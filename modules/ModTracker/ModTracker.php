@@ -1,17 +1,17 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 include_once 'vtlib/Vtiger/Event.php';
 include_once 'include/Webservices/GetUpdates.php';
 
 class ModTracker {
-
+    public string $moduleName = 'ModTracker';
+    public string $parentName = '';
 
     /**
      * Constant variables which indicates the status of the changed record.
@@ -30,53 +30,11 @@ class ModTracker {
 	* Invoked when special actions are performed on the module.
 	* @param String Module name
 	* @param String Event Type
-	*/	
-	function vtlib_handler($moduleName, $eventType) {
- 		global $adb, $currentModule;
-		
-		$modtrackerModule = Vtiger_Module::getInstance($currentModule);
-
-		// Shouldn't assign any thing to variable if we are not going use that
-		$this->getModTrackerEnabledModules();
-
- 		if($eventType == 'module.postinstall') {
-			$adb->pquery('UPDATE vtiger_tab SET customized=0 WHERE name=?', array($moduleName));
-
-			$fieldid = $adb->getUniqueID('vtiger_settings_field');
-			$blockid = getSettingsBlockId('LBL_OTHER_SETTINGS');
-			$seq_res = $adb->pquery("SELECT max(sequence) AS max_seq FROM vtiger_settings_field WHERE blockid = ?", array($blockid));
-			if ($adb->num_rows($seq_res) > 0) {
-				$cur_seq = $adb->query_result($seq_res, 0, 'max_seq');
-				if ($cur_seq != null)	$seq = $cur_seq + 1;
-			}
-
-			$adb->pquery('INSERT INTO vtiger_settings_field(fieldid, blockid, name, iconpath, description, linkto, sequence)
-				VALUES (?,?,?,?,?,?,?)', array($fieldid, $blockid, 'ModTracker', 'set-IcoLoginHistory.gif', 'LBL_MODTRACKER_DESCRIPTION',
-					'index.php?module=ModTracker&action=BasicSettings&parenttab=Settings&formodule=ModTracker', $seq));
-
-		}  else if($eventType == 'module.disabled') {
-			
-			$em = new VTEventsManager($adb);
-			$em->setHandlerInActive('ModTrackerHandler');
-			
-			// De-register Common Javascript
-			$modtrackerModule->deleteLink( 'HEADERSCRIPT', 'ModTrackerCommon_JS');
-
-        }  else if($eventType == 'module.enabled') {
-			$em = new VTEventsManager($adb);
-			$em->setHandlerActive('ModTrackerHandler');
-			
-			// Register Common Javascript
-			$modtrackerModule->addLink( 'HEADERSCRIPT', 'ModTrackerCommon_JS', 'modules/ModTracker/ModTrackerCommon.js');
-
-		} else if($eventType == 'module.preuninstall') {
-			// TODO Handle actions when this module is about to be deleted.
-		} else if($eventType == 'module.preupdate') {
-			// TODO Handle actions before this module is updated.
-		} else if($eventType == 'module.postupdate') {
-			// TODO Handle actions after this module is updated.
-		}
- 	}
+	*/
+    function vtlib_handler($moduleName, $eventType)
+    {
+        Vtiger_Install_Model::getInstance($eventType, $moduleName)->install();
+    }
 
     /**
      * function gives an array of module names for which modtracking is enabled
@@ -395,4 +353,3 @@ class ModTracker {
         self::trackRelation($sourceModule, $sourceId, $targetModule, $targetId, self::$UNLINK);
     }
 }
-?>

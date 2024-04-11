@@ -1,14 +1,14 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 
 class Services extends CRMEntity {
+    public string $moduleName = 'Services';
+    public string $parentName = 'Inventory';
 	var $db, $log; // Used in class functions of CRMEntity
 
 	var $table_name = 'vtiger_service';
@@ -1040,62 +1040,24 @@ class Services extends CRMEntity {
 		parent::unlinkDependencies($module, $id);
 	}
 
-	/**
-	* Invoked when special actions are performed on the module.
-	* @param String Module name
-	* @param String Event Type
-	*/
-	function vtlib_handler($moduleName, $eventType) {
+    /**
+     * Invoked when special actions are performed on the module.
+     * @param String Module name
+     * @param String Event Type
+     * @throws AppException
+     */
+    function vtlib_handler($moduleName, $eventType)
+    {
+        if ($eventType == 'module.postupdate') {
+            //adds sharing accsess
+            $ServicesModule = Vtiger_Module::getInstance('Services');
+            Vtiger_Access::setDefaultSharing($ServicesModule);
+        }
 
-		require_once('include/utils/utils.php');
-		global $adb;
+        Vtiger_Install_Model::getInstance($eventType, $moduleName)->install();
+    }
 
-		if($eventType == 'module.postinstall') {
-			require_once('vtlib/Vtiger/Module.php');
-			$moduleInstance = Vtiger_Module::getInstance($moduleName);
-
-			$ttModuleInstance = Vtiger_Module::getInstance('HelpDesk');
-			$ttModuleInstance->setRelatedList($moduleInstance,'Services',array('select'));
-
-			$leadModuleInstance = Vtiger_Module::getInstance('Leads');
-			$leadModuleInstance->setRelatedList($moduleInstance,'Services',array('select'));
-
-			$accModuleInstance = Vtiger_Module::getInstance('Accounts');
-			$accModuleInstance->setRelatedList($moduleInstance,'Services',array('select'));
-
-			$conModuleInstance = Vtiger_Module::getInstance('Contacts');
-			$conModuleInstance->setRelatedList($moduleInstance,'Services',array('select'));
-
-			$potModuleInstance = Vtiger_Module::getInstance('Potentials');
-			$potModuleInstance->setRelatedList($moduleInstance,'Services',array('select'));
-
-			$pbModuleInstance = Vtiger_Module::getInstance('PriceBooks');
-			$pbModuleInstance->setRelatedList($moduleInstance,'Services',array('select'),'get_pricebook_services');
-
-			// Initialize module sequence for the module
-			$adb->pquery("INSERT into vtiger_modentity_num values(?,?,?,?,?,?)",array($adb->getUniqueId("vtiger_modentity_num"),$moduleName,'SER',1,1,1));
-
-			// Mark the module as Standard module
-			$adb->pquery('UPDATE vtiger_tab SET customized=0 WHERE name=?', array($moduleName));
-
-		} else if($eventType == 'module.disabled') {
-		// TODO Handle actions when this module is disabled.
-		} else if($eventType == 'module.enabled') {
-		// TODO Handle actions when this module is enabled.
-		} else if($eventType == 'module.preuninstall') {
-		// TODO Handle actions when this module is about to be deleted.
-		} else if($eventType == 'module.preupdate') {
-		// TODO Handle actions before this module is updated.
-		} else if($eventType == 'module.postupdate') {
-		// TODO Handle actions after this module is updated.
-
-			//adds sharing accsess
-			$ServicesModule  = Vtiger_Module::getInstance('Services');
-			Vtiger_Access::setDefaultSharing($ServicesModule);
-		}
-	}
-
-	/** Function to unlink an entity with given Id from another entity */
+    /** Function to unlink an entity with given Id from another entity */
 	function unlinkRelationship($id, $return_module, $return_id) {
 		global $log, $currentModule;
 		$log->fatal('id:--'.$id);

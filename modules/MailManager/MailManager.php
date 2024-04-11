@@ -1,15 +1,17 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 require_once 'include/Webservices/Query.php';
 
 class MailManager {
+
+    public $moduleName = 'MailManager';
+    public $parentName = 'Tools';
 
 	static function updateMailAssociation($mailuid, $emailid, $crmid) {
 		global $adb;
@@ -132,21 +134,7 @@ class MailManager {
 	 * @param String $modulename - Module name
 	 * @param String $event_type - Event Type (module.postinstall, module.disabled, module.enabled, module.preuninstall)
 	 */
-	function vtlib_handler($modulename, $event_type) {
-		if($event_type == 'module.postinstall') {
-			// TODO Handle actions when this module is installed.
-		} else if($event_type == 'module.disabled') {
-			// TODO Handle actions when this module is disabled.
-		} else if($event_type == 'module.enabled') {
-			// TODO Handle actions when this module is enabled.
-		} else if($event_type == 'module.preuninstall') {
-			// TODO Handle actions when this module is about to be deleted.
-		} else if($event_type == 'module.preupdate') {
-			// TODO Handle actions before this module is updated.
-		} else if($event_type == 'module.postupdate') {
-			// TODO Handle actions when this module is updated.
-		}
+	public function vtlib_handler($modulename, $event_type)
+	{
 	}
 }
-
-?>

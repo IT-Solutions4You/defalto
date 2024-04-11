@@ -34,8 +34,35 @@ class PDFMaker_Install_Model extends Vtiger_Install_Model
         $this->registerCustomLinks[] = ['SalesOrder', 'DETAILVIEWSIDEBARWIDGET', 'PDFMaker'];
         $this->registerCustomLinks[] = ['PurchaseOrder', 'DETAILVIEWSIDEBARWIDGET', 'PDFMaker'];
         $this->registerCustomLinks[] = ['Invoice', 'DETAILVIEWSIDEBARWIDGET', 'PDFMaker'];
-        $this->registerCustomLinks[] = ['PDFMaker', 'HEADERSCRIPT', 'PDFMakerFreeActionsJS', 'layouts/v7/modules/PDFMaker/resources/PDFMakerFreeActions.js'];
+        $this->registerCustomLinks[] = ['PDFMaker', 'HEADERSCRIPT', 'PDFMakerFreeActionsJS'];
         $this->updateCustomLinks(false);
+        $this->deleteLinks();
+    }
+
+    public function deleteLinks()
+    {
+        $this->db->pquery(
+            'DELETE FROM vtiger_links WHERE linklabel = ? AND linktype = ? AND linkurl = ?',
+            ['PDFMakerJS', 'HEADERSCRIPT', 'modules/PDFMaker/PDFMakerActions.js']
+        );
+        $this->db->pquery(
+            'DELETE FROM vtiger_links WHERE linklabel = ? AND linktype = ? AND linkurl LIKE ?',
+            ['PDF Export', 'LISTVIEWBASIC', '%getPDFListViewPopup2%']
+        );
+        $this->db->pquery(
+            'DELETE FROM vtiger_links  WHERE linklabel = ? AND linktype = ? AND linkurl = ?',
+            ['PDFMaker', 'DETAILVIEWWIDGET', 'module=PDFMaker&action=PDFMakerAjax&file=getPDFActions&record=$RECORD$']
+        );
+        $result = $this->db->pquery('SELECT tabid FROM vtiger_tab WHERE isentitytype = ?', [1]);
+
+        while ($row = $this->db->fetchByAssoc($result)) {
+            Vtiger_Link::deleteLink($row['tabid'], "DETAILVIEWWIDGET", 'PDFMaker');
+            Vtiger_Link::deleteLink($row['tabid'], "DETAILVIEWSIDEBARWIDGET", 'PDFMaker');
+            Vtiger_Link::deleteLink($row['tabid'], "LISTVIEWMASSACTION", 'PDF Export');
+            Vtiger_Link::deleteLink($row['tabid'], "LISTVIEWMASSACTION", 'PDF Export');
+        }
+
+        Vtiger_Link::deleteAll(getTabId('PDFMaker'));
     }
 
     public function getBlocks(): array
@@ -249,12 +276,43 @@ class PDFMaker_Install_Model extends Vtiger_Install_Model
             case 'module.enabled':
             case 'module.postinstall':
                 $this->addCustomLinks();
+                $this->updatePermissions();
                 break;
             case 'module.disabled':
             case 'module.preuninstall':
             case 'module.preupdate':
                 $this->deleteCustomLinks();
                 break;
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function updatePermissions(): void
+    {
+        $result = $this->db->pquery(
+            'SELECT * FROM vtiger_profile2standardpermissions WHERE tabid=(SELECT tabid FROM vtiger_tab WHERE name = ?)',
+            ['PDFMaker']
+        );
+
+        if ($this->db->num_rows($result)) {
+            $result = $this->db->pquery(
+                'SELECT * FROM vtiger_pdfmaker_profilespermissions',
+                []
+            );
+
+            if (0 === $this->db->num_rows($result)) {
+                $this->db->pquery(
+                    'INSERT INTO vtiger_pdfmaker_profilespermissions SELECT profileid, operation, permissions FROM vtiger_profile2standardpermissions WHERE tabid = (SELECT tabid FROM vtiger_tab WHERE name = ?)',
+                    ['PDFMaker']
+                );
+            }
+
+            $this->db->pquery(
+                'DELETE FROM vtiger_profile2standardpermissions WHERE tabid = (SELECT tabid FROM vtiger_tab WHERE name = ?)',
+                ['PDFMaker']
+            );
         }
     }
 

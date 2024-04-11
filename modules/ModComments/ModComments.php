@@ -1,18 +1,20 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 include_once dirname(__FILE__) . '/ModCommentsCore.php';
 include_once dirname(__FILE__) . '/models/Comments.php';
 
 require_once 'include/utils/VtlibUtils.php';
 
 class ModComments extends ModCommentsCore {
+	public string $moduleName = 'ModComments';
+	public string $moduleLabel = 'Comments';
+	public string $parentName = '';
 
 	/**
 	 * Invoked when special actions are performed on the module.

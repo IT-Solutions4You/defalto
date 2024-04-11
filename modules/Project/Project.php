@@ -1,13 +1,13 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 class Project extends CRMEntity {
+    public string $moduleName = 'Project';
+    public string $parentName = 'Project';
     var $db, $log; // Used in class functions of CRMEntity
 
     var $table_name = 'vtiger_project';
@@ -322,109 +322,16 @@ class Project extends CRMEntity {
 		return $query;
 	}
 
-	/**
-	 * Invoked when special actions are performed on the module.
-	 * @param String Module name
-	 * @param String Event Type (module.postinstall, module.disabled, module.enabled, module.preuninstall)
-	 */
-	function vtlib_handler($modulename, $event_type) {
-		if($event_type == 'module.postinstall') {
-			global $adb;
-
-			include_once('vtlib/Vtiger/Module.php');
-			$moduleInstance = Vtiger_Module::getInstance($modulename);
-			$projectsResult = $adb->pquery('SELECT tabid FROM vtiger_tab WHERE name=?', array('Project'));
-			$projectTabid = $adb->query_result($projectsResult, 0, 'tabid');
-
-			// Mark the module as Standard module
-			$adb->pquery('UPDATE vtiger_tab SET customized=0 WHERE name=?', array($modulename));
-
-			// Add module to Customer portal
-			if(getTabid('CustomerPortal') && $projectTabid) {
-				$checkAlreadyExists = $adb->pquery('SELECT 1 FROM vtiger_customerportal_tabs WHERE tabid=?', array($projectTabid));
-				if($checkAlreadyExists && $adb->num_rows($checkAlreadyExists) < 1) {
-					$maxSequenceQuery = $adb->pquery("SELECT max(sequence) as maxsequence FROM vtiger_customerportal_tabs", array());
-					$maxSequence = $adb->query_result($maxSequenceQuery, 0, 'maxsequence');
-					$nextSequence = $maxSequence+1;
-					$adb->pquery("INSERT INTO vtiger_customerportal_tabs(tabid,visible,sequence) VALUES (?, ?, ?)", array($projectTabid,1,$nextSequence));
-					$adb->pquery("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?, ?, ?)", array($projectTabid,'showrelatedinfo',1));
-				}
-			}
-
-			// Add Gnatt chart to the related list of the module
-			$relation_id = $adb->getUniqueID('vtiger_relatedlists');
-			$max_sequence = 0;
-			$result = $adb->pquery("SELECT max(sequence) as maxsequence FROM vtiger_relatedlists WHERE tabid=?", array($projectTabid));
-			if($adb->num_rows($result)) $max_sequence = $adb->query_result($result, 0, 'maxsequence');
-			$sequence = $max_sequence+1;
-			$adb->pquery("INSERT INTO vtiger_relatedlists(relation_id,tabid,related_tabid,name,sequence,label,presence) VALUES(?,?,?,?,?,?,?)",
-						array($relation_id,$projectTabid,0,'get_gantt_chart',$sequence,'Charts',0));
-
-			// Add Project module to the related list of Accounts module
-			$accountsModuleInstance = Vtiger_Module::getInstance('Accounts');
-			$accountsModuleInstance->setRelatedList($moduleInstance, 'Projects', Array('ADD','SELECT'), 'get_dependents_list');
-
-			// Add Project module to the related list of Accounts module
-			$contactsModuleInstance = Vtiger_Module::getInstance('Contacts');
-			$contactsModuleInstance->setRelatedList($moduleInstance, 'Projects', Array('ADD','SELECT'), 'get_dependents_list');
-
-			// Add Project module to the related list of HelpDesk module
-			$helpDeskModuleInstance = Vtiger_Module::getInstance('HelpDesk');
-			$helpDeskModuleInstance->setRelatedList($moduleInstance, 'Projects', Array('SELECT'), 'get_related_list');
-
-			$modcommentsModuleInstance = Vtiger_Module::getInstance('ModComments');
-			if($modcommentsModuleInstance && file_exists('modules/ModComments/ModComments.php')) {
-				include_once 'modules/ModComments/ModComments.php';
-				if(class_exists('ModComments')) ModComments::addWidgetTo(array('Project'));
-			}
-
-			$result = $adb->pquery("SELECT 1 FROM vtiger_modentity_num WHERE semodule = ? AND active = 1", array($modulename));
-			if (!($adb->num_rows($result))) {
-				//Initialize module sequence for the module
-				$adb->pquery("INSERT INTO vtiger_modentity_num values(?,?,?,?,?,?)", array($adb->getUniqueId("vtiger_modentity_num"), $modulename, 'PROJ', 1, 1, 1));
-			}
-
-		} else if($event_type == 'module.disabled') {
-			// TODO Handle actions when this module is disabled.
-		} else if($event_type == 'module.enabled') {
-			// TODO Handle actions when this module is enabled.
-		} else if($event_type == 'module.preuninstall') {
-			// TODO Handle actions when this module is about to be deleted.
-		} else if($event_type == 'module.preupdate') {
-			// TODO Handle actions before this module is updated.
-		} else if($event_type == 'module.postupdate') {
-			global $adb;
-
-			$projectsResult = $adb->pquery('SELECT tabid FROM vtiger_tab WHERE name=?', array('Project'));
-			$projectTabid = $adb->query_result($projectsResult, 0, 'tabid');
-
-			// Add Gnatt chart to the related list of the module
-			$relation_id = $adb->getUniqueID('vtiger_relatedlists');
-			$max_sequence = 0;
-			$result = $adb->pquery("SELECT max(sequence) as maxsequence FROM vtiger_relatedlists WHERE tabid=?", array($projectTabid));
-			if($adb->num_rows($result)) $max_sequence = $adb->query_result($result, 0, 'maxsequence');
-			$sequence = $max_sequence+1;
-			$adb->pquery("INSERT INTO vtiger_relatedlists(relation_id,tabid,related_tabid,name,sequence,label,presence) VALUES(?,?,?,?,?,?,?)",
-						array($relation_id,$projectTabid,0,'get_gantt_chart',$sequence,'Charts',0));
-
-			// Add Comments widget to Project module
-			$modcommentsModuleInstance = Vtiger_Module::getInstance('ModComments');
-			if($modcommentsModuleInstance && file_exists('modules/ModComments/ModComments.php')) {
-				include_once 'modules/ModComments/ModComments.php';
-				if(class_exists('ModComments')) ModComments::addWidgetTo(array('Project'));
-			}
-
-			$result = $adb->pquery("SELECT 1 FROM vtiger_modentity_num WHERE semodule = ? AND active = 1", array($modulename));
-			if (!($adb->num_rows($result))) {
-				//Initialize module sequence for the module
-				$adb->pquery("INSERT INTO vtiger_modentity_num values(?,?,?,?,?,?)", array($adb->getUniqueId("vtiger_modentity_num"), $modulename, 'PROJ', 1, 1, 1));
-			}
-		}
-	}
-
-	static function registerLinks() {
-
-	}
+    /**
+     * Invoked when special actions are performed on the module.
+     * @param String Module name
+     * @param String Event Type (module.postinstall, module.disabled, module.enabled, module.preuninstall)
+     * @throws AppException
+     */
+    function vtlib_handler($moduleName, $eventType)
+    {
+        Vtiger_Install_Model::getInstance($eventType, $moduleName)->install();
+    }
 
     /**
      * Here we override the parent's method,
