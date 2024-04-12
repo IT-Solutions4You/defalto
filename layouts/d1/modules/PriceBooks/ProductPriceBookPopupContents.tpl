@@ -89,6 +89,9 @@
                                     <td class="listViewEntryValue text-truncate {$WIDTHTYPE}">
                                         {if $LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4'}
                                             <a>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
+                                        {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'currency'}
+                                            {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($LISTVIEW_ENTRY->getCurrencyId())}
+                                            {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_INFO['symbol'])}
                                         {else}
                                             <a>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
                                         {/if}
