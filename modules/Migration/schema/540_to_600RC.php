@@ -19,7 +19,7 @@ require_once 'modules/com_vtiger_workflow/VTWorkflowManager.inc';
 require_once 'modules/com_vtiger_workflow/VTTaskManager.inc';
 
 if(defined('VTIGER_UPGRADE')) {
-    Install_Utils_Model::installModules();
+    Install_Utils_Model::installAdditionalModulesAndLanguages();
 }
 
 if(!defined('INSTALLATION_MODE')) {

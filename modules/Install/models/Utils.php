@@ -523,22 +523,42 @@ class Install_Utils_Model {
 		return $dbCheckResult;
 	}
 
-	/**
-	 * Function installs all the available modules
-	 */
-    public static function installModules()
+    /**
+     * Function installs all the available modules
+     * @throws AppException
+     */
+    public static function installAdditionalModulesAndLanguages()
     {
         require_once('vtlib/Vtiger/Package.php');
         require_once('vtlib/Vtiger/Module.php');
         require_once('include/utils/utils.php');
 
         foreach (self::$registerModules as $moduleName) {
-            Vtiger_Install_Model::getInstance('module.postinstall', $moduleName)->installModule();
+            self::installModule($moduleName);
         }
 
         foreach (self::$registerLanguages as $languageInfo) {
-            Vtiger_Language::register($languageInfo[0], $languageInfo[1], $languageInfo[2]);
+            self::installLanguage($languageInfo);
         }
+    }
+
+    /**
+     * @param string $moduleName
+     * @return void
+     * @throws AppException
+     */
+    public static function installModule(string $moduleName): void
+    {
+        Vtiger_Install_Model::getInstance('module.postinstall', $moduleName)->installModule();
+    }
+
+    /**
+     * @param array $languageInfo [prefix, label, name]
+     * @return void
+     */
+    public static function installLanguage(array $languageInfo): void
+    {
+        Vtiger_Language::register($languageInfo[0], $languageInfo[1], $languageInfo[2]);
     }
 
     /*

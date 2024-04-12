@@ -13,7 +13,7 @@ include_once 'modules/com_vtiger_workflow/VTTaskManager.inc';
 include_once 'include/utils/utils.php';
 
 if(defined('VTIGER_UPGRADE')) {
-    Install_Utils_Model::installModules();
+    Install_Utils_Model::installAdditionalModulesAndLanguages();
 }
 if(defined('INSTALLATION_MODE')) {
 		// Set of task to be taken care while specifically in installation mode.

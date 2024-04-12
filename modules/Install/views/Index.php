@@ -197,7 +197,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 			Install_InitSchema_Model::initialize();
 
 			// Install all the available modules
-			Install_Utils_Model::installModules();
+			Install_Utils_Model::installAdditionalModulesAndLanguages();
 
 			Install_InitSchema_Model::upgrade();
 
