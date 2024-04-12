@@ -1,13 +1,15 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 class Assets extends CRMEntity {
+	public string $moduleName = 'Assets';
+	public string $parentName = 'Inventory';
+
 	var $db, $log; // Used in class functions of CRMEntity
 
 	var $table_name = 'vtiger_assets';
@@ -314,84 +316,18 @@ class Assets extends CRMEntity {
 	* @param String Module name
 	* @param String Event Type
 	*/
-	function vtlib_handler($moduleName, $eventType) {
-		require_once('include/utils/utils.php');
-		global $adb;
+	function vtlib_handler($moduleName, $eventType)
+	{
+		Vtiger_Install_Model::getInstance($eventType, $moduleName)->install();
 
- 		if($eventType == 'module.postinstall') {
-			//Add Assets Module to Customer Portal
-			global $adb;
-
-			$this->addModuleToCustomerPortal();
-
-			include_once('vtlib/Vtiger/Module.php');
-
-			// Mark the module as Standard module
-			$adb->pquery('UPDATE vtiger_tab SET customized=0 WHERE name=?', array($moduleName));
-
+		if ($eventType == 'module.postinstall') {
 			//adds sharing accsess
-			$AssetsModule  = Vtiger_Module::getInstance('Assets');
+			$AssetsModule = Vtiger_Module::getInstance('Assets');
 			Vtiger_Access::setDefaultSharing($AssetsModule);
-
-			//Showing Assets module in the related modules in the More Information Tab
-			$assetInstance = Vtiger_Module::getInstance('Assets');
-			$assetLabel = 'Assets';
-
-			$accountInstance = Vtiger_Module::getInstance('Accounts');
-			$accountInstance->setRelatedlist($assetInstance,$assetLabel,array('ADD'),'get_dependents_list');
-
-			$productInstance = Vtiger_Module::getInstance('Products');
-			$productInstance->setRelatedlist($assetInstance,$assetLabel,array('ADD'),'get_dependents_list');
-
-			$InvoiceInstance = Vtiger_Module::getInstance('Invoice');
-			$InvoiceInstance->setRelatedlist($assetInstance,$assetLabel,array('ADD'),'get_dependents_list');
-
-			$result = $adb->pquery("SELECT 1 FROM vtiger_modentity_num WHERE semodule = ? AND active = 1", array($moduleName));
-			if (!($adb->num_rows($result))) {
-				//Initialize module sequence for the module
-				$adb->pquery("INSERT INTO vtiger_modentity_num values(?,?,?,?,?,?)", array($adb->getUniqueId("vtiger_modentity_num"), $moduleName, 'ASSET', 1, 1, 1));
-			}
-
-		} else if($eventType == 'module.disabled') {
-		// TODO Handle actions when this module is disabled.
-		} else if($eventType == 'module.enabled') {
-		// TODO Handle actions when this module is enabled.
-		} else if($eventType == 'module.preuninstall') {
-		// TODO Handle actions when this module is about to be deleted.
-		} else if($eventType == 'module.preupdate') {
-		// TODO Handle actions before this module is updated.
-		} else if($eventType == 'module.postupdate') {
-			$this->addModuleToCustomerPortal();
-
-			$result = $adb->pquery("SELECT 1 FROM vtiger_modentity_num WHERE semodule = ? AND active =1 ", array($moduleName));
-			if (!($adb->num_rows($result))) {
-				//Initialize module sequence for the module
-				$adb->pquery("INSERT INTO vtiger_modentity_num values(?,?,?,?,?,?)", array($adb->getUniqueId("vtiger_modentity_num"), $moduleName, 'ASSET', 1, 1, 1));
-			}
-		}
- 	}
-
-	function addModuleToCustomerPortal() {
-		$adb = PearDatabase::getInstance();
-
-		$assetsResult = $adb->pquery('SELECT tabid FROM vtiger_tab WHERE name=?', array('Assets'));
-		$assetsTabId = $adb->query_result($assetsResult, 0, 'tabid');
-		if(getTabid('CustomerPortal') && $assetsTabId) {
-			$checkAlreadyExists = $adb->pquery('SELECT 1 FROM vtiger_customerportal_tabs WHERE tabid=?', array($assetsTabId));
-			if($checkAlreadyExists && $adb->num_rows($checkAlreadyExists) < 1) {
-				$maxSequenceQuery = $adb->pquery("SELECT max(sequence) as maxsequence FROM vtiger_customerportal_tabs", array());
-				$maxSequence = $adb->query_result($maxSequenceQuery, 0, 'maxsequence');
-				$nextSequence = $maxSequence+1;
-				$adb->pquery("INSERT INTO vtiger_customerportal_tabs(tabid,visible,sequence) VALUES (?,?,?)", array($assetsTabId,1,$nextSequence));
-			}
-			$checkAlreadyExists = $adb->pquery('SELECT 1 FROM vtiger_customerportal_prefs WHERE tabid=?', array($assetsTabId));
-			if($checkAlreadyExists && $adb->num_rows($checkAlreadyExists) < 1) {
-				$adb->pquery("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?,?,?)", array($assetsTabId,'showrelatedinfo',1));
-			}
 		}
 	}
 
-    /**
+	/**
 	 * Move the related records of the specified list of id's to the given record.
 	 * @param String This module name
 	 * @param Array List of Entity Id's from which related records need to be transfered

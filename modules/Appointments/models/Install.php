@@ -17,6 +17,10 @@ class Appointments_Install_Model extends Vtiger_Install_Model
     public array $registerCron = [
         ['AppointmentsReminder', 'modules/Appointments/cron/Reminder.service', 900, 'Appointments', 0, ''],
     ];
+
+    public array $registerWorkflows = [
+        ['Appointments', 'VTCalendarTask', 'Create Calendar Record'],
+    ];
     protected PearDatabase $db;
     protected string $eventType = '';
     protected string $moduleName = 'Appointments';
@@ -31,7 +35,7 @@ class Appointments_Install_Model extends Vtiger_Install_Model
         $this->insertEmailTemplates();
         $this->updateCron();
         $this->updateParentIdModules();
-        $this->updateWorkflow();
+        $this->updateWorkflows();
         $this->updateFilters();
         $this->updateIcons();
         $this->updatePicklists();
@@ -41,38 +45,12 @@ class Appointments_Install_Model extends Vtiger_Install_Model
     }
 
     /**
-     * @param string $firstColumn
-     * @param string $firstType
-     * @throws AppException
-     */
-    protected function createTable($firstColumn = '', $firstType = 'int(11)'): self
-    {
-        if ($this->isEmpty('table')) {
-            throw new AppException('Table is empty for create table');
-        }
-
-        if ($this->isEmpty('table_id')) {
-            throw new AppException('Table id is empty for create table');
-        }
-
-        $sql = sprintf(
-            'CREATE TABLE IF NOT EXISTS %s (%s int(11) AUTO_INCREMENT,PRIMARY KEY (%s)) ENGINE=InnoDB',
-            $this->get('table'),
-            $this->get('table_id'),
-            $this->get('table_id')
-        );
-        $this->db->query($sql);
-
-        return $this;
-    }
-
-    /**
      * @return void
      */
     public function deleteCustomLinks(): void
     {
         $this->updateCron(false);
-        $this->updateWorkflow(false);
+        $this->updateWorkflows(false);
 
         ModComments::removeWidgetFrom([$this->moduleName]);
         ModTracker::disableTrackingForModule(getTabid($this->moduleName));
@@ -338,21 +316,6 @@ class Appointments_Install_Model extends Vtiger_Install_Model
                 ],
             ],
         ];
-    }
-
-    /**
-     * @param string $eventType
-     * @param string $moduleName
-     * @return self
-     */
-    public static function getInstance(string $eventType, string $moduleName): self
-    {
-        $instance = new self();
-        $instance->eventType = $eventType;
-        $instance->moduleName = $moduleName;
-        $instance->db = PearDatabase::getInstance();
-
-        return $instance;
     }
 
     public function getTables(): array
@@ -637,57 +600,5 @@ class Appointments_Install_Model extends Vtiger_Install_Model
         $this->db->pquery('DELETE FROM vtiger_defaultcalendarview WHERE defaultcalendarview IN (?)', ['SharedCalendar']);
         $this->db->pquery('DELETE FROM vtiger_activity_view WHERE activity_view IN (?,?)', ['This Year', 'Agenda']);
         $this->db->pquery('UPDATE vtiger_calendar_type SET presence=? WHERE calendar_type IN (?,?,?,?)', ['0', 'Call', 'Meeting', 'Email', 'Reminder']);
-    }
-
-    /**
-     * @param bool $register
-     * @return void
-     */
-    protected function updateWorkflow(bool $register = true)
-    {
-        vimport('~~modules/com_vtiger_workflow/include.inc');
-        vimport('~~modules/com_vtiger_workflow/tasks/VTEntityMethodTask.inc');
-        vimport('~~modules/com_vtiger_workflow/VTEntityMethodManager.inc');
-        vimport('~~modules/com_vtiger_workflow/VTTaskManager.inc');
-
-        $name = 'VTCalendarTask';
-        $label = 'Create Calendar Record';
-        $taskType = [
-            'name' => $name,
-            'label' => $label,
-            'classname' => $name,
-            'classpath' => '',
-            'templatepath' => '',
-            'modules' => [
-                'include' => [],
-                'exclude' => [],
-            ],
-            'sourcemodule' => $this->moduleName,
-        ];
-        $files = [
-            'modules/' . $this->moduleName . '/workflows/%s.inc' => 'modules/com_vtiger_workflow/tasks/%s.inc',
-            'layouts/v7/modules/' . $this->moduleName . '/workflows/%s.tpl' => 'layouts/v7/modules/Settings/Workflows/Tasks/%s.tpl',
-        ];
-
-        foreach ($files as $fromFile => $toFile) {
-            $fromFile = sprintf($fromFile, $name);
-            $toFile = sprintf($toFile, $name);
-
-            if (empty($taskType['classpath'])) {
-                $taskType['classpath'] = $toFile;
-            } elseif (empty($taskType['templatepath'])) {
-                $taskType['templatepath'] = $toFile;
-            }
-
-            $copied = copy($fromFile, $toFile);
-        }
-
-        $this->db->pquery(
-            'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?', [$name]
-        );
-
-        if ($copied && $register) {
-            VTTaskType::registerTaskType($taskType);
-        }
     }
 }

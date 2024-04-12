@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
@@ -7,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-class ITS4YouEmails_Install_View extends Vtiger_Index_View
+class Vtiger_Install_View extends Vtiger_Index_View
 {
     /**
      * @param Vtiger_Request $request
@@ -55,12 +56,22 @@ class ITS4YouEmails_Install_View extends Vtiger_Index_View
 
         $mode = $request->get('mode');
 
-        if ('delete' === $mode) {
-            ITS4YouEmails_Install_Model::getInstance('module.preuninstall', $request->getModule())->deleteModule();
-        } elseif ('install' === $mode) {
-            ITS4YouEmails_Install_Model::getInstance('module.postinstall', $request->getModule())->installModule();
-        } else {
+        if (empty($mode)) {
             throw new AppException('Required parameter "mode" in request "migrate, delete, install"');
+        }
+
+        $moduleName = $request->getModule();
+
+        switch ($mode) {
+            case 'install':
+                Vtiger_Install_Model::getInstance('module.postinstall', $moduleName)->installModule();
+                break;
+            case 'migrate':
+                Vtiger_Install_Model::getInstance('module.postinstall', $moduleName)->migrate();
+                break;
+            case 'delete':
+                Vtiger_Install_Model::getInstance('module.preuninstall', $moduleName)->deleteModule();
+                break;
         }
     }
 }

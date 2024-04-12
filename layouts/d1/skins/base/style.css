@@ -3507,10 +3507,6 @@ a.cp-modules:hover {
     z-index: 1002;
 }
 
-#relationBlock .recordScroll {
-    max-height: 150px;
-}
-
 /*Start - List sidebar toggle*/
 .essentials-toggle {
     background-color: white;

@@ -21,18 +21,21 @@ class PBXManager_Detail_View extends Vtiger_Detail_View{
     /*
      * Overided to convert totalduration to minutes
      */
-    function preProcess(Vtiger_Request $request, $display=true) {
-		$recordId = $request->get('record');
-		$moduleName = $request->getModule();
-		if(!$this->record){
-			$this->record = Vtiger_DetailView_Model::getInstance($moduleName, $recordId);
-		}
-		$recordModel = $this->record->getRecord();
-        
-       // To show recording link only if callstatus is 'completed' 
-        if($recordModel->get('callstatus') != 'completed') { 
-            $recordModel->set('recordingurl', ''); 
+    function preProcess(Vtiger_Request $request, $display = true)
+    {
+        $recordId = $request->get('record');
+        $moduleName = $request->getModule();
+
+        if (!$this->record) {
+            $this->record = Vtiger_DetailView_Model::getInstance($moduleName, $recordId);
         }
-        return parent::preProcess($request, true);
-	}
+        $recordModel = $this->record->getRecord();
+
+        // To show recording link only if callstatus is 'completed'
+        if ($recordModel->get('callstatus') != 'completed') {
+            $recordModel->set('recordingurl', '');
+        }
+
+        parent::preProcess($request);
+    }
 }
