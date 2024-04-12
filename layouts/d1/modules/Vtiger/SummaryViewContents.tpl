@@ -16,9 +16,9 @@
 				<div class="col-lg-4 fieldLabel" >
                     <label class="muted text-truncate" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}">
                         {vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}
-                        {if $FIELD_MODEL->get('uitype') eq '71' || $FIELD_MODEL->get('uitype') eq '72'}
-                        {assign var=CURRENCY_INFO value=getCurrencySymbolandCRate($USER_MODEL->get('currency_id'))}
-                        &nbsp;({$CURRENCY_INFO['symbol']})
+                        {if $FIELD_MODEL->getFieldDataType() eq 'currency'}
+                            {assign var=CURRENCY_INFO value=getCurrencySymbolandCRate($RECORD->getCurrencyId())}
+                            <span class="ms-2">({$CURRENCY_INFO['symbol']})</span>
                         {/if}
                     </label>
                 </div>

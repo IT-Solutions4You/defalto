@@ -56,4 +56,13 @@ class Vtiger_Number_UIType extends Vtiger_Base_UIType {
 
         return decimalFormat($value);
     }
+
+    /**
+     * @param int|string $value
+     * @return string
+     */
+    public static function transformDisplayValue($value): string
+    {
+        return (new self())->getDisplayValue($value);
+    }
 }

@@ -353,34 +353,12 @@ class ListViewController {
 							$value = Vtiger_Time_UIType::getTimeValueInAMorPM($value);
 						}
 					}
-				} elseif($fieldDataType == 'currency') {
-                    if (!empty($value)) {
-                        if ($field->getUIType() == 72) {
-                            if ($fieldName == 'unit_price') {
-                                $currencyId = getProductBaseCurrency($recordId, $module);
-                                $cursym_convrate = getCurrencySymbolandCRate($currencyId);
-                                $currencySymbol = $cursym_convrate['symbol'];
-                            } else {
-                                $currencyInfo = getInventoryCurrencyInfo($module, $recordId);
-                                $currencySymbol = $currencyInfo['currency_symbol'];
-                            }
-
-                            $value = CurrencyField::convertToUserFormat($value, null, true);
-                            $row['currencySymbol'] = $currencySymbol;
-                        } else {
-                            $value = CurrencyField::convertToDbFormat($value, null, true);
-                            $currencyId = getCurrencyIdForInventoryRecord((int)$recordId, (string)$module);
-
-                            if (!$currencyId) {
-                                $currencyId = $this->user->currency_id;
-                            }
-
-                            $userCurrencyInfo = getCurrencySymbolandCRate($currencyId);
-                            $row['userCurrencySymbol'] = $userCurrencyInfo['symbol'];
-                        }
-                    }
-                } elseif ($fieldDataType == 'double') {
-					$value = decimalFormat($value);
+                } elseif ($fieldDataType == 'currency') {
+                    $value = Vtiger_Currency_UIType::transformDisplayValue($value, null, true);
+                } elseif($fieldDataType == 'percent') {
+                    $value = Vtiger_Number_UIType::transformDisplayValue($value) . ' %';
+                } elseif ($fieldDataType == 'double' || $fieldDataType == 'integer') {
+					$value = Vtiger_Number_UIType::transformDisplayValue($value);
 				} elseif($fieldDataType == 'url') {
 					$matchPattern = "^[\w]+:\/\/^";
 					preg_match($matchPattern, $rawValue, $matches);
