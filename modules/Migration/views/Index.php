@@ -63,19 +63,6 @@ class Migration_Index_View extends Vtiger_View_Controller {
 		$viewer->view('MigrationPostProcess.tpl', $moduleName);
 	}
 
-	public function getHeaderCss(Vtiger_Request $request) {
-		$headerCssInstances = array();
-		$cssFileNames = array(
-			'~/layouts/vlayout/modules/Migration/css/style.css',
-			'~/layouts/vlayout/modules/Migration/css/mkCheckbox.css',
-			'~/libraries/bootstrap/css/bootstrap-responsive.css',
-			'~/libraries/bootstrap/css/bootstrap.min.css',
-		);
-		$cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
-		$headerCssInstances = array_merge($headerCssInstances, $cssInstances);
-		return $headerCssInstances;
-	}
-
 	public function getHeaderScripts(Vtiger_Request $request) {
 		$headerScriptInstances = array();
 		$moduleName = $request->getModule();

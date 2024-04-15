@@ -75,22 +75,20 @@ Class Users_Edit_View extends Users_PreferenceEdit_View {
 		$this->postProcessSettings($request);
 		parent::postProcess($request);
 	}
-	
-	public function getHeaderScripts(Vtiger_Request $request) {
-		$headerScriptInstances = parent::getHeaderScripts($request);
-		$moduleName = $request->getModule();
 
-		$jsFileNames = array(
-			'modules.Settings.Vtiger.resources.Index',
-			"~layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.js",
-		);
+    public function getHeaderScripts(Vtiger_Request $request)
+    {
+        $headerScriptInstances = parent::getHeaderScripts($request);
+        $moduleName = $request->getModule();
+        $jsFileNames = [
+            'modules.Settings.Vtiger.resources.Index',
+        ];
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
-		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
-		return $headerScriptInstances;
-	}
-	
-	public function process(Vtiger_Request $request) {
+        return array_merge($headerScriptInstances, $jsScriptInstances);
+    }
+
+    public function process(Vtiger_Request $request) {
 		parent::process($request);
 	}
 }
