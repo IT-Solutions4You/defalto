@@ -21,12 +21,12 @@ class MailManager_Draft_View extends MailManager_Abstract_View {
 	 * Returns a List of search strings on the internal vtiger Drafts
 	 * @return Array of vtiger Email Fields
 	 */
-	public static function getSearchOptions() {
-		$options = array('subject'=>'SUBJECT', 'saved_toid'=>'TO','description'=>'BODY','bccmail'=>'BCC','ccmail'=>'CC');
-		return $options;
-	}
+    public static function getSearchOptions()
+    {
+        return ['subject' => 'SUBJECT', 'to_email' => 'TO', 'body' => 'BODY', 'bcc_email' => 'BCC', 'cc_email' => 'CC'];
+    }
 
-	/**
+    /**
 	 * Function which returns the Draft Model
 	 * @return MailManager_Draft_Model
 	 */
@@ -37,4 +37,3 @@ class MailManager_Draft_View extends MailManager_Abstract_View {
 		return $this->mMailboxModel;
 	}
 }
-?>
