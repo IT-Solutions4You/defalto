@@ -57,7 +57,9 @@
     <div class="mmSearchContainerOther py-3 container-fluid">
         <div class="row">
             <div class="col">
-                <input type="text" class="form-control" id="mailManagerSearchbox" aria-describedby="basic-addon2" value="{$QUERY}" data-foldername='{$FOLDER->name()}' placeholder="{vtranslate('LBL_TYPE_TO_SEARCH', $MODULE)}">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="mailManagerSearchbox" aria-describedby="basic-addon2" value="{$QUERY}" data-foldername='{$FOLDER->name()}' placeholder="{vtranslate('LBL_TYPE_TO_SEARCH', $MODULE)}">
+                </div>
             </div>
             <div class="col">
                 <select class="form-select" id="searchType">

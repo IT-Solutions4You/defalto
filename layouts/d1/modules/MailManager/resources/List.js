@@ -1090,31 +1090,32 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		});
 	},
 
-	registerDraftMailClickEvent : function() {
-		var self = this;
-		var container = self.getContainer();
-		container.find('.draftEmail').click(function(e) {
+	registerDraftMailClickEvent: function () {
+		let self = this,
+			container = self.getContainer();
+
+		container.find('.draftEmail').click(function (e) {
 			e.preventDefault();
-			var element = jQuery(e.currentTarget);
-			var msgNo = element.find('.msgNo').val();
-			var params = {
-				'module' : 'ITS4YouEmails',
-				'view' : 'ComposeEmail',
-				'mode' : 'emailEdit',
-				'record' : msgNo
-			};
-			app.helper.showProgress(app.vtranslate("JSLBL_Opening")+"...");
-			app.request.post({data : params}).then(function(err,data) {
+			let element = jQuery(e.currentTarget),
+				msgNo = element.find('.msgNo').val(),
+				params = {
+					'module': 'ITS4YouEmails',
+					'view': 'ComposeEmail',
+					'mode': 'emailEdit',
+					'record': msgNo
+				};
+
+			app.helper.showProgress(app.vtranslate('JSLBL_Opening') + '...');
+			app.request.post({data: params}).then(function (error, data) {
 				app.helper.hideProgress();
-				if(err === null) {
-					var dataObj = jQuery(data);
-					var descriptionContent = dataObj.find('#iframeDescription').val();
-					app.helper.showModal(data, {cb:function() {
-						var editInstance = new ITS4YouEmails_MassEdit_Js();
-						editInstance.registerEvents();
-						jQuery('#emailPreviewIframe').contents().find('html').html(descriptionContent);
-						jQuery("#emailPreviewIframe").height(jQuery('.email-body-preview').height());
-					}});
+
+				if (!error) {
+					app.helper.showModal(data, {
+						cb: function () {
+							let editInstance = new ITS4YouEmails_MassEdit_Js();
+							editInstance.registerEvents();
+						}
+					});
 				}
 			});
 		});
@@ -1483,17 +1484,19 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		});
 	},
 
-	registerSearchTypeChangeEvent : function() {
-		var container = this.getContainer();
-		container.on('change', '#searchType', function(e){
-			var element = jQuery(e.currentTarget);
-			var searchBox = jQuery('#mailManagerSearchbox');
-			if(element.val() == 'ON'){
+	registerSearchTypeChangeEvent: function () {
+		let container = this.getContainer();
+
+		container.on('change', '#searchType', function (e) {
+			let element = jQuery(e.currentTarget),
+				searchBox = jQuery('#mailManagerSearchbox');
+
+			if ('ON' === element.val()) {
 				searchBox.addClass('dateField');
-				searchBox.parent().append('<span class="date-addon input-group-addon"><i class="fa fa-calendar"></i></span>');
+				searchBox.parent().append('<span class="date-addon input-group-text"><i class="fa fa-calendar"></i></span>');
 				vtUtils.registerEventForDateFields(searchBox);
-			} else {
-				searchBox.datepicker('remove');
+			} else if (searchBox.is('.dateField')) {
+				searchBox.datepicker('destroy');
 				searchBox.removeClass('dateField');
 				searchBox.parent().find('.date-addon').remove();
 			}

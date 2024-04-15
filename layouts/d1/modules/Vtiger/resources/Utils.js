@@ -453,7 +453,7 @@ var vtUtils = {
 
         let parentDateElement = element.parent();
 
-        jQuery('.input-group-addon', parentDateElement).on('click', function (e) {
+        jQuery('.input-group-addon, .input-group-text', parentDateElement).on('click', function (e) {
             let elem = jQuery(e.currentTarget);
             elem.parent().find('.dateField').focus();
         });
