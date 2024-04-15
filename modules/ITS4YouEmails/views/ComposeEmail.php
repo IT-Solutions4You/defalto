@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-class ITS4YouEmails_ComposeEmail_View extends Vtiger_ComposeEmail_View
+class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 {
     /** @var bool|EMAILMaker_EMAILContent_Model */
     public $EMAILContentModel = false;
@@ -22,8 +22,15 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_ComposeEmail_View
     public $sourceRecordIds = [];
     public $recordId;
 
-    public function checkPermission(Vtiger_Request $request)
+    public function requiresPermission(Vtiger_Request $request)
     {
+        $permissions = parent::requiresPermission($request);
+
+        $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
+        $permissions[] = ['module_parameter' => 'custom_module', 'action' => 'DetailView'];
+        $request->set('custom_module', 'ITS4YouEmails');
+
+        return $permissions;
     }
 
     /**
@@ -42,8 +49,6 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_ComposeEmail_View
      */
     public function composeMailData($request)
     {
-        parent::composeMailData($request);
-
         $moduleName = $request->getModule();
         $qualifiedModuleName = $request->getModule(false);
 
