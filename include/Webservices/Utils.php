@@ -273,11 +273,9 @@ function vtws_getWebserviceEntityId($entityName, $id){
 }
 
 function vtws_addDefaultModuleTypeEntity($moduleName){
-	global $adb;
-	$isModule = 1;
 	$moduleHandler = array('file'=>'include/Webservices/VtigerModuleOperation.php',
 		'class'=>'VtigerModuleOperation');
-	return vtws_addModuleTypeWebserviceEntity($moduleName,$moduleHandler['file'],$moduleHandler['class'],$isModule);
+	return vtws_addModuleTypeWebserviceEntity($moduleName,$moduleHandler['file'],$moduleHandler['class']);
 }
 
 function vtws_addModuleTypeWebserviceEntity($moduleName,$filePath,$className){
