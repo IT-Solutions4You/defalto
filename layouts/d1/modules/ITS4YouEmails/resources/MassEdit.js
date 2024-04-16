@@ -578,8 +578,6 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
             let params = {
                 submitHandler: function (form) {
                     form = jQuery(form);
-                    app.helper.hideModal();
-                    app.helper.showProgress();
 
                     if (CKEDITOR.instances['description']) {
                         form.find('#description').val(CKEDITOR.instances['description'].getData());
@@ -594,18 +592,20 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
                             processData: false
                         };
 
-                    app.request.post(postParams).then(function (err, data) {
+                    app.helper.hideModal();
+                    app.helper.showProgress();
+                    app.request.post(postParams).then(function (error, data) {
                         app.helper.hideProgress();
-                        if (typeof data != 'undefined') {
-                            let ele = jQuery(data);
-                            let success = ele.find('.mailSentSuccessfully');
-                            if (success.length <= 0) {
+                        if (!error) {
+                            let element = jQuery(data);
+
+                            if (element.is('.mailSentSuccessfully') || element.find('.mailSentSuccessfully').length) {
                                 app.helper.showModal(data);
                             } else {
                                 app.event.trigger('post.mail.sent', data);
                             }
                         } else {
-                            app.helper.showErrorNotification({'message': err['message']});
+                            app.helper.showErrorNotification({'message': error['message']});
                         }
                     });
                 }
