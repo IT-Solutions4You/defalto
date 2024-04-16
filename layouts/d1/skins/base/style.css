@@ -47,7 +47,6 @@
     --bs-secondary-rgb: 129, 129, 165;
     --html-font-size: 0.850rem;
     --bs-primary-rgb: 94, 129, 244;
-    --bs-primary-color: rgb(var(--bs-primary-rgb));
     --bs-primary-bg-subtle: #eff3fe;
     --bs-primary-text-emphasis: #475eab;
 
@@ -62,6 +61,12 @@
     --dt-dark-red-color: #ab475e;
     --dt-yellow-color: #f4cf5e;
     --dt-light-yellow-color: #fefaef;
+    --bs-primary-color: var(--dt-blue-color);
+}
+
+.nav-link {
+    --bs-nav-link-color: var(--dt-blue-color);
+    --bs-nav-link-hover-color: var(--dt-dark-blue-color)
 }
 
 .btn-primary {
@@ -2837,9 +2842,8 @@ li.dashboardWidget {
 }
 .layoutContent .blockFieldsList ul {
     list-style-type: none;
-    float: left;
     min-height: 4rem;
-    width: 44%;
+    width: 48%;
 }
 
 .layoutContent .blockFieldsList {
@@ -2854,23 +2858,8 @@ li.dashboardWidget {
     opacity: 1;
 }
 
-.relatedTabModulesList .relationListInfo {
-    border: 1px solid #DDDDDD;
-    border-left: 3px solid #6565D9;
-}
-
-.relatedTabModulesList .relatedListInfoHeader {
-    color: #6565D9;
-}
-
 .cursorPointerMove {
     cursor: move;
-}
-
-.relatedListContainer .ONE_TO_ONE {
-    width: 300px;
-    padding: 5px;
-    padding-left: 14px;
 }
 
 .relatedListContainer .referenceModule,
@@ -2879,12 +2868,6 @@ li.dashboardWidget {
     color: green;
     font-weight: bold;
     opacity: 0.6;
-}
-
-.relatedListContainer .ONE_TO_MANY {
-    width: 300px;
-    padding: 5px;
-    height: 70px;
 }
 
 .form-horizontal .inActiveList span {
