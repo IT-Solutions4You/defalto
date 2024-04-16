@@ -68,7 +68,7 @@ if (!class_exists('Migration_20240411112311')) {
 
             // add primary block
             $headerBlock = new Vtiger_Block();
-            $headerBlock->label = 'LBL_ITS4YouVendorRating_IMFORMATION';
+            $headerBlock->label = 'LBL_INVENTORYITEM_INFORMATION';
             $headerBlock->save($module);
 
             // fields for header block
