@@ -72,52 +72,66 @@ class Users_Field_Model extends Vtiger_Field_Model {
 	 * Function to get all the available picklist values for the current field
 	 * @return <Array> List of picklist values if the field is of type picklist or multipicklist, null otherwise.
 	 */
-	public function getPicklistValues() {
-        $fieldName = $this->getName(); 
-		if($this->get('uitype') == 32) {
-			 if($fieldName == 'language'){ 
-                return Vtiger_Language_Handler::getAllLanguages(); 
-            } else if($fieldName == 'defaultlandingpage'){
-				$db = PearDatabase::getInstance();
-                    $currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-                    $presence = array(0);
-                    $restrictedModules = array('Integration', 'Dashboard','ModComments');
-                    $query = 'SELECT name, tablabel, tabid FROM vtiger_tab WHERE presence IN (' . generateQuestionMarks($presence) . ') AND isentitytype = ? AND name NOT IN (' . generateQuestionMarks($restrictedModules) . ')';
+    public function getPicklistValues()
+    {
+        $fieldName = $this->getName();
 
-                    $result = $db->pquery($query, array($presence, '1', $restrictedModules));
-                    $numOfRows = $db->num_rows($result);
+        if ($this->get('uitype') == 32) {
+            if ($fieldName == 'language') {
+                return Vtiger_Language_Handler::getAllLanguages();
+            } elseif ($fieldName == 'defaultlandingpage') {
+                $db = PearDatabase::getInstance();
+                $currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+                $presence = [0];
+                $restrictedModules = ['Integration', 'Dashboard', 'ModComments'];
+                $query = 'SELECT name, tablabel, tabid FROM vtiger_tab WHERE presence IN (' . generateQuestionMarks($presence) . ') AND isentitytype = ? AND name NOT IN (' . generateQuestionMarks($restrictedModules) . ')';
+                $result = $db->pquery($query, [$presence, '1', $restrictedModules]);
+                $numOfRows = $db->num_rows($result);
+                $moduleData = ['Home' => vtranslate('Home', 'Home')];
 
-                    $moduleData = array('Home' => vtranslate('Home','Home'));
-                    for ($i = 0; $i < $numOfRows; $i++) {
-                        $tabId = $db->query_result($result, $i, 'tabid');
-                        // check the module access permission, if user has permission then show it in default module list
-                        if($currentUserPriviligesModel->hasModulePermission($tabId)){
-                            $moduleName = $db->query_result($result, $i, 'name');
-                            $moduleLabel = $db->query_result($result, $i, 'tablabel');
-                            $moduleData[$moduleName] = vtranslate($moduleLabel,$moduleName);
-                        }
+                for ($i = 0; $i < $numOfRows; $i++) {
+                    $tabId = $db->query_result($result, $i, 'tabid');
+                    // check the module access permission, if user has permission then show it in default module list
+                    if ($currentUserPriviligesModel->hasModulePermission($tabId)) {
+                        $moduleName = $db->query_result($result, $i, 'name');
+                        $moduleLabel = $db->query_result($result, $i, 'tablabel');
+                        $moduleData[$moduleName] = vtranslate($moduleLabel, $moduleName);
                     }
-                    return $moduleData;
-			}
-		}
-		else if ($this->get('uitype') == '115') {
-			$db = PearDatabase::getInstance();
+                }
 
-			$query = 'SELECT '.$this->getFieldName().' FROM vtiger_'.$this->getFieldName();
-			$result = $db->pquery($query, array());
-			$num_rows = $db->num_rows($result);
-			$fieldPickListValues = array();
-			for($i=0; $i<$num_rows; $i++) {
-				$picklistValue = $db->query_result($result,$i,$this->getFieldName());
-				$fieldPickListValues[$picklistValue] = vtranslate($picklistValue,$this->getModuleName());
-			}
-			return $fieldPickListValues;
-		}
-		return parent::getPicklistValues();
-	}
-    
+                return $moduleData;
+            }
+        } elseif ($this->get('uitype') == 115) {
+            $db = PearDatabase::getInstance();
+            $query = 'SELECT ' . $this->getFieldName() . ' FROM vtiger_' . $this->getFieldName();
+            $result = $db->pquery($query, []);
+            $num_rows = $db->num_rows($result);
+            $fieldPickListValues = [];
+
+            for ($i = 0; $i < $num_rows; $i++) {
+                $picklistValue = $db->query_result($result, $i, $this->getFieldName());
+                $fieldPickListValues[$picklistValue] = vtranslate($picklistValue, $this->getModuleName());
+            }
+
+            return $fieldPickListValues;
+        }
+
+        $calendarFields = [
+            'defaulteventstatus' => 'calendar_status',
+            'defaultactivitytype' => 'calendar_type',
+        ];
+
+        if (!empty($calendarFields[$fieldName])) {
+            $moduleModel = Vtiger_Module_Model::getInstance('Appointments');
+
+            return Vtiger_Field_Model::getInstance($calendarFields[$fieldName], $moduleModel)->getPicklistValues();
+        }
+
+        return parent::getPicklistValues();
+    }
+
     /**
-	 * Function to get all the available picklist values for the current field
+     * Function to get all the available picklist values for the current field
 	 * @return <Array> List of picklist values if the field is of type picklist or multipicklist, null otherwise.
 	 */
 	public function getEditablePicklistValues() {
