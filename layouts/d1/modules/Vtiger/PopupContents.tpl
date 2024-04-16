@@ -98,13 +98,9 @@
                     <td class="listViewEntryValue value text-truncate {$WIDTHTYPE}" title="{$RECORD_DATA_LISTVIEW_HEADERNAME}">
                         {if $LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4'}
                             <a>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
-                        {elseif $LISTVIEW_HEADER->get('uitype') eq '72'}
-                            {assign var=CURRENCY_SYMBOL_PLACEMENT value={$CURRENT_USER_MODEL->get('currency_symbol_placement')}}
-                            {if $CURRENCY_SYMBOL_PLACEMENT eq '1.0$'}
-                                {$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}{$LISTVIEW_ENTRY->get('currencySymbol')}
-                            {else}
-                                {$LISTVIEW_ENTRY->get('currencySymbol')}{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
-                            {/if}
+                        {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'currency'}
+                            {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($LISTVIEW_ENTRY->getCurrencyId())}
+                            {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_INFO['symbol'])}
                         {elseif $LISTVIEW_HEADERNAME eq 'listprice'}
                             {CurrencyField::convertToUserFormat($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), null, true, true)}
                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}

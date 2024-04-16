@@ -85,15 +85,9 @@
                                 {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                 {assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
                                 <td class="listViewEntryValue text-truncate {$WIDTHTYPE}">
-                                    {if $LISTVIEW_HEADER->get('uitype') eq '72' || $LISTVIEW_HEADER->get('uitype') eq '71'}
-                                        {assign var=CURRENCY_SYMBOL value=$LISTVIEW_ENTRY->get('currencySymbol')}
-                                        {if $LISTVIEW_HEADER->get('uitype') eq '71'}
-                                            {assign var=CURRENCY_SYMBOL value=$LISTVIEW_ENTRY->get('userCurrencySymbol')}
-                                        {/if}
-
-                                        {if $LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME) neq NULL}
-                                            {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_SYMBOL)}
-                                        {/if}
+                                    {if $LISTVIEW_HEADER->getFieldDataType() eq 'currency'}
+                                        {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($LISTVIEW_ENTRY->getCurrencyId())}
+                                        {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_INFO['symbol'])}
                                     {else}
                                         <a>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
                                     {/if}

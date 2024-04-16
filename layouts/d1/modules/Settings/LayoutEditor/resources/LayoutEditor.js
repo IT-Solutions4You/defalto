@@ -215,7 +215,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
         })
 
         //register the event to click on close the related module
-        container.find('.close').one('click', function (e) {
+        container.find('.deleteButton').one('click', function (e) {
             var currentTarget = jQuery(e.currentTarget);
             thisInstance.showSaveButton();
             var liEle = currentTarget.closest('li.relatedModule');
@@ -504,14 +504,12 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
                     data.find('input[name="quickcreate"]').removeClass('cursorPointer').addClass('cursorPointerNotAllowed');
                 }
                 data.find('input[name="presence"]').attr('checked', true).attr('readonly', 'readonly');
-                data.find('#fieldPresence').bootstrapSwitch('toggleReadonly', true);
             } else {
                 if (data.find('input[name="isquickcreatesupported"]').val()) {
                     data.find('input[name="quickcreate"]').removeAttr('readonly');
                     data.find('input[name="quickcreate"]').removeClass('cursorPointerNotAllowed').addClass('cursorPointer');
                 }
                 data.find('input[name="presence"]').removeAttr('readonly');
-                data.find('#fieldPresence').bootstrapSwitch('toggleReadonly');
             }
         })
 
@@ -1115,7 +1113,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
     setFieldDetails: function (result, form) {
         var fieldlabelHolder = form.find('.fieldLabel');
         fieldlabelHolder.find('b').html(result['label']);
-        var MandatorySymbol = fieldlabelHolder.find('.redColor');
+        var MandatorySymbol = fieldlabelHolder.find('.text-danger');
         var mTitle, meTitle, qTitle, sTitle, hTitle;
 
         if (!result['mandatory']) {
@@ -1127,7 +1125,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
             form.find('.mandatory').addClass('cursorPointer');
             form.find('.mandatory').removeClass('disabled');
             if (MandatorySymbol.length <= 0) {
-                fieldlabelHolder.append('<span class="redColor">*</span>');
+                fieldlabelHolder.append('<span class="text-danger ms-2">*</span>');
             }
 
             mTitle = app.vtranslate('JS_NOT_MAKE_THIS_FIELD', app.vtranslate('JS_PROP_MANDATORY'));
@@ -1391,11 +1389,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
         newBlockCloneCopy.attr('data-block-id', result['id']).find('.blockLabel').append(jQuery('<strong>' + result['label'] + '</strong>'));
         newBlockCloneCopy.find('.blockVisibility').attr('data-block-id', result['id']);
         beforeBlock.after(newBlockCloneCopy.removeClass('hide newCustomBlockCopy').addClass('editFieldsTable block_' + result['id']).attr('id', 'block_' + result['id']));
-        newBlockCloneCopy.find("#hiddenCollapseBlock").addClass('bootstrap-switch');
         newBlockCloneCopy.find("#hiddenCollapseBlock").attr('name', 'collapseBlock');
-        jQuery("input[name='collapseBlock']").bootstrapSwitch();
-        jQuery("input[name='collapseBlock']").bootstrapSwitch('handleWidth', '27px');
-        jQuery("input[name='collapseBlock']").bootstrapSwitch('labelWidth', '25px');
         newBlockCloneCopy.find('.blockFieldsList').sortable({'connectWith': '.blockFieldsList'});
     },
     /**
@@ -1917,7 +1911,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
         });
     },
     registerEventForCollapseBlock: function () {
-        jQuery('#moduleBlocks').on('switchChange.bootstrapSwitch', "input[name='collapseBlock']", function (e) {
+        jQuery('#moduleBlocks').on('change', "input[name='collapseBlock']", function (e) {
             var currentElement = jQuery(e.currentTarget);
             if (currentElement.val() == 1) {
                 currentElement.attr('value', 0);
@@ -2122,9 +2116,6 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
                     thisInstance.setNameFields();
                     thisInstance.registerAddCustomBlockEvent();
                     thisInstance.registerFieldSequenceSaveClick();
-                    jQuery("input[name='collapseBlock']").bootstrapSwitch();
-                    jQuery("input[name='collapseBlock']").bootstrapSwitch('handleWidth', '27px');
-                    jQuery("input[name='collapseBlock']").bootstrapSwitch('labelWidth', '25px');
                     thisInstance.registerSwitchActionOnFieldProperties();
                     thisInstance.registerAddCustomField();
                     app.helper.showVerticalScroll(jQuery('.addFieldTypes'), {'setHeight': '350px'});
@@ -2161,41 +2152,41 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
         return aDeferred.promise();
     },
     triggerDuplicationTabClickEvent: function () {
-        var thisInstance = this;
-        var contents = jQuery('#layoutEditorContainer').find('.contents');
+        let thisInstance = this;
+        const contents = jQuery('#layoutEditorContainer').find('.contents');
 
-        contents.find('.duplicationTab').click(function (e) {
-            var duplicationContainer = contents.find('#duplicationContainer');
+        contents.on('click', '.duplicationTab', function (e) {
+            const duplicationContainer = contents.find('#duplicationContainer');
             thisInstance.showDuplicationHandlingUI(duplicationContainer, e).then(function (data) {
-                var form = jQuery('.duplicateHandlingForm');
-                var duplicateHandlingContainer = form.find('.duplicateHandlingContainer');
+                const form = jQuery('.duplicateHandlingForm'),
+                    duplicateHandlingContainer = form.find('.duplicateHandlingContainer'),
+                    dupliCheckEle = form.find('.duplicateCheck');
 
-                var dupliCheckEle = form.find('.duplicateCheck');
                 if (dupliCheckEle.length > 0) {
-                    if (dupliCheckEle.data('currentRule') == 1) {
-                        dupliCheckEle.bootstrapSwitch('state', false, true);
+                    if (dupliCheckEle.data('currentRule') === 1) {
                         duplicateHandlingContainer.removeClass('show').addClass('hide');
                     } else {
-                        dupliCheckEle.bootstrapSwitch('state', true, true);
                         duplicateHandlingContainer.removeClass('hide').addClass('show');
                     }
-                    dupliCheckEle.bootstrapSwitch('handleWidth', '43px').bootstrapSwitch('labelWidth', '43px').bootstrapSwitch('size', '86px');
                 }
 
-                var fieldsList = form.find('#fieldsList');
-                form.off('switchChange.bootstrapSwitch');
-                form.on('switchChange.bootstrapSwitch', '.duplicateCheck', function (e, state) {
-                    if (state == true) {
+                let fieldsList = form.find('#fieldsList');
+
+                form.off('change', '.duplicateCheck').on('change', '.duplicateCheck', function (e, state) {
+                    let ruleElement = $(this);
+
+                    if (ruleElement.is(':checked')) {
                         duplicateHandlingContainer.removeClass('hide').addClass('show');
                         fieldsList.removeAttr('data-validation-engine').attr('data-validation-engine', 'validate[required]');
-                        form.find('.rule').val('0');
+                        ruleElement.val('0');
                     } else {
                         duplicateHandlingContainer.removeClass('show').addClass('hide');
                         fieldsList.removeAttr('data-validation-engine');
                         fieldsList.val('').trigger('liszt:updated').trigger('change', false);
                         form.find('.formFooter').removeClass('show').addClass('hide');
-                        form.find('.rule').val('1');
-                        if (dupliCheckEle.data('currentRule') != '1') {
+                        ruleElement.val('1');
+
+                        if (dupliCheckEle.data('currentRule') !== 1) {
                             form.submit();
                         }
                     }
@@ -2209,27 +2200,35 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
                     duplicationContainer.html('');
                     contents.find('.duplicationTab').trigger('click');
                 });
+
                 vtUtils.showSelect2ElementView(form.find('select').addClass('select2'), {maximumSelectionSize: 3});
                 vtUtils.enableTooltips();
 
-                var params = {
+                const params = {
                     submitHandler: function (form) {
-                        var form = jQuery(form);
-                        var params = form.serializeFormData();
+                        form = jQuery(form);
+
+                        let params = form.serializeFormData();
+
                         if ((typeof params['fieldIdsList[]'] == 'undefined') && (typeof params['fieldIdsList'] == 'undefined')) {
                             params['fieldIdsList'] = '';
                         }
 
+                        params['rule'] = dupliCheckEle.is(':checked') ? 0 : 1;
+
                         app.helper.showProgress();
-                        app.request.post({'data': params}).then(function (error, data) {
+                        app.request.post({data: params}).then(function (error, data) {
                             app.helper.hideProgress();
-                            if (error == null) {
-                                var message = app.vtranslate('JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE');
-                                if (params.rule == 1) {
+
+                            if (!error) {
+                                let message = app.vtranslate('JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE');
+
+                                if (params['rule'] === 1) {
                                     message = app.vtranslate('JS_DUPLICATE_CHECK_DISABLED');
                                 }
+
                                 app.helper.showSuccessNotification({'message': message});
-                                dupliCheckEle.data('currentRule', params.rule);
+                                dupliCheckEle.data('currentRule', params['rule']);
                                 form.find('.formFooter').removeClass('show').addClass('hide');
                             } else {
                                 app.helper.showErrorNotification({'message': app.vtranslate('JS_DUPLICATE_HANDLING_FAILURE_MESSAGE')});
@@ -2237,7 +2236,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
                         });
                         return false;
                     }
-                }
+                };
                 form.vtValidate(params);
             });
         });

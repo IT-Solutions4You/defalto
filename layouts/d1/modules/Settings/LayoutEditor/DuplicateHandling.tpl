@@ -13,14 +13,18 @@
 			<input type="hidden" name="module" value="LayoutEditor" />
 			<input type="hidden" name="action" value="Field" />
 			<input type="hidden" name="mode" value="updateDuplicateHandling" />
-			<div class="vt-default-callout vt-info-callout">
-				<h4 class="vt-callout-header"><span class="fa fa-info-circle"></span>&nbsp; Info </h4>
+			<div class="alert alert-primary">
+				<div class="fs-5 mb-2">
+					<span class="fa fa-info-circle"></span>
+					<span class="ms-2">{vtranslate('Info', $QUALIFIED_MODULE)}</span>
+				</div>
 				<div class="duplicationInfoMessage">{vtranslate('LBL_DUPLICATION_INFO_MESSAGE', $QUALIFIED_MODULE)}</div>
 			</div>
 			<div class="py-3">
-				<input type="hidden" class="rule" name="rule" value="">
-				<input type="checkbox" class="duplicateCheck" data-on-color="success" data-off-color="danger" data-current-rule="{$SOURCE_MODULE_MODEL->allowDuplicates}" {if !$SOURCE_MODULE_MODEL->isFieldsDuplicateCheckAllowed()}readonly="readonly"{/if} data-on-text="{vtranslate('LBL_YES', $QUALIFIED_MODULE)}" data-off-text="{vtranslate('LBL_NO', $QUALIFIED_MODULE)}" />
-				<span class="ms-3">{vtranslate('LBL_DUPLICATE_CHECK', $QUALIFIED_MODULE)}</span>
+				<label class="form-check form-switch ">
+					<input type="checkbox" name="rule" class="rule duplicateCheck form-check-input" value="{$SOURCE_MODULE_MODEL->allowDuplicates}" {if $SOURCE_MODULE_MODEL->allowDuplicates eq 0} checked="checked" {/if} data-on-color="success" data-off-color="danger" data-current-rule="{$SOURCE_MODULE_MODEL->allowDuplicates}" {if !$SOURCE_MODULE_MODEL->isFieldsDuplicateCheckAllowed()}readonly="readonly"{/if} data-on-text="{vtranslate('LBL_YES', $QUALIFIED_MODULE)}" data-off-text="{vtranslate('LBL_NO', $QUALIFIED_MODULE)}" />
+					<span class="form-check-label">{vtranslate('LBL_DUPLICATE_CHECK', $QUALIFIED_MODULE)}</span>
+				</label>
 			</div>
 			<div class="duplicateHandlingContainer show">
 				<div class="fieldsBlock">

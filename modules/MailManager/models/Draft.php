@@ -25,77 +25,85 @@ class MailManager_Draft_Model {
 		return new MailManager_DraftFolder_Model('Drafts');
 	}
 
-	public function searchDraftMails($q, $type, $page, $limit, $folder) {
-		if($type == "all") {
-			$where = $this->constructAllClause($q);
-		} else {
-			$where = $type ." LIKE '%". $q ."%'" ;
-		}
-		$where = " AND ".$where;
-		$draftMails = $this->getDrafts($page, $limit, $folder, $where);
-		return $draftMails;
-	}
+    public function searchDraftMails($q, $type, $page, $limit, $folder)
+    {
+        if ($type == 'all') {
+            $where = $this->constructAllClause($q);
+        } else {
+            $where = $type . " LIKE '%" . $q . "%'";
+        }
 
-	public function constructAllClause($query) {
-		$fields = array('bccmail','ccmail','subject','saved_toid','description');
-		for($i=0; $i<php7_count($fields); $i++) {
-			if($i == php7_count($fields)-1) {
-				$clause .=  $fields[$i]." LIKE '%".$query."%'";
-			} else {
-				$clause .=  $fields[$i]." LIKE '%".$query."%' OR ";
-			}
-		}
-		return $clause;
-	}
+        $where = ' AND ' . $where;
 
-	public function getDrafts($page, $limit, $folder, $where = null) {
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$handler = vtws_getModuleHandlerFromName('ITS4YouEmails', $currentUserModel);
-		$meta = $handler->getMeta();
-		if(!$meta->hasReadAccess()) {
-			return false;
-		}
+        return $this->getDrafts($page, $limit, $folder, $where);
+    }
 
-		if(!empty($page)) {
-			$limitClause = "LIMIT ".($limit*$page).", ".$limit;
-		} else {
-			$limitClause = "LIMIT 0, ".$limit;
-		}
-		$query = "SELECT * FROM ITS4YouEmails where email_flag='SAVED' $where ORDER BY modifiedtime DESC $limitClause;";
-		$draftMails = vtws_query($query, $currentUserModel);
-		for($i=0; $i<php7_count($draftMails); $i++) {
-			foreach($draftMails[$i] as $fieldname=>$fieldvalue) {
-				if($fieldname == "to_email" || $fieldname == "cc_email" || $fieldname == "bcc_email") {
-					if(!empty($fieldvalue)) {
-						$value = implode(',',Zend_Json::decode($fieldvalue));
-						if(strlen($value) > 45) {
-							$value = substr($value, 0, 45)."....";
-						}
-						$draftMails[$i][$fieldname] = $value;
-					}
-				} elseif($fieldname == "date_start") {
-                    if(!empty($fieldvalue)) {
-						$value = Vtiger_Date_UIType::getDisplayDateValue($fieldvalue);
-						$draftMails[$i][$fieldname] = $value;
-					}
-                } elseif($fieldname == "id") {
-					$emailId = vtws_getIdComponents($fieldvalue);
-					$draftMails[$i][$fieldname] = $emailId[1];
-				}
-			}
-		}
-		if($where) {
-			$folder->setPaging($limit*$page+1, $limit*$page+$limit, $limit, php7_count($draftMails), $page);
-		} else {
-			$total = $this->getTotalDraftCount();
-			$folder->setPaging($limit*$page+1, $limit*$page+$limit, $limit, $total, $page);
-		}
-		$folder->setMails($draftMails);
+    public function constructAllClause($query)
+    {
+        $fields = array_keys(MailManager_Draft_View::getSearchOptions());
+        $clause = '';
 
-		return $draftMails ;
-	}
+        for ($i = 0; $i < php7_count($fields); $i++) {
+            if ($i == php7_count($fields) - 1) {
+                $clause .= $fields[$i] . " LIKE '%" . $query . "%'";
+            } else {
+                $clause .= $fields[$i] . " LIKE '%" . $query . "%' OR ";
+            }
+        }
 
-	public function getTotalDraftCount() {
+        return $clause;
+    }
+
+    public function getDrafts($page, $limit, $folder, $where = null)
+    {
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $handler = vtws_getModuleHandlerFromName('ITS4YouEmails', $currentUserModel);
+        $meta = $handler->getMeta();
+
+        if (!$meta->hasReadAccess()) {
+            return false;
+        }
+
+        if (!empty($page)) {
+            $limitClause = "LIMIT " . ($limit * $page) . ", " . $limit;
+        } else {
+            $limitClause = "LIMIT 0, " . $limit;
+        }
+
+        $query = "SELECT * FROM ITS4YouEmails where email_flag='SAVED' $where ORDER BY modifiedtime DESC $limitClause;";
+
+        $draftMails = vtws_query($query, $currentUserModel);
+
+        foreach ($draftMails as $draftMailKey => $draftMail) {
+            foreach ($draftMail as $fieldName => $fieldValue) {
+                if (in_array($fieldName, ['to_email', 'cc_email', 'bcc_email'])) {
+                    if (!empty($fieldValue)) {
+                        $value = implode(',', Zend_Json::decode($fieldValue));
+                        if (strlen($value) > 45) {
+                            $value = substr($value, 0, 45) . "....";
+                        }
+                        $draftMails[$draftMailKey][$fieldName] = $value;
+                    }
+                } elseif ('id' === $fieldName) {
+                    $emailId = vtws_getIdComponents($fieldValue);
+                    $draftMails[$draftMailKey][$fieldName] = $emailId[1];
+                }
+            }
+        }
+
+        if ($where) {
+            $folder->setPaging($limit * $page + 1, $limit * $page + $limit, $limit, php7_count($draftMails), $page);
+        } else {
+            $total = $this->getTotalDraftCount();
+            $folder->setPaging($limit * $page + 1, $limit * $page + $limit, $limit, $total, $page);
+        }
+
+        $folder->setMails($draftMails);
+
+        return $draftMails;
+    }
+
+    public function getTotalDraftCount() {
 		$db = PearDatabase::getInstance();
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		if(empty(self::$totalDraftCount)) {

@@ -50,8 +50,6 @@
     {/foreach}
 
     <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/resources/v7_client_compat.js')}"></script>
-    <!-- Added in the end since it should be after less file loaded -->
-    <script type="text/javascript" src="{vresource_url('libraries/bootstrap/js/less.min.js')}"></script>
 
     <!-- Enable tracking pageload time -->
 	<script type="text/javascript">

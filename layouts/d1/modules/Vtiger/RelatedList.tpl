@@ -124,10 +124,9 @@
 												{elseif $RELATED_HEADERNAME eq 'access_count'}
 													{$RELATED_RECORD->getAccessCountValue($PARENT_RECORD->getId())}
 												{elseif $RELATED_HEADERNAME eq 'time_start' or $RELATED_HEADERNAME eq 'time_end'}
-												{elseif $HEADER_FIELD->get('uitype') eq '71' or $HEADER_FIELD->get('uitype') eq '72'}
+												{elseif $HEADER_FIELD->getFieldDataType() eq 'currency'}
 													{assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($RELATED_RECORD->getCurrencyId())}
-													{assign var=CURRENCY_VALUE value=Vtiger_Currency_UIType::transformDisplayValue($RELATED_RECORD->get($RELATED_HEADERNAME), null, true)}
-													{CurrencyField::appendCurrencySymbol($CURRENCY_VALUE, $CURRENCY_INFO['symbol'])}
+													{CurrencyField::appendCurrencySymbol($RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME), $CURRENCY_INFO['symbol'])}
 												{elseif $HEADER_FIELD->getFieldDataType() eq 'picklist'}
 													{assign var=PICKLIST_FIELD_ID value={$HEADER_FIELD->getId()}}
 													<span {if !empty($RELATED_LIST_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$PICKLIST_FIELD_ID}-{Vtiger_Util_Helper::convertSpaceToHyphen($RELATED_LIST_VALUE)}" {/if}> {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)} </span>

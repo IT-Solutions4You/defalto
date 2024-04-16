@@ -46,26 +46,30 @@
     </div>
 
     {if $FOLDER->mails()}
-        <div class="col-lg-12 mmEmailContainerDiv" id='emailListDiv'>
+        <div class="mmEmailContainerDiv" id="emailListDiv">
             {foreach item=MAIL from=$FOLDER->mails()}
                 {assign var=IS_READ value=1}
-                <div class="col-lg-12 cursorPointer mailEntry {if $IS_READ}mmReadEmail{/if}" data-read='{$IS_READ}'>
-                    <span class="col-lg-1 ">
-                        <input type='checkbox' class='mailCheckBox' class="pull-left">
-                    </span>
-                    <div class="col-lg-11 draftEmail ">
-                        <input type="hidden" class="msgNo" value='{$MAIL.id}'>
-                        <div class="col-lg-8  font13px stepText">
-                            {strip_tags($MAIL.saved_toid)}<br>{strip_tags($MAIL.subject)}
-                        </div>
-                        <div class="col-lg-4 ">
-                            <span class="pull-right">
-                                <span class='mmDateTimeValue'>{{$MAIL.date_start}}</span>
-                            </span>
-                        </div>
-                        <div class="col-lg-12 mmMailDesc text-truncate">
-                            {assign var=MAIL_DESC value=str_replace("\n", " ", strip_tags($MAIL.description))}
-                            {$MAIL_DESC}
+                <div class="container-fluid py-3 border-bottom">
+                    <div class="row cursorPointer mailEntry {if $IS_READ}mmReadEmail{/if}" data-read='{$IS_READ}'>
+                        <span class="col-1">
+                            <input type="checkbox" class="mailCheckBox form-check-input">
+                        </span>
+                        <div class="col-11">
+                            <div class="row">
+                                <div class="col-8 draftEmail">
+                                    <input type="hidden" class="msgNo" value="{$MAIL['id']}">
+                                    <div class="col-lg-8  font13px stepText">
+                                        <strong>
+                                            <span>{strip_tags($MAIL['to_email'])}</span>
+                                            <br>
+                                            <span>{strip_tags($MAIL['subject'])}</span>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <span class="mmDateTimeValue" title="{Vtiger_Util_Helper::formatDateTimeIntoDayString(date('Y-m-d H:i:s', strtotime($MAIL['createdtime'])))}">{Vtiger_Util_Helper::formatDateDiffInStrings(date('Y-m-d H:i:s', strtotime($MAIL['createdtime'])))}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
