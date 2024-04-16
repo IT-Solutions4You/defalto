@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 class Vtiger_Relation_Model extends Vtiger_Base_Model{
 
@@ -218,10 +216,10 @@ class Vtiger_Relation_Model extends Vtiger_Base_Model{
 		}
 		$query .= ' ORDER BY sequence'; // TODO: Need to handle entries that has related_tabid 0
 
-		$result = $db->pquery($query, array($parentModuleModel->getId(), []));
+        $result = $db->pquery($query, [$parentModuleModel->getId()]);
 
-		$relationModels = array();
-		$relationModelClassName = Vtiger_Loader::getComponentClassName('Model', 'Relation', $parentModuleModel->get('name'));
+        $relationModels = [];
+        $relationModelClassName = Vtiger_Loader::getComponentClassName('Model', 'Relation', $parentModuleModel->get('name'));
 		for($i=0; $i<$db->num_rows($result); $i++) {
 			$row = $db->query_result_rowdata($result, $i);
 			//$relationModuleModel = Vtiger_Module_Model::getCleanInstance($moduleName);

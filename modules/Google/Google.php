@@ -1,13 +1,11 @@
 <?php
-
-/* +***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * *********************************************************************************** */
+ */
+
 require_once 'vtlib/Vtiger/Module.php';
 require_once('include/events/include.inc');
 
@@ -21,30 +19,27 @@ class Google {
      * @param String Module name
      * @param String Event Type
      */
-    function vtlib_handler($moduleName, $eventType) {
+    function vtlib_handler($moduleName, $eventType)
+    {
         $adb = PearDatabase::getInstance();
-        $forModules = array('Contacts', 'Leads','Accounts');
-        $syncModules = array('Contacts' => 'Google Contacts', 'Calendar' => 'Google Calendar');
+        $forModules = ['Contacts', 'Leads', 'Accounts'];
+        $syncModules = ['Contacts' => 'Google Contacts', 'Calendar' => 'Google Calendar'];
 
         if ($eventType == 'module.postinstall') {
-            $adb->pquery('UPDATE vtiger_tab SET customized=0 WHERE name=?', array($moduleName));
+            $adb->pquery('UPDATE vtiger_tab SET customized=0 WHERE name=?', [$moduleName]);
             $this->addMapWidget($forModules);
             $this->addWidgetforSync($syncModules);
-        } else if ($eventType == 'module.disabled') {
+        } elseif ($eventType == 'module.disabled') {
             $this->removeMapWidget($forModules);
             $this->removeWidgetforSync($syncModules);
-			$adb->pquery('UPDATE vtiger_settings_field SET active=1 WHERE name=?',array($this->LBL_GOOGLE));
-        } else if ($eventType == 'module.enabled') {
+            $adb->pquery('UPDATE vtiger_settings_field SET active=1 WHERE name=?', [$this->LBL_GOOGLE]);
+        } elseif ($eventType == 'module.enabled') {
             $this->addMapWidget($forModules);
             $this->addWidgetforSync($syncModules);
-			$adb->pquery('UPDATE vtiger_settings_field SET active=0 WHERE name=?',array($this->LBL_GOOGLE));
-        } else if ($eventType == 'module.preuninstall') {
+            $adb->pquery('UPDATE vtiger_settings_field SET active=0 WHERE name=?', [$this->LBL_GOOGLE]);
+        } elseif ($eventType == 'module.preuninstall') {
             $this->removeMapWidget($forModules);
             $this->removeWidgetforSync($syncModules);
-        } else if ($eventType == 'module.preupdate') {
-            // TODO Handle actions before this module is updated.
-        } else if ($eventType == 'module.postupdate') {
-            
         }
     }
 

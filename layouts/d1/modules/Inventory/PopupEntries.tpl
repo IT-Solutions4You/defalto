@@ -37,7 +37,7 @@
                     <tr class="listViewHeaders bg-body-secondary">
                         {if $MULTI_SELECT}
                             <th class="{$WIDTHTYPE}">
-                                <input type="checkbox"  class="selectAllInCurrentPage" />
+                                <input type="checkbox"  class="selectAllInCurrentPage form-check-input" />
                             </th>
                         {else}
                             <th class="{$WIDTHTYPE}">&nbsp;</th>
@@ -83,7 +83,7 @@
                         {if $GETURL neq '' } data-url="{$LISTVIEW_ENTRY->$GETURL()|cat:'&sourceModule='|cat:$SOURCE_MODULE}" {/if}  id="{$MODULE}_popUpListView_row_{$smarty.foreach.popupListView.index+1}">
                         {if $MULTI_SELECT}
                             <td class="{$WIDTHTYPE}">
-                                <input class="entryCheckBox" type="checkbox" />
+                                <input class="entryCheckBox form-check-input" type="checkbox" />
                             </td>
                         {else}
                             <td></td>
@@ -93,7 +93,7 @@
                             <td class="listViewEntryValue text-truncate {$WIDTHTYPE}">
                                 {if $LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4'}
                                     <a>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
-                                {else if $LISTVIEW_HEADER->get('uitype') eq '72'}
+                                {elseif $LISTVIEW_HEADER->get('uitype') eq '72'}
                                     {assign var=CURRENCY_SYMBOL_PLACEMENT value={$CURRENT_USER_MODEL->get('currency_symbol_placement')}}
                                     {if $CURRENCY_SYMBOL_PLACEMENT eq '1.0$'}
                                         {$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}{$LISTVIEW_ENTRY->get('currencySymbol')}

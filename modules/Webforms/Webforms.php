@@ -1,47 +1,25 @@
 <?php
-/* +********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * ****************************************************************************** */
+ */
+
 require_once 'modules/Webforms/model/WebformsModel.php';
 require_once 'include/Webservices/DescribeObject.php';
 
 class Webforms {
-
-	var $LBL_WEBFORMS='Webforms';
+	public string $moduleName = 'Webforms';
+	public string $parentName = '';
+	public $LBL_WEBFORMS = 'Webforms';
 
 	// Cache to speed up describe information store
 	protected static $moduleDescribeCache = array();
 
-	function vtlib_handler($moduleName, $eventType) {
-		require_once('include/utils/utils.php');
-		global $adb;
-
-		if($eventType == 'module.postinstall') {
-			// Mark the module as Standard module
-			// Mark the module as Standard module
-			$this->updateSettings();
-			$adb->pquery('UPDATE vtiger_tab SET customized=0 WHERE name=?', array($this->LBL_WEBFORMS));
-		} else if($eventType == 'module.disabled') {
-		// TODO Handle actions when this module is disabled.
-			global $log,$adb;
-			$adb->pquery('UPDATE vtiger_settings_field SET active= 1  WHERE  name= ?',array($this->LBL_WEBFORMS));
-		} else if($eventType == 'module.enabled') {
-		// TODO Handle actions when this module is enabled.
-			global $log,$adb;
-			$adb->pquery('UPDATE vtiger_settings_field SET active= 0  WHERE  name= ?',array($this->LBL_WEBFORMS));
-		} else if($eventType == 'module.preuninstall') {
-		// TODO Handle actions when this module is about to be deleted.
-		} else if($eventType == 'module.preupdate') {
-		// TODO Handle actions before this module is updated.
-		} else if($eventType == 'module.postupdate') {
-		// TODO Handle actions after this module is updated.
-			$this->updateSettings();
-		}
+	public function vtlib_handler($moduleName, $eventType)
+	{
+		Vtiger_Install_Model::getInstance($eventType, $moduleName)->install();
 	}
 
 	function updateSettings(){

@@ -1,14 +1,53 @@
 <?php
-/* +***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * *********************************************************************************** */
+ */
 
 class Install_Utils_Model {
+
+    /**
+     * @var array
+     * [prefix, label, name]
+     */
+    public static array $registerLanguages = [
+        ['ar_ae', 'Arabic', 'Arabic',],
+        ['en_gb', 'British English', 'British English',],
+        ['pt_br', 'PT Brasil', 'Brazilian'],
+        ['es_es', 'ES Spanish', 'Spanish',],
+        ['es_mx', 'ES Mexico', 'Mexican Spanish',],
+        ['fr_fr', 'Pack de langue français', 'Pack de langue français',],
+        ['hu_hu', 'HU Magyar', 'Hungarian',],
+        ['it_it', 'IT Italian', 'Italian',],
+        ['nl_nl', 'NL-Dutch', 'Dutch',],
+        ['pl_pl', 'Język Polski', 'Język Polski',],
+        ['ro_ro', 'Romana', 'Romana',],
+        ['ru_ru', 'Russian', 'Russian'],
+        ['sv_se', 'Swedish', 'Swedish'],
+        ['tr_tr', 'Turkce Dil Paketi', 'Turkce',],
+    ];
+
+    public static array $registerModules = [
+        'Import',
+        'MailManager',
+        'ModTracker',
+        'PBXManager',
+        'ServiceContracts',
+        'Services',
+        'WSApp',
+        'Assets',
+        'CustomerPortal',
+        'Google',
+        'ModComments',
+        'Project',
+        'ProjectMilestone',
+        'ProjectTask',
+        'RecycleBin',
+        'SMSNotifier',
+        'Webforms',
+    ];
 
     /**
      * variable has all the files and folder that should be writable
@@ -484,46 +523,47 @@ class Install_Utils_Model {
 		return $dbCheckResult;
 	}
 
-	/**
-	 * Function installs all the available modules
-	 */
-	public static function installModules() {
-		require_once('vtlib/Vtiger/Package.php');
-		require_once('vtlib/Vtiger/Module.php');
-		require_once('include/utils/utils.php');
+    /**
+     * Function installs all the available modules
+     * @throws AppException
+     */
+    public static function installAdditionalModulesAndLanguages()
+    {
+        require_once('vtlib/Vtiger/Package.php');
+        require_once('vtlib/Vtiger/Module.php');
+        require_once('include/utils/utils.php');
 
-		$moduleFolders = array('packages/vtiger/mandatory', 'packages/vtiger/optional', 'packages/vtiger/marketplace');
-		foreach($moduleFolders as $moduleFolder) {
-			if ($handle = opendir($moduleFolder)) {
-				while (false !== ($file = readdir($handle))) {
-					$packageNameParts = explode(".",$file);
-					if($packageNameParts[php7_count($packageNameParts)-1] != 'zip'){
-						continue;
-					}
-					array_pop($packageNameParts);
-					$packageName = implode("",$packageNameParts);
-					if (!empty($packageName)) {
-						$packagepath = "$moduleFolder/$file";
-						$package = new Vtiger_Package();
-						$module = $package->getModuleNameFromZip($packagepath);
-						if($module != null) {
-							$moduleInstance = Vtiger_Module::getInstance($module);
-							if($moduleInstance) {
-								updateVtlibModule($module, $packagepath);
-							} else {
-								installVtlibModule($module, $packagepath);
-							}
-						}
-					}
-				}
-				closedir($handle);
-			}
-		}
-	}
+        foreach (self::$registerModules as $moduleName) {
+            self::installModule($moduleName);
+        }
 
-	/* 
-	 * Register installed user detail to inform about product updates and news.
-	 */
+        foreach (self::$registerLanguages as $languageInfo) {
+            self::installLanguage($languageInfo);
+        }
+    }
+
+    /**
+     * @param string $moduleName
+     * @return void
+     * @throws AppException
+     */
+    public static function installModule(string $moduleName): void
+    {
+        Vtiger_Install_Model::getInstance('module.postinstall', $moduleName)->installModule();
+    }
+
+    /**
+     * @param array $languageInfo [prefix, label, name]
+     * @return void
+     */
+    public static function installLanguage(array $languageInfo): void
+    {
+        Vtiger_Language::register($languageInfo[0], $languageInfo[1], $languageInfo[2]);
+    }
+
+    /*
+     * Register installed user detail to inform about product updates and news.
+     */
 	public static function registerUser($name, $email, $industry) {
 		require_once 'vtlib/Vtiger/Net/Client.php';
 		$client = new Vtiger_Net_Client("https://stats.vtiger.com/register.php");
