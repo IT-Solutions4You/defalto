@@ -11,10 +11,9 @@
             {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
             <form id="editColor" class="form-horizontal">
                 <div class="modal-body">
-                    <input type="hidden" class="selectedColor" name="selectedColor" value="" />
-                    <div class="form-group">
-                        <label class="control-label col-lg-3">{vtranslate('LBL_SELECT_STATUS', $MODULE)}</label>
-                        <div class="controls col-lg-9">
+                    <div class="form-group row py-2">
+                        <label class="control-label col-lg-4 text-secondary" for="editFieldsList">{vtranslate('LBL_SELECT_STATUS', $MODULE)}</label>
+                        <div class="controls col-lg">
                             <select id="editFieldsList" class="select2" name="taskstatus" style="min-width: 250px;">
                                 {foreach from=$TASK_STATUS item=STATUS_NAME}
                                     {assign var=STATUS_NAME value=trim($STATUS_NAME)}
@@ -23,10 +22,10 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-lg-3">{vtranslate('LBL_SELECT_PROJECT_TASK_STATUS_COLOR', $MODULE)}</label>
-                        <div class="controls col-lg-9">
-                            <div class="colorPicker"></div>
+                    <div class="form-group row py-2">
+                        <label class="control-label col-lg-4 text-secondary" for="selectedColor">{vtranslate('LBL_SELECT_PROJECT_TASK_STATUS_COLOR', $MODULE)}</label>
+                        <div class="controls col-lg">
+                            <input type="color" id="selectedColor" class="selectedColor form-control form-control-color" name="selectedColor" value="" />
                         </div>
                     </div>
                 </div>
