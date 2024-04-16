@@ -10,28 +10,6 @@
 Vtiger_List_Js('ITS4YouEmails_List_Js', {}, {
     registerEvents: function () {
         this._super();
-        this.registerListColumnsEvents();
-    },
-    registerListColumnsEvents: function() {
-        const self = this;
-
-        self.updateEmailsRecords();
-
-        app.event.on('post.listViewFilter.click', function (event, searchRow) {
-            self.updateEmailsRecords();
-        });
-    },
-    updateEmailsRecords: function () {
-        if ('ITS4YouEmails' === $('[name="targetModule"]').val()) {
-            $('.listViewEntries').each(function() {
-                let row = $(this),
-                    id = row.data('id'),
-                    url = 'index.php?module=ITS4YouEmails&view=Detail&record=' + id;
-
-                row.attr('data-recordurl', url);
-                row.find('a').attr('href', url);
-            });
-        }
     },
     getDefaultParams: function () {
         let container = this.getListViewContainer(),
