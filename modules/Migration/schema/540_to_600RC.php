@@ -25,19 +25,21 @@ if(!defined('INSTALLATION_MODE')) {
 Migration_Index_View::ExecuteQuery('UPDATE com_vtiger_workflows SET filtersavedinnew = 5', array());
 
 // Core workflow schema dependecy introduced in 6.1.0
-$adb=PearDatabase::getInstance();
-$result = $adb->pquery("show columns from com_vtiger_workflows like ?", array('schtypeid'));
-if (!($adb->num_rows($result))) { $adb->pquery("ALTER TABLE com_vtiger_workflows ADD schtypeid INT(10)", array()); }
-$result = $adb->pquery("show columns from com_vtiger_workflows like ?", array('schtime'));
-if (!($adb->num_rows($result))) { $adb->pquery("ALTER TABLE com_vtiger_workflows ADD schtime TIME", array()); }
-$result = $adb->pquery("show columns from com_vtiger_workflows like ?", array('schdayofmonth'));
-if (!($adb->num_rows($result))) {$adb->pquery("ALTER TABLE com_vtiger_workflows ADD schdayofmonth VARCHAR(100)", array());}
-$result = $adb->pquery("show columns from com_vtiger_workflows like ?", array('schdayofweek'));
-if (!($adb->num_rows($result))) {$adb->pquery("ALTER TABLE com_vtiger_workflows ADD schdayofweek VARCHAR(100)", array());}
-$result = $adb->pquery("show columns from com_vtiger_workflows like ?", array('schannualdates'));
-if (!($adb->num_rows($result))) {$adb->pquery("ALTER TABLE com_vtiger_workflows ADD schannualdates VARCHAR(100)", array());}
-$result = $adb->pquery("show columns from com_vtiger_workflows like ?", array('nexttrigger_time'));
-if (!($adb->num_rows($result))) {$adb->pquery("ALTER TABLE com_vtiger_workflows ADD nexttrigger_time DATETIME", array());}
+$adb = PearDatabase::getInstance();
+$columns = [
+    'schtypeid' => 'INT(10)',
+    'schtime' => 'TIME',
+    'schdayofmonth' => 'VARCHAR(100)',
+    'schdayofweek' => 'VARCHAR(100)',
+    'schannualdates' => 'VARCHAR(100)',
+    'nexttrigger_time' => 'DATETIME',
+];
+
+foreach ($columns as $column => $type) {
+    if (!columnExists($column, 'com_vtiger_workflows')) {
+        $adb->pquery(sprintf('ALTER TABLE com_vtiger_workflows ADD %s %s', $column, $type));
+    }
+}
 
 if(!defined('INSTALLATION_MODE')) {
 	Migration_Index_View::ExecuteQuery("CREATE TABLE IF NOT EXISTS com_vtiger_workflow_tasktypes (
@@ -205,7 +207,7 @@ for($i=0;$i<$count;$i++) {
 			$maxlength = $tableAndColumnSize[$tableName][$columnName]['max_length'] + $decimalsToChange;
 			$decimalDigits = $tableAndColumnSize[$tableName][$columnName]['scale'] + $decimalsToChange;
 
-			Migration_Index_View::ExecuteQuery("ALTER TABLE " .$tableName." MODIFY COLUMN ".$columnName." decimal(?,?)", array($maxlength, $decimalDigits));
+            Migration_Index_View::ExecuteQuery('ALTER TABLE ' . $tableName . ' CHANGE ' . $columnName . ' ' . $columnName . ' decimal(' . (int)$maxlength . ',' . (int)$decimalDigits . ')', null);
 		}
 	}
 }
@@ -404,7 +406,7 @@ $count = $adb->num_rows($result);
 for($i=0;$i<$count;$i++) {
 	$tableName = $adb->query_result($result,$i,'tablename');
 	$columnName = $adb->query_result($result,$i,'columnname');
-	Migration_Index_View::ExecuteQuery("ALTER TABLE " .$tableName." MODIFY COLUMN ".$columnName." decimal(?,?)", array(25, 8));
+    Migration_Index_View::ExecuteQuery('ALTER TABLE ' . $tableName . ' CHANGE ' . $columnName . ' ' . $columnName . " decimal(25,8)", null);
 }
 
 Migration_Index_View::ExecuteQuery('DELETE FROM vtiger_no_of_currency_decimals WHERE no_of_currency_decimalsid=?', array(1));

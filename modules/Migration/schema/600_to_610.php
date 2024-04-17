@@ -91,30 +91,21 @@ for($i=0, $len=php7_count($unWanted);$i<=$len;$i++){
         unlink($unWanted[$i]);
     }
 }
- 
-$result = $adb->pquery("show columns from com_vtiger_workflows like ?", array('schtypeid'));
-if (!($adb->num_rows($result))) {
-    $adb->pquery("ALTER TABLE com_vtiger_workflows ADD schtypeid INT(10)", array());
-}
-$result = $adb->pquery("show columns from com_vtiger_workflows like ?", array('schtime'));
-if (!($adb->num_rows($result))) {
-    $adb->pquery("ALTER TABLE com_vtiger_workflows ADD schtime TIME", array());
-}
-$result = $adb->pquery("show columns from com_vtiger_workflows like ?", array('schdayofmonth'));
-if (!($adb->num_rows($result))) {
-    $adb->pquery("ALTER TABLE com_vtiger_workflows ADD schdayofmonth VARCHAR(100)", array());
-}
-$result = $adb->pquery("show columns from com_vtiger_workflows like ?", array('schdayofweek'));
-if (!($adb->num_rows($result))) {
-    $adb->pquery("ALTER TABLE com_vtiger_workflows ADD schdayofweek VARCHAR(100)", array());
-}
-$result = $adb->pquery("show columns from com_vtiger_workflows like ?", array('schannualdates'));
-if (!($adb->num_rows($result))) {
-    $adb->pquery("ALTER TABLE com_vtiger_workflows ADD schannualdates VARCHAR(100)", array());
-}
-$result = $adb->pquery("show columns from com_vtiger_workflows like ?", array('nexttrigger_time'));
-if (!($adb->num_rows($result))) {
-    $adb->pquery("ALTER TABLE com_vtiger_workflows ADD nexttrigger_time DATETIME", array());
+
+$adb = PearDatabase::getInstance();
+$columns = [
+    'schtypeid' => 'INT(10)',
+    'schtime' => 'TIME',
+    'schdayofmonth' => 'VARCHAR(100)',
+    'schdayofweek' => 'VARCHAR(100)',
+    'schannualdates' => 'VARCHAR(100)',
+    'nexttrigger_time' => 'DATETIME',
+];
+
+foreach ($columns as $column => $type) {
+    if (!columnExists($column, 'com_vtiger_workflows')) {
+        $adb->pquery(sprintf('ALTER TABLE com_vtiger_workflows ADD %s %s', $column, $type));
+    }
 }
 
 Migration_Index_View::ExecuteQuery("CREATE TABLE IF NOT EXISTS vtiger_faqcf ( 

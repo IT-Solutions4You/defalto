@@ -877,8 +877,9 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 	//End
 
-	$criteria = ' MODIFY COLUMN click_count INT NOT NULL default 0';
-	Vtiger_Utils::AlterTable('vtiger_email_track', $criteria);
+    if (!columnExists('click_count', 'vtiger_email_track')) {
+        Vtiger_Utils::AlterTable('vtiger_email_track', ' ADD click_count INT NOT NULL default 0');
+    }
 
 	$em = new VTEventsManager($db);
 	$em->registerHandler('vtiger.lead.convertlead', 'modules/Leads/handlers/LeadHandler.php', 'LeadHandler');
