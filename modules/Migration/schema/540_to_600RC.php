@@ -18,10 +18,6 @@ require_once 'modules/com_vtiger_workflow/VTEntityMethodManager.inc';
 require_once 'modules/com_vtiger_workflow/VTWorkflowManager.inc';
 require_once 'modules/com_vtiger_workflow/VTTaskManager.inc';
 
-if(defined('VTIGER_UPGRADE')) {
-    Install_Utils_Model::installAdditionalModulesAndLanguages();
-}
-
 if(!defined('INSTALLATION_MODE')) {
 	Migration_Index_View::ExecuteQuery('ALTER TABLE com_vtiger_workflows ADD COLUMN filtersavedinnew int(1)', array());
 }

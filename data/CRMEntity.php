@@ -15,7 +15,7 @@ require_once("include/Zend/Json.php");
 require_once 'include/RelatedListView.php';
 
 class CRMEntity {
-
+    public int $isEntity = 1;
 	var $ownedby;
 	var $recordSource = 'CRM';
 	var $mode;

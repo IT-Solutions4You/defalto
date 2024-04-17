@@ -412,8 +412,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$createBatchEvent = 'vtiger.batchevent.save';
 	$EventManager->registerHandler($createBatchEvent, $handler_path, 'EmailLookupBatchHandler');
 
-	$EmailsModuleModel = Vtiger_Module_Model::getInstance('EMAILMaker');
-	$emailSupportedModulesList = $EmailsModuleModel->getEmailRelatedModules();
+	$emailSupportedModulesList = getEmailRelatedModules();
 
 	$recordModel = ITS4YouEmails_EmailLookup_Model::getInstance();
 	foreach ($emailSupportedModulesList as $module) {
@@ -1566,40 +1565,6 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$Vtiger_Utils_Log = true;
-	$moduleArray = array('Project' => 'LBL_PROJECT_INFORMATION');
-	foreach ($moduleArray as $module => $block) {
-		$moduleInstance = Vtiger_Module::getInstance($module);
-		$blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
-
-		$field = Vtiger_Field::getInstance('isconvertedfrompotential', $moduleInstance);
-		if (!$field) {
-			$field = new Vtiger_Field();
-			$field->name		= 'isconvertedfrompotential';
-			$field->label		= 'Is Converted From Opportunity';
-			$field->uitype		= 56;
-			$field->column		= 'isconvertedfrompotential';
-			$field->displaytype	= 2;
-			$field->columntype	= 'INT(1) NOT NULL DEFAULT 0';
-			$field->typeofdata	= 'C~O';
-			$blockInstance->addField($field);
-		}
-	}
-
-	$quotesModule = Vtiger_Module::getInstance('Quotes');
-	$projectInstance->setRelatedList($quotesModule, 'Quotes', Array('SELECT'));
-
-	if (!Vtiger_Field::getInstance('potentialid', $projectInstance)) {
-		$blockInstance = Vtiger_Block_Model::getInstance('LBL_PROJECT_INFORMATION', $projectInstance);
-		$potentialField = new Vtiger_Field();
-		$potentialField->name		= 'potentialid';
-		$potentialField->label		= 'Potential Name';
-		$potentialField->uitype		= 10;
-		$potentialField->typeofdata	= 'I~O';
-
-		$blockInstance->addField($potentialField);
-		$potentialField->setRelatedModules(Array('Potentials'));
-	}
-
 	$productsInstance = Vtiger_Module_Model::getInstance('Products');
 	$poInstance = Vtiger_Module_Model::getInstance('PurchaseOrder');
 	$productsInstance->setRelatedList($poInstance, 'PurchaseOrder', false, 'get_purchase_orders');
