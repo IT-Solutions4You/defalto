@@ -8,7 +8,63 @@
  * file that was distributed with this source code.
  */
 
-class ITS4YouDownload
+class Download_ZipArchive extends ZipArchive
+{
+    public function extractSubdirTo($destination, $subdir)
+    {
+        $errors = [];
+
+        // Prepare dirs
+        $destination = str_replace(["/", "\\"], DIRECTORY_SEPARATOR, $destination);
+        $subdir = str_replace(["/", "\\"], "/", $subdir);
+
+        if (substr($destination, mb_strlen(DIRECTORY_SEPARATOR, "UTF-8") * -1) != DIRECTORY_SEPARATOR) {
+            $destination .= DIRECTORY_SEPARATOR;
+        }
+
+        if (substr($subdir, -1) != "/") {
+            $subdir .= "/";
+        }
+
+        // Extract files
+        for ($i = 0; $i < $this->numFiles; $i++) {
+            $filename = $this->getNameIndex($i);
+
+            if (substr($filename, 0, mb_strlen($subdir, "UTF-8")) == $subdir) {
+                $relativePath = substr($filename, mb_strlen($subdir, "UTF-8"));
+                $relativePath = str_replace(["/", "\\"], DIRECTORY_SEPARATOR, $relativePath);
+
+                if (mb_strlen($relativePath, "UTF-8") > 0) {
+                    if (substr($filename, -1) == "/")  // Directory
+                    {
+                        // New dir
+                        if (!is_dir($destination . $relativePath)) {
+                            if (!@mkdir($destination . $relativePath, 0755, true)) {
+                                $errors[$i] = $filename;
+                            }
+                        }
+                    } else {
+                        if (dirname($relativePath) != ".") {
+                            if (!is_dir($destination . dirname($relativePath))) {
+                                // New dir (for file)
+                                @mkdir($destination . dirname($relativePath), 0755, true);
+                            }
+                        }
+
+                        // New file
+                        if (@file_put_contents($destination . $relativePath, $this->getFromIndex($i)) === false) {
+                            $errors[$i] = $filename;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $errors;
+    }
+}
+
+class Download
 {
     public const ZIP_CREATE = 'Zip file create';
     public const ZIP_CREATED = 'Zip file is created';
@@ -18,6 +74,7 @@ class ITS4YouDownload
     public const ZIP_NOT_COPIED = 'Zip file is not copied';
     public const ZIP_NOT_WRITABLE = 'Zip file is not writable';
     public const FILE_EXTRACTED = 'File extracted';
+    public const FILE_RENAME = 'Folder rename';
     public const FILE_OPENED = 'File opened';
     public const FINISH = 'Finish installation';
     public const START = 'Start installation';
@@ -29,25 +86,27 @@ class ITS4YouDownload
     public string $progress = '';
     public int $progressMax = 5;
     public int $progressNum = 0;
+    public string $version = '0.0.0';
 
     /**
      * @param string $url
      * @param string $dir
      * @param string $redirect
      *
-     * @return ITS4YouDownload
+     * @return Download
      * @throws Exception
      */
-    public static function zip(string $url, string $dir = DIRECTORY_SEPARATOR, string $redirect = 'index.php'): ITS4YouDownload
+    public static function zip(string $version, string $dir = DIRECTORY_SEPARATOR, string $redirect = 'index.php'): Download
     {
         if (!session_id()) {
             session_start();
         }
 
         $self = new self();
-        $self->url = $url;
+        $self->url = sprintf('https://github.com/IT-Solutions4You/defalto/archive/refs/tags/%s.zip', $version);
         $self->dir = $dir;
         $self->redirect = $redirect;
+        $self->version = $version;
         $self->retrieveProgress();
 
         if ($self->isRedirect()) {
@@ -148,7 +207,7 @@ class ITS4YouDownload
 
     /**
      * @param string $value
-     * @param int    $number
+     * @param int $number
      *
      * @return void
      */
@@ -225,12 +284,13 @@ class ITS4YouDownload
      */
     public function extract()
     {
-        $zip = new ZipArchive();
+        $zip = new Download_ZipArchive();
         $result = $zip->open($this->getZipFile());
+        $versionFolder = 'defalto-' . $this->version . '/';
 
         if (true === $result) {
             self::log(self::FILE_OPENED);
-            $zip->extractTo(__DIR__);
+            $zip->extractSubdirTo(__DIR__, $versionFolder);
 
             self::log(self::FILE_EXTRACTED);
             $zip->close();
@@ -269,7 +329,7 @@ class ITS4YouDownload
     }
 }
 
-$download = ITS4YouDownload::zip('https://its4you.sk/en/images/extensions/ITS4YouCRM/ITS4YouCRM.zip');
+$download = Download::zip('0.0.91');
 
 ?>
 
@@ -377,7 +437,7 @@ $download = ITS4YouDownload::zip('https://its4you.sk/en/images/extensions/ITS4Yo
 echo $download->progress ?>">
     <div class="progressContainer">
         <img class="logo" src="https://it-solutions4you.com/wp-content/uploads/2022/03/146x57_ITS4YOU_Logo.jpg" alt="Logo">
-        <h1>ITS4YouCRM installation progress</h1>
+        <h1>Defalto <?php echo $download->version ?> installation progress</h1>
         <div class="progress">
             <div class="progressBar" style="width: <?php
             echo $download->progressNum ?>%;"></div>
