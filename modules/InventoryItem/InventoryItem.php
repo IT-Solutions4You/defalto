@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class InventoryItem extends Vtiger_CRMEntity
+class InventoryItem extends CRMEntity
 {
     public $table_name = 'df_inventoryitem';
     public $table_index = 'inventoryitemid';
