@@ -16,142 +16,137 @@
                 <div class="row">
                     <div class="col-sm">
                         <input type='hidden' name='pwd_regex' value= {ZEND_json::encode($PWD_REGEX)}/>
-                        <table class="table table-borderless config-table input-table">
-                            <thead>
-                            <tr>
-                                <th class="w-50">{vtranslate('LBL_DATABASE_INFORMATION', 'Install')}</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>{vtranslate('LBL_DATABASE_TYPE', 'Install')}<span class="no text-danger ms-2">*</span></td>
-                                <td>
+                        <div class="container-fluid config-table">
+                            <div class="fw-bold">
+                            <div class="row py-2">
+                                <div class="col">{vtranslate('LBL_DATABASE_INFORMATION', 'Install')}</div>
+                            </div>
+                            </div>
+                            <div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('LBL_DATABASE_TYPE', 'Install')}<span class="no text-danger ms-2">*</span></div>
+                                <div class="col-lg-6">
                                     {vtranslate('MySQL', 'Install')}
                                     {if function_exists('mysqli_connect')}
                                         <input type="hidden" value="mysqli" name="db_type">
                                     {else}
                                         <input type="hidden" value="mysql" name="db_type">
                                     {/if}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>{vtranslate('LBL_HOST_NAME', 'Install')}<span class="no text-danger ms-2">*</span></td>
-                                <td><input type="text" class="form-control" value="{$DB_HOSTNAME}" name="db_hostname"></td>
-                            </tr>
-                            <tr>
-                                <td>{vtranslate('LBL_USERNAME', 'Install')}<span class="no text-danger ms-2">*</span></td>
-                                <td><input type="text" class="form-control" value="{$DB_USERNAME}" name="db_username"></td>
-                            </tr>
-                            <tr>
-                                <td>{vtranslate('LBL_PASSWORD','Install')}</td>
-                                <td><input type="password" class="form-control" value="{$DB_PASSWORD}" name="db_password"></td>
-                            </tr>
-                            <tr>
-                                <td>{vtranslate('LBL_DB_NAME', 'Install')}<span class="no text-danger ms-2">*</span></td>
-                                <td><input type="text" class="form-control" value="{$DB_NAME}" name="db_name"></td>
-                            </tr>
-                            <tr>
-                                <td>
+                                </div>
+                            </div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('LBL_HOST_NAME', 'Install')}<span class="no text-danger ms-2">*</span></div>
+                                <div class="col-lg-6"><input type="text" class="form-control" value="{$DB_HOSTNAME}" name="db_hostname"></div>
+                            </div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('LBL_USERNAME', 'Install')}<span class="no text-danger ms-2">*</span></div>
+                                <div class="col-lg-6"><input type="text" class="form-control" value="{$DB_USERNAME}" name="db_username"></div>
+                            </div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('LBL_PASSWORD','Install')}</div>
+                                <div class="col-lg-6"><input type="password" class="form-control" value="{$DB_PASSWORD}" name="db_password"></div>
+                            </div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('LBL_DB_NAME', 'Install')}<span class="no text-danger ms-2">*</span></div>
+                                <div class="col-lg-6"><input type="text" class="form-control" value="{$DB_NAME}" name="db_name"></div>
+                            </div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">
                                     <label>
-                                        <input type="checkbox" name="create_db"/>
-                                        <span>{vtranslate('LBL_CREATE_NEW_DB','Install')}</span>
+                                        <input type="checkbox" name="create_db" class="form-check-input me-2"/>
+                                        <span class="fw-bold">{vtranslate('LBL_CREATE_NEW_DB','Install')}</span>
                                     </label>
-                                </td>
-                            </tr>
-                            <tr class="hide" id="root_user">
-                                <td>{vtranslate('LBL_ROOT_USERNAME', 'Install')}<span class="no text-danger ms-2">*</span></td>
-                                <td><input type="text" class="form-control" value="" name="db_root_username"></td>
-                            </tr>
-                            <tr class="hide" id="root_password">
-                                <td>{vtranslate('LBL_ROOT_PASSWORD', 'Install')}</td>
-                                <td><input type="password" class="form-control" value="" name="db_root_password"></td>
-                            </tr>
-                            </tbody>
-                        </table>
+                                </div>
+                            </div>
+                            <div class="row py-2 hide" id="root_user">
+                                <div class="col-lg-6">{vtranslate('LBL_ROOT_USERNAME', 'Install')}<span class="no text-danger ms-2">*</span></div>
+                                <div class="col-lg-6"><input type="text" class="form-control" value="" name="db_root_username"></div>
+                            </div>
+                            <div class="row py-2 hide" id="root_password">
+                                <div class="col-lg-6">{vtranslate('LBL_ROOT_PASSWORD', 'Install')}</div>
+                                <div class="col-lg-6"><input type="password" class="form-control" value="" name="db_root_password"></div>
+                            </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-sm">
-                        <table class="table table-borderless config-table input-table">
-                            <thead>
-                            <tr>
-                                <th class="w-50">{vtranslate('LBL_SYSTEM_INFORMATION','Install')}</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>{vtranslate('LBL_CURRENCIES','Install')}<span class="no text-danger ms-2">*</span></td>
-                                <td>
+                        <div class="container-fluid config-table">
+                            <div class="fw-bold">
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('LBL_SYSTEM_INFORMATION','Install')}</div>
+                            </div>
+                            </div>
+                            <div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('LBL_CURRENCIES','Install')}<span class="no text-danger ms-2">*</span></div>
+                                <div class="col-lg-6">
                                     <select name="currency_name" class="select2" >
                                         {foreach key=CURRENCY_NAME item=CURRENCY_INFO from=$CURRENCIES}
                                             <option value="{$CURRENCY_NAME}" {if $CURRENCY_NAME eq 'USA, Dollars'} selected {/if}>{$CURRENCY_NAME} ({$CURRENCY_INFO.1})</option>
                                         {/foreach}
                                     </select>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <table class="table table-borderless config-table input-table">
-                            <thead>
-                            <tr>
-                                <th class="w-50">{vtranslate('LBL_ADMIN_INFORMATION', 'Install')}</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>{vtranslate('LBL_USERNAME', 'Install')}</td>
-                                <td>admin<input type="hidden" name="{$ADMIN_NAME}" value="admin"/></td>
-                            </tr>
-                            <tr>
-                                <td>{vtranslate('LBL_PASSWORD', 'Install')}<span class="no text-danger ms-2">*</span></td>
-                                <td><input type="password" class="form-control" value="{$ADMIN_PASSWORD}" name="password"/></td>
-                            </tr>
-                            <tr>
-                                <td>{vtranslate('LBL_RETYPE_PASSWORD', 'Install')} <span class="no text-danger ms-2">*</span></td>
-                                <td>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="fw-bold">
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('LBL_ADMIN_INFORMATION', 'Install')}</div>
+                            </div>
+                            </div>
+                            <div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('LBL_USERNAME', 'Install')}</div>
+                                <div class="col-lg-6">admin<input type="hidden" name="{$ADMIN_NAME}" value="admin"/></div>
+                            </div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('LBL_PASSWORD', 'Install')}<span class="no text-danger ms-2">*</span></div>
+                                <div class="col-lg-6"><input type="password" class="form-control" value="{$ADMIN_PASSWORD}" name="password"/></div>
+                            </div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('LBL_RETYPE_PASSWORD', 'Install')} <span class="no text-danger ms-2">*</span></div>
+                                <div class="col-lg-6">
                                     <input type="password" class="form-control" value="{$ADMIN_PASSWORD}" name="retype_password"/>
                                     <div id="passwordError" class="no text-danger"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>{vtranslate('First Name', 'Install')}</td>
-                                <td><input type="text" class="form-control" value="" name="firstname"/></td>
-                            </tr>
-                            <tr>
-                                <td>{vtranslate('Last Name', 'Install')} <span class="no text-danger ms-2">*</span></td>
-                                <td><input type="text" class="form-control" value="{$ADMIN_LASTNAME}" name="lastname"/></td>
-                            </tr>
-                            <tr>
-                                <td>{vtranslate('LBL_EMAIL','Install')} <span class="no text-danger ms-2">*</span></td>
-                                <td><input type="text" class="form-control" value="{$ADMIN_EMAIL}" name="admin_email"></td>
-                            </tr>
-                            <tr>
-                                <td>{vtranslate('LBL_DATE_FORMAT','Install')} <span class="no text-danger ms-2">*</span></td>
-                                <td>
+                                </div>
+                            </div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('First Name', 'Install')}</div>
+                                <div class="col-lg-6"><input type="text" class="form-control" value="" name="firstname"/></div>
+                            </div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('Last Name', 'Install')} <span class="no text-danger ms-2">*</span></div>
+                                <div class="col-lg-6"><input type="text" class="form-control" value="{$ADMIN_LASTNAME}" name="lastname"/></div>
+                            </div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('LBL_EMAIL','Install')} <span class="no text-danger ms-2">*</span></div>
+                                <div class="col-lg-6"><input type="text" class="form-control" value="{$ADMIN_EMAIL}" name="admin_email"></div>
+                            </div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('LBL_DATE_FORMAT','Install')} <span class="no text-danger ms-2">*</span></div>
+                                <div class="col-lg-6">
                                     <select class="select2"  name="dateformat">
-                                        <option value="mm-dd-yyyy">mm-dd-yyyy</option>
                                         <option value="dd-mm-yyyy">dd-mm-yyyy</option>
                                         <option value="yyyy-mm-dd">yyyy-mm-dd</option>
+                                        <option value="mm-dd-yyyy">mm-dd-yyyy</option>
                                     </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
+                                </div>
+                            </div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">
                                     {vtranslate('LBL_TIME_ZONE','Install')} <span class="no text-danger ms-2">*</span>
-                                </td>
-                                <td>
+                                </div>
+                                <div class="col-lg-6">
                                     <div>
                                         <select class="select2" name="timezone">
                                             {foreach item=TIMEZONE from=$TIMEZONES}
-                                                <option value="{$TIMEZONE}" {if $TIMEZONE eq 'America/Los_Angeles'}selected{/if}>{vtranslate($TIMEZONE, 'Users')}</option>
+                                                <option value="{$TIMEZONE}" {if $TIMEZONE eq 'Europe/Belgrade'}selected{/if}>{vtranslate($TIMEZONE, 'Users')}</option>
                                             {/foreach}
                                         </select>
                                     </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
