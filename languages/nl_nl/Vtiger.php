@@ -9,7 +9,7 @@
  ************************************************************************************/
 $languageStrings = array(
 	'APPTITLE'                     => 'Vtiger CRM'                  , 
-	'POWEREDBY'                    => 'Powered by vtiger CRM, Translation By Vicus', 
+	'POWEREDBY'                    => 'Powered by Defalto CRM, Translation By Vicus', 
 	'LBL_READ_LICENSE'             => 'Lees Licentie'               , 
 	'LBL_PRIVACY_POLICY'           => 'Privacy Policy'              , 
 	'LBL_SELECT_ALL'               => 'Selecteer Alles'             , 
