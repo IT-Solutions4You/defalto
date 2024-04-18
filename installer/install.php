@@ -391,9 +391,9 @@ $download = Download::zip($zipFileUrl, $zipFileFolder);
     <meta charset="utf-8">
     <style>
         body {
-            background: #eee;
+            padding: 0;
+            margin: 0;
         }
-
         * {
             font-family: sans-serif;
         }
@@ -412,8 +412,8 @@ $download = Download::zip($zipFileUrl, $zipFileFolder);
         }
 
         .progressHeader {
-            margin: -1em -2em 0 -2em;
-            border-radius: 0.5rem 0.5rem 0 0;
+            padding: 1em;
+            text-align: center;
             color: #fff;
             background: #103962;
         }
@@ -438,7 +438,7 @@ $download = Download::zip($zipFileUrl, $zipFileFolder);
         }
 
         .action {
-            text-align: right;
+            text-align: center;
             margin: 1em 0;
         }
 
@@ -495,11 +495,11 @@ $download = Download::zip($zipFileUrl, $zipFileFolder);
 <body>
 <div class="replaceContainer" data-progress="<?php
 echo $download->progress ?>">
-    <div class="progressContainer">
-        <div class="progressHeader">
-            <img class="logo" src="https://defalto.com/wp-content/uploads/2022/05/DefaltoCRMLogo170x40.png" alt="Logo">
-        </div>
+    <div class="progressHeader">
+        <img class="logo" src="https://defalto.com/wp-content/uploads/2022/05/DefaltoCRMLogo170x40.png" alt="Logo">
         <h1>Defalto installation progress</h1>
+    </div>
+    <div class="progressContainer">
         <div class="progress">
             <div class="progressBar" style="width: <?php
             echo $download->progressNum ?>%;"></div>
