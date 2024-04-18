@@ -24,6 +24,7 @@ class Project_Install_Model extends Vtiger_Install_Model
         ['Project', 'ProjectTeam', 'Project Team', ['ADD'], 'get_dependents_list'],
         ['Project', 'Documents', 'Documents', ['ADD','SELECT',], 'get_attachments'],
         ['Project', 'HelpDesk', 'HelpDesk', ['ADD','SELECT',], 'get_related_list'],
+        ['Project', 'Quotes', 'Quotes', ['SELECT',], 'get_related_list'],
     ];
 
     /**
@@ -200,6 +201,21 @@ class Project_Install_Model extends Vtiger_Install_Model
                     'quickcreate' => 3,
                     'masseditable' => 0,
                 ],
+                'potentialid' => [
+                    'uitype' => 10,
+                    'column' => 'potentialid',
+                    'table' => 'vtiger_project',
+                    'label' => 'Potential Name',
+                    'typeofdata' => 'I~O',
+                ],
+                'isconvertedfrompotential' => [
+                    'uitype' => 56,
+                    'column' => 'isconvertedfrompotential',
+                    'table' => 'vtiger_project',
+                    'label' => 'Is Converted From Opportunity',
+                    'typeofdata' => 'C~O',
+                    'displaytype'=> 2,
+                ],
             ],
             'LBL_CUSTOM_INFORMATION' => [
                 'targetbudget' => [
@@ -313,7 +329,10 @@ class Project_Install_Model extends Vtiger_Install_Model
             ->createColumn('projectpriority', 'varchar(100) default NULL')
             ->createColumn('projecttype', 'varchar(100) default NULL')
             ->createColumn('progress', 'varchar(100) default NULL')
-            ->createColumn('linktoaccountscontacts', 'varchar(100) default NULL');
+            ->createColumn('linktoaccountscontacts', 'varchar(100) default NULL')
+            ->createColumn('potentialid', 'int(19) default NULL')
+            ->createColumn('isconvertedfrompotential', 'INT(1) NOT NULL DEFAULT \'0\'')
+        ;
 
         $this->getTable('vtiger_projectcf', null)
             ->createTable('projectid');

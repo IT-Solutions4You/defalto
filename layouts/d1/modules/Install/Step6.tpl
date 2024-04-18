@@ -20,14 +20,20 @@
                             <table class="table table-borderless config-table input-table">
                                 <tbody>
                                 <tr>
-                                    <td><strong>Your Name</strong> <span class="no text-danger ms-2">*</span></td>
+                                    <td>
+                                        <strong>Your Name</strong>
+                                    </td>
                                     <td><input name="myname" class="text form-control" required="true"></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Your Email</strong>
+                                    <td>
+                                        <strong>Your Email</strong>
+                                    </td>
                                     <td><input name="myemail" class="email form-control" required="true"></td>
                                 <tr>
-                                    <td><strong>Your Industry</strong> <span class="no text-danger ms-2">*</span></td>
+                                    <td>
+                                        <strong>Your Industry</strong>
+                                    </td>
                                     <td>
                                         <select name="industry" class="select2" required="true" placeholder="Choose one...">
                                             <option>Accounting</option>
@@ -75,7 +81,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        This information will not be shared. Vtiger will use the email address for sending a monthly newsletter and any product updates.
+                                        This information will not be shared. Defalto will use the email address for sending a monthly newsletter and any product updates.
                                         Industry will be used to understand use cases and further improve the product.
                                     </td>
                                 </tr>

@@ -145,7 +145,7 @@ class SMSNotifier_Install_Model extends Vtiger_Install_Model
             ->createColumn('status', 'varchar(10) DEFAULT NULL')
             ->createColumn('smsmessageid', 'varchar(50) DEFAULT NULL')
             ->createColumn('needlookup', 'int(1) DEFAULT \'1\'')
-            ->createColumn('statusid', 'int(11) NOT NULL AUTO_INCREMENT')
+            ->createColumn('statusid', 'int(11) NOT NULL')
             ->createColumn('statusmessage', 'varchar(100) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`statusid`)');
     }

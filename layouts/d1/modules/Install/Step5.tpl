@@ -42,8 +42,6 @@
                                 <td>{$INFORMATION['db_name']}</td>
                             </tr>
                             </tbody>
-                        </table>
-                        <table class="table table-borderless config-table input-table">
                             <thead>
                             <tr>
                                 <th class="w-25">{vtranslate('LBL_SYSTEM_INFORMATION','Install')}</th>
@@ -60,8 +58,6 @@
                                 <td>{$INFORMATION['currency_name']}</td>
                             </tr>
                             </tbody>
-                        </table>
-                        <table class="table table-borderless config-table input-table">
                             <thead>
                             <tr>
                                 <th colspan="2">{vtranslate('LBL_ADMIN_USER_INFORMATION','Install')}</th>

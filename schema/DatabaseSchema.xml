@@ -186,7 +186,7 @@
 			<key />
 			<default value="0" />
 		</field>
-		<field name="name" type="C" size="25">
+		<field name="name" type="C" size="50">
 			<notnull />
 		</field>
 		<field name="presence" type="I" size="19">
