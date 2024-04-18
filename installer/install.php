@@ -287,7 +287,7 @@ class Download
     public function setProgress(string $value, int $number): void
     {
         $this->progress = $_SESSION['progress'] = $value;
-        $this->progressNum = $number * 20;
+        $this->progressNum = min(100, $number * 17);
     }
 
     /**
@@ -408,6 +408,14 @@ $download = Download::zip($zipFileUrl, $zipFileFolder);
             margin: 3em auto;
             width: 50vw;
             text-align: center;
+            border-radius: 0.5rem;
+        }
+
+        .progressHeader {
+            margin: -1em -2em 0 -2em;
+            border-radius: 0.5rem 0.5rem 0 0;
+            color: #fff;
+            background: #103962;
         }
 
         .progress {
@@ -417,7 +425,7 @@ $download = Download::zip($zipFileUrl, $zipFileFolder);
         }
 
         .progressBar {
-            background: #eee;
+            background: #103962;
             height: 1em;
         }
 
@@ -439,9 +447,10 @@ $download = Download::zip($zipFileUrl, $zipFileFolder);
             cursor: pointer;
             display: inline-block;
             padding: 0.8em 1em;
-            background: #08c;
+            background: #103962;
             color: #fff;
             border: 0;
+            border-radius: 0.5rem;
         }
 
         .hide {
@@ -487,10 +496,10 @@ $download = Download::zip($zipFileUrl, $zipFileFolder);
 <div class="replaceContainer" data-progress="<?php
 echo $download->progress ?>">
     <div class="progressContainer">
-        <img class="logo" src="https://defalto.com/wp-content/uploads/2022/05/DefaltoCRMLogo170x40.png" alt="Logo">
-        <h1>Defalto <?php
-            echo $download->version ?> installation progress
-        </h1>
+        <div class="progressHeader">
+            <img class="logo" src="https://defalto.com/wp-content/uploads/2022/05/DefaltoCRMLogo170x40.png" alt="Logo">
+        </div>
+        <h1>Defalto installation progress</h1>
         <div class="progress">
             <div class="progressBar" style="width: <?php
             echo $download->progressNum ?>%;"></div>
