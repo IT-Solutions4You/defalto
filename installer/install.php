@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the IT-Solutions4You CRM Software.
  *
  * (c) IT-Solutions4You s.r.o [info@its4you.sk]
@@ -10,32 +10,37 @@
 
 class Download_ZipArchive extends ZipArchive
 {
-    public function extractSubdirTo($destination, $subdir)
+    /**
+     * @param string $destination
+     * @param string $zipSubDir
+     * @return array
+     */
+    public function extractSubDirTo(string $destination, string $zipSubDir): array
     {
         $errors = [];
 
         // Prepare dirs
         $destination = str_replace(["/", "\\"], DIRECTORY_SEPARATOR, $destination);
-        $subdir = str_replace(["/", "\\"], "/", $subdir);
+        $zipSubDir = str_replace(["/", "\\"], "/", $zipSubDir);
 
-        if (substr($destination, mb_strlen(DIRECTORY_SEPARATOR, "UTF-8") * -1) != DIRECTORY_SEPARATOR) {
+        if (substr($destination, mb_strlen(DIRECTORY_SEPARATOR, 'UTF-8') * -1) != DIRECTORY_SEPARATOR) {
             $destination .= DIRECTORY_SEPARATOR;
         }
 
-        if (substr($subdir, -1) != "/") {
-            $subdir .= "/";
+        if (!str_ends_with($zipSubDir, '/')) {
+            $zipSubDir .= '/';
         }
 
         // Extract files
         for ($i = 0; $i < $this->numFiles; $i++) {
             $filename = $this->getNameIndex($i);
 
-            if (substr($filename, 0, mb_strlen($subdir, "UTF-8")) == $subdir) {
-                $relativePath = substr($filename, mb_strlen($subdir, "UTF-8"));
+            if (substr($filename, 0, mb_strlen($zipSubDir, 'UTF-8')) == $zipSubDir) {
+                $relativePath = substr($filename, mb_strlen($zipSubDir, 'UTF-8'));
                 $relativePath = str_replace(["/", "\\"], DIRECTORY_SEPARATOR, $relativePath);
 
-                if (mb_strlen($relativePath, "UTF-8") > 0) {
-                    if (substr($filename, -1) == "/")  // Directory
+                if (mb_strlen($relativePath, 'UTF-8') > 0) {
+                    if (str_ends_with($filename, '/'))  // Directory
                     {
                         // New dir
                         if (!is_dir($destination . $relativePath)) {
@@ -44,7 +49,7 @@ class Download_ZipArchive extends ZipArchive
                             }
                         }
                     } else {
-                        if (dirname($relativePath) != ".") {
+                        if (dirname($relativePath) != '.') {
                             if (!is_dir($destination . dirname($relativePath))) {
                                 // New dir (for file)
                                 @mkdir($destination . dirname($relativePath), 0755, true);
@@ -79,61 +84,123 @@ class Download
     public const FINISH = 'Finish installation';
     public const START = 'Start installation';
     public const SUCCESS = 'File extract successfully';
+    public const SUCCESS_COMPOSER = 'Composer updated successfully';
     public const ERROR = 'File not opened';
-    public string $url = '';
+    /**
+     * @var string
+     */
     public string $dir = '/';
-    public string $redirect = 'index.php';
+    /**
+     * @var string
+     */
+    public string $folder = '0.0.0';
+    /**
+     * @var string
+     */
     public string $progress = '';
+    /**
+     * @var int
+     */
     public int $progressMax = 5;
+    /**
+     * @var int
+     */
     public int $progressNum = 0;
-    public string $version = '0.0.0';
+    /**
+     * @var string
+     */
+    public string $redirect = 'index.php';
+    /**
+     * @var string
+     */
+    public string $url = '';
 
     /**
-     * @param string $url
-     * @param string $dir
-     * @param string $redirect
-     *
-     * @return Download
      * @throws Exception
      */
-    public static function zip(string $version, string $dir = DIRECTORY_SEPARATOR, string $redirect = 'index.php'): Download
+    public function extract(): void
     {
-        if (!session_id()) {
-            session_start();
-        }
+        $zip = new Download_ZipArchive();
+        $result = $zip->open($this->getZipFile());
 
-        $self = new self();
-        $self->url = sprintf('https://github.com/IT-Solutions4You/defalto/archive/refs/tags/%s.zip', $version);
-        $self->dir = $dir;
-        $self->redirect = $redirect;
-        $self->version = $version;
-        $self->retrieveProgress();
+        if (true === $result) {
+            self::log(self::FILE_OPENED);
+            $zip->extractSubDirTo(__DIR__, $this->folder);
 
-        if ($self->isRedirect()) {
-            $self->redirect();
-        } elseif ($self->is('start')) {
-            $self->start();
-        } elseif ($self->is('retrieve')) {
-            $self->retrieve();
-        } elseif ($self->is('download')) {
-            $self->download();
-        } elseif ($self->is('extract')) {
-            $self->extract();
+            self::log(self::FILE_EXTRACTED);
+            $zip->close();
+
+            self::log(self::SUCCESS);
+            $this->setProgress('update', 4);
         } else {
-            $self->finish();
+            self::log(self::ERROR);
+            $this->setProgress('error', 4);
         }
-
-        return $self;
     }
 
-    public function retrieveProgress()
+    /**
+     * @throws Exception
+     */
+    public function finish(): void
     {
-        $this->progress = !empty($_SESSION['progress']) ? $_SESSION['progress'] : 'start';
+        self::log(self::FINISH);
+        $this->setProgress('', 6);
+    }
 
-        if ($this->is('start')) {
-            $_SESSION['messages'] = [];
-            $_SESSION['progress'] = '';
-        }
+    /**
+     * @return string
+     */
+    public function getFileName(): string
+    {
+        return basename(__FILE__, '.php');
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessages(): string
+    {
+        return implode('<br>', $_SESSION['messages']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPHPFileName(): string
+    {
+        return $this->getFileName() . '.php';
+    }
+
+    /**
+     * @return string
+     */
+    public function getRedirectUrl(): string
+    {
+        return $this->getPHPFileName() . '?progress=redirect';
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getZipFile(): string
+    {
+        return __DIR__ . DIRECTORY_SEPARATOR . $this->getZipFileName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getZipFileName(): string
+    {
+        return $this->getFileName() . '.zip';
     }
 
     /**
@@ -154,7 +221,20 @@ class Download
         return !empty($_REQUEST['progress']) && 'redirect' === $_REQUEST['progress'];
     }
 
-    public function redirect()
+    /**
+     * @param string $value
+     *
+     * @return void
+     */
+    public static function log(string $value): void
+    {
+        $_SESSION['messages'][] = '[' . date('Y-m-d H:i:s') . ']: ' . print_r($value, true);
+    }
+
+    /**
+     * @return void
+     */
+    public function redirect(): void
     {
         unlink($this->getZipFileName());
         unlink($this->getPHPFileName());
@@ -163,65 +243,10 @@ class Download
     }
 
     /**
-     * @return string
-     */
-    public function getZipFileName(): string
-    {
-        return $this->getFileName() . '.zip';
-    }
-
-    /**
-     * @return string
-     */
-    public function getFileName(): string
-    {
-        return basename(__FILE__, '.php');
-    }
-
-    /**
-     * @return string
-     */
-    public function getPHPFileName(): string
-    {
-        return $this->getFileName() . '.php';
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function start()
-    {
-        self::log(self::START);
-        $this->setProgress('retrieve', 1);
-    }
-
-    /**
-     * @param string $value
-     *
-     * @return void
-     */
-    public static function log(string $value)
-    {
-        $_SESSION['messages'][] = '[' . date('Y-m-d H:i:s') . ']: ' . print_r($value, true);
-    }
-
-    /**
-     * @param string $value
-     * @param int $number
-     *
-     * @return void
-     */
-    public function setProgress(string $value, int $number)
-    {
-        $this->progress = $_SESSION['progress'] = $value;
-        $this->progressNum = $number * 20;
-    }
-
-    /**
      * @return void
      * @throws Exception
      */
-    public function retrieve()
+    public function retrieve(): void
     {
         $filename = $this->getZipFile();
 
@@ -241,11 +266,92 @@ class Download
     }
 
     /**
-     * @return string
+     * @return void
      */
-    public function getZipFile(): string
+    public function retrieveProgress(): void
     {
-        return __DIR__ . DIRECTORY_SEPARATOR . $this->getZipFileName();
+        $this->progress = !empty($_SESSION['progress']) ? $_SESSION['progress'] : 'start';
+
+        if ($this->is('start')) {
+            $_SESSION['messages'] = [];
+            $_SESSION['progress'] = '';
+        }
+    }
+
+    /**
+     * @param string $value
+     * @param int $number
+     *
+     * @return void
+     */
+    public function setProgress(string $value, int $number): void
+    {
+        $this->progress = $_SESSION['progress'] = $value;
+        $this->progressNum = $number * 20;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function start(): void
+    {
+        self::log(self::START);
+        $this->setProgress('retrieve', 1);
+    }
+
+    /**
+     * @return void
+     */
+    public function update()
+    {
+        if (true === is_file('updateComposer.php')) {
+            include_once 'updateComposer.php';
+
+            self::log(self::SUCCESS_COMPOSER);
+            $this->setProgress('finish', 5);
+        } else {
+            self::log(self::ERROR);
+            $this->setProgress('error', 5);
+        }
+    }
+
+    /**
+     * @param string $url
+     * @param string $folder
+     * @param string $redirect
+     *
+     * @return Download
+     * @throws Exception
+     */
+    public static function zip(string $url, string $folder, string $redirect = 'index.php'): Download
+    {
+        if (!session_id()) {
+            session_start();
+        }
+
+        $self = new self();
+        $self->url = $url;
+        $self->folder = $folder;
+        $self->redirect = $redirect;
+        $self->retrieveProgress();
+
+        if ($self->isRedirect()) {
+            $self->redirect();
+        } elseif ($self->is('start')) {
+            $self->start();
+        } elseif ($self->is('retrieve')) {
+            $self->retrieve();
+        } elseif ($self->is('download')) {
+            $self->download();
+        } elseif ($self->is('extract')) {
+            $self->extract();
+        } elseif ($self->is('update')) {
+            $self->update();
+        } else {
+            $self->finish();
+        }
+
+        return $self;
     }
 
     /**
@@ -270,66 +376,11 @@ class Download
             $this->setProgress('error', 3);
         }
     }
-
-    /**
-     * @return string
-     */
-    public function getUrl(): string
-    {
-        return $this->url;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function extract()
-    {
-        $zip = new Download_ZipArchive();
-        $result = $zip->open($this->getZipFile());
-        $versionFolder = 'defalto-' . $this->version . '/';
-
-        if (true === $result) {
-            self::log(self::FILE_OPENED);
-            $zip->extractSubdirTo(__DIR__, $versionFolder);
-
-            self::log(self::FILE_EXTRACTED);
-            $zip->close();
-
-            self::log(self::SUCCESS);
-            $this->setProgress('finish', 4);
-        } else {
-            self::log(self::ERROR);
-            $this->setProgress('error', 4);
-        }
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function finish()
-    {
-        self::log(self::FINISH);
-        $this->setProgress('', 5);
-    }
-
-    /**
-     * @return string
-     */
-    public function getMessages(): string
-    {
-        return implode('<br>', $_SESSION['messages']);
-    }
-
-    /**
-     * @return string
-     */
-    public function getRedirectUrl(): string
-    {
-        return $this->getPHPFileName() . '?progress=redirect';
-    }
 }
 
-$download = Download::zip('0.0.91');
+$zipFileUrl = 'https://github.com/IT-Solutions4You/defalto/archive/refs/heads/develop.zip';
+$zipFileFolder = 'defalto-feature-93';
+$download = Download::zip($zipFileUrl, $zipFileFolder);
 
 ?>
 
@@ -436,8 +487,10 @@ $download = Download::zip('0.0.91');
 <div class="replaceContainer" data-progress="<?php
 echo $download->progress ?>">
     <div class="progressContainer">
-        <img class="logo" src="https://it-solutions4you.com/wp-content/uploads/2022/03/146x57_ITS4YOU_Logo.jpg" alt="Logo">
-        <h1>Defalto <?php echo $download->version ?> installation progress</h1>
+        <img class="logo" src="https://defalto.com/wp-content/uploads/2022/05/DefaltoCRMLogo170x40.png" alt="Logo">
+        <h1>Defalto <?php
+            echo $download->version ?> installation progress
+        </h1>
         <div class="progress">
             <div class="progressBar" style="width: <?php
             echo $download->progressNum ?>%;"></div>
@@ -446,7 +499,8 @@ echo $download->progress ?>">
             echo $download->getMessages() ?></div>
         <div class="action">
             <a href="<?php
-            echo $download->getRedirectUrl() ?>" class="button hide">Continue Installation</a>
+            echo $download->getRedirectUrl() ?>" class="button hide">Continue Installation
+            </a>
         </div>
     </div>
 </div>
