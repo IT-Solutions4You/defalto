@@ -302,7 +302,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         $moduleName = $this->moduleName;
         $moduleFocus = CRMEntity::getInstance($moduleName);
 
-        $entity = in_array(get_parent_class($moduleFocus), ['CRMEntity', 'Vtiger_CRMEntity']);
+        $entity = (int)$moduleFocus->isEntity;
         $baseTableId = $moduleFocus->table_index;
         $baseTable = $moduleFocus->table_name;
         $label = $moduleFocus->moduleLabel;
@@ -721,11 +721,11 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @param $register
+     * @param bool $register
      * @return void
      * @throws Exception
      */
-    public function updateSettingsLinks($register = true)
+    public function updateSettingsLinks(bool $register = true): void
     {
         foreach ($this->registerSettingsLinks as $settingsLink) {
             [$name, $link, $block] = $settingsLink;
@@ -734,7 +734,14 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
 
             if ($register) {
                 $fieldId = $this->db->getUniqueID('vtiger_settings_field');
-                $blockId = getSettingsBlockId($block) ?: getSettingsBlockId('LBL_EXTENSIONS');
+                $blockId = getSettingsBlockId($block);
+
+                if (!$blockId) {
+                    $blockId = $this->db->getUniqueID('vtiger_settings_blocks');
+                    $sequenceResult = $this->db->pquery('SELECT max(sequence) AS max_seq FROM vtiger_settings_blocks');
+                    $sequence = intval($this->db->query_result($sequenceResult, 0, 'max_seq')) + 1;
+                    $this->db->pquery('INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?, ?, ?)', [$blockId, $block, $sequence]);
+                }
 
                 $sequenceResult = $this->db->pquery(
                     'SELECT max(sequence) AS max_seq FROM vtiger_settings_field WHERE blockid=?', [$blockId]

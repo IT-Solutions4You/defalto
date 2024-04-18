@@ -36,7 +36,7 @@
 					{if $BLOCK_LABEL_KEY neq 'LBL_INVITE_USER_BLOCK'}
 						{$ALL_BLOCK_LABELS[$BLOCK_ID] = $BLOCK_MODEL}
 					{/if}
-					<div id="block_{$BLOCK_ID}" class="editFieldsTable border container-fluid my-3 block_{$BLOCK_ID} {if $IS_BLOCK_SORTABLE}blockSortable{/if}" data-block-id="{$BLOCK_ID}" data-sequence="{$BLOCK_MODEL->get('sequence')}" data-custom-fields-count="{$BLOCK_MODEL->getCustomFieldsCount()}">
+					<div id="block_{$BLOCK_ID}" class="editFieldsTable border rounded container-fluid my-3 block_{$BLOCK_ID} {if $IS_BLOCK_SORTABLE}blockSortable{/if}" data-block-id="{$BLOCK_ID}" data-sequence="{$BLOCK_MODEL->get('sequence')}" data-custom-fields-count="{$BLOCK_MODEL->getCustomFieldsCount()}">
 						<div>
 							<div class="layoutBlockHeader row align-items-center py-3">
 								<div class="blockLabel col-sm-3" style="word-break: break-all;">
@@ -47,11 +47,15 @@
 								</div>
 								<div class="col-sm-9 text-end">
 									<div class="blockActions px-3">
-										<span class="ms-2">
-											<i class="fa fa-info-circle" title="{vtranslate('LBL_COLLAPSE_BLOCK_DETAIL_VIEW', $QUALIFIED_MODULE)}"></i>
-											<span class="mx-2">{vtranslate('LBL_COLLAPSE_BLOCK', $QUALIFIED_MODULE)}</span>
-											<input style="opacity: 0;" type="checkbox" {if $BLOCK_MODEL->isHidden()} checked value='0' {else} value='1' {/if} class="cursorPointer bootstrap-switch" name="collapseBlock" data-on-text="{vtranslate('LBL_YES', $QUALIFIED_MODULE)}" data-off-text="{vtranslate('LBL_NO', $QUALIFIED_MODULE)}" data-on-color="primary" data-block-id="{$BLOCK_MODEL->get('id')}"/>
-										</span>
+										<label class="me-2 btn btn-outline-secondary" title="{vtranslate('LBL_COLLAPSE_BLOCK_DETAIL_VIEW', $QUALIFIED_MODULE)}">
+											<div class="form-check form-switch form-check-reverse m-0">
+												<span class="form-check-label text-secondary">
+													<i class="fa fa-info-circle"></i>
+													<span class="mx-2">{vtranslate('LBL_COLLAPSE_BLOCK', $QUALIFIED_MODULE)}</span>
+												</span>
+												<input type="checkbox" {if $BLOCK_MODEL->isHidden()} checked value='0' {else} value='1' {/if} class="form-check-input" name="collapseBlock" data-on-text="{vtranslate('LBL_YES', $QUALIFIED_MODULE)}" data-off-text="{vtranslate('LBL_NO', $QUALIFIED_MODULE)}" data-on-color="primary" data-block-id="{$BLOCK_MODEL->get('id')}"/>
+											</div>
+										</label>
 										{if $BLOCK_MODEL->isAddCustomFieldEnabled()}
 											<button class="btn btn-outline-secondary addButton addCustomField ms-2" type="button">
 												<i class="fa fa-plus"></i>
@@ -75,7 +79,7 @@
 									{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
 									{if $smarty.foreach.fieldlist.index % 2 eq 0}
 										<li>
-											<div class="row border mb-3">
+											<div class="row border mb-3 rounded">
 												<div class="col-sm-4 border-end">
 													<div class="opacity editFields py-3 row" data-block-id="{$BLOCK_ID}" data-field-id="{$FIELD_MODEL->get('id')}" data-sequence="{$FIELD_MODEL->get('sequence')}" data-field-name="{$FIELD_MODEL->get('name')}">
 														{assign var=IS_MANDATORY value=$FIELD_MODEL->isMandatory()}
@@ -110,7 +114,7 @@
 														{assign var=NOT_S_FIELD_TITLE value={vtranslate('LBL_HIDE_THIS_FIELD_IN', $QUALIFIED_MODULE, vtranslate('LBL_KEY_FIELD',$QUALIFIED_MODULE))}}
 														{assign var=NOT_H_FIELD_TITLE value={vtranslate('LBL_HIDE_THIS_FIELD_IN', $QUALIFIED_MODULE, vtranslate('LBL_DETAIL_HEADER',$QUALIFIED_MODULE))}}
 														{assign var=IS_MANDATORY value=$FIELD_MODEL->isMandatory()}
-														<div class="fieldProperties col-sm-10" data-field-id="{$FIELD_MODEL->get('id')}">
+														<div class="fieldProperties col-sm" data-field-id="{$FIELD_MODEL->get('id')}">
 															<div class="mandatory switch text-capitalize {if (!$IS_MANDATORY)}disabled{/if} {if $FIELD_MODEL->isMandatoryOptionDisabled()}cursorPointerNotAllowed{else}cursorPointer{/if}" data-bs-toggle="tooltip" title="{if $IS_MANDATORY}{$NOT_M_FIELD_TITLE}{else}{$M_FIELD_TITLE}{/if}">
 																<i class="fa fa-exclamation-circle" data-name="mandatory" data-enable-value="M" data-disable-value="O" {if $FIELD_MODEL->isMandatoryOptionDisabled()}readonly="readonly"{/if}></i>
 																<span class="ms-2">{vtranslate('LBL_PROP_MANDATORY',$QUALIFIED_MODULE)}</span>
@@ -179,14 +183,14 @@
 																{/if}
 															</div>
 														</div>
-														<span class="col-sm-2 actions">
+														<span class="col-sm-auto actions">
 															{if $FIELD_MODEL->isEditable()}
-																<a href="javascript:void(0)" class="editFieldDetails">
+																<a href="javascript:void(0)" class="editFieldDetails btn">
 																	<i class="fa fa-pencil" title="{vtranslate('LBL_EDIT', $QUALIFIED_MODULE)}"></i>
 																</a>
 															{/if}
 															{if $FIELD_MODEL->isCustomField() eq 'true'}
-																<a href="javascript:void(0)" class="deleteCustomField pull-right" data-field-id="{$FIELD_MODEL->get('id')}"
+																<a href="javascript:void(0)" class="deleteCustomField btn" data-field-id="{$FIELD_MODEL->get('id')}"
 																	data-one-one-relationship="{$FIELD_MODEL->isOneToOneRelationField()}" data-relationship-field="{$FIELD_MODEL->isRelationShipReponsibleField()}"
 																	{if $FIELD_MODEL->isOneToOneRelationField()}
 																		{assign var=ONE_ONE_RELATION_FIELD_LABEL value=$FIELD_MODEL->getOneToOneRelationField()->get('label')}
@@ -218,7 +222,7 @@
 								{/foreach}
 								{if php7_count($FIELDS_LIST)%2 eq 0 }
 									{if $BLOCK_MODEL->isAddCustomFieldEnabled()}
-										<li class="row dummyRow py-3 border">
+										<li class="row dummyRow py-3 border rounded mb-3">
 											<div class="col-sm-8 dragUiText fs-5 text-end">
 												{vtranslate('LBL_ADD_NEW_FIELD_HERE',$QUALIFIED_MODULE)}
 											</div>
@@ -237,7 +241,7 @@
 									{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
 									{if $smarty.foreach.fieldlist1.index % 2 neq 0}
 										<li>
-											<div class="row border mb-3">
+											<div class="row border mb-3 rounded">
 												<div class="col-sm-4 border-end">
 													<div class="opacity editFields py-3 row" data-block-id="{$BLOCK_ID}" data-field-id="{$FIELD_MODEL->get('id')}" data-sequence="{$FIELD_MODEL->get('sequence')}" data-field-name="{$FIELD_MODEL->get('name')}" >
 														{assign var=IS_MANDATORY value=$FIELD_MODEL->isMandatory()}
@@ -262,7 +266,7 @@
 												<div class="col-sm-8 fieldPropertyContainer">
 													<div class="row py-3">
 														{assign var=IS_MANDATORY value=$FIELD_MODEL->isMandatory()}
-														<div class="fieldProperties col-sm-10" data-field-id="{$FIELD_MODEL->get('id')}">
+														<div class="fieldProperties col-sm" data-field-id="{$FIELD_MODEL->get('id')}">
 															<div class="mandatory switch text-capitalize {if (!$IS_MANDATORY)}disabled{/if} {if $FIELD_MODEL->isMandatoryOptionDisabled()}cursorPointerNotAllowed{else}cursorPointer{/if}" data-bs-toggle="tooltip" title="{if $IS_MANDATORY}{$NOT_M_FIELD_TITLE}{else}{$M_FIELD_TITLE}{/if}">
 																<i class="fa fa-exclamation-circle" data-name="mandatory" data-enable-value="M" data-disable-value="O" {if $FIELD_MODEL->isMandatoryOptionDisabled()}readonly="readonly"{/if}></i>
 																<span class="ms-2">{vtranslate('LBL_PROP_MANDATORY',$QUALIFIED_MODULE)}</span>
@@ -324,14 +328,14 @@
 																{/if}
 															</div>
 														</div>
-														<span class="col-sm-2 actions">
+														<span class="col-sm-auto actions">
 															{if $FIELD_MODEL->isEditable()}
-																<a href="javascript:void(0)" class="editFieldDetails">
+																<a href="javascript:void(0)" class="editFieldDetails btn">
 																	<i class="fa fa-pencil" title="{vtranslate('LBL_EDIT', $QUALIFIED_MODULE)}"></i>
 																</a>
 															{/if}
 															{if $FIELD_MODEL->isCustomField() eq 'true'}
-																<a href="javascript:void(0)" class="deleteCustomField pull-right" data-field-id="{$FIELD_MODEL->get('id')}"
+																<a href="javascript:void(0)" class="deleteCustomField btn" data-field-id="{$FIELD_MODEL->get('id')}"
 																	data-one-one-relationship="{$FIELD_MODEL->isOneToOneRelationField()}" data-relationship-field="{$FIELD_MODEL->isRelationShipReponsibleField()}"
 																	{if $FIELD_MODEL->isOneToOneRelationField()}
 																		{assign var=ONE_ONE_RELATION_FIELD_LABEL value=$FIELD_MODEL->getOneToOneRelationField()->get('label')}
@@ -363,12 +367,12 @@
 								{/foreach}
 								{if php7_count($FIELDS_LIST)%2 neq 0 }
 									{if $BLOCK_MODEL->isAddCustomFieldEnabled()}
-										<li class="row dummyRow py-3 border">
+										<li class="row dummyRow py-3 border rounded mb-3">
 											<div class="dragUiText col-sm-8 fs-5 text-end">
 												{vtranslate('LBL_ADD_NEW_FIELD_HERE',$QUALIFIED_MODULE)}
 											</div>
 											<div class="col-sm-4">
-												<button class="btn btn-outline-secondary btn-sm addButton">
+												<button class="btn btn-outline-secondary addButton">
 													<i class="fa fa-plus"></i>
 													<span class="ms-2">{vtranslate('LBL_ADD',$QUALIFIED_MODULE)}</span>
 												</button>
@@ -388,19 +392,25 @@
 	<input type="hidden" id="nameFields" value='{Vtiger_Functions::jsonEncode($SELECTED_MODULE_MODEL->getNameFields())}'>
 	<input type="hidden" id="headerFieldsMeta" value='{Vtiger_Functions::jsonEncode($HEADER_FIELDS_META)}'>
 
-	<div id="" class="newCustomBlockCopy hide border container-fluid my-3 blockSortable" data-block-id="" data-sequence="">
+	<div id="" class="newCustomBlockCopy border rounded container-fluid my-3 blockSortable hide" data-block-id="" data-sequence="">
 		<div class="layoutBlockHeader row align-items-center py-3">
 			<div class="blockLabel col-sm-3" style="word-break: break-all;">
 				<img class="cursorPointerMove p-3" src="{vimage_path('drag.png')}" />
 			</div>
 			<div class="col-sm-9 text-end">
 				<div class="blockActions px-3">
-					<span class="ms-2">
-						<i class="fa fa-info-circle" title="{vtranslate('LBL_COLLAPSE_BLOCK_DETAIL_VIEW', $QUALIFIED_MODULE)}"></i> {vtranslate('LBL_COLLAPSE_BLOCK', $QUALIFIED_MODULE)}
-						<input style="opacity: 0;" type="checkbox" {if $BLOCK_MODEL->isHidden()} checked value='0' {else} value='1' {/if} class ='cursorPointer' id="hiddenCollapseBlock" name="" data-on-text="{vtranslate('LBL_YES', $QUALIFIED_MODULE)}" data-off-text="{vtranslate('LBL_NO', $QUALIFIED_MODULE)}" data-on-color="primary" data-block-id="{$BLOCK_MODEL->get('id')}"/>
-					</span>
+					<label class="me-2 btn btn-outline-secondary" title="{vtranslate('LBL_COLLAPSE_BLOCK_DETAIL_VIEW', $QUALIFIED_MODULE)}">
+						<span class="form-check form-switch form-check-reverse m-0">
+							<span class="form-check-label text-secondary">
+								<i class="fa fa-info-circle"></i>
+								<span class="mx-2">{vtranslate('LBL_COLLAPSE_BLOCK', $QUALIFIED_MODULE)}</span>
+							</span>
+							<input type="checkbox" {if $BLOCK_MODEL->isHidden()} checked value='0' {else} value='1' {/if} class="form-check-input" name="collapseBlock" id="hiddenCollapseBlock" data-on-text="{vtranslate('LBL_YES', $QUALIFIED_MODULE)}" data-off-text="{vtranslate('LBL_NO', $QUALIFIED_MODULE)}" data-on-color="primary" data-block-id="{$BLOCK_MODEL->get('id')}"/>
+						</span>
+					</label>
 					<button class="btn btn-outline-secondary addButton addCustomField ms-2" type="button">
-						<i class="fa fa-plus"></i>{vtranslate('LBL_ADD_CUSTOM_FIELD', $QUALIFIED_MODULE)}
+						<i class="fa fa-plus"></i>
+						<span class="ms-2">{vtranslate('LBL_ADD_CUSTOM_FIELD', $QUALIFIED_MODULE)}</span>
 					</button>
 					<button class="inActiveFields addButton btn btn-outline-secondary ms-2">{vtranslate('LBL_SHOW_HIDDEN_FIELDS', $QUALIFIED_MODULE)}</button>
 					<button class="deleteCustomBlock addButton btn btn-outline-secondary ms-2">{vtranslate('LBL_DELETE_CUSTOM_BLOCK', $QUALIFIED_MODULE)}</button>
@@ -409,12 +419,12 @@
 		</div>
 		<div class="blockFieldsList row justify-content-around py-3 blockFieldsSortable">
 			<ul class="connectedSortable col-sm-6 ui-sortable" name="sortable1">
-				<li class="row dummyRow py-3 border">
+				<li class="row dummyRow py-3 border rounded mb-3">
 					<div class="dragUiText col-sm-8 fs-5 text-end">
 						{vtranslate('LBL_ADD_NEW_FIELD_HERE',$QUALIFIED_MODULE)}
 					</div>
 					<div class="col-sm-4">
-						<button class="btn btn-outline-secondary btn-sm addButton">
+						<button class="btn btn-outline-secondary addButton">
 							<i class="fa fa-plus"></i>
 							<span class="ms-2">{vtranslate('LBL_ADD',$QUALIFIED_MODULE)}</span>
 						</button>
@@ -425,7 +435,7 @@
 		</div>
 	</div>
 	<li class="newCustomFieldCopy hide">
-		<div class="row border">
+		<div class="row border rounded mb-3">
 			<div class="col-sm-4 border-end">
 				<div class="fieldLabelContainer py-3 text-end" data-field-id="" data-sequence="">
 					<div class="row">
@@ -449,7 +459,7 @@
 			</div>
 			<div class="col-sm-8 fieldPropertyContainer">
 				<div class="row py-3">
-					<div class="fieldProperties col-sm-10" data-field-id="">
+					<div class="fieldProperties col-sm" data-field-id="">
 						<div class="mandatory switch text-capitalize">
 							<i class="fa fa-exclamation-circle" data-name="mandatory" data-enable-value="M" data-disable-value="O" title="{vtranslate('LBL_MANDATORY',$QUALIFIED_MODULE)}"></i>
 							<span class="ms-2">{vtranslate('LBL_PROP_MANDATORY',$QUALIFIED_MODULE)}</span>
@@ -473,11 +483,11 @@
 						<div class="defaultValue col-sm-12">
 						</div>
 					</div>
-					<span class="col-sm-2 actions">
-						<a href="javascript:void(0)" class="editFieldDetails">
+					<span class="col-sm-auto actions">
+						<a href="javascript:void(0)" class="editFieldDetails btn">
 							<i class="fa fa-pencil" title="{vtranslate('LBL_EDIT', $QUALIFIED_MODULE)}"></i>
 						</a>
-						<a href="javascript:void(0)" class="deleteCustomField pull-right">
+						<a href="javascript:void(0)" class="deleteCustomField btn">
 							<i class="fa fa-trash" title="{vtranslate('LBL_DELETE', $QUALIFIED_MODULE)}"></i>
 						</a>
 					</span>

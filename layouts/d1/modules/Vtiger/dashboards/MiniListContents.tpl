@@ -25,17 +25,14 @@
 			<div class="row miniListContent p-2 border-bottom">
 				{foreach item=FIELD key=NAME from=$HEADER_FIELDS name="minilistWidgetModelRowHeaders"}
 					<div class="col-lg-{$SPANSIZE} text-truncate" title="{strip_tags($RECORD->get($NAME))}" style="padding-right: 5px;">
-					   {if $FIELD->get('uitype') eq '71' || ($FIELD->get('uitype') eq '72' && $FIELD->getName() eq 'unit_price')}
-							{assign var=CURRENCY_ID value=$USER_MODEL->get('currency_id')}
-							{if $FIELD->get('uitype') eq '72' && $NAME eq 'unit_price'}
-								{assign var=CURRENCY_ID value=getProductBaseCurrency($RECORD_ID, $RECORD->getModuleName())}
-							{/if}
+					   {if $FIELD->getFieldDataType() eq 'currency'}
+							{assign var=CURRENCY_ID value=$RECORD->getCurrencyId()}
 							{assign var=CURRENCY_INFO value=getCurrencySymbolandCRate($CURRENCY_ID)}
-							{if $RECORD->get($NAME) neq NULL}
-								&nbsp;{CurrencyField::appendCurrencySymbol($RECORD->get($NAME), $CURRENCY_INFO['symbol'])}&nbsp;
+							{if !$RECORD->isEmpty($NAME)}
+								{CurrencyField::appendCurrencySymbol($RECORD->get($NAME), $CURRENCY_INFO['symbol'])}
 							{/if}
 						{else}
-							{$RECORD->get($NAME)}&nbsp;
+							{$RECORD->get($NAME)}
 						{/if}
 						{if $smarty.foreach.minilistWidgetModelRowHeaders.last}
 							<a href="{$RECORD->getDetailViewUrl()}" class="pull-right"><i title="{vtranslate('LBL_SHOW_COMPLETE_DETAILS',$MODULE_NAME)}" class="fa fa-list"></i></a>

@@ -11,7 +11,7 @@ $languageStrings = array(
 
 	// Footer
 	'APPTITLE' => 'Vtiger CRM',
-	'POWEREDBY'=> 'Powered by vtiger CRM',
+	'POWEREDBY'=> 'Powered by Defalto CRM',
 	'LBL_READ_LICENSE' => 'Läs Licensavatlet',
 	'LBL_PRIVACY_POLICY' => 'Sekretesspolicy',
 

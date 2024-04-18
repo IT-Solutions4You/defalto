@@ -29,19 +29,17 @@ jQuery.Class('Install_Index_Js', {}, {
 
 	registerEventForStep4: function () {
 		jQuery('input[name="create_db"]').on('click', function () {
-			var userName = jQuery('#root_user');
-			var password = jQuery('#root_password');
-			var classU = userName.attr('class');
-			if (classU == 'hide')
-				userName.removeClass('hide');
-			else
-				userName.addClass('hide');
+			let userName = jQuery('#root_user'),
+				password = jQuery('#root_password'),
+				classU = userName.attr('class');
 
-			var classP = password.attr('class');
-			if (classP == 'hide')
+			if($(this).is(':checked')) {
+				userName.removeClass('hide');
 				password.removeClass('hide');
-			else
+			} else {
+				userName.addClass('hide');
 				password.addClass('hide');
+			}
 		});
 
 		if (jQuery('input[name="create_db"]').prop('checked'))
@@ -173,24 +171,9 @@ jQuery.Class('Install_Index_Js', {}, {
 
 	registerEventForStep6: function () {
 		jQuery('input[name="step7"]').on('click', function () {
-			var username = jQuery('input[name="myname"]').val();
-			if (username.length < 1) {
-				alert('Please enter your name.');
-				return;
-			}
-			var email = jQuery('input[name="myemail"]').val();
-			if (email.length < 1) {
-				alert('Please enter your email.');
-				return;
-			}
-			var industry = jQuery('select[name="industry"]').val();
-			if (industry.length < 1) {
-				alert('Please select appropriate industry option.');
-			} else {
-				jQuery('#progressIndicator').removeClass('hide').addClass('show');
-				jQuery('form[name="step6"]').submit();
-				jQuery('#formContainer').addClass('hide');
-			}
+			jQuery('#progressIndicator').removeClass('hide').addClass('show');
+			jQuery('form[name="step6"]').submit();
+			jQuery('#formContainer').addClass('hide');
 		});
 	},
 

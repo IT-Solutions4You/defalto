@@ -15,6 +15,7 @@
     "ext-openssl": "*",
     "ext-simplexml": "*",
     "ext-xml": "*",
+    "ext-zip": "*",
     "adodb/adodb-php": "5.*",
     "apalfrey/select2-bootstrap-5-theme": "*",
     "ckeditor/ckeditor": "4.22.*",

@@ -30,23 +30,23 @@ class Install_Utils_Model {
     ];
 
     public static array $registerModules = [
+        'ModTracker',
+        'ModComments',
         'Import',
         'MailManager',
-        'ModTracker',
+        'Google',
+        'CustomerPortal',
+        'Webforms',
+        'RecycleBin',
         'PBXManager',
         'ServiceContracts',
         'Services',
-        'WSApp',
+        'WSAPP',
         'Assets',
-        'CustomerPortal',
-        'Google',
-        'ModComments',
         'Project',
         'ProjectMilestone',
         'ProjectTask',
-        'RecycleBin',
         'SMSNotifier',
-        'Webforms',
     ];
 
     /**
@@ -232,7 +232,7 @@ class Install_Utils_Model {
 		include 'config.db.php';
 		
 		$parameters = array(
-			'db_hostname' => '',
+			'db_hostname' => 'localhost',
 			'db_username' => '',
 			'db_password' => '',
 			'db_name'     => '',
