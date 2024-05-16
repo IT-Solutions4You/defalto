@@ -50,6 +50,7 @@ class ProjectMilestone_Install_Model extends Vtiger_Install_Model
                     'quickcreate' => 0,
                     'masseditable' => 1,
                     'entity_identifier' => 1,
+                    'filter' => 1,
                 ],
                 'projectmilestonedate' => [
                     'uitype' => 5,
@@ -59,6 +60,7 @@ class ProjectMilestone_Install_Model extends Vtiger_Install_Model
                     'typeofdata' => 'D~O',
                     'quickcreate' => 0,
                     'masseditable' => 1,
+                    'filter' => 1,
                 ],
                 'projectid' => [
                     'uitype' => 10,
@@ -72,6 +74,7 @@ class ProjectMilestone_Install_Model extends Vtiger_Install_Model
                     'related_modules' => [
                         'Project',
                     ],
+                    'filter' => 1,
                 ],
                 'projectmilestonetype' => [
                     'uitype' => 15,
@@ -84,6 +87,7 @@ class ProjectMilestone_Install_Model extends Vtiger_Install_Model
                         'operative',
                         'other',
                     ],
+                    'filter' => 1,
                 ],
                 'assigned_user_id' => [
                     'uitype' => 53,
@@ -93,6 +97,7 @@ class ProjectMilestone_Install_Model extends Vtiger_Install_Model
                     'typeofdata' => 'V~M',
                     'quickcreate' => 0,
                     'masseditable' => 1,
+                    'filter' => 1,
                 ],
                 'projectmilestone_no' => [
                     'uitype' => 4,

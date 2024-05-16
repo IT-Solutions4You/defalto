@@ -104,7 +104,7 @@
                                             {assign var=IS_SELECTED_MODULE value=$IS_SELECTED_CATEGORY and $moduleName eq $MODULE}
                                             <div class="col-lg-12 p-0">
                                                 <a class="menu-items-link rounded d-block mb-2 p-3 text-truncate fw-bold {if !$IS_SELECTED_MODULE}text-secondary{/if}" href="{$moduleModel->getDefaultUrl()}&app={$APP_NAME}" title="{$translatedModuleLabel}">
-                                                    <span class="dt-menu-icon module-icon {if $IS_SELECTED_MODULE}text-primary{/if}">{$moduleModel->getModuleIcon()}</span>
+                                                    <span class="dt-menu-icon module-icon {if $IS_SELECTED_MODULE}text-primary{/if}">{$moduleModel->getModuleIcon('14px')}</span>
                                                     <span class="ms-3 module-name text-truncate">{$translatedModuleLabel}</span>
                                                 </a>
                                             </div>
