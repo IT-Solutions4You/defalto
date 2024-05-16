@@ -25,8 +25,13 @@ class Settings_Roles_Save_Action extends Vtiger_Action_Controller {
 		$recordId = $request->get('record');
 		$roleName = $request->get('rolename');
 		$allowassignedrecordsto = $request->get('allowassignedrecordsto');
+        $duplicate = Settings_Roles_Record_Model::getInstanceByName($roleName,array($recordId));
 
-		$moduleModel = Settings_Vtiger_Module_Model::getInstance($qualifiedModuleName);
+        if($duplicate) {
+            throw new Exception(vtranslate('LBL_DUPLICATES_EXIST',$request->getModule(false)));
+        }
+
+        $moduleModel = Settings_Vtiger_Module_Model::getInstance($qualifiedModuleName);
 		if(!empty($recordId)) {
 			$recordModel = Settings_Roles_Record_Model::getInstanceById($recordId);
 		} else {

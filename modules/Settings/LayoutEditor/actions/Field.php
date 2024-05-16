@@ -110,6 +110,11 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
                 $defaultValue = Vtiger_Time_UIType::getTimeValueWithSeconds($defaultValue);
             }
 
+            // Converting the date value to DB format (yyyy-mm-dd)
+            if ($defaultValue && $fieldInstance->get('uitype')=='5') {
+                $defaultValue = Vtiger_Date_UIType::getDBInsertedValue($defaultValue);
+            }
+
             $fieldInstance->set('defaultvalue', $defaultValue);
         }
 
@@ -200,6 +205,23 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
 			foreach($fieldIds as $fieldId) {
 				$fieldModel = Settings_LayoutEditor_Field_Model::getInstance($fieldId);
 				$fieldInfo = $fieldModel->getFieldInfo();
+                //The default value is set to response after reactivating the field.
+                $defaultValue = $fieldModel->getDefaultFieldValue();
+
+                if (isset($defaultValue)) {
+                    if ($defaultValue && $fieldInfo['type'] === 'date') {
+                        $defaultValue = DateTimeField::convertToUserFormat($defaultValue);
+                    } elseif (!$defaultValue) {
+                        $defaultValue = $fieldModel->getDisplayValue($defaultValue);
+                    } elseif (is_array($defaultValue)) {
+                        foreach ($defaultValue as $key => $value) {
+                            $defaultValue[$key] = $fieldModel->getDisplayValue($value);
+                        }
+                        $defaultValue = Zend_Json::encode($defaultValue);
+                    }
+                }
+
+                $fieldInfo['fieldDefaultValue'] = $defaultValue;
 				$responseData[] = array_merge(array('id'=>$fieldModel->getId(), 'blockid'=>$fieldModel->get('block')->id, 'customField'=>$fieldModel->isCustomField()),$fieldInfo);
 			}
             $response->setResult($responseData);
