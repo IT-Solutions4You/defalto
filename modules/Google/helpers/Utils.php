@@ -274,6 +274,11 @@ class Google_Utils_Helper {
         $result = $db->pquery($sql,array($user->getId()));
         for($i=0;$i<$db->num_rows($result);$i++) {  
             $row = $db->fetch_row($result);
+
+            if (in_array($row['google_field'], ['gd:website', 'content'])) {
+                continue;
+            }
+
             $fieldmapping[$row['vtiger_field']] = array(
                 'google_field_name' => $row['google_field'],
                 'google_field_type' => $row['google_field_type'],

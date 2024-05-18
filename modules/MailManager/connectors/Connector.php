@@ -236,16 +236,8 @@ class MailManager_Connector_Connector {
 			$mails = array();
 			$mailIds = array();
 
-			// to make sure this should not break in Vtiger6
-			$layout = Vtiger_Viewer::getDefaultLayoutName();
-			if($layout == "v7"){
-				$mbox = false;
-			} else {
-				$mbox = $this->mBox;
-			}
-
 			foreach($records as $result) {
-				$message = MailManager_Message_Model::parseOverview($result,$mbox);
+				$message = MailManager_Message_Model::parseOverview($result);
 				$mailIds[] = $message->msgNo();
 				array_unshift($mails, $message);
 			}
@@ -378,22 +370,18 @@ class MailManager_Connector_Connector {
 			// Reverse order the messages
 			rsort($nos, SORT_NUMERIC);
 
-			$mails = array();
+            $mails = [];
+            $mailNos = [];
 			$records = imap_fetch_overview($this->mBox, implode(',', $nos));
 
-			// to make sure this should not break in Vtiger6
-			$layout = Vtiger_Viewer::getDefaultLayoutName();
-			if($layout == "v7"){
-				$mbox = false;
-			} else {
-				$mbox = $this->mBox;
-			}
-
 			foreach($records as $result) {
-				array_unshift($mails, MailManager_Message_Model::parseOverview($result,$mbox));
-			}
+                $message = MailManager_Message_Model::parseOverview($result);
+                array_unshift($mails, $message);
+                array_unshift($mailNos, $message->msgNo());
+            }
+
 			$folder->setMails($mails);
-			$folder->setMailIds($nos);
+            $folder->setMailIds($mailNos);
 			$folder->setPaging($reverse_end, $reverse_start, $maxLimit, $nmsgs, $start);  //-1 as it starts from 0
 		}
 	}
@@ -425,4 +413,3 @@ class MailManager_Connector_Connector {
 		return $value;
 	}
 }
-?>

@@ -1249,7 +1249,32 @@ class Vtiger_Functions {
             }
 	}
 
-	/**
+    /**
+     * Check if a string is a valid time value.
+     *
+     * @param string $value The string to check.
+     *
+     * @return bool Returns true if $value is a valid time value, false otherwise.
+     */
+    public static function isTimeValue(string $value): bool
+    {
+        $value = trim($value);
+        $patterns = [
+            '/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/',
+            '/^(1[0-2]|0?[1-9]):[0-5][0-9] (AM|PM)$/i',
+            '/^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $value)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
 	 * Function to get value for all mandatory relation field of a module (except Users).
 	 * @param String $module Module for which mandatory relation field is needed
 	 * @param String $mode (Optional) Label or Id for relation fields. Default label

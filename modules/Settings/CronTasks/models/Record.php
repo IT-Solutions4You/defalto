@@ -97,7 +97,7 @@ class Settings_CronTasks_Record_Model extends Settings_Vtiger_Record_Model {
 				return $lastScannedTime;
 		    } else {
 				$dateTimeList = explode(" ", $lastScannedTime);
-                return $dateTimeList[0]." ".date('g:i:sa', strtotime($dateTimeList[1]));
+                return $dateTimeList[0]." ".date('g:i: A', strtotime($dateTimeList[1]));
 			}
 		} else {
 			return '';

@@ -239,14 +239,27 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 				$value = $info['value'];
 				// To convert date value from yyyy-mm-dd format to user format
 				$valueArray = explode(',', $value);
-				$isDateValue = false;
+				$isDateValue = $isTimeValue = false;
 				for($i = 0; $i < php7_count($valueArray); $i++) {
 					if(Vtiger_Functions::isDateValue($valueArray[$i])) {
 						$isDateValue = true;
 						$valueArray[$i] = DateTimeField::convertToUserFormat($valueArray[$i]);
 					}
-				}
-				if($isDateValue) {
+
+                    if (Vtiger_Functions::isTimeValue($valueArray[$i])) {
+                        $isTimeValue = true;
+                        $userModel = Users_Record_Model::getCurrentUserModel();
+                        $hourFormat = $userModel->get('hour_format');
+
+                        if ($hourFormat == '24') {
+                            $valueArray[$i] = date('H:i', strtotime($valueArray[$i]));
+                        } else {
+                            $valueArray[$i] = date('g:i A', strtotime($valueArray[$i]));
+                        }
+                    }
+                }
+
+                if ($isDateValue || $isTimeValue) {
 					$value = implode(',', $valueArray);
 				}
 				// End

@@ -22,7 +22,12 @@ class Settings_Webforms_Save_Action extends Settings_Vtiger_Index_Action {
 		return true;
 	}
 
-	public function process(Vtiger_Request $request) {
+    /**
+     * @throws AppException
+     * @throws Exception
+     */
+    public function process(Vtiger_Request $request)
+    {
 		$recordId = $request->get('record');
 		$qualifiedModuleName = $request->getModule(false);
 
@@ -35,12 +40,21 @@ class Settings_Webforms_Save_Action extends Settings_Vtiger_Index_Action {
 		}
 
 		$fieldsList = $recordModel->getModule()->getFields();
+        $supportedModules = Settings_Webforms_Module_Model::getSupportedModulesList();
+
 		foreach ($fieldsList as $fieldName => $fieldModel) {
 			$fieldValue = $request->get($fieldName);
 			if (!$fieldValue) {
 				$fieldValue = $fieldModel->get('defaultvalue');
 			}
-			$recordModel->set($fieldName, $fieldValue);
+
+            if($fieldModel->isMandatory() && empty(trim($fieldValue))) {
+                throw new AppException(vtranslate('LBL_MANDATORY_FIELD_MISSING'));
+            }else if($fieldName == 'targetmodule' && !array_key_exists($fieldValue,$supportedModules)){
+                throw new Exception('Target module is not supported to create webform');
+            }
+
+            $recordModel->set($fieldName, $fieldValue);
 		}
 
 		$fileFields = array();		

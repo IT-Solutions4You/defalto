@@ -265,7 +265,20 @@ class VTUpdateFieldsTask extends VTTask {
 					$fieldValueInDB = $fieldValue;
 				}
 
-				if($fieldInstance && $fieldInstance->getFieldDataType() == 'reference') {
+                if ($fieldInstance && $fieldInstance->getFieldDataType() === 'double') {
+                    //The replacing of UTF-8 non-breaking space characters with space is to handle if the decimal separator is space.
+                    $decimalSeparator = str_replace("\xC2\xA0", ' ', html_entity_decode($current_user->currency_decimal_separator, ENT_QUOTES, $default_charset));
+
+                    if (empty($decimalSeparator)) {
+                        $decimalSeparator = ' ';
+                    }
+
+                    /* When user prference digit grouping separator is dot(.), the dot will be removed while saving.
+                    so the value converted to the user format which will not conflict while saving */
+                    $fieldValue = str_replace(".", "$decimalSeparator", $fieldValue);
+                }
+
+                if($fieldInstance && $fieldInstance->getFieldDataType() == 'reference') {
 						$referenceModuleList = $fieldInstance->getReferenceList();
 						$fieldReferenceModule = $referenceModuleList[0];
 						$recordId = Vtiger_Util_Helper::getRecordId($fieldValue, $fieldReferenceModule,true);

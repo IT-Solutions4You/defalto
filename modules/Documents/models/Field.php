@@ -44,5 +44,18 @@ class Documents_Field_Model extends Vtiger_Field_Model {
         }
         return false;
     }
-    
+
+    /**
+     * Checks if the field is editable via AJAX.
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function isAjaxEditable()
+    {
+        $isParentEditable = parent::isAjaxEditable();
+        $fieldType = $this->get('uitype');
+
+        return $isParentEditable && $fieldType !== 19;
+    }
 }

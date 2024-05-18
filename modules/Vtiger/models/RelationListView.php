@@ -215,7 +215,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 
 		if ($this->get('whereCondition') && is_array($this->get('whereCondition'))) {
 			$currentUser = Users_Record_Model::getCurrentUserModel();
-			$queryGenerator = new QueryGenerator($relationModuleName, $currentUser);
+            $queryGenerator = new EnhancedQueryGenerator($relationModuleName, $currentUser);
 			$queryGenerator->setFields(array_values($relatedColumnFields));
 			$whereCondition = $this->get('whereCondition');
 			foreach ($whereCondition as $fieldName => $fieldValue) {

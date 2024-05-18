@@ -44,7 +44,14 @@ class MailManager_Folder_View extends MailManager_Abstract_View {
 						$dateArray[0] = $dateArray[1];
 						$dateArray[1] = $temp;
 						$q = implode('-', $dateArray);
+					} elseif ($dateFormat == 'dd/mm/yyyy') {
+						$dateArray = explode('/', $q);
+						$temp = $dateArray[0];
+						$dateArray[0] = $dateArray[1];
+						$dateArray[1] = $temp;
+						$q = implode('/', $dateArray);
 					}
+
 					$query = date('d M Y',strtotime($q));
 					$q = ''.$type.' "'.vtlib_purify($query).'"';
 				} else {
@@ -124,4 +131,3 @@ class MailManager_Folder_View extends MailManager_Abstract_View {
         return $request->validateWriteAccess();
     }
 }
-?>
