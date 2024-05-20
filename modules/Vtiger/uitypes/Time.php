@@ -35,7 +35,7 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType {
 	 */
 	public static function getTimeValueInAMorPM($time) {
 		if($time){
-			list($hours, $minutes, $seconds) = explode(':', $time);
+			[$hours, $minutes, $seconds] = explode(':', $time);
 			$format = vtranslate('PM');
 
 			if ($hours > 12) {
@@ -64,7 +64,7 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType {
 	public static function getTimeValueWithSeconds($time) {
 		if($time){
 			$timeDetails = explode(' ', $time);
-			list($hours, $minutes, $seconds) = explode(':', $timeDetails[0]);
+			[$hours, $minutes, $seconds] = explode(':', $timeDetails[0]);
 
 			//If pm exists and if it not 12 then we need to make it to 24 hour format
 			if ($timeDetails[1] === 'PM' && $hours != '12') {
@@ -119,4 +119,20 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType {
 		return 'uitypes/TimeFieldSearchView.tpl';
 	}
 
+    /**
+     * Retrieves the value to be inserted into the database for a time field.
+     *
+     * If the provided value contains 'AM' or 'PM', it is converted to a time value with seconds.
+     *
+     * @param mixed $value The value to be inserted into the database.
+     * @return mixed The value to be inserted into the database.
+     */
+    public function getDBInsertValue($value)
+    {
+        if (preg_match('/AM|PM/', $value)) {
+            $value = Vtiger_Time_UIType::getTimeValueWithSeconds($value);
+        }
+
+        return $value;
+    }
 }

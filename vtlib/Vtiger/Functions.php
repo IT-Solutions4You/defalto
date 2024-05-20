@@ -1556,6 +1556,18 @@ class Vtiger_Functions {
 	}
 
     /**
+     * Function to get logo public url
+     *
+     * @param <String> $logoName
+     *
+     * @return <String> $sourceUrl
+     */
+    public static function getLogoPublicURL($logoName)
+    {
+        return "public.php?type=logo&key=$logoName";
+    }
+
+    /**
      * Function to get the attachmentsid to given crmid
      * @param type $crmid
      * @param type $webaservice entity id

@@ -154,7 +154,11 @@
 			global $adb,$log;
 			$references = $meta->getReferenceFieldDetails();
 			foreach($references as $field=>$typeList){
-				if($row[$field]){
+                if ($meta->getEntityName() === 'Users' && $field === 'roleid') {
+                    continue;
+                }
+
+                if($row[$field]){
 					$found = false;
 					foreach ($typeList as $entity) {
 						$webserviceObject = VtigerWebserviceObject::fromName($adb,$entity);

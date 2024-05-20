@@ -93,11 +93,13 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 		$logoPath = $this->logoPath;
 		$handler = @opendir($logoPath);
 		$logoName = decode_html($this->get('logoname'));
+        $logoPath = Vtiger_Functions::getLogoPublicURL($logoName);
+
 		if ($logoName && $handler) {
 			while ($file = readdir($handler)) {
 				if($logoName === $file && in_array(str_replace('.', '', strtolower(substr($file, -4))), self::$logoSupportedFormats) && $file != "." && $file!= "..") {
 					closedir($handler);
-					return $logoPath.$logoName;
+					return $logoPath;
 				}
 			}
 		}

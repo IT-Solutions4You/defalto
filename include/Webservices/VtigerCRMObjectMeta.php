@@ -289,22 +289,34 @@ class VtigerCRMObjectMeta extends EntityMeta {
 		}
 		return parent::getColumnTableMapping();
 	}
-	
-	function getFieldColumnMapping(){
-		
-		if(!$this->meta){
-			$this->retrieveMeta();
-		}
-		if($this->fieldColumnMapping === null){
-			$this->fieldColumnMapping =  array();
-			foreach ($this->moduleFields as $fieldName => $webserviceField) {
-                $this->fieldColumnMapping[$fieldName] = $webserviceField->getColumnName();
-			}
-			$this->fieldColumnMapping['id'] = $this->idColumn;
-		}
-		return $this->fieldColumnMapping;
+
+    function getFieldColumnMapping()
+    {
+        if (!$this->meta) {
+            $this->retrieveMeta();
+        }
+
+        if ($this->fieldColumnMapping === null) {
+            $this->fieldColumnMapping = [];
+
+            foreach ($this->moduleFields as $fieldName => $webserviceField) {
+                if ($this->getEntityName() === "Users") {
+                    $restrictedFields = ['user_password', 'confirm_password', 'accesskey'];
+
+                    if (!in_array($fieldName, $restrictedFields)) {
+                        $this->fieldColumnMapping[$fieldName] = $webserviceField->getColumnName();
+                    }
+                } else {
+                    $this->fieldColumnMapping[$fieldName] = $webserviceField->getColumnName();
+                }
+            }
+
+            $this->fieldColumnMapping['id'] = $this->idColumn;
+        }
+
+        return $this->fieldColumnMapping;
 	}
-	
+
 	function getMandatoryFields(){
 		if(!$this->meta){
 			$this->retrieveMeta();

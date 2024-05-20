@@ -125,6 +125,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 				});
 			} else {
 				app.helper.showAlertBox({'message':app.vtranslate('JS_EMAIL_SERVER_CONFIGURATION')});
+				app.helper.hideProgress();
 			}
 		});
 	},

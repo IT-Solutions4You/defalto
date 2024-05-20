@@ -1433,6 +1433,7 @@ $languageStrings = array(
     'LBL_DAY4' => 'Thursday',
     'LBL_DAY5' => 'Friday',
     'LBL_DAY6' => 'Saturday',
+    'INVALID PICKLIST' => 'Invalid value for Picklist field',
 );
 
 $jsLanguageStrings = array(

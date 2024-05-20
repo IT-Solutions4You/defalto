@@ -87,8 +87,8 @@ class VTWorkflowManager{
 		$query = 'SELECT * FROM com_vtiger_workflows INNER JOIN vtiger_tab ON vtiger_tab.name = com_vtiger_workflows.module_name WHERE vtiger_tab.presence IN (0,2) AND execution_condition = ? AND status=?';
 		$params = array(VTWorkflowManager::$ON_SCHEDULE,1);
 		if($referenceTime != '') {
-			$query .= " AND (nexttrigger_time = '' OR nexttrigger_time IS NULL OR nexttrigger_time <= ?)";
-			array_push($params, $referenceTime);
+			$query .= ' AND (nexttrigger_time IS NULL OR nexttrigger_time <= ?)';
+            $params[] = $referenceTime;
 		}
 		$result = $adb->pquery($query, $params);
 		return $this->getWorkflowsForResult($result);
@@ -723,4 +723,3 @@ class Workflow{
 		return $nextTime;
 	}
 }
-?>

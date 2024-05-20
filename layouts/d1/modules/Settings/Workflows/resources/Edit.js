@@ -947,7 +947,21 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
 
       fieldUiHolder.html(fieldSpecificUi);
 
-      if (fieldSpecificUi.is('input.select2')) {
+       if (fieldInfo.type === 'picklist' || fieldInfo.type === 'multipicklist') {
+           const editablePicklistValues = Object.values(fieldInfo.editablepicklistvalues);
+           fieldSpecificUi.val(fieldInfo.value);
+           jQuery('.btn-success').on('click', function (event) {
+               const enteredValue = fieldSpecificUi.val().trim();
+
+               if (!editablePicklistValues.includes(enteredValue)) {
+                   const message = app.vtranslate('INVALID PICKLIST');
+                   app.helper.showErrorNotification({'message': message})
+                   event.preventDefault();
+               }
+           });
+       }
+
+       if (fieldSpecificUi.is('input.select2')) {
          var tagElements = fieldSpecificUi.data('tags');
          var params = {tags: tagElements, tokenSeparators: [","]}
          vtUtils.showSelect2ElementView(fieldSpecificUi, params)

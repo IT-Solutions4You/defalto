@@ -165,11 +165,7 @@ jQuery.Class("Vtiger_Helper_Js",{
 		app.request.post({data:actionParams}).then(
 			function(err,data) {
 				var state = false;
-				if(err === null){
-					state = true;
-				} else {
-					state = false;
-				}
+                state = err === null && data == true;
 				aDeferred.resolve(state);
 			}
 		);
