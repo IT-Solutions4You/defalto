@@ -510,7 +510,7 @@ Vtiger_Field_Js('Vtiger_Boolean_Field_Js',{},{
 	 * @return - checkbox element
 	 */
 	getUi : function() {
-		let	html = '<div class="input-group-text"><input type="hidden" name="'+this.getName() +'" value="0"/><input class="BooleanField inputElement form-check-input m-0" type="checkbox" name="'+ this.getName() +'" ';
+		let	html = '<div class="input-group-text"><input type="hidden" name="'+this.getName() +'"/><input class="BooleanField inputElement form-check-input m-0" type="checkbox" name="'+ this.getName() +'" ';
 
 		if(this.isChecked()) {
 			html += 'checked';
@@ -642,7 +642,7 @@ Vtiger_Field_Js('Vtiger_Time_Field_Js',{},{
 	 */
 	getUi: function () {
 		let html = '<div class="TimeField"><div class="input-group time">' +
-				'<input class="timepicker-default form-control inputElement" type="text" data-format="' + this.getTimeFormat() + '" name="' + this.getName() + '" value="' + this.getValue() + '" />' +
+				'<input class="timepicker-default form-control inputElement" type="text" data-rule-time="true" data-format="' + this.getTimeFormat() + '" name="' + this.getName() + '" value="' + this.getValue() + '" />' +
 				'<span class="input-group-addon input-group-text"><i class="fa fa-clock-o"></i></span>' +
 				'</div></div>',
 			element = jQuery(html);
