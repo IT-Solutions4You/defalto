@@ -470,7 +470,7 @@ function getAssociatedProducts($module, $focus, $seid = '', $refModuleName = fal
 		$taxamount = ($subTotal-$finalDiscount)*$tax_percent/100;
         list($before_dot, $after_dot) = explode('.', $taxamount);
         if($after_dot[$no_of_decimal_places] == 5) {
-            $taxamount = round($taxamount, $no_of_decimal_places, PHP_ROUND_HALF_DOWN); 
+            $taxamount = round($taxamount, $no_of_decimal_places);
         } else {
             $taxamount = number_format($taxamount, $no_of_decimal_places,'.','');
         }

@@ -103,53 +103,6 @@ function vtlib_moduleAlwaysActive() {
 }
 
 /**
- * Toggle the module (enable/disable)
- */
-function vtlib_toggleModuleAccess($modules, $enable_disable) {
-	global $adb, $__cache_module_activeinfo;
-
-	include_once('vtlib/Vtiger/Module.php');
-
-	if(is_string($modules)) $modules = array($modules);
-	$event_type = false;
-
-	if($enable_disable === true) {
-		$enable_disable = 0;
-		$event_type = Vtiger_Module::EVENT_MODULE_ENABLED;
-	} else if($enable_disable === false) {
-		$enable_disable = 1;
-		$event_type = Vtiger_Module::EVENT_MODULE_DISABLED;
-        //Update default landing page to dashboard if module is disabled.
-        $adb->pquery('UPDATE vtiger_users SET defaultlandingpage = ? WHERE defaultlandingpage IN(' . generateQuestionMarks($modules) . ')', array_merge(array('Home'), $modules));
-	}
-
-	$checkResult = $adb->pquery('SELECT name FROM vtiger_tab WHERE name IN ('. generateQuestionMarks($modules) .')', array($modules));
-	$rows = $adb->num_rows($checkResult);
-	for($i=0; $i<$rows; $i++) {
-		$existingModules[] = $adb->query_result($checkResult, $i, 'name');
-	}
-
-	foreach($modules as $module) {
-		if (in_array($module, $existingModules)) { // check if module exists then only update and trigger events
-			$adb->pquery("UPDATE vtiger_tab set presence = ? WHERE name = ?", array($enable_disable, $module));
-			$__cache_module_activeinfo[$module] = $enable_disable;
-			Vtiger_Module::fireEvent($module, $event_type);
-			Vtiger_Cache::flushModuleCache($module);
-		}
-	}
-
-	create_tab_data_file();
-	create_parenttab_data_file();
-
-	// UserPrivilege file needs to be regenerated if module state is changed from
-	// vtiger 5.1.0 onwards
-	global $vtiger_current_version;
-	if(version_compare($vtiger_current_version, '5.0.4', '>')) {
-		vtlib_RecreateUserPrivilegeFiles();
-	}
-}
-
-/**
  * Setup mandatory (requried) module variable values in the module class.
  */
 function vtlib_setup_modulevars($module, $focus)
@@ -611,41 +564,38 @@ function str_replace_json($search, $replace, $subject)
  * @return <String>
  */
 function purifyHtmlEventAttributes($value,$replaceAll = false){
-	
-$tmp_markers = $office365ImageMarkers =  array();
-$value = Vtiger_Functions::strip_base64_data($value,true,$tmp_markers);	
-$value = Vtiger_Functions::stripInlineOffice365Image($value,true,$office365ImageMarkers);		
-$tmp_markers = array_merge($tmp_markers, $office365ImageMarkers);
-
-$htmlEventAttributes = "onerror|onblur|onchange|oncontextmenu|onfocus|oninput|oninvalid|onresize|onauxclick|oncancel|oncanplay|oncanplaythrough|".
-                        "onreset|onsearch|onselect|onsubmit|onkeydown|onkeypress|onkeyup|onclose|oncuechange|ondurationchange|onemptied|onended|".
-                        "onclick|ondblclick|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragexit|onformdata|onloadeddata|onloadedmetadata|".
-                        "ondragstart|ondrop|onmousedown|onmousemove|onmouseout|onmouseover|onmouseenter|onmouseleave|onpause|onplay|onplaying|".
-                        "onmouseup|onmousewheel|onscroll|onwheel|oncopy|oncut|onpaste|onload|onprogress|onratechange|onsecuritypolicyviolation|".
-                        "onselectionchange|onabort|onselectstart|onstart|onfinish|onloadstart|onshow|onreadystatechange|onseeked|onslotchange|".
-                        "onseeking|onstalled|onsubmit|onsuspend|ontimeupdate|ontoggle|onvolumechange|onwaiting|onwebkitanimationend|onstorage|".
-                        "onwebkitanimationiteration|onwebkitanimationstart|onwebkittransitionend|onafterprint|onbeforeprint|onbeforeunload|".
-                        "onhashchange|onlanguagechange|onmessage|onmessageerror|onoffline|ononline|onpagehide|onpageshow|onpopstate|onunload|".
-                        "onrejectionhandled|onunhandledrejection|onloadend|onpointerenter|ongotpointercapture|onlostpointercapture|onpointerdown|".
-                        "onpointermove|onpointerup|onpointercancel|onpointerover|onpointerout|onpointerleave|onactivate|onafterscriptexecute|".
-                        "onanimationcancel|onanimationend|onanimationiteration|onanimationstart|onbeforeactivate|onbeforedeactivate|onbeforescriptexecute|".
-                        "onbegin|onbounce|ondeactivate|onend|onfocusin|onfocusout|onrepeat|ontransitioncancel|ontransitionend|ontransitionrun|".
-                        "ontransitionstart|onbeforecopy|onbeforecut|onbeforepaste|onfullscreenchange|onmozfullscreenchange|onpointerrawupdate|".
-                        "ontouchend|ontouchmove|ontouchstart";
+    $tmp_markers = $office365ImageMarkers = [];
+    $value = Vtiger_Functions::strip_base64_data($value, true, $tmp_markers);
+    $value = Vtiger_Functions::stripInlineOffice365Image($value, true, $office365ImageMarkers);
+    $tmp_markers = array_merge($tmp_markers, $office365ImageMarkers);
 
     // remove malicious html attributes with its value.
     if ($replaceAll) {
-        $regex = '\s*[=&%#]\s*(?:"[^"]*"[\'"]*|\'[^\']*\'[\'"]*|[^]*[\s\/>])*/i';
-        $value = preg_replace("/\s*(" . $htmlEventAttributes . ")" . $regex, '', $value);
-		
+        $value = preg_replace('/\b(alert|on\w+)\s*\([^)]*\)|\s*(?:on\w+)=(".*?"|\'.*?\'|[^\'">\s]+)\s*/', '', $value);
         //remove script tag with contents
         $value = purifyScript($value);
         //purify javascript alert from the tag contents
-        $value = purifyJavascriptAlert($value); 
-	
+        $value = purifyJavascriptAlert($value);
+
     } else {
-        if (preg_match("/\s*(" . $htmlEventAttributes . ")\s*=/i", $value)) {
-            $value = str_replace("=", "&equals;", $value);
+        $htmlEventAttributes = 'onerror|onblur|onchange|oncontextmenu|onfocus|oninput|oninvalid|onresize|onauxclick|oncancel|oncanplay|oncanplaythrough|' .
+            'onreset|onsearch|onselect|onsubmit|onkeydown|onkeypress|onkeyup|onclose|oncuechange|ondurationchange|onemptied|onended|' .
+            'onclick|ondblclick|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragexit|onformdata|onloadeddata|onloadedmetadata|' .
+            'ondragstart|ondrop|onmousedown|onmousemove|onmouseout|onmouseover|onmouseenter|onmouseleave|onpause|onplay|onplaying|' .
+            'onmouseup|onmousewheel|onscroll|onwheel|oncopy|oncut|onpaste|onload|onprogress|onratechange|onsecuritypolicyviolation|' .
+            'onselectionchange|onabort|onselectstart|onstart|onfinish|onloadstart|onshow|onreadystatechange|onseeked|onslotchange|' .
+            'onseeking|onstalled|onsubmit|onsuspend|ontimeupdate|ontoggle|onvolumechange|onwaiting|onwebkitanimationend|onstorage|' .
+            'onwebkitanimationiteration|onwebkitanimationstart|onwebkittransitionend|onafterprint|onbeforeprint|onbeforeunload|' .
+            'onhashchange|onlanguagechange|onmessage|onmessageerror|onoffline|ononline|onpagehide|onpageshow|onpopstate|onunload|' .
+            'onrejectionhandled|onunhandledrejection|onloadend|onpointerenter|ongotpointercapture|onlostpointercapture|onpointerdown|' .
+            'onpointermove|onpointerup|onpointercancel|onpointerover|onpointerout|onpointerleave|onactivate|onafterscriptexecute|' .
+            'onanimationcancel|onanimationend|onanimationiteration|onanimationstart|onbeforeactivate|onbeforedeactivate|onbeforescriptexecute|' .
+            'onbegin|onbounce|ondeactivate|onend|onfocusin|onfocusout|onrepeat|ontransitioncancel|ontransitionend|ontransitionrun|' .
+            'ontransitionstart|onbeforecopy|onbeforecut|onbeforepaste|onfullscreenchange|onmozfullscreenchange|onpointerrawupdate|' .
+            'ontouchend|ontouchmove|ontouchstart';
+
+        if (preg_match('/\s*(' . $htmlEventAttributes . ')\s*=/i', $value)) {
+            $value = str_replace('=', '&equals;', $value);
         }
     }
 
@@ -750,4 +700,43 @@ function php7_count($value): int
     }
 
     return count($value);
+}
+
+/**
+ * Remove content within quotes (single/double/unbalanced)
+ * Helpful to keep away quote-injection xss attacks in the templates.
+ */
+function vtlib_strip_quoted($input)
+{
+    if (is_null($input)) {
+        return null;
+    }
+
+    $output = $input;
+    /*
+     * Discard anything in "double-quoted until 'you' find next double quote"
+     * or discard anything in 'single quoted until "you" find next single quote'
+     */
+    $qchar = '"';
+    $idx = strpos($input, $qchar);
+
+    if ($idx === false) { // no double-quote, find single-quote
+        $qchar = "'";
+        $idx = strpos($input, $qchar);
+    }
+
+    if ($idx !== false) {
+        $output = substr($input, 0, $idx);
+        $idx = strpos($input, $qchar, $idx + 1);
+
+        if ($idx === false) {
+            // unbalanced - eat all.
+            $idx = strlen($input) - 1;
+        }
+
+        $input = substr($input, $idx + 1);
+        $output .= vtlib_strip_quoted($input);
+    }
+
+    return $output;
 }
