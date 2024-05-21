@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 /*
  * Check for image existence in themes orelse
@@ -64,8 +62,8 @@ function vtlib_isModuleActive($module) {
 
 	if(!isset($__cache_module_activeinfo[$module])) {
 		include 'tabdata.php';
-		$tabId = $tab_info_array[$module];
-		$presence = $tab_seq_array[$tabId];
+        $tabId = vtlib_array($tab_info_array)[$module];
+        $presence = vtlib_array($tab_seq_array)[$tabId];
 		$__cache_module_activeinfo[$module] = $presence;
 	} else {
 		$presence = $__cache_module_activeinfo[$module];
@@ -674,6 +672,15 @@ function vtlib_mime_content_type($filename) {
 	return Vtiger_Functions::mime_content_type($filename);
 }
 
+/**
+ * PHP Strict helpers.
+ */
+require_once 'vtlib/Vtiger/Utils/GuardedArray.php';
+function vtlib_array($data = null)
+{
+    return new Vtiger_GuardedArray($data);
+}
+
 function php7_compat_ereg($pattern, $str, $ignore_case=false) {
 	$regex = '/'. preg_replace('/\//', '\\/', $pattern) .'/' . ($ignore_case ? 'i': '');
 	return preg_match($regex, $str);
@@ -739,4 +746,14 @@ function vtlib_strip_quoted($input)
     }
 
     return $output;
+}
+
+function php7_trim($str) {
+    // PHP 8.x marks as deprecated
+    return $str == null ? $str : trim($str);
+}
+
+function php7_htmlentities($str) {
+    // PHP 8.x marks as deprecated
+    return $str == null ? $str : htmlentities($str);
 }

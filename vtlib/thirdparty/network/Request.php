@@ -932,7 +932,7 @@ class HTTP_Request
         $request = $this->_method . ' ' . $url . ' HTTP/' . $this->_http . "\r\n";
 
         if (in_array($this->_method, $this->_bodyDisallowed) ||
-            (0 == strlen($this->_body) && (HTTP_REQUEST_METHOD_POST != $this->_method ||
+            (0 == strlen($this->_body ? : '') && (HTTP_REQUEST_METHOD_POST != $this->_method ||
              (empty($this->_postData) && empty($this->_postFiles)))))
         {
             $this->removeHeader('Content-Type');
@@ -965,9 +965,7 @@ class HTTP_Request
 
             // "normal" POST request
             if (!isset($boundary)) {
-                $callback = function_exists('create_function')?
-                create_function('$a', 'return $a[0] . \'=\' . $a[1];') :
-                function ($a) { return $a[0] .'='. $a[1]; };
+                $callback = function ($a) { return $a[0] .'='. $a[1]; };
 
                 $postdata = implode('&', array_map($callback, $this->_flattenArray('', $this->_postData)));
 
@@ -1525,5 +1523,4 @@ class HTTP_Response
         }
         return $unpacked;
     }
-} // End class HTTP_Response
-?>
+}

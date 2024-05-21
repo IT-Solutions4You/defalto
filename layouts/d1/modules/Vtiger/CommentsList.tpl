@@ -10,7 +10,7 @@
 
 {if !empty($PARENT_COMMENTS)}
 	<ul class="unstyled">
-		{if $CURRENT_COMMENT}
+		{if isset($CURRENT_COMMENT) && $CURRENT_COMMENT}
 			{assign var=CHILDS_ROOT_PARENT_MODEL value=$CURRENT_COMMENT}
 			{assign var=CURRENT_COMMENT_PARENT_MODEL value=$CURRENT_COMMENT->getParentCommentModel()}
 			{while $CURRENT_COMMENT_PARENT_MODEL neq false}
@@ -27,7 +27,7 @@
 				<li class="commentDetails">
 					{include file='Comment.tpl'|@vtemplate_path COMMENT=$COMMENT COMMENT_MODULE_MODEL=$COMMENTS_MODULE_MODEL}
 
-					{if $CHILDS_ROOT_PARENT_MODEL}
+					{if isset($CHILDS_ROOT_PARENT_MODEL) && $CHILDS_ROOT_PARENT_MODEL}
 						{if $CHILDS_ROOT_PARENT_MODEL->getId() eq $PARENT_COMMENT_ID}		
 							{assign var=CHILD_COMMENTS_MODEL value=$CHILDS_ROOT_PARENT_MODEL->getChildComments()}
 							{include file='CommentsListIteration.tpl'|@vtemplate_path CHILD_COMMENTS_MODEL=$CHILD_COMMENTS_MODEL}

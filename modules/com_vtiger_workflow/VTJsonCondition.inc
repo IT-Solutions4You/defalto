@@ -1,12 +1,11 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 require_once("include/Zend/Json.php");
 
 class VTJsonCondition {
@@ -26,7 +25,8 @@ class VTJsonCondition {
 			$expressionResults = array();
 			$i = 0;
 			foreach ($expr as $cond) {
-				$conditionGroup = $cond['groupid'];
+				$conditionGroup = $cond['groupid'] ?? null;
+
 				if (empty($conditionGroup)) {
 					$conditionGroup = 0;
 				}
@@ -85,9 +85,10 @@ class VTJsonCondition {
 			foreach ($expressionResults as $groupId => $groupExprResultSet) {
 				$groupResult = TRUE;
 				foreach ($groupExprResultSet as $exprResult) {
-					$result = $exprResult['result'];
-					$logicalOperator = $exprResult['logicaloperator'];
-					if (isset($result)) { // Condition to skip last condition
+					if (isset($exprResult['result'])) { // Condition to skip last condition
+						$result = $exprResult['result'];
+						$logicalOperator = $exprResult['logicaloperator'] ?? null;
+
 						if (!empty($logicalOperator)) {
 							switch ($logicalOperator) {
 								case 'and' : $groupResult = ($groupResult && $result);
@@ -162,7 +163,7 @@ class VTJsonCondition {
 			$fieldValue = $data[$cond['fieldname']];
 		}
 		$value = trim(html_entity_decode($cond['value']));
-		$expressionType = $cond['valuetype'];
+		$expressionType = $cond['valuetype'] ?? null;
 
 		if ($expressionType == 'fieldname') {
 			if ($referredEntityData != null) {
@@ -555,5 +556,3 @@ class VTJsonCondition {
 	}
 
 }
-
-?>

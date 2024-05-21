@@ -1,12 +1,10 @@
 <?php
-/*+*******************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ******************************************************************************/
+ */
 
 require_once 'includes/runtime/Cache.php';
 require_once 'vtlib/Vtiger/Runtime.php';
@@ -62,7 +60,7 @@ class WebserviceField{
 		$this->isunique = isset($row['isunique']) && $row['isunique'] ? true : false;
 		$typeOfData = isset($row['typeofdata'])? $row['typeofdata'] : null;
 		$this->typeOfData = $typeOfData;
-		$typeOfData = explode("~",$typeOfData);
+        $typeOfData = explode('~', $typeOfData ? : '');
 		$this->mandatory = (php7_count($typeOfData) > 1 && $typeOfData[1] == 'M')? true: false;
 		if($this->uitype == 4){
 			$this->mandatory = false;
@@ -427,5 +425,3 @@ class WebserviceField{
 	}
 
 }
-
-?>

@@ -1,12 +1,10 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 
 require_once("VTJsonCondition.inc");
 require_once 'include/utils/ConfigReader.php';
@@ -353,7 +351,14 @@ class Workflow{
 		$this->conditionStrategy = new VTJsonCondition();
 	}
 
-	function setup($row) {
+    function __get($name)
+    {
+        return property_exists($this, $name) ? $this->$name : null;
+    }
+
+    function setup($row)
+    {
+        $row = vtlib_array($row);
 		$this->id = $row['workflow_id'];
 		$this->moduleName = $row['module_name'];
 		$this->description = to_html($row['summary']);

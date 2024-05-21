@@ -8,7 +8,7 @@
     {assign var="FIELD_INFO" value=$FIELD_MODEL->getFieldInfo()}
     {assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
     {assign var="dateFormat" value=$USER_MODEL->get('date_format')}
-    {if (!$FIELD_NAME)}
+    {if (!isset($FIELD_NAME))}
         {assign var="FIELD_NAME" value=$FIELD_MODEL->getFieldName()}
     {/if}
     <div class="input-group inputElement">

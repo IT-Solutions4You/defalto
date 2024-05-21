@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 class Users_Record_Model extends Vtiger_Record_Model {
 	
@@ -398,7 +396,9 @@ class Users_Record_Model extends Vtiger_Record_Model {
             $url = \Vtiger_Functions::getFilePublicURL($imageId, $imageName);
 
 			//decode_html - added to handle UTF-8 characters in file names
-			$imageOriginalName = urlencode(decode_html($imageName));
+            $imageNameDecoded = decode_html($imageName);
+            $imageOriginalName = urlencode($imageNameDecoded ? : '');
+
             if($url) {
                 $url = $site_URL.$url;
             }
@@ -598,8 +598,10 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	function getTagCloudStatus() {
 		$db = PearDatabase::getInstance();
 		$query = "SELECT visible FROM vtiger_homestuff WHERE userid=? AND stufftype='Tag Cloud'";
-		$visibility = $db->query_result($db->pquery($query, array($this->getId())), 0, 'visible');
-		if($visibility == 0) {
+        $rs = $db->pquery($query, array($this->getId()));
+        $visibility = $db->query_result($rs, 0, 'visible');
+
+        if($visibility == 0) {
 			return true;
 		} 
 		return false; 

@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 class Users_ListView_Model extends Vtiger_ListView_Model {
 
@@ -74,7 +72,6 @@ class Users_ListView_Model extends Vtiger_ListView_Model {
 			$listQueryComponents = explode(" WHERE vtiger_users.status='Active' AND", $listQuery);
 			$listQuery = implode(' WHERE ', $listQueryComponents);
 		}
-		$listQuery .= " AND (vtiger_users.user_name != 'admin' OR vtiger_users.is_owner = 1)";
 
 		// Impose non-admin restrictions.
 		$user = vglobal('current_user');

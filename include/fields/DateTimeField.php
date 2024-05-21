@@ -1,19 +1,20 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 require_once 'include/utils/utils.php';
 
 class DateTimeField {
 
 	static protected $databaseTimeZone = null;
 	protected $datetime;
-	private static $cache = array();
+    protected $date;
+    protected $time;
+    private static $cache = array();
 
 	/**
 	 *
@@ -84,7 +85,8 @@ class DateTimeField {
                 $user = $current_user;
         }
 
-        $format = $current_user->date_format;
+        $format = $current_user->date_format ?? '';
+
         if (empty($format)) {
             if (false === strpos($date, '-')) {
                 if(false === strpos($date, '.')){
@@ -175,7 +177,9 @@ class DateTimeField {
 		if(empty($user)) {
 			$user = $current_user;
 		}
-		$format = $user->date_format;
+
+        $format = $user->date_format ?? '';
+
 		if(empty($format)) {
 			$format = 'dd-mm-yyyy';
 		}
@@ -192,7 +196,11 @@ class DateTimeField {
     public static function __convertToUserFormat($date, $format)
     {
         $date = self::convertToInternalFormat($date);
-        list($y, $m, $d) = explode('-', $date[0]);
+        $dates = explode('-', $date[0]);
+        $y = $dates[0] ?? '';
+        $m = $dates[1] ?? '';
+        $d = $dates[2] ?? '';
+
 
         switch ($format) {
             case 'dd.mm.yyyy':
@@ -278,7 +286,7 @@ class DateTimeField {
 			// create datetime object for given time in source timezone
 			$sourceTimeZone = new DateTimeZone($sourceTimeZoneName);
 			if($time == '24:00') $time = '00:00';
-			$myDateTime = new DateTime($time, $sourceTimeZone);
+        $myDateTime = new DateTime($time ?? '', $sourceTimeZone);
 
 			// convert this to target timezone using the DateTimeZone object
 			$targetTimeZone = new DateTimeZone($targetTimeZoneName);
@@ -356,7 +364,7 @@ class DateTimeField {
 		if(empty($user)) {
 			$user = $current_user;
 		}
-		return str_replace(array('yyyy', 'mm','dd'), array('Y', 'm', 'd'), $user->date_format);
+		return str_replace(array('yyyy', 'mm','dd'), array('Y', 'm', 'd'), $user->date_format ?? '');
 	}
 
 	private static function sanitizeDate($value, $user) {
@@ -371,7 +379,7 @@ class DateTimeField {
 		$time = false;
 
 		/* If date-value is other than yyyy-mm-dd */
-		if(strpos($value, "-") < 4 && $user->date_format) {
+		if(strpos($value, "-") < 4 && isset($user->date_format) && $user->date_format) {
 			list($date, $time) = explode(' ', $value);
 			if(!empty($date)) {
 				switch ($user->date_format) {

@@ -1,12 +1,11 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 include_once('vtlib/Vtiger/Utils.php');
 include_once('vtlib/Vtiger/FieldBasic.php');
 require_once 'includes/runtime/Cache.php';
@@ -271,7 +270,7 @@ class Vtiger_Field extends Vtiger_FieldBasic {
 	 */
 	static function getAllForModule($moduleInstance) {
 		global $adb;
-		$instances = false;
+		$instances = [];
 
 		$query = "SELECT * FROM vtiger_field WHERE tabid=? ORDER BY sequence";
 		$queryParams = Array($moduleInstance->id);
@@ -296,4 +295,3 @@ class Vtiger_Field extends Vtiger_FieldBasic {
 		self::log("Deleting fields of the module ... DONE");
 	}
 }
-?>

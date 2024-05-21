@@ -5,7 +5,7 @@
 * All Rights Reserved.
 *}
 {strip}
-    {assign var="FIELD_INFO" value=$FIELD_MODEL->getFieldInfo()}
+    {assign var="FIELD_INFO" value=$FIELD_MODEL->getFieldInfo()|vtlib_array}
     <div class="select2_search_div">
     {assign var=ASSIGNED_USER_ID value=$FIELD_MODEL->get('name')}
     {assign var=ALL_ACTIVEUSER_LIST value=$FIELD_INFO['picklistvalues'][vtranslate('LBL_USERS')]}
