@@ -31,19 +31,24 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
 
 			$defaultValue = $fieldModel->get('defaultvalue');
 			$responseData['fieldDefaultValueRaw'] = $defaultValue;
-			if (isset($defaultValue)) {
-				if ($defaultValue && $fieldInfo['type'] == 'date') {
-					$defaultValue = DateTimeField::convertToUserFormat($defaultValue);
-				} else if (!$defaultValue) {
-					$defaultValue = $fieldModel->getDisplayValue($defaultValue);
-				} else if (is_array($defaultValue)) {
-					foreach ($defaultValue as $key => $value) {
-						$defaultValue[$key] = $fieldModel->getDisplayValue($value);
-					}
-					$defaultValue = Zend_Json::encode($defaultValue);
-				}
-			}
-			$responseData['fieldDefaultValue'] = $defaultValue;
+
+            if (isset($defaultValue)) {
+                if (is_array($defaultValue)) {
+                    foreach ($defaultValue as $key => $value) {
+                        $defaultValue[$key] = $fieldModel->getDisplayValue($value);
+                    }
+
+                    $defaultValue = Zend_Json::encode($defaultValue);
+                } elseif ($defaultValue && $fieldInfo['type'] == 'date') {
+                    $defaultValue = DateTimeField::convertToUserFormat($defaultValue);
+                } elseif ($defaultValue) {
+                    $defaultValue = $fieldModel->getDisplayValue($defaultValue);
+                } else {
+                    $defaultValue = '';
+                }
+            }
+
+            $responseData['fieldDefaultValue'] = $defaultValue;
 
             $response->setResult($responseData);
         }catch(Exception $e) {

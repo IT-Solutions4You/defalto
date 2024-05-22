@@ -225,7 +225,7 @@ class CustomView extends CRMEntity {
 		$result = $adb->pquery($ssql, $sparams);
 		while ($cvrow = $adb->fetch_array($result)) {
 			if ($cvrow['viewname'] == 'All') {
-				$cvrow['viewname'] = $app_strings['COMBO_ALL'];
+				$cvrow['viewname'] = $app_strings['COMBO_ALL'] ?? '';
 			}
 
 			$option = '';
@@ -497,7 +497,7 @@ class CustomView extends CRMEntity {
 			"thisfq","nextfq","yesterday","today","tomorrow",
 			"lastweek","thisweek","nextweek","lastmonth","thismonth",
 			"nextmonth","last7days","last14days","last30days","last60days","last90days",
-			"last120days","next30days","next60days","next90days","next120days",
+			"last120days", 'next7days', 'next14days', "next30days","next60days","next90days","next120days",
 		);
 	}
 
@@ -534,6 +534,8 @@ class CustomView extends CRMEntity {
 			"last60days" => "" . $mod_strings['Last 60 Days'] . "",
 			"last90days" => "" . $mod_strings['Last 90 Days'] . "",
 			"last120days" => "" . $mod_strings['Last 120 Days'] . "",
+			'next7days' => '' . $mod_strings['Next 7 Days'] . '',
+			'next14days' => '' . $mod_strings['Next 14 Days'] . '',
 			"next30days" => "" . $mod_strings['Next 30 Days'] . "",
 			"next60days" => "" . $mod_strings['Next 60 Days'] . "",
 			"next90days" => "" . $mod_strings['Next 90 Days'] . "",
@@ -602,6 +604,9 @@ class CustomView extends CRMEntity {
 
 		$next7days = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 6, date("Y")));
 		$next7DaysDateTime = new DateTimeField($next7days . ' ' . date('H:i:s'));
+
+		$next14days = date('Y-m-d', mktime(0, 0, 0, date('m'), date('d') + 13, date('Y')));
+		$next14DaysDateTime = new DateTimeField($next14days . ' ' . date('H:i:s'));
 
 		$next30days = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 29, date("Y")));
 		$next30DaysDateTime = new DateTimeField($next30days . ' ' . date('H:i:s'));
@@ -761,6 +766,10 @@ class CustomView extends CRMEntity {
 				} else if( type == "next7days" ) {
 					document.CustomView.startdate.value = "' . $todayDateTime->getDisplayDate() . '";
 					document.CustomView.enddate.value = "' . $next7DaysDateTime->getDisplayDate() . '";
+
+				} else if( type == "next14days" ) {
+					document.CustomView.startdate.value = "' . $todayDateTime->getDisplayDate() . '";
+					document.CustomView.enddate.value = "' . $next14DaysDateTime->getDisplayDate() . '";
 
 				} else if( type == "next30days" ) {
 					document.CustomView.startdate.value = "' . $todayDateTime->getDisplayDate() . '";
@@ -1585,6 +1594,7 @@ class CustomView extends CRMEntity {
 		$nextweek1 = date("Y-m-d", strtotime("+1 week $prvDay"));
 
 		$next7days = date("Y-m-d", mktime(0, 0, 0, $m, $d + 6, $y));
+		$next14days = date('Y-m-d', mktime(0, 0, 0, $m, $d + 6, $y));
 		$next30days = date("Y-m-d", mktime(0, 0, 0, $m, $d + 29, $y));
 		$next60days = date("Y-m-d", mktime(0, 0, 0, $m, $d + 59, $y));
 		$next90days = date("Y-m-d", mktime(0, 0, 0, $m, $d + 89, $y));
@@ -1674,6 +1684,9 @@ class CustomView extends CRMEntity {
 
 			$datevalue[0] = $today;
 			$datevalue[1] = $next7days;
+		} elseif ($type === 'next14days') {
+			$datevalue[0] = $today;
+			$datevalue[1] = $next14days;
 		} elseif ($type == "next30days") {
 
 			$datevalue[0] = $today;

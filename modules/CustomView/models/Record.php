@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 /**
  * CustomView Record Model Class
@@ -813,6 +811,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 		$nextweek1 = date("Y-m-d", strtotime("+1 week Saturday"));
 
 		$next7days = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 6, date("Y")));
+		$next14days = date('Y-m-d', mktime(0, 0, 0, date('m'), date('d') + 13, date('Y')));
 		$next30days = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 29, date("Y")));
 		$next60days = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 59, date("Y")));
 		$next90days = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 89, date("Y")));
@@ -886,6 +885,9 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 		} elseif ($type == "next7days") {
 			$dateValues[0] = $today;
 			$dateValues[1] = $next7days;
+		} elseif ($type == 'next14days') {
+			$dateValues[0] = $today;
+			$dateValues[1] = $next14days;
 		} elseif ($type == "next30days") {
 			$dateValues[0] = $today;
 			$dateValues[1] = $next30days;
@@ -969,6 +971,8 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 				'last60days' => array('label' => 'LBL_LAST_60_DAYS'),
 				'last90days' => array('label' => 'LBL_LAST_90_DAYS'),
 				'last120days' => array('label' => 'LBL_LAST_120_DAYS'),
+                             'next7days'  => ['label' => 'LBL_NEXT_7_DAYS'],
+                             'next14days' => ['label' => 'LBL_NEXT_14_DAYS'],
 				'next30days' => array('label' => 'LBL_NEXT_30_DAYS'),
 				'next60days' => array('label' => 'LBL_NEXT_60_DAYS'),
 				'next90days' => array('label' => 'LBL_NEXT_90_DAYS'),

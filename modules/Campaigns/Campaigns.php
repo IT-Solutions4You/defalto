@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The Initial Developer of the Original Code is SugarCRM, Inc.
  * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
@@ -168,9 +167,9 @@ class Campaigns extends CRMEntity {
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
-		if($return_value == null)
-			$return_value = Array();
-		else if($is_CampaignStatusAllowed && is_array($return_value['header'])) {
+        if ($return_value == null) {
+            $return_value = [];
+        } elseif ($is_CampaignStatusAllowed && isset($return_value['header']) && is_array($return_value['header'])) {
 			$statusPos = php7_count($return_value['header']) - 2; // Last column is for Actions, exclude that. Also the index starts from 0, so reduce one more count.
 			$return_value = $this->add_status_popup($return_value, $statusPos, 'Accounts');
 		}
@@ -273,7 +272,7 @@ class Campaigns extends CRMEntity {
 		if($return_value == null)
 			$return_value = Array();
 		else if($is_CampaignStatusAllowed) {
-			$statusPos = php7_count($return_value['header']) - 2; // Last column is for Actions, exclude that. Also the index starts from 0, so reduce one more count.
+			$statusPos = isset($return_value['header']) ? php7_count($return_value['header']) - 2 : ''; // Last column is for Actions, exclude that. Also the index starts from 0, so reduce one more count.
 			$return_value = $this->add_status_popup($return_value, $statusPos, 'Contacts');
 		}
 
@@ -371,7 +370,7 @@ class Campaigns extends CRMEntity {
 		if($return_value == null)
 			$return_value = Array();
 		else if($is_CampaignStatusAllowed) {
-			$statusPos = php7_count($return_value['header']) - 2; // Last column is for Actions, exclude that. Also the index starts from 0, so reduce one more count.
+			$statusPos = isset($return_value['header']) ? php7_count($return_value['header']) - 2 : ''; // Last column is for Actions, exclude that. Also the index starts from 0, so reduce one more count.
 			$return_value = $this->add_status_popup($return_value, $statusPos, 'Leads');
 		}
 
@@ -454,7 +453,7 @@ class Campaigns extends CRMEntity {
 	{
 		global $adb;
 
-		if(!$this->campaignrelstatus)
+		if(!isset($this->campaignrelstatus))
 		{
 			$result = $adb->pquery('SELECT * FROM vtiger_campaignrelstatus;', array());
 			while($row = $adb->fetchByAssoc($result))
