@@ -12,85 +12,59 @@
                 <input type=hidden name="view" value="Index"/>
                 <input type=hidden name="mode" value="Step7"/>
                 <input type=hidden name="auth_key" value="{$AUTH_KEY}"/>
-                {include file='StepHeader.tpl'|@vtemplate_path:'Install' TITLE='LBL_ONE_LAST_THING'}
+                {include file='StepHeader.tpl'|@vtemplate_path:'Install' TITLE='LBL_SMTP_SERVER_CONFIG'}
                 <div class="container-fluid p-3">
                     <div class="row">
-                        <div class="col-sm-2"></div>
-                        <div class="col-sm-8">
-                            <table class="table table-borderless config-table input-table">
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        <strong>Your Name</strong>
-                                    </td>
-                                    <td><input name="myname" class="text form-control" required="true"></td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Your Email</strong>
-                                    </td>
-                                    <td><input name="myemail" class="email form-control" required="true"></td>
-                                <tr>
-                                    <td>
-                                        <strong>Your Industry</strong>
-                                    </td>
-                                    <td>
-                                        <select name="industry" class="select2" required="true" placeholder="Choose one...">
-                                            <option>Accounting</option>
-                                            <option>Advertising</option>
-                                            <option>Agriculture</option>
-                                            <option>Apparel &amp; Accessories</option>
-                                            <option>Automotive</option>
-                                            <option>Banking &amp; Financial Services</option>
-                                            <option>Biotechnology</option>
-                                            <option>Call Centers</option>
-                                            <option>Careers/Employment</option>
-                                            <option>Chemical</option>
-                                            <option>Computer Hardware</option>
-                                            <option>Computer Software</option>
-                                            <option>Consulting</option>
-                                            <option>Construction</option>
-                                            <option>Education</option>
-                                            <option>Energy Services</option>
-                                            <option>Engineering</option>
-                                            <option>Entertainment</option>
-                                            <option>Financial</option>
-                                            <option>Food &amp; Food Service</option>
-                                            <option>Government</option>
-                                            <option>Health care</option>
-                                            <option>Insurance</option>
-                                            <option>Legal</option>
-                                            <option>Logistics</option>
-                                            <option>Manufacturing</option>
-                                            <option>Media &amp; Production</option>
-                                            <option>Non-profit</option>
-                                            <option>Pharmaceutical</option>
-                                            <option>Real Estate</option>
-                                            <option>Rental</option>
-                                            <option>Retail &amp; Wholesale</option>
-                                            <option>Security</option>
-                                            <option>Service</option>
-                                            <option>Sports</option>
-                                            <option>Telecommunications</option>
-                                            <option>Transportation</option>
-                                            <option>Travel &amp; Tourism</option>
-                                            <option>Utilities</option>
-                                            <option>Other</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        This information will not be shared. Defalto will use the email address for sending a monthly newsletter and any product updates.
-                                        Industry will be used to understand use cases and further improve the product.
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div class="col-sm-6">
+                            <div class="container-fluid">
+                                <div>
+                                    <label class="row py-2">
+                                        <span class="col-sm">
+                                            <strong>{vtranslate('Server')}</strong>
+                                        </span>
+                                        <span class="col-sm">
+                                            <input name="smtp_server" placeholder="ssl://smtp.example.com:465" class="form-control">
+                                        </span>
+                                    </label>
+                                    <label class="row py-2">
+                                        <span class="col-sm">
+                                            <strong>{vtranslate('Username')}</strong>
+                                        </span>
+                                        <span class="col-sm">
+                                            <input name="smtp_username" placeholder="email.address@example.com" class="form-control">
+                                        </span>
+                                    </label>
+                                    <label class="row py-2">
+                                        <span class="col-sm">
+                                            <strong>{vtranslate('Password')}</strong>
+                                        </span>
+                                        <span class="col-sm">
+                                            <input name="smtp_password" placeholder="********" type="password" class="form-control">
+                                        </span>
+                                    </label>
+                                    <label class="row py-2">
+                                        <span class="col-sm">
+                                            <strong>{vtranslate('From Email')}</strong>
+                                        </span>
+                                        <span class="col-sm">
+                                            <input name="smtp_from_email" placeholder="email.address@example.com" type="email" class="form-control">
+                                        </span>
+                                    </label>
+                                    <label class="row py-2">
+                                        <span class="col-sm">
+                                            <strong>{vtranslate('Requires Authentication')}</strong>
+                                        </span>
+                                        <span class="col-sm">
+                                            <input name="smtp_authentication" type="checkbox" checked="checked" value="on" class="form-check-input">
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="button-container text-end p-3">
+                    <input type="button" class="btn btn-primary me-2" value="{vtranslate('LBL_SKIP','Install')}" name="step7"/>
                     <input type="button" class="btn btn-primary active" value="{vtranslate('LBL_NEXT','Install')}" name="step7"/>
                 </div>
             </form>

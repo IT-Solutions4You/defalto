@@ -127,11 +127,9 @@ class ServiceContracts_Install_Model extends Vtiger_Install_Model {
                     'table' => 'vtiger_servicecontracts',
                     'label' => 'Related to',
                     'quickcreate' => 2,
-                    'relatedmodules' => [
-                        'relatedmodule' => [
-                            0 => 'Contacts',
-                            1 => 'Accounts',
-                        ],
+                    'related_modules' => [
+                        'Contacts',
+                        'Accounts',
                     ],
                     'filter' => 1,
                 ],
@@ -228,12 +226,10 @@ class ServiceContracts_Install_Model extends Vtiger_Install_Model {
                     'column' => 'contract_type',
                     'table' => 'vtiger_servicecontracts',
                     'label' => 'Type',
-                    'picklistvalues' => [
-                        'picklistvalue' => [
-                            0 => 'Support',
-                            1 => 'Services',
-                            2 => 'Administrative',
-                        ],
+                    'picklist_values' => [
+                        'Support',
+                        'Services',
+                        'Administrative',
                     ],
                 ],
                 'progress' => [

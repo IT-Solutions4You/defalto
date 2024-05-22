@@ -532,7 +532,7 @@ jQuery.Class("Vtiger_Helper_Js",{
             return jQuery({});
         }
 
-        return jQuery('#' + select2.containerId);
+        return jQuery(select2['$container']);
     },
     
      /* 
