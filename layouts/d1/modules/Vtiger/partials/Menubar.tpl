@@ -22,7 +22,7 @@
 		<div title="{$translatedModuleLabel}" class="px-0 py-2 m-0">
 			<div class="app-module-container rounded {if $MODULE eq $moduleName}active{else}opacity-50{/if}">
 				<a href="{$moduleModel->getDefaultUrl()}&app={$SELECTED_MENU_CATEGORY}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{$translatedModuleLabel}">
-					{$moduleModel->getModuleIcon()}
+					{$moduleModel->getModuleIcon('14px')}
 				</a>
 			</div>
 		</div>

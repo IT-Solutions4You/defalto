@@ -72,4 +72,6 @@ $languageStrings = array(
 	'LBL_OPEN_SSL'=>'Openssl support',
 	'LBL_CURL'=>'Curl support',
 	'LBL_MB_STRING'=>'Mbstring support',
+    'LBL_SMTP_SERVER_CONFIG' => 'Outgoing mail server configuration',
+    'LBL_SKIP' => 'Skip',
 );

@@ -82,7 +82,7 @@
                                 <div class="col-lg-6">
                                     <select name="currency_name" class="select2" >
                                         {foreach key=CURRENCY_NAME item=CURRENCY_INFO from=$CURRENCIES}
-                                            <option value="{$CURRENCY_NAME}" {if $CURRENCY_NAME eq 'USA, Dollars'} selected {/if}>{$CURRENCY_NAME} ({$CURRENCY_INFO.1})</option>
+                                            <option value="{$CURRENCY_NAME}" {if $CURRENCY_NAME eq 'Euro'} selected {/if}>{$CURRENCY_NAME} ({$CURRENCY_INFO.1})</option>
                                         {/foreach}
                                     </select>
                                 </div>
