@@ -1,13 +1,10 @@
 <?php
-/*********************************************************************************
-** The contents of this file are subject to the vtiger CRM Public License Version 1.0
-* ("License"); You may not use this file except in compliance with the License
-* The Original Code is:  vtiger CRM Open Source
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (C) vtiger.
-* All Rights Reserved.
-*
-********************************************************************************/
+/**
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * All Rights Reserved.
+ */
 
 require_once('include/logging.php');
 require_once('modules/CustomView/CustomView.php');
@@ -75,7 +72,9 @@ class ListViewSession {
 		}
 		$cv = new CustomView();
 		$viewId = $cv->getViewId($currentModule);
-		if(!empty($_SESSION[$currentModule.'_DetailView_Navigation'.$viewId])){
+        $recordNavigationInfo = [];
+
+        if (!empty($_SESSION[$currentModule . '_DetailView_Navigation' . $viewId])) {
 			$recordNavigationInfo = Zend_Json::decode($_SESSION[$currentModule.'_DetailView_Navigation'.$viewId]);
 			$pageNumber =0;
 			if(php7_count($recordNavigationInfo) == 1){
@@ -103,7 +102,7 @@ class ListViewSession {
 			}
 		}
 
-		$list_query = $_SESSION[$currentModule.'_listquery'];
+        $list_query = $_SESSION[$currentModule . '_listquery'] ?? '';
 
 		if($reUseData === false && !empty($list_query)){
 			$recordNavigationInfo = array();
@@ -166,7 +165,7 @@ class ListViewSession {
 			$recordNavigationInfo = array();
 			if($searchKey !== false){
 				foreach ($navigationRecordList as $index => $recordId) {
-					if(!is_array($recordNavigationInfo[$current])){
+					if(!isset($recordNavigationInfo[$current])){
 						$recordNavigationInfo[$current] = array();
 					}
 					if($index == $firstPageRecordCount  || $index == ($firstPageRecordCount+$pageCount * $list_max_entries_per_page)){
@@ -248,4 +247,3 @@ class ListViewSession {
 		}
 	}
 }
-?>

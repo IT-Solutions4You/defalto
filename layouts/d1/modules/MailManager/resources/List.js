@@ -350,7 +350,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 						'_msgno' : msgNos.join(',')
 					};
 					app.request.post({data : params}).then(function(err,data) {
-						app.helper.hideProgress();
+						self.openFolder(folder);
 						if(data.status) {
 							app.helper.showSuccessNotification({'message': app.vtranslate('JSLBL_MAILS_DELETED')});
 							self.updateUnreadCount("-"+self.getUnreadCountByMsgNos(msgNos), folder);
@@ -414,7 +414,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 					'_msgno' : msgNos.join(',')
 				};
 				app.request.post({data : params}).then(function(err,data) {
-					app.helper.hideProgress();
+					self.openFolder(folder);
 					if(data.status) {
 						app.helper.showSuccessNotification({'message': app.vtranslate('JSLBL_MAIL_MOVED')});
 						var unreadCount = self.getUnreadCountByMsgNos(msgNos);

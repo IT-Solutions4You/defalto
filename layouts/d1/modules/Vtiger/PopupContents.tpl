@@ -18,7 +18,7 @@
         <input type="hidden" id="pageEndRange" value="{$PAGING_MODEL->getRecordEndRange()}" />
         <input type="hidden" id="previousPageExist" value="{$PAGING_MODEL->isPrevPageExists()}" />
         <input type="hidden" id="nextPageExist" value="{$PAGING_MODEL->isNextPageExists()}" />
-        <input type="hidden" id="totalCount" value="{$LISTVIEW_COUNT}" />
+        <input type="hidden" id="totalCount" value="{$LISTVIEW_ENTRIES_COUNT}" />
 		{if $GETURL}<input type="hidden" id="getUrl" value="{$GETURL}" />{/if}
         <input type="hidden" value="{Vtiger_Util_Helper::toSafeHTML(Zend_JSON::encode($SEARCH_DETAILS))}" id="currentSearchParams" />
         <div class="contents-topscroll">

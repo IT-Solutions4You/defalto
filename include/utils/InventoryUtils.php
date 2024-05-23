@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- **************************************************************************************/
+ */
 
 /**	function to get the taxid
  *	@param string $type - tax type (VAT or Sales or Service)
@@ -72,9 +70,11 @@ function getProductTaxPercentage($type, $productid, $default = '')
         $taxpercentage = decimalFormat($taxpercentage);
     }
 
+    $regions=$adb->query_result($res,0, 'regions');
+
     return [
         'percentage' => $taxpercentage,
-        'regions' => Zend_Json::decode(html_entity_decode($adb->query_result($res, 0, 'regions'))),
+        'regions'    => Zend_Json::decode(html_entity_decode(!empty($regions) ? $regions : ''))
     ];
 }
 
@@ -230,7 +230,8 @@ function getTaxDetailsForProduct($productid, $available='all')
 			$tax_details[$i]['type']		= $adb->query_result($res, $i, 'type');
 			$tax_details[$i]['regions']		= Zend_Json::decode(html_entity_decode($adb->query_result($res, $i, 'taxregions')));
 			$tax_details[$i]['compoundon']	= Zend_Json::decode(html_entity_decode($adb->query_result($res, $i, 'compoundon')));
-			$tax_details[$i]['productregions']= Zend_Json::decode(html_entity_decode($adb->query_result($res, $i, 'productregions')));
+            $productRegions=$adb->query_result($res, $i, 'productregions');
+            $tax_details[$i]['productregions']= Zend_Json::decode(html_entity_decode(!empty($productRegions) ? $productRegions : ''));
 		}
 	}
 	else

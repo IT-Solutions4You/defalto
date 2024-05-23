@@ -1,12 +1,10 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 
 /**
  * TODO need to organize into classes based on functional grouping.
@@ -178,8 +176,17 @@ class Vtiger_Functions {
 				self::$moduleNameIdCache[$row['name']]  = $row;
 			}
 		}
-		return $id ? self::$moduleIdNameCache[$id] : self::$moduleNameIdCache[$name];
-	}
+
+        if ($id && isset(self::$moduleIdNameCache[$id])) {
+            return self::$moduleIdNameCache[$id];
+        }
+
+        if ($name && isset(self::$moduleNameIdCache[$name])) {
+            return self::$moduleNameIdCache[$name];
+        }
+
+        return null;
+    }
 
 	static function getModuleData($mixed) {
 		$id = $name = NULL;
@@ -473,9 +480,13 @@ class Vtiger_Functions {
 			while ($row = $adb->fetch_array($result)) {
 				$moduleFieldInfo[$module][$row['fieldname']] = $row;
 			}
-			Vtiger_Cache::set('ModuleFieldInfo',$module,$moduleFieldInfo[$module]);
-		}
-		return $moduleFieldInfo[$module] ? $moduleFieldInfo[$module] : NULL;
+
+            if (isset($moduleFieldInfo[$module])) {
+                Vtiger_Cache::set('ModuleFieldInfo', $module, $moduleFieldInfo[$module]);
+            }
+        }
+
+        return $moduleFieldInfo[$module] ?? null;
 	}
 
 	static function getModuleFieldInfoWithId($fieldid) {
@@ -520,13 +531,18 @@ class Vtiger_Functions {
 
 	// Utility
 	static function formatDecimal($value){
-		$fld_value = $value;
-		if(strpos($value, '.')) {
-			$fld_value = rtrim($value, '0');
-		}
-		$value = rtrim($fld_value, '.');
-		return $value;
-	}
+        if (!$value) {
+            return $value;
+        }
+
+        $fld_value = $value;
+
+        if (strpos($value, '.')) {
+            $fld_value = rtrim($value, '0');
+        }
+
+        return rtrim($fld_value, '.');
+    }
 
 	static function fromHTML($string, $encode=true) {
 		if (is_string($string)) {
@@ -726,12 +742,23 @@ class Vtiger_Functions {
 		$fields = Array();
 		for ($i = 1; $i < php7_count($token_data_pair); $i++) {
 			$module = explode('-', $tokenDataPair[$i]);
-			$fields[$module[0]][] = $module[1];
+
+            if (count($module) < 2) {
+                continue;
+            }
+
+            if (!isset($fields[$module[0]])) {
+                $fields[$module[0]] = array();
+            }
+
+            $fields[$module[0]][] = $module[1];
 		}
-		if (is_array($fields['custom']) && php7_count($fields['custom']) > 0) {
+
+        if (isset($fields['custom']) && is_array($fields['custom']) && php7_count($fields['custom']) > 0) {
 			$description = self::getMergedDescriptionCustomVars($fields, $description,$id,$parent_type);
 		}
-		if(is_array($fields['companydetails']) && php7_count($fields['companydetails']) > 0){
+
+        if(isset($fields['companydetails']) && is_array($fields['companydetails']) && php7_count($fields['companydetails']) > 0){
 			$description = self::getMergedDescriptionCompanyDetails($fields,$description);
 		}
 
@@ -1249,7 +1276,32 @@ class Vtiger_Functions {
             }
 	}
 
-	/**
+    /**
+     * Check if a string is a valid time value.
+     *
+     * @param string $value The string to check.
+     *
+     * @return bool Returns true if $value is a valid time value, false otherwise.
+     */
+    public static function isTimeValue(string $value): bool
+    {
+        $value = trim($value);
+        $patterns = [
+            '/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/',
+            '/^(1[0-2]|0?[1-9]):[0-5][0-9] (AM|PM)$/i',
+            '/^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $value)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
 	 * Function to get value for all mandatory relation field of a module (except Users).
 	 * @param String $module Module for which mandatory relation field is needed
 	 * @param String $mode (Optional) Label or Id for relation fields. Default label
@@ -1531,6 +1583,18 @@ class Vtiger_Functions {
 	}
 
     /**
+     * Function to get logo public url
+     *
+     * @param <String> $logoName
+     *
+     * @return <String> $sourceUrl
+     */
+    public static function getLogoPublicURL($logoName)
+    {
+        return "public.php?type=logo&key=$logoName";
+    }
+
+    /**
      * Function to get the attachmentsid to given crmid
      * @param type $crmid
      * @param type $webaservice entity id
@@ -1592,17 +1656,17 @@ class Vtiger_Functions {
 			$endchar = "";
 
 			// HTML embed in attributes (eg. img src="...").
-			$startidx = strpos($input, '"data:', $offset);
+            $startidx = strpos($input ?? '', '"data:', $offset);
 			if ($startidx !== false) {
 				$endchar = '"';
 			} else {
 				// HTML embed in attributes (eg. img src='...').
-				$startidx = strpos($input, "'data:", $offset);
+                $startidx = strpos($input ?? '', "'data:", $offset);
 				if ($startidx !== false) {
 					$endchar = "'";
 				} else {
 					// TEXT embed with wrap [eg. (data...)]
-					$startidx = strpos($input, "(data:", $offset);
+                    $startidx = strpos($input ?? '', "(data:", $offset);
 					if ($startidx !== false) {
 						$endchar = ")";
 					} else {
@@ -1631,7 +1695,7 @@ class Vtiger_Functions {
 			$offset = $endidx + 1;
 		} while (true);
 
-		if ($offset < strlen($input)) {
+        if ($offset < strlen($input ?? '')) {
 			$parts[] = substr($input, $offset);
 		}
 				return implode("", $parts);

@@ -1,12 +1,11 @@
 <?php
-/* +**********************************************************************************
-* The contents of this file are subject to the vtiger CRM Public License Version 1.0
-* ("License"); You may not use this file except in compliance with the License
-* The Original Code is:vtiger CRM Open Source
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (C) vtiger. All Rights Reserved.
-* Contributor(s): Valmir C. Trindade - Brazilian Portuguese Translation - www.ttcasolucoes.com.br
-************************************************************************************/
+/**
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * All Rights Reserved.
+ */
+
 $languageStrings = array(
 
 	// Footer
@@ -445,6 +444,8 @@ $languageStrings = array(
 	'LBL_LAST_60_DAYS' => 'Últimos 60 Dias',
 	'LBL_LAST_90_DAYS' => 'Últimos 90 Dias',
 	'LBL_LAST_120_DAYS' => 'Últimos 120 Dias',
+    'LBL_NEXT_7_DAYS' => 'Próximos 7 Dias',
+    'LBL_NEXT_14_DAYS' => 'Próximos 14 Dias',
 	'LBL_NEXT_30_DAYS' => 'Próximos 30 Dias',
 	'LBL_NEXT_60_DAYS' => 'Próximos 60 Dias',
 	'LBL_NEXT_90_DAYS' => 'Próximos 90 Dias',

@@ -1,12 +1,11 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 require_once('include/events/SqlResultIterator.inc');
 require_once('VTWorkflowManager.inc');
 require_once('VTEntityCache.inc');
@@ -31,6 +30,7 @@ require_once('VTWorkflowUtils.php');
  */
 
 class VTWorkflowEventHandler extends VTEventHandler {
+    protected array $workflows = [];
 
 	/**
 	 * Push tasks to the task queue if the conditions are true
@@ -56,13 +56,12 @@ class VTWorkflowEventHandler extends VTEventHandler {
 		 * workflows are intialised from ModCommentsHandler.php
 		 * While adding a comment on any record which are supporting Comments ModCommentsHandler will trigger
 		 */
-		if (!isset($this->workflows) || !is_array($this->workflows)) {
+		if (empty($this->workflows)) {
 			$wfs = new VTWorkflowManager($adb);
 			$this->workflows = $wfs->getWorkflowsForModule($entityData->getModuleName());
 		}
-		$workflows = $this->workflows;
 
-		foreach ($workflows as $workflow) {
+		foreach ($this->workflows as $workflow) {
 			if (!is_a($workflow, 'Workflow'))
 				continue;
 			switch ($workflow->executionCondition) {

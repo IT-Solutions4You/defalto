@@ -1,12 +1,10 @@
 <?php
-/*+********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ********************************************************************************/
+ */
 
 // Note is used to store customer information.
 class Documents extends CRMEntity {
@@ -515,6 +513,7 @@ class Documents extends CRMEntity {
 	function get_related_list($id, $cur_tab_id, $rel_tab_id,$actions = false) {
 		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		$other = CRMEntity::getInstance($related_module);
+        $more_relation='';
 		vtlib_setup_modulevars('Documents', $this);
 		vtlib_setup_modulevars($related_module, $other);
 

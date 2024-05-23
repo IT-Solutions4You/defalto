@@ -19,7 +19,7 @@
         {else}
             {assign var=STARRED value=false}
         {/if}
-        {if $QUICK_PREVIEW_ENABLED eq 'true'}
+        {if isset($QUICK_PREVIEW_ENABLED ) && $QUICK_PREVIEW_ENABLED eq 'true'}
             <span class="btn btn-sm text-secondary">
                 <a class="quickView fa fa-eye icon action" data-app="{$SELECTED_MENU_CATEGORY}" title="{vtranslate('LBL_QUICK_VIEW', $MODULE)}"></a>
             </span>

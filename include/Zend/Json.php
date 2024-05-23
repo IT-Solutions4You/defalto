@@ -56,7 +56,7 @@ class Zend_Json
     public static function decode($encodedValue, $objectDecodeType = Zend_Json::TYPE_ARRAY)
     {
         if (function_exists('json_decode') && self::$useBuiltinEncoderDecoder !== true) {
-            return json_decode($encodedValue, $objectDecodeType);
+            return $encodedValue != null ? json_decode($encodedValue, $objectDecodeType) : $encodedValue;
         }
 
         require_once 'include/Zend/Json/Decoder.php';
@@ -88,4 +88,3 @@ class Zend_Json
         return Zend_Json_Encoder::encode($valueToEncode, $cycleCheck);
     }
 }
-

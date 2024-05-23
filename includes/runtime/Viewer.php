@@ -1,12 +1,10 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 
 class Vtiger_Viewer extends Smarty {
 
@@ -58,12 +56,6 @@ class Vtiger_Viewer extends Smarty {
 		$this->setTemplateDir(array($templatesDir));
 		$this->setCompileDir($compileDir);		
 
-		// FOR SECURITY
-		// Escape all {$variable} to overcome XSS
-		// We need to use {$variable nofilter} to overcome double escaping
-		// TODO: Until we review the use disabled.
-		//$this->registerFilter('variable', array($this, 'safeHtmlFilter'));
-		
 		// FOR DEBUGGING: We need to have this only once.
 		static $debugViewerURI = false;
 		if (self::$debugViewer && $debugViewerURI === false) {
@@ -76,7 +68,83 @@ class Vtiger_Viewer extends Smarty {
 			
 			$this->log("URI: $debugViewerURI, TYPE: " . $_SERVER['REQUEST_METHOD']);
 		}
-	}
+
+        $classes = [
+            'Vtiger_MenuStructure_Model',
+            'Users_Privileges_Model',
+            'Vtiger_Module_Model',
+            'Settings_MenuEditor_Module_Model',
+            'Vtiger_Util_Helper',
+            'ZEND_JSON',
+            'Zend_Json',
+            'Zend_JSON',
+            'ZEND_json',
+            'Vtiger_Theme',
+            'Users_Record_Model',
+            'Vtiger_Module_Model',
+            'Vtiger_Field_Model',
+            'Settings_Picklist_Module_Model',
+            'CustomView_Record_Model',
+            'Vtiger_Extension_View',
+            'Vtiger_Tag_Model',
+            'Vtiger_Functions',
+            'Users',
+            'CurrencyField'
+        ];
+
+        foreach ($classes as $clazz) {
+            if (class_exists($clazz)) {
+                $this->registerClass($clazz, $clazz);
+            }
+        }
+
+        $modifiers = [
+            'vtranslate',
+            'vtlib_isModuleActive',
+            'vimage_path',
+            'strstr',
+            'stripos',
+            'strpos',
+            'date',
+            'vtemplate_path',
+            'vresource_url',
+            'decode_html',
+            'vtlib_purify',
+            'php7_count',
+            'getUserFullName',
+            'array_flip',
+            'explode',
+            'trim',
+            'array_push',
+            'array_map',
+            'array_key_exists',
+            'get_class',
+            'vtlib_array',
+            'getDuplicatesPreventionMessage',
+            'htmlentities',
+            'getCurrencySymbolandCRate',
+            'mb_substr',
+            'isPermitted',
+            'getEntityName',
+            'function_exists',
+            'php7_trim',
+            'php7_htmlentities',
+            'strtolower',
+            'strtoupper',
+            'str_replace',
+            'urlencode',
+            'getTranslatedCurrencyString',
+            'getTranslatedString',
+            'is_object',
+            'is_numeric'
+        ];
+
+        foreach ($modifiers as $modifier) {
+            if (function_exists($modifier)) {
+                $this->registerPlugin('modifier', $modifier, $modifier);
+            }
+        }
+    }
 
     // Backward compatible to SmartyBC
     function get_template_vars($name = NULL) {

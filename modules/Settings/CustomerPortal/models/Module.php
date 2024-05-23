@@ -1,17 +1,16 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************ */
+ */
 
 class Settings_CustomerPortal_Module_Model extends Settings_Vtiger_Module_Model {
 
 	var $name = 'CustomerPortal';
 	var $max_sequence = '';
+    protected $portalModules = [];
 
 	/**
 	 * Function to get Current portal user
@@ -46,7 +45,7 @@ class Settings_CustomerPortal_Module_Model extends Settings_Vtiger_Module_Model 
 	 * @return <Array> list of portal modules <Vtiger_Module_Model>
 	 */
 	public function getModulesList() {
-		if (!$this->portalModules) {
+		if (empty($this->portalModules)) {
 			$db = PearDatabase::getInstance();
 
 			$query = "SELECT vtiger_customerportal_tabs.*, vtiger_tab.name FROM vtiger_customerportal_tabs

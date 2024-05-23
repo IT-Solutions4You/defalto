@@ -1,12 +1,11 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 $languageStrings = array(
 	'APPTITLE'                     => 'Vtiger CRM'                  , 
 	'POWEREDBY'                    => 'Powered by Defalto CRM, Translation By Vicus', 
@@ -351,8 +350,10 @@ $languageStrings = array(
 	'LBL_LAST_30_DAYS'             => 'Vorige 30 Dagen'             , 
 	'LBL_LAST_60_DAYS'             => 'Vorige 60 Dagen'             , 
 	'LBL_LAST_90_DAYS'             => 'Vorige 90 Dagen'             , 
-	'LBL_LAST_120_DAYS'            => 'Vorige 120 Dagen'            , 
-	'LBL_NEXT_30_DAYS'             => 'Komende 30 Dagen'            , 
+	'LBL_LAST_120_DAYS'            => 'Vorige 120 Dagen'            ,
+    'LBL_NEXT_7_DAYS' => 'Komende 7 Dagen',
+    'LBL_NEXT_14_DAYS' => 'Komende 14 Dagen',
+	'LBL_NEXT_30_DAYS'             => 'Komende 30 Dagen'            ,
 	'LBL_NEXT_60_DAYS'             => 'Komende 60 Dagen'            , 
 	'LBL_NEXT_90_DAYS'             => 'Komende 90 Dagen'            , 
 	'LBL_NEXT_120_DAYS'            => 'Komende 120 Dagen'           , 

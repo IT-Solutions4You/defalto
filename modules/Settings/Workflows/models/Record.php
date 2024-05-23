@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 /*
  * Workflow Record Model Class
@@ -203,7 +201,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 		return $arr[$executionCondition-1];
 	}
 
-	function getV7executionConditionAsLabel($executionCondition=null, $module_name) {
+	function getV7executionConditionAsLabel($executionCondition=null, $module_name = null) {
 		if($executionCondition == null) {
 			$executionCondition = $this->get('execution_condition');
 		}
@@ -239,14 +237,27 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 				$value = $info['value'];
 				// To convert date value from yyyy-mm-dd format to user format
 				$valueArray = explode(',', $value);
-				$isDateValue = false;
+				$isDateValue = $isTimeValue = false;
 				for($i = 0; $i < php7_count($valueArray); $i++) {
 					if(Vtiger_Functions::isDateValue($valueArray[$i])) {
 						$isDateValue = true;
 						$valueArray[$i] = DateTimeField::convertToUserFormat($valueArray[$i]);
 					}
-				}
-				if($isDateValue) {
+
+                    if (Vtiger_Functions::isTimeValue($valueArray[$i])) {
+                        $isTimeValue = true;
+                        $userModel = Users_Record_Model::getCurrentUserModel();
+                        $hourFormat = $userModel->get('hour_format');
+
+                        if ($hourFormat == '24') {
+                            $valueArray[$i] = date('H:i', strtotime($valueArray[$i]));
+                        } else {
+                            $valueArray[$i] = date('g:i A', strtotime($valueArray[$i]));
+                        }
+                    }
+                }
+
+                if ($isDateValue || $isTimeValue) {
 					$value = implode(',', $valueArray);
 				}
 				// End

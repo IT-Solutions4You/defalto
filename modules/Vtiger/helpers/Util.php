@@ -95,7 +95,7 @@ class Vtiger_Util_Helper {
 	 * @return <String>
 	 */
 	public static function pluralize($count, $text) {
-		return $count ." ". (($count == 1) ? vtranslate("$text") : vtranslate("${text}S"));
+		return $count ." ". (($count == 1) ? vtranslate("$text") : vtranslate("{$text}S"));
 	}
 
 	/**
@@ -189,9 +189,15 @@ class Vtiger_Util_Helper {
 			 */
 			if ($currentUser->get('date_format') === 'mm-dd-yyyy') {
 				$dateInUserFormat = str_replace('-', '/', $dateInUserFormat);
-			}
+            } elseif ($currentUser->get('date_format') === 'dd/mm/yyyy') {
+                $dateArray = explode('/', $dateInUserFormat);
+                $temp = $dateArray[0];
+                $dateArray[0] = $dateArray[1];
+                $dateArray[1] = $temp;
+                $dateInUserFormat = implode('/', $dateArray);
+            }
 
-			$date = strtotime($dateInUserFormat);
+            $date = strtotime($dateInUserFormat);
 			$formatedDate = vtranslate('LBL_'.date('D', $date)) . ' ' . date('d', $date) . ' ' . vtranslate('LBL_'.date('M', $date));
 			if (date('Y', $date) != date('Y')) {
 				$formatedDate .= ', '.date('Y', $date);
@@ -269,22 +275,34 @@ class Vtiger_Util_Helper {
 			$dateTimeInUserFormat = Vtiger_Datetime_UIType::getDisplayDateTimeValue($dateTime);
 		}
 
-		[$dateInUserFormat, $timeInUserFormat] = explode(' ', $dateTimeInUserFormat);
-		[$hours, $minutes, $seconds] = explode(':', $timeInUserFormat);
+        [$dateInUserFormat, $timeInUserFormat, $meridiem] = explode(' ', $dateTimeInUserFormat);
 
-		$displayTime = $hours .':'. $minutes;
-		if ($currentUser->get('hour_format') === '12') {
-			$displayTime = Vtiger_Time_UIType::getTimeValueInAMorPM($displayTime);
-		}
+        if ($meridiem && $currentUser->get('hour_format') === '12') {
+            $displayTime = $timeInUserFormat.' '.$meridiem;
+        } else {
+            [$hours, $minutes, $seconds] = explode(':', $timeInUserFormat);
+            $displayTime = $hours . ':' . $minutes;
 
-		/**
+            if ($currentUser->get('hour_format') === '12') {
+                $displayTime = Vtiger_Time_UIType::getTimeValueInAMorPM($displayTime);
+            }
+        }
+
+        /**
 		 * To support strtotime() for 'mm-dd-yyyy' format the separator should be '/'
 		 * For more referrences
 		 * http://php.net/manual/en/datetime.formats.date.php
 		 */
 		if ($currentUser->get('date_format') === 'mm-dd-yyyy') {
 			$dateInUserFormat = str_replace('-', '/', $dateInUserFormat);
-		}
+        } elseif ($currentUser->get('date_format') === 'dd/mm/yyyy') {
+            // strtotime expects the format m/d/y making changes to its convenient
+            $dateArray = explode('/', $dateInUserFormat);
+            $temp = $dateArray[0];
+            $dateArray[0] = $dateArray[1];
+            $dateArray[1] = $temp;
+            $dateInUserFormat = implode('/', $dateArray);
+        }
 
 		$date = strtotime($dateInUserFormat);
 		//Adding date details

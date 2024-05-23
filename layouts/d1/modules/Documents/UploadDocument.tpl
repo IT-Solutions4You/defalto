@@ -24,7 +24,7 @@
 									<input type="hidden" name="relationOperation" value="{$RELATION_OPERATOR}" />
 									<input type="hidden" name="sourceModule" value="{$PARENT_MODULE}" />
 									<input type="hidden" name="sourceRecord" value="{$PARENT_ID}" />
-									{if $RELATION_FIELD_NAME}
+									{if isset($RELATION_FIELD_NAME)}
 										<input type="hidden" name="{$RELATION_FIELD_NAME}" value="{$PARENT_ID}" /> 
 									{/if}
 								{/if}

@@ -39,19 +39,19 @@ class ProjectTask extends CRMEntity {
 	/**
 	 * Mandatory for Listing (Related listview)
 	 */
-	var $list_fields = Array (
-		/* Format: Field Label => Array(tablename, columnname) */
-		// tablename should not have prefix 'vtiger_'
-		'Project Task Name'=> Array('projecttask', 'projecttaskname'),
-		'Start Date'=> Array('projecttask', 'startdate'),
-		'End Date'=> Array('projecttask', 'enddate'),
-		'Type'=>Array('projecttask','projecttasktype'),
-		'Progress'=>Array('projecttask','projecttaskprogress'),
-		'Assigned To' => Array('crmentity','smownerid')
+    var $list_fields = [
+        /* Format: Field Label => Array(tablename, columnname) */
+        // tablename should not have prefix 'vtiger_'
+        'Project Task Name' => ['projecttask' => 'projecttaskname'],
+        'Start Date'        => ['projecttask' => 'startdate'],
+        'End Date'          => ['projecttask' => 'enddate'],
+        'Type'              => ['projecttask' => 'projecttasktype'],
+        'Progress'          => ['projecttask' => 'projecttaskprogress'],
+        'Assigned To'       => ['crmentity' => 'smownerid'],
+    ];
 
-	);
-	var $list_fields_name = Array(
-		/* Format: Field Label => fieldname */
+    var $list_fields_name = array(
+        /* Format: Field Label => fieldname */
 		'Project Task Name'=> 'projecttaskname',
 		'Start Date'=>'startdate',
 		'End Date'=> 'enddate',
@@ -64,15 +64,16 @@ class ProjectTask extends CRMEntity {
 	var $list_link_field = 'projecttaskname';
 
 	// For Popup listview and UI type support
-	var $search_fields = Array(
-		/* Format: Field Label => Array(tablename, columnname) */
-		// tablename should not have prefix 'vtiger_'
-		'Project Task Name'=> Array('projecttask', 'projecttaskname'),
-		'Start Date'=> Array('projecttask', 'startdate'),
-		'Type'=>Array('projecttask','projecttasktype'),
-		'Assigned To' => Array('crmentity','smownerid')
-	);
-	var $search_fields_name = Array(
+    var $search_fields = [
+        /* Format: Field Label => Array(tablename, columnname) */
+        // tablename should not have prefix 'vtiger_'
+        'Project Task Name' => ['projecttask' => 'projecttaskname'],
+        'Start Date'        => ['projecttask' => 'startdate'],
+        'Type'              => ['projecttask' => 'projecttasktype'],
+        'Assigned To'       => ['crmentity' => 'smownerid'],
+    ];
+
+    var $search_fields_name = Array(
 		/* Format: Field Label => fieldname */
 		'Project Task Name'=> 'projecttaskname',
 		'Start Date'=>'startdate',

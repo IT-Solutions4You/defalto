@@ -1,12 +1,11 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 require_once('modules/com_vtiger_workflow/VTEntityCache.inc');
 require_once('modules/com_vtiger_workflow/VTWorkflowUtils.php');
 
@@ -138,7 +137,11 @@ class VTUpdateFieldsTask extends VTTask {
 						$currencyfieldConvertedValue = $focus->column_fields[$fieldValue . "_raw_converted"];
 
 						$fieldValue = $focus->column_fields[$fieldValue];
-					}
+
+                        if (isset($rightOperandFieldType) && $rightOperandFieldType == 'multipicklist' && $fieldDataType == 'string') {
+                            $fieldValue = str_replace(' |##| ', ' ', $fieldValue);
+                        }
+                    }
 					$fieldValueInDB = $fieldValue;
 
 					// for currency field value should be in database format
@@ -265,7 +268,20 @@ class VTUpdateFieldsTask extends VTTask {
 					$fieldValueInDB = $fieldValue;
 				}
 
-				if($fieldInstance && $fieldInstance->getFieldDataType() == 'reference') {
+                if ($fieldInstance && $fieldInstance->getFieldDataType() === 'double') {
+                    //The replacing of UTF-8 non-breaking space characters with space is to handle if the decimal separator is space.
+                    $decimalSeparator = str_replace("\xC2\xA0", ' ', html_entity_decode($current_user->currency_decimal_separator, ENT_QUOTES, $default_charset));
+
+                    if (empty($decimalSeparator)) {
+                        $decimalSeparator = ' ';
+                    }
+
+                    /* When user prference digit grouping separator is dot(.), the dot will be removed while saving.
+                    so the value converted to the user format which will not conflict while saving */
+                    $fieldValue = str_replace(".", "$decimalSeparator", $fieldValue);
+                }
+
+                if($fieldInstance && $fieldInstance->getFieldDataType() == 'reference') {
 						$referenceModuleList = $fieldInstance->getReferenceList();
 						$fieldReferenceModule = $referenceModuleList[0];
 						$recordId = Vtiger_Util_Helper::getRecordId($fieldValue, $fieldReferenceModule,true);

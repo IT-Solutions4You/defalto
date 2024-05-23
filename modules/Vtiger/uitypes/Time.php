@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 class Vtiger_Time_UIType extends Vtiger_Base_UIType {
 
@@ -35,7 +33,11 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType {
 	 */
 	public static function getTimeValueInAMorPM($time) {
 		if($time){
-			list($hours, $minutes, $seconds) = explode(':', $time);
+            if (substr_count($time, ':') < 2) {
+                $time .= ':';
+            } /* to overcome notice of missing index 2 (seconds) below */
+
+			[$hours, $minutes, $seconds] = explode(':', $time);
 			$format = vtranslate('PM');
 
 			if ($hours > 12) {
@@ -63,15 +65,19 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType {
 	 */
 	public static function getTimeValueWithSeconds($time) {
 		if($time){
-			$timeDetails = explode(' ', $time);
-			list($hours, $minutes, $seconds) = explode(':', $timeDetails[0]);
+            if (substr_count($time, ':') < 2) {
+                $time .= ':';
+            }
 
-			//If pm exists and if it not 12 then we need to make it to 24 hour format
-			if ($timeDetails[1] === 'PM' && $hours != '12') {
+			$timeDetails = explode(' ', $time);
+			[$hours, $minutes, $seconds] = explode(':', $timeDetails[0]);
+
+			//If pm exists and if it not 12 then we need to make it to 24-hour format
+            if (isset($timeDetails[1]) && $timeDetails[1] === 'PM' && $hours != '12') {
 				$hours = $hours+12;
 			}
 
-			if($timeDetails[1] === 'AM' && $hours == '12'){
+            if (isset($timeDetails[1]) && $timeDetails[1] === 'AM' && $hours == '12') {
 				$hours = '00';
 			}
 
@@ -119,4 +125,20 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType {
 		return 'uitypes/TimeFieldSearchView.tpl';
 	}
 
+    /**
+     * Retrieves the value to be inserted into the database for a time field.
+     *
+     * If the provided value contains 'AM' or 'PM', it is converted to a time value with seconds.
+     *
+     * @param mixed $value The value to be inserted into the database.
+     * @return mixed The value to be inserted into the database.
+     */
+    public function getDBInsertValue($value)
+    {
+        if (preg_match('/AM|PM/', $value)) {
+            $value = Vtiger_Time_UIType::getTimeValueWithSeconds($value);
+        }
+
+        return $value;
+    }
 }

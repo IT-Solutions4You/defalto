@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 class Settings_Roles_Save_Action extends Vtiger_Action_Controller {
 	
@@ -25,8 +23,13 @@ class Settings_Roles_Save_Action extends Vtiger_Action_Controller {
 		$recordId = $request->get('record');
 		$roleName = $request->get('rolename');
 		$allowassignedrecordsto = $request->get('allowassignedrecordsto');
+        $duplicate = Settings_Roles_Record_Model::getInstanceByName($roleName,array($recordId));
 
-		$moduleModel = Settings_Vtiger_Module_Model::getInstance($qualifiedModuleName);
+        if($duplicate) {
+            throw new Exception(vtranslate('LBL_DUPLICATES_EXIST',$request->getModule(false)));
+        }
+
+        $moduleModel = Settings_Vtiger_Module_Model::getInstance($qualifiedModuleName);
 		if(!empty($recordId)) {
 			$recordModel = Settings_Roles_Record_Model::getInstanceById($recordId);
 		} else {

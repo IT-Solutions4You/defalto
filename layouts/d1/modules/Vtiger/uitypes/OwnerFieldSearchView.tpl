@@ -5,11 +5,11 @@
 * All Rights Reserved.
 *}
 {strip}
-    {assign var="FIELD_INFO" value=$FIELD_MODEL->getFieldInfo()}
+    {assign var="FIELD_INFO" value=$FIELD_MODEL->getFieldInfo()|vtlib_array}
     <div class="select2_search_div">
     {assign var=ASSIGNED_USER_ID value=$FIELD_MODEL->get('name')}
     {assign var=ALL_ACTIVEUSER_LIST value=$FIELD_INFO['picklistvalues'][vtranslate('LBL_USERS')]}
-    {assign var=SEARCH_VALUES value=explode(',',$SEARCH_INFO['searchValue'])}
+    {assign var=SEARCH_VALUES value=explode(',',(isset($SEARCH_INFO['searchValue'])) ? $SEARCH_INFO['searchValue'] : ',')}
     {assign var=SEARCH_VALUES value=array_map("trim",$SEARCH_VALUES)}
 
     {if $FIELD_MODEL->get('uitype') eq '52' || $FIELD_MODEL->get('uitype') eq '77'}

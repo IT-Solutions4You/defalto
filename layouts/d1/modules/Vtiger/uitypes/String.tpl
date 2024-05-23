@@ -12,7 +12,7 @@
         {assign var="FIELD_NAME" value=$FIELD_MODEL->getFieldName()}
     {/if}
     <div class="Vtiger_String_UIType">
-        <input id="{$MODULE}_editView_fieldName_{$FIELD_NAME}" type="text" data-fieldname="{$FIELD_NAME}" data-fieldtype="string" class="inputUITypeString inputElement form-control {if $FIELD_MODEL->isNameField()}nameField{/if}" name="{$FIELD_NAME}" value="{decode_html($FIELD_MODEL->get('fieldvalue'))|htmlentities}"
+        <input id="{$MODULE}_editView_fieldName_{$FIELD_NAME}" type="text" data-fieldname="{$FIELD_NAME}" data-fieldtype="string" class="inputUITypeString inputElement form-control {if $FIELD_MODEL->isNameField()}nameField{/if}" name="{$FIELD_NAME}" value="{decode_html($FIELD_MODEL->get('fieldvalue'))|php7_htmlentities}"
                 {if $FIELD_MODEL->get('uitype') eq '3' || $FIELD_MODEL->get('uitype') eq '4'|| $FIELD_MODEL->isReadOnly()}
                     {if $FIELD_MODEL->get('uitype') neq '106'}
                         readonly

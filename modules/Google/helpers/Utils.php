@@ -1,12 +1,10 @@
 <?php
-/* +***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * *********************************************************************************** */
+ */
 
 class Google_Utils_Helper {
     
@@ -274,6 +272,11 @@ class Google_Utils_Helper {
         $result = $db->pquery($sql,array($user->getId()));
         for($i=0;$i<$db->num_rows($result);$i++) {  
             $row = $db->fetch_row($result);
+
+            if (in_array($row['google_field'], ['gd:website', 'content'])) {
+                continue;
+            }
+
             $fieldmapping[$row['vtiger_field']] = array(
                 'google_field_name' => $row['google_field'],
                 'google_field_type' => $row['google_field_type'],

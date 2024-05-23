@@ -144,14 +144,16 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
             var clonedDateElement = '<input type="text" class="dateField fieldValue inputElement form-control" value="' + value + '" data-date-format="' + dataFormat + '" data-input="true" >'
             clonedPopupUi.find('.fieldValueContainer div').prepend(clonedDateElement);
          } else if (fieldValueElement.hasClass('time')) {
-            clonedPopupUi.find('.textType').find('option[value="rawtext"]').attr('data-ui', 'input');
-            if (valueType == 'rawtext') {
-               var value = fieldValueElement.val();
-            } else {
-               value = '';
-            }
-            var clonedTimeElement = '<input type="text" style="width: 30%;" class="timepicker-default fieldValue inputElement" value="' + value + '" data-input="true" >'
-            clonedPopupUi.find('.fieldValueContainer div').prepend(clonedTimeElement);
+             clonedPopupUi.find('.textType').find('option[value="rawtext"]').attr('data-ui', 'input');
+             const timeFormat = fieldValueElement.data('time-format');
+             let value = '';
+
+             if (valueType === 'rawtext') {
+                 value = fieldValueElement.val();
+             }
+
+             let clonedTimeElement = '<input type="text" style="width: 30%;" class="timepicker-default fieldValue inputElement" value="' + value + '" data-format="' + timeFormat + '" data-input="true" >'
+             clonedPopupUi.find('.fieldValueContainer div').prepend(clonedTimeElement);
          } else if (fieldValueElement.hasClass('boolean')) {
             clonedPopupUi.find('.textType').find('option[value="rawtext"]').attr('data-ui', 'input');
             if (valueType == 'rawtext') {
@@ -599,12 +601,10 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
     * @return : boolean true/false
     */
    isEmptyFieldSelected: function (fieldSelect) {
-      var selectedOption = fieldSelect.find('option:selected');
-      //assumption that empty field will be having value none
-      if (selectedOption.val() == 'none') {
-         return true;
-      }
-      return false;
+       const selectedOption = fieldSelect.find('option:selected');
+       //assumption that empty field will be having value none
+
+       return selectedOption.val() === 'none' || selectedOption.val() === '';
    },
    getVTCreateEntityTaskFieldList: function () {
       return new Array('fieldname', 'value', 'valuetype', 'modulename');
@@ -947,7 +947,21 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
 
       fieldUiHolder.html(fieldSpecificUi);
 
-      if (fieldSpecificUi.is('input.select2')) {
+       if (fieldInfo.type === 'picklist' || fieldInfo.type === 'multipicklist') {
+           const editablePicklistValues = Object.values(fieldInfo.editablepicklistvalues);
+           fieldSpecificUi.val(fieldInfo.value);
+           jQuery('.btn-success').on('click', function (event) {
+               const enteredValue = fieldSpecificUi.val().trim();
+
+               if (!editablePicklistValues.includes(enteredValue)) {
+                   const message = app.vtranslate('INVALID PICKLIST');
+                   app.helper.showErrorNotification({'message': message})
+                   event.preventDefault();
+               }
+           });
+       }
+
+       if (fieldSpecificUi.is('input.select2')) {
          var tagElements = fieldSpecificUi.data('tags');
          var params = {tags: tagElements, tokenSeparators: [","]}
          vtUtils.showSelect2ElementView(fieldSpecificUi, params)

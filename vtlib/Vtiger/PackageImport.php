@@ -1,12 +1,11 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 include_once('vtlib/Vtiger/PackageExport.php');
 include_once('vtlib/Vtiger/Unzip.php');
 include_once('vtlib/Vtiger/Module.php');
@@ -186,6 +185,7 @@ class Vtiger_PackageImport extends Vtiger_PackageExport {
 		$languagefile_found = false;
 		$layoutfile_found = false;
 		$vtigerversion_found = false;
+        $extensionfile_found = false;
 
 		$modulename = null;
 		$language_modulename = null;
