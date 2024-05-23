@@ -128,7 +128,7 @@ jQuery.Class('PDFMaker_FreeActions_Js', {
     registerPDFSelectInput: function (container) {
         let self = this;
 
-        jQuery('#use_common_template', container).change(function () {
+        jQuery('[name=use_common_template]', container).change(function () {
             let element = jQuery(this);
 
             self.controlPDFSelectInput(container, element);
