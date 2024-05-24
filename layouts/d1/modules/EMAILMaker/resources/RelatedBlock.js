@@ -81,18 +81,31 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
             if (saved_secmodule !== secmodule) {
                 saved_secmodule_element.val(secmodule);
 
-                let params = {
+                app.helper.showProgress();
+
+                let params2 = {
                     'module': 'EMAILMaker',
-                    'action': 'IndexAjax',
-                    'mode': 'GetRelatedBlockColumns',
-                    'type': 'columns',
+                    'view': 'GetRelatedBlockFilters',
                     'secmodule': secmodule,
                     'primodule': primodule
                 };
 
-                app.helper.showProgress();
+                app.request.post({'data': params2}).then(
+                    function (err, response) {
+                        jQuery('#step3').html(response);
+                        EMAILMaker_RelatedBlockJs.registerEvents2();
+                    }
+                );
 
-                let ModuleFieldsElements = jQuery('.relatedblockColumns');
+                let ModuleFieldsElements = jQuery('.relatedblockColumns'),
+                    params = {
+                        'module': 'EMAILMaker',
+                        'action': 'IndexAjax',
+                        'mode': 'GetRelatedBlockColumns',
+                        'type': 'columns',
+                        'secmodule': secmodule,
+                        'primodule': primodule
+                    };
 
                 app.request.post({'data': params}).then(
                     function (err, response) {
@@ -132,20 +145,6 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
 
                         jQuery("#step1").addClass('hide');
                         jQuery("#step2").removeClass('hide');
-                    }
-                );
-
-                let params2 = {
-                    'module': 'EMAILMaker',
-                    'view': 'GetRelatedBlockFilters',
-                    'secmodule': secmodule,
-                    'primodule': primodule
-                };
-
-                app.request.post({'data': params2}).then(
-                    function (err, response) {
-                        jQuery('#step3').html(response);
-                        EMAILMaker_RelatedBlockJs.registerEvents2();
                     }
                 );
             } else {

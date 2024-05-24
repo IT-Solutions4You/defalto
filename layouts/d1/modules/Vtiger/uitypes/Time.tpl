@@ -19,7 +19,7 @@
 		{if php7_count($FIELD_INFO['validator'])}
 			data-specific-rules='{ZEND_JSON::encode($FIELD_INFO["validator"])}'
 		{/if} data-rule-time="true"/>
-		<span class="input-group-addon" style="width: 30px;">
+		<span class="input-group-addon input-group-text">
 			<i class="fa fa-clock-o"></i>
 		</span>
 	</div>

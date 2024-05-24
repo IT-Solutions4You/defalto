@@ -19,10 +19,10 @@
             {$RECORD_STRUCTURE[$key] = $BLOCK_FIELDS}
         {/foreach}
     {/foreach}
-    <div class="widget_header p-3 border-bottom">
+    <div class="widget_header border-bottom p-3">
         <h4>{vtranslate('LBL_FILTERS','EMAILMaker')}</h4>
     </div>
-    <div class="widget_contents p-3">
+    <div class="container-fluid p-3">
         {include file='AdvanceFilter.tpl'|@vtemplate_path RECORD_STRUCTURE=$RECORD_STRUCTURE ADVANCE_CRITERIA=$SELECTED_ADVANCED_FILTER_FIELDS COLUMNNAME_API=getReportFilterColumnName}
     </div>
 {/strip}
