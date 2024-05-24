@@ -5,6 +5,7 @@
  * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
  */
+
 class Vtiger_Reference_UIType extends Vtiger_Base_UIType {
 
 	/**
@@ -61,22 +62,33 @@ class Vtiger_Reference_UIType extends Vtiger_Base_UIType {
 		return '';
 	}
 
-	/**
-	 * Function to get the display value in edit view
-	 * @param reference record id
-	 * @return link
-	 */
-	public function getEditViewDisplayValue($value) {
-		$referenceModule = $this->getReferenceModule($value);
-		if($referenceModule) {
-			$referenceModuleName = $referenceModule->get('name');
-			$entityNames = getEntityName($referenceModuleName, array($value));
-			return $entityNames[$value];
-		}
-		return '';
-	}
+    /**
+     * Function to get the display value in edit view
+     *
+     * @param $value - record id
+     *
+     * @return string
+     * @throws Exception
+     */
+    public function getEditViewDisplayValue($value): string
+    {
+        if (!$value) {
+            return '';
+        }
 
-	public function getListSearchTemplateName() {
+        $referenceModule = $this->getReferenceModule($value);
+
+        if (!$referenceModule) {
+            return '';
+        }
+
+        $referenceModuleName = $referenceModule->get('name');
+        $entityNames = getEntityName($referenceModuleName, [$value]);
+
+        return $entityNames[$value];
+    }
+
+    public function getListSearchTemplateName() {
 		$fieldModel = $this->get('field');
 		if($fieldModel->get('uitype') == '52' || $fieldModel->get('uitype') == '77'){
 			return 'uitypes/OwnerFieldSearchView.tpl';

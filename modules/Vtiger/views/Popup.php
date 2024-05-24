@@ -9,6 +9,7 @@
 class Vtiger_Popup_View extends Vtiger_Footer_View {
 	protected $listViewEntries = false;
 	protected $listViewHeaders = false;
+    protected $listViewLinks = false;
 
 	public function requiresPermission(Vtiger_Request $request){
 		$permissions = parent::requiresPermission($request);

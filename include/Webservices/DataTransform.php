@@ -132,12 +132,12 @@
 			}
 
 			if(!isset($row['id'])){
-				if($row[$meta->getObectIndexColumn()] ){
-					$row['id'] = vtws_getId($meta->getEntityId(),$row[$meta->getObectIndexColumn()]);
-				}else{
-					//TODO Handle this.
-					//echo 'error id noy set' ;
-				}
+                if (isset($row[$meta->getObectIndexColumn()])) {
+                    $row['id'] = vtws_getId($meta->getEntityId(), $row[$meta->getObectIndexColumn()]);
+                } else {
+                    //TODO Handle this.
+                    //echo 'error id noy set' ;
+                }
 			}else if(isset($row[$meta->getObectIndexColumn()]) && strcmp($meta->getObectIndexColumn(),"id")!==0){
 				unset($row[$meta->getObectIndexColumn()]);
 			}
@@ -214,7 +214,7 @@
             foreach ($moduleFields as $fieldName => $fieldObj) {
                 if (in_array($fieldObj->getUIType(), $supportedUITypes)) {
                     //while doing retrieve operation we have record_id and on query operation we have id.
-                    $id = $row['record_id'] ? $row['record_id'] : $row['id'];
+                    $id = $row['record_id'] ?? ($row['id'] ?? null);
                     $ids = Vtiger_Functions::getAttachmentIds($id, $meta->getEntityId());
                 if($ids) {
                         foreach($ids as $id){
