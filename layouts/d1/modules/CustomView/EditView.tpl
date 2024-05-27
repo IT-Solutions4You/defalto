@@ -78,27 +78,6 @@
 											{/foreach}
 										</optgroup>
 									{/foreach}
-									{*Required to include event fields for columns in calendar module advanced filter*}
-									{foreach key=BLOCK_LABEL item=BLOCK_FIELDS from=$EVENT_RECORD_STRUCTURE}
-										<optgroup label='{vtranslate($BLOCK_LABEL, 'Events')}'>
-											{foreach key=FIELD_NAME item=FIELD_MODEL from=$BLOCK_FIELDS}
-												{* To not show starred field in custom view select *}
-												{if $FIELD_MODEL->getDisplayType() == '6'}
-													{continue}
-												{/if}
-												{if $FIELD_MODEL->isMandatory()}
-													{array_push($MANDATORY_FIELDS, $FIELD_MODEL->getCustomViewColumnName())}
-												{/if}
-												<option value="{$FIELD_MODEL->getCustomViewColumnName()}" data-field-name="{$FIELD_NAME}"
-													{if in_array(decode_html($FIELD_MODEL->getCustomViewColumnName()), $SELECTED_FIELDS)}
-														selected
-													{/if}
-													>{Vtiger_Util_Helper::toSafeHTML(vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE))}
-													{if $FIELD_MODEL->isMandatory() eq true} <span>*</span> {/if}
-												</option>
-											{/foreach}
-										</optgroup>
-									{/foreach}
 								</select>
 								<input type="hidden" name="columnslist" value='{Vtiger_Functions::jsonEncode($SELECTED_FIELDS)}' />
 								<input id="mandatoryFieldsList" type="hidden" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($MANDATORY_FIELDS))}' />

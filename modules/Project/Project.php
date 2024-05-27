@@ -5,6 +5,7 @@
  * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
  */
+
 class Project extends CRMEntity {
     public string $moduleName = 'Project';
     public string $parentName = 'Analytics';
@@ -549,7 +550,9 @@ class Project extends CRMEntity {
 	 */
 	public function getProjectTasks($recordId) {
 		$db = PearDatabase::getInstance();
-		$sql = "SELECT projecttaskid FROM vtiger_projecttask 
+        $projectTasks = [];
+
+        $sql = "SELECT projecttaskid FROM vtiger_projecttask 
 				INNER JOIN vtiger_crmentity ON vtiger_projecttask.projecttaskid = vtiger_crmentity.crmid
 				WHERE projectid=? AND vtiger_crmentity.deleted=0";
 		$result = $db->pquery($sql, array($recordId));

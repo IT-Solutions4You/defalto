@@ -17,11 +17,15 @@
                     <input type="hidden" name="viewname" value="{$VIEWNAME}" />
                     <input type="hidden" name="module" value="{$MODULE}"/>
                     <input type="hidden" name="view" value="ComposeEmail"/>
-                    <input type="hidden" name="search_key" value= "{$SEARCH_KEY}" />
+                    {if isset($SEARCH_KEY)}
+                        <input type="hidden" name="search_key" value= "{$SEARCH_KEY}" />
+                    {/if}
                     <input type="hidden" name="operator" value="{$OPERATOR}" />
-                    <input type="hidden" name="search_value" value="{$ALPHABET_VALUE}" />
+                    {if isset($ALPHABET_VALUE)}
+                        <input type="hidden" name="search_value" value="{$ALPHABET_VALUE}" />
+                    {/if}
                     <input type="hidden" name="tag_params" value={ZEND_JSON::encode($TAG_PARAMS)}>
-                    {if $SEARCH_PARAMS}
+                    {if isset($SEARCH_PARAMS)}
                         <input type="hidden" name="search_params" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($SEARCH_PARAMS))}' />
                     {/if}
                     <input type="hidden" name="fieldModule" value={$SOURCE_MODULE} />
@@ -65,13 +69,13 @@
                                 {/if}
                             {/if}
                     </div>
-                    {if $RELATED_LOAD eq true}
+                    {if isset($RELATED_LOAD) && $RELATED_LOAD eq true}
                         <input type="hidden" name="relatedLoad" value={$RELATED_LOAD} />
                     {/if}
                 </div>
                 <div class="preferenceDiv" style="padding: 0px 0px 10px 35px;">
                     <label class="checkbox displayInlineBlock">
-                        <input type="checkbox" name="saveRecipientPrefs" id="saveRecipientPrefs" {if $RECIPIENT_PREF_ENABLED}checked="true"{/if}/>&nbsp;&nbsp;&nbsp;
+                        <input type="checkbox" name="saveRecipientPrefs" id="saveRecipientPrefs" {if isset($RECIPIENT_PREF_ENABLED) && $RECIPIENT_PREF_ENABLED}checked="true"{/if}/>&nbsp;&nbsp;&nbsp;
                         {vtranslate('LBL_REMEMBER_MY_PREF',$MODULE)}&nbsp;&nbsp;
                         </label>
                     <i class="fa fa-info-circle" title="{vtranslate('LBL_EDIT_EMAIL_PREFERENCE_TOOLTIP', $MODULE)}"></i>

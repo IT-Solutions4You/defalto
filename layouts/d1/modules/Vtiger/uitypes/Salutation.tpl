@@ -14,7 +14,7 @@
                     {if $SALUTATION_FIELD_MODEL->isEmptyPicklistOptionAllowed()}
                         <option value="">{vtranslate('LBL_NONE', $MODULE)}</option>{/if}
                     {foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
-                        <option value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_NAME)}" {if trim(decode_html($SALUTATION_FIELD_MODEL->get('fieldvalue'))) eq trim($PICKLIST_NAME)} selected {/if}>{$PICKLIST_VALUE}</option>
+                        <option value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_NAME)}" {if isset($SALUTATION_FIELD_MODEL->get('fieldvalue')) && trim(decode_html($SALUTATION_FIELD_MODEL->get('fieldvalue'))) eq trim($PICKLIST_NAME)} selected {/if}>{$PICKLIST_VALUE}</option>
                     {/foreach}
                 </select>
             </div>

@@ -6,7 +6,7 @@
 *}
 {strip}
     <div class="col-md">
-        {if $MULTI_SELECT}
+        {if isset($MULTI_SELECT)}
             {if !empty($LISTVIEW_ENTRIES)}<button class="select btn btn-outline-secondary" disabled="disabled"><strong>{vtranslate('LBL_ADD', $MODULE)}</strong></button>{/if}
         {else}
             &nbsp;

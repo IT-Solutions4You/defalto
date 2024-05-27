@@ -16,7 +16,7 @@
         <div class="summaryWidgetContainer">
             <input type="hidden" name="module" value="{$FOR_MODULE}" />
             <h4>{'LBL_TOTAL_RECORDS_SCANNED'|@vtranslate:$MODULE}&nbsp;&nbsp;:&nbsp;&nbsp;{$IMPORT_RESULT.TOTAL}</h4>
-            {if $ERROR_MESSAGE neq ''}<span>{$ERROR_MESSAGE}</span>{/if}
+            {if isset($ERROR_MESSAGE) && $ERROR_MESSAGE neq ''}<span>{$ERROR_MESSAGE}</span>{/if}
             <hr>
             <div>{include file="Import_Result_Details.tpl"|@vtemplate_path:'Import'}</div>
         </div>

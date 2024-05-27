@@ -629,11 +629,12 @@ class CRMEntity {
 						if(php7_count($IMG_FILES)){
 							foreach($IMG_FILES as $fileIndex => $file) {
 								if($file['error'] == 0 && $file['name'] != '' && $file['size'] > 0) {
-									if($_REQUEST[$fileIndex.'_hidden'] != '')
+                                    if (isset($_REQUEST[$fileIndex . '_hidden']) && $_REQUEST[$fileIndex . '_hidden'] != '') {
                                         $file['original_name'] = vtlib_purify($_REQUEST[$fileIndex . '_hidden']);
-									else {
-										$file['original_name'] = stripslashes($file['name']);
-									}
+                                    } else {
+                                        $file['original_name'] = stripslashes($file['name']);
+                                    }
+
 									$file['original_name'] = str_replace('"','',$file['original_name']);
 									$attachmentId = $this->uploadAndSaveFile($this->id,$module,$file,'Image');
 									if($attachmentId) {
@@ -2032,7 +2033,7 @@ class CRMEntity {
 	 */
 	function transferRelatedRecords($module, $transferEntityIds, $entityId) {
 		global $adb, $log;
-		$log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
+		$log->debug("Entering function transferRelatedRecords ($module, " . implode(',', $transferEntityIds) . ", $entityId)");
 		foreach ($transferEntityIds as $transferId) {
 
 			// Pick the records related to the entity to be transfered, but do not pick the once which are already related to the current entity.
@@ -2937,7 +2938,7 @@ class CRMEntity {
 
 		// Select Custom Field Table Columns if present
 		if (isset($this->customFieldTable))
-			$query .= ", " . $this->customFieldTable[0] . ".* ";
+            $selectClause .= ", " . $this->customFieldTable[0] . ".* ";
 
 		$fromClause = " FROM $this->table_name";
 
@@ -2976,6 +2977,8 @@ class CRMEntity {
 		}
 
 		$i = 1;
+        $duplicateCheckClause = '';
+
 		foreach($tableColumns as $tableColumn){
 			$tableInfo = explode('.', $tableColumn);
 			$duplicateCheckClause .= " ifnull($tableColumn,'null') = ifnull(temp.$tableInfo[1],'null')";

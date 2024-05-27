@@ -244,10 +244,13 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 		$emailFieldsInfo = array();
 		$moduleModel = Vtiger_Module_Model::getInstance($sourceModule);
 		$recipientPrefModel = Vtiger_RecipientPreference_Model::getInstance($sourceModule);
-		
-		if($recipientPrefModel)
-		$recipientPrefs = $recipientPrefModel->getPreferences();
-		$moduleEmailPrefs = $recipientPrefs[$moduleModel->getId()];
+        $recipientPrefs = array();
+
+        if ($recipientPrefModel) {
+            $recipientPrefs = $recipientPrefModel->getPreferences();
+        }
+
+		$moduleEmailPrefs = isset($recipientPrefs[$moduleModel->getId()]) ? $recipientPrefs[$moduleModel->getId()] : [];
 		$emailFields = $moduleModel->getFieldsByType('email');
         $accesibleEmailFields = array();
 		

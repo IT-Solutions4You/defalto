@@ -68,7 +68,7 @@
                     {/foreach}
                 </td>
             </tr>
-            {if $MULTI_CURRENCY}
+            {if isset($MULTI_CURRENCY) && $MULTI_CURRENCY}
                 <tr id="lineitem_currency_container">
                     <td>{vtranslate('LBL_IMPORT_LINEITEMS_CURRENCY',$MODULE)}</td>
                     <td>

@@ -113,7 +113,8 @@ class Vtiger_Util_Helper {
 	 */
 	public static function toVtiger6SafeHTML($input) {
 		$allowableTags = '<a><br>';
-		return strip_tags($input, $allowableTags);
+
+		return strip_tags((string)$input, $allowableTags);
 	}
 	/**
 	 * Function to validate the input with given pattern.

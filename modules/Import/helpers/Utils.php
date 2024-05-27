@@ -1,15 +1,10 @@
 <?php
-
-/* +***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * *********************************************************************************** */
-//required for auto detecting file endings for files create in mac
-ini_set("auto_detect_line_endings", true);
+ */
 
 class Import_Utils_Helper {
 
@@ -142,6 +137,7 @@ class Import_Utils_Helper {
 	}
 
 	public static function getAssignedToUserList($module) {
+        $current_user = Users_Record_Model::getCurrentUserModel();
 		$cache = Vtiger_Cache::getInstance();
 		if($cache->getUserList($module,$current_user->id)){
 			return $cache->getUserList($module,$current_user->id);
@@ -153,6 +149,7 @@ class Import_Utils_Helper {
 	}
 
 	public static function getAssignedToGroupList($module) {
+        $current_user = Users_Record_Model::getCurrentUserModel();
 		$cache = Vtiger_Cache::getInstance();
 		if($cache->getGroupList($module,$current_user->id)){
 			return $cache->getGroupList($module,$current_user->id);

@@ -1,12 +1,10 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 
 class Vtiger_List_View extends Vtiger_Index_View {
 	protected $listViewEntries = false;
@@ -56,7 +54,7 @@ class Vtiger_List_View extends Vtiger_Index_View {
                 $this->listViewModel = Vtiger_ListView_Model::getInstance($moduleName, $cvId, $listHeaders);
 		$orderParams = $this->listViewModel->getSortParamsSession($listViewSessionKey);
 
-		if(empty($listHeaders) && is_array($orderParams)) {
+		if(empty($listHeaders) && is_array($orderParams) && array_key_exists('list_headers', $orderParams)) {
 			$listHeaders = $orderParams['list_headers'];
 		}
 
@@ -216,7 +214,8 @@ class Vtiger_List_View extends Vtiger_Index_View {
 			$orderBy = '';
 			$sortOrder = '';
 		}
-		if(empty($listHeaders) && is_array($orderParams)) {
+
+        if(empty($listHeaders) && is_array($orderParams) && array_key_exists('list_headers', $orderParams)) {
 			$listHeaders = $orderParams['list_headers'];
 		}
                 
@@ -226,24 +225,26 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		}
                 
 		if(empty($orderBy) && empty($searchValue) && empty($pageNumber)) {
-			if($orderParams) {
-				$pageNumber = $orderParams['page'];
-				$orderBy = $orderParams['orderby'];
-				$sortOrder = $orderParams['sortorder'];
-				$searchKey = $orderParams['search_key'];
-				$searchValue = $orderParams['search_value'];
-				$operator = $orderParams['operator'];
-                                if(empty($tagParams)){
-					$tagParams = $orderParams['tag_params'];
-				}
-				if(empty($searchParams)) {
-					$searchParams = $orderParams['search_params']; 
-				}
+            if ($orderParams) {
+                $pageNumber = $orderParams['page'] ?? '';
+                $orderBy = $orderParams['orderby'] ?? '';
+                $sortOrder = $orderParams['sortorder'] ?? '';
+                $searchKey = $orderParams['search_key'] ?? '';
+                $searchValue = $orderParams['search_value'] ?? '';
+                $operator = $orderParams['operator'];
 
-				if(empty($starFilterMode)) {
-					$starFilterMode = $orderParams['star_filter_mode'];
-				}
-			}
+                if (empty($tagParams)) {
+                    $tagParams = $orderParams['tag_params'] ?? '';
+                }
+
+                if (empty($searchParams)) {
+                    $searchParams = $orderParams['search_params'] ?? '';
+                }
+
+                if (empty($starFilterMode)) {
+                    $starFilterMode = $orderParams['star_filter_mode'] ?? '';
+                }
+            }
 		} else if($request->get('nolistcache') != 1) {
 			$params = array('page' => $pageNumber, 'orderby' => $orderBy, 'sortorder' => $sortOrder, 'search_key' => $searchKey,
 				'search_value' => $searchValue, 'operator' => $operator, 'tag_params' => $tagParams,'star_filter_mode'=> $starFilterMode,'search_params' =>$searchParams);

@@ -16,14 +16,14 @@
         <input type="hidden" name="file_encoding" value='{$USER_INPUT->get('file_encoding')}'/>
         <input type="hidden" name="delimiter" value='{$USER_INPUT->get('delimiter')}'/>
         {assign var=LABELS value=[]}
-        {if $FORMAT eq 'vcf'}
+        {if isset($FORMAT) && $FORMAT eq 'vcf'}
             {$LABELS["step1"] = 'LBL_UPLOAD_VCF'}
-        {elseif $FORMAT eq 'ics'}
+        {elseif isset($FORMAT) && $FORMAT eq 'ics'}
             {$LABELS["step1"] = 'LBL_UPLOAD_ICS'}
         {else}
             {$LABELS["step1"] = 'LBL_UPLOAD_CSV'}
         {/if}
-        {if $DUPLICATE_HANDLING_NOT_SUPPORTED eq 'true'}
+        {if isset($DUPLICATE_HANDLING_NOT_SUPPORTED) && $DUPLICATE_HANDLING_NOT_SUPPORTED eq 'true'}
             {$LABELS["step3"] = 'LBL_FIELD_MAPPING'}
         {else}
             {$LABELS["step2"] = 'LBL_DUPLICATE_HANDLING'}

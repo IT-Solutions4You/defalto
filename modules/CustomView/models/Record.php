@@ -352,7 +352,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 				if(empty($groupInfo)) continue;
 
 				$groupColumns = $groupInfo['columns'];
-				$groupCondition = $groupInfo['condition'];
+				$groupCondition = $groupInfo['condition'] ?? '';
 
 				foreach($groupColumns as $columnIndex => $columnCondition) {
 					if(empty($columnCondition)) continue;
@@ -424,7 +424,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 					// Update the condition expression for the group to which the condition column belongs
 					$groupConditionExpression = '';
 					if(!empty($advFilterList[$groupIndex]["conditionexpression"])) {
-						$groupConditionExpression = $advFilterList[$groupIndex]["conditionexpression"];
+						$groupConditionExpression = $advFilterList[$groupIndex]['conditionexpression'] ?? '';
 					}
 					$groupConditionExpression = $groupConditionExpression .' '. $columnIndex .' '. $advFilterColumnCondition;
 					$advFilterList[$groupIndex]["conditionexpression"] = $groupConditionExpression;
