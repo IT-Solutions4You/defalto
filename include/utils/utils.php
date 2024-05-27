@@ -1,17 +1,10 @@
 <?php
-/*********************************************************************************
- * The contents of this file are subject to the SugarCRM Public License Version 1.1.2
- * ("License"); You may not use this file except in compliance with the
- * License. You may obtain a copy of the License at http://www.sugarcrm.com/SPL
- * Software distributed under the License is distributed on an  "AS IS"  basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- * the specific language governing rights and limitations under the License.
- * The Original Code is:  SugarCRM Open Source
- * The Initial Developer of the Original Code is SugarCRM, Inc.
- * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.;
+/**
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
- ********************************************************************************/
+ */
 /*********************************************************************************
  * $Header$
  * Description:  Includes generic helper functions used throughout the application.
@@ -94,13 +87,13 @@ function get_user_array($add_blank=true, $status="Active", $assigned_user="",$pr
 							  vtiger_users.first_name as first_name ,vtiger_users.last_name as last_name, vtiger_users.userlabel AS userlabel 
 							  from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like ? and status='Active' union
 							  select shareduserid as id,vtiger_users.user_name as user_name ,
-							  vtiger_users.first_name as first_name ,vtiger_users.last_name as last_name,vtiger_users.userlabel AS userlabel from vtiger_tmp_write_user_sharing_per inner join vtiger_users on vtiger_users.id=vtiger_tmp_write_user_sharing_per.shareduserid where status='Active' and vtiger_tmp_write_user_sharing_per.userid=? and vtiger_tmp_write_user_sharing_per.tabid=? and (user_name != 'admin' OR is_owner=1)";
+							  vtiger_users.first_name as first_name ,vtiger_users.last_name as last_name,vtiger_users.userlabel AS userlabel from vtiger_tmp_write_user_sharing_per inner join vtiger_users on vtiger_users.id=vtiger_tmp_write_user_sharing_per.shareduserid where status='Active' and vtiger_tmp_write_user_sharing_per.userid=? and vtiger_tmp_write_user_sharing_per.tabid=?";
 					$params = array($current_user->id, $current_user_parent_role_seq."::%", $current_user->id, getTabid($module));
 				}
 				else
 				{
 					$log->debug("Sharing is Public. All vtiger_users should be listed");
-					$query = "SELECT id, user_name,first_name,last_name,userlabel from vtiger_users WHERE status=? and (user_name != 'admin' OR is_owner=1)";
+					$query = 'SELECT id, user_name,first_name,last_name,userlabel from vtiger_users WHERE status=?';
 					$params = array($status);
 				}
 		}
@@ -245,9 +238,9 @@ function return_specified_module_language($language, $module) {
  */
 function decide_to_html() {
 	global $doconvert, $inUTF8, $default_charset;
- 	$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : ''; 
- 		     
-    $inUTF8 = (strtoupper($default_charset) == 'UTF-8'); 
+ 	$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
+
+    $inUTF8 = (strtoupper($default_charset ?  : '') == 'UTF-8');
 
     $doconvert = true; 
 	if ($action == 'ExportData') {
@@ -1217,6 +1210,11 @@ function getValidDBInsertDateValue($value) {
 	global $log;
 	$log->debug("Entering getValidDBInsertDateValue(".$value.") method ...");
 	$value = trim($value);
+
+    if (empty($value)) {
+        return null;
+    }
+
 	$delim = array('/','.');
 	foreach ($delim as $delimiter){
 		$x = strpos($value, $delimiter);
@@ -1399,9 +1397,9 @@ function getCurrencyDecimalPlaces($user = null) {
     global $current_user;
 
 	$currency_decimal_places = 2;
-    if (!empty($user)) {
+    if (!empty($user) && isset($user->no_of_currency_decimals)) {
         $currency_decimal_places = $user->no_of_currency_decimals;
-    } else if ($current_user) {
+    } elseif ($current_user && isset($current_user->no_of_currency_decimals)) {
         $currency_decimal_places = $current_user->no_of_currency_decimals;
     }
     return (int)$currency_decimal_places;

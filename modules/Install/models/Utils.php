@@ -569,4 +569,33 @@ class Install_Utils_Model {
 		$client = new Vtiger_Net_Client("https://stats.vtiger.com/register.php");
 		@$client->doPost(array("name" => $name, "email" => $email, "industry" => $industry), 5);
 	}
+
+    /**
+     * @param Vtiger_Request $request
+     * @return bool
+     */
+    public static function saveSMTPServer(Vtiger_Request $request): bool
+    {
+        [$server, $port] = explode(':', $request->get('smtp_server', ''));
+        $username = $request->get('smtp_username', '');
+        $password = $request->get('smtp_password', '');
+
+        if (empty($server) || empty($username) || empty($password)) {
+            return false;
+        }
+
+        $outgoingServerModel = new Settings_Vtiger_Systems_Model();
+        $outgoingServerModel->setData([
+            'server' => $server,
+            'server_port' => $port,
+            'server_username' => $username,
+            'server_password' => $password,
+            'server_type' => 'email',
+            'smtp_auth' => $request->get('smtp_authentication', 'off'),
+            'from_email_field' => $request->get('smtp_from_email', ''),
+        ]);
+        $outgoingServerModel->save($request);
+
+        return true;
+    }
 }

@@ -685,7 +685,7 @@ jQuery.validator.addMethod("PositiveNumber",function(value,element,params){
 
 jQuery.validator.addMethod("percentage", function(value, element, params){
 		var decimalSeparator = app.getDecimalSeparator();
-		var strippedValue = value.replace(decimalSeparator, '');
+	let strippedValue = value.replace(/[^\d,]/g, '');
 		var spacePattern = /\s/;
 		if(spacePattern.test(decimalSeparator)) {
 			strippedValue = strippedValue.replace(/ /g, '');

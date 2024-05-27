@@ -64,4 +64,6 @@ $languageStrings = array(
 	'MSG_DB_ROOT_USER_NOT_AUTHORIZED' => 'Wiadomość: Określony użytkownik root bazy danych nie ma uprawnień do tworzenia bazy danych lub nazwy bazy danych zawiera znaki specjalne. Spróbuj zmienić ustawienia bazy danych',
 	'ERR_DB_NOT_FOUND' => 'Taka baza danych nie została znaleziona. Spróbuj zmienić ustawienia bazy danych',
 	'LBL_PASSWORD_MISMATCH' => 'Proszę wprowadzić ponownie hasła. Hasła do siebie nie pasują.',
+    'LBL_SMTP_SERVER_CONFIG' => 'Konfiguracja serwera poczty wychodzącej',
+    'LBL_SKIP' => 'Pominąć',
 );

@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 	class DataTransform{
 
@@ -134,18 +132,18 @@
 			}
 
 			if(!isset($row['id'])){
-				if($row[$meta->getObectIndexColumn()] ){
-					$row['id'] = vtws_getId($meta->getEntityId(),$row[$meta->getObectIndexColumn()]);
-				}else{
-					//TODO Handle this.
-					//echo 'error id noy set' ;
-				}
+                if (isset($row[$meta->getObectIndexColumn()])) {
+                    $row['id'] = vtws_getId($meta->getEntityId(), $row[$meta->getObectIndexColumn()]);
+                } else {
+                    //TODO Handle this.
+                    //echo 'error id noy set' ;
+                }
 			}else if(isset($row[$meta->getObectIndexColumn()]) && strcmp($meta->getObectIndexColumn(),"id")!==0){
 				unset($row[$meta->getObectIndexColumn()]);
 			}
 
 			foreach ($row as $field => $value) {
-				$row[$field] = html_entity_decode($value, ENT_QUOTES, $default_charset);
+                $row[$field] = $value ? html_entity_decode($value, ENT_QUOTES, $default_charset) : $value;
 			}
 			return $row;
 		}
@@ -154,7 +152,11 @@
 			global $adb,$log;
 			$references = $meta->getReferenceFieldDetails();
 			foreach($references as $field=>$typeList){
-				if($row[$field]){
+                if ($meta->getEntityName() === 'Users' && $field === 'roleid') {
+                    continue;
+                }
+
+                if($row[$field]){
 					$found = false;
 					foreach ($typeList as $entity) {
 						$webserviceObject = VtigerWebserviceObject::fromName($adb,$entity);
@@ -212,7 +214,7 @@
             foreach ($moduleFields as $fieldName => $fieldObj) {
                 if (in_array($fieldObj->getUIType(), $supportedUITypes)) {
                     //while doing retrieve operation we have record_id and on query operation we have id.
-                    $id = $row['record_id'] ? $row['record_id'] : $row['id'];
+                    $id = $row['record_id'] ?? ($row['id'] ?? null);
                     $ids = Vtiger_Functions::getAttachmentIds($id, $meta->getEntityId());
                 if($ids) {
                         foreach($ids as $id){

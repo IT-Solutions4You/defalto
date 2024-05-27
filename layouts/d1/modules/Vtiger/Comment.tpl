@@ -31,7 +31,7 @@
                             <span class="creatorName fw-bold me-2">
                                 {$CREATOR_NAME}
                             </span>
-                            {if $ROLLUP_STATUS and $COMMENT->get('module') ne $MODULE_NAME}
+                            {if isset ($ROLLUP_STATUS) && $ROLLUP_STATUS and $COMMENT->get('module') ne $MODULE_NAME}
                                 {assign var=SINGULR_MODULE value='SINGLE_'|cat:$COMMENT->get('module')}
                                 {assign var=ENTITY_NAME value=getEntityName($COMMENT->get('module'), array($COMMENT->get('related_to')))}
                                 <span class="text-secondary">
@@ -96,11 +96,11 @@
                         </div>
                         <div class="commentActionsContainer ms-4 my-2">
                             <span class="commentActions">
-                                {if $CHILDS_ROOT_PARENT_MODEL}
+                                {if isset ($CHILDS_ROOT_PARENT_MODEL) && $CHILDS_ROOT_PARENT_MODEL}
                                     {assign var=CHILDS_ROOT_PARENT_ID value=$CHILDS_ROOT_PARENT_MODEL->getId()}
                                 {/if}
                                 {if $COMMENTS_MODULE_MODEL->isPermitted('EditView')}
-                                    {if $CHILDS_ROOT_PARENT_MODEL}
+                                    {if isset ($CHILDS_ROOT_PARENT_MODEL) && $CHILDS_ROOT_PARENT_MODEL}
                                         {assign var=CHILDS_ROOT_PARENT_ID value=$CHILDS_ROOT_PARENT_MODEL->getId()}
                                     {/if}
                                     <a href="javascript:void(0);" class="cursorPointer replyComment feedback text-secondary me-3">
@@ -115,7 +115,7 @@
                                     {/if}
                                 {/if}
                                 {assign var=CHILD_COMMENTS_COUNT value=$COMMENT->getChildCommentsCount()}
-                                {if $CHILD_COMMENTS_MODEL neq null and ($CHILDS_ROOT_PARENT_ID neq $PARENT_COMMENT_ID)}
+                                {if $CHILD_COMMENTS_MODEL neq null and (isset($CHILDS_ROOT_PARENT_ID)&& $CHILDS_ROOT_PARENT_ID neq $PARENT_COMMENT_ID)}
                                     <span class="viewThreadBlock" data-child-comments-count="{$CHILD_COMMENTS_COUNT}">
                                         <a href="javascript:void(0)" class="cursorPointer viewThread text-secondary">
                                             <span class="childCommentsCount fw-bold">{$CHILD_COMMENTS_COUNT}</span>
@@ -128,7 +128,7 @@
                                             <span class="ms-2">{if $CHILD_COMMENTS_COUNT eq 1}{vtranslate('LBL_REPLY',$MODULE_NAME)}{else}{vtranslate('LBL_REPLIES',$MODULE_NAME)}{/if}</span>
                                         </a>
                                     </span>
-                                {elseif $CHILD_COMMENTS_MODEL neq null and ($CHILDS_ROOT_PARENT_ID eq $PARENT_COMMENT_ID)}
+                                {elseif $CHILD_COMMENTS_MODEL neq null and (isset($CHILDS_ROOT_PARENT_ID)&& $CHILDS_ROOT_PARENT_ID eq $PARENT_COMMENT_ID)}
                                     <span class="viewThreadBlock" data-child-comments-count="{$CHILD_COMMENTS_COUNT}" style="display:none;">
                                         <a href="javascript:void(0)" class="cursorPointer viewThread text-secondary">
                                             <span class="childCommentsCount fw-bold">{$CHILD_COMMENTS_COUNT}</span>

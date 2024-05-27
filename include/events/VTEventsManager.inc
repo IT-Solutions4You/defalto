@@ -10,7 +10,9 @@
 	 * Create and trigger events in vtiger
 	 */
 	class VTEventsManager{
-		function __construct($adb){
+		protected PearDatabase $adb;
+
+        function __construct($adb){
 			$this->adb = $adb;
 		}
 

@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 
@@ -215,14 +213,15 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 
 		if ($this->get('whereCondition') && is_array($this->get('whereCondition'))) {
 			$currentUser = Users_Record_Model::getCurrentUserModel();
-			$queryGenerator = new QueryGenerator($relationModuleName, $currentUser);
+            $queryGenerator = new EnhancedQueryGenerator($relationModuleName, $currentUser);
 			$queryGenerator->setFields(array_values($relatedColumnFields));
 			$whereCondition = $this->get('whereCondition');
 			foreach ($whereCondition as $fieldName => $fieldValue) {
 				if (is_array($fieldValue)) {
 					$comparator = $fieldValue[1];
 					$searchValue = $fieldValue[2];
-					$type = $fieldValue[3];
+                    $type = $fieldValue[3] ?? '';
+
 					if ($type == 'time') {
 						$searchValue = Vtiger_Time_UIType::getTimeValueWithSeconds($searchValue);
 					}
@@ -300,8 +299,9 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 				}
 			}
 			//To show the value of "Assigned to"
-			$ownerId = $row['smownerid'];
-			$newRow['assigned_user_id'] = $row['smownerid'];
+            if(isset($row['smownerid'])) {
+                $newRow['assigned_user_id'] = $row['smownerid'];
+            }
 
 			$record = Vtiger_Record_Model::getCleanInstance($relationModule->get('name'));
 			$record->setData($newRow)->setModuleFromInstance($relationModule)->setRawData($row);

@@ -1,12 +1,11 @@
 <?php
-/*+********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *********************************************************************************/
+ */
+
 require_once 'includes/runtime/Cache.php';
 /**
  * this file will be used to store the functions to be used in the picklist module
@@ -102,6 +101,8 @@ function get_available_module_picklist($picklist_details){
  */
 function getAllPickListValues($fieldName,$lang = Array() ){
 	global $adb;
+	$lang = vtlib_array($lang);
+
 	if(Vtiger_Cache::get('AllPicklistValues',$fieldName)){
 		return Vtiger_Cache::get('AllPicklistValues',$fieldName);
 	}
@@ -139,7 +140,11 @@ function getAllPickListValues($fieldName,$lang = Array() ){
  * @param object $adb - the peardatabase object
  * @return array $pick - the editable picklist values
  */
-function getEditablePicklistValues($fieldName, $lang= array(), $adb){
+function getEditablePicklistValues($fieldName, $lang= array(), $adb = null){
+	if ($adb == null) {
+		$adb = PearDatabase::getInstance();
+	}
+
 	$values = array();
 	$fieldName = $adb->sql_escape_string($fieldName);
 	$sql="select $fieldName from vtiger_$fieldName where presence=1 and $fieldName <> '--None--'";
@@ -165,7 +170,11 @@ function getEditablePicklistValues($fieldName, $lang= array(), $adb){
  * @param object $adb - the peardatabase object
  * @return array $pick - the no-editable picklist values
  */
-function getNonEditablePicklistValues($fieldName, $lang=array(), $adb){
+function getNonEditablePicklistValues($fieldName, $lang=array(), $adb = null){
+	if ($adb == null) {
+		$adb = PearDatabase::getInstance();
+	}
+
 	$values = array();
 	$fieldName = $adb->sql_escape_string($fieldName);
 	$sql = "select $fieldName from vtiger_$fieldName where presence=0";
@@ -240,4 +249,3 @@ function getAssignedPicklistValues($tableName, $roleid, $adb, $lang=array()){
 		return $arr;
 	}
 }
-?>

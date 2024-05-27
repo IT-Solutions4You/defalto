@@ -29,7 +29,7 @@
 									{if $IS_SELECT_BUTTON eq true} data-moduleName="{$RELATED_LINK->get('_module')->get('name')}" {/if}
 									{if ($RELATED_LINK->isPageLoadLink())}
 										{if $RELATION_FIELD} data-name="{$RELATION_FIELD->getName()}" {/if}
-										data-url="{$RELATED_LINK->getUrl()}{if $SELECTED_MENU_CATEGORY}&app={$SELECTED_MENU_CATEGORY}{/if}"
+										data-url="{$RELATED_LINK->getUrl()}{if isset($SELECTED_MENU_CATEGORY)}&app={$SELECTED_MENU_CATEGORY}{/if}"
 									{/if}
 									>{if $IS_SELECT_BUTTON eq false}<i class="fa fa-plus me-2"></i>{/if}{$RELATED_LINK->getLabel()}</button>
 							{/if}

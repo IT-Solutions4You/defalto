@@ -1,12 +1,11 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 require_once 'include/events/VTEntityData.inc';
 
 class VTEntityDelta extends VTEventHandler {
@@ -107,21 +106,29 @@ class VTEntityDelta extends VTEventHandler {
 	function getNewEntity($moduleName, $recordId) {
 		return self::$newEntity[$moduleName][$recordId];
 	}
-	
-	function hasChanged($moduleName, $recordId, $fieldName, $fieldValue = NULL) {
-		if(empty(self::$oldEntity[$moduleName][$recordId])) {
-			return false;
-		}
-		$fieldDelta = self::$entityDelta[$moduleName][$recordId][$fieldName];
-		if(is_array($fieldDelta)) {
-			$fieldDelta = array_map('decode_html', $fieldDelta);
-		}
-		$result = $fieldDelta['oldValue'] != $fieldDelta['currentValue'];
-		if ($fieldValue !== NULL) {
-			$result = $result && ($fieldDelta['currentValue'] === $fieldValue);
-		}
-		return $result;
-	}
+
+    function hasChanged($moduleName, $recordId, $fieldName, $fieldValue = null)
+    {
+        if (empty(self::$oldEntity[$moduleName][$recordId])) {
+            return false;
+        }
+
+        $result = false;
+        $fieldDelta = self::$entityDelta[$moduleName][$recordId][$fieldName];
+
+        if (is_array($fieldDelta)) {
+            $fieldDelta = array_map('decode_html', $fieldDelta);
+        }
+
+        if (isset($fieldDelta['oldValue']) && isset($fieldDelta['currentValue'])) {
+            $result = $fieldDelta['oldValue'] != $fieldDelta['currentValue'];
+        }
+
+        if ($fieldValue !== null) {
+            $result = $result && ($fieldDelta['currentValue'] === $fieldValue);
+        }
+
+        return $result;
+    }
 
 }
-?>

@@ -71,4 +71,6 @@ $languageStrings = array(
 	'MSG_DB_ROOT_USER_NOT_AUTHORIZED' => 'Mensaje: el usuario Root de la base de datos no tiene permiso para crear la base de datos o el nombre de la base de datos tiene caracteres especiales. Intenta cambiando los parámetros de configuración.',
 	'ERR_DB_NOT_FOUND' => 'No se ha encontrado la base de datos indicada. Intenta cambiando los parámetros de acceso.',
 	'LBL_PASSWORD_MISMATCH' => 'Por favor, escribe de nuevo las contraseñas. La Contraseña y su Repetición no coinciden.',
+    'LBL_SMTP_SERVER_CONFIG' => 'Configuración del servidor de correo saliente',
+    'LBL_SKIP' => 'Saltar',
 );

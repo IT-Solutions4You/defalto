@@ -1,12 +1,10 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 
 class CurrencyField {
 
@@ -123,7 +121,11 @@ class CurrencyField {
      * @return String - Formatted Currency
      */
     public static function convertToUserFormat($value, $user=null, $skipConversion=false, $skipFormatting=false) {
-		// To support negative values
+        if (!$value) {
+            return $value;
+        }
+
+        // To support negative values
 		$negative = false;
 		if(stripos($value, '-') === 0) {
 			$negative = true;
@@ -494,7 +496,7 @@ class CurrencyField {
 				$decimalSeparator = $user->currency_decimal_separator;
 			}
 
-			$fieldValue = explode(decode_html($decimalSeparator), $value);
+			$fieldValue = vtlib_array(explode(decode_html($decimalSeparator), $value));
 			if(strlen($fieldValue[1]) <= 1){
 				if(strlen($fieldValue[1]) == 1) {
 					return $value = $fieldValue[0].$decimalSeparator.$fieldValue[1];
@@ -511,4 +513,3 @@ class CurrencyField {
 		}
 	}
 }
-?>

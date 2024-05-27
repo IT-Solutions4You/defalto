@@ -38,16 +38,18 @@
                                         <div class="dropdown-menu w-100 currentTagMenu">
                                             <div class="scrollable" style="max-height:300px">
                                                 <ul>
-                                                {foreach item=TAG_MODEL from=$ALL_USER_TAGS}
-                                                    {if array_key_exists($TAG_MODEL->getId(), $TAGS_LIST)}
-                                                        {continue}
-                                                    {/if} 
-                                                    <li class="tag-item list-group-item">
-                                                        <a style="margin-left:0px;">
-                                                            {include file="Tag.tpl"|vtemplate_path:$MODULE NO_DELETE=true NO_EDIT=true}
-                                                        </a>
-                                                    </li>
-                                                {/foreach}
+                                                {if isset($ALL_USER_TAGS)}
+                                                    {foreach item=TAG_MODEL from=$ALL_USER_TAGS}
+                                                        {if array_key_exists($TAG_MODEL->getId(), $TAGS_LIST)}
+                                                            {continue}
+                                                        {/if}
+                                                        <li class="tag-item list-group-item">
+                                                            <a style="margin-left:0px;">
+                                                                {include file="Tag.tpl"|vtemplate_path:$MODULE NO_DELETE=true NO_EDIT=true}
+                                                            </a>
+                                                        </li>
+                                                    {/foreach}
+                                                {/if}
                                                 <li class="dummyExistingTagElement tag-item list-group-item hide">
                                                     <a style="margin-left:0px;">
                                                         {assign var=TAG_MODEL value=Vtiger_Tag_Model::getCleanInstance()}

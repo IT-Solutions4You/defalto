@@ -69,4 +69,6 @@ $languageStrings = array(
 	'LBL_MYSQLI_CONNECT_SUPPORT'=>'Suporte Mysqli',
     'LBL_OPEN_SSL'=>'Suporte Openssl',
     'LBL_CURL'=>'Suporte cURL',
+    'LBL_SMTP_SERVER_CONFIG' => 'Configuração do servidor de e-mail de saída',
+    'LBL_SKIP' => 'Pular',
 );

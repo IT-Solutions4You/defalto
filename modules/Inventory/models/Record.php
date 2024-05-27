@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 /**
  * Inventory Record Model Class
@@ -290,8 +288,8 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 
 		$productIdsList = array();
 		foreach ($productDetails as $key => $lineItemDetail) {
-			$productId	= $lineItemDetail['hdnProductId'.$key];
-			$entityType = $lineItemDetail['entityType'.$key];
+			$productId	= $lineItemDetail['hdnProductId'.$key] ?? '';
+			$entityType = $lineItemDetail['entityType'.$key] ?? '';
 			$productIdsList[$entityType][] = $productId;
 		}
 
@@ -303,19 +301,19 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 
 		//Getting image details of each product
 		$imageDetailsList = array();
-		if ($productIdsList['Products']) {
+		if (isset($productIdsList['Products']) && $productIdsList['Products']) {
 			$imageDetailsList = Products_Record_Model::getProductsImageDetails($productIdsList['Products']);
 		}
 
 		foreach ($productDetails as $key => $lineItemDetail) {
-			$productId = $lineItemDetail['hdnProductId'.$key];
-			$entityType = $lineItemDetail['entityType'.$key];
+			$productId = $lineItemDetail['hdnProductId'.$key] ?? '';
+			$entityType = $lineItemDetail['entityType'.$key] ?? '';
 
 			//updating list price details
-			$productDetails[$key]['listPrice'.$key] = number_format((float)$convertedPriceDetails[$entityType][$productId], $numOfCurrencyDecimals, '.', '');
+			$productDetails[$key]['listPrice'.$key] = isset($convertedPriceDetails[$entityType][$productId]) ? number_format((float)$convertedPriceDetails[$entityType][$productId], $numOfCurrencyDecimals, '.', '') : '';
 
 			//updating cost price details
-			$purchaseCost = (float)$userCurrencyInfo['conversion_rate'] * (float)$lineItemDetail['purchaseCost'.$key];
+			$purchaseCost = isset($lineItemDetail['purchaseCost'.$key]) ? (float)$userCurrencyInfo['conversion_rate'] * (float)$lineItemDetail['purchaseCost'.$key] : 0;
 			$productDetails[$key]['purchaseCost'.$key] = number_format($purchaseCost, $numOfCurrencyDecimals, '.', '');
 
 			if($moduleName === 'PurchaseOrder') {
@@ -323,7 +321,7 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 			}
 
 			//Image detail
-			if ($imageDetailsList[$productId]) {
+			if (isset($imageDetailsList[$productId]) && $imageDetailsList[$productId]) {
 				$imageDetails = $imageDetailsList[$productId];
 				$productDetails[$key]['productImage'.$key] = $imageDetails[0]['path'].'_'.$imageDetails[0]['orgname'];
 			}
@@ -623,7 +621,8 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 		if ($chargeId) {
 			$chargeTaxModelsList = array();
 			$chargesAndItsTaxes = $this->getCharges();
-			$chargeInfo = $chargesAndItsTaxes[$chargeId];
+			$chargeInfo = $chargesAndItsTaxes[$chargeId] ?? [];
+
 			if ($chargeInfo && $chargeInfo['taxes']) {
 				$taxes = array_keys($chargeInfo['taxes']);
 				foreach ($taxes as $taxId) {

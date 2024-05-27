@@ -440,21 +440,6 @@ for($i=0; $i<$noOfTabs; ++$i) {
 	$allTabIds[$tabName] = $tabId;
 }
 
-//Adding status field for project task
-
-$moduleInstance = Vtiger_Module::getInstance('ProjectTask');
-$blockInstance = Vtiger_Block::getInstance('LBL_PROJECT_TASK_INFORMATION', $moduleInstance);
-$fieldInstance = new Vtiger_Field();
-$fieldInstance->name = 'projecttaskstatus';
-$fieldInstance->label = 'Status';
-$fieldInstance->uitype = 15;
-$fieldInstance->quickcreate = 0;
-$blockInstance->addField($fieldInstance);
-
-$pickListValues = array('--None--', 'Open', 'In Progress', 'Completed', 'Deferred', 'Canceled ');
-
-$fieldInstance->setPicklistValues($pickListValues);
-
 //Dashboard schema changes
 Vtiger_Utils::CreateTable('vtiger_module_dashboard_widgets', '(id INT(19) NOT NULL AUTO_INCREMENT, linkid INT(19), userid INT(19), filterid INT(19),
 				title VARCHAR(100), data VARCHAR(500) DEFAULT "[]", PRIMARY KEY(id))');

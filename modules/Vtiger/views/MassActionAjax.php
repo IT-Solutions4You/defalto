@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 	function __construct() {
@@ -209,12 +207,14 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 			$viewer->assign('OPERATOR',$operator);
 			$viewer->assign('ALPHABET_VALUE',$searchValue);
             $viewer->assign('SEARCH_KEY',$searchKey);
-		}
-        
-        $searchParams = $request->get('search_params');
-        if(!empty($searchParams)) {
-            $viewer->assign('SEARCH_PARAMS',$searchParams);
+        } else {
+            $viewer->assign('OPERATOR', '');
+            $viewer->assign('ALPHABET_VALUE', '');
+            $viewer->assign('SEARCH_KEY', '');
         }
+
+        $searchParams = !empty($request->get('search_params')) ? $request->get('search_params') : ' ';
+        $viewer->assign('SEARCH_PARAMS', $searchParams);
 
 		$to = $request->get('to');
 		if (!$to) {
@@ -244,10 +244,13 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 		$emailFieldsInfo = array();
 		$moduleModel = Vtiger_Module_Model::getInstance($sourceModule);
 		$recipientPrefModel = Vtiger_RecipientPreference_Model::getInstance($sourceModule);
-		
-		if($recipientPrefModel)
-		$recipientPrefs = $recipientPrefModel->getPreferences();
-		$moduleEmailPrefs = $recipientPrefs[$moduleModel->getId()];
+        $recipientPrefs = array();
+
+        if ($recipientPrefModel) {
+            $recipientPrefs = $recipientPrefModel->getPreferences();
+        }
+
+		$moduleEmailPrefs = isset($recipientPrefs[$moduleModel->getId()]) ? $recipientPrefs[$moduleModel->getId()] : [];
 		$emailFields = $moduleModel->getFieldsByType('email');
         $accesibleEmailFields = array();
 		

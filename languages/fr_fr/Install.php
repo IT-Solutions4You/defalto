@@ -67,4 +67,6 @@ $languageStrings = array(
 	'MSG_DB_ROOT_USER_NOT_AUTHORIZED' => 'Message: Specified database Root User doesn\'t have permission to Create database or the Database name has special characters. Try changing the Database settings',
 	'ERR_DB_NOT_FOUND' => 'This Database is not found.Try changing the Database settings',
 	'LBL_PASSWORD_MISMATCH' => 'Please re-enter passwords.  The \"Password\" and \"Re-type password\" values do not match.',
+    'LBL_SMTP_SERVER_CONFIG' => 'Configuration du serveur de courrier sortant',
+    'LBL_SKIP' => 'Sauter',
 );

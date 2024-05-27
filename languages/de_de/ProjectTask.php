@@ -1,12 +1,11 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 $languageStrings = array(
 	'SINGLE_ProjectTask'	=>	"Projektaufgabe",
 	'LBL_ADD_RECORD'	=>	"In Projektaufgabe",
@@ -40,9 +39,8 @@ $languageStrings = array(
 	'In Progress'	=>	"in uitvoering",
 	'Completed'	=>	"Fertiggestellt",
 	'Deferred'	=>	"Latente",
-	'Canceled'	=>	"Gestrichen",
         'LBL_NO_DATE_VALUE_MSG' => 'oder Projektaufgaben nicht starten und / oder Enddatum',
 
-  'Canceled ' => 'Abgebrochen',
+  'Canceled' => 'Abgebrochen',
 
 );

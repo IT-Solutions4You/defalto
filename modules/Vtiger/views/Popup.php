@@ -1,16 +1,15 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 
 class Vtiger_Popup_View extends Vtiger_Footer_View {
 	protected $listViewEntries = false;
 	protected $listViewHeaders = false;
+    protected $listViewLinks = false;
 
 	public function requiresPermission(Vtiger_Request $request){
 		$permissions = parent::requiresPermission($request);
@@ -160,8 +159,29 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 				}
 		if(!empty($relatedParentModule) && !empty($relatedParentId)) {
 			$this->listViewHeaders = $listViewModel->getHeaders();
+            $relatedModuleModel = Vtiger_Module_Model::getInstance($moduleName);
+            $moduleFields = $relatedModuleModel->getFields();
 
-			$models = $listViewModel->getEntries($pagingModel);
+            if (empty($searchParams)) {
+                $searchParams = [];
+            }
+
+            $whereCondition = [];
+
+            foreach ($searchParams as $fieldListGroup) {
+                foreach ($fieldListGroup as $fieldSearchInfo) {
+                    $fieldModel = $moduleFields[$fieldSearchInfo[0]];
+                    $tableName = Vtiger_Util_Helper::validateStringForSql($fieldModel->get('table'));
+                    $column = Vtiger_Util_Helper::validateStringForSql($fieldModel->get('column'));
+                    $whereCondition[$fieldSearchInfo[0]] = [$tableName . '.' . $column, $fieldSearchInfo[1], $fieldSearchInfo[2]];
+                }
+            }
+
+            if (!empty($whereCondition)) {
+                $listViewModel->set('whereCondition', $whereCondition);
+            }
+
+            $models = $listViewModel->getEntries($pagingModel);
 			$noOfEntries = php7_count($models);
 			foreach ($models as $recordId => $recordModel) {
 				foreach ($this->listViewHeaders as $fieldName => $fieldModel) {

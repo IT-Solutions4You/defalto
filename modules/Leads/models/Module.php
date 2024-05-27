@@ -133,7 +133,8 @@ class Leads_Module_Model extends Vtiger_Module_Model {
 		if(!empty($ownerSql)) {
 			$ownerSql = ' AND '.$ownerSql;
 		}
-		
+
+        $dateFilterSql = '';
 		$params = array();
 		if(!empty($dateFilter)) {
 			$dateFilterSql = ' AND createdtime BETWEEN ? AND ? ';

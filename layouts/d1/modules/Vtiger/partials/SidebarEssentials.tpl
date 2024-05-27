@@ -48,7 +48,7 @@
 										{assign var="SHARED_MEMBER_COUNT" value=1}
 										{/if}
 									{/foreach}
-									<li style="font-size:12px;" class='listViewFilter {if $VIEWID eq $CUSTOM_VIEW->getId() && ($CURRENT_TAG eq '')} active {if $smarty.foreach.customView.iteration gt 10} {assign var=count value=1} {/if} {else if $smarty.foreach.customView.iteration gt 10} filterHidden hide{/if} '> 
+									<li style="font-size:12px;" class='listViewFilter {if $VIEWID eq $CUSTOM_VIEW->getId() && (isset($CURRENT_TAG) && $CURRENT_TAG eq '')} active {if $smarty.foreach.customView.iteration gt 10} {assign var=count value=1} {/if} {else if $smarty.foreach.customView.iteration gt 10} filterHidden hide{/if} '>
                                         {assign var=VIEWNAME value={vtranslate($CUSTOM_VIEW->get('viewname'), $MODULE)}}
 										{append var="CUSTOM_VIEW_NAMES" value=$VIEWNAME}
                                          <a class="filterName listViewFilterElipsis" href="{$LISTVIEW_URL|cat:'&viewname='|cat:$CUSTOM_VIEW->getId()|cat:'&app='|cat:$SELECTED_MENU_CATEGORY}" oncontextmenu="return false;" data-filter-id="{$CUSTOM_VIEW->getId()}" title="{$VIEWNAME|@escape:'html'}">{$VIEWNAME|@escape:'html'}</a> 
@@ -147,8 +147,9 @@
             <div class="menu-scroller scrollContainer" style="position:relative; top:0; left:0;">
                 <div class="list-menu-content">
                     <div id="listViewTagContainer" class="multiLevelTagList" 
-                    {if $ALL_CUSTOMVIEW_MODEL} data-view-id="{$ALL_CUSTOMVIEW_MODEL->getId()}" {/if}
+                    {if isset($ALL_CUSTOMVIEW_MODEL) && $ALL_CUSTOMVIEW_MODEL} data-view-id="{$ALL_CUSTOMVIEW_MODEL->getId()}" {/if}
                     data-list-tag-count="{Vtiger_Tag_Model::NUM_OF_TAGS_LIST}">
+                        {if isset($TAGS)}
                         {foreach item=TAG_MODEL from=$TAGS name=tagCounter}
                             {assign var=TAG_LABEL value=$TAG_MODEL->getName()}
                             {assign var=TAG_ID value=$TAG_MODEL->getId()}
@@ -157,7 +158,7 @@
                             {/if}
                             {include file="Tag.tpl"|vtemplate_path:$MODULE NO_DELETE=true ACTIVE= $CURRENT_TAG eq $TAG_ID}
                         {/foreach}
-                        <div> 
+                        <div>
                             <a class="moreTags {if (php7_count($TAGS) - Vtiger_Tag_Model::NUM_OF_TAGS_LIST) le 0} hide {/if}">
                                 <span class="moreTagCount">{php7_count($TAGS) - Vtiger_Tag_Model::NUM_OF_TAGS_LIST}</span>
                                 &nbsp;{vtranslate('LBL_MORE',$MODULE)|strtolower}
@@ -171,6 +172,7 @@
                         {/foreach}
                              </div>
                         </div>
+                        {/if}
                     </div>
                     {include file="AddTagUI.tpl"|vtemplate_path:$MODULE RECORD_NAME="" TAGS_LIST=array()}
                 </div>

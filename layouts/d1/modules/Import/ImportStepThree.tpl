@@ -20,7 +20,7 @@
     </label>
     <input type="text" name="save_map_as" id="save_map_as" class="form-control">
 </div>
-{if !$IMPORTABLE_FIELDS}
+{if !isset($IMPORTABLE_FIELDS) || !$IMPORTABLE_FIELDS}
 	{assign var=IMPORTABLE_FIELDS value=$AVAILABLE_FIELDS}
 {/if}
 {include file="Import_Default_Values_Widget.tpl"|@vtemplate_path:'Import' IMPORTABLE_FIELDS=$IMPORTABLE_FIELDS}

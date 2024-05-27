@@ -67,4 +67,6 @@ $languageStrings = array(
 	'MSG_DB_ROOT_USER_NOT_AUTHORIZED' => 'Üzenet: A megadott adatbázis Root felhasználónak nincs joga adatbázis létrehozására vagy az adatbázis neve tartalmaz speciális karaktereket. Próbálja meg változtatni az adatbázis beállításokat.',
 	'MSG_DB_USER_NOT_AUTHORIZED' => 'A megadott adatbázis felhasználónak nincs joga kapcsolódni a gazdagép adatbázisaihoz.',
 	'MSG_LIST_REASONS' => 'Ez a következő okok miatt fordulhat elő:',
+    'LBL_SMTP_SERVER_CONFIG' => 'Kimenő levelek szerver konfigurációja',
+    'LBL_SKIP' => 'Kihagyás',
 );

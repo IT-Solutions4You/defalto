@@ -1,12 +1,10 @@
 <?php
-/* +***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * *********************************************************************************** */
+ */
 
 class Vtiger_FindDuplicate_Model extends Vtiger_Base_Model {
 
@@ -99,7 +97,6 @@ class Vtiger_FindDuplicate_Model extends Vtiger_Base_Model {
             $fieldValues[$group][$groupRecordCount]['recordid'] = $row['recordid'];
             foreach($row as $field => $value) {
                 if($i == 0 && $field != 'recordid') $temp[$field] = $value;
-                $fieldModel = $fieldModels[$field];
                 $resultRow[$field] = $value;
             }
             $fieldValues[$group][$groupRecordCount++] = $resultRow;
@@ -115,44 +112,51 @@ class Vtiger_FindDuplicate_Model extends Vtiger_Base_Model {
 		return $self;
 	}
 
-	public function getRecordCount() {
-		if($this->rows) {
-			$rows = $this->rows;
-		} else {
-            $db = PearDatabase::getInstance();
-            if(!self::$query){
-                $moduleModel = $this->getModule();
-                $module = $moduleModel->getName();
-                $fields = $this->get('fields');
-                $fieldModels = $moduleModel->getFields();
-                if(is_array($fields)) {
-                    foreach($fields as $fieldName) {
-                        $fieldModel = $fieldModels[$fieldName];
-                        $requiredTables[] = $fieldModel->get('table');
-                        $tableColumns[] = $fieldModel->get('table').'.'.$fieldModel->get('column');
-                    }
-                }
-                $focus = CRMEntity::getInstance($module);
-                $ignoreEmpty = $this->get('ignoreEmpty');
-                self::$query = $focus->getQueryForDuplicates($module, $tableColumns, '', $ignoreEmpty,$requiredTables);
-            }
-            $query = self::$query;
-			$position = stripos($query, 'from');
-			if ($position) {
-				$split = preg_split('/from/i', $query);
-				$splitCount = php7_count($split);
-				$query = 'SELECT count(*) AS count ';
-				for ($i=1; $i<$splitCount; $i++) {
-					$query = $query. ' FROM ' .$split[$i];
-				}
-			}
-			$result = $db->pquery($query, array());
-			$rows = $db->query_result($result, 0, 'count');
+    public function getRecordCount()
+    {
+        if (isset($this->rows) && $this->rows) {
+            return $this->rows;
+        }
 
-		}
-		return $rows;
-	}
-    
+        $db = PearDatabase::getInstance();
+
+        if (!self::$query) {
+            $moduleModel = $this->getModule();
+            $module = $moduleModel->getName();
+            $fields = $this->get('fields');
+            $fieldModels = $moduleModel->getFields();
+
+            if (is_array($fields)) {
+                foreach ($fields as $fieldName) {
+                    $fieldModel = $fieldModels[$fieldName];
+                    $requiredTables[] = $fieldModel->get('table');
+                    $tableColumns[] = $fieldModel->get('table') . '.' . $fieldModel->get('column');
+                }
+            }
+
+            $focus = CRMEntity::getInstance($module);
+            $ignoreEmpty = $this->get('ignoreEmpty');
+            self::$query = $focus->getQueryForDuplicates($module, $tableColumns, '', $ignoreEmpty, $requiredTables);
+        }
+
+        $query = self::$query;
+        $position = stripos($query, 'from');
+
+        if ($position) {
+            $split = preg_split('/from/i', $query);
+            $splitCount = php7_count($split);
+            $query = 'SELECT count(*) AS count ';
+
+            for ($i = 1; $i < $splitCount; $i++) {
+                $query = $query . ' FROM ' . $split[$i];
+            }
+        }
+
+        $result = $db->pquery($query, []);
+
+        return $db->query_result($result, 0, 'count');
+    }
+
     public static function getMassDeleteRecords(Vtiger_Request $request) {
         $db = PearDatabase::getInstance();
         $module = $request->getModule();

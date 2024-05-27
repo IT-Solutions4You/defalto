@@ -1,17 +1,11 @@
 <?php
-/*********************************************************************************
- * The contents of this file are subject to the SugarCRM Public License Version 1.1.2
- * ("License"); You may not use this file except in compliance with the
- * License. You may obtain a copy of txhe License at http://www.sugarcrm.com/SPL
- * Software distributed under the License is distributed on an  "AS IS"  basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- * the specific language governing rights and limitations under the License.
- * The Original Code is:  SugarCRM Open Source
+/**
  * The Initial Developer of the Original Code is SugarCRM, Inc.
- * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.;
+ * Portions created by SugarCRM are Copyright (c) SugarCRM, Inc.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
- ********************************************************************************/
+ */
 
 class HelpDesk extends CRMEntity {
 	var $log;
@@ -122,9 +116,10 @@ class HelpDesk extends CRMEntity {
 		$this->insertIntoAttachment($this->id,$module);
 
 		//service contract update
-		$return_action = $_REQUEST['return_action'];
-		$for_module = $_REQUEST['return_module'];
-		$for_crmid  = $_REQUEST['return_id'];
+		$return_action = $_REQUEST['return_action'] ?? '';
+		$for_module = $_REQUEST['return_module'] ?? '';
+		$for_crmid  = $_REQUEST['return_id'] ?? '';
+
 		if ($return_action && $for_module && $for_crmid) {
 			if ($for_module == 'ServiceContracts') {
 				$on_focus = CRMEntity::getInstance($for_module);

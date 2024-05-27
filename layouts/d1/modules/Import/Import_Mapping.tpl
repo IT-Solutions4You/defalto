@@ -7,7 +7,7 @@
 {strip}
 	<input type="hidden" name="merge_type" value='{$USER_INPUT->get('merge_type')}' />
 	<input type="hidden" name="merge_fields" value='{$MERGE_FIELDS}' />
-	<input type="hidden" name="lineitem_currency" value='{$LINEITEM_CURRENCY}'>
+	<input type="hidden" name="lineitem_currency" value="{if isset($LINEITEM_CURRENCY)}{$LINEITEM_CURRENCY}{else}''{/if}">
 	<input type="hidden" id="mandatory_fields" name="mandatory_fields" value='{$ENCODED_MANDATORY_FIELDS}' />
 	<input type="hidden" name="field_mapping" id="field_mapping" value="" />
 	<input type="hidden" name="default_values" id="default_values" value="" />

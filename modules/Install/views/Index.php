@@ -1,12 +1,10 @@
 <?php
-/* +***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * *********************************************************************************** */
+ */
 
 class Install_Index_view extends Vtiger_View_Controller {
 
@@ -29,7 +27,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 
 	protected function applyInstallFriendlyEnv() {
 		// config.inc.php - will not be ready to control this yet.
-		error_reporting(E_ERROR & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);  // Production
+		// error_reporting(E_ERROR & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);  // Production
 		set_time_limit(0); // override limits on execution time to allow installation process to finish
 	}
 
@@ -98,8 +96,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 		$viewer->assign('CURRENCIES', Install_Utils_Model::getCurrencyList());
 
 		require_once 'modules/Users/UserTimeZonesArray.php';
-		$timeZone = new UserTimeZones();
-		$viewer->assign('TIMEZONES', $timeZone->userTimeZones());
+        $viewer->assign('TIMEZONES', UserTimeZones::getAll());
 
 		$defaultParameters = Install_Utils_Model::getDefaultPreInstallParameters();
 		$viewer->assign('DB_HOSTNAME', $defaultParameters['db_hostname']);
@@ -201,7 +198,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 
 			Install_InitSchema_Model::upgrade();
 
-			//Install_Utils_Model::registerUser($request->get("myname"), $request->get("myemail"), $request->get("industry"));
+            Install_Utils_Model::saveSMTPServer($request);
 
 			$viewer = $this->getViewer($request);
 			$viewer->assign('PASSWORD', $_SESSION['config_file_info']['password']);
@@ -219,7 +216,8 @@ class Install_Index_view extends Vtiger_View_Controller {
 	// Helper function as configuration file is still not loaded.
 	protected function retrieveConfiguredAppUniqueKey() {
 		include 'config.inc.php';
-		return $application_unique_key;
+
+        return $application_unique_key ?? '';
 	}
 
 	public function getHeaderCss(Vtiger_Request $request) {

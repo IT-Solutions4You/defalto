@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 class Settings_ModuleManager_Module_Model extends Vtiger_Module_Model {
 
@@ -35,7 +33,7 @@ class Settings_ModuleManager_Module_Model extends Vtiger_Module_Model {
 	 */
 	public function disableModule($moduleName) {
 		//Handling events after disable module
-		vtlib_toggleModuleAccess($moduleName, false);
+		$this->vtlib_toggleModuleAccess($moduleName, false);
 	}
 
 	/**
@@ -44,7 +42,7 @@ class Settings_ModuleManager_Module_Model extends Vtiger_Module_Model {
 	 */
 	public function enableModule($moduleName) {
 		//Handling events after enable module
-		vtlib_toggleModuleAccess($moduleName, true);
+		$this->vtlib_toggleModuleAccess($moduleName, true);
 	}
 
 
@@ -109,4 +107,54 @@ class Settings_ModuleManager_Module_Model extends Vtiger_Module_Model {
 	public static function getActionsRestrictedModulesList() {
 		return array('Home');
 	}
+
+    /**
+     * Toggle the module (enable/disable)
+     */
+    protected function vtlib_toggleModuleAccess($modules, $enable_disable)
+    {
+        global $adb, $__cache_module_activeinfo;
+
+        include_once('vtlib/Vtiger/Module.php');
+
+        if (is_string($modules)) {
+            $modules = [$modules];
+        }
+        $event_type = false;
+
+        if ($enable_disable === true) {
+            $enable_disable = 0;
+            $event_type = Vtiger_Module::EVENT_MODULE_ENABLED;
+        } elseif ($enable_disable === false) {
+            $enable_disable = 1;
+            $event_type = Vtiger_Module::EVENT_MODULE_DISABLED;
+            //Update default landing page to dashboard if module is disabled.
+            $adb->pquery('UPDATE vtiger_users SET defaultlandingpage = ? WHERE defaultlandingpage IN(' . generateQuestionMarks($modules) . ')', array_merge(['Home'], $modules));
+        }
+
+        $checkResult = $adb->pquery('SELECT name FROM vtiger_tab WHERE name IN (' . generateQuestionMarks($modules) . ')', [$modules]);
+        $rows = $adb->num_rows($checkResult);
+        for ($i = 0; $i < $rows; $i++) {
+            $existingModules[] = $adb->query_result($checkResult, $i, 'name');
+        }
+
+        foreach ($modules as $module) {
+            if (in_array($module, $existingModules)) { // check if module exists then only update and trigger events
+                $adb->pquery('UPDATE vtiger_tab set presence = ? WHERE name = ?', [$enable_disable, $module]);
+                $__cache_module_activeinfo[$module] = $enable_disable;
+                Vtiger_Module::fireEvent($module, $event_type);
+                Vtiger_Cache::flushModuleCache($module);
+            }
+        }
+
+        create_tab_data_file();
+        create_parenttab_data_file();
+
+        // UserPrivilege file needs to be regenerated if module state is changed from
+        // vtiger 5.1.0 onwards
+        global $vtiger_current_version;
+        if (version_compare($vtiger_current_version, '5.0.4', '>')) {
+            vtlib_RecreateUserPrivilegeFiles();
+        }
+    }
 }
