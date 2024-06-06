@@ -1,13 +1,10 @@
 <?php
-
-/* * *******************************************************************************
- * * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * ****************************************************************************** */
+ */
 
 include_once('config.php');
 require_once('include/logging.php');
@@ -1185,8 +1182,8 @@ class DefaultDataPopulator extends CRMEntity
         $organizationId = $this->db->getUniqueID('vtiger_organizationdetails');
         $this->db->query(
             "insert into vtiger_organizationdetails(organization_id,organizationname,address,city,state,country,code,phone,fax,website,logoname)
-								values ($organizationId,'vtiger','95, 12th Main Road, 3rd Block, Rajajinagar','Bangalore',
-										'Karnataka','India','560010','+91 9243602352','+91 9243602352','www.vtiger.com','vtiger-crm-logo.png')"
+								values ($organizationId,'IT-Solutions4You s.r.o.','Slovenska 69','Presov',
+										'','Slovakia','08001','+421 773 23 70','+421 773 23 70','it-solutions4you.com','')"
         );
 
 
@@ -1198,6 +1195,7 @@ class DefaultDataPopulator extends CRMEntity
         $this->db->query("insert into vtiger_actionmapping values(5,'Import',0)");
         $this->db->query("insert into vtiger_actionmapping values(6,'Export',0)");
         //$this->db->query("insert into vtiger_actionmapping values(7,'AddBusinessCard',0)");
+        $this->db->query("insert into vtiger_actionmapping values(7,'CreateView',0)");
         $this->db->query("insert into vtiger_actionmapping values(8,'Merge',0)");
         $this->db->query("insert into vtiger_actionmapping values(1,'VendorEditView',1)");
         $this->db->query("insert into vtiger_actionmapping values(4,'VendorDetailView',1)");

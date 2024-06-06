@@ -1,161 +1,163 @@
 <?php
-/* +***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * *********************************************************************************** */
+ */
+
 vimport('~~/modules/WSAPP/synclib/models/SyncRecordModel.php');
 
 class Google_Contacts_Model extends WSAPP_SyncRecordModel {
-    
+
     /**
      * return id of Google Record
-     * @return <string> id
+     * @return mixed id
      */
-    public function getId() {
-        return $this->data['entity']['id']['$t'];
+    public function getId()
+    {
+        return $this->data['entity']['resourceName'] ? : $this->data['entity']['id']['$t'];
     }
 
     /**
      * return modified time of Google Record
-     * @return <date> modified time 
+     * @return <date> modified time
      */
-    public function getModifiedTime() {
-        return $this->vtigerFormat($this->data['entity']['updated']['$t']);
+    public function getModifiedTime()
+    {
+        $updateTime = $this->data['entity']['metadata']['sources'][0]['updateTime'] ? : $this->data['entity']['updated']['$t'];
+        $updateTime = $updateTime ? : str_replace(' ', 'T', date('Y-m-d H:i:s'));
+
+        return $this->vtigerFormat($updateTime);
     }
-    
-    function getNamePrefix() {
-        $namePrefix = $this->data['entity']['gd$name']['gd$namePrefix']['$t'];
-        return $namePrefix;
+
+    function getNamePrefix()
+    {
+        return $this->data['entity']['names'][0]['honorificPrefix'];
     }
 
     /**
      * return first name of Google Record
-     * @return <string> $first name
+     * @return mixed $first name
      */
-    function getFirstName() {
-        $fname = $this->data['entity']['gd$name']['gd$givenName']['$t'];
-        return $fname;
+    function getFirstName()
+    {
+        return $this->data['entity']['names'][0]['givenName'];
     }
 
     /**
      * return Lastname of Google Record
-     * @return <string> Last name
+     * @return mixed Last name
      */
-    function getLastName() {
-        $lname = $this->data['entity']['gd$name']['gd$familyName']['$t'];
-        return $lname;
+    function getLastName()
+    {
+        return $this->data['entity']['names'][0]['familyName'];
     }
 
     /**
      * return Emails of Google Record
-     * @return <array> emails
+     * @return array emails
      */
-    function getEmails() {
-        $arr = $this->data['entity']['gd$email'];
-        $emails = array();
+    function getEmails()
+    {
+        $arr = $this->data['entity']['emailAddresses'];
+        $emails = [];
+
         if (is_array($arr)) {
             foreach ($arr as $email) {
-                if(isset($email['rel']))
-                    $labelEmail = parse_url($email['rel'], PHP_URL_FRAGMENT);
-                else
-                    $labelEmail = $email['label'];
-                $emails[$labelEmail] = $email['address'];
+                $labelEmail = $email['type'];
+                $emails[$labelEmail] = $email['value'];
             }
         }
+
         return $emails;
     }
 
     /**
      * return Phone number of Google Record
-     * @return <array> phone numbers
+     * @return array phone numbers
      */
-    function getPhones() {
-        $arr = $this->data['entity']['gd$phoneNumber'];
-        $phones = array();
-        if(is_array($arr)) {
+    function getPhones()
+    {
+        $arr = $this->data['entity']['phoneNumbers'];
+        $phones = [];
+
+        if (is_array($arr)) {
             foreach ($arr as $phone) {
-                $phoneNo = $phone['$t'];
-                if(isset($phone['rel']))
-                    $labelPhone = parse_url($phone['rel'], PHP_URL_FRAGMENT);
-                else
-                    $labelPhone = $phone['label'];
+                $phoneNo = $phone['value'];
+                $labelPhone = $phone['type'];
                 $phones[$labelPhone] = $phoneNo;
             }
         }
+
         return $phones;
     }
 
     /**
      * return Addresss of Google Record
-     * @return <array> Addresses
+     * @return array Addresses
      */
-    function getAddresses() {
-        $arr = $this->data['entity']['gd$structuredPostalAddress'];
-        $addresses = array();
-        if(is_array($arr)) {
+    function getAddresses()
+    {
+        $arr = $this->data['entity']['addresses'];
+        $addresses = [];
+
+        if (is_array($arr)) {
             foreach ($arr as $address) {
-                $structuredAddress = array(
-                    'street' => $address['gd$street']['$t'],
-                    'pobox' => $address['gd$pobox']['$t'],
-                    'postcode' => $address['gd$postcode']['$t'],
-                    'city' => $address['gd$city']['$t'],
-                    'region' => $address['gd$region']['$t'],
-                    'country' => $address['gd$country']['$t'],
-                    'formattedAddress' => $address['gd$formattedAddress']['$t']
-                );
-                if(isset($address['rel']))
-                    $labelAddress = parse_url($address['rel'], PHP_URL_FRAGMENT);
-                else
-                    $labelAddress = $address['label'];
+                $structuredAddress = [
+                    'street'           => $address['streetAddress'],
+                    'pobox'            => $address['poBox'],
+                    'postcode'         => $address['postalCode'],
+                    'city'             => $address['city'],
+                    'region'           => $address['region'],
+                    'country'          => $address['country'],
+                    'formattedAddress' => $address['formattedValue']
+                ];
+                $labelAddress = $address['type'];
                 $addresses[$labelAddress] = $structuredAddress;
             }
         }
+
         return $addresses;
     }
-    
-    function getUserDefineFieldsValues() {
-        $fieldValues = array();
-        $userDefinedFields = $this->data['entity']['gContact$userDefinedField'];
-        if(is_array($userDefinedFields) && php7_count($userDefinedFields)) {
-            foreach($userDefinedFields as $userDefinedField) {
+
+    function getUserDefineFieldsValues()
+    {
+        $fieldValues = [];
+        $userDefinedFields = $this->data['entity']['userDefined'];
+
+        if (is_array($userDefinedFields) && php7_count($userDefinedFields)) {
+            foreach ($userDefinedFields as $userDefinedField) {
                 $fieldName = $userDefinedField['key'];
                 $fieldValues[$fieldName] = $userDefinedField['value'];
             }
         }
+
         return $fieldValues;
     }
-    
-    function getUrlFields() {
-        $websiteFields = $this->data['entity']['gContact$website'];
-        $urls = array();
-        if(is_array($websiteFields)) {
-            foreach($websiteFields as $website) {
-                $url = $website['href'];
-                if(isset($website['rel'])) 
-                    $fieldName = $website['rel'];
-                else
-                    $fieldName = $website['label'];
-                $urls[$fieldName] = $url;
-            }
+
+    function getBirthday()
+    {
+        if ($this->data['entity']['birthdays'][0]['date']) {
+            $birthDate = $this->data['entity']['birthdays'][0]['date']['year'] . '-' . $this->data['entity']['birthdays'][0]['date']['month'] . '-' . $this->data['entity']['birthdays'][0]['date']['day'];
+        } else {
+            $date = $this->data['entity']['birthdays'][0]['text'];
+            $date = explode('/', $date);
+            $birthDate = $date[2] . '-' . $date[0] . '-' . $date[1];
         }
-        return $urls;
+
+        return $birthDate;
     }
-    
-    function getBirthday() {
-        return $this->data['entity']['gContact$birthday']['when'];
-    }
-    
-    function getTitle() {
-        return $this->data['entity']['gd$organization'][0]['gd$orgTitle']['$t'];
+
+    function getTitle()
+    {
+        return $this->data['entity']['organizations'][0]['title'];
     }
     
     function getAccountName($userId) {
         $description = false;
-        $orgName = $this->data['entity']['gd$organization'][0]['gd$orgName']['$t'];
+        $orgName = $this->data['entity']['organizations'][0]['name'];
+
         if(empty($orgName)) {
             $contactsModel = Vtiger_Module_Model::getInstance('Contacts');
             $accountFieldInstance = Vtiger_Field_Model::getInstance('account_id', $contactsModel);
@@ -230,12 +232,9 @@ class Google_Contacts_Model extends WSAPP_SyncRecordModel {
      * @return <date> Vtiger date Format
      */
     public static function vtigerFormat($date) {
-        list($date, $timestring) = explode('T', $date);
-        list($time, $tz) = explode('.', $timestring);
+        [$date, $timestring] = explode('T', $date);
+        [$time, $tz] = explode('.', $timestring);
 
         return $date . " " . $time;
     }
-
 }
-
-?>

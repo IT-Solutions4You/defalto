@@ -1,17 +1,10 @@
 <?php
-/*********************************************************************************
- * The contents of this file are subject to the SugarCRM Public License Version 1.1.2
- * ("License"); You may not use this file except in compliance with the
- * License. You may obtain a copy of the License at http://www.sugarcrm.com/SPL
- * Software distributed under the License is distributed on an  "AS IS"  basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- * the specific language governing rights and limitations under the License.
- * The Original Code is:  SugarCRM Open Source
- * The Initial Developer of the Original Code is SugarCRM, Inc.
- * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.;
+/**
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
- ********************************************************************************/
+ */
 /*********************************************************************************
  * $Header: /cvsroot/vtigercrm/vtiger_crm/include/utils/ListViewUtils.php,v 1.32 2006/02/03 06:53:08 mangai Exp $
  * Description:  Includes generic helper functions used throughout the application.
@@ -588,10 +581,15 @@ function decode_emptyspace_html($str){
 function decode_html($str) {
 	global $default_charset;
 	// Direct Popup action or Ajax Popup action should be treated the same.
-	if ((isset($_REQUEST['action']) && $_REQUEST['action'] == 'Popup') || (isset($_REQUEST['file']) && $_REQUEST['file'] == 'Popup'))
-		return html_entity_decode($str);
-	else
-		return html_entity_decode($str, ENT_QUOTES, $default_charset);
+	if ((isset($_REQUEST['action']) && $_REQUEST['action'] === 'Popup') || (isset($_REQUEST['file']) && $_REQUEST['file'] === 'Popup')) {
+        return html_entity_decode($str);
+    }
+
+    if ($str) {
+        return html_entity_decode($str, ENT_QUOTES, $default_charset);
+    }
+
+    return $str;
 }
 
 //function added to check the text length in the listview.

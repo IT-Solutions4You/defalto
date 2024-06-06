@@ -9,7 +9,12 @@
 {/foreach}
 <form class="form-horizontal recordEditView" id="EditView" name="edit" method="post" action="index.php" enctype="multipart/form-data">
     <div class="fc-overlay-modal modal-content overlayEdit border-0">
-        {assign var=TITLE value="{vtranslate('LBL_EDITING', $MODULE)} {vtranslate($SINGLE_MODULE_NAME, $MODULE)} - {$RECORD_STRUCTURE_MODEL->getRecordName()}"}
+        {if isset($SINGLE_MODULE_NAME)}
+            {assign var="singleModuleName" value=$SINGLE_MODULE_NAME}
+        {else}
+            {assign var="singleModuleName" value=""}
+        {/if}
+        {assign var=TITLE value="{vtranslate('LBL_EDITING', $MODULE)} {vtranslate($singleModuleName, $MODULE)} - {$RECORD_STRUCTURE_MODEL->getRecordName()}"}
         {include file="ModalHeader.tpl"|vtemplate_path:$MODULE}
         <div class="modal-body editViewBody overflow-auto">
             <div class="editViewContents">

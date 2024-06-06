@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * ************************************************************************************/
+ */
 
 class ProjectTask_Module_Model extends Vtiger_Module_Model {
 
@@ -74,7 +72,7 @@ class ProjectTask_Module_Model extends Vtiger_Module_Model {
 			}
 		}
 		//ProjectTask Progress and Status should show in Projects summary view
-		if(!$relatedListFields['projecttaskstatus']) {
+        if (!isset($relatedListFields['projecttaskstatus']) || !$relatedListFields['projecttaskstatus']) {
 			$fieldModel = Vtiger_Field_Model::getInstance('projecttaskstatus', $this);
 			if($fieldModel && $fieldModel->isViewableInDetailView()) {
 				$relatedListFields['projecttaskstatus'] = 'projecttaskstatus';

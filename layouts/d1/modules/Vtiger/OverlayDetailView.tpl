@@ -49,11 +49,13 @@
                 <div class="row">
                     <div class="col-lg-2 order-lg-2 text-end">
                         <button class="btn btn-primary fullDetailsButton me-2" onclick="window.location.href = '{$RECORD->getFullDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}'">{vtranslate('LBL_DETAILS',$MODULE_NAME)}</button>
+                        {if isset($DETAILVIEW_LINKS)}
                         {foreach item=DETAIL_VIEW_BASIC_LINK from=$DETAILVIEW_LINKS['DETAILVIEWBASIC']}
                             {if $DETAIL_VIEW_BASIC_LINK && $DETAIL_VIEW_BASIC_LINK->getLabel() == 'LBL_EDIT'}
                                 <button class="btn btn-primary editRelatedRecord me-2" value="{$RECORD->getEditViewUrl()}">{vtranslate('LBL_EDIT',$MODULE_NAME)}</button>
                             {/if}
                         {/foreach}
+                        {/if}
                         <button type="button" class="btn btn-close ms-4" aria-label="Close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="col-lg-10 order-lg-1">

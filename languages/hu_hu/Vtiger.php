@@ -1,12 +1,11 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 $languageStrings = array(
 	'APPTITLE'                     => 'Vtiger CRM'                  ,
 	'POWEREDBY'                    => 'vtiger CRM motor működteti',
@@ -351,6 +350,8 @@ $languageStrings = array(
 	'LBL_LAST_60_DAYS'             => 'Elmúlt 60 nap'              ,
 	'LBL_LAST_90_DAYS'             => 'Elmúlt 90 nap'              ,
 	'LBL_LAST_120_DAYS'            => 'Elmúlt 120 nap'             ,
+    'LBL_NEXT_7_DAYS' => 'Következő 7 nap',
+    'LBL_NEXT_14_DAYS' => 'Következő 14 nap',
 	'LBL_NEXT_30_DAYS'             => 'Következő 30 nap'          ,
 	'LBL_NEXT_60_DAYS'             => 'Következő 60 nap'          ,
 	'LBL_NEXT_90_DAYS'             => 'Következő 90 nap'          ,

@@ -1,12 +1,11 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 require_once('vtlib/thirdparty/dUnzip2.inc.php');
 
 /**
@@ -63,7 +62,7 @@ class Vtiger_Unzip extends dUnzip2 {
 		 * DEFAULT: If include is specified only files under the specified path will be included.
 		 * If exclude is specified folders or files will be excluded.
 		 */
-		if($includeExclude === false) $includeExclude = Array();
+		$includeExclude = vtlib_array($includeExclude);
 
 		$lista = $this->getList();
 		if(php7_count($lista)) foreach($lista as $fileName=>$trash){
@@ -133,4 +132,3 @@ class Vtiger_Unzip extends dUnzip2 {
 		return false;
 	}
 }
-?>

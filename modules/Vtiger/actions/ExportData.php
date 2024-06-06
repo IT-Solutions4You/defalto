@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 class Vtiger_ExportData_Action extends Vtiger_Mass_Action {
 
@@ -110,7 +108,7 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action {
 		$fieldInstances = $this->moduleFieldInstances;
 
 		$orderBy = $request->get('orderby');
-		$orderByFieldModel = $fieldInstances[$orderBy];
+        $orderByFieldModel = $fieldInstances[$orderBy] ?? '';
 		$sortOrder = $request->get('sortorder');
 
 		if ($mode !== 'ExportAllData') {
@@ -293,14 +291,17 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action {
 				continue;
 			}
 			//Track if the value had quotes at beginning
-			$beginsWithDoubleQuote = strpos($value, '"') === 0;
-			$endsWithDoubleQuote = substr($value,-1) === '"'?1:0;
+            if (is_string($value)) {
+                $beginsWithDoubleQuote = str_starts_with($value, '"');
+                $endsWithDoubleQuote = str_ends_with($value, '"') ? 1 : 0;
+                $value = trim($value, "\"");
+            }
 
-			$value = trim($value,"\"");
+            $value = trim($value,"\"");
 			$uitype = $fieldInfo->get('uitype');
 			$fieldname = $fieldInfo->get('name');
 
-			if(!$this->fieldDataTypeCache[$fieldName]) {
+            if (!isset($this->fieldDataTypeCache[$fieldName])) {
 				$this->fieldDataTypeCache[$fieldName] = $fieldInfo->getFieldDataType();
 			}
 			$type = $this->fieldDataTypeCache[$fieldName];

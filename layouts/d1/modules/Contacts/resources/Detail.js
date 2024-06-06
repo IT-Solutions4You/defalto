@@ -29,7 +29,8 @@ Vtiger_Detail_Js("Contacts_Detail_Js", {}, {
 				return false;
 			}
 
-			var primaryEmailValue = primaryEmailField["0"].data("value");
+			const primaryEmailValue = primaryEmailField.data("value");
+
 			if (primaryEmailValue == "") {
 				app.helper.showErrorNotification({message: app.vtranslate('JS_PLEASE_ENTER_PRIMARY_EMAIL_VALUE_TO_ENABLE_PORTAL_USER')});
 				return false;

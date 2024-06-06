@@ -1,17 +1,12 @@
 <?php
-/*********************************************************************************
- * The contents of this file are subject to the SugarCRM Public License Version 1.1.2
- * ("License"); You may not use this file except in compliance with the
- * License. You may obtain a copy of txhe License at http://www.sugarcrm.com/SPL
- * Software distributed under the License is distributed on an  "AS IS"  basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- * the specific language governing rights and limitations under the License.
- * The Original Code is:  SugarCRM Open Source
+/**
  * The Initial Developer of the Original Code is SugarCRM, Inc.
- * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.;
+ * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
- ********************************************************************************/
+ */
+
 class Campaigns extends CRMEntity {
 	var $log;
 	var $db;
@@ -172,9 +167,9 @@ class Campaigns extends CRMEntity {
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
-		if($return_value == null)
-			$return_value = Array();
-		else if($is_CampaignStatusAllowed && is_array($return_value['header'])) {
+        if ($return_value == null) {
+            $return_value = [];
+        } elseif ($is_CampaignStatusAllowed && isset($return_value['header']) && is_array($return_value['header'])) {
 			$statusPos = php7_count($return_value['header']) - 2; // Last column is for Actions, exclude that. Also the index starts from 0, so reduce one more count.
 			$return_value = $this->add_status_popup($return_value, $statusPos, 'Accounts');
 		}
@@ -277,7 +272,7 @@ class Campaigns extends CRMEntity {
 		if($return_value == null)
 			$return_value = Array();
 		else if($is_CampaignStatusAllowed) {
-			$statusPos = php7_count($return_value['header']) - 2; // Last column is for Actions, exclude that. Also the index starts from 0, so reduce one more count.
+			$statusPos = isset($return_value['header']) ? php7_count($return_value['header']) - 2 : ''; // Last column is for Actions, exclude that. Also the index starts from 0, so reduce one more count.
 			$return_value = $this->add_status_popup($return_value, $statusPos, 'Contacts');
 		}
 
@@ -375,7 +370,7 @@ class Campaigns extends CRMEntity {
 		if($return_value == null)
 			$return_value = Array();
 		else if($is_CampaignStatusAllowed) {
-			$statusPos = php7_count($return_value['header']) - 2; // Last column is for Actions, exclude that. Also the index starts from 0, so reduce one more count.
+			$statusPos = isset($return_value['header']) ? php7_count($return_value['header']) - 2 : ''; // Last column is for Actions, exclude that. Also the index starts from 0, so reduce one more count.
 			$return_value = $this->add_status_popup($return_value, $statusPos, 'Leads');
 		}
 
@@ -454,11 +449,11 @@ class Campaigns extends CRMEntity {
 	 * @param - $status_column index of the status column in the list.
 	 * returns true on success
 	 */
-	function add_status_popup($related_list, $status_column = 7, $related_module)
+	function add_status_popup($related_list, $status_column = 7, $related_module = null)
 	{
 		global $adb;
 
-		if(!$this->campaignrelstatus)
+		if(!isset($this->campaignrelstatus))
 		{
 			$result = $adb->pquery('SELECT * FROM vtiger_campaignrelstatus;', array());
 			while($row = $adb->fetchByAssoc($result))

@@ -1,24 +1,11 @@
 <?php
-/*********************************************************************************
- * The contents of this file are subject to the SugarCRM Public License Version 1.1.2
- * ("License"); You may not use this file except in compliance with the
- * License. You may obtain a copy of the License at http://www.sugarcrm.com/SPL
- * Software distributed under the License is distributed on an  "AS IS"  basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- * the specific language governing rights and limitations under the License.
- * The Original Code is:  SugarCRM Open Source
+/**
  * The Initial Developer of the Original Code is SugarCRM, Inc.
- * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.;
+ * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
- ********************************************************************************/
-
-/*********************************************
- * With modifications by
- * Daniel Jabbour
- * iWebPress Incorporated, www.iwebpress.com
- * djabbour - a t - iwebpress - d o t - com
- ********************************************/
+ * /
 
 /*********************************************************************************
  * $Header: /advent/projects/wesat/vtiger_crm/sugarcrm/modules/Users/Users.php,v 1.10 2005/04/19 14:40:48 ray Exp $
@@ -776,7 +763,7 @@ class Users extends CRMEntity {
 			}
 			$userlabel = trim(decode_html($userlabel));
 			
-			$this->column_fields['userlabel'] = strip_tags($userlabel);
+			$this->column_fields['userlabel'] = vtlib_strip_quoted(strip_tags($userlabel));
 		}
 
 		if($insertion_mode == 'edit') {

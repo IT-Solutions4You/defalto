@@ -446,6 +446,8 @@ $languageStrings = array(
 	'LBL_LAST_60_DAYS' => 'Last 60 Days',
 	'LBL_LAST_90_DAYS' => 'Last 90 Days',
 	'LBL_LAST_120_DAYS' => 'Last 120 Days',
+    'LBL_NEXT_7_DAYS' => 'Next 7 Days',
+    'LBL_NEXT_14_DAYS' => 'Next 14 Days',
 	'LBL_NEXT_30_DAYS' => 'Next 30 Days',
 	'LBL_NEXT_60_DAYS' => 'Next 60 Days',
 	'LBL_NEXT_90_DAYS' => 'Next 90 Days',
@@ -1437,6 +1439,7 @@ $languageStrings = array(
     'LBL_PDF_TEMPLATE' => 'PDF Template',
     'LBL_PDF_LANGUAGE' => 'PDF Language',
     'LBL_PDF_MERGE' => 'PDF Merge',
+    'INVALID PICKLIST' => 'Invalid value for Picklist field',
 );
 
 $jsLanguageStrings = array(

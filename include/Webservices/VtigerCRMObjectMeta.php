@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 class VtigerCRMObjectMeta extends EntityMeta {
 	
@@ -289,22 +287,34 @@ class VtigerCRMObjectMeta extends EntityMeta {
 		}
 		return parent::getColumnTableMapping();
 	}
-	
-	function getFieldColumnMapping(){
-		
-		if(!$this->meta){
-			$this->retrieveMeta();
-		}
-		if($this->fieldColumnMapping === null){
-			$this->fieldColumnMapping =  array();
-			foreach ($this->moduleFields as $fieldName => $webserviceField) {
-                $this->fieldColumnMapping[$fieldName] = $webserviceField->getColumnName();
-			}
-			$this->fieldColumnMapping['id'] = $this->idColumn;
-		}
-		return $this->fieldColumnMapping;
+
+    function getFieldColumnMapping()
+    {
+        if (!$this->meta) {
+            $this->retrieveMeta();
+        }
+
+        if ($this->fieldColumnMapping === null) {
+            $this->fieldColumnMapping = [];
+
+            foreach ($this->moduleFields as $fieldName => $webserviceField) {
+                if ($this->getEntityName() === "Users") {
+                    $restrictedFields = ['user_password', 'confirm_password', 'accesskey'];
+
+                    if (!in_array($fieldName, $restrictedFields)) {
+                        $this->fieldColumnMapping[$fieldName] = $webserviceField->getColumnName();
+                    }
+                } else {
+                    $this->fieldColumnMapping[$fieldName] = $webserviceField->getColumnName();
+                }
+            }
+
+            $this->fieldColumnMapping['id'] = $this->idColumn;
+        }
+
+        return $this->fieldColumnMapping;
 	}
-	
+
 	function getMandatoryFields(){
 		if(!$this->meta){
 			$this->retrieveMeta();
@@ -357,7 +367,7 @@ class VtigerCRMObjectMeta extends EntityMeta {
 		
 		require_once('modules/CustomView/CustomView.php');
 		$current_user = vtws_preserveGlobal('current_user',$this->user);
-		$theme = vtws_preserveGlobal('theme',$this->user->theme);
+        $theme = vtws_preserveGlobal('theme', isset($this->user->theme) ? $this->user->theme : "");
 		$default_language = VTWS_PreserveGlobal::getGlobal('default_language');
 		global $current_language;
 		if(empty($current_language)) $current_language = $default_language;

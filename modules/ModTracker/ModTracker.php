@@ -41,6 +41,7 @@ class ModTracker {
     */
     function getModTrackerEnabledModules() {
         global $adb;
+        $modules = [];
         $moduleResult = $adb->pquery('SELECT * FROM vtiger_modtracker_tabs', array());
         for($i=0; $i<$adb->num_rows($moduleResult); $i++) {
             $tabId = $adb->query_result($moduleResult, $i, 'tabid');

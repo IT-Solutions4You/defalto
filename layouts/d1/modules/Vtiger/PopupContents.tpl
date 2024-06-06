@@ -18,9 +18,9 @@
         <input type="hidden" id="pageEndRange" value="{$PAGING_MODEL->getRecordEndRange()}" />
         <input type="hidden" id="previousPageExist" value="{$PAGING_MODEL->isPrevPageExists()}" />
         <input type="hidden" id="nextPageExist" value="{$PAGING_MODEL->isNextPageExists()}" />
-        <input type="hidden" id="totalCount" value="{$LISTVIEW_COUNT}" />
-		{if $GETURL}<input type="hidden" id="getUrl" value="{$GETURL}" />{/if}
-        <input type="hidden" value="{Vtiger_Util_Helper::toSafeHTML(Zend_JSON::encode($SEARCH_DETAILS))}" id="currentSearchParams" />
+        <input type="hidden" id="totalCount" value="{$LISTVIEW_ENTRIES_COUNT}" />
+		{if isset($GETURL)}<input type="hidden" id="getUrl" value="{$GETURL}" />{/if}
+        {if isset($SEARCH_DETAILS)}<input type="hidden" value="{Vtiger_Util_Helper::toSafeHTML(Zend_JSON::encode($SEARCH_DETAILS))}" id="currentSearchParams" />{/if}
         <div class="contents-topscroll">
             <div class="topscroll-div">
                 &nbsp;
@@ -39,7 +39,7 @@
                 <table class="listview-table table table-borderless listViewEntriesTable">
                     <thead>
                         <tr class="listViewHeaders bg-body-secondary">
-                            {if $MULTI_SELECT}
+                            {if isset($MULTI_SELECT)}
                                 <th class="{$WIDTHTYPE}">
                                     <input type="checkbox" class="selectAllInCurrentPage form-check-input" />
                                 </th>
@@ -81,8 +81,8 @@
                 {foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES name=popupListView}
                     {assign var="RECORD_DATA" value=$LISTVIEW_ENTRY->getRawData()}
                     <tr class="listViewEntries border-bottom" data-id="{$LISTVIEW_ENTRY->getId()}" data-name="{$LISTVIEW_ENTRY->getName()}" data-info='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($LISTVIEW_ENTRY->getRawData()))}'
-                    {if $GETURL neq ''} data-url='{$LISTVIEW_ENTRY->$GETURL()}' {/if}  id="{$MODULE}_popUpListView_row_{$smarty.foreach.popupListView.index+1}">
-                    {if $MULTI_SELECT}
+                    {if isset($GETURL) && $GETURL neq ''} data-url='{$LISTVIEW_ENTRY->$GETURL()}' {/if}  id="{$MODULE}_popUpListView_row_{$smarty.foreach.popupListView.index+1}">
+                    {if isset($MULTI_SELECT)}
                         <td class="{$WIDTHTYPE}">
                             <input class="entryCheckBox form-check-input" type="checkbox" />
                         </td>

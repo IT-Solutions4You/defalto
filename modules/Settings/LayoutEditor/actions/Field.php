@@ -1,13 +1,10 @@
 <?php
-
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 
 class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
 
@@ -34,19 +31,24 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
 
 			$defaultValue = $fieldModel->get('defaultvalue');
 			$responseData['fieldDefaultValueRaw'] = $defaultValue;
-			if (isset($defaultValue)) {
-				if ($defaultValue && $fieldInfo['type'] == 'date') {
-					$defaultValue = DateTimeField::convertToUserFormat($defaultValue);
-				} else if (!$defaultValue) {
-					$defaultValue = $fieldModel->getDisplayValue($defaultValue);
-				} else if (is_array($defaultValue)) {
-					foreach ($defaultValue as $key => $value) {
-						$defaultValue[$key] = $fieldModel->getDisplayValue($value);
-					}
-					$defaultValue = Zend_Json::encode($defaultValue);
-				}
-			}
-			$responseData['fieldDefaultValue'] = $defaultValue;
+
+            if (isset($defaultValue)) {
+                if (is_array($defaultValue)) {
+                    foreach ($defaultValue as $key => $value) {
+                        $defaultValue[$key] = $fieldModel->getDisplayValue($value);
+                    }
+
+                    $defaultValue = Zend_Json::encode($defaultValue);
+                } elseif ($defaultValue && $fieldInfo['type'] == 'date') {
+                    $defaultValue = DateTimeField::convertToUserFormat($defaultValue);
+                } elseif ($defaultValue) {
+                    $defaultValue = $fieldModel->getDisplayValue($defaultValue);
+                } else {
+                    $defaultValue = '';
+                }
+            }
+
+            $responseData['fieldDefaultValue'] = $defaultValue;
 
             $response->setResult($responseData);
         }catch(Exception $e) {
@@ -108,6 +110,11 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
 
             if (preg_match('/AM|PM/', $defaultValue) && ($fieldInstance->get('uitype') == '14')) {
                 $defaultValue = Vtiger_Time_UIType::getTimeValueWithSeconds($defaultValue);
+            }
+
+            // Converting the date value to DB format (yyyy-mm-dd)
+            if ($defaultValue && $fieldInstance->get('uitype')=='5') {
+                $defaultValue = Vtiger_Date_UIType::getDBInsertedValue($defaultValue);
             }
 
             $fieldInstance->set('defaultvalue', $defaultValue);
@@ -200,6 +207,23 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
 			foreach($fieldIds as $fieldId) {
 				$fieldModel = Settings_LayoutEditor_Field_Model::getInstance($fieldId);
 				$fieldInfo = $fieldModel->getFieldInfo();
+                //The default value is set to response after reactivating the field.
+                $defaultValue = $fieldModel->getDefaultFieldValue();
+
+                if (isset($defaultValue)) {
+                    if ($defaultValue && $fieldInfo['type'] === 'date') {
+                        $defaultValue = DateTimeField::convertToUserFormat($defaultValue);
+                    } elseif (!$defaultValue) {
+                        $defaultValue = $fieldModel->getDisplayValue($defaultValue);
+                    } elseif (is_array($defaultValue)) {
+                        foreach ($defaultValue as $key => $value) {
+                            $defaultValue[$key] = $fieldModel->getDisplayValue($value);
+                        }
+                        $defaultValue = Zend_Json::encode($defaultValue);
+                    }
+                }
+
+                $fieldInfo['fieldDefaultValue'] = $defaultValue;
 				$responseData[] = array_merge(array('id'=>$fieldModel->getId(), 'blockid'=>$fieldModel->get('block')->id, 'customField'=>$fieldModel->isCustomField()),$fieldInfo);
 			}
             $response->setResult($responseData);

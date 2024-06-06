@@ -1030,8 +1030,9 @@ function getRoleInformation($roleid)
 	$rolename=$adb->query_result($result,0,'rolename');
 	$parentrole=$adb->query_result($result,0,'parentrole');
 	$roledepth=$adb->query_result($result,0,'depth');
-	$parentRoleArr=explode('::',$parentrole);
-	$immediateParent=$parentRoleArr[php7_count($parentRoleArr)-2];
+    $parentRoleArr = explode('::', $parentrole ? : '');
+    $parentRoleArrLen = php7_count($parentRoleArr);
+    $immediateParent = $parentRoleArrLen >= 2 ? $parentRoleArr[$parentRoleArrLen - 2] : null;
 	$roleDet=Array();
 	$roleDet[]=$rolename;
 	$roleDet[]=$parentrole;
@@ -1340,9 +1341,11 @@ function getCombinedUserGlobalPermissions($userId)
 	$no_of_profiles=php7_count($profArr);
 	$userGlobalPerrArr=Array();
 
-	$userGlobalPerrArr=getProfileGlobalPermission($profArr[0]);
-	if($no_of_profiles != 1)
-	{
+    if ($no_of_profiles) {
+        $userGlobalPerrArr = getProfileGlobalPermission($profArr[0]);
+    }
+
+    if($no_of_profiles > 1) {
 			for($i=1;$i<$no_of_profiles;$i++)
 		{
 			$tempUserGlobalPerrArr=getProfileGlobalPermission($profArr[$i]);
@@ -1475,7 +1478,7 @@ function getParentRole($roleId)
 	$log->debug("Entering getParentRole(".$roleId.") method ...");
 	$roleInfo=getRoleInformation($roleId);
 	$parentRole=$roleInfo[$roleId][1];
-	$tempParentRoleArr=explode('::',$parentRole);
+    $tempParentRoleArr = explode('::', $parentRole ? : '');
 	$parentRoleArr=Array();
 	foreach($tempParentRoleArr as $role_id)
 	{

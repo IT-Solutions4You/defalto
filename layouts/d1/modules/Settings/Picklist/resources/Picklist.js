@@ -317,7 +317,7 @@ var Settings_Picklist_Js = {
 			form = container.find('[name="addItemForm"]'),
 			params = {
 				submitHandler: function (form) {
-					let specialChars = /[<\>\"\,\[\]\{\}]/,
+					let specialChars = /[\<\>\"\,\[\]\{\}\'\!\@\#\$\%\^\&\*\(\)\+\=\?\|\\\;\:\/]/,
 						newValueEle = jQuery('[name="newValue"]', container),
 						newValues = newValueEle.select2('val'),
 						newValueArray = newValues,
@@ -335,7 +335,7 @@ var Settings_Picklist_Js = {
 							return false;
 						}
 						if (specialChars.test(newValueArray[i])) {
-							errorMessage = app.vtranslate('JS_SPECIAL_CHARACTERS') + " < > \" , [ ] { } " + app.vtranslate('JS_NOT_ALLOWED');
+							errorMessage = app.vtranslate('JS_SPECIAL_CHARACTERS') + " <>\",[]{}\'!@#$%^&*()+=?|\\;:/ " + app.vtranslate('JS_NOT_ALLOWED');
 							vtUtils.showValidationMessage(newValueEle, errorMessage, showValidationParams);
 							return false;
 						}
@@ -395,7 +395,7 @@ var Settings_Picklist_Js = {
         var params = {
             submitHandler: function(form) {
                 var form = jQuery(form);
-                var specialChars = /[<\>\"\,\[\]\{\}]/;
+                let specialChars = /[\<\>\"\,\[\]\{\}\'\!\@\#\$\%\^\&\*\(\)\+\=\?\|\\\;\:\/]/;
 				var newValueEle = jQuery('[name="renamedValue"]',form);
 				var newValue = jQuery.trim(newValueEle.val());
 				if(Settings_Picklist_Js.duplicateItemNameCheck(form)) {
@@ -420,7 +420,7 @@ var Settings_Picklist_Js = {
 								at: 'top left',
 								container : form
 					}};
-                    var errorMessage = app.vtranslate('JS_SPECIAL_CHARACTERS') + " < > \" , [ ] { } " + app.vtranslate('JS_NOT_ALLOWED');
+					const errorMessage = app.vtranslate('JS_SPECIAL_CHARACTERS') + " <>\",[]{}\'!@#$%^&*()+=?|\\;:/ " + app.vtranslate('JS_NOT_ALLOWED');
                     vtUtils.showValidationMessage(newValueEle, errorMessage, showValidationParams);
                     return false;
                 }

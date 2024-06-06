@@ -286,7 +286,7 @@ Vtiger_Date_Field_Js('Workflows_Date_Field_Js',{},{
 
         if (comparatorSelectedOptionVal.length > 0) {
             if (comparatorSelectedOptionVal == 'between' || comparatorSelectedOptionVal == 'custom') {
-                html = '<div class="date"><input class="dateField inputElement form-control" data-calendar-type="range" name="' + this.getName() + '" data-date-format="' + this.getDateFormat() + '" type="text" ReadOnly="true" value="' + this.getValue() + '"></div>';
+                html = '<div class="date"><input class="dateField inputElement form-control" data-calendar-type="range" name="' + this.getName() + '" data-date-format="' + this.getDateFormat() + '" type="text" value="' + this.getValue() + '"></div>';
                 element = jQuery(html);
 
                 return this.addValidationToElement(element);
@@ -385,9 +385,10 @@ Vtiger_Time_Field_Js('Workflows_Time_Field_Js',{},{
 	 * @return - input text field
 	 */
     getUi : function() {
-        var html = '<input type="text" class="getPopupUi time inputElement" name="'+ this.getName() +'"  value="'+  this.getValue() + '" />'+
-        '<input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
-        var element = jQuery(html);
+        let html = '<input type="text" class="getPopupUi time inputElement" name="' + this.getName() + '" data-time-format="' + this.getTimeFormat() + '" value="' + this.getValue() + '" />' +
+            '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />';
+        const element = jQuery(html);
+
         return this.addValidationToElement(element);
     }
 });

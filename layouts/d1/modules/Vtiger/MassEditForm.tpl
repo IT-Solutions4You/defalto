@@ -14,7 +14,7 @@
             <input type="hidden" name="selected_ids" value={ZEND_JSON::encode($SELECTED_IDS)}>
             <input type="hidden" name="excluded_ids" value={ZEND_JSON::encode($EXCLUDED_IDS)}>
             <input type="hidden" name="tag_params" value={ZEND_JSON::encode($TAG_PARAMS)}>
-            <input type="hidden" name="search_params" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($SEARCH_PARAMS))}'/>
+            <input type="hidden" name="search_params" value='{(isset($SEARCH_PARAMS)) ? Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($SEARCH_PARAMS)) : ""}'/>
             <div class="fc-overlay-modal modal-content overlayEdit border-0">
                 {assign var=TITLE value=vtranslate('LBL_MASS_EDITING',$MODULE)}
                 {include file=vtemplate_path('ModalHeader.tpl', $MODULE) TITLE=$TITLE}

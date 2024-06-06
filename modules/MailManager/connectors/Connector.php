@@ -1,12 +1,10 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is: vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 
 vimport ('~modules/MailManager/models/Message.php');
 
@@ -236,16 +234,8 @@ class MailManager_Connector_Connector {
 			$mails = array();
 			$mailIds = array();
 
-			// to make sure this should not break in Vtiger6
-			$layout = Vtiger_Viewer::getDefaultLayoutName();
-			if($layout == "v7"){
-				$mbox = false;
-			} else {
-				$mbox = $this->mBox;
-			}
-
 			foreach($records as $result) {
-				$message = MailManager_Message_Model::parseOverview($result,$mbox);
+				$message = MailManager_Message_Model::parseOverview($result);
 				$mailIds[] = $message->msgNo();
 				array_unshift($mails, $message);
 			}
@@ -378,22 +368,18 @@ class MailManager_Connector_Connector {
 			// Reverse order the messages
 			rsort($nos, SORT_NUMERIC);
 
-			$mails = array();
+            $mails = [];
+            $mailNos = [];
 			$records = imap_fetch_overview($this->mBox, implode(',', $nos));
 
-			// to make sure this should not break in Vtiger6
-			$layout = Vtiger_Viewer::getDefaultLayoutName();
-			if($layout == "v7"){
-				$mbox = false;
-			} else {
-				$mbox = $this->mBox;
-			}
-
 			foreach($records as $result) {
-				array_unshift($mails, MailManager_Message_Model::parseOverview($result,$mbox));
-			}
+                $message = MailManager_Message_Model::parseOverview($result);
+                array_unshift($mails, $message);
+                array_unshift($mailNos, $message->msgNo());
+            }
+
 			$folder->setMails($mails);
-			$folder->setMailIds($nos);
+            $folder->setMailIds($mailNos);
 			$folder->setPaging($reverse_end, $reverse_start, $maxLimit, $nmsgs, $start);  //-1 as it starts from 0
 		}
 	}
@@ -425,4 +411,3 @@ class MailManager_Connector_Connector {
 		return $value;
 	}
 }
-?>

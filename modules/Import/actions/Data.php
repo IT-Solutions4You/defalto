@@ -1,12 +1,10 @@
 <?php
-/* ***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * ***********************************************************************************/
+ */
 
 require_once 'include/Webservices/Create.php';
 require_once 'include/Webservices/Update.php';
@@ -619,7 +617,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 
                     unset($this->allPicklistValues[$fieldName]);
 				} else {
-					$fieldData[$fieldName] = $picklistDetails[$picklistValueInLowerCase];
+                    $fieldData[$fieldName] = $picklistDetails[$picklistValueInLowerCase] ?? '';
 				}
 			} else if ($fieldDataType == 'currency') {
 				// While exporting we are exporting as user format, we should import as db format while importing
@@ -738,10 +736,10 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 		}
 		if ($fieldData != null && $checkMandatoryFieldValues) {
 			foreach ($moduleFields as $fieldName => $fieldInstance) {
-				if ((($fieldData[$fieldName] == '') || ($fieldData[$fieldName] == null)) && $fieldInstance->isMandatory()) {
-					return null;
-				}
-			}
+                if ((empty($fieldData[$fieldName]) || !isset($fieldData[$fieldName])) && $fieldInstance->isMandatory()) {
+                    return null;
+                }
+            }
 		}
 
 		return $fieldData;

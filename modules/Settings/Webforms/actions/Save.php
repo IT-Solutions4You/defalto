@@ -1,12 +1,10 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is: vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 
 class Settings_Webforms_Save_Action extends Settings_Vtiger_Index_Action {
 
@@ -22,7 +20,12 @@ class Settings_Webforms_Save_Action extends Settings_Vtiger_Index_Action {
 		return true;
 	}
 
-	public function process(Vtiger_Request $request) {
+    /**
+     * @throws AppException
+     * @throws Exception
+     */
+    public function process(Vtiger_Request $request)
+    {
 		$recordId = $request->get('record');
 		$qualifiedModuleName = $request->getModule(false);
 
@@ -35,12 +38,22 @@ class Settings_Webforms_Save_Action extends Settings_Vtiger_Index_Action {
 		}
 
 		$fieldsList = $recordModel->getModule()->getFields();
+        $supportedModules = Settings_Webforms_Module_Model::getSupportedModulesList();
+
 		foreach ($fieldsList as $fieldName => $fieldModel) {
 			$fieldValue = $request->get($fieldName);
 			if (!$fieldValue) {
 				$fieldValue = $fieldModel->get('defaultvalue');
 			}
-			$recordModel->set($fieldName, $fieldValue);
+
+            if ($fieldModel->isMandatory() && empty(trim($fieldValue))) {
+                $label = vtranslate($fieldModel->get('label'), $qualifiedModuleName);
+                throw new AppException(vtranslate('LBL_MANDATORY_FIELD_MISSING', 'Vtiger', $label));
+            } elseif ($fieldName == 'targetmodule' && !array_key_exists($fieldValue, $supportedModules)) {
+                throw new Exception(vtranslate('LBL_TARGET_MODULE_IS_NOT_SUPPORTED_TO_CREATE_WEBFORM', 'Vtiger'));
+            }
+
+            $recordModel->set($fieldName, $fieldValue);
 		}
 
 		$fileFields = array();		
@@ -51,10 +64,17 @@ class Settings_Webforms_Save_Action extends Settings_Vtiger_Index_Action {
 
 		$returnUrl = $recordModel->getModule()->getListViewUrl();
 		$recordModel->set('selectedFieldsData', $request->get('selectedFieldsData'));
-		if (!$recordModel->checkDuplicate()) {
+        $selectedFieldsData = $request->get('selectedFieldsData');
+
+        if (empty($selectedFieldsData)) {
+            throw new AppException(vtranslate('LBL_MANDATORY_FIELDS_MISSING', 'Vtiger'));
+        }
+
+        if (!$recordModel->checkDuplicate()) {
 			$recordModel->save();
 			$returnUrl = $recordModel->getDetailViewUrl();
 		}
+
 		header("Location: $returnUrl");
 	}
 

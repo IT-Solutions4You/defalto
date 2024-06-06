@@ -1,12 +1,11 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 require_once("include/Zend/Json.php");
 
 class VTJsonCondition {
@@ -26,13 +25,14 @@ class VTJsonCondition {
 			$expressionResults = array();
 			$i = 0;
 			foreach ($expr as $cond) {
-				$conditionGroup = $cond['groupid'];
+				$conditionGroup = $cond['groupid'] ?? null;
+
 				if (empty($conditionGroup)) {
 					$conditionGroup = 0;
 				}
 				preg_match('/(\w+) : \((\w+)\) (\w+)/', $cond['fieldname'], $matches);
 				if (php7_count($matches) == 0) {
-					if ($cond['fieldname'] == '_VT_add_comment' && $cond['isEvaluated']) {
+					if (isset($cond['isEvaluated']) && $cond['fieldname'] == '_VT_add_comment' && $cond['isEvaluated']) {
 						$expressionResults[$conditionGroup][$i]['result'] = $cond['isEvaluated'];
 					} else {
 						$expressionResults[$conditionGroup][$i]['result'] = $this->checkCondition($entityData, $cond);
@@ -85,9 +85,10 @@ class VTJsonCondition {
 			foreach ($expressionResults as $groupId => $groupExprResultSet) {
 				$groupResult = TRUE;
 				foreach ($groupExprResultSet as $exprResult) {
-					$result = $exprResult['result'];
-					$logicalOperator = $exprResult['logicaloperator'];
-					if (isset($result)) { // Condition to skip last condition
+					if (isset($exprResult['result'])) { // Condition to skip last condition
+						$result = $exprResult['result'];
+						$logicalOperator = $exprResult['logicaloperator'] ?? null;
+
 						if (!empty($logicalOperator)) {
 							switch ($logicalOperator) {
 								case 'and' : $groupResult = ($groupResult && $result);
@@ -159,10 +160,10 @@ class VTJsonCondition {
 			}
 			$rawFieldValue = $fieldValue;
 		} else {
-			$fieldValue = $data[$cond['fieldname']];
+			$fieldValue = $data[$cond['fieldname']] ?? '';
 		}
 		$value = trim(html_entity_decode($cond['value']));
-		$expressionType = $cond['valuetype'];
+		$expressionType = $cond['valuetype'] ?? null;
 
 		if ($expressionType == 'fieldname') {
 			if ($referredEntityData != null) {
@@ -191,7 +192,7 @@ class VTJsonCondition {
 		global $current_user;
 		$handler = vtws_getModuleHandlerFromName($entityData->getModuleName(), $current_user);
 		$moduleFields = $handler->getMeta()->getModuleFields();
-		$fieldInstance = $moduleFields[$cond['fieldname']];
+		$fieldInstance = $moduleFields[$cond['fieldname']] ?? '';
 
 		if($fieldInstance && $fieldInstance->getFieldDataType() == 'datetime') {
 			//Convert the DB Date Time Format to User Date Time Format
@@ -555,5 +556,3 @@ class VTJsonCondition {
 	}
 
 }
-
-?>

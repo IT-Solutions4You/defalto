@@ -1,12 +1,10 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 
 	/**
 	 * Functionality to save and retrieve Tasks from the database.
@@ -28,7 +26,8 @@
 		 */
 		public function saveTask($task){
 			$adb = $this->adb;
-			if(is_numeric($task->id)){//How do I check whether a member exists in php?
+
+            if (isset($task->id) && is_numeric($task->id)) {
 				$taskId = $task->id;
 				$adb->pquery("update com_vtiger_workflowtasks set summary=?, task=? where task_id=?",
 							array($task->summary, serialize($task), $taskId));
@@ -157,6 +156,11 @@
 		public abstract function doTask($data);
 		public abstract function getFieldNames();
 
+        public function __get($name)
+        {
+            return property_exists($this, $name) ? $this->$name : null;
+        }
+
 		public function getTimeFieldList() {
 			return array();
 		}
@@ -186,7 +190,7 @@
 		}
 
 		public function formatTimeForTimePicker($time) {
-			list($h, $m, $s) = explode(':', $time);
+			[$h, $m, $s] = explode(':', $time);
 			$mn = str_pad($m - $m % 15, 2, 0, STR_PAD_LEFT);
 			$AM_PM = array('am', 'pm');
 			return str_pad(($h%12), 2, 0, STR_PAD_LEFT).':'.$mn.$AM_PM[($h/12)%2];

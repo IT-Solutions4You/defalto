@@ -287,7 +287,7 @@ class CRMEntity {
         $this->column_fields['label'] = $label;
 
 		if ($this->mode == 'edit') {
-			$description_val = from_html($this->column_fields['description'], ($insertion_mode == 'edit') ? true : false);
+			$description_val = from_html($this->column_fields['description'], ($this->mode == 'edit') ? true : false);
 
 			$tabid = getTabid($module);
 			$modified_date_var = $adb->formatDate($date_var, true);
@@ -355,7 +355,7 @@ class CRMEntity {
 				$source = strtoupper($this->recordSource);
 			}
 
-			$description_val = from_html($this->column_fields['description'], ($this->mode == 'edit') ? true : false);
+			$description_val = from_html($this->column_fields['description'], false);
 			$params = array("crmid" => $current_id, "smcreatorid" => $current_user->id, "smownerid" => $ownerid, 
 							"smgroupid" => $groupid, "setype" => $module, "description" => $description_val,
 							"modifiedby" => $current_user->id, "createdtime" => $created_date_var, 
@@ -629,11 +629,12 @@ class CRMEntity {
 						if(php7_count($IMG_FILES)){
 							foreach($IMG_FILES as $fileIndex => $file) {
 								if($file['error'] == 0 && $file['name'] != '' && $file['size'] > 0) {
-									if($_REQUEST[$fileIndex.'_hidden'] != '')
-										$file['original_name'] = vtlib_purify($_REQUEST[$fileindex.'_hidden']);
-									else {
-										$file['original_name'] = stripslashes($file['name']);
-									}
+                                    if (isset($_REQUEST[$fileIndex . '_hidden']) && $_REQUEST[$fileIndex . '_hidden'] != '') {
+                                        $file['original_name'] = vtlib_purify($_REQUEST[$fileIndex . '_hidden']);
+                                    } else {
+                                        $file['original_name'] = stripslashes($file['name']);
+                                    }
+
 									$file['original_name'] = str_replace('"','',$file['original_name']);
 									$attachmentId = $this->uploadAndSaveFile($this->id,$module,$file,'Image');
 									if($attachmentId) {
@@ -648,7 +649,8 @@ class CRMEntity {
 							$skipUpdateForField = true;
 						}
 					}
-					if (($insertion_mode == 'edit' && $skipUpdateForField == false) || $_REQUEST['imgDeleted']) {
+
+                    if (($insertion_mode == 'edit' && $skipUpdateForField == false) || (isset($_REQUEST['imgDeleted']) && $_REQUEST['imgDeleted'])) {
 						$skipUpdateForField = false;
 						$uploadedFileNames = array();
 						$getImageNamesSql = 'SELECT name FROM vtiger_seattachmentsrel INNER JOIN vtiger_attachments ON
@@ -668,8 +670,8 @@ class CRMEntity {
 						$uploadedFileNames = array();
 						foreach($UPLOADED_FILES as $fileIndex => $file) {
 							if($file['error'] == 0 && $file['name'] != '' && $file['size'] > 0) {
-								if($_REQUEST[$fileindex.'_hidden'] != '') {
-									$file['original_name'] = vtlib_purify($_REQUEST[$fileindex.'_hidden']);
+                                if(isset($_REQUEST[$fileIndex.'_hidden']) && $_REQUEST[$fileIndex.'_hidden'] != '') {
+									$file['original_name'] = vtlib_purify($_REQUEST[$fileIndex.'_hidden']);
 								} else {
 									$file['original_name'] = stripslashes($file['name']);
 								}
@@ -2031,7 +2033,7 @@ class CRMEntity {
 	 */
 	function transferRelatedRecords($module, $transferEntityIds, $entityId) {
 		global $adb, $log;
-		$log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
+		$log->debug("Entering function transferRelatedRecords ($module, " . implode(',', $transferEntityIds) . ", $entityId)");
 		foreach ($transferEntityIds as $transferId) {
 
 			// Pick the records related to the entity to be transfered, but do not pick the once which are already related to the current entity.
@@ -2936,7 +2938,7 @@ class CRMEntity {
 
 		// Select Custom Field Table Columns if present
 		if (isset($this->customFieldTable))
-			$query .= ", " . $this->customFieldTable[0] . ".* ";
+            $selectClause .= ", " . $this->customFieldTable[0] . ".* ";
 
 		$fromClause = " FROM $this->table_name";
 
@@ -2975,6 +2977,8 @@ class CRMEntity {
 		}
 
 		$i = 1;
+        $duplicateCheckClause = '';
+
 		foreach($tableColumns as $tableColumn){
 			$tableInfo = explode('.', $tableColumn);
 			$duplicateCheckClause .= " ifnull($tableColumn,'null') = ifnull(temp.$tableInfo[1],'null')";
@@ -3048,7 +3052,7 @@ class TrackableObject implements ArrayAccess, IteratorAggregate {
 
 	function offsetSet($key, $value) {
         if (is_array($value)) {
-            $value = empty($value) ? '' : $value[0];
+            $value = empty($value) ? '' : (array_key_exists(0, $value) ? $value[0] : '');
         }
 
 		if($this->tracking && $this->trackingEnabled) {
