@@ -214,5 +214,12 @@ class Vtiger_Block_Model extends Vtiger_Block {
 		}
 		return false;
 	}
-	
+
+    /**
+     * @return null|Vtiger_Module_Model
+     */
+    public function getModuleInstance(): ?Vtiger_Module_Model
+    {
+        return $this->module;
+    }
 }
