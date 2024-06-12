@@ -23,6 +23,10 @@ class Vtiger_BlockUiType_Model extends Vtiger_Base_Model
         $query = 'SELECT name FROM vtiger_blockuitype WHERE blockuitype = ?';
         $result = $db->pquery($query, [$uiType]);
 
+        if (!$db->num_rows($result)) {
+            return 'Base';
+        }
+
         return ucfirst($db->query_result($result, 0, 'name'));
     }
 }

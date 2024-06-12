@@ -16,6 +16,7 @@ class Vtiger_RecordStructure_Model extends Vtiger_Base_Model {
 	protected $record = false;
 	protected $module = false;
 	protected $structuredValues = false;
+    protected array $blockData = [];
 
 	const RECORD_STRUCTURE_MODE_DEFAULT = '';
 	const RECORD_STRUCTURE_MODE_DETAIL = 'Detail';
@@ -25,7 +26,7 @@ class Vtiger_RecordStructure_Model extends Vtiger_Base_Model {
 	const RECORD_STRUCTURE_MODE_SUMMARY = 'Summary';
 	const RECORD_STRUCTURE_MODE_FILTER = 'Filter';
 
-	/**
+    /**
 	 * Function to set the record Model
 	 * @param <type> $record - record instance
 	 * @return Vtiger_RecordStructure_Model
@@ -107,6 +108,8 @@ class Vtiger_RecordStructure_Model extends Vtiger_Base_Model {
 		$className = Vtiger_Loader::getComponentClassName('Model', $mode.'RecordStructure', $moduleModel->getName(true));
 		$instance = new $className();
 		$instance->setModule($moduleModel)->setRecord($recordModel);
+        $instance->loadBlockData();
+
 		return $instance;
 	}
 
@@ -119,6 +122,29 @@ class Vtiger_RecordStructure_Model extends Vtiger_Base_Model {
 		$className = Vtiger_Loader::getComponentClassName('Model', $mode.'RecordStructure', $moduleModel->get('name'));
 		$instance = new $className();
 		$instance->setModule($moduleModel);
+        $instance->loadBlockData();
+
 		return $instance;
 	}
+
+    /**
+     * Loads basic block data from vtiger_blocks and adds template name to each block
+     *
+     * @return void
+     */
+    public function loadBlockData()
+    {
+        $blockData = $this->getModule()->getBlocks();
+
+        foreach ($blockData as $blockModel) {
+            $this->blockData[$blockModel->get('label')] = [
+                'id'            => $blockModel->get('id'),
+                'increateview'  => $blockModel->get('increateview'),
+                'ineditview'    => $blockModel->get('ineditview'),
+                'indetailview'  => $blockModel->get('indetailview'),
+                'blockuitype'   => $blockModel->get('blockuitype'),
+                'template_name' => (Vtiger_Factory_BlockUIType::getInstanceFromBlock($blockModel))->getTemplateName(),
+            ];
+        }
+    }
 }
