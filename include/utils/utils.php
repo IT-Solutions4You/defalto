@@ -327,7 +327,7 @@ function getColumnFields($module)
 	// Lookup in cache for information
 	$cachedModuleFields = VTCacheUtils::lookupFieldInfo_Module($module);
 
-	if(empty($cachedModuleFields)) {
+	if (!$cachedModuleFields) {
 		global $adb;
 		$tabid = getTabid($module);
 
