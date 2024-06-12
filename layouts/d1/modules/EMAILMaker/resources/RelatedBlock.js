@@ -127,8 +127,6 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
                                     optgroup.append(option);
                                 });
 
-                                console.log(optgroup);
-
                                 ModuleFieldsElement.append(optgroup);
                             });
                         });
