@@ -51,41 +51,20 @@ jQuery.Class("Vtiger_CustomView_Js",{
 	 * Function to regiser the event to make the columns list sortable
 	 */
 	makeColumnListSortable : function() {
-		var select2Element = this.getColumnListSelect2Element();
-		//TODO : peform the selection operation in context this might break if you have multi select element in advance filter
-		//The sorting is only available when Select2 is attached to a hidden input field.
-		var chozenChoiceElement = select2Element.find('ul.select2-choices');
-		chozenChoiceElement.sortable({
-				'containment': chozenChoiceElement,
-				start: function() { },
-				update: function() {}
-			});
-	},
+		const customViewForm = jQuery('#CustomView'),
+			selectElement = this.getColumnSelectElement(),
+			valueElement = $('input[name="columnslist"]', customViewForm);
 
-	/**
-	 * Function which will arrange the chosen element choices in order
-	 */
-	arrangeSelectChoicesInOrder : function() {
-		var contentsContainer = this.getContainer();
-		var chosenElement = this.getColumnListSelect2Element();
-		var choicesContainer = chosenElement.find('ul.select2-choices');
-		var choicesList = choicesContainer.find('li.select2-search-choice');
-		var columnListSelectElement = this.getColumnSelectElement();
-		var selectedOptions = columnListSelectElement.find('option:selected');
-		var selectedOrder = JSON.parse(jQuery('input[name="columnslist"]', contentsContainer).val());
-
-		for(var index=selectedOrder.length ; index > 0 ; index--) {
-			var selectedValue = selectedOrder[index-1];
-			var value = selectedValue.replace("'", "&#39;");
-			var option = selectedOptions.filter('[value="'+value+'"]');
-			choicesList.each(function(choiceListIndex,element){
-				var liElement = jQuery(element);
-				if(liElement.find('div').html() == option.html()){
-					choicesContainer.prepend(liElement);
-					return false;
-				}
-			});
-		}
+		vtUtils.makeSelect2ElementSortable(
+			selectElement,
+			valueElement,
+			function(valueElement) {
+				return JSON.parse(valueElement.val());
+			},
+			function(valueElement, selectedValues) {
+				valueElement.val(JSON.stringify(selectedValues));
+			}
+		);
 	},
 
 	/**
@@ -216,7 +195,6 @@ jQuery.Class("Vtiger_CustomView_Js",{
 	registerFilterCreateEvents : function() {
 		var self = this;
 		self.registerSelect2ElementForColumnsSelection();
-		this.arrangeSelectChoicesInOrder();
 		this.makeColumnListSortable();
 		this.registerToogleShareList();
 		this.registerOnlyAllUsersInSharedList();
@@ -244,13 +222,6 @@ jQuery.Class("Vtiger_CustomView_Js",{
 					var advfilterlist = self.advanceFilterInstance.getValues();
 					jQuery('#advfilterlist').val(JSON.stringify(advfilterlist));
 
-					var selectValueElements = self.getColumnSelectElement().select2('data');
-					var selectedValues = [];
-					for(i=0; i<selectValueElements.length; i++) {
-						selectedValues.push(selectValueElements[i].id);
-					}
-					var selectValues = JSON.stringify(selectedValues);
-					jQuery('input[name="columnslist"]', self.getContainer()).val(selectValues);
 					var allUsersStatusEle = jQuery('#allUsersStatusValue');
 					if(self.isAllUsersSelected() && (jQuery('[data-toogle-members]').is(":checked"))){
 						allUsersStatusEle.val(allUsersStatusEle.data('public'));

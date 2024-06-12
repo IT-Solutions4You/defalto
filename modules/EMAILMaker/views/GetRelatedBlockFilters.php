@@ -11,10 +11,13 @@ class EMAILMaker_GetRelatedBlockFilters_View extends Vtiger_BasicAjax_View
 {
     public function process(Vtiger_Request $request)
     {
+        $module = $request->getModule();
         $primaryModule = $request->get('primodule');
         $secondaryModules = $request->get('secmodule');
+
         $record = $request->get('record');
         $relatedBlockModel = new EMAILMaker_RelatedBlock_Model();
+        $relatedBlockModel->setId($record);
         $relatedBlockModel->setPrimaryModule($primaryModule);
 
         if (!empty($secondaryModules)) {
@@ -34,7 +37,7 @@ class EMAILMaker_GetRelatedBlockFilters_View extends Vtiger_BasicAjax_View
         foreach ($dateFilters as $comparatorKey => $comparatorInfo) {
             $comparatorInfo['startdate'] = DateTimeField::convertToUserFormat($comparatorInfo['startdate']);
             $comparatorInfo['enddate'] = DateTimeField::convertToUserFormat($comparatorInfo['enddate']);
-            $comparatorInfo['label'] = vtranslate($comparatorInfo['label']);
+            $comparatorInfo['label'] = vtranslate($comparatorInfo['label'], $module);
             $dateFilters[$comparatorKey] = $comparatorInfo;
         }
         $viewer->assign('DATE_FILTERS', $dateFilters);

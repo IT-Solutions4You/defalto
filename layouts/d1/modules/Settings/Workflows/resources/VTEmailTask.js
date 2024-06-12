@@ -23,6 +23,20 @@ Vtiger.Class('VTEmailTask', {
     registerEvents: function() {
         this.registerTemplateChange();
         this.registerVariables();
+        this.registerSortableSelect2Element();
+    },
+    registerSortableSelect2Element: function () {
+        const self = this,
+            selectElement = $('#pdf_template_select'),
+            valueElement = $('#pdf_template');
+
+        if(selectElement.length && selectElement.length) {
+            vtUtils.showSelect2ElementView(selectElement);
+
+            selectElement.one('select2-loaded', function () {
+                vtUtils.makeSelect2ElementSortable(selectElement, valueElement);
+            });
+        }
     },
     registerVariables: function () {
         const self = this,
@@ -75,4 +89,6 @@ Vtiger.Class('VTEmailTask', {
     }
 });
 
-VTEmailTask.getInstance().registerEvents();
+$(function() {
+    VTEmailTask.getInstance().registerEvents();
+})
