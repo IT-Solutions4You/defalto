@@ -160,151 +160,144 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
         return $adb->query_result($result, 0, $name);
     }
 
-    public function getColumnsListbyBlock($module, $block, $pri_module, $current_user)
+    public function isAdminQuery($user)
     {
-        $adb = PearDatabase::getInstance();
-
-        if (is_string($block)) {
-            $block = explode(",", $block);
-        }
-
-        $tabid = getTabid($module);
-        $params = [$tabid, $block];
         $is_admin = false;
         $profileGlobalPermission = [];
 
-        require('user_privileges/user_privileges_' . $current_user->id . '.php');
-        //Security Check
-        if ($is_admin == true || $profileGlobalPermission[1] == 0 || $profileGlobalPermission[2] == 0) {
-            $sql = "select * from vtiger_field where vtiger_field.tabid in (" . generateQuestionMarks($tabid) . ") and vtiger_field.block in (" . generateQuestionMarks($block) . ") and vtiger_field.displaytype in (1,2,3) and vtiger_field.presence in (0,2) ";
+        require 'user_privileges/user_privileges_' . $user->id . '.php';
 
-            //fix for Ticket #4016
-            $sql .= " order by sequence";
-        } else {
-            $profileList = getCurrentUserProfileList();
-            $sql = "select * from vtiger_field inner join vtiger_profile2field on vtiger_profile2field.fieldid=vtiger_field.fieldid inner join vtiger_def_org_field on vtiger_def_org_field.fieldid=vtiger_field.fieldid where vtiger_field.tabid in (" . generateQuestionMarks($tabid) . ")  and vtiger_field.block in (" . generateQuestionMarks($block) . ") and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 and vtiger_def_org_field.visible=0 and vtiger_field.presence in (0,2)";
-            if (count($profileList) > 0) {
-                $sql .= " and vtiger_profile2field.profileid in (" . generateQuestionMarks($profileList) . ")";
-                array_push($params, $profileList);
-            }
+        return $is_admin == true || $profileGlobalPermission[1] == 0 || $profileGlobalPermission[2] == 0;
+    }
 
-            //fix for Ticket #4016
-            $sql .= " group by vtiger_field.fieldid order by sequence";
+    public function getColumnsListbyBlock($module, $block, $pri_module, $current_user)
+    {
+        if (is_string($block)) {
+            $block = explode(',', $block);
         }
 
+        $adb = PearDatabase::getInstance();
+        $tabId = getTabid($module);
+        $params = [$tabId, $block];
+
+        if ($this->isAdminQuery($current_user)) {
+            $sql = 'SELECT * FROM vtiger_field 
+                WHERE vtiger_field.tabid IN (' . generateQuestionMarks($tabId) . ') AND vtiger_field.block IN (' . generateQuestionMarks($block) . ') AND vtiger_field.displaytype IN (1,2,3) AND vtiger_field.presence IN (0,2) 
+                ORDER BY sequence';
+        } else {
+            $profileList = getCurrentUserProfileList();
+            $sql = 'SELECT * FROM vtiger_field 
+                INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid 
+                INNER JOIN vtiger_def_org_field on vtiger_def_org_field.fieldid=vtiger_field.fieldid 
+                WHERE vtiger_field.tabid IN (' . generateQuestionMarks($tabId) . ') AND vtiger_field.block IN (' . generateQuestionMarks($block) . ') AND vtiger_field.displaytype IN (1,2,3) AND vtiger_profile2field.visible=0 AND vtiger_def_org_field.visible=0 AND vtiger_field.presence IN (0,2)';
+
+            if (count($profileList) > 0) {
+                $sql .= ' AND vtiger_profile2field.profileid IN (' . generateQuestionMarks($profileList) . ')';
+                $params[] = $profileList;
+            }
+
+            $sql .= ' GROUP BY vtiger_field.fieldid ORDER BY sequence';
+        }
+
+        $moduleColumnList = [];
         $result = $adb->pquery($sql, $params);
-        $noofrows = $adb->num_rows($result);
-        for ($i = 0; $i < $noofrows; $i++) {
-            $fieldtablename = $adb->query_result($result, $i, "tablename");
-            $fieldcolname = $adb->query_result($result, $i, "columnname");
-            $fieldname = $adb->query_result($result, $i, "fieldname");
-            $fieldtype = $adb->query_result($result, $i, "typeofdata");
-            $uitype = $adb->query_result($result, $i, "uitype");
-            $fieldtype = explode("~", $fieldtype);
-            $fieldtypeofdata = $fieldtype[0];
 
-            $fieldtypeofdata = ChangeTypeOfData_Filter($fieldtablename, $fieldcolname, $fieldtypeofdata);
+        while ($row = $adb->fetchByAssoc($result)) {
+            $fieldTableName = $row['tablename'];
+            $fieldColumnName = $row['columnname'];
+            $fieldName = $row['fieldname'];
+            $uiType = $row['uitype'];
+            $fieldLabel = $row['fieldlabel'];
+            $fieldType = explode('~', $row['typeofdata']);
+            $fieldTypeOfData = ChangeTypeOfData_Filter($fieldTableName, $fieldColumnName, $fieldType[0]);
+            $blockId = $row['block'];
 
-            if ($uitype == 68 || $uitype == 59) {
-                $fieldtypeofdata = 'V';
+            if ($uiType == 68 || $uiType == 59) {
+                $fieldTypeOfData = 'V';
             }
-            if ($fieldtablename == "vtiger_crmentity") {
-                $fieldtablename = $fieldtablename . $module;
+
+            if ($fieldTableName == 'vtiger_crmentity') {
+                $fieldTableName = $fieldTableName . $module;
             }
-            if ($fieldname == "assigned_user_id") {
-                $fieldtablename = "vtiger_users" . $module;
-                $fieldcolname = "user_name";
-            }
-            if ($fieldname == "account_id") {
-                $fieldtablename = "vtiger_account" . $module;
-                $fieldcolname = "accountname";
-            }
-            if ($fieldname == "contact_id") {
-                $fieldtablename = "vtiger_contactdetails" . $module;
-                $fieldcolname = "lastname";
-            }
-            if ($fieldname == "parent_id") {
-                $fieldtablename = "vtiger_crmentityRel" . $module;
-                $fieldcolname = "setype";
-            }
-            if ($fieldname == "vendor_id") {
-                $fieldtablename = "vtiger_vendorRel" . $module;
-                $fieldcolname = "vendorname";
-            }
-            if ($fieldname == "potential_id") {
-                $fieldtablename = "vtiger_potentialRel" . $module;
-                $fieldcolname = "potentialname";
-            }
-            if ($fieldname == "assigned_user_id1") {
-                $fieldtablename = "vtiger_usersRel1";
-                $fieldcolname = "user_name";
-            }
-            if ($fieldname == 'quote_id') {
-                $fieldtablename = "vtiger_quotes" . $module;
-                $fieldcolname = "subject";
+
+            $fields = [
+                'assigned_user_id' => ['vtiger_users' . $module, 'user_name'],
+                'account_id' => ['vtiger_account' . $module, 'accountname'],
+                'contact_id' => ['vtiger_contactdetails' . $module, 'lastname'],
+                'parent_id' => ['vtiger_crmentityRel' . $module, 'setype'],
+                'vendor_id' => ['vtiger_vendorRel' . $module, 'vendorname'],
+                'potential_id' => ['vtiger_potentialRel' . $module, 'potentialname'],
+                'assigned_user_id1' => ['vtiger_usersRel1' . $module, 'user_name'],
+                'quote_id' => ['vtiger_quotes' . $module, 'subject'],
+            ];
+
+            if (isset($fields[$fieldName])) {
+                [$fieldTableName, $fieldColumnName] = $fields[$fieldName];
             }
 
             $product_id_tables = [
-                "vtiger_troubletickets" => "vtiger_productsRel",
-                "vtiger_campaign" => "vtiger_productsCampaigns",
-                "vtiger_faq" => "vtiger_productsFaq",
+                'vtiger_troubletickets' => 'vtiger_productsRel',
+                'vtiger_campaign' => 'vtiger_productsCampaigns',
+                'vtiger_faq' => 'vtiger_productsFaq',
             ];
-            if ($fieldname == 'product_id' && isset($product_id_tables[$fieldtablename])) {
-                $fieldtablename = $product_id_tables[$fieldtablename];
-                $fieldcolname = "productname";
+
+            if ($fieldName == 'product_id' && isset($product_id_tables[$fieldTableName])) {
+                $fieldTableName = $product_id_tables[$fieldTableName];
+                $fieldColumnName = 'productname';
             }
-            if ($fieldname == 'campaignid' && $module == 'Potentials') {
-                $fieldtablename = "vtiger_campaign" . $module;
-                $fieldcolname = "campaignname";
+            if ($fieldName == 'campaignid' && $module == 'Potentials') {
+                $fieldTableName = 'vtiger_campaign' . $module;
+                $fieldColumnName = 'campaignname';
             }
-            if ($fieldname == 'currency_id' && $fieldtablename == 'vtiger_pricebook') {
-                $fieldtablename = "vtiger_currency_info" . $module;
-                $fieldcolname = "currency_name";
+            if ($fieldName == 'currency_id' && $fieldTableName == 'vtiger_pricebook') {
+                $fieldTableName = 'vtiger_currency_info' . $module;
+                $fieldColumnName = 'currency_name';
             }
 
-            $fieldlabel = $adb->query_result($result, $i, "fieldlabel");
-            $fieldlabel1 = str_replace(" ", "_", $fieldlabel);
-            $optionvalue = $fieldtablename . ":" . $fieldcolname . ":" . $module . "_" . $fieldlabel1 . ":" . $fieldname . ":" . $fieldtypeofdata;
-            //$this->adv_rel_fields[$fieldtypeofdata][] = '$'.$module.'#'.$fieldname.'$'."::".vtranslate($module,$module)." ".$fieldlabel;
-            if ($module != 'HelpDesk' || $fieldname != 'filename') {
-                $module_columnlist[$optionvalue] = vtranslate($fieldlabel, $module);
+            $optionValue = implode(':', [$fieldTableName, $fieldColumnName, $module . '_' . str_replace(' ', '_', $fieldLabel), $fieldName, $fieldTypeOfData]);
+
+            if ($module != 'HelpDesk' || $fieldName != 'filename') {
+                $moduleColumnList[$optionValue] = vtranslate($fieldLabel, $module);
             }
-        }
-        $blockname = getBlockName($block);
-        if ($blockname == 'LBL_RELATED_PRODUCTS' && ($module == 'PurchaseOrder' || $module == 'SalesOrder' || $module == 'Quotes' || $module == 'Invoice')) {
-            $fieldtablename = 'vtiger_inventoryproductrel';
-            $fields = [
-                'productid' => vtranslate('Product Name', $module),
-                'serviceid' => vtranslate('Service Name', $module),
-                'listprice' => vtranslate('List Price', $module),
-                'discount' => vtranslate('Discount', $module),
-                'quantity' => vtranslate('Quantity', $module),
-                'comment' => vtranslate('Comments', $module),
-            ];
-            $fields_datatype = [
-                'productid' => 'V',
-                'serviceid' => 'V',
-                'listprice' => 'I',
-                'discount' => 'I',
-                'quantity' => 'I',
-                'comment' => 'V',
-            ];
-            foreach ($fields as $fieldcolname => $label) {
-                $fieldtypeofdata = $fields_datatype[$fieldcolname];
-                $optionvalue = $fieldtablename . ":" . $fieldcolname . ":" . $module . "_" . $label . ":" . $fieldcolname . ":" . $fieldtypeofdata;
-                $module_columnlist[$optionvalue] = $label;
+
+            $blockName = getBlockName($blockId);
+
+            if ($blockName == 'LBL_RELATED_PRODUCTS' && ($module == 'PurchaseOrder' || $module == 'SalesOrder' || $module == 'Quotes' || $module == 'Invoice')) {
+                $fieldTableName = 'vtiger_inventoryproductrel';
+                $fields = [
+                    'productid' => vtranslate('Product Name', $module),
+                    'serviceid' => vtranslate('Service Name', $module),
+                    'listprice' => vtranslate('List Price', $module),
+                    'discount' => vtranslate('Discount', $module),
+                    'quantity' => vtranslate('Quantity', $module),
+                    'comment' => vtranslate('Comments', $module),
+                ];
+                $fields_datatype = [
+                    'productid' => 'V',
+                    'serviceid' => 'V',
+                    'listprice' => 'I',
+                    'discount' => 'I',
+                    'quantity' => 'I',
+                    'comment' => 'V',
+                ];
+
+                foreach ($fields as $fieldColumnName => $label) {
+                    $fieldTypeOfData = $fields_datatype[$fieldColumnName];
+                    $optionValue = implode(':', [$fieldTableName, $fieldColumnName, $module . '_' . $label, $fieldColumnName, $fieldTypeOfData]);
+                    $moduleColumnList[$optionValue] = $label;
+                }
+            } elseif ($pri_module == 'PriceBooks' && $blockName == 'LBL_PRICING_INFORMATION' && ($module == 'Products' || $module == 'Services')) {
+                $fieldTableName = 'vtiger_pricebookproductreltmp' . $module;
+                $fieldColumnName = 'listprice';
+                $label = vtranslate('LBL_PB_LIST_PRICE', $module);
+                $customTmpLabel = 'LBL@~@PB@~@LIST@~@PRICE';    // "@~@" stands for "_" that needs special handling because of translation of RB header
+                $fieldTypeOfData = 'I';
+                $optionValue = implode(':', [$fieldTableName, $fieldColumnName, $module . '_' . $customTmpLabel, $fieldColumnName, $fieldTypeOfData]);
+                $moduleColumnList[$optionValue] = $label;
             }
-        } elseif ($pri_module == "PriceBooks" && $blockname == "LBL_PRICING_INFORMATION" && ($module == "Products" || $module == "Services")) {
-            $fieldtablename = "vtiger_pricebookproductreltmp" . $module;
-            $fieldcolname = "listprice";
-            $label = vtranslate("LBL_PB_LIST_PRICE", $module);
-            $customTmpLabel = "LBL@~@PB@~@LIST@~@PRICE";    // "@~@" stands for "_" that needs special handling because of translation of RB header
-            $fieldtypeofdata = "I";
-            $optionvalue = $fieldtablename . ":" . $fieldcolname . ":" . $module . "_" . $customTmpLabel . ":" . $fieldcolname . ":" . $fieldtypeofdata;
-            $module_columnlist[$optionvalue] = $label;
         }
 
-        return $module_columnlist;
+        return $moduleColumnList;
     }
 
     public function getId()
@@ -322,46 +315,38 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
     {
         global $current_user;
 
-        $returnModuleList = [];
+        $moduleFields = [];
+        $blocks = $this->getModuleList($module);
 
-        $moduleList = $this->getModuleList($module);
-        $columnsListByBlock = $this->getColumnsListbyBlock($module, array_keys($moduleList), true, $current_user);
-        $allColumnsListByBlocks =& $columnsListByBlock;
-
-        foreach ($moduleList as $key => $value) {
-            $temp = $allColumnsListByBlocks[$key];
-
-            if (!empty($returnModuleList[$module][$value])) {
-                if (!empty($temp)) {
-                    $returnModuleList[$module][$value] = array_merge($returnModuleList[$module][$value], $temp);
-                }
-            } else {
-                $returnModuleList[$module][$value] = $temp;
-            }
+        foreach ($blocks as $blockId => $blockLabel) {
+            $blockColumns = $this->getColumnsListbyBlock($module, [$blockId], true, $current_user);
+            $moduleFields[$blockLabel] = array_merge((array)$moduleFields[$module][$blockLabel], $blockColumns);
         }
 
-        return $returnModuleList;
+        return $moduleFields;
     }
 
-    public function getModuleList($sec_module)
+    public function getModuleList($moduleName)
     {
         $adb = PearDatabase::getInstance();
-        $sec_module_id = getTabid($sec_module);
-        $reportblocks = $adb->pquery("SELECT blockid, blocklabel, tabid FROM vtiger_blocks WHERE tabid IN (?)", [$sec_module_id]);
-        $prev_block_label = '';
-        if ($adb->num_rows($reportblocks)) {
-            while ($resultrow = $adb->fetch_array($reportblocks)) {
-                $blockid = $resultrow['blockid'];
-                $blocklabel = $resultrow['blocklabel'];
-                if (!empty($blocklabel)) {
-                    $module_list[$blockid] = vtranslate($blocklabel, $sec_module);
-                    $prev_block_label = $blocklabel;
-                } else {
-                    $module_list[$blockid] = vtranslate($prev_block_label, $sec_module);
-                }
+        $moduleId = getTabid($moduleName);
+        $result = $adb->pquery('SELECT blockid, blocklabel, tabid FROM vtiger_blocks WHERE tabid IN (?)', [$moduleId]);
+        $prevBlockLabel = '';
+        $moduleList = [];
+
+        while ($row = $adb->fetch_array($result)) {
+            $blockId = $row['blockid'];
+            $blockLabel = $row['blocklabel'];
+
+            if (!empty($blockLabel)) {
+                $moduleList[$blockId] = vtranslate($blockLabel, $moduleName);
+                $prevBlockLabel = $blockLabel;
+            } else {
+                $moduleList[$blockId] = vtranslate($prevBlockLabel, $moduleName);
             }
         }
-        return $module_list;
+
+        return $moduleList;
     }
 
     public function getPrimaryModule()
@@ -420,7 +405,7 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
      */
     public function getSecModuleColumnsList($module): array
     {
-        if ($module == '') {
+        if (empty($module)) {
             return [];
         }
 

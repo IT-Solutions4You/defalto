@@ -122,11 +122,12 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
 
                                 jQuery.each(fields, function (key, field) {
 
-                                    optgroup.append(jQuery('<option>', {
-                                        value: key,
-                                        text: field
-                                    }));
+                                    let option = jQuery('<option value="' + key + '">' + field + '</option>>');
+
+                                    optgroup.append(option);
                                 });
+
+                                console.log(optgroup);
 
                                 ModuleFieldsElement.append(optgroup);
                             });
