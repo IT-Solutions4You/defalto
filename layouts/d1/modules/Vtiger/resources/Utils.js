@@ -97,11 +97,12 @@ var vtUtils = {
             params.dropdownParent = selectElement.parents('.modal');
         }
 
-        if(!params.width) {
-            params.width = 'auto';
-        }
+        params.width = params.width ?? 'auto';
+        params.theme = params.theme ?? 'bootstrap-5';
 
-        params.theme = 'bootstrap-5';
+        if (!params.id && selectElement.attr('id')) {
+            params.id = 's2id_' + selectElement.attr('id');
+        }
 
         selectElement.select2(params).on('select2:opening', function (e) {
             if (selectElement.data('unselect')) {
@@ -121,10 +122,6 @@ var vtUtils = {
                 instance = element.data('select2');
 
             instance.dropdown.css('z-index', 1000002);
-        });
-
-        selectElement.each(function () {
-            $(this).next('.select2').attr('id', 's2id_' + $(this).attr('id'));
         });
 
         //validator should not validate select2 text inputs
@@ -736,6 +733,34 @@ var vtUtils = {
            return true;
     },
     makeSelect2ElementSortable: function (selectElement, valueElement, getValueFunction, setValueFunction) {
+
+        vtUtils.showSelect2ElementView(selectElement, {
+            results: function() {
+                return [
+                    {
+                        id: 0,
+                        text: 'enhancement'
+                    },
+                    {
+                        id: 1,
+                        text: 'bug'
+                    },
+                    {
+                        id: 2,
+                        text: 'duplicate'
+                    },
+                    {
+                        id: 3,
+                        text: 'invalid'
+                    },
+                    {
+                        id: 4,
+                        text: 'wontfix'
+                    }
+                ];
+            },
+        })
+
         let selectParent = selectElement.parent(),
             select2Element = selectElement.next('.select2'),
             select2ChoiceElement = select2Element.find('ul.select2-selection__rendered'),
@@ -743,6 +768,8 @@ var vtUtils = {
 
         orderSortedValues = function () {
             selectParent.find("ul.select2-selection__rendered").children("li[title]").each(function (i, obj) {
+                console.log(obj, selectElement.select2('data'));
+
                 let element = selectElement.children('option').filter(function () {
                     return $(this).html() == obj.title
                 });
@@ -752,8 +779,28 @@ var vtUtils = {
         };
 
         moveElementToEndOfParent = function (element) {
-            element.parent().append(element.detach());
+            element.parents('select').append(element.detach());
         };
+
+        updateOptionTitles = function(selectElement) {
+            selectElement.find('option').each(function() {
+                $(this).attr('title', $(this).html());
+            });
+        }
+
+        getOptionById = function (selectElement, id) {
+            let optionElement;
+
+            selectElement.find('option').each(function () {
+                if ($(this).val() === id) {
+                    optionElement = $(this);
+                }
+            });
+
+            return optionElement;
+        }
+
+        updateOptionTitles(selectElement);
 
         if ('function' === typeof getValueFunction) {
             selectedFieldNames = getValueFunction(valueElement);
@@ -763,7 +810,7 @@ var vtUtils = {
 
         if (selectedFieldNames) {
             $.each(selectedFieldNames, function (index, id) {
-                let element = selectElement.children("option[value=" + id + "]");
+                let element = getOptionById(selectElement, id);
 
                 moveElementToEndOfParent(element);
             });
@@ -773,7 +820,7 @@ var vtUtils = {
 
         selectElement.on("select2:select", function (evt) {
             let id = evt.params.data.id,
-                element = $(this).children("option[value=" + id + "]");
+                element = getOptionById($(this), id);
 
             moveElementToEndOfParent(element);
 

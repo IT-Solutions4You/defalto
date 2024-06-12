@@ -484,7 +484,7 @@ Vtiger_Owner_Field_Js('Workflows_Ownergroup_Field_Js',{},{
 
 AdvanceFilter_Picklist_Field_Js('Workflows_Picklist_Field_Js', {}, {
     getUi: function () {
-        let html = '<select type="hidden" data-close-on-select="true" data-placeholder="' + app.vtranslate('JS_PLEASE_SELECT_ATLEAST_ONE_OPTION') + '" class="inputElement select2 form-select" name="' + this.getName() + '" id="' + this.getName() + '">' + this.getOptions() +  '</select>',
+        let html = '<select type="hidden" data-close-on-select="true" data-placeholder="' + app.vtranslate('JS_PLEASE_SELECT_ATLEAST_ONE_OPTION') + '" class="inputElement select2 form-select" name="' + this.getName() + '">' + this.getOptions() +  '</select>',
             selectContainer = jQuery(html);
 
         this.setSelected(selectContainer);
