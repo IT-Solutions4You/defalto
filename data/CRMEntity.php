@@ -2126,6 +2126,11 @@ class CRMEntity {
 					$crmentityRelSecModuleTableDeps = array();
 					for ($j = 0; $j < $adb->num_rows($ui10_modules_query); $j++) {
 						$rel_mod = $adb->query_result($ui10_modules_query, $j, 'relmodule');
+
+                        if (!vtlib_isModuleActive($rel_mod)) {
+                            continue;
+                        }
+
 						$rel_obj = CRMEntity::getInstance($rel_mod);
 						vtlib_setup_modulevars($rel_mod, $rel_obj);
 
@@ -2142,6 +2147,11 @@ class CRMEntity {
 					}
 					for ($j = 0; $j < $adb->num_rows($ui10_modules_query); $j++) {
 						$rel_mod = $adb->query_result($ui10_modules_query, $j, 'relmodule');
+
+                        if (!vtlib_isModuleActive($rel_mod)) {
+                            continue;
+                        }
+
 						$rel_obj = CRMEntity::getInstance($rel_mod);
 						vtlib_setup_modulevars($rel_mod, $rel_obj);
 

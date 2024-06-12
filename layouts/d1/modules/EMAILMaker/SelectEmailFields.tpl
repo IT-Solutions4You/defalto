@@ -137,7 +137,7 @@
                                             <span>{vtranslate('LBL_SELECT_PDF_TEMPLATES','EMAILMaker')}:</span>
                                         </div>
                                         <div class="col-lg">
-                                            <select id="use_common_pdf_template" multiple class="form-control">
+                                            <select id="use_common_pdf_template" multiple class="form-control select2">
                                                 {foreach from=$PDF_TEMPLATES item=PDF_TEMPLATE_DATA key=PDF_TEMPLATE_ID}
                                                     <option value="{$PDF_TEMPLATE_ID}"
                                                             {if $PDFTEMPLATEID neq ''}
@@ -159,7 +159,7 @@
                                             <span>{vtranslate('LBL_MERGE_PDF_TEMPLATES','EMAILMaker')}:</span>
                                         </div>
                                         <div class="col-lg">
-                                            <input type="checkbox" value="1" name="is_merge_templates">
+                                            <input type="checkbox" class="form-check-input" value="1" name="is_merge_templates">
                                         </div>
                                     </div>
                                     <div class="row py-2">
@@ -175,7 +175,7 @@
                                     <div class="col-auto ms-auto {if $PDFTEMPLATEIDS neq ""}hide{/if}" id="EMAILMakerPDFTemplatesBtn">
                                         <button id="addPDFMakerTemplate" class="btn btn btn-primary" onClick="return false;">
                                             <i class="fa fa-plus"></i>
-                                            <span>{vtranslate('LBL_ADD_PDFMAKER_TEMPLATES','EMAILMaker')}</span>
+                                            <span class="ms-2">{vtranslate('LBL_ADD_PDFMAKER_TEMPLATES','EMAILMaker')}</span>
                                         </button>
                                     </div>
                                 </div>

@@ -1435,6 +1435,10 @@ $languageStrings = array(
     'LBL_DAY4' => 'Thursday',
     'LBL_DAY5' => 'Friday',
     'LBL_DAY6' => 'Saturday',
+    'LBL_PDF_CONTENT' => 'PDF Content',
+    'LBL_PDF_TEMPLATE' => 'PDF Template',
+    'LBL_PDF_LANGUAGE' => 'PDF Language',
+    'LBL_PDF_MERGE' => 'PDF Merge',
     'INVALID PICKLIST' => 'Invalid value for Picklist field',
 );
 
