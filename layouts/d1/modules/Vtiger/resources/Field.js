@@ -202,8 +202,6 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js',{},{
 			value = this.getValue(),
 			html = '<div class="ReferenceField w-100 ';
 
-		console.log(['value', value]);
-
 		if (value) {
 			html += 'selected';
 		}

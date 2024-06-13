@@ -24,8 +24,6 @@ jQuery.Class('Vtiger_Header_Js', {
         let fileLocationType = currentTargetObject.data('filelocationtype'),
             fileName = currentTargetObject.data('filename');
 
-        console.log(fileName, fileLocationType);
-
         if ('I' === fileLocationType) {
             let params = {
                 module: 'Documents',

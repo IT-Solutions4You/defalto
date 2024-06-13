@@ -137,8 +137,6 @@ Vtiger_Detail_Js('Project_Detail_Js',{
 				selectedStatus = currentElement.find('option:selected').val(),
 				searchInfo = null;
 
-			console.log(referenceModuleName);
-
 			if (selectedStatus.length > 0 && referenceModuleName == "HelpDesk") {
 				searchInfo = [];
 				searchInfo.push('ticketstatus');
