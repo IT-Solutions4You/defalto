@@ -777,6 +777,10 @@ var vtUtils = {
         };
 
         moveElementToEndOfParent = function (element) {
+            if (!element || !element.length) {
+                return;
+            }
+
             element.parents('select').append(element.detach());
         };
 
