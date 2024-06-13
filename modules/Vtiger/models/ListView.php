@@ -263,7 +263,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
             }
 
             if ($cvOrderBy && $cvOrderByField && $cvOrderByField->isActiveField()) {
-                $cvOrderBy['orderby'] = $moduleModel->getOrderBySql($cvOrderBy);
+                $cvOrderBy['orderby'] = $moduleModel->getOrderBySql($cvOrderBy['orderby']);
                 $orderBy = ' ORDER BY ' . implode(' ', $cvOrderBy);
             } elseif (PerformancePrefs::getBoolean('LISTVIEW_DEFAULT_SORTING', true)) {
                 $orderBy = $moduleFocus->default_order_by;
