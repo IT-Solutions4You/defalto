@@ -623,8 +623,6 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 		jQuery(form).find('#moduleData_' + targetModule).on('change', function (e) {
 			let values = $('#addField_' + targetModule).val();
 
-			console.log(values);
-
 			if (typeof values !== 'undefined') {
 				if (values.length > 0) {
 					jQuery("#addFieldButton_" + targetModule).removeAttr("disabled");

@@ -467,8 +467,6 @@ jQuery.Class("Vtiger_RelatedList_Js",{
 				let pageCount = data.page,
 					numOfrecords = data.numberOfRecords;
 
-				console.log(data);
-
 				if (numOfrecords === 0) {
 					numOfrecords = 1;
 				}
