@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-abstract class Vtiger_Install_Model extends Vtiger_Base_Model
+abstract class Vtiger_Install_Model extends Vtiger_DatabaseTable_Model
 {
     /**
      * @var array
@@ -87,70 +87,6 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
                 $this->db->pquery('INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?, ?, ?)', [$projectTabId, 'showrelatedinfo', 1]);
             }
         }
-    }
-
-    /**
-     * @param $column
-     * @param $type
-     * @return $this
-     * @throws AppException
-     */
-    protected function createColumn($column, $type): self
-    {
-        if ($this->isEmpty('table')) {
-            throw new AppException('Table is empty for create column');
-        }
-
-        if (!columnExists($column, $this->get('table'))) {
-            $sql = sprintf('ALTER TABLE %s ADD %s %s', $this->get('table'), $column, $type);
-        } else {
-            $sql = sprintf('ALTER TABLE %s CHANGE %s %s %s', $this->get('table'), $column, $column, $type);
-        }
-
-        $this->db->query($sql);
-
-        return $this;
-    }
-
-    /**
-     * @param $criteria
-     * @return $this
-     */
-    public function createKey($criteria)
-    {
-        $this->db->pquery(
-            sprintf(
-                'ALTER TABLE %s ADD %s',
-                $this->get('table'),
-                $criteria
-            )
-        );
-
-        return $this;
-    }
-
-    /**
-     * @throws AppException
-     */
-    protected function createTable($firstColumn = '', $firstType = 'int(19)'): self
-    {
-        if ($this->isEmpty('table')) {
-            throw new AppException('Table is empty for create table');
-        }
-
-        if (!empty($firstColumn)) {
-            $criteria = sprintf('(%s %s)', $firstColumn, $firstType);
-        }
-
-        if (!$this->isEmpty('table_id')) {
-            $criteria = sprintf(' (%s int(11) AUTO_INCREMENT,PRIMARY KEY (%s))', $this->get('table_id'), $this->get('table_id'));
-        }
-
-        $sql = 'CREATE TABLE IF NOT EXISTS ' . $this->get('table') . $criteria;
-
-        $this->db->pquery($sql);
-
-        return $this;
     }
 
     /**
@@ -242,21 +178,6 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         $instance->db = PearDatabase::getInstance();
 
         return $instance;
-    }
-
-    /**
-     * @param string $table
-     * @param string|null $tableId
-     * @return self
-     */
-    public function getTable(string $table, string|null $tableId): self
-    {
-        $clone = clone $this;
-        $clone->db = PearDatabase::getInstance();
-        $clone->set('table', $table);
-        $clone->set('table_id', $tableId);
-
-        return $clone;
     }
 
     /**
