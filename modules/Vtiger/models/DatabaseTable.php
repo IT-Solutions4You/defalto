@@ -23,9 +23,7 @@ class Vtiger_DatabaseTable_Model extends Vtiger_Base_Model
      */
     protected function createColumn($column, $type): self
     {
-        if ($this->isEmpty('table')) {
-            throw new AppException('Table is empty for create column');
-        }
+        $this->requireTable('Table is empty for create column');
 
         if (!columnExists($column, $this->get('table'))) {
             $sql = sprintf('ALTER TABLE %s ADD %s %s', $this->get('table'), $column, $type);
@@ -60,9 +58,7 @@ class Vtiger_DatabaseTable_Model extends Vtiger_Base_Model
      */
     protected function createTable($firstColumn = '', $firstType = 'int(19)'): self
     {
-        if ($this->isEmpty('table')) {
-            throw new AppException('Table is empty for create table');
-        }
+        $this->requireTable('Table is empty for create table');
 
         if (!empty($firstColumn)) {
             $criteria = sprintf('(%s %s)', $firstColumn, $firstType);
@@ -87,10 +83,24 @@ class Vtiger_DatabaseTable_Model extends Vtiger_Base_Model
     public function getTable(string $table, string|null $tableId): self
     {
         $clone = clone $this;
-        $clone->db = PearDatabase::getInstance();
+        $clone->retrieveDB();
         $clone->set('table', $table);
         $clone->set('table_id', $tableId);
 
         return $clone;
+    }
+
+    public function requireTable($message)
+    {
+        if ($this->isEmpty('table')) {
+            throw new AppException($message);
+        }
+    }
+
+    public function retrieveDB()
+    {
+        if (empty($this->db)) {
+            $this->db = PearDatabase::getInstance();
+        }
     }
 }
