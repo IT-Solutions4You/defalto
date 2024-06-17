@@ -17,12 +17,7 @@
 			</div>
 		{/if}
 		{foreach key=BLOCK_LABEL item=BLOCK_FIELDS from=$RECORD_STRUCTURE name=blockIterator}
-			{if $BLOCK_FIELDS|php7_count gt 0}
-				<div class="fieldBlockContainer mb-3 border-bottom {if 1 neq $smarty.foreach.blockIterator.iteration}{/if}" data-block="{$BLOCK_LABEL}">
-					<h4 class="fieldBlockHeader fw-bold py-3 px-4 m-0">{vtranslate($BLOCK_LABEL, $MODULE)}</h4>
-					{include file=vtemplate_path('blocks/Fields.tpl',$MODULE)}
-				</div>
-			{/if}
+			{include file=vtemplate_path($RECORD_STRUCTURE_MODEL->blockData[$BLOCK_LABEL]['template_name'], $MODULE_NAME)}
 		{/foreach}
 	</div>
 {/strip}

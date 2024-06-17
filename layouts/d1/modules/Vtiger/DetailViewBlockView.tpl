@@ -14,7 +14,6 @@
 		{else}
 			{assign var=BLOCK value=''}
 		{/if}
-{*		{if $BLOCK eq null or $FIELD_MODEL_LIST|count lte 0}{continue}{/if}*}
 		{if $BLOCK eq null}{continue}{/if}
 		{include file=vtemplate_path($RECORD_STRUCTURE_MODEL->blockData[$BLOCK_LABEL_KEY]['template_name'], $MODULE_NAME) BLOCK=$BLOCK USER_MODEL=$USER_MODEL MODULE_NAME=$MODULE_NAME RECORD=$RECORD}
 	{/foreach}

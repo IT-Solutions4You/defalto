@@ -19,7 +19,7 @@ class Vtiger_Base_BlockUIType extends Vtiger_Base_Model implements Vtiger_IF_Blo
      */
     public function getTemplateName(string $mode = 'Detail'): string
     {
-        if ($mode === 'Edit') {
+        if ($mode === 'Edit' || $mode === 'MassEdit') {
             return 'blockuitypes/BaseEdit.tpl';
         }
 

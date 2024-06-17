@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  *}
 
+{if $FIELD_MODEL_LIST|count > 0}
 <div class="mt-3 bg-body rounded block block_{$BLOCK_LABEL_KEY}" data-block="{$BLOCK_LABEL_KEY}" data-blockid="{$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}">
     {assign var=IS_HIDDEN value=$BLOCK->isHidden()}
     {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
@@ -117,3 +118,4 @@
         </div>
     </div>
 </div>
+{/if}

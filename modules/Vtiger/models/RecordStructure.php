@@ -122,7 +122,7 @@ class Vtiger_RecordStructure_Model extends Vtiger_Base_Model {
 		$className = Vtiger_Loader::getComponentClassName('Model', $mode.'RecordStructure', $moduleModel->get('name'));
 		$instance = new $className();
 		$instance->setModule($moduleModel);
-        $instance->loadBlockData();
+        $instance->loadBlockData($mode);
 
 		return $instance;
 	}

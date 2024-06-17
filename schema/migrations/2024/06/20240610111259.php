@@ -20,12 +20,14 @@ if (!class_exists('Migration_20240610111259')) {
         {
             $this->db->pquery('ALTER TABLE vtiger_blocks ADD blockuitype INT(11) DEFAULT 1');
 
-            $sql = 'CREATE TABLE IF NOT EXISTS `vtiger_blockuitype` (
-                `blockuitype` int(11) NOT NULL,
+            $sql = 'CREATE TABLE IF NOT EXISTS `df_blockuitype` (
+                `blockuitype` int(11) NOT NULL AUTO_INCREMENT,
                 `name` varchar(255) NOT NULL,
                 PRIMARY KEY (`blockuitype`)
             )';
             $this->db->pquery($sql);
+
+            $this->db->pquery('INSERT INTO `df_blockuitype` (`name`) VALUES ("Base")');
         }
     }
 } else {

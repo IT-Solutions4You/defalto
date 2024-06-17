@@ -18,10 +18,7 @@
         {foreach key=BLOCK_LABEL item=BLOCK_FIELDS from=$RECORD_STRUCTURE name=blockIterator}
             {if $BLOCK_LABEL eq 'LBL_ITEM_DETAILS'}{continue}{/if}
             {if php7_count($BLOCK_FIELDS) gt 0}
-                <div class="fieldBlockContainer mb-3 border-bottom" data-block="{$BLOCK_LABEL}">
-                    <h4 class="fieldBlockHeader fw-bold py-3 px-4 m-0">{vtranslate($BLOCK_LABEL, $MODULE)}</h4>
-                    {include file=vtemplate_path('blocks/Fields.tpl',$MODULE)}
-                </div>
+                {include file=vtemplate_path($RECORD_STRUCTURE_MODEL->blockData[$BLOCK_LABEL]['template_name'], $MODULE_NAME)}
             {/if}
         {/foreach}
     </div>

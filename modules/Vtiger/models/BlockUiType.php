@@ -20,7 +20,7 @@ class Vtiger_BlockUiType_Model extends Vtiger_Base_Model
     public static function getNameForUIType(int $uiType = 1): string
     {
         $db = PearDatabase::getInstance();
-        $query = 'SELECT name FROM vtiger_blockuitype WHERE blockuitype = ?';
+        $query = 'SELECT name FROM df_blockuitype WHERE blockuitype = ?';
         $result = $db->pquery($query, [$uiType]);
 
         if (!$db->num_rows($result)) {
@@ -41,7 +41,7 @@ class Vtiger_BlockUiType_Model extends Vtiger_Base_Model
     public static function getUiTypeId(string $name): int
     {
         $db = PearDatabase::getInstance();
-        $query = 'SELECT blockuitype FROM vtiger_blockuitype WHERE name = ?';
+        $query = 'SELECT blockuitype FROM df_blockuitype WHERE name = ?';
         $result = $db->pquery($query, [$name]);
 
         if ($db->num_rows($result)) {
@@ -70,7 +70,7 @@ class Vtiger_BlockUiType_Model extends Vtiger_Base_Model
 
         $db = PearDatabase::getInstance();
 
-        $insertQuery = 'INSERT INTO vtiger_blockuitype (name) VALUES (?)';
+        $insertQuery = 'INSERT INTO df_blockuitype (name) VALUES (?)';
         $db->pquery($insertQuery, [$name]);
 
         return $db->getLastInsertID();
