@@ -13,11 +13,16 @@ class Vtiger_Base_BlockUIType extends Vtiger_Base_Model implements Vtiger_IF_Blo
     /**
      * Returns the Template name for the current Block UI Type Object
      *
+     * @param string $mode
+     *
      * @return string
      */
-    public function getTemplateName(): string
+    public function getTemplateName(string $mode = 'Detail'): string
     {
+        if ($mode === 'Edit') {
+            return 'blockuitypes/BaseEdit.tpl';
+        }
+
         return 'blockuitypes/Base.tpl';
     }
-
 }

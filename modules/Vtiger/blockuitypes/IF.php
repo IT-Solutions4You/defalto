@@ -10,5 +10,5 @@
 
 interface Vtiger_IF_BlockUIType
 {
-    public function getTemplateName(): string;
+    public function getTemplateName(string $mode = 'Detail'): string;
 }

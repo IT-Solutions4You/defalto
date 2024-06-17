@@ -299,6 +299,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 
 		$viewer = $this->getViewer($request);
 		$viewer->assign('RECORD', $recordModel);
+        $viewer->assign('RECORD_STRUCTURE_MODEL', $recordStrucure);
 		$viewer->assign('RECORD_STRUCTURE', $structuredValues);
 		$viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
@@ -407,6 +408,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 
 		$moduleModel = $recordModel->getModule();
 		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+        $viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructure);
 		$viewer->assign('RECORD_STRUCTURE', $recordStructure->getStructure());
 		$viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
 
