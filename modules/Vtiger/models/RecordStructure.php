@@ -25,7 +25,7 @@ class Vtiger_RecordStructure_Model extends Vtiger_Base_Model {
 	const RECORD_STRUCTURE_MODE_SUMMARY = 'Summary';
 	const RECORD_STRUCTURE_MODE_FILTER = 'Filter';
 
-	/**
+    /**
 	 * Function to set the record Model
 	 * @param <type> $record - record instance
 	 * @return Vtiger_RecordStructure_Model
@@ -107,6 +107,7 @@ class Vtiger_RecordStructure_Model extends Vtiger_Base_Model {
 		$className = Vtiger_Loader::getComponentClassName('Model', $mode.'RecordStructure', $moduleModel->getName(true));
 		$instance = new $className();
 		$instance->setModule($moduleModel)->setRecord($recordModel);
+
 		return $instance;
 	}
 
@@ -119,6 +120,7 @@ class Vtiger_RecordStructure_Model extends Vtiger_Base_Model {
 		$className = Vtiger_Loader::getComponentClassName('Model', $mode.'RecordStructure', $moduleModel->get('name'));
 		$instance = new $className();
 		$instance->setModule($moduleModel);
+
 		return $instance;
 	}
 }
