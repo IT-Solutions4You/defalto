@@ -1439,25 +1439,26 @@ class Users extends CRMEntity {
 	 * Function to get the user if of the active admin user.
 	 * @return Integer - Active Admin User ID
 	 */
-	public static function getActiveAdminId() {
-		global $adb;
-		$cache = Vtiger_Cache::getInstance();
-		if($cache->getAdminUserId()){
-			return $cache->getAdminUserId();
-		} else {
-		$sql = "SELECT id FROM vtiger_users WHERE is_admin = 'on' AND status = 'Active' AND is_owner = 1 limit 1";
-		$result = $adb->pquery($sql, array());
-		$adminId = 1;
-		$it = new SqlResultIterator($adb, $result);
-		foreach ($it as $row) {
-			$adminId = $row->id;
-		}
-			$cache->setAdminUserId($adminId);
-		return $adminId;
-		}
-	}
+    public static function getActiveAdminId()
+    {
+        global $adb;
+        $cache = Vtiger_Cache::getInstance();
 
-	/**
+        if (!empty($cache->getAdminUserId())) {
+            return $cache->getAdminUserId();
+        } else {
+            $sql = "SELECT id FROM vtiger_users WHERE is_admin = 'on' AND status = 'Active' AND is_owner = 1 limit 1";
+            $result = $adb->pquery($sql, array());
+            $row = (array)$adb->fetchByAssoc($result);
+            $adminId = $row['id'] ?? 1;
+
+            $cache->setAdminUserId($adminId);
+
+            return $adminId;
+        }
+    }
+
+    /**
 	 * Function to get the active admin user object
 	 * @return Users - Active Admin User Instance
 	 */

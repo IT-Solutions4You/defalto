@@ -31,7 +31,7 @@
 			<div id="js-reminder-selections" style="visibility:{if $REMINDER_VALUES neq ''}visible{else}collapse{/if};">
 				<div class="row">
 					<div class="col-lg-2 py-2">
-						<select class="select2" name="reminder_days" id="js-reminder-days">
+						<select class="select2" name="reminder_days" id="js-reminder-days" data-rule-reminder_required="true">
 							{for $DAYS = 0 to 31}
 								<option value="{$DAYS}" {if $DAYS eq $DAY}selected{/if}>{$DAYS}</option>
 							{/for}

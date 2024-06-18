@@ -138,7 +138,10 @@ class VTEmailTask extends VTTask
                     $emailRecord->set('bcc_email_ids', implode(',', $this->getAddressIds($bccEmails)));
                 }
 
+                $this->retrievePDFTemplate($emailRecord);
+
                 $emailRecord->save();
+                $emailRecord->savePDF();
 
                 if (count($attachments) > 0) {
                     foreach ($attachments as $attachment_id) {
@@ -699,5 +702,97 @@ class VTEmailTask extends VTTask
     protected function useValue($data, $fieldname)
     {
         return !empty($data[$fieldname]);
+    }
+
+
+    public function retrievePDFTemplate($emailRecord) {
+        $pdfTemplates = $this->getPDFTemplate();
+
+        if (EMAILMaker_Module_Model::isPDFMakerInstalled() && !empty($pdfTemplates)) {
+            $emailRecord->set('pdf_template_ids', $pdfTemplates);
+            $emailRecord->set('pdf_template_language', $this->getPDFTemplateLanguage());
+            $emailRecord->set('is_merge_templates', $this->getPDFTemplateMerge());
+        } else {
+            $emailRecord->set('pdf_template_ids', '');
+            $emailRecord->set('pdf_template_language', '');
+            $emailRecord->set('is_merge_templates', '');
+        }
+    }
+
+    public function getPDFTemplateMerge()
+    {
+        return 'Yes' === $this->pdf_template_merge ? 1 : 0;
+    }
+
+    public function getPDFTemplateLanguage()
+    {
+        return $this->pdf_template_language;
+    }
+
+    public function getPDFMakerModel()
+    {
+        return Vtiger_Module_Model::getInstance('PDFMaker');
+    }
+
+    public function getPDFTemplate($returnArray = false)
+    {
+        if (!EMAILMaker_Module_Model::isPDFMakerInstalled()) {
+            return $returnArray ? [] : '';
+        }
+
+        if (is_array($this->pdf_template)) {
+            $templateIds = $this->pdf_template;
+        } else {
+            $templateIds = explode(';', $this->pdf_template);
+        }
+
+        $PDFMakerModel = $this->getPDFMakerModel();
+
+        foreach ($templateIds as $templateId) {
+            if ($PDFMakerModel->isTemplateDeleted($templateId)) {
+                return $returnArray ? [] : '';
+            }
+        }
+
+        if ($returnArray) {
+            return $templateIds;
+        }
+
+        return implode(';', $templateIds);
+    }
+
+    /**
+     * @param string $moduleName
+     * @return array
+     */
+    public function getPDFTemplates(string $moduleName): array
+    {
+        $moduleModel = PDFMaker_Module_Model::getInstance('PDFMaker');
+
+        if (!EMAILMaker_Module_Model::isPDFMakerInstalled()) {
+            return [];
+        }
+
+        $templates = $moduleModel->GetAvailableTemplates($moduleName);
+        $defaultTemplate = [];
+        $fieldValue = [];
+
+        if ($moduleModel->CheckPermissions('DETAIL')) {
+            foreach ($templates as $templateId => $templateInfo) {
+                if (!$moduleModel->isTemplateDeleted($templateId)) {
+                    if (in_array($templateInfo['is_default'], ['1', '3'])) {
+                        $defaultTemplate[$templateId] = $templateInfo['templatename'];
+                    } else {
+                        $fieldValue[$templateId] = $templateInfo['templatename'];
+                    }
+                }
+            }
+
+            if (php7_count($defaultTemplate) > 0) {
+                $fieldValue = $defaultTemplate + $fieldValue;
+            }
+        }
+
+        return $fieldValue;
     }
 }

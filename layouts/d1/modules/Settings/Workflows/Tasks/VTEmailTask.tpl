@@ -189,6 +189,47 @@
 						</div>
 					</div>
 				</div>
+				{if EMAILMaker_Module_Model::isPDFMakerInstalled()}
+					<div id="tabPDFTemplate">
+						<div class="row">
+							<h4 class="m-0 fw-bold py-3 border-bottom">{vtranslate('LBL_PDF_CONTENT',$QUALIFIED_MODULE)}</h4>
+						</div>
+						<div class="row py-2">
+							<div class="col-lg-2">
+								{vtranslate('LBL_PDF_TEMPLATE',$QUALIFIED_MODULE)}
+							</div>
+							<div class="col-lg-6">
+								<input type="hidden" id="pdf_template" name="pdf_template" value="{$TASK_OBJECT->getPDFTemplate()}">
+								<select name="pdf_template_select" class="select2" id="pdf_template_select" multiple="multiple" data-width="100%">
+									{foreach from=$TASK_OBJECT->getPDFTemplates($SOURCE_MODULE) key=PDF_TEMPLATE_ID item=PDF_TEMPLATE}
+										<option value="{$PDF_TEMPLATE_ID}" title="{$PDF_TEMPLATE}" {if in_array($PDF_TEMPLATE_ID, $TASK_OBJECT->getPDFTemplate(true))}selected="selected"{/if}>{$PDF_TEMPLATE}</option>
+									{/foreach}
+								</select>
+							</div>
+						</div>
+						<div class="row py-2">
+							<div class="col-lg-2">
+								{vtranslate('LBL_PDF_LANGUAGE',$QUALIFIED_MODULE)}
+							</div>
+							<div class="col-lg-6">
+								<select id="pdf_template_language" name="pdf_template_language" class="inputElement select2 form-select">
+									{html_options  options=$LANGUAGES_ARRAY selected=$TASK_OBJECT->pdf_template_language}
+								</select>
+							</div>
+						</div>
+						<div class="row py-2">
+							<div class="col-lg-2">
+								{vtranslate('LBL_PDF_MERGE',$QUALIFIED_MODULE)}
+							</div>
+							<div class="col-lg-6">
+								<label class="form-check form-switch">
+									<input type="hidden" name="pdf_template_merge" id="pdf_template_merge" value="No">
+									<input type="checkbox" name="pdf_template_merge" id="pdf_template_merge" class="form-check-input" value="Yes" {if 'Yes' eq $TASK_OBJECT->pdf_template_merge}checked="checked"{/if}>
+								</label>
+							</div>
+						</div>
+					</div>
+				{/if}
 				<div id="infoTabTemplate">
 					<div class="row">
 						<h4 class="m-0 fw-bold py-3 border-bottom">{vtranslate('LBL_CONFIG_DETAILS',$QUALIFIED_MODULE)}</h4>

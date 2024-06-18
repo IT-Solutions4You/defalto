@@ -16,7 +16,7 @@
 					{assign var="TITLE" value={vtranslate('LBL_CREATE_LIST',$MODULE)}}
 				{/if}
 				{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$TITLE}
-				<div class="modal-body p-3">
+				<div class="modal-body overflow-auto p-3">
 					<div class="customview-content row">
 						<input type=hidden name="record" id="record" value="{$RECORD_ID}" />
 						<input type="hidden" name="module" value="{$MODULE}" />
@@ -30,23 +30,28 @@
 						{/if}
 						<input type="hidden" name="date_filters" data-value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($DATE_FILTERS))}' />
 						<div class="form-group p-2">
-							<label>{vtranslate('LBL_VIEW_NAME',$MODULE)}&nbsp;<span class="redColor">*</span> </label>
+							<label class="py-2">
+								<span>{vtranslate('LBL_VIEW_NAME',$MODULE)}</span>
+								<span class="text-danger ms-2">*</span>
+							</label>
 							<div class="row">
-								<div class="col-lg-5 col-md-5 col-sm-5">
+								<div class="col-lg-6">
 									<input class="form-control" type="text" data-record-id="{$RECORD_ID}" id="viewname" name="viewname" value="{$CUSTOMVIEW_MODEL->get('viewname')}" data-rule-required="true" data-rule-maxsize="100" data-rule-check-filter-duplicate='{Vtiger_Util_Helper::toSafeHTML(Zend_JSON::encode($CUSTOM_VIEWS_LIST))}'>
 								</div>
-								<div class="col-lg-5 col-md-5 col-sm-5">
+								<div class="col-lg-6">
 									<label class="checkbox-inline p-2">
-										<input type="checkbox" name="setdefault" value="1" {if $CUSTOMVIEW_MODEL->isDefault()} checked="checked"{/if}> &nbsp;&nbsp;{vtranslate('LBL_SET_AS_DEFAULT',$MODULE)}
+										<input class="form-check-input" type="checkbox" name="setdefault" value="1" {if $CUSTOMVIEW_MODEL->isDefault()} checked="checked"{/if}>
+										<span class="ms-2">{vtranslate('LBL_SET_AS_DEFAULT',$MODULE)}</span>
 									</label>
 									<label class="checkbox-inline p-2">
-										<input id="setmetrics" name="setmetrics" type="checkbox" value="1" {if $CUSTOMVIEW_MODEL->get('setmetrics') eq '1'} checked="checked"{/if}> &nbsp;&nbsp;{vtranslate('LBL_LIST_IN_METRICS',$MODULE)}</label>
+										<input class="form-check-input" id="setmetrics" name="setmetrics" type="checkbox" value="1" {if $CUSTOMVIEW_MODEL->get('setmetrics') eq '1'} checked="checked"{/if}>
+										<span class="ms-2">{vtranslate('LBL_LIST_IN_METRICS',$MODULE)}</span>
 									</label>
 								</div>
 							</div>
 						</div>
 						<div class="form-group p-2">
-							<label>
+							<label class="py-2">
 								{vtranslate('LBL_CHOOSE_COLUMNS',$MODULE)} ({vtranslate('LBL_MAX_NUMBER_FILTER_COLUMNS')})
 							</label>
 							<div class="columnsSelectDiv clearfix">
@@ -85,24 +90,23 @@
 							<div class="col-lg-2 col-md-2 col-sm-2"></div>
 						</div>
 						<div class="form-group p-2">
-							<label class="filterHeaders">{vtranslate('LBL_CHOOSE_FILTER_CONDITIONS', $MODULE)}:</label>
+							<label class="filterHeaders py-2">{vtranslate('LBL_CHOOSE_FILTER_CONDITIONS', $MODULE)}:</label>
 							<div class="filterElements well filterConditionContainer filterConditionsDiv">
 								{include file='AdvanceFilter.tpl'|@vtemplate_path}
 							</div>
 						</div>
 						<div class="form-group p-2">
-							<label class="filterHeaders">{vtranslate('LBL_FILTER_SORTING', $MODULE)}: </label>
+							<label class="filterHeaders py-2">{vtranslate('LBL_FILTER_SORTING', $MODULE)}: </label>
 							<div class="well">
 								{include file='SortBy.tpl'|@vtemplate_path:$MODULE}
 							</div>
 						</div>
 						<div class="form-group p-2">
-							<div class="checkbox">
-								<label>
-									<input type="hidden" name="sharelist" value="0" />
-									<input type="checkbox" data-toogle-members="true" name="sharelist" value="1" {if $LIST_SHARED} checked="checked"{/if}> &nbsp;&nbsp;{vtranslate('LBL_SHARE_THIS_LIST',$MODULE)}
-								</label>
-							</div>
+							<label class="py-2">
+								<input type="hidden" name="sharelist" value="0" />
+								<input class="form-check-input" type="checkbox" data-toogle-members="true" name="sharelist" value="1" {if $LIST_SHARED} checked="checked"{/if}>
+								<span class="ms-2">{vtranslate('LBL_SHARE_THIS_LIST',$MODULE)}</span>
+							</label>
 							<select id="memberList" class="col-lg-7 col-md-7 col-sm-7 select2 members op0{if $LIST_SHARED} fadeInx{/if}" multiple="true" name="members[]" data-placeholder="{vtranslate('LBL_ADD_USERS_ROLES', $MODULE)}" style="margin-bottom: 10px;" data-rule-required="{if $LIST_SHARED}true{else}false{/if}">
 								<optgroup label="{vtranslate('LBL_ALL',$MODULE)}">
 									<option value="All::Users" data-member-type="{vtranslate('LBL_ALL',$MODULE)}"

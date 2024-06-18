@@ -60,16 +60,18 @@ var vtUtils = {
         // Sort DOM nodes alphabetically in select box.
         if (typeof params['customSortOptGroup'] !== 'undefined' && params['customSortOptGroup']) {
             jQuery('optgroup', selectElement).each(function () {
-                var optgroup = jQuery(this);
-                var options = optgroup.children().toArray().sort(function (a, b) {
-                    var aText = jQuery(a).text();
-                    var bText = jQuery(b).text();
-                    return aText < bText ? 1 : -1;
-                });
+                let optgroup = jQuery(this),
+                    options = optgroup.children().toArray().sort(function (a, b) {
+                        let aText = jQuery(a).text(),
+                            bText = jQuery(b).text();
+
+                        return aText < bText ? 1 : -1;
+                    });
                 jQuery.each(options, function (i, v) {
                     optgroup.prepend(v);
                 });
             });
+
             delete params['customSortOptGroup'];
         }
 
@@ -95,11 +97,12 @@ var vtUtils = {
             params.dropdownParent = selectElement.parents('.modal');
         }
 
-        if(!params.width) {
-            params.width = 'auto';
-        }
+        params.width = params.width ?? 'auto';
+        params.theme = params.theme ?? 'bootstrap-5';
 
-        params.theme = 'bootstrap-5';
+        if (!params.id && selectElement.attr('id')) {
+            params.id = 's2id_' + selectElement.attr('id');
+        }
 
         selectElement.select2(params).on('select2:opening', function (e) {
             if (selectElement.data('unselect')) {
@@ -121,16 +124,14 @@ var vtUtils = {
             instance.dropdown.css('z-index', 1000002);
         });
 
-        selectElement.each(function () {
-            $(this).next().attr('id', 's2id_' + $(this).attr('id'));
-        });
-
         //validator should not validate select2 text inputs
         $('.select2-search input').addClass('ignore-validation');
 
         if (typeof params.maximumSelectionSize != "undefined") {
             vtUtils.registerChangeEventForMultiSelect(selectElement, params);
         }
+
+        selectElement.trigger('select2-loaded');
 
         return selectElement;
     },
@@ -730,5 +731,132 @@ var vtUtils = {
            }
 	   // If password regex is not set - consider it as strong.
            return true;
+    },
+    makeSelect2ElementSortable: function (selectElement, valueElement, getValueFunction, setValueFunction) {
+
+        vtUtils.showSelect2ElementView(selectElement, {
+            results: function() {
+                return [
+                    {
+                        id: 0,
+                        text: 'enhancement'
+                    },
+                    {
+                        id: 1,
+                        text: 'bug'
+                    },
+                    {
+                        id: 2,
+                        text: 'duplicate'
+                    },
+                    {
+                        id: 3,
+                        text: 'invalid'
+                    },
+                    {
+                        id: 4,
+                        text: 'wontfix'
+                    }
+                ];
+            },
+        })
+
+        let selectParent = selectElement.parent(),
+            select2Element = selectElement.next('.select2'),
+            select2ChoiceElement = select2Element.find('ul.select2-selection__rendered'),
+            selectedFieldNames;
+
+        orderSortedValues = function () {
+            selectParent.find("ul.select2-selection__rendered").children("li[title]").each(function (i, obj) {
+                let element = selectElement.children('option').filter(function () {
+                    return $(this).html() == obj.title
+                });
+
+                moveElementToEndOfParent(element)
+            });
+        };
+
+        moveElementToEndOfParent = function (element) {
+            if (!element || !element.length) {
+                return;
+            }
+
+            element.parents('select').append(element.detach());
+        };
+
+        updateOptionTitles = function(selectElement) {
+            selectElement.find('option').each(function() {
+                $(this).attr('title', $(this).html());
+            });
+        }
+
+        getOptionById = function (selectElement, id) {
+            let optionElement;
+
+            selectElement.find('option').each(function () {
+                if ($(this).val() === id) {
+                    optionElement = $(this);
+                }
+            });
+
+            return optionElement;
+        }
+
+        updateOptionTitles(selectElement);
+
+        if ('function' === typeof getValueFunction) {
+            selectedFieldNames = getValueFunction(valueElement);
+        } else {
+            selectedFieldNames = valueElement.val().split(';');
+        }
+
+        if (selectedFieldNames) {
+            $.each(selectedFieldNames, function (index, id) {
+                let element = getOptionById(selectElement, id);
+
+                moveElementToEndOfParent(element);
+            });
+
+            selectElement.trigger('change');
+        }
+
+        selectElement.on("select2:select", function (evt) {
+            let id = evt.params.data.id,
+                element = getOptionById($(this), id);
+
+            moveElementToEndOfParent(element);
+
+            selectElement.trigger('change');
+        });
+
+        select2ChoiceElement.sortable({
+            update: function () {
+                //If arrangements of fields is completed save field order button should be enabled
+                if (selectElement.val().length > 1) {
+                    orderSortedValues();
+                }
+            },
+            stop: function () {
+                selectElement.trigger('change');
+            }
+        });
+
+        selectElement.on('change', function () {
+            let selectIds = [];
+
+            select2Element.find('.select2-selection__choice').each(function (i, selectedElement) {
+                selectElement.find('option').each(function (i, optionElement) {
+                    if ($(optionElement).attr('title') === $(selectedElement).attr('title')) {
+                        selectIds.push($(optionElement).val())
+                    }
+                })
+            })
+
+            if ('function' === typeof setValueFunction) {
+                setValueFunction(valueElement, selectIds);
+            } else {
+                valueElement.val(selectIds.join(';'));
+            }
+        });
     },
 }

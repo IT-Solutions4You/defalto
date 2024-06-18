@@ -164,6 +164,7 @@ Class Inventory_Edit_View extends Vtiger_Edit_View {
 		$viewer->assign('RECORD',$recordModel);
 		$viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
 		$viewer->assign('RECORD_STRUCTURE', $recordStructure);
+        $viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
 		$viewer->assign('MODULE', $moduleName);
 		$viewer->assign('CURRENTDATE', date('Y-n-j'));
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
