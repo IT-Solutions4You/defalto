@@ -77,7 +77,7 @@ class Vtiger_Block {
         $this->display_status = isset($valuemap['display_status']) ? $valuemap['display_status'] : null;
 		$this->sequence = isset($valuemap['sequence']) ? $valuemap['sequence'] : null;
         $this->iscustom = isset($valuemap['iscustom']) ? $valuemap['iscustom'] : null;
-        $this->blockuitype = isset($valuemap['blockuitype']) ? $valuemap['blockuitype'] : null;
+        $this->blockuitype = isset($valuemap['blockuitype']) ? $valuemap['blockuitype'] : 1;
         $tabid = isset($valuemap['tabid']) ? $valuemap['tabid'] : null;
 		$this->module= $moduleInstance ? $moduleInstance : Vtiger_Module::getInstance($tabid);
 	}
