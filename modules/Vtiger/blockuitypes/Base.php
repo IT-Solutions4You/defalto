@@ -8,21 +8,20 @@
  * file that was distributed with this source code.
  */
 
-class Vtiger_Base_BlockUIType extends Vtiger_Base_Model implements Vtiger_IF_BlockUIType
+class Vtiger_Base_BlockUIType extends Vtiger_Base_Model implements Vtiger_Interface_BlockUIType
 {
     /**
-     * Returns the Template name for the current Block UI Type Object
-     *
-     * @param string $mode
-     *
-     * @return string
+     * @inheritDoc
      */
-    public function getTemplateName(string $mode = 'Detail'): string
+    public function getTemplateName(): string
     {
-        if ($mode === 'Edit' || $mode === 'MassEdit') {
-            return 'blockuitypes/BaseEdit.tpl';
-        }
-
+        return 'blockuitypes/BaseEdit.tpl';
+    }
+    /**
+     * @inheritDoc
+     */
+    public function getDetailViewTemplateName(): string
+    {
         return 'blockuitypes/Base.tpl';
     }
 }

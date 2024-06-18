@@ -11,7 +11,7 @@
         {if $BLOCK_LABEL_KEY neq 'LBL_CALENDAR_SETTINGS'}
             {assign var=BLOCK value=$BLOCK_LIST[$BLOCK_LABEL_KEY]}
             {if $BLOCK eq null}{continue}{/if}
-            {include file=vtemplate_path($RECORD_STRUCTURE_MODEL->blockData[$BLOCK_LABEL_KEY]['template_name'], $MODULE_NAME) BLOCK=$BLOCK USER_MODEL=$USER_MODEL MODULE_NAME=$MODULE_NAME RECORD=$RECORD}
+            {include file=vtemplate_path($BLOCK->getUITypeModel()->getDetailViewTemplateName(), $MODULE_NAME) BLOCK=$BLOCK USER_MODEL=$USER_MODEL MODULE_NAME=$MODULE_NAME RECORD=$RECORD}
         {/if}
     {/foreach}
 {/strip}

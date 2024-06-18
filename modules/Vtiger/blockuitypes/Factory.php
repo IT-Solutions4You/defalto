@@ -17,7 +17,7 @@ class Vtiger_Factory_BlockUIType
      *
      * @return Vtiger_Base_Blockuitype or BlockUIType specific object instance
      */
-    public static function getInstanceFromBlock(Vtiger_Block_Model $blockModel): Vtiger_IF_BlockUIType
+    public static function getInstanceFromBlock(Vtiger_Block_Model $blockModel): Vtiger_Interface_BlockUIType
     {
         $blockUiType = $blockModel->get('blockuitype');
         $blockUiTypeName = Vtiger_BlockUiType_Model::getNameForUIType($blockUiType);

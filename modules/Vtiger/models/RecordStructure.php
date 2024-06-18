@@ -13,7 +13,6 @@
  */
 class Vtiger_RecordStructure_Model extends Vtiger_Base_Model {
 
-    public array $blockData = [];
 	protected $record = false;
 	protected $module = false;
 	protected $structuredValues = false;
@@ -108,7 +107,6 @@ class Vtiger_RecordStructure_Model extends Vtiger_Base_Model {
 		$className = Vtiger_Loader::getComponentClassName('Model', $mode.'RecordStructure', $moduleModel->getName(true));
 		$instance = new $className();
 		$instance->setModule($moduleModel)->setRecord($recordModel);
-        $instance->loadBlockData($mode);
 
 		return $instance;
 	}
@@ -122,31 +120,7 @@ class Vtiger_RecordStructure_Model extends Vtiger_Base_Model {
 		$className = Vtiger_Loader::getComponentClassName('Model', $mode.'RecordStructure', $moduleModel->get('name'));
 		$instance = new $className();
 		$instance->setModule($moduleModel);
-        $instance->loadBlockData($mode);
 
 		return $instance;
 	}
-
-    /**
-     * Loads basic block data from vtiger_blocks and adds template name to each block
-     *
-     * @param string $mode
-     *
-     * @return void
-     */
-    public function loadBlockData(string $mode = 'Detail'): void
-    {
-        $blockData = $this->getModule()->getBlocks();
-
-        foreach ($blockData as $blockModel) {
-            $this->blockData[$blockModel->get('label')] = [
-                'id'            => $blockModel->get('id'),
-                'increateview'  => $blockModel->get('increateview'),
-                'ineditview'    => $blockModel->get('ineditview'),
-                'indetailview'  => $blockModel->get('indetailview'),
-                'blockuitype'   => $blockModel->get('blockuitype'),
-                'template_name' => (Vtiger_Factory_BlockUIType::getInstanceFromBlock($blockModel))->getTemplateName($mode),
-            ];
-        }
-    }
 }

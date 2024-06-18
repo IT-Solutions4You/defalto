@@ -11,7 +11,8 @@
     <div name="editContent">
         {foreach key=BLOCK_LABEL item=BLOCK_FIELDS from=$RECORD_STRUCTURE name=blockIterator}
             {if $BLOCK_LABEL neq 'LBL_CALENDAR_SETTINGS'}
-                {include file=vtemplate_path($RECORD_STRUCTURE_MODEL->blockData[$BLOCK_LABEL]['template_name'], $MODULE)}
+                {assign var=BLOCK value=$BLOCK_LIST[$BLOCK_LABEL]}
+                {include file=vtemplate_path($BLOCK->getUITypeModel()->getTemplateName(), $MODULE_NAME)}
             {/if}
         {/foreach}
     </div>

@@ -17,7 +17,8 @@
 			</div>
 		{/if}
 		{foreach key=BLOCK_LABEL item=BLOCK_FIELDS from=$RECORD_STRUCTURE name=blockIterator}
-			{include file=vtemplate_path($RECORD_STRUCTURE_MODEL->blockData[$BLOCK_LABEL]['template_name'], $MODULE_NAME)}
+			{assign var=BLOCK value=$BLOCK_LIST[$BLOCK_LABEL]}
+			{include file=vtemplate_path($BLOCK->getUITypeModel()->getTemplateName(), $MODULE_NAME)}
 		{/foreach}
 	</div>
 {/strip}
