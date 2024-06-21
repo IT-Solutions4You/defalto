@@ -42,6 +42,7 @@ class EMAILMaker_Field_Model extends Vtiger_Field_Model
     {
         return array(
             'string' => array('is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'),
+            'country' => array('is', 'is not', 'is empty', 'is not empty'),
             'salutation' => array('is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'),
             'text' => array('is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'),
             'url' => array('is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'),
