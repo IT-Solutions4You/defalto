@@ -73,6 +73,27 @@ class Vtiger_DatabaseData_Model extends Vtiger_DatabaseTable_Model
         return $this->db->pquery($query, $params);
     }
 
+    public function getDeleteQuery($table, $search)
+    {
+        return sprintf(
+            'DELETE FROM %s WHERE %s=?',
+            $table,
+            implode('=? AND ', array_keys($search)),
+        );
+    }
+
+    public function deleteData($search)
+    {
+        $this->requireTable('Table is empty for delete data');
+
+        $query = $this->getDeleteQuery($this->get('table'), $search);
+        $params = $search;
+
+        $this->retrieveDB();
+
+        return $this->db->pquery($query, $params);
+    }
+
     /**
      * @param array $data
      * @param array $search
