@@ -218,6 +218,7 @@ class VTEmailTask extends VTTask
 
             $utils = new VTWorkflowUtils();
             $adminUser = $utils->adminUser();
+
             if (!$entityCache) {
                 $entityCache = new VTEntityCache($adminUser);
             }

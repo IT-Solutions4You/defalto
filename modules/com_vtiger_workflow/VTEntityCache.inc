@@ -118,8 +118,8 @@ class VTWorkflowEntity{
 }
 
 class VTEntityCache{
-    protected $user;
-    protected $cache;
+    public $user;
+    public $cache;
 
     function __construct($user)
     {

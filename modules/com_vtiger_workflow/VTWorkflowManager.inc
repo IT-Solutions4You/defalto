@@ -125,28 +125,38 @@ class VTWorkflowManager{
             return vglobal('max_scheduled_workflows');
 	}
 
-	function getWorkflowsForModule($moduleName){
-		$adb=$this->adb;
-		$cache= Vtiger_Cache::getInstance();
-		if($cache->getWorkflowForModule($moduleName)){
-			return $this->getWorkflowsForResult($cache->getWorkflowForModule($moduleName));
-		} else {
-		//my changes
-		$result=$adb->getColumnNames("com_vtiger_workflows");
-		if(in_array('defaultworkflow',$result)){
-			$result = $adb->pquery("select workflow_id, module_name, summary, test, execution_condition, defaultworkflow, type, filtersavedinnew
-								from com_vtiger_workflows where module_name=? and status=?",array($moduleName,1));
-		}
-		else{
-			$result = $adb->pquery("select workflow_id, module_name, summary, test, execution_condition, type, filtersavedinnew
-								from com_vtiger_workflows where module_name=? and status=?",array($moduleName,1));
-		}
-			$cache->setWorkflowForModule($moduleName,$result);
-		return $this->getWorkflowsForResult($result);
-		}
-	}
+    function getWorkflowsForModule($moduleName)
+    {
+        $adb = $this->adb;
+        $cache = Vtiger_Cache::getInstance();
 
-	protected function getWorkflowsForResult($result){
+        if (!empty($cache->getWorkflowForModule($moduleName))) {
+            return $this->getWorkflowsForResult($cache->getWorkflowForModule($moduleName));
+        } else {
+            //my changes
+            $result = $adb->getColumnNames("com_vtiger_workflows");
+
+            if (in_array('defaultworkflow', $result)) {
+                $result = $adb->pquery(
+                    "select workflow_id, module_name, summary, test, execution_condition, defaultworkflow, type, filtersavedinnew
+								from com_vtiger_workflows where module_name=? and status=?",
+                    [$moduleName, 1]
+                );
+            } else {
+                $result = $adb->pquery(
+                    "select workflow_id, module_name, summary, test, execution_condition, type, filtersavedinnew
+								from com_vtiger_workflows where module_name=? and status=?",
+                    [$moduleName, 1]
+                );
+            }
+
+            $cache->setWorkflowForModule($moduleName, $result);
+
+            return $this->getWorkflowsForResult($result);
+        }
+    }
+
+    protected function getWorkflowsForResult($result){
 		$adb=$this->adb;
 
 		$it = new SqlResultIterator($adb, $result);
