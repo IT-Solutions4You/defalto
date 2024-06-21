@@ -18,7 +18,8 @@ Vtiger_Edit_Js("Accounts_Edit_Js",{
 										'bill_city'	:'ship_city',
 										'bill_state':'ship_state',
 										'bill_code'	:'ship_code',
-										'bill_country':'ship_country'
+										'bill_country':'ship_country',
+										'bill_country_id':'ship_country_id'
 								},
    
    // mapping address fields of MemberOf field in the module              
@@ -29,13 +30,15 @@ Vtiger_Edit_Js("Accounts_Edit_Js",{
 										'bill_state':'bill_state',
 										'bill_code'	:'bill_code',
 										'bill_country':'bill_country',
-                                        'ship_street' : 'ship_street',        
+										'bill_country_id':'bill_country_id',
+                                        'ship_street' : 'ship_street',
                                         'ship_pobox' : 'ship_pobox',
                                         'ship_city':'ship_city',
                                         'ship_state':'ship_state',
                                         'ship_code':'ship_code',
-                                        'ship_country':'ship_country'
-                                   },                          
+                                        'ship_country':'ship_country',
+                                        'ship_country_id':'ship_country_id',
+                                   },
 	/**
 	 * Function to swap array
 	 * @param Array that need to be swapped
@@ -56,20 +59,26 @@ Vtiger_Edit_Js("Accounts_Edit_Js",{
 	 * @param strings which accepts value as either odd or even
 	 */
 	copyAddress : function(swapMode, container){
-		var thisInstance = this;
-		var addressMapping = this.addressFieldsMappingInModule;
+		let thisInstance = this,
+			addressMapping = this.addressFieldsMappingInModule;
+
 		if(swapMode == "false"){
-			for(var key in addressMapping) {
-				var fromElement = container.find('[name="'+key+'"]');
-				var toElement = container.find('[name="'+addressMapping[key]+'"]');
+			for(let key in addressMapping) {
+				let fromElement = container.find('[name="'+key+'"]'),
+					toElement = container.find('[name="'+addressMapping[key]+'"]');
+
 				toElement.val(fromElement.val());
+				toElement.trigger('change');
 			}
 		} else if(swapMode){
-			var swappedArray = thisInstance.swapObject(addressMapping);
-			for(var key in swappedArray) {
-				var fromElement = container.find('[name="'+key+'"]');
-				var toElement = container.find('[name="'+swappedArray[key]+'"]');
+			let swappedArray = thisInstance.swapObject(addressMapping);
+
+			for(let key in swappedArray) {
+				let fromElement = container.find('[name="'+key+'"]'),
+					toElement = container.find('[name="'+swappedArray[key]+'"]');
+
 				toElement.val(fromElement.val());
+				toElement.trigger('change');
 			}
 		}
 	},
