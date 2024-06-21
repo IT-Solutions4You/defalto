@@ -55,7 +55,6 @@ if (!class_exists('Migration_20240619081559')) {
                          * V pripade, ze je zadana v ponuke/objed/fakture celkova zlava, tak z nej vycislujem overall discount pri polozkach a teda naplnam overall_discount, overall_discount_amount a total_after_overall_discount
                          * Ak aj nie je celkova zlava, tak total_after_overall_discount musim naplnit tym co je v total_after_discount
                          * Tiez musim zistit ake su v systeme dane, zistit si spravne nazvy stlpcov, spocitat si ich, na zaklade toto naplnit polia tax a tax amount
-                         * Chyba mi pole Tax (percento)
                          * Nakoniec vycislujem Total - to je vlastne cena po dani
                          */
                         //$inventoryItem->column_fields['item_text'] = getEntityName(getSalesEntityType($productsRow['productid']), $productsRow['productid'])[$productsRow['productid']];
