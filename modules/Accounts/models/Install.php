@@ -85,7 +85,7 @@ class Accounts_Install_Model extends Vtiger_Install_Model {
                     'quickcreate' => 2,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
+                    'summaryfield' => 1,
                 ],
                 'tickersymbol' => [
                     'name' => 'tickersymbol',
@@ -149,7 +149,7 @@ class Accounts_Install_Model extends Vtiger_Install_Model {
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
+                    'summaryfield' => 1,
                 ],
                 'employees' => [
                     'name' => 'employees',
