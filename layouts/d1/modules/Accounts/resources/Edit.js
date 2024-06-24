@@ -18,8 +18,7 @@ Vtiger_Edit_Js("Accounts_Edit_Js",{
 										'bill_city'	:'ship_city',
 										'bill_state':'ship_state',
 										'bill_code'	:'ship_code',
-										'bill_country':'ship_country',
-										'bill_country_id':'ship_country_id'
+										'bill_country_id':'ship_country_id',
 								},
    
    // mapping address fields of MemberOf field in the module              
@@ -29,14 +28,12 @@ Vtiger_Edit_Js("Accounts_Edit_Js",{
 										'bill_city'	:'bill_city',
 										'bill_state':'bill_state',
 										'bill_code'	:'bill_code',
-										'bill_country':'bill_country',
 										'bill_country_id':'bill_country_id',
                                         'ship_street' : 'ship_street',
                                         'ship_pobox' : 'ship_pobox',
                                         'ship_city':'ship_city',
                                         'ship_state':'ship_state',
                                         'ship_code':'ship_code',
-                                        'ship_country':'ship_country',
                                         'ship_country_id':'ship_country_id',
                                    },
 	/**
