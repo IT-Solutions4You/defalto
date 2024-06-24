@@ -302,7 +302,7 @@ abstract class Vtiger_Install_Model extends Vtiger_DatabaseData_Model
         if ($entity) {
             $moduleInstance->initTables($moduleInstance->basetable, $moduleInstance->basetableid);
 
-            $filterSequence = 0;
+            $dynamicFilterSequence = 0;
             $filter = Vtiger_Filter::getInstance('All', $moduleInstance);
 
             if (!$filter) {
@@ -421,7 +421,9 @@ abstract class Vtiger_Install_Model extends Vtiger_DatabaseData_Model
                     if (isset($fieldParams['filter'])) {
                         self::logSuccess('Filter create: ' . $fieldName);
 
-                        $filterSequence++;
+                        $dynamicFilterSequence++;
+                        $filterSequence = !empty($fieldParams['filter_sequence']) ? $fieldParams['filter_sequence'] : $dynamicFilterSequence;
+
                         $filter->addField($fieldInstance, $filterSequence);
                     }
 

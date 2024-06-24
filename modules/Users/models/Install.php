@@ -48,6 +48,7 @@ class Users_Install_Model extends Vtiger_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 1,
                     'filter' => 1,
+                    'filter_sequence' => 3,
                 ],
                 'is_admin' => [
                     'name' => 'is_admin',
@@ -65,6 +66,7 @@ class Users_Install_Model extends Vtiger_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 1,
                     'filter' => 1,
+                    'filter_sequence' => 5,
                 ],
                 'user_password' => [
                     'name' => 'user_password',
@@ -112,6 +114,7 @@ class Users_Install_Model extends Vtiger_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 1,
                     'filter' => 1,
+                    'filter_sequence' => 1,
                 ],
                 'last_name' => [
                     'name' => 'last_name',
@@ -144,6 +147,7 @@ class Users_Install_Model extends Vtiger_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 1,
                     'filter' => 1,
+                    'filter_sequence' => 2,
                 ],
                 'email1' => [
                     'name' => 'email1',
@@ -392,6 +396,7 @@ class Users_Install_Model extends Vtiger_Install_Model
                         'summaryfield' => 0,
                         'headerfield' => 1,
                         'filter' => 1,
+                        'filter_sequence' => 5,
                     ],
                     'department' => [
                         'name' => 'department',
@@ -468,6 +473,7 @@ class Users_Install_Model extends Vtiger_Install_Model
                         'summaryfield' => 0,
                         'headerfield' => 1,
                         'filter' => 1,
+                        'filter_sequence' => 4,
                     ],
                     'secondaryemail' => [
                         'name' => 'secondaryemail',
