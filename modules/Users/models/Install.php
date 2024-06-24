@@ -46,6 +46,8 @@ class Users_Install_Model extends Vtiger_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
+                    'filter' => 1,
                 ],
                 'is_admin' => [
                     'name' => 'is_admin',
@@ -61,6 +63,8 @@ class Users_Install_Model extends Vtiger_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
+                    'filter' => 1,
                 ],
                 'user_password' => [
                     'name' => 'user_password',
@@ -106,6 +110,8 @@ class Users_Install_Model extends Vtiger_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
+                    'filter' => 1,
                 ],
                 'last_name' => [
                     'name' => 'last_name',
@@ -136,6 +142,8 @@ class Users_Install_Model extends Vtiger_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
+                    'filter' => 1,
                 ],
                 'email1' => [
                     'name' => 'email1',
@@ -382,6 +390,8 @@ class Users_Install_Model extends Vtiger_Install_Model
                         'displaytype' => 1,
                         'masseditable' => 1,
                         'summaryfield' => 0,
+                        'headerfield' => 1,
+                        'filter' => 1,
                     ],
                     'department' => [
                         'name' => 'department',
@@ -456,6 +466,8 @@ class Users_Install_Model extends Vtiger_Install_Model
                         'displaytype' => 1,
                         'masseditable' => 1,
                         'summaryfield' => 0,
+                        'headerfield' => 1,
+                        'filter' => 1,
                     ],
                     'secondaryemail' => [
                         'name' => 'secondaryemail',
