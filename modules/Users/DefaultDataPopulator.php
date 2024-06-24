@@ -423,8 +423,6 @@ class DefaultDataPopulator extends CRMEntity
             [6, null, 'ship_state', 'vtiger_accountshipads', 1, '1', 'ship_state', 'Shipping State', 1, 2, '', 100, 8, $accountAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [6, null, 'bill_code', 'vtiger_accountbillads', 1, '1', 'bill_code', 'Billing Code', 1, 2, '', 100, 9, $accountAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [6, null, 'ship_code', 'vtiger_accountshipads', 1, '1', 'ship_code', 'Shipping Code', 1, 2, '', 100, 10, $accountAddress, 1, 'V~O', 1, null, 'BAS', 1],
-            [6, null, 'bill_country', 'vtiger_accountbillads', 1, '1', 'bill_country', 'Billing Country', 1, 2, '', 100, 11, $accountAddress, 1, 'V~O', 1, null, 'BAS', 1],
-            [6, null, 'ship_country', 'vtiger_accountshipads', 1, '1', 'ship_country', 'Shipping Country', 1, 2, '', 100, 12, $accountAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [6, null, 'bill_pobox', 'vtiger_accountbillads', 1, '1', 'bill_pobox', 'Billing Po Box', 1, 2, '', 100, 3, $accountAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [6, null, 'ship_pobox', 'vtiger_accountshipads', 1, '1', 'ship_pobox', 'Shipping Po Box', 1, 2, '', 100, 4, $accountAddress, 1, 'V~O', 1, null, 'BAS', 1],
             //Block12
@@ -459,7 +457,6 @@ class DefaultDataPopulator extends CRMEntity
             [7, null, 'lane', 'vtiger_leadaddress', 1, '21', 'lane', 'Street', 1, 2, '', 100, 1, $leadAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [7, null, 'code', 'vtiger_leadaddress', 1, '1', 'code', 'Postal Code', 1, 2, '', 100, 3, $leadAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [7, null, 'city', 'vtiger_leadaddress', 1, '1', 'city', 'City', 1, 2, '', 100, 4, $leadAddress, 1, 'V~O', 1, null, 'BAS', 1],
-            [7, null, 'country', 'vtiger_leadaddress', 1, '1', 'country', 'Country', 1, 2, '', 100, 5, $leadAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [7, null, 'state', 'vtiger_leadaddress', 1, '1', 'state', 'State', 1, 2, '', 100, 6, $leadAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [7, null, 'pobox', 'vtiger_leadaddress', 1, '1', 'pobox', 'Po Box', 1, 2, '', 100, 2, $leadAddress, 1, 'V~O', 1, null, 'BAS', 1],
             //Block15 --End
@@ -512,8 +509,6 @@ class DefaultDataPopulator extends CRMEntity
             [4, null, 'otherstate', 'vtiger_contactaddress', 1, '1', 'otherstate', 'Other State', 1, 2, '', 100, 8, $contactAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [4, null, 'mailingzip', 'vtiger_contactaddress', 1, '1', 'mailingzip', 'Mailing Zip', 1, 2, '', 100, 9, $contactAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [4, null, 'otherzip', 'vtiger_contactaddress', 1, '1', 'otherzip', 'Other Zip', 1, 2, '', 100, 10, $contactAddress, 1, 'V~O', 1, null, 'BAS', 1],
-            [4, null, 'mailingcountry', 'vtiger_contactaddress', 1, '1', 'mailingcountry', 'Mailing Country', 1, 2, '', 100, 11, $contactAddress, 1, 'V~O', 1, null, 'BAS', 1],
-            [4, null, 'othercountry', 'vtiger_contactaddress', 1, '1', 'othercountry', 'Other Country', 1, 2, '', 100, 12, $contactAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [4, null, 'mailingpobox', 'vtiger_contactaddress', 1, '1', 'mailingpobox', 'Mailing Po Box', 1, 2, '', 100, 3, $contactAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [4, null, 'otherpobox', 'vtiger_contactaddress', 1, '1', 'otherpobox', 'Other Po Box', 1, 2, '', 100, 4, $contactAddress, 1, 'V~O', 1, null, 'BAS', 1],
             //Block7 -- End
@@ -691,7 +686,6 @@ class DefaultDataPopulator extends CRMEntity
             [18, null, 'city', 'vtiger_vendor', 1, '1', 'city', 'City', 1, 2, '', 100, 3, $vendorAddress, 1, 'V~O', 1, null, 'ADV', 1],
             [18, null, 'state', 'vtiger_vendor', 1, '1', 'state', 'State', 1, 2, '', 100, 4, $vendorAddress, 1, 'V~O', 1, null, 'ADV', 1],
             [18, null, 'postalcode', 'vtiger_vendor', 1, '1', 'postalcode', 'Postal Code', 1, 2, '', 100, 5, $vendorAddress, 1, 'V~O', 1, null, 'ADV', 1],
-            [18, null, 'country', 'vtiger_vendor', 1, '1', 'country', 'Country', 1, 2, '', 100, 6, $vendorAddress, 1, 'V~O', 1, null, 'ADV', 1],
             //Block 47
             [18, null, 'description', 'vtiger_crmentity', 1, '19', 'description', 'Description', 1, 2, '', 100, 1, $vendorDescription, 1, 'V~O', 1, null, 'ADV', 1],
             //Vendor Details -- END
@@ -744,8 +738,6 @@ class DefaultDataPopulator extends CRMEntity
             [20, null, 'ship_state', 'vtiger_quotesshipads', 1, '1', 'ship_state', 'Shipping State', 1, 2, '', 100, 8, $quoteAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [20, null, 'bill_code', 'vtiger_quotesbillads', 1, '1', 'bill_code', 'Billing Code', 1, 2, '', 100, 9, $quoteAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [20, null, 'ship_code', 'vtiger_quotesshipads', 1, '1', 'ship_code', 'Shipping Code', 1, 2, '', 100, 10, $quoteAddress, 1, 'V~O', 3, null, 'BAS', 1],
-            [20, null, 'bill_country', 'vtiger_quotesbillads', 1, '1', 'bill_country', 'Billing Country', 1, 2, '', 100, 11, $quoteAddress, 1, 'V~O', 3, null, 'BAS', 1],
-            [20, null, 'ship_country', 'vtiger_quotesshipads', 1, '1', 'ship_country', 'Shipping Country', 1, 2, '', 100, 12, $quoteAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [20, null, 'bill_pobox', 'vtiger_quotesbillads', 1, '1', 'bill_pobox', 'Billing Po Box', 1, 2, '', 100, 3, $quoteAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [20, null, 'ship_pobox', 'vtiger_quotesshipads', 1, '1', 'ship_pobox', 'Shipping Po Box', 1, 2, '', 100, 4, $quoteAddress, 1, 'V~O', 3, null, 'BAS', 1],
             //Block55
@@ -790,8 +782,6 @@ class DefaultDataPopulator extends CRMEntity
             [21, null, 'ship_state', 'vtiger_poshipads', 1, '1', 'ship_state', 'Shipping State', 1, 2, '', 100, 8, $purchaseOrderAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [21, null, 'bill_code', 'vtiger_pobillads', 1, '1', 'bill_code', 'Billing Code', 1, 2, '', 100, 9, $purchaseOrderAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [21, null, 'ship_code', 'vtiger_poshipads', 1, '1', 'ship_code', 'Shipping Code', 1, 2, '', 100, 10, $purchaseOrderAddress, 1, 'V~O', 3, null, 'BAS', 1],
-            [21, null, 'bill_country', 'vtiger_pobillads', 1, '1', 'bill_country', 'Billing Country', 1, 2, '', 100, 11, $purchaseOrderAddress, 1, 'V~O', 3, null, 'BAS', 1],
-            [21, null, 'ship_country', 'vtiger_poshipads', 1, '1', 'ship_country', 'Shipping Country', 1, 2, '', 100, 12, $purchaseOrderAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [21, null, 'bill_pobox', 'vtiger_pobillads', 1, '1', 'bill_pobox', 'Billing Po Box', 1, 2, '', 100, 3, $purchaseOrderAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [21, null, 'ship_pobox', 'vtiger_poshipads', 1, '1', 'ship_pobox', 'Shipping Po Box', 1, 2, '', 100, 4, $purchaseOrderAddress, 1, 'V~O', 3, null, 'BAS', 1],
             //Block61
@@ -839,8 +829,6 @@ class DefaultDataPopulator extends CRMEntity
             [22, null, 'ship_state', 'vtiger_soshipads', 1, '1', 'ship_state', 'Shipping State', 1, 2, '', 100, 8, $salesOrderAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [22, null, 'bill_code', 'vtiger_sobillads', 1, '1', 'bill_code', 'Billing Code', 1, 2, '', 100, 9, $salesOrderAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [22, null, 'ship_code', 'vtiger_soshipads', 1, '1', 'ship_code', 'Shipping Code', 1, 2, '', 100, 10, $salesOrderAddress, 1, 'V~O', 3, null, 'BAS', 1],
-            [22, null, 'bill_country', 'vtiger_sobillads', 1, '1', 'bill_country', 'Billing Country', 1, 2, '', 100, 11, $salesOrderAddress, 1, 'V~O', 3, null, 'BAS', 1],
-            [22, null, 'ship_country', 'vtiger_soshipads', 1, '1', 'ship_country', 'Shipping Country', 1, 2, '', 100, 12, $salesOrderAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [22, null, 'bill_pobox', 'vtiger_sobillads', 1, '1', 'bill_pobox', 'Billing Po Box', 1, 2, '', 100, 3, $salesOrderAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [22, null, 'ship_pobox', 'vtiger_soshipads', 1, '1', 'ship_pobox', 'Shipping Po Box', 1, 2, '', 100, 4, $salesOrderAddress, 1, 'V~O', 3, null, 'BAS', 1],
             //Block67
@@ -894,8 +882,6 @@ class DefaultDataPopulator extends CRMEntity
             [23, null, 'ship_state', 'vtiger_invoiceshipads', 1, '1', 'ship_state', 'Shipping State', 1, 2, '', 100, 8, $invoiceAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [23, null, 'bill_code', 'vtiger_invoicebillads', 1, '1', 'bill_code', 'Billing Code', 1, 2, '', 100, 9, $invoiceAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [23, null, 'ship_code', 'vtiger_invoiceshipads', 1, '1', 'ship_code', 'Shipping Code', 1, 2, '', 100, 10, $invoiceAddress, 1, 'V~O', 3, null, 'BAS', 1],
-            [23, null, 'bill_country', 'vtiger_invoicebillads', 1, '1', 'bill_country', 'Billing Country', 1, 2, '', 100, 11, $invoiceAddress, 1, 'V~O', 3, null, 'BAS', 1],
-            [23, null, 'ship_country', 'vtiger_invoiceshipads', 1, '1', 'ship_country', 'Shipping Country', 1, 2, '', 100, 12, $invoiceAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [23, null, 'bill_pobox', 'vtiger_invoicebillads', 1, '1', 'bill_pobox', 'Billing Po Box', 1, 2, '', 100, 3, $invoiceAddress, 1, 'V~O', 3, null, 'BAS', 1],
             [23, null, 'ship_pobox', 'vtiger_invoiceshipads', 1, '1', 'ship_pobox', 'Shipping Po Box', 1, 2, '', 100, 4, $invoiceAddress, 1, 'V~O', 3, null, 'BAS', 1],
             //Block73
@@ -939,7 +925,6 @@ class DefaultDataPopulator extends CRMEntity
             [29, null, 'address_city', 'vtiger_users', 1, '1', 'address_city', 'City', 1, 0, '', 100, 3, $userAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [29, null, 'address_state', 'vtiger_users', 1, '1', 'address_state', 'State', 1, 0, '', 100, 5, $userAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [29, null, 'address_postalcode', 'vtiger_users', 1, '1', 'address_postalcode', 'Postal Code', 1, 0, '', 100, 4, $userAddress, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'address_country', 'vtiger_users', 1, '1', 'address_country', 'Country', 1, 0, '', 100, 2, $userAddress, 1, 'V~O', 1, null, 'BAS', 1],
             [29, null, 'accesskey', 'vtiger_users', 1, 3, 'accesskey', 'Webservice Access Key', 1, 0, '', 100, 2, $userAdvance, 2, 'V~O', 1, null, 'BAS', 1],
             [29, null, 'time_zone', 'vtiger_users', 1, '16', 'time_zone', 'Time Zone', 1, 0, '', 200, 15, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
             [29, null, 'currency_id', 'vtiger_users', 1, '117', 'currency_id', 'Currency', 1, 0, '', 100, 1, $userCurrency, 1, 'I~O', 1, null, 'BAS', 1],
