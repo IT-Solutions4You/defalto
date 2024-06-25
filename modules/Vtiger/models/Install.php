@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-abstract class Vtiger_Install_Model extends Vtiger_Base_Model
+abstract class Vtiger_Install_Model extends Vtiger_DatabaseData_Model
 {
     /**
      * @var array
@@ -62,6 +62,9 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
      */
     protected string $parentName = '';
 
+    public static $filters = [];
+    public static $blocks = [];
+
     /**
      * @return void
      */
@@ -87,70 +90,6 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
                 $this->db->pquery('INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?, ?, ?)', [$projectTabId, 'showrelatedinfo', 1]);
             }
         }
-    }
-
-    /**
-     * @param $column
-     * @param $type
-     * @return $this
-     * @throws AppException
-     */
-    protected function createColumn($column, $type): self
-    {
-        if ($this->isEmpty('table')) {
-            throw new AppException('Table is empty for create column');
-        }
-
-        if (!columnExists($column, $this->get('table'))) {
-            $sql = sprintf('ALTER TABLE %s ADD %s %s', $this->get('table'), $column, $type);
-        } else {
-            $sql = sprintf('ALTER TABLE %s CHANGE %s %s %s', $this->get('table'), $column, $column, $type);
-        }
-
-        $this->db->query($sql);
-
-        return $this;
-    }
-
-    /**
-     * @param $criteria
-     * @return $this
-     */
-    public function createKey($criteria)
-    {
-        $this->db->pquery(
-            sprintf(
-                'ALTER TABLE %s ADD %s',
-                $this->get('table'),
-                $criteria
-            )
-        );
-
-        return $this;
-    }
-
-    /**
-     * @throws AppException
-     */
-    protected function createTable($firstColumn = '', $firstType = 'int(19)'): self
-    {
-        if ($this->isEmpty('table')) {
-            throw new AppException('Table is empty for create table');
-        }
-
-        if (!empty($firstColumn)) {
-            $criteria = sprintf('(%s %s)', $firstColumn, $firstType);
-        }
-
-        if (!$this->isEmpty('table_id')) {
-            $criteria = sprintf(' (%s int(11) AUTO_INCREMENT,PRIMARY KEY (%s))', $this->get('table_id'), $this->get('table_id'));
-        }
-
-        $sql = 'CREATE TABLE IF NOT EXISTS ' . $this->get('table') . $criteria;
-
-        $this->db->pquery($sql);
-
-        return $this;
     }
 
     /**
@@ -242,21 +181,6 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         $instance->db = PearDatabase::getInstance();
 
         return $instance;
-    }
-
-    /**
-     * @param string $table
-     * @param string|null $tableId
-     * @return self
-     */
-    public function getTable(string $table, string|null $tableId): self
-    {
-        $clone = clone $this;
-        $clone->db = PearDatabase::getInstance();
-        $clone->set('table', $table);
-        $clone->set('table_id', $tableId);
-
-        return $clone;
     }
 
     /**
@@ -381,16 +305,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         if ($entity) {
             $moduleInstance->initTables($moduleInstance->basetable, $moduleInstance->basetableid);
 
-            $filterSequence = 0;
-            $filter = Vtiger_Filter::getInstance('All', $moduleInstance);
-
-            if (!$filter) {
-                $filter = new Vtiger_Filter();
-            }
-
-            $filter->name = 'All';
-            $filter->isdefault = true;
-            $filter->save($moduleInstance);
+            $filterDynamicSequence = 0;
 
             if (isset($blocks['LBL_ITEM_DETAILS'])) {
                 $taxResult = $this->db->pquery('SELECT * FROM vtiger_inventorytaxinfo');
@@ -407,18 +322,12 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
                 }
             }
 
+            $fieldTable = $this->getTable('vtiger_field', null);
+
             foreach ($blocks as $block => $fields) {
                 self::logSuccess('Block create: ' . $block);
                 $fieldSequence = 0;
-                $blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
-
-                if (!$blockInstance) {
-                    $blockInstance = new Vtiger_Block();
-                }
-
-                $blockInstance->label = $block;
-
-                $moduleInstance->addBlock($blockInstance);
+                $blockInstance = $this->createBlock($block, $moduleInstance);
 
                 foreach ($fields as $fieldName => $fieldParams) {
                     if (empty($fieldName)) {
@@ -453,15 +362,17 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
                     }
 
                     $blockInstance->addField($fieldInstance);
-
-                    $params = [
-                        'block' => $fieldInstance->getBlockId(),
-                        'presence' => $fieldInstance->presence,
-                        'displaytype' => $fieldInstance->displaytype,
-                        'sequence' => $fieldInstance->sequence,
-                    ];
-                    $sql = sprintf('UPDATE vtiger_field SET %s=? WHERE fieldid=?', implode('=?,', array_keys($params)));
-                    $this->db->pquery($sql, [$params, $fieldInstance->id]);
+                    $fieldTable->updateData(
+                        [
+                            'block' => $fieldInstance->getBlockId(),
+                            'presence' => $fieldInstance->presence,
+                            'displaytype' => $fieldInstance->displaytype,
+                            'sequence' => $fieldInstance->sequence,
+                        ],
+                        [
+                            'fieldid' => $fieldInstance->id,
+                        ],
+                    );
 
                     if (!empty($picklistValues)) {
                         self::logSuccess('Picklist values create: ' . $fieldName);
@@ -500,8 +411,11 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
                     if (isset($fieldParams['filter'])) {
                         self::logSuccess('Filter create: ' . $fieldName);
 
-                        $filterSequence++;
-                        $filter->addField($fieldInstance, $filterSequence);
+                        $filterDynamicSequence++;
+                        $filterSequence = !empty($fieldParams['filter_sequence']) ? $fieldParams['filter_sequence'] : $filterDynamicSequence;
+
+                        $filterInstance = $this->createFilter('All', $moduleInstance);
+                        $filterInstance->addField($fieldInstance, $filterSequence);
                     }
 
                     if (isset($fieldParams['entity_identifier'])) {
@@ -530,6 +444,54 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
 
         self::logSuccess('Module result: ' . $moduleName);
         self::logSuccess($moduleInstance);
+    }
+
+    public function createBlock($blockName, $moduleInstance)
+    {
+        $moduleName = $moduleInstance->name;
+
+        if (!empty(self::$blocks[$blockName][$moduleName])) {
+            return self::$blocks[$blockName][$moduleName];
+        }
+
+        $blockInstance = Vtiger_Block::getInstance($blockName, $moduleInstance);
+
+        if (!$blockInstance) {
+            $blockInstance = new Vtiger_Block();
+        }
+
+        $blockInstance->label = $blockName;
+
+        $moduleInstance->addBlock($blockInstance);
+
+        self::$blocks[$blockName][$moduleName] = $blockInstance;
+
+        return $blockInstance;
+    }
+
+    public function createFilter($filterName, $moduleInstance)
+    {
+        $moduleName = $moduleInstance->name;
+
+        if (!empty(self::$filters[$filterName][$moduleName])) {
+            return self::$filters[$filterName][$moduleName];
+        }
+
+        self::logSuccess('Filter create: ' . $moduleName . ':' . $filterName);
+
+        $filterInstance = Vtiger_Filter::getInstance($filterName, $moduleInstance);
+
+        if (!$filterInstance) {
+            $filterInstance = new Vtiger_Filter();
+        }
+
+        $filterInstance->name = $filterName;
+        $filterInstance->isdefault = true;
+        $filterInstance->save($moduleInstance);
+
+        self::$filters[$filterName][$moduleName] = $filterInstance;
+
+        return $filterInstance;
     }
 
     /**

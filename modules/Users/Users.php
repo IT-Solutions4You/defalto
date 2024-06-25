@@ -1478,10 +1478,9 @@ class Users extends CRMEntity {
 		$updateData = array();
 
 		if (isset($requestArray['about']['phone'])) $updateData['phone_mobile'] = vtlib_purify ($requestArray['about']['phone']);
-		if (isset($requestArray['about']['country'])) $updateData['address_country'] = vtlib_purify ($requestArray['about']['country']);
+		if (isset($requestArray['about']['country_id'])) $updateData['address_country_id'] = vtlib_purify ($requestArray['about']['country_id']);
 		if (isset($requestArray['about']['company_job'])) $updateData['title'] = vtlib_purify ($requestArray['about']['company_job']);
 		if (isset($requestArray['about']['department'])) $updateData['department'] = vtlib_purify ($requestArray['about']['department']);
-
 		if (isset($requestArray['lang_name'])) $updateData['language'] = vtlib_purify ($requestArray['lang_name']);
 		if (isset($requestArray['time_zone'])) $updateData['time_zone']= vtlib_purify ($requestArray['time_zone']);
 		if (isset($requestArray['date_format'])) $updateData['date_format']= vtlib_purify ($requestArray['date_format']);

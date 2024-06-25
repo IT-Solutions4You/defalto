@@ -206,8 +206,8 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         $viewer->assign('INVENTORYTERMSANDCONDITIONS', EMAILMaker_Fields_Model::getInventoryTermsAndConditionsOptions());
         $viewer->assign('CUSTOM_FUNCTIONS', $this->getCustomFunctionsList());
 
-        $global_lang_labels = @array_flip($app_strings);
-        $global_lang_labels = @array_flip($global_lang_labels);
+        $global_lang_labels = array_flip($app_strings);
+        $global_lang_labels = array_flip($global_lang_labels);
         asort($global_lang_labels);
 
         $viewer->assign('GLOBAL_LANG_LABELS', $global_lang_labels);
@@ -216,8 +216,8 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
 
         if (!empty($select_module)) {
             $mod_lang = EMAILMaker_EMAILMaker_Model::getModuleLanguageArray($select_module);
-            $module_lang_labels = @array_flip($mod_lang);
-            $module_lang_labels = @array_flip($module_lang_labels);
+            $module_lang_labels = array_flip($mod_lang);
+            $module_lang_labels = array_flip($module_lang_labels);
             asort($module_lang_labels);
         } else {
             $module_lang_labels[''] = vtranslate('LBL_SELECT_MODULE_FIELD', 'EMAILMaker');
@@ -462,9 +462,6 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         $moduleName = $request->getModule();
 
         $jsFileNames = array(
-            "modules.EMAILMaker.resources.ckeditor.ckeditor",
-            "libraries.jquery.ckeditor.adapters.jquery",
-            "libraries.jquery.jquery_windowmsg",
             "modules.$moduleName.resources.AdvanceFilter"
         );
 

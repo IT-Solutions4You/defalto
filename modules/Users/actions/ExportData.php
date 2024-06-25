@@ -34,7 +34,7 @@ class Users_ExportData_Action extends Vtiger_ExportData_Action {
 									'address_street'=> 'Street',
 									'address_city'	=> 'City',
 									'address_state'	=> 'State',
-									'address_country'	=> 'Country',
+									'address_country_id'	=> 'Country',
 									'address_postalcode'=> 'Postal Code');
 
 	/**
