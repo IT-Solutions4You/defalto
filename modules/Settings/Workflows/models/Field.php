@@ -62,6 +62,7 @@ class Settings_Workflows_Field_Model extends Vtiger_Field_Model {
 	public static function getAdvancedFilterOpsByFieldType() {
 		return array(
 			'string' => array('is', 'is not', 'contains', 'does not contain', 'starts with', 'ends with', 'has changed', 'has changed to', 'has changed from', 'is empty', 'is not empty'),
+			'country' => array('is', 'is not', 'is empty', 'is not empty'),
 			'salutation' => array('is', 'is not', 'contains', 'does not contain', 'starts with', 'ends with', 'has changed', 'is empty', 'is not empty'),
 			'text' => array('is', 'is not', 'contains', 'does not contain', 'starts with', 'ends with', 'has changed', 'is empty', 'is not empty'),
 			'url' => array('is', 'is not', 'contains', 'does not contain', 'starts with', 'ends with', 'has changed', 'is empty', 'is not empty'),

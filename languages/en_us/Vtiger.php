@@ -1440,6 +1440,13 @@ $languageStrings = array(
     'LBL_PDF_LANGUAGE' => 'PDF Language',
     'LBL_PDF_MERGE' => 'PDF Merge',
     'INVALID PICKLIST' => 'Invalid value for Picklist field',
+    'LBL_COUNTRIES' => 'Countries',
+    'LBL_COUNTRIES_INTEGRATION' => 'Activate or deactivate country',
+    'LBL_COUNTRY_UPDATED' => 'Country updated',
+    'LBL_ACTIVATE_ALL' => 'Activate all',
+    'LBL_DEACTIVATE_ALL' => 'Deactivate all',
+    'LBL_ALL_COUNTRIES_HAVE_BEEN_ACTIVATED' => 'All countries have been activated',
+    'LBL_ALL_COUNTRIES_HAVE_BEEN_DEACTIVATED' => 'All countries have been deactivated',
 );
 
 $jsLanguageStrings = array(

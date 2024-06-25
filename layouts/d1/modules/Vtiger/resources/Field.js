@@ -798,3 +798,28 @@ Vtiger_Field_Js('Vtiger_Double_Field_Js', {}, {
 		return this.addValidationToElement(html);
 	},
 });
+
+/** @var Vtiger_Double_Field_Js */
+Vtiger_Field_Js('Vtiger_Country_Field_Js', {}, {
+	getOptions: function () {
+		let selectedValue = this.get('value'),
+			values = this.get('picklistvalues'),
+			options = '<option value="">' + app.vtranslate('JS_SELECT_OPTION') + '</option>',
+			selected = '';
+
+		$.each(values, function (key, value) {
+			selected = key === selectedValue ? ' selected="selected" ' : '';
+
+			options += '<option value="' + key + '" ' + selected + '>' + value + '</option>';
+		})
+
+		return options;
+	},
+	getUi: function () {
+		let html = '<select class="CountryField form-select inputElement select2" data-width="100%" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-' + this.getType() + '=true /></select>';
+		html = jQuery(html);
+		html.append(this.getOptions());
+
+		return this.addValidationToElement(html);
+	},
+});

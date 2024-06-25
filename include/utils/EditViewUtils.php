@@ -32,7 +32,7 @@ function getConvertSoToInvoice($focus,$so_focus,$soid)
 	global $log,$current_user;
 	$log->debug("Entering getConvertSoToInvoice(".get_class($focus).",".get_class($so_focus).",".$soid.") method ...");
     $log->info("in getConvertSoToInvoice ".$soid);
-    $xyz=array('bill_street','bill_city','bill_code','bill_pobox','bill_country','bill_state','ship_street','ship_city','ship_code','ship_pobox','ship_country','ship_state');
+    $xyz=array('bill_street','bill_city','bill_code','bill_pobox','bill_country_id','bill_state','ship_street','ship_city','ship_code','ship_pobox','ship_country_id','ship_state');
 	for($i=0;$i<php7_count($xyz);$i++){
 		if (getFieldVisibilityPermission('SalesOrder', $current_user->id,$xyz[$i]) == '0'){
 			$so_focus->column_fields[$xyz[$i]] = $so_focus->column_fields[$xyz[$i]];
@@ -57,8 +57,8 @@ function getConvertSoToInvoice($focus,$so_focus,$soid)
 	$focus->column_fields['ship_state'] = $so_focus->column_fields['ship_state'];
 	$focus->column_fields['bill_code'] = $so_focus->column_fields['bill_code'];
 	$focus->column_fields['ship_code'] = $so_focus->column_fields['ship_code'];
-	$focus->column_fields['bill_country'] = $so_focus->column_fields['bill_country'];
-	$focus->column_fields['ship_country'] = $so_focus->column_fields['ship_country'];
+	$focus->column_fields['bill_country_id'] = $so_focus->column_fields['bill_country_id'];
+	$focus->column_fields['ship_country_id'] = $so_focus->column_fields['ship_country_id'];
 	$focus->column_fields['bill_pobox'] = $so_focus->column_fields['bill_pobox'];
 	$focus->column_fields['ship_pobox'] = $so_focus->column_fields['ship_pobox'];
 	$focus->column_fields['description'] = $so_focus->column_fields['description'];

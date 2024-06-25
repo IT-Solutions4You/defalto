@@ -22,7 +22,7 @@ class Contacts_Record_Model extends Vtiger_Record_Model {
 				array('parentField'=>'mailingstreet', 'inventoryField'=>'bill_street', 'defaultValue'=>''),
 				array('parentField'=>'mailingstate', 'inventoryField'=>'bill_state', 'defaultValue'=>''),
 				array('parentField'=>'mailingzip', 'inventoryField'=>'bill_code', 'defaultValue'=>''),
-				array('parentField'=>'mailingcountry', 'inventoryField'=>'bill_country', 'defaultValue'=>''),
+				array('parentField'=>'mailingcountry_id', 'inventoryField'=>'bill_country_id', 'defaultValue'=>''),
 				array('parentField'=>'mailingpobox', 'inventoryField'=>'bill_pobox', 'defaultValue'=>''),
 
 				//Shipping Address Fields
@@ -30,7 +30,7 @@ class Contacts_Record_Model extends Vtiger_Record_Model {
 				array('parentField'=>'othercity', 'inventoryField'=>'ship_city', 'defaultValue'=>''),
 				array('parentField'=>'otherstate', 'inventoryField'=>'ship_state', 'defaultValue'=>''),
 				array('parentField'=>'otherzip', 'inventoryField'=>'ship_code', 'defaultValue'=>''),
-				array('parentField'=>'othercountry', 'inventoryField'=>'ship_country', 'defaultValue'=>''),
+				array('parentField'=>'othercountry_id', 'inventoryField'=>'ship_country_id', 'defaultValue'=>''),
 				array('parentField'=>'otherpobox', 'inventoryField'=>'ship_pobox', 'defaultValue'=>'')
 		);
 	}

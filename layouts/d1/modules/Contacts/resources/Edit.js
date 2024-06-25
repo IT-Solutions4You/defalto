@@ -18,8 +18,8 @@ Vtiger_Edit_Js("Contacts_Edit_Js",{},{
 									'otherstate' : 'ship_state',
 									'mailingzip' : 'bill_code',
 									'otherzip' : 'ship_code',
-									'mailingcountry' : 'bill_country',
-									'othercountry' : 'ship_country'
+									'mailingcountry_id' : 'bill_country_id',
+									'othercountry_id' : 'ship_country_id'
 									}
 							},
 							
@@ -30,7 +30,7 @@ Vtiger_Edit_Js("Contacts_Edit_Js",{},{
 										'othercity' : 'mailingcity',
 										'otherstate' : 'mailingstate',
 										'otherzip' : 'mailingzip',
-										'othercountry' : 'mailingcountry'
+										'othercountry_id' : 'mailingcountry_id'
 								},
 	
         /* Function which will register event for Reference Fields Selection
@@ -103,27 +103,37 @@ Vtiger_Edit_Js("Contacts_Edit_Js",{},{
 	 * Function to copy address between fields
 	 * @param strings which accepts value as either odd or even
 	 */
-	copyAddress : function(swapMode, container){
-		var thisInstance = this;
-		var addressMapping = this.addressFieldsMappingInModule;
-		if(swapMode == "false"){
-			for(var key in addressMapping) {
-				var fromElement = container.find('[name="'+key+'"]');
-				var toElement = container.find('[name="'+addressMapping[key]+'"]');
+	copyAddress: function (swapMode, container) {
+		let thisInstance = this,
+			addressMapping = this.addressFieldsMappingInModule,
+			fromElement,
+			toElement;
+
+		if (swapMode == "false") {
+			for (let key in addressMapping) {
+				fromElement = container.find('[name="' + key + '"]');
+				toElement = container.find('[name="' + addressMapping[key] + '"]');
 				toElement.val(fromElement.val());
-				if((jQuery("#massEditContainer").length) && (toElement.val()!= "") && (typeof(toElement.attr('data-validation-engine')) == "undefined")){
+
+				if ((jQuery("#massEditContainer").length) && (toElement.val() != "") && (typeof (toElement.attr('data-validation-engine')) == "undefined")) {
 					toElement.attr('data-validation-engine', toElement.data('invalidValidationEngine'));
 				}
+
+				toElement.trigger('change');
 			}
-		} else if(swapMode){
-			var swappedArray = thisInstance.swapObject(addressMapping);
-			for(var key in swappedArray) {
-				var fromElement = container.find('[name="'+key+'"]');
-				var toElement = container.find('[name="'+swappedArray[key]+'"]');
+		} else if (swapMode) {
+			let swappedArray = thisInstance.swapObject(addressMapping);
+
+			for (let key in swappedArray) {
+				fromElement = container.find('[name="' + key + '"]');
+				toElement = container.find('[name="' + swappedArray[key] + '"]');
 				toElement.val(fromElement.val());
-				if((jQuery("#massEditContainer").length) && (toElement.val()!= "")  && (typeof(toElement.attr('data-validation-engine')) == "undefined")){
+
+				if ((jQuery("#massEditContainer").length) && (toElement.val() != "") && (typeof (toElement.attr('data-validation-engine')) == "undefined")) {
 					toElement.attr('data-validation-engine', toElement.data('invalidValidationEngine'));
 				}
+
+				toElement.trigger('change');
 			}
 		}
 	},

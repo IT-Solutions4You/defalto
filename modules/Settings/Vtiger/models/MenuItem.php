@@ -289,4 +289,63 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model {
 		}
 		return $menuItemModels;
     }
+
+    public static function getNewSequence($blockId = null)
+    {
+        $sql = sprintf('SELECT max(sequence) AS max_seq FROM %s', self::$itemsTable);
+        $params = [];
+
+        if (!empty($blockId)) {
+            $sql .= ' WHERE blockid=? ';
+            $params = [$blockId];
+        }
+
+        $adb = PearDatabase::getInstance();
+        $sequenceResult = $adb->pquery($sql, $params);
+
+        return intval($adb->query_result($sequenceResult, 0, 'max_seq')) + 1;
+    }
+
+    /**
+     * @return void
+     */
+    public function save(): void
+    {
+        $table = (new Vtiger_DatabaseData_Model())->getTable(self::$itemsTable, self::$itemId);
+        $data = $table->selectData([], ['name' => $this->get('name')]);
+
+        if ($this->isEmpty('sequence')) {
+            $this->set('sequence', self::getNewSequence($this->get('blockid')));
+        }
+
+        if (empty($data)) {
+            $table->insertData([
+                self::$itemId => $this->db->getUniqueID(self::$itemsTable),
+                'blockid' => $this->get('blockid'),
+                'name' => $this->get('name'),
+                'linkto' => $this->get('linkto'),
+                'sequence' => $this->get('sequence'),
+            ]);
+        } else {
+            $table->updateData([
+                'blockid' => $this->get('blockid'),
+                'name' => $this->get('name'),
+                'linkto' => $this->get('linkto'),
+                'sequence' => $this->get('sequence'),
+            ], [
+                self::$itemId => $data[self::$itemId],
+            ]);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function delete(): void
+    {
+        $table = (new Vtiger_DatabaseData_Model())->getTable(self::$itemsTable, self::$itemId);
+        $table->deleteData([
+            'name' => $this->get('name'),
+        ]);
+    }
 }

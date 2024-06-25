@@ -205,7 +205,7 @@ $cvcolumns = Array(Array('vtiger_leaddetails:lead_no:lead_no:Leads_Lead_No:V',
                          'vtiger_contactaddress:mailingcity:mailingcity:Contacts_Mailing_City:V',
                          'vtiger_contactaddress:mailingstate:mailingstate:Contacts_Mailing_State:V',
 			 'vtiger_contactaddress:mailingzip:mailingzip:Contacts_Mailing_Zip:V',
-			 'vtiger_contactaddress:mailingcountry:mailingcountry:Contacts_Mailing_Country:V'),
+			 'vtiger_contactaddress:mailingcountry_id:mailingcountry_id:Contacts_Mailing_Country:V'),
 
 		   Array('vtiger_contactdetails:firstname:firstname:Contacts_First_Name:V',
                  'vtiger_contactdetails:lastname:lastname:Contacts_Last_Name:V',
