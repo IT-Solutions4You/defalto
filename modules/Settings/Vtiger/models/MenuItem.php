@@ -319,8 +319,9 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model {
         }
 
         if (empty($data)) {
+            $db = PearDatabase::getInstance();
             $table->insertData([
-                self::$itemId => $this->db->getUniqueID(self::$itemsTable),
+                self::$itemId => $db->getUniqueID(self::$itemsTable),
                 'blockid' => $this->get('blockid'),
                 'name' => $this->get('name'),
                 'linkto' => $this->get('linkto'),
