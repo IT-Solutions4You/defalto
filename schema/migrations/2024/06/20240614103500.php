@@ -19,6 +19,13 @@ if (!class_exists('Migration_20240614103500')) {
          */
         public function migrate(string $strFileName): void
         {
+            global $current_user;
+
+            if (empty($current_user)) {
+                $user = new Users();
+                $current_user = $user->retrieveCurrentUserInfoFromFile(Users::getActiveAdminId());
+            }
+
             /** @var Vtiger_Country_Model $countryModel */
             $countryModel = Vtiger_Country_Model::getInstance();
             $countryModel->createTables();
