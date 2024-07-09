@@ -77,7 +77,7 @@
 	
 	class SqlResultIteratorRow{
 
-        protected $data;
+        public $data;
 
         function __construct($data){
 			$this->data = $data;
@@ -86,4 +86,8 @@
 		function get($column){
 			return $this->data[$column];
 		}
+
+        function __get($column){
+            return $this->get($column);
+        }
 	}

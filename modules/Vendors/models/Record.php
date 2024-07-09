@@ -27,7 +27,7 @@ class Vendors_Record_Model extends Vtiger_Record_Model {
 				array('parentField'=>'street', 'inventoryField'=>'bill_street', 'defaultValue'=>''),
 				array('parentField'=>'state', 'inventoryField'=>'bill_state', 'defaultValue'=>''),
 				array('parentField'=>'postalcode', 'inventoryField'=>'bill_code', 'defaultValue'=>''),
-				array('parentField'=>'country', 'inventoryField'=>'bill_country', 'defaultValue'=>''),
+				array('parentField'=>'country_id', 'inventoryField'=>'bill_country_id', 'defaultValue'=>''),
 				array('parentField'=>'pobox', 'inventoryField'=>'bill_pobox', 'defaultValue'=>''),
 
 				//Shipping Address Fields
@@ -35,7 +35,7 @@ class Vendors_Record_Model extends Vtiger_Record_Model {
 				array('parentField'=>'city', 'inventoryField'=>'ship_city', 'defaultValue'=>''),
 				array('parentField'=>'state', 'inventoryField'=>'ship_state', 'defaultValue'=>''),
 				array('parentField'=>'postalcode', 'inventoryField'=>'ship_code', 'defaultValue'=>''),
-				array('parentField'=>'country', 'inventoryField'=>'ship_country', 'defaultValue'=>''),
+				array('parentField'=>'country_id', 'inventoryField'=>'ship_country_id', 'defaultValue'=>''),
 				array('parentField'=>'pobox', 'inventoryField'=>'ship_pobox', 'defaultValue'=>'')
 		);
 	}

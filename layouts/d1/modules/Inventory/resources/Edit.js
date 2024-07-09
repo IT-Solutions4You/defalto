@@ -45,8 +45,8 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 									'ship_state' : 'otherstate',
 									'bill_code' : 'mailingzip',
 									'ship_code' : 'otherzip',
-									'bill_country' : 'mailingcountry',
-									'ship_country' : 'othercountry'
+									'bill_country_id' : 'mailingcountry_id',
+									'ship_country_id' : 'othercountry_id'
 								} ,
 
 								'Accounts' : {
@@ -60,8 +60,8 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 									'ship_state' : 'ship_state',
 									'bill_code' : 'bill_code',
 									'ship_code' : 'ship_code',
-									'bill_country' : 'bill_country',
-									'ship_country' : 'ship_country'
+									'bill_country_id' : 'bill_country_id',
+									'ship_country_id' : 'ship_country_id'
 								},
 
 								'Vendors' : {
@@ -75,8 +75,8 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 									'ship_state' : 'state',
 									'bill_code' : 'postalcode',
 									'ship_code' : 'postalcode',
-									'bill_country' : 'country',
-									'ship_country' : 'country'
+									'bill_country_id' : 'country_id',
+									'ship_country_id' : 'country_id'
 								},
 								'Leads' : {
 									'bill_street' :  'lane',
@@ -89,8 +89,8 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 									'ship_state' : 'state',
 									'bill_code' : 'code',
 									'ship_code' : 'code',
-									'bill_country' : 'country',
-									'ship_country' : 'country'
+									'bill_country_id' : 'country_id',
+									'ship_country_id' : 'country_id'
 								} 
 							},
 
@@ -102,7 +102,7 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 									'bill_city' : 'bill_city',
 									'bill_state' : 'bill_state',
 									'bill_code' : 'bill_code',
-									'bill_country' : 'bill_country'
+									'bill_country_id' : 'bill_country_id'
 									},
 								'AccountsShipMap' : {
 									'ship_street' : 'ship_street',
@@ -110,7 +110,7 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 									'ship_city'  : 'ship_city',
 									'ship_state' : 'ship_state',
 									'ship_code' : 'ship_code',
-									'ship_country' : 'ship_country'
+									'ship_country_id' : 'ship_country_id'
 									},
 								'ContactsBillMap' : {
 									'bill_street' :  'mailingstreet',
@@ -118,7 +118,7 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 									'bill_city' : 'mailingcity',
 									'bill_state' : 'mailingstate',
 									'bill_code' : 'mailingzip',
-									'bill_country' : 'mailingcountry'
+									'bill_country_id' : 'mailingcountry_id'
 									},
 								'ContactsShipMap' : {
 									'ship_street' : 'otherstreet',
@@ -126,7 +126,7 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 									'ship_city'  : 'othercity',
 									'ship_state' : 'otherstate',
 									'ship_code' : 'otherzip',
-									'ship_country' : 'othercountry'
+									'ship_country_id' : 'othercountry_id'
 								},
 								'LeadsBillMap' : {
 									'bill_street' :  'lane',
@@ -134,7 +134,7 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 									'bill_city' : 'city',
 									'bill_state' : 'state',
 									'bill_code' : 'code',
-									'bill_country' : 'country'
+									'bill_country_id' : 'country_id'
 									},
 								'LeadsShipMap' : {
 									'ship_street' : 'lane',
@@ -142,7 +142,7 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 									'ship_city'  : 'city',
 									'ship_state' : 'state',
 									'ship_code' : 'code',
-									'ship_country' : 'country'
+									'ship_country_id' : 'country_id'
 								}
 
 	},
@@ -154,7 +154,7 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 										'bill_city'	:'ship_city',
 										'bill_state':'ship_state',
 										'bill_code'	:'ship_code',
-										'bill_country':'ship_country'
+										'bill_country_id':'ship_country_id'
 								},
     
     dummyLineItemRow : false,
@@ -312,23 +312,28 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 	 * @param strings which accepts value as either odd or even
 	 */
 	copyAddress : function(swapMode){
-		var self = this;
-		var formElement = this.getForm();
-		var addressMapping = this.addressFieldsMappingInModule;
+		let self = this,
+			formElement = this.getForm(),
+			addressMapping = this.addressFieldsMappingInModule,
+			fromElement,
+			toElement;
+
 		if(swapMode == "false"){
-			for(var key in addressMapping) {
-				var fromElement = formElement.find('[name="'+key+'"]');
-				var toElement = formElement.find('[name="'+addressMapping[key]+'"]');
+			for(let key in addressMapping) {
+				fromElement = formElement.find('[name="'+key+'"]');
+				toElement = formElement.find('[name="'+addressMapping[key]+'"]');
 				toElement.val(fromElement.val());
+				toElement.trigger('change');
 			}
 		} else if(swapMode){
-			var swappedArray = self.swapObject(addressMapping);
-			for(var key in swappedArray) {
-				var fromElement = formElement.find('[name="'+key+'"]');
-				var toElement = formElement.find('[name="'+swappedArray[key]+'"]');
+			let swappedArray = self.swapObject(addressMapping);
+
+			for(let key in swappedArray) {
+				fromElement = formElement.find('[name="'+key+'"]');
+				toElement = formElement.find('[name="'+swappedArray[key]+'"]');
 				toElement.val(fromElement.val());
+				toElement.trigger('change');
 			}
-			toElement.val(fromElement.val());
 		}
 	},
     

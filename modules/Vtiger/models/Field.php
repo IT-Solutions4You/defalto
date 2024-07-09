@@ -53,6 +53,8 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	const UITYPE_ROLE_BASED_PICKLIST = 15;
 	const UITYPE_PICKLIST = 16; //non-role based picklist
 	const UITYPE_URL = 17;
+
+    const UITYPE_COUNTRY = 18;
 	const UITYPE_FULL_WIDTH_TEXT_AREA = 19;
 	const UITYPE_FAQ = 20;
 	const UITYPE_HALF_WIDTH_TEXT_AREA = 21;
@@ -219,43 +221,50 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		return $this->webserviceField;
 	}
 
-	/**
-	 * Function to get the Webservice Field data type
-	 * @return <String> Data type of the field
-	 */
-	public function getFieldDataType() {
-		if(!isset($this->fieldDataType) || !$this->fieldDataType) {
-			$uiType = $this->get('uitype');
-			if($uiType == self::UITYPE_IMAGE) {
-				$fieldDataType = 'image';
-			} else if($uiType == self::UITYPE_FOLDER_NAME) {
-				$fieldDataType = 'documentsFolder';
-			} else if($uiType == self::UITYPE_DOWNLOAD_TYPE) {
-				$fieldDataType = 'fileLocationType';
-			} else if($uiType == self::UITYPE_PERCENTAGE) {
-				$fieldDataType = 'percentage';
-			} else if($uiType == self::UITYPE_FILENAME) {
-				$fieldDataType = 'documentsFileUpload';
-			} else if($uiType == self::UITYPE_TAX) {
-				$fieldDataType = 'productTax';
-			} else if($uiType == self::UITYPE_CURRENCY_CODE) {
-				$fieldDataType = 'currencyList';
-			} else if($uiType == self::UITYPE_SALUTATION_OR_FIRSTNAME && stripos($this->getName(), 'salutationtype') !== false) {
-				$fieldDataType = 'picklist';
-			} else if($uiType == self::UITYPE_SALUTATION_OR_FIRSTNAME && stripos($this->getName(), 'firstname') !== false) {
-				$fieldDataType = 'salutation';
-			} else if($uiType == self::UITYPE_SALUTATION_OR_FIRSTNAME && stripos($this->getName(), 'roundrobin_userid') !== false) {
-                $fieldDataType = 'multiowner';
-			} else {
-				$webserviceField = $this->getWebserviceFieldObject();
-				$fieldDataType = $webserviceField->getFieldDataType();
-			}
-			$this->fieldDataType = $fieldDataType;
-		}
-		return isset($this->fieldDataType) ? $this->fieldDataType : null;
-	}
+    /**
+     * Function to get the Webservice Field data type
+     * @return string Data type of the field
+     * @throws Exception
+     */
+    public function getFieldDataType()
+    {
+        if (!isset($this->fieldDataType) || !$this->fieldDataType) {
+            $uiType = $this->get('uitype');
 
-	/**
+            if ($uiType == self::UITYPE_IMAGE) {
+                $fieldDataType = 'image';
+            } elseif ($uiType == self::UITYPE_FOLDER_NAME) {
+                $fieldDataType = 'documentsFolder';
+            } elseif ($uiType == self::UITYPE_COUNTRY) {
+                $fieldDataType = 'country';
+            } elseif ($uiType == self::UITYPE_DOWNLOAD_TYPE) {
+                $fieldDataType = 'fileLocationType';
+            } elseif ($uiType == self::UITYPE_PERCENTAGE) {
+                $fieldDataType = 'percentage';
+            } elseif ($uiType == self::UITYPE_FILENAME) {
+                $fieldDataType = 'documentsFileUpload';
+            } elseif ($uiType == self::UITYPE_TAX) {
+                $fieldDataType = 'productTax';
+            } elseif ($uiType == self::UITYPE_CURRENCY_CODE) {
+                $fieldDataType = 'currencyList';
+            } elseif ($uiType == self::UITYPE_SALUTATION_OR_FIRSTNAME && stripos($this->getName(), 'salutationtype') !== false) {
+                $fieldDataType = 'picklist';
+            } elseif ($uiType == self::UITYPE_SALUTATION_OR_FIRSTNAME && stripos($this->getName(), 'firstname') !== false) {
+                $fieldDataType = 'salutation';
+            } elseif ($uiType == self::UITYPE_SALUTATION_OR_FIRSTNAME && stripos($this->getName(), 'roundrobin_userid') !== false) {
+                $fieldDataType = 'multiowner';
+            } else {
+                $webserviceField = $this->getWebserviceFieldObject();
+                $fieldDataType = $webserviceField->getFieldDataType();
+            }
+
+            $this->fieldDataType = $fieldDataType;
+        }
+
+        return $this->fieldDataType ?? null;
+    }
+
+    /**
 	 * Function to get list of modules the field refernced to
 	 * @return <Array> -  list of modules for which field is refered to
 	 */
@@ -723,7 +732,11 @@ class Vtiger_Field_Model extends Vtiger_Field {
 			$this->fieldInfo['referencemodules'] = $this->getReferenceList();
 		}
 
-		$this->fieldInfo['validator'] = $this->getValidator();
+        if ($this->getFieldDataType() == 'country') {
+            $this->fieldInfo['picklistvalues'] = $this->getUITypeModel()->getPicklistValues();
+        }
+
+        $this->fieldInfo['validator'] = $this->getValidator();
 		return $this->fieldInfo;
 	}
 
