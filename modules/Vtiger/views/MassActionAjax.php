@@ -104,6 +104,7 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('MODULE_MODEL',$moduleModel); 
 		$viewer->assign('MASS_EDIT_FIELD_DETAILS',$fieldInfo); 
 		$viewer->assign('RECORD_STRUCTURE', $recordStructure);
+        $viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $viewer->assign('MODULE_MODEL', $moduleModel);
         //do not show any image details in mass edit form

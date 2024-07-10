@@ -29,6 +29,8 @@ class Vtiger_Block {
     var $display_status=1;
 	var $iscustom=0;
 
+    public $blockuitype = 1;
+
 	var $module;
 
 	/**
@@ -75,6 +77,7 @@ class Vtiger_Block {
         $this->display_status = isset($valuemap['display_status']) ? $valuemap['display_status'] : null;
 		$this->sequence = isset($valuemap['sequence']) ? $valuemap['sequence'] : null;
         $this->iscustom = isset($valuemap['iscustom']) ? $valuemap['iscustom'] : null;
+        $this->blockuitype = isset($valuemap['blockuitype']) ? $valuemap['blockuitype'] : 1;
         $tabid = isset($valuemap['tabid']) ? $valuemap['tabid'] : null;
 		$this->module= $moduleInstance ? $moduleInstance : Vtiger_Module::getInstance($tabid);
 	}
@@ -91,9 +94,9 @@ class Vtiger_Block {
 		$this->id = $this->__getUniqueId();
 		if(!$this->sequence) $this->sequence = $this->__getNextSequence();
 
-		$adb->pquery("INSERT INTO vtiger_blocks(blockid,tabid,blocklabel,sequence,show_title,visible,create_view,edit_view,detail_view,iscustom)
+		$adb->pquery("INSERT INTO vtiger_blocks(blockid,tabid,blocklabel,sequence,show_title,visible,create_view,edit_view,detail_view,iscustom, blockuitype)
 			VALUES(?,?,?,?,?,?,?,?,?,?)", Array($this->id, $this->module->id, $this->label,$this->sequence,
-			$this->showtitle, $this->visible,$this->increateview, $this->ineditview, $this->indetailview, $this->iscustom));
+			$this->showtitle, $this->visible,$this->increateview, $this->ineditview, $this->indetailview, $this->iscustom, $this->blockuitype));
 		self::log("Creating Block $this->label ... DONE");
 		self::log("Module language entry for $this->label ... CHECK");
 	}
@@ -217,4 +220,18 @@ class Vtiger_Block {
 		$adb->pquery("DELETE FROM vtiger_blocks WHERE tabid=?", Array($moduleInstance->id));
 		self::log("Deleting blocks for module ... DONE");
 	}
+
+    /**
+     * Changes the block ui type for the block in both actual object instance and database
+     *
+     * @param int $blockUiType
+     *
+     * @return void
+     */
+    public function changeBlockUiType(int $blockUiType): void
+    {
+        $this->blockuitype = $blockUiType;
+        $db = PearDatabase::getInstance();
+        $db->pquery('UPDATE vtiger_blocks SET blockuitype = ? WHERE blockid = ?', [$blockUiType, $this->id]);
+    }
 }

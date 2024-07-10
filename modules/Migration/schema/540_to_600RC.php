@@ -1032,9 +1032,6 @@ if(!defined('INSTALLATION_MODE')) {
 }
 
 $summaryFields = array(
-	'Accounts'	=> array('assigned_user_id', 'email1', 'phone', 'bill_city', 'bill_country', 'website'),
-	'Contacts'	=> array('assigned_user_id', 'email', 'phone', 'mailingcity', 'mailingcountry'),
-	'Leads'		=> array('assigned_user_id', 'email', 'phone', 'city', 'country', 'leadsource'),
 	'HelpDesk'	=> array('assigned_user_id', 'ticketstatus', 'parent_id', 'ticketseverities', 'description'),
 	'Potentials'=> array('assigned_user_id', 'amount', 'sales_stage', 'closingdate'),
 	'Project'	=> array('assigned_user_id', 'targetenddate'));

@@ -59,7 +59,7 @@ class Users_List_View extends Settings_Vtiger_List_View {
 			$status = 'Active';
 
 		$listViewModel = Vtiger_ListView_Model::getInstance($moduleName, $cvId);
-
+        $listViewSessionKey = $moduleName.'_'.$cvId;
 		$linkParams = array('MODULE'=>$moduleName, 'ACTION'=>$request->get('view'), 'CVID'=>$cvId);
 		$linkModels = $listViewModel->getListViewMassActions($linkParams);
 				$listViewModel->set('status', $status);
@@ -77,17 +77,19 @@ class Users_List_View extends Settings_Vtiger_List_View {
 		$operator = $request->get('operator');
 
 		if($request->get('mode') == 'removeAlphabetSearch') {
-			Vtiger_ListView_Model::deleteParamsSession($moduleName.'_'.$cvId, array('search_key', 'search_value', 'operator'));
+			Vtiger_ListView_Model::deleteParamsSession($listViewSessionKey, array('search_key', 'search_value', 'operator'));
 			$searchKey = '';
 			$searchValue = '';
 			$operator = '';
 		}
-		if($request->get('mode') == 'removeSorting') {
-			Vtiger_ListView_Model::deleteParamsSession($listViewSessionKey, array('orderby', 'sortorder'));
-			$orderBy = '';
-			$sortOrder = '';
-		}
-		if(!empty($operator)) {
+
+        if ($request->get('mode') == 'removeSorting') {
+            Vtiger_ListView_Model::deleteParamsSession($listViewSessionKey, ['orderby', 'sortorder']);
+            $orderBy = '';
+            $sortOrder = '';
+        }
+
+        if (!empty($operator)) {
 			$listViewModel->set('operator', $operator);
 			$viewer->assign('OPERATOR',$operator);
 			$viewer->assign('ALPHABET_VALUE',$searchValue);

@@ -255,12 +255,15 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
             $orderBy = ' ORDER BY vtiger_crmentity.createdtime DESC';
             $cvModel = CustomView_Record_Model::getInstanceById($viewid);
             $cvOrderBy = false;
+            $cvOrderByField = false;
 
             if ($cvModel) {
                 $cvOrderBy = $cvModel->fetchOrderBy();
+                $cvOrderByField = $moduleModel->getFieldByColumn($cvOrderBy['orderby']);
             }
 
-            if ($cvOrderBy) {
+            if ($cvOrderBy && $cvOrderByField && $cvOrderByField->isActiveField()) {
+                $cvOrderBy['orderby'] = $moduleModel->getOrderBySql($cvOrderBy['orderby']);
                 $orderBy = ' ORDER BY ' . implode(' ', $cvOrderBy);
             } elseif (PerformancePrefs::getBoolean('LISTVIEW_DEFAULT_SORTING', true)) {
                 $orderBy = $moduleFocus->default_order_by;

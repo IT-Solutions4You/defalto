@@ -768,8 +768,6 @@ var vtUtils = {
 
         orderSortedValues = function () {
             selectParent.find("ul.select2-selection__rendered").children("li[title]").each(function (i, obj) {
-                console.log(obj, selectElement.select2('data'));
-
                 let element = selectElement.children('option').filter(function () {
                     return $(this).html() == obj.title
                 });
@@ -779,6 +777,10 @@ var vtUtils = {
         };
 
         moveElementToEndOfParent = function (element) {
+            if (!element || !element.length) {
+                return;
+            }
+
             element.parents('select').append(element.detach());
         };
 
