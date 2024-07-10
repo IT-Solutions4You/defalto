@@ -752,7 +752,9 @@ class Accounts_Install_Model extends Vtiger_Install_Model {
             ->createKey('PRIMARY KEY IF NOT EXISTS (`accountid`)')
             ->createKey('KEY IF NOT EXISTS `account_account_type_idx` (`account_type`)')
             ->createKey('KEY IF NOT EXISTS `email_idx` (`email1`,`email2`)')
-            ->createKey('CONSTRAINT `fk_1_vtiger_account` FOREIGN KEY IF NOT EXISTS (`accountid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
+            ->createKey('CONSTRAINT `fk_1_vtiger_account` FOREIGN KEY IF NOT EXISTS (`accountid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
+            ->createKey('index email_idx (email1, email2)')
+        ;
 
         $this->getTable('vtiger_accountscf', null)
             ->createTable('accountid');

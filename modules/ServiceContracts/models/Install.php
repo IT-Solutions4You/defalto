@@ -152,6 +152,7 @@ class ServiceContracts_Install_Model extends Vtiger_Install_Model {
                     'table' => 'vtiger_servicecontracts',
                     'label' => 'Total Units',
                     'quickcreate' => 2,
+                    'typeofdata' => 'NN~O',
                 ],
                 'used_units' => [
                     'uitype' => 7,
@@ -159,6 +160,7 @@ class ServiceContracts_Install_Model extends Vtiger_Install_Model {
                     'table' => 'vtiger_servicecontracts',
                     'label' => 'Used Units',
                     'quickcreate' => 2,
+                    'typeofdata' => 'NN~O',
                 ],
                 'subject' => [
                     'column' => 'subject',

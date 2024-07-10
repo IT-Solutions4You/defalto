@@ -332,6 +332,7 @@ class Project_Install_Model extends Vtiger_Install_Model
             ->createColumn('linktoaccountscontacts', 'varchar(100) default NULL')
             ->createColumn('potentialid', 'int(19) default NULL')
             ->createColumn('isconvertedfrompotential', 'INT(1) NOT NULL DEFAULT \'0\'')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`projectid`)')
         ;
 
         $this->getTable('vtiger_projectcf', null)

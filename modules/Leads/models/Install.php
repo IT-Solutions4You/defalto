@@ -574,7 +574,7 @@ class Leads_Install_Model extends Vtiger_Install_Model {
             ->createColumn('salutation', 'varchar(200) DEFAULT NULL')
             ->createColumn('lastname', 'varchar(80) NOT NULL')
             ->createColumn('company', 'varchar(100) NOT NULL')
-            ->createColumn('annualrevenue', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('annualrevenue', 'decimal(25,5) DEFAULT NULL')
             ->createColumn('industry', 'varchar(200) DEFAULT NULL')
             ->createColumn('campaign', 'varchar(30) DEFAULT NULL')
             ->createColumn('rating', 'varchar(200) DEFAULT NULL')
@@ -607,7 +607,8 @@ class Leads_Install_Model extends Vtiger_Install_Model {
             ->createKey('PRIMARY KEY IF NOT EXISTS (`leadid`)')
             ->createKey('KEY IF NOT EXISTS `leaddetails_converted_leadstatus_idx` (`converted`,`leadstatus`)')
             ->createKey('KEY IF NOT EXISTS `email_idx` (`email`)')
-            ->createKey('CONSTRAINT `fk_1_vtiger_leaddetails` FOREIGN KEY IF NOT EXISTS (`leadid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
+            ->createKey('CONSTRAINT `fk_1_vtiger_leaddetails` FOREIGN KEY IF NOT EXISTS (`leadid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
+            ->createKey('index email_idx (email)');
 
         $this->getTable('vtiger_leadaddress', null)
             ->createColumn('leadaddressid', 'int(19) NOT NULL DEFAULT \'0\'')

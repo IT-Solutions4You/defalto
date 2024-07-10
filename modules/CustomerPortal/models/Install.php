@@ -60,7 +60,41 @@ class CustomerPortal_Install_Model extends Vtiger_Install_Model {
     {
         $this->getTable('vtiger_customerportal_fields', null)
             ->createTable('tabid')
-            ->createColumn('fieldid', 'int(19) default NULL')
-            ->createColumn('visible', 'int(1) default NULL');
+            ->createColumn('fieldinfo', 'text DEFAULT NULL')
+            ->createColumn('records_visible', 'int(1) DEFAULT NULL')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`tabid`)')
+        ;
+        
+        $this->getTable('vtiger_customerportal_prefs', null)
+            ->createTable('tabid')
+            ->createColumn('prefkey', 'varchar(100) NOT NULL')
+            ->createColumn('prefvalue', 'int(20) DEFAULT NULL')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`tabid`,`prefkey`)')
+            ;
+
+        $this->getTable('vtiger_customerportal_relatedmoduleinfo', null)
+            ->createTable('tabid')
+            ->createColumn('relatedmodules', 'text DEFAULT NULL')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`tabid`)')
+            ;
+
+        $this->getTable('vtiger_customerportal_settings', null)
+            ->createTable('id')
+            ->createColumn('url','varchar(250) DEFAULT NULL')
+            ->createColumn('default_assignee','int(11) DEFAULT NULL')
+            ->createColumn('support_notification','int(11) DEFAULT NULL')
+            ->createColumn('announcement','text DEFAULT NULL')
+            ->createColumn('shortcuts','text DEFAULT NULL')
+            ->createColumn('widgets','text DEFAULT NULL')
+            ->createColumn('charts','text DEFAULT NULL')
+            ;
+
+        $this->getTable('vtiger_customerportal_tabs', null)
+            ->createTable('tabid')
+            ->createColumn('visible','int(1) DEFAULT \'1\'')
+            ->createColumn('sequence','int(1) DEFAULT NULL')
+            ->createColumn('createrecord','tinyint(1) NOT NULL DEFAULT \'0\'')
+            ->createColumn('editrecord','tinyint(1) NOT NULL DEFAULT \'0\'')
+            ;
     }
 }
