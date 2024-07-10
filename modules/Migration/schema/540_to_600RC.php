@@ -173,7 +173,6 @@ $fieldInstance = Vtiger_Field::getInstance('invoicestatus', $invoiceModuleInstan
 $fieldInstance->setPicklistValues( Array ('Cancel'));
 
 //Currency Decimal places handling
-Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_account MODIFY COLUMN annualrevenue decimal(25,5)", array());
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_leaddetails MODIFY COLUMN annualrevenue decimal(25,5)", array());
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET typeofdata='N~O' WHERE fieldlabel='Annual Revenue' and typeofdata='I~O'",array());
 
