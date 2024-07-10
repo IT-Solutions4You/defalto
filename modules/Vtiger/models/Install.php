@@ -438,9 +438,7 @@ abstract class Vtiger_Install_Model extends Vtiger_DatabaseData_Model
             }
         }
 
-        $moduleManagerModel = new Settings_ModuleManager_Module_Model();
-        $moduleManagerModel->disableModule($moduleName);
-        $moduleManagerModel->enableModule($moduleName);
+        $this->install();
 
         self::logSuccess('Module result: ' . $moduleName);
         self::logSuccess($moduleInstance);
