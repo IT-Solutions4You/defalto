@@ -62,8 +62,20 @@ abstract class Vtiger_Install_Model extends Vtiger_DatabaseData_Model
      */
     protected string $parentName = '';
 
-    public static $filters = [];
-    public static $blocks = [];
+    /**
+     * @var array
+     */
+    public static array $filters = [];
+
+    /**
+     * @var array
+     */
+    public static array $blocks = [];
+
+    /**
+     * @var array
+     */
+    public static array $installedModules = [];
 
     /**
      * @return void
@@ -213,12 +225,29 @@ abstract class Vtiger_Install_Model extends Vtiger_DatabaseData_Model
         }
     }
 
+    public function isInstalledModule(): bool
+    {
+        if (isset(self::$installedModules[$this->moduleName])) {
+            self::logError($this->moduleName . ': was already installed in this process');
+
+            return true;
+        }
+
+        self::$installedModules[$this->moduleName] = true;
+
+        return false;
+    }
+
     /**
      * @return void
      * @throws AppException
      */
     public function installModule()
     {
+        if ($this->isInstalledModule()) {
+            return;
+        }
+
         $this->installTables();
 
         self::logSuccess('Install tables');
