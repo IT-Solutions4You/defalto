@@ -67,17 +67,15 @@ class VTEmailTask extends VTTask
             'luserid' => $logged_user_id,
             'muserid' => $modified_by_user_id,
         ];
-
-        [$entityTabId, $entityId] = vtws_getIdComponents($entity->getId());
-
+        $entityId = vtws_getIdComponents($entity->getId())[1];
+        $entityUserId = vtws_getIdComponents($entity->get('assigned_user_id'))[1];
         $moduleName = 'ITS4YouEmails';
-        $userId = $current_user->id;
+        $userId = !empty($entityUserId) ? $entityUserId : $current_user->id;
 
         foreach ($to_emails as $email_data) {
             $to_email = $email_data['email'];
             $recipientModule = $email_data['module'];
-
-            [$recipientTabId, $recipientId] = explode('x', $email_data['id']);
+            $recipientId = vtws_getIdComponents($email_data['id'])[1];
 
             if (!empty($to_email)) {
                 $subject = strip_tags(decode_html($load_subject));
@@ -225,13 +223,15 @@ class VTEmailTask extends VTTask
 
             $fromUserId = Users::getActiveAdminId();
             $entityOwnerId = $entity->get('assigned_user_id');
+
             if ($entityOwnerId) {
-                [$moduleId, $fromUserId] = explode('x', $entityOwnerId);
+                $fromUserId = vtws_getIdComponents($entityOwnerId)[1];
             }
 
             $ownerEntity = $entityCache->forId($entityOwnerId);
+
             if ($ownerEntity->getModuleName() === 'Groups') {
-                [$moduleId, $recordId] = vtws_getIdComponents($entityId);
+                $recordId = vtws_getIdComponents($entityId)[1];
                 $fromUserId = Vtiger_Util_Helper::getCreator($recordId);
             }
 
@@ -307,7 +307,7 @@ class VTEmailTask extends VTTask
             $templateId = $this->template;
             $language = $this->template_language;
 
-            [$entityModuleId, $entityRecordId] = vtws_getIdComponents($entityId);
+            $entityRecordId = vtws_getIdComponents($entityId)[1];
             $entityModuleName = getSalesEntityType($entityRecordId);
 
             if(!empty($templateId) && is_numeric($templateId)) {
@@ -339,8 +339,7 @@ class VTEmailTask extends VTTask
             $taskContents['luserid'] = isset($_SESSION['authenticated_user_id']) ? $_SESSION['authenticated_user_id'] : '';
 
             $modifiedById = $entity->get('modifiedby');
-            [$modifiedByTabId, $modifiedByUserId] = explode('x', $modifiedById);
-            $taskContents['muserid'] = $modifiedByUserId;
+            $taskContents['muserid'] = vtws_getIdComponents($modifiedById)[1];
 
             $taskContents['signature'] = $this->signature;
 
@@ -610,7 +609,7 @@ class VTEmailTask extends VTTask
                         $to_email = $data[$filename];
                     }
                 } elseif ('$parent_role_emails' === $to_email) {
-                    [$userModuleId, $userRecordId] = explode('x', $data['assigned_user_id']);
+                    $userRecordId = vtws_getIdComponents($data['assigned_user_id'])[1];
 
                     return $this->getParentEmails($userRecordId);
                 } else {
@@ -685,7 +684,7 @@ class VTEmailTask extends VTTask
             $emails = implode(',', $emails);
         }
         if (strpos($emails, 'parent_role_emails')) {
-            [$moduleId, $userId] = explode('x', $entity->get('assigned_user_id'));
+            $userId = vtws_getIdComponents($entity->get('assigned_user_id'))[1];
 
             $parentEmails = $this->getParentEmails($userId);
             $parentEmailsAddresses = [];
