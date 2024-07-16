@@ -173,8 +173,6 @@ $fieldInstance = Vtiger_Field::getInstance('invoicestatus', $invoiceModuleInstan
 $fieldInstance->setPicklistValues( Array ('Cancel'));
 
 //Currency Decimal places handling
-Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_account MODIFY COLUMN annualrevenue decimal(25,5)", array());
-Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_leaddetails MODIFY COLUMN annualrevenue decimal(25,5)", array());
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET typeofdata='N~O' WHERE fieldlabel='Annual Revenue' and typeofdata='I~O'",array());
 
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_currency_info MODIFY COLUMN conversion_rate decimal(12,5)", array());
@@ -509,33 +507,10 @@ Migration_Index_View::ExecuteQuery("DELETE FROM vtiger_cvcolumnlist WHERE cvid I
 				('ModComments','ProjectMilestone','Project','SMSNotifier','PBXManager'))
 			AND columnindex = 0", array());
 
-// Added indexes for Modtracker Module to improve performance
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_modtracker_basic ADD INDEX crmidx (crmid)', array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_modtracker_basic ADD INDEX idx (id)', array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_modtracker_detail ADD INDEX idx (id)', array());
-
-// Ends
-
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_links MODIFY column linktype VARCHAR(50)', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_links MODIFY column linklabel VARCHAR(50)', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_links MODIFY column handler_class VARCHAR(50)', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_links MODIFY column handler VARCHAR(50)', array());
-
-//--
-//Add ModComments to HelpDesk and Faq module
-
-$moduleInstance = Vtiger_Module::getInstance('ModComments');
-$customer = Vtiger_Field::getInstance('customer', $moduleInstance);
-if (!$customer) {
-	$customer = new Vtiger_Field();
-	$customer->name = 'customer';
-	$customer->label = 'Customer';
-	$customer->uitype = '10';
-	$customer->displaytype = '3';
-	$blockInstance = Vtiger_Block::getInstance('LBL_MODCOMMENTS_INFORMATION', $moduleInstance);
-	$blockInstance->addField($customer);
-	$customer->setRelatedModules(array('Contacts'));
-}
 
 require_once 'modules/ModComments/ModComments.php';
 ModComments::addWidgetTo(array("HelpDesk", "Faq"));
@@ -996,8 +971,6 @@ $contactModule = Vtiger_Module::getInstance('Contacts');
 $contactModule->setRelatedList($assetsModuleInstance, '', false, 'get_dependents_list');
 // End 2013.04.23
 
-// Start 2013.04.30
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_users MODIFY signature TEXT', array());
 //Adding column to store the state of short cut settings fields
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_settings_field ADD COLUMN pinned int(1) DEFAULT 0',array());
 
@@ -1201,11 +1174,6 @@ if(!$modCommentsReasonToEdit){
 	$blockInstance->addField($reasonToEdit);
 }
 
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_invoice MODIFY balance decimal(25,8)',array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_invoice MODIFY received decimal(25,8)',array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_purchaseorder MODIFY balance decimal(25,8)',array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_purchaseorder MODIFY paid decimal(25,8)',array());
-
 $labels = array('LBL_ADD_NOTE', 'Add Note');
 $sql = 'UPDATE vtiger_links SET handler = ?, handler_class = ?, handler_path = ? WHERE linklabel IN (?, ?)';
 Migration_Index_View::ExecuteQuery($sql, array('isLinkPermitted', 'Documents', 'modules/Documents/Documents.php', $labels));
@@ -1259,8 +1227,6 @@ foreach ($inventoryModules as $key => $moduleName) {
 	$blockInstance->addField($field);
 }
 
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_invoice_recurring_info ADD PRIMARY KEY (salesorderid)',array());
-
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET masseditable = ? where fieldname = ? and tabid = ?',
 			array('1', 'accountname', getTabid('Accounts')));
 
@@ -1303,18 +1269,11 @@ Migration_Index_View::ExecuteQuery('UPDATE vtiger_currency_info SET currency_nam
 		array('Hong Kong, Dollars', 'LvHong Kong, Dollars'));
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET defaultvalue=1 WHERE fieldname = ?',array("filestatus"));
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_role ADD allowassignedrecordsto INT(2) NOT NULL DEFAULT 1', array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_assets MODIFY datesold date', array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_assets MODIFY dateinservice date', array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_assets MODIFY serialnumber varchar(200)', array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_assets MODIFY account int(19)', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE com_vtiger_workflowtask_queue ADD COLUMN task_contents text', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE com_vtiger_workflowtask_queue DROP INDEX com_vtiger_workflowtask_queue_idx',array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner_ids modify column messageid varchar(512)' , array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner_ids add index scanner_message_ids_idx (scannerid, messageid)', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner_folders add index folderid_idx (folderid)', array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_leaddetails add index email_idx (email)', array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_contactdetails add index email_idx (email)', array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_account add index email_idx (email1, email2)', array());
 
 $moduleInstance = Vtiger_Module::getInstance('Users');
 $blockInstance = Vtiger_Block::getInstance('LBL_MORE_INFORMATION',$moduleInstance);

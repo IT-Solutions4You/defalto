@@ -25,10 +25,6 @@ if (!class_exists('Migration_20240520204659')) {
                 ['discount_percent', 'discount_amount', 'vtiger_quotes', 'vtiger_purchaseorder', 'vtiger_salesorder', 'vtiger_invoice']
             );
             $this->db->pquery('UPDATE vtiger_inventorycharges SET value = 0 WHERE  name = ? and value IS NULL', ['Shipping & Handling']);
-            $this->db->pquery('ALTER TABLE vtiger_quotes MODIFY s_h_percent DECIMAL(25,3)');
-            $this->db->pquery('ALTER TABLE vtiger_purchaseorder MODIFY s_h_percent DECIMAL(25,3)');
-            $this->db->pquery('ALTER TABLE vtiger_salesorder MODIFY s_h_percent DECIMAL(25,3)');
-            $this->db->pquery('ALTER TABLE vtiger_invoice MODIFY s_h_percent DECIMAL(25,3)');
             // Make hidden mandatory fields optional
             $this->db->pquery("UPDATE vtiger_field SET typeofdata = replace(typeofdata,'~M','~O') where presence =1 and typeofdata like '%~M%'");
 

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class PDFMaker_PDFContentUtils_Model extends Vtiger_Base_Model
+class PDFMaker_PDFContentUtils_Model extends Vtiger_TemplateContent_Helper
 {
     private static $is_inventory_module = array();
 

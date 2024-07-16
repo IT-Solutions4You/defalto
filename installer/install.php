@@ -10,6 +10,8 @@
 
 class Download_ZipArchive extends ZipArchive
 {
+    public static $skipFolders = [];
+    public static $skipFiles = [];
     /**
      * @param string $destination
      * @param string $zipSubDir
@@ -44,7 +46,7 @@ class Download_ZipArchive extends ZipArchive
                     {
                         // New dir
                         if (!is_dir($destination . $relativePath)) {
-                            if (!@mkdir($destination . $relativePath, 0755, true)) {
+                            if (!mkdir($destination . $relativePath, 0755, true)) {
                                 $errors[$i] = $filename;
                             }
                         }
@@ -52,12 +54,32 @@ class Download_ZipArchive extends ZipArchive
                         if (dirname($relativePath) != '.') {
                             if (!is_dir($destination . dirname($relativePath))) {
                                 // New dir (for file)
-                                @mkdir($destination . dirname($relativePath), 0755, true);
+                                mkdir($destination . dirname($relativePath), 0755, true);
                             }
                         }
 
-                        // New file
-                        if (@file_put_contents($destination . $relativePath, $this->getFromIndex($i)) === false) {
+                        $skip = false;
+
+                        foreach (self::$skipFolders as $skipFolder) {
+                            if (str_starts_with($relativePath, $skipFolder . DIRECTORY_SEPARATOR)) {
+                                $skip = true;
+                            }
+                        }
+
+                        if (!$skip) {
+                            foreach (self::$skipFiles as $skipFile) {
+                                if (str_ends_with($filename, $skipFile)) {
+                                    $skip = true;
+                                }
+                            }
+                        }
+
+                        if ($skip) {
+                            Download::log('Skip: ' . $relativePath);
+                        }
+
+                        /// New file
+                        if (file_put_contents($destination . $relativePath, $this->getFromIndex($i)) === false) {
                             $errors[$i] = $filename;
                         }
                     }
@@ -379,7 +401,11 @@ class Download
 }
 
 $zipFileUrl = 'https://github.com/IT-Solutions4You/defalto/archive/refs/heads/develop.zip';
-$zipFileFolder = 'defalto-feature-93';
+$zipFileFolder = 'defalto-develop';
+
+//Download_ZipArchive::$skipFolders = ['user_privileges', 'layouts/d1/modules/PDFMaker', 'modules/PDFMaker', 'manifest', 'update', 'icons', 'installer'];
+//Download_ZipArchive::$skipFiles = ['config.inc.php', 'composer.lock', 'index.php', 'install.php', 'parent_tabdata.php', 'tabdata.php', 'PDFMaker.php'];
+
 $download = Download::zip($zipFileUrl, $zipFileFolder);
 
 ?>

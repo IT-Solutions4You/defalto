@@ -74,6 +74,7 @@ class MailManager_Install_Model extends Vtiger_Install_Model {
             ->createColumn('muid','int(11) default NULL')
             ->createColumn('lastsavedtime','int(11) default NULL')
             ->createColumn('folder','varchar(250)')
+            ->createColumn('mfolder','VARCHAR(250)')
             ->createKey('KEY IF NOT EXISTS `userid_lastsavedtime_idx` (`userid`,`lastsavedtime`)')
             ->createKey('KEY IF NOT EXISTS `userid_muid_idx` (`userid`,`muid`)')
         ;

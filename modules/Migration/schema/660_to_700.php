@@ -291,14 +291,6 @@ if(defined('VTIGER_UPGRADE')) {
 		$model->save();
 	}
 
-	$columns = $db->getColumnNames('vtiger_import_queue');
-	if (!in_array('lineitem_currency_id', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_import_queue ADD COLUMN lineitem_currency_id INT(5)', array());
-	}
-	if (!in_array('paging', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_import_queue ADD COLUMN paging INT(1) DEFAULT 0', array());
-	}
-
 	$documentsInstance = Vtiger_Module::getInstance('Documents');
 	if ($documentsInstance) {
 		$documentsInstance->setRelatedList(Vtiger_Module::getInstance('Contacts'), 'Contacts', true);
@@ -375,17 +367,6 @@ if(defined('VTIGER_UPGRADE')) {
 		if (!$db->num_rows($result)) {
 			$db->pquery('INSERT INTO vtiger_relatedlists VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($db->getUniqueID('vtiger_relatedlists'), $refModuleTabId, $modCommentsTabId, 'get_comments', '1', 'ModComments', '0', '', $fieldId, 'NULL', '1:N'));
 		}
-	}
-
-	$columns = $db->getColumnNames('vtiger_modcomments');
-	if (in_array('parent_comments', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_modcomments MODIFY parent_comments INT(19)',array());
-	}
-	if (in_array('customer', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_modcomments MODIFY customer INT(19)', array());
-	}
-	if (in_array('userid', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_modcomments MODIFY userid INT(19)', array());
 	}
 
 	if (!Vtiger_Utils::CheckTable('vtiger_emailslookup')) {
@@ -774,8 +755,6 @@ if(defined('VTIGER_UPGRADE')) {
 			}
 		}
 	}
-	//Change to modify shipping tax percent column type
-	$db->pquery('ALTER TABLE vtiger_invoice MODIFY s_h_percent DECIMAL(25,8)', array());
 
 	if (!Vtiger_Utils::CheckTable('vtiger_projecttask_status_color')) {
 		$db->pquery('CREATE TABLE vtiger_projecttask_status_color (
@@ -815,8 +794,6 @@ if(defined('VTIGER_UPGRADE')) {
 		$fieldInstance->set('typeofdata', $typeOfData);
 		$fieldInstance->save();
 	}
-
-	$db->pquery('ALTER TABLE vtiger_webforms_field MODIFY COLUMN defaultvalue TEXT', array());
 
 	//Rollup Comments Settings table
 	if (!Vtiger_Utils::CheckTable('vtiger_rollupcomments_settings')) {

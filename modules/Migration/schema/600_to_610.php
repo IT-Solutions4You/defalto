@@ -927,24 +927,6 @@ foreach ($taskIdsList as $taskId => $taskModuleName) {
 
 global $root_directory;
 
-// To update vtiger_modcomments table for permormance issue
-$datatypeQuery = "ALTER TABLE vtiger_modcomments MODIFY COLUMN related_to int(19)";
-$dtresult = Migration_Index_View::ExecuteQuery($datatypeQuery, array());
-if($dtresult){
-echo 'ModComments related_to field Datatype updated';
-}else{
-echo 'Failed to update Modcomments Datatype';
-}
-echo '</br>';
-$indexQuery = "ALTER TABLE vtiger_modcomments ADD INDEX relatedto_idx (related_to)";
-$indexResult = Migration_Index_View::ExecuteQuery($indexQuery, array());
-if($indexResult){
-echo 'Index added on ModComments';
-}else{
-echo 'Failed to add index on ModComments';
-}
-// End
-
 $maxActionIdResult = $adb->pquery('SELECT MAX(actionid) AS maxid FROM vtiger_actionmapping', array());
 $maxActionId = $adb->query_result($maxActionIdResult, 0, 'maxid');
 Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_actionmapping(actionid, actionname, securitycheck) VALUES(?,?,?)', array($maxActionId+1 ,'Print', '0'));
@@ -952,31 +934,10 @@ echo "<br> added print to vtiger_actionnmapping";
 //94 ends
 
 //95 starts
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_webforms MODIFY COLUMN description TEXT',array());
 require_once 'vtlib/Vtiger/Module.php';
-$module = Vtiger_Module::getInstance('Users');
-if ($module) {
-    $blockInstance = Vtiger_Block::getInstance('LBL_CALENDAR_SETTINGS', $module);
-    if ($blockInstance) {
-        $hideCompletedField = Vtiger_Field::getInstance('hidecompletedevents', $module);
-        if(!$hideCompletedField){
-            $fieldInstance = new Vtiger_Field();
-            $fieldInstance->name = 'hidecompletedevents';
-            $fieldInstance->label = 'LBL_HIDE_COMPLETED_EVENTS';
-            $fieldInstance->uitype = 56;
-            $fieldInstance->column = $fieldInstance->name;
-            $fieldInstance->columntype = 'INT';
-            $fieldInstance->typeofdata = 'C~O';
-            $fieldInstance->diplaytype = '1';
-            $fieldInstance->defaultvalue = '0';
-            $blockInstance->addField($fieldInstance);
-            echo '<br>Hide/Show, completed/held, events/todo FIELD ADDED IN USERS';
-        }
-    }
-}
-
 $entityModulesModels = Vtiger_Module_Model::getEntityModules();
 $modules = array();
+
 if($entityModulesModels){
     foreach($entityModulesModels as $model){
        $modules[] =  $model->getName();

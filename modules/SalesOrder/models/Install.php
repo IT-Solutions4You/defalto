@@ -974,7 +974,7 @@ class SalesOrder_Install_Model extends Vtiger_Install_Model {
             ->createColumn('enable_recurring', 'int(11) DEFAULT \'0\'')
             ->createColumn('compound_taxes_info', 'text DEFAULT NULL')
             ->createColumn('pre_tax_total', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('s_h_percent', 'int(11) DEFAULT NULL')
+            ->createColumn('s_h_percent', 'DECIMAL(25,3) DEFAULT NULL')
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createColumn('region_id', 'int(19) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`salesorderid`)')

@@ -157,10 +157,7 @@ class ProjectMilestone_Install_Model extends Vtiger_Install_Model
      */
     public function getTables(): array
     {
-        return [
-            'vtiger_modcomments',
-            'vtiger_modcommentscf',
-        ];
+        return [];
     }
 
     /**
