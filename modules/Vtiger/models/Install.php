@@ -62,8 +62,20 @@ abstract class Vtiger_Install_Model extends Vtiger_DatabaseData_Model
      */
     protected string $parentName = '';
 
-    public static $filters = [];
-    public static $blocks = [];
+    /**
+     * @var array
+     */
+    public static array $filters = [];
+
+    /**
+     * @var array
+     */
+    public static array $blocks = [];
+
+    /**
+     * @var array
+     */
+    public static array $installedModules = [];
 
     /**
      * @return void
@@ -214,11 +226,31 @@ abstract class Vtiger_Install_Model extends Vtiger_DatabaseData_Model
     }
 
     /**
+     * @return bool
+     */
+    public function isInstalledModule(): bool
+    {
+        if (isset(self::$installedModules[$this->moduleName])) {
+            self::logError($this->moduleName . ': was already installed in this process');
+
+            return true;
+        }
+
+        self::$installedModules[$this->moduleName] = true;
+
+        return false;
+    }
+
+    /**
      * @return void
      * @throws AppException
      */
     public function installModule()
     {
+        if ($this->isInstalledModule()) {
+            return;
+        }
+
         $this->installTables();
 
         self::logSuccess('Install tables');
@@ -226,13 +258,14 @@ abstract class Vtiger_Install_Model extends Vtiger_DatabaseData_Model
         $moduleName = $this->moduleName;
         $moduleFocus = CRMEntity::getInstance($moduleName);
 
-        $entity = (int)$moduleFocus->isEntity;
-        $baseTableId = $moduleFocus->table_index;
-        $baseTable = $moduleFocus->table_name;
-        $label = $moduleFocus->moduleLabel;
-        $name = $moduleFocus->moduleName;
-        $parent = $moduleFocus->parentName;
-        $cfTable = $moduleFocus->customFieldTable[0];
+        $entity = !empty($moduleFocus->isEntity) ? 1 : 0;
+        $baseTableId = $moduleFocus->table_index ?? '';
+        $baseTable = $moduleFocus->table_name ?? '';
+        $label = $moduleFocus->moduleLabel ?? '';
+        $name = $moduleFocus->moduleName ?? '';
+        $parent = $moduleFocus->parentName ?? '';
+        $cfTable = $moduleFocus->customFieldTable[0] ?? '';
+        $groupRelTable = $moduleFocus->groupFieldTable[0] ?? '';
 
         $versionClass = $moduleName . '_Version_Helper';
         $version = class_exists($versionClass) ? $versionClass::getVersion() : 0.1;
@@ -438,9 +471,7 @@ abstract class Vtiger_Install_Model extends Vtiger_DatabaseData_Model
             }
         }
 
-        $moduleManagerModel = new Settings_ModuleManager_Module_Model();
-        $moduleManagerModel->disableModule($moduleName);
-        $moduleManagerModel->enableModule($moduleName);
+        $this->install();
 
         self::logSuccess('Module result: ' . $moduleName);
         self::logSuccess($moduleInstance);

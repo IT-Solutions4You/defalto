@@ -674,8 +674,8 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                 $Details['TOTAL'][$variableName] = $this->formatNumberToPDF($finalDetails[$fieldName]);
             }
 
-            $totalwithwat = $finalDetails['preTaxTotal'] + $finalDetails['tax_totalamount'];
-            $Details['TOTAL']['TOTALWITHVAT'] = $this->formatNumberToPDF($totalwithwat);
+            $totalWithVat = $this->getTotalWithVat($finalDetails);
+            $Details['TOTAL']['TOTALWITHVAT'] = $this->formatNumberToPDF($totalWithVat);
             $Details['TOTAL']['TAXTYPE'] = $taxtype;
 
             foreach ($relatedProducts as $i => $PData) {

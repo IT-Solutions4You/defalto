@@ -84,12 +84,6 @@ class PDFMaker_Install_Model extends Vtiger_Install_Model
         ];
     }
 
-    public function insertData($table, $params)
-    {
-        $sql = sprintf('INSERT INTO %s (%s) VALUES (%s)', $table, implode(',', array_keys($params)), generateQuestionMarks($params));
-        $this->db->pquery($sql, $params);
-    }
-
     public function insertPDFTemplates()
     {
         $table = 'vtiger_pdfmaker';
@@ -101,7 +95,7 @@ class PDFMaker_Install_Model extends Vtiger_Install_Model
         ];
 
         if (!$this->isProductBlockExists($productBlock['name'])) {
-            $this->insertData('vtiger_pdfmaker_productbloc_tpl', $productBlock);
+            $this->getTable('vtiger_pdfmaker_productbloc_tpl', null)->insertData($productBlock);
         }
 
         // Product block 02
@@ -111,7 +105,7 @@ class PDFMaker_Install_Model extends Vtiger_Install_Model
         ];
 
         if (!$this->isProductBlockExists($productBlock['name'])) {
-            $this->insertData('vtiger_pdfmaker_productbloc_tpl', $productBlock);
+            $this->getTable('vtiger_pdfmaker_productbloc_tpl', null)->insertData($productBlock);
         }
 
         // Template 01
@@ -148,8 +142,8 @@ class PDFMaker_Install_Model extends Vtiger_Install_Model
         );
 
         if (!$this->isTemplateExists($data['filename'])) {
-            $this->insertData($table, $data);
-            $this->insertData($tableSettings, $dataSettings);
+            $this->getTable($table, null)->insertData($data);
+            $this->getTable($tableSettings, null)->insertData($dataSettings);
         }
 
         // Template 02
@@ -186,8 +180,8 @@ class PDFMaker_Install_Model extends Vtiger_Install_Model
         );
 
         if (!$this->isTemplateExists($data['filename'])) {
-            $this->insertData($table, $data);
-            $this->insertData($tableSettings, $dataSettings);
+            $this->getTable($table, null)->insertData($data);
+            $this->getTable($tableSettings, null)->insertData($dataSettings);
         }
 
         // Template 03
@@ -224,8 +218,8 @@ class PDFMaker_Install_Model extends Vtiger_Install_Model
         );
 
         if (!$this->isTemplateExists($data['filename'])) {
-            $this->insertData($table, $data);
-            $this->insertData($tableSettings, $dataSettings);
+            $this->getTable($table, null)->insertData($data);
+            $this->getTable($tableSettings, null)->insertData($dataSettings);
         }
         
         // Template 04
@@ -262,8 +256,8 @@ class PDFMaker_Install_Model extends Vtiger_Install_Model
         );
 
         if (!$this->isTemplateExists($data['filename'])) {
-            $this->insertData($table, $data);
-            $this->insertData($tableSettings, $dataSettings);
+            $this->getTable($table, null)->insertData($data);
+            $this->getTable($tableSettings, null)->insertData($dataSettings);
         }
 
         $this->db->pquery('INSERT INTO vtiger_pdfmaker_releases (version, date, updated) VALUES(?, NOW(), 1)', array(PDFMaker_Version_Helper::$version));

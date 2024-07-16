@@ -871,7 +871,7 @@ class Invoice_Install_Model extends Vtiger_Install_Model
             ->createColumn('pre_tax_total', 'decimal(25,8) DEFAULT NULL')
             ->createColumn('received', 'decimal(25,8) DEFAULT NULL')
             ->createColumn('balance', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('s_h_percent', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('s_h_percent', 'decimal(25,3) DEFAULT NULL')
             ->createColumn('potential_id', 'varchar(100) DEFAULT NULL')
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createColumn('region_id', 'int(19) DEFAULT NULL')
@@ -902,5 +902,17 @@ class Invoice_Install_Model extends Vtiger_Install_Model
             ->createColumn('ship_pobox', 'varchar(30) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (invoiceshipaddressid)')
             ->createKey('CONSTRAINT fk_1_vtiger_invoiceshipads FOREIGN KEY IF NOT EXISTS (invoiceshipaddressid) REFERENCES vtiger_invoice (invoiceid) ON DELETE CASCADE');
+        
+        $this->getTable('vtiger_invoice_recurring_info', null)
+            ->createTable('salesorderid','int(11) NOT NULL,')
+            ->createColumn('recurring_frequency','varchar(200) DEFAULT NULL')
+            ->createColumn('start_period','date DEFAULT NULL')
+            ->createColumn('end_period','date DEFAULT NULL')
+            ->createColumn('last_recurring_date','date DEFAULT NULL')
+            ->createColumn('payment_duration','varchar(200) DEFAULT NULL')
+            ->createColumn('invoice_status','varchar(200) DEFAULT NULL')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`salesorderid`)')
+            ->createKey('CONSTRAINT `fk_salesorderid_vtiger_invoice_recurring_info` FOREIGN KEY IF NOT EXISTS (`salesorderid`) REFERENCES `vtiger_salesorder` (`salesorderid`) ON DELETE CASCADE')
+            ;
     }
 }

@@ -68,7 +68,7 @@ class Webforms_Install_Model extends Vtiger_Install_Model
             ->createColumn('publicid','varchar(100) NOT NULL')
             ->createColumn('enabled','int(1) NOT NULL DEFAULT \'1\'')
             ->createColumn('targetmodule','varchar(50) NOT NULL')
-            ->createColumn('description','varchar(250) DEFAULT NULL')
+            ->createColumn('description','TEXT DEFAULT NULL')
             ->createColumn('ownerid','int(19) NOT NULL')
             ->createColumn('returnurl','varchar(250) DEFAULT NULL')
             ->createColumn('captcha','int(1) NOT NULL DEFAULT \'0\'')

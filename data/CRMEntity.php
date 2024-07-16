@@ -16,9 +16,12 @@ require_once 'include/RelatedListView.php';
 
 class CRMEntity {
     public int $isEntity = 1;
-	var $ownedby;
-	var $recordSource = 'CRM';
-	var $mode;
+	public $ownedby;
+	public $recordSource = 'CRM';
+	public $mode;
+    public string $parentName = '';
+    public string $moduleName = '';
+    public string $moduleLabel = '';
 
 	/**
 	 * Detect if we are in bulk save mode, where some features can be turned-off

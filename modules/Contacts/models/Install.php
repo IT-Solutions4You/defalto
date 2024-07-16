@@ -762,7 +762,8 @@ class Contacts_Install_Model extends Vtiger_Install_Model
             ->createKey('PRIMARY KEY IF NOT EXISTS (`contactid`)')
             ->createKey('KEY IF NOT EXISTS `contactdetails_accountid_idx` (`accountid`)')
             ->createKey('KEY IF NOT EXISTS `email_idx` (`email`)')
-            ->createKey('CONSTRAINT `fk_1_vtiger_contactdetails` FOREIGN KEY IF NOT EXISTS (`contactid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
+            ->createKey('CONSTRAINT `fk_1_vtiger_contactdetails` FOREIGN KEY IF NOT EXISTS (`contactid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
+            ->createKey('index email_idx (email)');
 
         $this->getTable('vtiger_contactsubdetails', null)
             ->createTable('contactsubscriptionid', 'int(19) NOT NULL DEFAULT \'0\'')

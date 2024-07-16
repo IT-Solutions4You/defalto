@@ -871,8 +871,8 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                 $Details["TOTAL"][$variableName] = $this->formatNumberToEMAIL($finalDetails[$fieldName]);
             }
 
-            $totalwithwat = $finalDetails["preTaxTotal"] + $finalDetails["tax_totalamount"];
-            $Details["TOTAL"]["TOTALWITHVAT"] = $this->formatNumberToEMAIL($totalwithwat);
+            $totalWithVat = $this->getTotalWithVat($finalDetails);
+            $Details['TOTAL']['TOTALWITHVAT'] = $this->formatNumberToEMAIL($totalWithVat);
 
             foreach ($relatedProducts as $i => $PData) {
                 $Details["P"][$i] = array();

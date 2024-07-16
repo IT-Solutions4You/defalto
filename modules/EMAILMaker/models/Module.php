@@ -580,7 +580,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         return $emailsResult;
     }
 
-    public function GetListviewResult($orderby = "templateid", $dir = "ASC", $request, $all_data = true)
+    public function GetListviewResult($orderby = 'templateid', $dir = 'ASC', $request = null, $all_data = true)
     {
         $adb = PearDatabase::getInstance();
         $R_Atr = array('0');
