@@ -225,6 +225,9 @@ abstract class Vtiger_Install_Model extends Vtiger_DatabaseData_Model
         }
     }
 
+    /**
+     * @return bool
+     */
     public function isInstalledModule(): bool
     {
         if (isset(self::$installedModules[$this->moduleName])) {
