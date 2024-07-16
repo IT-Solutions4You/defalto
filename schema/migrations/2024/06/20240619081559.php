@@ -33,6 +33,31 @@ if (!class_exists('Migration_20240619081559')) {
                 $entriesRes = $this->db->pquery('SELECT crmid, smownerid FROM vtiger_crmentity WHERE setype = ? AND deleted = 0', [$inventoryModule]);
 
                 while ($entry = $this->db->fetch_array($entriesRes)) {
+                    $entityFocus = CRMEntity::getInstance($inventoryModule);
+                    $entityFocus->id = $entry['crmid'];
+                    $entityFocus->retrieve_entity_info($entry['crmid'], $inventoryModule);
+                    $taxType = $entityFocus->column_fields->offsetGet('hdnTaxType');
+
+                    if ('individual' == $taxType) {
+                        $discountPercent = $entityFocus->column_fields->offsetGet('discount_percent');
+                        $discountAmount = $entityFocus->column_fields->offsetGet('discount_amount');
+
+                        if (empty($discountAmount)) {
+                            $discountAmount = 0;
+                        }
+
+                        if (!empty($discountPercent)) {
+                            $discountAmount = $entityFocus->column_fields['hdnSubTotal'] * $discountPercent / 100;
+                        }
+
+                        if ($discountAmount > 0) {
+                            $adjustment = (int)trim($entityFocus->column_fields->offsetGet('txtAdjustment'), '+');
+                            $adjustment -= $discountAmount;
+                            $baseTable = $entityFocus->basetable;
+//                                $this->db->pquery('UPDATE ' . $baseTable . ' SET adjustment = ?, discount_percent = NULL, discount_amount = NULL WHERE crmid = ?', [$adjustment, $entry['crmid']]);
+                        }
+                    }
+
                     $productsRes = $this->db->pquery('SELECT * FROM vtiger_inventoryproductrel WHERE id = ?', [$entry['crmid']]);
 
                     while ($productsRow = $this->db->fetchByAssoc($productsRes)) {
@@ -72,19 +97,41 @@ if (!class_exists('Migration_20240619081559')) {
                                 break;
                         }
 
+                        $discountAmount = 0;
+
+                        if ('group' == $taxType) {
+                            $discountPercent = $entityFocus->column_fields->offsetGet('discount_percent');
+                            $discountAmount = $entityFocus->column_fields->offsetGet('discount_amount');
+
+                            if (!empty($discountPercent)) {
+                                $discountAmount = ($inventoryItem->column_fields['total_after_discount'] * $discountPercent) / 100;
+                            } elseif (!empty($discountAmount)) {
+                                $discountPercent = round(($discountAmount / $entityFocus->column_fields['hdnSubTotal']) * 100, 2);
+                                $discountAmount = ($inventoryItem->column_fields['total_after_discount'] * $discountPercent) / 100;
+                            } else {
+                                $discountPercent = 0;
+                                $discountAmount = 0;
+                            }
+
+                            $inventoryItem->column_fields['overall_discount'] = $discountPercent;
+                            $inventoryItem->column_fields['overall_discount_amount'] = $discountAmount;
+                        }
+
+                        $inventoryItem->column_fields['total_after_overall_discount'] = $inventoryItem->column_fields['total_after_discount'] - $discountAmount;
+
                         /**
-                         * V pripade, ze je zadana v ponuke/objed/fakture celkova zlava, tak z nej vycislujem overall discount pri polozkach a teda naplnam overall_discount, overall_discount_amount a total_after_overall_discount
-                         * Ak je Cekova zlava percento, tak dat spravne percenta; ak je celkova suma, tak to hodit do halieroveho vyrovnania
-                         * Ak aj nie je celkova zlava, tak total_after_overall_discount musim naplnit tym co je v total_after_discount:
                          * Tiez musim zistit ake su v systeme dane, zistit si spravne nazvy stlpcov, spocitat si ich, na zaklade toto naplnit polia tax a tax amount
                          * Nakoniec vycislujem Total - to je vlastne cena po dani
                          */
 
+                        $inventoryItem->column_fields['total'] = $inventoryItem->column_fields['total_after_overall_discount'];
+
+                        $inventoryItem->save('InventoryItem');
                     }
                 }
 
             }
-
+            exit;
             $current_user = $previous_user;
         }
     }
