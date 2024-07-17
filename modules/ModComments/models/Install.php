@@ -1,6 +1,6 @@
 <?php
 
-class ModComments_Install_Model extends Vtiger_Install_Model
+class ModComments_Install_Model extends Core_Install_Model
 {
 
     public function addCustomLinks(): void

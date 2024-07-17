@@ -549,7 +549,7 @@ class Install_Utils_Model {
      */
     public static function installModule(string $moduleName): void
     {
-        Vtiger_Install_Model::getInstance('module.postinstall', $moduleName)->installModule();
+        Core_Install_Model::getInstance('module.postinstall', $moduleName)->installModule();
     }
 
     /**

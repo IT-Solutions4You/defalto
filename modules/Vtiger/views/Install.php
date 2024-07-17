@@ -64,13 +64,13 @@ class Vtiger_Install_View extends Vtiger_Index_View
 
         switch ($mode) {
             case 'install':
-                Vtiger_Install_Model::getInstance('module.postinstall', $moduleName)->installModule();
+                Core_Install_Model::getInstance('module.postinstall', $moduleName)->installModule();
                 break;
             case 'migrate':
-                Vtiger_Install_Model::getInstance('module.postinstall', $moduleName)->migrate();
+                Core_Install_Model::getInstance('module.postinstall', $moduleName)->migrate();
                 break;
             case 'delete':
-                Vtiger_Install_Model::getInstance('module.preuninstall', $moduleName)->deleteModule();
+                Core_Install_Model::getInstance('module.preuninstall', $moduleName)->deleteModule();
                 break;
         }
     }

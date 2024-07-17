@@ -11,7 +11,7 @@
     {if empty($FIELD_NAME)}
         {assign var=FIELD_NAME value=$FIELD_MODEL->getFieldName()}
     {/if}
-    <div class="Vtiger_Number_UIType">
+    <div class="Core_Number_UIType">
         <input id="{$MODULE}_editView_fieldName_{$FIELD_NAME}" type="text" class="form-control inputElement numberField replaceCommaWithDot" name="{$FIELD_NAME}"
                value="{$FIELD_MODEL->getEditViewDisplayValue($FIELD_VALUE)}" {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}
                 {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if}

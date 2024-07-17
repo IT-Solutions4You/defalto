@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the IT-Solutions4You CRM Software.
  *
  * (c) IT-Solutions4You s.r.o [info@its4you.sk]
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class Vtiger_EditSharingRecord_View extends Vtiger_Edit_View
+class Core_EditSharingRecord_View extends Vtiger_Edit_View
 {
     /**
      * @param Vtiger_Request $request
@@ -20,7 +20,7 @@ class Vtiger_EditSharingRecord_View extends Vtiger_Edit_View
         $qualifiedModuleName = $request->getModule(false);
         $record = $request->get('record');
 
-        $recordModel = Vtiger_SharingRecord_Model::getInstance($record);
+        $recordModel = Core_SharingRecord_Model::getInstance($record);
         $viewer->assign('MODE', 'edit');
 
         $recordName = $recordModel->getRecordName($record);

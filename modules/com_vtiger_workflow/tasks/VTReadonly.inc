@@ -18,7 +18,7 @@ class VTReadonly extends VTTask
 
         list($moduleId, $record) = vtws_getIdComponents($entity->getId());
 
-        $readonly = Vtiger_Readonly_Model::getInstance($module);
+        $readonly = Core_Readonly_Model::getInstance($module);
         $readonly->setRecord($record);
         $readonly->setReadonly();
     }

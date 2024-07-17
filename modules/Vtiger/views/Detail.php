@@ -665,7 +665,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
         $recordId = $request->get('record');
         $moduleName = $request->getModule();
 
-        $recordModel = Vtiger_SharingRecord_Model::getInstance($recordId);
+        $recordModel = Core_SharingRecord_Model::getInstance($recordId);
 
         $viewer = $this->getViewer($request);
 

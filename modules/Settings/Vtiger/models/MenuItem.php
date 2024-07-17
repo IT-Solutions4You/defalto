@@ -311,7 +311,7 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model {
      */
     public function save(): void
     {
-        $table = (new Vtiger_DatabaseData_Model())->getTable(self::$itemsTable, self::$itemId);
+        $table = (new Core_DatabaseData_Model())->getTable(self::$itemsTable, self::$itemId);
         $data = $table->selectData([], ['name' => $this->get('name')]);
 
         if ($this->isEmpty('sequence')) {
@@ -344,7 +344,7 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model {
      */
     public function delete(): void
     {
-        $table = (new Vtiger_DatabaseData_Model())->getTable(self::$itemsTable, self::$itemId);
+        $table = (new Core_DatabaseData_Model())->getTable(self::$itemsTable, self::$itemId);
         $table->deleteData([
             'name' => $this->get('name'),
         ]);

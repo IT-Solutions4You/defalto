@@ -1054,7 +1054,7 @@ class Services extends CRMEntity {
             Vtiger_Access::setDefaultSharing($ServicesModule);
         }
 
-        Vtiger_Install_Model::getInstance($eventType, $moduleName)->install();
+        Core_Install_Model::getInstance($eventType, $moduleName)->install();
     }
 
     /** Function to unlink an entity with given Id from another entity */

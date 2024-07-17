@@ -18,8 +18,8 @@ if (!class_exists('Migration_20240126101600')) {
          */
         public function migrate(string $fileName): void
         {
-            Vtiger_Readonly_Model::updateTable();
-            Vtiger_Readonly_Model::updateWorkflow();
+            Core_Readonly_Model::updateTable();
+            Core_Readonly_Model::updateWorkflow();
         }
     }
 } else {

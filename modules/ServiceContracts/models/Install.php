@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-class ServiceContracts_Install_Model extends Vtiger_Install_Model {
+class ServiceContracts_Install_Model extends Core_Install_Model {
 
     /**
      * @var string

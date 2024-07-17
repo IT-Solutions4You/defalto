@@ -70,7 +70,7 @@
         <div class="kanbanFieldValuesScroll row flex-nowrap h-100 overflow-auto">
             {foreach from=$FIELD_VALUES item=FIELD_VALUE}
                 {assign var=FIELD_VALUE_BG value=$FIELD_VALUES_COLOR[$FIELD_VALUE]}
-                {assign var=FIELD_VALUE_RGB value=Vtiger_Kanban_Model::getRGBFromHex($FIELD_VALUES_COLOR[$FIELD_VALUE])}
+                {assign var=FIELD_VALUE_RGB value=Core_Kanban_Model::getRGBFromHex($FIELD_VALUES_COLOR[$FIELD_VALUE])}
                 {assign var=FIELD_VALUE_COLOR value=Settings_Picklist_Module_Model::getTextColor($FIELD_VALUE_BG)}
                 <div class="kb-container col-xl-2 col-lg-2 col-sm-3 pt-3 ps-0">
                     <div class="h-100">
