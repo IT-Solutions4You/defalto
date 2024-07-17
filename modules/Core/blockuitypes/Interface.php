@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the IT-Solutions4You CRM Software.
  *
  * (c) IT-Solutions4You s.r.o [info@its4you.sk]
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-interface Vtiger_Interface_BlockUIType
+interface Core_Interface_BlockUIType
 {
     /**
      * Returns the Template name used when editing

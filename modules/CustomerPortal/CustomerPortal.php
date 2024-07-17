@@ -62,6 +62,6 @@ class CustomerPortal
             $adb->pquery('UPDATE vtiger_tab SET customized=0 WHERE name=?', [$moduleName]);
         }
 
-        Vtiger_Install_Model::getInstance($eventType, $moduleName)->install();
+        Core_Install_Model::getInstance($eventType, $moduleName)->install();
     }
 }

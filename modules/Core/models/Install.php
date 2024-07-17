@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-abstract class Vtiger_Install_Model extends Vtiger_DatabaseData_Model
+abstract class Core_Install_Model extends Core_DatabaseData_Model
 {
     /**
      * @var array

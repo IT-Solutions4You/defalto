@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class Vtiger_TemplateContent_Helper extends Vtiger_Base_Model
+class Core_TemplateContent_Helper extends Vtiger_Base_Model
 {
     /**
      * @param $finalDetails

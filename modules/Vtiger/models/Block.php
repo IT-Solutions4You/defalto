@@ -224,10 +224,10 @@ class Vtiger_Block_Model extends Vtiger_Block {
     }
 
     /**
-     * @return Vtiger_Interface_BlockUIType
+     * @return Core_Interface_BlockUIType
      */
-    public function getUITypeModel(): Vtiger_Interface_BlockUIType
+    public function getUITypeModel(): Core_Interface_BlockUIType
     {
-        return Vtiger_Factory_BlockUIType::getInstanceFromBlock($this);
+        return Core_Factory_BlockUIType::getInstanceFromBlock($this);
     }
 }

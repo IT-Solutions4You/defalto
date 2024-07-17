@@ -141,7 +141,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 		}
 
         if ($currentUserModel->isAdminUser() || $currentUserModel->getId() === $recordModel->get('assigned_user_id')) {
-            if (Vtiger_Readonly_Model::isButtonPermitted($moduleName, $recordId)) {
+            if (Core_Readonly_Model::isButtonPermitted($moduleName, $recordId)) {
                 $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues(
                     [
                         'linktype' => 'DETAILVIEWBASIC',

@@ -219,7 +219,7 @@ function isPermitted($module,$actionname,$record_id='')
     $defaultOrgSharingPermission = [];
     $sharingPermission = 'no';
 
-    if (!Vtiger_Readonly_Model::isPermitted((string)$module, (int)$record_id, $actionname)) {
+    if (!Core_Readonly_Model::isPermitted((string)$module, (int)$record_id, $actionname)) {
         return 'no';
     }
 

@@ -9,7 +9,7 @@
     <div class="table-actions d-flex align-items-center">
         {if !$SEARCH_MODE_RESULTS}
             <span class="input form-check">
-                {assign var=LIST_VIEW_ENTRIE_IS_READONLY value=!Vtiger_Readonly_Model::isPermitted($LISTVIEW_ENTRY->getModuleName(), $LISTVIEW_ENTRY->getId())}
+                {assign var=LIST_VIEW_ENTRIE_IS_READONLY value=!Core_Readonly_Model::isPermitted($LISTVIEW_ENTRY->getModuleName(), $LISTVIEW_ENTRY->getId())}
                 <input type="checkbox" value="{$LISTVIEW_ENTRY->getId()}" class="listViewEntriesCheckBox form-check-input"/>
                 <input type="hidden" value="{$LIST_VIEW_ENTRIE_IS_READONLY}" class="listViewEntriesIsReadonly"/>
             </span>

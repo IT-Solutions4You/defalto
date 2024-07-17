@@ -1,6 +1,6 @@
 <?php
 
-class Import_Install_Model extends Vtiger_Install_Model
+class Import_Install_Model extends Core_Install_Model
 {
     protected string $moduleName = 'Import';
 

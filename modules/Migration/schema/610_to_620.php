@@ -7,7 +7,7 @@
  */
 
 if(defined('VTIGER_UPGRADE')) {
-    Vtiger_Install_Model::getInstance('module.postupdate', 'Google')->installModule();
+    Core_Install_Model::getInstance('module.postupdate', 'Google')->installModule();
 }
 if(defined('INSTALLATION_MODE')) {
 		// Set of task to be taken care while specifically in installation mode.

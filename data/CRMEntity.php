@@ -959,7 +959,7 @@ class CRMEntity {
 		$log->debug("module name is " . $module_name);
 
         //Readonly disable save
-        if (!Vtiger_Readonly_Model::isPermitted((string)$this->column_fields['record_module'], (int)$this->column_fields['record_id'])) {
+        if (!Core_Readonly_Model::isPermitted((string)$this->column_fields['record_module'], (int)$this->column_fields['record_id'])) {
             return;
         }
 

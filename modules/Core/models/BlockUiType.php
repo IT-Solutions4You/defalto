@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the IT-Solutions4You CRM Software.
  *
  * (c) IT-Solutions4You s.r.o [info@its4you.sk]
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class Vtiger_BlockUiType_Model extends Vtiger_Base_Model
+class Core_BlockUiType_Model extends Vtiger_Base_Model
 {
     /**
      * Retrieves the name associated with the given UI type from the database.
@@ -16,6 +16,7 @@ class Vtiger_BlockUiType_Model extends Vtiger_Base_Model
      * @param int $uiType The UI type to retrieve the name for. Defaults to 1.
      *
      * @return string The name associated with the given UI type.
+     * @throws Exception
      */
     public static function getNameForUIType(int $uiType = 1): string
     {

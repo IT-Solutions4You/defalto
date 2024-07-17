@@ -6,7 +6,7 @@
  * All Rights Reserved.
  */
 
-class Vtiger_Percentage_UIType extends Vtiger_Number_UIType
+class Vtiger_Percentage_UIType extends Core_Number_UIType
 {
     /**
      * @return string

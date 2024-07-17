@@ -19,7 +19,7 @@ class Webforms {
 
 	public function vtlib_handler($moduleName, $eventType)
 	{
-		Vtiger_Install_Model::getInstance($eventType, $moduleName)->install();
+		Core_Install_Model::getInstance($eventType, $moduleName)->install();
 	}
 
 	function updateSettings(){

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class ProjectMilestone_Install_Model extends Vtiger_Install_Model
+class ProjectMilestone_Install_Model extends Core_Install_Model
 {
 
     protected string $moduleNumbering = 'PM';

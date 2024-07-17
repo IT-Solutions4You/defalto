@@ -36,6 +36,6 @@ if(defined('VTIGER_UPGRADE')) {
     ];
 
     foreach ($updateModulesList as $moduleName) {
-		Vtiger_Install_Model::getInstance('module.postupdate', $moduleName)->installModule();
+		Core_Install_Model::getInstance('module.postupdate', $moduleName)->installModule();
 	}
 }

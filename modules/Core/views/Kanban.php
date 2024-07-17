@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the IT-Solutions4You CRM Software.
  *
  * (c) IT-Solutions4You s.r.o [info@its4you.sk]
@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-class Vtiger_Kanban_View extends Vtiger_Index_View
+class Core_Kanban_View extends Vtiger_Index_View
 {
 
     public function getHeaderScripts(Vtiger_Request $request)
@@ -32,7 +32,7 @@ class Vtiger_Kanban_View extends Vtiger_Index_View
         $module = $request->getModule();
         $qualifiedModule = $request->getModule(false);
 
-        $kanbanModel = Vtiger_Kanban_Model::getInstance($module);
+        $kanbanModel = Core_Kanban_Model::getInstance($module);
         $kanbanModel->retrieveRequestInfo($request);
 
         $fieldValues = $kanbanModel->getFieldValues();
@@ -70,7 +70,7 @@ class Vtiger_Kanban_View extends Vtiger_Index_View
     {
         $module = $request->getModule();
 
-        $kanbanModel = Vtiger_Kanban_Model::getInstance($module);
+        $kanbanModel = Core_Kanban_Model::getInstance($module);
         $kanbanModel->retrieveRequestInfo($request);
 
         $recordsInfo = array();

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class Vtiger_Country_Model extends Vtiger_DatabaseData_Model
+class Core_Country_Model extends Core_DatabaseData_Model
 {
     public string $table = 'its4you_countries';
     public static array $countryCodes = [

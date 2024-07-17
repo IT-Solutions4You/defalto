@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class Leads_Install_Model extends Vtiger_Install_Model {
+class Leads_Install_Model extends Core_Install_Model {
 
     /**
      * @return void

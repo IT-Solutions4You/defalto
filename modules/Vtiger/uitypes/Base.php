@@ -45,38 +45,32 @@ class Vtiger_Base_UIType extends Vtiger_Base_Model {
 		return $value;
 	}
 
-	/**
-	 * Static function to get the UIType object from Vtiger Field Model
-	 * @param Vtiger_Field_Model $fieldModel
-	 * @return Vtiger_Base_UIType or UIType specific object instance
-	 */
-	public static function getInstanceFromField($fieldModel) {
-		$fieldDataType = $fieldModel->getFieldDataType();
-		$uiTypeClassSuffix = ucfirst($fieldDataType);
-		$moduleName = $fieldModel->getModuleName();
-		$moduleSpecificUiTypeClassName = $moduleName.'_'.$uiTypeClassSuffix.'_UIType';
-		$uiTypeClassName = 'Vtiger_'.$uiTypeClassSuffix.'_UIType';
-		$fallBackClassName = 'Vtiger_Base_UIType';
+    /**
+     * Static function to get the UIType object from Vtiger Field Model
+     * @param Vtiger_Field_Model $fieldModel
+     * @return Vtiger_Base_UIType or UIType specific object instance
+     * @throws AppException
+     * @throws Exception
+     */
+    public static function getInstanceFromField($fieldModel): Vtiger_Base_UIType
+    {
+        $fieldDataType = $fieldModel->getFieldDataType();
+        $uiTypeClassSuffix = ucfirst($fieldDataType);
+        $moduleName = $fieldModel->getModuleName();
+        $moduleSpecificFilePath = Vtiger_Loader::getComponentClassName('UIType', $uiTypeClassSuffix, $moduleName);
 
-		$moduleSpecificFileName = 'modules.'. $moduleName .'.uitypes.'.$uiTypeClassSuffix;
-		$uiTypeClassFileName = 'modules.Vtiger.uitypes.'.$uiTypeClassSuffix;
+        if (class_exists($moduleSpecificFilePath)) {
+            $instance = new $moduleSpecificFilePath();
+        } else {
+            $instance = new Vtiger_Base_UIType();
+        }
 
-		$moduleSpecificFilePath = Vtiger_Loader::resolveNameToPath($moduleSpecificFileName);
-		$completeFilePath = Vtiger_Loader::resolveNameToPath($uiTypeClassFileName);
+        $instance->set('field', $fieldModel);
 
-		if(file_exists($moduleSpecificFilePath)) {
-			$instance = new $moduleSpecificUiTypeClassName();
-		}
-		else if(file_exists($completeFilePath)) {
-			$instance = new $uiTypeClassName();
-		} else {
-			$instance = new $fallBackClassName();
-		}
-		$instance->set('field', $fieldModel);
-		return $instance;
-	}
+        return $instance;
+    }
 
-	/**
+    /**
 	 * Function to get the display value in edit view
 	 * @param reference record id
 	 * @return link

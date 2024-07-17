@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-class ITS4YouEmails_Install_Model extends Vtiger_Install_Model
+class ITS4YouEmails_Install_Model extends Core_Install_Model
 {
 
     protected string $moduleName = 'ITS4YouEmails';
