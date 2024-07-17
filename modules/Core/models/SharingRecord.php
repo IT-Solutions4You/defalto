@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the IT-Solutions4You CRM Software.
  *
  * (c) IT-Solutions4You s.r.o [info@its4you.sk]
@@ -10,7 +10,7 @@
 
 require_once 'include/events/include.inc';
 
-class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
+class Core_SharingRecord_Model extends Vtiger_Base_Model
 {
     private $isShared;
 
@@ -28,7 +28,7 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
      *
      * @param <Number> record Id
      *
-     * @return <Vtiger_SharingRecord_Model> instance
+     * @return <Core_SharingRecord_Model> instance
      */
     public function setId($id)
     {
@@ -89,7 +89,7 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
 
     /**
      * Function to get all the members of the groups
-     * @return <Array> Vtiger_SharingRecord_Model instances
+     * @return <Array> Core_SharingRecord_Model instances
      */
     public function getMembers($record = false)
     {

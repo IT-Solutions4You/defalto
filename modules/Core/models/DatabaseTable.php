@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class Vtiger_DatabaseTable_Model extends Vtiger_Base_Model
+class Core_DatabaseTable_Model extends Vtiger_Base_Model
 {
     /**
      * @var PearDatabase

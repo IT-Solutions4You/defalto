@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class Vtiger_Country_UIType extends Vtiger_Base_UIType
+class Core_Country_UIType extends Vtiger_Base_UIType
 {
     /**
      * @param $value
@@ -19,8 +19,8 @@ class Vtiger_Country_UIType extends Vtiger_Base_UIType
     public function getDisplayValue($value, $record = false, $recordInstance = false)
     {
         $moduleName = $this->getModuleName();
-        /** @var Vtiger_Country_Model $countryModel */
-        $countryModel = Vtiger_Country_Model::getInstance($moduleName);
+        /** @var Core_Country_Model $countryModel */
+        $countryModel = Core_Country_Model::getInstance($moduleName);
 
         if (!empty($value)) {
             $country = $countryModel->getCountry($value);
@@ -50,8 +50,8 @@ class Vtiger_Country_UIType extends Vtiger_Base_UIType
     public function getPicklistValues(): array
     {
         $moduleName = $this->getModuleName();
-        /** @var Vtiger_Country_Model $countryModel */
-        $countryModel = Vtiger_Country_Model::getInstance($moduleName);
+        /** @var Core_Country_Model $countryModel */
+        $countryModel = Core_Country_Model::getInstance($moduleName);
         $countries = $countryModel->getCountries();
         $values = [];
 

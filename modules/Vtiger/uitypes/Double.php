@@ -6,6 +6,6 @@
  * All Rights Reserved.
  */
 
-class Vtiger_Double_UIType extends Vtiger_Number_UIType
+class Vtiger_Double_UIType extends Core_Number_UIType
 {
 }

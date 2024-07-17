@@ -348,7 +348,7 @@ class SMSNotifierBase extends CRMEntity {
         $SMSNotifierModule  = Vtiger_Module::getInstance('SMSNotifier');
         Vtiger_Access::setDefaultSharing($SMSNotifierModule);
 
-		Vtiger_Install_Model::getInstance($eventType, $moduleName)->install();
+		Core_Install_Model::getInstance($eventType, $moduleName)->install();
 	}
 
 	function getListButtons($app_strings) {

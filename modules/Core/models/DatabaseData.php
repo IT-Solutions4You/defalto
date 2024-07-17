@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class Vtiger_DatabaseData_Model extends Vtiger_DatabaseTable_Model
+class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 {
     /**
      * @param string $table

@@ -12,7 +12,7 @@ class Settings_Vtiger_Country_Action extends Settings_Vtiger_Index_Action
 {
     public function activateAll(Vtiger_Request $request)
     {
-        $countryModel = Vtiger_Country_Model::getInstance();
+        $countryModel = Core_Country_Model::getInstance();
         $countryModel->activateAll();
 
         $response = new Vtiger_Response();
@@ -25,7 +25,7 @@ class Settings_Vtiger_Country_Action extends Settings_Vtiger_Index_Action
 
     public function deactivateAll(Vtiger_Request $request)
     {
-        $countryModel = Vtiger_Country_Model::getInstance();
+        $countryModel = Core_Country_Model::getInstance();
         $countryModel->deactivateAll();
 
         $response = new Vtiger_Response();
@@ -38,7 +38,7 @@ class Settings_Vtiger_Country_Action extends Settings_Vtiger_Index_Action
 
     public function update(Vtiger_Request $request)
     {
-        $countryModel = Vtiger_Country_Model::getInstance();
+        $countryModel = Core_Country_Model::getInstance();
         $countryModel->set('countries', [
             $request->get('value') => 'true' === $request->get('is_active') ? 1 : 0,
         ]);

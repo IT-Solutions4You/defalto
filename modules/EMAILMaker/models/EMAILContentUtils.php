@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-class EMAILMaker_EMAILContentUtils_Model extends Vtiger_TemplateContent_Helper
+class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
 {
 
     private static $is_inventory_module = array();

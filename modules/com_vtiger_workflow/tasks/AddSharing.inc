@@ -20,9 +20,9 @@ class AddSharing extends VTTask
         return ['memberViewList', 'memberEditList'];
     }
 
-    public function getSharingRecord(): Vtiger_SharingRecord_Model
+    public function getSharingRecord(): Core_SharingRecord_Model
     {
-        return new Vtiger_SharingRecord_Model();
+        return new Core_SharingRecord_Model();
     }
 
     public function isSelectedList($id): bool
@@ -39,7 +39,7 @@ class AddSharing extends VTTask
     {
         $entityId = $entity->getId();
         $recordId = vtws_getIdComponents($entityId)[1];
-        $sharing = Vtiger_SharingRecord_Model::getAllSharing($recordId);
+        $sharing = Core_SharingRecord_Model::getAllSharing($recordId);
         $setMemberViewList = [];
         $setMemberEditList = [];
         $counter = 0;

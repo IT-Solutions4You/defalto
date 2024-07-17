@@ -15,7 +15,7 @@ class Settings_Vtiger_Country_View extends Settings_Vtiger_Index_View
         $module = $request->getModule();
         $qualifiedModule = $request->getModule(false);
 
-        $countryModel = Vtiger_Country_Model::getInstance();
+        $countryModel = Core_Country_Model::getInstance();
 
         $viewer = $this->getViewer($request);
         $viewer->assign('MODULE', $module);

@@ -161,7 +161,16 @@ class Vtiger_Loader {
 		if(file_exists($fallBackComponentFilePath)) {
 			return $fallBackComponentClassName;
 		}
-		throw new AppException('Handler not found.');
+
+        // Build fall back file path and class name
+        $coreComponentFilePath = Vtiger_Loader::resolveNameToPath('modules.Core.'.$componentTypeDirectory.'.'.$componentName);
+        $coreComponentClassName = 'Core_'.$componentName.'_'.$componentType;
+
+        if(file_exists($coreComponentFilePath)) {
+            return $coreComponentClassName;
+        }
+
+		throw new AppException('Handler not found: ' . $fallBackComponentClassName);
 	}
 
 	/**

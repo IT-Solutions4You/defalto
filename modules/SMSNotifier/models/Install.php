@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class SMSNotifier_Install_Model extends Vtiger_Install_Model
+class SMSNotifier_Install_Model extends Core_Install_Model
 {
     /**
      * [module, type, label, url, icon, sequence, handlerInfo]

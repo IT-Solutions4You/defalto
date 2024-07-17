@@ -749,7 +749,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
      */
     public static function isSupportedSaveOverlay($module): bool
     {
-        return class_exists('Vtiger_SaveOverlay_Action') || class_exists(sprintf('%s_SaveOverlay_Action', $module));
+        return class_exists('Core_SaveOverlay_Action') || class_exists(sprintf('%s_SaveOverlay_Action', $module));
     }
 
     /**

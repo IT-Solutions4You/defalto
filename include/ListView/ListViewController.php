@@ -356,9 +356,9 @@ class ListViewController {
                 } elseif ($fieldDataType == 'currency') {
                     $value = Vtiger_Currency_UIType::transformDisplayValue($value, null, true);
                 } elseif($fieldDataType == 'percent') {
-                    $value = Vtiger_Number_UIType::transformDisplayValue($value) . ' %';
+                    $value = Core_Number_UIType::transformDisplayValue($value) . ' %';
                 } elseif ($fieldDataType == 'double' || $fieldDataType == 'integer') {
-					$value = Vtiger_Number_UIType::transformDisplayValue($value);
+					$value = Core_Number_UIType::transformDisplayValue($value);
 				} elseif($fieldDataType == 'url') {
 					$matchPattern = "^[\w]+:\/\/^";
 					preg_match($matchPattern, $rawValue, $matches);
@@ -466,7 +466,7 @@ class ListViewController {
 					}
 					$value = $displayValue;
 				} elseif($field->getUIType() == Vtiger_Field_Model::UITYPE_COUNTRY) {
-                    $value = !empty($rawValue) ? Vtiger_Country_UIType::transformDisplayValue($rawValue) : '';
+                    $value = !empty($rawValue) ? Core_Country_UIType::transformDisplayValue($rawValue) : '';
                 } else {
 					$value = textlength_check($value);
 				}

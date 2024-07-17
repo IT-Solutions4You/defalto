@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class Vtiger_SaveSharingRecord_Action extends Vtiger_Save_Action
+class Core_SaveSharingRecord_Action extends Vtiger_Save_Action
 {
     /**
      * @param Vtiger_Request $request
@@ -18,7 +18,7 @@ class Vtiger_SaveSharingRecord_Action extends Vtiger_Save_Action
         $moduleName = $request->getModule();
         $recordId = $request->get('record');
 
-        $recordModel = new Vtiger_SharingRecord_Model();
+        $recordModel = new Core_SharingRecord_Model();
 
         if ($recordModel) {
             $recordModel->set('record', $request->get('record'));

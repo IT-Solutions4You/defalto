@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the IT-Solutions4You CRM Software.
  *
  * (c) IT-Solutions4You s.r.o [info@its4you.sk]
@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-class Vtiger_Readonly_Action extends Vtiger_Action_Controller
+class Core_Readonly_Action extends Vtiger_Action_Controller
 {
 
     /**
@@ -22,7 +22,7 @@ class Vtiger_Readonly_Action extends Vtiger_Action_Controller
         $success = false;
 
         if (!empty($record)) {
-            $model = Vtiger_Readonly_Model::getInstance($module);
+            $model = Core_Readonly_Model::getInstance($module);
             $model->setRecord($record);
             $model->unsetReadonly();
 
@@ -50,15 +50,15 @@ class Vtiger_Readonly_Action extends Vtiger_Action_Controller
 
         echo '<h1>Update table</h1>';
 
-        Vtiger_Readonly_Model::updateTable();
+        Core_Readonly_Model::updateTable();
 
         echo '<h1>Delete workflow</h1>';
 
-        Vtiger_Readonly_Model::updateWorkflow(false);
+        Core_Readonly_Model::updateWorkflow(false);
 
         echo '<h1>Install workflow</h1>';
 
-        Vtiger_Readonly_Model::updateWorkflow();
+        Core_Readonly_Model::updateWorkflow();
 
         echo '<h1>Finish</h1>';
     }
@@ -75,7 +75,7 @@ class Vtiger_Readonly_Action extends Vtiger_Action_Controller
         $success = false;
 
         if (!empty($record)) {
-            $model = Vtiger_Readonly_Model::getInstance($module);
+            $model = Core_Readonly_Model::getInstance($module);
             $model->setRecord($record);
             $model->setReadonly();
 

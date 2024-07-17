@@ -1043,7 +1043,7 @@ if(!defined('INSTALLATION_MODE')) {
     $moduleInstance = Vtiger_Module_Model::getInstance('PBXManager');
     if(!$moduleInstance){ 
        echo '<br>Installing PBX Manager starts<br>'; 
-        Vtiger_Install_Model::getInstance('module.postupdate', 'PBXManager')->installModule();
+        Core_Install_Model::getInstance('module.postupdate', 'PBXManager')->installModule();
     }else{ 
         $result = $adb->pquery('SELECT server, port FROM vtiger_asterisk', array());
         $server = $adb->query_result($result, 0, 'server');

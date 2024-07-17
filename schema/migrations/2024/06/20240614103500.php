@@ -26,8 +26,8 @@ if (!class_exists('Migration_20240614103500')) {
                 $current_user = $user->retrieveCurrentUserInfoFromFile(Users::getActiveAdminId());
             }
 
-            /** @var Vtiger_Country_Model $countryModel */
-            $countryModel = Vtiger_Country_Model::getInstance();
+            /** @var Core_Country_Model $countryModel */
+            $countryModel = Core_Country_Model::getInstance();
             $countryModel->createTables();
             $countryModel->createLinks();
 
@@ -44,7 +44,7 @@ if (!class_exists('Migration_20240614103500')) {
             ];
 
             foreach ($moduleNames as $moduleName) {
-                Vtiger_Install_Model::getInstance('module.postinstall', $moduleName)->installModule();
+                Core_Install_Model::getInstance('module.postinstall', $moduleName)->installModule();
             }
 
             $countryFields = [
@@ -62,7 +62,7 @@ if (!class_exists('Migration_20240614103500')) {
                 ['address_country', 'vtiger_users',],
                 ['country', 'vtiger_vendor',],
             ];
-            $fieldTable = (new Vtiger_DatabaseData_Model())->getTable('vtiger_field', null);
+            $fieldTable = (new Core_DatabaseData_Model())->getTable('vtiger_field', null);
 
             foreach ($countryFields as $countryField) {
                 $fieldTable->deleteData(['fieldname' => $countryField[0], 'tablename' => $countryField[1]]);
