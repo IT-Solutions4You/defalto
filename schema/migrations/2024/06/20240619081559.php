@@ -120,7 +120,7 @@ if (!class_exists('Migration_20240619081559')) {
                         $inventoryItem->column_fields['total_after_overall_discount'] = $inventoryItem->column_fields['total_after_discount'] - $discountAmount;
 
                         /**
-                         * Tiez musim zistit ake su v systeme dane, zistit si spravne nazvy stlpcov, spocitat si ich, na zaklade toto naplnit polia tax a tax amount
+                         * Tiez musim zistit ake su v systeme dane, zistit si spravne nazvy stlpcov, spocitat si ich, na zaklade toho naplnit polia tax a tax amount
                          * Nakoniec vycislujem Total - to je vlastne cena po dani
                          */
 

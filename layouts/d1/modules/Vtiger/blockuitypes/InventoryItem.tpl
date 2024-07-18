@@ -22,6 +22,47 @@
         </div>
     </div>
     <div class="blockData p-3 border-top border-light-subtle {if $IS_HIDDEN}hide{/if}">
-        asdfk
+        <div class="lineitemTableContainer">
+            <table class="table table-borderless" id="lineItemTab">
+                <tr class="border-bottom">
+                    <td><strong>{vtranslate('LBL_TOOLS',$MODULE)}</strong></td>
+                    {if isset($PRODUCT_EDITABLE)}
+                        <td>
+                            <span class="text-danger me-2">*</span>
+                            <strong>{vtranslate({$LINEITEM_FIELDS['productid']->get('label')},$MODULE)}</strong>
+                        </td>
+                    {/if}
+                    <td>
+                        <strong>{vtranslate('LBL_QTY',$MODULE)}</strong>
+                    </td>
+                </tr>
+                <tr id="row0" class="hide border-bottom lineItemCloneCopy" data-row-num="0">
+                    {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'Inventory' row_no=0 data=[] IGNORE_UI_REGISTRATION=true}
+                </tr>
+                {foreach key=row_no item=data from=$RELATED_PRODUCTS}
+                    <tr id="row{$row_no}" data-row-num="{$row_no}" class="border-bottom lineItemRow" {if $data["entityType$row_no"] eq 'Products'}data-quantity-in-stock={$data["qtyInStock$row_no"]}{/if}>
+                        {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'Inventory' row_no=$row_no data=$data}
+                    </tr>
+                {/foreach}
+            </table>
+        </div>
+    </div>
+    <div class="px-4">
+        <div class="btn-toolbar">
+            {if $PRODUCT_ACTIVE eq 'true'}
+            <div class="btn-group">
+                <button type="button" class="btn btn-default" id="addProduct" data-module-name="Products">
+                    <i class="fa fa-plus"></i><strong>&nbsp;&nbsp;{vtranslate('LBL_ADD_PRODUCT',$MODULE)}</strong>
+                </button>
+            </div>
+            {/if}
+            {if $SERVICE_ACTIVE eq 'true'}
+            <div class="btn-group">
+                <button type="button" class="btn btn-default" id="addService" data-module-name="Services">
+                    <i class="fa fa-plus"></i><strong>&nbsp;&nbsp;{vtranslate('LBL_ADD_SERVICE',$MODULE)}</strong>
+                </button>
+            </div>
+            {/if}
+        </div>
     </div>
 </div>
