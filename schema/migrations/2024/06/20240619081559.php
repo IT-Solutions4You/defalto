@@ -23,7 +23,7 @@ if (!class_exists('Migration_20240619081559')) {
             $current_user = Users::getActiveAdminUser();
 
             $inventoryModules = ['Quotes', 'SalesOrder', 'PurchaseOrder', 'Invoice'];
-            $newBlockUiType = Vtiger_BlockUiType_Model::addBlockUiType('InventoryItem');
+            $newBlockUiType = Core_BlockUiType_Model::addBlockUiType('InventoryItem');
 
             foreach ($inventoryModules as $inventoryModule) {
                 $module = Vtiger_Module::getInstance($inventoryModule);

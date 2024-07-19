@@ -18,14 +18,20 @@ trait InventoryItem_Detail_Trait
         $serviceModuleModel = Vtiger_Module_Model::getInstance('Services');
         $viewer->assign('SERVICE_ACTIVE', $serviceModuleModel->isActive());
 
+        $inventoryItems = [];
+        $db = PearDatabase::getInstance();
+        $sql = 'SELECT df_inventoryitem.* 
+            FROM df_inventoryitem
+            LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid
+            WHERE vtiger_crmentity.deleted = 0
+            AND df_inventoryitem.parentid = ?
+            ORDER BY df_inventoryitem.sequence, vtiger_crmentity.crmid';
+        $result = $db->pquery($sql, [$request->get('record')]);
 
-        /*show($request->getAll());
-        $entityModuleModel = Vtiger_Module_Model::getInstance($request->get('module'));
-        $entityRecordModel = Vtiger_Record_Model::getInstanceById($request->get('record'), $entityModuleModel);
-        $inventoryItemModuleModel = Vtiger_Module_Model::getInstance('InventoryItem');
-        $relationModel = Vtiger_Relation_Model::getInstance($entityModuleModel, $inventoryItemModuleModel);
-        $query = $relationModel->getQuery($entityRecordModel);
-        show($query);*/
+        while ($row = $db->fetch_array($result)) {
+            $inventoryItems[] = $row;
+        }
+
+        $viewer->assign('INVENTORY_ITEMS', $inventoryItems);
     }
 }
-
