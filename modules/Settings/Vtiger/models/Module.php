@@ -105,7 +105,7 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 	 * @return Settings_Vtiger_Module_Model instance
 	 */
 	public static function getInstance() {
-            list($name) = func_get_args();
+            [$name] = func_get_args();
             if(empty($name)){
                 $name='Settings:Vtiger';
             }
@@ -148,51 +148,55 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 		return $settingsMenItems;
 	}
 
-	static function getActiveBlockName($request) {
-		$finalResult = array();
-		$view = $request->get('view');
-		$moduleName = $request->getModule();
-		$qualifiedModuleName = $request->getModule(false);
+    public static function getActiveBlockName($request)
+    {
+        $finalResult = [];
+        $view = $request->get('view');
+        $moduleName = $request->getModule();
+        $qualifiedModuleName = $request->getModule(false);
 
-		$arrayParams = array();
-		$whereCondition .= "linkto LIKE ?  ";
+        $arrayParams = [];
+        $whereCondition = ' linkto LIKE ? ';
         $arrayParams[] = "%$moduleName%";
- 		if ($moduleName != 'LanguageEditor') {
- 			$whereCondition .= "AND (linkto LIKE '%parent=Settings%' OR linkto LIKE '%parenttab=Settings%')";
- 		}
 
-		$db = PearDatabase::getInstance();
-		$query = "SELECT vtiger_settings_blocks.label AS blockname, vtiger_settings_field.name AS menu FROM vtiger_settings_blocks
+        if ($moduleName != 'LanguageEditor') {
+            $whereCondition .= 'AND (linkto LIKE \'%parent=Settings%\' OR linkto LIKE \'%parenttab=Settings%\')';
+        }
+
+        $db = PearDatabase::getInstance();
+        $query = "SELECT vtiger_settings_blocks.label AS block, vtiger_settings_field.name AS menu FROM vtiger_settings_blocks
 					INNER JOIN vtiger_settings_field ON vtiger_settings_field.blockid=vtiger_settings_blocks.blockid
 					WHERE $whereCondition";
-		$result = $db->pquery($query, $arrayParams);
-		$numOfRows = $db->num_rows($result);
-		if ($numOfRows == 1) {
-			$finalResult = array(	'block' => $db->query_result($result, 0, 'blockname'),
-									'menu'	=> $db->query_result($result, 0, 'menu'));
-		} elseif ($numOfRows > 1) {
+        $result = $db->pquery($query, $arrayParams);
+        $numOfRows = $db->num_rows($result);
+
+        if ($numOfRows == 1) {
+            $finalResult = $db->fetchByAssoc($result);
+        } elseif ($numOfRows > 1) {
             $query = "$query AND linkto LIKE ? ";
             $arrayParams[] = "%view=$view%";
-			$result = $db->pquery($query, $arrayParams);
-			$numOfRows = $db->num_rows($result);
-			if ($numOfRows == 1) {
-				$finalResult = array(	'block' => $db->query_result($result, 0, 'blockname'),
-										'menu'	=> $db->query_result($result, 0, 'menu'));
-			}
-		}
+            $result = $db->pquery($query, $arrayParams);
+            $numOfRows = $db->num_rows($result);
 
-		if (!$finalResult) {
-			if ($moduleName === 'Users') {
-				$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-			} else {
-				$moduleModel = Settings_Vtiger_Module_Model::getInstance($qualifiedModuleName);
-			}
-			$finalResult = $moduleModel->getSettingsActiveBlock($view);
-		}
-		return $finalResult;
-	}
+            if ($numOfRows == 1) {
+                $finalResult = $db->fetchByAssoc($result);
+            }
+        }
 
-	public function getSettingsActiveBlock($viewName) {
+        if (!$finalResult) {
+            if ($moduleName === 'Users') {
+                $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+            } else {
+                $moduleModel = Settings_Vtiger_Module_Model::getInstance($qualifiedModuleName);
+            }
+
+            $finalResult = $moduleModel->getSettingsActiveBlock($view);
+        }
+
+        return $finalResult;
+    }
+
+    public function getSettingsActiveBlock($viewName) {
 		$blocksList = array('OutgoingServerEdit' => array('block' => 'LBL_CONFIGURATION', 'menu' => 'LBL_MAIL_SERVER_SETTINGS'));
 		return $blocksList[$viewName];
 	}
