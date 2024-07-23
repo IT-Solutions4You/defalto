@@ -5,4 +5,4 @@
 * All Rights Reserved.
 */
 
-Inventory_Detail_Js("Quotes_Detail_Js",{},{});
+Vtiger_Detail_Js("Quotes_Detail_Js",{},{});

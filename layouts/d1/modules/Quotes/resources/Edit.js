@@ -5,7 +5,7 @@
 * All Rights Reserved.
 */
 
-Inventory_Edit_Js("Quotes_Edit_Js",{},{
+Vtiger_Edit_Js("Quotes_Edit_Js",{},{
     
     accountsReferenceField : false,
     contactsReferenceField : false,

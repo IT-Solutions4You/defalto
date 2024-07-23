@@ -288,6 +288,7 @@ $languageStrings = array(
 	'LBL_TAX' => 'Imposto',
 	'LBL_ADD_PRODUCT' => 'Adicionar Produto',
 	'LBL_ADD_SERVICE' => 'Adicionar Serviço',
+    'LBL_ADD_TEXT' => 'Adicionar Texto',
 	'LBL_LI_ADD_PRODUCT' => 'Produto',
 	'LBL_LI_ADD_SERVICE' => 'Serviço',
 	'LBL_ITEMS_TOTAL' => 'Valor Total Itens',

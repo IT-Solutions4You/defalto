@@ -63,6 +63,11 @@
                 </button>
             </div>
             {/if}
+            <div class="btn-group">
+                <button type="button" class="btn btn-default" id="addText" data-module-name="">
+                    <i class="fa fa-plus"></i><strong>&nbsp;&nbsp;{vtranslate('LBL_ADD_TEXT', $MODULE)}</strong>
+                </button>
+            </div>
         </div>
     </div>
 </div>

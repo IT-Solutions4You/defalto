@@ -224,6 +224,7 @@ $languageStrings = array(
 	'LBL_TAX'                      => 'adó'                        ,
 	'LBL_ADD_PRODUCT'              => 'Következő tétel: Termék hozzáadása',
 	'LBL_ADD_SERVICE'              => 'Következő tétel: Szolgáltatás hozzáadása',
+    'LBL_ADD_TEXT'                 => 'Következő tétel: Szöveg hozzáadása',
 	'LBL_ITEMS_TOTAL'              => 'Items Total'                 , // TODO: Review
 	'LBL_SHIPPING_AND_HANDLING_CHARGES' => 'Szállítási és Kezelési Költség',
 	'LBL_PRE_TAX_TOTAL'            => 'Pre Tax Total'               , // TODO: Review

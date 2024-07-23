@@ -224,6 +224,7 @@ $languageStrings = array(
 	'LBL_TAX'                      => 'Impozit'                     ,
 	'LBL_ADD_PRODUCT'              => 'Adauga produs'               ,
 	'LBL_ADD_SERVICE'              => 'Adauga serviciu'             ,
+    'LBL_ADD_TEXT'                 => 'Adauga text'                 ,
 	'LBL_ITEMS_TOTAL'              => 'Items Total'                 , // TODO: Review
 	'LBL_SHIPPING_AND_HANDLING_CHARGES' => 'Taxe transport & livrare'    ,
 	'LBL_PRE_TAX_TOTAL'            => 'Pre Tax Total'               , // TODO: Review

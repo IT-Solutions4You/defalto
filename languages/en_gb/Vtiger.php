@@ -224,6 +224,7 @@ $languageStrings = array(
 	'LBL_TAX'                      => 'Tax'                         ,
 	'LBL_ADD_PRODUCT'              => 'Add Product'                 ,
 	'LBL_ADD_SERVICE'              => 'Add Service'                 ,
+    'LBL_ADD_TEXT'                 => 'Add Text'                    ,
 	'LBL_ITEMS_TOTAL'              => 'Items Total'                 , // TODO: Review
 	'LBL_SHIPPING_AND_HANDLING_CHARGES' => 'Shipping & Handling Charges' ,
 	'LBL_PRE_TAX_TOTAL'            => 'Pre Tax Total'               , // TODO: Review

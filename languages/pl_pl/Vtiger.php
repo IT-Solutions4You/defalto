@@ -244,6 +244,7 @@ $languageStrings = array(
 	'LBL_TAX' => 'Podatek',
 	'LBL_ADD_PRODUCT' => 'Dodaj produkt',
 	'LBL_ADD_SERVICE' => 'Dodaj usługę',
+    'LBL_ADD_TEXT' => 'Dodaj tekst',
 	'LBL_NET_TOTAL' => 'Brutto',
 	'LBL_OVERALL_DISCOUNT' => 'Ogólnie Rabat',
 	'LBL_CHARGES' => 'Opłaty',
