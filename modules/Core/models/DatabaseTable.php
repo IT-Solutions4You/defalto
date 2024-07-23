@@ -21,7 +21,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
      * @return $this
      * @throws AppException
      */
-    protected function createColumn($column, $type): self
+    public function createColumn($column, $type): self
     {
         $this->requireTable('Table is empty for create column');
 
@@ -56,7 +56,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
     /**
      * @throws AppException
      */
-    protected function createTable($firstColumn = '', $firstType = 'int(19)'): self
+    public function createTable($firstColumn = '', $firstType = 'int(19)'): self
     {
         $this->requireTable('Table is empty for create table');
 
