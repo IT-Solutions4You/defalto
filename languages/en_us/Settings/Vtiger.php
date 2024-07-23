@@ -379,6 +379,17 @@ $languageStrings = array(
     'LBL_TALLY' => 'Tally',
     'LBL_SHOPPINGCART' => 'ShoppingCart',
 	'LBL_PHONE_CONFIGURATION' => 'Phone Configuration',
+    'LBL_ADD_REGIONS_TAX' => 'Add Regions Tax',
+    'LBL_TAXES_UPDATED' => 'Taxes updated',
+    'LBL_TAX_ALREADY_EXISTS' => 'Tax already exists',
+    'LBL_TAX_DELETED' => 'Tax deleted',
+    'LBL_REGIONS' => 'Regions',
+    'LBL_TAXES_REGIONS' => 'Taxes regions',
+    'LBL_ADD_REGION' => 'Add region',
+    'LBL_ADD_TAX' => 'Add tax',
+    'LBL_TAXES_REGION_UPDATED' => 'Region updated',
+    'LBL_NAME' => 'Name',
+    'LBL_TAX_REGION_DELETED' => 'Region deleted',
 );
 
 $jsLanguageStrings = array(

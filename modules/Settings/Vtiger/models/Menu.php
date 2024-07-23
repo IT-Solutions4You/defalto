@@ -115,7 +115,49 @@ class Settings_Vtiger_Menu_Model extends Vtiger_Base_Model {
 		return false;
 	}
 
-	/**
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function save(): bool
+    {
+        $db = PearDatabase::getInstance();
+        $label = $this->getLabel();
+
+        if ($this->isEmpty('label')) {
+            return false;
+        }
+
+        if ($this->isEmpty('sequence')) {
+            $this->set('sequence', $this->getNewSequence());
+        }
+
+        $table = (new Core_DatabaseData_Model())->getTable(self::$menusTable, self::$menuId);
+        $sequence = $this->get('sequence');
+
+        if (empty($this->getId())) {
+            $this->set(self::$menuId, $db->getUniqueID('vtiger_settings_blocks'));
+            $table->insertData([self::$menuId => $this->getId(), 'label' => $label, 'sequence' => $sequence]);
+        } else {
+            $table->updateData(['label' => $label, 'sequence' => $sequence], [self::$menuId => $this->getId()]);
+        }
+
+        return true;
+    }
+
+    /**
+     * @return int
+     * @throws Exception
+     */
+    public function getNewSequence(): int
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT max(sequence) AS max_seq FROM vtiger_settings_blocks');
+
+        return intval($db->query_result($result, 0, 'max_seq')) + 1;
+    }
+
+    /**
 	 * Function returns menu items for the current menu
 	 * @return <Settings_Vtiger_MenuItem_Model>
 	 */

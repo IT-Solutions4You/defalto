@@ -94,7 +94,15 @@ class Vtiger_Loader {
 		return true;
 	}
 
-	/**
+    public static function getComponentInfo($component)
+    {
+        return [
+            implode('.', $component),
+            implode('_', $component),
+        ];
+    }
+
+    /**
 	 * Function to get the class name of a given Component, of given Type, for a given Module
 	 * @param <String> $componentType
 	 * @param <String> $componentName
@@ -107,33 +115,33 @@ class Vtiger_Loader {
 		$componentTypeDirectory = strtolower($componentType).'s';
 		// Fall Back Directory & Fall Back Class
 		$fallBackModuleDir = $fallBackModuleClassPath = 'Vtiger';
+		$coreFallBackModuleDir = $coreFallBackModuleClassPath = 'Core';
 		// Intermediate Fall Back Directories & Classes, before relying on final fall back
 		$firstFallBackModuleDir = $firstFallBackModuleClassPath = '';
 		$secondFallBackDir = $secondFallBackClassPath = '';
 		// Default module directory & class name
 		$moduleDir = $moduleClassPath = $moduleName;
 		// Change the Module directory & class, along with intermediate fall back directory and class, if module names has submodule as well
-		if(strpos($moduleName, ':') > 0) {
-			$moduleHierarchyParts = explode(':', $moduleName);
-			$moduleDir = str_replace(':', '.', $moduleName);
-			$moduleClassPath = str_replace(':', '_', $moduleName);
-			$actualModule = $moduleHierarchyParts[count($moduleHierarchyParts)-1];
-			$secondFallBackModuleDir= $secondFallBackModuleClassPath =  $actualModule;
-			$modules = array('Users');
-			if($actualModule != 'Users') {
-				$baseModule = $moduleHierarchyParts[0];
-				if($baseModule == 'Settings')  $baseModule = 'Settings:Vtiger';
-				$firstFallBackDir = str_replace(':', '.', $baseModule);
-				$firstFallBackClassPath = str_replace(':', '_', $baseModule);
-			}
-		}
-		// Build module specific file path and class name
+        if (strpos($moduleName, ':') > 0) {
+            $moduleHierarchyParts = explode(':', $moduleName);
+            [$moduleDir, $moduleClassPath] = self::getComponentInfo($moduleHierarchyParts);
+            $actualModule = $moduleHierarchyParts[count($moduleHierarchyParts) - 1];
+            $secondFallBackModuleDir = $secondFallBackModuleClassPath = $actualModule;
+
+            if ($actualModule != 'Users') {
+                $moduleHierarchyParts[1] = 'Vtiger';
+                [$firstFallBackDir, $firstFallBackClassPath] = self::getComponentInfo($moduleHierarchyParts);
+            }
+
+            $moduleHierarchyParts[1] = 'Core';
+            [$coreFallBackModuleDir, $coreFallBackModuleClassPath] = self::getComponentInfo($moduleHierarchyParts);
+        }
+        // Build module specific file path and class name
 		$moduleSpecificComponentFilePath = Vtiger_Loader::resolveNameToPath('modules.'.$moduleDir.'.'.$componentTypeDirectory.'.'.$componentName);
 		$moduleSpecificComponentClassName = $moduleClassPath.'_'.$componentName.'_'.$componentType;
 		if(file_exists($moduleSpecificComponentFilePath)) {
 			return $moduleSpecificComponentClassName;
 		}
-
 
 		// Build first intermediate fall back file path and class name
 		if(!empty($firstFallBackDir) && !empty($firstFallBackClassPath)) {
@@ -158,15 +166,16 @@ class Vtiger_Loader {
 		// Build fall back file path and class name
 		$fallBackComponentFilePath = Vtiger_Loader::resolveNameToPath('modules.'.$fallBackModuleDir.'.'.$componentTypeDirectory.'.'.$componentName);
 		$fallBackComponentClassName = $fallBackModuleClassPath.'_'.$componentName.'_'.$componentType;
+
 		if(file_exists($fallBackComponentFilePath)) {
 			return $fallBackComponentClassName;
 		}
 
         // Build fall back file path and class name
-        $coreComponentFilePath = Vtiger_Loader::resolveNameToPath('modules.Core.'.$componentTypeDirectory.'.'.$componentName);
-        $coreComponentClassName = 'Core_'.$componentName.'_'.$componentType;
+        $coreComponentFilePath = Vtiger_Loader::resolveNameToPath('modules.' . $coreFallBackModuleDir . '.' . $componentTypeDirectory . '.' . $componentName);
+        $coreComponentClassName = $coreFallBackModuleClassPath . '_' . $componentName . '_' . $componentType;
 
-        if(file_exists($coreComponentFilePath)) {
+        if (file_exists($coreComponentFilePath)) {
             return $coreComponentClassName;
         }
 

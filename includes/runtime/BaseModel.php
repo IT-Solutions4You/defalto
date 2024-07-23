@@ -87,7 +87,7 @@ class Vtiger_Base_Model {
 
 	/**
 	 * Function to check if the key is empty.
-	 * @param type $key
+	 * @param string $key
 	 */
 	public function isEmpty($key) {
 		return (!isset($this->valueMap[$key]) || empty($this->valueMap[$key]));

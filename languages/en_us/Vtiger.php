@@ -1448,6 +1448,8 @@ $languageStrings = array(
     'LBL_DEACTIVATE_ALL' => 'Deactivate all',
     'LBL_ALL_COUNTRIES_HAVE_BEEN_ACTIVATED' => 'All countries have been activated',
     'LBL_ALL_COUNTRIES_HAVE_BEEN_DEACTIVATED' => 'All countries have been deactivated',
+    'LBL_ADD_REGION' => 'Add region',
+    'LBL_ADD_TAX' => 'Add tax',
 );
 
 $jsLanguageStrings = array(

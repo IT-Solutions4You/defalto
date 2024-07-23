@@ -16,7 +16,7 @@
 				{foreach item=BLOCK_MENUS from=$SETTINGS_MENUS}
 					{assign var=BLOCK_NAME value=$BLOCK_MENUS->getLabel()}
 					{assign var=BLOCK_MENU_ITEMS value=$BLOCK_MENUS->getMenuItems()}
-					{assign var=NUM_OF_MENU_ITEMS value= $BLOCK_MENU_ITEMS|@php7_count}
+					{assign var=NUM_OF_MENU_ITEMS value= $BLOCK_MENU_ITEMS|php7_count}
 					{if $NUM_OF_MENU_ITEMS gt 0}
 						<div class="accordion-item border-0 settingsSearch">
 							<div id="{$BLOCK_NAME}_accordion" class="settingsSearchHeader accordion-header">

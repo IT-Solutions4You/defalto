@@ -138,7 +138,7 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model {
 		$params = array($name);
 
 		if($menuModel) {
-			$sql .= ' WHERE blockid = ?';
+			$sql .= ' AND blockid = ?';
 			$params[] = $menuModel->getId();
 		}
 		$result = $db->pquery($sql, $params);
