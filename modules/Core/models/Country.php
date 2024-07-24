@@ -314,10 +314,10 @@ class Core_Country_Model extends Core_DatabaseData_Model
         return $instance;
     }
 
-    public function save(): bool
+    public function save(): void
     {
         if ($this->isEmpty('countries')) {
-            return false;
+            return;
         }
 
         $countries = (array)$this->get('countries');
@@ -334,8 +334,6 @@ class Core_Country_Model extends Core_DatabaseData_Model
                 $table->updateData(['name' => $name, 'is_active' => $active], ['code' => $code]);
             }
         }
-
-        return true;
     }
 
     public function getCountries(): array
