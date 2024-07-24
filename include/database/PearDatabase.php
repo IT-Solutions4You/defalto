@@ -971,18 +971,22 @@ class PearDatabase{
 		return $result;
     }
 
-    function getColumnNames($tablename) {
-		$this->println("ADODB getColumnNames table=".$tablename);
-		$this->checkConnection();
-		$adoflds = $this->database->MetaColumns($tablename);
-		$i=0;
-        if(!empty($adoflds)){
-            foreach($adoflds as $fld) {
-                $colNames[$i] = $fld->name;
+    public function getColumnNames($tableName)
+    {
+        $this->println("ADODB getColumnNames table=" . $tableName);
+        $this->checkConnection();
+        $fields = $this->database->MetaColumns($tableName);
+        $columnNames = [];
+        $i = 0;
+
+        if (!empty($fields)) {
+            foreach ($fields as $field) {
+                $columnNames[$i] = $field->name;
                 $i++;
             }
         }
-		return $colNames;
+
+        return $columnNames;
     }
 
     function formatString($tablename,$fldname, $str) {

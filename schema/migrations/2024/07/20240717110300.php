@@ -20,13 +20,14 @@ if (!class_exists('Migration_20240717110300')) {
          */
         public function migrate(string $strFileName): void
         {
-            $tax = Core_Tax_Model::getInstance();
-            $tax->createTables();
-            $tax->createLinks();
-
             $region = Core_TaxRegion_Model::getInstance();
             $region->createTables();
             $region->createLinks();
+
+            $tax = Core_Tax_Model::getInstance();
+            $tax->createTables();
+            $tax->createLinks();
+            $tax->migrateData();
         }
     }
 } else {
