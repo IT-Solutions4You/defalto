@@ -268,8 +268,103 @@ class Core_Tax_Model extends Core_DatabaseData_Model
         $this->save();
     }
 
+    /**
+     * @param $taxId
+     * @return bool
+     */
     public function isSelectedCompoundOn($taxId)
     {
         return in_array($taxId, $this->getTaxesOnCompound());
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function migrateData()
+    {
+        $this->retrieveDB();
+        $columnNames = array_merge($this->db->getColumnNames('vtiger_taxregions'), $this->db->getColumnNames('vtiger_inventorytaxinfo'));
+        $regions = [];
+        $taxes = [];
+
+        if (!empty($columnNames)) {
+            $regionResult = $this->db->pquery('SELECT * FROM vtiger_taxregions');
+
+            while ($row = $this->db->fetchByAssoc($regionResult)) {
+                $regionId = $row['regionid'];
+                $regionName = decode_html($row['name']);
+                $region = Core_TaxRegion_Model::getInstance($regionName);
+                $region->setName($regionName);
+                $region->save();
+
+                $regions[$regionId] = $region->getId();
+            }
+
+            $taxResult = $this->db->pquery('SELECT * FROM vtiger_inventorytaxinfo ORDER BY method DESC ');
+
+            while ($row = $this->db->fetchByAssoc($taxResult)) {
+                $taxId = $row['taxid'];
+                $taxName = decode_html($row['taxlabel']);
+
+                $tax = Core_Tax_Model::getInstance($taxName);
+                $tax->setName($taxName);
+                $tax->set('percentage', decode_html($row['percentage']));
+                $tax->set('active', 1 === intval($row['deleted']) ? 0 : 1);
+                $tax->set('deleted', 0);
+                $tax->set('method', $row['method']);
+                $tax->set('regions', json_encode($this->migrateRegions($row, $regions)));
+                $tax->set('compound_on', json_encode($this->migrateCompoundOn($row, $taxes)));
+                $tax->save();
+
+                $taxes[$taxId] = $tax->getId();
+            }
+        }
+    }
+
+    /**
+     * @param array $data
+     * @param array $regions
+     * @return array
+     */
+    public function migrateRegions(array $data, array $regions): array
+    {
+        $values = json_decode(decode_html($data['regions']), true);
+        $newValues = [];
+
+        foreach ($values as $value) {
+            if (empty($value['list'])) {
+                continue;
+            }
+
+            $newRegionIds = [];
+
+            foreach ($value['list'] as $regionListId) {
+                $newRegionIds[] = $regions[$regionListId];
+            }
+
+            $newValues[] = [
+                'list' => $newRegionIds,
+                'value' => $value['value'],
+            ];
+        }
+
+        return $newValues;
+    }
+
+    /**
+     * @param array $data
+     * @param array $taxes
+     * @return array
+     */
+    public function migrateCompoundOn(array $data, array $taxes): array
+    {
+        $values = (array)json_decode(decode_html($data['compoundon']), true);
+        $newValues = [];
+
+        foreach ($values as $value) {
+            $newValues[] = $taxes[$value];
+        }
+
+        return $newValues;
     }
 }
