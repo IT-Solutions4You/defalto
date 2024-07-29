@@ -612,9 +612,9 @@ class Leads_Install_Model extends Core_Install_Model {
 
         $this->getTable('vtiger_leadaddress', null)
             ->createColumn('leadaddressid', 'int(19) NOT NULL DEFAULT \'0\'')
-            ->createColumn('city', 'varchar(30) DEFAULT NULL')
-            ->createColumn('code', 'varchar(30) DEFAULT NULL')
-            ->createColumn('state', 'varchar(30) DEFAULT NULL')
+            ->createColumn('city', 'varchar(150) DEFAULT NULL')
+            ->createColumn('code', 'varchar(150) DEFAULT NULL')
+            ->createColumn('state', 'varchar(150) DEFAULT NULL')
             ->createColumn('pobox', 'varchar(30) DEFAULT NULL')
             ->createColumn('phone', 'varchar(50) DEFAULT NULL')
             ->createColumn('mobile', 'varchar(50) DEFAULT NULL')
