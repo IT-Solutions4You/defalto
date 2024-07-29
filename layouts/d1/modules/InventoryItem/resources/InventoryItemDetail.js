@@ -9,7 +9,7 @@
 
 /** @var InventoryItem_InventoryItemDetail_Js */
 Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
-    lineItemDetectingClass : 'lineItemRow',
+    lineItemDetectingClass: 'lineItemRow',
     numOfLineItems: 0,
 
     init: function () {
@@ -21,7 +21,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     initializeVariables: function () {
         this.dummyLineItemRow = jQuery('#row0');
         this.lineItemsHolder = jQuery('#lineItemTab');
-        this.numOfLineItems = this.lineItemsHolder.find('.'+ this.lineItemDetectingClass).length;
+        this.numOfLineItems = this.lineItemsHolder.find('.' + this.lineItemDetectingClass).length;
     },
 
     registerBasicEvents: function (container) {
@@ -33,9 +33,10 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const self = this;
         const addLineItemEventHandler = function (e, data) {
             const currentTarget = jQuery(e.currentTarget);
-            const params = {'currentTarget': currentTarget}
+            const params = {'currentTarget': currentTarget};
             console.log(params);
             let newLineItem = self.getNewLineItem(params);
+            console.log(newLineItem);
             /*newLineItem = newLineItem.appendTo(self.lineItemsHolder);
             newLineItem.find('input.productName').addClass('autoComplete');
             newLineItem.find('.ignore-ui-registration').removeClass('ignore-ui-registration');
@@ -46,7 +47,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             if (typeof data != "undefined") {
                 self.mapResultsToFields(newLineItem, data);
             }*/
-        }
+        };
 
         jQuery('#addProduct').on('click', addLineItemEventHandler);
         jQuery('#addService').on('click', addLineItemEventHandler);
@@ -69,7 +70,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.updateRowNumberForRow(newRow, ++this.numOfLineItems);
         this.initializeLineItemRowCustomFields(newRow, ++this.numOfLineItems);
 
-        return newRow
+        return newRow;
     },
 
     updateRowNumberForRow: function (lineItemRow, expectedSequenceNumber, currentSequenceNumber) {
@@ -91,9 +92,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         //To handle variable tax ids
         for (let classIndex in classFields) {
             let className = classFields[classIndex];
-
             jQuery('.' + className, lineItemRow).each(function (index, domElement) {
-                let idString = domElement.id
+                let idString = domElement.id;
                 //remove last character which will be the row number
                 idFields.push(idString.slice(0, (idString.length - currentSequenceNumber.length)));
             });
@@ -128,54 +128,68 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         return lineItemRow;
     },
 
-    initializeLineItemRowCustomFields : function(lineItemRow, rowNum) {
-        var lineItemType = lineItemRow.find('input.lineItemType').val();
-        for(var cfName in this.customLineItemFields) {
-            var elementName = cfName + rowNum;
-            var element = lineItemRow.find('[name="'+elementName+'"]');
+    initializeLineItemRowCustomFields: function (lineItemRow, rowNum) {
+        const lineItemType = lineItemRow.find('input.lineItemType').val();
 
-            var cfDataType = this.customLineItemFields[cfName];
-            if (cfDataType == 'picklist' || cfDataType == 'multipicklist') {
+        for (let cfName in this.customLineItemFields) {
+            let elementName = cfName + rowNum;
+            let element = lineItemRow.find('[name="' + elementName + '"]');
+            let cfDataType = this.customLineItemFields[cfName];
 
-                (cfDataType == 'multipicklist') && (element = lineItemRow.find('[name="'+elementName+'[]"]'));
-
-                var picklistValues = element.data('productPicklistValues');
-                (lineItemType == 'Services') && (picklistValues = element.data('servicePicklistValues'));
-                var options = '';
-                (cfDataType == 'picklist') && (options = '<option value="">'+app.vtranslate('JS_SELECT_OPTION')+'</option>');
-
-                for(var picklistName in picklistValues) {
-                    var pickListValue = picklistValues[picklistName];
-                    options += '<option value="'+picklistName+'">'+pickListValue+'</option>';
+            if (cfDataType === 'picklist' || cfDataType === 'multipicklist') {
+                if (cfDataType === 'multipicklist') {
+                    element = lineItemRow.find('[name="' + elementName + '[]"]');
                 }
+
+                let picklistValues = element.data('productPicklistValues');
+                let options = '';
+
+                if (lineItemType === 'Services') {
+                    picklistValues = element.data('servicePicklistValues');
+                }
+
+                if (cfDataType === 'picklist') {
+                    options = '<option value="">' + app.vtranslate('JS_SELECT_OPTION') + '</option>';
+                }
+
+                for (let picklistName in picklistValues) {
+                    let pickListValue = picklistValues[picklistName];
+                    options += '<option value="' + picklistName + '">' + pickListValue + '</option>';
+                }
+
                 element.html(options);
                 element.addClass('select2');
             }
 
-            var defaultValueInfo = this.customFieldsDefaultValues[cfName];
+            let defaultValueInfo = this.customFieldsDefaultValues[cfName];
+
             if (defaultValueInfo) {
-                var defaultValue = defaultValueInfo;
+                let defaultValue = defaultValueInfo;
+
                 if (typeof defaultValueInfo == 'object') {
-                    defaultValue = defaultValueInfo['productFieldDefaultValue'];
-                    (lineItemType == 'Services') && (defaultValue = defaultValueInfo['serviceFieldDefaultValue'])
+                    defaultValue = defaultValueInfo.productFieldDefaultValue;
+
+                    if (lineItemType === 'Services') {
+                        defaultValue = defaultValueInfo.serviceFieldDefaultValue;
+                    }
                 }
 
                 if (cfDataType === 'multipicklist') {
                     if (defaultValue.length > 0) {
                         defaultValue = defaultValue.split(" |##| ");
-                        var setDefaultValue = function(picklistElement, values){
-                            for(var index in values) {
-                                var picklistVal = values[index];
-                                picklistElement.find('option[value="'+picklistVal+'"]').prop('selected',true);
+                        let setDefaultValue = function (picklistElement, values) {
+                            for (let index in values) {
+                                let picklistVal = values[index];
+                                picklistElement.find('option[value="' + picklistVal + '"]').prop('selected', true);
                             }
-                        }(element, defaultValue)
+                        };
+                        setDefaultValue(element, defaultValue);
                     }
                 } else {
                     element.val(defaultValue);
                 }
             } else {
-                defaultValue = '';
-                element.val(defaultValue);
+                element.val('');
             }
         }
 
