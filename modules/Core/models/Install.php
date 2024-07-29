@@ -571,10 +571,10 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public function updateComments($register = true)
     {
+        ModComments::removeWidgetFrom([$this->moduleName]);
+
         if ($register) {
             ModComments::addWidgetTo([$this->moduleName]);
-        } else {
-            ModComments::removeWidgetFrom([$this->moduleName]);
         }
     }
 
@@ -649,10 +649,10 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public function updateHistory($register = true)
     {
+        ModTracker::disableTrackingForModule(getTabid($this->moduleName));
+
         if ($register) {
             ModTracker::enableTrackingForModule(getTabid($this->moduleName));
-        } else {
-            ModTracker::disableTrackingForModule(getTabid($this->moduleName));
         }
     }
 
