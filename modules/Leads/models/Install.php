@@ -608,7 +608,7 @@ class Leads_Install_Model extends Core_Install_Model {
             ->createKey('KEY IF NOT EXISTS `leaddetails_converted_leadstatus_idx` (`converted`,`leadstatus`)')
             ->createKey('KEY IF NOT EXISTS `email_idx` (`email`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_leaddetails` FOREIGN KEY IF NOT EXISTS (`leadid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
-            ->createKey('index email_idx (email)');
+            ->createKey('INDEX IF NOT EXISTS email_idx (email)');
 
         $this->getTable('vtiger_leadaddress', null)
             ->createColumn('leadaddressid', 'int(19) NOT NULL DEFAULT \'0\'')

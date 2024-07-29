@@ -253,7 +253,7 @@ class Services_Install_Model extends Core_Install_Model
      */
     public function installTables(): void
     {
-        $this->getTable('vtiger_services', null)
+        $this->getTable('vtiger_service', null)
             ->createTable('serviceid')
             ->createColumn('service_no','varchar(100) NOT NULL')
             ->createColumn('servicename','varchar(50) NOT NULL')
@@ -271,7 +271,7 @@ class Services_Install_Model extends Core_Install_Model
             ->createColumn('currency_id','int(19) NOT NULL default \'1\'')
             ->createColumn('commissionrate','decimal(7,3) default NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`serviceid`)')
-            ->createKey('CONSTRAINT `fk_1_vtiger_service` FOREIGN KEY IF NOT EXISTS (`serviceid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
+            ->createKey('CONSTRAINT fk_1_vtiger_service FOREIGN KEY IF NOT EXISTS (`serviceid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
             ;
 
         $this->getTable('vtiger_servicecf', null)
