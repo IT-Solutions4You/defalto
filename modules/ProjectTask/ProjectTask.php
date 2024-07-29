@@ -8,7 +8,7 @@
 
 class ProjectTask extends CRMEntity {
     public string $moduleName = 'ProjectTask';
-    public string $parentName = 'Analytics';
+    public string $parentName = 'Project';
 	var $db, $log; // Used in class functions of CRMEntity
 
 	var $table_name = 'vtiger_projecttask';
