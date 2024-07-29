@@ -39,14 +39,12 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
         $this->updateNumbering();
         $this->updateCustomLinks();
         $this->updateRelatedToModules();
-
         $this->retrieveRelatedList();
         $this->updateRelatedList();
+        $this->updateHistory();
+        $this->updateComments();
 
         Settings_MenuEditor_Module_Model::addModuleToApp($this->moduleName, $this->parentName);
-
-        ModComments::addWidgetTo([$this->moduleName]);
-        ModTracker::enableTrackingForModule(getTabid($this->moduleName));
     }
 
     public function updateRelatedToModules(): void
@@ -68,12 +66,10 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
     public function deleteCustomLinks(): void
     {
         $this->updateCustomLinks(false);
-
         $this->retrieveRelatedList();
         $this->updateRelatedList(false);
-
-        ModComments::removeWidgetFrom([$this->moduleName]);
-        ModTracker::disableTrackingForModule(getTabid($this->moduleName));
+        $this->updateHistory(false);
+        $this->updateComments(false);
     }
 
     /**
