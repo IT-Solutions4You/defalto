@@ -61,21 +61,6 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model {
 			);
 		}
 
-
-		$documentsInstance = Vtiger_Module_Model::getInstance('Documents');
-		if($userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'DetailView')) {
-			$createPermission = $userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'CreateView');
-			$widgets[] = array(
-					'linktype' => 'DETAILVIEWWIDGET',
-					'linklabel' => 'Documents',
-					'linkName'	=> $documentsInstance->getName(),
-					'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
-							'&relatedModule=Documents&mode=showRelatedRecords&page=1&limit=5',
-					'action'	=>	($createPermission == true) ? array('Add') : array(),
-					'actionURL' =>	$documentsInstance->getQuickCreateUrl()
-			);
-		}
-
 		foreach ($widgets as $widgetDetails) {
 			$widgetLinks[] = Vtiger_Link_Model::getInstanceFromValues($widgetDetails);
 		}

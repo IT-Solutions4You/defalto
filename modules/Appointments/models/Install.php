@@ -39,9 +39,8 @@ class Appointments_Install_Model extends Core_Install_Model
         $this->updateFilters();
         $this->updateIcons();
         $this->updatePicklists();
-
-        ModComments::addWidgetTo([$this->moduleName]);
-        ModTracker::enableTrackingForModule(getTabid($this->moduleName));
+        $this->updateHistory();
+        $this->updateComments();
     }
 
     /**
@@ -51,9 +50,8 @@ class Appointments_Install_Model extends Core_Install_Model
     {
         $this->updateCron(false);
         $this->updateWorkflows(false);
-
-        ModComments::removeWidgetFrom([$this->moduleName]);
-        ModTracker::disableTrackingForModule(getTabid($this->moduleName));
+        $this->updateHistory(false);
+        $this->updateComments(false);
     }
 
     /**

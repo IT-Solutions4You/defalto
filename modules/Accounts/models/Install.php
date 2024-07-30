@@ -753,7 +753,7 @@ class Accounts_Install_Model extends Core_Install_Model {
             ->createKey('KEY IF NOT EXISTS `account_account_type_idx` (`account_type`)')
             ->createKey('KEY IF NOT EXISTS `email_idx` (`email1`,`email2`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_account` FOREIGN KEY IF NOT EXISTS (`accountid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
-            ->createKey('index email_idx (email1, email2)')
+            ->createKey('INDEX IF NOT EXISTS email_idx (email1, email2)')
         ;
 
         $this->getTable('vtiger_accountscf', null)
@@ -761,20 +761,20 @@ class Accounts_Install_Model extends Core_Install_Model {
 
         $this->getTable('vtiger_accountshipads', null)
             ->createTable('accountaddressid')
-            ->createColumn('ship_city', 'varchar(30) DEFAULT NULL')
-            ->createColumn('ship_code', 'varchar(30) DEFAULT NULL')
+            ->createColumn('ship_city', 'varchar(150) DEFAULT NULL')
+            ->createColumn('ship_code', 'varchar(150) DEFAULT NULL')
             ->createColumn('ship_country_id', 'varchar(2) DEFAULT NULL')
-            ->createColumn('ship_state', 'varchar(30) DEFAULT NULL')
+            ->createColumn('ship_state', 'varchar(150) DEFAULT NULL')
             ->createColumn('ship_pobox', 'varchar(30) DEFAULT NULL')
             ->createColumn('ship_street', 'varchar(250) DEFAULT NULL')
         ;
 
         $this->getTable('vtiger_accountbillads', null)
             ->createTable('accountaddressid')
-            ->createColumn('bill_city', 'varchar(30) DEFAULT NULL')
-            ->createColumn('bill_code', 'varchar(30) DEFAULT NULL')
+            ->createColumn('bill_city', 'varchar(150) DEFAULT NULL')
+            ->createColumn('bill_code', 'varchar(150) DEFAULT NULL')
             ->createColumn('bill_country_id', 'varchar(2) DEFAULT NULL')
-            ->createColumn('bill_state', 'varchar(30) DEFAULT NULL')
+            ->createColumn('bill_state', 'varchar(150) DEFAULT NULL')
             ->createColumn('bill_street', 'varchar(250) DEFAULT NULL')
             ->createColumn('bill_pobox', 'varchar(30) DEFAULT NULL')
             ;

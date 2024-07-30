@@ -270,7 +270,7 @@ class ModComments_Install_Model extends Core_Install_Model
             ->createColumn('is_private', 'int(1) DEFAULT \'0\'')
             ->createColumn('filename', 'varchar(255) DEFAULT NULL')
             ->createColumn('related_email_id', 'int(11) DEFAULT NULL')
-            ->createKey('INDEX relatedto_idx (related_to)')
+            ->createKey('INDEX IF NOT EXISTS relatedto_idx (related_to)')
             ->createKey('KEY IF NOT EXISTS `relatedto_idx` (`related_to`)')
             ->createKey('KEY IF NOT EXISTS `fk_crmid_vtiger_modcomments` (`modcommentsid`)')
             ->createKey('CONSTRAINT `fk_crmid_vtiger_modcomments` FOREIGN KEY IF NOT EXISTS (`modcommentsid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');

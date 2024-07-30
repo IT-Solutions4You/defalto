@@ -78,8 +78,8 @@ class ModTracker_Install_Model extends Core_Install_Model
             ->createColumn('changedon', 'datetime default NULL')
             ->createColumn('status', 'int(1) default \'0\'')
             ->createKey('PRIMARY KEY IF NOT EXISTS  (`id`)')
-            ->createKey('INDEX crmidx (crmid)')
-            ->createKey('INDEX idx (id)')
+            ->createKey('INDEX IF NOT EXISTS crmidx (crmid)')
+            ->createKey('INDEX IF NOT EXISTS idx (id)')
         ;
 
         $this->getTable('vtiger_modtracker_tabs', null)
@@ -92,7 +92,7 @@ class ModTracker_Install_Model extends Core_Install_Model
             ->createColumn('fieldname', 'varchar(100) default NULL')
             ->createColumn('prevalue', 'text')
             ->createColumn('postvalue', 'text')
-            ->createKey('INDEX idx (id)')
+            ->createKey('INDEX IF NOT EXISTS idx (id)')
             ;
 
         $this->getTable('vtiger_modtracker_relations', null)
