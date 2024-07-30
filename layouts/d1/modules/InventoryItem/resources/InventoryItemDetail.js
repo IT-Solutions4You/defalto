@@ -34,19 +34,18 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const addLineItemEventHandler = function (e, data) {
             const currentTarget = jQuery(e.currentTarget);
             const params = {'currentTarget': currentTarget};
-            console.log(params);
             let newLineItem = self.getNewLineItem(params);
-            console.log(newLineItem);
-            /*newLineItem = newLineItem.appendTo(self.lineItemsHolder);
+            newLineItem = newLineItem.appendTo(self.lineItemsHolder);
             newLineItem.find('input.productName').addClass('autoComplete');
             newLineItem.find('.ignore-ui-registration').removeClass('ignore-ui-registration');
             vtUtils.applyFieldElementsView(newLineItem);
             app.event.trigger('post.lineItem.New', newLineItem);
             self.checkLineItemRow();
             self.registerLineItemAutoComplete(newLineItem);
+
             if (typeof data != "undefined") {
                 self.mapResultsToFields(newLineItem, data);
-            }*/
+            }
         };
 
         jQuery('#addProduct').on('click', addLineItemEventHandler);
@@ -67,8 +66,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         newRow.find('.lineItemPopup').filter(':not([data-module-name="' + itemType + '"])').remove();
         newRow.find('.lineItemType').val(itemType);
         ++this.numOfLineItems;
-        this.updateRowNumberForRow(newRow, ++this.numOfLineItems);
-        this.initializeLineItemRowCustomFields(newRow, ++this.numOfLineItems);
+        this.updateRowNumberForRow(newRow, this.numOfLineItems);
+        this.initializeLineItemRowCustomFields(newRow, this.numOfLineItems);
 
         return newRow;
     },
