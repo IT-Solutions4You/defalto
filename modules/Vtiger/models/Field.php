@@ -244,7 +244,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
             } elseif ($uiType == self::UITYPE_FILENAME) {
                 $fieldDataType = 'documentsFileUpload';
             } elseif ($uiType == self::UITYPE_TAX) {
-                $fieldDataType = 'productTax';
+                $fieldDataType = 'tax';
             } elseif ($uiType == self::UITYPE_CURRENCY_CODE) {
                 $fieldDataType = 'currencyList';
             } elseif ($uiType == self::UITYPE_SALUTATION_OR_FIRSTNAME && stripos($this->getName(), 'salutationtype') !== false) {

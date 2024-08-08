@@ -2044,4 +2044,5 @@ $jsLanguageStrings = array(
     'JS_MONTH' => 'Month',
     'JS_YEAR' => 'Year',
     'JS_NEXT' => 'Next',
+    'JS_UPDATE_RECORD_TAXES_QUESTION' => 'Do you want to update the taxes of all records?',
 );

@@ -390,6 +390,8 @@ $languageStrings = array(
     'LBL_TAXES_REGION_UPDATED' => 'Region updated',
     'LBL_NAME' => 'Name',
     'LBL_TAX_REGION_DELETED' => 'Region deleted',
+    'LBL_UPDATE_RECORD_TAXES' => 'Update record taxes',
+    'LBL_UPDATED_RECORD_TAXES' => 'Updated record taxes',
 );
 
 $jsLanguageStrings = array(

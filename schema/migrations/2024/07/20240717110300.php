@@ -24,6 +24,9 @@ if (!class_exists('Migration_20240717110300')) {
             $region->createTables();
             $region->createLinks();
 
+            $taxRecord = Core_TaxRecord_Model::getInstance();
+            $taxRecord->createTables();
+
             $tax = Core_Tax_Model::getInstance();
             $tax->createTables();
             $tax->createLinks();

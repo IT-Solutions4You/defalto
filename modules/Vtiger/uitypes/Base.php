@@ -99,4 +99,9 @@ class Vtiger_Base_UIType extends Vtiger_Base_Model {
     public function getListSearchTemplateName() {
         return 'uitypes/FieldSearchView.tpl';
     }
+
+    public function isLabelTemplate(): bool
+    {
+        return false;
+    }
 }
