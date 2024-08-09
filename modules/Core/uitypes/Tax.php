@@ -11,22 +11,26 @@
 class Core_Tax_UIType extends Vtiger_Base_UIType
 {
     /**
-     * @param int $recordId
+     * @param mixed $recordId
      * @return array
      * @throws AppException
      */
-    public function getTaxes(int $recordId): array
+    public function getTaxes(mixed $recordId): array
     {
+        $recordId = (int)$recordId;
+
         return Core_TaxRecord_Model::getActiveTaxes($recordId);
     }
 
     /**
-     * @param int $recordId
+     * @param mixed $recordId
      * @return array
      * @throws AppException
      */
-    public function getDetailTaxes(int $recordId): array
+    public function getDetailTaxes(mixed $recordId): array
     {
+        $recordId = (int)$recordId;
+
         return Core_TaxRecord_Model::getActiveTaxesForRecord($recordId);
     }
 

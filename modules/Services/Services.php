@@ -114,7 +114,10 @@ class Services extends CRMEntity {
 		//Inserting into service_taxrel table
 		if($_REQUEST['ajxaction'] != 'DETAILVIEW'&& $_REQUEST['action'] != 'ProcessDuplicates' && !$this->isWorkFlowFieldUpdate)
 		{
-			$this->insertTaxInformation('vtiger_producttaxrel', 'Services');
+            $request = new Vtiger_Request($_REQUEST, $_REQUEST);
+            $request->set('taxes_data', $request->get('taxclass'));
+
+            Core_TaxRecord_Model::getInstance((int)$this->id)->saveFromRequest($request);
 
 			if ($_REQUEST['action'] != 'MassEditSave' ) {
 				$this->insertPriceInformation('vtiger_productcurrencyrel', 'Services');

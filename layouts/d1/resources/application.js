@@ -209,6 +209,15 @@ window.app = (function () {
 			}
 			return params;
 		},
+		convertArrayToDataParams: function (array) {
+			let params = {};
+
+			$.each(array, function (i, info) {
+				params[info['name']] = info['value'];
+			});
+
+			return params;
+		},
 		module: function () {
 			return _module;
 		},

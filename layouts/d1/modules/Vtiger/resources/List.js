@@ -1394,7 +1394,7 @@ Vtiger.Class("Vtiger_List_Js", {
 			formInputFields = form.find(':input').not('[id^=include_in_mass_edit_]'),
 			autoIncludeFieldsInMassEditCallback = function () {
 				let fieldName = $(this).attr('name');
-				fieldName = fieldName.replace(/\[\]$/, ''); //remove trailing [] for cases like multiselect
+				fieldName = fieldName.replace(/(\[.*\])$/, ''); //remove trailing [] for cases like multiselect
 
 				form.find("input[id=include_in_mass_edit_" + fieldName + "]").prop("checked", true);
 			};
@@ -1405,40 +1405,42 @@ Vtiger.Class("Vtiger_List_Js", {
 
 	saveMassEdit: function (event) {
 		event.preventDefault();
-		var form = $('#massEdit');
-		var changedFields = form.find("input[id^=include_in_mass_edit_]:checked");
+
+		let form = $('#massEdit'),
+			changedFields = form.find("input[id^=include_in_mass_edit_]:checked");
 
 		app.helper.showProgress();
+
 		if (changedFields.length > 0) {
-			var newData = app.convertUrlToDataParams(form.serialize());
-			var updateFieldsRequest = '';
+			let newData = app.convertArrayToDataParams(form.serializeArray()),
+				updateFieldsRequest = {};
 
 			//add url params for hidden fields needed for the save request
-			var hiddenFields = form.children("input[type=hidden]");
-			hiddenFields.each(function(i, obj){
-				key = $(this).attr("name");
+			let hiddenFields = form.children("input[type=hidden]");
+
+			hiddenFields.each(function (i, obj) {
+				let key = $(this).attr("name");
 
 				if (typeof newData[key] !== 'undefined') {
-					updateFieldsRequest += key + '=' + newData[key] + '&';
+					updateFieldsRequest[key] = newData[key];
 				}
 			});
 
 			//add url params for fields that will be updated
-			changedFields.each(function(i, obj){
-				var fieldName = $(this).data("update-field");
-				var fieldNameArray = fieldName + encodeURI('[]'); //fieldnames of fields like multipicklist have [] after the fieldname
+			changedFields.each(function (i, obj) {
+				let fieldName = $(this).data('update-field');
 
-				var key = fieldName;
-				if (typeof newData[fieldNameArray] !== 'undefined') {
-					key = fieldNameArray;
-				}
+				$.each(newData, function (fieldKey) {
+					let keyInfo = fieldKey.split('[');
 
-				var value = newData[key];
-				updateFieldsRequest += key + '=';
-				if (typeof value !== 'undefined') {
-					updateFieldsRequest += value;
-				}
-				updateFieldsRequest += '&';
+					if (fieldName === keyInfo[0]) {
+						if (typeof newData[fieldKey] !== 'undefined') {
+							updateFieldsRequest[fieldKey] = newData[fieldKey];
+						} else {
+							updateFieldsRequest[fieldKey] = '';
+						}
+					}
+				});
 			});
 
 			app.request.post({data: updateFieldsRequest}).then(function (err, data) {
@@ -1457,7 +1459,6 @@ Vtiger.Class("Vtiger_List_Js", {
 			app.helper.showAlertBox({'message': app.vtranslate('NONE_OF_THE_FIELD_VALUES_ARE_CHANGED_IN_MASS_EDIT')});
 		}
 	},
-
 	markSelectedIdsCheckboxes: function () {
 		let self = this,
 			recordSelectTrackerObj = self.getRecordSelectTrackerInstance(),
