@@ -291,4 +291,14 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
         return (int)$data[$this->tableId] !== (int)$this->get($this->tableId);
     }
+
+    /**
+     * @throws AppException
+     */
+    public function retrieveIdByParams($params = []): void
+    {
+        $data = $this->getTable($this->table, $this->tableId)->selectData([$this->tableId], $params);
+
+        $this->setId((int)$data[$this->tableId]);
+    }
 }

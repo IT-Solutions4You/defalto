@@ -145,6 +145,7 @@ class Settings_Core_Taxes_Action extends Settings_Vtiger_Index_Action
         $this->exposeMethod('delete');
         $this->exposeMethod('deleteRegion');
         $this->exposeMethod('status');
+        $this->exposeMethod('updateTaxes');
     }
 
     /**
@@ -180,6 +181,24 @@ class Settings_Core_Taxes_Action extends Settings_Vtiger_Index_Action
                 'id' => $region->getId(),
                 'name' => $region->getName(),
             ],
+        ]);
+        $response->emit();
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function updateTaxes(Vtiger_Request $request)
+    {
+        $recordId = (int)$request->get('record');
+
+        $tax = Core_Tax_Model::getInstanceById($recordId);
+        $tax->updateRecordTaxes();
+
+        $response = new Vtiger_Response();
+        $response->setResult([
+            'success' => true,
+            'message' => vtranslate('LBL_UPDATED_RECORD_TAXES', $request->getModule(false)),
         ]);
         $response->emit();
     }

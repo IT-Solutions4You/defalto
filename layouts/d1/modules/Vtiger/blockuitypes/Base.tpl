@@ -31,27 +31,8 @@
                     {if !$FIELD_MODEL->isViewableInDetailView()}
                         {continue}
                     {/if}
-                    {if $FIELD_MODEL->get('uitype') eq "83"}
-                        {foreach item=tax key=count from=$TAXCLASS_DETAILS}
-                            <div id="{$MODULE}_{$VIEW}_{$FIELD_MODEL->getName()}" class="py-2 col-lg-6">
-                                <div class="h-100">
-                                    <div class="row py-2 border-bottom border-light-subtle h-100">
-                                        <div class="col-4 fieldLabel {$WIDTHTYPE}">
-                                            <span class='muted'>{vtranslate($tax.taxlabel, $MODULE)}(%)</span>
-                                        </div>
-                                        <div class="col-8 fieldValue fw-semibold {$WIDTHTYPE}">
-                                            <span class="value text-truncate" data-field-type="{$FIELD_MODEL->getFieldDataType()}">
-                                                {if $tax.check_value eq 1}
-                                                    {$tax.percentage}
-                                                {else}
-                                                    0
-                                                {/if}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {/foreach}
+                    {if $FIELD_MODEL->getUiTypeModel()->isLabelTemplate()}
+                        {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                     {elseif $FIELD_MODEL->get('uitype') eq "69" || $FIELD_MODEL->get('uitype') eq "105"}
                         <div  id="{$MODULE}_{$VIEW}_{$FIELD_MODEL->getName()}" class="py-2 col-lg-12">
                             <div class="h-100">

@@ -7,38 +7,40 @@
 	}
 })(jQuery);
 
-;(function($){
-	$.fn.serializeFormData = function() {
-		var form = $(this);
-		var values = form.serializeArray();
-		var data = {};				
+;(function ($) {
+	$.fn.serializeFormData = function () {
+		let form = $(this),
+			values = form.serializeArray(),
+			data = {};
+
 		if (values) {
-			$(values).each(function(k,v){
-				if(v.name in data && (typeof data[v.name] != 'object')) {
-					var element = form.find('[name="'+v.name+'"]');
+			$(values).each(function (k, v) {
+				if (v.name in data && (typeof data[v.name] != 'object')) {
+					let element = form.find('[name="' + v.name + '"]');
 					//Only for muti select element we need to send array of values
-					if(element.is('select') && element.attr('multiple')!=undefined) {
-						var prevValue = data[v.name];
-						data[v.name] = new Array();
+					if (element.is('select') && element.attr('multiple') != undefined) {
+						let prevValue = data[v.name];
+						data[v.name] = [];
 						data[v.name].push(prevValue)
 					}
 				}
-				if(typeof data[v.name] == 'object' ) {
+				if (typeof data[v.name] == 'object') {
 					data[v.name].push(v.value);
-				}else{
-					data[v.name]=v.value;
-				}				
+				} else {
+					data[v.name] = v.value;
+				}
 			});
 		}
 		// If data-type="autocomplete", pickup data-value="..." set
-		var autocompletes = $('[data-type="autocomplete"]', $(this));
-		$(autocompletes).each(function(i){
-			var ac = $(autocompletes[i]);
+		let autocompletes = $('[data-type="autocomplete"]', $(this));
+		$(autocompletes).each(function (i) {
+			let ac = $(autocompletes[i]);
 			data[ac.attr('name')] = ac.data('value');
-		});		
+		});
+
 		return data;
 	}
-	
+
 })(jQuery);
 
 ;(function($) {

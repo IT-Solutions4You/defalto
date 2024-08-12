@@ -149,6 +149,33 @@ Vtiger.Class('Settings_Vtiger_Taxes_Js', {
             }
         });
     },
+    registerUpdateRecords: function () {
+        const self = this;
+
+        self.getContainer().on('click', '.taxUpdate', function () {
+            let element = $(this),
+                recordId = self.getTaxId(element);
+
+            self.updateRecords(recordId);
+        });
+    },
+    updateRecords(recordId) {
+        app.helper.showConfirmationBox({message: app.vtranslate('JS_UPDATE_RECORD_TAXES_QUESTION')}).then(function () {
+            let params = {
+                module: 'Core',
+                action: 'Taxes',
+                parent: 'Settings',
+                mode: 'updateTaxes',
+                record: recordId
+            };
+
+            app.request.post({data: params}).then(function (error, data) {
+                if (!error) {
+                    app.helper.showSuccessNotification({message: data['message']});
+                }
+            });
+        });
+    },
     createListEntry: function (params, info) {
         if ('saveRegion' === params['mode']) {
             this.createRegionListEntry(info);
@@ -186,9 +213,10 @@ Vtiger.Class('Settings_Vtiger_Taxes_Js', {
             status.removeProp('checked', 'checked');
         }
 
-        listEntry.find('.taxLabel').text(info['label'])
-        listEntry.find('.taxPercentage').text(info['value'])
-        listEntry.find('.taxMethod').text(info['method'])
+        listEntry.find('.taxLabel').text(info['label']);
+        listEntry.find('.taxPercentage').text(info['value']);
+        listEntry.find('.taxMethod').text(info['method']);
+        listEntry.find('.taxUpdate').trigger('click');
     },
     createRegionListEntry: function (info) {
         const self = this,
@@ -229,7 +257,7 @@ Vtiger.Class('Settings_Vtiger_Taxes_Js', {
 
             let regions = regionClone.find('.regions');
 
-            regions.attr('name', 'regions[' + regionsKeyValue + '][list]')
+            regions.attr('name', 'regions[' + regionsKeyValue + '][region_id]')
 
             app.showSelect2ElementView(regions);
 
@@ -250,6 +278,7 @@ Vtiger.Class('Settings_Vtiger_Taxes_Js', {
         this.registerEditClick();
         this.registerRegionEditClick();
         this.registerStatusClick();
+        this.registerUpdateRecords();
     },
     registerStatusClick: function () {
         const self = this;
