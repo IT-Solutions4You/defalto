@@ -61,7 +61,9 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 									'bill_code' : 'bill_code',
 									'ship_code' : 'ship_code',
 									'bill_country_id' : 'bill_country_id',
-									'ship_country_id' : 'ship_country_id'
+									'ship_country_id' : 'ship_country_id',
+									'region_id' : 'region_id',
+									'currency_id' : 'currency_id',
 								},
 
 								'Vendors' : {
