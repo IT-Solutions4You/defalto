@@ -800,6 +800,9 @@ Vtiger_Field_Js('Vtiger_Double_Field_Js', {}, {
 });
 
 /** @var Vtiger_Double_Field_Js */
+Vtiger_Picklist_Field_Js('Vtiger_Region_Field_Js', {}, {});
+
+/** @var Vtiger_Double_Field_Js */
 Vtiger_Field_Js('Vtiger_Country_Field_Js', {}, {
 	getOptions: function () {
 		let selectedValue = this.get('value'),

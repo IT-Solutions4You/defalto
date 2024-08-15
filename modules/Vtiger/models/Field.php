@@ -65,6 +65,8 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	const UITYPE_FOLDER_NAME = 26;
 	const UITYPE_DOWNLOAD_TYPE = 27;
 	const UITYPE_FILENAME = 28;
+
+    const UITYPE_REGION = 29;
 	const UITYPE_ACTIVITY_SEND_REMINDER = 30;
 	const UITYPE_MULTI_SELECT = 33;
 	const UITYPE_ACCOUNT_REFERENCE = 51;
@@ -245,6 +247,8 @@ class Vtiger_Field_Model extends Vtiger_Field {
                 $fieldDataType = 'documentsFileUpload';
             } elseif ($uiType == self::UITYPE_TAX) {
                 $fieldDataType = 'tax';
+            } elseif ($uiType == self::UITYPE_REGION) {
+                $fieldDataType = 'region';
             } elseif ($uiType == self::UITYPE_CURRENCY_CODE) {
                 $fieldDataType = 'currencyList';
             } elseif ($uiType == self::UITYPE_SALUTATION_OR_FIRSTNAME && stripos($this->getName(), 'salutationtype') !== false) {
@@ -734,6 +738,10 @@ class Vtiger_Field_Model extends Vtiger_Field {
 
         if ($this->getFieldDataType() == 'country') {
             $this->fieldInfo['picklistvalues'] = $this->getUITypeModel()->getPicklistValues();
+        }
+
+        if ($this->getFieldDataType() == 'region') {
+            $this->fieldInfo['editablepicklistvalues'] = $this->fieldInfo['picklistvalues'] = $this->getUITypeModel()->getPicklistValues();
         }
 
         $this->fieldInfo['validator'] = $this->getValidator();
