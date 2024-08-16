@@ -1037,14 +1037,14 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 * Function to set reference field value
 	 */
 	setReferenceFieldValue : function(container, params) {
-		var sourceField = container.find('input.sourceField').attr('name');
-		var fieldElement = container.find('input[name="'+sourceField+'"]');
-		var sourceFieldDisplay = sourceField+"_display";
-		var fieldDisplayElement = container.find('input[name="'+sourceFieldDisplay+'"]');
-		var popupReferenceModuleElement = container.find('input[name="popupReferenceModule"]').length ? container.find('input[name="popupReferenceModule"]') : container.find('input.popupReferenceModule');
-		var popupReferenceModule = popupReferenceModuleElement.val();
-		var selectedName = params.name;
-		var id = params.id;
+		let sourceField = container.find('input.sourceField').attr('name'),
+			fieldElement = container.find('input[name="'+sourceField+'"]'),
+			sourceFieldDisplay = sourceField+"_display",
+			fieldDisplayElement = container.find('input[name="'+sourceFieldDisplay+'"]'),
+			popupReferenceModuleElement = container.find('input[name="popupReferenceModule"]').length ? container.find('input[name="popupReferenceModule"]') : container.find('input.popupReferenceModule'),
+			popupReferenceModule = popupReferenceModuleElement.val(),
+			selectedName = params.name,
+			id = params.id;
 
 		if (id && selectedName) {
 			if(!fieldDisplayElement.length) {
@@ -1055,6 +1055,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 				fieldElement.val(id);
 				fieldElement.data('value', id);
 				fieldDisplayElement.val(selectedName);
+
 				if(selectedName) {
 					fieldDisplayElement.attr('readonly', 'readonly');
 				} else {
@@ -1069,6 +1070,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 				fieldElement.parent().find('.clearReferenceSelection').addClass('hide');
 				fieldElement.parent().find('.referencefield-wrapper').removeClass('selected');
 			}
+
 			fieldElement.trigger(Vtiger_Edit_Js.referenceSelectionEvent, {'source_module' : popupReferenceModule, 'record' : id, 'selectedName' : selectedName});
 		}
 	},
@@ -1128,40 +1130,44 @@ Vtiger.Class('Vtiger_Index_Js', {
 		return params;
 	},
 
-	searchModuleNames : function(params) {
-		var aDeferred = jQuery.Deferred();
+	searchModuleNames: function (params) {
+		let aDeferred = jQuery.Deferred();
 
-		if(typeof params.module == 'undefined') {
+		if (typeof params.module == 'undefined') {
 			params.module = app.getModuleName();
 		}
 
-		if(typeof params.action == 'undefined') {
+		if (typeof params.action == 'undefined') {
 			params.action = 'BasicAjax';
 		}
 
-		if(typeof params.base_record == 'undefined') {
-			var record = jQuery('[name="record"]');
-			var recordId = app.getRecordId();
-			if(record.length) {
+		if (typeof params.base_record == 'undefined') {
+			let record = jQuery('[name="record"]'),
+				recordId = app.getRecordId();
+
+			if (record.length) {
 				params.base_record = record.val();
-			} else if(recordId) {
+			} else if (recordId) {
 				params.base_record = recordId;
-			} else if(app.view() == 'List') {
-				var editRecordId = jQuery('#listview-table').find('tr.listViewEntries.edited').data('id');
-				if(editRecordId) {
+			} else if (app.view() == 'List') {
+				let editRecordId = jQuery('#listview-table').find('tr.listViewEntries.edited').data('id');
+
+				if (editRecordId) {
 					params.base_record = editRecordId;
 				}
 			}
 		}
-		app.request.get({data:params}).then(
-			function(err, res){
+
+		app.request.post({data: params}).then(
+			function (err, res) {
 				aDeferred.resolve(res);
 			},
-			function(error){
+			function (error) {
 				//TODO : Handle error
 				aDeferred.reject();
 			}
 		);
+
 		return aDeferred.promise();
 	},
 
