@@ -1831,10 +1831,6 @@ input[type=checkbox]:checked {
     height: 15px;
 }
 
-.relatedContents .listSearchContributor {
-    width: 130px;
-}
-
 .relatedContents .relatedListEntryValues:hover {
     text-decoration: none;
 }
@@ -3717,10 +3713,16 @@ li.select2-search-choice div {
 }
 
 .popupEntriesDiv {
-    width: 100%;
-    height: 430px;
-    overflow: hidden;
+    overflow: auto;
     position: relative;
+}
+
+.popupEntriesDiv th {
+    min-width: 10vw;
+}
+
+.popupEntriesDiv th:first-child {
+    min-width: auto;
 }
 
 .popupEntriesTableContainer {
