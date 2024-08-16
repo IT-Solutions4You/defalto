@@ -541,6 +541,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 			switch($moduleName) {
 				case 'HelpDesk': $this->nameFields = array('ticket_title'); $fieldNames = 'ticket_title'; break;
 				case 'Documents': $this->nameFields = array('notes_title'); $fieldNames = 'notes_title';  break;
+				case 'Users': $this->nameFields = array('first_name', 'last_name'); $fieldNames = 'first_name,last_name';  break;
 			}
 			$entiyObj = new stdClass();
 			$entiyObj->basetable = $adb->query_result($result, 0, 'tablename');
