@@ -39,7 +39,7 @@
                 <table class="listview-table table table-borderless listViewEntriesTable">
                     <thead>
                         <tr class="listViewHeaders bg-body-secondary">
-                            {if isset($MULTI_SELECT)}
+                            {if !empty($MULTI_SELECT)}
                                 <th class="{$WIDTHTYPE}">
                                     <input type="checkbox" class="selectAllInCurrentPage form-check-input" />
                                 </th>
@@ -82,7 +82,7 @@
                     {assign var="RECORD_DATA" value=$LISTVIEW_ENTRY->getRawData()}
                     <tr class="listViewEntries border-bottom" data-id="{$LISTVIEW_ENTRY->getId()}" data-name="{$LISTVIEW_ENTRY->getName()}" data-info='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($LISTVIEW_ENTRY->getRawData()))}'
                     {if isset($GETURL) && $GETURL neq ''} data-url='{$LISTVIEW_ENTRY->$GETURL()}' {/if}  id="{$MODULE}_popUpListView_row_{$smarty.foreach.popupListView.index+1}">
-                    {if isset($MULTI_SELECT)}
+                    {if !empty($MULTI_SELECT)}
                         <td class="{$WIDTHTYPE}">
                             <input class="entryCheckBox form-check-input" type="checkbox" />
                         </td>

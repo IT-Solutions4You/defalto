@@ -6,10 +6,8 @@
 *}
 {strip}
     <div class="col-md">
-        {if isset($MULTI_SELECT)}
+        {if !empty($MULTI_SELECT)}
             {if !empty($LISTVIEW_ENTRIES)}<button class="select btn btn-outline-secondary" disabled="disabled"><strong>{vtranslate('LBL_ADD', $MODULE)}</strong></button>{/if}
-        {else}
-            &nbsp;
         {/if}
         {if !empty($RELATED_PARENT_ID)}
             <button type="button" class="btn btn-outline-secondary showAllRecordsRecords">
