@@ -14,6 +14,7 @@ class AddSharing extends VTTask
 
     public $memberViewList = [];
     public $memberEditList = [];
+    public $entity;
 
     public function getFieldNames()
     {
@@ -35,8 +36,31 @@ class AddSharing extends VTTask
         return in_array($id, (array)$this->memberEditList);
     }
 
+    /**
+     * @param string $share
+     * @return string
+     */
+    public function updateShareType(string $share): string
+    {
+        [$shareType, $shareValue] = explode(':', $share);
+
+        if ('Fields' === $shareType) {
+            $entityUserId = $this->entity->get($shareValue);
+
+            if (empty($userId)) {
+                return '';
+            }
+
+            [$tabId, $userId] = explode('x', $entityUserId);
+            $share = 'Users:' . $userId;
+        }
+
+        return $share;
+    }
+
     public function doTask($entity)
     {
+        $this->entity = $entity;
         $entityId = $entity->getId();
         $recordId = vtws_getIdComponents($entityId)[1];
         $sharing = Core_SharingRecord_Model::getAllSharing($recordId);
@@ -53,7 +77,9 @@ class AddSharing extends VTTask
 
         if (is_array($this->memberViewList)) {
             foreach ($this->memberViewList as $share) {
-                if (!isset($setMemberViewList[$share])) {
+                $share = $this->updateShareType($share);
+
+                if (!isset($setMemberViewList[$share]) && !empty($share)) {
                     $setMemberViewList[$share] = $counter;
                     $counter++;
                 }
@@ -71,7 +97,9 @@ class AddSharing extends VTTask
 
         if (is_array($this->memberEditList)) {
             foreach ($this->memberEditList as $share) {
-                if (!isset($setMemberEditList[$share])) {
+                $share = $this->updateShareType($share);
+
+                if (!isset($setMemberEditList[$share]) && !empty($share)) {
                     $setMemberEditList[$share] = $counter;
                     $counter++;
                 }
