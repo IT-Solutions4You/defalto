@@ -47,7 +47,7 @@ class AddSharing extends VTTask
         if ('Fields' === $shareType) {
             $entityUserId = $this->entity->get($shareValue);
 
-            if (empty($userId)) {
+            if (empty($entityUserId)) {
                 return '';
             }
 
