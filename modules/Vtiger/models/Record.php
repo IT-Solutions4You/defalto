@@ -51,14 +51,18 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 		$displayName = $this->get('label');
 		$module = $this->getModule();
 		$entityFields = $module->getNameFields();
+
 		if($entityFields){
+            $name = [];
+
 			foreach($entityFields as $field){
 				if($this->get($field)){
 					$name[] = $this->get($field);
 				}
 			}
+
 			if(!empty($name)){
-				$displayName = implode(" ", $name);
+				$displayName = implode(' ', $name);
 			}
 		}
 

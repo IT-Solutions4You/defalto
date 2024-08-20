@@ -307,26 +307,43 @@ class Vtiger_ModuleBasic {
 
 	/**
 	 * Set entity identifier field for this module
-	 * @param Vtiger_Field Instance of field to use
+	 * @param Vtiger_Field|object|array Instance of field to use
 	 */
-	function setEntityIdentifier($fieldInstance) {
+	public function setEntityIdentifier($fieldInstance): void
+    {
 		global $adb;
 
-		if($this->basetableid) {
-			if(!$this->entityidfield) $this->entityidfield = $this->basetableid;
-			if(!$this->entityidcolumn)$this->entityidcolumn= $this->basetableid;
-		}
-		if ($this->entityidfield && $this->entityidcolumn) {
-			$result = $adb->pquery("SELECT tabid FROM vtiger_entityname WHERE tablename=? AND tabid=?", array($fieldInstance->table, $this->id));
-			if ($adb->num_rows($result) == 0) {
-				$adb->pquery("INSERT INTO vtiger_entityname(tabid, modulename, tablename, fieldname, entityidfield, entityidcolumn) VALUES(?,?,?,?,?,?)", Array($this->id, $this->name, $fieldInstance->table, $fieldInstance->name, $this->entityidfield, $this->entityidcolumn));
-				self::log("Setting entity identifier ... DONE");
-			} else {
-				$adb->pquery("UPDATE vtiger_entityname SET fieldname=?,entityidfield=?,entityidcolumn=? WHERE tablename=? AND tabid=?", array($fieldInstance->name, $this->entityidfield, $this->entityidcolumn, $fieldInstance->table, $this->id));
-				self::log("Updating entity identifier ... DONE");
+		if ($this->basetableid) {
+			if (!$this->entityidfield) {
+				$this->entityidfield = $this->basetableid;
+			}
+			if (!$this->entityidcolumn) {
+				$this->entityidcolumn = $this->basetableid;
 			}
 		}
-	}
+
+	    if ($this->entityidfield && $this->entityidcolumn) {
+		    if (is_array($fieldInstance)) {
+			    $fieldName = implode(',', array_map(function ($fieldInstance) {
+				    return $fieldInstance->name;
+			    }, $fieldInstance));
+			    $fieldTable = $fieldInstance[0]->table;
+		    } else {
+			    $fieldTable = $fieldInstance->table;
+			    $fieldName = $fieldInstance->name;
+		    }
+
+		    $result = $adb->pquery('SELECT tabid FROM vtiger_entityname WHERE tablename=? AND tabid=?', [$fieldTable, $this->id]);
+
+		    if ($adb->num_rows($result) == 0) {
+			    $adb->pquery("INSERT INTO vtiger_entityname(tabid, modulename, tablename, fieldname, entityidfield, entityidcolumn) VALUES(?,?,?,?,?,?)", [$this->id, $this->name, $fieldTable, $fieldName, $this->entityidfield, $this->entityidcolumn]);
+			    self::log("Setting entity identifier ... DONE");
+		    } else {
+			    $adb->pquery("UPDATE vtiger_entityname SET fieldname=?,entityidfield=?,entityidcolumn=? WHERE tablename=? AND tabid=?", [$fieldName, $this->entityidfield, $this->entityidcolumn, $fieldTable, $this->id]);
+			    self::log("Updating entity identifier ... DONE");
+		    }
+	    }
+    }
 
 	/**
 	 * Unset entity identifier information

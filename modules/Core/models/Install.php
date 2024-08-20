@@ -337,7 +337,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         if ($entity) {
             $moduleInstance->initTables($moduleInstance->basetable, $moduleInstance->basetableid);
-
+            $entityIdentifiers = [];
             $filterDynamicSequence = 0;
 
             if (isset($blocks['LBL_ITEM_DETAILS'])) {
@@ -454,9 +454,13 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                     if (isset($fieldParams['entity_identifier'])) {
                         self::logSuccess('Entity Identifier: ' . $fieldName);
 
-                        $moduleInstance->setEntityIdentifier($fieldInstance);
+                        $entityIdentifiers[] = $fieldInstance;
                     }
                 }
+            }
+
+            if (!empty($entityIdentifiers)) {
+                $moduleInstance->setEntityIdentifier($entityIdentifiers);
             }
 
             self::logSuccess('Link start creating');

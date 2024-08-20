@@ -42,36 +42,35 @@ class Users_Module_Model extends Vtiger_Module_Model {
 	 * @param <String> $parentModule - parent module name
 	 * @return <Array of Users_Record_Model>
 	 */
-	public function searchRecord($searchValue, $parentId=false, $parentModule=false, $relatedModule=false) {
-		if(!empty($searchValue)) {
-			$db = PearDatabase::getInstance();
+    public function searchRecord($searchValue, $parentId = false, $parentModule = false, $relatedModule = false)
+    {
+        if (empty($searchValue)) {
+            return [];
+        }
 
-			$query = 'SELECT * FROM vtiger_users WHERE userlabel LIKE ? AND status = ?';
-			$currentUser = Users_Record_Model::getCurrentUserModel();
-			$allSubordinates = $currentUser->getAllSubordinatesByReportsToField($currentUser->getId());
-			$params = array("%$searchValue%", 'Active');
+        $db = PearDatabase::getInstance();
+        $query = 'SELECT * FROM vtiger_users WHERE userlabel LIKE ? AND status = ?';
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $params = ["%$searchValue%", 'Active'];
 
-			// do not allow the subordinates
-			if(php7_count($allSubordinates) > 0) {
-				$query .= " AND vtiger_users.id NOT IN (". implode(',',$allSubordinates) .")";
-			}
+        if (!$currentUser->isAdminUser()) {
+            $query .= ' AND vtiger_users.id IN (' . implode(',', array_keys($currentUser->getAccessibleUsers())) . ')';
+        }
 
-			$result = $db->pquery($query, $params);
-			$noOfRows = $db->num_rows($result);
+        $result = $db->pquery($query, $params);
+        $matchingRecords = [];
 
-			$matchingRecords = array();
-			for($i=0; $i<$noOfRows; ++$i) {
-				$row = $db->query_result_rowdata($result, $i);
-				$modelClassName = Vtiger_Loader::getComponentClassName('Model', 'Record', 'Users');
-				$recordInstance = new $modelClassName();
-				$matchingRecords['Users'][$row['id']] = $recordInstance->setData($row)->setModuleFromInstance($this);
-			}
-			return $matchingRecords;
-		}
-	}
+        while ($row = $db->fetchByAssoc($result)) {
+            $modelClassName = Vtiger_Loader::getComponentClassName('Model', 'Record', 'Users');
+            $recordInstance = new $modelClassName();
+            $matchingRecords['Users'][$row['id']] = $recordInstance->setData($row)->setModuleFromInstance($this);
+        }
 
-	/**
-	 * Function returns the default column for Alphabetic search
+        return $matchingRecords;
+    }
+
+    /**
+     * Function returns the default column for Alphabetic search
 	 * @return <String> columnname
 	 */
 	public function getAlphabetSearchField(){

@@ -948,26 +948,25 @@ jQuery.Class("Vtiger_Popup_Js",{
             jQuery('.selectAllInCurrentPage').prop('checked',true);
 		}
 	},
-        
-    registerPostPopupLoadEvents : function(){
-        var popupContainer = jQuery('#popupModal');
-        var Options= {
-            axis:"yx",
-            setHeight:"400px", // Without height, it will not know where to start
-            scrollInertia: 200
-        };
-        app.helper.showVerticalScroll(popupContainer.find('.popupEntriesDiv'), Options);
-        
-        // For Email Templates popup
-        var popupContainer = jQuery('.popupModal');
-        if(popupContainer.length != 0) {
-            var Options= {
-                axis:"yx",
-                scrollInertia: 200
-            };
-            app.helper.showVerticalScroll(popupContainer.find('.popupEntriesDiv'), Options);
-        }
-    },
+
+	registerPostPopupLoadEvents: function () {
+		let popupContainer = jQuery('#popupModal'),
+			settings = {
+				axis: 'yx',
+				setHeight: '40vh',
+			};
+
+		if (popupContainer.length) {
+			app.helper.showVerticalScroll(popupContainer.find('.popupEntriesDiv'), settings);
+		}
+
+		// For Email Templates popup
+		popupContainer = jQuery('.popupModal');
+
+		if (popupContainer.length) {
+			app.helper.showVerticalScroll(popupContainer.find('.popupEntriesDiv'), settings);
+		}
+	},
 
 	registerToRemoveEmailFieldClickAttr : function() {
 		jQuery('#popupContents').find('a.emailField').removeAttr('onclick');
