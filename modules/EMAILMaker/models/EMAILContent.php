@@ -1381,8 +1381,6 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     private function replaceUserCompanyFields($convert_source)
     {
-        $r = "root_directory";
-        $root_dir = vglobal($r);
         $current_user = Users_Record_Model::getCurrentUserModel();
 
         if (getTabId(EMAILMaker_EMAILMaker_Model::MULTI_COMPANY) && vtlib_isModuleActive(EMAILMaker_EMAILMaker_Model::MULTI_COMPANY)) {
@@ -1395,6 +1393,11 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             $CompanyDetails_Data = $CompanyDetails_Model->getData();
             $ismulticompany = false;
         }
+
+        self::$rep['%COMPANY_FAX%'] = '';
+        self::$rep['%company-fax%'] = '';
+        self::$rep['$company-fax$'] = '';
+
         $CompanyDetails_Fields = $CompanyDetails_Model->getFields();
 
         foreach ($CompanyDetails_Fields as $field_name => $field_data) {
@@ -1429,11 +1432,18 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
             self::$rep['%COMPANY_' . strtoupper($coll) . '%'] = $label;
             self::$rep['%company-' . strtolower($coll) . '%'] = $label;
+
+            if ('country_id' === $coll) {
+                self::$rep['$company-country$'] = $value;
+                self::$rep['%COMPANY_COUNTRY$%'] = $label;
+                self::$rep['%company-country%'] = $label;
+            }
         }
 
         $result = self::$db->pquery("SELECT tandc FROM vtiger_inventory_tandc WHERE type = ?", array("Inventory"));
         $tandc = self::$db->query_result($result, 0, "tandc");
-        self::$rep["$" . "TERMS_AND_CONDITIONS$"] = nl2br((string)$tandc);
+
+        self::$rep['$TERMS_AND_CONDITIONS$'] = nl2br((string)$tandc);
 
         if ($convert_source) {
             //assigned user fields
