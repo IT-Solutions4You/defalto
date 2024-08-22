@@ -177,7 +177,7 @@
                                                         </button>
                                                     </div>
                                                 </div>
-                                                <div id="smcreator_user_info_div" class="au_info_div form-control" style="display:none;">
+                                                <div id="smcreator_user_info_div" class="au_info_div" style="display:none;">
                                                     <div class="input-group">
                                                         <select name="smcreator_user_info" id="smcreator_user_info" class="select2 form-select" data-width="50%">
                                                             {html_options  options=$USERINFORMATIONS['c']}

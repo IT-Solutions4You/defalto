@@ -1262,6 +1262,9 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         $Settings_Vtiger_CompanyDetails_Model = Settings_Vtiger_CompanyDetails_Model::getInstance();
         $CompanyDetails_Fields = $Settings_Vtiger_CompanyDetails_Model->getFields();
 
+        self::$rep['$COMPANY_FAX$'] = '';
+        self::$rep['%COMPANY_FAX$%'] = '';
+
         foreach ($CompanyDetails_Fields as $field_name => $field_data) {
             if ($field_name == 'organizationname') {
                 $coll = 'name';
@@ -1279,8 +1282,15 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                 $value = $Settings_Vtiger_CompanyDetails_Model->get($field_name);
             }
 
+            $label = vtranslate($field_name, 'Settings:Vtiger');
+
             self::$rep['$COMPANY_' . strtoupper($coll) . '$'] = $value;
-            self::$rep['%COMPANY_' . strtoupper($coll) . '%'] = vtranslate($field_name, 'Settings:Vtiger');
+            self::$rep['%COMPANY_' . strtoupper($coll) . '%'] = $label;
+
+            if ('country_id' === $coll) {
+                self::$rep['$COMPANY_COUNTRY$'] = $value;
+                self::$rep['%COMPANY_COUNTRY$%'] = $label;
+            }
         }
 
         $tandcResult = self::$db->pquery('SELECT tandc FROM vtiger_inventory_tandc WHERE type = ?', array('Inventory'));

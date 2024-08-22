@@ -299,4 +299,36 @@ class PDFMaker_Fields_Model extends Vtiger_Base_Model
 
         return $current_mod_strings_big['languageStrings'];
     }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public static function getCompanyOptions(): array
+    {
+        $company = Settings_Vtiger_CompanyDetails_Model::getInstance();
+        $fields = $company->getFields();
+        $options = [];
+
+        foreach ($fields as $fieldName => $fieldType) {
+            if ($fieldName == 'organizationname') {
+                $fieldName = 'name';
+            } elseif ($fieldName == 'code') {
+                $fieldName = 'zip';
+            } elseif ($fieldName == 'logoname') {
+                continue;
+            }
+
+            $labelKey = 'LBL_COMPANY_' . strtoupper($fieldName);
+            $label = vtranslate($labelKey, 'EMAILMaker');
+
+            if (empty($label) || $labelKey === $label) {
+                $label = vtranslate($fieldName, 'Settings:Vtiger');
+            }
+
+            $options['COMPANY_' . strtoupper($fieldName)] = $label;
+        }
+
+        return $options;
+    }
 }
