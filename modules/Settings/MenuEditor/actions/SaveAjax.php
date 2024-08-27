@@ -8,64 +8,70 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-Class Settings_MenuEditor_SaveAjax_Action extends Settings_Vtiger_IndexAjax_View {
+class Settings_MenuEditor_SaveAjax_Action extends Settings_Vtiger_IndexAjax_View
+{
 
-	function __construct() {
-		parent::__construct();
-		$this->exposeMethod('removeModule');
-		$this->exposeMethod('addModule');
-		$this->exposeMethod('saveSequence');
-	}
+    public function addModule(Vtiger_Request $request)
+    {
+        $sourceModules = [$request->get('sourceModule')];
 
-	public function process(Vtiger_Request $request) {
-		$mode = $request->get('mode');
-		if (!empty($mode)) {
-			$this->invokeExposedMethod($mode, $request);
-			return;
-		}
-	}
+        if ($request->has('sourceModules')) {
+            $sourceModules = $request->get('sourceModules');
+        }
 
-	function removeModule(Vtiger_Request $request) {
-		$sourceModule = $request->get('sourceModule');
-		$appName = $request->get('appname');
-		$db = PearDatabase::getInstance();
-		$db->pquery('UPDATE vtiger_app2tab SET visible = ? WHERE tabid = ? AND appname = ?', array(0, getTabid($sourceModule), $appName));
+        $appName = $request->get('appname');
 
-		$response = new Vtiger_Response();
-		$response->setResult(array('success' => true));
-		$response->emit();
-	}
+        foreach ($sourceModules as $sourceModule) {
+            Settings_MenuEditor_Module_Model::addModuleToApp($sourceModule, $appName);
+            Settings_MenuEditor_Module_Model::setVisible(getTabid($sourceModule), $appName, 1);
+        }
 
-	function addModule(Vtiger_Request $request) {
-		$sourceModules = array($request->get('sourceModule'));
-		if ($request->has('sourceModules')) {
-			$sourceModules = $request->get('sourceModules');
-		}
-		$appName = $request->get('appname');
-		$db = PearDatabase::getInstance();
-		foreach ($sourceModules as $sourceModule) {
-			$db->pquery('UPDATE vtiger_app2tab SET visible = ? WHERE tabid = ? AND appname = ?', array(1, getTabid($sourceModule), $appName));
-		}
+        $response = new Vtiger_Response();
+        $response->setResult(['success' => true]);
+        $response->emit();
+    }
 
-		$response = new Vtiger_Response();
-		$response->setResult(array('success' => true));
-		$response->emit();
-	}
+    public function process(Vtiger_Request $request)
+    {
+        $mode = $request->get('mode');
 
-	function saveSequence(Vtiger_Request $request) {
-		$moduleSequence = $request->get('sequence');
-		$appName = $request->get('appname');
-		$db = PearDatabase::getInstance();
-		foreach ($moduleSequence as $moduleName => $sequence) {
-			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-			$db->pquery('UPDATE vtiger_app2tab SET sequence = ? WHERE tabid = ? AND appname = ?', array($sequence, $moduleModel->getId(), $appName));
-		}
+        if (!empty($mode)) {
+            $this->invokeExposedMethod($mode, $request);
+        }
+    }
 
-		$response = new Vtiger_Response();
-		$response->setResult(array('success' => true));
-		$response->emit();
-	}
+    public function removeModule(Vtiger_Request $request)
+    {
+        $sourceModule = $request->get('sourceModule');
+        $appName = $request->get('appname');
+
+        Settings_MenuEditor_Module_Model::setVisible(getTabid($sourceModule), $appName, 0);
+
+        $response = new Vtiger_Response();
+        $response->setResult(['success' => true]);
+        $response->emit();
+    }
+
+    public function saveSequence(Vtiger_Request $request)
+    {
+        $moduleSequence = $request->get('sequence');
+        $appName = $request->get('appname');
+
+        foreach ($moduleSequence as $moduleName => $sequence) {
+            Settings_MenuEditor_Module_Model::setSequence($moduleName, $appName, $sequence);
+        }
+
+        $response = new Vtiger_Response();
+        $response->setResult(['success' => true]);
+        $response->emit();
+    }
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->exposeMethod('removeModule');
+        $this->exposeMethod('addModule');
+        $this->exposeMethod('saveSequence');
+    }
 
 }
-
-?>

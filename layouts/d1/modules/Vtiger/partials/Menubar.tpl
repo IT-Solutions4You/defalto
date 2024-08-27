@@ -13,7 +13,7 @@
 	<div class="app-indicator-icon-container px-0 py-2 m-0" data-menu-category="{$SELECTED_MENU_CATEGORY}">
 		<div class="app-indicator-active active" title="{if $MODULE eq 'Home' || !$MODULE} {vtranslate('LBL_DASHBOARD')} {else}{vtranslate("LBL_$SELECTED_MENU_CATEGORY")}{/if}">
 			<span class="app-indicator-icon rounded">
-				<i class="fa {if $MODULE eq 'Home' || !$MODULE}fa-dashboard{else}{$APP_IMAGE_MAP[$SELECTED_MENU_CATEGORY]}{/if}"></i>
+				<i class="fa {$APP_IMAGE_MAP[$SELECTED_MENU_CATEGORY]}"></i>
 			</span>
 		</div>
 	</div>

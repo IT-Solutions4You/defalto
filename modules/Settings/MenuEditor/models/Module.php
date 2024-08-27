@@ -10,7 +10,10 @@
 
 class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
 
-	var $name = 'MenuEditor';
+	public $name = 'MenuEditor';
+    public static $ignoredHiddenModules = [
+        'Google', 'Dashboard', 'Users', 'ModTracker', 'WSAPP', 'Import', 'Webforms', 'CustomerPortal', 'ModComments', 'Documents', 'MailManager'
+    ];
 
 	/**
 	 * Function to save the menu structure
@@ -34,78 +37,91 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
 	 * @param <string> $appName
 	 * @return <array> $modules
 	 */
-	public static function getHiddenModulesForApp($appName) {
-		$db = PearDatabase::getInstance();
-		$modules = array();
-		$result = $db->pquery('SELECT tabid FROM vtiger_app2tab WHERE appname = ? AND visible = ?', array($appName, 0));
-		$count = $db->num_rows($result);
-		if ($count > 0) {
-			for ($i = 0; $i < $count; $i++) {
-				$tabid = $db->query_result($result, $i, 'tabid');
-				$moduleName = getTabModuleName($tabid);
-				$moduleInstance = Vtiger_Module_Model::getInstance($moduleName);
-				if ($moduleInstance->isActive()) {
-					$modules[$moduleName] = $moduleName;
-				}
-			}
-		}
+    public static function getHiddenModulesForApp($appName)
+    {
+        $activeModules = Vtiger_Module_Model::getAll(['0'], self::$ignoredHiddenModules);
+        $modules = [];
 
-		return $modules;
-	}
+        foreach ($activeModules as $activeModule) {
+            if ($activeModule->isActive()) {
+                $modules[$activeModule->getName()] = $activeModule->getName();
+            }
+        }
 
-	public static function getAllVisibleModules() {
-		$modules = array();
-		$presence = array('0', '2');
-		$db = PearDatabase::getInstance();
-		$result = $db->pquery('SELECT * FROM vtiger_app2tab WHERE visible = ? ORDER BY appname,sequence', array(1));
-		$count = $db->num_rows($result);
-		$userPrivModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if ($count > 0) {
-			for ($i = 0; $i < $count; $i++) {
-				$tabid = $db->query_result($result, $i, 'tabid');
-				$moduleName = getTabModuleName($tabid);
-				$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-				if (empty($moduleModel)) {
-					continue;
-				}
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT tabid FROM vtiger_app2tab WHERE appname = ? AND visible = ?', [$appName, 1]);
 
-				$sequence = $db->query_result($result, $i, 'sequence');
-				$appname = $db->query_result($result, $i, 'appname');
-				$moduleModel->set('app2tab_sequence', $sequence);
-				if (($userPrivModel->isAdminUser() ||
-						$userPrivModel->hasGlobalReadPermission() ||
-						$userPrivModel->hasModulePermission($moduleModel->getId())) && in_array($moduleModel->get('presence'), $presence)) {
-					$modules[$appname][$moduleName] = $moduleModel;
-				}
-			}
-		}
+        while ($row = $db->fetchByAssoc($result)) {
+            $moduleName = getTabModuleName($row['tabid']);
 
-		return $modules;
-	}
+            unset($modules[$moduleName]);
+        }
 
-	public static function addModuleToApp($moduleName, $parent) {
-		if (empty($moduleName) || empty($parent)) return;
+        return $modules;
+    }
 
-		$db = PearDatabase::getInstance();
-		$parent = strtoupper($parent);
-		$oldToNewAppMapping = Vtiger_MenuStructure_Model::getOldToNewAppMapping();
-		if (!empty($oldToNewAppMapping[$parent])) {
-			$parent = $oldToNewAppMapping[$parent];
-		}
+    public static function getAllVisibleModules()
+    {
+        $modules = [];
+        $presence = ['0', '2'];
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT * FROM vtiger_app2tab WHERE visible = ? ORDER BY appname,sequence', [1]);
+        $count = $db->num_rows($result);
+        $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 
-		$ignoredModules = Vtiger_MenuStructure_Model::getIgnoredModules();
-		if (!in_array($moduleName, $ignoredModules)) {
-			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-			$result = $db->pquery('SELECT * FROM vtiger_app2tab WHERE tabid = ? AND appname = ?', array($moduleModel->getId(), $parent));
+        if ($count > 0) {
+            for ($i = 0; $i < $count; $i++) {
+                $tabId = $db->query_result($result, $i, 'tabid');
+                $moduleName = getTabModuleName($tabId);
+                $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 
-			$sequence = self::getMaxSequenceForApp($parent) + 1;
-			if ($db->num_rows($result) == 0) {
-				$db->pquery('INSERT INTO vtiger_app2tab(tabid,appname,sequence) VALUES(?,?,?)', array($moduleModel->getId(), $parent, $sequence));
-			}
-		}
-	}
+                if (empty($moduleModel)) {
+                    continue;
+                }
 
-	public static function updateModuleApp($moduleName, $parent, $oldParent = false) {
+                $sequence = $db->query_result($result, $i, 'sequence');
+                $appName = $db->query_result($result, $i, 'appname');
+                $moduleModel->set('app2tab_sequence', $sequence);
+
+                if (($userPrivilegesModel->isAdminUser() ||
+                        $userPrivilegesModel->hasGlobalReadPermission() ||
+                        $userPrivilegesModel->hasModulePermission($moduleModel->getId())) && in_array($moduleModel->get('presence'), $presence)) {
+                    $modules[$appName][$moduleName] = $moduleModel;
+                }
+            }
+        }
+
+        return $modules;
+    }
+
+    public static function addModuleToApp($moduleName, $parent)
+    {
+        if (empty($moduleName) || empty($parent)) {
+            return;
+        }
+
+        $db = PearDatabase::getInstance();
+        $parent = strtoupper($parent);
+        $oldToNewAppMapping = Vtiger_MenuStructure_Model::getOldToNewAppMapping();
+
+        if (!empty($oldToNewAppMapping[$parent])) {
+            $parent = $oldToNewAppMapping[$parent];
+        }
+
+        $ignoredModules = Vtiger_MenuStructure_Model::getIgnoredModules();
+
+        if (!in_array($moduleName, $ignoredModules)) {
+            $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+            $result = $db->pquery('SELECT * FROM vtiger_app2tab WHERE tabid = ? AND appname = ?', [$moduleModel->getId(), $parent]);
+            $sequence = self::getMaxSequenceForApp($parent) + 1;
+
+            if ($db->num_rows($result) == 0) {
+                $db->pquery('INSERT INTO vtiger_app2tab(tabid,appname,sequence) VALUES(?,?,?)', [$moduleModel->getId(), $parent, $sequence]);
+            }
+        }
+    }
+
+    public static function updateModuleApp($moduleName, $parent, $oldParent = false) {
 		$db = PearDatabase::getInstance();
 
 		$parent = strtoupper($parent);
@@ -141,4 +157,32 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
 		return $sequence;
 	}
 
+    public static function getActiveApp($app = '')
+    {
+        if (!empty($app)) {
+            $_SESSION['MenuEditor']['app'] = $app;
+        }
+
+        if (empty($app) && !empty($_SESSION['MenuEditor']['app'])) {
+            $app = $_SESSION['MenuEditor']['app'];
+        }
+
+        if (empty($app)) {
+            $app = 'HOME';
+        }
+
+        return $app;
+    }
+
+    public static function setVisible(string $module, string $app, int $visible): void
+    {
+        $db = PearDatabase::getInstance();
+        $db->pquery('UPDATE vtiger_app2tab SET visible = ? WHERE tabid = ? AND appname = ?', [$visible, getTabid($module), $app]);
+    }
+
+    public static function setSequence(string $module, string $app, int $sequence): void
+    {
+        $db = PearDatabase::getInstance();
+        $db->pquery('UPDATE vtiger_app2tab SET sequence = ? WHERE tabid = ? AND appname = ?', [$sequence, getTabid($module), $app]);
+    }
 }
