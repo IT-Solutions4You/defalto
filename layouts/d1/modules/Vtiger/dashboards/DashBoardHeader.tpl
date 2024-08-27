@@ -5,7 +5,7 @@
 * All Rights Reserved.
 *}
 <div class="dashboardHeading">
-	<div class="buttonGroups p-2 bg-body text-end">
+	<div class="buttonGroups p-2 bg-body text-end rounded-bottom">
 		<div class="btn-group">
 			{if $SELECTABLE_WIDGETS|count gt 0}
 				<button class="btn btn-outline-secondary addButton dropdown-toggle" data-bs-toggle="dropdown">

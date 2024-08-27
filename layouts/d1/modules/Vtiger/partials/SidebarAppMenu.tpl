@@ -61,27 +61,10 @@
                     {/if}
                 </div>
             </div>
-            {assign var=HOME_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Home')}
-            {assign var=DASHBOARD_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Dashboard')}
             <div class="app-list row flex-wrap">
-                <div class="col-sm py-3">
-                    <div class="container-fluid">
-                        <div class="row">
-                            {if $USER_PRIVILEGES_MODEL->hasModulePermission($DASHBOARD_MODULE_MODEL->getId())}
-                                <a class="col-lg-12 p-0 menu-item app-item" href="{$HOME_MODULE_MODEL->getDefaultUrl()}">
-                                    <div class="menu-items-link rounded p-3 mb-3 text-secondary">
-                                        <span class="app-icon-list dt-menu-icon fa fa-dashboard"></span>
-                                        <span class="app-name ms-3 text-truncate">{vtranslate('LBL_DASHBOARD',$MODULE)}</span>
-                                    </div>
-                                </a>
-                            {/if}
-                        </div>
-                    </div>
-                </div>
                 {assign var=APP_GROUPED_MENU value=Settings_MenuEditor_Module_Model::getAllVisibleModules()}
                 {assign var=APP_LIST value=Vtiger_MenuStructure_Model::getAppMenuList()}
                 {foreach item=APP_NAME from=$APP_LIST}
-                    {if $APP_NAME eq 'ANALYTICS'} {continue}{/if}
                     {if !empty($APP_GROUPED_MENU[$APP_NAME])}
                         {assign var=IS_SELECTED_CATEGORY value=$SELECTED_MENU_CATEGORY eq $APP_NAME}
                         <div class="col-sm py-3">

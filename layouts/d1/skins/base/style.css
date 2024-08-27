@@ -4011,6 +4011,16 @@ input:focus:-ms-input-placeholder {
     background-color: #777;
 }
 
+.dashBoardTabContents [class*=gridster_] {
+    padding: 5px 4px 5px 5px;
+    margin: 0 -10px;
+}
+
+.dashBoardTabContents > div > ul {
+    margin: 0;
+    padding: 0;
+}
+
 .menuEditorItem .custom-module {
     border-radius: 4px;
     padding: 3px 5px;

@@ -12,7 +12,7 @@
 			<div class="gridster_{$TABID}">
 				{assign var="ROWCOUNT" value=0}
 				{assign var="COLCOUNT" value=0}
-				<ul class="p-0 m-3">
+				<ul>
 					{assign var=COLUMNS value=2}
 					{assign var=ROW value=1}
 					{foreach from=$WIDGETS item=WIDGET name=count}
