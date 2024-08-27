@@ -44,26 +44,26 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
 		// Order by pre-defined automation process for QuickCreate.
 		uksort($menuModelsList, array('Vtiger_MenuStructure_Model', 'sortMenuItemsByProcess'));
 
-		$selectedModuleMenuCategory = 'MARKETING';
+		$selectedModuleMenuCategory = 'HOME';
 		$moduleFound = false;
 
 		$menuGroupedByParent = Settings_MenuEditor_Module_Model::getAllVisibleModules();
-		$supportGroup = $menuGroupedByParent['SUPPORT'];
-		unset($menuGroupedByParent['SUPPORT']);
-		$menuGroupedByParent['SUPPORT'] = $supportGroup;
-        $parentApp = $request->get('app');
+        $parentApp = Settings_MenuEditor_Module_Model::getActiveApp($request->get('app'));
 
-		foreach ($menuGroupedByParent as $parentCategory => $menuList) {
-			if($parentCategory == 'ANALYTICS' || $parentCategory == 'SETTINGS') continue;
-			if(!empty($menuList)) {
-				if(array_key_exists($selectedModule, $menuList) && ($parentCategory == $parentApp)) {
-					$moduleFound = true;
-					$selectedModuleMenuCategory = $parentCategory;
-				}
-			}
-		}
+        foreach ($menuGroupedByParent as $parentCategory => $menuList) {
+            if ($parentCategory == 'ANALYTICS' || $parentCategory == 'SETTINGS') {
+                continue;
+            }
 
-		//If module is not found in any category we need to show the module itself 
+            if (!empty($menuList)) {
+                if (array_key_exists($selectedModule, $menuList) && ($parentCategory == $parentApp)) {
+                    $moduleFound = true;
+                    $selectedModuleMenuCategory = $parentCategory;
+                }
+            }
+        }
+
+        //If module is not found in any category we need to show the module itself
 		//Eg : Home->DashBoard view we ned to show Home 
 		if($moduleFound) {
 			$selectedMenuCategoryLabel = vtranslate('LBL_'.$selectedModuleMenuCategory, $selectedModule);
