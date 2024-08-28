@@ -51,10 +51,6 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
         $parentApp = Settings_MenuEditor_Module_Model::getActiveApp($request->get('app'));
 
         foreach ($menuGroupedByParent as $parentCategory => $menuList) {
-            if ($parentCategory == 'ANALYTICS' || $parentCategory == 'SETTINGS') {
-                continue;
-            }
-
             if (!empty($menuList)) {
                 if (array_key_exists($selectedModule, $menuList) && ($parentCategory == $parentApp)) {
                     $moduleFound = true;
@@ -63,8 +59,6 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
             }
         }
 
-        //If module is not found in any category we need to show the module itself
-		//Eg : Home->DashBoard view we ned to show Home 
 		if($moduleFound) {
 			$selectedMenuCategoryLabel = vtranslate('LBL_'.$selectedModuleMenuCategory, $selectedModule);
 		}else{

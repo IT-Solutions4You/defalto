@@ -15,6 +15,15 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
         'Google', 'Dashboard', 'Users', 'ModTracker', 'WSAPP', 'Import', 'Webforms', 'CustomerPortal', 'ModComments', 'Documents', 'MailManager'
     ];
 
+    public array $defaultSequenceList = [
+        'MARKETING' => ['Campaigns', 'Leads', 'Contacts', 'Accounts',],
+        'SALES' => ['Potentials', 'Quotes', 'Invoice', 'Products', 'Services', 'SMSNotifier', 'Contacts', 'Accounts',],
+        'SUPPORT' => ['HelpDesk', 'Faq', 'ServiceContracts', 'Assets', 'SMSNotifier', 'Contacts', 'Accounts',],
+        'INVENTORY' => ['Products', 'Services', 'PriceBooks', 'Invoice', 'SalesOrder', 'PurchaseOrder', 'Vendors', 'Contacts', 'Accounts',],
+        'PROJECT' => ['Project', 'ProjectTask', 'ProjectMilestone', 'Contacts', 'Accounts',],
+        'TOOLS' => ['Rss', 'Portal', 'RecycleBin',],
+    ];
+
 	/**
 	 * Function to save the menu structure
 	 */
@@ -174,6 +183,23 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
         return $app;
     }
 
+    /**
+     * @param string $module
+     * @return array
+     */
+    public static function getApps(string $module): array
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT appname,visible FROM vtiger_app2tab WHERE tabid = ?', [getTabid($module)]);
+        $apps = [];
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $apps[$row['appname']] = $row['visible'];
+        }
+
+        return $apps;
+    }
+
     public static function setVisible(string $module, string $app, int $visible): void
     {
         $db = PearDatabase::getInstance();
@@ -184,5 +210,65 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
     {
         $db = PearDatabase::getInstance();
         $db->pquery('UPDATE vtiger_app2tab SET sequence = ? WHERE tabid = ? AND appname = ?', [$sequence, getTabid($module), $app]);
+    }
+
+    public function getMenuEditorTable()
+    {
+        return (new Core_DatabaseData_Model())->getTable('vtiger_app2tab', null);
+    }
+
+    public function createTables(): void
+    {
+        $this->getMenuEditorTable()
+            ->createTable('tabid')
+            ->createColumn('appname', 'VARCHAR(20) DEFAULT NULL')
+            ->createColumn('sequence', 'INT(11) DEFAULT NULL')
+            ->createColumn('visible', 'TINYINT(3) DEFAULT \'1\'')
+            ->createKey('CONSTRAINT `vtiger_app2tab_fk_tab` FOREIGN KEY IF NOT EXISTS (`tabid`) REFERENCES `vtiger_tab` (`tabid`) ON DELETE CASCADE');
+    }
+
+    public function addModules()
+    {
+        $restrictedModules = ['ModComments'];
+        $appsList = [
+            'SALES' => ['Potentials', 'Quotes', 'Contacts', 'Accounts'],
+            'PROJECT' => ['Project', 'ProjectTask', 'ProjectMilestone', 'Contacts', 'Accounts'],
+        ];
+        $menuModelsList = Vtiger_Module_Model::getEntityModules();
+        $menuStructure = Vtiger_MenuStructure_Model::getInstanceFromMenuList($menuModelsList);
+        $menuGroupedByParent = $menuStructure->getMenuGroupedByParent();
+        $menuGroupedByParent = $menuStructure->regroupMenuByParent($menuGroupedByParent);
+
+        foreach ($menuGroupedByParent as $app => $appModules) {
+            $modules = [];
+
+            if (isset($appsList[$app]) && $appsList[$app]) {
+                $modules = $appsList[$app];
+            }
+
+            foreach ($appModules as $moduleName => $moduleModel) {
+                if (!in_array($moduleName, $modules)) {
+                    $modules[] = $moduleName;
+                }
+            }
+
+            foreach ($modules as $moduleName) {
+                if (!in_array($moduleName, $restrictedModules)) {
+                    Settings_MenuEditor_Module_Model::addModuleToApp($moduleName, $app);
+                }
+            }
+        }
+
+        Settings_MenuEditor_Module_Model::addModuleToApp('SMSNotifier', 'SALES');
+        Settings_MenuEditor_Module_Model::addModuleToApp('SMSNotifier', 'SUPPORT');
+    }
+
+    public function setDefaultSequence()
+    {
+        foreach ($this->defaultSequenceList as $app => $defSequence) {
+            foreach ($defSequence as $sequence => $module) {
+                self::setSequence($module, $app, $sequence);
+            }
+        }
     }
 }

@@ -1880,23 +1880,12 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	/**
 	 * Function to get the app name for module
 	 */
-	function getAppName() {
-		$db = PearDatabase::getInstance();
-		$result = $db->pquery('SELECT appname,visible FROM vtiger_app2tab WHERE tabid = ?', array($this->getId()));
-		$count = $db->num_rows($result);
-		$apps = array();
-		if ($count > 0) {
-			for ($i = 0; $i < $count; $i++) {
-				$appName = $db->query_result($result, $i, 'appname');
-				$visibility = $db->query_result($result, $i, 'visible');
-				$apps[$appName] = $visibility;
-			}
-		}
+    public function getAppName(): array
+    {
+        return Settings_MenuEditor_Module_Model::getApps($this->getName());
+    }
 
-		return $apps;
-	}
-
-	public function getCustomPicklistDependency() {
+    public function getCustomPicklistDependency() {
 		return array();
 	}
 
