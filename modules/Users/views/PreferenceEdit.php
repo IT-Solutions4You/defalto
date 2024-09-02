@@ -81,7 +81,6 @@ Class Users_PreferenceEdit_View extends Vtiger_Edit_View {
 			$viewer->assign('CURRENT_USER_MODEL', $currentUser);
 			$viewer->assign('LANGUAGE', $currentUser->get('language'));
 			$viewer->assign('COMPANY_DETAILS_SETTINGS',new Settings_Vtiger_CompanyDetails_Model());
-			$viewer->assign('SELECTED_MENU_CATEGORY', 'MARKETING');
 			$viewer->assign('ACTIVE_BLOCK', Settings_Vtiger_Module_Model::getActiveBlockName($request));
 
 			$settingsModel = Settings_Vtiger_Module_Model::getInstance();

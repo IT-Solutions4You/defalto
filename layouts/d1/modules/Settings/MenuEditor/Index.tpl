@@ -27,7 +27,7 @@
                 {assign var=APP_LIST value=Vtiger_MenuStructure_Model::getAppMenuList()}
                 {foreach item=APP_IMAGE key=APP_NAME from=$APP_IMAGE_MAP name=APP_MAP}
                     {if !in_array($APP_NAME, $APP_LIST)} {continue} {/if}
-                    <div class="col-lg-2{if $smarty.foreach.APP_MAP.index eq 0 or php7_count($APP_LIST) eq 1}{/if}">
+                    <div class="col-lg-3 {if $smarty.foreach.APP_MAP.index eq 0 or php7_count($APP_LIST) eq 1}{/if}">
                         <div class="mb-3 p-3 text-truncate fw-bold rounded bg-menu-icon menuEditorItem app-{$APP_NAME}" data-app-name="{$APP_NAME}">
                             <i class="text-primary fa {$APP_IMAGE}"></i>
                             {assign var=TRANSLATED_APP_NAME value={vtranslate("LBL_$APP_NAME")}}
@@ -50,7 +50,7 @@
                             <div class="menuEditorItem menuEditorModuleItem menuEditorAddItem btn btn-outline-secondary w-100 mb-3" data-appname="{$APP_NAME}">
                                 <div class="text-truncate">
                                     <i class="fa fa-plus"></i>
-                                    <span class="ms-2">{vtranslate('LBL_SELECT_HIDDEN_MODULE', $QUALIFIED_MODULE_NAME)}</span>
+                                    <span class="ms-2">{vtranslate('LBL_SELECT_MODULE', $QUALIFIED_MODULE_NAME)}</span>
                                 </div>
                             </div>
                         </div>

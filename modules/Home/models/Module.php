@@ -10,6 +10,7 @@
 
 class Home_Module_Model extends Vtiger_Module_Model {
 
+    protected string $fontIcon = 'fa fa-dashboard';
 	/**
 	 * Function returns the default view for the Home module
 	 * @return <String>

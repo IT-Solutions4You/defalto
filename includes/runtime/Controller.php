@@ -228,6 +228,7 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
             $viewer->assign('STYLES', array());
             $viewer->assign('SETTING_EXIST', false);
 
+            $viewer->assign('SELECTED_MENU_CATEGORY', Settings_MenuEditor_Module_Model::getActiveApp($request->get('app')));
         }
 		return $this->viewer;
 	}
@@ -256,59 +257,63 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 		}
 	}
 
-	function preProcess(Vtiger_Request $request, $display=true) {
-		$currentUser = Users_Record_Model::getCurrentUserModel();
-		$viewer = $this->getViewer($request);
-		$viewer->assign('PAGETITLE', $this->getPageTitle($request));
-		$viewer->assign('SCRIPTS',$this->getHeaderScripts($request));
-		$viewer->assign('STYLES',$this->getHeaderCss($request));
-		$viewer->assign('SKIN_PATH', Vtiger_Theme::getCurrentUserThemePath());
-		$viewer->assign('LANGUAGE_STRINGS', $this->getJSLanguageStrings($request));
-		$viewer->assign('LANGUAGE', $currentUser->get('language'));
-		
-		if ($request->getModule() != 'Install') {
-			$userCurrencyInfo = getCurrencySymbolandCRate($currentUser->get('currency_id'));
-			$viewer->assign('USER_CURRENCY_SYMBOL', $userCurrencyInfo['symbol']);
-		}
-		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+    public function preProcess(Vtiger_Request $request, $display = true)
+    {
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $viewer = $this->getViewer($request);
+        $viewer->assign('PAGETITLE', $this->getPageTitle($request));
+        $viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
+        $viewer->assign('STYLES', $this->getHeaderCss($request));
+        $viewer->assign('SKIN_PATH', Vtiger_Theme::getCurrentUserThemePath());
+        $viewer->assign('LANGUAGE_STRINGS', $this->getJSLanguageStrings($request));
+        $viewer->assign('LANGUAGE', $currentUser->get('language'));
 
-		if($display) {
-			$this->preProcessDisplay($request);
-		}
-	}
+        if ($request->getModule() != 'Install') {
+            $userCurrencyInfo = getCurrencySymbolandCRate($currentUser->get('currency_id'));
+            $viewer->assign('USER_CURRENCY_SYMBOL', $userCurrencyInfo['symbol']);
+        }
 
-	protected function preProcessTplName(Vtiger_Request $request) {
-		return 'Header.tpl';
-	}
+        $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
-	//Note : To get the right hook for immediate parent in PHP,
-	// specially in case of deep hierarchy
-	//TODO: Need to revisit this.
-	/*function preProcessParentTplName(Vtiger_Request $request) {
-		return parent::preProcessTplName($request);
-	}*/
+        if ($display) {
+            $this->preProcessDisplay($request);
+        }
+    }
 
-	protected function preProcessDisplay(Vtiger_Request $request) {
-		$viewer = $this->getViewer($request);
-        $displayed = $viewer->view($this->preProcessTplName($request), $request->getModule(false));
-		/*if(!$displayed) {
-			$tplName = $this->preProcessParentTplName($request);
-			if($tplName) {
-				$viewer->view($tplName, $request->getModule());
-			}
-		}*/
-	}
+    protected function preProcessTplName(Vtiger_Request $request)
+    {
+        return 'Header.tpl';
+    }
+
+    protected function postProcessTplName(Vtiger_Request $request)
+    {
+        return 'Footer.tpl';
+    }
+
+    protected function preProcessDisplay(Vtiger_Request $request)
+    {
+        $viewer = $this->getViewer($request);
+        $viewer->view($this->preProcessTplName($request), $request->getModule(false));
+    }
+
+    protected function postProcessDisplay(Vtiger_Request $request)
+    {
+        $viewer = $this->getViewer($request);
+        $viewer->view($this->postProcessTplName($request), $request->getModule(false));
+    }
 
 
-	function postProcess(Vtiger_Request $request) {
+    public function postProcess(Vtiger_Request $request)
+    {
         $moduleName = $request->getModule();
-		$viewer = $this->getViewer($request);
-		$currentUser = Users_Record_Model::getCurrentUserModel();
-		$viewer->assign('ACTIVITY_REMINDER', $currentUser->getCurrentUserActivityReminderInSeconds());
-		$viewer->view('Footer.tpl', $moduleName);
-	}
+        $currentUser = Users_Record_Model::getCurrentUserModel();
 
-	/**
+        $viewer = $this->getViewer($request);
+        $viewer->assign('ACTIVITY_REMINDER', $currentUser->getCurrentUserActivityReminderInSeconds());
+        $this->postProcessDisplay($request);
+    }
+
+    /**
 	 * Retrieves headers scripts that need to loaded in the page
 	 * @param Vtiger_Request $request - request model
 	 * @return <array> - array of Vtiger_JsScript_Model

@@ -11,7 +11,7 @@ vimport('~~/vtlib/Vtiger/Module.php');
  * Vtiger Module Model Class
  */
 class Vtiger_Module_Model extends Vtiger_Module {
-
+    protected string $fontIcon = '';
 	protected $blocks = false;
 	protected $nameFields = false;
 	protected $moduleMeta = false;
@@ -1880,23 +1880,12 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	/**
 	 * Function to get the app name for module
 	 */
-	function getAppName() {
-		$db = PearDatabase::getInstance();
-		$result = $db->pquery('SELECT appname,visible FROM vtiger_app2tab WHERE tabid = ?', array($this->getId()));
-		$count = $db->num_rows($result);
-		$apps = array();
-		if ($count > 0) {
-			for ($i = 0; $i < $count; $i++) {
-				$appName = $db->query_result($result, $i, 'appname');
-				$visibility = $db->query_result($result, $i, 'visible');
-				$apps[$appName] = $visibility;
-			}
-		}
+    public function getAppName(): array
+    {
+        return Settings_MenuEditor_Module_Model::getApps($this->getName());
+    }
 
-		return $apps;
-	}
-
-	public function getCustomPicklistDependency() {
+    public function getCustomPicklistDependency() {
 		return array();
 	}
 
@@ -1921,27 +1910,37 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		return $this->isPermitted('EditView');
 	}
 
-	public function getModuleIcon($height = '') {
-		$moduleName = $this->getName();
-		$lowerModuleName = strtolower($moduleName);
-		$title = vtranslate($moduleName, $moduleName);
-
-		$moduleIcon = "<i style='font-size: $height' class='vicon-$lowerModuleName' title='$title'></i>";
+    public function getModuleIcon($height = '')
+    {
+        $moduleName = $this->getName();
+        $lowerModuleName = strtolower($moduleName);
+        $title = vtranslate($moduleName, $moduleName);
+        $moduleIcon = "<i style='font-size: $height' class='vicon-$lowerModuleName' title='$title'></i>";
 
         if ($this->source == 'custom') {
             $moduleIcon = "<i style='font-size: $height' class='fa-solid fa-puzzle-piece'></i>";
         }
 
-		$imageFilePath = 'layouts/'.Vtiger_Viewer::getLayoutName()."/modules/$moduleName/$moduleName.png";
-		if (file_exists($imageFilePath)) {
-			$moduleIcon = "<img height='$height' src='$imageFilePath' title='$title'/>";
-		}
+        $imageFilePath = 'layouts/' . Vtiger_Viewer::getLayoutName() . "/modules/$moduleName/$moduleName.png";
 
-		return $moduleIcon;
-	}
+        if (file_exists($imageFilePath)) {
+            $moduleIcon = "<img height='$height' src='$imageFilePath' title='$title'/>";
+        }
 
-	public static function getModuleIconPath($moduleName) {
+        if (!empty($this->getFontIcon())) {
+            $moduleIcon = "<i style='font-size: $height' class='" . $this->getFontIcon() . "' title='$title'></i>";
+        }
+
+        return $moduleIcon;
+    }
+
+    public static function getModuleIconPath($moduleName) {
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		return $moduleModel->getModuleIcon();
 	}
+
+    public function getFontIcon()
+    {
+        return $this->fontIcon;
+    }
 }

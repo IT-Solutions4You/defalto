@@ -48,10 +48,6 @@ class Vtiger_RecordQuickPreview_View extends Vtiger_Detail_View {
 		$viewer->assign('SUMMARY_RECORD_STRUCTURE', $recordStrucure->getStructure());
 		$viewer->assign('$SOCIAL_ENABLED', false);
 		$viewer->assign('LIST_PREVIEW', true);
-		$appName = $request->get('app');
-		if(!empty($appName)){
-			$viewer->assign('SELECTED_MENU_CATEGORY',$appName);
-		}
 		$pageNumber = 1;
 		$limit = 5;
 

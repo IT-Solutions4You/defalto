@@ -9,7 +9,8 @@
  *************************************************************************************/
 
 class Portal_Module_Model extends Vtiger_Module_Model {
-    
+
+    public string $fontIcon = 'fa fa-link';
     public function getSideBarLinks($linkParams) {
 		$quickLink = array(
             'linktype' => 'SIDEBARLINK',
