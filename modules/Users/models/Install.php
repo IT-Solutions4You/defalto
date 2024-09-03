@@ -864,6 +864,8 @@ class Users_Install_Model extends Core_Install_Model
                             'dd-mm-yyyy',
                             'mm-dd-yyyy',
                             'yyyy-mm-dd',
+                            'dd.mm.yyyy',
+                            'dd/mm/yyyy',
                         ],
                 ],
                 'time_zone' => [
