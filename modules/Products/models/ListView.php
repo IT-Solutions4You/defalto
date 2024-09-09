@@ -21,7 +21,7 @@ class Products_ListView_Model extends Vtiger_ListView_Model {
 		$moduleName = $this->getModule()->get('name');
 		$moduleFocus = CRMEntity::getInstance($moduleName);
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-
+        $viewId = $this->getViewId($pagingModel);
 		$queryGenerator = $this->get('query_generator');
 		$listViewContoller = $this->get('listview_controller');
 
@@ -43,18 +43,7 @@ class Products_ListView_Model extends Vtiger_ListView_Model {
 			$queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator));
 		}
         
-        $orderBy = $this->getForSql('orderby');
-		$sortOrder = $this->getForSql('sortorder');
-		
-        if(!empty($orderBy)){
-			$queryGenerator = $this->get('query_generator');
-			$fieldModels = $queryGenerator->getModuleFields();
-			$orderByFieldModel = $fieldModels[$orderBy];
-			if($orderByFieldModel && ($orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE ||
-					$orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::OWNER_TYPE)){
-                $queryGenerator->addWhereField($orderBy);
-            }
-        }
+        $this->retrieveOrderBy($viewId);
 		$listQuery = $this->getQuery();
 
 		if($this->get('subProductsPopup')){
@@ -75,19 +64,10 @@ class Products_ListView_Model extends Vtiger_ListView_Model {
 		$startIndex = $pagingModel->getStartIndex();
 		$pageLimit = $pagingModel->getPageLimit();
 
-		if(!empty($orderBy) && $orderByFieldModel) {
-			$listQuery .= ' ORDER BY '.$queryGenerator->getOrderByColumn($orderBy).' '.$sortOrder;
-		} else if(empty($orderBy) && empty($sortOrder)){
-			//List view will be displayed on recently created/modified records
-			$listQuery .= ' ORDER BY vtiger_crmentity.modifiedtime DESC';
-		}
+        $listQuery .= $this->getQueryGenerator()->getOrderByClause();
 
-		$viewid = ListViewSession::getCurrentView($moduleName);
-        if(empty($viewid)){
-            $viewid = $pagingModel->get('viewid');
-        }
-        $_SESSION['lvs'][$moduleName][$viewid]['start'] = $pagingModel->get('page');
-		ListViewSession::setSessionQuery($moduleName, $listQuery, $viewid);
+        $_SESSION['lvs'][$moduleName][$viewId]['start'] = $pagingModel->get('page');
+		ListViewSession::setSessionQuery($moduleName, $listQuery, $viewId);
 
 		//For Products popup in Price Book Related list
 		if(($sourceModule !== 'PriceBooks' && $sourceField !== 'priceBookRelatedList')

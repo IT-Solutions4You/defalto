@@ -65,7 +65,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
         }
 
         if (!$this->isEmpty('table_id')) {
-            $criteria = sprintf(' (%s int(11) AUTO_INCREMENT,PRIMARY KEY (%s))', $this->get('table_id'), $this->get('table_id'));
+            $criteria = sprintf(' (%s int(19) AUTO_INCREMENT,PRIMARY KEY (%s))', $this->get('table_id'), $this->get('table_id'));
         }
 
         $sql = 'CREATE TABLE IF NOT EXISTS ' . $this->get('table') . $criteria;

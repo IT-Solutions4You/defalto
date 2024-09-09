@@ -20,15 +20,16 @@ if (!class_exists('Migration_20240717110300')) {
          */
         public function migrate(string $strFileName): void
         {
+            $tax = Core_Tax_Model::getInstance();
+            $tax->createTables();
+
             $region = Core_TaxRegion_Model::getInstance();
             $region->createTables();
-            $region->createLinks();
 
             $taxRecord = Core_TaxRecord_Model::getInstance();
             $taxRecord->createTables();
 
-            $tax = Core_Tax_Model::getInstance();
-            $tax->createTables();
+            $region->createLinks();
             $tax->createLinks();
             $tax->migrateData();
         }

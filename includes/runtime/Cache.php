@@ -474,7 +474,8 @@ class Vtiger_Cache {
 		if ($blockId) {
 			Vtiger_Cache::delete('BlockFields', $module->name.'_'.$blockId);
 		} else {
-			$blocks = $module->getBlocks();
+			$blocks = $module ? $module->getBlocks() : [];
+
 			foreach ($blocks as $label => $block) {
 				Vtiger_Cache::delete('BlockFields', $module->name.'_'.$block->id);
 			}

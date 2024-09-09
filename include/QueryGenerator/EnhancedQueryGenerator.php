@@ -11,7 +11,7 @@
 require_once 'include/QueryGenerator/QueryGenerator.php';
 
 class EnhancedQueryGenerator extends QueryGenerator {
-
+    protected $orderByColumns = [];
 	public function __construct($module, $user) {
 		parent::__construct($module, $user);
 		$this->tableIndexList = array();
@@ -218,7 +218,7 @@ class EnhancedQueryGenerator extends QueryGenerator {
 			// if its a reference field then we need to add the fieldname to table name
 			preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldObject->referenceFieldName, $matches);
 			if (php7_count($matches) != 0) {
-				list($full, $referenceField, $referenceModule, $fieldname) = $matches;
+				[$full, $referenceField, $referenceModule, $fieldname] = $matches;
 			}
 			$field = $fieldObject;
 		}
@@ -240,7 +240,7 @@ class EnhancedQueryGenerator extends QueryGenerator {
 			// handle for reference field
 			preg_match('/(\w+) ; \((\w+)\) (\w+)/', $field, $matches);
 			if (php7_count($matches) != 0) {
-				list($full, $referenceField, $referenceModule, $fieldname) = $matches;
+				[$full, $referenceField, $referenceModule, $fieldname] = $matches;
 				$parentReferenceFieldModel = null;
 				$parentReferenceFieldModel = $moduleFields[$field];
 				if ($parentReferenceFieldModel) {
@@ -290,7 +290,7 @@ class EnhancedQueryGenerator extends QueryGenerator {
 			// for reference field do not add the table names to the list
 			preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 			if (php7_count($matches) != 0) {
-				list($full, $referenceParentFieldName, $referenceModuleName, $fieldName) = $matches;
+				[$full, $referenceParentFieldName, $referenceModuleName, $fieldName] = $matches;
 			}
 
 			$fieldType = $field->getFieldDataType();
@@ -381,7 +381,7 @@ class EnhancedQueryGenerator extends QueryGenerator {
 			// for reference field do not add the table names to the list
 			preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 			if (php7_count($matches) != 0) {
-				list($full, $referenceParentFieldName, $referenceModuleName, $fieldName) = $matches;
+				[$full, $referenceParentFieldName, $referenceModuleName, $fieldName] = $matches;
 			}
 
 			$fieldType = $field->getFieldDataType();
@@ -607,7 +607,7 @@ class EnhancedQueryGenerator extends QueryGenerator {
 			// if its a reference field then we need to add the fieldname to table name
 			preg_match('/(\w+) ; \((\w+)\) (\w+)/', $baseFieldName, $matches);
 			if (php7_count($matches) != 0) {
-				list($full, $parentReferenceField, $referenceModule, $fieldName) = $matches;
+				[$full, $parentReferenceField, $referenceModule, $fieldName] = $matches;
 			}
 
 			if (empty($field) || $conditionInfo['operator'] == 'None') {
@@ -784,7 +784,7 @@ class EnhancedQueryGenerator extends QueryGenerator {
 		$parentReferenceField = '';
 		preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 		if (php7_count($matches) != 0) {
-			list($full, $parentReferenceField, $referenceModule, $fieldName) = $matches;
+			[$full, $parentReferenceField, $referenceModule, $fieldName] = $matches;
 		}
 		if ($orderByFieldModel && $orderByFieldModel->getFieldDataType() == 'reference') {
 			$referenceModules = $orderByFieldModel->getReferenceList();
@@ -939,4 +939,42 @@ class EnhancedQueryGenerator extends QueryGenerator {
 		}
 	}
 
+    public function getOrderByClause()
+    {
+        $columns = $this->getOrderByColumns();
+
+        if (empty($columns)) {
+            return '';
+        }
+
+        return vsprintf(' ORDER BY ' . implode(' %s,', array_keys($columns)) . ' %s ', array_values($columns));
+    }
+
+    public function getOrderByColumns()
+    {
+        return $this->orderByColumns;
+    }
+
+    public function setOrderByColumns($orderByColumns): void
+    {
+        $meta = $this->getMeta($this->getModule());
+
+        foreach ($orderByColumns as $orderByColumn => $sortOrder) {
+            [$tableName, $columnName] = explode('.', $orderByColumn);
+
+            if (empty($columnName)) {
+                $columnName = $tableName;
+                $tableName = '';
+            }
+
+            /** @var WebserviceField $field */
+            $field = $meta->getFieldByColumnName($columnName);
+
+            if (!empty($field)) {
+                $this->addWhereField($field->getFieldName());
+            }
+        }
+
+        $this->orderByColumns = $orderByColumns;
+    }
 }

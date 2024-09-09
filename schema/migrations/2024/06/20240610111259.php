@@ -15,19 +15,14 @@ if (!class_exists('Migration_20240610111259')) {
     {
         /**
          * @param string $strFileName
+         * @throws Exception
          */
         public function migrate(string $strFileName): void
         {
-            $this->db->pquery('ALTER TABLE vtiger_blocks ADD blockuitype INT(11) DEFAULT 1');
+            (new Vtiger_Block())->createTables();
+            (new Core_BlockUiType_Model())->createTables();
 
-            $sql = 'CREATE TABLE IF NOT EXISTS `df_blockuitype` (
-                `blockuitype` int(11) NOT NULL AUTO_INCREMENT,
-                `name` varchar(255) NOT NULL,
-                PRIMARY KEY (`blockuitype`)
-            )';
-            $this->db->pquery($sql);
-
-            $this->db->pquery('INSERT INTO `df_blockuitype` (`name`) VALUES ("Base")');
+            Core_BlockUiType_Model::addBlockUiType('Base');
         }
     }
 } else {

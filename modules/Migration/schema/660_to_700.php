@@ -358,8 +358,16 @@ if(defined('VTIGER_UPGRADE')) {
 
 	$refModulesList = $modCommentFieldInstance->getReferenceList();
 	foreach ($refModulesList as $refModuleName) {
-		$refModuleModel = Vtiger_Module_Model::getInstance($refModuleName);
-		$refModuleTabId = $refModuleModel->getId();
+        if (empty($refModuleTabId)) {
+            continue;
+        }
+
+		$refModuleTabId = Vtiger_Functions::getModuleId($refModuleName);
+
+        if (empty($refModuleTabId)) {
+            continue;
+        }
+
 		$db->pquery('UPDATE vtiger_relatedlists SET sequence=(sequence+1) WHERE tabid=?', array($refModuleTabId));
 
 		$query = 'SELECT 1 FROM vtiger_relatedlists WHERE tabid=? AND related_tabid =?';
@@ -1378,7 +1386,7 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 	//End: Tax Enhancements - Compound Taxes, Regional Taxes, Deducted Taxes, Other Charges
-    $menuEditorModel = Settings_Vtiger_Module_Model::getInstance('MenuEditor');
+    $menuEditorModel = Settings_Vtiger_Module_Model::getInstance('Settings:MenuEditor');
     $menuEditorModel->createTables();
     $menuEditorModel->addModules();
     $menuEditorModel->setDefaultSequence();

@@ -23,7 +23,7 @@ class Vtiger_Base_Model {
 	/**
 	 * Function to get the value for a given key
 	 * @param $key
-	 * @return Value for the given key
+	 * @return mixed for the given key
 	 */
 	public function get($key){
 		return isset($this->valueMap[$key]) ? $this->valueMap[$key] : null;
@@ -42,7 +42,7 @@ class Vtiger_Base_Model {
 	 * Function to get the value if its safe to use for SQL Query (column).
 	 * @param <String> $key
 	 * @param <Boolean> $skipEmpty - Skip the check if string is empty
-	 * @return Value for the given key
+	 * @return string Value for the given key
 	 */
 	public function getForSql($key, $skipEmtpy=true) {
 		return Vtiger_Util_Helper::validateStringForSql($this->get($key), $skipEmtpy);
