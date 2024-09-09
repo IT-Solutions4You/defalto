@@ -734,32 +734,7 @@ var vtUtils = {
     },
     makeSelect2ElementSortable: function (selectElement, valueElement, getValueFunction, setValueFunction) {
 
-        vtUtils.showSelect2ElementView(selectElement, {
-            results: function() {
-                return [
-                    {
-                        id: 0,
-                        text: 'enhancement'
-                    },
-                    {
-                        id: 1,
-                        text: 'bug'
-                    },
-                    {
-                        id: 2,
-                        text: 'duplicate'
-                    },
-                    {
-                        id: 3,
-                        text: 'invalid'
-                    },
-                    {
-                        id: 4,
-                        text: 'wontfix'
-                    }
-                ];
-            },
-        })
+        vtUtils.showSelect2ElementView(selectElement)
 
         let selectParent = selectElement.parent(),
             select2Element = selectElement.next('.select2'),
