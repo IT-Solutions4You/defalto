@@ -135,11 +135,14 @@ class Documents_ListView_Model extends Vtiger_ListView_Model {
 	 */
 	public function getListViewEntries($pagingModel) {
 
+
 		$db = PearDatabase::getInstance();
 
 		$moduleName = $this->getModule()->get('name');
 		$moduleFocus = CRMEntity::getInstance($moduleName);
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+
+        $viewId = $this->getViewId($pagingModel);
 
 		$queryGenerator = $this->get('query_generator');
 		$listViewContoller = $this->get('listview_controller');
@@ -172,25 +175,16 @@ class Documents_ListView_Model extends Vtiger_ListView_Model {
 		if(!empty($searchKey)) {
 			$queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator));
 		}
-        
-        $orderBy = $this->getForSql('orderby');
-		$sortOrder = $this->getForSql('sortorder');
 
-        if(!empty($orderBy)){
-			$queryGenerator = $this->get('query_generator');
-			$fieldModels = $queryGenerator->getModuleFields();
-			$orderByFieldModel = $fieldModels[$orderBy];
-            if($orderByFieldModel && ($orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE ||
-					$orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::OWNER_TYPE)){
-                $queryGenerator->addWhereField($orderBy);
-            }
-        }
         //Document source required in list view for managing delete 
         $listViewFields = $queryGenerator->getFields(); 
-        if(!in_array('document_source', $listViewFields)){ 
+        if(!in_array('document_source', $listViewFields)){
             $listViewFields[] = 'document_source'; 
         }
+
         $queryGenerator->setFields($listViewFields);
+        $this->retrieveOrderBy($viewId);
+
 		$listQuery = $this->getQuery();
 
 		$sourceModule = $this->get('src_module');
@@ -214,19 +208,10 @@ class Documents_ListView_Model extends Vtiger_ListView_Model {
 		$startIndex = $pagingModel->getStartIndex();
 		$pageLimit = $pagingModel->getPageLimit();
 
-		if(!empty($orderBy) && $orderByFieldModel) {
-			$listQuery .= ' ORDER BY '.$queryGenerator->getOrderByColumn($orderBy).' '.$sortOrder;
-		} else if(empty($orderBy) && empty($sortOrder)){
-			//List view will be displayed on recently created/modified records
-			$listQuery .= ' ORDER BY vtiger_crmentity.modifiedtime DESC';
-		}
+        $listQuery .= $this->getQueryGenerator()->getOrderByClause();
 
-		$viewid = ListViewSession::getCurrentView($moduleName);
-        if(empty($viewid)){
-            $viewid = $pagingModel->get('viewid');
-        }
-        $_SESSION['lvs'][$moduleName][$viewid]['start'] = $pagingModel->get('page');
-		ListViewSession::setSessionQuery($moduleName, $listQuery, $viewid);
+        $_SESSION['lvs'][$moduleName][$viewId]['start'] = $pagingModel->get('page');
+		ListViewSession::setSessionQuery($moduleName, $listQuery, $viewId);
 
 		$listQuery .= " LIMIT $startIndex,".($pageLimit+1);
 
