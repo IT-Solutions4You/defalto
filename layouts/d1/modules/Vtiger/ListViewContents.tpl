@@ -97,7 +97,9 @@
                                 &nbsp;{vtranslate($LISTVIEW_HEADER->get('label'), $LISTVIEW_HEADER->getModuleName())}&nbsp;
                             </a>
                             {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
-                                <a href="#" class="removeSorting"><i class="fa fa-remove"></i></a>
+                                <a href="#" class="removeSorting text-secondary">
+                                    <i class="fa fa-remove"></i>
+                                </a>
                             {/if}
                         </th>
                     {/foreach}
