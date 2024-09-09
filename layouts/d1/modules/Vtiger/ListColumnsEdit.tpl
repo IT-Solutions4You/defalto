@@ -53,13 +53,12 @@
 								<div class="panel panel-default" id="avialFieldsList">
 									{foreach item=BLOCK_FIELDS key=BLOCK_LABEL from=$RECORD_STRUCTURE name=availFieldsLoop}
 										{assign var=RAND_ID value=10|mt_rand:1000}
-										<div class="instafilta-section">
-											<div id="{$RAND_ID}_accordion" class="availFieldBlock" role="tab">
-												<a class="fieldLabel" data-bs-toggle="collapse" data-parent="#accordion" href="#{$RAND_ID}">
-													<i class="fa fa-caret-right"></i><span>{vtranslate($BLOCK_LABEL, $SOURCE_MODULE)}</span>
-												</a>
-											</div>
-											<div id="{$RAND_ID}" class="panel-collapse collapse">
+										<div class="instafilta-section collapse-container" id="collapse-container-{$RAND_ID}">
+											<a class="collapse-fields collapsed py-2 d-block" role="tab" data-bs-toggle="collapse" href="#" data-bs-target="#collapse-fields-{$RAND_ID}">
+												<i class="fa fa-caret-right text-secondary"></i>
+												<span class="px-2">{vtranslate($BLOCK_LABEL, $SOURCE_MODULE)}</span>
+											</a>
+											<div id="collapse-fields-{$RAND_ID}" class="panel-collapse collapse">
 												<div class="panel-body">
 													{foreach item=FIELD_MODEL key=FIELD_NAME from=$BLOCK_FIELDS}
 														{assign var=FIELD_MODULE_NAME value={$FIELD_MODEL->getModule()->getName()}}
