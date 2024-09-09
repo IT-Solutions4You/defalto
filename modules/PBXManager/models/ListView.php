@@ -60,6 +60,7 @@ class PBXManager_ListView_Model extends Vtiger_ListView_Model {
         $moduleName = $this->getModule()->get('name');
         $moduleFocus = CRMEntity::getInstance($moduleName);
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        $viewId = $this->getViewId($pagingModel);
 
         //Add the direction field to the query irrespective of filter
         $queryGenerator = $this->get('query_generator');
@@ -78,27 +79,7 @@ class PBXManager_ListView_Model extends Vtiger_ListView_Model {
             $queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator));
         }
 
-        $orderBy = $this->getForSql('orderby');
-        $sortOrder = $this->getForSql('sortorder');
-
-        //List view will be displayed on recently created/modified records
-        if (empty($orderBy) && empty($sortOrder) && $moduleName != "Users") {
-            $orderBy = 'modifiedtime';
-            $sortOrder = 'DESC';
-        }
-
-        if (!empty($orderBy)) {
-            $columnFieldMapping = $moduleModel->getColumnFieldMapping();
-            $orderByFieldName = $columnFieldMapping[$orderBy];
-            $orderByFieldModel = $moduleModel->getField($orderByFieldName);
-
-            if ($orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE) {
-                //IF it is reference add it in the where fields so that from clause will be having join of the table
-                $queryGenerator = $this->get('query_generator');
-                $queryGenerator->addWhereField($orderByFieldName);
-                //$queryGenerator->whereFields[] = $orderByFieldName;
-            }
-        }
+        $this->retrieveOrderBy($viewId);
         $listQuery = $this->getQuery();
 
         $sourceModule = $this->get('src_module');
@@ -114,34 +95,9 @@ class PBXManager_ListView_Model extends Vtiger_ListView_Model {
         $startIndex = $pagingModel->getStartIndex();
         $pageLimit = $pagingModel->getPageLimit();
 
-        if (!empty($orderBy)) {
-            if ($orderByFieldModel->isReferenceField()) {
-                $referenceModules = $orderByFieldModel->getReferenceList();
+       $listQuery .= $this->getQueryGenerator()->getOrderByClause();
 
-                $referenceNameFieldOrderBy = array();
-                foreach ($referenceModules as $referenceModuleName) {
-                    $referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModuleName);
-                    $referenceNameFields = $referenceModuleModel->getNameFields();
-                    $columnList = array();
-                    foreach ($referenceNameFields as $nameField) {
-                        $fieldModel = $referenceModuleModel->getField($nameField);
-                        $columnList[] = $fieldModel->get('table') . $orderByFieldModel->getName() . '.' . $fieldModel->get('column');
-                    }
-                    if (php7_count($columnList) > 1) {
-                        $referenceNameFieldOrderBy[] = getSqlForNameInDisplayFormat(array('first_name' => $columnList[0], 'last_name' => $columnList[1]), 'Users') . ' ' . $sortOrder;
-                    } else {
-                        $referenceNameFieldOrderBy[] = implode('', $columnList) . ' ' . $sortOrder;
-                    }
-                }
-                $listQuery .= ' ORDER BY ' . implode(',', $referenceNameFieldOrderBy);
-            } else {
-                $listQuery .= ' ORDER BY ' . $orderBy . ' ' . $sortOrder;
-            }
-        }
-
-
-        $viewid = ListViewSession::getCurrentView($moduleName);
-        ListViewSession::setSessionQuery($moduleName, $listQuery, $viewid);
+       ListViewSession::setSessionQuery($moduleName, $listQuery, $viewId);
 
         $listQuery .= " LIMIT $startIndex," . ($pageLimit + 1);
 

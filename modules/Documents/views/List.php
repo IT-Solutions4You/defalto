@@ -125,15 +125,15 @@ class Documents_List_View extends Vtiger_List_View {
 			Vtiger_ListView_Model::setSortParamsSession($listViewSessionKey, $params);
 		}
 
-		if($sortOrder == "ASC"){
-			$nextSortOrder = "DESC";
-			$sortImage = "icon-chevron-down";
-			$faSortImage = "fa-sort-desc";
-		}else{
-			$nextSortOrder = "ASC";
-			$sortImage = "icon-chevron-up";
-			$faSortImage = "fa-sort-asc";
-		}
+        if ($sortOrder == 'ASC') {
+            $nextSortOrder = 'DESC';
+            $sortImage = 'icon-chevron-down';
+            $faSortImage = 'fa-sort-desc';
+        } else {
+            $nextSortOrder = 'ASC';
+            $sortImage = 'icon-chevron-up';
+            $faSortImage = 'fa-sort-asc';
+        }
 
 		if(empty ($pageNumber)){
 			$pageNumber = '1';
@@ -257,6 +257,7 @@ class Documents_List_View extends Vtiger_List_View {
 		$viewer->assign('SORT_ORDER',$sortOrder);
 		$viewer->assign('NEXT_SORT_ORDER',$nextSortOrder);
 		$viewer->assign('SORT_IMAGE',$sortImage);
+        $viewer->assign('FASORT_IMAGE',$faSortImage);
 		$viewer->assign('COLUMN_NAME',$orderBy);
 		$viewer->assign('FOLDER_NAME',$request->get('folder_value'));
 
