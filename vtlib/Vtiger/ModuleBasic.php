@@ -201,7 +201,10 @@ class Vtiger_ModuleBasic {
 
 		if (!empty($parentTab)) {
 			$menuInstance = Vtiger_Menu::getInstance($parentTab);
-			$menuInstance->addModule($moduleInstance);
+
+			if ($menuInstance) {
+				$menuInstance->addModule($moduleInstance);
+			}
 		}
 
 		self::log("Creating Module $this->name ... DONE");
@@ -469,4 +472,3 @@ class Vtiger_ModuleBasic {
 		self::log("DONE");
 	}
 }
-?>

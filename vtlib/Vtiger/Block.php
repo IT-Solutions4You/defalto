@@ -86,20 +86,32 @@ class Vtiger_Block {
 	 * Create vtiger CRM block
 	 * @access private
 	 */
-	function __create($moduleInstance) {
-		global $adb;
+    public function __create($moduleInstance)
+    {
+        $this->module = $moduleInstance;
+        $this->id = $this->__getUniqueId();
 
-		$this->module = $moduleInstance;
+        if (!$this->sequence) {
+            $this->sequence = $this->__getNextSequence();
+        }
 
-		$this->id = $this->__getUniqueId();
-		if(!$this->sequence) $this->sequence = $this->__getNextSequence();
+        $this->getBlockTable()->insertData([
+            'blockid' => $this->id,
+            'tabid' => $this->module->id,
+            'blocklabel' => $this->label,
+            'sequence' => $this->sequence,
+            'show_title' => $this->showtitle,
+            'visible' => $this->visible,
+            'create_view' => $this->increateview,
+            'edit_view' => $this->ineditview,
+            'detail_view' => $this->indetailview,
+            'iscustom' => $this->iscustom,
+            'blockuitype' => $this->blockuitype,
+        ]);
 
-		$adb->pquery("INSERT INTO vtiger_blocks(blockid,tabid,blocklabel,sequence,show_title,visible,create_view,edit_view,detail_view,iscustom, blockuitype)
-			VALUES(?,?,?,?,?,?,?,?,?,?)", Array($this->id, $this->module->id, $this->label,$this->sequence,
-			$this->showtitle, $this->visible,$this->increateview, $this->ineditview, $this->indetailview, $this->iscustom, $this->blockuitype));
-		self::log("Creating Block $this->label ... DONE");
-		self::log("Module language entry for $this->label ... CHECK");
-	}
+        self::log("Creating Block $this->label ... DONE");
+        self::log("Module language entry for $this->label ... CHECK");
+    }
 
 	/**
 	 * Update vtiger CRM block
@@ -233,5 +245,27 @@ class Vtiger_Block {
         $this->blockuitype = $blockUiType;
         $db = PearDatabase::getInstance();
         $db->pquery('UPDATE vtiger_blocks SET blockuitype = ? WHERE blockid = ?', [$blockUiType, $this->id]);
+    }
+
+    public function getBlockTable()
+    {
+        return (new Core_DatabaseData_Model())->getTable('vtiger_blocks', 'blockid');
+    }
+
+    public function createTables()
+    {
+        $this->getBlockTable()
+            ->createTable('blockid')
+            ->createColumn('tabid', 'int(19) NOT NULL')
+            ->createColumn('blocklabel', 'varchar(100) NOT NULL')
+            ->createColumn('sequence', 'int(10) DEFAULT NULL')
+            ->createColumn('show_title', 'int(2) DEFAULT NULL')
+            ->createColumn('visible', 'int(2) NOT NULL DEFAULT \'0\'')
+            ->createColumn('create_view', 'int(2) NOT NULL DEFAULT \'0\'')
+            ->createColumn('edit_view', 'int(2) NOT NULL DEFAULT \'0\'')
+            ->createColumn('detail_view', 'int(2) NOT NULL DEFAULT \'0\'')
+            ->createColumn('display_status', 'int(1) NOT NULL DEFAULT \'1\'')
+            ->createColumn('iscustom', 'int(1) NOT NULL DEFAULT \'0\'')
+            ->createColumn('blockuitype', 'int(11) NOT NULL DEFAULT \'1\'');
     }
 }
