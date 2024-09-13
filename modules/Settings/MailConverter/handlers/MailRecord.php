@@ -135,24 +135,36 @@ class Vtiger_MailRecord {
 	/**
 	 * Helper function to convert the encoding of input to target charset.
 	 */
-	static function __convert_encoding($input, $to, $from = false) {
-		static $mb_function = NULL;
-		static $iconv_function = NULL;
+    static function __convert_encoding($input, $to, $from = false)
+    {
+        static $mb_function = null;
+        static $iconv_function = null;
 
-		if ($mb_function === NULL) $mb_function = function_exists('mb_convert_encoding');
-		if ($iconv_function === NULL) $iconv_function = function_exists('iconv');
+        if ($mb_function === null) {
+            $mb_function = function_exists('mb_convert_encoding');
+        }
 
-		if($mb_function) {
-			if(!$from) $from = mb_detect_encoding($input);
+        if ($iconv_function === null) {
+            $iconv_function = function_exists('iconv');
+        }
 
-			if(strtolower(trim($to)) == strtolower(trim($from))) {                         
-					return $input;
-			} else {
-				return mb_convert_encoding($input, $to, $from);
-			}
-		}
-		return $input;
-	}
+        if ($mb_function) {
+            if (!$from) {
+                $from = mb_detect_encoding($input);
+            }
+
+            if('default' === $from) {
+                $from = null;
+            }
+
+            if (strtolower(trim($to)) == strtolower(trim($from))) {
+                return $input;
+            } else {
+                return mb_convert_encoding($input, $to, $from);
+            }
+        }
+        return $input;
+    }
 	
 	/**
 	 * MIME decode function to parse IMAP header or mail information
@@ -332,4 +344,3 @@ class Vtiger_MailRecord {
     	}
 	}
 }
-?>
