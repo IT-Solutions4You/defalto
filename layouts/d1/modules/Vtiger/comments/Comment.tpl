@@ -36,7 +36,7 @@
                             <span class="creatorName me-1 fw-bold" data-related-to="{$COMMENT->isEmpty('related_to')}" data-parent-record="{$PARENT_RECORD}">
                                 {$CREATOR_NAME}
                             </span>
-                            {if !empty($ROLLUP_STATUS) and !empty($PARENT_RECORD) and !$COMMENT->isEmpty('related_to') and $COMMENT->get('related_to') ne $PARENT_RECORD}
+                            {if !empty($PARENT_RECORD) and !$COMMENT->isEmpty('related_to') and $COMMENT->get('related_to') ne $PARENT_RECORD}
                                 {assign var=SINGULAR_MODULE value='SINGLE_'|cat:$COMMENT->get('module')}
                                 {assign var=ENTITY_NAME value=getEntityName($COMMENT->get('module'), array($COMMENT->get('related_to')))}
                                 <span class="text-secondary wordbreak">
