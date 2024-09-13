@@ -8,11 +8,11 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title fs-4 filename" title="{$FILE_NAME}">{$TRIMMED_FILE_NAME}</div>
+                <h5 class="modal-title filename" title="{$FILE_NAME}">{$TRIMMED_FILE_NAME}</h5>
                 {if $FILE_PREVIEW_NOT_SUPPORTED neq 'yes'}
                     <a class="btn btn-primary ms-auto" href="{$DOWNLOAD_URL}">{vtranslate('LBL_DOWNLOAD_FILE',$MODULE_NAME)}</a>
                 {/if}
-                <button type="button" class="btn-close ms-3" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="filePreview container-fluid">
