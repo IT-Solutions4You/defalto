@@ -400,8 +400,8 @@ class Download
 $zipFileUrl = 'https://github.com/IT-Solutions4You/defalto/archive/refs/heads/develop.zip';
 $zipFileFolder = 'defalto-develop';
 
-//Download_ZipArchive::$skipFolders = ['user_privileges', 'layouts/d1/modules/PDFMaker', 'modules/PDFMaker', 'manifest', 'update', 'icons', 'installer'];
-//Download_ZipArchive::$skipFiles = ['config.inc.php', 'composer.lock', 'index.php', 'install.php', 'parent_tabdata.php', 'tabdata.php', 'PDFMaker.php'];
+Download_ZipArchive::$skipFolders = ['user_privileges', 'layouts/d1/modules/PDFMaker', 'modules/PDFMaker', 'manifest', 'update', 'icons', 'installer'];
+Download_ZipArchive::$skipFiles = ['config.inc.php', 'composer.lock', 'index.php', 'update.php', 'install.php', 'parent_tabdata.php', 'tabdata.php', 'PDFMaker.php'];
 
 $download = Download::zip($zipFileUrl, $zipFileFolder);
 
