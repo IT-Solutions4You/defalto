@@ -134,7 +134,19 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 		return false;
 	}
 
-	/**
+    public static function getInstanceByData($data)
+    {
+        $instance = new self();
+        $instance->setData($data);
+
+        if (!empty($data['related_to'])) {
+            $instance->set('module', getSalesEntityType($data['related_to']));
+        }
+
+        return $instance;
+    }
+
+    /**
 	 * Function to create an instance of ModComment_Record_Model
 	 * @param <Integer> $record
 	 * @return ModComment_Record_Model
@@ -225,66 +237,69 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 	 * Function returns latest comments for parent record
 	 * @param <Integer> $parentRecordId - parent record for which latest comment need to retrieved
 	 * @param <Vtiger_Paging_Model> - paging model
-	 * @return ModComments_Record_Model if exits or null
+	 * @return array ModComments_Record_Model if exits or null
 	 */
-	public static function getRecentComments($parentRecordId, $pagingModel = false){
-		$recordInstances = array();
-		$db = PearDatabase::getInstance();
+    public static function getRecentComments($parentRecordId, $pagingModel = false)
+    {
+        $recordInstances = [];
+        $db = PearDatabase::getInstance();
+        $listView = Vtiger_ListView_Model::getInstance('ModComments');
+        $queryGenerator = $listView->get('query_generator');
+        $queryGenerator->setFields(['parent_comments', 'createdtime', 'modifiedtime', 'related_to', 'assigned_user_id', 'commentcontent', 'creator', 'id', 'customer', 'reasontoedit', 'userid', 'from_mailconverter', 'from_mailroom', 'is_private', 'customer_email', 'related_email_id', 'filename']);
+        $query = $queryGenerator->getQuery();
+        $query = $query . ' AND related_to = ? ORDER BY vtiger_crmentity.createdtime DESC';
 
-		$listView = Vtiger_ListView_Model::getInstance('ModComments');
-		$queryGenerator = $listView->get('query_generator');
-		$queryGenerator->setFields(array('parent_comments', 'createdtime', 'modifiedtime', 'related_to', 'assigned_user_id',
-			'commentcontent', 'creator', 'id', 'customer', 'reasontoedit', 'userid', 'from_mailconverter', 'from_mailroom', 'is_private', 'customer_email', 'related_email_id', 'filename'));
+        if ($pagingModel) {
+            $startIndex = $pagingModel->getStartIndex();
+            $limit = $pagingModel->getPageLimit();
+            $limit = $limit + 1;
+            $query = $query . " LIMIT $startIndex, $limit";
+        }
 
-		$query = $queryGenerator->getQuery();
-		$query = $query ." AND related_to = ? ORDER BY vtiger_crmentity.createdtime DESC";
+        $result = $db->pquery($query, [$parentRecordId]);
+        $rows = $db->num_rows($result);
 
-		if($pagingModel){
-			$startIndex = $pagingModel->getStartIndex();
-			$limit = $pagingModel->getPageLimit();
-			$limit = $limit+1;
-			$query = $query . " LIMIT $startIndex, $limit";
-		}
+        for ($i = 0; $i < $rows; $i++) {
+            $row = $db->query_result_rowdata($result, $i);
+            $recordInstance = new self();
+            $recordInstance->setData($row);
+            $recordInstances[] = $recordInstance;
+        }
 
+        return $recordInstances;
+    }
 
-		$result = $db->pquery($query, array($parentRecordId));
-		$rows = $db->num_rows($result);
-
-		for ($i=0; $i<$rows; $i++) {
-			$row = $db->query_result_rowdata($result, $i);
-			$recordInstance = new self();
-			$recordInstance->setData($row);
-			$recordInstances[] = $recordInstance;
-		}
-		return $recordInstances;
-	}
-
-	/**
-	 * Function returns all the parent comments model
+    /**
+     * Function returns all the parent comments model
 	 * @param <Integer> $parentId
 	 * @return ModComments_Record_Model(s)
 	 */
-	public static function getAllParentComments($parentId) {
-			$recordInstances = array();
-			$db = PearDatabase::getInstance();
-			$focus = CRMEntity::getInstance('ModComments');
-			$query = $focus->get_comments();
-			if($query) {
-				$query .= " AND related_to = ? AND parent_comments = ? ORDER BY vtiger_crmentity.createdtime DESC";
-				$result = $db->pquery($query, array($parentId, ''));
-				$count = $db->num_rows($result);
-				for($i = 0; $i < $count; $i++) {
-					$rowData = $db->query_result_rowdata($result, $i);
-					$recordInstance = new self();
-					$recordInstance->setData($rowData);
-					$recordInstances[] = $recordInstance;
-				}
-			}
-			return $recordInstances;
-	}
+    public static function getAllParentComments($parentId)
+    {
+        $recordInstances = [];
+        $db = PearDatabase::getInstance();
+        $focus = CRMEntity::getInstance('ModComments');
+        $query = $focus->get_comments();
 
-	/**
-	 * Function returns all the child comment count
+        if ($query) {
+            $query .= ' AND related_to = ? AND (parent_comments IS NULL or parent_comments < 1) ORDER BY vtiger_crmentity.createdtime DESC';
+            $result = $db->pquery($query, [$parentId]);
+            $count = $db->num_rows($result);
+
+            for ($i = 0; $i < $count; $i++) {
+                $rowData = $db->query_result_rowdata($result, $i);
+
+                $recordInstance = new self();
+                $recordInstance->setData($rowData);
+                $recordInstances[] = $recordInstance;
+            }
+        }
+
+        return $recordInstances;
+    }
+
+    /**
+     * Function returns all the child comment count
 	 * @return <type>
 	 */
 	public function getChildCommentsCount() {
@@ -300,10 +315,11 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 		}
 	}
 
-	/**
-	 * Returns child comments models for a comment
-	 * @return ModComment_Record_Model(s)
-	 */
+    /**
+     * Returns child comments models for a comment
+     * @return array ModComment_Record_Model(s)
+     * @throws Exception
+     */
 	public function getChildComments() {
 		$db = PearDatabase::getInstance();
 		$parentCommentId = $this->get('modcommentsid');
@@ -314,8 +330,7 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 
 		$listView = Vtiger_ListView_Model::getInstance('ModComments');
 		$queryGenerator = $listView->get('query_generator');
-		$queryGenerator->setFields(array('parent_comments', 'createdtime', 'modifiedtime', 'related_to', 'id', 'assigned_user_id',
-			'commentcontent', 'creator', 'reasontoedit', 'userid', 'from_mailconverter', 'from_mailroom','is_private', 'customer_email'));
+		$queryGenerator->setFields(array('parent_comments', 'createdtime', 'modifiedtime', 'related_to', 'id', 'assigned_user_id', 'commentcontent', 'creator', 'reasontoedit', 'userid', 'from_mailconverter', 'from_mailroom','is_private', 'customer_email'));
 		$query = $queryGenerator->getQuery();
 
 		//Condition are directly added as query_generator transforms the
@@ -325,11 +340,10 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 		$recordInstances = array();
 		$result = $db->pquery($query, array($parentCommentId, $parentRecordId));
 		$rows = $db->num_rows($result);
+
 		for ($i=0; $i<$rows; $i++) {
 			$row = $db->query_result_rowdata($result, $i);
-			$recordInstance = new self();
-			$recordInstance->setData($row);
-			$recordInstances[] = $recordInstance;
+			$recordInstances[] = self::getInstanceByData($row);
 		}
 
 		return $recordInstances;
