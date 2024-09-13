@@ -686,10 +686,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		app.event.on("post.relatedListLoad.click",function(event, container){
 			vtUtils.applyFieldElementsView(container);
 			vtUtils.enableTooltips();
-			var vtigerInstance = Vtiger_Index_Js.getInstance();
-			vtigerInstance.registerMultiUpload();
+			Vtiger_Index_Js.getInstance().registerMultiUpload();
 			//For Rollup Comments
 			self.registerRollupCommentsSwitchEvent();
+			self.registerScrollForRollupEvents();
 			//END
 		});
 
@@ -1845,85 +1845,88 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	 * function to save comment
 	 * return json response
 	 */
-	saveComment : function(e) {
-		var self = this;
-		var aDeferred = jQuery.Deferred();
-		var currentTarget = jQuery(e.currentTarget);
-		var form = jQuery(e.currentTarget).closest('form');
-		var commentMode = currentTarget.data('mode');
-		var closestCommentBlock = currentTarget.closest('.addCommentBlock');
-		var commentContent = closestCommentBlock.find('.commentcontent');
-		var formData = new FormData(form[0]); 
-		var commentContentValue = commentContent.val();
-		var isPrivate;
-		if(closestCommentBlock.find('#is_private').is(":checked")) {
-			isPrivate = 1;
-		} else {
-			isPrivate = 0;
-		}
-		var errorMsg;
-		if(commentContentValue.trim() == ""){
+	saveComment: function (e) {
+		let self = this,
+			aDeferred = jQuery.Deferred(),
+			currentTarget = jQuery(e.currentTarget),
+			form = jQuery(e.currentTarget).closest('form'),
+			commentMode = currentTarget.data('mode'),
+			closestCommentBlock = currentTarget.closest('.addCommentBlock'),
+			commentContent = closestCommentBlock.find('.commentcontent'),
+			commentContentValue = commentContent.val(),
+			isPrivate = closestCommentBlock.find('#is_private').is(':checked') ? 1 : 0,
+			errorMsg,
+			editCommentReason = '';
+
+		if (!commentContentValue.trim()) {
 			errorMsg = app.vtranslate('JS_LBL_COMMENT_VALUE_CANT_BE_EMPTY');
 			vtUtils.showValidationMessage(commentContent, errorMsg);
 			aDeferred.reject();
 			return aDeferred.promise();
 		}
-		  vtUtils.hideValidationMessage(commentContent);
-		if(commentMode == "edit"){
-			var editCommentReason = closestCommentBlock.find('[name="reasonToEdit"]').val();
+
+		vtUtils.hideValidationMessage(commentContent);
+
+		if (commentMode === 'edit') {
+			editCommentReason = closestCommentBlock.find('[name="reasonToEdit"]').val();
 			isPrivate = closestCommentBlock.find('[name="is_private"]').val();
 		}
 
 		app.helper.showProgress();
-		var element = jQuery(e.currentTarget);
+		let element = jQuery(e.currentTarget);
 		element.attr('disabled', 'disabled');
 
-		var commentInfoHeader = closestCommentBlock.closest('.commentDetails').find('.commentInfoHeader');
-		var commentId = commentInfoHeader.data('commentid');
-		var parentCommentId = commentInfoHeader.data('parentcommentid');
-		var commentRelatedTo = commentInfoHeader.data('relatedto');
-		if(!commentRelatedTo) commentRelatedTo = form.find('[name="record"]').val() ?? self.getRecordId();
+		let commentInfoHeader = closestCommentBlock.closest('.commentDetails').find('.commentInfoHeader'),
+			commentId = commentInfoHeader.data('commentid'),
+			parentCommentId = commentInfoHeader.data('parentcommentid'),
+			commentRelatedTo = commentInfoHeader.data('relatedto');
+
+		if (!commentRelatedTo) commentRelatedTo = form.find('[name="record"]').val() ?? self.getRecordId();
 
 		let incrementCount = false,
-			postData = {
-				'commentcontent': commentContentValue,
-				'related_to': commentRelatedTo,
-				'module': 'ModComments',
-				'is_private': isPrivate,
-			};
+			formData = new FormData();
 
-		if(commentMode == "edit"){
-			postData['record'] = commentId;
-			postData['reasontoedit'] = editCommentReason;
-			postData['parent_comments'] = parentCommentId;
-			postData['mode'] = 'edit';
-			postData['action'] = 'Save';
-		} else if(commentMode == "add"){
-			postData['parent_comments'] = commentId;
-			postData['action'] = 'SaveAjax';
-			postData['filename'] = Vtiger_Index_Js.files;
+		formData.append('commentcontent', commentContentValue);
+		formData.append('related_to', commentRelatedTo);
+		formData.append('module', 'ModComments');
+		formData.append('is_private', isPrivate);
+
+		if (commentMode === 'edit') {
+			formData.append('record', commentId);
+			formData.append('reasontoedit', editCommentReason);
+			formData.append('parent_comments', parentCommentId);
+			formData.append('mode', 'edit');
+			formData.append('action', 'Save');
+		} else if (commentMode === 'add') {
+			formData.append('parent_comments', 'undefined' === typeof commentId ? 0 : commentId);
+			formData.append('action', 'SaveAjax');
+
+			$.each(Vtiger_Index_Js.files, function (fileName, fileValue) {
+				formData.append('filename[]', fileValue);
+			});
+
 			incrementCount = true;
 		}
 
-		app.request.post({data: postData}).then(
-			function(err,data){
-				Vtiger_Index_Js.files = '';
-				jQuery('.MultiFile-remove').trigger('click');
-				app.helper.hideProgress();
-				if(incrementCount){
-					// to increment related records count when we add comment from related tab / summary view widget
-					var tabElement = self.getTabByLabel("ModComments");
-					var relatedController = new Vtiger_RelatedList_Js(self.getRecordId(), app.getModuleName(), tabElement, self.getRelatedModuleName());
-					relatedController.updateRelatedRecordsCount(jQuery(tabElement).data('relation-id'),[1],true);
-				}
-				aDeferred.resolve(data);
-			},
-			function(textStatus, errorThrown){
-				app.helper.hideProgress();
-				element.removeAttr('disabled');
-				aDeferred.reject(textStatus, errorThrown);
+		app.request.post({data: formData, processData: false, contentType: false}).then(function (err, data) {
+			Vtiger_Index_Js.files = {};
+			jQuery('.MultiFile-remove').trigger('click');
+			app.helper.hideProgress();
+
+			if (incrementCount) {
+				// to increment related records count when we add comment from related tab / summary view widget
+				let tabElement = self.getTabByLabel("ModComments"),
+					relatedController = new Vtiger_RelatedList_Js(self.getRecordId(), app.getModuleName(), tabElement, self.getRelatedModuleName());
+
+				relatedController.updateRelatedRecordsCount(jQuery(tabElement).data('relation-id'), [1], true);
 			}
-		);
+
+			aDeferred.resolve(data);
+		}, function (textStatus, errorThrown) {
+			app.helper.hideProgress();
+			element.removeAttr('disabled');
+			aDeferred.reject(textStatus, errorThrown);
+		});
 
 		return aDeferred.promise();
 	},
@@ -1976,13 +1979,15 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	/**
 	 * Function to get child comments
 	 */
-	getChildComments : function(commentId){
-		var aDeferred = jQuery.Deferred();
-		var url= 'module='+app.getModuleName()+'&view=Detail&record='+this.getRecordId()+'&mode=showChildComments&commentid='+commentId;
-		var dataObj = this.getCommentThread(url);
-		dataObj.then(function(data){
+	getChildComments: function (commentId) {
+		let aDeferred = jQuery.Deferred(),
+			url = 'module=' + app.getModuleName() + '&view=Detail&record=' + this.getRecordId() + '&mode=showChildComments&commentid=' + commentId,
+			dataObj = this.getCommentThread(url);
+
+		dataObj.then(function (data) {
 			aDeferred.resolve(data);
 		});
+
 		return aDeferred.promise();
 	},
 
@@ -2118,10 +2123,12 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			rollUpComments.removeProp('checked');
 		}
 	},
-	registerScrollForRollupEvents : function() {
-		var relatedController = this.getRelatedController();
-		if(relatedController)
+	registerScrollForRollupEvents: function () {
+		let relatedController = this.getRelatedController();
+
+		if (relatedController) {
 			relatedController.registerScrollForRollupComments();
+		}
 	},
 
 	registerStarToggle: function () {
@@ -2662,50 +2669,24 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		});
 	},
 
+	registerDetailViewThread() {
+		this.getContentHolder().on('click', '.detailViewThread', function (e) {
+			let recentCommentsTab = self.getTabByLabel(self.detailViewRecentCommentsTabLabel),
+				commentId = jQuery(e.currentTarget).closest('.singleComment').find('.commentInfoHeader').data('commentid');
 
+			if (recentCommentsTab) {
+				e.preventDefault();
+				recentCommentsTab.trigger('click', {'commentid': commentId});
+			}
+		});
+	},
 	registerEvents : function() {
 		this._super();
 		this.registerEventsForRelatedList();
 		var detailContentsHolder = this.getContentHolder();
 		var self = this;
 		this.registerSendSmsSubmitEvent();
-		detailContentsHolder.on('click','.viewThread', function(e){
-			var currentTarget = jQuery(e.currentTarget);
-			var currentTargetParent = currentTarget.parent();
-			var commentActionsBlock = currentTarget.closest('.commentActions');
-			var currentCommentBlock = currentTarget.closest('.commentDetails');
-			var ulElements = currentCommentBlock.find('ul');
-			if(ulElements.length > 0){
-				ulElements.show();
-				commentActionsBlock.find('.hideThreadBlock').show();
-				currentTargetParent.hide();
-				return;
-			}
-			var commentId = currentTarget.closest('.commentDiv').find('.commentInfoHeader').data('commentid');
-			self.getChildComments(commentId).then(function(data){
-				jQuery(data).appendTo(jQuery(e.currentTarget).closest('.commentDetails'));
-				commentActionsBlock.find('.hideThreadBlock').show();
-				currentTargetParent.hide();
-			});
-		});
-		detailContentsHolder.on('click','.hideThread', function(e){
-			var currentTarget = jQuery(e.currentTarget);
-			var currentTargetParent = currentTarget.parent();
-			var commentActionsBlock = currentTarget.closest('.commentActions');
-			var currentCommentBlock = currentTarget.closest('.commentDetails');
-			currentCommentBlock.find('ul').hide();
-			currentTargetParent.hide();
-			commentActionsBlock.find('.viewThreadBlock').show();
-		});
-		detailContentsHolder.on('click','.detailViewThread',function(e){
-			let recentCommentsTab = self.getTabByLabel(self.detailViewRecentCommentsTabLabel),
-				commentId = jQuery(e.currentTarget).closest('.singleComment').find('.commentInfoHeader').data('commentid');
-
-			if(recentCommentsTab) {
-				e.preventDefault();
-				recentCommentsTab.trigger('click',{'commentid':commentId});
-			}
-		});
+		this.registerDetailViewThread();
 		this.registerStarToggle();
 		this.registerTagEvents();
 		app.event.on("post.mail.sent",function(event,data){
@@ -2755,92 +2736,52 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		//RegisterBasicEvents for Related-List overlay's
 		this.registerBasicEvents();
 		this.registerHeaderAjaxEditEvents();
+
 		detailContentsHolder.on('click','.detailViewSaveComment', function(e){
-			var element = jQuery(e.currentTarget);
+			let element = jQuery(e.currentTarget);
+
 			if(!element.is(":disabled")) {
-				var dataObj = self.saveComment(e);
-				dataObj.then(function(){
-					var commentsContainer = detailContentsHolder.find("[data-name='ModComments']");
-					self.loadWidget(commentsContainer).then(function() {
+				self.saveComment(e).then(function(){
+					let commentsContainer = detailContentsHolder.find("[data-name='ModComments']");
+
+					self.loadWidget(commentsContainer).then(function () {
 						element.removeAttr('disabled');
-						app.event.trigger('post.summarywidget.load',commentsContainer);
-						var indexInstance = Vtiger_Index_Js.getInstance();
-						indexInstance.registerMultiUpload();
+						app.event.trigger('post.summarywidget.load', commentsContainer);
+
+						Vtiger_Index_Js.getInstance().registerMultiUpload();
 					});
 				});
 			}
 		});
 
-		detailContentsHolder.on('click','.saveComment', function(e){
-			var element = jQuery(e.currentTarget);
-			if(!element.is(":disabled")) {
-				var currentTarget = jQuery(e.currentTarget);
-				var mode = currentTarget.data('mode');
-				var dataObj = self.saveComment(e);
-				dataObj.then(function(data){
-					var closestAddCommentBlock = currentTarget.closest('.addCommentBlock');
-					var commentTextAreaElement = closestAddCommentBlock.find('.commentcontent');
-					var commentInfoBlock = currentTarget.closest('.singleComment');
-					commentTextAreaElement.val('');
+		detailContentsHolder.on('click', '.saveComment', function (e) {
+			let element = jQuery(e.currentTarget);
 
-					if(mode == "add"){
-						var commentId = data['id'];
-						var commentHtml = self.getCommentUI(commentId);
-						commentHtml.then(function(data){
-							var html;
-							if(jQuery(data).hasClass('privateComment')) {
-								html = '<ul class="unstyled"><li class="commentDetails privateComment">'+data+'</li></ul>';
-							} else {
-								html = '<ul class="unstyled"><li class="commentDetails">'+data+'</li></ul>';
-							}
-							var commentBlock = closestAddCommentBlock.closest('.commentDetails');
-							var detailContentsHolder = self.getContentHolder();
-							var noCommentsMsgContainer = jQuery('.noCommentsMsgContainer',detailContentsHolder);
-							noCommentsMsgContainer.remove();
-							if(commentBlock.length > 0){
-								closestAddCommentBlock.remove();
-								var childComments = commentBlock.find('ul');
-								if(childComments.length <= 0){
-									var currentChildCommentsCount = commentInfoBlock.find('.viewThreadBlock').data('childCommentsCount');
-									var newChildCommentCount = currentChildCommentsCount + 1;
-									commentInfoBlock.find('.childCommentsCount').text(newChildCommentCount);
-									var parentCommentId = commentInfoBlock.find('.commentInfoHeader').data('commentid');
-									self.getChildComments(parentCommentId).then(function(responsedata){
-										jQuery(responsedata).appendTo(commentBlock);
-										commentInfoBlock.find('.viewThreadBlock').hide();
-										commentInfoBlock.find('.hideThreadBlock').show();
-									});
-								}else {
-									jQuery(html).appendTo(commentBlock);
-								}
-							} else {
-								jQuery(html).prependTo(closestAddCommentBlock.closest('.commentContainer').find('.commentsList'));
-								commentTextAreaElement.css({height : '71px'});
-							}
-							commentInfoBlock.find('.commentActionsContainer').show();
-						});
-					}else if(mode == "edit"){
-						var modifiedTime = commentInfoBlock.find('.commentModifiedTime');
-						var commentInfoContent = commentInfoBlock.find('.commentInfoContent');
-						var commentEditStatus = commentInfoBlock.find('[name="editStatus"]');
-						var commentReason = commentInfoBlock.find('[name="editReason"]');
-						commentInfoContent.html(data.commentcontent);
-						commentReason.html(data.reasontoedit);
-						modifiedTime.text(data.modifiedtime);
-						modifiedTime.attr('title',data.modifiedtimetitle)
-						if(commentEditStatus.hasClass('hide')){
-							commentEditStatus.removeClass('hide');
-						}
-						if(data.reasontoedit != ""){
-							commentInfoBlock.find('.editReason').removeClass('hide')
-						}
-						commentInfoContent.show();
-						commentInfoBlock.find('.commentActionsContainer').show();
-						closestAddCommentBlock.remove();
+			if (!element.is(":disabled")) {
+				let currentTarget = jQuery(e.currentTarget);
+
+				self.saveComment(e).then(function (data) {
+					let commentElement = currentTarget.parents('.commentDiv'),
+						commentId = commentElement.find('.commentInfoHeader').data('commentid'),
+						commentNew = false;
+
+					if ('undefined' === typeof commentId) {
+						commentId = data.id;
+						commentNew = true
 					}
+
+					self.getChildComments(commentId).then(function (childCommentsData) {
+						if (commentNew) {
+							detailContentsHolder.find('.commentsList').prepend(childCommentsData)
+							detailContentsHolder.find('.commentcontent').val('');
+						} else {
+							commentElement.html(childCommentsData);
+							commentElement.find('.childComments').addClass('show');
+						}
+					});
+
 					element.removeAttr('disabled');
-					var indexInstance = Vtiger_Index_Js.getInstance();
-					indexInstance.registerMultiUpload();
+					Vtiger_Index_Js.getInstance().registerMultiUpload();
 				});
 			}
 		});
