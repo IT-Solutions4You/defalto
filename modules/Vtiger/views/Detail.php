@@ -486,25 +486,27 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 
 		$pagingModel = new Vtiger_Paging_Model();
 		$pagingModel->set('page', $pageNumber);
+
 		if(!empty($limit)) {
 			$pagingModel->set('limit', $limit);
 		}
 
 		if($request->get('rollup-toggle')) {
-			$rollupsettings = ModComments_Module_Model::storeRollupSettingsForUser($currentUserModel, $request);
+			$rollUpSettings = ModComments_Module_Model::storeRollupSettingsForUser($currentUserModel, $request);
 		} else {
-			$rollupsettings = ModComments_Module_Model::getRollupSettingsForUser($currentUserModel, $moduleName);
+            $rollUpSettings = ModComments_Module_Model::getRollupSettingsForUser($currentUserModel, $moduleName);
 		}
 
         $parentRecordModel = Vtiger_Record_Model::getInstanceById($parentId, $moduleName);
 
-		if(isset($rollupsettings['rollup_status']) && $rollupsettings['rollup_status']) {
-			$recentComments = $parentRecordModel->getRollupCommentsForModule(0, 6);
-		}else {
-			$recentComments = ModComments_Record_Model::getRecentComments($parentId, $pagingModel);
-		}
+        if (!empty($rollUpSettings['rollup_status'])) {
+            $recentComments = $parentRecordModel->getRollupCommentsForModule(0, 6);
+        } else {
+            $recentComments = ModComments_Record_Model::getRecentComments($parentId, $pagingModel);
+        }
 
-		$pagingModel->calculatePageRange($recentComments);
+        $pagingModel->calculatePageRange($recentComments);
+
 		if ($pagingModel->get('limit') < php7_count($recentComments)) {
 			array_pop($recentComments);
 		}
@@ -522,8 +524,8 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
 		$viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
 		$viewer->assign('COMMENTS_MODULE_MODEL', $modCommentsModel);
-		$viewer->assign('ROLLUP_STATUS', isset($rollupsettings['rollup_status']) ? $rollupsettings['rollup_status'] : false);
-		$viewer->assign('ROLLUPID', isset($rollupsettings['rollupid']) ? $rollupsettings['rollupid'] : 0);
+		$viewer->assign('ROLLUP_STATUS', isset($rollUpSettings['rollup_status']) ? $rollUpSettings['rollup_status'] : false);
+		$viewer->assign('ROLLUPID', isset($rollUpSettings['rollupid']) ? $rollUpSettings['rollupid'] : 0);
 		$viewer->assign('PARENT_RECORD', $parentId);
         $viewer->assign('STARTINDEX', 0);
 
@@ -574,26 +576,32 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 	/**
 	 * Function sends the child comments for a comment
 	 * @param Vtiger_Request $request
-	 * @return <type>
+	 * @return void
 	 */
-	function showChildComments(Vtiger_Request $request) {
-		$parentCommentId = $request->get('commentid');
-		$parentCommentModel = ModComments_Record_Model::getInstanceById($parentCommentId);
-		$childComments = $parentCommentModel->getChildComments();
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
-		$moduleName = $parentCommentModel->getParentRecordModel()->getModuleName();
+    public function showChildComments(Vtiger_Request $request): void
+    {
+        $parentCommentId = $request->get('commentid');
+        $parentCommentModel = ModComments_Record_Model::getInstanceById($parentCommentId);
+        $parentRecordModel = $parentCommentModel->getParentRecordModel();
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
+        $moduleName = $parentRecordModel->getModuleName();
 
-		$viewer = $this->getViewer($request);
-		$viewer->assign('PARENT_COMMENTS', $childComments);
-		$viewer->assign('CURRENTUSER', $currentUserModel);
-		$viewer->assign('COMMENTS_MODULE_MODEL', $modCommentsModel);
-		$viewer->assign('MODULE_NAME', $moduleName);
+        $viewer = $this->getViewer($request);
+        $viewer->assign('CURRENTUSER', $currentUserModel);
+        $viewer->assign('COMMENTS_MODULE_MODEL', $modCommentsModel);
+        $viewer->assign('MODULE_NAME', $moduleName);
+        $viewer->assign('COMMENT', $parentCommentModel);
+        $viewer->assign('SHOW_REPLIES', true);
+        $viewer->assign('IS_CREATABLE', $modCommentsModel->isPermitted('CreateView'));
+        $viewer->assign('IS_EDITABLE', $modCommentsModel->isPermitted('EditView'));
+        $viewer->assign('PARENT_RECORD', $request->get('record'));
+        $viewer->assign('ROLLUP_STATUS', 1);
 
-		return $viewer->view('CommentsList.tpl', $moduleName, 'true');
-	}
+        $viewer->view('comments/Comment.tpl', $moduleName);
+    }
 
-	/**
+    /**
 	 * Function to get Ajax is enabled or not
 	 * @param Vtiger_Record_Model record model
 	 * @return <boolean> true/false

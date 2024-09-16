@@ -1449,6 +1449,9 @@ $languageStrings = array(
     'LBL_ALL_COUNTRIES_HAVE_BEEN_DEACTIVATED' => 'All countries have been deactivated',
     'LBL_ADD_REGION' => 'Add region',
     'LBL_ADD_TAX' => 'Add tax',
+    'LBL_SYSTEM_INFORMATION' => 'System Information',
+    'LBL_SHOW_RELATED_COMMENTS' => 'Show related comments',
+    'LBL_SHOW_RELATED_COMMENTS_INFO' => "If 'Show related comments' is set to 'On' comments on related records will be shown. For example, if you are viewing comments on an Organization record, comments added to related Contacts, Opportunities, Tickets, ..etc would also be displayed.",
 );
 
 $jsLanguageStrings = array(

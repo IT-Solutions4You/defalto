@@ -256,20 +256,22 @@ Vtiger_Index_Js("Vtiger_Edit_Js",{
 	 * Function to register event for image delete
 	 */
 	registerEventForImageDelete : function(){
-		var formElement = this.getForm();
+		let formElement = this.getForm();
+
 		formElement.find('.imageDelete').on('click',function(e){
-			var element = jQuery(e.currentTarget);
-			var imageId = element.closest('div').find('img').data().imageId;
-			var parentTd = element.closest('td');
-			var imageUploadElement = parentTd.find('[name="imagename[]"]');
-			element.closest('div').remove();
+			let element = jQuery(e.currentTarget),
+                imageContainer = element.closest('.existingImageContainer'),
+                imageId = imageContainer.find('img').data('imageId'),
+                imageUploadElement = element.closest('.fieldValue').find('[name="imagename[]"]');
+
+            imageContainer.remove();
             
 			if(formElement.find('[name=imageid]').length !== 0) {
-				var imageIdValue = JSON.parse(formElement.find('[name=imageid]').val());
+				let imageIdValue = JSON.parse(formElement.find('[name=imageid]').val());
 				imageIdValue.push(imageId);
 				formElement.find('[name=imageid]').val(JSON.stringify(imageIdValue));
 			} else {
-				var imageIdJson = [];
+				let imageIdJson = [];
 				imageIdJson.push(imageId);
 				formElement.append('<input type="hidden" name="imgDeleted" value="true" />');
 				formElement.append('<input type="hidden" name="imageid" value="'+JSON.stringify(imageIdJson)+'" />');
@@ -280,7 +282,7 @@ Vtiger_Index_Js("Vtiger_Edit_Js",{
 			}
 		});
 	},
-        
+
         registerFileElementChangeEvent : function(container) {
             var thisInstance = this;
             container.on('change', 'input[name="imagename[]"],input[name="sentdocument"]', function(e){

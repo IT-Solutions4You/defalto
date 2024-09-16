@@ -328,12 +328,12 @@ class Vtiger_ModuleBasic {
 	    if ($this->entityidfield && $this->entityidcolumn) {
 		    if (is_array($fieldInstance)) {
 			    $fieldName = implode(',', array_map(function ($fieldInstance) {
-				    return $fieldInstance->name;
+				    return $fieldInstance->column;
 			    }, $fieldInstance));
 			    $fieldTable = $fieldInstance[0]->table;
 		    } else {
 			    $fieldTable = $fieldInstance->table;
-			    $fieldName = $fieldInstance->name;
+			    $fieldName = $fieldInstance->column;
 		    }
 
 		    $result = $adb->pquery('SELECT tabid FROM vtiger_entityname WHERE tablename=? AND tabid=?', [$fieldTable, $this->id]);

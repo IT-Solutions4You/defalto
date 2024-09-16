@@ -43,4 +43,40 @@ class HelpDesk_Record_Model extends Vtiger_Record_Model {
 
 		return $commentsList;
 	}
+
+    public function getTicketTable()
+    {
+        return (new Core_DatabaseData_Model())->getTable('vtiger_troubletickets', 'ticketid');
+    }
+
+    public function updateCommentFields(): void
+    {
+        $ticketTable = $this->getTicketTable();
+        $ticketId = $this->getId();
+        $createdTime = strtotime($this->get('createdtime'));
+
+        if ($this->isEmpty('first_comment')) {
+            $firstComment = date('Y-m-d H:i:s');
+
+            $this->set('first_comment', $firstComment);
+            $this->set('first_comment_hours', (strtotime($firstComment) - $createdTime) / 60 / 60);
+        }
+
+        $lastComment = date('Y-m-d H:i:s');
+
+        $this->set('last_comment', $lastComment);
+        $this->set('last_comment_hours', (strtotime($lastComment) - $createdTime) / 60 / 60);
+
+        $ticketTable->updateData(
+            [
+                'first_comment' => $this->get('first_comment'),
+                'first_comment_hours' => $this->get('first_comment_hours'),
+                'last_comment' => $this->get('last_comment'),
+                'last_comment_hours' => $this->get('last_comment_hours'),
+            ],
+            [
+                $ticketTable->get('table_id') => $ticketId,
+            ],
+        );
+    }
 }

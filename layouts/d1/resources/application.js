@@ -83,11 +83,11 @@ window.app = (function () {
 			};
 
 			if (typeof params.contentType != 'undefined') {
-				ajaxParams['contentType'] = params.contentType;
+				ajaxParams.contentType = params.contentType;
 			}
 
 			if (typeof params.processData != 'undefined') {
-				ajaxParams['processData'] = params.processData;
+				ajaxParams.processData = params.processData;
 			}
 
 			jQuery.ajax(ajaxParams);
