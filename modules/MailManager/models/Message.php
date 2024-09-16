@@ -703,4 +703,3 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 		return $icon;
 	}
 }
-?>

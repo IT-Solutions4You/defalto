@@ -60,25 +60,38 @@ class Settings_Vtiger_OutgoingServer_Model extends Settings_Vtiger_Systems_Model
     public function isDefaultSettingLoaded() {
         return $this->defaultLoaded;
     }
-    
-    public function save($request){
-        $currentUser = Users_Record_Model::getCurrentUserModel();
 
-        $from_email =  $request->get('from_email_field');
-        $to_email = getUserEmail($currentUser->getId());
-        
-        $subject = $this->getSubject();
-        $description = $this->getBody();
-		// This is added so that send_mail API will treat it as user initiated action
+    public function save($request)
+    {
         $olderAction = $_REQUEST['action'];
-		$_REQUEST['action'] = 'Save';
-        if($to_email != ''){
-            $mail_status = EMAILMaker_Utils_Helper::sendMail($to_email, $currentUser->get('user_name'), $from_email, $subject, $description, true);
+        $_REQUEST['action'] = 'Save';
+
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $toEmail = getUserEmail($currentUser->getId());
+        $password = Vtiger_Functions::isProtectedText($request->get('server_password')) ? Vtiger_Functions::fromProtectedText($request->get('server_password')) : $request->get('server_password');
+        // This is added so that send_mail API will treat it as user initiated action
+
+        if (!empty($toEmail)) {
+            $mailer = ITS4YouEmails_Mailer_Model::getCleanInstance();
+            $mailer->setMailerType($this->get('mailer_type'));
+            $mailer->setSMTP(
+                $request->get('server'),
+                $request->get('server_username'),
+                $password,
+                'on' === $request->get('smtp_auth'),
+            );
+            $mailer->setFrom($request->get('from_email_field'));
+            $mailer->addAddress($toEmail);
+            $mailer->Subject = $this->getSubject();;
+            $mailer->Body = $this->getBody();
         }
-		$_REQUEST['action'] = $olderAction;
-        if($mail_status != 1 && !$this->isDefaultSettingLoaded()) {
-            throw new Exception('Error occurred while sending mail');
-        } 
+
+        if (!$mailer->send()) {
+            throw new Exception('Error occurred while sending mail: ' . $mailer->ErrorInfo);
+        }
+
+        $_REQUEST['action'] = $olderAction;
+
         return parent::save($request);
     }
 }
