@@ -4,19 +4,22 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 *}
+{include file='Header.tpl'|@vtemplate_path:'Vtiger'}
 <input type="hidden" id="module" value="Install" />
 <input type="hidden" id="view" value="Index" />
-<div class="container-fluid px-4 page-container">
-	<div class="row h-header align-items-center">
-		<div class="col-sm">
-			<div class="logo">
-				<img src="{'logo.png'|vimage_path}"/>
+<header class="fixed-top app-fixed-navbar bg-body-secondary">
+	<div class="container-fluid px-4 page-container">
+		<div class="row h-header align-items-center">
+			<div class="col-sm">
+				<div class="logo">
+					<img src="{'logo.png'|vimage_path}"/>
+				</div>
 			</div>
-		</div>
-		<div class="col-sm-auto">
-			<div class="head">
-				<h3>{vtranslate('LBL_INSTALLATION_WIZARD', 'Install')}</h3>
+			<div class="col-sm-auto">
+				<div class="head">
+					<h3>{vtranslate('LBL_INSTALLATION_WIZARD', 'Install')}</h3>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+</header>

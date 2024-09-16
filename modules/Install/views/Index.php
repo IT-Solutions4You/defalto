@@ -36,7 +36,8 @@ class Install_Index_view extends Vtiger_View_Controller {
 
 		date_default_timezone_set('Europe/London'); // to overcome the pre configuration settings
 
-		parent::preProcess($request);
+		parent::preProcess($request, false);
+
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
 		if ($chosenLanguage = $request->get('lang')) {
