@@ -56,20 +56,29 @@ class Migration_Index_View extends Vtiger_View_Controller {
 	}
 
 
-	public function preProcess(Vtiger_Request $request, $display = true) {
-		$viewer = $this->getViewer($request);
-		$selectedModule = $request->getModule();
-		$viewer->assign('MODULE', $selectedModule);
-		parent::preProcess($request, false);
-	}
+    public function preProcess(Vtiger_Request $request, $display = true)
+    {
+        parent::preProcess($request, false);
 
-	public function postProcess(Vtiger_Request $request) {
-		$viewer = $this->getViewer($request);
-		$moduleName = $request->getModule();
-		$viewer->view('MigrationPostProcess.tpl', $moduleName);
-	}
+        $moduleName = $request->getModule();
 
-	public function getHeaderScripts(Vtiger_Request $request) {
+        $viewer = $this->getViewer($request);
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('VIEW', 'Index');
+        $viewer->view('MigrationPreProcess.tpl', $moduleName);
+    }
+
+    public function postProcess(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('VIEW', 'Index');
+        $viewer->view('MigrationPostProcess.tpl', $moduleName);
+    }
+
+    public function getHeaderScripts(Vtiger_Request $request) {
 		$headerScriptInstances = array();
 		$moduleName = $request->getModule();
 
