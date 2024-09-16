@@ -15,10 +15,10 @@ class Core_Factory_BlockUIType
      *
      * @param Vtiger_Block_Model $blockModel
      *
-     * @return Core_Base_BlockUIType or BlockUIType specific object instance
+     * @return self Core_Base_BlockUIType or BlockUIType specific object instance
      * @throws Exception
      */
-    public static function getInstanceFromBlock(Vtiger_Block_Model $blockModel): Core_Interface_BlockUIType
+    public static function getInstanceFromBlock(Vtiger_Block_Model $blockModel): self
     {
         $blockUiType = $blockModel->get('blockuitype');
         $blockUiTypeName = Core_BlockUiType_Model::getNameForUIType($blockUiType);
