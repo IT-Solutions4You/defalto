@@ -338,48 +338,58 @@ jQuery.Class("Vtiger_RelatedList_Js",{
     
     triggerRelationAdditionalActions : function() {
 	},
-	
-	registerScrollForRollupComments : function() {
-        jQuery(document).scroll(function() {
-            if ($(window).scrollTop() + $(window).height() >= $(document).height() - 30
-                && jQuery('div.commentContainer').length > 0
-                && jQuery('#rollupcomments').attr('rollup-status') > 0
-				&& jQuery('[data-label-key="ModComments"]').is('.active')) {
-				
-                if(Vtiger_RelatedList_Js.loaded && jQuery('#rollupcomments').attr('hascomments') == 1) {
-                    Vtiger_RelatedList_Js.loaded = false;
-					app.helper.showProgress();
-                    var currentTarget = jQuery('#rollupcomments');
-                    var moduleName = currentTarget.attr('module');
-                    var recordId = currentTarget.attr('record');
-                    var rollupId = currentTarget.attr('rollupid');
-                    var rollupstatus = currentTarget.attr('rollup-status');
-                    var startindex = parseInt(currentTarget.attr('startindex'));
 
-                    var url = 'index.php?module=Vtiger&view=ModCommentsDetailAjax&parent='+
-                      moduleName+'&parentId='+recordId+'&rollupid='+rollupId+'&rollup_status='+rollupstatus
-                      +'&startindex='+startindex+'&mode=getNextGroupOfRollupComments';
+	registerScrollForRollupComments: function () {
+		let self = this;
 
-                    var params = {
-						'type' : 'GET',
-						'url' : url
-					};
-					
-                    app.request.get(params).then(function(err, data){
-						Vtiger_RelatedList_Js.loaded = true;
-						app.helper.hideProgress();
-						if(data) {
-							jQuery('#rollupcomments').attr('startindex', startindex + 10);
-							jQuery('.commentsBody ul.unstyled:first').append(jQuery(data).children());
-						}else {
-							jQuery('#rollupcomments').attr('hascomments', '0');
-						}
-                    });
-                }
-            }
-        });
-    },
-    
+		if (parseInt($('#rollupcomments').attr('rollup-status')) !== 1) {
+			return;
+		}
+
+		$('.commentsBody').on('scroll', function () {
+			if ('undefined' !== typeof $(this)[0] && $(this)[0].scrollHeight - $(this).height() === $(this).scrollTop()) {
+				self.loadMoreRelatedComments();
+			}
+		});
+
+		$('.moreRelatedComments').on('click', function () {
+			self.loadMoreRelatedComments();
+		});
+	},
+	loadMoreRelatedComments() {
+		if (Vtiger_RelatedList_Js.loaded === false) {
+			return;
+		}
+
+		Vtiger_RelatedList_Js.loaded = false;
+		app.helper.showProgress();
+
+		let commentsBody = jQuery('.commentsBody'),
+			currentTarget = jQuery('#rollupcomments'),
+			startIndex = parseInt(currentTarget.attr('startindex')),
+			data = {
+				'module': app.getModuleName(),
+				'view': app.getViewName(),
+				'record': app.getRecordId(),
+				'mode': 'showRelatedList',
+				'relatedModule': 'ModComments',
+				'startIndex': startIndex,
+			};
+
+		app.request.post({data: data}).then(function (err, data) {
+			app.helper.hideProgress();
+
+			if ($('.singleComment', data).length) {
+				Vtiger_RelatedList_Js.loaded = true;
+
+				commentsBody.append($('.commentsBody', data).html());
+				currentTarget.attr('startindex', startIndex + 10);
+			} else {
+				commentsBody.next('.moreRelatedCommentsContainer').remove();
+				currentTarget.attr('hascomments', 0);
+			}
+		});
+	},
     getPageJumpParams: function() {
         var thisInstance = this;
         var params = {

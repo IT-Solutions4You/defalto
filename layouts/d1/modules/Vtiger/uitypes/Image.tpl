@@ -43,7 +43,7 @@
 		{if $MODULE eq 'Products'}<div id="MultiFile1_wrap_list" class="MultiFile-list"></div>{/if}
 
 		{foreach key=ITER item=IMAGE_INFO from=$IMAGE_DETAILS}
-			<div class="row mb-3">
+			<div class="row mb-3 existingImageContainer">
 				{if !empty($IMAGE_INFO.url)}
 					<div class="col-lg-auto" name="existingImages">
 						<img class="rounded" src="{$IMAGE_INFO.url}" data-image-id="{$IMAGE_INFO.id}" style="max-height: 15rem;">

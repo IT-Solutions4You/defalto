@@ -30,7 +30,7 @@ require_once('VTWorkflowUtils.php');
  */
 
 class VTWorkflowEventHandler extends VTEventHandler {
-    protected array $workflows = [];
+    public array $workflows = [];
 
 	/**
 	 * Push tasks to the task queue if the conditions are true

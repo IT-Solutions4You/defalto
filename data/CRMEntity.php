@@ -19,6 +19,8 @@ class CRMEntity {
 	public $ownedby;
 	public $recordSource = 'CRM';
 	public $mode;
+    public $log;
+    public $db;
     public string $parentName = '';
     public string $moduleName = '';
     public string $moduleLabel = '';

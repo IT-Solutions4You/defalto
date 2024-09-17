@@ -381,7 +381,7 @@ class PearDatabase{
 			if(is_array($value)) {
 				$output = $this->flatten_array($value, $output);
 			} else {
-				array_push($output, $value);
+				$output[] = $value;
 			}
 		}
 		return $output;

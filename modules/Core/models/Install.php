@@ -164,6 +164,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
             self::logSuccess($dropTables);
 
+            $this->db->pquery('SET FOREIGN_KEY_CHECKS=0');
+
             foreach ($dropTables as $dropTable) {
                 $this->db->pquery('DROP TABLE IF EXISTS ' . $dropTable);
             }
@@ -376,7 +378,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                     $fieldInstance = Vtiger_Field_Model::getInstance($fieldName, $moduleInstance);
 
                     if (!$fieldInstance) {
-                        $fieldInstance = new Vtiger_Field();
+                        $fieldInstance = new Vtiger_Field_Model();
                     }
 
                     $fieldInstance->name = $fieldName;
@@ -476,6 +478,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
 
         $this->install();
+
+        Vtiger_Cache::delete('module', $moduleName);
 
         self::logSuccess('Module result: ' . $moduleName);
         self::logSuccess($moduleInstance);
