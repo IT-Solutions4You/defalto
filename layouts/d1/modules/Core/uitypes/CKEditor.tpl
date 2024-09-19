@@ -11,7 +11,7 @@
     {assign var=SPECIAL_VALIDATOR value=$FIELD_MODEL->getValidator()}
     {assign var=FIELD_NAME value=$FIELD_MODEL->getFieldName()}
     {assign var=FIELD_VALUE value=purifyHtmlEventAttributes(decode_html($FIELD_MODEL->get('fieldvalue')),true)}
-    <div class="Vtiger_CKEditor_UIType">
+    <div class="Core_CKEditor_UIType">
         <textarea rows="3" id="{$MODULE}_editView_fieldName_{$FIELD_NAME}" class="ckeditor form-control inputElement {if $FIELD_MODEL->isNameField()}nameField{/if}" name="{$FIELD_NAME}"
         {if !empty($SPECIAL_VALIDATOR)} data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}' {/if}
         {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if}

@@ -8,7 +8,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Vtiger_CKEditor_UIType extends Vtiger_Base_UIType {
+class Core_CKEditor_UIType extends Vtiger_Base_UIType {
 
     /**
      * Function to get the Display Value, for the current field type with given DB Insert Value
