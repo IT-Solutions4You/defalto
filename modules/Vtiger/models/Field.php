@@ -68,6 +68,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 
     const UITYPE_REGION = 29;
 	const UITYPE_ACTIVITY_SEND_REMINDER = 30;
+	const UITYPE_CKEDITOR = 31;
 	const UITYPE_MULTI_SELECT = 33;
 	const UITYPE_ACCOUNT_REFERENCE = 51;
 	const UITYPE_USER_REFERENCE = 52;//e.g. assigned to

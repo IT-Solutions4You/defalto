@@ -176,6 +176,10 @@
     height: var(--overlay-height);
 }
 
+.h-iframe {
+    height: 50vh;
+}
+
 footer, .h-footer {
     min-height: var(--footer-height);
 }

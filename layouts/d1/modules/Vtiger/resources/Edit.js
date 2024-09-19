@@ -331,7 +331,15 @@ Vtiger_Index_Js("Vtiger_Edit_Js",{
         this.registerReferenceCreate(form);
         this.referenceModulePopupRegisterEvent(form);
         this.registerPostReferenceEvent(this.getEditViewContainer());
+        this.registerCKEditor(form);
         vtUtils.registerReplaceCommaWithDot(form);
+    },
+    registerCKEditor: function (form) {
+        let ckeditorInstance = new Vtiger_CkEditor_Js();
+
+        form.find('.ckeditor').each(function (index, element) {
+            ckeditorInstance.loadCkEditor($(element), {height: '25em'})
+        });
     },
     proceedRegisterEvents : function(){
 		if(jQuery('.recordEditView').length > 0){

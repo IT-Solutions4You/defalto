@@ -249,7 +249,7 @@ class HelpDesk_Install_Model extends Core_Install_Model {
             'LBL_DESCRIPTION_INFORMATION' => [
                 'description' => [
                     'name' => 'description',
-                    'uitype' => 19,
+                    'uitype' => 31,
                     'column' => 'description',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Description',
