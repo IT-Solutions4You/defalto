@@ -252,6 +252,8 @@ class Vtiger_Field_Model extends Vtiger_Field {
                 $fieldDataType = 'region';
             } elseif ($uiType == self::UITYPE_CURRENCY_CODE) {
                 $fieldDataType = 'currencyList';
+            } elseif ($uiType == self::UITYPE_CKEDITOR) {
+                $fieldDataType = 'CKEditor';
             } elseif ($uiType == self::UITYPE_SALUTATION_OR_FIRSTNAME && stripos($this->getName(), 'salutationtype') !== false) {
                 $fieldDataType = 'picklist';
             } elseif ($uiType == self::UITYPE_SALUTATION_OR_FIRSTNAME && stripos($this->getName(), 'firstname') !== false) {
@@ -536,7 +538,8 @@ class Vtiger_Field_Model extends Vtiger_Field {
             self::UITYPE_LINEITEMS_CURRENCY_AMOUNT,
             self::UITYPE_ATTACHMENT,
 	        self::UITYPE_DOWNLOAD_TYPE,
-	        self::UITYPE_FILENAME
+	        self::UITYPE_FILENAME,
+            self::UITYPE_CKEDITOR,
 	    );
 		if(!$this->isEditable() || in_array($this->get('uitype'), $ajaxRestrictedFields)) {
 			return false;
