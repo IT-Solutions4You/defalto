@@ -69,6 +69,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
     const UITYPE_REGION = 29;
 	const UITYPE_ACTIVITY_SEND_REMINDER = 30;
 	const UITYPE_CKEDITOR = 31;
+	const UITYPE_MAILMANAGER_REFERENCE = 32;
 	const UITYPE_MULTI_SELECT = 33;
 	const UITYPE_ACCOUNT_REFERENCE = 51;
 	const UITYPE_USER_REFERENCE = 52;//e.g. assigned to
@@ -231,7 +232,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
      */
     public function getFieldDataType()
     {
-        if (!isset($this->fieldDataType) || !$this->fieldDataType) {
+        if (empty($this->fieldDataType)) {
             $uiType = $this->get('uitype');
 
             if ($uiType == self::UITYPE_IMAGE) {
@@ -254,6 +255,8 @@ class Vtiger_Field_Model extends Vtiger_Field {
                 $fieldDataType = 'currencyList';
             } elseif ($uiType == self::UITYPE_CKEDITOR) {
                 $fieldDataType = 'CKEditor';
+            } elseif ($uiType == self::UITYPE_MAILMANAGER_REFERENCE) {
+                $fieldDataType = 'MailManagerReference';
             } elseif ($uiType == self::UITYPE_SALUTATION_OR_FIRSTNAME && stripos($this->getName(), 'salutationtype') !== false) {
                 $fieldDataType = 'picklist';
             } elseif ($uiType == self::UITYPE_SALUTATION_OR_FIRSTNAME && stripos($this->getName(), 'firstname') !== false) {
@@ -540,6 +543,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	        self::UITYPE_DOWNLOAD_TYPE,
 	        self::UITYPE_FILENAME,
             self::UITYPE_CKEDITOR,
+            self::UITYPE_MAILMANAGER_REFERENCE,
 	    );
 		if(!$this->isEditable() || in_array($this->get('uitype'), $ajaxRestrictedFields)) {
 			return false;
