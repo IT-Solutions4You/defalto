@@ -448,22 +448,31 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
                         $filterDynamicSequence++;
                         $filterSequence = !empty($fieldParams['filter_sequence']) ? $fieldParams['filter_sequence'] : $filterDynamicSequence;
-
-                        $filterInstance = $this->createFilter('All', $moduleInstance);
-                        $filterInstance->addField($fieldInstance, $filterSequence);
+                        $filterFields[$filterSequence] = $fieldInstance;
                     }
 
                     if (isset($fieldParams['entity_identifier'])) {
                         self::logSuccess('Entity Identifier: ' . $fieldName);
 
                         $entityIdentifiers[] = $fieldInstance;
+                        $moduleInstance->setEntityIdentifier($entityIdentifiers);
                     }
                 }
             }
 
-            if (!empty($entityIdentifiers)) {
-                $moduleInstance->setEntityIdentifier($entityIdentifiers);
+            self::logSuccess('Filter start creating');
+
+            if (!empty($filterFields)) {
+                $filterInstance = $this->createFilter('All', $moduleInstance);
+
+                ksort($filterFields);
+
+                foreach ($filterFields as $filterSequence => $filterField) {
+                    $filterInstance->addField($filterField, $filterSequence);
+                }
             }
+
+            self::logSuccess('Filter end creating');
 
             self::logSuccess('Link start creating');
 
