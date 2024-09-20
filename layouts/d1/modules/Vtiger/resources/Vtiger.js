@@ -409,11 +409,13 @@ Vtiger.Class('Vtiger_Index_Js', {
 		app.event.on("post.QuickCreateForm.show",function(event,form){
 			form.find('#goToFullForm').on('click', function(e) {
 				window.onbeforeunload = true;
-				var form = jQuery(e.currentTarget).closest('form');
-				var editViewUrl = jQuery(e.currentTarget).data('editViewUrl');
+				let form = jQuery(e.currentTarget).closest('form'),
+					editViewUrl = jQuery(e.currentTarget).data('editViewUrl');
+
 				if (typeof goToFullFormCallBack != "undefined") {
 					goToFullFormCallBack(form);
 				}
+
 				thisInstance.quickCreateGoToFullForm(form, editViewUrl);
 			});
 		});
@@ -421,17 +423,29 @@ Vtiger.Class('Vtiger_Index_Js', {
 
 	/**
 	 * Function to navigate from quickcreate to editView Fullform
-	 * @param accepts form element as parameter
+	 * @param form
+	 * @param editViewUrl
 	 */
-	quickCreateGoToFullForm: function(form, editViewUrl) {
-		var formData = form.serializeFormData();
-		//As formData contains information about both view and action removed action and directed to view
-		delete formData.module;
-		delete formData.action;
-		delete formData.picklistDependency;
-		var formDataUrl = jQuery.param(formData);
-		var completeUrl = editViewUrl + "&" + formDataUrl;
-		window.location.href = completeUrl;
+	quickCreateGoToFullForm: function (form, editViewUrl) {
+		let cloneForm = $(form).clone(),
+			updateFormData = app.convertUrlToDataParams(editViewUrl);
+
+		cloneForm.find('[name="action"]').remove();
+		cloneForm.find('[name="picklistDependency"]').remove();
+
+		$.each(updateFormData, function (index, value) {
+			let element = cloneForm.find('[name="' + index + '"]')
+
+			if (element.length) {
+				element.val(value)
+			} else {
+				cloneForm.append('<input type="hidden" name="' + index + '" value="' + value + '" />')
+			}
+		});
+
+		$('body').append(cloneForm)
+
+		cloneForm.submit();
 	},
 
 	registerQuickCreateSubMenus : function() {

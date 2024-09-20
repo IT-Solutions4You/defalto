@@ -10,6 +10,7 @@
 
 class Core_CKEditor_UIType extends Vtiger_Base_UIType {
 
+    public const NEW_LINE_TAGS = ['address', 'br','article','aside','blockquote','canvas','dd','div','dl','dt','fieldset','figcaption','figure','footer','form','h1','h2','h3','h4','h5','h6','header','hr','li','main','nav','noscript','ol','p','pre','section','table','tfoot','ul','video',];
     /**
      * Function to get the Display Value, for the current field type with given DB Insert Value
      * @param $value
@@ -19,9 +20,43 @@ class Core_CKEditor_UIType extends Vtiger_Base_UIType {
      */
     public function getDisplayValue($value, $record = false, $recordInstance = false)
     {
+        return self::transformDisplayValue((string)$value);
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public static function transformDisplayValue($value): string
+    {
         $content = nl2br(strip_tags(decode_html($value)));
 
         return preg_replace('#(<br */?>\s*)+#i', '<br />', $content);
+    }
+
+    public static function transformEditViewDisplayValue($value): string
+    {
+        $content = decode_html($value);
+        $newLineTags = self::NEW_LINE_TAGS;
+
+        foreach ($newLineTags as $newLineTag) {
+            $newLineTag = '</' . $newLineTag . '>';
+            $content = str_replace($newLineTag, $newLineTag . '<br>', $content);
+        }
+
+        $newContent = '';
+        $lines = explode('<br>', $content);
+
+        foreach ($lines as $line) {
+            $line = trim(strip_tags($line));
+            $line = preg_replace('/\s+/', ' ', $line);
+
+            if (!empty($line)) {
+                $newContent .= $line . PHP_EOL;
+            }
+        }
+
+        return $newContent;
     }
 
     /**
