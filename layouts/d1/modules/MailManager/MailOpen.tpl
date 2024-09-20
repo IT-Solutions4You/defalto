@@ -19,16 +19,14 @@
         <input type="hidden" id="mmAttchmentCount" value="{$ATTACHMENT_COUNT}">
         <div id="mailManagerActions">
             <div class="row">
-                <div class="col-lg" id="relationBlock"></div>
-                <div class="col-lg-auto">
-                    <span class="pull-right">
-                        <button type="button" class="btn btn-outline-secondary mailPagination me-2" {if $MAIL->msgno() < $FOLDER->count()}data-folder='{$FOLDER->name()}' data-msgno='{$MAIL->msgno(1)}'{else}disabled="disabled"{/if}>
-                            <i class="fa fa-caret-left"></i>
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary mailPagination" {if $MAIL->msgno() > 1}data-folder='{$FOLDER->name()}' data-msgno='{$MAIL->msgno(-1)}'{else}disabled="disabled"{/if}>
-                            <i class="fa fa-caret-right"></i>
-                        </button>
-                    </span>
+                <div class="col-10 mb-2" id="relationBlock"></div>
+                <div class="col-auto ms-auto">
+                    <button type="button" class="btn btn-outline-secondary mailPagination me-2" {if $MAIL->msgno() < $FOLDER->count()}data-folder='{$FOLDER->name()}' data-msgno='{$MAIL->msgno(1)}'{else}disabled="disabled"{/if}>
+                        <i class="fa fa-caret-left"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary mailPagination" {if $MAIL->msgno() > 1}data-folder='{$FOLDER->name()}' data-msgno='{$MAIL->msgno(-1)}'{else}disabled="disabled"{/if}>
+                        <i class="fa fa-caret-right"></i>
+                    </button>
                 </div>
             </div>
         </div>

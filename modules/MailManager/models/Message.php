@@ -36,6 +36,33 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 	 */
 	protected $mUid;
 
+    public const RELATIONS_MAPPING = [
+        'HelpDesk' => [
+            'Contacts' => 'contact_id',
+            'Accounts' => 'parent_id',
+        ],
+        'ITS4YouEmails' => [
+            'Vendors' => 'vendor_id',
+            'Contacts' => 'contact_id',
+            'Accounts' => 'account_id',
+            'Leads' => 'lead_id',
+        ],
+        'Potentials' => [
+            'Contacts' => 'contact_id',
+            'Accounts' => 'related_to',
+        ],
+    ];
+
+    /**
+     * array values [ModuleName, TableId, TableName] for field module_manager_id
+     */
+    public const RELATIONS_TABLES = [
+        ['HelpDesk', 'ticketid', 'vtiger_troubletickets'],
+        ['Potentials', 'potentialid', 'vtiger_potential'],
+    ];
+
+    public array $displayedRecords = [];
+
 	/**
 	 * Constructor which gets the Mail details from the server
 	 * @param String $mBox - Mail Box Connection string
@@ -548,7 +575,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 		if ($date) {
 			if ($format) {
 				$dateTimeFormat = Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat(date('Y-m-d H:i:s', strtotime($date)));
-				list($date, $time, $AMorPM) = explode(' ', $dateTimeFormat);
+				[$date, $time, $AMorPM] = explode(' ', $dateTimeFormat);
 
 				$pos = strpos($dateTimeFormat, date(DateTimeField::getPHPDateFormat()));
 				if ($pos === false) {
@@ -609,22 +636,26 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 	 * @param Object $result
 	 * @return self
 	 */
-	public static function parseOverview($result, $mbox = false) {
-		if($mbox) {
-			$instance = new self($mbox, $result->msgno, true);
-		} else {
-			$instance = new self();
-		}
-		$instance->setSubject($result->subject);
-		$instance->setFrom($result->from);
-		$instance->setDate($result->date);
-		$instance->setRead($result->seen);
-		$instance->setMsgNo($result->msgno);
-		$instance->setTo($result->to);
-		return $instance;
-	}
-	
-	public function getInlineBody() {
+	public static function parseOverview($result, $mbox = false)
+    {
+        if ($mbox) {
+            $instance = new self($mbox, $result->msgno, true);
+        } else {
+            $instance = new self();
+        }
+
+        $instance->setSubject($result->subject);
+        $instance->setFrom($result->from);
+        $instance->setDate($result->date);
+        $instance->setRead($result->seen);
+        $instance->setMsgNo($result->msgno);
+        $instance->setTo($result->to);
+        $instance->mUid = $result->uid;
+
+        return $instance;
+    }
+
+    public function getInlineBody() {
 		$bodytext = $this->body();
 		$bodytext = preg_replace("/<br>/", " ", $bodytext);
 		$bodytext = strip_tags($bodytext);
@@ -702,4 +733,138 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 		
 		return $icon;
 	}
+
+    public array $mUidRelations = [];
+    public array $mUidRelationRecords = [];
+
+    public function getRelationIds(): array
+    {
+        if (empty($this->mUid) || !empty($this->mUidRelations)) {
+            return $this->mUidRelations;
+        }
+
+        $this->retrieveRelationsMailManager();
+
+        foreach (self::RELATIONS_TABLES as $relation) {
+            $this->retrieveRelations($relation[0], $relation[1], $relation[2]);
+        }
+
+        return $this->mUidRelations;
+    }
+
+    public function retrieveRelationsMailManager(): void
+    {
+        $adb = PearDatabase::getInstance();
+        $uid = $this->muid();
+        $result = $adb->pquery(
+            'SELECT vtiger_mailmanager_mailrel.* FROM vtiger_mailmanager_mailrel 
+            INNER JOIN vtiger_mailmanager_mailrecord ON vtiger_mailmanager_mailrecord.muniqueid=vtiger_mailmanager_mailrel.mailuid
+            WHERE vtiger_mailmanager_mailrecord.muid=?',
+            [$uid],
+        );
+
+        while ($row = $adb->fetchByAssoc($result)) {
+            $this->mUidRelations[(int)$row['emailid']] = 'ITS4YouEmails';
+            $this->mUidRelations[(int)$row['crmid']] = getSalesEntityType((int)$row['crmid']);
+        }
+    }
+
+    public function retrieveRelations($module, $tableId, $tableName)
+    {
+        $adb = PearDatabase::getInstance();
+        $sql = sprintf('SELECT %s as id FROM %s WHERE mail_manager_id=?', $tableId, $tableName);
+        $result = $adb->pquery($sql, [$this->muid()]);
+
+        while ($row = $adb->fetchByAssoc($result)) {
+            if (!isRecordExists($row['id'])) {
+                continue;
+            }
+
+            $this->mUidRelations[(int)$row['id']] = $module;
+        }
+    }
+
+
+    public function getRelations(): array
+    {
+        if (!empty($this->mUidRelationRecords)) {
+            return $this->mUidRelationRecords;
+        }
+
+        foreach ($this->getRelationIds() as $relationId => $relationModule) {
+            if (!isRecordExists($relationId)) {
+                return [];
+            }
+
+            $this->mUidRelationRecords[$relationId] = Vtiger_Record_Model::getInstanceById($relationId, $relationModule);
+        }
+
+        return $this->mUidRelationRecords;
+    }
+
+    public function getEmailRelations()
+    {
+        $relation = [];
+
+        foreach ($this->getRelations() as $recordModel) {
+            if ('ITS4YouEmails' !== $recordModel->getModuleName()) {
+                continue;
+            }
+
+            $relation[$recordModel->getId()] = $recordModel;
+        }
+
+        return $relation;
+    }
+
+
+
+    public function displayed($record): void
+    {
+        $this->displayedRecords[$record] = $record;
+    }
+
+    public function isDisplayed($record): bool
+    {
+        return !empty($this->displayedRecords[$record]);
+    }
+
+    public function getOtherRelations(): array
+    {
+        $relations = [];
+
+        foreach ($this->getRelations() as $record) {
+            if ($this->isDisplayed($record->getId())) {
+                continue;
+            }
+
+            $relations[$record->getId()] = $record;
+        }
+
+        return $relations;
+    }
+
+    public function getRelationsById($record): array
+    {
+        $relation = [];
+
+        if (empty($record)) {
+            return $relation;
+        }
+
+        $record = (int)$record;
+        $moduleName = getSalesEntityType($record);
+
+        foreach ($this->getRelations() as $recordModel) {
+            $fieldName = self::RELATIONS_MAPPING[$recordModel->getModuleName()][$moduleName];
+
+            if (empty($fieldName) || $recordModel->isEmpty($fieldName)) {
+                continue;
+            }
+
+            $relation[$recordModel->getId()] = $recordModel;
+        }
+
+        return $relation;
+    }
 }

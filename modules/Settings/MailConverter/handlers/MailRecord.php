@@ -160,7 +160,11 @@ class Vtiger_MailRecord {
             if (strtolower(trim($to)) == strtolower(trim($from))) {
                 return $input;
             } else {
-                return mb_convert_encoding($input, $to, $from);
+                try {
+                    return mb_convert_encoding($input, $to, $from);
+                } catch (ValueError $exception) {
+                    return iconv($from, $to, $input);
+                }
             }
         }
         return $input;

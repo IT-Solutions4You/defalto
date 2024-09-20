@@ -21,7 +21,9 @@ include_once 'modules/MailManager/MailManager.php';
 
 class MailManager_Relation_View extends MailManager_Abstract_View {
 
-	/**
+    protected array $ignoredMailDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
+
+    /**
 	 * Used to check the MailBox connection
 	 * @var Boolean
 	 */
@@ -51,24 +53,31 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$response = new MailManager_Response(true);
 		$viewer = $this->getViewer($request);
+        $moduleName = $request->get('_mlinktotype');
 
 		if ('find' == $this->getOperationArg($request)) {
 			// Check if the message is already linked.
 			$msgUid = $request->get('_msguid');
+
 			if(!empty($msgUid)) {
 				$linkedto = MailManager_Relate_Action::associatedLink($request->get('_msguid'));
 			}
+
+            $allowedModules = [];
+            $foldername = $request->get('_folder');
+            $connector = $this->getConnector($foldername);
+            $mail = $connector->openMail($request->get('_msgno'), $foldername);
+
 			// If the message was not linked, lookup for matching records, using FROM address
 			if (empty($linkedto)) {
 				$results = array();
 				$allowedModules = $this->getCurrentUserMailManagerAllowedModules();
+                
 				foreach (self::$MODULES as $MODULE) {
 					if(!in_array($MODULE, $allowedModules)) continue;
 
 					//lookup will be from email other than sent mail folder 
 					$lookupEmail = $request->get('_mfrom');
-					$foldername = $request->get('_folder');
-					$connector = $this->getConnector($foldername);
 					$folder = $connector->folderInstance($foldername);
 					$isSentFolder = $lookupEmail == $currentUserModel->get('email1') || $folder->isSentFolder();
 					//if its sent folder, lookup email will be first TO email
@@ -89,10 +98,12 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 						}
 					}
 				}
+                
 				$viewer->assign('LOOKUPS', $results);
 			} else {
 				$viewer->assign('LINKEDTO', $linkedto);
 			}
+
 			$jsFileNames = array("~libraries/jquery/instaFilta/instafilta.min.js");
 			$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 			$viewer->assign('HEADER_SCRIPTS', $jsScriptInstances);
@@ -100,8 +111,10 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 			$viewer->assign('ALLOWED_MODULES', $allowedModules);
 			$viewer->assign('MSGNO', $request->get('_msgno'));
 			$viewer->assign('FOLDER', $request->get('_folder'));
+            $viewer->assign('EMAIL', $mail);
+            $viewer->assign('MODULE', $request->getModule());
 
-			$response->setResult( array( 'ui' => $viewer->view( 'Relationship.tpl', 'MailManager', true ) ) );
+			$response->setResult( array( 'ui' => $viewer->view( 'Relationship.tpl', $request->getModule(), true ) ) );
 
 		} else if ('link' == $this->getOperationArg($request)) {
 
@@ -123,11 +136,11 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 			$viewer->assign('LINKEDTO', $linkedto);
 			$viewer->assign('MSGNO', $request->get('_msgno'));
 			$viewer->assign('FOLDER', $foldername);
-			$response->setResult( array( 'ui' => $viewer->view( 'Relationship.tpl', 'MailManager', true ) ) );
+            $viewer->assign('MODULE', $request->getModule());
+
+			$response->setResult( array( 'ui' => $viewer->view( 'Relationship.tpl', $request->getModule(), true ) ) );
 
 		} else if ('create_wizard' == $this->getOperationArg($request)) {
-			$moduleName = $request->get('_mlinktotype');
-
             if(!vtlib_isModuleActive($moduleName)) {
 				$response->setResult(array('error'=>vtranslate('LBL_OPERATION_NOT_PERMITTED', $moduleName)));
 				return $response;
@@ -146,29 +159,30 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 			}
 
 			$linkedto = MailManager_Relate_Action::getSalesEntityInfo($parent);
-			switch ($moduleName) {
-				case 'HelpDesk' :   $from = $mail->from();
-									if ($parent) {
-										if($linkedto['module'] == 'Contacts') {
-											$referenceFieldName = 'contact_id';
-										} elseif ($linkedto['module'] == 'Accounts') {
-											$referenceFieldName = 'parent_id';
-										}
-										$request->set($referenceFieldName, $this->setParentForHelpDesk($parent, $from));
-									}
-									break;
-									
-				case 'Potentials' : if ($parent) {
-										if($linkedto['module'] == 'Contacts') {
-											$referenceFieldName = 'contact_id';
-										} elseif ($linkedto['module'] == 'Accounts') {
-											$referenceFieldName = 'related_to';
-										}
-										$request->set($referenceFieldName, $request->get('_mlinkto'));
-									}
-									break;
-			}
 
+            switch ($moduleName) {
+                case 'HelpDesk' :
+                    $from = $mail->from();
+
+                    if ($parent) {
+                        $referenceFieldName = MailManager_Message_Model::RELATIONS_MAPPING['Potentials'][$linkedto['module']];
+                        $request->set($referenceFieldName, $this->setParentForHelpDesk($parent, $from));
+                    }
+
+                    $request->set('description', $mail->body());
+                    break;
+                case 'Potentials' :
+                    if ($parent) {
+                        $referenceFieldName = MailManager_Message_Model::RELATIONS_MAPPING['Potentials'][$linkedto['module']];
+                        $request->set($referenceFieldName, $request->get('_mlinkto'));
+                    }
+
+                    $request->set('description', Core_CKEditor_UIType::transformEditViewDisplayValue($mail->body()));
+                    break;
+            }
+
+
+            $request->set('mail_manager_id', $mail->muid());
 			$request->set('module', $moduleName);
 
 			// Delegate QuickCreate FormUI to the target view controller of module.
@@ -265,8 +279,9 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 				$viewer->assign('ALLOWED_MODULES', $this->getCurrentUserMailManagerAllowedModules());
 				$viewer->assign('LINK_TO_AVAILABLE_ACTIONS', $this->linkToAvailableActions());
 				$viewer->assign('FOLDER', $foldername);
+				$viewer->assign('MODULE', $request->getModule());
 
-				$response->setResult( array( 'ui' => $viewer->view( 'Relationship.tpl', 'MailManager', true ) ) );
+				$response->setResult( array( 'ui' => $viewer->view( 'Relationship.tpl', $request->getModule(), true ) ) );
 			} catch (DuplicateException $e) {
 				$response->setResult(array('ui' => '', 'error' => $e, 'title' => $e->getMessage(), 'message' => $e->getDuplicationMessage()));
 			} catch(Exception $e) {
@@ -282,11 +297,16 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 			$uploadResponse = $connector->saveAttachment($request);
 			$response->setResult($uploadResponse);
 		} else if ('commentwidget' == $this->getOperationArg($request)) {
+            $foldername = $request->get('_folder');
+            $connector = $this->getConnector($foldername);
+            $mail = $connector->openMail($request->get('_msgno'), $foldername);
+
 			$viewer->assign('LINKMODULE', $request->get('_mlinktotype'));
 			$viewer->assign('PARENT', $request->get('_mlinkto'));
 			$viewer->assign('MSGNO', $request->get('_msgno'));
 			$viewer->assign('FOLDER', $request->get('_folder'));
 			$viewer->assign('MODULE', $request->getModule());
+			$viewer->assign('COMMENTCONTENT', Core_CKEditor_UIType::transformEditViewDisplayValue($mail->body()));
 			$viewer->view( 'MailManagerCommentWidget.tpl', 'MailManager' );
 			$response = false;
 		}
@@ -322,38 +342,53 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	 * @param MailManager_Message_Model $mail
 	 * @return Array
 	 */
-	public function processFormData($mail, $isSentFolder = false) {
-		$subject = $mail->subject();
-		$email = $mail->from();
-		if($isSentFolder) {
-			$email = $mail->to();
-			if(!empty($email)) $mail_address = implode(',', $email);
-		} else {
-			if(!empty($email)) $mail_address = implode(',', $email);
-		}
+    public function processFormData($mail, $isSentFolder = false)
+    {
+        $subject = $mail->subject();
+        $email = $mail->from();
 
-		if(!empty($mail_address)) $name = explode('@', $mail_address);
-		if(!empty($name[1])) $companyName = explode('.', $name[1]);
+        if ($isSentFolder) {
+            $email = $mail->to();
 
-		$defaultFieldValueMap =  array( 'lastname'	=>	$name[0],
-				'email'			=> $email[0],
-				'email1'		=> $email[0],
-				'accountname'	=> $companyName[0],
-				'company'		=> $companyName[0],
-				'ticket_title'	=> $subject,
-				'potentialname' => $subject,
-				'subject'		=> $subject,
-				'title'			=> $subject,
-		);
-		return $defaultFieldValueMap;
-	}
+            if (!empty($email)) {
+                $mail_address = implode(',', $email);
+            }
+        } elseif (!empty($email)) {
+            $mail_address = implode(',', $email);
+        }
 
-	/**
+        if (!empty($mail_address)) {
+            $companyName = $mail_address;
+            $name = explode('@', $mail_address);
+        }
+
+        if (!empty($name[1])) {
+            if (in_array($name[1], $this->ignoredMailDomains)) {
+                $companyName = $name[0];
+            } else {
+                $companyName = explode('.', $name[1])[0];
+            }
+        }
+
+        return [
+            'lastname' => $name[0],
+            'email' => $email[0],
+            'email1' => $email[0],
+            'accountname' => $companyName,
+            'company' => $companyName,
+            'ticket_title' => $subject,
+            'potentialname' => $subject,
+            'subject' => $subject,
+            'title' => $subject,
+        ];
+    }
+
+    /**
 	 * Returns the available List of accessible modules for Mail Manager
 	 * @return Array
 	 */
 	public function getCurrentUserMailManagerAllowedModules() {
-		$moduleListForCreateRecordFromMail = array('Contacts', 'Accounts', 'Leads', 'HelpDesk', 'Potentials');
+		$moduleListForCreateRecordFromMail = array('Contacts', 'Accounts', 'Leads');
 
 		foreach($moduleListForCreateRecordFromMail as $module) {
 			if(MailManager::checkModuleWriteAccessForCurrentUser($module)) {
@@ -368,7 +403,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	 * @return string
 	 */
 	public function linkToAvailableActions() {
-		$moduleListForLinkTo = array('HelpDesk','ModComments','ITS4YouEmails','Potentials');
+		$moduleListForLinkTo = array('ITS4YouEmails', 'ModComments', 'HelpDesk','Potentials');
 
 		foreach($moduleListForLinkTo as $module) {
 			if(MailManager::checkModuleWriteAccessForCurrentUser($module)) {
@@ -468,14 +503,20 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 			}
 
 			foreach($qresults as $qresult) {
-				$labelValues = array();
-				foreach($labelFields as $fieldname) {
-					if(isset($qresult[$fieldname])) $labelValues[] = $qresult[$fieldname];
-				}
-				$ids = vtws_getIdComponents($qresult['id']);
-				$results[] = array( 'wsid' => $qresult['id'], 'id' => $ids[1], 'label' => implode(' ', $labelValues));
-			}
-		}
+                $recordId = vtws_getIdComponents($qresult['id'])[1];
+
+                if (!empty($recordId) && isRecordExists($recordId)) {
+                    $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+                    $results[] = [
+                        'wsid' => $qresult['id'],
+                        'id' => $recordId,
+                        'icon' => $recordModel->getModule()->getModuleIcon(),
+                        'url' => $recordModel->getDetailViewUrl(),
+                        'label' => $recordModel->getName(),
+                    ];
+                }
+            }
+        }
 
 
 		if(!empty($results)) {

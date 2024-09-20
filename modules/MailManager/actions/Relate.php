@@ -31,18 +31,30 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$handler = vtws_getModuleHandlerFromName('ITS4YouEmails', $currentUserModel);
 		$meta = $handler->getMeta();
+
 		if ($meta->hasWriteAccess() != true) {
 			return false;
 		}
+
 		$mailBoxModel = MailManager_Mailbox_Model::activeInstance();
 		$username = $mailBoxModel->username();
 		$recordModel = Vtiger_Record_Model::getCleanInstance('ITS4YouEmails');
 		$recordModel->set('subject', $mailrecord->_subject);
 
-		if(!empty($module)) $recordModel->set('parent_type', $module);
-		if(!empty($linkfocus->id)) $recordModel->set('parent_id', "$linkfocus->id@-1|");
+		if(!empty($module)) {
+            $recordModel->set('parent_type', $module);
+        }
 
-		//To display inline image in body of email when we go to detail view of email from email related tab of related record.
+        if (!empty($linkfocus->id)) {
+            $recordModel->set('related_to', $linkfocus->id);
+            $fieldName = MailManager_Message_Model::RELATIONS_MAPPING['ITS4YouEmails'][$module];
+
+            if (!empty($fieldName)) {
+                $recordModel->set($fieldName, $linkfocus->id);
+            }
+        }
+
+        //To display inline image in body of email when we go to detail view of email from email related tab of related record.
 		$body = $mailrecord->getBodyHTML();
 		$inlineAttachments = $mailrecord->inlineAttachments();
 		if (is_array($inlineAttachments)) {
@@ -57,8 +69,6 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 		}
 		$recordModel->set('body', $body);
 		$recordModel->set('assigned_user_id', $currentUserModel->get('id'));
-		$recordModel->set('date_start', date('Y-m-d', $mailrecord->_date));
-        $recordModel->set('time_start', date('H:i',$mailrecord->_date));
 		$recordModel->set('email_flag', 'MailManager');
 
 		$from = $mailrecord->_from[0];
@@ -72,6 +82,7 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 		$recordModel->set('cc_email', $cc);
 		$recordModel->set('bcc_email', $bcc);
 		$recordModel->set('mailboxemail', $username);
+		$recordModel->set('mail_manager_id', $mailrecord->muid());
 		$recordModel->save();
 
 		// TODO: Handle attachments of the mail (inline/file)
@@ -161,8 +172,8 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 		}
 
 		$name = getEntityName($modulename, $linkto);
-		$detailInformation =  self::buildDetailViewLink($modulename, $linkfocus->id, $name[$linkto]);
-		return $detailInformation;
+
+        return self::buildDetailViewLink($modulename, $linkfocus->id, $name[$linkto]);
 	}
 
 	/**
@@ -172,13 +183,33 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 	 * @param String $label
 	 * @return Array
 	 */
-	public static function buildDetailViewLink($module, $record, $label) {
-		$detailViewLink = sprintf("<a target='_blank' href='index.php?module=%s&view=Detail&record=%s'>%s</a>",
-				$module, $record, textlength_check($label));
-		return array('record'=>$record, 'module'=>$module, 'label'=>$label, 'detailviewlink'=> $detailViewLink);
-	}
+    public static function buildDetailViewLink($module, $record, $label)
+    {
+        if (!empty($record) && isRecordExists($record)) {
+            $recordModel = Vtiger_Record_Model::getInstanceById($record, $module);
 
-	/**
+            return [
+                'icon' => $recordModel->getModule()->getModuleIcon(),
+                'record' => $record,
+                'module' => $module,
+                'label' => $recordModel->getName(),
+                'url' => $recordModel->getDetailViewUrl(),
+            ];
+        }
+
+        $detailViewUrl = sprintf('index.php?module=%s&view=Detail&record=%s', $module, $record);
+        $detailViewLink = sprintf("<a target='_blank' href='%s'>%s</a>", $detailViewUrl, textlength_check($label));
+
+        return [
+            'record' => $record,
+            'module' => $module,
+            'label' => $label,
+            'detailviewlink' => $detailViewLink,
+            'url' => $detailViewUrl,
+        ];
+    }
+
+    /**
 	 * Returns the related entity for a Mail
 	 * @global PearDataBase $db
 	 * @param integer $mailuid - Mail Number
