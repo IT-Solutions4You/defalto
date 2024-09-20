@@ -340,6 +340,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         if ($entity) {
             $moduleInstance->initTables($moduleInstance->basetable, $moduleInstance->basetableid);
             $entityIdentifiers = [];
+            $filterFields = [];
             $filterDynamicSequence = 0;
 
             if (isset($blocks['LBL_ITEM_DETAILS'])) {
@@ -400,6 +401,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                     $fieldTable->updateData(
                         [
                             'block' => $fieldInstance->getBlockId(),
+                            'tablename' => $fieldInstance->table,
                             'presence' => $fieldInstance->presence,
                             'displaytype' => $fieldInstance->displaytype,
                             'sequence' => $fieldInstance->sequence,
