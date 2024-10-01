@@ -292,27 +292,27 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			self.registerMailClickEvent();
 			self.registerMarkMessageAsRead();
 			self.clearPreviewContainer();
-			self.loadMailContents(folderName);
 			container.find('#searchType').trigger('change');
 	});
 	},
-
 	/**
 	 * Function to load the body of all mails in folder list
 	 * @param {type} folderName
 	 * @returns {undefined}
 	 */
 	loadMailContents : function(folderName){
-		var mailids = jQuery('input[name="folderMailIds"]').val();
+		let mailids = jQuery('input[name="folderMailIds"]').val();
+
 		if (typeof mailids !== 'undefined') {
 			mailids = mailids.split(",");
-			var params = {
+			let params = {
 				'module' : 'MailManager',
 				'action' : 'Folder',
 				'mode' : 'showMailContent',
 				'mailids' : mailids,
 				'folderName':folderName
 			};
+
 			app.request.post({"data" : params}).then(function(error, responseData) {
 				for(var k in responseData){
 					var messageContent = responseData[k];
@@ -322,7 +322,6 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			});
 		}
 	},
-
 	registerFolderMailDeleteEvent : function() {
 		var self = this;
 		var container = self.getContainer();
