@@ -24,24 +24,18 @@
                     </div>
                     {if $EMAIL}
                         {$EMAIL->displayed($LINKEDTO.record)}
-                        {include file="RelationshipRecords.tpl"|vtemplate_path:$MODULE RELATION_RECORDS=$EMAIL->getRelationsById($LINKEDTO.record)}
-                        {include file="RelationshipRecords.tpl"|vtemplate_path:$MODULE RELATION_RECORDS=$EMAIL->getOtherRelations()}
+                        {include file="RelationshipRecords.tpl"|vtemplate_path:$MODULE RELATION_RECORDS=$EMAIL->getRelationsById($LINKEDTO.record) RELATION_MARGIN=true}
+                        {include file="RelationshipRecords.tpl"|vtemplate_path:$MODULE RELATION_RECORDS=$EMAIL->getOtherRelations() RELATION_MARGIN=false}
                     {/if}
                 </div>
             </div>
             <div class="col text-end">
                 {if $LINK_TO_AVAILABLE_ACTIONS|count}
-                    <select name="_mlinktotype" id="_mlinktotype" data-action="associate" class="form-select">
-                        <option value="">{vtranslate('LBL_ACTIONS',$MODULE)}</option>
-                        {foreach item=moduleName from=$LINK_TO_AVAILABLE_ACTIONS}
-                            <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
-                        {/foreach}
-                    </select>
+                    {include file="RelationshipActions.tpl"|vtemplate_path:$MODULE ACTION_MODULES=$LINK_TO_AVAILABLE_ACTIONS ACTION_TYPE='associate'}
                 {/if}
             </div>
         </div>
-    {/if}
-    {if $LOOKUPS}
+    {elseif $LOOKUPS}
         {assign var=LOOKRECATLEASTONE value=false}
         {foreach item=RECORDS key=MODULE from=$LOOKUPS}
             {foreach item=RECORD from=$RECORDS}
@@ -49,7 +43,7 @@
             {/foreach}
         {/foreach}
         <div class="row mailManagerLookUps">
-            <div class="col-8 recordScroll mb-1">
+            <div class="col recordScroll mb-1">
                 <ul class="list-group overflow-auto h-25vh-max">
                     {foreach item=RECORDS key=RECORD_MODULE from=$LOOKUPS}
                         {foreach item=RECORD from=$RECORDS}
@@ -68,46 +62,38 @@
                             </li>
                             {if $EMAIL}
                                 {$EMAIL->displayed($RECORD.id)}
-                                {include file="RelationshipRecords.tpl"|vtemplate_path:$MODULE RELATION_RECORDS=$EMAIL->getRelationsById($RECORD.id)}
+                                {include file="RelationshipRecords.tpl"|vtemplate_path:$MODULE RELATION_RECORDS=$EMAIL->getRelationsById($RECORD.id) RELATION_MARGIN=true}
                             {/if}
                         {/foreach}
                     {/foreach}
                     {if $EMAIL}
-                        {include file="RelationshipRecords.tpl"|vtemplate_path:$MODULE RELATION_RECORDS=$EMAIL->getOtherRelations()}
+                        {include file="RelationshipRecords.tpl"|vtemplate_path:$MODULE RELATION_RECORDS=$EMAIL->getOtherRelations() RELATION_MARGIN=false}
                     {/if}
                 </ul>
             </div>
-            <div class="col">
+            <div class="col-auto">
                 {if $LOOKRECATLEASTONE}
                     {if $LINK_TO_AVAILABLE_ACTIONS|count}
-                        <select name="_mlinktotype" id="_mlinktotype" data-action="associate" class="form-select">
-                            <option value="">{vtranslate('LBL_ACTIONS',$MODULE)}</option>
-                            {foreach item=moduleName from=$LINK_TO_AVAILABLE_ACTIONS}
-                                <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
-                            {/foreach}
-                        </select>
+                        {include file="RelationshipActions.tpl"|vtemplate_path:$MODULE ACTION_MODULES=$LINK_TO_AVAILABLE_ACTIONS ACTION_TYPE='associate'}
                     {/if}
                 {elseif $ALLOWED_MODULES|count}
-                    <select name="_mlinktotype" id="_mlinktotype" data-action="create" class="form-select">
-                        <option value="">{vtranslate('LBL_ACTIONS',$MODULE)}</option>
-                        {foreach item=moduleName from=$ALLOWED_MODULES}
-                            <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
-                        {/foreach}
-                    </select>
+                    {include file="RelationshipActions.tpl"|vtemplate_path:$MODULE ACTION_MODULES=$ALLOWED_MODULES ACTION_TYPE='create'}
                 {/if}
             </div>
         </div>
     {elseif empty($LINKEDTO)}
         <div class="row mailManagerEmptyLinkedTo">
-            <div class="col-8 recordScroll mb-1"></div>
-            <div class="col">
+            <div class="col recordScroll mb-1">
+                {if false eq $EMAIL->isAttachmentsAllowed()}
+                    <div class="alert alert-warning d-flex align-items-center justify-content-between py-2">
+                        <span>{vtranslate('LBL_BLOCKED_REMOTE_CONTENT', $MODULE)}</span>
+                        <button type="button" class="btn btn-warning allowRemoteContent">{vtranslate('LBL_ALLOW', $MODULE)}</button>
+                    </div>
+                {/if}
+            </div>
+            <div class="col-auto">
                 {if $ALLOWED_MODULES|count}
-                    <select name="_mlinktotype" id="_mlinktotype" data-action="create" class="form-select">
-                        <option value="">{vtranslate('LBL_ACTIONS',$MODULE)}</option>
-                        {foreach item=moduleName from=$ALLOWED_MODULES}
-                            <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
-                        {/foreach}
-                    </select>
+                    {include file="RelationshipActions.tpl"|vtemplate_path:$MODULE ACTION_MODULES=$ALLOWED_MODULES ACTION_TYPE='create'}
                 {/if}
             </div>
         </div>

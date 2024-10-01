@@ -49,8 +49,8 @@
         <div class="mmEmailContainerDiv" id="emailListDiv">
             {foreach item=MAIL from=$FOLDER->mails()}
                 {assign var=IS_READ value=1}
-                <div class="container-fluid py-3 border-bottom">
-                    <div class="row cursorPointer mailEntry {if $IS_READ}mmReadEmail{/if}" data-read='{$IS_READ}'>
+                <div class="container-fluid py-3 border-bottom mailEntry">
+                    <div class="row cursorPointer {if $IS_READ}mmReadEmail{/if}" data-read='{$IS_READ}'>
                         <span class="col-1">
                             <input type="checkbox" class="mailCheckBox form-check-input">
                         </span>

@@ -88,25 +88,9 @@
                         <div class="col-sm-auto">
                             <div class="min-w-5rem">
                                 <input type="checkbox" class="mailCheckBox form-check-input">
-                                {assign var=EMAIL_RELATIONS value=$MAIL->getEmailRelations()}
-                                {if count($EMAIL_RELATIONS)}
-                                    <span class="dropdown ms-2">
-                                        <span data-bs-toggle="dropdown">
-                                            <i class="bi bi-check"></i>
-                                        </span>
-                                        <ul class="dropdown-menu">
-                                            {foreach from=$EMAIL_RELATIONS item=EMAIL_RELATION}
-                                                <li>
-                                                    <a href="{$EMAIL_RELATION->getDetailViewUrl()}" class="dropdown-item link-primary" target="_blank">
-                                                        {$EMAIL_RELATION->getModule()->getModuleIcon()}
-                                                        <span class="ms-2">{$EMAIL_RELATION->getName()}</span>
-                                                    </a>
-                                                </li>
-                                            {/foreach}
-                                        </ul>
-                                    </span>
+                                {if $MAIL->hasRelations()}
+                                    <i class="bi bi-check ms-2"></i>
                                 {/if}
-
                                 {assign var=ATTACHMENT value=$MAIL->attachments()}
                                 {assign var=INLINE_ATTCH value=$MAIL->inlineAttachments()}
                                 {assign var=ATTCHMENT_COUNT value=(php7_count($ATTACHMENT) - php7_count($INLINE_ATTCH))}

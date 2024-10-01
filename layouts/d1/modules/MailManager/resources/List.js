@@ -681,6 +681,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			var params = {
 				'module' : 'MailManager',
 				'view' : 'Index',
+				'attachments': parentEle.data('attachments'),
 				'_operation' : 'mail',
 				'_operationarg' : 'open',
 				'_folder' : parentEle.data('folder'),
@@ -1201,31 +1202,50 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		}
 	},
 
-	handleRelationActions : function() {
-		var self = this;
-		var container = self.getContainer();
-		container.find('#_mlinktotype').on('change', function(e) {
-			var element = jQuery(e.currentTarget);
-			var actionType = element.data('action');
-			var module = element.val();
-			var relatedRecord = self.getRecordForRelation();
-			if(relatedRecord !== false) {
-				if(actionType == "associate") {
-					if(module == 'ITS4YouEmails') {
+	handleRelationActions: function () {
+		let self = this,
+			container = self.getContainer(),
+			containerActions = self.getContainerActions(),
+			mLinkToType = container.find('#_mlinktotype');
+
+		mLinkToType.on('change', function (e) {
+			let element = jQuery(e.currentTarget),
+				actionType = element.data('action'),
+				module = element.val(),
+				relatedRecord = self.getRecordForRelation();
+
+			if (relatedRecord !== false) {
+				if (actionType === 'associate') {
+					if (module === 'ITS4YouEmails') {
 						self.associateEmail(relatedRecord);
-					} else if(module == "ModComments") {
+					} else if (module === 'ModComments') {
 						self.associateComment(relatedRecord);
-					} else if(module) {
+					} else if (module) {
 						self.createRelatedRecord(module);
 					}
-				} else if(module) {
+				} else if (module) {
 					self.createRelatedRecord(module);
 				}
 			}
+
 			self.resetRelationDropdown();
 		});
-	},
 
+		container.on('click', '[data-change-module]', function () {
+			mLinkToType.val($(this).data('changeModule'));
+			mLinkToType.trigger('change');
+		});
+
+		containerActions.on('click', '.allowRemoteContent', function () {
+			let mailEntry = $('.mailEntry.highLightMail')
+
+			mailEntry.data('attachments', '1');
+			mailEntry.find('.mmfolderMails').trigger('click');
+		});
+	},
+	getContainerActions() {
+		return $('#mailManagerActions');
+	},
 	associateEmail : function(relatedRecord) {
 		var self = this;
 		var container = self.getContainer();

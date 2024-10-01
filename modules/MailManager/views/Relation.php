@@ -36,12 +36,6 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	}
 
 	/**
-	 * List of modules used to match the Email address
-	 * @var Array
-	 */
-	static $MODULES = array ( 'Contacts', 'Accounts', 'Leads', 'HelpDesk', 'Potentials');
-
-	/**
 	 * Process the request to perform relationship operations
 	 * @global Users Instance $currentUserModel
 	 * @global PearDataBase Instance $adb
@@ -50,6 +44,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	 * @return boolean
 	 */
 	public function process(Vtiger_Request $request) {
+        /** @var MailManager_Connector_Connector $connector */
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$response = new MailManager_Response(true);
 		$viewer = $this->getViewer($request);
@@ -58,89 +53,49 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 		if ('find' == $this->getOperationArg($request)) {
 			// Check if the message is already linked.
 			$msgUid = $request->get('_msguid');
+            $linkedTo = null;
 
-			if(!empty($msgUid)) {
-				$linkedto = MailManager_Relate_Action::associatedLink($request->get('_msguid'));
-			}
+            if (!empty($msgUid)) {
+                $linkedTo = MailManager_Relate_Action::associatedLink($msgUid);
+            }
 
-            $allowedModules = [];
             $foldername = $request->get('_folder');
+            $messageNo = $request->get('_msgno');
             $connector = $this->getConnector($foldername);
-            $mail = $connector->openMail($request->get('_msgno'), $foldername);
+            $folder = $connector->folderInstance($foldername);
+            $mail = $connector->openMail($messageNo, $foldername, false);
+            $mail->retrieveBody();
 
 			// If the message was not linked, lookup for matching records, using FROM address
-			if (empty($linkedto)) {
-				$results = array();
-				$allowedModules = $this->getCurrentUserMailManagerAllowedModules();
-                
-				foreach (self::$MODULES as $MODULE) {
-					if(!in_array($MODULE, $allowedModules)) continue;
+            if (!empty($linkedTo)) {
+                $viewer->assign('LINKEDTO', $linkedTo);
+            } else {
+                $mail->retrieveLookUps($request->get('_mfrom'), $request->get('_mto'), $folder->isSentFolder());
 
-					//lookup will be from email other than sent mail folder 
-					$lookupEmail = $request->get('_mfrom');
-					$folder = $connector->folderInstance($foldername);
-					$isSentFolder = $lookupEmail == $currentUserModel->get('email1') || $folder->isSentFolder();
-					//if its sent folder, lookup email will be first TO email
-					if($isSentFolder) {
-						$toEmail = $request->get('_mto');
-						$toEmail = explode(',', $toEmail);
-						$lookupEmail = $toEmail[0];
-					}
-					if(empty($lookupEmail)) continue;
+                $viewer->assign('LOOKUPS', $mail->getLookUps());
+            }
 
-					$lookupResults = $this->lookupModuleRecordsWithEmail($MODULE, $lookupEmail);
+            $this->retrieveRelationship($request, $mail, $linkedTo);
 
-					foreach ($lookupResults as $lookupResult) {
-						if(array_key_exists('parent', $lookupResult)) {
-							$results[getSalesEntityType($lookupResult['id'])][] = $lookupResult;
-						}else{
-							$results[$MODULE][] = $lookupResult;
-						}
-					}
-				}
-                
-				$viewer->assign('LOOKUPS', $results);
-			} else {
-				$viewer->assign('LINKEDTO', $linkedto);
-			}
-
-			$jsFileNames = array("~libraries/jquery/instaFilta/instafilta.min.js");
-			$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-			$viewer->assign('HEADER_SCRIPTS', $jsScriptInstances);
-			$viewer->assign('LINK_TO_AVAILABLE_ACTIONS', $this->linkToAvailableActions());
-			$viewer->assign('ALLOWED_MODULES', $allowedModules);
-			$viewer->assign('MSGNO', $request->get('_msgno'));
-			$viewer->assign('FOLDER', $request->get('_folder'));
-            $viewer->assign('EMAIL', $mail);
-            $viewer->assign('MODULE', $request->getModule());
-
-			$response->setResult( array( 'ui' => $viewer->view( 'Relationship.tpl', $request->getModule(), true ) ) );
-
-		} else if ('link' == $this->getOperationArg($request)) {
-
+            $response->setResult(['ui' => $viewer->view('Relationship.tpl', $request->getModule(), true)]);
+        } elseif ('link' == $this->getOperationArg($request)) {
 			$linkto = $request->get('_mlinkto');
 			$foldername = $request->get('_folder');
+            $messageNo = $request->get('_msgno');
 			$connector = $this->getConnector($foldername);
 
 			// This is to handle larger uploads
-			$memory_limit = MailManager_Config_Model::get('MEMORY_LIMIT');
-			ini_set('memory_limit', $memory_limit);
+			ini_set('memory_limit', MailManager_Config_Model::get('MEMORY_LIMIT'));
 
-			$mail = $connector->openMail($request->get('_msgno'), $foldername);
+			$mail = $connector->openMail($messageNo, $foldername);
 			$mail->attachments(); // Initialize attachments
 
 			$linkedto = MailManager_Relate_Action::associate($mail, $linkto);
 
-			$viewer->assign('LINK_TO_AVAILABLE_ACTIONS', $this->linkToAvailableActions());
-			$viewer->assign('ALLOWED_MODULES', $this->getCurrentUserMailManagerAllowedModules());
-			$viewer->assign('LINKEDTO', $linkedto);
-			$viewer->assign('MSGNO', $request->get('_msgno'));
-			$viewer->assign('FOLDER', $foldername);
-            $viewer->assign('MODULE', $request->getModule());
+            $this->retrieveRelationship($request, $mail, $linkedto);
 
-			$response->setResult( array( 'ui' => $viewer->view( 'Relationship.tpl', $request->getModule(), true ) ) );
-
-		} else if ('create_wizard' == $this->getOperationArg($request)) {
+            $response->setResult(['ui' => $viewer->view('Relationship.tpl', $request->getModule(), true)]);
+        } elseif ('create_wizard' == $this->getOperationArg($request)) {
             if(!vtlib_isModuleActive($moduleName)) {
 				$response->setResult(array('error'=>vtranslate('LBL_OPERATION_NOT_PERMITTED', $moduleName)));
 				return $response;
@@ -159,21 +114,20 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 			}
 
 			$linkedto = MailManager_Relate_Action::getSalesEntityInfo($parent);
+            $referenceFieldName = MailManager_Message_Model::RELATIONS_MAPPING[$moduleName][$linkedto['module']];
 
             switch ($moduleName) {
                 case 'HelpDesk' :
                     $from = $mail->from();
 
-                    if ($parent) {
-                        $referenceFieldName = MailManager_Message_Model::RELATIONS_MAPPING['Potentials'][$linkedto['module']];
+                    if ($parent && $referenceFieldName) {
                         $request->set($referenceFieldName, $this->setParentForHelpDesk($parent, $from));
                     }
 
                     $request->set('description', $mail->body());
                     break;
                 case 'Potentials' :
-                    if ($parent) {
-                        $referenceFieldName = MailManager_Message_Model::RELATIONS_MAPPING['Potentials'][$linkedto['module']];
+                    if ($parent && $referenceFieldName) {
                         $request->set($referenceFieldName, $request->get('_mlinkto'));
                     }
 
@@ -196,7 +150,8 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 			// UI already sent
 			$response = false;
 
-		} else if ('create' == $this->getOperationArg($request)) {
+		} elseif ('create' == $this->getOperationArg($request)) {
+            $linkedTo = null;
 			$linkModule = $request->get('_mlinktotype');
 
 			if(!vtlib_isModuleActive($linkModule)) {
@@ -209,13 +164,14 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 
 			if(!empty($foldername)) {
 				// This is to handle larger uploads
-				$memory_limit = MailManager_Config_Model::get('MEMORY_LIMIT');
-				ini_set('memory_limit', $memory_limit);
+				ini_set('memory_limit', MailManager_Config_Model::get('MEMORY_LIMIT'));
 
 				$connector = $this->getConnector($foldername);
 				$mail = $connector->openMail($request->get('_msgno'), $foldername);
 				$attachments = $mail->attachments(); // Initialize attachments
-			}
+			} else {
+                $mail = new MailManager_Message_Model();
+            }
 
 			$linkedto = MailManager_Relate_Action::getSalesEntityInfo($parent);
 			$recordModel = Vtiger_Record_Model::getCleanInstance($linkModule);
@@ -237,35 +193,32 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 				$recordModel->set('source','Mail Manager');
 			}
 
-			switch ($linkModule) {
-				case 'HelpDesk' :   $from = $mail->from();
-									if ($parent) {
-										if($linkedto['module'] == 'Contacts') {
-											$referenceFieldName = 'contact_id';
-										} elseif ($linkedto['module'] == 'Accounts') {
-											$referenceFieldName = 'parent_id';
-										}
-									}
-									if(!$request->has($referenceFieldName)) {
-										$recordModel->set($referenceFieldName, $this->setParentForHelpDesk($parent, $from));
-									}
-									break;
+            switch ($linkModule) {
+                case 'HelpDesk' :
+                    $from = $mail->from();
+                    $referenceFieldName = MailManager_Message_Model::RELATIONS_MAPPING[$linkModule][$linkedto['module']];
 
-				case 'ModComments': $recordModel->set('assigned_user_id', $currentUserModel->getId());
-									$recordModel->set('commentcontent', $request->getRaw('commentcontent'));
-									$recordModel->set('userid', $currentUserModel->getId());
-									$recordModel->set('creator', $currentUserModel->getId());
-									$recordModel->set('related_to', $parent);
-									break;
-			}
+                    if (!empty($referenceFieldName) && !$request->has($referenceFieldName)) {
+                        $recordModel->set($referenceFieldName, $this->setParentForHelpDesk($parent, $from));
+                    }
+                    break;
 
-			try {
+                case 'ModComments':
+                    $recordModel->set('assigned_user_id', $currentUserModel->getId());
+                    $recordModel->set('commentcontent', $request->getRaw('commentcontent'));
+                    $recordModel->set('userid', $currentUserModel->getId());
+                    $recordModel->set('creator', $currentUserModel->getId());
+                    $recordModel->set('related_to', $parent);
+                    break;
+            }
+
+            try {
 				$recordModel->save();
 
 				// This condition is added so that emails are not created for Tickets and Todo without Parent,
 				// as there is no way to relate them
 				if(empty($parent) && $linkModule != 'HelpDesk') {
-					$linkedto = MailManager_Relate_Action::associate($mail, $recordModel->getId());
+					$linkedTo = MailManager_Relate_Action::associate($mail, $recordModel->getId());
 				}
 
 				// add attachments to the tickets as Documents
@@ -274,29 +227,24 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 					$relationController->__SaveAttachements($mail, $linkModule, $recordModel);
 				}
 
-				$viewer->assign('MSGNO', $request->get('_msgno'));
-				$viewer->assign('LINKEDTO', $linkedto);
-				$viewer->assign('ALLOWED_MODULES', $this->getCurrentUserMailManagerAllowedModules());
-				$viewer->assign('LINK_TO_AVAILABLE_ACTIONS', $this->linkToAvailableActions());
-				$viewer->assign('FOLDER', $foldername);
-				$viewer->assign('MODULE', $request->getModule());
+                $this->retrieveRelationship($request, $mail, $linkedTo);
 
-				$response->setResult( array( 'ui' => $viewer->view( 'Relationship.tpl', $request->getModule(), true ) ) );
-			} catch (DuplicateException $e) {
+                $response->setResult(['ui' => $viewer->view('Relationship.tpl', $request->getModule(), true)]);
+            } catch (DuplicateException $e) {
 				$response->setResult(array('ui' => '', 'error' => $e, 'title' => $e->getMessage(), 'message' => $e->getDuplicationMessage()));
 			} catch(Exception $e) {
 				$response->setResult( array( 'ui' => '', 'error' => $e ));
 			}
 
-		} else if ('savedraft' == $this->getOperationArg($request)) {
+		} elseif ('savedraft' == $this->getOperationArg($request)) {
 			$connector = $this->getConnector('__vt_drafts');
 			$draftResponse = $connector->saveDraft($request);
 			$response->setResult($draftResponse);
-		} else if ('saveattachment' == $this->getOperationArg($request)) {
+		} elseif ('saveattachment' == $this->getOperationArg($request)) {
 			$connector = $this->getConnector('__vt_drafts');
 			$uploadResponse = $connector->saveAttachment($request);
 			$response->setResult($uploadResponse);
-		} else if ('commentwidget' == $this->getOperationArg($request)) {
+		} elseif ('commentwidget' == $this->getOperationArg($request)) {
             $foldername = $request->get('_folder');
             $connector = $this->getConnector($foldername);
             $mail = $connector->openMail($request->get('_msgno'), $foldername);
@@ -310,10 +258,37 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 			$viewer->view( 'MailManagerCommentWidget.tpl', 'MailManager' );
 			$response = false;
 		}
+
 		return $response;
 	}
 
-	/**
+    /**
+     * @param Vtiger_Request $request
+     * @param MailManager_Message_Model $mail
+     * @param $linkedTo
+     * @return void
+     */
+    public function retrieveRelationship(Vtiger_Request $request, $mail, $linkedTo = null)
+    {
+        $folderName = $request->get('_folder');
+        $messageNo = $request->get('_msgno');
+        $jsScriptInstances = $this->checkAndConvertJsScripts([
+            '~libraries/jquery/instaFilta/instafilta.min.js',
+        ]);
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('MSGNO', $messageNo);
+        $viewer->assign('LINKEDTO', $linkedTo);
+        $viewer->assign('ALLOWED_MODULES', $mail->getCurrentUserMailManagerAllowedModules());
+        $viewer->assign('LINK_TO_AVAILABLE_ACTIONS', $this->linkToAvailableActions());
+        $viewer->assign('FOLDER', $folderName);
+        $viewer->assign('MODULE', $request->getModule());
+        $viewer->assign('HEADER_SCRIPTS', $jsScriptInstances);
+        $viewer->assign('EMAIL', $mail);
+        $viewer->assign('IS_ENABLED_ATTACHMENTS', $mail->isAttachmentsAllowed());
+    }
+
+    /**
 	 * Returns the Parent for Tickets module
 	 * @global Users Instance $currentUserModel
 	 * @param Integer $parent - crmid of Parent
@@ -383,20 +358,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
         ];
     }
 
-    /**
-	 * Returns the available List of accessible modules for Mail Manager
-	 * @return Array
-	 */
-	public function getCurrentUserMailManagerAllowedModules() {
-		$moduleListForCreateRecordFromMail = array('Contacts', 'Accounts', 'Leads');
 
-		foreach($moduleListForCreateRecordFromMail as $module) {
-			if(MailManager::checkModuleWriteAccessForCurrentUser($module)) {
-				$mailManagerAllowedModules[] = $module;
-			}
-		}
-		return $mailManagerAllowedModules;
-	}
 
 	/**
 	 * Returns the list of accessible modules on which Actions(Relationship) can be taken.
@@ -413,178 +375,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 		return $mailManagerAllowedModules;
 	}
 
-	/**
-	 * Helper function to scan for relations
-	 */
-	protected $wsDescribeCache = array();
-	public function ws_describe($module) {
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		if (!isset($this->wsDescribeCache[$module])) {
-			$this->wsDescribeCache[$module] = vtws_describe( $module, $currentUserModel);
-		}
-		return $this->wsDescribeCache[$module];
-	}
-
-	/**
-	 * Funtion used to build Web services query
-	 * @param String $module - Name of the module
-	 * @param String $text - Search String
-	 * @param String $type - Tyoe of fields Phone, Email etc
-	 * @return String
-	 */
-	public function buildSearchQuery($module, $text, $type) {
-		$describe = $this->ws_describe($module);
-		// to check whether fields are accessible to current_user or not
-		$labelFields = explode(',',$describe['labelFields']);
-
-		//overwrite labelfields with field names instead of column names
-		$currentUserModel = vglobal('current_user');
-		$handler = vtws_getModuleHandlerFromName($module, $currentUserModel);
-		$meta = $handler->getMeta();
-		$fieldColumnMapping = $meta->getFieldColumnMapping();
-		$columnFieldMapping = array_flip($fieldColumnMapping);
-		foreach ($labelFields as $i => $columnname) {
-			$labelFields[$i] = $columnFieldMapping[$columnname];
-		}
-
-		foreach($labelFields as $fieldName){
-			foreach($describe['fields'] as $describefield){
-				if($describefield['name'] == $fieldName){
-					$searchFields[] = $fieldName;
-					break;
-				}
-			}
-		}
-
-		$whereClause = '';
-		foreach($describe['fields'] as $field) {
-			if (strcasecmp($type, $field['type']['name']) === 0) {
-				$whereClause .= sprintf( " %s LIKE '%%%s%%' OR", $field['name'], $text );
-			}
-		}
-		return sprintf( "SELECT %s FROM %s WHERE %s;", implode(',',$searchFields), $module, rtrim($whereClause, 'OR') );
-	}
-
-	/**
-	 * Returns the List of Matching records with the Email Address
-	 * @global Users Instance $currentUserModel
-	 * @param String $module
-	 * @param Email Address $email
-	 * @return Array
-	 */
-	public function lookupModuleRecordsWithEmail($module, $email) {
-		$currentUserModel = vglobal('current_user');
-		$results = array();
-		$activeEmailFields = null;
-
-		$handler = vtws_getModuleHandlerFromName($module, $currentUserModel);
-		$meta = $handler->getMeta();
-		$emailFields = $meta->getEmailFields();
-		$moduleFields = $meta->getModuleFields();
-		foreach($emailFields as $emailFieldName){
-			$emailFieldInstance = $moduleFields[$emailFieldName];
-			if(!(((int)$emailFieldInstance->getPresence()) == 1)) {
-				$activeEmailFields[] = $emailFieldName;
-			}
-		}
-		//before calling vtws_query, need to check Active Email Fields are there or not
-		if(php7_count($activeEmailFields) > 0) {
-			$query = $this->buildSearchQuery($module, $email, 'EMAIL');
-			$qresults = vtws_query( $query, $currentUserModel );
-			$describe = $this->ws_describe($module);
-			$labelFields = explode(',', $describe['labelFields']);
-
-			//overwrite labelfields with field names instead of column names
-			$fieldColumnMapping = $meta->getFieldColumnMapping();
-			$columnFieldMapping = array_flip($fieldColumnMapping);
-
-			foreach ($labelFields as $i => $columnname) {
-				$labelFields[$i] = $columnFieldMapping[$columnname];
-			}
-
-			foreach($qresults as $qresult) {
-                $recordId = vtws_getIdComponents($qresult['id'])[1];
-
-                if (!empty($recordId) && isRecordExists($recordId)) {
-                    $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
-                    $results[] = [
-                        'wsid' => $qresult['id'],
-                        'id' => $recordId,
-                        'icon' => $recordModel->getModule()->getModuleIcon(),
-                        'url' => $recordModel->getDetailViewUrl(),
-                        'label' => $recordModel->getName(),
-                    ];
-                }
-            }
-        }
-
-
-		if(!empty($results)) {
-			foreach ($results as $result) {
-				$relResults = $this->lookupRelModuleRecords($result['wsid']);
-				$results = array_merge($results, $relResults);
-			}
-		}
-		return $results;
-	}
-
-	/**
-	 * Function to lookup rel records(which supports emails only) of records
-	 * @param <string> $wsId
-	 * @return <array> $results
-	 */
-	public function lookupRelModuleRecords($wsId) {
-		$currentUser = vglobal('current_user');
-		$results = array();
-		/* Harcoded to fecth only project records. In future we should treat 
-		 * below $relModules array as modules which support emails and related to 
-		 * parent module.
-		 */
-
-		/* [20180601 Softar TODO #1002] This causes and exception and total failure to fetch the related items
-		 if the Projects module is disabled or not in user permissions list
-		$relModules = array('Project');
-		*/
-
-		$relModules = [];
-		$db = PearDatabase::getInstance();
-		$wsObject = VtigerWebserviceObject::fromId($db, $wsId);
-		$entityName = $wsObject->getEntityName();
-
-		foreach ($relModules as $relModule) {
-			$relation = Vtiger_Relation_Model::getInstanceByModuleName($entityName, $relModule);
-			if(!$relation) {
-				continue;
-			}
-			$relDescribe = $this->ws_describe($relModule);
-			$labelFields = explode(',', $relDescribe['labelFields']);
-			$relHandler = vtws_getModuleHandlerFromName($relModule, $currentUser);
-			$relMeta = $relHandler->getMeta();
-			//overwrite labelfields with field names instead of column names
-			$fieldColumnMapping = $relMeta->getFieldColumnMapping();
-			$columnFieldMapping = array_flip($fieldColumnMapping);
-
-			foreach ($labelFields as $i => $columnname) {
-				$labelFields[$i] = $columnFieldMapping[$columnname];
-			}
-
-			$sql = sprintf("SELECT %s FROM %s",  implode(',', $labelFields),$relModule);
-			$relQResults = vtws_query_related($sql, $wsId, $relation->get('label'), $currentUser);
-
-			foreach($relQResults as $qresult) {
-				$labelValues = array();
-				foreach($labelFields as $fieldname) {
-					if(isset($qresult[$fieldname])) $labelValues[] = $qresult[$fieldname];
-				}
-				$ids = vtws_getIdComponents($qresult['id']);
-				$results[] = array( 'wsid' => $qresult['id'], 'id' => $ids[1], 'label' => implode(' ', $labelValues),'parent' => $wsId);
-			}
-		}
-		return $results;
-	}
-
 	public function validateRequest(Vtiger_Request $request) {
 		return $request->validateWriteAccess();
 	}
 }
-?>

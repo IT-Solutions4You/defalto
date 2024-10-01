@@ -127,6 +127,8 @@ $languageStrings = Array (
 	'LBL_EMAIL_ALREADY_EXISTS_IN_CRM' => 'Email already exists in CRM',
 	'LBL_RELATED_EMAILS' => 'Related emails',
 	'LBL_RELATED_RECIPIENTS' => 'Related recipients',
+	'LBL_BLOCKED_REMOTE_CONTENT' => 'Remote content has been blocked to protect your privacy',
+	'LBL_ALLOW' => 'Allow',
 );
 
 $jsLanguageStrings = Array (

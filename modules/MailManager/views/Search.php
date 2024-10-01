@@ -37,5 +37,3 @@ class MailManager_Search_View extends MailManager_Relation_View {
 		return $response;
 	}
 }
-
-?>
