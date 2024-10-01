@@ -53,7 +53,14 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
     public function retrieveSMTPData($smtpRecord)
     {
         $this->setMailerType($smtpRecord->get('mailer_type'));
-        $this->setSMTP($smtpRecord->get('server'), $smtpRecord->get('server_username'), $smtpRecord->getDecodedPassword(), !$smtpRecord->isEmpty('smtp_auth'));
+        $this->setSMTP(
+            $smtpRecord->get('server'),
+            $smtpRecord->get('server_username'),
+            $smtpRecord->getDecodedPassword(),
+            !$smtpRecord->isEmpty('smtp_auth'),
+            $smtpRecord->get('server_protocol'),
+            $smtpRecord->get('server_port')
+        );
 
         if (!$smtpRecord->isEmpty('from_email_field')) {
             $this->setFrom($smtpRecord->get('from_email_field'));
@@ -150,7 +157,7 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
      * @param bool $auth
      * @return void
      */
-    public function setSMTP($host, $username, $password, $auth = true)
+    public function setSMTP($host, $username, $password, $auth = true, $smtpSecure = '', $port = 25)
     {
         $this->retrieveMailer();
         $this->retrieveSMTPOptions();
@@ -163,13 +170,14 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
         $this->Username = $username;
         $this->Password = $password;
         $this->SMTPAuth = $auth;
+        $this->SMTPSecure = $smtpSecure;
+        $this->Port = $port;
 
-        $hostInfo = explode('://', $this->Host);
-        $smtpSecure = $hostInfo[0];
+        [$smtpSecure, $host] = explode('://', $this->Host);
 
         if ('tls' === $smtpSecure) {
             $this->SMTPSecure = $smtpSecure;
-            $this->Host = $hostInfo[1];
+            $this->Host = $host;
         }
     }
 

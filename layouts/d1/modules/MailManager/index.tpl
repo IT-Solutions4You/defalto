@@ -23,7 +23,7 @@
             <div class="container-fluid h-100">
                 <div class="row h-100">
                     <div class="col-lg-6 border-end d-flex flex-column" id="mails_container"></div>
-                    <div class="col-lg-6" id="mailPreviewContainer">
+                    <div class="col-lg-6  pt-lg-0 pt-sm-5" id="mailPreviewContainer">
                         <div class="mmListMainContainer">
                             <div class="text-center">
                                 <strong>{vtranslate('LBL_NO_MAIL_SELECTED_DESC', $MODULE)}</strong>

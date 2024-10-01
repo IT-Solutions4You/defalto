@@ -596,7 +596,6 @@ class DefaultDataPopulator extends CRMEntity
             [13, null, 'status', 'vtiger_troubletickets', 1, '15', 'ticketstatus', 'Status', 1, 2, '', 100, 7, $helpDeskInformation, 1, 'V~M', 1, 2, 'BAS', 1],
             [13, null, 'category', 'vtiger_troubletickets', 1, '15', 'ticketcategories', 'Category', 1, 2, '', 100, 10, $helpDeskInformation, 1, 'V~O', 1, null, 'BAS', 1],
             [13, null, 'hours', 'vtiger_troubletickets', 1, '1', 'hours', 'Hours', 1, 2, '', 100, 9, $helpDeskInformation, 1, 'I~O', 1, null, 'BAS', 1],
-            [13, null, 'days', 'vtiger_troubletickets', 1, '1', 'days', 'Days', 1, 2, '', 100, 10, $helpDeskInformation, 1, 'I~O', 1, null, 'BAS', 1],
             [13, null, 'createdtime', 'vtiger_crmentity', 1, '70', 'createdtime', 'Created Time', 1, 0, '', 100, 9, $helpDeskInformation, 2, 'DT~O', 3, null, 'BAS', 0],
             [13, null, 'modifiedtime', 'vtiger_crmentity', 1, '70', 'modifiedtime', 'Modified Time', 1, 0, '', 100, 12, $helpDeskInformation, 2, 'DT~O', 3, null, 'BAS', 0],
             [13, null, 'from_portal', 'vtiger_ticketcf', 1, '56', 'from_portal', 'From Portal', 1, 0, '', 100, 13, $helpDeskInformation, 3, 'C~O', 3, null, 'BAS', 0],

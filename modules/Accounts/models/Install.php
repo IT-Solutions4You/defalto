@@ -146,10 +146,10 @@ class Accounts_Install_Model extends Core_Install_Model {
                     'presence' => 2,
                     'maximumlength' => 100,
                     'typeofdata' => 'E~O',
-                    'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+                    'quickcreate' => 2,
                 ],
                 'employees' => [
                     'name' => 'employees',

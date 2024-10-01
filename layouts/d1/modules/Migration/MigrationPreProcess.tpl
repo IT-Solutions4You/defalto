@@ -5,8 +5,6 @@
 * All Rights Reserved.
 *}
 {include file='Header.tpl'|@vtemplate_path:'Vtiger'}
-<input type="hidden" id="module" value="Install" />
-<input type="hidden" id="view" value="Index" />
 <header class="fixed-top app-fixed-navbar bg-body-secondary">
 	<div class="container-fluid px-4 page-container">
 		<div class="row h-header align-items-center">
@@ -17,7 +15,7 @@
 			</div>
 			<div class="col-sm-auto">
 				<div class="head">
-					<h3>{vtranslate('LBL_INSTALLATION_WIZARD', 'Install')}</h3>
+					<h3>{vtranslate('LBL_INSTALLATION_WIZARD', $MODULE)}</h3>
 				</div>
 			</div>
 		</div>

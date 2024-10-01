@@ -10,6 +10,7 @@
 
 class Potentials_Module_Model extends Vtiger_Module_Model {
 
+    protected string $fontIcon = 'fa-solid fa-sack-dollar';
 	/**
 	 * Function to get the Quick Links for the module
 	 * @param <Array> $linkParams

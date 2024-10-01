@@ -23,7 +23,7 @@ include_once('vtlib/Vtiger/Event.php');
 class Vtiger_Mailer extends PHPMailer {
 
 	private bool $_serverConfigured = false;
-    private string $Signature;
+    public string $Signature;
 
     /**
 	 * Constructor

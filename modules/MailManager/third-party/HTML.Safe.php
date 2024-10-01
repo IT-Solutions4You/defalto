@@ -351,9 +351,9 @@ class HTML_Safe
                     }
                 }
 
-                $tempval = preg_replace('/&#(\d+);?/me', "chr('\\1')", $value); //"'
+                $tempval = preg_replace('/&#(\d+);?/', "chr('\\1')", $value); //"'
                 $tempval = preg_replace(
-                    '/&#x([0-9a-f]+);?/mei',
+                    '/&#x([0-9a-f]+);?/i',
                     "chr(hexdec('\\1'))",
                     $tempval
                 );

@@ -14,41 +14,41 @@
  */
 class Vtiger_MailRecord {
 	// FROM address(es) list 
-	var $_from;
-	// TO address(es) list
-	var $_to;
-	//var $_replyto;
+    public $_from;
+    // TO address(es) list
+    public $_to;
+    //var $_replyto;
 
-	// CC address(es) list
-	var $_cc;
-	// BCC address(es) list
-	var $_bcc;
-	// DATE
-	var $_date;
-	// SUBJECT
-	var $_subject;
-	// BODY (either HTML / PLAIN message)
-	var $_body;
-     // Name of Mail Sender 
-    var $_fromname;
+    // CC address(es) list
+    public $_cc;
+    // BCC address(es) list
+    public $_bcc;
+    // DATE
+    public $_date;
+    // SUBJECT
+    public $_subject;
+    // BODY (either HTML / PLAIN message)
+    public $_body;
+    // Name of Mail Sender
+    public $_fromname;
     // CHARSET of the body content
-	var $_charset;
-	// If HTML message was set as body content
-	var $_isbodyhtml;
-	// PLAIN message of the original email
-	var $_plainmessage = false;
-	// HTML message of the original email
-	var $_htmlmessage = false;
-	// ATTACHMENTS list of the email
-	var $_attachments = false;
-	// UNIQUEID associated with the email
-	var $_uniqueid = false;
+    public $_charset;
+    // If HTML message was set as body content
+    public $_isbodyhtml;
+    // PLAIN message of the original email
+    public $_plainmessage = false;
+    // HTML message of the original email
+    public $_htmlmessage = false;
+    // ATTACHMENTS list of the email
+    public $_attachments = false;
+    // UNIQUEID associated with the email
+    public $_uniqueid = false;
 
-	// Flag to avoid re-parsing the email body.
-	var $_bodyparsed = false;
+    // Flag to avoid re-parsing the email body.
+    public $_bodyparsed = false;
 
-	/** DEBUG Functionality. */
-	var $debug = false;
+    /** DEBUG Functionality. */
+    public $debug = false;
 	function log($message=false) {
 		if(!$message) $message = $this->__toString();
 
@@ -160,7 +160,11 @@ class Vtiger_MailRecord {
             if (strtolower(trim($to)) == strtolower(trim($from))) {
                 return $input;
             } else {
-                return mb_convert_encoding($input, $to, $from);
+                try {
+                    return mb_convert_encoding($input, $to, $from);
+                } catch (ValueError $exception) {
+                    return iconv($from, $to, $input);
+                }
             }
         }
         return $input;

@@ -7,10 +7,10 @@
 {strip}
     <div class="mmActionsContainer container-fluid">
         <div class="row">
-            <div class="col-lg-1">
+            <div class="col-1">
                 <input type='checkbox' id='mainCheckBox' class="form-check-input">
             </div>
-            <div class="col-lg-5">
+            <div class="col">
                 <div class="btn btn-outline-secondary me-2 mmActionIcon" id="mmMarkAsRead" data-folder="{$FOLDER->name()}" title="{vtranslate('LBL_MARK_AS_READ', $MODULE)}">
                     <i class="fa-regular fa-envelope-open"></i>
                 </div>
@@ -40,7 +40,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-lg-6 text-end">
+            <div class="col-auto text-end">
                 {if $FOLDER->mails()}
                     <span class="pageInfo me-2">{$FOLDER->pageInfo()}</span>
                     <span class="pageInfoData me-2" data-start="{$FOLDER->getStartCount()}" data-end="{$FOLDER->getEndCount()}" data-total="{$FOLDER->count()}" data-label-of="{vtranslate('LBL_OF')}"></span>
@@ -85,10 +85,21 @@
                 {/if}
                 <div class="container-fluid py-3 border-bottom cursorPointer mailEntry {if $IS_READ}mmReadEmail{/if}" id='mmMailEntry_{$MAIL->msgNo()}' data-folder="{$FOLDER->name()}" data-read='{$IS_READ}'>
                     <div class="row">
-                        <span class="col-lg-1">
-                            <input type="checkbox" class="mailCheckBox form-check-input">
-                        </span>
-                        <div class="col-lg-11 mmfolderMails" title="{$MAIL->subject()}">
+                        <div class="col-sm-auto">
+                            <div class="min-w-5rem">
+                                <input type="checkbox" class="mailCheckBox form-check-input">
+                                {if $MAIL->hasRelations()}
+                                    <i class="bi bi-check ms-2"></i>
+                                {/if}
+                                {assign var=ATTACHMENT value=$MAIL->attachments()}
+                                {assign var=INLINE_ATTCH value=$MAIL->inlineAttachments()}
+                                {assign var=ATTCHMENT_COUNT value=(php7_count($ATTACHMENT) - php7_count($INLINE_ATTCH))}
+                                {if $ATTCHMENT_COUNT}
+                                    <i class="bi bi-paperclip ms-2"></i>
+                                {/if}
+                            </div>
+                        </div>
+                        <div class="col-sm overflow-auto mmfolderMails" title="{$MAIL->subject()}">
                             <input type="hidden" class="msgNo" value='{$MAIL->msgNo()}'>
                             <input type="hidden" class='mm_foldername' value='{$FOLDER->name()}'>
                             <div class="row">
@@ -104,13 +115,7 @@
                                         <strong>{strip_tags($DISPLAY_NAME)}<br>{strip_tags($SUBJECT)}</strong>
                                     {/if}
                                 </div>
-                                <div class="col-lg-4 text-end text-muted fs-small">
-                                    {assign var=ATTACHMENT value=$MAIL->attachments()}
-                                    {assign var=INLINE_ATTCH value=$MAIL->inlineAttachments()}
-                                    {assign var=ATTCHMENT_COUNT value=(php7_count($ATTACHMENT) - php7_count($INLINE_ATTCH))}
-                                    {if $ATTCHMENT_COUNT}
-                                        <i class="fa fa-paperclip me-2"></i>
-                                    {/if}
+                                <div class="col-sm-4 text-end text-muted fs-small">
                                     <span class="mmDateTimeValue" title="{Vtiger_Util_Helper::formatDateTimeIntoDayString(date('Y-m-d H:i:s', strtotime($MAIL->_date)))}">{Vtiger_Util_Helper::formatDateDiffInStrings(date('Y-m-d H:i:s', strtotime($MAIL->_date)))}</span>
                                 </div>
                             </div>

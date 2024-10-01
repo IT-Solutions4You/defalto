@@ -142,7 +142,7 @@ class Vtiger_Filter {
 
 		$cvcolvalue = $this->__getColumnValue($fieldInstance);
 
-		$adb->pquery("UPDATE vtiger_cvcolumnlist SET columnindex=columnindex+1 WHERE cvid=? AND columnindex>=? ORDER BY columnindex DESC", 
+		$adb->pquery("UPDATE vtiger_cvcolumnlist SET columnindex=columnindex+1 WHERE cvid=? AND columnindex>=? ORDER BY columnindex DESC",
 			Array($this->id, $index));
 		$adb->pquery("INSERT INTO vtiger_cvcolumnlist(cvid,columnindex,columnname) VALUES(?,?,?)", Array($this->id, $index, $cvcolvalue));
 
@@ -288,4 +288,3 @@ class Vtiger_Filter {
 		}
 	}
 }
-?>

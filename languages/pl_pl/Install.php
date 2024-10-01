@@ -12,8 +12,8 @@
 $languageStrings = array(
 	'LBL_INSTALLATION_WIZARD' => 'Kreator instalacji',
 	'LBL_WELCOME' => 'Witamy',
-	'LBL_WELCOME_TO_VTIGER6_SETUP_WIZARD' => 'Witamy w kreatorze instalacji',
-	'LBL_VTIGER6_SETUP_WIZARD_DESCRIPTION' => 'Ten kreator pomoże Ci przejść przez proces instalacji systemu Vtiger 6',
+	'LBL_WELCOME_TO_Defalto_SETUP_WIZARD' => 'Witamy w kreatorze instalacji',
+	'LBL_Defalto_SETUP_WIZARD_DESCRIPTION' => 'Ten kreator pomoże Ci przejść przez proces instalacji systemu Vtiger 6',
 	'LBL_INSTALL_BUTTON' => 'Instaluj',
 	'LBL_DISAGREE' => 'Nie zgadzam się',
 	'LBL_I_AGREE' => 'Zgadzam się',

@@ -45,17 +45,21 @@ class ModTracker_Record_Model extends Vtiger_Record_Model {
 		return $recordInstances;
 	}
 
-	function setParent($id, $moduleName) {
-		if(!Vtiger_Util_Helper::checkRecordExistance($id)) {
-			$this->parent = Vtiger_Record_Model::getInstanceById($id, $moduleName);
-		} else {
-			$this->parent = Vtiger_Record_Model::getCleanInstance($moduleName);
-			$this->parent->id = $id;
-			$this->parent->setId($id);
-		}
-	}
+    /**
+     * @throws Exception
+     */
+    public function setParent($id, $moduleName)
+    {
+        if (!Vtiger_Util_Helper::checkRecordExistance($id)) {
+            $this->parent = Vtiger_Record_Model::getInstanceById($id, $moduleName);
+        } else {
+            $this->parent = Vtiger_Record_Model::getCleanInstance($moduleName);
+            $this->parent->id = $id;
+            $this->parent->setId($id);
+        }
+    }
 
-	function getParent() {
+    function getParent() {
 		return $this->parent;
 	}
 

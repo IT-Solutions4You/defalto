@@ -214,12 +214,14 @@ class MailManager_Connector_Connector {
 
 	/**
 	 * Sets a list of mails with paging
-	 * @param String $folder - MailManager_Model_Folder Instance
+	 * @param MailManager_Folder_Model $folder - MailManager_Model_Folder Instance
 	 * @param Integer $start  - Page number
 	 * @param Integer $maxLimit - Number of mails
 	 */
-	public function folderMails($folder, $start, $maxLimit) {
+	public function folderMails($folder, $start, $maxLimit)
+    {
 		$folderCheck = @imap_check($this->mBox);
+
 		if ($folderCheck->Nmsgs) {
 
 			$reverse_start = $folderCheck->Nmsgs - ($start*$maxLimit);
@@ -229,16 +231,16 @@ class MailManager_Connector_Connector {
 			if ($reverse_end < 1) $reverse_end = 1;
 
 			$sequence = sprintf("%s:%s", $reverse_start, $reverse_end);
-
 			$records = imap_fetch_overview($this->mBox, $sequence);
 			$mails = array();
 			$mailIds = array();
 
 			foreach($records as $result) {
-				$message = MailManager_Message_Model::parseOverview($result);
+				$message = MailManager_Message_Model::parseOverview($result, $this->mBox);
 				$mailIds[] = $message->msgNo();
 				array_unshift($mails, $message);
 			}
+
 			$folder->setMails($mails);
 			$folder->setMailIds($mailIds);
 			$folder->setPaging($reverse_end, $reverse_start, $maxLimit, $folderCheck->Nmsgs, $start);
@@ -315,15 +317,17 @@ class MailManager_Connector_Connector {
 	/**
 	 * Creates an instance of Message
 	 * @param String $msgno - Message number
-	 * @return MailManager_Model_Message
+	 * @return MailManager_Message_Model
 	 */
-	public function openMail($msgno, $folder) {
-		$this->clearDBCache();
-		return new MailManager_Message_Model($this->mBox, $msgno, true, $folder);
-	}
+    public function openMail($msgno, $folder, $fetchBody = true)
+    {
+        $this->clearDBCache();
+
+        return new MailManager_Message_Model($this->mBox, $msgno, $fetchBody, $folder);
+    }
 
 
-	/**
+    /**
 	 * Marks the mail as Unread
 	 * @param <String> $msgno - Message Number
 	 */
@@ -346,7 +350,7 @@ class MailManager_Connector_Connector {
 	/**
 	 * Searches the Mail Box with the query
 	 * @param String $query - imap search format
-	 * @param MailManager_Model_Folder $folder - folder instance
+	 * @param MailManager_Folder_Model $folder - folder instance
 	 * @param Integer $start - Page number
 	 * @param Integer $maxLimit - Number of mails
 	 */
@@ -373,7 +377,7 @@ class MailManager_Connector_Connector {
 			$records = imap_fetch_overview($this->mBox, implode(',', $nos));
 
 			foreach($records as $result) {
-                $message = MailManager_Message_Model::parseOverview($result);
+                $message = MailManager_Message_Model::parseOverview($result, $this->mBox);
                 array_unshift($mails, $message);
                 array_unshift($mailNos, $message->msgNo());
             }

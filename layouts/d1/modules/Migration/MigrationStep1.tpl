@@ -5,45 +5,30 @@
 * All Rights Reserved.
 *}
 {strip}
-	{include file="Header.tpl"|vtemplate_path:'Install'}
-	<div class="container-fluid page-container">
-		<div class="row">
-			<div class="col-lg-6">
-				<div class="logo">
-					<img src="{'logo.png'|vimage_path}"/>
-				</div>
-			</div>
-			<div class="col-lg-6">
-				<div class="head pull-right">
-					<h3>{vtranslate('LBL_MIGRATION_WIZARD', $MODULE)}</h3>
-				</div>
-			</div>
-		</div>
-		<div class="row main-container">
-			<div class="col-lg-12 inner-container">
-				<div id="running" class="alignCenter">
-					<br><br><br><br><br>
-					<h4> {vtranslate('LBL_WAIT',$MODULE)} </h4><br>
-					<img src="{vimage_path('install_loading.gif')}"/>
-					<h5> {vtranslate('LBL_INPROGRESS',$MODULE)} </h5>
-				</div>
-				<div id="success" class="hide">
-					<div class="row">
-						<div class="col-lg-10">
-							<h4> {vtranslate('LBL_DATABASE_CHANGE_LOG',$MODULE)} </h4>
-						</div>
-					</div><hr>
-				</div>
-				<div id="showDetails" class="hide" style="max-height: 350px; overflow: auto; padding: 10px; border: 1px solid #ddd;"></div><br>
-				<div id="nextButton" class="button-container col-lg-12 hide">
-					<form action='index.php' method="POST">
-						<input type="hidden" name="module" id="module" value="Migration">
-						<input type="hidden" name="view" id="view" value="Index">
-						<input type="hidden" name="mode" value="step2">
-						<input type="submit" class="btn btn-default btn-primary pull-right" value="{vtranslate('Next', $MODULE)}"/>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="main-container container h-main px-4 py-3">
+        <div class="inner-container">
+            <form action='index.php' method="POST" class="bg-body rounded">
+                <input type="hidden" name="module" id="module" value="{$MODULE}">
+                <input type="hidden" name="view" id="view" value="Index">
+                <input type="hidden" name="mode" value="step2">
+                {include file='StepHeader.tpl'|@vtemplate_path:$MODULE}
+                <div class="p-3">
+                    <div id="running" class="text-center py-5">
+                        <h4>{vtranslate('LBL_WAIT',$MODULE)}</h4>
+                        <div class="spinner-border text-primary my-3" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h5>{vtranslate('LBL_INPROGRESS',$MODULE)}</h5>
+                    </div>
+                    <div id="success" class="hide">
+                        <h4> {vtranslate('LBL_DATABASE_CHANGE_LOG',$MODULE)} </h4>
+                    </div>
+                    <div id="showDetails" class="overflow-auto border rounded my-3 hide" style="height: 30vh;"></div>
+                    <div id="nextButton" class="button-container text-end hide">
+                        <button type="submit" class="btn btn-primary active">{vtranslate('Next', $MODULE)}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 {/strip}

@@ -179,6 +179,8 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'filter' => 1,
+                    'filter_sequence' => 5,
                 ],
                 'lead_view' => [
                     'name' => 'lead_view',

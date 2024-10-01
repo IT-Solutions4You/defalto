@@ -138,17 +138,10 @@ class Vtiger_Util_Helper {
      */
     public static function checkRecordExistance($recordId)
     {
-        global $adb;
-        $result = $adb->pquery(
-            'SELECT deleted FROM vtiger_crmentity WHERE crmid=?',
-            [$recordId]
-        );
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery('SELECT deleted FROM vtiger_crmentity WHERE crmid=?', [$recordId]);
 
-        if (!$adb->num_rows($result)) {
-            return 1;
-        }
-
-        return (int)$adb->query_result($result, 'deleted');
+        return $adb->num_rows($result) ? (int)$adb->query_result($result, 0,'deleted') : 1;
     }
 
     /**

@@ -142,6 +142,7 @@ class Home_Module_Model extends Vtiger_Module_Model {
 			$row = $db->query_result_rowdata($result, $i);
 			$moduleName = $row['module'];
 			$recordId = $row['crmid'];
+
 			if(Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId)){
 				$modTrackerRecorModel = new ModTracker_Record_Model();
 				$modTrackerRecorModel->setData($row)->setParent($recordId, $moduleName);

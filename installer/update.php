@@ -403,7 +403,7 @@ $zipFileFolder = 'defalto-develop';
 Download_ZipArchive::$skipFolders = ['user_privileges', 'layouts/d1/modules/PDFMaker', 'modules/PDFMaker', 'manifest', 'update', 'icons', 'installer'];
 Download_ZipArchive::$skipFiles = ['config.inc.php', 'composer.lock', 'index.php', 'update.php', 'install.php', 'parent_tabdata.php', 'tabdata.php', 'PDFMaker.php'];
 
-$download = Download::zip($zipFileUrl, $zipFileFolder);
+$download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migration&view=Index&mode=step1');
 
 ?>
 
@@ -530,9 +530,7 @@ echo $download->progress ?>">
         <div class="log"><?php
             echo $download->getMessages() ?></div>
         <div class="action">
-            <a href="<?php
-            echo $download->getRedirectUrl() ?>" class="button hide">Continue Installation
-            </a>
+            <a href="<?php echo $download->getRedirectUrl() ?>" class="button hide">Continue Database Migration</a>
         </div>
     </div>
 </div>

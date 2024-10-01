@@ -9,6 +9,7 @@
  ************************************************************************************ */
 
 $languageStrings = Array (
+	'SINGLE_MailManager' => 'Mail Manager',
 	'MailManager' => 'Mail Manager',
 	'LBL_Folders'         => 'Folders',
 	'LBL_Newer'           => 'Newer',
@@ -84,6 +85,7 @@ $languageStrings = Array (
     'LBL_MAILMANAGER_ADD_Emails' => 'Attach Email',
     'LBL_MAILMANAGER_ADD_ModComments' => 'Add Comment',
 	'LBL_MAILMANAGER_ADD_Potentials' => 'Add Opportunity',
+	'LBL_MAILMANAGER_ADD_ITS4YouEmails' => 'Add Email',
     'LBL_ADD' => 'Add',
 	'JSLBL_Body_Cannot_Be_Empty' => 'Body cannot be empty',
 	'LBL_ALLMAILS' => 'All Mails',
@@ -122,6 +124,11 @@ $languageStrings = Array (
 	'LBL_ADD_CALENDAR' => 'Add Task',
 	'LBL_ADD_EVENTS' => 'Add Event',
 	'LBL_MAILMANAGER_ADD_Cases' => 'Add Case',
+	'LBL_EMAIL_ALREADY_EXISTS_IN_CRM' => 'Email already exists in CRM',
+	'LBL_RELATED_EMAILS' => 'Related emails',
+	'LBL_RELATED_RECIPIENTS' => 'Related recipients',
+	'LBL_BLOCKED_REMOTE_CONTENT' => 'Remote content has been blocked to protect your privacy',
+	'LBL_ALLOW' => 'Allow',
 );
 
 $jsLanguageStrings = Array (

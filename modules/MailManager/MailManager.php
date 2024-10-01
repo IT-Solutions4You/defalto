@@ -79,22 +79,25 @@ class MailManager {
 		return $filteredResult;
 	}
 
-	static function lookupMailAssociation($mailuid) {
-		global $adb;
-
-		// Mail could get associated with two-or-more records if they get deleted after linking.
-		$result = $adb->pquery(
-			"SELECT vtiger_mailmanager_mailrel.* FROM vtiger_mailmanager_mailrel INNER JOIN
+    public static function lookupMailAssociation($mailuid)
+    {
+        $adb = PearDatabase::getInstance();
+        // Mail could get associated with two-or-more records if they get deleted after linking.
+        $result = $adb->pquery(
+            "SELECT vtiger_mailmanager_mailrel.* FROM vtiger_mailmanager_mailrel INNER JOIN
 			vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_mailmanager_mailrel.crmid AND vtiger_crmentity.deleted=0
-			AND vtiger_mailmanager_mailrel.mailuid=? LIMIT 1", array(decode_html($mailuid)));
-		if ($adb->num_rows($result)) {
-			$resultrow = $adb->fetch_array($result);
-			return $resultrow;
-		}
-		return false;
-	}
+			AND vtiger_mailmanager_mailrel.mailuid=? LIMIT 1",
+            [decode_html($mailuid)],
+        );
 
-	static function lookupVTEMailAssociation($emailId) {
+        if ($adb->num_rows($result)) {
+            return $adb->fetch_array($result);
+        }
+
+        return false;
+    }
+
+    static function lookupVTEMailAssociation($emailId) {
 		global $adb;
 		$result = $adb->pquery(
 			"SELECT vtiger_mailmanager_mailrel.* FROM vtiger_mailmanager_mailrel INNER JOIN

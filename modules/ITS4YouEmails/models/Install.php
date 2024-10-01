@@ -386,6 +386,20 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
                     'label' => 'Attachment Ids',
                     'masseditable' => '0',
                 ],
+                'mail_manager_id' => [
+                    'name' => 'mail_manager_id',
+                    'column' => 'mail_manager_id',
+                    'uitype' => 32,
+                    'table' => 'its4you_emails',
+                    'label' => 'Mail Manager Id',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'N~O',
+                    'quickcreate' => 0,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 0,
+                ],
             ],
             'LBL_DESCRIPTION_INFORMATION' => [
                 'description' => [
@@ -456,6 +470,7 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
             ->createColumn('workflow_id','varchar(100) DEFAULT NULL')
             ->createColumn('tags','varchar(1) DEFAULT NULL')
             ->createColumn('recipient_id','int(11) DEFAULT NULL')
+            ->createColumn('mail_manager_id','int(11) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`its4you_emails_id`)');
 
         $this->getTable('its4you_emailscf', null)
