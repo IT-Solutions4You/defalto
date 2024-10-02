@@ -159,11 +159,12 @@ class Settings_Vtiger_ConfigModule_Model extends Settings_Vtiger_Module_Model {
 		return true;
 	}
 
-	/**
-	 * Function to get the instance of Config module model
-	 * @return <Settings_Vtiger_ConfigModule_Model> $moduleModel
-	 */
-	public static function getInstance() {
+    /**
+     * Function to get the instance of Config module model
+     * @param string $module
+     * @return Settings_Vtiger_ConfigModule_Model $moduleModel
+     */
+	public static function getInstance($module = 'Settings:Vtiger') {
 		$moduleModel = new self();
 		$moduleModel->getViewableData();
 		return $moduleModel;

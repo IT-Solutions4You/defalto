@@ -109,7 +109,7 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 	 * Function to get fields
 	 * @return <Array>
 	 */
-	public function getFields() {
+	public function getFields($blockInstance = false) {
 		return $this->fields;
 	}
 

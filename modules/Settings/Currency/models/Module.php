@@ -28,15 +28,17 @@ class Settings_Currency_Module_Model extends Settings_Vtiger_Module_Model{
     public function getBaseTable() {
 		return self::tableName;
 	}
-    
-    public static function tranformCurrency($oldCurrencyId, $newCurrencyId) {
-        return transferCurrency($oldCurrencyId,$newCurrencyId);
+
+    public static function tranformCurrency($oldCurrencyId, $newCurrencyId)
+    {
+        return transferCurrency($oldCurrencyId, $newCurrencyId);
     }
-    
-    public static function delete($recordId) {
+
+    public function delete($recordId = null)
+    {
         $db = PearDatabase::getInstance();
-        $query = 'UPDATE '.self::tableName.' SET deleted=1 WHERE id=?';
-        $params = array($recordId);
+        $query = 'UPDATE ' . self::tableName . ' SET deleted=1 WHERE id=?';
+        $params = [$recordId];
         $db->pquery($query, $params);
     }
 }

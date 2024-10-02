@@ -216,15 +216,16 @@ class Vtiger_Block_Model extends Vtiger_Block {
 	}
 
     /**
-     * @return null|Vtiger_Module_Model
+     * @return Core_ModuleModel_Interface|null
      */
-    public function getModuleInstance(): ?Vtiger_Module_Model
+    public function getModuleInstance(): null|Core_ModuleModel_Interface
     {
         return $this->module;
     }
 
     /**
      * @return Core_Interface_BlockUIType
+     * @throws Exception
      */
     public function getUITypeModel(): Core_Interface_BlockUIType
     {

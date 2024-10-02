@@ -46,7 +46,7 @@ class Settings_Workflows_Module_Model extends Settings_Vtiger_Module_Model {
 	 * Function to get the url for default view of the module
 	 * @return <string> - url
 	 */
-	public static function getDefaultUrl() {
+	public function getDefaultUrl() {
 		return 'index.php?module=Workflows&parent=Settings&view=List';
 	}
 
@@ -58,7 +58,7 @@ class Settings_Workflows_Module_Model extends Settings_Vtiger_Module_Model {
 		return "javascript:Settings_Workflows_List_Js.triggerCreate('index.php?module=Workflows&parent=Settings&view=Edit')";
 	}
 
-	public static function getCreateRecordUrl() {
+	public function getCreateRecordUrl() {
 		return 'index.php?module=Workflows&parent=Settings&view=Edit';
 	}
 
@@ -138,11 +138,13 @@ class Settings_Workflows_Module_Model extends Settings_Vtiger_Module_Model {
 
 	}
 
-	public function getFields() {
-	   return array();
-	}
+    public function getFields($blockInstance = false)
+    {
+        return [];
+    }
 
-	public function getModuleBasicLinks(){
-	   return array();
-	}
+    public function getModuleBasicLinks()
+    {
+        return [];
+    }
 }

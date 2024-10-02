@@ -20,8 +20,13 @@
             </div>
             <div class="col-3 col-sm-4 col-md-5 transitionsAllHalfSecond module-breadcrumb module-breadcrumb-{$REQUEST_INSTANCE.view}">
                 <div class="w-100 text-truncate text-nowrap fs-4 px-xs-3 ps-lg-3">
-                    {assign var=MODULE_MODEL value=Vtiger_Module_Model::getInstance($MODULE)}
-                    {if $MODULE_MODEL}
+                    {if 'Settings' eq $REQUEST_INSTANCE.parent}
+                        {assign var=SETTINGS_MODULE_MODEL value=Settings_Vtiger_Module_Model::getInstance(join(['Settings:',$MODULE]))}
+                        {assign var=DEFAULT_FILTER_URL value=$SETTINGS_MODULE_MODEL->getDefaultUrl()}
+                        {assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}
+                        {assign var=SINGLE_MODULE_LABEL value=vtranslate($SINGLE_MODULE_NAME, $QUALIFIED_MODULE)}
+                    {elseif $MODULE}
+                        {assign var=MODULE_MODEL value=Vtiger_Module_Model::getInstance($MODULE)}
                         {if $MODULE_MODEL->getDefaultViewName() neq 'List'}
                             {assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getDefaultUrl()}
                         {else}

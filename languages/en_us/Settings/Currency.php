@@ -152,6 +152,7 @@ $languageStrings = array(
 	'Malawi, kwacha'		=> 'Malawi, kwacha',
 	'Tunisian, Dinar'		=> 'Tunisian, Dinar',
 	'Moroccan, Dirham'		=> 'Moroccan, Dirham',
+	'SINGLE_Currency'		=> 'Currency',
 );
 
 $jsLanguageStrings = array(
