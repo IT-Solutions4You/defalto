@@ -9,17 +9,17 @@
 		<div class="bottomscroll-div">
 			<div class="fieldBlockContainer mt-3 bg-body rounded">
 				<div class="fieldBlockHeader p-3 border-bottom">
-					<span class="ms-3 fs-4 fw-bold">{vtranslate($SOURCE_MODULE, {$SOURCE_MODULE})} {vtranslate('LBL_FIELD_INFORMATION', {$MODULE_NAME})}</span>
+					<span class="ms-3 fs-4 fw-bold">{vtranslate($SOURCE_MODULE, {$SOURCE_MODULE})} {vtranslate('LBL_FIELD_INFORMATION', $QUALIFIED_MODULE)}</span>
 				</div>
 				<div class="p-3">
 					<table class="table table-borderless">
 						<thead>
 							<tr>
-								<td><b>{vtranslate('LBL_MANDATORY', {$MODULE_NAME})}</b></td>
-								<td><b>{vtranslate('LBL_HIDDEN', {$MODULE_NAME})}</b></td>
-								<td><b>{vtranslate('LBL_FIELD_NAME', {$MODULE_NAME})}</b></td>
-								<td><b>{vtranslate('LBL_OVERRIDE_VALUE', {$MODULE_NAME})}</b></td>
-								<td><b>{vtranslate('LBL_WEBFORM_REFERENCE_FIELD', {$MODULE_NAME})}</b></td>
+								<td><b>{vtranslate('LBL_MANDATORY', $QUALIFIED_MODULE)}</b></td>
+								<td><b>{vtranslate('LBL_HIDDEN', $QUALIFIED_MODULE)}</b></td>
+								<td><b>{vtranslate('LBL_FIELD_NAME', $QUALIFIED_MODULE)}</b></td>
+								<td><b>{vtranslate('LBL_OVERRIDE_VALUE', $QUALIFIED_MODULE)}</b></td>
+								<td><b>{vtranslate('LBL_WEBFORM_REFERENCE_FIELD', $QUALIFIED_MODULE)}</b></td>
 							</tr>
 						</thead>
 						<tbody>
@@ -63,7 +63,7 @@
 									</td>
 									<td>
 										{if Settings_Webforms_Record_Model::isCustomField($FIELD_MODEL->get('name'))}
-											{vtranslate('LBL_LABEL', $MODULE_NAME)} : {vtranslate($FIELD_MODEL->get('label'), $MODULE_NAME)}
+											{vtranslate('LBL_LABEL', $QUALIFIED_MODULE)} : {vtranslate($FIELD_MODEL->get('label'), $QUALIFIED_MODULE)}
 										{else}
 											{vtranslate({$FIELD_MODEL->get('neutralizedfield')}, $SOURCE_MODULE)}
 										{/if}
@@ -81,19 +81,19 @@
 			<div class="bottomscroll-div">
 				<div class="fieldBlockContainer mt-3 bg-body rounded">
 					<div class="fieldBlockHeader p-3 border-bottom">
-						<span class="ms-3 fs-4 fw-bold">{vtranslate('LBL_UPLOAD_DOCUMENTS', $MODULE_NAME)}</span>
+						<span class="ms-3 fs-4 fw-bold">{vtranslate('LBL_UPLOAD_DOCUMENTS', $QUALIFIED_MODULE)}</span>
 					</div>
 					<div class="p-3">
 						<div>
 							<table class="table table-borderless">
 								<tr>
-									<td><b>{vtranslate('LBL_FIELD_LABEL', $MODULE_NAME)}</b></td>
-									<td><b>{vtranslate('LBL_MANDATORY', $MODULE_NAME)}</b></td>
+									<td><b>{vtranslate('LBL_FIELD_LABEL', $QUALIFIED_MODULE)}</b></td>
+									<td><b>{vtranslate('LBL_MANDATORY', $QUALIFIED_MODULE)}</b></td>
 								</tr>
 								{foreach from=$DOCUMENT_FILE_FIELDS item=DOCUMENT_FILE_FIELD}
 									<tr class="border-top">
 										<td>{$DOCUMENT_FILE_FIELD['fieldlabel']}</td>
-										<td>{if $DOCUMENT_FILE_FIELD['required']}{vtranslate('LBL_YES')}{else}{vtranslate('LBL_NO')}{/if}</td>
+										<td>{if $DOCUMENT_FILE_FIELD['required']}{vtranslate('LBL_YES', $QUALIFIED_MODULE)}{else}{vtranslate('LBL_NO', $QUALIFIED_MODULE)}{/if}</td>
 									</tr>
 								{/foreach}
 							</table>
@@ -101,7 +101,8 @@
 						<div>
 							<div class="vt-default-callout vt-info-callout" style="margin: 0;">
 								<h4 class="vt-callout-header">
-									<span class="fa fa-info-circle"></span>&nbsp; {vtranslate('LBL_INFO')}
+									<span class="fa fa-info-circle"></span>
+									<span class="ms-2">{vtranslate('LBL_INFO', $QUALIFIED_MODULE)}</span>
 								</h4>
 								<div>
 									{vtranslate('LBL_FILE_FIELD_INFO', $QUALIFIED_MODULE, vtranslate("SINGLE_$SOURCE_MODULE", $SOURCE_MODULE))}
