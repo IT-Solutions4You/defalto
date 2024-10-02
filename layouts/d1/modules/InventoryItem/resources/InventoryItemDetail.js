@@ -26,11 +26,20 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     registerBasicEvents: function (container) {
         this._super(container);
-        this.registerAddProductService();
+        this.registerAddButtons();
     },
 
-    registerAddProductService: function () {
+    registerAddButtons: function () {
         const self = this;
+
+        const addTextLineHandler = function (e, data) {
+            const currentTarget = jQuery(e.currentTarget);
+            const params = {'currentTarget': currentTarget};
+            let newTextLine = self.getNewLineItem(params);
+            newTextLine = newTextLine.appendTo(self.lineItemsHolder);
+            app.event.trigger('post.textLine.New', newTextLine);
+        };
+
         const addLineItemEventHandler = function (e, data) {
             const currentTarget = jQuery(e.currentTarget);
             const params = {'currentTarget': currentTarget};
@@ -50,7 +59,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         jQuery('#addProduct').on('click', addLineItemEventHandler);
         jQuery('#addService').on('click', addLineItemEventHandler);
-        jQuery('#addText').on('click', addLineItemEventHandler);
+        jQuery('#addText').on('click', addTextLineHandler);
     },
 
     getLineItemSetype: function (row) {

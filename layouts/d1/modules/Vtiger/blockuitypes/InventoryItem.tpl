@@ -22,6 +22,24 @@
         </div>
     </div>
     <div class="blockData p-3 border-top border-light-subtle {if $IS_HIDDEN}hide{/if}">
+        <table id="dummyLineItemTable" style="display: none;">
+            <tr id="row0" class="hide border-bottom lineItemCloneCopy" data-row-num="0">
+                {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'Inventory' row_no=0 data=[] IGNORE_UI_REGISTRATION=true}
+            </tr>
+            <tr id="row1" class="hide border-bottom lineItemCloneCopy" data-row-num="0">
+                <td class="text-center">
+                    <a class="btn deleteRow me-2">
+                        <i class="fa fa-trash" title="{vtranslate('LBL_DELETE',$MODULE)}"></i>
+                    </a>
+                    <a>
+                        <img src="{vimage_path('drag.png')}" title="{vtranslate('LBL_DRAG',$MODULE)}"/>
+                    </a>
+                    <input type="hidden" class="rowNumber" value="1" />
+                </td>
+                <td colspan="15">
+                </td>
+            </tr>
+        </table>
         <div class="lineitemTableContainer">
             <table class="table table-borderless" id="lineItemTab">
                 <tr class="border-bottom">
@@ -36,9 +54,6 @@
                         <strong>{vtranslate('LBL_QTY',$MODULE)}</strong>
                     </td>
                 </tr>
-                <tr id="row0" class="hide border-bottom lineItemCloneCopy" data-row-num="0">
-                    {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'Inventory' row_no=0 data=[] IGNORE_UI_REGISTRATION=true}
-                </tr>
                 {foreach key=row_no item=data from=$RELATED_PRODUCTS}
                     <tr id="row{$row_no}" data-row-num="{$row_no}" class="border-bottom lineItemRow" {if $data["entityType$row_no"] eq 'Products'}data-quantity-in-stock={$data["qtyInStock$row_no"]}{/if}>
                         {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'Inventory' row_no=$row_no data=$data}
@@ -49,6 +64,11 @@
     </div>
     <div class="px-4">
         <div class="btn-toolbar">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default" id="addText" data-module-name="">
+                    <i class="fa fa-plus"></i><strong>&nbsp;&nbsp;{vtranslate('LBL_ADD_TEXT', $MODULE)}</strong>
+                </button>
+            </div>
             {if $PRODUCT_ACTIVE eq 'true'}
             <div class="btn-group">
                 <button type="button" class="btn btn-default" id="addProduct" data-module-name="Products">
@@ -63,11 +83,6 @@
                 </button>
             </div>
             {/if}
-            <div class="btn-group">
-                <button type="button" class="btn btn-default" id="addText" data-module-name="">
-                    <i class="fa fa-plus"></i><strong>&nbsp;&nbsp;{vtranslate('LBL_ADD_TEXT', $MODULE)}</strong>
-                </button>
-            </div>
         </div>
     </div>
 </div>
