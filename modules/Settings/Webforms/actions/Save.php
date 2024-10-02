@@ -42,11 +42,14 @@ class Settings_Webforms_Save_Action extends Settings_Vtiger_Index_Action {
 
 		foreach ($fieldsList as $fieldName => $fieldModel) {
 			$fieldValue = $request->get($fieldName);
+
 			if (!$fieldValue) {
 				$fieldValue = $fieldModel->get('defaultvalue');
 			}
 
-            if ($fieldModel->isMandatory() && empty(trim($fieldValue))) {
+            $fieldValueString = is_array($fieldValue) ? implode(',', $fieldValue) : $fieldValue;
+
+            if ($fieldModel->isMandatory() && empty(trim($fieldValueString))) {
                 $label = vtranslate($fieldModel->get('label'), $qualifiedModuleName);
                 throw new AppException(vtranslate('LBL_MANDATORY_FIELD_MISSING', 'Vtiger', $label));
             } elseif ($fieldName == 'targetmodule' && !array_key_exists($fieldValue, $supportedModules)) {
