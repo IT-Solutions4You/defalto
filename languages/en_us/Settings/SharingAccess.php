@@ -28,6 +28,7 @@ $languageStrings = array(
 	'SINGLE_Groups' => 'Group',
 	'SINGLE_Roles' => 'Role',
 	'SINGLE_RoleAndSubordinates' => 'RoleAndSubordinate',
+	'SINGLE_SharingAccess' => 'Sharing Access',
 );
 
 $jsLanguageStrings = array(

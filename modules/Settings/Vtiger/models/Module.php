@@ -11,7 +11,7 @@
 /*
  * Settings Module Model Class
  */
-class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
+class Settings_Vtiger_Module_Model extends Vtiger_Base_Model implements Core_ModuleModel_Interface {
 
 	var $baseTable = 'vtiger_settings_field';
 	var $baseIndex = 'fieldid';
@@ -100,20 +100,25 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 		return true;
 	}
 
-	/**
-	 * Function to get the instance of Settings module model
-	 * @return Settings_Vtiger_Module_Model instance
-	 */
-	public static function getInstance() {
-            [$name] = func_get_args();
-            if(empty($name)){
-                $name='Settings:Vtiger';
-            }
-            $modelClassName = Vtiger_Loader::getComponentClassName('Model', 'Module', $name);
-            return new $modelClassName();
-	}
+    /**
+     * Function to get the instance of Settings module model
+     * @return Settings_Vtiger_Module_Model instance
+     * @throws AppException
+     */
+    public static function getInstance($value = 'Settings:Vtiger')
+    {
+        [$name] = func_get_args();
 
-	/**
+        if (empty($name)) {
+            $name = 'Settings:Vtiger';
+        }
+
+        $modelClassName = Vtiger_Loader::getComponentClassName('Model', 'Module', $name);
+
+        return new $modelClassName();
+    }
+
+    /**
 	 * Function to get Index view Url
 	 * @return <String> URL
 	 */
@@ -201,20 +206,23 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 		return $blocksList[$viewName];
 	}
 
-	public function getModuleIcon() {
-		$moduleName = $this->getName();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		if ($moduleModel) {
-			$moduleIcon = $moduleModel->getModuleIcon();
-		} else {
-			$lowerModuleName = strtolower($moduleName);
-			$title = vtranslate($moduleName, $moduleName);
-			$moduleIcon = "<i class='vicon-$lowerModuleName' title='$title'></i>";
-		}
-		return $moduleIcon;
-	}
+    public function getModuleIcon($height = '')
+    {
+        $moduleName = $this->getName();
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 
-	static function getSettingsMenuListForNonAdmin() {
+        if ($moduleModel) {
+            $moduleIcon = $moduleModel->getModuleIcon();
+        } else {
+            $lowerModuleName = strtolower($moduleName);
+            $title = vtranslate($moduleName, $moduleName);
+            $moduleIcon = "<i class='vicon-$lowerModuleName' title='$title'></i>";
+        }
+
+        return $moduleIcon;
+    }
+
+    static function getSettingsMenuListForNonAdmin() {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$myTagSettingsUrl = $currentUser->getMyTagSettingsListUrl();
 
@@ -229,4 +237,13 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 
 		return $settingsMenuList;
 	}
+
+    public function getDefaultUrl()
+    {
+        return 'index.php?module=' . $this->get('name') . '&view=' . $this->getDefaultViewName() . '&parent=Settings';
+    }
+
+    public function getDefaultViewName() {
+        return 'List';
+    }
 }

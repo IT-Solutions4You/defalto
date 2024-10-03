@@ -54,6 +54,7 @@ Class Settings_Webforms_Edit_View extends Settings_Vtiger_Index_View {
 
 		$allFieldsList = $recordModel->getAllFieldsList($sourceModule);
 		$recordStructure = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
+        $moduleModel = $recordModel->getModule();
 
 		$viewer->assign('MODE', $mode);
 		$viewer->assign('RECORD_ID', $recordId);
@@ -68,6 +69,7 @@ Class Settings_Webforms_Edit_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('RECORD_STRUCTURE', $recordStructure->getStructure());
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 		$viewer->assign('DOCUMENT_FILE_FIELDS', $fileFields);
+		$viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
 
 		$viewer->view('EditView.tpl', $qualifiedModuleName);
 	}
