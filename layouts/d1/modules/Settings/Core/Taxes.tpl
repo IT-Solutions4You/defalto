@@ -29,11 +29,14 @@
                                 <label class="btn text-secondary">
                                     <input type="checkbox" class="taxStatus form-check-input">
                                 </label>
-                                <button type="button" class="taxEdit btn text-secondary ms-2">
+                                <button type="button" class="taxEdit btn text-secondary ms-2" title="{vtranslate('LBL_EDIT', $QUALIFIED_MODULE)}">
                                     <i class="fa fa-pencil"></i>
                                 </button>
-                                <button type="button" class="taxDelete btn text-secondary ms-2">
+                                <button type="button" class="taxDelete btn text-secondary ms-2" title="{vtranslate('LBL_DELETE', $QUALIFIED_MODULE)}">
                                     <i class="fa fa-trash"></i>
+                                </button>
+                                <button type="button" class="taxUpdate btn text-secondary ms-2" title="{vtranslate('LBL_UPDATE_RECORD_TAXES', $QUALIFIED_MODULE)}">
+                                    <i class="fa-solid fa-upload"></i>
                                 </button>
                             </div>
                         </td>
@@ -48,11 +51,14 @@
                                     <label class="btn text-secondary">
                                         <input type="checkbox" class="taxStatus form-check-input" {if $TAX_RECORD->isActive()}checked="checked"{/if}>
                                     </label>
-                                    <button type="button" class="taxEdit btn text-secondary ms-2">
+                                    <button type="button" class="taxEdit btn text-secondary ms-2" title="{vtranslate('LBL_EDIT', $QUALIFIED_MODULE)}">
                                         <i class="fa fa-pencil"></i>
                                     </button>
-                                    <button type="button" class="taxDelete btn text-secondary ms-2">
+                                    <button type="button" class="taxDelete btn text-secondary ms-2" title="{vtranslate('LBL_DELETE', $QUALIFIED_MODULE)}">
                                         <i class="fa fa-trash"></i>
+                                    </button>
+                                    <button type="button" class="taxUpdate btn text-secondary ms-2" title="{vtranslate('LBL_UPDATE_RECORD_TAXES', $QUALIFIED_MODULE)}">
+                                        <i class="fa-solid fa-upload"></i>
                                     </button>
                                 </div>
                             </td>

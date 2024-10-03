@@ -51,14 +51,18 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 		$displayName = $this->get('label');
 		$module = $this->getModule();
 		$entityFields = $module->getNameFields();
+
 		if($entityFields){
+            $name = [];
+
 			foreach($entityFields as $field){
 				if($this->get($field)){
 					$name[] = $this->get($field);
 				}
 			}
+
 			if(!empty($name)){
-				$displayName = implode(" ", $name);
+				$displayName = implode(' ', $name);
 			}
 		}
 
@@ -673,44 +677,36 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 		return $rawValue;
 	}
 
-	function getRollupCommentsForModule($startIndex = 0, $pageLimit = 10) {
-		$rollupComments = array();
-		$modulename = $this->getModuleName();
-		$recordId = $this->getId();
+    function getRollupCommentsForModule($startIndex = 0, $pageLimit = 10)
+    {
+        $rollupComments = [];
+        $modulename = $this->getModuleName();
+        $recordId = $this->getId();
 
-		$relatedModuleRecordIds = $this->getCommentEnabledRelatedEntityIds($modulename, $recordId);
-		array_unshift($relatedModuleRecordIds, $recordId);
+        $relatedModuleRecordIds = $this->getCommentEnabledRelatedEntityIds($modulename, $recordId);
+        array_unshift($relatedModuleRecordIds, $recordId);
 
-		if ($relatedModuleRecordIds) {
+        if ($relatedModuleRecordIds) {
+            $listView = Vtiger_ListView_Model::getInstance('ModComments');
+            $queryGenerator = $listView->get('query_generator');
+            $queryGenerator->setFields(['parent_comments', 'createdtime', 'modifiedtime', 'related_to', 'assigned_user_id', 'commentcontent', 'creator', 'id', 'customer', 'reasontoedit', 'userid', 'from_mailconverter', 'is_private', 'customer_email']);
+            $query = $queryGenerator->getQuery();
+            $query .= " AND vtiger_modcomments.related_to IN (" . generateQuestionMarks($relatedModuleRecordIds) . ") AND (vtiger_modcomments.parent_comments < 1 OR vtiger_modcomments.parent_comments IS NULL) ORDER BY vtiger_crmentity.createdtime DESC LIMIT  $startIndex,$pageLimit";
+            $db = PearDatabase::getInstance();
+            $result = $db->pquery($query, $relatedModuleRecordIds);
 
-			$listView = Vtiger_ListView_Model::getInstance('ModComments');
-			$queryGenerator = $listView->get('query_generator');
-			$queryGenerator->setFields(array('parent_comments', 'createdtime', 'modifiedtime', 'related_to', 'assigned_user_id',
-				'commentcontent', 'creator', 'id', 'customer', 'reasontoedit', 'userid', 'from_mailconverter', 'is_private', 'customer_email'));
+            if ($db->num_fields($result)) {
+                for ($i = 0; $i < $db->num_rows($result); $i++) {
+                    $rowdata = $db->query_result_rowdata($result, $i);
+                    $rollupComments[] = ModComments_Record_Model::getInstanceByData($rowdata);
+                }
+            }
+        }
 
-			$query = $queryGenerator->getQuery();
+        return $rollupComments;
+    }
 
-			$query .= " AND vtiger_modcomments.related_to IN (" . generateQuestionMarks($relatedModuleRecordIds)
-					. ") AND vtiger_modcomments.parent_comments=0 ORDER BY vtiger_crmentity.createdtime DESC LIMIT "
-					. " $startIndex,$pageLimit";
-
-			$db = PearDatabase::getInstance();
-			$result = $db->pquery($query, $relatedModuleRecordIds);
-			if ($db->num_fields($result)) {
-				for ($i = 0; $i < $db->num_rows($result); $i++) {
-					$rowdata = $db->query_result_rowdata($result, $i);
-					$recordInstance = new ModComments_Record_Model();
-					$rowdata['module'] = getSalesEntityType($rowdata['related_to']);
-					$recordInstance->setData($rowdata);
-					$rollupComments[] = $recordInstance;
-				}
-			}
-		}
-
-		return $rollupComments;
-	}
-
-	function getCommentEnabledRelatedEntityIds($modulename, $recordId) {
+    function getCommentEnabledRelatedEntityIds($modulename, $recordId) {
 		$user = Users_Record_Model::getCurrentUserModel();
 		$relatedModuleRecordIds = array();
         //User fields are restricted types

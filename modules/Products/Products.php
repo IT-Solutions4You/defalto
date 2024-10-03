@@ -90,7 +90,10 @@ class Products extends CRMEntity {
 		if($_REQUEST['ajxaction'] != 'DETAILVIEW' && $_REQUEST['action'] != 'ProcessDuplicates' && !$this->isWorkFlowFieldUpdate)
 		{
 			if ($_REQUEST['ajxaction'] != 'CurrencyUpdate') {
-				$this->insertTaxInformation('vtiger_producttaxrel', 'Products');
+                $request = new Vtiger_Request($_REQUEST, $_REQUEST);
+                $request->set('taxes_data', $request->get('taxclass'));
+
+                Core_TaxRecord_Model::getInstance((int)$this->id)->saveFromRequest($request);
 			}
 
 			if ($_REQUEST['action'] != 'MassEditSave' ) {
@@ -105,7 +108,6 @@ class Products extends CRMEntity {
 		$this->updateUnitPrice();
 		//Inserting into attachments, handle image save in crmentity uitype 69
 		//$this->insertIntoAttachment($this->id,'Products');
-
 	}
 
 	/**	function to save the product tax information in vtiger_producttaxrel table

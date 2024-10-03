@@ -20,7 +20,7 @@ class Vtiger_Index_View extends Vtiger_Basic_View {
 		return $permissions;
 	}
 	
-	public function preProcess (Vtiger_Request $request, $display=true) {
+	public function preProcess(Vtiger_Request $request, $display=true) {
 		parent::preProcess($request, false);
 
 		$viewer = $this->getViewer($request);

@@ -83,11 +83,11 @@ window.app = (function () {
 			};
 
 			if (typeof params.contentType != 'undefined') {
-				ajaxParams['contentType'] = params.contentType;
+				ajaxParams.contentType = params.contentType;
 			}
 
 			if (typeof params.processData != 'undefined') {
-				ajaxParams['processData'] = params.processData;
+				ajaxParams.processData = params.processData;
 			}
 
 			jQuery.ajax(ajaxParams);
@@ -207,6 +207,15 @@ window.app = (function () {
                 if (queryParamComponents[0] in params) params[queryParamComponents[0]] += '&' + queryParamComponents[0] + '=' + queryParamComponents[1];
 				else params[queryParamComponents[0]] = queryParamComponents[1];
 			}
+			return params;
+		},
+		convertArrayToDataParams: function (array) {
+			let params = {};
+
+			$.each(array, function (i, info) {
+				params[info['name']] = info['value'];
+			});
+
 			return params;
 		},
 		module: function () {

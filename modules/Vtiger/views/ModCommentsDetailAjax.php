@@ -10,40 +10,50 @@
 
 class Vtiger_ModCommentsDetailAjax_View extends Vtiger_IndexAjax_View {
 
-	function __construct() {
+    public function __construct() {
 		$this->exposeMethod('saveRollupSettings');
 		$this->exposeMethod('getNextGroupOfRollupComments');
 	}
-    
-    function requiresPermission(Vtiger_Request $request) {
+
+    public function requiresPermission(Vtiger_Request $request) {
         $permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
         $request->set('custom_module', 'ModComments');
-		
+
 		return $permissions;
     }
 
-	public function process(Vtiger_Request $request) {
-		$mode = $request->getMode();
-		if (!empty($mode) && $this->isMethodExposed($mode)) {
-			$this->invokeExposedMethod($mode, $request);
-			return;
-		}
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     * @throws Exception
+     */
+    public function process(Vtiger_Request $request)
+    {
+        $mode = $request->getMode();
 
-		$moduleName = $request->getModule();
-		$viewer = $this->getRollupComments($request);
-		echo $viewer->view('ShowAllComments.tpl', $moduleName, true);
-	}
+        if (!empty($mode) && $this->isMethodExposed($mode)) {
+            $this->invokeExposedMethod($mode, $request);
+            return;
+        }
 
-	function getRollupComments($request) {
-		$startindex = $request->get('startindex');
+        $moduleName = $request->getModule();
+        $viewer = $this->getRollupComments($request);
+        $viewer->view('ShowAllComments.tpl', $moduleName);
+    }
 
+    /**
+     * @param $request
+     * @return Vtiger_Viewer
+     */
+    public function getRollupComments($request) {
+		$startIndex = $request->get('startIndex', 0);
 		$parentRecordId = $request->get('parentId');
 		$parenModule = $request->get('parent');
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$request->set('rollup_status', 1);
 		$rollupsettings = ModComments_Module_Model::storeRollupSettingsForUser($currentUserModel, $request);
 		$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentRecordId, $parenModule);
-		$commentsRecordModel = $parentRecordModel->getRollupCommentsForModule($startindex);
+		$commentsRecordModel = $parentRecordModel->getRollupCommentsForModule($startIndex);
 		$modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
 
 		$fileNameFieldModel = Vtiger_Field::getInstance("filename", $modCommentsModel);
@@ -60,21 +70,32 @@ class Vtiger_ModCommentsDetailAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('MODULE_RECORD', $parentRecordId);
 		$viewer->assign('ROLLUP_STATUS', $request->get('rollup_status'));
 		$viewer->assign('ROLLUPID', $rollupsettings['rollupid']);
-		$viewer->assign('STARTINDEX', $startindex + 10);
+		$viewer->assign('STARTINDEX', $startIndex + 10);
 
 		return $viewer;
 	}
 
-	function saveRollupSettings(Vtiger_Request $request) {
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     */
+    public function saveRollupSettings(Vtiger_Request $request) {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		ModComments_Module_Model::storeRollupSettingsForUser($currentUserModel, $request);
 	}
 
-	function getNextGroupOfRollupComments(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$viewer = $this->getRollupComments($request);
-		if (php7_count($viewer->tpl_vars['PARENT_COMMENTS']->value))
-			echo $viewer->view('CommentsList.tpl', $moduleName, true);
-	}
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     */
+    public function getNextGroupOfRollupComments(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $viewer = $this->getRollupComments($request);
+
+        if (php7_count($viewer->tpl_vars['PARENT_COMMENTS']->value)) {
+            $viewer->view('comments/List.tpl', $moduleName);
+        }
+    }
 
 }

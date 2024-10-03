@@ -164,6 +164,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
             self::logSuccess($dropTables);
 
+            $this->db->pquery('SET FOREIGN_KEY_CHECKS=0');
+
             foreach ($dropTables as $dropTable) {
                 $this->db->pquery('DROP TABLE IF EXISTS ' . $dropTable);
             }
@@ -337,7 +339,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         if ($entity) {
             $moduleInstance->initTables($moduleInstance->basetable, $moduleInstance->basetableid);
-
+            $entityIdentifiers = [];
+            $filterFields = [];
             $filterDynamicSequence = 0;
 
             if (isset($blocks['LBL_ITEM_DETAILS'])) {
@@ -376,7 +379,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                     $fieldInstance = Vtiger_Field_Model::getInstance($fieldName, $moduleInstance);
 
                     if (!$fieldInstance) {
-                        $fieldInstance = new Vtiger_Field();
+                        $fieldInstance = new Vtiger_Field_Model();
                     }
 
                     $fieldInstance->name = $fieldName;
@@ -398,6 +401,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                     $fieldTable->updateData(
                         [
                             'block' => $fieldInstance->getBlockId(),
+                            'tablename' => $fieldInstance->table,
                             'presence' => $fieldInstance->presence,
                             'displaytype' => $fieldInstance->displaytype,
                             'sequence' => $fieldInstance->sequence,
@@ -446,18 +450,31 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
                         $filterDynamicSequence++;
                         $filterSequence = !empty($fieldParams['filter_sequence']) ? $fieldParams['filter_sequence'] : $filterDynamicSequence;
-
-                        $filterInstance = $this->createFilter('All', $moduleInstance);
-                        $filterInstance->addField($fieldInstance, $filterSequence);
+                        $filterFields[$filterSequence] = $fieldInstance;
                     }
 
                     if (isset($fieldParams['entity_identifier'])) {
                         self::logSuccess('Entity Identifier: ' . $fieldName);
 
-                        $moduleInstance->setEntityIdentifier($fieldInstance);
+                        $entityIdentifiers[] = $fieldInstance;
+                        $moduleInstance->setEntityIdentifier($entityIdentifiers);
                     }
                 }
             }
+
+            self::logSuccess('Filter start creating');
+
+            if (!empty($filterFields)) {
+                $filterInstance = $this->createFilter('All', $moduleInstance);
+
+                ksort($filterFields);
+
+                foreach ($filterFields as $filterSequence => $filterField) {
+                    $filterInstance->addField($filterField, $filterSequence);
+                }
+            }
+
+            self::logSuccess('Filter end creating');
 
             self::logSuccess('Link start creating');
 
@@ -472,6 +489,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
 
         $this->install();
+
+        Vtiger_Cache::delete('module', $moduleName);
 
         self::logSuccess('Module result: ' . $moduleName);
         self::logSuccess($moduleInstance);

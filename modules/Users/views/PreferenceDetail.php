@@ -50,7 +50,6 @@ class Users_PreferenceDetail_View extends Vtiger_Detail_View {
 			$moduleName = $request->getModule();
 			$detailViewModel = Vtiger_DetailView_Model::getInstance($moduleName, $recordId);
 			$recordModel = $detailViewModel->getRecord();
-			$selectedModuleMenuCategory = 'MARKETING';
 
 			$detailViewLinkParams = array('MODULE'=>$moduleName,'RECORD'=>$recordId);
 			$detailViewLinks = $detailViewModel->getDetailViewLinks($detailViewLinkParams);
@@ -82,7 +81,6 @@ class Users_PreferenceDetail_View extends Vtiger_Detail_View {
 
 			$companyDetails = Vtiger_CompanyDetails_Model::getInstanceById();
 			$companyLogo = $companyDetails->getLogo();
-			$viewer->assign('SELECTED_MENU_CATEGORY',$selectedModuleMenuCategory);
 			$viewer->assign('CURRENTDATE', date('Y-n-j'));
 			$viewer->assign('MODULE', $selectedModule);
 			$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);

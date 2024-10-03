@@ -19,16 +19,14 @@
         <input type="hidden" id="mmAttchmentCount" value="{$ATTACHMENT_COUNT}">
         <div id="mailManagerActions">
             <div class="row">
-                <div class="col-lg" id="relationBlock"></div>
-                <div class="col-lg-auto">
-                    <span class="pull-right">
-                        <button type="button" class="btn btn-outline-secondary mailPagination me-2" {if $MAIL->msgno() < $FOLDER->count()}data-folder='{$FOLDER->name()}' data-msgno='{$MAIL->msgno(1)}'{else}disabled="disabled"{/if}>
-                            <i class="fa fa-caret-left"></i>
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary mailPagination" {if $MAIL->msgno() > 1}data-folder='{$FOLDER->name()}' data-msgno='{$MAIL->msgno(-1)}'{else}disabled="disabled"{/if}>
-                            <i class="fa fa-caret-right"></i>
-                        </button>
-                    </span>
+                <div class="col mb-2" id="relationBlock"></div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-outline-secondary mailPagination me-2" {if $MAIL->msgno() < $FOLDER->count()}data-folder='{$FOLDER->name()}' data-msgno='{$MAIL->msgno(1)}'{else}disabled="disabled"{/if}>
+                        <i class="fa fa-caret-left"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary mailPagination" {if $MAIL->msgno() > 1}data-folder='{$FOLDER->name()}' data-msgno='{$MAIL->msgno(-1)}'{else}disabled="disabled"{/if}>
+                        <i class="fa fa-caret-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -99,15 +97,6 @@
             <span class="btn btn-outline-secondary mmDetailAction me-2" id="mmPrint" title="{vtranslate('LBL_Print', $MODULE)}">
                 <i class="fa fa-print"></i>
             </span>
-            <span class="btn btn-outline-secondary mmDetailAction me-2" id="mmReply" title="{vtranslate('LBL_Reply', $MODULE)}">
-                <i class="fa fa-reply"></i>
-            </span>
-            <span class="btn btn-outline-secondary mmDetailAction me-2" id="mmReplyAll" title="{vtranslate('LBL_Reply_All', $MODULE)}">
-                <i class="fa fa-reply-all"></i>
-            </span>
-            <span class="btn btn-outline-secondary mmDetailAction me-2" id="mmForward" title="{vtranslate('LBL_Forward', $MODULE)}">
-                <i class="fa fa-share"></i>
-            </span>
             <span class="btn btn-outline-secondary mmDetailAction me-2" id="mmDelete" title="{vtranslate('LBL_Delete', $MODULE)}">
                 <i class="fa fa-trash-o"></i>
             </span>
@@ -118,28 +107,30 @@
                 <div id="mmBody">{$BODY}</div>
             </div>
         </div>
-        {if $ATTACHMENT_COUNT}
+        {if $ATTACHMENT_COUNT > 0}
             <hr class="mmDetailHr">
-            <div class='col-lg-12 padding0px'>
-                <span><strong>{vtranslate('LBL_Attachments',$MODULE)}</strong></span>
-                <span>&nbsp;&nbsp;({php7_count($ATTACHMENTS) - php7_count($INLINE_ATT)}&nbsp;{vtranslate('LBL_FILES', $MODULE)})</span>
-                <br><br>
+            <div class="col-lg-12 padding0px">
+                <div class="mb-3">
+                    <strong class="me-2">{vtranslate('LBL_Attachments',$MODULE)}</strong>
+                    <span>({$ATTACHMENT_COUNT}&nbsp;{vtranslate('LBL_FILES', $MODULE)})</span>
+                </div>
                 {foreach item=ATTACHVALUE from=$ATTACHMENTS name="attach"}
                     {assign var=ATTACHNAME value=$ATTACHVALUE['filename']}
                     {if $INLINE_ATT[$ATTACHNAME] eq null}
                         {assign var=DOWNLOAD_LINK value=$ATTACHNAME|@escape:'url'}
 						{assign var=ATTACHID value=$ATTACHVALUE['attachid']}
-                        <span>
-                            <i class="fa {$MAIL->getAttachmentIcon($ATTACHVALUE['path'])}"></i>&nbsp;&nbsp;
-                            <a href="index.php?module={$MODULE}&view=Index&_operation=mail&_operationarg=attachment_dld&_muid={$MAIL->muid()}&_atid={$ATTACHID}&_atname={$DOWNLOAD_LINK|@escape:'htmlall':'UTF-8'}">
-                                {$ATTACHNAME}
-                            </a>
-                            <span>&nbsp;&nbsp;({$ATTACHVALUE['size']})</span>
-                            <a href="index.php?module={$MODULE}&view=Index&_operation=mail&_operationarg=attachment_dld&_muid={$MAIL->muid()}&_atid={$ATTACHID}&_atname={$DOWNLOAD_LINK|@escape:'htmlall':'UTF-8'}">
-                                &nbsp;&nbsp;<i class="fa fa-download"></i>
-                            </a>
-                        </span>
-                        <br>
+                        {if $ATTACHID}
+                            <div class="mb-2">
+                                <i class="fa {$MAIL->getAttachmentIcon($ATTACHVALUE['path'])}"></i>&nbsp;&nbsp;
+                                <a href="index.php?module={$MODULE}&view=Index&_operation=mail&_operationarg=attachment_dld&_muid={$MAIL->muid()}&_atid={$ATTACHID}&_atname={$DOWNLOAD_LINK|@escape:'htmlall':'UTF-8'}">
+                                    {$ATTACHNAME}
+                                </a>
+                                <span>&nbsp;&nbsp;({$ATTACHVALUE['size']})</span>
+                                <a href="index.php?module={$MODULE}&view=Index&_operation=mail&_operationarg=attachment_dld&_muid={$MAIL->muid()}&_atid={$ATTACHID}&_atname={$DOWNLOAD_LINK|@escape:'htmlall':'UTF-8'}">
+                                    &nbsp;&nbsp;<i class="fa fa-download"></i>
+                                </a>
+                            </div>
+                        {/if}
                     {/if}
                 {/foreach}
             </div>

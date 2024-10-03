@@ -27,19 +27,24 @@ class Migration_Index_View extends Vtiger_View_Controller {
         return true;
     }
 
-	public function process(Vtiger_Request $request) {
-		// Override error reporting to production mode
-		// error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
-		// Migration could be heavy at-times.
-		set_time_limit(0);	
+    public function process(Vtiger_Request $request)
+    {
+        // Override error reporting to production mode
+        // error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
+        // Migration could be heavy at-times.
+        set_time_limit(0);
 
-		$mode = $request->getMode();
-		if(!empty($mode)) {
-			$this->invokeExposedMethod($mode, $request);
-		}
-	}
+        $mode = $request->getMode();
 
-	protected function step1(Vtiger_Request $request) {
+        if (!empty($mode)) {
+            $this->invokeExposedMethod($mode, $request);
+            return;
+        }
+
+        $this->step1($request);
+    }
+
+    protected function step1(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$viewer = $this->getViewer($request);
 
@@ -56,20 +61,29 @@ class Migration_Index_View extends Vtiger_View_Controller {
 	}
 
 
-	public function preProcess(Vtiger_Request $request, $display = true) {
-		$viewer = $this->getViewer($request);
-		$selectedModule = $request->getModule();
-		$viewer->assign('MODULE', $selectedModule);
-		parent::preProcess($request, false);
-	}
+    public function preProcess(Vtiger_Request $request, $display = true)
+    {
+        parent::preProcess($request, false);
 
-	public function postProcess(Vtiger_Request $request) {
-		$viewer = $this->getViewer($request);
-		$moduleName = $request->getModule();
-		$viewer->view('MigrationPostProcess.tpl', $moduleName);
-	}
+        $moduleName = $request->getModule();
 
-	public function getHeaderScripts(Vtiger_Request $request) {
+        $viewer = $this->getViewer($request);
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('VIEW', 'Index');
+        $viewer->view('MigrationPreProcess.tpl', $moduleName);
+    }
+
+    public function postProcess(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('VIEW', 'Index');
+        $viewer->view('MigrationPostProcess.tpl', $moduleName);
+    }
+
+    public function getHeaderScripts(Vtiger_Request $request) {
 		$headerScriptInstances = array();
 		$moduleName = $request->getModule();
 

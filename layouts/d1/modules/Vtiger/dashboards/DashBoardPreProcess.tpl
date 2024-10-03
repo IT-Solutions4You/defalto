@@ -4,21 +4,20 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 *}
-{* modules/Vtiger/views/DashBoard.php *}
-{* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
-{include file="modules/Vtiger/partials/Topbar.tpl"}
+{strip}
+    {include file="partials/Topbar.tpl"|vtemplate_path:$MODULE}
+    <div class="container-fluid app-nav">
+        <div class="row">
+            {include file="partials/SidebarHeader.tpl"|vtemplate_path:$MODULE}
+            {include file="ModuleHeader.tpl"|vtemplate_path:$MODULE}
+        </div>
+    </div>
+    </nav>
+    {include file="OverlayPageContent.tpl"|vtemplate_path:$MODULE}
+    <div class="container-fluid main-container main-container-{$MODULE}">
+        <div class="row">
+            {include file='ModuleNavigator.tpl'|vtemplate_path:$MODULE}
+            <div class="col-lg px-0 mb-lg-4 mx-lg-4 rounded overflow-hidden">
 
-<div class="container-fluid app-nav">
-    <div class="row">
-        {include file="modules/Vtiger/partials/SidebarHeader.tpl"}
-        {include file="ModuleHeader.tpl"|vtemplate_path:$MODULE}
-    </div>
-</div>
-</nav>
- <div id='overlayPageContent' class='fade modal content-area overlayPageContent overlay-container-60' tabindex='-1' role='dialog' aria-hidden='true'>
-        <div class="data">
-        </div>
-        <div class="modal-dialog">
-        </div>
-    </div>
+
 {/strip}

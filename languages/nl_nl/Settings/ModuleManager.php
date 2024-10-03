@@ -13,7 +13,7 @@
  * @package   NL-Dutch
  * @author    $Author: luuk $
  * @version   CVS: $Revision: 1.4 $ $Date: 2014/09/07 21:06:45 $
- * @source    $Source: /var/lib/cvs/vtiger600/languages/nl_nl/Settings/ModuleManager.php,v $
+ * @source    $Source: /var/lib/cvs/Defalto00/languages/nl_nl/Settings/ModuleManager.php,v $
  * @copyright 2005-2014 Vicus eBusiness Solutions B.V. <info@.vicus.nl>
  * @link      http://www.vicus.nl
  ************************************************************************************/

@@ -115,31 +115,7 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
             $viewer->assign('COMPANY_HEADER_SIGNATURE', $organization_header_img);
         }
 
-        $Settings_Vtiger_CompanyDetails_Model = Settings_Vtiger_CompanyDetails_Model::getInstance();
-        $CompanyDetails_Fields = $Settings_Vtiger_CompanyDetails_Model->getFields();
-
-        $Acc_Info = [];
-
-        foreach ($CompanyDetails_Fields as $field_name => $field_type) {
-            if ($field_name == 'organizationname') {
-                $field_name = 'name';
-            } elseif ($field_name == 'code') {
-                $field_name = 'zip';
-            } elseif ($field_name == 'logoname') {
-                continue;
-            }
-
-            $l = 'LBL_COMPANY_' . strtoupper($field_name);
-            $label = vtranslate($l, 'EMAILMaker');
-
-            if ($label == '' || $l == $label) {
-                $label = $field_name;
-            }
-
-            $Acc_Info['COMPANY_' . strtoupper($field_name)] = $label;
-        }
-
-        $viewer->assign('ACCOUNTINFORMATIONS', $Acc_Info);
+        $viewer->assign('ACCOUNTINFORMATIONS', PDFMaker_Fields_Model::getCompanyOptions());
 
         $sql_user_block = 'SELECT blockid, blocklabel FROM vtiger_blocks WHERE tabid = ? ORDER BY sequence ASC';
         $res_user_block = $adb->pquery($sql_user_block, array('29'));

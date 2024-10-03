@@ -28,17 +28,6 @@ class Products_MassActionAjax_View extends Vtiger_MassActionAjax_View {
 			$fieldInfo[$fieldName] = $fieldModel->getFieldInfo();
 		}
 
-		$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
-		$taxDetails = $recordModel->getTaxClassDetails();
-		foreach ($taxDetails as $taxkey => $taxInfo) {
-			$taxInfo['percentage'] = 0;
-			foreach ($taxInfo['regions'] as $regionKey => $regionInfo) {
-				$taxInfo['regions'][$regionKey]['value'] = 0;
-			}
-			$taxDetails[$taxkey] = $taxInfo;
-		}
-
-		$viewer->assign('TAXCLASS_DETAILS', $taxDetails);
 		$viewer->assign('MASS_EDIT_FIELD_DETAILS', $fieldInfo);
 	}
 }

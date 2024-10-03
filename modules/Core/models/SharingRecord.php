@@ -101,6 +101,47 @@ class Core_SharingRecord_Model extends Vtiger_Base_Model
     }
 
     /**
+     * @param string $module
+     * @return array
+     */
+    public function getMembersOptions(string $module = ''): array
+    {
+        $memberGroups = Settings_Groups_Member_Model::getAll(false);
+
+        if (class_exists('ITS4YouMultiCompany_Module_Model')) {
+            /** @var ITS4YouMultiCompany_Module_Model $multiCompany */
+            $multiCompany = Vtiger_Module_Model::getInstance('ITS4YouMultiCompany');
+
+            if ($multiCompany && $multiCompany->isActive()) {
+                $allCompany = $multiCompany::getCompaniesList('all');
+
+                foreach ($allCompany as $companyId => $company) {
+                    $type = 'MultiCompany4you';
+                    $qualifiedId = $type . ':' . $companyId;
+                    $memberGroups[$type][$qualifiedId] = (new Vtiger_Base_Model())->set('id', $qualifiedId)->set('name', $company['companyname']);
+                }
+            }
+        }
+
+        if (!empty($module)) {
+            $moduleModel = Vtiger_Module_Model::getInstance($module);
+            $fields = $moduleModel->getFieldsByType(['owner', 'reference']);
+
+            foreach ($fields as $field) {
+                if (!in_array((int)$field->get('uitype'), [53, 52])) {
+                    continue;
+                }
+
+                $type = 'Fields';
+                $qualifiedId = $type . ':' . $field->get('name');
+                $memberGroups[$type][$qualifiedId] = (new Vtiger_Base_Model())->set('id', $qualifiedId)->set('name', vtranslate($field->get('label'), $module));
+            }
+        }
+
+        return $memberGroups;
+    }
+
+    /**
      * @param $record
      *
      * @return array

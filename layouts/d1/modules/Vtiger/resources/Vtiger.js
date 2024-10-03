@@ -6,7 +6,7 @@
 */
 /** @var Vtiger_Index_Js */
 Vtiger.Class('Vtiger_Index_Js', {
-	files: [],
+	files: {},
 	hideNC: true,
 
 	getInstance : function() {
@@ -409,11 +409,13 @@ Vtiger.Class('Vtiger_Index_Js', {
 		app.event.on("post.QuickCreateForm.show",function(event,form){
 			form.find('#goToFullForm').on('click', function(e) {
 				window.onbeforeunload = true;
-				var form = jQuery(e.currentTarget).closest('form');
-				var editViewUrl = jQuery(e.currentTarget).data('editViewUrl');
+				let form = jQuery(e.currentTarget).closest('form'),
+					editViewUrl = jQuery(e.currentTarget).data('editViewUrl');
+
 				if (typeof goToFullFormCallBack != "undefined") {
 					goToFullFormCallBack(form);
 				}
+
 				thisInstance.quickCreateGoToFullForm(form, editViewUrl);
 			});
 		});
@@ -421,17 +423,29 @@ Vtiger.Class('Vtiger_Index_Js', {
 
 	/**
 	 * Function to navigate from quickcreate to editView Fullform
-	 * @param accepts form element as parameter
+	 * @param form
+	 * @param editViewUrl
 	 */
-	quickCreateGoToFullForm: function(form, editViewUrl) {
-		var formData = form.serializeFormData();
-		//As formData contains information about both view and action removed action and directed to view
-		delete formData.module;
-		delete formData.action;
-		delete formData.picklistDependency;
-		var formDataUrl = jQuery.param(formData);
-		var completeUrl = editViewUrl + "&" + formDataUrl;
-		window.location.href = completeUrl;
+	quickCreateGoToFullForm: function (form, editViewUrl) {
+		let cloneForm = $(form).clone(),
+			updateFormData = app.convertUrlToDataParams(editViewUrl);
+
+		cloneForm.find('[name="action"]').remove();
+		cloneForm.find('[name="picklistDependency"]').remove();
+
+		$.each(updateFormData, function (index, value) {
+			let element = cloneForm.find('[name="' + index + '"]')
+
+			if (element.length) {
+				element.val(value)
+			} else {
+				cloneForm.append('<input type="hidden" name="' + index + '" value="' + value + '" />')
+			}
+		});
+
+		$('body').append(cloneForm)
+
+		cloneForm.submit();
 	},
 
 	registerQuickCreateSubMenus : function() {
@@ -889,38 +903,45 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 * @returns {undefined}
 	 */
 	registerFileChangeEvent: function () {
-		var thisInstance = this;
-		var container = jQuery('body');
-		Vtiger_Index_Js.files = '';
-		container.on('change', 'input[name="filename[]"],input[name="imagename[]"]', function(e){
-			if(e.target.type == "text") return false;
+		let thisInstance = this,
+			container = jQuery('body');
 
-			var files_uploaded=[];
-			var fileSize = 0;
-			jQuery.each(e.target.files,function(key,element){
-				files_uploaded[key] = element;
-				fileSize += Number(element['size']);
+		Vtiger_Index_Js.files = '';
+
+		container.on('change', 'input[name="filename[]"], input[name="imagename[]"]', function(e){
+			if(e.target.type === 'text') return false;
+
+			let files_uploaded=[],
+				fileSize = 0,
+				element = container.find('input[name="filename[]"],input[name="imagename[]"]');
+
+			element.each(function (key, element) {
+				if ('undefined' !== typeof element.files[0]) {
+					files_uploaded[key] = element.files[0];
+					fileSize += Number(element.files[0]['size']);
+				}
 			});
 
-
 			Vtiger_Index_Js.files = files_uploaded;
-			var element = container.find('input[name="filename[]"],input[name="imagename[]"]');
+
 			//ignore all other types than file
-			if(element.attr('type') != 'file'){
-				return ;
+			if (element.attr('type') !== 'file') {
+				return;
 			}
-			var uploadFileSizeHolder = element.closest('.fileUploadContainer').find('.uploadedFileSize');
-			var maxFileSize = thisInstance.getMaxiumFileUploadingSize(container);
-			if(fileSize > maxFileSize) {
-				alert(app.vtranslate('JS_EXCEEDS_MAX_UPLOAD_SIZE'));
-				var removeFileLinks = jQuery('.MultiFile-remove');
-				jQuery(removeFileLinks[removeFileLinks.length - 1]).click();
+
+			let uploadFileSizeHolder = element.closest('.fileUploadContainer').find('.uploadedFileSize'),
+				maxFileSize = thisInstance.getMaxiumFileUploadingSize(container);
+
+			if (fileSize > maxFileSize) {
+				jQuery('.MultiFile-label:last-child .MultiFile-remove').click();
+
+				app.helper.showErrorNotification({message: app.vtranslate('JS_EXCEEDS_MAX_UPLOAD_SIZE')});
 			} else {
-				if(container.length > 1){
-					jQuery('div.fieldsContainer').find('form#I_form').find('input[name="filename"]').css('width','80px');
-					jQuery('div.fieldsContainer').find('form#W_form').find('input[name="filename"]').css('width','80px');
+				if (container.length > 1) {
+					jQuery('div.fieldsContainer').find('form#I_form').find('input[name="filename"]').css('width', '80px');
+					jQuery('div.fieldsContainer').find('form#W_form').find('input[name="filename"]').css('width', '80px');
 				} else {
-					container.find('input[name="filename[]"]').css('width','80px');
+					container.find('input[name="filename[]"]').css('width', '80px');
 				}
 			}
 		});
@@ -1037,14 +1058,14 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 * Function to set reference field value
 	 */
 	setReferenceFieldValue : function(container, params) {
-		var sourceField = container.find('input.sourceField').attr('name');
-		var fieldElement = container.find('input[name="'+sourceField+'"]');
-		var sourceFieldDisplay = sourceField+"_display";
-		var fieldDisplayElement = container.find('input[name="'+sourceFieldDisplay+'"]');
-		var popupReferenceModuleElement = container.find('input[name="popupReferenceModule"]').length ? container.find('input[name="popupReferenceModule"]') : container.find('input.popupReferenceModule');
-		var popupReferenceModule = popupReferenceModuleElement.val();
-		var selectedName = params.name;
-		var id = params.id;
+		let sourceField = container.find('input.sourceField').attr('name'),
+			fieldElement = container.find('input[name="'+sourceField+'"]'),
+			sourceFieldDisplay = sourceField+"_display",
+			fieldDisplayElement = container.find('input[name="'+sourceFieldDisplay+'"]'),
+			popupReferenceModuleElement = container.find('input[name="popupReferenceModule"]').length ? container.find('input[name="popupReferenceModule"]') : container.find('input.popupReferenceModule'),
+			popupReferenceModule = popupReferenceModuleElement.val(),
+			selectedName = params.name,
+			id = params.id;
 
 		if (id && selectedName) {
 			if(!fieldDisplayElement.length) {
@@ -1055,6 +1076,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 				fieldElement.val(id);
 				fieldElement.data('value', id);
 				fieldDisplayElement.val(selectedName);
+
 				if(selectedName) {
 					fieldDisplayElement.attr('readonly', 'readonly');
 				} else {
@@ -1069,6 +1091,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 				fieldElement.parent().find('.clearReferenceSelection').addClass('hide');
 				fieldElement.parent().find('.referencefield-wrapper').removeClass('selected');
 			}
+
 			fieldElement.trigger(Vtiger_Edit_Js.referenceSelectionEvent, {'source_module' : popupReferenceModule, 'record' : id, 'selectedName' : selectedName});
 		}
 	},
@@ -1128,40 +1151,44 @@ Vtiger.Class('Vtiger_Index_Js', {
 		return params;
 	},
 
-	searchModuleNames : function(params) {
-		var aDeferred = jQuery.Deferred();
+	searchModuleNames: function (params) {
+		let aDeferred = jQuery.Deferred();
 
-		if(typeof params.module == 'undefined') {
+		if (typeof params.module == 'undefined') {
 			params.module = app.getModuleName();
 		}
 
-		if(typeof params.action == 'undefined') {
+		if (typeof params.action == 'undefined') {
 			params.action = 'BasicAjax';
 		}
 
-		if(typeof params.base_record == 'undefined') {
-			var record = jQuery('[name="record"]');
-			var recordId = app.getRecordId();
-			if(record.length) {
+		if (typeof params.base_record == 'undefined') {
+			let record = jQuery('[name="record"]'),
+				recordId = app.getRecordId();
+
+			if (record.length) {
 				params.base_record = record.val();
-			} else if(recordId) {
+			} else if (recordId) {
 				params.base_record = recordId;
-			} else if(app.view() == 'List') {
-				var editRecordId = jQuery('#listview-table').find('tr.listViewEntries.edited').data('id');
-				if(editRecordId) {
+			} else if (app.view() == 'List') {
+				let editRecordId = jQuery('#listview-table').find('tr.listViewEntries.edited').data('id');
+
+				if (editRecordId) {
 					params.base_record = editRecordId;
 				}
 			}
 		}
-		app.request.get({data:params}).then(
-			function(err, res){
+
+		app.request.post({data: params}).then(
+			function (err, res) {
 				aDeferred.resolve(res);
 			},
-			function(error){
+			function (error) {
 				//TODO : Handle error
 				aDeferred.reject();
 			}
 		);
+
 		return aDeferred.promise();
 	},
 

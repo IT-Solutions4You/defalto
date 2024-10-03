@@ -265,6 +265,10 @@
 			<notnull />
 			<default value="0" />
 		</field>
+		<field name="blockuitype" type="I" size="11">
+			<notnull />
+			<default value="0" />
+		</field>
 		<index name="block_tabid_idx">
 			<col>tabid</col>
 		</index>
@@ -3343,7 +3347,6 @@
 		<field name="country_id" type="C" size="2" />
 		<field name="code" type="C" size="30" />
 		<field name="phone" type="C" size="30" />
-		<field name="fax" type="C" size="30" />
 		<field name="website" type="C" size="100" />
 		<field name="logoname" type="C" size="50" />
 		<field name="logo" type="X" />

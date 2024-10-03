@@ -11,7 +11,6 @@
 vimport('~~/modules/Settings/MailConverter/handlers/MailRecord.php');
 
 class MailManager_Message_Model extends Vtiger_MailRecord  {
-
 	/**
 	 * Sets the Imap connection
 	 * @var String
@@ -36,6 +35,43 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 	 */
 	protected $mUid;
 
+    protected $mFolder;
+	protected $lookUps = [];
+	protected $attachmentsAllowed = null;
+
+    public const RELATIONS_MAPPING = [
+        'HelpDesk' => [
+            'Contacts' => 'contact_id',
+            'Accounts' => 'parent_id',
+        ],
+        'ITS4YouEmails' => [
+            'Vendors' => 'vendor_id',
+            'Contacts' => 'contact_id',
+            'Accounts' => 'account_id',
+            'Leads' => 'lead_id',
+        ],
+        'Potentials' => [
+            'Contacts' => 'contact_id',
+            'Accounts' => 'related_to',
+        ],
+    ];
+
+    /**
+     * array values [ModuleName, TableId, TableName] for field module_manager_id
+     */
+    public const RELATIONS_TABLES = [
+        ['HelpDesk', 'ticketid', 'vtiger_troubletickets'],
+        ['Potentials', 'potentialid', 'vtiger_potential'],
+    ];
+
+    /**
+     * List of modules used to match the Email address
+     * @var Array
+     */
+    public const EMAIL_ADDRESS_MODULES = array ('Accounts', 'Contacts', 'Leads', 'HelpDesk', 'Potentials');
+
+    public array $displayedRecords = [];
+
 	/**
 	 * Constructor which gets the Mail details from the server
 	 * @param String $mBox - Mail Box Connection string
@@ -57,6 +93,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 			}
 			if (!$loaded) {
 				parent::__construct($mBox, $msgno, $fetchbody);
+
 				if ($fetchbody) {
 					// Save for further use
 					$loaded = $this->saveToDB($this->mUid, $folder);
@@ -69,7 +106,17 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 		}
 	}
 
-	/**
+    public function retrieveBody()
+    {
+        if (empty($this->mBox) || empty($this->mMsgNo)) {
+            return;
+        }
+
+        $this->_bodyparsed = false;
+        $this->fetchBody($this->mBox, $this->mMsgNo);
+    }
+
+    /**
 	 * Gets the Mail Body and Attachments
 	 * @param String $imap - Mail Box connection string
 	 * @param Integer $messageid - Mail Number
@@ -261,11 +308,18 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 			$filteredColumns = "aname, attachid, path, cid";
 
 			$whereClause = "";
-			if ($aName) { $whereClause .= " AND aname=?"; $params[] = $aName; }
-			if ($aId)   { $whereClause .= " AND attachid=?"; $params[] = $aId; }
 
-			$atResult = $db->pquery("SELECT {$filteredColumns} FROM vtiger_mailmanager_mailattachments
-						WHERE userid=? AND muid=? $whereClause", $params);
+            if (!empty($aName)) {
+                $whereClause .= " AND aname=?";
+                $params[] = $aName;
+            }
+
+            if (!empty($aId)) {
+                $whereClause .= " AND attachid=?";
+                $params[] = $aId;
+            }
+
+			$atResult = $db->pquery("SELECT {$filteredColumns} FROM vtiger_mailmanager_mailattachments WHERE userid=? AND muid=? $whereClause", $params);
 
 			if ($db->num_rows($atResult)) {
 				for($atIndex = 0; $atIndex < $db->num_rows($atResult); ++$atIndex) {
@@ -298,69 +352,136 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 	 * @param Integer $uid - Mail Unique Number
 	 * @return Boolean
 	 */
-	protected function saveToDB($uid, $folder = '') {
-		$db = PearDatabase::getInstance();
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+    protected function saveToDB($uid, $folder = '')
+    {
+        $this->setMUId($uid);
+        $this->setFolder($folder);
+        $this->saveToDBRecord();
+        // Take care of attachments...
+        $this->saveToDBAttachments();
 
-		$savedtime = strtotime("now");
+        return true;
+    }
 
-		$params = array($currentUserModel->getId());
-		$params[] = $uid;
-		$params[] = Zend_Json::encode($this->_from);
-		$params[] = Zend_Json::encode($this->_to);
-		$params[] = Zend_Json::encode($this->_cc);
-		$params[] = Zend_Json::encode($this->_bcc);
-		$params[] = $this->_date;
-		$params[] = $this->_subject;
-		$params[] = $this->_body;
-		$params[] = $this->_charset;
-		$params[] = $this->_isbodyhtml;
-		$params[] = $this->_plainmessage;
-		$params[] = $this->_htmlmessage;
-		$params[] = $this->_uniqueid;
-		$params[] = $this->_bodyparsed;
-		$params[] = $savedtime;
-		$params[] = $folder;
+    public function saveToDBRecord(): void
+    {
+        $mUid = $this->muid();
+        $record = $this->getRecordTable()->selectData(['muid'], ['muid' => $this->muid()]);
 
-		$db->pquery("INSERT INTO vtiger_mailmanager_mailrecord (userid, muid, mfrom, mto, mcc, mbcc,
-				mdate, msubject, mbody, mcharset, misbodyhtml, mplainmessage, mhtmlmessage, muniqueid,
-				mbodyparsed, lastsavedtime, mfolder) VALUES (".generateQuestionMarks($params).")", $params);
+        if (!empty($record['muid'])) {
+            return;
+        }
 
-		// Take care of attachments...
-		if (!empty($this->_attachments)) {
-			foreach($this->_attachments as $index => $aValue) {
-				
-				$attachInfo = $this->__SaveAttachmentFile($aValue['filename'], $aValue['data']);
-				
-				if(is_array($attachInfo) && !empty($attachInfo)) {
-					$db->pquery("INSERT INTO vtiger_mailmanager_mailattachments
-					(userid, muid, attachid, aname, path, lastsavedtime) VALUES (?, ?, ?, ?, ?, ?)",
-					array($currentUserModel->getId(), $uid, $attachInfo['attachid'], $attachInfo['name'], $attachInfo['path'], $savedtime));
-					
-					unset($this->_attachments[$index]);					// This is needed first when we save attachment with invalid file extension,
-					$this->_attachments[] = array('filename' => $attachInfo['name'], 'data' => $aValue['data']); // so the file name has to renamed.
-				}
-				unset($aValue['data']);
-			}
-		}
+        $this->saveRecord([
+            'userid' => Users_Record_Model::getCurrentUserModel()->getId(),
+            'muid' => $mUid,
+            'mfrom' => Zend_Json::encode($this->_from),
+            'mto' => Zend_Json::encode($this->_to),
+            'mcc' => Zend_Json::encode($this->_cc),
+            'mbcc' => Zend_Json::encode($this->_bcc),
+            'mdate' => $this->_date,
+            'msubject' => $this->_subject,
+            'mbody' => $this->_body,
+            'mcharset' => $this->_charset,
+            'misbodyhtml' => $this->_isbodyhtml,
+            'mplainmessage' => $this->_plainmessage,
+            'mhtmlmessage' => $this->_htmlmessage,
+            'muniqueid' => $this->_uniqueid,
+            'mbodyparsed' => $this->_bodyparsed,
+            'lastsavedtime' => strtotime("now"),
+            'mfolder' => $this->getFolder(),
+        ]);
+    }
 
-		if(is_array($this->_inline_attachments))
-		foreach($this->_inline_attachments as $index => $info) {
-			$attachInfo = $this->__SaveAttachmentFile($info['filename'], $info['data']);
-			if(is_array($attachInfo) && !empty($attachInfo)) {
-				$db->pquery("INSERT INTO vtiger_mailmanager_mailattachments
-				(userid, muid, attachid, aname, path, lastsavedtime, cid) VALUES (?, ?, ?, ?, ?, ?, ?)",
-				array($currentUserModel->getId(), $uid, $attachInfo['attachid'], @self::__mime_decode($attachInfo['name']), $attachInfo['path'], $savedtime, $info['cid']));
-				
-				$this->_attachments[] = array('filename' => @self::__mime_decode($info['filename']), 'data' => $info['data']); // so the file name has to renamed.
-			}
-			unset($aValue['data']);
-		}
+    public function saveToDBAttachments(): void
+    {
+        $uid = $this->muid();
+        $currentUserId = Users_Record_Model::getCurrentUserModel()->getId();
+        $savedTime = strtotime("now");
+        $attachment = $this->getAttachmentTable()->selectData(['muid'], ['muid' => $uid]);
 
-		return true;
-	}
+        if (!empty($attachment['muid'])) {
+            return;
+        }
 
-	/**
+        if (!empty($this->_attachments)) {
+            foreach ($this->_attachments as $index => $info) {
+                $attachInfo = $this->__SaveAttachmentFile($info['filename'], $info['data']);
+
+                if (is_array($attachInfo) && !empty($attachInfo)) {
+                    $this->saveAttachment([
+                        'userid' => $currentUserId,
+                        'muid' => $uid,
+                        'attachid' => $attachInfo['attachid'],
+                        'aname' => $attachInfo['name'],
+                        'path' => $attachInfo['path'],
+                        'lastsavedtime' => $savedTime,
+                    ]);
+                    $this->_attachments[$index] = [
+                        'filename' => $attachInfo['filename'],
+                        'data' => $info['data'],
+                    ]; // so the file name has to renamed.
+                } else {
+                    unset($this->_attachments[$index]);
+                }
+
+                unset($info['data']);
+            }
+        }
+
+        if (!empty($this->_inline_attachments)) {
+            foreach ($this->_inline_attachments as $index => $info) {
+                $attachInfo = $this->__SaveAttachmentFile($info['filename'], $info['data']);
+
+                if (is_array($attachInfo) && !empty($attachInfo)) {
+                    $this->saveAttachment([
+                        'userid' => $currentUserId,
+                        'muid' => $uid,
+                        'attachid' => $attachInfo['attachid'],
+                        'aname' => self::__mime_decode($attachInfo['name']),
+                        'path' => $attachInfo['path'],
+                        'lastsavedtime' => $savedTime,
+                        'cid' => $info['cid'],
+                    ]);
+                    $this->_attachments[$index] = [
+                        'filename' => self::__mime_decode($info['filename']),
+                        'data' => $info['data'],
+                    ]; // so the file name has to renamed.
+                } else {
+                    unset($this->_inline_attachments[$index]);
+                }
+
+                unset($info['data']);
+            }
+        }
+    }
+
+    public function clearAttachments()
+    {
+        $this->_attachments = [];
+        $this->_inline_attachments = [];
+    }
+
+    public function saveRecord($data)
+    {
+        $this->getRecordTable()->insertData($data);
+    }
+
+    public function getRecordTable() {
+        return (new Core_DatabaseData_Model())->getTable('vtiger_mailmanager_mailrecord', null);
+    }
+    
+    public function saveAttachment($data)
+    {
+        $this->getAttachmentTable()->insertData($data);
+    }
+
+    public function getAttachmentTable()
+    {
+        return (new Core_DatabaseData_Model())->getTable('vtiger_mailmanager_mailattachments', null);
+    }
+
+    /**
 	 * Save the Mail Attachments to DB
 	 * @global PearDataBase Instance $db
 	 * @global Users Instance $currentUserModel
@@ -411,6 +532,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 	 */
 	public function attachments($withContent=true, $aName=false, $aId=false) {
 		$this->loadAttachmentsFromDB($withContent, $aName, $aId);
+
 		return $this->_attachments;
 	}
 
@@ -548,7 +670,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 		if ($date) {
 			if ($format) {
 				$dateTimeFormat = Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat(date('Y-m-d H:i:s', strtotime($date)));
-				list($date, $time, $AMorPM) = explode(' ', $dateTimeFormat);
+				[$date, $time, $AMorPM] = explode(' ', $dateTimeFormat);
 
 				$pos = strpos($dateTimeFormat, date(DateTimeField::getPHPDateFormat()));
 				if ($pos === false) {
@@ -609,22 +731,27 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 	 * @param Object $result
 	 * @return self
 	 */
-	public static function parseOverview($result, $mbox = false) {
-		if($mbox) {
-			$instance = new self($mbox, $result->msgno, true);
-		} else {
-			$instance = new self();
-		}
-		$instance->setSubject($result->subject);
-		$instance->setFrom($result->from);
-		$instance->setDate($result->date);
-		$instance->setRead($result->seen);
-		$instance->setMsgNo($result->msgno);
-		$instance->setTo($result->to);
-		return $instance;
-	}
-	
-	public function getInlineBody() {
+	public static function parseOverview($result, $mbox = false)
+    {
+        if ($mbox) {
+            $instance = new self($mbox, $result->msgno, false);
+            $instance->retrieveBody();
+        } else {
+            $instance = new self();
+        }
+
+        $instance->setSubject($result->subject);
+        $instance->setFrom($result->from);
+        $instance->setDate($result->date);
+        $instance->setRead($result->seen);
+        $instance->setMsgNo($result->msgno);
+        $instance->setTo($result->to);
+        $instance->mUid = $result->uid;
+
+        return $instance;
+    }
+
+    public function getInlineBody() {
 		$bodytext = $this->body();
 		$bodytext = preg_replace("/<br>/", " ", $bodytext);
 		$bodytext = strip_tags($bodytext);
@@ -702,5 +829,452 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 		
 		return $icon;
 	}
+
+    public array $mUidRelations = [];
+    public array $mUidRelationRecords = [];
+
+    public function getRelationIds(): array
+    {
+        if (empty($this->mUid) || !empty($this->mUidRelations)) {
+            return $this->mUidRelations;
+        }
+
+        $this->retrieveRelationsMailManager();
+
+        foreach (self::RELATIONS_TABLES as $relation) {
+            $this->retrieveRelations($relation[0], $relation[1], $relation[2]);
+        }
+
+        return $this->mUidRelations;
+    }
+
+    public function retrieveRelationsMailManager(): void
+    {
+        $adb = PearDatabase::getInstance();
+        $uid = $this->muid();
+        $result = $adb->pquery(
+            'SELECT vtiger_mailmanager_mailrel.* FROM vtiger_mailmanager_mailrel 
+            INNER JOIN vtiger_mailmanager_mailrecord ON vtiger_mailmanager_mailrecord.muniqueid=vtiger_mailmanager_mailrel.mailuid
+            WHERE vtiger_mailmanager_mailrecord.muid=?',
+            [$uid],
+        );
+
+        while ($row = $adb->fetchByAssoc($result)) {
+            $this->mUidRelations[(int)$row['emailid']] = 'ITS4YouEmails';
+            $this->mUidRelations[(int)$row['crmid']] = getSalesEntityType((int)$row['crmid']);
+        }
+    }
+
+    public function retrieveRelations($module, $tableId, $tableName)
+    {
+        $adb = PearDatabase::getInstance();
+        $sql = sprintf('SELECT %s as id FROM %s WHERE mail_manager_id=?', $tableId, $tableName);
+        $result = $adb->pquery($sql, [$this->muid()]);
+
+        while ($row = $adb->fetchByAssoc($result)) {
+            if (!isRecordExists($row['id'])) {
+                continue;
+            }
+
+            $this->mUidRelations[(int)$row['id']] = $module;
+        }
+    }
+
+
+    public function getRelations(): array
+    {
+        if (!empty($this->mUidRelationRecords)) {
+            return $this->mUidRelationRecords;
+        }
+
+        foreach ($this->getRelationIds() as $relationId => $relationModule) {
+            if (!isRecordExists($relationId)) {
+                continue;
+            }
+
+            $this->mUidRelationRecords[$relationId] = Vtiger_Record_Model::getInstanceById($relationId, $relationModule);
+        }
+
+        return $this->mUidRelationRecords;
+    }
+
+    public function getEmailRelations()
+    {
+        $relation = [];
+
+        foreach ($this->getRelations() as $recordModel) {
+            if ('ITS4YouEmails' !== $recordModel->getModuleName()) {
+                continue;
+            }
+
+            $relation[$recordModel->getId()] = $recordModel;
+        }
+
+        return $relation;
+    }
+
+    public function retrieveLookUps(string $lookupEmail, string $toEmail, bool $isSentFolder = false)
+    {
+        if (!empty($this->lookUps)) {
+            return $this->lookUps;
+        }
+
+        $allowedModules = $this->getCurrentUserMailManagerAllowedModules();
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+
+        foreach (self::EMAIL_ADDRESS_MODULES as $MODULE) {
+            if (!in_array($MODULE, $allowedModules)) {
+                continue;
+            }
+
+            //lookup will be from email other than sent mail folder
+            //if its sent folder, lookup email will be first TO email
+            if ($lookupEmail == $currentUserModel->get('email1') || $isSentFolder) {
+                $lookupEmail = explode(',', $toEmail)[0];
+            }
+
+            if (empty($lookupEmail)) {
+                continue;
+            }
+
+            $lookupResults = $this->lookupModuleRecordsWithEmail($MODULE, $lookupEmail);
+
+            foreach ($lookupResults as $lookupResult) {
+                if (array_key_exists('parent', $lookupResult)) {
+                    $this->lookUps[getSalesEntityType($lookupResult['id'])][] = $lookupResult;
+                } else {
+                    $this->lookUps[$MODULE][] = $lookupResult;
+                }
+            }
+        }
+
+        return $this->lookUps;
+    }
+
+    public function getLookUps()
+    {
+        return $this->lookUps;
+    }
+
+    /**
+     * Returns the List of Matching records with the Email Address
+     * @global Users Instance $currentUserModel
+     * @param String $module
+     * @param Email $email Address $email
+     * @return Array
+     */
+    public function lookupModuleRecordsWithEmail($module, $email)
+    {
+        $currentUserModel = vglobal('current_user');
+        $results = [];
+        $activeEmailFields = null;
+
+        $handler = vtws_getModuleHandlerFromName($module, $currentUserModel);
+        $meta = $handler->getMeta();
+        $emailFields = $meta->getEmailFields();
+        $moduleFields = $meta->getModuleFields();
+
+        foreach ($emailFields as $emailFieldName) {
+            $emailFieldInstance = $moduleFields[$emailFieldName];
+            if (!(((int)$emailFieldInstance->getPresence()) == 1)) {
+                $activeEmailFields[] = $emailFieldName;
+            }
+        }
+
+        //before calling vtws_query, need to check Active Email Fields are there or not
+        if (php7_count($activeEmailFields) > 0) {
+            $query = $this->buildSearchQuery($module, $email, 'EMAIL');
+            $qresults = vtws_query($query, $currentUserModel);
+            $describe = $this->ws_describe($module);
+            $labelFields = explode(',', $describe['labelFields']);
+
+            //overwrite labelfields with field names instead of column names
+            $fieldColumnMapping = $meta->getFieldColumnMapping();
+            $columnFieldMapping = array_flip($fieldColumnMapping);
+
+            foreach ($labelFields as $i => $columnname) {
+                $labelFields[$i] = $columnFieldMapping[$columnname];
+            }
+
+            foreach ($qresults as $qresult) {
+                $recordId = vtws_getIdComponents($qresult['id'])[1];
+
+                if (!empty($recordId) && isRecordExists($recordId)) {
+                    $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+                    $results[] = [
+                        'wsid' => $qresult['id'],
+                        'id' => $recordId,
+                        'icon' => $recordModel->getModule()->getModuleIcon(),
+                        'url' => $recordModel->getDetailViewUrl(),
+                        'label' => $recordModel->getName(),
+                    ];
+                }
+            }
+        }
+
+        if (!empty($results)) {
+            foreach ($results as $result) {
+                $relResults = $this->lookupRelModuleRecords($result['wsid']);
+                $results = array_merge($results, $relResults);
+            }
+        }
+
+        return $results;
+    }
+
+    public function displayed($record): void
+    {
+        $this->displayedRecords[$record] = $record;
+    }
+
+    public function isDisplayed($record): bool
+    {
+        return !empty($this->displayedRecords[$record]);
+    }
+
+    public function getOtherRelations(): array
+    {
+        $relations = [];
+
+        foreach ($this->getRelations() as $record) {
+            if ($this->isDisplayed($record->getId())) {
+                continue;
+            }
+
+            $relations[$record->getId()] = $record;
+        }
+
+        return $relations;
+    }
+
+    public function getRelationsById($record): array
+    {
+        $relation = [];
+
+        if (empty($record)) {
+            return $relation;
+        }
+
+        $record = (int)$record;
+        $moduleName = getSalesEntityType($record);
+
+        foreach ($this->getRelations() as $recordModel) {
+            $fieldName = self::RELATIONS_MAPPING[$recordModel->getModuleName()][$moduleName];
+
+            if (empty($fieldName) || $recordModel->isEmpty($fieldName)) {
+                continue;
+            }
+
+            $relation[$recordModel->getId()] = $recordModel;
+        }
+
+        return $relation;
+    }
+
+    public function hasRelations(): bool
+    {
+        $adb = PearDatabase::getInstance();
+        $sql = 'SELECT muid,muniqueid FROM vtiger_mailmanager_mailrecord
+            LEFT JOIN vtiger_mailmanager_mailrel ON vtiger_mailmanager_mailrel.mailuid=muniqueid 
+            LEFT JOIN its4you_emails ON its4you_emails.mail_manager_id=muid 
+            LEFT JOIN vtiger_troubletickets ON vtiger_troubletickets.mail_manager_id=muid 
+            LEFT JOIN vtiger_potential ON vtiger_potential.mail_manager_id=muid 
+            WHERE muid=? AND (
+                its4you_emails.mail_manager_id > 0 
+                OR vtiger_troubletickets.mail_manager_id > 0 
+                OR vtiger_potential.mail_manager_id > 0 
+                OR vtiger_mailmanager_mailrel.emailid > 0
+            )';
+        $params = [$this->muid()];
+        $result = $adb->pquery($sql, $params);
+
+        return $result && $adb->num_rows($result);
+    }
+
+    public function hasLookUps($folder)
+    {
+        $this->retrieveLookUps($this->from()[0], $this->to()[0], $folder->isSentFolder());
+
+        return !empty($this->getLookUps());
+    }
+
+    public function setMUId($value)
+    {
+        $this->mUid = $value;
+    }
+
+    /**
+     * Returns the available List of accessible modules for Mail Manager
+     * @return Array
+     */
+    public function getCurrentUserMailManagerAllowedModules()
+    {
+        $moduleListForCreateRecordFromMail = ['Contacts', 'Accounts', 'Leads'];
+        $modules = [];
+
+        foreach ($moduleListForCreateRecordFromMail as $module) {
+            if (MailManager::checkModuleWriteAccessForCurrentUser($module)) {
+                $modules[] = $module;
+            }
+        }
+
+        return $modules;
+    }
+
+    /**
+     * Funtion used to build Web services query
+     * @param String $module - Name of the module
+     * @param String $text - Search String
+     * @param String $type - Tyoe of fields Phone, Email etc
+     * @return String
+     */
+    public function buildSearchQuery($module, $text, $type)
+    {
+        $describe = $this->ws_describe($module);
+        // to check whether fields are accessible to current_user or not
+        $labelFields = explode(',', $describe['labelFields']);
+
+        //overwrite labelfields with field names instead of column names
+        $currentUserModel = vglobal('current_user');
+        $handler = vtws_getModuleHandlerFromName($module, $currentUserModel);
+        $meta = $handler->getMeta();
+        $fieldColumnMapping = $meta->getFieldColumnMapping();
+        $columnFieldMapping = array_flip($fieldColumnMapping);
+
+        foreach ($labelFields as $i => $columnname) {
+            $labelFields[$i] = $columnFieldMapping[$columnname];
+        }
+
+        foreach ($labelFields as $fieldName) {
+            foreach ($describe['fields'] as $describefield) {
+                if ($describefield['name'] == $fieldName) {
+                    $searchFields[] = $fieldName;
+                    break;
+                }
+            }
+        }
+
+        $whereClause = '';
+        foreach ($describe['fields'] as $field) {
+            if (strcasecmp($type, $field['type']['name']) === 0) {
+                $whereClause .= sprintf(" %s LIKE '%%%s%%' OR", $field['name'], $text);
+            }
+        }
+        return sprintf("SELECT %s FROM %s WHERE %s;", implode(',', $searchFields), $module, rtrim($whereClause, 'OR'));
+    }
+
+    /**
+     * Helper function to scan for relations
+     */
+    protected $wsDescribeCache = array();
+    public function ws_describe($module) {
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        if (!isset($this->wsDescribeCache[$module])) {
+            $this->wsDescribeCache[$module] = vtws_describe( $module, $currentUserModel);
+        }
+        return $this->wsDescribeCache[$module];
+    }
+
+    /**
+     * Function to lookup rel records(which supports emails only) of records
+     * @param <string> $wsId
+     * @return <array> $results
+     */
+    public function lookupRelModuleRecords($wsId) {
+        $currentUser = vglobal('current_user');
+        $results = array();
+        /* Harcoded to fecth only project records. In future we should treat
+         * below $relModules array as modules which support emails and related to
+         * parent module.
+         */
+
+        /* [20180601 Softar TODO #1002] This causes and exception and total failure to fetch the related items
+         if the Projects module is disabled or not in user permissions list
+        $relModules = array('Project');
+        */
+
+        $relModules = [];
+        $db = PearDatabase::getInstance();
+        $wsObject = VtigerWebserviceObject::fromId($db, $wsId);
+        $entityName = $wsObject->getEntityName();
+
+        foreach ($relModules as $relModule) {
+            $relation = Vtiger_Relation_Model::getInstanceByModuleName($entityName, $relModule);
+            if(!$relation) {
+                continue;
+            }
+            $relDescribe = $this->ws_describe($relModule);
+            $labelFields = explode(',', $relDescribe['labelFields']);
+            $relHandler = vtws_getModuleHandlerFromName($relModule, $currentUser);
+            $relMeta = $relHandler->getMeta();
+            //overwrite labelfields with field names instead of column names
+            $fieldColumnMapping = $relMeta->getFieldColumnMapping();
+            $columnFieldMapping = array_flip($fieldColumnMapping);
+
+            foreach ($labelFields as $i => $columnname) {
+                $labelFields[$i] = $columnFieldMapping[$columnname];
+            }
+
+            $sql = sprintf("SELECT %s FROM %s",  implode(',', $labelFields),$relModule);
+            $relQResults = vtws_query_related($sql, $wsId, $relation->get('label'), $currentUser);
+
+            foreach($relQResults as $qresult) {
+                $labelValues = array();
+                foreach($labelFields as $fieldname) {
+                    if(isset($qresult[$fieldname])) $labelValues[] = $qresult[$fieldname];
+                }
+                $ids = vtws_getIdComponents($qresult['id']);
+                $results[] = array( 'wsid' => $qresult['id'], 'id' => $ids[1], 'label' => implode(' ', $labelValues),'parent' => $wsId);
+            }
+        }
+        return $results;
+    }
+
+    public function replaceInlineAttachments(): array
+    {
+        $inlineAttachments = $this->inlineAttachments();
+        $attachments = [];
+
+        if (is_array($inlineAttachments)) {
+            foreach ($inlineAttachments as $index => $att) {
+                $cid = $att['cid'];
+                $name = Vtiger_MailRecord::__mime_decode($att['filename']);
+                $this->_body = preg_replace('/cid:' . $cid . '/', $this->getImageUrl($name), $this->_body);
+                $attachments[$name] = $cid;
+            }
+        }
+
+        return $attachments;
+    }
+
+    public function getImageUrl($fileName): string
+    {
+        return 'index.php?module=MailManager&view=Index&_operation=mail&_operationarg=attachment_dld&_muid=' . $this->muid() . '&_atname=' . urlencode($fileName);
+    }
+
+    public function isAttachmentsAllowed()
+    {
+        if (null !== $this->attachmentsAllowed) {
+            return $this->attachmentsAllowed;
+        }
+
+        $this->attachmentsAllowed = true;
+
+        if (!empty($this->_attachments) || !empty($this->_inline_attachments)) {
+            $data = $this->getAttachmentTable()->selectData(['muid'], ['muid' => $this->muid()]);
+            $this->attachmentsAllowed = !empty($data['muid']);
+        }
+
+        return $this->attachmentsAllowed;
+    }
+
+    public function getFolder()
+    {
+        return $this->mFolder;
+    }
+
+    public function setFolder($value)
+    {
+        $this->mFolder = $value;
+    }
 }
-?>

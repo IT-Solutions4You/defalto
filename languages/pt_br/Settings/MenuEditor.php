@@ -25,5 +25,4 @@ $jsLanguageStrings = Array (
     'JS_MODULE_REMOVED' => 'O Módulo foi removido com sucesso',
     'JS_MODULE_ADD_SUCCESS' => 'O(s) Módulo(s) foi adicionado(s) com sucesso',
     'JS_PLEASE_SELECT_A_MODULE' => 'Por favor, seleciona um Módulo',
-)
-?>
+);

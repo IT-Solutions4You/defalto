@@ -6,97 +6,96 @@
 *}
 {strip}
     {if $LINKEDTO}
-        <div class="row">
-            <div class="col-lg-7 recordScroll" >
-                <div class="row">
-                    <div class="col-lg-1">
-                        <input type="radio" name="_mlinkto" value="{$LINKEDTO.record}" class="form-check-input">
-                    </div>
-                    <div class="col-lg-11 mmRelatedRecordDesc text-truncate" title="{$LINKEDTO.detailviewlink}">
-                        <span class="me-2">{$LINKEDTO.detailviewlink}</span>
-                        <span>({vtranslate($LINKEDTO.module, $moduleName)})</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-5 text-end">
-                {if $LINK_TO_AVAILABLE_ACTIONS|count neq 0}
-                    <select name="_mlinktotype"  id="_mlinktotype" data-action="associate" class="form-select">
-                        <option value="">{vtranslate('LBL_ACTIONS',$MODULE)}</option>
-                        {foreach item=moduleName from=$LINK_TO_AVAILABLE_ACTIONS}
-                            <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
-                        {/foreach}
-                    </select>
-                {/if}
-            </div>
-        </div>
-    {/if}
-
-    {if $LOOKUPS}
-        {assign var="LOOKRECATLEASTONE" value=false}
-        {foreach item=RECORDS key=MODULE from=$LOOKUPS}
-            {foreach item=RECORD from=$RECORDS}
-                {assign var="LOOKRECATLEASTONE" value=true}
-            {/foreach}
-        {/foreach}
-        <div class="row">
-            <div class="col-lg-7 recordScroll" >
-                {foreach item=RECORDS key=MODULE from=$LOOKUPS}
-                    {foreach item=RECORD from=$RECORDS}
+        <div class="row mailManagerLinkedTo">
+            <div class="col-8 recordScroll mb-1">
+                <div class="list-group overflow-auto h-25vh-max">
+                    <div class="list-group-item">
                         <div class="row">
-                            <div class="col-lg-1">
-                                <input type="radio" name="_mlinkto" value="{$RECORD.id}" class="form-check-input">
+                            <div class="col-1">
+                                <input type="radio" name="_mlinkto" value="{$LINKEDTO.record}" class="form-check-input" checked="checked">
                             </div>
-                            <div class="col-lg-11 text-truncate mmRelatedRecordDesc">
-                                <a target="_blank" href="index.php?module={$MODULE}&view=Detail&record={$RECORD.id}" title="{$RECORD.label}">
-                                    <span>{$RECORD.label|textlength_check}</span>
-                                    {assign var="SINGLE_MODLABEL" value="SINGLE_$MODULE"}
-                                    <span class="ms-2">({vtranslate($SINGLE_MODLABEL, $MODULE)})</span>
+                            <div class="col text-truncate mmRelatedRecordDesc">
+                                <a target="_blank" class="link-primary" href="{$LINKEDTO.url}">
+                                    {$LINKEDTO.icon}
+                                    <span class="ms-2">{$LINKEDTO.label}</span>
                                 </a>
                             </div>
                         </div>
-                        <br>
-                    {/foreach}
-                {/foreach}
+                    </div>
+                    {if $EMAIL}
+                        {$EMAIL->displayed($LINKEDTO.record)}
+                        {include file="RelationshipRecords.tpl"|vtemplate_path:$MODULE RELATION_RECORDS=$EMAIL->getRelationsById($LINKEDTO.record) RELATION_MARGIN=true}
+                        {include file="RelationshipRecords.tpl"|vtemplate_path:$MODULE RELATION_RECORDS=$EMAIL->getOtherRelations() RELATION_MARGIN=false}
+                    {/if}
+                </div>
             </div>
-            <div class="pull-left col-lg-5 ">
-                {if $LOOKRECATLEASTONE}
-                    {if $LINK_TO_AVAILABLE_ACTIONS|count neq 0}
-                        <select name="_mlinktotype"  id="_mlinktotype" data-action="associate" class="form-select">
-                            <option value="">{vtranslate('LBL_ACTIONS',$MODULE)}</option>
-                            {foreach item=moduleName from=$LINK_TO_AVAILABLE_ACTIONS}
-                                <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
-                            {/foreach}
-                        </select>
-                    {/if}
-                {else}
-                    {if $ALLOWED_MODULES|count neq 0}
-                        <select name="_mlinktotype"  id="_mlinktotype" data-action="create" class="form-select">
-                            <option value="">{vtranslate('LBL_ACTIONS','MailManager')}</option>
-                            {foreach item=moduleName from=$ALLOWED_MODULES}
-                                <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
-                            {/foreach}
-                        </select>
-                    {/if}
+            <div class="col text-end">
+                {if $LINK_TO_AVAILABLE_ACTIONS|count}
+                    {include file="RelationshipActions.tpl"|vtemplate_path:$MODULE ACTION_MODULES=$LINK_TO_AVAILABLE_ACTIONS ACTION_TYPE='associate'}
                 {/if}
             </div>
         </div>
-    {else}
-        {if $LINKEDTO eq ""}
-            <div class="row">
-                <div class="col-lg-7 recordScroll">
-
-                </div>
-                <div class="col-lg-5">
-                    {if $ALLOWED_MODULES|count neq 0}
-                        <select name="_mlinktotype"  id="_mlinktotype" data-action="create" class="form-select" >
-                            <option value="">{vtranslate('LBL_ACTIONS','MailManager')}</option>
-                            {foreach item=moduleName from=$ALLOWED_MODULES}
-                                <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
-                            {/foreach}
-                        </select>
+    {elseif $LOOKUPS}
+        {assign var=LOOKRECATLEASTONE value=false}
+        {foreach item=RECORDS key=MODULE from=$LOOKUPS}
+            {foreach item=RECORD from=$RECORDS}
+                {assign var=LOOKRECATLEASTONE value=true}
+            {/foreach}
+        {/foreach}
+        <div class="row mailManagerLookUps">
+            <div class="col recordScroll mb-1">
+                <ul class="list-group overflow-auto h-25vh-max">
+                    {foreach item=RECORDS key=RECORD_MODULE from=$LOOKUPS}
+                        {foreach item=RECORD from=$RECORDS}
+                            <li class="list-group-item" title="{vtranslate($RECORD_MODULE, $RECORD_MODULE)}">
+                                <div class="row">
+                                    <div class="col-1">
+                                        <input type="radio" name="_mlinkto" value="{$RECORD.id}" class="form-check-input">
+                                    </div>
+                                    <div class="col text-truncate mmRelatedRecordDesc">
+                                        <a target="_blank" class="link-primary" href="{$RECORD.url}" title="{$RECORD.label}">
+                                            {$RECORD.icon}
+                                            <span class="ms-2">{$RECORD.label|textlength_check}</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                            {if $EMAIL}
+                                {$EMAIL->displayed($RECORD.id)}
+                                {include file="RelationshipRecords.tpl"|vtemplate_path:$MODULE RELATION_RECORDS=$EMAIL->getRelationsById($RECORD.id) RELATION_MARGIN=true}
+                            {/if}
+                        {/foreach}
+                    {/foreach}
+                    {if $EMAIL}
+                        {include file="RelationshipRecords.tpl"|vtemplate_path:$MODULE RELATION_RECORDS=$EMAIL->getOtherRelations() RELATION_MARGIN=false}
                     {/if}
-                </div>
+                </ul>
             </div>
-        {/if}
+            <div class="col-auto">
+                {if $LOOKRECATLEASTONE}
+                    {if $LINK_TO_AVAILABLE_ACTIONS|count}
+                        {include file="RelationshipActions.tpl"|vtemplate_path:$MODULE ACTION_MODULES=$LINK_TO_AVAILABLE_ACTIONS ACTION_TYPE='associate'}
+                    {/if}
+                {elseif $ALLOWED_MODULES|count}
+                    {include file="RelationshipActions.tpl"|vtemplate_path:$MODULE ACTION_MODULES=$ALLOWED_MODULES ACTION_TYPE='create'}
+                {/if}
+            </div>
+        </div>
+    {elseif empty($LINKEDTO)}
+        <div class="row mailManagerEmptyLinkedTo">
+            <div class="col recordScroll mb-1">
+                {if false eq $EMAIL->isAttachmentsAllowed()}
+                    <div class="alert alert-warning d-flex align-items-center justify-content-between py-2">
+                        <span>{vtranslate('LBL_BLOCKED_REMOTE_CONTENT', $MODULE)}</span>
+                        <button type="button" class="btn btn-warning allowRemoteContent">{vtranslate('LBL_ALLOW', $MODULE)}</button>
+                    </div>
+                {/if}
+            </div>
+            <div class="col-auto">
+                {if $ALLOWED_MODULES|count}
+                    {include file="RelationshipActions.tpl"|vtemplate_path:$MODULE ACTION_MODULES=$ALLOWED_MODULES ACTION_TYPE='create'}
+                {/if}
+            </div>
+        </div>
     {/if}
 {/strip}

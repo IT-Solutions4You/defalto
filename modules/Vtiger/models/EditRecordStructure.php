@@ -41,9 +41,6 @@ class Vtiger_EditRecordStructure_Model extends Vtiger_RecordStructure_Model {
 								$fieldModel->set('fieldvalue', $defaultValue);
 						}
 						$values[$blockLabel][$fieldName] = $fieldModel;
-                        if ($fieldName == 'taxclass' && php7_count($recordModel->getTaxClassDetails()) < 1) {
-                            unset($values[$blockLabel][$fieldName]);
-                        }
 					}
 				}
 			}

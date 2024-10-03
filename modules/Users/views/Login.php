@@ -31,7 +31,6 @@ class Users_Login_View extends Vtiger_View_Controller {
 		$viewer->assign('LANGUAGE_STRINGS', array());
 
 		$viewer->assign('INVENTORY_MODULES', array());
-		$viewer->assign('SELECTED_MENU_CATEGORY', '');
 		$viewer->assign('QUALIFIED_MODULE', '');
 		$viewer->assign('PARENT_MODULE', '');
 		$viewer->assign('NOTIFIER_URL', '');

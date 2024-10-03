@@ -13,7 +13,7 @@
  */
 class Vtiger_ListView_Model extends Vtiger_Base_Model {
 
-
+    protected $focus = null;
 
 	/**
 	 * Function to get the Module Model
@@ -174,86 +174,56 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 		return $headerFieldModels;
 	}
 
-	/**
-	 * Function to get the list view entries
-	 * @param Vtiger_Paging_Model $pagingModel
-	 * @return <Array> - Associative array of record id mapped to Vtiger_Record_Model instance.
-	 */
-	public function getListViewEntries($pagingModel) {
-		$db = PearDatabase::getInstance();
+    /**
+     * @param object $pagingModel
+     * @return int
+     */
+    public function getViewId(object $pagingModel): int
+    {
+        $moduleName = $this->getModuleName();
+        $viewId = ListViewSession::getCurrentView($moduleName);
 
-		$moduleName = $this->getModule()->get('name');
-		$moduleFocus = CRMEntity::getInstance($moduleName);
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-
-		$queryGenerator = $this->get('query_generator');
-		$listViewContoller = $this->get('listview_controller');
-
-		 $searchParams = $this->get('search_params');
-		if(empty($searchParams)) {
-			$searchParams = array();
-		}
-		$glue = "";
-		if(php7_count($queryGenerator->getWhereFields()) > 0 && (php7_count($searchParams)) > 0) {
-			$glue = QueryGenerator::$AND;
-		}
-		$queryGenerator->parseAdvFilterList($searchParams, $glue);
-
-		$searchKey = $this->get('search_key');
-		$searchValue = $this->get('search_value');
-		$operator = $this->get('operator');
-		if(!empty($searchKey)) {
-			$queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator));
-		}
-
-		$orderBy = $this->getForSql('orderby');
-		$sortOrder = $this->getForSql('sortorder');
-
-		if(!empty($orderBy)){
-			$queryGenerator = $this->get('query_generator');
-			$fieldModels = $queryGenerator->getModuleFields();
-			$orderByFieldModel = $fieldModels[$orderBy];
-			if($orderByFieldModel && ($orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE ||
-					$orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::OWNER_TYPE)){
-				$queryGenerator->addWhereField($orderBy);
-			}
-		}
-		$listQuery = $this->getQuery();
-
-		$sourceModule = $this->get('src_module');
-		if(!empty($sourceModule)) {
-			if(method_exists($moduleModel, 'getQueryByModuleField')) {
-				$overrideQuery = $moduleModel->getQueryByModuleField($sourceModule, $this->get('src_field'), $this->get('src_record'), $listQuery,$this->get('relationId'));
-				if(!empty($overrideQuery)) {
-					$listQuery = $overrideQuery;
-				}
-			}
-		}
-
-		$startIndex = $pagingModel->getStartIndex();
-		$pageLimit = $pagingModel->getPageLimit();
-
-        $viewid = ListViewSession::getCurrentView($moduleName);
-
-        if(empty($viewid)) {
-            $viewid = $pagingModel->get('viewid');
+        if (empty($viewId)) {
+            $viewId = $pagingModel->get('viewid');
         }
 
-        $_SESSION['lvs'][$moduleName][$viewid]['start'] = $pagingModel->get('page');
+        return (int)$viewId;
+    }
 
-        if(!empty($orderBy) && $orderByFieldModel) {
-			if($orderBy == 'roleid' && $moduleName == 'Users'){
-				$listQuery .= ' ORDER BY vtiger_role.rolename '.' '. $sortOrder; 
-			} else {
-				$listQuery .= ' ORDER BY '.$queryGenerator->getOrderByColumn($orderBy).' '.$sortOrder;
-			}
+    public function retrieveOrderBy($viewId = 0)
+    {
+        $moduleFocus = $this->getFocus();
+        $moduleModel = $this->getModule();
+        $moduleName = $this->getModuleName();
+        $orderBy = $this->getForSql('orderby');
+        $sortOrder = $this->getForSql('sortorder');
+        $orderByColumns = [];
 
-			if ($orderBy == 'first_name' && $moduleName == 'Users') {
-				$listQuery .= ' , last_name '.' '. $sortOrder .' ,  email1 '. ' '. $sortOrder;
-			}
-        } elseif (empty($orderBy) && empty($sortOrder) && $moduleName != "Users") {
-            $orderBy = ' ORDER BY vtiger_crmentity.createdtime DESC';
-            $cvModel = CustomView_Record_Model::getInstanceById($viewid);
+        if (!empty($orderBy)) {
+            $queryGenerator = $this->get('query_generator');
+            $fieldModels = $queryGenerator->getModuleFields();
+            $orderByFieldModel = $fieldModels[$orderBy];
+
+            if ($orderByFieldModel && ($orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE || $orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::OWNER_TYPE)) {
+                $queryGenerator->addWhereField($orderBy);
+            }
+        }
+
+        if (!empty($orderBy) && $orderByFieldModel) {
+            if ($orderBy == 'roleid' && $moduleName == 'Users') {
+                $orderByColumn = 'vtiger_role.rolename';
+            } else {
+                $orderByColumn = $queryGenerator->getOrderByColumn($orderBy);
+            }
+
+            $orderByColumns[$orderByColumn] = $sortOrder;
+
+            if ($orderBy == 'first_name' && $moduleName == 'Users') {
+                $orderByColumns['last_name'] = $sortOrder;
+                $orderByColumns['email1'] = $sortOrder;
+            }
+        } elseif (empty($orderBy) && empty($sortOrder) && $moduleName !== 'Users') {
+            $cvModel = CustomView_Record_Model::getInstanceById($viewId);
             $cvOrderBy = false;
             $cvOrderByField = false;
 
@@ -264,7 +234,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 
             if ($cvOrderBy && $cvOrderByField && $cvOrderByField->isActiveField()) {
                 $cvOrderBy['orderby'] = $moduleModel->getOrderBySql($cvOrderBy['orderby']);
-                $orderBy = ' ORDER BY ' . implode(' ', $cvOrderBy);
+                $orderByColumns[$cvOrderBy['orderby']] = $cvOrderBy['sortorder'];
             } elseif (PerformancePrefs::getBoolean('LISTVIEW_DEFAULT_SORTING', true)) {
                 $orderBy = $moduleFocus->default_order_by;
                 $qualifiedOrderBy = $orderBy;
@@ -273,42 +243,119 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
                 if ($orderByField) {
                     $qualifiedOrderBy = $moduleModel->getOrderBySql($qualifiedOrderBy);
                     $sortOrder = $moduleFocus->default_sort_order;
-                    $orderBy = ' ORDER BY ' . $qualifiedOrderBy . ' ' . $sortOrder;
+                    $orderByColumns[$qualifiedOrderBy] = $sortOrder;
                 }
             }
 
-            $listQuery .= $orderBy;
+            if (empty($orderByColumns)) {
+                $orderByColumns['vtiger_crmentity.createdtime'] = 'DESC';
+            }
         }
 
-		ListViewSession::setSessionQuery($moduleName, $listQuery, $viewid);
+        $this->getQueryGenerator()->setOrderByColumns($orderByColumns);
+    }
+
+    public function getFocus()
+    {
+        if (!empty($this->focus)) {
+            $this->focus = CRMEntity::getInstance($this->getModuleName());
+        }
+
+        return $this->focus;
+    }
+
+    public function getModuleName()
+    {
+        return $this->getModule()->getName();
+    }
+
+    /**
+     * Function to get the list view entries
+     * @param Vtiger_Paging_Model $pagingModel
+     * @return array - Associative array of record id mapped to Vtiger_Record_Model instance.
+     * @throws Exception
+     */
+    public function getListViewEntries($pagingModel)
+    {
+        $db = PearDatabase::getInstance();
+        $moduleModel = $this->getModule();
+        $moduleName = $this->getModuleName();
+        $moduleFocus = $this->getFocus();
+        $viewId = $this->getViewId($pagingModel);
+        /** @var EnhancedQueryGenerator $queryGenerator */
+        $queryGenerator = $this->get('query_generator');
+        $listViewContoller = $this->get('listview_controller');
+        $searchParams = $this->get('search_params');
+
+        if (empty($searchParams)) {
+            $searchParams = [];
+        }
+
+        $glue = "";
+
+        if (php7_count($queryGenerator->getWhereFields()) > 0 && (php7_count($searchParams)) > 0) {
+            $glue = QueryGenerator::$AND;
+        }
+
+        $queryGenerator->parseAdvFilterList($searchParams, $glue);
+        $searchKey = $this->get('search_key');
+        $searchValue = $this->get('search_value');
+        $operator = $this->get('operator');
+
+        if (!empty($searchKey)) {
+            $queryGenerator->addUserSearchConditions(['search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator]);
+        }
+
+        $this->retrieveOrderBy($viewId);
+
+        $listQuery = $this->getQuery();
+
+        $sourceModule = $this->get('src_module');
+        if (!empty($sourceModule)) {
+            if (method_exists($moduleModel, 'getQueryByModuleField')) {
+                $overrideQuery = $moduleModel->getQueryByModuleField($sourceModule, $this->get('src_field'), $this->get('src_record'), $listQuery, $this->get('relationId'));
+                if (!empty($overrideQuery)) {
+                    $listQuery = $overrideQuery;
+                }
+            }
+        }
+
+        $listQuery .= $this->getQueryGenerator()->getOrderByClause();
+
+        $startIndex = $pagingModel->getStartIndex();
+        $pageLimit = $pagingModel->getPageLimit();
+
+        $_SESSION['lvs'][$moduleName][$viewId]['start'] = $pagingModel->get('page');
+
+        ListViewSession::setSessionQuery($moduleName, $listQuery, $viewId);
 
         $listQuery .= ' LIMIT ' . $startIndex . ', ' . ($pageLimit + 1);
 
         $listResult = $db->pquery($listQuery, []);
 
-		$listViewRecordModels = array();
-		$listViewEntries =  $listViewContoller->getListViewRecords($moduleFocus,$moduleName, $listResult);
+        $listViewRecordModels = [];
+        $listViewEntries = $listViewContoller->getListViewRecords($moduleFocus, $moduleName, $listResult);
 
-		$pagingModel->calculatePageRange($listViewEntries);
+        $pagingModel->calculatePageRange($listViewEntries);
 
-		if($db->num_rows($listResult) > $pageLimit){
-			array_pop($listViewEntries);
-			$pagingModel->set('nextPageExists', true);
-		}else{
-			$pagingModel->set('nextPageExists', false);
-		}
+        if ($db->num_rows($listResult) > $pageLimit) {
+            array_pop($listViewEntries);
+            $pagingModel->set('nextPageExists', true);
+        } else {
+            $pagingModel->set('nextPageExists', false);
+        }
 
-		$index = 0;
-		foreach($listViewEntries as $recordId => $record) {
-			$rawData = $db->query_result_rowdata($listResult, $index++);
-			$record['id'] = $recordId;
-			$listViewRecordModels[$recordId] = $moduleModel->getRecordFromArray($record, $rawData);
-		}
-		return $listViewRecordModels;
-	}
+        $index = 0;
+        foreach ($listViewEntries as $recordId => $record) {
+            $rawData = $db->query_result_rowdata($listResult, $index++);
+            $record['id'] = $recordId;
+            $listViewRecordModels[$recordId] = $moduleModel->getRecordFromArray($record, $rawData);
+        }
+        return $listViewRecordModels;
+    }
 
-	/**
-	 * Function to get the list view entries
+    /**
+     * Function to get the list view entries
 	 * @param Vtiger_Paging_Model $pagingModel
 	 * @return <Array> - Associative array of record id mapped to Vtiger_Record_Model instance.
 	 */
@@ -374,12 +421,19 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 		return $db->query_result($listResult, 0, 'count');
 	}
 
-	function getQuery() {
-		$queryGenerator = $this->get('query_generator');
-		$listQuery = $queryGenerator->getQuery();
+    public function getQuery()
+    {
+        return $this->getQueryGenerator()->getQuery();
+    }
 
-		return $listQuery;
-	}
+    /**
+     * @return EnhancedQueryGenerator
+     */
+    public function getQueryGenerator(): EnhancedQueryGenerator
+    {
+        return $this->get('query_generator');
+    }
+
 	/**
 	 * Static Function to get the Instance of Vtiger ListView model for a given module and custom view
 	 * @param <String> $moduleName - Module Name

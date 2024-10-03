@@ -248,6 +248,7 @@ class ListViewController {
 			foreach ($listViewFields as $fieldName) {
 				$recordId = $baseRecordId;
 				$rawFieldName = $fieldName;
+                /** @var WebserviceField $field */
 				$field = $moduleFields[$fieldName];
 				$uitype = $field->getUIType();
 				$fieldDataType = $field->getFieldDataType();
@@ -467,6 +468,8 @@ class ListViewController {
 					$value = $displayValue;
 				} elseif($field->getUIType() == Vtiger_Field_Model::UITYPE_COUNTRY) {
                     $value = !empty($rawValue) ? Core_Country_UIType::transformDisplayValue($rawValue) : '';
+                } elseif($field->getUIType() == Vtiger_Field_Model::UITYPE_REGION) {
+                    $value = !empty($rawValue) ? Core_Region_UIType::transformDisplayValue($rawValue) : '';
                 } else {
 					$value = textlength_check($value);
 				}

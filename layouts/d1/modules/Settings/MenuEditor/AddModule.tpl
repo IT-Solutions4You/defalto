@@ -15,23 +15,22 @@
 				{foreach item=APP_NAME from=$APP_ARRAY}
 					{assign var=HIDDEN_MODULES value=Settings_MenuEditor_Module_Model::getHiddenModulesForApp($APP_NAME)}
 					<div class="row modulesContainer {if $APP_NAME neq $SELECTED_APP_NAME} hide {/if}" data-appname="{$APP_NAME}">
-						<div class="col-lg-12 col-md-12 col-sm-12">
-							{if php7_count($HIDDEN_MODULES) gt 0}
-								{foreach item=MODULE_NAME from=$HIDDEN_MODULES}
-									<span class="btn-group" style="margin-bottom: 10px; margin-left: 25px; margin-right: -15px;">
-										<buttton class="btn addButton btn-default module-buttons addModule" data-module="{$MODULE_NAME}" style="text-transform: inherit;margin-right:15px">{vtranslate($MODULE_NAME, $MODULE_NAME)}&nbsp;&nbsp;
-											<i class="fa fa-plus"></i>
-										</buttton>
+						{if php7_count($HIDDEN_MODULES) gt 0}
+							{foreach item=MODULE_NAME from=$HIDDEN_MODULES}
+								<div class="col-lg-3 mb-3">
+									<span class="btn-group w-100">
+										<button class="btn btn-outline-secondary module-buttons addButton addModule text-start" data-module="{$MODULE_NAME}">
+											<span class="me-2">{vtranslate($MODULE_NAME, $MODULE_NAME)}</span>
+											<span class="float-end">
+												<i class="fa fa-plus"></i>
+											</span>
+										</button>
 									</span>
-								{/foreach}
-							{else}
-								<h5>
-									<center>
-										{vtranslate('LBL_NO', $QUALIFIED_MODULE)} {vtranslate('LBL_MODULES', $QUALIFIED_MODULE)} {vtranslate('LBL_FOUND', $QUALIFIED_MODULE)}.</h4>
-									</center>
-								</h5>
-							{/if}
-						</div>
+								</div>
+							{/foreach}
+						{else}
+							<h5 class="text-center">{vtranslate('LBL_NO', $QUALIFIED_MODULE)} {vtranslate('LBL_MODULES', $QUALIFIED_MODULE)} {vtranslate('LBL_FOUND', $QUALIFIED_MODULE)}.</h5>
+						{/if}
 					</div>
 				{/foreach}
 			</div>

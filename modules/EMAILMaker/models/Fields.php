@@ -334,10 +334,11 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
 
     /**
      * @return array
+     * @throws Exception
      */
     public static function getCompanyOptions()
     {
-        $data = array();
+        $data = [];
 
         if (getTabId('ITS4YouMultiCompany') && vtlib_isModuleActive('ITS4YouMultiCompany')) {
             $EMAILMakerFieldsModel = new EMAILMaker_Fields_Model();
@@ -355,11 +356,11 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
                     continue;
                 }
 
-                $l = 'LBL_COMPANY_' . strtoupper($fieldName);
-                $label = vtranslate($l, 'EMAILMaker');
+                $labelKey = 'LBL_COMPANY_' . strtoupper($fieldName);
+                $label = vtranslate($labelKey, 'EMAILMaker');
 
-                if (empty($label) || $l == $label) {
-                    $label = $fieldName;
+                if (empty($label) || $labelKey === $label) {
+                    $label = vtranslate($fieldName, 'Settings:Vtiger');
                 }
 
                 $data['company-' . $fieldName] = $label;
@@ -686,7 +687,7 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
     public static function updateMembersGroups(&$members, $type, $data)
     {
         foreach ($members[$type] as $memberId => $memberData) {
-            list($sharingType, $sharingId) = explode(':', $memberId);
+            [$sharingType, $sharingId] = explode(':', $memberId);
 
             if (empty($data[$sharingId])) {
                 unset($members[$sharingType][$memberId]);

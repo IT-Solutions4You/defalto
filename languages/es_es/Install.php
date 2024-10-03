@@ -19,8 +19,8 @@
 $languageStrings = array(
 	'LBL_INSTALLATION_WIZARD' => 'Asistente de Instalación',
 	'LBL_WELCOME' => 'Bienvenido',
-	'LBL_WELCOME_TO_VTIGER6_SETUP_WIZARD' => 'Bienvenido al Asistente de Instalación de Vtiger CRM 6',
-	'LBL_VTIGER6_SETUP_WIZARD_DESCRIPTION' => 'Este asistente te guiará en la instalación de Vtiger CRM6',
+	'LBL_WELCOME_TO_Defalto_SETUP_WIZARD' => 'Bienvenido al Asistente de Instalación de Vtiger CRM 6',
+	'LBL_Defalto_SETUP_WIZARD_DESCRIPTION' => 'Este asistente te guiará en la instalación de Vtiger CRM6',
 	'LBL_INSTALL_BUTTON' => 'Instalar',
 	'LBL_DISAGREE' => 'No Acepto',
 	'LBL_I_AGREE' => 'Acepto',

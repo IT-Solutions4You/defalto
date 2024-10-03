@@ -21,79 +21,82 @@
  ********************************************************************************/
 
 class Potentials extends CRMEntity {
-	var $log;
-	var $db;
+	public $log;
+	public $db;
+    public string $parentName = 'Sales';
+	public $module_name="Potentials";
+    public $table_name = "vtiger_potential";
+    public $table_index = 'potentialid';
 
-	var $module_name="Potentials";
-	var $table_name = "vtiger_potential";
-	var $table_index= 'potentialid';
+    public $tab_name = ['vtiger_crmentity', 'vtiger_potential', 'vtiger_potentialscf'];
+    public $tab_name_index = ['vtiger_crmentity' => 'crmid', 'vtiger_potential' => 'potentialid', 'vtiger_potentialscf' => 'potentialid'];
+    /**
+     * Mandatory table for supporting custom fields.
+     */
+    public $customFieldTable = ['vtiger_potentialscf', 'potentialid'];
 
-	var $tab_name = Array('vtiger_crmentity','vtiger_potential','vtiger_potentialscf');
-	var $tab_name_index = Array('vtiger_crmentity'=>'crmid','vtiger_potential'=>'potentialid','vtiger_potentialscf'=>'potentialid');
-	/**
-	 * Mandatory table for supporting custom fields.
-	 */
-	var $customFieldTable = Array('vtiger_potentialscf', 'potentialid');
+    public $column_fields = [];
 
-	var $column_fields = Array();
+    public $sortby_fields = ['potentialname', 'amount', 'closingdate', 'smownerid', 'accountname'];
 
-	var $sortby_fields = Array('potentialname','amount','closingdate','smownerid','accountname');
+    // This is the list of vtiger_fields that are in the lists.
+    public $list_fields = [
+        'Potential' => ['potential' => 'potentialname'],
+        'Organization Name' => ['potential' => 'related_to'],
+        'Contact Name' => ['potential' => 'contact_id'],
+        'Sales Stage' => ['potential' => 'sales_stage'],
+        'Amount' => ['potential' => 'amount'],
+        'Expected Close Date' => ['potential' => 'closingdate'],
+        'Assigned To' => ['crmentity', 'smownerid'],
+    ];
 
-	// This is the list of vtiger_fields that are in the lists.
-	var $list_fields = Array(
-			'Potential'=>Array('potential'=>'potentialname'),
-			'Organization Name'=>Array('potential'=>'related_to'),
-			'Contact Name'=>Array('potential'=>'contact_id'),
-			'Sales Stage'=>Array('potential'=>'sales_stage'),
-			'Amount'=>Array('potential'=>'amount'),
-			'Expected Close Date'=>Array('potential'=>'closingdate'),
-			'Assigned To'=>Array('crmentity','smownerid')
-			);
+    public $list_fields_name = [
+        'Potential' => 'potentialname',
+        'Organization Name' => 'related_to',
+        'Contact Name' => 'contact_id',
+        'Sales Stage' => 'sales_stage',
+        'Amount' => 'amount',
+        'Expected Close Date' => 'closingdate',
+        'Assigned To' => 'assigned_user_id',
+    ];
 
-	var $list_fields_name = Array(
-			'Potential'=>'potentialname',
-			'Organization Name'=>'related_to',
-			'Contact Name'=>'contact_id',
-			'Sales Stage'=>'sales_stage',
-			'Amount'=>'amount',
-			'Expected Close Date'=>'closingdate',
-			'Assigned To'=>'assigned_user_id');
+    public $list_link_field = 'potentialname';
 
-	var $list_link_field= 'potentialname';
+    public $search_fields = [
+        'Potential' => ['potential' => 'potentialname'],
+        'Related To' => ['potential' => 'related_to'],
+        'Expected Close Date' => ['potential' => 'closedate'],
+    ];
 
-	var $search_fields = Array(
-			'Potential'=>Array('potential'=>'potentialname'),
-			'Related To'=>Array('potential'=>'related_to'),
-			'Expected Close Date'=>Array('potential'=>'closedate')
-			);
+    public $search_fields_name = [
+        'Potential' => 'potentialname',
+        'Related To' => 'related_to',
+        'Expected Close Date' => 'closingdate',
+    ];
 
-	var $search_fields_name = Array(
-			'Potential'=>'potentialname',
-			'Related To'=>'related_to',
-			'Expected Close Date'=>'closingdate'
-			);
+    public $required_fields = [];
 
-	var $required_fields =  array();
+    // Used when enabling/disabling the mandatory fields for the module.
+    // Refers to vtiger_field.fieldname values.
+    public $mandatory_fields = ['assigned_user_id', 'createdtime', 'modifiedtime', 'potentialname'];
 
-	// Used when enabling/disabling the mandatory fields for the module.
-	// Refers to vtiger_field.fieldname values.
-	var $mandatory_fields = Array('assigned_user_id', 'createdtime', 'modifiedtime', 'potentialname');
+    //Added these variables which are used as default order by and sortorder in ListView
+    public $default_order_by = 'potentialname';
+    public $default_sort_order = 'ASC';
 
-	//Added these variables which are used as default order by and sortorder in ListView
-	var $default_order_by = 'potentialname';
-	var $default_sort_order = 'ASC';
+    // For Alphabetical search
+    public $def_basicsearch_col = 'potentialname';
 
-	// For Alphabetical search
-	var $def_basicsearch_col = 'potentialname';
+    public $related_module_table_index = [
+        'Contacts' => ['table_name' => 'vtiger_contactdetails', 'table_index' => 'contactid', 'rel_index' => 'contactid'],
+    ];
 
-	var $related_module_table_index = array(
-		'Contacts' => array('table_name'=>'vtiger_contactdetails','table_index'=>'contactid','rel_index'=>'contactid')
-	);
+    public $LBL_POTENTIAL_MAPPING = 'LBL_OPPORTUNITY_MAPPING';
 
-	var $LBL_POTENTIAL_MAPPING = 'LBL_OPPORTUNITY_MAPPING';
-	//var $groupTable = Array('vtiger_potentialgrouprelation','potentialid');
-	function __construct() {
-            $this->log = Logger::getLogger('potential');
+    //var $groupTable = Array('vtiger_potentialgrouprelation','potentialid');
+    function __construct()
+    {
+        $this->log = Logger::getLogger('potential');
             $this->db = PearDatabase::getInstance();
             $this->column_fields = getColumnFields('Potentials');
         }   

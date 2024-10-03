@@ -390,6 +390,16 @@ $languageStrings = array(
     'LBL_TAXES_REGION_UPDATED' => 'Region updated',
     'LBL_NAME' => 'Name',
     'LBL_TAX_REGION_DELETED' => 'Region deleted',
+    'LBL_UPDATE_RECORD_TAXES' => 'Update record taxes',
+    'LBL_UPDATED_RECORD_TAXES' => 'Updated record taxes',
+    'company_reg_no' => 'Company Reg. No',
+    'bank_name' => 'Bank Name',
+    'bank_account_no' => 'Bank Account No',
+    'iban' => 'IBAN',
+    'swift' => 'SWIFT',
+    'description' => 'Description',
+    'country_id' => 'Country',
+    'LBL_BANK_INFORMATION' => 'Bank Information',
 );
 
 $jsLanguageStrings = array(

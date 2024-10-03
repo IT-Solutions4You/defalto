@@ -14,6 +14,13 @@ class Core_Tax_Model extends Core_DatabaseData_Model
         'deleted',
         'active',
     ];
+
+    /**
+     * @var array
+     */
+    protected array $regions = [];
+    protected static array $all_taxes = [];
+
     /**
      * @var string
      */
@@ -26,6 +33,8 @@ class Core_Tax_Model extends Core_DatabaseData_Model
      * @var string
      */
     protected string $tableName = 'tax_label';
+
+    protected bool $activeForRecord = false;
 
     /**
      * @throws Exception
@@ -77,13 +86,20 @@ class Core_Tax_Model extends Core_DatabaseData_Model
      */
     public static function getAllTaxes(): array
     {
+        if (!empty(self::$all_taxes)) {
+            return self::$all_taxes;
+        }
+
         $adb = PearDatabase::getInstance();
         $result = $adb->pquery('SELECT tax_id FROM df_taxes WHERE deleted != 1');
         $taxes = [];
 
         while ($row = $adb->fetchByAssoc($result)) {
-            $taxes[] = self::getInstanceById($row['tax_id']);
+            $taxId = $row['tax_id'];
+            $taxes[$taxId] = self::getInstanceById($taxId);
         }
+
+        self::$all_taxes = $taxes;
 
         return $taxes;
     }
@@ -147,17 +163,17 @@ class Core_Tax_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @return mixed
+     * @return float
      */
-    public function getPercentage()
+    public function getPercentage(): float
     {
-        return $this->get('percentage');
+        return (float)$this->get('percentage');
     }
 
     /**
      * @return array|mixed|string
      */
-    public function getRegionTaxes()
+    public function getRegionsInfo()
     {
         $regions = $this->get('regions');
 
@@ -283,40 +299,76 @@ class Core_Tax_Model extends Core_DatabaseData_Model
     public function migrateData()
     {
         $this->retrieveDB();
-        $columnNames = array_merge($this->db->getColumnNames('vtiger_taxregions'), $this->db->getColumnNames('vtiger_inventorytaxinfo'));
+        $columnNames = array_merge(
+            $this->db->getColumnNames('vtiger_taxregions'),
+            $this->db->getColumnNames('vtiger_inventorytaxinfo'),
+            $this->db->getColumnNames('vtiger_producttaxrel'),
+        );
         $regions = [];
         $taxes = [];
 
-        if (!empty($columnNames)) {
-            $regionResult = $this->db->pquery('SELECT * FROM vtiger_taxregions');
+        if (empty($columnNames)) {
+            return;
+        }
 
-            while ($row = $this->db->fetchByAssoc($regionResult)) {
-                $regionId = $row['regionid'];
-                $regionName = decode_html($row['name']);
-                $region = Core_TaxRegion_Model::getInstance($regionName);
-                $region->setName($regionName);
-                $region->save();
+        $regionResult = $this->db->pquery('SELECT * FROM vtiger_taxregions');
 
-                $regions[$regionId] = $region->getId();
-            }
+        while ($row = $this->db->fetchByAssoc($regionResult)) {
+            $regionId = $row['regionid'];
+            $regionName = decode_html($row['name']);
+            $region = Core_TaxRegion_Model::getInstance($regionName);
+            $region->setName($regionName);
+            $region->save();
 
-            $taxResult = $this->db->pquery('SELECT * FROM vtiger_inventorytaxinfo ORDER BY method DESC ');
+            $regions[$regionId] = $region->getId();
+        }
 
-            while ($row = $this->db->fetchByAssoc($taxResult)) {
-                $taxId = $row['taxid'];
-                $taxName = decode_html($row['taxlabel']);
+        $taxResult = $this->db->pquery('SELECT * FROM vtiger_inventorytaxinfo ORDER BY method DESC ');
 
-                $tax = Core_Tax_Model::getInstance($taxName);
-                $tax->setName($taxName);
-                $tax->set('percentage', decode_html($row['percentage']));
-                $tax->set('active', 1 === intval($row['deleted']) ? 0 : 1);
-                $tax->set('deleted', 0);
-                $tax->set('method', $row['method']);
-                $tax->set('regions', json_encode($this->migrateRegions($row, $regions)));
-                $tax->set('compound_on', json_encode($this->migrateCompoundOn($row, $taxes)));
-                $tax->save();
+        while ($row = $this->db->fetchByAssoc($taxResult)) {
+            $taxId = $row['taxid'];
+            $taxName = decode_html($row['taxlabel']);
 
-                $taxes[$taxId] = $tax->getId();
+            $tax = Core_Tax_Model::getInstance($taxName);
+            $tax->setName($taxName);
+            $tax->set('percentage', decode_html($row['percentage']));
+            $tax->set('active', 1 === intval($row['deleted']) ? 0 : 1);
+            $tax->set('deleted', 0);
+            $tax->set('method', $row['method']);
+            $tax->set('regions', json_encode($this->migrateRegions($row, $regions)));
+            $tax->set('compound_on', json_encode($this->migrateCompoundOn($row, $taxes)));
+            $tax->save();
+
+            $taxes[$taxId] = $tax->getId();
+        }
+
+        $recordResult = $this->db->pquery('SELECT * FROM vtiger_producttaxrel');
+
+        while ($row = $this->db->fetchByAssoc($recordResult)) {
+            $recordId = $row['productid'];
+            $taxId = $taxes[$row['taxid']];
+            $taxPercentage = $row['taxpercentage'];
+            $regionInfo = json_decode(decode_html($row['regions']), true);
+
+            $record = Core_TaxRecord_Model::getInstance($recordId);
+            $record->set('record_id', $recordId);
+            $record->set('tax_id', $taxId);
+            $record->set('percentage', $taxPercentage);
+            $record->set('region_id', null);
+            $record->retrieveId();
+            $record->save();
+
+            if (!empty($regionInfo) && !empty($regionInfo[0]['list'])) {
+                foreach ($regionInfo as $region) {
+                    foreach ($region['list'] as $regionId) {
+                        $regionId = $regions[$regionId];
+
+                        $record->set('percentage', $region['value']);
+                        $record->set('region_id', $regionId);
+                        $record->retrieveId();
+                        $record->save();
+                    }
+                }
             }
         }
     }
@@ -342,10 +394,12 @@ class Core_Tax_Model extends Core_DatabaseData_Model
                 $newRegionIds[] = $regions[$regionListId];
             }
 
-            $newValues[] = [
-                'list' => $newRegionIds,
-                'value' => $value['value'],
-            ];
+            foreach ($newRegionIds as $newRegionId) {
+                $newValues[] = [
+                    'region_id' => $newRegionId,
+                    'value' => $value['value'],
+                ];
+            }
         }
 
         return $newValues;
@@ -366,5 +420,98 @@ class Core_Tax_Model extends Core_DatabaseData_Model
         }
 
         return $newValues;
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function getRegions(): array
+    {
+        if (!empty($this->regions)) {
+            return $this->regions;
+        }
+
+        foreach ($this->getRegionsInfo() as $regionInfo) {
+            $id = (int)$regionInfo['region_id'];
+            $region = $this->getRegion($id);
+
+            if ($region) {
+                $region->setPercentage($regionInfo['value']);
+
+                $this->regions[$id] = $region;
+            }
+        }
+
+        return $this->regions;
+    }
+
+    /**
+     * @param int $id
+     * @return bool|object
+     * @throws AppException
+     */
+    public function getRegion(int $id): bool|object
+    {
+        return Core_TaxRegion_Model::getInstanceById($id);
+    }
+
+    public function setPercentage($value)
+    {
+        $this->set('percentage', $value);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActiveForRecord(): bool
+    {
+        return $this->activeForRecord;
+    }
+
+    /**
+     * @param bool $value
+     * @return void
+     */
+    public function setActiveForRecord(bool $value): void
+    {
+        $this->activeForRecord = $value;
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function updateRecordTaxes(): void
+    {
+        $this->retrieveDB();
+        $result = $this->db->pquery('SELECT record_id FROM df_taxes_records WHERE tax_id=? AND region_id IS NULL', [$this->getId()]);
+
+        while ($row = $this->db->fetchByAssoc($result)) {
+            $recordId = $row['record_id'];
+            $record = Core_TaxRecord_Model::getInstance($recordId);
+            $record->set('record_id', $recordId);
+            $record->set('tax_id', $this->getId());
+            $record->set('region_id', null);
+            $record->set('percentage', $this->getPercentage());
+            $record->retrieveId();
+            $record->save();
+
+            foreach ($this->getRegions() as $region) {
+                $record->set('percentage', $region->getPercentage());
+                $record->set('region_id', $region->getId());
+                $record->retrieveId();
+                $record->save();
+            }
+        }
+
+        $this->deleteUnusedRegions();
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function deleteUnusedRegions(): void
+    {
+        $regionIds = array_keys($this->getRegions());
+        $this->db->pquery('DELETE FROM df_taxes_records WHERE tax_id=? AND region_id IS NOT NULL AND region_id NOT IN (' . generateQuestionMarks($regionIds) . ')', [$this->getId(), $regionIds]);
     }
 }

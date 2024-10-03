@@ -76,10 +76,7 @@ class Download_ZipArchive extends ZipArchive
 
                         if ($skip) {
                             Download::log('Skip: ' . $relativePath);
-                        }
-
-                        /// New file
-                        if (file_put_contents($destination . $relativePath, $this->getFromIndex($i)) === false) {
+                        } elseif (file_put_contents($destination . $relativePath, $this->getFromIndex($i)) === false) {
                             $errors[$i] = $filename;
                         }
                     }
@@ -509,7 +506,7 @@ $download = Download::zip($zipFileUrl, $zipFileFolder);
                     removeClass('.button', 'hide')
                 }
             }
-            request.open('GET', 'install.php', true);
+            request.open('GET', '<?php echo $download->getPHPFileName(); ?>', true);
             request.send();
         }
 

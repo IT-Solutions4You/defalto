@@ -25,6 +25,10 @@ class MailManager_Folder_View extends MailManager_Abstract_View {
 			$foldername = $request->get('_folder');
 			$type = $request->get('type');
 
+            /**
+             * @var MailManager_Connector_Connector $connector
+             * @var MailManager_Folder_Model $folder
+             */
 			$connector = $this->getConnector($foldername);
 			$folder = $connector->folderInstance($foldername);
 

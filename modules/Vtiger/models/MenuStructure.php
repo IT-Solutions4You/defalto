@@ -210,34 +210,38 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model {
 		return $regroupMenuByParent;
 	}
 
-	public static function getOldToNewAppMapping() {
-		$oldToNewAppMap = array(
-							'CONTACT'				=> 'SALES',
-							'MARKETING_AND_SALES'	=> 'MARKETING',
-							'INVENTORY'				=> 'INVENTORY',
-							'SUPPORT'				=> 'SUPPORT',
-							'PROJECT'				=> 'PROJECT',
-							'TOOLS'					=> 'TOOLS'
-						  );
-		return $oldToNewAppMap;
-	}
+    public static function getOldToNewAppMapping()
+    {
+        return [
+            'CONTACT' => 'SALES',
+            'MARKETING_AND_SALES' => 'MARKETING',
+            'INVENTORY' => 'INVENTORY',
+            'SUPPORT' => 'SUPPORT',
+            'PROJECT' => 'PROJECT',
+            'TOOLS' => 'TOOLS',
+        ];
+    }
 
-	/**
+    /**
 	 * Function to get the app menu items in order
 	 * @return <array>
 	 */
-	public static function getAppMenuList(){
-		return array('MARKETING','SALES','INVENTORY','SUPPORT','PROJECT','TOOLS');
-	}
+    public static function getAppMenuList()
+    {
+        return ['HOME', 'MARKETING', 'SALES', 'INVENTORY', 'SUPPORT', 'PROJECT', 'ANALYTICS', 'TOOLS'];
+    }
 
-	public static function getAppIcons() {
-		$appImageIcons = array(	'MARKETING' => 'fa-users',
-								'SALES'		=> 'fa-regular fa-circle-dot',
-								'SUPPORT'	=> 'fa-life-ring',
-								'INVENTORY'	=> 'vicon-inventory',
-								'PROJECT'	=> 'fa-briefcase',
-								'TOOLS'		=> 'fa-wrench'
-							);
-		return $appImageIcons;
-	}
+    public static function getAppIcons()
+    {
+        return [
+            'HOME' => 'fa-home',
+            'MARKETING' => 'fa-users',
+            'SALES' => 'fa-regular fa-circle-dot',
+            'SUPPORT' => 'fa-life-ring',
+            'INVENTORY' => 'vicon-inventory',
+            'PROJECT' => 'fa-briefcase',
+            'ANALYTICS' => 'fa-solid fa-chart-pie',
+            'TOOLS' => 'fa-wrench',
+        ];
+    }
 }

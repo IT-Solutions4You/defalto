@@ -409,12 +409,10 @@ class Vtiger_Functions {
 				$columns  = explode(',', $metainfo['fieldname']);
 
 				// NOTE: Ignore field-permission check for non-admin (to compute record label).
-				$columnString = php7_count($columns) < 2? $columns[0] :
-					sprintf("concat(%s)", implode(",' ',", $columns));
+				$columnString = php7_count($columns) < 2? $columns[0] : sprintf("concat(%s)", implode(",' ',", $columns));
+				$sql = sprintf('SELECT %s, %s AS id FROM %s WHERE %s IN (%s)', implode(',',$columns), $idcolumn, $table, $idcolumn, generateQuestionMarks($ids));
 
-				$sql = sprintf('SELECT '. implode(',',$columns).', %s AS id FROM %s WHERE %s IN (%s)',
-						 $idcolumn, $table, $idcolumn, generateQuestionMarks($ids));
-
+                $adb->avoidPreparedSql = true;
 				$result = $adb->pquery($sql, $ids);
 
 				if($result) {

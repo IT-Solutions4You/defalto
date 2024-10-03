@@ -461,6 +461,9 @@
                                                     <option value="dd-mm-yyyy" {if $CURRENT_USER_MODEL->get('date_format') eq "dd-mm-yyyy"} selected{/if}>dd-mm-yyyy</option>
                                                     <option value="mm-dd-yyyy" {if $CURRENT_USER_MODEL->get('date_format') eq "mm-dd-yyyy"} selected{/if}>mm-dd-yyyy</option>
                                                     <option value="yyyy-mm-dd" {if $CURRENT_USER_MODEL->get('date_format') eq "yyyy-mm-dd"} selected{/if}>yyyy-mm-dd</option>
+
+                                                    <option value="dd.mm.yyyy" {if $CURRENT_USER_MODEL->get('date_format') eq "dd.mm.yyyy"} selected{/if}>dd.mm.yyyy</option>
+                                                    <option value="dd/mm/yyyy" {if $CURRENT_USER_MODEL->get('date_format') eq "dd/mm/yyyy"} selected{/if}>dd/mm/yyyy</option>
                                                 </select>
                                             </div>
                                         </div>

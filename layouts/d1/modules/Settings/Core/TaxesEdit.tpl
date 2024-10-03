@@ -128,7 +128,7 @@
                                             <span class="deleteRegionsTax btn btn-outline-secondary">
                                                 <i class="fa-solid fa-xmark"></i>
                                             </span>
-                                            <select data-placeholder="{vtranslate('LBL_SELECT_REGIONS', $QUALIFIED_MODULE)}" class="regions form-select inputElement" multiple="" data-rule-required="true">
+                                            <select data-placeholder="{vtranslate('LBL_SELECT_REGIONS', $QUALIFIED_MODULE)}" class="regions form-select inputElement" data-rule-required="true">
                                                 {foreach item=TAX_REGION_MODEL from=$TAX_REGIONS}
                                                     <option value="{$TAX_REGION_MODEL->getId()}">{$TAX_REGION_MODEL->getName()}</option>
                                                 {/foreach}
@@ -140,16 +140,16 @@
                                     </td>
                                 </tr>
                                 {assign var=REGIONS_KEY value=1}
-                                {foreach item=REGIONS_INFO key=REGIONS_KEY from=$TAX_RECORD_MODEL->getRegionTaxes()}
+                                {foreach item=REGIONS_INFO key=REGIONS_KEY from=$TAX_RECORD_MODEL->getRegionsInfo()}
                                     <tr>
                                         <td class="regionsList">
                                             <div class="input-group">
                                                 <span class="deleteRegionsTax btn btn-outline-secondary">
                                                     <i class="fa-solid fa-xmark"></i>
                                                 </span>
-                                                <select name="regions[{$REGIONS_KEY}][list]" data-placeholder="{vtranslate('LBL_SELECT_REGIONS', $QUALIFIED_MODULE)}" class="regions form-select inputElement" multiple="" data-rule-required="true">
+                                                <select name="regions[{$REGIONS_KEY}][region_id]" data-placeholder="{vtranslate('LBL_SELECT_REGIONS', $QUALIFIED_MODULE)}" class="regions form-select inputElement" data-rule-required="true">
                                                     {foreach item=TAX_REGION_MODEL from=$TAX_REGIONS}
-                                                        <option value="{$TAX_REGION_MODEL->getId()}" {if $TAX_REGION_MODEL->isSelectedRegion($REGIONS_INFO['list'])}selected{/if}>{$TAX_REGION_MODEL->getName()}</option>
+                                                        <option value="{$TAX_REGION_MODEL->getId()}" {if $TAX_REGION_MODEL->isSelectedRegion($REGIONS_INFO['region_id'])}selected{/if}>{$TAX_REGION_MODEL->getName()}</option>
                                                     {/foreach}
                                                 </select>
                                             </div>

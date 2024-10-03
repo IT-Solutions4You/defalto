@@ -286,19 +286,18 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 		return '<div class="wait_resizing_msg"><p class="text-info">'+app.vtranslate('JS_WIDGET_RESIZING_WAIT_MSG')+'</p></div>';
 	},
 
-	registerGridster : function() {
-		var thisInstance = this;
-		var widgetMargin = 10;
-		var activeTabId = this.getActiveTabId();
-		var activeGridster = jQuery(".gridster_"+activeTabId);
-		var items = activeGridster.find('ul li');
+	registerGridster: function () {
+		let thisInstance = this,
+			widgetMargin = 5,
+			activeTabId = this.getActiveTabId(),
+			activeGridster = jQuery(".gridster_" + activeTabId),
+			items = activeGridster.find('ul li');
+
 		items.detach();
 
 		// Constructing the grid based on window width
-		var cols = this.getgridColumns();
-		$(".mainContainer").css('min-width', "500px");
-		var col_width = (Math.floor(($(window).width()-30)/cols) - (2*widgetMargin));
-
+		let cols = this.getgridColumns(),
+			col_width = (Math.floor((activeGridster.width()) / cols) - (2 * widgetMargin));
 
 		Vtiger_DashBoard_Js.gridster = this.getContainer().gridster({
 			widget_margins: [widgetMargin, widgetMargin],
@@ -306,26 +305,27 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			min_cols: 1,
 			max_cols: 4,
 			min_rows: 20,
-			resize : {
-				enabled : true,
+			resize: {
+				enabled: true,
 				start: function (e, ui, widget) {
-					var widgetContent = widget.find('.dashboardWidgetContent');
+					let widgetContent = widget.find('.dashboardWidgetContent');
 					widgetContent.before(thisInstance.getWaitingForResizeCompleteMsg());
 					widgetContent.addClass('hide');
 				},
-				stop : function(e, ui, widget) {
-					var widgetContent = widget.find('.dashboardWidgetContent');
+				stop: function (e, ui, widget) {
+					let widgetContent = widget.find('.dashboardWidgetContent');
 					widgetContent.prev('.wait_resizing_msg').remove();
 					widgetContent.removeClass('hide');
 
-					var widgetName = widget.data('name');
-					 /**
+					let widgetName = widget.data('name');
+					/**
 					 * we are setting default height in DashBoardWidgetContents.tpl
 					 * need to overwrite based on resized widget height
-					 */ 
-					var widgetChartContainer = widget.find(".widgetChartContainer");
-					if(widgetChartContainer.length > 0){
-						widgetChartContainer.css("height",widget.height() - 110);
+					 */
+					let widgetChartContainer = widget.find(".widgetChartContainer");
+
+					if (widgetChartContainer.length > 0) {
+						widgetChartContainer.css("height", widget.height() - 110);
 					}
 					widgetChartContainer.html('');
 					Vtiger_Widget_Js.getInstance(widget, widgetName);
@@ -334,14 +334,14 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 				}
 			},
 			draggable: {
-				'stop': function(event, ui) {
-					 thisInstance.savePositions(activeGridster.find('.dashboardWidget'));
+				'stop': function (event, ui) {
+					thisInstance.savePositions(activeGridster.find('.dashboardWidget'));
 				}
 			}
 		}).data('gridster');
 
 
-		items.sort(function(a,b){
+		items.sort(function (a, b) {
 			var widgetA = jQuery(a);
 			var widgetB = jQuery(b);
 			var rowA = parseInt(widgetA.attr('data-row'));
@@ -349,20 +349,20 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			var colA = parseInt(widgetA.attr('data-col'));
 			var colB = parseInt(widgetB.attr('data-col'));
 
-			if(rowA === rowB && colA === colB) {
+			if (rowA === rowB && colA === colB) {
 				return 0;
 			}
 
-			if(rowA > rowB || (rowA === rowB && colA > colB)) {
+			if (rowA > rowB || (rowA === rowB && colA > colB)) {
 				return 1;
 			}
 			return -1;
 		});
-		jQuery.each(items , function (i, e) {
+		jQuery.each(items, function (i, e) {
 			var item = $(this);
 			var columns = parseInt(item.attr("data-sizex")) > cols ? cols : parseInt(item.attr("data-sizex"));
 			var rows = parseInt(item.attr("data-sizey"));
-			if(item.attr("data-position")=="false"){
+			if (item.attr("data-position") == "false") {
 				Vtiger_DashBoard_Js.gridster.add_widget(item, columns, rows);
 			} else {
 				Vtiger_DashBoard_Js.gridster.add_widget(item, columns, rows);

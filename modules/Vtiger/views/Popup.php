@@ -131,7 +131,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 
         if(!empty($relatedParentModule) && !empty($relatedParentId)) {
 			$parentRecordModel = Vtiger_Record_Model::getInstanceById($relatedParentId, $relatedParentModule);
-			$listViewModel = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $moduleName, $label,$relationId);
+			$listViewModel = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $moduleName, $label, $relationId);
 			$searchModuleModel = $listViewModel->getRelatedModuleModel();
 		}else{
 			$listViewModel = Vtiger_ListView_Model::getInstanceForPopup($moduleName);

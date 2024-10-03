@@ -56,7 +56,7 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View {
 		}
 	}
 
-	function preProcessTplName(Vtiger_Request $request) {
+	public function preProcessTplName(Vtiger_Request $request) {
 		return 'dashboards/DashBoardPreProcess.tpl';
 	}
 

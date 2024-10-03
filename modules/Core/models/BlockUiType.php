@@ -76,4 +76,16 @@ class Core_BlockUiType_Model extends Vtiger_Base_Model
 
         return $db->getLastInsertID();
     }
+
+    public function getBlockUiTypeTable()
+    {
+        return (new Core_DatabaseData_Model())->getTable('df_blockuitype', 'blockuitype');
+    }
+
+    public function createTables()
+    {
+        $this->getBlockUiTypeTable()
+            ->createTable()
+            ->createColumn('name', 'varchar(255) NOT NULL');
+    }
 }

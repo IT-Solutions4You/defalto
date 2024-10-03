@@ -4,3 +4,8 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 *}
+{strip}
+</div>
+</div>
+</div>
+{/strip}

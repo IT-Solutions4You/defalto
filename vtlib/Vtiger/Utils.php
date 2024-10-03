@@ -189,7 +189,7 @@ class Vtiger_Utils {
         $tablename = Vtiger_Util_Helper::validateStringForSql($tablename);
 		$org_dieOnError = $adb->dieOnError;
 		$adb->dieOnError = false;
-		$sql = "CREATE TABLE " . $tablename . $criteria;
+		$sql = 'CREATE TABLE IF NOT EXISTS ' . $tablename . $criteria;
 		if($suffixTableMeta !== false) {
 			if($suffixTableMeta === true) {
 				if($adb->isMySQL()) {

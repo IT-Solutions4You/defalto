@@ -1303,7 +1303,7 @@ $languageStrings = array(
 	'LBL_ROLEANDSUBORDINATE' => 'Role and Subordinates',
 	'LBL_YOUR_LEARNING_SCORE' => 'Your CRM learning score',
 	'LBL_SWITCH_TO_VTIGER7_NOW' => 'Switch to Vtiger7 by Feb 15th',
-	'LBL_VTIGER6_RETIREMENT_NOTICE' => 'This version will be retired on Feb 15th 2016',
+	'LBL_Defalto_RETIREMENT_NOTICE' => 'This version will be retired on Feb 15th 2016',
 	'ModTracker' => 'Updates',
 	'LBL_MAIL_SENT_SUCCESSFULLY' => 'Mail Sent Successfully',
         'LBL_MAIL_SAVED_SUCCESSFULLY' => 'Mail Saved Successfully',
@@ -1450,6 +1450,9 @@ $languageStrings = array(
     'LBL_ALL_COUNTRIES_HAVE_BEEN_DEACTIVATED' => 'All countries have been deactivated',
     'LBL_ADD_REGION' => 'Add region',
     'LBL_ADD_TAX' => 'Add tax',
+    'LBL_SYSTEM_INFORMATION' => 'System Information',
+    'LBL_SHOW_RELATED_COMMENTS' => 'Show related comments',
+    'LBL_SHOW_RELATED_COMMENTS_INFO' => "If 'Show related comments' is set to 'On' comments on related records will be shown. For example, if you are viewing comments on an Organization record, comments added to related Contacts, Opportunities, Tickets, ..etc would also be displayed.",
 );
 
 $jsLanguageStrings = array(
@@ -2045,4 +2048,5 @@ $jsLanguageStrings = array(
     'JS_MONTH' => 'Month',
     'JS_YEAR' => 'Year',
     'JS_NEXT' => 'Next',
+    'JS_UPDATE_RECORD_TAXES_QUESTION' => 'Do you want to update the taxes of all records?',
 );

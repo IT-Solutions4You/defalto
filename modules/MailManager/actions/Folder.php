@@ -36,7 +36,9 @@ class MailManager_Folder_Action extends Vtiger_Action_Controller {
 
 		$mailContents = array();
 		foreach ($mailIds as $msgNo) {
-			$message = $connector->openMail($msgNo, $folderName);
+			$message = $connector->openMail($msgNo, $folderName, false);
+            $message->retrieveBody();
+
 			$mailContents[$msgNo] = $message->getInlineBody();
 		}
 		$response = new Vtiger_Response();

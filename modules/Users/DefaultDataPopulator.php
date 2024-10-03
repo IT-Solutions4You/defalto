@@ -290,7 +290,20 @@ class DefaultDataPopulator extends CRMEntity
             $blockId = $this->db->getUniqueID('vtiger_blocks');
             $sequence++;
             $blockIds[] = $blockId;
-            $this->db->query(sprintf('INSERT INTO vtiger_blocks VALUES (%s,%s,\'%s\',%s,0,0,0,0,0,1,0)', $blockId, $tabId, $blockLabel, $sequence));
+
+            (new Vtiger_Block())->getBlockTable()->insertData([
+                'blockid' =>  $blockId,
+                'tabid' =>  $tabId,
+                'blocklabel' =>  $blockLabel,
+                'sequence' =>  $sequence,
+                'show_title' => 0,
+                'visible' => 0,
+                'create_view' => 0,
+                'edit_view' => 0,
+                'detail_view' => 0,
+                'display_status' => 1,
+                'iscustom' => 0,
+            ]);
         }
 
         return $blockIds;
@@ -583,7 +596,6 @@ class DefaultDataPopulator extends CRMEntity
             [13, null, 'status', 'vtiger_troubletickets', 1, '15', 'ticketstatus', 'Status', 1, 2, '', 100, 7, $helpDeskInformation, 1, 'V~M', 1, 2, 'BAS', 1],
             [13, null, 'category', 'vtiger_troubletickets', 1, '15', 'ticketcategories', 'Category', 1, 2, '', 100, 10, $helpDeskInformation, 1, 'V~O', 1, null, 'BAS', 1],
             [13, null, 'hours', 'vtiger_troubletickets', 1, '1', 'hours', 'Hours', 1, 2, '', 100, 9, $helpDeskInformation, 1, 'I~O', 1, null, 'BAS', 1],
-            [13, null, 'days', 'vtiger_troubletickets', 1, '1', 'days', 'Days', 1, 2, '', 100, 10, $helpDeskInformation, 1, 'I~O', 1, null, 'BAS', 1],
             [13, null, 'createdtime', 'vtiger_crmentity', 1, '70', 'createdtime', 'Created Time', 1, 0, '', 100, 9, $helpDeskInformation, 2, 'DT~O', 3, null, 'BAS', 0],
             [13, null, 'modifiedtime', 'vtiger_crmentity', 1, '70', 'modifiedtime', 'Modified Time', 1, 0, '', 100, 12, $helpDeskInformation, 2, 'DT~O', 3, null, 'BAS', 0],
             [13, null, 'from_portal', 'vtiger_ticketcf', 1, '56', 'from_portal', 'From Portal', 1, 0, '', 100, 13, $helpDeskInformation, 3, 'C~O', 3, null, 'BAS', 0],
@@ -1164,13 +1176,18 @@ class DefaultDataPopulator extends CRMEntity
 
 
         //Insert into vtiger_organizationdetails vtiger_table
-        $organizationId = $this->db->getUniqueID('vtiger_organizationdetails');
-        $this->db->query(
-            "insert into vtiger_organizationdetails(organization_id,organizationname,address,city,state,country,code,phone,fax,website,logoname)
-								values ($organizationId,'IT-Solutions4You s.r.o.','Slovenska 69','Presov',
-										'','Slovakia','08001','+421 773 23 70','+421 773 23 70','it-solutions4you.com','')"
-        );
-
+        (new Core_DatabaseData_Model())->getTable('vtiger_organizationdetails', null)->insertData([
+            'organization_id' => $this->db->getUniqueID('vtiger_organizationdetails'),
+            'organizationname' => 'IT-Solutions4You s.r.o.',
+            'address' => 'IT-Solutions4You s.r.o.',
+            'city' => 'Presov',
+            'state' => '',
+            'country_id' => 'SK',
+            'code' => '08001',
+            'phone' => '+421 773 23 70',
+            'website' => 'it-solutions4you.com',
+            'logoname' => '',
+        ]);
 
         $this->db->query("insert into vtiger_actionmapping values(0,'Save',0)");
         $this->db->query("insert into vtiger_actionmapping values(1,'EditView',0)");

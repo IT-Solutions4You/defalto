@@ -753,7 +753,7 @@ Vtiger.Class("Vtiger_List_Js", {
 
 			let value = jQuery.trim(valueElement.text()),
 				//adding string,text,url,currency in customhandling list as string will be textlengthchecked
-				customHandlingFields = ['owner', 'ownergroup', 'picklist', 'multipicklist', 'reference', 'string', 'url', 'text', 'email', 'boolean', 'country'];
+				customHandlingFields = ['owner', 'ownergroup', 'picklist', 'multipicklist', 'reference', 'string', 'url', 'text', 'email', 'boolean', 'country', 'region'];
 
 			if (jQuery.inArray(fieldType, customHandlingFields) !== -1) {
 				value = tdElement.data('rawvalue');
@@ -1394,7 +1394,7 @@ Vtiger.Class("Vtiger_List_Js", {
 			formInputFields = form.find(':input').not('[id^=include_in_mass_edit_]'),
 			autoIncludeFieldsInMassEditCallback = function () {
 				let fieldName = $(this).attr('name');
-				fieldName = fieldName.replace(/\[\]$/, ''); //remove trailing [] for cases like multiselect
+				fieldName = fieldName.replace(/(\[.*\])$/, ''); //remove trailing [] for cases like multiselect
 
 				form.find("input[id=include_in_mass_edit_" + fieldName + "]").prop("checked", true);
 			};
@@ -1405,40 +1405,42 @@ Vtiger.Class("Vtiger_List_Js", {
 
 	saveMassEdit: function (event) {
 		event.preventDefault();
-		var form = $('#massEdit');
-		var changedFields = form.find("input[id^=include_in_mass_edit_]:checked");
+
+		let form = $('#massEdit'),
+			changedFields = form.find("input[id^=include_in_mass_edit_]:checked");
 
 		app.helper.showProgress();
+
 		if (changedFields.length > 0) {
-			var newData = app.convertUrlToDataParams(form.serialize());
-			var updateFieldsRequest = '';
+			let newData = app.convertArrayToDataParams(form.serializeArray()),
+				updateFieldsRequest = {};
 
 			//add url params for hidden fields needed for the save request
-			var hiddenFields = form.children("input[type=hidden]");
-			hiddenFields.each(function(i, obj){
-				key = $(this).attr("name");
+			let hiddenFields = form.children("input[type=hidden]");
+
+			hiddenFields.each(function (i, obj) {
+				let key = $(this).attr("name");
 
 				if (typeof newData[key] !== 'undefined') {
-					updateFieldsRequest += key + '=' + newData[key] + '&';
+					updateFieldsRequest[key] = newData[key];
 				}
 			});
 
 			//add url params for fields that will be updated
-			changedFields.each(function(i, obj){
-				var fieldName = $(this).data("update-field");
-				var fieldNameArray = fieldName + encodeURI('[]'); //fieldnames of fields like multipicklist have [] after the fieldname
+			changedFields.each(function (i, obj) {
+				let fieldName = $(this).data('update-field');
 
-				var key = fieldName;
-				if (typeof newData[fieldNameArray] !== 'undefined') {
-					key = fieldNameArray;
-				}
+				$.each(newData, function (fieldKey) {
+					let keyInfo = fieldKey.split('[');
 
-				var value = newData[key];
-				updateFieldsRequest += key + '=';
-				if (typeof value !== 'undefined') {
-					updateFieldsRequest += value;
-				}
-				updateFieldsRequest += '&';
+					if (fieldName === keyInfo[0]) {
+						if (typeof newData[fieldKey] !== 'undefined') {
+							updateFieldsRequest[fieldKey] = newData[fieldKey];
+						} else {
+							updateFieldsRequest[fieldKey] = '';
+						}
+					}
+				});
 			});
 
 			app.request.post({data: updateFieldsRequest}).then(function (err, data) {
@@ -1457,7 +1459,6 @@ Vtiger.Class("Vtiger_List_Js", {
 			app.helper.showAlertBox({'message': app.vtranslate('NONE_OF_THE_FIELD_VALUES_ARE_CHANGED_IN_MASS_EDIT')});
 		}
 	},
-
 	markSelectedIdsCheckboxes: function () {
 		let self = this,
 			recordSelectTrackerObj = self.getRecordSelectTrackerInstance(),
@@ -2438,137 +2439,142 @@ Vtiger.Class("Vtiger_List_Js", {
 			e.stopPropagation();
 		});
 	},
+	updateColumnsCarets() {
+		$.each($('.collapse-fields'), function (index, element) {
+			let icon = $(element).find('i');
+
+			if ($(element).is('.collapsed')) {
+				icon.removeClass('fa-caret-down').addClass('fa-caret-right');
+			} else {
+				icon.removeClass('fa-caret-right').addClass('fa-caret-down');
+			}
+		})
+	},
 	registerConfigureColumnsEvents: function () {
-		var thisInstance = this;
-		var listViewContentDiv = this.getListViewContainer();
+		let self = this,
+			listViewContentDiv = self.getListViewContainer();
+
 		listViewContentDiv.on('click', '.listColumnFilter', function (e) {
 			if (jQuery(e.currentTarget).hasClass('disabled')) {
 				return false;
 			}
-			var params = {
-				module: app.module(),
-				view: 'ListAjax',
-				mode: 'ShowListColumnsEdit',
-				source_module: app.module(),
-				cvid: thisInstance.getCurrentCvId()
-			};
+			let params = {
+					module: app.module(),
+					view: 'ListAjax',
+					mode: 'ShowListColumnsEdit',
+					source_module: app.module(),
+					cvid: self.getCurrentCvId()
+				},
+				callback = function (container) {
+					let selectedFieldsList = jQuery('#selectedFieldsList'),
+						selectedFieldsListContainer = container.find('.selectedFieldsListContainer'),
+						availFieldsList = jQuery('#avialFieldsList'),
+						availFieldsListContainer = container.find('.avialFieldsListContainer');
 
-			var callback = function (container) {
-				var selectedFieldsList = jQuery('#selectedFieldsList');
-				var selectedFieldsListContainer = container.find('.selectedFieldsListContainer');
-				var availFieldsList = jQuery('#avialFieldsList');
-				var availFieldsListContainer = container.find('.avialFieldsListContainer');
+					//register ui events
+					app.helper.showVerticalScroll(availFieldsListContainer, {setHeight: '25vh', advanced: {updateOnSelectorChange: 'true'}});
+					app.helper.showVerticalScroll(selectedFieldsListContainer, {setHeight: '25vh', advanced: {updateOnSelectorChange: 'true'}});
 
-				//register ui events
-				app.helper.showVerticalScroll(availFieldsListContainer,
-						{setHeight: '200', advanced: {updateOnSelectorChange: 'true'}});
-				app.helper.showVerticalScroll(selectedFieldsListContainer,
-						{setHeight: '250', advanced: {updateOnSelectorChange: 'true'}});
-
-				selectedFieldsList.sortable({
-					start: function (e, ui) {
-						if (!ui.item.hasClass('active')) {
-							ui.item.addClass('active');
+					selectedFieldsList.sortable({
+						start: function (e, ui) {
+							if (!ui.item.hasClass('active')) {
+								ui.item.addClass('active');
+							}
+						},
+						stop: function (e, ui) {
+							ui.item.removeClass('active');
 						}
-					},
-					stop: function (e, ui) {
-						ui.item.removeClass('active');
-					}
-				});
+					});
 
-				container.find('.searchAvailFields').instaFilta({
-					onFilterComplete: function (macthedItems) {
-						if (macthedItems.length > 0) {
-							jQuery.each(macthedItems, function (i, ele) {
-								var parent = jQuery(ele).closest('.instafilta-section');
-								var availFieldBlock = parent.find('.availFieldBlock');
-								if (availFieldBlock.find('i').hasClass('fa-caret-right')) {
-									availFieldBlock.find('a[data-parent="#accordion"]').trigger('click');
+					container.find('.searchAvailFields').instaFilta({
+						onFilterComplete: function (matchedItems) {
+							if (matchedItems.length > 0) {
+								jQuery.each(matchedItems, function (i, e) {
+									let element = jQuery(e).parents('.collapse-container'),
+										collapseId = element.find('.collapse-fields').attr('data-bs-target'),
+										collapse = new bootstrap.Collapse(collapseId);
+
+									collapse.show();
+
+									self.updateColumnsCarets();
+								});
+							}
+						}
+					});
+
+					availFieldsListContainer.on('click', '.collapse-fields', function (e) {
+						self.updateColumnsCarets();
+
+						if (params && params.autoIconChangeForOthers) {
+							return true;
+						}
+					});
+
+					//remove selected field event
+					selectedFieldsList.on('click', '.removeField', function (e) {
+						var selectedFieldsEles = selectedFieldsList.find('.item');
+						if (selectedFieldsEles.length <= 1) {
+							app.helper.showErrorNotification({message: app.vtranslate('JS_ATLEAST_SELECT_ONE_FIELD')});
+							return false;
+						}
+						var ele = jQuery(e.currentTarget);
+						var sourceFieldEle = ele.parent('.item');
+						var targetFieldEle = availFieldsListContainer.find('.item[data-cv-columnname="' + sourceFieldEle.attr('data-cv-columnname') + '"]');
+						targetFieldEle.removeClass('hide');
+						sourceFieldEle.remove();
+					});
+
+					//add available field to selected list
+					availFieldsList.on('click', '.item', function (e) {
+						var selectedFieldsEles = selectedFieldsList.find('.item');
+						var limit = jQuery('#maxListFieldsSelectionSize').text();
+						if (selectedFieldsEles.length > limit) {
+							app.helper.showErrorNotification({message: app.vtranslate('JS_YOU_CAN_SELECT_ONLY') + ' ' + limit + ' ' + app.vtranslate('JS_ITEMS')});
+							return false;
+						}
+						var sourceFieldEle = jQuery(e.currentTarget);
+						var targetFieldEle = selectedFieldsListContainer.find('.item-dummy').clone();
+						targetFieldEle.removeClass('hide item-dummy').addClass('item');
+						targetFieldEle.attr('data-cv-columnname', sourceFieldEle.attr('data-cv-columnname'));
+						targetFieldEle.attr('data-columnname', sourceFieldEle.attr('data-columnname'));
+						targetFieldEle.attr('data-field-id', sourceFieldEle.attr('data-field-id'));
+						targetFieldEle.find('.fieldLabel').html(sourceFieldEle.find('.fieldLabel').html());
+						targetFieldEle.appendTo(selectedFieldsList);
+						sourceFieldEle.addClass('hide');
+					});
+
+					var configColumnsForm = container.find('.configColumnsForm');
+					var params = {
+						submitHandler: function (form) {
+							var formData = jQuery(form).serializeFormData();
+							var columnsList = [];
+							var selectedFieldEles = selectedFieldsList.find('.item');
+							jQuery.each(selectedFieldEles, function (i, e) {
+								var ele = jQuery(e);
+								columnsList.push(ele.attr('data-cv-columnname'));
+							});
+
+							formData.source_module = app.module();
+							formData.columnslist = JSON.stringify(columnsList);
+							app.helper.showProgress();
+							app.request.post({data: formData}).then(function (err, res) {
+								app.helper.hideProgress();
+								if (err) {
+									app.helper.showErrorNotification({"message": err});
+									return false;
+								} else {
+									app.helper.showSuccessNotification({message: res.message});
+									app.helper.hideModal();
+									var appName = app.getAppName();
+									var url = res['listviewurl'] + '&app=' + appName;
+									window.location.href = url;
 								}
 							});
 						}
-					}
-				});
+					};
 
-				availFieldsListContainer.on('click', '.availFieldBlock a[data-parent="#accordion"]', function (e) {
-					var target = jQuery(e.currentTarget);
-					var closestItag = target.find('i');
-					if (closestItag.hasClass('fa-caret-right')) {
-						closestItag.removeClass('fa-caret-right').addClass('fa-caret-down');
-					} else {
-						closestItag.removeClass('fa-caret-down').addClass('fa-caret-right');
-					}
-
-					if (params && params.autoIconChangeForOthers) {
-						return true;
-					}
-				});
-
-				//remove selected field event
-				selectedFieldsList.on('click', '.removeField', function (e) {
-					var selectedFieldsEles = selectedFieldsList.find('.item');
-					if (selectedFieldsEles.length <= 1) {
-						app.helper.showErrorNotification({message: app.vtranslate('JS_ATLEAST_SELECT_ONE_FIELD')});
-						return false;
-					}
-					var ele = jQuery(e.currentTarget);
-					var sourceFieldEle = ele.parent('.item');
-					var targetFieldEle = availFieldsListContainer.find('.item[data-cv-columnname="' + sourceFieldEle.attr('data-cv-columnname') + '"]');
-					targetFieldEle.removeClass('hide');
-					sourceFieldEle.remove();
-				});
-
-				//add available field to selected list
-				availFieldsList.on('click', '.item', function (e) {
-					var selectedFieldsEles = selectedFieldsList.find('.item');
-					var limit = jQuery('#maxListFieldsSelectionSize').text();
-					if (selectedFieldsEles.length > limit) {
-						app.helper.showErrorNotification({message: app.vtranslate('JS_YOU_CAN_SELECT_ONLY')+' '+limit+' '+app.vtranslate('JS_ITEMS')});
-						return false;
-					}
-					var sourceFieldEle = jQuery(e.currentTarget);
-					var targetFieldEle = selectedFieldsListContainer.find('.item-dummy').clone();
-					targetFieldEle.removeClass('hide item-dummy').addClass('item');
-					targetFieldEle.attr('data-cv-columnname', sourceFieldEle.attr('data-cv-columnname'));
-					targetFieldEle.attr('data-columnname', sourceFieldEle.attr('data-columnname'));
-					targetFieldEle.attr('data-field-id', sourceFieldEle.attr('data-field-id'));
-					targetFieldEle.find('.fieldLabel').html(sourceFieldEle.find('.fieldLabel').html());
-					targetFieldEle.appendTo(selectedFieldsList);
-					sourceFieldEle.addClass('hide');
-				});
-
-				var configColumnsForm = container.find('.configColumnsForm');
-				var params = {
-					submitHandler: function (form) {
-						var formData = jQuery(form).serializeFormData();
-						var columnsList = [];
-						var selectedFieldEles = selectedFieldsList.find('.item');
-						jQuery.each(selectedFieldEles, function (i, e) {
-							var ele = jQuery(e);
-							columnsList.push(ele.attr('data-cv-columnname'));
-						});
-
-						formData.source_module = app.module();
-						formData.columnslist = JSON.stringify(columnsList);
-						app.helper.showProgress();
-						app.request.post({data: formData}).then(function (err, res) {
-							app.helper.hideProgress();
-							if (err) {
-								app.helper.showErrorNotification({"message": err});
-								return false;
-							} else {
-								app.helper.showSuccessNotification({message: res.message});
-								app.helper.hideModal();
-								var appName = app.getAppName();
-								var url = res['listviewurl'] + '&app=' + appName;
-								window.location.href = url;
-							}
-						});
-					}
-				};
-
-				configColumnsForm.vtValidate(params);
-			}
+					configColumnsForm.vtValidate(params);
+				}
 
 			app.helper.showProgress();
 			app.request.post({data: params}).then(function (err, res) {

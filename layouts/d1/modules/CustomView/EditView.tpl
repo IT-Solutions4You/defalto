@@ -63,19 +63,21 @@
 										<optgroup label='{vtranslate($BLOCK_LABEL, $SOURCE_MODULE)}'>
 											{foreach key=FIELD_NAME item=FIELD_MODEL from=$BLOCK_FIELDS}
 												{* To not show star field in filter select view*}
+												{assign var=CV_COLUMN_NAME value=decode_html($FIELD_MODEL->getCustomViewColumnName())}
 												{if $FIELD_MODEL->getDisplayType() == '6'}
 													{continue}
 												{/if}
 												{if $FIELD_MODEL->isMandatory()}
-													{array_push($MANDATORY_FIELDS, $FIELD_MODEL->getCustomViewColumnName())}
+													{assign var=MANDATORY_ID value=array_push($MANDATORY_FIELDS, $CV_COLUMN_NAME)}
 												{/if}
 												{assign var=FIELD_MODULE_NAME value=$FIELD_MODEL->getModule()->getName()}
-												<option value="{$FIELD_MODEL->getCustomViewColumnName()}" data-field-name="{$FIELD_NAME}"
-													{if in_array(decode_html($FIELD_MODEL->getCustomViewColumnName()), $SELECTED_FIELDS)}
-														selected
+												<option value="{$CV_COLUMN_NAME}" data-field-name="{$FIELD_NAME}"
+													{if in_array(decode_html($CV_COLUMN_NAME), $SELECTED_FIELDS)}
+														selected="selected"
 													{elseif (!$RECORD_ID) && ($FIELD_MODEL->isSummaryField() || $FIELD_MODEL->isHeaderField()) && ($FIELD_MODULE_NAME eq $SOURCE_MODULE) && (!(preg_match("/\([A-Za-z_0-9]* \; \([A-Za-z_0-9]*\) [A-Za-z_0-9]*\)/", $FIELD_NAME))) && $NUMBER_OF_COLUMNS_SELECTED < $MAX_ALLOWED_COLUMNS}
-														selected
+														selected="selected"
 														{assign var=NUMBER_OF_COLUMNS_SELECTED value=$NUMBER_OF_COLUMNS_SELECTED + 1}
+														{assign var=SELECTED_ID value=array_push($SELECTED_FIELDS, $CV_COLUMN_NAME)}
 													{/if}
 													>{Vtiger_Util_Helper::toSafeHTML(vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE))}
 													{if $FIELD_MODEL->isMandatory() eq true} <span>*</span> {/if}

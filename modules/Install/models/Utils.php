@@ -47,6 +47,8 @@ class Install_Utils_Model {
         'ProjectMilestone',
         'ProjectTask',
         'SMSNotifier',
+        'HelpDesk',
+        'Potentials'
     ];
 
     /**

@@ -183,35 +183,47 @@ class Vtiger_Viewer extends Smarty {
 	 * @param <String> $moduleName
 	 * @return <String> - Module specific template path if exists, otherwise default template path for the given template name
 	 */
-	public function getTemplatePath($templateName, $moduleName='') {
-		$moduleName = str_replace(':', '/', $moduleName);
-		$completeFilePath = $this->getTemplateDir(0). DIRECTORY_SEPARATOR . "modules/$moduleName/$templateName";
-		if(!empty($moduleName) && file_exists($completeFilePath)) {
-			return "modules/$moduleName/$templateName";
-		} else {
-			// Fall back lookup on actual module, in case where parent module doesn't contain actual module within in (directory structure)
-			if(strpos($moduleName, '/') > 0) {
-				$moduleHierarchyParts = explode('/', $moduleName);
-				$actualModuleName = $moduleHierarchyParts[php7_count($moduleHierarchyParts)-1];
-				$baseModuleName = $moduleHierarchyParts[0];
-				$fallBackOrder = array (
-					"$actualModuleName",
-					"$baseModuleName/Vtiger"
-				);
+    public function getTemplatePath($templateName, $moduleName = '')
+    {
+        $moduleName = str_replace(':', '/', $moduleName);
+        $templateDir = rtrim($this->getTemplateDir(0), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $completeFilePath = $templateDir . "modules/$moduleName/$templateName";
 
-				foreach($fallBackOrder as $fallBackModuleName) {
-					$intermediateFallBackFileName = 'modules/'. $fallBackModuleName .'/'.$templateName;
-					$intermediateFallBackFilePath = $this->getTemplateDir(0). DIRECTORY_SEPARATOR . $intermediateFallBackFileName;
-					if(file_exists($intermediateFallBackFilePath)) {
-						return $intermediateFallBackFileName;
-					}
-				}
-			}
-			return "modules/Vtiger/$templateName";
-		}
-	}
+        if (!empty($moduleName) && file_exists($completeFilePath)) {
+            return "modules/$moduleName/$templateName";
+        } else {
+            // Fall back lookup on actual module, in case where parent module doesn't contain actual module within in (directory structure)
+            if (strpos($moduleName, '/') > 0) {
+                $moduleHierarchyParts = explode('/', $moduleName);
+                $actualModuleName = $moduleHierarchyParts[php7_count($moduleHierarchyParts) - 1];
+                $baseModuleName = $moduleHierarchyParts[0];
+                $fallBackOrder = [
+                    "$actualModuleName",
+                    "$baseModuleName/Vtiger",
+                ];
 
-	/** @Override */
+                foreach ($fallBackOrder as $fallBackModuleName) {
+                    $intermediateFallBackFileName = 'modules/' . $fallBackModuleName . '/' . $templateName;
+                    $intermediateFallBackFilePath = $templateDir . $intermediateFallBackFileName;
+
+                    if (file_exists($intermediateFallBackFilePath)) {
+                        return $intermediateFallBackFileName;
+                    }
+                }
+            }
+
+            $coreTemplateName = 'modules/Core/' . $templateName;
+            $coreFilePath = $templateDir . $coreTemplateName;
+
+            if (file_exists($coreFilePath)) {
+                return $coreTemplateName;
+            }
+
+            return "modules/Vtiger/$templateName";
+        }
+    }
+
+    /** @Override */
 	public function assign($tpl_var, $value = null, $nocache = false) {
 		// Reject unexpected value assignments.
 		if ($tpl_var == 'SELECTED_MENU_CATEGORY') {

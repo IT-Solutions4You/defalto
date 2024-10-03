@@ -358,8 +358,16 @@ if(defined('VTIGER_UPGRADE')) {
 
 	$refModulesList = $modCommentFieldInstance->getReferenceList();
 	foreach ($refModulesList as $refModuleName) {
-		$refModuleModel = Vtiger_Module_Model::getInstance($refModuleName);
-		$refModuleTabId = $refModuleModel->getId();
+        if (empty($refModuleTabId)) {
+            continue;
+        }
+
+		$refModuleTabId = Vtiger_Functions::getModuleId($refModuleName);
+
+        if (empty($refModuleTabId)) {
+            continue;
+        }
+
 		$db->pquery('UPDATE vtiger_relatedlists SET sequence=(sequence+1) WHERE tabid=?', array($refModuleTabId));
 
 		$query = 'SELECT 1 FROM vtiger_relatedlists WHERE tabid=? AND related_tabid =?';
@@ -1378,111 +1386,10 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 	//End: Tax Enhancements - Compound Taxes, Regional Taxes, Deducted Taxes, Other Charges
-
-	if (!Vtiger_Utils::CheckTable('vtiger_app2tab')) {
-		Vtiger_Utils::CreateTable('vtiger_app2tab', "(
-			`tabid` INT(11) DEFAULT NULL,
-			`appname` VARCHAR(20) DEFAULT NULL,
-			`sequence` INT(11) DEFAULT NULL,
-			`visible` TINYINT(3) DEFAULT '1',
-			CONSTRAINT `vtiger_app2tab_fk_tab` FOREIGN KEY (`tabid`) REFERENCES `vtiger_tab` (`tabid`) ON DELETE CASCADE
-			)", true);
-	}
-
-	$restrictedModules = array('ModComments');
-	$appsList = array(	'SALES'		=> array('Potentials', 'Quotes', 'Contacts', 'Accounts'),
-						'PROJECT'	=> array('Project', 'ProjectTask', 'ProjectMilestone', 'Contacts', 'Accounts'));
-
-	$menuModelsList = Vtiger_Module_Model::getEntityModules();
-	$menuStructure = Vtiger_MenuStructure_Model::getInstanceFromMenuList($menuModelsList);
-	$menuGroupedByParent = $menuStructure->getMenuGroupedByParent();
-	$menuGroupedByParent = $menuStructure->regroupMenuByParent($menuGroupedByParent);
-	foreach ($menuGroupedByParent as $app => $appModules) {
-		$modules = array();
-		if (isset($appsList[$app]) && $appsList[$app]) {
-			$modules = $appsList[$app];
-		}
-		foreach ($appModules as $moduleName => $moduleModel) {
-			if (!in_array($moduleName, $modules)) {
-				$modules[] = $moduleName;
-			}
-		}
-		foreach ($modules as $moduleName) {
-			if (!in_array($moduleName, $restrictedModules)) {
-				Settings_MenuEditor_Module_Model::addModuleToApp($moduleName, $app);
-			}
-		}
-	}
-
-	$tabIdResult = $db->pquery('SELECT tabid FROM vtiger_app2tab WHERE appname=? AND tabid=?', array('SALES', getTabid('SMSNotifier')));
-	$existingTabId = $db->query_result($tabIdResult, 0, 'tabid');
-	if (!$existingTabId) {
-		$seqResult = $db->pquery('SELECT max(sequence) as sequence FROM vtiger_app2tab WHERE appname=?', array('SALES'));
-		$sequence = $db->query_result($seqResult, 0, 'sequence');
-		$db->pquery('INSERT INTO vtiger_app2tab(tabid,appname,sequence,visible) values(?,?,?,?)', array(getTabid('SMSNotifier'), 'SALES', $sequence+11, 1));
-	}
-
-	$tabIdResult = $db->pquery('SELECT tabid FROM vtiger_app2tab WHERE appname=? AND tabid=?', array('SUPPORT', getTabid('SMSNotifier')));
-	$existingTabId = $db->query_result($tabIdResult, 0, 'tabid');
-	if (!$existingTabId) {
-		$seqResult = $db->pquery('SELECT max(sequence) as sequence FROM vtiger_app2tab WHERE appname=?', array('SUPPORT'));
-		$sequence = $db->query_result($seqResult, 0, 'sequence');
-		$db->pquery('INSERT INTO vtiger_app2tab(tabid,appname,sequence,visible) values(?,?,?,?)', array(getTabid('SMSNotifier'), 'SUPPORT', $sequence+11, 1));
-	}
-
-	$result = $db->pquery('SELECT tabid,name FROM vtiger_tab', array());
-	$moduleTabIds = array();
-	while ($row = $db->fetchByAssoc($result)) {
-		$moduleName = $row['name'];
-		$moduleTabIds[$moduleName] = $row['tabid'];
-	}
-
-	$defSequenceList = array(
-			'MARKETING'	=> array(	$moduleTabIds['Campaigns'],
-									$moduleTabIds['Leads'],
-									$moduleTabIds['Contacts'],
-									$moduleTabIds['Accounts'],
-			),
-			'SALES'		=> array(	$moduleTabIds['Potentials'],
-									$moduleTabIds['Quotes'],
-									$moduleTabIds['Invoice'],
-									$moduleTabIds['Products'],
-									$moduleTabIds['Services'],
-									$moduleTabIds['SMSNotifier'],
-									$moduleTabIds['Contacts'],
-									$moduleTabIds['Accounts']
-			),
-			'SUPPORT'	=> array(	$moduleTabIds['Faq'],
-									$moduleTabIds['ServiceContracts'],
-									$moduleTabIds['Assets'],
-									$moduleTabIds['SMSNotifier'],
-									$moduleTabIds['Contacts'],
-									$moduleTabIds['Accounts']
-			),
-			'INVENTORY'	=> array(	$moduleTabIds['Products'],
-									$moduleTabIds['Services'],
-									$moduleTabIds['PriceBooks'],
-									$moduleTabIds['Invoice'],
-									$moduleTabIds['SalesOrder'],
-									$moduleTabIds['PurchaseOrder'],
-									$moduleTabIds['Vendors'],
-									$moduleTabIds['Contacts'],
-									$moduleTabIds['Accounts']
-			),
-			'PROJECT'	=> array(	$moduleTabIds['Project'],
-									$moduleTabIds['ProjectTask'],
-									$moduleTabIds['ProjectMilestone'],
-									$moduleTabIds['Contacts'],
-									$moduleTabIds['Accounts']
-			)
-	);
-
-	foreach ($defSequenceList as $app => $sequence) {
-		foreach ($sequence as $seq => $moduleTabId) {
-			$params = array($moduleTabId, $app, $seq+1);
-			$db->pquery('UPDATE vtiger_app2tab SET sequence=? WHERE appname =? AND tabid=?', $params);
-		}
-	}
+    $menuEditorModel = Settings_Vtiger_Module_Model::getInstance('Settings:MenuEditor');
+    $menuEditorModel->createTables();
+    $menuEditorModel->addModules();
+    $menuEditorModel->setDefaultSequence();
 
 	$leadsModuleInstance = Vtiger_Module::getInstance('Leads');
 	$quotesModuleInstance = Vtiger_Module::getInstance('Quotes');
@@ -1507,10 +1414,6 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP FOREIGN KEY fk_1_vtiger_cvstdfilter', array());
 	}
 	$db->pquery('ALTER TABLE vtiger_cvstdfilter ADD CONSTRAINT fk_1_vtiger_cvstdfilter FOREIGN KEY (cvid) REFERENCES vtiger_customview(cvid) ON DELETE CASCADE', array());
-
-	if (!Vtiger_Utils::TableHasForeignKey('vtiger_app2tab', 'vtiger_app2tab_fk_tab')) {
-		$db->pquery('ALTER TABLE vtiger_app2tab ADD CONSTRAINT vtiger_app2tab_fk_tab FOREIGN KEY(tabid) REFERENCES vtiger_tab(tabid) ON DELETE CASCADE', array());
-	}
 
 	if (!Vtiger_Utils::CheckTable('vtiger_convertpotentialmapping')) {
 		Vtiger_Utils::CreateTable('vtiger_convertpotentialmapping',

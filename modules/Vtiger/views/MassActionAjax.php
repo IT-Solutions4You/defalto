@@ -146,7 +146,8 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('EXCLUDED_IDS', $excludedIds);
         $viewer->assign('TAG_PARAMS', $tagParams);
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
-        
+		$viewer->assign('DESCRIPTION', $request->get('description', ''));
+
         $modCommentsModel = Vtiger_Module_Model::getInstance($moduleName);
 		$fileNameFieldModel = Vtiger_Field::getInstance("filename", $modCommentsModel);
         $fileFieldModel = Vtiger_Field_Model::getInstanceFromFieldObject($fileNameFieldModel);
@@ -169,7 +170,7 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
         $viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
 		$viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
 
-		echo $viewer->view('AddCommentForm.tpl',$moduleName,true);
+		$viewer->view('AddCommentForm.tpl',$moduleName);
 	}
 
 	/**

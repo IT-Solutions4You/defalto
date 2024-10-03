@@ -8,91 +8,90 @@
  */
 
 class HelpDesk extends CRMEntity {
-	var $log;
-	var $db;
-	var $table_name = "vtiger_troubletickets";
-	var $table_index= 'ticketid';
-	var $tab_name = Array('vtiger_crmentity','vtiger_troubletickets','vtiger_ticketcf');
-	var $tab_name_index = Array('vtiger_crmentity'=>'crmid','vtiger_troubletickets'=>'ticketid','vtiger_ticketcf'=>'ticketid','vtiger_ticketcomments'=>'ticketid');
-	/**
-	 * Mandatory table for supporting custom fields.
-	 */
-	var $customFieldTable = Array('vtiger_ticketcf', 'ticketid');
+    public string $parentName = 'SUPPORT';
+    public $table_name = 'vtiger_troubletickets';
+    public $table_index = 'ticketid';
+    public $tab_name = ['vtiger_crmentity', 'vtiger_troubletickets', 'vtiger_ticketcf'];
+    public $tab_name_index = ['vtiger_crmentity' => 'crmid', 'vtiger_troubletickets' => 'ticketid', 'vtiger_ticketcf' => 'ticketid', 'vtiger_ticketcomments' => 'ticketid'];
+    /**
+     * Mandatory table for supporting custom fields.
+     */
+    public $customFieldTable = ['vtiger_ticketcf', 'ticketid'];
 
-	var $column_fields = Array();
-	//Pavani: Assign value to entity_table
-        var $entity_table = "vtiger_crmentity";
+    public $column_fields = [];
+    //Pavani: Assign value to entity_table
+    public $entity_table = 'vtiger_crmentity';
 
-	var $sortby_fields = Array('title','status','priority','crmid','firstname','smownerid');
+    public $sortby_fields = ['title', 'status', 'priority', 'crmid', 'firstname', 'smownerid'];
 
-	var $list_fields = Array(
-					//Module Sequence Numbering
-					//'Ticket ID'=>Array('crmentity'=>'crmid'),
-					'Ticket No'=>Array('troubletickets'=>'ticket_no'),
-					// END
-					'Subject'=>Array('troubletickets'=>'title'),
-					'Related to'=>Array('troubletickets'=>'parent_id'),
-					'Contact Name'=>Array('troubletickets'=>'contact_id'),
-					'Status'=>Array('troubletickets'=>'status'),
-					'Priority'=>Array('troubletickets'=>'priority'),
-					'Assigned To'=>Array('crmentity','smownerid')
-				);
+    public $list_fields = [
+        //Module Sequence Numbering
+        //'Ticket ID'=>Array('crmentity'=>'crmid'),
+        'Ticket No' => ['troubletickets' => 'ticket_no'],
+        // END
+        'Subject' => ['troubletickets' => 'title'],
+        'Related to' => ['troubletickets' => 'parent_id'],
+        'Contact Name' => ['troubletickets' => 'contact_id'],
+        'Status' => ['troubletickets' => 'status'],
+        'Priority' => ['troubletickets' => 'priority'],
+        'Assigned To' => ['crmentity', 'smownerid'],
+    ];
 
-	var $list_fields_name = Array(
-					'Ticket No'=>'ticket_no',
-					'Subject'=>'ticket_title',
-					'Related to'=>'parent_id',
-					'Contact Name' => 'contact_id',
-					'Status'=>'ticketstatus',
-					'Priority'=>'ticketpriorities',
-					'Assigned To'=>'assigned_user_id'
-				     );
+    public $list_fields_name = [
+        'Ticket No' => 'ticket_no',
+        'Subject' => 'ticket_title',
+        'Related to' => 'parent_id',
+        'Contact Name' => 'contact_id',
+        'Status' => 'ticketstatus',
+        'Priority' => 'ticketpriorities',
+        'Assigned To' => 'assigned_user_id',
+    ];
 
-	var $list_link_field= 'ticket_title';
+    public $list_link_field = 'ticket_title';
 
-	var $range_fields = Array(
-				        'ticketid',
-					'title',
-			        	'firstname',
-				        'lastname',
-			        	'parent_id',
-			        	'productid',
-			        	'productname',
-			        	'priority',
-			        	'severity',
-				        'status',
-			        	'category',
-					'description',
-					'solution',
-					'modifiedtime',
-					'createdtime'
-				);
-	var $search_fields = Array(
-		//'Ticket ID' => Array('vtiger_crmentity'=>'crmid'),
-		'Ticket No' =>Array('vtiger_troubletickets'=>'ticket_no'),
-		'Title' => Array('vtiger_troubletickets'=>'title')
-		);
-	var $search_fields_name = Array(
-		'Ticket No' => 'ticket_no',
-		'Title'=>'ticket_title',
-		);
-	//Specify Required fields
-    var $required_fields =  array();
+    public $range_fields = [
+        'ticketid',
+        'title',
+        'firstname',
+        'lastname',
+        'parent_id',
+        'productid',
+        'productname',
+        'priority',
+        'severity',
+        'status',
+        'category',
+        'description',
+        'solution',
+        'modifiedtime',
+        'createdtime',
+    ];
+    public $search_fields = [
+        //'Ticket ID' => Array('vtiger_crmentity'=>'crmid'),
+        'Ticket No' => ['vtiger_troubletickets' => 'ticket_no'],
+        'Title' => ['vtiger_troubletickets' => 'title'],
+    ];
+    public $search_fields_name = [
+        'Ticket No' => 'ticket_no',
+        'Title' => 'ticket_title',
+    ];
+    //Specify Required fields
+    public $required_fields = [];
 
-	// Used when enabling/disabling the mandatory fields for the module.
-	// Refers to vtiger_field.fieldname values.
-	var $mandatory_fields = Array('assigned_user_id', 'createdtime', 'modifiedtime', 'ticket_title','ticketpriorities','ticketstatus');
+    // Used when enabling/disabling the mandatory fields for the module.
+    // Refers to vtiger_field.fieldname values.
+    public $mandatory_fields = ['assigned_user_id', 'createdtime', 'modifiedtime', 'ticket_title', 'ticketpriorities', 'ticketstatus'];
 
-     //Added these variables which are used as default order by and sortorder in ListView
-    var $default_order_by = 'crmid';
-    var $default_sort_order = 'DESC';
+    //Added these variables which are used as default order by and sortorder in ListView
+    public $default_order_by = 'crmid';
+    public $default_sort_order = 'DESC';
 
-	// For Alphabetical search
-	var $def_basicsearch_col = 'ticket_title';
+    // For Alphabetical search
+    public $def_basicsearch_col = 'ticket_title';
 
-	//var $groupTable = Array('vtiger_ticketgrouprelation','ticketid');
+    //var $groupTable = Array('vtiger_ticketgrouprelation','ticketid');
 
-	/**	Constructor which will set the column_fields in this object
+    /**    Constructor which will set the column_fields in this object
 	 */
         function __construct() {
             $this->log =Logger::getLogger('helpdesk');
@@ -100,11 +99,12 @@ class HelpDesk extends CRMEntity {
             $this->db = PearDatabase::getInstance();
             $this->column_fields = getColumnFields('HelpDesk');
             $this->log->debug("Exiting HelpDesk method ...");
-        }   
-	function HelpDesk()
-	{
-            self::__construct();
-	}
+        }
+
+    function HelpDesk()
+    {
+        self::__construct();
+    }
 
 
 	function save_module($module)
@@ -179,7 +179,7 @@ class HelpDesk extends CRMEntity {
 		$log->debug("Entering into insertIntoAttachment($id,$module) method.");
 
 		$file_saved = false;
-		
+
 		if(php7_count($_FILES)) {
 			foreach($_FILES as $fileindex => $files)
 			{
@@ -395,9 +395,9 @@ class HelpDesk extends CRMEntity {
 		if (!$queryPlanner->requireTable('vtiger_troubletickets', $matrix)) {
 			return '';
 		}
-        
+
         $matrix->setDependency("vtiger_troubletickets",array("vtiger_crmentityHelpDesk","vtiger_ticketcf","vtiger_crmentityRelHelpDesk","vtiger_productsRel"));
-		
+
 		// TODO Support query planner
 		$query = $this->getRelationQuery($module,$secmodule,"vtiger_troubletickets","ticketid", $queryPlanner);
 
@@ -434,7 +434,7 @@ class HelpDesk extends CRMEntity {
 
 		//if secondary modules custom reference field is selected
         $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-        
+
 		return $query;
 	}
 

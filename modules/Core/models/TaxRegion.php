@@ -6,6 +6,8 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
     protected string $tableId = 'region_id';
     protected string $tableName = 'name';
     protected array $columns = ['name'];
+    protected static array $all_regions = [];
+    public float $percentage;
 
     /**
      * @return void
@@ -45,6 +47,10 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
      */
     public static function getAllRegions(): array
     {
+        if (!empty(self::$all_regions)) {
+            return self::$all_regions;
+        }
+
         $adb = PearDatabase::getInstance();
         $result = $adb->pquery('SELECT region_id FROM df_taxes_regions');
         $regions = [];
@@ -53,6 +59,8 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
             $region = self::getInstanceById($row['region_id']);
             $regions[$region->getId()] = $region;
         }
+
+        self::$all_regions = $regions;
 
         return $regions;
     }
@@ -102,13 +110,18 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
         return self::getInstance($request->get('name', ''));
     }
 
+    public function getPercentage(): float
+    {
+        return $this->percentage;
+    }
+
     /**
-     * @param mixed $values
+     * @param int $regionId
      * @return bool
      */
-    public function isSelectedRegion(mixed $values): bool
+    public function isSelectedRegion(mixed $regionId): bool
     {
-        return in_array($this->getId(), (array)$values);
+        return $this->getId() === (int)$regionId;
     }
 
     /**
@@ -117,5 +130,10 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
     public function getSaveParams(): array
     {
         return ['name' => $this->getName()];
+    }
+
+    public function setPercentage(float $percentage): void
+    {
+        $this->percentage = $percentage;
     }
 }
