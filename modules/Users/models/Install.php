@@ -280,14 +280,13 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
-                    'picklist_values' =>
-                        [
-                            '.',
-                            ',',
-                            '\'',
-                            ' ',
-                            '$',
-                        ],
+                    'picklist_overwrite' => true,
+                    'picklist_values' => [
+                        '.',
+                        ',',
+                        '\'',
+                        '$',
+                    ],
                 ],
                 'currency_grouping_separator' => [
                     'name' => 'currency_grouping_separator',
@@ -303,11 +302,12 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'picklist_overwrite' => true,
                     'picklist_values' => [
+                        ' ',
                         ',',
                         '.',
                         '\'',
-                        ' ',
                         '$',
                     ],
                 ],
