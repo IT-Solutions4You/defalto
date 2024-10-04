@@ -24,11 +24,9 @@ class Core_Files_Model extends Vtiger_Base_Model
         $fileName = ltrim($fileName, '/');
         $file = $this->getLayoutDirectory() . $fileName;
 
-        echo '<pre>';
-        print_R($file);
-        echo '</pre>';
-
-        unlink($file);
+        if(file_exists($file) && is_writable($file)) {
+            unlink($file);
+        }
     }
 
     /**
@@ -40,11 +38,9 @@ class Core_Files_Model extends Vtiger_Base_Model
         $fileName = ltrim($fileName, '/');
         $file = $this->getModuleDirectory() . $fileName;
 
-        echo '<pre>';
-        print_R($file);
-        echo '</pre>';
-
-        unlink($file);
+        if(file_exists($file) && is_writable($file)) {
+            unlink($file);
+        }
     }
 
     /**
