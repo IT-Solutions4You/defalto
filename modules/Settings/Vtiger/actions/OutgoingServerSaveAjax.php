@@ -10,30 +10,35 @@
  ************************************************************************************/
 
 class Settings_Vtiger_OutgoingServerSaveAjax_Action extends Settings_Vtiger_Basic_Action {
-    
-    public function process(Vtiger_Request $request) {
+
+    public function process(Vtiger_Request $request)
+    {
         $outgoingServerSettingsModel = Settings_Vtiger_Systems_Model::getInstanceFromServerType('email', 'OutgoingServer');
         $loadDefaultSettings = $request->get('default');
-        if($loadDefaultSettings == "true") {
+
+        if ($loadDefaultSettings == "true") {
             $outgoingServerSettingsModel->loadDefaultValues();
-        }else{
+        } else {
             $outgoingServerSettingsModel->setData($request->getAll());
         }
+
         $response = new Vtiger_Response();
-        try{
+
+        try {
             if ($loadDefaultSettings == "true") {
-                $response->setResult('OK');
+                $response->setResult(['success' => true, 'message' => 'OK']);
             } else {
                 $id = $outgoingServerSettingsModel->save($request);
                 $data = $outgoingServerSettingsModel->getData();
-                $response->setResult($data);
+                $response->setResult(['success' => true, 'data' => $data, 'id' => $id]);
             }
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             $response->setError($e->getCode(), $e->getMessage());
         }
+
         $response->emit();
     }
-    
+
     public function validateRequest(Vtiger_Request $request) {
         $request->validateWriteAccess();
     }
