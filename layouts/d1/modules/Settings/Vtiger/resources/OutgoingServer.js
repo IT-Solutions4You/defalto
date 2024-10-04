@@ -18,38 +18,38 @@ Vtiger.Class("Settings_Vtiger_OutgoingServer_Js",{},{
 	/*
 	 * function to Save the Outgoing Server Details
 	 */
-	saveOutgoingDetails : function(form) {
-		var thisInstance = this;
-		var aDeferred = jQuery.Deferred();
-		var data = form.serializeFormData();
-		var params = {
-		'module' : app.getModuleName(),
-		'parent' : app.getParentModuleName(),
-		'action': 'OutgoingServerSaveAjax'
+	saveOutgoingDetails: function (form) {
+		let self = this,
+			aDeferred = jQuery.Deferred(),
+			data = form.serializeFormData(),
+			params = {
+				'module': app.getModuleName(),
+				'parent': app.getParentModuleName(),
+				'action': 'OutgoingServerSaveAjax'
 			};
-           
-       jQuery.extend(params,data);
-		app.request.post({'data' : params}).then(
-			function(err, data) {
-                app.helper.showProgress();
-				if(err === null){
-                    var OutgoingServerDetailUrl = form.data('detailUrl');
-                    	thisInstance.loadContents(OutgoingServerDetailUrl).then(
-						function(data) {
-						jQuery('.settingsPageDiv').html(data);
-						thisInstance.registerDetailViewEvents();
-                            app.helper.hideProgress();
-						}
-					);
+
+		jQuery.extend(params, data);
+
+		app.request.post({data: params}).then(function (error, data) {
+			app.helper.showProgress();
+			if (!error) {
+				let detailUrl = form.data('detailUrl');
+
+				self.loadContents(detailUrl).then(function (data) {
+					self.setSettingsContainer(data)
+					self.registerDetailViewEvents();
+					app.helper.hideProgress();
+				});
+
 				aDeferred.resolve(data);
-                }else {
-                app.helper.hideProgress();
-					jQuery('.errorMessage', form).removeClass('hide');
-                    aDeferred.reject();
-				}
+			} else {
+				app.helper.hideProgress();
+				jQuery('.errorMessage', form).removeClass('hide');
+				aDeferred.reject();
 			}
-		);
-        return aDeferred.promise();
+		});
+
+		return aDeferred.promise();
 	},
 	
 	/*
@@ -68,21 +68,21 @@ Vtiger.Class("Settings_Vtiger_OutgoingServer_Js",{},{
             }
         });
     },
-    
-    
-	loadContents : function(url) {
-		var aDeferred = jQuery.Deferred();
-		app.request.pjax({"url" : url}).then(
-			function(err, data){
-                if(err === null){
-				jQuery('.settingsPageDiv ').html(data);
+
+
+	loadContents: function (url) {
+		let aDeferred = jQuery.Deferred(),
+			self = this;
+
+		app.request.post({data: app.convertUrlToDataParams(url)}).then(function (error, data) {
+			if (!error) {
+				self.setSettingsContainer(data)
 				aDeferred.resolve(data);
-            }
-			},
-			function(error, err){
+			} else {
 				aDeferred.reject();
 			}
-		);
+		});
+
 		return aDeferred.promise();
 	},
 	
@@ -140,60 +140,138 @@ Vtiger.Class("Settings_Vtiger_OutgoingServer_Js",{},{
 	 * function to register the events in DetailView
 	 */
 	registerDetailViewEvents : function() {
-		var thisInstance = this;
-		//Detail view container
-		var container = jQuery('#OutgoingServerDetails');
-		var editButton = jQuery('.editButton', container);
-		//register click event for edit button
-		editButton.click(function(e) {
-			app.helper.showProgress();
+		let self = this,
+			container = self.getDetailContainer();
 
-			var url = editButton.data('url');
-			thisInstance.loadContents(url).then(
-				function(data) {
-                    jQuery('.settingsPageDiv ').html(data);
-                    app.helper.hideProgress();
-					//after load the contents register the edit view events
-					thisInstance.registerEditViewEvents();
-                    thisInstance.registerOnChangeEventOfserverType();
-                    vtUtils.showSelect2ElementView(jQuery('select[name="serverType"]'));
-                    
-				}
-			);
+		//register click event for edit button
+		container.on('click', '.editButton', function(e) {
+			app.helper.showProgress();
+			let url = $(this).data('url');
+
+			self.loadContents(url).then(function(data) {
+				app.helper.hideProgress();
+				self.setSettingsContainer(data);
+				//after load the contents register the edit view events
+				self.registerEditViewEvents();
+				self.registerOnChangeEventOfserverType();
+				self.updateFieldsVisibility();
+				vtUtils.showSelect2ElementView(jQuery('select[name="serverType"]'));
+			});
+		});
+
+		self.updateFieldsVisibility();
+	},
+	getSettingsContainer() {
+		return $('.settingsPageDiv');
+	},
+	setSettingsContainer(value) {
+		this.getSettingsContainer().html(value);
+	},
+	registerOnChangeEventOfserverType: function (e) {
+		let self = this,
+			form = self.getForm();
+
+		form.find('[name="serverType"]').on('change', function (e) {
+
+			let servertypevalue = form.find('[name="serverType"]').val();
+			form.find('[name="server"]').val(servertypevalue);
+			form.find('[name="server_username"]').val('');
+			form.find('[name="server_password"]').val('');
+			form.find('[name="from_email_field"]').val('');
+			form.find('[name="client_id"]').val('');
+			form.find('[name="client_secret"]').val('');
+			form.find('[name="client_token"]').val('');
+
+			self.updateFieldsVisibility();
 		});
 	},
-	
-    registerOnChangeEventOfserverType:function(e){
-		var form = jQuery('#OutgoingServerForm');
-            form.find('[name="serverType"]').on('change',function(e){
-                
-                var servertypevalue=form.find('[name="serverType"]').val();
-				form.find('[name="server"]').val(servertypevalue);
-                
-                if(servertypevalue === "mail.od1.vtiger.com"){
-                   var vtigerUser= form.find('[name="vtigerServer"]').data("username");
-                   var vtigerpassword= form.find('[name="vtigerServer"]').data("password");
-                   var vtigeremail= form.find('[name="vtigerServer"]').data("email");
-                    form.find('[name="server_username"]').val(vtigerUser);
-                    form.find('[name="server_password"]').val(vtigerpassword);
-                    form.find('[name="from_email_field"]').val(vtigeremail);
-                }else{
-					form.find('[name="server_username"]').val("");
-					form.find('[name="server_password"]').val("");
-					form.find('[name="from_email_field"]').val("");
+	getDetailContainer() {
+		return $('#OutgoingServerDetails');
+	},
+	getEditContainer() {
+		return $('#EditViewOutgoing');
+	},
+	updateFieldsVisibility() {
+		let self = this,
+			container = self.getEditContainer().length ? self.getEditContainer() : self.getDetailContainer(),
+			serverType = container.find('[name="serverType"]'),
+			loginOAuth = container.find('.oauthLogin'),
+			loginServer = container.find('.serverLogin');
+
+		loginOAuth.addClass('hide');
+		loginServer.addClass('hide');
+
+		if ('ssl://smtp.gmail.com:465' === serverType.val()) {
+			loginOAuth.removeClass('hide');
+		} else {
+			loginServer.removeClass('hide');
+		}
+	},
+	registerEvents: function () {
+		let self = this;
+		self.registerEditViewEvents();
+		self.registerOnChangeEventOfserverType();
+		self.registerDetailViewEvents();
+		self.registerFilters();
+		self.retrieveTokenButton();
+		self.updateFieldsVisibility();
+	},
+	getForm() {
+		return $('#OutgoingServerForm')
+	},
+	retrieveTokenButton() {
+		const self = this,
+			form = self.getForm();
+
+		form.on('click', '.retrieveToken', function () {
+			let params = form.serializeFormData()
+
+			params['action'] = 'Auth';
+			params['mode'] = 'url';
+
+			app.request.post({data: params}).then(function (error, data) {
+				if (!error) {
+					if(data['url']) {
+						self.getTokenElement().val('');
+
+						window.open(data['url'], '_blank')
+					}
+
+					if(data['message']) {
+						app.helper.showErrorNotification({message: data['message']});
+					}
 				}
 			});
-	},
-    
-	registerEvents: function() {
-		var thisInstance = this;
-		thisInstance.registerEditViewEvents();
-		thisInstance.registerOnChangeEventOfserverType();
-		thisInstance.registerDetailViewEvents();
-		
-        this.registerFilters();
-	}
+		});
 
+		form.on('click', '.refreshToken', function () {
+			self.loadToken();
+		});
+	},
+	getTokenElement() {
+		return this.getForm().find('[name="client_token"]');
+	},
+	loadToken() {
+		const self = this,
+			clientId = self.getForm().find('[name="client_id"]').val(),
+			token = self.getTokenElement().val(),
+			params = {
+				module: 'Core',
+				action: 'Auth',
+				mode: 'token',
+				client_id: clientId,
+			}
+
+		if (!clientId || token) {
+			return false;
+		}
+
+		app.request.post({data: params}).then(function (error, data) {
+			if (!error && data['token']) {
+				self.getForm().find('[name="client_token"]').val(data['token']);
+			}
+		});
+	},
 });
 
 

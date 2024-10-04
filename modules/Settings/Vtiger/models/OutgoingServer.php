@@ -16,15 +16,17 @@ class Settings_Vtiger_OutgoingServer_Model extends Settings_Vtiger_Systems_Model
     public function getSubject() {
         return 'Test mail about the mail server configuration.';
     }
-    
-    public function getBody() {
+
+    public function getBody()
+    {
         $currentUser = Users_Record_Model::getCurrentUserModel();
-        return 'Dear '.$currentUser->get('user_name').', <br><br><b> This is a test mail sent to confirm if a mail is 
+
+        return 'Dear ' . $currentUser->get('user_name') . ', <br><br><b> This is a test mail sent to confirm if a mail is 
                 actually being sent through the smtp server that you have configured. </b><br>Feel free to delete this mail.
                 <br><br>Thanks  and  Regards,<br> Team vTiger <br><br>';
     }
-    
-	public function loadDefaultValues() {
+
+    public function loadDefaultValues() {
         $defaultOutgoingServerDetails = VtigerConfig::getOD('DEFAULT_OUTGOING_SERVER_DETAILS');
         if (empty($defaultOutgoingServerDetails)) {
             $db = PearDatabase::getInstance();
@@ -71,19 +73,30 @@ class Settings_Vtiger_OutgoingServer_Model extends Settings_Vtiger_Systems_Model
         $password = Vtiger_Functions::isProtectedText($request->get('server_password')) ? Vtiger_Functions::fromProtectedText($request->get('server_password')) : $request->get('server_password');
         // This is added so that send_mail API will treat it as user initiated action
 
+        $mailer = ITS4YouEmails_Mailer_Model::getCleanInstance();
+
+        if ($request->isEmpty('provider')) {
+            $request->set('provider', $mailer->getProviderByServer($request->get('server')));
+        }
+
         if (!empty($toEmail)) {
-            $mailer = ITS4YouEmails_Mailer_Model::getCleanInstance();
+            $host = $request->get('server');
+            $username = $request->get('server_username');
+            $auth = 'on' === $request->get('smtp_auth');
+            $smtpSecure = null;
+            $port = null;
+            $provider = $request->get('provider');
+            $clientId = $request->get('client_id');
+            $clientSecret = $request->get('client_secret');
+            $refreshToken = $request->get('client_token');
+
             $mailer->setMailerType($this->get('mailer_type'));
-            $mailer->setSMTP(
-                $request->get('server'),
-                $request->get('server_username'),
-                $password,
-                'on' === $request->get('smtp_auth'),
-            );
+            $mailer->setSMTP($host, $username, $password, $auth, $smtpSecure, $port, $provider, $clientId, $clientSecret, $refreshToken);
             $mailer->setFrom($request->get('from_email_field'));
             $mailer->addAddress($toEmail);
-            $mailer->Subject = $this->getSubject();;
+            $mailer->Subject = $this->getSubject();
             $mailer->Body = $this->getBody();
+            $mailer->isHTML(true);
         }
 
         if (!$mailer->send()) {

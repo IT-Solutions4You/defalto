@@ -69,12 +69,48 @@
 										<input type="text" class="inputElement form-control" name="server_username" value="{$MODEL->get('server_username')}">
 									</div>
 								</div>
-								<div class="row py-2">
-									<div class="col-lg-3 fieldLabel">
-										<label>{vtranslate('LBL_PASSWORD', $QUALIFIED_MODULE)}</label>
+								<div class="serverLogin hide">
+									<div class="row py-2">
+										<div class="col-lg-3 fieldLabel">
+											<label>{vtranslate('LBL_PASSWORD', $QUALIFIED_MODULE)}</label>
+										</div>
+										<div class="col-lg-4 fieldValue">
+											<input type="password" class="inputElement form-control" name="server_password" value="{$MODEL->get('server_password')}">
+										</div>
 									</div>
-									<div class="col-lg-4 fieldValue">
-										<input type="password" class="inputElement form-control" name="server_password" value="{$MODEL->get('server_password')}">
+								</div>
+								<div class="oauthLogin hide">
+									<div class="row py-2">
+										<div class="col-lg-3 fieldLabel">
+											<label>{vtranslate('LBL_CLIENT_ID', $QUALIFIED_MODULE)}</label>
+										</div>
+										<div class="col-lg-4 fieldValue">
+											<input type="text" class="inputElement form-control" name="client_id" value="{$MODEL->get('client_id')}">
+										</div>
+									</div>
+									<div class="row py-2">
+										<div class="col-lg-3 fieldLabel">
+											<label>{vtranslate('LBL_CLIENT_SECRET', $QUALIFIED_MODULE)}</label>
+										</div>
+										<div class="col-lg-4 fieldValue">
+											<input type="password" class="inputElement form-control" name="client_secret" value="{$MODEL->get('client_secret')}">
+										</div>
+									</div>
+									<div class="row py-2">
+										<div class="col-lg-3 fieldLabel">
+											<label>{vtranslate('LBL_CLIENT_TOKEN', $QUALIFIED_MODULE)}</label>
+										</div>
+										<div class="col-lg-4 fieldValue">
+											<div class="input-group">
+												<input type="password" class="inputElement form-control" name="client_token" value="{$MODEL->get('client_token')}">
+												<button class="input-group-text refreshToken" type="button">
+													<i class="fa fa-download"></i>
+												</button>
+												<button class="input-group-text retrieveToken" type="button">
+													<i class="fa fa-search"></i>
+												</button>
+											</div>
+										</div>
 									</div>
 								</div>
 								<div class="row py-2">
@@ -98,7 +134,7 @@
 										<label>{vtranslate('LBL_REQUIRES_AUTHENTICATION', $QUALIFIED_MODULE)}</label>
 									</div>
 									<div class="col-lg-4">
-										<input type="checkbox" class="form-check-input" name="smtp_auth" {if $MODEL->isSmtpAuthEnabled()}checked{/if} ></div>
+										<input type="checkbox" class="form-check-input" name="smtp_auth" {if $MODEL->isSmtpAuthEnabled()}checked{/if} >
 									</div>
 								</div>
 							</div>

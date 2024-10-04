@@ -414,6 +414,9 @@ $languageStrings = array(
     'SINGLE_PBXManager' => 'PBXManager',
     'SINGLE_MailConverter' => 'Mail Converter',
     'SINGLE_Core' => 'Defalto',
+    'LBL_CLIENT_ID' => 'Client Id',
+    'LBL_CLIENT_SECRET' => 'Client Secret',
+    'LBL_CLIENT_TOKEN' => 'Client Token',
 );
 
 $jsLanguageStrings = array(
