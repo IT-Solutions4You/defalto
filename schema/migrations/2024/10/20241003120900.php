@@ -21,6 +21,14 @@ if (!class_exists('Migration_20241003120900')) {
         {
             $system = new Settings_Vtiger_Systems_Model();
             $system->createTables();
+
+            $files = Core_Files_Model::getInstance('Vtiger');
+            $files->deleteModuleFile('blockuitypes/Base.php');
+            $files->deleteModuleFile('blockuitypes/Factory.php');
+            $files->deleteModuleFile('blockuitypes/Interface.php');
+
+            $files->deleteLayoutFile('blockuitypes/Base.tpl');
+            $files->deleteLayoutFile('blockuitypes/BaseEdit.tpl');
         }
     }
 } else {
