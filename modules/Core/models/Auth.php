@@ -1,156 +1,161 @@
 <?php
-/* * *******************************************************************************
- * The content of this file is subject to the ITS4YouSMTP license.
- * ("License"); You may not use this file except in compliance with the License
- * The Initial Developer of the Original Code is IT-Solutions4You s.r.o.
- * Portions created by IT-Solutions4You s.r.o. are Copyright(C) IT-Solutions4You s.r.o.
- * All Rights Reserved.
- * ****************************************************************************** */
+/*
+ * This file is part of the IT-Solutions4You CRM Software.
+ *
+ * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-class Core_Auth_Model extends Vtiger_Base_Model {
+class Core_Auth_Model extends Vtiger_Base_Model
+{
 
-	protected $viewer;
+    protected $viewer;
 
-	public static function getInstance()
-	{
-		return new self();
-	}
+    public function getClientId()
+    {
+        return $_SESSION[$this->getModuleName()]['client_id'];
+    }
 
-	public function getProviderName() {
-		return $_SESSION[$this->getModuleName()]['provider'];
-	}
+    public function getClientSecret()
+    {
+        return $_SESSION[$this->getModuleName()]['client_secret'];
+    }
 
-	public function getProvider()
-	{
-		$params = $this->getProviderParams();
+    public static function getInstance()
+    {
+        return new self();
+    }
 
-		return new League\OAuth2\Client\Provider\Google($params);
-	}
+    public function getModuleName()
+    {
+        return 'Core';
+    }
 
-	public function getToken() {
-		return $_SESSION[$this->getModuleName()]['token'];
-	}
+    public function getProvider()
+    {
+        $params = $this->getProviderParams();
 
-	public function setToken($value)
-	{
-		$_SESSION[$this->getModuleName()]['token'] = $value;
-	}
+        return new League\OAuth2\Client\Provider\Google($params);
+    }
 
-	public function getProviderParams()
-	{
-		return [
-			'clientId' => $this->getClientId(),
-			'clientSecret' => $this->getClientSecret(),
-			'redirectUri' => $this->getRedirectUri(),
-			'accessType' => 'offline'
-		];
-	}
+    public function getProviderName()
+    {
+        return $_SESSION[$this->getModuleName()]['provider'];
+    }
 
-	public function getProviderOptions()
-	{
-		return [
-			'scope' => ['openid email profile https://mail.google.com/']
-		];
-	}
+    public function getProviderOptions()
+    {
+        return [
+            'scope' => ['openid email profile https://mail.google.com/'],
+        ];
+    }
 
-	public function setProviderName($value)
-	{
-		$_SESSION[$this->getModuleName()]['provider'] = $value;
-	}
+    public function getProviderParams()
+    {
+        return [
+            'clientId' => $this->getClientId(),
+            'clientSecret' => $this->getClientSecret(),
+            'redirectUri' => $this->getRedirectUri(),
+            'accessType' => 'offline',
+        ];
+    }
 
-	public function getRedirectUri()
-	{
-		return rtrim(vglobal('site_URL'), '/') . '/auth.php?provider=' . $this->getProviderName();
-	}
+    public function getRedirectUri()
+    {
+        return rtrim(vglobal('site_URL'), '/') . '/auth.php?provider=' . $this->getProviderName();
+    }
 
-	public function viewAuthForm() {
+    public function getToken()
+    {
+        return $_SESSION[$this->getModuleName()]['token'];
+    }
 
-		$viewer = $this->getViewer();
-		$viewer->assign('REDIRECT_URI', $this->getRedirectUri());
-		$viewer->assign('CLIENT_SECRET', $this->getClientSecret());
-		$viewer->assign('CLIENT_ID', $this->getClientId());
-		$viewer->assign('PROVIDER', $this->getProviderName());
-		$viewer->assign('TOKEN', $this->getToken());
-		$viewer->view('AuthForm.tpl', $this->getModuleName());
-	}
+    public function getViewer()
+    {
+        if (!empty($this->viewer)) {
+            return $this->viewer;
+        }
 
-	public function getModuleName()
-	{
-		return 'Core';
-	}
+        $moduleName = $this->getModuleName();
 
-	public function getViewer()
-	{
-		if (!empty($this->viewer)) {
-			return $this->viewer;
-		}
+        $viewer = new Vtiger_Viewer();
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('QUALIFIED_MODULE', $moduleName);
 
-		$moduleName = $this->getModuleName();
+        $this->viewer = $viewer;
 
-		$viewer = new Vtiger_Viewer();
-		$viewer->assign('MODULE', $moduleName);
-		$viewer->assign('QUALIFIED_MODULE', $moduleName);
+        return $viewer;
+    }
 
-		$this->viewer = $viewer;
+    public function redirectToProvider()
+    {
+        $provider = $this->getProvider();
+        $options = $this->getProviderOptions();
+        $authUrl = $provider->getAuthorizationUrl($options);
+        $_SESSION['oauth2state'] = $provider->getState();
 
-		return $viewer;
-	}
+        header('Location: ' . $authUrl);
+    }
 
-	public function getClientId() {
-		return $_SESSION[$this->getModuleName()]['client_id'];
-	}
+    /**
+     * @throws \League\OAuth2\Client\Provider\Exception\IdentityProviderException
+     */
+    public function retrieveToken()
+    {
+        $provider = $this->getProvider();
+        $accessToken = $provider->getAccessToken('authorization_code', ['code' => $_GET['code']]);
+        $token = $accessToken->getRefreshToken();
 
-	public function setClientId($value)
-	{
-		$_SESSION[$this->getModuleName()]['client_id'] = $value;
-	}
+        if (!empty($token)) {
+            $this->setToken($token);
+        }
+    }
 
-	public function getClientSecret() {
-		return $_SESSION[$this->getModuleName()]['client_secret'];
-	}
+    public function setClientId($value)
+    {
+        $_SESSION[$this->getModuleName()]['client_id'] = $value;
+    }
 
-	public function setClientSecret($value)
-	{
-		$_SESSION[$this->getModuleName()]['client_secret'] = $value;
-	}
+    public function setClientSecret($value)
+    {
+        $_SESSION[$this->getModuleName()]['client_secret'] = $value;
+    }
 
+    public function setProviderName($value)
+    {
+        $_SESSION[$this->getModuleName()]['provider'] = $value;
+    }
 
-	public function validateConfig()
-	{
-		if (empty($this->getProvider())) {
-			die('Provider missing');
-		}
+    public function setToken($value)
+    {
+        $_SESSION[$this->getModuleName()]['token'] = $value;
+    }
 
-		if (empty($this->getClientId())) {
-			die('Client Id missing');
-		}
+    public function validateConfig()
+    {
+        if (empty($this->getProvider())) {
+            die('Provider missing');
+        }
 
-		if (empty($this->getClientSecret())) {
-			die('Client Secret missing');
-		}
-	}
+        if (empty($this->getClientId())) {
+            die('Client Id missing');
+        }
 
-	public function redirectToProvider()
-	{
-		$provider = $this->getProvider();
-		$options = $this->getProviderOptions();
-		$authUrl = $provider->getAuthorizationUrl($options);
-		$_SESSION['oauth2state'] = $provider->getState();
+        if (empty($this->getClientSecret())) {
+            die('Client Secret missing');
+        }
+    }
 
-		header('Location: ' . $authUrl);
-	}
-
-	/**
-	 * @throws \League\OAuth2\Client\Provider\Exception\IdentityProviderException
-	 */
-	public function retrieveToken()
-	{
-		$provider = $this->getProvider();
-		$accessToken = $provider->getAccessToken('authorization_code', ['code' => $_GET['code']]);
-		$token = $accessToken->getRefreshToken();
-
-		if (!empty($token)) {
-			$this->setToken($token);
-		}
-	}
+    public function viewAuthForm()
+    {
+        $viewer = $this->getViewer();
+        $viewer->assign('REDIRECT_URI', $this->getRedirectUri());
+        $viewer->assign('CLIENT_SECRET', $this->getClientSecret());
+        $viewer->assign('CLIENT_ID', $this->getClientId());
+        $viewer->assign('PROVIDER', $this->getProviderName());
+        $viewer->assign('TOKEN', $this->getToken());
+        $viewer->view('AuthForm.tpl', $this->getModuleName());
+    }
 }

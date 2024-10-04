@@ -1,28 +1,49 @@
 <?php
-/* * *******************************************************************************
- * The content of this file is subject to the ITS4YouSMTP license.
- * ("License"); You may not use this file except in compliance with the License
- * The Initial Developer of the Original Code is IT-Solutions4You s.r.o.
- * Portions created by IT-Solutions4You s.r.o. are Copyright(C) IT-Solutions4You s.r.o.
- * All Rights Reserved.
- * ****************************************************************************** */
+
+/*
+ * This file is part of the IT-Solutions4You CRM Software.
+ *
+ * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 class Core_Auth_Action extends Vtiger_Action_Controller
 {
-	public function preProcess(Vtiger_Request $request, $display = true)
-	{
-	}
+    public function postProcess(Vtiger_Request $request)
+    {
+    }
 
-	public function process(Vtiger_Request $request)
-	{
-		$this->exposeMethod('url');
-		$this->exposeMethod('token');
+    public function preProcess(Vtiger_Request $request, $display = true)
+    {
+    }
 
-		$mode = $request->getMode();
+    public function process(Vtiger_Request $request)
+    {
+        $this->exposeMethod('url');
+        $this->exposeMethod('token');
 
-		if (!empty($mode)) {
-			$this->invokeExposedMethod($mode, $request);
-		}
-	}
+        $mode = $request->getMode();
+
+        if (!empty($mode)) {
+            $this->invokeExposedMethod($mode, $request);
+        }
+    }
+
+    public function token(Vtiger_Request $request)
+    {
+        $authModel = Core_Auth_Model::getInstance();
+        $token = null;
+
+        if ($authModel->getClientId() === $request->get('client_id')) {
+            $token = $authModel->getToken();
+        }
+
+        $response = new Vtiger_Response();
+        $response->setResult(['success' => !empty($token), 'token' => $token]);
+        $response->emit();
+    }
 
     public function url(Vtiger_Request $request)
     {
@@ -52,22 +73,4 @@ class Core_Auth_Action extends Vtiger_Action_Controller
         $response->setResult(['success' => $success, 'url' => $url, 'message' => $message]);
         $response->emit();
     }
-
-    public function token(Vtiger_Request $request)
-	{
-		$authModel = Core_Auth_Model::getInstance();
-		$token = null;
-
-		if ($authModel->getClientId() === $request->get('client_id')) {
-			$token = $authModel->getToken();
-		}
-
-		$response = new Vtiger_Response();
-		$response->setResult(['success' => !empty($token), 'token' => $token]);
-		$response->emit();
-	}
-
-	public function postProcess(Vtiger_Request $request)
-	{
-	}
 }
