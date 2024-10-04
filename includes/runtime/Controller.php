@@ -169,9 +169,9 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 			// Defaults to avoid warning
 			// General
 			$viewer->assign('V7_THEME_PATH', '');
-			$viewer->assign('MODULE_NAME', '');
-			$viewer->assign('MODULE', '');
-			$viewer->assign('QUALIFIED_MODULE', '');
+			$viewer->assign('MODULE_NAME', $request->getModule());
+			$viewer->assign('MODULE', $request->getModule());
+			$viewer->assign('QUALIFIED_MODULE', $request->getModule(false));
 			$viewer->assign('VIEW', '');
 			$viewer->assign('PARENT_MODULE', '');
 			$viewer->assign('EXTENSION_MODULE', '');
