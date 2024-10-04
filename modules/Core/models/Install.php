@@ -418,15 +418,20 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                         $picklistTable = 'vtiger_' . $fieldName;
                         $currentPicklistValues = [];
 
-                        if (Vtiger_Utils::checkTable($picklistTable)) {
-                            $currentPicklistValues = $fieldInstance->getPicklistValues();
-                        }
+                        if (true === $fieldParams['picklist_overwrite']) {
+                            $fieldInstance->deletePicklistValues();
+                            $fieldInstance->setPicklistValues($picklistValues);
+                        } else {
+                            if (Vtiger_Utils::checkTable($picklistTable)) {
+                                $currentPicklistValues = $fieldInstance->getPicklistValues();
+                            }
 
-                        foreach ($picklistValues as $picklistKey => $picklistValue) {
-                            $picklistName = is_array($picklistValue) ? $picklistValue[0] : $picklistValue;
+                            foreach ($picklistValues as $picklistKey => $picklistValue) {
+                                $picklistName = is_array($picklistValue) ? $picklistValue[0] : $picklistValue;
 
-                            if (!isset($currentPicklistValues[$picklistName])) {
-                                $fieldInstance->setPicklistValues([$picklistKey => $picklistValue]);
+                                if (!isset($currentPicklistValues[$picklistName])) {
+                                    $fieldInstance->setPicklistValues([$picklistKey => $picklistValue]);
+                                }
                             }
                         }
                     }

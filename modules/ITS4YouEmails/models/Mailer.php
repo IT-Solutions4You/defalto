@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use League\OAuth2\Client\Provider\Google as Google;
+use PHPMailer\PHPMailer\OAuth as OAuth;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -59,7 +61,12 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
             $smtpRecord->getDecodedPassword(),
             !$smtpRecord->isEmpty('smtp_auth'),
             $smtpRecord->get('server_protocol'),
-            $smtpRecord->get('server_port')
+            $smtpRecord->get('server_port'),
+
+            $smtpRecord->get('provider'),
+            $smtpRecord->get('client_id'),
+            $smtpRecord->get('client_secret'),
+            $smtpRecord->get('client_token'),
         );
 
         if (!$smtpRecord->isEmpty('from_email_field')) {
@@ -78,13 +85,33 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
 
         if ($adb->num_rows($result)) {
             $row = $adb->query_result_rowdata($result);
-
-            $this->setSMTP($row['server'], $row['server_username'], self::fromProtectedText($row['server_password']), !empty($row['smtp_auth']));
+            $server = decode_html($row['server']);
+            $this->setSMTP(
+                $server,
+                $row['server_username'],
+                self::fromProtectedText($row['server_password']),
+                !empty($row['smtp_auth']),
+                null,
+                null,
+                $this->getProviderByServer($server),
+                decode_html($row['client_id']),
+                decode_html($row['client_secret']),
+                decode_html($row['client_token'])
+            );
 
             if (!empty($row['from_email_field'])) {
                 $this->setFrom($row['from_email_field']);
             }
         }
+    }
+
+    public function getProviderByServer($server): string
+    {
+        if ('ssl://smtp.gmail.com:465' === $server) {
+            return 'Google';
+        }
+
+        return '';
     }
 
     public function setMailerType($type)
@@ -157,7 +184,7 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
      * @param bool $auth
      * @return void
      */
-    public function setSMTP($host, $username, $password, $auth = true, $smtpSecure = '', $port = 25)
+    public function setSMTP($host, $username, $password, $auth = true, $smtpSecure = '', $port = 25, $provider = '', $clientId = '', $clientSecret = '', $refreshToken = '')
     {
         $this->retrieveMailer();
         $this->retrieveSMTPOptions();
@@ -178,6 +205,25 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
         if ('tls' === $smtpSecure) {
             $this->SMTPSecure = $smtpSecure;
             $this->Host = $host;
+        }
+
+        if (!empty($refreshToken)) {
+            if ('Google' === $provider) {
+                $this->AuthType = 'XOAUTH2';
+
+                $provider = new Google([
+                    'clientId' => $clientId,
+                    'clientSecret' => $clientSecret,
+                ]);
+                $oAuth = new OAuth([
+                    'provider' => $provider,
+                    'clientId' => $clientId,
+                    'clientSecret' => $clientSecret,
+                    'refreshToken' => $refreshToken,
+                    'userName' => $username,
+                ]);
+                $this->setOAuth($oAuth);
+            }
         }
     }
 
