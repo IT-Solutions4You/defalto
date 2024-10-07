@@ -20,6 +20,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     initializeVariables: function () {
         this.dummyLineItemRow = jQuery('#row0');
+        this.dummyTextRow = jQuery('#dummyTextRow');
         this.lineItemsHolder = jQuery('#lineItemTab');
         this.numOfLineItems = this.lineItemsHolder.find('.' + this.lineItemDetectingClass).length;
     },
@@ -35,7 +36,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const addTextLineHandler = function (e, data) {
             const currentTarget = jQuery(e.currentTarget);
             const params = {'currentTarget': currentTarget};
-            let newTextLine = self.getNewLineItem(params);
+            let newTextLine = self.getNewTextItem(params);
             newTextLine = newTextLine.appendTo(self.lineItemsHolder);
             app.event.trigger('post.textLine.New', newTextLine);
         };
@@ -64,6 +65,21 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     getLineItemSetype: function (row) {
         return row.find('.lineItemType').val();
+    },
+
+    getNewTextItem: function (params) {
+        let currentTarget = params.currentTarget,
+            itemType = currentTarget.data('moduleName'),
+            newRow = this.dummyTextRow.clone(true).removeClass('hide').addClass(this.lineItemDetectingClass).removeClass('lineItemCloneCopy');
+
+        newRow.find('.individualTaxContainer').removeClass('opacity-0');
+        newRow.find('.lineItemPopup').filter(':not([data-module-name="' + itemType + '"])').remove();
+        newRow.find('.lineItemType').val(itemType);
+        ++this.numOfLineItems;
+        this.updateRowNumberForRow(newRow, this.numOfLineItems);
+        this.initializeLineItemRowCustomFields(newRow, this.numOfLineItems);
+
+        return newRow;
     },
 
     getNewLineItem: function (params) {

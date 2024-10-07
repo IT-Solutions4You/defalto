@@ -6,6 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *}
+
 <div class="mt-3 bg-body rounded block block_{$BLOCK_LABEL_KEY}" data-block="{$BLOCK_LABEL_KEY}" data-blockid="{$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}">
     {assign var=IS_HIDDEN value=$BLOCK->isHidden()}
     {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
@@ -22,6 +23,11 @@
         </div>
     </div>
     <div class="blockData p-3 border-top border-light-subtle {if $IS_HIDDEN}hide{/if}">
+        <table style="display:none;">
+            <tr id="dummyTextRow" class="border-bottom" data-row-num="0">
+                {include file="partials/TextItemContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=[] IGNORE_UI_REGISTRATION=true}
+            </tr>
+        </table>
         <table id="dummyLineItemTable" style="display: none;">
             <tr id="row0" class="hide border-bottom lineItemCloneCopy" data-row-num="0">
                 {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'Inventory' row_no=0 data=[] IGNORE_UI_REGISTRATION=true}
