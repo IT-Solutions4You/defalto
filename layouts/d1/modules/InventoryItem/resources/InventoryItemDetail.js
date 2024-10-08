@@ -28,6 +28,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     registerBasicEvents: function (container) {
         this._super(container);
         this.registerAddButtons();
+        this.makeLineItemsSortable();
     },
 
     registerAddButtons: function () {
@@ -50,11 +51,11 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             newLineItem.find('.ignore-ui-registration').removeClass('ignore-ui-registration');
             vtUtils.applyFieldElementsView(newLineItem);
             app.event.trigger('post.lineItem.New', newLineItem);
-            self.checkLineItemRow();
-            self.registerLineItemAutoComplete(newLineItem);
+            // self.checkLineItemRow();
+            // self.registerLineItemAutoComplete(newLineItem);
 
             if (typeof data != "undefined") {
-                self.mapResultsToFields(newLineItem, data);
+                // self.mapResultsToFields(newLineItem, data);
             }
         };
 
@@ -72,6 +73,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             itemType = currentTarget.data('moduleName'),
             newRow = this.dummyTextRow.clone(true).removeClass('hide').addClass(this.lineItemDetectingClass).removeClass('lineItemCloneCopy');
 
+        newRow.attr('id', 'row0');
         newRow.find('.individualTaxContainer').removeClass('opacity-0');
         newRow.find('.lineItemPopup').filter(':not([data-module-name="' + itemType + '"])').remove();
         newRow.find('.lineItemType').val(itemType);
@@ -218,6 +220,37 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
 
         return lineItemRow;
+    },
+
+    makeLineItemsSortable: function () {
+        jQuery('#lineItemTab tbody').sortable({
+            handle: '.drag_drop_line_item',
+            update: function (event, ui) {
+                const newOrder = jQuery(this).sortable('toArray');
+                const data = [];
+
+                jQuery.each(newOrder, function (index, value) {
+                    if (value != '') {
+                        jQuery('#' + value).find('input.rowSequence').val(index);
+                        data.push({
+                            'id': jQuery('#' + value).find('input.lineItemId').val(),
+                            'sequence': index,
+                            });
+                    }
+                });
+
+                const requestParams = {
+                    'module': 'InventoryItem',
+                    'action': 'SortLineItems',
+                    'record': app.getRecordId(),
+                    'data': JSON.stringify(data),
+                };
+
+                app.request.post({"data":requestParams}).then(function(err,res) {
+                    console.log(res);
+                });
+            }
+        });
     },
 
 });

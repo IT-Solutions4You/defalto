@@ -11,10 +11,12 @@
     <a class="btn deleteRow me-2">
         <i class="fa fa-trash" title="{vtranslate('LBL_DELETE',$MODULE)}"></i>
     </a>
-    <a>
+    <a class="drag_drop_line_item">
         <img src="{vimage_path('drag.png')}" title="{vtranslate('LBL_DRAG',$MODULE)}"/>
     </a>
     <input type="hidden" class="rowNumber" value="{$row_no}" />
+    <input type="hidden" class="lineItemId" value="{$data.id}" />
+    <input type="hidden" class="rowSequence" value="{$row_no}" />
 </td>
 <td colspan="50">
     {assign var="productName" value="productName"|cat:$row_no}

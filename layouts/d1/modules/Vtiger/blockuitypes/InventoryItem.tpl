@@ -23,27 +23,12 @@
         </div>
     </div>
     <div class="blockData p-3 border-top border-light-subtle {if $IS_HIDDEN}hide{/if}">
-        <table style="display:none;">
-            <tr id="dummyTextRow" class="border-bottom" data-row-num="0">
-                {include file="partials/TextItemContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=[] IGNORE_UI_REGISTRATION=true}
-            </tr>
-        </table>
         <table id="dummyLineItemTable" style="display: none;">
             <tr id="row0" class="hide border-bottom lineItemCloneCopy" data-row-num="0">
-                {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'Inventory' row_no=0 data=[] IGNORE_UI_REGISTRATION=true}
+                {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=[] IGNORE_UI_REGISTRATION=true}
             </tr>
-            <tr id="row1" class="hide border-bottom lineItemCloneCopy" data-row-num="0">
-                <td class="text-center">
-                    <a class="btn deleteRow me-2">
-                        <i class="fa fa-trash" title="{vtranslate('LBL_DELETE',$MODULE)}"></i>
-                    </a>
-                    <a>
-                        <img src="{vimage_path('drag.png')}" title="{vtranslate('LBL_DRAG',$MODULE)}"/>
-                    </a>
-                    <input type="hidden" class="rowNumber" value="1" />
-                </td>
-                <td colspan="15">
-                </td>
+            <tr id="dummyTextRow" class=" hide border-bottom" data-row-num="0">
+                {include file="partials/TextItemContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=[] IGNORE_UI_REGISTRATION=true}
             </tr>
         </table>
         <div class="lineitemTableContainer">
