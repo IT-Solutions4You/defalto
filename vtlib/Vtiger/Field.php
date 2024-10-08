@@ -101,7 +101,21 @@ class Vtiger_Field extends Vtiger_FieldBasic {
 		}
 	}
 
-	/**
+    /**
+     * @return void
+     */
+    public function deletePicklistValues()
+    {
+        $adb = PearDatabase::getInstance();
+        $picklistTable = 'vtiger_' . $this->name;
+        $picklistId = $this->name . 'id';
+
+        if (columnExists($picklistId, $picklistTable) && columnExists($this->name, $picklistTable)) {
+            $adb->pquery(sprintf('DELETE FROM %s', $picklistTable));
+        }
+    }
+
+    /**
 	 * Set values for picklist field (non-role based)
 	 * @param Array List of values to add
 	 *

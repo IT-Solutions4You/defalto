@@ -10,7 +10,7 @@ vimport('~~/vtlib/Vtiger/Module.php');
 /**
  * Vtiger Module Model Class
  */
-class Vtiger_Module_Model extends Vtiger_Module {
+class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Interface {
     protected string $fontIcon = '';
 	protected $blocks = false;
 	protected $nameFields = false;

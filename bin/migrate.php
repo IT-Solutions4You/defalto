@@ -16,9 +16,15 @@ require_once('config.php');
 require_once 'vendor/autoload.php';
 include_once 'includes/main/WebUI.php';
 
-set_include_path($root_directory);
+global $current_user;
 
+if (!$current_user) {
+    $current_user = Users::getActiveAdminUser();
+}
+
+set_include_path($root_directory);
 require_once('include/Migrations/Migrations.php');
+
 $migrationObj = new Migrations();
 $migrationObj->setArguments($argv);
 $migrationObj->run();

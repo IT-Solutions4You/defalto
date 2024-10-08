@@ -400,6 +400,23 @@ $languageStrings = array(
     'description' => 'Description',
     'country_id' => 'Country',
     'LBL_BANK_INFORMATION' => 'Bank Information',
+    'SINGLE_LoginHistory' => 'Login History',
+    'SINGLE_ModuleManager' => 'Module Manager',
+    'SINGLE_LayoutEditor' => 'Layout Editor',
+    'SINGLE_Vtiger' => 'Defalto',
+    'SINGLE_CronTasks' => 'Cron Tasks',
+    'SINGLE_Workflows' => 'Workflows',
+    'SINGLE_Webforms' => 'Webforms',
+    'SINGLE_PickListDependency' => 'PickList Dependency',
+    'SINGLE_MenuEditor' => 'Menu Editor',
+    'SINGLE_Leads' => 'Lead',
+    'SINGLE_Tags' => 'Tags',
+    'SINGLE_PBXManager' => 'PBXManager',
+    'SINGLE_MailConverter' => 'Mail Converter',
+    'SINGLE_Core' => 'Defalto',
+    'LBL_CLIENT_ID' => 'Client Id',
+    'LBL_CLIENT_SECRET' => 'Client Secret',
+    'LBL_CLIENT_TOKEN' => 'Client Token',
 );
 
 $jsLanguageStrings = array(

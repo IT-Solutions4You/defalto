@@ -26,7 +26,7 @@ class Settings_Webforms_Detail_View extends Settings_Vtiger_Index_View {
 	public function process(Vtiger_Request $request) {
 		$recordId = $request->get('record');
 		$qualifiedModuleName = $request->getModule(false);
-
+        $moduleName = $request->getModule();
 		$recordModel = Settings_Webforms_Record_Model::getInstanceById($recordId, $qualifiedModuleName);
 		$siteUrl = $postUrl = vglobal('site_URL');
 		if($siteUrl[strlen($siteUrl)-1] != '/') $postUrl .= '/';
@@ -40,7 +40,8 @@ class Settings_Webforms_Detail_View extends Settings_Vtiger_Index_View {
 
 		$viewer = $this->getViewer($request);
 		$viewer->assign('RECORD', $recordModel);
-		$viewer->assign('MODULE_NAME', $qualifiedModuleName);
+		$viewer->assign('MODULE_NAME', $moduleName);
+		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 		$viewer->assign('RECORD_STRUCTURE', $recordStructure->getStructure());
 		$viewer->assign('MODULE_MODEL', $moduleModel);
 

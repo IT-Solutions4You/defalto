@@ -61,19 +61,23 @@ class Settings_Webforms_Module_Model extends Settings_Vtiger_Module_Model {
 	 * Function to get list of fields
 	 * @return <Array> list of Field models <Settings_Webforms_Field_Model>
 	 */
-	public function getFields() {
-		if (!$this->fields) {
-			$fieldsList = array();
-			$blocks = $this->getBlocks();
-			foreach ($blocks as $blockModel) {
-				$fieldsList = array_merge($fieldsList, $blockModel->getFields());
-			}
-			$this->fields = $fieldsList;
-		}
-		return $this->fields;
-	}
+    public function getFields($blockInstance = false)
+    {
+        if (!$this->fields) {
+            $fieldsList = [];
+            $blocks = $this->getBlocks();
 
-	/**
+            foreach ($blocks as $blockModel) {
+                $fieldsList = array_merge($fieldsList, $blockModel->getFields());
+            }
+
+            $this->fields = $fieldsList;
+        }
+
+        return $this->fields;
+    }
+
+    /**
 	 * Function to get field using field name
 	 * @param <String> $fieldName
 	 * @return <Settings_Webforms_Field_Model>

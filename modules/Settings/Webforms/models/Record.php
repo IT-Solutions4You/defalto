@@ -253,15 +253,12 @@ class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model {
 	 * Function to set db insert value value for checkbox
 	 * @param <string> $fieldName
 	 */
-	public function setCheckBoxValue($fieldName) {
-		if($this->get($fieldName) == "on"){
-			$this->set($fieldName,1);
-		} else {
-			$this->set($fieldName,0);
-		}
-	}
+    public function setCheckBoxValue($fieldName)
+    {
+        $this->set($fieldName, (int)$this->get($fieldName));
+    }
 
-	/**
+    /**
 	 * Function to save the record
 	 */
 	public function save() {
