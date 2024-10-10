@@ -19,7 +19,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     initializeVariables: function () {
-        this.dummyLineItemRow = jQuery('#row0');
+        this.dummyLineItemRow = jQuery('#dummyItemRow');
         this.dummyTextRow = jQuery('#dummyTextRow');
         this.lineItemsHolder = jQuery('#lineItemTab');
         this.numOfLineItems = this.lineItemsHolder.find('.' + this.lineItemDetectingClass).length;
@@ -51,8 +51,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             newLineItem.find('.ignore-ui-registration').removeClass('ignore-ui-registration');
             vtUtils.applyFieldElementsView(newLineItem);
             app.event.trigger('post.lineItem.New', newLineItem);
-            // self.checkLineItemRow();
-            // self.registerLineItemAutoComplete(newLineItem);
+            self.registerLineItemAutoComplete(newLineItem);
 
             if (typeof data != "undefined") {
                 // self.mapResultsToFields(newLineItem, data);
@@ -235,7 +234,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                         data.push({
                             'id': jQuery('#' + value).find('input.lineItemId').val(),
                             'sequence': index,
-                            });
+                        });
                     }
                 });
 
@@ -246,9 +245,68 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     'data': JSON.stringify(data),
                 };
 
-                app.request.post({"data":requestParams}).then(function(err,res) {
+                app.request.post({"data": requestParams}).then(function (err, res) {
                     console.log(res);
                 });
+            }
+        });
+    },
+
+    registerLineItemAutoComplete: function (container) {
+        const self = this;
+        if (typeof container == 'undefined') {
+            container = this.lineItemsHolder;
+        }
+        container.find('input.autoComplete').autocomplete({
+            'minLength': '3',
+            'source': function (request, response) {
+                const inputElement = jQuery(this.element[0]);
+                const tdElement = inputElement.closest('td');
+                const searchValue = request.term;
+                const params = {};
+                params.search_module = tdElement.find('.lineItemPopup').data('moduleName');
+                params.search_value = searchValue;
+                self.searchModuleNames(params).then(function (data) {
+                    const responseDataList = [];
+                    let serverDataFormat = data;
+
+                    if (serverDataFormat.length <= 0) {
+                        serverDataFormat = [{
+                            'label': app.vtranslate('JS_NO_RESULTS_FOUND'),
+                            'type': 'no results'
+                        }];
+                    }
+
+                    for (let id in serverDataFormat) {
+                        responseDataList.push(serverDataFormat[id]);
+                    }
+
+                    response(responseDataList);
+                });
+            },
+            'select': function (event, ui) {
+                const selectedItemData = ui.item;
+                //To stop selection if no results is selected
+                if (typeof selectedItemData.type != 'undefined' && selectedItemData.type == "no results") {
+                    return false;
+                }
+                const element = jQuery(this);
+                element.attr('disabled', 'disabled');
+                const tdElement = element.closest('td');
+                const selectedModule = tdElement.find('.lineItemPopup').data('moduleName');
+                const dataUrl = "index.php?module=Inventory&action=GetTaxes&record=" + selectedItemData.id + "&currency_id=" + jQuery('#currency_id option:selected').val() + "&sourceModule=" + app.getModuleName();
+                app.request.get({'url': dataUrl}).then(
+                    function (error, data) {
+                        if (error == null) {
+                            const itemRow = self.getClosestLineItemRow(element);
+                            itemRow.find('.lineItemType').val(selectedModule);
+                            self.mapResultsToFields(itemRow, data[0]);
+                        }
+                    },
+                    function (error, err) {
+
+                    }
+                );
             }
         });
     },

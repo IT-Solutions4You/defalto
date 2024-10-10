@@ -28,7 +28,7 @@ trait InventoryItem_Detail_Trait
             ORDER BY df_inventoryitem.sequence, vtiger_crmentity.crmid';
         $result = $db->pquery($sql, [$request->get('record')]);
 
-        while ($row = $db->fetch_array($result)) {
+        while ($row = $db->fetchByAssoc($result)) {
             $inventoryItems[] = $row;
         }
 

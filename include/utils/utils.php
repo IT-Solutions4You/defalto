@@ -1711,7 +1711,7 @@ function show()
 	if (!empty($input_args)) {
 		foreach ($input_args as $input) {
 			if (is_array($input)) {
-				echo '<table border="1">';
+				echo '<table border="1" class="table-bordered">';
 				echo '<tr><th>Key</th><th>Value</th></tr>';
 				foreach ($input as $key => $value) {
 					echo "<tr><td>$key</td><td>";

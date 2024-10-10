@@ -6,10 +6,9 @@
 *}
 {strip}
 	{assign var="deleted" value="deleted"|cat:$row_no}
-	{assign var="image" value="productImage"|cat:$row_no}
 	{assign var="purchaseCost" value="purchaseCost"|cat:$row_no}
 	{assign var="margin" value="margin"|cat:$row_no}
-    {assign var="hdnProductId" value="hdnProductId"|cat:$row_no}
+    {assign var="hdnProductId" value="productid"|cat:$row_no}
     {assign var="productName" value="productName"|cat:$row_no}
     {assign var="comment" value="comment"|cat:$row_no}
     {assign var="productDescription" value="productDescription"|cat:$row_no}
@@ -60,11 +59,6 @@
         <input type="hidden" class="lineItemId" value="{$data.id}" />
         <input type="hidden" class="rowSequence" value="{$row_no}" />
 	</td>
-	{if $IMAGE_EDITABLE}
-		<td class="lineItemImage text-center">
-			<img alt="{$data.$image}" src="{$data.$image}" height="42" width="42">
-		</td>
-	{/if}
 
 	{*if $PRODUCT_EDITABLE*}
 		<td>
@@ -78,7 +72,7 @@
                     <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="{$entityType}" class="lineItemType"/>
                     {if !$data.$productDeleted}
                         <span class="input-group-addon input-group-text cursorPointer clearLineItem" title="{vtranslate('LBL_CLEAR',$MODULE)}">
-                            <i class="fa fa-times-circle"></i>
+                            <i class="fa fa-xmark"></i>
                         </span>
                     {/if}
                     {if $row_no eq 0}
@@ -130,7 +124,7 @@
 	<td>
 		<input id="{$qty}" name="{$qty}" type="text" class="qty smallInputBox inputElement form-control replaceCommaWithDot"
 			   data-rule-required=true data-rule-positive=true data-rule-greater_than_zero=true value="{if !empty($data.$qty)}{$data.$qty}{else}1{/if}"
-			   {if $QUANTITY_EDITABLE eq false} disabled=disabled {/if} />
+			   />
 
 		{if $PURCHASE_COST_EDITABLE eq false and $MODULE neq 'PurchaseOrder'}
 			<input id="{$purchaseCost}" type="hidden" value="{if ((float)$data.$purchaseCost)}{((float)$data.$purchaseCost) / ((float)$data.$qty)}{else}0{/if}" />

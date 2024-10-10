@@ -73,6 +73,13 @@ class InventoryItem extends CRMEntity
     public $default_order_by = 'inventoryitemid';
     public $default_sort_order = 'DESC';
 
+    function __construct()
+    {
+        $this->log =Logger::getLogger('inventoryItem');
+        $this->db = PearDatabase::getInstance();
+        $this->column_fields = getColumnFields('InventoryItem');
+    }
+
     /**
      * Invoked when special actions are performed on the module.
      *

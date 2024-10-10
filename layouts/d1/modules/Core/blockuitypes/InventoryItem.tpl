@@ -24,7 +24,7 @@
     </div>
     <div class="blockData p-3 border-top border-light-subtle {if $IS_HIDDEN}hide{/if}">
         <table id="dummyLineItemTable" style="display: none;">
-            <tr id="row0" class="hide border-bottom lineItemCloneCopy" data-row-num="0">
+            <tr id="dummyItemRow" class="hide border-bottom lineItemCloneCopy" data-row-num="0">
                 {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=[] IGNORE_UI_REGISTRATION=true}
             </tr>
             <tr id="dummyTextRow" class=" hide border-bottom" data-row-num="0">
@@ -45,7 +45,7 @@
                         <strong>{vtranslate('LBL_QTY',$MODULE)}</strong>
                     </td>
                 </tr>
-                {foreach key=row_no item=data from=$RELATED_PRODUCTS}
+                {foreach key=row_no item=data from=$INVENTORY_ITEMS}
                     <tr id="row{$row_no}" data-row-num="{$row_no}" class="border-bottom lineItemRow" {if $data["entityType$row_no"] eq 'Products'}data-quantity-in-stock={$data["qtyInStock$row_no"]}{/if}>
                         {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'Inventory' row_no=$row_no data=$data}
                     </tr>
