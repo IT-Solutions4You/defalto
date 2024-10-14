@@ -420,12 +420,34 @@ var vtUtils = {
             language = app.getUserLanguage().substring(0, 2),
             format = self.getDatepickerFormat(element);
 
+        function updateButtons(input) {
+            let container = input.datepicker('widget'),
+                customButtons = '<button type="button" class="ui-state-default" data-handler="today">' + app.vtranslate('JS_TODAY') + '</button>' +
+                    '<button type="button" class="ui-state-default" data-handler="clear">' + app.vtranslate('JS_CLEAR') + '</button>';
+
+            setTimeout(function () {
+                container.find('.ui-datepicker-buttonpane').html(customButtons);
+                container.off('click', '[data-handler]').on('click', '[data-handler]', function () {
+                    let handler = $(this).data('handler'),
+                        inputElement = $(input),
+                        date = null;
+
+                    if ('today' === handler) {
+                        date = app.getDateInVtigerFormat(format, new Date());
+                    }
+
+                    inputElement.val(date)
+                    inputElement.datepicker('hide');
+                });
+            }, 1)
+        }
+
         return {
             autoclose: true,
-            todayBtn: "linked",
             dateFormat: format.replace('yyyy', 'yy'),
             todayHighlight: true,
-            clearBtn: true,
+            showTodayButton: false,
+            showButtonPanel: true,
             language: language,
             firstDay: self.getFirstDayId(),
             weekStart: self.getFirstDayId(),
@@ -434,6 +456,12 @@ var vtUtils = {
             monthNamesShort: self.getMonthNamesShort(),
             dayNames: self.getDayNames(),
             dayNamesShort: self.getDayNamesShort(),
+            beforeShow: function() {
+                updateButtons(element);
+            },
+            onChangeMonthYear: function() {
+                updateButtons(element);
+            },
         };
     },
     /**

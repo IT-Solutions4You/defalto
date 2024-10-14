@@ -1257,7 +1257,12 @@ class QueryGenerator {
 
 				if($type == 'picklist') {
 					global $mod_strings;
-					// Get all the keys for the for the Picklist value
+					// Get all the keys for the Picklist value
+
+                    if (empty($mod_strings)) {
+                        throw new AppException('Missing current language strings');
+                    }
+
 					$mod_keys = array_keys($mod_strings, $value);
 					if(php7_count($mod_keys) >= 1) {
 						// Iterate on the keys, to get the first key which doesn't start with LBL_      (assuming it is not used in PickList)
