@@ -24,7 +24,8 @@
                    data-date-format="{$DATE_FORMAT}"
                    value=""
                     {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if}
-                   data-rule-date="true"/>
+                   data-rule-date="true"
+                   autocomplete="off"/>
             <span class="input-group-text">
                 <i class="fa fa-calendar "></i>
             </span>
