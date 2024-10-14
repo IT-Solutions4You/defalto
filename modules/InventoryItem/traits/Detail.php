@@ -29,8 +29,16 @@ trait InventoryItem_Detail_Trait
         $result = $db->pquery($sql, [$request->get('record')]);
 
         while ($row = $db->fetchByAssoc($result)) {
+            if (empty($row['productid']) && !empty($row['item_text'])) {
+                $row['type'] = 'Text';
+            } else {
+                $row['type'] = getSalesEntityType($row['productid']);
+            }
+
             $inventoryItems[] = $row;
         }
+
+        show($inventoryItems);
 
         $viewer->assign('INVENTORY_ITEMS', $inventoryItems);
     }
