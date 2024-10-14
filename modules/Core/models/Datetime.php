@@ -1,13 +1,12 @@
 <?php
-/*********************************************************************************
- ** The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
+/**
+ * This file is part of the IT-Solutions4You CRM Software.
  *
- ********************************************************************************/
+ * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 class Core_Datetime_Model
 {
@@ -34,6 +33,52 @@ class Core_Datetime_Model
     public $z_day;
     public $z_hour = '00';
     public $z_month;
+
+    /**
+     * Constructor for Core_Datetime_Model class
+     * @param array $timearr - collection of string
+     * @param string $check - check string
+     */
+    public function __construct(&$timearr, $check)
+    {
+        if (!isset($timearr) || php7_count($timearr) == 0) {
+            $this->setDateTime(null);
+        } elseif (isset($timearr['ts'])) {
+            $this->setDateTime($timearr['ts']);
+        } else {
+            if (isset($timearr['hour']) && $timearr['hour'] !== '') {
+                $this->hour = $timearr['hour'];
+            }
+            if (isset($timearr['min']) && $timearr['min'] !== '') {
+                $this->minute = $timearr['min'];
+            }
+            if (isset($timearr['sec']) && $timearr['sec'] !== '') {
+                $this->second = $timearr['sec'];
+            }
+            if (isset($timearr['day']) && $timearr['day'] !== '') {
+                $this->day = $timearr['day'];
+            }
+            if (isset($timearr['week']) && $timearr['week'] !== '') {
+                $this->week = $timearr['week'];
+            }
+            if (isset($timearr['month']) && $timearr['month'] !== '') {
+                $this->month = $timearr['month'];
+            }
+            if (isset($timearr['year']) && $timearr['year'] >= 1970) {
+                $this->year = $timearr['year'];
+            } else {
+                return null;
+            }
+        }
+        if ($check) {
+            $this->getDateTime();
+        }
+    }
+
+    public function Core_Datetime_Model(&$timearr, $check)
+    {
+        self::__construct($timearr, $check);
+    }
 
     /**
      * function to get values from Core_Datetime_Model object
@@ -90,6 +135,7 @@ class Core_Datetime_Model
         $date_array['month'] = $this->month;
         $date_array['year'] = $this->year;
         $datetimevalue = new Core_Datetime_Model($date_array, true);
+
         return $datetimevalue;
     }
 
@@ -116,6 +162,7 @@ class Core_Datetime_Model
         $date_array['month'] = $this->month;
         $date_array['year'] = $this->year;
         $datetimevalue = new Core_Datetime_Model($date_array, true);
+
         return $datetimevalue;
     }
 
@@ -142,6 +189,7 @@ class Core_Datetime_Model
         $date_array['month'] = $this->month;
         $date_array['year'] = $this->year;
         $datetimevalue = new Core_Datetime_Model($date_array, true);
+
         return $datetimevalue;
     }
 
@@ -168,6 +216,7 @@ class Core_Datetime_Model
         $month_array['month'] = $month;
         $month_array['year'] = $year;
         $datetimevalue = new Core_Datetime_Model($month_array, true);
+
         return $datetimevalue;
     }
 
@@ -200,6 +249,7 @@ class Core_Datetime_Model
         $month_array['month'] = $month;
         $month_array['year'] = $year;
         $datetimevalue = new Core_Datetime_Model($month_array, true);
+
         return $datetimevalue;
     }
 
@@ -218,6 +268,7 @@ class Core_Datetime_Model
         $week_array['month'] = $this->month;
         $week_array['year'] = $this->year;
         $datetimevalue = new Core_Datetime_Model($week_array, true);
+
         return $datetimevalue;
     }
 
@@ -237,6 +288,7 @@ class Core_Datetime_Model
         $year_array['month'] = $index + 1;
         $year_array['year'] = $this->year;
         $datetimevalue = new Core_Datetime_Model($year_array, true);
+
         return $datetimevalue;
     }
 
@@ -271,6 +323,7 @@ class Core_Datetime_Model
         $day_array['month'] = $month;
         $day_array['year'] = $year;
         $datetimevalue = new Core_Datetime_Model($day_array, true);
+
         return $datetimevalue;
     }
 
@@ -317,6 +370,7 @@ class Core_Datetime_Model
             'month' => $this->month,
             'year' => $this->year,
         ];
+
         return new Core_Datetime_Model($date_data, true);
     }
 
@@ -339,6 +393,7 @@ class Core_Datetime_Model
         if (isset($this->year) && $this->year != '') {
             array_push($array, "year=" . $this->year);
         }
+
         return ("&" . implode('&', $array));
     }
 
@@ -398,6 +453,7 @@ class Core_Datetime_Model
             'month' => $first_day->month,
             'year' => $first_day->year,
         ];
+
         return new Core_Datetime_Model($date_data, true);
     }
 
@@ -418,6 +474,7 @@ class Core_Datetime_Model
             'month' => 1,
             'year' => $year,
         ];
+
         return new Core_Datetime_Model($date_data, true);
     }
 
@@ -428,6 +485,7 @@ class Core_Datetime_Model
     public function get_formatted_date()
     {
         $date = $this->year . "-" . $this->z_month . "-" . $this->z_day;
+
         return DateTimeField::convertToUserFormat($date);
     }
 
@@ -445,6 +503,7 @@ class Core_Datetime_Model
         if (empty($min)) {
             $min = '00';
         }
+
         return $hour . ':' . $min;
     }
 
@@ -455,6 +514,7 @@ class Core_Datetime_Model
     public function get_userTimezone_formatted_date()
     {
         $dateTimeInUserFormat = DateTimeField::convertToUserTimeZone($this->get_DB_formatted_date() . ' ' . $this->get_formatted_time());
+
         return $dateTimeInUserFormat->format('Y-m-d');
     }
 
@@ -521,52 +581,6 @@ class Core_Datetime_Model
 
         if ($is_leap == 1) {
             $this->daysinyear += 1;
-        }
-    }
-
-    public function Core_Datetime_Model(&$timearr, $check)
-    {
-        self::__construct($timearr, $check);
-    }
-
-    /**
-     * Constructor for Core_Datetime_Model class
-     * @param array $timearr - collection of string
-     * @param string $check - check string
-     */
-    public function __construct(&$timearr, $check)
-    {
-        if (!isset($timearr) || php7_count($timearr) == 0) {
-            $this->setDateTime(null);
-        } elseif (isset($timearr['ts'])) {
-            $this->setDateTime($timearr['ts']);
-        } else {
-            if (isset($timearr['hour']) && $timearr['hour'] !== '') {
-                $this->hour = $timearr['hour'];
-            }
-            if (isset($timearr['min']) && $timearr['min'] !== '') {
-                $this->minute = $timearr['min'];
-            }
-            if (isset($timearr['sec']) && $timearr['sec'] !== '') {
-                $this->second = $timearr['sec'];
-            }
-            if (isset($timearr['day']) && $timearr['day'] !== '') {
-                $this->day = $timearr['day'];
-            }
-            if (isset($timearr['week']) && $timearr['week'] !== '') {
-                $this->week = $timearr['week'];
-            }
-            if (isset($timearr['month']) && $timearr['month'] !== '') {
-                $this->month = $timearr['month'];
-            }
-            if (isset($timearr['year']) && $timearr['year'] >= 1970) {
-                $this->year = $timearr['year'];
-            } else {
-                return null;
-            }
-        }
-        if ($check) {
-            $this->getDateTime();
         }
     }
 }

@@ -27,6 +27,56 @@ class RecurringType
     public $startdate;
 
     /**
+     * Constructor for class RecurringType
+     * @param array $repeat_arr - array contains recurring info
+     */
+    public function __construct($repeat_arr)
+    {
+        $st_date = explode("-", $repeat_arr["startdate"]);
+        $st_time = explode(":", $repeat_arr["starttime"]);
+        $end_date = explode("-", $repeat_arr["enddate"]);
+        $end_time = explode(":", $repeat_arr['endtime']);
+        $recurringenddate = explode("-", $repeat_arr["recurringenddate"]);
+
+        $start_date = [
+            'day' => $st_date[2],
+            'month' => $st_date[1],
+            'year' => $st_date[0],
+            'hour' => $st_time[0],
+            'min' => $st_time[1],
+        ];
+        $end_date = [
+            'day' => $end_date[2],
+            'month' => $end_date[1],
+            'year' => $end_date[0],
+            'hour' => $end_time[0],
+            'min' => $end_time[1],
+        ];
+        $recurringenddate = [
+            'day' => $recurringenddate[2],
+            'month' => $recurringenddate[1],
+            'year' => $recurringenddate[0],
+        ];
+        $this->startdate = new Core_Datetime_Model($start_date, true);
+        $this->enddate = new Core_Datetime_Model($end_date, true);
+        $this->recurringenddate = new Core_Datetime_Model($recurringenddate, true);
+
+        $this->recur_type = $repeat_arr['type'];
+        $this->recur_freq = $repeat_arr['repeat_frequency'];
+        if (empty($this->recur_freq)) {
+            $this->recur_freq = 1;
+        }
+        $this->dayofweek_to_rpt = $repeat_arr['dayofweek_to_repeat'];
+        $this->repeat_monthby = $repeat_arr['repeatmonth_type'];
+        if (isset($repeat_arr['repeatmonth_date'])) {
+            $this->rptmonth_datevalue = $repeat_arr['repeatmonth_date'];
+        }
+        $this->rptmonth_daytype = $repeat_arr['repeatmonth_daytype'];
+
+        $this->recurringdates = $this->_getRecurringDates();
+    }
+
+    /**
      *  Function to get recurring dates depending on the recurring type
      *  return  array   $recurringDates     -  Recurring Dates in format
      *    Recurring date will be returned in DB Time Zone, as well as DB format
@@ -202,6 +252,7 @@ class RecurringType
                 die("Recurring Type " . $this->recur_type . " is not defined");
             }
         }
+
         return $recurringDates;
     }
 
@@ -374,6 +425,7 @@ class RecurringType
             $year = $dateObj->year;
             $dateObj = $dateObj->getThismonthDaysbyIndex($index, $day, $month, $year);
         }
+
         return $dateObj;
     }
 
@@ -396,6 +448,7 @@ class RecurringType
             $month = $dateObj->month;
             $year = $dateObj->year;
             $dateObj = $dateObj->getThismonthDaysbyIndex($index, $day, $month, $year);
+
             return $dateObj;
         }
     }
@@ -458,56 +511,7 @@ class RecurringType
                 $recurringInfo['dayofweek_to_repeat'][0] = (int)$userStartDateTime->format('N') % 7;
             }
         }
+
         return $recurringInfo;
-    }
-
-    /**
-     * Constructor for class RecurringType
-     * @param array $repeat_arr - array contains recurring info
-     */
-    public function __construct($repeat_arr)
-    {
-        $st_date = explode("-", $repeat_arr["startdate"]);
-        $st_time = explode(":", $repeat_arr["starttime"]);
-        $end_date = explode("-", $repeat_arr["enddate"]);
-        $end_time = explode(":", $repeat_arr['endtime']);
-        $recurringenddate = explode("-", $repeat_arr["recurringenddate"]);
-
-        $start_date = [
-            'day' => $st_date[2],
-            'month' => $st_date[1],
-            'year' => $st_date[0],
-            'hour' => $st_time[0],
-            'min' => $st_time[1],
-        ];
-        $end_date = [
-            'day' => $end_date[2],
-            'month' => $end_date[1],
-            'year' => $end_date[0],
-            'hour' => $end_time[0],
-            'min' => $end_time[1],
-        ];
-        $recurringenddate = [
-            'day' => $recurringenddate[2],
-            'month' => $recurringenddate[1],
-            'year' => $recurringenddate[0],
-        ];
-        $this->startdate = new Core_Datetime_Model($start_date, true);
-        $this->enddate = new Core_Datetime_Model($end_date, true);
-        $this->recurringenddate = new Core_Datetime_Model($recurringenddate, true);
-
-        $this->recur_type = $repeat_arr['type'];
-        $this->recur_freq = $repeat_arr['repeat_frequency'];
-        if (empty($this->recur_freq)) {
-            $this->recur_freq = 1;
-        }
-        $this->dayofweek_to_rpt = $repeat_arr['dayofweek_to_repeat'];
-        $this->repeat_monthby = $repeat_arr['repeatmonth_type'];
-        if (isset($repeat_arr['repeatmonth_date'])) {
-            $this->rptmonth_datevalue = $repeat_arr['repeatmonth_date'];
-        }
-        $this->rptmonth_daytype = $repeat_arr['repeatmonth_daytype'];
-
-        $this->recurringdates = $this->_getRecurringDates();
     }
 }
