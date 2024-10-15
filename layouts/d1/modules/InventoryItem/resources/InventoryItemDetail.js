@@ -29,6 +29,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this._super(container);
         this.registerAddButtons();
         this.makeLineItemsSortable();
+        this.addRowListeners();
     },
 
     registerAddButtons: function () {
@@ -39,6 +40,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             const params = {'currentTarget': currentTarget};
             let newTextLine = self.getNewTextItem(params);
             newTextLine = newTextLine.appendTo(self.lineItemsHolder);
+            self.setupRowListeners(self.numOfLineItems);
             app.event.trigger('post.textLine.New', newTextLine);
         };
 
@@ -52,6 +54,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             vtUtils.applyFieldElementsView(newLineItem);
             app.event.trigger('post.lineItem.New', newLineItem);
             self.registerLineItemAutoComplete(newLineItem);
+            self.setupRowListeners(self.numOfLineItems);
 
             if (typeof data != "undefined") {
                 // self.mapResultsToFields(newLineItem, data);
@@ -250,6 +253,76 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 });
             }
         });
+    },
+
+    addRowListeners: function () {
+        const self = this;
+        $('.lineItemRow').each(function () {
+            const rowNum = $(this).data('row-num');
+            self.setupRowListeners(rowNum);
+        });
+    },
+
+    setupRowListeners: function (rowNum) {
+        const self = this;
+        const row = $(`#row${rowNum}`);
+
+        // Use event delegation for all input events within the row
+        row.on('change blur', 'input, select, textarea', function () {
+            const element = $(this);
+            // Don't save on hidden input changes unless specifically needed
+            if (!element.is(':hidden') || element.hasClass('saveOnChange')) {
+                self.saveProductLine(rowNum);
+            }
+        });
+    },
+
+    saveProductLine: function (rowNum) {
+        const row = $(`#row${rowNum}`);
+        const data = this.serializeRow(row);
+
+        // Check if the row has any non-empty values
+        const hasContent = Object.values(data).some(value => value !== '' && value != null);
+
+        if (hasContent) {
+            $.ajax({
+                url: 'index.php',
+                method: 'POST',
+                data: {
+                    rowNum: rowNum,
+                    module: 'InventoryItem',
+                    action: 'SaveProductLine',
+                    data: data
+                },
+                success: function (response) {
+                    if (response.newLineItemId) {
+                        row.find('[name="lineItemId"]').val(response.newLineItemId);
+                    }
+
+                    row.trigger('lineSaved', [response]);
+                },
+                error: function (xhr, status, error) {
+                    row.trigger('lineErrorSaving', [error]);
+                }
+            });
+        }
+    },
+
+    serializeRow: function (row) {
+        let data = {};
+        row.find('input, select, textarea').each(function () {
+            const element = $(this);
+            const name = element.attr('name');
+            if (name) {
+                if (element.is(':checkbox')) {
+                    data[name] = element.is(':checked') ? element.val() : '';
+                } else {
+                    data[name] = element.val();
+                }
+            }
+        });
+
+        return data;
     },
 
     registerLineItemAutoComplete: function (container) {

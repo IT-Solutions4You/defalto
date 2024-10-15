@@ -47,7 +47,11 @@
                 </tr>
                 {foreach key=row_no item=data from=$INVENTORY_ITEMS}
                     <tr id="row{$row_no}" data-row-num="{$row_no}" class="border-bottom lineItemRow" {if $data["entityType$row_no"] eq 'Products'}data-quantity-in-stock={$data["qtyInStock$row_no"]}{/if}>
-                        {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'InventoryItem' row_no=$row_no data=$data}
+                        {if $data.entityType eq 'Text'}
+                            {include file="partials/TextItemContent.tpl"|@vtemplate_path:'InventoryItem' row_no=$row_no data=$data}
+                        {else}
+                            {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'InventoryItem' row_no=$row_no data=$data}
+                        {/if}
                     </tr>
                 {/foreach}
             </table>
