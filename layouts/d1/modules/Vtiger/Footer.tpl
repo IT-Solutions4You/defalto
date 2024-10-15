@@ -8,7 +8,7 @@
 <footer class="app-footer bg-body">
     <div class="h-footer d-flex justify-content-center align-items-center">
         <div>
-            <a href="https://defalto.com">Powered by Defalto {$VTIGER_VERSION} © 2004 - {date('Y')}</a>
+            <a href="https://defalto.com">Powered by Defalto {$VTIGER_VERSION} © 2022 - {date('Y')}</a>
         </div>
     </div>
 </footer>
