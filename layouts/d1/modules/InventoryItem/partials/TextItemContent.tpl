@@ -19,8 +19,8 @@
     <input type="hidden" class="rowSequence" value="{$row_no}" />
 </td>
 <td colspan="50">
-    {assign var="productName" value="productName"|cat:$row_no}
-    <input type="text" id="{$productName}" name="{$productName}" value="{$data.$productName}" class="productName form-control autoComplete" data-rule-required=true>
-    <input type="hidden" id="{$hdnProductId}" name="{$hdnProductId}" value="{$data.$hdnProductId}" class="selectedModuleId"/>
+    {assign var="item_text" value="item_text"|cat:$row_no}
+    <input type="text" id="{$item_text}" name="{$item_text}" value="{$data.item_text}" class="productName form-control autoComplete" data-rule-required=true>
+    <input type="hidden" id="productid{$row_no}" name="productid{$row_no}" value="{$data.productid}" class="selectedModuleId"/>
     <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="Text" class="lineItemType"/>
 </td>

@@ -18,7 +18,7 @@ trait InventoryItem_Detail_Trait
         $serviceModuleModel = Vtiger_Module_Model::getInstance('Services');
         $viewer->assign('SERVICE_ACTIVE', $serviceModuleModel->isActive());
 
-        $inventoryItems = [];
+        $inventoryItems = [[],];
         $db = PearDatabase::getInstance();
         $sql = 'SELECT df_inventoryitem.* 
             FROM df_inventoryitem
@@ -30,13 +30,19 @@ trait InventoryItem_Detail_Trait
 
         while ($row = $db->fetchByAssoc($result)) {
             if (empty($row['productid']) && !empty($row['item_text'])) {
-                $row['type'] = 'Text';
+                $row['entityType'] = 'Text';
             } else {
-                $row['type'] = getSalesEntityType($row['productid']);
+                $row['entityType'] = getSalesEntityType($row['productid']);
+
+                if (empty($row['item_text'])) {
+                    $row['item_text'] = getEntityName($row['entityType'], $row['productid'])[$row['productid']];
+                }
             }
 
             $inventoryItems[] = $row;
         }
+
+        unset($inventoryItems[0]);
 
         show($inventoryItems);
 

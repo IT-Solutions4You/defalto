@@ -105,7 +105,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
 
         let idFields = [
-                'productName', 'subproduct_ids', 'hdnProductId', 'purchaseCost', 'margin', 'comment', 'qty',
+                'item_text', 'subproduct_ids', 'productid', 'purchaseCost', 'margin', 'comment', 'quantity',
                 'listPrice', 'discount_div', 'discount_type', 'discount_percentage',
                 'discount_amount', 'lineItemType', 'searchIcon', 'netPrice', 'subprod_names',
                 'productTotal', 'discountTotal', 'totalAfterDiscount', 'taxTotal'

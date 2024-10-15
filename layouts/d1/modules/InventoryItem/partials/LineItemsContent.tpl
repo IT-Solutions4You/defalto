@@ -9,7 +9,7 @@
 	{assign var="purchaseCost" value="purchaseCost"|cat:$row_no}
 	{assign var="margin" value="margin"|cat:$row_no}
     {assign var="hdnProductId" value="productid"|cat:$row_no}
-    {assign var="productName" value="productName"|cat:$row_no}
+    {assign var="item_text" value="item_text"|cat:$row_no}
     {assign var="comment" value="comment"|cat:$row_no}
     {assign var="productDescription" value="productDescription"|cat:$row_no}
     {assign var="qtyInStock" value="qtyInStock"|cat:$row_no}
@@ -20,7 +20,7 @@
     {assign var="subprod_names" value="subprod_names"|cat:$row_no}
 	{assign var="subprod_qty_list" value="subprod_qty_list"|cat:$row_no}
     {assign var="entityIdentifier" value="entityType"|cat:$row_no}
-    {assign var="entityType" value=$data.$entityIdentifier}
+    {assign var="entityType" value=$data.entityType}
 
     {assign var="discount_type" value="discount_type"|cat:$row_no}
     {assign var="discount_percent" value="discount_percent"|cat:$row_no}
@@ -42,7 +42,7 @@
 	{assign var="listPriceValues" value=Products_Record_Model::getListPriceValues($productId)}
 	{if $MODULE eq 'PurchaseOrder'}
 		{assign var="listPriceValues" value=array()}
-		{assign var="purchaseCost" value="{if $data.$purchaseCost && $RECORD_CURRENCY_RATE}{((float)$data.$purchaseCost) / ((float)$data.$qty * (float){$RECORD_CURRENCY_RATE})}{else}0{/if}"}
+		{assign var="purchaseCost" value="{if $data.$purchaseCost && $RECORD_CURRENCY_RATE}{((float)$data.$purchaseCost) / ((float)$data.quantity * (float){$RECORD_CURRENCY_RATE})}{else}0{/if}"}
 		{foreach item=currency_details from=$CURRENCIES}
 			{append var='listPriceValues' value=$currency_details.conversionrate * $purchaseCost index=$currency_details.currency_id}
 		{/foreach}
@@ -67,8 +67,8 @@
 			<!-- Product Re-Ordering Feature Code Addition ends -->
 			<div class="itemNameDiv form-inline">
                 <div class="input-group">
-                    <input type="text" id="{$productName}" name="{$productName}" value="{$data.$productName}" class="productName form-control {if $row_no neq 0}autoComplete{/if}" placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}" data-rule-required=true {if !empty($data.$productName)}disabled="disabled"{/if}>
-                    <input type="hidden" id="{$hdnProductId}" name="{$hdnProductId}" value="{$data.$hdnProductId}" class="selectedModuleId"/>
+                    <input type="text" id="{$item_text}" name="{$item_text}" value="{$data.item_text}" class="item_text form-control {if $row_no neq 0}autoComplete{/if}" placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}" data-rule-required=true {if !empty($data.$item_text)}disabled="disabled"{/if}>
+                    <input type="hidden" id="{$hdnProductId}" name="{$hdnProductId}" value="{$data.productid}" class="selectedModuleId"/>
                     <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="{$entityType}" class="lineItemType"/>
                     {if !$data.$productDeleted}
                         <span class="input-group-addon input-group-text cursorPointer clearLineItem" title="{vtranslate('LBL_CLEAR',$MODULE)}">
@@ -105,7 +105,7 @@
 			</div>
 			{if $data.$productDeleted}
 				<div class="row-fluid deletedItem redColor">
-					{if empty($data.$productName)}
+					{if empty($data.$item_text)}
 						{vtranslate('LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM',$MODULE)}
 					{else}
 						{vtranslate('LBL_THIS',$MODULE)} {$entityType} {vtranslate('LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM',$MODULE)}
@@ -123,11 +123,11 @@
 
 	<td>
 		<input id="{$qty}" name="{$qty}" type="text" class="qty smallInputBox inputElement form-control replaceCommaWithDot"
-			   data-rule-required=true data-rule-positive=true data-rule-greater_than_zero=true value="{if !empty($data.$qty)}{$data.$qty}{else}1{/if}"
+			   data-rule-required=true data-rule-positive=true data-rule-greater_than_zero=true value="{if !empty($data.quantity)}{$data.quantity}{else}1{/if}"
 			   />
 
 		{if $PURCHASE_COST_EDITABLE eq false and $MODULE neq 'PurchaseOrder'}
-			<input id="{$purchaseCost}" type="hidden" value="{if ((float)$data.$purchaseCost)}{((float)$data.$purchaseCost) / ((float)$data.$qty)}{else}0{/if}" />
+			<input id="{$purchaseCost}" type="hidden" value="{if ((float)$data.$purchaseCost)}{((float)$data.$purchaseCost) / ((float)$data.quantity)}{else}0{/if}" />
             <span style="display:none" class="purchaseCost">0</span>
 			<input name="{$purchaseCost}" type="hidden" value="{if $data.$purchaseCost}{$data.$purchaseCost}{else}0{/if}" />
 		{/if}
@@ -136,7 +136,7 @@
 			<span class="margin pull-right" style="display:none">{if $data.$margin}{$data.$margin}{else}0{/if}</span>
 		{/if}
 		{if $MODULE neq 'PurchaseOrder' &&  $MODULE neq 'Quotes'}
-			<div class="mt-3 stockAlert text-danger {if $data.$qty <= $data.$qtyInStock}hide{/if}" >
+			<div class="mt-3 stockAlert text-danger {if $data.quantity <= $data.$qtyInStock}hide{/if}" >
 				{vtranslate('LBL_STOCK_NOT_ENOUGH',$MODULE)}
 				<br>
 				{vtranslate('LBL_MAX_QTY_SELECT',$MODULE)}&nbsp;<span class="maxQuantity">{$data.$qtyInStock}</span>
@@ -146,7 +146,7 @@
 
 	{if $PURCHASE_COST_EDITABLE}
 		<td>
-			<input id="{$purchaseCost}" type="hidden" value="{if $data.$purchaseCost}{((float)$data.$purchaseCost) / ((float)$data.$qty)}{else}0{/if}" />
+			<input id="{$purchaseCost}" type="hidden" value="{if $data.$purchaseCost}{((float)$data.$purchaseCost) / ((float)$data.quantity)}{else}0{/if}" />
 			<input name="{$purchaseCost}" type="hidden" value="{if $data.$purchaseCost}{$data.$purchaseCost}{else}0{/if}" />
 			<span class="pull-right purchaseCost">{if $data.$purchaseCost}{$data.$purchaseCost}{else}0{/if}</span>
 		</td>
