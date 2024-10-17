@@ -56,7 +56,7 @@
             <img src="{vimage_path('drag.png')}" title="{vtranslate('LBL_DRAG',$MODULE)}"/>
         </a>
 		<input type="hidden" class="rowNumber" value="{$row_no}" />
-        <input type="hidden" class="lineItemId" value="{$data.id}" />
+        <input type="hidden" class="lineItemId" name="lineItemId{$row_no}" value="{$data.inventoryitemid}" />
         <input type="hidden" class="rowSequence" value="{$row_no}" />
 	</td>
 

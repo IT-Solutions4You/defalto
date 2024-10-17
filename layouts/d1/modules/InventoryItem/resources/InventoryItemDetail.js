@@ -268,7 +268,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const row = $(`#row${rowNum}`);
 
         // Use event delegation for all input events within the row
-        row.on('change blur', 'input, select, textarea', function () {
+        row.on('change, blur', 'input, select, textarea', function () {
             const element = $(this);
             // Don't save on hidden input changes unless specifically needed
             if (!element.is(':hidden') || element.hasClass('saveOnChange')) {
@@ -292,6 +292,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     rowNum: rowNum,
                     module: 'InventoryItem',
                     action: 'SaveProductLine',
+                    for_record: app.getRecordId(),
                     data: data
                 },
                 success: function (response) {
