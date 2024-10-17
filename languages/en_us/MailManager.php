@@ -129,6 +129,12 @@ $languageStrings = Array (
 	'LBL_RELATED_RECIPIENTS' => 'Related recipients',
 	'LBL_BLOCKED_REMOTE_CONTENT' => 'Remote content has been blocked to protect your privacy',
 	'LBL_ALLOW' => 'Allow',
+    'LBL_PROXY' => 'Proxy',
+    'LBL_CLIENT_ID' => 'Client Id',
+    'LBL_CLIENT_SECRET' => 'Client Secret',
+    'LBL_CLIENT_TOKEN' => 'Client Token',
+    'LBL_CLIENT_ACCESS_TOKEN' => 'Client Access Token',
+    'LBL_MISSING_PARAMS' => 'Missing params client id or secret',
 );
 
 $jsLanguageStrings = Array (

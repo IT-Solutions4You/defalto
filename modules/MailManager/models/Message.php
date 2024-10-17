@@ -118,7 +118,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 
     /**
 	 * Gets the Mail Body and Attachments
-	 * @param String $imap - Mail Box connection string
+	 * @param IMAP\Connection $imap - Mail Box connection string
 	 * @param Integer $messageid - Mail Number
 	 * @param Object $p
 	 * @param Integer $partno
@@ -127,14 +127,16 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 	public function __getpart($imap, $messageid, $p, $partno) {
 		// $partno = '1', '2', '2.1', '2.1.3', etc if multipart, 0 if not multipart
 
-		if($partno) {
-			$maxDownLoadLimit = MailManager_Config_Model::get('MAXDOWNLOADLIMIT');
-			if($p->bytes < $maxDownLoadLimit) {
-				$data = imap_fetchbody($imap,$messageid,$partno, FT_PEEK);  // multipart
-			}
-		} else {
-			$data = imap_body($imap,$messageid, FT_PEEK); //not multipart
-		}
+        if ($partno) {
+            $maxDownLoadLimit = MailManager_Config_Model::get('MAXDOWNLOADLIMIT');
+
+            if (!empty($p->bytes) && $p->bytes < $maxDownLoadLimit) {
+                $data = imap_fetchbody($imap, $messageid, $partno, FT_PEEK);  // multipart
+            }
+        } else {
+            $data = imap_body($imap, $messageid, FT_PEEK); //not multipart
+        }
+
 		// Any part may be encoded, even plain text messages, so check everything.
     	if ($p->encoding==4) $data = quoted_printable_decode($data);
 		elseif ($p->encoding==3) $data = base64_decode($data);
@@ -193,10 +195,11 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 	    }
 
     	// SUBPART RECURSION
-	    if ($p->parts) {
-        	foreach ($p->parts as $partno0=>$p2)
-            	$this->__getpart($imap,$messageid,$p2,$partno.'.'.($partno0+1));  // 1.2, 1.2.1, etc.
-    	}
+        if ($p->parts) {
+            foreach ($p->parts as $subPartNo => $subPart) {
+                $this->__getpart($imap, $messageid, $subPart, $partno . '.' . ($subPartNo + 1));  // 1.2, 1.2.1, etc.
+            }
+        }
 	}
 
 	/**
@@ -493,7 +496,11 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 	public function __SaveAttachmentFile($filename, $filecontent) {
 		require_once 'modules/Settings/MailConverter/handlers/MailAttachmentMIME.php';
 
-		$db = PearDatabase::getInstance();
+        if (empty($filecontent)) {
+            return null;
+        }
+
+        $db = PearDatabase::getInstance();
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 
 		$filename = imap_utf8($filename);

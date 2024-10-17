@@ -48,24 +48,37 @@ class MailManager_Connector_Connector {
 
 	/**
 	 * Connects to the Imap server with the given parameters
-	 * @param $model MailManager_Model_Mailbox Instance
+	 * @param $model MailManager_Mailbox_Model Instance
 	 * $param $folder String optional - mail box folder name
-	 * @returns MailManager_Connector Object
+	 * @returns MailManager_Connector_Connector Object
 	 */
-	public static function connectorWithModel($model, $folder='') {
-		$port = 143; // IMAP
-		if (strcasecmp($model->protocol(), 'pop') === 0) $port = 110; // NOT IMPLEMENTED
-		else if (strcasecmp($model->ssltype(), 'ssl') === 0) $port = 993; // IMAP SSL
+    public static function connectorWithModel($model, $folder = '')
+    {
+        $model->retrieveClientAccessToken();
 
-		$url = sprintf('{%s:%s/%s/%s/%s}%s', $model->server(), $port, $model->protocol(),
-				$model->ssltype(), $model->certvalidate(), $folder);
-		$baseUrl = sprintf('{%s:%s/%s/%s/%s}', $model->server(), $port, $model->protocol(),
-				$model->ssltype(), $model->certvalidate());
-		return new self($url, $model->username(), $model->password(), $baseUrl, $model->serverName());
-	}
+        if (strcasecmp($model->protocol(), 'pop') === 0) {
+            $port = 110; // NOT IMPLEMENTED
+        } elseif (strcasecmp($model->ssltype(), 'ssl') === 0) {
+            $port = 993; // IMAP SSL
+        } else {
+            $port = 143; // IMAP
+        }
+
+        $baseUrl = sprintf('{%s:%s/%s/%s/%s}', $model->server(), $port, $model->protocol(), $model->ssltype(), $model->certvalidate());
+        $password = $model->password();
+
+        if (!empty($model->proxy())) {
+            $baseUrl = sprintf("{%s/IMAP4/notls/novalidate-cert}", $model->proxy());
+            $password = $model->clientAccessToken();
+        }
+
+        $url = sprintf('%s%s', $baseUrl, $folder);
+
+        return new self($url, $model->username(), $password, $baseUrl);
+    }
 
 
-	/**
+    /**
 	 * Opens up imap connection to the specified url
 	 * @param $url String - mail server url
 	 * @param $username String  - user name of the mail box
@@ -73,18 +86,17 @@ class MailManager_Connector_Connector {
 	 * @param $baseUrl Optional - url of the mailserver excluding folder name.
 	 *	This is used to fetch the folders of the mail box
 	 */
-	public function __construct($url, $username, $password, $baseUrl=false, $serverName = '') {
+	public function __construct($url, $username, $password, $baseUrl=false) {
 		$boxUrl = $this->convertCharacterEncoding(html_entity_decode($url),'UTF7-IMAP','UTF-8'); //handle both utf8 characters and html entities
-		$this->mBoxUrl = $boxUrl;
-		$this->mBoxBaseUrl = $baseUrl; // Used for folder List
-
+        $this->mBoxUrl = $boxUrl;
+        $this->mBoxBaseUrl = $baseUrl; // Used for folder List
 		/**
 		 * disabled Kerberos authentication
 		 * reference : http://sugarcrmsolutions.blogspot.in/2013/12/problems-in-email-integration.html
 		 */
 
-		if($serverName == 'gmail') {
-			$this->mBox = imap_open($boxUrl, $username, $password);
+        if(str_contains($url, 'imap.gmail.com')) {
+            $this->mBox = imap_open($boxUrl, $username, $password);
 		} else {
 			$this->mBox = imap_open($boxUrl, $username, $password, NULL, 1, array('DISABLE_AUTHENTICATOR' => 'GSSAPI'));
 		}
@@ -220,7 +232,7 @@ class MailManager_Connector_Connector {
 	 */
 	public function folderMails($folder, $start, $maxLimit)
     {
-		$folderCheck = @imap_check($this->mBox);
+		$folderCheck = imap_check($this->mBox);
 
 		if ($folderCheck->Nmsgs) {
 

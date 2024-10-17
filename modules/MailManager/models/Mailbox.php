@@ -20,6 +20,11 @@ class MailManager_Mailbox_Model {
 	protected $mId;
 	protected $mServerName;
     protected $mFolder;
+    protected string $mClientId = '';
+    protected string $mClientSecret = '';
+    protected string $mClientAccessToken = '';
+    protected string $mClientToken = '';
+    protected string $mProxy = '';
 
 	public function exists() {
 		return !empty($this->mId);
@@ -37,11 +42,91 @@ class MailManager_Mailbox_Model {
 		return $e->encrypt($value);
 	}
 
-	public function server() {
+    /**
+     * @return mixed
+     */
+    public function clientId(): string
+    {
+        return $this->mClientId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function clientSecret(): string
+    {
+        return $this->mClientSecret;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function clientAccessToken(): string
+    {
+        return $this->mClientAccessToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function clientToken(): string
+    {
+        return $this->mClientToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function proxy(): string
+    {
+        return $this->mProxy;
+    }
+
+    public function server() {
 		return $this->mServer;
 	}
 
-	public function setServer($server) {
+    /**
+     * @param string $clientId
+     */
+    public function setClientId(string $clientId): void
+    {
+        $this->mClientId = $clientId;
+    }
+
+    /**
+     * @param string $clientSecret
+     */
+    public function setClientSecret(string $clientSecret): void
+    {
+        $this->mClientSecret = $clientSecret;
+    }
+
+    /**
+     * @param string $clientAccessToken
+     */
+    public function setClientAccessToken(string $clientAccessToken): void
+    {
+        $this->mClientAccessToken = $clientAccessToken;
+    }
+
+    /**
+     * @param string $clientToken
+     */
+    public function setClientToken(string $clientToken): void
+    {
+        $this->mClientToken = $clientToken;
+    }
+
+    /**
+     * @param string $proxy
+     */
+    public function setProxy(string $proxy): void
+    {
+        $this->mProxy = $proxy;
+    }
+
+    public function setServer($server) {
 		$this->mServer = trim($server);
 	}
 
@@ -115,55 +200,84 @@ class MailManager_Mailbox_Model {
 		$db->pquery("DELETE FROM vtiger_mail_accounts WHERE user_id = ? AND account_id = ?", array($currentUserModel->getId(), $this->mId));
 	}
 
-	public function save() {
-		$db = PearDatabase::getInstance();
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+    /**
+     * @throws AppException
+     */
+    public function save()
+    {
+        $db = PearDatabase::getInstance();
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $account_id = 1;
+        $maxresult = $db->pquery("SELECT max(account_id) as max_account_id FROM vtiger_mail_accounts", []);
 
-		$account_id = 1;
-		$maxresult = $db->pquery("SELECT max(account_id) as max_account_id FROM vtiger_mail_accounts", array());
-		if ($db->num_rows($maxresult)) $account_id += intval($db->query_result($maxresult, 0, 'max_account_id'));
+        if ($db->num_rows($maxresult)) {
+            $account_id += intval($db->query_result($maxresult, 0, 'max_account_id'));
+        }
 
-		$isUpdate = !empty($this->mId);
+        $isUpdate = !empty($this->mId);
+        $parameters = [
+            'display_name' => $this->username(),
+            'mail_servername' => $this->server(),
+            'mail_username' => $this->username(),
+            'mail_password' => $this->password(false),
+            'mail_protocol' => $this->protocol(),
+            'ssltype' => $this->ssltype(),
+            'sslmeth' => $this->certvalidate(),
+            'box_refresh' => $this->refreshTimeOut(),
+            'sent_folder' => $this->folder(),
+            'mail_proxy' => $this->proxy(),
+            'client_id' => $this->clientId(),
+            'client_secret' => $this->clientSecret(),
+            'client_token' => $this->clientToken(),
+            'client_access_token' => $this->clientAccessToken(),
+        ];
+        $userId = $currentUserModel->getId();
+        $table = $this->getMailAccountTable();
 
-		$sql = "";
-		$parameters = array($this->username(), $this->server(), $this->username(), $this->password(false), $this->protocol(), $this->ssltype(), $this->certvalidate(), $this->refreshTimeOut(),$this->folder(), $currentUserModel->getId());
+        if ($isUpdate) {
+            $table->updateData($parameters, ['user_id' => $userId, 'account_id' => $this->mId]);
+        } else {
+            $data['user_id'] = $userId;
+            $data['mails_per_page'] = vglobal('list_max_entries_per_page');
+            $data['account_name'] = $this->username();
+            $data['status'] = 1;
+            $data['set_default'] = '0';
+            $data['account_id'] = $account_id;
+            $table->insertData($data);
+        }
 
-		if ($isUpdate) {
-			$sql = "UPDATE vtiger_mail_accounts SET display_name=?, mail_servername=?, mail_username=?, mail_password=?, mail_protocol=?, ssltype=?, sslmeth=?, box_refresh=?, sent_folder=? WHERE user_id=? AND account_id=?";
-			$parameters[] = $this->mId;
-		} else {
-			$sql = "INSERT INTO vtiger_mail_accounts(display_name, mail_servername, mail_username, mail_password, mail_protocol, ssltype, sslmeth, box_refresh,sent_folder, user_id, mails_per_page, account_name, status, set_default, account_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-			$parameters[] = vglobal('list_max_entries_per_page'); // Number of emails per page
-			$parameters[] = $this->username();
-			$parameters[] = 1; // Status
-			$parameters[] = '0'; // Set Default
-			$parameters[] = $account_id;
-		}
-		$db->pquery($sql, $parameters);
-		if (!$isUpdate) {
-			$this->mId = $account_id;
-		}
-	}
+        if (!$isUpdate) {
+            $this->mId = $account_id;
+        }
+    }
 
-	public static function activeInstance($currentUserModel = false) {
+    public static function activeInstance($currentUserModel = false) {
 		$db = PearDatabase::getInstance();
         if(!$currentUserModel)
             $currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$instance = new MailManager_Mailbox_Model();
 
 		$result = $db->pquery("SELECT * FROM vtiger_mail_accounts WHERE user_id=? AND status=1 AND set_default=0", array($currentUserModel->getId()));
+
 		if ($db->num_rows($result)) {
-			$instance->mServer = trim($db->query_result($result, 0, 'mail_servername'));
-			$instance->mUsername = trim($db->query_result($result, 0, 'mail_username'));
-			$instance->mPassword = trim($db->query_result($result, 0, 'mail_password'));
-			$instance->mProtocol = trim($db->query_result($result, 0, 'mail_protocol'));
-			$instance->mSSLType = trim($db->query_result($result, 0, 'ssltype'));
-			$instance->mCertValidate = trim($db->query_result($result, 0, 'sslmeth'));
-			$instance->mId = trim($db->query_result($result, 0, 'account_id'));
-			$instance->mRefreshTimeOut = trim($db->query_result($result, 0, 'box_refresh'));
-            $instance->mFolder = trim($db->query_result($result, 0, 'sent_folder'));
-			$instance->mServerName = self::setServerName($instance->mServer);
+            $row = $db->fetchByAssoc($result, 0);
+            $instance->mServer = trim($row['mail_servername']);
+            $instance->mUsername = trim($row['mail_username']);
+            $instance->mPassword = trim($row['mail_password']);
+            $instance->mProtocol = trim($row['mail_protocol']);
+            $instance->mSSLType = trim($row['ssltype']);
+            $instance->mCertValidate = trim($row['sslmeth']);
+            $instance->mId = trim($row['account_id']);
+            $instance->mRefreshTimeOut = trim($row['box_refresh']);
+            $instance->mFolder = trim($row['sent_folder']);
+            $instance->mServerName = self::setServerName($instance->mServer);
+            $instance->mProxy = trim($row['mail_proxy']);
+            $instance->mClientId = trim($row['client_id']);
+            $instance->mClientSecret = trim($row['client_secret']);
+            $instance->mClientToken = trim($row['client_token']);
+            $instance->mClientAccessToken = trim($row['client_access_token']);
 		}
+
 		return $instance;
 	}
 
@@ -180,6 +294,72 @@ class MailManager_Mailbox_Model {
 		return $mServerName;
 	}
 
-}
+    public function getMailAccountTable()
+    {
+        return (new Core_DatabaseData_Model())->getTable('vtiger_mail_accounts', 'account_id');
+    }
 
-?>
+    public function createTables()
+    {
+        $this->getMailAccountTable()
+            ->createTable('account_id', 'int(11) NOT NULL')
+            ->createColumn('user_id', 'int(11) NOT NULL')
+            ->createColumn('display_name', 'varchar(50) DEFAULT NULL')
+            ->createColumn('mail_id', 'varchar(50) DEFAULT NULL')
+            ->createColumn('account_name', 'varchar(50) DEFAULT NULL')
+            ->createColumn('mail_protocol', 'varchar(20) DEFAULT NULL')
+            ->createColumn('mail_username', 'varchar(50) NOT NULL')
+            ->createColumn('mail_password', 'text DEFAULT NULL')
+            ->createColumn('mail_servername', 'varchar(50) DEFAULT NULL')
+            ->createColumn('box_refresh', 'int(10) DEFAULT NULL')
+            ->createColumn('mails_per_page', 'int(10) DEFAULT NULL')
+            ->createColumn('ssltype', 'varchar(50) DEFAULT NULL')
+            ->createColumn('sslmeth', 'varchar(50) DEFAULT NULL')
+            ->createColumn('int_mailer', 'int(1) DEFAULT 0')
+            ->createColumn('status', 'varchar(10) DEFAULT NULL')
+            ->createColumn('set_default', 'int(2) DEFAULT NULL')
+            ->createColumn('sent_folder', 'varchar(50) DEFAULT NULL')
+            ->createColumn('mail_proxy', 'VARCHAR(50) DEFAULT NULL')
+            ->createColumn('client_id', 'varchar(255) DEFAULT NULL')
+            ->createColumn('client_secret', 'varchar(255) DEFAULT NULL')
+            ->createColumn('client_token', 'text DEFAULT NULL')
+            ->createColumn('client_access_token', 'text DEFAULT NULL')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`account_id`)')
+        ;
+    }
+
+    public function isProxy(): bool
+    {
+        return !empty($this->proxy());
+    }
+
+    public function retrieveClientAccessToken(): void
+    {
+        if (empty($this->clientAccessToken())) {
+            return;
+        }
+
+        $authModel = Core_Auth_Model::getInstance();
+        $authModel->setClientId($this->clientId());
+        $authModel->setClientSecret($this->clientSecret());
+
+        if ($authModel->isExpired()) {
+            $authModel->setToken($this->clientToken());
+            $authModel->updateAccessToken($this);
+        }
+    }
+
+    /**
+     * @param Core_Auth_Model $authModel
+     * @return void
+     * @throws AppException
+     */
+    public function updateAccessToken(Core_Auth_Model $authModel): void
+    {
+        if (!empty($this->clientAccessToken())) {
+            $this->setClientAccessToken($authModel->getAccessToken());
+        }
+
+
+    }
+}

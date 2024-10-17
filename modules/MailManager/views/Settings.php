@@ -45,6 +45,13 @@ class MailManager_Settings_View extends MailManager_MainUI_View {
 			$model->setSSLType($request->get('_mbox_ssltype', 'ssl'));
 			$model->setCertValidate($request->get('_mbox_certvalidate', 'novalidate-cert'));
 			$model->setRefreshTimeOut($request->get('_mbox_refresh_timeout'));
+
+			$model->setProxy($request->get('_mbox_proxy'));
+			$model->setClientId($request->get('_mbox_client_id'));
+			$model->setClientSecret($request->get('_mbox_client_secret'));
+            $model->setClientToken($request->get('_mbox_client_token'));
+			$model->setClientAccessToken($request->get('_mbox_client_access_token'));
+
 			$connector = $this->getConnector();
             $sentFolder = $request->get('_mbox_sent_folder');
             if($connector->isConnected() && empty($sentFolder)) {
