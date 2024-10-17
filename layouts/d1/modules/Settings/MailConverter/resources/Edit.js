@@ -4,7 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
-
+/** @var Settings_MailConverter_Edit_Js */
 Settings_Vtiger_Index_Js('Settings_MailConverter_Edit_Js', {
 	firstStep: function (e) {
 		var form = jQuery('#mailBoxEditView');
@@ -20,6 +20,8 @@ Settings_Vtiger_Index_Js('Settings_MailConverter_Edit_Js', {
 		form.submit(function (e) {
 			e.preventDefault();
 		});
+
+
 	},
 
 	saveMailBox: function (form) {
@@ -130,5 +132,83 @@ Settings_Vtiger_Index_Js('Settings_MailConverter_Edit_Js', {
 		this._super();
 		Settings_MailConverter_Edit_Js.firstStep();
 		Settings_MailConverter_Edit_Js.activateHeader();
+
+		this.registerUpdateVisibility();
+		this.registerClientTokenActions();
+	},
+	registerClientTokenActions() {
+		const self = this,
+			form = self.getForm(),
+			tokenElement = form.find('[name="client_token"]'),
+			accessTokenElement = form.find('[name="client_access_token"]');
+
+		form.on('click', '.retrieveToken', function () {
+			let formData = form.serializeFormData();
+
+			app.getOAuth2Url(formData['server'], formData['client_id'], formData['client_secret']).then(function (error, data) {
+				if (!error) {
+					if (data['url']) {
+						tokenElement.val('');
+						accessTokenElement.val('');
+
+						window.open(data['url'], '_blank')
+					}
+
+					if (data['message']) {
+						app.helper.showErrorNotification({message: data['message']});
+					}
+				}
+			});
+		});
+
+		form.on('click', '.refreshToken', function () {
+			self.loadAccessToken(form);
+		});
+	},
+	loadAccessToken() {
+		const self = this,
+			form = self.getForm(),
+			clientId = form.find('[name="client_id"]').val(),
+			tokenElement = form.find('[name="client_token"]'),
+			accessTokenElement = form.find('[name="client_access_token"]'),
+			token = tokenElement.val();
+
+		if (!clientId || token) {
+			return false;
+		}
+
+		app.getOAuth2Tokens(clientId).then(function (error, data) {
+			if (!error) {
+				tokenElement.val(data['token']);
+				accessTokenElement.val(data['access_token']);
+			}
+		})
+	},
+	registerUpdateVisibility() {
+		const self = this;
+
+		self.updateFieldsVisibility();
+
+		self.getForm().on('focusout', '[name="server"]', function() {
+			self.updateFieldsVisibility();
+		});
+	},
+	updateFieldsVisibility() {
+		let self = this,
+			form = self.getForm(),
+			hideFields = ['mail_proxy', 'client_id', 'client_secret', 'client_token', 'client_access_token'];
+
+		form.find('.fieldContainer').removeClass('hide');
+
+		if (0 <= form.find('[name=server]').val().indexOf('imap.gmail.com')) {
+			hideFields = ['password'];
+		}
+
+		$.each(hideFields, function(index, fieldName) {
+			form.find('[name="' + fieldName + '"]').parents('.fieldContainer').addClass('hide');
+		})
+	},
+	getForm() {
+		return jQuery('#mailBoxEditView');
 	}
 });

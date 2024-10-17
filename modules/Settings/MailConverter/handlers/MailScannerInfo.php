@@ -15,43 +15,52 @@ require_once('modules/Settings/MailConverter/handlers/MailScannerRule.php');
  */
 class Vtiger_MailScannerInfo {
 	// id of this scanner record
-	var $scannerid = false;
-	// name of this scanner
-	var $scannername=false;
-	// mail server to connect to
-	var $server    = false;
-	// mail protocol to use
-	var $protocol  = false;
-	// username to use
-	var $username  = false;
-	// password to use
-	var $password  = false;
-	// notls/tls/ssl
-	var $ssltype   = false;
-	// validate-certificate or novalidate-certificate
-	var $sslmethod = false;
-	// last successful connection url to use
-	var $connecturl= false;
-	// search for type
-	var $searchfor = false;
-	// post scan mark record as
-	var $markas = false;
-	// server time_zone
-	var $time_zone = false;
+    public $scannerid = false;
+    // name of this scanner
+    public $scannername = false;
+    // mail server to connect to
+    public $server = false;
+    // mail protocol to use
+    public $protocol = false;
+    // username to use
+    public $username = false;
+    // password to use
+    public $password = false;
+    // notls/tls/ssl
+    public $ssltype = false;
+    // validate-certificate or novalidate-certificate
+    public $sslmethod = false;
+    // last successful connection url to use
+    public $connecturl = false;
+    // search for type
+    public $searchfor = false;
+    // post scan mark record as
+    public $markas = false;
+    // server time_zone
+    public $time_zone = false;
 
-	// is the scannered enabled?
-	var $isvalid   = false;
+    // is the scannered enabled?
+    public $isvalid = false;
 
-	// Last scan on the folders.
-	var $lastscan  = false;
+    // Last scan on the folders.
+    public $lastscan = false;
 
-	// Need rescan on the folders?
-	var $rescan    = false;
+    // Need rescan on the folders?
+    public $rescan = false;
 
-	// Rules associated with this mail scanner
-	var $rules = false;
+    // Rules associated with this mail scanner
+    public $rules = false;
+    /**
+     * @var array|int|mixed|string|string[]|null
+     */
+    public string $mail_proxy = '';
+    public string $client_id = '';
+    public string $client_secret = '';
+    public string $client_token = '';
+    public string $client_access_token = '';
 
-	/**
+
+    /**
 	 * Constructor
 	 */
 	function __construct($scannername, $initialize=true) {
@@ -91,9 +100,15 @@ class Vtiger_MailScannerInfo {
 			$this->markas     = $adb->query_result($result, 0, 'markas');
 			$this->isvalid    = $adb->query_result($result, 0, 'isvalid');
 			$this->time_zone   = $adb->query_result($result, 0, 'time_zone');
+			$this->mail_proxy   = $adb->query_result($result, 0, 'mail_proxy');
+			$this->client_id   = $adb->query_result($result, 0, 'client_id');
+			$this->client_secret   = $adb->query_result($result, 0, 'client_secret');
+			$this->client_token   = $adb->query_result($result, 0, 'client_token');
+			$this->client_access_token   = $adb->query_result($result, 0, 'client_access_token');
 
 			$this->initializeFolderInfo();
 			$this->initializeRules();
+            $this->retrieveClientAccessToken();
 		}
 	}
 
@@ -148,7 +163,7 @@ class Vtiger_MailScannerInfo {
 		##--Fix for trac : http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/8051-## 
                 if ($this->timezone && trim($this->timezone)) { 
 			$currentTZ = date_default_timezone_get();
-			list ($tzhours, $tzminutes) = explode(':', trim($this->time_zone));
+			[$tzhours, $tzminutes] = explode(':', trim($this->time_zone));
 			$returnDate = date($format, strtotime(sprintf("%s hours %s minutes", $tzhours, $tzminutes)));
 			date_default_timezone_set($currentTZ);
 		} else {
@@ -300,29 +315,55 @@ class Vtiger_MailScannerInfo {
 	/**
 	 * Get scanner information as map
 	 */
-	function getAsMap() {
-		$infomap = Array();
-		$keys = Array('scannerid', 'scannername', 'server', 'protocol', 'username', 'password', 'ssltype',
-			'sslmethod', 'connecturl', 'searchfor', 'markas', 'isvalid', 'time_zone', 'rules');
-		foreach($keys as $key) {
-			$infomap[$key] = $this->$key;
-		}
-		$infomap['requireRescan'] = $this->checkRescan();
-		return $infomap;
-	}
+	function getAsMap()
+    {
+        $infomap = [];
+        $keys = [
+            'scannerid',
+            'scannername',
+            'server',
+            'protocol',
+            'username',
+            'password',
+            'mail_proxy',
+            'client_id',
+            'client_secret',
+            'client_token',
+            'client_access_token',
+            'ssltype',
+            'sslmethod',
+            'connecturl',
+            'searchfor',
+            'markas',
+            'isvalid',
+            'time_zone',
+            'rules',
+        ];
+        foreach ($keys as $key) {
+            $infomap[$key] = $this->$key;
+        }
+        $infomap['requireRescan'] = $this->checkRescan();
 
-	/**
-	 * Compare this instance with give instance
+        return $infomap;
+    }
+
+    /**
+     * Compare this instance with give instance
 	 */
-	function compare($otherInstance) {
-		$checkkeys = Array('server', 'scannername', 'protocol', 'username', 'password', 'ssltype', 'sslmethod', 'searchfor', 'markas');
-		foreach($checkkeys as $key) {
-			if($this->$key != $otherInstance->$key) return false;
-		}
-		return true;
-	}
+    function compare($otherInstance)
+    {
+        $checkkeys = ['server', 'scannername', 'protocol', 'username', 'password', 'mail_proxy', 'client_id', 'client_token', 'client_secret', 'client_access_token', 'ssltype', 'sslmethod', 'searchfor', 'markas'];
 
-	/**
+        foreach ($checkkeys as $key) {
+            if ($this->$key != $otherInstance->$key) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
 	 * Create/Update the scanner information in database
 	 */
 	function update($otherInstance) {
@@ -347,29 +388,72 @@ class Vtiger_MailScannerInfo {
 		$this->markas    = $otherInstance->markas;
 		$this->isvalid   = $otherInstance->isvalid;
 		$this->time_zone  = $otherInstance->time_zone;
+        $this->mail_proxy = $otherInstance->mail_proxy;
+		$this->client_id  = $otherInstance->client_id;
+		$this->client_secret  = $otherInstance->client_secret;
+		$this->client_token  = $otherInstance->client_token;
+		$this->client_access_token  = $otherInstance->client_access_token;
 
 		$useisvalid = ($this->isvalid)? 1 : 0;
-
 		$usepassword = $this->__crypt($this->password);
+        $params = [
+            'scannername' => $this->scannername,
+            'server' => $this->server,
+            'protocol' => $this->protocol,
+            'username' => $this->username,
+            'password' => $usepassword,
+            'ssltype' => $this->ssltype,
+            'sslmethod' => $this->sslmethod,
+            'connecturl' => $this->connecturl,
+            'searchfor' => $this->searchfor,
+            'markas' => $this->markas,
+            'isvalid' => $useisvalid,
+            'time_zone' => $this->time_zone,
+            'mail_proxy' => $this->mail_proxy,
+            'client_id' => $this->client_id,
+            'client_secret' => $this->client_secret,
+            'client_token' => $this->client_token,
+            'client_access_token' => $this->client_access_token,
+        ];
 
-		global $adb;
-		if($this->scannerid == false) {
-            $adb->pquery("INSERT INTO vtiger_mailscanner(scannername,server,protocol,username,password,ssltype,
-				sslmethod,connecturl,searchfor,markas,isvalid,time_zone) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
-				Array($this->scannername,$this->server, $this->protocol, $this->username, $usepassword,
-				$this->ssltype, $this->sslmethod, $this->connecturl, $this->searchfor, $this->markas, $useisvalid, $this->time_zone));
-			$this->scannerid = $adb->database->Insert_ID();
+        if (empty($this->scannerid)) {
+            $this->scannerid = $this->getMailScannerTable()->insertData($params);
         } else { //this record is exist in the data
-			$adb->pquery("UPDATE vtiger_mailscanner SET scannername=?,server=?,protocol=?,username=?,password=?,ssltype=?,
-				sslmethod=?,connecturl=?,searchfor=?,markas=?,isvalid=?, time_zone=? WHERE scannerid=?",
-				Array($this->scannername,$this->server,$this->protocol, $this->username, $usepassword, $this->ssltype,
-				$this->sslmethod, $this->connecturl,$this->searchfor, $this->markas,$useisvalid, $this->time_zone, $this->scannerid));
+            $this->getMailScannerTable()->updateData($params, ['scannerid' => $this->scannerid]);
         }
 
-		return $mailServerChanged;
+        return $mailServerChanged;
 	}
 
-	/**
+    public function getMailScannerTable() {
+        return (new Core_DatabaseData_Model())->getTable('vtiger_mailscanner', 'scannerid');
+    }
+
+    public function createTables()
+    {
+        $this->getMailScannerTable()
+            ->createTable()
+            ->createColumn('scannername', 'varchar(30) DEFAULT NULL')
+            ->createColumn('server', 'varchar(100) DEFAULT NULL')
+            ->createColumn('protocol', 'varchar(10) DEFAULT NULL')
+            ->createColumn('username', 'varchar(255) DEFAULT NULL')
+            ->createColumn('password', 'varchar(255) DEFAULT NULL')
+            ->createColumn('ssltype', 'varchar(10) DEFAULT NULL')
+            ->createColumn('sslmethod', 'varchar(30) DEFAULT NULL')
+            ->createColumn('connecturl', 'varchar(255) DEFAULT NULL')
+            ->createColumn('searchfor', 'varchar(10) DEFAULT NULL')
+            ->createColumn('markas', 'varchar(10) DEFAULT NULL')
+            ->createColumn('isvalid', 'int(1) DEFAULT NULL')
+            ->createColumn('scanfrom', 'varchar(10) DEFAULT \'ALL\'')
+            ->createColumn('time_zone', 'varchar(10) DEFAULT NULL')
+            ->createColumn('mail_proxy', 'VARCHAR(50) DEFAULT NULL')
+            ->createColumn('client_id', 'varchar(255) DEFAULT NULL')
+            ->createColumn('client_secret', 'varchar(255) DEFAULT NULL')
+            ->createColumn('client_token', 'text DEFAULT NULL')
+            ->createColumn('client_access_token', 'text DEFAULT NULL');
+    }
+
+    /**
 	 * Delete the scanner information from database
 	 */
 	function delete() {
@@ -412,5 +496,34 @@ class Vtiger_MailScannerInfo {
 		}
 		return $scanners;
 	}
+
+    public function retrieveClientAccessToken(): void
+    {
+        if (empty($this->client_access_token)) {
+            return;
+        }
+
+        $authModel = Core_Auth_Model::getInstance();
+        $authModel->setClientId($this->client_id);
+        $authModel->setClientSecret($this->client_secret);
+
+        if ($authModel->isExpired()) {
+            $authModel->setToken($this->client_token);
+            $authModel->updateAccessToken($this);
+        }
+    }
+
+    /**
+     * @param Core_Auth_Model $authModel
+     * @return void
+     * @throws AppException
+     */
+    public function updateAccessToken(Core_Auth_Model $authModel): void
+    {
+        if (!empty($this->client_access_token)) {
+            $this->client_access_token = $authModel->getAccessToken();
+        }
+
+
+    }
 }
-?>

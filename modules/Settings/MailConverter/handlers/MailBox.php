@@ -77,49 +77,65 @@ class Vtiger_MailBox {
 		$isconnected = false;
 
 		// Connect using last successful url
-		if($mailboxsettings['connecturl']) {
-			$connecturl = $mailboxsettings['connecturl'];
-			if($mailboxsettings['readonly']) $connecturl = str_replace("}", "/readonly}", $connecturl);
-			$this->log("Trying to connect using connecturl $connecturl$folder", true);
-			$imap = @imap_open("$connecturl$folder", $mailboxsettings['username'], $mailboxsettings['password']);
-			if($imap) {
-				$this->_imapurl = $connecturl;
-				$this->_imapfolder = $folder;
-				$isconnected = true;
+        if ($mailboxsettings['connecturl']) {
+            $connecturl = $mailboxsettings['connecturl'];
 
-				$this->log("Successfully connected", true);
-			}
-		}
+            if ($mailboxsettings['readonly']) {
+                $connecturl = str_replace("}", "/readonly}", $connecturl);
+            }
 
-		if(!$imap) {
-			$connectString = '{'. $mailboxsettings['server'].':'.$mailboxsettings['port'].'/'.$mailboxsettings['protocol'].'/'.$mailboxsettings['ssltype'].'/'.$mailboxsettings['sslmethod'] .$mailboxsettings['readonly'] ."}";
-			$connectStringShort = '{'. $mailboxsettings['server'].'/'.$mailboxsettings['protocol'].':'.$mailboxsettings['port'] .$mailboxsettings['readonly'] ."}";
+            $this->log("Trying to connect using connecturl $connecturl$folder", true);
+            $imap = imap_open("$connecturl$folder", $mailboxsettings['username'], $mailboxsettings['password']);
 
-			$this->log("Trying to connect using $connectString$folder", true);
-			if(!$imap = @imap_open("$connectString$folder", $mailboxsettings["username"], $mailboxsettings["password"])) {
-				$this->log("Connect failed using $connectString$folder, trying with $connectStringShort$folder...", true);
-				$imap = @imap_open("$connectStringShort$folder", $mailboxsettings["username"], $mailboxsettings["password"]);
-				if($imap) {
-					$this->_imapurl = $connectStringShort;
-					$this->_imapfolder = $folder;
-					$isconnected = true;
-					$this->log("Successfully connected", true);
-				} else {
-					$this->log("Connect failed using $connectStringShort$folder", true);
-				}
-			} else {
-				$this->_imapurl = $connectString;
-				$this->_imapfolder = $folder;
-				$isconnected = true;
-				$this->log("Successfully connected", true);
-			}
-		}
+            if ($imap) {
+                $this->_imapurl = $connecturl;
+                $this->_imapfolder = $folder;
+                $isconnected = true;
 
-		$this->_imap = $imap;
+                $this->log("Successfully connected", true);
+            }
+        }
+
+        if (!$imap) {
+            $connectString = '{' . $mailboxsettings['server'] . ':' . $mailboxsettings['port'] . '/' . $mailboxsettings['protocol'] . '/' . $mailboxsettings['ssltype'] . '/' . $mailboxsettings['sslmethod'] . $mailboxsettings['readonly'] . "}";
+            $connectStringShort = '{' . $mailboxsettings['server'] . '/' . $mailboxsettings['protocol'] . ':' . $mailboxsettings['port'] . $mailboxsettings['readonly'] . "}";
+
+            if (!empty($mailboxsettings['mail_proxy'])) {
+                $connectString = sprintf("{%s/notls/novalidate-cert}", $mailboxsettings['mail_proxy']);
+                $connectStringShort = $connectString;
+                $mailboxsettings['password'] = $mailboxsettings['client_access_token'];
+            }
+
+            $this->log("Trying to connect using $connectString$folder", true);
+
+            if (!$imap = imap_open("$connectString$folder", $mailboxsettings["username"], $mailboxsettings["password"])) {
+                $this->log("Connect failed using $connectString$folder, trying with $connectStringShort$folder...", true);
+                $imap = imap_open("$connectStringShort$folder", $mailboxsettings["username"], $mailboxsettings["password"]);
+
+                if ($imap) {
+                    $this->_imapurl = $connectStringShort;
+                    $this->_imapfolder = $folder;
+                    $isconnected = true;
+                    $this->log("Successfully connected", true);
+                } else {
+                    $this->log("Connect failed using $connectStringShort$folder", true);
+                }
+            } else {
+                $this->_imapurl = $connectString;
+                $this->_imapfolder = $folder;
+                $isconnected = true;
+                $this->log("Successfully connected", true);
+            }
+        }
+
+        $this->_imap = $imap;
+
 		return $isconnected;
 	}
 
-	/**
+
+
+    /**
 	 * Open the mailbox folder.
 	 * @param $folder Folder name to open
 	 * @param $reopen set to true for re-opening folder if open (default=false)
@@ -233,5 +249,3 @@ class Vtiger_MailBox {
 		}
 	}
 }
-
-?>
