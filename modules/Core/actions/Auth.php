@@ -34,14 +34,17 @@ class Core_Auth_Action extends Vtiger_Action_Controller
     public function token(Vtiger_Request $request)
     {
         $authModel = Core_Auth_Model::getInstance();
+        $authModel->retrieveAuthClientId();
         $token = null;
+        $accessToken = null;
 
         if ($authModel->getClientId() === $request->get('client_id')) {
             $token = $authModel->getToken();
+            $accessToken = $authModel->getAccessToken();
         }
 
         $response = new Vtiger_Response();
-        $response->setResult(['success' => !empty($token), 'token' => $token]);
+        $response->setResult(['success' => !empty($token), 'token' => $token, 'access_token' => $accessToken]);
         $response->emit();
     }
 
@@ -62,10 +65,11 @@ class Core_Auth_Action extends Vtiger_Action_Controller
 
         if ($success) {
             $authModel = Core_Auth_Model::getInstance();
-            $authModel->setToken('');
-            $authModel->setProviderName($request->get('provider'));
             $authModel->setClientId($request->get('client_id'));
             $authModel->setClientSecret($request->get('client_secret'));
+            $authModel->setProviderName($request->get('provider'));
+            $authModel->setToken('');
+            $authModel->setAuthClientId($request->get('client_id'));
             $url = $authModel->getRedirectUri();
         }
 

@@ -155,6 +155,7 @@ Vtiger.Class("Settings_Vtiger_OutgoingServer_Js",{},{
 				self.registerEditViewEvents();
 				self.registerOnChangeEventOfserverType();
 				self.updateFieldsVisibility();
+				self.retrieveTokenButton();
 				vtUtils.showSelect2ElementView(jQuery('select[name="serverType"]'));
 			});
 		});
@@ -226,10 +227,7 @@ Vtiger.Class("Settings_Vtiger_OutgoingServer_Js",{},{
 		form.on('click', '.retrieveToken', function () {
 			let params = form.serializeFormData()
 
-			params['action'] = 'Auth';
-			params['mode'] = 'url';
-
-			app.request.post({data: params}).then(function (error, data) {
+			app.getOAuth2Url(params['server'], params['client_id'], params['client_secret']).then(function (error, data) {
 				if (!error) {
 					if(data['url']) {
 						self.getTokenElement().val('');
@@ -254,19 +252,13 @@ Vtiger.Class("Settings_Vtiger_OutgoingServer_Js",{},{
 	loadToken() {
 		const self = this,
 			clientId = self.getForm().find('[name="client_id"]').val(),
-			token = self.getTokenElement().val(),
-			params = {
-				module: 'Core',
-				action: 'Auth',
-				mode: 'token',
-				client_id: clientId,
-			}
+			token = self.getTokenElement().val();
 
 		if (!clientId || token) {
 			return false;
 		}
 
-		app.request.post({data: params}).then(function (error, data) {
+		app.getOAuth2Tokens(clientId).then(function (error, data) {
 			if (!error && data['token']) {
 				self.getForm().find('[name="client_token"]').val(data['token']);
 			}

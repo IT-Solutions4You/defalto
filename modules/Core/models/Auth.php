@@ -13,14 +13,24 @@ class Core_Auth_Model extends Vtiger_Base_Model
 
     protected $viewer;
 
+    public function getAccessExpire()
+    {
+        return $this->getSession('client_access_expire');
+    }
+
+    public function getAccessToken()
+    {
+        return $this->getSession('client_access_token');
+    }
+
     public function getClientId()
     {
-        return $_SESSION[$this->getModuleName()]['client_id'];
+        return $this->getSession('client_id');
     }
 
     public function getClientSecret()
     {
-        return $_SESSION[$this->getModuleName()]['client_secret'];
+        return $this->getSession('client_secret');
     }
 
     public static function getInstance()
@@ -42,7 +52,7 @@ class Core_Auth_Model extends Vtiger_Base_Model
 
     public function getProviderName()
     {
-        return $_SESSION[$this->getModuleName()]['provider'];
+        return $this->getSession('provider');
     }
 
     public function getProviderOptions()
@@ -67,9 +77,19 @@ class Core_Auth_Model extends Vtiger_Base_Model
         return rtrim(vglobal('site_URL'), '/') . '/auth.php?provider=' . $this->getProviderName();
     }
 
+    public function getSession($name)
+    {
+        return $_SESSION[$this->getModuleName()][$this->getSessionName()][$name];
+    }
+
+    public function getSessionName()
+    {
+        return md5($this->get('client_id'));
+    }
+
     public function getToken()
     {
-        return $_SESSION[$this->getModuleName()]['token'];
+        return $this->getSession('token');
     }
 
     public function getViewer()
@@ -89,6 +109,13 @@ class Core_Auth_Model extends Vtiger_Base_Model
         return $viewer;
     }
 
+    public function isExpired()
+    {
+        $expire = $this->getAccessExpire();
+
+        return empty($expire) || time() > $expire;
+    }
+
     public function redirectToProvider()
     {
         $provider = $this->getProvider();
@@ -97,6 +124,17 @@ class Core_Auth_Model extends Vtiger_Base_Model
         $_SESSION['oauth2state'] = $provider->getState();
 
         header('Location: ' . $authUrl);
+    }
+
+    public function retrieveAccessToken()
+    {
+        $provider = $this->getProvider();
+        $accessToken = $provider->getAccessToken('refresh_token', [
+            'refresh_token' => $this->getToken(),
+        ]);
+
+        $this->setAccessToken($accessToken->getToken());
+        $this->setAccessExpire($accessToken->getExpires());
     }
 
     /**
@@ -111,26 +149,81 @@ class Core_Auth_Model extends Vtiger_Base_Model
         if (!empty($token)) {
             $this->setToken($token);
         }
+
+        $this->setAccessToken($accessToken->getToken());
+        $this->setAccessExpire($accessToken->getExpires());
+    }
+
+    public function setAccessExpire($value)
+    {
+        $this->setSession('client_access_expire', $value);
+    }
+
+    public function setAccessToken($value)
+    {
+        $this->setSession('client_access_token', $value);
     }
 
     public function setClientId($value)
     {
-        $_SESSION[$this->getModuleName()]['client_id'] = $value;
+        $this->setSession('client_id', $value);
     }
 
     public function setClientSecret($value)
     {
-        $_SESSION[$this->getModuleName()]['client_secret'] = $value;
+        $this->setSession('client_secret', $value);
+
     }
 
     public function setProviderName($value)
     {
-        $_SESSION[$this->getModuleName()]['provider'] = $value;
+        $this->setSession('provider', $value);
+    }
+
+    public function setSession($name, $value): void
+    {
+        $this->set($name, $value);
+
+        if ($this->isEmpty('client_id')) {
+            die('Empty client id');
+        }
+
+        $_SESSION[$this->getModuleName()][$this->getSessionName()][$name] = $value;
     }
 
     public function setToken($value)
     {
-        $_SESSION[$this->getModuleName()]['token'] = $value;
+        $this->setSession('token', $value);
+    }
+
+    /**
+     * @param MailManager_Mailbox_Model|Vtiger_MailScannerInfo|object $recordModel
+     * @throws AppException
+     */
+    public function updateAccessToken(object $recordModel): void
+    {
+        $this->retrieveAccessToken();
+        $accessToken = $this->getAccessToken();
+
+        if (!empty($accessToken)) {
+            $update = [
+                'client_access_token' => $this->getAccessToken(),
+            ];
+            $search = [
+                'client_id' => $this->getClientId(),
+                'client_secret' => $this->getClientSecret(),
+            ];
+
+            (new MailManager_Mailbox_Model())->getMailAccountTable()->updateData($update, $search);
+
+            if (include_once('modules/MailManager/models/Mailbox.php')) {
+                (new Vtiger_MailScannerInfo('', false))->getMailScannerTable()->updateData($update, $search);
+            }
+        }
+
+        if (method_exists($recordModel, 'updateAccessToken')) {
+            $recordModel->updateAccessToken($this);
+        }
     }
 
     public function validateConfig()
@@ -156,6 +249,17 @@ class Core_Auth_Model extends Vtiger_Base_Model
         $viewer->assign('CLIENT_ID', $this->getClientId());
         $viewer->assign('PROVIDER', $this->getProviderName());
         $viewer->assign('TOKEN', $this->getToken());
+        $viewer->assign('ACCESS_TOKEN', $this->getAccessToken());
         $viewer->view('AuthForm.tpl', $this->getModuleName());
+    }
+
+    public function retrieveAuthClientId()
+    {
+        $this->set('client_id', $_SESSION[$this->getModuleName()]['authClientId']);
+    }
+
+    public function setAuthClientId($value)
+    {
+        $_SESSION[$this->getModuleName()]['authClientId'] = $value;
     }
 }

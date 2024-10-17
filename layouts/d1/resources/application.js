@@ -440,6 +440,39 @@ window.app = (function () {
 		getUserCurrencySymbolPlacement: function () {
 			return _USERMETA.currencySymbolPlacement;
 		},
+		getOAuth2Url(server, clientId, clientSecret) {
+			let aDeferred = jQuery.Deferred(),
+				params = {
+					module: app.getModuleName(),
+					action: 'Auth',
+					mode: 'url',
+					server: server,
+					client_id: clientId,
+					client_secret: clientSecret,
+				};
+
+			app.request.post({data: params}).then(function (error, data) {
+				aDeferred.resolve(error, data)
+			})
+
+			return aDeferred.promise();
+		},
+		getOAuth2Tokens(clientId) {
+			const self = this,
+				aDeferred = jQuery.Deferred(),
+				params = {
+					module: 'Core',
+					action: 'Auth',
+					mode: 'token',
+					client_id: clientId,
+				};
+
+			app.request.post({data: params}).then(function (error, data) {
+				aDeferred.resolve(error, data)
+			});
+
+			return aDeferred.promise();
+		},
 		appendUserCurrencySymbol: function (value) {
 			var userCurrencySymbol = app.getUserCurrencySymbol();
 			var userCurrencySymbolPlacement = app.getUserCurrencySymbolPlacement();
