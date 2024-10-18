@@ -108,6 +108,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 				self.handleSettingsEvents(data);
 				self.registerDeleteMailboxEvent(data);
 				self.registerSaveMailboxEvent(data);
+				self.registerClientTokenActions(data);
 			});
 		});
 	},
@@ -115,41 +116,55 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	handleSettingsEvents : function(data) {
 		var settingContainer = jQuery(data);
 		settingContainer.find('#serverType').on('change', function(e) {
-			var element = jQuery(e.currentTarget);
-			var serverType = element.val();
-			var useServer = '', useProtocol = '', useSSLType = '', useCert = '';
-			if(serverType == 'gmail' || serverType == 'yahoo') {
+			let element = jQuery(e.currentTarget),
+				serverType = element.val(),
+				useServer = '', useProtocol = '', useSSLType = '', useCert = '',
+				oauth2Element = settingContainer.find('.oauth2_settings'),
+				detailsElement = settingContainer.find('.settings_details'),
+				additionalElement = settingContainer.find('.additional_settings')
+
+			oauth2Element.addClass('hide');
+			additionalElement.addClass('hide');
+			detailsElement.addClass('hide');
+
+			if(serverType == 'gmail') {
 				useServer = 'imap.gmail.com';
-				if(serverType == 'yahoo') {
-					useServer = 'imap.mail.yahoo.com';
-				}
 				useProtocol = 'IMAP4';
 				useSSLType = 'ssl';
 				useCert = 'novalidate-cert';
-				settingContainer.find('.settings_details').removeClass('hide');
-				settingContainer.find('.additional_settings').addClass('hide');
+
+				detailsElement.removeClass('hide');
+				oauth2Element.removeClass('hide');
+			} else if(serverType == 'yahoo') {
+				useServer = 'imap.mail.yahoo.com';
+				useProtocol = 'IMAP4';
+				useSSLType = 'ssl';
+				useCert = 'novalidate-cert';
+				detailsElement.removeClass('hide');
 			} else if(serverType == 'fastmail') {
 				useServer = 'mail.messagingengine.com';
 				useProtocol = 'IMAP4';
 				useSSLType = 'ssl';
 				useCert = 'novalidate-cert';
-				settingContainer.find('.settings_details').removeClass('hide');
-				settingContainer.find('.additional_settings').addClass('hide');
+				detailsElement.removeClass('hide');
 			} else if(serverType == 'other') {
 				useServer = '';
 				useProtocol = 'IMAP4';
 				useSSLType = 'ssl';
 				useCert = 'novalidate-cert';
-				settingContainer.find('.settings_details').removeClass('hide');
-				settingContainer.find('.additional_settings').removeClass('hide');
-			} else {
-				settingContainer.find('.settings_details').addClass('hide');
+				detailsElement.removeClass('hide');
+				additionalElement.removeClass('hide');
 			}
 
 			settingContainer.find('.refresh_settings').show();
 			settingContainer.find('#_mbox_user').val('');
 			settingContainer.find('#_mbox_pwd').val('');
 			settingContainer.find('[name="_mbox_sent_folder"]').val('');
+			settingContainer.find('[name="_mbox_proxy"]').val('');
+			settingContainer.find('[name="_mbox_client_id"]').val('');
+			settingContainer.find('[name="_mbox_client_secret"]').val('');
+			settingContainer.find('[name="_mbox_client_token"]').val('');
+			settingContainer.find('[name="_mbox_client_access_token"]').val('');
 			settingContainer.find('.selectFolderValue').addClass('hide');
 			settingContainer.find('.selectFolderDesc').removeClass('hide');
 			if(useProtocol != '') {
@@ -670,57 +685,67 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		});
 	},
 
-	registerMailClickEvent : function() {
-		var self = this;
-		var container = self.getContainer();
-		container.find('.mmfolderMails').click(function(e) {
-			var emailElement = jQuery(e.currentTarget);
-			var parentEle = emailElement.closest('.mailEntry');
-			var msgNo = emailElement.find('.msgNo').val();
-			var params = {
-				'module' : 'MailManager',
-				'view' : 'Index',
-				'attachments': parentEle.data('attachments'),
-				'_operation' : 'mail',
-				'_operationarg' : 'open',
-				'_folder' : parentEle.data('folder'),
-				'_msgno' : msgNo
-			};
-			app.helper.showProgress(app.vtranslate("JSLBL_Opening")+"...");
-			app.request.post({data : params}).then(function(err, data) {
-				app.helper.hideProgress();
-				var uiContent = data.ui;
-				var unreadCount = self.getUnreadCountByMsgNos(new Array(msgNo));
-				jQuery(parentEle).addClass('mmReadEmail');
-				jQuery(parentEle).data('read', "1");
-				var nameSubject = jQuery(parentEle).find('.nameSubjectHolder').find('strong').html();
-				jQuery(parentEle).find('.nameSubjectHolder').html(nameSubject);
-				container.find('#mailPreviewContainer').html(uiContent);
-				self.highLightMail(msgNo);
-				self.registerMailDeleteEvent();
-				self.registerForwardEvent();
-				self.registerPrintEvent();
-				self.registerReplyEvent();
-				self.registerReplyAllEvent();
-				self.showRelatedActions();
-				self.registerMailPaginationEvent();
-				container.find('.emailDetails').popover({html: true});
-				self.updateUnreadCount("-"+unreadCount, jQuery(parentEle).data('folder'));
-				self.loadContentsInIframe(container.find('#mmBody'));
+	registerMailClickEvent: function () {
+		let self = this,
+			container = self.getContainer();
+
+		container.find('.mmfolderMails').click(function (e) {
+			let emailElement = jQuery(e.currentTarget),
+				parentEle = emailElement.closest('.mailEntry'),
+				msgNo = emailElement.find('.msgNo').val(),
+				params = {
+					'module': 'MailManager',
+					'view': 'Index',
+					'attachments': parentEle.data('attachments'),
+					'_operation': 'mail',
+					'_operationarg': 'open',
+					'_folder': parentEle.data('folder'),
+					'_msgno': msgNo
+				};
+			app.helper.showProgress(app.vtranslate("JSLBL_Opening") + "...");
+			app.request.post({data: params}).then(function (error, data) {
+				if (!error && data['ui']) {
+					app.helper.hideProgress();
+					let uiContent = data.ui,
+						unreadCount = self.getUnreadCountByMsgNos(new Array(msgNo)),
+						parentElement = jQuery(parentEle),
+						nameSubject = parentElement.find('.nameSubjectHolder').find('strong').html();
+
+					parentElement.addClass('mmReadEmail');
+					parentElement.data('read', "1");
+					parentElement.find('.nameSubjectHolder').html(nameSubject);
+					container.find('#mailPreviewContainer').html(uiContent);
+					self.highLightMail(msgNo);
+					self.registerMailDeleteEvent();
+					self.registerForwardEvent();
+					self.registerPrintEvent();
+					self.registerReplyEvent();
+					self.registerReplyAllEvent();
+					self.showRelatedActions();
+					self.registerMailPaginationEvent();
+					container.find('.emailDetails').popover({html: true});
+					self.updateUnreadCount("-" + unreadCount, jQuery(parentEle).data('folder'));
+					self.loadContentsInIframe(container.find('#mmBody'));
+				} else {
+					app.helper.showErrorNotification({message: app.vtranslate('Email not loaded')})
+				}
 			});
 		});
 	},
 
-	loadContentsInIframe : function(element) {
-		var bodyContent = element.html();
-		element.html('<iframe id="bodyFrame" style="width: 100%; border: none;"></iframe>');
-		var frameElement = jQuery("#bodyFrame")[0].contentWindow.document;
+	loadContentsInIframe: function (element) {
+		let bodyContent = element.html();
+		element.html('<iframe id="bodyFrame" class="h-100 w-100 border-0"></iframe>');
+
+		let frameElement = jQuery("#bodyFrame")[0].contentWindow.document;
 		frameElement.open();
 		frameElement.close();
-		jQuery('#bodyFrame').contents().find('html').html(bodyContent);
-		jQuery('#bodyFrame').contents().find('html').find('a').on('click', function(e) {
+
+		let bodyFrame = jQuery('#bodyFrame');
+		bodyFrame.contents().find('html').html(bodyContent);
+		bodyFrame.contents().find('html').find('a').on('click', function (e) {
 			e.preventDefault();
-			var url = jQuery(e.currentTarget).attr('href');
+			let url = jQuery(e.currentTarget).attr('href');
 			window.open(url, '_blank');
 		});
 	},
@@ -1020,15 +1045,6 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		app.request.post({data: params}).then(function (err, data) {
 			container.find('#relationBlock').html(data.ui);
 			self.handleRelationActions();
-
-			let iframeHeight = jQuery('#mails_container').height() - (200 + jQuery('#mailManagerActions').height()),
-				contentHeight = jQuery('#bodyFrame').contents().find('html').height();
-
-			if (contentHeight > iframeHeight) {
-				jQuery('#bodyFrame').css({'height': iframeHeight});
-			} else {
-				jQuery('#bodyFrame').css({'height': contentHeight});
-			}
 		});
 	},
 
@@ -1532,6 +1548,54 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		});
 	},
 
+	registerClientTokenActions(data) {
+		const self = this,
+			form = $(data).find('form'),
+			tokenElement = form.find('[name="_mbox_client_token"]'),
+			accessTokenElement = form.find('[name="_mbox_client_access_token"]');
+
+		form.on('click', '.retrieveToken', function () {
+			let formData = form.serializeFormData();
+
+			app.getOAuth2Url(formData['_mbox_server'], formData['_mbox_client_id'], formData['_mbox_client_secret']).then(function (error, data) {
+				if (!error) {
+					if (data['url']) {
+						tokenElement.val('');
+						accessTokenElement.val('');
+
+						window.open(data['url'], '_blank')
+					}
+
+					if (data['message']) {
+						app.helper.showErrorNotification({message: data['message']});
+					}
+				}
+			});
+		});
+
+		form.on('click', '.refreshToken', function () {
+			self.loadAccessToken(form);
+		});
+	},
+
+	loadAccessToken(form) {
+		const self = this,
+			clientId = form.find('[name="_mbox_client_id"]').val(),
+			tokenElement = form.find('[name="_mbox_client_token"]'),
+			accessTokenElement = form.find('[name="_mbox_client_access_token"]'),
+			token = tokenElement.val();
+
+		if (!clientId || token) {
+			return false;
+		}
+
+		app.getOAuth2Tokens(clientId).then(function (error, data) {
+			if (!error) {
+				tokenElement.val(data['token']);
+				accessTokenElement.val(data['access_token']);
+			}
+		})
+	},
 	registerEvents : function() {
 		var self = this;
 		self.loadFolders();

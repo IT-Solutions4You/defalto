@@ -212,6 +212,7 @@ class Settings_MailConverter_Record_Model extends Settings_Vtiger_Record_Model {
 			$mailBox = new Vtiger_MailBox($scannerLatestInfo);
 			$isConnected = $mailBox->connect();
 		}
+
 		if($isConnected) {
 			$scannerLatestInfo->connecturl = $mailBox->_imapurl;
 			//$scannerLatestInfo->isvalid = $scannerOldInfo->isvalid = $isConnected;

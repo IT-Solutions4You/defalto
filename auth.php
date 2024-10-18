@@ -19,6 +19,7 @@ if (!session_id()) {
 }
 
 $authInstance = Core_Auth_Model::getInstance();
+$authInstance->retrieveAuthClientId();
 $authInstance->validateConfig();
 
 if (empty($_SESSION['oauth2state'])) {

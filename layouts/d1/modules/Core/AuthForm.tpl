@@ -41,6 +41,7 @@
     <p>{vtranslate('Client Id', $QUALIFIED_MODULE)}: <input type="text" value="{$CLIENT_ID}" readonly="readonly"><p>
     <p>{vtranslate('Client Secret', $QUALIFIED_MODULE)}: <input type="text" value="{$CLIENT_SECRET}" readonly="readonly"></p>
     <p>{vtranslate('Client Token', $QUALIFIED_MODULE)}: <input type="text" value="{$TOKEN}" readonly="readonly"></p>
+    <p>{vtranslate('Client Access Token', $QUALIFIED_MODULE)}: <input type="text" value="{$ACCESS_TOKEN}" readonly="readonly"></p>
     <button type="button" onclick="javascript:window.close('','_parent','');">{vtranslate('Close', $QUALIFIED_MODULE)}</button>
 </form>
 </body>

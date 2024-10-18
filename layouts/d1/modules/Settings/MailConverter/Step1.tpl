@@ -24,7 +24,7 @@
 						{if !$RECORD_MODEL->isFieldEditable($FIELD_MODEL)}
 							{continue}
 						{/if}
-						<div class="row py-2">
+						<div class="row py-2 fieldContainer">
 							<div class="col-lg-3 fieldLabel control-label">
 								<label>{vtranslate($FIELD_MODEL->get('label'), $QUALIFIED_MODULE)}{if $FIELD_MODEL->isMandatory()} <span class="redColor">*</span>{/if}</label>
 							</div>
@@ -33,6 +33,13 @@
 								{if $FIELD_DATA_TYPE eq 'password'}
 									<input class="fieldValue inputElement form-control" type="password" name="{$FIELD_MODEL->getName()}" {if $RECORD_EXISTS} value="{$RECORD_MODEL->get($FIELD_NAME)}" {/if}
 											{if $FIELD_MODEL->isMandatory()}data-validation-engine="validate[required]"{/if} />
+								{elseif $FIELD_DATA_TYPE eq 'token'}
+									<div class="input-group">
+										<input class="fieldValue inputElement form-control" type="password" name="{$FIELD_MODEL->getName()}" {if $RECORD_EXISTS} value="{$RECORD_MODEL->get($FIELD_NAME)}" {/if}
+												{if $FIELD_MODEL->isMandatory()}data-validation-engine="validate[required]"{/if} />
+										<button class="input-group-text refreshToken" type="button"><i class="fa fa-download"></i></button>
+										<button class="input-group-text retrieveToken" type="button"><i class="fa fa-search"></i></button>
+									</div>
 								{elseif $FIELD_DATA_TYPE eq 'boolean'}
 									{assign var=RECORD_ID value=$RECORD_MODEL->getId()}
 									<input type="hidden" name="{$FIELD_MODEL->getName()}" value="0" />
