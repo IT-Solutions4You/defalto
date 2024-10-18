@@ -52,7 +52,7 @@
                                 <input name="_mbox_user" class="inputElement form-control" id="_mbox_user" value="{$MAILBOX->username()}" type="text" placeholder="{vtranslate('LBL_Your_Mailbox_Account',$MODULE)}">
                             </div>
                         </div>
-                        <div class="row py-2 settings_details {if $SERVERNAME eq ''}hide{/if}">
+                        <div class="row py-2 settings_details settings_password {if $SERVERNAME eq '' or $MAILBOX->isProxy()}hide{/if}">
                             <div class="fieldLabel col-lg-4">
                                 <label class="detailViewButtoncontainer">
                                     <span>{vtranslate('LBL_Password',$MODULE)}</span>
@@ -61,6 +61,69 @@
                             </div>
                             <div class="fieldValue col-lg">
                                 <input name="_mbox_pwd" class="inputElement form-control" id="_mbox_pwd" value="{$MAILBOX->password()}" type="password" placeholder="{vtranslate('LBL_Account_Password',$MODULE)}">
+                            </div>
+                        </div>
+                        <div class="row py-2 oauth2_settings {if !$MAILBOX->isProxy()}hide{/if}">
+                            <div class="fieldLabel col-lg-4">
+                                <label class="detailViewButtoncontainer">
+                                    <span>{vtranslate('LBL_PROXY',$MODULE)}</span>
+                                    <span class="text-danger ms-2">*</span>
+                                </label>
+                            </div>
+                            <div class="fieldValue col-lg">
+                                <input name="_mbox_proxy" class="inputElement form-control" id="_mbox_proxy" value="{$MAILBOX->getProxy()}" type="text">
+                            </div>
+                        </div>
+                        <div class="row py-2 oauth2_settings {if !$MAILBOX->isProxy()}hide{/if}">
+                            <div class="fieldLabel col-lg-4">
+                                <label class="detailViewButtoncontainer">
+                                    <span>{vtranslate('LBL_CLIENT_ID',$MODULE)}</span>
+                                    <span class="text-danger ms-2">*</span>
+                                </label>
+                            </div>
+                            <div class="fieldValue col-lg">
+                                <input name="_mbox_client_id" class="inputElement form-control" id="_mbox_client_id" value="{$MAILBOX->getClientId()}" type="text">
+                            </div>
+                        </div>
+                        <div class="row py-2 oauth2_settings {if !$MAILBOX->isProxy()}hide{/if}">
+                            <div class="fieldLabel col-lg-4">
+                                <label class="detailViewButtoncontainer">
+                                    <span>{vtranslate('LBL_CLIENT_SECRET',$MODULE)}</span>
+                                    <span class="text-danger ms-2">*</span>
+                                </label>
+                            </div>
+                            <div class="fieldValue col-lg">
+                                <input name="_mbox_client_secret" class="inputElement form-control" id="_mbox_client_secret" value="{$MAILBOX->getClientSecret()}" type="password">
+                            </div>
+                        </div>
+                        <div class="row py-2 oauth2_settings {if !$MAILBOX->isProxy()}hide{/if}">
+                            <div class="fieldLabel col-lg-4">
+                                <label class="detailViewButtoncontainer">
+                                    <span>{vtranslate('LBL_CLIENT_TOKEN',$MODULE)}</span>
+                                    <span class="text-danger ms-2">*</span>
+                                </label>
+                            </div>
+                            <div class="fieldValue col-lg">
+                                <div class="input-group">
+                                    <input name="_mbox_client_token" class="inputElement form-control" id="_mbox_client_token" value="{$MAILBOX->getClientToken()}" type="password">
+                                    <button class="input-group-text refreshToken" type="button">
+                                        <i class="fa fa-download"></i>
+                                    </button>
+                                    <button class="input-group-text retrieveToken" type="button">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row py-2 oauth2_settings {if !$MAILBOX->isProxy()}hide{/if}">
+                            <div class="fieldLabel col-lg-4">
+                                <label class="detailViewButtoncontainer">
+                                    <span>{vtranslate('LBL_CLIENT_ACCESS_TOKEN',$MODULE)}</span>
+                                    <span class="text-danger ms-2">*</span>
+                                </label>
+                            </div>
+                            <div class="fieldValue col-lg">
+                                <input name="_mbox_client_access_token" class="inputElement form-control" id="_mbox_client_access_token" value="{$MAILBOX->getClientAccessToken()}" type="password">
                             </div>
                         </div>
                         <div class="row py-2 additional_settings {if $SERVERNAME neq 'other'}hide{/if}">

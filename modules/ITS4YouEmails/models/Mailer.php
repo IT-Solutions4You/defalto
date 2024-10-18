@@ -107,7 +107,7 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
 
     public function getProviderByServer($server): string
     {
-        if ('ssl://smtp.gmail.com:465' === $server) {
+        if (str_contains($server, 'gmail.com')) {
             return 'Google';
         }
 

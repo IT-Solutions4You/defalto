@@ -21,7 +21,7 @@ abstract class MailManager_Abstract_View extends Vtiger_Index_View {
 	}
     
     public function preProcess (Vtiger_Request $request, $display = true) {
-		if ($this->getOperationArg($request) === 'attachment_dld') {
+		if (in_array($this->getOperationArg($request), ['open', 'attachment_dld'])) {
 			return true;
 		} else {
 			parent::preProcess($request, $display);
@@ -29,7 +29,7 @@ abstract class MailManager_Abstract_View extends Vtiger_Index_View {
 	}
 
 	public function postProcess(Vtiger_Request $request) {
-		if ($this->getOperationArg($request) === 'attachment_dld') {
+		if (in_array($this->getOperationArg($request), ['open', 'attachment_dld'])) {
 			return true;
 		} else {
 			parent::postProcess($request);

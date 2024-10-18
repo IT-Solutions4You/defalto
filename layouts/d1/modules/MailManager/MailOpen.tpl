@@ -5,7 +5,7 @@
 * All Rights Reserved.
 *}
 {strip}
-    <div class="container-fluid">
+    <div class="container-fluid d-flex flex-column h-100">
         <input type="hidden" id="mmFrom" value='{implode(',', $MAIL->from())}'>
         <input type="hidden" id="mmSubject" value='{Vtiger_Functions::jsonEncode($MAIL->subject())}'>
         <input type="hidden" id="mmMsgNo" value="{$MAIL->msgNo()}">
@@ -19,7 +19,11 @@
         <input type="hidden" id="mmAttchmentCount" value="{$ATTACHMENT_COUNT}">
         <div id="mailManagerActions">
             <div class="row">
-                <div class="col mb-2" id="relationBlock"></div>
+                <div class="col mb-2" id="relationBlock">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
                 <div class="col-auto">
                     <button type="button" class="btn btn-outline-secondary mailPagination me-2" {if $MAIL->msgno() < $FOLDER->count()}data-folder='{$FOLDER->name()}' data-msgno='{$MAIL->msgno(1)}'{else}disabled="disabled"{/if}>
                         <i class="fa fa-caret-left"></i>
@@ -30,13 +34,12 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row border-bottom py-3">
             <div class="col-lg-12">
-                <h5 class="mmMailSubject fw-bold my-3">{$MAIL->subject()}</h5>
+                <h5 class="mmMailSubject fw-bold m-0">{$MAIL->subject()}</h5>
             </div>
         </div>
-        <hr>
-        <div class="row">
+        <div class="row py-3">
             <div class="col-lg-1">
                 <div class="mmFirstNameChar bg-primary text-white p-3 rounded text-center">
                     {assign var=NAME value=$MAIL->from()}
@@ -93,7 +96,7 @@
                 </span>
             </div>
         </div>
-        <div class="text-end">
+        <div class="text-end border-bottom pb-3">
             <span class="btn btn-outline-secondary mmDetailAction me-2" id="mmPrint" title="{vtranslate('LBL_Print', $MODULE)}">
                 <i class="fa fa-print"></i>
             </span>
@@ -101,38 +104,38 @@
                 <i class="fa fa-trash-o"></i>
             </span>
         </div>
-        <hr>
-        <div class="row mt-3">
+        <div class="row pt-3 h-75 overflow-hidden">
             <div class="col-lg-12 mmEmailContainerDiv">
-                <div id="mmBody">{$BODY}</div>
+                <div id="mmBody" class="h-100">{$BODY}</div>
             </div>
         </div>
         {if $ATTACHMENT_COUNT > 0}
-            <hr class="mmDetailHr">
-            <div class="col-lg-12 padding0px">
-                <div class="mb-3">
-                    <strong class="me-2">{vtranslate('LBL_Attachments',$MODULE)}</strong>
-                    <span>({$ATTACHMENT_COUNT}&nbsp;{vtranslate('LBL_FILES', $MODULE)})</span>
-                </div>
-                {foreach item=ATTACHVALUE from=$ATTACHMENTS name="attach"}
-                    {assign var=ATTACHNAME value=$ATTACHVALUE['filename']}
-                    {if $INLINE_ATT[$ATTACHNAME] eq null}
-                        {assign var=DOWNLOAD_LINK value=$ATTACHNAME|@escape:'url'}
-						{assign var=ATTACHID value=$ATTACHVALUE['attachid']}
-                        {if $ATTACHID}
-                            <div class="mb-2">
-                                <i class="fa {$MAIL->getAttachmentIcon($ATTACHVALUE['path'])}"></i>&nbsp;&nbsp;
-                                <a href="index.php?module={$MODULE}&view=Index&_operation=mail&_operationarg=attachment_dld&_muid={$MAIL->muid()}&_atid={$ATTACHID}&_atname={$DOWNLOAD_LINK|@escape:'htmlall':'UTF-8'}">
-                                    {$ATTACHNAME}
-                                </a>
-                                <span>&nbsp;&nbsp;({$ATTACHVALUE['size']})</span>
-                                <a href="index.php?module={$MODULE}&view=Index&_operation=mail&_operationarg=attachment_dld&_muid={$MAIL->muid()}&_atid={$ATTACHID}&_atname={$DOWNLOAD_LINK|@escape:'htmlall':'UTF-8'}">
-                                    &nbsp;&nbsp;<i class="fa fa-download"></i>
-                                </a>
-                            </div>
+            <div class="row border-top">
+                <div class="col-lg-12">
+                    <div class="py-3">
+                        <strong class="me-2">{vtranslate('LBL_Attachments',$MODULE)}</strong>
+                        <span>({$ATTACHMENT_COUNT}&nbsp;{vtranslate('LBL_FILES', $MODULE)})</span>
+                    </div>
+                    {foreach item=ATTACHVALUE from=$ATTACHMENTS name="attach"}
+                        {assign var=ATTACHNAME value=$ATTACHVALUE['filename']}
+                        {if !isset($INLINE_ATT[$ATTACHNAME])}
+                            {assign var=DOWNLOAD_LINK value=$ATTACHNAME|@escape:'url'}
+                            {assign var=ATTACHID value=$ATTACHVALUE['attachid']}
+                            {if $ATTACHID}
+                                <div class="mb-2">
+                                    <i class="fa {$MAIL->getAttachmentIcon($ATTACHVALUE['path'])}"></i>&nbsp;&nbsp;
+                                    <a href="index.php?module={$MODULE}&view=Index&_operation=mail&_operationarg=attachment_dld&_muid={$MAIL->muid()}&_atid={$ATTACHID}&_atname={$DOWNLOAD_LINK|@escape:'htmlall':'UTF-8'}">
+                                        {$ATTACHNAME}
+                                    </a>
+                                    <span>&nbsp;&nbsp;({$ATTACHVALUE['size']})</span>
+                                    <a href="index.php?module={$MODULE}&view=Index&_operation=mail&_operationarg=attachment_dld&_muid={$MAIL->muid()}&_atid={$ATTACHID}&_atname={$DOWNLOAD_LINK|@escape:'htmlall':'UTF-8'}">
+                                        &nbsp;&nbsp;<i class="fa fa-download"></i>
+                                    </a>
+                                </div>
+                            {/if}
                         {/if}
-                    {/if}
-                {/foreach}
+                    {/foreach}
+                </div>
             </div>
         {/if}
     </div>
