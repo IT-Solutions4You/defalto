@@ -67,9 +67,9 @@ class MailManager_Connector_Connector {
         $baseUrl = sprintf('{%s:%s/%s/%s/%s}', $model->server(), $port, $model->protocol(), $model->ssltype(), $model->certvalidate());
         $password = $model->password();
 
-        if (!empty($model->proxy())) {
-            $baseUrl = sprintf("{%s/IMAP4/notls/novalidate-cert}", $model->proxy());
-            $password = $model->clientAccessToken();
+        if (!empty($model->getProxy())) {
+            $baseUrl = sprintf("{%s/IMAP4/notls/novalidate-cert}", $model->getProxy());
+            $password = $model->getClientAccessToken();
         }
 
         $url = sprintf('%s%s', $baseUrl, $folder);

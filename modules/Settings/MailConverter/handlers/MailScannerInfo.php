@@ -497,20 +497,16 @@ class Vtiger_MailScannerInfo {
 		return $scanners;
 	}
 
+    /**
+     * @throws AppException
+     */
     public function retrieveClientAccessToken(): void
     {
         if (empty($this->client_access_token)) {
             return;
         }
 
-        $authModel = Core_Auth_Model::getInstance();
-        $authModel->setClientId($this->client_id);
-        $authModel->setClientSecret($this->client_secret);
-
-        if ($authModel->isExpired()) {
-            $authModel->setToken($this->client_token);
-            $authModel->updateAccessToken($this);
-        }
+        Core_Auth_Model::getInstance($this->client_id, $this->client_secret, $this->client_token)->updateAccessToken($this);
     }
 
     /**

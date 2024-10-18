@@ -71,7 +71,7 @@
                                 </label>
                             </div>
                             <div class="fieldValue col-lg">
-                                <input name="_mbox_proxy" class="inputElement form-control" id="_mbox_proxy" value="{$MAILBOX->proxy()}" type="text">
+                                <input name="_mbox_proxy" class="inputElement form-control" id="_mbox_proxy" value="{$MAILBOX->getProxy()}" type="text">
                             </div>
                         </div>
                         <div class="row py-2 oauth2_settings {if !$MAILBOX->isProxy()}hide{/if}">
@@ -82,7 +82,7 @@
                                 </label>
                             </div>
                             <div class="fieldValue col-lg">
-                                <input name="_mbox_client_id" class="inputElement form-control" id="_mbox_client_id" value="{$MAILBOX->clientId()}" type="text">
+                                <input name="_mbox_client_id" class="inputElement form-control" id="_mbox_client_id" value="{$MAILBOX->getClientId()}" type="text">
                             </div>
                         </div>
                         <div class="row py-2 oauth2_settings {if !$MAILBOX->isProxy()}hide{/if}">
@@ -93,7 +93,7 @@
                                 </label>
                             </div>
                             <div class="fieldValue col-lg">
-                                <input name="_mbox_client_secret" class="inputElement form-control" id="_mbox_client_secret" value="{$MAILBOX->clientSecret()}" type="password">
+                                <input name="_mbox_client_secret" class="inputElement form-control" id="_mbox_client_secret" value="{$MAILBOX->getClientSecret()}" type="password">
                             </div>
                         </div>
                         <div class="row py-2 oauth2_settings {if !$MAILBOX->isProxy()}hide{/if}">
@@ -105,7 +105,7 @@
                             </div>
                             <div class="fieldValue col-lg">
                                 <div class="input-group">
-                                    <input name="_mbox_client_token" class="inputElement form-control" id="_mbox_client_token" value="{$MAILBOX->clientSecret()}" type="password">
+                                    <input name="_mbox_client_token" class="inputElement form-control" id="_mbox_client_token" value="{$MAILBOX->getClientToken()}" type="password">
                                     <button class="input-group-text refreshToken" type="button">
                                         <i class="fa fa-download"></i>
                                     </button>
@@ -123,7 +123,7 @@
                                 </label>
                             </div>
                             <div class="fieldValue col-lg">
-                                <input name="_mbox_client_access_token" class="inputElement form-control" id="_mbox_client_access_token" value="{$MAILBOX->clientAccessToken()}" type="password">
+                                <input name="_mbox_client_access_token" class="inputElement form-control" id="_mbox_client_access_token" value="{$MAILBOX->getClientAccessToken()}" type="password">
                             </div>
                         </div>
                         <div class="row py-2 additional_settings {if $SERVERNAME neq 'other'}hide{/if}">

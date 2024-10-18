@@ -33,9 +33,23 @@ class Core_Auth_Model extends Vtiger_Base_Model
         return $this->getSession('client_secret');
     }
 
-    public static function getInstance()
+    /**
+     * @param string $clientId
+     * @param string $clientSecret
+     * @param string $clientToken
+     * @return self
+     */
+    public static function getInstance(string $clientId = '', string $clientSecret = '', string $clientToken = ''): self
     {
-        return new self();
+        $instance = new self();
+
+        if (!empty($clientId)) {
+            $instance->setClientId($clientId);
+            $instance->setClientSecret($clientSecret);
+            $instance->setToken($clientToken);
+        }
+
+        return $instance;
     }
 
     public function getModuleName()
@@ -202,6 +216,10 @@ class Core_Auth_Model extends Vtiger_Base_Model
      */
     public function updateAccessToken(object $recordModel): void
     {
+        if (!$this->isExpired()) {
+            return;
+        }
+
         $this->retrieveAccessToken();
         $accessToken = $this->getAccessToken();
 

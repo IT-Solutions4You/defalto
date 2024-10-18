@@ -45,7 +45,7 @@ class MailManager_Mailbox_Model {
     /**
      * @return mixed
      */
-    public function clientId(): string
+    public function getClientId(): string
     {
         return $this->mClientId;
     }
@@ -53,7 +53,7 @@ class MailManager_Mailbox_Model {
     /**
      * @return mixed
      */
-    public function clientSecret(): string
+    public function getClientSecret(): string
     {
         return $this->mClientSecret;
     }
@@ -61,7 +61,7 @@ class MailManager_Mailbox_Model {
     /**
      * @return mixed
      */
-    public function clientAccessToken(): string
+    public function getClientAccessToken(): string
     {
         return $this->mClientAccessToken;
     }
@@ -69,7 +69,7 @@ class MailManager_Mailbox_Model {
     /**
      * @return mixed
      */
-    public function clientToken(): string
+    public function getClientToken(): string
     {
         return $this->mClientToken;
     }
@@ -77,7 +77,7 @@ class MailManager_Mailbox_Model {
     /**
      * @return mixed
      */
-    public function proxy(): string
+    public function getProxy(): string
     {
         return $this->mProxy;
     }
@@ -225,11 +225,11 @@ class MailManager_Mailbox_Model {
             'sslmeth' => $this->certvalidate(),
             'box_refresh' => $this->refreshTimeOut(),
             'sent_folder' => $this->folder(),
-            'mail_proxy' => $this->proxy(),
-            'client_id' => $this->clientId(),
-            'client_secret' => $this->clientSecret(),
-            'client_token' => $this->clientToken(),
-            'client_access_token' => $this->clientAccessToken(),
+            'mail_proxy' => $this->getProxy(),
+            'client_id' => $this->getClientId(),
+            'client_secret' => $this->getClientSecret(),
+            'client_token' => $this->getClientToken(),
+            'client_access_token' => $this->getClientAccessToken(),
         ];
         $userId = $currentUserModel->getId();
         $table = $this->getMailAccountTable();
@@ -330,23 +330,19 @@ class MailManager_Mailbox_Model {
 
     public function isProxy(): bool
     {
-        return !empty($this->proxy());
+        return !empty($this->getProxy());
     }
 
+    /**
+     * @throws AppException
+     */
     public function retrieveClientAccessToken(): void
     {
-        if (empty($this->clientAccessToken())) {
+        if (empty($this->getClientAccessToken())) {
             return;
         }
 
-        $authModel = Core_Auth_Model::getInstance();
-        $authModel->setClientId($this->clientId());
-        $authModel->setClientSecret($this->clientSecret());
-
-        if ($authModel->isExpired()) {
-            $authModel->setToken($this->clientToken());
-            $authModel->updateAccessToken($this);
-        }
+        Core_Auth_Model::getInstance($this->getClientId(), $this->getClientSecret(), $this->getClientToken())->updateAccessToken($this);
     }
 
     /**
@@ -356,10 +352,8 @@ class MailManager_Mailbox_Model {
      */
     public function updateAccessToken(Core_Auth_Model $authModel): void
     {
-        if (!empty($this->clientAccessToken())) {
+        if (!empty($this->getClientAccessToken())) {
             $this->setClientAccessToken($authModel->getAccessToken());
         }
-
-
     }
 }
