@@ -257,35 +257,39 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     addRowListeners: function () {
         const self = this;
-        $('.lineItemRow').each(function () {
-            const rowNum = $(this).data('row-num');
+        jQuery('.lineItemRow').each(function () {
+            const rowNum = jQuery(this).data('row-num');
             self.setupRowListeners(rowNum);
         });
     },
 
     setupRowListeners: function (rowNum) {
         const self = this;
-        const row = $(`#row${rowNum}`);
+        const row = jQuery(`#row${rowNum}`);
 
         // Use event delegation for all input events within the row
         row.on('change, blur', 'input, select, textarea', function () {
-            const element = $(this);
+            const element = jQuery(this);
             // Don't save on hidden input changes unless specifically needed
             if (!element.is(':hidden') || element.hasClass('saveOnChange')) {
                 self.saveProductLine(rowNum);
             }
         });
+
+        row.on('click', '.deleteRow', function () {
+            self.deleteProductLine(rowNum);
+        });
     },
 
     saveProductLine: function (rowNum) {
-        const row = $(`#row${rowNum}`);
+        const row = jQuery(`#row${rowNum}`);
         const data = this.serializeRow(row);
 
         // Check if the row has any non-empty values
         const hasContent = Object.values(data).some(value => value !== '' && value != null);
 
         if (hasContent) {
-            $.ajax({
+            jQuery.ajax({
                 url: 'index.php',
                 method: 'POST',
                 data: {
@@ -309,10 +313,30 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
     },
 
+    deleteProductLine: function (rowNum) {
+        // show confirmation dialog
+        const self = this;
+
+        if (confirm(app.vtranslate('JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE')) === true) {
+            const row = jQuery('#row' + rowNum);
+            const data = self.serializeRow(row);
+            app.request.post({
+                'data': {
+                    module: 'InventoryItem',
+                    action: 'DeleteProductLine',
+                    for_record: app.getRecordId(),
+                    lineItemId: jQuery('input[name="lineItemId' + rowNum + '"]').val()
+                }
+            }).then(function (data) {
+                row.remove();
+            });
+        }
+    },
+
     serializeRow: function (row) {
         let data = {};
         row.find('input, select, textarea').each(function () {
-            const element = $(this);
+            const element = jQuery(this);
             const name = element.attr('name');
             if (name) {
                 if (element.is(':checkbox')) {
