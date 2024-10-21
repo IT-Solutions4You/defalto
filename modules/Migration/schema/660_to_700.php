@@ -1415,51 +1415,10 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 	$db->pquery('ALTER TABLE vtiger_cvstdfilter ADD CONSTRAINT fk_1_vtiger_cvstdfilter FOREIGN KEY (cvid) REFERENCES vtiger_customview(cvid) ON DELETE CASCADE', array());
 
-	if (!Vtiger_Utils::CheckTable('vtiger_convertpotentialmapping')) {
-		Vtiger_Utils::CreateTable('vtiger_convertpotentialmapping',
-				"(`cfmid` int(19) NOT NULL AUTO_INCREMENT,
-				`potentialfid` int(19) NOT NULL,
-				`projectfid` int(19) DEFAULT NULL,
-				`editable` int(11) DEFAULT '1',
-				PRIMARY KEY (`cfmid`)
-				)", true);
-		$fieldMap = array(
-			array('potentialname', 'projectname', 0),
-			array('description', 'description', 1),
-		);
-
-		$potentialTab = getTabid('Potentials');
-		$projectTab = getTabid('Project');
-		$mapSql = 'INSERT INTO vtiger_convertpotentialmapping(potentialfid, projectfid, editable) values(?,?,?)';
-
-		foreach ($fieldMap as $values) {
-			$potentialfid = getFieldid($potentialTab, $values[0]);
-			$projectfid = getFieldid($projectTab, $values[1]);
-			$editable = isset($values[4])? $values[4] : 1;
-			$db->pquery($mapSql, array($potentialfid, $projectfid, $editable));
-		}
-	}
-
-	$columns = $db->getColumnNames('vtiger_potential');
-	if (!in_array('converted', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_potential ADD converted INT(1) NOT NULL DEFAULT 0', array());
-	}
-
 	$Vtiger_Utils_Log = true;
 	$productsInstance = Vtiger_Module_Model::getInstance('Products');
 	$poInstance = Vtiger_Module_Model::getInstance('PurchaseOrder');
 	$productsInstance->setRelatedList($poInstance, 'PurchaseOrder', false, 'get_purchase_orders');
-
-	$modules = array('Potentials', 'Contacts', 'Accounts', 'Project');
-	foreach ($modules as $moduleName) {
-		$tabId = getTabid($moduleName);
-		if ($moduleName == 'Project') {
-			$db->pquery('UPDATE vtiger_field SET displaytype=? WHERE fieldname=? AND tabid=?', array(1, 'isconvertedfrompotential', $tabId));
-		} else {
-			$db->pquery('UPDATE vtiger_field SET displaytype=? WHERE fieldname=? AND tabid=?', array(1, 'isconvertedfromlead', $tabId));
-		}
-		Vtiger_Cache::flushModuleCache($moduleName);
-	}
 
 	$db->pquery('DELETE FROM vtiger_links WHERE linktype=? AND handler_class=?', array('DETAILVIEWBASIC', 'Documents'));
 
