@@ -25,7 +25,7 @@ class Settings_Potentials_MappingEdit_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('PROJECT_MODULE_MODEL', Settings_Potentials_Module_Model::getInstance('Project'));
 
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
-		$viewer->assign('RESTRICTED_FIELD_IDS_LIST', Settings_Potentials_Mapping_Model::getRestrictedFieldIdsList());
+		$viewer->assign('RESTRICTED_FIELD_NAMES_LIST', Settings_Potentials_Mapping_Model::getRestrictedFieldNamesList());
 		$viewer->view('PotentialMappingEdit.tpl', $qualifiedModuleName);
 	}
 	
