@@ -18,7 +18,7 @@
                 <form id="potentialsMapping" method="POST">
                     <div class="editViewBody ">
                         <div class="editViewContents table-container" >
-                            <input type="hidden" id="restrictedFieldsList" value={ZEND_JSON::encode($RESTRICTED_FIELD_IDS_LIST)} />
+                            <input type="hidden" id="restrictedFieldsList" value={ZEND_JSON::encode($RESTRICTED_FIELD_NAMES_LIST)} />
                             <table class="table table-borderless listview-table-norecords" width="100%" id="convertPotentialMapping">
                                 <tbody>
                                     <tr>
@@ -53,7 +53,7 @@
                                                 <select class="potentialFields select2" style="width:180px" name="mapping[{$smarty.foreach.mappingLoop.iteration}][potential]" {if $MAPPING_ARRAY['editable'] eq 0} disabled {/if}>
                                                     {foreach key=FIELD_TYPE item=FIELDS_INFO from=$POTENTIALS_MODULE_MODEL->getFields()}
                                                         {foreach key=FIELD_ID item=FIELD_OBJECT from=$FIELDS_INFO}
-                                                            <option data-type="{$FIELD_TYPE}" {if $FIELD_ID eq $MAPPING_ARRAY['Potentials']['id']} selected {/if} label="{vtranslate($FIELD_OBJECT->get('label'), $POTENTIALS_MODULE_MODEL->getName())}" value="{$FIELD_ID}">
+                                                            <option data-type="{$FIELD_TYPE}" {if $FIELD_OBJECT->get('name') eq $MAPPING_ARRAY['Potentials']['name']} selected {/if} label="{vtranslate($FIELD_OBJECT->get('label'), $POTENTIALS_MODULE_MODEL->getName())}" value="{$FIELD_OBJECT->get('name')}">
                                                                     {vtranslate($FIELD_OBJECT->get('label'), $POTENTIALS_MODULE_MODEL->getName())}
                                                             </option>
                                                         {/foreach}
@@ -67,7 +67,7 @@
                                                     {foreach key=FIELD_TYPE item=FIELDS_INFO from=$PROJECT_MODULE_MODEL->getFields()}
                                                         {foreach key=FIELD_ID item=FIELD_OBJECT from=$FIELDS_INFO}
                                                             {if $MAPPING_ARRAY['Potentials']['fieldDataType'] eq $FIELD_TYPE}
-                                                                <option data-type="{$FIELD_TYPE}" {if $FIELD_ID eq $MAPPING_ARRAY['Project']['id']} selected {/if} label="{vtranslate($FIELD_OBJECT->get('label'), $PROJECT_MODULE_MODEL->getName())}" value="{$FIELD_ID}">
+                                                                <option data-type="{$FIELD_TYPE}" {if $FIELD_OBJECT->get('name') eq $MAPPING_ARRAY['Project']['name']} selected {/if} label="{vtranslate($FIELD_OBJECT->get('label'), $PROJECT_MODULE_MODEL->getName())}" value="{$FIELD_OBJECT->get('name')}">
                                                                         {vtranslate($FIELD_OBJECT->get('label'), $PROJECT_MODULE_MODEL->getName())}
                                                                 </option>
                                                             {/if}
@@ -95,7 +95,7 @@
                                                 {foreach key=FIELD_TYPE item=FIELDS_INFO from=$POTENTIALS_MODULE_MODEL->getFields()}
                                                     {foreach key=FIELD_ID item=FIELD_OBJECT from=$FIELDS_INFO}
                                                         {if $FIELD_OBJECT->isEditable()}
-                                                            <option data-type="{$FIELD_TYPE}" label="{vtranslate($FIELD_OBJECT->get('label'), $POTENTIALS_MODULE_MODEL->getName())}" value="{$FIELD_ID}">
+                                                            <option data-type="{$FIELD_TYPE}" label="{vtranslate($FIELD_OBJECT->get('label'), $POTENTIALS_MODULE_MODEL->getName())}" value="{$FIELD_OBJECT->get('name')}">
                                                                 {vtranslate($FIELD_OBJECT->get('label'), $POTENTIALS_MODULE_MODEL->getName())}
                                                             </option>
                                                         {/if}
@@ -110,7 +110,7 @@
                                                 {foreach key=FIELD_TYPE item=FIELDS_INFO from=$PROJECT_MODULE_MODEL->getFields()}
                                                     {foreach key=FIELD_ID item=FIELD_OBJECT from=$FIELDS_INFO}
                                                         {if $FIELD_OBJECT->isEditable()}
-                                                            <option data-type="{$FIELD_TYPE}" label="{vtranslate($FIELD_OBJECT->get('label'), $PROJECT_MODULE_MODEL->getName())}" value="{$FIELD_ID}">
+                                                            <option data-type="{$FIELD_TYPE}" label="{vtranslate($FIELD_OBJECT->get('label'), $PROJECT_MODULE_MODEL->getName())}" value="{$FIELD_OBJECT->get('name')}">
                                                                 {vtranslate($FIELD_OBJECT->get('label'), $PROJECT_MODULE_MODEL->getName())}
                                                             </option>
                                                         {/if}

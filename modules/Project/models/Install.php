@@ -214,7 +214,7 @@ class Project_Install_Model extends Core_Install_Model
                     'table' => 'vtiger_project',
                     'label' => 'Is Converted From Opportunity',
                     'typeofdata' => 'C~O',
-                    'displaytype'=> 2,
+                    'displaytype'=> 1,
                 ],
             ],
             'LBL_CUSTOM_INFORMATION' => [

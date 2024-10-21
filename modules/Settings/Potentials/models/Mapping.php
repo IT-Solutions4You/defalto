@@ -50,126 +50,128 @@ class Settings_Potentials_Mapping_Model extends Settings_Leads_Mapping_Model {
 	 * Function to get mapping details
 	 * @return <Array> list of mapping details
 	 */
-	public function getMapping($editable = false) {
-		if (!$this->mapping) {
-			$db = PearDatabase::getInstance();
-			$query = 'SELECT * FROM vtiger_convertpotentialmapping';
-			if ($editable) {
-				$query .= ' WHERE editable = 1';
-			}
+    public function getMapping($editable = false)
+    {
+        if (!$this->mapping) {
+            $db = PearDatabase::getInstance();
+            $query = 'SELECT * FROM vtiger_convertpotentialmapping';
 
-			$result = $db->pquery($query, array());
-			$numOfRows = $db->num_rows($result);
-            $mapping = array();
-			for ($i=0; $i<$numOfRows; $i++) {
-				$rowData = $db->query_result_rowdata($result, $i);
-				$mapping[$rowData['cfmid']] = $rowData;
-			}
-
-			$finalMapping = $fieldIdsList = array();
-			foreach ($mapping as $mappingDetails) {
-				array_push($fieldIdsList, $mappingDetails['potentialfid'], $mappingDetails['projectfid']);
-			}
-            $fieldLabelsList = array();
-            if(!empty($fieldIdsList)){
-                $fieldLabelsList = $this->getFieldsInfo(array_unique($fieldIdsList));
+            if ($editable) {
+                $query .= ' WHERE editable = 1';
             }
-			foreach ($mapping as $mappingId => $mappingDetails) {
-				$finalMapping[$mappingId] = array(
-						'editable'	=> $mappingDetails['editable'],
-						'Potentials'		=> $fieldLabelsList[$mappingDetails['potentialfid']],
-						'Project'	=> $fieldLabelsList[$mappingDetails['projectfid']]
-				);
-			}
 
-			$this->mapping = $finalMapping;
-		}
-		return $this->mapping;
-	}
+            $result = $db->pquery($query, []);
+            $mapping = [];
 
-	/**
-	 * Function to save the mapping info
-	 * @param <Array> $mapping info
-	 */
-	public function save($mapping) {
-		$db = PearDatabase::getInstance();
-		$deleteMappingsList = $updateMappingsList = $createMappingsList = array();
-		foreach ($mapping as $mappingDetails) {
-			$mappingId = $mappingDetails['mappingId'];
-			if ($mappingDetails['potential']) {
-				if ($mappingId) {
-					if ((array_key_exists('deletable', $mappingDetails)) || (!$mappingDetails['project'])) {
-						$deleteMappingsList[] = $mappingId;
-					} else {
-						if ($mappingDetails['project']) {
-							$updateMappingsList[] = $mappingDetails;
-						}
-					}
-				} else {
-					if ($mappingDetails['project']) {
-						$createMappingsList[] = $mappingDetails;
-					}
-				}
-			}
-		}
+            while ($row = $db->fetchByAssoc($result)) {
+                $mapping[$row['cfmid']] = $row;
+            }
 
-		if ($deleteMappingsList) {
-			$db->pquery('DELETE FROM vtiger_convertpotentialmapping WHERE editable = 1 AND cfmid IN ('. generateQuestionMarks($deleteMappingsList) .')', $deleteMappingsList);
-		}
+            $finalMapping = $fieldNamesList = $fieldLabelsList = [];
 
-		if ($createMappingsList) {
-			$insertQuery = 'INSERT INTO vtiger_convertpotentialmapping(potentialfid, projectfid) VALUES ';
+            foreach ($mapping as $mappingDetails) {
+                array_push($fieldNamesList, $mappingDetails['potential_field'], $mappingDetails['project_field']);
+            }
 
-			$count = php7_count($createMappingsList);
-            $params = array();
-			for ($i=0; $i<$count; $i++) {
-				$mappingDetails = $createMappingsList[$i];
-				$insertQuery .= '(?, ?)';
-                array_push($params, $mappingDetails['potential'], $mappingDetails['project']);
-				if ($i !== $count-1) {
-					$insertQuery .= ', ';
-				}
-			}
-			$db->pquery($insertQuery, $params);
-		}
+            if (!empty($fieldNamesList)) {
+                $fieldLabelsList = $this->getFieldsInfoByName(array_unique($fieldNamesList));
+            }
 
-		if ($updateMappingsList) {
-			$potentialQuery		= ' SET potentialfid = CASE ';
-			$projectQuery	= ' projectfid = CASE ';
+            foreach ($mapping as $mappingId => $mappingDetails) {
+                $finalMapping[$mappingId] = [
+                    'editable' => $mappingDetails['editable'],
+                    'Potentials' => $fieldLabelsList[$mappingDetails['potential_field']],
+                    'Project' => $fieldLabelsList[$mappingDetails['project_field']],
+                ];
+            }
 
-			foreach ($updateMappingsList as $mappingDetails) {
-				$mappingId		 = $mappingDetails['mappingId'];
-				$potentialQuery		.= " WHEN cfmid = $mappingId THEN ". $mappingDetails['potential'];
-				$projectQuery	.= " WHEN cfmid = $mappingId THEN ". $mappingDetails['project'];
-			}
-			$potentialQuery		.= ' ELSE potentialfid END ';
-			$projectQuery	.= ' ELSE projectfid END ';
+            $this->mapping = $finalMapping;
+        }
 
-			$db->pquery("UPDATE vtiger_convertpotentialmapping $potentialQuery, $projectQuery WHERE editable = ?", array(1));
-		}
-	}
+        return $this->mapping;
+    }
 
-	/**
-	 * Function to get restricted field ids list
+    /**
+     * Function to save the mapping info
+     * @param <Array> $mapping info
+     * @throws AppException
+     */
+    public function save($mapping)
+    {
+        $deleteMappingsList = $updateMappingsList = $createMappingsList = [];
+
+        foreach ($mapping as $mappingDetails) {
+            $mappingId = $mappingDetails['mappingId'];
+
+            if ($mappingDetails['potential']) {
+                if ($mappingId) {
+                    if ((array_key_exists('deletable', $mappingDetails)) || (!$mappingDetails['project'])) {
+                        $deleteMappingsList[] = $mappingDetails;
+                    } elseif ($mappingDetails['project']) {
+                        $updateMappingsList[] = $mappingDetails;
+                    }
+                } elseif ($mappingDetails['project']) {
+                    $createMappingsList[] = $mappingDetails;
+                }
+            }
+        }
+
+        $table = (new Core_DatabaseData_Model())->getTable('vtiger_convertpotentialmapping', null);
+
+        if ($deleteMappingsList) {
+            foreach ($deleteMappingsList as $deleteMapping) {
+                $table->deleteData([
+                    'cfmid' => $deleteMapping['mappingId'],
+                    'editable' => 1,
+                ]);
+            }
+        }
+
+        if ($updateMappingsList) {
+            foreach ($updateMappingsList as $updateMapping) {
+                $table->updateData([
+                    'potential_field' => $updateMapping['potential'],
+                    'project_field' => $updateMapping['project'],
+                ], [
+                    'cfmid' => $updateMapping['mappingId'],
+                    'editable' => 1,
+                ]);
+            }
+        }
+
+        if ($createMappingsList) {
+            foreach ($createMappingsList as $createMapping) {
+                $params = ['potential_field' => $createMapping['potential'], 'project_field' => $createMapping['project'], 'editable' => 1];
+                $data = $table->selectData([], $params);
+
+                if (empty($data)) {
+                    $table->insertData($params);
+                }
+            }
+        }
+    }
+
+    /**
+     * Function to get restricted field ids list
 	 * @return <Array> list of field ids
 	 */
-	public static function getRestrictedFieldIdsList() {
-		$db = PearDatabase::getInstance();
-		$result = $db->pquery('SELECT * FROM vtiger_convertpotentialmapping WHERE editable = ?', array(0));
-		$numOfRows = $db->num_rows($result);
+    public static function getRestrictedFieldNamesList()
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT * FROM vtiger_convertpotentialmapping WHERE editable = ?', [0]);
+        $fields = [];
 
-		$restrictedIdsList = array();
-		for ($i=0; $i<$numOfRows; $i++) {
-			$rowData = $db->query_result_rowdata($result, $i);
-			if ($rowData['projectfid']) {
-				$restrictedIdsList[] = $rowData['projectfid'];
-			}
-		}
-		return $restrictedIdsList;
-	}
+        while ($row = $db->fetchByAssoc($result)) {
+            if ($row['project_field']) {
+                $fields[] = $row['project_field'];
+            }
+        }
 
-	/**
-	 * Function to get mapping supported modules list
+        return $fields;
+    }
+
+    /**
+     * Function to get mapping supported modules list
 	 * @return <Array>
 	 */
 	public static function getSupportedModulesList() {

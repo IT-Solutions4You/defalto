@@ -99,49 +99,54 @@ class Potentials_Record_Model extends Vtiger_Record_Model {
 	}
 
 
-	/**
-	 * Function returns field mapped to Potentials field, used in Potential Convert for settings the field values
-	 * @param <String> $fieldName
-	 * @return <String>
-	 */
-	function getConvertPotentialMappedField($fieldName, $moduleName) {
-		$mappingFields = $this->get('mappingFields');
+    /**
+     * Function returns field mapped to Potentials field, used in Potential Convert for settings the field values
+     * @param <String> $fieldName
+     * @param $moduleName
+     * @return mixed
+     * @throws Exception
+     */
+    public function getConvertPotentialMappedField($fieldName, $moduleName)
+    {
+        $mappingFields = $this->get('mappingFields');
 
-		if (!$mappingFields) {
-			$db = PearDatabase::getInstance();
-			$mappingFields = array();
+        if (!$mappingFields) {
+            $db = PearDatabase::getInstance();
+            $mappingFields = [];
 
-			$result = $db->pquery('SELECT * FROM vtiger_convertpotentialmapping', array());
-			$numOfRows = $db->num_rows($result);
+            $result = $db->pquery('SELECT * FROM vtiger_convertpotentialmapping');
 
-			$projectInstance = Vtiger_Module_Model::getInstance('Project');
-			$projectFieldInstances = $projectInstance->getFieldsById();
+            $projectInstance = Vtiger_Module_Model::getInstance('Project');
+            $projectFieldInstances = $projectInstance->getFields();
 
-			$potentialInstance = Vtiger_Module_Model::getInstance('Potentials');
-			$potentialFieldInstances = $potentialInstance->getFieldsById();
+            $potentialInstance = Vtiger_Module_Model::getInstance('Potentials');
+            $potentialFieldInstances = $potentialInstance->getFields();
 
-			for($i=0; $i<$numOfRows; $i++) {
-				$row = $db->query_result_rowdata($result,$i);
-				if(empty($row['potentialfid'])) continue;
+            while($row = $db->fetchByAssoc($result)) {
+                if (empty($row['potential_field']) || empty($row['project_field'])) {
+                    continue;
+                }
 
-				$potentialFieldInstance = $potentialFieldInstances[$row['potentialfid']];
-				if(!$potentialFieldInstance) continue;
+                $potentialFieldName = $row['potential_field'];
+                $projectFieldName = $row['project_field'];
+                $potentialFieldInstance = $potentialFieldInstances[$potentialFieldName];
+                $projectFieldInstance = $projectFieldInstances[$projectFieldName];
 
-				$potentialFieldName = $potentialFieldInstance->getName();
-				$projectFieldInstance = $projectFieldInstances[$row['projectfid']];
+                if (!$potentialFieldInstance || !$projectFieldInstance) {
+                    continue;
+                }
 
-				if ($row['projectfid'] && $projectFieldInstance) {
-					$mappingFields['Project'][$projectFieldInstance->getName()] = $potentialFieldName;
-				}
-			}
+                $mappingFields['Project'][$projectFieldName] = $potentialFieldName;
+            }
 
-			$this->set('mappingFields', $mappingFields);
-		}
-		return $mappingFields[$moduleName][$fieldName];
-	}
+            $this->set('mappingFields', $mappingFields);
+        }
 
-	/**
-	 * Function to check whether the Potential is converted or not
+        return $mappingFields[$moduleName][$fieldName];
+    }
+
+    /**
+     * Function to check whether the Potential is converted or not
 	 * @return True if the Potential is Converted false otherwise.
 	 */
 	function isPotentialConverted() {
