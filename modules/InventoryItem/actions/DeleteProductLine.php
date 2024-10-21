@@ -15,12 +15,12 @@ class InventoryItem_DeleteProductLine_Action extends Vtiger_Delete_Action
     {
         $response = new Vtiger_Response();
 
-
         try {
             $moduleName = $request->getModule();
             $recordId = $request->get('lineItemId');
             $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
             $recordModel->delete();
+            $response->setResult('OK');
         } catch (Exception $e) {
             $response->setError($e->getMessage());
         }

@@ -81,6 +81,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         newRow.find('.lineItemType').val(itemType);
         ++this.numOfLineItems;
         this.updateRowNumberForRow(newRow, this.numOfLineItems);
+        this.updateRowSequence(newRow);
         this.initializeLineItemRowCustomFields(newRow, this.numOfLineItems);
 
         return newRow;
@@ -96,6 +97,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         newRow.find('.lineItemType').val(itemType);
         ++this.numOfLineItems;
         this.updateRowNumberForRow(newRow, this.numOfLineItems);
+        this.updateRowSequence(newRow);
         this.initializeLineItemRowCustomFields(newRow, this.numOfLineItems);
 
         return newRow;
@@ -139,7 +141,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
 
         let nameFields = [
-            'discount', 'purchaseCost', 'margin'
+            'lineItemId', 'discount', 'purchaseCost', 'margin'
         ];
 
         for (let nameIndex in nameFields) {
@@ -154,6 +156,20 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         lineItemRow.find('input.rowNumber').val(expectedSequenceNumber);
 
         return lineItemRow;
+    },
+
+    updateRowSequence: function (row) {
+        row.find('.rowSequence').val(1);
+        const productTable = jQuery('#lineItemTab');
+
+        if (productTable.length > 0) {
+            const lastRow = productTable.find('.lineItemRow:last');
+
+            if (lastRow.length > 0) {
+                const lastRowSequence = parseInt(lastRow.find('.rowSequence').val());
+                row.find('.rowSequence').val(lastRowSequence + 1);
+            }
+        }
     },
 
     initializeLineItemRowCustomFields: function (lineItemRow, rowNum) {
@@ -300,8 +316,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     data: data
                 },
                 success: function (response) {
-                    if (response.newLineItemId) {
-                        row.find('[name="lineItemId"]').val(response.newLineItemId);
+                    if (!isNaN(response.result)) {
+                        row.find('[name="lineItemId' + rowNum + '"]').val(response.result);
                     }
 
                     row.trigger('lineSaved', [response]);
@@ -314,7 +330,6 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     deleteProductLine: function (rowNum) {
-        // show confirmation dialog
         const self = this;
 
         if (confirm(app.vtranslate('JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE')) === true) {

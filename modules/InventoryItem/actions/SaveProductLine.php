@@ -35,7 +35,7 @@ class InventoryItem_SaveProductLine_Action extends Vtiger_SaveAjax_Action
             $focus->column_fields['parentid'] = $request->get('for_record');
             $focus->save('InventoryItem');
 
-            $response->setResult('OK');
+            $response->setResult($focus->id);
         } catch (Exception $e) {
             $response->setError($e->getMessage());
         }
