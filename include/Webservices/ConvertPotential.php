@@ -102,26 +102,20 @@ function vtws_populateConvertPotentialEntities($entityvalue, $entity, $entityHan
 	$sql = 'SELECT * FROM vtiger_convertpotentialmapping';
 	$result = $adb->pquery($sql, array());
 	if ($adb->num_rows($result)) {
-		$column = 'potentialfid';
-		if ($entityName == 'Project') {
-			$column = 'projectfid';
-		}
-
+        $column = $entityName == 'Project' ? 'project_field' : 'potential_field';
 		$potentialFields = $potentialHandler->getMeta()->getModuleFields();
 		$entityFields = $entityHandler->getMeta()->getModuleFields();
 		$row = $adb->fetch_array($result);
 		$count = 1;
 		do {
-			$entityField = vtws_getFieldfromFieldId($row[$column], $entityFields);
-			if ($entityField == null) {
+			$entityField = $entityFields[$row[$column]];
+            $potentialField = $potentialFields[$row['potential_field']];
+
+			if ($entityField == null || $potentialField == null) {
 				//user doesn't have access so continue.TODO update even if user doesn't have access
 				continue;
 			}
-			$potentialField = vtws_getFieldfromFieldId($row['potentialfid'], $potentialFields);
-			if ($potentialField == null) {
-				//user doesn't have access so continue.TODO update even if user doesn't have access
-				continue;
-			}
+
 			$potentialFieldName = $potentialField->getFieldName();
 			$entityFieldName = $entityField->getFieldName();
 			$entity[$entityFieldName] = $potentialinfo[$potentialFieldName];
