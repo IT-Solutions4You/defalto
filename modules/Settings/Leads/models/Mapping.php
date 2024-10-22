@@ -113,41 +113,76 @@ class Settings_Leads_Mapping_Model extends Settings_Vtiger_Module_Model {
 		return $this->mapping;
 	}
 
-	/**
-	 * Function to get fields info
-	 * @param <Array> list of field ids
-	 * @return <Array> list of field info
-	 */
-	public function getFieldsInfo($fieldIdsList) {
-		$leadModel = Vtiger_Module_Model::getInstance($this->getName());
-		$leadId = $leadModel->getId();
+    /**
+     * Function to get fields info
+     * @param array $fieldIdsList list of field ids
+     * @return array list of field info
+     * @throws Exception
+     */
+    public function getFieldsInfo($fieldIdsList)
+    {
+        $leadModel = Vtiger_Module_Model::getInstance($this->getName());
+        $leadId = $leadModel->getId();
 
-		$db = PearDatabase::getInstance();
-		$result = $db->pquery('SELECT fieldid, fieldlabel, uitype, typeofdata, fieldname, tablename, tabid FROM vtiger_field WHERE fieldid IN ('. generateQuestionMarks($fieldIdsList). ')', $fieldIdsList);
-		$numOfRows = $db->num_rows($result);
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT fieldid, fieldlabel, uitype, typeofdata, fieldname, tablename, tabid FROM vtiger_field WHERE fieldid IN (' . generateQuestionMarks($fieldIdsList) . ')', $fieldIdsList);
+        $numOfRows = $db->num_rows($result);
 
-		$fieldLabelsList = array();
-		for ($i=0; $i<$numOfRows; $i++) {
-			$rowData = $db->query_result_rowdata($result, $i);
+        $fieldLabelsList = [];
+        for ($i = 0; $i < $numOfRows; $i++) {
+            $rowData = $db->query_result_rowdata($result, $i);
 
-			$fieldInfo = array('id' => $rowData['fieldid'], 'label' => $rowData['fieldlabel']);
+            $fieldInfo = ['id' => $rowData['fieldid'], 'label' => $rowData['fieldlabel']];
 
-			if (intval($rowData['tabid']) === intval($leadId)) {
-				$fieldModel = Settings_Leads_Field_Model::getCleanInstance();
-				$fieldModel->set('uitype', $rowData['uitype']);
-				$fieldModel->set('typeofdata', $rowData['typeofdata']);
-				$fieldModel->set('name', $rowData['fieldname']);
-				$fieldModel->set('table', $rowData['tablename']);
+            if (intval($rowData['tabid']) === intval($leadId)) {
+                $fieldModel = Settings_Leads_Field_Model::getCleanInstance();
+                $fieldModel->set('uitype', $rowData['uitype']);
+                $fieldModel->set('typeofdata', $rowData['typeofdata']);
+                $fieldModel->set('name', $rowData['fieldname']);
+                $fieldModel->set('table', $rowData['tablename']);
 
-				$fieldInfo['fieldDataType'] = $fieldModel->getFieldDataType();
-			}
+                $fieldInfo['fieldDataType'] = $fieldModel->getFieldDataType();
+            }
 
-			$fieldLabelsList[$rowData['fieldid']] = $fieldInfo;
-		}
-		return $fieldLabelsList;
-	}
+            $fieldLabelsList[$rowData['fieldid']] = $fieldInfo;
+        }
 
-	/**
+        return $fieldLabelsList;
+    }
+
+    public function getFieldsInfoByName(array $fieldNamesList): array
+    {
+        $leadModel = Vtiger_Module_Model::getInstance($this->getName());
+        $leadId = $leadModel->getId();
+
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT fieldid, fieldlabel, uitype, typeofdata, fieldname, tablename, tabid FROM vtiger_field WHERE fieldname IN (' . generateQuestionMarks($fieldNamesList) . ')', $fieldNamesList);
+        $numOfRows = $db->num_rows($result);
+
+        $fieldLabelsList = [];
+
+        for ($i = 0; $i < $numOfRows; $i++) {
+            $rowData = $db->query_result_rowdata($result, $i);
+
+            $fieldInfo = ['name' => $rowData['fieldname'], 'label' => $rowData['fieldlabel']];
+
+            if (intval($rowData['tabid']) === intval($leadId)) {
+                $fieldModel = Settings_Leads_Field_Model::getCleanInstance();
+                $fieldModel->set('uitype', $rowData['uitype']);
+                $fieldModel->set('typeofdata', $rowData['typeofdata']);
+                $fieldModel->set('name', $rowData['fieldname']);
+                $fieldModel->set('table', $rowData['tablename']);
+
+                $fieldInfo['fieldDataType'] = $fieldModel->getFieldDataType();
+            }
+
+            $fieldLabelsList[$rowData['fieldname']] = $fieldInfo;
+        }
+
+        return $fieldLabelsList;
+    }
+
+    /**
 	 * Function to save the mapping info
 	 * @param <Array> $mapping info
 	 */

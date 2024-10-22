@@ -20,6 +20,7 @@ class Potentials_Install_Model extends Core_Install_Model
         $this->updateHistory();
         $this->updateComments();
         $this->updateRelatedList();
+        $this->updateMapping();
     }
 
     public function deleteCustomLinks(): void
@@ -485,5 +486,35 @@ class Potentials_Install_Model extends Core_Install_Model
             ->createColumn('sortorderid','int(11) DEFAULT NULL')
             ->createColumn('color','varchar(10) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`leadsourceid`)');
+
+        $this->getTable('vtiger_convertpotentialmapping', 'cfmid')
+            ->createTable()
+            ->createColumn('editable', 'INT(1) DEFAULT \'1\'')
+            ->createColumn('potential_field', 'VARCHAR(50)')
+            ->createColumn('project_field', 'VARCHAR(50)');
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function updateMapping(): void
+    {
+        $table = $this->getTable('vtiger_convertpotentialmapping', null);
+        $fieldMap = [
+            ['potentialname', 'projectname', 0],
+            ['description', 'description', 1],
+            ['related_to', 'linktoaccountscontacts', 1],
+        ];
+        $data = $table->selectData(['cfmid'], []);
+
+        if (!empty($data['cfmid'])) {
+            return;
+        }
+
+        foreach ($fieldMap as $values) {
+            [$potentialField, $projectField, $editable] = $values;
+
+            $table->insertData(['potential_field' => $potentialField, 'project_field' => $projectField, 'editable' => $editable]);
+        }
     }
 }
