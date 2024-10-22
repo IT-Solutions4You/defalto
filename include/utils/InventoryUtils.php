@@ -1019,6 +1019,10 @@ function getBaseConversionRateForProduct($productid, $mode='edit', $module='Prod
 	$res = $adb->pquery($sql, $params);
 	$conv_rate = $adb->query_result($res, 0, 'conversion_rate');
 
+    if (empty($conv_rate)) {
+        $conv_rate = 1;
+    }
+
 	return 1 / $conv_rate;
 }
 

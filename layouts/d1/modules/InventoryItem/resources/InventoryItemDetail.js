@@ -28,6 +28,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     registerBasicEvents: function (container) {
         this._super(container);
         this.registerAddButtons();
+        this.registerLineItemAutoComplete();
         this.makeLineItemsSortable();
         this.addRowListeners();
     },
@@ -49,7 +50,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             const params = {'currentTarget': currentTarget};
             let newLineItem = self.getNewLineItem(params);
             newLineItem = newLineItem.appendTo(self.lineItemsHolder);
-            newLineItem.find('input.productName').addClass('autoComplete');
+            newLineItem.find('input.item_text').addClass('autoComplete');
             newLineItem.find('.ignore-ui-registration').removeClass('ignore-ui-registration');
             vtUtils.applyFieldElementsView(newLineItem);
             app.event.trigger('post.lineItem.New', newLineItem);
@@ -141,7 +142,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
 
         let nameFields = [
-            'lineItemId', 'discount', 'purchaseCost', 'margin'
+            'lineItemId', 'discount', 'purchaseCost', 'margin', 'sequence'
         ];
 
         for (let nameIndex in nameFields) {
@@ -160,9 +161,9 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     updateRowSequence: function (row) {
         row.find('.rowSequence').val(1);
-        const productTable = jQuery('#lineItemTab');
+        const productTable = this.lineItemsHolder;
 
-        if (productTable.length > 0) {
+        if (productTable.find('tr').length > 0) {
             const lastRow = productTable.find('.lineItemRow:last');
 
             if (lastRow.length > 0) {
@@ -404,14 +405,13 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     return false;
                 }
                 const element = jQuery(this);
-                element.attr('disabled', 'disabled');
                 const tdElement = element.closest('td');
                 const selectedModule = tdElement.find('.lineItemPopup').data('moduleName');
                 const dataUrl = "index.php?module=Inventory&action=GetTaxes&record=" + selectedItemData.id + "&currency_id=" + jQuery('#currency_id option:selected').val() + "&sourceModule=" + app.getModuleName();
                 app.request.get({'url': dataUrl}).then(
                     function (error, data) {
                         if (error == null) {
-                            const itemRow = self.getClosestLineItemRow(element);
+                            const itemRow = element.parents('tr').first();
                             itemRow.find('.lineItemType').val(selectedModule);
                             self.mapResultsToFields(itemRow, data[0]);
                         }
@@ -422,6 +422,18 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 );
             }
         });
+    },
+
+    mapResultsToFields: function (parentRow, responseData) {
+        const lineItemNameElment = jQuery('input.item_text', parentRow);
+        const referenceModule = this.getLineItemSetype(parentRow);
+
+        for (let id in responseData) {
+            let recordData = responseData[id];
+            jQuery('input.productid', parentRow).val(id);
+            jQuery('input.lineItemType',parentRow).val(referenceModule);
+            lineItemNameElment.val(recordData.name);
+        }
     },
 
 });

@@ -13,7 +13,7 @@
     {assign var="comment" value="comment"|cat:$row_no}
     {assign var="productDescription" value="productDescription"|cat:$row_no}
     {assign var="qtyInStock" value="qtyInStock"|cat:$row_no}
-    {assign var="qty" value="qty"|cat:$row_no}
+    {assign var="quantity" value="quantity"|cat:$row_no}
     {assign var="listPrice" value="listPrice"|cat:$row_no}
     {assign var="productTotal" value="productTotal"|cat:$row_no}
     {assign var="subproduct_ids" value="subproduct_ids"|cat:$row_no}
@@ -57,7 +57,7 @@
         </a>
 		<input type="hidden" class="rowNumber" value="{$row_no}" />
         <input type="hidden" class="lineItemId" name="lineItemId{$row_no}" value="{$data.inventoryitemid}" />
-        <input type="hidden" class="rowSequence" value="{$row_no}" />
+        <input type="hidden" class="rowSequence" name="sequence{$row_no}" value="{$row_no}" />
 	</td>
 
 	{*if $PRODUCT_EDITABLE*}
@@ -68,7 +68,7 @@
 			<div class="itemNameDiv form-inline">
                 <div class="input-group">
                     <input type="text" id="{$item_text}" name="{$item_text}" value="{$data.item_text}" class="item_text form-control {if $row_no neq 0}autoComplete{/if}" placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}" data-rule-required=true {if !empty($data.$item_text)}disabled="disabled"{/if}>
-                    <input type="hidden" id="{$hdnProductId}" name="{$hdnProductId}" value="{$data.productid}" class="selectedModuleId"/>
+                    <input type="hidden" id="{$hdnProductId}" name="{$hdnProductId}" value="{$data.productid}" class="productid"/>
                     <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="{$entityType}" class="lineItemType"/>
                     {if !$data.$productDeleted}
                         <span class="input-group-addon input-group-text cursorPointer clearLineItem" title="{vtranslate('LBL_CLEAR',$MODULE)}">
@@ -122,7 +122,7 @@
 	{*/if*}
 
 	<td>
-		<input id="{$qty}" name="{$qty}" type="text" class="qty smallInputBox inputElement form-control replaceCommaWithDot"
+		<input id="{$quantity}" name="{$quantity}" type="text" class="quantity smallInputBox inputElement form-control replaceCommaWithDot"
 			   data-rule-required=true data-rule-positive=true data-rule-greater_than_zero=true value="{if !empty($data.quantity)}{$data.quantity}{else}1{/if}"
 			   />
 

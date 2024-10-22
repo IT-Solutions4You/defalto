@@ -16,7 +16,7 @@
     </a>
     <input type="hidden" class="rowNumber" value="{$row_no}" />
     <input type="hidden" class="lineItemId" name="lineItemId{$row_no}" value="{$data.inventoryitemid}" />
-    <input type="hidden" class="rowSequence" value="{$row_no}" />
+    <input type="hidden" class="rowSequence" name="sequence{$row_no}" value="{$row_no}" />
 </td>
 <td colspan="50">
     {assign var="item_text" value="item_text"|cat:$row_no}
