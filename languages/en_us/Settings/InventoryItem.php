@@ -8,7 +8,8 @@
  * file that was distributed with this source code.
  */
 
-class Settings_Core_InventoryItemBlock_View extends Settings_Vtiger_Index_View
-{
+$languageStrings = [
+    'InventoryItem'        => 'Inventory Item',
+    'SINGLE_InventoryItem' => 'Inventory Item',
 
-}
+];

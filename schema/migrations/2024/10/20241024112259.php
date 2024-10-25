@@ -30,7 +30,7 @@ if (!class_exists('Migration_20241024112259')) {
             $link = Settings_Vtiger_MenuItem_Model::getInstance('Inventory Item Block', $menu);
 
             if (!$link) {
-                $link = Settings_Vtiger_MenuItem_Model::getInstanceFromArray(['name' => 'Inventory Item Block', 'blockid' => $menu->getId(), 'linkto' => 'index.php?module=Core&parent=Settings&view=InventoryItemBlock']);
+                $link = Settings_Vtiger_MenuItem_Model::getInstanceFromArray(['name' => 'Inventory Item Block', 'blockid' => $menu->getId(), 'linkto' => 'index.php?module=InventoryItem&parent=Settings&view=Index']);
                 $link->save();
             }
         }
