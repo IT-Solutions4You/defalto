@@ -100,6 +100,10 @@ class MailManager_Connector_Connector {
             $password = $boxModel->getClientAccessToken();
         }
 
+        if (empty($server) || empty($password)) {
+            return;
+        }
+
         $options = [];
         $config = [
             'host' => $server,
