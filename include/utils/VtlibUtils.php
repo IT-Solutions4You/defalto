@@ -569,7 +569,7 @@ function purifyHtmlEventAttributes($value,$replaceAll = false){
 
     // remove malicious html attributes with its value.
     if ($replaceAll) {
-        $value = preg_replace('/\b(alert|on\w+)\s*\([^)]*\)|\s*(?:on\w+)=(".*?"|\'.*?\'|[^\'">\s]+)\s*/', '', $value);
+        $value = preg_replace('/\b(alert|on\w+)\s*\([^)]*\)|\s*(?: on\w+)=(".*?"|\'.*?\'|[^\'">\s]+)\s*/', '', $value);
         //remove script tag with contents
         $value = purifyScript($value);
         //purify javascript alert from the tag contents

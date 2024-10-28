@@ -811,27 +811,27 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         return trim(str_replace(array($siteUrl, $rootDirectory, trim($siteUrl, '/\\'), trim($rootDirectory, '/\\')), array('', ''), $replaceUrl), '/\\');
     }
 
-    public function saveEmailToSentFolder()
+    /**
+     * @throws AppException
+     */
+    public function saveEmailToSentFolder(): void
     {
         if (true === $this->get('skip_save_email_to_sent_folder')) {
             return;
         }
 
-        $mailer = $this->getMailer();
-        $mailString = $mailer->getMailString();
-        $mailBoxModel = MailManager_Mailbox_Model::activeInstance();
-        $folderName = $mailBoxModel->folder();
+        $mailBoxModel = MailManager_Mailbox_Model::getActiveInstance();
+        $folderName = $mailBoxModel->getFolder();
+        $messageString = $this->getMailer()->getMailString();
 
-        if (!empty($folderName) && !empty($mailString)) {
+        if (!empty($folderName)) {
             $connector = MailManager_Connector_Connector::connectorWithModel($mailBoxModel, '');
-            $message = str_replace("\n", "\r\n", $mailString);
+            $mBoxFolder = $connector->getFolder($folderName)->getBoxFolder($connector->getBox());
 
-            if (function_exists('mb_convert_encoding')) {
-                $folderName = mb_convert_encoding($folderName, 'UTF7-IMAP', 'UTF-8');
-            }
-
-            if ($connector->mBox) {
-                imap_append($connector->mBox, $connector->mBoxUrl . $folderName, $message, "\\Seen");
+            try {
+                $mBoxFolder?->appendMessage($messageString, ['Seen']);
+            } catch (Exception $e) {
+                throw new AppException('SAVE EMAIL TO SENT FOLDER:' . $e->getMessage());
             }
         }
     }

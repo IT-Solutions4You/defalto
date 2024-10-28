@@ -24,6 +24,8 @@
     "fullcalendar/fullcalendar": "*",
     "google/apiclient": "2.*",
     "kcfinder/kcfinder": "*",
+    "league/oauth2-client": "^2.7",
+    "league/oauth2-google": "^4.0",
     "michelf/php-markdown": "1.*",
     "monolog/monolog": "^3.5",
     "mpdf/mpdf": "*",
@@ -41,8 +43,7 @@
     "smarty/smarty": "4.*",
     "twbs/bootstrap": "*",
     "twbs/bootstrap-icons": "*",
-    "league/oauth2-client": "^2.7",
-    "league/oauth2-google": "^4.0"
+    "webklex/php-imap": "*"
   },
   "require-dev": {
     "phpstan/phpstan": "1.9.*",

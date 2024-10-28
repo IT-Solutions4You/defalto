@@ -74,14 +74,6 @@ class MailManager_Mailbox_Model {
         return $this->mClientToken;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getProxy(): string
-    {
-        return $this->mProxy;
-    }
-
     public function server() {
 		return $this->mServer;
 	}
@@ -190,7 +182,7 @@ class MailManager_Mailbox_Model {
 		$this->mFolder = $value;
 	}
 
-	public function folder() {
+	public function getFolder() {
 		return decode_html($this->mFolder);
 	}
 
@@ -224,8 +216,7 @@ class MailManager_Mailbox_Model {
             'ssltype' => $this->ssltype(),
             'sslmeth' => $this->certvalidate(),
             'box_refresh' => $this->refreshTimeOut(),
-            'sent_folder' => $this->folder(),
-            'mail_proxy' => $this->getProxy(),
+            'sent_folder' => $this->getFolder(),
             'client_id' => $this->getClientId(),
             'client_secret' => $this->getClientSecret(),
             'client_token' => $this->getClientToken(),
@@ -251,15 +242,23 @@ class MailManager_Mailbox_Model {
         }
     }
 
-    public static function activeInstance($currentUserModel = false) {
-		$db = PearDatabase::getInstance();
-        if(!$currentUserModel)
+    /**
+     * @param $currentUserModel
+     * @return MailManager_Mailbox_Model
+     */
+    public static function getActiveInstance(object|bool $currentUserModel = false): object
+    {
+        $db = PearDatabase::getInstance();
+
+        if (!$currentUserModel) {
             $currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$instance = new MailManager_Mailbox_Model();
+        }
 
-		$result = $db->pquery("SELECT * FROM vtiger_mail_accounts WHERE user_id=? AND status=1 AND set_default=0", array($currentUserModel->getId()));
+        $instance = new MailManager_Mailbox_Model();
 
-		if ($db->num_rows($result)) {
+        $result = $db->pquery("SELECT * FROM vtiger_mail_accounts WHERE user_id=? AND status=1 AND set_default=0", [$currentUserModel->getId()]);
+
+        if ($db->num_rows($result)) {
             $row = $db->fetchByAssoc($result, 0);
             $instance->mServer = trim($row['mail_servername']);
             $instance->mUsername = trim($row['mail_username']);
@@ -271,17 +270,16 @@ class MailManager_Mailbox_Model {
             $instance->mRefreshTimeOut = trim($row['box_refresh']);
             $instance->mFolder = trim($row['sent_folder']);
             $instance->mServerName = self::setServerName($instance->mServer);
-            $instance->mProxy = trim($row['mail_proxy']);
             $instance->mClientId = trim($row['client_id']);
             $instance->mClientSecret = trim($row['client_secret']);
             $instance->mClientToken = trim($row['client_token']);
             $instance->mClientAccessToken = trim($row['client_access_token']);
-		}
+        }
 
-		return $instance;
-	}
+        return $instance;
+    }
 
-	public static function setServerName($mServer) {
+    public static function setServerName($mServer) {
 		if($mServer == 'imap.gmail.com') {
 			$mServerName = 'gmail';
 		} else if($mServer == 'imap.mail.yahoo.com') {
@@ -319,7 +317,6 @@ class MailManager_Mailbox_Model {
             ->createColumn('status', 'varchar(10) DEFAULT NULL')
             ->createColumn('set_default', 'int(2) DEFAULT NULL')
             ->createColumn('sent_folder', 'varchar(50) DEFAULT NULL')
-            ->createColumn('mail_proxy', 'VARCHAR(50) DEFAULT NULL')
             ->createColumn('client_id', 'varchar(255) DEFAULT NULL')
             ->createColumn('client_secret', 'varchar(255) DEFAULT NULL')
             ->createColumn('client_token', 'text DEFAULT NULL')
@@ -328,9 +325,9 @@ class MailManager_Mailbox_Model {
         ;
     }
 
-    public function isProxy(): bool
+    public function isOAuth(): bool
     {
-        return !empty($this->getProxy());
+        return !empty($this->getClientId());
     }
 
     /**
@@ -356,4 +353,16 @@ class MailManager_Mailbox_Model {
             $this->setClientAccessToken($authModel->getAccessToken());
         }
     }
-}
+
+    public function getPort()
+    {
+        if (strcasecmp($this->protocol(), 'pop') === 0) {
+            $port = 110; // NOT IMPLEMENTED
+        } elseif (strcasecmp($this->ssltype(), 'ssl') === 0) {
+            $port = 993; // IMAP SSL
+        } else {
+            $port = 143; // IMAP
+        }
+
+        return $port;
+    }}

@@ -34,6 +34,11 @@ class Core_CKEditor_UIType extends Vtiger_Base_UIType {
         return preg_replace('#(<br */?>\s*)+#i', '<br />', $content);
     }
 
+    public function getEditViewDisplayValue($value)
+    {
+        return purifyHtmlEventAttributes(decode_html($value), true);
+    }
+
     public static function transformEditViewDisplayValue($value): string
     {
         $content = decode_html($value);
@@ -45,6 +50,7 @@ class Core_CKEditor_UIType extends Vtiger_Base_UIType {
         }
 
         $newContent = '';
+        $content = preg_replace('/<img.*src="(.*?)".*\/?>/', '\1', $content);
         $lines = explode('<br>', $content);
 
         foreach ($lines as $line) {

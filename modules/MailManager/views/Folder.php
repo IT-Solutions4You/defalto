@@ -8,127 +8,94 @@
 
 class MailManager_Folder_View extends MailManager_Abstract_View {
 
-	/**
-	 * Process the request for Folder opertions
-	 * @global <type> $maxEntriesPerPage
-	 * @param Vtiger_Request $request
-	 * @return MailManager_Response
-	 */
-	public function process(Vtiger_Request $request) {
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$maxEntriesPerPage = vglobal('list_max_entries_per_page');
+    /**
+     * Process the request for Folder opertions
+     * @param Vtiger_Request $request
+     * @return MailManager_Response
+     * @throws Exception
+     * @global <type> $maxEntriesPerPage
+     */
+    public function process(Vtiger_Request $request)
+    {
+        $this->exposeMethod('getFoldersList');
+        $this->exposeMethod('open');
 
-		$response = new MailManager_Response();
-		$moduleName = $request->getModule();
-		if ('open' == $this->getOperationArg($request)) {
-			$q = $request->get('q');
-			$foldername = $request->get('_folder');
-			$type = $request->get('type');
+        $response = new MailManager_Response();
+        $mode = $this->getOperationArg($request);
 
-            /**
-             * @var MailManager_Connector_Connector $connector
-             * @var MailManager_Folder_Model $folder
-             */
-			$connector = $this->getConnector($foldername);
-			$folder = $connector->folderInstance($foldername);
+        if (!empty($mode) && $this->isMethodExposed($mode)) {
+            $response = $this->invokeExposedMethod($mode, $request, $response);
+        }
 
-			if (empty($q)) {
-				$connector->folderMails($folder, intval($request->get('_page', 0)), $maxEntriesPerPage);
-			} else {
-				if(empty($type)) {
-					$type='ALL';
-				}
-				if($type == 'ON') {
-					$dateFormat = $currentUserModel->get('date_format');
-					if ($dateFormat == 'mm-dd-yyyy') {
-						$dateArray = explode('-', $q);
-						$temp = $dateArray[0];
-						$dateArray[0] = $dateArray[1];
-						$dateArray[1] = $temp;
-						$q = implode('-', $dateArray);
-					} elseif ($dateFormat == 'dd/mm/yyyy') {
-						$dateArray = explode('/', $q);
-						$temp = $dateArray[0];
-						$dateArray[0] = $dateArray[1];
-						$dateArray[1] = $temp;
-						$q = implode('/', $dateArray);
-					}
+        return $response;
+    }
 
-					$query = date('d M Y',strtotime($q));
-					$q = ''.$type.' "'.vtlib_purify($query).'"';
-				} else {
-					$q = ''.$type.' "'.vtlib_purify($q).'"';
-				}
-				$connector->searchMails($q, $folder, intval($request->get('_page', 0)), $maxEntriesPerPage);
-			}
+    public function getFoldersList(Vtiger_Request $request, $response)
+    {
+        $moduleName = $request->getModule();
+        $viewer = $this->getViewer($request);
 
-			$folderList = $connector->getFolderList();
+        if ($this->hasMailboxModel()) {
+            /** @var MailManager_Connector_Connector $connector */
+            $connector = $this->getConnector();
 
-			$viewer = $this->getViewer($request);
-			
-			$viewer->assign('TYPE', $type);
-			$viewer->assign('QUERY', $request->get('q'));
-			$viewer->assign('FOLDER', $folder);
-			$viewer->assign('FOLDERLIST',  $folderList);
-			$viewer->assign('SEARCHOPTIONS' ,self::getSearchOptions());
-			$viewer->assign('JS_DATEFORMAT', parse_calendardate());
-			$viewer->assign('USER_DATE_FORMAT', $currentUserModel->get('date_format'));
-			$viewer->assign('MODULE', $moduleName);
-			$response->setResult($viewer->view( 'FolderOpen.tpl', $moduleName, true ));
-		} elseif('drafts' == $this->getOperationArg($request)) {
-			$moduleName = $request->getModule();
-			$q = $request->get('q');
-			$type = $request->get('type');
-			$page = intval($request->get('_page', 0));
+            if ($connector->isConnected()) {
+                $connector->updateFolders();
+                $viewer->assign('FOLDERS', $connector->getFolders());
+            } elseif ($connector->hasError()) {
+                $error = $connector->lastError();
+                $response->isJSON(true);
+                $response->setError(101, $error);
+            }
 
-			$connector = $this->getConnector('__vt_drafts');
-			$folder = $connector->folderInstance();
+            $this->closeConnector();
+        }
 
-			if(empty($q)) {
-				$draftMails = $connector->getDrafts($page, $maxEntriesPerPage, $folder);
-			} else {
-				$draftMails = $connector->searchDraftMails($q, $type, $page, $maxEntriesPerPage, $folder);
-			}
+        $viewer->assign('MODULE', $request->getModule());
+        $response->setResult($viewer->view('FolderList.tpl', $moduleName, true));
 
-			$viewer = $this->getViewer($request);
-			$viewer->assign('MAILS', $draftMails);
-			$viewer->assign('FOLDER', $folder);
-			$viewer->assign('SEARCHOPTIONS' ,MailManager_Draft_View::getSearchOptions());
-			$viewer->assign('USER_DATE_FORMAT', $currentUserModel->get('date_format'));
-			$viewer->assign('MODULE', $moduleName);
-			$viewer->assign('QUERY', $request->get('q'));
-			$viewer->assign('TYPE', $type);
-			$response->setResult($viewer->view('FolderDrafts.tpl', $moduleName, true));
-		} else if ('getFoldersList' == $this->getOperationArg($request)) {
-			$viewer = $this->getViewer($request);
-			if ($this->hasMailboxModel()) {
-				$connector = $this->getConnector();
+        return $response;
+    }
 
-				if ($connector->isConnected()) {
-					$folders = $connector->folders();
-					$connector->updateFolders();
-					$viewer->assign('FOLDERS', $folders);
-				} else if($connector->hasError()) {
-					$error = $connector->lastError();
-					$response->isJSON(true);
-					$response->setError(101, $error);
-				}
-				$this->closeConnector();
-			} 
-			$viewer->assign('MODULE', $request->getModule());
-			$response->setResult($viewer->view('FolderList.tpl', $moduleName, true));
-		}
-		return $response;
-	}
+    /**
+     * @throws AppException
+     */
+    public function open(Vtiger_Request $request, $response)
+    {
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $maxEntriesPerPage = vglobal('list_max_entries_per_page');
+        $moduleName = $request->getModule();
+        $query = $request->get('q');
+        $folderName = $request->get('_folder');
+        $type = $request->get('type');
+        /**
+         * @var MailManager_Connector_Connector $connector
+         * @var MailManager_Folder_Model $folder
+         */
+        $connector = $this->getConnector();
+        $folder = $connector->getFolder($folderName);
+        $page = intval($request->get('_page', 1));
 
-	/**
-	 * Returns the List of search string on the MailBox
-	 * @return string
-	 */
-	public static function getSearchOptions() {
-		$options = array('SUBJECT'=>'SUBJECT','TO'=>'TO','BODY'=>'BODY','BCC'=>'BCC','CC'=>'CC','FROM'=>'FROM','DATE'=>'ON');
-		return $options;
-	}
+        if (empty($query)) {
+            $connector->retrieveFolderMails($folder, $page, $maxEntriesPerPage);
+        } else {
+            $connector->retrieveSearchMails($connector->formatQueryFromRequest($query, $type), $folder, $page, $maxEntriesPerPage);
+        }
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('TYPE', $type);
+        $viewer->assign('QUERY', $query);
+        $viewer->assign('FOLDER', $folder);
+        $viewer->assign('FOLDER_LIST', $connector->getFolderList());
+        $viewer->assign('SEARCHOPTIONS', MailManager_Folder_Model::getSearchOptions());
+        $viewer->assign('JS_DATEFORMAT', parse_calendardate());
+        $viewer->assign('USER_DATE_FORMAT', $currentUserModel->get('date_format'));
+        $viewer->assign('MODULE', $moduleName);
+        $response->setResult($viewer->view('FolderOpen.tpl', $moduleName, true));
+
+        return $response;
+    }
+
     public function validateRequest(Vtiger_Request $request) {
         return $request->validateWriteAccess();
     }

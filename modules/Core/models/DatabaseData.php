@@ -168,16 +168,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     public function selectData(array $data, array $search): array|null
     {
         $this->requireTable('Table is empty for select data');
-
-        $query = $this->getSelectQuery($this->get('table'), $data, $search);
-        $params = [];
-
-        if (!empty($search)) {
-            $params = array_merge($params, $search);
-        }
-
-        $this->retrieveDB();
-        $result = $this->db->pquery($query, $params);
+        $result = $this->selectResult($data, $search);
         $data = $this->db->fetchByAssoc($result);
 
         if (empty($data)) {
@@ -187,6 +178,23 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
         return array_map(function ($value) {
             return is_string($value) ? decode_html($value) : $value;
         }, $data);
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function selectResult(array $data, array $search)
+    {
+        $this->requireTable('Table is empty for select result');
+        $this->retrieveDB();
+        $query = $this->getSelectQuery($this->get('table'), $data, $search);
+        $params = [];
+
+        if (!empty($search)) {
+            $params = array_merge($params, $search);
+        }
+
+        return $this->db->pquery($query, $params);
     }
 
     /**
