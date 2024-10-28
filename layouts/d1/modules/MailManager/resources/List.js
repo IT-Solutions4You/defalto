@@ -127,37 +127,42 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			detailsElement.addClass('hide');
 			passwordElement.addClass('hide');
 
-			if(serverType === 'gmail') {
-				useServer = 'imap.gmail.com';
-				useProtocol = 'IMAP4';
-				useSSLType = 'ssl';
-				useCert = 'novalidate-cert';
-
-				detailsElement.removeClass('hide');
-				oauth2Element.removeClass('hide');
-			} else if(serverType === 'yahoo') {
-				useServer = 'imap.mail.yahoo.com';
-				useProtocol = 'IMAP4';
-				useSSLType = 'ssl';
-				useCert = 'novalidate-cert';
-				detailsElement.removeClass('hide');
-				passwordElement.removeClass('hide');
-			} else if(serverType === 'fastmail') {
-				useServer = 'mail.messagingengine.com';
-				useProtocol = 'IMAP4';
-				useSSLType = 'ssl';
-				useCert = 'novalidate-cert';
-				detailsElement.removeClass('hide');
-				passwordElement.removeClass('hide');
-			} else if(serverType === 'other') {
-				useServer = '';
-				useProtocol = 'IMAP4';
-				useSSLType = 'ssl';
-				useCert = 'novalidate-cert';
-				detailsElement.removeClass('hide');
-				additionalElement.removeClass('hide');
-				passwordElement.removeClass('hide');
+			switch(serverType) {
+				case 'gmail':
+					useServer = 'imap.gmail.com';
+					useProtocol = 'IMAP4';
+					useSSLType = 'ssl';
+					useCert = 'novalidate-cert';
+					detailsElement.removeClass('hide');
+					oauth2Element.removeClass('hide');
+					break;
+				case 'yahoo':
+					useServer = 'imap.mail.yahoo.com';
+					useProtocol = 'IMAP4';
+					useSSLType = 'ssl';
+					useCert = 'novalidate-cert';
+					detailsElement.removeClass('hide');
+					passwordElement.removeClass('hide');
+					break;
+				case 'fastmail':
+					useServer = 'mail.messagingengine.com';
+					useProtocol = 'IMAP4';
+					useSSLType = 'ssl';
+					useCert = 'novalidate-cert';
+					detailsElement.removeClass('hide');
+					passwordElement.removeClass('hide');
+					break;
+				case 'other':
+					useServer = '';
+					useProtocol = 'IMAP4';
+					useSSLType = 'ssl';
+					useCert = 'novalidate-cert';
+					detailsElement.removeClass('hide');
+					additionalElement.removeClass('hide');
+					passwordElement.removeClass('hide');
+					break;
 			}
+
 
 			settingContainer.find('.refresh_settings').show();
 			settingContainer.find('#_mbox_user').val('');
