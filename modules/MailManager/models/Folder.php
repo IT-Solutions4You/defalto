@@ -11,8 +11,10 @@
 class MailManager_Folder_Model {
 
 	protected $mName;
+	protected $mPath;
 	protected $mCount;
 	protected $mUnreadCount;
+	protected $mBoxFolder = null;
 	protected $mMails;
 	protected $mPageCurrent;
 	protected $mPageStart;
@@ -22,25 +24,36 @@ class MailManager_Folder_Model {
 	protected $startCount;
 	protected $endCount;
 
-	public function __construct($name='') {
-		$this->setName($name);
-	}
+    public function __construct($name, $path = null, $mBoxFolder = null)
+    {
+        $this->setName($name);
+        $this->setPath($path);
+        $this->setBoxFolder($mBoxFolder);
+    }
 
-	public function name($prefix='') {
-		$endswith = false;
-		if (!empty($prefix)) {
-			$endswith = (strrpos($prefix, $this->mName) === strlen($prefix)-strlen($this->mName));
-		}
-		if ($endswith) {
-			return $prefix;
-		} else {
-			return $prefix.$this->mName;
-		}
-	}
-	
-	public function isSentFolder() {
-		$mailBoxModel = MailManager_Mailbox_Model::activeInstance();
-		$folderName = $mailBoxModel->folder();
+    public function getLabel()
+    {
+        return $this->mName;
+    }
+
+    public function getName()
+    {
+        return $this->mName;
+    }
+
+    public function getPath()
+    {
+        return $this->mPath;
+    }
+
+    public function setPath($value)
+    {
+        $this->mPath = $value;
+    }
+
+    public function isSentFolder() {
+		$mailBoxModel = MailManager_Mailbox_Model::getActiveInstance();
+		$folderName = $mailBoxModel->getFolder();
 		if($this->mName == $folderName) {
 			return true;
 		}
@@ -51,11 +64,11 @@ class MailManager_Folder_Model {
 		$this->mName = $name;
 	}
 
-	public function mails() {
+	public function getMails() {
 		return $this->mMails;
 	}
 
-	public function mailIds(){
+	public function getMailIds(){
 		return $this->mMailIds;
 	}
 
@@ -67,15 +80,16 @@ class MailManager_Folder_Model {
 		$this->mMails = $mails;
 	}
 
-	public function setPaging($start, $end, $limit, $total, $current) {
-		$this->mPageStart = intval($start);
-		$this->mPageEnd = intval($end);
-		$this->mPageLimit = intval($limit);
-		$this->mCount = intval($total);
-		$this->mPageCurrent = intval($current);
-	}
+    public function setPaging($limit, $total, $page)
+    {
+        $this->mPageLimit = intval($limit);
+        $this->mCount = intval($total);
+        $this->mPageCurrent = intval($page);
+        $this->mPageStart = ceil($total / $limit);
+        $this->mPageEnd = 1;
+    }
 
-	public function pageStart() {
+    public function pageStart() {
 		return $this->mPageStart;
 	}
 
@@ -83,37 +97,29 @@ class MailManager_Folder_Model {
 		return $this->mPageEnd;
 	}
 
-	public function pageInfo() {
-		$offset = 0;
-		if($this->mPageCurrent != 0) {	// this is needed as set the start correctly
-			$offset = 1;
-		}
-		$s = max(1, $this->mPageCurrent * $this->mPageLimit + $offset);
+    public function pageInfo()
+    {
+        $this->startCount = max(1, ($this->mPageCurrent - 1) * $this->mPageLimit);
+        $this->endCount = min($this->mPageCurrent * $this->mPageLimit, $this->mCount);
 
-		$st = ($s==1)? 0 : $s-1;  // this is needed to set end page correctly
+        return sprintf("%s - %s of %s", $this->startCount, $this->endCount, $this->mCount);
+    }
 
-		$e = min($st + $this->mPageLimit, $this->mCount);
-		$t = $this->mCount;
-
-		$this->startCount = $s;
-		$this->endCount = $e;
-
-		return sprintf("%s - %s of %s", $s, $e, $t);
-	}
-
-	public function pageCurrent($offset=0) {
+    public function pageCurrent($offset=0) {
 		return $this->mPageCurrent + $offset;
 	}
 
-	public function hasNextPage() {
-		return ($this->mPageStart > 1);
-	}
+    public function hasNextPage()
+    {
+        return $this->endCount !== $this->mCount;
+    }
 
-	public function hasPrevPage() {
-		return ($this->mPageStart != $this->mPageEnd) && ($this->mPageEnd < $this->mCount);
-	}
+    public function hasPrevPage()
+    {
+        return $this->startCount !== 1;
+    }
 
-	public function count() {
+    public function count() {
 		return $this->mCount;
 	}
 
@@ -136,6 +142,31 @@ class MailManager_Folder_Model {
 	public function getEndCount() {
 		return $this->endCount;
 	}
-}
 
-?>
+    /**
+     * @param $mBox
+     * @return \Webklex\PHPIMAP\Folder|null
+     */
+    public function getBoxFolder($mBox): Webklex\PHPIMAP\Folder|null
+    {
+        if (empty($this->mBoxFolder)) {
+            $this->setBoxFolder($mBox->getFolder($this->getName()));
+        }
+
+        return $this->mBoxFolder;
+    }
+
+    public function setBoxFolder(Webklex\PHPIMAP\Folder|null $value): void
+    {
+        $this->mBoxFolder = $value;
+    }
+
+    /**
+     * Returns the List of search string on the MailBox
+     * @return string
+     */
+    public static function getSearchOptions()
+    {
+        return ['SUBJECT' => 'SUBJECT', 'TO' => 'TO', 'BODY' => 'BODY', 'BCC' => 'BCC', 'CC' => 'CC', 'FROM' => 'FROM', 'DATE' => 'ON'];
+    }
+}

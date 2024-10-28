@@ -31,7 +31,7 @@ class MailManager_MainUI_View extends MailManager_Abstract_View {
 				if ($connector->hasError()) {
 					$viewer->assign('ERROR', $connector->lastError());
 				} else {
-					$folders = $connector->folders();
+					$folders = $connector->getFolders();
 					$connector->updateFolders();
 					$viewer->assign('FOLDERS', $folders);
 				}
@@ -48,4 +48,3 @@ class MailManager_MainUI_View extends MailManager_Abstract_View {
         return $request->validateReadAccess();
     }
 }
-?>

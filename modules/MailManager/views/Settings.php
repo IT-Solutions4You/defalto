@@ -10,11 +10,12 @@
 
 class MailManager_Settings_View extends MailManager_MainUI_View {
 
-	/**
-	 * Process the request for Settings Operations
-	 * @param Vtiger_Request $request
-	 * @return MailManager_Response
-	 */
+    /**
+     * Process the request for Settings Operations
+     * @param Vtiger_Request $request
+     * @return MailManager_Response
+     * @throws AppException
+     */
 	public function process(Vtiger_Request $request) {
 		$response = new MailManager_Response();
 		$module = $request->getModule();
@@ -23,10 +24,12 @@ class MailManager_Settings_View extends MailManager_MainUI_View {
 			$model = $this->getMailBoxModel();
             $connector = $this->getConnector();
 			$serverName = $model->serverName();
+            $folders = [];
 
             if ($connector->isConnected()) {
-                $folders = $connector->folders();
+                $folders = $connector->getFolders();
             }
+
 			$viewer = $this->getViewer($request);
 			$viewer->assign('MODULE', $module);
 			$viewer->assign('MAILBOX', $model);
@@ -55,9 +58,10 @@ class MailManager_Settings_View extends MailManager_MainUI_View {
 			$connector = $this->getConnector();
             $sentFolder = $request->get('_mbox_sent_folder');
             if($connector->isConnected() && empty($sentFolder)) {
-                $folderInstaces = $connector->folders();
-                foreach($folderInstaces as $folder) {
-                    if (strpos(strtolower($folder->name()), 'sent') !== false) {
+                $folderInstances = $connector->getFolders();
+
+                foreach($folderInstances as $folder) {
+                    if (str_contains(strtolower($folder->getName()), 'sent')) {
                         $sentFolder = $folder->name();
                     }
                 }

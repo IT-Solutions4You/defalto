@@ -13,9 +13,12 @@ vimport('~~/modules/Settings/MailConverter/handlers/MailRecord.php');
 class MailManager_Message_Model extends Vtiger_MailRecord  {
 	/**
 	 * Sets the Imap connection
-	 * @var String
+	 * @var object
 	 */
 	protected $mBox;
+	public array $_inline_attachments = [];
+    public $_attachments = [];
+    public $_body = '';
 
 	/**
 	 * Marks the mail Read/UnRead
@@ -35,7 +38,19 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 	 */
 	protected $mUid;
 
+    /**
+     * @var false|object
+     */
     protected $mFolder;
+    protected $mFolderName;
+
+    protected array $fromName;
+    protected array $toName;
+
+    /**
+     * @var false|object
+     */
+    protected $mMessage;
 	protected $lookUps = [];
 	protected $attachmentsAllowed = null;
 
@@ -72,135 +87,47 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 
     public array $displayedRecords = [];
 
-	/**
-	 * Constructor which gets the Mail details from the server
-	 * @param String $mBox - Mail Box Connection string
-	 * @param Integer $msgno - Mail Message Number
-	 * @param Boolean $fetchbody - Used to save the mail information to DB
-	 */
-	public function __construct($mBox=false, $msgno=false, $fetchbody=false, $folder = '') {
-		if ($mBox && $msgno) {
-
-			$this->mBox = $mBox;
-			$this->mMsgNo = $msgno;
-			$loaded = false;
-
-			// Unique ID based on sequence number
-			$this->mUid = imap_uid($mBox, $msgno);
-			if ($fetchbody) {
-				// Lookup if there was previous cached message
-				$loaded = $this->readFromDB($this->mUid, $folder);
-			}
-			if (!$loaded) {
-				parent::__construct($mBox, $msgno, $fetchbody);
-
-				if ($fetchbody) {
-					// Save for further use
-					$loaded = $this->saveToDB($this->mUid, $folder);
-				}
-			}
-			if ($loaded) {
-				$this->setRead(true);
-				$this->setMsgNo(intval($msgno));
-			}
-		}
-	}
-
-    public function retrieveBody()
+    public function __construct()
     {
-        if (empty($this->mBox) || empty($this->mMsgNo)) {
-            return;
-        }
-
-        $this->_bodyparsed = false;
-        $this->fetchBody($this->mBox, $this->mMsgNo);
     }
 
     /**
-	 * Gets the Mail Body and Attachments
-	 * @param IMAP\Connection $imap - Mail Box connection string
-	 * @param Integer $messageid - Mail Number
-	 * @param Object $p
-	 * @param Integer $partno
-	 */
-	// Modified: http://in2.php.net/manual/en/function.imap-fetchstructure.php#85685
-	public function __getpart($imap, $messageid, $p, $partno) {
-		// $partno = '1', '2', '2.1', '2.1.3', etc if multipart, 0 if not multipart
+     * @return mixed
+     */
+    public function getFolderName(): string
+    {
+        if (empty($this->mFolderName)) {
+            $folder = $this->getFolder();
 
-        if ($partno) {
-            $maxDownLoadLimit = MailManager_Config_Model::get('MAXDOWNLOADLIMIT');
-
-            if (!empty($p->bytes) && $p->bytes < $maxDownLoadLimit) {
-                $data = imap_fetchbody($imap, $messageid, $partno, FT_PEEK);  // multipart
-            }
-        } else {
-            $data = imap_body($imap, $messageid, FT_PEEK); //not multipart
-        }
-
-		// Any part may be encoded, even plain text messages, so check everything.
-    	if ($p->encoding==4) $data = quoted_printable_decode($data);
-		elseif ($p->encoding==3) $data = base64_decode($data);
-		// no need to decode 7-bit, 8-bit, or binary
-
-    	// PARAMETERS
-	    // get all parameters, like charset, filenames of attachments, etc.
-    	$params = array();
-	    if ($p->parameters) {
-			foreach ($p->parameters as $x) $params[ strtolower( $x->attribute ) ] = $x->value;
-		}
-	    if ($p->dparameters) {
-			foreach ($p->dparameters as $x) $params[ strtolower( $x->attribute ) ] = $x->value;
-		}
-
-		// ATTACHMENT
-    	// Any part with a filename is an attachment,
-	    // so an attached text file (type 0) is not mistaken as the message.
-    	if (($params['filename'] || $params['name']) && strtolower($p->disposition) == "attachment") {
-        	// filename may be given as 'Filename' or 'Name' or both
-	        $filename = ($params['filename'])? $params['filename'] : $params['name'];
-			// filename may be encoded, so see imap_mime_header_decode()
-			if(!$this->_attachments) $this->_attachments = Array();
-			$this->_attachments[] = array('filename' => @self::__mime_decode($filename), 'data' => $data); //For Fixing issue when two files have same name
-	    } elseif($p->ifdisposition && strtolower($p->disposition) == "inline" && $p->bytes > 0 &&
-                $p->subtype != 'PLAIN' && $p->subtype != 'HTML' && $p->ifid && !empty($p->id)) {
-			$filename = ($params['filename'])? $params['filename'] : $params['name'];
-			$id = substr($p->id, 1,strlen($p->id)-2);
-			//if there is no file name, setting id as file name for inline images
-			if(empty($filename)) {
-				$filename = $id;
-			}
-			$this->_inline_attachments[] = array('cid'=>$id, 'filename'=>@self::__mime_decode($filename), 'data' => $data);
-		} elseif(($params['filename'] || $params['name']) && $p->bytes > 0) {
-			$filename = ($params['filename'])? $params['filename'] : $params['name'];
-			$this->_attachments[] = array('filename' => @self::__mime_decode($filename), 'data' => $data);
-		}
-	    // TEXT
-    	elseif ($p->type==0 && $data) {
-    		$this->_charset = $params['charset'];  // assume all parts are same charset
-    		$data = self::__convert_encoding($data, 'UTF-8', $this->_charset);
-
-        	// Messages may be split in different parts because of inline attachments,
-	        // so append parts together with blank row.
-    	    if (strtolower($p->subtype)=='plain') $this->_plainmessage .= trim($data) ."\n\n";
-	        else $this->_htmlmessage .= $data ."<br><br>";
-		}
-
-	    // EMBEDDED MESSAGE
-    	// Many bounce notifications embed the original message as type 2,
-	    // but AOL uses type 1 (multipart), which is not handled here.
-    	// There are no PHP functions to parse embedded messages,
-	    // so this just appends the raw source to the main message.
-    	elseif ($p->type==2 && $data) {
-			$this->_plainmessage .= trim($data) ."\n\n";
-	    }
-
-    	// SUBPART RECURSION
-        if ($p->parts) {
-            foreach ($p->parts as $subPartNo => $subPart) {
-                $this->__getpart($imap, $messageid, $subPart, $partno . '.' . ($subPartNo + 1));  // 1.2, 1.2.1, etc.
+            if ($folder) {
+                $this->setFolderName($folder->getName());
             }
         }
-	}
+
+        return $this->mFolderName;
+    }
+
+    public function getFromName($length = 0): string
+    {
+        $value = implode(', ', $this->fromName);
+
+        if ($length) {
+            $value = substr($value, 0, $length);
+        }
+
+        return $value;
+    }
+
+    public function getToName($length = 0): string
+    {
+        $value = implode(', ', $this->toName);
+
+        if ($length) {
+            $value = substr($value, 0, $length);
+        }
+
+        return $value;
+    }
 
 	/**
 	 * Clears the cache data
@@ -290,86 +217,79 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 		return false;
 	}
 
-	/**
-	 * Loads the Saved Attachments from the DB
-	 * @global PearDataBase Instance$db
-	 * @global Users Instance $currentUserModel
-	 * @global Array $upload_badext - List of bad extensions
-	 * @param Boolean $withContent - Used to load the Attachments with/withoud content
-	 * @param String $aName - Attachment Name
-	 * @param Integer $aId - Attachment Id (to eliminate friction with same Attachment Name)
-	 */
-	protected function loadAttachmentsFromDB($withContent, $aName=false, $aId=false) {
-		$db = PearDatabase::getInstance();
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-
-		if (empty($this->_attachments)) {
-			$this->_attachments = array();
-
-			$params = array($currentUserModel->getId(), $this->muid());
-
-			$filteredColumns = "aname, attachid, path, cid";
-
-			$whereClause = "";
-
-            if (!empty($aName)) {
-                $whereClause .= " AND aname=?";
-                $params[] = $aName;
-            }
-
-            if (!empty($aId)) {
-                $whereClause .= " AND attachid=?";
-                $params[] = $aId;
-            }
-
-			$atResult = $db->pquery("SELECT {$filteredColumns} FROM vtiger_mailmanager_mailattachments WHERE userid=? AND muid=? $whereClause", $params);
-
-			if ($db->num_rows($atResult)) {
-				for($atIndex = 0; $atIndex < $db->num_rows($atResult); ++$atIndex) {
-					$atResultRow = $db->raw_query_result_rowdata($atResult, $atIndex);
-					if($withContent) {
-						$binFile = sanitizeUploadFileName($atResultRow['aname'], vglobal('upload_badext'));
-						$saved_filename = $atResultRow['path'] . $atResultRow['attachid']. '_' .$binFile;
-						if(file_exists($saved_filename)) $fileContent = @fread(fopen($saved_filename, "r"), filesize($saved_filename));
-					}
-					if(!empty($atResultRow['cid'])) {
-						$this->_inline_attachments[] = array('filename'=>$atResultRow['aname'], 'cid'=>$atResultRow['cid']);
-					}
-					$filePath = $atResultRow['path'].$atResultRow['attachid'].'_'.sanitizeUploadFileName($atResultRow['aname'], vglobal('upload_badext'));
-					$fileSize = $this->convertFileSize(filesize($filePath));
-					$data = ($withContent? $fileContent: false);
-					$this->_attachments[] = array('filename'=>$atResultRow['aname'], 'data' => $data, 'size' => $fileSize, 'path' => $filePath, 'attachid' => $atResultRow['attachid']);
-					unset($fileContent); // Clear immediately
-				}
-
-				$atResult->free();
-				unset($atResult); // Indicate cleanup
-			}
-		}
-	}
-
-	/**
-	 * Save the Mail information to DB
-	 * @global PearDataBase Instance $db
-	 * @global Users Instance $currentUserModel
-	 * @param Integer $uid - Mail Unique Number
-	 * @return Boolean
-	 */
-    protected function saveToDB($uid, $folder = '')
+    /**
+     * @param bool $withContent
+     * @param string|null $aName
+     * @param int|null $aId
+     * @return void
+     * @throws AppException
+     */
+    public function retrieveAttachmentsFromDB(bool $withContent, string|null $aName = null, int|null $aId = null): void
     {
-        $this->setMUId($uid);
-        $this->setFolder($folder);
-        $this->saveToDBRecord();
-        // Take care of attachments...
-        $this->saveToDBAttachments();
+        if (!empty($this->_attachments)) {
+            return;
+        }
 
-        return true;
+        $db = PearDatabase::getInstance();
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $this->_attachments = [];
+        $data = ['aname', 'attachid', 'path', 'cid'];
+        $search = ['userid' => $currentUserModel->getId(), 'muid' => $this->getUid()];
+
+        if (!empty($aName)) {
+            $search['aname'] = $aName;
+        }
+
+        if (!empty($aId)) {
+            $search['attachid'] = $aId;
+        }
+
+        $result = $this->getAttachmentTable()->selectResult($data, $search);
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $fileName = sanitizeUploadFileName($row['aname'], vglobal('upload_badext'));
+            $filePath = $row['path'] . $row['attachid'] . '_' . $fileName;
+            $fileSize = filesize($filePath);
+            $fileContent = '';
+
+            if ($withContent) {
+                $fileContent = file_get_contents($filePath);
+            }
+
+            $fileInfo = [
+                'filename' => $row['aname'],
+                'data' => $fileContent,
+                'size' => $fileSize,
+                'path' => $filePath,
+                'type' => mime_content_type($filePath),
+                'attachment_id' => $row['attachid'],
+                'attachment_url' => $this->getAttachmentUrl($row['attachid'], $row['aname']),
+                'cid' => $row['cid'],
+            ];
+
+            if (!empty($row['cid'])) {
+                $this->_inline_attachments[] = $fileInfo;
+            } else {
+                $this->_attachments[] = $fileInfo;
+            }
+        }
+    }
+
+    public function getAttachmentUrl($attachmentId, $attachmentName): string
+    {
+        return sprintf(
+            '%s/index.php?module=MailManager&view=Index&_operation=mail&_operationarg=attachment_dld&_muid=%s&_atid=%s&_atname=%s',
+            rtrim(vglobal('site_URL'), '/'),
+            $this->getUid(),
+            $attachmentId,
+            urlencode($attachmentName),
+        );
     }
 
     public function saveToDBRecord(): void
     {
-        $mUid = $this->muid();
-        $record = $this->getRecordTable()->selectData(['muid'], ['muid' => $this->muid()]);
+        $mUid = $this->getUid();
+        $record = $this->getRecordTable()->selectData(['muid'], ['muid' => $mUid]);
 
         if (!empty($record['muid'])) {
             return;
@@ -392,15 +312,17 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
             'muniqueid' => $this->_uniqueid,
             'mbodyparsed' => $this->_bodyparsed,
             'lastsavedtime' => strtotime("now"),
-            'mfolder' => $this->getFolder(),
+            'mfolder' => $this->getFolderName(),
         ]);
     }
 
+    /**
+     * @throws AppException
+     */
     public function saveToDBAttachments(): void
     {
-        $uid = $this->muid();
+        $uid = $this->getUid();
         $currentUserId = Users_Record_Model::getCurrentUserModel()->getId();
-        $savedTime = strtotime("now");
         $attachment = $this->getAttachmentTable()->selectData(['muid'], ['muid' => $uid]);
 
         if (!empty($attachment['muid'])) {
@@ -409,21 +331,19 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 
         if (!empty($this->_attachments)) {
             foreach ($this->_attachments as $index => $info) {
-                $attachInfo = $this->__SaveAttachmentFile($info['filename'], $info['data']);
+                $attachInfo = $this->saveAttachmentFile($info['filename'], $info['data'], $info['type']);
 
                 if (is_array($attachInfo) && !empty($attachInfo)) {
                     $this->saveAttachment([
                         'userid' => $currentUserId,
                         'muid' => $uid,
-                        'attachid' => $attachInfo['attachid'],
-                        'aname' => $attachInfo['name'],
+                        'attachid' => $attachInfo['attachmentsid'],
+                        'aname' => $attachInfo['storedname'],
                         'path' => $attachInfo['path'],
-                        'lastsavedtime' => $savedTime,
+                        'lastsavedtime' => strtotime('now'),
                     ]);
-                    $this->_attachments[$index] = [
-                        'filename' => $attachInfo['filename'],
-                        'data' => $info['data'],
-                    ]; // so the file name has to renamed.
+                    $this->_attachments[$index]['attachment_id'] = $attachInfo['attachmentsid'];
+                    $this->_attachments[$index]['attachment_url'] = $this->getAttachmentUrl($attachInfo['attachmentsid'], $attachInfo['storedname']);
                 } else {
                     unset($this->_attachments[$index]);
                 }
@@ -434,22 +354,20 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 
         if (!empty($this->_inline_attachments)) {
             foreach ($this->_inline_attachments as $index => $info) {
-                $attachInfo = $this->__SaveAttachmentFile($info['filename'], $info['data']);
+                $attachInfo = $this->saveAttachmentFile($info['filename'], $info['data'], $info['type']);
 
                 if (is_array($attachInfo) && !empty($attachInfo)) {
                     $this->saveAttachment([
                         'userid' => $currentUserId,
                         'muid' => $uid,
-                        'attachid' => $attachInfo['attachid'],
-                        'aname' => self::__mime_decode($attachInfo['name']),
+                        'attachid' => $attachInfo['attachmentsid'],
+                        'aname' => $attachInfo['storedname'],
                         'path' => $attachInfo['path'],
-                        'lastsavedtime' => $savedTime,
+                        'lastsavedtime' => strtotime('now'),
                         'cid' => $info['cid'],
                     ]);
-                    $this->_attachments[$index] = [
-                        'filename' => self::__mime_decode($info['filename']),
-                        'data' => $info['data'],
-                    ]; // so the file name has to renamed.
+                    $this->_attachments[$index]['attachment_id'] = $attachInfo['attachmentsid'];
+                    $this->_attachments[$index]['attachment_url'] = $this->getAttachmentUrl($attachInfo['attachmentsid'], $attachInfo['storedname']);
                 } else {
                     unset($this->_inline_attachments[$index]);
                 }
@@ -484,217 +402,211 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
         return (new Core_DatabaseData_Model())->getTable('vtiger_mailmanager_mailattachments', null);
     }
 
-    /**
-	 * Save the Mail Attachments to DB
-	 * @global PearDataBase Instance $db
-	 * @global Users Instance $currentUserModel
-	 * @global Array $upload_badext
-	 * @param String $filename - name of the file
-	 * @param Text $filecontent
-	 * @return Array with attachment information
-	 */
-	public function __SaveAttachmentFile($filename, $filecontent) {
-		require_once 'modules/Settings/MailConverter/handlers/MailAttachmentMIME.php';
 
-        if (empty($filecontent)) {
+    /**
+     * @param string $fileName
+     * @param string $fileContent
+     * @return array|null
+     * @throws AppException
+     */
+    public function saveAttachmentFile(string $fileName, string $fileContent, string $fileType): null|array
+    {
+        if (empty($fileContent)) {
             return null;
         }
 
-        $db = PearDatabase::getInstance();
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $attachment = Core_Attachment_Model::getInstance('MailManager');
+        $attachment->retrieveDefault($fileName);
+        $attachment->setType($fileType);
+        $attachment->saveFile($fileContent);
 
-		$filename = imap_utf8($filename);
-		$dirname = decideFilePath();
-		$usetime = $db->formatDate(date('Y-m-d H:i:s'), true);
-		$binFile = sanitizeUploadFileName($filename, vglobal('upload_badext'));
+        if ($attachment->validateSaveFile()) {
+            $attachment->save();
+        }
 
-		$attachid = $db->getUniqueId('vtiger_crmentity');
-		$saveasfile = "$dirname/$attachid". "_" .$binFile;
+        return $attachment->getData();
+    }
 
-		$fh = fopen($saveasfile, 'wb');
-		fwrite($fh, $filecontent);
-		fclose($fh);
-
-		$mimetype = MailAttachmentMIME::detect($saveasfile);
-
-		$db->pquery("INSERT INTO vtiger_crmentity(crmid, smcreatorid, smownerid,
-				modifiedby, setype, description, createdtime, modifiedtime, presence, deleted)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-				Array($attachid, $currentUserModel->getId(), $currentUserModel->getId(), $currentUserModel->getId(), "MailManager Attachment", $binFile, $usetime, $usetime, 1, 0));
-
-		$db->pquery("INSERT INTO vtiger_attachments SET attachmentsid=?, name=?, description=?, type=?, path=?",
-			Array($attachid, $binFile, $binFile, $mimetype, $dirname));
-
-		$attachInfo = array('attachid'=>$attachid, 'path'=>$dirname, 'name'=>$binFile, 'type'=>$mimetype, 'size'=>filesize($saveasfile));
-
-		return $attachInfo;
-	}
-
-	/**
-	 * Gets the Mail Attachments
-	 * @param Boolean $withContent
-	 * @param String $aName
-	 * @param Integer $aId
-	 * @return List of Attachments
+    /**
+	 * Gets the Mail Attachment
+	 * @return array List of Attachments
 	 */
-	public function attachments($withContent=true, $aName=false, $aId=false) {
-		$this->loadAttachmentsFromDB($withContent, $aName, $aId);
+    public function getAttachments()
+    {
+        return $this->_attachments;
+    }
 
-		return $this->_attachments;
-	}
-
-	public function inlineAttachments() {
+    /**
+     * @return array
+     */
+    public function getInlineAttachments() {
 		return $this->_inline_attachments;
 	}
 
-	/**
+    /**
+     * @param string $mFolderName
+     */
+    public function setFolderName(string $value): void
+    {
+        $this->mFolderName = $value;
+    }
+
+    public function setToName(array $toName): void
+    {
+        $this->toName = $toName;
+    }
+
+    public function setFromName(array $fromName): void
+    {
+        $this->fromName = $fromName;
+    }
+
+    /**
 	 * Gets the Mail Subject
 	 * @param Boolean $safehtml
 	 * @return String
 	 */
-	public function subject($safehtml=true) {
-		$mailSubject = str_replace("_", " ", $this->_subject);
-		if ($safehtml==true) {
-			return MailManager_Utils_Helper::safe_html_string($mailSubject);
-		}
-		return $mailSubject;
-	}
+    public function getSubject($safeHtml = true): string
+    {
+        $mailSubject = str_replace('_', ' ', $this->_subject);
 
-	/**
+        if ($safeHtml) {
+            return MailManager_Utils_Helper::safe_html_string($mailSubject);
+        }
+
+        return $mailSubject;
+    }
+
+    /**
 	 * Sets the Mail Subject
-	 * @param String $subject
+	 * @param string $subject
 	 */
-	public function setSubject($subject) {
-		$mailSubject = str_replace("_", " ", $subject);
-		$this->_subject = @self::__mime_decode($mailSubject);
-	}
+    public function setSubject(string $subject): void
+    {
+        $this->_subject = $subject;
+    }
 
-	/**
-	 * Gets the Mail Body
-	 * @param Boolean $safehtml
-	 * @return String
-	 */
-	public function body($safehtml=true) {
-		return $this->getBodyHTML($safehtml);
-	}
+    /**
+     * Gets the Mail Body
+     * @param bool $safeHtml
+     * @return string
+     */
+    public function getBody(bool $safeHtml = true): string
+    {
+        return $this->getBodyHTML($safeHtml);
+    }
 
-	/**
-	 * Gets the Mail Body
-	 * @param Boolean $safehtml
-	 * @return String
-	 */
-	public function getBodyHTML($safehtml=true) {
-		$bodyhtml = parent::getBodyHTML();
-		if ($safehtml) {
-			$bodyhtml = MailManager_Utils_Helper::safe_html_string($bodyhtml);
-		}
-		return $bodyhtml;
-	}
+    /**
+     * Gets the Mail Body
+     * @param bool $safeHtml
+     * @return string
+     */
+    public function getBodyHTML(bool $safeHtml = true): string
+    {
+        $body = $this->_body;
 
-	/**
+        if ($safeHtml) {
+            $body = MailManager_Utils_Helper::safe_html_string($body);
+        }
+
+        return $body;
+    }
+
+    /**
 	 * Gets the Mail From
-	 * @param Integer $maxlen
-	 * @return string
+	 * @return array
 	 */
-	public function from($maxlen = 0) {
-		$fromString = $this->_from;
-		if ($maxlen && mb_strlen($fromString, 'UTF-8') > $maxlen) {
-			$fromString = mb_substr($fromString, 0, $maxlen-3, 'UTF-8').'...';
-		}
-		return $fromString;
+	public function getFrom(): array
+    {
+		return $this->_from;
 	}
 
 	/**
 	 * Sets the Mail From Email Address
-	 * @param Email $from
+	 * @param array $from Email
 	 */
-	public function setFrom($from) {
-		$mailFrom = str_replace("_", " ", $from);
-		$this->_from = @self::__mime_decode($mailFrom);
-	}
-	
-	/**
+    public function setFrom(array $from): void
+    {
+        $this->_from = $from;
+    }
+
+    /**
 	 * Sets the Mail To Email Address
-	 * @param Email $to
+	 * @param array $to Email
 	 */
-	public function setTo($to) {
-		$mailTo = str_replace("_", " ", $to);
-		$this->_to = @self::__mime_decode($mailTo);
-	}
+    public function setTo(array $to): void
+    {
+        $this->_to = $to;
+    }
 
-	/**
-	 * Gets the Mail To Email Addresses
-	 * @return Email(s)
-	 */
-	public function to($maxlen = 0) {
-		$toString =  $this->_to;
-		if ($maxlen && mb_strlen($toString, 'UTF-8') > $maxlen) {
-			$toString = mb_substr($toString, 0, $maxlen-3, 'UTF-8').'...';
-		}
-		return $toString;
-	}
+    /**
+     * Gets the Mail To Email Addresses
+     * @return array Email(s)
+     */
+    public function getTo(): array
+    {
+        return $this->_to;
+    }
 
-	/**
+    /**
 	 * Gets the Mail CC Email Addresses
-	 * @return Email(s)
+	 * @return array Email(s)
 	 */
-	public function cc() {
+	public function getCC(): array
+    {
 		return $this->_cc;
 	}
 
 	/**
 	 * Gets the Mail BCC Email Addresses
-	 * @return Email(s)
+	 * @return array Email(s)
 	 */
-	public function bcc() {
+	public function getBCC(): array
+    {
 		return $this->_bcc;
 	}
 
 	/**
 	 * Gets the Mail Unique Identifier
-	 * @return String
+	 * @return string
 	 */
-	public function uniqueid() {
+	public function getUniqueId(): string
+    {
 		return $this->_uniqueid;
-	}
-
-	/**
-	 * Gets the Mail Unique Number
-	 * @return Integer
-	 */
-	public function muid() {
-		// unique message sequence id = imap_uid($msgno)
-		return $this->mUid;
 	}
 
 	/**
 	 * Gets the Mail Date
 	 * @param Boolean $format
-	 * @return Date
+	 * @return string Date
 	 */
-	public function date($format = false) {
-		$date = $this->_date;
-		if ($date) {
-			if ($format) {
-				$dateTimeFormat = Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat(date('Y-m-d H:i:s', strtotime($date)));
-				[$date, $time, $AMorPM] = explode(' ', $dateTimeFormat);
+    public function getDate($format = false)
+    {
+        $date = $this->_date;
 
-				$pos = strpos($dateTimeFormat, date(DateTimeField::getPHPDateFormat()));
-				if ($pos === false) {
-					return $date.' '.$time.' '.$AMorPM ;
-				} else {
-					return vtranslate('LBL_TODAY').' '.$time. ' ' .$AMorPM;
-				}
-			} else {
-				return Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat(date('Y-m-d H:i:s', $date));
-			}
-		}
-		return '';
-	}
+        if ($date) {
+            if ($format) {
+                $dateTimeFormat = Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat(date('Y-m-d H:i:s', $date));
+                [$date, $time, $AMorPM] = explode(' ', $dateTimeFormat);
 
-	/**
+                $pos = strpos($dateTimeFormat, date(DateTimeField::getPHPDateFormat()));
+
+                if ($pos === false) {
+                    return $date . ' ' . $time . ' ' . $AMorPM;
+                } else {
+                    return vtranslate('LBL_TODAY') . ' ' . $time . ' ' . $AMorPM;
+                }
+            } else {
+                return Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat(date('Y-m-d H:i:s', $date));
+            }
+        }
+
+        return '';
+    }
+
+    /**
 	 * Sets the Mail Date
-	 * @param Date $date
+	 * @param int $date time value
 	 */
 	public function setDate($date) {
 		$this->_date = $date;
@@ -733,29 +645,191 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 		$this->mMsgNo = $msgno;
 	}
 
-	/**
-	 * Sets the Mail Headers
-	 * @param Object $result
-	 * @return self
-	 */
-	public static function parseOverview($result, $mbox = false)
+    /**
+     * Sets the Mail Headers
+     * @param object $mMessage
+     * @param object|bool $mBox
+     * @param object|bool $mFolder
+     * @return self
+     */
+    public static function parseOverview(object $mMessage, object|bool $mFolder = false, object|bool $mBox = false): self
     {
-        if ($mbox) {
-            $instance = new self($mbox, $result->msgno, false);
-            $instance->retrieveBody();
+        if ($mMessage) {
+            $instance = self::getInstanceByBoxMessage($mMessage, $mFolder, $mBox);
         } else {
             $instance = new self();
         }
 
-        $instance->setSubject($result->subject);
-        $instance->setFrom($result->from);
-        $instance->setDate($result->date);
-        $instance->setRead($result->seen);
-        $instance->setMsgNo($result->msgno);
-        $instance->setTo($result->to);
-        $instance->mUid = $result->uid;
+        return $instance;
+    }
+
+    public static function getInstanceByBoxMessage($mMessage, $mFolder, $mBox): self
+    {
+        $instance = new self();
+        $instance->setBoxMessage($mMessage);
+        $instance->setFolder($mFolder);
+        $instance->setBox($mBox);
+        $instance->retrieveInfo();
 
         return $instance;
+    }
+
+    public function validateBoxMessage()
+    {
+        return !empty($this->mMessage);
+    }
+
+    public function retrieveInfo(): void
+    {
+        if (!$this->validateBoxMessage()) {
+            return;
+        }
+
+        $mMessage = $this->getBoxMessage();
+        $attributes = $mMessage->getAttributes();
+
+        $this->setUid(intval($mMessage->getUid()));
+        $this->setUniqueId($attributes['message_id']);
+        $this->setMsgNo($attributes['msgn']);
+
+        $from = $attributes['from']->all();
+        $this->setFrom($this->getEmailAddresses($from));
+        $this->setFromName($this->getEmailNames($from));
+        $to = $attributes['to']->all();
+        $this->setTo($this->getEmailAddresses($to));
+        $this->setToName($this->getEmailNames($to));
+        $this->setCC(!empty($attributes['cc']) ? $this->getEmailAddresses($attributes['cc']->all()) : []);
+        $this->setBCC(!empty($attributes['bcc']) ? $this->getEmailAddresses($attributes['bcc']->all()) : []);
+
+        $this->setSubject($mMessage->getSubject());
+        $this->setDate($attributes['date']->get()->getTimestamp());
+        $this->setRead('Seen' === $mMessage->getFlags()->get('seen'));
+    }
+
+    public function retrieveBody(): void
+    {
+        if (!$this->validateBoxMessage()) {
+            return;
+        }
+
+        $mMessage = $this->getBoxMessage();
+        $this->setBody($mMessage ? $mMessage->getHTMLBody() : '');
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function retrieveAttachments($withContent = true, $attachmentName = null, int $attachmentId = null): void
+    {
+        $this->clearAttachments();
+        $this->retrieveAttachmentsFromDB($withContent, $attachmentName, $attachmentId);
+        $this->retrieveAttachmentsFromMessage();
+        $this->replaceInlineAttachments();
+    }
+
+    public function retrieveAttachmentsFromMessage(): void
+    {
+        if (!empty($this->_attachments)) {
+            return;
+        }
+
+        if (!$this->validateBoxMessage()) {
+            return;
+        }
+
+        $mMessage = $this->getBoxMessage();
+        $attachments = $mMessage->getAttachments();
+
+        foreach ($attachments as $attachment) {
+            $attributes = $attachment->getAttributes();
+            $cId = $attributes['id'];
+            $content = $attachment->content;
+            $name = $attributes['filename'];
+            $disposition = $attributes['disposition'];
+            $size = $attributes['size'];
+
+            if ('inline' === $disposition) {
+                $this->_inline_attachments[] = ['cid' => $cId, 'filename' => $name, 'data' => $content, 'type' => $attributes['content_type'], 'size' => $size];
+            } else {
+                $this->_attachments[] = ['filename' => $name, 'data' => $content, 'type' => $attributes['content_type'], 'size' => $size];
+            }
+        }
+    }
+
+    public function replaceInlineAttachments()
+    {
+        $body = $this->getBody();
+
+        foreach ($this->getInlineAttachments() as $attachment) {
+            if (!empty($attachment['attachment_url'])) {
+                $image = $attachment['attachment_url'];
+            } else {
+                $image = $this->getBodyImage($attachment['data'], $attachment['type']);
+            }
+
+            $body = str_replace('cid:' . $attachment['cid'], $image, $body);
+        }
+
+        $this->setBody($body);
+    }
+
+    public function getBodyImage($content, $contentType)
+    {
+        return sprintf('data:%s;base64,%s', $contentType, base64_encode($content));
+    }
+
+    public function setBody(string $value): void
+    {
+        $this->_body = $value;
+    }
+
+    public function setCC(array $value): void
+    {
+        $this->_cc = $value;
+    }
+
+    public function setBCC(array $value): void
+    {
+        $this->_bcc = $value;
+    }
+
+    public function getEmailAddresses(array $values): array
+    {
+        $emails = [];
+
+        foreach ($values as $value) {
+            $emails[] = $value->mail;
+        }
+
+        return $emails;
+    }
+
+    public function getEmailNames(array $values)
+    {
+        $names = [];
+
+        foreach ($values as $value) {
+            $names[] = $value->full;
+        }
+
+        return $names;
+    }
+
+    /**
+     * @param string $value
+     * @return void
+     */
+    public function setUniqueId(string $value): void
+    {
+        $this->_uniqueid = $value;
+    }
+
+    /**
+     * @return object|bool
+     */
+    public function getBoxMessage(): object|bool
+    {
+        return $this->mMessage;
     }
 
     public function getInlineBody() {
@@ -764,18 +838,6 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 		$bodytext = strip_tags($bodytext);
 		$bodytext = preg_replace("/\n/", " ", $bodytext);
 		return $bodytext;
-	}
-
-	function convertFileSize($size) {
-		$type = 'Bytes';
-		if($size > 1048575) {
-			$size = round(($size/(1024*1024)), 2);
-			$type = 'MB';
-		} else if($size > 1023) {
-			$size = round(($size/1024), 2);
-			$type = 'KB';
-		}
-		return $size.' '.$type;
 	}
 	
 	public function getAttachmentIcon($fileName) {
@@ -858,7 +920,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
     public function retrieveRelationsMailManager(): void
     {
         $adb = PearDatabase::getInstance();
-        $uid = $this->muid();
+        $uid = $this->getUid();
         $result = $adb->pquery(
             'SELECT vtiger_mailmanager_mailrel.* FROM vtiger_mailmanager_mailrel 
             INNER JOIN vtiger_mailmanager_mailrecord ON vtiger_mailmanager_mailrecord.muniqueid=vtiger_mailmanager_mailrel.mailuid
@@ -876,7 +938,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
     {
         $adb = PearDatabase::getInstance();
         $sql = sprintf('SELECT %s as id FROM %s WHERE mail_manager_id=?', $tableId, $tableName);
-        $result = $adb->pquery($sql, [$this->muid()]);
+        $result = $adb->pquery($sql, [$this->getUid()]);
 
         while ($row = $adb->fetchByAssoc($result)) {
             if (!isRecordExists($row['id'])) {
@@ -1092,22 +1154,38 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
                 OR vtiger_potential.mail_manager_id > 0 
                 OR vtiger_mailmanager_mailrel.emailid > 0
             )';
-        $params = [$this->muid()];
+        $params = [$this->getUid()];
         $result = $adb->pquery($sql, $params);
 
         return $result && $adb->num_rows($result);
     }
 
+    /**
+     * @return bool
+     * @throws AppException
+     */
+    public function hasAttachments(): bool
+    {
+        $data = $this->getAttachmentTable()->selectData(['muid'], ['muid' => $this->getUid()]);
+
+        return !empty($data['muid']);
+    }
+
     public function hasLookUps($folder)
     {
-        $this->retrieveLookUps($this->from()[0], $this->to()[0], $folder->isSentFolder());
+        $this->retrieveLookUps($this->getFrom()[0], $this->getTo()[0], $folder->isSentFolder());
 
         return !empty($this->getLookUps());
     }
 
-    public function setMUId($value)
+    public function setUid(int $value): void
     {
         $this->mUid = $value;
+    }
+
+    public function getUid(): int
+    {
+        return $this->mUid;
     }
 
     /**
@@ -1237,26 +1315,9 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
         return $results;
     }
 
-    public function replaceInlineAttachments(): array
-    {
-        $inlineAttachments = $this->inlineAttachments();
-        $attachments = [];
-
-        if (is_array($inlineAttachments)) {
-            foreach ($inlineAttachments as $index => $att) {
-                $cid = $att['cid'];
-                $name = Vtiger_MailRecord::__mime_decode($att['filename']);
-                $this->_body = preg_replace('/cid:' . $cid . '/', $this->getImageUrl($name), $this->_body);
-                $attachments[$name] = $cid;
-            }
-        }
-
-        return $attachments;
-    }
-
     public function getImageUrl($fileName): string
     {
-        return 'index.php?module=MailManager&view=Index&_operation=mail&_operationarg=attachment_dld&_muid=' . $this->muid() . '&_atname=' . urlencode($fileName);
+        return 'index.php?module=MailManager&view=Index&_operation=mail&_operationarg=attachment_dld&_muid=' . $this->getUid() . '&_atname=' . urlencode($fileName);
     }
 
     public function isAttachmentsAllowed()
@@ -1268,7 +1329,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
         $this->attachmentsAllowed = true;
 
         if (!empty($this->_attachments) || !empty($this->_inline_attachments)) {
-            $data = $this->getAttachmentTable()->selectData(['muid'], ['muid' => $this->muid()]);
+            $data = $this->getAttachmentTable()->selectData(['muid'], ['muid' => $this->getUid()]);
             $this->attachmentsAllowed = !empty($data['muid']);
         }
 
@@ -1280,8 +1341,17 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
         return $this->mFolder;
     }
 
+    public function setBoxMessage($value) {
+        $this->mMessage = $value;
+    }
+
     public function setFolder($value)
     {
         $this->mFolder = $value;
+    }
+
+    public function setBox($value)
+    {
+        $this->mBox = $value;
     }
 }

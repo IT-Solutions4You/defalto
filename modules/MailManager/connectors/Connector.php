@@ -5,6 +5,8 @@
  * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
  */
+use Webklex\PHPIMAP\ClientManager;
+use Webklex\PHPIMAP\Client;
 
 vimport ('~modules/MailManager/models/Message.php');
 
@@ -24,6 +26,7 @@ class MailManager_Connector_Connector {
 	 * Mail Box connection instance
 	*/
 	public $mBox;
+	public $mBoxModel;
 
 	/*
 	 * Last imap error
@@ -46,88 +49,91 @@ class MailManager_Connector_Connector {
 	protected $mBoxBaseUrl;
 
 
-	/**
-	 * Connects to the Imap server with the given parameters
-	 * @param $model MailManager_Mailbox_Model Instance
-	 * $param $folder String optional - mail box folder name
-	 * @returns MailManager_Connector_Connector Object
-	 */
-    public static function connectorWithModel($model, $folder = '')
+    /**
+     * Connects to the Imap server with the given parameters
+     * @param $model MailManager_Mailbox_Model Instance
+     * $param $folder String optional - mail box folder name
+     * @returns MailManager_Connector_Connector Object
+     * @throws AppException
+     */
+    public static function connectorWithModel(MailManager_Mailbox_Model $model): self
     {
         $model->retrieveClientAccessToken();
 
-        if (strcasecmp($model->protocol(), 'pop') === 0) {
-            $port = 110; // NOT IMPLEMENTED
-        } elseif (strcasecmp($model->ssltype(), 'ssl') === 0) {
-            $port = 993; // IMAP SSL
-        } else {
-            $port = 143; // IMAP
-        }
-
-        $baseUrl = sprintf('{%s:%s/%s/%s/%s}', $model->server(), $port, $model->protocol(), $model->ssltype(), $model->certvalidate());
-        $password = $model->password();
-
-        if (!empty($model->getProxy())) {
-            $baseUrl = sprintf("{%s/IMAP4/notls/novalidate-cert}", $model->getProxy());
-            $password = $model->getClientAccessToken();
-        }
-
-        $url = sprintf('%s%s', $baseUrl, $folder);
-
-        return new self($url, $model->username(), $password, $baseUrl);
+        return new self($model);
     }
 
 
     /**
-	 * Opens up imap connection to the specified url
-	 * @param $url String - mail server url
-	 * @param $username String  - user name of the mail box
-	 * @param $password String  - pass word of the mail box
-	 * @param $baseUrl Optional - url of the mailserver excluding folder name.
-	 *	This is used to fetch the folders of the mail box
-	 */
-	public function __construct($url, $username, $password, $baseUrl=false) {
-		$boxUrl = $this->convertCharacterEncoding(html_entity_decode($url),'UTF7-IMAP','UTF-8'); //handle both utf8 characters and html entities
-        $this->mBoxUrl = $boxUrl;
-        $this->mBoxBaseUrl = $baseUrl; // Used for folder List
-		/**
-		 * disabled Kerberos authentication
-		 * reference : http://sugarcrmsolutions.blogspot.in/2013/12/problems-in-email-integration.html
-		 */
-
-        if(str_contains($url, 'imap.gmail.com')) {
-            $this->mBox = imap_open($boxUrl, $username, $password);
-		} else {
-			$this->mBox = imap_open($boxUrl, $username, $password, NULL, 1, array('DISABLE_AUTHENTICATOR' => 'GSSAPI'));
-		}
-
-		$this->isError();
-	}
+     * Opens up imap connection to the specified url
+     * @param MailManager_Mailbox_Model $model
+     */
+    public function __construct(MailManager_Mailbox_Model $model)
+    {
+        $this->mBoxModel = $model;
+        $this->connect();
+    }
 
 
-	/**
+    /**
 	 * Closes the connection
 	 */
 	public function __destruct() {
 		$this->close();
 	}
 
+    public function connect()
+    {
+        /** @var MailManager_Mailbox_Model $boxModel */
+        $boxModel = $this->mBoxModel;
 
-	/**
+        if (empty($boxModel)) {
+            return;
+        }
+
+        $server = $boxModel->server();
+        $password = $boxModel->password();
+        $authentication = '';
+
+        if (str_contains($server, 'gmail.com')) {
+            $authentication = 'oauth';
+            $password = $boxModel->getClientAccessToken();
+        }
+
+        $options = [];
+        $config = [
+            'host' => $server,
+            'port' => $boxModel->getPort(),
+            'encryption' => $boxModel->ssltype(),
+            'validate_cert' => true,
+            'protocol' => $boxModel->protocol(),
+            'username' => $boxModel->username(),
+            'password' => $password,
+            'authentication' => $authentication,
+        ];
+
+        $clientManager = new ClientManager($options);
+
+        $this->mBox = $clientManager->account($config['host']);
+        $this->mBox = $clientManager->make($config);
+        $this->mBox->connect();
+    }
+
+    /**
 	 * Closes the imap connection
 	 */
-	public function close() {
-		if (!empty($this->mBox)) {
+    public function close()
+    {
+        if (empty($this->mBox)) {
+            return;
+        }
 
-			if ($this->mModified) imap_close($this->mBox, CL_EXPUNGE);
-			else imap_close($this->mBox);
-
-			$this->mBox = null;
-		}
-	}
+        $this->getBox()->disconnect();
+        $this->mBox = null;
+    }
 
 
-	/**
+    /**
 	 * Checks for the connection
 	 */
 	public function isConnected() {
@@ -166,102 +172,138 @@ class MailManager_Connector_Connector {
 	}
 
 
-	/**
-	 * Reads mail box folders
-	 * @param string $ref Optional -
-	 */
-	public function folders($ref="{folder}") {
-		if ($this->mFolders) return $this->mFolders;
+    /**
+     * Reads mail box folders
+     * @return array|bool|mixed
+     */
+    public function getFolders()
+    {
+        if ($this->mFolders) {
+            return $this->mFolders;
+        }
 
-		$result = imap_getmailboxes($this->mBox, $ref, "*");
-		if ($this->isError()) return false;
+        $result = $this->getBox()->getFolders();
+        $folders = [];
 
-		$folders = array();
-		foreach($result as $row) {
-			$folderName = str_replace($ref, "", $row->name);
-			$folder = $this->convertCharacterEncoding( $folderName, "UTF-8", "UTF7-IMAP"  ); //Decode folder name
-			$folders[] = $this->folderInstance($folder);
-		}
-		$this->mFolders = $folders;
-		return $folders;
-	}
+        foreach ($result as $row) {
+            if ($row->hasChildren()) {
+                foreach ($row->getChildren()->all() as $childRow) {
+                    $folderInstance = $this->getFolder($childRow->name, $childRow->path);
+                    $folderInstance->setBoxFolder($childRow);
+
+                    $folders[] = $folderInstance;
+                }
+            } else {
+                $folderInstance = $this->getFolder($row->name, $row->path);
+                $folderInstance->setBoxFolder($row);
+
+                $folders[] = $folderInstance;
+            }
+        }
+
+        $this->mFolders = $folders;
+
+        return $folders;
+    }
+
+    public function getBox()
+    {
+        return $this->mBox;
+    }
 
 
-	/**
+    /**
 	 * Used to update the folders optionus
 	 * @param imap_stats flag $options
 	 */
-	public function updateFolders($options=SA_UNSEEN) {
-		$this->folders(); // Initializes the folder Instance
-		foreach($this->mFolders as $folder) {
-			$this->updateFolder($folder, $options);
-		}
-	}
+    public function updateFolders($options = SA_UNSEEN)
+    {
+        $folders = $this->getFolders(); // Initializes the folder Instance
+
+        foreach ($folders as $folder) {
+            $this->updateFolder($folder, $options);
+        }
+    }
 
 
-	/**
+    /**
 	 * Updates the mail box's folder
-	 * @param MailManager_Model_Folder $folder - folder instance
-	 * @param $options imap_status flags like SA_UNSEEN, SA_MESSAGES etc
+	 * @param MailManager_Folder_Model $folder - folder instance
+	 * @param int $options imap_status flags like SA_UNSEEN, SA_MESSAGES etc
 	 */
-	public function updateFolder($folder, $options) {
-		$mailbox = $this->convertCharacterEncoding($folder->name($this->mBoxUrl), "UTF7-IMAP","ISO-8859-1"); //Encode folder name
-		$result = @imap_status($this->mBox, $mailbox, $options);
-		if ($result) {
-			if (isset($result->unseen)) $folder->setUnreadCount($result->unseen);
-			if (isset($result->messages)) $folder->setCount($result->messages);
-		}
-	}
+    public function updateFolder(MailManager_Folder_Model $folder, int $options = 0): void
+    {
+        $mBoxFolder = $folder->getBoxFolder($this->getBox());
+
+        if ($mBoxFolder) {
+            $allMessages = $mBoxFolder->query()->all()->setFetchBody(false);
+
+            $folder->setCount($allMessages->count());
+            $folder->setUnreadCount($allMessages->unseen()->count());
+        }
+    }
 
 
-	/**
+    /**
 	 * Returns MailManager_Model_Folder Instance
 	 * @param String $name - folder name
 	 */
-	public function folderInstance($name) {
-		vimport('modules/MailManager/models/Folder.php');
-		return new MailManager_Folder_Model($name);
-	}
+    public function getFolder(string $name, string $path = null, $mBoxFolder = null): MailManager_Folder_Model
+    {
+        return new MailManager_Folder_Model($name, $path, $mBoxFolder);
+    }
 
 
-	/**
+    /**
 	 * Sets a list of mails with paging
 	 * @param MailManager_Folder_Model $folder - MailManager_Model_Folder Instance
-	 * @param Integer $start  - Page number
-	 * @param Integer $maxLimit - Number of mails
+	 * @param Integer $page  - Page number
+	 * @param Integer $limit - Number of mails
 	 */
-	public function folderMails($folder, $start, $maxLimit)
+    public function retrieveFolderMails($folder, int $page, int $limit)
     {
-		$folderCheck = imap_check($this->mBox);
+        $mBoxFolder = $folder->getBoxFolder($this->getBox());
 
-		if ($folderCheck->Nmsgs) {
+        if ($mBoxFolder) {
+            $query = $mBoxFolder->query()->all()->setFetchBody(false);
+            $count = $query->count();
 
-			$reverse_start = $folderCheck->Nmsgs - ($start*$maxLimit);
-			$reverse_end = $reverse_start - $maxLimit + 1;
+            [$mailIds, $mails] = $this->getMails($query, $folder, $page, $limit);
 
-			if ($reverse_start < 1) $reverse_start = 1;
-			if ($reverse_end < 1) $reverse_end = 1;
+            $folder->setMails($mails);
+            $folder->setMailIds($mailIds);
+            $folder->setPaging($limit, $count, $page);
+        }
+    }
 
-			$sequence = sprintf("%s:%s", $reverse_start, $reverse_end);
-			$records = imap_fetch_overview($this->mBox, $sequence);
-			$mails = array();
-			$mailIds = array();
+    public function getMails($query, $folder, $page, $limit)
+    {
+        $count = $query->count();
+        $messageNo = $count - (($page - 1) * $limit);
+        $lastMessageNo = max($count - ($page * $limit) + 1, 1);
 
-			foreach($records as $result) {
-				$message = MailManager_Message_Model::parseOverview($result, $this->mBox);
-				$mailIds[] = $message->msgNo();
-				array_unshift($mails, $message);
-			}
+        $mailIds = [];
+        $mails = [];
 
-			$folder->setMails($mails);
-			$folder->setMailIds($mailIds);
-			$folder->setPaging($reverse_end, $reverse_start, $maxLimit, $folderCheck->Nmsgs, $start);
-		}
-	}
+        while ($messageNo >= $lastMessageNo) {
+            if (empty($messageNo)) {
+                break;
+            }
+
+            $mBoxMessage = $query->getMessageByMsgn($messageNo);
+            $message = MailManager_Message_Model::parseOverview($mBoxMessage, $folder, $this->getBox());
+
+            $mailIds[] = $message->getUid();
+            $mails[] = $message;
+            $messageNo--;
+        }
+
+        return [$mailIds, $mails];
+    }
 
 
-	/**
-	 * Return the cache interval
+    /**
+     * Return the cache interval
 	 */
 	public function clearDBCacheInterval() {
 		// TODO Provide configuration option.
@@ -298,127 +340,193 @@ class MailManager_Connector_Connector {
 
 	/**
 	 * Function which deletes the mails
-	 * @param String $msgno - List of message number seperated by commas.
+     * @params object $folder
+	 * @param String $mUId - List of message number seperated by commas.
 	 */
-	public function deleteMail($msgno) {
-		$msgno = trim($msgno,',');
-		$msgno = explode(',',$msgno);
-		for($i = 0;$i<php7_count($msgno);$i++) {
-			@imap_delete($this->mBox, $msgno[$i]);
-		}
-		imap_expunge($this->mBox);
-	}
-
-
-	/**
-	 * Function which moves mail to another folder
-	 * @param String $msgno - List of message number separated by commas
-	 * @param String $folderName - folder name
-	 */
-	public function moveMail($msgno, $folderName) {
-		$msgno = trim($msgno,',');
-		$msgno = explode(',',$msgno);
-		$folder = $this->convertCharacterEncoding(html_entity_decode($folderName),'UTF7-IMAP','UTF-8'); //handle both utf8 characters and html entities
-		for($i = 0;$i<php7_count($msgno);$i++) {
-			@imap_mail_move($this->mBox, $msgno[$i], $folder);
-		}
-		@imap_expunge($this->mBox);
-	}
-
-
-	/**
-	 * Creates an instance of Message
-	 * @param String $msgno - Message number
-	 * @return MailManager_Message_Model
-	 */
-    public function openMail($msgno, $folder, $fetchBody = true)
+    public function deleteMail(object $folder, string $mUId): void
     {
-        $this->clearDBCache();
+        $mUIds = explode(',', trim($mUId, ','));
 
-        return new MailManager_Message_Model($this->mBox, $msgno, $fetchBody, $folder);
+        foreach ($mUIds as $mUId) {
+            $message = $this->getMessageByMUid($folder, $mUId);
+
+            if ($message) {
+                $message->delete(true);
+            }
+        }
     }
 
 
     /**
-	 * Marks the mail as Unread
-	 * @param <String> $msgno - Message Number
-	 */
-	public function markMailUnread($msgno) {
-		imap_clearflag_full( $this->mBox, $msgno, '\\Seen');
-		$this->mModified = true;
-	}
+     * Function which moves mail to another folder
+     * @param string $mUIds
+     * @param object $folderFrom
+     * @param object $folderTo
+     */
+    public function moveMail(string $mUIds, object $folderFrom, object $folderTo): void
+    {
+        $mUIds = explode(',', trim($mUIds, ','));
+
+        foreach ($mUIds as $mUid) {
+            $message = $this->getMessageByMUid($folderFrom, $mUid);
+
+            if ($message) {
+                $message->move($folderTo->getName());
+            }
+        }
+    }
 
 
-	/**
-	 * Marks the mail as Read
-	 * @param String $msgno - Message Number
-	 */
-	public function markMailRead($msgno) {
-		imap_setflag_full($this->mBox, $msgno, '\\Seen');
-		$this->mModified = true;
-	}
+    /**
+     * Creates an instance of Message
+     * @param MailManager_Folder_Model $folder
+     * @param int $mUId
+     * @param bool $fetchBody
+     * @return MailManager_Message_Model
+     * @throws AppException
+     */
+    public function getMail(MailManager_Folder_Model $folder, int $mUId, bool $fetchBody = true): MailManager_Message_Model
+    {
+        $this->clearDBCache();
+        $mBox = $this->getBox();
+        $message = MailManager_Message_Model::getInstanceByBoxMessage($this->getMessageByMUid($folder, $mUId), $folder, $mBox);
+
+        if ($fetchBody) {
+            $message->retrieveBody();
+            $message->retrieveAttachments();
+        }
+
+        return $message;
+    }
+
+    /**
+     * Marks the mail as Unread
+     * @param object $folder
+     * @param int $mUid
+     * @throws AppException
+     */
+    public function markMailUnread(object $folder, int $mUid): void
+    {
+        if (empty($mUid)) {
+            throw new AppException('Empty mUid for action markMailUnread');
+        }
+
+        $message = $this->getMessageByMUid($folder, $mUid);
+
+        if ($message) {
+            $message->unsetFlag('Seen');
+            $this->mModified = true;
+        }
+    }
 
 
-	/**
-	 * Searches the Mail Box with the query
-	 * @param String $query - imap search format
-	 * @param MailManager_Folder_Model $folder - folder instance
-	 * @param Integer $start - Page number
-	 * @param Integer $maxLimit - Number of mails
-	 */
-	public function searchMails($query, $folder, $start, $maxLimit) {
-		$nos = imap_search($this->mBox, $query);
+    /**
+     * Marks the mail as Read
+     * @param int $mUid - Message Number
+     * @throws AppException
+     */
+    public function markMailRead(object $folder, int $mUid): void
+    {
+        if (empty($mUid)) {
+            throw new AppException('Empty mUid for action markMailRead');
+        }
 
-		if (!empty($nos)) {
-			$nmsgs = php7_count($nos);
+        $message = $this->getMessageByMUid($folder, $mUid);
 
-			$reverse_start = $nmsgs - ($start*$maxLimit);
-			$reverse_end   = $reverse_start - $maxLimit;
+        if ($message) {
+            $message->setFlag('Seen');
+            $this->mModified = true;
+        }
+    }
 
-			if ($reverse_start < 1) $reverse_start = 1;
-			if ($reverse_end < 1) $reverse_end = 0;
+    public function getMessageByMUid($folder, int $mUid)
+    {
+        $box = $this->getBox();
 
-			if($nmsgs > 1)
-				$nos = array_slice($nos, $reverse_end, ($reverse_start-$reverse_end));
+        return $box ? $folder->getBoxFolder($box)->query()->getMessageByUid($mUid) : null;
+    }
 
-			// Reverse order the messages
-			rsort($nos, SORT_NUMERIC);
 
-            $mails = [];
-            $mailNos = [];
-			$records = imap_fetch_overview($this->mBox, implode(',', $nos));
+    /**
+     * Searches the Mail Box with the query
+     * @param array $query - imap search format
+     * @param MailManager_Folder_Model $folder - folder instance
+     * @param int $page
+     * @param int $limit
+     */
+    public function retrieveSearchMails(array $query, MailManager_Folder_Model $folder, int $page, int $limit): void
+    {
+        $mBoxFolder = $folder->getBoxFolder($this->getBox());
 
-			foreach($records as $result) {
-                $message = MailManager_Message_Model::parseOverview($result, $this->mBox);
-                array_unshift($mails, $message);
-                array_unshift($mailNos, $message->msgNo());
+        if ($mBoxFolder) {
+            $query = $mBoxFolder->query()->where($query)->all();
+            $count = $query->count();
+
+            [$mailIds, $mails] = $this->getMails($query, $folder, $page, $limit);
+
+            $folder->setMails($mails);
+            $folder->setMailIds($mailIds);
+            $folder->setPaging($limit, $count, $page);  //-1 as it starts from 0
+        }
+    }
+
+    /**
+     * @param string $query
+     * @param string $type
+     * @return array
+     */
+    public function formatQueryFromRequest(string $query, string $type)
+    {
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+
+        if (empty($type)) {
+            $type = 'ALL';
+        }
+
+        if ($type == 'ON') {
+            $dateFormat = $currentUserModel->get('date_format');
+
+            if ($dateFormat == 'mm-dd-yyyy') {
+                $dateArray = explode('-', $query);
+                $temp = $dateArray[0];
+                $dateArray[0] = $dateArray[1];
+                $dateArray[1] = $temp;
+                $query = implode('-', $dateArray);
+            } elseif ($dateFormat == 'dd/mm/yyyy') {
+                $dateArray = explode('/', $query);
+                $temp = $dateArray[0];
+                $dateArray[0] = $dateArray[1];
+                $dateArray[1] = $temp;
+                $query = implode('/', $dateArray);
             }
 
-			$folder->setMails($mails);
-            $folder->setMailIds($mailNos);
-			$folder->setPaging($reverse_end, $reverse_start, $maxLimit, $nmsgs, $start);  //-1 as it starts from 0
-		}
-	}
+            $query = date('d-M-Y', strtotime($query));
 
+            $where = [$type => vtlib_purify($query)];
+        } else {
+            $where = [$type => vtlib_purify($query)];
+        }
 
-	/**
+        return $where;
+    }
+
+    /**
 	 * Returns list of Folder for the Mail Box
 	 * @return Array folder list
 	 */
-	public function getFolderList() {
-		if(!empty($this->mBoxBaseUrl)) {
-			$list = @imap_list($this->mBox, $this->mBoxBaseUrl, '*');
-			if (is_array($list)) {
-				foreach ($list as $val) {
-					$folder = $this->convertCharacterEncoding( $val, 'UTF-8', 'UTF7-IMAP' ); //Decode folder name
-					$folderList[] =  preg_replace("/{(.*?)}/", "", $folder);
-				}
-			}
-		}
-		return $folderList;
-	}
+    public function getFolderList()
+    {
+        $folders = $this->getFolders();
+        $folderList = [];
 
-	public function convertCharacterEncoding($value, $toCharset, $fromCharset) {
+        foreach ($folders as $folder) {
+            $folderList[] = $folder->getName();
+        }
+
+        return $folderList;
+    }
+
+    public function convertCharacterEncoding($value, $toCharset, $fromCharset) {
 		if (function_exists('mb_convert_encoding')) {
 			$value = mb_convert_encoding($value, $toCharset, $fromCharset);
 		} else {

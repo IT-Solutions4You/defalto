@@ -81,7 +81,7 @@ abstract class MailManager_Abstract_View extends Vtiger_Index_View {
 	 */
 	protected function getMailboxModel() {
 		if ($this->mMailboxModel === false) {
-			$this->mMailboxModel = MailManager_Mailbox_Model::activeInstance();
+			$this->mMailboxModel = MailManager_Mailbox_Model::getActiveInstance();
 		}
 		return $this->mMailboxModel;
 	}
@@ -95,35 +95,29 @@ abstract class MailManager_Abstract_View extends Vtiger_Index_View {
 		return $model->exists();
 	}
 
-	/**
-	 * Returns a Connector to either MailBox or Internal Drafts
-	 * @param String $folder - Name of the folder
-	 * @return MailManager_Connector
-	 */
-	protected function getConnector($folder='') {
-		if (!$this->mConnector || ($this->mFolder != $folder)) {
-			if($folder == "__vt_drafts") {
-				$draftController = new MailManager_Draft_View();
-				$this->mConnector = $draftController->connectorWithModel();
-			} else {
-				if ($this->mConnector) $this->mConnector->close();
+    /**
+     * Returns a Connector to either MailBox or Internal Drafts
+     * @return MailManager_Connector_Connector
+     * @throws AppException
+     */
+    protected function getConnector()
+    {
+        if (!$this->mConnector) {
+            $model = $this->getMailboxModel();
+            $this->mConnector = MailManager_Connector_Connector::connectorWithModel($model);
+        }
 
-				$model = $this->getMailboxModel();
-				$this->mConnector = MailManager_Connector_Connector::connectorWithModel($model, $folder);
-			}
-			$this->mFolder = $folder;
-		}
-		return $this->mConnector;
-	}
+        return $this->mConnector;
+    }
 
-	/**
+    /**
 	 * Function that closes connection to IMAP server
 	 */
-	public function closeConnector() {
-		if ($this->mConnector) {
-			$this->mConnector->close();
-			$this->mConnector = false;
-		}
-	}
+    public function closeConnector()
+    {
+        if ($this->mConnector) {
+            $this->mConnector->close();
+            $this->mConnector = false;
+        }
+    }
 }
-?>
