@@ -212,43 +212,49 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	},
 
 	registerSaveMailboxEvent : function(data) {
-		var settingContainer = jQuery(data);
+		let settingContainer = jQuery(data);
 		settingContainer.find('#saveMailboxBtn').click(function(e) {
 			e.preventDefault();
-			var form = settingContainer.find('#EditView');
-			var data = form.serializeFormData();
-			var params = {
-				position: {
-					'my' : 'bottom left',
-					'at' : 'top left',
-					'container' : jQuery('#EditView')
-			}};
-			var errorMsg = app.vtranslate('JS_REQUIRED_FIELD');
-			if(data['_mbox_server'] == "") {
+			let form = settingContainer.find('#EditView'),
+				data = form.serializeFormData(),
+				params = {
+					position: {
+						'my': 'bottom left',
+						'at': 'top left',
+						'container': jQuery('#EditView')
+					}
+				};
+			let errorMsg = app.vtranslate('JS_REQUIRED_FIELD');
+
+			if (!data['_mbox_server']) {
 				vtUtils.showValidationMessage(settingContainer.find('#_mbox_server'), errorMsg, params);
 				return false;
 			} else {
 				vtUtils.hideValidationMessage(settingContainer.find('#_mbox_server'));
 			}
-			if(data['_mbox_user'] == "") {
+			if (!data['_mbox_user']) {
 				vtUtils.showValidationMessage(settingContainer.find('#_mbox_user'), errorMsg, params);
 				return false;
 			} else {
 				vtUtils.hideValidationMessage(settingContainer.find('#_mbox_user'));
 			}
-			if(data['_mbox_pwd'] == "") {
+			if (!data['_mbox_pwd'] && !data['_mbox_client_id']) {
 				vtUtils.showValidationMessage(settingContainer.find('#_mbox_pwd'), errorMsg, params);
+				vtUtils.showValidationMessage(settingContainer.find('#_mbox_client_id'), errorMsg, params);
 				return false;
 			} else {
 				vtUtils.hideValidationMessage(settingContainer.find('#_mbox_pwd'));
 			}
+
 			app.helper.showProgress(app.vtranslate("JSLBL_Saving_And_Verifying")+"...");
-			var params = {
+
+			params = {
 				'module' : 'MailManager',
 				'view' : 'Index',
 				'_operation' : 'settings',
 				'_operationarg' : 'save'
 			};
+
 			jQuery.extend(params, data);
 			app.request.post({"data" : params}).then(function(error, responseData) {
 				app.helper.hideModal();
