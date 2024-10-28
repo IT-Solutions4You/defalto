@@ -17,15 +17,16 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 	public function __construct($foractionid = 0) {
 	}
 
-	/**
-	 * Create new Email record (and link to given record) including attachments
-	 * @global Users $current_user
-	 * @global PearDataBase $db
-	 * @param  MailManager_Message_Model $mailrecord
-	 * @param String $module
-	 * @param CRMEntity $linkfocus
-	 * @return Integer
-	 */
+    /**
+     * Create new Email record (and link to given record) including attachments
+     * @param MailManager_Message_Model $mailrecord
+     * @param String $module
+     * @param CRMEntity $linkfocus
+     * @return Integer
+     * @throws AppException
+     * @global PearDataBase $db
+     * @global Users $current_user
+     */
 	public function createNewEmail($mailrecord, $module, $linkfocus) {
 		$site_URL = vglobal('site_URL');
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
@@ -79,15 +80,16 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 		return $recordModel->getId();
 	}
 
-	/**
-	 * Save attachments from the email and add it to the module record.
-	 * @global PearDataBase $db
-	 * @global String $root_directory
-	 * @param MailManager_Message_Model $mailrecord
-	 * @param String $basemodule
-	 * @param Vtiger_Record_Model $recordModel
-	 */
-    public function saveAttachments($mailRecord, $baseModule, $recordModel)
+    /**
+     * Save attachments from the email and add it to the module record.
+     * @param MailManager_Message_Model $mailRecord
+     * @param string $baseModule
+     * @param Vtiger_Record_Model $recordModel
+     * @throws AppException
+     * @global PearDataBase $db
+     * @global String $root_directory
+     */
+    public function saveAttachments(MailManager_Message_Model $mailRecord, string $baseModule, Vtiger_Record_Model $recordModel): void
     {
         $recordId = $recordModel->getId();
 
@@ -108,7 +110,13 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
         }
     }
 
-    public function saveAttachment($baseModule, $attachmentInfo)
+    /**
+     * @param string $baseModule
+     * @param array $attachmentInfo
+     * @return Core_Attachment_Model
+     * @throws AppException
+     */
+    public function saveAttachment(string $baseModule, array $attachmentInfo): Core_Attachment_Model
     {
         $attachment = Core_Attachment_Model::getInstance($baseModule);
         $attachment->retrieveDefault($attachmentInfo['filename']);

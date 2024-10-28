@@ -1116,6 +1116,10 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
         return $relations;
     }
 
+    /**
+     * @param int $record Record id from contact, account, leads, ...
+     * @return array
+     */
     public function getRelationsById($record): array
     {
         $relation = [];
@@ -1130,7 +1134,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
         foreach ($this->getRelations() as $recordModel) {
             $fieldName = self::RELATIONS_MAPPING[$recordModel->getModuleName()][$moduleName];
 
-            if (empty($fieldName) || $recordModel->isEmpty($fieldName)) {
+            if (empty($fieldName) || $recordModel->isEmpty($fieldName) || $record !== (int)$recordModel->get($fieldName)) {
                 continue;
             }
 

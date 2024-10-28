@@ -11,11 +11,6 @@
 class MailManager_Folder_Action extends Vtiger_Action_Controller
 {
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * @throws Exception
      */

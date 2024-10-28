@@ -82,9 +82,12 @@ class MailManager_Connector_Connector {
 		$this->close();
 	}
 
-    public function connect()
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function connect(): void
     {
-        /** @var MailManager_Mailbox_Model $boxModel */
         $boxModel = $this->mBoxModel;
 
         if (empty($boxModel)) {
@@ -210,6 +213,9 @@ class MailManager_Connector_Connector {
         return $folders;
     }
 
+    /**
+     * @return object|bool|null
+     */
     public function getBox()
     {
         return $this->mBox;
@@ -280,6 +286,13 @@ class MailManager_Connector_Connector {
         }
     }
 
+    /**
+     * @param $query
+     * @param $folder
+     * @param $page
+     * @param $limit
+     * @return array[]
+     */
     public function getMails($query, $folder, $page, $limit)
     {
         $count = $query->count();
@@ -443,6 +456,11 @@ class MailManager_Connector_Connector {
         }
     }
 
+    /**
+     * @param $folder
+     * @param int $mUid
+     * @return mixed|null
+     */
     public function getMessageByMUid($folder, int $mUid)
     {
         $box = $this->getBox();
@@ -530,6 +548,12 @@ class MailManager_Connector_Connector {
         return $folderList;
     }
 
+    /**
+     * @param $value
+     * @param $toCharset
+     * @param $fromCharset
+     * @return array|false|string|string[]|null
+     */
     public function convertCharacterEncoding($value, $toCharset, $fromCharset) {
 		if (function_exists('mb_convert_encoding')) {
 			$value = mb_convert_encoding($value, $toCharset, $fromCharset);
