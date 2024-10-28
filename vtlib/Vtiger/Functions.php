@@ -1755,4 +1755,13 @@ class Vtiger_Functions {
 		}
 		return implode("", $parts);
 	}
+
+    public static function formatBytes($size): string
+    {
+        $base = log($size) / log(1024);
+        $suffix = ['', 'KB', 'MB', 'GB', 'TB'];
+        $f_base = floor($base);
+
+        return round(pow(1024, $base - floor($base)), 1) . $suffix[$f_base];
+    }
 }
