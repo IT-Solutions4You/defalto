@@ -119,7 +119,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
      */
     public function retrieveFromEmail(Vtiger_Request $request)
     {
-        list($type, $emailValue) = explode("::", addslashes($request->get('from_email')));
+        [$type, $emailValue] = explode("::", addslashes($request->get('from_email')));
 
         if (!empty($emailValue)) {
             if ('s' === $type && class_exists('ITS4YouSMTP_Record_Model')) {
@@ -226,21 +226,16 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
 
         if ($uploadStatus) {
             $module = 'ITS4YouEmails';
-            $attachment = ITS4YouEmails_Attachment_Model::getInstance();
-            $attachment->setData([
-                'id' => $attachmentId,
-                'creator_id' => $this->currentUser->getId(),
-                'owner_id' => $this->currentUser->getId(),
-                'module' => $module,
-                'description' => '',
-                'file_name' => $fileName,
-                'file_type' => $fileType,
-                'file_path' => $uploadFilePath,
-                'stored_name' => $fileName,
-            ]);
+            $attachment = ITS4YouEmails_Attachment_Model::getInstance($module);
+            $attachment->setId($attachmentId);
+            $attachment->setName($fileName);
+            $attachment->setDescription($fileName);
+            $attachment->setStoredName($fileName);
+            $attachment->setPath($uploadFilePath);
+            $attachment->setType($fileType);
             $attachment->save();
 
-            return $attachmentId;
+            return $attachment->getId();
         } else {
             $log->debug('Skip the save attachment process.');
 
@@ -248,6 +243,9 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         }
     }
 
+    /**
+     * @throws AppException
+     */
     public function retrieveDocumentsFromSavedAttachments()
     {
         global $upload_badext;
@@ -266,29 +264,25 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                 $oldFilePath = $filePath . '/' . $oldFileName;
 
                 $attachmentId = $this->db->getUniqueID('vtiger_crmentity');
-
                 $binFile = sanitizeUploadFileName($fileName, $upload_badext);
                 $fileName = ltrim(basename(' ' . $binFile));
                 $filetype = $existingAttachInfo['type'];
                 $upload_file_path = decideFilePath();
                 $newFilePath = $upload_file_path . $attachmentId . '_' . $binFile;
-                copy($oldFilePath, $newFilePath);
+                $isSavedFile = copy($oldFilePath, $newFilePath);
 
-                $attachment = ITS4YouEmails_Attachment_Model::getInstance();
-                $attachment->setData([
-                    'id' => $attachmentId,
-                    'creator_id' => $this->currentUser->getId(),
-                    'owner_id' => $this->currentUser->getId(),
-                    'module' => $this->moduleName,
-                    'description' => '',
-                    'file_name' => $fileName,
-                    'file_type' => $filetype,
-                    'file_path' => $upload_file_path,
-                    'stored_name' => $fileName,
-                ]);
-                $attachment->save();
+                if ($isSavedFile) {
+                    $attachment = ITS4YouEmails_Attachment_Model::getInstance($this->moduleName);
+                    $attachment->setId($attachmentId);
+                    $attachment->setName($fileName);
+                    $attachment->setDescription($fileName);
+                    $attachment->setStoredName($fileName);
+                    $attachment->setPath($upload_file_path);
+                    $attachment->setType($filetype);
+                    $attachment->save();
 
-                $this->documentsIds[] = $attachmentId;
+                    $this->documentsIds[] = $attachmentId;
+                }
             }
         }
     }
@@ -495,7 +489,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                     foreach ($mailAddress as $toEmailId => $toEmailAddress) {
                         $insertedEmails = array();
 
-                        list($toRecord, $toEmail, $toModule) = explode('|', $toEmailId);
+                        [$toRecord, $toEmail, $toModule] = explode('|', $toEmailId);
 
                         $cloneRecordModelEmails = clone $recordModelEmails;
                         $cloneRecordModelEmails->set('assigned_user_id', $current_user_id);
