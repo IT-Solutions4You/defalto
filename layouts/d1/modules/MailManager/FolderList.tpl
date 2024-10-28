@@ -10,10 +10,10 @@
     {assign var=TRASH_ADDED value=0}
     <ul class="nav nav-pills flex-column">
         {foreach item=FOLDER from=$FOLDERS}
-            {if stripos($FOLDER->name(), 'inbox') !== false && $INBOX_ADDED == 0}
+            {if stripos($FOLDER->getName(), 'inbox') !== false && $INBOX_ADDED == 0}
                 {assign var=INBOX_ADDED value=1}
-                {assign var=INBOX_FOLDER value=$FOLDER->name()}
-                <li class="tab-item nav-link fs-6 mm_folder mmMainFolder active d-flex align-items-center justify-content-between cursorPointer" data-foldername="{$FOLDER->name()}">
+                {assign var=INBOX_FOLDER value=$FOLDER->getName()}
+                <li class="tab-item nav-link fs-6 mm_folder mmMainFolder active d-flex align-items-center justify-content-between cursorPointer" data-foldername="{$FOLDER->getName()}">
                     <div>
                         <i class="fa fa-inbox fs-3"></i>
                         <b class="mx-2">{vtranslate('LBL_INBOX', $MODULE)}</b>
@@ -27,8 +27,8 @@
         
         {foreach item=FOLDER from=$FOLDERS}
             {if $FOLDER->isSentFolder()}
-                {assign var=SENT_FOLDER value=$FOLDER->name()}
-                <li class="tab-item nav-link fs-6 mm_folder mm_folder mmMainFolder d-flex align-items-center justify-content-between cursorPointer" data-foldername="{$FOLDER->name()}">
+                {assign var=SENT_FOLDER value=$FOLDER->getName()}
+                <li class="tab-item nav-link fs-6 mm_folder mm_folder mmMainFolder d-flex align-items-center justify-content-between cursorPointer" data-foldername="{$FOLDER->getName()}">
                     <div>
                         <i class="fa fa-paper-plane fs-3"></i>
                         <b class="mx-2">{vtranslate('LBL_SENT', $MODULE)}</b>
@@ -41,10 +41,10 @@
         {/foreach}
         
         {foreach item=FOLDER from=$FOLDERS}
-            {if stripos($FOLDER->name(), 'trash') !== false && $TRASH_ADDED == 0}
+            {if stripos($FOLDER->getName(), 'trash') !== false && $TRASH_ADDED == 0}
                 {assign var=TRASH_ADDED value=1}
-                {assign var=TRASH_FOLDER value=$FOLDER->name()}
-                <li class="tab-item nav-link fs-6 mm_folder mm_folder mmMainFolder d-flex align-items-center justify-content-between cursorPointer" data-foldername="{$FOLDER->name()}">
+                {assign var=TRASH_FOLDER value=$FOLDER->getName()}
+                <li class="tab-item nav-link fs-6 mm_folder mm_folder mmMainFolder d-flex align-items-center justify-content-between cursorPointer" data-foldername="{$FOLDER->getName()}">
                     <div>
                         <i class="fa fa-trash-o fs-3"></i>
                         <b class="mx-2">{vtranslate('LBL_TRASH', $MODULE)}</b>
@@ -60,11 +60,11 @@
         </li>
         {assign var=IGNORE_FOLDERS value=array($INBOX_FOLDER, $SENT_FOLDER, $TRASH_FOLDER)}
         {foreach item=FOLDER from=$FOLDERS}
-            {if !in_array($FOLDER->name(), $IGNORE_FOLDERS)}
-            <li class="tab-item nav-link fs-6 mm_folder mm_folder mmOtherFolder d-flex align-items-center justify-content-between cursorPointer" data-foldername="{$FOLDER->name()}">
+            {if !in_array($FOLDER->getName(), $IGNORE_FOLDERS)}
+            <li class="tab-item nav-link fs-6 mm_folder mm_folder mmOtherFolder d-flex align-items-center justify-content-between cursorPointer" data-foldername="{$FOLDER->getName()}">
                 <div>
                     <i class="fa-solid fa-folder fs-3"></i>
-                    <b class="mx-2">{$FOLDER->name()}</b>
+                    <b class="mx-2">{$FOLDER->getLabel()}</b>
                 </div>
                 <div class="badge rounded-pill text-bg-primary mmUnreadCountBadge {if !$FOLDER->unreadCount()}hide{/if}">
                    {$FOLDER->unreadCount()} 
