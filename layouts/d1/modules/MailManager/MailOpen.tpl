@@ -16,21 +16,19 @@
         <input type="hidden" id="mmDate" value="{$MAIL->getDate()}">
         <input type="hidden" id="mmUserName" value="{$USERNAME}">
         <input type="hidden" id="mmAttchmentCount" value="{$ATTACHMENTS_COUNT}">
-        <div id="mailManagerActions">
-            <div class="row">
-                <div class="col mb-2" id="relationBlock">
-                    <div class="spinner-border text-secondary" role="status">
-                        <span class="sr-only">Loading...</span>
-                    </div>
+        <div class="row" id="mailManagerActions">
+            <div class="col mb-2" id="relationBlock">
+                <div class="spinner-border text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
                 </div>
-                <div class="col-auto">
-                    <button type="button" class="btn btn-outline-secondary mailPagination me-2" data-folder='{$FOLDER->getName()}' data-muid='{$MAIL->getUid()}' data-type="prev" disabled="disabled">
-                        <i class="fa fa-caret-left"></i>
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary mailPagination" data-folder='{$FOLDER->getName()}' data-muid='{$MAIL->getUid()}' data-type="next" disabled="disabled">
-                        <i class="fa fa-caret-right"></i>
-                    </button>
-                </div>
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-secondary mailPagination me-2" data-folder='{$FOLDER->getName()}' data-muid='{$MAIL->getUid()}' data-type="prev" disabled="disabled">
+                    <i class="fa fa-caret-left"></i>
+                </button>
+                <button type="button" class="btn btn-outline-secondary mailPagination" data-folder='{$FOLDER->getName()}' data-muid='{$MAIL->getUid()}' data-type="next" disabled="disabled">
+                    <i class="fa fa-caret-right"></i>
+                </button>
             </div>
         </div>
         <div class="row border-bottom py-3">
