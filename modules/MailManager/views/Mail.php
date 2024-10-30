@@ -53,8 +53,8 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
         $mail = $connector->getMail($folder, $mUid);
 
         if (!$request->isEmpty('attachments') || $mail->hasRelations() || $mail->hasLookUps($folder)) {
-            $mail->saveToDBRecord();
-            $mail->saveToDBAttachments();
+            $mail->saveRecordToDB();
+            $mail->saveAttachmentsToDB();
         }
 
         $viewer = $this->getViewer($request);

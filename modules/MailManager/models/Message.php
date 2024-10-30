@@ -173,49 +173,38 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 		}
 	}
 
-	/**
-	 * Reads the Mail information from the Database
-	 * @global PearDataBase Instance $db
-	 * @global User Instance $currentUserModel
-	 * @param Integer $uid
-	 * @return Boolean
-	 */
+    /**
+     * Reads the Mail information from the Database
+     * @return void
+     * @throws AppException
+     */
 
-	public function readFromDB($uid, $folder = false) {
-		$db = PearDatabase::getInstance();
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$query = "SELECT * FROM vtiger_mailmanager_mailrecord WHERE userid=? AND muid=?";
-		$params = array($currentUserModel->getId(), $uid);
-		if($folder) {
-			$query .= " AND mfolder = ?";
-			array_push($params, $folder);
-		}
-		$result = $db->pquery($query, $params);
-		if ($db->num_rows($result)) {
-			$resultrow = $db->fetch_array($result);
-			$this->mUid  = decode_html($resultrow['muid']);
+    public function retrieveRecordFromDB(): void
+    {
+        if (!$this->validateUid()) {
+            return;
+        }
 
-			$this->_from = Zend_Json::decode(decode_html($resultrow['mfrom']));
-			$this->_to   = Zend_Json::decode(decode_html($resultrow['mto']));
-			$this->_cc   = Zend_Json::decode(decode_html($resultrow['mcc']));
-			$this->_bcc  = Zend_Json::decode(decode_html($resultrow['mbcc']));
+        $uid = $this->getUid();
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $data = $this->getRecordTable()->selectData([], ['userid' => $currentUserModel->getId(), 'muid' => $uid]);
 
-			$this->_date	= decode_html($resultrow['mdate']);
-			$subject = str_replace("_"," ",decode_html($resultrow['msubject']));
-			$this->_subject = @self::__mime_decode($subject);
-			$this->_body    = decode_html($resultrow['mbody']);
-			$this->_charset = decode_html($resultrow['mcharset']);
+        if (!empty($data['muid'])) {
+            $this->setFrom(Zend_Json::decode(decode_html($data['mfrom'])));
+            $this->setTo(Zend_Json::decode(decode_html($data['mto'])));
+            $this->setCC(Zend_Json::decode(decode_html($data['mcc'])));
+            $this->setBCC(Zend_Json::decode(decode_html($data['mbcc'])));
+            $this->setDate(intval($data['mdate']));
+            $this->setSubject(decode_html($data['msubject']));
+            $this->setBody(decode_html($data['mbody']));
+            $this->setUniqueId(decode_html($data['muniqueid']));
+        }
+    }
 
-			$this->_isbodyhtml   = intval($resultrow['misbodyhtml'])? true : false;
-			$this->_plainmessage = intval($resultrow['mplainmessage'])? true:false;
-			$this->_htmlmessage  = intval($resultrow['mhtmlmessage'])? true :false;
-			$this->_uniqueid     = decode_html($resultrow['muniqueid']);
-			$this->_bodyparsed   = intval($resultrow['mbodyparsed'])? true : false;
-
-			return true;
-		}
-		return false;
-	}
+    public function validateUid(): bool
+    {
+        return !empty($this->mUid);
+    }
 
     /**
      * @param bool $withContent
@@ -286,7 +275,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
         );
     }
 
-    public function saveToDBRecord(): void
+    public function saveRecordToDB(): void
     {
         $mUid = $this->getUid();
         $record = $this->getRecordTable()->selectData(['muid'], ['muid' => $mUid]);
@@ -319,7 +308,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
     /**
      * @throws AppException
      */
-    public function saveToDBAttachments(): void
+    public function saveAttachmentsToDB(): void
     {
         $uid = $this->getUid();
         $currentUserId = Users_Record_Model::getCurrentUserModel()->getId();
@@ -649,10 +638,11 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
      * Sets the Mail Headers
      * @param object $mMessage
      * @param object|bool $mBox
-     * @param object|bool $mFolder
+     * @param MailManager_Folder_Model|bool $mFolder
      * @return self
+     * @throws AppException
      */
-    public static function parseOverview(object $mMessage, object|bool $mFolder = false, object|bool $mBox = false): self
+    public static function parseOverview(object $mMessage, MailManager_Folder_Model|bool $mFolder = false, object|bool $mBox = false): self
     {
         if ($mMessage) {
             $instance = self::getInstanceByBoxMessage($mMessage, $mFolder, $mBox);
@@ -663,13 +653,21 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
         return $instance;
     }
 
-    public static function getInstanceByBoxMessage($mMessage, $mFolder, $mBox): self
+    /**
+     * @param object $mMessage
+     * @param object $mBox
+     * @return MailManager_Message_Model
+     * @throws AppException
+     * @var MailManager_Folder_Model $mFolder
+     */
+    public static function getInstanceByBoxMessage(object $mMessage, MailManager_Folder_Model $mFolder, object $mBox): self
     {
         $instance = new self();
         $instance->setBoxMessage($mMessage);
         $instance->setFolder($mFolder);
         $instance->setBox($mBox);
-        $instance->retrieveInfo();
+        $instance->setUid(intval($mMessage->getUid()));
+        $instance->retrieveRecord();
 
         return $instance;
     }
@@ -679,7 +677,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
         return !empty($this->mMessage);
     }
 
-    public function retrieveInfo(): void
+    public function retrieveRecordFromMessage(): void
     {
         if (!$this->validateBoxMessage()) {
             return;
@@ -713,7 +711,16 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
         }
 
         $mMessage = $this->getBoxMessage();
-        $this->setBody($mMessage ? $mMessage->getHTMLBody() : '');
+
+        if ($mMessage) {
+            $body = $mMessage->getHTMLBody();
+
+            if (empty($body)) {
+                $body = $mMessage->getTextBody();
+            }
+
+            $this->setBody($body);
+        }
     }
 
     /**
@@ -1357,5 +1364,14 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
     public function setBox($value)
     {
         $this->mBox = $value;
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function retrieveRecord(): void
+    {
+        $this->retrieveRecordFromDB();
+        $this->retrieveRecordFromMessage();
     }
 }

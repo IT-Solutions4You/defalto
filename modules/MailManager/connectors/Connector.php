@@ -265,17 +265,19 @@ class MailManager_Connector_Connector {
 
 
     /**
-	 * Sets a list of mails with paging
-	 * @param MailManager_Folder_Model $folder - MailManager_Model_Folder Instance
-	 * @param Integer $page  - Page number
-	 * @param Integer $limit - Number of mails
-	 */
-    public function retrieveFolderMails($folder, int $page, int $limit)
+     * Sets a list of mails with paging
+     * @param MailManager_Folder_Model $folder - MailManager_Model_Folder Instance
+     * @param Integer $page - Page number
+     * @param Integer $limit - Number of mails
+     * @throws AppException
+     * @throws Exception
+     */
+    public function retrieveFolderMails(MailManager_Folder_Model $folder, int $page, int $limit): void
     {
         $mBoxFolder = $folder->getBoxFolder($this->getBox());
 
         if ($mBoxFolder) {
-            $query = $mBoxFolder->query()->all()->setFetchBody(false);
+            $query = $mBoxFolder->query()->all()->setFetchOrderDesc()->setFetchBody(true);
             $count = $query->count();
 
             [$mailIds, $mails] = $this->getMails($query, $folder, $page, $limit);
@@ -287,32 +289,24 @@ class MailManager_Connector_Connector {
     }
 
     /**
-     * @param $query
-     * @param $folder
-     * @param $page
-     * @param $limit
-     * @return array[]
+     * @param object $query
+     * @param MailManager_Folder_Model $folder
+     * @param int $page
+     * @param int $limit
+     * @return array
+     * @throws Exception
      */
-    public function getMails($query, $folder, $page, $limit)
+    public function getMails(object $query, MailManager_Folder_Model $folder, int $page, int $limit): array
     {
-        $count = $query->count();
-        $messageNo = $count - (($page - 1) * $limit);
-        $lastMessageNo = max($count - ($page * $limit) + 1, 1);
-
+        $query = $query->limit($limit, $page);
         $mailIds = [];
         $mails = [];
 
-        while ($messageNo >= $lastMessageNo) {
-            if (empty($messageNo)) {
-                break;
-            }
-
-            $mBoxMessage = $query->getMessageByMsgn($messageNo);
+        foreach ($query->get() as $mBoxMessage) {
             $message = MailManager_Message_Model::parseOverview($mBoxMessage, $folder, $this->getBox());
 
-            $mailIds[] = $message->getUid();
-            $mails[] = $message;
-            $messageNo--;
+            array_unshift($mailIds, $message->getUid());
+            array_unshift($mails, $message);
         }
 
         return [$mailIds, $mails];
@@ -405,8 +399,7 @@ class MailManager_Connector_Connector {
     public function getMail(MailManager_Folder_Model $folder, int $mUId, bool $fetchBody = true): MailManager_Message_Model
     {
         $this->clearDBCache();
-        $mBox = $this->getBox();
-        $message = MailManager_Message_Model::getInstanceByBoxMessage($this->getMessageByMUid($folder, $mUId), $folder, $mBox);
+        $message = MailManager_Message_Model::getInstanceByBoxMessage($this->getMessageByMUid($folder, $mUId), $folder, $this->getBox());
 
         if ($fetchBody) {
             $message->retrieveBody();
@@ -475,13 +468,14 @@ class MailManager_Connector_Connector {
      * @param MailManager_Folder_Model $folder - folder instance
      * @param int $page
      * @param int $limit
+     * @throws Exception
      */
     public function retrieveSearchMails(array $query, MailManager_Folder_Model $folder, int $page, int $limit): void
     {
         $mBoxFolder = $folder->getBoxFolder($this->getBox());
 
         if ($mBoxFolder) {
-            $query = $mBoxFolder->query()->where($query)->all();
+            $query = $mBoxFolder->query()->setFetchOrderAsc()->setFetchBody(true)->where($query);
             $count = $query->count();
 
             [$mailIds, $mails] = $this->getMails($query, $folder, $page, $limit);
