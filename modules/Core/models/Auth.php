@@ -235,7 +235,7 @@ class Core_Auth_Model extends Vtiger_Base_Model
             (new MailManager_Mailbox_Model())->getMailAccountTable()->updateData($update, $search);
 
             if (include_once('modules/Settings/MailConverter/handlers/MailScannerInfo.php')) {
-                (new Vtiger_MailScannerInfo('', false))->getMailScannerTable()->updateData($update, $search);
+                (new Vtiger_MailScannerInfo())->getMailScannerTable()->updateData($update, $search);
             }
         }
 
