@@ -167,30 +167,40 @@ class Settings_MailConverter_Record_Model extends Settings_Vtiger_Record_Model {
 		else return $cryptobj->decrypt(trim($password));
 	}
 
-	/**
-	 * Functon to delete this record
-	 */
-	public function delete() {
+    /**
+     * Functon to delete this record
+     * @throws AppException
+     */
+	public function delete(): void
+    {
         vimport('~~modules/Settings/MailConverter/handlers/MailScannerInfo.php');
-        $scanner = new Vtiger_MailScannerInfo(trim($this->getName()));
+        $scanner = Vtiger_MailScannerInfo::getInstance(trim($this->getName()));
 		$scanner->delete();
 	}
 
-	/**
-	 * Function to save this record
-	 * @return <Boolean> true/false (Saved/Not Saved)
-	 */
-	public function save() {
+    /**
+     * Function to save this record
+     * @return bool true/false (Saved/Not Saved)
+     * @throws AppException
+     */
+	public function save(): bool
+    {
         vimport('~~modules/Settings/MailConverter/handlers/MailScannerInfo.php');
-		$scannerLatestInfo = new Vtiger_MailScannerInfo(false, false);
+		$scannerLatestInfo = Vtiger_MailScannerInfo::getInstance(false, false);
 		$fieldsList = $this->getModule()->getFields();
+
 		foreach ($fieldsList as $fieldName => $fieldModel) {
 			$scannerLatestInfo->$fieldName = $this->get($fieldName);
 		}
+
 		$scannerId = $this->getId();
-		if (!empty($scannerId)) {
+
+        if (!empty($scannerId)) {
 			$scannerLatestInfo->scannerid = $this->getId();
 		}
+
+        $scannerLatestInfo->retrieveClientAccessToken();
+
 		//Checking Scanner Name
 		$scannerName = $this->getName();
 		if($scannerName && !validateAlphanumericInput($scannerName)) {
@@ -205,70 +215,74 @@ class Settings_MailConverter_Record_Model extends Settings_Vtiger_Record_Model {
 
 		
 		$isConnected = true;
-		$scannerOldInfo = new Vtiger_MailScannerInfo($this->get('scannerOldName'));
+		$scannerOldInfo = Vtiger_MailScannerInfo::getInstance($this->get('scannerOldName'));
 
 		if(!$scannerOldInfo->compare($scannerLatestInfo)) {
-            vimport('~~modules/Settings/MailConverter/handlers/MailBox.php');
-			$mailBox = new Vtiger_MailBox($scannerLatestInfo);
+			$mailBox = new Settings_MailConverter_MailBox_Handler($scannerLatestInfo);
 			$isConnected = $mailBox->connect();
 		}
 
 		if($isConnected) {
-			$scannerLatestInfo->connecturl = $mailBox->_imapurl;
-			//$scannerLatestInfo->isvalid = $scannerOldInfo->isvalid = $isConnected;
             if(!empty($scannerId)){
                 $scannerOldInfo->scannerid = $scannerId;
             }
-			$mailServerChanged = $scannerOldInfo->update($scannerLatestInfo);
+
             if(empty($scannerId)) {
                 $this->set('scannerid', $scannerOldInfo->scannerid);
             }
 
 			$rescanFolder = false;
+
 			if ($this->get('searchfor') === 'all') {
 				$rescanFolder = true;
 			}
+
 			$scannerOldInfo->updateAllFolderRescan($rescanFolder);
 		}
+
 		return $isConnected;
 	}
 
-	/**
-	 * Function to scan this record
-	 * @return <Boolean> true/false (Scaned/Not)
-	 */
-	public function scanNow() {
+    /**
+     * Function to scan this record
+     * @return <Boolean> true/false (Scaned/Not)
+     * @throws AppException
+     */
+	public function scanNow(): bool
+    {
 		$isValid = $this->get('isvalid');
+
 		if ($isValid) {
 			vimport('~~modules/Settings/MailConverter/handlers/MailScannerInfo.php');
 			vimport('~~modules/Settings/MailConverter/handlers/MailScanner.php');
-			$scannerInfo = new Vtiger_MailScannerInfo($this->getName());
+			$scannerInfo = Vtiger_MailScannerInfo::getInstance($this->getName());
 			/** Start the scanning. */
 			$scanner = new Vtiger_MailScanner($scannerInfo);
-			$status = $scanner->performScanNow();
-			return $status;
+
+			return $scanner->performScanNow();
 		}
+
 		return false;
 	}
 
-	/**
-	 * Function to get Folders list of this record
-	 * @return <Array> Folders list
-	 */
+    /**
+     * Function to get Folders list of this record
+     * @return <Array> Folders list
+     * @throws AppException
+     */
 	public function getFoldersList() {
-        vimport('~~modules/Settings/MailConverter/handlers/MailBox.php');
-		$scannerInfo = new Vtiger_MailScannerInfo($this->getName());
+		$scannerInfo = Vtiger_MailScannerInfo::getInstance($this->getName());
 		return $scannerInfo->getFolderInfo();
 	}
 
-	/**
-	 * Function to get Updated folders list
-	 * @return <Array> Folders List
-	 */
+    /**
+     * Function to get Updated folders list
+     * @return <Array> Folders List
+     * @throws AppException
+     */
 	public function getUpdatedFoldersList() {
-        vimport('~~modules/Settings/MailConverter/handlers/MailBox.php');
-		$scannerInfo = new Vtiger_MailScannerInfo($this->getName());
-		$mailBox = new Vtiger_MailBox($scannerInfo);
+		$scannerInfo = Vtiger_MailScannerInfo::getInstance($this->getName());
+		$mailBox = new Settings_MailConverter_MailBox_Handler($scannerInfo);
 
 		if($mailBox->connect()) {
 			$folders = $mailBox->getFolders();
@@ -327,18 +341,22 @@ class Settings_MailConverter_Record_Model extends Settings_Vtiger_Record_Model {
 	 * @param <Integer> $recordId
 	 * @return <Settings_MailConverter_Record_Model>
 	 */
-	public static function getInstanceById($recordId) {
-		$db = PearDatabase::getInstance();
-		$result = $db->pquery('SELECT * FROM vtiger_mailscanner WHERE scannerid = ?', array($recordId));
-		if ($db->num_rows($result)) {
-			$recordModel = self::getCleanInstance();
-			$recordModel->setData($db->query_result_rowdata($result));
-            return $recordModel->set('password', $recordModel->__crypt($recordModel->get('password'),false));
-		}
-		return false;
-	}
+    public static function getInstanceById($recordId)
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT * FROM vtiger_mailscanner WHERE scannerid = ?', [$recordId]);
 
-	/**
+        if ($db->num_rows($result)) {
+            $recordModel = self::getCleanInstance();
+            $recordModel->setData($db->query_result_rowdata($result));
+
+            return $recordModel->set('password', $recordModel->__crypt($recordModel->get('password'), false));
+        }
+
+        return false;
+    }
+
+    /**
 	 * Function to get List of mail scanner records
 	 * @return <Array> List of record models <Settings_MailConverter_Record_Model>
 	 */

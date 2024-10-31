@@ -59,15 +59,21 @@ class Vtiger_MailScannerInfo {
     public string $client_token = '';
     public string $client_access_token = '';
 
+    /**
+     * @throws AppException
+     */
+    public static function getInstance($scannerName, $initialize = true): self
+    {
+        $instance = new self();
+
+        if ($initialize && $scannerName) {
+            $instance->initialize($scannerName);
+        }
+
+        return $instance;
+    }
 
     /**
-	 * Constructor
-	 */
-	function __construct($scannername, $initialize=true) {
-		if($initialize && $scannername) $this->initialize($scannername);
-	}
-
-	/**
 	 * Encrypt/Decrypt input.
 	 * @access private
 	 */
@@ -78,9 +84,10 @@ class Vtiger_MailScannerInfo {
 		else return $cryptobj->decrypt(trim($password));
 	}
 
-	/**
-	 * Initialize this instance.
-	 */
+    /**
+     * Initialize this instance.
+     * @throws AppException
+     */
 	function initialize($scannername) {
 		global $adb;
 		$result = $adb->pquery("SELECT * FROM vtiger_mailscanner WHERE scannername=?", Array($scannername));
@@ -325,7 +332,6 @@ class Vtiger_MailScannerInfo {
             'protocol',
             'username',
             'password',
-            'mail_proxy',
             'client_id',
             'client_secret',
             'client_token',
@@ -409,7 +415,6 @@ class Vtiger_MailScannerInfo {
             'markas' => $this->markas,
             'isvalid' => $useisvalid,
             'time_zone' => $this->time_zone,
-            'mail_proxy' => $this->mail_proxy,
             'client_id' => $this->client_id,
             'client_secret' => $this->client_secret,
             'client_token' => $this->client_token,
@@ -446,7 +451,6 @@ class Vtiger_MailScannerInfo {
             ->createColumn('isvalid', 'int(1) DEFAULT NULL')
             ->createColumn('scanfrom', 'varchar(10) DEFAULT \'ALL\'')
             ->createColumn('time_zone', 'varchar(10) DEFAULT NULL')
-            ->createColumn('mail_proxy', 'VARCHAR(50) DEFAULT NULL')
             ->createColumn('client_id', 'varchar(255) DEFAULT NULL')
             ->createColumn('client_secret', 'varchar(255) DEFAULT NULL')
             ->createColumn('client_token', 'text DEFAULT NULL')
@@ -519,7 +523,5 @@ class Vtiger_MailScannerInfo {
         if (!empty($this->client_access_token)) {
             $this->client_access_token = $authModel->getAccessToken();
         }
-
-
     }
 }

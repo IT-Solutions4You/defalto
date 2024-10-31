@@ -131,49 +131,54 @@ class Vtiger_MailScannerRule {
     /**
      * Check if the rule criteria is matching
      */
-	function isMatching($matchfound1, $matchfound2 = null) {
-        if ($matchfound2 === null)
-            return $matchfound1;
+	function isMatching($matchFound1, $matchFound2 = null) {
+        if ($matchFound2 === null)
+            return $matchFound1;
 
         if ($this->matchusing == 'AND')
-            return ($matchfound1 && $matchfound2);
+            return ($matchFound1 && $matchFound2);
         if ($this->matchusing == 'OR')
-            return ($matchfound1 || $matchfound2);
+            return ($matchFound1 || $matchFound2);
         return false;
     }
 
     /**
      * Apply all the criteria.
-     * @param $mailrecord
+     * @param $mailRecord
      * @param $includingBody
      * @returns false if not match is found or else all matching result found
      */
-    function applyAll($mailrecord, $includingBody=true) {
-        $matchresults = Array();
-        $matchfound = null;
+    public function applyAll($mailRecord, $includingBody = true)
+    {
+        $matchResults = [];
+        $matchFound = null;
 
         if ($this->hasACondition()) {
-            $subrules = Array('FROM', 'TO', 'CC', 'BCC', 'SUBJECT', 'BODY');
+            $subrules = ['FROM', 'TO', 'CC', 'BCC', 'SUBJECT', 'BODY'];
 
             foreach ($subrules as $subrule) {
-            // Body rule could be defered later to improve performance
-            // in that case skip it.
-                    if($subrule == 'BODY' && !$includingBody) continue;
+                // Body rule could be defered later to improve performance
+                // in that case skip it.
+                if ($subrule == 'BODY' && !$includingBody) {
+                    continue;
+                }
 
-            $checkmatch = $this->apply($subrule, $mailrecord);
-            $matchfound = $this->isMatching($checkmatch, $matchfound);
-            // Collect matching result array
-            if ($matchfound && is_array($checkmatch))
-                $matchresults[] = $checkmatch;
+                $checkMatch = $this->apply($subrule, $mailRecord);
+                $matchFound = $this->isMatching($checkMatch, $matchFound);
+                // Collect matching result array
+                if ($matchFound && is_array($checkMatch)) {
+                    $matchResults[] = $checkMatch;
+                }
             }
         } else {
-            $matchfound = false;
-                if($this->matchusing == 'OR') {
-            $matchfound = true;
-                    $matchresults[] = $this->__CreateMatchResult('BLANK','','','');
+            $matchFound = false;
+            if ($this->matchusing == 'OR') {
+                $matchFound = true;
+                $matchResults[] = $this->__CreateMatchResult('BLANK', '', '', '');
             }
         }
-		return ($matchfound)? $matchresults : false;
+
+        return ($matchFound) ? $matchResults : false;
     }
 
     /**
@@ -192,68 +197,76 @@ class Vtiger_MailScannerRule {
     /**
      * Apply required condition on the mail record.
      */
-    function apply($subrule, $mailrecord) {
-        $matchfound = false;
-            if($this->isvalid) {
-                switch(strtoupper($subrule)) {
-            case 'FROM':
-                if($this->fromaddress) {
-                    if(strpos($this->fromaddress, '*') == 0)
-                        $this->fromaddress = trim($this->fromaddress, '*');
-                    $matchfound = $this->find($subrule, 'Contains', $mailrecord->_from[0], $this->fromaddress);
-                } else {
-                    $matchfound = $this->__CreateDefaultMatchResult($subrule);
-                }
-                break;
-            case 'TO':
-                        if($this->toaddress) {
-                            foreach($mailrecord->_to as $toemail) {
-                    $matchfound = $this->find($subrule, 'Contains', $toemail, $this->toaddress);
-                                if($matchfound) break;
-                }
-                } else {
-                $matchfound = $this->__CreateDefaultMatchResult($subrule);
-                }
-                break;
-            case 'CC':
-                if ($this->cc) {
-                foreach ($mailrecord->_cc as $toemail) {
-                    $matchfound = $this->find($subrule, 'Contains', $toemail, $this->cc);
-                    if ($matchfound)
+    function apply($subrule, $mailRecord)
+    {
+        $matchFound = false;
+        
+        if ($this->isvalid) {
+            switch (strtoupper($subrule)) {
+                case 'FROM':
+                    if ($this->fromaddress) {
+                        if (strpos($this->fromaddress, '*') == 0) {
+                            $this->fromaddress = trim($this->fromaddress, '*');
+                        }
+                        $matchFound = $this->find($subrule, 'Contains', $mailRecord->getFrom()[0], $this->fromaddress);
+                    } else {
+                        $matchFound = $this->__CreateDefaultMatchResult($subrule);
+                    }
                     break;
-                }
-                } else {
-                $matchfound = $this->__CreateDefaultMatchResult($subrule);
-                }
-                break;
-            case 'BCC':
-                if ($this->bcc) {
-                foreach ($mailrecord->_bcc as $toemail) {
-                    $matchfound = $this->find($subrule, 'Contains', $toemail, $this->bcc);
-                    if ($matchfound)
+                case 'TO':
+                    if ($this->toaddress) {
+                        foreach ($mailRecord->getTo() as $toEmail) {
+                            $matchFound = $this->find($subrule, 'Contains', $toEmail, $this->toaddress);
+                            if ($matchFound) {
+                                break;
+                            }
+                        }
+                    } else {
+                        $matchFound = $this->__CreateDefaultMatchResult($subrule);
+                    }
                     break;
-                }
-                } else {
-                $matchfound = $this->__CreateDefaultMatchResult($subrule);
-                }
-                break;
-            case 'SUBJECT':
-                if ($this->subjectop) {
-                    $matchfound = $this->find($subrule, $this->subjectop, $mailrecord->_subject, $this->subject);
-                } else {
-                    $matchfound = $this->__CreateDefaultMatchResult($subrule);
-                }
-                break;
-            case 'BODY':
-                if ($this->bodyop) {
-                $matchfound = $this->find($subrule, $this->bodyop, trim(strip_tags($mailrecord->_body)), trim($this->body));
-                } else {
-                $matchfound = $this->__CreateDefaultMatchResult($subrule);
-                }
-                break;
+                case 'CC':
+                    if ($this->cc) {
+                        foreach ($mailRecord->getCC() as $toEmail) {
+                            $matchFound = $this->find($subrule, 'Contains', $toEmail, $this->cc);
+                            if ($matchFound) {
+                                break;
+                            }
+                        }
+                    } else {
+                        $matchFound = $this->__CreateDefaultMatchResult($subrule);
+                    }
+                    break;
+                case 'BCC':
+                    if ($this->bcc) {
+                        foreach ($mailRecord->getBCC() as $toEmail) {
+                            $matchFound = $this->find($subrule, 'Contains', $toEmail, $this->bcc);
+                            if ($matchFound) {
+                                break;
+                            }
+                        }
+                    } else {
+                        $matchFound = $this->__CreateDefaultMatchResult($subrule);
+                    }
+                    break;
+                case 'SUBJECT':
+                    if ($this->subjectop) {
+                        $matchFound = $this->find($subrule, $this->subjectop, $mailRecord->getSubject(), $this->subject);
+                    } else {
+                        $matchFound = $this->__CreateDefaultMatchResult($subrule);
+                    }
+                    break;
+                case 'BODY':
+                    if ($this->bodyop) {
+                        $matchFound = $this->find($subrule, $this->bodyop, trim(strip_tags($mailRecord->getBody())), trim($this->body));
+                    } else {
+                        $matchFound = $this->__CreateDefaultMatchResult($subrule);
+                    }
+                    break;
             }
         }
-        return $matchfound;
+
+        return $matchFound;
     }
 
     /**
@@ -264,65 +277,65 @@ class Vtiger_MailScannerRule {
             return false;
             $input = trim(preg_replace("/\r/", '', decode_html($input))); 
             $searchfor = decode_html($searchfor);
-        $matchfound = false;
+        $matchFound = false;
         $matches = false;
 
         switch ($condition) {
             case 'Contains':
-            $matchfound = stripos($input, $searchfor);
-            $matchfound = ($matchfound !== FALSE);
+            $matchFound = stripos($input, $searchfor);
+            $matchFound = ($matchFound !== FALSE);
             $matches = $searchfor;
             break;
             case 'Not Contains':
-            $matchfound = stripos($input, $searchfor);
-            $matchfound = ($matchfound === FALSE);
+            $matchFound = stripos($input, $searchfor);
+            $matchFound = ($matchFound === FALSE);
             $matches = $searchfor;
             break;
             case 'Equals':
-            $matchfound = strcasecmp($input, $searchfor);
-            $matchfound = ($matchfound === 0);
+            $matchFound = strcasecmp($input, $searchfor);
+            $matchFound = ($matchFound === 0);
             $matches = $searchfor;
             break;
             case 'Not Equals':
-            $matchfound = strcasecmp($input, $searchfor);
-            $matchfound = ($matchfound !== 0);
+            $matchFound = strcasecmp($input, $searchfor);
+            $matchFound = ($matchFound !== 0);
             $matches = $searchfor;
             break;
             case 'Begins With':
-            $matchfound = stripos($input, $searchfor);
-            $matchfound = ($matchfound === 0);
+            $matchFound = stripos($input, $searchfor);
+            $matchFound = ($matchFound === 0);
             $matches = $searchfor;
             break;
             case 'Ends With':
-            $matchfound = strripos($input, $searchfor);
-            $matchfound = ($matchfound === strlen($input) - strlen($searchfor));
+            $matchFound = strripos($input, $searchfor);
+            $matchFound = ($matchFound === strlen($input) - strlen($searchfor));
             $matches = $searchfor;
             break;
             case 'Regex':
             $regmatches = Array();
-            $matchfound = false;
+            $matchFound = false;
             $searchfor = str_replace('/', '\/', $searchfor);
                     $input = str_replace("_", " ", $input);
             if (preg_match("/$searchfor/i", $input, $regmatches)) {
                 // Pick the last matching group
                 $matches = $regmatches[php7_count($regmatches) - 1];
-                $matchfound = true;
+                $matchFound = true;
             }
             break;
             case 'Has Ticket Number':
             $regmatches = Array();
-            $matchfound = false;
+            $matchFound = false;
             $searchfor = "Ticket Id[^:]?: ([0-9]+)"; 
             $searchfor = str_replace('/', '\/', $searchfor);
             if (preg_match("/$searchfor/i", $input, $regmatches)) {
                 // Pick the last matching group
                 $matches = $regmatches[php7_count($regmatches) - 1];
-                $matchfound = true;
+                $matchFound = true;
             }
             break;
         }
-        if($matchfound) $matchfound = $this->__CreateMatchResult($subrule, $condition, $searchfor, $matches);
-        return $matchfound;
+        if($matchFound) $matchFound = $this->__CreateMatchResult($subrule, $condition, $searchfor, $matches);
+        return $matchFound;
     }
 
     /**
@@ -443,13 +456,11 @@ class Vtiger_MailScannerRule {
     /**
      * Take action on mail record
      */
-    function takeAction($mailscanner, $mailrecord, $matchresult) {
+    function takeAction($mailscanner, $mailRecord, $matchresult) {
 		if(empty($this->actions)) return false;
 
         $action = $this->useaction; // Action is limited to One right now
-        return $action->apply($mailscanner, $mailrecord, $this, $matchresult);
+        return $action->apply($mailscanner, $mailRecord, $this, $matchresult);
     }
 
 }
-
-?>

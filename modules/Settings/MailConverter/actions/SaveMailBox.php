@@ -11,10 +11,10 @@
 class Settings_MailConverter_SaveMailBox_Action extends Settings_Vtiger_Index_Action {
 
 	public function process(Vtiger_Request $request) {
-		$recordId = $request->get('record');
+		$recordId = (int)$request->get('record');
 		$qualifiedModuleName = $request->getModule(false);
 
-		if ($recordId) {
+		if (!empty($recordId)) {
 			$recordModel = Settings_MailConverter_Record_Model::getInstanceById($recordId);
 		} else {
 			$recordModel = Settings_MailConverter_Record_Model::getCleanInstance();
@@ -22,6 +22,7 @@ class Settings_MailConverter_SaveMailBox_Action extends Settings_Vtiger_Index_Ac
 
 		$recordModel->set('scannerOldName', $request->get('scannerOldName'));
 		$fieldsList = $recordModel->getModule()->getFields();
+
 		foreach ($fieldsList as $fieldName=>$fieldModel) {
 			$recordModel->set($fieldName, $request->get($fieldName));
 		}

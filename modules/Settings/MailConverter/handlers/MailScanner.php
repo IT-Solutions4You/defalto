@@ -1,15 +1,13 @@
 <?php
-/*********************************************************************************
- ** The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
+/*
+ * This file is part of the IT-Solutions4You CRM Software.
  *
- ********************************************************************************/
+ * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-require_once('modules/Settings/MailConverter/handlers/MailBox.php');
 require_once('modules/Settings/MailConverter/handlers/MailAttachmentMIME.php');
 
 /**
@@ -18,26 +16,32 @@ require_once('modules/Settings/MailConverter/handlers/MailAttachmentMIME.php');
  */
 class Vtiger_MailScanner {
 	// MailScanner information instance
-	var $_scannerinfo = false;
+	public $_scannerinfo = false;
 	// Reference mailbox to use
-	var $_mailbox = false;
+    public $_mailbox = false;
 
 	// Ignore scanning the folders always
-	var $_generalIgnoreFolders = Array( "INBOX.Trash", "INBOX.Drafts", "[Gmail]/Spam", "[Gmail]/Trash", "[Gmail]/Drafts", "[Gmail]/Important", "[Gmail]/Starred", "[Gmail]/Sent Mail", "[Gmail]/All Mail");
+    public $_generalIgnoreFolders = Array( "INBOX.Trash", "INBOX.Drafts", "[Gmail]/Spam", "[Gmail]/Trash", "[Gmail]/Drafts", "[Gmail]/Important", "[Gmail]/Starred", "[Gmail]/Sent Mail", "[Gmail]/All Mail");
 
 	/** DEBUG functionality. */
-	var $debug = false;
-	function log($message) {
-		global $log;
-		if($log && $this->debug) { $log->debug($message); }
-		else if($this->debug) echo "$message\n";
-	}
+    public $debug = false;
 
-	/**
+    public function log($message): void
+    {
+        global $log;
+
+        if ($log && $this->debug) {
+            $log->debug($message);
+        } elseif ($this->debug) {
+            echo "$message\n";
+        }
+    }
+
+    /**
 	 * Constructor.
 	 */
-	function __construct($scannerinfo) {
-		$this->_scannerinfo = $scannerinfo;
+	function __construct($scannerInfo) {
+		$this->_scannerinfo = $scannerInfo;
 	}
 
 	/**
@@ -45,15 +49,16 @@ class Vtiger_MailScanner {
 	 */
 	function getMailBox() {
 		if(!$this->_mailbox) {
-			$this->_mailbox = new Vtiger_MailBox($this->_scannerinfo);
+			$this->_mailbox = new Settings_MailConverter_MailBox_Handler($this->_scannerinfo);
 			$this->_mailbox->debug = $this->debug;
 		}
 		return $this->_mailbox;
 	}
 
-	/**
-	 * Start Scanning.
-	 */
+    /**
+     * Start Scanning.
+     * @throws AppException
+     */
 	function performScanNow() {
 		// Check if rules exists to proceed
 		$rules = $this->_scannerinfo->rules;
@@ -68,22 +73,26 @@ class Vtiger_MailScanner {
 		$mailbox->connect();
 
 		/** Loop through all the folders. */
-		$folders = $mailbox->getFolders();
-                if(!is_array($folders)) {
-                    return $folders;
-                }
+        $folders = $mailbox->getFolders();
+
+        if (!is_array($folders)) {
+            return $folders;
+        }
 
 		// Build ignore folder list
 		$ignoreFolders = Array();
-		$folderinfoList = $this->_scannerinfo->getFolderInfo();
-		$allFolders = array_keys($folderinfoList);
-		foreach ($folders as $folder) {
-			if (!in_array($folder, $allFolders))
-				$ignoreFolders[] = $folder;
-		}
+		$folderInfoList = $this->_scannerinfo->getFolderInfo();
+		$allFolders = array_keys($folderInfoList);
 
-		if ($folders)
-			$this->log("Folders found: " . implode(',', $folders) . "\n");
+        foreach ($folders as $folder) {
+            if (!in_array($folder, $allFolders)) {
+                $ignoreFolders[] = $folder;
+            }
+        }
+
+        if ($folders) {
+            $this->log("Folders found: " . implode(',', $folders) . "\n");
+        }
 
 		foreach($folders as $lookAtFolder) {
 			// Skip folder scanning?
@@ -92,46 +101,52 @@ class Vtiger_MailScanner {
 				continue;
 			}
 			// If a new folder has been added we should avoid scanning it
-			if(!isset($folderinfoList[$lookAtFolder])) {
+			if(!isset($folderInfoList[$lookAtFolder])) {
 				$this->log("\nSkipping New Folder: $lookAtFolder\n");
 				continue;
 			}
 
 			// Search for mail in the folder
-			$mailsearch = $mailbox->search($lookAtFolder);
-			$this->log($mailsearch? "Total Mails Found in [$lookAtFolder]: " . php7_count($mailsearch) : "No Mails Found in [$lookAtFolder]");
+            $mBoxFolder = $mailbox->getFolder($lookAtFolder);
+			$mailSearch = $mailbox->getSearchMails($mBoxFolder);
+
+            $this->log($mailSearch ? "Total Mails Found in [$lookAtFolder]: " . php7_count($mailSearch) : "No Mails Found in [$lookAtFolder]");
 
 			// No emails? Continue with next folder
-			if(empty($mailsearch)) continue;
+			if(empty($mailSearch)) continue;
 
 			// Loop through each of the email searched
-			foreach($mailsearch as $messageid) {
+			foreach($mailSearch as $mBoxMail) {
+                $messageId = $mBoxMail->getUid();
 				// Fetch only header part first, based on account lookup fetch the body.
-				$mailrecord = $mailbox->getMessage($messageid, false);
-				$mailrecord->debug = $mailbox->debug;
-				$mailrecord->log();
+				$mailRecord = $mailbox->getMessage($mBoxMail, $mBoxFolder, $mailbox->getBox());
+				$mailRecord->debug = $mailbox->debug;
+				$mailRecord->log();
 
 				// If the email is already scanned & rescanning is not set, skip it
-				if($this->isMessageScanned($mailrecord, $lookAtFolder)) {
-					$this->log("\nMessage already scanned [$mailrecord->_subject], IGNORING...\n");
-					unset($mailrecord);
+				if($this->isMessageScanned($mailRecord, $lookAtFolder)) {
+					$this->log("\nMessage already scanned [$mailRecord->_subject], IGNORING...\n");
+					unset($mailRecord);
 					continue;
 				}
 
 				// Apply rules configured for the mailbox
-				$crmid = false;
-				foreach($rules as $mailscannerrule) {
-					$crmid = $this->applyRule($mailscannerrule, $mailrecord, $mailbox, $messageid);
-					if($crmid) {
+				$crmId = false;
+
+				foreach($rules as $rule) {
+                    $crmId = $this->applyRule($rule, $mailRecord, $mailbox, $messageId);
+
+					if($crmId) {
 						break; // Rule was successfully applied and action taken
 					}
 				}
+
 				// Mark the email message as scanned
-				$this->markMessageScanned($mailrecord, $crmid);
-				$mailbox->markMessage($messageid);
+				$this->markMessageScanned($mailRecord, $crmId);
+				$mailbox->markMessage($mailRecord);
 
 				/** Free the resources consumed. */
-				unset($mailrecord);
+				unset($mailRecord);
 			}
 			/* Update lastscan for this folder and reset rescan flag */
 			// TODO: Update lastscan only if all the mail searched was parsed successfully?
@@ -146,49 +161,45 @@ class Vtiger_MailScanner {
 	/**
 	 * Apply all the rules configured for a mailbox on the mailrecord.
 	 */
-	function applyRule($mailscannerrule, $mailrecord, $mailbox, $messageid) {
-		// If no actions are set, don't proceed
-		if(empty($mailscannerrule->actions)) return false;
+    public function applyRule($mailscannerrule, $mailRecord, $mailbox, $messageId)
+    {
+        // If no actions are set, don't proceed
+        if (empty($mailscannerrule->actions)) {
+            return false;
+        }
+        // Check if rule is defined for the body
+        $bodyrule = $mailscannerrule->hasBodyRule();
+        // Apply rule to check if record matches the criteria
+        $matchresult = $mailscannerrule->applyAll($mailRecord, $bodyrule);
+        // If record matches the conditions fetch body to take action.
+        $crmId = false;
 
-		// Check if rule is defined for the body
-		$bodyrule = $mailscannerrule->hasBodyRule();
+        if ($matchresult) {
+            $crmId = $mailscannerrule->takeAction($this, $mailRecord, $matchresult);
+        }
 
-		if($bodyrule) {
-			// We need the body part for rule evaluation
-			$mailrecord->fetchBody($mailbox->_imap, $messageid);
-		}
+        // Return the CRMID
+        return $crmId;
+    }
 
-		// Apply rule to check if record matches the criteria
-		$matchresult = $mailscannerrule->applyAll($mailrecord, $bodyrule);
-
-		// If record matches the conditions fetch body to take action.
-		$crmid = false;
-		if($matchresult) {
-			$mailrecord->fetchBody($mailbox->_imap, $messageid);
-			$crmid = $mailscannerrule->takeAction($this, $mailrecord, $matchresult);
-		}
-		// Return the CRMID
-		return $crmid;
-	}
-
-	/**
+    /**
 	 * Mark the email as scanned.
 	 */
-	function markMessageScanned($mailrecord, $crmid=false) {
+	function markMessageScanned($mailRecord, $crmid=false) {
 		global $adb;
 		if($crmid === false) $crmid = null;
 		// TODO Make sure we have unique entry
 		$adb->pquery("INSERT INTO vtiger_mailscanner_ids(scannerid, messageid, crmid) VALUES(?,?,?)",
-			Array($this->_scannerinfo->scannerid, $mailrecord->_uniqueid, $crmid));
+			Array($this->_scannerinfo->scannerid, $mailRecord->_uniqueid, $crmid));
 	}
 
 	/**
 	 * Check if email was scanned.
 	 */
-	function isMessageScanned($mailrecord, $lookAtFolder) {
+	function isMessageScanned($mailRecord, $lookAtFolder) {
 		global $adb;
 		$messages = $adb->pquery("SELECT 1 FROM vtiger_mailscanner_ids WHERE scannerid=? AND messageid=?",
-			Array($this->_scannerinfo->scannerid, $mailrecord->_uniqueid));
+			Array($this->_scannerinfo->scannerid, $mailRecord->_uniqueid));
 
 		$folderRescan = $this->_scannerinfo->needRescan($lookAtFolder);
 		$isScanned = false;
@@ -201,7 +212,7 @@ class Vtiger_MailScanner {
 
 			if($folderRescan && empty($relatedCRMId)) {
 				$adb->pquery("DELETE FROM vtiger_mailscanner_ids WHERE scannerid=? AND messageid=?",
-					Array($this->_scannerinfo->scannerid, $mailrecord->_uniqueid));
+					Array($this->_scannerinfo->scannerid, $mailRecord->_uniqueid));
 				$isScanned = false;
 			}
 		}
@@ -494,7 +505,63 @@ class Vtiger_MailScanner {
         $scannerId = $this->_scannerinfo->scannerid;
 		$adb->pquery("UPDATE vtiger_mailscanner SET isvalid=? WHERE scannerid=?", array(0,$scannerId));
     }
-    
-}
 
-?>
+    /**
+     * Helper function for triggering the scan.
+     */
+    public static function performScanNowFromCron($scannerInfo, $debug)
+    {
+        /** If the scanner is not enabled, stop. */
+        if ($scannerInfo->isvalid) {
+            echo "Scanning " . $scannerInfo->server . " in progress\n";
+
+            /** Start the scanning. */
+            $scanner = new Vtiger_MailScanner($scannerInfo);
+            $scanner->debug = $debug;
+            $status = $scanner->performScanNow();
+
+            if ($status && is_bool($status)) {
+                echo "\nScanning " . $scannerInfo->server . " completed\n";
+            } else {
+                echo "\nScanning Failed. Error " . $status . "\n";
+            }
+        } else {
+            echo "Failed! [{$scannerInfo->scannername}] is not enabled for scanning!";
+        }
+    }
+
+    /**
+     * @throws AppException
+     */
+    public static function runCron()
+    {
+        /**
+         * Execution of this is based on number of emails and connection to mailserver.
+         * So setting infinite timeout.
+         */
+        set_time_limit(0);
+
+        /** Turn-off this if not required. */
+        $debug = true;
+
+        /** Pick up the mail scanner for scanning. */
+        if (isset($_REQUEST['scannername'])) {
+            // Target scannername specified?	
+            $scannerName = vtlib_purify($_REQUEST['scannername']);
+            $scannerInfo = Vtiger_MailScannerInfo::getInstance($scannerName);
+
+            self::performScanNowFromCron($scannerInfo, $debug);
+        } else {
+            // Scan all the configured mailscanners?
+
+            $scannerInfos = Vtiger_MailScannerInfo::listAll();
+            if (empty($scannerInfos)) {
+                echo "No mailbox configured for scanning!";
+            } else {
+                foreach ($scannerInfos as $scannerInfo) {
+                    self::performScanNowFromCron($scannerInfo, $debug);
+                }
+            }
+        }
+    }
+}

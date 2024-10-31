@@ -24,7 +24,7 @@ if (!class_exists('Migration_20241015120600')) {
 
             include_once 'modules/Settings/MailConverter/handlers/MailScannerInfo.php';
 
-            $mailScanner = new Vtiger_MailScannerInfo('', false);
+            $mailScanner = new Vtiger_MailScannerInfo();
             $mailScanner->createTables();
         }
     }

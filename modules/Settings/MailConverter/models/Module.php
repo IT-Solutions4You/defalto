@@ -30,7 +30,6 @@ class Settings_MailConverter_Module_Model extends Settings_Vtiger_Module_Model {
 			'server'		=> array('name' => 'server',		'typeofdata' => 'V~M',	'label' => 'Server',		'datatype' => 'string'),
 			'username'		=> array('name' => 'username',		'typeofdata' => 'V~M',	'label' => 'User Name',		'datatype' => 'string'),
 			'password'		=> array('name' => 'password',		'typeofdata' => 'V~M',	'label' => 'Password',		'datatype' => 'password'),
-			'mail_proxy'		=> array('name' => 'mail_proxy',		'typeofdata' => 'V~M',	'label' => 'Proxy',		'datatype' => 'string'),
 			'client_id'		=> array('name' => 'client_id',		'typeofdata' => 'V~M',	'label' => 'Client Id',		'datatype' => 'string'),
 			'client_secret'		=> array('name' => 'client_secret',		'typeofdata' => 'V~M',	'label' => 'Client Secret',		'datatype' => 'password'),
 			'client_token'		=> array('name' => 'client_token',		'typeofdata' => 'V~M',	'label' => 'Client Token',		'datatype' => 'token'),
@@ -133,12 +132,15 @@ class Settings_MailConverter_Module_Model extends Settings_Vtiger_Module_Model {
 		return $folders;
 	}
 
-	public static function getFolders($id) {
+    /**
+     * @throws AppException
+     */
+    public static function getFolders($id): bool|array
+    {
 		include_once 'modules/Settings/MailConverter/handlers/MailScannerInfo.php';
-		include_once 'modules/Settings/MailConverter/handlers/MailBox.php';
 		$scannerName = Settings_MailConverter_Module_Model::getScannerName($id);
-		$scannerInfo = new Vtiger_MailScannerInfo($scannerName);
-		$mailBox = new Vtiger_MailBox($scannerInfo);
+		$scannerInfo = Vtiger_MailScannerInfo::getInstance($scannerName);
+		$mailBox = new Settings_MailConverter_MailBox_Handler($scannerInfo);
 		$isConnected = $mailBox->connect();
 		if($isConnected) {
 			$allFolders = $mailBox->getFolders();
@@ -168,13 +170,19 @@ class Settings_MailConverter_Module_Model extends Settings_Vtiger_Module_Model {
 		return $scannerName;
 	}
 
-	public static function updateFolders($scannerId, $folders) {
+    /**
+     * @throws AppException
+     */
+    public static function updateFolders($scannerId, $folders): void
+    {
 		include_once 'modules/Settings/MailConverter/handlers/MailScannerInfo.php';
+
 		$db = PearDatabase::getInstance();
 		$scannerName = Settings_MailConverter_Module_Model::getScannerName($scannerId);
-		$scannerInfo = new Vtiger_MailScannerInfo($scannerName);
+		$scannerInfo = Vtiger_MailScannerInfo::getInstance($scannerName);
 		$lastScan = $scannerInfo->dateBasedOnMailServerTimezone('d-M-Y');
 		$db->pquery("DELETE FROM vtiger_mailscanner_folders WHERE scannerid=?", array($scannerId));
+
 		foreach ($folders as $folder) {
 			$db->pquery("INSERT INTO vtiger_mailscanner_folders VALUES(?,?,?,?,?,?)", array('', $scannerId, $folder, $lastScan, '0', '1'));
 		}
