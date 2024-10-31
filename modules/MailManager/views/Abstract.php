@@ -10,9 +10,6 @@
 
 vimport('~~/modules/MailManager/runtime/Request.php');
 vimport('modules/MailManager/MailManager.php');
-//vimport('modules/MailManager/helpers/Utils.php');
-//vimport('modules/MailManager/connectors/Connector.php');
-vimport('modules/Settings/MailConverter/handlers/MailRecord.php');
 
 abstract class MailManager_Abstract_View extends Vtiger_Index_View {
 

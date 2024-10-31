@@ -69,7 +69,7 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
         $metaInfo = [
             'from' => $mail->getFrom(),
             'subject' => $mail->getSubject(),
-            'msgno' => $mail->msgNo(),
+            'msgno' => $mail->getMsgNo(),
             'msguid' => $mail->getUniqueId(),
             'folder' => $folderName,
             'to' => $mail->getTo(),

@@ -8,7 +8,7 @@
     <div class="container-fluid d-flex flex-column h-100">
         <input type="hidden" id="mmFrom" value='{implode(',', $MAIL->getFrom())}'>
         <input type="hidden" id="mmSubject" value='{Vtiger_Functions::jsonEncode($MAIL->getSubject())}'>
-        <input type="hidden" id="mmMsgNo" value="{$MAIL->msgNo()}">
+        <input type="hidden" id="mmMsgNo" value="{$MAIL->getMsgNo()}">
         <input type="hidden" id="mmMsgUid" value="{$MAIL->getUid()}">
         <input type="hidden" id="mmFolder" value="{$FOLDER->getName()}">
         <input type="hidden" id="mmTo" value='{implode(',', $MAIL->getTo())}'>
