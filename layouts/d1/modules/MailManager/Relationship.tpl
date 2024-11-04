@@ -57,6 +57,9 @@
                                             {$RECORD.icon}
                                             <span class="ms-2">{$RECORD.label|textlength_check}</span>
                                         </a>
+                                        {if !empty($RECORD['account_label'])}
+                                            <span class="ms-2 text-secondary">({$RECORD['account_label']})</span>
+                                        {/if}
                                     </div>
                                 </div>
                             </li>
