@@ -8,13 +8,11 @@
  * file that was distributed with this source code.
  */
 
-require_once('modules/Settings/MailConverter/handlers/MailAttachmentMIME.php');
-
 /**
  * Mail Scanner provides the ability to scan through the given mailbox
  * applying the rules configured.
  */
-class Vtiger_MailScanner {
+class Settings_MailConverter_MailScanner_Handler {
 	// MailScanner information instance
 	public $_scannerinfo = false;
 	// Reference mailbox to use
@@ -508,6 +506,7 @@ class Vtiger_MailScanner {
 
     /**
      * Helper function for triggering the scan.
+     * @throws AppException
      */
     public static function performScanNowFromCron($scannerInfo, $debug)
     {
@@ -516,7 +515,7 @@ class Vtiger_MailScanner {
             echo "Scanning " . $scannerInfo->server . " in progress\n";
 
             /** Start the scanning. */
-            $scanner = new Vtiger_MailScanner($scannerInfo);
+            $scanner = new Settings_MailConverter_MailScanner_Handler($scannerInfo);
             $scanner->debug = $debug;
             $status = $scanner->performScanNow();
 
@@ -548,13 +547,13 @@ class Vtiger_MailScanner {
         if (isset($_REQUEST['scannername'])) {
             // Target scannername specified?	
             $scannerName = vtlib_purify($_REQUEST['scannername']);
-            $scannerInfo = Vtiger_MailScannerInfo::getInstance($scannerName);
+            $scannerInfo = Settings_MailConverter_MailScannerInfo_Handler::getInstance($scannerName);
 
             self::performScanNowFromCron($scannerInfo, $debug);
         } else {
             // Scan all the configured mailscanners?
 
-            $scannerInfos = Vtiger_MailScannerInfo::listAll();
+            $scannerInfos = Settings_MailConverter_MailScannerInfo_Handler::getAll();
             if (empty($scannerInfos)) {
                 echo "No mailbox configured for scanning!";
             } else {

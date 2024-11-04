@@ -122,8 +122,6 @@ class Core_Attachment_Model extends Core_DatabaseData_Model {
      */
     public function save(): void
     {
-        require_once 'modules/Settings/MailConverter/handlers/MailAttachmentMIME.php';
-
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         $time = $this->getDB()->formatDate(date('Y-m-d H:i:s'), true);
         $entityTable = $this->getTable('vtiger_crmentity', 'crmid');

@@ -12,28 +12,26 @@
 use Webklex\PHPIMAP\ClientManager;
 use Webklex\PHPIMAP\Client;
 
-require_once('modules/Settings/MailConverter/handlers/MailScannerInfo.php');
-
 /**
  * Class to work with server mailbox.
  */
 class Settings_MailConverter_MailBox_Handler {
 	// Mailbox credential information
-	var $_scannerinfo = false;
-	// IMAP connection instance
-	var $_imap = false;
-	// IMAP url to use for connecting
-	var $_imapurl = false;
-	// IMAP folder currently opened
-	var $_imapfolder = false;
-	// Should we need to expunge while closing imap connection?
-	var $_needExpunge = false;
+    public $_scannerinfo = false;
+    // IMAP connection instance
+    public $_imap = false;
+    // IMAP url to use for connecting
+    public $_imapurl = false;
+    // IMAP folder currently opened
+    public $_imapfolder = false;
+    // Should we need to expunge while closing imap connection?
+    public $_needExpunge = false;
 
-	// Mailbox crendential information (as a map)
-	var $_mailboxsettings = false;
+    // Mailbox crendential information (as a map)
+    public $_mailboxsettings = false;
 
-	/** DEBUG functionality. */
-	var $debug = false;
+    /** DEBUG functionality. */
+    public $debug = false;
 	function log($message, $force=false) {
 		global $log;
 		if($log && ($force || $this->debug)) { $log->debug($message); }
@@ -71,10 +69,11 @@ class Settings_MailConverter_MailBox_Handler {
 		if($this->_scannerinfo->markas == "UNCHANGED") $this->_mailboxsettings['readonly'] = "/readonly";
 	}
 
-	/**
-	 * Connect to mail box folder.
-	 */
-    public function connect()
+    /**
+     * Connect to mail box folder.
+     * @throws Exception
+     */
+    public function connect(): bool
     {
         $settings = $this->_mailboxsettings;
 
@@ -111,8 +110,7 @@ class Settings_MailConverter_MailBox_Handler {
         try {
             $this->_imap->connect();
         } catch (Exception $e) {
-
-            return false;
+            throw new AppException('MailScanner Connection Error: ' . $e->getMessage());
         }
 
         return true;

@@ -84,7 +84,7 @@ class MailManager_UploadFileXHR extends qqUploadedFileXhr {
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 						Array($attachid, $currentUserModel->getId(), $currentUserModel->getId(), $currentUserModel->getId(), "Documents Attachment", $description, $usetime, $usetime, 1, 0));
 
-				$mimetype = MailAttachmentMIME::detect($uploadPath.$attachid."_".$fileName);
+				$mimetype = Settings_MailConverter_MailAttachmentMIME_Handler::detect($uploadPath.$attachid."_".$fileName);
 				$db->pquery("INSERT INTO vtiger_attachments SET attachmentsid=?, name=?, description=?, type=?, path=?",
 						Array($attachid, $fileName, $description, $mimetype, $uploadPath));
 
@@ -200,7 +200,7 @@ class MailManager_UploadFileForm extends qqUploadedFileForm {
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 						Array($attachid, $currentUserModel->getId(), $currentUserModel->getId(), $currentUserModel->getId(), "Documents Attachment", $description, $usetime, $usetime, 1, 0));
 
-				$mimetype = MailAttachmentMIME::detect($uploadPath.$attachid."_".$fileName);
+				$mimetype = Settings_MailConverter_MailAttachmentMIME_Handler::detect($uploadPath.$attachid."_".$fileName);
 
 				$db->pquery("INSERT INTO vtiger_attachments SET attachmentsid=?, name=?, description=?, type=?, path=?",
 						Array($attachid, $fileName, $description, $mimetype, $uploadPath));

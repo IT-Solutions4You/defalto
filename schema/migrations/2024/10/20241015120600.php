@@ -22,9 +22,7 @@ if (!class_exists('Migration_20241015120600')) {
             $mailManager = new MailManager_Mailbox_Model();
             $mailManager->createTables();
 
-            include_once 'modules/Settings/MailConverter/handlers/MailScannerInfo.php';
-
-            $mailScanner = new Vtiger_MailScannerInfo();
+            $mailScanner = new Settings_MailConverter_MailScannerInfo_Handler();
             $mailScanner->createTables();
         }
     }

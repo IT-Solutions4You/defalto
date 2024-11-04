@@ -8,11 +8,9 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-require_once 'modules/Settings/MailConverter/handlers/MailScannerAction.php';
-require_once 'modules/Settings/MailConverter/handlers/MailAttachmentMIME.php';
 require_once 'modules/MailManager/MailManager.php';
 
-class MailManager_Relate_Action extends Vtiger_MailScannerAction {
+class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction_Handler {
 
 	public function __construct($foractionid = 0) {
 	}

@@ -9,47 +9,45 @@
  *
  ********************************************************************************/
 
-require_once('modules/Settings/MailConverter/handlers/MailScannerAction.php');
-
 /**
  * Scanner Rule
  */
-class Vtiger_MailScannerRule {
+class Settings_MailConverter_MailScannerRule_Handler {
     // id of this instance
-	var $ruleid    = false;
+    public $ruleid = false;
     // scanner to which this rule is linked
-    var $scannerid = false;
+    public $scannerid = false;
     // from address criteria
-	var $fromaddress= false;
+    public $fromaddress = false;
     // to address criteria
-    var $toaddress = false;
+    public $toaddress = false;
     // cc address criteria
-    var $cc = false;
+    public $cc = false;
     // bcc address criteria
-    var $bcc = false;
+    public $bcc = false;
     // subject criteria operator
-    var $subjectop = false;
+    public $subjectop = false;
     // subject criteria
-	var $subject   = false;
+    public $subject = false;
     // body criteria operator
-	var $bodyop    = false;
+    public $bodyop = false;
     // body criteria
-	var $body      = false;
+    public $body = false;
     // order of this rule
-	var $sequence  = false;
+    public $sequence = false;
     // is this action valid
-	var $isvalid   = false;
+    public $isvalid = false;
     // match criteria ALL or ANY
-    var $matchusing = false;
+    public $matchusing = false;
     // assigned to user id
-    var $assigned_to = false;
+    public $assigned_to = false;
     // associated actions for this rule
-	var $actions  = false;
+    public $actions = false;
     // TODO we are restricting one action for one rule right now
-	var $useaction= false;
+    public $useaction = false;
 
-	/** DEBUG functionality **/
-	var $debug     = false;
+    /** DEBUG functionality **/
+    public $debug = false;
     function log($message) {
 	global $log;
 		if($log && $this->debug) { $log->debug($message); }
@@ -113,7 +111,7 @@ class Vtiger_MailScannerRule {
                 if($actioncount) {
                     for($index = 0; $index < $actioncount; ++$index) {
                 $actionid = $adb->query_result($actionres, $index, 'actionid');
-                $ruleaction = new Vtiger_MailScannerAction($actionid);
+                $ruleaction = new Settings_MailConverter_MailScannerAction_Handler($actionid);
                 $ruleaction->debug = $this->debug;
                 $this->actions[] = $ruleaction;
             }
@@ -446,7 +444,7 @@ class Vtiger_MailScannerRule {
                 if($action) $action->delete();
         } else {
                 if($actionid == '') {
-            $action = new Vtiger_MailScannerAction($actionid);
+            $action = new Settings_MailConverter_MailScannerAction_Handler($actionid);
             }
             $action->scannerid = $this->scannerid;
             $action->update($this->ruleid, $actiontext);

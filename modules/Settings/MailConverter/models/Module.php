@@ -134,14 +134,16 @@ class Settings_MailConverter_Module_Model extends Settings_Vtiger_Module_Model {
 
     /**
      * @throws AppException
+     * @throws Exception
      */
     public static function getFolders($id): bool|array
     {
-		include_once 'modules/Settings/MailConverter/handlers/MailScannerInfo.php';
 		$scannerName = Settings_MailConverter_Module_Model::getScannerName($id);
-		$scannerInfo = Vtiger_MailScannerInfo::getInstance($scannerName);
-		$mailBox = new Settings_MailConverter_MailBox_Handler($scannerInfo);
-		$isConnected = $mailBox->connect();
+        $scannerInfo = Settings_MailConverter_MailScannerInfo_Handler::getInstance($scannerName);
+        $mailBox = new Settings_MailConverter_MailBox_Handler($scannerInfo);
+
+        $isConnected = $mailBox->connect();
+
 		if($isConnected) {
 			$allFolders = $mailBox->getFolders();
 			$folders = array();
@@ -175,11 +177,9 @@ class Settings_MailConverter_Module_Model extends Settings_Vtiger_Module_Model {
      */
     public static function updateFolders($scannerId, $folders): void
     {
-		include_once 'modules/Settings/MailConverter/handlers/MailScannerInfo.php';
-
 		$db = PearDatabase::getInstance();
 		$scannerName = Settings_MailConverter_Module_Model::getScannerName($scannerId);
-		$scannerInfo = Vtiger_MailScannerInfo::getInstance($scannerName);
+		$scannerInfo = Settings_MailConverter_MailScannerInfo_Handler::getInstance($scannerName);
 		$lastScan = $scannerInfo->dateBasedOnMailServerTimezone('d-M-Y');
 		$db->pquery("DELETE FROM vtiger_mailscanner_folders WHERE scannerid=?", array($scannerId));
 

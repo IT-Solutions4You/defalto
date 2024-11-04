@@ -15,8 +15,6 @@ require_once 'include/Webservices/QueryRelated.php';
 require_once 'includes/runtime/Cache.php';
 include_once 'include/Webservices/DescribeObject.php';
 require_once 'modules/Vtiger/helpers/Util.php';
-include_once 'modules/Settings/MailConverter/handlers/MailScannerAction.php';
-include_once 'modules/Settings/MailConverter/handlers/MailAttachmentMIME.php';
 include_once 'modules/MailManager/MailManager.php';
 
 class MailManager_Relation_View extends MailManager_Abstract_View {

@@ -12,7 +12,4 @@ require_once('include/utils/utils.php');
 require_once('include/logging.php');
 require_once('include/database/PearDatabase.php');
 
-require_once('modules/Settings/MailConverter/handlers/MailScannerInfo.php');
-require_once('modules/Settings/MailConverter/handlers/MailScanner.php');
-
-Vtiger_MailScanner::runCron();
+Settings_MailConverter_MailScanner_Handler::runCron();

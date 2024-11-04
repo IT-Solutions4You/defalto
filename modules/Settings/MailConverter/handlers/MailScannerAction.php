@@ -20,7 +20,7 @@ require_once ('modules/Accounts/Accounts.php');
 /**
  * Mail Scanner Action
  */
-class Vtiger_MailScannerAction {
+class Settings_MailConverter_MailScannerAction_Handler {
 	// actionid for this instance
 	var $actionid	= false;
 	// scanner to which this action is associated
@@ -152,9 +152,8 @@ class Vtiger_MailScannerAction {
             $action = $this;
 
             $params = array($action,$mailscanner, $mailRecord, $mailscannerrule);
-            require 'modules/Settings/MailConverter/handlers/MailScannerEntityMethodManager.inc';
-            global $adb;
-            $emm = new MailScannerEntityMethodManager($adb);
+            $adb = PearDatabase::getInstance();
+            $emm = new Settings_MailConverter_MailScannerEntityMethodManager_Handler($adb);
 
             $returnid = $emm->executeMethod($this->module,$this->actiontype, $params);
 
@@ -535,7 +534,7 @@ class Vtiger_MailScannerAction {
 			fclose($fh);
 		}
 
-		$mimetype = MailAttachmentMIME::detect($saveasfile);
+		$mimetype = Settings_MailConverter_MailAttachmentMIME_Handler::detect($saveasfile);
 
 		$adb->pquery(
 			'INSERT INTO vtiger_attachments SET attachmentsid=?, name=?, description=?, type=?, storedname=?, path=?',

@@ -151,10 +151,7 @@ class Core_Auth_Model extends Vtiger_Base_Model
         $this->setAccessExpire($accessToken->getExpires());
     }
 
-    /**
-     * @throws \League\OAuth2\Client\Provider\Exception\IdentityProviderException
-     */
-    public function retrieveToken()
+    public function retrieveToken(): void
     {
         $provider = $this->getProvider();
         $accessToken = $provider->getAccessToken('authorization_code', ['code' => $_GET['code']]);
@@ -211,7 +208,7 @@ class Core_Auth_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @param MailManager_Mailbox_Model|Vtiger_MailScannerInfo|object $recordModel
+     * @param object $recordModel
      * @throws AppException
      */
     public function updateAccessToken(object $recordModel): void
@@ -233,10 +230,7 @@ class Core_Auth_Model extends Vtiger_Base_Model
             ];
 
             (new MailManager_Mailbox_Model())->getMailAccountTable()->updateData($update, $search);
-
-            if (include_once('modules/Settings/MailConverter/handlers/MailScannerInfo.php')) {
-                (new Vtiger_MailScannerInfo())->getMailScannerTable()->updateData($update, $search);
-            }
+            (new Settings_MailConverter_MailScannerInfo_Handler())->getMailScannerTable()->updateData($update, $search);
         }
 
         if (method_exists($recordModel, 'updateAccessToken')) {
