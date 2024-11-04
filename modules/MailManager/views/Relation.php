@@ -147,7 +147,8 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
         $isSentFolder = $mail->getFrom()[0] == $currentUserModel->get('email1') || $folder->isSentFolder();
         $formData = $this->processFormData($mail, $isSentFolder);
         $linkedTo = MailManager_Relate_Action::getSalesEntityInfo($parent);
-        $referenceFieldName = MailManager_Message_Model::RELATIONS_MAPPING[$linkModule][$linkedTo['module']];
+        $referenceFields = MailManager_Message_Model::RELATIONS_MAPPING[$linkModule];
+        $referenceFieldName = $referenceFields[$linkedTo['module']];
 
         switch ($linkModule) {
             case 'HelpDesk' :
@@ -166,6 +167,13 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 
                 $formData['description'] = Core_CKEditor_UIType::transformEditViewDisplayValue($mail->getBody(false));
                 break;
+        }
+
+        $contactRecordId = $formData[$referenceFields['Contacts']];
+
+        if ($contactRecordId && isRecordExists($contactRecordId)) {
+            $contactRecordModel = Vtiger_Record_Model::getInstanceById($contactRecordId, 'Contacts');
+            $formData[$referenceFields['Accounts']] = $contactRecordModel->get('account_id');
         }
 
         $formData['mail_manager_id'] = $mail->getUid();
