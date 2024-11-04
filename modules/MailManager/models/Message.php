@@ -37,6 +37,7 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
     public const RELATIONS_TABLES = [
         ['HelpDesk', 'ticketid', 'vtiger_troubletickets'],
         ['Potentials', 'potentialid', 'vtiger_potential'],
+        ['ITS4YouEmails', 'its4you_emails_id', 'its4you_emails'],
     ];
 
     /**

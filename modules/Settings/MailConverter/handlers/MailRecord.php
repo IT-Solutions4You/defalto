@@ -80,7 +80,7 @@ class Settings_MailConverter_MailRecord_Handler
     protected bool $mRead = false;
     protected int $mUid = 0;
     protected array $toName;
-    protected null|object $mBoxFolder;
+    protected null|object $mBoxFolder = null;
 
     /**
      * String representation of the object.
