@@ -303,6 +303,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 			}
 			$viewer->assign('PAGE_COUNT', $pageCount);
 			$viewer->assign('LISTVIEW_COUNT', $totalCount);
+			$viewer->assign('LISTVIEW_ENTRIES_COUNT', $totalCount);
 		}
 
 		$viewer->assign('MULTI_SELECT', $multiSelectMode);
