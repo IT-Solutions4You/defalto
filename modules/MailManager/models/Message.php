@@ -564,12 +564,18 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
 
                 if (!empty($recordId) && isRecordExists($recordId)) {
                     $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+                    $label = $recordModel->getName();
+
+                    if (!$recordModel->isEmpty('account_id')) {
+                        $label .= ' (' . strip_tags($recordModel->getDisplayValue('account_id')) . ')';
+                    }
+
                     $results[] = [
                         'wsid' => $qresult['id'],
                         'id' => $recordId,
                         'icon' => $recordModel->getModule()->getModuleIcon(),
                         'url' => $recordModel->getDetailViewUrl(),
-                        'label' => $recordModel->getName(),
+                        'label' => $label,
                     ];
                 }
             }
