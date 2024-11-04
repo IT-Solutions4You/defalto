@@ -12,7 +12,7 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
 
 	public $name = 'MenuEditor';
     public static $ignoredHiddenModules = [
-        'Google', 'Dashboard', 'Users', 'ModTracker', 'WSAPP', 'Import', 'Webforms', 'CustomerPortal', 'ModComments', 'Documents', 'MailManager'
+        'Google', 'Dashboard', 'Users', 'ModTracker', 'WSAPP', 'Import', 'Webforms', 'CustomerPortal', 'ModComments',
     ];
 
     public array $defaultSequenceList = [
@@ -21,7 +21,7 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
         'SUPPORT' => ['HelpDesk', 'Faq', 'ServiceContracts', 'Assets', 'SMSNotifier', 'Contacts', 'Accounts',],
         'INVENTORY' => ['Products', 'Services', 'PriceBooks', 'Invoice', 'SalesOrder', 'PurchaseOrder', 'Vendors', 'Contacts', 'Accounts',],
         'PROJECT' => ['Project', 'ProjectTask', 'ProjectMilestone', 'Contacts', 'Accounts',],
-        'TOOLS' => ['Rss', 'Portal', 'RecycleBin',],
+        'TOOLS' => ['Rss', 'Portal', 'RecycleBin', 'Documents', 'MailManager'],
     ];
 
 	/**

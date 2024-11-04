@@ -158,11 +158,12 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model {
 		return array('CONTACT'=>array(), 'MARKETING_AND_SALES'=>array(),'SUPPORT'=>array(),'INVENTORY'=>array(),'TOOLS'=>array(),'ANALYTICS'=>array());
 	}
 
-	public static function getIgnoredModules() {
-		return array('Documents', 'MailManager', 'SMSNotifier');
-	}
+    public static function getIgnoredModules()
+    {
+        return ['SMSNotifier'];
+    }
 
-	function regroupMenuByParent($menuGroupedByParent) {
+    function regroupMenuByParent($menuGroupedByParent) {
 		$editionsToAppMap = array(
 									'Contacts'		=> array('MARKETING', 'SALES', 'INVENTORY', 'SUPPORT', 'PROJECT'),
 									'Accounts'		=> array('MARKETING', 'SALES', 'INVENTORY', 'SUPPORT', 'PROJECT'),
