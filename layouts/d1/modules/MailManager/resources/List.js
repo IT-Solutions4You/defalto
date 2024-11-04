@@ -1154,13 +1154,14 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			'_folder' : _folder
 		}
 		app.helper.showProgress(app.vtranslate('JSLBL_Saving')+'...');
-		app.request.post({'data' : params}).then(function(err, response) {
+		app.request.post({'data': params}).then(function (error, data) {
 			app.helper.hideProgress();
-			if(response.ui) {
-				app.helper.showSuccessNotification({'message':''});
+
+			if (data['success']) {
+				app.helper.showSuccessNotification({'message': ''});
 				app.helper.hideModal();
 			} else {
-				app.helper.showAlertBox({'message' : app.vtranslate("JSLBL_FAILED_ADDING_COMMENT")});
+				app.helper.showAlertBox({'message': app.vtranslate("JSLBL_FAILED_ADDING_COMMENT")});
 			}
 		});
 	},
