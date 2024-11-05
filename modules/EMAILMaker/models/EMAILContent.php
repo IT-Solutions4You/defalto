@@ -45,6 +45,8 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     public $EMAILMaker = false;
 
+    private $vatBlock = [];
+
     public function __construct()
     {
         if (!defined('LOGO_PATH')) {
@@ -843,10 +845,38 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         return $this->getInventoryCurrencyInfoCustomArray($inventory_table, $inventory_id, $record_id);
     }
 
+    /**
+     * @param string $taxKey
+     * @param string $taxLabel
+     * @param float $taxValue
+     * @param float $nett
+     * @param float $vat
+     * @return void
+     */
+    public function setVatBlock($taxKey, $taxLabel, $taxValue, $nett, $vat)
+    {
+        if (empty($this->vatBlock[$taxKey])) {
+            $this->vatBlock[$taxKey] = [
+                'netto' => 0,
+                'vat' => 0,
+            ];
+        }
+
+        $this->vatBlock[$taxKey]['label'] = $taxLabel;
+        $this->vatBlock[$taxKey]['value'] = $taxValue;
+        $this->vatBlock[$taxKey]['netto'] += $nett;
+        $this->vatBlock[$taxKey]['vat'] += $vat;
+    }
+
+    public function getVatBlock()
+    {
+        return $this->vatBlock;
+    }
+
     private function getInventoryProducts($module, $focus)
     {
         if (!empty($focus->id)) {
-            $total_vatsum = $totalwithoutwat = $totalAfterDiscount_subtotal = $total_subtotal = $totalsum_subtotal = 0;
+            $totalVatSum = $totalwithoutwat = $totalAfterDiscount_subtotal = $total_subtotal = $totalsum_subtotal = 0;
             [$images, $bacImgs] = $this->getInventoryImages($focus->id);
 
             $recordModel = Inventory_Record_Model::getInstanceById($focus->id);
@@ -918,8 +948,8 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                 $Details["P"][$i]["PS_CRMID"] = $psid;
                 $Details["P"][$i]["PS_NO"] = $PData["hdnProductcode" . $sequence];
 
-                if (count($PData["subprod_qty_list" . $sequence]) > 0) {
-                    foreach ($PData["subprod_qty_list" . $sequence] as $sid => $SData) {
+                if (Core_Utils_Helper::count($PData['subprod_qty_list' . $sequence]) > 0) {
+                    foreach ($PData['subprod_qty_list' . $sequence] as $sid => $SData) {
                         $sname = $SData["name"];
                         if ($SData["qty"] > 0) {
                             $sname .= " (" . $SData["qty"] . ")";
@@ -998,38 +1028,37 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                 } elseif (isset($bacImgs[$productid . "_" . $sequence])) {
                     $Details["P"][$i]["PRODUCTS_IMAGENAME"] = "<img src='" . self::$site_url . "/" . $bacImgs[$productid . "_" . $sequence]["src"] . "' width='83' />";
                 }
-                $taxtotal = $tax_avg_value = "0.00";
-                if ($taxtype == "individual") {
 
-                    //$tax_info_message = $mod_strings["LBL_TOTAL_AFTER_DISCOUNT"] . " = $totalAfterDiscount \\n";
-                    $tax_details = getTaxDetailsForProduct($productid, "all");
-                    $Tax_Values = array();
-                    for ($tax_count = 0; $tax_count < count($tax_details); $tax_count++) {
-                        $tax_name = $tax_details[$tax_count]["taxname"];
-                        $tax_label = $tax_details[$tax_count]["taxlabel"];
-                        $tax_value = getInventoryProductTaxValue($focus->id, $productid, $tax_name);
+                $taxAverageValue = 0;
+                $taxTotal = 0;
 
-                        $individual_taxamount = $totalAfterDiscount * $tax_value / 100;
-                        $taxtotal = $taxtotal + $individual_taxamount;
+                if ('individual' === $taxtype) {
+                    $taxDetails = getTaxDetailsForProduct($productid, "all");
+                    $Tax_Values = [];
+                    for ($taxCount = 0; $taxCount < count($taxDetails); $taxCount++) {
+                        $taxName = $taxDetails[$taxCount]['taxname'];
+                        $taxLabel = $taxDetails[$taxCount]['taxlabel'];
+                        $taxValue = getInventoryProductTaxValue($focus->id, $productid, $taxName);
+                        $individualTaxAmount = $totalAfterDiscount * $taxValue / 100;
+                        $taxTotal += $individualTaxAmount;
 
-                        if ($tax_name != "") {
-                            $Vat_Block[$tax_name . "-" . $tax_value]["label"] = $tax_label;
-                            $Vat_Block[$tax_name . "-" . $tax_value]["netto"] += $totalAfterDiscount;
+                        if (!empty($taxName)) {
+                            $taxVatSum = round($individualTaxAmount, self::$decimals);
+                            $taxNameWithValue = $taxName . '-' . $taxValue;
+                            $this->setVatBlock($taxNameWithValue, $taxLabel, $taxValue, $totalAfterDiscount, $taxVatSum);
 
-                            $vatsum = round($individual_taxamount, self::$decimals);
-                            $total_vatsum += $vatsum;
-                            $Vat_Block[$tax_name . "-" . $tax_value]["vat"] += $vatsum;
-                            $Vat_Block[$tax_name . "-" . $tax_value]["value"] = $tax_value;
-                            $Tax_Values[] = $tax_value;
+                            $totalVatSum += $taxVatSum;
+                            $Tax_Values[] = $taxValue;
                         }
                     }
 
                     if (count($Tax_Values) > 0) {
-                        $tax_avg_value = array_sum($Tax_Values);
+                        $taxAverageValue = array_sum($Tax_Values);
                     }
                 }
-                $Details["P"][$i]["PRODUCTVATPERCENT"] = $this->formatNumberToEMAIL($tax_avg_value);
-                $Details["P"][$i]["PRODUCTVATSUM"] = $this->formatNumberToEMAIL($taxtotal);
+
+                $Details["P"][$i]["PRODUCTVATPERCENT"] = $this->formatNumberToEMAIL($taxAverageValue);
+                $Details["P"][$i]["PRODUCTVATSUM"] = $this->formatNumberToEMAIL($taxTotal);
 
                 $result1 = self::$db->pquery("SELECT * FROM vtiger_inventoryproductrel WHERE id=? AND sequence_no=?", array(self::$focus->id, $sequence));
                 $row1 = self::$db->fetchByAssoc($result1, 0);
@@ -1056,26 +1085,17 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
         $Details["TOTAL"]["TOTALWITHOUTVAT"] = $this->formatNumberToEMAIL($totalAfterDiscount_subtotal);
         if ($taxtype == "individual") {
-            $Details["TOTAL"]["TAXTOTAL"] = $this->formatNumberToEMAIL($total_vatsum);
+            $Details["TOTAL"]["TAXTOTAL"] = $this->formatNumberToEMAIL($totalVatSum);
         }
         $finalDiscountPercent = "";
-        $total_vat_percent = 0;
+        $totalVatPercent = 0;
 
         foreach ((array)$finalDetails['taxes'] as $TAX) {
-            $tax_name = $TAX['taxname'];
-            $Vat_Block[$tax_name]['label'] = $TAX['taxlabel'];
-            $Vat_Block[$tax_name]['netto'] = $finalDetails['totalAfterDiscount'];
-            if (isset($Vat_Block[$tax_name]['vat'])) {
-                $Vat_Block[$tax_name]['vat'] += $TAX['amount'];
-            } else {
-                $Vat_Block[$tax_name]['vat'] = $TAX['amount'];
-            }
-            $Vat_Block[$tax_name]['value'] = $TAX['percentage'];
-
-            $total_vat_percent += $TAX['percentage'];
+            $this->setVatBlock($TAX['taxname'], $TAX['taxlabel'], $TAX['percentage'], $finalDetails['totalAfterDiscount'], $TAX['amount']);
+            $totalVatPercent += $TAX['percentage'];
         }
 
-        $Details["TOTAL"]["TAXTOTALPERCENT"] = $this->formatNumberToEMAIL($total_vat_percent);
+        $Details["TOTAL"]["TAXTOTALPERCENT"] = $this->formatNumberToEMAIL($totalVatPercent);
 
         $hdnDiscountPercent = (float)$focus->column_fields['hdnDiscountPercent'];
         $hdnDiscountAmount = (float)$focus->column_fields['hdnDiscountAmount'];
@@ -1085,7 +1105,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         }
 
         $Details["TOTAL"]["FINALDISCOUNTPERCENT"] = $this->formatNumberToEMAIL($finalDiscountPercent);
-        $Details["TOTAL"]["VATBLOCK"] = $Vat_Block;
+        $Details["TOTAL"]["VATBLOCK"] = $this->getVatBlock();
 
         $Charges_Block = array();
 

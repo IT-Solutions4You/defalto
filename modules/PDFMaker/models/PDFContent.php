@@ -71,6 +71,8 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         'logo' => 'LOGO'
     );
 
+    protected array $vatBlock = [];
+
     function __construct($l_module, $l_focus, $l_language)
     {
         parent::__construct();
@@ -648,6 +650,34 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         return $this->getInventoryCurrencyInfoCustomArray($inventory_table, $inventory_id, $record_id);
     }
 
+    /**
+     * @param string $taxKey
+     * @param string $taxLabel
+     * @param float $taxValue
+     * @param float $nett
+     * @param float $vat
+     * @return void
+     */
+    public function setVatBlock($taxKey, $taxLabel, $taxValue, $nett, $vat)
+    {
+        if (empty($this->vatBlock[$taxKey])) {
+            $this->vatBlock[$taxKey] = [
+                'netto' => 0,
+                'vat' => 0,
+            ];
+        }
+
+        $this->vatBlock[$taxKey]['label'] = $taxLabel;
+        $this->vatBlock[$taxKey]['value'] = $taxValue;
+        $this->vatBlock[$taxKey]['netto'] += $nett;
+        $this->vatBlock[$taxKey]['vat'] += $vat;
+    }
+
+    public function getVatBlock()
+    {
+        return $this->vatBlock;
+    }
+
     private function getInventoryProducts($module, $focus)
     {
         if (!empty($focus->id)) {
@@ -839,13 +869,9 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                         $taxtotal = $taxtotal + $individual_taxamount;
 
                         if ($tax_name != '') {
-                            $Vat_Block[$tax_name . '-' . $tax_value]['label'] = $tax_label;
-                            $Vat_Block[$tax_name . '-' . $tax_value]['netto'] += $totalAfterDiscount;
-
                             $vatsum = round($individual_taxamount, self::$decimals);
                             $total_vatsum += $vatsum;
-                            $Vat_Block[$tax_name . '-' . $tax_value]['vat'] += $vatsum;
-                            $Vat_Block[$tax_name . '-' . $tax_value]['value'] = $tax_value;
+                            $this->setVatBlock($tax_name . '-' . $tax_value, $tax_label, $tax_value, $totalAfterDiscount, $vatsum);
                             $Tax_Values[] = $tax_value;
                             $VatPercent[] = $this->formatNumberToPDF($tax_value);
                         }
@@ -908,17 +934,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         if ($taxtype !== 'individual') {
             if (php7_count($finalDetails['taxes']) > 0) {
                 foreach ($finalDetails['taxes'] as $TAX) {
-                    $tax_name = $TAX['taxname'];
-                    $Vat_Block[$tax_name]['label'] = $TAX['taxlabel'];
-                    $Vat_Block[$tax_name]['netto'] = $finalDetails['totalAfterDiscount'];
-
-                    if (isset($Vat_Block[$tax_name]['vat'])) {
-                        $Vat_Block[$tax_name]['vat'] += $TAX['amount'];
-                    } else {
-                        $Vat_Block[$tax_name]['vat'] = $TAX['amount'];
-                    }
-
-                    $Vat_Block[$tax_name]['value'] = $TAX['percentage'];
+                    $this->setVatBlock($TAX['taxname'], $TAX['taxlabel'], $TAX['percentage'], $finalDetails['totalAfterDiscount'], $TAX['amount']);
                     $total_vat_percent += $TAX['percentage'];
                 }
             }
@@ -934,7 +950,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         }
 
         $Details['TOTAL']['FINALDISCOUNTPERCENT'] = $this->formatNumberToPDF($finalDiscountPercent);
-        $Details['TOTAL']['VATBLOCK'] = $Vat_Block;
+        $Details['TOTAL']['VATBLOCK'] = $this->getVatBlock();
 
         return $Details;
     }
