@@ -450,8 +450,7 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 	}
 
 	public function getParsedContent(){
-		require_once 'modules/Settings/MailConverter/handlers/MailParser.php';
-		$htmlParser = new Vtiger_MailParser($this->getName());
+		$htmlParser = new Settings_MailConverter_MailParser_Handler($this->getName());
 		return $htmlParser->parseHtml();
 	}
 }

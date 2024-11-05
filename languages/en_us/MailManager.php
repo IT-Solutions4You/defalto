@@ -135,6 +135,9 @@ $languageStrings = Array (
     'LBL_CLIENT_TOKEN' => 'Client Token',
     'LBL_CLIENT_ACCESS_TOKEN' => 'Client Access Token',
     'LBL_MISSING_PARAMS' => 'Missing params client id or secret',
+    'LBL_MAILMANAGER_CREATE_Contacts' => 'Create Contact',
+    'LBL_MAILMANAGER_CREATE_Accounts' => 'Create Organization',
+    'LBL_MAILMANAGER_CREATE_Leads' => 'Create Lead',
 );
 
 $jsLanguageStrings = Array (
@@ -212,6 +215,7 @@ $jsLanguageStrings = Array (
 	'JSLBL_FAILED_ADDING_COMMENT' => 'Failed to add comment',
 	'JSLBL_MAILS_DELETED' => 'Mail(s) deleted successfully.',
 	'JSLBL_MAILS_MARKED_UNREAD' => 'Mail(s) marked as unread.',
+	'JSLBL_MAILS_MARKED_READ' => 'Mail(s) marked as read.',
 	'JSLBL_MAILS_MARKED_READ' => 'Mail(s) marked as read.',
 );
 

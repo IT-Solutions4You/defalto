@@ -9,7 +9,7 @@
  ******************************************************************************/
  require_once("include/events/SqlResultIterator.inc");
 
-class MailScannerEntityMethodManager {
+class Settings_MailConverter_MailScannerEntityMethodManager_Handler {
 	
 	function __construct($adb){
 		$this->adb = $adb;
@@ -103,4 +103,3 @@ $adb->pquery('ALTER TABLE `vtiger_mailscanner_actions`
 		$adb->pquery("DELETE FROM vtiger_mailscanner_entitymethod WHERE module_name = ? and method_name= ?", array($moduleName, $methodName));
 	}
 }
-?>

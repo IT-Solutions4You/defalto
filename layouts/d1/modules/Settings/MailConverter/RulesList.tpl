@@ -16,7 +16,7 @@
             </div>
         {else}
             <input type="hidden" id="scannerId" value="{$SCANNER_ID}"/>
-            <div class="container-fluid">
+            <div class="container-fluid my-3">
                 <div class="row">
                     <div class="col-lg-4 mailBoxDropdownWrapper">
                         <select class="mailBoxDropdown select2">

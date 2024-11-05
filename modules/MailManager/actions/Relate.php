@@ -8,11 +8,9 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-require_once 'modules/Settings/MailConverter/handlers/MailScannerAction.php';
-require_once 'modules/Settings/MailConverter/handlers/MailAttachmentMIME.php';
 require_once 'modules/MailManager/MailManager.php';
 
-class MailManager_Relate_Action extends Vtiger_MailScannerAction {
+class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction_Handler {
 
 	public function __construct($foractionid = 0) {
 	}
@@ -40,7 +38,7 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 		$mailBoxModel = MailManager_Mailbox_Model::getActiveInstance();
 		$username = $mailBoxModel->username();
 		$recordModel = Vtiger_Record_Model::getCleanInstance('ITS4YouEmails');
-		$recordModel->set('subject', $mailrecord->_subject);
+		$recordModel->set('subject', $mailrecord->getSubject());
 
 		if(!empty($module)) {
             $recordModel->set('parent_type', $module);
@@ -140,21 +138,21 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 	public static function associate($mailrecord, $linkto) {
 		$instance = new self();
 
-		$modulename = getSalesEntityType($linkto);
-		$linkfocus = CRMEntity::getInstance($modulename);
-		$linkfocus->retrieve_entity_info($linkto, $modulename);
+		$moduleName = getSalesEntityType($linkto);
+		$linkfocus = CRMEntity::getInstance($moduleName);
+		$linkfocus->retrieve_entity_info($linkto, $moduleName);
 		$linkfocus->id = $linkto;
-		$emailid = $instance->createNewEmail($mailrecord, $modulename, $linkfocus);
+		$emailid = $instance->createNewEmail($mailrecord, $moduleName, $linkfocus);
 
 		if (!empty($emailid)) {
 			MailManager::updateMailAssociation($mailrecord->getUniqueId(), $emailid, $linkfocus->id);
 			// To add entry in ModTracker for email relation
-			relateEntities($linkfocus, $modulename, $linkto, 'ITS4YouEmails', $emailid);
+			relateEntities($linkfocus, $moduleName, $linkto, 'ITS4YouEmails', $emailid);
 		}
 
-		$name = getEntityName($modulename, $linkto);
+		$name = getEntityName($moduleName, $linkto);
 
-        return self::buildDetailViewLink($modulename, $linkfocus->id, $name[$linkto]);
+        return self::buildDetailViewLink($moduleName, $linkfocus->id, $name[$linkto]);
 	}
 
 	/**

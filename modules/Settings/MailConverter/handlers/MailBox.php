@@ -9,29 +9,29 @@
  *
  ********************************************************************************/
 
-require_once('modules/Settings/MailConverter/handlers/MailScannerInfo.php');
-require_once('modules/Settings/MailConverter/handlers/MailRecord.php');
+use Webklex\PHPIMAP\ClientManager;
+use Webklex\PHPIMAP\Client;
 
 /**
  * Class to work with server mailbox.
  */
-class Vtiger_MailBox {
+class Settings_MailConverter_MailBox_Handler {
 	// Mailbox credential information
-	var $_scannerinfo = false;
-	// IMAP connection instance
-	var $_imap = false;
-	// IMAP url to use for connecting
-	var $_imapurl = false;
-	// IMAP folder currently opened
-	var $_imapfolder = false;
-	// Should we need to expunge while closing imap connection?
-	var $_needExpunge = false;
+    public $_scannerinfo = false;
+    // IMAP connection instance
+    public $_imap = false;
+    // IMAP url to use for connecting
+    public $_imapurl = false;
+    // IMAP folder currently opened
+    public $_imapfolder = false;
+    // Should we need to expunge while closing imap connection?
+    public $_needExpunge = false;
 
-	// Mailbox crendential information (as a map)
-	var $_mailboxsettings = false;
+    // Mailbox crendential information (as a map)
+    public $_mailboxsettings = false;
 
-	/** DEBUG functionality. */
-	var $debug = false;
+    /** DEBUG functionality. */
+    public $debug = false;
 	function log($message, $force=false) {
 		global $log;
 		if($log && ($force || $this->debug)) { $log->debug($message); }
@@ -50,202 +50,197 @@ class Vtiger_MailBox {
 
 		$server = $this->_mailboxsettings['server'];
 		$serverPort = explode(':', $server);
-		if(empty($serverPort[1])) {
-			if($this->_mailboxsettings['protocol'] == 'pop3') { $port = '110'; }
-			else {
-				if($this->_mailboxsettings['ssltype'] == 'tls' ||
-					$this->_mailboxsettings['ssltype'] == 'ssl') {
-						$port = '993';
-				}
-				else $port = '143';
-			}
-		} else {
-			$port = $serverPort[1];
-			$this->_mailboxsettings['server'] = $serverPort[0];
-		}
-		$this->_mailboxsettings['port'] = $port;
+
+        if (empty($serverPort[1])) {
+            if ($this->_mailboxsettings['protocol'] == 'pop3') {
+                $port = '110';
+            } elseif ($this->_mailboxsettings['ssltype'] == 'tls' || $this->_mailboxsettings['ssltype'] == 'ssl') {
+                $port = '993';
+            } else {
+                $port = '143';
+            }
+        } else {
+            $port = $serverPort[1];
+            $this->_mailboxsettings['server'] = $serverPort[0];
+        }
+
+        $this->_mailboxsettings['port'] = $port;
 		
 		if($this->_scannerinfo->markas == "UNCHANGED") $this->_mailboxsettings['readonly'] = "/readonly";
 	}
 
-	/**
-	 * Connect to mail box folder.
-	 */
-	function connect($folder='INBOX') {
-		$imap = false;
-		$mailboxsettings = $this->_mailboxsettings;
-		$isconnected = false;
+    /**
+     * Connect to mail box folder.
+     * @throws Exception
+     */
+    public function connect(): bool
+    {
+        $settings = $this->_mailboxsettings;
 
-		// Connect using last successful url
-        if ($mailboxsettings['connecturl']) {
-            $connecturl = $mailboxsettings['connecturl'];
+        $server = $settings['server'];
+        $password = $settings['password'];
+        $authentication = '';
 
-            if ($mailboxsettings['readonly']) {
-                $connecturl = str_replace("}", "/readonly}", $connecturl);
-            }
-
-            $this->log("Trying to connect using connecturl $connecturl$folder", true);
-            $imap = imap_open("$connecturl$folder", $mailboxsettings['username'], $mailboxsettings['password']);
-
-            if ($imap) {
-                $this->_imapurl = $connecturl;
-                $this->_imapfolder = $folder;
-                $isconnected = true;
-
-                $this->log("Successfully connected", true);
-            }
+        if (str_contains($server, 'gmail.com')) {
+            $authentication = 'oauth';
+            $password = $settings['client_access_token'];
         }
 
-        if (!$imap) {
-            $connectString = '{' . $mailboxsettings['server'] . ':' . $mailboxsettings['port'] . '/' . $mailboxsettings['protocol'] . '/' . $mailboxsettings['ssltype'] . '/' . $mailboxsettings['sslmethod'] . $mailboxsettings['readonly'] . "}";
-            $connectStringShort = '{' . $mailboxsettings['server'] . '/' . $mailboxsettings['protocol'] . ':' . $mailboxsettings['port'] . $mailboxsettings['readonly'] . "}";
-
-            if (!empty($mailboxsettings['mail_proxy'])) {
-                $connectString = sprintf("{%s/notls/novalidate-cert}", $mailboxsettings['mail_proxy']);
-                $connectStringShort = $connectString;
-                $mailboxsettings['password'] = $mailboxsettings['client_access_token'];
-            }
-
-            $this->log("Trying to connect using $connectString$folder", true);
-
-            if (!$imap = imap_open("$connectString$folder", $mailboxsettings["username"], $mailboxsettings["password"])) {
-                $this->log("Connect failed using $connectString$folder, trying with $connectStringShort$folder...", true);
-                $imap = imap_open("$connectStringShort$folder", $mailboxsettings["username"], $mailboxsettings["password"]);
-
-                if ($imap) {
-                    $this->_imapurl = $connectStringShort;
-                    $this->_imapfolder = $folder;
-                    $isconnected = true;
-                    $this->log("Successfully connected", true);
-                } else {
-                    $this->log("Connect failed using $connectStringShort$folder", true);
-                }
-            } else {
-                $this->_imapurl = $connectString;
-                $this->_imapfolder = $folder;
-                $isconnected = true;
-                $this->log("Successfully connected", true);
-            }
+        if (empty($server) || empty($password)) {
+            return false;
         }
 
-        $this->_imap = $imap;
+        $options = [];
+        $config = [
+            'host' => $server,
+            'port' => $settings['port'],
+            'encryption' => $settings['ssltype'],
+            'validate_cert' => true,
+            'protocol' => $settings['protocol'],
+            'username' => $settings['username'],
+            'password' => $password,
+            'authentication' => $authentication,
+        ];
 
-		return $isconnected;
-	}
+        $clientManager = new ClientManager($options);
 
+        $this->_imap = $clientManager->account($config['host']);
+        $this->_imap = $clientManager->make($config);
+
+        try {
+            $this->_imap->connect();
+        } catch (Exception $e) {
+            throw new AppException('MailScanner Connection Error: ' . $e->getMessage());
+        }
+
+        return true;
+    }
+
+    public function getBox()
+    {
+        return $this->_imap;
+    }
 
 
     /**
 	 * Open the mailbox folder.
-	 * @param $folder Folder name to open
-	 * @param $reopen set to true for re-opening folder if open (default=false)
-	 * @return true if connected, false otherwise
+	 * @param string $folder Folder name to open
+	 * @return object if connected, false otherwise
 	 */
-	function open($folder, $reopen=false) {
-		/** Avoid re-opening of the box if not requested. */
-		if(!$reopen && ($folder == $this->_imapfolder)) return true;
+    public function getFolder(string $folder): object
+    {
+        return $this->_imap->getFolder($folder);
+    }
 
-		if(!$this->_imap) return $this->connect($folder);
+    /**
+     * Get the mails based on searchquery.
+     * @param object $mBoxFolder
+     * @param string $searchQuery IMAP query, (default false: fetches mails newer from lastscan)
+     * @return bool|object return query of emails records or false
+     */
+    public function getSearchMails(object $mBoxFolder, string $searchQuery = ''): bool|object
+    {
+        $folder = $mBoxFolder->name;
 
-		$mailboxsettings = $this->_mailboxsettings;
+        if (empty($searchQuery)) {
+            $lastScanOn = $this->_scannerinfo->getLastscan($mBoxFolder->name);
+            $searchFor = $this->_scannerinfo->searchfor;
 
-		$isconnected = false;
-		$connectString = $this->_imapurl;
-		$this->log("Trying to open folder using $connectString$folder");
-		$imap = @imap_open("$connectString$folder", $mailboxsettings["username"], $mailboxsettings["password"]);
-		if($imap) {
+            if ($searchFor && $lastScanOn) {
+                if ($searchFor == 'ALL') {
+                    $searchQuery = "SINCE $lastScanOn";
+                } else {
+                    $searchQuery = "$searchFor SINCE $lastScanOn";
+                }
+            } else {
+                $searchQuery = $lastScanOn ? "SINCE $lastScanOn" : "BEFORE " . $this->_scannerinfo->dateBasedOnMailServerTimezone('d-M-Y');
+            }
+        }
 
-			// Perform cleanup task before re-initializing the connection
-			$this->close();
+        if ($mBoxFolder) {
+            $this->log("Searching mailbox[$folder] using query: $searchQuery");
+            $searchQuery = explode(' ', $searchQuery, 2);
+            $query = $mBoxFolder->query()->where([$searchQuery[0] => $searchQuery[1]]);
 
-			$this->_imapfolder = $folder;
-			$this->_imap = $imap;
-			$isconnected = true;
-		}
-		return $isconnected;
-	}
+            return $query->get();
+        }
 
-	/**
-	 * Get the mails based on searchquery.
-	 * @param $folder Folder in which mails to be read.
-	 * @param $searchQuery IMAP query, (default false: fetches mails newer from lastscan)
-	 * @return imap_search records or false
-	 */
-	function search($folder, $searchQuery=false) {
-		if(!$searchQuery) {
-			$lastscanOn = $this->_scannerinfo->getLastscan($folder);
-			$searchfor = $this->_scannerinfo->searchfor;
+        return false;
+    }
 
-			if($searchfor && $lastscanOn) {
-				if($searchfor == 'ALL') {
-					$searchQuery = "SINCE $lastscanOn";
-				} else {
-					$searchQuery = "$searchfor SINCE $lastscanOn";
-				}
-			} else {
-				$searchQuery = $lastscanOn? "SINCE $lastscanOn" : "BEFORE ". $this->_scannerinfo->dateBasedOnMailServerTimezone('d-M-Y');
-			}
-		}
-		if($this->open($folder)) {
-			$this->log("Searching mailbox[$folder] using query: $searchQuery");
-			return imap_search($this->_imap, $searchQuery);
-		}
-		return false;
-	}
-
-	/**
+    /**
 	 * Get folder names (as list) for the given mailbox connection
 	 */
-	function getFolders() {
-		$folders = false;
-		if($this->_imap) {
-			$imapfolders = imap_list($this->_imap, $this->_imapurl, '*');
-			if($imapfolders) {
-				foreach($imapfolders as $imapfolder) {
-					$folders[] = substr($imapfolder, strlen($this->_imapurl));
-				}
-			} else {
-                            return imap_last_error();
-                        }
-		}
-		return $folders;
-	}
+    public function getFolders()
+    {
+        $folders = [];
 
-	/**
-	 * Fetch the email based on the messageid.
-	 * @param $messageid messageid of the email
-	 * @param $fetchbody set to false to defer fetching the body, (default: true)
-	 */
-	function getMessage($messageid, $fetchbody=true) {
-		return new Vtiger_MailRecord($this->_imap, $messageid, $fetchbody);
-	}
+        if ($this->_imap) {
+            $mBoxFolders = $this->_imap->getFolders();
 
-	/**
+            if ($mBoxFolders) {
+                foreach ($mBoxFolders as $mBoxFolder) {
+                    $folders[] = $mBoxFolder->name;
+                }
+            }
+        }
+
+        return $folders;
+    }
+
+    /**
+     * Fetch the email based on the messageid.
+     * @param object $mBoxMessage
+     * @param object $mBoxFolder
+     * @param object $mBox
+     * @return Settings_MailConverter_MailRecord_Handler
+     * @throws AppException
+     */
+    public function getMessage(object $mBoxMessage, object $mBoxFolder, object $mBox)
+    {
+        $message = new Settings_MailConverter_MailRecord_Handler();
+        $message->setBox($mBox);
+        $message->setBoxMessage($mBoxMessage);
+        $message->setBoxFolder($mBoxFolder);
+        $message->setUid($mBoxMessage->getUid());
+        $message->retrieveRecord();
+        $message->retrieveBody();
+        $message->retrieveAttachments();
+
+        return $message;
+    }
+
+    /**
 	 * Mark the message in the mailbox.
 	 */
-	function markMessage($messageid) {
-		$markas = $this->_scannerinfo->markas;
-		if ($this->_imap && $markas) {
-		    if (strtoupper($markas) == 'SEEN') {
-				$markas = "\\Seen";
-				imap_setflag_full($this->_imap, $messageid, $markas);
-		    } else if (strtoupper($markas) == 'UNSEEN') {
-				imap_clearflag_full($this->_imap, $messageid, "\\Seen");
-		    }
-		}
-	}
+    public function markMessage($mailRecord)
+    {
+        $mBoxMessage = $mailRecord->getBoxMessage();
 
-	/**
+        if (!$mBoxMessage) {
+            return;
+        }
+
+        $markAs = $this->_scannerinfo->markas;
+
+        switch (strtoupper($markAs)) {
+            case 'SEEN':
+                $mBoxMessage->setFlag(['Seen']);
+                break;
+            case 'UNSEEN':
+                $mBoxMessage->unsetFlag(['Seen']);
+                break;
+        }
+    }
+
+    /**
 	 * Close the open IMAP connection.
 	 */
-	function close() {
-		if($this->_needExpunge) {
-			imap_expunge($this->_imap);
-		}
-		$this->_needExpunge = false;
-		if($this->_imap) {
-			imap_close($this->_imap);
-			$this->_imap = false;
-		}
-	}
+    public function close(): void
+    {
+        if ($this->_imap) {
+            $this->_imap->disconnect();
+            $this->_imap = false;
+        }
+    }
 }

@@ -179,7 +179,9 @@
 .h-iframe, .h-50vh {
     height: 50vh;
 }
-
+.h-75vh {
+    height: 75vh;
+}
 .h-25vh-max {
     max-height: 25vh;
 }

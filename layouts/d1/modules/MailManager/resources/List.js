@@ -315,7 +315,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			app.helper.hideProgress();
 			self.registerMoveMailDropdownClickEvent();
 			self.registerMailCheckBoxClickEvent();
-			self.registerScrollForMailList();
+
 			self.registerMainCheckboxClickEvent();
 			self.registerPrevPageClickEvent();
 			self.registerNextPageClickEvent();
@@ -543,7 +543,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			}
 			var folder = container.find('#mailManagerSearchbox').data('foldername');
 			var type = container.find('#searchType').val();
-			self.openFolder(folder, 0, query, type);
+			self.openFolder(folder, 1, query, type);
 		});
 	},
 
@@ -639,18 +639,6 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			element.addClass('open');
 		});
 	},
-
-	registerScrollForMailList : function() {
-		let self = this;
-		self.getContainer().find('#emailListDiv').mCustomScrollbar({
-			setHeight: '70vh',
-			autoExpandScrollbar: true,
-			scrollInertia: 200,
-			autoHideScrollbar: true,
-			theme : "dark-3"
-		});
-	},
-
 	registerMainCheckboxClickEvent : function() {
 		var self = this;
 		var container = self.getContainer();
@@ -1007,10 +995,12 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			}
 
 		app.helper.showProgress(app.vtranslate('JSLBL_Associating') + '...');
-		app.request.post({data: params}).then(function (err, data) {
-			if (err === null) {
+		app.request.post({data: params}).then(function (error, data) {
+			if (!error && data['success']) {
 				app.helper.showSuccessNotification({'message': ''});
 				app.helper.hideProgress();
+
+				self.showRelatedActions();
 			} else {
 				app.helper.showErrorNotification({"message": err});
 			}
@@ -1088,46 +1078,46 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	 * @param {type} form
 	 * @returns {undefined}
 	 */
-	quickCreateSave : function(form,invokeParams){
-		var container = this.getContainer();
-		var params = {
-			submitHandler: function(form) {
-				// to Prevent submit if already submitted
-				jQuery("button[name='saveButton']").attr("disabled","disabled");
-				if(this.numberOfInvalids() > 0) {
-					return false;
-				}
-				var formData = jQuery(form).serialize();
-				var requestParams = invokeParams.requestParams;
+	quickCreateSave: function (form, invokeParams) {
+		let container = this.getContainer(),
+			params = {
+				submitHandler: function (form) {
+					// to Prevent submit if already submitted
+					jQuery("button[name='saveButton']").attr("disabled", "disabled");
+					if (this.numberOfInvalids() > 0) {
+						return false;
+					}
+					let formData = jQuery(form).serialize(),
+						requestParams = invokeParams.requestParams;
 
-				// replacing default parameters for custom handlings in mail manager
-				formData = formData.replace('module=', 'xmodule=').replace('action=', 'xaction=');
-				if(requestParams) {
-					requestParams['_operationarg'] = 'create';
-					jQuery.each(requestParams, function(key, value){
-						formData += "&"+key+"="+value;
+					// replacing default parameters for custom handlings in mail manager
+					formData = formData.replace('module=', 'xmodule=').replace('action=', 'xaction=');
+					if (requestParams) {
+						requestParams['_operationarg'] = 'create';
+						jQuery.each(requestParams, function (key, value) {
+							formData += "&" + key + "=" + value;
+						});
+					}
+
+					app.request.post({data: formData}).then(function (error, data) {
+						if (!error) {
+							if (!data.error) {
+								jQuery('.vt-notification').remove();
+								app.event.trigger("post.QuickCreateForm.save", data, jQuery(form).serializeFormData());
+								app.helper.hideModal();
+								app.helper.showSuccessNotification({"message": app.vtranslate('JS_RECORD_CREATED')});
+								invokeParams.callbackFunction(data, error);
+							} else {
+								jQuery("button[name='saveButton']").removeAttr('disabled');
+								app.event.trigger('post.save.failed', data);
+							}
+						} else {
+							app.event.trigger("post.QuickCreateForm.save", data, jQuery(form).serializeFormData());
+							app.helper.showErrorNotification({"message": error});
+						}
 					});
 				}
-
-				app.request.post({data:formData}).then(function(err,data){
-                    if(err === null) {
-						if (!data.error) {
-							jQuery('.vt-notification').remove();
-							app.event.trigger("post.QuickCreateForm.save",data,jQuery(form).serializeFormData());
-							app.helper.hideModal();
-							app.helper.showSuccessNotification({"message":app.vtranslate('JS_RECORD_CREATED')});
-							invokeParams.callbackFunction(data, err);
-						} else {
-							jQuery("button[name='saveButton']").removeAttr('disabled');
-							app.event.trigger('post.save.failed', data);
-						}
-                    }else{
-						app.event.trigger("post.QuickCreateForm.save",data,jQuery(form).serializeFormData());
-                        app.helper.showErrorNotification({"message":err});
-                    }
-                });
-			}
-		};
+			};
 		form.vtValidate(params);
 	},
 
@@ -1164,13 +1154,14 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			'_folder' : _folder
 		}
 		app.helper.showProgress(app.vtranslate('JSLBL_Saving')+'...');
-		app.request.post({'data' : params}).then(function(err, response) {
+		app.request.post({'data': params}).then(function (error, data) {
 			app.helper.hideProgress();
-			if(response.ui) {
-				app.helper.showSuccessNotification({'message':''});
+
+			if (data['success']) {
+				app.helper.showSuccessNotification({'message': ''});
 				app.helper.hideModal();
 			} else {
-				app.helper.showAlertBox({'message' : app.vtranslate("JSLBL_FAILED_ADDING_COMMENT")});
+				app.helper.showAlertBox({'message': app.vtranslate("JSLBL_FAILED_ADDING_COMMENT")});
 			}
 		});
 	},

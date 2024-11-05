@@ -8,7 +8,7 @@
  * All Rights Reserved.
  * *********************************************************************************** */
 
-class Vtiger_MailParser {
+class Settings_MailConverter_MailParser_Handler {
 
 	var $msg = false;
 

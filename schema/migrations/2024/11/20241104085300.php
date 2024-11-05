@@ -10,8 +10,8 @@
 
 require_once 'vtlib/Vtiger/Cron.php';
 
-if (!class_exists('Migration_20241015120600')) {
-    class Migration_20241015120600 extends AbstractMigrations
+if (!class_exists('Migration_20241104085300')) {
+    class Migration_20241104085300 extends AbstractMigrations
     {
         /**
          * @param string $strFileName
@@ -19,11 +19,8 @@ if (!class_exists('Migration_20241015120600')) {
          */
         public function migrate(string $strFileName): void
         {
-            $mailManager = new MailManager_Mailbox_Model();
-            $mailManager->createTables();
-
-            $mailScanner = new Settings_MailConverter_MailScannerInfo_Handler();
-            $mailScanner->createTables();
+            Settings_MenuEditor_Module_Model::addModuleToApp('MailManager', 'Tools');
+            Settings_MenuEditor_Module_Model::addModuleToApp('Documents', 'Tools');
         }
     }
 } else {

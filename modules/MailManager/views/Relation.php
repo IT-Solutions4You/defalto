@@ -15,8 +15,6 @@ require_once 'include/Webservices/QueryRelated.php';
 require_once 'includes/runtime/Cache.php';
 include_once 'include/Webservices/DescribeObject.php';
 require_once 'modules/Vtiger/helpers/Util.php';
-include_once 'modules/Settings/MailConverter/handlers/MailScannerAction.php';
-include_once 'modules/Settings/MailConverter/handlers/MailAttachmentMIME.php';
 include_once 'modules/MailManager/MailManager.php';
 
 class MailManager_Relation_View extends MailManager_Abstract_View {
@@ -38,7 +36,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
     /**
      * Process the request to perform relationship operations
      * @param Vtiger_Request $request
-     * @return boolean
+     * @return void
      * @throws AppException
      * @throws Exception
      * @global Users Instance $currentUserModel
@@ -83,12 +81,14 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
         $folder = $connector->getFolder($folderName);
         $mail = $connector->getMail($folder, $msgUid);
         $viewer = $this->getViewer($request);
+        $fromEmail = $request->get('_mfrom') ?? $mail->getFrom()[0];
+        $toEmail = $request->get('_mto') ?? $mail->getTo()[0];
 
         // If the message was not linked, lookup for matching records, using FROM address
         if (!empty($linkedTo)) {
             $viewer->assign('LINKEDTO', $linkedTo);
         } else {
-            $mail->retrieveLookUps($request->get('_mfrom'), $request->get('_mto'), $folder->isSentFolder());
+            $mail->retrieveLookUps($fromEmail, $toEmail, $folder->isSentFolder());
 
             $viewer->assign('LOOKUPS', $mail->getLookUps());
         }
@@ -115,14 +115,9 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
         $folder = $connector->getFolder($folderName);
         $mail = $connector->getMail($folder, $uid);
 
-        $linkedTo = MailManager_Relate_Action::associate($mail, $linkTo);
+        MailManager_Relate_Action::associate($mail, $linkTo);
 
-        $this->retrieveRelationship($request, $mail, $linkedTo);
-
-        $viewer = $this->getViewer($request);
-        $response->setResult([
-            'ui' => $viewer->view('Relationship.tpl', $request->getModule(), true)
-        ]);
+        $response->setResult(['success' => true]);
 
         return $response;
     }
@@ -152,7 +147,8 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
         $isSentFolder = $mail->getFrom()[0] == $currentUserModel->get('email1') || $folder->isSentFolder();
         $formData = $this->processFormData($mail, $isSentFolder);
         $linkedTo = MailManager_Relate_Action::getSalesEntityInfo($parent);
-        $referenceFieldName = MailManager_Message_Model::RELATIONS_MAPPING[$linkModule][$linkedTo['module']];
+        $referenceFields = MailManager_Message_Model::RELATIONS_MAPPING[$linkModule];
+        $referenceFieldName = $referenceFields[$linkedTo['module']];
 
         switch ($linkModule) {
             case 'HelpDesk' :
@@ -171,6 +167,13 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 
                 $formData['description'] = Core_CKEditor_UIType::transformEditViewDisplayValue($mail->getBody(false));
                 break;
+        }
+
+        $contactRecordId = $formData[$referenceFields['Contacts']];
+
+        if ($contactRecordId && isRecordExists($contactRecordId)) {
+            $contactRecordModel = Vtiger_Record_Model::getInstanceById($contactRecordId, 'Contacts');
+            $formData[$referenceFields['Accounts']] = $contactRecordModel->get('account_id');
         }
 
         $formData['mail_manager_id'] = $mail->getUid();
@@ -269,7 +272,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
             // This condition is added so that emails are not created for Tickets and Todo without Parent,
             // as there is no way to relate them
             if (empty($parent) && $linkModule != 'HelpDesk') {
-                $linkedTo = MailManager_Relate_Action::associate($mail, $recordModel->getId());
+                MailManager_Relate_Action::associate($mail, $recordModel->getId());
             }
 
             // add attachments to the tickets as Documents
@@ -278,10 +281,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
                 $relationController->saveAttachments($mail, $linkModule, $recordModel);
             }
 
-            $viewer = $this->getViewer($request);
-            $this->retrieveRelationship($request, $mail, $linkedTo);
-
-            $response->setResult(['ui' => $viewer->view('Relationship.tpl', $request->getModule(), true)]);
+            $response->setResult(['ui' => '', 'success' => true]);
         } catch (DuplicateException $e) {
             $response->setResult(['ui' => '', 'error' => $e, 'title' => $e->getMessage(), 'message' => $e->getDuplicationMessage()]);
         } catch (Exception $e) {

@@ -59,6 +59,7 @@ class MailManager_Folder_View extends MailManager_Abstract_View {
 
     /**
      * @throws AppException
+     * @throws Exception
      */
     public function open(Vtiger_Request $request, $response)
     {

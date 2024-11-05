@@ -48,7 +48,7 @@
             </div>
         </div>
     </div>
-    <div class="mmSearchContainerOther py-3 container-fluid">
+    <div class="mmSearchContainerOther py-3 container-fluid border-bottom">
         <div class="row">
             <div class="col">
                 <div class="input-group">
@@ -68,7 +68,7 @@
         </div>
     </div>
    {if $FOLDER->getMails()}
-        <div class="mmEmailContainerDiv container-fluid px-0" id="emailListDiv">
+        <div class="mmEmailContainerDiv container-fluid px-0 h-75vh overflow-auto" id="emailListDiv">
             {assign var=IS_SENT_FOLDER value=$FOLDER->isSentFolder()}
             <input type="hidden" name="folderMailIds" value="{','|implode:$FOLDER->getMailIds()}"/>
             {foreach item=MAIL from=$FOLDER->getMails()}
@@ -77,7 +77,7 @@
                 {else}
                     {assign var=IS_READ value=0}
                 {/if}
-                <div class="container-fluid py-3 border-bottom cursorPointer mailEntry {if $IS_READ}mmReadEmail{else}fw-bold{/if}" id='mmMailEntry_{$MAIL->getUid()}' data-folder="{$FOLDER->getName()}" data-read='{$IS_READ}'>
+                <div class="container-fluid py-2 border-bottom cursorPointer mailEntry {if $IS_READ}mmReadEmail{else}fw-bold{/if}" id='mmMailEntry_{$MAIL->getUid()}' data-folder="{$FOLDER->getName()}" data-read='{$IS_READ}'>
                     <div class="row">
                         <div class="col-sm-auto">
                             <div class="min-w-5rem">

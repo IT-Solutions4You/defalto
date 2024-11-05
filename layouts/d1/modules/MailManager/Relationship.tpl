@@ -57,6 +57,9 @@
                                             {$RECORD.icon}
                                             <span class="ms-2">{$RECORD.label|textlength_check}</span>
                                         </a>
+                                        {if !empty($RECORD['account_label'])}
+                                            <span class="ms-2 text-secondary">({$RECORD['account_label']})</span>
+                                        {/if}
                                     </div>
                                 </div>
                             </li>
@@ -84,16 +87,14 @@
     {elseif empty($LINKEDTO)}
         <div class="row mailManagerEmptyLinkedTo">
             <div class="col recordScroll mb-1">
+                {if $ALLOWED_MODULES|count}
+                    {include file="RelationshipActions.tpl"|vtemplate_path:$MODULE ACTION_MODULES=$ALLOWED_MODULES ACTION_TYPE='create' ACTION_BUTTONS=true}
+                {/if}
                 {if false eq $EMAIL->isAttachmentsAllowed()}
-                    <div class="alert alert-warning d-flex align-items-center justify-content-between py-2">
+                    <div class="alert alert-warning d-flex align-items-center justify-content-between py-2 my-3">
                         <span>{vtranslate('LBL_BLOCKED_REMOTE_CONTENT', $MODULE)}</span>
                         <button type="button" class="btn btn-warning allowRemoteContent">{vtranslate('LBL_ALLOW', $MODULE)}</button>
                     </div>
-                {/if}
-            </div>
-            <div class="col-auto">
-                {if $ALLOWED_MODULES|count}
-                    {include file="RelationshipActions.tpl"|vtemplate_path:$MODULE ACTION_MODULES=$ALLOWED_MODULES ACTION_TYPE='create'}
                 {/if}
             </div>
         </div>
