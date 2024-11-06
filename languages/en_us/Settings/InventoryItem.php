@@ -11,5 +11,5 @@
 $languageStrings = [
     'InventoryItem'        => 'Inventory Item',
     'SINGLE_InventoryItem' => 'Inventory Item',
-
+    'LBL_GENERAL_SETTING' => 'General Setting',
 ];

@@ -22,7 +22,10 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
         $moduleModel = Settings_Picklist_Module_Model::getInstance($sourceModule);
         $viewer = $this->getViewer($request);
         $qualifiedName = $request->getModule(FALSE);
-show($pickListSupportedModules);
         $viewer->assign('PICKLIST_MODULES',$pickListSupportedModules);
+        $viewer->assign('SELECTED_MODULE_NAME', $sourceModule);
+        $viewer->assign('QUALIFIED_NAME',$qualifiedName);
+
+        $viewer->view('Index.tpl',$qualifiedName);
     }
 }

@@ -13,7 +13,7 @@ class Settings_InventoryItem_Module_Model extends Vtiger_Module_Model
     {
         $db = PearDatabase::getInstance();
         $supportedModules = ['Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice', ];
-        $query = "SELECT distinct vtiger_tab.tablabel, vtiger_tab.name as tabname
+        $query = "SELECT vtiger_tab.tabid, vtiger_tab.tablabel, vtiger_tab.name as tabname
 				  FROM vtiger_tab
 				  WHERE vtiger_tab.name IN (" . generateQuestionMarks($supportedModules) . ") 
 				    AND vtiger_tab.presence != 1
@@ -21,13 +21,9 @@ class Settings_InventoryItem_Module_Model extends Vtiger_Module_Model
         $result = $db->pquery($query, $supportedModules);
 
         $modulesModelsList = [];
+
         while ($row = $db->fetch_array($result)) {
-            $moduleLabel = $row['tablabel'];
-            $moduleName = $row['tabname'];
-            $instance = new self();
-            $instance->name = $moduleName;
-            $instance->label = $moduleLabel;
-            $modulesModelsList[] = $instance;
+            $modulesModelsList[$row['tabid']] = $row['tabname'];
         }
 
         return $modulesModelsList;
