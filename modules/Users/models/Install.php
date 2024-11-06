@@ -48,7 +48,7 @@ class Users_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 0,
                     'filter' => 1,
-                    'filter_sequence' => 3,
+                    'filter_sequence' => 5,
                 ],
                 'is_admin' => [
                     'name' => 'is_admin',
@@ -66,7 +66,7 @@ class Users_Install_Model extends Core_Install_Model
                     'summaryfield' => 1,
                     'headerfield' => 0,
                     'filter' => 1,
-                    'filter_sequence' => 5,
+                    'filter_sequence' => 8,
                 ],
                 'user_password' => [
                     'name' => 'user_password',
@@ -132,6 +132,8 @@ class Users_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 1,
                     'headerfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 2,
                     'entity_identifier' => 1,
                 ],
                 'roleid' => [
@@ -150,7 +152,7 @@ class Users_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 1,
                     'filter' => 1,
-                    'filter_sequence' => 2,
+                    'filter_sequence' => 4,
                 ],
                 'email1' => [
                     'name' => 'email1',
@@ -165,6 +167,8 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 3,
                 ],
                 'status' => [
                     'name' => 'status',
@@ -401,7 +405,7 @@ class Users_Install_Model extends Core_Install_Model
                         'summaryfield' => 0,
                         'headerfield' => 0,
                         'filter' => 1,
-                        'filter_sequence' => 5,
+                        'filter_sequence' => 7,
                     ],
                     'department' => [
                         'name' => 'department',
@@ -478,7 +482,7 @@ class Users_Install_Model extends Core_Install_Model
                         'summaryfield' => 0,
                         'headerfield' => 0,
                         'filter' => 1,
-                        'filter_sequence' => 4,
+                        'filter_sequence' => 6,
                     ],
                     'secondaryemail' => [
                         'name' => 'secondaryemail',
