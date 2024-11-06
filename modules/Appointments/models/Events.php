@@ -263,7 +263,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         }
 
         $hour = implode(':', $hour);
-        $start_hour = $currentUser->get('start_hour');
+        $start_hour = '00:00' === $currentUser->get('start_hour') ? '00:00:00' : $currentUser->get('start_hour');
 
         return sprintf(
             '.fc .fc-timegrid-slot[data-time*="%s"] { border-top: 2px solid #5e81f4 !important; } ' .
