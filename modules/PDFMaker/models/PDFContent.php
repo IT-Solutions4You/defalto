@@ -229,7 +229,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         }
 
         $PDF_content = array();
-        list($PDF_content['header'], $PDF_content['body'], $PDF_content['footer']) = explode(self::$section_sep, self::$content);
+        [$PDF_content['header'], $PDF_content['body'], $PDF_content['footer']] = explode(self::$section_sep, self::$content);
 
         return $PDF_content;
     }
@@ -683,7 +683,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         if (!empty($focus->id)) {
             $total_vatsum = $totalwithoutwat = $totalAfterDiscount_subtotal = $total_subtotal = $totalsum_subtotal = 0;
 
-            list($images, $bacImgs) = $this->getInventoryImages($focus->id);
+            [$images, $bacImgs] = $this->getInventoryImages($focus->id);
 
             $recordModel = Inventory_Record_Model::getInstanceById($focus->id);
             $relatedProducts = $recordModel->getProducts();
@@ -1107,7 +1107,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                         $oParent = $oParent->parent;
                     }
 
-                    list($tag) = explode('>', $oParent->outertext, 2);
+                    [$tag] = explode('>', $oParent->outertext, 2);
 
                     $header = $oParent->first_child();
 
@@ -1150,7 +1150,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                         $style_subtotal_tag = $style_subtotal_endtag = '';
 
                         if (isset($td->innertext)) {
-                            list($style_subtotal_tag, $style_subtotal_endtag) = explode('#PRODUCTBLOC_' . $block_type . 'START#', $td->innertext);
+                            [$style_subtotal_tag, $style_subtotal_endtag] = explode('#PRODUCTBLOC_' . $block_type . 'START#', $td->innertext);
                         }
 
                         if (isset($style_subtotal)) {
@@ -1271,50 +1271,26 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         return rtrim(vglobal('site_URL'), '/') . '/';
     }
 
-    private function replaceUserCompanyFields()
+    /**
+     * @throws Exception
+     */
+    public function replaceCompanyFields(): void
     {
+        $userId = self::$focus->column_fields['assigned_user_id'];
+        $fields = Core_TemplateContent_Helper::getCompanyFields($userId, self::$language);
+
+        self::$rep = array_merge(self::$rep, $fields);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function replaceUserCompanyFields(): void
+    {
+        $this->replaceCompanyFields();
+        $this->replaceTermsAndConditions();
+
         $current_user = Users_Record_Model::getCurrentUserModel();
-
-        $Settings_Vtiger_CompanyDetails_Model = Settings_Vtiger_CompanyDetails_Model::getInstance();
-        $CompanyDetails_Fields = $Settings_Vtiger_CompanyDetails_Model->getFields();
-
-        self::$rep['$COMPANY_FAX$'] = '';
-        self::$rep['%COMPANY_FAX$%'] = '';
-
-        foreach ($CompanyDetails_Fields as $field_name => $field_data) {
-            if ($field_name == 'organizationname') {
-                $coll = 'name';
-            } elseif ($field_name == 'code') {
-                $coll = 'zip';
-            } elseif ($field_name == 'logoname') {
-                continue;
-            } else {
-                $coll = $field_name;
-            }
-
-            if ($coll == 'logo') {
-                $value = '<img src="' . self::getSiteUrl() . LOGO_PATH . $Settings_Vtiger_CompanyDetails_Model->get('logoname') . '">';
-            } else {
-                $value = $Settings_Vtiger_CompanyDetails_Model->get($field_name);
-            }
-
-            $label = vtranslate($field_name, 'Settings:Vtiger');
-
-            self::$rep['$COMPANY_' . strtoupper($coll) . '$'] = $value;
-            self::$rep['%COMPANY_' . strtoupper($coll) . '%'] = $label;
-
-            if ('country_id' === $coll) {
-                self::$rep['$COMPANY_COUNTRY$'] = $value;
-                self::$rep['%COMPANY_COUNTRY$%'] = $label;
-            }
-        }
-
-        $tandcResult = self::$db->pquery('SELECT tandc FROM vtiger_inventory_tandc WHERE type = ?', array('Inventory'));
-        $tandc = self::$db->query_result($tandcResult, 0, 'tandc');
-
-        if (strpos($tandc, '&lt;br /&gt;') === false && strpos($tandc, '&lt;br/&gt;') === false && strpos($tandc, '&lt;br&gt;') === false) {
-            self::$rep['$TERMS_AND_CONDITIONS$'] = nl2br($tandc);
-        }
 
         if (self::$focus->column_fields['assigned_user_id'] != '') {
             $user_res = self::$db->pquery('SELECT * FROM vtiger_users WHERE id = ?', array(self::$focus->column_fields['assigned_user_id']));
@@ -1361,6 +1337,17 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         $this->replaceFieldsToContent('Users', $smcreatorid_user_focus, true, false, 'C_');
 
         $this->replaceContent();
+    }
+
+    protected function replaceTermsAndConditions()
+    {
+        $value = Core_Utils_Helper::getTermsAndConditions(self::$module);
+
+        if (empty($value)) {
+            $value = Core_Utils_Helper::getTermsAndConditions('Inventory');
+        }
+
+        self::$rep['$TERMS_AND_CONDITIONS$'] = nl2br($value);
     }
 
     private function replaceUserData($id, $data, $type)

@@ -1809,19 +1809,20 @@ class EMAILMakerRelBlockRun extends CRMEntity
         global $current_user;
         $id = array(getTabid($this->primarymodule));
         if ($this->secondarymodule != '') {
-            array_push($id, getTabid($this->secondarymodule));
+            $id[] = getTabid($this->secondarymodule);
         }
 
         $query = 'select fieldname,columnname,fieldid,fieldlabel,tabid,uitype from vtiger_field where tabid in(' . generateQuestionMarks($id) . ') and uitype in (15,33,55)'; //and columnname in (?)';
         $result = $adb->pquery($query, $id); //,$select_column));
         $roleid = $current_user->roleid;
         $subrole = getRoleSubordinates($roleid);
+        $roleids = [];
+
         if (count($subrole) > 0) {
             $roleids = $subrole;
-            array_push($roleids, $roleid);
-        } else {
-            $roleids = $roleid;
         }
+
+        $roleids[] = $roleid;
 
         for ($i = 0; $i < $adb->num_rows($result); $i++) {
             $fieldname = $adb->query_result($result, $i, "fieldname");
@@ -1832,11 +1833,11 @@ class EMAILMakerRelBlockRun extends CRMEntity
             $fieldlabel1 = str_replace(" ", "_", $fieldlabel);
             $keyvalue = getTabModuleName($tabid) . "_" . $fieldlabel1;
             $fieldvalues = array();
-            if (count($roleids) > 1) {
-                $mulsel = "select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid in (\"" . implode($roleids, "\",\"") . "\") and picklistid in (select picklistid from vtiger_$fieldname) order by sortid asc";
-            } else {
-                $mulsel = "select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid ='" . $roleid . "' and picklistid in (select picklistid from vtiger_$fieldname) order by sortid asc";
-            }
+            $mulsel = sprintf(
+                'select distinct %s from vtiger_%s inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_%s.picklist_valueid where roleid in ("%s") and picklistid in (select picklistid from vtiger_%s) order by sortid asc',
+                $fieldname, $fieldname, $fieldname, implode('","', $roleids), $fieldname
+            );
+
             if ($fieldname != 'firstname') {
                 $mulselresult = $adb->pquery($mulsel, array());
             }

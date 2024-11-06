@@ -18,6 +18,8 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     private static $recordId;
     private static $recordModel;
     private static $language;
+
+    /** @var CRMEntity */
     private static $focus;
     private static $db;
     private static $mod_strings;
@@ -142,6 +144,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
      * @param int|null $recipientRecordId
      * @param string|null $recipientModuleName
      * @return self
+     * @throws Exception
      */
     public static function getInstance(string $moduleName, int $recordId, string $language, int $recipientRecordId = null, string $recipientModuleName = null): self
     {
@@ -150,6 +153,11 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
         if (!empty($moduleName)) {
             self::$focus = CRMEntity::getInstance($moduleName);
+
+            if (!empty($recordId)) {
+                self::$focus->retrieve_entity_info($recordId, $moduleName);
+                self::$focus->id = $recordId;
+            }
         }
 
         self::$recipientid = $recipientRecordId;
@@ -1399,71 +1407,37 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         }
     }
 
-    private function replaceUserCompanyFields($convert_source)
+    protected function replaceTermsAndConditions()
     {
+        $value = Core_Utils_Helper::getTermsAndConditions(self::$module);
+
+        if (empty($value)) {
+            $value = Core_Utils_Helper::getTermsAndConditions('Inventory');
+        }
+
+        self::$rep['$TERMS_AND_CONDITIONS$'] = nl2br($value);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function replaceCompanyFields(): void
+    {
+        $userId = intval(self::$focus->column_fields['assigned_user_id'] ?? Users_Record_Model::getCurrentUserModel()->getId());
+        $fields = Core_TemplateContent_Helper::getCompanyFields($userId, self::$language);
+
+        self::$rep = array_merge(self::$rep, $fields);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function replaceUserCompanyFields($convert_source): void
+    {
+        $this->replaceCompanyFields();
+        $this->replaceTermsAndConditions();
+
         $current_user = Users_Record_Model::getCurrentUserModel();
-
-        if (getTabId(EMAILMaker_EMAILMaker_Model::MULTI_COMPANY) && vtlib_isModuleActive(EMAILMaker_EMAILMaker_Model::MULTI_COMPANY)) {
-            $CompanyDetailsRecord_Model = ITS4YouMultiCompany_Record_Model::getCompanyInstance(self::$focus->column_fields["assigned_user_id"]);
-            $CompanyDetails_Model = $CompanyDetailsRecord_Model->getModule();
-            $CompanyDetails_Data = $CompanyDetailsRecord_Model->getData();
-            $ismulticompany = true;
-        } else {
-            $CompanyDetails_Model = Settings_Vtiger_CompanyDetails_Model::getInstance();
-            $CompanyDetails_Data = $CompanyDetails_Model->getData();
-            $ismulticompany = false;
-        }
-
-        self::$rep['%COMPANY_FAX%'] = '';
-        self::$rep['%company-fax%'] = '';
-        self::$rep['$company-fax$'] = '';
-
-        $CompanyDetails_Fields = $CompanyDetails_Model->getFields();
-
-        foreach ($CompanyDetails_Fields as $field_name => $field_data) {
-            $value = "";
-
-            if ($field_name == "organizationname" || $field_name == "companyname") {
-                $coll = "name";
-            } elseif ($field_name == "street") {
-                $coll = "address";
-            } elseif ($field_name == "code") {
-                $coll = "zip";
-            } elseif ($field_name == "logoname") {
-                continue;
-            } else {
-                $coll = $field_name;
-            }
-            if ('logo' === $coll && !empty($CompanyDetails_Data['logoname'])) {
-                $value = '<img src="' . self::$site_url . LOGO_PATH . $CompanyDetails_Data["logoname"] . '">';
-            } elseif (($coll == "logo" || $coll == "stamp") && $ismulticompany && !empty($CompanyDetails_Data[$coll])) {
-                $value = $this->getAttachmentImage($CompanyDetails_Data[$coll], self::$site_url);
-            } elseif (isset($CompanyDetails_Data[$field_name])) {
-                $value = $CompanyDetails_Data[$field_name];
-            }
-
-            self::$rep['$company-' . strtolower($coll) . '$'] = $value;
-
-            if ($ismulticompany) {
-                $label = self::getTranslate($field_data->get('label'), 'ITS4YouMultiCompany');
-            } else {
-                $label = self::getTranslate($field_name, 'Settings:Vtiger');
-            }
-
-            self::$rep['%COMPANY_' . strtoupper($coll) . '%'] = $label;
-            self::$rep['%company-' . strtolower($coll) . '%'] = $label;
-
-            if ('country_id' === $coll) {
-                self::$rep['$company-country$'] = $value;
-                self::$rep['%COMPANY_COUNTRY$%'] = $label;
-                self::$rep['%company-country%'] = $label;
-            }
-        }
-
-        $result = self::$db->pquery("SELECT tandc FROM vtiger_inventory_tandc WHERE type = ?", array("Inventory"));
-        $tandc = self::$db->query_result($result, 0, "tandc");
-
-        self::$rep['$TERMS_AND_CONDITIONS$'] = nl2br((string)$tandc);
 
         if ($convert_source) {
             //assigned user fields
