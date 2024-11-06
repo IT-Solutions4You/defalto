@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
+/** @var PDFMaker_EditFree_Js */
 Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
 
     duplicateCheckCache : {},
@@ -22,66 +22,54 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
     setForm : function(element){
         this.formElement = element;
         return this;
-    },    
-    registerRecordPreSaveEvent : function(form){
-        if(typeof form == 'undefined'){
-                form = this.getForm();
-        }
-
-        form.on(Vtiger_Edit_Js.recordPreSave, function(e, data){
-
-            if (!PDFMaker_EditFreeJs.ControlNumber('margin_top', true) || !PDFMaker_EditFreeJs.ControlNumber('margin_bottom', true) || !PDFMaker_EditFreeJs.ControlNumber('margin_left', true) || !PDFMaker_EditFreeJs.ControlNumber('margin_right', true)){
-                error++;
-            }
-            if (!PDFMaker_EditFreeJs.CheckCustomFormat()){
-                error++;
-            }
-            if (error == 0){
-                moduleName = app.getModuleName();
-                form.submit();
-
-            }
-            e.preventDefault();
-        })
     },
     registerBasicEvents: function(container){
         this._super(container);
         this.registerButtons();
-        this.registerRecordPreSaveEvent();
-
-    },    
+    },
     registerSubmitEvent: function(){
-        var thisInstance = this;
-        var editViewForm = this.getForm();
-        editViewForm.submit(function(e){
-            //Form should submit only once for multiple clicks also
-            if(typeof editViewForm.data('submit') != "undefined"){
+        let editViewForm = this.getForm();
+
+        editViewForm.vtValidate({
+            submitHandler : function() {
+
+                let e = jQuery.Event(Vtiger_Edit_Js.recordPresaveEvent);
+                app.event.trigger(e);
+                if(e.isDefaultPrevented()) {
                     return false;
-            } else {
-                thisInstance.calculateValues();
-                editViewForm.data('submit', 'true');
-                //on submit form trigger the recordPreSave event
-                var recordPreSaveEvent = jQuery.Event(Vtiger_Edit_Js.recordPreSave);
-                editViewForm.trigger(recordPreSaveEvent, {'value' : 'edit'});
-                if(recordPreSaveEvent.isDefaultPrevented()) {
-                        //If duplicate record validation fails, form should submit again
-                        editViewForm.removeData('submit');
-                        e.preventDefault();
                 }
+                let error = 0;
+
+                if (!PDFMaker_EditFreeJs.ControlNumber('margin_top', true) || !PDFMaker_EditFreeJs.ControlNumber('margin_bottom', true) || !PDFMaker_EditFreeJs.ControlNumber('margin_left', true) || !PDFMaker_EditFreeJs.ControlNumber('margin_right', true)){
+                    error++;
+                }
+
+                if (!PDFMaker_EditFreeJs.CheckCustomFormat()){
+                    error++;
+                }
+
+                if (error > 0){
+                    return false;
+                }
+
+                window.onbeforeunload = null;
+                editViewForm.find('.saveButton').attr('disabled',true);
+                return true;
             }
         });
     },
     registerButtons: function() {
-        var thisInstance = this;
-        var selectElement1 = jQuery('.InsertIntoTemplate');
-        selectElement1.on('click', function() {
-            var selectedType = jQuery(this).data('type');
-            thisInstance.InsertIntoTemplate(selectedType,false);
+        let self = this,
+            form = self.getForm();
+
+        form.on('click', '.InsertIntoTemplate', function() {
+            let selectedType = jQuery(this).data('type');
+            self.InsertIntoTemplate(selectedType,false);
         });
-        var selectElement2 = jQuery('.InsertLIntoTemplate');
-        selectElement2.on('click', function() {
-            var selectedType = jQuery(this).data('type');
-            thisInstance.InsertIntoTemplate(selectedType,true);
+
+        form.on('click', '.InsertLIntoTemplate', function() {
+            let selectedType = jQuery(this).data('type');
+            self.InsertIntoTemplate(selectedType,true);
         });
     },
     getSelectedEditor : function() {
@@ -284,33 +272,30 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
         PDFMaker_EditFreeJs.fill_module_lang_array(moduleName);
         PDFMaker_EditFreeJs.fill_module_product_fields_array(moduleName);
     },
-    registerCKEditor: function() {
+    registerCKEditor: function () {
         const ckeditorInstance = new Vtiger_CkEditor_Js();
 
         ckeditorInstance.loadCkEditor($('#body'), {height: '65vh'});
         ckeditorInstance.loadCkEditor($('#header_body'), {height: '65vh'});
         ckeditorInstance.loadCkEditor($('#footer_body'), {height: '65vh'});
     },
-    registerEvents: function(){
-        this.registerAppTriggerEvent();
-        this.registerCKEditor();
+    registerEvents: function () {
+        let editViewForm = this.getForm(),
+            statusToProceed = this.proceedRegisterEvents();
 
-        var editViewForm = this.getForm();
-        var statusToProceed = this.proceedRegisterEvents();
-        if(!statusToProceed){
-                return;
+        if (!statusToProceed) {
+            return;
         }
-        this.registerSelectModuleOption();
 
+        this.registerSelectModuleOption();
         this.registerBasicEvents(this.getForm());
         this.registerSelectRelatedModuleOption();
         this.registerSubmitEvent();
         this.registerSelectAccInfoOption();
 
-
-        if (typeof this.registerLeavePageWithoutSubmit == 'function'){
+        if (typeof this.registerLeavePageWithoutSubmit == 'function') {
             this.registerLeavePageWithoutSubmit(editViewForm);
-        }             
+        }
     },
     registerAutoCompleteFields: function() {
 
@@ -435,13 +420,17 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
                 }
             }
         },
-        ControlNumber: function(elid, final){
-            var control_number = document.getElementById(elid).value;
-            var re = new Array();
+        /**
+         * @return {boolean}
+         */
+        ControlNumber: function (elid, final) {
+            let control_number = document.getElementById(elid).value;
+            let re = [];
             re[1] = new RegExp("^([0-9])");
             re[2] = new RegExp("^[0-9]{1}[.]$");
             re[3] = new RegExp("^[0-9]{1}[.][0-9]{1}$");
-            if (control_number.length > 3 || !re[control_number.length].test(control_number) || (final == true && control_number.length == 2)){
+
+            if (!control_number.length || control_number.length > 3 || !re[control_number.length].test(control_number) || (final === true && control_number.length === 2)) {
                 alert(app.vtranslate("LBL_MARGIN_ERROR"));
                 document.getElementById(elid).focus();
                 return false;
