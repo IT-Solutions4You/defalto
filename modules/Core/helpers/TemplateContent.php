@@ -92,7 +92,7 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
      */
     public static function getAttachmentImage(int $id, string $site_url): string
     {
-        if (!empty($id)) {
+        if (empty($id)) {
             return '';
         }
 
