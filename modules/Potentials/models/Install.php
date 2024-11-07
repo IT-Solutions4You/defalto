@@ -395,7 +395,7 @@ class Potentials_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
+                    'quickcreate' => 2,
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
