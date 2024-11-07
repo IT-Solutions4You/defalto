@@ -51,6 +51,7 @@ class Core_CKEditor_UIType extends Vtiger_Base_UIType {
 
         $newContent = '';
         $content = preg_replace('/<img.*src="(.*?)".*\/?>/', '\1', $content);
+        $content = str_replace(['<br />', '<br/>'], ['<br>', '<br>'], $content);
         $lines = explode('<br>', $content);
 
         foreach ($lines as $line) {
