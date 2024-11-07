@@ -41,7 +41,7 @@ class Settings_MailConverter_MailRecord_Handler
     /**
      * @var string
      */
-    public string $_subject;
+    public string $_subject = '';
     /**
      * @var array
      */
@@ -514,7 +514,7 @@ class Settings_MailConverter_MailRecord_Handler
             $body = $mMessage->getHTMLBody();
 
             if (empty($body)) {
-                $body = '<div style="white-space: pre-line;">' . $mMessage->getTextBody() . '</div>';
+                $body = str_replace(PHP_EOL, '<br>', $mMessage->getTextBody());
             }
 
             $this->setBody($body);
@@ -655,6 +655,33 @@ class Settings_MailConverter_MailRecord_Handler
         }
 
         return $attachment->getData();
+    }
+
+    /**
+     * @param string $fileName
+     * @param string $fileContent
+     * @param int $userId
+     * @param string $source
+     * @return Documents_Record_Model
+     */
+    public function saveDocumentFile(string $fileName, string $fileContent, int $userId, string $source = 'MailRecord'): Documents_Record_Model
+    {
+        /**
+         * Create document record
+         * @var $document Documents_Record_Model
+         */
+        $document = Vtiger_Record_Model::getCleanInstance('Documents');
+        $document->set('notes_title', $fileName);
+        $document->set('filename', $fileName);
+        $document->set('filesize', strlen($fileContent));
+        $document->set('filestatus', 1);
+        $document->set('filelocationtype', 'I');
+        $document->set('folderid', 1);
+        $document->set('assigned_user_id', $userId);
+        $document->set('source', $source);
+        $document->save();
+
+        return $document;
     }
 
     public function getBodyText(): string

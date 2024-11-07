@@ -27,6 +27,10 @@ $PERFORMANCE_CONFIG = [
     // Recommended value false
     'LISTVIEW_COMPUTE_PAGE_COUNT'  => false,
 
+    // Compute mail manager mail count while loading folders everytime.
+    // Recommended value false
+    'MAIL_MANAGER_COMPUTE_FOLDER_COUNT' => false,
+
     // Control DetailView Record Navigation
     'DETAILVIEW_RECORD_NAVIGATION' => true,
 
