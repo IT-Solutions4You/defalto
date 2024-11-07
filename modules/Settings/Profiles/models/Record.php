@@ -197,16 +197,22 @@ class Settings_Profiles_Record_Model extends Settings_Vtiger_Record_Model {
 		}
 	}
 
-	public function isModuleFieldLocked($module, $field) {
-		$fieldModel = $this->getProfileTabFieldModel($module, $field);
-        if(!$fieldModel->isEditable() || $fieldModel->isMandatory()
-				|| in_array($fieldModel->get('uitype'),self::$fieldLockedUiTypes) || $fieldModel->hasCustomLock()) {
-			return true;
-		}
-		return false;
-	}
+    public function isModuleFieldLocked($module, $field)
+    {
+        $fieldModel = $this->getProfileTabFieldModel($module, $field);
 
-	public function getProfileTabModel($module) {
+        if ('emailoptout' === $fieldModel->getName()) {
+            return true;
+        }
+
+        if (!$fieldModel->isEditable() || $fieldModel->isMandatory() || in_array($fieldModel->get('uitype'), self::$fieldLockedUiTypes) || $fieldModel->hasCustomLock()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getProfileTabModel($module) {
 		$tabId = false;
 		if(is_object($module) && is_a($module, 'Vtiger_Module_Model')) {
 			$tabId = $module->getId();
@@ -864,4 +870,15 @@ class Settings_Profiles_Record_Model extends Settings_Vtiger_Record_Model {
 			}
 		}
 	}
+
+    /**
+     * @throws Exception
+     */
+    public static function getProfileName(int $profileId): string
+    {
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery('SELECT * FROM vtiger_profile WHERE profileid=?', [$profileId]);
+
+        return (string)$adb->query_result($result, 0, 'profilename');
+    }
 }
