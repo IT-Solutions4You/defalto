@@ -12,14 +12,16 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	},
 
 	loadFolders : function(folder) {
-		app.helper.showProgress(app.vtranslate("JSLBL_Loading_Please_Wait")+"...");
-		var self = this;
-		var params = {
+		app.helper.showProgress(app.vtranslate('JSLBL_Loading_Folders_Please_Wait')+'...');
+
+		let self = this,
+			params = {
 			'module' : app.getModuleName(),
 			'view' : 'Index',
 			'_operation' : 'folder',
 			'_operationarg' : 'getFoldersList'
 		}
+
 		app.request.post({"data" : params}).then(function(error, responseData) {
 			app.helper.hideProgress();
 			self.getContainer().find('#folders_list').html(responseData);
@@ -90,17 +92,19 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	},
 
 	registerSettingsEdit : function() {
-		var self = this;
-		var container = this.getContainer();
+		let self = this,
+			container = this.getContainer();
+
 		container.find('.mailbox_setting').click(function() {
-			app.helper.showProgress(app.vtranslate("JSLBL_Loading_Please_Wait")+"...");
-			var params = {
-				'module' : 'MailManager',
-				'view' : 'Index',
-				'_operation' : 'settings',
-				'_operationarg' : 'edit'
-			};
-			var popupInstance = Vtiger_Popup_Js.getInstance();
+			app.helper.showProgress(app.vtranslate('JSLBL_Loading_Please_Wait') + '...');
+			let params = {
+					'module' : 'MailManager',
+					'view' : 'Index',
+					'_operation' : 'settings',
+					'_operationarg' : 'edit'
+				},
+				popupInstance = Vtiger_Popup_Js.getInstance();
+
 			popupInstance.showPopup(params, '', function(data) {
 				app.helper.hideProgress();
 				self.handleSettingsEvents(data);
@@ -197,18 +201,21 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	},
 
 	registerDeleteMailboxEvent : function(data) {
-		var settingContainer = jQuery(data);
+		let settingContainer = jQuery(data);
+
 		settingContainer.find('#deleteMailboxBtn').click(function(e) {
 			e.preventDefault();
-			app.helper.showProgress(app.vtranslate("JSLBL_Deleting")+"...");
-			var params = {
+			app.helper.showProgress(app.vtranslate('JSLBL_Deleting') + '...');
+			let params = {
 				'module' : 'MailManager',
 				'view' : 'Index',
 				'_operation' : 'settings',
 				'_operationarg' : 'remove'
 			};
+
 			app.request.post({"data" : params}).then(function(error, responseData) {
 				app.helper.hideProgress();
+
 				if(responseData.status) {
 					window.location.reload();
 				}
@@ -251,7 +258,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 				vtUtils.hideValidationMessage(settingContainer.find('#_mbox_pwd'));
 			}
 
-			app.helper.showProgress(app.vtranslate("JSLBL_Saving_And_Verifying")+"...");
+			app.helper.showProgress(app.vtranslate('JSLBL_Saving_And_Verifying') + '...');
 
 			params = {
 				'module' : 'MailManager',
@@ -272,18 +279,8 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			});
 		});
 	},
-
-	registerInitialLayout : function() {
-		var self = this;
-		var container = self.getContainer();
-		if(container.find('#isMailBoxExists').val() == "0") {
-			container.find('#modnavigator').addClass('hide');
-			container.find('#listViewContent').addClass('paddingLeft0');
-		}
-	},
-
 	openFolder : function(folderName, page, query, type) {
-		app.helper.showProgress(app.vtranslate("JSLBL_Loading_Please_Wait")+"...");
+		app.helper.showProgress(app.vtranslate('JSLBL_Loading_Mails_Please_Wait') + '...');
 
 		let self = this,
 			container = self.getContainer();
@@ -1323,7 +1320,6 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		self.loadFolders();
 		self.registerComposeEmail();
 		self.registerSettingsEdit();
-		self.registerInitialLayout();
 		self.registerRefreshFolder();
 		self.registerSearchTypeChangeEvent();
 		self.registerPostMailSentEvent();

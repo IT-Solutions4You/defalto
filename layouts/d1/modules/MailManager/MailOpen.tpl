@@ -19,7 +19,7 @@
         <div class="row" id="mailManagerActions">
             <div class="col mb-2" id="relationBlock">
                 <div class="spinner-border text-secondary" role="status">
-                    <span class="sr-only">Loading...</span>
+                    <span class="sr-only">{vtranslate('Loading relations', $QUALIFIED_MODULE)}...</span>
                 </div>
             </div>
             <div class="col-auto">

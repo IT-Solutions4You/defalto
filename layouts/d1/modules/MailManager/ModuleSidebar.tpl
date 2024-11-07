@@ -5,8 +5,8 @@
 * All Rights Reserved.
 *}
 {strip}
-    <div class="col-lg-2 p-0 bg-body rounded-end rounded-bottom-0">
-        <div id="modules-menu" class="modules-menu mmModulesMenu p-3">
+    <div class="col-lg-2 p-0 bg-body rounded-end rounded-bottom-0 mmFoldersContainer">
+        <div id="modules-menu" class="modules-menu mmModulesMenu p-3 h-100">
             <div class="d-flex justify-content-between pb-3">
                 <div class="fw-bold text-truncate">{$MAILBOX->username()}</div>
                 <div class="d-flex">
