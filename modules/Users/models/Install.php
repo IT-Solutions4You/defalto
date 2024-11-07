@@ -16,6 +16,24 @@ class Users_Install_Model extends Core_Install_Model
      */
     public function addCustomLinks(): void
     {
+        $this->updateProfiles();
+    }
+
+    public function updateProfiles()
+    {
+        $sql = 'SELECT vtiger_user2role.userid as user_id, vtiger_role2profile.profileid as profile_id FROM vtiger_user2role 
+    INNER JOIN vtiger_role2profile ON vtiger_role2profile.roleid=vtiger_user2role.roleid';
+        $result = $this->getDB()->pquery($sql);
+
+        while ($row = $this->getDB()->fetchByAssoc($result)) {
+            $recordModel = Vtiger_Record_Model::getInstanceById($row['user_id'], 'Users');
+
+            if ($recordModel && $recordModel->isEmpty('profile_id')) {
+                $recordModel->set('profile_id', $row['profile_id']);
+                $recordModel->set('mode', 'edit');
+                $recordModel->save();
+            }
+        }
     }
 
     /**
@@ -48,7 +66,7 @@ class Users_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 0,
                     'filter' => 1,
-                    'filter_sequence' => 3,
+                    'filter_sequence' => 8,
                 ],
                 'is_admin' => [
                     'name' => 'is_admin',
@@ -66,7 +84,7 @@ class Users_Install_Model extends Core_Install_Model
                     'summaryfield' => 1,
                     'headerfield' => 0,
                     'filter' => 1,
-                    'filter_sequence' => 5,
+                    'filter_sequence' => 9,
                 ],
                 'user_password' => [
                     'name' => 'user_password',
@@ -132,6 +150,8 @@ class Users_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 1,
                     'headerfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 2,
                     'entity_identifier' => 1,
                 ],
                 'roleid' => [
@@ -150,7 +170,7 @@ class Users_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 1,
                     'filter' => 1,
-                    'filter_sequence' => 2,
+                    'filter_sequence' => 4,
                 ],
                 'email1' => [
                     'name' => 'email1',
@@ -165,6 +185,24 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 3,
+                ],
+                'profile_id' => [
+                    'name' => 'profile_id',
+                    'uitype' => 14001,
+                    'column' => 'profile_id',
+                    'table' => 'df_user2profile',
+                    'label' => 'Profile',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~M',
+                    'quickcreate' => 0,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 5,
                 ],
                 'status' => [
                     'name' => 'status',
@@ -180,7 +218,7 @@ class Users_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'filter' => 1,
-                    'filter_sequence' => 5,
+                    'filter_sequence' => 10,
                 ],
                 'lead_view' => [
                     'name' => 'lead_view',
@@ -401,7 +439,7 @@ class Users_Install_Model extends Core_Install_Model
                         'summaryfield' => 0,
                         'headerfield' => 0,
                         'filter' => 1,
-                        'filter_sequence' => 5,
+                        'filter_sequence' => 7,
                     ],
                     'department' => [
                         'name' => 'department',
@@ -478,7 +516,7 @@ class Users_Install_Model extends Core_Install_Model
                         'summaryfield' => 0,
                         'headerfield' => 0,
                         'filter' => 1,
-                        'filter_sequence' => 4,
+                        'filter_sequence' => 6,
                     ],
                     'secondaryemail' => [
                         'name' => 'secondaryemail',
@@ -1299,5 +1337,12 @@ class Users_Install_Model extends Core_Install_Model
             ->createColumn('defaultlandingpage', 'varchar(255) NOT NULL')
             ->createColumn('week_days', 'varchar(100) DEFAULT NULL')
             ->createColumn('slot_duration', 'varchar(100) DEFAULT NULL');
+        
+        $this->getTable('df_user2profile', 'user_id')
+            ->createTable('user_id', 'INT(11) NOT NULL')
+            ->createColumn('profile_id', 'INT(11) NOT NULL')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`userid`)')
+            ->createKey('INDEX IF NOT EXISTS `user2profile_profileid_idx` (`profile_id`)')
+            ;
     }
 }

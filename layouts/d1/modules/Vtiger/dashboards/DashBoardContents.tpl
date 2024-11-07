@@ -14,7 +14,7 @@
                         <a class="nav-link {if $TAB_DATA["id"] eq $SELECTED_TAB}active{/if}" data-bs-toggle="tab" href="#tab_{$TAB_DATA["id"]}">
                             <div class="d-flex align-items-center">
                                 <span class="name text-truncate" value="{$TAB_DATA["tabname"]}">
-                                    <strong>{$TAB_DATA["tabname"]}</strong>
+                                    <strong>{vtranslate($TAB_DATA["tabname"], $QUALIFIED_MODULE)}</strong>
                                 </span>
                                 <span class="editTabName hide">
                                     <input class="form-control d-inline" type="text" name="tabName"/>

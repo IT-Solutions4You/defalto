@@ -8,8 +8,8 @@
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 <div class="editViewPageDiv">
     <div class="main-scroll px-4 pb-4">
-        <form class="form-horizontal p-3 bg-body rounded" id="EditView" name="EditProfile" method="post" action="index.php" enctype="multipart/form-data">
-            <div class="editViewHeader">
+        <form class="form-horizontal bg-body rounded" id="EditView" name="EditProfile" method="post" action="index.php" enctype="multipart/form-data">
+            <div class="editViewHeader border-bottom p-3">
                 {if $RECORD_MODEL->getId()}
                     <h4>
                         {vtranslate('LBL_EDIT_PROFILE', $QUALIFIED_MODULE)}
@@ -20,7 +20,6 @@
                     </h4>
                 {/if}
             </div>
-            <hr>
             <div class="editViewBody">
                 <div class="editViewContents">
                     <div id="submitParams">
@@ -35,7 +34,7 @@
                     </div>
 
                     <div name="editContent" class="container-fluid">
-                        <div class="row form-group mb-3">
+                        <div class="row form-group py-2">
                             <div class="col-lg-3 col-md-3 col-sm-3 control-label fieldLabel">
                                 <label>
                                     <strong>{vtranslate('LBL_PROFILE_NAME', $QUALIFIED_MODULE)}</strong>
@@ -46,7 +45,7 @@
                                 <input type="text" class="inputElement form-control" name="profilename" id="profilename" value="{$RECORD_MODEL->getName()}" data-rule-required="true"/>
                             </div>
                         </div>
-                        <div class="row mb-3">
+                        <div class="row py-2">
                             <div class="col-lg-3 col-md-3 col-sm-3 control-label fieldLabel">
                                 <label>
                                     <strong>{vtranslate('LBL_DESCRIPTION', $QUALIFIED_MODULE)}</strong>
@@ -60,8 +59,8 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-overlay-footer modal-footer">
-                <div class="container-fluid">
+            <div class="modal-overlay-footer modal-footer border-top">
+                <div class="container-fluid p-3">
                     <div class="row">
                         <div class="col-6 text-end">
                             <a class="cancelLink btn btn-primary" data-dismiss="modal" href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>

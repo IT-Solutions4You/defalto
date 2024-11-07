@@ -172,7 +172,7 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
     getSelect2ElementData: function (elementData) {
         let optionId = elementData.id,
             emailInfo = optionId ? elementData.id.split('|') : [],
-            emailAddress = emailInfo[1];
+            emailAddress = 1 === emailInfo.length ? emailInfo[0] : emailInfo[1];
 
         if (!elementData.recordId && $.isNumeric(emailInfo[0])) {
             elementData.recordId = emailInfo[0];

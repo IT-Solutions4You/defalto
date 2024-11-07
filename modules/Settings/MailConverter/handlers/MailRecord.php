@@ -514,7 +514,7 @@ class Settings_MailConverter_MailRecord_Handler
             $body = $mMessage->getHTMLBody();
 
             if (empty($body)) {
-                $body = $mMessage->getTextBody();
+                $body = '<div style="white-space: pre-line;">' . $mMessage->getTextBody() . '</div>';
             }
 
             $this->setBody($body);

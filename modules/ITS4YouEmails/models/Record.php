@@ -166,15 +166,18 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $body = $this->getBody();
 
         if (vtlib_isModuleActive('EMAILMaker')) {
-            $record = $this->get('related_to');
-            $module = getSalesEntityType($record);
-
             $toEmailIds = $this->getJsonArray('to_email_ids');
 
             foreach ($toEmailIds as $toEmailId) {
                 [$recipientId, $recipientEmail, $recipientModule] = explode('|', $toEmailId);
 
-                $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstance($module, (int)$record, $this->get('email_template_language'), (int)$recipientId, $recipientModule);
+                if ($this->isEmpty('related_to') && !empty($recipientId) && !empty($recipientModule)) {
+                    $this->setRelatedTo($recipientId);
+                    $this->setRelatedModule($recipientModule);
+                }
+
+                $module = $this->getRelatedModule();
+                $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstance($module, $this->getRelatedTo(), $this->get('email_template_language'), (int)$recipientId, $recipientModule);
                 $EMAILContentModel->setSubject($subject);
                 $EMAILContentModel->setBody($body);
 
@@ -361,6 +364,11 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public function getRelatedTo()
     {
         return intval($this->get('related_to'));
+    }
+
+    public function setRelatedTo(int $value): void
+    {
+        $this->set('related_to', $value);
     }
 
     /**
@@ -1074,13 +1082,25 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         return $this->get('pdf_template_language');
     }
 
-    public function getRelatedModule()
+    /**
+     * @return string
+     */
+    public function getRelatedModule(): string
     {
-        if ($this->isEmpty('related_to_module')) {
-            $this->set('related_to_module', getSalesEntityType($this->get('related_to')));
+        if ($this->isEmpty('related_to_module') && !$this->isEmpty('related_to')) {
+            $this->setRelatedModule(getSalesEntityType($this->get('related_to')));
         }
 
-        return $this->get('related_to_module');
+        return (string)$this->get('related_to_module');
+    }
+
+    /**
+     * @param string $value
+     * @return void
+     */
+    public function setRelatedModule(string $value): void
+    {
+        $this->set('related_to_module', $value);
     }
 
     public function getRelatedRecords()
