@@ -8,25 +8,24 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-require_once 'modules/Settings/MailConverter/handlers/MailScannerAction.php';
-require_once 'modules/Settings/MailConverter/handlers/MailAttachmentMIME.php';
 require_once 'modules/MailManager/MailManager.php';
 
-class MailManager_Relate_Action extends Vtiger_MailScannerAction {
+class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction_Handler {
 
 	public function __construct($foractionid = 0) {
 	}
 
-	/**
-	 * Create new Email record (and link to given record) including attachments
-	 * @global Users $current_user
-	 * @global PearDataBase $db
-	 * @param  MailManager_Message_Model $mailrecord
-	 * @param String $module
-	 * @param CRMEntity $linkfocus
-	 * @return Integer
-	 */
-	public function __CreateNewEmail($mailrecord, $module, $linkfocus) {
+    /**
+     * Create new Email record (and link to given record) including attachments
+     * @param MailManager_Message_Model $mailrecord
+     * @param String $module
+     * @param CRMEntity $linkfocus
+     * @return Integer
+     * @throws AppException
+     * @global PearDataBase $db
+     * @global Users $current_user
+     */
+	public function createNewEmail($mailrecord, $module, $linkfocus) {
 		$site_URL = vglobal('site_URL');
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$handler = vtws_getModuleHandlerFromName('ITS4YouEmails', $currentUserModel);
@@ -36,10 +35,10 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 			return false;
 		}
 
-		$mailBoxModel = MailManager_Mailbox_Model::activeInstance();
+		$mailBoxModel = MailManager_Mailbox_Model::getActiveInstance();
 		$username = $mailBoxModel->username();
 		$recordModel = Vtiger_Record_Model::getCleanInstance('ITS4YouEmails');
-		$recordModel->set('subject', $mailrecord->_subject);
+		$recordModel->set('subject', $mailrecord->getSubject());
 
 		if(!empty($module)) {
             $recordModel->set('parent_type', $module);
@@ -55,26 +54,14 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
         }
 
         //To display inline image in body of email when we go to detail view of email from email related tab of related record.
-		$body = $mailrecord->getBodyHTML();
-		$inlineAttachments = $mailrecord->inlineAttachments();
-		if (is_array($inlineAttachments)) {
-			foreach ($inlineAttachments as $index => $att) {
-				$cid = $att['cid'];
-				$attch_name = Vtiger_MailRecord::__mime_decode($att['filename']);
-				$id = $mailrecord->muid();
-				$src = $site_URL . "/index.php?module=MailManager&view=Index&_operation=mail&_operationarg=attachment_dld&_muid=$id&_atname=" . urlencode($attch_name);
-				$body = preg_replace('/cid:' . $cid . '/', $src, $body);
-				$inline_cid[$attch_name] = $cid;
-			}
-		}
-		$recordModel->set('body', $body);
+		$recordModel->set('body', $mailrecord->getBody(false));
 		$recordModel->set('assigned_user_id', $currentUserModel->get('id'));
 		$recordModel->set('email_flag', 'MailManager');
 
-		$from = $mailrecord->_from[0];
-		$to = implode(',', $mailrecord->_to);
-		$cc = (!empty($mailrecord->_cc))? implode(',', $mailrecord->_cc) : '';
-		$bcc= (!empty($mailrecord->_bcc))? implode(',', $mailrecord->_bcc) : '';
+        $from = $mailrecord->getFrom()[0];
+        $to = implode(',', $mailrecord->getTo());
+        $cc = (!empty($mailrecord->getCC())) ? implode(',', $mailrecord->getCC()) : '';
+        $bcc = (!empty($mailrecord->getBCC())) ? implode(',', $mailrecord->getBCC()) : '';
 		
 		//emails field were restructured and to,bcc and cc field are JSON arrays
 		$recordModel->set('from_email', $from);
@@ -82,73 +69,66 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 		$recordModel->set('cc_email', $cc);
 		$recordModel->set('bcc_email', $bcc);
 		$recordModel->set('mailboxemail', $username);
-		$recordModel->set('mail_manager_id', $mailrecord->muid());
+		$recordModel->set('mail_manager_id', $mailrecord->getUid());
 		$recordModel->save();
 
 		// TODO: Handle attachments of the mail (inline/file)
-		$this->__SaveAttachements($mailrecord, 'ITS4YouEmails', $recordModel);
+		$this->saveAttachments($mailrecord, 'ITS4YouEmails', $recordModel);
 
 		return $recordModel->getId();
 	}
 
-	/**
-	 * Save attachments from the email and add it to the module record.
-	 * @global PearDataBase $db
-	 * @global String $root_directory
-	 * @param MailManager_Message_Model $mailrecord
-	 * @param String $basemodule
-	 * @param Vtiger_Record_Model $recordModel
-	 */
-	public function __SaveAttachements($mailrecord, $basemodule, $recordModel) {
-		$db = PearDatabase::getInstance();
+    /**
+     * Save attachments from the email and add it to the module record.
+     * @param MailManager_Message_Model $mailRecord
+     * @param string $baseModule
+     * @param Vtiger_Record_Model $recordModel
+     * @throws AppException
+     * @global PearDataBase $db
+     * @global String $root_directory
+     */
+    public function saveAttachments(MailManager_Message_Model $mailRecord, string $baseModule, Vtiger_Record_Model $recordModel): void
+    {
+        $recordId = $recordModel->getId();
 
-		// If there is no attachments return
-		if(!$mailrecord->_attachments) return;
+        foreach ($mailRecord->getAttachments() as $attachmentInfo) {
+            $attachment = $this->saveAttachment($baseModule, $attachmentInfo);
 
-		$userid = $recordModel->get('assigned_user_id');
-		$recordId = $recordModel->getId();
-		$setype = "$basemodule Attachment";
+            if ($attachment->getId()) {
+                $this->relateAttachment($recordId, $attachment->getId());
+            }
+        }
 
-		$date_var = $db->formatDate(date('YmdHis'), true);
+        foreach ($mailRecord->getInlineAttachments() as $attachmentInfo) {
+            $attachment = $this->saveAttachment($baseModule, $attachmentInfo);
 
-		foreach($mailrecord->_attachments as $attachmentData) {
-			$filename = $attachmentData['filename'];
-			$filecontent = $attachmentData['data'];
-			
-			if(empty($filecontent)) continue;
+            if ($attachment->getId()) {
+                $this->relateAttachment($recordId, $attachment->getId());
+            }
+        }
+    }
 
-			$attachid = $db->getUniqueId('vtiger_crmentity');
-			$description = $filename;
-			$usetime = $db->formatDate($date_var, true);
+    /**
+     * @param string $baseModule
+     * @param array $attachmentInfo
+     * @return Core_Attachment_Model
+     * @throws AppException
+     */
+    public function saveAttachment(string $baseModule, array $attachmentInfo): Core_Attachment_Model
+    {
+        $attachment = Core_Attachment_Model::getInstance($baseModule);
+        $attachment->retrieveDefault($attachmentInfo['filename']);
+        $attachment->setType($attachmentInfo['type']);
+        $attachment->saveFile($attachmentInfo['data']);
 
-			$db->pquery("INSERT INTO vtiger_crmentity(crmid, smcreatorid, smownerid,
-				modifiedby, setype, description, createdtime, modifiedtime, presence, deleted)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-					Array($attachid, $userid, $userid, $userid, $setype, $description, $usetime, $usetime, 1, 0));
+        if ($attachment->validateSaveFile()) {
+            $attachment->save();
+        }
 
-			$issaved = $this->__SaveAttachmentFile($attachid, $filename, $filecontent);
+        return $attachment;
+    }
 
-			if($issaved) {
-				// To compute file size & type
-				$attachRes = $db->pquery("SELECT * FROM vtiger_attachments WHERE attachmentsid = ?", array($attachid));
-				if($db->num_rows($attachRes)) {
-					$filePath = $db->query_result($attachRes, 0, 'path');
-					$completeFilePath = vglobal('root_directory').$filePath. $attachid.'_'. $filename;
-					if(file_exists($completeFilePath)) {
-						$fileSize = filesize($completeFilePath);
-						$mimetype = MailAttachmentMIME::detect($completeFilePath);
-					}
-				}
-
-				// Link file attached to emails also, for it to appear on email's page
-				if(!empty($recordId) && !empty($attachid)) {
-					$this->relateAttachment($recordId, $attachid);
-				}
-			}
-		}
-	}
-
-	/**
+    /**
 	 *
 	 * @global Users $current_user
 	 * @param MailManager_Message_Model $mailrecord
@@ -158,22 +138,21 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 	public static function associate($mailrecord, $linkto) {
 		$instance = new self();
 
-		$modulename = getSalesEntityType($linkto);
-		$linkfocus = CRMEntity::getInstance($modulename);
-		$linkfocus->retrieve_entity_info($linkto, $modulename);
+		$moduleName = getSalesEntityType($linkto);
+		$linkfocus = CRMEntity::getInstance($moduleName);
+		$linkfocus->retrieve_entity_info($linkto, $moduleName);
 		$linkfocus->id = $linkto;
-
-		$emailid = $instance->__CreateNewEmail($mailrecord, $modulename, $linkfocus);
+		$emailid = $instance->createNewEmail($mailrecord, $moduleName, $linkfocus);
 
 		if (!empty($emailid)) {
-			MailManager::updateMailAssociation($mailrecord->uniqueid(), $emailid, $linkfocus->id);
+			MailManager::updateMailAssociation($mailrecord->getUniqueId(), $emailid, $linkfocus->id);
 			// To add entry in ModTracker for email relation
-			relateEntities($linkfocus, $modulename, $linkto, 'ITS4YouEmails', $emailid);
+			relateEntities($linkfocus, $moduleName, $linkto, 'ITS4YouEmails', $emailid);
 		}
 
-		$name = getEntityName($modulename, $linkto);
+		$name = getEntityName($moduleName, $linkto);
 
-        return self::buildDetailViewLink($modulename, $linkfocus->id, $name[$linkto]);
+        return self::buildDetailViewLink($moduleName, $linkfocus->id, $name[$linkto]);
 	}
 
 	/**

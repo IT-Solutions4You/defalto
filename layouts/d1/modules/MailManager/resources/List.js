@@ -58,20 +58,18 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	},
 
 	registerFolderClickEvent : function() {
-		var self = this;
-		var container = self.getContainer();
+		let self = this,
+			container = self.getContainer();
+
 		container.find('.mm_folder').click(function(e) {
-			var folderElement = jQuery(e.currentTarget);
-			var folderName = folderElement.data('foldername');
+			let folderElement = jQuery(e.currentTarget),
+				folderName = folderElement.data('foldername');
+
 			container.find('.mm_folder').each(function(i, ele) {
 				jQuery(ele).removeClass('active');
 			});
 			folderElement.addClass('active');
-			if(folderName == 'vt_drafts') {
-				self.openDraftFolder();
-			} else {
-				self.openFolder(folderName);
-			}
+			self.openFolder(folderName);
 		});
 	},
 
@@ -121,40 +119,50 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 				useServer = '', useProtocol = '', useSSLType = '', useCert = '',
 				oauth2Element = settingContainer.find('.oauth2_settings'),
 				detailsElement = settingContainer.find('.settings_details'),
-				additionalElement = settingContainer.find('.additional_settings')
+				additionalElement = settingContainer.find('.additional_settings'),
+				passwordElement = settingContainer.find('.settings_password')
 
 			oauth2Element.addClass('hide');
 			additionalElement.addClass('hide');
 			detailsElement.addClass('hide');
+			passwordElement.addClass('hide');
 
-			if(serverType == 'gmail') {
-				useServer = 'imap.gmail.com';
-				useProtocol = 'IMAP4';
-				useSSLType = 'ssl';
-				useCert = 'novalidate-cert';
-
-				detailsElement.removeClass('hide');
-				oauth2Element.removeClass('hide');
-			} else if(serverType == 'yahoo') {
-				useServer = 'imap.mail.yahoo.com';
-				useProtocol = 'IMAP4';
-				useSSLType = 'ssl';
-				useCert = 'novalidate-cert';
-				detailsElement.removeClass('hide');
-			} else if(serverType == 'fastmail') {
-				useServer = 'mail.messagingengine.com';
-				useProtocol = 'IMAP4';
-				useSSLType = 'ssl';
-				useCert = 'novalidate-cert';
-				detailsElement.removeClass('hide');
-			} else if(serverType == 'other') {
-				useServer = '';
-				useProtocol = 'IMAP4';
-				useSSLType = 'ssl';
-				useCert = 'novalidate-cert';
-				detailsElement.removeClass('hide');
-				additionalElement.removeClass('hide');
+			switch(serverType) {
+				case 'gmail':
+					useServer = 'imap.gmail.com';
+					useProtocol = 'IMAP4';
+					useSSLType = 'ssl';
+					useCert = 'novalidate-cert';
+					detailsElement.removeClass('hide');
+					oauth2Element.removeClass('hide');
+					break;
+				case 'yahoo':
+					useServer = 'imap.mail.yahoo.com';
+					useProtocol = 'IMAP4';
+					useSSLType = 'ssl';
+					useCert = 'novalidate-cert';
+					detailsElement.removeClass('hide');
+					passwordElement.removeClass('hide');
+					break;
+				case 'fastmail':
+					useServer = 'mail.messagingengine.com';
+					useProtocol = 'IMAP4';
+					useSSLType = 'ssl';
+					useCert = 'novalidate-cert';
+					detailsElement.removeClass('hide');
+					passwordElement.removeClass('hide');
+					break;
+				case 'other':
+					useServer = '';
+					useProtocol = 'IMAP4';
+					useSSLType = 'ssl';
+					useCert = 'novalidate-cert';
+					detailsElement.removeClass('hide');
+					additionalElement.removeClass('hide');
+					passwordElement.removeClass('hide');
+					break;
 			}
+
 
 			settingContainer.find('.refresh_settings').show();
 			settingContainer.find('#_mbox_user').val('');
@@ -209,43 +217,49 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	},
 
 	registerSaveMailboxEvent : function(data) {
-		var settingContainer = jQuery(data);
+		let settingContainer = jQuery(data);
 		settingContainer.find('#saveMailboxBtn').click(function(e) {
 			e.preventDefault();
-			var form = settingContainer.find('#EditView');
-			var data = form.serializeFormData();
-			var params = {
-				position: {
-					'my' : 'bottom left',
-					'at' : 'top left',
-					'container' : jQuery('#EditView')
-			}};
-			var errorMsg = app.vtranslate('JS_REQUIRED_FIELD');
-			if(data['_mbox_server'] == "") {
+			let form = settingContainer.find('#EditView'),
+				data = form.serializeFormData(),
+				params = {
+					position: {
+						'my': 'bottom left',
+						'at': 'top left',
+						'container': jQuery('#EditView')
+					}
+				};
+			let errorMsg = app.vtranslate('JS_REQUIRED_FIELD');
+
+			if (!data['_mbox_server']) {
 				vtUtils.showValidationMessage(settingContainer.find('#_mbox_server'), errorMsg, params);
 				return false;
 			} else {
 				vtUtils.hideValidationMessage(settingContainer.find('#_mbox_server'));
 			}
-			if(data['_mbox_user'] == "") {
+			if (!data['_mbox_user']) {
 				vtUtils.showValidationMessage(settingContainer.find('#_mbox_user'), errorMsg, params);
 				return false;
 			} else {
 				vtUtils.hideValidationMessage(settingContainer.find('#_mbox_user'));
 			}
-			if(data['_mbox_pwd'] == "") {
+			if (!data['_mbox_pwd'] && !data['_mbox_client_id']) {
 				vtUtils.showValidationMessage(settingContainer.find('#_mbox_pwd'), errorMsg, params);
+				vtUtils.showValidationMessage(settingContainer.find('#_mbox_client_id'), errorMsg, params);
 				return false;
 			} else {
 				vtUtils.hideValidationMessage(settingContainer.find('#_mbox_pwd'));
 			}
+
 			app.helper.showProgress(app.vtranslate("JSLBL_Saving_And_Verifying")+"...");
-			var params = {
+
+			params = {
 				'module' : 'MailManager',
 				'view' : 'Index',
 				'_operation' : 'settings',
 				'_operationarg' : 'save'
 			};
+
 			jQuery.extend(params, data);
 			app.request.post({"data" : params}).then(function(error, responseData) {
 				app.helper.hideModal();
@@ -269,14 +283,16 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	},
 
 	openFolder : function(folderName, page, query, type) {
-		var self = this;
 		app.helper.showProgress(app.vtranslate("JSLBL_Loading_Please_Wait")+"...");
-		if(!page) {
-			page = 0;
-		}
-		var container = self.getContainer();
+
+		let self = this,
+			container = self.getContainer();
+
+		page = page ?? 1;
+
 		vtUtils.hideValidationMessage(container.find('#mailManagerSearchbox'));
-		var params = {
+
+		let params = {
 			'module' : 'MailManager',
 			'view' : 'Index',
 			'_operation' : 'folder',
@@ -284,19 +300,22 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			'_folder' : folderName,
 			'_page' : page
 		};
+
 		if(query) {
 			params['q'] = query;
 		}
+
 		if(type) {
 			params['type'] = type;
 		}
+
 		app.request.post({"data" : params}).then(function(error, responseData) {
 			container.find('#mailPreviewContainer').removeClass('hide');
 			container.find('#mails_container').html(responseData);
 			app.helper.hideProgress();
 			self.registerMoveMailDropdownClickEvent();
 			self.registerMailCheckBoxClickEvent();
-			self.registerScrollForMailList();
+
 			self.registerMainCheckboxClickEvent();
 			self.registerPrevPageClickEvent();
 			self.registerNextPageClickEvent();
@@ -310,70 +329,51 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			container.find('#searchType').trigger('change');
 	});
 	},
-	/**
-	 * Function to load the body of all mails in folder list
-	 * @param {type} folderName
-	 * @returns {undefined}
-	 */
-	loadMailContents : function(folderName){
-		let mailids = jQuery('input[name="folderMailIds"]').val();
-
-		if (typeof mailids !== 'undefined') {
-			mailids = mailids.split(",");
-			let params = {
-				'module' : 'MailManager',
-				'action' : 'Folder',
-				'mode' : 'showMailContent',
-				'mailids' : mailids,
-				'folderName':folderName
-			};
-
-			app.request.post({"data" : params}).then(function(error, responseData) {
-				for(var k in responseData){
-					var messageContent = responseData[k];
-					var messageEle = jQuery('#mmMailEntry_'+k);
-					messageEle.find('.mmMailDesc').html(messageContent);
-				}
-			});
-		}
-	},
 	registerFolderMailDeleteEvent : function() {
-		var self = this;
-		var container = self.getContainer();
+		let self = this,
+			container = self.getContainer();
+
 		container.find('#mmDeleteMail').click(function(e) {
-			var folder = jQuery(e.currentTarget).data('folder');
-			var msgNos = new Array();
+			let folder = jQuery(e.currentTarget).data('folder'),
+				mUIds = [];
+
 			container.find('.mailCheckBox').each(function(i, ele) {
-				var element = jQuery(ele);
+				let element = jQuery(ele);
 				if(element.is(":checked")) {
-					msgNos.push(element.closest('.mailEntry').find('.msgNo').val());
+					mUIds.push(self.getUid(element.closest('.mailEntry')));
 				}
 			});
-			if(msgNos.length <= 0) {
+
+			if(mUIds.length <= 0) {
 				app.helper.showAlertBox({message:app.vtranslate('JSLBL_NO_EMAILS_SELECTED')});
 				return false;
 			} else {
 				app.helper.showConfirmationBox({'message' : app.vtranslate('LBL_DELETE_CONFIRMATION')}).then(function() {
 					app.helper.showProgress(app.vtranslate("JSLBL_Deleting")+"...");
-					var params = {
+					let params = {
 						'module' : 'MailManager',
 						'view' : 'Index',
 						'_operation' : 'mail',
 						'_operationarg' : 'delete',
 						'_folder' : folder,
-						'_msgno' : msgNos.join(',')
+						'_muid' : mUIds.join(',')
 					};
+
 					app.request.post({data : params}).then(function(err,data) {
 						self.openFolder(folder);
 						if(data.status) {
 							app.helper.showSuccessNotification({'message': app.vtranslate('JSLBL_MAILS_DELETED')});
-							self.updateUnreadCount("-"+self.getUnreadCountByMsgNos(msgNos), folder);
-							self.updatePagingCount(msgNos.length);
-							for(var i = 0; i < msgNos.length; i++) {
-								container.find('#mmMailEntry_'+msgNos[i]).remove();
+
+							self.updateUnreadCount('-', self.getUnreadCount(mUIds), folder);
+							self.updatePagingCount(mUIds.length);
+
+							for (let i = 0; i < mUIds.length; i++) {
+								container.find('#mmMailEntry_' + mUIds[i]).remove();
 							}
-							var openedMsgNo = container.find('#mmMsgNo').val();
-							if(jQuery.inArray(openedMsgNo, msgNos) !== -1) {
+
+							let openedUid = self.getUid(container);
+
+							if(jQuery.inArray(openedUid, mUIds) !== -1) {
 								self.clearPreviewContainer();
 							}
 						}
@@ -397,126 +397,136 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		}
 	},
 
-	registerMoveMailToFolder : function() {
-		var self = this;
-		var container = self.getContainer();
-		var moveToDropDown = container.find('#mmMoveToFolder');
-		moveToDropDown.on('click','a',function(e) {
-			var element = jQuery(e.currentTarget);
-			var moveToFolder = element.closest('li').data('movefolder');
-			var folder = element.closest('li').data('folder');
-			var msgNos = new Array();
-			container.find('.mailCheckBox').each(function(i, ele) {
-				var element = jQuery(ele);
-				if(element.is(":checked")) {
-					msgNos.push(element.closest('.mailEntry').find('.msgNo').val());
-				}
-			});
-			if(msgNos.length <= 0) {
+	registerMoveMailToFolder: function () {
+		let self = this,
+			container = self.getContainer(),
+			moveToDropDown = container.find('#mmMoveToFolder');
+
+		moveToDropDown.on('click', 'a', function (e) {
+			let element = jQuery(e.currentTarget),
+				moveToFolder = element.closest('li').data('movefolder'),
+				folder = element.closest('li').data('folder'),
+				mUIds = self.getUIds(container);
+
+			if (!self.validateUIds(mUIds)) {
 				container.find('.moveToFolderDropDown').removeClass('open');
-				app.helper.showAlertBox({message:app.vtranslate('JSLBL_NO_EMAILS_SELECTED')});
 				return false;
-			} else {
-				app.helper.showProgress(app.vtranslate("JSLBL_MOVING")+"...");
-				var params = {
-					'module' : 'MailManager',
-					'view' : 'Index',
-					'_operation' : 'mail',
-					'_operationarg' : 'move',
-					'_folder' : folder,
-					'_moveFolder' : moveToFolder,
-					'_msgno' : msgNos.join(',')
-				};
-				app.request.post({data : params}).then(function(err,data) {
-					self.openFolder(folder);
-					if(data.status) {
-						app.helper.showSuccessNotification({'message': app.vtranslate('JSLBL_MAIL_MOVED')});
-						var unreadCount = self.getUnreadCountByMsgNos(msgNos);
-						self.updateUnreadCount("-"+unreadCount, folder);
-						self.updateUnreadCount("+"+unreadCount, moveToFolder);
-						for(var i = 0; i < msgNos.length; i++) {
-							container.find('#mmMailEntry_'+msgNos[i]).remove();
-						}
-						container.find('.moveToFolderDropDown').removeClass('open');
-					}
-				});
 			}
+
+			let params = {
+				'module': 'MailManager',
+				'view': 'Index',
+				'_operation': 'mail',
+				'_operationarg': 'move',
+				'_folder': folder,
+				'_moveFolder': moveToFolder,
+				'_muid': mUIds.join(',')
+			};
+
+			app.helper.showProgress(app.vtranslate("JSLBL_MOVING") + "...");
+			app.request.post({data: params}).then(function (err, data) {
+				self.openFolder(folder);
+				if (data.status) {
+					app.helper.showSuccessNotification({'message': app.vtranslate('JSLBL_MAIL_MOVED')});
+
+					let unreadCount = self.getUnreadCount(mUIds);
+					self.updateUnreadCount('-', unreadCount, folder);
+					self.updateUnreadCount('+', unreadCount, moveToFolder);
+
+					for (var i = 0; i < mUIds.length; i++) {
+						container.find('#mmMailEntry_' + mUIds[i]).remove();
+					}
+
+					container.find('.moveToFolderDropDown').removeClass('open');
+				}
+			});
+		});
+	},
+	getUIds(container) {
+		let self = this,
+			mUIds = [];
+
+		container.find('.mailCheckBox').each(function (i, ele) {
+			let element = jQuery(ele);
+
+			if (element.is(":checked")) {
+				mUIds.push(self.getUid(element.closest('.mailEntry')));
+			}
+		});
+
+		return mUIds;
+	},
+	validateUIds(mUIds) {
+		if (mUIds.length <= 0) {
+			app.helper.showAlertBox({message: app.vtranslate('JSLBL_NO_EMAILS_SELECTED')});
+			return false;
+		}
+
+		return true;
+	},
+	getMarkParams(mUIds, folder, type = 'unread') {
+		return {
+			'module': 'MailManager',
+			'view': 'Index',
+			'_operation': 'mail',
+			'_operationarg': 'mark',
+			'_folder': folder,
+			'_muid': mUIds.join(','),
+			'_markas': type
+		}
+	},
+	registerMarkMessageAsUnread: function () {
+		let self = this,
+			container = self.getContainer();
+
+		container.find('#mmMarkAsUnread').click(function (e) {
+			let folder = jQuery(e.currentTarget).data('folder'),
+				mUIds = self.getUIds(container);
+
+			if (!self.validateUIds(mUIds)) {
+				return false;
+			}
+
+			let params = self.getMarkParams(mUIds, folder, 'unread');
+
+			app.helper.showProgress(app.vtranslate('JSLBL_Updating') + '...');
+			app.request.post({data: params}).then(function (err, data) {
+				app.helper.hideProgress();
+
+				if (data.status) {
+					app.helper.showSuccessNotification({'message': app.vtranslate('JSLBL_MAILS_MARKED_UNREAD')});
+					self.updateUnreadCount('+', self.getReadCount(mUIds), folder);
+					self.markMessageUnread(mUIds);
+				}
+			});
 		});
 	},
 
-	registerMarkMessageAsUnread : function() {
-		var self = this;
-		var container = self.getContainer();
-		container.find('#mmMarkAsUnread').click(function(e) {
-			var folder = jQuery(e.currentTarget).data('folder');
-			var msgNos = new Array();
-			container.find('.mailCheckBox').each(function(i, ele) {
-				var element = jQuery(ele);
-				if(element.is(":checked")) {
-					msgNos.push(element.closest('.mailEntry').find('.msgNo').val());
-				}
-			});
-			if(msgNos.length <= 0) {
-				app.helper.showAlertBox({message:app.vtranslate('JSLBL_NO_EMAILS_SELECTED')});
-				return false;
-			} else {
-				app.helper.showProgress(app.vtranslate("JSLBL_Updating")+"...");
-				var params = {
-					'module' : 'MailManager',
-					'view' : 'Index',
-					'_operation' : 'mail',
-					'_operationarg' : 'mark',
-					'_folder' : folder,
-					'_msgno' : msgNos.join(','),
-					'_markas' : 'unread'
-				};
-				app.request.post({data : params}).then(function(err,data) {
-					app.helper.hideProgress();
-					if(data.status) {
-						app.helper.showSuccessNotification({'message': app.vtranslate('JSLBL_MAILS_MARKED_UNREAD')});
-						self.markMessageUnread(msgNos);
-						self.updateUnreadCount("+"+self.getUnreadCountByMsgNos(msgNos), folder);
-					}
-				});
-			}
-		});
-	},
+	registerMarkMessageAsRead: function () {
+		let self = this,
+			container = self.getContainer();
 
-	registerMarkMessageAsRead : function() {
-		var self = this;
-		var container = self.getContainer();
-		container.find('#mmMarkAsRead').click(function(e) {
-			var folder = jQuery(e.currentTarget).data('folder');
-			var msgNos = new Array();
-			container.find('.mailCheckBox').each(function(i, ele) {
-				var element = jQuery(ele);
-				if(element.is(":checked")) {
-					msgNos.push(element.closest('.mailEntry').find('.msgNo').val());
+		container.find('#mmMarkAsRead').click(function (e) {
+			let folder = jQuery(e.currentTarget).data('folder'),
+				mUIds = self.getUIds(container);
+
+			if (!self.validateUIds(mUIds)) {
+				return false;
+			}
+
+			let params = self.getMarkParams(mUIds, folder, 'read');
+
+			app.helper.showProgress(app.vtranslate('JSLBL_Updating') + '...');
+			app.request.post({data: params}).then(function (err, data) {
+				app.helper.hideProgress();
+
+				if (data.status) {
+					app.helper.showSuccessNotification({'message': app.vtranslate('JSLBL_MAILS_MARKED_READ')});
+
+					self.updateUnreadCount('-', self.getUnreadCount(mUIds), folder);
+					self.markMessageRead(mUIds);
 				}
 			});
-			if(msgNos.length <= 0) {
-				app.helper.showAlertBox({message:app.vtranslate('JSLBL_NO_EMAILS_SELECTED')});
-				return false;
-			} else {
-				app.helper.showProgress(app.vtranslate("JSLBL_Updating")+"...");
-				var params = {
-					'module' : 'MailManager',
-					'view' : 'Index',
-					'_operation' : 'mail',
-					'_operationarg' : 'mark',
-					'_folder' : folder,
-					'_msgno' : msgNos.join(','),
-					'_markas' : 'read'
-				};
-				app.request.post({data : params}).then(function(err,data) {
-					app.helper.hideProgress();
-					if(data.status) {
-						app.helper.showSuccessNotification({'message': app.vtranslate('JSLBL_MAILS_MARKED_READ')});
-						self.markMessageRead(msgNos);
-						self.updateUnreadCount("-"+self.getUnreadCountByMsgNos(msgNos), folder);
-					}
-				});
-			}
 		});
 	},
 
@@ -533,59 +543,68 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			}
 			var folder = container.find('#mailManagerSearchbox').data('foldername');
 			var type = container.find('#searchType').val();
-			self.openFolder(folder, 0, query, type);
+			self.openFolder(folder, 1, query, type);
 		});
 	},
 
-	markMessageUnread : function(msgNos) {
-		var self = this;
-		var container = self.getContainer();
-		if(typeof msgNos == "string") {
-			msgNos = new Array(msgNos);
+	markMessageUnread(mUIds) {
+		if (typeof mUIds !== 'object') {
+			return console.error('mUIds is not object');
 		}
-		if(typeof msgNos == "object") {
-			for(var i = 0; i < msgNos.length; i++) {
-				var msgNo = msgNos[i];
-				var msgEle = container.find('#mmMailEntry_'+msgNo);
-				msgEle.removeClass('mmReadEmail');
-				msgEle.data('read', "0");
-				var nameSubject = "<strong>" + msgEle.find('.nameSubjectHolder').html() + "</strong>";
-				msgEle.find('.nameSubjectHolder').html(nameSubject);
-			}
+
+		let self = this,
+			container = self.getContainer();
+
+		for (let i = 0; i < mUIds.length; i++) {
+			let mUId = mUIds[i];
+			let messageElement = container.find('#mmMailEntry_' + mUId);
+
+			messageElement.data('read', '0');
+			messageElement.removeClass('mmReadEmail');
+			messageElement.addClass('fw-bold')
 		}
 	},
 
-	markMessageRead : function(msgNos) {
-		var self = this;
-		var container = self.getContainer();
-		if(typeof msgNos == "string") {
-			msgNos = new Array(msgNos);
+	markMessageRead(mUIds) {
+		if (typeof mUIds !== 'object') {
+			return console.error('mUIds is not object');
 		}
-		if(typeof msgNos == "object") {
-			for(var i = 0; i < msgNos.length; i++) {
-				var msgNo = msgNos[i];
-				var msgEle = container.find('#mmMailEntry_'+msgNo);
-				msgEle.addClass('mmReadEmail');
-				msgEle.data('read', "1");
-				var nameSubject = msgEle.find('.nameSubjectHolder').find('strong').html();
-				msgEle.find('.nameSubjectHolder').html(nameSubject);
-			}
+
+		let self = this,
+			container = self.getContainer();
+
+		for (let i = 0; i < mUIds.length; i++) {
+			let mUId = mUIds[i],
+				messageElement = container.find('#mmMailEntry_' + mUId);
+
+			messageElement.addClass('mmReadEmail');
+			messageElement.data('read', '1');
+			messageElement.removeClass('fw-bold');
 		}
 	},
 
-	getUnreadCountByMsgNos : function(msgNos) {
-		var count = 0;
-		var self = this;
-		var container = self.getContainer();
-		for(var i = 0; i < msgNos.length; i++) {
-			var isRead = parseInt(container.find('#mmMailEntry_'+msgNos[i]).data('read'));
-			if(isRead == 0) {
+	getUnreadCount(mUIds) {
+		return this.getReadCount(mUIds, 'unread');
+	},
+	getReadCount(mUIds, type = 'read') {
+		let count = 0,
+			self = this,
+			container = self.getContainer();
+
+		for (let i = 0; i < mUIds.length; i++) {
+			let isRead = parseInt(container.find('#mmMailEntry_' + mUIds[i]).data('read'));
+
+			if (1 === isRead && 'read' === type) {
+				count++;
+			}
+
+			if (0 === isRead && 'unread' === type) {
 				count++;
 			}
 		}
+
 		return count;
 	},
-
 	registerMailCheckBoxClickEvent : function() {
 		var self = this;
 		var container = self.getContainer();
@@ -620,18 +639,6 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			element.addClass('open');
 		});
 	},
-
-	registerScrollForMailList : function() {
-		let self = this;
-		self.getContainer().find('#emailListDiv').mCustomScrollbar({
-			setHeight: '70vh',
-			autoExpandScrollbar: true,
-			scrollInertia: 200,
-			autoHideScrollbar: true,
-			theme : "dark-3"
-		});
-	},
-
 	registerMainCheckboxClickEvent : function() {
 		var self = this;
 		var container = self.getContainer();
@@ -684,7 +691,9 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			self.openFolder(folder, page, jQuery('#mailManagerSearchbox').val(), jQuery('#searchType').val());
 		});
 	},
-
+	getUid(container) {
+		return container.find('.mm_uid').val();
+	},
 	registerMailClickEvent: function () {
 		let self = this,
 			container = self.getContainer();
@@ -692,7 +701,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		container.find('.mmfolderMails').click(function (e) {
 			let emailElement = jQuery(e.currentTarget),
 				parentEle = emailElement.closest('.mailEntry'),
-				msgNo = emailElement.find('.msgNo').val(),
+				mUid = self.getUid(emailElement),
 				params = {
 					'module': 'MailManager',
 					'view': 'Index',
@@ -700,32 +709,23 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 					'_operation': 'mail',
 					'_operationarg': 'open',
 					'_folder': parentEle.data('folder'),
-					'_msgno': msgNo
+					'_muid': mUid,
 				};
 			app.helper.showProgress(app.vtranslate("JSLBL_Opening") + "...");
 			app.request.post({data: params}).then(function (error, data) {
 				if (!error && data['ui']) {
 					app.helper.hideProgress();
-					let uiContent = data.ui,
-						unreadCount = self.getUnreadCountByMsgNos(new Array(msgNo)),
-						parentElement = jQuery(parentEle),
-						nameSubject = parentElement.find('.nameSubjectHolder').find('strong').html();
+					let uiContent = data.ui;
 
-					parentElement.addClass('mmReadEmail');
-					parentElement.data('read', "1");
-					parentElement.find('.nameSubjectHolder').html(nameSubject);
-					container.find('#mailPreviewContainer').html(uiContent);
-					self.highLightMail(msgNo);
+					self.updateUnreadCount('-', self.getUnreadCount([mUid]), jQuery(parentEle).data('folder'));
+					self.markMessageRead([mUid]);
+					self.setMailPreview(uiContent)
+					self.highLightMail(mUid);
 					self.registerMailDeleteEvent();
-					self.registerForwardEvent();
 					self.registerPrintEvent();
-					self.registerReplyEvent();
-					self.registerReplyAllEvent();
 					self.showRelatedActions();
-					self.registerMailPaginationEvent();
-					container.find('.emailDetails').popover({html: true});
-					self.updateUnreadCount("-" + unreadCount, jQuery(parentEle).data('folder'));
 					self.loadContentsInIframe(container.find('#mmBody'));
+					self.updateMailPaginationEvent();
 				} else {
 					app.helper.showErrorNotification({message: app.vtranslate('Email not loaded')})
 				}
@@ -750,22 +750,26 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		});
 	},
 
-	highLightMail : function(msgNo) {
-		var self = this;
-		var container = self.getContainer();
-		container.find('.mailEntry').each(function(i, ele) {
-			var element = jQuery(ele);
-			var isRead = element.data('read');
-			if(parseInt(isRead)) {
+	highLightMail: function (msgUid) {
+		let self = this,
+			container = self.getContainer();
+
+		container.find('.mailEntry').each(function (i, ele) {
+			let element = jQuery(ele),
+				isRead = element.data('read');
+
+			if (parseInt(isRead)) {
 				element.addClass('mmReadEmail');
 				element.removeClass('highLightMail');
 			} else {
 				element.removeClass('highLightMail');
 			}
+
 			element.find('.mmDateTimeValue').removeClass('mmListDateDivSelected');
 			element.addClass('fontBlack');
 		});
-		var selectedMailEle = container.find('#mmMailEntry_'+msgNo);
+		let selectedMailEle = container.find('#mmMailEntry_' + msgUid);
+
 		selectedMailEle.addClass('highLightMail');
 		selectedMailEle.removeClass('fontBlack');
 		selectedMailEle.addClass('whiteFont');
@@ -773,147 +777,87 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		selectedMailEle.find('.mmDateTimeValue').addClass('mmListDateDivSelected');
 	},
 
-	registerMailPaginationEvent : function() {
-		var self = this;
-		var container = self.getContainer();
-		container.find('.mailPagination').click(function(e) {
-			var element = jQuery(e.currentTarget);
-			var msgNo = element.data('msgno');
-			var folder = element.data('folder');
-			var params = {
-				'module' : 'MailManager',
-				'view' : 'Index',
-				'_operation' : 'mail',
-				'_operationarg' : 'open',
-				'_folder' : folder,
-				'_msgno' : msgNo
-			};
-			app.helper.showProgress(app.vtranslate("JSLBL_Opening")+"...");
-			app.request.post({data : params}).then(function(err, data) {
-				app.helper.hideProgress();
-				var uiContent = data.ui;
-				container.find('#mmMailEntry_'+msgNo).addClass('mmReadEmail');
-				container.find('#mmMailEntry_'+msgNo).data('read', "1");
-				var nameSubject = container.find('#mmMailEntry_'+msgNo).find('.nameSubjectHolder').find('strong').html();
-				container.find('#mmMailEntry_'+msgNo).find('.nameSubjectHolder').html(nameSubject);
-				container.find('#mailPreviewContainer').html(uiContent);
-				self.registerMailDeleteEvent();
-				self.registerForwardEvent();
-				self.registerReplyEvent();
-				self.registerReplyAllEvent();
-				self.showRelatedActions();
-				self.registerMailPaginationEvent();
-				self.highLightMail(msgNo);
-				self.loadContentsInIframe(container.find('#mmBody'));
-			});
+	registerMailPaginationEvent: function () {
+		let self = this,
+			container = self.getContainer();
+
+		self.updateMailPaginationEvent();
+
+		container.on('click', '.mailPagination', function (e) {
+			let type = $(this).data('type'),
+				elements = self.updateMailPaginationEvent(),
+				element = null;
+
+			if ('next' === type && 'object' === typeof elements.next) {
+				element = elements.next;
+			} else if ('prev' === type && 'object' === typeof elements.prev) {
+				element = elements.prev;
+			}
+
+			if (element) {
+				element.find('.mmfolderMails').trigger('click');
+			}
 		});
 	},
+	updateMailPaginationEvent() {
+		let value = $('#mailPreviewContainer').find('#mmMsgUid').val()
 
+		if (value) {
+			let currentMail = $('#mmMailEntry_' + value),
+				prevMail = currentMail.prev('.mailEntry'),
+				nextMail = currentMail.next('.mailEntry'),
+				pagination = $('.mailPagination');
+
+			pagination.removeAttr('disabled');
+
+			if (!prevMail.length) {
+				pagination.filter('[data-type="prev"]').prop('disabled', 'disabled');
+			}
+
+			if (!nextMail.length) {
+				pagination.filter('[data-type="next"]').prop('disabled', 'disabled');
+			}
+
+			return {prev: prevMail, next: nextMail}
+		}
+	},
 	registerMailDeleteEvent : function() {
-		var self = this;
-		var container = self.getContainer();
-		container.find('#mmDelete').click(function() {
-			var msgNo = jQuery('#mmMsgNo').val();
-			var folder = jQuery('#mmFolder').val();
-			app.helper.showConfirmationBox({'message' : app.vtranslate('LBL_DELETE_CONFIRMATION')}).then(function() {
-				app.helper.showProgress(app.vtranslate("JSLBL_Deleting")+"...");
-				var params = {
-					'module' : 'MailManager',
-					'view' : 'Index',
-					'_operation' : 'mail',
-					'_operationarg' : 'delete',
-					'_folder' : folder,
-					'_msgno' : msgNo
+		let self = this,
+			container = self.getContainer();
+
+		container.find('#mmDelete').click(function () {
+			let msgUid = jQuery('#mmMsgUid').val(),
+				folder = jQuery('#mmFolder').val();
+
+			app.helper.showConfirmationBox({'message': app.vtranslate('LBL_DELETE_CONFIRMATION')}).then(function () {
+				app.helper.showProgress(app.vtranslate("JSLBL_Deleting") + "...");
+				let params = {
+					'module': 'MailManager',
+					'view': 'Index',
+					'_operation': 'mail',
+					'_operationarg': 'delete',
+					'_folder': folder,
+					'_muid': msgUid
 				};
-				app.request.post({data : params}).then(function(err,data) {
+				app.request.post({data: params}).then(function (err, data) {
 					app.helper.hideProgress();
-					if(data.status) {
-						container.find('#mmMailEntry_'+msgNo).remove();
-						var previewHtml = '<div class="mmListMainContainer">\n\
-										<center><strong>'+app.vtranslate('JSLBL_NO_MAIL_SELECTED_DESC')+'</center></strong></div>';
-						jQuery('#mailPreviewContainer').html(previewHtml);
+					if (data.status) {
+						container.find('#mmMailEntry_' + msgUid).remove();
+						self.setMailPreview();
 					}
 				});
 			});
 		});
 	},
+	setMailPreview(value) {
+		const self = this;
 
-	registerForwardEvent : function() {
-		var self = this;
-		var container = self.getContainer();
-		container.find('#mmForward').click(function() {
-			app.helper.showProgress(app.vtranslate("JSLBL_Loading")+"...");
-			var msgNo = jQuery('#mmMsgNo').val();
-			var from = jQuery('#mmFrom').val();
-			var to = jQuery('#mmTo').val();
-			var cc = jQuery('#mmCc').val() ? jQuery('#mmCc').val() : '';
-			var subject = JSON.parse(jQuery('#mmSubject').val());
-			var body = jQuery('#mmBody').find('iframe#bodyFrame').contents().find('html').html();
-			var date = jQuery('#mmDate').val();
-			var folder = jQuery('#mmFolder').val();
+		if (!value) {
+			value = '<div class="mmListMainContainer fw-bold text-center">' + app.vtranslate('JSLBL_NO_MAIL_SELECTED_DESC') + '</div>';
+		}
 
-			var fwdMsgMetaInfo = app.vtranslate('JSLBL_FROM') + from + '<br/>'+
-					app.vtranslate('JSLBL_DATE') + date + '<br/>'+
-					app.vtranslate('JSLBL_SUBJECT') + subject;
-			if (to != '' && to != null) {
-				fwdMsgMetaInfo += '<br/>'+app.vtranslate('JSLBL_TO') + to;
-			}
-			if (cc != '' && cc != null) {
-				fwdMsgMetaInfo += '<br/>'+app.vtranslate('JSLBL_CC') + cc;
-			}
-			fwdMsgMetaInfo += '<br/>';
-
-			var fwdSubject = (subject.toUpperCase().indexOf('FWD:') == 0) ? subject : 'Fwd: ' + subject;
-			var fwdBody = '<p></p><p>'+app.vtranslate('JSLBL_FORWARD_MESSAGE_TEXT')+'<br/>'+fwdMsgMetaInfo+'</p>'+body;
-			var attchmentCount = parseInt(container.find('#mmAttchmentCount').val());
-			if(attchmentCount) {
-				var params = {
-					'module' : 'MailManager',
-					'view' : 'Index',
-					'_operation' : 'mail',
-					'_operationarg' : 'forward',
-					'messageid' : encodeURIComponent(msgNo),
-					'folder' : encodeURIComponent(folder),
-					'subject' : encodeURIComponent(fwdSubject),
-					'body' : encodeURIComponent(fwdBody)
-				};
-				app.request.post({'data' : params}).then(function(err, data) {
-					var draftId = data.emailid;
-					var newParams = {
-						'module' : 'ITS4YouEmails',
-						'view' : 'ComposeEmail',
-						'mode' : 'emailEdit',
-						'record' : draftId
-					};
-					app.request.post({data : newParams}).then(function(err,data) {
-						app.helper.hideProgress();
-						if(err === null) {
-							var dataObj = jQuery(data);
-							var descriptionContent = dataObj.find('#iframeDescription').val();
-							app.helper.showModal(data, {cb : function() {
-								var editInstance = new ITS4YouEmails_MassEdit_Js();
-								editInstance.registerEvents();
-								jQuery('#emailPreviewIframe').contents().find('html').html(descriptionContent);
-								jQuery("#emailPreviewIframe").height(jQuery('#emailPreviewIframe').contents().find('html').height());
-							}});
-						}
-					});
-				});
-			} else {
-				app.helper.hideProgress();
-				var params = {
-					'step' : "step1",
-					'module' : "MailManager",
-					'view' : "MassActionAjax",
-					'mode' : "showComposeEmailForm",
-					'selected_ids' : "[]",
-					'excluded_ids' : "[]",
-				}
-				self.openComposeEmailForm("forward", params, {'subject' : fwdSubject, 'body' : fwdBody});
-			}
-		});
+		$('#mailPreviewContainer', self.getContainer()).html(value);
 	},
-
 	registerPrintEvent : function() {
 		var self = this;
 		var container = self.getContainer();
@@ -937,98 +881,12 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			content.print();
 		});
 	},
-
-	registerReplyEvent : function() {
-		var self = this;
-		self.getContainer().find('#mmReply').click(function() {
-			self.openReplyEmail(false);
-		});
-	},
-
-	registerReplyAllEvent : function() {
-		var self = this;
-		self.getContainer().find('#mmReplyAll').click(function() {
-			self.openReplyEmail(true);
-		});
-	},
-
-	openReplyEmail : function(all) {
-		var self = this;
-		if (typeof(all) == 'undefined') {
-			all = true;
-		}
-		var mUserName = jQuery('#mmUserName').val();
-		var from = jQuery('#mmFrom').val();
-		var to = all ? jQuery('#mmTo').val() : '';
-		var cc = all ? jQuery('#mmCc').val() : '';
-
-		var mailIds = '';
-		if(to != null) {
-			mailIds = to;
-		}
-		if(cc != null) {
-			mailIds = mailIds ? mailIds+','+cc : cc;
-		}
-
-		mailIds = mailIds.replace(/\s+/g, '');
-
-		var emails = mailIds.split(',');
-		for(var i = 0; i < emails.length ; i++) {
-			if(emails[i].indexOf(mUserName) != -1){
-				emails.splice(i,1);
-			}
-		}
-		mailIds = emails.join(',');
-
-		mailIds = mailIds.replace(',,', ',');
-		if(mailIds.charAt(mailIds.length-1) == ',') {
-			mailIds = mailIds.slice(0, -1);
-		} else if(mailIds.charAt(0) == ','){
-			mailIds = mailIds.slice(1);
-		}
-
-		var subject = JSON.parse(jQuery('#mmSubject').val());
-		var body = jQuery('#mmBody').find('iframe#bodyFrame').contents().find('html').html();
-		var date = jQuery('#mmDate').val();
-
-		var replySubject = (subject.toUpperCase().indexOf('RE:') == 0) ? subject : 'Re: ' + subject;
-		var replyBody = '<p></br></br></p><p style="margin:0;padding:0;">On '+date+', '+from+' wrote :</p><blockquote style="border:0;margin:0;border-left:1px solid gray;padding:0 0 0 2px;">'+body+'</blockquote><br />';
-		var parentRecord = new Array();
-		var linktoElement = jQuery('[name=_mlinkto]');
-		linktoElement.each(function(index){
-			var value = jQuery(this).val();
-			if(value) {
-				parentRecord.push(value);
-			}
-		});
-		var params = {
-			'step' : "step1",
-			'module' : "MailManager",
-			'view' : "MassActionAjax",
-			'mode' : "showComposeEmailForm",
-			'linktomodule' : 'true', 
-			'excluded_ids' : "[]",
-			'to' : '["'+from+'"]'
-		}
-		if(parentRecord.length) {
-			params['selected_ids'] = parentRecord;
-		} else {
-			params['selected_ids'] = "[]";
-		}
-		if(mailIds) {
-			self.openComposeEmailForm("replyall", params, {'subject' : replySubject, 'body' : replyBody, 'ids' : mailIds});
-		} else {
-			self.openComposeEmailForm("reply", params, {'subject' : replySubject, 'body' : replyBody});
-		}
-	},
-
 	showRelatedActions: function () {
 		let self = this,
 			container = self.getContainer(),
 			from = container.find('#mmFrom').val(),
 			to = container.find('#mmTo').val(),
 			folder = container.find('#mmFolder').val(),
-			msgNo = container.find('#mmMsgNo').val(),
 			msgUid = container.find('#mmMsgUid').val(),
 			params = {
 				'module': 'MailManager',
@@ -1038,7 +896,6 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 				'_mfrom': from,
 				'_mto': to,
 				'_folder': folder,
-				'_msgno': msgNo,
 				'_msguid': msgUid
 			};
 
@@ -1047,176 +904,38 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			self.handleRelationActions();
 		});
 	},
-
-	openDraftFolder : function(page, query, type) {
-		var self = this;
-		app.helper.showProgress(app.vtranslate("JSLBL_Loading_Please_Wait")+"...");
-		if(!page) {
-			page = 0;
-		}
-		var container = self.getContainer();
-		vtUtils.hideValidationMessage(container.find('#mailManagerSearchbox'));
-		var params = {
-			'module' : 'MailManager',
-			'view' : 'Index',
-			'_operation' : 'folder',
-			'_operationarg' : 'drafts',
-			'_page' : page
-		};
-		if(query) {
-			params['q'] = query;
-		}
-		if(type) {
-			params['type'] = type;
-		}
-		app.request.post({"data" : params}).then(function(error, responseData) {
-			container.find('#mails_container').html(responseData);
-			container.find('#mailPreviewContainer').addClass('hide');
-			app.helper.hideProgress();
-			self.registerMoveMailDropdownClickEvent();
-			self.registerMailCheckBoxClickEvent();
-			self.registerScrollForMailList();
-			self.registerMainCheckboxClickEvent();
-			self.registerDraftPrevPageClickEvent();
-			self.registerDraftNextPageClickEvent();
-			self.registerDraftMailClickEvent();
-			self.registerDraftSearchEvent();
-			self.registerDraftDeleteEvent();
-			self.clearPreviewContainer();
-		});
-	},
-
-	registerDraftPrevPageClickEvent : function() {
-		var self = this;
-		var container = self.getContainer();
-		container.find('#PreviousPageButton').click(function(e) {
-			var element = jQuery(e.currentTarget);
-			var page = element.data('page');
-			self.openDraftFolder(page);
-		});
-	},
-
-	registerDraftNextPageClickEvent : function() {
-		var self = this;
-		var container = self.getContainer();
-		container.find('#NextPageButton').click(function(e) {
-			var element = jQuery(e.currentTarget);
-			var page = element.data('page');
-			self.openDraftFolder(page);
-		});
-	},
-
-	registerDraftMailClickEvent: function () {
+	updateUnreadCount: function (operation, count, folder) {
 		let self = this,
 			container = self.getContainer();
 
-		container.find('.draftEmail').click(function (e) {
-			e.preventDefault();
-			let element = jQuery(e.currentTarget),
-				msgNo = element.find('.msgNo').val(),
-				params = {
-					'module': 'ITS4YouEmails',
-					'view': 'ComposeEmail',
-					'mode': 'emailEdit',
-					'record': msgNo
-				};
-
-			app.helper.showProgress(app.vtranslate('JSLBL_Opening') + '...');
-			app.request.post({data: params}).then(function (error, data) {
-				app.helper.hideProgress();
-
-				if (!error) {
-					app.helper.showModal(data, {
-						cb: function () {
-							let editInstance = new ITS4YouEmails_MassEdit_Js();
-							editInstance.registerEvents();
-						}
-					});
-				}
-			});
-		});
-	},
-
-	registerDraftSearchEvent : function() {
-		var self = this;
-		var container = self.getContainer();
-		container.find('#mm_searchButton').click(function() {
-			var query = container.find('#mailManagerSearchbox').val();
-			if(query.trim() == '') {
-				vtUtils.showValidationMessage(container.find('#mailManagerSearchbox'), app.vtranslate('JSLBL_ENTER_SOME_VALUE'));
-				return false;
-			} else {
-				vtUtils.hideValidationMessage(container.find('#mailManagerSearchbox'));
-			}
-			var type = container.find('#searchType').val();
-			self.openDraftFolder(0, query, type);
-		});
-	},
-
-	registerDraftDeleteEvent : function() {
-		var self = this;
-		var container = self.getContainer();
-		container.find('#mmDeleteMail').click(function() {
-			var msgNos = new Array();
-			container.find('.mailCheckBox').each(function(i, ele) {
-				var element = jQuery(ele);
-				if(element.is(":checked")) {
-					msgNos.push(element.closest('.mailEntry').find('.msgNo').val());
-				}
-			});
-			if(msgNos.length <= 0) {
-				app.helper.showAlertBox({message:app.vtranslate('JSLBL_NO_EMAILS_SELECTED')});
-				return false;
-			} else {
-				app.helper.showConfirmationBox({'message' : app.vtranslate('LBL_DELETE_CONFIRMATION')}).then(function() {
-					app.helper.showProgress(app.vtranslate("JSLBL_Deleting")+"...");
-					var params = {
-						'module' : 'MailManager',
-						'view' : 'Index',
-						'_operation' : 'mail',
-						'_operationarg' : 'delete',
-						'_folder' : '__vt_drafts',
-						'_msgno' : msgNos.join(',')
-					};
-					app.request.post({data : params}).then(function(err,data) {
-						app.helper.hideProgress();
-						if(data.status) {
-							self.openDraftFolder();
-							app.helper.showSuccessNotification({'message': app.vtranslate('JSLBL_MAILS_DELETED')});
-						}
-					});
-				});
-			}
-		});
-	},
-
-	updateUnreadCount : function(count, folder) {
-		var self = this;
-		var container = self.getContainer();
-		if(!folder) {
+		if (!folder) {
 			folder = container.find('.mm_folder.active').data('foldername');
 		}
-		var newCount;
-		if(typeof count == "number") {
-			newCount = parseInt(count);
-		} else {
-			var oldCount = parseInt(container.find('.mm_folder[data-foldername="'+folder+'"]').find('.mmUnreadCountBadge').text());
-			if(count.substr(0, 1) == "+") {
-				newCount = oldCount + (parseInt(count.substr(1, (count.length - 1))));
-			} else if(count.substr(0, 1) == "-") {
-				newCount = oldCount - (parseInt(count.substr(1, (count.length - 1))));
-			} else {
-				newCount = parseInt(count);
-			}
-		}
-		container.find('.mm_folder[data-foldername="'+folder+'"]').find('.mmUnreadCountBadge').text(newCount);
-		if(newCount > 0) {
-			container.find('.mm_folder[data-foldername="'+folder+'"]').find('.mmUnreadCountBadge').removeClass("hide");
-		} else {
-			container.find('.mm_folder[data-foldername="'+folder+'"]').find('.mmUnreadCountBadge').addClass("hide");
-		}
-	},
 
+		let countElements = container.find('.mm_folder[data-foldername="' + folder + '"]').find('.mmUnreadCountBadge');
+
+		$(countElements).each(function () {
+			let countElement = $(this),
+				newCount = 0,
+				oldCount = countElement.text();
+
+			if ('+' === operation) {
+				newCount = parseFloat(oldCount) + parseFloat(count);
+			} else if ('-' === operation) {
+				newCount = parseFloat(oldCount) - parseFloat(count);
+			} else {
+				newCount = count;
+			}
+
+			countElement.text(newCount)
+
+			if (newCount > 0) {
+				countElement.removeClass("hide");
+			} else {
+				countElement.addClass("hide");
+			}
+		})
+	},
 	handleRelationActions: function () {
 		let self = this,
 			container = self.getContainer(),
@@ -1261,69 +980,73 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	getContainerActions() {
 		return $('#mailManagerActions');
 	},
-	associateEmail : function(relatedRecord) {
-		var self = this;
-		var container = self.getContainer();
-		var params = {
-			'module' : 'MailManager',
-			'view' : 'Index',
-			'_operation' : 'relation',
-			'_operationarg' : 'link',
-			'_mlinkto' : relatedRecord,
-			'_mlinktotype' : 'ITS4YouEmails',
-			'_folder' : container.find('#mmFolder').val(),
-			'_msgno' : container.find('#mmMsgNo').val()
-		}
-		app.helper.showProgress(app.vtranslate('JSLBL_Associating')+'...');
-		app.request.post({data : params}).then(function(err,data) {
-			if (err === null) {
-				app.helper.showSuccessNotification({'message':''});
+	associateEmail: function (relatedRecord) {
+		let self = this,
+			container = self.getContainer(),
+			params = {
+				'module': 'MailManager',
+				'view': 'Index',
+				'_operation': 'relation',
+				'_operationarg': 'link',
+				'_mlinkto': relatedRecord,
+				'_mlinktotype': 'ITS4YouEmails',
+				'_folder': container.find('#mmFolder').val(),
+				'_msguid': container.find('#mmMsgUid').val(),
+			}
+
+		app.helper.showProgress(app.vtranslate('JSLBL_Associating') + '...');
+		app.request.post({data: params}).then(function (error, data) {
+			if (!error && data['success']) {
+				app.helper.showSuccessNotification({'message': ''});
 				app.helper.hideProgress();
+
+				self.showRelatedActions();
 			} else {
 				app.helper.showErrorNotification({"message": err});
 			}
 		});
 	},
 
-	associateComment : function(relatedRecord) {
-		var self = this;
-		var container = self.getContainer();
-		var params = {
-			'module' : 'MailManager',
-			'view' : 'Index',
-			'_operation' : 'relation',
-			'_operationarg' : 'commentwidget',
-			'_mlinkto' : relatedRecord,
-			'_mlinktotype' : 'ModComments',
-			'_folder' : container.find('#mmFolder').val(),
-			'_msgno' : container.find('#mmMsgNo').val()
-		}
-		app.helper.showProgress(app.vtranslate('JSLBL_Loading')+'...');
-		app.request.post({data : params}).then(function(err, data) {
+	associateComment: function (relatedRecord) {
+		let self = this,
+			container = self.getContainer(),
+			params = {
+				'module': 'MailManager',
+				'view': 'Index',
+				'_operation': 'relation',
+				'_operationarg': 'commentwidget',
+				'_mlinkto': relatedRecord,
+				'_mlinktotype': 'ModComments',
+				'_folder': container.find('#mmFolder').val(),
+				'_msguid': container.find('#mmMsgUid').val(),
+			}
+		app.helper.showProgress(app.vtranslate('JSLBL_Loading') + '...');
+		app.request.post({data: params}).then(function (err, data) {
 			app.helper.hideProgress();
-			app.helper.showModal(data, {'cb' : function(data) {
-				jQuery('[name="saveButton"]', data).on('click',function(e){
-					e.preventDefault();
-					self.saveComment(data);
-				});
-			}});
+			app.helper.showModal(data, {
+				'cb': function (data) {
+					jQuery('[name="saveButton"]', data).on('click', function (e) {
+						e.preventDefault();
+						self.saveComment(data);
+					});
+				}
+			});
 		});
 	},
 
 	createRelatedRecord : function(module) {
-		var self = this;
-		var container = self.getContainer();
-		var relatedRecord = self.getRecordForRelation();
-		var msgNo = container.find('#mmMsgNo').val();
-		var folder = container.find('#mmFolder').val();
-		var params = {
+		let self = this,
+			container = self.getContainer(),
+			relatedRecord = self.getRecordForRelation(),
+			folder = container.find('#mmFolder').val(),
+			params = {
 			'module' : 'MailManager',
 			'view' : 'Index',
 			'_operation' : 'relation',
 			'_operationarg' : 'create_wizard',
 			'_mlinktotype' : module,
 			'_folder' : folder,
-			'_msgno' : msgNo
+			'_msguid': container.find('#mmMsgUid').val(),
 		};
 		if(relatedRecord && relatedRecord !== null) {
 			params['_mlinkto'] = relatedRecord;
@@ -1332,14 +1055,14 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		app.request.post({data : params}).then(function(err, data) {
 			app.helper.hideProgress();
 			app.helper.showModal(data);
-			var form = jQuery('form[name="QuickCreate"]');
+			let form = jQuery('form[name="QuickCreate"]');
 			app.event.trigger('post.QuickCreateForm.show',form);
 			vtUtils.applyFieldElementsView(form);
-			var moduleName = form.find('[name="module"]').val();
-			var targetClass = app.getModuleSpecificViewClass('Edit', moduleName);
-			var targetInstance = new window[targetClass]();
+			let moduleName = form.find('[name="module"]').val(),
+				targetClass = app.getModuleSpecificViewClass('Edit', moduleName),
+				targetInstance = new window[targetClass]();
 			targetInstance.registerBasicEvents(form);
-			var newParams = {};
+			let newParams = {};
 			newParams.callbackFunction = function() {
 				app.helper.hideModal();
 				self.showRelatedActions();
@@ -1355,64 +1078,65 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	 * @param {type} form
 	 * @returns {undefined}
 	 */
-	quickCreateSave : function(form,invokeParams){
-		var container = this.getContainer();
-		var params = {
-			submitHandler: function(form) {
-				// to Prevent submit if already submitted
-				jQuery("button[name='saveButton']").attr("disabled","disabled");
-				if(this.numberOfInvalids() > 0) {
-					return false;
-				}
-				var formData = jQuery(form).serialize();
-				var requestParams = invokeParams.requestParams;
+	quickCreateSave: function (form, invokeParams) {
+		let container = this.getContainer(),
+			params = {
+				submitHandler: function (form) {
+					// to Prevent submit if already submitted
+					jQuery("button[name='saveButton']").attr("disabled", "disabled");
+					if (this.numberOfInvalids() > 0) {
+						return false;
+					}
+					let formData = jQuery(form).serialize(),
+						requestParams = invokeParams.requestParams;
 
-				// replacing default parameters for custom handlings in mail manager
-				formData = formData.replace('module=', 'xmodule=').replace('action=', 'xaction=');
-				if(requestParams) {
-					requestParams['_operationarg'] = 'create';
-					jQuery.each(requestParams, function(key, value){
-						formData += "&"+key+"="+value;
+					// replacing default parameters for custom handlings in mail manager
+					formData = formData.replace('module=', 'xmodule=').replace('action=', 'xaction=');
+					if (requestParams) {
+						requestParams['_operationarg'] = 'create';
+						jQuery.each(requestParams, function (key, value) {
+							formData += "&" + key + "=" + value;
+						});
+					}
+
+					app.request.post({data: formData}).then(function (error, data) {
+						if (!error) {
+							if (!data.error) {
+								jQuery('.vt-notification').remove();
+								app.event.trigger("post.QuickCreateForm.save", data, jQuery(form).serializeFormData());
+								app.helper.hideModal();
+								app.helper.showSuccessNotification({"message": app.vtranslate('JS_RECORD_CREATED')});
+								invokeParams.callbackFunction(data, error);
+							} else {
+								jQuery("button[name='saveButton']").removeAttr('disabled');
+								app.event.trigger('post.save.failed', data);
+							}
+						} else {
+							app.event.trigger("post.QuickCreateForm.save", data, jQuery(form).serializeFormData());
+							app.helper.showErrorNotification({"message": error});
+						}
 					});
 				}
-
-				app.request.post({data:formData}).then(function(err,data){
-                    if(err === null) {
-						if (!data.error) {
-							jQuery('.vt-notification').remove();
-							app.event.trigger("post.QuickCreateForm.save",data,jQuery(form).serializeFormData());
-							app.helper.hideModal();
-							app.helper.showSuccessNotification({"message":app.vtranslate('JS_RECORD_CREATED')});
-							invokeParams.callbackFunction(data, err);
-						} else {
-							jQuery("button[name='saveButton']").removeAttr('disabled');
-							app.event.trigger('post.save.failed', data);
-						}
-                    }else{
-						app.event.trigger("post.QuickCreateForm.save",data,jQuery(form).serializeFormData());
-                        app.helper.showErrorNotification({"message":err});
-                    }
-                });
-			}
-		};
+			};
 		form.vtValidate(params);
 	},
 
 	saveComment : function(data) {
-		var _mlinkto = jQuery('[name="_mlinkto"]', data).val();
-		var _mlinktotype = jQuery('[name="_mlinktotype"]', data).val();
-		var _msgno = jQuery('[name="_msgno"]', data).val();
-		var _folder = jQuery('[name="_folder"]', data).val();
-		var commentcontent = jQuery('[name="commentcontent"]', data).val();
+		let _mlinkto = jQuery('[name="_mlinkto"]', data).val(),
+			_mlinktotype = jQuery('[name="_mlinktotype"]', data).val(),
+			_msguid = jQuery('[name="_msguid"]', data).val(),
+			_folder = jQuery('[name="_folder"]', data).val(),
+			commentcontent = jQuery('[name="commentcontent"]', data).val();
+
 		if(commentcontent.trim() == "") {
-			var validationParams = {
+			let validationParams = {
 				position: {
 					'my' : 'bottom left',
 					'at' : 'top left',
 					'container' : jQuery('#commentContainer', data)
 				}
-			};
-			var errorMsg = app.vtranslate('JSLBL_CANNOT_ADD_EMPTY_COMMENT');
+			},
+				errorMsg = app.vtranslate('JSLBL_CANNOT_ADD_EMPTY_COMMENT');
 			vtUtils.showValidationMessage(jQuery('[name="commentcontent"]', data), errorMsg, validationParams);
 			return false;
 		} else {
@@ -1426,17 +1150,18 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			'commentcontent' : commentcontent,
 			'_mlinkto' : _mlinkto,
 			'_mlinktotype' : _mlinktotype,
-			'_msgno' : _msgno,
+			'_msguid': _msguid,
 			'_folder' : _folder
 		}
 		app.helper.showProgress(app.vtranslate('JSLBL_Saving')+'...');
-		app.request.post({'data' : params}).then(function(err, response) {
+		app.request.post({'data': params}).then(function (error, data) {
 			app.helper.hideProgress();
-			if(response.ui) {
-				app.helper.showSuccessNotification({'message':''});
+
+			if (data['success']) {
+				app.helper.showSuccessNotification({'message': ''});
 				app.helper.hideModal();
 			} else {
-				app.helper.showAlertBox({'message' : app.vtranslate("JSLBL_FAILED_ADDING_COMMENT")});
+				app.helper.showAlertBox({'message': app.vtranslate("JSLBL_FAILED_ADDING_COMMENT")});
 			}
 		});
 	},
@@ -1500,22 +1225,18 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		});
 	},
 
-	clearPreviewContainer : function() {
-		var previewHtml = '<div class="mmListMainContainer">\n\
-							<center><strong>'+app.vtranslate('JSLBL_NO_MAIL_SELECTED_DESC')+'</center></strong></div>';
-		this.getContainer().find('#mailPreviewContainer').html(previewHtml);
+	clearPreviewContainer: function () {
+		this.setMailPreview()
 	},
 
-	registerRefreshFolder : function() {
-		var self = this;
-		var container = self.getContainer();
-		container.find('.mailbox_refresh').click(function() {
-			var folder = container.find('.mm_folder.active').data('foldername');
-			if(folder == 'vt_drafts') {
-				self.openDraftFolder();
-			} else {
-				self.openFolder(folder);
-			}
+	registerRefreshFolder: function () {
+		let self = this,
+			container = self.getContainer();
+
+		container.find('.mailbox_refresh').click(function () {
+			let folder = container.find('.mm_folder.active').data('foldername');
+
+			self.openFolder(folder);
 		});
 	},
 
@@ -1596,8 +1317,9 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			}
 		})
 	},
-	registerEvents : function() {
-		var self = this;
+	registerEvents: function () {
+		const self = this;
+
 		self.loadFolders();
 		self.registerComposeEmail();
 		self.registerSettingsEdit();
@@ -1605,5 +1327,6 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		self.registerRefreshFolder();
 		self.registerSearchTypeChangeEvent();
 		self.registerPostMailSentEvent();
+		self.registerMailPaginationEvent();
 	}
 });

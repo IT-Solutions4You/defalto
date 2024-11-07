@@ -77,42 +77,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group row py-2 px-3">
-                            <label class="control-label fieldLabel col-lg-3 col-md-3 col-sm-3">
-                                <strong>{vtranslate('LBL_PRIVILEGES',$QUALIFIED_MODULE)}</strong>
-                            </label>
-                            <div class="controls fieldValue col-lg-6 col-md-6 col-sm-6">
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" value="1" {if $PROFILE_DIRECTLY_RELATED_TO_ROLE} checked="" {/if} name="profile_directly_related_to_role" data-handler="new" class="alignTop"/>
-                                        <span class="ms-2">{vtranslate('LBL_ASSIGN_NEW_PRIVILEGES',$QUALIFIED_MODULE)}</span>
-                                    </label>
-                                </div>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" value="0" {if $PROFILE_DIRECTLY_RELATED_TO_ROLE eq false} checked="" {/if} name="profile_directly_related_to_role" data-handler="existing" class="alignTop"/>
-                                        <span class="ms-2">{vtranslate('LBL_ASSIGN_EXISTING_PRIVILEGES',$QUALIFIED_MODULE)}</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="data-content-new" data-content="new">
-                            <div class="profileData col-sm-12">
-                            </div>
-                        </div>
-                        <div class="form-group row py-2 px-3" data-content="existing">
-                            <div class="fieldLabel control-label col-lg-3 col-md-3 col-sm-3"></div>
-                            <div class="fieldValue controls col-lg-6 col-md-6 col-sm-6">
-                                {assign var="ROLE_PROFILES" value=$RECORD_MODEL->getProfiles()}
-                                <select class="select2 inputElement col-lg-12 hide" multiple="true" id="profilesList" name="profiles[]" data-placeholder="{vtranslate('LBL_CHOOSE_PROFILES',$QUALIFIED_MODULE)}" style="width: 460px" data-rule-required="true">
-                                    {foreach from=$ALL_PROFILES item=PROFILE}
-                                        {if $PROFILE->isDirectlyRelated() eq false}
-                                            <option value="{$PROFILE->getId()}" {if isset($ROLE_PROFILES[$PROFILE->getId()])}selected="true"{/if}>{$PROFILE->getName()}</option>
-                                        {/if}
-                                    {/foreach}
-                                </select>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-top">

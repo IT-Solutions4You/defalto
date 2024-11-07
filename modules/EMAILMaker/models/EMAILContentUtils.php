@@ -800,38 +800,4 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
             "Modified Time" => "Modified Time"
         );
     }
-
-    public function getAttachmentImage($id, $site_url)
-    {
-        if (isset($id) and $id != "") {
-            $db = PearDatabase::getInstance();
-            $query = $this->getAttachmentImageQuery();
-            $result = $db->pquery($query, array($id));
-            $num_rows = $db->num_rows($result);
-            if ($num_rows > 0) {
-                $row = $db->query_result_rowdata($result);
-
-                if (!isset($row['storedname']) || empty($row['storedname'])) {
-                    $row['storedname'] = $row['name'];
-                }
-
-                $image_src = $row["path"] . $row["attachmentsid"] . "_" . $row['storedname'];
-
-                return "<img src='" . $site_url . "/" . $image_src . "'/>";
-            }
-        } else {
-            return "";
-        }
-    }
-
-    public function getAttachmentImageQuery()
-    {
-        return "SELECT vtiger_attachments.*
-	            FROM vtiger_seattachmentsrel
-	            INNER JOIN vtiger_attachments
-	            ON vtiger_attachments.attachmentsid=vtiger_seattachmentsrel.attachmentsid
-	            INNER JOIN vtiger_crmentity
-	            ON vtiger_attachments.attachmentsid=vtiger_crmentity.crmid
-	            WHERE deleted=0 AND vtiger_attachments.attachmentsid=?";
-    }
 }

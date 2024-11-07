@@ -59,7 +59,11 @@ class Settings_MailConverter_Edit_View extends Settings_Vtiger_Index_View {
 		$viewer->view('Step1.tpl', $qualifiedModuleName);
 	}
 
-	public function step2(Vtiger_Request $request) {
+    /**
+     * @throws AppException
+     */
+    public function step2(Vtiger_Request $request): void
+    {
 		$recordId = $request->get('record');
 		$qualifiedModuleName = $request->getModule(false);
 		$folders = Settings_MailConverter_Module_Model::getFolders($recordId);

@@ -34,12 +34,16 @@ Settings_Vtiger_Index_Js('Settings_MailConverter_List_Js', {
 			app.helper.showProgress();
 			app.request.post({'url': url}).then(function (err, data) {
 				jQuery('#SCANNER_'+data.id).remove();
-				var url = window.location.href;
-				var url1 = url.split('&');
-				var path = url1[0]+'&'+url1[1]+'&'+url1[2];
+				let url = window.location.href,
+					url1 = url.split('&'),
+					path = url1[0]+'&'+url1[1]+'&'+url1[2];
+
 				app.helper.showSuccessNotification({'message': app.vtranslate('JS_MAILBOX_DELETED_SUCCESSFULLY')});
 				app.helper.hideProgress();
-				window.location.assign(path);
+
+				if (data['id']) {
+					window.location.assign(path);
+				}
 			});
 		});
 	},

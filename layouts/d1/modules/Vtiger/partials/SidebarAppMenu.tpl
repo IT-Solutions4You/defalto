@@ -19,28 +19,6 @@
                     <div class="fs-3 text-primary">{$COMPANY_NAME}</div>
                 </div>
                 <div class="col-lg text-end text-secondary d-flex flex-wrap align-items-center justify-content-end">
-                    {assign var=DOCUMENTS_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Documents')}
-                    {if $USER_PRIVILEGES_MODEL->hasModulePermission($DOCUMENTS_MODULE_MODEL->getId())}
-                        <div class="menu-item app-item app-item-misc d-inline-block p-1 me-3">
-                            <div class="menu-items-wrapper">
-                                <a href="index.php?module=Documents&view=List">
-                                    <span class="app-icon-list dt-menu-icon">{$DOCUMENTS_MODULE_MODEL->getModuleIcon()}</span>
-                                    <span class="app-name ms-2 text-truncate"> {vtranslate('Documents')}</span>
-                                </a>
-                            </div>
-                        </div>
-                    {/if}
-                    {assign var=MAILMANAGER_MODULE_MODEL value=Vtiger_Module_Model::getInstance('MailManager')}
-                    {if $USER_PRIVILEGES_MODEL->hasModulePermission($MAILMANAGER_MODULE_MODEL->getId())}
-                        <div class="menu-item app-item app-item-misc d-inline-block p-1 me-3">
-                            <div class="menu-items-wrapper">
-                                <a href="index.php?module=MailManager&view=List">
-                                    <span class="app-icon-list dt-menu-icon">{$MAILMANAGER_MODULE_MODEL->getModuleIcon()}</span>
-                                    <span class="app-name ps-2 text-truncate"> {vtranslate('MailManager')}</span>
-                                </a>
-                            </div>
-                        </div>
-                    {/if}
                     {if $USER_MODEL->isAdminUser()}
                         <div class="menu-item app-item app-item-misc d-inline-block p-1 me-3">
                             <div class="menu-items-wrapper">

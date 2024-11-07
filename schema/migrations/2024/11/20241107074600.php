@@ -10,20 +10,17 @@
 
 require_once 'vtlib/Vtiger/Cron.php';
 
-if (!class_exists('Migration_20241015120600')) {
-    class Migration_20241015120600 extends AbstractMigrations
+if (!class_exists('Migration_20241107074600')) {
+    class Migration_20241107074600 extends AbstractMigrations
     {
         /**
          * @param string $strFileName
+         * @throws AppException
          * @throws Exception
          */
         public function migrate(string $strFileName): void
         {
-            $mailManager = new MailManager_Mailbox_Model();
-            $mailManager->createTables();
-
-            $mailScanner = new Settings_MailConverter_MailScannerInfo_Handler();
-            $mailScanner->createTables();
+            Core_Install_Model::getInstance('module.postinstall', 'Users')->installModule();
         }
     }
 } else {

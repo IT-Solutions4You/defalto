@@ -257,6 +257,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         self::logSuccess('Install tables');
 
+        $currentUser = Users_Record_Model::getCurrentUserModel();
         $moduleName = $this->moduleName;
         $moduleFocus = CRMEntity::getInstance($moduleName);
 
@@ -422,7 +423,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                             $fieldInstance->deletePicklistValues();
                             $fieldInstance->setPicklistValues($picklistValues);
                         } else {
-                            if (Vtiger_Utils::checkTable($picklistTable)) {
+                            // Required current user disable for install
+                            if ($currentUser->getId() && Vtiger_Utils::checkTable($picklistTable)) {
                                 $currentPicklistValues = $fieldInstance->getPicklistValues();
                             }
 

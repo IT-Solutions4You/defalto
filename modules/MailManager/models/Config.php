@@ -34,4 +34,3 @@ class MailManager_Config_Model {
 		return $defvalue;
 	}
 }
-?>

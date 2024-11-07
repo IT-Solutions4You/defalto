@@ -15,8 +15,6 @@ require_once 'include/Webservices/QueryRelated.php';
 require_once 'includes/runtime/Cache.php';
 include_once 'include/Webservices/DescribeObject.php';
 require_once 'modules/Vtiger/helpers/Util.php';
-include_once 'modules/Settings/MailConverter/handlers/MailScannerAction.php';
-include_once 'modules/Settings/MailConverter/handlers/MailAttachmentMIME.php';
 include_once 'modules/MailManager/MailManager.php';
 
 class MailManager_Relation_View extends MailManager_Abstract_View {
@@ -35,232 +33,294 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 		return parent::getMailboxModel();
 	}
 
-	/**
-	 * Process the request to perform relationship operations
-	 * @global Users Instance $currentUserModel
-	 * @global PearDataBase Instance $adb
-	 * @global String $currentModule
-	 * @param Vtiger_Request $request
-	 * @return boolean
-	 */
-	public function process(Vtiger_Request $request) {
-        /** @var MailManager_Connector_Connector $connector */
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$response = new MailManager_Response(true);
-		$viewer = $this->getViewer($request);
-        $moduleName = $request->get('_mlinktotype');
+    /**
+     * Process the request to perform relationship operations
+     * @param Vtiger_Request $request
+     * @return void
+     * @throws AppException
+     * @throws Exception
+     * @global Users Instance $currentUserModel
+     * @global PearDataBase Instance $adb
+     * @global String $currentModule
+     */
+    public function process(Vtiger_Request $request)
+    {
+        $this->exposeMethod('find');
+        $this->exposeMethod('link');
+        $this->exposeMethod('commentwidget');
+        $this->exposeMethod('create');
+        $this->exposeMethod('create_wizard');
+        $this->exposeMethod('saveattachment');
+        $response = new MailManager_Response(true);
+        $operation = $this->getOperationArg($request);
 
-		if ('find' == $this->getOperationArg($request)) {
-			// Check if the message is already linked.
-			$msgUid = $request->get('_msguid');
-            $linkedTo = null;
+        if (!empty($operation) && $this->isMethodExposed($operation)) {
+            $response = $this->invokeExposedMethod($operation, $request, $response);
+        }
 
-            if (!empty($msgUid)) {
-                $linkedTo = MailManager_Relate_Action::associatedLink($msgUid);
+        if ($response) {
+            $response->emit();
+        }
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function find(Vtiger_Request $request, $response) {
+
+        // Check if the message is already linked.
+        $msgUid = $request->get('_msguid');
+        $linkedTo = null;
+
+        if (!empty($msgUid)) {
+            $linkedTo = MailManager_Relate_Action::associatedLink($msgUid);
+        }
+
+        $folderName = $request->get('_folder');
+        $connector = $this->getConnector();
+        $folder = $connector->getFolder($folderName);
+        $mail = $connector->getMail($folder, $msgUid);
+        $viewer = $this->getViewer($request);
+        $fromEmail = $request->get('_mfrom') ?? $mail->getFrom()[0];
+        $toEmail = $request->get('_mto') ?? $mail->getTo()[0];
+
+        // If the message was not linked, lookup for matching records, using FROM address
+        if (!empty($linkedTo)) {
+            $viewer->assign('LINKEDTO', $linkedTo);
+        } else {
+            $mail->retrieveLookUps($fromEmail, $toEmail, $folder->isSentFolder());
+
+            $viewer->assign('LOOKUPS', $mail->getLookUps());
+        }
+
+        $this->retrieveRelationship($request, $mail, $linkedTo);
+
+        $response->setResult(['ui' => $viewer->view('Relationship.tpl', $request->getModule(), true)]);
+
+        return $response;
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function link(Vtiger_Request $request, $response)
+    {
+        $linkTo = $request->get('_mlinkto');
+        $folderName = $request->get('_folder');
+        $uid = (int)$request->get('_msguid');
+        // This is to handle larger uploads
+        ini_set('memory_limit', MailManager_Config_Model::get('MEMORY_LIMIT'));
+
+        $connector = $this->getConnector();
+        $folder = $connector->getFolder($folderName);
+        $mail = $connector->getMail($folder, $uid);
+
+        MailManager_Relate_Action::associate($mail, $linkTo);
+
+        $response->setResult(['success' => true]);
+
+        return $response;
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function create_wizard(Vtiger_Request $request, $response)
+    {
+        $linkModule = $request->get('_mlinktotype');
+        $moduleName = $request->getModule();
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+
+        if (!vtlib_isModuleActive($linkModule)) {
+            $response->setResult(['error' => vtranslate('LBL_OPERATION_NOT_PERMITTED', $moduleName)]);
+
+            return $response;
+        }
+
+        $parent = $request->get('_mlinkto');
+        $folderName = $request->get('_folder');
+        $uid = $request->get('_msguid');
+
+        $connector = $this->getConnector();
+        $folder = $connector->getFolder($folderName);
+        $mail = $connector->getMail($folder, $uid);
+        $isSentFolder = $mail->getFrom()[0] == $currentUserModel->get('email1') || $folder->isSentFolder();
+        $formData = $this->processFormData($mail, $isSentFolder);
+        $linkedTo = MailManager_Relate_Action::getSalesEntityInfo($parent);
+        $referenceFields = MailManager_Message_Model::RELATIONS_MAPPING[$linkModule];
+        $referenceFieldName = $referenceFields[$linkedTo['module']];
+
+        switch ($linkModule) {
+            case 'HelpDesk' :
+                $from = $mail->getFrom();
+
+                if ($parent && $referenceFieldName) {
+                    $formData[$referenceFieldName] = $this->setParentForHelpDesk($parent, $from);
+                }
+
+                $formData['description'] = $mail->getBody(false);
+                break;
+            case 'Potentials' :
+                if ($parent && $referenceFieldName) {
+                    $formData[$referenceFieldName] = $request->get('_mlinkto');
+                }
+
+                $formData['description'] = Core_CKEditor_UIType::transformEditViewDisplayValue($mail->getBody(false));
+                break;
+        }
+
+        $contactRecordId = $formData[$referenceFields['Contacts']];
+
+        if ($contactRecordId && isRecordExists($contactRecordId)) {
+            $contactRecordModel = Vtiger_Record_Model::getInstanceById($contactRecordId, 'Contacts');
+            $formData[$referenceFields['Accounts']] = $contactRecordModel->get('account_id');
+        }
+
+        $formData['mail_manager_id'] = $mail->getUid();
+        $formData['module'] = $linkModule;
+
+        $request = new Vtiger_Request($formData, $formData);
+        // Delegate QuickCreate FormUI to the target view controller of module.
+        $viewClassName = Vtiger_Loader::getComponentClassName('View', 'QuickCreateAjax', $linkModule);
+
+        if (!class_exists($viewClassName)) {
+            $viewClassName = 'Vtiger_QuickCreateAjax_View';
+        }
+
+        $viewController = new $viewClassName();
+        $viewController->process($request);
+
+        // UI already sent
+        return false;
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function create(Vtiger_Request $request, $response)
+    {
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $moduleName = $request->getModule();
+        $linkModule = $request->get('_mlinktotype');
+
+        if (!vtlib_isModuleActive($linkModule)) {
+            $response->setResult(['ui' => '', 'error' => vtranslate('LBL_OPERATION_NOT_PERMITTED', $moduleName)]);
+
+            return $response;
+        }
+
+        $parent = $request->get('_mlinkto');
+        $folderName = $request->get('_folder');
+        $uid = $request->get('_msguid');
+
+        if (!empty($folderName)) {
+            // This is to handle larger uploads
+            ini_set('memory_limit', MailManager_Config_Model::get('MEMORY_LIMIT'));
+
+            $connector = $this->getConnector();
+            $folder = $connector->getFolder($folderName);
+            $mail = $connector->getMail($folder, $uid);
+            $attachments = $mail->getAttachments();
+        } else {
+            $mail = new MailManager_Message_Model();
+        }
+
+        $linkedTo = MailManager_Relate_Action::getSalesEntityInfo($parent);
+        $recordModel = Vtiger_Record_Model::getCleanInstance($linkModule);
+        $fields = $recordModel->getModule()->getFields();
+
+        foreach ($fields as $fieldName => $fieldModel) {
+            if ($request->has($fieldName)) {
+                $fieldValue = $request->get($fieldName);
+                $fieldDataType = $fieldModel->getFieldDataType();
+
+                if ($fieldDataType == 'time') {
+                    $fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
+                }
+
+                $recordModel->set($fieldName, $fieldValue);
+            }
+        }
+
+        // Newly added field for source of created record
+        if ('ModComments' !== $linkModule) {
+            $recordModel->set('source', 'Mail Manager');
+        }
+
+        switch ($linkModule) {
+            case 'HelpDesk' :
+                $from = $mail->getFrom();
+                $referenceFieldName = MailManager_Message_Model::RELATIONS_MAPPING[$linkModule][$linkedTo['module']];
+
+                if (!empty($referenceFieldName) && !$request->has($referenceFieldName)) {
+                    $recordModel->set($referenceFieldName, $this->setParentForHelpDesk($parent, $from));
+                }
+                break;
+
+            case 'ModComments':
+                $recordModel->set('assigned_user_id', $currentUserModel->getId());
+                $recordModel->set('commentcontent', $request->getRaw('commentcontent'));
+                $recordModel->set('userid', $currentUserModel->getId());
+                $recordModel->set('creator', $currentUserModel->getId());
+                $recordModel->set('related_to', $parent);
+                break;
+        }
+
+        try {
+            $recordModel->save();
+
+            // This condition is added so that emails are not created for Tickets and Todo without Parent,
+            // as there is no way to relate them
+            if (empty($parent) && $linkModule != 'HelpDesk') {
+                MailManager_Relate_Action::associate($mail, $recordModel->getId());
             }
 
-            $foldername = $request->get('_folder');
-            $messageNo = $request->get('_msgno');
-            $connector = $this->getConnector($foldername);
-            $folder = $connector->folderInstance($foldername);
-            $mail = $connector->openMail($messageNo, $foldername, false);
-            $mail->retrieveBody();
-
-			// If the message was not linked, lookup for matching records, using FROM address
-            if (!empty($linkedTo)) {
-                $viewer->assign('LINKEDTO', $linkedTo);
-            } else {
-                $mail->retrieveLookUps($request->get('_mfrom'), $request->get('_mto'), $folder->isSentFolder());
-
-                $viewer->assign('LOOKUPS', $mail->getLookUps());
+            // add attachments to the tickets as Documents
+            if ($linkModule == 'HelpDesk' && !empty($attachments)) {
+                $relationController = new MailManager_Relate_Action();
+                $relationController->saveAttachments($mail, $linkModule, $recordModel);
             }
 
-            $this->retrieveRelationship($request, $mail, $linkedTo);
+            $response->setResult(['ui' => '', 'success' => true]);
+        } catch (DuplicateException $e) {
+            $response->setResult(['ui' => '', 'error' => $e, 'title' => $e->getMessage(), 'message' => $e->getDuplicationMessage()]);
+        } catch (Exception $e) {
+            $response->setResult(['ui' => '', 'error' => $e]);
+        }
 
-            $response->setResult(['ui' => $viewer->view('Relationship.tpl', $request->getModule(), true)]);
-        } elseif ('link' == $this->getOperationArg($request)) {
-			$linkto = $request->get('_mlinkto');
-			$foldername = $request->get('_folder');
-            $messageNo = $request->get('_msgno');
-			$connector = $this->getConnector($foldername);
+        return $response;
+    }
 
-			// This is to handle larger uploads
-			ini_set('memory_limit', MailManager_Config_Model::get('MEMORY_LIMIT'));
+    public function saveattachment(Vtiger_Request $request, $response) {
+        $connector = $this->getConnector('__vt_drafts');
+        $uploadResponse = $connector->saveAttachment($request);
+        $response->setResult($uploadResponse);
 
-			$mail = $connector->openMail($messageNo, $foldername);
-			$mail->attachments(); // Initialize attachments
+        return $response;
+    }
 
-			$linkedto = MailManager_Relate_Action::associate($mail, $linkto);
+    /**
+     * @throws AppException
+     */
+    public function commentwidget(Vtiger_Request $request, $response)
+    {
+        $folderName = $request->get('_folder');
+        $mUid = (int)$request->get('_msguid');
+        $connector = $this->getConnector();
+        $folder = $connector->getFolder($folderName);
+        $mail = $connector->getMail($folder, $mUid);
 
-            $this->retrieveRelationship($request, $mail, $linkedto);
+        $viewer = $this->getViewer($request);
+        $viewer->assign('LINKMODULE', $request->get('_mlinktotype'));
+        $viewer->assign('PARENT', $request->get('_mlinkto'));
+        $viewer->assign('UID', $mUid);
+        $viewer->assign('FOLDER', $request->get('_folder'));
+        $viewer->assign('MODULE', $request->getModule());
+        $viewer->assign('COMMENTCONTENT', Core_CKEditor_UIType::transformEditViewDisplayValue($mail->getBody(false)));
+        $viewer->view('MailManagerCommentWidget.tpl', 'MailManager');
 
-            $response->setResult(['ui' => $viewer->view('Relationship.tpl', $request->getModule(), true)]);
-        } elseif ('create_wizard' == $this->getOperationArg($request)) {
-            if(!vtlib_isModuleActive($moduleName)) {
-				$response->setResult(array('error'=>vtranslate('LBL_OPERATION_NOT_PERMITTED', $moduleName)));
-				return $response;
-			}
-
-			$parent =  $request->get('_mlinkto');
-			$foldername = $request->get('_folder');
-
-			$connector = $this->getConnector($foldername);
-			$mail = $connector->openMail($request->get('_msgno'), $foldername);
-			$folder = $connector->folderInstance($foldername);
-			$isSentFolder = $mail->from()[0] == $currentUserModel->get('email1') || $folder->isSentFolder();
-			$formData = $this->processFormData($mail, $isSentFolder);
-			foreach ($formData as $key => $value) {
-				$request->set($key, $value);
-			}
-
-			$linkedto = MailManager_Relate_Action::getSalesEntityInfo($parent);
-            $referenceFieldName = MailManager_Message_Model::RELATIONS_MAPPING[$moduleName][$linkedto['module']];
-
-            switch ($moduleName) {
-                case 'HelpDesk' :
-                    $from = $mail->from();
-
-                    if ($parent && $referenceFieldName) {
-                        $request->set($referenceFieldName, $this->setParentForHelpDesk($parent, $from));
-                    }
-
-                    $request->set('description', $mail->body());
-                    break;
-                case 'Potentials' :
-                    if ($parent && $referenceFieldName) {
-                        $request->set($referenceFieldName, $request->get('_mlinkto'));
-                    }
-
-                    $request->set('description', Core_CKEditor_UIType::transformEditViewDisplayValue($mail->body()));
-                    break;
-            }
-
-
-            $request->set('mail_manager_id', $mail->muid());
-			$request->set('module', $moduleName);
-
-			// Delegate QuickCreate FormUI to the target view controller of module.
-			$quickCreateviewClassName = $moduleName . '_QuickCreateAjax_View';
-			if (!class_exists($quickCreateviewClassName)) {
-				$quickCreateviewClassName = 'Vtiger_QuickCreateAjax_View';
-			}
-			$quickCreateViewController = new $quickCreateviewClassName();
-			$quickCreateViewController->process($request);
-
-			// UI already sent
-			$response = false;
-
-		} elseif ('create' == $this->getOperationArg($request)) {
-            $linkedTo = null;
-			$linkModule = $request->get('_mlinktotype');
-
-			if(!vtlib_isModuleActive($linkModule)) {
-				$response->setResult(array('ui'=>'', 'error'=>vtranslate('LBL_OPERATION_NOT_PERMITTED', $moduleName)));
-				return $response;
-			}
-
-			$parent =  $request->get('_mlinkto');
-			$foldername = $request->get('_folder');
-
-			if(!empty($foldername)) {
-				// This is to handle larger uploads
-				ini_set('memory_limit', MailManager_Config_Model::get('MEMORY_LIMIT'));
-
-				$connector = $this->getConnector($foldername);
-				$mail = $connector->openMail($request->get('_msgno'), $foldername);
-				$attachments = $mail->attachments(); // Initialize attachments
-			} else {
-                $mail = new MailManager_Message_Model();
-            }
-
-			$linkedto = MailManager_Relate_Action::getSalesEntityInfo($parent);
-			$recordModel = Vtiger_Record_Model::getCleanInstance($linkModule);
-
-			$fields = $recordModel->getModule()->getFields();
-			foreach ($fields as $fieldName => $fieldModel) {
-				if ($request->has($fieldName)) {
-					$fieldValue = $request->get($fieldName);
-					$fieldDataType = $fieldModel->getFieldDataType();
-					if($fieldDataType == 'time') {
-						$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
-					}
-					$recordModel->set($fieldName, $fieldValue);
-				}
-			}
-
-			// Newly added field for source of created record
-			if($linkModule != "ModComments"){
-				$recordModel->set('source','Mail Manager');
-			}
-
-            switch ($linkModule) {
-                case 'HelpDesk' :
-                    $from = $mail->from();
-                    $referenceFieldName = MailManager_Message_Model::RELATIONS_MAPPING[$linkModule][$linkedto['module']];
-
-                    if (!empty($referenceFieldName) && !$request->has($referenceFieldName)) {
-                        $recordModel->set($referenceFieldName, $this->setParentForHelpDesk($parent, $from));
-                    }
-                    break;
-
-                case 'ModComments':
-                    $recordModel->set('assigned_user_id', $currentUserModel->getId());
-                    $recordModel->set('commentcontent', $request->getRaw('commentcontent'));
-                    $recordModel->set('userid', $currentUserModel->getId());
-                    $recordModel->set('creator', $currentUserModel->getId());
-                    $recordModel->set('related_to', $parent);
-                    break;
-            }
-
-            try {
-				$recordModel->save();
-
-				// This condition is added so that emails are not created for Tickets and Todo without Parent,
-				// as there is no way to relate them
-				if(empty($parent) && $linkModule != 'HelpDesk') {
-					$linkedTo = MailManager_Relate_Action::associate($mail, $recordModel->getId());
-				}
-
-				// add attachments to the tickets as Documents
-				if($linkModule == 'HelpDesk' && !empty($attachments)) {
-					$relationController = new MailManager_Relate_Action();
-					$relationController->__SaveAttachements($mail, $linkModule, $recordModel);
-				}
-
-                $this->retrieveRelationship($request, $mail, $linkedTo);
-
-                $response->setResult(['ui' => $viewer->view('Relationship.tpl', $request->getModule(), true)]);
-            } catch (DuplicateException $e) {
-				$response->setResult(array('ui' => '', 'error' => $e, 'title' => $e->getMessage(), 'message' => $e->getDuplicationMessage()));
-			} catch(Exception $e) {
-				$response->setResult( array( 'ui' => '', 'error' => $e ));
-			}
-
-		} elseif ('savedraft' == $this->getOperationArg($request)) {
-			$connector = $this->getConnector('__vt_drafts');
-			$draftResponse = $connector->saveDraft($request);
-			$response->setResult($draftResponse);
-		} elseif ('saveattachment' == $this->getOperationArg($request)) {
-			$connector = $this->getConnector('__vt_drafts');
-			$uploadResponse = $connector->saveAttachment($request);
-			$response->setResult($uploadResponse);
-		} elseif ('commentwidget' == $this->getOperationArg($request)) {
-            $foldername = $request->get('_folder');
-            $connector = $this->getConnector($foldername);
-            $mail = $connector->openMail($request->get('_msgno'), $foldername);
-
-			$viewer->assign('LINKMODULE', $request->get('_mlinktotype'));
-			$viewer->assign('PARENT', $request->get('_mlinkto'));
-			$viewer->assign('MSGNO', $request->get('_msgno'));
-			$viewer->assign('FOLDER', $request->get('_folder'));
-			$viewer->assign('MODULE', $request->getModule());
-			$viewer->assign('COMMENTCONTENT', Core_CKEditor_UIType::transformEditViewDisplayValue($mail->body()));
-			$viewer->view( 'MailManagerCommentWidget.tpl', 'MailManager' );
-			$response = false;
-		}
-
-		return $response;
-	}
+        return false;
+    }
 
     /**
      * @param Vtiger_Request $request
@@ -319,11 +379,11 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	 */
     public function processFormData($mail, $isSentFolder = false)
     {
-        $subject = $mail->subject();
-        $email = $mail->from();
+        $subject = $mail->getSubject();
+        $email = $mail->getFrom();
 
         if ($isSentFolder) {
-            $email = $mail->to();
+            $email = $mail->getTo();
 
             if (!empty($email)) {
                 $mail_address = implode(',', $email);

@@ -5,8 +5,7 @@
 * All Rights Reserved.
 */
 
-jQuery.Class('Install_Index_Js', {}, {
-
+Vtiger_Index_Js('Install_Index_Js', {}, {
 	registerEventForStep3: function () {
 		jQuery('#recheck').on('click', function () {
 			window.location.reload();

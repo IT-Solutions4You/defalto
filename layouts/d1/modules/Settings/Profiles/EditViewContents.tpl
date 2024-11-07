@@ -36,8 +36,8 @@
 					<input type="hidden" name="viewall" value="0" />
 					<label class="control-label form-check">
 						<input class="listViewEntriesCheckBox form-check-input" type="checkbox" name="viewall" {if $RECORD_MODEL->hasGlobalReadPermission()}checked="true"{/if}  />
-						<span class="mx-2">{vtranslate('LBL_VIEW_ALL',$QUALIFIED_MODULE)}</span>
-						<span>
+						<span class="ms-2">{vtranslate('LBL_VIEW_ALL',$QUALIFIED_MODULE)}</span>
+						<span class="text-secondary ms-2">
 							<i class="fa fa-info-circle" title="{vtranslate('LBL_VIEW_ALL_DESC',$QUALIFIED_MODULE)}"></i>
 						</span>
 					</label>
@@ -47,8 +47,8 @@
 					<input type="hidden" name="editall" value="0" />
 					<label class="control-label form-check">
 						<input class="listViewEntriesCheckBox form-check-input" type="checkbox" name="editall" {if $RECORD_MODEL->hasGlobalReadPermission()}checked="true"{/if} />
-						<span class="mx-2">{vtranslate('LBL_EDIT_ALL',$QUALIFIED_MODULE)}</span>
-						<span>
+						<span class="ms-2">{vtranslate('LBL_EDIT_ALL',$QUALIFIED_MODULE)}</span>
+						<span class="text-secondary ms-2">
 							<i class="fa fa-info-circle" title="{vtranslate('LBL_EDIT_ALL_DESC',$QUALIFIED_MODULE)}"></i>
 						</span>
 					</label>
@@ -145,56 +145,45 @@
 						<td class="roles-fields p-3" colspan="6">
 							<div data-togglecontent="{$TABID}-fields" style="display: none">
 								{if $PROFILE_MODULE->getFields() && $PROFILE_MODULE->isEntityModule() }
-									<div class="d-flex justify-content-between pb-3">
-										<div class="fs-5">
+									<div class="row py-2">
+										<div class="col-lg col-sm fs-5">
 											<strong>{vtranslate('LBL_FIELDS',$QUALIFIED_MODULE)}</strong>
 										</div>
-										<div class="text-end">
-											<span class="mini-slider-control ui-slider" data-value="0">
-												<a style="margin-top: 3px" class="ui-slider-handle"></a>
-											</span>
-											<span style="margin: 0 20px;">{vtranslate('LBL_INIVISIBLE',$QUALIFIED_MODULE)}</span>&nbsp;&nbsp;
-											<span class="mini-slider-control ui-slider" data-value="1">
-												<a style="margin-top: 3px" class="ui-slider-handle"></a>
-											</span>
-											<span style="margin: 0 20px;">{vtranslate('LBL_READ_ONLY',$QUALIFIED_MODULE)}</span>&nbsp;&nbsp;
-											<span class="mini-slider-control ui-slider" data-value="2">
-												<a style="margin-top: 3px" class="ui-slider-handle"></a>
-											</span>
-											<span style="margin: 0 20px;">{vtranslate('LBL_WRITE',$QUALIFIED_MODULE)}</span>
+										<div class="col-lg-auto col-sm-auto">
+											<i class="fa-solid fa-circle text-black" data-value="0"></i>
+											<span class="ms-2">{vtranslate('LBL_INIVISIBLE',$QUALIFIED_MODULE)}</span>
+										</div>
+										<div class="col-lg-auto col-sm-auto" data-value="1">
+											<i class="fa-solid fa-circle text-warning"></i>
+											<span class="ms-2">{vtranslate('LBL_READ_ONLY',$QUALIFIED_MODULE)}</span>
+										</div>
+										<div class="col-lg-auto col-sm-auto" data-value="2">
+											<i class="fa-solid fa-circle text-success"></i>
+											<span class="ms-2">{vtranslate('LBL_WRITE',$QUALIFIED_MODULE)}</span>
 										</div>
 									</div>
-									<table class="table table-borderless">
-										{assign var=COUNTER value=0}
+									<div class="row py-2">
 										{foreach from=$PROFILE_MODULE->getFields() key=FIELD_NAME item=FIELD_MODEL name="fields"}
-											{assign var='FIELD_ID' value=$FIELD_MODEL->getId()}
+											{assign var=FIELD_ID value=$FIELD_MODEL->getId()}
 											{if $FIELD_MODEL->isActiveField() && $FIELD_MODEL->get('uitype') != '83' && $FIELD_MODEL->get('displaytype') neq '6'}
-												{if $COUNTER % 3 == 0}
-													<tr>
-												{/if}
-												<td >
-													<!-- Field will be locked iff that field is non editable or Mandatory or UIType 70.
-													 But, we can't set emailoptout field to either Mandatory/non-editable/uitype70
-													-->
-													{assign var="FIELD_LOCKED" value=true}
-													{if $FIELD_NAME neq 'emailoptout'}
-														{assign var="FIELD_LOCKED" value=$RECORD_MODEL->isModuleFieldLocked($PROFILE_MODULE, $FIELD_MODEL)}
-													{/if}
-													<input type="hidden" name="permissions[{$TABID}][fields][{$FIELD_ID}]" data-range-input="{$FIELD_ID}" value="{$RECORD_MODEL->getModuleFieldPermissionValue($PROFILE_MODULE, $FIELD_MODEL)}" readonly="true">
-													<div class="mini-slider-control editViewMiniSlider pull-left" data-locked="{$FIELD_LOCKED}" data-range="{$FIELD_ID}" data-value="{$RECORD_MODEL->getModuleFieldPermissionValue($PROFILE_MODULE, $FIELD_MODEL)}"></div>
-													<div class="pull-left">
-														{vtranslate($FIELD_MODEL->get('label'), $MODULE_NAME)}&nbsp;{if $FIELD_MODEL->isMandatory()}<span class="redColor">*</span>{/if}
+												<div class="col-lg-4 col-sm-4 py-2">
+													<div class="row">
+														<div class="col-auto">
+															{assign var=FIELD_LOCKED value=$RECORD_MODEL->isModuleFieldLocked($PROFILE_MODULE, $FIELD_MODEL)}
+															<input type="hidden" name="permissions[{$TABID}][fields][{$FIELD_ID}]" data-range-input="{$FIELD_ID}" value="{$RECORD_MODEL->getModuleFieldPermissionValue($PROFILE_MODULE, $FIELD_MODEL)}" readonly="true">
+															<div class="mini-slider-control editViewMiniSlider" data-locked="{$FIELD_LOCKED}" data-range="{$FIELD_ID}" data-value="{$RECORD_MODEL->getModuleFieldPermissionValue($PROFILE_MODULE, $FIELD_MODEL)}"></div>
+														</div>
+														<div class="col">
+															<span>{vtranslate($FIELD_MODEL->get('label'), $MODULE_NAME)}</span>
+															{if $FIELD_MODEL->isMandatory()}<span class="text-danger ms-2">*</span>{/if}
+														</div>
 													</div>
-												</td>
-												{if $smarty.foreach.fields.last OR ($COUNTER+1) % 3 == 0}
-													</tr>
-												{/if}
-											{assign var=COUNTER value=$COUNTER+1}
-											{else if $FIELD_MODEL->get('displaytype') eq '6' || $FIELD_MODEL->getName() eq 'adjusted_amount'}
+												</div>
+											{elseif $FIELD_MODEL->get('displaytype') eq '6' || $FIELD_MODEL->getName() eq 'adjusted_amount'}
 												<input type='hidden' name='permissions[{$TABID}][fields][{$FIELD_ID}]' value='2' />
 											{/if}
 										{/foreach}
-									</table>
+									</div>
 								{/if}
 							</div>
 						</td>

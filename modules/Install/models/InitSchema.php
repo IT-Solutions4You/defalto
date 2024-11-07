@@ -1202,15 +1202,8 @@ class Install_InitSchema_Model {
 		// Added Help Info for Hours and Days fields of HelpDesk module.
 		vimport('~~vtlib/Vtiger/Module.php');
 		$helpDeskModule = Vtiger_Module::getInstance('HelpDesk');
-		$field1 = Vtiger_Field::getInstance('hours',$helpDeskModule);
-		$field2 = Vtiger_Field::getInstance('days',$helpDeskModule);
-
+        $field1 = Vtiger_Field::getInstance('hours',$helpDeskModule);
 		$field1->setHelpInfo('This gives the estimated hours for the Ticket.'.
-					'<br>When the same ticket is added to a Service Contract,'.
-					'based on the Tracking Unit of the Service Contract,'.
-					'Used units is updated whenever a ticket is Closed.');
-
-		$field2->setHelpInfo('This gives the estimated days for the Ticket.'.
 					'<br>When the same ticket is added to a Service Contract,'.
 					'based on the Tracking Unit of the Service Contract,'.
 					'Used units is updated whenever a ticket is Closed.');

@@ -8,10 +8,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-vimport('~~modules/Settings/MailConverter/handlers/MailScannerAction.php');
-vimport('~~modules/Settings/MailConverter/handlers/MailScannerRule.php');
 require_once "include/events/SqlResultIterator.inc";
-
 
 class Settings_MailConverter_RuleRecord_Model extends Settings_Vtiger_Record_Model {
 
@@ -105,7 +102,7 @@ class Settings_MailConverter_RuleRecord_Model extends Settings_Vtiger_Record_Mod
 
 	/**
 	 * Function to get Actions of this record
-	 * @return <Array> List of actions <Vtiger_MailScannerAction>
+	 * @return <Array> List of actions <Settings_MailConverter_MailScannerAction_Handler>
 	 */
 	public function getActions() {
 		$ruleId = $this->getId();
@@ -116,7 +113,7 @@ class Settings_MailConverter_RuleRecord_Model extends Settings_Vtiger_Record_Mod
 
 			for($i=0; $i<$numOfRows; $i++) {
 				$actionId = $db->query_result($result, $i, 'actionid');
-				$this->actions[$actionId] = new Vtiger_MailScannerAction($actionId);
+				$this->actions[$actionId] = new Settings_MailConverter_MailScannerAction_Handler($actionId);
 			}
 		}
 		return $this->actions;
@@ -126,7 +123,7 @@ class Settings_MailConverter_RuleRecord_Model extends Settings_Vtiger_Record_Mod
 	 * Function to Delete this record
 	 */
 	public function delete() {
-		$rule = new Vtiger_MailScannerRule($this->getId());
+		$rule = new Settings_MailConverter_MailScannerRule_Handler($this->getId());
 		$rule->delete();
 	}
 
@@ -135,7 +132,7 @@ class Settings_MailConverter_RuleRecord_Model extends Settings_Vtiger_Record_Mod
 	 */
 	public function save() {
 		$recordId = $this->getId();
-		$ruleModel = new Vtiger_MailScannerRule($recordId);
+		$ruleModel = new Settings_MailConverter_MailScannerRule_Handler($recordId);
 		$fieldsList = $this->getFields();
 		$ruleModel->scannerid = $this->get('scannerid');
 		$ruleModel->assigned_to = $this->assignedTo;

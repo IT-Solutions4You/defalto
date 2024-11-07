@@ -103,4 +103,9 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
             $this->db = PearDatabase::getInstance();
         }
     }
+
+    public function getDB()
+    {
+        return $this->db;
+    }
 }

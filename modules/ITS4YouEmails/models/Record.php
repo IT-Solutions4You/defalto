@@ -166,15 +166,18 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $body = $this->getBody();
 
         if (vtlib_isModuleActive('EMAILMaker')) {
-            $record = $this->get('related_to');
-            $module = getSalesEntityType($record);
-
             $toEmailIds = $this->getJsonArray('to_email_ids');
 
             foreach ($toEmailIds as $toEmailId) {
                 [$recipientId, $recipientEmail, $recipientModule] = explode('|', $toEmailId);
 
-                $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstance($module, (int)$record, $this->get('email_template_language'), (int)$recipientId, $recipientModule);
+                if ($this->isEmpty('related_to') && !empty($recipientId) && !empty($recipientModule)) {
+                    $this->setRelatedTo($recipientId);
+                    $this->setRelatedModule($recipientModule);
+                }
+
+                $module = $this->getRelatedModule();
+                $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstance($module, $this->getRelatedTo(), $this->get('email_template_language'), (int)$recipientId, $recipientModule);
                 $EMAILContentModel->setSubject($subject);
                 $EMAILContentModel->setBody($body);
 
@@ -361,6 +364,11 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public function getRelatedTo()
     {
         return intval($this->get('related_to'));
+    }
+
+    public function setRelatedTo(int $value): void
+    {
+        $this->set('related_to', $value);
     }
 
     /**
@@ -811,27 +819,27 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         return trim(str_replace(array($siteUrl, $rootDirectory, trim($siteUrl, '/\\'), trim($rootDirectory, '/\\')), array('', ''), $replaceUrl), '/\\');
     }
 
-    public function saveEmailToSentFolder()
+    /**
+     * @throws AppException
+     */
+    public function saveEmailToSentFolder(): void
     {
         if (true === $this->get('skip_save_email_to_sent_folder')) {
             return;
         }
 
-        $mailer = $this->getMailer();
-        $mailString = $mailer->getMailString();
-        $mailBoxModel = MailManager_Mailbox_Model::activeInstance();
-        $folderName = $mailBoxModel->folder();
+        $mailBoxModel = MailManager_Mailbox_Model::getActiveInstance();
+        $folderName = $mailBoxModel->getFolder();
+        $messageString = $this->getMailer()->getMailString();
 
-        if (!empty($folderName) && !empty($mailString)) {
+        if (!empty($folderName)) {
             $connector = MailManager_Connector_Connector::connectorWithModel($mailBoxModel, '');
-            $message = str_replace("\n", "\r\n", $mailString);
+            $mBoxFolder = $connector->getFolder($folderName)->getBoxFolder($connector->getBox());
 
-            if (function_exists('mb_convert_encoding')) {
-                $folderName = mb_convert_encoding($folderName, 'UTF7-IMAP', 'UTF-8');
-            }
-
-            if ($connector->mBox) {
-                imap_append($connector->mBox, $connector->mBoxUrl . $folderName, $message, "\\Seen");
+            try {
+                $mBoxFolder?->appendMessage($messageString, ['Seen']);
+            } catch (Exception $e) {
+                throw new AppException('SAVE EMAIL TO SENT FOLDER:' . $e->getMessage());
             }
         }
     }
@@ -1074,13 +1082,25 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         return $this->get('pdf_template_language');
     }
 
-    public function getRelatedModule()
+    /**
+     * @return string
+     */
+    public function getRelatedModule(): string
     {
-        if ($this->isEmpty('related_to_module')) {
-            $this->set('related_to_module', getSalesEntityType($this->get('related_to')));
+        if ($this->isEmpty('related_to_module') && !$this->isEmpty('related_to')) {
+            $this->setRelatedModule(getSalesEntityType($this->get('related_to')));
         }
 
-        return $this->get('related_to_module');
+        return (string)$this->get('related_to_module');
+    }
+
+    /**
+     * @param string $value
+     * @return void
+     */
+    public function setRelatedModule(string $value): void
+    {
+        $this->set('related_to_module', $value);
     }
 
     public function getRelatedRecords()

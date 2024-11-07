@@ -9,7 +9,7 @@
     <div class="modal-content">
         <input type=hidden name="_mlinkto" value="{$PARENT}">
 	<input type=hidden name="_mlinktotype" value="{$LINKMODULE}">
-	<input type=hidden name="_msgno" value="{$MSGNO}">
+	<input type=hidden name="_msguid" value="{$UID}">
 	<input type=hidden name="_folder" value="{$FOLDER}">
         {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=vtranslate('LBL_MAILMANAGER_ADD_ModComments', $MODULE)}
         <div class="modal-body" id='commentContainer'>

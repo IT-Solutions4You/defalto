@@ -11,10 +11,10 @@
 class Settings_MailConverter_SaveMailBox_Action extends Settings_Vtiger_Index_Action {
 
 	public function process(Vtiger_Request $request) {
-		$recordId = $request->get('record');
+		$recordId = (int)$request->get('record');
 		$qualifiedModuleName = $request->getModule(false);
 
-		if ($recordId) {
+		if (!empty($recordId)) {
 			$recordModel = Settings_MailConverter_Record_Model::getInstanceById($recordId);
 		} else {
 			$recordModel = Settings_MailConverter_Record_Model::getCleanInstance();
@@ -22,13 +22,14 @@ class Settings_MailConverter_SaveMailBox_Action extends Settings_Vtiger_Index_Ac
 
 		$recordModel->set('scannerOldName', $request->get('scannerOldName'));
 		$fieldsList = $recordModel->getModule()->getFields();
+
 		foreach ($fieldsList as $fieldName=>$fieldModel) {
 			$recordModel->set($fieldName, $request->get($fieldName));
 		}
 
 		$status = $recordModel->save();
+        $response = new Vtiger_Response();
 
-		$response = new Vtiger_Response();
 		if ($status) {
 			$result = array('message' => vtranslate('LBL_SAVED_SUCCESSFULLY', $qualifiedModuleName));
 			$result['id'] = $recordModel->getId();
@@ -37,6 +38,7 @@ class Settings_MailConverter_SaveMailBox_Action extends Settings_Vtiger_Index_Ac
 		} else {
 			$response->setError(vtranslate('LBL_CONNECTION_TO_MAILBOX_FAILED', $qualifiedModuleName));
 		}
+
 		$response->emit();
 	}
         

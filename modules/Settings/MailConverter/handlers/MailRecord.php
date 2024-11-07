@@ -12,339 +12,653 @@
 /**
  * This class provides structured way of accessing details of email.
  */
-class Vtiger_MailRecord {
-	// FROM address(es) list 
-    public $_from;
-    // TO address(es) list
-    public $_to;
-    //var $_replyto;
-
-    // CC address(es) list
-    public $_cc;
-    // BCC address(es) list
-    public $_bcc;
-    // DATE
-    public $_date;
-    // SUBJECT
-    public $_subject;
-    // BODY (either HTML / PLAIN message)
-    public $_body;
-    // Name of Mail Sender
-    public $_fromname;
-    // CHARSET of the body content
-    public $_charset;
-    // If HTML message was set as body content
-    public $_isbodyhtml;
-    // PLAIN message of the original email
-    public $_plainmessage = false;
-    // HTML message of the original email
-    public $_htmlmessage = false;
-    // ATTACHMENTS list of the email
-    public $_attachments = false;
-    // UNIQUEID associated with the email
-    public $_uniqueid = false;
-
-    // Flag to avoid re-parsing the email body.
-    public $_bodyparsed = false;
-
+class Settings_MailConverter_MailRecord_Handler
+{
+    protected $moduleName = 'MailConverter';
+    public array $_attachments = [];
+    /**
+     * @var array
+     */
+    public array $_bcc;
+    public string $_body = '';
+    /**
+     * @var array
+     */
+    public array $_cc;
+    /**
+     * @var int
+     */
+    public int $_date;
+    /**
+     * @var array
+     */
+    public array $_from;
+    /**
+     * @var string
+     */
+    public string $_fromname;
+    public array $_inline_attachments = [];
+    /**
+     * @var string
+     */
+    public string $_subject;
+    /**
+     * @var array
+     */
+    public array $_to = [];
+    /**
+     * @var string|null
+     */
+    public string|null $_uniqueid = null;
     /** DEBUG Functionality. */
     public $debug = false;
-	function log($message=false) {
-		if(!$message) $message = $this->__toString();
+    protected array $fromName;
+    /**
+     * Sets the Imap connection
+     * @var null|object
+     */
+    protected null|object $mBox;
+    /**
+     * @var null|object
+     */
+    protected null|object $mFolder;
+    /**
+     * @var string
+     */
+    protected string $mFolderName = '';
+    /**
+     * @var false|object
+     */
+    protected false|object $mBoxMessage;
+    protected int $mMsgNo = 0;
 
-		global $log;
-		if($log && $this->debug) { $log->debug($message); }
-		else if($this->debug) {
-			echo var_export($message, true) . "\n";
-		}
-	}
+    // Flag to avoid re-parsing the email body.
+    /**
+     * Marks the mail Read/UnRead
+     * @var Boolean
+     */
+    protected bool $mRead = false;
+    protected int $mUid = 0;
+    protected array $toName;
+    protected null|object $mBoxFolder = null;
 
-	/**
-	 * String representation of the object.
-	 */
-	function __toString() {
-		$tostring = '';
-		$tostring .= 'FROM: [' . implode(',', $this->_from) . ']';
-		$tostring .= ',TO: [' . implode(',', $this->_to) . ']';
-		if (!empty($this->_cc))
-		    $tostring .= ',CC: [' . implode(',', $this->_cc) . ']';
-		if (!empty($this->_bcc))
-		    $tostring .= ',BCC: [' . implode(',', $this->_bcc) . ']';
-		$tostring .= ',DATE: [' . $this->_date . ']';
-		$tostring .= ',SUBJECT: [' . $this->_subject . ']';
-		return $tostring;
-	}
-
-	/**
-	 * Constructor.
-	 */
-	function __construct($imap, $messageid, $fetchbody=true) {
-		$this->__parseHeader($imap, $messageid);
-		if($fetchbody) $this->__parseBody($imap, $messageid);
-	}
-
-	/**
-	 * Get body content as Text.
-	 */
-	function getBodyText($striptags=true) {
-		$bodytext = $this->_body;
-
-		if($this->_plainmessage) {
-			$bodytext = $this->_plainmessage;
-		} else if($this->_isbodyhtml) {
-			// TODO This conversion can added multiple lines if 
-			// content is displayed directly on HTML page
-			$bodytext = preg_replace("/<br>/", "\n", $bodytext);
-			$bodytext = strip_tags($bodytext);
-		}
-		return $bodytext;
-	}
-
-	/**
-	 * Get body content as HTML.
-	 */
-	function getBodyHTML() {
-		$bodyhtml = $this->_body;
-		if(!$this->_isbodyhtml) {
-			$bodyhtml = preg_replace( Array("/\r\n/", "/\n/"), Array('<br>','<br>'), $bodyhtml );
-		}
-		if ($bodyhtml) $bodyhtml = str_replace("\xc2\xa0",' ', $bodyhtml);
-		return $bodyhtml;
-	}		
-
-	/**
-	 * Fetch the mail body from server.
-	 */
-	function fetchBody($imap, $messageid) {
-		if(!$this->_bodyparsed) $this->__parseBody($imap, $messageid);
-	}
-
-	/**
-	 * Parse the email id from the mail header text.
-	 * @access private
-	 */
-	function __getEmailIdList($inarray) {
-		if(empty($inarray)) return Array();
-		$emails = Array();
-		foreach($inarray as $emailinfo) {
-			$emails[] = $emailinfo->mailbox . '@' . $emailinfo->host;
-		}
-		return $emails;
-	}
-	
-	/**
-	 * Helper function to convert the encoding of input to target charset.
-	 */
-    static function __convert_encoding($input, $to, $from = false)
+    /**
+     * String representation of the object.
+     */
+    public function __toString()
     {
-        static $mb_function = null;
-        static $iconv_function = null;
+        $toString = 'FROM: [' . implode(',', $this->_from) . ']';
+        $toString .= ',TO: [' . implode(',', $this->_to) . ']';
 
-        if ($mb_function === null) {
-            $mb_function = function_exists('mb_convert_encoding');
+        if (!empty($this->_cc)) {
+            $toString .= ',CC: [' . implode(',', $this->_cc) . ']';
         }
-
-        if ($iconv_function === null) {
-            $iconv_function = function_exists('iconv');
+        if (!empty($this->_bcc)) {
+            $toString .= ',BCC: [' . implode(',', $this->_bcc) . ']';
         }
+        $toString .= ',DATE: [' . $this->_date . ']';
+        $toString .= ',SUBJECT: [' . $this->_subject . ']';
 
-        if ($mb_function) {
-            if (!$from) {
-                $from = mb_detect_encoding($input);
-            }
-
-            if('default' === $from) {
-                $from = null;
-            }
-
-            if (strtolower(trim($to)) == strtolower(trim($from))) {
-                return $input;
-            } else {
-                try {
-                    return mb_convert_encoding($input, $to, $from);
-                } catch (ValueError $exception) {
-                    return iconv($from, $to, $input);
-                }
-            }
-        }
-        return $input;
+        return $toString;
     }
-	
-	/**
-	 * MIME decode function to parse IMAP header or mail information
-	 */
-	static function __mime_decode($input, &$words=null, $targetEncoding='UTF-8') {
-		if(is_null($words)) $words = array();
-		$returnvalue = $input;
-		
-		preg_match_all('/=\?([^\?]+)\?([^\?]+)\?([^\?]+)\?=/', $input, $matches);
-                if($matches) array_filter($matches);
-                if(php7_count($matches[0])>0){
-                $decodedArray=  imap_mime_header_decode($input);
-                foreach($decodedArray as $part=>$prop){
-                            $decodevalue=$prop->text;
-                            $charset=$prop->charset;
-				$value = self::__convert_encoding($decodevalue, $targetEncoding, $charset);				
-				array_push($words, $value);				
-			}
-		}
-		if(!empty($words)) {
-			$returnvalue = implode('', $words);
-		}
-		return $returnvalue;
-	}
-	
-	/**
-	 * MIME encode function to prepare input to target charset supported by normal IMAP clients.
-	 */
-	static function __mime_encode($input, $encoding='Q', $charset='iso-8859-1') {
-		$returnvalue = $input;		
-		$encoded = false;
-		
-		if(strtoupper($encoding) == 'B' ) {
-			$returnvalue = self::__convert_encoding($input, $charset);
-			$returnvalue = base64_encode($returnvalue);
-			$encoded = true;
-		} else {
-			$returnvalue = self::__convert_encoding($input, $charset);
-			if(function_exists('imap_qprint')) {
-				$returnvalue = imap_qprint($returnvalue);
-				$encoded = true;
-			} else {
-				// TODO: Handle case when imap_qprint is not available.
-			}
-		}
-		if($encoded) {
-			$returnvalue = "=?$charset?$encoding?$returnvalue?=";
-		}
-		return $returnvalue;
-	}
 
-	/**
-	 * Parse header of the email.
-	 * @access private
-	 */
-	function __parseHeader($imap, $messageid) {
-		$this->_from = Array();
-		$this->_to = Array();
+    /**
+     * @return void
+     */
+    public function clearAttachments(): void
+    {
+        $this->_attachments = [];
+        $this->_inline_attachments = [];
+    }
 
-		$mailheader = imap_headerinfo($imap, $messageid);
+    /**
+     * Gets the Mail Attachment
+     * @return array List of Attachments
+     */
+    public function getAttachments()
+    {
+        return $this->_attachments;
+    }
 
-		$this->_uniqueid = $mailheader->message_id;
+    /**
+     * Gets the Mail BCC Email Addresses
+     * @return array Email(s)
+     */
+    public function getBCC(): array
+    {
+        return $this->_bcc;
+    }
 
-		$this->_from = $this->__getEmailIdList($mailheader->from);
-                $this->_fromname = self::__mime_decode($mailheader->from[0]->personal);
-		$this->_to   = $this->__getEmailIdList($mailheader->to);
-		$this->_cc   = $this->__getEmailIdList($mailheader->cc);
-		$this->_bcc  = $this->__getEmailIdList($mailheader->bcc);
+    public function setBCC(array $value): void
+    {
+        $this->_bcc = $value;
+    }
 
-		$this->_date = $mailheader->udate;
+    /**
+     * Gets the Mail Body
+     * @param bool $safeHtml
+     * @return string
+     */
+    public function getBody(bool $safeHtml = true): string
+    {
+        $body = $this->_body;
 
-		$this->_subject = self::__mime_decode($mailheader->subject);
-		if(!$this->_subject) $this->_subject = 'Untitled';
-	}
-	// Modified: http://in2.php.net/manual/en/function.imap-fetchstructure.php#85685
-	function __parseBody($imap, $messageid) {
-		$structure = imap_fetchstructure($imap, $messageid);
+        if ($safeHtml) {
+            $body = MailManager_Utils_Helper::safe_html_string($body);
+        }
 
-		$this->_plainmessage = '';
-		$this->_htmlmessage = '';
-		$this->_body = '';
-		$this->_isbodyhtml = false;
+        return $body;
+    }
 
-		if($structure->parts) { /* multipart */
-			foreach($structure->parts as $partno0=>$p) {
-				$this->__getpart($imap, $messageid, $p, $partno0+1);
-			}
-		} else { /* not multipart */
-			$this->__getpart($imap, $messageid, $structure, 0);
-		}
+    public function setBody(string $value): void
+    {
+        $this->_body = $value;
+    }
 
-		// Set the body (either plain or html content)
-		if($this->_htmlmessage != '') {
-			$this->_body = $this->_htmlmessage;
-			$this->_isbodyhtml = true;
-		} else {
-			$this->_body = $this->_plainmessage;
-		}
+    public function getBodyImage($content, $contentType)
+    {
+        return sprintf('data:%s;base64,%s', $contentType, base64_encode($content));
+    }
 
-		if($this->_attachments) {
-			$this->log("Attachments: ");
-		    $filename = array();
-		    $content = array();
-		    $attachmentKeys = array_keys($this->_attachments);
-		    for ($i = 0; $i < php7_count($attachmentKeys); $i++) {
-				$filename[$i] = self::__mime_decode($attachmentKeys[$i]);
-				$content[$i] = $this->_attachments[$attachmentKeys[$i]];
-		    }
-		    unset($this->_attachments);
-		    for ($i = 0; $i < php7_count($attachmentKeys); $i++) {
-				$this->_attachments[$filename[$i]] = $content[$i];
-		    }
-			$this->log(array_keys($this->_attachments));
-		}
+    public function getBoxFolder()
+    {
+        return $this->mBoxFolder;
+    }
 
-		$this->_bodyparsed = true;
-	}
-	// Modified: http://in2.php.net/manual/en/function.imap-fetchstructure.php#85685	
-	function __getpart($imap, $messageid, $p, $partno) {
-	    // $partno = '1', '2', '2.1', '2.1.3', etc if multipart, 0 if not multipart
-    	
-	    // DECODE DATA
-    	$data = ($partno)? 
-			imap_fetchbody($imap,$messageid,$partno):  // multipart
-			imap_body($imap,$messageid);               // not multipart
-	
-		// Any part may be encoded, even plain text messages, so check everything.
-    	if ($p->encoding==4) $data = quoted_printable_decode($data);
-		elseif ($p->encoding==3) $data = base64_decode($data);
-		// no need to decode 7-bit, 8-bit, or binary
+    /**
+     * @return object|bool
+     */
+    public function getBoxMessage(): object|bool
+    {
+        return $this->mBoxMessage;
+    }
 
-    	// PARAMETERS
-	    // get all parameters, like charset, filenames of attachments, etc.
-    	$params = array();
-	    if ($p->parameters) {
-			foreach ($p->parameters as $x) $params[ strtolower( $x->attribute ) ] = $x->value;
-		}
-	    if ($p->dparameters) {
-			foreach ($p->dparameters as $x) $params[ strtolower( $x->attribute ) ] = $x->value;
-		}
+    /**
+     * Gets the Mail CC Email Addresses
+     * @return array Email(s)
+     */
+    public function getCC(): array
+    {
+        return $this->_cc;
+    }
 
-	    // ATTACHMENT
-    	// Any part with a filename is an attachment,
-	    // so an attached text file (type 0) is not mistaken as the message.
-    	if ($params['filename'] || $params['name']) {
-        	// filename may be given as 'Filename' or 'Name' or both
-	        $filename = ($params['filename'])? $params['filename'] : $params['name'];
-			// filename may be encoded, so see imap_mime_header_decode()
-			if(!$this->_attachments) $this->_attachments = Array();
-			$this->_attachments[$filename] = $data;  // TODO: this is a problem if two files have same name
-	    }
+    public function setCC(array $value): void
+    {
+        $this->_cc = $value;
+    }
 
-	    // TEXT
-    	elseif ($p->type==0 && $data) {    		
-    		$this->_charset = $params['charset'];  // assume all parts are same charset
-    		$data = self::__convert_encoding($data, 'UTF-8', $this->_charset);
-    		
-        	// Messages may be split in different parts because of inline attachments,
-	        // so append parts together with blank row.
-    	    if (strtolower($p->subtype)=='plain') $this->_plainmessage .= trim($data) ."\n\n";
-	        else $this->_htmlmessage .= $data ."<br><br>";			
-		}
+    /**
+     * Gets the Mail Date
+     * @param Boolean $format
+     * @return string Date
+     */
+    public function getDate($format = false)
+    {
+        $date = $this->_date;
 
-	    // EMBEDDED MESSAGE
-    	// Many bounce notifications embed the original message as type 2,
-	    // but AOL uses type 1 (multipart), which is not handled here.
-    	// There are no PHP functions to parse embedded messages,
-	    // so this just appends the raw source to the main message.
-    	elseif ($p->type==2 && $data) {
-			$this->_plainmessage .= trim($data) ."\n\n";
-	    }
+        if ($date) {
+            if ($format) {
+                $dateTimeFormat = Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat(date('Y-m-d H:i:s', $date));
+                [$date, $time, $AMorPM] = explode(' ', $dateTimeFormat);
 
-    	// SUBPART RECURSION
-	    if ($p->parts) {
-        	foreach ($p->parts as $partno0=>$p2)
-            	$this->__getpart($imap,$messageid,$p2,$partno.'.'.($partno0+1));  // 1.2, 1.2.1, etc.
-    	}
-	}
+                $pos = strpos($dateTimeFormat, date(DateTimeField::getPHPDateFormat()));
+
+                if ($pos === false) {
+                    return $date . ' ' . $time . ' ' . $AMorPM;
+                } else {
+                    return vtranslate('LBL_TODAY') . ' ' . $time . ' ' . $AMorPM;
+                }
+            } else {
+                return Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat(date('Y-m-d H:i:s', $date));
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * Sets the Mail Date
+     * @param int $date time value
+     */
+    public function setDate($date)
+    {
+        $this->_date = $date;
+    }
+
+    public function getEmailAddresses(array $values): array
+    {
+        $emails = [];
+
+        foreach ($values as $value) {
+            $emails[] = $value->mail;
+        }
+
+        return $emails;
+    }
+
+    public function getEmailNames(array $values)
+    {
+        $names = [];
+
+        foreach ($values as $value) {
+            $names[] = $value->full;
+        }
+
+        return $names;
+    }
+
+    public function getFolder()
+    {
+        return $this->mFolder;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFolderName(): string
+    {
+        if (!empty($this->mFolderName)) {
+            return $this->mFolderName;
+        }
+
+        $folder = $this->getFolder();
+        $boxFolder = $this->getBoxFolder();
+        $name = '';
+
+        if ($folder) {
+            $name = $folder->getName();
+        }
+
+        if ($boxFolder) {
+            $name = $boxFolder->name;
+        }
+
+        $this->setFolderName($name);
+
+
+        return $this->mFolderName;
+    }
+
+    /**
+     * Gets the Mail From
+     * @return array
+     */
+    public function getFrom(): array
+    {
+        return $this->_from;
+    }
+
+    /**
+     * Sets the Mail From Email Address
+     * @param array $from Email
+     */
+    public function setFrom(array $from): void
+    {
+        $this->_from = $from;
+    }
+
+    public function getFromName($length = 0): string
+    {
+        $value = implode(', ', $this->fromName);
+
+        if ($length) {
+            $value = substr($value, 0, $length);
+        }
+
+        return $value;
+    }
+
+    public function setFromName(array $fromName): void
+    {
+        $this->fromName = $fromName;
+    }
+
+    /**
+     * @return array
+     */
+    public function getInlineAttachments()
+    {
+        return $this->_inline_attachments;
+    }
+
+    /**
+     * Gets the Mail Message Number
+     * @return Integer
+     */
+    public function getMsgNo()
+    {
+        return $this->mMsgNo;
+    }
+
+    /**
+     * Gets the Mail Subject
+     * @param Boolean $safehtml
+     * @return String
+     */
+    public function getSubject($safeHtml = true): string
+    {
+        $mailSubject = str_replace('_', ' ', $this->_subject);
+
+        if ($safeHtml) {
+            return MailManager_Utils_Helper::safe_html_string($mailSubject);
+        }
+
+        return $mailSubject;
+    }
+
+    /**
+     * Sets the Mail Subject
+     * @param string $subject
+     */
+    public function setSubject(string $subject): void
+    {
+        $this->_subject = $subject;
+    }
+
+    /**
+     * Gets the Mail To Email Addresses
+     * @return array Email(s)
+     */
+    public function getTo(): array
+    {
+        return $this->_to;
+    }
+
+    /**
+     * Sets the Mail To Email Address
+     * @param array $to Email
+     */
+    public function setTo(array $to): void
+    {
+        $this->_to = $to;
+    }
+
+    public function getToName($length = 0): string
+    {
+        $value = implode(', ', $this->toName);
+
+        if ($length) {
+            $value = substr($value, 0, $length);
+        }
+
+        return $value;
+    }
+
+    public function setToName(array $toName): void
+    {
+        $this->toName = $toName;
+    }
+
+    public function getUid(): int
+    {
+        return $this->mUid;
+    }
+
+    /**
+     * Gets the Mail Unique Identifier
+     * @return string
+     */
+    public function getUniqueId(): string
+    {
+        return $this->_uniqueid;
+    }
+
+    /**
+     * @param string|null $value
+     * @return void
+     */
+    public function setUniqueId(string|null $value): void
+    {
+        $this->_uniqueid = $value;
+    }
+
+    /**
+     * Checks if the Mail is read
+     * @return Boolean
+     */
+    public function isRead()
+    {
+        return $this->mRead;
+    }
+
+    function log($message = false)
+    {
+        if (!$message) {
+            $message = $this->__toString();
+        }
+
+        global $log;
+        if ($log && $this->debug) {
+            $log->debug($message);
+        } elseif ($this->debug) {
+            echo var_export($message, true) . "\n";
+        }
+    }
+
+    public function replaceInlineAttachments()
+    {
+        $body = $this->getBody();
+
+        foreach ($this->getInlineAttachments() as $attachment) {
+            if (!empty($attachment['attachment_url'])) {
+                $image = $attachment['attachment_url'];
+            } else {
+                $image = $this->getBodyImage($attachment['data'], $attachment['type']);
+            }
+
+            $body = str_replace('cid:' . $attachment['cid'], $image, $body);
+        }
+
+        $this->setBody($body);
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function retrieveAttachments($withContent = true, $attachmentName = null, int $attachmentId = null): void
+    {
+        $this->clearAttachments();
+        $this->retrieveAttachmentsFromDB($withContent, $attachmentName, $attachmentId);
+        $this->retrieveAttachmentsFromMessage();
+        $this->replaceInlineAttachments();
+    }
+
+    /**
+     * @param bool $withContent
+     * @param string|null $aName
+     * @param int|null $aId
+     * @return void
+     */
+    public function retrieveAttachmentsFromDB(bool $withContent, string|null $aName = null, int|null $aId = null)
+    {
+    }
+
+    public function retrieveAttachmentsFromMessage(): void
+    {
+        if (!empty($this->_attachments)) {
+            return;
+        }
+
+        if (!$this->validateBoxMessage()) {
+            return;
+        }
+
+        $mMessage = $this->getBoxMessage();
+        $attachments = $mMessage->getAttachments();
+
+        foreach ($attachments as $attachment) {
+            $attributes = $attachment->getAttributes();
+            $cId = $attributes['id'];
+            $content = $attachment->content;
+            $name = $attributes['filename'];
+            $disposition = $attributes['disposition'];
+            $size = $attributes['size'];
+
+            if ('inline' === $disposition) {
+                $this->_inline_attachments[] = ['cid' => $cId, 'filename' => $name, 'data' => $content, 'type' => $attributes['content_type'], 'size' => $size];
+            } else {
+                $this->_attachments[] = ['filename' => $name, 'data' => $content, 'type' => $attributes['content_type'], 'size' => $size];
+            }
+        }
+    }
+
+    public function retrieveBody(): void
+    {
+        if (!$this->validateBoxMessage()) {
+            return;
+        }
+
+        $mMessage = $this->getBoxMessage();
+
+        if ($mMessage) {
+            $body = $mMessage->getHTMLBody();
+
+            if (empty($body)) {
+                $body = '<div style="white-space: pre-line;">' . $mMessage->getTextBody() . '</div>';
+            }
+
+            $this->setBody($body);
+        }
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function retrieveRecord(): void
+    {
+        $this->retrieveRecordFromDB();
+        $this->retrieveRecordFromMessage();
+    }
+
+    public function retrieveRecordFromDB()
+    {
+    }
+
+    public function retrieveRecordFromMessage(): void
+    {
+        if (!$this->validateBoxMessage()) {
+            return;
+        }
+
+        $mMessage = $this->getBoxMessage();
+        $attributes = $mMessage->getAttributes();
+
+        $this->setUid(intval($mMessage->getUid()));
+        $this->setUniqueId($attributes['message_id']);
+        $this->setMsgNo((int)$attributes['msgn']);
+
+        $from = $attributes['from']->all();
+        $this->setFrom($this->getEmailAddresses($from));
+        $this->setFromName($this->getEmailNames($from));
+        $to = $attributes['to']->all();
+        $this->setTo($this->getEmailAddresses($to));
+        $this->setToName($this->getEmailNames($to));
+        $this->setCC(!empty($attributes['cc']) ? $this->getEmailAddresses($attributes['cc']->all()) : []);
+        $this->setBCC(!empty($attributes['bcc']) ? $this->getEmailAddresses($attributes['bcc']->all()) : []);
+
+        $this->setSubject($mMessage->getSubject());
+        $this->setDate($attributes['date']->get()->getTimestamp());
+        $this->setRead('Seen' === $mMessage->getFlags()->get('seen'));
+    }
+
+    public function setBox($value)
+    {
+        $this->mBox = $value;
+    }
+
+    public function setBoxFolder($value): void
+    {
+        $this->mBoxFolder = $value;
+    }
+
+    public function setBoxMessage($value)
+    {
+        $this->mBoxMessage = $value;
+    }
+
+    public function setFolder($value)
+    {
+        $this->mFolder = $value;
+    }
+
+    /**
+     * @param string $mFolderName
+     */
+    public function setFolderName(string $value): void
+    {
+        $this->mFolderName = $value;
+    }
+
+    /**
+     * Sets the Mail Message Number
+     * @param Integer $value
+     */
+    public function setMsgNo(int $value): void
+    {
+        $this->mMsgNo = $value;
+    }
+
+    /**
+     * Sets if the Mail is read
+     * @param Boolean $read
+     */
+    public function setRead($read)
+    {
+        $this->mRead = $read;
+    }
+
+    /**
+     * @param int $value
+     * @return void
+     */
+    public function setUid(int $value): void
+    {
+        $this->mUid = $value;
+    }
+
+    /**
+     * @return bool
+     */
+    public function validateBoxMessage(): bool
+    {
+        return !empty($this->mBoxMessage);
+    }
+
+    /**
+     * @return bool
+     */
+    public function validateUid(): bool
+    {
+        return !empty($this->mUid);
+    }
+
+    /**
+     * @param string $fileName
+     * @param string $fileContent
+     * @param string $fileType
+     * @return array|null
+     * @throws AppException
+     */
+    public function saveAttachmentFile(string $fileName, string $fileContent, string $fileType): null|array
+    {
+        if (empty($fileContent)) {
+            return null;
+        }
+
+        $attachment = Core_Attachment_Model::getInstance($this->moduleName);
+        $attachment->retrieveDefault($fileName);
+        $attachment->setType($fileType);
+        $attachment->saveFile($fileContent);
+
+        if ($attachment->validateSaveFile()) {
+            $attachment->save();
+        }
+
+        return $attachment->getData();
+    }
+
+    public function getBodyText(): string
+    {
+        return strip_tags($this->getBody());
+    }
 }

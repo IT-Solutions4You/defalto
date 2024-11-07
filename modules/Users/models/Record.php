@@ -952,4 +952,25 @@ class Users_Record_Model extends Vtiger_Record_Model {
 
         return '';
     }
+
+    /**
+     * Function to update user to vtiger_profile mapping based on the userid
+     *
+     * @param int $profileId
+     * @param int $userId
+     */
+    public static function updateUser2ProfileMapping(int $profileId, int $userId): void
+    {
+        global $log;
+        $log->debug('Entering updateUser2ProfileMapping(' . $profileId . ',' . $userId . ') method ...');
+        $adb = PearDatabase::getInstance();
+        $resultCheck = $adb->pquery('SELECT * FROM df_user2profile WHERE user_id=?', [$userId]);
+
+        if ($adb->num_rows($resultCheck)) {
+            $adb->pquery('DELETE FROM df_user2profile WHERE user_id=?', [$userId]);
+        }
+
+        $adb->pquery('INSERT INTO df_user2profile(user_id,profile_id) VALUES(?,?)', [$userId, $profileId]);
+        $log->debug('Exiting updateUser2ProfileMapping method ...');
+    }
 }

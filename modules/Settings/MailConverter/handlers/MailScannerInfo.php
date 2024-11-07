@@ -8,14 +8,13 @@
  * All Rights Reserved.
  *
  ********************************************************************************/
-require_once('modules/Settings/MailConverter/handlers/MailScannerRule.php');
 
 /**
  * Mail Scanner information manager.
  */
-class Vtiger_MailScannerInfo {
+class Settings_MailConverter_MailScannerInfo_Handler {
 	// id of this scanner record
-    public $scannerid = false;
+    public int $scannerid = 0;
     // name of this scanner
     public $scannername = false;
     // mail server to connect to
@@ -59,15 +58,21 @@ class Vtiger_MailScannerInfo {
     public string $client_token = '';
     public string $client_access_token = '';
 
+    /**
+     * @throws AppException
+     */
+    public static function getInstance($scannername, $initialize = true): self
+    {
+        $instance = new self();
+
+        if ($initialize && $scannername) {
+            $instance->initialize($scannername);
+        }
+
+        return $instance;
+    }
 
     /**
-	 * Constructor
-	 */
-	function __construct($scannername, $initialize=true) {
-		if($initialize && $scannername) $this->initialize($scannername);
-	}
-
-	/**
 	 * Encrypt/Decrypt input.
 	 * @access private
 	 */
@@ -78,37 +83,37 @@ class Vtiger_MailScannerInfo {
 		else return $cryptobj->decrypt(trim($password));
 	}
 
-	/**
-	 * Initialize this instance.
-	 */
-	function initialize($scannername) {
+    /**
+     * Initialize this instance.
+     * @throws AppException
+     */
+	public function initialize($scannername) {
 		global $adb;
 		$result = $adb->pquery("SELECT * FROM vtiger_mailscanner WHERE scannername=?", Array($scannername));
+        $row = $adb->fetchByAssoc($result);
 
-		if($adb->num_rows($result)) {
-			$this->scannerid  = $adb->query_result($result, 0, 'scannerid');
-			$this->scannername= $adb->query_result($result, 0, 'scannername');
-			$this->server     = $adb->query_result($result, 0, 'server');
-			$this->protocol   = $adb->query_result($result, 0, 'protocol');
-			$this->username   = $adb->query_result($result, 0, 'username');
-			$this->password   = $adb->query_result($result, 0, 'password');
-			$this->password   = $this->__crypt($this->password, false);
-			$this->ssltype    = $adb->query_result($result, 0, 'ssltype');
-			$this->sslmethod  = $adb->query_result($result, 0, 'sslmethod');
-			$this->connecturl = $adb->query_result($result, 0, 'connecturl');
-			$this->searchfor  = $adb->query_result($result, 0, 'searchfor');
-			$this->markas     = $adb->query_result($result, 0, 'markas');
-			$this->isvalid    = $adb->query_result($result, 0, 'isvalid');
-			$this->time_zone   = $adb->query_result($result, 0, 'time_zone');
-			$this->mail_proxy   = $adb->query_result($result, 0, 'mail_proxy');
-			$this->client_id   = $adb->query_result($result, 0, 'client_id');
-			$this->client_secret   = $adb->query_result($result, 0, 'client_secret');
-			$this->client_token   = $adb->query_result($result, 0, 'client_token');
-			$this->client_access_token   = $adb->query_result($result, 0, 'client_access_token');
+		if($row) {
+            $this->scannerid  = $row['scannerid'];
+            $this->scannername= $row['scannername'];
+            $this->server     = $row['server'];
+            $this->protocol   = $row['protocol'];
+            $this->username   = $row['username'];
+            $this->password   = $row['password'];
+            $this->password   = $this->__crypt($this->password, false);
+            $this->ssltype    = $row['ssltype'];
+            $this->sslmethod  = $row['sslmethod'];
+            $this->connecturl = $row['connecturl'];
+            $this->searchfor  = $row['searchfor'];
+            $this->markas     = $row['markas'];
+            $this->isvalid    = $row['isvalid'];
+            $this->time_zone   = $row['time_zone'];
+            $this->client_id   = decode_html($row['client_id']);
+            $this->client_secret   = decode_html($row['client_secret']);
+            $this->client_token   = decode_html($row['client_token']);
+            $this->client_access_token   = decode_html($row['client_access_token']);
 
 			$this->initializeFolderInfo();
 			$this->initializeRules();
-            $this->retrieveClientAccessToken();
 		}
 	}
 
@@ -304,7 +309,7 @@ class Vtiger_MailScannerInfo {
 			if($rulescount) {
 				for($index = 0; $index < $rulescount; ++$index) {
 					$ruleid = $adb->query_result($rulesres, $index, 'ruleid');
-					$scannerrule = new Vtiger_MailScannerRule($ruleid);
+					$scannerrule = new Settings_MailConverter_MailScannerRule_Handler($ruleid);
 					$scannerrule->debug = $this->debug;
 					$this->rules[] = $scannerrule;
 				}
@@ -325,7 +330,6 @@ class Vtiger_MailScannerInfo {
             'protocol',
             'username',
             'password',
-            'mail_proxy',
             'client_id',
             'client_secret',
             'client_token',
@@ -352,7 +356,7 @@ class Vtiger_MailScannerInfo {
 	 */
     function compare($otherInstance)
     {
-        $checkkeys = ['server', 'scannername', 'protocol', 'username', 'password', 'mail_proxy', 'client_id', 'client_token', 'client_secret', 'client_access_token', 'ssltype', 'sslmethod', 'searchfor', 'markas'];
+        $checkkeys = ['server', 'scannername', 'protocol', 'username', 'password', 'client_id', 'client_token', 'client_secret', 'client_access_token', 'ssltype', 'sslmethod', 'searchfor', 'markas'];
 
         foreach ($checkkeys as $key) {
             if ($this->$key != $otherInstance->$key) {
@@ -394,22 +398,24 @@ class Vtiger_MailScannerInfo {
 		$this->client_token  = $otherInstance->client_token;
 		$this->client_access_token  = $otherInstance->client_access_token;
 
-		$useisvalid = ($this->isvalid)? 1 : 0;
-		$usepassword = $this->__crypt($this->password);
+        return $mailServerChanged;
+	}
+
+    public function save()
+    {
         $params = [
             'scannername' => $this->scannername,
             'server' => $this->server,
             'protocol' => $this->protocol,
             'username' => $this->username,
-            'password' => $usepassword,
+            'password' => $this->__crypt($this->password),
             'ssltype' => $this->ssltype,
             'sslmethod' => $this->sslmethod,
             'connecturl' => $this->connecturl,
             'searchfor' => $this->searchfor,
             'markas' => $this->markas,
-            'isvalid' => $useisvalid,
+            'isvalid' => $this->isvalid ? 1 : 0,
             'time_zone' => $this->time_zone,
-            'mail_proxy' => $this->mail_proxy,
             'client_id' => $this->client_id,
             'client_secret' => $this->client_secret,
             'client_token' => $this->client_token,
@@ -421,9 +427,7 @@ class Vtiger_MailScannerInfo {
         } else { //this record is exist in the data
             $this->getMailScannerTable()->updateData($params, ['scannerid' => $this->scannerid]);
         }
-
-        return $mailServerChanged;
-	}
+    }
 
     public function getMailScannerTable() {
         return (new Core_DatabaseData_Model())->getTable('vtiger_mailscanner', 'scannerid');
@@ -446,7 +450,6 @@ class Vtiger_MailScannerInfo {
             ->createColumn('isvalid', 'int(1) DEFAULT NULL')
             ->createColumn('scanfrom', 'varchar(10) DEFAULT \'ALL\'')
             ->createColumn('time_zone', 'varchar(10) DEFAULT NULL')
-            ->createColumn('mail_proxy', 'VARCHAR(50) DEFAULT NULL')
             ->createColumn('client_id', 'varchar(255) DEFAULT NULL')
             ->createColumn('client_secret', 'varchar(255) DEFAULT NULL')
             ->createColumn('client_token', 'text DEFAULT NULL')
@@ -481,21 +484,22 @@ class Vtiger_MailScannerInfo {
 		}
 	}
 
-	/**
-	 * List all the mail-scanners configured.
-	 */
-	static function listAll() {
-		$scanners = array();
+    /**
+     * List all the mail-scanners configured.
+     * @throws AppException
+     */
+    public static function getAll(): array
+    {
+        $scanners = [];
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery('SELECT scannername FROM vtiger_mailscanner', []);
 
-		global $adb;
-		$result = $adb->pquery("SELECT scannername FROM vtiger_mailscanner", array());
-		if($result && $adb->num_rows($result)) {
-			while($resultrow = $adb->fetch_array($result)) {
-				$scanners[] = new self( decode_html($resultrow['scannername'] ));
-			}
-		}
-		return $scanners;
-	}
+        while ($row = $adb->fetch_array($result)) {
+            $scanners[] = self::getInstance(decode_html($row['scannername']));
+        }
+
+        return $scanners;
+    }
 
     /**
      * @throws AppException
@@ -519,7 +523,15 @@ class Vtiger_MailScannerInfo {
         if (!empty($this->client_access_token)) {
             $this->client_access_token = $authModel->getAccessToken();
         }
+    }
 
+    public function getId()
+    {
+        return $this->scannerid;
+    }
 
+    public function setId($value)
+    {
+        $this->scannerid = $value;
     }
 }
