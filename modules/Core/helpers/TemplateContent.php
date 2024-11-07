@@ -93,24 +93,26 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
     public static function getAttachmentImage(int $id, string $site_url): string
     {
         if (!empty($id)) {
-            $db = PearDatabase::getInstance();
-            $query = self::getAttachmentImageQuery();
-            $result = $db->pquery($query, [$id]);
-            $num_rows = $db->num_rows($result);
-            if ($num_rows > 0) {
-                $row = $db->query_result_rowdata($result);
-
-                if (empty($row['storedname'])) {
-                    $row['storedname'] = $row['name'];
-                }
-
-                $image_src = $row['path'] . $row['attachmentsid'] . "_" . $row['storedname'];
-
-                return "<img src='" . $site_url . "/" . $image_src . "'/>";
-            }
+            return '';
         }
 
-        return '';
+        $db = PearDatabase::getInstance();
+        $query = self::getAttachmentImageQuery();
+        $result = $db->pquery($query, [$id]);
+
+        if (!$db->num_rows($result)) {
+            return '';
+        }
+
+        $row = $db->query_result_rowdata($result);
+
+        if (empty($row['storedname'])) {
+            $row['storedname'] = $row['name'];
+        }
+
+        $image_src = $row['path'] . $row['attachmentsid'] . "_" . $row['storedname'];
+
+        return "<img src='" . $site_url . "/" . $image_src . "'/>";
     }
 
     /**

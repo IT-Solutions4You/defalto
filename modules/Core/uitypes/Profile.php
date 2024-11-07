@@ -27,13 +27,13 @@ class Core_Profile_UiType extends Vtiger_Base_UIType {
      */
     public function getEditViewDisplayValue($value)
     {
-        if ($value) {
-            $profileModel = Settings_Profiles_Record_Model::getInstanceById($value);
-
-            return $profileModel->getName();
+        if (empty($value)) {
+            return '';
         }
 
-        return '';
+        $profileModel = Settings_Profiles_Record_Model::getInstanceById($value);
+
+        return $profileModel->getName();
     }
 
     /**
