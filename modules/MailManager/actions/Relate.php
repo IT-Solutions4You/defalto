@@ -90,12 +90,19 @@ class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction
     public function saveAttachments(MailManager_Message_Model $mailRecord, string $baseModule, Vtiger_Record_Model $recordModel): void
     {
         $recordId = $recordModel->getId();
+        $currentUser = Users_Record_Model::getCurrentUserModel();
 
         foreach ($mailRecord->getAttachments() as $attachmentInfo) {
             $attachment = $this->saveAttachment($baseModule, $attachmentInfo);
 
             if ($attachment->getId()) {
-                $this->relateAttachment($recordId, $attachment->getId());
+                $documentRecord = $mailRecord->saveDocumentFile($attachment->getName(), $attachment->getContent(), $currentUser->getId(), 'MailManager');
+
+                if ($documentRecord->getId()) {
+                    $documentRecord->saveAttachmentsRelation($documentRecord->getId(), $attachment->getId());
+                    $documentRecord->saveAttachmentsRelation($recordModel->getId(), $attachment->getId());
+                    $documentRecord->saveDocumentsRelation($recordModel->getId(), $documentRecord->getId());
+                }
             }
         }
 
