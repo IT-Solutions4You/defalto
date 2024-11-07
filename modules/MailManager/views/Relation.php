@@ -50,7 +50,6 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
         $this->exposeMethod('commentwidget');
         $this->exposeMethod('create');
         $this->exposeMethod('create_wizard');
-        $this->exposeMethod('saveattachment');
         $response = new MailManager_Response(true);
         $operation = $this->getOperationArg($request);
 
@@ -287,14 +286,6 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
         } catch (Exception $e) {
             $response->setResult(['ui' => '', 'error' => $e]);
         }
-
-        return $response;
-    }
-
-    public function saveattachment(Vtiger_Request $request, $response) {
-        $connector = $this->getConnector('__vt_drafts');
-        $uploadResponse = $connector->saveAttachment($request);
-        $response->setResult($uploadResponse);
 
         return $response;
     }
