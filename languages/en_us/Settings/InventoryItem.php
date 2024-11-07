@@ -12,4 +12,6 @@ $languageStrings = [
     'InventoryItem'        => 'Inventory Item',
     'SINGLE_InventoryItem' => 'Inventory Item',
     'LBL_GENERAL_SETTING' => 'General Setting',
+    'LBL_FIELDS_IN_ITEMS_BLOCK' => 'Fields in Items Block',
+    'LBL_SELECT_VISIBLE_FIELDS' => 'Select Visible Fields',
 ];

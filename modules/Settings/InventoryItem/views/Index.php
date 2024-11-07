@@ -12,20 +12,30 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
 {
     public function process(Vtiger_Request $request)
     {
-        $sourceModule = $request->get('source_module');
-        $pickListSupportedModules = Settings_InventoryItem_Module_Model::getPicklistSupportedModules();
-        if (empty($sourceModule)) {
-            //take the first module as the source module
-            $sourceModule = $pickListSupportedModules[0]->name;
+        $moduleName = $request->getModule();
+        $qualifiedName = $request->getModule(false);
+        $selectedModule = $request->get('selectedModule');
+        $supportedModules = Settings_InventoryItem_Module_Model::getPicklistSupportedModules();
+
+        if (empty($selectedModule)) {
+            $selectedModule = 0;
         }
 
-        $moduleModel = Settings_Picklist_Module_Model::getInstance($sourceModule);
-        $viewer = $this->getViewer($request);
-        $qualifiedName = $request->getModule(FALSE);
-        $viewer->assign('PICKLIST_MODULES',$pickListSupportedModules);
-        $viewer->assign('SELECTED_MODULE_NAME', $sourceModule);
-        $viewer->assign('QUALIFIED_NAME',$qualifiedName);
+        $moduleModel = Vtiger_Module_Model::getInstance('InventoryItem');
+        $fieldModelList = $moduleModel->getFields();
 
-        $viewer->view('Index.tpl',$qualifiedName);
+        $viewer = $this->getViewer($request);
+        $viewer->assign('MODULE_NAME', $moduleName);
+        $viewer->assign('QUALIFIED_NAME', $qualifiedName);
+        $viewer->assign('SUPPORTED_MODULES', $supportedModules);
+        $viewer->assign('SELECTED_MODULE_NAME', $selectedModule);
+        $viewer->assign('FIELD_MODEL_LIST', $fieldModelList);
+        $viewer->assign('SELECTED_FIELDS', ['productid', 'quantity']);
+
+        $viewer->view('Index.tpl', $qualifiedName);
+
+        foreach($fieldModelList as $fieldModel) {
+            show($fieldModel->getName());
+        }
     }
 }
