@@ -17,15 +17,22 @@ class Users_Field_Model extends Vtiger_Field_Model {
 	 * Function to check whether the current field is read-only
 	 * @return <Boolean> - true/false
 	 */
-	public function isReadOnly() {
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		if(($currentUserModel->isAdminUser() == false && $this->get('uitype') == 98) || $this->get('uitype') == 106 || $this->get('uitype') == 156 || $this->get('uitype') == 115) {
-			return true;
-		}
-	}
+    public function isReadOnly()
+    {
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $readonlyUiTypes = [
+            self::UITYPE_USER_ROLE,
+            self::UITYPE_USER_USERNAME,
+            self::UITYPE_USER_IS_ADMIN,
+            self::UITYPE_USER_STATUS,
+            self::UITYPE_USER_PROFILE,
+        ];
+
+        return !$currentUserModel->isAdminUser() && in_array($this->getUIType(), $readonlyUiTypes);
+    }
 
 
-	/**
+    /**
 	 * Function to check if the field is shown in detail view
 	 * @return <Boolean> - true/false
 	 */
@@ -37,38 +44,45 @@ class Users_Field_Model extends Vtiger_Field_Model {
 	}
 
 
-	/**
-	 * Function to get the Webservice Field data type
-	 * @return <String> Data type of the field
-	 */
-	public function getFieldDataType() {
-		if($this->get('uitype') == 99){
-			return 'password';
-		}else if(in_array($this->get('uitype'), array(32, 115))) {
-			return 'picklist';
-		} else if($this->get('uitype') == 101) {
-			return 'userReference';
-		} else if($this->get('uitype') == 98) {
-			return 'userRole';
-		} elseif($this->get('uitype') == 105) {
-			return 'image';
-		} else if($this->get('uitype') == 31) {
-			return 'theme';
-		}
-		return parent::getFieldDataType();
-	}
-
-	/**
-	 * Function to check whether field is ajax editable'
-	 * @return <Boolean>
-	 */
-    public function isAjaxEditable()
+    /**
+     * Function to get the Webservice Field data type
+     * @return <String> Data type of the field
+     * @throws Exception
+     */
+    public function getFieldDataType()
     {
-        return !(!$this->isEditable() || $this->get('uitype') == 105 || $this->get('uitype') == 106 || $this->get('uitype') == 98 || $this->get('uitype') == 101
-            || $this->getName() === 'signature');
+        $uiType = $this->getUIType();
+
+        if ($uiType == self::UITYPE_USER_PASSWORD) {
+            return 'password';
+        } elseif (in_array($uiType, [self::UITYPE_USER_PICKLIST, self::UITYPE_USER_STATUS])) {
+            return 'picklist';
+        } elseif ($uiType == self::UITYPE_USER_REPORTS_TO) {
+            return 'userReference';
+        } elseif ($uiType == self::UITYPE_USER_ROLE) {
+            return 'userRole';
+        } elseif ($uiType == self::UITYPE_USER_IMAGE) {
+            return 'image';
+        } elseif ($uiType == self::UITYPE_USER_THEME) {
+            return 'theme';
+        } elseif ($uiType == self::UITYPE_USER_PROFILE) {
+            return 'profile';
+        }
+
+        return parent::getFieldDataType();
     }
 
-	/**
+    /**
+     * Function to check whether field is ajax editable'
+     * @return bool
+     * @throws Exception
+     */
+    public function isAjaxEditable()
+    {
+        return !(!$this->isEditable() || in_array($this->getUIType(), [self::UITYPE_USER_PROFILE, self::UITYPE_USER_IMAGE, self::UITYPE_USER_USERNAME, self::UITYPE_USER_ROLE, self::UITYPE_USER_REPORTS_TO]) || $this->getName() === 'signature');
+    }
+
+    /**
 	 * Function to get all the available picklist values for the current field
 	 * @return <Array> List of picklist values if the field is of type picklist or multipicklist, null otherwise.
 	 */
@@ -199,10 +213,6 @@ class Users_Field_Model extends Vtiger_Field_Model {
 		return false;
 	}
 
-	public function getUIType() {
-		return $this->get('uitype');
-	}
-
 	public function getPicklistDetails() {
 		if ($this->get('uitype') == 98) {
 			$picklistValues = $this->getAllRoles();
@@ -217,4 +227,20 @@ class Users_Field_Model extends Vtiger_Field_Model {
 		}
 		return $pickListDetails;
 	}
+
+    /**
+     * @return array
+     */
+    public function getAllProfiles(): array
+    {
+        $profileModels = Settings_Profiles_Record_Model::getAll();
+        $profiles = [];
+
+        foreach ($profileModels as $profileId => $profileModel) {
+            $profileName = $profileModel->getName();
+            $profiles[$profileName] = $profileId;
+        }
+
+        return $profiles;
+    }
 }

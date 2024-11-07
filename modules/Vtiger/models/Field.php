@@ -103,14 +103,16 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	const UITYPE_USER_THEME = 31;
 	const UITYPE_USER_PICKLIST = 32;
 	const UITYPE_USER_ROLE = 98;
-	const UITYPE_USER_PASSWORD = 98;
+	const UITYPE_USER_PASSWORD = 99;
 	const UITYPE_USER_REPORTS_TO = 101;
 	const UITYPE_USER_EMAIL = 104;
+	const UITYPE_USER_IMAGE = 105;
 	const UITYPE_USER_USERNAME = 106;
 	const UITYPE_USER_STATUS = 115;
 	const UITYPE_USER_END_HOUR = 116;
 	const UITYPE_USER_IS_ADMIN = 156;
-	
+	const UITYPE_USER_PROFILE = 14001 ;
+
 	
 	/**
 	 * Function to get the value of a given property
@@ -1586,5 +1588,14 @@ class Vtiger_Field_Model extends Vtiger_Field {
         }
 
         return '';
+    }
+
+    /**
+     * @return int
+     * @throws Exception
+     */
+    public function getUIType(): int
+    {
+        return (int)$this->get('uitype');
     }
 }

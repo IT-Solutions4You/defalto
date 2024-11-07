@@ -66,7 +66,7 @@ class ListViewController {
 		if(isset($field->referenceFieldName) && $field->referenceFieldName) {
 			preg_match('/(\w+) ; \((\w+)\) (\w+)/', $field->referenceFieldName, $matches);
 			if (php7_count($matches) != 0) {
-				list($full, $parentReferenceFieldName, $referenceModule, $referenceFieldName) = $matches;
+				[$full, $parentReferenceFieldName, $referenceModule, $referenceFieldName] = $matches;
 			}
 			$columnName = $parentReferenceFieldName.$referenceFieldName;
 		}
@@ -130,7 +130,11 @@ class ListViewController {
 		return $headerFields;
 	}
 
-	function getListViewRecords($focus, $module, $result) {
+    /**
+     * @throws AppException
+     * @throws Exception
+     */
+    function getListViewRecords($focus, $module, $result) {
 		global $listview_max_textlength, $theme, $default_charset;
 
 		require('user_privileges/user_privileges_'.$this->user->id.'.php');
@@ -163,7 +167,7 @@ class ListViewController {
 				//if the assigned to is related to the reference field
 				preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 				if(php7_count($matches) > 0) {
-					list($full, $referenceParentField, $module, $fieldName) = $matches;
+					[$full, $referenceParentField, $module, $fieldName] = $matches;
 					$columnName = strtolower($referenceParentField.$fieldName);
 				} else {
 					$columnName = $field->getColumnName();
@@ -255,7 +259,7 @@ class ListViewController {
 				// for reference fields read the value differently
 				preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 				if(php7_count($matches) > 0) {
-					list($full, $referenceParentField, $module, $fieldName) = $matches;
+					[$full, $referenceParentField, $module, $fieldName] = $matches;
 					$matches = null;
 					$rawValue = $this->db->query_result($result, $i, strtolower($referenceParentField.$fieldName));
 					//if the field is related to reference module's field, then we might need id of that record for example emails field
@@ -470,6 +474,8 @@ class ListViewController {
                     $value = !empty($rawValue) ? Core_Country_UIType::transformDisplayValue($rawValue) : '';
                 } elseif($field->getUIType() == Vtiger_Field_Model::UITYPE_REGION) {
                     $value = !empty($rawValue) ? Core_Region_UIType::transformDisplayValue($rawValue) : '';
+                } elseif($field->getUIType() == Vtiger_Field_Model::UITYPE_USER_PROFILE) {
+                    $value = '<a href="index.php?module=Profiles&parent=Settings&view=Detail&record=' . $value . '">' . textlength_check(Settings_Profiles_Record_Model::getProfileName((int)$value)) . '</a>';
                 } else {
 					$value = textlength_check($value);
 				}

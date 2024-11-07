@@ -39,8 +39,8 @@
 				$sql = "SELECT distinct(vtiger_field.tabid) as tabid FROM vtiger_field LEFT JOIN vtiger_ws_fieldtype ON ".
 				"vtiger_field.uitype=vtiger_ws_fieldtype.uitype
 				 INNER JOIN vtiger_profile2field ON vtiger_field.fieldid = vtiger_profile2field.fieldid
-				 INNER JOIN vtiger_role2profile ON vtiger_profile2field.profileid = vtiger_role2profile.profileid
-				 INNER JOIN vtiger_user2role ON vtiger_user2role.roleid = vtiger_role2profile.roleid
+				 INNER JOIN df_user2profile ON vtiger_profile2field.profileid = df_user2profile.profile_id
+				 INNER JOIN vtiger_user2role ON vtiger_user2role.userid = df_user2profile.user_id
 				 where vtiger_profile2field.visible=0 
 				 and vtiger_field.presence in (0,2)
 				 and vtiger_user2role.userid=? and fieldtype in (".

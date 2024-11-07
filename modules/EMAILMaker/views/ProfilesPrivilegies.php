@@ -34,7 +34,8 @@ class EMAILMaker_ProfilesPrivilegies_View extends EMAILMaker_Index_View
         $permissionNames = array();
         foreach ($permissions as $profileid => $subArr) {
             $permissionNames[$profileid] = array();
-            $profileName = $this->getProfileName($profileid);
+            $profileName = Settings_Profiles_Record_Model::getProfileName($profileid);
+
             foreach ($subArr as $actionid => $perm) {
                 $permStr = ($perm == "0" ? 'checked="checked"' : "");
                 switch ($actionid) {
@@ -73,13 +74,5 @@ class EMAILMaker_ProfilesPrivilegies_View extends EMAILMaker_Index_View
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
         $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
         return $headerScriptInstances;
-    }
-
-    public function getProfileName($profileid)
-    {
-        $adb = PearDatabase::getInstance();
-        $result = $adb->pquery("select * from vtiger_profile where profileid=?", array($profileid));
-        $profilename = $adb->query_result($result, 0, "profilename");
-        return $profilename;
     }
 }

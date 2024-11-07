@@ -26,97 +26,105 @@ require_once 'includes/runtime/Cache.php';
  *
  */
 class Users extends CRMEntity {
-	var $log;
-	/**
-	 * @var PearDatabase
-	 */
-	var $db;
-	// Stored fields
-	var $id;
-	var $authenticated = false;
-	var $error_string;
-	var $is_admin;
-	var $deleted;
+    public $log;
+    /**
+     * @var PearDatabase
+     */
+    public $db;
+    // Stored fields
+    public $id;
+    public $authenticated = false;
+    public $error_string;
+    public $is_admin;
+    public $deleted;
 
-	var $tab_name = Array('vtiger_users','vtiger_attachments','vtiger_user2role','vtiger_asteriskextensions');
-	var $tab_name_index = Array('vtiger_users'=>'id','vtiger_attachments'=>'attachmentsid','vtiger_user2role'=>'userid','vtiger_asteriskextensions'=>'userid');
+    public $tab_name = ['vtiger_users', 'vtiger_attachments', 'vtiger_user2role', 'vtiger_asteriskextensions', 'df_user2profile'];
+    public $tab_name_index = [
+        'vtiger_users' => 'id',
+        'vtiger_attachments' => 'attachmentsid',
+        'vtiger_user2role' => 'userid',
+        'vtiger_asteriskextensions' => 'userid',
+        'df_user2profile' => 'user_id',
+    ];
 
-	var $table_name = "vtiger_users";
-	var $table_index= 'id';
+    public $table_name = "vtiger_users";
+    public $table_index = 'id';
 
-	// This is the list of fields that are in the lists.
-	var $list_link_field= 'last_name';
+    // This is the list of fields that are in the lists.
+    public $list_link_field = 'last_name';
 
-	var $list_mode;
-	var $popup_type;
+    public $list_mode;
+    public $popup_type;
 
-	var $search_fields = Array(
-			'Name'=>Array('vtiger_users'=>'last_name'),
-			'Email'=>Array('vtiger_users'=>'email1'),
-			'Email2'=>Array('vtiger_users'=>'email2')
-	);
-	var $search_fields_name = Array(
-			'Name'=>'last_name',
-			'Email'=>'email1',
-			'Email2'=>'email2'
-	);
+    public $search_fields = [
+        'Name' => ['vtiger_users' => 'last_name'],
+        'Email' => ['vtiger_users' => 'email1'],
+        'Email2' => ['vtiger_users' => 'email2'],
+    ];
+    public $search_fields_name = [
+        'Name' => 'last_name',
+        'Email' => 'email1',
+        'Email2' => 'email2',
+    ];
 
-	var $module_name = "Users";
+    public $module_name = "Users";
 
-	var $object_name = "User";
-	var $user_preferences;
-	var $homeorder_array = array('HDB','ALVT','PLVT','QLTQ','CVLVT','HLT','GRT','OLTSO','ILTI','MNL','OLTPO','LTFAQ');
+    public $object_name = "User";
+    public $user_preferences;
+    public $homeorder_array = ['HDB', 'ALVT', 'PLVT', 'QLTQ', 'CVLVT', 'HLT', 'GRT', 'OLTSO', 'ILTI', 'MNL', 'OLTPO', 'LTFAQ'];
 
-	var $encodeFields = Array("first_name", "last_name", "description");
+    public $encodeFields = ["first_name", "last_name", "description"];
 
-	// This is used to retrieve related fields from form posts.
-	var $additional_column_fields = Array('reports_to_name');
+    // This is used to retrieve related fields from form posts.
+    public $additional_column_fields = ['reports_to_name'];
 
-	var $sortby_fields = Array('status','email1','email2','phone_work','is_admin','user_name','last_name');
+    public $sortby_fields = ['status', 'email1', 'email2', 'phone_work', 'is_admin', 'user_name', 'last_name'];
 
-	// This is the list of vtiger_fields that are in the lists.
-	var $list_fields = Array(
-			'First Name'=>Array('vtiger_users'=>'first_name'),
-			'Last Name'=>Array('vtiger_users'=>'last_name'),
-			'Role Name'=>Array('vtiger_user2role'=>'roleid'),
-			'User Name'=>Array('vtiger_users'=>'user_name'),
-			'Status'=>Array('vtiger_users'=>'status'),
-			'Email'=>Array('vtiger_users'=>'email1'),
-			'Email2'=>Array('vtiger_users'=>'email2'),
-			'Admin'=>Array('vtiger_users'=>'is_admin'),
-			'Phone'=>Array('vtiger_users'=>'phone_work')
-	);
-	var $list_fields_name = Array(
-			'Last Name'=>'last_name',
-			'First Name'=>'first_name',
-			'Role Name'=>'roleid',
-			'User Name'=>'user_name',
-			'Status'=>'status',
-			'Email'=>'email1',
-			'Email2'=>'email2',
-			'Admin'=>'is_admin',
-			'Phone'=>'phone_work'
-	);
+    // This is the list of vtiger_fields that are in the lists.
+    public $list_fields = [
+        'First Name' => ['vtiger_users' => 'first_name'],
+        'Last Name' => ['vtiger_users' => 'last_name'],
+        'Role Name' => ['vtiger_user2role' => 'roleid'],
+        'Profile Name' => ['df_user2profile' => 'profile_id'],
+        'User Name' => ['vtiger_users' => 'user_name'],
+        'Status' => ['vtiger_users' => 'status'],
+        'Email' => ['vtiger_users' => 'email1'],
+        'Email2' => ['vtiger_users' => 'email2'],
+        'Admin' => ['vtiger_users' => 'is_admin'],
+        'Phone' => ['vtiger_users' => 'phone_work'],
+    ];
+    public $list_fields_name = [
+        'Last Name' => 'last_name',
+        'First Name' => 'first_name',
+        'Role Name' => 'roleid',
+        'Profile Name' => 'profile_id',
+        'User Name' => 'user_name',
+        'Status' => 'status',
+        'Email' => 'email1',
+        'Email2' => 'email2',
+        'Admin' => 'is_admin',
+        'Phone' => 'phone_work',
+    ];
 
-	var $popup_fields = array('last_name');
+    public $popup_fields = ['last_name'];
 
-	// This is the list of fields that are in the lists.
-	var $default_order_by = "user_name";
-	var $default_sort_order = 'ASC';
+    // This is the list of fields that are in the lists.
+    public $default_order_by = "user_name";
+    public $default_sort_order = 'ASC';
 
-	var $record_id;
-	var $new_schema = true;
+    public $record_id;
+    public $new_schema = true;
 
-	var $DEFAULT_PASSWORD_CRYPT_TYPE; //'BLOWFISH', /* before PHP5.3*/ MD5;
+    public $DEFAULT_PASSWORD_CRYPT_TYPE; //'BLOWFISH', /* before PHP5.3*/ MD5;
 
-	//Default Widgests
-	var $default_widgets = array('PLVT', 'CVLVT');
+    //Default Widgests
+    public $default_widgets = ['PLVT', 'CVLVT'];
 
-	/** constructor function for the main user class
-	 instantiates the Logger class and PearDatabase Class
-	 *
-	 */
-        function __construct() {
+    /** constructor function for the main user class
+    instantiates the Logger class and PearDatabase Class
+     *
+     */
+    function __construct() {
             $this->log = Logger::getLogger('user');
             $this->log->debug("Entering Users() method ...");
             $this->db = PearDatabase::getInstance();
@@ -1113,7 +1121,11 @@ class Users extends CRMEntity {
 			updateUser2RoleMapping($this->column_fields['roleid'],$this->id);
 		}
 
-		//After adding new user, set the default activity types for new user
+        if (!empty($this->column_fields['profile_id'])) {
+            Users_Record_Model::updateUser2ProfileMapping($this->column_fields['profile_id'], $this->id);
+        }
+
+        //After adding new user, set the default activity types for new user
 		Vtiger_Util_Helper::setCalendarDefaultActivityTypesForUser($this->id);
 
 		require_once('modules/Users/CreateUserPrivilegeFile.php');
@@ -1284,40 +1296,35 @@ class Users extends CRMEntity {
 	/** function to save the order in which the modules have to be displayed in the home page for the specified user id
 	 * @param $id -- user id:: Type integer
 	 */
-	 function saveHomeStuffOrder($id)
-	 {
-		global $log,$adb;
-		$log->debug("Entering in function saveHomeOrder($id)");
+    function saveHomeStuffOrder($id)
+    {
+        global $log, $adb;
+        $log->debug("Entering in function saveHomeOrder($id)");
+        $save_array = [];
 
-		$save_array = array();
-		 if($this->mode == 'edit')
-		 {
-			 for($i = 0;$i < php7_count($this->homeorder_array);$i++)
-			 {
-				 if(isset($_REQUEST[$this->homeorder_array[$i]]) && $_REQUEST[$this->homeorder_array[$i]] != '')
-				 {
-					$save_array[] = $this->homeorder_array[$i];
-					$qry=" update vtiger_homestuff,vtiger_homedefault set vtiger_homestuff.visible=0 where vtiger_homestuff.stuffid=vtiger_homedefault.stuffid and vtiger_homestuff.userid=? and vtiger_homedefault.hometype=?";//To show the default Homestuff on the the Home Page
-					$result=$adb->pquery($qry, array($id, $this->homeorder_array[$i]));
-				}
-				 else
-				 {
-					$qry="update vtiger_homestuff,vtiger_homedefault set vtiger_homestuff.visible=1 where vtiger_homestuff.stuffid=vtiger_homedefault.stuffid and vtiger_homestuff.userid=? and vtiger_homedefault.hometype=?";//To hide the default Homestuff on the the Home Page
-					$result=$adb->pquery($qry, array($id, $this->homeorder_array[$i]));
-				}
-			}
-			if($save_array)
-				$homeorder = implode(',',$save_array);
-		}
-		 else
-		 {
-			$this->insertUserdetails('postinstall');
+        if ($this->mode == 'edit') {
+            for ($i = 0; $i < php7_count($this->homeorder_array); $i++) {
+                if (!empty($_REQUEST[$this->homeorder_array[$i]])) {
+                    $save_array[] = $this->homeorder_array[$i];
+                    $qry = " update vtiger_homestuff,vtiger_homedefault set vtiger_homestuff.visible=0 where vtiger_homestuff.stuffid=vtiger_homedefault.stuffid and vtiger_homestuff.userid=? and vtiger_homedefault.hometype=?";//To show the default Homestuff on the the Home Page
+                    $result = $adb->pquery($qry, [$id, $this->homeorder_array[$i]]);
+                } else {
+                    $qry = "update vtiger_homestuff,vtiger_homedefault set vtiger_homestuff.visible=1 where vtiger_homestuff.stuffid=vtiger_homedefault.stuffid and vtiger_homestuff.userid=? and vtiger_homedefault.hometype=?";//To hide the default Homestuff on the the Home Page
+                    $result = $adb->pquery($qry, [$id, $this->homeorder_array[$i]]);
+                }
+            }
 
-		}
-		$log->debug("Exiting from function saveHomeOrder($id)");
-	}
+            if ($save_array) {
+                $homeorder = implode(',', $save_array);
+            }
+        } else {
+            $this->insertUserdetails('postinstall');
+        }
 
-	/**
+        $log->debug("Exiting from function saveHomeOrder($id)");
+    }
+
+    /**
 	 * Track the viewing of a detail record.  This leverages get_summary_text() which is object specific
 	 * params $user_id - The user that is viewing the record.
 	 * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc..

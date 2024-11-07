@@ -1299,32 +1299,28 @@ function getDSTableNameForType($typeString)
 
 }
 
-/** This function is to retreive the vtiger_profiles associated with the  the specified user
-  * It takes the following input parameters:
-  *     $userid -- The User Id:: Type Integer
-  *This function will return the vtiger_profiles associated to the specified vtiger_users in an Array in the following format:
-  *     $userProfileArray=(profileid1,profileid2,profileid3,...,profileidn);
-  */
-function getUserProfile($userId)
+/**
+ * @param int $userId
+ *
+ * @return array
+ */
+function getUserProfile(int $userId): array
 {
-	global $log;
-	$log->debug("Entering getUserProfile(".$userId.") method ...");
-	global $adb;
-	$roleId=fetchUserRole($userId);
-	$profArr=Array();
-	$sql1 = "select profileid from vtiger_role2profile where roleid=?";
-	$result1 = $adb->pquery($sql1, array($roleId));
-	$num_rows=$adb->num_rows($result1);
-	for($i=0;$i<$num_rows;$i++)
-	{
+    global $log;
+    $log->debug('Entering getUserProfile(' . $userId . ') method ...');
+    $adb = PearDatabase::getInstance();
+    $profileIds = [];
+    $result = $adb->pquery('SELECT profile_id FROM df_user2profile WHERE user_id=?', [$userId]);
 
-			$profileid=  $adb->query_result($result1,$i,"profileid");
-		$profArr[]=$profileid;
-	}
-		$log->debug("Exiting getUserProfile method ...");
-		return $profArr;
+    while ($row = $adb->fetchByAssoc($result)) {
+        $profileIds[] = $row['profile_id'];
+    }
 
+    $log->debug('Exiting getUserProfile method ...');
+
+    return $profileIds;
 }
+
 
 /** To retreive the global permission of the specifed user from the various vtiger_profiles associated with the user
   * @param $userid -- The User Id:: Type Integer
