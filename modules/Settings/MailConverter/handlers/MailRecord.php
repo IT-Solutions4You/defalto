@@ -202,11 +202,12 @@ class Settings_MailConverter_MailRecord_Handler
                 [$date, $time, $AMorPM] = explode(' ', $dateTimeFormat);
 
                 $pos = strpos($dateTimeFormat, date(DateTimeField::getPHPDateFormat()));
+                $time = substr($time, 0, 5);
 
                 if ($pos === false) {
-                    return $date . ' ' . $time . ' ' . $AMorPM;
+                    return $date . ', ' . $time . ' ' . $AMorPM;
                 } else {
-                    return vtranslate('LBL_TODAY') . ' ' . $time . ' ' . $AMorPM;
+                    return $time . ' ' . $AMorPM;
                 }
             } else {
                 return Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat(date('Y-m-d H:i:s', $date));
