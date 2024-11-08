@@ -72,9 +72,11 @@ class Users_Save_Action extends Vtiger_Save_Action {
 			if ($fieldName == 'is_owner') {
 				$fieldValue = null;
 			}
-			if ($fieldName == 'roleid' && !($currentUserModel->isAdminUser())) {
+
+            if (in_array($fieldName, ['roleid', 'profile_id']) && !($currentUserModel->isAdminUser())) {
 				$fieldValue = null;
 			}
+
             if($fieldName == 'signature' && $fieldValue !== null){
                 $purifiedContent = vtlib_purify(decode_html($fieldValue));
                 // Purify malicious html event attributes
