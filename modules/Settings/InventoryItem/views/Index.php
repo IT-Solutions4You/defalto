@@ -38,4 +38,27 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
             show($fieldModel->getName());
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    function getHeaderScripts(Vtiger_Request $request) {
+        $headerScriptInstances = parent::getHeaderScripts($request);
+        $moduleName = $request->getModule();
+
+        $layout = Vtiger_Viewer::getDefaultLayoutName();
+        $jsFileNames = array(
+            'modules.Vtiger.resources.Vtiger',
+            'modules.Settings.Vtiger.resources.Vtiger',
+            'modules.Settings.Vtiger.resources.Edit',
+            "modules.Settings.$moduleName.resources.$moduleName",
+            'modules.Settings.Vtiger.resources.Index',
+            "modules.Settings.$moduleName.resources.Index",
+            "~layouts/$layout/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js",
+        );
+
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+        return $headerScriptInstances;
+    }
 }
