@@ -33,6 +33,14 @@ if (!class_exists('Migration_20241024112259')) {
                 $link = Settings_Vtiger_MenuItem_Model::getInstanceFromArray(['name' => 'Inventory Item Block', 'blockid' => $menu->getId(), 'linkto' => 'index.php?module=InventoryItem&parent=Settings&view=Index']);
                 $link->save();
             }
+
+            $this->db->query('
+                CREATE TABLE IF NOT EXISTS `its4you_inventoryitemcolumns` (
+                    `tabid` int(11) NOT NULL,
+                    `columnslist` varchar(500) DEFAULT NULL,
+                    PRIMARY KEY (`tabid`)
+                ) ENGINE=innodb DEFAULT CHARSET=utf8
+            ');
         }
     }
 } else {

@@ -8,27 +8,6 @@
 
 class Settings_InventoryItem_Module_Model extends Vtiger_Module_Model
 {
-
-    public static function getPicklistSupportedModules()
-    {
-        $db = PearDatabase::getInstance();
-        $supportedModules = ['Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice', ];
-        $query = "SELECT vtiger_tab.tabid, vtiger_tab.tablabel, vtiger_tab.name as tabname
-				  FROM vtiger_tab
-				  WHERE vtiger_tab.name IN (" . generateQuestionMarks($supportedModules) . ") 
-				    AND vtiger_tab.presence != 1
-				  ORDER BY vtiger_tab.tabid";
-        $result = $db->pquery($query, $supportedModules);
-
-        $modulesModelsList = [];
-
-        while ($row = $db->fetch_array($result)) {
-            $modulesModelsList[$row['tabid']] = $row['tabname'];
-        }
-
-        return $modulesModelsList;
-    }
-
     /**
      * Static Function to get the instance of Vtiger Module Model for the given id or name
      *
@@ -61,5 +40,56 @@ class Settings_InventoryItem_Module_Model extends Vtiger_Module_Model
         }
 
         return $moduleModel;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getSupportedModules(): array
+    {
+        $db = PearDatabase::getInstance();
+        $supportedModules = ['Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice', ];
+        $query = "SELECT vtiger_tab.tabid, vtiger_tab.tablabel, vtiger_tab.name as tabname
+				  FROM vtiger_tab
+				  WHERE vtiger_tab.name IN (" . generateQuestionMarks($supportedModules) . ") 
+				    AND vtiger_tab.presence != 1
+				  ORDER BY vtiger_tab.tabid";
+        $result = $db->pquery($query, $supportedModules);
+
+        $modulesModelsList = [];
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $modulesModelsList[$row['tabid']] = $row['tabname'];
+        }
+
+        return $modulesModelsList;
+    }
+
+    /**
+     * @param int $moduleId
+     *
+     * @return array
+     */
+    public static function getSelectedFields(int $moduleId): array
+    {
+        $return = [];
+        $db = PearDatabase::getInstance();
+
+        $query = 'SELECT columnslist FROM its4you_inventoryitemcolumns WHERE tabid = ?';
+        $result = $db->pquery($query, [$moduleId]);
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $return = explode(',', $row['columnslist']);
+        }
+
+        return $return;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getDefaultSelectedFields(): array
+    {
+        return self::getSelectedFields(0);
     }
 }

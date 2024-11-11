@@ -15,10 +15,16 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
         $moduleName = $request->getModule();
         $qualifiedName = $request->getModule(false);
         $selectedModule = $request->get('selectedModule');
-        $supportedModules = Settings_InventoryItem_Module_Model::getPicklistSupportedModules();
 
         if (empty($selectedModule)) {
             $selectedModule = 0;
+        }
+
+        $supportedModules = Settings_InventoryItem_Module_Model::getSupportedModules();
+        $selectedFields = Settings_InventoryItem_Module_Model::getSelectedFields($selectedModule);
+
+        if (empty($selectedFields)) {
+            $selectedFields = Settings_InventoryItem_Module_Model::getDefaultSelectedFields();
         }
 
         $moduleModel = Vtiger_Module_Model::getInstance('InventoryItem');
@@ -28,15 +34,12 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
         $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('QUALIFIED_NAME', $qualifiedName);
         $viewer->assign('SUPPORTED_MODULES', $supportedModules);
-        $viewer->assign('SELECTED_MODULE_NAME', $selectedModule);
+        $viewer->assign('SELECTED_MODULE', $selectedModule);
         $viewer->assign('FIELD_MODEL_LIST', $fieldModelList);
-        $viewer->assign('SELECTED_FIELDS', ['productid', 'quantity']);
+        $viewer->assign('SELECTED_FIELDS', $selectedFields);
+        $viewer->assign('MANDATORY_FIELDS', ['productid', 'quantity']);
 
         $viewer->view('Index.tpl', $qualifiedName);
-
-        foreach($fieldModelList as $fieldModel) {
-            show($fieldModel->getName());
-        }
     }
 
     /**
