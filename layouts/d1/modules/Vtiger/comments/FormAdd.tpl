@@ -23,7 +23,7 @@
             <div class="col text-end">
                 <label class="form-check form-switch form-check-reverse pt-3 containerInternalComment">
                     <span class="form-check-label">{vtranslate('LBL_INTERNAL_COMMENT')}</span>
-                    <input type="checkbox" class="form-check-input" id="is_private" checked="checked">
+                    <input type="checkbox" class="form-check-input" id="is_private">
                 </label>
             </div>
         </div>
