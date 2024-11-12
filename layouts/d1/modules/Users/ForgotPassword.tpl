@@ -6,136 +6,82 @@
 *}
 <!DOCTYPE html>
 <html>
-    <head>
-        <style type="text/css">
-            body{
-                font-family: Tahoma, "Trebuchet MS","Lucida Grande",Verdana !important;
-                //background: #F5FAEE !important;/*#f1f6e8;*/
-                color : #555 !important;
-                font-size: 85% !important;
-                height: 98% !important;
-            }
-            hr{
-                border: 0;
-                height: 1px;
-                background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
-            }
-            #container{
-                min-width:280px;
-                width:50%;
-                margin-top:2%;
-            }
-            #btn{
-                color: white;
-                border-radius: 4px;
-                text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-                background: rgb(28, 184, 65);
-                border-style: none;
-                width: 86px;
-                height: 27px;
-                font-size: 12px;
-            }
-            #password,#confirmPassword{
-                height:20px;
-                width:140px;
+<head>
+    <link type='text/css' rel='stylesheet' href='{vresource_url('vendor/twbs/bootstrap/dist/css/bootstrap.min.css')}'>
+    <link type='text/css' rel='stylesheet' href='{vresource_url('vendor/twbs/bootstrap-icons/font/bootstrap-icons.min.css')}'>
+    <link type="text/css" rel="stylesheet" href="{vresource_url('layouts/$LAYOUT$/skins/base/style.css?v=0.0.150')}" media="screen">
+    <script language='JavaScript'>
+        function checkPassword() {
+            let password = document.getElementById('password').value,
+                confirmPassword = document.getElementById('confirmPassword').value;
 
+            if (!password && !confirmPassword) {
+                alert('Please enter new Password');
+                return false;
+            } else if (password != confirmPassword) {
+                alert('Password and Confirm Password should be same');
+                return false;
+            } else {
+                return true;
             }
-            .control-label{
-                font-size: 12px;
-            }
-            #content{
-                padding:8px 20px;
-                border:1px solid #ddd;
-                background:#fff;
-                border-radius:5px;
-            }
-            #footer{
-                float:right;
-            }
-            #footer p{
-                text-align:right;
-                margin-right:20px;
-            }
-            .button-container a{
-                text-decoration: none;
-            }
-            .button-container{
-                float: right;
-            }
-            .button-container .btn{
-                margin-left: 15px;
-                min-width: 100px;
-                font-weight: bold;
-            }
-            .logo{
-                padding: 15px 0 ;
-            }
-            .line{
-
-            }
-        </style>
-        <script language='JavaScript'>
-            function checkPassword() {
-                var password = document.getElementById('password').value;
-                var confirmPassword = document.getElementById('confirmPassword').value;
-                if (password == '' && confirmPassword == '') {
-                    alert('Please enter new Password');
-                    return false;
-                } else if (password != confirmPassword) {
-                    alert('Password and Confirm Password should be same');
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        </script>
-    </head>
-    <body>
-        <div id="container">
-            <div class="logo" style = "padding-left:50%">
-                <img  src="{$LOGOURL}" alt="{$TITLE}" style="height: 4em;width: 12em;"><br><br><br>
-            </div>
-            <div style = "padding-left:50%;width:100%">
-                {if $LINK_EXPIRED neq 'true'}
-                    <div id="content">
-                        <span><h2 style = "font-size:16px">{vtranslate('LBL_CHANGE_PASSWORD',$MODULE)}</h2></span>
-                        <hr class="line">
-                        <div id="changePasswordBlock" align='left'>
-                            <form name="changePassword" id="changePassword" action="{$TRACKURL}" method="post" accept-charset="utf-8">
-                                <input type="hidden" name="username" value="{$USERNAME}">
-                                <input type="hidden" name="shorturl_id" value="{$SHORTURL_ID}">
-                                <input type="hidden" name="secret_hash" value="{$SECRET_HASH}">
-                                <table align='center'>
-                                    <tr>
-                                        <td style="text-align:right"><label class="control-label" for="password">{vtranslate('LBL_NEW_PASSWORD',$MODULE)}</label></td>
-                                        <td><input type="password" id="password" name="password"></td>
-                                    </tr>
-                                    <tr><td></td></tr>
-                                    <tr>
-                                        <td style="text-align:right"><label class="control-label" for="confirmPassword">{vtranslate('LBL_CONFIRM_PASSWORD',$MODULE)}</label></td>
-                                        <td><input type="password" id="confirmPassword" name="confirmPassword"></td>
-                                    </tr>
-                                    <tr><td></td></tr>
-                                    <tr>
-                                        <td></td>
-                                        <td style="text-align:right"><input type="submit" id="btn" value="Submit" onclick="return checkPassword();"/></td>
-                                    </tr>
-                                </table>
-                            </form>
-                        </div>
-                        <div id="footer">
-                            <p></p>
-                        </div>
-                        <div style="clear:both;"></div>
-                    </div>
-                {else}
-                    <div id="content">
-                        {vtranslate('LBL_PASSWORD_LINK_EXPIRED_OR_INVALID_PASSWORD', $MODULE)}
-                    </div>
-                {/if}
-            </div>
-        </div>
+        }
+    </script>
+</head>
+<body class="bg-body-secondary">
+<div id="container" class="container">
+    <div class="logo p-3">
+        <img src="{$LOGOURL}" alt="{$TITLE}">
     </div>
+    <div class="border rounded bg-body">
+        {if $LINK_EXPIRED neq 'true'}
+            <div id="content">
+                <div class="p-3 border-bottom">
+                    <h3 class="m-0">{vtranslate('LBL_CHANGE_PASSWORD',$MODULE)}</h3>
+                </div>
+                <div id="changePasswordBlock" class="p-3">
+                    <form name="changePassword" id="changePassword" action="{$TRACKURL}" method="post" accept-charset="utf-8">
+                        <input type="hidden" name="username" value="{$USERNAME}">
+                        <input type="hidden" name="shorturl_id" value="{$SHORTURL_ID}">
+                        <input type="hidden" name="secret_hash" value="{$SECRET_HASH}">
+                        <div>
+                            <div class="row py-2 align-items-center">
+                                <div class="col-lg-3 fieldLabel text-secondary">
+                                    <label class="control-label " for="password">{vtranslate('LBL_NEW_PASSWORD',$MODULE)}</label>
+                                </div>
+                                <div class="col-lg-3 fieldValue">
+                                    <input class="form-control" type="password" id="password" name="password">
+                                </div>
+                            </div>
+                            <div class="row py-2 align-items-center">
+                                <div class="col-lg-3 fieldLabel text-secondary">
+                                    <label class="control-label" for="confirmPassword">{vtranslate('LBL_CONFIRM_PASSWORD',$MODULE)}</label>
+                                </div>
+                                <div class="col-lg-3 fieldValue">
+                                    <input class="form-control" type="password" id="confirmPassword" name="confirmPassword">
+                                </div>
+                            </div>
+                            <div class="row py-2 align-items-center">
+                                <div class="col-lg-3"></div>
+                                <div class="col-lg-3">
+                                    <input class="btn btn-success" type="submit" id="btn" value="Submit" onclick="return checkPassword();"/>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="footer">
+                    <p></p>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+        {else}
+            <div id="content">
+                {vtranslate('LBL_PASSWORD_LINK_EXPIRED_OR_INVALID_PASSWORD', $MODULE)}
+            </div>
+        {/if}
+    </div>
+</div>
+</div>
 </div>
 </body>
 </html>
