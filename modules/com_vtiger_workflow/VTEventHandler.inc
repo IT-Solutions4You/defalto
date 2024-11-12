@@ -117,5 +117,3 @@ class VTWorkflowEventHandler extends VTEventHandler {
 	}
 
 }
-
-?>

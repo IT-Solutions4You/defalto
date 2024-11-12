@@ -84,7 +84,7 @@ class Settings_Workflows_Field_Model extends Vtiger_Field_Model {
 			'owner' => array('has changed','is','is not'),
 			'ownergroup' => array('has changed','is','is not'),
 			'recurrence' => array('is', 'is not', 'has changed'),
-			'comment' => array('is added'),
+			'comment' => array('is added', 'is comment source'),
 			'image' => array('is', 'is not', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'),
 			'percentage' => array('equal to', 'less than', 'greater than', 'does not equal', 'less than or equal to', 'greater than or equal to', 'has changed', 'is not empty'),
 			'currencyList' => array('is', 'is not', 'has changed', 'has changed to', 'has changed from'),
