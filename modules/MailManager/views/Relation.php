@@ -219,7 +219,6 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
             $connector = $this->getConnector();
             $folder = $connector->getFolder($folderName);
             $mail = $connector->getMail($folder, $uid);
-            $attachments = $mail->getAttachments();
         } else {
             $mail = new MailManager_Message_Model();
         }
@@ -241,10 +240,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
             }
         }
 
-        // Newly added field for source of created record
-        if ('ModComments' !== $linkModule) {
-            $recordModel->set('source', 'Mail Manager');
-        }
+        $recordModel->set('source', 'Mail Manager');
 
         switch ($linkModule) {
             case 'HelpDesk' :
@@ -257,27 +253,25 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
                 break;
 
             case 'ModComments':
+                $relatedTo = !$request->isEmpty('related_to') ? $request->get('related_to') : $parent;
+
                 $recordModel->set('assigned_user_id', $currentUserModel->getId());
                 $recordModel->set('commentcontent', $request->getRaw('commentcontent'));
                 $recordModel->set('userid', $currentUserModel->getId());
                 $recordModel->set('creator', $currentUserModel->getId());
-                $recordModel->set('related_to', $parent);
+                $recordModel->set('related_to', $relatedTo);
                 break;
         }
 
         try {
             $recordModel->save();
 
-            // This condition is added so that emails are not created for Tickets and Todo without Parent,
-            // as there is no way to relate them
-            if (empty($parent) && $linkModule != 'HelpDesk') {
-                MailManager_Relate_Action::associate($mail, $recordModel->getId());
-            }
+            $linkTo = 'ModComments' === $recordModel->getModuleName() ? $recordModel->get('related_to') : $recordModel->getId();
 
-            // add attachments to the tickets as Documents
-            if ($linkModule == 'HelpDesk' && !empty($attachments)) {
-                $relationController = new MailManager_Relate_Action();
-                $relationController->saveAttachments($mail, $linkModule, $recordModel);
+            if (!empty($linkTo)) {
+                $mail->setAttachmentRelationIds($recordModel->getId());
+                
+                MailManager_Relate_Action::associate($mail, $linkTo, $parent);
             }
 
             $response->setResult(['ui' => '', 'success' => true]);
@@ -300,6 +294,13 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
         $connector = $this->getConnector();
         $folder = $connector->getFolder($folderName);
         $mail = $connector->getMail($folder, $mUid);
+        $mailRecordId = $mail->getRecordIdByString($mail->getSubject());
+
+        $recordModel = Vtiger_Record_Model::getCleanInstance('ModComments');
+        $moduleModel = $recordModel->getModule();
+
+        $fieldModel = $moduleModel->getField('related_to');
+        $fieldModel->set('fieldvalue', $mailRecordId);
 
         $viewer = $this->getViewer($request);
         $viewer->assign('LINKMODULE', $request->get('_mlinktotype'));
@@ -307,6 +308,10 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
         $viewer->assign('UID', $mUid);
         $viewer->assign('FOLDER', $request->get('_folder'));
         $viewer->assign('MODULE', $request->getModule());
+        $viewer->assign('RECORD_MODEL', $recordModel);
+        $viewer->assign('MODULE_MODEL', $moduleModel);
+        $viewer->assign('FIELD_MODEL', $fieldModel);
+        $viewer->assign('MAIL', $mail);
         $viewer->assign('COMMENTCONTENT', Core_CKEditor_UIType::transformEditViewDisplayValue($mail->getBody(false)));
         $viewer->view('MailManagerCommentWidget.tpl', 'MailManager');
 

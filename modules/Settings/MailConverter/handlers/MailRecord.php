@@ -16,6 +16,8 @@ class Settings_MailConverter_MailRecord_Handler
 {
     protected $moduleName = 'MailConverter';
     public array $_attachments = [];
+    public array $documentRelationIds = [];
+    public array $attachmentRelationIds = [];
     /**
      * @var array
      */
@@ -109,6 +111,14 @@ class Settings_MailConverter_MailRecord_Handler
     {
         $this->_attachments = [];
         $this->_inline_attachments = [];
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttachmentRelationIds(): array
+    {
+        return $this->attachmentRelationIds;
     }
 
     /**
@@ -560,6 +570,21 @@ class Settings_MailConverter_MailRecord_Handler
         $this->setSubject($mMessage->getSubject());
         $this->setDate($attributes['date']->get()->getTimestamp());
         $this->setRead('Seen' === $mMessage->getFlags()->get('seen'));
+        $this->setUniqueId($mMessage->getMessageId());
+    }
+
+    /**
+     * @param array|int $value
+     * @param bool $clear
+     * @return void
+     */
+    public function setAttachmentRelationIds(array|int $value, bool $clear = false): void
+    {
+        if ($clear) {
+            $this->attachmentRelationIds = [];
+        }
+
+        $this->attachmentRelationIds = array_merge($this->attachmentRelationIds, (array)$value);
     }
 
     public function setBox($value)
@@ -688,5 +713,71 @@ class Settings_MailConverter_MailRecord_Handler
     public function getBodyText(): string
     {
         return strip_tags($this->getBody());
+    }
+
+    /**
+     * @param string $string
+     * @return int
+     */
+    public function getRecordIdByString(string $string): int
+    {
+        $tables = [
+            ['vtiger_potential', 'potentialid', 'potential_no',],
+            ['vtiger_troubletickets', 'ticketid', 'ticket_no',],
+        ];
+
+        preg_match('/([a-zA-Z]+[0-9]+)/', $string, $matches);
+
+        foreach ($matches as $match) {
+            foreach ($tables as $table) {
+                $recordId = $this->getRecordIdByNo($match, $table[0], $table[1], $table[2]);
+
+                if (!empty($recordId) && isRecordExists($recordId)) {
+                    return $recordId;
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param string $number
+     * @param string $tableName
+     * @param string $tableId
+     * @param string $tableNumber
+     * @return int
+     */
+    public function getRecordIdByNo(string $number, string $tableName, string $tableId, string $tableNumber): int
+    {
+        $sql = sprintf('SELECT %s FROM %s WHERE %s=?', $tableId, $tableName, $tableNumber);
+
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery($sql, [$number]);
+        $data = $adb->fetchByAssoc($result);
+
+        return (int)$data[$tableId];
+    }
+
+    /**
+     * @return array
+     */
+    public function getDocumentRelationIds(): array
+    {
+        return $this->documentRelationIds;
+    }
+
+    /**
+     * @param int|array $value
+     * @param bool $clear
+     * @return void
+     */
+    public function setDocumentRelationIds(int|array $value, bool $clear = false): void
+    {
+        if ($clear) {
+            $this->documentRelationIds = [];
+        }
+
+        $this->documentRelationIds = array_merge($this->documentRelationIds, (array)$value);
     }
 }

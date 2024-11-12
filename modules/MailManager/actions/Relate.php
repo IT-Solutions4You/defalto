@@ -17,7 +17,7 @@ class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction
 
     /**
      * Create new Email record (and link to given record) including attachments
-     * @param MailManager_Message_Model $mailrecord
+     * @param MailManager_Message_Model $mailRecord
      * @param String $module
      * @param CRMEntity $linkfocus
      * @return Integer
@@ -25,8 +25,7 @@ class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction
      * @global PearDataBase $db
      * @global Users $current_user
      */
-	public function createNewEmail($mailrecord, $module, $linkfocus) {
-		$site_URL = vglobal('site_URL');
+	public function createNewEmail(MailManager_Message_Model $mailRecord, CRMEntity $linkFocus, $relationIds = []) {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$handler = vtws_getModuleHandlerFromName('ITS4YouEmails', $currentUserModel);
 		$meta = $handler->getMeta();
@@ -35,45 +34,49 @@ class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction
 			return false;
 		}
 
-		$mailBoxModel = MailManager_Mailbox_Model::getActiveInstance();
-		$username = $mailBoxModel->username();
 		$recordModel = Vtiger_Record_Model::getCleanInstance('ITS4YouEmails');
-		$recordModel->set('subject', $mailrecord->getSubject());
+		$recordModel->set('subject', $mailRecord->getSubject());
 
-		if(!empty($module)) {
-            $recordModel->set('parent_type', $module);
-        }
+        if (!empty($linkFocus->id)) {
+            $recordModel->set('related_to', $linkFocus->id);
 
-        if (!empty($linkfocus->id)) {
-            $recordModel->set('related_to', $linkfocus->id);
-            $fieldName = MailManager_Message_Model::RELATIONS_MAPPING['ITS4YouEmails'][$module];
+            foreach ($relationIds as $relationId) {
+                if(empty($relationId)) {
+                    continue;
+                }
+                
+                $relationModule = getSalesEntityType($relationId);
+                $relationField = MailManager_Message_Model::RELATIONS_MAPPING['ITS4YouEmails'][$relationModule];
 
-            if (!empty($fieldName)) {
-                $recordModel->set($fieldName, $linkfocus->id);
+                if (!empty($relationField)) {
+                    $recordModel->set($relationField, $relationId);
+                }
             }
         }
 
         //To display inline image in body of email when we go to detail view of email from email related tab of related record.
-		$recordModel->set('body', $mailrecord->getBody(false));
+		$recordModel->set('body', $mailRecord->getBody(false));
 		$recordModel->set('assigned_user_id', $currentUserModel->get('id'));
 		$recordModel->set('email_flag', 'MailManager');
 
-        $from = $mailrecord->getFrom()[0];
-        $to = implode(',', $mailrecord->getTo());
-        $cc = (!empty($mailrecord->getCC())) ? implode(',', $mailrecord->getCC()) : '';
-        $bcc = (!empty($mailrecord->getBCC())) ? implode(',', $mailrecord->getBCC()) : '';
+        $from = $mailRecord->getFrom()[0];
+        $to = implode(',', $mailRecord->getTo());
+        $cc = (!empty($mailRecord->getCC())) ? implode(',', $mailRecord->getCC()) : '';
+        $bcc = (!empty($mailRecord->getBCC())) ? implode(',', $mailRecord->getBCC()) : '';
 		
 		//emails field were restructured and to,bcc and cc field are JSON arrays
 		$recordModel->set('from_email', $from);
 		$recordModel->set('to_email', $to);
 		$recordModel->set('cc_email', $cc);
 		$recordModel->set('bcc_email', $bcc);
-		$recordModel->set('mailboxemail', $username);
-		$recordModel->set('mail_manager_id', $mailrecord->getUid());
+		$recordModel->set('mail_manager_id', $mailRecord->getUid());
 		$recordModel->save();
+        
+        $mailRecord->setDocumentRelationIds([$recordModel->getId(), $recordModel->get('related_to')]);
+        $mailRecord->setAttachmentRelationIds([$recordModel->getId()]);
 
 		// TODO: Handle attachments of the mail (inline/file)
-		$this->saveAttachments($mailrecord, 'ITS4YouEmails', $recordModel);
+		$this->saveAttachments($mailRecord, 'ITS4YouEmails', $recordModel);
 
 		return $recordModel->getId();
 	}
@@ -99,9 +102,19 @@ class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction
                 $documentRecord = $mailRecord->saveDocumentFile($attachment->getName(), $attachment->getContent(), $currentUser->getId(), 'MailManager');
 
                 if ($documentRecord->getId()) {
-                    $documentRecord->saveAttachmentsRelation($documentRecord->getId(), $attachment->getId());
-                    $documentRecord->saveAttachmentsRelation($recordModel->getId(), $attachment->getId());
-                    $documentRecord->saveDocumentsRelation($recordModel->getId(), $documentRecord->getId());
+                    $mailRecord->setAttachmentRelationIds($documentRecord->getId());
+
+                    if (!empty($mailRecord->getAttachmentRelationIds())) {
+                        foreach ($mailRecord->getAttachmentRelationIds() as $relationId) {
+                            $documentRecord->saveAttachmentsRelation($relationId, $attachment->getId());
+                        }
+                    }
+
+                    if (!empty($mailRecord->getDocumentRelationIds())) {
+                        foreach ($mailRecord->getDocumentRelationIds() as $relationId) {
+                            $documentRecord->saveDocumentsRelation($relationId, $documentRecord->getId());
+                        }
+                    }
                 }
             }
         }
@@ -136,33 +149,42 @@ class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction
     }
 
     /**
-	 *
-	 * @global Users $current_user
-	 * @param MailManager_Message_Model $mailrecord
-	 * @param Integer $linkto
-	 * @return Array
-	 */
-	public static function associate($mailrecord, $linkto) {
-		$instance = new self();
+     *
+     * @param MailManager_Message_Model $mailRecord
+     * @param int $linkTo
+     * @param int $recipientId
+     * @return Array
+     * @throws AppException
+     * @global Users $current_user
+     */
+    public static function associate(MailManager_Message_Model $mailRecord, int $linkTo, int $recipientId = 0): array
+    {
+        $instance = new self();
 
-		$moduleName = getSalesEntityType($linkto);
-		$linkfocus = CRMEntity::getInstance($moduleName);
-		$linkfocus->retrieve_entity_info($linkto, $moduleName);
-		$linkfocus->id = $linkto;
-		$emailid = $instance->createNewEmail($mailrecord, $moduleName, $linkfocus);
+        $moduleName = getSalesEntityType($linkTo);
 
-		if (!empty($emailid)) {
-			MailManager::updateMailAssociation($mailrecord->getUniqueId(), $emailid, $linkfocus->id);
-			// To add entry in ModTracker for email relation
-			relateEntities($linkfocus, $moduleName, $linkto, 'ITS4YouEmails', $emailid);
-		}
+        $linkFocus = CRMEntity::getInstance($moduleName);
+        $linkFocus->retrieve_entity_info($linkTo, $moduleName);
+        $linkFocus->id = $linkTo;
 
-		$name = getEntityName($moduleName, $linkto);
+        $emailId = $instance->createNewEmail($mailRecord, $linkFocus, array_unique([$linkFocus->id, $recipientId]));
 
-        return self::buildDetailViewLink($moduleName, $linkfocus->id, $name[$linkto]);
-	}
+        if (!empty($emailId)) {
+            MailManager::updateMailAssociation($mailRecord->getUniqueId(), $emailId, $linkFocus->id);
+            // To add entry in ModTracker for email relation
+            relateEntities($linkFocus, $moduleName, $linkTo, 'ITS4YouEmails', $emailId);
 
-	/**
+            if ($recipientId) {
+                MailManager::updateMailAssociation($mailRecord->getUniqueId(), $emailId, $recipientId);
+            }
+        }
+
+        $name = getEntityName($moduleName, $linkTo);
+
+        return self::buildDetailViewLink($moduleName, $linkFocus->id, $name[$linkTo]);
+    }
+
+    /**
 	 * Returns the information about the Parent
 	 * @param String $module
 	 * @param Integer $record

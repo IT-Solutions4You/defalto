@@ -210,6 +210,7 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
             'mbody' => $this->_body,
             'lastsavedtime' => strtotime("now"),
             'mfolder' => $this->getFolderName(),
+            'muniqueid' => $this->getUniqueId(),
         ]);
     }
 
@@ -823,5 +824,18 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
         }
 
         return $this->attachmentsAllowed;
+    }
+
+    public function getEmailId()
+    {
+        if (!$this->validateUid()) {
+            return 0;
+        }
+
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery('SELECT its4you_emails_id FROM its4you_emails INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=its4you_emails_id AND vtiger_crmentity.deleted=0 WHERE mail_manager_id=?');
+        $data = $adb->fetchByAssoc($result);
+
+        return $data['its4you_emails_id'];
     }
 }

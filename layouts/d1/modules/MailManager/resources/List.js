@@ -1020,17 +1020,24 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		app.helper.showProgress(app.vtranslate('JSLBL_Loading') + '...');
 		app.request.post({data: params}).then(function (err, data) {
 			app.helper.hideProgress();
-			app.helper.showModal(data, {
-				'cb': function (data) {
-					jQuery('[name="saveButton"]', data).on('click', function (e) {
-						e.preventDefault();
-						self.saveComment(data);
-					});
-				}
-			});
+			app.helper.showModal(data, {'cb': function (data) {
+				self.registerCommentModal(data)
+			}});
 		});
 	},
+	registerCommentModal(data) {
+		const self = this,
+			indexInstance = Vtiger_Index_Js.getInstance();
 
+		indexInstance.referenceModulePopupRegisterEvent(data);
+		indexInstance.registerClearReferenceSelectionEvent(data);
+
+		$('[name="saveButton"]', data).on('click', function (e) {
+			e.preventDefault();
+
+			self.saveComment(data);
+		});
+	},
 	createRelatedRecord : function(module) {
 		let self = this,
 			container = self.getContainer(),
@@ -1119,46 +1126,53 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	},
 
 	saveComment : function(data) {
-		let _mlinkto = jQuery('[name="_mlinkto"]', data).val(),
+		let self = this,
+			_mlinkto = jQuery('[name="_mlinkto"]', data).val(),
 			_mlinktotype = jQuery('[name="_mlinktotype"]', data).val(),
 			_msguid = jQuery('[name="_msguid"]', data).val(),
 			_folder = jQuery('[name="_folder"]', data).val(),
-			commentcontent = jQuery('[name="commentcontent"]', data).val();
+			commentContent = jQuery('[name="commentcontent"]', data).val(),
+			relatedTo = jQuery('[name="related_to"]', data).val();
 
-		if(commentcontent.trim() == "") {
+		if (!commentContent.trim()) {
 			let validationParams = {
-				position: {
-					'my' : 'bottom left',
-					'at' : 'top left',
-					'container' : jQuery('#commentContainer', data)
-				}
-			},
+					position: {
+						'my': 'bottom left',
+						'at': 'top left',
+						'container': jQuery('#commentContainer', data)
+					}
+				},
 				errorMsg = app.vtranslate('JSLBL_CANNOT_ADD_EMPTY_COMMENT');
 			vtUtils.showValidationMessage(jQuery('[name="commentcontent"]', data), errorMsg, validationParams);
 			return false;
 		} else {
 			vtUtils.hideValidationMessage(jQuery('[name="commentcontent"]', data));
 		}
-		var params = {
+
+		let params = {
 			'module' : 'MailManager',
 			'view' : 'Index',
 			'_operation' : 'relation',
 			'_operationarg' : 'create',
-			'commentcontent' : commentcontent,
 			'_mlinkto' : _mlinkto,
 			'_mlinktotype' : _mlinktotype,
 			'_msguid': _msguid,
-			'_folder' : _folder
+			'_folder' : _folder,
+			'commentcontent' : commentContent,
+			'related_to': relatedTo,
 		}
-		app.helper.showProgress(app.vtranslate('JSLBL_Saving')+'...');
+
+		app.helper.showProgress(app.vtranslate('JSLBL_Saving') + '...');
 		app.request.post({'data': params}).then(function (error, data) {
 			app.helper.hideProgress();
 
 			if (data['success']) {
 				app.helper.showSuccessNotification({'message': ''});
 				app.helper.hideModal();
+
+				self.showRelatedActions();
 			} else {
-				app.helper.showAlertBox({'message': app.vtranslate("JSLBL_FAILED_ADDING_COMMENT")});
+				app.helper.showAlertBox({'message': app.vtranslate('JSLBL_FAILED_ADDING_COMMENT')});
 			}
 		});
 	},
