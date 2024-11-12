@@ -142,8 +142,12 @@ class VTEmailTask extends VTTask
                 $emailRecord->savePDF();
 
                 if (count($attachments) > 0) {
-                    foreach ($attachments as $attachment_id) {
-                        $emailRecord->saveDocumentRelation($attachment_id);
+                    foreach ($attachments as $attachmentId) {
+                        if ('Documents' === getSalesEntityType($attachmentId)) {
+                            $emailRecord->saveDocumentRelation($attachmentId);
+                        } else {
+                            $emailRecord->saveAttachmentRelation($attachmentId);;
+                        }
                     }
                 }
 

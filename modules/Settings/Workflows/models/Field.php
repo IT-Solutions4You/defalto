@@ -111,17 +111,19 @@ class Settings_Workflows_Field_Model extends Vtiger_Field_Model {
 	 * @param <Vtiger_Module_Model> $moduleModel
 	 * @return <Array> list of Field models <Vtiger_Field_Model>
 	 */
-	public static function getCommentFieldsListForTasks($moduleModel) {
-		$commentsFieldsInfo = array('lastComment' => 'Last Comment', 'last5Comments' => 'Last 5 Comments', 'allComments' => 'All Comments');
+    public static function getCommentFieldsListForTasks($moduleModel)
+    {
+        $commentsFieldsInfo = ModComments_Module_Model::getCommentFields();
+        $commentFieldModelsList = [];
 
-		$commentFieldModelsList = array();
-		foreach ($commentsFieldsInfo as $fieldName => $fieldLabel) {
-			$commentField = new Vtiger_Field_Model();
-			$commentField->setModule($moduleModel);
-			$commentField->set('name', $fieldName);
-			$commentField->set('label', $fieldLabel);
-			$commentFieldModelsList[$fieldName] = $commentField;
-		}
-		return $commentFieldModelsList;
-	}
+        foreach ($commentsFieldsInfo as $fieldName => $fieldLabel) {
+            $commentField = new Vtiger_Field_Model();
+            $commentField->setModule($moduleModel);
+            $commentField->set('name', $fieldName);
+            $commentField->set('label', $fieldLabel);
+            $commentFieldModelsList[$fieldName] = $commentField;
+        }
+
+        return $commentFieldModelsList;
+    }
 }
