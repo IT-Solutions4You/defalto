@@ -134,6 +134,10 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 		return false;
 	}
 
+    /**
+     * @param array $data
+     * @return self
+     */
     public static function getInstanceByData($data)
     {
         $instance = new self();
@@ -147,26 +151,32 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
     }
 
     /**
-	 * Function to create an instance of ModComment_Record_Model
-	 * @param <Integer> $record
-	 * @return ModComment_Record_Model
-	 */
-	public static function getInstanceById($record, $module=null) {
-		$db = PearDatabase::getInstance();
-		$result = $db->pquery('SELECT vtiger_modcomments.*, vtiger_crmentity.smownerid,
-					vtiger_crmentity.createdtime, vtiger_crmentity.modifiedtime FROM vtiger_modcomments
-					INNER JOIN vtiger_crmentity ON vtiger_modcomments.modcommentsid = vtiger_crmentity.crmid
-					WHERE modcommentsid = ? AND deleted = 0', array($record));
-		if($db->num_rows($result)) {
-			$row = $db->query_result_rowdata($result, 0);
-			$self = new self();
-			$self->setData($row);
-			return $self;
-		}
-		return false;
-	}
+     * Function to create an instance of ModComment_Record_Model
+     * @param int $recordId
+     * @param string $module
+     * @return self|bool
+     * @throws Exception
+     */
+    public static function getInstanceById($recordId, $module = 'ModComments')
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery(
+            'SELECT vtiger_modcomments.*, vtiger_crmentity.smownerid, vtiger_crmentity.createdtime, vtiger_crmentity.modifiedtime FROM vtiger_modcomments
+                INNER JOIN vtiger_crmentity ON vtiger_modcomments.modcommentsid = vtiger_crmentity.crmid
+                WHERE modcommentsid = ? AND deleted = 0',
+            [$recordId],
+        );
 
-	/**
+        if ($db->num_rows($result)) {
+            $row = $db->query_result_rowdata($result, 0);
+
+            return self::getInstanceByData($row);
+        }
+
+        return false;
+    }
+
+    /**
 	 * Function returns the parent Comment Model
 	 * @return <Vtiger_Record_Model>
 	 */
@@ -261,9 +271,7 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 
         for ($i = 0; $i < $rows; $i++) {
             $row = $db->query_result_rowdata($result, $i);
-            $recordInstance = new self();
-            $recordInstance->setData($row);
-            $recordInstances[] = $recordInstance;
+            $recordInstances[] = self::getInstanceByData($row);
         }
 
         return $recordInstances;
@@ -383,7 +391,16 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 		}
 	}
 
-	/**
+    public function getCommentModule()
+    {
+        if ($this->isEmpty('module')) {
+            $this->set('module', getSalesEntityType($this->get('related_to')));
+        }
+
+        return $this->get('module');
+    }
+
+    /**
 	 * Function to get all comments related to record $parentId
 	 * @param <Integer> $parentId
 	 * @return ModComments_Record_Model(s)

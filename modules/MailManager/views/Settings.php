@@ -104,4 +104,3 @@ class MailManager_Settings_View extends MailManager_MainUI_View {
         return $request->validateWriteAccess();
     }
 }
-?>

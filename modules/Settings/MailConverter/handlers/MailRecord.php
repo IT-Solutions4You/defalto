@@ -16,6 +16,8 @@ class Settings_MailConverter_MailRecord_Handler
 {
     protected $moduleName = 'MailConverter';
     public array $_attachments = [];
+    public array $documentRelationIds = [];
+    public array $attachmentRelationIds = [];
     /**
      * @var array
      */
@@ -41,7 +43,7 @@ class Settings_MailConverter_MailRecord_Handler
     /**
      * @var string
      */
-    public string $_subject;
+    public string $_subject = '';
     /**
      * @var array
      */
@@ -109,6 +111,14 @@ class Settings_MailConverter_MailRecord_Handler
     {
         $this->_attachments = [];
         $this->_inline_attachments = [];
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttachmentRelationIds(): array
+    {
+        return $this->attachmentRelationIds;
     }
 
     /**
@@ -202,11 +212,12 @@ class Settings_MailConverter_MailRecord_Handler
                 [$date, $time, $AMorPM] = explode(' ', $dateTimeFormat);
 
                 $pos = strpos($dateTimeFormat, date(DateTimeField::getPHPDateFormat()));
+                $time = substr($time, 0, 5);
 
                 if ($pos === false) {
-                    return $date . ' ' . $time . ' ' . $AMorPM;
+                    return $date . ', ' . $time . ' ' . $AMorPM;
                 } else {
-                    return vtranslate('LBL_TODAY') . ' ' . $time . ' ' . $AMorPM;
+                    return $time . ' ' . $AMorPM;
                 }
             } else {
                 return Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat(date('Y-m-d H:i:s', $date));
@@ -514,7 +525,7 @@ class Settings_MailConverter_MailRecord_Handler
             $body = $mMessage->getHTMLBody();
 
             if (empty($body)) {
-                $body = '<div style="white-space: pre-line;">' . $mMessage->getTextBody() . '</div>';
+                $body = str_replace(PHP_EOL, '<br>', $mMessage->getTextBody());
             }
 
             $this->setBody($body);
@@ -559,6 +570,21 @@ class Settings_MailConverter_MailRecord_Handler
         $this->setSubject($mMessage->getSubject());
         $this->setDate($attributes['date']->get()->getTimestamp());
         $this->setRead('Seen' === $mMessage->getFlags()->get('seen'));
+        $this->setUniqueId($mMessage->getMessageId());
+    }
+
+    /**
+     * @param array|int $value
+     * @param bool $clear
+     * @return void
+     */
+    public function setAttachmentRelationIds(array|int $value, bool $clear = false): void
+    {
+        if ($clear) {
+            $this->attachmentRelationIds = [];
+        }
+
+        $this->attachmentRelationIds = array_merge($this->attachmentRelationIds, (array)$value);
     }
 
     public function setBox($value)
@@ -657,8 +683,101 @@ class Settings_MailConverter_MailRecord_Handler
         return $attachment->getData();
     }
 
+    /**
+     * @param string $fileName
+     * @param string $fileContent
+     * @param int $userId
+     * @param string $source
+     * @return Documents_Record_Model
+     */
+    public function saveDocumentFile(string $fileName, string $fileContent, int $userId, string $source = 'MailRecord'): Documents_Record_Model
+    {
+        /**
+         * Create document record
+         * @var $document Documents_Record_Model
+         */
+        $document = Vtiger_Record_Model::getCleanInstance('Documents');
+        $document->set('notes_title', $fileName);
+        $document->set('filename', $fileName);
+        $document->set('filesize', strlen($fileContent));
+        $document->set('filestatus', 1);
+        $document->set('filelocationtype', 'I');
+        $document->set('folderid', 1);
+        $document->set('assigned_user_id', $userId);
+        $document->set('source', $source);
+        $document->save();
+
+        return $document;
+    }
+
     public function getBodyText(): string
     {
         return strip_tags($this->getBody());
+    }
+
+    /**
+     * @param string $string
+     * @return int
+     */
+    public function getRecordIdByString(string $string): int
+    {
+        $tables = [
+            ['vtiger_potential', 'potentialid', 'potential_no',],
+            ['vtiger_troubletickets', 'ticketid', 'ticket_no',],
+        ];
+
+        preg_match('/([a-zA-Z]+[0-9]+)/', $string, $matches);
+
+        foreach ($matches as $match) {
+            foreach ($tables as $table) {
+                $recordId = $this->getRecordIdByNo($match, $table[0], $table[1], $table[2]);
+
+                if (!empty($recordId) && isRecordExists($recordId)) {
+                    return $recordId;
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param string $number
+     * @param string $tableName
+     * @param string $tableId
+     * @param string $tableNumber
+     * @return int
+     */
+    public function getRecordIdByNo(string $number, string $tableName, string $tableId, string $tableNumber): int
+    {
+        $sql = sprintf('SELECT %s FROM %s WHERE %s=?', $tableId, $tableName, $tableNumber);
+
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery($sql, [$number]);
+        $data = $adb->fetchByAssoc($result);
+
+        return (int)$data[$tableId];
+    }
+
+    /**
+     * @return array
+     */
+    public function getDocumentRelationIds(): array
+    {
+        return $this->documentRelationIds;
+    }
+
+    /**
+     * @param int|array $value
+     * @param bool $clear
+     * @return void
+     */
+    public function setDocumentRelationIds(int|array $value, bool $clear = false): void
+    {
+        if ($clear) {
+            $this->documentRelationIds = [];
+        }
+
+        $this->documentRelationIds = array_merge($this->documentRelationIds, (array)$value);
     }
 }

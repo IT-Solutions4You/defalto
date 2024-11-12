@@ -735,7 +735,7 @@ class PearDatabase{
 
 		if($this->getRowCount($result ) == 1)
 	    	return $result;
-		$this->log->error('Rows Returned:'. $this->getRowCount($result) .' More than 1 row returned for '. $sql);
+		$this->log->debug('Rows Returned:'. $this->getRowCount($result) .' More than 1 row returned for '. $sql);
 		return '';
     }
 	/* function which extends requireSingleResult api to execute prepared statment
@@ -746,7 +746,7 @@ class PearDatabase{
 
 		if($this->getRowCount($result ) == 1)
 	    	return $result;
-		$this->log->error('Rows Returned:'. $this->getRowCount($result) .' More than 1 row returned for '. $sql);
+		$this->log->debug('Rows Returned:'. $this->getRowCount($result) .' More than 1 row returned for '. $sql);
 		return '';
     }
 

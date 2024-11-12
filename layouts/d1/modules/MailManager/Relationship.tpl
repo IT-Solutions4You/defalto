@@ -43,7 +43,7 @@
             {/foreach}
         {/foreach}
         <div class="row mailManagerLookUps">
-            <div class="col recordScroll mb-1">
+            <div class="col recordScroll mb-1 overflow-hidden">
                 <ul class="list-group overflow-auto h-25vh-max">
                     {foreach item=RECORDS key=RECORD_MODULE from=$LOOKUPS}
                         {foreach item=RECORD from=$RECORDS}

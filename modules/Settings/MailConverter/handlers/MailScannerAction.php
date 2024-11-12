@@ -463,11 +463,13 @@ class Settings_MailConverter_MailScannerAction_Handler {
 		return $emailid;
 	}
 
-	/**
-	 * Save attachments from the email and add it to the module record.
-	 */
+    /**
+     * Save attachments from the email and add it to the module record.
+     * @throws AppException
+     */
     public function saveAttachements($mailRecord, $baseModule, $baseFocus)
     {
+        /** @var Settings_MailConverter_MailRecord_Handler $mailRecord */
         global $adb;
 
         // If there is no attachments return
@@ -485,30 +487,21 @@ class Settings_MailConverter_MailScannerAction_Handler {
             $attachmentId = $attachInfo['attachmentsid'];
 
             if ($attachmentId) {
-                // Create document record
-                $document = new Documents();
-                $document->column_fields['notes_title'] = $fileName;
-                $document->column_fields['filename'] = $fileName;
-                $document->column_fields['filesize'] = strlen($fileContent);
-                $document->column_fields['filestatus'] = 1;
-                $document->column_fields['filelocationtype'] = 'I';
-                $document->column_fields['folderid'] = 1; // Default Folder
-                $document->column_fields['assigned_user_id'] = $userid;
-                $document->column_fields['source'] = $this->recordSource;
-                $document->save('Documents');
+                /**
+                 * Create document record
+                 */
+                $documentRecord = $mailRecord->saveDocumentFile($fileName, $fileContent, $userid, $this->recordSource);
 
-                // Link file attached to document
-                $adb->pquery('INSERT INTO vtiger_seattachmentsrel(crmid, attachmentsid) VALUES(?,?)', [$document->id, $attachmentId]);
+                if ($documentRecord->getId()) {
+                    // Link document to base record
+                    $documentRecord->saveDocumentsRelation($baseFocus->id, $documentRecord->getId());
 
-                // Link document to base record
-                $adb->pquery('INSERT INTO vtiger_senotesrel(crmid, notesid) VALUES(?,?)', [$baseFocus->id, $document->id]);
+                    // Link file attached to document
+                    $documentRecord->saveAttachmentsRelation($documentRecord->getId(), $attachmentId);
 
-                // Link document to Parent entity - Account/Contact/...
-                [$eid, $junk] = explode('@', $baseFocus->column_fields['parent_id']);
-                $adb->pquery('INSERT INTO vtiger_senotesrel(crmid, notesid) VALUES(?,?)', [$eid, $document->id]);
-
-                // Link Attachement to the Email
-                $adb->pquery('INSERT INTO vtiger_seattachmentsrel(crmid, attachmentsid) VALUES(?,?)', [$baseFocus->id, $attachmentId]);
+                    // Link Attachment to the Email
+                    $documentRecord->saveAttachmentsRelation($baseFocus->id, $attachmentId);
+                }
             }
         }
     }

@@ -37,12 +37,12 @@
                                 {$CREATOR_NAME}
                             </span>
                             {if !empty($PARENT_RECORD) and !$COMMENT->isEmpty('related_to') and $COMMENT->get('related_to') ne $PARENT_RECORD}
-                                {assign var=SINGULAR_MODULE value='SINGLE_'|cat:$COMMENT->get('module')}
-                                {assign var=ENTITY_NAME value=getEntityName($COMMENT->get('module'), array($COMMENT->get('related_to')))}
+                                {assign var=SINGULAR_MODULE value='SINGLE_'|cat:$COMMENT->getCommentModule()}
+                                {assign var=ENTITY_NAME value=getEntityName($COMMENT->getCommentModule(), array($COMMENT->get('related_to')))}
                                 <span class="text-secondary wordbreak">
                                     <span class="me-1">{vtranslate('LBL_ON','Vtiger')}</span>
-                                    <span class="me-1">{vtranslate($SINGULAR_MODULE, $COMMENT->get('module'))}</span>
-                                    <a class="fw-bold me-1" href="index.php?module={$COMMENT->get('module')}&view=Detail&record={$COMMENT->get('related_to')}">
+                                    <span class="me-1">{vtranslate($SINGULAR_MODULE, $COMMENT->getCommentModule())}</span>
+                                    <a class="fw-bold me-1" href="index.php?module={$COMMENT->getCommentModule()}&view=Detail&record={$COMMENT->get('related_to')}">
                                         {$ENTITY_NAME[$COMMENT->get('related_to')]}
                                     </a>
                                 </span>
@@ -50,9 +50,9 @@
                             <span class="commentTime text-secondary cursorDefault ms-3" title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">
                                 {Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getCommentedTime())}
                             </span>
-                            {if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
+                            {if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES) and in_array($COMMENT->getCommentModule(), $PRIVATE_COMMENT_MODULES)}
                                 <span class="text-secondary ms-3">
-                                    {if $COMMENT->get('is_private') or !in_array($COMMENT->get('module'), $PRIVATE_COMMENT_MODULES)}
+                                    {if $COMMENT->get('is_private')}
                                         <i class="fa fa-lock" data-bs-toggle="tooltip" data-placement="top" title="{vtranslate('LBL_INTERNAL_COMMENT_TOOTLTIP',$MODULE)}"></i>
                                     {else}
                                         <i class="fa fa-unlock" data-bs-toggle="tooltip" data-placement="top" title="{vtranslate('LBL_EXTERNAL_COMMENT_TOOTLTIP',$MODULE)}"></i>

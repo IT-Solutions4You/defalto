@@ -245,7 +245,7 @@ class MailManager_Connector_Connector {
     {
         $mBoxFolder = $folder->getBoxFolder($this->getBox());
 
-        if ($mBoxFolder) {
+        if ($mBoxFolder && true === PerformancePrefs::get('MAIL_MANAGER_COMPUTE_FOLDER_COUNT')) {
             $allMessages = $mBoxFolder->query()->all()->setFetchBody(false);
 
             $folder->setCount($allMessages->count());
@@ -277,9 +277,8 @@ class MailManager_Connector_Connector {
         $mBoxFolder = $folder->getBoxFolder($this->getBox());
 
         if ($mBoxFolder) {
-            $query = $mBoxFolder->query()->all()->setFetchOrderDesc()->setFetchBody(true);
+            $query = $mBoxFolder->query()->all()->setFetchOrderDesc()->setFetchBody(false);
             $count = $query->count();
-
             [$mailIds, $mails] = $this->getMails($query, $folder, $page, $limit);
 
             $folder->setMails($mails);
@@ -398,7 +397,6 @@ class MailManager_Connector_Connector {
      */
     public function getMail(MailManager_Folder_Model $folder, int $mUId, bool $fetchBody = true): MailManager_Message_Model
     {
-        $this->clearDBCache();
         $message = MailManager_Message_Model::getInstanceByBoxMessage($this->getMessageByMUid($folder, $mUId), $folder, $this->getBox());
 
         if ($fetchBody) {
@@ -475,7 +473,7 @@ class MailManager_Connector_Connector {
         $mBoxFolder = $folder->getBoxFolder($this->getBox());
 
         if ($mBoxFolder) {
-            $query = $mBoxFolder->query()->setFetchOrderAsc()->setFetchBody(true)->where($query);
+            $query = $mBoxFolder->query()->setFetchOrderAsc()->setFetchBody(false)->where($query);
             $count = $query->count();
 
             [$mailIds, $mails] = $this->getMails($query, $folder, $page, $limit);
