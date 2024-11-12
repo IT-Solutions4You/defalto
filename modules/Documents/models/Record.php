@@ -133,5 +133,34 @@ class Documents_Record_Model extends Vtiger_Record_Model {
 		}
 		return $value;
 	}
-    
+
+    /**
+     * @param int $recordId
+     * @param int $attachmentId
+     * @return void
+     */
+    public function saveAttachmentsRelation(int $recordId, int $attachmentId): void
+    {
+        if (empty($recordId) || empty($attachmentId)) {
+            return;
+        }
+
+        $adb = PearDatabase::getInstance();
+        $adb->pquery('INSERT INTO vtiger_seattachmentsrel(crmid, attachmentsid) VALUES(?,?)', [$recordId, $attachmentId]);
+    }
+
+    /**
+     * @param int $recordId
+     * @param int $documentId
+     * @return void
+     */
+    public function saveDocumentsRelation(int $recordId, int $documentId): void
+    {
+        if(empty($recordId) || empty($documentId)) {
+            return;
+        }
+
+        $adb = PearDatabase::getInstance();
+        $adb->pquery('INSERT INTO vtiger_senotesrel(crmid, notesid) VALUES(?,?)', [$recordId, $documentId]);
+    }
 }

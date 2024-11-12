@@ -118,6 +118,14 @@ class Core_Attachment_Model extends Core_DatabaseData_Model {
     }
 
     /**
+     * @return string
+     */
+    public function getContent(): string
+    {
+        return (string)$this->get('content');
+    }
+
+    /**
      * @throws AppException
      */
     public function save(): void

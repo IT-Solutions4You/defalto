@@ -12,14 +12,16 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	},
 
 	loadFolders : function(folder) {
-		app.helper.showProgress(app.vtranslate("JSLBL_Loading_Please_Wait")+"...");
-		var self = this;
-		var params = {
+		app.helper.showProgress(app.vtranslate('JSLBL_Loading_Folders_Please_Wait')+'...');
+
+		let self = this,
+			params = {
 			'module' : app.getModuleName(),
 			'view' : 'Index',
 			'_operation' : 'folder',
 			'_operationarg' : 'getFoldersList'
 		}
+
 		app.request.post({"data" : params}).then(function(error, responseData) {
 			app.helper.hideProgress();
 			self.getContainer().find('#folders_list').html(responseData);
@@ -90,17 +92,19 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	},
 
 	registerSettingsEdit : function() {
-		var self = this;
-		var container = this.getContainer();
+		let self = this,
+			container = this.getContainer();
+
 		container.find('.mailbox_setting').click(function() {
-			app.helper.showProgress(app.vtranslate("JSLBL_Loading_Please_Wait")+"...");
-			var params = {
-				'module' : 'MailManager',
-				'view' : 'Index',
-				'_operation' : 'settings',
-				'_operationarg' : 'edit'
-			};
-			var popupInstance = Vtiger_Popup_Js.getInstance();
+			app.helper.showProgress(app.vtranslate('JSLBL_Loading_Please_Wait') + '...');
+			let params = {
+					'module' : 'MailManager',
+					'view' : 'Index',
+					'_operation' : 'settings',
+					'_operationarg' : 'edit'
+				},
+				popupInstance = Vtiger_Popup_Js.getInstance();
+
 			popupInstance.showPopup(params, '', function(data) {
 				app.helper.hideProgress();
 				self.handleSettingsEvents(data);
@@ -197,18 +201,21 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	},
 
 	registerDeleteMailboxEvent : function(data) {
-		var settingContainer = jQuery(data);
+		let settingContainer = jQuery(data);
+
 		settingContainer.find('#deleteMailboxBtn').click(function(e) {
 			e.preventDefault();
-			app.helper.showProgress(app.vtranslate("JSLBL_Deleting")+"...");
-			var params = {
+			app.helper.showProgress(app.vtranslate('JSLBL_Deleting') + '...');
+			let params = {
 				'module' : 'MailManager',
 				'view' : 'Index',
 				'_operation' : 'settings',
 				'_operationarg' : 'remove'
 			};
+
 			app.request.post({"data" : params}).then(function(error, responseData) {
 				app.helper.hideProgress();
+
 				if(responseData.status) {
 					window.location.reload();
 				}
@@ -251,7 +258,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 				vtUtils.hideValidationMessage(settingContainer.find('#_mbox_pwd'));
 			}
 
-			app.helper.showProgress(app.vtranslate("JSLBL_Saving_And_Verifying")+"...");
+			app.helper.showProgress(app.vtranslate('JSLBL_Saving_And_Verifying') + '...');
 
 			params = {
 				'module' : 'MailManager',
@@ -272,18 +279,8 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			});
 		});
 	},
-
-	registerInitialLayout : function() {
-		var self = this;
-		var container = self.getContainer();
-		if(container.find('#isMailBoxExists').val() == "0") {
-			container.find('#modnavigator').addClass('hide');
-			container.find('#listViewContent').addClass('paddingLeft0');
-		}
-	},
-
 	openFolder : function(folderName, page, query, type) {
-		app.helper.showProgress(app.vtranslate("JSLBL_Loading_Please_Wait")+"...");
+		app.helper.showProgress(app.vtranslate('JSLBL_Loading_Mails_Please_Wait') + '...');
 
 		let self = this,
 			container = self.getContainer();
@@ -1023,17 +1020,24 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		app.helper.showProgress(app.vtranslate('JSLBL_Loading') + '...');
 		app.request.post({data: params}).then(function (err, data) {
 			app.helper.hideProgress();
-			app.helper.showModal(data, {
-				'cb': function (data) {
-					jQuery('[name="saveButton"]', data).on('click', function (e) {
-						e.preventDefault();
-						self.saveComment(data);
-					});
-				}
-			});
+			app.helper.showModal(data, {'cb': function (data) {
+				self.registerCommentModal(data)
+			}});
 		});
 	},
+	registerCommentModal(data) {
+		const self = this,
+			indexInstance = Vtiger_Index_Js.getInstance();
 
+		indexInstance.referenceModulePopupRegisterEvent(data);
+		indexInstance.registerClearReferenceSelectionEvent(data);
+
+		$('[name="saveButton"]', data).on('click', function (e) {
+			e.preventDefault();
+
+			self.saveComment(data);
+		});
+	},
 	createRelatedRecord : function(module) {
 		let self = this,
 			container = self.getContainer(),
@@ -1122,46 +1126,53 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	},
 
 	saveComment : function(data) {
-		let _mlinkto = jQuery('[name="_mlinkto"]', data).val(),
+		let self = this,
+			_mlinkto = jQuery('[name="_mlinkto"]', data).val(),
 			_mlinktotype = jQuery('[name="_mlinktotype"]', data).val(),
 			_msguid = jQuery('[name="_msguid"]', data).val(),
 			_folder = jQuery('[name="_folder"]', data).val(),
-			commentcontent = jQuery('[name="commentcontent"]', data).val();
+			commentContent = jQuery('[name="commentcontent"]', data).val(),
+			relatedTo = jQuery('[name="related_to"]', data).val();
 
-		if(commentcontent.trim() == "") {
+		if (!commentContent.trim()) {
 			let validationParams = {
-				position: {
-					'my' : 'bottom left',
-					'at' : 'top left',
-					'container' : jQuery('#commentContainer', data)
-				}
-			},
+					position: {
+						'my': 'bottom left',
+						'at': 'top left',
+						'container': jQuery('#commentContainer', data)
+					}
+				},
 				errorMsg = app.vtranslate('JSLBL_CANNOT_ADD_EMPTY_COMMENT');
 			vtUtils.showValidationMessage(jQuery('[name="commentcontent"]', data), errorMsg, validationParams);
 			return false;
 		} else {
 			vtUtils.hideValidationMessage(jQuery('[name="commentcontent"]', data));
 		}
-		var params = {
+
+		let params = {
 			'module' : 'MailManager',
 			'view' : 'Index',
 			'_operation' : 'relation',
 			'_operationarg' : 'create',
-			'commentcontent' : commentcontent,
 			'_mlinkto' : _mlinkto,
 			'_mlinktotype' : _mlinktotype,
 			'_msguid': _msguid,
-			'_folder' : _folder
+			'_folder' : _folder,
+			'commentcontent' : commentContent,
+			'related_to': relatedTo,
 		}
-		app.helper.showProgress(app.vtranslate('JSLBL_Saving')+'...');
+
+		app.helper.showProgress(app.vtranslate('JSLBL_Saving') + '...');
 		app.request.post({'data': params}).then(function (error, data) {
 			app.helper.hideProgress();
 
 			if (data['success']) {
 				app.helper.showSuccessNotification({'message': ''});
 				app.helper.hideModal();
+
+				self.showRelatedActions();
 			} else {
-				app.helper.showAlertBox({'message': app.vtranslate("JSLBL_FAILED_ADDING_COMMENT")});
+				app.helper.showAlertBox({'message': app.vtranslate('JSLBL_FAILED_ADDING_COMMENT')});
 			}
 		});
 	},
@@ -1323,7 +1334,6 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		self.loadFolders();
 		self.registerComposeEmail();
 		self.registerSettingsEdit();
-		self.registerInitialLayout();
 		self.registerRefreshFolder();
 		self.registerSearchTypeChangeEvent();
 		self.registerPostMailSentEvent();

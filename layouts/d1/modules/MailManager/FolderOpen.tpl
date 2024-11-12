@@ -103,7 +103,7 @@
                                     {strip_tags($DISPLAY_NAME)}<br>{strip_tags($SUBJECT)}
                                 </div>
                                 <div class="col-sm-4 text-end text-muted fs-small">
-                                    <span class="mmDateTimeValue" title="{Vtiger_Util_Helper::formatDateTimeIntoDayString(date('Y-m-d H:i:s', strtotime($MAIL->_date)))}">{Vtiger_Util_Helper::formatDateDiffInStrings(date('Y-m-d H:i:s', $MAIL->_date))}</span>
+                                    <span class="mmDateTimeValue">{$MAIL->getDate(true)}</span>
                                 </div>
                             </div>
                         </div>
