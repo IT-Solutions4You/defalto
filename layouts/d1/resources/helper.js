@@ -456,9 +456,13 @@ jQuery.Class("Vtiger_Helper_Js",{
 
         let cb = params.cb,
             container = jQuery('#myModal');
-		
+
+        if(!container.find('.modal-dialog').length) {
+            console.error('Missing modal dialog in modal element')
+        }
+
         container.on('hidden.bs.modal',function() {
-			container.html('');
+			container.html('<div class="modal-dialog"></div>');
 			window.onbeforeunload = null;
         });
 		

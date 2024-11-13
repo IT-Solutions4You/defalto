@@ -603,19 +603,19 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	},
 
 	loadSelectedTabContents: function(tabElement, urlAttributes){
-			var self = this;
-			var detailViewContainer = this.getDetailViewContainer();
-			var url = tabElement.data('url');
+			let self = this,
+				url = tabElement.data('url');
+
 			self.loadContents(url,urlAttributes).then(function(data){
 				self.deSelectAllrelatedTabs();
 				self.markRelatedTabAsSelected(tabElement);
-				var container = jQuery('.relatedContainer');
+				let container = jQuery('.relatedContainer');
 				app.event.trigger("post.relatedListLoad.click",container.find(".searchRow"));
 				// Added this to register pagination events in related list
-				var relatedModuleInstance = self.getRelatedController();
+				let relatedModuleInstance = self.getRelatedController();
 				//Summary tab is clicked
 				if(tabElement.data('linkKey') == self.detailViewSummaryTabLabel) {
-					self.registerSummaryViewContainerEvents(detailViewContainer);
+					self.registerSummaryViewContainerEvents(self.getContentHolder());
 					self.registerEventForPicklistDependencySetup(self.getForm());
 				}
 
@@ -1630,10 +1630,17 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	registerSummaryViewContainerEvents: function (summaryViewContainer) {
 		const self = this;
 
+		if (!summaryViewContainer.is('.details')) {
+			console.error('Missing or wrong summary view container');
+		}
+
+		summaryViewContainer.off();
+
 		self.loadWidgets();
 		/**
 		 * Function to handle the ajax edit for summary view fields
 		 */
+
 		summaryViewContainer.on('click', '.summary-table .fieldValue .editAction', function (e) {
 			let currentTarget = jQuery(e.currentTarget),
 				currentTdElement = currentTarget.closest('.fieldValue');
@@ -1643,6 +1650,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		});
 
 		summaryViewContainer.on('click', '.createRecord', function (e) {
+			console.log('summaryViewContainer click createRecord')
+			console.log(summaryViewContainer);
+			console.trace();
+
 			let currentElement = jQuery(e.currentTarget),
 				form = currentElement.closest('form'),
 				recordElement = form.find('[name=record]'),
@@ -2922,7 +2933,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		//END
 
 		this.registerRelatedRowClickEvent();
-		this.registerSummaryViewContainerEvents(this.getContentHolder());
+		this.registerSummaryViewContainerEvents(self.getContentHolder());
 
 		//prevent detail view ajax form submissions
 		jQuery('form#detailView, form#headerForm').on('submit', function(e) {
