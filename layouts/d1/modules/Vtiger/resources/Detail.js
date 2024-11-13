@@ -196,7 +196,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	}
 
 },{
-
+	registerSummaryHandlers: true,
 	detailViewSummaryTabLabel : 'LBL_RECORD_SUMMARY',
 	detailViewDetailTabLabel : 'LBL_RECORD_DETAILS',
 	detailViewHistoryTabLabel : 'LBL_HISTORY',
@@ -615,7 +615,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				let relatedModuleInstance = self.getRelatedController();
 				//Summary tab is clicked
 				if(tabElement.data('linkKey') == self.detailViewSummaryTabLabel) {
-					self.registerSummaryViewContainerEvents(self.getDetailViewContainer(), false);
+					self.registerSummaryViewContainerEvents(self.getDetailViewContainer());
 					self.registerEventForPicklistDependencySetup(self.getForm());
 				}
 
@@ -1627,7 +1627,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		});
 	},
 
-	registerSummaryViewContainerEvents: function (summaryViewContainer, registerHandlers = true) {
+	registerSummaryViewContainerEvents: function (summaryViewContainer) {
 		const self = this;
 
 		if (!summaryViewContainer.is('.detailViewContainer')) {
@@ -1639,9 +1639,11 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		 * Function to handle the ajax edit for summary view fields
 		 */
 
-		if (!registerHandlers) {
+		if (!self.registerSummaryHandlers) {
 			return;
 		}
+
+		self.registerSummaryHandlers = false;
 
 		summaryViewContainer.on('click', '.summary-table .fieldValue .editAction', function (e) {
 			let currentTarget = jQuery(e.currentTarget),
