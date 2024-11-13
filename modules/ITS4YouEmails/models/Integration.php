@@ -96,7 +96,7 @@ class ITS4YouEmails_Integration_Model extends Vtiger_Base_Model
         return $this->getReferenceField()->getReferenceList();
     }
 
-    public function updateRelation($register = true)
+    public function updateRelation($register = true): void
     {
         $relatedModule = $this->getEmailsModel();
         $relatedFunction = 'get_related_list';
@@ -109,5 +109,15 @@ class ITS4YouEmails_Integration_Model extends Vtiger_Base_Model
         if($register) {
             $module->setRelatedList($relatedModule, '', $relatedActions, $relatedFunction);
         }
+    }
+
+    /**
+     * @param bool $register
+     * @return void
+     */
+    public function updateLinks(bool $register = true): void
+    {
+        $emailMaker = new EMAILMaker_EMAILMaker_Model();
+        $emailMaker->AddLinks($this->moduleName, $register);
     }
 }

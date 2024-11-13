@@ -845,4 +845,50 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             }
         }
     }
+
+    /**
+     * @param bool $register
+     * @return void
+     */
+    public function updateAppointments(bool $register = true): void
+    {
+        $moduleName = $this->getModuleName();
+        $integration = Settings_Appointments_Integration_Model::getInstance($moduleName);
+
+        $integration->unsetField();
+        $integration->unsetRelation();
+
+        if ($register) {
+            $integration->setField();
+            $integration->setRelation();
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getModuleName(): string
+    {
+        return $this->moduleName;
+    }
+
+    /**
+     * @param bool $register
+     * @return void
+     */
+    public function updateEmails(bool $register = true): void
+    {
+        $moduleName = $this->getModuleName();
+
+        $emails = ITS4YouEmails_Integration_Model::getInstance($moduleName);
+        $emails->updateRelation(false);
+        $emails->updateLinks(false);
+        $emails->unsetReferenceModule();
+
+        if ($register) {
+            $emails->updateRelation();
+            $emails->updateLinks();
+            $emails->setReferenceModule();
+        }
+    }
 }
