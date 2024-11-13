@@ -56,9 +56,11 @@ class ModCommentsHandler extends VTEventHandler {
 					$util = new VTWorkflowUtils();
 					$entityCache = new VTEntityCache($util->adminUser());
 
+                    $dataSource = !empty($data->get('source')) ? $data->get('source') : 'CRM';
+
 					$entityCacheData = $entityCache->forId($wsId);
 					$entityCacheData->set('from_portal', $fromPortal);
-					$entityCacheData->set('comment_source', $data->get('source'));
+					$entityCacheData->set('comment_source', $dataSource);
 					$entityCacheData->set('comment_added', true);
 					$entityCache->cache[$wsId] = $entityCacheData;
 					$relatedToEventHandler->handleEvent($eventName, $entityData, $entityCache,$relatedInfo);
