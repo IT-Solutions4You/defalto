@@ -470,4 +470,69 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 		$htmlParser = new Settings_MailConverter_MailParser_Handler($this->getName());
 		return $htmlParser->parseHtml();
 	}
+
+    /**
+     * @param int $recordId
+     * @param int|null $limit
+     * @param int $isPrivate
+     * @param array $columns
+     * @return array
+     */
+    public static function getCommentsByRecord(int $recordId, int|null $limit = null, array $columns = [], int $isPrivate = 1): array
+    {
+        if (empty($columns)) {
+            $columns = ['vtiger_modcomments.modcommentsid', 'vtiger_modcomments.commentcontent', 'vtiger_modcomments.userid', 'vtiger_crmentity.createdtime'];
+        }
+
+        $adb = PearDatabase::getInstance();
+        $sql = sprintf(
+            'SELECT %s FROM vtiger_modcomments
+				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_modcomments.modcommentsid
+				WHERE vtiger_modcomments.related_to = ? AND vtiger_modcomments.is_private <> ? 
+				ORDER BY vtiger_modcomments.modcommentsid DESC ',
+            implode(',', $columns),
+        );
+
+        if (is_integer($limit)) {
+            $sql .= 'LIMIT ' . $limit;
+        }
+
+        $result = $adb->pquery($sql, [$recordId, $isPrivate]);
+        $data = [];
+
+        while ($row = $adb->fetchByAssoc($result)) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param int $recordId
+     * @param int|null $limit
+     * @param int $isPrivate
+     * @return array
+     */
+    public static function getCommentsAttachmentsByRecord(int $recordId, int|null $limit = null, int $isPrivate = 1): array
+    {
+        $adb = PearDatabase::getInstance();
+        $sql = 'SELECT vtiger_seattachmentsrel.attachmentsid FROM vtiger_modcomments
+				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_modcomments.modcommentsid
+				INNER JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.crmid = vtiger_modcomments.modcommentsid
+				WHERE vtiger_modcomments.related_to = ? AND vtiger_modcomments.is_private <> ?
+				ORDER BY vtiger_modcomments.modcommentsid DESC ';
+
+        if (is_integer($limit)) {
+            $sql .= 'LIMIT ' . $limit;
+        }
+
+        $result = $adb->pquery($sql, [$recordId, $isPrivate]);
+        $ids = [];
+
+        while ($row = $adb->fetchByAssoc($result)) {
+            $ids[] = (int)$row['attachmentsid'];
+        }
+
+        return array_filter($ids);
+    }
 }

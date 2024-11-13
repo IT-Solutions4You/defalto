@@ -29,7 +29,7 @@ class VTSimpleTemplate{
 				$fieldname = $match[1];
 
 				//To handle comments for this module
-				if (in_array($fieldname, array('lastComment', 'last5Comments', 'allComments'))) {
+				if (in_array($fieldname, ModComments_Module_Model::getCommentFieldNames())) {
 					return $this->getComments($this->parent->getModuleName(), $fieldname, $this->parent->getId());
 				}
 
@@ -45,7 +45,7 @@ class VTSimpleTemplate{
 					$result ='$'.$fieldname;
 				}
 			}else{
-				list($full, $referenceField, $referenceModule, $fieldname) = $matches;
+				[$full, $referenceField, $referenceModule, $fieldname] = $matches;
 				if($referenceModule === '__VtigerMeta__' || $fieldname === 'dbLabel') {
 					$result = $this->getMetaValue($fieldname);
 				} else if ('__VtigerCompany__' == $referenceModule) { 
@@ -56,7 +56,7 @@ class VTSimpleTemplate{
 						$result="";
 					}else{
 						//To handle comments for this reference module
-						if (in_array($fieldname, array('lastComment', 'last5Comments', 'allComments'))) {
+						if (in_array($fieldname, ModComments_Module_Model::getCommentFieldNames())) {
 							return $this->getComments($referenceModule, $fieldname, $referenceId);
 						}
 
@@ -74,7 +74,7 @@ class VTSimpleTemplate{
 						}
 						$entity = $this->cache->forId($referenceId);
 						if($referenceModule==="Users" && $entity->getModuleName()=="Groups"){
-							list($groupEntityId, $groupId) = vtws_getIdComponents($referenceId);
+							[$groupEntityId, $groupId] = vtws_getIdComponents($referenceId);
 
 							require_once('include/utils/GetGroupUsers.php');
 							$ggu = new GetGroupUsers();
@@ -192,7 +192,7 @@ class VTSimpleTemplate{
 			case 'portalurl'			:	return $PORTAL_URL;
 			case 'logo'					:	return '<img src="cid:logo" />';
 
-			case 'recordId'				: list($moduleId, $recordId) = vtws_getIdComponents($this->parent->getId());
+			case 'recordId'				: [$moduleId, $recordId] = vtws_getIdComponents($this->parent->getId());
 										  return $recordId;
 
 			case 'supportName'			: return $HELPDESK_SUPPORT_NAME;
@@ -225,15 +225,15 @@ class VTSimpleTemplate{
 		$referenceId = $this->parent->get('assigned_user_id');
 		if ($referenceId) {
 			$entity = $this->cache->forId($referenceId);
-			list($entityId, $ownerId) = vtws_getIdComponents($referenceId);
+			[$entityId, $ownerId] = vtws_getIdComponents($referenceId);
 
 			if($entity->getModuleName() === 'Groups') {
-				list($moduleId, $recordId) = vtws_getIdComponents($this->parent->getId());
+				[$moduleId, $recordId] = vtws_getIdComponents($this->parent->getId());
 				$ownerId = Vtiger_Util_Helper::getCreator($recordId);
 			}
 		}
 		if(empty($ownerId)) {
-			list($moduleId, $recordId) = vtws_getIdComponents($this->parent->getId());
+			[$moduleId, $recordId] = vtws_getIdComponents($this->parent->getId());
 			$ownerArr = getRecordOwnerId($recordId);
 			if (empty($ownerArr)) {
 				$ownerArr['Users'] = Vtiger_Util_Helper::getCreator($recordId);
@@ -333,61 +333,59 @@ class VTSimpleTemplate{
 		return nl2br($fieldValue);
 	}
 
-	/**
-	 * Function to fieldvalues of Comments
-	 * @param <String> $moduleName
-	 * @param <String> $fieldName
-	 * @param <String> $fieldValue
-	 * @return <String> $comments
-	 */
-	public function getComments($moduleName, $fieldName, $fieldValue) {
-		global $adb, $log, $current_user;
+    /**
+     * Function to fieldvalues of Comments
+     * @param string $moduleName
+     * @param string $fieldName
+     * @param string $fieldValue
+     * @return string $comments
+     */
+    public function getComments(string $moduleName, string $fieldName, string $fieldValue): string
+    {
+        global $current_user;
 
-		$sql = 'SELECT vtiger_modcomments.commentcontent,vtiger_modcomments.userid, vtiger_crmentity.createdtime FROM vtiger_modcomments
-				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_modcomments.modcommentsid
-				WHERE vtiger_modcomments.related_to = ? AND vtiger_modcomments.is_private <> ? 
-				ORDER BY vtiger_modcomments.modcommentsid DESC';
+        $isSummaryField = in_array($fieldName, ModComments_Module_Model::$commentFieldsSummary);
+        $limit = ModComments_Module_Model::$commentFieldsLimit[$fieldName];
+        $recordId = vtws_getIdComponents($fieldValue)[1];
+        $comments = ModComments_Record_Model::getCommentsByRecord($recordId, $limit ?? null);
+        $commentsList = '';
 
-		switch ($fieldName) {
-			case 'lastComment'		: $sql .= ' LIMIT 1';	break;
-			case 'last5Comments'	: $sql .= ' LIMIT 5';	break;
-			default					: $sql;					break;
-		}
-		list($entityId, $recordId) = vtws_getIdComponents($fieldValue);
+        foreach ($comments as $comment) {
+            $content = decode_html($comment['commentcontent']);
 
-		$result = $adb->pquery($sql, array($recordId, 1));
-		$numOfRows = $adb->num_rows($result);
+            if (!empty($content)) {
+                $commentsList .= nl2br($content);
 
-		$commentsList = '';
-		for ($i=0; $i<$numOfRows; $i++) {
-			$comment = $adb->query_result($result, $i, 'commentcontent');
-			if ($comment != '') {
-				$dateTime = new DateTimeField($adb->query_result($result, $i, 'createdtime'));
-				$dateTimeValue = $dateTime->getDisplayDateTimeValue();
-				$dateTimeParts = explode(' ', $dateTimeValue);
-				$createdTime = $dateTimeParts[0].' '.Vtiger_Time_UIType::getDisplayValueUserFormat($dateTimeParts[1]);
-				$timeZone = vtranslate($current_user->time_zone, 'Users');
-				$userId = $adb->query_result($result, $i, 'userid');
-				$commenter = getOwnerName($userId);
-				$commentsList .= nl2br($comment);
-				$commentsList .= '<br>'.$commenter.' '.vtranslate('LBL_COMMENTED_AT','ModComments').':<small>'.$createdTime.' ('.$timeZone.')</small><br><br>';
-			}
-		}
+                if ($isSummaryField) {
+                    $dateTime = new DateTimeField($comment['createdtime']);
+                    $dateTimeValue = $dateTime->getDisplayDateTimeValue();
+                    $dateTimeParts = explode(' ', $dateTimeValue);
+                    $createdTime = $dateTimeParts[0] . ' ' . Vtiger_Time_UIType::getDisplayValueUserFormat($dateTimeParts[1]);
+                    $commentsList .= sprintf(
+                        '<br>%s %s:<small>%s (%s)</small><br><br>',
+                        getOwnerName($comment['userid']),
+                        vtranslate('LBL_COMMENTED_AT', 'ModComments'),
+                        $createdTime,
+                        vtranslate($current_user->time_zone, 'Users'),
+                    );
+                }
+            }
+        }
 
-		return $commentsList;
-	}
+        return $commentsList;
+    }
 
-	/**
-	 * Function to get the record owner id of the current record
+    /**
+     * Function to get the record owner id of the current record
 	 * @return <integer> $ownerId
 	 */
 	function getOwnerId() {
 		$referenceId = $this->parent->get('assigned_user_id');
 		if ($referenceId) {
 			$entity = $this->cache->forId($referenceId);
-			list($entityId, $ownerId) = vtws_getIdComponents($referenceId);
+			[$entityId, $ownerId] = vtws_getIdComponents($referenceId);
 			if($entity->getModuleName() === 'Groups') {
-				list($moduleId, $recordId) = vtws_getIdComponents($this->parent->getId());
+				[$moduleId, $recordId] = vtws_getIdComponents($this->parent->getId());
 				$ownerId = Vtiger_Util_Helper::getCreator($recordId);
 			}
 		}

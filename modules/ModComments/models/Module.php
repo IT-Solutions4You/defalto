@@ -8,9 +8,44 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class ModComments_Module_Model extends Vtiger_Module_Model{
+class ModComments_Module_Model extends Vtiger_Module_Model
+{
+    public static array $commentFields = [
+        'lastComment' => 'Last Comment',
+        'lastCommentSummary' => 'Last Comment Summary',
+        'last5Comments' => 'Last 5 Comments',
+        'allComments' => 'All Comments',
+    ];
 
-	/**
+    public static array $commentFieldsSummary = [
+        'lastCommentSummary',
+        'last5Comments',
+        'allComments',
+    ];
+
+    public static array $commentFieldsLimit = [
+        'lastComment' => 1,
+        'lastCommentSummary' => 1,
+        'last5Comments' => 5,
+    ];
+
+    /**
+     * @return array
+     */
+    public static function getCommentFields(): array
+    {
+        return self::$commentFields;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getCommentFieldNames(): array
+    {
+        return array_keys(self::$commentFields);
+    }
+
+    /**
 	 * Function to get the Quick Links for the module
 	 * @param <Array> $linkParams
 	 * @return <Array> List of Vtiger_Link_Model instances

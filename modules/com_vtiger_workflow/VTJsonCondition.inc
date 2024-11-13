@@ -32,11 +32,7 @@ class VTJsonCondition {
 				}
 				preg_match('/(\w+) : \((\w+)\) (\w+)/', $cond['fieldname'], $matches);
 				if (php7_count($matches) == 0) {
-					if (isset($cond['isEvaluated']) && $cond['fieldname'] == '_VT_add_comment' && $cond['isEvaluated']) {
-						$expressionResults[$conditionGroup][$i]['result'] = $cond['isEvaluated'];
-					} else {
-						$expressionResults[$conditionGroup][$i]['result'] = $this->checkCondition($entityData, $cond);
-					}
+                    $expressionResults[$conditionGroup][$i]['result'] = $this->checkCondition($entityData, $cond);
 				} else {
 					list($full, $referenceField, $referenceModule, $fieldname) = $matches;
 					$referenceFieldId = $data[$referenceField];
@@ -512,9 +508,11 @@ class VTJsonCondition {
 				$idParts = vtws_getIdComponents($entityData->getId());
 				return ($entityDelta->hasChanged($entityData->getModuleName(), $idParts[1], $cond['fieldname'])
 					&& (decode_html($value) == decode_html($entityDelta->getOldValue($entityData->getModuleName(), $idParts[1], $cond['fieldname']))));
+            case 'is comment source':
+                return !empty($data['comment_source']) && strtolower($value) === strtolower($data['comment_source']);
 			case 'is added':
 				//This condition was used only for comments. It should not execute from not from workflows, So it was always "FALSE"
-				return false;
+				return !empty($data['comment_added']);
 			case 'is tomorrow' :
 				$tomorrow = date('Y-m-d', strtotime('+1 days'));
 				$fieldValue = date('Y-m-d', strtotime($fieldValue));
