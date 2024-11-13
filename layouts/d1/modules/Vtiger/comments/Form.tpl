@@ -29,7 +29,7 @@
                     <div class="col-auto ms-auto">
                         {if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
                             <label class="form-check form-switch form-check-reverse">
-                                <input type="checkbox" class="form-check-input" id="is_private" checked>
+                                <input type="checkbox" class="form-check-input" id="is_private">
                                 <span class="form-check-label me-2">{vtranslate('LBL_INTERNAL_COMMENT')}</span>
                                 <i class="fa fa-question-circle cursorPointer" data-bs-toggle="tooltip" data-placement="top" title="{vtranslate('LBL_INTERNAL_COMMENT_INFO')}"></i>
                             </label>

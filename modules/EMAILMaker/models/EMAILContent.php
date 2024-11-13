@@ -1739,8 +1739,20 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     {
         $templateAttachments = $this->getAttachmentsForId(self::$templateid);
         $recordsAttachments = $this->getAttachmentsForRecord();
+        $commentAttachments = $this->getAttachmentsForContent();
 
-        return array_merge($templateAttachments, $recordsAttachments);
+        return array_merge($templateAttachments, $recordsAttachments, $commentAttachments);
+    }
+
+    public function getAttachmentsForContent(): array
+    {
+        $body = $this->getBody();
+
+        if (empty(self::$recordId) && !str_contains('$lastComment', $body) && !str_contains('$lastCommentSummary', $body)) {
+            return [];
+        }
+
+        return ModComments_Record_Model::getCommentsAttachmentsByRecord(self::$recordId, 1);
     }
 
     public function getAttachmentsForRecord()

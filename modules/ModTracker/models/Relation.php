@@ -47,14 +47,14 @@ class ModTracker_Relation_Model extends Vtiger_Record_Model {
 		return false;
 	}
 
-	public function getRecordDetailViewUrl() {
-		try {
-			$recordModel = Vtiger_Record_Model::getInstanceById($this->get('targetid'), $this->get('targetmodule'));
+    public function getRecordDetailViewUrl()
+    {
+        if ($this->isEmpty('targetid') || !isRecordExists($this->get('targetid'))) {
+            return false;
+        }
 
-			return $recordModel->getDetailViewUrl();
-		} catch (Exception $e) {
-			return false;
-		}
-	}
+        $recordModel = Vtiger_Record_Model::getInstanceById($this->get('targetid'), $this->get('targetmodule'));
 
+        return $recordModel->getDetailViewUrl();
+    }
 }

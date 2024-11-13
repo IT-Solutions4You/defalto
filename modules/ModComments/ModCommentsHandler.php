@@ -58,6 +58,8 @@ class ModCommentsHandler extends VTEventHandler {
 
 					$entityCacheData = $entityCache->forId($wsId);
 					$entityCacheData->set('from_portal', $fromPortal);
+					$entityCacheData->set('comment_source', $data->get('source'));
+					$entityCacheData->set('comment_added', true);
 					$entityCache->cache[$wsId] = $entityCacheData;
 					$relatedToEventHandler->handleEvent($eventName, $entityData, $entityCache,$relatedInfo);
 					$util->revertUser();

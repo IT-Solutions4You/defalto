@@ -48,13 +48,17 @@ if (isset($_REQUEST['username']) && isset($_REQUEST['emailId'])) {
 
 		$subject = 'Vtiger CRM: Password Reset';
 
-		$mail = new Vtiger_Mailer();
-		$mail->IsHTML();
-		$mail->Body = $content;
-		$mail->Subject = $subject;
-		$mail->AddAddress($email);
+        global $HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME;
 
-		$status = $mail->Send(true);
+		$mailer = ITS4YouEmails_Mailer_Model::getCleanInstance();
+        $mailer->retrieveSMTPVtiger();
+        $mailer->setFrom($HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME);
+        $mailer->addAddress($email);
+        $mailer->Subject = $subject;
+        $mailer->Body = $content;
+        $mailer->isHTML();
+        $status = $mailer->send();;
+
 		if ($status === 1 || $status === true) {
 			header('Location:  index.php?modules=Users&view=Login&mailStatus=success');
 		} else {
