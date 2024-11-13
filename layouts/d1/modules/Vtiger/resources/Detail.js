@@ -615,7 +615,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				let relatedModuleInstance = self.getRelatedController();
 				//Summary tab is clicked
 				if(tabElement.data('linkKey') == self.detailViewSummaryTabLabel) {
-					self.registerSummaryViewContainerEvents(self.getContentHolder());
+					self.registerSummaryViewContainerEvents(self.getDetailViewContainer(), false);
 					self.registerEventForPicklistDependencySetup(self.getForm());
 				}
 
@@ -1627,19 +1627,21 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		});
 	},
 
-	registerSummaryViewContainerEvents: function (summaryViewContainer) {
+	registerSummaryViewContainerEvents: function (summaryViewContainer, registerHandlers = true) {
 		const self = this;
 
-		if (!summaryViewContainer.is('.details')) {
+		if (!summaryViewContainer.is('.detailViewContainer')) {
 			console.error('Missing or wrong summary view container');
 		}
-
-		summaryViewContainer.off();
 
 		self.loadWidgets();
 		/**
 		 * Function to handle the ajax edit for summary view fields
 		 */
+
+		if (!registerHandlers) {
+			return;
+		}
 
 		summaryViewContainer.on('click', '.summary-table .fieldValue .editAction', function (e) {
 			let currentTarget = jQuery(e.currentTarget),
@@ -1650,10 +1652,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		});
 
 		summaryViewContainer.on('click', '.createRecord', function (e) {
-			console.log('summaryViewContainer click createRecord')
-			console.log(summaryViewContainer);
-			console.trace();
-
 			let currentElement = jQuery(e.currentTarget),
 				form = currentElement.closest('form'),
 				recordElement = form.find('[name=record]'),
@@ -2933,7 +2931,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		//END
 
 		this.registerRelatedRowClickEvent();
-		this.registerSummaryViewContainerEvents(self.getContentHolder());
+		this.registerSummaryViewContainerEvents(self.getDetailViewContainer());
 
 		//prevent detail view ajax form submissions
 		jQuery('form#detailView, form#headerForm').on('submit', function(e) {
