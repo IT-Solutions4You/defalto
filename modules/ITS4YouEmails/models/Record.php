@@ -60,7 +60,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $adb = PearDatabase::getInstance();
         $result = $adb->pquery('SELECT signature FROM vtiger_users WHERE id=?', [$userId]);
 
-        return nl2br(decode_html($adb->query_result($result, 0, 'signature')));
+        return decode_html($adb->query_result($result, 0, 'signature'));
     }
 
     /**
