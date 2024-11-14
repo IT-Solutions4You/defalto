@@ -62,15 +62,18 @@ class MailManager_Settings_View extends MailManager_MainUI_View {
 
                 foreach($folderInstances as $folder) {
                     if (str_contains(strtolower($folder->getName()), 'sent')) {
-                        $sentFolder = $folder->name();
+                        $sentFolder = $folder->getName();
                     }
                 }
             }
+
             $model->setFolder($sentFolder);
+
 			if ($connector->isConnected()) {
 				$model->save();
 
 				$request->set('_operation', 'mainui');
+
 				return parent::process($request);
 			} else if($connector->hasError()) {
                 $error = $connector->lastError();
