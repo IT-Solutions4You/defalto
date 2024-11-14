@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 class Documents_Record_Model extends Vtiger_Record_Model {
 
@@ -146,7 +144,14 @@ class Documents_Record_Model extends Vtiger_Record_Model {
         }
 
         $adb = PearDatabase::getInstance();
-        $adb->pquery('INSERT INTO vtiger_seattachmentsrel(crmid, attachmentsid) VALUES(?,?)', [$recordId, $attachmentId]);
+        $params = [$recordId, $attachmentId];
+        $result = $adb->pquery('SELECT * FROM vtiger_seattachmentsrel WHERE crmid=? AND attachmentsid=?', $params);
+
+        if ($adb->num_rows($result)) {
+            return;
+        }
+
+        $adb->pquery('INSERT INTO vtiger_seattachmentsrel(crmid, attachmentsid) VALUES(?,?)', $params);
     }
 
     /**
@@ -161,6 +166,13 @@ class Documents_Record_Model extends Vtiger_Record_Model {
         }
 
         $adb = PearDatabase::getInstance();
-        $adb->pquery('INSERT INTO vtiger_senotesrel(crmid, notesid) VALUES(?,?)', [$recordId, $documentId]);
+        $params = [$recordId, $documentId];
+        $result = $adb->pquery('SELECT * FROM vtiger_senotesrel WHERE crmid=? AND notesid=?', $params);
+
+        if ($adb->num_rows($result)) {
+            return;
+        }
+
+        $adb->pquery('INSERT INTO vtiger_senotesrel(crmid, notesid) VALUES(?,?)', $params);
     }
 }

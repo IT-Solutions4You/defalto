@@ -189,5 +189,40 @@ class ModComments extends ModCommentsCore {
 		}
 	}
 
+	public function save_module($module): void
+    {
+	    $this->retrieveSource();
+		$this->saveMailAttachmentIds();
+	}
+
+	/**
+	 * @return void
+     * Required functionality for mail manager
+     * ModComments documents from system are save by CRMEntity class from $_FILE
+	 */
+    public function saveMailAttachmentIds(): void
+    {
+        $mailAttachmentIds = array_filter(explode(',', $this->column_fields['mail_attachment_ids']));
+        $commentId = $this->id;
+
+        if (!empty($mailAttachmentIds) && !empty($commentId)) {
+            /** @var Documents_Record_Model $documentRecord */
+            $documentRecord = Vtiger_Record_Model::getCleanInstance('Documents');
+
+            foreach ($mailAttachmentIds as $mailAttachmentId) {
+                $documentRecord->saveAttachmentsRelation($commentId, $mailAttachmentId);
+            }
+        }
+    }
+
+    /**
+     * @return void
+     * Required for condition is comment source and source is empty after save from system
+     */
+    public function retrieveSource(): void
+    {
+        if (empty($this->column_fields['source'])) {
+            $this->column_fields['source'] = 'CRM';
+        }
+    }
 }
-?>

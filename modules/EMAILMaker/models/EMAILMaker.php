@@ -935,21 +935,21 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return array($moduleNames, $moduleIds);
     }
 
-    public function AddLinks($modulename)
+    public function AddLinks($moduleName, $register = true)
     {
         require_once('vtlib/Vtiger/Module.php');
 
-        if (empty($modulename)) {
+        if (empty($moduleName)) {
             $entityModules = Vtiger_Module_Model::getEntityModules();
 
             /** @var $entityModule Vtiger_Module_Model */
             foreach ($entityModules as $entityModule) {
                 if ($entityModule->isEntityModule() && $entityModule->isActive()) {
-                    $this->AddLinks($entityModule->getName());
+                    $this->AddLinks($entityModule->getName(), $register);
                 }
             }
         } else {
-            $link_module = Vtiger_Module::getInstance($modulename);
+            $link_module = Vtiger_Module::getInstance($moduleName);
             $link_module->deleteLink('DETAILVIEWSIDEBARWIDGET', 'EMAILMaker');
             $link_module->deleteLink('LISTVIEWMASSACTION', 'Send Emails with EMAILMaker');
             $link_module->deleteLink('DETAILVIEWBASIC', 'Send Emails with EMAILMaker');
@@ -957,8 +957,10 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
             $link_module->deleteLink('LISTVIEWMASSACTION', 'Send Email');
             $link_module->deleteLink('DETAILVIEWBASIC', 'Send Email');
 
-            $link_module->addLink('LISTVIEWMASSACTION', 'Send Email', 'javascript:EMAILMaker_Actions_Js.getListViewPopup(this,\'$MODULE$\');', '<i class="fa fa-paper-plane" aria-hidden="true"></i>');
-            $link_module->addLink('DETAILVIEWBASIC', 'Send Email', 'javascript:EMAILMaker_Actions_Js.getDetailViewPopup(this,\'$MODULE$\');', '<i class="fa fa-paper-plane" aria-hidden="true"></i>');
+            if ($register) {
+                $link_module->addLink('LISTVIEWMASSACTION', 'Send Email', 'javascript:EMAILMaker_Actions_Js.getListViewPopup(this,\'$MODULE$\');', '<i class="fa fa-paper-plane" aria-hidden="true"></i>');
+                $link_module->addLink('DETAILVIEWBASIC', 'Send Email', 'javascript:EMAILMaker_Actions_Js.getDetailViewPopup(this,\'$MODULE$\');', '<i class="fa fa-paper-plane" aria-hidden="true"></i>');
+            }
         }
     }
 
