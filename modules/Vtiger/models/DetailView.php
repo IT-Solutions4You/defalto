@@ -285,11 +285,13 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
             );
         }
 
-		$widgetLinks = array();
-		foreach ($widgets as $widgetDetails) {
-			$widgetLinks[] = Vtiger_Link_Model::getInstanceFromValues($widgetDetails);
-		}
-		return $widgetLinks;
+        $widgetLinks = [];
+
+        foreach ($widgets as $widgetDetails) {
+            $widgetLinks[] = Vtiger_Link_Model::getInstanceFromValues($widgetDetails);
+        }
+
+        return $widgetLinks;
 	}
 
 	/**

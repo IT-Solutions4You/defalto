@@ -41,8 +41,10 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
         $this->updateRelatedToModules();
         $this->retrieveRelatedList();
         $this->updateRelatedList();
-        $this->updateHistory();
-        $this->updateComments();
+        $this->updateHistory(false);
+        $this->updateComments(false);
+        $this->updateAppointments(false);
+        $this->updateEmails(false);
 
         Settings_MenuEditor_Module_Model::addModuleToApp($this->moduleName, $this->parentName);
     }
@@ -70,6 +72,8 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
         $this->updateRelatedList(false);
         $this->updateHistory(false);
         $this->updateComments(false);
+        $this->updateAppointments(false);
+        $this->updateEmails(false);
     }
 
     /**

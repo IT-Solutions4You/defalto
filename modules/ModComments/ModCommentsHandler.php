@@ -1,19 +1,23 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 
 require_once 'modules/com_vtiger_workflow/VTEventHandler.inc';
 require_once 'modules/HelpDesk/HelpDesk.php';
 
 class ModCommentsHandler extends VTEventHandler {
 
-	function handleEvent($eventName, $data) {
+    /**
+     * @param string $eventName
+     * @param VTEntityData $data
+     * @return void
+     * @throws Exception
+     */
+	public function handleEvent($eventName, $data) {
 
 		if($eventName == 'vtiger.entity.beforesave') {
 			// Entity is about to be saved, take required action
@@ -21,20 +25,22 @@ class ModCommentsHandler extends VTEventHandler {
 
 		if($eventName == 'vtiger.entity.aftersave') {
 			$db = PearDatabase::getInstance();
-
 			$relatedToId = $data->get('related_to');
             $relatedInfo = array();
             $relatedInfo['module'] = $data->focus->moduleName;
             $relatedInfo['id'] = $data->focus->id;
-			if ($relatedToId && $data->getModuleName() == 'ModComments') {
+
+			if ($relatedToId && 'ModComments' === $data->getModuleName()) {
 				$moduleName = getSalesEntityType($relatedToId);
 				$focus = CRMEntity::getInstance($moduleName);
 				$focus->retrieve_entity_info($relatedToId, $moduleName);
 				$focus->id = $relatedToId;
 				$fromPortal = $data->get('from_portal');
+
 				if ($fromPortal) {
 					$focus->column_fields['from_portal'] = $fromPortal;
 				}
+
 				if($data->isNew()) {
 					// we need to update related to modified and last modified by, whenever a comment is added
                     $focus->setTrackLinkedInfo($relatedToId, $data->getId());
@@ -43,6 +49,7 @@ class ModCommentsHandler extends VTEventHandler {
 
 				//if its Internal comment, workflow should not trigger
 				$isPrivateComment = $data->get('is_private');
+
 				if(!$isPrivateComment) {
 					$entityData = VTEntityData::fromCRMEntity($focus);
 
