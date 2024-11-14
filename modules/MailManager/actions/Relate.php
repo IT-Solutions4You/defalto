@@ -1,12 +1,10 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is: vtiger CRM Open source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 
 require_once 'modules/MailManager/MailManager.php';
 
@@ -86,7 +84,6 @@ class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction
      * @param MailManager_Message_Model $mailRecord
      * @param string $baseModule
      * @param Vtiger_Record_Model $recordModel
-     * @throws AppException
      * @global PearDataBase $db
      * @global String $root_directory
      */
@@ -96,17 +93,17 @@ class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction
         $currentUser = Users_Record_Model::getCurrentUserModel();
 
         foreach ($mailRecord->getAttachments() as $attachmentInfo) {
-            $attachment = $this->saveAttachment($baseModule, $attachmentInfo);
+            $attachmentId = $attachmentInfo['attachment_id'];
 
-            if ($attachment->getId()) {
-                $documentRecord = $mailRecord->saveDocumentFile($attachment->getName(), $attachment->getContent(), $currentUser->getId(), 'MailManager');
+            if ($attachmentId) {
+                $documentRecord = $mailRecord->saveDocumentFile($attachmentInfo['filename'], $attachmentInfo['size'], $currentUser->getId(), 'MailManager');
 
                 if ($documentRecord->getId()) {
                     $mailRecord->setAttachmentRelationIds($documentRecord->getId());
 
                     if (!empty($mailRecord->getAttachmentRelationIds())) {
                         foreach ($mailRecord->getAttachmentRelationIds() as $relationId) {
-                            $documentRecord->saveAttachmentsRelation($relationId, $attachment->getId());
+                            $documentRecord->saveAttachmentsRelation($relationId, $attachmentId);
                         }
                     }
 
@@ -120,10 +117,12 @@ class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction
         }
 
         foreach ($mailRecord->getInlineAttachments() as $attachmentInfo) {
-            $attachment = $this->saveAttachment($baseModule, $attachmentInfo);
+            $attachmentId = $attachmentInfo['attachment_id'];
 
-            if ($attachment->getId()) {
-                $this->relateAttachment($recordId, $attachment->getId());
+            if ($attachmentId) {
+                /** @var Documents_Record_Model $documentRecord */
+                $documentRecord = Vtiger_Record_Model::getCleanInstance('Documents');
+                $documentRecord->saveAttachmentsRelation($recordId, $attachmentId);
             }
         }
     }
@@ -246,31 +245,4 @@ class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction
 			return self::buildDetailViewLink($modulename, $crmid, $recordlabels[$crmid]);
 		}
 	}
-
-	/**
-	 *
-	 * @global PearDataBase $db
-	 * @param <type> $modulewsid
-	 * @return <type>
-	 */
-	public static function ws_modulename($modulewsid) {
-		$db = PearDatabase::getInstance();
-		$result = $db->pquery("SELECT name FROM vtiger_ws_entity WHERE id=?", array($modulewsid));
-		if ($db->num_rows($result)) return $db->query_result($result, 0, 'name');
-		return false;
-	}
-
-	/**
-	 * Related an attachment to a Email record
-	 * @global PearDataBase $db
-	 * @param Integer $crmId
-	 * @param Integer $attachId
-	 */
-	public function relateAttachment($crmId, $attachId) {
-		$db = PearDatabase::getInstance();
-		$db->pquery("INSERT INTO vtiger_seattachmentsrel(crmid, attachmentsid) VALUES(?,?)",
-				array($crmId, $attachId));
-	}
-
 }
-?>

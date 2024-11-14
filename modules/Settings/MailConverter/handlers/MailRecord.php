@@ -1,13 +1,10 @@
 <?php
-/*********************************************************************************
- ** The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *
- ********************************************************************************/
+ */
 
 /**
  * This class provides structured way of accessing details of email.
@@ -128,6 +125,20 @@ class Settings_MailConverter_MailRecord_Handler
     public function getAttachments()
     {
         return $this->_attachments;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAttachmentsIds(): string
+    {
+        $ids = [];
+
+        foreach ($this->getAttachments() as $attachment) {
+            $ids[] = $attachment['attachment_id'];
+        }
+
+        return implode(',', array_unique($ids));
     }
 
     /**
@@ -685,12 +696,12 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * @param string $fileName
-     * @param string $fileContent
+     * @param int $fileSize
      * @param int $userId
      * @param string $source
      * @return Documents_Record_Model
      */
-    public function saveDocumentFile(string $fileName, string $fileContent, int $userId, string $source = 'MailRecord'): Documents_Record_Model
+    public function saveDocumentFile(string $fileName, int $fileSize, int $userId, string $source = 'MailRecord'): Documents_Record_Model
     {
         /**
          * Create document record
@@ -699,7 +710,7 @@ class Settings_MailConverter_MailRecord_Handler
         $document = Vtiger_Record_Model::getCleanInstance('Documents');
         $document->set('notes_title', $fileName);
         $document->set('filename', $fileName);
-        $document->set('filesize', strlen($fileContent));
+        $document->set('filesize', $fileSize);
         $document->set('filestatus', 1);
         $document->set('filelocationtype', 'I');
         $document->set('folderid', 1);
