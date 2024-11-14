@@ -486,7 +486,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             self::logSuccess('Link start creating');
 
             if (!empty($name) && !empty($parent)) {
-                Settings_MenuEditor_Module_Model::updateModuleApp($name, $parent);
                 Settings_MenuEditor_Module_Model::addModuleToApp($name, $parent);
 
                 self::logSuccess('Link created');
