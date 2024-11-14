@@ -1746,13 +1746,24 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     public function getAttachmentsForContent(): array
     {
-        $body = $this->getBody();
-
-        if (empty(self::$recordId) && !str_contains('$lastComment', $body) && !str_contains('$lastCommentSummary', $body)) {
+        if (empty(self::$recordId)) {
             return [];
         }
 
-        return ModComments_Record_Model::getCommentsAttachmentsByRecord(self::$recordId, 1);
+        $body = $this->getBody();
+        $variables = ModComments_Module_Model::$commentAttachmentVariables;
+        $attachments = false;
+        $limit = 0;
+
+        foreach ($variables as $variable) {
+            if (str_contains($body, $variable)) {
+                $attachments = true;
+                $limit = ModComments_Module_Model::$commentFieldsLimit[trim($variable, '$')];
+                break;
+            }
+        }
+
+        return $attachments ? ModComments_Record_Model::getCommentsAttachmentsByRecord(self::$recordId, $limit) : [];
     }
 
     public function getAttachmentsForRecord()

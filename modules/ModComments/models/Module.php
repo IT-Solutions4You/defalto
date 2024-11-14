@@ -29,6 +29,11 @@ class ModComments_Module_Model extends Vtiger_Module_Model
         'last5Comments' => 5,
     ];
 
+    public static array $commentAttachmentVariables = [
+        '$lastComment',
+        '$lastCommentSummary',
+    ];
+
     /**
      * @return array
      */
