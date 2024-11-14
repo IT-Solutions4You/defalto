@@ -138,7 +138,7 @@ class Settings_MailConverter_MailRecord_Handler
             $ids[] = $attachment['attachment_id'];
         }
 
-        return implode(',', array_unique($ids));
+        return implode(',', array_filter(array_unique($ids)));
     }
 
     /**

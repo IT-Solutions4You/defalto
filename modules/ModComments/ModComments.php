@@ -202,7 +202,7 @@ class ModComments extends ModCommentsCore {
 	 */
     public function saveMailAttachmentIds(): void
     {
-        $mailAttachmentIds = explode(',', $this->column_fields['mail_attachment_ids']);
+        $mailAttachmentIds = array_filter(explode(',', $this->column_fields['mail_attachment_ids']));
         $commentId = $this->id;
 
         if (!empty($mailAttachmentIds) && !empty($commentId)) {
