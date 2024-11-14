@@ -492,7 +492,12 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
         return $data;
     }
 
-    public static function getCommentsQuery($columns, $limit = null)
+    /**
+     * @param array $columns
+     * @param int|null $limit
+     * @return string
+     */
+    public static function getCommentsQuery(array $columns, int|null $limit = null): string
     {
         if (empty($columns)) {
             $columns = ['vtiger_modcomments.modcommentsid', 'vtiger_modcomments.commentcontent', 'vtiger_modcomments.userid', 'vtiger_crmentity.createdtime'];
