@@ -270,7 +270,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
             if (!empty($linkTo)) {
                 $mail->setAttachmentRelationIds($recordModel->getId());
                 
-                MailManager_Relate_Action::associate($mail, $linkTo, $parent);
+                MailManager_Relate_Action::associate($mail, $linkTo, (int)$parent);
             }
 
             $response->setResult(['ui' => '', 'success' => true]);
