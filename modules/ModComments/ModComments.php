@@ -221,10 +221,8 @@ class ModComments extends ModCommentsCore {
      */
     public function retrieveSource(): void
     {
-        if (!empty($this->column_fields['source'])) {
-            return;
+        if (empty($this->column_fields['source'])) {
+            $this->column_fields['source'] = 'CRM';
         }
-
-        $this->column_fields['source'] = 'CRM';
     }
 }
