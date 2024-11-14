@@ -21,12 +21,7 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
         }
 
         $supportedModules = Settings_InventoryItem_Module_Model::getSupportedModules();
-        $selectedFields = Settings_InventoryItem_Module_Model::getSelectedFields($selectedModule);
-
-        if (empty($selectedFields)) {
-            $selectedFields = Settings_InventoryItem_Module_Model::getDefaultSelectedFields();
-        }
-
+        $selectedFields = InventoryItem_Module_Model::getSelectedFields($selectedModule);
         $moduleModel = Vtiger_Module_Model::getInstance('InventoryItem');
         $fieldModelList = $moduleModel->getFields();
 

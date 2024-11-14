@@ -64,32 +64,4 @@ class Settings_InventoryItem_Module_Model extends Vtiger_Module_Model
 
         return $modulesModelsList;
     }
-
-    /**
-     * @param int $moduleId
-     *
-     * @return array
-     */
-    public static function getSelectedFields(int $moduleId): array
-    {
-        $return = [];
-        $db = PearDatabase::getInstance();
-
-        $query = 'SELECT columnslist FROM its4you_inventoryitemcolumns WHERE tabid = ?';
-        $result = $db->pquery($query, [$moduleId]);
-
-        while ($row = $db->fetchByAssoc($result)) {
-            $return = explode(',', $row['columnslist']);
-        }
-
-        return $return;
-    }
-
-    /**
-     * @return array
-     */
-    public static function getDefaultSelectedFields(): array
-    {
-        return self::getSelectedFields(0);
-    }
 }

@@ -18,6 +18,12 @@ trait InventoryItem_Detail_Trait
         $serviceModuleModel = Vtiger_Module_Model::getInstance('Services');
         $viewer->assign('SERVICE_ACTIVE', $serviceModuleModel->isActive());
 
+        $viewer->assign('INVENTORY_ITEMS', $this->fetchItems((int)$request->get('record')));
+        $viewer->assign('INVENTORY_ITEM_COLUMNS', InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule())));
+    }
+
+    private function fetchItems(int $record): array
+    {
         $inventoryItems = [[],];
         $db = PearDatabase::getInstance();
         $sql = 'SELECT df_inventoryitem.* 
@@ -26,7 +32,7 @@ trait InventoryItem_Detail_Trait
             WHERE vtiger_crmentity.deleted = 0
             AND df_inventoryitem.parentid = ?
             ORDER BY df_inventoryitem.sequence, vtiger_crmentity.crmid';
-        $result = $db->pquery($sql, [$request->get('record')]);
+        $result = $db->pquery($sql, [$record]);
 
         while ($row = $db->fetchByAssoc($result)) {
             if (empty($row['productid']) && !empty($row['item_text'])) {
@@ -44,8 +50,6 @@ trait InventoryItem_Detail_Trait
 
         unset($inventoryItems[0]);
 
-        show($inventoryItems);
-
-        $viewer->assign('INVENTORY_ITEMS', $inventoryItems);
+        return $inventoryItems;
     }
 }
