@@ -7,8 +7,57 @@
  */
 
 class Users_Record_Model extends Vtiger_Record_Model {
-	
-	/**
+
+    /**
+     * @var array
+     */
+    protected static array $defaultValues = [
+        'date_format' => 'dd.mm.yyyy',
+        'dayoftheweek' => 'Monday',
+        'start_hour' => '07:00',
+        'end_hour' => '23:00',
+        'callduration' => 5,
+        'othereventduration' => 5,
+        'hour_format' => 24,
+        'activity_view' => 'This Week',
+        'calendarsharedtype' => 'public',
+        'default_record_view' => 'Summary',
+        'status' => 'Active',
+        'currency_decimal_separator' => '.',
+        'currency_grouping_separator' => ',',
+        'lead_view' => 'Today',
+        'reminder_interval' => '1 Minute',
+        'weekstart' => '1',
+        'workdays' => '0,1,2,3,4,5,6,',
+        'holidays' => 'de,en_uk,fr,it,us,',
+        'defaultactivitytype' => 'Call',
+        'defaultcalendarview' => 'MyCalendar',
+        'slot_duration' => '30 minutes',
+    ];
+
+    /**
+     * @param array $data
+     * @return void
+     */
+    public static function setDefaultValues(array $data): void
+    {
+        self::$defaultValues = array_merge(self::$defaultValues, $data);
+    }
+
+    /**
+     * @return array
+     */
+    public static function getDefaultValues(): array
+    {
+        $defaultValues = [
+            'currency_id' => CurrencyField::getDBCurrencyId(),
+            'time_zone' => DateTimeField::getDBTimeZone(),
+        ];
+
+        return array_merge($defaultValues, self::$defaultValues);
+    }
+
+    /**
 	 * Checks if the key is in property or data.
 	 */
 	public function has($key) {
