@@ -86,9 +86,10 @@ class Install_InitSchema_Model {
         $migrationObj->run();
     }
 
-	/**
-	 * Function creates default user's Role, Profiles
-	 */
+    /**
+     * Function creates default user's Role, Profiles
+     * @throws Exception
+     */
 	public static function createDefaultUsersAccess() {
       	$adb = PearDatabase::getInstance();
         $roleId1 = $adb->getUniqueID("vtiger_role");
@@ -791,52 +792,25 @@ class Install_InitSchema_Model {
 		 // Invalidate any cached information
     	VTCacheUtils::clearRoleSubordinates();
 
-		$adminPassword = $_SESSION['config_file_info']['password'];
-		$userDateFormat = $_SESSION['config_file_info']['dateformat'];
-		$userTimeZone = $_SESSION['config_file_info']['timezone'];
-		//Fix for http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/7974
-        $userFirstName = $_SESSION['config_file_info']['firstname']; 
-        $userLastName = $_SESSION['config_file_info']['lastname']; 
-        $userLanguage = $_SESSION['config_file_info']['default_language'];
         // create default admin user
     	$user = CRMEntity::getInstance('Users');
-		//Fix for http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/7974
-        $user->column_fields["first_name"] = $userFirstName; 
- 	$user->column_fields["last_name"] = $userLastName; 
-        //Ends
-        $user->column_fields["user_name"] = 'admin';
-        $user->column_fields["status"] = 'Active';
-        $user->column_fields["is_admin"] = 'on';
-        $user->column_fields["user_password"] = $adminPassword;
-        $user->column_fields["time_zone"] = $userTimeZone;
-        $user->column_fields["language"] = $userLanguage;
-        $user->column_fields["holidays"] = 'de,en_uk,fr,it,us,';
-        $user->column_fields["workdays"] = '0,1,2,3,4,5,6,';
-        $user->column_fields["weekstart"] = '1';
-        $user->column_fields["namedays"] = '';
-        $user->column_fields["currency_id"] = 1;
-        $user->column_fields["reminder_interval"] = '1 Minute';
-        $user->column_fields["reminder_next_time"] = date('Y-m-d H:i');
-		$user->column_fields["date_format"] = $userDateFormat;
-		$user->column_fields["hour_format"] = 'am/pm';
-		$user->column_fields["start_hour"] = '08:00';
-		$user->column_fields["end_hour"] = '23:00';
-		$user->column_fields["imagename"] = '';
-		$user->column_fields["internal_mailer"] = '1';
-		$user->column_fields["activity_view"] = 'This Week';
-		$user->column_fields["lead_view"] = 'Today';
+        $user->column_fields['first_name'] = $_SESSION['config_file_info']['firstname'];
+        $user->column_fields['last_name'] = $_SESSION['config_file_info']['lastname'];
+        $user->column_fields['user_name'] = 'admin';
+        $user->column_fields['is_admin'] = 'on';
+        $user->column_fields['user_password'] = $_SESSION['config_file_info']['password'];
+        $user->column_fields['time_zone'] = $_SESSION['config_file_info']['timezone'];
+        $user->column_fields['language'] = $_SESSION['config_file_info']['default_language'];
+        $user->column_fields['namedays'] = '';
+        $user->column_fields['currency_id'] = 1;
+        $user->column_fields['reminder_next_time'] = date('Y-m-d H:i');
+        $user->column_fields['date_format'] = $_SESSION['config_file_info']['dateformat'];
+        $user->column_fields['imagename'] = '';
+        $user->column_fields['internal_mailer'] = '1';
+        $user->column_fields['email1'] = $_SESSION['config_file_info']['admin_email'] ?? 'admin@defaltouser.com';
+        $user->column_fields['roleid'] = Settings_Roles_Record_Model::getRoleId('CEO');
+        $user->save('Users');
 
-		$adminEmail = $_SESSION['config_file_info']['admin_email'];
-		if($adminEmail == '') $adminEmail ="admin@vtigeruser.com";
-		$user->column_fields["email1"] = $adminEmail;
-		$roleQuery = "SELECT roleid FROM vtiger_role WHERE rolename='CEO'";
-		$adb->checkConnection();
-		$adb->database->SetFetchMode(ADODB_FETCH_ASSOC);
-		$roleResult = $adb->pquery($roleQuery, array());
-		$roleId = $adb->query_result($roleResult,0,"roleid");
-		$user->column_fields["roleid"] = $roleId;
-
-        $user->save("Users");
         $adminUserId = $user->id;
 
 		//Inserting into vtiger_groups table
