@@ -44,7 +44,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
     public function log($message)
     {
         global $log;
-        
+
         if ($log && $this->debug) {
             $log->debug($message);
         } elseif ($this->debug) {
@@ -103,7 +103,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
             );
             $this->actionid = $adb->database->Insert_ID();
         }
-        
+
         $checkMapping = $adb->pquery('SELECT COUNT(*) AS ruleaction_count FROM vtiger_mailscanner_ruleactions WHERE ruleid=? AND actionid=?', [$ruleid, $this->actionid]);
 
         if ($adb->num_rows($checkMapping) && !$adb->query_result($checkMapping, 0, 'ruleaction_count')) {
@@ -184,7 +184,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
         global $adb;
         $returnId = false;
         $useSubject = false;
-        
+
         if ($this->lookup == 'SUBJECT') {
             // If regex match was performed on subject use the matched group
             // to lookup the ticket record
@@ -437,7 +437,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
         if ($this->module == 'Contacts') {
             foreach ($useEmail as $email) {
                 $linkFocus = $mailScanner->getContactRecord($email);
-                
+
                 if ($linkFocus) {
                     break;
                 }
@@ -445,7 +445,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
         } elseif ($this->module == 'Accounts') {
             foreach ($useEmail as $email) {
                 $linkFocus = $mailScanner->getAccountRecord($email);
-                
+
                 if ($linkFocus) {
                     break;
                 }
@@ -453,7 +453,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
         } elseif ($this->module == 'Leads') {
             foreach ($useEmail as $email) {
                 $linkFocus = $mailScanner->getLeadRecord($email);
-                
+
                 if ($linkFocus) {
                     break;
                 }
@@ -461,7 +461,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
         }
 
         $returnId = false;
-        
+
         if ($linkFocus) {
             $returnId = $this->createNewEmail($mailRecord, $linkFocus);
         }
