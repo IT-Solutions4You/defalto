@@ -628,25 +628,30 @@ class Settings_MailConverter_MailScannerAction_Handler {
                 $mailRecord->_attachments[$attachmentIndex]['attachment_id'] = $attachmentId;
             }
 
-            if ($attachmentId) {
-                $documentRecord = $mailRecord->saveDocumentFile($attachmentInfo['filename'], $attachmentInfo['size'], $currentUser->getId(), $this->moduleName);
+            if (empty($attachmentId)) {
+                continue;
+            }
 
-                if ($documentRecord->getId()) {
-                    $mailRecord->setAttachmentRelationIds($documentRecord->getId());
+            $documentRecord = $mailRecord->saveDocumentFile($attachmentInfo['filename'], $attachmentInfo['size'], $currentUser->getId(), $this->moduleName);
 
-                    if (!empty($mailRecord->getAttachmentRelationIds())) {
-                        foreach ($mailRecord->getAttachmentRelationIds() as $relationId) {
-                            $documentRecord->saveAttachmentsRelation($relationId, $attachmentId);
-                        }
-                    }
+            if (empty($documentRecord->getId())) {
+                continue;
+            }
 
-                    if (!empty($mailRecord->getDocumentRelationIds())) {
-                        foreach ($mailRecord->getDocumentRelationIds() as $relationId) {
-                            $documentRecord->saveDocumentsRelation($relationId, $documentRecord->getId());
-                        }
-                    }
+            $mailRecord->setAttachmentRelationIds($documentRecord->getId());
+
+            if (!empty($mailRecord->getAttachmentRelationIds())) {
+                foreach ($mailRecord->getAttachmentRelationIds() as $relationId) {
+                    $documentRecord->saveAttachmentsRelation($relationId, $attachmentId);
                 }
             }
+
+            if (!empty($mailRecord->getDocumentRelationIds())) {
+                foreach ($mailRecord->getDocumentRelationIds() as $relationId) {
+                    $documentRecord->saveDocumentsRelation($relationId, $documentRecord->getId());
+                }
+            }
+
         }
 
         foreach ($mailRecord->getInlineAttachments() as $attachmentIndex => $attachmentInfo) {
