@@ -650,87 +650,46 @@ class Users extends CRMEntity {
 	 * @param $module -- module name:: Type varchar
 	 *
 	 */
-	function saveentity($module, $fileid='') {
-		global $current_user;//$adb added by raju for mass mailing
-		$insertion_mode = $this->mode;
-		if(empty($this->column_fields['time_zone'])) {
-			$dbDefaultTimeZone = DateTimeField::getDBTimeZone();
-			$this->column_fields['time_zone'] = $dbDefaultTimeZone;
-			$this->time_zone = $dbDefaultTimeZone;
-		}
-		if(empty($this->column_fields['currency_id'])) {
-			$this->column_fields['currency_id'] = CurrencyField::getDBCurrencyId();
-		}
-		if(empty($this->column_fields['date_format'])) {
-			$this->column_fields['date_format'] = 'yyyy-mm-dd';
-		}
+    public function saveentity($module, $fileid = '')
+    {
+        global $current_user;//$adb added by raju for mass mailing
+        $insertion_mode = $this->mode;
 
-		if(empty($this->column_fields['start_hour'])) {
-			$this->column_fields['start_hour'] = '09:00';
-		}
+        foreach (Users_Record_Model::getDefaultValues() as $defaultKey => $defaultValue) {
+            if (empty($this->column_fields[$defaultKey])) {
+                $this->column_fields[$defaultKey] = $defaultValue;
 
-		if(empty($this->column_fields['dayoftheweek'])) {
-			$this->column_fields['dayoftheweek'] = 'Sunday';
-		}
+                if ('time_zone' === $defaultKey) {
+                    $this->time_zone = $defaultValue;
+                }
+            }
+        }
 
-		if(empty($this->column_fields['callduration'])) {
-			$this->column_fields['callduration'] = 5;
-		}
+        $this->db->println("TRANS saveentity starts $module");
+        $this->db->startTransaction();
 
-		if(empty($this->column_fields['othereventduration'])) {
-			$this->column_fields['othereventduration'] = 5;
-		}
+        foreach ($this->tab_name as $table_name) {
+            if ($table_name == 'vtiger_attachments') {
+                $this->insertIntoAttachment($this->id, $module);
+            } else {
+                $this->insertIntoEntityTable($table_name, $module);
+            }
+        }
 
-		if(empty($this->column_fields['hour_format'])) {
-			$this->column_fields['hour_format'] = 12;
-		}
+        require_once('modules/Users/CreateUserPrivilegeFile.php');
+        createUserPrivilegesfile($this->id);
+        unset($_SESSION['next_reminder_interval']);
+        unset($_SESSION['next_reminder_time']);
 
-		if(empty($this->column_fields['activity_view'])) {
-			$this->column_fields['activity_view'] = 'Today';
-		}
+        if ($insertion_mode != 'edit') {
+            $this->createAccessKey();
+        }
 
-		if(empty($this->column_fields['calendarsharedtype'])) {
-			$this->column_fields['calendarsharedtype'] = 'public';
-		}
+        $this->db->completeTransaction();
+        $this->db->println("TRANS saveentity ends");
+    }
 
-		if(empty($this->column_fields['default_record_view'])) {
-			$this->column_fields['default_record_view'] = 'Summary';
-		}
-
-		if(empty($this->column_fields['status'])) {
-			$this->column_fields['status'] = 'Active';
-		}
-
-		if(empty($this->column_fields['currency_decimal_separator'])) {
-			$this->column_fields['currency_decimal_separator'] = '.';
-		}
-
-		if(empty($this->column_fields['currency_grouping_separator'])) {
-			$this->column_fields['currency_grouping_separator'] = ',';
-		}
-
-		$this->db->println("TRANS saveentity starts $module");
-		$this->db->startTransaction();
-		foreach($this->tab_name as $table_name) {
-			if($table_name == 'vtiger_attachments') {
-				$this->insertIntoAttachment($this->id,$module);
-			}
-			else {
-				$this->insertIntoEntityTable($table_name, $module);
-			}
-		}
-		require_once('modules/Users/CreateUserPrivilegeFile.php');
-		createUserPrivilegesfile($this->id);
-		unset($_SESSION['next_reminder_interval']);
-		unset($_SESSION['next_reminder_time']);
-		if($insertion_mode != 'edit') {
-			$this->createAccessKey();
-		}
-		$this->db->completeTransaction();
-		$this->db->println("TRANS saveentity ends");
-	}
-
-	function createAccessKey() {
+    function createAccessKey() {
 		global $adb;
 		$updateQuery = "update vtiger_users set accesskey=? where id=?";
 		$adb->pquery($updateQuery,array(vtws_generateRandomAccessKey(16),$this->id));

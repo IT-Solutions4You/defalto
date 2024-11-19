@@ -270,77 +270,82 @@ class Settings_MailConverter_MailScannerRule_Handler {
     /**
      * Find if the rule matches based on condition and parameters
      */
-    function find($subrule, $condition, $input, $searchfor) {
-        if (!$input)
+    public function find($subrule, $condition, $input, $searchFor)
+    {
+        if (!$input) {
             return false;
-            $input = trim(preg_replace("/\r/", '', decode_html($input))); 
-            $searchfor = decode_html($searchfor);
+        }
+        $input = trim(preg_replace("/\r/", '', decode_html($input)));
+        $searchFor = decode_html($searchFor);
         $matchFound = false;
         $matches = false;
 
         switch ($condition) {
             case 'Contains':
-            $matchFound = stripos($input, $searchfor);
-            $matchFound = ($matchFound !== FALSE);
-            $matches = $searchfor;
-            break;
+                $matchFound = stripos($input, $searchFor);
+                $matchFound = ($matchFound !== false);
+                $matches = $searchFor;
+                break;
             case 'Not Contains':
-            $matchFound = stripos($input, $searchfor);
-            $matchFound = ($matchFound === FALSE);
-            $matches = $searchfor;
-            break;
+                $matchFound = stripos($input, $searchFor);
+                $matchFound = ($matchFound === false);
+                $matches = $searchFor;
+                break;
             case 'Equals':
-            $matchFound = strcasecmp($input, $searchfor);
-            $matchFound = ($matchFound === 0);
-            $matches = $searchfor;
-            break;
+                $matchFound = strcasecmp($input, $searchFor);
+                $matchFound = ($matchFound === 0);
+                $matches = $searchFor;
+                break;
             case 'Not Equals':
-            $matchFound = strcasecmp($input, $searchfor);
-            $matchFound = ($matchFound !== 0);
-            $matches = $searchfor;
-            break;
+                $matchFound = strcasecmp($input, $searchFor);
+                $matchFound = ($matchFound !== 0);
+                $matches = $searchFor;
+                break;
             case 'Begins With':
-            $matchFound = stripos($input, $searchfor);
-            $matchFound = ($matchFound === 0);
-            $matches = $searchfor;
-            break;
+                $matchFound = stripos($input, $searchFor);
+                $matchFound = ($matchFound === 0);
+                $matches = $searchFor;
+                break;
             case 'Ends With':
-            $matchFound = strripos($input, $searchfor);
-            $matchFound = ($matchFound === strlen($input) - strlen($searchfor));
-            $matches = $searchfor;
-            break;
+                $matchFound = strripos($input, $searchFor);
+                $matchFound = ($matchFound === strlen($input) - strlen($searchFor));
+                $matches = $searchFor;
+                break;
             case 'Regex':
-            $regmatches = Array();
-            $matchFound = false;
-            $searchfor = str_replace('/', '\/', $searchfor);
-                    $input = str_replace("_", " ", $input);
-            if (preg_match("/$searchfor/i", $input, $regmatches)) {
-                // Pick the last matching group
-                $matches = $regmatches[php7_count($regmatches) - 1];
-                $matchFound = true;
-            }
-            break;
+                $regMatches = [];
+                $matchFound = false;
+                $searchFor = str_replace('/', '\/', $searchFor);
+                $input = str_replace("_", " ", $input);
+
+                if (preg_match("/$searchFor/i", $input, $regMatches)) {
+                    // Pick the last matching group
+                    $matches = $regMatches[php7_count($regMatches) - 1];
+                    $matchFound = true;
+                }
+                break;
             case 'Has Ticket Number':
-            $regmatches = Array();
-            $matchFound = false;
-            $searchfor = "Ticket Id[^:]?: ([0-9]+)"; 
-            $searchfor = str_replace('/', '\/', $searchfor);
-            if (preg_match("/$searchfor/i", $input, $regmatches)) {
-                // Pick the last matching group
-                $matches = $regmatches[php7_count($regmatches) - 1];
-                $matchFound = true;
-            }
-            break;
+                $regMatches = [];
+                $matchFound = false;
+
+                if (preg_match("/([A-Z]+[0-9]+)/i", $input, $regMatches)) {
+                    // Pick the last matching group
+                    $matches = $regMatches[php7_count($regMatches) - 1];
+                    $matchFound = true;
+                }
+                break;
         }
-        if($matchFound) $matchFound = $this->__CreateMatchResult($subrule, $condition, $searchfor, $matches);
+        if ($matchFound) {
+            $matchFound = $this->__CreateMatchResult($subrule, $condition, $searchFor, $matches);
+        }
+
         return $matchFound;
     }
 
     /**
      * Create matching result for the subrule.
      */
-    function __CreateMatchResult($subrule, $condition, $searchfor, $matches) {
-		return Array( 'subrule' => $subrule, 'condition' => $condition, 'searchfor' => $searchfor, 'matches' => $matches);
+    function __CreateMatchResult($subrule, $condition, $searchFor, $matches) {
+		return Array( 'subrule' => $subrule, 'condition' => $condition, 'searchfor' => $searchFor, 'matches' => $matches);
     }
 
     /**

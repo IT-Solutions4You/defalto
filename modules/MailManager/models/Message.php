@@ -640,24 +640,31 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
         return $relation;
     }
 
+    /**
+     * @return bool
+     */
     public function hasRelations(): bool
     {
+        $mUid = $this->getUid();
         $adb = PearDatabase::getInstance();
-        $sql = 'SELECT muid,muniqueid FROM vtiger_mailmanager_mailrecord
-            LEFT JOIN vtiger_mailmanager_mailrel ON vtiger_mailmanager_mailrel.mailuid=muniqueid 
-            LEFT JOIN its4you_emails ON its4you_emails.mail_manager_id=muid 
-            LEFT JOIN vtiger_troubletickets ON vtiger_troubletickets.mail_manager_id=muid 
-            LEFT JOIN vtiger_potential ON vtiger_potential.mail_manager_id=muid 
-            WHERE muid=? AND (
-                its4you_emails.mail_manager_id > 0 
-                OR vtiger_troubletickets.mail_manager_id > 0 
-                OR vtiger_potential.mail_manager_id > 0 
-                OR vtiger_mailmanager_mailrel.emailid > 0
-            )';
-        $params = [$this->getUid()];
+        $sql = 'SELECT muid,muniqueid FROM vtiger_mailmanager_mailrecord INNER JOIN vtiger_mailmanager_mailrel ON vtiger_mailmanager_mailrel.mailuid=muniqueid WHERE muid = ?';
+        $params = [$mUid];
         $result = $adb->pquery($sql, $params);
 
-        return $result && $adb->num_rows($result);
+        if ($result && $adb->num_rows($result)) {
+            return true;
+        }
+
+        foreach (MailManager_Message_Model::RELATIONS_TABLES as $relationTable) {
+            $sql = sprintf('SELECT mail_manager_id FROM %s WHERE mail_manager_id=?', $relationTable[2]);
+            $result = $adb->pquery($sql, $params);
+
+            if ($result && $adb->num_rows($result)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

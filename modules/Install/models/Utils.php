@@ -551,7 +551,24 @@ class Install_Utils_Model {
      */
     public static function installModule(string $moduleName): void
     {
+        if(defined('VTIGER_UPGRADE')) {
+            self::log('Upgrading Module [' . $moduleName . '] -- Starts');
+        }
+
         Core_Install_Model::getInstance('module.postinstall', $moduleName)->installModule();
+
+        if(defined('VTIGER_UPGRADE')) {
+            self::log('Upgrading Module [' . $moduleName . '] -- Ends');
+        }
+    }
+
+    /**
+     * @param string $message
+     * @return void
+     */
+    public static function log(string $message): void
+    {
+        echo '<div style="font-weight: bold; color: red;">' . $message . '</div>';
     }
 
     /**
@@ -560,7 +577,15 @@ class Install_Utils_Model {
      */
     public static function installLanguage(array $languageInfo): void
     {
+        if(defined('VTIGER_UPGRADE')) {
+            self::log('Upgrading Language [' . $languageInfo[0] . '] -- Starts');
+        }
+
         Vtiger_Language::register($languageInfo[0], $languageInfo[1], $languageInfo[2]);
+
+        if(defined('VTIGER_UPGRADE')) {
+            self::log('Upgrading Language [' . $languageInfo[0] . '] -- Ends');
+        }
     }
 
     /*

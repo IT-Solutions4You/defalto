@@ -649,8 +649,8 @@ class Users_Install_Model extends Core_Install_Model
                         'summaryfield' => 0,
                         'picklist_values' =>
                             [
-                                0 => 'Summary',
-                                1 => 'Detail',
+                                'Summary',
+                                'Detail',
                             ],
                     ],
                     'leftpanelhide' => [
@@ -1058,6 +1058,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'defaultvalue' => 'Monday',
                     'picklist_values' => [
                         'Sunday',
                         'Monday',
@@ -1081,6 +1082,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'defaultvalue' => 5,
                     'picklist_values' => [
                         '5',
                         '10',
@@ -1102,6 +1104,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'defaultvalue' => 5,
                     'picklist_values' => [
                         '5',
                         '10',
@@ -1123,6 +1126,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 3,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'defaultvalue' => 'public',
                     'picklist_values' => [
                         'public',
                         'private',
@@ -1298,7 +1302,7 @@ class Users_Install_Model extends Core_Install_Model
             ->createColumn('workdays', 'varchar(30) DEFAULT NULL')
             ->createColumn('weekstart', 'int(11) DEFAULT NULL')
             ->createColumn('date_format', 'varchar(200) DEFAULT NULL')
-            ->createColumn('hour_format', 'varchar(30) DEFAULT \'am/pm\'')
+            ->createColumn('hour_format', 'varchar(30) DEFAULT \'24\'')
             ->createColumn('start_hour', 'varchar(30) DEFAULT \'10:00\'')
             ->createColumn('end_hour', 'varchar(30) DEFAULT \'23:00\'')
             ->createColumn('is_owner', 'varchar(100) DEFAULT \'0\'')

@@ -723,7 +723,10 @@ class Settings_MailConverter_MailRecord_Handler
 
     public function getBodyText(): string
     {
-        return strip_tags($this->getBody());
+        $body = decode_html($this->getBody());
+        $body = strip_tags($body);
+
+        return trim($body);
     }
 
     /**

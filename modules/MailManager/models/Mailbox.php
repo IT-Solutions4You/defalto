@@ -207,7 +207,7 @@ class MailManager_Mailbox_Model {
         }
 
         $isUpdate = !empty($this->mId);
-        $parameters = [
+        $data = [
             'display_name' => $this->username(),
             'mail_servername' => $this->server(),
             'mail_username' => $this->username(),
@@ -226,7 +226,7 @@ class MailManager_Mailbox_Model {
         $table = $this->getMailAccountTable();
 
         if ($isUpdate) {
-            $table->updateData($parameters, ['user_id' => $userId, 'account_id' => $this->mId]);
+            $table->updateData($data, ['user_id' => $userId, 'account_id' => $this->mId]);
         } else {
             $data['user_id'] = $userId;
             $data['mails_per_page'] = vglobal('list_max_entries_per_page');

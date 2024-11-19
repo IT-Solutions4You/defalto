@@ -26,9 +26,9 @@ class Settings_MailConverter_DeleteRule_Action extends Settings_Vtiger_Index_Act
 
 		$recordModel = Settings_MailConverter_RuleRecord_Model::getInstanceById($recordId);
 		$scannerId = $recordModel->getScannerId();
-
 		$response = new Vtiger_Response();
-		if ($scannerId === $request->get('scannerId')) {
+
+		if ($scannerId === (int)$request->get('scannerId')) {
 			$recordModel->delete();
 			$response->setResult(vtranslate('LBL_DELETED_SUCCESSFULLY', $qualifiedModuleName));
 		} else {

@@ -251,7 +251,7 @@ class Settings_MailConverter_MailScanner_Handler {
 	/**
 	 * Lookup Contact record based on the email given.
 	 */
-	function LookupContact($email) {
+	function getLookupContact($email) {
 		global $adb;
 		if($this->_cachedContactIds[$email]) {
 			$this->log("Reusing Cached Contact Id for email: $email");
@@ -303,7 +303,7 @@ class Settings_MailConverter_MailScanner_Handler {
 	/**
 	 * Lookup Account record based on the email given.
 	 */
-	function LookupAccount($email) {
+	function getLookupAccount($email) {
 		global $adb;
 		if($this->_cachedAccountIds[$email]) {
 			$this->log("Reusing Cached Account Id for email: $email");
@@ -330,52 +330,59 @@ class Settings_MailConverter_MailScanner_Handler {
 	/**
 	 * Lookup Ticket record based on the subject or id given.
 	 */
-	function LookupTicket($subjectOrId) {
-		global $adb;
+    public function getLookupTicket($subjectOrId)
+    {
+        global $adb;
 
-		$checkTicketId = $this->__toInteger($subjectOrId);
-		if(!$checkTicketId) {
-			$ticketres = $adb->pquery("SELECT ticketid FROM vtiger_troubletickets WHERE title = ? OR ticket_no = ?", Array($subjectOrId, $subjectOrId));
-			if($adb->num_rows($ticketres)) $checkTicketId = $adb->query_result($ticketres, 0, 'ticketid');
-		}
-		// Try with ticket_no before CRMID (case where ticket_no is also just number)
-		if(!$checkTicketId) {
-			$ticketres = $adb->pquery("SELECT ticketid FROM vtiger_troubletickets WHERE ticket_no = ?", Array($subjectOrId));
-			if($adb->num_rows($ticketres)) $checkTicketId = $adb->query_result($ticketres, 0, 'ticketid');
-		}
-		// Nothing found?
-		if(!$checkTicketId) return false;
+        $checkTicketId = $this->__toInteger($subjectOrId);
 
-		if($this->_cachedTicketIds[$checkTicketId]) {
-			$this->log("Reusing Cached Ticket Id for: $subjectOrId");
-			return $this->_cachedTicketIds[$checkTicketId];
-		}
+        if (!$checkTicketId) {
+            $ticketres = $adb->pquery("SELECT ticketid FROM vtiger_troubletickets WHERE title = ? OR ticket_no = ?", [$subjectOrId, $subjectOrId]);
+            if ($adb->num_rows($ticketres)) {
+                $checkTicketId = $adb->query_result($ticketres, 0, 'ticketid');
+            }
+        }
+        // Try with ticket_no before CRMID (case where ticket_no is also just number)
+        if (!$checkTicketId) {
+            $ticketres = $adb->pquery("SELECT ticketid FROM vtiger_troubletickets WHERE ticket_no = ?", [$subjectOrId]);
+            if ($adb->num_rows($ticketres)) {
+                $checkTicketId = $adb->query_result($ticketres, 0, 'ticketid');
+            }
+        }
+        // Nothing found?
+        if (!$checkTicketId) {
+            return false;
+        }
 
-		// Verify ticket is not deleted
-		$ticketid = false;
-		if($checkTicketId) {
-			$crmres = $adb->pquery("SELECT setype, deleted FROM vtiger_crmentity WHERE crmid=?", Array($checkTicketId));
-			if($adb->num_rows($crmres)) {
-				if($adb->query_result($crmres, 0, 'setype') == 'HelpDesk' &&
-					$adb->query_result($crmres, 0, 'deleted') == '0') $ticketid = $checkTicketId;
-			}
-		}
-		if($ticketid) {
-			$this->log("Caching Ticket Id found for: $subjectOrId");
-			$this->_cachedTicketIds[$checkTicketId] = $ticketid;
-		} else {
-			$this->log("No matching Ticket found for: $subjectOrId");
-		}
-		return $ticketid;
-	}
+        if ($this->_cachedTicketIds[$checkTicketId]) {
+            $this->log("Reusing Cached Ticket Id for: $subjectOrId");
 
-	/**
-	 * Get Account record information based on email.
+            return $this->_cachedTicketIds[$checkTicketId];
+        }
+        // Verify ticket is not deleted
+        $ticketId = false;
+
+        if (!empty($checkTicketId) && isRecordExists($checkTicketId)) {
+            $ticketId = $checkTicketId;
+        }
+
+        if ($ticketId) {
+            $this->log("Caching Ticket Id found for: $subjectOrId");
+            $this->_cachedTicketIds[$checkTicketId] = $ticketId;
+        } else {
+            $this->log("No matching Ticket found for: $subjectOrId");
+        }
+
+        return $ticketId;
+    }
+
+    /**
+     * Get Account record information based on email.
 	 */
-	function GetAccountRecord($email, $accountid = false) {
+	function getAccountRecord($email, $accountid = false) {
 		require_once('modules/Accounts/Accounts.php');
 		if(!$accountid)
-                    $accountid = $this->LookupAccount($email);
+                    $accountid = $this->getLookupAccount($email);
 		$account_focus = false;
 		if($accountid) {
 			if($this->_cachedAccounts[$accountid]) {
@@ -396,10 +403,10 @@ class Settings_MailConverter_MailScanner_Handler {
 	/**
 	 * Get Contact record information based on email.
 	 */
-	function GetContactRecord($email, $contactid = false) {
+	function getContactRecord($email, $contactid = false) {
 		require_once('modules/Contacts/Contacts.php');
 		if(!$contactid)
-                    $contactid = $this->LookupContact($email);
+                    $contactid = $this->getLookupContact($email);
 		$contact_focus = false;
 		if($contactid) {
 			if($this->_cachedContacts[$contactid]) {
@@ -422,7 +429,7 @@ class Settings_MailConverter_MailScanner_Handler {
 	/**
 	 * Get Lead record information based on email.
 	 */
-	function GetLeadRecord($email) {
+	function getLeadRecord($email) {
 		require_once('modules/Leads/Leads.php');
 		$leadid = $this->LookupLead($email);
 		$lead_focus = false;
@@ -448,9 +455,9 @@ class Settings_MailConverter_MailScanner_Handler {
 	 * Lookup Contact or Account based on from email and with respect to given CRMID
 	 */
 	function LookupContactOrAccount($fromemail, $checkWith) {
-		$recordid = $this->LookupContact($fromemail);
+		$recordid = $this->getLookupContact($fromemail);
 		if ($checkWith['contact_id'] && $recordid != $checkWith['contact_id']) {
-			$recordid = $this->LookupAccount($fromemail);
+			$recordid = $this->getLookupAccount($fromemail);
 			if (($checkWith['parent_id'] && $recordid != $checkWith['parent_id']))
 				$recordid = false;
 		}
@@ -460,9 +467,9 @@ class Settings_MailConverter_MailScanner_Handler {
 	/**
 	 * Get Ticket record information based on subject or id.
 	 */
-	function GetTicketRecord($subjectOrId, $fromemail=false) {
+	public function getTicketRecord($subjectOrId, $fromemail=false) {
 		require_once('modules/HelpDesk/HelpDesk.php');
-		$ticketid = $this->LookupTicket($subjectOrId);
+		$ticketid = $this->getLookupTicket($subjectOrId);
 		$ticket_focus = false;
 		if($ticketid) {
 			if($this->_cachedTickets[$ticketid]) {

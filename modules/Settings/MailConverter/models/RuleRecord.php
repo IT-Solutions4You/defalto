@@ -44,7 +44,7 @@ class Settings_MailConverter_RuleRecord_Model extends Settings_Vtiger_Record_Mod
 	 * @return <Integer> Scanner id
 	 */
 	public function getScannerId() {
-		return $this->get('scannerid');
+		return (int)$this->get('scannerid');
 	}
 
 	/**
