@@ -516,7 +516,7 @@ class Settings_MailConverter_MailScannerInfo_Handler {
             $authModel->setProviderByServer($this->server);
             $authModel->updateAccessToken($this);
         } catch (Exception $e) {
-            throw new AppException('Update access token error: ' . ($e->getMessage()));
+
         }
     }
 

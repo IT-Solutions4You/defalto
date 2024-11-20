@@ -344,7 +344,7 @@ class MailManager_Mailbox_Model {
             $authModel->setProviderByServer($this->getServer());
             $authModel->updateAccessToken($this);
         } catch (Exception $e) {
-            throw new AppException('Update access token error: ' . ($e->getMessage()));
+
         }
     }
 
