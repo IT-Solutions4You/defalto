@@ -1289,7 +1289,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		form.on('click', '.retrieveToken', function () {
 			let formData = form.serializeFormData();
 
-			app.getOAuth2Url(formData['_mbox_server'], formData['_mbox_client_id'], formData['_mbox_client_secret']).then(function (error, data) {
+			app.getOAuth2Url(formData['_mbox_server'], formData['_mbox_client_id'], formData['_mbox_client_secret'], formData['_mbox_client_token']).then(function (error, data) {
 				if (!error) {
 					if (data['url']) {
 						tokenElement.val('');

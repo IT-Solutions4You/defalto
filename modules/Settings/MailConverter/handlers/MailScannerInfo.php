@@ -89,7 +89,7 @@ class Settings_MailConverter_MailScannerInfo_Handler {
      */
 	public function initialize($scannername) {
 		global $adb;
-		$result = $adb->pquery("SELECT * FROM vtiger_mailscanner WHERE scannername=?", Array($scannername));
+		$result = $adb->pquery('SELECT * FROM vtiger_mailscanner WHERE scannername=?', Array($scannername));
         $row = $adb->fetchByAssoc($result);
 
 		if($row) {
