@@ -24,6 +24,12 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 
 		app.request.post({"data" : params}).then(function(error, responseData) {
 			app.helper.hideProgress();
+
+			if(error) {
+				app.helper.showErrorNotification(error)
+				return;
+			}
+
 			self.getContainer().find('#folders_list').html(responseData);
 			self.getContainer().find('#folders_list').mCustomScrollbar({
 				setHeight: 550,

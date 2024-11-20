@@ -67,11 +67,17 @@ class MailManager_Connector_Connector {
     /**
      * Opens up imap connection to the specified url
      * @param MailManager_Mailbox_Model $model
+     * @throws Exception
      */
     public function __construct(MailManager_Mailbox_Model $model)
     {
-        $this->mBoxModel = $model;
-        $this->connect();
+        try {
+            $this->mBoxModel = $model;
+            $this->connect();
+        } catch (Exception $e) {
+            $this->mBox = null;
+            $this->setError('Connection error: "' . $e->getMessage() . '"');
+        }
     }
 
 
@@ -147,18 +153,19 @@ class MailManager_Connector_Connector {
 		return !empty($this->mBox);
 	}
 
+    /**
+     * @param string $value
+     * @return void
+     */
+    public function setError(string $value): void
+    {
+        $this->mError = $value;
+    }
 
-	/**
+    /**
 	 * Returns the last imap error
 	 */
 	public function isError() {
-		$errors = imap_errors();
-		if($errors !== false) {
-			$this->mError = implode(', ',$errors);
-		} else {
-			$this->mError = imap_last_error();
-		}
-
 		return $this->hasError();
 	}
 
