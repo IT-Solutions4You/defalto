@@ -86,7 +86,7 @@ class Core_Auth_Model extends Vtiger_Base_Model
         ];
     }
 
-    public function getRedirectUri()
+    public function getRedirectUri(): string
     {
         return rtrim(vglobal('site_URL'), '/') . '/auth.php?provider=' . $this->getProviderName();
     }
@@ -315,5 +315,12 @@ class Core_Auth_Model extends Vtiger_Base_Model
     public function getAuthorizationMessage(): string
     {
         return (string)$this->get('authorization_message');
+    }
+
+    public function setProviderByServer($server)
+    {
+        if (str_contains($server, 'gmail.com')) {
+            $this->setProviderName('Google');
+        }
     }
 }

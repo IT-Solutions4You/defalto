@@ -58,8 +58,6 @@ class MailManager_Connector_Connector {
      */
     public static function connectorWithModel(MailManager_Mailbox_Model $model): self
     {
-        $model->retrieveClientAccessToken();
-
         return new self($model);
     }
 
@@ -73,6 +71,7 @@ class MailManager_Connector_Connector {
     {
         try {
             $this->mBoxModel = $model;
+            $this->mBoxModel->retrieveClientAccessToken();
             $this->connect();
         } catch (Exception $e) {
             $this->mBox = null;

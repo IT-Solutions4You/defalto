@@ -114,6 +114,7 @@ class Settings_MailConverter_MailScannerInfo_Handler {
 
 			$this->initializeFolderInfo();
 			$this->initializeRules();
+            $this->retrieveClientAccessToken();
 		}
 	}
 
@@ -510,7 +511,13 @@ class Settings_MailConverter_MailScannerInfo_Handler {
             return;
         }
 
-        Core_Auth_Model::getInstance($this->client_id, $this->client_secret, $this->client_token)->updateAccessToken($this);
+        try {
+            $authModel = Core_Auth_Model::getInstance($this->client_id, $this->client_secret, $this->client_token);
+            $authModel->setProviderByServer($this->server);
+            $authModel->updateAccessToken($this);
+        } catch (Exception $e) {
+            throw new AppException('Update access token error: ' . ($e->getMessage()));
+        }
     }
 
     /**

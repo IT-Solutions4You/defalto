@@ -339,13 +339,18 @@ class MailManager_Mailbox_Model {
             return;
         }
 
-        Core_Auth_Model::getInstance($this->getClientId(), $this->getClientSecret(), $this->getClientToken())->updateAccessToken($this);
+        try {
+            $authModel = Core_Auth_Model::getInstance($this->getClientId(), $this->getClientSecret(), $this->getClientToken());
+            $authModel->setProviderByServer($this->getServer());
+            $authModel->updateAccessToken($this);
+        } catch (Exception $e) {
+            throw new AppException('Update access token error: ' . ($e->getMessage()));
+        }
     }
 
     /**
      * @param Core_Auth_Model $authModel
      * @return void
-     * @throws AppException
      */
     public function updateAccessToken(Core_Auth_Model $authModel): void
     {
@@ -365,4 +370,10 @@ class MailManager_Mailbox_Model {
         }
 
         return $port;
-    }}
+    }
+
+    public function getServer()
+    {
+        return $this->mServer;
+    }
+}
