@@ -384,6 +384,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
         }
 
         $recordModel->set('source', $this->recordSource);
+        $recordModel->set('mail_manager_id', $mailRecord->getUid());
 
         try {
             $recordModel->save();

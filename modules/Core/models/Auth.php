@@ -143,10 +143,14 @@ class Core_Auth_Model extends Vtiger_Base_Model
     public function retrieveAccessToken()
     {
         $provider = $this->getProvider();
+
+        if (!$this->isExpired()) {
+            return;
+        }
+
         $accessToken = $provider->getAccessToken('refresh_token', [
             'refresh_token' => $this->getToken(),
         ]);
-
         $this->setAccessToken($accessToken->getToken());
         $this->setAccessExpire($accessToken->getExpires());
     }
@@ -281,8 +285,9 @@ class Core_Auth_Model extends Vtiger_Base_Model
      */
     public function authorizationProcess(): void
     {
-        if (!empty($this->getToken()) && !empty($this->getAccessToken())) {
+        if (!empty($this->getToken()) && !empty($this->getAccessToken()) && !$this->isExpired()) {
             $this->setAuthorizationMessage('Retrieved token by Client Token');
+
             return;
         }
 
