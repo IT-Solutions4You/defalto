@@ -21,17 +21,5 @@ if (!session_id()) {
 $authInstance = Core_Auth_Model::getInstance();
 $authInstance->retrieveAuthClientId();
 $authInstance->validateConfig();
-
-if (empty($_SESSION['oauth2state'])) {
-    $authInstance->redirectToProvider();
-    exit('Redirected');
-} elseif (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
-    unset($_SESSION['oauth2state']);
-    unset($_SESSION['provider']);
-    exit('Invalid state');
-} elseif (empty($authInstance->getToken())) {
-    $authInstance->retrieveToken();
-    unset($_SESSION['oauth2state']);
-}
-
+$authInstance->authorizationProcess();
 $authInstance->viewAuthForm();

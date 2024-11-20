@@ -70,6 +70,11 @@ class Core_Auth_Action extends Vtiger_Action_Controller
             $authModel->setProviderName($request->get('provider'));
             $authModel->setToken($request->get('client_token', ''));
             $authModel->setAuthClientId($request->get('client_id'));
+
+            if (!$request->isEmpty('client_token')) {
+                $authModel->retrieveAccessToken();
+            }
+
             $url = $authModel->getRedirectUri();
         }
 

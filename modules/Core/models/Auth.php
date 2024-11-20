@@ -262,6 +262,7 @@ class Core_Auth_Model extends Vtiger_Base_Model
         $viewer->assign('PROVIDER', $this->getProviderName());
         $viewer->assign('TOKEN', $this->getToken());
         $viewer->assign('ACCESS_TOKEN', $this->getAccessToken());
+        $viewer->assign('AUTHORIZATION_MESSAGE', $this->get('authorization_message'));
         $viewer->view('AuthForm.tpl', $this->getModuleName());
     }
 
@@ -273,5 +274,29 @@ class Core_Auth_Model extends Vtiger_Base_Model
     public function setAuthClientId($value)
     {
         $_SESSION[$this->getModuleName()]['authClientId'] = $value;
+    }
+
+    /**
+     * @return void
+     */
+    public function authorizationProcess(): void
+    {
+        if (!empty($this->getToken()) && !empty($this->getAccessToken())) {
+            $this->set('authorization_message', 'Retrieved token by Client Token');
+            return;
+        }
+
+        if (empty($_SESSION['oauth2state'])) {
+            $this->redirectToProvider();
+            $this->set('authorization_message', 'Redirected');
+        } elseif (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
+            unset($_SESSION['oauth2state']);
+            unset($_SESSION['provider']);
+            $this->set('authorization_message', 'Invalid state');
+        } elseif (empty($this->getToken())) {
+            $this->retrieveToken();
+            $this->set('authorization_message', 'Retrieved Token by Authorization');
+            unset($_SESSION['oauth2state']);
+        }
     }
 }
