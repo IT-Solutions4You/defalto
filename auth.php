@@ -19,7 +19,14 @@ if (!session_id()) {
 }
 
 $authInstance = Core_Auth_Model::getInstance();
-$authInstance->retrieveAuthClientId();
-$authInstance->validateConfig();
-$authInstance->authorizationProcess();
+$authInstance->retrieveLoggedUser();
+
+try {
+    $authInstance->retrieveAuthClientId();
+    $authInstance->validateConfig();
+    $authInstance->authorizationProcess();
+} catch (Exception $e) {
+    $authInstance->setAuthorizationMessage($e->getMessage());
+}
+
 $authInstance->viewAuthForm();
