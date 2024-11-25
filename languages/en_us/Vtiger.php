@@ -1452,6 +1452,13 @@ $languageStrings = array(
     'LBL_SYSTEM_INFORMATION' => 'System Information',
     'LBL_SHOW_RELATED_COMMENTS' => 'Show related comments',
     'LBL_SHOW_RELATED_COMMENTS_INFO' => "If 'Show related comments' is set to 'On' comments on related records will be shown. For example, if you are viewing comments on an Organization record, comments added to related Contacts, Opportunities, Tickets, ..etc would also be displayed.",
+    'LBL_RELATED_BLOCK_EDIT' => 'Related block edit',
+    'LBL_RELATED_MODULE' => 'Related module',
+    'LBL_SELECT_COLUMNS' => 'Select columns',
+    'LBL_FILTERS' => 'Filters',
+    'LBL_SORTING' => 'Sorting',
+    'LBL_NAME' => 'Name',
+    'LBL_BLOCK_STYLE' => 'Block style',
 );
 
 $jsLanguageStrings = array(
