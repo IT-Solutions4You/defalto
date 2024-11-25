@@ -20,6 +20,22 @@ trait InventoryItem_Detail_Trait
 
         $viewer->assign('INVENTORY_ITEMS', $this->fetchItems((int)$request->get('record')));
         $viewer->assign('INVENTORY_ITEM_COLUMNS', InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule())));
+
+        /*$record = $request->get('record');
+        $recordModel = Vtiger_Record_Model::getInstanceById($record, 'InventoryItem');
+        $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
+        $recordStructure = [];
+
+        foreach ($recordStructureInstance->getStructure() as $key => $value) {
+            foreach ($value as $key2 => $value2) {
+                $recordStructure[$key2] = $value2;
+            }
+        }
+
+        foreach($recordStructure as $key => $value) {
+            show($key, $value->get('fieldvalue'));
+        }*/
+
     }
 
     private function fetchItems(int $record): array
