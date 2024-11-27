@@ -131,29 +131,29 @@ class Settings_MailConverter_MailScanner_Handler {
 				// Apply rules configured for the mailbox
 				$crmId = false;
 
-				foreach($rules as $rule) {
+                foreach ($rules as $rule) {
                     $crmId = $this->applyRule($rule, $mailRecord, $mailbox, $messageId);
 
-					if($crmId) {
-						break; // Rule was successfully applied and action taken
-					}
-				}
+                    if ($crmId) {
+                        $mailbox->markMessage($mailRecord);
+                        break; // Rule was successfully applied and action taken
+                    }
+                }
 
-				// Mark the email message as scanned
+                // Mark the email message as scanned
 				$this->markMessageScanned($mailRecord, $crmId);
-				$mailbox->markMessage($mailRecord);
 
 				/** Free the resources consumed. */
 				unset($mailRecord);
 			}
 			/* Update lastscan for this folder and reset rescan flag */
 			// TODO: Update lastscan only if all the mail searched was parsed successfully?
-			$rescanFolderFlag = false;
-			$this->updateLastScan($lookAtFolder, $rescanFolderFlag);
+			$this->updateLastScan($lookAtFolder);
 		}
 		// Close the mailbox at end
 		$mailbox->close();
-                return true;
+
+        return true;
 	}
 
 	/**

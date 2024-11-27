@@ -177,8 +177,9 @@ class Settings_MailConverter_MailScannerAction_Handler {
     }
 
     /**
-	 * Update ticket action.
-	 */
+     * Update ticket action.
+     * @throws AppException
+     */
     public function updateTicket(Settings_MailConverter_MailScanner_Handler $mailScanner, Settings_MailConverter_MailRecord_Handler $mailRecord, $regexMatchInfo, $mailScannerRule)
     {
         global $adb;
@@ -206,8 +207,8 @@ class Settings_MailConverter_MailScannerAction_Handler {
             // If matching ticket is found, update comment, attach email
             if ($linkFocus) {
                 $mailRecord->setDocumentRelationIds((int)$linkFocus->id);
-
-                $returnId = $this->createNewEmail($mailRecord, $linkFocus);
+                $relationIds = array_filter([$linkFocus->column_fields['parent_id'], $linkFocus->column_fields['contact_id']]);
+                $returnId = $this->createNewEmail($mailRecord, $linkFocus, $relationIds);
 
                 $commentFocus = new ModComments();
                 $commentFocus->column_fields['commentcontent'] = $mailRecord->getBodyText();
@@ -564,7 +565,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
 
         $recordModel->set('body', $mailRecord->getBody(false));
         $recordModel->set('assigned_user_id', $this->getAssignedToId($linkFocus));
-        $recordModel->set('email_flag', 'MailManager');
+        $recordModel->set('email_flag', $this->recordSource);
 
         $from = $mailRecord->getFrom()[0];
         $to = implode(',', $mailRecord->getTo());
