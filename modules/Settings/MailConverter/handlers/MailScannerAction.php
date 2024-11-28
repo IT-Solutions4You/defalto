@@ -385,7 +385,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
         }
 
         $recordModel->set('source', $this->recordSource);
-        $recordModel->set('mail_manager_id', $mailRecord->getUid());
+        $recordModel->set('mail_message_key', $mailRecord->generateUniqueKeyFromEmail());
 
         try {
             $recordModel->save();
@@ -577,7 +577,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
         $recordModel->set('to_email', $to);
         $recordModel->set('cc_email', $cc);
         $recordModel->set('bcc_email', $bcc);
-        $recordModel->set('mail_manager_id', $mailRecord->getUid());
+        $recordModel->set('mail_message_key', $mailRecord->generateUniqueKeyFromEmail());
         $recordModel->save();
 
         $mailRecord->setDocumentRelationIds([$recordModel->getId(), $recordModel->get('related_to')]);

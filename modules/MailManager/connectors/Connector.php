@@ -13,11 +13,6 @@ vimport ('~modules/MailManager/models/Message.php');
 class MailManager_Connector_Connector {
 
 	/*
-	 * Cache interval time
-	*/
-	static $DB_CACHE_CLEAR_INTERVAL = "-1 day"; // strtotime
-
-	/*
 	 * Mail Box URL
 	*/
 	public $mBoxUrl;
@@ -315,43 +310,6 @@ class MailManager_Connector_Connector {
 
         return [$mailIds, $mails];
     }
-
-
-    /**
-     * Return the cache interval
-	 */
-	public function clearDBCacheInterval() {
-		// TODO Provide configuration option.
-		if (self::$DB_CACHE_CLEAR_INTERVAL) {
-			return strtotime(self::$DB_CACHE_CLEAR_INTERVAL);
-		}
-		return false;
-	}
-
-
-	/**
-	 * Clears the cache data
-	 */
-	public function clearDBCache() {
-		// Trigger purne any older mail saved in DB first
-		$interval = $this->clearDBCacheInterval();
-
-		$timenow = strtotime("now");
-
-		// Optimization to avoid trigger for ever mail open (with interval specified)
-		$lastClearTimeFromSession = false;
-		if ($interval && isset($_SESSION) && isset($_SESSION['mailmanager_clearDBCacheIntervalLast'])) {
-			$lastClearTimeFromSession = intval($_SESSION['mailmanager_clearDBCacheIntervalLast']);
-			if (($timenow - $lastClearTimeFromSession) < ($timenow - $interval)) {
-				$interval = false; 
-			}
-		}
-		if ($interval) {
-			MailManager_Message_Model::pruneOlderInDB($interval);
-			$_SESSION['mailmanager_clearDBCacheIntervalLast'] = $timenow;
-		}
-	}
-
 
 	/**
 	 * Function which deletes the mails

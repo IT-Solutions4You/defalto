@@ -173,7 +173,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
             $formData[$referenceFields['Accounts']] = $contactRecordModel->get('account_id');
         }
 
-        $formData['mail_manager_id'] = $mail->getUid();
+        $formData['mail_message_key'] = $mail->generateUniqueKeyFromEmail();
         $formData['module'] = $linkModule;
 
         $request = new Vtiger_Request($formData, $formData);
