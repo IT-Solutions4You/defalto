@@ -35,15 +35,12 @@
             <table class="table table-borderless" id="lineItemTab">
                 <tr class="border-bottom">
                     <td><strong>{vtranslate('LBL_TOOLS',$MODULE)}</strong></td>
-                    {if isset($PRODUCT_EDITABLE)}
+                    {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
+                        {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
                         <td>
-                            <span class="text-danger me-2">*</span>
-                            <strong>{vtranslate({$LINEITEM_FIELDS['productid']->get('label')},$MODULE)}</strong>
+                            <strong>{vtranslate({$FIELD->get('label')},$MODULE)}</strong>
                         </td>
-                    {/if}
-                    <td>
-                        <strong>{vtranslate('LBL_QTY',$MODULE)}</strong>
-                    </td>
+                    {/foreach}
                 </tr>
                 {foreach key=row_no item=data from=$INVENTORY_ITEMS}
                     <tr id="row{$row_no}" data-row-num="{$row_no}" class="border-bottom lineItemRow" {if $data["entityType$row_no"] eq 'Products'}data-quantity-in-stock={$data["qtyInStock$row_no"]}{/if}>

@@ -10,6 +10,8 @@
 
 trait InventoryItem_Detail_Trait
 {
+    protected $excludedFields = ['assigned_user_id', 'description', 'item_text', 'parentid', 'parentitemid', 'sequence'];
+
     public function adaptDetail(Vtiger_Request $request, Vtiger_Viewer $viewer)
     {
         $productModuleModel = Vtiger_Module_Model::getInstance('Products');
@@ -18,23 +20,21 @@ trait InventoryItem_Detail_Trait
         $serviceModuleModel = Vtiger_Module_Model::getInstance('Services');
         $viewer->assign('SERVICE_ACTIVE', $serviceModuleModel->isActive());
 
+        $viewer->assign('EXCLUDED_FIELDS', $this->excludedFields);
         $viewer->assign('INVENTORY_ITEMS', $this->fetchItems((int)$request->get('record')));
         $viewer->assign('INVENTORY_ITEM_COLUMNS', InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule())));
 
-        /*$record = $request->get('record');
-        $recordModel = Vtiger_Record_Model::getInstanceById($record, 'InventoryItem');
+        $recordModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
         $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
         $recordStructure = [];
 
-        foreach ($recordStructureInstance->getStructure() as $key => $value) {
+        foreach ($recordStructureInstance->getStructure() as $value) {
             foreach ($value as $key2 => $value2) {
                 $recordStructure[$key2] = $value2;
             }
         }
 
-        foreach($recordStructure as $key => $value) {
-            show($key, $value->get('fieldvalue'));
-        }*/
+        $viewer->assign('INVENTORY_ITEM_RECORD_STRUCTURE', $recordStructure);
 
     }
 
