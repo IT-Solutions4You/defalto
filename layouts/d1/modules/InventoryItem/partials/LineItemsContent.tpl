@@ -93,18 +93,6 @@
                         {/if}
                     </div>
                 </div>
-                <input type="hidden" value="{$data.$subproduct_ids}" id="{$subproduct_ids}" name="{$subproduct_ids}" class="subProductIds" />
-                <div id="{$subprod_names}" name="{$subprod_names}" class="subInformation">
-            <span class="subProductsContainer">
-                {foreach key=SUB_PRODUCT_ID item=SUB_PRODUCT_INFO from=$data.$subprod_qty_list}
-                    <em> - {$SUB_PRODUCT_INFO.name} ({$SUB_PRODUCT_INFO.qty})
-                        {if $SUB_PRODUCT_INFO.qty > getProductQtyInStock($SUB_PRODUCT_ID)}
-                            &nbsp;-&nbsp;<span class="redColor">{vtranslate('LBL_STOCK_NOT_ENOUGH', $MODULE)}</span>
-                        {/if}
-                    </em><br>
-                {/foreach}
-            </span>
-                </div>
                 {if $data.$productDeleted}
                     <div class="row-fluid deletedItem redColor">
                         {if empty($data.$item_text)}
@@ -123,18 +111,18 @@
             </td>
         {elseif $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double'}
             <td>
-                <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control replaceCommaWithDot"
+                <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control replaceCommaWithDot allowOnlyNumbers"
                        data-rule-required=true data-rule-positive=true data-rule-greater_than_zero=true value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
             </td>
         {else}
-            <td>{$data.$INVENTORY_ITEM_FIELD_NAME}</td>
+            <td><input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/></td>
         {/if}
 
     {/foreach}
 
     {foreach key=FIELD_NAME item=INVENTORY_ITEM_RECORD from=$INVENTORY_ITEM_RECORD_STRUCTURE}
         {if !in_array($FIELD_NAME, $INVENTORY_ITEM_COLUMNS) and !in_array($FIELD_NAME, $EXCLUDED_FIELDS)}
-            <td style="display: none;"><input id="{$FIELD_NAME|cat:$row_no}" name="{$FIELD_NAME|cat:$row_no}" type="hidden" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"></td>
+            <td style="display: none;"><input id="{$FIELD_NAME|cat:$row_no}" name="{$FIELD_NAME|cat:$row_no}" class="{$FIELD_NAME}" type="hidden" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"></td>
         {/if}
     {/foreach}
 

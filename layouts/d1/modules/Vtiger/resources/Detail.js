@@ -2947,6 +2947,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		}
 
 		vtUtils.registerReplaceCommaWithDot($(document));
+		vtUtils.registerAllowOnlyNumbers($(document));
 	},
 
 	/**

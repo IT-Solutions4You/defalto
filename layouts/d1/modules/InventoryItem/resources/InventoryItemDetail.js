@@ -31,6 +31,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.registerLineItemAutoComplete();
         this.makeLineItemsSortable();
         this.addRowListeners();
+        this.registerClearLineItemSelection();
     },
 
     registerAddButtons: function () {
@@ -434,6 +435,25 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             jQuery('input.lineItemType',parentRow).val(referenceModule);
             lineItemNameElment.val(recordData.name);
         }
+    },
+
+    registerClearLineItemSelection : function() {
+        const self = this;
+
+        this.lineItemsHolder.on('click','.clearLineItem', function(e){
+            const elem = jQuery(e.currentTarget);
+            const parentElem = elem.closest('td');
+            self.clearLineItemDetails(parentElem);
+            e.preventDefault();
+        });
+    },
+
+    clearLineItemDetails : function(parentElem) {
+        const lineItemRow = parentElem.closest('tr');
+        jQuery('input.allowOnlyNumbers', lineItemRow).val(0);
+        jQuery('input.item_text', lineItemRow).val('');
+        jQuery('input.productid', lineItemRow).val('');
+        //this.quantityChangeActions(lineItemRow);
     },
 
 });
