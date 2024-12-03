@@ -744,47 +744,6 @@ class EMAILMaker_IndexAjax_Action extends Vtiger_Action_Controller
         $response->emit();
     }
 
-    public function GetRelatedBlockColumns(Vtiger_Request $request)
-    {
-
-        $current_user = Users_Record_Model::getCurrentUserModel();
-        $RelatedBlock = new EMAILMaker_RelatedBlock_Model();
-
-        $sec_module = $request->get('secmodule');
-        $pri_module = $request->get('primodule');
-        $mode = $request->get('type');
-
-        $module_list = $RelatedBlock->getModuleList($sec_module);
-
-        $Fields = array();
-        /*
-        if ($type == "stdcriteria") {
-            $options = $RelatedBlock->getStdCriteriaByModule($sec_module, $module_list, $current_user);
-            if (count($options) > 0) {
-                $content = "";
-                foreach ($options AS $value => $label) {
-                    $content .= "<option value='" . $value . "'>" . $label . "</option>";
-                    $Fields[$value] =  $label;
-                }
-            }
-        } else {
-            */
-        foreach ($module_list as $blockid => $optgroup) {
-            $options = $RelatedBlock->getColumnsListbyBlock($sec_module, $blockid, $pri_module, $current_user);
-
-            if (!empty($options) && count($options)) {
-                foreach ($options as $value => $label) {
-                    $Fields[$optgroup][$value] = $label;
-                }
-            }
-        }
-        //}
-
-        $response = new Vtiger_Response();
-        $response->setResult(array("fields" => $Fields));
-        $response->emit();
-    }
-
     public function SaveDisplayConditions(Vtiger_Request $request)
     {
         $templateid = $request->get('record');

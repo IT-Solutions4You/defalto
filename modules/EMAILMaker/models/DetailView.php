@@ -31,7 +31,7 @@ class EMAILMaker_DetailView_Model extends Vtiger_DetailView_Model
             'linktype' => 'DETAILVIEWBASIC',
             'linklabel' => 'LBL_EDIT',
             'linkurl' => $recordModel->getEditViewUrl(),
-            'linkicon' => ''
+            'linkicon' => '<i class="fa-solid fa-pencil"></i>'
         );
 
         foreach ($detailViewLinks as $detailViewLink) {
@@ -46,7 +46,7 @@ class EMAILMaker_DetailView_Model extends Vtiger_DetailView_Model
             'linktype' => 'DETAILVIEW',
             'linklabel' => 'LBL_DELETE',
             'linkurl' => 'javascript:Vtiger_Detail_Js.deleteRecord("' . $recordModel->getDeleteUrl() . '")',
-            'linkicon' => ''
+            'linkicon' => '<i class="fa-solid fa-trash"></i>'
         );
         $linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($deletelinkModel);
 
@@ -54,7 +54,7 @@ class EMAILMaker_DetailView_Model extends Vtiger_DetailView_Model
             'linktype' => 'DETAILVIEWBASIC',
             'linklabel' => 'LBL_DUPLICATE',
             'linkurl' => $recordModel->getDuplicateRecordUrl(),
-            'linkicon' => ''
+            'linkicon' => '<i class="fa-solid fa-copy"></i>'
         );
         $linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($duplicateLinkModel);
 

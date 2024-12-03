@@ -311,7 +311,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
             $viewer->assign($viewer_key, $pbFields);
         }
 
-        $viewer->assign('RELATED_BLOCKS', $EMAILMaker->GetRelatedBlocks($select_module));
+        $viewer->assign('RELATED_BLOCKS', $EMAILMaker->getRelatedBlocks($select_module));
         $viewer->assign('SUBJECT_FIELDS', $EMAILMaker->getSubjectFields());
 
         if (!empty($select_module)) {

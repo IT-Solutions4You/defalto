@@ -324,6 +324,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $this->handleRowbreak();
         $this->replaceUserCompanyFields($convert_source);
         $this->replaceLabels();
+        $this->convertHideTR();
 
         if (strtoupper(self::$def_charset) != "UTF-8") {
             self::$content = iconv(self::$def_charset, "UTF-8//TRANSLIT", self::$content);
@@ -361,6 +362,16 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $this->setSubject($EMAIL_content["subject"]);
         $this->setBody($EMAIL_content["body"]);
         $this->setPreview($EMAIL_content);
+    }
+
+    /**
+     * @param string $type
+     */
+    protected function convertHideTR(string $type = ''): void
+    {
+        $regex = '/<tr\b[^<]*>[^<]*(?:<(?!tr\b)[^<]*)*#' . $type . 'HIDETR#[^<]*(?:<(?!\/tr>)[^<]*)*<\/tr>/';
+
+        self::$content = preg_replace($regex, '', self::$content);
     }
 
     //private function replaceFieldsToContent($emodule, $efocus, $is_related = false, $inventory_currency = false, $is_recipient = false, $is_l_user = false)
@@ -1139,100 +1150,9 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     /**
      * @throws Exception
      */
-    private function convertRelatedBlocks()
+    private function convertRelatedBlocks(): void
     {
-        include_once 'modules/EMAILMaker/resources/EMAILMakerRelBlockRun.php';
-
-        if (false !== strpos(self::$content, '#RELBLOCK')) {
-            preg_match_all('|#RELBLOCK([0-9]+)_START#|U', self::$content, $relatedBlocks, PREG_PATTERN_ORDER);
-
-            if (0 < count($relatedBlocks[1])) {
-                $convertRelBlock = array();
-
-                foreach ($relatedBlocks[1] as $relBlockId) {
-                    if (in_array($relBlockId, $convertRelBlock)) {
-                        continue;
-                    }
-
-                    $blockStart = sprintf('#RELBLOCK%s_START#', $relBlockId);
-                    $blockEnd = sprintf('#RELBLOCK%s_END#', $relBlockId);
-
-                    if (strpos(self::$content, $blockStart) === false || strpos(self::$content, $blockEnd) === false) {
-                        continue;
-                    }
-
-                    $this->convertRelatedBlock($relBlockId);
-                    $secModule = EMAILMaker_RelatedBlock_Model::getBlockValue($relBlockId, 'secmodule');
-
-                    $oRelBlockRun = new EMAILMakerRelBlockRun(self::$focus->id, $relBlockId, self::$module, $secModule);
-                    $oRelBlockRun->SetEMAILLanguage(self::$language);
-                    $relBlockData = $oRelBlockRun->GenerateReport();
-
-                    $exploded = explode($blockStart, self::$content);
-                    $explodedEMAIL = array(
-                        $exploded[0]
-                    );
-
-                    for ($iterator = 1; $iterator < count($exploded); $iterator++) {
-                        $SubExploded = explode($blockEnd, $exploded[$iterator]);
-
-                        foreach ($SubExploded as $part) {
-                            $explodedEMAIL[] = $part;
-                        }
-
-                        $highestPartId = $iterator * 2 - 1;
-                        $productParts[$highestPartId] = $explodedEMAIL[$highestPartId];
-                        $explodedEMAIL[$highestPartId] = '';
-                    }
-
-                    if (!in_array($secModule, self::$relBlockModules)) {
-                        self::$relBlockModules[] = $secModule;
-                    }
-
-                    if (count($relBlockData) > 0) {
-                        foreach ($relBlockData as $relBlockDetails) {
-                            foreach ($productParts as $productPartId => $productPartText) {
-                                $show_line = false;
-
-                                foreach ($relBlockDetails as $column => $value) {
-                                    if ('-' !== trim($value) && 'listprice' !== $column) {
-                                        $show_line = true;
-                                    }
-
-                                    $productPartText = str_ireplace('$' . $column . '$', html_entity_decode($value), $productPartText);
-                                }
-
-                                if ($show_line) {
-                                    $explodedEMAIL[$productPartId] .= $productPartText;
-                                }
-                            }
-                        }
-                    }
-
-                    self::$content = implode('', $explodedEMAIL);
-
-                    $convertRelBlock[] = $relBlockId;
-                }
-            }
-        }
-    }
-
-    private function convertRelatedBlock($blockId)
-    {
-        EMAILMaker_EMAILMaker_Model::getSimpleHtmlDomFile();
-        $html = str_get_html(self::$content);
-
-        if (is_array($html->find('td'))) {
-            foreach ($html->find('td') as $td) {
-                if (trim($td->plaintext) == '#RELBLOCK' . $blockId . '_START#') {
-                    $td->parent->outertext = '#RELBLOCK' . $blockId . '_START#';
-                }
-                if (trim($td->plaintext) == '#RELBLOCK' . $blockId . '_END#') {
-                    $td->parent->outertext = '#RELBLOCK' . $blockId . '_END#';
-                }
-            }
-            self::$content = $html->save();
-        }
+        self::$content = Core_RelatedBlock_Model::replaceAll(self::$recordModel, self::$content);
     }
 
     private function convertInventoryModules()
