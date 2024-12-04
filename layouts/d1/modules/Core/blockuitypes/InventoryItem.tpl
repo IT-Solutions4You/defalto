@@ -55,26 +55,19 @@
         </div>
     </div>
     <div class="px-4">
-        <div class="btn-toolbar">
+        <div class="btn-toolbar inventoryItemAddButtons">
             <div class="btn-group">
                 <button type="button" class="btn btn-default" id="addText" data-module-name="">
                     <i class="fa fa-plus"></i><strong>&nbsp;&nbsp;{vtranslate('LBL_ADD_TEXT', $MODULE)}</strong>
                 </button>
             </div>
-            {if $PRODUCT_ACTIVE eq 'true'}
+            {foreach from=$ITEM_MODULES item=ITEM_MODULE_NAME}
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default" id="addProduct" data-module-name="Products">
-                        <i class="fa fa-plus"></i><strong>&nbsp;&nbsp;{vtranslate('LBL_ADD_PRODUCT',$MODULE)}</strong>
+                    <button type="button" class="btn btn-default" id="add{$ITEM_MODULE_NAME}" data-module-name="{$ITEM_MODULE_NAME}">
+                        <i class="fa fa-plus"></i><strong>&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}</strong>
                     </button>
                 </div>
-            {/if}
-            {if $SERVICE_ACTIVE eq 'true'}
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default" id="addService" data-module-name="Services">
-                        <i class="fa fa-plus"></i><strong>&nbsp;&nbsp;{vtranslate('LBL_ADD_SERVICE',$MODULE)}</strong>
-                    </button>
-                </div>
-            {/if}
+            {/foreach}
         </div>
     </div>
 </div>

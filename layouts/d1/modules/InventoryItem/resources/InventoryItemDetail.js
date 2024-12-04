@@ -32,6 +32,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.makeLineItemsSortable();
         this.addRowListeners();
         this.registerClearLineItemSelection();
+        this.registerLineItemPopupSelection();
     },
 
     registerAddButtons: function () {
@@ -59,13 +60,13 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             self.setupRowListeners(self.numOfLineItems);
 
             if (typeof data != "undefined") {
-                // self.mapResultsToFields(newLineItem, data);
+                self.mapResultsToFields(newLineItem, data);
             }
         };
 
-        jQuery('#addProduct').on('click', addLineItemEventHandler);
-        jQuery('#addService').on('click', addLineItemEventHandler);
         jQuery('#addText').on('click', addTextLineHandler);
+        const addButtonsToolbar = jQuery('.inventoryItemAddButtons');
+        addButtonsToolbar.find('button').not(':eq(0)').on('click', addLineItemEventHandler);
     },
 
     getLineItemSetype: function (row) {
@@ -432,15 +433,15 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         for (let id in responseData) {
             let recordData = responseData[id];
             jQuery('input.productid', parentRow).val(id);
-            jQuery('input.lineItemType',parentRow).val(referenceModule);
+            jQuery('input.lineItemType', parentRow).val(referenceModule);
             lineItemNameElment.val(recordData.name);
         }
     },
 
-    registerClearLineItemSelection : function() {
+    registerClearLineItemSelection: function () {
         const self = this;
 
-        this.lineItemsHolder.on('click','.clearLineItem', function(e){
+        this.lineItemsHolder.on('click', '.clearLineItem', function (e) {
             const elem = jQuery(e.currentTarget);
             const parentElem = elem.closest('td');
             self.clearLineItemDetails(parentElem);
@@ -448,7 +449,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
     },
 
-    clearLineItemDetails : function(parentElem) {
+    clearLineItemDetails: function (parentElem) {
         const lineItemRow = parentElem.closest('tr');
         jQuery('input.allowOnlyNumbers', lineItemRow).val(0);
         jQuery('input.item_text', lineItemRow).val('');
@@ -456,6 +457,49 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         //this.quantityChangeActions(lineItemRow);
     },
 
+    registerLineItemPopupSelection: function () {
+        const self = this;
+
+        this.lineItemsHolder.on('click', '.lineItemPopup', function (e) {
+            const triggerElement = jQuery(e.currentTarget);
+            self.showLineItemPopup({'view': triggerElement.data('popup')});
+            const popupReferenceModule = triggerElement.data('moduleName');
+            const postPopupHandler = function (e, data) {
+                data = JSON.parse(data);
+
+                if (!$.isArray(data)) {
+                    data = [data];
+                }
+
+                self.postLineItemSelectionActions(triggerElement.closest('tr'), data, popupReferenceModule);
+            };
+            app.event.off('post.LineItemPopupSelection.click');
+            app.event.one('post.LineItemPopupSelection.click', postPopupHandler);
+        });
+    },
+
+    showLineItemPopup: function (callerParams) {
+        let params = {
+            'module': this.getModuleName(),
+            'multi_select': true,
+            'currency_id': jQuery('select[name="currency_id"]').val(),
+        };
+
+        params = jQuery.extend(params, callerParams);
+        const popupInstance = Vtiger_Popup_Js.getInstance();
+        popupInstance.showPopup(params, 'post.LineItemPopupSelection.click');
+    },
+
+    postLineItemSelectionActions: function (itemRow, selectedLineItemsData, lineItemSelectedModuleName) {
+        for (let index in selectedLineItemsData) {
+            if (index !== 0) {
+                jQuery('#add' + lineItemSelectedModuleName).trigger('click', selectedLineItemsData[index]);
+            } else {
+                itemRow.find('.lineItemType').val(lineItemSelectedModuleName);
+                this.mapResultsToFields(itemRow, selectedLineItemsData[index]);
+            }
+        }
+    },
 });
 
 InventoryItem_InventoryItemDetail_Js_Instance = new InventoryItem_InventoryItemDetail_Js();

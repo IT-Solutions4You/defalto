@@ -14,12 +14,7 @@ trait InventoryItem_Detail_Trait
 
     public function adaptDetail(Vtiger_Request $request, Vtiger_Viewer $viewer)
     {
-        $productModuleModel = Vtiger_Module_Model::getInstance('Products');
-        $viewer->assign('PRODUCT_ACTIVE', $productModuleModel->isActive());
-
-        $serviceModuleModel = Vtiger_Module_Model::getInstance('Services');
-        $viewer->assign('SERVICE_ACTIVE', $serviceModuleModel->isActive());
-
+        $viewer->assign('ITEM_MODULES', InventoryItem_ItemModules_Model::getItemModules());
         $viewer->assign('EXCLUDED_FIELDS', $this->excludedFields);
         $viewer->assign('INVENTORY_ITEMS', $this->fetchItems((int)$request->get('record')));
         $viewer->assign('INVENTORY_ITEM_COLUMNS', InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule())));
