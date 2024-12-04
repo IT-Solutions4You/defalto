@@ -84,9 +84,7 @@
             </div>
             <div class="container-fluid">
                 <div class="row py-3">
-                    <div class="col-6 text-end">
-                        <button onclick="history.back()" class="btn btn-primary cancelLink" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</button>
-                    </div>
+                    <div class="col-6"></div>
                     <div class="col-6">
                         <button id="saveRelatedBlock" class="btn btn-primary active" type="submit" name="saveButton">
                             <strong>{vtranslate('LBL_SAVE', $MODULE)}</strong>

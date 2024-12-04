@@ -1459,6 +1459,8 @@ $languageStrings = array(
     'LBL_SORTING' => 'Sorting',
     'LBL_NAME' => 'Name',
     'LBL_BLOCK_STYLE' => 'Block style',
+    'LBL_RELATED_BLOCK_PREVIEW' => 'Related block preview',
+    'LBL_CONTENT' => 'Content',
 );
 
 $jsLanguageStrings = array(

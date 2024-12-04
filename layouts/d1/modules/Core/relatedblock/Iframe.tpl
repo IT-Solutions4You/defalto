@@ -1,0 +1,1 @@
+{Core_RelatedBlock_Model::replaceAll($RECORD_MODEL, $TEMPLATE_CONTENT)}
