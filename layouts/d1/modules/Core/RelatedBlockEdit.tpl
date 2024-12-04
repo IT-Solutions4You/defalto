@@ -54,7 +54,8 @@
                         SOURCE_MODULE=$RELATED_BLOCK_MODEL->getRelatedModuleName()
                         ADVANCE_CRITERIA=$RELATED_BLOCK_MODEL->getAdvanceCriteria()
                         ADVANCED_FILTER_OPTIONS=Vtiger_Field_Model::getAdvancedFilterOptions()
-                        ADVANCED_FILTER_OPTIONS_BY_TYPE=Vtiger_Field_Model::getAdvancedFilterOpsByFieldType()}
+                        ADVANCED_FILTER_OPTIONS_BY_TYPE=Vtiger_Field_Model::getAdvancedFilterOpsByFieldType()
+                        DATE_FILTERS=Vtiger_Field_Model::getDateFilterTypes()}
                     </div>
                 </div>
             </div>

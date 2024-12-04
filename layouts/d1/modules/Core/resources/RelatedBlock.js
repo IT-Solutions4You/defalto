@@ -41,6 +41,7 @@ Vtiger_Index_Js('Vtiger_RelatedBlock_Js', {}, {
         this.registerFilterConditions();
         this.registerSubmit();
         this.registerColumnsChange();
+        vtUtils.registerReplaceCommaWithDot(this.getForm());
     },
     registerChangeRelatedModule() {
         const self = this;
