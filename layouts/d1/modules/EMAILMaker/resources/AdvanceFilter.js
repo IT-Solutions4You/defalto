@@ -16,7 +16,12 @@ Vtiger_AdvanceFilter_Js('EMAILMaker_AdvanceFilter_Js', {}, {
     comparatorsWithNoValueBoxMap: ['is empty', 'is not empty'],
     getFieldSpecificType: function (fieldSelected) {
         let fieldInfo = fieldSelected.data('fieldinfo');
-        return fieldInfo.type;
+
+        if ('undefined' !== typeof fieldInfo) {
+            return fieldInfo['type'];
+        }
+
+        return fieldSelected.data('fieldtype');
     },
     getModuleName: function () {
         return app.getModuleName();
@@ -251,7 +256,7 @@ Vtiger_AdvanceFilter_Js('EMAILMaker_AdvanceFilter_Js', {}, {
         let fieldSelected = fieldSelectElement.find('option:selected'),
             fieldInfo = fieldSelected.data('fieldinfo');
 
-        if (jQuery.inArray(fieldInfo.comparatorElementVal, this.comparatorsWithNoValueBoxMap) != -1) {
+        if ('undefined' !== typeof fieldInfo && jQuery.inArray(fieldInfo.comparatorElementVal, this.comparatorsWithNoValueBoxMap) != -1) {
             return jQuery('');
         } else {
             return this._super(fieldSelectElement);
