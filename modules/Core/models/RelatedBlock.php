@@ -519,6 +519,15 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
             ];
         }
 
+        if ('ModComments' === $this->getRelatedModuleName()) {
+            return [
+                'modcommentsrel',
+                'vtiger_modcommentsrel',
+                'INNER JOIN vtiger_modcomments',
+                sprintf('vtiger_modcommentsrel.modcommentsid=vtiger_crmentity.crmid AND vtiger_modcommentsrel.related_to=%d', $this->getSourceRecord()->getId()),
+            ];
+        }
+
         return [
             'crmentityrel',
             'vtiger_crmentityrel',
