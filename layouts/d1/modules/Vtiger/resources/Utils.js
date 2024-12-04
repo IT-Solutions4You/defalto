@@ -19,6 +19,32 @@ var vtUtils = {
             }
         });
     },
+    updateSelect2ElementViewIds(selectElement) {
+        selectElement.each(function() {
+            let element = $(this),
+                id = element.attr('id'),
+                column = element.attr('name');
+
+            if(!id) {
+                let similarElements = $('[name="' + column + '"]');
+                element.attr('id', column + (similarElements.length + 1));
+            }
+        })
+    },
+    hideSelect2ElementView(selectElement) {
+        let selectElements = $(selectElement);
+
+        selectElements.each(function () {
+            selectElement = $(this);
+
+            if (selectElement.is('.select2-hidden-accessible')) {
+                selectElement.select2('destroy');
+                selectElement.removeClass('select2-hidden-accessible')
+            }
+        });
+
+        return selectElement
+    },
     /**
 	 * Function which will show the select2 element for select boxes . This will use select2 library
 	 */
@@ -28,6 +54,10 @@ var vtUtils = {
                 vtUtils.showSelect2ElementView($(this), params);
             });
 
+            return selectElement;
+        }
+
+        if (selectElement.is('.select2-hidden-accessible')) {
             return selectElement;
         }
 
@@ -579,7 +609,8 @@ var vtUtils = {
         if(typeof customParams === 'undefined') {
             customParams = {};
         }
-        var qtipParams =  {
+
+        let qtipParams =  {
             content: {
                 text: message
             },
@@ -646,7 +677,7 @@ var vtUtils = {
 	},
 
     showValidationMessage : function(element,message,params) {
-        if(element.hasClass('select2')) {
+        if (element.hasClass('select2')) {
             element = app.helper.getSelect2FromSelect(element);
         }
 
@@ -654,7 +685,7 @@ var vtUtils = {
             params = {};
         }
 
-        var validationTooltipParams = {
+        let validationTooltipParams = {
             position: {
                 my: 'bottom left',
                 at: 'top left'
