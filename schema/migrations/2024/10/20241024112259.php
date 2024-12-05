@@ -41,6 +41,15 @@ if (!class_exists('Migration_20241024112259')) {
                     PRIMARY KEY (`tabid`)
                 ) ENGINE=innodb DEFAULT CHARSET=utf8
             ');
+
+            $this->db->query('
+                CREATE TABLE `df_inventoryitem_itemmodules` (
+                  `tabid` int(19) NOT NULL,
+                  PRIMARY KEY (`tabid`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+            ');
+
+            $this->db->pquery('INSERT INTO df_inventoryitem_itemmodules (tabid) VALUES (?), (?)', [getTabid('Products'), getTabid('Services')]);
         }
     }
 } else {

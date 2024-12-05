@@ -13,10 +13,13 @@ class InventoryItem_ItemModules_Model
     public static function getItemModules(): array
     {
         $return = [];
+        $db = PearDatabase::getInstance();
+        $sql = 'SELECT * FROM df_inventoryitem_itemmodules';
+        $result = $db->query($sql);
 
-        $itemModules = ['Products', 'Services'];
+        while($row = $db->fetchByAssoc($result)) {
+            $module = vtlib_getModuleNameById($row['tabid']);
 
-        foreach ($itemModules as $module) {
             if (vtlib_isModuleActive($module)) {
                 $return[] = $module;
             }

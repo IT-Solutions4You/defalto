@@ -55,18 +55,15 @@
         </div>
     </div>
     <div class="px-4">
-        <div class="btn-toolbar inventoryItemAddButtons">
-            <div class="btn-group">
-                <button type="button" class="btn btn-default" id="addText" data-module-name="">
-                    <i class="fa fa-plus"></i><strong>&nbsp;&nbsp;{vtranslate('LBL_ADD_TEXT', $MODULE)}</strong>
-                </button>
-            </div>
+        <div class="btn-toolbar inventoryItemAddButtons" style="display:inline;">
+            <div class="recordLabel verticalAlignMiddle me-2" style="display:inline;"><strong>Add </strong></div>
+            <button type="button" class="btn btn-outline-primary mb-1 me-1" id="addText" data-module-name="">
+                <i class="fa fa-i-cursor"></i><strong>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}</strong>
+            </button>
             {foreach from=$ITEM_MODULES item=ITEM_MODULE_NAME}
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default" id="add{$ITEM_MODULE_NAME}" data-module-name="{$ITEM_MODULE_NAME}">
-                        <i class="fa fa-plus"></i><strong>&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}</strong>
-                    </button>
-                </div>
+                <button type="button" class="btn btn-outline-primary mb-1 me-1" id="add{$ITEM_MODULE_NAME}" data-module-name="{$ITEM_MODULE_NAME}">
+                    {Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}<strong>&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}</strong>
+                </button>
             {/foreach}
         </div>
     </div>
