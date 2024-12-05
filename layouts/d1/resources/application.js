@@ -440,7 +440,7 @@ window.app = (function () {
 		getUserCurrencySymbolPlacement: function () {
 			return _USERMETA.currencySymbolPlacement;
 		},
-		getOAuth2Url(server, clientId, clientSecret) {
+		getOAuth2Url(server, clientId, clientSecret, clientToken = '') {
 			let aDeferred = jQuery.Deferred(),
 				params = {
 					module: app.getModuleName(),
@@ -449,6 +449,7 @@ window.app = (function () {
 					server: server,
 					client_id: clientId,
 					client_secret: clientSecret,
+					client_token: clientToken,
 				};
 
 			app.request.post({data: params}).then(function (error, data) {

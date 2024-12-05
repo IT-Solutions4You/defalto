@@ -58,13 +58,8 @@ class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction
         $emailId = $instance->createNewEmail($mailRecord, $linkFocus, array_unique([$linkFocus->id, $recipientId]));
 
         if (!empty($emailId)) {
-            MailManager::updateMailAssociation($mailRecord->getUniqueId(), $emailId, $linkFocus->id);
             // To add entry in ModTracker for email relation
             relateEntities($linkFocus, $moduleName, $linkTo, 'ITS4YouEmails', $emailId);
-
-            if ($recipientId) {
-                MailManager::updateMailAssociation($mailRecord->getUniqueId(), $emailId, $recipientId);
-            }
         }
 
         $name = getEntityName($moduleName, $linkTo);

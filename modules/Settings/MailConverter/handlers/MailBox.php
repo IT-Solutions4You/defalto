@@ -135,32 +135,32 @@ class Settings_MailConverter_MailBox_Handler {
     /**
      * Get the mails based on searchquery.
      * @param object $mBoxFolder
-     * @param string $searchQuery IMAP query, (default false: fetches mails newer from lastscan)
      * @return bool|object return query of emails records or false
      */
-    public function getSearchMails(object $mBoxFolder, string $searchQuery = ''): bool|object
+    public function getSearchMails(object $mBoxFolder): bool|object
     {
         $folder = $mBoxFolder->name;
+        $lastScanOn = $this->_scannerinfo->getLastscan($mBoxFolder->name);
 
-        if (empty($searchQuery)) {
-            $lastScanOn = $this->_scannerinfo->getLastscan($mBoxFolder->name);
-            $searchFor = $this->_scannerinfo->searchfor;
-
-            if ($searchFor && $lastScanOn) {
-                if ($searchFor == 'ALL') {
-                    $searchQuery = "SINCE $lastScanOn";
-                } else {
-                    $searchQuery = "$searchFor SINCE $lastScanOn";
-                }
-            } else {
-                $searchQuery = $lastScanOn ? "SINCE $lastScanOn" : "BEFORE " . $this->_scannerinfo->dateBasedOnMailServerTimezone('d-M-Y');
-            }
+        if ($lastScanOn) {
+            $searchQuery = 'SINCE ' . $lastScanOn;
+        } else {
+            $searchQuery = 'BEFORE ' . $this->_scannerinfo->dateBasedOnMailServerTimezone('d-M-Y');
         }
 
         if ($mBoxFolder) {
             $this->log("Searching mailbox[$folder] using query: $searchQuery");
-            $searchQuery = explode(' ', $searchQuery, 2);
-            $query = $mBoxFolder->query()->where([$searchQuery[0] => $searchQuery[1]]);
+            $searchFor = $this->_scannerinfo->searchfor;
+            $query = $mBoxFolder->query();
+
+            if ('UNSEEN' === $searchFor) {
+                $query->where(['UNSEEN']);
+            } elseif ('ALL' === $searchFor) {
+                $query->all();
+            }
+
+            [$searchKey, $searchValue] = explode(' ', $searchQuery, 2);
+            $query->where([$searchKey => $searchValue]);
 
             return $query->get();
         }

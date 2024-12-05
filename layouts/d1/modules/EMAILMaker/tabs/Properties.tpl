@@ -110,24 +110,39 @@
                     </div>
                     {* related bloc tpl *}
                     <div class="form-group row py-2">
-                        <label class="control-label fieldLabel col-sm-3 text-muted">{vtranslate('LBL_RELATED_BLOCK_TPL',$MODULE)}:</label>
+                        <label class="control-label fieldLabel col-sm-3 text-muted">{vtranslate('LBL_RELATED_BLOCK_TPL',$QUALIFIED_MODULE)}:</label>
                         <div class="controls col-sm-9">
                             <div class="input-group">
                                 <select name="related_block" id="related_block" class="select2 form-control" data-width="50%">
                                     {html_options options=$RELATED_BLOCKS}
                                 </select>
-                                <button type="button" class="btn btn-success" onclick="EMAILMaker_EditJs.InsertRelatedBlock();" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
+                                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"></button>
+                                <button type="button" class="btn btn-success" onclick="EMAILMaker_EditJs.InsertRelatedBlock();" title="{vtranslate('LBL_INSERT_TO_TEXT', $QUALIFIED_MODULE)}">
                                     <i class="fa fa-usd"></i>
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary addButton" onclick="EMAILMaker_EditJs.CreateRelatedBlock();" title="{vtranslate('LBL_CREATE')}">
-                                    <i class="fa fa-plus"></i>
+                                <button type="button" class="btn btn-warning" onclick="EMAILMaker_EditJs.RefreshRelatedBlock();" title="{vtranslate('LBL_REFRESH', $QUALIFIED_MODULE)}">
+                                    <i class="fa-solid fa-arrows-rotate"></i>
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary" onclick="EMAILMaker_EditJs.EditRelatedBlock();" title="{vtranslate('LBL_EDIT')}">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary crmButton small delete" onclick="EMAILMaker_EditJs.DeleteRelatedBlock();" title="{vtranslate('LBL_DELETE')}">
-                                    <i class="fa fa-trash"></i>
-                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:EMAILMaker_EditJs.CreateRelatedBlock();">
+                                            <i class="bi bi-plus-lg"></i>
+                                            <span class="ms-2">{vtranslate('LBL_CREATE', $QUALIFIED_MODULE)}</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:EMAILMaker_EditJs.EditRelatedBlock()">
+                                            <i class="bi bi-pencil-fill"></i>
+                                            <span class="ms-2">{vtranslate('LBL_EDIT', $QUALIFIED_MODULE)}</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:EMAILMaker_EditJs.DeleteRelatedBlock();">
+                                            <i class="bi bi-trash-fill"></i>
+                                            <span class="ms-2">{vtranslate('LBL_DELETE', $QUALIFIED_MODULE)}</span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>

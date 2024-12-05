@@ -1158,36 +1158,22 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return $result;
     }
 
-    public function GetRelatedBlocks($select_module, $select_too = true)
+    /**
+     * @throws AppException
+     */
+    public function getRelatedBlocks($selectModule, $selectNull = true)
     {
+        $relatedBlocks = [];
 
-        if ($select_too) {
-            $Related_Blocks[""] = vtranslate("LBL_PLS_SELECT", "EMAILMaker");
-        }
-        if ($select_module != "") {
-            $Related_Modules = EMAILMaker_RelatedBlock_Model::getRelatedModulesList($select_module);
-
-            if (count($Related_Modules) > 0) {
-                $sql = "SELECT * FROM vtiger_emakertemplates_relblocks
-                        WHERE secmodule IN(" . generateQuestionMarks($Related_Modules) . ")
-                            AND deleted = 0
-                        ORDER BY relblockid";
-                $result = $this->db->pquery($sql, $Related_Modules);
-                while ($row = $this->db->fetchByAssoc($result)) {
-                    if ($row["module"] == "PriceBooks" && $row["module"] != $select_module) {
-                        $csql = "SELECT * FROM vtiger_pdfmaker_relblockcol WHERE relblockid = ? AND columnname LIKE ?";
-                        $cresult = $this->db->pquery($csql, array($row["relblockid"], "vtiger_pricebookproductreltmp%"));
-                        if ($this->db->num_rows($cresult) > 0) {
-                            continue;
-                        }
-                    }
-
-                    $Related_Blocks[$row["relblockid"]] = $row["name"];
-                }
-            }
+        if ($selectNull) {
+            $relatedBlocks[''] = vtranslate('LBL_PLS_SELECT', 'EMAILMaker');
         }
 
-        return $Related_Blocks;
+        if (!empty($selectModule)) {
+            $relatedBlocks += Core_RelatedBlock_Model::getAllOptions($selectModule);
+        }
+
+        return $relatedBlocks;
     }
 
     public function getRecipientModulenames()

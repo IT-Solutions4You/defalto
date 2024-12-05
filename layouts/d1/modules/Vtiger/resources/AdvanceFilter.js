@@ -170,16 +170,13 @@ jQuery.Class("Vtiger_AdvanceFilter_Js",{
 	 * @return : current instance
 	 */
 	addNewCondition : function(conditionGroupElement){
-		var basicElement = jQuery('.basic',conditionGroupElement);
-		var newRowElement = basicElement.find('.conditionRow').clone(true,true);
-		jQuery('select',newRowElement).addClass('select2');
-		var conditionList = jQuery('.conditionList', conditionGroupElement);
-        newRowElement.addClass('op0');
+		let basicElement = jQuery('.basic',conditionGroupElement),
+			newRowElement = basicElement.find('.conditionRow').clone(true,true),
+			conditionList = jQuery('.conditionList', conditionGroupElement);
+
+		newRowElement.find('select').addClass('select2');
         newRowElement.appendTo(conditionList);
-        setTimeout(function(){
-            newRowElement.addClass('fadeInx');
-        },100)
-		//change in to chosen elements
+
         vtUtils.showSelect2ElementView(newRowElement.find('select.select2'));
 
 		return this;
@@ -189,8 +186,9 @@ jQuery.Class("Vtiger_AdvanceFilter_Js",{
 	 * Function/Handler  which will triggered when user clicks on add condition
 	 */
 	addConditionHandler : function(e) {
-		var element = jQuery(e.currentTarget);
-		var conditionGroup = element.closest('div.conditionGroup');
+		let element = jQuery(e.currentTarget),
+			conditionGroup = element.closest('div.conditionGroup');
+
 		this.addNewCondition(conditionGroup);
 	},
 
@@ -363,11 +361,7 @@ jQuery.Class("Vtiger_AdvanceFilter_Js",{
 
 			vtUtils.showSelect2ElementView(fieldSpecificUi, params);
 		} else if (fieldSpecificUi.is('select')) {
-			if (fieldSpecificUi.hasClass('chzn-select')) {
-				app.changeSelectElementView(fieldSpecificUi)
-			} else {
-				vtUtils.showSelect2ElementView(fieldSpecificUi);
-			}
+			vtUtils.showSelect2ElementView(fieldSpecificUi);
 		} else if (fieldSpecificUi.has('input.dateField').length > 0) {
 			vtUtils.registerEventForDateFields(fieldSpecificUi);
 		} else if (fieldSpecificUi.has('input.timepicker-default').length > 0) {
@@ -601,9 +595,10 @@ jQuery.Class("Vtiger_AdvanceFilter_Js",{
 	 * Event handler which is invoked on add condition
 	 */
 	registerAddCondition : function() {
-		var thisInstance = this;
-		this.getAddConditionElement().on('click',function(e){
-			thisInstance.addConditionHandler(e);
+		let self = this;
+
+		self.getAddConditionElement().on('click',function(e){
+			self.addConditionHandler(e);
 		});
 	},
 
@@ -611,15 +606,19 @@ jQuery.Class("Vtiger_AdvanceFilter_Js",{
 	 * Function which will register field change event
 	 */
 	registerFieldChange : function() {
-		var filterContainer = this.getFilterContainer();
-		var thisInstance = this;
+		let filterContainer = this.getFilterContainer(),
+			thisInstance = this;
+
 		filterContainer.on('change','select[name="columnname"]',function(e,data){
-            var currentElement = jQuery(e.currentTarget);
-            if(typeof data == 'undefined' || data._intialize != true){
-                var row = currentElement.closest('div.conditionRow');
-                var conditionSelectElement = row.find('select[name="comparator"]');
-                conditionSelectElement.empty();
-            }
+            let currentElement = jQuery(e.currentTarget);
+
+			if (typeof data == 'undefined' || data._intialize !== true) {
+				let row = currentElement.closest('div.conditionRow'),
+					conditionSelectElement = row.find('select[name="comparator"]');
+
+				conditionSelectElement.empty();
+			}
+
 			thisInstance.loadConditions(currentElement);
 			thisInstance.loadFieldSpecificUi(currentElement);
 		});
@@ -629,13 +628,14 @@ jQuery.Class("Vtiger_AdvanceFilter_Js",{
 	 * Function which will register condition change
 	 */
 	registerConditionChange : function() {
-		var filterContainer = this.getFilterContainer();
-		var thisInstance = this;
+		let filterContainer = this.getFilterContainer(),
+			thisInstance = this;
+
 		filterContainer.on('change','select[name="comparator"]', function(e){
-			var comparatorSelectElement = jQuery(e.currentTarget);
-			var row = comparatorSelectElement.closest('div.conditionRow');
-			var fieldSelectElement = row.find('select[name="columnname"]');
-			var selectedOption = fieldSelectElement.find('option:selected');
+			let comparatorSelectElement = jQuery(e.currentTarget),
+				row = comparatorSelectElement.closest('div.conditionRow'),
+				fieldSelectElement = row.find('select[name="columnname"]');
+
 			//To handle the validation depending on condtion
 			thisInstance.loadFieldSpecificUi(fieldSelectElement);
 			thisInstance.addValidationToFieldIfNeeded(fieldSelectElement);

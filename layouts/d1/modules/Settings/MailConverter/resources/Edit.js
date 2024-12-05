@@ -145,7 +145,7 @@ Settings_Vtiger_Index_Js('Settings_MailConverter_Edit_Js', {
 		form.on('click', '.retrieveToken', function () {
 			let formData = form.serializeFormData();
 
-			app.getOAuth2Url(formData['server'], formData['client_id'], formData['client_secret']).then(function (error, data) {
+			app.getOAuth2Url(formData['server'], formData['client_id'], formData['client_secret'], formData['client_token']).then(function (error, data) {
 				if (!error) {
 					if (data['url']) {
 						tokenElement.val('');

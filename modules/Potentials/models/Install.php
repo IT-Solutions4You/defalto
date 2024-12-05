@@ -370,20 +370,6 @@ class Potentials_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'mail_manager_id' => [
-                    'name' => 'mail_manager_id',
-                    'column' => 'mail_manager_id',
-                    'uitype' => 32,
-                    'table' => 'vtiger_potential',
-                    'label' => 'Mail Manager Id',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'N~O',
-                    'quickcreate' => 0,
-                    'displaytype' => 1,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
             ],
             'LBL_DESCRIPTION_INFORMATION' => [
                 'description' => [
@@ -453,7 +439,6 @@ class Potentials_Install_Model extends Core_Install_Model
             ->createColumn('converted', 'int(1) NOT NULL DEFAULT \'0\'')
             ->createColumn('currency_id', 'int(19) DEFAULT NULL')
             ->createColumn('conversion_rate', 'decimal(10,3) DEFAULT NULL')
-            ->createColumn('mail_manager_id', 'INT(19) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`potentialid`)')
             ->createKey('KEY IF NOT EXISTS `potential_relatedto_idx` (`related_to`)')
             ->createKey('KEY IF NOT EXISTS `potentail_sales_stage_idx` (`sales_stage`)')

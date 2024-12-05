@@ -9,19 +9,21 @@
 		<div class="details border1px">
 			<div class="ruleHead modal-header" style="cursor: move;">
 				<div class="container-fluid p-3 border-bottom">
-					<div class="row">
-						<div class="col">
-							<strong>
+					<div class="row align-items-center">
+						<div class="col-auto">
+							<div class="btn">
 								<img src="{vimage_path('drag.png')}" />
-								<span class="mx-2">{vtranslate('LBL_RULE', $QUALIFIED_MODULE)}</span>
-								<span class="sequenceNumber">{$RULE_COUNT}</span>
-								<span class="mx-2">:</span>
-								<span>{vtranslate($RULE_MODEL->get('action'), $QUALIFIED_MODULE)}</span>
-							</strong>
+							</div>
+						</div>
+						<div class="col fw-bold">
+							<span class="me-2">{vtranslate('LBL_RULE', $QUALIFIED_MODULE)}</span>
+							<span class="sequenceNumber me-2">{$RULE_COUNT}</span>
+							<span class="me-2">:</span>
+							<span>{vtranslate($RULE_MODEL->get('action'), $QUALIFIED_MODULE)}</span>
 						</div>
 						<div class="col-auto">
 							{foreach from=$RULE_MODEL->getRecordLinks() item=ACTION_LINK}
-								<span class="btn"
+								<span class="btn btn-outline-secondary ms-2"
 									{if stripos($ACTION_LINK->getUrl(), 'javascript:')===0}
 										onclick='{$ACTION_LINK->getUrl()|substr:strlen("javascript:")}'
 									{else}
@@ -34,58 +36,63 @@
 					</div>
 				</div>
 			</div>
-			<fieldset class="p-3">
-				<div class="container-fluid">
-					<div class="row py-2">
-						<div class="col">
-							<strong>{vtranslate('LBL_CONDITIONS', $QUALIFIED_MODULE)}</strong>
-						</div>
-					</div>
-					{foreach key=FIELD_NAME item=FIELD_MODEL from=$FIELDS}
-						<div class="row py-2">
-							<div class="col-lg-3 fieldLabel">
-								<label>{vtranslate($FIELD_MODEL->get('label'), $QUALIFIED_MODULE)}</label>
+			<div class="container-fluid">
+				<div class="row">
+					<fieldset class="col-lg-6 py-3">
+						<div class="container-fluid">
+							<div class="row py-2">
+								<div class="col text-secondary fw-bold">{vtranslate('LBL_CONDITIONS', $QUALIFIED_MODULE)}</div>
 							</div>
-							<div class="col-lg-7 fieldValue">
-								{if $FIELD_NAME neq 'action' && $FIELD_NAME neq 'assigned_to'}
-									{assign var=FIELD_VALUE value=$RULE_MODEL->get($FIELD_NAME)}
-									{if $FIELD_NAME eq 'matchusing'}
-										{assign var=FIELD_VALUE value=vtranslate('LBL_ANY_CONDITIONS', $QUALIFIED_MODULE)}
-										{if $RULE_MODEL->get('matchusing') eq 'AND'}
-											{assign var=FIELD_VALUE value=vtranslate('LBL_ALL_CONDITIONS', $QUALIFIED_MODULE)}
-										{/if}
-									{elseif $FIELD_NAME eq 'subject'}
-										<span class="me-2">{vtranslate($RULE_MODEL->get('subjectop'))}</span>
-									{elseif $FIELD_NAME eq 'body'}
-										<span class="me-2">{vtranslate($RULE_MODEL->get('bodyop'))}</span>
-									{/if}
-									<span>{$FIELD_VALUE}</span>
+							{foreach key=FIELD_NAME item=FIELD_MODEL from=$FIELDS}
+								{if $FIELD_NAME eq 'action' or $FIELD_NAME eq 'assigned_to'}
+									{continue}
 								{/if}
+								<div class="row py-2">
+									<div class="col-sm-3 fieldLabel text-secondary">
+										<label>{vtranslate($FIELD_MODEL->get('label'), $QUALIFIED_MODULE)}</label>
+									</div>
+									<div class="col-sm-7 fieldValue">
+										{assign var=FIELD_VALUE value=$RULE_MODEL->get($FIELD_NAME)}
+										{if $FIELD_NAME eq 'matchusing'}
+											{assign var=FIELD_VALUE value=vtranslate('LBL_ANY_CONDITIONS', $QUALIFIED_MODULE)}
+											{if $RULE_MODEL->get('matchusing') eq 'AND'}
+												{assign var=FIELD_VALUE value=vtranslate('LBL_ALL_CONDITIONS', $QUALIFIED_MODULE)}
+											{/if}
+										{elseif $FIELD_NAME eq 'subject'}
+											<span class="me-2">{vtranslate($RULE_MODEL->get('subjectop'))}</span>
+										{elseif $FIELD_NAME eq 'body'}
+											<span class="me-2">{vtranslate($RULE_MODEL->get('bodyop'))}</span>
+										{/if}
+										<span>{$FIELD_VALUE}</span>
+									</div>
+								</div>
+							{/foreach}
+						</div>
+					</fieldset>
+					<fieldset class="col-lg-6 py-3">
+						<div class="container-fluid">
+							<div class="row py-2">
+								<div class="col text-secondary fw-bold">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</div>
 							</div>
+							<div class="row py-2">
+								<div class="col-sm-3 fieldLabel text-secondary">
+									<label>{vtranslate('action', $QUALIFIED_MODULE)}</label>
+								</div>
+								<div class="col-lg-7 fieldValue">{vtranslate($RULE_MODEL->get('action'), $QUALIFIED_MODULE)}</small></div>
+							</div>
+							{assign var=ASSIGNED_TO_RULES_ARRAY value=array('CREATE_HelpDesk_FROM', 'CREATE_Leads_SUBJECT', 'CREATE_Contacts_SUBJECT', 'CREATE_Accounts_SUBJECT')}
+							{if in_array($RULE_MODEL->get('action'), $ASSIGNED_TO_RULES_ARRAY)}
+								<div class="row py-2">
+									<div class="col-sm-3 fieldLabel text-secondary">
+										<label>{vtranslate('Assigned To')}</label>
+									</div>
+									<div class="col-lg-7 fieldValue">{$RULE_MODEL->get('assigned_to')}</div>
+								</div>
+							{/if}
 						</div>
-					{/foreach}
-					{assign var=ASSIGNED_TO_RULES_ARRAY value=array('CREATE_HelpDesk_FROM', 'CREATE_Leads_SUBJECT', 'CREATE_Contacts_SUBJECT', 'CREATE_Accounts_SUBJECT')}
-					{if in_array($RULE_MODEL->get('action'), $ASSIGNED_TO_RULES_ARRAY)}
-						<div class="row py-2">
-							<div class="col-lg-3 fieldLabel"><label>{vtranslate('Assigned To')}</label></div>
-							<div class="col-lg-7 fieldValue">{$RULE_MODEL->get('assigned_to')}</div>
-						</div>
-					{/if}
+					</fieldset>
 				</div>
-			</fieldset>
-			<fieldset class="p-3">
-				<div class="container-fluid">
-					<div class="row py-2">
-						<div class="col">
-							<strong>{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</strong>
-						</div>
-					</div>
-					<div class="row py-2">
-						<div class="col-lg-3 fieldLabel"><label>{vtranslate('action', $QUALIFIED_MODULE)}</label></div>
-						<div class="col-lg-7 fieldValue">{vtranslate($RULE_MODEL->get('action'), $QUALIFIED_MODULE)}</small></div>
-					</div>
-				</div>
-			</fieldset>
+			</div>
 		</div>
 	</div>
 	<br>

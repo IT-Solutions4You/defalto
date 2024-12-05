@@ -12,6 +12,10 @@ require_once 'include/QueryGenerator/QueryGenerator.php';
 
 class EnhancedQueryGenerator extends QueryGenerator {
     protected $orderByColumns = [];
+    protected $customTableJoins = [];
+
+    protected bool $convertColumnToName = false;
+    protected bool $orderByClauseRequired = false;
 	public function __construct($module, $user) {
 		parent::__construct($module, $user);
 		$this->tableIndexList = array();
@@ -254,12 +258,28 @@ class EnhancedQueryGenerator extends QueryGenerator {
 							' AS '.$referenceField.$fieldname.'_id';
 				}
 			} else {
-				$columns[] = $this->getSQLColumn($field);
+                $sql = $this->getSQLColumn($field);
+
+                if ($this->isConvertColumnToName()) {
+                    $sql .= ' AS ' . $field;
+                }
+
+                $columns[] = $sql;
 			}
 		}
 		$this->columns = implode(', ', $columns);
 		return $this->columns;
 	}
+
+    public function setConvertColumnToName(bool $value): void
+    {
+        $this->convertColumnToName = $value;
+    }
+
+    public function isConvertColumnToName(): bool
+    {
+        return $this->convertColumnToName;
+    }
 
 	public function getFromClause() {
 		global $current_user;
@@ -547,12 +567,7 @@ class EnhancedQueryGenerator extends QueryGenerator {
 			$sqlTablesList[] = $tableName;
 		}
 
-		if ($this->meta->getTabName() == 'Documents') {
-			$tableJoinCondition['folderid'] = array(
-				'vtiger_attachmentsfolderfolderid' => "$baseTable.folderid = vtiger_attachmentsfolderfolderid.folderid"
-			);
-			$tableJoinMapping['vtiger_attachmentsfolderfolderid'] = 'INNER JOIN vtiger_attachmentsfolder';
-		}
+        $this->retrieveCustomTableJoins($tableJoinMapping, $tableJoinCondition);
 
 		foreach ($tableJoinCondition as $fieldName => $conditionInfo) {
 			foreach ($conditionInfo as $tableName => $condition) {
@@ -562,6 +577,7 @@ class EnhancedQueryGenerator extends QueryGenerator {
 				} else {
 					$tableNameAlias = '';
 				}
+
 				if (!in_array($tableName, $sqlTablesList)) {
 					$sql .= " $tableJoinMapping[$tableName] $tableName $tableNameAlias ON $condition";
 					$sqlTablesList[] = $tableName;
@@ -575,7 +591,35 @@ class EnhancedQueryGenerator extends QueryGenerator {
 		return $sql;
 	}
 
-	public function getWhereClause() {
+    public function retrieveCustomTableJoins(&$tableJoinMapping, &$tableJoinCondition): void
+    {
+        if ($this->meta->getTabName() == 'Documents') {
+            $tableJoinMapping['vtiger_attachmentsfolderfolderid'] = 'INNER JOIN vtiger_attachmentsfolder';
+            $tableJoinCondition['folderid'] = [
+                'vtiger_attachmentsfolderfolderid' => 'vtiger_notes.folderid = vtiger_attachmentsfolderfolderid.folderid',
+            ];
+        }
+
+        foreach ($this->getCustomTableJoins() as $customTableJoin) {
+            [$fieldName, $tableName, $mapping, $condition] = $customTableJoin;
+            $tableJoinMapping[$tableName] = $mapping;
+            $tableJoinCondition[$fieldName] = [
+                $tableName => $condition,
+            ];
+        }
+    }
+
+    public function setCustomTableJoins($field, $table, $mapping, $condition): void
+    {
+        $this->customTableJoins[] = [$field, $table, $mapping, $condition];
+    }
+
+    public function getCustomTableJoins()
+    {
+        return $this->customTableJoins;
+    }
+
+    public function getWhereClause() {
 		global $current_user;
 		if ($this->query || $this->whereClause) {
 			return $this->whereClause;
@@ -947,7 +991,13 @@ class EnhancedQueryGenerator extends QueryGenerator {
             return '';
         }
 
-        return vsprintf(' ORDER BY ' . implode(' %s,', array_keys($columns)) . ' %s ', array_values($columns));
+        $orders = [];
+
+        foreach ($columns as $column => $order) {
+            $orders[] = $column . ' ' . $order;
+        }
+
+        return sprintf(' ORDER BY %s ', implode(',', $orders));
     }
 
     public function getOrderByColumns()
@@ -976,5 +1026,59 @@ class EnhancedQueryGenerator extends QueryGenerator {
         }
 
         $this->orderByColumns = $orderByColumns;
+    }
+
+    /**
+     * @param bool $sortClause
+     * @return string|null
+     */
+    public function getQuery(bool $sortClause = false): string
+    {
+        if (empty($this->query)) {
+            $conditionedReferenceFields = [];
+            $allFields = array_merge($this->fields, (array)$this->whereFields);
+            foreach ($allFields as $fieldName) {
+                if (in_array($fieldName, $this->referenceFieldList)) {
+                    $moduleList = $this->referenceFieldInfoList[$fieldName];
+                    foreach ($moduleList as $module) {
+                        if (empty($this->moduleNameFields[$module])) {
+                            $meta = $this->getMeta($module);
+                        }
+                    }
+                } elseif (in_array($fieldName, $this->ownerFields)) {
+                    $meta = $this->getMeta('Users');
+                    $meta = $this->getMeta('Groups');
+                }
+            }
+
+            $query = "SELECT ";
+            $query .= $this->getSelectClauseColumnSQL();
+            $query .= $this->getFromClause();
+            $query .= $this->getWhereClause();
+
+            if ($this->isOrderByClauseRequired()) {
+                $query .= $this->getOrderByClause();
+            }
+
+            $this->query = $query;
+
+            return $query;
+        } else {
+            return $this->query;
+        }
+    }
+
+    /**
+     * @param bool $value
+     * @return void
+     */
+    public function setOrderByClauseRequired(bool $value): void
+    {
+        $this->orderByClauseRequired = $value;
+    }
+
+    public function isOrderByClauseRequired(): bool
+    {
+        return $this->orderByClauseRequired;
     }
 }

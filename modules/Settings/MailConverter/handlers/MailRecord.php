@@ -794,4 +794,20 @@ class Settings_MailConverter_MailRecord_Handler
 
         $this->documentRelationIds = array_merge($this->documentRelationIds, (array)$value);
     }
+
+    /**
+     * @return string|null
+     */
+    public function generateUniqueKeyFromEmail(): null|string
+    {
+        if (!$this->validateBoxMessage()) {
+            return null;
+        }
+
+        $mMessage = $this->getBoxMessage();
+        $attributes = $mMessage->getAttributes();
+        $uniqueString = $attributes['message_id'];
+
+        return md5($uniqueString);
+    }
 }

@@ -192,7 +192,15 @@ class Vtiger_Request implements ArrayAccess
 		return $moduleName;
 	}
 
-	function isAjax() {
+    /**
+     * @return int
+     */
+    public function getRecord(): int
+    {
+        return (int)$this->get('record');
+    }
+
+    function isAjax() {
 		if(!empty($_SERVER['HTTP_X_PJAX']) && $_SERVER['HTTP_X_PJAX'] == true) {
 			return true;
 		} elseif(!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
