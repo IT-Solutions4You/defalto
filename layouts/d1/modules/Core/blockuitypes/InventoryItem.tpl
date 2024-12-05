@@ -25,10 +25,10 @@
     <div class="blockData p-3 border-top border-light-subtle {if $IS_HIDDEN}hide{/if}">
         <table id="dummyLineItemTable" style="display: none;">
             <tr id="dummyItemRow" class="hide border-bottom lineItemCloneCopy" data-row-num="0">
-                {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=[] IGNORE_UI_REGISTRATION=true}
+                {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=[]}
             </tr>
             <tr id="dummyTextRow" class=" hide border-bottom" data-row-num="0">
-                {include file="partials/TextItemContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=[] IGNORE_UI_REGISTRATION=true}
+                {include file="partials/TextItemContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=[]}
             </tr>
         </table>
         <div class="lineitemTableContainer">
@@ -43,7 +43,7 @@
                     {/foreach}
                 </tr>
                 {foreach key=row_no item=data from=$INVENTORY_ITEMS}
-                    <tr id="row{$row_no}" data-row-num="{$row_no}" class="border-bottom lineItemRow" {if $data["entityType$row_no"] eq 'Products'}data-quantity-in-stock={$data["qtyInStock$row_no"]}{/if}>
+                    <tr id="row{$row_no}" data-row-num="{$row_no}" class="border-bottom lineItemRow">
                         {if $data.entityType eq 'Text'}
                             {include file="partials/TextItemContent.tpl"|@vtemplate_path:'InventoryItem' row_no=$row_no data=$data}
                         {else}

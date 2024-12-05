@@ -48,74 +48,87 @@
 		{/foreach}
 	{/if}
 
-	<td class="text-center">
-        <a class="btn deleteRow me-2">
-            <i class="fa fa-trash" title="{vtranslate('LBL_DELETE',$MODULE)}"></i>
+    <td style="width: 3%" nowrap="nowrap">
+    <span class="noEditLineItem">
+        <a class="btn drag_drop_line_item padding0">
+            {*<img src="{vimage_path('drag.png')}" title="{vtranslate('LBL_DRAG',$MODULE)}"/>*}
+            <i class="fa fa-arrows-v fa-fw text-secondary" title="{vtranslate('LBL_DRAG',$MODULE)}"></i>
         </a>
-		<a class="drag_drop_line_item">
-            <img src="{vimage_path('drag.png')}" title="{vtranslate('LBL_DRAG',$MODULE)}"/>
+        <a class="btn editRow padding0">
+            <i class="fa fa-pencil fa-fw text-secondary" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>
         </a>
-		<input type="hidden" class="rowNumber" value="{$row_no}" />
+        <a class="btn deleteRow padding0">
+            <i class="fa fa-trash-o fa-fw text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i>
+        </a>
+    </span>
+        <span class="editLineItem hide">
+        <a class="btn saveRow padding0">
+            <i class="fa fa-save fa-fw text-secondary" title="{vtranslate('LBL_SAVE',$MODULE)}"></i>
+        </a>
+        <a class="btn cancelEditRow padding0">
+            <i class="fa fa-close fa-fw text-secondary" title="{vtranslate('LBL_CANCEL',$MODULE)}"></i>
+        </a>
+    </span>
+        <input type="hidden" class="rowNumber" value="{$row_no}" />
         <input type="hidden" class="lineItemId" name="lineItemId{$row_no}" value="{$data.inventoryitemid}" />
         <input type="hidden" class="rowSequence" name="sequence{$row_no}" value="{$row_no}" />
-	</td>
+    </td>
 
     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
         {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
             <td>
-                <!-- Product Re-Ordering Feature Code Addition Starts -->
                 <input type="hidden" name="hidtax_row_no{$row_no}" id="hidtax_row_no{$row_no}" value="{$tax_row_no}"/>
-                <!-- Product Re-Ordering Feature Code Addition ends -->
-                <div class="itemNameDiv form-inline">
-                    <div class="input-group">
-                        <input type="text" id="{$item_text}" name="{$item_text}" value="{$data.item_text}" class="item_text form-control {if $row_no neq 0}autoComplete{/if}" placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}" data-rule-required=true {if !empty($data.$item_text)}disabled="disabled"{/if}>
-                        <input type="hidden" id="{$hdnProductId}" name="{$hdnProductId}" value="{$data.productid}" class="productid"/>
-                        <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="{$entityType}" class="lineItemType"/>
-                        {if !$data.$productDeleted}
-                            <span class="input-group-addon input-group-text cursorPointer clearLineItem" title="{vtranslate('LBL_CLEAR',$MODULE)}">
-                        <i class="fa fa-xmark"></i>
-                    </span>
-                        {/if}
-                        {if $row_no eq 0}
-                            <span class="input-group-text lineItemPopup cursorPointer" data-popup="ServicesPopup" title="{vtranslate('Services',$MODULE)}" data-module-name="Services" data-field-name="serviceid">{Vtiger_Module_Model::getModuleIconPath('Services')}</span>
-                            <span class="input-group-text lineItemPopup cursorPointer" data-popup="ProductsPopup" title="{vtranslate('Products',$MODULE)}" data-module-name="Products" data-field-name="productid">{Vtiger_Module_Model::getModuleIconPath('Products')}</span>
-                        {elseif $entityType eq '' and $PRODUCT_ACTIVE eq 'true'}
-                            <span class="input-group-text lineItemPopup cursorPointer" data-popup="ProductsPopup" title="{vtranslate('Products',$MODULE)}" data-module-name="Products" data-field-name="productid">{Vtiger_Module_Model::getModuleIconPath('Products')}</span>
-                        {elseif $entityType eq '' and $SERVICE_ACTIVE eq 'true'}
-                            <span class="input-group-text lineItemPopup cursorPointer" data-popup="ServicesPopup" title="{vtranslate('Services',$MODULE)}" data-module-name="Services" data-field-name="serviceid">{Vtiger_Module_Model::getModuleIconPath('Services')}</span>
-                        {else}
-                            {if ($entityType eq 'Services') and (!$data.$productDeleted)}
-                                <span class="input-group-text lineItemPopup cursorPointer" data-popup="ServicesPopup" title="{vtranslate('Services',$MODULE)}" data-module-name="Services" data-field-name="serviceid">{Vtiger_Module_Model::getModuleIconPath('Services')}</span>
-                            {elseif (!$data.$productDeleted)}
-                                <span class="input-group-text lineItemPopup cursorPointer" data-popup="ProductsPopup" title="{vtranslate('Products',$MODULE)}" data-module-name="Products" data-field-name="productid">{Vtiger_Module_Model::getModuleIconPath('Products')}</span>
+                <span class="noEditLineItem">{$data.item_text}</span>
+                <span class="editLineItem hide">
+                    <div class="itemNameDiv form-inline">
+                        <div class="input-group">
+                            <input type="text" id="{$item_text}" name="{$item_text}" value="{$data.item_text}" class="item_text form-control {if $row_no neq 0}autoComplete{/if}" placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}" data-rule-required=true {if !empty($data.$item_text)}disabled="disabled"{/if}>
+                            <input type="hidden" id="{$hdnProductId}" name="{$hdnProductId}" value="{$data.productid}" class="productid"/>
+                            <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="{$entityType}" class="lineItemType"/>
+                            {if !$data.$productDeleted}
+                                <span class="input-group-addon input-group-text cursorPointer clearLineItem" title="{vtranslate('LBL_CLEAR',$MODULE)}">
+                            <i class="fa fa-xmark"></i>
+                        </span>
                             {/if}
-                        {/if}
+                            {if $row_no eq 0}
+                                <span class="input-group-text lineItemPopup cursorPointer" data-popup="ServicesPopup" title="{vtranslate('Services',$MODULE)}" data-module-name="Services" data-field-name="serviceid">{Vtiger_Module_Model::getModuleIconPath('Services')}</span>
+                                <span class="input-group-text lineItemPopup cursorPointer" data-popup="ProductsPopup" title="{vtranslate('Products',$MODULE)}" data-module-name="Products" data-field-name="productid">{Vtiger_Module_Model::getModuleIconPath('Products')}</span>
+                            {elseif $entityType eq '' and $PRODUCT_ACTIVE eq 'true'}
+                                <span class="input-group-text lineItemPopup cursorPointer" data-popup="ProductsPopup" title="{vtranslate('Products',$MODULE)}" data-module-name="Products" data-field-name="productid">{Vtiger_Module_Model::getModuleIconPath('Products')}</span>
+                            {elseif $entityType eq '' and $SERVICE_ACTIVE eq 'true'}
+                                <span class="input-group-text lineItemPopup cursorPointer" data-popup="ServicesPopup" title="{vtranslate('Services',$MODULE)}" data-module-name="Services" data-field-name="serviceid">{Vtiger_Module_Model::getModuleIconPath('Services')}</span>
+                            {else}
+                                {if ($entityType eq 'Services') and (!$data.$productDeleted)}
+                                    <span class="input-group-text lineItemPopup cursorPointer" data-popup="ServicesPopup" title="{vtranslate('Services',$MODULE)}" data-module-name="Services" data-field-name="serviceid">{Vtiger_Module_Model::getModuleIconPath('Services')}</span>
+                                {elseif (!$data.$productDeleted)}
+                                    <span class="input-group-text lineItemPopup cursorPointer" data-popup="ProductsPopup" title="{vtranslate('Products',$MODULE)}" data-module-name="Products" data-field-name="productid">{Vtiger_Module_Model::getModuleIconPath('Products')}</span>
+                                {/if}
+                            {/if}
+                        </div>
                     </div>
-                </div>
-                {if $data.$productDeleted}
-                    <div class="row-fluid deletedItem redColor">
-                        {if empty($data.$item_text)}
-                            {vtranslate('LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM',$MODULE)}
-                        {else}
-                            {vtranslate('LBL_THIS',$MODULE)} {$entityType} {vtranslate('LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM',$MODULE)}
-                        {/if}
-                    </div>
-                {else}
                     {if $COMMENT_EDITABLE}
                         <div class="mt-3">
                             <textarea id="{$comment}" name="{$comment}" class="lineItemCommentBox form-control">{decode_html($data.$comment)}</textarea>
                         </div>
                     {/if}
-                {/if}
+                </span>
             </td>
         {elseif $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double'}
             <td>
-                <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control replaceCommaWithDot allowOnlyNumbers"
+                <span class="noEditLineItem">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
+                <span class="editLineItem hide">
+                    <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control replaceCommaWithDot allowOnlyNumbers"
                        data-rule-required=true data-rule-positive=true data-rule-greater_than_zero=true value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
+                </span>
             </td>
         {else}
-            <td><input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/></td>
+            <td>
+                <span class="noEditLineItem">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
+                <span class="editLineItem hide">
+                    <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
+                </span>
+            </td>
         {/if}
 
     {/foreach}

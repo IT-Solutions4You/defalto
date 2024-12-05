@@ -298,6 +298,14 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         row.on('click', '.deleteRow', function () {
             self.deleteProductLine(rowNum);
         });
+
+        row.on('click', '.editRow', function () {
+            self.editProductLine(rowNum);
+        });
+
+        row.on('click', '.cancelEditRow', function () {
+            self.cancelEditProductLine(rowNum);
+        });
     },
 
     saveProductLine: function (rowNum) {
@@ -368,11 +376,25 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         return data;
     },
 
+    editProductLine: function (rowNum) {
+        const row = jQuery('#row' + rowNum);
+        jQuery('.noEditLineItem', row).toggleClass('hide');
+        jQuery('.editLineItem', row).toggleClass('hide');
+    },
+
+    cancelEditProductLine: function (rowNum) {
+        const row = jQuery('#row' + rowNum);
+        jQuery('.noEditLineItem', row).toggleClass('hide');
+        jQuery('.editLineItem', row).toggleClass('hide');
+    },
+
     registerLineItemAutoComplete: function (container) {
         const self = this;
+
         if (typeof container == 'undefined') {
             container = this.lineItemsHolder;
         }
+
         container.find('input.autoComplete').autocomplete({
             'minLength': '3',
             'source': function (request, response) {
