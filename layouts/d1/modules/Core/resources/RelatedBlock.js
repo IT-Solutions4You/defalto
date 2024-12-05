@@ -54,6 +54,10 @@ Vtiger_Index_Js('Vtiger_RelatedBlock_Js', {}, {
         let relatedFieldsSelect = this.getFormElement('related_fields_select'),
             relatedFields = this.getFormElement('related_fields');
 
+        if (!relatedFieldsSelect.length) {
+            return;
+        }
+
         vtUtils.makeSelect2ElementSortable(relatedFieldsSelect, relatedFields);
     },
     registerFilterConditions() {

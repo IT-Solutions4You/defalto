@@ -34,12 +34,24 @@
                 </div>
             </div>
             <div class="container-fluid">
+                <div class="row py-3 align-items-center">
+                    <div class="col-lg-3 text-secondary fieldLabel"></div>
+                    <div class="col-lg fieldValue">
+                        <select name="related_field" id="relateField" class="form-select select2" required>
+                            {foreach from=$RELATED_BLOCK_MODEL->getRelatedModuleFieldOptions() item=RELATED_LABEL key=RELATED_FIELD}
+                                <option value="{$RELATED_FIELD}" {if $RELATED_BLOCK_MODEL->isSelectedRelatedField($RELATED_FIELD)}selected="selected"{/if}>{$RELATED_LABEL}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
                 <div class="row py-3 align-items-center border-bottom">
                     <div class="col-lg-3 text-secondary fieldLabel">{vtranslate('LBL_SELECT_COLUMNS', $QUALIFIED_MODULE)}</div>
                     <div class="col-lg fieldValue">
                         <select name="related_fields_select" id="relateFieldsSelect" class="form-select select2" multiple="multiple" required>
                             {foreach from=$RELATED_BLOCK_MODEL->getRelatedFieldsOptions() item=FIELD_LABEL key=FIELD_MODULE}
-                                <option value="{$FIELD_MODULE}" {if $RELATED_BLOCK_MODEL->isSelectedRelatedField($FIELD_MODULE)}selected="selected"{/if}>{$FIELD_LABEL}</option>
+                                <option value="{$FIELD_MODULE}" {if $RELATED_BLOCK_MODEL->isSelectedRelatedFields($FIELD_MODULE)}selected="selected"{/if}>{$FIELD_LABEL}</option>
                             {/foreach}
                         </select>
                     </div>

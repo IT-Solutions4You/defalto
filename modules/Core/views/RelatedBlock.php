@@ -153,7 +153,7 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
         $sourceRecordId = (int)$request->get('sourceRecord');
 
         $viewer = $this->getViewer($request);
-        $viewer->assign('IFRAME_URL', sprintf('index.php?module=Invoice&view=RelatedBlock&mode=iframe&record=%d&sourceRecord=%d', $recordId, $sourceRecordId));
+        $viewer->assign('IFRAME_URL', sprintf('index.php?module=%s&view=RelatedBlock&mode=iframe&record=%d&sourceRecord=%d', $moduleName, $recordId, $sourceRecordId));
         $viewer->view('relatedblock/Preview.tpl', $moduleName);
     }
 
@@ -168,20 +168,31 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
         $recordId = $request->getRecord();
         $sourceRecordId = (int)$request->get('sourceRecord');
 
-        if(empty($recordId) || empty($sourceRecordId)) {
-            throw new AppException(vtranslate('Empty related block record or source record', $moduleName));
+        if(empty($sourceRecordId)) {
+            throw new AppException(vtranslate('Empty related block source record', $moduleName) . ': [&sourceRecord=]');
         }
 
-        $relatedBlock = Core_RelatedBlock_Model::getInstanceById($recordId, $moduleName);
-        $relatedBlock->setSourceRecordId($sourceRecordId);
-        $relatedBlock->retrieveSourceRecord();
+        if(empty($recordId)) {
+            $records = Core_RelatedBlock_Model::getAll($moduleName);
+        } else {
+            $records = [
+                Core_RelatedBlock_Model::getInstanceById($recordId, $moduleName)
+            ];
+        }
 
-        $testContent = $relatedBlock->getTemplateContent();
+        $testContent = '';
+
+        foreach ($records as $record) {
+            $record->setSourceRecordId($sourceRecordId);
+            $record->retrieveSourceRecord();
+
+            $testContent .= $record->getName() . '<br><br>';
+            $testContent .= $record->getTemplateContent() . '<hr>';
+        }
 
         $viewer = $this->getViewer($request);
-        $viewer->assign('RELATED_BLOCK_MODEL', $relatedBlock);
         $viewer->assign('TEMPLATE_CONTENT', $testContent);
-        $viewer->assign('RECORD_MODEL', $relatedBlock->getSourceRecord());
+        $viewer->assign('RECORD_MODEL', $records[0]->getSourceRecord());
         $viewer->view('relatedblock/Iframe.tpl', $moduleName);
     }
 
@@ -194,6 +205,7 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
 
         $viewer = $this->getViewer($request);
         $viewer->assign('RELATED_BLOCK_MODELS', Core_RelatedBlock_Model::getAll($moduleName));
+        $viewer->assign('RELATED_BLOCK_MODEL', Core_RelatedBlock_Model::getInstance($moduleName));
         $viewer->view('RelatedBlockList.tpl', $request->getModule());
     }
 

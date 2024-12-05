@@ -30,6 +30,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
      * @var object|bool
      */
     protected object|bool $related_module = false;
+    protected object|bool $related_field = false;
     protected Vtiger_Record_Model $sourceRecord;
     protected object|null $queryGenerator = null;
 
@@ -82,7 +83,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
      */
     public function decodeData()
     {
-        $fields = ['filters', 'related_fields', 'sorting', 'content', 'name'];
+        $fields = ['filters', 'related_field', 'related_fields', 'sorting', 'content', 'name'];
 
         foreach ($fields as $field) {
             $this->set($field, decode_html($this->get($field)));
@@ -153,9 +154,9 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @return bool|object|Vtiger_Module_Model
+     * @return bool|Vtiger_Module_Model
      */
-    public function getRelatedModule()
+    public function getRelatedModule(): Vtiger_Module_Model|bool
     {
         if (empty($this->related_module)) {
             $this->related_module = Vtiger_Module_Model::getInstance($this->getRelatedModuleName());
@@ -218,7 +219,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     public function getRelatedModuleSortOptions()
     {
         $options = [];
-        $fields = $this->getRelatedModule()->getFIelds();
+        $fields = $this->getRelatedModule()->getFields();
 
         foreach ($fields as $field) {
             $options[$field->getName()] = $field->get('label');
@@ -236,7 +237,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
      * @param $value
      * @return bool
      */
-    public function isSelectedRelatedField($value)
+    public function isSelectedRelatedFields($value)
     {
         return in_array($value, $this->getRelatedFields());
     }
@@ -258,6 +259,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     {
         $fields = [
             'related_module',
+            'related_field',
             'related_fields',
             'content',
             'name',
@@ -320,7 +322,8 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
             ->createColumn('name', 'VARCHAR(200)')
             ->createColumn('module', 'VARCHAR(100)')
             ->createColumn('related_module', 'VARCHAR(100)')
-            ->createColumn('related_fields', 'VARCHAR(100)')
+            ->createColumn('related_field', 'VARCHAR(100)')
+            ->createColumn('related_fields', 'TEXT')
             ->createColumn('filters', 'TEXT')
             ->createColumn('sorting', 'VARCHAR(200)')
             ->createColumn('content', 'TEXT')
@@ -336,6 +339,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
             'name' => $this->get('name'),
             'module' => $this->get('module_name'),
             'related_module' => $this->get('related_module'),
+            'related_field' => $this->get('related_field'),
             'related_fields' => $this->get('related_fields'),
             'filters' => htmlentities($this->get('filters')),
             'sorting' => $this->get('sorting'),
@@ -378,12 +382,27 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     {
         if ($this->isEmpty('filters')) {
             return [
-                0 => [],
-                1 => [],
+                1 => [
+                    'columns' => [],
+                ],
+                2 => [
+                    'columns' => [],
+                ],
             ];
         }
 
         return json_decode(decode_html($this->get('filters')), true);
+    }
+
+    public function getFormatedFilters()
+    {
+        $filters = $this->getFilters();
+
+        if (empty($filters[2]['columns'])) {
+            $filters[1]['condition'] = '';
+        }
+
+        return $filters;
     }
 
     /**
@@ -399,7 +418,15 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
      */
     public function getEditViewUrl(): string
     {
-        return 'index.php?module=' . $this->get('module_name') . '&view=RelatedBlock&mode=edit&record=' . $this->getId();
+        return $this->getCreateViewUrl() . '&record=' . $this->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreateViewUrl(): string
+    {
+        return 'index.php?module=' . $this->get('module_name') . '&view=RelatedBlock&mode=edit';
     }
 
     /**
@@ -508,8 +535,26 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
         return $newContent;
     }
 
-    public function getRelatedModuleJoin()
+    /**
+     * @throws Exception
+     */
+    public function getRelatedModuleJoin(): array
     {
+        if (!empty($this->getRelatedFieldName())) {
+            $field = $this->getRelatedField();
+            $column = $field->get('column');
+            $table = $field->get('table');
+            $tableId = $this->getRelatedTableIndex($table);
+            $tableRel = $table . '_rel';
+
+            return [
+                $column . '_rel',
+                $tableRel,
+                'INNER JOIN ' . $table,
+                sprintf('%s.%s=vtiger_crmentity.crmid AND %s.%s=%d', $tableRel, $tableId, $tableRel, $column, $this->getSourceRecord()->getId()),
+            ];
+        }
+
         if ('Documents' === $this->getRelatedModuleName()) {
             return [
                 'senotesrel',
@@ -590,7 +635,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
         $queryGenerator->setFields($this->getRelatedFields());
         $queryGenerator->setCustomTableJoins($relatedModuleJoin[0], $relatedModuleJoin[1], $relatedModuleJoin[2], $relatedModuleJoin[3]);
-        $queryGenerator->parseAdvFilterList($this->getFilters());
+        $queryGenerator->parseAdvFilterList($this->getFormatedFilters());
         $queryGenerator->setOrderByColumns($this->getOrderByColumns());
 
         return $queryGenerator->getQuery();
@@ -668,5 +713,66 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     public function getSorting()
     {
         return decode_html($this->get('sorting'));
+    }
+
+    public function getRelatedModuleFieldOptions()
+    {
+        $options = [
+            '' => vtranslate('LBL_RELATION_LIST', $this->getModuleName())
+        ];
+        $module = $this->getRelatedModule();
+
+        if(empty($module)) {
+            return $options;
+        }
+
+        $fields = $module->getFieldsByType('reference');
+
+        foreach ($fields as $field) {
+            $list = $field->getReferenceList();
+
+            if(in_array($this->getModuleName(), $list)) {
+                $label = vtranslate($field->get('label'), $module->getName());
+                $options = [$field->get('name') => $label] + $options;
+            }
+        }
+
+        return $options;
+    }
+
+    /**
+     * @param string $value
+     * @return bool
+     */
+    public function isSelectedRelatedField(string $value): bool
+    {
+        return $value === $this->getRelatedFieldName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getRelatedFieldName(): string
+    {
+        return (string)$this->get('related_field');
+    }
+
+    /**
+     * @return bool|Vtiger_Field_Model
+     */
+    public function getRelatedField(): Vtiger_Field_Model|bool
+    {
+        if (empty($this->related_field)) {
+            $this->related_field = Vtiger_Field_Model::getInstance($this->getRelatedFieldName(), $this->getRelatedModule());
+        }
+
+        return $this->related_field;
+    }
+
+    public function getRelatedTableIndex($table): string
+    {
+        $focus = CRMEntity::getInstance($this->getRelatedModuleName());
+
+        return $focus->tab_name_index[$table];
     }
 }
