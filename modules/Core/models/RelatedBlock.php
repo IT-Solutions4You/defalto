@@ -228,6 +228,9 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
         return $options;
     }
 
+    /**
+     * @return Vtiger_Record_Model
+     */
     public function getSourceRecord(): Vtiger_Record_Model
     {
         return $this->sourceRecord;
@@ -394,7 +397,10 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
         return json_decode(decode_html($this->get('filters')), true);
     }
 
-    public function getFormatedFilters()
+    /**
+     * @return array
+     */
+    public function getFormatedFilters(): array
     {
         $filters = $this->getFilters();
 
@@ -406,7 +412,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @return array[]
+     * @return array
      */
     public function getAdvanceCriteria(): array
     {
@@ -463,25 +469,40 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
         return $options;
     }
 
+    /**
+     * @param Vtiger_Record_Model $sourceRecord
+     * @return void
+     */
     public function setSourceRecord(Vtiger_Record_Model $sourceRecord): void
     {
         $this->sourceRecord = $sourceRecord;
     }
 
+    /**
+     * @param int $value
+     * @return void
+     */
     public function setSourceRecordId(int $value): void
     {
         $this->set('source_record_id', $value);
     }
 
+    /**
+     * @return void
+     */
     public function retrieveSourceRecord(): void
     {
         $this->setSourceRecord(Vtiger_Record_Model::getInstanceById($this->get('source_record_id')));
     }
 
-    public function getTemplateContent()
+    /**
+     * @return string
+     */
+    public function getTemplateContent(): string
     {
         $content = $this->getContent();
-        $content = str_replace(
+
+        return str_replace(
             [
                 '#RELATED_BLOCK_START#',
                 '#RELATED_BLOCK_END#',
@@ -492,8 +513,6 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
             ],
             $content,
         );
-
-        return $content;
     }
 
     /**
@@ -584,7 +603,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     /**
      * @throws Exception
      */
-    public function replaceRecords($content): string
+    public function replaceRecords(string $content): string
     {
         $relatedModule = $this->getRelatedModule();
 
@@ -669,16 +688,28 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
         return $content;
     }
 
+    /**
+     * @param $fieldName
+     * @return string
+     */
     public function getVariableLabel($fieldName): string
     {
         return '%' . $this->getVariableName($fieldName) . '%';
     }
 
+    /**
+     * @param $fieldName
+     * @return string
+     */
     public function getVariableName($fieldName): string
     {
         return strtoupper(sprintf('RB_%s_%s', $this->getRelatedModuleName(), $fieldName));
     }
 
+    /**
+     * @param $fieldName
+     * @return string
+     */
     public function getVariable($fieldName): string
     {
         return '$' . $this->getVariableName($fieldName) . '$';
@@ -710,19 +741,25 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
         return $data;
     }
 
-    public function getSorting()
+    /**
+     * @return string
+     */
+    public function getSorting(): string
     {
         return decode_html($this->get('sorting'));
     }
 
-    public function getRelatedModuleFieldOptions()
+    /**
+     * @return array|mixed
+     */
+    public function getRelatedModuleFieldOptions(): array
     {
         $options = [
-            '' => vtranslate('LBL_RELATION_LIST', $this->getModuleName())
+            '' => vtranslate('LBL_RELATION_LIST', $this->getModuleName()),
         ];
         $module = $this->getRelatedModule();
 
-        if(empty($module)) {
+        if (empty($module)) {
             return $options;
         }
 
@@ -731,7 +768,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
         foreach ($fields as $field) {
             $list = $field->getReferenceList();
 
-            if(in_array($this->getModuleName(), $list)) {
+            if (in_array($this->getModuleName(), $list)) {
                 $label = vtranslate($field->get('label'), $module->getName());
                 $options = [$field->get('name') => $label] + $options;
             }
@@ -769,7 +806,11 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
         return $this->related_field;
     }
 
-    public function getRelatedTableIndex($table): string
+    /**
+     * @param string $table
+     * @return string
+     */
+    public function getRelatedTableIndex(string $table): string
     {
         $focus = CRMEntity::getInstance($this->getRelatedModuleName());
 

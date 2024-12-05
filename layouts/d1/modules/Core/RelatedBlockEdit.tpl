@@ -37,7 +37,7 @@
                 <div class="row py-3 align-items-center">
                     <div class="col-lg-3 text-secondary fieldLabel"></div>
                     <div class="col-lg fieldValue">
-                        <select name="related_field" id="relateField" class="form-select select2" required>
+                        <select name="related_field" id="relateField" class="form-select select2">
                             {foreach from=$RELATED_BLOCK_MODEL->getRelatedModuleFieldOptions() item=RELATED_LABEL key=RELATED_FIELD}
                                 <option value="{$RELATED_FIELD}" {if $RELATED_BLOCK_MODEL->isSelectedRelatedField($RELATED_FIELD)}selected="selected"{/if}>{$RELATED_LABEL}</option>
                             {/foreach}
