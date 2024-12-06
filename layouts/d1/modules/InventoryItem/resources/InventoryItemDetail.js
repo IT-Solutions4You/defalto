@@ -286,21 +286,16 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const self = this;
         const row = jQuery(`#row${rowNum}`);
 
-        // Use event delegation for all input events within the row
-        row.on('change, blur', 'input, select, textarea', function () {
-            const element = jQuery(this);
-            // Don't save on hidden input changes unless specifically needed
-            if (!element.is(':hidden') || element.hasClass('saveOnChange')) {
-                self.saveProductLine(rowNum);
-            }
-        });
-
         row.on('click', '.deleteRow', function () {
             self.deleteProductLine(rowNum);
         });
 
         row.on('click', '.editRow', function () {
             self.editProductLine(rowNum);
+        });
+
+        row.on('click', '.saveRow', function () {
+            self.saveProductLine(rowNum);
         });
 
         row.on('click', '.cancelEditRow', function () {
@@ -338,6 +333,9 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 }
             });
         }
+
+        jQuery('.noEditLineItem', row).toggleClass('hide');
+        jQuery('.editLineItem', row).toggleClass('hide');
     },
 
     deleteProductLine: function (rowNum) {
