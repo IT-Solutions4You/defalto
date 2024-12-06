@@ -3332,7 +3332,7 @@ div.tooltip-inner {
 }
 
 .markStar:hover .unfollowMessage {
-    display: block;
+    display: inline-block;
 }
 
 .markStar:hover .followMessage {
@@ -3340,7 +3340,7 @@ div.tooltip-inner {
 }
 
 .markStar.markStarActive .starredStatus {
-    display: block;
+    display: inline-block;
 }
 
 .markStar.markStarActive .unstarredStatus {
