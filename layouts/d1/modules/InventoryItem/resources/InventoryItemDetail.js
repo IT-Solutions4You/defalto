@@ -44,6 +44,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             let newTextLine = self.getNewTextItem(params);
             newTextLine = newTextLine.appendTo(self.lineItemsHolder);
             self.setupRowListeners(self.numOfLineItems);
+            jQuery('.editRow', newTextLine).trigger('click');
             app.event.trigger('post.textLine.New', newTextLine);
         };
 
@@ -55,9 +56,10 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             newLineItem.find('input.item_text').addClass('autoComplete');
             newLineItem.find('.ignore-ui-registration').removeClass('ignore-ui-registration');
             vtUtils.applyFieldElementsView(newLineItem);
-            app.event.trigger('post.lineItem.New', newLineItem);
             self.registerLineItemAutoComplete(newLineItem);
             self.setupRowListeners(self.numOfLineItems);
+            jQuery('.editRow', newLineItem).trigger('click');
+            app.event.trigger('post.lineItem.New', newLineItem);
 
             if (typeof data != "undefined") {
                 self.mapResultsToFields(newLineItem, data);
@@ -304,7 +306,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     saveProductLine: function (rowNum) {
-        const row = jQuery(`#row${rowNum}`);
+        const row = jQuery('#row' + rowNum);
         const data = this.serializeRow(row);
 
         // Check if the row has any non-empty values
@@ -336,6 +338,25 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         jQuery('.noEditLineItem', row).toggleClass('hide');
         jQuery('.editLineItem', row).toggleClass('hide');
+
+        jQuery('input', row).each(function () {
+            const element = jQuery(this);
+            const elementId = element.attr('id');
+
+            if (elementId) {
+                const originalElement = jQuery('#original_' + elementId);
+
+                if (originalElement.length > 0) {
+                    originalElement.val(element.val());
+                }
+
+                const displayElement = jQuery('.display_' + elementId);
+
+                if (displayElement.length > 0) {
+                    displayElement.text(element.val());
+                }
+            }
+        });
     },
 
     deleteProductLine: function (rowNum) {
@@ -384,6 +405,19 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const row = jQuery('#row' + rowNum);
         jQuery('.noEditLineItem', row).toggleClass('hide');
         jQuery('.editLineItem', row).toggleClass('hide');
+
+        jQuery('input', row).each(function () {
+            const element = jQuery(this);
+            const elementId = element.attr('id');
+
+            if (elementId) {
+                const originalElement = jQuery('#original_' + elementId);
+
+                if (originalElement.length > 0) {
+                    element.val(originalElement.val());
+                }
+            }
+        });
     },
 
     registerLineItemAutoComplete: function (container) {
@@ -471,8 +505,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     clearLineItemDetails: function (parentElem) {
         const lineItemRow = parentElem.closest('tr');
+        jQuery('input.form-control', lineItemRow).val('');
         jQuery('input.allowOnlyNumbers', lineItemRow).val(0);
-        jQuery('input.item_text', lineItemRow).val('');
         jQuery('input.productid', lineItemRow).val('');
         //this.quantityChangeActions(lineItemRow);
     },

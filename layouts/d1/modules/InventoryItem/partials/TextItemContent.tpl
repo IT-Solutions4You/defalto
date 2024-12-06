@@ -16,9 +16,6 @@
         <a class="btn editRow padding0">
             <i class="fa fa-pencil fa-fw text-secondary" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>
         </a>
-        <a class="btn deleteRow padding0">
-            <i class="fa fa-trash-o fa-fw text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i>
-        </a>
     </span>
     <span class="editLineItem hide">
         <a class="btn saveRow padding0">
@@ -28,16 +25,21 @@
             <i class="fa fa-close fa-fw text-secondary" title="{vtranslate('LBL_CANCEL',$MODULE)}"></i>
         </a>
     </span>
+    <a class="btn deleteRow padding0">
+        <i class="fa fa-trash-o fa-fw text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i>
+    </a>
     <input type="hidden" class="rowNumber" value="{$row_no}" />
     <input type="hidden" class="lineItemId" name="lineItemId{$row_no}" value="{$data.inventoryitemid}" />
     <input type="hidden" class="rowSequence" name="sequence{$row_no}" value="{$row_no}" />
 </td>
 <td colspan="50">
     {assign var="item_text" value="item_text"|cat:$row_no}
-    <span class="noEditLineItem">{$data.item_text}</span>
+    <span class="noEditLineItem display_{$item_text}">{$data.item_text}</span>
     <span class="editLineItem hide">
-        <input type="text" id="{$item_text}" name="{$item_text}" value="{$data.item_text}" class="item_text form-control autoComplete" data-rule-required=true>
+        <input type="text" id="{$item_text}" name="{$item_text}" value="{$data.item_text}" class="item_text form-control" data-rule-required=true>
         <input type="hidden" id="productid{$row_no}" name="productid{$row_no}" value="{$data.productid}" class="selectedModuleId"/>
+        <input type="hidden" id="original_{$item_text}" name="original_{$item_text}" value="{$data.item_text}" class="original_item_text" data-rule-required=true>
+        <input type="hidden" id="original_productid{$row_no}" name="original_productid{$row_no}" value="{$data.productid}" class="original_selectedModuleId"/>
         <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="Text" class="lineItemType"/>
     </span>
 </td>

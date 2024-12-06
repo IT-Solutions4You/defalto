@@ -49,26 +49,26 @@
 	{/if}
 
     <td style="width: 3%" nowrap="nowrap">
-    <span class="noEditLineItem">
-        <a class="btn drag_drop_line_item padding0">
-            {*<img src="{vimage_path('drag.png')}" title="{vtranslate('LBL_DRAG',$MODULE)}"/>*}
-            <i class="fa fa-arrows-v fa-fw text-secondary" title="{vtranslate('LBL_DRAG',$MODULE)}"></i>
-        </a>
-        <a class="btn editRow padding0">
-            <i class="fa fa-pencil fa-fw text-secondary" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>
-        </a>
+        <span class="noEditLineItem">
+            <a class="btn drag_drop_line_item padding0">
+                {*<img src="{vimage_path('drag.png')}" title="{vtranslate('LBL_DRAG',$MODULE)}"/>*}
+                <i class="fa fa-arrows-v fa-fw text-secondary" title="{vtranslate('LBL_DRAG',$MODULE)}"></i>
+            </a>
+            <a class="btn editRow padding0">
+                <i class="fa fa-pencil fa-fw text-secondary" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>
+            </a>
+        </span>
+            <span class="editLineItem hide">
+            <a class="btn saveRow padding0">
+                <i class="fa fa-save fa-fw text-secondary" title="{vtranslate('LBL_SAVE',$MODULE)}"></i>
+            </a>
+            <a class="btn cancelEditRow padding0">
+                <i class="fa fa-close fa-fw text-secondary" title="{vtranslate('LBL_CANCEL',$MODULE)}"></i>
+            </a>
+        </span>
         <a class="btn deleteRow padding0">
             <i class="fa fa-trash-o fa-fw text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i>
         </a>
-    </span>
-        <span class="editLineItem hide">
-        <a class="btn saveRow padding0">
-            <i class="fa fa-save fa-fw text-secondary" title="{vtranslate('LBL_SAVE',$MODULE)}"></i>
-        </a>
-        <a class="btn cancelEditRow padding0">
-            <i class="fa fa-close fa-fw text-secondary" title="{vtranslate('LBL_CANCEL',$MODULE)}"></i>
-        </a>
-    </span>
         <input type="hidden" class="rowNumber" value="{$row_no}" />
         <input type="hidden" class="lineItemId" name="lineItemId{$row_no}" value="{$data.inventoryitemid}" />
         <input type="hidden" class="rowSequence" name="sequence{$row_no}" value="{$row_no}" />
@@ -79,12 +79,14 @@
         {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
             <td>
                 <input type="hidden" name="hidtax_row_no{$row_no}" id="hidtax_row_no{$row_no}" value="{$tax_row_no}"/>
-                <span class="noEditLineItem">{$data.item_text}</span>
+                <span class="noEditLineItem display_{$item_text}">{$data.item_text}</span>
                 <span class="editLineItem hide">
                     <div class="itemNameDiv form-inline">
                         <div class="input-group">
                             <input type="text" id="{$item_text}" name="{$item_text}" value="{$data.item_text}" class="item_text form-control {if $row_no neq 0}autoComplete{/if}" placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}" data-rule-required=true {if !empty($data.$item_text)}disabled="disabled"{/if}>
                             <input type="hidden" id="{$hdnProductId}" name="{$hdnProductId}" value="{$data.productid}" class="productid"/>
+                            <input type="hidden" id="original_{$item_text}" name="original_{$item_text}" value="{$data.item_text}" class="original_item_text">
+                            <input type="hidden" id="original_{$hdnProductId}" name="original_{$hdnProductId}" value="{$data.productid}" class="original_productid"/>
                             <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="{$entityType}" class="lineItemType"/>
                             {if !$data.$productDeleted}
                                 <span class="input-group-addon input-group-text cursorPointer clearLineItem" title="{vtranslate('LBL_CLEAR',$MODULE)}">
@@ -116,17 +118,18 @@
             </td>
         {elseif $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double'}
             <td>
-                <span class="noEditLineItem">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
+                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
                 <span class="editLineItem hide">
-                    <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control replaceCommaWithDot allowOnlyNumbers"
-                       data-rule-required=true data-rule-positive=true data-rule-greater_than_zero=true value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
+                    <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control replaceCommaWithDot allowOnlyNumbers" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
+                    <input id="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="original_{$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
                 </span>
             </td>
         {else}
             <td>
-                <span class="noEditLineItem">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
+                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
                 <span class="editLineItem hide">
-                    <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
+                    <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
+                    <input id="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="original_{$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
                 </span>
             </td>
         {/if}
