@@ -7,12 +7,15 @@
 {strip}
     <div class='related-tabs col-lg-3 col-xl-2 order-2 pt-3'>
         <div class="bg-body rounded h-100 px-3">
+            <div class="fw-bold pt-3 px-3">{vtranslate('LBL_NAVIGATION', $QUALIFIED_MODULE)}</div>
             <ul class="nav nav-pills flex-column py-3">
                 {foreach item=RELATED_LINK from=$DETAILVIEW_LINKS['DETAILVIEWTAB']}
+                    {if empty($SELECTED_TAB_LABEL)}
+                        {assign var=SELECTED_TAB_LABEL value=$RELATED_LINK->getLabel()}
+                    {/if}
                     {assign var=RELATEDLINK_URL value=$RELATED_LINK->getUrl()}
                     {assign var=RELATEDLINK_LABEL value=$RELATED_LINK->getLabel()}
-                    {assign var=RELATED_TAB_LABEL value={vtranslate('SINGLE_'|cat:$MODULE_NAME, $MODULE_NAME)}|cat:" "|cat:$RELATEDLINK_LABEL}
-                    <li class="tab-item nav-link fs-6 {if $RELATEDLINK_LABEL==$SELECTED_TAB_LABEL}active{/if}" data-url="{$RELATEDLINK_URL}&tab_label={$RELATED_TAB_LABEL}&app={$SELECTED_MENU_CATEGORY}" data-label-key="{$RELATEDLINK_LABEL}" data-link-key="{$RELATED_LINK->get('linkKey')}">
+                    <li class="tab-item nav-link fs-6 {if $RELATEDLINK_LABEL==$SELECTED_TAB_LABEL}active{/if}" data-url="{$RELATEDLINK_URL}&tab_label={$RELATEDLINK_LABEL}&app={$SELECTED_MENU_CATEGORY}" data-label-key="{$RELATEDLINK_LABEL}" data-link-key="{$RELATED_LINK->get('linkKey')}">
                         <a href="{$RELATEDLINK_URL}&tab_label={$RELATEDLINK_LABEL}&app={$SELECTED_MENU_CATEGORY}" class="text-truncate">
                             <div class="row">
                                 <div class="col-1 tab-icon">

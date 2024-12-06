@@ -155,20 +155,8 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$viewer->assign('TAGS_LIST', $tagsList);
 		$viewer->assign('ALL_USER_TAGS', $allUserTags);
 
-		$selectedTabLabel = $request->get('tab_label');
 		$relationId = $request->get('relationId');
-
-        if (empty($selectedTabLabel)) {
-            if ($currentUserModel->get('default_record_view') === 'Detail') {
-                $selectedTabLabel = vtranslate('SINGLE_' . $moduleName, $moduleName) . ' ' . vtranslate('LBL_DETAILS', $moduleName);
-            } elseif ($moduleModel->isSummaryViewSupported()) {
-                $selectedTabLabel = vtranslate('SINGLE_' . $moduleName, $moduleName) . ' ' . vtranslate('LBL_SUMMARY', $moduleName);
-            } else {
-                $selectedTabLabel = vtranslate('SINGLE_' . $moduleName, $moduleName) . ' ' . vtranslate('LBL_DETAILS', $moduleName);
-            }
-        }
-
-        $viewer->assign('SELECTED_TAB_LABEL', $selectedTabLabel);
+        $viewer->assign('SELECTED_TAB_LABEL', $request->get('tab_label'));
 		$viewer->assign('SELECTED_RELATION_ID',$relationId);
 
 		//Vtiger7 - TO show custom view name in Module Header
@@ -213,22 +201,10 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$detailViewLinkParams = array('MODULE'=>$moduleName,'RECORD'=>$recordId);
 		$detailViewLinks = $this->record->getDetailViewLinks($detailViewLinkParams);
 
-		$selectedTabLabel = $request->get('tab_label');
 		$relationId = $request->get('relationId');
-
-        if (empty($selectedTabLabel)) {
-            if ($currentUserModel->get('default_record_view') === 'Detail') {
-                $selectedTabLabel = vtranslate('SINGLE_' . $moduleName, $moduleName) . ' ' . vtranslate('LBL_DETAILS', $moduleName);
-            } elseif ($moduleModel->isSummaryViewSupported()) {
-                $selectedTabLabel = vtranslate('SINGLE_' . $moduleName, $moduleName) . ' ' . vtranslate('LBL_SUMMARY', $moduleName);
-            } else {
-                $selectedTabLabel = vtranslate('SINGLE_' . $moduleName, $moduleName) . ' ' . vtranslate('LBL_DETAILS', $moduleName);
-            }
-        }
-
         $viewer = $this->getViewer($request);
 
-		$viewer->assign('SELECTED_TAB_LABEL', $selectedTabLabel);
+		$viewer->assign('SELECTED_TAB_LABEL', $request->get('tab_label'));
 		$viewer->assign('SELECTED_RELATION_ID',$relationId);
 		$viewer->assign('MODULE_MODEL', $this->record->getModule());
 		$viewer->assign('DETAILVIEW_LINKS', $detailViewLinks);
