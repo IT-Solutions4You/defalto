@@ -1598,4 +1598,12 @@ class Vtiger_Field_Model extends Vtiger_Field {
     {
         return (int)$this->get('uitype');
     }
+
+    /**
+     * @return Core_DatabaseData_Model
+     */
+    public function getFieldTable(): Core_DatabaseData_Model
+    {
+        return (new Core_DatabaseData_Model())->getTable('vtiger_field', 'fieldid');
+    }
 }
