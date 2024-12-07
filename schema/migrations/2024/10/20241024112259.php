@@ -43,13 +43,35 @@ if (!class_exists('Migration_20241024112259')) {
             ');
 
             $this->db->query('
-                CREATE TABLE `df_inventoryitem_itemmodules` (
+                CREATE TABLE IF NOT EXISTS `df_inventoryitem_itemmodules` (
                   `tabid` int(19) NOT NULL,
                   PRIMARY KEY (`tabid`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
             ');
 
             $this->db->pquery('INSERT INTO df_inventoryitem_itemmodules (tabid) VALUES (?), (?)', [getTabid('Products'), getTabid('Services')]);
+
+            $this->db->pquery('UPDATE vtiger_field SET displaytype = 1, presence = 0, quickcreate = 1 WHERE fieldname = ? AND tablename IN (?, ?, ?, ?)', ['currency_id', 'vtiger_quotes', 'vtiger_purchaseorder', 'vtiger_salesorder', 'vtiger_invoice']);
+            $tabId = getTabid('Quotes');
+            $this->db->pquery('DELETE FROM vtiger_field WHERE tabid = ? AND tablename = ?', [$tabId, 'vtiger_inventoryproductrel']);
+
+            /*$itemDetailsBlockSql = 'SELECT blockid FROM vtiger_blocks WHERE tabid = ? AND blocklabel = ?';
+            $itemDetailsBlockResult = $this->db->pquery($itemDetailsBlockSql, [$tabId, 'LBL_ITEM_DETAILS']);
+
+            if ($this->db->num_rows($itemDetailsBlockResult)) {
+                $itemDetailsBlockRow = $this->db->fetchByAssoc($itemDetailsBlockResult);
+
+                $firstBlockSql = 'SELECT blockid FROM vtiger_blocks WHERE tabid = ? AND blocklabel != ? ORDER BY sequence LIMIT 0,1';
+                $firstBlockResult = $this->db->pquery($firstBlockSql, [$tabId, 'LBL_ITEM_DETAILS']);
+
+                if ($this->db->num_rows($firstBlockResult)) {
+                    $firstBlockRow = $this->db->fetchByAssoc($firstBlockResult);
+
+                    $this->db->pquery('UPDATE vtiger_field SET block = ?, displaytype = 3 WHERE block = ?', [$firstBlockRow['blockid'], $itemDetailsBlockRow['blockid']]);
+                }
+            }*/
+
+            $this->db->pquery('UPDATE vtiger_ws_entity SET handler_class = ? WHERE name = ?', ['VtigerModuleOperation', 'Quotes']);
         }
     }
 } else {

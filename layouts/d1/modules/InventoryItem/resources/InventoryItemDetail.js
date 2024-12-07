@@ -108,55 +108,42 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         return newRow;
     },
 
-    updateRowNumberForRow: function (lineItemRow, expectedSequenceNumber, currentSequenceNumber) {
-        if (typeof currentSequenceNumber == 'undefined') {
-            //by default there will zero current sequence number
-            currentSequenceNumber = 0;
-        }
+    updateRowNumberForRow: function (lineItemRow, expectedSequenceNumber) {
+        const regex = /0$/;
 
-        let idFields = [
-                'item_text', 'subproduct_ids', 'productid', 'purchaseCost', 'margin', 'comment', 'quantity',
-                'listPrice', 'discount_div', 'discount_type', 'discount_percentage',
-                'discount_amount', 'lineItemType', 'searchIcon', 'netPrice', 'subprod_names',
-                'productTotal', 'discountTotal', 'totalAfterDiscount', 'taxTotal'
-            ],
-            classFields = [
-                'taxPercentage'
-            ];
+        lineItemRow.find('*').each(function () {
+            const $el = $(this);
 
-        //To handle variable tax ids
-        for (let classIndex in classFields) {
-            let className = classFields[classIndex];
-            jQuery('.' + className, lineItemRow).each(function (index, domElement) {
-                let idString = domElement.id;
-                //remove last character which will be the row number
-                idFields.push(idString.slice(0, (idString.length - currentSequenceNumber.length)));
-            });
-        }
+            if ($el.attr('id')) {
+                const oldId = $el.attr('id');
+                if (regex.test(oldId)) {
+                    const newId = oldId.replace(regex, expectedSequenceNumber);
+                    $el.attr('id', newId);
+                }
+            }
+
+            if ($el.attr('name')) {
+                const oldName = $el.attr('name');
+                if (regex.test(oldName)) {
+                    const newName = oldName.replace(regex, expectedSequenceNumber);
+                    $el.attr('name', newName);
+                }
+            }
+
+            if ($el.is('span') && $el.attr('class')) {
+                const classes = $el.attr('class').split(' ');
+                const updatedClasses = classes.map(className => {
+                    if (regex.test(className)) {
+                        return className.replace(regex, expectedSequenceNumber);
+                    }
+                    return className;
+                }).join(' ');
+
+                $el.attr('class', updatedClasses);
+            }
+        });
 
         let expectedRowId = 'row' + expectedSequenceNumber;
-
-        for (let idIndex in idFields) {
-            let elementId = idFields[idIndex],
-                actualElementId = elementId + currentSequenceNumber,
-                expectedElementId = elementId + expectedSequenceNumber;
-
-            lineItemRow.find('#' + actualElementId).attr('id', expectedElementId)
-                .filter('[name="' + actualElementId + '"]').attr('name', expectedElementId);
-        }
-
-        let nameFields = [
-            'lineItemId', 'discount', 'purchaseCost', 'margin', 'sequence'
-        ];
-
-        for (let nameIndex in nameFields) {
-            let elementName = nameFields[nameIndex],
-                actualElementName = elementName + currentSequenceNumber,
-                expectedElementName = elementName + expectedSequenceNumber;
-
-            lineItemRow.find('[name="' + actualElementName + '"]').attr('name', expectedElementName);
-        }
-
         lineItemRow.attr('id', expectedRowId).attr('data-row-num', expectedSequenceNumber);
         lineItemRow.find('input.rowNumber').val(expectedSequenceNumber);
 
@@ -328,35 +315,37 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                         row.find('[name="lineItemId' + rowNum + '"]').val(response.result);
                     }
 
+                    jQuery('.noEditLineItem', row).toggleClass('hide');
+                    jQuery('.editLineItem', row).toggleClass('hide');
+
+                    jQuery('input', row).each(function () {
+                        const element = jQuery(this);
+                        const elementId = element.attr('id');
+
+                        if (elementId) {
+                            const originalElement = jQuery('#original_' + elementId);
+
+                            if (originalElement.length > 0) {
+                                originalElement.val(element.val());
+                            }
+
+                            const displayElement = jQuery('.display_' + elementId);
+
+                            if (displayElement.length > 0) {
+                                displayElement.text(element.val());
+                            }
+                        }
+                    });
+
                     row.trigger('lineSaved', [response]);
                 },
                 error: function (xhr, status, error) {
+                    app.helper.showErrorNotification({message: app.vtranslate('JS_PRODUCT_LINE_SAVE_ERROR', 'InventoryItem')});
+
                     row.trigger('lineErrorSaving', [error]);
                 }
             });
         }
-
-        jQuery('.noEditLineItem', row).toggleClass('hide');
-        jQuery('.editLineItem', row).toggleClass('hide');
-
-        jQuery('input', row).each(function () {
-            const element = jQuery(this);
-            const elementId = element.attr('id');
-
-            if (elementId) {
-                const originalElement = jQuery('#original_' + elementId);
-
-                if (originalElement.length > 0) {
-                    originalElement.val(element.val());
-                }
-
-                const displayElement = jQuery('.display_' + elementId);
-
-                if (displayElement.length > 0) {
-                    displayElement.text(element.val());
-                }
-            }
-        });
     },
 
     deleteProductLine: function (rowNum) {

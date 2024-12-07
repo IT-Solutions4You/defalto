@@ -20,14 +20,15 @@
  * All Rights Reserved.
  * Contributor(s): ______________________________________..
  ********************************************************************************/
+
 class Quotes extends CRMEntity {
 	var $log;
 	var $db;
 
 	var $table_name = "vtiger_quotes";
 	var $table_index= 'quoteid';
-	var $tab_name = Array('vtiger_crmentity','vtiger_quotes','vtiger_quotesbillads','vtiger_quotesshipads','vtiger_quotescf','vtiger_inventoryproductrel');
-	var $tab_name_index = Array('vtiger_crmentity'=>'crmid','vtiger_quotes'=>'quoteid','vtiger_quotesbillads'=>'quotebilladdressid','vtiger_quotesshipads'=>'quoteshipaddressid','vtiger_quotescf'=>'quoteid','vtiger_inventoryproductrel'=>'id');
+	var $tab_name = Array('vtiger_crmentity','vtiger_quotes','vtiger_quotesbillads','vtiger_quotesshipads','vtiger_quotescf');
+	var $tab_name_index = Array('vtiger_crmentity'=>'crmid','vtiger_quotes'=>'quoteid','vtiger_quotesbillads'=>'quotebilladdressid','vtiger_quotesshipads'=>'quoteshipaddressid','vtiger_quotescf'=>'quoteid');
 	/**
 	 * Mandatory table for supporting custom fields.
 	 */
@@ -117,23 +118,6 @@ class Quotes extends CRMEntity {
 	{
 		global $adb;
 
-		/* $_REQUEST['REQUEST_FROM_WS'] is set from webservices script.
-		 * Depending on $_REQUEST['totalProductCount'] value inserting line items into DB.
-		 * This should be done by webservices, not be normal save of Inventory record.
-		 * So unsetting the value $_REQUEST['totalProductCount'] through check point
-		 */
-		if (isset($_REQUEST['REQUEST_FROM_WS']) && $_REQUEST['REQUEST_FROM_WS']) {
-			unset($_REQUEST['totalProductCount']);
-		}
-
-		//in ajax save we should not call this function, because this will delete all the existing product values
-		if($_REQUEST['action'] != 'QuotesAjax' && $_REQUEST['ajxaction'] != 'DETAILVIEW'
-				&& $_REQUEST['action'] != 'MassEditSave' && $_REQUEST['action'] != 'ProcessDuplicates'
-				&& $_REQUEST['action'] != 'SaveAjax' && $this->isLineItemUpdate != false) {
-			//Based on the total Number of rows we will save the product relationship with this entity
-			saveInventoryProductDetails($this, 'Quotes');
-		}
-
 		// Update the currency id and the conversion rate for the quotes
 		$update_query = "update vtiger_quotes set currency_id=?, conversion_rate=? where quoteid=?";
 		$update_params = array($this->column_fields['currency_id'], $this->column_fields['conversion_rate'], $this->id);
@@ -195,14 +179,12 @@ class Quotes extends CRMEntity {
 	function generateReportsSecQuery($module,$secmodule,$queryPlanner){
 		$matrix = $queryPlanner->newDependencyMatrix();
 		$matrix->setDependency('vtiger_crmentityQuotes', array('vtiger_usersQuotes', 'vtiger_groupsQuotes', 'vtiger_lastModifiedByQuotes'));
-		$matrix->setDependency('vtiger_inventoryproductrelQuotes', array('vtiger_productsQuotes', 'vtiger_serviceQuotes'));
-		
+
 		if (!$queryPlanner->requireTable('vtiger_quotes', $matrix)) {
 			return '';
 		}
         $matrix->setDependency('vtiger_quotes',array('vtiger_crmentityQuotes', "vtiger_currency_info$secmodule",
 				'vtiger_quotescf', 'vtiger_potentialRelQuotes', 'vtiger_quotesbillads','vtiger_quotesshipads',
-				'vtiger_inventoryproductrelQuotes', 'vtiger_contactdetailsQuotes', 'vtiger_accountQuotes',
 				'vtiger_invoice_recurring_info','vtiger_quotesQuotes','vtiger_usersRel1'));
 
 		$query = $this->getRelationQuery($module,$secmodule,"vtiger_quotes","quoteid", $queryPlanner);
@@ -220,14 +202,6 @@ class Quotes extends CRMEntity {
 		}
 		if ($queryPlanner->requireTable("vtiger_currency_info$secmodule")){
 			$query .= " left join vtiger_currency_info as vtiger_currency_info$secmodule on vtiger_currency_info$secmodule.id = vtiger_quotes.currency_id";
-		}
-		if ($queryPlanner->requireTable("vtiger_inventoryproductrelQuotes",$matrix)){
-		}
-		if ($queryPlanner->requireTable("vtiger_productsQuotes")){
-			$query .= " left join vtiger_products as vtiger_productsQuotes on vtiger_productsQuotes.productid = vtiger_inventoryproductreltmpQuotes.productid";
-		}
-		if ($queryPlanner->requireTable("vtiger_serviceQuotes")){
-			$query .= " left join vtiger_service as vtiger_serviceQuotes on vtiger_serviceQuotes.serviceid = vtiger_inventoryproductreltmpQuotes.productid";
 		}
 		if ($queryPlanner->requireTable("vtiger_groupsQuotes")){
 			$query .= " left join vtiger_groups as vtiger_groupsQuotes on vtiger_groupsQuotes.groupid = vtiger_crmentityQuotes.smownerid";
@@ -300,14 +274,6 @@ class Quotes extends CRMEntity {
 		}
 	}
 
-	function insertIntoEntityTable($table_name, $module, $fileid = '')  {
-		//Ignore relation table insertions while saving of the record
-		if($table_name == 'vtiger_inventoryproductrel') {
-			return;
-		}
-		parent::insertIntoEntityTable($table_name, $module, $fileid);
-	}
-
 	/*Function to create records in current module.
 	**This function called while importing records to this module*/
 	function createRecords($obj) {
@@ -348,7 +314,6 @@ class Quotes extends CRMEntity {
 		//To get the Permitted fields query and the permitted fields list
 		$sql = getPermittedFieldsQuery("Quotes", "detail_view");
 		$fields_list = getFieldsListFromQuery($sql);
-		$fields_list .= getInventoryFieldsForExport($this->table_name);
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 
 		$query = "SELECT $fields_list FROM ".$this->entity_table."
@@ -356,9 +321,6 @@ class Quotes extends CRMEntity {
 				LEFT JOIN vtiger_quotescf ON vtiger_quotescf.quoteid = vtiger_quotes.quoteid
 				LEFT JOIN vtiger_quotesbillads ON vtiger_quotesbillads.quotebilladdressid = vtiger_quotes.quoteid
 				LEFT JOIN vtiger_quotesshipads ON vtiger_quotesshipads.quoteshipaddressid = vtiger_quotes.quoteid
-				LEFT JOIN vtiger_inventoryproductrel ON vtiger_inventoryproductrel.id = vtiger_quotes.quoteid
-				LEFT JOIN vtiger_products ON vtiger_products.productid = vtiger_inventoryproductrel.productid
-				LEFT JOIN vtiger_service ON vtiger_service.serviceid = vtiger_inventoryproductrel.productid
 				LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_quotes.contactid
 				LEFT JOIN vtiger_potential ON vtiger_potential.potentialid = vtiger_quotes.potentialid
 				LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_quotes.accountid

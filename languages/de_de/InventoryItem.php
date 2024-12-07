@@ -34,3 +34,7 @@ $languageStrings = [
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Sequenz',
 ];
+
+$jsLanguageStrings = [
+    'JS_PRODUCT_LINE_SAVE_ERROR' => 'Produktlinie konnte nicht gespeichert werden',
+];

@@ -8,5 +8,6 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Quotes_ListView_Model extends Inventory_ListView_Model {
+class Quotes_ListView_Model extends Vtiger_ListView_Model
+{
 }

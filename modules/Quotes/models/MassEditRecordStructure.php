@@ -11,6 +11,6 @@
 /**
  * Mass Edit Record Structure Model
  */
-class Quotes_MassEditRecordStructure_Model extends Inventory_MassEditRecordStructure_Model {
-
+class Quotes_MassEditRecordStructure_Model extends Vtiger_MassEditRecordStructure_Model
+{
 }

@@ -33,6 +33,7 @@
         </table>
         <div class="lineitemTableContainer">
             <table class="table table-borderless" id="lineItemTab">
+                <thead>
                 <tr class="border-bottom">
                     <td><strong>{vtranslate('LBL_TOOLS',$MODULE)}</strong></td>
                     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
@@ -42,6 +43,8 @@
                         </td>
                     {/foreach}
                 </tr>
+                </thead>
+                <tbody>
                 {foreach key=row_no item=data from=$INVENTORY_ITEMS}
                     <tr id="row{$row_no}" data-row-num="{$row_no}" class="border-bottom lineItemRow">
                         {if $data.entityType eq 'Text'}
@@ -51,6 +54,7 @@
                         {/if}
                     </tr>
                 {/foreach}
+                </tbody>
             </table>
         </div>
     </div>

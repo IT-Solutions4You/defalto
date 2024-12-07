@@ -8,5 +8,6 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Quotes_FilterRecordStructure_Model extends Inventory_FilterRecordStructure_Model {
+class Quotes_FilterRecordStructure_Model extends Vtiger_FilterRecordStructure_Model
+{
 }

@@ -8,7 +8,6 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Quotes_Module_Model extends Inventory_Module_Model {
-
+class Quotes_Module_Model extends Vtiger_Module_Model
+{
 }
-?>

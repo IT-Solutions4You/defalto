@@ -11,37 +11,27 @@
 /**
  * Quotes Record Model Class
  */
-class Quotes_Record_Model extends Inventory_Record_Model {
+class Quotes_Record_Model extends Vtiger_Record_Model
+{
 
-	public function getCreateInvoiceUrl() {
-		$invoiceModuleModel = Vtiger_Module_Model::getInstance('Invoice');
+    public function getCreateInvoiceUrl()
+    {
+        $invoiceModuleModel = Vtiger_Module_Model::getInstance('Invoice');
 
-		return "index.php?module=".$invoiceModuleModel->getName()."&view=".$invoiceModuleModel->getEditViewName()."&quote_id=".$this->getId();
-	}
+        return "index.php?module=" . $invoiceModuleModel->getName() . "&view=" . $invoiceModuleModel->getEditViewName() . "&quote_id=" . $this->getId();
+    }
 
-	public function getCreateSalesOrderUrl() {
-		$salesOrderModuleModel = Vtiger_Module_Model::getInstance('SalesOrder');
+    public function getCreateSalesOrderUrl()
+    {
+        $salesOrderModuleModel = Vtiger_Module_Model::getInstance('SalesOrder');
 
-		return "index.php?module=".$salesOrderModuleModel->getName()."&view=".$salesOrderModuleModel->getEditViewName()."&quote_id=".$this->getId();
-	}
+        return "index.php?module=" . $salesOrderModuleModel->getName() . "&view=" . $salesOrderModuleModel->getEditViewName() . "&quote_id=" . $this->getId();
+    }
 
-	public function getCreatePurchaseOrderUrl() {
-		$purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
-		return "index.php?module=".$purchaseOrderModuleModel->getName()."&view=".$purchaseOrderModuleModel->getEditViewName()."&quote_id=".$this->getId();
-	}
+    public function getCreatePurchaseOrderUrl()
+    {
+        $purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
 
-	/**
-	 * Function to get this record and details as PDF
-	 */
-	public function getPDF() {
-		$recordId = $this->getId();
-		$moduleName = $this->getModuleName();
-
-		$controller = new Vtiger_QuotePDFController($moduleName);
-		$controller->loadRecord($recordId);
-
-		$fileName = $moduleName.'_'.getModuleSequenceNumber($moduleName, $recordId);
-		$controller->Output($fileName.'.pdf', 'D');
-	}
-
+        return "index.php?module=" . $purchaseOrderModuleModel->getName() . "&view=" . $purchaseOrderModuleModel->getEditViewName() . "&quote_id=" . $this->getId();
+    }
 }
