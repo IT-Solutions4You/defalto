@@ -116,8 +116,8 @@
                     {/if}
                 </span>
             </td>
-        {elseif $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double'}
-            <td>
+        {elseif $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'currency'}
+            <td class="textAlignRight">
                 <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
                 <span class="editLineItem hide">
                     <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control replaceCommaWithDot allowOnlyNumbers" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
@@ -138,7 +138,7 @@
 
     {foreach key=FIELD_NAME item=INVENTORY_ITEM_RECORD from=$INVENTORY_ITEM_RECORD_STRUCTURE}
         {if !in_array($FIELD_NAME, $INVENTORY_ITEM_COLUMNS) and !in_array($FIELD_NAME, $EXCLUDED_FIELDS)}
-            <td style="display: none;"><input id="{$FIELD_NAME|cat:$row_no}" name="{$FIELD_NAME|cat:$row_no}" class="{$FIELD_NAME}" type="hidden" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"></td>
+            <td style="display: none;"><input id="{$FIELD_NAME|cat:$row_no}" name="{$FIELD_NAME|cat:$row_no}" class="{$FIELD_NAME}" type="hidden" value="{$data.$FIELD_NAME}"></td>
         {/if}
     {/foreach}
 

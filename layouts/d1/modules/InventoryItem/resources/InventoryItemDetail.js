@@ -33,6 +33,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.addRowListeners();
         this.registerClearLineItemSelection();
         this.registerLineItemPopupSelection();
+        this.recalculateTotals();
     },
 
     registerAddButtons: function () {
@@ -543,6 +544,28 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             }
         }
     },
+
+    recalculateTotals: function () {
+        const self = this;
+        $('tfoot span[class^="total_"]', this.lineItemsHolder).each(function () {
+            let span = $(this);
+
+            // Extract the specific class part (e.g., from "total_price" -> "price")
+            let targetClass = span.attr('class').replace('total_', '');
+
+            // Initialize total for this column
+            let columnTotal = 0;
+
+            // Find all inputs in tbody with the specific class and sum their values
+            $('tbody input.' + targetClass, self.lineItemsHolder).each(function () {
+                let inputValue = parseFloat($(this).val()) || 0; // Parse value, default to 0
+                columnTotal += inputValue;
+            });
+
+            // Update the total in the corresponding span (formatted to 2 decimal places)
+            span.text(columnTotal.toFixed(2));
+        });
+    }
 });
 
 InventoryItem_InventoryItemDetail_Js_Instance = new InventoryItem_InventoryItemDetail_Js();

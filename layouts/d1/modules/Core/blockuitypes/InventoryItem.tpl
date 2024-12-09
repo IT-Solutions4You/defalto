@@ -55,6 +55,30 @@
                     </tr>
                 {/foreach}
                 </tbody>
+                <tfoot>
+                <tr>
+                    <td></td>
+                    {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
+                        {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
+                        <td{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer'} class="textAlignRight"{/if}>
+                            {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
+                                <strong>{vtranslate('Total', 'InventoryItem')}</strong>
+                             {elseif $FIELD->getFieldDataType() eq 'currency'}
+                                <span class="total_{$INVENTORY_ITEM_FIELD_NAME}"></span>
+                            {/if}
+                        </td>
+                    {/foreach}
+                    {foreach key=FIELD_NAME item=FIELD from=$INVENTORY_ITEM_RECORD_STRUCTURE}
+                        {if !in_array($FIELD_NAME, $INVENTORY_ITEM_COLUMNS) and !in_array($FIELD_NAME, $EXCLUDED_FIELDS)}
+                            <td style="display: none;">
+                                {if $FIELD->getFieldDataType() eq 'currency'}
+                                    <span class="total_{$INVENTORY_ITEM_FIELD_NAME}"></span>
+                                {/if}
+                            </td>
+                        {/if}
+                    {/foreach}
+                </tr>
+                </tfoot>
             </table>
         </div>
     </div>

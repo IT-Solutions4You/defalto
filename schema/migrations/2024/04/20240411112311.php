@@ -258,7 +258,7 @@ if (!class_exists('Migration_20240411112311')) {
             $price->name = 'price';
             $price->column = 'price';
             $price->label = 'Price';
-            $price->uitype = 7;
+            $price->uitype = 71;
             $price->presence = 0;
             $price->sequence = 7;
             $price->columntype = 'DECIMAL(25,4) DEFAULT NULL';
@@ -273,7 +273,7 @@ if (!class_exists('Migration_20240411112311')) {
             $subTotal->name = 'subtotal';
             $subTotal->column = 'subtotal';
             $subTotal->label = 'Subtotal';
-            $subTotal->uitype = 7;
+            $subTotal->uitype = 71;
             $subTotal->presence = 0;
             $subTotal->sequence = 8;
             $subTotal->columntype = 'DECIMAL(25,4) DEFAULT NULL';
@@ -318,7 +318,7 @@ if (!class_exists('Migration_20240411112311')) {
             $discountAmount->name = 'discount_amount';
             $discountAmount->column = 'discount_amount';
             $discountAmount->label = 'Discount Amount';
-            $discountAmount->uitype = 7;
+            $discountAmount->uitype = 71;
             $discountAmount->presence = 0;
             $discountAmount->sequence = 11;
             $discountAmount->columntype = 'DECIMAL(25,4) DEFAULT NULL';
@@ -333,7 +333,7 @@ if (!class_exists('Migration_20240411112311')) {
             $overallDiscountAmount->name = 'overall_discount_amount';
             $overallDiscountAmount->column = 'overall_discount_amount';
             $overallDiscountAmount->label = 'Overall Discount Amount';
-            $overallDiscountAmount->uitype = 7;
+            $overallDiscountAmount->uitype = 71;
             $overallDiscountAmount->presence = 0;
             $overallDiscountAmount->sequence = 12;
             $overallDiscountAmount->columntype = 'DECIMAL(25,4) DEFAULT NULL';
@@ -348,7 +348,7 @@ if (!class_exists('Migration_20240411112311')) {
             $totalAfterDiscount->name = 'total_after_discount';
             $totalAfterDiscount->column = 'total_after_discount';
             $totalAfterDiscount->label = 'Total After Discount';
-            $totalAfterDiscount->uitype = 7;
+            $totalAfterDiscount->uitype = 71;
             $totalAfterDiscount->presence = 0;
             $totalAfterDiscount->sequence = 13;
             $totalAfterDiscount->columntype = 'DECIMAL(25,4) DEFAULT NULL';
@@ -363,7 +363,7 @@ if (!class_exists('Migration_20240411112311')) {
             $totalAfterOverallDiscount->name = 'total_after_overall_discount';
             $totalAfterOverallDiscount->column = 'total_after_overall_discount';
             $totalAfterOverallDiscount->label = 'Total After Overall Discount';
-            $totalAfterOverallDiscount->uitype = 7;
+            $totalAfterOverallDiscount->uitype = 71;
             $totalAfterOverallDiscount->presence = 0;
             $totalAfterOverallDiscount->sequence = 14;
             $totalAfterOverallDiscount->columntype = 'DECIMAL(25,4) DEFAULT NULL';
@@ -393,7 +393,7 @@ if (!class_exists('Migration_20240411112311')) {
             $taxAmount->name = 'tax_amount';
             $taxAmount->column = 'tax_amount';
             $taxAmount->label = 'Tax Amount';
-            $taxAmount->uitype = 7;
+            $taxAmount->uitype = 71;
             $taxAmount->presence = 0;
             $taxAmount->sequence = 16;
             $taxAmount->columntype = 'DECIMAL(25,4) DEFAULT NULL';
@@ -408,7 +408,7 @@ if (!class_exists('Migration_20240411112311')) {
             $total->name = 'total';
             $total->column = 'total';
             $total->label = 'Total';
-            $total->uitype = 7;
+            $total->uitype = 71;
             $total->presence = 0;
             $total->sequence = 17;
             $total->columntype = 'DECIMAL(25,4) DEFAULT NULL';
@@ -423,7 +423,7 @@ if (!class_exists('Migration_20240411112311')) {
             $purchaseCost->name = 'purchase_cost';
             $purchaseCost->column = 'purchase_cost';
             $purchaseCost->label = 'Purchase Cost';
-            $purchaseCost->uitype = 7;
+            $purchaseCost->uitype = 71;
             $purchaseCost->presence = 0;
             $purchaseCost->sequence = 18;
             $purchaseCost->columntype = 'DECIMAL(25,4) DEFAULT NULL';
@@ -438,7 +438,7 @@ if (!class_exists('Migration_20240411112311')) {
             $margin->name = 'margin';
             $margin->column = 'margin';
             $margin->label = 'Margin';
-            $margin->uitype = 7;
+            $margin->uitype = 71;
             $margin->displaytype = 2;
             $margin->presence = 0;
             $margin->sequence = 19;
