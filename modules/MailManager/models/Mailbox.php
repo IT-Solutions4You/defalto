@@ -207,7 +207,7 @@ class MailManager_Mailbox_Model {
         }
 
         $isUpdate = !empty($this->mId);
-        $parameters = [
+        $data = [
             'display_name' => $this->username(),
             'mail_servername' => $this->server(),
             'mail_username' => $this->username(),
@@ -226,7 +226,7 @@ class MailManager_Mailbox_Model {
         $table = $this->getMailAccountTable();
 
         if ($isUpdate) {
-            $table->updateData($parameters, ['user_id' => $userId, 'account_id' => $this->mId]);
+            $table->updateData($data, ['user_id' => $userId, 'account_id' => $this->mId]);
         } else {
             $data['user_id'] = $userId;
             $data['mails_per_page'] = vglobal('list_max_entries_per_page');
@@ -243,8 +243,9 @@ class MailManager_Mailbox_Model {
     }
 
     /**
-     * @param $currentUserModel
+     * @param object|bool $currentUserModel
      * @return MailManager_Mailbox_Model
+     * @throws AppException
      */
     public static function getActiveInstance(object|bool $currentUserModel = false): object
     {
@@ -270,10 +271,11 @@ class MailManager_Mailbox_Model {
             $instance->mRefreshTimeOut = trim($row['box_refresh']);
             $instance->mFolder = trim($row['sent_folder']);
             $instance->mServerName = self::setServerName($instance->mServer);
-            $instance->mClientId = trim($row['client_id']);
-            $instance->mClientSecret = trim($row['client_secret']);
-            $instance->mClientToken = trim($row['client_token']);
-            $instance->mClientAccessToken = trim($row['client_access_token']);
+            $instance->mClientId = decode_html(trim($row['client_id']));
+            $instance->mClientSecret = decode_html(trim($row['client_secret']));
+            $instance->mClientToken = decode_html(trim($row['client_token']));
+            $instance->mClientAccessToken = decode_html(trim($row['client_access_token']));
+            $instance->retrieveClientAccessToken();
         }
 
         return $instance;
@@ -339,13 +341,18 @@ class MailManager_Mailbox_Model {
             return;
         }
 
-        Core_Auth_Model::getInstance($this->getClientId(), $this->getClientSecret(), $this->getClientToken())->updateAccessToken($this);
+        try {
+            $authModel = Core_Auth_Model::getInstance($this->getClientId(), $this->getClientSecret(), $this->getClientToken());
+            $authModel->setProviderByServer($this->getServer());
+            $authModel->updateAccessToken($this);
+        } catch (Exception $e) {
+
+        }
     }
 
     /**
      * @param Core_Auth_Model $authModel
      * @return void
-     * @throws AppException
      */
     public function updateAccessToken(Core_Auth_Model $authModel): void
     {
@@ -365,4 +372,10 @@ class MailManager_Mailbox_Model {
         }
 
         return $port;
-    }}
+    }
+
+    public function getServer()
+    {
+        return $this->mServer;
+    }
+}

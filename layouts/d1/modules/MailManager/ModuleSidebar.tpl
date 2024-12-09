@@ -18,7 +18,7 @@
                     </button>
                 </div>
             </div>
-            <div id='folders_list'></div>
+            <div id="folders_list"></div>
         </div>
     </div>
 {/strip}

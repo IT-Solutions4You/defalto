@@ -173,7 +173,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
             $formData[$referenceFields['Accounts']] = $contactRecordModel->get('account_id');
         }
 
-        $formData['mail_manager_id'] = $mail->getUid();
+        $formData['mail_message_key'] = $mail->generateUniqueKeyFromEmail();
         $formData['module'] = $linkModule;
 
         $request = new Vtiger_Request($formData, $formData);
@@ -270,7 +270,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
             if (!empty($linkTo)) {
                 $mail->setAttachmentRelationIds($recordModel->getId());
                 
-                MailManager_Relate_Action::associate($mail, $linkTo, $parent);
+                MailManager_Relate_Action::associate($mail, $linkTo, (int)$parent);
             }
 
             $response->setResult(['ui' => '', 'success' => true]);

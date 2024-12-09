@@ -230,59 +230,85 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
     }
 
     /**
+     * @return string
+     */
+    public function getTrackingWidgetUrl(): string
+    {
+        return $this->getWidgetUrl('showRecentActivities');
+    }
+
+    /**
+     * @return array
+     */
+    public function getTrackingWidgetInfo(): array
+    {
+        return [
+            'linktype' => 'DETAILVIEWWIDGET',
+            'linklabel' => 'LBL_UPDATES',
+            'linkurl' => $this->getTrackingWidgetInfo(),
+        ];
+    }
+
+    public function getWidgetUrl(string $mode): string
+    {
+        return sprintf('module=%s&view=Detail&record=%d&mode=%s&page=1&limit=5', $this->getModuleName(), $this->getRecord()->getId(), $mode);
+    }
+
+    public function getCommentWidgetUrl(): string
+    {
+        return $this->getWidgetUrl('showRecentComments');
+    }
+
+    public function getCommentWidgetInfo()
+    {
+        return [
+            'linktype' => 'DETAILVIEWWIDGET',
+            'linklabel' => 'ModComments',
+            'linkurl' => $this->getCommentWidgetUrl(),
+        ];
+    }
+
+    /**
 	 * Function to get the detail view widgets
 	 * @return <Array> - List of widgets , where each widget is an Vtiger_Link_Model
 	 */
-	public function getWidgets() {
-		$moduleModel = $this->getModule();
-		$widgets = array();
+    public function getWidgets()
+    {
+        $moduleModel = $this->getModule();
+        $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+        $widgets = [];
+        $documentsInstance = Vtiger_Module_Model::getInstance('Documents');
 
-		if($moduleModel->isTrackingEnabled()) {
-			$widgets[] = array(
-					'linktype' => 'DETAILVIEWWIDGET',
-					'linklabel' => 'LBL_UPDATES',
-					'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
-							'&mode=showRecentActivities&page=1&limit=5',
-			);
-		}
+        if ($userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Documents')) {
+            $createPermission = $userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'CreateView');
+            $widgets[] = [
+                'linktype' => 'DETAILVIEWWIDGET',
+                'linklabel' => 'Documents',
+                'linkName' => $documentsInstance->getName(),
+                'linkurl' => $this->getWidgetUrl('showRelatedRecords') . '&relatedModule=Documents',
+                'action' => $createPermission ? ['Add'] : [],
+                'actionURL' => $documentsInstance->getQuickCreateUrl(),
+            ];
+        }
 
-		$modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
-		if($moduleModel->isCommentEnabled() && $modCommentsModel->isPermitted('DetailView')) {
-			$widgets[] = array(
-					'linktype' => 'DETAILVIEWWIDGET',
-					'linklabel' => 'ModComments',
-					'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
-							'&mode=showRecentComments&page=1&limit=5'
-			);
-		}
+        $modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
 
-		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		$documentsInstance = Vtiger_Module_Model::getInstance('Documents');
-		if($userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Documents')) {
-			$createPermission = $userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'CreateView');
-			$widgets[] = array(
-					'linktype' => 'DETAILVIEWWIDGET',
-					'linklabel' => 'Documents',
-					'linkName'	=> $documentsInstance->getName(),
-					'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
-							'&relatedModule=Documents&mode=showRelatedRecords&page=1&limit=5',
-					'action'	=>	($createPermission == true) ? array('Add') : array(),
-					'actionURL' =>	$documentsInstance->getQuickCreateUrl()
-			);
-		}
+        if ($moduleModel->isCommentEnabled() && $modCommentsModel->isPermitted('DetailView')) {
+            $widgets[] = $this->getCommentWidgetInfo();
+        }
 
         $appointmentsInstance = Vtiger_Module_Model::getInstance('Appointments');
-        if($userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Appointments')) {
+
+        if ($userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Appointments')) {
             $createPermission = $userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'CreateView');
-            $widgets[] = array(
+            $widgets[] = [
                 'linktype' => 'DETAILVIEWWIDGET',
                 'linklabel' => 'Appointments',
-                'linkName'	=> $appointmentsInstance->getName(),
-                'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
-                    '&mode=getEvents&page=1&limit=5',
-                'action'	=>	($createPermission == true) ? array('Add') : array(),
-                'actionURL' =>	$appointmentsInstance->getQuickCreateUrl()
-            );
+                'linkName' => $appointmentsInstance->getName(),
+                'linkurl' => $this->getWidgetUrl('getEvents'),
+                'action' => $createPermission ? ['Add'] : [],
+                'actionURL' => $appointmentsInstance->getQuickCreateUrl(),
+            ];
         }
 
         $widgetLinks = [];
@@ -292,10 +318,10 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
         }
 
         return $widgetLinks;
-	}
+    }
 
-	/**
-	 * Function to get the Quick Links for the Detail view of the module
+    /**
+     * Function to get the Quick Links for the Detail view of the module
 	 * @param <Array> $linkParams
 	 * @return <Array> List of Vtiger_Link_Model instances
 	 */

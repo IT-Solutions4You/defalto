@@ -18,79 +18,84 @@ class ModComments_FilePreview_View extends Vtiger_IndexAjax_View {
 		}
 	}
 
-	public function process(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$recordId = $request->get('record');
-		$attachmentId = $request->get('attachmentid');
-		$basicFileTypes = array('txt', 'csv', 'ics');
-		$imageFileTypes = array('image/gif', 'image/png', 'image/jpeg');
-		//supported by video js
-		$videoFileTypes = array('video/mp4', 'video/ogg', 'audio/ogg', 'video/webm');
-		$audioFileTypes = array('audio/mp3', 'audio/mpeg', 'audio/wav');
-		//supported by viewer js
-		$opendocumentFileTypes = array('odt', 'ods', 'odp', 'fodt');
-		$recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
-		$attachments = $recordModel->getFileDetails($attachmentId);
-		$fileDetails = $attachments[0];
-		$fileContent = false;
-		if (!empty($fileDetails)) {
-			$filePath = $fileDetails['path'];
-			$fileName = $fileDetails['name'];
+    public function process(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $recordId = $request->get('record');
+        $attachmentId = $request->get('attachmentid');
+        $basicFileTypes = ['txt', 'csv', 'ics'];
+        $imageFileTypes = ['image/gif', 'image/png', 'image/jpeg'];
+        //supported by video js
+        $videoFileTypes = ['video/mp4', 'video/ogg', 'audio/ogg', 'video/webm'];
+        $audioFileTypes = ['audio/mp3', 'audio/mpeg', 'audio/wav'];
+        //supported by viewer js
+        $opendocumentFileTypes = ['odt', 'ods', 'odp', 'fodt'];
+        $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
+        $attachments = $recordModel->getFileDetails($attachmentId);
+        $fileDetails = $attachments[0];
+        $fileContent = false;
+
+        if (!empty($fileDetails)) {
+            $filePath = $fileDetails['path'];
+            $fileName = $fileDetails['name'];
             $storedFileName = $fileDetails['storedname'];
-			$fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
-			$savedFile = $fileDetails['attachmentsid']."_".$storedFileName;
+            $fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
+            $savedFile = $fileDetails['attachmentsid'] . "_" . $storedFileName;
+            $fileSize = filesize($filePath . $savedFile);
+            $fileSize = $fileSize + ($fileSize % 1024);
 
-			$fileSize = filesize($filePath.$savedFile);
-			$fileSize = $fileSize + ($fileSize % 1024);
+            if (fopen($filePath . $savedFile, "r")) {
+                $fileContent = fread(fopen($filePath . $savedFile, "r"), $fileSize);
+            }
+        }
 
-			if (fopen($filePath.$savedFile, "r")) {
-				$fileContent = fread(fopen($filePath.$savedFile, "r"), $fileSize);
-			}
-		}
+        $type = $fileDetails['type'];
+        $contents = $fileContent;
+        $filename = $fileDetails['name'];
+        $parts = explode('.', $filename);
 
-		$type = $fileDetails['type'];
-		$contents = $fileContent;
-		$filename = $fileDetails['name'];
-		$parts = explode('.', $filename);
-		if ($recordModel->get('filename')) {
-                    $fileDetails = $recordModel->getFileNameAndDownloadURL($recordId, $attachmentId);
-                    $downloadUrl =  $recordModel->getDownloadFileURL($attachmentId);
-                    $trimmedFileName = $fileDetails[0]['trimmedFileName'];
-                }
+        if ($recordId && $attachmentId) {
+            $fileDetails = $recordModel->getFileNameAndDownloadURL($recordId, $attachmentId);
+            $downloadUrl = $recordModel->getDownloadFileURL($attachmentId);
+            $trimmedFileName = $fileDetails[0]['trimmedFileName'];
+        }
 
-		//support for plain/text document
-		$extn = 'txt';
-		if (php7_count($parts) > 1) {
-			$extn = end($parts);
-		}
-		$viewer = $this->getViewer($request);
-		$viewer->assign('MODULE_NAME', $moduleName);
-		if (in_array($extn, $basicFileTypes))
-			$viewer->assign('BASIC_FILE_TYPE', 'yes');
-		else if (in_array($type, $videoFileTypes))
-			$viewer->assign('VIDEO_FILE_TYPE', 'yes');
-		else if (in_array($type, $imageFileTypes))
-			$viewer->assign('IMAGE_FILE_TYPE', 'yes');
-		else if (in_array($type, $audioFileTypes))
-			$viewer->assign('AUDIO_FILE_TYPE', 'yes');
-		else if (in_array($extn, $opendocumentFileTypes)) {
-			$viewer->assign('OPENDOCUMENT_FILE_TYPE', 'yes');
-			$downloadUrl .= "&type=$extn";
-		} else if ($extn == 'pdf') {
-			$viewer->assign('PDF_FILE_TYPE', 'yes');
-		} else
-			$viewer->assign('FILE_PREVIEW_NOT_SUPPORTED', 'yes');
+        //support for plain/text document
+        $extn = 'txt';
 
-		$viewer->assign('DOWNLOAD_URL', $downloadUrl);
-		$viewer->assign('TRIMMED_FILE_NAME', $trimmedFileName);
-		$viewer->assign('FILE_NAME', $filename);
-		$viewer->assign('FILE_EXTN', $extn);
-		$viewer->assign('FILE_TYPE', $type);
-		$viewer->assign('FILE_CONTENTS', $contents);
-		$site_URL = vglobal('site_URL');
-		$viewer->assign('SITE_URL', $site_URL);
+        if (php7_count($parts) > 1) {
+            $extn = end($parts);
+        }
 
-		echo $viewer->view('FilePreview.tpl', $moduleName, true);
-	}
+        $viewer = $this->getViewer($request);
+        $viewer->assign('MODULE_NAME', $moduleName);
+
+        if (in_array($extn, $basicFileTypes)) {
+            $viewer->assign('BASIC_FILE_TYPE', 'yes');
+        } elseif (in_array($type, $videoFileTypes)) {
+            $viewer->assign('VIDEO_FILE_TYPE', 'yes');
+        } elseif (in_array($type, $imageFileTypes)) {
+            $viewer->assign('IMAGE_FILE_TYPE', 'yes');
+        } elseif (in_array($type, $audioFileTypes)) {
+            $viewer->assign('AUDIO_FILE_TYPE', 'yes');
+        } elseif (in_array($extn, $opendocumentFileTypes)) {
+            $viewer->assign('OPENDOCUMENT_FILE_TYPE', 'yes');
+            $downloadUrl .= "&type=$extn";
+        } elseif ($extn == 'pdf') {
+            $viewer->assign('PDF_FILE_TYPE', 'yes');
+        } else {
+            $viewer->assign('FILE_PREVIEW_NOT_SUPPORTED', 'yes');
+        }
+
+        $viewer->assign('DOWNLOAD_URL', $downloadUrl);
+        $viewer->assign('TRIMMED_FILE_NAME', $trimmedFileName);
+        $viewer->assign('FILE_NAME', $filename);
+        $viewer->assign('FILE_EXTN', $extn);
+        $viewer->assign('FILE_TYPE', $type);
+        $viewer->assign('FILE_CONTENTS', $contents);
+        $viewer->assign('SITE_URL', vglobal('site_URL'));
+
+        $viewer->view('FilePreview.tpl', $moduleName);
+    }
 
 }

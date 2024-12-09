@@ -143,7 +143,7 @@ class Migration_Index_View extends Vtiger_View_Controller {
         $migrationObj->run();
 
         //During migration process we need to upgrade the package changes
-                if(defined('VTIGER_UPGRADE')) {
+        if(defined('VTIGER_UPGRADE')) {
 		
 			echo "<table class='config-table'><tr><th><span><b><font color='red'> Upgrading Modules -- Starts. </font></b></span></th></tr></table>";
 			echo "<table class='config-table'>";

@@ -535,10 +535,9 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
         },
         fill_related_blocks_array: function (module, selected) {
             let urlParams = {
-                module: 'EMAILMaker',
-                handler: 'fill_relblocks',
-                action: 'AjaxRequestHandle',
-                selmod: module
+                module: this.getTemplateModule(),
+                view: 'RelatedBlock',
+                mode: 'options'
             }
 
             app.request.post({'data': urlParams}).then(function (error, data) {
@@ -549,7 +548,7 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
 
                     relatedBlockElement.empty();
 
-                    jQuery.each(data['relblocks'], function (blockKey, blockName) {
+                    jQuery.each(data['options'], function (blockKey, blockName) {
                         newOption = new Option(blockName, blockKey, false, false);
                         newKey = blockKey
 
@@ -588,67 +587,94 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
             });
         },
         refresh_related_blocks_array: function (selected) {
-            let module = document.getElementById('modulename').value;
+            let module = this.getTemplateModule();
+
             EMAILMaker_EditJs.fill_related_blocks_array(module, selected);
         },
         InsertRelatedBlock: function () {
-            let relblockid = document.getElementById('related_block').value;
-            if (relblockid == '')
+            let id = this.getRelatedBlock(),
+                module = this.getTemplateModule();
+
+            if (!id) {
                 return false;
-            let oEditor = CKEDITOR.instances.body;
-            let ajax_url = 'index.php?module=EMAILMaker&action=AjaxRequestHandle&handler=get_relblock&relblockid=' + relblockid;
-            jQuery.ajax(ajax_url).success(function (response) {
-                oEditor.insertHtml(response);
-            }).error(function () {
-            });
+            }
+
+            let editor = CKEDITOR.instances['body'],
+                url = 'index.php?module=' + module + '&view=RelatedBlock&mode=content&record=' + id;
+
+            jQuery.ajax(url).success(function (response) {
+                editor.insertHtml(response);
+            })
+        },
+        RefreshRelatedBlock() {
+            let module = this.getTemplateModule();
+
+            EMAILMaker_EditJs.fill_related_blocks_array(module, module);
         },
         EditRelatedBlock: function () {
-            let relblockid = document.getElementById('related_block').value;
-            if (relblockid == '') {
-                alert(app.vtranslate('LBL_SELECT_RELBLOCK'));
-                return false;
-            }
+            let id = this.getRelatedBlock(),
+                module = this.getTemplateModule(),
+                popup_url = 'index.php?module=' + module + '&view=RelatedBlock&mode=edit&record=' + id;
 
-            let popup_url = 'index.php?module=EMAILMaker&view=EditRelatedBlock&record=' + relblockid;
-            window.open(popup_url, "Editblock", "width=1230,height=700,scrollbars=yes");
+            if (id) {
+                window.open(popup_url, "Editblock", "width=1230,height=700,scrollbars=yes");
+            }
         },
         CreateRelatedBlock: function () {
-            let email_module = document.getElementById("modulename").value;
-            if (email_module == '') {
-                alert(app.vtranslate("LBL_MODULE_ERROR"));
+            let module = this.getTemplateModule(),
+                popup_url = 'index.php?module=' + module + '&view=RelatedBlock&mode=edit';
+
+            if (module) {
+                window.open(popup_url, "Editblock", "width=1230,height=700,scrollbars=yes");
+            }
+        },
+        getRelatedBlock() {
+            let id = document.getElementById('related_block').value;
+
+            if (!id) {
+                app.helper.showErrorNotification({message: app.vtranslate('LBL_SELECT_RELBLOCK')});
                 return false;
             }
-            let popup_url = 'index.php?module=EMAILMaker&view=EditRelatedBlock&emailmodule=' + email_module;
-            window.open(popup_url, "Editblock", "width=1230,height=700,scrollbars=yes");
+
+            return id;
+        },
+        getTemplateModule() {
+            let email_module = document.getElementById("modulename").value;
+
+            if (!email_module) {
+                app.helper.showErrorNotification({message: app.vtranslate('LBL_MODULE_ERROR')});
+                return false;
+            }
+
+            return email_module;
         },
         DeleteRelatedBlock: function () {
-            let relblockid = document.getElementById('related_block').value;
-            let result = false;
-            if (relblockid == '') {
-                alert(app.vtranslate('LBL_SELECT_RELBLOCK'));
-                return false;
-            } else {
-                let message = app.vtranslate('LBL_DELETE_RELBLOCK_CONFIRM') + " " + jQuery("#related_block option:selected").text();
+            let id = this.getRelatedBlock(),
+                module = this.getTemplateModule();
 
-                app.helper.showConfirmationBox({'message': message}).then(function (e) {
-                    let params = {
-                        "module": "EMAILMaker",
-                        "action": "AjaxRequestHandle",
-                        "handler": "delete_relblock",
-                        "relblockid": relblockid
-                    };
-                    app.helper.showProgress();
-
-                    app.request.post({'data': params}).then(
-                        function (err, response) {
-                            app.helper.hideProgress();
-                            if (err === null) {
-                                EMAILMaker_EditJs.refresh_related_blocks_array();
-                            }
-                        }
-                    );
-                });
+            if (!id) {
+                return;
             }
+
+            let message = app.vtranslate('LBL_DELETE_RELBLOCK_CONFIRM') + ' ' + jQuery('#related_block option:selected').text();
+
+            app.helper.showConfirmationBox({'message': message}).then(function (e) {
+                let params = {
+                    module: module,
+                    view: 'RelatedBlock',
+                    mode: 'delete',
+                    record: id
+                };
+                app.helper.showProgress();
+
+                app.request.post({data: params}).then(function (error, data) {
+                    app.helper.hideProgress();
+
+                    if (!error) {
+                        EMAILMaker_EditJs.refresh_related_blocks_array();
+                    }
+                });
+            });
         },
         insertFieldIntoSubject: function (val) {
             if (val != '') {

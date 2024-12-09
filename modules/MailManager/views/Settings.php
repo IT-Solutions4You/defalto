@@ -57,6 +57,7 @@ class MailManager_Settings_View extends MailManager_MainUI_View {
 
 			$connector = $this->getConnector();
             $sentFolder = $request->get('_mbox_sent_folder');
+
             if($connector->isConnected() && empty($sentFolder)) {
                 $folderInstances = $connector->getFolders();
 

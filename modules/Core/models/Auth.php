@@ -8,6 +8,9 @@
  * file that was distributed with this source code.
  */
 
+use League\OAuth2\Client\Provider\Google;
+use League\OAuth2\Client\Grant\RefreshToken;
+
 class Core_Auth_Model extends Vtiger_Base_Model
 {
 
@@ -44,6 +47,7 @@ class Core_Auth_Model extends Vtiger_Base_Model
         $instance = new self();
 
         if (!empty($clientId)) {
+            $instance->setAuthClientId($clientId);
             $instance->setClientId($clientId);
             $instance->setClientSecret($clientSecret);
             $instance->setToken($clientToken);
@@ -61,7 +65,7 @@ class Core_Auth_Model extends Vtiger_Base_Model
     {
         $params = $this->getProviderParams();
 
-        return new League\OAuth2\Client\Provider\Google($params);
+        return new Google($params);
     }
 
     public function getProviderName()
@@ -76,7 +80,7 @@ class Core_Auth_Model extends Vtiger_Base_Model
         ];
     }
 
-    public function getProviderParams()
+    public function getProviderParams(): array
     {
         return [
             'clientId' => $this->getClientId(),
@@ -86,7 +90,18 @@ class Core_Auth_Model extends Vtiger_Base_Model
         ];
     }
 
-    public function getRedirectUri()
+    /**
+     * @return string
+     * Use in getProviderParams: 'hostedDomain' => $this->getHostedDomain(),
+     */
+    public function getHostedDomain(): string
+    {
+        $siteUrl = parse_url(vglobal('site_URL'));
+
+        return $siteUrl['host'];
+    }
+
+    public function getRedirectUri(): string
     {
         return rtrim(vglobal('site_URL'), '/') . '/auth.php?provider=' . $this->getProviderName();
     }
@@ -143,10 +158,8 @@ class Core_Auth_Model extends Vtiger_Base_Model
     public function retrieveAccessToken()
     {
         $provider = $this->getProvider();
-        $accessToken = $provider->getAccessToken('refresh_token', [
-            'refresh_token' => $this->getToken(),
-        ]);
-
+        $grant = new RefreshToken();
+        $accessToken = $provider->getAccessToken($grant, ['refresh_token' => $this->getToken()]);
         $this->setAccessToken($accessToken->getToken());
         $this->setAccessExpire($accessToken->getExpires());
     }
@@ -262,6 +275,8 @@ class Core_Auth_Model extends Vtiger_Base_Model
         $viewer->assign('PROVIDER', $this->getProviderName());
         $viewer->assign('TOKEN', $this->getToken());
         $viewer->assign('ACCESS_TOKEN', $this->getAccessToken());
+        $viewer->assign('AUTHORIZATION_MESSAGE', $this->getAuthorizationMessage());
+        $viewer->assign('EXPIRE_DATE', $this->getExpireDate());
         $viewer->view('AuthForm.tpl', $this->getModuleName());
     }
 
@@ -273,5 +288,76 @@ class Core_Auth_Model extends Vtiger_Base_Model
     public function setAuthClientId($value)
     {
         $_SESSION[$this->getModuleName()]['authClientId'] = $value;
+    }
+
+    /**
+     * @return void
+     */
+    public function authorizationProcess(): void
+    {
+        if (!empty($this->getToken()) && !empty($this->getAccessToken()) && $this->isExpired()) {
+            $this->retrieveAccessToken();
+            $this->setAuthorizationMessage('Retrieved token by Client Token');
+        }
+
+        if (empty($_SESSION['oauth2state'])) {
+            $this->redirectToProvider();
+            $this->setAuthorizationMessage('Redirected');
+        } elseif (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
+            $this->setAuthorizationMessage('Invalid state');
+            unset($_SESSION['oauth2state']);
+            unset($_SESSION['provider']);
+        } elseif (empty($this->getToken()) || empty($this->getAccessToken())) {
+            $this->retrieveToken();
+            $this->setAuthorizationMessage( 'Retrieved Token by Authorization');
+            unset($_SESSION['oauth2state']);
+        } else {
+            $this->setAuthorizationMessage( 'Retrieved Token from Session');
+            unset($_SESSION['oauth2state']);
+        }
+    }
+
+    /**
+     * @param string $value
+     * @return void
+     */
+    public function setAuthorizationMessage(string $value): void
+    {
+        $this->set('authorization_message', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthorizationMessage(): string
+    {
+        return (string)$this->get('authorization_message');
+    }
+
+    public function setProviderByServer($server)
+    {
+        if (str_contains($server, 'gmail.com')) {
+            $this->setProviderName('Google');
+        }
+    }
+
+    public function getExpireDate()
+    {
+        $time = $this->getAccessExpire();
+        $date = date('Y-m-d H:i:s', $time);
+        $userDate = DateTimeField::convertToUserTimeZone($date);
+
+        return DateTimeField::convertToUserFormat($userDate->format('Y-m-d H:i:s'));
+    }
+
+    public function retrieveLoggedUser()
+    {
+        if (empty($_SESSION['authenticated_user_id'])) {
+            echo vtranslate('Required login to system', $this->getModuleName());
+        }
+
+        $recordModel = Users_Record_Model::getInstanceById($_SESSION['authenticated_user_id'], 'Users');
+
+        vglobal('current_user', $recordModel->getEntity());
     }
 }

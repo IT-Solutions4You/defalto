@@ -428,20 +428,6 @@ class HelpDesk_Install_Model extends Core_Install_Model {
                     'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
-                'mail_manager_id' => [
-                    'name' => 'mail_manager_id',
-                    'column' => 'mail_manager_id',
-                    'uitype' => 32,
-                    'table' => 'vtiger_troubletickets',
-                    'label' => 'Mail Manager Id',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'N~O',
-                    'quickcreate' => 0,
-                    'displaytype' => 1,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
             ],
         ];
     }
@@ -520,7 +506,6 @@ class HelpDesk_Install_Model extends Core_Install_Model {
             ->createColumn('first_comment_hours','decimal(10,3) DEFAULT NULL')
             ->createColumn('last_comment','datetime DEFAULT NULL')
             ->createColumn('last_comment_hours','decimal(10,3) DEFAULT NULL')
-            ->createColumn('mail_manager_id','INT(19) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`ticketid`)')
             ->createKey('KEY IF NOT EXISTS `troubletickets_ticketid_idx` (`ticketid`)')
             ->createKey('KEY IF NOT EXISTS `troubletickets_status_idx` (`status`)')

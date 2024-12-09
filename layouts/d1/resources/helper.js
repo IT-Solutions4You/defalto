@@ -526,17 +526,11 @@ jQuery.Class("Vtiger_Helper_Js",{
     },
 
     getSelect2FromSelect: function (selectEle) {
-        if (typeof selectEle == "undefined") {
+        if (typeof selectEle == 'undefined') {
             return jQuery({});
         }
 
-        let select2 = selectEle.data('select2');
-
-        if (typeof select2 == "undefined") {
-            return jQuery({});
-        }
-
-        return jQuery(select2['$container']);
+        return selectEle.parent().find('.select2-selection');
     },
     
      /* 

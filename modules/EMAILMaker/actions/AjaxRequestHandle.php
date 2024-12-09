@@ -81,14 +81,6 @@ class EMAILMaker_AjaxRequestHandle_Action extends Vtiger_Action_Controller
                 $adb->pquery("DELETE FROM vtiger_emakertemplates_label_vals WHERE label_id=? AND lang_id=?", array($request->get("label_id"), $request->get("lang_id")));
                 $adb->pquery("INSERT INTO vtiger_emakertemplates_label_vals(label_id, lang_id, label_value) VALUES(?,?,?)", array($request->get("label_id"), $request->get("lang_id"), $request->get("label_value")));
                 break;
-            case "fill_relblocks":
-                $module = addslashes($request->get("selmod"));
-                $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
-                $Related_Blocks = $EMAILMaker->GetRelatedBlocks($module, false);
-                $response = new Vtiger_Response();
-                $response->setResult(array('success' => true, 'relblocks' => $Related_Blocks));
-                $response->emit();
-                break;
             case "fill_module_product_fields":
                 $module = addslashes($request->get("productmod"));
                 $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
@@ -96,15 +88,6 @@ class EMAILMaker_AjaxRequestHandle_Action extends Vtiger_Action_Controller
                 $keys = implode('||', array_keys($Product_Block_Fields["SELECT_PRODUCT_FIELD"]));
                 $values = implode('||', $Product_Block_Fields["SELECT_PRODUCT_FIELD"]);
                 echo $keys . '|@|' . $values;
-                break;
-            case 'get_relblock':
-                $record = addslashes($request->get('relblockid'));
-
-                echo EMAILMaker_RelatedBlock_Model::getBlockBody($record);
-                break;
-            case "delete_relblock":
-                $record = addslashes($request->get("relblockid"));
-                $adb->pquery("UPDATE vtiger_emakertemplates_relblocks SET deleted = 1 WHERE relblockid = ?", array($record));
                 break;
         }
     }

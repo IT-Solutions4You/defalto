@@ -32,15 +32,6 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
     ];
 
     /**
-     * array values [ModuleName, TableId, TableName] for field module_manager_id
-     */
-    public const RELATIONS_TABLES = [
-        ['HelpDesk', 'ticketid', 'vtiger_troubletickets'],
-        ['Potentials', 'potentialid', 'vtiger_potential'],
-        ['ITS4YouEmails', 'its4you_emails_id', 'its4you_emails'],
-    ];
-
-    /**
      * List of modules used to match the Email address
      * @var Array
      */
@@ -403,44 +394,27 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
             return $this->mUidRelations;
         }
 
-        $this->retrieveRelationsMailManager();
-
-        foreach (self::RELATIONS_TABLES as $relation) {
-            $this->retrieveRelations($relation[0], $relation[1], $relation[2]);
-        }
+        $this->retrieveRelations();
 
         return $this->mUidRelations;
     }
 
-    public function retrieveRelationsMailManager(): void
+    public function retrieveRelations()
     {
         $adb = PearDatabase::getInstance();
-        $uid = $this->getUid();
-        $result = $adb->pquery(
-            'SELECT vtiger_mailmanager_mailrel.* FROM vtiger_mailmanager_mailrel 
-            INNER JOIN vtiger_mailmanager_mailrecord ON vtiger_mailmanager_mailrecord.muniqueid=vtiger_mailmanager_mailrel.mailuid
-            WHERE vtiger_mailmanager_mailrecord.muid=?',
-            [$uid],
-        );
+        $sql = 'SELECT its4you_emails_id,related_to FROM its4you_emails WHERE mail_message_key = ?';
+        $result = $adb->pquery($sql, [$this->generateUniqueKeyFromEmail()]);
 
         while ($row = $adb->fetchByAssoc($result)) {
-            $this->mUidRelations[(int)$row['emailid']] = 'ITS4YouEmails';
-            $this->mUidRelations[(int)$row['crmid']] = getSalesEntityType((int)$row['crmid']);
-        }
-    }
+            $recordIds = array_filter([(int)$row['its4you_emails_id'], (int)$row['related_to']]);
 
-    public function retrieveRelations($module, $tableId, $tableName)
-    {
-        $adb = PearDatabase::getInstance();
-        $sql = sprintf('SELECT %s as id FROM %s WHERE mail_manager_id=?', $tableId, $tableName);
-        $result = $adb->pquery($sql, [$this->getUid()]);
+            foreach ($recordIds as $recordId) {
+                if (!isRecordExists($recordId)) {
+                    continue;
+                }
 
-        while ($row = $adb->fetchByAssoc($result)) {
-            if (!isRecordExists($row['id'])) {
-                continue;
+                $this->mUidRelations[$recordId] = getSalesEntityType($recordId);
             }
-
-            $this->mUidRelations[(int)$row['id']] = $module;
         }
     }
 
@@ -640,21 +614,14 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
         return $relation;
     }
 
+    /**
+     * @return bool
+     */
     public function hasRelations(): bool
     {
         $adb = PearDatabase::getInstance();
-        $sql = 'SELECT muid,muniqueid FROM vtiger_mailmanager_mailrecord
-            LEFT JOIN vtiger_mailmanager_mailrel ON vtiger_mailmanager_mailrel.mailuid=muniqueid 
-            LEFT JOIN its4you_emails ON its4you_emails.mail_manager_id=muid 
-            LEFT JOIN vtiger_troubletickets ON vtiger_troubletickets.mail_manager_id=muid 
-            LEFT JOIN vtiger_potential ON vtiger_potential.mail_manager_id=muid 
-            WHERE muid=? AND (
-                its4you_emails.mail_manager_id > 0 
-                OR vtiger_troubletickets.mail_manager_id > 0 
-                OR vtiger_potential.mail_manager_id > 0 
-                OR vtiger_mailmanager_mailrel.emailid > 0
-            )';
-        $params = [$this->getUid()];
+        $params = [$this->generateUniqueKeyFromEmail()];
+        $sql = 'SELECT mail_message_key FROM its4you_emails WHERE mail_message_key=?';
         $result = $adb->pquery($sql, $params);
 
         return $result && $adb->num_rows($result);
@@ -824,18 +791,5 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
         }
 
         return $this->attachmentsAllowed;
-    }
-
-    public function getEmailId()
-    {
-        if (!$this->validateUid()) {
-            return 0;
-        }
-
-        $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT its4you_emails_id FROM its4you_emails INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=its4you_emails_id AND vtiger_crmentity.deleted=0 WHERE mail_manager_id=?');
-        $data = $adb->fetchByAssoc($result);
-
-        return $data['its4you_emails_id'];
     }
 }
