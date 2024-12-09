@@ -39,7 +39,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     registerAddButtons: function () {
         const self = this;
 
-        const addTextLineHandler = function (e, data) {
+        const addTextLineHandler = function (e) {
             const currentTarget = jQuery(e.currentTarget);
             const params = {'currentTarget': currentTarget};
             let newTextLine = self.getNewTextItem(params);
@@ -236,15 +236,16 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     makeLineItemsSortable: function () {
         jQuery('#lineItemTab tbody').sortable({
             handle: '.drag_drop_line_item',
-            update: function (event, ui) {
+            update: function () {
                 const newOrder = jQuery(this).sortable('toArray');
                 const data = [];
 
                 jQuery.each(newOrder, function (index, value) {
-                    if (value != '') {
-                        jQuery('#' + value).find('input.rowSequence').val(index);
+                    if (value !== '') {
+                        let valueElement = jQuery('#' + value);
+                        valueElement.find('input.rowSequence').val(index);
                         data.push({
-                            'id': jQuery('#' + value).find('input.lineItemId').val(),
+                            'id': valueElement.find('input.lineItemId').val(),
                             'sequence': index,
                         });
                     }
@@ -350,11 +351,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     deleteProductLine: function (rowNum) {
-        const self = this;
-
         if (confirm(app.vtranslate('JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE')) === true) {
             const row = jQuery('#row' + rowNum);
-            const data = self.serializeRow(row);
             app.request.post({
                 'data': {
                     module: 'InventoryItem',
@@ -362,7 +360,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     for_record: app.getRecordId(),
                     lineItemId: jQuery('input[name="lineItemId' + rowNum + '"]').val()
                 }
-            }).then(function (data) {
+            }).then(function () {
                 row.remove();
             });
         }
@@ -447,7 +445,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             'select': function (event, ui) {
                 const selectedItemData = ui.item;
                 //To stop selection if no results is selected
-                if (typeof selectedItemData.type != 'undefined' && selectedItemData.type == "no results") {
+                if (typeof selectedItemData.type != 'undefined' && selectedItemData.type === "no results") {
                     return false;
                 }
                 const element = jQuery(this);
@@ -536,7 +534,9 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     postLineItemSelectionActions: function (itemRow, selectedLineItemsData, lineItemSelectedModuleName) {
         for (let index in selectedLineItemsData) {
-            if (index !== 0) {
+
+            if ((index * 1) !== 0) {
+                console.log(index);
                 jQuery('#add' + lineItemSelectedModuleName).trigger('click', selectedLineItemsData[index]);
             } else {
                 itemRow.find('.lineItemType').val(lineItemSelectedModuleName);
