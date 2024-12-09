@@ -20,11 +20,13 @@ class InventoryItem_Module_Model extends Vtiger_Module_Model
         $return = [];
         $db = PearDatabase::getInstance();
 
-        $query = 'SELECT columnslist FROM its4you_inventoryitemcolumns WHERE tabid = ?';
+        $query = 'SELECT columnslist FROM df_inventoryitemcolumns WHERE tabid = ?';
         $result = $db->pquery($query, [$moduleId]);
 
         while ($row = $db->fetchByAssoc($result)) {
-            $return = explode(',', $row['columnslist']);
+            if (!empty($row['columnslist'])) {
+                $return = explode(',', $row['columnslist']);
+            }
         }
 
         if (empty($return) && $addDefaultFields) {

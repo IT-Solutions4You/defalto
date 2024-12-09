@@ -273,29 +273,37 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
     },
 
-    setupRowListeners: function (rowNum) {
+    setupRowListeners: function (rowNumber) {
         const self = this;
-        const row = jQuery(`#row${rowNum}`);
+        const row = jQuery('#row' + rowNumber);
 
         row.on('click', '.deleteRow', function () {
-            self.deleteProductLine(rowNum);
+            self.deleteProductLine(rowNumber);
         });
 
         row.on('click', '.editRow', function () {
-            self.editProductLine(rowNum);
+            self.editProductLine(rowNumber);
         });
 
         row.on('click', '.saveRow', function () {
-            self.saveProductLine(rowNum);
+            self.saveProductLine(rowNumber);
         });
 
         row.on('click', '.cancelEditRow', function () {
-            self.cancelEditProductLine(rowNum);
+            self.cancelEditProductLine(rowNumber);
+        });
+
+        row.on('change', 'input', function () {
+            const element = jQuery(this);
+            // Don't save on hidden input changes unless specifically needed
+            if ((!element.is(':hidden') || element.hasClass('recalculateOnChange')) && !isNaN(element.val())) {
+                self.recalculateProductLine(rowNumber);
+            }
         });
     },
 
-    saveProductLine: function (rowNum) {
-        const row = jQuery('#row' + rowNum);
+    saveProductLine: function (rowNumber) {
+        const row = jQuery('#row' + rowNumber);
         const data = this.serializeRow(row);
 
         // Check if the row has any non-empty values
@@ -306,7 +314,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 url: 'index.php',
                 method: 'POST',
                 data: {
-                    rowNum: rowNum,
+                    rowNum: rowNumber,
                     module: 'InventoryItem',
                     action: 'SaveProductLine',
                     for_record: app.getRecordId(),
@@ -314,7 +322,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 },
                 success: function (response) {
                     if (!isNaN(response.result)) {
-                        row.find('[name="lineItemId' + rowNum + '"]').val(response.result);
+                        row.find('[name="lineItemId' + rowNumber + '"]').val(response.result);
                     }
 
                     jQuery('.noEditLineItem', row).toggleClass('hide');
@@ -350,15 +358,15 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
     },
 
-    deleteProductLine: function (rowNum) {
+    deleteProductLine: function (rowNumber) {
         if (confirm(app.vtranslate('JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE')) === true) {
-            const row = jQuery('#row' + rowNum);
+            const row = jQuery('#row' + rowNumber);
             app.request.post({
                 'data': {
                     module: 'InventoryItem',
                     action: 'DeleteProductLine',
                     for_record: app.getRecordId(),
-                    lineItemId: jQuery('input[name="lineItemId' + rowNum + '"]').val()
+                    lineItemId: jQuery('input[name="lineItemId' + rowNumber + '"]').val()
                 }
             }).then(function () {
                 row.remove();
@@ -383,14 +391,14 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         return data;
     },
 
-    editProductLine: function (rowNum) {
-        const row = jQuery('#row' + rowNum);
+    editProductLine: function (rowNumber) {
+        const row = jQuery('#row' + rowNumber);
         jQuery('.noEditLineItem', row).toggleClass('hide');
         jQuery('.editLineItem', row).toggleClass('hide');
     },
 
-    cancelEditProductLine: function (rowNum) {
-        const row = jQuery('#row' + rowNum);
+    cancelEditProductLine: function (rowNumber) {
+        const row = jQuery('#row' + rowNumber);
         jQuery('.noEditLineItem', row).toggleClass('hide');
         jQuery('.editLineItem', row).toggleClass('hide');
 
@@ -565,7 +573,20 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             // Update the total in the corresponding span (formatted to 2 decimal places)
             span.text(columnTotal.toFixed(2));
         });
-    }
+    },
+
+    recalculateProductLine: function (rowNumber) {
+        const row = jQuery('#row' + rowNumber);
+        const quantity = parseFloat(jQuery('.quantity', row).val());
+        let price = parseFloat(jQuery('.price', row).val());
+        price = quantity * price;
+
+
+        console.log(price);
+        jQuery('.total', row).val(price);
+
+        this.recalculateTotals();
+    },
 });
 
 InventoryItem_InventoryItemDetail_Js_Instance = new InventoryItem_InventoryItemDetail_Js();

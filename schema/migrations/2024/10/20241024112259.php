@@ -39,7 +39,7 @@ if (!class_exists('Migration_20241024112259')) {
 
             $this->db->query(
                 '
-                CREATE TABLE IF NOT EXISTS `its4you_inventoryitemcolumns` (
+                CREATE TABLE IF NOT EXISTS `df_inventoryitemcolumns` (
                     `tabid` int(11) NOT NULL,
                     `columnslist` varchar(500) DEFAULT NULL,
                     PRIMARY KEY (`tabid`)
@@ -67,7 +67,7 @@ if (!class_exists('Migration_20241024112259')) {
             foreach ($inventoryModules as $inventoryModuleName) {
                 $tabId = getTabid($inventoryModuleName);
                 $this->db->pquery('DELETE FROM vtiger_field WHERE tabid = ? AND tablename = ?', [$tabId, 'vtiger_inventoryproductrel']);
-                $this->db->pquery('UPDATE vtiger_ws_entity SET handler_class = ? WHERE name = ?', ['VtigerModuleOperation', $inventoryModuleName]);
+                $this->db->pquery('UPDATE vtiger_ws_entity SET handler_path = ?,  handler_class = ? WHERE name = ?', ['include/Webservices/VtigerModuleOperation.php', 'VtigerModuleOperation', $inventoryModuleName]);
             }
         }
     }

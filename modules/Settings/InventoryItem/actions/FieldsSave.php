@@ -13,7 +13,7 @@ class Settings_InventoryItem_FieldsSave_Action extends Settings_Vtiger_Index_Act
     public function process(Vtiger_Request $request): void
     {
         $db = PearDatabase::getInstance();
-        $db->pquery('REPLACE INTO its4you_inventoryitemcolumns (tabid, columnslist) VALUES (?,?)', [$request->get('selectedModule'), implode(',', $request->get('columnslist'))]);
+        $db->pquery('REPLACE INTO df_inventoryitemcolumns (tabid, columnslist) VALUES (?,?)', [$request->get('selectedModule'), implode(',', $request->get('columnslist'))]);
         $link = 'index.php?module=InventoryItem&parent=Settings&view=Index';
 
         if ($request->get('selectedModule')) {
