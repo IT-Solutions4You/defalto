@@ -39,7 +39,7 @@
                     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
                         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
                         <td>
-                            <strong>{vtranslate({$FIELD->get('label')},$MODULE)}</strong>
+                            <strong>{vtranslate({$FIELD->get('label')}, 'InventoryItem')}</strong>
                         </td>
                     {/foreach}
                 </tr>

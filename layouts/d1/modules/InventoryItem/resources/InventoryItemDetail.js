@@ -580,10 +580,56 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const quantity = parseFloat(jQuery('.quantity', row).val());
         let price = parseFloat(jQuery('.price', row).val());
         price = quantity * price;
+        jQuery('.subtotal', row).val(price);
+        jQuery('.display_subtotal' + rowNumber, row).html(price.toFixed(2));
 
+        const discount = parseFloat(jQuery('.discount', row).val());
+        let discount_amount = parseFloat(jQuery('.discount_amount', row).val());
 
-        console.log(price);
+        if (discount && discount > 0) {
+            discount_amount = price * (discount / 100);
+            jQuery('.discount_amount', row).val(discount_amount);
+        }
+
+        if (isNaN(discount_amount)) {
+            discount_amount = 0;
+        }
+
+        price = price - discount_amount;
+        jQuery('.total_after_discount', row).val(price);
+        jQuery('.display_total_after_discount' + rowNumber, row).html(price.toFixed(2));
+
+        const overall_discount = parseFloat(jQuery('.overall_discount', row).val());
+        let overall_discount_amount = parseFloat(jQuery('.overall_discount_amount', row).val());
+
+        if (overall_discount && overall_discount > 0) {
+            overall_discount_amount = price * (overall_discount / 100);
+            jQuery('.overall_discount_amount', row).val(overall_discount_amount);
+        }
+
+        if (isNaN(overall_discount_amount)) {
+            overall_discount_amount = 0;
+        }
+
+        price = price - overall_discount_amount;
+        jQuery('.total_after_overall_discount', row).val(price);
+        jQuery('.display_total_after_overall_discount' + rowNumber, row).html(price.toFixed(2));
+
+        const tax = parseFloat(jQuery('.tax', row).val());
+        let tax_amount = parseFloat(jQuery('.tax_amount', row).val());
+
+        if (tax && tax > 0) {
+            tax_amount = price * (tax / 100);
+            jQuery('.tax_amount', row).val(tax_amount);
+        }
+
+        if (isNaN(tax_amount)) {
+            tax_amount = 0;
+        }
+
+        price = price + tax_amount;
         jQuery('.total', row).val(price);
+        jQuery('.display_total' + rowNumber, row).html(price.toFixed(2));
 
         this.recalculateTotals();
     },
