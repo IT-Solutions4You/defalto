@@ -356,15 +356,16 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 
 	/**
 	 * Function to get Relation query
-	 * @return <String>
+	 * @return string
 	 */
 	public function getRelationQuery() {
+        /** @var Vtiger_Relation_Model $relationModel */
 		$relationModel = $this->getRelationModel();
 
 		if(!empty($relationModel) && $relationModel->get('name') != NULL){
 			$recordModel = $this->getParentRecordModel();
-			$query = $relationModel->getQuery($recordModel);
-			return $query;
+
+            return $relationModel->getQuery($recordModel);
 		}
 		$relatedModuleModel = $this->getRelatedModuleModel();
 		$relatedModuleName = $relatedModuleModel->getName();
@@ -396,7 +397,8 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		return $query;
 	}
 
-	public static function getInstance($parentRecordModel, $relationModuleName, $label=false) {
+    public static function getInstance($parentRecordModel, $relationModuleName, $label = false): self
+    {
 		$parentModuleName = $parentRecordModel->getModule()->get('name');
 		$className = Vtiger_Loader::getComponentClassName('Model', 'RelationListView', $parentModuleName);
 		$instance = new $className();
@@ -413,8 +415,9 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 			$parentModuleModel = $instance->getParentRecordModel()->getModule();
 			$referenceFieldOfParentModule = $parentModuleModel->getFieldsByType('reference');
 			foreach ($referenceFieldOfParentModule as $fieldName=>$fieldModel) {
-				$refredModulesOfReferenceField = $fieldModel->getReferenceList();
-				if(in_array($relatedModuleName, $refredModulesOfReferenceField)){
+				$relatedModuleNames = $fieldModel->getReferenceList();
+
+				if(in_array($relatedModuleName, $relatedModuleNames)){
 					$relationModelClassName = Vtiger_Loader::getComponentClassName('Model', 'Relation', $parentModuleModel->getName());
 					$relationModel = new $relationModelClassName();
 					$relationModel->setParentModuleModel($parentModuleModel)->setRelationModuleModel($relatedModuleModel);
@@ -422,10 +425,13 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 				}
 			}
 		}
+
 		if(!$relationModel){
 			$relationModel = false;
 		}
+
 		$instance->setRelationModel($relationModel);
+
 		return $instance;
 	}
 

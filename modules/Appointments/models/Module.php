@@ -127,11 +127,12 @@ class Appointments_Module_Model extends Vtiger_Module_Model
      */
     public function getModuleIcon($height = '', string $type = ''): string
     {
+        $type = strtolower($type);
         $icons = [
-            'Meeting' => 'fa-users',
-            'Call' => 'fa-phone',
-            'Email' => 'fa-envelope',
-            'Reminder' => 'fa-bell',
+            'meeting' => 'fa-users',
+            'call' => 'fa-phone',
+            'email' => 'fa-envelope',
+            'reminder' => 'fa-bell',
         ];
 
         if (!empty($icons[$type])) {
@@ -288,5 +289,12 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         }
 
         return $listQuery;
+    }
+
+    public function getConfigureRelatedListFields() {
+        $fields = parent::getConfigureRelatedListFields();
+        $fields['is_all_day'] = 'is_all_day';
+
+        return $fields;
     }
 }
