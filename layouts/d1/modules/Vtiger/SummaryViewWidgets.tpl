@@ -17,6 +17,9 @@
         </div>
         {* Module Summary View Ends Here*}
         {foreach item=DETAIL_VIEW_WIDGET from=$DETAILVIEW_LINKS['DETAILVIEWWIDGET'] name=count}
+            {if 'Placeholder' eq $DETAIL_VIEW_WIDGET->getLabel()}
+                {continue}
+            {/if}
             {if $smarty.foreach.count.index % 2 == 0}
                 {include file='SummaryViewWidget.tpl'|vtemplate_path:$MODULE_NAME}
             {/if}
@@ -25,6 +28,9 @@
 
     <div class="right-block col-xl-7">
         {foreach item=DETAIL_VIEW_WIDGET from=$DETAILVIEW_LINKS['DETAILVIEWWIDGET'] name=count}
+            {if 'Placeholder' eq $DETAIL_VIEW_WIDGET->getLabel()}
+                {continue}
+            {/if}
             {if $smarty.foreach.count.index % 2 != 0}
                 {include file='SummaryViewWidget.tpl'|vtemplate_path:$MODULE_NAME}
             {/if}

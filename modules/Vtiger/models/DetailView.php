@@ -291,12 +291,6 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
             ];
         }
 
-        $modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
-
-        if ($moduleModel->isCommentEnabled() && $modCommentsModel->isPermitted('DetailView')) {
-            $widgets[] = $this->getCommentWidgetInfo();
-        }
-
         $appointmentsInstance = Vtiger_Module_Model::getInstance('Appointments');
 
         if ($userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Appointments')) {
@@ -309,6 +303,17 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
                 'action' => $createPermission ? ['Add'] : [],
                 'actionURL' => $appointmentsInstance->getQuickCreateUrl(),
             ];
+        }
+
+        $widgets[] = [
+            'linktype' => 'DETAILVIEWWIDGET',
+            'linklabel' => 'Placeholder',
+        ];
+
+        $modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
+
+        if ($moduleModel->isCommentEnabled() && $modCommentsModel->isPermitted('DetailView')) {
+            $widgets[] = $this->getCommentWidgetInfo();
         }
 
         $widgetLinks = [];
