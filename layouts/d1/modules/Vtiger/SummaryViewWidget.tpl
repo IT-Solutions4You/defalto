@@ -17,7 +17,7 @@
                     {assign var=PARENT_ID value=$RECORD->getId()}
                     <div class="pull-right">
                         <div class="dropdown">
-                            <button type="button" class="btn text-secondary fw-bold" data-bs-toggle="dropdown">
+                            <button type="button" class="btn btn-sm text-secondary fw-bold" data-bs-toggle="dropdown">
                                 <i class="fa-solid fa-plus"></i>
                                 <span class="ms-2">{vtranslate('LBL_NEW_DOCUMENT', 'Documents')}</span>
                             </button>
@@ -63,7 +63,7 @@
                     </div>
                 {else}
                     <div class="pull-right">
-                        <button class="btn text-secondary fw-bold addButton createRecord" type="button" data-url="{$DETAIL_VIEW_WIDGET->get('actionURL')}">
+                        <button class="btn btn-sm text-secondary fw-bold addButton createRecord" type="button" data-url="{$DETAIL_VIEW_WIDGET->get('actionURL')}">
                             <i class="fa fa-plus"></i>
                             <span class="mx-2">{vtranslate('LBL_ADD',$MODULE_NAME)}</span>
                             <span>{vtranslate($DETAIL_VIEW_WIDGET->getLabel(),$MODULE_NAME)}</span>

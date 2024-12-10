@@ -15,13 +15,10 @@ class Appointments_Record_Model extends Vtiger_Record_Model
      */
     public function getActivityTypeIcon(): string
     {
-        $calendarType = strtolower($this->get('calendar_type'));
+        /** @var Appointments_Module_Model $module */
+        $module = $this->getModule();
 
-        if ('email' === $calendarType) {
-            return 'fa fa-envelope fa-lg';
-        }
-
-        return 'vicon-' . $calendarType;
+        return $module->getModuleIcon('', $this->get('calendar_type'));
     }
 
     /**
@@ -44,5 +41,34 @@ class Appointments_Record_Model extends Vtiger_Record_Model
         $recurrence = Appointments_Recurrence_Model::getInstanceByRecord(intval($this->getId()));
 
         return $recurrence && $recurrence->isExists();
+    }
+
+    /**
+     * @param string $name
+     * @return array
+     */
+    public function getDateInfo(string $name): array
+    {
+        $value = $this->get($name);
+        [$date, $time] = explode(' ', $value);
+        $displayDate = Vtiger_Util_Helper::formatDateIntoStrings($value);
+
+        $userModel = Users_Record_Model::getCurrentUserModel();
+        $formattedTime = DateTimeField::convertToUserTimeZone($value)->format('H:i');
+
+        if (12 === (int)$userModel->get('hour_format')) {
+            $formattedTime = Vtiger_Time_UIType::getTimeValueInAMorPM($formattedTime);
+        }
+
+        if (1 === (int)$this->get('is_all_day')) {
+            $time = $formattedTime = null;
+        }
+
+        return [
+            'date' => $date,
+            'display_date' => $displayDate,
+            'time' => $time,
+            'display_time' => $formattedTime,
+        ];
     }
 }

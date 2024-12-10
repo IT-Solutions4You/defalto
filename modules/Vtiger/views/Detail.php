@@ -705,6 +705,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
             $viewer->assign('PAGE_NUMBER', $pageNumber);
             $viewer->assign('ACTIVITIES', $relatedActivities);
             $viewer->assign('ACTIVITIES_MODULE_NAME', $activitiesModuleName);
+            $viewer->assign('ACTIVITIES_MODULE', $activitiesModule);
             $viewer->assign('RELATION_LIST_URL', $relationListView->getRelationModel()->getListUrl($recordModel));
             $viewer->assign('PARENT_FIELD_NAME', $parentFieldNames[$moduleName] ?? $parentFieldName);
 
