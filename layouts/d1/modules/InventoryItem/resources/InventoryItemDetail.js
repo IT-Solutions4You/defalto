@@ -113,26 +113,26 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const regex = /0$/;
 
         lineItemRow.find('*').each(function () {
-            const $el = $(this);
+            const thisElement = jQuery(this);
 
-            if ($el.attr('id')) {
-                const oldId = $el.attr('id');
+            if (thisElement.attr('id')) {
+                const oldId = thisElement.attr('id');
                 if (regex.test(oldId)) {
                     const newId = oldId.replace(regex, expectedSequenceNumber);
-                    $el.attr('id', newId);
+                    thisElement.attr('id', newId);
                 }
             }
 
-            if ($el.attr('name')) {
-                const oldName = $el.attr('name');
+            if (thisElement.attr('name')) {
+                const oldName = thisElement.attr('name');
                 if (regex.test(oldName)) {
                     const newName = oldName.replace(regex, expectedSequenceNumber);
-                    $el.attr('name', newName);
+                    thisElement.attr('name', newName);
                 }
             }
 
-            if ($el.is('span') && $el.attr('class')) {
-                const classes = $el.attr('class').split(' ');
+            if (thisElement.is('span') && thisElement.attr('class')) {
+                const classes = thisElement.attr('class').split(' ');
                 const updatedClasses = classes.map(className => {
                     if (regex.test(className)) {
                         return className.replace(regex, expectedSequenceNumber);
@@ -140,7 +140,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     return className;
                 }).join(' ');
 
-                $el.attr('class', updatedClasses);
+                thisElement.attr('class', updatedClasses);
             }
         });
 
@@ -325,8 +325,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                         row.find('[name="lineItemId' + rowNumber + '"]').val(response.result);
                     }
 
-                    jQuery('.noEditLineItem', row).toggleClass('hide');
-                    jQuery('.editLineItem', row).toggleClass('hide');
+                    jQuery('.noEditLineItem:not(.computed)', row).toggleClass('hide');
+                    jQuery('.editLineItem:not(.computed)', row).toggleClass('hide');
 
                     jQuery('input', row).each(function () {
                         const element = jQuery(this);
@@ -393,14 +393,14 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     editProductLine: function (rowNumber) {
         const row = jQuery('#row' + rowNumber);
-        jQuery('.noEditLineItem', row).toggleClass('hide');
-        jQuery('.editLineItem', row).toggleClass('hide');
+        jQuery('.noEditLineItem:not(.computed)', row).toggleClass('hide');
+        jQuery('.editLineItem:not(.computed)', row).toggleClass('hide');
     },
 
     cancelEditProductLine: function (rowNumber) {
         const row = jQuery('#row' + rowNumber);
-        jQuery('.noEditLineItem', row).toggleClass('hide');
-        jQuery('.editLineItem', row).toggleClass('hide');
+        jQuery('.noEditLineItem:not(.computed)', row).toggleClass('hide');
+        jQuery('.editLineItem:not(.computed)', row).toggleClass('hide');
 
         jQuery('input', row).each(function () {
             const element = jQuery(this);
@@ -517,7 +517,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             const postPopupHandler = function (e, data) {
                 data = JSON.parse(data);
 
-                if (!$.isArray(data)) {
+                if (!jQuery.isArray(data)) {
                     data = [data];
                 }
 
@@ -555,8 +555,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     recalculateTotals: function () {
         const self = this;
-        $('tfoot span[class^="total_"]', this.lineItemsHolder).each(function () {
-            let span = $(this);
+        jQuery('tfoot span[class^="total_"]', this.lineItemsHolder).each(function () {
+            let span = jQuery(this);
 
             // Extract the specific class part (e.g., from "total_price" -> "price")
             let targetClass = span.attr('class').replace('total_', '');
@@ -565,8 +565,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             let columnTotal = 0;
 
             // Find all inputs in tbody with the specific class and sum their values
-            $('tbody input.' + targetClass, self.lineItemsHolder).each(function () {
-                let inputValue = parseFloat($(this).val()) || 0; // Parse value, default to 0
+            jQuery('tbody input.' + targetClass, self.lineItemsHolder).each(function () {
+                let inputValue = parseFloat(jQuery(this).val()) || 0; // Parse value, default to 0
                 columnTotal += inputValue;
             });
 

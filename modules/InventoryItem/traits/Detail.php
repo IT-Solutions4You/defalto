@@ -11,11 +11,13 @@
 trait InventoryItem_Detail_Trait
 {
     protected $excludedFields = ['assigned_user_id', 'description', 'item_text', 'parentid', 'parentitemid', 'sequence'];
+    protected $computedFields = ['subtotal', 'total_after_discount', 'total_after_overall_discount', 'total'];
 
     public function adaptDetail(Vtiger_Request $request, Vtiger_Viewer $viewer)
     {
         $viewer->assign('ITEM_MODULES', InventoryItem_ItemModules_Model::getItemModules());
         $viewer->assign('EXCLUDED_FIELDS', $this->excludedFields);
+        $viewer->assign('COMPUTED_FIELDS', $this->computedFields);
         $viewer->assign('INVENTORY_ITEMS', $this->fetchItems((int)$request->get('record')));
         $viewer->assign('INVENTORY_ITEM_COLUMNS', InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule())));
 

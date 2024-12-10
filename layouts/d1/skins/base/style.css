@@ -3082,6 +3082,10 @@ li.dashboardWidget {
     width: 40%;
 }
 
+.minWidth20per {
+    min-width: 20%;
+}
+
 .table.detailview-table.no-border .ajaxEdited .input-group-addon {
     width: auto;
 }
