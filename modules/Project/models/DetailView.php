@@ -16,8 +16,21 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model {
 	 */
 	public function getWidgets() {
 		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		$widgetLinks = parent::getWidgets();
+		$widgetLinks = [];
 		$widgets = array();
+
+        $keyMetrics = array(
+            'linktype' => 'DETAILVIEWWIDGET',
+            'link_template' => 'SummaryKeyMetrics.tpl',
+        );
+        $widgetLinks[] = Vtiger_Link_Model::getInstanceFromValues($keyMetrics);
+
+        $placeholder = array(
+            'linktype' => 'DETAILVIEWWIDGET',
+            'link_template' => 'SummaryPlaceholder.tpl',
+        );
+        $widgetLinks[] = Vtiger_Link_Model::getInstanceFromValues($placeholder);
+        $widgetLinks = array_merge($widgetLinks, parent::getWidgets());
 
 		$helpDeskInstance = Vtiger_Module_Model::getInstance('HelpDesk');
 		if($userPrivilegesModel->hasModuleActionPermission($helpDeskInstance->getId(), 'DetailView')) {

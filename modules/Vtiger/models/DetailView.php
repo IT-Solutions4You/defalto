@@ -279,17 +279,11 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
         $widgets = [];
         $documentsInstance = Vtiger_Module_Model::getInstance('Documents');
 
-        if ($userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Documents')) {
-            $createPermission = $userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'CreateView');
-            $widgets[] = [
-                'linktype' => 'DETAILVIEWWIDGET',
-                'linklabel' => 'Documents',
-                'linkName' => $documentsInstance->getName(),
-                'linkurl' => $this->getWidgetUrl('showRelatedRecords') . '&relatedModule=Documents',
-                'action' => $createPermission ? ['Add'] : [],
-                'actionURL' => $documentsInstance->getQuickCreateUrl(),
-            ];
-        }
+        $widgets[] = [
+            'linktype' => 'DETAILVIEWWIDGET',
+            'linklabel' => 'KeyFields',
+            'link_template' => 'SummaryKeyFields.tpl'
+        ];
 
         $appointmentsInstance = Vtiger_Module_Model::getInstance('Appointments');
 
@@ -305,10 +299,17 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
             ];
         }
 
-        $widgets[] = [
-            'linktype' => 'DETAILVIEWWIDGET',
-            'linklabel' => 'Placeholder',
-        ];
+        if ($userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Documents')) {
+            $createPermission = $userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'CreateView');
+            $widgets[] = [
+                'linktype' => 'DETAILVIEWWIDGET',
+                'linklabel' => 'Documents',
+                'linkName' => $documentsInstance->getName(),
+                'linkurl' => $this->getWidgetUrl('showRelatedRecords') . '&relatedModule=Documents',
+                'action' => $createPermission ? ['Add'] : [],
+                'actionURL' => $documentsInstance->getQuickCreateUrl(),
+            ];
+        }
 
         $modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
 
