@@ -268,6 +268,22 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
         ];
     }
 
+    public function getPlaceholderWidgetInfo(): array
+    {
+        return [
+            'linktype' => 'DETAILVIEWWIDGET',
+            'link_template' => 'SummaryPlaceholder.tpl',
+        ];
+    }
+
+    public function getKeyFieldsWidgetInfo(): array
+    {
+        return [
+            'linktype' => 'DETAILVIEWWIDGET',
+            'link_template' => 'SummaryKeyFields.tpl'
+        ];
+    }
+
     /**
 	 * Function to get the detail view widgets
 	 * @return <Array> - List of widgets , where each widget is an Vtiger_Link_Model
@@ -277,13 +293,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
         $moduleModel = $this->getModule();
         $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
         $widgets = [];
-        $documentsInstance = Vtiger_Module_Model::getInstance('Documents');
-
-        $widgets[] = [
-            'linktype' => 'DETAILVIEWWIDGET',
-            'linklabel' => 'KeyFields',
-            'link_template' => 'SummaryKeyFields.tpl'
-        ];
+        $widgets[] = $this->getKeyFieldsWidgetInfo();
 
         $appointmentsInstance = Vtiger_Module_Model::getInstance('Appointments');
 
@@ -297,7 +307,11 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
                 'action' => $createPermission ? ['Add'] : [],
                 'actionURL' => $appointmentsInstance->getQuickCreateUrl(),
             ];
+        } else {
+            $widgets[] = $this->getPlaceholderWidgetInfo();
         }
+
+        $documentsInstance = Vtiger_Module_Model::getInstance('Documents');
 
         if ($userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Documents')) {
             $createPermission = $userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'CreateView');
@@ -309,12 +323,16 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
                 'action' => $createPermission ? ['Add'] : [],
                 'actionURL' => $documentsInstance->getQuickCreateUrl(),
             ];
+        } else {
+            $widgets[] = $this->getPlaceholderWidgetInfo();
         }
 
         $modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
 
         if ($moduleModel->isCommentEnabled() && $modCommentsModel->isPermitted('DetailView')) {
             $widgets[] = $this->getCommentWidgetInfo();
+        } else {
+            $widgets[] = $this->getPlaceholderWidgetInfo();
         }
 
         $widgetLinks = [];
