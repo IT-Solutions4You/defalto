@@ -271,10 +271,6 @@
   font-family: Arial, sans-serif
 }
 
-input[readonly]{
-  color: #c0c0c0;
-}
-
 .taskStatusBox{
   position:absolute;
   width:100px;

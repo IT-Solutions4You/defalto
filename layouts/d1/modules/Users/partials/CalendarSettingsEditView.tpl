@@ -23,19 +23,7 @@
                                     <div class="col-lg-6 py-2">
                                         <div class="row">
                                             <div class="col-sm-4 fieldLabel alignMiddle">
-                                                {if $isReferenceField eq "reference"}
-                                                    {if $refrenceListCount > 1}
-                                                        <select style="width: 140px;" class="select2 referenceModulesList">
-                                                            {foreach key=index item=value from=$refrenceList}
-                                                                <option value="{$value}">{vtranslate($value, $value)}</option>
-                                                            {/foreach}
-                                                        </select>
-                                                    {else}
-                                                        {vtranslate($FIELD_MODEL->get('label'), $MODULE)}
-                                                    {/if}
-                                                {else}
-                                                    {vtranslate($FIELD_MODEL->get('label'), $MODULE)}
-                                                {/if}
+                                                {vtranslate($FIELD_MODEL->get('label'), $MODULE)}
                                                 {if $FIELD_MODEL->isMandatory() eq true}<span class="text-danger ms-2">*</span>{/if}
                                             </div>
                                             <div class="col-sm fieldValue">

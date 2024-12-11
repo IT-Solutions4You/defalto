@@ -31,7 +31,7 @@
                                 <li id="VtigerAction">
                                     <a class="dropdown-item" href="javascript:Documents_Index_Js.uploadTo('Vtiger',{$PARENT_ID},'{$MODULE_NAME}')">
                                         <i class="fa fa-home"></i>
-                                        <span class="ms-2">{vtranslate('LBL_TO_SERVICE', 'Documents', {vtranslate('LBL_VTIGER', 'Documents')})}</span>
+                                        <span class="ms-2">{vtranslate('LBL_TO_SERVICE', 'Documents', vtranslate('LBL_VTIGER', 'Documents'))}</span>
                                     </a>
                                 </li>
                                 <li>
@@ -46,16 +46,13 @@
                                 <li id="shareDocument">
                                     <a class="dropdown-item" href="javascript:Documents_Index_Js.createDocument('E',{$PARENT_ID},'{$MODULE_NAME}')">
                                         <i class="fa fa-external-link"></i>
-                                        <span class="ms-2">{vtranslate('LBL_FROM_SERVICE', 'Documents', {vtranslate('LBL_FILE_URL', 'Documents')})}</span>
+                                        <span class="ms-2">{vtranslate('LBL_FROM_SERVICE', 'Documents', vtranslate('LBL_FILE_URL', 'Documents'))}</span>
                                     </a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
                                 </li>
                                 <li id="createDocument">
                                     <a class="dropdown-item" href="javascript:Documents_Index_Js.createDocument('W',{$PARENT_ID},'{$MODULE_NAME}')">
                                         <i class="fa fa-file-text"></i>
-                                        <span class="ms-2">{vtranslate('LBL_CREATE_NEW', 'Documents', {vtranslate('SINGLE_Documents', 'Documents')})}</span>
+                                        <span class="ms-2">{vtranslate('LBL_CREATE_NEW', 'Documents', vtranslate('SINGLE_Documents', 'Documents'))}</span>
                                     </a>
                                 </li>
                             </ul>

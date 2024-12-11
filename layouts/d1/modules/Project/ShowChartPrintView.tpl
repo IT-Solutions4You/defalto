@@ -81,7 +81,7 @@
 							<span class="teamworkIcon">(</span>
 						</button>
 					</span>
-					<button onclick="print();" class="btn reportActions btn-default">{vtranslate('LBL_REPORT_PRINT', 'Project')}</button>
+					<button onclick="print();" class="btn reportActions btn-default">{vtranslate('LBL_PRINT', 'Project')}</button>
 				</div>
 			</div>
 			<br>
