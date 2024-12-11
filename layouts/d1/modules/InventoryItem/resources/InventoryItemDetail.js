@@ -283,14 +283,25 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         row.on('click', '.editRow', function () {
             self.editProductLine(rowNumber);
+            let tableWidth = jQuery(this).closest('table').outerWidth() * 0.85;
+            let textarea = jQuery(this).closest('tr').find('textarea.description');
+
+            textarea.css({
+                width: tableWidth + 'px'
+            });
+
+            let textareaHeight = textarea.outerHeight() + 3;
+            textarea.closest('td').css('padding-bottom', textareaHeight + 'px');
         });
 
         row.on('click', '.saveRow', function () {
             self.saveProductLine(rowNumber);
+            jQuery('.item_text_td', row).css('padding-bottom', '0px');
         });
 
         row.on('click', '.cancelEditRow', function () {
             self.cancelEditProductLine(rowNumber);
+            jQuery('.item_text_td', row).css('padding-bottom', '0px');
         });
 
         row.on('change', 'input', function () {
@@ -299,6 +310,11 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             if ((!element.is(':hidden') || element.hasClass('recalculateOnChange')) && !isNaN(element.val())) {
                 self.recalculateProductLine(rowNumber);
             }
+        });
+
+        jQuery(document).on('input mouseup', 'textarea.description', function() {
+            let newHeight = jQuery(this).outerHeight() + 3;
+            jQuery(this).closest('td').css('padding-bottom', newHeight + 'px');
         });
     },
 
@@ -395,6 +411,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const row = jQuery('#row' + rowNumber);
         jQuery('.noEditLineItem:not(.computed)', row).toggleClass('hide');
         jQuery('.editLineItem:not(.computed)', row).toggleClass('hide');
+
     },
 
     cancelEditProductLine: function (rowNumber) {

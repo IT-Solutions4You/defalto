@@ -77,7 +77,7 @@
     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
         {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
-            <td class="minWidth20per"">
+            <td class="minWidth20per item_text_td">
                 <input type="hidden" name="hidtax_row_no{$row_no}" id="hidtax_row_no{$row_no}" value="{$tax_row_no}"/>
                 <span class="noEditLineItem display_{$item_text}">{$data.item_text}</span>
                 <span class="editLineItem hide">
@@ -109,9 +109,9 @@
                             {/if}
                         </div>
                     </div>
-                    {if $COMMENT_EDITABLE}
-                        <div class="mt-3">
-                            <textarea id="{$comment}" name="{$comment}" class="lineItemCommentBox form-control">{decode_html($data.$comment)}</textarea>
+                    {if $DESCRIPTION_ALLOWED eq 'true'}
+                        <div class="mt-3" style="position: relative;">
+                            <textarea id="{'description'|cat:$row_no}" name="{'description'|cat:$row_no}" class="description lineItemCommentBox form-control" style="position: absolute;top: 100%;left: 0;width: 0;z-index: 100;box-sizing: border-box;padding: 5px;resize: both;">{decode_html($data.description)}</textarea>
                         </div>
                     {/if}
                 </span>

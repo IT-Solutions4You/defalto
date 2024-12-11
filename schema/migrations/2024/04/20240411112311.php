@@ -288,7 +288,7 @@ if (!class_exists('Migration_20240411112311')) {
             $discount->name = 'discount';
             $discount->column = 'discount';
             $discount->label = 'Discount';
-            $discount->uitype = 7;
+            $discount->uitype = 9;
             $discount->presence = 0;
             $discount->sequence = 9;
             $discount->columntype = 'DECIMAL(25,4) DEFAULT NULL';
@@ -303,7 +303,7 @@ if (!class_exists('Migration_20240411112311')) {
             $overallDiscount->name = 'overall_discount';
             $overallDiscount->column = 'overall_discount';
             $overallDiscount->label = 'Overall Discount';
-            $overallDiscount->uitype = 7;
+            $overallDiscount->uitype = 9;
             $overallDiscount->presence = 0;
             $overallDiscount->sequence = 10;
             $overallDiscount->columntype = 'DECIMAL(25,4) DEFAULT NULL';

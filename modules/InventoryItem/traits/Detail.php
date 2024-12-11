@@ -19,7 +19,18 @@ trait InventoryItem_Detail_Trait
         $viewer->assign('EXCLUDED_FIELDS', $this->excludedFields);
         $viewer->assign('COMPUTED_FIELDS', $this->computedFields);
         $viewer->assign('INVENTORY_ITEMS', $this->fetchItems((int)$request->get('record')));
-        $viewer->assign('INVENTORY_ITEM_COLUMNS', InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule())));
+        $selectedFields = InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule()));
+
+        if (in_array('description', $selectedFields)) {
+            $viewer->assign('DESCRIPTION_ALLOWED', true);
+            $key = array_search('description', $selectedFields);
+
+            if ($key !== false) {
+                unset($selectedFields[$key]);
+            }
+        }
+
+        $viewer->assign('INVENTORY_ITEM_COLUMNS', $selectedFields);
 
         $recordModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
         $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
@@ -39,7 +50,7 @@ trait InventoryItem_Detail_Trait
     {
         $inventoryItems = [[],];
         $db = PearDatabase::getInstance();
-        $sql = 'SELECT df_inventoryitem.* 
+        $sql = 'SELECT df_inventoryitem.*, vtiger_crmentity.description 
             FROM df_inventoryitem
             LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid
             WHERE vtiger_crmentity.deleted = 0
