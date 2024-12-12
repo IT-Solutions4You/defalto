@@ -283,7 +283,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         row.on('click', '.editRow', function () {
             self.editProductLine(rowNumber);
-            let tableWidth = jQuery(this).closest('table').outerWidth() * 0.85;
+            let tableWidth = jQuery(this).closest('table').outerWidth() * 0.5;
             let textarea = jQuery(this).closest('tr').find('textarea.description');
 
             textarea.css({

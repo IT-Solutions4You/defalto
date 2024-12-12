@@ -11,7 +11,7 @@
 trait InventoryItem_Detail_Trait
 {
     protected $excludedFields = ['assigned_user_id', 'description', 'item_text', 'parentid', 'parentitemid', 'sequence'];
-    protected $computedFields = ['subtotal', 'total_after_discount', 'total_after_overall_discount', 'total'];
+    protected $computedFields = ['subtotal', 'total_after_discount', 'overall_discount_amount', 'total_after_overall_discount', 'tax_amount', 'total'];
 
     public function adaptDetail(Vtiger_Request $request, Vtiger_Viewer $viewer)
     {

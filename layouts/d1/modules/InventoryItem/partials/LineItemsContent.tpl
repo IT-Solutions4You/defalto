@@ -111,12 +111,12 @@
                     </div>
                     {if $DESCRIPTION_ALLOWED eq 'true'}
                         <div class="mt-3" style="position: relative;">
-                            <textarea id="{'description'|cat:$row_no}" name="{'description'|cat:$row_no}" class="description lineItemCommentBox form-control" style="position: absolute;top: 100%;left: 0;width: 0;z-index: 100;box-sizing: border-box;padding: 5px;resize: both;">{decode_html($data.description)}</textarea>
+                            <textarea id="{'description'|cat:$row_no}" name="{'description'|cat:$row_no}" class="description lineItemCommentBox form-control" style="position: absolute;top: 100%;left: 0;width: 0;z-index: 100;box-sizing: border-box;padding: 5px;resize: both;" rows="4">{decode_html($data.description)}</textarea>
                         </div>
                     {/if}
                 </span>
             </td>
-        {elseif $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'currency'}
+        {elseif $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'percentage'}
             <td class="textAlignRight">
                 <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
                 <span class="editLineItem hide">

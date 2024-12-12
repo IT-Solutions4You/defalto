@@ -63,7 +63,7 @@
                         <td{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer'} class="textAlignRight"{/if}>
                             {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
                                 <strong>{vtranslate('Total', 'InventoryItem')}</strong>
-                             {elseif $FIELD->getFieldDataType() eq 'currency'}
+                             {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $COMPUTED_FIELDS)}
                                 <span class="total_{$INVENTORY_ITEM_FIELD_NAME}"></span>
                             {/if}
                         </td>
