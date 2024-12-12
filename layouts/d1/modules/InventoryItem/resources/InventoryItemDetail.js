@@ -341,8 +341,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                         row.find('[name="lineItemId' + rowNumber + '"]').val(response.result);
                     }
 
-                    jQuery('.noEditLineItem:not(.computed)', row).toggleClass('hide');
-                    jQuery('.editLineItem:not(.computed)', row).toggleClass('hide');
+                    jQuery('.noEditLineItem', row).toggleClass('hide');
+                    jQuery('.editLineItem', row).toggleClass('hide');
 
                     jQuery('input', row).each(function () {
                         const element = jQuery(this);
@@ -409,15 +409,15 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     editProductLine: function (rowNumber) {
         const row = jQuery('#row' + rowNumber);
-        jQuery('.noEditLineItem:not(.computed)', row).toggleClass('hide');
-        jQuery('.editLineItem:not(.computed)', row).toggleClass('hide');
+        jQuery('.noEditLineItem', row).toggleClass('hide');
+        jQuery('.editLineItem', row).toggleClass('hide');
 
     },
 
     cancelEditProductLine: function (rowNumber) {
         const row = jQuery('#row' + rowNumber);
-        jQuery('.noEditLineItem:not(.computed)', row).toggleClass('hide');
-        jQuery('.editLineItem:not(.computed)', row).toggleClass('hide');
+        jQuery('.noEditLineItem', row).toggleClass('hide');
+        jQuery('.editLineItem', row).toggleClass('hide');
 
         jQuery('input', row).each(function () {
             const element = jQuery(this);
