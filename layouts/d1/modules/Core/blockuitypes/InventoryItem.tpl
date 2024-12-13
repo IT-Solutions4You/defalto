@@ -38,7 +38,7 @@
                     <td><strong>{vtranslate('LBL_TOOLS',$MODULE)}</strong></td>
                     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
                         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
-                        <td>
+                        <td{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'percentage'} class="textAlignRight"{/if}>
                             <strong>{vtranslate({$FIELD->get('label')}, 'InventoryItem')}</strong>
                         </td>
                     {/foreach}
@@ -60,9 +60,9 @@
                     <td></td>
                     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
                         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
-                        <td{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer'} class="textAlignRight"{/if}>
+                        <td{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'percentage'} class="textAlignRight"{/if} style="font-weight: bold;">
                             {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
-                                <strong>{vtranslate('Total', 'InventoryItem')}</strong>
+                                {vtranslate('Total', 'InventoryItem')}
                              {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $COMPUTED_FIELDS)}
                                 <span class="total_{$INVENTORY_ITEM_FIELD_NAME}"></span>
                             {/if}

@@ -283,11 +283,12 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         row.on('click', '.editRow', function () {
             self.editProductLine(rowNumber);
-            let tableWidth = jQuery(this).closest('table').outerWidth() * 0.5;
+            let tableWidth = jQuery(this).closest('table').outerWidth();
             let textarea = jQuery(this).closest('tr').find('textarea.description');
 
             textarea.css({
-                width: tableWidth + 'px'
+                'width': tableWidth * 0.5 + 'px',
+                'max-width': tableWidth * 0.9 + 'px',
             });
 
             let textareaHeight = textarea.outerHeight() + 3;
