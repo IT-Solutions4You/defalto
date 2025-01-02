@@ -642,7 +642,9 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
             isCkeditorApplied = descriptionElement.data('isCkeditorApplied');
 
         if (true !== isCkeditorApplied) {
-            this.loadCkEditor(descriptionElement.data('isCkeditorApplied', true), container);
+            descriptionElement.data('isCkeditorApplied', true);
+
+            this.loadCkEditor(descriptionElement, container);
         }
     },
     registerEventDocumentsListClick: function () {

@@ -4460,3 +4460,9 @@ input[type=number] {
 .min-w-5rem {
     min-width: 5rem;
 }
+.cke_dialog_background_cover {
+    z-index: 20000 !important;
+}
+.cke_dialog_container {
+    z-index: 20001 !important;
+}
