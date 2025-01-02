@@ -193,8 +193,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	 */
 	previewFile: function (e, recordId,attachmentId) {
 		Vtiger_Index_Js.previewFile(e, recordId,attachmentId);
-	}
-
+	},
+	openDetail() {
+		$('[data-link-key="LBL_RECORD_DETAILS"]').trigger('click');
+	},
 },{
 	registerSummaryHandlers: true,
 	detailViewSummaryTabLabel : 'LBL_RECORD_SUMMARY',
@@ -573,31 +575,32 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	 * @returns {undefined}
 	 */
 	registerEventForRelatedTabClick : function(){
-		var self = this;
-		var detailViewContainer = this.getDetailViewContainer();
+		let self = this,
+			detailViewContainer = this.getDetailViewContainer();
+
 		jQuery('.related-tabs', detailViewContainer).on('click', 'li.tab-item a', function(e, urlAttributes) {
 			e.preventDefault();
 		});
-		jQuery('.related-tabs', detailViewContainer).on('click', 'li.more-tab a', function(e, urlAttributes) {
-			e.preventDefault();
-		});
+
 		jQuery('.related-tabs', detailViewContainer).on('click', 'li.more-tab', function(e,urlAttributes){
-			if(jQuery('.moreTabElement').length != 0){
+			if(0 !== jQuery('.moreTabElement').length){
 				jQuery('.moreTabElement').remove();
 			}
-			var moreTabElement = jQuery(e.currentTarget).clone();
+
+			let moreTabElement = jQuery(e.currentTarget).clone();
 			moreTabElement.find('.content').text('');
 			moreTabElement.addClass('moreTabElement');
 			moreTabElement.addClass('active');
-			var moreElementTitle = moreTabElement.find('a').attr('displaylabel')
+			let moreElementTitle = moreTabElement.find('a').attr('displaylabel')
 			moreTabElement.attr('title',moreElementTitle);
 			moreTabElement.find('.tab-icon').removeClass('text-truncate');
 			jQuery('.related-tab-more-element').before(moreTabElement);
 			self.loadSelectedTabContents(moreTabElement, urlAttributes);
 			self.registerQtipevent(moreTabElement);
 		});
+
 		jQuery('.related-tabs', detailViewContainer).on('click', 'li.tab-item', function(e,urlAttributes){
-			var tabElement = jQuery(e.currentTarget);
+			let tabElement = jQuery(e.currentTarget);
 			self.loadSelectedTabContents(tabElement, urlAttributes);
 		});
 	},
