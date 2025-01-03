@@ -15,7 +15,7 @@ class Project_Install_Model extends Core_Install_Model
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        ['Accounts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_dependents_list'],
+        ['Accounts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_merged_list'],
         ['Contacts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_dependents_list'],
         ['HelpDesk', 'Project', 'Projects', ['SELECT'], 'get_related_list'],
 
