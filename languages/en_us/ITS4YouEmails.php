@@ -96,6 +96,7 @@ $languageStrings = array(
     'LBL_TITLE' => 'Title',
     'LBL_FILENAME' => 'Filename',
     'LBL_FOLDER' => 'Folder',
+    'LBL_BANNED_WORD' => 'Banned word: ',
 );
 
 $jsLanguageStrings = array(

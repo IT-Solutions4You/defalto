@@ -51,12 +51,13 @@ class ITS4YouEmails_Utils_Helper
 
             if ($recordModel) {
                 $recordModel->send();
+                $emailFlag = $recordModel->get('email_flag');
 
-                if ($recordModel->get('email_flag') === $recordModel::$FLAG_ERROR) {
-	                $sendingResult['error_message'] .= '<br>' . $recordModel->get('result');
-                    $sendingResult['error']++;
-                } elseif ($recordModel->get('email_flag') === $recordModel::$FLAG_SENT) {
+                if ($emailFlag === $recordModel::$FLAG_SENT) {
                     $sendingResult['sent']++;
+                } else {
+                    $sendingResult['error_message'] .= '<br>[' . $emailFlag . '] ' . $recordModel->get('result');
+                    $sendingResult['error']++;
                 }
             }
         }
