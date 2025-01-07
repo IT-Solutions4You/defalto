@@ -56,6 +56,7 @@ class Project_Install_Model extends Core_Install_Model
 
     /**
      * @return void
+     * @throws Exception
      */
     public function addCustomLinks(): void
     {
@@ -69,9 +70,11 @@ class Project_Install_Model extends Core_Install_Model
         $this->addModuleToCustomerPortal();
     }
 
-
-
-    public function addRelatedListCharts()
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function addRelatedListCharts(): void
     {
         // Add Gnatt chart to the related list of the module
         $tabId = getTabid($this->moduleName);
@@ -224,6 +227,7 @@ class Project_Install_Model extends Core_Install_Model
                     'table' => 'vtiger_project',
                     'label' => 'Target Budget',
                     'filter' => 1,
+                    'typeofdata' => 'N~O',
                 ],
                 'projecturl' => [
                     'uitype' => 17,
