@@ -37,10 +37,12 @@
                 <tr class="border-bottom">
                     <td><strong>{vtranslate('LBL_TOOLS',$MODULE)}</strong></td>
                     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
+                        {if !in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
                         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
                         <td{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'percentage'} class="textAlignRight"{/if}>
                             <strong>{vtranslate({$FIELD->get('label')}, 'InventoryItem')}</strong>
                         </td>
+                        {/if}
                     {/foreach}
                 </tr>
                 </thead>
@@ -78,6 +80,13 @@
                         {/if}
                     {/foreach}
                 </tr>
+                {if !empty($SPECIAL_TREATMENT_FIELDS)}
+                    {if in_array('overall_discount', $SPECIAL_TREATMENT_FIELDS) and in_array('overall_discount', $INVENTORY_ITEM_COLUMNS)}
+                        <tr>
+                            <td>re</td>
+                        </tr>
+                    {/if}
+                {/if}
                 </tfoot>
             </table>
         </div>
