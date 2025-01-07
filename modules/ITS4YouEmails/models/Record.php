@@ -1247,7 +1247,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
      * @param array $bannedWords
      * @return void
      */
-    public function setBannedWords($bannedWords): void
+    public function setBannedWords(array $bannedWords): void
     {
         $this->bannedWords = $bannedWords;
     }
