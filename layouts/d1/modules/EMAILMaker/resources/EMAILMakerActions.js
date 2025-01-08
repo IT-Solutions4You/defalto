@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 /** @var EMAILMaker_Actions_Js */
-jQuery.Class("EMAILMaker_Actions_Js", {
+jQuery.Class('EMAILMaker_Actions_Js', {
     templatesElements: {},
     massEmailForm: false,
 

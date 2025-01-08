@@ -613,6 +613,29 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 		return $fileDetails;
 	}
 
+    /**
+     * @return array
+     */
+    public function getDocumentFileDetails(): array
+    {
+        $db = PearDatabase::getInstance();
+        $fileDetails = [];
+        $query = 'SELECT * FROM vtiger_attachments
+				INNER JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid
+				INNER JOIN vtiger_senotesrel ON vtiger_senotesrel.notesid = vtiger_seattachmentsrel.crmid
+				WHERE vtiger_senotesrel.crmid = ? ';
+        $params = [$this->get('id')];
+        $result = $db->pquery($query, $params);
+
+        while ($row = $db->fetch_array($result)) {
+            if (!empty($row)) {
+                $fileDetails[] = $row;
+            }
+        }
+
+        return $fileDetails;
+    }
+
 	public function downloadFile($attachmentId = false) {
 		$attachments = $this->getFileDetails($attachmentId);
 		if(is_array($attachments[0])) {

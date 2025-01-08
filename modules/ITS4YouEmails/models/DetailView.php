@@ -64,6 +64,27 @@ class ITS4YouEmails_DetailView_Model extends Vtiger_DetailView_Model
             }
         }
 
+        $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues([
+            'linktype' => 'DETAILVIEWBASIC',
+            'linklabel' => 'Reply to',
+            'linkurl' => 'javascript:ITS4YouEmails_MassEdit_Js.replyEmail(' . $this->getRecord()->getId() . ',"' . $this->getModule()->getName() . '");',
+            'linkicon' => '<i class="fa-solid fa-reply"></i>',
+        ]);
+
+        $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues([
+            'linktype' => 'DETAILVIEWBASIC',
+            'linklabel' => 'Reply to all',
+            'linkurl' => 'javascript:ITS4YouEmails_MassEdit_Js.replyAllEmail(' . $this->getRecord()->getId() . ',"' . $this->getModule()->getName() . '");',
+            'linkicon' => '<i class="fa-solid fa-reply-all"></i>',
+        ]);
+
+        $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues([
+            'linktype' => 'DETAILVIEWBASIC',
+            'linklabel' => 'Forward',
+            'linkurl' => 'javascript:ITS4YouEmails_MassEdit_Js.forwardEmail(' . $this->getRecord()->getId() . ',"' . $this->getModule()->getName() . '");',
+            'linkicon' => '<i class="fa-solid fa-reply fa-flip-horizontal"></i>',
+        ]);
+
         return $linkModelList;
     }
 }

@@ -199,4 +199,140 @@ class ITS4YouEmails_Utils_Helper
 
         return $body;
     }
+
+    /**
+     * @param array $fileDetail
+     * @return array
+     */
+    public static function getAttachmentDetails(array $fileDetail): array
+    {
+        $fileDetail['storedname'] = $fileDetail['storedname'] ?? $fileDetail['name'];
+        $fileDetail['fileid'] = $fileDetail['attachmentsid'];
+        $fileDetail['docid'] = $fileDetail['crmid'];
+        $fileDetail['attachment'] = $fileDetail['name'];
+        $fileDetail['nondeletable'] = false;
+        $fileDetail['size'] = filesize(decode_html($fileDetail['path'] . $fileDetail['attachmentsid'] . '_' . $fileDetail['storedname']));
+
+        return $fileDetail;
+    }
+
+    /**
+     * @param Vtiger_Record_Model $recordModel
+     * @return array
+     */
+    public static function getRecordAttachments(Vtiger_Record_Model $recordModel): array
+    {
+        $fileDetails = array_merge($recordModel->getFileDetails(), $recordModel->getDocumentFileDetails());
+        $attachments = [];
+
+        foreach ($fileDetails as $fileDetail) {
+            $fileDetail = self::getAttachmentDetails($fileDetail);
+            unset($fileDetail['docid']);
+            unset($fileDetail['crmid']);
+
+            $attachments[] = $fileDetail;
+        }
+
+        return $attachments;
+    }
+
+    /**
+     * @param object $recordModel
+     * @return array
+     */
+    public static function getMailManagerAttachments(object $recordModel): array
+    {
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $sql = 'SELECT vtiger_attachments.* FROM vtiger_mailmanager_mailattachments 
+    		INNER JOIN vtiger_attachments ON vtiger_attachments.attachmentsid=vtiger_mailmanager_mailattachments.attachid
+    		WHERE muid=? AND userid=? AND cid IS NULL';
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery($sql, [$recordModel->getUid(), $currentUser->getId()]);
+
+        $attachments = [];
+
+        while ($row = $adb->fetchByAssoc($result)) {
+            $fileDetail = self::getAttachmentDetails($row);
+            unset($fileDetail['docid']);
+            unset($fileDetail['crmid']);
+
+            $attachments[] = $fileDetail;
+        }
+
+        return $attachments;
+    }
+
+    /**
+     * @param array|string $values
+     * @return array
+     */
+    public static function getEmailIds(array|string $values): array
+    {
+        $ids = [];
+
+        if(is_string($values)) {
+            $values = json_decode($values);
+        }
+
+        if (!is_array($values)) {
+            $values = [];
+        }
+
+        foreach ($values as $value) {
+            $ids[] = sprintf('email|%s|', $value);
+        }
+
+        return $ids;
+    }
+
+    /**
+     * @param string $emailAddressId
+     * @param string $emailAddress
+     * @return array
+     */
+    public static function getArrayAllEmails(string $emailAddressId, string $emailAddress): array
+    {
+        return [
+            'id' => $emailAddressId,
+            'name' => $emailAddress,
+            'emailid' => $emailAddress,
+            'module' => '',
+        ];
+    }
+
+    /**
+     * @param $emailAddressId
+     * @param $emailAddress
+     * @return array
+     */
+    public static function getArrayAllMailNamesList($emailAddressId, $emailAddress) {
+        return [
+            'id' => $emailAddressId,
+            'recordid' => '',
+            'sid' => '0',
+            'label' => $emailAddress,
+            'value' => $emailAddress,
+            'module' => '',
+        ];
+    }
+
+    /**
+     * @param Vtiger_Record_Model $recordModel
+     * @return string
+     */
+    public static function getEmailFieldFromRecord(Vtiger_Record_Model $recordModel): string
+    {
+        $moduleModel = $recordModel->getModule();
+        $fields = $moduleModel->getFieldsByType('email');
+
+        foreach ($fields as $field) {
+            $fieldName = $field->get('name');
+
+            if (!$recordModel->isEmpty($fieldName)) {
+                return $fieldName;
+            }
+        }
+
+        return '';
+    }
 }
