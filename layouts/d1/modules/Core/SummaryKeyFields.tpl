@@ -19,4 +19,22 @@
     <div class="summaryViewFields p-3">
         {$MODULE_SUMMARY}
     </div>
+    <div class="p-3 border-top">
+        {if $RECORD}
+            {assign var=FIELD_MODEL value=$RECORD->getField('createdtime')}
+            {if $FIELD_MODEL}
+                <div class="text-end text-secondary small">
+                    <span>{vtranslate($FIELD_MODEL->get('label'), $QUALIFIED_MODULE)}:</span>
+                    <span class="ms-2">{$RECORD->getDisplayValue($FIELD_MODEL->get('name'))}</span>
+                </div>
+            {/if}
+            {assign var=FIELD_MODEL value=$RECORD->getField('modifiedtime')}
+            {if $FIELD_MODEL}
+                <div class="text-end text-secondary small">
+                    <span>{vtranslate($FIELD_MODEL->get('label'), $QUALIFIED_MODULE)}:</span>
+                    <span class="ms-2">{$RECORD->getDisplayValue($FIELD_MODEL->get('name'))}</span>
+                </div>
+            {/if}
+        {/if}
+    </div>
 </div>
