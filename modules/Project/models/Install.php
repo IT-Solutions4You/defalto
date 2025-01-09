@@ -222,7 +222,7 @@ class Project_Install_Model extends Core_Install_Model
             ],
             'LBL_CUSTOM_INFORMATION' => [
                 'targetbudget' => [
-                    'uitype' => 7,
+                    'uitype' => 71,
                     'column' => 'targetbudget',
                     'table' => 'vtiger_project',
                     'label' => 'Target Budget',

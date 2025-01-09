@@ -13,11 +13,11 @@
     {/if}
     <div class="Core_Number_UIType">
         <input id="{$MODULE}_editView_fieldName_{$FIELD_NAME}" type="text" class="form-control inputElement numberField replaceCommaWithDot" name="{$FIELD_NAME}"
-               value="{$FIELD_MODEL->getEditViewDisplayValue($FIELD_VALUE)}" {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}
-                {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if}
-                {if php7_count($FIELD_INFO['validator'])}
-                    data-specific-rules='{ZEND_JSON::encode($FIELD_INFO["validator"])}'
-                {/if}
+            value="{$FIELD_MODEL->getEditViewDisplayValue($FIELD_VALUE)}"
+            data-rule-number='true'
+            {if !empty($SPECIAL_VALIDATOR)} data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}' {/if}
+            {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if}
+            {if php7_count($FIELD_INFO['validator'])} data-specific-rules='{ZEND_JSON::encode($FIELD_INFO["validator"])}' {/if}
         />
     </div>
 {/strip}

@@ -252,6 +252,10 @@ jQuery.validator.addMethod("greaterThanDependentRepeatTillDate", function(value,
     }, jQuery.validator.format(app.vtranslate('JS_REPEAT_DATE_SHOULD_BE_GREATER_THAN_START_DATE'))
 );
 
+jQuery.validator.addMethod('number', function (value, element, params) {
+	return !value || $.isNumeric(value);
+}, jQuery.validator.format(app.vtranslate('JS_PLEASE_ENTER_VALID_VALUE')));
+
 jQuery.validator.addMethod("currency", function (value, element, params) {
 		let strippedValue = value.replace(' ', '');
 
