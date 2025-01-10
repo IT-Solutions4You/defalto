@@ -34,7 +34,7 @@
 </td>
 <td colspan="50">
     {assign var="item_text" value="item_text"|cat:$row_no}
-    <span class="noEditLineItem display_{$item_text}">{$data.item_text}</span>
+    <span class="noEditLineItem display_{$item_text}"><strong>{$data.item_text}</strong></span>
     <span class="editLineItem hide">
         <input type="text" id="{$item_text}" name="{$item_text}" value="{$data.item_text}" class="item_text form-control" data-rule-required=true>
         <input type="hidden" id="productid{$row_no}" name="productid{$row_no}" value="{$data.productid}" class="selectedModuleId"/>

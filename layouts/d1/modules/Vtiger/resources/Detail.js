@@ -10,6 +10,8 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	detailInstance : false,
 	PreAjaxSaveEvent : 'PreAjaxSaveEvent',
 	PostAjaxSaveEvent : 'PostAjaxSaveEvent',
+	relatedListLoad: 'post.relatedListLoad.click',
+
 	getInstance: function(){
 		if( Vtiger_Detail_Js.detailInstance == false ){
 			var module = app.getModuleName();

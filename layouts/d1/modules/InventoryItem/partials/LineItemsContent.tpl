@@ -79,7 +79,7 @@
         {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
             <td class="minWidth20per item_text_td">
                 <input type="hidden" name="hidtax_row_no{$row_no}" id="hidtax_row_no{$row_no}" value="{$tax_row_no}"/>
-                <span class="noEditLineItem display_{$item_text}">{$data.item_text}</span>
+                <span class="noEditLineItem display_{$item_text}"><strong>{$data.item_text}&nbsp;&nbsp;<small><a class="text-primary" href="index.php?module={$data.entityType}&view=Detail&record={$data.productid}" target="_blank"><i class="fa fa-external-link text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i></a></strong></small></span>
                 <span class="editLineItem hide">
                     <div class="itemNameDiv form-inline">
                         <div class="input-group">

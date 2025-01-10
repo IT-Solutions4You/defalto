@@ -15,7 +15,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     init: function () {
         this._super();
         this.initializeVariables();
-        this.registerEvents();
+        this.registerBasicEvents();
     },
 
     initializeVariables: function () {
@@ -25,15 +25,25 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.numOfLineItems = this.lineItemsHolder.find('.' + this.lineItemDetectingClass).length;
     },
 
-    registerBasicEvents: function (container) {
-        this._super(container);
-        this.registerAddButtons();
-        this.registerLineItemAutoComplete();
+    registerBasicEvents: function () {
+        this._super();
+        this.registerItemsTableEvents();
+        this.recalculateTotals();
+        const self = this;
+
+        app.event.on(Vtiger_Detail_Js.relatedListLoad, function () {
+            self.initializeVariables();
+            self.registerItemsTableEvents();
+        });
+    },
+
+    registerItemsTableEvents: function () {
         this.makeLineItemsSortable();
         this.addRowListeners();
-        this.registerClearLineItemSelection();
-        this.registerLineItemPopupSelection();
-        this.recalculateTotals();
+        this.registerLineItemAutoComplete();
+        this.registerLineItemClear();
+        this.registerLineItemPopup();
+        this.registerAddButtons();
     },
 
     registerAddButtons: function () {
@@ -313,7 +323,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             }
         });
 
-        jQuery(document).on('input mouseup', 'textarea.description', function() {
+        jQuery(document).on('input mouseup', 'textarea.description', function () {
             let newHeight = jQuery(this).outerHeight() + 3;
             jQuery(this).closest('td').css('padding-bottom', newHeight + 'px');
         });
@@ -506,7 +516,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
     },
 
-    registerClearLineItemSelection: function () {
+    registerLineItemClear: function () {
         const self = this;
 
         this.lineItemsHolder.on('click', '.clearLineItem', function (e) {
@@ -525,7 +535,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         //this.quantityChangeActions(lineItemRow);
     },
 
-    registerLineItemPopupSelection: function () {
+    registerLineItemPopup: function () {
         const self = this;
 
         this.lineItemsHolder.on('click', '.lineItemPopup', function (e) {
