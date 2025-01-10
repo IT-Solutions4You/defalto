@@ -175,6 +175,15 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 
         $formData['mail_message_key'] = $mail->generateUniqueKeyFromEmail();
         $formData['module'] = $linkModule;
+        $formData['relationOperation'] = true;
+        $formData['sourceModule'] = 'MailManager';
+        $formData['sourceRecord'] = $uid;
+
+        self::setMailSession([
+            'recipientId' => $parent,
+            'uniqueId' => $uid,
+            'folderName' => $folderName,
+        ]);
 
         $request = new Vtiger_Request($formData, $formData);
         // Delegate QuickCreate FormUI to the target view controller of module.
@@ -196,6 +205,9 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
      */
     public function create(Vtiger_Request $request, $response)
     {
+        // clear after save
+        self::setMailSession([]);
+
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         $moduleName = $request->getModule();
         $linkModule = $request->get('_mlinktotype');
@@ -269,7 +281,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 
             if (!empty($linkTo)) {
                 $mail->setAttachmentRelationIds($recordModel->getId());
-                
+
                 MailManager_Relate_Action::associate($mail, $linkTo, (int)$parent);
             }
 
@@ -316,6 +328,8 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 
         return false;
     }
+
+
 
     /**
      * @param Vtiger_Request $request
@@ -433,4 +447,14 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	public function validateRequest(Vtiger_Request $request) {
 		return $request->validateWriteAccess();
 	}
+
+    public static function setMailSession(array|null $data): void
+    {
+        $_SESSION['MailManager']['mail'] = $data;
+    }
+
+    public static function getMailSession()
+    {
+        return $_SESSION['MailManager']['mail'] ?? [];
+    }
 }

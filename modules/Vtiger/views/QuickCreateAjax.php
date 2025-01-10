@@ -56,8 +56,16 @@ class Vtiger_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
 
 		$viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
 		$viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
-		echo $viewer->view('QuickCreate.tpl',$moduleName,true);
 
+        $isRelationOperation = !$request->isEmpty('relationOperation');
+        $viewer->assign('RELATION_OPERATOR', $isRelationOperation);
+
+        if ($isRelationOperation) {
+            $viewer->assign('PARENT_MODULE', $request->get('sourceModule'));
+            $viewer->assign('PARENT_ID', $request->get('sourceRecord'));
+        }
+
+		$viewer->view('QuickCreate.tpl',$moduleName);
 	}
 	
 	

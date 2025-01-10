@@ -22,6 +22,11 @@
                     {/if}
                     <input type="hidden" name="module" value="{$MODULE}">
                     <input type="hidden" name="action" value="SaveAjax">
+                    {if $RELATION_OPERATOR eq 'true'}
+                        <input type="hidden" name="relationOperation" value="{$RELATION_OPERATOR}" />
+                        <input type="hidden" name="sourceModule" value="{$PARENT_MODULE}" />
+                        <input type="hidden" name="sourceRecord" value="{$PARENT_ID}" />
+                    {/if}
                     <div class="quickCreateContent">
                         <div class="massEditTable">
                             <div class="row">
