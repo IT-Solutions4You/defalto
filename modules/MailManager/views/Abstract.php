@@ -117,4 +117,15 @@ abstract class MailManager_Abstract_View extends Vtiger_Index_View {
             $this->mConnector = false;
         }
     }
+
+    /**
+     * @throws AppException
+     */
+    public function getMail(string $folderName, int $mUid): MailManager_Message_Model
+    {
+        $connector = $this->getConnector();
+        $folder = $connector->getFolder($folderName);
+
+        return $connector->getMail($folder, $mUid);
+    }
 }

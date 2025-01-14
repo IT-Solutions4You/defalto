@@ -1152,6 +1152,10 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
      */
     private function convertRelatedBlocks(): void
     {
+        if (!str_contains(self::$content, '#RELATED_BLOCK_')) {
+            return;
+        }
+
         self::$content = Core_RelatedBlock_Model::replaceAll(self::$recordModel, self::$content);
     }
 

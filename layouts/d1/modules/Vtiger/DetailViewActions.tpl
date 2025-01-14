@@ -13,15 +13,21 @@
                     <button class="btn btn-primary me-2 markStar {if $STARRED}markStarActive{/if}" id="starToggle">
                         <div class="starredStatus" title="{vtranslate('LBL_STARRED', $MODULE)}">
                             <div class="unfollowMessage">
-                                <i class="fa-regular fa-star me-2"></i>
+                                <i class="bi bi-bookmark me-2"></i>
                                 <span>{vtranslate('LBL_UNFOLLOW',$MODULE)}</span>
                             </div>
                             <div class="followMessage">
-                                <i class="fa-solid fa-star me-2"></i>
+                                <i class="bi bi-bookmark-fill me-2"></i>
                                 <span>{vtranslate('LBL_FOLLOWING',$MODULE)}</span>
                             </div>
                         </div>
                         <div class="unstarredStatus" title="{vtranslate('LBL_NOT_STARRED', $MODULE)}">
+                            <span class="followMessage">
+                                <i class="bi bi-bookmark me-2"></i>
+                            </span>
+                            <span class="unfollowMessage">
+                                <i class="bi bi-bookmark-fill me-2"></i>
+                            </span>
                             <span>{vtranslate('LBL_FOLLOW',$MODULE)}</span>
                         </div>
                     </button>

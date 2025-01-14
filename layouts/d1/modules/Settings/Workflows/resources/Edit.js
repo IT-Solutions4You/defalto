@@ -329,33 +329,37 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
    
    //Workflow action related api's
    registerEditTaskEvent: function () {
-      var thisInstance = this;
-      var container = this.getActionContainer();
+      let self = this,
+          container = this.getActionContainer();
+
       container.on('click', '[data-url]', function (e) {
-         var currentElement = jQuery(e.currentTarget);
-         var url = currentElement.data('url') + '&module_name=' + jQuery('#module_name').val();
+         let currentElement = jQuery(e.currentTarget),
+             url = currentElement.data('url') + '&module_name=' + jQuery('#module_name').val();
+
          app.helper.showProgress();
          app.request.get({url:url}).then(function (error, data) {
             app.helper.hideProgress();
-            app.helper.loadPageContentOverlay(data).then(function(container) {
-                var container = jQuery(container);
-                var viewPortHeight = $(window).height();
+            app.helper.loadPageContentOverlay(data, {focus: false}).then(function(container) {
+                container = jQuery(container);
 
-                var params = {
-                    setHeight:(viewPortHeight-jQuery('.app-fixed-navbar').height()-container.find('.modal-header').height())+'px'
-                };
-                app.helper.showVerticalScroll(container.find('.modal-body.editTaskBody'), params);
-				var taskType = jQuery('#taskType').val();
-				var functionName = 'register' + taskType + 'Events';
-				if (typeof thisInstance[functionName] != 'undefined') {
-				   thisInstance[functionName].apply(thisInstance);
+                app.helper.showVerticalScroll(container.find('.modal-body.editTaskBody'), {
+                    setHeight:($(window).height()-jQuery('.app-fixed-navbar').height()-container.find('.modal-header').height())+'px'
+                });
+
+				let taskType = jQuery('#taskType').val(),
+                    functionName = 'register' + taskType + 'Events';
+
+				if (typeof self[functionName] != 'undefined') {
+                    self[functionName].apply(self);
 				}
-				thisInstance.registerSaveTaskSubmitEvent(taskType);
-				thisInstance.registerFillTaskFieldsEvent();
-				thisInstance.registerCheckSelectDateEvent();
+
+                self.registerSaveTaskSubmitEvent(taskType);
+                self.registerFillTaskFieldsEvent();
+                self.registerCheckSelectDateEvent();
             });
          });
       });
+
       container.on('click', '.editTask', function (e) {
           var currentElement = jQuery(e.currentTarget);
           var params = {

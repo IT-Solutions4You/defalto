@@ -30,9 +30,21 @@
             {/if}
         {/if}
         {assign var=displayId value=$FIELD_VALUE}
-        <div class="input-group rounded-start">
+        <div class="input-group rounded-start flex-nowrap">
+            {if $REFERENCE_LIST_COUNT > 1}
+                {assign var=DISPLAYID value=$FIELD_MODEL->get('fieldvalue')}
+                {assign var=REFERENCED_MODULE_STRUCT value=$FIELD_MODEL->getUITypeModel()->getReferenceModule($DISPLAYID)}
+                {if !empty($REFERENCED_MODULE_STRUCT)}
+                    {assign var=REFERENCED_MODULE_NAME value=$REFERENCED_MODULE_STRUCT->get('name')}
+                {/if}
+                <select class="select2 referenceModulesList {if $FIELD_MODEL->isMandatory() eq true}reference-mandatory{/if}">
+                    {foreach key=index item=value from=$REFERENCE_LIST}
+                        <option value="{$value}" {if $value eq $REFERENCED_MODULE_NAME} selected {/if} >{vtranslate($value, $value)}</option>
+                    {/foreach}
+                </select>
+            {/if}
             <input id="{$FIELD_NAME}_display" name="{$FIELD_MODEL->getFieldName()}_display" data-fieldname="{$FIELD_MODEL->getFieldName()}" data-fieldtype="reference" type="text"
-               class="marginLeftZero autoComplete inputElement form-control"
+               class="marginLeftZero autoComplete inputElement form-control w-50"
                value="{$FIELD_MODEL->getEditViewDisplayValue($displayId)}"
                placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}"
                {if !empty($FIELD_VALUE)}

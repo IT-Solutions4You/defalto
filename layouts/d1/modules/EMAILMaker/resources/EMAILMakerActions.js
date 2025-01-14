@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 /** @var EMAILMaker_Actions_Js */
-jQuery.Class("EMAILMaker_Actions_Js", {
+jQuery.Class('EMAILMaker_Actions_Js', {
     templatesElements: {},
     massEmailForm: false,
 
@@ -25,7 +25,8 @@ jQuery.Class("EMAILMaker_Actions_Js", {
                     cb: function () {
                         let emailEditInstance = new ITS4YouEmails_MassEdit_Js();
                         emailEditInstance.registerEvents();
-                    }
+                    },
+                    focus: false,
                 });
 
                 return aDeferred.resolve(modalContainer);

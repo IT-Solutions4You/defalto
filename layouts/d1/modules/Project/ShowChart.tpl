@@ -22,7 +22,7 @@
                         <span class="teamworkIcon">(</span>
                     </button>
                     <a href="index.php?module=Project&view=ExportChart&record={$PARENT_ID}" target="_blank" class="btn btn-outline-secondary reportActions">
-                        <span>{vtranslate('LBL_REPORT_PRINT', 'Project')}</span>
+                        <span>{vtranslate('LBL_PRINT', 'Project')}</span>
                     </a>
                 </div>
                 <br />

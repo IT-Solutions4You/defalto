@@ -212,6 +212,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'uitype' => 10,
                     'typeofdata' => 'I~O',
                     'related_modules' => [],
+                    'quickcreate' => 0,
                     'columntype' => 'INT(11)',
                 ],
                 'contact_id' => [
@@ -219,6 +220,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'label' => 'Contact Name',
                     'uitype' => 57,
                     'typeofdata' => 'V~O',
+                    'quickcreate' => 0,
                     'related_modules' => [
                         'Contacts',
                     ],
@@ -229,6 +231,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'label' => 'Account Name',
                     'uitype' => 10,
                     'typeofdata' => 'I~O',
+                    'quickcreate' => 0,
                     'related_modules' => [
                         'Accounts',
                     ],

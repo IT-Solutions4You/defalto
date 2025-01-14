@@ -191,6 +191,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'table' => 'vtiger_projecttask',
                     'label' => 'Worked Hours',
                     'filter' => 1,
+                    'typeofdata' => 'N~O',
                 ],
                 'startdate' => [
                     'uitype' => 5,

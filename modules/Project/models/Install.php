@@ -15,7 +15,7 @@ class Project_Install_Model extends Core_Install_Model
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        ['Accounts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_dependents_list'],
+        ['Accounts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_merged_list'],
         ['Contacts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_dependents_list'],
         ['HelpDesk', 'Project', 'Projects', ['SELECT'], 'get_related_list'],
 
@@ -56,6 +56,7 @@ class Project_Install_Model extends Core_Install_Model
 
     /**
      * @return void
+     * @throws Exception
      */
     public function addCustomLinks(): void
     {
@@ -69,9 +70,11 @@ class Project_Install_Model extends Core_Install_Model
         $this->addModuleToCustomerPortal();
     }
 
-
-
-    public function addRelatedListCharts()
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function addRelatedListCharts(): void
     {
         // Add Gnatt chart to the related list of the module
         $tabId = getTabid($this->moduleName);
@@ -219,11 +222,12 @@ class Project_Install_Model extends Core_Install_Model
             ],
             'LBL_CUSTOM_INFORMATION' => [
                 'targetbudget' => [
-                    'uitype' => 7,
+                    'uitype' => 71,
                     'column' => 'targetbudget',
                     'table' => 'vtiger_project',
                     'label' => 'Target Budget',
                     'filter' => 1,
+                    'typeofdata' => 'N~O',
                 ],
                 'projecturl' => [
                     'uitype' => 17,

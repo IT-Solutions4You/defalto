@@ -12,8 +12,10 @@ class MailManager {
 
     public $moduleName = 'MailManager';
     public $parentName = 'Tools';
+    public $id;
+    public $allowDeleted;
 
-	static function updateMailAssociation($mailuid, $emailid, $crmid) {
+    static function updateMailAssociation($mailuid, $emailid, $crmid) {
 		global $adb;
 		$adb->pquery("INSERT INTO vtiger_mailmanager_mailrel (mailuid, emailid, crmid) VALUES (?,?,?)", array($mailuid, $emailid, $crmid));
 	}
@@ -140,4 +142,14 @@ class MailManager {
 	public function vtlib_handler($modulename, $event_type)
 	{
 	}
+
+    /**
+     * Required for mail manager create tickets action in full form
+     */
+    public function retrieve_entity_info($record, $module, $allowDeleted = false)
+    {
+        $this->id = $record;
+        $this->moduleName = $module;
+        $this->allowDeleted = $allowDeleted;
+    }
 }
