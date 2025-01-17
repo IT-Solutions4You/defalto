@@ -79,7 +79,7 @@ if (!class_exists('Migration_20240619081559')) {
                             $inventoryItem->column_fields['discount_amount'] = 0;
                         }
 
-                        $inventoryItem->column_fields['total_after_discount'] = $inventoryItem->column_fields['subtotal'] - $inventoryItem->column_fields['discount_amount'];
+                        $inventoryItem->column_fields['price_after_discount'] = $inventoryItem->column_fields['subtotal'] - $inventoryItem->column_fields['discount_amount'];
                         $inventoryItem->column_fields['description'] = $productsRow['comment'];
                         $inventoryItem->column_fields['purchase_cost'] = $productsRow['purchase_cost'];
 
@@ -104,10 +104,10 @@ if (!class_exists('Migration_20240619081559')) {
                             $discountAmount = $entityFocus->column_fields->offsetGet('discount_amount');
 
                             if (!empty($discountPercent)) {
-                                $discountAmount = ($inventoryItem->column_fields['total_after_discount'] * $discountPercent) / 100;
+                                $discountAmount = ($inventoryItem->column_fields['price_after_discount'] * $discountPercent) / 100;
                             } elseif (!empty($discountAmount)) {
                                 $discountPercent = round(($discountAmount / $entityFocus->column_fields['hdnSubTotal']) * 100, 2);
-                                $discountAmount = ($inventoryItem->column_fields['total_after_discount'] * $discountPercent) / 100;
+                                $discountAmount = ($inventoryItem->column_fields['price_after_discount'] * $discountPercent) / 100;
                             } else {
                                 $discountPercent = 0;
                                 $discountAmount = 0;
@@ -117,21 +117,21 @@ if (!class_exists('Migration_20240619081559')) {
                             $inventoryItem->column_fields['overall_discount_amount'] = $discountAmount;
                         }
 
-                        $inventoryItem->column_fields['total_after_overall_discount'] = $inventoryItem->column_fields['total_after_discount'] - $discountAmount;
+                        $inventoryItem->column_fields['price_after_overall_discount'] = $inventoryItem->column_fields['price_after_discount'] - $discountAmount;
 
                         /**
                          * Tiez musim zistit ake su v systeme dane, zistit si spravne nazvy stlpcov, spocitat si ich, na zaklade toho naplnit polia tax a tax amount
                          * Nakoniec vycislujem Total - to je vlastne cena po dani
                          */
 
-                        $inventoryItem->column_fields['total'] = $inventoryItem->column_fields['total_after_overall_discount'];
+                        $inventoryItem->column_fields['price_total'] = $inventoryItem->column_fields['price_after_overall_discount'];
 
                         $inventoryItem->save('InventoryItem');
                     }
                 }
 
             }
-            exit;
+
             $current_user = $previous_user;
         }
     }

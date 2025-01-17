@@ -44,6 +44,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.registerLineItemClear();
         this.registerLineItemPopup();
         this.registerAddButtons();
+        this.registerOverallDiscountActions();
     },
 
     registerAddButtons: function () {
@@ -586,7 +587,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         jQuery('tfoot span[class^="total_"]', this.lineItemsHolder).each(function () {
             let span = jQuery(this);
 
-            // Extract the specific class part (e.g., from "total_price" -> "price")
+            // Extract the specific class part (e.g., from "total_price_total" -> "price_total")
             let targetClass = span.attr('class').replace('total_', '');
 
             // Initialize total for this column
@@ -624,8 +625,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
 
         price = price - discount_amount;
-        jQuery('.total_after_discount', row).val(price);
-        jQuery('.display_total_after_discount' + rowNumber, row).html(price.toFixed(2));
+        jQuery('.price_after_discount', row).val(price);
+        jQuery('.display_price_after_discount' + rowNumber, row).html(price.toFixed(2));
 
         const overall_discount = parseFloat(jQuery('.overall_discount', row).val());
         let overall_discount_amount = parseFloat(jQuery('.overall_discount_amount', row).val());
@@ -640,8 +641,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
 
         price = price - overall_discount_amount;
-        jQuery('.total_after_overall_discount', row).val(price);
-        jQuery('.display_total_after_overall_discount' + rowNumber, row).html(price.toFixed(2));
+        jQuery('.price_after_overall_discount', row).val(price);
+        jQuery('.display_price_after_overall_discount' + rowNumber, row).html(price.toFixed(2));
 
         const tax = parseFloat(jQuery('.tax', row).val());
         let tax_amount = parseFloat(jQuery('.tax_amount', row).val());
@@ -661,6 +662,13 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         this.recalculateTotals();
     },
+
+    registerOverallDiscountActions: function () {
+        const self = this;
+        this.lineItemsHolder.on('click', '.editOverallDiscount', function () {
+
+        });
+    }
 });
 
 InventoryItem_InventoryItemDetail_Js_Instance = new InventoryItem_InventoryItemDetail_Js();

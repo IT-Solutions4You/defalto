@@ -86,7 +86,8 @@
                 {if !empty($SPECIAL_TREATMENT_FIELDS)}
                     {if in_array('overall_discount', $SPECIAL_TREATMENT_FIELDS) and in_array('overall_discount', $INVENTORY_ITEM_COLUMNS)}
                         <tr>
-                            <td colspan="{$INVENTORY_ITEM_FIELD_NAME@total - 1}" class="textAlignRight">Overal Discount</td>
+                            <td colspan="{$INVENTORY_ITEM_FIELD_NAME@total - 1}" class="textAlignRight"><strong>{vtranslate('Overal Discount %', 'InventoryItem')}</strong>&nbsp;&nbsp;<i class="fa fa-pencil fa-fw text-secondary editOverallDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}"></i></td>
+                            <td class="textAlignRight"><span class="overal_dicsount_percent">7</span></td>
                         </tr>
                     {/if}
                 {/if}
