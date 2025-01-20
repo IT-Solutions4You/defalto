@@ -665,10 +665,26 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     registerOverallDiscountActions: function () {
         const self = this;
-        this.lineItemsHolder.on('click', '.editOverallDiscount', function () {
 
+        this.lineItemsHolder.on('click', '.editOverallDiscount', function () {
+            jQuery('#overallDiscountSettingDiv').show();
+            jQuery('#overall_discount_percent').focus();
         });
-    }
+
+        this.lineItemsHolder.on('click', '.closeOverallDiscountDiv', function () {
+            jQuery('#overallDiscountSettingDiv').hide();
+        });
+
+        this.lineItemsHolder.on('change', '#overall_discount_percent', function () {
+            let price = parseFloat(jQuery('.total_price_after_discount').text());
+            let overall_discount_amount = price * (jQuery('#overall_discount_percent').val() / 100);
+            jQuery('#overall_discount_amount').val(overall_discount_amount.toFixed(2));
+        });
+
+        this.lineItemsHolder.on('click', '.saveOverallDiscount', function () {
+            console.log('save');
+        });
+    },
 });
 
 InventoryItem_InventoryItemDetail_Js_Instance = new InventoryItem_InventoryItemDetail_Js();

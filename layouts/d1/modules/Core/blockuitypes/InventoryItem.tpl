@@ -86,7 +86,48 @@
                 {if !empty($SPECIAL_TREATMENT_FIELDS)}
                     {if in_array('overall_discount', $SPECIAL_TREATMENT_FIELDS) and in_array('overall_discount', $INVENTORY_ITEM_COLUMNS)}
                         <tr>
-                            <td colspan="{$INVENTORY_ITEM_FIELD_NAME@total - 1}" class="textAlignRight"><strong>{vtranslate('Overal Discount %', 'InventoryItem')}</strong>&nbsp;&nbsp;<i class="fa fa-pencil fa-fw text-secondary editOverallDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}"></i></td>
+                            <td colspan="{$INVENTORY_ITEM_FIELD_NAME@total - 1}" class="textAlignRight">
+                                <div class="position-relative">
+                                <strong>{vtranslate('Overal Discount %', 'InventoryItem')}</strong>&nbsp;&nbsp;<i class="fa fa-pencil fa-fw text-secondary editOverallDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>
+                                <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="overallDiscountSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
+                                    <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Overal Discount %', 'InventoryItem')}</h3>
+                                    <div class="popover-body popover-content">
+                                        <div class="finalTaxUI validCheck" id="group_tax_div">
+                                            <input type="hidden" class="popover_title" value="Group Tax" aria-invalid="false">
+                                            <table class="table table-borderless popupTable m-0">
+                                                <tbody>
+                                                <tr>
+                                                    <td class="lineOnTop p-3">{vtranslate('Discount ', 'InventoryItem')}</td>
+                                                    <td class="lineOnTop">
+                                                        <div class="input-group">
+                                                            <input type="text" size="5" data-compound-on="" name="overall_discount_percent" id="overall_discount_percent" value="" class="form-control overallDiscountPercent replaceCommaWithDot textAlignRight" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
+                                                            <div class="input-group-text">%</div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="lineOnTop text-end">
+                                                        <input type="text" size="6" name="overall_discount_amount" id="overall_discount_amount" style="cursor:pointer;" value="" readonly="" class="form-control overallDiscountAmount textAlignRight" aria-invalid="false">
+                                                    </td>
+                                                </tr>
+                                                <input type="hidden" id="group_tax_count" value="3" aria-invalid="false">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer lineItemPopupModalFooter p-3">
+                                        <div class="container-fluid p-0">
+                                            <div class="row">
+                                                <div class="col-6 text-end">
+                                                    <a class="btn btn-outline-primary popoverCancel closeOverallDiscountDiv">Cancel</a>
+                                                </div>
+                                                <div class="col-6 text-start">
+                                                    <a class="btn btn-primary active popoverButton saveOverallDiscount"><strong>Save</strong></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </td>
                             <td class="textAlignRight"><span class="overal_dicsount_percent">7</span></td>
                         </tr>
                     {/if}
