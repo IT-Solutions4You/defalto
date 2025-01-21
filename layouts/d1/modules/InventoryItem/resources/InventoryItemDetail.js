@@ -682,7 +682,24 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
 
         this.lineItemsHolder.on('click', '.saveOverallDiscount', function () {
-            console.log('save');
+            const overallDiscountPercent = parseFloat(jQuery('#overall_discount_percent').val());
+            const originalOverallDiscountPercent = parseFloat(jQuery('#original_overall_discount_percent').val());
+
+            if (originalOverallDiscountPercent !== overallDiscountPercent) {
+                app.helper.showProgress();
+                const params = {
+                    module: 'InventoryItem',
+                    action: 'SaveOverallDiscount',
+                    for_record: app.getRecordId(),
+                    overall_discount_percent: overallDiscountPercent,
+                };
+
+                app.request.post({"data": params}).then(function (err, res) {
+                    console.log('done');
+                });
+            } else {
+                app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});
+            }
         });
     },
 });
