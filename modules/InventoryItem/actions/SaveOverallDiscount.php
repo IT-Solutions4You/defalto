@@ -12,11 +12,7 @@ class InventoryItem_SaveOverallDiscount_Action extends Vtiger_SaveAjax_Action
 {
     public function process(Vtiger_Request $request)
     {
-        /*$recordModel = $this->getRecordModelFromRequest($request);
-        $recordModel->saveOverallDiscount();*/
-        show($request->getAll());
         $db = PearDatabase::getInstance();
-//        $db->setDebug(true);
         $discount = (float)$request->get('overall_discount_percent');
 
         $sql = 'SELECT df_inventoryitem.* 
@@ -28,7 +24,6 @@ class InventoryItem_SaveOverallDiscount_Action extends Vtiger_SaveAjax_Action
         $res = $db->pquery($sql, [$request->get('for_record')]);
 
         while ($row = $db->fetchByAssoc($res)) {
-            show($row);
             $recordModel = Vtiger_Record_Model::getInstanceById($row['inventoryitemid'], 'InventoryItem');
             $recordModel->set('overall_discount', $discount);
             $recordModel->set('mode', 'edit');

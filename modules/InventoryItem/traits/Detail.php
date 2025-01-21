@@ -49,7 +49,6 @@ trait InventoryItem_Detail_Trait
         }
 
         $viewer->assign('INVENTORY_ITEM_RECORD_STRUCTURE', $recordStructure);
-
     }
 
     private function fetchItems(int $record): array

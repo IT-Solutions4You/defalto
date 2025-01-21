@@ -701,6 +701,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 });
             } else {
                 app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});
+                jQuery('#overallDiscountSettingDiv').hide();
             }
         });
     },

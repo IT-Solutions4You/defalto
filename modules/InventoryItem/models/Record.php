@@ -19,7 +19,8 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
         parent::save();
     }
 
-    private function recalculate() {
+    private function recalculate()
+    {
         $quantity = $this->get('quantity');
         $price = $this->get('price');
         $subtotal = round($quantity * $price, 2);
