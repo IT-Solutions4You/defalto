@@ -672,6 +672,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
 
         this.lineItemsHolder.on('click', '.closeOverallDiscountDiv', function () {
+            jQuery('#overall_discount_percent').val(jQuery('#original_overall_discount_percent').val());
+            jQuery('#overall_discount_percent').trigger('change');
             jQuery('#overallDiscountSettingDiv').hide();
         });
 
@@ -695,7 +697,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 };
 
                 app.request.post({"data": params}).then(function (err, res) {
-                    console.log('done');
+                    location.reload();
                 });
             } else {
                 app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});

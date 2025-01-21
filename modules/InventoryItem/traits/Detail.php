@@ -12,8 +12,9 @@ trait InventoryItem_Detail_Trait
 {
     protected $excludedFields = ['assigned_user_id', 'description', 'item_text', 'parentid', 'parentitemid', 'sequence'];
     protected $computedFields = ['subtotal', 'price_after_discount', 'overall_discount_amount', 'price_after_overall_discount', 'tax_amount', 'price_total'];
-
     protected $specialTreatmentFields = ['overall_discount'];
+    protected $overallDiscount = 0;
+    protected $overallDiscountAmount = 0;
 
     public function adaptDetail(Vtiger_Request $request, Vtiger_Viewer $viewer)
     {
@@ -22,6 +23,8 @@ trait InventoryItem_Detail_Trait
         $viewer->assign('COMPUTED_FIELDS', $this->computedFields);
         $viewer->assign('SPECIAL_TREATMENT_FIELDS', $this->specialTreatmentFields);
         $viewer->assign('INVENTORY_ITEMS', $this->fetchItems((int)$request->get('record')));
+        $viewer->assign('OVERALL_DISCOUNT', number_format($this->overallDiscount, 2));
+        $viewer->assign('OVERALL_DISCOUNT_AMOUNT', number_format($this->overallDiscountAmount, 2));
         $selectedFields = InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule()));
 
         if (in_array('description', $selectedFields)) {
@@ -71,6 +74,12 @@ trait InventoryItem_Detail_Trait
                     $row['item_text'] = getEntityName($row['entityType'], $row['productid'])[$row['productid']];
                 }
             }
+
+            if ($row['overall_discount'] > 0) {
+                $this->overallDiscount = $row['overall_discount'];
+            }
+
+            $this->overallDiscountAmount += $row['overall_discount_amount'];
 
             $inventoryItems[] = $row;
         }

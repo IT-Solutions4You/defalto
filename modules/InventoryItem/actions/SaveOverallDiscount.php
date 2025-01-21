@@ -30,8 +30,8 @@ class InventoryItem_SaveOverallDiscount_Action extends Vtiger_SaveAjax_Action
         while ($row = $db->fetchByAssoc($res)) {
             show($row);
             $recordModel = Vtiger_Record_Model::getInstanceById($row['inventoryitemid'], 'InventoryItem');
-            $recordModel->getEntity()->mode = 'edit';
             $recordModel->set('overall_discount', $discount);
+            $recordModel->set('mode', 'edit');
             $recordModel->save();
         }
     }
