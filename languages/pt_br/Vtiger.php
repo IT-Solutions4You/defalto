@@ -23,6 +23,7 @@ $languageStrings = array(
 	'LBL_ADDING_NEW' => 'Adicionando novo',
 	'LBL_EDITING' => 'Editando',
 	'LBL_SAVE' => 'Salvar',
+	'LBL_APPLY' => 'Apply',
 	'LBL_CANCEL' => 'Cancelar',
 	'LBL_BACK' => 'Voltar',
 	'LBL_IMPORT' => 'Importar',

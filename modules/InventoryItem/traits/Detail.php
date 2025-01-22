@@ -10,9 +10,9 @@
 
 trait InventoryItem_Detail_Trait
 {
-    protected $excludedFields = ['assigned_user_id', 'description', 'item_text', 'parentid', 'parentitemid', 'sequence'];
-    protected $computedFields = ['subtotal', 'price_after_discount', 'overall_discount_amount', 'price_after_overall_discount', 'tax_amount', 'price_total'];
-    protected $specialTreatmentFields = ['overall_discount'];
+    protected $excludedFields = ['assigned_user_id', 'description', 'item_text', 'parentid', 'parentitemid', 'sequence', 'discount_type', 'discount', 'overall_discount', ];
+    protected $computedFields = ['subtotal', 'price_after_discount', 'overall_discount_amount', 'price_after_overall_discount', 'tax_amount', 'price_total', ];
+    protected $specialTreatmentFields = ['overall_discount', ];
     protected $overallDiscount = 0;
     protected $overallDiscountAmount = 0;
 
@@ -26,6 +26,13 @@ trait InventoryItem_Detail_Trait
         $viewer->assign('OVERALL_DISCOUNT', number_format($this->overallDiscount, 2));
         $viewer->assign('OVERALL_DISCOUNT_AMOUNT', number_format($this->overallDiscountAmount, 2));
         $selectedFields = InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule()));
+        $selectedFieldsCount = count($selectedFields);
+
+        foreach ($selectedFields as $key => $value) {
+            if (in_array($value, $this->excludedFields)) {
+                $selectedFieldsCount--;
+            }
+        }
 
         if (in_array('description', $selectedFields)) {
             $viewer->assign('DESCRIPTION_ALLOWED', true);
@@ -37,6 +44,7 @@ trait InventoryItem_Detail_Trait
         }
 
         $viewer->assign('INVENTORY_ITEM_COLUMNS', $selectedFields);
+        $viewer->assign('DISPLAYED_FIELDS_COUNT', $selectedFieldsCount);
 
         $recordModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
         $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);

@@ -20,6 +20,7 @@ $languageStrings = array(
 	'LBL_CREATING_NEW' => 'Skapa',
 	'LBL_EDITING' => 'Redigera',
 	'LBL_SAVE' => 'Spara',
+	'LBL_APPLY' => 'Apply',
 	'LBL_CANCEL' => 'Avbryt',
 	'LBL_BACK' => 'Tillbaka',
 	'LBL_IMPORT' => 'Import',

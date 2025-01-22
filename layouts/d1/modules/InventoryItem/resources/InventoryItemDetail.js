@@ -324,6 +324,18 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             }
         });
 
+        row.on('click', '.editProductDiscount', function () {
+            jQuery('#discountSettingsDiv' + rowNumber).show();
+        });
+
+        row.on('click', '.closeDiscountDiv', function () {
+            jQuery(this).closest('.discountSettingsDiv').hide();
+        });
+
+        row.on('click', '.applyDiscount', function () {
+            jQuery(this).closest('.discountSettingsDiv').hide();
+        });
+
         jQuery(document).on('input mouseup', 'textarea.description', function () {
             let newHeight = jQuery(this).outerHeight() + 3;
             jQuery(this).closest('td').css('padding-bottom', newHeight + 'px');

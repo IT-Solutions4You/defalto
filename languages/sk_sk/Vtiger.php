@@ -417,6 +417,7 @@ $languageStrings = array(
 "LBL_RESULT_FOR_THE_TAG" => "Výsledky pre značku",
 "LBL_Sat" => "So",
 "LBL_SAVE" => "Uložiť",
+"LBL_APPLY" => "Použiť",
 "LBL_SAVE_AS_DRAFT" => "Uložiť ako návrh",
 "LBL_SAVE_AS_FILTER" => "Uložiť ako zoznam",
 "LBL_SAVE_FILTER" => "Uložiť zoznam",

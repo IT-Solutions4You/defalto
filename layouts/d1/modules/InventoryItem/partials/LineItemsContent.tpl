@@ -90,8 +90,8 @@
                             <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="{$entityType}" class="lineItemType"/>
                             {if !$data.$productDeleted}
                                 <span class="input-group-addon input-group-text cursorPointer clearLineItem" title="{vtranslate('LBL_CLEAR',$MODULE)}">
-                            <i class="fa fa-xmark"></i>
-                        </span>
+                                    <i class="fa fa-xmark"></i>
+                                </span>
                             {/if}
                             {if $row_no eq 0}
                                 <span class="input-group-text lineItemPopup cursorPointer" data-popup="ServicesPopup" title="{vtranslate('Services',$MODULE)}" data-module-name="Services" data-field-name="serviceid">{Vtiger_Module_Model::getModuleIconPath('Services')}</span>
@@ -111,17 +111,68 @@
                     </div>
                     {if $DESCRIPTION_ALLOWED eq 'true'}
                         <div class="mt-3" style="position: relative;">
-                            <textarea id="{'description'|cat:$row_no}" name="{'description'|cat:$row_no}" class="description lineItemCommentBox form-control" style="position: absolute;top: 100%;left: 0;width: 0;z-index: 100;box-sizing: border-box;padding: 5px;resize: both;" rows="4">{decode_html($data.description)}</textarea>
+                            <textarea id="{'description'|cat:$row_no}" name="{'description'|cat:$row_no}" class="description lineItemCommentBox form-control" style="position: absolute;top: 100%;left: 0;width: 0;box-sizing: border-box;padding: 5px;resize: both;" rows="4">{decode_html($data.description)}</textarea>
                         </div>
                     {/if}
                 </span>
             </td>
         {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
+        {elseif $INVENTORY_ITEM_FIELD_NAME eq 'discount_amount'}
+            <td class="textAlignRight">
+                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
+                <span class="editLineItem hide">
+                    <div class="input-group">
+                        <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" {if in_array($INVENTORY_ITEM_FIELD_NAME, $COMPUTED_FIELDS)}readonly="readonly" {/if}/>
+                        <span class="input-group-addon input-group-text cursorPointer editProductDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}">
+                            <i class="fa fa-pencil"></i>
+                        </span>
+                    </div>
+                    <div class="position-relative">
+                        <div class="popover lineItemPopover border-1 bs-popover-auto fade discountSettingsDiv" id="discountSettingsDiv{$row_no}" role="tooltip" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
+                            <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Discount', 'InventoryItem')}</h3>
+                            <div class="popover-body popover-content">
+                                <div class="finalTaxUI validCheck" id="group_tax_div">
+                                    <table class="table table-borderless popupTable m-0">
+                                        <tbody>
+                                        <tr>
+                                            <td class="lineOnTop p-3">{vtranslate('Discount', 'InventoryItem')}</td>
+                                            <td class="lineOnTop">
+                                                <div class="input-group">
+                                                    <input type="text" size="5" data-compound-on="" name="discount_percent" id="discount_percent" value="{$DISCOUNT}" class="form-control discountPercent replaceCommaWithDot textAlignRight" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
+                                                    <input type="hidden" id="original_discount_percent" name="original_discount_percent" value="{$DISCOUNT}" class="original_discount_percent">
+                                                    <div class="input-group-text">%</div>
+                                                </div>
+                                            </td>
+                                            <td class="lineOnTop text-end">
+                                                <input type="text" size="6" name="discount_amount" id="discount_amount" style="cursor:pointer;" value="{$DISCOUNT_AMOUNT}" readonly="" class="form-control discountAmount textAlignRight" aria-invalid="false">
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer lineItemPopupModalFooter p-3">
+                                <div class="container-fluid p-0">
+                                    <div class="row">
+                                        <div class="col-6 text-end">
+                                            <a class="btn btn-outline-primary popoverCancel closeDiscountDiv">{vtranslate('LBL_CANCEL')}</a>
+                                        </div>
+                                        <div class="col-6 text-start">
+                                            <a class="btn btn-primary active popoverButton applyDiscount"><strong>{vtranslate('LBL_APPLY')}</strong></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input id="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="original_{$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
+                </span>
+            </td>
         {elseif $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'percentage'}
             <td class="textAlignRight">
                 <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
                 <span class="editLineItem hide">
-                    <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control replaceCommaWithDot allowOnlyNumbers" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" {if in_array($INVENTORY_ITEM_FIELD_NAME, $COMPUTED_FIELDS)}readonly="readonly"{/if}/>
+                    <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" {if in_array($INVENTORY_ITEM_FIELD_NAME, $COMPUTED_FIELDS)}readonly="readonly"{/if}/>
                     <input id="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="original_{$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
                 </span>
             </td>

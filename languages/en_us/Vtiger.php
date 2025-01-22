@@ -23,6 +23,7 @@ $languageStrings = array(
 	'LBL_ADDING_NEW' => 'Adding new',
 	'LBL_EDITING' => 'Editing',
 	'LBL_SAVE' => 'Save',
+	'LBL_APPLY' => 'Apply',
 	'LBL_CANCEL' => 'Cancel',
 	'LBL_BACK' => 'Back',
 	'LBL_IMPORT' => 'Import',
@@ -231,7 +232,7 @@ $languageStrings = array(
 	//Filters & Advance Filter
 	'LBL_AND' => 'and',
 	'LBL_OR' => 'or',
-	'LBL_APPLBL_NONEROVE' => 'Approve',
+	'LBL_APPROVE' => 'Approve',
 	'LBL_DENY' => 'Deny',
 	'LBL_EQUALS' => 'equals',
 	'LBL_NOT_EQUAL_TO' => 'not equal to',

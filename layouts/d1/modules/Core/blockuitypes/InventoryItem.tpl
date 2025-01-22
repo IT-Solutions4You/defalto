@@ -86,7 +86,7 @@
                 {if !empty($SPECIAL_TREATMENT_FIELDS)}
                     {if in_array('overall_discount', $SPECIAL_TREATMENT_FIELDS) and in_array('overall_discount', $INVENTORY_ITEM_COLUMNS)}
                         <tr>
-                            <td colspan="{$INVENTORY_ITEM_FIELD_NAME@total - 1}" class="textAlignRight">
+                            <td colspan="{$DISPLAYED_FIELDS_COUNT + 1}" class="textAlignRight">
                                 <div class="position-relative">
                                 <strong>{vtranslate('Overal Discount %', 'InventoryItem')}</strong>&nbsp;&nbsp;<i class="fa fa-pencil fa-fw text-secondary editOverallDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>
                                 <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="overallDiscountSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
@@ -96,7 +96,7 @@
                                             <table class="table table-borderless popupTable m-0">
                                                 <tbody>
                                                 <tr>
-                                                    <td class="lineOnTop p-3">{vtranslate('Discount ', 'InventoryItem')}</td>
+                                                    <td class="lineOnTop p-3">{vtranslate('Discount', 'InventoryItem')}</td>
                                                     <td class="lineOnTop">
                                                         <div class="input-group">
                                                             <input type="text" size="5" data-compound-on="" name="overall_discount_percent" id="overall_discount_percent" value="{$OVERALL_DISCOUNT}" class="form-control overallDiscountPercent replaceCommaWithDot textAlignRight" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
@@ -116,10 +116,10 @@
                                         <div class="container-fluid p-0">
                                             <div class="row">
                                                 <div class="col-6 text-end">
-                                                    <a class="btn btn-outline-primary popoverCancel closeOverallDiscountDiv">Cancel</a>
+                                                    <a class="btn btn-outline-primary popoverCancel closeOverallDiscountDiv">{vtranslate('LBL_CANCEL')}</a>
                                                 </div>
                                                 <div class="col-6 text-start">
-                                                    <a class="btn btn-primary active popoverButton saveOverallDiscount"><strong>Save</strong></a>
+                                                    <a class="btn btn-primary active popoverButton saveOverallDiscount"><strong>{vtranslate('LBL_SAVE')}</strong></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -127,7 +127,7 @@
                                 </div>
                                 </div>
                             </td>
-                            <td class="textAlignRight"><span class="overal_dicsount_percent">{$OVERALL_DISCOUNT}</span></td>
+                            <td class="textAlignRight"><strong>{$OVERALL_DISCOUNT}</strong></td>
                         </tr>
                     {/if}
                 {/if}

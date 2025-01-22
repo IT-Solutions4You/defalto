@@ -16,6 +16,7 @@ $languageStrings = array(
 	'LBL_CREATING_NEW'             => 'Создание нового'                ,
 	'LBL_EDITING'                  => 'Редактирование',
 	'LBL_SAVE'                     => 'Сохранить'          , // KEY 5.x: LBL_SAVE_LABEL
+	'LBL_APPLY'                    => 'Apply',
 	'LBL_CANCEL'                   => 'Отменить'            , // KEY 5.x: LBL_CANCEL_BUTTON_LABEL
 	'LBL_BACK'                     => 'Назад'                  ,
 	'LBL_IMPORT'                   => 'Импорт'                ,

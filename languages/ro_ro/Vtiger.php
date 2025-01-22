@@ -16,6 +16,7 @@ $languageStrings = array(
 	'LBL_CREATING_NEW'             => 'Creating New'                ,
 	'LBL_EDITING'                  => 'Editare'                     ,
 	'LBL_SAVE'                     => 'Salveaza'                    ,
+	'LBL_APPLY'                    => 'Apply'                       ,
 	'LBL_CANCEL'                   => 'Anuleaza'                    ,
 	'LBL_BACK'                     => 'Inapoi'                      ,
 	'LBL_IMPORT'                   => 'Importa'                     ,
