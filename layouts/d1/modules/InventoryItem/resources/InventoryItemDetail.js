@@ -337,10 +337,15 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
 
         row.on('click', '.closeDiscountDiv', function () {
+            jQuery('#discount' + rowNumber).val(jQuery('#original_discount' + rowNumber).val());
+            jQuery('#discount_type' + rowNumber).val(jQuery('#original_discount_type' + rowNumber).val());
+            jQuery('#discount_type' + rowNumber).trigger('change');
             jQuery(this).closest('.discountSettingsDiv').hide();
         });
 
         row.on('click', '.applyDiscount', function () {
+            jQuery('#original_discount' + rowNumber).val(jQuery('#discount' + rowNumber).val());
+            jQuery('#original_discount_type' + rowNumber).val(jQuery('#discount_type' + rowNumber).val());
             self.recalculateProductLine(rowNumber);
             jQuery(this).closest('.discountSettingsDiv').hide();
         });

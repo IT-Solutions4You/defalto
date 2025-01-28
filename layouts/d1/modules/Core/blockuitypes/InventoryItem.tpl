@@ -35,12 +35,12 @@
             <table class="table table-borderless" id="lineItemTab">
                 <thead>
                 <tr class="border-bottom">
-                    <td><strong>{vtranslate('LBL_TOOLS',$MODULE)}</strong></td>
+                    <td class="font-bold">{vtranslate('LBL_TOOLS',$MODULE)}</td>
                     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
                         {if !in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
                         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
-                        <td{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'percentage'} class="textAlignRight"{/if}>
-                            <strong>{vtranslate({$FIELD->get('label')}, 'InventoryItem')}</strong>
+                        <td class="font-bold{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'percentage'} textAlignRight{/if}">
+                            {vtranslate({$FIELD->get('label')}, 'InventoryItem')}
                         </td>
                         {/if}
                     {/foreach}
@@ -119,7 +119,7 @@
                                                     <a class="btn btn-outline-primary popoverCancel closeOverallDiscountDiv">{vtranslate('LBL_CANCEL')}</a>
                                                 </div>
                                                 <div class="col-6 text-start">
-                                                    <a class="btn btn-primary active popoverButton saveOverallDiscount"><strong>{vtranslate('LBL_SAVE')}</strong></a>
+                                                    <a class="btn btn-primary active popoverButton saveOverallDiscount font-bold">{vtranslate('LBL_SAVE')}</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -127,7 +127,7 @@
                                 </div>
                                 </div>
                             </td>
-                            <td class="textAlignRight"><strong>{$OVERALL_DISCOUNT}</strong></td>
+                            <td class="textAlignRight font-bold">{$OVERALL_DISCOUNT}</td>
                         </tr>
                     {/if}
                 {/if}
@@ -137,13 +137,13 @@
     </div>
     <div class="px-4">
         <div class="btn-toolbar inventoryItemAddButtons" style="display:inline;">
-            <div class="recordLabel verticalAlignMiddle me-2" style="display:inline;"><strong>Add </strong></div>
-            <button type="button" class="btn btn-outline-primary mb-1 me-1" id="addText" data-module-name="">
-                <i class="fa fa-i-cursor"></i><strong>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}</strong>
+            <div class="recordLabel verticalAlignMiddle me-2 font-bold" style="display:inline;">Add </div>
+            <button type="button" class="btn btn-outline-primary mb-1 me-1 font-bold" id="addText" data-module-name="">
+                <i class="fa fa-i-cursor"></i>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}
             </button>
             {foreach from=$ITEM_MODULES item=ITEM_MODULE_NAME}
-                <button type="button" class="btn btn-outline-primary mb-1 me-1" id="add{$ITEM_MODULE_NAME}" data-module-name="{$ITEM_MODULE_NAME}">
-                    {Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}<strong>&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}</strong>
+                <button type="button" class="btn btn-outline-primary mb-1 me-1 font-bold" id="add{$ITEM_MODULE_NAME}" data-module-name="{$ITEM_MODULE_NAME}">
+                    {Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}
                 </button>
             {/foreach}
         </div>

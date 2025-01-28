@@ -4464,3 +4464,7 @@ input[type=number] {
 .min-w-5rem {
     min-width: 5rem;
 }
+
+.font-bold {
+    font-weight: bold;
+}

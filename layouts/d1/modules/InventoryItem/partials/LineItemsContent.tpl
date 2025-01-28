@@ -77,9 +77,9 @@
     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
         {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
-            <td class="minWidth20per item_text_td">
+            <td class="minWidth20per item_text_td" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}">
                 <input type="hidden" name="hidtax_row_no{$row_no}" id="hidtax_row_no{$row_no}" value="{$tax_row_no}"/>
-                <span class="noEditLineItem display_{$item_text}"><strong>{$data.item_text}&nbsp;&nbsp;<small><a class="text-primary" href="index.php?module={$data.entityType}&view=Detail&record={$data.productid}" target="_blank"><i class="fa fa-external-link text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i></a></strong></small></span>
+                <span class="noEditLineItem display_{$item_text} font-bold">{$data.item_text}&nbsp;&nbsp;<small><a class="text-primary" href="index.php?module={$data.entityType}&view=Detail&record={$data.productid}" target="_blank"><i class="fa fa-external-link text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i></a></small></span>
                 <span class="editLineItem hide">
                     <div class="itemNameDiv form-inline">
                         <div class="input-group">
@@ -118,7 +118,7 @@
             </td>
         {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
         {elseif $INVENTORY_ITEM_FIELD_NAME eq 'discount_amount'}
-            <td class="textAlignRight">
+            <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}">
                 <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
                 <span class="editLineItem hide">
                     <div class="input-group">
@@ -142,13 +142,14 @@
                                                     <option value="Direct" {if $data.discount_type eq 'Amount'}selected{/if}>{vtranslate('Direct', 'InventoryItem')}</option>
                                                     <option value="Product Unit Price" {if $data.discount_type eq 'Product Unit Price'}selected{/if}>{vtranslate('Product Unit Price', 'InventoryItem')}</option>
                                                 </select>
+                                                <input type="hidden" name="original_discount_type{$row_no}" id="original_discount_type{$row_no}" value="{$data.discount_type}" class="original_discount_type{$row_no}">
                                             </td>
                                         </tr>
                                         <tr>
                                             <td class="p-3">{vtranslate('Discount', 'InventoryItem')}</td>
                                             <td>
                                                 <input type="text" size="5" data-compound-on="" name="discount{$row_no}" id="discount{$row_no}" value="{$data.discount}" class="form-control discount replaceCommaWithDot textAlignRight doNotRecalculateOnChange" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
-                                                <input type="hidden" id="original_discount_percent" name="original_discount_percent" value="{$data.discount}" class="original_discount_percent">
+                                                <input type="hidden" id="original_discount{$row_no}" name="original_discount{$row_no}" value="{$data.discount}" class="original_discount{$row_no}">
                                             </td>
                                         </tr>
                                         <tr>
@@ -168,7 +169,7 @@
                                             <a class="btn btn-outline-primary popoverCancel closeDiscountDiv">{vtranslate('LBL_CANCEL')}</a>
                                         </div>
                                         <div class="col-6 text-start">
-                                            <a class="btn btn-primary active popoverButton applyDiscount"><strong>{vtranslate('LBL_APPLY')}</strong></a>
+                                            <a class="btn btn-primary active popoverButton applyDiscount font-bold">{vtranslate('LBL_APPLY')}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -179,7 +180,7 @@
                 </span>
             </td>
         {elseif $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'percentage'}
-            <td class="textAlignRight">
+            <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}">
                 <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
                 <span class="editLineItem hide">
                     <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" {if in_array($INVENTORY_ITEM_FIELD_NAME, $COMPUTED_FIELDS)}readonly="readonly"{/if}/>
@@ -187,7 +188,7 @@
                 </span>
             </td>
         {else}
-            <td>
+            <td title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}">
                 <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
                 <span class="editLineItem hide">
                     <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
