@@ -96,15 +96,15 @@
                                             <table class="table table-borderless popupTable m-0">
                                                 <tbody>
                                                 <tr>
-                                                    <td class="lineOnTop p-3">{vtranslate('Discount', 'InventoryItem')}</td>
-                                                    <td class="lineOnTop">
+                                                    <td class="p-3">{vtranslate('Discount', 'InventoryItem')}</td>
+                                                    <td>
                                                         <div class="input-group">
                                                             <input type="text" size="5" data-compound-on="" name="overall_discount_percent" id="overall_discount_percent" value="{$OVERALL_DISCOUNT}" class="form-control overallDiscountPercent replaceCommaWithDot textAlignRight" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
                                                             <input type="hidden" id="original_overall_discount_percent" name="original_overall_discount_percent" value="{$OVERALL_DISCOUNT}" class="original_overall_discount_percent">
                                                             <div class="input-group-text">%</div>
                                                         </div>
                                                     </td>
-                                                    <td class="lineOnTop text-end">
+                                                    <td class="text-end">
                                                         <input type="text" size="6" name="overall_discount_amount" id="overall_discount_amount" style="cursor:pointer;" value="{$OVERALL_DISCOUNT_AMOUNT}" readonly="" class="form-control overallDiscountAmount textAlignRight" aria-invalid="false">
                                                     </td>
                                                 </tr>

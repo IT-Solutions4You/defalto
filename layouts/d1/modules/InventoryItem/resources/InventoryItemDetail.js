@@ -319,7 +319,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         row.on('change', 'input', function () {
             const element = jQuery(this);
             // Don't save on hidden input changes unless specifically needed
-            if ((!element.is(':hidden') || element.hasClass('recalculateOnChange')) && !isNaN(element.val())) {
+            if ((!element.is(':hidden') || element.hasClass('recalculateOnChange')) && !element.hasClass('doNotRecalculateOnChange') && !isNaN(element.val())) {
                 self.recalculateProductLine(rowNumber);
             }
         });
@@ -328,11 +328,20 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             jQuery('#discountSettingsDiv' + rowNumber).show();
         });
 
+        row.on('change', '.discount_type', function () {
+           self.recalculateDiscountDiv(rowNumber);
+        });
+
+        row.on('change', '.discount', function () {
+           self.recalculateDiscountDiv(rowNumber);
+        });
+
         row.on('click', '.closeDiscountDiv', function () {
             jQuery(this).closest('.discountSettingsDiv').hide();
         });
 
         row.on('click', '.applyDiscount', function () {
+            self.recalculateProductLine(rowNumber);
             jQuery(this).closest('.discountSettingsDiv').hide();
         });
 
@@ -621,23 +630,15 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const quantity = parseFloat(jQuery('.quantity', row).val());
         let price = parseFloat(jQuery('.price', row).val());
         price = quantity * price;
-        jQuery('.subtotal', row).val(price);
+        jQuery('.subtotal', row).val(price.toFixed(2));
         jQuery('.display_subtotal' + rowNumber, row).html(price.toFixed(2));
+        jQuery('.subtotal_in_discount_div', row).html(price.toFixed(2));
 
-        const discount = parseFloat(jQuery('.discount', row).val());
-        let discount_amount = parseFloat(jQuery('.discount_amount', row).val());
-
-        if (discount && discount > 0) {
-            discount_amount = price * (discount / 100);
-            jQuery('.discount_amount', row).val(discount_amount);
-        }
-
-        if (isNaN(discount_amount)) {
-            discount_amount = 0;
-        }
+        let discount_amount = this.recalculateDiscountDiv(rowNumber);
+        jQuery('.discount_amount', row).val(discount_amount);
 
         price = price - discount_amount;
-        jQuery('.price_after_discount', row).val(price);
+        jQuery('.price_after_discount', row).val(price.toFixed(2));
         jQuery('.display_price_after_discount' + rowNumber, row).html(price.toFixed(2));
 
         const overall_discount = parseFloat(jQuery('.overall_discount', row).val());
@@ -645,7 +646,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         if (overall_discount && overall_discount > 0) {
             overall_discount_amount = price * (overall_discount / 100);
-            jQuery('.overall_discount_amount', row).val(overall_discount_amount);
+            jQuery('.overall_discount_amount', row).val(overall_discount_amount.toFixed(2));
         }
 
         if (isNaN(overall_discount_amount)) {
@@ -653,7 +654,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
 
         price = price - overall_discount_amount;
-        jQuery('.price_after_overall_discount', row).val(price);
+        jQuery('.price_after_overall_discount', row).val(price.toFixed(2));
         jQuery('.display_price_after_overall_discount' + rowNumber, row).html(price.toFixed(2));
 
         const tax = parseFloat(jQuery('.tax', row).val());
@@ -661,7 +662,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         if (tax && tax > 0) {
             tax_amount = price * (tax / 100);
-            jQuery('.tax_amount', row).val(tax_amount);
+            jQuery('.tax_amount', row).val(tax_amount.toFixed(2));
         }
 
         if (isNaN(tax_amount)) {
@@ -669,10 +670,37 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
 
         price = price + tax_amount;
-        jQuery('.total', row).val(price);
+        jQuery('.total', row).val(price.toFixed(2));
         jQuery('.display_total' + rowNumber, row).html(price.toFixed(2));
 
         this.recalculateTotals();
+    },
+
+    recalculateDiscountDiv: function (rowNumber) {
+        const row = jQuery('#row' + rowNumber);
+        const quantity = parseFloat(jQuery('.quantity', row).val());
+        const price = parseFloat(jQuery('.subtotal', row).val());
+        const discount_type = jQuery('.discount_type', row).val();
+        let discount = parseFloat(jQuery('.discount', row).val());
+        let discount_amount = 0;
+
+        if (isNaN(discount)) {
+            discount = 0;
+        }
+
+        if (discount_type === 'Percentage') {
+            discount_amount = price * (discount / 100);
+        } else if (discount_type === 'Direct') {
+            discount_amount = discount;
+        } else if (discount_type === 'Product Unit Price') {
+            discount_amount = quantity * discount;
+        }
+
+        discount_amount = discount_amount.toFixed(2);
+
+        jQuery('.discount_computed_value', row).val(discount_amount);
+
+        return discount_amount;
     },
 
     registerOverallDiscountActions: function () {

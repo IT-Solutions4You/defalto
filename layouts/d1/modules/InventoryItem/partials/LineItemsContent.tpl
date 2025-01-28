@@ -122,29 +122,39 @@
                 <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
                 <span class="editLineItem hide">
                     <div class="input-group">
-                        <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" {if in_array($INVENTORY_ITEM_FIELD_NAME, $COMPUTED_FIELDS)}readonly="readonly" {/if}/>
+                        <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" readonly="readonly" />
                         <span class="input-group-addon input-group-text cursorPointer editProductDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}">
                             <i class="fa fa-pencil"></i>
                         </span>
                     </div>
                     <div class="position-relative">
                         <div class="popover lineItemPopover border-1 bs-popover-auto fade discountSettingsDiv" id="discountSettingsDiv{$row_no}" role="tooltip" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
-                            <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Discount', 'InventoryItem')}</h3>
+                            <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Discount of', 'InventoryItem')} <span class="subtotal_in_discount_div">{$data.subtotal}</span></h3>
                             <div class="popover-body popover-content">
                                 <div class="finalTaxUI validCheck" id="group_tax_div">
                                     <table class="table table-borderless popupTable m-0">
                                         <tbody>
                                         <tr>
-                                            <td class="lineOnTop p-3">{vtranslate('Discount', 'InventoryItem')}</td>
-                                            <td class="lineOnTop">
-                                                <div class="input-group">
-                                                    <input type="text" size="5" data-compound-on="" name="discount_percent" id="discount_percent" value="{$DISCOUNT}" class="form-control discountPercent replaceCommaWithDot textAlignRight" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
-                                                    <input type="hidden" id="original_discount_percent" name="original_discount_percent" value="{$DISCOUNT}" class="original_discount_percent">
-                                                    <div class="input-group-text">%</div>
-                                                </div>
+                                            <td class="p-3">{vtranslate('Discount type', 'InventoryItem')}</td>
+                                            <td>
+                                                <select name="discount_type{$row_no}" id="discount_type{$row_no}" class="inputElement select2 form-select discount_type">
+                                                    <option value="Percentage" {if $data.discount_type eq 'Percent'}selected{/if}>{vtranslate('Percentage', 'InventoryItem')}</option>
+                                                    <option value="Direct" {if $data.discount_type eq 'Amount'}selected{/if}>{vtranslate('Direct', 'InventoryItem')}</option>
+                                                    <option value="Product Unit Price" {if $data.discount_type eq 'Product Unit Price'}selected{/if}>{vtranslate('Product Unit Price', 'InventoryItem')}</option>
+                                                </select>
                                             </td>
-                                            <td class="lineOnTop text-end">
-                                                <input type="text" size="6" name="discount_amount" id="discount_amount" style="cursor:pointer;" value="{$DISCOUNT_AMOUNT}" readonly="" class="form-control discountAmount textAlignRight" aria-invalid="false">
+                                        </tr>
+                                        <tr>
+                                            <td class="p-3">{vtranslate('Discount', 'InventoryItem')}</td>
+                                            <td>
+                                                <input type="text" size="5" data-compound-on="" name="discount{$row_no}" id="discount{$row_no}" value="{$data.discount}" class="form-control discount replaceCommaWithDot textAlignRight doNotRecalculateOnChange" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
+                                                <input type="hidden" id="original_discount_percent" name="original_discount_percent" value="{$data.discount}" class="original_discount_percent">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-3">{vtranslate('Computed value', 'InventoryItem')}</td>
+                                            <td class="text-end">
+                                                <input type="text" size="6" name="discount_computed_value{$row_no}" id="discount_computed_value{$row_no}" style="cursor:pointer;" value="{$data.discount_amount}" readonly="readonly" class="form-control discount_computed_value textAlignRight" aria-invalid="false">
                                             </td>
                                         </tr>
                                         </tbody>
