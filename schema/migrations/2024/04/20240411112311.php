@@ -454,7 +454,6 @@ if (!class_exists('Migration_20240411112311')) {
             $margin->column = 'margin';
             $margin->label = 'Margin';
             $margin->uitype = 71;
-            $margin->displaytype = 2;
             $margin->presence = 0;
             $margin->sequence = 20;
             $margin->columntype = 'DECIMAL(25,4) DEFAULT NULL';

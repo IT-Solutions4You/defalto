@@ -10,12 +10,25 @@
 
 trait InventoryItem_Detail_Trait
 {
-    protected $excludedFields = ['assigned_user_id', 'description', 'item_text', 'parentid', 'parentitemid', 'sequence', 'discount_type', 'discount', 'overall_discount', ];
-    protected $computedFields = ['subtotal', 'price_after_discount', 'overall_discount_amount', 'price_after_overall_discount', 'tax_amount', 'price_total', ];
-    protected $specialTreatmentFields = ['discount', 'overall_discount', ];
+    protected $excludedFields = ['assigned_user_id', 'description', 'item_text', 'parentid', 'parentitemid', 'sequence', 'discount_type', 'discount', 'overall_discount',];
+    protected $computedFields = ['subtotal', 'price_after_discount', 'overall_discount_amount', 'price_after_overall_discount', 'tax_amount', 'price_total', 'margin',];
+    protected $specialTreatmentFields = ['discount', 'overall_discount',];
     protected $overallDiscount = 0;
     protected $overallDiscountAmount = 0;
-    protected $roundValues = ['subtotal', 'discount', 'discount_amount', 'price_after_discount', 'overall_discount', 'overall_discount_amount', 'price_after_overall_discount', 'tax', 'tax_amount', 'price_total', 'purchase_cost', 'margin', ];
+    protected $roundValues = [
+        'subtotal',
+        'discount',
+        'discount_amount',
+        'price_after_discount',
+        'overall_discount',
+        'overall_discount_amount',
+        'price_after_overall_discount',
+        'tax',
+        'tax_amount',
+        'price_total',
+        'purchase_cost',
+        'margin',
+    ];
 
     public function adaptDetail(Vtiger_Request $request, Vtiger_Viewer $viewer)
     {

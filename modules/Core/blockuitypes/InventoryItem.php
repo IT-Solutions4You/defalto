@@ -15,7 +15,7 @@ class Core_InventoryItem_BlockUIType extends Vtiger_Base_Model implements Core_I
      */
     public function getTemplateName(): string
     {
-        return '';
+        return 'blockuitypes/InventoryItemEdit.tpl';
     }
     /**
      * @inheritDoc

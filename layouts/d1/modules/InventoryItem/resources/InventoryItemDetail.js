@@ -662,6 +662,16 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         jQuery('.price_after_overall_discount', row).val(price.toFixed(2));
         jQuery('.display_price_after_overall_discount' + rowNumber, row).html(price.toFixed(2));
 
+        let purchseCost = parseFloat(jQuery('.purchase_cost', row).val());
+        let margin = 0;
+
+        if (!isNaN(purchseCost) && purchseCost > 0) {
+            margin = price - (purchseCost * quantity);
+        }
+
+        jQuery('.margin', row).val(margin.toFixed(2));
+        jQuery('display_margin' + rowNumber, row).html(margin.toFixed(2));
+
         const tax = parseFloat(jQuery('.tax', row).val());
         let tax_amount = parseFloat(jQuery('.tax_amount', row).val());
 

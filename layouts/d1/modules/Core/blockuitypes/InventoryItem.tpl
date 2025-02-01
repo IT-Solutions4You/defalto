@@ -86,7 +86,7 @@
                 {if !empty($SPECIAL_TREATMENT_FIELDS)}
                     {if in_array('overall_discount', $SPECIAL_TREATMENT_FIELDS) and in_array('overall_discount', $INVENTORY_ITEM_COLUMNS)}
                         <tr>
-                            <td colspan="{$DISPLAYED_FIELDS_COUNT + 1}" class="textAlignRight">
+                            <td colspan="{$DISPLAYED_FIELDS_COUNT}" class="textAlignRight">
                                 <div class="position-relative">
                                 <strong>{vtranslate('Overal Discount %', 'InventoryItem')}</strong>&nbsp;&nbsp;<i class="fa fa-pencil fa-fw text-secondary editOverallDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>
                                 <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="overallDiscountSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
