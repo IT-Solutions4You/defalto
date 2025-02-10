@@ -344,21 +344,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             $filterFields = [];
             $filterDynamicSequence = 0;
 
-            if (isset($blocks['LBL_ITEM_DETAILS'])) {
-                $taxResult = $this->db->pquery('SELECT * FROM vtiger_inventorytaxinfo');
-
-                while ($row = $this->db->fetchByAssoc($taxResult)) {
-                    $blocks['LBL_ITEM_DETAILS'][$row['taxname']] = [
-                        'table' => 'vtiger_inventoryproductrel',
-                        'label' => $row['taxlabel'],
-                        'uitype' => 83,
-                        'typeofdata' => 'V~O',
-                        'displaytype' => 5,
-                        'masseditable' => 0,
-                    ];
-                }
-            }
-
             $fieldTable = $this->getTable('vtiger_field', null);
 
             foreach ($blocks as $block => $fields) {

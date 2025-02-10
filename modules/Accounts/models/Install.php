@@ -507,7 +507,7 @@ class Accounts_Install_Model extends Core_Install_Model {
                     'column' => 'region_id',
                     'label' => 'Tax Region',
                     'uitype' => 29,
-                    'typeofdata' => 'V~O',
+                    'typeofdata' => 'I~O',
                     'displaytype' => 1,
                     'columntype' => 'int(19)',
                     'readonly' => 0,

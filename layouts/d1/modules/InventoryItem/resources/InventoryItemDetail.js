@@ -28,7 +28,6 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     registerBasicEvents: function () {
         this._super();
         this.registerItemsTableEvents();
-        this.recalculateTotals();
         const self = this;
 
         app.event.on(Vtiger_Detail_Js.relatedListLoad, function () {
@@ -38,6 +37,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     registerItemsTableEvents: function () {
+        this.recalculateTotals();
         this.makeLineItemsSortable();
         this.addRowListeners();
         this.registerLineItemAutoComplete();
