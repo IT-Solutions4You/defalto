@@ -328,4 +328,17 @@ class Vtiger_Link_Model extends Vtiger_Link {
 		}
 		return false;
 	}
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    public function getWidgetTemplate(): string
+    {
+        if (empty($this->get('link_template'))) {
+            return 'SummaryViewWidget.tpl';
+        }
+
+        return (string)$this->get('link_template');
+    }
 }

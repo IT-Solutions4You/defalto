@@ -56,7 +56,7 @@ class Appointments_Field_Model extends Vtiger_Field_Model
      */
     public function isEmptyPicklistOptionAllowed(): bool
     {
-        if ('calendar_visibility' === $this->getFieldName()) {
+        if (in_array($this->getFieldName(), ['calendar_visibility', 'calendar_status'])) {
             return false;
         }
 

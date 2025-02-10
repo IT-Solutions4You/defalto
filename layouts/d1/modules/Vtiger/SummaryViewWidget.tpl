@@ -17,7 +17,7 @@
                     {assign var=PARENT_ID value=$RECORD->getId()}
                     <div class="pull-right">
                         <div class="dropdown">
-                            <button type="button" class="btn text-secondary fw-bold" data-bs-toggle="dropdown">
+                            <button type="button" class="btn btn-sm text-secondary fw-bold" data-bs-toggle="dropdown">
                                 <i class="fa-solid fa-plus"></i>
                                 <span class="ms-2">{vtranslate('LBL_NEW_DOCUMENT', 'Documents')}</span>
                             </button>
@@ -31,7 +31,7 @@
                                 <li id="VtigerAction">
                                     <a class="dropdown-item" href="javascript:Documents_Index_Js.uploadTo('Vtiger',{$PARENT_ID},'{$MODULE_NAME}')">
                                         <i class="fa fa-home"></i>
-                                        <span class="ms-2">{vtranslate('LBL_TO_SERVICE', 'Documents', {vtranslate('LBL_VTIGER', 'Documents')})}</span>
+                                        <span class="ms-2">{vtranslate('LBL_TO_SERVICE', 'Documents', vtranslate('LBL_VTIGER', 'Documents'))}</span>
                                     </a>
                                 </li>
                                 <li>
@@ -46,16 +46,13 @@
                                 <li id="shareDocument">
                                     <a class="dropdown-item" href="javascript:Documents_Index_Js.createDocument('E',{$PARENT_ID},'{$MODULE_NAME}')">
                                         <i class="fa fa-external-link"></i>
-                                        <span class="ms-2">{vtranslate('LBL_FROM_SERVICE', 'Documents', {vtranslate('LBL_FILE_URL', 'Documents')})}</span>
+                                        <span class="ms-2">{vtranslate('LBL_FROM_SERVICE', 'Documents', vtranslate('LBL_FILE_URL', 'Documents'))}</span>
                                     </a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
                                 </li>
                                 <li id="createDocument">
                                     <a class="dropdown-item" href="javascript:Documents_Index_Js.createDocument('W',{$PARENT_ID},'{$MODULE_NAME}')">
                                         <i class="fa fa-file-text"></i>
-                                        <span class="ms-2">{vtranslate('LBL_CREATE_NEW', 'Documents', {vtranslate('SINGLE_Documents', 'Documents')})}</span>
+                                        <span class="ms-2">{vtranslate('LBL_CREATE_NEW', 'Documents', vtranslate('SINGLE_Documents', 'Documents'))}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -63,7 +60,7 @@
                     </div>
                 {else}
                     <div class="pull-right">
-                        <button class="btn text-secondary fw-bold addButton createRecord" type="button" data-url="{$DETAIL_VIEW_WIDGET->get('actionURL')}">
+                        <button class="btn btn-sm text-secondary fw-bold addButton createRecord" type="button" data-url="{$DETAIL_VIEW_WIDGET->get('actionURL')}">
                             <i class="fa fa-plus"></i>
                             <span class="mx-2">{vtranslate('LBL_ADD',$MODULE_NAME)}</span>
                             <span>{vtranslate($DETAIL_VIEW_WIDGET->getLabel(),$MODULE_NAME)}</span>

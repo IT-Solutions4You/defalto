@@ -8,6 +8,74 @@
  */
 /** @var ITS4YouEmails_MassEdit_Js */
 jQuery.Class('ITS4YouEmails_MassEdit_Js', {
+    replyEmail(recordId, recordModule) {
+        let params = {
+                module: 'ITS4YouEmails',
+                view: 'ComposeEmail',
+                mode: 'Reply',
+                record: app.getRecordId(),
+                parentRecord: recordId,
+                parentModule: recordModule,
+            };
+
+        this.composeEmail(params);
+    },
+    replyAllEmail(recordId, recordModule) {
+        let params = {
+                module: 'ITS4YouEmails',
+                view: 'ComposeEmail',
+                mode: 'ReplyAll',
+                record: app.getRecordId(),
+                parentRecord: recordId,
+                parentModule: recordModule,
+            };
+
+        this.composeEmail(params);
+    },
+    forwardEmail(recordId, recordModule) {
+        let params = {
+                module: 'ITS4YouEmails',
+                view: 'ComposeEmail',
+                mode: 'Forward',
+                record: app.getRecordId(),
+                parentRecord: recordId,
+                parentModule: recordModule,
+            };
+
+        this.composeEmail(params);
+    },
+    mailManagerEmail() {
+        let params = {
+                module: 'ITS4YouEmails',
+                view: 'ComposeEmail',
+                mode: 'MailManager',
+            };
+
+        this.composeEmail(params);
+    },
+    createEmail() {
+        let params = {
+                module: 'ITS4YouEmails',
+                view: 'ComposeEmail',
+                mode: 'CreateEmail',
+                record: app.getRecordId(),
+                sourceModule: app.getModuleName(),
+            };
+
+        this.composeEmail(params);
+    },
+    composeEmail(params) {
+        const self = new ITS4YouEmails_MassEdit_Js();
+
+        if($('.modal').is(':visible')) {
+            app.helper.hideModal().then(function() {
+                self.showComposeEmailForm(params)
+            });
+        } else {
+            self.showComposeEmailForm(params)
+        }
+    },
+}, {
     init: function () {
         this.preloadAllData = [];
     },
@@ -642,7 +710,9 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
             isCkeditorApplied = descriptionElement.data('isCkeditorApplied');
 
         if (true !== isCkeditorApplied) {
-            this.loadCkEditor(descriptionElement.data('isCkeditorApplied', true), container);
+            descriptionElement.data('isCkeditorApplied', true);
+
+            this.loadCkEditor(descriptionElement, container);
         }
     },
     registerEventDocumentsListClick: function () {
@@ -1110,5 +1180,28 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
     },
     getMaxUploadSize: function () {
         return jQuery('#maxUploadSize').val();
+    },
+    setAttachmentsFileSizeBySize : function(fileSize){
+        this.attachmentsFileSize += parseFloat(fileSize);
+    },
+    showComposeEmailForm: function (params) {
+        let aDeferred = jQuery.Deferred(),
+            thisInstance = this;
+
+        app.request.post({data: params}).then(function (error, data) {
+            app.helper.hideProgress();
+
+            if (!error) {
+                let modalContainer = app.helper.showModal(data, {
+                    cb: function () {
+                        thisInstance.registerEvents();
+                    }
+                });
+
+                return aDeferred.resolve(modalContainer);
+            }
+        });
+
+        return aDeferred.promise();
     },
 });

@@ -15,7 +15,9 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public static $FLAG_SENT = 'SENT';
     public static $FLAG_ERROR = 'ERROR';
     public static $FLAG_SAVED = 'SAVED';
+    public static $FLAG_BANNED_WORD = 'BANNED WORD';
     public $relatedToFields = [];
+    public array $bannedWords = [];
     /**
      * @var ITS4YouEmails_Mailer_Model
      */
@@ -107,26 +109,35 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
             $this->retrieveInReplyTo();
             $this->convertImagesToEmbed();
 
-            $success = $this->sendEmail();
+            $hasBannedWords = $this->hasBannedWords();
 
-            $this->set('subject', $mailer->Subject);
-            $this->setBody($mailer->Body);
+            if (!$hasBannedWords) {
+                $success = $this->sendEmail();
 
-            if ($success) {
-                $this->set('result', vtranslate('LBL_SUCCESS_EMAIL', $this->getModuleName()));
-                $this->set('email_flag', self::$FLAG_SENT);
+                $this->set('subject', $mailer->Subject);
+                $this->setBody($mailer->Body);
+            }
+
+            if ($hasBannedWords) {
+                $result = vtranslate('LBL_BANNED_WORD', $this->getModuleName()) . $mailer->ErrorInfo;
+                $flag = self::$FLAG_BANNED_WORD;
+            } elseif ($success) {
+                $result = vtranslate('LBL_SUCCESS_EMAIL', $this->getModuleName());
+                $flag = self::$FLAG_SENT;
 
                 $mailer->saveMessageId();
                 $this->saveEmailToSentFolder();
             } else {
-                $this->set('result', vtranslate('LBL_ERROR_EMAIL', $this->getModuleName()) . $mailer->ErrorInfo);
-                $this->set('email_flag', self::$FLAG_ERROR);
+                $result = vtranslate('LBL_ERROR_EMAIL', $this->getModuleName()) . $mailer->ErrorInfo;
+                $flag = self::$FLAG_ERROR;
             }
         } catch (Exception $e) {
-            $this->set('result', vtranslate('LBL_ERROR_EMAIL', $this->getModuleName()) . $mailer->ErrorInfo . ' | Exception: ' . $e->getMessage());
-            $this->set('email_flag', self::$FLAG_ERROR);
+            $result = vtranslate('LBL_ERROR_EMAIL', $this->getModuleName()) . $mailer->ErrorInfo . ' | Exception: ' . $e->getMessage();
+            $flag = self::$FLAG_ERROR;
         }
 
+        $this->set('result', $result);
+        $this->set('email_flag', $flag);
         $this->set('mode', 'edit');
         $this->save();
 
@@ -1198,5 +1209,56 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         } else {
             $db->pquery('INSERT INTO vtiger_email_track(crmid, mailid, access_count) values(?, ?, ?)', [$parentId, $recordId, 1]);
         }
+    }
+
+    /**
+     * Retrieve banned words, return boolean value and set ErrorInfo to mailer
+     * @return bool
+     */
+    public function hasBannedWords(): bool
+    {
+        $this->retrieveBannedWords();
+        $subject = strtolower($this->getSubject());
+        $body = strtolower($this->getBody());
+
+        foreach ($this->getBannedWords() as $bannedWord) {
+            $bannedWord = strtolower($bannedWord);
+
+            if (-1 < stripos($subject, $bannedWord) || -1 < stripos($body, $bannedWord)) {
+                $mailer = $this->getMailer();
+                $mailer->ErrorInfo = $bannedWord;
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBannedWords(): array
+    {
+        return $this->bannedWords;
+    }
+
+    /**
+     * @param array $bannedWords
+     * @return void
+     */
+    public function setBannedWords(array $bannedWords): void
+    {
+        $this->bannedWords = $bannedWords;
+    }
+
+    /**
+     * @return void
+     */
+    public function retrieveBannedWords(): void
+    {
+        global $ITS4YouEmails_BannedWords;
+
+        $this->setBannedWords(array_merge((array)$ITS4YouEmails_BannedWords, ['#ITS4YouEmails_Do_Not_Send_Mail#']));
     }
 }

@@ -10,14 +10,25 @@
 
 class Project_DetailView_Model extends Vtiger_DetailView_Model {
 
-	/**
+    public function getKeyMetricsWidgetInfo(): array
+    {
+        return [
+            'linktype' => 'DETAILVIEWWIDGET',
+            'link_template' => 'SummaryKeyMetrics.tpl',
+        ];
+    }
+
+    /**
 	 * Function to get the detail view widgets
 	 * @return <Array> - List of widgets , where each widget is an Vtiger_Link_Model
 	 */
 	public function getWidgets() {
 		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		$widgetLinks = parent::getWidgets();
+		$widgetLinks = [];
 		$widgets = array();
+        $widgetLinks[] = Vtiger_Link_Model::getInstanceFromValues($this->getKeyMetricsWidgetInfo());
+        $widgetLinks[] = Vtiger_Link_Model::getInstanceFromValues($this->getPlaceholderWidgetInfo());
+        $widgetLinks = array_merge($widgetLinks, parent::getWidgets());
 
 		$helpDeskInstance = Vtiger_Module_Model::getInstance('HelpDesk');
 		if($userPrivilegesModel->hasModuleActionPermission($helpDeskInstance->getId(), 'DetailView')) {

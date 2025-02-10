@@ -8,19 +8,67 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class HelpDeskHandler extends VTEventHandler {
+class HelpDeskHandler extends VTEventHandler
+{
+    /**
+     * @param string $eventName
+     * @param object $entityData
+     * @return void
+     * @throws AppException
+     */
+    public function handleEvent($eventName, $entityData)
+    {
+        if ($eventName == 'vtiger.entity.aftersave.final') {
+            $moduleName = $entityData->getModuleName();
+            if ($moduleName == 'HelpDesk') {
+                $this->updateTicketFromPortal($entityData->getId());
+                $this->createEmailFromMailManager($entityData->getId());
+            }
+        }
+    }
 
-	function handleEvent($eventName, $entityData) {
-		global $log, $adb;
+    /**
+     * @param int $recordId
+     * @return void
+     * @throws AppException
+     */
+    public function createEmailFromMailManager(int $recordId): void
+    {
+        $requestData = $_REQUEST;
 
-		if($eventName == 'vtiger.entity.aftersave.final') {
-			$moduleName = $entityData->getModuleName();
-			if ($moduleName == 'HelpDesk') {
-				$ticketId = $entityData->getId();
-				$adb->pquery('UPDATE vtiger_ticketcf SET from_portal=0 WHERE ticketid=?', array($ticketId));
-			}
-		}
-	}
+        if (empty(MailManager_Relation_View::getMailSession()) || empty($requestData['sourceModule']) || empty($requestData['sourceRecord']) || 'MailManager' !== $requestData['sourceModule']) {
+            return;
+        }
+
+        $mailData = MailManager_Relation_View::getMailSession();
+
+        if (empty($mailData['uniqueId']) || $mailData['uniqueId'] !== $requestData['sourceRecord']) {
+            return;
+        }
+
+        $recipientId = $mailData['recipientId'];
+        $folderName = $mailData['folderName'];
+        $uniqueId = $mailData['uniqueId'];
+
+        // This is to handle larger uploads
+        ini_set('memory_limit', MailManager_Config_Model::get('MEMORY_LIMIT'));
+
+        $mail = (new MailManager_Relation_View())->getMail($folderName, $uniqueId);
+        $mail->setAttachmentRelationIds($recordId);
+
+        MailManager_Relate_Action::associate($mail, $recordId, (int)$recipientId);
+        MailManager_Relation_View::setMailSession([]);
+    }
+
+    /**
+     * @param int $recordId
+     * @return void
+     */
+    public function updateTicketFromPortal(int $recordId): void
+    {
+        $adb = PearDatabase::getInstance();
+        $adb->pquery('UPDATE vtiger_ticketcf SET from_portal=0 WHERE ticketid=?', [$recordId]);
+    }
 }
 
 function HelpDesk_nofifyOnPortalTicketCreation($entityData) {

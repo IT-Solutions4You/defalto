@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
@@ -14,39 +15,21 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
     /**
      * @var bool
      */
-    public $isPDFActive = false;
+    public $emailListView = null;
     /**
      * @var bool
      */
-    public $emailListView = null;
-    /**
-     * @var array
-     */
-    public $sourceRecordIds = [];
+    public $isPDFActive = false;
     /**
      * @var
      */
     public $recordId;
-
     /**
-     * @param Vtiger_Request $request
-     * @return array
+     * @var array
      */
-    public function requiresPermission(Vtiger_Request $request)
-    {
-        $permissions = parent::requiresPermission($request);
+    public $sourceRecordIds = [];
 
-        $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
-        $permissions[] = ['module_parameter' => 'custom_module', 'action' => 'DetailView'];
-        $request->set('custom_module', 'ITS4YouEmails');
-
-        return $permissions;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function composeMailData(Vtiger_Request $request)
+    public function composeDefaultMailData(Vtiger_Request $request)
     {
         $moduleName = $request->getModule();
         $qualifiedModuleName = $request->getModule(false);
@@ -71,6 +54,10 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $viewer->assign('MAX_UPLOAD_SIZE', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
         $viewer->assign('RELATED_MODULES', $moduleModel->getEmailRelatedModules());
         $viewer->assign('SOURCE_MODULE', $sourceModule);
+
+        if ($relatedLoad) {
+            $viewer->assign('RELATED_LOAD', true);
+        }
 
         if ($documentIds) {
             $attachements = [];
@@ -125,7 +112,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
         $sourceRecordId = $request->get('record');
 
-        if ($sourceRecordId) {
+        if (!empty($sourceRecordId) && isRecordExists($sourceRecordId)) {
             $sourceRecordModel = Vtiger_Record_Model::getInstanceById($sourceRecordId);
 
             if ($sourceRecordModel->get('email_flag') === 'SAVED') {
@@ -141,7 +128,6 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
                     $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $sourceModule);
 
                     if ($recordModel) {
-
                         if ($recordModel->get('emailoptout')) {
                             continue;
                         }
@@ -249,27 +235,26 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $viewer->assign('CCMAIL_INFO', $ccMailInfo);
         $viewer->assign('BCC', $request->get('bcc'));
         $viewer->assign('BCCMAIL_INFO', $bccMailInfo);
+    }
 
-        $userPrevilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-        $viewer->assign('MODULE_IS_ACTIVE', $userPrevilegesModel->hasModulePermission(Vtiger_Module_Model::getInstance('EMAILMaker')->getId()));
+    /**
+     * @throws Exception
+     */
+    public function composeMailData(Vtiger_Request $request)
+    {
+        $this->composeDefaultMailData($request);
 
-        if ($relatedLoad) {
-            $viewer->assign('RELATED_LOAD', true);
-        }
-
-        $emailTemplateIds = $this->getEmailTemplateIds($request);
-        $emailTemplateLanguage = $request->get('email_template_language');
+        $moduleName = $request->getModule();
+        $qualifiedModuleName = $request->getModule(false);
 
         $viewer = $this->getViewer($request);
-        $viewer->assign('EMAIL_TEMPLATE_LANGUAGE', $emailTemplateLanguage);
-        $viewer->assign('EMAIL_TEMPLATE_IDS', $emailTemplateIds);
+        $viewer->assign('MODULE', $moduleName);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
         $viewer->assign('SOURCEMODULE', $this->getSourceModule($request));
-        $viewer->assign('IS_MERGE_TEMPLATES', $request->get('is_merge_templates'));
 
-        if (!$request->isEmpty('pdf_template_ids')) {
-            $this->retrievePDFTemplates($request);
-        }
+        $this->retrieveModeData($request);
+        $this->retrievePDFTemplates($request);
+        $this->retrieveEMAILTemplates($request);
 
         if ('RetrieveEmails' === $request->get('mode')) {
             $this->retrieveEmails($request);
@@ -284,43 +269,92 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $this->retrieveDocumentsUrl($request);
     }
 
-
     /**
-     * @throws Exception
+     * @param object $recordModel
+     * @return string
      */
-    public function process(Vtiger_Request $request)
+    public function getEmailFieldFromRecord(object $recordModel): string
     {
-        $this->composeMailData($request);
+        $moduleModel = $recordModel->getModule();
+        $fields = $moduleModel->getFieldsByType('email');
 
-        $viewer = $this->getViewer($request);
-        $viewer->view('ComposeEmailForm.tpl', $request->getModule());
-    }
+        foreach ($fields as $field) {
+            $fieldName = $field->get('name');
 
-    /**
-     * @param Vtiger_Request $request
-     * @return void
-     */
-    public function retrieveRecordDocumentsUrl(Vtiger_Request $request)
-    {
-        $records = $this->getRecordsListFromRequest($request);
-        $recordDocumentsUrl = '';
-
-        if (1 === count((array)$records)) {
-            $recordDocumentsUrl = 'module=ITS4YouEmails&view=Documents&mode=recordDocuments&record=' . $records[0];
+            if (!$recordModel->isEmpty($fieldName)) {
+                return (string)$fieldName;
+            }
         }
 
-        $viewer = $this->getViewer($request);
-        $viewer->assign('RECORD_DOCUMENTS_URL', $recordDocumentsUrl);
+        return '';
     }
 
     /**
      * @param Vtiger_Request $request
-     * @return void
+     * @return mixed|String
      */
-    public function retrieveDocumentsUrl(Vtiger_Request $request)
+    public function getEmailTemplateIds(Vtiger_Request $request)
     {
-        $viewer = $this->getViewer($request);
-        $viewer->assign('DOCUMENTS_URL', 'view=Popup&module=Documents&src_module=ITS4YouEmails&src_field=composeEmail');
+        return $request->get('email_template_ids');
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return mixed|String
+     */
+    public function getEmailTemplateLanguage(Vtiger_Request $request)
+    {
+        return $request->get('email_template_language');
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return mixed|string|null
+     */
+    public function getParentModule(Vtiger_Request $request)
+    {
+        return $request->get('parentModule') ?? getSalesEntityType($this->getParentRecord($request));
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return int|null
+     */
+    public function getParentRecord(Vtiger_Request $request): null|int
+    {
+        $recordId = (int)$request->get('parentRecord');
+        $recordModule = $request->get('parentModule');
+
+        if ('MailManager' === $recordModule) {
+            return $recordId;
+        }
+
+        if (empty($recordId) || !isRecordExists($recordId)) {
+            return null;
+        }
+
+        return $recordId;
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return mixed|String
+     */
+    public function getRecordId(Vtiger_Request $request)
+    {
+        if (empty($this->recordId)) {
+            $sourceIds = $this->getSourceRecords($request);
+
+            if (count($sourceIds) == 1) {
+                $recordId = $sourceIds[0];
+            } else {
+                $recordId = $request->get('record');
+            }
+
+            $this->recordId = $recordId;
+        }
+
+        return $this->recordId;
     }
 
     /**
@@ -349,11 +383,11 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         }
 
         if (empty($tagParams)) {
-            $tagParams = array();
+            $tagParams = [];
         }
 
         if (!is_array($tagParams)) {
-            $tagParams = array($tagParams);
+            $tagParams = [$tagParams];
         }
 
         if (!empty($selectedIds) && $selectedIds != 'all') {
@@ -365,7 +399,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $searchParams = $request->get('search_params');
 
         if (empty($searchParams) && !is_array($searchParams)) {
-            $searchParams = array();
+            $searchParams = [];
         }
 
         $searchAndTagParams = array_merge($searchParams, $tagParams);
@@ -375,7 +409,9 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         if ($sourceRecord && $sourceModule) {
             $sourceRecordModel = Vtiger_Record_Model::getInstanceById($sourceRecord, $sourceModule);
 
-            return $sourceRecordModel->getSelectedIdsList($request->get('parentModule'), $excludedIds);
+            if (method_exists($sourceRecordModel, 'getSelectedIdsList')) {
+                return $sourceRecordModel->getSelectedIdsList($request->get('parentModule'), $excludedIds);
+            }
         }
 
         $customViewModel = CustomView_Record_Model::getInstanceById($cvId);
@@ -396,197 +432,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
             return $customViewModel->getRecordIds($excludedIds);
         }
 
-        return array();
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function retrieveSMTPRecords(Vtiger_Request $request)
-    {
-        $records = array();
-
-        if (vtlib_isModuleActive('ITS4YouSMTP') && getTabid('ITS4YouSMTP')) {
-            /** @var ITS4YouSMTP_Module_Model $moduleModel */
-            $moduleModel = Vtiger_Module_Model::getInstance('ITS4YouSMTP');
-            $records = $moduleModel->getRecords();
-        }
-
-        $viewer = $this->getViewer($request);
-        $viewer->assign('SMTP_RECORDS', $records);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function retrieveEmails(Vtiger_Request $request)
-    {
-        $sourceIds = $this->getSourceRecords($request);
-        $recordId = $this->getRecordId($request);
-
-        if (count($sourceIds)) {
-            $this->retrieveEmailsForFields($request);
-        }
-
-        if (!empty($recordId)) {
-            $this->retrieveEmailsForDetail($request);
-        }
-    }
-
-    /**
-     * @param Vtiger_Request $request
-     * @throws Exception
-     */
-    public function retrieveEmailsForFields(Vtiger_Request $request)
-    {
-        $moduleName = $this->getSourceModule($request);
-        $inventoryRecordId = $this->getRecordId($request);
-        $recordModel = Vtiger_Record_Model::getInstanceById($inventoryRecordId, $moduleName);
-        $inventoryModule = $recordModel->getModule();
-        $inventoryFields = $inventoryModule->getFields();
-        $toEmailConsiderableFields = array('contact_id', 'account_id', 'vendor_id');
-        $db = PearDatabase::getInstance();
-        $field_lists = array();
-
-        foreach ($toEmailConsiderableFields as $fieldName) {
-            if (!array_key_exists($fieldName, $inventoryFields)) {
-                continue;
-            }
-
-            $fieldModel = $inventoryFields[$fieldName];
-
-            if (!$fieldModel->isViewable()) {
-                continue;
-            }
-
-            $fieldValue = $recordModel->get($fieldName);
-
-            if (empty($fieldValue)) {
-                continue;
-            }
-
-            $referenceModule = Vtiger_Functions::getCRMRecordType($fieldValue);
-            $referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
-
-            if (!$referenceModuleModel) {
-                continue;
-            }
-
-            if (!empty($fieldValue) && isRecordExists($fieldValue)) {
-                $referenceRecordModel = Vtiger_Record_Model::getInstanceById($fieldValue, $referenceModule);
-
-                if ($referenceRecordModel->get('emailoptout')) {
-                    continue;
-                }
-            }
-
-            $emailFields = $referenceModuleModel->getFieldsByType('email');
-
-            if (count($emailFields)) {
-                continue;
-            }
-
-            $current_user = Users_Record_Model::getCurrentUserModel();
-            $queryGenerator = new QueryGenerator($referenceModule, $current_user);
-            $queryGenerator->setFields(array_keys($emailFields));
-            $query = $queryGenerator->getQuery();
-            $query .= ' AND crmid = ' . $fieldValue;
-            $result = $db->pquery($query, array());
-
-            if ($db->num_rows($result)) {
-                continue;
-            }
-
-            foreach ($emailFields as $fieldName => $emailFieldModel) {
-                $emailValue = $db->query_result($result, 0, $fieldName);
-
-                if (!empty($emailValue)) {
-                    $field_lists[] = implode('|', [$fieldValue, $fieldName, getSalesEntityType($fieldValue)]);
-                    break 2;
-                }
-            }
-        }
-
-        if ($request->isEmpty('field_lists')) {
-            $request->set('field_lists', $field_lists);
-        }
-    }
-
-    /**
-     * @param Vtiger_Request $request
-     * @throws Exception
-     */
-    public function retrieveEmailsForDetail(Vtiger_Request $request)
-    {
-        $recordId = $this->getRecordId($request);
-        $recordModule = $this->getSourceModule($request);
-        $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $recordModule);
-
-        if ($recordModel) {
-            $recordField = $this->getEmailFieldFromRecord($recordModel);
-
-            if (empty($recordEmail)) {
-                /** @var Vtiger_Field_Model $field */
-                foreach ($recordModel->getModule()->getFieldsByType('reference') as $field) {
-                    $refFieldName = $field->get('name');
-                    $refRecordId = $recordModel->get($refFieldName);
-
-                    if ($recordModel->isEmpty($refFieldName)) {
-                        continue;
-                    }
-
-                    foreach ($field->getReferenceList() as $refModuleName) {
-                        $refRecordModel = Vtiger_Record_Model::getInstanceById($refRecordId, $refModuleName);
-                        $refRecordField = $this->getEmailFieldFromRecord($refRecordModel);
-
-                        if (!empty($refRecordField)) {
-                            $recordId = $refRecordId;
-                            $recordField = $refRecordField;
-                            $recordModule = $refModuleName;
-                            break 2;
-                        }
-                    }
-                }
-            }
-
-            if ($request->isEmpty('field_lists')) {
-                $request->set('field_lists',
-                    [
-                        implode('|', [$recordId, $recordField, $recordModule])
-                    ]
-                );
-            }
-        }
-    }
-
-    /**
-     * @param object $recordModel
-     * @return string
-     */
-    public function getEmailFieldFromRecord(object $recordModel): string
-    {
-        $moduleModel = $recordModel->getModule();
-        $fields = $moduleModel->getFieldsByType('email');
-
-        foreach ($fields as $field) {
-            $fieldName = $field->get('name');
-
-            if (!$recordModel->isEmpty($fieldName)) {
-                return (string)$fieldName;
-            }
-        }
-
-        return '';
-    }
-
-
-    /**
-     * @param Vtiger_Request $request
-     * @return mixed|String
-     */
-    public function getEmailTemplateIds(Vtiger_Request $request)
-    {
-        return $request->get('email_template_ids');
+        return [];
     }
 
     /**
@@ -603,27 +449,152 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
     }
 
     /**
+     * @param Vtiger_Request $request
+     * @return array|mixed|String|String[]
+     */
+    public function getSourceRecords(Vtiger_Request $request)
+    {
+        if (empty($this->sourceRecordIds)) {
+            if (!$request->isEmpty('record')) {
+                $sourceIds = [$request->get('record')];
+            } else {
+                $sourceIds = $this->getRecordsListFromRequest($request);
+
+                if (!is_array($sourceIds)) {
+                    $sourceIds = [$sourceIds];
+                }
+            }
+
+            $this->sourceRecordIds = $sourceIds;
+        }
+
+        return $this->sourceRecordIds;
+    }
+
+
+    /**
+     * @param Vtiger_Request $request
+     * @return bool
+     */
+    public function isEmailListView(Vtiger_Request $request): bool
+    {
+        if (null === $this->emailListView) {
+            $templates = $this->getEmailTemplateIds($request);
+
+            if (!empty($templates)) {
+                $this->emailListView = ITS4YouEmails_Utils_Helper::isTemplateForListView($templates);
+            } else {
+                $this->emailListView = false;
+            }
+        }
+
+        return $this->emailListView;
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return array
+     */
+    public function requiresPermission(Vtiger_Request $request)
+    {
+        $permissions = parent::requiresPermission($request);
+
+        $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
+        $permissions[] = ['module_parameter' => 'custom_module', 'action' => 'DetailView'];
+        $request->set('custom_module', 'ITS4YouEmails');
+
+        return $permissions;
+    }
+
+    /**
      * @throws Exception
      */
-    public function retrievePDFTemplates(Vtiger_Request $request)
+    public function process(Vtiger_Request $request)
     {
-        $PDFTemplateIds = array_filter(explode(';', $request->get('pdf_template_ids')));
+        $this->composeMailData($request);
 
-        if (count($PDFTemplateIds) > 0) {
-            $this->isPDFActive = true;
-            $PDFLanguage = $request->get('pdf_template_language', $request->get('email_template_language'));
-            $PDFTemplatesList = ITS4YouEmails_Utils_Helper::validatePDFTemplates($PDFTemplateIds, [
-                'records' => $this->getSourceRecords($request),
-                'module' => $this->getSourceModule($request),
-                'language' => $PDFLanguage,
-            ]);
-            $PDFTemplateIds = implode(';', array_keys($PDFTemplatesList));
+        $viewer = $this->getViewer($request);
+        $viewer->view('ComposeEmailForm.tpl', $request->getModule());
+    }
 
-            $viewer = $this->getViewer($request);
-            $viewer->assign('PDF_TEMPLATE_IDS', $PDFTemplateIds);
-            $viewer->assign('PDF_TEMPLATES', $PDFTemplatesList);
-            $viewer->assign('PDF_TEMPLATE_LANGUAGE', $PDFLanguage);
+    /**
+     * @param $fileDetails
+     * @return mixed
+     */
+    public function retrieveAttachmentDetails($fileDetails)
+    {
+        $fileDetails['storedname'] = $fileDetails['storedname'] ?? $fileDetails['name'];
+        $fileDetails['fileid'] = $fileDetails['attachmentsid'];
+        $fileDetails['docid'] = $fileDetails['crmid'];
+        $fileDetails['attachment'] = $fileDetails['name'];
+        $fileDetails['nondeletable'] = false;
+        $fileDetails['size'] = filesize(decode_html($fileDetails['path'] . $fileDetails['attachmentsid'] . '_' . $fileDetails['storedname']));
+
+        return $fileDetails;
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     */
+    public function retrieveAttachments(Vtiger_Request $request)
+    {
+        $attachments = $request->get('attachments', []);
+        $documentIds = $request->get('document_ids', []);
+
+        if ($this->EMAILContentModel) {
+            $documentIds = $this->EMAILContentModel->getAttachments();
         }
+
+        if (count($documentIds)) {
+            foreach ($documentIds as $documentId) {
+                $documentRecordModel = Vtiger_Record_Model::getInstanceById($documentId, "Documents");
+
+                if ($documentRecordModel->get('filelocationtype') == 'I') {
+                    $fileDetails = $documentRecordModel->getFileDetails();
+
+                    if ($fileDetails) {
+                        $attachments[] = ITS4YouEmails_Utils_Helper::getAttachmentDetails($fileDetails);
+                    }
+                }
+            }
+        }
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('ATTACHMENTS', $attachments);
+        $viewer->assign('DOCUMENT_IDS', $documentIds);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function retrieveCreateEmail(Vtiger_Request $request)
+    {
+        $this->retrieveEmails($request);
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     */
+    public function retrieveDocumentsUrl(Vtiger_Request $request)
+    {
+        $viewer = $this->getViewer($request);
+        $viewer->assign('DOCUMENTS_URL', 'view=Popup&module=Documents&src_module=ITS4YouEmails&src_field=composeEmail');
+    }
+
+    /**
+     * @param $request
+     * @return void
+     */
+    public function retrieveEMAILTemplates($request)
+    {
+        $emailTemplateIds = $this->getEmailTemplateIds($request);
+        $emailTemplateLanguage = $request->get('email_template_language');
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('EMAIL_TEMPLATE_LANGUAGE', $emailTemplateLanguage);
+        $viewer->assign('EMAIL_TEMPLATE_IDS', $emailTemplateIds);
     }
 
     /**
@@ -638,7 +609,11 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $isSingleRecord = !$isMoreSources;
         $sourceModule = $request->get('sourceModule');
         $selectedIds = $request->get('selected_ids');
-        $to = $toMailInfo = $sourceNames = [];
+        $allEmails = $request->get('all_emails', []);
+        $allEmailsLabels = $request->get('all_emails_labels', []);
+        $allMailInfo = $request->get('all_mail_info', []);
+        $allMailNamesList = $request->get('all_mail_names_list', []);
+        $sourceNames = $request->get('source_names', []);
 
         $viewer = $this->getViewer($request);
         $viewer->assign('SOURCERECORD', $isSingleRecord ? $recordId : null);
@@ -646,18 +621,16 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $allFieldLists['to'] = $request->get('field_lists');
         $allFieldLists['cc'] = $request->get('field_lists_cc');
         $allFieldLists['bcc'] = $request->get('field_lists_bcc');
-        $selectedSourceId = null;
+        $selectedSourceId = $request->get('selected_sourceid', null);
         $sourceModules = ['Accounts', 'Contacts', 'Leads'];
 
         if ((in_array($sourceModule, $sourceModules) && !$isSingleRecord && !$this->isPDFActive && 'all' !== $selectedIds) || ($this->isEmailListView($request) && !$this->isPDFActive)) {
             $noGrouping = true;
             $isSingleRecord = true;
             $selectedSourceId = '0';
-            $viewer->assign('SOURCE_IDS', ['0']);
             $sourceNames[0] = '';
         } else {
             $noGrouping = false;
-            $viewer->assign('SOURCE_IDS', $sourceIds);
         }
 
         if (count($sourceIds) > 0) {
@@ -665,11 +638,11 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
                 $groupId = $noGrouping ? '0' : $sourceId;
 
                 foreach ($allFieldLists as $fieldListType => $fieldLists) {
-                    if (!isset($toMailInfo[$fieldListType][$groupId])) {
-                        $toMailInfo[$fieldListType][$groupId] = array();
+                    if (!isset($allMailInfo[$fieldListType][$groupId])) {
+                        $allMailInfo[$fieldListType][$groupId] = [];
                     }
                     if (!isset($allMailNamesList[$fieldListType][$groupId])) {
-                        $allMailNamesList[$fieldListType][$groupId] = array();
+                        $allMailNamesList[$fieldListType][$groupId] = [];
                     }
                     if (null === $selectedSourceId) {
                         $selectedSourceId = $sourceId;
@@ -685,7 +658,11 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
                         foreach ($fieldLists as $fieldListEmailId) {
                             [$fieldListId, $fieldListField, $fieldListModule] = explode('|', $fieldListEmailId);
 
-                            if ($fieldListId == $sourceId || empty($fieldListId)) {
+                            if ('email' === $fieldListId) {
+                                $recordModel = $recordSourceModel;
+                                $fieldListEmailId = $sourceId . '|' . $fieldListField . '|' . $fieldListModule;
+                                $fieldListRecordId = $sourceId;
+                            } elseif ($fieldListId == $sourceId || empty($fieldListId)) {
                                 $recordModel = $recordSourceModel;
                                 $fieldListEmailId = $sourceId . '|' . $fieldListField . '|' . $fieldListModule;
                                 $fieldListRecordId = $sourceId;
@@ -716,29 +693,34 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
                                 }
                             }
 
-                            $emailName = $recordModel->getName();
-                            $emailRecordId = $recordModel->getId();
-                            $emailAddress = $recordModel->get($fieldListField);
-                            $emailOptOutValue = $recordModel->get('emailoptout');
+                            $emailRecordId = null;
+                            $emailOptOutValue = false;
+                            $emailName = $emailAddress = 'email' === $fieldListId ? $fieldListField : $recordModel->get($fieldListField);
+
+                            if ($recordModel) {
+                                $emailName = $recordModel->getName();
+                                $emailRecordId = $recordModel->getId();
+                                $emailOptOutValue = $recordModel->get('emailoptout');
+                            }
 
                             if (!empty($emailAddress) && (!$emailOptOutValue || !$isMoreSources)) {
                                 $emailAddressId = $fieldListRecordId . '|' . $emailAddress . '|' . $fieldListModule;
-                                $toEmails[$fieldListType][$groupId][] = array(
+                                $allEmails[$fieldListType][$groupId][] = [
                                     'id' => $fieldListRecordId,
                                     'name' => $emailName . ' <b>(' . $emailAddress . ')</b>',
                                     'emailid' => $emailAddress,
                                     'module' => $fieldListModule,
-                                );
-                                $to[$fieldListType][$groupId][$emailAddressId] = $emailName . ' <b>(' . $emailAddress . ')</b>';
-                                $allMailNamesList[$fieldListType][$groupId][$emailAddressId][] = array(
+                                ];
+                                $allEmailsLabels[$fieldListType][$groupId][$emailAddressId] = $emailName . ' <b>(' . $emailAddress . ')</b>';
+                                $allMailNamesList[$fieldListType][$groupId][$emailAddressId][] = [
                                     'id' => $fieldListEmailId,
                                     'recordid' => $emailRecordId,
                                     'sid' => $groupId,
                                     'label' => $emailName,
                                     'value' => $emailAddress,
                                     'module' => $fieldListModule,
-                                );
-                                $toMailInfo[$fieldListType][$groupId][$emailAddressId][] = $emailAddress;
+                                ];
+                                $allMailInfo[$fieldListType][$groupId][$emailAddressId][] = $emailAddress;
                             }
                         }
                     }
@@ -747,81 +729,19 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         }
 
         $viewer->assign('SELECTED_SOURCEID', $selectedSourceId);
+        $viewer->assign('SOURCE_IDS', $sourceIds);
         $viewer->assign('SOURCE_NAMES', $sourceNames);
         $viewer->assign('SINGLE_RECORD', $isSingleRecord ? 'yes' : 'no');
 
-        foreach (array('to', 'cc', 'bcc') as $t) {
-            if (count((array)$to[$t]) > 0) {
-                $viewer->assign(strtoupper($t), $to[$t]);
+        foreach (['to', 'cc', 'bcc'] as $type) {
+            if (count((array)$allEmailsLabels[$type]) > 0) {
+                $viewer->assign(strtoupper($type), $allEmailsLabels[$type]);
             }
 
-            $viewer->assign(strtoupper($t) . '_EMAILS', $toEmails[$t]);
-            $viewer->assign(strtoupper($t) . 'MAIL_INFO', $toMailInfo[$t]);
-            $viewer->assign(strtoupper($t) . 'MAIL_NAMES_LIST', $allMailNamesList[$t]);
+            $viewer->assign(strtoupper($type) . '_EMAILS', $allEmails[$type]);
+            $viewer->assign(strtoupper($type) . 'MAIL_INFO', $allMailInfo[$type]);
+            $viewer->assign(strtoupper($type) . 'MAIL_NAMES_LIST', $allMailNamesList[$type]);
         }
-    }
-
-    /**
-     * @param Vtiger_Request $request
-     * @return array|mixed|String|String[]
-     */
-    public function getSourceRecords(Vtiger_Request $request)
-    {
-        if (empty($this->sourceRecordIds)) {
-            if (!$request->isEmpty('record')) {
-                $sourceIds = array($request->get('record'));
-            } else {
-                $sourceIds = $this->getRecordsListFromRequest($request);
-
-                if (!is_array($sourceIds)) {
-                    $sourceIds = array($sourceIds);
-                }
-            }
-
-            $this->sourceRecordIds = $sourceIds;
-        }
-
-        return $this->sourceRecordIds;
-    }
-
-    /**
-     * @param Vtiger_Request $request
-     * @return mixed|String
-     */
-    public function getRecordId(Vtiger_Request $request)
-    {
-        if (empty($this->recordId)) {
-            $sourceIds = $this->getSourceRecords($request);
-
-            if (count($sourceIds) == 1) {
-                $recordId = $sourceIds[0];
-            } else {
-                $recordId = $request->get('record');
-            }
-
-            $this->recordId = $recordId;
-        }
-
-        return $this->recordId;
-    }
-
-    /**
-     * @param Vtiger_Request $request
-     * @return bool
-     */
-    public function isEmailListView(Vtiger_Request $request): bool
-    {
-        if (null === $this->emailListView) {
-            $templates = $this->getEmailTemplateIds($request);
-
-            if (!empty($templates)) {
-                $this->emailListView = ITS4YouEmails_Utils_Helper::isTemplateForListView($templates);
-            } else {
-                $this->emailListView = false;
-            }
-        }
-
-        return $this->emailListView;
     }
 
     /**
@@ -833,15 +753,15 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $emailTemplateLanguage = $this->getEmailTemplateLanguage($request);
         $sourceIds = $this->getSourceRecords($request);
         $recordId = $this->getRecordId($request);
-        $subject = $body = '';
+        $subject = $request->get('subject', '');
+        $body = $request->get('body', '');
         $sourceModule = $request->get('sourceModule');
 
         if (!empty($emailTemplateIds)) {
             if ($this->isEmailListView($request)) {
-
-                $ListViewBlocks = array();
-                $ListViewBlock = array();
-                $ListViewBlockContent = array();
+                $ListViewBlocks = [];
+                $ListViewBlock = [];
+                $ListViewBlockContent = [];
 
                 foreach ($sourceIds as $sourceId) {
                     $this->EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstanceById((int)$emailTemplateIds, $emailTemplateLanguage, $sourceModule, (int)$sourceId);
@@ -905,47 +825,302 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
-     * @return mixed|String
+     * @return void
      */
-    public function getEmailTemplateLanguage(Vtiger_Request $request)
+    public function retrieveEmailInfo(Vtiger_Request $request)
     {
-        return $request->get('email_template_language');
+        $recordId = $this->getParentRecord($request);
+        $recordModule = $this->getParentModule($request);
+
+        if (!$recordId || !$recordModule) {
+            return;
+        }
+
+        $method = 'retrieveEmailInfoFrom' . $recordModule;
+
+        if (method_exists($this, $method)) {
+            $this->$method($request, $recordId, $recordModule);
+        }
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @param int $recordId
+     * @param string $recordModule
+     * @return void
+     */
+    public function retrieveEmailInfoFromITS4YouEmails(Vtiger_Request $request, $recordId, $recordModule)
+    {
+        $mode = $request->get('mode');
+        $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $recordModule);
+
+        $subject = decode_html($recordModel->get('subject'));
+
+        if (in_array($mode, ['Reply', 'ReplyAll'])) {
+            $subject = 'Re:' . $subject;
+        }
+
+        $request->set('subject', $subject);
+        $request->set('body', decode_html($recordModel->get('body')));
+        $request->set('attachments', ITS4YouEmails_Utils_Helper::getRecordAttachments($recordModel));
+
+        if ('Reply' === $mode) {
+            $request->set('field_lists', [sprintf('email|%s|', decode_html($recordModel->get('from_email')))]);
+        }
+
+        if ('ReplyAll' === $mode) {
+            $toEmails = array_unique(array_merge(json_decode(decode_html($recordModel->get('to_email'))), [decode_html($recordModel->get('from_email'))]));
+
+            $request->set('field_lists', ITS4YouEmails_Utils_Helper::getEmailIds($toEmails));
+            $request->set('field_lists_cc', ITS4YouEmails_Utils_Helper::getEmailIds(decode_html($recordModel->get('cc_email'))));
+            $request->set('field_lists_bcc', ITS4YouEmails_Utils_Helper::getEmailIds(decode_html($recordModel->get('bcc_email'))));
+        }
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @param int $recordId
+     * @param string $recordModule
+     * @return void
+     * @throws AppException
+     */
+    public function retrieveEmailInfoFromMailManager(Vtiger_Request $request, int $recordId, string $recordModule): void
+    {
+        $mode = $request->get('mode');
+
+        $recordModel = new MailManager_Message_Model();
+        $recordModel->setUid($recordId);
+        $recordModel->retrieveRecordFromDB();
+        $subject = $recordModel->getSubject();
+
+        if (in_array($mode, ['Reply', 'ReplyAll'])) {
+            $subject = 'Re:' . $subject;
+        }
+
+        $sourceId = $request->get('record', '0');
+        $request->set('selected_sourceid', $sourceId);
+        $request->set('source_names', [$sourceId]);
+        $allEmails = [
+            'to' => [$sourceId => []],
+            'cc' => [$sourceId => []],
+            'bcc' => [$sourceId => []],
+        ];
+        $allMailInfo = [
+            'to' => [$sourceId => []],
+            'cc' => [$sourceId => []],
+            'bcc' => [$sourceId => []],
+        ];
+        $allMailNamesList = [
+            'to' => [$sourceId => []],
+            'cc' => [$sourceId => []],
+            'bcc' => [$sourceId => []],
+        ];
+        $allEmailsLabels = [
+            'to' => [$sourceId => []],
+            'cc' => [$sourceId => []],
+            'bcc' => [$sourceId => []],
+        ];
+
+        $request->set('subject', $subject);
+        $request->set('body', $recordModel->getBody());
+        $request->set('attachments', ITS4YouEmails_Utils_Helper::getMailManagerAttachments($recordModel));
+
+        if ('Reply' === $mode || 'ReplyAll' === $mode) {
+            $emailAddressRecord = !empty($sourceId) ? $sourceId : 'email';
+            $emailAddress = $recordModel->getFrom()[0];
+            $emailAddressId = sprintf('%s|%s|', $emailAddressRecord, $emailAddress);
+            $allEmails['to'][$sourceId] = ITS4YouEmails_Utils_Helper::getArrayAllEmails($emailAddressId, $emailAddress);
+            $allEmailsLabels['to'][$sourceId][$emailAddressId] = $emailAddress;
+            $allMailNamesList['to'][$sourceId][$emailAddressId][] = ITS4YouEmails_Utils_Helper::getArrayAllMailNamesList($emailAddressId, $emailAddress);
+            $allMailInfo['to'][$sourceId][$emailAddressId][] = $emailAddress;
+        }
+
+        if ('ReplyAll' === $mode) {
+            foreach ($recordModel->getTo() as $to) {
+                $emailAddress = $to;
+                $emailAddressId = sprintf('email|%s|', $to);
+                $allEmails['to'][$sourceId] = ITS4YouEmails_Utils_Helper::getArrayAllEmails($emailAddressId, $emailAddress);
+                $allEmailsLabels['to'][$sourceId][$emailAddressId] = $emailAddress;
+                $allMailNamesList['to'][$sourceId][$emailAddressId][] = ITS4YouEmails_Utils_Helper::getArrayAllMailNamesList($emailAddressId, $emailAddress);
+                $allMailInfo['to'][$sourceId][$emailAddressId][] = $emailAddress;
+            }
+
+            foreach ($recordModel->getCC() as $cc) {
+                $emailAddress = $cc;
+                $emailAddressId = sprintf('email|%s|', $cc);
+                $allEmails['cc'][$sourceId] = ITS4YouEmails_Utils_Helper::getArrayAllEmails($emailAddressId, $emailAddress);
+                $allEmailsLabels['cc'][$sourceId][$emailAddressId] = $emailAddress;
+                $allMailNamesList['cc'][$sourceId][$emailAddressId][] = ITS4YouEmails_Utils_Helper::getArrayAllMailNamesList($emailAddressId, $emailAddress);
+                $allMailInfo['cc'][$sourceId][$emailAddressId][] = $emailAddress;
+            }
+
+            foreach ($recordModel->getBCC() as $bcc) {
+                $emailAddress = $bcc;
+                $emailAddressId = sprintf('email|%s|', $bcc);
+                $allEmails['bcc'][$sourceId] = ITS4YouEmails_Utils_Helper::getArrayAllEmails($emailAddressId, $emailAddress);
+                $allEmailsLabels['bcc'][$sourceId][$emailAddressId] = $emailAddress;
+                $allMailNamesList['bcc'][$sourceId][$emailAddressId][] = ITS4YouEmails_Utils_Helper::getArrayAllMailNamesList($emailAddressId, $emailAddress);
+                $allMailInfo['bcc'][$sourceId][$emailAddressId][] = $emailAddress;
+            }
+        }
+
+        $request->set('all_emails', $allEmails);
+        $request->set('all_mail_info', $allMailInfo);
+        $request->set('all_mail_names_list', $allMailNamesList);
+        $request->set('all_emails_labels', $allEmailsLabels);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function retrieveEmails(Vtiger_Request $request)
+    {
+        $sourceIds = $this->getSourceRecords($request);
+        $recordId = $this->getRecordId($request);
+
+        if (count($sourceIds)) {
+            $this->retrieveEmailsForFields($request);
+        }
+
+        if (!empty($recordId)) {
+            $this->retrieveEmailsForDetail($request);
+        }
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @throws Exception
+     */
+    public function retrieveEmailsForDetail(Vtiger_Request $request)
+    {
+        $recordId = $this->getRecordId($request);
+        $recordModule = $this->getSourceModule($request);
+        $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $recordModule);
+
+        if ($recordModel) {
+            $recordField = ITS4YouEmails_Utils_Helper::getEmailFieldFromRecord($recordModel);
+
+            if (empty($recordEmail)) {
+                /** @var Vtiger_Field_Model $field */
+                foreach ($recordModel->getModule()->getFieldsByType('reference') as $field) {
+                    $refFieldName = $field->get('name');
+                    $refRecordId = $recordModel->get($refFieldName);
+
+                    if ($recordModel->isEmpty($refFieldName)) {
+                        continue;
+                    }
+
+                    foreach ($field->getReferenceList() as $refModuleName) {
+                        $refRecordModel = Vtiger_Record_Model::getInstanceById($refRecordId, $refModuleName);
+                        $refRecordField = ITS4YouEmails_Utils_Helper::getEmailFieldFromRecord($refRecordModel);
+
+                        if (!empty($refRecordField)) {
+                            $recordId = $refRecordId;
+                            $recordField = $refRecordField;
+                            $recordModule = $refModuleName;
+                            break 2;
+                        }
+                    }
+                }
+            }
+
+            if ($request->isEmpty('field_lists')) {
+                $request->set(
+                    'field_lists',
+                    [
+                        implode('|', [$recordId, $recordField, $recordModule]),
+                    ],
+                );
+            }
+        }
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @throws Exception
+     */
+    public function retrieveEmailsForFields(Vtiger_Request $request)
+    {
+        $moduleName = $this->getSourceModule($request);
+        $inventoryRecordId = $this->getRecordId($request);
+        $recordModel = Vtiger_Record_Model::getInstanceById($inventoryRecordId, $moduleName);
+        $inventoryModule = $recordModel->getModule();
+        $inventoryFields = $inventoryModule->getFields();
+        $toEmailConsiderableFields = ['contact_id', 'account_id', 'vendor_id'];
+        $db = PearDatabase::getInstance();
+        $field_lists = [];
+
+        foreach ($toEmailConsiderableFields as $fieldName) {
+            if (!array_key_exists($fieldName, $inventoryFields)) {
+                continue;
+            }
+
+            $fieldModel = $inventoryFields[$fieldName];
+
+            if (!$fieldModel->isViewable()) {
+                continue;
+            }
+
+            $fieldValue = $recordModel->get($fieldName);
+
+            if (empty($fieldValue)) {
+                continue;
+            }
+
+            $referenceModule = Vtiger_Functions::getCRMRecordType($fieldValue);
+            $referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
+
+            if (!$referenceModuleModel) {
+                continue;
+            }
+
+            if (!empty($fieldValue) && isRecordExists($fieldValue)) {
+                $referenceRecordModel = Vtiger_Record_Model::getInstanceById($fieldValue, $referenceModule);
+
+                if ($referenceRecordModel->get('emailoptout')) {
+                    continue;
+                }
+            }
+
+            $emailFields = $referenceModuleModel->getFieldsByType('email');
+
+            if (count($emailFields)) {
+                continue;
+            }
+
+            $current_user = Users_Record_Model::getCurrentUserModel();
+            $queryGenerator = new QueryGenerator($referenceModule, $current_user);
+            $queryGenerator->setFields(array_keys($emailFields));
+            $query = $queryGenerator->getQuery();
+            $query .= ' AND crmid = ' . $fieldValue;
+            $result = $db->pquery($query, []);
+
+            if ($db->num_rows($result)) {
+                continue;
+            }
+
+            foreach ($emailFields as $fieldName => $emailFieldModel) {
+                $emailValue = $db->query_result($result, 0, $fieldName);
+
+                if (!empty($emailValue)) {
+                    $field_lists[] = implode('|', [$fieldValue, $fieldName, getSalesEntityType($fieldValue)]);
+                    break 2;
+                }
+            }
+        }
+
+        if ($request->isEmpty('field_lists')) {
+            $request->set('field_lists', $field_lists);
+        }
     }
 
     /**
      * @param Vtiger_Request $request
      * @return void
      */
-    public function retrieveAttachments(Vtiger_Request $request): void
+    public function retrieveForward(Vtiger_Request $request)
     {
-        $attachments = array();
-        $documentIds = array();
-
-        if ($this->EMAILContentModel) {
-            $documentIds = $this->EMAILContentModel->getAttachments();
-        }
-
-        if (count($documentIds) > 0) {
-            foreach ($documentIds as $documentId) {
-                $moduleName = getSalesEntityType($documentId);
-                $documentRecordModel = Vtiger_Record_Model::getInstanceById($documentId, "Documents");
-                if ($documentRecordModel->get('filelocationtype') == 'I') {
-                    $fileDetails = $documentRecordModel->getFileDetails();
-                    if ($fileDetails) {
-                        $fileDetails['fileid'] = $fileDetails['attachmentsid'];
-                        $fileDetails['docid'] = $fileDetails['crmid'];
-                        $fileDetails['attachment'] = $fileDetails['name'];
-                        $fileDetails['nondeletable'] = false;
-                        $fileDetails['size'] = filesize($fileDetails['path'] . $fileDetails['attachmentsid'] . "_" . $fileDetails['name']);
-                        $attachments[] = $fileDetails;
-                    }
-                }
-            }
-        }
-
-        $viewer = $this->getViewer($request);
-        $viewer->assign('ATTACHMENTS', $attachments);
-        $viewer->assign('DOCUMENT_IDS', $documentIds);
+        $this->retrieveEmailInfo($request);
     }
 
     /**
@@ -956,7 +1131,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $emailTemplateId = $this->getEmailTemplateIds($request);
         $savedDefaultFrom = ITS4YouEmails_Utils_Helper::getSavedFromField($emailTemplateId);
         $selectedDefaultFrom = '';
-        $fromEmails = array();
+        $fromEmails = [];
         $userDefaultFrom = ITS4YouEmails_Utils_Helper::getUserFromEmails($fromEmails, $savedDefaultFrom);
         $organizationDefaultFrom = ITS4YouEmails_Utils_Helper::getOrganizationFromEmails($fromEmails, $savedDefaultFrom);
 
@@ -971,5 +1146,152 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $viewer = $this->getViewer($request);
         $viewer->assign('SELECTED_DEFAULT_FROM', $selectedDefaultFrom);
         $viewer->assign('FROM_EMAILS', $fromEmails);
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     */
+    public function retrieveMailManager(Vtiger_Request $request)
+    {
+        $request->set('selected_sourceid', '0');
+        $request->set('source_names', ['0']);
+        $request->set('all_emails', [
+            'to' => ['0' => []],
+            'cc' => ['0' => []],
+            'bcc' => ['0' => []],
+        ]);
+        $request->set('all_mail_info', [
+            'to' => ['0' => []],
+            'cc' => ['0' => []],
+            'bcc' => ['0' => []],
+        ]);
+        $request->set('all_mail_names_list', [
+            'to' => ['0' => []],
+            'cc' => ['0' => []],
+            'bcc' => ['0' => []],
+        ]);
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     */
+    public function retrieveModeData(Vtiger_Request $request): void
+    {
+        $classMode = 'retrieve' . ucfirst($request->get('mode'));
+
+        if (method_exists($this, $classMode)) {
+            $this->$classMode($request);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function retrievePDFTemplates(Vtiger_Request $request)
+    {
+        $viewer = $this->getViewer($request);
+        $viewer->assign('IS_MERGE_TEMPLATES', $request->get('is_merge_templates'));
+
+        if (1 !== (int)$request->get('ispdfactive') || $request->isEmpty('pdf_template_ids')) {
+            return;
+        }
+
+        $PDFTemplateIds = array_filter(explode(';', $request->get('pdf_template_ids')));
+
+        if (!count($PDFTemplateIds)) {
+            return;
+        }
+
+        $this->isPDFActive = true;
+        $PDFLanguage = $request->get('pdf_template_language', $request->get('email_template_language'));
+        $PDFTemplatesList = ITS4YouEmails_Utils_Helper::validatePDFTemplates($PDFTemplateIds, [
+            'records' => $this->getSourceRecords($request),
+            'module' => $this->getSourceModule($request),
+            'language' => $PDFLanguage,
+        ]);
+        $PDFTemplateIds = implode(';', array_keys($PDFTemplatesList));
+        $viewer->assign('PDF_TEMPLATE_IDS', $PDFTemplateIds);
+        $viewer->assign('PDF_TEMPLATES', $PDFTemplatesList);
+        $viewer->assign('PDF_TEMPLATE_LANGUAGE', $PDFLanguage);
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     */
+    public function retrieveRecordDocumentsUrl(Vtiger_Request $request)
+    {
+        $records = $this->getRecordsListFromRequest($request);
+        $recordDocumentsUrl = '';
+
+        if (1 === count((array)$records)) {
+            $recordDocumentsUrl = 'module=ITS4YouEmails&view=Documents&mode=recordDocuments&record=' . $records[0];
+        }
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('RECORD_DOCUMENTS_URL', $recordDocumentsUrl);
+    }
+
+    /**
+     * @throws WebServiceException
+     */
+    public function retrieveRelatedModules(Vtiger_Request $request)
+    {
+        /** @var $moduleModel ITS4YouEmails_Module_Model */
+        $moduleModel = Vtiger_Module_Model::getInstance('ITS4YouEmails');
+        $relatedModules = $moduleModel->getEmailRelatedModules();
+        $selected = $request->get('fieldModule');
+
+        if (empty($fieldModule)) {
+            $moduleNames = array_filter([$request->get('parentModule'), $request->get('sourceModule'), 'Accounts', 'Contacts', 'Leads']);
+
+            foreach ($moduleNames as $moduleName) {
+                if (in_array($moduleName, $relatedModules)) {
+                    $selected = $moduleName;
+                    break;
+                }
+            }
+        }
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('RELATED_MODULES', $relatedModules);
+        $viewer->assign('RELATED_MODULE_SELECTED', $selected);
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     */
+    public function retrieveReply(Vtiger_Request $request)
+    {
+        $this->retrieveEmailInfo($request);
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     */
+    public function retrieveReplyAll(Vtiger_Request $request)
+    {
+        $this->retrieveEmailInfo($request);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function retrieveSMTPRecords(Vtiger_Request $request)
+    {
+        $records = [];
+
+        if (vtlib_isModuleActive('ITS4YouSMTP') && getTabid('ITS4YouSMTP')) {
+            /** @var ITS4YouSMTP_Module_Model $moduleModel */
+            $moduleModel = Vtiger_Module_Model::getInstance('ITS4YouSMTP');
+            $records = $moduleModel->getRecords();
+        }
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('SMTP_RECORDS', $records);
     }
 }

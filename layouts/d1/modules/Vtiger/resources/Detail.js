@@ -195,8 +195,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	 */
 	previewFile: function (e, recordId,attachmentId) {
 		Vtiger_Index_Js.previewFile(e, recordId,attachmentId);
-	}
-
+	},
+	openDetail() {
+		$('[data-link-key="LBL_RECORD_DETAILS"]').trigger('click');
+	},
 },{
 	registerSummaryHandlers: true,
 	detailViewSummaryTabLabel : 'LBL_RECORD_SUMMARY',
@@ -575,31 +577,32 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	 * @returns {undefined}
 	 */
 	registerEventForRelatedTabClick : function(){
-		var self = this;
-		var detailViewContainer = this.getDetailViewContainer();
+		let self = this,
+			detailViewContainer = this.getDetailViewContainer();
+
 		jQuery('.related-tabs', detailViewContainer).on('click', 'li.tab-item a', function(e, urlAttributes) {
 			e.preventDefault();
 		});
-		jQuery('.related-tabs', detailViewContainer).on('click', 'li.more-tab a', function(e, urlAttributes) {
-			e.preventDefault();
-		});
+
 		jQuery('.related-tabs', detailViewContainer).on('click', 'li.more-tab', function(e,urlAttributes){
-			if(jQuery('.moreTabElement').length != 0){
+			if(0 !== jQuery('.moreTabElement').length){
 				jQuery('.moreTabElement').remove();
 			}
-			var moreTabElement = jQuery(e.currentTarget).clone();
+
+			let moreTabElement = jQuery(e.currentTarget).clone();
 			moreTabElement.find('.content').text('');
 			moreTabElement.addClass('moreTabElement');
 			moreTabElement.addClass('active');
-			var moreElementTitle = moreTabElement.find('a').attr('displaylabel')
+			let moreElementTitle = moreTabElement.find('a').attr('displaylabel')
 			moreTabElement.attr('title',moreElementTitle);
 			moreTabElement.find('.tab-icon').removeClass('text-truncate');
 			jQuery('.related-tab-more-element').before(moreTabElement);
 			self.loadSelectedTabContents(moreTabElement, urlAttributes);
 			self.registerQtipevent(moreTabElement);
 		});
+
 		jQuery('.related-tabs', detailViewContainer).on('click', 'li.tab-item', function(e,urlAttributes){
-			var tabElement = jQuery(e.currentTarget);
+			let tabElement = jQuery(e.currentTarget);
 			self.loadSelectedTabContents(tabElement, urlAttributes);
 		});
 	},
@@ -1628,7 +1631,17 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			}
 		});
 	},
+	registerPostLoadWidget(container) {
+		const self = this;
 
+		jQuery('.widget_contents', container).on(self.widgetPostLoad, function() {
+			let selects = $(this).find('.select2');
+
+			if(selects.length) {
+				vtUtils.showSelect2ElementView($(this).find('.select2'))
+			}
+		})
+	},
 	registerSummaryViewContainerEvents: function (summaryViewContainer) {
 		const self = this;
 
@@ -1693,15 +1706,12 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		/*
 		 * Register the event to edit the status for for related activities
 		 */
-		summaryViewContainer.on('click', '.editStatus', function (e) {
+		summaryViewContainer.on('change', '.activityStatus .select2', function (e) {
 			let currentTarget = jQuery(e.currentTarget),
 				currentDiv = currentTarget.closest('.activityStatus'),
-				editElement = currentDiv.find('.edit'),
-				detailViewElement = currentDiv.find('.value');
+				editElement = currentDiv.find('.edit');
 
-			currentTarget.hide();
-			detailViewElement.addClass('hide');
-			editElement.removeClass('hide').show();
+			currentDiv.attr('data-calendar-status', currentTarget.val());
 
 			let callbackFunction = function () {
 				let fieldnameElement = jQuery('.fieldname', editElement),
@@ -1720,18 +1730,13 @@ Vtiger.Class("Vtiger_Detail_Js",{
 					vtUtils.hideValidationMessage(select2Element);
 				}
 
-				if (previousValue === ajaxEditNewValue) {
-					editElement.addClass('hide');
-					detailViewElement.removeClass('hide');
-					currentTarget.show();
-				} else {
+				if (previousValue !== ajaxEditNewValue) {
 					let activityDiv = currentDiv.closest('.activityEntries'),
 						activityId = activityDiv.find('.activityId').val(),
 						moduleName = activityDiv.find('.activityModule').val(),
 						activityType = activityDiv.find('.activityType').val();
 
 					app.helper.showProgress();
-					editElement.addClass('hide');
 
 					let params = {
 						action: 'SaveAjax',
@@ -1744,26 +1749,23 @@ Vtiger.Class("Vtiger_Detail_Js",{
 						origin: 'SummaryWidget'
 					};
 
-					app.request.post({"data": params}).then(
-						function (err, data) {
-							app.helper.hideProgress();
-							if (err == null) {
-								jQuery('.vt-notification').remove();
-								detailViewElement.removeClass('hide');
-								currentTarget.show();
-								detailViewElement.html(translatedValue);
-								fieldnameElement.data('prevValue', ajaxEditNewValue);
-							} else {
-								app.event.trigger('post.save.failed', err);
-								detailViewElement.removeClass('hide');
-								currentTarget.show();
-								fieldElement.select2('val', previousValue);
-							}
-						});
+					app.request.post({"data": params}).then(function (error, data) {
+						app.helper.hideProgress();
+
+						if (!error) {
+							jQuery('.vt-notification').remove();
+							fieldnameElement.data('prevValue', ajaxEditNewValue);
+						} else {
+							app.event.trigger('post.save.failed', error);
+							fieldElement.select2('val', previousValue);
+						}
+					});
 				}
 			}
 			app.helper.addClickOutSideEvent(currentDiv, callbackFunction);
 		});
+
+		self.registerPostLoadWidget(summaryViewContainer);
 	},
 
 	addRelationBetweenRecords : function(relatedModule, relatedModuleRecordId){
@@ -1800,34 +1802,27 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	},
 
 	loadWidget : function(widgetContainer) {
-		var aDeferred = jQuery.Deferred();
-		var thisInstance = this;
-		var contentContainer = jQuery('.widget_contents',widgetContainer);
-		var urlParams = widgetContainer.data('url');
+		let aDeferred = jQuery.Deferred(),
+			thisInstance = this,
+			contentContainer = jQuery('.widget_contents',widgetContainer),
+			urlParams = widgetContainer.data('url'),
+			params = {
+				'type' : 'GET',
+				'dataType': 'html',
+				'data' : urlParams
+			};
 
-		var params = {
-			'type' : 'GET',
-			'dataType': 'html',
-			'data' : urlParams
-		};
 		app.helper.showProgress();
-		app.request.post(params).then(
-			function(err,data){
-				app.helper.hideProgress();
-				contentContainer.html(data);
-				contentContainer.trigger(thisInstance.widgetPostLoad);
+		app.request.post(params).then(function(error,data){
+			app.helper.hideProgress();
+			contentContainer.html(data);
+			contentContainer.trigger(thisInstance.widgetPostLoad);
 
-				var adjustedHeight = contentContainer.height()-50;
-				app.helper.showVerticalScroll(contentContainer.find('.twitterContainer'),{
-					'setHeight' : adjustedHeight
-				});
+			aDeferred.resolve(params);
+		}, function(){
+			aDeferred.reject();
+		});
 
-				aDeferred.resolve(params);
-			},
-			function(){
-				aDeferred.reject();
-			}
-		);
 		return aDeferred.promise();
 	},
 

@@ -115,17 +115,21 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller {
 			}
 		}
 		$recordModel->save();
-		if($request->get('relationOperation')) {
-			$parentModuleName = $request->get('sourceModule');
-			$parentModuleModel = Vtiger_Module_Model::getInstance($parentModuleName);
-			$parentRecordId = $request->get('sourceRecord');
-			$relatedModule = $recordModel->getModule();
-			$relatedRecordId = $recordModel->getId();
 
-			$relationModel = Vtiger_Relation_Model::getInstance($parentModuleModel, $relatedModule);
-			$relationModel->addRelation($parentRecordId, $relatedRecordId);
-		}
-		$this->savedRecordId = $recordModel->getId();
+        if ($request->get('relationOperation')) {
+            $parentModuleName = $request->get('sourceModule');
+            $parentModuleModel = Vtiger_Module_Model::getInstance($parentModuleName);
+            $parentRecordId = $request->get('sourceRecord');
+            $relatedModule = $recordModel->getModule();
+            $relatedRecordId = $recordModel->getId();
+            $relationModel = Vtiger_Relation_Model::getInstance($parentModuleModel, $relatedModule);
+
+            if ($relationModel) {
+                $relationModel->addRelation($parentRecordId, $relatedRecordId);
+            }
+        }
+
+        $this->savedRecordId = $recordModel->getId();
 		return $recordModel;
 	}
 

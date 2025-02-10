@@ -77,6 +77,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public static array $installedModules = [];
 
+    public static array $fieldKeySkippedForUpdate = ['presence', 'typeofdata', 'quickcreate', 'masseditable', 'summaryfield'];
+
     /**
      * @return void
      */
@@ -244,21 +246,11 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @return void
-     * @throws AppException
+     * @param string $moduleName
+     * @return false|Vtiger_Module
      */
-    public function installModule()
+    public function createModule(string $moduleName): Vtiger_Module|bool
     {
-        if ($this->isInstalledModule()) {
-            return;
-        }
-
-        $this->installTables();
-
-        self::logSuccess('Install tables');
-
-        $currentUser = Users_Record_Model::getCurrentUserModel();
-        $moduleName = $this->moduleName;
         $moduleFocus = CRMEntity::getInstance($moduleName);
 
         $entity = !empty($moduleFocus->isEntity) ? 1 : 0;
@@ -272,8 +264,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         $versionClass = $moduleName . '_Version_Helper';
         $version = class_exists($versionClass) ? $versionClass::getVersion() : 0.1;
-
-        $blocks = $this->getBlocks();
 
         if (!empty($entity) && empty($baseTableId)) {
             self::logError('Empty base table ID');
@@ -328,6 +318,30 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $moduleInstance->grouptable = $groupRelTable;
         $moduleInstance->save();
 
+        return $moduleInstance;
+    }
+
+    /**
+     * @return void
+     * @throws AppException
+     */
+    public function installModule()
+    {
+        if ($this->isInstalledModule()) {
+            return;
+        }
+
+        $this->installTables();
+
+        self::logSuccess('Install tables');
+
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $moduleName = $this->getModuleName();
+
+        self::logSuccess('Module create');
+
+        $moduleInstance = $this->createModule($moduleName);
+
         self::logSuccess('Module created');
 
         $moduleInstance->setDefaultSharing();
@@ -338,11 +352,13 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         self::logSuccess('Webservice Setup');
 
-        if ($entity) {
+        if ($moduleInstance->isentitytype) {
             $moduleInstance->initTables($moduleInstance->basetable, $moduleInstance->basetableid);
             $entityIdentifiers = [];
             $filterFields = [];
             $filterDynamicSequence = 0;
+
+            $blocks = $this->getBlocks();
 
             $fieldTable = $this->getTable('vtiger_field', null);
 
@@ -359,45 +375,16 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                     self::logSuccess('Field create: ' . $fieldName);
 
                     $fieldSequence++;
-                    $relatedModules = [];
-                    $picklistValues = [];
+                    $fieldParams['sequence'] = $fieldParams['sequence'] ?? $fieldSequence;
+                    $fieldParams['table'] = $fieldParams['table'] ?? $moduleInstance->basetable;
+                    $fieldParams['block'] = $blockInstance;
+                    $fieldParams['module'] = $moduleInstance;
 
-                    $fieldInstance = Vtiger_Field_Model::getInstance($fieldName, $moduleInstance);
+                    $fieldInstance = $this->createField($fieldName, $fieldParams);
 
-                    if (!$fieldInstance) {
-                        $fieldInstance = new Vtiger_Field_Model();
-                    }
+                    if (!empty($fieldParams['picklist_values'])) {
+                        $picklistValues = $fieldParams['picklist_values'];
 
-                    $fieldInstance->name = $fieldName;
-                    $fieldInstance->column = $fieldName;
-                    $fieldInstance->table = $baseTable;
-                    $fieldInstance->sequence = $fieldSequence;
-
-                    foreach ($fieldParams as $fieldParamName => $fieldParam) {
-                        if ('picklist_values' === $fieldParamName) {
-                            $picklistValues = $fieldParam;
-                        } elseif ('related_modules' === $fieldParamName) {
-                            $relatedModules = $fieldParam;
-                        } else {
-                            $fieldInstance->$fieldParamName = $fieldParam;
-                        }
-                    }
-
-                    $blockInstance->addField($fieldInstance);
-                    $fieldTable->updateData(
-                        [
-                            'block' => $fieldInstance->getBlockId(),
-                            'tablename' => $fieldInstance->table,
-                            'presence' => $fieldInstance->presence,
-                            'displaytype' => $fieldInstance->displaytype,
-                            'sequence' => $fieldInstance->sequence,
-                        ],
-                        [
-                            'fieldid' => $fieldInstance->id,
-                        ],
-                    );
-
-                    if (!empty($picklistValues)) {
                         self::logSuccess('Picklist values create: ' . $fieldName);
                         self::logSuccess($picklistValues);
 
@@ -423,7 +410,9 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                         }
                     }
 
-                    if (!empty($relatedModules)) {
+                    if (!empty($fieldParams['related_modules'])) {
+                        $relatedModules = $fieldParams['related_modules'];
+
                         self::logSuccess('Related modules create: ' . $fieldName . ' - ' . implode(',', $relatedModules));
 
                         foreach ($relatedModules as $relatedModule => $relatedLabel) {
@@ -470,8 +459,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
             self::logSuccess('Link start creating');
 
-            if (!empty($name) && !empty($parent)) {
-                Settings_MenuEditor_Module_Model::addModuleToApp($name, $parent);
+            if (!empty($moduleInstance->name) && !empty($moduleInstance->parent)) {
+                Settings_MenuEditor_Module_Model::addModuleToApp($moduleInstance->name, $moduleInstance->parent);
 
                 self::logSuccess('Link created');
             } else {
@@ -485,6 +474,74 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         self::logSuccess('Module result: ' . $moduleName);
         self::logSuccess($moduleInstance);
+    }
+
+    /**
+     * @return string
+     */
+    public function getModuleName(): string
+    {
+        return $this->moduleName;
+    }
+
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function isFieldKeySkippedForUpdate(string $key): bool
+    {
+        return defined('VTIGER_UPGRADE') && in_array($key, self::$fieldKeySkippedForUpdate);
+    }
+
+    /**
+     * @param string $fieldName
+     * @param array $fieldParams
+     * @return Vtiger_Field_Model|bool
+     * @throws AppException
+     */
+    public function createField(string $fieldName, array $fieldParams): Vtiger_Field_Model|bool
+    {
+        $moduleInstance = $fieldParams['module'];
+        $blockInstance = $fieldParams['block'];
+        $fieldInstance = $this->getFieldInstance($fieldName, $moduleInstance);
+
+        foreach ($fieldParams as $fieldParamName => $fieldParam) {
+            if ($fieldInstance->getId() && $this->isFieldKeySkippedForUpdate($fieldParamName)) {
+                continue;
+            }
+
+            $fieldInstance->$fieldParamName = $fieldParam;
+        }
+
+        $fieldInstance->save($blockInstance);
+        $fieldInstance->getFieldTable()->updateData(
+            [
+                'block' => $fieldInstance->getBlockId(),
+                'tablename' => $fieldInstance->table,
+                'presence' => $fieldInstance->presence,
+                'displaytype' => $fieldInstance->displaytype,
+                'sequence' => $fieldInstance->sequence,
+            ],
+            [
+                'fieldid' => $fieldInstance->id,
+            ],
+        );
+
+        return $fieldInstance;
+    }
+
+    public function getFieldInstance($fieldName, $moduleInstance)
+    {
+        $fieldInstance = Vtiger_Field_Model::getInstance($fieldName, $moduleInstance);
+
+        if (!$fieldInstance) {
+            $fieldInstance = new Vtiger_Field_Model();
+        }
+
+        $fieldInstance->name = $fieldName;
+        $fieldInstance->column = $fieldName;
+
+        return $fieldInstance;
     }
 
     public function createBlock($blockName, $moduleInstance)
@@ -846,14 +903,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             $integration->setField();
             $integration->setRelation();
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getModuleName(): string
-    {
-        return $this->moduleName;
     }
 
     /**

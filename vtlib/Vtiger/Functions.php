@@ -1764,4 +1764,27 @@ class Vtiger_Functions {
 
         return round(pow(1024, $base - floor($base)), 1) . $suffix[$f_base];
     }
+
+    /**
+     * @param $color
+     * @return string
+     */
+    public static function hexToRGB($color): string
+    {
+        $color = trim($color, '#');
+        $data = array_map('hexdec', str_split($color, 2));
+
+        return implode(',', $data);
+    }
+
+    /**
+     * @param string $color
+     * @return string
+     */
+    public static function getArrowDownSVG(string $color): string
+    {
+        $color = trim($color, '#');
+
+        return "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23$color' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e";
+    }
 }

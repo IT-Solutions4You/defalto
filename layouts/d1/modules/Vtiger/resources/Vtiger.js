@@ -771,11 +771,12 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 * This will allow users to create reference record from edit view of other record
 	 */
 	registerReferenceCreate : function(container) {
-		var thisInstance = this;
+		let self = this;
 		container.on('click','.createReferenceRecord', function(e) {
-			var element = jQuery(e.currentTarget);
-			var controlElementTd = thisInstance.getParentElement(element);
-			thisInstance.referenceCreateHandler(controlElementTd);
+			let element = jQuery(e.currentTarget),
+				parentElement = self.getParentElement(element);
+
+			self.referenceCreateHandler(parentElement);
 		});
 	},
 
@@ -792,16 +793,16 @@ Vtiger.Class('Vtiger_Index_Js', {
 		});
 		container.on('change', '.referenceModulesList', function (e) {
 			let element = jQuery(e.currentTarget),
-				closestTD = self.getParentElement(element).next(),
+				parentElement = self.getParentElement(element),
 				popupReferenceModule = element.val(),
-				referenceModuleElement = jQuery('input[name="popupReferenceModule"]', closestTD).length ? jQuery('input[name="popupReferenceModule"]', closestTD) : jQuery('input.popupReferenceModule', closestTD),
+				referenceModuleElement = jQuery('input[name="popupReferenceModule"]', parentElement).length ? jQuery('input[name="popupReferenceModule"]', parentElement) : jQuery('input.popupReferenceModule', parentElement),
 				prevSelectedReferenceModule = referenceModuleElement.val();
 
 			referenceModuleElement.val(popupReferenceModule);
 
 			//If Reference module is changed then we should clear the previous value
 			if (prevSelectedReferenceModule !== popupReferenceModule) {
-				closestTD.find('.clearReferenceSelection').trigger('click');
+				parentElement.find('.clearReferenceSelection').trigger('click');
 			}
 		});
 	},

@@ -211,7 +211,7 @@
                                 <a href="{$CALENDAR_TODAY_RECORD->getDetailViewUrl()}" class="btn btn-outline-secondary text-secondary border-secondary" title="{$CALENDAR_TODAY_RECORD->getName()}">
                                     <div class="text-start">
                                         <div>
-                                            <i class="{$CALENDAR_TODAY_RECORD->getActivityTypeIcon()}"></i>
+                                            {$CALENDAR_TODAY_RECORD->getActivityTypeIcon()}
                                             <span class="ms-2">{$CALENDAR_TODAY_RECORD->getTimes()}</span>
                                         </div>
                                         <div>

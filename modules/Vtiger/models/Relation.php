@@ -105,6 +105,7 @@ class Vtiger_Relation_Model extends Vtiger_Base_Model{
 	}
 
 	public function getQuery($parentRecord, $actions=false){
+        /** @var Vtiger_Module_Model $parentModuleModel */
 		$parentModuleModel = $this->getParentModuleModel();
 		$relatedModuleModel = $this->getRelationModuleModel();
 		$parentModuleName = $parentModuleModel->getName();

@@ -255,13 +255,13 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                 $fileName = $existingAttachInfo['attachment'];
                 $filePath = $existingAttachInfo['path'];
                 $fileId = $existingAttachInfo['fileid'];
-                $oldFileName = $fileName;
+                $oldFileName = $existingAttachInfo['storedname'] ?? $fileName;
 
                 if (!empty ($fileId)) {
-                    $oldFileName = $existingAttachInfo['fileid'] . '_' . $fileName;
+		            $oldFileName = $existingAttachInfo['fileid'] . '_' . $oldFileName;
                 }
 
-                $oldFilePath = $filePath . '/' . $oldFileName;
+	            $oldFilePath = rtrim($filePath, '/') . '/' . $oldFileName;
 
                 $attachmentId = $this->db->getUniqueID('vtiger_crmentity');
                 $binFile = sanitizeUploadFileName($fileName, $upload_badext);
@@ -322,10 +322,10 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         }
 
         if ($request->has('selected_sourceid')) {
-            $selectedSourceId = $request->get('selected_sourceid');
-
-            if ('0' == $selectedSourceId) {
-                $getEmails = array('0');
+		    if (empty($getEmails) || '0' === $request->get('selected_sourceid')) {
+			    $getEmails = [
+				    $request->get('selected_sourceid')
+			    ];
             }
         }
 
@@ -491,10 +491,13 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
 
                         [$toRecord, $toEmail, $toModule] = explode('|', $toEmailId);
 
+                        $relatedToEntityId = ('Users' !== $toModule ? $toRecord : null);
+                        $relatedTo = !empty($mailAddressId) ? $mailAddressId : $relatedToEntityId;
+
                         $cloneRecordModelEmails = clone $recordModelEmails;
                         $cloneRecordModelEmails->set('assigned_user_id', $current_user_id);
                         $cloneRecordModelEmails->set('attachment_ids', $sendEmail['attachment_ids']);
-                        $cloneRecordModelEmails->set('related_to', $mailAddressId);
+                        $cloneRecordModelEmails->set('related_to', $relatedTo);
                         $cloneRecordModelEmails->set('to_email', $toEmail);
                         $cloneRecordModelEmails->set('to_email_ids', $toEmailId);
                         $cloneRecordModelEmails->clearRelatedToInfo();

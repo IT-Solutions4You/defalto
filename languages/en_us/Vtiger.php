@@ -1465,6 +1465,7 @@ $languageStrings = array(
     'LBL_CONTENT' => 'Content',
     'LBL_RELATED_BLOCKS' => 'Related Blocks',
     'LBL_RELATION_LIST' => 'Relations List',
+    'LBL_NAVIGATION' => 'Navigation',
 );
 
 $jsLanguageStrings = array(

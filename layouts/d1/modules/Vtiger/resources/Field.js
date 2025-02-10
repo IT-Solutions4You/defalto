@@ -339,30 +339,21 @@ Vtiger_Field_Js('Vtiger_Documentsfolder_Field_Js',{},{
 	 * Function to get the ui
 	 * @return - select element and chosen element
 	 */
-	getUi : function() {
+	getUi: function () {
 		//added class inlinewidth
-		let html = '<select class="DocumentsFolderField select2 inputElement inlinewidth" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">',
+		let html = '<select class="DocumentsFolderField select2 inputElement inlinewidth" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">',
 			pickListValues = this.getPickListValues(),
 			selectedOption = app.htmlDecode(this.getValue());
 
-		if(typeof pickListValues[' '] == 'undefined' || pickListValues[' '].length <= 0 || pickListValues[' '] !== 'Select an Option') {
-			html += '<option value="">'+app.vtranslate('JS_SELECT_OPTION')+'</option>';
+		if (typeof pickListValues[' '] == 'undefined' || pickListValues[' '].length <= 0 || pickListValues[' '] !== 'Select an Option') {
+			html += '<option value="">' + app.vtranslate('JS_SELECT_OPTION') + '</option>';
 		}
 
-		let data = this.getData(),
-			fieldName = this.getName();
+		$.each(pickListValues, function(option, value) {
+			html += '<option value="' + value + '" ' + (value === selectedOption ? 'selected': '') + ' >' + value + '</option>';
+		})
 
-		for(var option in pickListValues) {
-			html += '<option value="'+option+'" ';
-
-			if(option == selectedOption) {
-				html += ' selected ';
-			}
-
-			html += '>'+pickListValues[option]+'</option>';
-		}
-
-		html +='</select>';
+		html += '</select>';
 
 		let selectContainer = jQuery(html);
 

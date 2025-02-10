@@ -30,7 +30,7 @@
     </div>
     <div id="js_strings" class="hide noprint">{Zend_Json::encode($LANGUAGE_STRINGS)}</div>
     <div id="maxListFieldsSelectionSize" class="hide noprint">{$MAX_LISTFIELDS_SELECTION_SIZE}</div>
-    <div id="myModal" class="modal myModal fade">
+    <div id="myModal" class="modal myModal fade" tabindex="-1" data-bs-focus="false">
         <div class="modal-dialog"></div>
     </div>
     {include file='JSResources.tpl'|@vtemplate_path}

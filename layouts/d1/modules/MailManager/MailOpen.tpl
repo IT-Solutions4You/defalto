@@ -6,6 +6,7 @@
 *}
 {strip}
     <div class="container-fluid d-flex flex-column h-100">
+        <input type="hidden" id="recordId" value="0">
         <input type="hidden" id="mmFrom" value='{implode(',', $MAIL->getFrom())}'>
         <input type="hidden" id="mmSubject" value='{Vtiger_Functions::jsonEncode($MAIL->getSubject())}'>
         <input type="hidden" id="mmMsgNo" value="{$MAIL->getMsgNo()}">
@@ -94,6 +95,15 @@
             </div>
         </div>
         <div class="text-end border-bottom pb-3">
+            <span class="btn btn-outline-secondary mmDetailAction me-2" onclick='javascript:ITS4YouEmails_MassEdit_Js.replyEmail({$MAIL->getUid()},"MailManager");' title="{vtranslate('Reply', $MODULE)}">
+                <i class="fa-solid fa-reply"></i>
+            </span>
+            <span class="btn btn-outline-secondary mmDetailAction me-2" onclick='javascript:ITS4YouEmails_MassEdit_Js.replyAllEmail({$MAIL->getUid()},"MailManager");' title="{vtranslate('Reply all', $MODULE)}">
+                <i class="fa-solid fa-reply-all"></i>
+            </span>
+            <span class="btn btn-outline-secondary mmDetailAction me-2" onclick='javascript:ITS4YouEmails_MassEdit_Js.forwardEmail({$MAIL->getUid()},"MailManager");' title="{vtranslate('Forward', $MODULE)}">
+                <i class="fa-solid fa-reply fa-flip-horizontal"></i>
+            </span>
             <span class="btn btn-outline-secondary mmDetailAction me-2" id="mmPrint" title="{vtranslate('LBL_Print', $MODULE)}">
                 <i class="fa fa-print"></i>
             </span>

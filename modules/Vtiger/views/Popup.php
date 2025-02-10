@@ -77,10 +77,16 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 	/*
 	 * Function to initialize the required data in smarty to display the List View Contents
 	 */
-	public function initializeListViewContents(Vtiger_Request $request, Vtiger_Viewer $viewer) {
+    /**
+     * @param Vtiger_Request $request
+     * @param Vtiger_Viewer $viewer
+     * @return void
+     * @throws AppException
+     */
+    public function initializeListViewContents(Vtiger_Request $request, Vtiger_Viewer $viewer) {
 		$moduleName = $this->getModule($request);
-		$cvId = $request->get('cvid');
-		$pageNumber = $request->get('page');
+		$cvId = $request->get('cvid', '0');
+		$pageNumber = $request->get('page', '1');
 		$orderBy = $request->get('orderby');
 		$sortOrder = $request->get('sortorder');
 		$sourceModule = $request->get('src_module');
@@ -91,30 +97,18 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 		$currencyId = $request->get('currency_id');
 		$relatedParentModule = $request->get('related_parent_module');
 		$relatedParentId = $request->get('related_parent_id');
-				$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-				$searchParams=$request->get('search_params');
-
-		$relationId = $request->get('relationId'); 
-
+        $searchParams=$request->get('search_params');
+		$relationId = $request->get('relationId');
 		//To handle special operation when selecting record from Popup
 		$getUrl = $request->get('get_url');
-		$autoFillModule = $moduleModel->getAutoFillModule($moduleName);
+        //Check whether the request is in multi select mode
+        $multiSelectMode = $request->isEmpty('multi_select');
 
-		//Check whether the request is in multi select mode
-		$multiSelectMode = $request->get('multi_select');
-		if(empty($multiSelectMode)) {
-			$multiSelectMode = false;
-		}
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+		$autoFillModule = $moduleModel->getAutoFillModule($moduleName);
 
 		if(empty($getUrl) && !empty($sourceField) && !empty($autoFillModule) && !$multiSelectMode) {
 			$getUrl = 'getParentPopupContentsUrl';
-		}
-
-		if(empty($cvId)) {
-			$cvId = '0';
-		}
-		if(empty ($pageNumber)){
-			$pageNumber = '1';
 		}
 
 		$pagingModel = new Vtiger_Paging_Model();
@@ -122,23 +116,26 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 
 		$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceForModule($moduleModel);
 
-        if (Vtiger_Util_Helper::checkRecordExistance($relatedParentId)) {
-            $relatedParentModule = '';
-            $relatedParentId = '';
-        } else {
+        if (!empty($relatedParentId) && isRecordExists($relatedParentId)) {
             $relatedParentModule = getSalesEntityType($relatedParentId);
         }
 
-        if(!empty($relatedParentModule) && !empty($relatedParentId)) {
+        if(!empty($relatedParentId)) {
+            /** Required for focus function get_merged_list for example creating Appointments record with quick create in module Accounts and related to is Project  */
+            vglobal('currentModule', $relatedParentModule);
+
 			$parentRecordModel = Vtiger_Record_Model::getInstanceById($relatedParentId, $relatedParentModule);
-			$listViewModel = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $moduleName, $label, $relationId);
-			$searchModuleModel = $listViewModel->getRelatedModuleModel();
-		}else{
-			$listViewModel = Vtiger_ListView_Model::getInstanceForPopup($moduleName);
-			$searchModuleModel = $listViewModel->getModule();
+            $listViewModel = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $moduleName, false, $relationId);
+            $relationModel = $listViewModel->getRelationModel();
+            $searchModuleModel = $listViewModel->getRelatedModuleModel();
 		}
 
-		if(!empty($orderBy)) {
+        if (empty($listViewModel) || empty($relationModel)) {
+            $listViewModel = Vtiger_ListView_Model::getInstanceForPopup($moduleName);
+            $searchModuleModel = $listViewModel->getModule();
+        }
+
+        if(!empty($orderBy)) {
 			$listViewModel->set('orderby', $orderBy);
 			$listViewModel->set('sortorder', $sortOrder);
 		}
@@ -151,14 +148,16 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 			$listViewModel->set('search_key', $searchKey);
 			$listViewModel->set('search_value', $searchValue);
 		}
+
 		$listViewModel->set('relationId',$relationId);
 
-				if(!empty($searchParams)){
-					$transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchParams, $searchModuleModel);
-					$listViewModel->set('search_params',$transformedSearchParams);
-				}
-		if(!empty($relatedParentModule) && !empty($relatedParentId)) {
-			$this->listViewHeaders = $listViewModel->getHeaders();
+        if(!empty($searchParams)){
+            $transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchParams, $searchModuleModel);
+            $listViewModel->set('search_params',$transformedSearchParams);
+        }
+
+        if (is_a($listViewModel, 'Vtiger_RelationListView_Model')) {
+            $this->listViewHeaders = $listViewModel->getHeaders();
             $relatedModuleModel = Vtiger_Module_Model::getInstance($moduleName);
             $moduleFields = $relatedModuleModel->getFields();
 
@@ -182,25 +181,24 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
             }
 
             $models = $listViewModel->getEntries($pagingModel);
-			$noOfEntries = php7_count($models);
-			foreach ($models as $recordId => $recordModel) {
-				foreach ($this->listViewHeaders as $fieldName => $fieldModel) {
-					$recordModel->set($fieldName, $recordModel->getDisplayValue($fieldName));
-				}
-				$models[$recordId] = $recordModel;
-			}
-			$this->listViewEntries = $models;
-			if(php7_count($this->listViewEntries) > 0 ){
-				$parent_related_records = true;
-			}
-		}else{
-			$this->listViewHeaders = $listViewModel->getListViewHeaders();
-			$this->listViewEntries = $listViewModel->getListViewEntries($pagingModel);
-		}
+            $noOfEntries = php7_count($models);
+            foreach ($models as $recordId => $recordModel) {
+                foreach ($this->listViewHeaders as $fieldName => $fieldModel) {
+                    $recordModel->set($fieldName, $recordModel->getDisplayValue($fieldName));
+                }
+                $models[$recordId] = $recordModel;
+            }
+            $this->listViewEntries = $models;
+            if (php7_count($this->listViewEntries) > 0) {
+                $parent_related_records = true;
+            }
+        } else {
+            $this->listViewHeaders = $listViewModel->getListViewHeaders();
+            $this->listViewEntries = $listViewModel->getListViewEntries($pagingModel);
+        }
 
-		// If there are no related records with parent module then, we should show all the records
-		if((!isset($parent_related_records) || !$parent_related_records) && 
-			!empty($relatedParentModule) && !empty($relatedParentId)){
+        // If there are no related records with parent module then, we should show all the records
+		if((!isset($parent_related_records) || !$parent_related_records) && !empty($relatedParentModule) && !empty($relatedParentId)){
 			$relatedParentModule = null;
 			$relatedParentId = null;
 			$listViewModel = Vtiger_ListView_Model::getInstanceForPopup($moduleName);
@@ -227,20 +225,20 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 			$this->listViewEntries = $listViewModel->getListViewEntries($pagingModel);
 		}
 		// End  
-				if(empty($searchParams)) {
-					$searchParams = array();
-				}
-			   //To make smarty to get the details easily accesible
-				foreach($searchParams as $fieldListGroup){
-					foreach($fieldListGroup as $fieldSearchInfo){
-						$fieldSearchInfo['searchValue'] = $fieldSearchInfo[2];
-						$fieldSearchInfo['fieldName'] = $fieldName = $fieldSearchInfo[0];
-						$fieldSearchInfo['comparator'] = $fieldSearchInfo[1];
-						$searchParams[$fieldName] = $fieldSearchInfo;
-					}
-		}
+        if (empty($searchParams)) {
+            $searchParams = [];
+        }
+        //To make smarty to get the details easily accesible
+        foreach ($searchParams as $fieldListGroup) {
+            foreach ($fieldListGroup as $fieldSearchInfo) {
+                $fieldSearchInfo['searchValue'] = $fieldSearchInfo[2];
+                $fieldSearchInfo['fieldName'] = $fieldName = $fieldSearchInfo[0];
+                $fieldSearchInfo['comparator'] = $fieldSearchInfo[1];
+                $searchParams[$fieldName] = $fieldSearchInfo;
+            }
+        }
 
-		$noOfEntries = php7_count($this->listViewEntries);
+        $noOfEntries = php7_count($this->listViewEntries);
 
 		if(empty($sortOrder)){
 			$sortOrder = "ASC";
@@ -256,7 +254,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 		}
 
 		$viewer->assign('MODULE', $moduleName);
-				$viewer->assign('RELATED_MODULE', $moduleName);
+        $viewer->assign('RELATED_MODULE', $moduleName);
 		$viewer->assign('MODULE_NAME',$moduleName);
 
 		$viewer->assign('SOURCE_MODULE', $sourceModule);

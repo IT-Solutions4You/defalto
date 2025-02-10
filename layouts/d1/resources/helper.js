@@ -298,7 +298,8 @@ jQuery.Class("Vtiger_Helper_Js",{
         return  {
             backdrop:true,
             show:true,
-            keyboard: false
+            keyboard: false,
+            focus: false,
         };
     },
 

@@ -511,7 +511,7 @@ class Accounts_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'columntype' => 'int(19)',
                     'readonly' => 0,
-                    'presence' => 0,
+                    'presence' => 2,
                 ],
             ],
             'LBL_CUSTOM_INFORMATION' => [],

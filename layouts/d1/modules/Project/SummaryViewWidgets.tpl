@@ -6,20 +6,9 @@
 *}
 {strip}
     <div class="left-block col-xl-5">
-        {include file='SummaryKeyMetrics.tpl'|vtemplate_path:$MODULE_NAME}
-        {* Module Summary View*}
-        <div class="summaryView bg-body rounded mb-3">
-            <div class="summaryViewHeader p-3 border-1 border-bottom">
-                <h4 class="display-inline-block">{vtranslate('LBL_KEY_FIELDS', $MODULE_NAME)}</h4>
-            </div>
-            <div class="summaryViewFields p-3">
-                {$MODULE_SUMMARY}
-            </div>
-        </div>
-        {* Module Summary View Ends Here*}
         {foreach item=DETAIL_VIEW_WIDGET from=$DETAILVIEW_LINKS['DETAILVIEWWIDGET'] name=count}
             {if $smarty.foreach.count.index % 2 == 0}
-                {include file='SummaryViewWidget.tpl'|vtemplate_path:$MODULE_NAME}
+                {include file=$DETAIL_VIEW_WIDGET->getWidgetTemplate()|vtemplate_path:$MODULE_NAME}
             {/if}
         {/foreach}
     </div>
@@ -27,7 +16,7 @@
     <div class="right-block col-xl-7">
         {foreach item=DETAIL_VIEW_WIDGET from=$DETAILVIEW_LINKS['DETAILVIEWWIDGET'] name=count}
             {if $smarty.foreach.count.index % 2 != 0}
-                {include file='SummaryViewWidget.tpl'|vtemplate_path:$MODULE_NAME}
+                {include file=$DETAIL_VIEW_WIDGET->getWidgetTemplate()|vtemplate_path:$MODULE_NAME}
             {/if}
         {/foreach}
     </div>
