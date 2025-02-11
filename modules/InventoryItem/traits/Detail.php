@@ -32,11 +32,13 @@ trait InventoryItem_Detail_Trait
 
     public function adaptDetail(Vtiger_Request $request, Vtiger_Viewer $viewer)
     {
+        $recordId = (int)$request->get('record');
         $viewer->assign('ITEM_MODULES', InventoryItem_ItemModules_Model::getItemModules());
         $viewer->assign('EXCLUDED_FIELDS', $this->excludedFields);
         $viewer->assign('COMPUTED_FIELDS', $this->computedFields);
         $viewer->assign('SPECIAL_TREATMENT_FIELDS', $this->specialTreatmentFields);
-        $viewer->assign('INVENTORY_ITEMS', $this->fetchItems((int)$request->get('record')));
+        $viewer->assign('INVENTORY_ITEMS', $this->fetchItems($recordId));
+        $viewer->assign('EMPTY_ROW', $this->getEmptyRow());
         $viewer->assign('OVERALL_DISCOUNT', number_format($this->overallDiscount, 2));
         $viewer->assign('OVERALL_DISCOUNT_AMOUNT', number_format($this->overallDiscountAmount, 2));
         $selectedFields = InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule()));
@@ -71,6 +73,15 @@ trait InventoryItem_Detail_Trait
         }
 
         $viewer->assign('INVENTORY_ITEM_RECORD_STRUCTURE', $recordStructure);
+
+        $entityRecordModel = Vtiger_Record_Model::getInstanceById($recordId);
+        $adjustment = $entityRecordModel->get('txtAdjustment');
+
+        if (!$adjustment) {
+            $adjustment = 0;
+        }
+
+        $viewer->assign('ADJUSTMENT', number_format($adjustment, 2));
     }
 
     private function fetchItems(int $record): array
@@ -112,5 +123,14 @@ trait InventoryItem_Detail_Trait
         unset($inventoryItems[0]);
 
         return $inventoryItems;
+    }
+
+    private function getEmptyRow()
+    {
+        $db = PearDatabase::getInstance();
+        $columns = $db->getColumnNames('df_inventoryitem');
+        $columns['entityType'] = '';
+
+        return $columns;
     }
 }

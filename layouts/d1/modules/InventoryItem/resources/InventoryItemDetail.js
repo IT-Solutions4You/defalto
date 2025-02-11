@@ -45,6 +45,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.registerLineItemPopup();
         this.registerAddButtons();
         this.registerOverallDiscountActions();
+        this.registerAdjustmentActions();
     },
 
     registerAddButtons: function () {
@@ -625,6 +626,14 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 columnTotal += inputValue;
             });
 
+            if (targetClass === 'price_total') {
+                let adjustment = parseFloat(jQuery('#adjustment').val());
+
+                if (!isNaN(adjustment)) {
+                    columnTotal += adjustment;
+                }
+            }
+
             // Update the total in the corresponding span (formatted to 2 decimal places)
             span.text(columnTotal.toFixed(2));
         });
@@ -757,6 +766,62 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             } else {
                 app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});
                 jQuery('#overallDiscountSettingDiv').hide();
+            }
+        });
+    },
+
+    registerAdjustmentActions: function () {
+        const self = this;
+
+        this.lineItemsHolder.on('click', '.editAdjustment', function () {
+            jQuery('#adjustmentSettingDiv').show();
+            jQuery('#adjustment').focus();
+            jQuery('#adjustment').trigger('change');
+        });
+
+        this.lineItemsHolder.on('click', '.closeAdjustmentDiv', function () {
+            jQuery('#adjustment').val(jQuery('#original_adjustment').val());
+            jQuery('#adjustment').trigger('change');
+            jQuery('#adjustmentSettingDiv').hide();
+        });
+
+        this.lineItemsHolder.on('change', '#adjustment', function () {
+            let price = 0;
+            jQuery('tbody input.price_total', self.lineItemsHolder).each(function () {
+                price += parseFloat(jQuery(this).val()) || 0; // Parse value, default to 0
+            });
+            let adjustment = parseFloat(jQuery('#adjustment').val());
+
+            if (isNaN(adjustment)) {
+                adjustment = 0;
+            }
+
+            jQuery('#total_with_adjustment').val((price + adjustment).toFixed(2));
+        });
+
+        this.lineItemsHolder.on('click', '.saveAdjustment', function () {
+            const adjustment = parseFloat(jQuery('#adjustment').val());
+            const originalAdjustment = parseFloat(jQuery('#original_adjustment').val());
+
+            if (originalAdjustment !== adjustment) {
+                app.helper.showProgress();
+                const params = {
+                    module: 'InventoryItem',
+                    action: 'SaveAdjustment',
+                    for_record: app.getRecordId(),
+                    for_module: app.getModuleName(),
+                    adjustment: adjustment,
+                };
+
+                app.request.post({"data": params}).then(function (err, res) {
+                    app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});
+                    jQuery('#original_adjustment').val(adjustment);
+                    jQuery('.total_price_total').text(jQuery('#total_with_adjustment').val());
+                    app.helper.hideProgress();
+                    jQuery('#adjustmentSettingDiv').hide();
+                });
+            } else {
+                jQuery('#adjustmentSettingDiv').hide();
             }
         });
     },

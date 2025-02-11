@@ -25,10 +25,10 @@
     <div class="blockData p-3 border-top border-light-subtle {if $IS_HIDDEN}hide{/if}">
         <table id="dummyLineItemTable" style="display: none;">
             <tr id="dummyItemRow" class="hide border-bottom lineItemCloneCopy" data-row-num="0">
-                {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=[]}
+                {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=$EMPTY_ROW}
             </tr>
             <tr id="dummyTextRow" class=" hide border-bottom" data-row-num="0">
-                {include file="partials/TextItemContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=[]}
+                {include file="partials/TextItemContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=$EMPTY_ROW}
             </tr>
         </table>
         <div class="lineitemTableContainer">
@@ -88,7 +88,7 @@
                         <tr>
                             <td colspan="{$DISPLAYED_FIELDS_COUNT}" class="textAlignRight">
                                 <div class="position-relative">
-                                <strong>{vtranslate('Overal Discount %', 'InventoryItem')}</strong>&nbsp;&nbsp;<i class="fa fa-pencil fa-fw text-secondary editOverallDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>
+                                    <i class="fa fa-pencil fa-fw text-secondary editOverallDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Overal Discount %', 'InventoryItem')}</strong>
                                 <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="overallDiscountSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
                                     <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Overal Discount %', 'InventoryItem')}</h3>
                                     <div class="popover-body popover-content">
@@ -128,6 +128,49 @@
                                 </div>
                             </td>
                             <td class="textAlignRight font-bold">{$OVERALL_DISCOUNT}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="{$DISPLAYED_FIELDS_COUNT}" class="textAlignRight">
+                                <div class="position-relative">
+                                    <i class="fa fa-pencil fa-fw text-secondary editAdjustment" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Adjustment', 'InventoryItem')}</strong>
+                                    <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="adjustmentSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
+                                        <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Adjustment', 'InventoryItem')}</h3>
+                                        <div class="popover-body popover-content">
+                                            <div class="finalTaxUI validCheck" id="group_tax_div">
+                                                <table class="table table-borderless popupTable m-0">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="p-3">{vtranslate('Adjustment', 'InventoryItem')}</td>
+                                                        <td>
+                                                            <div class="input-group">
+                                                                <input type="text" size="5" data-compound-on="" name="adjustment" id="adjustment" value="{$ADJUSTMENT}" class="form-control adjustment replaceCommaWithDot textAlignRight" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
+                                                                <input type="hidden" id="original_adjustment" name="original_adjustment" value="{$ADJUSTMENT}" class="original_adjustment">
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <input type="text" size="6" name="total_with_adjustment" id="total_with_adjustment" style="cursor:pointer;" value="" readonly="" class="form-control totalWithAdjustment textAlignRight" aria-invalid="false">
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer lineItemPopupModalFooter p-3">
+                                            <div class="container-fluid p-0">
+                                                <div class="row">
+                                                    <div class="col-6 text-end">
+                                                        <a class="btn btn-outline-primary popoverCancel closeAdjustmentDiv">{vtranslate('LBL_CANCEL')}</a>
+                                                    </div>
+                                                    <div class="col-6 text-start">
+                                                            <a class="btn btn-primary active popoverButton saveAdjustment font-bold">{vtranslate('LBL_SAVE')}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="textAlignRight font-bold">{$ADJUSTMENT}</td>
                         </tr>
                     {/if}
                 {/if}

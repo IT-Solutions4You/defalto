@@ -35,7 +35,6 @@
     {assign var="totalAfterDiscount" value="totalAfterDiscount"|cat:$row_no}
     {assign var="taxTotal" value="taxTotal"|cat:$row_no}
     {assign var="netPrice" value="netPrice"|cat:$row_no}
-    {assign var="FINAL" value=$RELATED_PRODUCTS.1.final_details}
 
 	{assign var="productDeleted" value="productDeleted"|cat:$row_no}
 	{assign var="productId" value=$data[$hdnProductId]}
@@ -78,7 +77,6 @@
         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
         {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
             <td class="minWidth20per item_text_td" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}">
-                <input type="hidden" name="hidtax_row_no{$row_no}" id="hidtax_row_no{$row_no}" value="{$tax_row_no}"/>
                 <span class="noEditLineItem display_{$item_text} font-bold">{$data.item_text}&nbsp;&nbsp;<small><a class="text-primary" href="index.php?module={$data.entityType}&view=Detail&record={$data.productid}" target="_blank"><i class="fa fa-external-link text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i></a></small></span>
                 <span class="editLineItem hide">
                     <div class="itemNameDiv form-inline">
