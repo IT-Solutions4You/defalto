@@ -36,7 +36,42 @@ class Vtiger_Base_UIType extends Vtiger_Base_Model {
 		return $value;
 	}
 
-	/**
+    /**
+     * @param mixed $fieldValue
+     * @return mixed
+     */
+    public function getRequestValue(mixed $fieldValue): mixed
+    {
+        $fieldModel = $this->getFieldModel();
+        $fieldName = $fieldModel->getName();
+        $fieldDataType = $fieldModel->getFieldDataType();
+
+        if (null === $fieldValue) {
+            return null;
+        }
+
+        if (in_array($fieldName, ['commentcontent', 'notecontent'])) {
+            $purifiedContent = vtlib_purify(decode_html($fieldValue));
+            // Purify malicious html event attributes
+            $fieldValue = purifyHtmlEventAttributes(decode_html($purifiedContent), true);
+        }
+
+        if ('multipicklist' === $fieldDataType && is_array($fieldValue)) {
+            $fieldValue = implode(' |##| ', $fieldValue);
+        }
+
+        if ('time' === $fieldDataType) {
+            $fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
+        }
+
+        if ('currency' !== $fieldDataType && !is_array($fieldValue)) {
+            $fieldValue = trim($fieldValue);
+        }
+
+        return Vtiger_Util_Helper::validateFieldValue($fieldValue, $fieldModel);
+    }
+
+    /**
 	 * Function to get the Display Value, for the current field type with given DB Insert Value
 	 * @param <Object> $value
 	 * @return <Object>
@@ -68,6 +103,14 @@ class Vtiger_Base_UIType extends Vtiger_Base_Model {
         $instance->set('field', $fieldModel);
 
         return $instance;
+    }
+
+    /**
+     * @return object
+     */
+    public function getFieldModel(): object
+    {
+        return $this->get('field');
     }
 
     /**
