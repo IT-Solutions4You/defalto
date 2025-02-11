@@ -4466,3 +4466,9 @@ input[type=number] {
 .cke_dialog_container {
     z-index: 20001 !important;
 }
+.border-dashed {
+    border-style: dashed;
+}
+.pe-grab {
+    cursor: grab;
+}
