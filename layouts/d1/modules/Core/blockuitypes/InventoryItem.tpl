@@ -12,14 +12,31 @@
     {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
     <input type=hidden name="timeFormatOptions" data-value='{if isset($DAY_STARTS)}{$DAY_STARTS}{else}""{/if}' />
     <div class="p-3">
-        <div class="text-truncate d-flex align-items-center">
-            <span class="btn btn-outline-secondary blockToggle {if !$IS_HIDDEN}hide{/if}" data-mode="hide" data-id={$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}>
-                <i class="fa fa-plus"></i>
-            </span>
-            <span class="btn btn-outline-secondary blockToggle {if $IS_HIDDEN}hide{/if}" data-mode="show" data-id={$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}>
-                <i class="fa fa-minus"></i>
-            </span>
-            <span class="ms-3 fs-4 fw-bold">{vtranslate({$BLOCK_LABEL_KEY},{$MODULE_NAME})}</span>
+        <div class="text-truncate d-flex align-items-center row">
+            <div class="col-lg-6">
+                <span class="btn btn-outline-secondary blockToggle {if !$IS_HIDDEN}hide{/if}" data-mode="hide" data-id={$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}>
+                    <i class="fa fa-plus"></i>
+                </span>
+                <span class="btn btn-outline-secondary blockToggle {if $IS_HIDDEN}hide{/if}" data-mode="show" data-id={$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}>
+                    <i class="fa fa-minus"></i>
+                </span>
+                <span class="ms-3 fs-4 fw-bold">{vtranslate({$BLOCK_LABEL_KEY},{$MODULE_NAME})}</span>
+            </div>
+            <div style="border: 1px fuchsia solid;" class="col-lg-6 textAlignRight">
+                {*assign var=BLOCK_FIELDS value=array('region_id' => $RECORD_STRUCTURE['LBL_ITEM_DETAILS']['region_id'])}
+                {include file=vtemplate_path('blocks/Fields.tpl',$MODULE)*}
+                {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['region_id']}
+                {*include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)*}
+                <div class="h-100">
+                    <div class="row py-2 h-100">
+                        {assign var=FIELD_VALUE value=$FIELD_MODEL->get('fieldvalue')}
+                        {assign var=FIELD_DISPLAY_VALUE value=Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}
+                        <span>
+                            <i class="fa fa-pencil fa-fw text-secondary editRegionId"></i>&nbsp;&nbsp;<span class="muted">{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}:</span> {$FIELD_DISPLAY_VALUE}
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="blockData p-3 border-top border-light-subtle {if $IS_HIDDEN}hide{/if}">
@@ -177,18 +194,18 @@
                 </tfoot>
             </table>
         </div>
-    </div>
-    <div class="px-4">
-        <div class="btn-toolbar inventoryItemAddButtons" style="display:inline;">
-            <div class="recordLabel verticalAlignMiddle me-2 font-bold" style="display:inline;">Add </div>
-            <button type="button" class="btn btn-outline-primary mb-1 me-1 font-bold" id="addText" data-module-name="">
-                <i class="fa fa-i-cursor"></i>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}
-            </button>
-            {foreach from=$ITEM_MODULES item=ITEM_MODULE_NAME}
-                <button type="button" class="btn btn-outline-primary mb-1 me-1 font-bold" id="add{$ITEM_MODULE_NAME}" data-module-name="{$ITEM_MODULE_NAME}">
-                    {Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}
+        <div class="px-4">
+            <div class="btn-toolbar inventoryItemAddButtons" style="display:inline;">
+                <div class="recordLabel verticalAlignMiddle me-2 font-bold" style="display:inline;">Add </div>
+                <button type="button" class="btn btn-outline-primary mb-1 me-1 font-bold" id="addText" data-module-name="">
+                    <i class="fa fa-i-cursor"></i>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}
                 </button>
-            {/foreach}
+                {foreach from=$ITEM_MODULES item=ITEM_MODULE_NAME}
+                    <button type="button" class="btn btn-outline-primary mb-1 me-1 font-bold" id="add{$ITEM_MODULE_NAME}" data-module-name="{$ITEM_MODULE_NAME}">
+                        {Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}
+                    </button>
+                {/foreach}
+            </div>
         </div>
     </div>
 </div>
