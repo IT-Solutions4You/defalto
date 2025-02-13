@@ -46,6 +46,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.registerAddButtons();
         this.registerOverallDiscountActions();
         this.registerAdjustmentActions();
+        this.registerRegionActions();
     },
 
     registerAddButtons: function () {
@@ -822,6 +823,55 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 });
             } else {
                 jQuery('#adjustmentSettingDiv').hide();
+            }
+        });
+    },
+
+    registerRegionActions: function () {
+        const self = this;
+        const blockHeaderDiv = jQuery('#block_line_items_header');
+
+        blockHeaderDiv.on('click', '.editRegion', function (event) {
+            const regionDiv = jQuery('#regionDiv');
+            regionDiv.show();
+            const pencilElement = jQuery(this);
+            let offset = pencilElement.offset();
+            let x = offset.left;
+            let width = regionDiv.outerWidth();
+            regionDiv.css({
+                'left': (x + pencilElement.outerWidth() / 2 - width) + 'px',
+                'transform': 'translate(50px, -' + (regionDiv.outerHeight() / 2) + 'px)',
+            });
+        });
+
+        blockHeaderDiv.on('click', '.closeRegionDiv', function () {
+            jQuery('select[name="region_id"]').val(jQuery('#region_id_original').val()).trigger('change');
+            jQuery('#regionDiv').hide();
+        });
+
+        blockHeaderDiv.on('click', '.saveRegion', function () {
+            const region = jQuery('select[name="region_id"]').val();
+            const originalRegion = jQuery('#region_id_original').val();
+
+            if (originalRegion !== region) {
+                app.helper.showProgress();
+                const params = {
+                    module: 'InventoryItem',
+                    action: 'SaveRegion',
+                    for_record: app.getRecordId(),
+                    for_module: app.getModuleName(),
+                    region_id: region,
+                };
+
+                app.request.post({"data": params}).then(function (err, res) {
+                    app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});
+                    jQuery('#region_id_original').val(region);
+                    jQuery('#region_name').html(jQuery('select[name="region_id"] option:selected').text());
+                    app.helper.hideProgress();
+                    jQuery('#regionDiv').hide();
+                });
+            } else {
+                jQuery('#regionDiv').hide();
             }
         });
     },

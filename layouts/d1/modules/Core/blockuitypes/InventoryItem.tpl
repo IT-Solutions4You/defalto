@@ -22,18 +22,35 @@
                 </span>
                 <span class="ms-3 fs-4 fw-bold">{vtranslate({$BLOCK_LABEL_KEY},{$MODULE_NAME})}</span>
             </div>
-            <div style="border: 1px fuchsia solid;" class="col-lg-6 textAlignRight">
-                {*assign var=BLOCK_FIELDS value=array('region_id' => $RECORD_STRUCTURE['LBL_ITEM_DETAILS']['region_id'])}
-                {include file=vtemplate_path('blocks/Fields.tpl',$MODULE)*}
+            <div class="col-lg-6 textAlignRight" id="block_line_items_header">
                 {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['region_id']}
-                {*include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)*}
                 <div class="h-100">
                     <div class="row py-2 h-100">
-                        {assign var=FIELD_VALUE value=$FIELD_MODEL->get('fieldvalue')}
                         {assign var=FIELD_DISPLAY_VALUE value=Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}
                         <span>
-                            <i class="fa fa-pencil fa-fw text-secondary editRegionId"></i>&nbsp;&nbsp;<span class="muted">{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}:</span> {$FIELD_DISPLAY_VALUE}
+                            <i class="fa fa-pencil fa-fw text-secondary editRegion"></i>&nbsp;&nbsp;<span class="muted">{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}:</span> <span id="region_name">{$FIELD_DISPLAY_VALUE}</span>
                         </span>
+                    </div>
+                </div>
+                <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="regionDiv" style="position: absolute; margin: 0px; opacity: 1; visibility: visible; display: none;" data-popper-placement="left">
+                    <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Region', $MODULE_NAME)}</h3>
+                    <div class="popover-body popover-content">
+                        <div class="validCheck">
+                            {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)}
+                            <input type="hidden" name="region_id_original" id="region_id_original" value="{$FIELD_MODEL->get('fieldvalue')}">
+                        </div>
+                    </div>
+                    <div class="modal-footer lineItemPopupModalFooter p-3">
+                        <div class="container-fluid p-0">
+                            <div class="row">
+                                <div class="col-6 text-end">
+                                    <a class="btn btn-outline-primary popoverCancel closeRegionDiv">{vtranslate('LBL_CANCEL')}</a>
+                                </div>
+                                <div class="col-6 text-start">
+                                    <a class="btn btn-primary active popoverButton saveRegion font-bold">{vtranslate('LBL_SAVE')}</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -109,7 +126,7 @@
                                 <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="overallDiscountSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
                                     <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Overal Discount %', 'InventoryItem')}</h3>
                                     <div class="popover-body popover-content">
-                                        <div class="finalTaxUI validCheck" id="group_tax_div">
+                                        <div class="validCheck">
                                             <table class="table table-borderless popupTable m-0">
                                                 <tbody>
                                                 <tr>
@@ -153,7 +170,7 @@
                                     <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="adjustmentSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
                                         <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Adjustment', 'InventoryItem')}</h3>
                                         <div class="popover-body popover-content">
-                                            <div class="finalTaxUI validCheck" id="group_tax_div">
+                                            <div class="validCheck">
                                                 <table class="table table-borderless popupTable m-0">
                                                     <tbody>
                                                     <tr>

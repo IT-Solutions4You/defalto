@@ -129,7 +129,7 @@
                         <div class="popover lineItemPopover border-1 bs-popover-auto fade discountSettingsDiv" id="discountSettingsDiv{$row_no}" role="tooltip" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
                             <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Discount of', 'InventoryItem')} <span class="subtotal_in_discount_div">{$data.subtotal}</span></h3>
                             <div class="popover-body popover-content">
-                                <div class="finalTaxUI validCheck" id="group_tax_div">
+                                <div class="validCheck">
                                     <table class="table table-borderless popupTable m-0">
                                         <tbody>
                                         <tr>
