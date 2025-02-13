@@ -47,6 +47,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.registerOverallDiscountActions();
         this.registerAdjustmentActions();
         this.registerRegionActions();
+        this.registerPriceBookPopUp();
     },
 
     registerAddButtons: function () {
@@ -516,7 +517,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 const element = jQuery(this);
                 const tdElement = element.closest('td');
                 const selectedModule = tdElement.find('.lineItemPopup').data('moduleName');
-                const dataUrl = "index.php?module=Inventory&action=GetTaxes&record=" + selectedItemData.id + "&currency_id=" + jQuery('#currency_id option:selected').val() + "&sourceModule=" + app.getModuleName();
+                const dataUrl = "index.php?module=Inventory&action=GetTaxes&record=" + selectedItemData.id + "&currency_id=" + self.getCurrencyId() + "&sourceModule=" + app.getModuleName();
                 app.request.get({'url': dataUrl}).then(
                     function (error, data) {
                         if (error == null) {
@@ -589,11 +590,11 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         let params = {
             'module': this.getModuleName(),
             'multi_select': true,
-            'currency_id': jQuery('select[name="currency_id"]').val(),
+            'currency_id': this.getCurrencyId(),
         };
 
         params = jQuery.extend(params, callerParams);
-        const popupInstance = Vtiger_Popup_Js.getInstance();
+        const popupInstance = Vtiger_Popup_Js.getInstance();console.log(params);
         popupInstance.showPopup(params, 'post.LineItemPopupSelection.click');
     },
 
@@ -874,6 +875,46 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 jQuery('#regionDiv').hide();
             }
         });
+    },
+
+    registerPriceBookPopUp: function () {
+        const self = this;
+
+        this.lineItemsHolder.on('click', '.choosePriceBook', function (e) {
+            const triggerElement = jQuery(e.currentTarget);
+            const lineItemRow = triggerElement.parents('tr').first();
+            const rowNumber = lineItemRow.find('input.rowNumber').val();
+            const productId = lineItemRow.find('#productid' + rowNumber).val();
+
+            let params = {
+                'module': 'PriceBooks',
+                'currency_id': self.getCurrencyId(),
+                'src_record': productId,
+                'view': 'Popup',
+                'get_url': 'getProductListPriceURL',
+            };
+
+            const popupInstance = Vtiger_Popup_Js.getInstance();
+            popupInstance.showPopup(params, 'post.LineItemPriceBookSelect.click');
+
+            const postPriceBookPopupHandler = function(e, data) {
+                const responseData = JSON.parse(data);
+
+                for (let id in responseData) {
+                    let listPrice = parseFloat(responseData[id]).toFixed(3);
+                    let priceElement = lineItemRow.find('.price');
+                    priceElement.val(listPrice);
+                    priceElement.trigger('change');
+                }
+            };
+
+            app.event.off('post.LineItemPriceBookSelect.click');
+            app.event.one('post.LineItemPriceBookSelect.click', postPriceBookPopupHandler);
+        });
+    },
+
+    getCurrencyId: function () {
+        return jQuery('input.fieldBasicData[data-name="currency_id"]').data('value');
     },
 });
 
