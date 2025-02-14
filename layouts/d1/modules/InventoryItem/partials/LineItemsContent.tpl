@@ -116,11 +116,11 @@
             </td>
         {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
         {elseif $INVENTORY_ITEM_FIELD_NAME eq 'discount_amount'}
-            <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}">
+            <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}" style="min-width: 80px;">
                 <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
                 <span class="editLineItem hide">
                     <div class="input-group">
-                        <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" readonly="readonly" />
+                        <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" readonly="readonly" />
                         <span class="input-group-addon input-group-text cursorPointer editProductDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}">
                             <i class="fa fa-pencil"></i>
                         </span>
@@ -178,11 +178,11 @@
                 </span>
             </td>
         {elseif $INVENTORY_ITEM_FIELD_NAME eq 'price'}
-            <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}">
+            <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}" nowrap="nowrap" style="min-width: 80px;">
                 <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
                 <span class="editLineItem hide">
                     <div class="input-group">
-                        <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" />
+                        <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" />
                         <span class="input-group-addon input-group-text cursorPointer choosePriceBook" title="{vtranslate('LBL_EDIT',$MODULE)}">
                             {Vtiger_Module_Model::getModuleIconPath('PriceBooks')}
                         </span>
@@ -194,7 +194,7 @@
             <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}">
                 <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
                 <span class="editLineItem hide">
-                    <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" {if in_array($INVENTORY_ITEM_FIELD_NAME, $COMPUTED_FIELDS)}readonly="readonly"{/if}/>
+                    <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" {if in_array($INVENTORY_ITEM_FIELD_NAME, $COMPUTED_FIELDS)}readonly="readonly"{/if}/>
                     <input id="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="original_{$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
                 </span>
             </td>
@@ -202,7 +202,7 @@
             <td title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}">
                 <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
                 <span class="editLineItem hide">
-                    <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} smallInputBox inputElement form-control" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
+                    <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="text" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
                     <input id="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="original_{$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
                 </span>
             </td>

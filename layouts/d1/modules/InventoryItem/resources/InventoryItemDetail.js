@@ -332,11 +332,11 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
 
         row.on('change', '.discount_type', function () {
-           self.recalculateDiscountDiv(rowNumber);
+            self.recalculateDiscountDiv(rowNumber);
         });
 
         row.on('change', '.discount', function () {
-           self.recalculateDiscountDiv(rowNumber);
+            self.recalculateDiscountDiv(rowNumber);
         });
 
         row.on('click', '.closeDiscountDiv', function () {
@@ -594,7 +594,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         };
 
         params = jQuery.extend(params, callerParams);
-        const popupInstance = Vtiger_Popup_Js.getInstance();console.log(params);
+        const popupInstance = Vtiger_Popup_Js.getInstance();
+        console.log(params);
         popupInstance.showPopup(params, 'post.LineItemPopupSelection.click');
     },
 
@@ -832,29 +833,18 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const self = this;
         const blockHeaderDiv = jQuery('#block_line_items_header');
 
-        blockHeaderDiv.on('click', '.editRegion', function (event) {
-            const regionDiv = jQuery('#regionDiv');
-            regionDiv.show();
-            const pencilElement = jQuery(this);
-            let offset = pencilElement.offset();
-            let x = offset.left;
-            let width = regionDiv.outerWidth();
-            regionDiv.css({
-                'left': (x + pencilElement.outerWidth() / 2 - width) + 'px',
-                'transform': 'translate(50px, -' + (regionDiv.outerHeight() / 2) + 'px)',
-            });
-        });
-
-        blockHeaderDiv.on('click', '.closeRegionDiv', function () {
-            jQuery('select[name="region_id"]').val(jQuery('#region_id_original').val()).trigger('change');
-            jQuery('#regionDiv').hide();
-        });
-
-        blockHeaderDiv.on('click', '.saveRegion', function () {
-            const region = jQuery('select[name="region_id"]').val();
+        blockHeaderDiv.on('click', 'ul.region li a', function (event) {
+            const clickedItem = jQuery(this);
+            const region = clickedItem.data('regionid');
             const originalRegion = jQuery('#region_id_original').val();
 
-            if (originalRegion !== region) {
+            if (typeof region == 'undefined') {
+                return true;
+            }
+
+            event.preventDefault();
+
+            if (originalRegion != region) {
                 app.helper.showProgress();
                 const params = {
                     module: 'InventoryItem',
@@ -867,12 +857,9 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 app.request.post({"data": params}).then(function (err, res) {
                     app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});
                     jQuery('#region_id_original').val(region);
-                    jQuery('#region_name').html(jQuery('select[name="region_id"] option:selected').text());
                     app.helper.hideProgress();
-                    jQuery('#regionDiv').hide();
+                    jQuery('button.region-button').text(clickedItem.text());
                 });
-            } else {
-                jQuery('#regionDiv').hide();
             }
         });
     },
@@ -897,7 +884,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             const popupInstance = Vtiger_Popup_Js.getInstance();
             popupInstance.showPopup(params, 'post.LineItemPriceBookSelect.click');
 
-            const postPriceBookPopupHandler = function(e, data) {
+            const postPriceBookPopupHandler = function (e, data) {
                 const responseData = JSON.parse(data);
 
                 for (let id in responseData) {

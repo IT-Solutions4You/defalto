@@ -119,7 +119,7 @@
                                         </label>
                                     </td>
                                     <td>
-                                        <input class="inputElement smallInputBox input-medium form-control" type="text" name="percentage" value="{$TAX_RECORD_MODEL->getTax()}" data-rule-required="true" data-rule-inventory_percentage="true" />
+                                        <input class="inputElement input-medium form-control" type="text" name="percentage" value="{$TAX_RECORD_MODEL->getTax()}" data-rule-required="true" data-rule-inventory_percentage="true" />
                                     </td>
                                 </tr>
                                 <tr class="regionsContainerClone hide">

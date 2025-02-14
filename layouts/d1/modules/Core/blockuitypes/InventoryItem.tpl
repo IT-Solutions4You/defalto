@@ -12,7 +12,7 @@
     {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
     <input type=hidden name="timeFormatOptions" data-value='{if isset($DAY_STARTS)}{$DAY_STARTS}{else}""{/if}' />
     <div class="p-3">
-        <div class="text-truncate d-flex align-items-center row">
+        <div class="d-flex align-items-center row">
             <div class="col-lg-6">
                 <span class="btn btn-outline-secondary blockToggle {if !$IS_HIDDEN}hide{/if}" data-mode="hide" data-id={$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}>
                     <i class="fa fa-plus"></i>
@@ -20,37 +20,30 @@
                 <span class="btn btn-outline-secondary blockToggle {if $IS_HIDDEN}hide{/if}" data-mode="show" data-id={$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}>
                     <i class="fa fa-minus"></i>
                 </span>
-                <span class="ms-3 fs-4 fw-bold">{vtranslate({$BLOCK_LABEL_KEY},{$MODULE_NAME})}</span>
+                <span class="ms-3 fs-4 fw-bold text-truncate">{vtranslate({$BLOCK_LABEL_KEY},{$MODULE_NAME})}</span>
             </div>
             <div class="col-lg-6 textAlignRight" id="block_line_items_header">
                 {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['region_id']}
-                <div class="h-100">
-                    <div class="row py-2 h-100">
-                        {assign var=FIELD_DISPLAY_VALUE value=Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}
-                        <span>
-                            <i class="fa fa-pencil fa-fw text-secondary editRegion"></i>&nbsp;&nbsp;<span class="muted">{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}:</span> <span id="region_name">{$FIELD_DISPLAY_VALUE}</span>
-                        </span>
-                    </div>
-                </div>
-                <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="regionDiv" style="position: absolute; margin: 0px; opacity: 1; visibility: visible; display: none;" data-popper-placement="left">
-                    <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Region', $MODULE_NAME)}</h3>
-                    <div class="popover-body popover-content">
-                        <div class="validCheck">
-                            {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)}
-                            <input type="hidden" name="region_id_original" id="region_id_original" value="{$FIELD_MODEL->get('fieldvalue')}">
-                        </div>
-                    </div>
-                    <div class="modal-footer lineItemPopupModalFooter p-3">
-                        <div class="container-fluid p-0">
-                            <div class="row">
-                                <div class="col-6 text-end">
-                                    <a class="btn btn-outline-primary popoverCancel closeRegionDiv">{vtranslate('LBL_CANCEL')}</a>
-                                </div>
-                                <div class="col-6 text-start">
-                                    <a class="btn btn-primary active popoverButton saveRegion font-bold">{vtranslate('LBL_SAVE')}</a>
-                                </div>
-                            </div>
-                        </div>
+                {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
+                {assign var=CURRENT_VALUE value=$FIELD_MODEL->get('fieldvalue')}
+                {assign var=PICKLIST_VALUES value=$FIELD_INFO['editablepicklistvalues']}
+                <div class="btn-group" role="group">
+                    <input type="hidden" name="region_id_original" id="region_id_original" value="{$FIELD_MODEL->get('fieldvalue')}">
+                    <button type="button" class="btn btn-primary">{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}</button>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary region-button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {if $PICKLIST_VALUES[$CURRENT_VALUE] neq ''}{$PICKLIST_VALUES[$CURRENT_VALUE]}{else}{vtranslate('Default', 'InventoryItem')}{/if}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end region" aria-labelledby="btnGroupDrop1">
+                            <li><a class="dropdown-item" data-regionid="0">{vtranslate('Default', 'InventoryItem')}</a></li>
+                            {foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
+                                <li><a class="dropdown-item{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} current{/if}" data-regionid="{$PICKLIST_NAME}"{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} aria-current="true"{/if}>{$PICKLIST_VALUE}</a></li>
+                            {/foreach}
+                            {if $CURRENT_USER_MODEL->isAdminUser()}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="index.php?module=Core&parent=Settings&view=Taxes&mode=regions"><span class="fa fa-cog module-icon dt-menu-icon"></span>&nbsp;&nbsp;{vtranslate('Settings')}</a></li>
+                            {/if}
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -65,7 +58,7 @@
                 {include file="partials/TextItemContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=$EMPTY_ROW}
             </tr>
         </table>
-        <div class="lineitemTableContainer">
+        <div class="lineItemTableContainer">
             <table class="table table-borderless" id="lineItemTab">
                 <thead>
                 <tr class="border-bottom">

@@ -4474,3 +4474,7 @@ input[type=number] {
 .font-bold {
     font-weight: bold;
 }
+
+.lineItemTableContainer {
+    overflow-x: auto;
+}
