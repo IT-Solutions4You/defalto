@@ -58,10 +58,6 @@ if (!class_exists('Migration_20241024112259')) {
 
             $this->db->pquery('INSERT INTO df_inventoryitem_itemmodules (tabid) VALUES (?), (?)', [getTabid('Products'), getTabid('Services')]);
 
-            $this->db->pquery(
-                'UPDATE vtiger_field SET displaytype = 1, presence = 0, quickcreate = 1 WHERE fieldname = ? AND tablename IN (?, ?, ?, ?)',
-                ['currency_id', 'vtiger_quotes', 'vtiger_purchaseorder', 'vtiger_salesorder', 'vtiger_invoice']
-            );
             $inventoryModules = ['Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice'];
 
             foreach ($inventoryModules as $inventoryModuleName) {

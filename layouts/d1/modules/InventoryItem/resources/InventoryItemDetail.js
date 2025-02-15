@@ -845,21 +845,26 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             event.preventDefault();
 
             if (originalRegion != region) {
-                app.helper.showProgress();
-                const params = {
-                    module: 'InventoryItem',
-                    action: 'SaveRegion',
-                    for_record: app.getRecordId(),
-                    for_module: app.getModuleName(),
-                    region_id: region,
-                };
+                app.helper.showConfirmationBox({'message' : app.vtranslate('JS_CONFIRM_TAXES_AND_CHARGES_REPLACE')}).then(
+                    function() {
+                        app.helper.showProgress();
+                        const params = {
+                            module: 'InventoryItem',
+                            action: 'SaveRegion',
+                            for_record: app.getRecordId(),
+                            for_module: app.getModuleName(),
+                            region_id: region,
+                        };
 
-                app.request.post({"data": params}).then(function (err, res) {
-                    app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});
-                    jQuery('#region_id_original').val(region);
-                    app.helper.hideProgress();
-                    jQuery('button.region-button').text(clickedItem.text());
-                });
+                        app.request.post({"data": params}).then(function (err, res) {
+                            app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});
+                            jQuery('#region_id_original').val(region);
+                            app.helper.hideProgress();
+                            jQuery('button.region-button').text(clickedItem.text());
+                        });
+                    },
+                    function(error, err){});
+
             }
         });
     },
