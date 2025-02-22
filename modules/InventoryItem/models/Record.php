@@ -24,12 +24,19 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
         $quantity = $this->get('quantity');
         $price = $this->get('price');
         $subtotal = round($quantity * $price, 2);
-        $discountPercent = $this->get('discount');
+        $discountType = $this->get('discount_type');
+        $discount = $this->get('discount');
+        $discountAmount = 0;
 
-        if ($discountPercent > 0) {
-            $discountAmount = round($subtotal * $discountPercent / 100, 2);
-        } else {
-            $discountAmount = $this->get('discount_amount');
+        switch ($discountType) {
+            case 'Percentage':
+                $discountAmount = $subtotal * $discount / 100;
+                break;
+            case 'Direct':
+                $discountAmount = $this->get('discount_amount');
+                break;
+            case 'Product Unit Price':
+                $discountAmount = $quantity * $discount;
         }
 
         $priceAfterDiscount = $subtotal - $discountAmount;
@@ -41,6 +48,13 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
         }
 
         $priceAfterOverallDiscount = $priceAfterDiscount - $overallDiscountAmount;
+        $purchaseCost = $this->get('purchase_cost');
+        $margin = 0;
+
+        if ($purchaseCost > 0) {
+            $margin = $priceAfterOverallDiscount - ($purchaseCost * $quantity);
+        }
+
         $tax = $this->get('tax');
         $taxAmount = round($priceAfterOverallDiscount * $tax / 100, 2);
         $priceTotal = $priceAfterOverallDiscount + $taxAmount;
@@ -71,6 +85,10 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
 
         if ($priceTotal != $this->get('price_total')) {
             $this->set('price_total', $priceTotal);
+        }
+
+        if ($margin != $this->get('margin')) {
+            $this->set('margin', $margin);
         }
     }
 }

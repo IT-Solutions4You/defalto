@@ -772,10 +772,10 @@ class SalesOrder_Install_Model extends Core_Install_Model {
                     'table'        => 'vtiger_salesorder',
                     'label'        => 'Currency',
                     'readonly'     => 1,
-                    'presence'     => 2,
+                    'presence'     => 0,
                     'typeofdata'   => 'I~O',
-                    'quickcreate'  => 3,
-                    'displaytype'  => 3,
+                    'quickcreate'  => 1,
+                    'displaytype'  => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
@@ -793,6 +793,20 @@ class SalesOrder_Install_Model extends Core_Install_Model {
                     'masseditable'    => 0,
                     'summaryfield'    => 0,
                     'picklist_values' => [],
+                ],
+                'pricebookid' => [
+                    'name' => 'pricebookid',
+                    'uitype' => 73,
+                    'column' => 'pricebookid',
+                    'table' => 'vtiger_salesorder',
+                    'label' => 'Price Book',
+                    'readonly' => 0,
+                    'presence' => 0,
+                    'typeofdata' => 'I~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 0,
                 ],
             ],
         ];
@@ -847,6 +861,7 @@ class SalesOrder_Install_Model extends Core_Install_Model {
             ->createColumn('s_h_percent', 'DECIMAL(25,3) DEFAULT NULL')
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createColumn('region_id', 'int(19) DEFAULT NULL')
+            ->createColumn('pricebookid', 'int(19) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`salesorderid`)')
             ->createKey('KEY IF NOT EXISTS `salesorder_vendorid_idx` (`vendorid`)')
             ->createKey('KEY IF NOT EXISTS `salesorder_contactid_idx` (`contactid`)')

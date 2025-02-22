@@ -673,10 +673,10 @@ class Invoice_Install_Model extends Core_Install_Model
                     'table' => 'vtiger_invoice',
                     'label' => 'Currency',
                     'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'I~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
+                    'presence'     => 0,
+                    'typeofdata'   => 'I~O',
+                    'quickcreate'  => 1,
+                    'displaytype'  => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
@@ -694,6 +694,20 @@ class Invoice_Install_Model extends Core_Install_Model
                     'masseditable' => 0,
                     'summaryfield' => 0,
                     'picklist_values' => [],
+                ],
+                'pricebookid' => [
+                    'name' => 'pricebookid',
+                    'uitype' => 73,
+                    'column' => 'pricebookid',
+                    'table' => 'vtiger_salesorder',
+                    'label' => 'Price Book',
+                    'readonly' => 0,
+                    'presence' => 0,
+                    'typeofdata' => 'I~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 0,
                 ],
             ],
         ];
@@ -745,6 +759,7 @@ class Invoice_Install_Model extends Core_Install_Model
             ->createColumn('potential_id', 'varchar(100) DEFAULT NULL')
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createColumn('region_id', 'int(19) DEFAULT NULL')
+            ->createColumn('pricebookid', 'int(19) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (invoiceid)')
             ->createKey('KEY IF NOT EXISTS invoice_purchaseorderid_idx (invoiceid)')
             ->createKey('KEY IF NOT EXISTS fk_2_vtiger_invoice (salesorderid)')

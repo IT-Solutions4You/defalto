@@ -46,6 +46,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.registerAddButtons();
         this.registerOverallDiscountActions();
         this.registerAdjustmentActions();
+        this.registerCurrencyActions();
         this.registerRegionActions();
         this.registerPriceBookPopUp();
     },
@@ -273,7 +274,6 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 };
 
                 app.request.post({"data": requestParams}).then(function (err, res) {
-                    console.log(res);
                 });
             }
         });
@@ -517,7 +517,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 const element = jQuery(this);
                 const tdElement = element.closest('td');
                 const selectedModule = tdElement.find('.lineItemPopup').data('moduleName');
-                const dataUrl = "index.php?module=Inventory&action=GetTaxes&record=" + selectedItemData.id + "&currency_id=" + self.getCurrencyId() + "&sourceModule=" + app.getModuleName();
+                const dataUrl = "index.php?module=InventoryItem&action=GetTaxes&record=" + selectedItemData.id + "&currency_id=" + self.getCurrencyId() + "&sourceModule=" + app.getModuleName();
                 app.request.get({'url': dataUrl}).then(
                     function (error, data) {
                         if (error == null) {
@@ -542,6 +542,10 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             let recordData = responseData[id];
             jQuery('input.productid', parentRow).val(id);
             jQuery('input.lineItemType', parentRow).val(referenceModule);
+            jQuery('input.quantity', parentRow).val(1).focus();
+            jQuery('input.unit', parentRow).val(recordData.unit);
+            jQuery('input.price', parentRow).val(recordData.listprice).trigger('change');
+            jQuery('input.purchase_cost', parentRow).val(recordData.purchaseCost);
             lineItemNameElment.val(recordData.name);
         }
     },
@@ -570,8 +574,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         this.lineItemsHolder.on('click', '.lineItemPopup', function (e) {
             const triggerElement = jQuery(e.currentTarget);
-            self.showLineItemPopup({'view': triggerElement.data('popup')});
             const popupReferenceModule = triggerElement.data('moduleName');
+            self.showLineItemPopup({'item_module': popupReferenceModule});
             const postPopupHandler = function (e, data) {
                 data = JSON.parse(data);
 
@@ -588,14 +592,15 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     showLineItemPopup: function (callerParams) {
         let params = {
-            'module': this.getModuleName(),
+            'module': 'InventoryItem',
+            'view': 'ItemsPopup',
+            'src_module': this.getModuleName(),
+            'src_record': app.getRecordId(),
             'multi_select': true,
             'currency_id': this.getCurrencyId(),
         };
-
         params = jQuery.extend(params, callerParams);
-        const popupInstance = Vtiger_Popup_Js.getInstance();
-        console.log(params);
+        const popupInstance = InventoryItem_Popup_Js.getInstance();
         popupInstance.showPopup(params, 'post.LineItemPopupSelection.click');
     },
 
@@ -603,7 +608,6 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         for (let index in selectedLineItemsData) {
 
             if ((index * 1) !== 0) {
-                console.log(index);
                 jQuery('#add' + lineItemSelectedModuleName).trigger('click', selectedLineItemsData[index]);
             } else {
                 itemRow.find('.lineItemType').val(lineItemSelectedModuleName);
@@ -829,11 +833,51 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
     },
 
+    registerCurrencyActions: function () {
+        const self = this;
+        const blockLineItemsCurrencyDiv = jQuery('#block_line_items_currency');
+        blockLineItemsCurrencyDiv.on('click', 'ul.currency li a', function (event) {
+            const clickedItem = jQuery(this);
+            const currency = clickedItem.data('currencyid');
+            const originalCurrency = jQuery('#currency_id_original').val();
+
+            if (typeof currency == 'undefined') {
+                return true;
+            }
+
+            event.preventDefault();
+
+            if (originalCurrency != currency) {
+                app.helper.showConfirmationBox({'message' : app.vtranslate('JS_CONFIRM_CURRENCY_CHANGE')}).then(
+                    function() {
+                        app.helper.showProgress();
+                        const params = {
+                            module: 'InventoryItem',
+                            action: 'SaveCurrency',
+                            for_record: app.getRecordId(),
+                            for_module: app.getModuleName(),
+                            currency_id: currency,
+                        };
+
+                        app.request.post({"data": params}).then(function (err, res) {
+                            app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});
+                            jQuery('#currency_id_original').val(currency);
+                            app.helper.hideProgress();
+                            jQuery('button.currency-button').text(clickedItem.text());
+                            location.reload();
+                        });
+                    },
+                    function(error, err){}
+                );
+            }
+        });
+    },
+
     registerRegionActions: function () {
         const self = this;
-        const blockHeaderDiv = jQuery('#block_line_items_header');
+        const blockLineItemsRegionDiv = jQuery('#block_line_items_region');
 
-        blockHeaderDiv.on('click', 'ul.region li a', function (event) {
+        blockLineItemsRegionDiv.on('click', 'ul.region li a', function (event) {
             const clickedItem = jQuery(this);
             const region = clickedItem.data('regionid');
             const originalRegion = jQuery('#region_id_original').val();
@@ -863,8 +907,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                             jQuery('button.region-button').text(clickedItem.text());
                         });
                     },
-                    function(error, err){});
-
+                    function(error, err){}
+                );
             }
         });
     },
@@ -906,7 +950,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     getCurrencyId: function () {
-        return jQuery('input.fieldBasicData[data-name="currency_id"]').data('value');
+        return jQuery('#currency_id_original').val();
     },
 });
 

@@ -35,8 +35,12 @@ class Quotes_Detail_View extends Vtiger_Detail_View
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $jsFileNames = [
-            'modules.InventoryItem.resources.InventoryItemDetail',
         ];
+
+        if (method_exists($this, 'getAdditionalHeaderScripts')) {
+            $jsFileNames = array_merge($jsFileNames, $this->getAdditionalHeaderScripts());
+        }
+
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
         return array_merge($headerScriptInstances, $jsScriptInstances);

@@ -22,14 +22,38 @@
                 </span>
                 <span class="ms-3 fs-4 fw-bold text-truncate">{vtranslate({$BLOCK_LABEL_KEY},{$MODULE_NAME})}</span>
             </div>
-            <div class="col-lg-6 textAlignRight" id="block_line_items_header">
+            <div class="col-lg-3 textAlignRight" id="block_line_items_currency">
+                {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['currency_id']}
+                {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
+                {assign var=CURRENT_VALUE value=$FIELD_MODEL->get('fieldvalue')}
+                {assign var=PICKLIST_VALUES value=$FIELD_INFO['currencyList']}
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary">{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}</button>
+                    <input type="hidden" name="currency_id_original" id="currency_id_original" value="{$FIELD_MODEL->get('fieldvalue')}">
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary currency-button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {if $PICKLIST_VALUES[$CURRENT_VALUE] neq ''}{$PICKLIST_VALUES[$CURRENT_VALUE]}{else}{vtranslate('Default', 'InventoryItem')}{/if}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end currency" aria-labelledby="btnGroupDrop1">
+                            {foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
+                                <li><a class="dropdown-item{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} current{/if}" data-currencyid="{$PICKLIST_NAME}"{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} aria-current="true"{/if}>{$PICKLIST_VALUE}</a></li>
+                            {/foreach}
+                            {if $CURRENT_USER_MODEL->isAdminUser()}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="index.php?module=Currency&parent=Settings&view=List"><span class="fa fa-cog module-icon dt-menu-icon"></span>&nbsp;&nbsp;{vtranslate('Settings')}</a></li>
+                            {/if}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 textAlignRight" id="block_line_items_region">
                 {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['region_id']}
                 {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
                 {assign var=CURRENT_VALUE value=$FIELD_MODEL->get('fieldvalue')}
                 {assign var=PICKLIST_VALUES value=$FIELD_INFO['editablepicklistvalues']}
                 <div class="btn-group" role="group">
-                    <input type="hidden" name="region_id_original" id="region_id_original" value="{$FIELD_MODEL->get('fieldvalue')}">
                     <button type="button" class="btn btn-primary">{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}</button>
+                    <input type="hidden" name="region_id_original" id="region_id_original" value="{$FIELD_MODEL->get('fieldvalue')}">
                     <div class="btn-group" role="group">
                         <button id="btnGroupDrop1" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary region-button" data-bs-toggle="dropdown" aria-expanded="false">
                             {if $PICKLIST_VALUES[$CURRENT_VALUE] neq ''}{$PICKLIST_VALUES[$CURRENT_VALUE]}{else}{vtranslate('Default', 'InventoryItem')}{/if}

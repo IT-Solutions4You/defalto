@@ -23,12 +23,12 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 	 * @param Vtiger_request $request
 	 * @return <String>
 	 */
-	function getModule(Vtiger_request $request) {
+	public function getModule(Vtiger_request $request) {
 		$moduleName = $request->getModule();
 		return $moduleName;
 	}
 
-	function process (Vtiger_Request $request) {
+	public function process (Vtiger_Request $request) {
 		$viewer = $this->getViewer ($request);
 		$moduleName = $this->getModule($request);
 		$companyDetails = Vtiger_CompanyDetails_Model::getInstanceById();
@@ -41,7 +41,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 		$viewer->view('Popup.tpl', $moduleName);
 	}
 
-	function postProcess(Vtiger_Request $request) {
+	public function postProcess(Vtiger_Request $request) {
 		$viewer = $this->getViewer ($request);
 		$moduleName = $this->getModule($request);
 		$viewer->view('PopupFooter.tpl', $moduleName);
@@ -52,7 +52,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 	 * @param Vtiger_Request $request
 	 * @return <Array> - List of Vtiger_JsScript_Model instances
 	 */
-	function getHeaderScripts(Vtiger_Request $request) {
+	public function getHeaderScripts(Vtiger_Request $request) {
 		$headerScriptInstances = parent::getHeaderScripts($request);
 		$moduleName = $request->getModule();
 
@@ -312,7 +312,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 	 * Function to get listView count
 	 * @param Vtiger_Request $request
 	 */
-	function getListViewCount(Vtiger_Request $request){
+	public function getListViewCount(Vtiger_Request $request){
 		$moduleName = $this->getModule($request);
 		$sourceModule = $request->get('src_module');
 		$sourceField = $request->get('src_field');
@@ -368,7 +368,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 	 * Function to get the page count for list
 	 * @return total number of pages
 	 */
-	function getPageCount(Vtiger_Request $request){
+	public function getPageCount(Vtiger_Request $request){
 		$listViewCount = $this->getListViewCount($request);
 		$pagingModel = new Vtiger_Paging_Model();
 		$pageLimit = $pagingModel->getPageLimit();

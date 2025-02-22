@@ -625,7 +625,7 @@ jQuery.Class("Vtiger_Popup_Js",{
 	getPageJumpParams : function(){
 		var params = this.getCompleteParams();
 		params['view'] = 'PopupAjax';
-		params['mode'] = 'getPageCount';
+		params['mode'] = 'getPageCount';console.log('base');
 		return params;
 	},
 	
@@ -639,7 +639,7 @@ jQuery.Class("Vtiger_Popup_Js",{
 			"type" : "GET",
 			"data" : pageCountParams
 		}
-		
+
 		app.request.get(params).then(
 			function(err, data) {
 				var response;
@@ -653,22 +653,22 @@ jQuery.Class("Vtiger_Popup_Js",{
 		);
 		return aDeferred.promise();
 	},
-	
-	totalNumOfRecords : function (currentEle) {
-		var thisInstance = this;
-		var popupContainer = thisInstance.getPopupPageContainer();
-		var totalRecordsElement = popupContainer.find('#totalCount');
-		var totalNumberOfRecords = totalRecordsElement.val();
+
+	totalNumOfRecords: function (currentEle) {
+		const thisInstance = this;
+		const popupContainer = thisInstance.getPopupPageContainer();
+		const totalRecordsElement = popupContainer.find('#totalCount');
+		let totalNumberOfRecords = totalRecordsElement.val();
 		currentEle.addClass('hide');
 
-		if(totalNumberOfRecords === '') {
-			thisInstance.getPageCount().then(function(data){
+		if (totalNumberOfRecords === '' || totalNumberOfRecords == 0) {
+			thisInstance.getPageCount().then(function (data) {
 				totalNumberOfRecords = data.numberOfRecords;
 				totalRecordsElement.val(totalNumberOfRecords);
 				popupContainer.find('ul#listViewPageJumpDropDown #totalPageCount').text(data.page);
 				thisInstance.showPagingInfo();
 			});
-		}else{
+		} else {
 			thisInstance.showPagingInfo();
 		}
 	},

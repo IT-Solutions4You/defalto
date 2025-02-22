@@ -4,7 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
-
+/** @var Products_ProductRelatedProductBundles_Js */
 Vtiger_Popup_Js("Products_ProductRelatedProductBundles_Js", {}, {
     popupSelectedRecords : {},
     /**

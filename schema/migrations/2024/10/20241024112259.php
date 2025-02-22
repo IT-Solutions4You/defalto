@@ -58,12 +58,76 @@ if (!class_exists('Migration_20241024112259')) {
 
             $this->db->pquery('INSERT INTO df_inventoryitem_itemmodules (tabid) VALUES (?), (?)', [getTabid('Products'), getTabid('Services')]);
 
+            $this->db->pquery(
+                'UPDATE vtiger_field SET displaytype = 1, presence = 0, quickcreate = 1 WHERE fieldname = ? AND tablename IN (?, ?, ?, ?)',
+                ['currency_id', 'vtiger_quotes', 'vtiger_purchaseorder', 'vtiger_salesorder', 'vtiger_invoice']
+            );
             $inventoryModules = ['Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice'];
 
             foreach ($inventoryModules as $inventoryModuleName) {
                 $tabId = getTabid($inventoryModuleName);
                 $this->db->pquery('DELETE FROM vtiger_field WHERE tabid = ? AND tablename = ?', [$tabId, 'vtiger_inventoryproductrel']);
                 $this->db->pquery('UPDATE vtiger_ws_entity SET handler_path = ?,  handler_class = ? WHERE name = ?', ['include/Webservices/VtigerModuleOperation.php', 'VtigerModuleOperation', $inventoryModuleName]);
+
+                $inventoryModuleEntity = CRMEntity::getInstance($inventoryModuleName);
+                $inventoryModule = Vtiger_Module::getInstance($inventoryModuleName);
+                $priceBookIdField = Vtiger_Field::getInstance('pricebookid', $inventoryModule);
+
+                if (!$priceBookIdField) {
+                    $blocks = Vtiger_Block::getAllForModule($inventoryModule);
+                    $itemsBlock = false;
+
+                    foreach ($blocks as $block) {
+                        if ($block->label === 'LBL_ITEM_DETAILS') {
+                            $itemsBlock = $block;
+                            break;
+                        }
+                    }
+
+                    if (!$itemsBlock) {
+                        continue;
+                    }
+
+                    $priceBookId = new Vtiger_Field();
+                    $priceBookId->table = $inventoryModuleEntity->basetable;
+                    $priceBookId->name = 'pricebookid';
+                    $priceBookId->column = 'pricebookid';
+                    $priceBookId->label = 'Price Book';
+                    $priceBookId->uitype = 10;
+                    $priceBookId->presence = 0;
+                    $priceBookId->sequence = 10;
+                    $priceBookId->columntype = 'INT(11)';
+                    $priceBookId->typeofdata = 'V~O';
+                    $priceBookId->quickcreate = 1;
+                    $priceBookId->masseditable = 0;
+                    $priceBookId->summaryfield = 0;
+                    $priceBookId->save($itemsBlock);
+                    $priceBookId->setRelatedModules(['PriceBooks']);
+                }
+            }
+            
+            $accountsEntity = CRMEntity::getInstance('Accounts');
+            $accountsModule = Vtiger_Module::getInstance('Accounts');
+            $priceBookIdField = Vtiger_Field::getInstance('pricebookid', $accountsModule);
+
+            if (!$priceBookIdField) {
+                $blocks = Vtiger_Block::getAllForModule($accountsModule);
+                $block = $blocks[0];
+                $priceBookId = new Vtiger_Field();
+                $priceBookId->table = $accountsEntity->basetable;
+                $priceBookId->name = 'pricebookid';
+                $priceBookId->column = 'pricebookid';
+                $priceBookId->label = 'Price Book';
+                $priceBookId->uitype = 10;
+                $priceBookId->presence = 0;
+                $priceBookId->sequence = 50;
+                $priceBookId->columntype = 'INT(11)';
+                $priceBookId->typeofdata = 'V~O';
+                $priceBookId->quickcreate = 1;
+                $priceBookId->masseditable = 0;
+                $priceBookId->summaryfield = 0;
+                $priceBookId->save($block);
+                $priceBookId->setRelatedModules(['PriceBooks']);
             }
         }
     }

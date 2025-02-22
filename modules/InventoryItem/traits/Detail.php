@@ -133,4 +133,16 @@ trait InventoryItem_Detail_Trait
 
         return $columns;
     }
-}
+
+    public function getAdditionalHeaderScripts(): array
+    {
+        $jsFileNames = [
+            'modules.InventoryItem.resources.InventoryItemDetail',
+            'modules.Vtiger.resources.Popup',
+            'modules.InventoryItem.resources.ItemsPopup',
+            'modules.Products.resources.ProductRelatedProductBundles',
+
+        ];
+
+        return $jsFileNames;
+    }}
