@@ -221,7 +221,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="textAlignRight font-bold">{$ADJUSTMENT}</td>
+                            <td class="textAlignRight font-bold adjustmentDisplay">{$ADJUSTMENT}</td>
                         </tr>
                     {/if}
                 {/if}

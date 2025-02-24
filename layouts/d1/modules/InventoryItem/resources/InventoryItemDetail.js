@@ -824,6 +824,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});
                     jQuery('#original_adjustment').val(adjustment);
                     jQuery('.total_price_total').text(jQuery('#total_with_adjustment').val());
+                    jQuery('.adjustmentDisplay').text(jQuery('#adjustment').val());
                     app.helper.hideProgress();
                     jQuery('#adjustmentSettingDiv').hide();
                 });
