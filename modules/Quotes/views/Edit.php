@@ -6,33 +6,14 @@
  * All Rights Reserved.
  */
 
-class Quotes_Detail_View extends Vtiger_Detail_View
+class Quotes_Edit_View extends Vtiger_Edit_View
 {
-    use InventoryItem_Detail_Trait;
+    use InventoryItem_Edit_Trait;
 
     /**
-     * Function returns Inventory details
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return bool|html
+     * @inheritDoc
      */
-    function showModuleDetailView(Vtiger_Request $request)
-    {
-        $viewer = $this->getViewer($request);
-        $this->adaptDetail($request, $viewer);
-
-        return parent::showModuleDetailView($request);
-    }
-
-    /**
-     * Get the header scripts for the view.
-     *
-     * @param Vtiger_Request $request The request object
-     * @return array Merged header script instances
-     */
-    public function getHeaderScripts(Vtiger_Request $request)
-    {
+    function getHeaderScripts(Vtiger_Request $request) {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $jsFileNames = [
         ];
@@ -44,5 +25,6 @@ class Quotes_Detail_View extends Vtiger_Detail_View
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
         return array_merge($headerScriptInstances, $jsScriptInstances);
+
     }
 }

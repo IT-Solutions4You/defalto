@@ -134,15 +134,16 @@ trait InventoryItem_Detail_Trait
         return $columns;
     }
 
-    public function getAdditionalHeaderScripts(): array
+    /**
+     * @return Array
+     */
+    public function adaptHeaderScripts(): array
     {
-        $jsFileNames = [
+        return [
             'modules.InventoryItem.resources.InventoryItemDetail',
             'modules.Vtiger.resources.Popup',
             'modules.InventoryItem.resources.ItemsPopup',
             'modules.Products.resources.ProductRelatedProductBundles',
-
         ];
-
-        return $jsFileNames;
-    }}
+    }
+}
