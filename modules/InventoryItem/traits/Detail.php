@@ -10,12 +10,12 @@
 
 trait InventoryItem_Detail_Trait
 {
-    protected $excludedFields = ['assigned_user_id', 'description', 'item_text', 'parentid', 'parentitemid', 'sequence', 'discount_type', 'discount', 'overall_discount',];
-    protected $computedFields = ['subtotal', 'price_after_discount', 'overall_discount_amount', 'price_after_overall_discount', 'tax_amount', 'price_total', 'margin',];
-    protected $specialTreatmentFields = ['discount', 'overall_discount',];
-    protected $overallDiscount = 0;
-    protected $overallDiscountAmount = 0;
-    protected $roundValues = [
+    protected array $excludedFields = ['assigned_user_id', 'description', 'item_text', 'parentid', 'parentitemid', 'sequence', 'discount_type', 'discount', 'overall_discount',];
+    protected array $computedFields = ['subtotal', 'price_after_discount', 'overall_discount_amount', 'price_after_overall_discount', 'tax_amount', 'price_total', 'margin',];
+    protected array $specialTreatmentFields = ['discount', 'overall_discount',];
+    protected float $overallDiscount = 0;
+    protected float $overallDiscountAmount = 0;
+    protected array $roundValues = [
         'subtotal',
         'discount',
         'discount_amount',
@@ -30,6 +30,14 @@ trait InventoryItem_Detail_Trait
         'margin',
     ];
 
+    /**
+     * Add product block into Detail View
+     *
+     * @param Vtiger_Request $request
+     * @param Vtiger_Viewer  $viewer
+     *
+     * @return void
+     */
     public function adaptDetail(Vtiger_Request $request, Vtiger_Viewer $viewer)
     {
         $recordId = (int)$request->get('record');
@@ -44,7 +52,7 @@ trait InventoryItem_Detail_Trait
         $selectedFields = InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule()));
         $selectedFieldsCount = count($selectedFields);
 
-        foreach ($selectedFields as $key => $value) {
+        foreach ($selectedFields as $value) {
             if (in_array($value, $this->excludedFields)) {
                 $selectedFieldsCount--;
             }
@@ -82,8 +90,17 @@ trait InventoryItem_Detail_Trait
         }
 
         $viewer->assign('ADJUSTMENT', number_format($adjustment, 2));
+
+        $viewer->assign('PRICEBOOKS', $this->fetchPriceBooks($request));
     }
 
+    /**
+     * Get items for given record.
+     *
+     * @param int $record
+     *
+     * @return array[]
+     */
     private function fetchItems(int $record): array
     {
         $inventoryItems = [[],];
@@ -125,7 +142,12 @@ trait InventoryItem_Detail_Trait
         return $inventoryItems;
     }
 
-    private function getEmptyRow()
+    /**
+     * Get (default) empty row as line item
+     *
+     * @return array
+     */
+    private function getEmptyRow(): array
     {
         $db = PearDatabase::getInstance();
         $columns = $db->getColumnNames('df_inventoryitem');
@@ -135,6 +157,68 @@ trait InventoryItem_Detail_Trait
     }
 
     /**
+     * Get all PriceBooks.
+     * Restricted to Price Books with the same currency as the entity has.
+     * If the actual Price Book has different currency, it is added at the end.
+     *
+     * @param Vtiger_Request $request
+     *
+     * @return array [id => name]
+     */
+    private function fetchPriceBooks(Vtiger_Request $request): array
+    {
+        $records = [];
+        $db = PearDatabase::getInstance();
+        $module = $request->get('module');
+        $user = Users_Record_Model::getCurrentUserModel();
+
+        $recordModel = Vtiger_Record_Model::getInstanceById($request->get('record'), $module);
+        $currencyId = $recordModel->get('currency_id');
+        $selectedPriceBookId = $recordModel->get('pricebookid');
+
+        $pagingModel = new Vtiger_Paging_Model();
+        $pagingModel->set('page', 1);
+        $pagingModel->set('limit', 1000);
+
+        $forModule = 'PriceBooks';
+        $queryGenerator = new EnhancedQueryGenerator($forModule, $user);
+        $queryGenerator->setFields(['id', 'bookname']);
+
+        $moduleSpecificControllerPath = 'modules/' . $forModule . '/controllers/ListViewController.php';
+
+        if (file_exists($moduleSpecificControllerPath)) {
+            include_once $moduleSpecificControllerPath;
+            $moduleSpecificControllerClassName = $forModule . 'ListViewController';
+            $controller = new $moduleSpecificControllerClassName($db, $user, $queryGenerator);
+        } else {
+            $controller = new ListViewController($db, $user, $queryGenerator);
+        }
+
+        $listViewModel = Vtiger_ListView_Model::getCleanInstance($forModule)->set('query_generator', $queryGenerator)->set('listview_controller', $controller);
+
+        if ($currencyId) {
+            $queryGenerator = $listViewModel->get('query_generator');
+            $queryGenerator->addUserSearchConditions(['search_field' => 'currency_id', 'search_text' => $currencyId, 'operator' => 'e']);
+        }
+
+        $records = [];
+        $listViewRecords = $listViewModel->getListViewEntries($pagingModel);
+
+        foreach ($listViewRecords as $listViewRecord) {
+            $data = $listViewRecord->getData();
+            $records[$data['id']] = $data['bookname'];
+        }
+
+        if (!isset($records[$selectedPriceBookId])) {
+            $records[$selectedPriceBookId] = getEntityName('PriceBooks', $selectedPriceBookId)[$selectedPriceBookId];
+        }
+
+        return $records;
+    }
+
+    /**
+     * Used to inject custom js files into getHeaderScripts method
+     *
      * @return Array
      */
     public function adaptHeaderScripts(): array
