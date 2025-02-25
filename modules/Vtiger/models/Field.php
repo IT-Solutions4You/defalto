@@ -1623,4 +1623,15 @@ class Vtiger_Field_Model extends Vtiger_Field {
 
         return sprintf('picklist-option-%s-%s', $this->getId(), $value);
     }
+
+    /**
+     * Check whether the field can contain negative numbers
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function isNegativeNumber(): bool
+    {
+        return str_starts_with($this->get('typeofdata'), 'NN');
+    }
 }

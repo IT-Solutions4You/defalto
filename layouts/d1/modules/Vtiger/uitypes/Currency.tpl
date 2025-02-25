@@ -53,7 +53,7 @@
         {else}
             <div class="input-group">
                 <span class="input-group-text currencyUITypeSymbol" id="basic-addon1">{$CURRENCY_SYMBOL}</span>
-                <input type="text" class="form-control input-lg currencyField replaceCommaWithDot" name="{$FIELD_NAME}"
+                <input type="text" class="form-control input-lg currencyField replaceCommaWithDot {if $FIELD_MODEL->isNegativeNumber()}negativeNumber{/if}" name="{$FIELD_NAME}"
                        value="{$FIELD_MODEL->getEditViewDisplayValue($FIELD_MODEL->get('fieldvalue'))}" {if !empty($SPECIAL_VALIDATOR)}data-validator={Zend_Json::encode($SPECIAL_VALIDATOR)}{/if}
                        {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if} data-rule-currency='true'
                         {if php7_count($FIELD_INFO['validator'])}
