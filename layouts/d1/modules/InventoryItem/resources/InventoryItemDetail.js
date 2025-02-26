@@ -48,6 +48,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.registerAdjustmentActions();
         this.registerCurrencyActions();
         this.registerRegionActions();
+        this.registerPriceBookActions();
         this.registerPriceBookPopUp();
     },
 
@@ -763,6 +764,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 const params = {
                     module: 'InventoryItem',
                     action: 'SaveOverallDiscount',
+                    mode: 'saveOverallDiscount',
                     for_record: app.getRecordId(),
                     overall_discount_percent: overallDiscountPercent,
                 };
@@ -814,7 +816,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 app.helper.showProgress();
                 const params = {
                     module: 'InventoryItem',
-                    action: 'SaveAdjustment',
+                    action: 'SaveItemsBlockDetail',
+                    mode: 'saveAdjustment',
                     for_record: app.getRecordId(),
                     for_module: app.getModuleName(),
                     adjustment: adjustment,
@@ -854,7 +857,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                         app.helper.showProgress();
                         const params = {
                             module: 'InventoryItem',
-                            action: 'SaveCurrency',
+                            action: 'SaveItemsBlockDetail',
+                            mode: 'saveCurrency',
                             for_record: app.getRecordId(),
                             for_module: app.getModuleName(),
                             currency_id: currency,
@@ -895,7 +899,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                         app.helper.showProgress();
                         const params = {
                             module: 'InventoryItem',
-                            action: 'SaveRegion',
+                            action: 'SaveItemsBlockDetail',
+                            mode: 'saveRegion',
                             for_record: app.getRecordId(),
                             for_module: app.getModuleName(),
                             region_id: region,
@@ -906,6 +911,47 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                             jQuery('#region_id_original').val(region);
                             app.helper.hideProgress();
                             jQuery('button.region-button').text(clickedItem.text());
+                        });
+                    },
+                    function(error, err){}
+                );
+            }
+        });
+    },
+
+    registerPriceBookActions: function () {
+        const self = this;
+        const blockLineItemsPriceBookDiv = jQuery('#block_line_items_pricebook');
+        blockLineItemsPriceBookDiv.on('click', 'ul.pricebook li a', function (event) {
+            const clickedItem = jQuery(this);
+            const priceBook = clickedItem.data('pricebookid');
+            const originalPriceBook = jQuery('#pricebookid_original').val();
+
+            if (typeof priceBook == 'undefined') {
+                return true;
+            }
+
+            event.preventDefault();
+
+            if (originalPriceBook != priceBook) {
+                app.helper.showConfirmationBox({'message' : app.vtranslate('JS_CONFIRM_PRICEBOOK_CHANGE')}).then(
+                    function() {
+                        app.helper.showProgress();
+                        const params = {
+                            module: 'InventoryItem',
+                            action: 'SaveItemsBlockDetail',
+                            mode: 'savePriceBook',
+                            for_record: app.getRecordId(),
+                            for_module: app.getModuleName(),
+                            pricebookid: priceBook,
+                        };
+
+                        app.request.post({"data": params}).then(function (err, res) {
+                            app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});
+                            jQuery('#pricebookid_original').val(priceBook);
+                            app.helper.hideProgress();
+                            jQuery('button.pricebook-button').text(clickedItem.text());
+                            location.reload();
                         });
                     },
                     function(error, err){}

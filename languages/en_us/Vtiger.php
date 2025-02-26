@@ -2064,4 +2064,5 @@ $jsLanguageStrings = array(
     'JS_UPDATE_RECORD_TAXES_QUESTION' => 'Do you want to update the taxes of all records?',
     'JS_CLEAR' => 'Clear',
     'JS_CONFIRM_CURRENCY_CHANGE' => 'After changing the currency, all prices will be recalculated according to the set exchange rate.',
+    'JS_CONFIRM_PRICEBOOK_CHANGE' => 'After changing the Price Book, all prices will be recalculated according to the new Price Book.',
 );

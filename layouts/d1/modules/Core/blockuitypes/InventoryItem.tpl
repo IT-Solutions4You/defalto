@@ -36,7 +36,7 @@
                             <ul class="dropdown-menu dropdown-menu-end pricebook" aria-labelledby="btnGroupDrop1">
                                 <li><a class="dropdown-item" data-pricebookid="0">{vtranslate('LBL_NONE', 'InventoryItem')}</a></li>
                                 {foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PRICEBOOKS}
-                                    <li><a class="dropdown-item{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} current{/if}" data-currencyid="{$PICKLIST_NAME}"{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} aria-current="true"{/if}>{$PICKLIST_VALUE}</a></li>
+                                    <li><a class="dropdown-item{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} current{/if}" data-pricebookid="{$PICKLIST_NAME}"{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} aria-current="true"{/if}>{$PICKLIST_VALUE}</a></li>
                                 {/foreach}
                                 {*<li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="index.php?module=Currency&parent=Settings&view=List"><span class="fa fa-cog module-icon dt-menu-icon"></span>&nbsp;&nbsp;{vtranslate('Settings')}</a></li>*}
