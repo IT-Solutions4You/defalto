@@ -10,6 +10,9 @@
 
 class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
 {
+    /**
+     * @inheritDoc
+     */
     public function process(Vtiger_Request $request)
     {
         $mode = $request->get('mode');
@@ -26,7 +29,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
      */
     protected function savePriceBook(Vtiger_Request $request)
     {
-        $recordId = $request->get('for_record');
+        $recordId = (int)$request->get('for_record');
         $moduleName = $request->get('for_module');
         $priceBookId = (float)$request->get('pricebookid');
 
@@ -37,7 +40,6 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         $currencyId = $recordModel->get('currency_id');
         $recordModel->save();
 
-        $db = PearDatabase::getInstance();
         $toNewCurrency = 1;
 
         $priceBookModel = Vtiger_Record_Model::getInstanceById($priceBookId, 'PriceBooks');
@@ -49,21 +51,15 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
             $toNewCurrency = $toBaseCurrency * $currenciesConversionTable[$currencyId];
         }
 
-        $sql = 'SELECT df_inventoryitem.*
-                FROM df_inventoryitem
-                    INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid AND vtiger_crmentity.deleted = 0
-                WHERE parentid = ?
-                    AND productid IS NOT NULL
-                    AND productid <> 0';
-        $res = $db->pquery($sql, [$request->get('for_record')]);
+        $items = $this->fetchItems($recordId);
 
-        while ($row = $db->fetchByAssoc($res)) {
-            if (!$row['productid']) {
+        foreach ($items as $item) {
+            if (!$item['productid']) {
                 continue;
             }
 
-            $recordModel = Vtiger_Record_Model::getInstanceById($row['inventoryitemid'], 'InventoryItem');
-            $price = $priceBookModel->getProductsListPrice($row['productid']);
+            $recordModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
+            $price = $priceBookModel->getProductsListPrice($item['productid']);
 
             if (!$price) {
                 $price = $recordModel->get('price');
@@ -75,6 +71,8 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
             $recordModel->set('mode', 'edit');
             $recordModel->save();
         }
+
+        InventoryItem_ParentEntity_Model::updateTotals($recordId);
     }
 
     /**
@@ -84,7 +82,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
      */
     protected function saveRegion(Vtiger_Request $request)
     {
-        $recordId = $request->get('for_record');
+        $recordId = (int)$request->get('for_record');
         $moduleName = $request->get('for_module');
         $regionId = (float)$request->get('region_id');
 
@@ -92,6 +90,8 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         $recordModel->set('mode', 'edit');
         $recordModel->set('region_id', $regionId);
         $recordModel->save();
+
+        InventoryItem_ParentEntity_Model::updateTotals($recordId);
     }
 
     /**
@@ -102,22 +102,19 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
     protected function saveOverallDiscount(Vtiger_Request $request)
     {
         $db = PearDatabase::getInstance();
+        $recordId = (int)$request->get('for_record');
         $discount = (float)$request->get('overall_discount_percent');
 
-        $sql = 'SELECT df_inventoryitem.* 
-                FROM df_inventoryitem
-                    INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid AND vtiger_crmentity.deleted = 0
-                WHERE parentid = ?   
-                    AND productid IS NOT NULL
-                    AND productid <> 0';
-        $res = $db->pquery($sql, [$request->get('for_record')]);
+        $items = $this->fetchItems($recordId);
 
-        while ($row = $db->fetchByAssoc($res)) {
-            $recordModel = Vtiger_Record_Model::getInstanceById($row['inventoryitemid'], 'InventoryItem');
+        foreach ($items as $item) {
+            $recordModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
             $recordModel->set('overall_discount', $discount);
             $recordModel->set('mode', 'edit');
             $recordModel->save();
         }
+
+        InventoryItem_ParentEntity_Model::updateTotals($recordId);
     }
 
     /**
@@ -127,7 +124,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
      */
     protected function saveAdjustment(Vtiger_Request $request)
     {
-        $recordId = $request->get('for_record');
+        $recordId = (int)$request->get('for_record');
         $moduleName = $request->get('for_module');
         $adjustment = (float)$request->get('adjustment');
 
@@ -135,6 +132,8 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         $recordModel->set('mode', 'edit');
         $recordModel->set('txtAdjustment', $adjustment);
         $recordModel->save();
+
+        InventoryItem_ParentEntity_Model::updateTotals($recordId);
     }
 
     /**
@@ -144,7 +143,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
      */
     protected function saveCurrency(Vtiger_Request $request)
     {
-        $recordId = $request->get('for_record');
+        $recordId = (int)$request->get('for_record');
         $moduleName = $request->get('for_module');
         $currencyId = (float)$request->get('currency_id');
 
@@ -159,21 +158,15 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         $toBaseCurrency = 1 / $currenciesConversionTable[$oldCurrencyId];
         $toNewCurrency = $toBaseCurrency * $currenciesConversionTable[$currencyId];
 
-        $sql = 'SELECT df_inventoryitem.*
-                FROM df_inventoryitem
-                    INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid AND vtiger_crmentity.deleted = 0
-                WHERE parentid = ?
-                    AND productid IS NOT NULL
-                    AND productid <> 0';
-        $res = $db->pquery($sql, [$request->get('for_record')]);
+        $items = $this->fetchItems($recordId);
 
-        while ($row = $db->fetchByAssoc($res)) {
-            if (!$row['productid']) {
+        foreach ($items as $item) {
+            if (!$item['productid']) {
                 continue;
             }
 
-            $recordModel = Vtiger_Record_Model::getInstanceById($row['inventoryitemid'], 'InventoryItem');
-            $currencyPriceList = Products_Record_Model::getListPriceValues($row['productid']);
+            $recordModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
+            $currencyPriceList = Products_Record_Model::getListPriceValues($item['productid']);
 
             if (isset($currencyPriceList[$currencyId])) {
                 $price = $currencyPriceList[$currencyId];
@@ -194,6 +187,8 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
             $recordModel->set('mode', 'edit');
             $recordModel->save();
         }
+
+        InventoryItem_ParentEntity_Model::updateTotals($recordId);
     }
 
     /**
@@ -211,5 +206,29 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         }
 
         return $currencies;
+    }
+
+    /**
+     * @param int $parentId
+     *
+     * @return array
+     */
+    protected function fetchItems(int $parentId): array
+    {
+        $db = PearDatabase::getInstance();
+        $items = [];
+        $sql = 'SELECT df_inventoryitem.* 
+                FROM df_inventoryitem
+                    INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid AND vtiger_crmentity.deleted = 0
+                WHERE parentid = ?   
+                    AND productid IS NOT NULL
+                    AND productid <> 0';
+        $res = $db->pquery($sql, [$parentId]);
+
+        while ($row = $db->fetchByAssoc($res)) {
+            $items[] = $row;
+        }
+
+        return $items;
     }
 }

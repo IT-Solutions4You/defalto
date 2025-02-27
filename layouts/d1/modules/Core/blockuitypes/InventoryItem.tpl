@@ -23,7 +23,7 @@
                 <span class="ms-3 fs-4 fw-bold text-truncate">{vtranslate({$BLOCK_LABEL_KEY},{$MODULE_NAME})}</span>
             </div>
             <div class="col-lg-8 row">
-                <div class="col-lg-4 textAlignRight" id="block_line_items_pricebook">
+                <div class="col-lg-6 textAlignRight" id="block_line_items_pricebook">
                     <div class="btn-group" role="group">
                         {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['pricebookid']}
                         {assign var=CURRENT_VALUE value=$FIELD_MODEL->get('fieldvalue')}
@@ -38,13 +38,11 @@
                                 {foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PRICEBOOKS}
                                     <li><a class="dropdown-item{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} current{/if}" data-pricebookid="{$PICKLIST_NAME}"{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} aria-current="true"{/if}>{$PICKLIST_VALUE}</a></li>
                                 {/foreach}
-                                {*<li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="index.php?module=Currency&parent=Settings&view=List"><span class="fa fa-cog module-icon dt-menu-icon"></span>&nbsp;&nbsp;{vtranslate('Settings')}</a></li>*}
                             </ul>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 textAlignRight" id="block_line_items_currency">
+                <div class="col-lg-3 textAlignRight" id="block_line_items_currency">
                     {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['currency_id']}
                     {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
                     {assign var=CURRENT_VALUE value=$FIELD_MODEL->get('fieldvalue')}
@@ -68,7 +66,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 textAlignRight" id="block_line_items_region">
+                <div class="col-lg-3 textAlignRight" id="block_line_items_region">
                     {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['region_id']}
                     {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
                     {assign var=CURRENT_VALUE value=$FIELD_MODEL->get('fieldvalue')}
@@ -142,7 +140,7 @@
                         <td{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'percentage'} class="textAlignRight"{/if} style="font-weight: bold;">
                             {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
                                 {vtranslate('Total', 'InventoryItem')}
-                             {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $COMPUTED_FIELDS)}
+                             {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $TOTAL_FIELDS)}
                                 <span class="total_{$INVENTORY_ITEM_FIELD_NAME}"></span>
                             {/if}
                         </td>

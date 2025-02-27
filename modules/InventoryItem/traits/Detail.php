@@ -10,8 +10,6 @@
 
 trait InventoryItem_Detail_Trait
 {
-    protected array $excludedFields = ['assigned_user_id', 'description', 'item_text', 'parentid', 'parentitemid', 'sequence', 'discount_type', 'discount', 'overall_discount',];
-    protected array $computedFields = ['subtotal', 'price_after_discount', 'overall_discount_amount', 'price_after_overall_discount', 'tax_amount', 'price_total', 'margin',];
     protected array $specialTreatmentFields = ['discount', 'overall_discount',];
     protected float $overallDiscount = 0;
     protected float $overallDiscountAmount = 0;
@@ -42,8 +40,9 @@ trait InventoryItem_Detail_Trait
     {
         $recordId = (int)$request->get('record');
         $viewer->assign('ITEM_MODULES', InventoryItem_ItemModules_Model::getItemModules());
-        $viewer->assign('EXCLUDED_FIELDS', $this->excludedFields);
-        $viewer->assign('COMPUTED_FIELDS', $this->computedFields);
+        $viewer->assign('EXCLUDED_FIELDS', InventoryItem_Field_Model::excludedFields);
+        $viewer->assign('COMPUTED_FIELDS', InventoryItem_Field_Model::computedFields);
+        $viewer->assign('TOTAL_FIELDS', InventoryItem_Field_Model::totalFields);
         $viewer->assign('SPECIAL_TREATMENT_FIELDS', $this->specialTreatmentFields);
         $viewer->assign('INVENTORY_ITEMS', $this->fetchItems($recordId));
         $viewer->assign('EMPTY_ROW', $this->getEmptyRow());
@@ -53,7 +52,7 @@ trait InventoryItem_Detail_Trait
         $selectedFieldsCount = count($selectedFields);
 
         foreach ($selectedFields as $value) {
-            if (in_array($value, $this->excludedFields)) {
+            if (in_array($value, InventoryItem_Field_Model::computedFields)) {
                 $selectedFieldsCount--;
             }
         }
