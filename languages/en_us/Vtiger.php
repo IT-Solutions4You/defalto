@@ -1464,6 +1464,12 @@ $languageStrings = array(
     'LBL_RELATED_BLOCKS' => 'Related Blocks',
     'LBL_RELATION_LIST' => 'Relations List',
     'LBL_NAVIGATION' => 'Navigation',
+    'LBL_ASC' => 'Ascending',
+    'LBL_DESC' => 'Descending',
+    'LBL_SUM' => 'Sum',
+    'LBL_AVG' => 'Avg',
+    'LBL_MIN' => 'Min',
+    'LBL_MAX' => 'Max',
 );
 
 $jsLanguageStrings = array(
