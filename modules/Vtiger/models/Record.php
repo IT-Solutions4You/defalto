@@ -233,6 +233,27 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 	}
 
     /**
+     * @param string $fieldName
+     * @param false|int $recordId
+     * @return mixed
+     * @throws AppException
+     */
+    public function getReportDisplayValue(string $fieldName, false|int $recordId = false): mixed
+    {
+        if (empty($recordId)) {
+            $recordId = $this->getId();
+        }
+
+        $fieldModel = $this->getModule()->getField($fieldName);
+
+        if ($fieldModel) {
+            return $fieldModel->getReportDisplayValue($this->get($fieldName), (int)$recordId, $this);
+        }
+
+        return false;
+    }
+
+    /**
      * Function to retieve display value for a field
      * @param string $fieldName - field name for which values need to get
      * @return mixed

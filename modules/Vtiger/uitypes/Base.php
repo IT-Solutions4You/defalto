@@ -9,8 +9,37 @@
  *************************************************************************************/
 
 class Vtiger_Base_UIType extends Vtiger_Base_Model {
+    /**
+     * @param mixed $value
+     * @param bool|int $record
+     * @param object|bool $recordInstance
+     * @return string
+     * @throws Exception
+     */
+    public function getReportDisplayValue(mixed $value, bool|int $record, object|bool $recordInstance): string
+    {
+        $displayValue = $this->getDisplayValue($value, $record, $recordInstance);
 
-	/**
+        if ($recordInstance && $this->isReportValueUrl()) {
+            return sprintf('<a href="%s">%s</a>', $recordInstance->getDetailViewUrl(), strip_tags($displayValue));
+        }
+
+        return $displayValue;
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function isReportValueUrl(): bool
+    {
+        /** @var Vtiger_Field_Model $field */
+        $field = $this->get('field');
+
+        return 4 === $field->getUIType() || $field->isNameField();
+    }
+
+    /**
 	 * Function to get the Template name for the current UI Type Object
 	 * @return <String> - Template Name
 	 */
