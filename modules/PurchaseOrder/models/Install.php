@@ -678,7 +678,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'name' => 'pricebookid',
                     'uitype' => 73,
                     'column' => 'pricebookid',
-                    'table' => 'vtiger_salesorder',
+                    'table' => 'vtiger_purchaseorder',
                     'label' => 'Price Book',
                     'readonly' => 0,
                     'presence' => 0,

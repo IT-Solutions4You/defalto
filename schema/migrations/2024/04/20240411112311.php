@@ -34,7 +34,6 @@ if (!class_exists('Migration_20240411112311')) {
             $this->db->pquery(
                 'CREATE TABLE IF NOT EXISTS `df_inventoryitem` (
                                      `inventoryitemid` INT(11) NULL DEFAULT NULL,
-                                     `inventoryitem_no` VARCHAR(100) NULL DEFAULT NULL COLLATE \'utf8_general_ci\',
                                      PRIMARY KEY (`inventoryitemid`) USING BTREE
                                  )
                                  COLLATE=\'utf8_general_ci\'
