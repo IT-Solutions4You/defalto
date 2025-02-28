@@ -983,12 +983,12 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             const postPriceBookPopupHandler = function (e, data) {
                 const responseData = JSON.parse(data);
 
-                for (let id in responseData) {
-                    let listPrice = parseFloat(responseData[id]).toFixed(3);
-                    let priceElement = lineItemRow.find('.price');
-                    priceElement.val(listPrice);
-                    priceElement.trigger('change');
-                }
+                let listPrice = parseFloat(responseData.price).toFixed(3);
+                let priceElement = lineItemRow.find('.price');
+                priceElement.val(listPrice);
+                priceElement.trigger('change');
+                let pricebookidElement = lineItemRow.find('.pricebookid');
+                pricebookidElement.val(responseData.pricebookid);
             };
 
             app.event.off('post.LineItemPriceBookSelect.click');

@@ -188,6 +188,8 @@
                         </span>
                     </div>
                     <input id="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="original_{$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
+                    <input id="pricebookid{$row_no}" name="pricebookid{$row_no}" class="pricebookid" type="hidden" value="{$data.pricebookid}" />
+                    <input id="original_pricebookid{$row_no}" name="original_pricebookid{$row_no}" class="original_pricebookid" type="hidden" value="{$data.pricebookid}" />
                 </span>
             </td>
         {elseif $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'percentage'}
