@@ -190,6 +190,23 @@ jQuery.Class("Vtiger_Field_Js",{
 
 })
 
+/** @var Vtiger_Url_Field_Js */
+Vtiger_Field_Js('Vtiger_Url_Field_Js',{},{
+	getUi: function () {
+		let html = '<input class="inputElement form-control" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-' + this.getType() + '=true />',
+			htmlValue = this.getValue(),
+			htmlElement = $(htmlValue);
+
+		if(htmlElement && htmlElement.is('a')) {
+			htmlValue = htmlElement.attr('href');
+		}
+
+		html = jQuery(html).val(htmlValue);
+
+		return this.addValidationToElement(html);
+	}
+});
+
 /** @var Vtiger_Reference_Field_Js */
 Vtiger_Field_Js('Vtiger_Reference_Field_Js',{},{
 

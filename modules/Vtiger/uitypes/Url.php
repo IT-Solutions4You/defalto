@@ -18,14 +18,25 @@ class Vtiger_Url_UIType extends Vtiger_Base_UIType {
 		return 'uitypes/Url.tpl';
 	}
 
-	public function getDisplayValue($value, $record=false, $recordInstance=false) {
-		$matchPattern = "^[\w]+:\/\/^";
-		preg_match($matchPattern, $value, $matches);
-		if(!empty ($matches[0])) {
-			$value = '<a class="urlField cursorPointer" href="'.$value.'" target="_blank">'.textlength_check($value).'</a>';
-		} else {
-			$value = '<a class="urlField cursorPointer" href="http://'.$value.'" target="_blank">'.textlength_check($value).'</a>';
-		}
-		return $value;
-	}
+    public function getDisplayValue($value, $record = false, $recordInstance = false)
+    {
+        return self::transformDisplayValue($value);
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public static function transformDisplayValue(string $value): string
+    {
+        preg_match("^[\w]+:\/\/^", $value, $matches);
+
+        if (!empty ($matches[0])) {
+            $value = '<a class="urlField cursorPointer" href="' . $value . '" target="_blank">' . textlength_check($value) . '</a>';
+        } else {
+            $value = '<a class="urlField cursorPointer" href="http://' . $value . '" target="_blank">' . textlength_check($value) . '</a>';
+        }
+
+        return $value;
+    }
 }
