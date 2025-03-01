@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class InventoryItem_GetTaxes_Action extends Vtiger_Action_Controller
+class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
 {
 
     public function requiresPermission(\Vtiger_Request $request)
@@ -68,7 +68,25 @@ class InventoryItem_GetTaxes_Action extends Vtiger_Action_Controller
                 }
             }
 
-            if (isset($listPriceValuesList[$id][$currencyId])) {
+            $priceBookId = $request->get('pricebookid');
+            $priceBookPrice = 0;
+
+            if ($priceBookId) {
+                $priceBookModel = Vtiger_Record_Model::getInstanceById($priceBookId, 'PriceBooks');
+                $priceBookPrice = $priceBookModel->getProductsListPrice($id);
+                $priceBookCurrency = $priceBookModel->get('currency_id');
+
+                if ($priceBookCurrency != $currencyId) {
+                    $currenciesConversionTable = InventoryItem_Utils_Helper::getCurrenciesConversionTable();
+                    $toBaseCurrency = 1 / $currenciesConversionTable[$priceBookCurrency];
+                    $toNewCurrency = $toBaseCurrency * $currenciesConversionTable[$currencyId];
+                    $priceBookPrice *= $toNewCurrency;
+                }
+            }
+
+            if ($priceBookPrice) {
+                $listPricesList[$id] = (float)$priceBookPrice;
+            } elseif (isset($listPriceValuesList[$id][$currencyId])) {
                 $listPricesList[$id] = (float)$listPriceValuesList[$id][$currencyId];
             } else {
                 $listPricesList[$id] = (float)$recordModel->get('unit_price') * (float)$conversionRate;
@@ -100,6 +118,8 @@ class InventoryItem_GetTaxes_Action extends Vtiger_Action_Controller
             }
         }
 
+        $info = [];
+
         foreach ($idList as $id) {
             $resultData = [
                 'id'              => $id,
@@ -117,6 +137,7 @@ class InventoryItem_GetTaxes_Action extends Vtiger_Action_Controller
 
             $info[] = [$id => $resultData];
         }
+
         $response->setResult($info);
         $response->emit();
     }

@@ -89,6 +89,32 @@ Vtiger_Popup_Js("InventoryItem_Popup_Js", {}, {
         return params;
     },
 
+    getListViewEntries: function (e) {
+        e.preventDefault();
+        const preEvent = jQuery.Event('pre.popupSelect.click');
+        app.event.trigger(preEvent);
+
+        if (preEvent.isDefaultPrevented()) {
+            return;
+        }
+
+        const thisInstance = this;
+        const row  = jQuery(e.currentTarget);
+        const dataUrl = "index.php?module=InventoryItem&action=GetItemDetails&record=" + row.data('id') + "&currency_id=" + jQuery('#currency_id_original').val() + "&sourceModule=" + app.getModuleName() + "&pricebookid=" + jQuery('#pricebookid_original').val();
+
+        app.request.post({"url": dataUrl}).then(
+            function (err, data) {
+                for (let id in data) {
+                    if (typeof data[id] == "object") {
+                        var recordData = data[id];
+                    }
+                }
+
+                thisInstance.done(data, thisInstance.getEventName());
+            });
+        e.preventDefault();
+    },
+
     /**
      * Function to register event for back to products button click
      */

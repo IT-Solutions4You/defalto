@@ -511,14 +511,15 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             },
             'select': function (event, ui) {
                 const selectedItemData = ui.item;
-                //To stop selection if no results is selected
+
                 if (typeof selectedItemData.type != 'undefined' && selectedItemData.type === "no results") {
                     return false;
                 }
+
                 const element = jQuery(this);
                 const tdElement = element.closest('td');
                 const selectedModule = tdElement.find('.lineItemPopup').data('moduleName');
-                const dataUrl = "index.php?module=InventoryItem&action=GetTaxes&record=" + selectedItemData.id + "&currency_id=" + self.getCurrencyId() + "&sourceModule=" + app.getModuleName();
+                const dataUrl = "index.php?module=InventoryItem&action=GetItemDetails&record=" + selectedItemData.id + "&currency_id=" + self.getCurrencyId() + "&sourceModule=" + app.getModuleName() + "&pricebookid=" + jQuery('#pricebookid_original').val();
                 app.request.get({'url': dataUrl}).then(
                     function (error, data) {
                         if (error == null) {
@@ -567,7 +568,6 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         jQuery('input.form-control', lineItemRow).val('');
         jQuery('input.allowOnlyNumbers', lineItemRow).val(0);
         jQuery('input.productid', lineItemRow).val('');
-        //this.quantityChangeActions(lineItemRow);
     },
 
     registerLineItemPopup: function () {

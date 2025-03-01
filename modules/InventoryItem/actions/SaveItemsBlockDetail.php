@@ -23,6 +23,9 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
     }
 
     /**
+     * Changes the PriceBook and updates prices of Products.
+     * If the Product is found in the PriceBook, it updates the price and the PriceBook for given InventoryItem.
+     *
      * @param Vtiger_Request $request
      *
      * @return void
@@ -31,7 +34,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
     {
         $recordId = (int)$request->get('for_record');
         $moduleName = $request->get('for_module');
-        $priceBookId = (float)$request->get('pricebookid');
+        $priceBookId = (int)$request->get('pricebookid');
 
         $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
         $recordModel->set('mode', 'edit');
@@ -40,13 +43,17 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         $currencyId = $recordModel->get('currency_id');
         $recordModel->save();
 
+        if (!$priceBookId) {
+            return;
+        }
+
         $toNewCurrency = 1;
 
         $priceBookModel = Vtiger_Record_Model::getInstanceById($priceBookId, 'PriceBooks');
         $priceBookCurrencyId = $priceBookModel->get('currency_id');
 
         if ($priceBookCurrencyId != $currencyId) {
-            $currenciesConversionTable = $this->getCurrenciesConversionTable();
+            $currenciesConversionTable = InventoryItem_Utils_Helper::getCurrenciesConversionTable();
             $toBaseCurrency = 1 / $currenciesConversionTable[$oldPriceBookId];
             $toNewCurrency = $toBaseCurrency * $currenciesConversionTable[$currencyId];
         }
@@ -58,6 +65,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
                 continue;
             }
 
+            $changed = false;
             $recordModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
             $price = $priceBookModel->getProductsListPrice($item['productid']);
 
@@ -65,11 +73,22 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
                 $price = $recordModel->get('price');
             } else {
                 $price *= $toNewCurrency;
+
+                if ($priceBookId != $recordModel->get('pricebookid')) {
+                    $recordModel->set('pricebookid', $priceBookId);
+                    $changed = true;
+                }
             }
 
-            $recordModel->set('price', $price);
-            $recordModel->set('mode', 'edit');
-            $recordModel->save();
+            if ($price != $recordModel->get('price')) {
+                $recordModel->set('price', $price);
+                $changed = true;
+            }
+
+            if ($changed) {
+                $recordModel->set('mode', 'edit');
+                $recordModel->save();
+            }
         }
 
         InventoryItem_ParentEntity_Model::updateTotals($recordId);
@@ -137,6 +156,16 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
     }
 
     /**
+     * Saves new currency and recalculates all Product prices into new currency.
+     * Implemented logic:
+     * If the InventoryItem record has a selected PriceBook, then:
+     *  - Check if the selected PriceBook is in the currency we are switching to
+     *  -   - If yes, set the price from the PriceBook
+     *  -   - Otherwise, recalculate the given price based on the exchange rate
+     * If there is no PriceBook, then:
+     *  - If the product has a defined price in the new currency, set this price
+     *  - Otherwise, recalculate the current price based on the exchange rate
+     *
      * @param Vtiger_Request $request
      *
      * @return void
@@ -152,9 +181,8 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         $oldCurrencyId = $recordModel->get('currency_id');
         $recordModel->set('currency_id', $currencyId);
         $recordModel->save();
-        $db = PearDatabase::getInstance();
 
-        $currenciesConversionTable = $this->getCurrenciesConversionTable();
+        $currenciesConversionTable = InventoryItem_Utils_Helper::getCurrenciesConversionTable();
         $toBaseCurrency = 1 / $currenciesConversionTable[$oldCurrencyId];
         $toNewCurrency = $toBaseCurrency * $currenciesConversionTable[$currencyId];
 
@@ -166,12 +194,25 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
             }
 
             $recordModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
-            $currencyPriceList = Products_Record_Model::getListPriceValues($item['productid']);
+            $priceBookId = $recordModel->get('pricebookid');
 
-            if (isset($currencyPriceList[$currencyId])) {
-                $price = $currencyPriceList[$currencyId];
+            if ($priceBookId) {
+                $priceBookModel = Vtiger_Record_Model::getInstanceById($priceBookId, 'PriceBooks');
+                $priceBookCurrencyId = $priceBookModel->get('currency_id');
+
+                if ($priceBookCurrencyId != $currencyId) {
+                    $price = $recordModel->get('price') * $toNewCurrency;
+                } else {
+                    $price = $priceBookModel->getProductsListPrice($item['productid']);
+                }
             } else {
-                $price = $recordModel->get('price') * $toNewCurrency;
+                $currencyPriceList = Products_Record_Model::getListPriceValues($item['productid']);
+
+                if (isset($currencyPriceList[$currencyId])) {
+                    $price = $currencyPriceList[$currencyId];
+                } else {
+                    $price = $recordModel->get('price') * $toNewCurrency;
+                }
             }
 
             $recordModel->set('price', $price);
@@ -189,23 +230,6 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         }
 
         InventoryItem_ParentEntity_Model::updateTotals($recordId);
-    }
-
-    /**
-     * @return array
-     */
-    protected function getCurrenciesConversionTable(): array
-    {
-        $db = PearDatabase::getInstance();
-        $currencies = [];
-        $sql = 'SELECT id, conversion_rate FROM vtiger_currency_info WHERE deleted = 0 AND currency_status = ?';
-        $res = $db->pquery($sql, ['Active']);
-
-        while ($row = $db->fetchByAssoc($res)) {
-            $currencies[$row['id']] = $row['conversion_rate'];
-        }
-
-        return $currencies;
     }
 
     /**
