@@ -155,9 +155,9 @@ class Quotes_Install_Model extends Core_Install_Model
                                     4 => 'BlueDart',
                                 ],
                         ],
-                    'hdnSubTotal'       =>
+                    'subtotal'       =>
                         [
-                            'name'         => 'hdnSubTotal',
+                            'name'         => 'subtotal',
                             'uitype'       => 72,
                             'column'       => 'subtotal',
                             'table'        => 'vtiger_quotes',
@@ -200,11 +200,11 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'hdnGrandTotal'     =>
+                    'price_total'     =>
                         [
-                            'name'         => 'hdnGrandTotal',
+                            'name'         => 'price_total',
                             'uitype'       => 72,
-                            'column'       => 'total',
+                            'column'       => 'price_total',
                             'table'        => 'vtiger_quotes',
                             'label'        => 'Total',
                             'readonly'     => 1,
@@ -338,13 +338,13 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'pre_tax_total'     =>
+                    'price_after_overall_discount'     =>
                         [
-                            'name'         => 'pre_tax_total',
+                            'name'         => 'price_after_overall_discount',
                             'uitype'       => 72,
-                            'column'       => 'pre_tax_total',
+                            'column'       => 'price_after_overall_discount',
                             'table'        => 'vtiger_quotes',
-                            'label'        => 'Pre Tax Total',
+                            'label'        => 'Price After Overall Discount',
                             'readonly'     => 1,
                             'presence'     => 2,
                             'typeofdata'   => 'N~O',
@@ -595,8 +595,8 @@ class Quotes_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'hdnDiscountAmount'  => [
-                    'name'         => 'hdnDiscountAmount',
+                'discount_amount'  => [
+                    'name'         => 'discount_amount',
                     'uitype'       => 72,
                     'column'       => 'discount_amount',
                     'table'        => 'vtiger_quotes',

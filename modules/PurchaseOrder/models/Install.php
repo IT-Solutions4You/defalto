@@ -179,10 +179,10 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'hdnGrandTotal' => [
-                    'name' => 'hdnGrandTotal',
+                'price_total' => [
+                    'name' => 'price_total',
                     'uitype' => 72,
-                    'column' => 'total',
+                    'column' => 'price_total',
                     'table' => 'vtiger_purchaseorder',
                     'label' => 'Total',
                     'readonly' => 1,
@@ -193,8 +193,8 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 1,
                 ],
-                'hdnSubTotal' => [
-                    'name' => 'hdnSubTotal',
+                'subtotal' => [
+                    'name' => 'subtotal',
                     'uitype' => 72,
                     'column' => 'subtotal',
                     'table' => 'vtiger_purchaseorder',
@@ -327,12 +327,12 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'pre_tax_total' => [
-                    'name' => 'pre_tax_total',
+                'price_after_overall_discount' => [
+                    'name' => 'price_after_overall_discount',
                     'uitype' => 72,
-                    'column' => 'pre_tax_total',
+                    'column' => 'price_after_overall_discount',
                     'table' => 'vtiger_purchaseorder',
-                    'label' => 'Pre Tax Total',
+                    'label' => 'Price After Overall Discount',
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'N~O',
@@ -603,8 +603,8 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'hdnDiscountAmount' => [
-                    'name' => 'hdnDiscountAmount',
+                'discount_amount' => [
+                    'name' => 'discount_amount',
                     'uitype' => 72,
                     'column' => 'discount_amount',
                     'table' => 'vtiger_purchaseorder',

@@ -59,7 +59,7 @@ class Invoice extends CRMEntity {
 						'Subject'=>'subject',
 						'Sales Order'=>'salesorder_id',
 						'Status'=>'invoicestatus',
-						'Total'=>'hdnGrandTotal',
+						'Total'=>'price_total',
 						'Assigned To'=>'assigned_user_id'
 					  );
 	var $list_link_field= 'subject';

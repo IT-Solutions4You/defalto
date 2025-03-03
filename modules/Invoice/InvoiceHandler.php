@@ -45,7 +45,7 @@ class InvoiceHandler extends VTEventHandler {
                 $wsrecord['received'] = floatval(((float)$wsrecord['received']/$oldConversionRate) * (float)$wsrecord['conversion_rate']);
               }  
             }
-            $wsrecord['balance'] = floatval((float)$wsrecord['hdnGrandTotal'] - (float)$wsrecord['received']);
+            $wsrecord['balance'] = floatval((float)$wsrecord['price_total'] - (float)$wsrecord['received']);
             if ($wsrecord['balance'] == 0) {
                 $wsrecord['invoicestatus'] = 'Paid';
             }

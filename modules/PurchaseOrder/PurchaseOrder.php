@@ -61,7 +61,7 @@ class PurchaseOrder extends CRMEntity {
 				        'Subject'=>'subject',
 				        'Vendor Name'=>'vendor_id',
 					'Tracking Number'=>'tracking_no',
-					'Total'=>'hdnGrandTotal',
+					'Total'=>'price_total',
 				        'Assigned To'=>'assigned_user_id'
 				      );
 	var $list_link_field= 'subject';

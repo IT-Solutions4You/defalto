@@ -722,8 +722,8 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $prefix = "";
 
         $IReplacements = array();
-        $IReplacements["SUBTOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["hdnSubTotal"]);
-        $IReplacements["TOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["hdnGrandTotal"]);
+        $IReplacements["SUBTOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["subtotal"]);
+        $IReplacements["TOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["price_total"]);
 
         $currencytype = $this->getInventoryCurrencyInfoCustom($module, $focus);
         $currencytype["currency_symbol"] = str_replace("€", "&euro;", $currencytype["currency_symbol"]);
