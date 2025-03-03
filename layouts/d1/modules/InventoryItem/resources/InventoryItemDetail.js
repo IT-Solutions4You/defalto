@@ -75,6 +75,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             vtUtils.applyFieldElementsView(newLineItem);
             self.registerLineItemAutoComplete(newLineItem);
             self.setupRowListeners(self.numOfLineItems);
+            vtUtils.showSelect2ElementView(newLineItem.find('select.discount_type'));
             jQuery('.editRow', newLineItem).trigger('click');
             app.event.trigger('post.lineItem.New', newLineItem);
 
@@ -104,7 +105,6 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         ++this.numOfLineItems;
         this.updateRowNumberForRow(newRow, this.numOfLineItems);
         this.updateRowSequence(newRow);
-        this.initializeLineItemRowCustomFields(newRow, this.numOfLineItems);
 
         return newRow;
     },
@@ -120,7 +120,6 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         ++this.numOfLineItems;
         this.updateRowNumberForRow(newRow, this.numOfLineItems);
         this.updateRowSequence(newRow);
-        this.initializeLineItemRowCustomFields(newRow, this.numOfLineItems);
 
         return newRow;
     },
@@ -179,74 +178,6 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 row.find('.rowSequence').val(lastRowSequence + 1);
             }
         }
-    },
-
-    initializeLineItemRowCustomFields: function (lineItemRow, rowNum) {
-        const lineItemType = lineItemRow.find('input.lineItemType').val();
-
-        for (let cfName in this.customLineItemFields) {
-            let elementName = cfName + rowNum;
-            let element = lineItemRow.find('[name="' + elementName + '"]');
-            let cfDataType = this.customLineItemFields[cfName];
-
-            if (cfDataType === 'picklist' || cfDataType === 'multipicklist') {
-                if (cfDataType === 'multipicklist') {
-                    element = lineItemRow.find('[name="' + elementName + '[]"]');
-                }
-
-                let picklistValues = element.data('productPicklistValues');
-                let options = '';
-
-                if (lineItemType === 'Services') {
-                    picklistValues = element.data('servicePicklistValues');
-                }
-
-                if (cfDataType === 'picklist') {
-                    options = '<option value="">' + app.vtranslate('JS_SELECT_OPTION') + '</option>';
-                }
-
-                for (let picklistName in picklistValues) {
-                    let pickListValue = picklistValues[picklistName];
-                    options += '<option value="' + picklistName + '">' + pickListValue + '</option>';
-                }
-
-                element.html(options);
-                element.addClass('select2');
-            }
-
-            let defaultValueInfo = this.customFieldsDefaultValues[cfName];
-
-            if (defaultValueInfo) {
-                let defaultValue = defaultValueInfo;
-
-                if (typeof defaultValueInfo == 'object') {
-                    defaultValue = defaultValueInfo.productFieldDefaultValue;
-
-                    if (lineItemType === 'Services') {
-                        defaultValue = defaultValueInfo.serviceFieldDefaultValue;
-                    }
-                }
-
-                if (cfDataType === 'multipicklist') {
-                    if (defaultValue.length > 0) {
-                        defaultValue = defaultValue.split(" |##| ");
-                        let setDefaultValue = function (picklistElement, values) {
-                            for (let index in values) {
-                                let picklistVal = values[index];
-                                picklistElement.find('option[value="' + picklistVal + '"]').prop('selected', true);
-                            }
-                        };
-                        setDefaultValue(element, defaultValue);
-                    }
-                } else {
-                    element.val(defaultValue);
-                }
-            } else {
-                element.val('');
-            }
-        }
-
-        return lineItemRow;
     },
 
     makeLineItemsSortable: function () {
@@ -705,7 +636,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
 
         price = price + tax_amount;
-        jQuery('.total', row).val(price.toFixed(2));
+        jQuery('.price_total', row).val(price.toFixed(2));
         jQuery('.display_total' + rowNumber, row).html(price.toFixed(2));
 
         this.recalculateTotals();
@@ -978,6 +909,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 'src_record': productId,
                 'view': 'Popup',
                 'get_url': 'getProductListPriceURL',
+                'src_field': 'productid',
+                'src_module': 'Products',
             };
 
             const popupInstance = Vtiger_Popup_Js.getInstance();

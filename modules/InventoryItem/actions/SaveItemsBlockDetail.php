@@ -25,6 +25,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
     /**
      * Changes the PriceBook and updates prices of Products.
      * If the Product is found in the PriceBook, it updates the price and the PriceBook for given InventoryItem.
+     * If the PriceBook was in fact removed, then Products with price from this PriceBook will get standard price.
      *
      * @param Vtiger_Request $request
      *
@@ -43,34 +44,58 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         $currencyId = $recordModel->get('currency_id');
         $recordModel->save();
 
-        if (!$priceBookId) {
-            return;
-        }
-
+        $priceBookModel = false;
         $toNewCurrency = 1;
 
-        $priceBookModel = Vtiger_Record_Model::getInstanceById($priceBookId, 'PriceBooks');
-        $priceBookCurrencyId = $priceBookModel->get('currency_id');
+        if ($priceBookId) {
+            $priceBookModel = Vtiger_Record_Model::getInstanceById($priceBookId, 'PriceBooks');
+            $priceBookCurrencyId = $priceBookModel->get('currency_id');
 
-        if ($priceBookCurrencyId != $currencyId) {
-            $currenciesConversionTable = InventoryItem_Utils_Helper::getCurrenciesConversionTable();
-            $toBaseCurrency = 1 / $currenciesConversionTable[$oldPriceBookId];
-            $toNewCurrency = $toBaseCurrency * $currenciesConversionTable[$currencyId];
+            if ($priceBookCurrencyId != $currencyId) {
+                $currenciesConversionTable = InventoryItem_Utils_Helper::getCurrenciesConversionTable();
+                $toBaseCurrency = 1 / $currenciesConversionTable[$oldPriceBookId];
+                $toNewCurrency = $toBaseCurrency * $currenciesConversionTable[$currencyId];
+            }
         }
 
         $items = $this->fetchItems($recordId);
 
         foreach ($items as $item) {
             if (!$item['productid']) {
+                // Text lines
+                continue;
+            }
+
+            $recordModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
+
+            if (!$priceBookId && $oldPriceBookId != $item['pricebookid']) {
+                // The global pricebook was removed, but current line has price from different pricebook
                 continue;
             }
 
             $changed = false;
-            $recordModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
-            $price = $priceBookModel->getProductsListPrice($item['productid']);
+            $price = 0;
+
+            if ($priceBookModel) {
+                $price = $priceBookModel->getProductsListPrice($item['productid']);
+            }
 
             if (!$price) {
                 $price = $recordModel->get('price');
+
+                if (!$priceBookId) {
+                    // handle removed pricebook
+                    $recordModel->set('pricebookid', $priceBookId);
+                    $changed = true;
+                    $currencyPriceList = Products_Record_Model::getListPriceValues($item['productid']);
+
+                    if (isset($currencyPriceList[$currencyId])) {
+                        $price = $currencyPriceList[$currencyId];
+                    } else {
+                        $itemModel = Vtiger_Record_Model::getInstanceById($item['productid'], getSalesEntityType($item['productid']));
+                        $price = $itemModel->get('unit_price');
+                    }
+                }
             } else {
                 $price *= $toNewCurrency;
 

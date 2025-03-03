@@ -136,7 +136,7 @@
                                         <tr>
                                             <td class="p-3">{vtranslate('Discount type', 'InventoryItem')}</td>
                                             <td>
-                                                <select name="discount_type{$row_no}" id="discount_type{$row_no}" class="inputElement select2 form-select discount_type">
+                                                <select name="discount_type{$row_no}" id="discount_type{$row_no}" class="inputElement {if $row_no > 0}select2{/if} form-select discount_type">
                                                     <option value="Percentage" {if $data.discount_type eq 'Percent'}selected{/if}>{vtranslate('Percentage', 'InventoryItem')}</option>
                                                     <option value="Direct" {if $data.discount_type eq 'Amount'}selected{/if}>{vtranslate('Direct', 'InventoryItem')}</option>
                                                     <option value="Product Unit Price" {if $data.discount_type eq 'Product Unit Price'}selected{/if}>{vtranslate('Product Unit Price', 'InventoryItem')}</option>

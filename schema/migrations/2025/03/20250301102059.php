@@ -38,6 +38,10 @@ if (!class_exists('Migration_20250301102059')) {
                 'tax_amount'              => 'Tax Amount',
                 'margin'                  => 'Margin',
             ];
+            $alterFields = [
+                'total' => 'price_total',
+                'pre_tax_total' => 'price_after_overall_discount',
+            ];
 
             foreach ($inventoryModules as $inventoryModuleName) {
                 $inventoryModuleEntity = CRMEntity::getInstance($inventoryModuleName);
@@ -101,6 +105,13 @@ if (!class_exists('Migration_20250301102059')) {
                     $field->presence = 0;
                     $field->masseditable = 0;
                     $field->save($block);
+                }
+
+                foreach ($alterFields as $oldFieldName => $newFieldName) {
+                    $this->db->pquery('ALTER TABLE ' . $inventoryModuleEntity->table_name . ' CHANGE ' . $oldFieldName . ' ' . $newFieldName . ' DECIMAL(25, 4) NULL DEFAULT NULL');
+                    $this->db->pquery('UPDATE vtiger_field SET columnname = ? WHERE columnname = ? AND TABLENAME = ?', [$newFieldName, $oldFieldName, $inventoryModuleEntity->table_name]);
+                    $this->db->pquery($updateCvColumnlistSql, [':' . $oldFieldName . ':' . $newFieldName . ':', ':' . $newFieldName . ':' . $newFieldName . ':', $inventoryModuleName]);
+                    $this->db->pquery($updateCvAdvFilterSql, [':' . $oldFieldName . ':' . $newFieldName . ':', ':' . $newFieldName . ':' . $newFieldName . ':', $inventoryModuleName]);
                 }
             }
         }
