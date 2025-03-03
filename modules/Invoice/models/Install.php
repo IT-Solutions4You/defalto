@@ -652,8 +652,8 @@ class Invoice_Install_Model extends Core_Install_Model
                     'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
-                'txtAdjustment' => [
-                    'name' => 'txtAdjustment',
+                'adjustment' => [
+                    'name' => 'adjustment',
                     'uitype' => 72,
                     'column' => 'adjustment',
                     'table' => 'vtiger_invoice',

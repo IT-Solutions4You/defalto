@@ -35,6 +35,7 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
         $response = new Vtiger_Response();
         $namesList = $purchaseCostsList = $taxesList = $listPricesList = $listPriceValuesList = $unit = [];
         $descriptionsList = $quantitiesList = $imageSourcesList = $productIdsList = $baseCurrencyIdsList = [];
+        $setPriceBookId = [];
 
         foreach ($idList as $id) {
             $recordModel = Vtiger_Record_Model::getInstanceById($id);
@@ -86,6 +87,7 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
 
             if ($priceBookPrice) {
                 $listPricesList[$id] = (float)$priceBookPrice;
+                $setPriceBookId[$id] = $priceBookId;
             } elseif (isset($listPriceValuesList[$id][$currencyId])) {
                 $listPricesList[$id] = (float)$listPriceValuesList[$id][$currencyId];
             } else {
@@ -133,6 +135,7 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
                 'quantityInStock' => $quantitiesList[$id],
                 'imageSource'     => $imageSourcesList[$id],
                 'unit'            => $unit[$id],
+                'pricebookid'     => $setPriceBookId[$id],
             ];
 
             $info[] = [$id => $resultData];

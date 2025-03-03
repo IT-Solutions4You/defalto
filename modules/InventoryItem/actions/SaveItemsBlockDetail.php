@@ -149,7 +149,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
 
         $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
         $recordModel->set('mode', 'edit');
-        $recordModel->set('txtAdjustment', $adjustment);
+        $recordModel->set('adjustment', $adjustment);
         $recordModel->save();
 
         InventoryItem_ParentEntity_Model::updateTotals($recordId);

@@ -732,7 +732,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $IReplacements["CURRENCYNAME"] = getTranslatedCurrencyString($currencytype["currency_name"]);
         $IReplacements["CURRENCYSYMBOL"] = $currencytype["currency_symbol"];
         $IReplacements["CURRENCYCODE"] = $currencytype["currency_code"];
-        $IReplacements["ADJUSTMENT"] = $this->formatNumberToEMAIL($focus->column_fields["txtAdjustment"]);
+        $IReplacements["ADJUSTMENT"] = $this->formatNumberToEMAIL($focus->column_fields["adjustment"]);
 
         $Products = $this->getInventoryProducts($module, $focus);
 

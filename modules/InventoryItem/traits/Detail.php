@@ -82,7 +82,7 @@ trait InventoryItem_Detail_Trait
         $viewer->assign('INVENTORY_ITEM_RECORD_STRUCTURE', $recordStructure);
 
         $entityRecordModel = Vtiger_Record_Model::getInstanceById($recordId);
-        $adjustment = $entityRecordModel->get('txtAdjustment');
+        $adjustment = $entityRecordModel->get('adjustment');
 
         if (!$adjustment) {
             $adjustment = 0;

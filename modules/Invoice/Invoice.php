@@ -361,16 +361,16 @@ class Invoice extends CRMEntity {
 		$updateparams = array();
 		// Remaining column values to be updated -> column name to field name mapping
 		$invoice_column_field = Array (
-			'adjustment' => 'txtAdjustment',
-			'subtotal' => 'hdnSubTotal',
-			'total' => 'hdnGrandTotal',
+			'adjustment' => 'adjustment',
+			'subtotal' => 'subtotal',
+			'total' => 'total',
 			'taxtype' => 'hdnTaxType',
 			'discount_percent' => 'hdnDiscountPercent',
-			'discount_amount' => 'hdnDiscountAmount',
+			'discount_amount' => 'discount_amount',
 			's_h_amount' => 'hdnS_H_Amount',
 			'region_id' => 'region_id',
 			's_h_percent' => 'hdnS_H_Percent',
-			'balance' => 'hdnGrandTotal'
+			'balance' => 'total'
 		);
 		$updatecols = array();
 		foreach($invoice_column_field as $col => $field) {

@@ -548,7 +548,10 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             jQuery('input.unit', parentRow).val(recordData.unit);
             jQuery('input.price', parentRow).val(recordData.listprice).trigger('change');
             jQuery('input.purchase_cost', parentRow).val(recordData.purchaseCost);
+            jQuery('input.pricebookid', parentRow).val(recordData.pricebookid);
+            jQuery('input.overall_discount', parentRow).val(jQuery('#overall_discount_percent').val());
             lineItemNameElment.val(recordData.name);
+            this.recalculateProductLine(parentRow.data('rowNum'));
         }
     },
 
@@ -794,7 +797,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             jQuery('#adjustmentSettingDiv').hide();
         });
 
-        this.lineItemsHolder.on('change', '#adjustment', function () {
+        this.lineItemsHolder.on('change keyup', '#adjustment', function () {
             let price = 0;
             jQuery('tbody input.price_total', self.lineItemsHolder).each(function () {
                 price += parseFloat(jQuery(this).val()) || 0; // Parse value, default to 0

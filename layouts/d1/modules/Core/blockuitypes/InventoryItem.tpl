@@ -215,7 +215,7 @@
                                                         <td class="p-3">{vtranslate('Adjustment', 'InventoryItem')}</td>
                                                         <td>
                                                             <div class="input-group">
-                                                                <input type="text" size="5" data-compound-on="" name="adjustment" id="adjustment" value="{$ADJUSTMENT}" class="form-control adjustment replaceCommaWithDot textAlignRight" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
+                                                                <input type="text" size="5" data-compound-on="" name="adjustment" id="adjustment" value="{$ADJUSTMENT}" class="form-control adjustment replaceCommaWithDot allowOnlyNumbers textAlignRight" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
                                                                 <input type="hidden" id="original_adjustment" name="original_adjustment" value="{$ADJUSTMENT}" class="original_adjustment">
                                                             </div>
                                                         </td>

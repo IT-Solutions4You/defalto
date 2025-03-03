@@ -528,7 +528,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         self::$rep['$' . $prefix . 'CURRENCYNAME$'] = getTranslatedCurrencyString($currencytype['currency_name']);
         self::$rep['$' . $prefix . 'CURRENCYSYMBOL$'] = $currencytype['currency_symbol'];
         self::$rep['$' . $prefix . 'CURRENCYCODE$'] = $currencytype['currency_code'];
-        self::$rep['$' . $prefix . 'ADJUSTMENT$'] = $this->formatNumberToPDF($focus->column_fields['txtAdjustment']);
+        self::$rep['$' . $prefix . 'ADJUSTMENT$'] = $this->formatNumberToPDF($focus->column_fields['adjustment']);
 
         $Products = $this->getInventoryProducts($module, $focus);
 
