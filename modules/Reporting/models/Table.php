@@ -164,18 +164,33 @@ class Reporting_Table_Model extends Vtiger_Base_Model
             }
         }
 
-        foreach($this->tableCalculations as $fieldName => $value) {
+        foreach ($this->tableCalculations as $fieldName => $value) {
             $values = $data[$fieldName];
-            $table[] = [
+            $row = [
                 $value['label'],
-                'Yes' === $value['sum'] ? $this->getFieldValue($fieldName, $formatRecord, $this->sum($values)) : '-',
-                'Yes' === $value['avg'] ? $this->getFieldValue($fieldName, $formatRecord, $this->avg($values)) : '-',
-                'Yes' === $value['min'] ? $this->getFieldValue($fieldName, $formatRecord, $this->min($values)) : '-',
-                'Yes' === $value['max'] ? $this->getFieldValue($fieldName, $formatRecord, $this->max($values)) : '-',
             ];
+
+            $this->setFieldValue($fieldName, $formatRecord, $this->sum($values));
+            $row[] = 'Yes' === $value['sum'] ? $this->getFieldValue($fieldName, $formatRecord) : '-';
+
+            $this->setFieldValue($fieldName, $formatRecord, $this->avg($values));
+            $row[] = 'Yes' === $value['avg'] ? $this->getFieldValue($fieldName, $formatRecord) : '-';
+
+            $this->setFieldValue($fieldName, $formatRecord, $this->min($values));
+            $row[] = 'Yes' === $value['min'] ? $this->getFieldValue($fieldName, $formatRecord) : '-';
+
+            $this->setFieldValue($fieldName, $formatRecord, $this->max($values));
+            $row[] = 'Yes' === $value['max'] ? $this->getFieldValue($fieldName, $formatRecord) : '-';
+
+            $table[] = $row;
         }
 
         return $table;
+    }
+
+    public function setFieldValue($fieldName, $formatRecord, $value): void
+    {
+        $formatRecord->set($fieldName, $value);
     }
 
     /**
@@ -279,16 +294,11 @@ class Reporting_Table_Model extends Vtiger_Base_Model
     /**
      * @throws AppException
      */
-    public function getFieldValue($field, $record, $value = null)
+    public function getFieldValue($field, $record)
     {
         $record = $this->getFieldRecord($field, $record);
         $fieldInfo = $this->getFieldInfo($field);
         $fieldName = $fieldInfo['reference_field'] ?: $fieldInfo['field'];
-
-        if ($value) {
-            $record->set($fieldName, $value);
-        }
-
         $fieldValue = $record->getReportDisplayValue($fieldName);
 
         if (Reporting_Fields_Model::isCustomField($fieldName)) {
