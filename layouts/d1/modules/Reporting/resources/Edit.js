@@ -364,6 +364,28 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
         selectField.html(html);
         selectField.trigger('change');
     },
+    isCreateFieldAllowed(value) {
+        let self = this,
+            duplicateElement = self.getFieldsByName(value);
+
+        if (self.getEditField()) {
+            if (!duplicateElement.length) {
+                return true;
+            }
+
+            if (self.getEditField().val() === value) {
+                return true;
+            }
+
+            if (self.getEditField() !== duplicateElement) {
+                return false;
+            }
+        } else if (duplicateElement.length) {
+            return false;
+        }
+
+        return true;
+    },
     registerModalFieldEvents(modalContainer) {
         let self = this,
             containerElement = self.getFieldsContainer(),
@@ -395,9 +417,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
                 return;
             }
 
-            let duplicateElement = self.getFieldsByName(value);
-
-            if ((!self.getEditField() && duplicateElement.length) || (self.getEditField() && self.getEditField().val() !== duplicateElement.val())) {
+            if (!self.isCreateFieldAllowed(value)) {
                 app.helper.showErrorNotification({message: app.vtranslate('JS_FIELD_ALREADY_SELECTED')})
                 return;
             }
