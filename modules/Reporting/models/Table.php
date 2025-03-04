@@ -184,6 +184,8 @@ class Reporting_Table_Model extends Vtiger_Base_Model
      */
     public function avg(array $numbers): float
     {
+        $numbers = array_map('floatval', $numbers);
+
         return array_sum($numbers) / count($numbers);
     }
 
@@ -193,6 +195,8 @@ class Reporting_Table_Model extends Vtiger_Base_Model
      */
     public function min(array $numbers): float
     {
+        $numbers = array_map('floatval', $numbers);
+
         return min($numbers);
     }
 
@@ -202,6 +206,8 @@ class Reporting_Table_Model extends Vtiger_Base_Model
      */
     public function max(array $numbers): float
     {
+        $numbers = array_map('floatval', $numbers);
+
         return max($numbers);
     }
 
@@ -212,6 +218,8 @@ class Reporting_Table_Model extends Vtiger_Base_Model
      */
     public function sum(array $numbers): float
     {
+        $numbers = array_map('floatval', $numbers);
+
         return array_sum($numbers);
     }
 
