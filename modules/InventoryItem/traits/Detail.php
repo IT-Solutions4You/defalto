@@ -89,8 +89,9 @@ trait InventoryItem_Detail_Trait
         }
 
         $viewer->assign('ADJUSTMENT', number_format($adjustment, 2));
-
         $viewer->assign('PRICEBOOKS', $this->fetchPriceBooks($request));
+        $taxRecordModel = Core_TaxRecord_Model::getInstance(354);
+        show($taxRecordModel->getTaxes());
     }
 
     /**

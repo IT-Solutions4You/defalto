@@ -39,17 +39,25 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
 
         foreach ($idList as $id) {
             $recordModel = Vtiger_Record_Model::getInstanceById($id);
+            $taxRecordModel = Core_TaxRecord_Model::getInstance($id);
+            $taxModels = $taxRecordModel->getTaxes();
             $taxes = [];
+            $taxInfo = $taxRecordModel->getTaxesInfo();
+            foreach ($taxInfo as $taxId => $taxData) {
+                $tax = $taxModels[$taxId];
+                $regions = [];
 
-            if (method_exists($recordModel, 'getTaxes')) {
-                $taxes = $recordModel->getTaxes();
-
-                foreach ($taxes as $key => $taxInfo) {
-                    $taxInfo['compoundOn'] = json_encode($taxInfo['compoundOn']);
-                    $taxes[$key] = $taxInfo;
+                foreach ($tax->getRegionsInfo() as $regionId => $regionData) {
+                    $regions[$regionId] = $regionData;
                 }
+
+                $taxes[$taxId] = $tax->getSaveParams();
+                $taxes[$taxId]['regions'] = json_encode($regions);
+                $taxes[$taxId]['taxid'] = $taxId;
             }
 
+            show($taxes, $taxModels);
+exit;
             $taxesList[$id] = $taxes;
             $namesList[$id] = decode_html($recordModel->getName());
             $descriptionsList[$id] = decode_html($recordModel->get('description'));

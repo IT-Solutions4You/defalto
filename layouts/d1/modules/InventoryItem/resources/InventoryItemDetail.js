@@ -473,6 +473,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         for (let id in responseData) {
             let recordData = responseData[id];
+            console.table(recordData);
             jQuery('input.productid', parentRow).val(id);
             jQuery('input.lineItemType', parentRow).val(referenceModule);
             jQuery('input.quantity', parentRow).val(1).focus();
