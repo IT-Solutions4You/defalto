@@ -738,14 +738,6 @@ a.menu-item:hover {
     padding-left: var(--menu-width);
 }
 
-.input-group-addon-save {
-    width: auto;
-}
-
-.input-group-addon-cancel {
-    width: auto;
-}
-
 .pointerCursorOnHover:hover {
     cursor: pointer;
 }
@@ -1208,22 +1200,32 @@ input[type=checkbox]:checked {
 /**********************************
 **********Detail View Styles**********
 **********************************/
+#detailView .fieldValue {
+    position: relative;
+}
 #detailView .fieldValue .action {
     display: none;
-    position: absolute;
-    margin-left: 10px;
 }
 
 #detailView .fieldValue:hover .action {
     display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
-#detailView td.fieldValue:hover .action a {
+#detailView .fieldValue .editAction {
+    padding: 0.5rem;
+    border-radius: var(--bs-border-radius) !important;
+    background-color: rgba(var(--bs-body-bg-rgb),var(--bs-bg-opacity)) !important;
+}
+
+#detailView .fieldValue:hover .action a {
     text-decoration: none;
     color: inherit;
 }
 
-#detailView td.fieldValue .edit {
+#detailView .fieldValue .edit {
     width: 100%;
 }
 
@@ -4465,4 +4467,16 @@ input[type=number] {
 }
 .cke_dialog_container {
     z-index: 20001 !important;
+}
+.border-dashed {
+    border-style: dashed;
+}
+.pe-grab {
+    cursor: grab;
+}
+.picklist-color {
+    background-color: rgba(var(--bs-secondary-bg-rgb),var(--bs-bg-opacity));
+}
+.editElement .select2-container {
+    overflow: auto;
 }

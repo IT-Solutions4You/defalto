@@ -20,8 +20,7 @@ class Core_Factory_BlockUIType
      */
     public static function getInstanceFromBlock(Vtiger_Block_Model $blockModel): Core_Interface_BlockUIType
     {
-        $blockUiType = $blockModel->get('blockuitype');
-        $blockUiTypeName = Core_BlockUiType_Model::getNameForUIType($blockUiType);
+        $blockUiTypeName = $blockModel->getUITypeName();
         $moduleInstance = $blockModel->getModuleInstance();
         $moduleName = $moduleInstance->getName();
         $moduleSpecificFilePath = Vtiger_Loader::getComponentClassName('BlockUiType', $blockUiTypeName, $moduleName);

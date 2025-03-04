@@ -155,32 +155,16 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller {
 		}
 
 		$fieldModelList = $moduleModel->getFields();
-		foreach ($fieldModelList as $fieldName => $fieldModel) {
-			$fieldValue = $request->get($fieldName, null);
-            $fieldDataType = $fieldModel->getFieldDataType();
 
-            if (is_array($fieldValue) && $fieldDataType === 'multipicklist') {
-                $fieldValue = implode(' |##| ', $fieldValue);
+        foreach ($fieldModelList as $fieldName => $fieldModel) {
+            $fieldValue = $request->get($fieldName, null);
+            $fieldValue = $fieldModel->getUITypeModel()->getRequestValue($fieldValue);
+
+            if (null !== $fieldValue) {
+                $recordModel->set($fieldName, $fieldValue);
             }
+        }
 
-			if($fieldDataType == 'time' && $fieldValue !== null){
-				$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
-			}
-            $ckeditorFields = array('commentcontent', 'notecontent');
-            if((in_array($fieldName, $ckeditorFields)) && $fieldValue !== null){
-                $purifiedContent = vtlib_purify(decode_html($fieldValue));
-                // Purify malicious html event attributes
-                $fieldValue = purifyHtmlEventAttributes(decode_html($purifiedContent),true);
-			}
-			if($fieldValue !== null) {
-				if(!is_array($fieldValue) && $fieldDataType != 'currency') {
-					$fieldValue = trim($fieldValue);
-				}
-
-                $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue, $fieldModel);
-				$recordModel->set($fieldName, $fieldValue);
-			}
-		}
 		return $recordModel;
 	}
 }

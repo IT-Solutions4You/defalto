@@ -150,7 +150,15 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		return $this->name;
 	}
 
-	public function getFieldName() {
+    /**
+     * @return string
+     */
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    public function getFieldName() {
 		return $this->name;
 	}
 
@@ -190,7 +198,21 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		return $uiTypeInstance->getDisplayValue($value, $record, $recordInstance);
 	}
 
-	/**
+    /**
+     * @throws AppException
+     */
+    public function getReportDisplayValue(mixed $value, false|int $record = false, false|object $recordInstance = false)
+    {
+        if (!isset($this->uitype_instance) || !$this->uitype_instance) {
+            $this->uitype_instance = Vtiger_Base_UIType::getInstanceFromField($this);
+        }
+
+        $uiTypeInstance = $this->uitype_instance;
+
+        return $uiTypeInstance->getReportDisplayValue($value, $record, $recordInstance);
+    }
+
+    /**
 	 * Function to retrieve display type of a field
 	 * @return <String> - display type of the field
 	 */

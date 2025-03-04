@@ -175,7 +175,7 @@
                                             </span>
                                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}
                                             {assign var=PICKLIST_FIELD_ID value={$LISTVIEW_HEADER->getId()}}
-                                            <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$PICKLIST_FIELD_ID}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY_RAWVALUE)}" {/if}> {$LISTVIEW_ENTRY_VALUE}</span>
+                                            <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$PICKLIST_FIELD_ID}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY_RAWVALUE)}" {/if}>{$LISTVIEW_ENTRY->getDisplayValue($LISTVIEW_HEADERNAME)}</span>
                                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'multipicklist'}
                                                 {assign var=MULTI_RAW_PICKLIST_VALUES value=explode('|##|',$LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}
                                                 {assign var=MULTI_PICKLIST_VALUES value=explode(',',$LISTVIEW_ENTRY_VALUE)}

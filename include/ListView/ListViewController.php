@@ -365,13 +365,7 @@ class ListViewController {
                 } elseif ($fieldDataType == 'double' || $fieldDataType == 'integer') {
 					$value = Core_Number_UIType::transformDisplayValue($value);
 				} elseif($fieldDataType == 'url') {
-					$matchPattern = "^[\w]+:\/\/^";
-					preg_match($matchPattern, $rawValue, $matches);
-					if(!empty ($matches[0])){
-						$value = '<a class="urlField cursorPointer" href="'.$rawValue.'" target="_blank">'.textlength_check($value).'</a>';
-					}else{
-						$value = '<a class="urlField cursorPointer" href="http://'.$rawValue.'" target="_blank">'.textlength_check($value).'</a>';
-					}
+					$value = Vtiger_Url_UIType::transformDisplayValue($value);
 				} elseif ($fieldDataType == 'email') {
 					global $current_user;
                     $emailModuleInstance = Vtiger_Module_Model::getInstance('ITS4YouEmails');

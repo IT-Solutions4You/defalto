@@ -24,6 +24,7 @@ class CRMEntity {
     public string $parentName = '';
     public string $moduleName = '';
     public string $moduleLabel = '';
+    public $column_fields = [];
 
 	/**
 	 * Detect if we are in bulk save mode, where some features can be turned-off
@@ -3049,6 +3050,24 @@ class CRMEntity {
     public function isTrackLinkedInfo(int $recordId, int $relationId): bool
     {
         return isset($this->trackLinkedInfoRecords[$recordId][$relationId]);
+    }
+
+    /**
+     * @return void
+     */
+    public function saveSharing(): void
+    {
+        if (empty($this->id)) {
+            return;
+        }
+
+        $sharingInfo = explode(' |##| ', $this->column_fields['sharing']);
+        $recordId = (int)$this->id;
+        $record = Core_SharingRecord_Model::getInstance($recordId);
+        $record->setRecordId($recordId);
+        $record->retrieveSaveParams();
+        $record->setMemberViewList($sharingInfo);
+        $record->save();
     }
 }
 

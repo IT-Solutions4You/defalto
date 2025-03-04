@@ -40,7 +40,7 @@
                                         {/if}
                                     </span>
                                     <span class="action">
-                                        <a href="#" onclick="return false;" class="editAction fa fa-pencil"></a>
+                                        <a href="#" onclick="return false;" class="editAction fa fa-pencil d-inline-block"></a>
                                     </span>
                                 </div>
                             {/if}
