@@ -303,10 +303,10 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
 
         cloneElement.find('.fieldLabel').attr('name', fieldName + '[label]').val(display);
         cloneElement.find('.fieldValue').attr('name', fieldName + '[name]').val(value);
-        cloneElement.find('.fieldSum').attr('name', fieldName + '[sum]');
-        cloneElement.find('.fieldAvg').attr('name', fieldName + '[avg]');
-        cloneElement.find('.fieldMin').attr('name', fieldName + '[min]');
-        cloneElement.find('.fieldMax').attr('name', fieldName + '[max]');
+        cloneElement.find('.fieldSum input').attr('name', fieldName + '[sum]');
+        cloneElement.find('.fieldAvg input').attr('name', fieldName + '[avg]');
+        cloneElement.find('.fieldMin input').attr('name', fieldName + '[min]');
+        cloneElement.find('.fieldMax input').attr('name', fieldName + '[max]');
         cloneElement.attr('data-name', value);
         cloneElement.attr('data-label', display);
         selectedElement.append(cloneElement);
