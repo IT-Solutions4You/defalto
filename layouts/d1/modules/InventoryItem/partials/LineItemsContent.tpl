@@ -197,12 +197,12 @@
             <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}">
                 <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
                 <span class="editLineItem hide">
-                    <select name="discount_type{$row_no}" id="discount_type{$row_no}" class="inputElement {if $row_no > 0}select2{/if} form-select discount_type">
-                        <option value="Percentage" {if $data.discount_type eq 'Percent'}selected{/if}>{vtranslate('Percentage', 'InventoryItem')}</option>
-                        <option value="Direct" {if $data.discount_type eq 'Amount'}selected{/if}>{vtranslate('Direct', 'InventoryItem')}</option>
-                        <option value="Product Unit Price" {if $data.discount_type eq 'Product Unit Price'}selected{/if}>{vtranslate('Product Unit Price', 'InventoryItem')}</option>
+                    <select name="tax{$row_no}" id="tax{$row_no}" class="inputElement {if $row_no > 0}select2{/if} form-select discount_type">
+                        <option value="0" {if $data.discount_type eq '0'}selected{/if}>{vtranslate('No Tax', 'InventoryItem')}</option>
+                        {*<option value="Direct" {if $data.discount_type eq 'Amount'}selected{/if}>{vtranslate('Direct', 'InventoryItem')}</option>
+                        <option value="Product Unit Price" {if $data.discount_type eq 'Product Unit Price'}selected{/if}>{vtranslate('Product Unit Price', 'InventoryItem')}</option>*}
                     </select>
-                    <input type="hidden" name="original_discount_type{$row_no}" id="original_discount_type{$row_no}" value="{$data.discount_type}" class="original_discount_type{$row_no}">
+                    <input id="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="original_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="original_{$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
                 </span>
             </td>
 

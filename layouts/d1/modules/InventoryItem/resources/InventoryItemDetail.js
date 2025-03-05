@@ -470,10 +470,10 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     mapResultsToFields: function (parentRow, responseData) {
         const lineItemNameElment = jQuery('input.item_text', parentRow);
         const referenceModule = this.getLineItemSetype(parentRow);
+        const selectedRegionId = jQuery('#region_id_original').val();
 
         for (let id in responseData) {
             let recordData = responseData[id];
-            console.table(recordData);
             jQuery('input.productid', parentRow).val(id);
             jQuery('input.lineItemType', parentRow).val(referenceModule);
             jQuery('input.quantity', parentRow).val(1).focus();
@@ -482,6 +482,29 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             jQuery('input.purchase_cost', parentRow).val(recordData.purchaseCost);
             jQuery('input.pricebookid', parentRow).val(recordData.pricebookid);
             jQuery('input.overall_discount', parentRow).val(jQuery('#overall_discount_percent').val());
+            let recordTaxes = recordData.taxes;
+            let taxes = {};
+
+            for (let taxid in recordTaxes) {
+                tax = recordTaxes[taxid];
+                let percentage = tax.percentage;
+                let regions = JSON.parse(tax.regions);
+
+                for (let regionId in regions) {
+                    if (regionId == selectedRegionId) {
+                        percentage = regions[regionId];
+                    }
+                }
+
+                taxes[taxid] = {
+                    'id': taxid,
+                    'label': tax.tax_label,
+                    'percentage': percentage,
+                };
+            }
+
+console.table(taxes);
+
             lineItemNameElment.val(recordData.name);
             this.recalculateProductLine(parentRow.data('rowNum'));
         }

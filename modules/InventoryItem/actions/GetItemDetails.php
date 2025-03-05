@@ -43,21 +43,15 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
             $taxModels = $taxRecordModel->getTaxes();
             $taxes = [];
             $taxInfo = $taxRecordModel->getTaxesInfo();
+
             foreach ($taxInfo as $taxId => $taxData) {
                 $tax = $taxModels[$taxId];
-                $regions = [];
-
-                foreach ($tax->getRegionsInfo() as $regionId => $regionData) {
-                    $regions[$regionId] = $regionData;
-                }
-
+                unset($taxData['default']);
                 $taxes[$taxId] = $tax->getSaveParams();
-                $taxes[$taxId]['regions'] = json_encode($regions);
+                $taxes[$taxId]['regions'] = json_encode($taxData);
                 $taxes[$taxId]['taxid'] = $taxId;
             }
 
-            show($taxes, $taxModels);
-exit;
             $taxesList[$id] = $taxes;
             $namesList[$id] = decode_html($recordModel->getName());
             $descriptionsList[$id] = decode_html($recordModel->get('description'));
