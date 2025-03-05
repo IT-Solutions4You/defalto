@@ -8,9 +8,11 @@
  * file that was distributed with this source code.
  */
 
-
 class InventoryItem_SaveProductLine_Action extends Vtiger_SaveAjax_Action
 {
+    /**
+     * @inheritDoc
+     */
     public function process(Vtiger_Request $request)
     {
         $response = new Vtiger_Response();
@@ -27,13 +29,14 @@ class InventoryItem_SaveProductLine_Action extends Vtiger_SaveAjax_Action
             }
 
             foreach ($focus->column_fields as $fieldName => $fieldValue) {
-                if ($data[$fieldName . $rowIdentifier]) {
+                if (isset($data[$fieldName . $rowIdentifier]) && $data[$fieldName . $rowIdentifier] != $focus->column_fields[$fieldName]) {
                     $focus->column_fields[$fieldName] = $data[$fieldName . $rowIdentifier];
                 }
             }
 
             $focus->column_fields['parentid'] = $request->get('for_record');
             $focus->save('InventoryItem');
+            $focus->saveTaxId((int)$data['taxid']);
 
             $response->setResult($focus->id);
         } catch (Exception $e) {

@@ -26,4 +26,29 @@ class InventoryItem_Utils_Helper
 
         return $currencies;
     }
+
+    /**
+     * @param int $productId
+     *
+     * @return array
+     * @throws AppException
+     */
+    public static function getTaxesForProduct(int $productId): array
+    {
+        $taxRecordModel = Core_TaxRecord_Model::getInstance($productId);
+        $taxModels = $taxRecordModel->getTaxes();
+        $taxes = [];
+        $taxInfo = $taxRecordModel->getTaxesInfo();
+
+        foreach ($taxInfo as $taxId => $taxData) {
+            $tax = $taxModels[$taxId];
+            unset($taxData['default']);
+            $taxes[$taxId] = $tax->getSaveParams();
+            $taxes[$taxId]['regions'] = json_encode($taxData);
+            $taxes[$taxId]['taxid'] = $taxId;
+            $taxes[$taxId]['percentage'] = number_format($taxes[$taxId]['percentage'], 2);
+        }
+
+        return $taxes;
+    }
 }

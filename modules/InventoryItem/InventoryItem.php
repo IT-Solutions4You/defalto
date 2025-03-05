@@ -75,7 +75,7 @@ class InventoryItem extends CRMEntity
 
     function __construct()
     {
-        $this->log =Logger::getLogger('inventoryItem');
+        $this->log = Logger::getLogger('inventoryItem');
         $this->db = PearDatabase::getInstance();
         $this->column_fields = getColumnFields('InventoryItem');
     }
@@ -121,6 +121,7 @@ class InventoryItem extends CRMEntity
                     [$transferId, $entityId]
                 );
                 $res_cnt = $adb->num_rows($sel_result);
+
                 if ($res_cnt > 0) {
                     for ($i = 0; $i < $res_cnt; $i++) {
                         $id_field_value = $adb->query_result($sel_result, $i, $id_field);
@@ -132,6 +133,7 @@ class InventoryItem extends CRMEntity
                 }
             }
         }
+
         parent::transferRelatedRecords($module, $transferEntityIds, $entityId);
         $log->debug('Exiting transferRelatedRecords...');
     }
@@ -149,9 +151,10 @@ class InventoryItem extends CRMEntity
 
     /**
      * Function to unlink an entity with given Id from another entity
-     * @param int $id
+     *
+     * @param int    $id
      * @param string $return_module
-     * @param int $return_id
+     * @param int    $return_id
      *
      * @return void
      */
@@ -179,11 +182,11 @@ class InventoryItem extends CRMEntity
     }
 
     /**
-     * @param string $module
-     * @param int $crmid
-     * @param string $with_module
+     * @param string    $module
+     * @param int       $crmid
+     * @param string    $with_module
      * @param int|array $with_crmids
-     * @param array $otherParams
+     * @param array     $otherParams
      *
      * @return void
      */
@@ -192,8 +195,58 @@ class InventoryItem extends CRMEntity
         if (!is_array($with_crmids)) {
             $with_crmids = [$with_crmids];
         }
+
         foreach ($with_crmids as $with_crmid) {
             parent::save_related_module($module, $crmid, $with_module, $with_crmid);
         }
+    }
+
+    /**
+     * @param int $taxId
+     *
+     * @return void
+     */
+    public function saveTaxId(int $taxId)
+    {
+        if (!$this->id) {
+            return;
+        }
+
+        $oldTaxId = $this->retrieveTaxId();
+
+        if ($oldTaxId === $taxId) {
+            return;
+        }
+
+        $sql = 'INSERT INTO df_inventoryitemtaxrel (inventoryitemid, taxid, percentage, amount) VALUES (?, ?, ?, ?) 
+                            ON DUPLICATE KEY UPDATE taxid = ?, percentage = ?, amount = ?';
+        $params = [
+            $this->id,
+            $taxId,
+            $this->column_fields['tax'],
+            $this->column_fields['tax_amount'],
+            $taxId,
+            $this->column_fields['tax'],
+            $this->column_fields['tax_amount']
+        ];
+        $this->db->pquery($sql, $params);
+    }
+
+    public function retrieveTaxId(): int
+    {
+        $taxId = 0;
+
+        if (!$this->id) {
+            return $taxId;
+        }
+
+        $result = $this->db->pquery('SELECT taxid FROM df_inventoryitemtaxrel WHERE inventoryitemid = ?', [$this->id]);
+
+        if ($this->db->num_rows($result)) {
+            $row = $this->db->fetchByAssoc($result);
+            $taxId = (int)$row['taxid'];
+        }
+
+        return $taxId;
     }
 }

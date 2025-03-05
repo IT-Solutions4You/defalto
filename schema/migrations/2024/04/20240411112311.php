@@ -54,7 +54,6 @@ if (!class_exists('Migration_20240411112311')) {
                 'CREATE TABLE IF NOT EXISTS `df_inventoryitemtaxrel` (
                                      `inventoryitemid` INT(11) NOT NULL,
                                      `taxid` INT(11) NOT NULL,
-                                     `sequence` INT(11) NOT NULL,
                                      `percentage` INT(11) NOT NULL,
                                      `amount` INT(11) NOT NULL,
                                      PRIMARY KEY (`inventoryitemid`) USING BTREE

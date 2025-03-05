@@ -462,7 +462,6 @@ class InventoryItem_Install_Model extends Core_Install_Model
         $this->getTable('df_inventoryitemtaxrel', null)
             ->createTable('inventoryitemid')
             ->createColumn('taxid', 'varchar(150) DEFAULT NULL')
-            ->createColumn('sequence', 'varchar(150) DEFAULT NULL')
             ->createColumn('percentage', 'varchar(2) DEFAULT NULL')
             ->createColumn('amount', 'varchar(150) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`inventoryitemid`)')

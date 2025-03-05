@@ -251,7 +251,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             jQuery('.item_text_td', row).css('padding-bottom', '0px');
         });
 
-        row.on('change', 'input', function () {
+        row.on('change', 'input, select.tax', function () {
             const element = jQuery(this);
             // Don't save on hidden input changes unless specifically needed
             if ((!element.is(':hidden') || element.hasClass('recalculateOnChange')) && !element.hasClass('doNotRecalculateOnChange') && !isNaN(element.val())) {
@@ -294,6 +294,9 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     saveProductLine: function (rowNumber) {
         const row = jQuery('#row' + rowNumber);
         const data = this.serializeRow(row);
+        let taxElement = jQuery('select.tax', row);
+        let selectedOption = taxElement.find('option:selected');
+        data.taxid = selectedOption.data('taxid');
 
         // Check if the row has any non-empty values
         const hasContent = Object.values(data).some(value => value !== '' && value != null);
@@ -335,6 +338,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                             }
                         }
                     });
+
+                    jQuery('.display_tax' + rowNumber).text(jQuery('#tax' + rowNumber).val());
 
                     row.trigger('lineSaved', [response]);
                 },
@@ -482,11 +487,12 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             jQuery('input.purchase_cost', parentRow).val(recordData.purchaseCost);
             jQuery('input.pricebookid', parentRow).val(recordData.pricebookid);
             jQuery('input.overall_discount', parentRow).val(jQuery('#overall_discount_percent').val());
+            let taxElement = jQuery('select.tax', parentRow);
+            taxElement.find('option:not(:first)').remove();
             let recordTaxes = recordData.taxes;
-            let taxes = {};
 
             for (let taxid in recordTaxes) {
-                tax = recordTaxes[taxid];
+                let tax = recordTaxes[taxid];
                 let percentage = tax.percentage;
                 let regions = JSON.parse(tax.regions);
 
@@ -496,15 +502,17 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     }
                 }
 
-                taxes[taxid] = {
-                    'id': taxid,
-                    'label': tax.tax_label,
-                    'percentage': percentage,
-                };
+                percentage = (percentage * 1).toFixed(2);
+
+                let option = jQuery('<option>', {
+                    value: percentage,
+                    'data-taxid': taxid,
+                    text: tax.tax_label + ' (' + percentage + '%)'
+                });
+                taxElement.append(option);
             }
 
-console.table(taxes);
-
+            taxElement.find('option:eq(1)').prop('selected', true);
             lineItemNameElment.val(recordData.name);
             this.recalculateProductLine(parentRow.data('rowNum'));
         }
@@ -526,6 +534,8 @@ console.table(taxes);
         jQuery('input.form-control', lineItemRow).val('');
         jQuery('input.allowOnlyNumbers', lineItemRow).val(0);
         jQuery('input.productid', lineItemRow).val('');
+        let taxElement = jQuery('select.tax', lineItemRow);
+        taxElement.find('option:not(:first)').remove();
     },
 
     registerLineItemPopup: function () {
@@ -647,18 +657,19 @@ console.table(taxes);
         jQuery('.margin', row).val(margin.toFixed(2));
         jQuery('display_margin' + rowNumber, row).html(margin.toFixed(2));
 
-        const tax = parseFloat(jQuery('.tax', row).val());
-        let tax_amount = parseFloat(jQuery('.tax_amount', row).val());
+        let tax = parseFloat(jQuery('.tax', row).val());
 
-        if (tax && tax > 0) {
-            tax_amount = price * (tax / 100);
-            jQuery('.tax_amount', row).val(tax_amount.toFixed(2));
+        if (!tax) {
+            tax = 0;
         }
+
+        let tax_amount = price * (tax / 100);
 
         if (isNaN(tax_amount)) {
             tax_amount = 0;
         }
 
+        jQuery('.tax_amount', row).val(tax_amount.toFixed(2));
         price = price + tax_amount;
         jQuery('.price_total', row).val(price.toFixed(2));
         jQuery('.display_total' + rowNumber, row).html(price.toFixed(2));
@@ -810,8 +821,8 @@ console.table(taxes);
             event.preventDefault();
 
             if (originalCurrency != currency) {
-                app.helper.showConfirmationBox({'message' : app.vtranslate('JS_CONFIRM_CURRENCY_CHANGE')}).then(
-                    function() {
+                app.helper.showConfirmationBox({'message': app.vtranslate('JS_CONFIRM_CURRENCY_CHANGE')}).then(
+                    function () {
                         app.helper.showProgress();
                         const params = {
                             module: 'InventoryItem',
@@ -830,7 +841,8 @@ console.table(taxes);
                             location.reload();
                         });
                     },
-                    function(error, err){}
+                    function (error, err) {
+                    }
                 );
             }
         });
@@ -852,8 +864,8 @@ console.table(taxes);
             event.preventDefault();
 
             if (originalRegion != region) {
-                app.helper.showConfirmationBox({'message' : app.vtranslate('JS_CONFIRM_TAXES_AND_CHARGES_REPLACE')}).then(
-                    function() {
+                app.helper.showConfirmationBox({'message': app.vtranslate('JS_CONFIRM_TAXES_AND_CHARGES_REPLACE')}).then(
+                    function () {
                         app.helper.showProgress();
                         const params = {
                             module: 'InventoryItem',
@@ -871,7 +883,8 @@ console.table(taxes);
                             jQuery('button.region-button').text(clickedItem.text());
                         });
                     },
-                    function(error, err){}
+                    function (error, err) {
+                    }
                 );
             }
         });
@@ -892,8 +905,8 @@ console.table(taxes);
             event.preventDefault();
 
             if (originalPriceBook != priceBook) {
-                app.helper.showConfirmationBox({'message' : app.vtranslate('JS_CONFIRM_PRICEBOOK_CHANGE')}).then(
-                    function() {
+                app.helper.showConfirmationBox({'message': app.vtranslate('JS_CONFIRM_PRICEBOOK_CHANGE')}).then(
+                    function () {
                         app.helper.showProgress();
                         const params = {
                             module: 'InventoryItem',
@@ -912,7 +925,8 @@ console.table(taxes);
                             location.reload();
                         });
                     },
-                    function(error, err){}
+                    function (error, err) {
+                    }
                 );
             }
         });

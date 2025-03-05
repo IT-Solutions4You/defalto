@@ -10,7 +10,9 @@
 
 class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
 {
-
+    /**
+     * @inheritDoc
+     */
     public function requiresPermission(\Vtiger_Request $request)
     {
         $permissions = parent::requiresPermission($request);
@@ -19,6 +21,9 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
         return $permissions;
     }
 
+    /**
+     * @inheritDoc
+     */
     function process(Vtiger_Request $request)
     {
         $decimalPlace = getCurrencyDecimalPlaces();
@@ -39,20 +44,8 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
 
         foreach ($idList as $id) {
             $recordModel = Vtiger_Record_Model::getInstanceById($id);
-            $taxRecordModel = Core_TaxRecord_Model::getInstance($id);
-            $taxModels = $taxRecordModel->getTaxes();
-            $taxes = [];
-            $taxInfo = $taxRecordModel->getTaxesInfo();
 
-            foreach ($taxInfo as $taxId => $taxData) {
-                $tax = $taxModels[$taxId];
-                unset($taxData['default']);
-                $taxes[$taxId] = $tax->getSaveParams();
-                $taxes[$taxId]['regions'] = json_encode($taxData);
-                $taxes[$taxId]['taxid'] = $taxId;
-            }
-
-            $taxesList[$id] = $taxes;
+            $taxesList[$id] = InventoryItem_Utils_Helper::getTaxesForProduct($id);
             $namesList[$id] = decode_html($recordModel->getName());
             $descriptionsList[$id] = decode_html($recordModel->get('description'));
             $listPriceValuesList[$id] = [];
