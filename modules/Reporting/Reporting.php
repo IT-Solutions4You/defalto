@@ -11,7 +11,7 @@
 class Reporting extends CRMEntity
 {
     /**
-     * Indicator if this is a custom module or standard module
+     * Indicator whether this is a custom module or standard module
      */
     public $column_fields = [];
     /**
