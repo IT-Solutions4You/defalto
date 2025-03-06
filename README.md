@@ -7,14 +7,14 @@ Defalto is an open-source CRM system designed for businesses seeking a flexible,
 
 Features
 ------------
-Contact and Account Management
-Sales and Pipeline Tracking
-Task and Calendar Integration
-Customizable Modules
-Role-based Access Control
-API Integration
-Reporting and Analytics
-Open-source under GNU AGPL v3 License
+- Contact and Account Management
+- Sales and Pipeline Tracking
+- Task and Calendar Integration
+- Customizable Modules
+- Role-based Access Control
+- API Integration
+- Reporting and Analytics
+- Open-source under GNU AGPL v3 License
 
 License
 ------------
