@@ -881,6 +881,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                             jQuery('#region_id_original').val(region);
                             app.helper.hideProgress();
                             jQuery('button.region-button').text(clickedItem.text());
+                            location.reload();
                         });
                     },
                     function (error, err) {

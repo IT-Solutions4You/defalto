@@ -212,9 +212,11 @@ class InventoryItem extends CRMEntity
             return;
         }
 
-        $oldTaxId = $this->retrieveTaxId();
+        $taxRel = $this->retrieveTaxRel();
+        $oldTaxId = $taxRel['taxid'];
+        $oldTaxPercentage = $taxRel['percentage'];
 
-        if ($oldTaxId === $taxId) {
+        if ($oldTaxId === $taxId && $oldTaxPercentage == $this->column_fields['tax']) {
             return;
         }
 
@@ -232,21 +234,32 @@ class InventoryItem extends CRMEntity
         $this->db->pquery($sql, $params);
     }
 
-    public function retrieveTaxId(): int
+    /**
+     * @return array
+     */
+    public function retrieveTaxRel(): array
     {
         $taxId = 0;
+        $percentage = 0.0;
 
         if (!$this->id) {
-            return $taxId;
+            return [
+                'taxId' => $taxId,
+                'percentage' => $percentage,
+            ];
         }
 
-        $result = $this->db->pquery('SELECT taxid FROM df_inventoryitemtaxrel WHERE inventoryitemid = ?', [$this->id]);
+        $result = $this->db->pquery('SELECT taxid, percentage FROM df_inventoryitemtaxrel WHERE inventoryitemid = ?', [$this->id]);
 
         if ($this->db->num_rows($result)) {
             $row = $this->db->fetchByAssoc($result);
             $taxId = (int)$row['taxid'];
+            $percentage = (float)$row['percentage'];
         }
 
-        return $taxId;
+        return [
+            'taxId' => $taxId,
+            'percentage' => $percentage,
+        ];
     }
 }

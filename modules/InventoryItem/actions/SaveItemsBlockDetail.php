@@ -135,6 +135,32 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         $recordModel->set('region_id', $regionId);
         $recordModel->save();
 
+        $items = $this->fetchItems($recordId);
+
+        foreach ($items as $item) {
+            if (!$item['productid']) {
+                // Text lines
+                continue;
+            }
+
+            $taxes = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$item['inventoryitemid'], (int)$item['productid'], (int)$item['parentid']);
+
+            if (empty($taxes)) {
+                continue;
+            }
+
+            foreach ($taxes as $tax) {
+                if (isset($tax['selected']) && (float)$tax['percentage'] != (float)$item['tax']) {
+                    $recordModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
+                    $recordModel->set('tax', $tax['percentage']);
+                    $recordModel->set('mode', 'edit');
+                    $recordModel->save();
+                    $entity = $recordModel->getEntity();
+                    $entity->saveTaxId($tax['taxid']);
+                }
+            }
+        }
+
         InventoryItem_ParentEntity_Model::updateTotals($recordId);
     }
 
@@ -266,8 +292,9 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
     {
         $db = PearDatabase::getInstance();
         $items = [];
-        $sql = 'SELECT df_inventoryitem.* 
+        $sql = 'SELECT df_inventoryitem.*, df_inventoryitemcf.* 
                 FROM df_inventoryitem
+                    LEFT JOIN df_inventoryitemcf ON df_inventoryitemcf.inventoryitemid = df_inventoryitem.inventoryitemid
                     INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid AND vtiger_crmentity.deleted = 0
                 WHERE parentid = ?   
                     AND productid IS NOT NULL

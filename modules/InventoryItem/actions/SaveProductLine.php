@@ -38,6 +38,8 @@ class InventoryItem_SaveProductLine_Action extends Vtiger_SaveAjax_Action
             $focus->save('InventoryItem');
             $focus->saveTaxId((int)$data['taxid']);
 
+            InventoryItem_ParentEntity_Model::updateTotals((int)$focus->column_fields['parentid']);
+
             $response->setResult($focus->id);
         } catch (Exception $e) {
             $response->setError($e->getMessage());

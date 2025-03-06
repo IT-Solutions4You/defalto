@@ -134,7 +134,7 @@ trait InventoryItem_Detail_Trait
                 $row[$fieldName] = number_format((float)$row[$fieldName], 2);
             }
 
-            $row['taxes'] = $this->fetchTaxesForItem((int)$row['inventoryitemid'], (int)$row['productid'], $record);
+            $row['taxes'] = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$row['inventoryitemid'], (int)$row['productid'], $record);
 
             $inventoryItems[] = $row;
         }
@@ -142,77 +142,6 @@ trait InventoryItem_Detail_Trait
         unset($inventoryItems[0]);
 
         return $inventoryItems;
-    }
-
-    /**
-     * @param int $inventoryItemId
-     * @param int $productId
-     * @param int $record
-     *
-     * @return array
-     * @throws AppException
-     */
-    private function fetchTaxesForItem(int $inventoryItemId, int $productId, int $record): array
-    {
-        $taxes = InventoryItem_Utils_Helper::getTaxesForProduct($productId);
-        $selectedTaxId = $this->fetchSelectedTaxForItem($inventoryItemId);
-
-        if (isset($taxes[$selectedTaxId])) {
-            $taxes[$selectedTaxId]['selected'] = true;
-        }
-        
-        return $this->adaptPercentageForRegion($taxes, $record);
-    }
-
-    private function fetchSelectedTaxForItem(int $record): int
-    {
-        $taxId = 0;
-        $db = PearDatabase::getInstance();
-        $result = $db->pquery('SELECT taxid FROM df_inventoryitemtaxrel WHERE inventoryitemid = ?', [$record]);
-
-        if ($db->num_rows($result)) {
-            $row = $db->fetchByAssoc($result);
-            $taxId = (int)$row['taxid'];
-        }
-
-        return $taxId;
-    }
-
-    /**
-     * @param array $taxes
-     * @param int   $record
-     *
-     * @return array
-     */
-    private function adaptPercentageForRegion(array $taxes, int $record): array
-    {
-        $regionId = $this->getRegionForRecord($record);
-
-        if (!$regionId) {
-            return $taxes;
-        }
-
-        foreach ($taxes as $taxId => $taxData) {
-            if (!isset($taxData['regions']) || empty($taxData['regions']) || strlen($taxData['regions']) === 2) {
-                continue;
-            }
-
-            $regions = json_decode($taxData['regions']);
-
-            if (isset($regions->$regionId)) {
-                $taxes[$taxId]['percentage'] = number_format($regions->$regionId, 2);
-            }
-        }
-
-        return $taxes;
-    }
-
-    private function getRegionForRecord(int $record): int
-    {
-        $recordModel = Vtiger_Record_Model::getInstanceById($record, getSalesEntityType($record));
-        $regionId = $recordModel->get('region_id');
-
-        return (int)$regionId;
     }
 
     /**
