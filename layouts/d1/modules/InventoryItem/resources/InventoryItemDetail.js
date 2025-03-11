@@ -267,18 +267,19 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             self.recalculateDiscountDiv(rowNumber);
         });
 
-        row.on('change', '.discount', function () {
+        row.on('change', '.discount_popup', function () {
             self.recalculateDiscountDiv(rowNumber);
         });
 
         row.on('click', '.closeDiscountDiv', function () {
-            jQuery('#discount' + rowNumber).val(jQuery('#original_discount' + rowNumber).val());
+            jQuery('#discount_popup' + rowNumber).val(jQuery('#original_discount' + rowNumber).val());
             jQuery('#discount_type' + rowNumber).val(jQuery('#original_discount_type' + rowNumber).val());
             jQuery('#discount_type' + rowNumber).trigger('change');
             jQuery(this).closest('.discountSettingsDiv').hide();
         });
 
         row.on('click', '.applyDiscount', function () {
+            jQuery('#discount' + rowNumber).val(jQuery('#discount_popup' + rowNumber).val());
             jQuery('#original_discount' + rowNumber).val(jQuery('#discount' + rowNumber).val());
             jQuery('#original_discount_type' + rowNumber).val(jQuery('#discount_type' + rowNumber).val());
             self.recalculateProductLine(rowNumber);
@@ -682,7 +683,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const quantity = parseFloat(jQuery('.quantity', row).val());
         const price = parseFloat(jQuery('.subtotal', row).val());
         const discount_type = jQuery('.discount_type', row).val();
-        let discount = parseFloat(jQuery('.discount', row).val());
+        let discount = parseFloat(jQuery('.discount_popup', row).val());
         let discount_amount = 0;
 
         if (isNaN(discount)) {
@@ -732,7 +733,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 app.helper.showProgress();
                 const params = {
                     module: 'InventoryItem',
-                    action: 'SaveOverallDiscount',
+                    action: 'SaveItemsBlockDetail',
                     mode: 'saveOverallDiscount',
                     for_record: app.getRecordId(),
                     overall_discount_percent: overallDiscountPercent,

@@ -147,7 +147,7 @@
                                         <tr>
                                             <td class="p-3">{vtranslate('Discount', 'InventoryItem')}</td>
                                             <td>
-                                                <input type="text" size="5" data-compound-on="" name="discount{$row_no}" id="discount{$row_no}" value="{$data.discount}" class="form-control discount replaceCommaWithDot textAlignRight doNotRecalculateOnChange" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
+                                                <input type="text" size="5" data-compound-on="" name="discount_popup{$row_no}" id="discount_popup{$row_no}" value="{$data.discount}" class="form-control discount_popup replaceCommaWithDot textAlignRight doNotRecalculateOnChange" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
                                                 <input type="hidden" id="original_discount{$row_no}" name="original_discount{$row_no}" value="{$data.discount}" class="original_discount{$row_no}">
                                             </td>
                                         </tr>

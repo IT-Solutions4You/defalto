@@ -201,51 +201,51 @@
                             </td>
                             <td class="textAlignRight font-bold">{$OVERALL_DISCOUNT}</td>
                         </tr>
-                        <tr>
-                            <td colspan="{$DISPLAYED_FIELDS_COUNT}" class="textAlignRight">
-                                <div class="position-relative">
-                                    <i class="fa fa-pencil fa-fw text-secondary editAdjustment" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Adjustment', 'InventoryItem')}</strong>
-                                    <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="adjustmentSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
-                                        <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Adjustment', 'InventoryItem')}</h3>
-                                        <div class="popover-body popover-content">
-                                            <div class="validCheck">
-                                                <table class="table table-borderless popupTable m-0">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td class="p-3">{vtranslate('Adjustment', 'InventoryItem')}</td>
-                                                        <td>
-                                                            <div class="input-group">
-                                                                <input type="text" size="5" data-compound-on="" name="adjustment" id="adjustment" value="{$ADJUSTMENT}" class="form-control adjustment replaceCommaWithDot allowOnlyNumbers textAlignRight" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
-                                                                <input type="hidden" id="original_adjustment" name="original_adjustment" value="{$ADJUSTMENT}" class="original_adjustment">
-                                                            </div>
-                                                        </td>
-                                                        <td class="text-end">
-                                                            <input type="text" size="6" name="total_with_adjustment" id="total_with_adjustment" style="cursor:pointer;" value="" readonly="" class="form-control totalWithAdjustment textAlignRight" aria-invalid="false">
-                                                        </td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
+                    {/if}
+                {/if}
+                <tr>
+                    <td colspan="{$DISPLAYED_FIELDS_COUNT}" class="textAlignRight">
+                        <div class="position-relative">
+                            <i class="fa fa-pencil fa-fw text-secondary editAdjustment" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Adjustment', 'InventoryItem')}</strong>
+                            <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="adjustmentSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
+                                <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Adjustment', 'InventoryItem')}</h3>
+                                <div class="popover-body popover-content">
+                                    <div class="validCheck">
+                                        <table class="table table-borderless popupTable m-0">
+                                            <tbody>
+                                            <tr>
+                                                <td class="p-3">{vtranslate('Adjustment', 'InventoryItem')}</td>
+                                                <td>
+                                                    <div class="input-group">
+                                                        <input type="text" size="5" data-compound-on="" name="adjustment" id="adjustment" value="{$ADJUSTMENT}" class="form-control adjustment replaceCommaWithDot allowOnlyNumbers textAlignRight" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
+                                                        <input type="hidden" id="original_adjustment" name="original_adjustment" value="{$ADJUSTMENT}" class="original_adjustment">
+                                                    </div>
+                                                </td>
+                                                <td class="text-end">
+                                                    <input type="text" size="6" name="total_with_adjustment" id="total_with_adjustment" style="cursor:pointer;" value="" readonly="" class="form-control totalWithAdjustment textAlignRight" aria-invalid="false">
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="modal-footer lineItemPopupModalFooter p-3">
+                                    <div class="container-fluid p-0">
+                                        <div class="row">
+                                            <div class="col-6 text-end">
+                                                <a class="btn btn-outline-primary popoverCancel closeAdjustmentDiv">{vtranslate('LBL_CANCEL')}</a>
                                             </div>
-                                        </div>
-                                        <div class="modal-footer lineItemPopupModalFooter p-3">
-                                            <div class="container-fluid p-0">
-                                                <div class="row">
-                                                    <div class="col-6 text-end">
-                                                        <a class="btn btn-outline-primary popoverCancel closeAdjustmentDiv">{vtranslate('LBL_CANCEL')}</a>
-                                                    </div>
-                                                    <div class="col-6 text-start">
-                                                            <a class="btn btn-primary active popoverButton saveAdjustment font-bold">{vtranslate('LBL_SAVE')}</a>
-                                                    </div>
-                                                </div>
+                                            <div class="col-6 text-start">
+                                                <a class="btn btn-primary active popoverButton saveAdjustment font-bold">{vtranslate('LBL_SAVE')}</a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </td>
-                            <td class="textAlignRight font-bold adjustmentDisplay">{$ADJUSTMENT}</td>
-                        </tr>
-                    {/if}
-                {/if}
+                            </div>
+                        </div>
+                    </td>
+                    <td class="textAlignRight font-bold adjustmentDisplay">{$ADJUSTMENT}</td>
+                </tr>
                 </tfoot>
             </table>
         </div>
