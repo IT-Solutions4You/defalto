@@ -81,12 +81,26 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
             if (typeof data != "undefined") {
                 self.mapResultsToFields(newLineItem, data);
+            } else {
+                jQuery('.lineItemPopup', newLineItem).trigger('click');
             }
         };
 
         jQuery('#addText').on('click', addTextLineHandler);
         const addButtonsToolbar = jQuery('.inventoryItemAddButtons');
         addButtonsToolbar.find('button').not(':eq(0)').on('click', addLineItemEventHandler);
+
+        const blockLineItemsAddDiv = jQuery('#block_line_items_add');
+        blockLineItemsAddDiv.on('click', 'ul.add_menu li a', function (event) {
+            const clickedItem = jQuery(this);
+            const moduleName = clickedItem.data('modulename');
+
+            if (moduleName === '') {
+                addButtonsToolbar.find('button').first().trigger('click');
+            } else {
+
+            }
+        });
     },
 
     getLineItemSetype: function (row) {
@@ -495,7 +509,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             for (let taxid in recordTaxes) {
                 let tax = recordTaxes[taxid];
                 let percentage = tax.percentage;
-                let regions = JSON.parse(tax.regions);
+                let regions = tax.regions ? JSON.parse(tax.regions) : {};
 
                 for (let regionId in regions) {
                     if (regionId == selectedRegionId) {

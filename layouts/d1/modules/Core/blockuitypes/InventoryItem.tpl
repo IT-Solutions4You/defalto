@@ -23,7 +23,20 @@
                 <span class="ms-3 fs-4 fw-bold text-truncate">{vtranslate({$BLOCK_LABEL_KEY},{$MODULE_NAME})}</span>
             </div>
             <div class="col-lg-8 row">
-                <div class="col-lg-6 textAlignRight" id="block_line_items_pricebook">
+                <div class="col-lg-1 textAlignRight" id="block_line_items_add">
+                    <div class="btn-group" role="group">
+                        <button id="block_line_items_add_button" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary text-primary add-button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-plus-circle"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end add_menu" aria-labelledby="btnGroupDrop1">
+                            <li><a class="dropdown-item" data-modulename=""><i class="fa fa-i-cursor"></i>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}</a></li>
+                            {foreach item=ITEM_MODULE_NAME from=$ITEM_MODULES}
+                                <li><a class="dropdown-item" data-modulename="{$ITEM_MODULE_NAME}">{Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}</a></li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-5 textAlignRight" id="block_line_items_pricebook">
                     <div class="btn-group" role="group">
                         {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['pricebookid']}
                         {assign var=CURRENT_VALUE value=$FIELD_MODEL->get('fieldvalue')}
