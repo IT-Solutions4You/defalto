@@ -63,6 +63,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             self.setupRowListeners(self.numOfLineItems);
             jQuery('.editRow', newTextLine).trigger('click');
             app.event.trigger('post.textLine.New', newTextLine);
+            jQuery('.item_text', newTextLine).focus();
         };
 
         const addLineItemEventHandler = function (e, data) {
@@ -98,7 +99,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             if (moduleName === '') {
                 addButtonsToolbar.find('button').first().trigger('click');
             } else {
-
+                addButtonsToolbar.find('button[data-module-name="' + moduleName + '"]').trigger('click');
             }
         });
     },
