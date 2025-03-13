@@ -92,7 +92,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         addButtonsToolbar.find('button').not(':eq(0)').on('click', addLineItemEventHandler);
 
         const blockLineItemsAddDiv = jQuery('#block_line_items_add');
-        blockLineItemsAddDiv.on('click', 'ul.add_menu li a', function (event) {
+        /*blockLineItemsAddDiv.on('click', 'ul.add_menu li a', function (event) {
             const clickedItem = jQuery(this);
             const moduleName = clickedItem.data('modulename');
 
@@ -101,6 +101,31 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             } else {
                 addButtonsToolbar.find('button[data-module-name="' + moduleName + '"]').trigger('click');
             }
+        });*/
+        blockLineItemsAddDiv.on('click', 'ul.add_menu li a', function (event, params) {
+            const clickedItem = jQuery(this);
+            const moduleName = clickedItem.data('modulename');
+
+            if (typeof params === 'undefined') {
+                params = {};
+            }
+
+            app.helper.showProgress();
+            const requestParams = {
+                'module': 'InventoryItem',
+                'view': 'PopupItemEdit',
+                'item_type': moduleName,
+                'for_module': app.getModuleName(),
+                'data': params.data
+            };
+            /*console.log(requestParams);
+    app.helper.hideProgress();
+    return false;*/
+            app.request.post({data:requestParams}).then(function(err,data) {
+                app.helper.hideProgress();
+                console.log(err);
+                console.log(data);
+            });
         });
     },
 
