@@ -103,6 +103,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             }
         });*/
         blockLineItemsAddDiv.on('click', 'ul.add_menu li a', function (event, params) {
+            app.helper.showProgress();
+
             const clickedItem = jQuery(this);
             const moduleName = clickedItem.data('modulename');
 
@@ -110,7 +112,6 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 params = {};
             }
 
-            app.helper.showProgress();
             const requestParams = {
                 'module': 'InventoryItem',
                 'view': 'PopupItemEdit',
@@ -118,13 +119,25 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 'for_module': app.getModuleName(),
                 'data': params.data
             };
-            /*console.log(requestParams);
-    app.helper.hideProgress();
-    return false;*/
+
             app.request.post({data:requestParams}).then(function(err,data) {
                 app.helper.hideProgress();
-                console.log(err);
-                console.log(data);
+                // console.log(err);
+                // console.log(data);
+                let form = jQuery('#InventoryItemPopupForm');
+                let callbackparams = {
+                    'cb': function (container) {
+                        //self.registerPostReferenceEvent(container);
+                        console.log('haf');
+                        app.event.trigger('post.InventoryItemPopup.show', form);
+                        app.helper.registerLeavePageWithoutSubmit(form);
+                        app.helper.registerModalDismissWithoutSubmit(form);
+                    },
+                    backdrop: 'static',
+                    keyboard: false
+                };
+
+                app.helper.showModal(data, callbackparams);
             });
         });
     },

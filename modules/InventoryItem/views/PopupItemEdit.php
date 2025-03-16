@@ -30,11 +30,19 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();
         show($moduleName, $request->getAll());
+
         $viewer->assign('MODULE', $moduleName);
-        $viewer->assign('MODULE_NAME',$moduleName);
+        $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('SOURCE_MODULE', $request->get('for_module'));
         $viewer->assign('RECORD', $request->get('record'));
         $viewer->view('PopupItemEdit.tpl', $moduleName);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    function preProcess(Vtiger_Request $request, $display = true)
+    {
     }
 
     /**
