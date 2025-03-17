@@ -116,7 +116,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 'module': 'InventoryItem',
                 'view': 'PopupItemEdit',
                 'item_type': moduleName,
-                'for_module': app.getModuleName(),
+                'source_module': app.getModuleName(),
+                'source_record': app.getRecordId(),
                 'data': params.data
             };
 

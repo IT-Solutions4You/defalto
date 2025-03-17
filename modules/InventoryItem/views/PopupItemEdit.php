@@ -29,12 +29,53 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
     {
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();
-        show($moduleName, $request->getAll());
 
-        $viewer->assign('MODULE', $moduleName);
+        $selectedFields = InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule()));
+        $recordModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
+        $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
+        $recordStructure = [];
+
+        foreach ($recordStructureInstance->getStructure() as $value) {
+            foreach ($value as $key2 => $value2) {
+                $recordStructure[$key2] = $value2;
+            }
+        }
+
+        $structure = [];
+        $processed = [];
+
+        foreach ($selectedFields as $fieldName) {
+            if (in_array($fieldName, $processed)) {
+                continue;
+            }
+
+            $fields = [];
+            $label = vtranslate($recordStructure[$fieldName]->get('label'), 'InventoryItem');
+            $fields[] = $recordStructure[$fieldName];
+            $processed[] = $fieldName;
+
+            if (isset($recordStructure[$fieldName . '_amount'])) {
+                $fields[] = $recordStructure[$fieldName . '_amount'];
+                $processed[] = $fieldName . '_amount';
+            }
+
+            if (isset($recordStructure['price_after_' . $fieldName])) {
+                $fields[] = $recordStructure['price_after_' . $fieldName];
+                $processed[] = 'price_after_' . $fieldName;
+            }
+
+            $structure[] = [$label, $fields];
+        }
+
         $viewer->assign('MODULE_NAME', $moduleName);
-        $viewer->assign('SOURCE_MODULE', $request->get('for_module'));
+        $viewer->assign('MODULE', $moduleName);
         $viewer->assign('RECORD', $request->get('record'));
+        $viewer->assign('SOURCE_MODULE', $request->get('source_module'));
+        $viewer->assign('SOURCE_RECORD', $request->get('source_record'));
+        $viewer->assign('INVENTORY_ITEM_COLUMNS', $selectedFields);
+        $viewer->assign('RECORD_STRUCTURE', $recordStructure);
+        $viewer->assign('FORMATTED_RECORD_STRUCTURE', $structure);
+        $viewer->assign('ITEM_TYPE', $request->get('item_type'));
         $viewer->view('PopupItemEdit.tpl', $moduleName);
     }
 
