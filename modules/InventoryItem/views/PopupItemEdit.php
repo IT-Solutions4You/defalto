@@ -41,6 +41,7 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
             }
         }
 
+        $hardFormattedRecordStructure = [];
         $structure = [];
         $processed = [];
 
@@ -49,8 +50,22 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
                 continue;
             }
 
-            $fields = [];
             $label = vtranslate($recordStructure[$fieldName]->get('label'), 'InventoryItem');
+
+            if (in_array($fieldName, ['productid', 'description', 'quantity', 'unit', 'price', 'subtotal'])) {
+                if ($fieldName === 'productid') {
+                    $seType = $request->get('item_type');
+                    $entityFieldNames = getEntityFieldNames($seType);
+                    $entityFieldName = $entityFieldNames['fieldname'];
+                    $entityField = Vtiger_Field_Model::getInstance($entityFieldName, Vtiger_Module_Model::getInstance($seType));
+                    $label = getTranslatedString($entityField->label, $seType);
+                }
+
+                $hardFormattedRecordStructure[$fieldName] = [$label, $recordStructure[$fieldName]];
+                continue;
+            }
+
+            $fields = [];
             $fields[] = $recordStructure[$fieldName];
             $processed[] = $fieldName;
 
@@ -75,6 +90,7 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $viewer->assign('INVENTORY_ITEM_COLUMNS', $selectedFields);
         $viewer->assign('RECORD_STRUCTURE', $recordStructure);
         $viewer->assign('FORMATTED_RECORD_STRUCTURE', $structure);
+        $viewer->assign('HARD_FORMATTED_RECORD_STRUCTURE', $hardFormattedRecordStructure);
         $viewer->assign('ITEM_TYPE', $request->get('item_type'));
         $viewer->view('PopupItemEdit.tpl', $moduleName);
     }
