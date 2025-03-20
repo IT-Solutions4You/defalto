@@ -75,12 +75,11 @@
                                         {else}
                                             {assign var=FIELD_DISPLAY_VALUE value=Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}
                                         {/if}
-
                                         <span class="value" data-field-type="{$FIELD_MODEL->getFieldDataType()}">
                                             {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                                         </span>
                                         {if $IS_AJAX_ENABLED && $FIELD_MODEL->isEditable() eq 'true' && $FIELD_MODEL->isAjaxEditable() eq 'true'}
-                                            <span class="action pull-right"><a href="#" onclick="return false;" class="editAction fa fa-pencil"></a></span>
+                                            <span class="action"><a href="#" onclick="return false;" class="editAction fa fa-pencil"></a></span>
                                             <div class="hide edit">
                                                 {if $fieldDataType eq 'multipicklist'}
                                                     <input type="hidden" class="fieldBasicData" data-name='{$FIELD_MODEL->get('name')}[]' data-type="{$fieldDataType}" data-displayvalue='{$FIELD_DISPLAY_VALUE}' data-value="{$FIELD_VALUE}" />

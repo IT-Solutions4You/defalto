@@ -346,7 +346,7 @@ class Settings_Groups_Record_Model extends Settings_Vtiger_Record_Model {
 	 * @return Settings_Groups_Record_Model instance, if exists. Null otherwise
 	 */
 	public static function getInstance() {
-            list($value) = func_get_args();
+            [$value] = func_get_args();
             $db = PearDatabase::getInstance();
 
             if (Vtiger_Utils::isNumber($value)) {

@@ -231,4 +231,27 @@ class Vtiger_Block_Model extends Vtiger_Block {
     {
         return Core_Factory_BlockUIType::getInstanceFromBlock($this);
     }
+
+    /**
+     * @throws Exception
+     */
+    public function getUITypeName(): string
+    {
+        $blockUiType = $this->get('blockuitype');
+
+        return Core_BlockUiType_Model::getNameForUIType($blockUiType);
+    }
+
+    public function getEditViewId(): string
+    {
+        $label = str_replace(['LBL_', ' '], ['', ''], $this->get('label'));
+        $module = $this->getModuleInstance()->getName();
+
+        return $module . '_editView_blockName_' . $label;
+    }
+
+    public function getLabel(): string
+    {
+        return $this->get('label');
+    }
 }

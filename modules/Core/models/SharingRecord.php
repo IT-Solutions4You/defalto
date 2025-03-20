@@ -281,12 +281,10 @@ class Core_SharingRecord_Model extends Vtiger_Base_Model
         $db->pquery('UPDATE vtiger_crmentity SET isshared=? WHERE crmid=?', [$isShared, $this->get('record')]);
     }
 
+
     /**
-     * Function to get the instance of Group model, given group id or name
-     *
-     * @param <Object> $value
-     *
-     * @return Settings_Groups_Record_Model instance, if exists. Null otherwise
+     * @param $recordId
+     * @return self
      */
     public static function getInstance($recordId)
     {
@@ -346,6 +344,59 @@ class Core_SharingRecord_Model extends Vtiger_Base_Model
     }
 
     /**
+     * @return void
+     */
+    public function retrieveSaveParams(): void
+    {
+        $data = $this->getData();
+        $updateData = [
+            1 => [],
+            2 => [],
+        ];
+
+        foreach ($data as $sharingType => $sharingData) {
+            $sharingType = (int)$sharingType;
+
+            if (!in_array($sharingType, [1, 2])) {
+                continue;
+            }
+
+            foreach ((array)$sharingData as $userType => $userData) {
+                foreach ((array)$userData as $userId => $userName) {
+                    if (empty($userType) || empty($userId)) {
+                        continue;
+                    }
+
+                    $updateData[$sharingType][] = implode(':', [$userType, $userId]);
+                }
+            }
+        }
+
+        $this->setMemberViewList($updateData[1]);
+        $this->setMemberEditList($updateData[2]);
+    }
+
+    /**
+     * @param array $values
+     * @return void
+     */
+    public function setMemberViewList(array $values): void
+    {
+        $members = array_filter((array)$this->get('memberViewList'));
+        $this->set('memberViewList', array_unique(array_merge($members, $values)));
+    }
+
+    /**
+     * @param array $values
+     * @return void
+     */
+    public function setMemberEditList(array $values): void
+    {
+        $members = array_filter((array)$this->get('memberEditList'));
+        $this->set('memberEditList', array_unique(array_merge($members, $values)));
+    }
+
+    /**
      * @param $recordId
      *
      * @return array|int|mixed|string|string[]|null
@@ -357,5 +408,14 @@ class Core_SharingRecord_Model extends Vtiger_Base_Model
         $result = $db->pquery('SELECT label FROM vtiger_crmentity WHERE crmid = ?', [$recordId]);
 
         return $db->query_result($result, 0, 'label');
+    }
+
+    /**
+     * @param int $value
+     * @return void
+     */
+    public function setRecordId(int $value): void
+    {
+        $this->set('record', $value);
     }
 }

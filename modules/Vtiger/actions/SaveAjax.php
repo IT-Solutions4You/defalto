@@ -24,10 +24,15 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
                 if ($fieldModel->isViewable()) {
                     $recordFieldValue = $recordModel->get($fieldName);
 
-                    if (is_array($recordFieldValue) && $fieldModel->getFieldDataType() == 'multipicklist') {
+                    if($fieldModel->getFieldDataType() == 'multipicklist') {
+                        if(!is_array($recordFieldValue)) {
+                            $recordFieldValue = explode(' |##| ', $recordFieldValue);
+                        }
+
                         foreach ($recordFieldValue as $picklistValue) {
                             $picklistColorMap[$picklistValue] = Settings_Picklist_Module_Model::getPicklistColorByValue($fieldName, $picklistValue);
                         }
+
                         $recordFieldValue = implode(' |##| ', $recordFieldValue);
                     }
 
@@ -96,20 +101,10 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
                     $fieldValue = $request->get('value');
                 }
 
-                $fieldDataType = $fieldModel->getFieldDataType();
-
-                if ($fieldDataType == 'time' && $fieldValue !== null) {
-                    $fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
-                }
-
                 $fieldValue = $this->purifyCkeditorField($fieldName, $fieldValue);
 
                 if ($fieldValue !== null) {
-                    if (!is_array($fieldValue)) {
-                        $fieldValue = trim($fieldValue);
-                    }
-
-                    $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue, $fieldModel);
+                    $fieldValue = $fieldModel->getUiTypeModel()->getRequestValue($fieldValue);
                     $recordModel->set($fieldName, $fieldValue);
                 }
 
@@ -133,24 +128,10 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
                     $fieldValue = $fieldModel->getDefaultFieldValue();
                 }
 
-                $fieldDataType = $fieldModel->getFieldDataType();
-
-                if ($fieldDataType == 'time' && $fieldValue !== null) {
-                    $fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
-                }
-
-                if (is_array($fieldValue) && $fieldDataType == 'multipicklist') {
-                    $fieldValue = implode(' |##| ', $fieldValue);
-                }
-
                 $fieldValue = $this->purifyCkeditorField($fieldName, $fieldValue);
 
                 if ($fieldValue !== null) {
-                    if (!is_array($fieldValue)) {
-                        $fieldValue = trim($fieldValue);
-                    }
-
-                    $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue, $fieldModel);
+                    $fieldValue = $fieldModel->getUiTypeModel()->getRequestValue($fieldValue);
                     $recordModel->set($fieldName, $fieldValue);
                 }
             }

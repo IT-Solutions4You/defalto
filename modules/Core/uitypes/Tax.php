@@ -55,4 +55,22 @@ class Core_Tax_UIType extends Vtiger_Base_UIType
     {
         return true;
     }
+
+    /**
+     * @throws AppException
+     */
+    public function getDisplayValue($value, $record = false, $recordInstance = false)
+    {
+        /** @var Core_Tax_Model $tax */
+        $taxes = $this->getDetailTaxes($record);
+        $data = [];
+
+        foreach ($taxes as $tax) {
+            if ($tax->isActive()) {
+                $data[] = sprintf('%s: %s%s', $tax->getName(), $tax->getTax(), '%');
+            }
+        }
+
+        return implode(', ', $data);
+    }
 }
