@@ -625,7 +625,7 @@ jQuery.Class("Vtiger_Popup_Js",{
 	getPageJumpParams : function(){
 		var params = this.getCompleteParams();
 		params['view'] = 'PopupAjax';
-		params['mode'] = 'getPageCount';console.log('base');
+		params['mode'] = 'getPageCount';
 		return params;
 	},
 	

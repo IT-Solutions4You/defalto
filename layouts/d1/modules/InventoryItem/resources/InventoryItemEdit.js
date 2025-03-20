@@ -185,7 +185,7 @@ Vtiger.Class('InventoryItem_InventoryItemEdit_Js', {}, {
             function (error, data) {
                 if (error == null) {
                     aDeferred.resolve(data);
-                } else {
+                //} else {
                     //aDeferred.reject(data.message);
                 }
             },
