@@ -17,6 +17,7 @@
                     <input type="hidden" name="record" value="{$RECORD}"/>
                     <input type="hidden" name="source_module" value="{$SOURCE_MODULE}"/>
                     <input type="hidden" name="source_record" value="{$SOURCE_RECORD}"/>
+                    <input type="hidden" name="item_type" value="{$ITEM_TYPE}"/>
 
                     {if $HARD_FORMATTED_RECORD_STRUCTURE.productid neq ''}
                         {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE['productid'][1]}
@@ -32,10 +33,10 @@
                             <div class="col-lg-10">
                                 <div class="input-group">
                                     <input type="text" id="{$item_text}" name="{$item_text}" value="{$data.item_text}"
-                                           class="item_text form-control {if $row_no neq 0}autoComplete{/if}" placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}"
+                                           class="item_text form-control autoComplete" placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}"
                                            data-rule-required=true {if !empty($data.$item_text)}disabled="disabled"{/if}>
                                     <input type="hidden" id="{$hdnProductId}" name="{$hdnProductId}" value="{$data.productid}" class="productid"/>
-                                    <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="{$entityType}" class="lineItemType"/>
+                                    <input type="hidden" id="lineItemType" name="lineItemType" value="{$ITEM_TYPE}" class="lineItemType"/>
                                     {if !$data.$productDeleted}
                                         <span class="input-group-addon input-group-text cursorPointer clearLineItem" title="{vtranslate('LBL_CLEAR',$MODULE)}">
                                                     <i class="fa fa-xmark"></i>

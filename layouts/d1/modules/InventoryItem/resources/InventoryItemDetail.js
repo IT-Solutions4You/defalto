@@ -40,9 +40,9 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.recalculateTotals();
         this.makeLineItemsSortable();
         this.addRowListeners();
-        this.registerLineItemAutoComplete();
-        this.registerLineItemClear();
-        this.registerLineItemPopup();
+        this.registerLineItemAutoCompleteOld();
+        this.registerLineItemClearOld();
+        this.registerLineItemPopupOld();
         this.registerAddButtons();
         this.registerOverallDiscountActions();
         this.registerAdjustmentActions();
@@ -74,14 +74,14 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             newLineItem.find('input.item_text').addClass('autoComplete');
             newLineItem.find('.ignore-ui-registration').removeClass('ignore-ui-registration');
             vtUtils.applyFieldElementsView(newLineItem);
-            self.registerLineItemAutoComplete(newLineItem);
+            self.registerLineItemAutoCompleteOld(newLineItem);
             self.setupRowListeners(self.numOfLineItems);
             vtUtils.showSelect2ElementView(newLineItem.find('select.discount_type'));
             jQuery('.editRow', newLineItem).trigger('click');
             app.event.trigger('post.lineItem.New', newLineItem);
 
             if (typeof data != "undefined") {
-                self.mapResultsToFields(newLineItem, data);
+                self.mapResultsToFieldsOld(newLineItem, data);
             } else {
                 jQuery('.lineItemPopup', newLineItem).trigger('click');
             }
@@ -121,15 +121,12 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 'data': params.data
             };
 
-            app.request.post({data:requestParams}).then(function(err,data) {
+            app.request.post({data: requestParams}).then(function (err, data) {
                 app.helper.hideProgress();
-                // console.log(err);
-                // console.log(data);
                 let form = jQuery('#InventoryItemPopupForm');
-                let callbackparams = {
+                let callbackParams = {
                     'cb': function (container) {
-                        //self.registerPostReferenceEvent(container);
-                        console.log('haf');
+                        self.registerItemPopupEditEvents(container);
                         app.event.trigger('post.InventoryItemPopup.show', form);
                         app.helper.registerLeavePageWithoutSubmit(form);
                         app.helper.registerModalDismissWithoutSubmit(form);
@@ -138,7 +135,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     keyboard: false
                 };
 
-                app.helper.showModal(data, callbackparams);
+                app.helper.showModal(data, callbackParams);
             });
         });
     },
@@ -318,11 +315,11 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
 
         row.on('change', '.discount_type', function () {
-            self.recalculateDiscountDiv(rowNumber);
+            self.recalculateDiscountDivOld(rowNumber);
         });
 
         row.on('change', '.discount_popup', function () {
-            self.recalculateDiscountDiv(rowNumber);
+            self.recalculateDiscountDivOld(rowNumber);
         });
 
         row.on('click', '.closeDiscountDiv', function () {
@@ -466,7 +463,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
     },
 
-    registerLineItemAutoComplete: function (container) {
+    registerLineItemAutoCompleteOld: function (container) {
         const self = this;
 
         if (typeof container == 'undefined') {
@@ -516,7 +513,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                         if (error == null) {
                             const itemRow = element.parents('tr').first();
                             itemRow.find('.lineItemType').val(selectedModule);
-                            self.mapResultsToFields(itemRow, data[0]);
+                            self.mapResultsToFieldsOld(itemRow, data[0]);
                         }
                     },
                     function (error, err) {
@@ -527,7 +524,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
     },
 
-    mapResultsToFields: function (parentRow, responseData) {
+    mapResultsToFieldsOld: function (parentRow, responseData) {
         const lineItemNameElment = jQuery('input.item_text', parentRow);
         const referenceModule = this.getLineItemSetype(parentRow);
         const selectedRegionId = jQuery('#region_id_original').val();
@@ -573,18 +570,18 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
     },
 
-    registerLineItemClear: function () {
+    registerLineItemClearOld: function () {
         const self = this;
 
         this.lineItemsHolder.on('click', '.clearLineItem', function (e) {
             const elem = jQuery(e.currentTarget);
             const parentElem = elem.closest('td');
-            self.clearLineItemDetails(parentElem);
+            self.clearLineItemDetailsOld(parentElem);
             e.preventDefault();
         });
     },
 
-    clearLineItemDetails: function (parentElem) {
+    clearLineItemDetailsOld: function (parentElem) {
         const lineItemRow = parentElem.closest('tr');
         jQuery('input.form-control', lineItemRow).val('');
         jQuery('input.allowOnlyNumbers', lineItemRow).val(0);
@@ -593,13 +590,13 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         taxElement.find('option:not(:first)').remove();
     },
 
-    registerLineItemPopup: function () {
+    registerLineItemPopupOld: function () {
         const self = this;
 
         this.lineItemsHolder.on('click', '.lineItemPopup', function (e) {
             const triggerElement = jQuery(e.currentTarget);
             const popupReferenceModule = triggerElement.data('moduleName');
-            self.showLineItemPopup({'item_module': popupReferenceModule});
+            self.showLineItemPopupOld({'item_module': popupReferenceModule});
             const postPopupHandler = function (e, data) {
                 data = JSON.parse(data);
 
@@ -607,14 +604,14 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     data = [data];
                 }
 
-                self.postLineItemSelectionActions(triggerElement.closest('tr'), data, popupReferenceModule);
+                self.postLineItemSelectionActionsOld(triggerElement.closest('tr'), data, popupReferenceModule);
             };
             app.event.off('post.LineItemPopupSelection.click');
             app.event.one('post.LineItemPopupSelection.click', postPopupHandler);
         });
     },
 
-    showLineItemPopup: function (callerParams) {
+    showLineItemPopupOld: function (callerParams) {
         let params = {
             'module': 'InventoryItem',
             'view': 'ItemsPopup',
@@ -628,14 +625,14 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         popupInstance.showPopup(params, 'post.LineItemPopupSelection.click');
     },
 
-    postLineItemSelectionActions: function (itemRow, selectedLineItemsData, lineItemSelectedModuleName) {
+    postLineItemSelectionActionsOld: function (itemRow, selectedLineItemsData, lineItemSelectedModuleName) {
         for (let index in selectedLineItemsData) {
 
             if ((index * 1) !== 0) {
                 jQuery('#add' + lineItemSelectedModuleName).trigger('click', selectedLineItemsData[index]);
             } else {
                 itemRow.find('.lineItemType').val(lineItemSelectedModuleName);
-                this.mapResultsToFields(itemRow, selectedLineItemsData[index]);
+                this.mapResultsToFieldsOld(itemRow, selectedLineItemsData[index]);
             }
         }
     },
@@ -679,7 +676,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         jQuery('.display_subtotal' + rowNumber, row).html(price.toFixed(2));
         jQuery('.subtotal_in_discount_div', row).html(price.toFixed(2));
 
-        let discount_amount = this.recalculateDiscountDiv(rowNumber);
+        let discount_amount = this.recalculateDiscountDivOld(rowNumber);
         jQuery('.discount_amount', row).val(discount_amount);
 
         price = price - discount_amount;
@@ -732,7 +729,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.recalculateTotals();
     },
 
-    recalculateDiscountDiv: function (rowNumber) {
+    recalculateDiscountDivOld: function (rowNumber) {
         const row = jQuery('#row' + rowNumber);
         const quantity = parseFloat(jQuery('.quantity', row).val());
         const price = parseFloat(jQuery('.subtotal', row).val());
@@ -1029,6 +1026,284 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     getCurrencyId: function () {
         return jQuery('#currency_id_original').val();
     },
+
+
+    /***************************************************
+     ***************************************************
+     ***************************************************
+     ***************************************************
+     ***************************************************
+     ***************************************************
+     ***************************************************
+     ***************************************************
+     ***************************************************
+     ***************************************************
+     ***************************************************
+     ***************************************************/
+
+
+    registerItemPopupEditEvents: function (container) {
+        this.registerLineItemAutoComplete(container);
+        this.registerLineItemClear(container);
+        this.registerLineItemPopup(container);
+    },
+
+
+    registerLineItemAutoComplete: function (container) {
+        const self = this;
+
+        if (typeof container == 'undefined') {
+            container = this.lineItemsHolder;
+        }
+
+        container.find('input.autoComplete').autocomplete({
+            'minLength': '3',
+            'source': function (request, response) {
+                const params = {};
+                params.search_module = container.find('.lineItemPopup').data('moduleName');
+                params.search_value = request.term;
+
+                if (!params.search_module || params.search_module === 'Text') {
+                    return false;
+                }
+
+                self.searchModuleNames(params).then(function (data) {
+                    const responseDataList = [];
+                    let serverDataFormat = data;
+
+                    if (serverDataFormat.length <= 0) {
+                        serverDataFormat = [{
+                            'label': app.vtranslate('JS_NO_RESULTS_FOUND'),
+                            'type': 'no results'
+                        }];
+                    }
+
+                    for (let id in serverDataFormat) {
+                        responseDataList.push(serverDataFormat[id]);
+                    }
+
+                    response(responseDataList);
+                });
+            },
+            'select': function (event, ui) {
+                const selectedItemData = ui.item;
+
+                if (typeof selectedItemData.type != 'undefined' && selectedItemData.type === "no results") {
+                    return false;
+                }
+
+                const element = jQuery(this);
+                const selectedModule = container.find('.lineItemPopup').data('moduleName');
+                const dataUrl = "index.php?module=InventoryItem&action=GetItemDetails&record=" + selectedItemData.id + "&currency_id=" + self.getCurrencyId() + "&sourceModule=" + app.getModuleName() + "&pricebookid=" + jQuery('#pricebookid_original').val();
+                app.request.get({'url': dataUrl}).then(
+                    function (error, data) {
+                        if (error == null) {
+                            const itemRow = element.parents('tr').first();
+                            itemRow.find('.lineItemType').val(selectedModule);
+                            self.mapResultsToFields(container, data[0]);
+                        }
+                    },
+                    function (error, err) {
+
+                    }
+                );
+            }
+        });
+    },
+
+    mapResultsToFields: function (container, responseData) {
+        const lineItemNameElement = container.find('input.item_text');
+        const selectedRegionId = jQuery('#region_id_original').val();
+
+        for (let id in responseData) {
+            let recordData = responseData[id];
+            jQuery('input.productid', container).val(id);
+            jQuery('input.quantity', container).val(1).focus();
+            jQuery('input.unit', container).val(recordData.unit);
+            jQuery('input.price', container).val(parseFloat(recordData.listprice).toFixed(3)).trigger('change');
+            jQuery('input.purchase_cost', container).val(recordData.purchaseCost);
+            jQuery('input.pricebookid', container).val(recordData.pricebookid);
+            jQuery('input.overall_discount', container).val(jQuery('#overall_discount_percent').val());
+            let taxElement = jQuery('select.tax', container);
+            taxElement.find('option:not(:first)').remove();
+            let recordTaxes = recordData.taxes;
+
+            for (let taxid in recordTaxes) {
+                let tax = recordTaxes[taxid];
+                let percentage = tax.percentage;
+                let regions = tax.regions ? JSON.parse(tax.regions) : {};
+
+                for (let regionId in regions) {
+                    if (regionId == selectedRegionId) {
+                        percentage = regions[regionId];
+                    }
+                }
+
+                percentage = (percentage * 1).toFixed(2);
+
+                let option = jQuery('<option>', {
+                    value: percentage,
+                    'data-taxid': taxid,
+                    text: tax.tax_label + ' (' + percentage + '%)'
+                });
+                taxElement.append(option);
+            }
+
+            taxElement.find('option:eq(1)').prop('selected', true);
+            lineItemNameElement.val(recordData.name);
+            this.recalculateItem(container);
+        }
+    },
+
+    recalculateItem: function (container) {
+        const quantity = parseFloat(jQuery('.quantity', container).val());
+        let price = parseFloat(jQuery('.price', container).val());
+        price = quantity * price;
+        jQuery('.subtotal', container).val(price.toFixed(2));
+        jQuery('.display_subtotal', container).html(price.toFixed(2));
+        jQuery('.subtotal_in_discount_div', container).html(price.toFixed(2));
+
+        let discount_amount = this.recalculateDiscountDiv(container);
+        jQuery('.discount_amount', container).val(discount_amount);
+
+        price = price - discount_amount;
+        jQuery('.price_after_discount', container).val(price.toFixed(2));
+        jQuery('.display_price_after_discount', container).html(price.toFixed(2));
+
+        const overall_discount = parseFloat(jQuery('.overall_discount', container).val());
+        let overall_discount_amount = parseFloat(jQuery('.overall_discount_amount', container).val());
+
+        if (overall_discount && overall_discount > 0) {
+            overall_discount_amount = price * (overall_discount / 100);
+            jQuery('.overall_discount_amount', container).val(overall_discount_amount.toFixed(2));
+        }
+
+        if (isNaN(overall_discount_amount)) {
+            overall_discount_amount = 0;
+        }
+
+        price = price - overall_discount_amount;
+        jQuery('.price_after_overall_discount', container).val(price.toFixed(2));
+        jQuery('.display_price_after_overall_discount', container).html(price.toFixed(2));
+
+        let purchseCost = parseFloat(jQuery('.purchase_cost', container).val());
+        let margin = 0;
+
+        if (!isNaN(purchseCost) && purchseCost > 0) {
+            margin = price - (purchseCost * quantity);
+        }
+
+        jQuery('.margin', container).val(margin.toFixed(2));
+        jQuery('display_margin', container).html(margin.toFixed(2));
+
+        let tax = parseFloat(jQuery('.tax', container).val());
+
+        if (!tax) {
+            tax = 0;
+        }
+
+        let tax_amount = price * (tax / 100);
+
+        if (isNaN(tax_amount)) {
+            tax_amount = 0;
+        }
+
+        jQuery('.tax_amount', container).val(tax_amount.toFixed(2));
+        price = price + tax_amount;
+        jQuery('.price_total', container).val(price.toFixed(2));
+        jQuery('.display_total', container).html(price.toFixed(2));
+    },
+
+    recalculateDiscountDiv: function (container) {
+        const quantity = parseFloat(jQuery('.quantity', container).val());
+        const price = parseFloat(jQuery('.subtotal', container).val());
+        const discount_type = jQuery('.discount_type', container).val();
+        let discount = parseFloat(jQuery('.discount_popup', container).val());
+        let discount_amount = 0;
+
+        if (isNaN(discount)) {
+            discount = 0;
+        }
+
+        if (discount_type === 'Percentage') {
+            discount_amount = price * (discount / 100);
+        } else if (discount_type === 'Direct') {
+            discount_amount = discount;
+        } else if (discount_type === 'Product Unit Price') {
+            discount_amount = quantity * discount;
+        }
+
+        discount_amount = discount_amount.toFixed(2);
+
+        jQuery('.discount_computed_value', container).val(discount_amount);
+
+        return discount_amount;
+    },
+
+    registerLineItemClear: function (container) {
+        const self = this;
+
+        jQuery('.clearLineItem', container).on('click', function (e) {
+            self.clearLineItemDetails(container);
+            e.preventDefault();
+        });
+    },
+
+    clearLineItemDetails: function (container) {
+        jQuery('input.form-control', container).val('');
+        jQuery('input.allowOnlyNumbers', container).val(0);
+        jQuery('input.productid', container).val('');
+        let taxElement = jQuery('select.tax', container);
+        taxElement.find('option:not(:first)').remove();
+    },
+
+    registerLineItemPopup: function (container) {
+        const self = this;
+
+        jQuery('.lineItemPopup', container).on('click', function (e) {
+            const triggerElement = jQuery(e.currentTarget);
+            const popupReferenceModule = triggerElement.data('moduleName');
+            self.showLineItemPopup({'item_module': popupReferenceModule});
+            const postPopupHandler = function (e, data) {
+                data = JSON.parse(data);
+
+                if (!jQuery.isArray(data)) {
+                    data = [data];
+                }
+
+                self.postLineItemSelectionActions(container, data, popupReferenceModule);
+            };
+            app.event.off('post.LineItemPopupSelection.click');
+            app.event.one('post.LineItemPopupSelection.click', postPopupHandler);
+        });
+    },
+
+    showLineItemPopup: function (callerParams) {
+        let params = {
+            'module': 'InventoryItem',
+            'view': 'ItemsPopup',
+            'src_module': this.getModuleName(),
+            'src_record': app.getRecordId(),
+            'multi_select': true,
+            'currency_id': this.getCurrencyId(),
+        };
+        params = jQuery.extend(params, callerParams);
+        const popupInstance = InventoryItem_Popup_Js.getInstance();
+        popupInstance.showPopup(params, 'post.LineItemPopupSelection.click');
+    },
+
+    postLineItemSelectionActions: function (itemRow, selectedLineItemsData, lineItemSelectedModuleName) {
+        for (let index in selectedLineItemsData) {
+
+            if ((index * 1) !== 0) {
+                jQuery('#add' + lineItemSelectedModuleName).trigger('click', selectedLineItemsData[index]);
+            } else {
+                itemRow.find('.lineItemType').val(lineItemSelectedModuleName);
+                this.mapResultsToFields(itemRow, selectedLineItemsData[index]);
+            }
+        }
+    },
+
 });
 
 InventoryItem_InventoryItemDetail_Js_Instance = new InventoryItem_InventoryItemDetail_Js();
