@@ -32,10 +32,10 @@
                             </div>
                             <div class="col-lg-10">
                                 <div class="input-group">
-                                    <input type="text" id="{$item_text}" name="{$item_text}" value="{$data.item_text}"
+                                    <input type="text" id="item_text" name="item_text" value="{$data.item_text}"
                                            class="item_text form-control autoComplete" placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}"
-                                           data-rule-required=true {if !empty($data.$item_text)}disabled="disabled"{/if}>
-                                    <input type="hidden" id="{$hdnProductId}" name="{$hdnProductId}" value="{$data.productid}" class="productid"/>
+                                           data-rule-required=true {if !empty($data.item_text)}disabled="disabled"{/if}>
+                                    <input type="hidden" id="productid" name="productid" value="{$data.productid}" class="productid"/>
                                     <input type="hidden" id="lineItemType" name="lineItemType" value="{$ITEM_TYPE}" class="lineItemType"/>
                                     {if !$data.$productDeleted}
                                         <span class="input-group-addon input-group-text cursorPointer clearLineItem" title="{vtranslate('LBL_CLEAR',$MODULE)}">
@@ -78,13 +78,13 @@
                                 </div>
                                 {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE['quantity'][1]}
                                 {assign var=FIELD_NAME value=$FIELD->get('name')}
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text"
                                            class="{$FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data[$FIELD_NAME]}"/>
                                 </div>
                             {/if}
                             {if $HARD_FORMATTED_RECORD_STRUCTURE.unit neq ''}
-                                <div class="col-lg-1"></div>
+                                <div class="col-lg-2"></div>
                                 <div class="col-lg-2">
                                     <div class="row py-2 h-100">
                                         <div class="fieldlabel text-truncate medium">
@@ -113,7 +113,7 @@
                                 </div>
                                 {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE['price'][1]}
                                 {assign var=FIELD_NAME value=$FIELD->get('name')}
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <div class="input-group">
                                         <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text"
                                                class="{$FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight"
@@ -126,7 +126,7 @@
                                 </div>
                             {/if}
                             {if $HARD_FORMATTED_RECORD_STRUCTURE.subtotal neq ''}
-                                <div class="col-lg-1"></div>
+                                <div class="col-lg-2"></div>
                                 <div class="col-lg-2">
                                     <div class="row py-2 h-100">
                                         <div class="fieldlabel text-truncate medium">
@@ -137,8 +137,12 @@
                                 {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE['subtotal'][1]}
                                 {assign var=FIELD_NAME value=$FIELD->get('name')}
                                 <div class="col-lg-3">
-                                    <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{$data[$FIELD_NAME]}"/>
+                                    <div class="row py-2 h-100">
+                                        <div class="display_subtotal textAlignRight font-bold">{$data[$FIELD_NAME]}</div>
+                                    </div>
                                 </div>
+                                <div class="col-lg-3 display_subtotal textAlignRight font-bold">{$data[$FIELD_NAME]}</div>
+                                <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="hidden" class="{$FIELD_NAME} inputElement form-control" value="{$data[$FIELD_NAME]}"/>
                             {/if}
                         </div>
                     {/if}
@@ -229,6 +233,7 @@
                                             </div>
                                         </div>
                                     {elseif $FIELD_NAME eq 'tax'}
+                                        <div id="tax_div">
                                         <select name="{$FIELD_NAME}" id="{$FIELD_NAME}" class="inputElement select2 form-select {$FIELD_NAME}">
                                             <option value="0" data-taxid="0" {if $data.discount_type eq '0'}selected{/if}>{vtranslate('No Tax', 'InventoryItem')}</option>
                                             {foreach item=taxDetails from=$data['taxes']}
@@ -237,6 +242,15 @@
                                                 </option>
                                             {/foreach}
                                         </select>
+                                        </div>
+                                    {elseif $FIELD_NAME eq 'price_total'}
+                                        <div class="col-lg-2">
+                                            <div class="row py-2 h-100">
+                                                <div class="display_{$FIELD_NAME} textAlignRight font-bold">{$data[$FIELD_NAME]}</div>
+                                            </div>
+                                        </div>
+                                        <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="hidden" class="{$FIELD_NAME} inputElement form-control"
+                                               value="{$data[$FIELD_NAME]}"/>
                                     {elseif $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'percentage'}
                                         <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text"
                                                class="{$FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data[$FIELD_NAME]}"/>
@@ -248,16 +262,22 @@
                             {if $INVENTORY_ROW.1.1 neq ''}
                                 {assign var=FIELD value=$INVENTORY_ROW.1.1}
                                 <div class="col-lg-2">
-                                    <input id="{$FIELD->get('name')}" name="{$FIELD->get('name')}" type="text" class="{$FIELD->get('name')} inputElement form-control"
-                                           value="{$data[$FIELD->get('name')]}"/>
+                                    <div class="row py-2 h-100">
+                                        <div class="display_{$FIELD->get('name')} textAlignRight">{$data[$FIELD->get('name')]}</div>
+                                    </div>
                                 </div>
+                                <input id="{$FIELD->get('name')}" name="{$FIELD->get('name')}" type="hidden" class="{$FIELD->get('name')} inputElement form-control"
+                                       value="{$data[$FIELD->get('name')]}"/>
                             {/if}
                             {if $INVENTORY_ROW.1.2 neq ''}
                                 {assign var=FIELD value=$INVENTORY_ROW.1.2}
                                 <div class="col-lg-2">
-                                    <input id="{$FIELD->get('name')}" name="{$FIELD->get('name')}" type="text" class="{$FIELD->get('name')} inputElement form-control"
-                                           value="{$data[$FIELD->get('name')]}"/>
+                                    <div class="row py-2 h-100">
+                                        <div class="display_{$FIELD->get('name')} textAlignRight font-bold">{$data[$FIELD->get('name')]}</div>
+                                    </div>
                                 </div>
+                                <input id="{$FIELD->get('name')}" name="{$FIELD->get('name')}" type="hidden" class="{$FIELD->get('name')} inputElement form-control"
+                                       value="{$data[$FIELD->get('name')]}"/>
                             {/if}
                         </div>
                     {/foreach}

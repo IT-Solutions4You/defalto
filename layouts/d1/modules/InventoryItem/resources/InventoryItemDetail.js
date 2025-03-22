@@ -49,7 +49,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.registerCurrencyActions();
         this.registerRegionActions();
         this.registerPriceBookActions();
-        this.registerPriceBookPopUp();
+        this.registerPriceBookPopUpOld();
     },
 
     registerAddButtons: function () {
@@ -985,7 +985,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
     },
 
-    registerPriceBookPopUp: function () {
+    registerPriceBookPopUpOld: function () {
         const self = this;
 
         this.lineItemsHolder.on('click', '.choosePriceBook', function (e) {
@@ -1043,11 +1043,65 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
 
     registerItemPopupEditEvents: function (container) {
+        this.setupListeners(container);
         this.registerLineItemAutoComplete(container);
         this.registerLineItemClear(container);
         this.registerLineItemPopup(container);
+        this.registerPriceBookPopUp(container);
     },
 
+    setupListeners: function (container) {
+        const self = this;
+
+        /**
+         * TODO: Save action
+         */
+        container.on('click', '.saveRow', function () {
+            self.saveProductLine(rowNumber);
+            jQuery('.item_text_td', row).css('padding-bottom', '0px');
+        });
+
+        /**
+         * Recalculate on change
+         */
+        container.on('change', 'input, select.tax', function () {
+            const element = jQuery(this);
+            // Don't save on hidden input changes unless specifically needed
+            if ((!element.is(':hidden') || element.hasClass('recalculateOnChange')) && !element.hasClass('doNotRecalculateOnChange') && !isNaN(element.val())) {
+                self.recalculateItem(container);
+            }
+        });
+
+        container.on('click', '.editProductDiscount', function () {
+            jQuery('#discountSettingsDiv', container).show();
+            jQuery('#tax_div', container).hide();
+        });
+
+        container.on('change', '.discount_type', function () {
+            self.recalculateDiscountDiv(container);
+        });
+
+        container.on('keyup', '.discount_popup', function () {
+            self.recalculateDiscountDiv(container);
+        });
+
+        container.on('click', '.closeDiscountDiv', function () {
+            jQuery('#discount_popup', container).val(jQuery('#original_discount', container).val());
+            jQuery('#discount_type', container).val(jQuery('#original_discount_type', container).val());
+            jQuery('#discount_type', container).trigger('change');
+            jQuery('#discountSettingsDiv', container).hide();
+            jQuery('#tax_div', container).show();
+        });
+
+        container.on('click', '.applyDiscount', function () {
+            jQuery('#discount', container).val(jQuery('#discount_popup', container).val());
+            jQuery('#original_discount', container).val(jQuery('#discount', container).val());
+            jQuery('#original_discount_type', container).val(jQuery('#discount_type', container).val());
+            self.recalculateItem(container);
+            jQuery('#discountSettingsDiv', container).hide();
+            jQuery('#tax_div', container).show();
+        });
+    },
 
     registerLineItemAutoComplete: function (container) {
         const self = this;
@@ -1098,8 +1152,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 app.request.get({'url': dataUrl}).then(
                     function (error, data) {
                         if (error == null) {
-                            const itemRow = element.parents('tr').first();
-                            itemRow.find('.lineItemType').val(selectedModule);
+                            container.find('.lineItemType').val(selectedModule);
                             self.mapResultsToFields(container, data[0]);
                         }
                     },
@@ -1156,8 +1209,17 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     recalculateItem: function (container) {
-        const quantity = parseFloat(jQuery('.quantity', container).val());
+        let quantity = parseFloat(jQuery('.quantity', container).val());
         let price = parseFloat(jQuery('.price', container).val());
+
+        if (isNaN(quantity)) {
+            quantity = 0.0;
+        }
+
+        if (isNaN(price)) {
+            price = 0.0;
+        }
+
         price = quantity * price;
         jQuery('.subtotal', container).val(price.toFixed(2));
         jQuery('.display_subtotal', container).html(price.toFixed(2));
@@ -1165,6 +1227,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         let discount_amount = this.recalculateDiscountDiv(container);
         jQuery('.discount_amount', container).val(discount_amount);
+        jQuery('.display_discount_amount', container).html(discount_amount);
 
         price = price - discount_amount;
         jQuery('.price_after_discount', container).val(price.toFixed(2));
@@ -1175,12 +1238,14 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         if (overall_discount && overall_discount > 0) {
             overall_discount_amount = price * (overall_discount / 100);
-            jQuery('.overall_discount_amount', container).val(overall_discount_amount.toFixed(2));
         }
 
         if (isNaN(overall_discount_amount)) {
             overall_discount_amount = 0;
         }
+
+        jQuery('.overall_discount_amount', container).val(overall_discount_amount.toFixed(2));
+        jQuery('.display_overall_discount_amount', container).html(overall_discount_amount.toFixed(2));
 
         price = price - overall_discount_amount;
         jQuery('.price_after_overall_discount', container).val(price.toFixed(2));
@@ -1209,9 +1274,10 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
 
         jQuery('.tax_amount', container).val(tax_amount.toFixed(2));
+        jQuery('.display_tax_amount', container).html(tax_amount.toFixed(2));
         price = price + tax_amount;
         jQuery('.price_total', container).val(price.toFixed(2));
-        jQuery('.display_total', container).html(price.toFixed(2));
+        jQuery('.display_price_total', container).html(price.toFixed(2));
     },
 
     recalculateDiscountDiv: function (container) {
@@ -1255,6 +1321,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         jQuery('input.productid', container).val('');
         let taxElement = jQuery('select.tax', container);
         taxElement.find('option:not(:first)').remove();
+        this.recalculateItem(container);
     },
 
     registerLineItemPopup: function (container) {
@@ -1284,7 +1351,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             'view': 'ItemsPopup',
             'src_module': this.getModuleName(),
             'src_record': app.getRecordId(),
-            'multi_select': true,
+            'multi_select': false,
             'currency_id': this.getCurrencyId(),
         };
         params = jQuery.extend(params, callerParams);
@@ -1304,6 +1371,41 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
     },
 
+    registerPriceBookPopUp: function (container) {
+        const self = this;
+
+        jQuery('.choosePriceBook', container).on('click', function (e) {
+            const productId = jQuery('#productid', container).val();
+
+            let params = {
+                'module': 'PriceBooks',
+                'currency_id': self.getCurrencyId(),
+                'src_record': productId,
+                'view': 'Popup',
+                'get_url': 'getProductListPriceURL',
+                'src_field': 'productid',
+                'src_module': 'Products',
+                'search_params': '[[["active","e","1"]]]',
+            };
+
+            const popupInstance = Vtiger_Popup_Js.getInstance();
+            popupInstance.showPopup(params, 'post.LineItemPriceBookSelect.click');
+
+            const postPriceBookPopupHandler = function (e, data) {
+                const responseData = JSON.parse(data);
+
+                let listPrice = parseFloat(responseData.price).toFixed(3);
+                let priceElement = container.find('.price');
+                priceElement.val(listPrice);
+                priceElement.trigger('change');
+                let pricebookIdElement = container.find('.pricebookid');
+                pricebookIdElement.val(responseData.pricebookid);
+            };
+
+            app.event.off('post.LineItemPriceBookSelect.click');
+            app.event.one('post.LineItemPriceBookSelect.click', postPriceBookPopupHandler);
+        });
+    },
 });
 
 InventoryItem_InventoryItemDetail_Js_Instance = new InventoryItem_InventoryItemDetail_Js();
