@@ -125,7 +125,7 @@ class Vtiger_Functions {
 
 	protected static $currencyInfoCache = array();
 
-	protected static function getCurrencyInfo($currencyid) {
+	public static function getCurrencyInfo($currencyid) {
 		global $adb;
 		if (!isset(self::$currencyInfoCache[$currencyid])) {
 			$result = $adb->pquery('SELECT * FROM vtiger_currency_info', array());

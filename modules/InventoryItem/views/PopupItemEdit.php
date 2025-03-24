@@ -82,6 +82,9 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
             $structure[] = [$label, $fields];
         }
 
+        $sourceRecordModel = Vtiger_Record_Model::getInstanceById($request->get('source_record'), $request->get('source_module'));
+        $currencyInfo = Vtiger_Functions::getCurrencyInfo($sourceRecordModel->get('currency_id'));
+
         $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('RECORD', $request->get('record'));
@@ -92,6 +95,8 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $viewer->assign('FORMATTED_RECORD_STRUCTURE', $structure);
         $viewer->assign('HARD_FORMATTED_RECORD_STRUCTURE', $hardFormattedRecordStructure);
         $viewer->assign('ITEM_TYPE', $request->get('item_type'));
+        $viewer->assign('CURRENCY_NAME', $currencyInfo['currency_name']);
+        $viewer->assign('CURRENCY_SYMBOL', $currencyInfo['currency_symbol']);
         $viewer->view('PopupItemEdit.tpl', $moduleName);
     }
 
@@ -110,5 +115,17 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();
         $viewer->view('PopupItemEditFooter.tpl', $moduleName);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request)
+    {
+        $headerScriptInstances = parent::getHeaderScripts($request);
+        $jsFileNames = ['modules.Vtiger.resources.CkEditor'];
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }
