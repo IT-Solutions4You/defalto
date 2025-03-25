@@ -1029,15 +1029,22 @@ Vtiger.Class("Vtiger_Detail_Js",{
 
 		return aDeferred.promise();
 	},
+	registerSaveOnEnterEvent: function (editElement) {
+		editElement.find('.inputElement:not(textarea)').on('keyup', function (e) {
+			let textArea = editElement.find('textarea'),
+				ignoreList = ['reference', 'picklist', 'multipicklist', 'owner'],
+				fieldType = jQuery(e.target).closest('.ajaxEdited').find('.fieldBasicData').data('type');
 
-	registerSaveOnEnterEvent: function(editElement) {
-		editElement.find('.inputElement:not(textarea)').on('keyup', function(e) {
-			var textArea = editElement.find('textarea');
-			var ignoreList = ['reference','picklist','multipicklist','owner'];
-			var fieldType = jQuery(e.target).closest('.ajaxEdited').find('.fieldBasicData').data('type');
-			if(ignoreList.indexOf(fieldType) !== -1) return;
-			if(!textArea.length){
-				(e.keyCode || e.which) === 13  && editElement.find('.inlineAjaxSave').trigger('click');
+			if (ignoreList.indexOf(fieldType) !== -1) return;
+			if (!textArea.length) {
+				(e.keyCode || e.which) === 13 && editElement.find('.inlineAjaxSave').trigger('click');
+			}
+		});
+	},
+	registerCancelOnEscEvent: function (editElement) {
+		$(document).on('keyup', function (e) {
+			if (27 === e.which) {
+				editElement.find('.inlineAjaxCancel').trigger('click');
 			}
 		});
 	},
@@ -1153,6 +1160,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		vtigerInstance.referenceModulePopupRegisterEvent(contentHolder);
 		editElement.addClass('ajaxEdited');
 		thisInstance.registerSaveOnEnterEvent(editElement);
+		thisInstance.registerCancelOnEscEvent(editElement);
 		jQuery('.editAction').addClass('hide');
 
 		if (fieldType == 'picklist' || fieldType == 'ownergroup' || fieldType == 'owner') {
