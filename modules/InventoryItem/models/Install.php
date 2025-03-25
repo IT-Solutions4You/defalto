@@ -348,11 +348,27 @@ class InventoryItem_Install_Model extends Core_Install_Model
                 ],
                 'margin'                       => [
                     'name'          => 'margin',
-                    'uitype'        => 71,
+                    'uitype'        => 7,
                     'column'        => 'margin',
                     'table'         => 'df_inventoryitem',
                     'generatedtype' => 1,
                     'label'         => 'Margin',
+                    'readonly'      => 1,
+                    'presence'      => 0,
+                    'maximumlength' => 100,
+                    'typeofdata'    => 'N~O',
+                    'quickcreate'   => 1,
+                    'displaytype'   => 1,
+                    'masseditable'  => 1,
+                    'summaryfield'  => 0,
+                ],
+                'margin_amount'                => [
+                    'name'          => 'margin_amount',
+                    'uitype'        => 71,
+                    'column'        => 'margin_amount',
+                    'table'         => 'df_inventoryitem',
+                    'generatedtype' => 1,
+                    'label'         => 'Margin Amount',
                     'readonly'      => 1,
                     'presence'      => 0,
                     'maximumlength' => 100,
@@ -442,6 +458,7 @@ class InventoryItem_Install_Model extends Core_Install_Model
             ->createColumn('price_total', 'decimal(25,4) DEFAULT NULL')
             ->createColumn('purchase_cost', 'decimal(25,4) DEFAULT NULL')
             ->createColumn('margin', 'decimal(25,4) DEFAULT NULL')
+            ->createColumn('margin_amount', 'decimal(25,4) DEFAULT NULL')
             ->createColumn('unit', 'varchar(255) DEFAULT NULL')
             ->createColumn('parentitemid', 'int(19) DEFAULT NULL')
             ->createColumn('sequence', 'int(19) DEFAULT 1')
@@ -470,8 +487,7 @@ class InventoryItem_Install_Model extends Core_Install_Model
         $this->getTable('df_inventoryitemcolumns', null)
             ->createTable('tabid')
             ->createColumn('columnslist', 'varchar(500) DEFAULT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`tabid`)')
-            ->createKey('CONSTRAINT `fk_1_df_inventoryitemcolumns` FOREIGN KEY IF NOT EXISTS (`tabid`) REFERENCES `vtiger_tab` (`tabid`) ON DELETE CASCADE');
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`tabid`)');
 
         $this->getTable('df_inventoryitem_itemmodules', null)
             ->createTable('tabid')

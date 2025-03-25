@@ -663,7 +663,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             }
 
             // Update the total in the corresponding span (formatted to 2 decimal places)
-            span.text(columnTotal.toFixed(2));
+            span.text(columnTotal.toFixed(app.getNumberOfDecimals()));
         });
     },
 
@@ -1048,19 +1048,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.registerLineItemClear(container);
         this.registerLineItemPopup(container);
         this.registerPriceBookPopUp(container);
-        const cke = new Vtiger_CkEditor_Js();
-        cke.loadCkEditor(container.find('.description'), {
-            'height': 200, toolbar: [
-                {name: 'document', items: ['Maximize']},
-                {name: 'styles', items: ['Format', 'FontSize']},
-                {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike']},
-                {name: 'colors', items: ['TextColor', 'RemoveFormat']},
-                {name: 'paragraph', items: ['NumberedList', 'BulletedList']},
-                {name: 'alignment', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
-                {name: 'links', items: ['Link']},
-                {name: 'source', items: ['Source']}
-            ]
-        });
+        this.loadCkEditor(container);
+        this.applyOverallDiscount(container);
     },
 
     setupListeners: function (container) {
@@ -1176,6 +1165,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             jQuery('input.unit', container).val(recordData.unit);
             jQuery('input.price', container).val(parseFloat(recordData.listprice).toFixed(3)).trigger('change');
             jQuery('input.purchase_cost', container).val(recordData.purchaseCost);
+            jQuery('div.display_purchase_cost', container).text(recordData.purchaseCost);
             jQuery('input.pricebookid', container).val(recordData.pricebookid);
             jQuery('input.overall_discount', container).val(jQuery('#overall_discount_percent').val());
             let taxElement = jQuery('select.tax', container);
@@ -1193,7 +1183,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     }
                 }
 
-                percentage = (percentage * 1).toFixed(2);
+                percentage = (percentage * 1).toFixed(app.getNumberOfDecimals());
 
                 let option = jQuery('<option>', {
                     value: percentage,
@@ -1212,7 +1202,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     recalculateItem: function (container) {
         let quantity = parseFloat(jQuery('.quantity', container).val());
         let price = parseFloat(jQuery('.price', container).val());
-        let decimalPlaces = 2;
+        let decimalPlaces = app.getNumberOfDecimals();
 
         if (isNaN(quantity)) {
             quantity = 0.0;
@@ -1222,10 +1212,11 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             price = 0.0;
         }
 
-        price = parseFloat((quantity * price).toFixed(decimalPlaces));
+        price = (quantity * price).toFixed(decimalPlaces);
         jQuery('.subtotal', container).val(price);
         jQuery('.display_subtotal', container).html(price);
         jQuery('.subtotal_in_discount_div', container).html(price);
+        price = parseFloat(price);
 
         const discount_type = jQuery('.discount_type', container).val();
         let discount = parseFloat(jQuery('.discount', container).val());
@@ -1245,13 +1236,15 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             jQuery('.discount', container).val(0);
         }
 
-        discount_amount = parseFloat(discount_amount.toFixed(decimalPlaces));
+        discount_amount = discount_amount.toFixed(decimalPlaces);
         jQuery('.discount_amount', container).val(discount_amount);
         jQuery('.display_discount_amount', container).html(discount_amount);
+        discount_amount = parseFloat(discount_amount);
 
-        price = parseFloat((price - discount_amount).toFixed(decimalPlaces));
+        price = (price - discount_amount).toFixed(decimalPlaces);
         jQuery('.price_after_discount', container).val(price);
         jQuery('.display_price_after_discount', container).html(price);
+        price = parseFloat(price);
 
         const overall_discount = parseFloat(jQuery('.overall_discount', container).val());
         let overall_discount_amount = parseFloat(jQuery('.overall_discount_amount', container).val());
@@ -1264,23 +1257,29 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             overall_discount_amount = 0;
         }
 
-        overall_discount_amount = parseFloat(overall_discount_amount.toFixed(2));
+        overall_discount_amount = overall_discount_amount.toFixed(decimalPlaces);
         jQuery('.overall_discount_amount', container).val(overall_discount_amount);
         jQuery('.display_overall_discount_amount', container).html(overall_discount_amount);
+        overall_discount_amount = parseFloat(overall_discount_amount);
 
-        price = parseFloat((price - overall_discount_amount).toFixed(decimalPlaces));
+        price = (price - overall_discount_amount).toFixed(decimalPlaces);
         jQuery('.price_after_overall_discount', container).val(price);
         jQuery('.display_price_after_overall_discount', container).html(price);
+        price = parseFloat(price);
 
         let purchaseCost = parseFloat(jQuery('.purchase_cost', container).val());
         let margin = 0;
+        let margin_amount = 0;
 
         if (!isNaN(purchaseCost) && purchaseCost > 0) {
-            margin = (price - (purchaseCost * quantity)).toFixed(decimalPlaces);
+            margin_amount = (price - (purchaseCost * quantity)).toFixed(decimalPlaces);
+            margin = ((parseFloat(margin_amount) / price) * 100).toFixed(decimalPlaces);
         }
 
         jQuery('.margin', container).val(margin);
-        jQuery('display_margin', container).html(margin);
+        jQuery('.display_margin', container).html(margin);
+        jQuery('.margin_amount', container).val(margin_amount);
+        jQuery('.display_margin_amount', container).html(margin_amount);
 
         let tax = parseFloat(jQuery('.tax', container).val());
 
@@ -1294,9 +1293,10 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             tax_amount = 0;
         }
 
-        tax_amount = parseFloat(tax_amount.toFixed(2));
+        tax_amount = tax_amount.toFixed(decimalPlaces);
         jQuery('.tax_amount', container).val(tax_amount);
         jQuery('.display_tax_amount', container).html(tax_amount);
+        tax_amount = parseFloat(tax_amount);
 
         price = (price + tax_amount).toFixed(decimalPlaces);
         jQuery('.price_total', container).val(price);
@@ -1402,6 +1402,36 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             app.event.off('post.LineItemPriceBookSelect.click');
             app.event.one('post.LineItemPriceBookSelect.click', postPriceBookPopupHandler);
         });
+    },
+
+    loadCkEditor: function (container) {
+        const cke = new Vtiger_CkEditor_Js();
+        const descriptionElement = container.find('.description');
+
+        if (container.find('.description').length > 0) {
+            cke.loadCkEditor(descriptionElement, {
+                'height': 100, toolbar: [
+                    {name: 'document', items: ['Maximize']},
+                    {name: 'styles', items: ['Format', 'FontSize']},
+                    {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike']},
+                    {name: 'colors', items: ['TextColor', 'RemoveFormat']},
+                    {name: 'paragraph', items: ['NumberedList', 'BulletedList']},
+                    {name: 'alignment', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
+                    {name: 'links', items: ['Link']},
+                    {name: 'source', items: ['Source']}
+                ]
+            });
+        }
+    },
+
+    applyOverallDiscount: function (container) {
+        const overallDiscountPercent = jQuery('#overall_discount_percent').val();
+
+        if (isNaN(overallDiscountPercent) || parseFloat(overallDiscountPercent) === 0.0) {
+            jQuery('.overall_discount', container).val(0).closest('div.full_row').hide();
+        } else {
+            jQuery('.overall_discount', container).val(overallDiscountPercent);
+        }
     },
 });
 

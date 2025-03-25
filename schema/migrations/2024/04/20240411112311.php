@@ -451,7 +451,7 @@ if (!class_exists('Migration_20240411112311')) {
             $margin->name = 'margin';
             $margin->column = 'margin';
             $margin->label = 'Margin';
-            $margin->uitype = 71;
+            $margin->uitype = 7;
             $margin->presence = 0;
             $margin->sequence = 20;
             $margin->columntype = 'DECIMAL(25,4) DEFAULT NULL';
@@ -460,6 +460,21 @@ if (!class_exists('Migration_20240411112311')) {
             $margin->masseditable = 0;
             $margin->summaryfield = 0;
             $margin->save($headerBlock);
+
+            $marginAmount = new Vtiger_Field();
+            $marginAmount->table = $module->basetable;
+            $marginAmount->name = 'margin_amount';
+            $marginAmount->column = 'margin_amount';
+            $marginAmount->label = 'Margin Amount';
+            $marginAmount->uitype = 71;
+            $marginAmount->presence = 0;
+            $marginAmount->sequence = 20;
+            $marginAmount->columntype = 'DECIMAL(25,4) DEFAULT NULL';
+            $marginAmount->typeofdata = 'N~O';
+            $marginAmount->quickcreate = 1;
+            $marginAmount->masseditable = 0;
+            $marginAmount->summaryfield = 0;
+            $marginAmount->save($headerBlock);
 
             $sequence = new Vtiger_Field();
             $sequence->table = $module->basetable;

@@ -10,6 +10,27 @@
 
 class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
 {
+    protected array $hardCodedFields = [
+        'productid',
+        'description',
+        'quantity',
+        'unit',
+        'price',
+        'subtotal',
+        'discount',
+        'discount_amount',
+        'price_after_discount',
+        'overall_discount',
+        'overall_discount_amount',
+        'price_after_overall_discount',
+        'tax',
+        'tax_amount',
+        'price_total',
+        'purchase_cost',
+        'margin',
+        'margin_amount',
+    ];
+
     /**
      * @inheritDoc
      */
@@ -30,7 +51,7 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();
 
-        $selectedFields = InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule()));
+        $selectedFields = InventoryItem_Module_Model::getSelectedFields(getTabid($request->get('source_module')));
         $recordModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
         $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
         $recordStructure = [];
@@ -52,7 +73,7 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
 
             $label = vtranslate($recordStructure[$fieldName]->get('label'), 'InventoryItem');
 
-            if (in_array($fieldName, ['productid', 'description', 'quantity', 'unit', 'price', 'subtotal'])) {
+            if (in_array($fieldName, $this->hardCodedFields)) {
                 if ($fieldName === 'productid') {
                     $seType = $request->get('item_type');
                     $entityFieldNames = getEntityFieldNames($seType);
@@ -72,11 +93,6 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
             if (isset($recordStructure[$fieldName . '_amount'])) {
                 $fields[] = $recordStructure[$fieldName . '_amount'];
                 $processed[] = $fieldName . '_amount';
-            }
-
-            if (isset($recordStructure['price_after_' . $fieldName])) {
-                $fields[] = $recordStructure['price_after_' . $fieldName];
-                $processed[] = 'price_after_' . $fieldName;
             }
 
             $structure[] = [$label, $fields];

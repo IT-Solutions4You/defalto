@@ -26,6 +26,7 @@ trait InventoryItem_Detail_Trait
         'price_total',
         'purchase_cost',
         'margin',
+        'margin_amount',
     ];
 
     /**
