@@ -1215,6 +1215,7 @@ input[type=checkbox]:checked {
 }
 
 #detailView .fieldValue .editAction {
+    margin: -0.5rem 0;
     padding: 0.5rem;
     border-radius: var(--bs-border-radius) !important;
     background-color: rgba(var(--bs-body-bg-rgb),var(--bs-bg-opacity)) !important;
