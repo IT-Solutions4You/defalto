@@ -272,7 +272,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
 
             if ($discountType == 'Direct') {
                 $recordModel->set('discount_amount', $recordModel->get('discount_amount') * $toNewCurrency);
-            } elseif ($discountType == 'Product Unit Price') {
+            } elseif ($discountType == 'Discount per Unit') {
                 $recordModel->set('discount', $recordModel->get('discount') * $toNewCurrency);
             }
 

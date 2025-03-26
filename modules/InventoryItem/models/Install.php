@@ -183,7 +183,7 @@ class InventoryItem_Install_Model extends Core_Install_Model
                     'picklist_values' => [
                         'Percentage',
                         'Direct',
-                        'Product Unit Price',
+                        'Discount per Unit',
                     ],
                 ],
                 'discount'                     => [

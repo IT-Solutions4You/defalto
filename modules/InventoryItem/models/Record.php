@@ -35,7 +35,7 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
             case 'Direct':
                 $discountAmount = $this->get('discount_amount');
                 break;
-            case 'Product Unit Price':
+            case 'Discount per Unit':
                 $discountAmount = $quantity * $discount;
         }
 

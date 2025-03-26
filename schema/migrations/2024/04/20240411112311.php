@@ -294,7 +294,7 @@ if (!class_exists('Migration_20240411112311')) {
             $discountType->quickcreate = 1;
             $discountType->masseditable = 0;
             $discountType->save($headerBlock);
-            $discountType->setPicklistValues(['Percentage', 'Direct', 'Product Unit Price']);
+            $discountType->setPicklistValues(['Percentage', 'Direct', 'Discount per Unit']);
 
             $discount = new Vtiger_Field();
             $discount->table = $module->basetable;

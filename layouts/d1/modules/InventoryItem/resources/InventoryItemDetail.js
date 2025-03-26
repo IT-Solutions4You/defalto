@@ -749,7 +749,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             discount_amount = price * (discount / 100);
         } else if (discount_type === 'Direct') {
             discount_amount = discount;
-        } else if (discount_type === 'Product Unit Price') {
+        } else if (discount_type === 'Discount per Unit') {
             discount_amount = quantity * discount;
         }
 
@@ -1237,7 +1237,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             discount_amount = price * (discount / 100);
         } else if (discount_type === 'Direct') {
             discount_amount = discount;
-        } else if (discount_type === 'Product Unit Price') {
+        } else if (discount_type === 'Discount per Unit') {
             discount_amount = quantity * discount;
         } else {
             jQuery('.discount', container).val(0);

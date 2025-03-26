@@ -208,8 +208,8 @@
                                                 {if $data.discount_type eq 'Percent'}selected{/if}>{vtranslate('Percentage', 'InventoryItem')}</option>
                                         <option value="Direct"
                                                 {if $data.discount_type eq 'Amount'}selected{/if}>{vtranslate('Direct', 'InventoryItem')}</option>
-                                        <option value="Product Unit Price"
-                                                {if $data.discount_type eq 'Product Unit Price'}selected{/if}>{vtranslate('Product Unit Price', 'InventoryItem')}</option>
+                                        <option value="Discount per Unit"
+                                                {if $data.discount_type eq 'Discount per Unit'}selected{/if}>{vtranslate('Discount per Unit', 'InventoryItem')}</option>
                                     </select>
                                 </div>
                                 <div class="col-lg-2">
