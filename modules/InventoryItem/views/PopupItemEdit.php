@@ -86,16 +86,8 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
                 continue;
             }
 
-            $fields = [];
-            $fields[] = $recordStructure[$fieldName];
             $processed[] = $fieldName;
-
-            if (isset($recordStructure[$fieldName . '_amount'])) {
-                $fields[] = $recordStructure[$fieldName . '_amount'];
-                $processed[] = $fieldName . '_amount';
-            }
-
-            $structure[] = [$label, $fields];
+            $structure[$fieldName] = [$label, $recordStructure[$fieldName]];
         }
 
         $sourceRecordModel = Vtiger_Record_Model::getInstanceById($request->get('source_record'), $request->get('source_module'));

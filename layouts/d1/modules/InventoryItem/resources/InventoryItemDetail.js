@@ -127,6 +127,10 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 let callbackParams = {
                     'cb': function (container) {
                         self.registerItemPopupEditEvents(container);
+                        jQuery('input.item_text', container).focus();
+                        const overallDiscount = jQuery('#overall_discount_percent').val();
+                        jQuery('input.overall_discount', container).val(overallDiscount);
+                        jQuery('span.display_overall_discount', container).text(overallDiscount);
                         app.event.trigger('post.InventoryItemPopup.show', form);
                         app.helper.registerLeavePageWithoutSubmit(form);
                         app.helper.registerModalDismissWithoutSubmit(form);
@@ -1136,13 +1140,10 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     return false;
                 }
 
-                const element = jQuery(this);
-                const selectedModule = container.find('.lineItemPopup').data('moduleName');
                 const dataUrl = "index.php?module=InventoryItem&action=GetItemDetails&record=" + selectedItemData.id + "&currency_id=" + self.getCurrencyId() + "&sourceModule=" + app.getModuleName() + "&pricebookid=" + jQuery('#pricebookid_original').val();
                 app.request.get({'url': dataUrl}).then(
                     function (error, data) {
                         if (error == null) {
-                            container.find('.lineItemType').val(selectedModule);
                             self.mapResultsToFields(container, data[0]);
                         }
                     },
@@ -1161,13 +1162,19 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         for (let id in responseData) {
             let recordData = responseData[id];
             jQuery('input.productid', container).val(id);
-            jQuery('input.quantity', container).val(1).focus();
+            jQuery('textarea.description', container).text(recordData.description);
+            const  editorInstance = CKEDITOR.instances[jQuery('textarea.description', container).attr('id')];
+
+            if (editorInstance) {
+                editorInstance.setData(recordData.description);
+            }
+
+            jQuery('input.quantity', container).val(1)/*.focus()*/;
             jQuery('input.unit', container).val(recordData.unit);
             jQuery('input.price', container).val(parseFloat(recordData.listprice).toFixed(3)).trigger('change');
             jQuery('input.purchase_cost', container).val(recordData.purchaseCost);
             jQuery('div.display_purchase_cost', container).text(recordData.purchaseCost);
             jQuery('input.pricebookid', container).val(recordData.pricebookid);
-            jQuery('input.overall_discount', container).val(jQuery('#overall_discount_percent').val());
             let taxElement = jQuery('select.tax', container);
             taxElement.find('option:not(:first)').remove();
             let recordTaxes = recordData.taxes;
@@ -1271,7 +1278,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         let margin = 0;
         let margin_amount = 0;
 
-        if (!isNaN(purchaseCost) && purchaseCost > 0) {
+        if (!isNaN(purchaseCost) && purchaseCost > 0 && price > 0) {
             margin_amount = (price - (purchaseCost * quantity)).toFixed(decimalPlaces);
             margin = ((parseFloat(margin_amount) / price) * 100).toFixed(decimalPlaces);
         }
