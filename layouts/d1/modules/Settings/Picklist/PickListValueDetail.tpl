@@ -64,7 +64,7 @@
                                             {/if}
                                         </div>
                                         <div class="col">
-                                            <span class="py-1 px-2 rounded picklist-color picklist-{$SELECTED_PICKLIST_FIELDMODEL->getId()}-{$PICKLIST_KEY}"> {vtranslate($PICKLIST_VALUE,$SELECTED_MODULE_NAME)} </span>
+                                            <span class="py-1 px-2 rounded picklist-color picklist-{$SELECTED_PICKLIST_FIELDMODEL->getId()}-{$PICKLIST_KEY}">{vtranslate($PICKLIST_VALUE,$SELECTED_MODULE_NAME)}</span>
                                         </div>
                                     </div>
                                 </div>

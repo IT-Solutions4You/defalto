@@ -1308,25 +1308,19 @@ Vtiger.Class("Vtiger_Detail_Js",{
 							jQuery('.vt-notification').remove();
 							let postSaveRecordDetails = response;
 
-							console.log(fieldBasicData.data('type'));
-
 							if ('picklist' === fieldBasicData.data('type') && 'Users' !== app.getModuleName()) {
-								let color = 'undefined' !== typeof postSaveRecordDetails[fieldName].colormap ? postSaveRecordDetails[fieldName].colormap[postSaveRecordDetails[fieldName].value] : false,
+								let style = '',
+									color = 'undefined' !== typeof postSaveRecordDetails[fieldName].colormap ? postSaveRecordDetails[fieldName].colormap[postSaveRecordDetails[fieldName].value] : false,
 									picklistHtml;
 
 								if (color) {
 									let contrast = app.helper.getColorContrast(color),
 										textColor = (contrast === 'dark') ? 'white' : 'black';
 
-									picklistHtml = '<span class="picklist-color d-inline-block me-1 mb-1 py-1 px-2 rounded" style="background-color: ' + color + '; color: ' + textColor + ';">' +
-										postSaveRecordDetails[fieldName].display_value +
-										'</span>';
-								} else {
-									picklistHtml = '<span class="picklist-color d-inline-block me-1 mb-1 py-1 px-2 rounded">' +
-										postSaveRecordDetails[fieldName].display_value +
-										'</span>';
+									style = 'style="background-color: ' + color + '; color: ' + textColor + ';"';
 								}
 
+								picklistHtml = '<span class="py-1 px-2 rounded picklist-color" ' + style + '>' + postSaveRecordDetails[fieldName].display_value + '</span>';
 								detailViewValue.html(picklistHtml);
 							} else if ('multipicklist' === fieldBasicData.data('type') && 'Users' !== app.getModuleName()) {
 								let picklistHtml = '',
@@ -1338,20 +1332,17 @@ Vtiger.Class("Vtiger_Detail_Js",{
 								picklistValues = picklistValues.split(',');
 
 								for (let i = 0; i < rawPicklistValues.length; i++) {
-									let color = 'undefined' !== typeof postSaveRecordDetails[fieldName].colormap ? postSaveRecordDetails[fieldName].colormap[rawPicklistValues[i].trim()] : false;
+									let style = '',
+										color = 'undefined' !== typeof postSaveRecordDetails[fieldName].colormap ? postSaveRecordDetails[fieldName].colormap[rawPicklistValues[i].trim()] : false;
 
 									if (color) {
 										let contrast = app.helper.getColorContrast(color),
 											textColor = (contrast === 'dark') ? 'white' : 'black';
 
-										picklistHtml += '<span class="picklist-color d-inline-block me-1 mb-1 py-1 px-2 rounded" style="background-color: ' + color + '; color: ' + textColor + ';">' +
-											picklistValues[i] +
-											'</span>';
-									} else {
-										picklistHtml = '<span class="picklist-color d-inline-block me-1 mb-1 py-1 px-2 rounded">' +
-											picklistValues[i] +
-											'</span>';
+										style = 'style="background-color: ' + color + '; color: ' + textColor + ';"';
 									}
+
+									picklistHtml += '<span class="me-1 py-1 px-2 rounded picklist-color" ' + style + '>' + picklistValues[i] + '</span>';
 								}
 
 								detailViewValue.html(picklistHtml);

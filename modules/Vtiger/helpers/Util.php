@@ -1248,6 +1248,10 @@ class Vtiger_Util_Helper {
 		if (!empty($string)) {
 			return str_replace(" ", "-", decode_html($string));
 		}
+
+        if('0' == $string) {
+            return '0';
+        }
 	}
 
 	public static function escapeCssSpecialCharacters($string) {
@@ -1255,6 +1259,10 @@ class Vtiger_Util_Helper {
 			$pattern = "/[!#$%&'()*+,.\/:;<=>?@^`~]/";
 			return preg_replace($pattern, '\\\\$0', $string);
 		}
+
+        if('0' == $string) {
+            return '0';
+        }
 	}
     
     public static function getEncryptedFileName($sanitizedFileName) {

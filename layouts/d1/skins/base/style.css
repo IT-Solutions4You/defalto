@@ -4478,6 +4478,9 @@ input[type=number] {
 .picklist-color {
     background-color: rgba(var(--bs-secondary-bg-rgb),var(--bs-bg-opacity));
 }
+.picklist-color:empty {
+    background-color: transparent;
+}
 .editElement .select2-container {
     overflow: auto;
 }
