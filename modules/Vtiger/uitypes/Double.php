@@ -8,4 +8,36 @@
 
 class Vtiger_Double_UIType extends Core_Number_UIType
 {
+    /**
+     * @param $value
+     * @param $record
+     * @param $recordInstance
+     * @return string
+     */
+    public function getDisplayValue($value, $record = false, $recordInstance = false)
+    {
+        return self::transformDisplayValue($value);
+    }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public static function transformDisplayValue($value): string
+    {
+        return strip_tags($value);
+    }
+
+    /**
+     * @param mixed $value
+     * @return float
+     */
+    public function getEditViewDisplayValue($value)
+    {
+        if (empty($value)) {
+            return '';
+        }
+
+        return $value;
+    }
 }
