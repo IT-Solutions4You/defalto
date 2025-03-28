@@ -25,6 +25,10 @@ class Vtiger_Double_UIType extends Core_Number_UIType
      */
     public static function transformDisplayValue($value): string
     {
+        if('' == $value) {
+            return '';
+        }
+
         return strip_tags($value);
     }
 

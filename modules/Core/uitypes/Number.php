@@ -27,8 +27,8 @@ class Core_Number_UIType extends Vtiger_Base_UIType {
     {
         $value = strip_tags($value);
 
-        if (empty($value)) {
-            return '0';
+        if ('' == $value) {
+            return '';
         }
 
         $currentUser = Users_Record_Model::getCurrentUserModel();
