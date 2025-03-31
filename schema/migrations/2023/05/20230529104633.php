@@ -23,7 +23,7 @@ if (!class_exists('Migration_20230529104633')) {
                       `sortorder` varchar(4) NOT NULL
                     )';
             $this->db->query($sql);
-            $foreignKeySql = 'ALTER TABLE `its4you_cvorderby` ADD CONSTRAINT `CUSOM_VIEW_ID` FOREIGN KEY (`cvid`) REFERENCES `vtiger_customview`(`cvid`) ON DELETE CASCADE ON UPDATE CASCADE';
+            $foreignKeySql = 'ALTER TABLE `its4you_cvorderby` ADD CONSTRAINT `CUSOM_VIEW_ID` FOREIGN KEY IF NOT EXISTS (`cvid`) REFERENCES `vtiger_customview`(`cvid`) ON DELETE CASCADE ON UPDATE CASCADE';
             $this->db->query($foreignKeySql);
         }
     }
