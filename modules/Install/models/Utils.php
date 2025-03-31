@@ -30,6 +30,7 @@ class Install_Utils_Model {
     ];
 
     public static array $registerModules = [
+        'Users',
         'ModTracker',
         'ModComments',
         'Import',
@@ -48,7 +49,11 @@ class Install_Utils_Model {
         'ProjectTask',
         'SMSNotifier',
         'HelpDesk',
-        'Potentials'
+        'Potentials',
+        'Appointments',
+        'ITS4YouEmails',
+        'EMAILMaker',
+        'PDFMaker',
     ];
 
     /**
@@ -535,12 +540,34 @@ class Install_Utils_Model {
         require_once('vtlib/Vtiger/Module.php');
         require_once('include/utils/utils.php');
 
+        self::installTables();
+
         foreach (self::$registerModules as $moduleName) {
             self::installModule($moduleName);
         }
 
         foreach (self::$registerLanguages as $languageInfo) {
             self::installLanguage($languageInfo);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public static function installTables(): void
+    {
+        $dir = explode('/modules/', __DIR__);
+        $files = glob($dir[0] . '/modules/*/models/Install.php');
+
+        foreach ($files as $file) {
+            preg_match('/modules\/(.*)\/models/', $file, $matches);
+            $moduleName = $matches[1];
+            $class = $moduleName . '_Install_Model';
+
+            if ('Core' !== $moduleName && class_exists($class) && method_exists($class, 'installTables')) {
+                $install = $class::getInstance('module.postupdate', $moduleName);
+                $install->installTables();
+            }
         }
     }
 
@@ -555,7 +582,9 @@ class Install_Utils_Model {
             self::log('Upgrading Module [' . $moduleName . '] -- Starts');
         }
 
-        Core_Install_Model::getInstance('module.postinstall', $moduleName)->installModule();
+        $instance = Core_Install_Model::getInstance('module.postinstall', $moduleName);
+        $instance->requireInstallTables = false;
+        $instance->installModule();
 
         if(defined('VTIGER_UPGRADE')) {
             self::log('Upgrading Module [' . $moduleName . '] -- Ends');
@@ -624,5 +653,14 @@ class Install_Utils_Model {
         $outgoingServerModel->save($request);
 
         return true;
+    }
+
+    public static function installMigrations(): void
+    {
+        require_once('include/Migrations/Migrations.php');
+
+        $migrationObj = new Migrations();
+        $migrationObj->setArguments(['Index.php', 'migrate', '-y']);
+        $migrationObj->run();
     }
 }

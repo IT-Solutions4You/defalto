@@ -98,7 +98,10 @@ class Migration_Index_View extends Vtiger_View_Controller {
 		return $headerScriptInstances;
 	}
 
-	public function applyDBChanges(){
+    /**
+     * @throws AppException
+     */
+    public function applyDBChanges(){
 		$migrationModuleModel = Migration_Module_Model::getInstance();
 
 		$getAllowedMigrationVersions = $migrationModuleModel->getAllowedMigrationVersions();
@@ -137,14 +140,8 @@ class Migration_Index_View extends Vtiger_View_Controller {
 			}
 		}
 
-        require_once('include/Migrations/Migrations.php');
-        $migrationObj = new Migrations();
-        $migrationObj->setArguments(['Index.php', 'migrate', '-y']);
-        $migrationObj->run();
-
         //During migration process we need to upgrade the package changes
         if(defined('VTIGER_UPGRADE')) {
-		
 			echo "<table class='config-table'><tr><th><span><b><font color='red'> Upgrading Modules -- Starts. </font></b></span></th></tr></table>";
 			echo "<table class='config-table'>";
 	
@@ -152,8 +149,9 @@ class Migration_Index_View extends Vtiger_View_Controller {
 			Install_Utils_Model::installAdditionalModulesAndLanguages();
 
 			echo "<table class='config-table'><tr><th><span><b><font color='red'>Upgrading Modules -- Ends.</font></b></span></th></tr></table>";
-			
 		}
+
+        Install_Utils_Model::installMigrations();
 
 		//update vtiger version in db
 		$migrationModuleModel->updateVtigerVersion();

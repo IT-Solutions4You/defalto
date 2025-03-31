@@ -80,10 +80,7 @@ class Install_InitSchema_Model {
 			}
 		}
 
-        require_once('include/Migrations/Migrations.php');
-        $migrationObj = new Migrations();
-        $migrationObj->setArguments(['InitSchema.php', 'migrate', '-y']);
-        $migrationObj->run();
+        Install_Utils_Model::installMigrations();
     }
 
     /**
