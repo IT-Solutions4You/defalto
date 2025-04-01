@@ -382,6 +382,10 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'defaultvalue' => 2,
+                    'helpinfo' => "<b>Currency - Number of Decimal places</b> <br/><br/>".
+                        "Number of decimal places specifies how many number of decimals will be shown after decimal separator.<br/>".
+                        "<b>Eg:</b> 123.00",
                     'picklist_values' => [
                         '0',
                         '1',
@@ -404,6 +408,12 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'helpinfo' => "<b> Truncate Trailing Zeros </b> <br/><br/>".
+                        "It truncated trailing 0s in any of Currency, Decimal and Percentage Field types<br/><br/>".
+                        "<b>Ex:</b><br/>".
+                        "If value is 89.00000 then <br/>".
+                        "decimal and Percentage fields were shows 89<br/>".
+                        "currency field type - shows 89.00<br/>",
                 ],
             ],
             'LBL_MORE_INFORMATION' =>

@@ -912,6 +912,7 @@ class DefaultDataPopulator extends CRMEntity
             [29, null, 'first_name', 'vtiger_users', 1, '1', 'first_name', 'First Name', 1, 0, '', 30, 7, $userLogin, 1, 'V~O', 1, null, 'BAS', 1],
             [29, null, 'last_name', 'vtiger_users', 1, '2', 'last_name', 'Last Name', 1, 0, '', 30, 9, $userLogin, 1, 'V~M', 1, null, 'BAS', 1],
             [29, null, 'roleid', 'vtiger_user2role', 1, '98', 'roleid', 'Role', 1, 0, '', 200, 11, $userLogin, 1, 'V~M', 1, null, 'BAS', 1],
+            [29, null, 'profile_id', 'df_user2profile', 1, '14001', 'profile_id', 'Profile', 1, 0, '', 20, 5, $userMore, 1, 'V~M', 1, null, 'BAS', 1],
             [29, null, 'email1', 'vtiger_users', 1, '104', 'email1', 'Email', 1, 0, '', 100, 4, $userLogin, 1, 'E~M', 1, null, 'BAS', 1],
             [29, null, 'status', 'vtiger_users', 1, '115', 'status', 'Status', 1, 0, '', 100, 6, $userLogin, 1, 'V~O', 1, null, 'BAS', 1],
             [29, null, 'activity_view', 'vtiger_users', 1, '16', 'activity_view', 'Default Activity View', 1, 0, '', 100, 12, $userLogin, 1, 'V~O', 1, null, 'BAS', 1],
