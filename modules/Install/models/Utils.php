@@ -8,6 +8,8 @@
 
 class Install_Utils_Model {
 
+    public static bool $installedTables = false;
+
     /**
      * @var array
      * [prefix, label, name]
@@ -540,8 +542,6 @@ class Install_Utils_Model {
         require_once('vtlib/Vtiger/Module.php');
         require_once('include/utils/utils.php');
 
-        self::installTables();
-
         foreach (self::$registerModules as $moduleName) {
             self::installModule($moduleName);
         }
@@ -551,11 +551,28 @@ class Install_Utils_Model {
         }
     }
 
+    public static function isInstalledTables(): bool
+    {
+        $success = false;
+
+        if (self::$installedTables) {
+            $success = true;
+        }
+
+        self::$installedTables = true;
+
+        return $success;
+    }
+
     /**
      * @return void
      */
     public static function installTables(): void
     {
+        if (self::isInstalledTables()) {
+            return;
+        }
+
         $dir = explode('/modules/', __DIR__);
         $files = glob($dir[0] . '/modules/*/models/Install.php');
 
