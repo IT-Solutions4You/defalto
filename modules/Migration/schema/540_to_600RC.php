@@ -210,26 +210,6 @@ for($i=0;$i<$count;$i++) {
 	}
 }
 
-$moduleInstance = Vtiger_Module::getInstance('Users');
-$currencyBlock = Vtiger_Block::getInstance('LBL_CURRENCY_CONFIGURATION', $moduleInstance);
-
-$currency_decimals_field = new Vtiger_Field();
-$currency_decimals_field->name = 'no_of_currency_decimals';
-$currency_decimals_field->label = 'Number Of Currency Decimals';
-$currency_decimals_field->table ='vtiger_users';
-$currency_decimals_field->column = 'no_of_currency_decimals';
-$currency_decimals_field->columntype = 'VARCHAR(2)';
-$currency_decimals_field->typeofdata = 'V~O';
-$currency_decimals_field->uitype = 16;
-$currency_decimals_field->defaultvalue = '2';
-$currency_decimals_field->sequence = 6;
-$currency_decimals_field->helpinfo = "<b>Currency - Number of Decimal places</b> <br/><br/>".
-		"Number of decimal places specifies how many number of decimals will be shown after decimal separator.<br/>".
-		"<b>Eg:</b> 123.00";
-$currencyBlock->addField($currency_decimals_field);
-$currency_decimals_field->setPicklistValues(array("1","2","3","4","5"));
-//Currency Decimal places handling - END
-
 $inventoryModules = array('Invoice','SalesOrder','PurchaseOrder','Quotes');
 $actions = array('Import','Export');
 
@@ -370,27 +350,6 @@ if (!defined('INSTALLATION_MODE')) {
 }
 
 Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_ws_referencetype VALUES (?,?)', array(31,'Campaigns'));
-
-$moduleInstance = Vtiger_Module::getInstance('Users');
-$currencyBlock = Vtiger_Block::getInstance('LBL_CURRENCY_CONFIGURATION', $moduleInstance);
-$truncateTrailingZeros = new Vtiger_Field();
-
-$truncateTrailingZeros->name = 'truncate_trailing_zeros';
-$truncateTrailingZeros->label = 'Truncate Trailing Zeros';
-$truncateTrailingZeros->table ='vtiger_users';
-$truncateTrailingZeros->column = 'truncate_trailing_zeros';
-$truncateTrailingZeros->columntype = 'varchar(3)';
-$truncateTrailingZeros->typeofdata = 'V~O';
-$truncateTrailingZeros->uitype = 56;
-$truncateTrailingZeros->sequence = 7;
-$truncateTrailingZeros->defaultvalue = 0;
-$truncateTrailingZeros->helpinfo = "<b> Truncate Trailing Zeros </b> <br/><br/>".
-    "It truncated trailing 0s in any of Currency, Decimal and Percentage Field types<br/><br/>".
-    "<b>Ex:</b><br/>".
-    "If value is 89.00000 then <br/>".
-    "decimal and Percentage fields were shows 89<br/>".
-    "currency field type - shows 89.00<br/>";
-$currencyBlock->addField($truncateTrailingZeros);
 
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_productcurrencyrel MODIFY COLUMN actual_price decimal(28,8)", array());
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_productcurrencyrel MODIFY COLUMN converted_price decimal(28,8)", array());
@@ -643,74 +602,12 @@ $moduleInstance = Vtiger_Module::getInstance('Users');
 $tabId = getTabid('Users');
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_blocks SET sequence = sequence+1 WHERE tabid=? AND sequence >= 2', array($tabId));
 
-// Create Calendar Settings block
-$calendarSettings = new Vtiger_Block();
-$calendarSettings->label = 'LBL_CALENDAR_SETTINGS';
-$calendarSettings->sequence = 2;
-$moduleInstance->addBlock($calendarSettings);
-
-$calendarSettings = Vtiger_Block::getInstance('LBL_CALENDAR_SETTINGS', $moduleInstance);
-
-$dayOfTheWeek = new Vtiger_Field();
-$dayOfTheWeek->name = 'dayoftheweek';
-$dayOfTheWeek->label = 'Starting Day of the week';
-$dayOfTheWeek->table ='vtiger_users';
-$dayOfTheWeek->column = 'dayoftheweek';
-$dayOfTheWeek->columntype = 'varchar(100)';
-$dayOfTheWeek->typeofdata = 'V~O';
-$dayOfTheWeek->uitype = 16;
-$dayOfTheWeek->sequence = 2;
-$dayOfTheWeek->defaultvalue = 'Sunday';
-$calendarSettings->addField($dayOfTheWeek);
-$dayOfTheWeek->setPicklistValues(array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'));
-
-$defaultCallDuration = new Vtiger_Field();
-$defaultCallDuration->name = 'callduration';
-$defaultCallDuration->label = 'Default Call Duration';
-$defaultCallDuration->table ='vtiger_users';
-$defaultCallDuration->column = 'callduration';
-$defaultCallDuration->columntype = 'varchar(100)';
-$defaultCallDuration->typeofdata = 'V~O';
-$defaultCallDuration->uitype = 16;
-$defaultCallDuration->sequence = 3;
-$defaultCallDuration->defaultvalue = 5;
-$calendarSettings->addField($defaultCallDuration);
-$defaultCallDuration->setPicklistValues(array('5','10','30','60','120'));
-
-$otherEventDuration = new Vtiger_Field();
-$otherEventDuration->name = 'othereventduration';
-$otherEventDuration->label = 'Other Event Duration';
-$otherEventDuration->table ='vtiger_users';
-$otherEventDuration->column = 'othereventduration';
-$otherEventDuration->columntype = 'varchar(100)';
-$otherEventDuration->typeofdata = 'V~O';
-$otherEventDuration->uitype = 16;
-$otherEventDuration->sequence = 4;
-$otherEventDuration->defaultvalue = 5;
-$calendarSettings->addField($otherEventDuration);
-$otherEventDuration->setPicklistValues(array('5','10','30','60','120'));
-
-$blockId = getBlockId($tabId, 'LBL_CALENDAR_SETTINGS');
-$sql = 'UPDATE vtiger_field SET block = ? , displaytype = ? WHERE tabid = ? AND tablename = ? AND columnname in (?,?,?,?,?,?)';
-Migration_Index_View::ExecuteQuery($sql, array($blockId, 1, $tabId, 'vtiger_users', 'time_zone','activity_view','reminder_interval','date_format','start_hour', 'hour_format'));
-
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET uitype = ? WHERE tabid = ? AND tablename = ? AND columnname in (?,?)',
-		array(16, $tabId, 'vtiger_users', 'hour_format', 'start_hour'));
-
-$fieldid = getFieldid($tabId, 'hour_format');
-$hour_format = Vtiger_Field::getInstance($fieldid, $moduleInstance);
-$hour_format->setPicklistValues(array(12,24));
-
-$fieldid = getFieldid($tabId, 'start_hour');
-$start_hour = Vtiger_Field::getInstance($fieldid, $moduleInstance);
-$start_hour->setPicklistValues(array('00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00'
-								,'12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'));
-
 //update hour_format value in existing customers
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET hour_format = ? WHERE hour_format = ? OR hour_format = ?', array(12, 'am/pm', ''));
-
 //add user default values
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET dayoftheweek = ?, callduration = ?, othereventduration = ?, start_hour = ? ', array('Sunday', 5, 5, '00:00'));
+Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET dayoftheweek = ?, callduration = ?, othereventduration = ?, start_hour = ? ', array('Monday', 5, 5, '00:00'));
+
+Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET default_record_view = ?', array('Summary'));
 
 // END 2012.12.02
 
@@ -760,41 +657,6 @@ foreach ($inventoryModules as $module => $details) {
     }
 }
 
-$moduleInstance = Vtiger_Module::getInstance('Users');
-
-$calendarSettings = Vtiger_Block::getInstance('LBL_CALENDAR_SETTINGS', $moduleInstance);
-$calendarsharedtype = new Vtiger_Field();
-$calendarsharedtype->name = 'calendarsharedtype';
-$calendarsharedtype->label = 'Calendar Shared Type';
-$calendarsharedtype->table ='vtiger_users';
-$calendarsharedtype->column = 'calendarsharedtype';
-$calendarsharedtype->columntype = 'varchar(100)';
-$calendarsharedtype->typeofdata = 'V~O';
-$calendarsharedtype->uitype = 16;
-$calendarsharedtype->sequence = 2;
-$calendarsharedtype->displaytype = 3;
-$calendarsharedtype->defaultvalue = 'Public';
-$calendarSettings->addField($calendarsharedtype);
-$calendarsharedtype->setPicklistValues(array('public','private','seletedusers'));
-
-$allUsers = get_user_array(false);
-foreach ($allUsers as $id => $name) {
-    $query = 'select sharedid from vtiger_sharedcalendar where userid=?';
-    $result = $adb->pquery($query, array($id));
-	$count = $adb->num_rows($result);
-    if($count > 0){
-		Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET calendarsharedtype = ? WHERE id = ?', array('selectedusers', $id));
-    }else{
-		Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET calendarsharedtype = ? WHERE id = ? ', array('public', $id));
-        foreach ($allUsers as $sharedid => $name) {
-            if($sharedid != $id){
-                $sql = "INSERT INTO vtiger_sharedcalendar VALUES (?,?)";
-                Migration_Index_View::ExecuteQuery($sql, array($id, $sharedid));
-            }
-        }
-    }
-}
-
 // Add Key Metrics widget.
 $homeModule = Vtiger_Module::getInstance('Home');
 $homeModule->addLink('DASHBOARDWIDGET', 'Key Metrics', 'index.php?module=Home&view=ShowWidget&name=KeyMetrics');
@@ -818,24 +680,6 @@ foreach ($moduleArray as $module => $block) {
 
 $homeModule = Vtiger_Module::getInstance('Home');
 $homeModule->addLink('DASHBOARDWIDGET', 'Mini List', 'index.php?module=Home&view=ShowWidget&name=MiniList');
-
-$moduleInstance = Vtiger_Module::getInstance('Users');
-$moreInfoBlock = Vtiger_Block::getInstance('LBL_MORE_INFORMATION', $moduleInstance);
-
-$viewField = new Vtiger_Field();
-$viewField->name = 'default_record_view';
-$viewField->label = 'Default Record View';
-$viewField->table ='vtiger_users';
-$viewField->column = 'default_record_view';
-$viewField->columntype = 'VARCHAR(10)';
-$viewField->typeofdata = 'V~O';
-$viewField->uitype = 16;
-$viewField->defaultvalue = 'Summary';
-
-$moreInfoBlock->addField($viewField);
-$viewField->setPicklistValues(array('Summary', 'Detail'));
-
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET default_record_view = ?', array('Summary'));
 
 $InvoiceInstance = Vtiger_Module::getInstance('Invoice');
 Vtiger_Event::register($InvoiceInstance, 'vtiger.entity.aftersave', 'InvoiceHandler', 'modules/Invoice/InvoiceHandler.php');
@@ -1274,25 +1118,6 @@ Migration_Index_View::ExecuteQuery('ALTER TABLE com_vtiger_workflowtask_queue DR
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner_ids modify column messageid varchar(512)' , array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner_ids add index scanner_message_ids_idx (scannerid, messageid)', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner_folders add index folderid_idx (folderid)', array());
-
-$moduleInstance = Vtiger_Module::getInstance('Users');
-$blockInstance = Vtiger_Block::getInstance('LBL_MORE_INFORMATION',$moduleInstance);
-
-$field = new Vtiger_Field();
-$field->name = 'leftpanelhide';
-$field->label = 'Left Panel Hide';
-$field->column = 'leftpanelhide';
-$field->table = 'vtiger_users';
-$field->uitype = 56;
-$field->typeofdata = 'V~O';
-$field->readonly = 1;
-$field->displaytype = 1;
-$field->masseditable = 1;
-$field->quickcreate = 1;
-$field->defaultvalue = 0;
-$field->columntype = 'VARCHAR(3)';
-$blockInstance->addField($field);
-
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET leftpanelhide = ?', array(0));
 $potentialModule = Vtiger_Module::getInstance('Potentials');
 $block = Vtiger_Block::getInstance('LBL_OPPORTUNITY_INFORMATION', $potentialModule);
@@ -1488,27 +1313,6 @@ $checkQuery = 'SELECT 1 FROM vtiger_currencies  WHERE currency_name=?';
 $checkResult = $adb->pquery($checkQuery,array('Maldivian Ruffiya'));
 if($adb->num_rows($checkResult) <= 0) {
 	Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_currencies VALUES ('.$adb->getUniqueID("vtiger_currencies").',"Maldivian Ruffiya","MVR","MVR")',array());
-}
-
-$usersInstance = Vtiger_Module::getInstance('Users');
-$blockInstance = Vtiger_Block::getInstance('LBL_MORE_INFORMATION', $usersInstance);
-$usersRowHeightField = Vtiger_Field::getInstance('rowheight', $usersInstance);
-if (!$usersRowHeightField) {
-	$field = new Vtiger_Field();
-	$field->name = 'rowheight';
-	$field->label = 'Row Height';
-	$field->table = 'vtiger_users';
-	$field->uitype = 16;
-	$field->typeofdata = 'V~O';
-	$field->readonly = 1;
-	$field->displaytype = 1;
-	$field->masseditable = 1;
-	$field->quickcreate = 1;
-	$field->columntype = 'VARCHAR(10)';
-	$field->defaultvalue = 'medium';
-	$blockInstance->addField($field);
-
-	$field->setPicklistValues(array('wide', 'medium', 'narrow'));
 }
 
 $moduleInstance = Vtiger_Module::getInstance('HelpDesk');

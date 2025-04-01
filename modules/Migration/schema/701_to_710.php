@@ -138,9 +138,14 @@ if (defined('VTIGER_UPGRADE')) {
 		}
 		ksort($orderedPicklists);
 
-		$moduleModel = new Settings_Picklist_Module_Model();
-		$moduleModel->updateSequence($fieldName, $orderedPicklists);
-		echo '<br>Succecssfully reordered timezones<br>';
+        if(!empty($orderedPicklists)) {
+            $moduleModel = new Settings_Picklist_Module_Model();
+            $moduleModel->updateSequence($fieldName, $orderedPicklists);
+
+            echo '<br>Succecssfully reordered timezones<br>';
+        } else {
+            echo '<br>Skipped reordered timezones<br>';
+        }
 	}
 	//END::Reordering Timezones
 

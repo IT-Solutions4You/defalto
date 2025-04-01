@@ -683,44 +683,6 @@ $productsTabId = getTabId('Products');
 
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_relatedlists SET actions=? WHERE label=? and tabid=? ",array('ADD,SELECT', 'PriceBooks', $productsTabId));
 echo '<br>Updated PriceBooks related list actions for products and services';
-
-/**
-* To add defaulteventstatus and defaultactivitytype fields to Users Module
-* Save 2 clicks usability feature
-*/
-require_once 'vtlib/Vtiger/Module.php';
-$module = Vtiger_Module::getInstance('Users');
-  if ($module) {
-      $blockInstance = Vtiger_Block::getInstance('LBL_CALENDAR_SETTINGS', $module);
-      if ($blockInstance) {
-          $desField = Vtiger_Field::getInstance('defaulteventstatus', $module);
-          if(!$desField) {
-          $fieldInstance = new Vtiger_Field();
-          $fieldInstance->name = 'defaulteventstatus';
-          $fieldInstance->label = 'Default Event Status';
-          $fieldInstance->uitype = 15;
-          $fieldInstance->column = $fieldInstance->name;
-          $fieldInstance->columntype = 'VARCHAR(50)';
-          $fieldInstance->typeofdata = 'V~O';
-          $blockInstance->addField($fieldInstance);
-          $fieldInstance->setPicklistValues(Array('Planned','Held','Not Held'));
-          }
-          $datField = Vtiger_Field::getInstance('defaultactivitytype', $module);
-          if(!$datField) {
-          $fieldInstance1 = new Vtiger_Field();
-          $fieldInstance1->name = 'defaultactivitytype';
-          $fieldInstance1->label = 'Default Activity Type';
-          $fieldInstance1->uitype = 15;
-          $fieldInstance1->column = $fieldInstance1->name;
-          $fieldInstance1->columntype = 'VARCHAR(50)';
-          $fieldInstance1->typeofdata = 'V~O';
-          $blockInstance->addField($fieldInstance1);
-          $fieldInstance1->setPicklistValues(Array('Call','Meeting'));
-          }
-      }
-  }
-  echo 'Default status and activitytype field created';
-//84 ends
   
 //85 starts
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_account ALTER isconvertedfromlead SET DEFAULT ?', array('0'));
@@ -1115,23 +1077,7 @@ if(!defined('INSTALLATION_MODE')) {
                 $adb->pquery('UPDATE vtiger_pbxmanager SET customer = ? AND user = ? AND totalduration = ? AND callstatus = ? WHERE pbxmanagerid = ?', array($customer, $user, $timeofcall, $callstatus, $pbxmanagerid));
             }
 
-            //Adding PBXManager PostUpdate API's 
-            //Add user extension field 
-
-            $module = Vtiger_Module::getInstance('Users');
-            if ($module) {
-                $module->initTables();
-                $blockInstance = Vtiger_Block::getInstance('LBL_MORE_INFORMATION', $module);
-                if ($blockInstance) {
-                    $fieldInstance = new Vtiger_Field();
-                    $fieldInstance->name = 'phone_crm_extension';
-                    $fieldInstance->label = 'CRM Phone Extension';
-                    $fieldInstance->uitype = 11;
-                    $fieldInstance->typeofdata = 'V~O';
-                    $blockInstance->addField($fieldInstance);
-                }
-            }
-            echo '<br>Added PBXManager User extension field.<br>';
+            //Adding PBXManager PostUpdate API's
             //Query to fetch asterisk extension 
             $extensionResult = $adb->pquery('SELECT userid, asterisk_extension FROM vtiger_asteriskextensions', array());
             for ($i = 0; $i < $adb->num_rows($extensionResult); $i++) {
@@ -1267,30 +1213,6 @@ Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET masseditable = ? WHE
 //Add Column trial for vtiger_tab table if not exists
 if (!columnExists('trial', 'vtiger_tab')) {
     $adb->pquery("ALTER TABLE vtiger_tab ADD trial INT(1) NOT NULL DEFAULT 0", []);
-}
-
-//Adding is_owner to existing vtiger users
-
-$usersModuleInstance = Vtiger_Module::getInstance('Users');
-$usersBlockInstance = Vtiger_Block::getInstance('LBL_USERLOGIN_ROLE', $usersModuleInstance);
-
-$usersFieldInstance = Vtiger_Field::getInstance('is_owner', $usersModuleInstance);
-if (!$usersFieldInstance) {
-    $field = new Vtiger_Field();
-    $field->name = 'is_owner';
-    $field->label = 'Account Owner';
-    $field->column = 'is_owner';
-    $field->table = 'vtiger_users';
-    $field->uitype = 1;
-    $field->typeofdata = 'V~O';
-    $field->readonly = '0';
-    $field->displaytype = '5';
-    $field->masseditable = '0';
-    $field->quickcreate = '0';
-    $field->columntype = 'VARCHAR(5)';
-    $field->defaultvalue = 0;
-    $usersBlockInstance->addField($field);
-    echo '<br> Added isOwner field in Users';
 }
 
 //Setting up is_owner for every admin user of CRM
