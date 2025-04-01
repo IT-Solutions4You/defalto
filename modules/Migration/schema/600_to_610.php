@@ -129,6 +129,7 @@ if($adb->num_rows($result) <= 0){
 //74 starts
 
 //Start: Moving Entity methods of Tickets to Workflows
+$moduleName = 'HelpDesk';
 $result = $adb->pquery('SELECT DISTINCT workflow_id FROM com_vtiger_workflowtasks WHERE workflow_id IN
                                 (SELECT workflow_id FROM com_vtiger_workflows WHERE module_name IN (?) AND defaultworkflow = ?)
                                 AND task LIKE ?', array($moduleName, 1, '%VTEntityMethodTask%'));
@@ -1092,7 +1093,7 @@ if(!defined('INSTALLATION_MODE')) {
                 'method' => 'checkLinkPermission');
             $headerScriptLinkType = 'HEADERSCRIPT';
             $incomingLinkLabel = 'Incoming Calls';
-            Vtiger_Link::addLink(0, $headerScriptLinkType, $incominglinkLabel, 'modules/PBXManager/resources/PBXManagerJS.js', '', '', $handlerInfo);
+            Vtiger_Link::addLink(0, $headerScriptLinkType, $incomingLinkLabel, 'modules/PBXManager/resources/PBXManagerJS.js', '', '', $handlerInfo);
             echo '<br>Added PBXManager links<br>';
 
             //Add settings links 
