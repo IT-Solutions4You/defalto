@@ -20,6 +20,8 @@ class Install_InitSchema_Model {
 		$adb = PearDatabase::getInstance();
 		$adb->createTables("schema/DatabaseSchema.xml");
 
+        Install_Utils_Model::installTables();
+
 		$defaultDataPopulator = new DefaultDataPopulator();
 		$defaultDataPopulator->create_tables();
 
@@ -839,6 +841,8 @@ class Install_InitSchema_Model {
         insertProfile2field($profileId2);
         insertProfile2field($profileId3);
         insertProfile2field($profileId4);
+
+        vglobal('current_user', $user);
 	}
 
 	/**
