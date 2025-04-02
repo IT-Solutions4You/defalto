@@ -331,13 +331,7 @@ class Vtiger_Util_Helper {
 	 */
     public static function getPickListId($fieldName)
     {
-        $pickListIds = self::$picklistTableIds;
-
-        if (array_key_exists($fieldName, $pickListIds)) {
-            return $pickListIds[$fieldName];
-        }
-
-        return $fieldName . 'id';
+        return self::$picklistTableIds[$fieldName] ?? $fieldName . 'id';
     }
 
     /**
