@@ -8,7 +8,15 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class PriceBooks_Module_Model extends Vtiger_Module_Model {
+class PriceBooks_Module_Model extends Vtiger_Module_Model
+{
+    /**
+     * @var array
+     */
+    public static array $customFieldLabels = [
+        'listprice' => 'Selling Price',
+        'unit_price' => 'Unit Price',
+    ];
 
 	/**
 	 * Function returns query for PriceBook-Product relation
@@ -177,4 +185,28 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model {
 		return $this->importableFields;
 	}
 
+
+    /**
+     * @throws AppException
+     */
+    public static function getCustomField(string $fieldName, string $moduleName): object
+    {
+        $fieldModel = Vtiger_Field_Model::getCleanInstance($fieldName, $moduleName);
+        $fieldModel->label = self::$customFieldLabels[$fieldName];
+        $fieldModel->uitype = 71;
+
+        return $fieldModel;
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function getField($fieldName)
+    {
+        if (in_array($fieldName, array_keys(self::$customFieldLabels))) {
+            return self::getCustomField($fieldName, $this->getName());
+        }
+
+        return parent::getField($fieldName);
+    }
 }

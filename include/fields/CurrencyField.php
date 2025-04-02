@@ -422,12 +422,18 @@ class CurrencyField {
 	 * @param Boolean $skipConversion
      * @return Number
      */
-	public static function convertToDBFormat($value, $user=null, $skipConversion=false) {
+    public static function convertToDBFormat($value, $user = null, $skipConversion = false)
+    {
+        if (!strlen($value)) {
+            return $value;
+        }
+
         $self = new self($value);
+
         return $self->getDBInsertedValue($user, $skipConversion);
     }
 
-	/**
+    /**
 	 * Function to get the default CRM currency
 	 * @return Integer Default system currency id
 	 */

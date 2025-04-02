@@ -188,7 +188,7 @@
 													{assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($RELATED_RECORD->getCurrencyId())}
 													{CurrencyField::appendCurrencySymbol($RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME), $CURRENCY_INFO['symbol'])}
 												{elseif $HEADER_FIELD->getFieldDataType() eq 'picklist'}
-													<span {if !empty($RELATED_LIST_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$HEADER_FIELD->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($RELATED_LIST_VALUE)}" {/if}> {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)} </span>
+													<span class="py-1 px-2 rounded picklist-color picklist-{$HEADER_FIELD->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($RELATED_LIST_VALUE)}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</span>
 												{else}
 													{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}
 												{/if}

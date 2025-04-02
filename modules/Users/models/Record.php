@@ -1022,4 +1022,12 @@ class Users_Record_Model extends Vtiger_Record_Model {
         $adb->pquery('INSERT INTO df_user2profile(user_id,profile_id) VALUES(?,?)', [$userId, $profileId]);
         $log->debug('Exiting updateUser2ProfileMapping method ...');
     }
+
+    /**
+     * @return string
+     */
+    public function getDecimalSeparator(): string
+    {
+        return decode_html($this->get('currency_decimal_separator'));
+    }
 }

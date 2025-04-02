@@ -7,7 +7,26 @@
  */
 
 class Vtiger_Util_Helper {
-	/**
+
+    public static array $picklistTableIds = [
+        'opportunity_type' => 'opptypeid',
+        'sales_stage' => 'sales_stage_id',
+        'rating' => 'rating_id',
+        'ticketpriorities' => 'ticketpriorities_id',
+        'ticketseverities' => 'ticketseverities_id',
+        'ticketstatus' => 'ticketstatus_id',
+        'ticketcategories' => 'ticketcategories_id',
+        'salutationtype' => 'salutationid',
+        'faqstatus' => 'faqstatus_id',
+        'faqcategories' => 'faqcategories_id',
+        'recurring_frequency' => 'recurring_frequency_id',
+        'payment_duration' => 'payment_duration_id',
+        'language' => 'id',
+        'recurringtype' => 'recurringeventid',
+        'duration_minutes' => 'minutesid',
+    ];
+
+    /**
 	 * Function used to transform mulitiple uploaded file information into useful format.
 	 * @param array $_files - ex: array( 'file' => array('name'=> array(0=>'name1',1=>'name2'),
 	 *												array('type'=>array(0=>'type1',2=>'type2'),
@@ -310,30 +329,12 @@ class Vtiger_Util_Helper {
 	/**
 	 * Function to get picklist key for a picklist
 	 */
-	public static function getPickListId($fieldName){
-		$pickListIds = array('opportunity_type' => 'opptypeid',
-								'sales_stage'	=> 'sales_stage_id',
-								'rating'		=> 'rating_id',
-								'ticketpriorities'	=> 'ticketpriorities_id',
-								'ticketseverities'	=> 'ticketseverities_id',
-								'ticketstatus'		=> 'ticketstatus_id',
-								'ticketcategories'	=> 'ticketcategories_id',
-								'salutationtype'	=> 'salutationid',
-								'faqstatus'			=> 'faqstatus_id',
-								'faqcategories'		=> 'faqcategories_id',
-								'recurring_frequency'=> 'recurring_frequency_id',
-								'payment_duration'	=> 'payment_duration_id',
-								'language'			=> 'id',
-								'recurringtype' => 'recurringeventid',
-								'duration_minutes' => 'minutesid'
-							);
-		if(array_key_exists($fieldName, $pickListIds)){
-			return $pickListIds[$fieldName];
-		}
-		return $fieldName.'id';
-	}
+    public static function getPickListId($fieldName)
+    {
+        return self::$picklistTableIds[$fieldName] ?? $fieldName . 'id';
+    }
 
-	/**
+    /**
 	 * Function which will give the picklist values for a field
 	 * @param type $fieldName -- string
 	 * @return type -- array of values
@@ -1248,6 +1249,10 @@ class Vtiger_Util_Helper {
 		if (!empty($string)) {
 			return str_replace(" ", "-", decode_html($string));
 		}
+
+        if('0' == $string) {
+            return '0';
+        }
 	}
 
 	public static function escapeCssSpecialCharacters($string) {
@@ -1255,6 +1260,10 @@ class Vtiger_Util_Helper {
 			$pattern = "/[!#$%&'()*+,.\/:;<=>?@^`~]/";
 			return preg_replace($pattern, '\\\\$0', $string);
 		}
+
+        if('0' == $string) {
+            return '0';
+        }
 	}
     
     public static function getEncryptedFileName($sanitizedFileName) {

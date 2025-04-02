@@ -274,7 +274,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
             ->createColumn('projecttasktype', 'varchar(100) default NULL')
             ->createColumn('projecttaskpriority', 'varchar(100) default NULL')
             ->createColumn('projecttaskprogress', 'varchar(100) default NULL')
-            ->createColumn('projecttaskhours', 'varchar(255) default NULL')
+            ->createColumn('projecttaskhours', 'decimal(11,2) default NULL')
             ->createColumn('startdate', 'date default NULL')
             ->createColumn('enddate', 'date default NULL')
             ->createColumn('projectid', 'varchar(100) default NULL')

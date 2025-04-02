@@ -173,7 +173,10 @@ class Install_Index_view extends Vtiger_View_Controller {
 		$viewer->view('Step6.tpl', $moduleName);
 	}
 
-	public function Step7(Vtiger_Request $request) {
+    /**
+     * @throws AppException
+     */
+    public function Step7(Vtiger_Request $request) {
         $moduleName = $request->getModule();
 		$webuiInstance = new Vtiger_WebUI();
 		$isInstalled = $webuiInstance->isInstalled();

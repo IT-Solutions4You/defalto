@@ -45,11 +45,14 @@ class Settings_Leads_Field_Model extends Vtiger_Field_Model {
 
     /**
 	 * Function to get clean instance
-	 * @return <Settings_Leads_Field_Model>
+     * @param string $fieldName
+     * @param string $moduleName
+     * @return <Settings_Leads_Field_Model>
 	 */
-	public static function getCleanInstance() {
-		return new self();
-	}
+    public static function getCleanInstance(string $fieldName = '', string $moduleName = ''): object
+    {
+        return new self();
+    }
 
 	/**
 	 * Function to get instance

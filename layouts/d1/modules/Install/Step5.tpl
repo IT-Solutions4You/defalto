@@ -88,7 +88,7 @@
             <div class="button-container text-end p-3">
                 <input type="button" class="btn btn-outline-secondary" value="{vtranslate('LBL_BACK','Install')}" {if $DB_CONNECTION_INFO['flag'] eq true} disabled="disabled" {/if} name="back"/>
                 {if $DB_CONNECTION_INFO['flag'] eq true}
-                    <input type="button" class="btn btn-large btn-primary" value="{vtranslate('LBL_NEXT','Install')}" name="step6"/>
+                    <input type="button" class="btn btn-large btn-primary ms-2" value="{vtranslate('LBL_NEXT','Install')}" name="step6"/>
                 {/if}
             </div>
         </form>

@@ -17,17 +17,24 @@ if(defined('VTIGER_UPGRADE')) {
 		$adb->pquery('INSERT INTO vtiger_actionmapping VALUES(?, ?, ?)', array(7, 'CreateView', 0));
 	}
 
-	$createActionResult = $adb->pquery('SELECT * FROM vtiger_profile2standardpermissions WHERE operation=?', array(1));
-	$query = 'INSERT INTO vtiger_profile2standardpermissions VALUES';
-	while($rowData = $adb->fetch_array($createActionResult)) {
-		$tabId			= $rowData['tabid'];
-		$profileId		= $rowData['profileid'];
-		$permissions	= $rowData['permissions'];
-		$query .= "('$profileId', '$tabId', '7', '$permissions'),";
-	}
-	$adb->pquery(trim($query, ','), array());
+    $createActionResult = $adb->pquery('SELECT * FROM vtiger_profile2standardpermissions WHERE operation=?', [1]);
 
-	require_once 'modules/Users/CreateUserPrivilegeFile.php';
+    while ($rowData = $adb->fetch_array($createActionResult)) {
+        $tabId = $rowData['tabid'];
+        $profileId = $rowData['profileid'];
+        $permissions = $rowData['permissions'];
+
+        $result = $adb->pquery('SELECT profileid FROM vtiger_profile2standardpermissions WHERE profileid=? AND tabid=? AND operation=?', [$profileId, $tabId, 7]);
+
+        if (!$adb->num_rows($result)) {
+            $adb->pquery(
+                'INSERT INTO vtiger_profile2standardpermissions (profileid, tabid, operation, permissions) VALUES (?,?,?,?)',
+                [$profileId, $tabId, 7, $permissions],
+            );
+        }
+    }
+
+    require_once 'modules/Users/CreateUserPrivilegeFile.php';
 	$usersResult = $adb->pquery('SELECT id FROM vtiger_users', array());
 	$numOfRows = $adb->num_rows($usersResult);
 	$userIdsList = array();

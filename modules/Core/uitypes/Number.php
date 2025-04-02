@@ -27,15 +27,15 @@ class Core_Number_UIType extends Vtiger_Base_UIType {
     {
         $value = strip_tags($value);
 
-        if (empty($value)) {
-            return '0';
+        if ('' == $value) {
+            return '';
         }
 
         $currentUser = Users_Record_Model::getCurrentUserModel();
         $value = CurrencyField::convertToUserFormat($value, $currentUser, true);
 
         if ($currentUser->isEmpty('truncate_trailing_zeros')) {
-            $value = rtrim(rtrim($value, '0'), $currentUser->get('currency_decimal_separator'));
+            $value = rtrim(rtrim($value, '0'), $currentUser->getDecimalSeparator());
         }
 
         return $value;

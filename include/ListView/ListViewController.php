@@ -362,8 +362,10 @@ class ListViewController {
                     $value = Vtiger_Currency_UIType::transformDisplayValue($value, null, true);
                 } elseif($fieldDataType == 'percent') {
                     $value = Core_Number_UIType::transformDisplayValue($value) . ' %';
-                } elseif ($fieldDataType == 'double' || $fieldDataType == 'integer') {
-					$value = Core_Number_UIType::transformDisplayValue($value);
+                } elseif ($fieldDataType == 'integer') {
+                    $value = Core_Number_UIType::transformDisplayValue($value);
+                } elseif ($fieldDataType == 'double') {
+					$value = Vtiger_Double_UIType::transformDisplayValue($value);
 				} elseif($fieldDataType == 'url') {
 					$value = Vtiger_Url_UIType::transformDisplayValue($value);
 				} elseif ($fieldDataType == 'email') {

@@ -8,6 +8,8 @@
  */
 /** @var ITS4YouEmails_MassEdit_Js */
 jQuery.Class('ITS4YouEmails_MassEdit_Js', {
+    documentClickEventRegistered: false,
+    templateClickEventRegistered: false,
     replyEmail(recordId, recordModule) {
         let params = {
                 module: 'ITS4YouEmails',
@@ -743,6 +745,7 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
     registerEventEmailTemplateListClick: function () {
         const self = this;
 
+        app.event.off('post.EmailTemplateList.click')
         app.event.on('post.EmailTemplateList.click', function (event, data) {
             let responseData = JSON.parse(data);
             jQuery('.popupModal').modal('hide');
@@ -759,6 +762,16 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
                 ckEditorInstance.loadContentsInCkeditor(body);
                 $('#subject').val(subject);
                 selectedTemplateBody = responseData[id].info;
+
+                if ('undefined' !== typeof data['info']['document_records'] && data['info']['document_records']) {
+                    $.each(data['info']['document_records'], function (documentId, documentData) {
+                        let data = {};
+
+                        data[documentId] = {info: documentData};
+
+                        app.event.trigger('post.DocumentsList.click', JSON.stringify(data));
+                    });
+                }
             }
 
             let sourceModule = jQuery('[name=source_module]').val(),

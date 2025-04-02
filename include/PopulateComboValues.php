@@ -23,55 +23,57 @@ class PopulateComboValues
 	var $app_list_strings;
 
 
-	/** 
-	 * To populate the default combo values for the combo vtiger_tables
-	 * @param $values -- values:: Type string array
-	 * @param $tableName -- tablename:: Type string 
-	 */
-	function insertComboValues($values, $tableName,$picklistid)
-	{
-		global $log;
+    /**
+     * To populate the default combo values for the combo vtiger_tables
+     * @param $values -- values:: Type string array
+     * @param $tableName -- tablename:: Type string
+     * @throws AppException
+     */
+    public function insertComboValues($values, $tableName, $picklistId)
+    {
+        global $log;
         $tableName = Vtiger_Util_Helper::validateStringForSql($tableName);
-		global $adb;
-		//inserting the value in the vtiger_picklistvalues_seq for the getting uniqueID for each picklist values...
-		$i=0;
-		foreach ($values as $val => $cal)
-		{
-			$picklist_valueid = getUniquePicklistID();
-			$id = $adb->getUniqueID('vtiger_'.$tableName);
-			if($val != '')
-			{
-				$params = array($id, $val, 1, $picklist_valueid, $i);
-				$adb->pquery("insert into vtiger_$tableName values(?,?,?,?,?)", $params);
-			}
-			else
-			{
-				$params = array($id, '--None--', 1, $picklist_valueid, $i);
-				$adb->pquery("insert into vtiger_$tableName values(?,?,?,?,?)", $params);
-			}
+        $tableKey = 'vtiger_' . $tableName;
+        $table = (new Core_DatabaseData_Model())->getTable($tableKey, '');
+        global $adb;
+        //inserting the value in the vtiger_picklistvalues_seq for the getting uniqueID for each picklist values...
+        $i = 0;
 
-			//Default entries for role2picklist relation has been inserted..
+        foreach ($values as $val => $cal) {
+            $picklistValueId = getUniquePicklistID();
+            $id = $adb->getUniqueID('vtiger_' . $tableName);
+            $idKey = Vtiger_Util_Helper::getPickListId($tableName);
+            $nameKey = $tableName;
 
-			$sql="select roleid from vtiger_role";
-			$role_result = $adb->pquery($sql, array());
-			$numrow = $adb->num_rows($role_result);
-			for($k=0; $k < $numrow; $k ++)
-			{
-				$roleid = $adb->query_result($role_result,$k,'roleid');
-				$params = array($roleid, $picklist_valueid, $picklistid, $i);
-				$adb->pquery("insert into vtiger_role2picklist values(?,?,?,?)", $params);
-			}
+            if ($val != '') {
+                $params = [$idKey => $id, $nameKey => $val, 'presence' => 1, 'picklist_valueid' => $picklistValueId, 'sortorderid' => $i];
+                $table->insertData($params);
+            } else {
+                $params = [$idKey => $id, $nameKey => '--None--', 'presence' => 1, 'picklist_valueid' => $picklistValueId, 'sortorderid' => $i];
+                $table->insertData($params);
+            }
 
-			$i++;
-		}
-	
+            //Default entries for role2picklist relation has been inserted..
 
-		$log->debug("Exiting insertComboValues method ...");
-	}
+            $sql = "select roleid from vtiger_role";
+            $role_result = $adb->pquery($sql, []);
+            $numrow = $adb->num_rows($role_result);
+
+            for ($k = 0; $k < $numrow; $k++) {
+                $roleId = $adb->query_result($role_result, $k, 'roleid');
+                $params = [$roleId, $picklistValueId, $picklistId, $i];
+                $adb->pquery("insert into vtiger_role2picklist values(?,?,?,?)", $params);
+            }
+
+            $i++;
+        }
 
 
-	/** 
-	 * To populate the combo vtiger_tables at startup time
+        $log->debug("Exiting insertComboValues method ...");
+    }
+
+    /**
+     * To populate the combo vtiger_tables at startup time
 	 */
 
 	function create_tables () 

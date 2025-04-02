@@ -340,7 +340,8 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model {
 		return ucfirst($fieldDataType);
 	}
 
-	public static function getCleanInstance() {
+	public static function getCleanInstance(string $fieldName = '', string $moduleName = ''): object
+    {
 		$fieldInstance = new self();
 		//We need to initialize these attributes since we use these for clean instance as well 
 		//$field->block->module->name at multiple places

@@ -759,7 +759,7 @@ Vtiger.Class("Vtiger_List_Js", {
 				value = tdElement.data('rawvalue');
 			}
 
-			let numberHandlingFields = ['currency', 'double', 'percentage', 'integer'];
+			let numberHandlingFields = ['currency', 'percentage', 'integer'];
 
 			if (jQuery.inArray(fieldType, numberHandlingFields) !== -1) {
 				value = parseFloat(tdElement.data('rawvalue')).toFixed(app.getNumberOfDecimals());

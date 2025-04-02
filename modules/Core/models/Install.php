@@ -78,6 +78,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     public static array $installedModules = [];
 
     public static array $fieldKeySkippedForUpdate = ['presence', 'typeofdata', 'quickcreate', 'masseditable', 'summaryfield'];
+    public bool $requireInstallTables = true;
 
     /**
      * @return void
@@ -322,6 +323,14 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * @return bool
+     */
+    public function isRequiredInstallTables(): bool
+    {
+        return $this->requireInstallTables;
+    }
+
+    /**
      * @return void
      * @throws AppException
      */
@@ -331,7 +340,9 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             return;
         }
 
-        $this->installTables();
+        if ($this->isRequiredInstallTables()) {
+            $this->installTables();
+        }
 
         self::logSuccess('Install tables');
 

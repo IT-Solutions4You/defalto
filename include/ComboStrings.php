@@ -88,10 +88,6 @@ $combo_strings = Array(
                 , 'Project Cancelled'=>'Project Cancelled'
                 , 'Shutdown'=>'Shutdown'
                 ),
-'opportunity_type_dom' => Array(''=>''
-                , 'Existing Business'=>'Existing Business'
-                , 'New Business'=>'New Business'
-                ),
 'sales_stage_dom' => Array('Prospecting'=>'Prospecting'
                 , 'Qualification'=>'Qualification'
                 , 'Needs Analysis'=>'Needs Analysis'

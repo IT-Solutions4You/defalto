@@ -30,7 +30,6 @@ class Appointments_Install_Model extends Core_Install_Model
      */
     public function addCustomLinks(): void
     {
-        $this->installTables();
         $this->installFields();
         $this->insertEmailTemplates();
         $this->updateCron();
