@@ -50,37 +50,40 @@ Vtiger_RelatedList_Js("Campaigns_RelatedList_Js",{
 		}
 	},
 
-	registerChangeCustomFilterEvent : function() {
-		var self = this;
-		var filterSelectElement = this.relatedContentContainer.find('#recordsFilter');
-		filterSelectElement.change(function(e){
-			var element = jQuery(e.currentTarget);
-			if (jQuery('.bootbox-confirm .in').length == 0) {
-				var message = app.vtranslate('JS_APPENDED_TO_EXISTING_LIST',self.relatedModulename)+'<br><br>'+app.vtranslate('JS_WISH_TO_PROCEED');
-				app.helper.showConfirmationBox({'message':message}).then(function(e){
-					var cvId = element.find('option:selected').data('id');
-					var params = {
-						'sourceRecord' : self.parentRecordId,
-						'relatedModule' :self.relatedModulename,
-						'viewId' : cvId,
-						'module' : app.getModuleName(),
-						'action': "RelationAjax",
-						'mode' : 'addRelationsFromRelatedModuleViewId'
-					};
+	registerChangeCustomFilterEvent: function () {
+		let self = this,
+			filter = this.relatedContentContainer.find('#recordsFilter');
+
+		filter.off('change');
+		filter.on('change', function (e) {
+			let element = jQuery(e.currentTarget);
+
+			if (!jQuery('.bootbox-confirm .in').length) {
+				let message = app.vtranslate('JS_APPENDED_TO_EXISTING_LIST', self.relatedModulename) + '<br><br>' + app.vtranslate('JS_WISH_TO_PROCEED');
+
+				app.helper.showConfirmationBox({'message': message}).then(function (e) {
+					let cvId = element.find('option:selected').data('id'),
+						params = {
+							sourceRecord: self.parentRecordId,
+							relatedModule: self.relatedModulename,
+							viewId: cvId,
+							module: app.getModuleName(),
+							action: 'RelationAjax',
+							mode: 'addRelationsFromRelatedModuleViewId'
+						};
+
 					app.helper.showProgress();
-					app.request.post({"data" : params}).then(
-						function(responseData) {
-							app.helper.hideProgress();
-							if(responseData != null){
-								app.helper.showErrorNotification({"message": app.vtranslate('JS_NO_RECORDS_RELATED_TO_THIS_FILTER')});
-							} else {
-								self.loadRelatedList().then(function() {
-									self.triggerRelationAdditionalActions();
-								});
-							}
-						},
-						function(textStatus, errorThrown){}
-					);
+					app.request.post({data: params}).then(function (responseData) {
+						app.helper.hideProgress();
+
+						if (responseData != null) {
+							app.helper.showErrorNotification({message: app.vtranslate('JS_NO_RECORDS_RELATED_TO_THIS_FILTER')});
+						} else {
+							self.loadRelatedList().then(function () {
+								self.triggerRelationAdditionalActions();
+							});
+						}
+					});
 				});
 			}
 		});
