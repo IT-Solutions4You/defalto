@@ -8,43 +8,44 @@
  * file that was distributed with this source code.
  */
 
-class Documents_Install_Model extends Core_Install_Model {
+class Documents_Install_Model extends Core_Install_Model
+{
 
     public array $registerRelatedLists = [
-        ['Contacts', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['Accounts', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['Potentials', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['Leads', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['Products', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['Services', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['Project', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['Assets', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['ServiceContracts', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['Quotes', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['Invoice', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['SalesOrder', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['PurchaseOrder', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['HelpDesk', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['Faq', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['Appointments', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['ITS4YouEmails', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
-        ['Documents', 'Contacts', 'Contacts', '', 'get_related_list',],
-        ['Documents', 'Accounts', 'Accounts', '', 'get_related_list',],
-        ['Documents', 'Potentials', 'Potentials', '', 'get_related_list',],
-        ['Documents', 'Leads', 'Leads', '', 'get_related_list',],
-        ['Documents', 'Products', 'Products', '', 'get_related_list',],
-        ['Documents', 'Services', 'Services', '', 'get_related_list',],
-        ['Documents', 'Project', 'Project', '', 'get_related_list',],
-        ['Documents', 'Assets', 'Assets', '', 'get_related_list',],
-        ['Documents', 'ServiceContracts', 'ServiceContracts', '', 'get_related_list',],
-        ['Documents', 'Quotes', 'Quotes', '', 'get_related_list',],
-        ['Documents', 'Invoice', 'Invoice', '', 'get_related_list',],
-        ['Documents', 'SalesOrder', 'SalesOrder', '', 'get_related_list',],
-        ['Documents', 'PurchaseOrder', 'PurchaseOrder', '', 'get_related_list',],
-        ['Documents', 'HelpDesk', 'HelpDesk', '', 'get_related_list',],
-        ['Documents', 'Faq', 'Faq', '', 'get_related_list',],
-        ['Documents', 'Appointments', 'Appointments', '', 'get_related_list',],
-        ['Documents', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list',],
+        ['Accounts', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
+        ['Leads', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
+        ['Contacts', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
+        ['Potentials', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
+        ['Products', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
+        ['HelpDesk', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
+        ['Quotes', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
+        ['PurchaseOrder', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
+        ['SalesOrder', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
+        ['Invoice', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
+        ['Faq', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
+        ['ServiceContracts', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
+        ['Services', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
+        ['Assets', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
+        ['ProjectTask', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
+        ['Project', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
+        ['ITS4YouEmails', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
+        ['Documents', 'Contacts', 'Contacts', '1', 'get_related_list', '',],
+        ['Documents', 'Accounts', 'Accounts', '1', 'get_related_list', '',],
+        ['Documents', 'Potentials', 'Potentials', '1', 'get_related_list', '',],
+        ['Documents', 'Leads', 'Leads', '1', 'get_related_list', '',],
+        ['Documents', 'Products', 'Products', '1', 'get_related_list', '',],
+        ['Documents', 'Services', 'Services', '1', 'get_related_list', '',],
+        ['Documents', 'Project', 'Project', '1', 'get_related_list', '',],
+        ['Documents', 'Assets', 'Assets', '1', 'get_related_list', '',],
+        ['Documents', 'ServiceContracts', 'ServiceContracts', '1', 'get_related_list', '',],
+        ['Documents', 'Quotes', 'Quotes', '1', 'get_related_list', '',],
+        ['Documents', 'Invoice', 'Invoice', '1', 'get_related_list', '',],
+        ['Documents', 'SalesOrder', 'SalesOrder', '1', 'get_related_list', '',],
+        ['Documents', 'PurchaseOrder', 'PurchaseOrder', '1', 'get_related_list', '',],
+        ['Documents', 'HelpDesk', 'HelpDesk', '1', 'get_related_list', '',],
+        ['Documents', 'Faq', 'Faq', '1', 'get_related_list', '',],
+        ['Documents', 'Appointments', 'Appointments', '', 'get_related_list', '',],
+        ['Documents', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
     ];
 
     public function addCustomLinks(): void
@@ -347,8 +348,7 @@ class Documents_Install_Model extends Core_Install_Model {
         $this->getTable('vtiger_notescf', null)
             ->createTable('notesid')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`notesid`)')
-            ->createKey('CONSTRAINT `fk_notesid_vtiger_notescf` FOREIGN KEY IF NOT EXISTS (`notesid`) REFERENCES `vtiger_notes` (`notesid`) ON DELETE CASCADE')
-        ;
+            ->createKey('CONSTRAINT `fk_notesid_vtiger_notescf` FOREIGN KEY IF NOT EXISTS (`notesid`) REFERENCES `vtiger_notes` (`notesid`) ON DELETE CASCADE');
 
         $this->getTable('vtiger_senotesrel', null)
             ->createTable('crmid', 'int(19) NOT NULL DEFAULT 0')
@@ -357,7 +357,6 @@ class Documents_Install_Model extends Core_Install_Model {
             ->createKey('KEY IF NOT EXISTS `senotesrel_notesid_idx` (`notesid`)')
             ->createKey('KEY IF NOT EXISTS `senotesrel_crmid_idx` (`crmid`)')
             ->createKey('CONSTRAINT `fk1_crmid` FOREIGN KEY IF NOT EXISTS (`crmid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
-            ->createKey('CONSTRAINT `fk_2_vtiger_senotesrel` FOREIGN KEY IF NOT EXISTS (`notesid`) REFERENCES `vtiger_notes` (`notesid`) ON DELETE CASCADE')
-        ;
+            ->createKey('CONSTRAINT `fk_2_vtiger_senotesrel` FOREIGN KEY IF NOT EXISTS (`notesid`) REFERENCES `vtiger_notes` (`notesid`) ON DELETE CASCADE');
     }
 }
