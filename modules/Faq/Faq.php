@@ -23,83 +23,86 @@
 
 // Faq is used to store vtiger_faq information.
 class Faq extends CRMEntity {
-	var $log;
-	var $db;
-	var $table_name = "vtiger_faq";
-	var $table_index= 'id';
+	public string $parentName = 'Support';
+	public $log;
+	public $db;
+	public $table_name = "vtiger_faq";
+	public $table_index = 'id';
 	//fix for Custom Field for FAQ 
-	var $tab_name = Array('vtiger_crmentity','vtiger_faq','vtiger_faqcf');
-	var $tab_name_index = Array('vtiger_crmentity'=>'crmid','vtiger_faq'=>'id','vtiger_faqcomments'=>'faqid','vtiger_faqcf'=>'faqid');
-    var $customFieldTable = Array('vtiger_faqcf', 'faqid');
+	public $tab_name = ['vtiger_crmentity', 'vtiger_faq', 'vtiger_faqcf'];
+	public $tab_name_index = ['vtiger_crmentity' => 'crmid', 'vtiger_faq' => 'id', 'vtiger_faqcomments' => 'faqid', 'vtiger_faqcf' => 'faqid'];
+	public $customFieldTable = ['vtiger_faqcf', 'faqid'];
 
-	var $entity_table = "vtiger_crmentity";
+	public $entity_table = "vtiger_crmentity";
 
-	var $column_fields = Array();
+	public $column_fields = [];
 
-	var $sortby_fields = Array('question','category','id');
+	public $sortby_fields = ['question', 'category', 'id'];
 
 	// This is the list of vtiger_fields that are in the lists.
-	var $list_fields = Array(
-				'FAQ Id'=>Array('faq'=>'id'),
-				'Question'=>Array('faq'=>'question'),
-				'Category'=>Array('faq'=>'category'),
-				'Product Name'=>Array('faq'=>'product_id'),
-				'Created Time'=>Array('crmentity'=>'createdtime'),
-				'Modified Time'=>Array('crmentity'=>'modifiedtime')
-				);
+	public $list_fields = [
+		'FAQ Id' => ['faq' => 'id'],
+		'Question' => ['faq' => 'question'],
+		'Category' => ['faq' => 'category'],
+		'Product Name' => ['faq' => 'product_id'],
+		'Created Time' => ['crmentity' => 'createdtime'],
+		'Modified Time' => ['crmentity' => 'modifiedtime'],
+	];
 
-	var $list_fields_name = Array(
-				        'FAQ Id'=>'',
-				        'Question'=>'question',
-				        'Category'=>'faqcategories',
-				        'Product Name'=>'product_id',
-						'Created Time'=>'createdtime',
-						'Modified Time'=>'modifiedtime'
-				      );
-	var $list_link_field= 'question';
+	public $list_fields_name = [
+		'FAQ Id' => '',
+		'Question' => 'question',
+		'Category' => 'faqcategories',
+		'Product Name' => 'product_id',
+		'Created Time' => 'createdtime',
+		'Modified Time' => 'modifiedtime',
+	];
+	public $list_link_field = 'question';
 
-	var $search_fields = Array(
-				'Account Name'=>Array('account'=>'accountname'),
-				'City'=>Array('accountbillads'=>'bill_city'),
-				);
+	public $search_fields = [
+		'Account Name' => ['account' => 'accountname'],
+		'City' => ['accountbillads' => 'bill_city'],
+	];
 
-	var $search_fields_name = Array(
-				        'Account Name'=>'accountname',
-				        'City'=>'bill_city',
-				      );
+	public $search_fields_name = [
+		'Account Name' => 'accountname',
+		'City' => 'bill_city',
+	];
 
 	//Added these variables which are used as default order by and sortorder in ListView
-	var $default_order_by = 'id';
-	var $default_sort_order = 'DESC';
+	public $default_order_by = 'id';
+	public $default_sort_order = 'DESC';
 
-	var $mandatory_fields = Array('question','faq_answer','createdtime' ,'modifiedtime');
+	public $mandatory_fields = ['question', 'faq_answer', 'createdtime', 'modifiedtime'];
 
 	// For Alphabetical search
-	var $def_basicsearch_col = 'question';
+	public $def_basicsearch_col = 'question';
 
-	/**	Constructor which will set the column_fields in this object
+	/**    Constructor which will set the column_fields in this object
 	 */
-        function __construct() {
-            $this->log =Logger::getLogger('faq');
-            $this->log->debug("Entering Faq() method ...");
-            $this->db = PearDatabase::getInstance();
-            $this->column_fields = getColumnFields('Faq');
-            $this->log->debug("Exiting Faq method ...");
-        }   
-	function Faq() {
-            self::__construct();
+	function __construct()
+	{
+		$this->log = Logger::getLogger('faq');
+		$this->log->debug("Entering Faq() method ...");
+		$this->db = PearDatabase::getInstance();
+		$this->column_fields = getColumnFields('Faq');
+		$this->log->debug("Exiting Faq method ...");
+	}
+
+	function Faq()
+	{
+		self::__construct();
 	}
 
 	function save_module($module)
 	{
 		//Inserting into Faq comment table
 		$this->insertIntoFAQCommentTable('vtiger_faqcomments', $module);
-
 	}
 
 
 	/** Function to insert values in vtiger_faqcomments table for the specified module,
-  	  * @param $table_name -- table name:: Type varchar
+	 * @param $table_name -- table name:: Type varchar
   	  * @param $module -- module:: Type varchar
  	 */
 	function insertIntoFAQCommentTable($table_name, $module)
@@ -140,4 +143,3 @@ class Faq extends CRMEntity {
 	}
 
 }
-?>
