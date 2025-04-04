@@ -108,4 +108,14 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
     {
         return $this->db;
     }
+
+    public function disableForeignKeyCheck(): void
+    {
+        $this->getDB()->pquery('SET FOREIGN_KEY_CHECKS = 0');
+    }
+
+    public function enableForeignKeyCheck(): void
+    {
+        $this->getDB()->pquery('SET FOREIGN_KEY_CHECKS = 0');
+    }
 }

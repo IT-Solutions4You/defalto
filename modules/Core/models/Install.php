@@ -845,7 +845,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     public function updateToStandardModule()
     {
         // Mark the module as Standard module
-        $this->db->pquery('UPDATE vtiger_tab SET customized=0 WHERE name=?', [$this->moduleName]);
+        $this->db->pquery('UPDATE vtiger_tab SET customized=0,source=NULL WHERE name=?', [$this->moduleName]);
     }
 
     /**
