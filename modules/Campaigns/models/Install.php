@@ -7,12 +7,18 @@ class Campaigns_Install_Model extends Core_Install_Model {
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        ['Campaigns', 'Accounts', 'Accounts', 'add,select', 'get_accounts', '',],
-        ['Campaigns', 'Contacts', 'Contacts', 'add,select', 'get_contacts', '',],
-        ['Campaigns', 'Leads', 'Leads', 'add,select', 'get_leads', '',],
-        ['Campaigns', 'Potentials', 'Potentials', 'add', 'get_opportunities', '',],
-        ['Campaigns', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
+        ['Leads', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', ],
+        ['Contacts', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', ],
+        ['Campaigns', 'Contacts', 'Contacts', 'add,select', 'get_contacts', ],
+        ['Campaigns', 'Leads', 'Leads', 'add,select', 'get_leads', ],
+        ['Campaigns', 'Potentials', 'Potentials', 'add', 'get_opportunities', ],
+        ['Campaigns', 'Calendar', 'Activities', 'add', 'get_activities', ],
+        ['Accounts', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', ],
+        ['Campaigns', 'Accounts', 'Accounts', 'add,select', 'get_accounts', ],
+        ['Campaigns', 'Appointments', 'Appointments', '', 'get_related_list', ],
+        ['Campaigns', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', ],
     ];
+
 
     public function addCustomLinks(): void
     {
@@ -47,6 +53,8 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 1,
                     'entity_identifier' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 1,
                 ],
                 'campaign_no' => [
                     'name' => 'campaign_no',
@@ -89,6 +97,8 @@ class Campaigns_Install_Model extends Core_Install_Model {
                         'Telemarketing',
                         'Others',
                     ],
+                    'filter' => 1,
+                    'filter_sequence' => 2,
                 ],
                 'product_id' => [
                     'name' => 'product_id',
@@ -124,6 +134,8 @@ class Campaigns_Install_Model extends Core_Install_Model {
                         'Completed',
                         'Cancelled',
                     ],
+                    'filter' => 1,
+                    'filter_sequence' => 3,
                 ],
                 'closingdate' => [
                     'name' => 'closingdate',
@@ -138,6 +150,8 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 5,
                 ],
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',
@@ -152,6 +166,8 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 6,
                 ],
                 'numsent' => [
                     'name' => 'numsent',
@@ -302,6 +318,8 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 4,
                 ],
                 'budgetcost' => [
                     'name' => 'budgetcost',
