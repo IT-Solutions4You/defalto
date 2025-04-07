@@ -11,7 +11,7 @@
     <div class="modal-content">
         {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE="{vtranslate($MODULE,$MODULE)} &nbsp;&nbsp;<small>({$CURRENCY_NAME})</small>"}
         <div class="modal-body">
-            <div id="popupPageContainer" class="contentsDiv col-sm-12">
+            <div id="ItemsPopupContainer" class="contentsDiv col-sm-12">
                 <form id="InventoryItemPopupForm">
                     <input type="hidden" name="module" value="{$MODULE}"/>
                     <input type="hidden" name="record" value="{$RECORD}"/>
