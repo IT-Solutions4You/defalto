@@ -105,7 +105,11 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $viewer->assign('ITEM_TYPE', $request->get('item_type'));
         $viewer->assign('CURRENCY_NAME', $currencyInfo['currency_name']);
         $viewer->assign('CURRENCY_SYMBOL', $currencyInfo['currency_symbol']);
-        $viewer->view('PopupItemEdit.tpl', $moduleName);
+        if ($request->get('item_type') == '') {
+            $viewer->view('PopupTextEdit.tpl', $moduleName);
+        } else {
+            $viewer->view('PopupItemEdit.tpl', $moduleName);
+        }
     }
 
     /**

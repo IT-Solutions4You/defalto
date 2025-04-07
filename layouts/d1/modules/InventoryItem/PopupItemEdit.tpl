@@ -371,5 +371,15 @@
                 </form>
             </div>
         </div>
+        <div class="modal-footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-6"><a href="#" class="btn btn-primary cancelLink" type="reset">{vtranslate('LBL_CANCEL')}</a></div>
+                    <div class="col-6 text-end">
+                        <button class="btn btn-primary active saveButton" name="saveButton"><strong>{vtranslate('LBL_SAVE')}</strong></button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

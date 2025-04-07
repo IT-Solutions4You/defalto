@@ -1062,9 +1062,35 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         /**
          * TODO: Save action
          */
-        container.on('click', '.saveRow', function () {
-            self.saveProductLine(rowNumber);
-            jQuery('.item_text_td', row).css('padding-bottom', '0px');
+        container.on('click', '.saveButton', function () {
+            /*self.saveProductLine(rowNumber);
+            jQuery('.item_text_td', row).css('padding-bottom', '0px');*/
+            let data = jQuery('#InventoryItemPopupForm', container).serialize();
+            jQuery.ajax({
+                url: 'index.php',
+                method: 'POST',
+                data: {
+                    module: 'InventoryItem',
+                    action: 'SaveFromPopup',
+                    for_record: app.getRecordId(),
+                    data: data
+                },
+                success: function (response) {
+                    console.log(response);
+
+                    container.trigger('lineSaved', [response]);
+                    container.find('.btn-close').trigger('click');
+                },
+                error: function (xhr, status, error) {
+                    app.helper.showErrorNotification({message: app.vtranslate('JS_PRODUCT_LINE_SAVE_ERROR', 'InventoryItem')});
+
+                    container.trigger('lineErrorSaving', [error]);
+                }
+            });
+        });
+
+        container.on('click', '.cancelLink', function () {
+            container.find('.btn-close').trigger('click');
         });
 
         /**
