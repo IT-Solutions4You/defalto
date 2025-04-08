@@ -1214,6 +1214,7 @@ input[type=checkbox]:checked {
     right: 0;
 }
 
+#headerForm .fieldValue .editAction,
 #detailView .fieldValue .editAction {
     margin: -0.5rem 0;
     padding: 0.5rem;
@@ -1248,7 +1249,7 @@ input[type=checkbox]:checked {
 
 .overlayDetailHeader .recordBasicInfo .inputElement,
 .detailview-header .recordBasicInfo .inputElement {
-    width: 70%;
+    width: 100%;
 }
 
 .overlayDetailHeader .recordBasicInfo .referencefield-wrapper .inputElement,
@@ -4483,4 +4484,7 @@ input[type=number] {
 }
 .editElement .select2-container {
     overflow: auto;
+}
+.word-break-all {
+    word-break: break-all;
 }
