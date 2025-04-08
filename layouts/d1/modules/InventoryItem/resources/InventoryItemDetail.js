@@ -1059,22 +1059,36 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     setupListeners: function (container) {
         const self = this;
 
-        /**
-         * TODO: Save action
-         */
         container.on('click', '.saveButton', function () {
-            /*self.saveProductLine(rowNumber);
-            jQuery('.item_text_td', row).css('padding-bottom', '0px');*/
-            let data = jQuery('#InventoryItemPopupForm', container).serialize();
+            let data = {action: 'SaveFromPopup'};
+            container.find('input, select, textarea').each(function () {
+                const element = jQuery(this);
+                const name = element.attr('name');
+                if (name) {
+                    if (element.is(':checkbox')) {
+                        data[name] = element.is(':checked') ? element.val() : '';
+                    } else if (element.is('textarea')) {
+                        const instance = CKEDITOR.instances[element.attr('id')];
+
+                        if (instance) {
+                            data[name] = instance.getData();
+                        } else {
+                            data[name] = element.val();
+                        }
+                    } else {
+                        data[name] = element.val();
+                    }
+                }
+            });
+            let taxElement = jQuery('select.tax', container);
+            let selectedOption = taxElement.find('option:selected');
+            data.taxid = selectedOption.data('taxid');
+
+
             jQuery.ajax({
                 url: 'index.php',
                 method: 'POST',
-                data: {
-                    module: 'InventoryItem',
-                    action: 'SaveFromPopup',
-                    for_record: app.getRecordId(),
-                    data: data
-                },
+                data: data,
                 success: function (response) {
                     console.log(response);
 
@@ -1131,9 +1145,12 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
 
         container.find('input.autoComplete').autocomplete({
-            'minLength': '3',
+            'minLength': '2',
             'source': function (request, response) {
-                const params = {};
+                const params = {
+                    'module': 'InventoryItem',
+                    'action': 'PopupBasicAjax',
+                };
                 params.search_module = container.find('.lineItemPopup').data('moduleName');
                 params.search_value = request.term;
 
@@ -1189,7 +1206,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             let recordData = responseData[id];
             jQuery('input.productid', container).val(id);
             jQuery('textarea.description', container).text(recordData.description);
-            const  editorInstance = CKEDITOR.instances[jQuery('textarea.description', container).attr('id')];
+            const editorInstance = CKEDITOR.instances[jQuery('textarea.description', container).attr('id')];
 
             if (editorInstance) {
                 editorInstance.setData(recordData.description);
