@@ -51,11 +51,7 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
             $priceFieldName = $possiblePriceFieldName;
         }
 
-        $isLineItem = false;
-
         if (method_exists($searchModuleModel, 'searchRecordsOnSequenceNumber')) {
-            $isLineItem = true;
-
             foreach ($records as $moduleName => $recordModels) {
                 foreach ($recordModels as $recordId => $recordModel) {
                     $records[$moduleName][$recordId] = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
@@ -63,6 +59,7 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
             }
 
             $sequenceBasedRecords = $searchModuleModel->searchRecordsOnSequenceNumber($searchValue, $relatedModule);
+
             if ($sequenceBasedRecords) {
                 foreach ($sequenceBasedRecords as $recordId => $recordModel) {
                     $records[$searchModule][$recordId] = $recordModel;
@@ -83,6 +80,10 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
                     }
 
                     $recordLabel .= decode_html($recordModel->getName());
+
+                    if ($searchModule === 'Products' && $recordModel->get('productcode')) {
+                        $recordLabel .= ' - ' . $recordModel->get('productcode');
+                    }
 
                     if ($priceFieldName) {
                         $recordLabel .= ' (' . $recordModel->get($priceFieldName) . ')';
