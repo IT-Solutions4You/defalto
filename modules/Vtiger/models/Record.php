@@ -862,4 +862,24 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 
         return (int)$currencyId;
     }
+
+    /**
+     * @return string
+     */
+    public function getImageUrl(): string
+    {
+        $images = $this->getImageDetails();
+
+        if (empty($images)) {
+            return '';
+        }
+
+        foreach ($images as $image) {
+            if (!empty($image['url'])) {
+                return $image['url'];
+            }
+        }
+
+        return '';
+    }
 }

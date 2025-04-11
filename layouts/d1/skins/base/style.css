@@ -4488,3 +4488,24 @@ input[type=number] {
 .word-break-all {
     word-break: break-all;
 }
+.h-2rem {
+    min-height: 2rem;
+}
+.mt-1rem {
+    margin-top: 1rem;
+}
+.w-2rem {
+    min-width: 2rem;
+}
+.h-4rem {
+    min-height: 4rem;
+}
+.w-4rem {
+    min-width: 4rem;
+}
+.h-3rem {
+    min-height: 3rem;
+}
+.w-3rem {
+    min-width: 3rem;
+}
