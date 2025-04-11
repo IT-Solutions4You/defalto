@@ -226,7 +226,7 @@ class MailManager_Connector_Connector {
 	 * Used to update the folders optionus
 	 * @param imap_stats flag $options
 	 */
-    public function updateFolders($options = SA_UNSEEN)
+    public function updateFolders($options = 4)
     {
         $folders = $this->getFolders(); // Initializes the folder Instance
 
