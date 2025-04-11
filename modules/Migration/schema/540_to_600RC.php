@@ -112,7 +112,6 @@ if(!defined('INSTALLATION_MODE')) {
 	}
 }
 
-
 Migration_Index_View::ExecuteQuery("CREATE TABLE IF NOT EXISTS vtiger_shorturls (
 					id int(11) NOT NULL AUTO_INCREMENT,
 					uid varchar(50) DEFAULT NULL,
@@ -123,20 +122,6 @@ Migration_Index_View::ExecuteQuery("CREATE TABLE IF NOT EXISTS vtiger_shorturls 
 					PRIMARY KEY (id),
 					KEY uid (uid)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8", array());
-
-$moduleInstance = Vtiger_Module::getInstance('Potentials');
-$block = Vtiger_Block::getInstance('LBL_OPPORTUNITY_INFORMATION', $moduleInstance);
-
-$forecast_field = new Vtiger_Field();
-$forecast_field->name = 'forecast_amount';
-$forecast_field->label = 'Forecast Amount';
-$forecast_field->table ='vtiger_potential';
-$forecast_field->column = 'forecast_amount';
-$forecast_field->columntype = 'decimal(25,4)';
-$forecast_field->typeofdata = 'N~O';
-$forecast_field->uitype = '71';
-$forecast_field->masseditable = '0';
-$block->addField($forecast_field);
 
 global $adb;
 $workflowManager = new VTWorkflowManager($adb);
@@ -660,24 +645,6 @@ foreach ($inventoryModules as $module => $details) {
 // Add Key Metrics widget.
 $homeModule = Vtiger_Module::getInstance('Home');
 $homeModule->addLink('DASHBOARDWIDGET', 'Key Metrics', 'index.php?module=Home&view=ShowWidget&name=KeyMetrics');
-
-$moduleArray = array('Accounts' => 'LBL_ACCOUNT_INFORMATION', 'Contacts' => 'LBL_CONTACT_INFORMATION', 'Potentials' => 'LBL_OPPORTUNITY_INFORMATION');
-foreach ($moduleArray as $module => $block) {
-    $moduleInstance = Vtiger_Module::getInstance($module);
-    $blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
-
-    $field = new Vtiger_Field();
-    $field->name = 'isconvertedfromlead';
-    $field->label = 'Is Converted From Lead';
-    $field->uitype = 56;
-    $field->column = 'isconvertedfromlead';
-    $field->displaytype = 2;
-    $field->defaultvalue = 'no';
-    $field->columntype = 'varchar(3)';
-    $field->typeofdata = 'C~O';
-    $blockInstance->addField($field);
-}
-
 $homeModule = Vtiger_Module::getInstance('Home');
 $homeModule->addLink('DASHBOARDWIDGET', 'Mini List', 'index.php?module=Home&view=ShowWidget&name=MiniList');
 

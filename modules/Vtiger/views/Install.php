@@ -73,5 +73,7 @@ class Vtiger_Install_View extends Vtiger_Index_View
                 Core_Install_Model::getInstance('module.preuninstall', $moduleName)->deleteModule();
                 break;
         }
+
+        Core_Install_Model::updateModuleMetaFiles();
     }
 }

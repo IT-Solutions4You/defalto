@@ -948,4 +948,14 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             $emails->setReferenceModule();
         }
     }
+
+    /**
+     * @return void
+     */
+    public static function updateModuleMetaFiles(): void
+    {
+        require_once 'vtlib/Vtiger/Deprecated.php';
+        Vtiger_Deprecated::createModuleMetaFile();
+        Vtiger_Deprecated::createModuleGroupMetaFile();
+    }
 }
