@@ -1969,4 +1969,29 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
 
         return $config;
     }
+
+    /**
+     * @param string $category
+     * @return string
+     */
+    public function getCustomViewUrl(string $category = ''): string
+    {
+        if ($this->getDefaultViewName() !== 'List') {
+            $url = $this->getDefaultUrl();
+        } else {
+            $cvId = $this->getDefaultCustomFilter();
+
+            if ($cvId) {
+                $url = implode('', [$this->getListViewUrl(), '&viewname=', $cvId]);
+            } else {
+                $url = $this->getListViewUrlWithAllFilter();
+            }
+        }
+
+        if (!empty($category)) {
+            $url .= '&app=' . $category;
+        }
+
+        return $url;
+    }
 }

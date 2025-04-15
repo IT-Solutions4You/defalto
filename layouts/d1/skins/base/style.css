@@ -4509,3 +4509,18 @@ input[type=number] {
 .w-3rem {
     min-width: 3rem;
 }
+.w-25vw {
+    min-width: 25vw;
+}
+.w-25vw-max {
+    max-width: 25vw;
+}
+.w-30rem {
+    width: 30rem;
+}
+.dropdown-item .dropdown-action {
+    opacity: 0;
+}
+.dropdown-item:hover .dropdown-action {
+    opacity: 1;
+}
