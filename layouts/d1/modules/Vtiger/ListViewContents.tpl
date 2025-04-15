@@ -11,6 +11,7 @@
 <div>
     <input type="hidden" name="view" id="view" value="{$VIEW}"/>
     <input type="hidden" name="cvid" value="{$VIEWID}"/>
+    <input type="hidden" name="viewname" value="{$VIEWID}"/>
     <input type="hidden" name="pageStartRange" id="pageStartRange" value="{$PAGING_MODEL->getRecordStartRange()}"/>
     <input type="hidden" name="pageEndRange" id="pageEndRange" value="{$PAGING_MODEL->getRecordEndRange()}"/>
     <input type="hidden" name="previousPageExist" id="previousPageExist" value="{$PAGING_MODEL->isPrevPageExists()}"/>

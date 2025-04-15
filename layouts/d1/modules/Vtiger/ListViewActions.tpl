@@ -20,7 +20,12 @@
             {/if}
         {/foreach}
         <div class="row">
-            <div class="col-lg-auto pb-3">
+            <div class="col pb-3">
+                {include file='ListViewTags.tpl'|vtemplate_path:$MODULE}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg pb-3">
                 <div class="listViewActionsContainer" role="group" aria-label="...">
                     {if $editAction}
                         <button type="button" class="btn btn-outline-secondary me-1" id={$MODULE}_listView_massAction_{$editAction->getLabel()}
@@ -114,9 +119,6 @@
                     {/if}
                 </div>
             </div>
-            <div class="col-lg-4 mx-auto pb-3">
-                {include file="ListViewCustomViews.tpl"|vtemplate_path:$MODULE}
-            </div>
             <div class="col-lg-auto pb-3">
                 {assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}
                 {include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
@@ -150,11 +152,6 @@
                 <div class="hide messageContainer py-2">
                     <div class="text-center"><a href="#" id="deSelectAllMsgDiv" class="fs-5 text-primary">{vtranslate('LBL_DESELECT_ALL_RECORDS',$MODULE)}</a></div>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col pb-3">
-                {include file='ListViewTags.tpl'|vtemplate_path:$MODULE}
             </div>
         </div>
     </div>
