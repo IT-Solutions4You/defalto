@@ -463,7 +463,6 @@ Vtiger.Class("Vtiger_List_Js", {
 		self.markSelectedIdsCheckboxes();
 		self.registerDynamicListHeaders();
 		self.registerPostLoadListViewActions();
-		self.registerCustomViewsSelect();
 	},
 	placeListContents: function (contents) {
 		var container = this.getListViewContainer();
@@ -2699,64 +2698,48 @@ Vtiger.Class("Vtiger_List_Js", {
 		//For Pagination
 		self.initializePaginationEvents();
 		//END
-		self.registerCustomViewsSelect();
 		self.registerCustomViewsEvents();
+		self.registerSearch();
+		self.registerOpenLink();
 
 		vtUtils.registerReplaceCommaWithDot($(document));
 	},
-	updateCustomViewsButtons: function (container) {
-		let self = this,
-			filterData = self.getCustomViewsData(container.find('#custom_views')),
-			actionsElement = container.find('.customViewsActions'),
-			deleteFilter = actionsElement.find('.deleteFilter'),
-			editFilter = actionsElement.find('.editFilter'),
-			duplicateFilter = actionsElement.find('.duplicateFilter'),
-			toggleDefault = actionsElement.find('.toggleDefault'),
-			toggleDefaultIcon = toggleDefault.find('i'),
-			currentFilterName = $('.current-filter-name');
+	registerOpenLink() {
+		$(document).on('click', '[data-open-url]', function(e) {
+			let url = $(this).data('openUrl');
 
-		if('undefined' === typeof filterData) {
-			return;
-		}
+			if (!url || $(e.target).is('a') || $(e.target).parents('a').length) {
+				return;
+			}
 
-		editFilter.attr('data-url', filterData['editurl']);
-		editFilter.attr('data-id', filterData['id']);
-
-		deleteFilter.attr('data-url', filterData['deleteurl']);
-		deleteFilter.attr('data-id', filterData['id']);
-
-		duplicateFilter.attr('data-url', filterData['default']);
-
-		toggleDefault.attr('data-url', filterData['defaulttoggle']);
-		toggleDefault.attr('data-is-default', filterData['is-default']);
-		toggleDefault.attr('data-filter-id', filterData['filter-id']);
-
-		if (filterData['deletable'] && filterData['deleteurl']) {
-			deleteFilter.removeClass('hide');
-		} else {
-			deleteFilter.addClass('hide');
-		}
-
-		if (filterData['editable'] && filterData['editurl']) {
-			editFilter.removeClass('hide');
-		} else {
-			editFilter.addClass('hide');
-		}
-
-		if (1 === parseInt(filterData['isDefault'])) {
-			toggleDefaultIcon.attr('class', toggleDefaultIcon.attr('data-check-icon'));
-			toggleDefault.data('isDefault', 1);
-		} else {
-			toggleDefaultIcon.attr('class', toggleDefaultIcon.attr('data-uncheck-icon'));
-			toggleDefault.data('isDefault', 0);
-		}
-
-		currentFilterName.text(filterData['filterName']);
+			window.location.href = url;
+		});
 	},
-	getCustomViewsData: function (selectElement) {
-		let filterId = selectElement.select2('val');
+	simplifyString(value) {
+		value = value.toLowerCase();
+		value = value.replaceAll(' ', '');
 
-		return this.getFilterData(filterId);
+		return value;
+	},
+	registerSearch() {
+		const self = this;
+
+		$(document).on('keyup', '[data-search]', function () {
+			let searchValue = self.simplifyString($(this).val()),
+				searchId = $(this).data('search'),
+				searchElements = $('[data-search-element="' + searchId + '"]')
+
+			searchElements.each(function(i, e) {
+				let element = $(e),
+					elementValue = self.simplifyString(element.data('searchValue'));
+
+				if(elementValue.indexOf(searchValue) >= 0) {
+					element.show();
+				} else {
+					element.hide();
+				}
+			});
+		});
 	},
 	getFilterElement: function (filterId) {
 		return $('[data-filter-id="' + filterId + '"]');
@@ -2764,70 +2747,43 @@ Vtiger.Class("Vtiger_List_Js", {
 	getFilterData: function (filterId) {
 		return this.getFilterElement(filterId).data();
 	},
+	getMainContainer() {
+		return $('main');
+	},
 	registerCustomViewsEvents: function () {
 		const self = this,
-			container = self.getListViewContainer();
+			container = self.getMainContainer();
 
-		container.on('change', '#custom_views', function (e) {
-			let selectElement = $(e.currentTarget),
-				filterData = self.getCustomViewsData(selectElement);
-
-			self.resetData();
-			self.filterClick = true;
-			self.loadFilter(filterData['filterId'], {'page': ''});
-			self.updateCustomViewsButtons(container, filterData);
-		});
-
-		container.on('click', 'li.createFilter', function (e) {
+		container.on('click', '[data-cv-create-url]', function (e) {
 			let element = jQuery(e.currentTarget);
-			element.trigger('post.CreateFilter.click', {'url': element.data('url')});
+			if (typeof element.data('cvCreateUrl') == "undefined") return;
+
+			app.event.trigger('post.CreateFilter.click', {'url': element.data('cvCreateUrl')});
 		});
 
-		container.on('click', 'li.editFilter,li.duplicateFilter', function (e) {
+		container.on('click', '[data-cv-edit-url]', function (e) {
 			let element = jQuery(e.currentTarget);
-			if (typeof element.data('url') == "undefined") return;
-			element.trigger('post.CreateFilter.click', {'url': element.data('url')});
+			if (typeof element.data('cvEditUrl') == "undefined") return;
+
+			app.event.trigger('post.CreateFilter.click', {'url': element.data('cvEditUrl')});
 		});
 
-		container.on('click', 'li.deleteFilter', function (e) {
+		container.on('click', '[data-cv-duplicate-url]', function (e) {
 			let element = jQuery(e.currentTarget);
-			if (typeof element.data('url') == "undefined") return;
-			element.trigger('post.DeleteFilter.click', {'url': element.data('url')});
+			if (typeof element.data('cvDuplicateUrl') == "undefined") return;
+
+			app.event.trigger('post.CreateFilter.click', {'url': element.data('cvDuplicateUrl')});
 		});
 
-		container.on('click','li.toggleDefault',function(e){
+		container.on('click', '[data-cv-delete-url]', function (e) {
 			let element = jQuery(e.currentTarget);
-			element.trigger('post.ToggleDefault.click',{'url':element.data('url')});
-		});
-
-		container.on('post.ToggleDefault.saved', function (e, params) {
-			let target = $(e.target),
-				icon = target.find('i');
-
-			if (1 === parseInt(params['isdefault'])) {
-				target.data('isDefault', 1);
-				icon.attr('class', icon.attr('data-check-icon'))
-			} else {
-				target.data('isDefault', 0);
-				icon.attr('class', icon.attr('data-uncheck-icon'))
-			}
+			if (typeof element.data('cvDeleteUrl') == "undefined") return;
+			element.trigger('post.DeleteFilter.click', {'url': element.data('cvDeleteUrl')});
 		});
 
 		container.on('post.DeletedFilter', function (e) {
-			let selectElement = container.find('#custom_views'),
-				allCvId = jQuery('[name="allCvId"]').val();
-
-			selectElement.val(allCvId).trigger('change');
+			window.location.reload();
 		});
-
-	},
-	registerCustomViewsSelect: function () {
-		const self = this,
-			container = self.getListViewContainer();
-
-		app.showSelect2ElementView(container.find('#custom_views'));
-
-		self.updateCustomViewsButtons(container);
 	},
 	registerHeaderReflowOnListSearchSelections: function () {
 		var listViewContentDiv = this.getListViewContainer();

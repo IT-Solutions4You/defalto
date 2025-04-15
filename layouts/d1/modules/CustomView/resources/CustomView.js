@@ -250,7 +250,7 @@ jQuery.Class("Vtiger_CustomView_Js",{
 	registerEvents : function() {
 		const self = this;
 
-		jQuery(document).on('post.CreateFilter.click',function(e,params){
+		app.event.on('post.CreateFilter.click',function(e,params){
 			self.doOperation(params.url).then(function(data){
 				self.showCreateFilter(data);
 				var form = jQuery('#CustomView');

@@ -18,53 +18,46 @@
                     </div>
                 </div>
             </div>
-            <div class="col-3 col-sm-4 col-md-5 transitionsAllHalfSecond module-breadcrumb module-breadcrumb-{$REQUEST_INSTANCE.view}">
-                <div class="w-100 text-truncate text-nowrap fs-4 px-xs-3 ps-lg-3">
-                    {if 'Settings' eq $REQUEST_INSTANCE.parent}
-                        {assign var=SETTINGS_MODULE_MODEL value=Settings_Vtiger_Module_Model::getInstance(join(['Settings:',$MODULE]))}
-                        {assign var=DEFAULT_FILTER_URL value=$SETTINGS_MODULE_MODEL->getDefaultUrl()}
-                        {assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}
-                        {assign var=SINGLE_MODULE_LABEL value=vtranslate($SINGLE_MODULE_NAME, $QUALIFIED_MODULE)}
-                    {elseif $MODULE}
-                        {assign var=MODULE_MODEL value=Vtiger_Module_Model::getInstance($MODULE)}
-                        {if $MODULE_MODEL->getDefaultViewName() neq 'List'}
-                            {assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getDefaultUrl()}
-                        {else}
-                            {assign var=DEFAULT_FILTER_ID value=$MODULE_MODEL->getDefaultCustomFilter()}
-                            {if $DEFAULT_FILTER_ID}
-                                {assign var=CVURL value="&viewname="|cat:$DEFAULT_FILTER_ID}
-                                {assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getListViewUrl()|cat:$CVURL}
-                            {else}
-                                {assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getListViewUrlWithAllFilter()}
+            <div class="col module-breadcrumb module-breadcrumb-{$REQUEST_INSTANCE.view}">
+                <div class="row align-items-center flex-nowrap">
+                    <div class="col-auto">
+                        {if 'Settings' eq $REQUEST_INSTANCE.parent}
+                            {assign var=SETTINGS_MODULE_MODEL value=Settings_Vtiger_Module_Model::getInstance(join(['Settings:',$MODULE]))}
+                            {assign var=DEFAULT_FILTER_URL value=$SETTINGS_MODULE_MODEL->getDefaultUrl()}
+                            {assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}
+                            {assign var=SINGLE_MODULE_LABEL value=vtranslate($SINGLE_MODULE_NAME, $QUALIFIED_MODULE)}
+                        {elseif $MODULE}
+                            {assign var=MODULE_MODEL value=Vtiger_Module_Model::getInstance($MODULE)}
+                            {assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}
+                            {assign var=SINGLE_MODULE_LABEL value=vtranslate($SINGLE_MODULE_NAME, $MODULE)}
+                            {assign var=CUSTOM_VIEW_URL value=$MODULE_MODEL->getCustomViewUrl($SELECTED_MENU_CATEGORY)}
+                            {if $REQUEST_INSTANCE.view eq 'List'}
+                                {assign var=SINGLE_MODULE_LABEL value=vtranslate($MODULE, $MODULE)}
                             {/if}
+                            {if isset($smarty.session.lvs) && isset($smarty.session.lvs.$MODULE) && isset($smarty.session.lvs.$MODULE.viewname)}
+                                {assign var=VIEWID value=$smarty.session.lvs.$MODULE.viewname}
+                            {/if}
+                            {if isset($VIEWID) && $VIEWID}
+                                {assign var=CUSTOM_VIEW_URL value=implode('', [$MODULE_MODEL->getListViewUrl(), '&viewname=', $VIEWID, '&app=', $SELECTED_MENU_CATEGORY])}
+                            {/if}
+                        {else}
+                            {assign var=SINGLE_MODULE_NAME value='SINGLE_Settings'}
+                            {assign var=SINGLE_MODULE_LABEL value=vtranslate('SINGLE_Settings', 'Vtiger')}
+                            {assign var=CUSTOM_VIEW_URL value='index.php'}
                         {/if}
-                        {assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}
-                        {assign var=SINGLE_MODULE_LABEL value=vtranslate($SINGLE_MODULE_NAME, $MODULE)}
-                        {assign var=CUSTOM_VIEW_URL value=implode('', [$DEFAULT_FILTER_URL,'&app=',$SELECTED_MENU_CATEGORY])}
-                        {if isset($smarty.session.lvs) && isset($smarty.session.lvs.$MODULE) && isset($smarty.session.lvs.$MODULE.viewname)}
-                            {assign var=VIEWID value=$smarty.session.lvs.$MODULE.viewname}
-                        {/if}
-                        {if isset($VIEWID) && $VIEWID}
-                            {assign var=CUSTOM_VIEW_URL value=implode('', [$MODULE_MODEL->getListViewUrl(), '&viewname=', $VIEWID, '&app=', $SELECTED_MENU_CATEGORY])}
-                        {/if}
-                    {else}
-                        {assign var=SINGLE_MODULE_NAME value='SINGLE_Settings'}
-                        {assign var=SINGLE_MODULE_LABEL value=vtranslate('SINGLE_Settings', 'Vtiger')}
-                        {assign var=CUSTOM_VIEW_URL value='index.php'}
-                    {/if}
-                    <a class="module-title fs-3" title="{$SINGLE_MODULE_LABEL}" href='{$CUSTOM_VIEW_URL}'>
-                        {$SINGLE_MODULE_LABEL}
-                    </a>
+                        <a class="module-title fs-3" title="{$SINGLE_MODULE_LABEL}" href='{$CUSTOM_VIEW_URL}'>{$SINGLE_MODULE_LABEL}</a>
+                    </div>
+                    <div class="current-filter-slash col-auto p-0 fs-3">/</div>
                     {if $RECORD and $REQUEST_INSTANCE.view eq 'Edit'}
-                        <span class="current-filter-slash d-inline px-2">/</span>
-                        <a class="current-filter-name filter-name cursorPointer" title="{$RECORD->get('label')}">{vtranslate('LBL_EDITING', $MODULE)} : {$RECORD->get('label')}</a>
+                        <a class="current-filter-name filter-name col cursorPointer fs-5" title="{$RECORD->get('label')}">{vtranslate('LBL_EDITING', $MODULE)} : {$RECORD->get('label')}</a>
                     {elseif $REQUEST_INSTANCE.view eq 'Edit'}
-                        <span class="current-filter-slash d-inline px-2">/</span>
-                        <a class="current-filter-name filter-name cursorPointer">{vtranslate('LBL_ADDING_NEW', $MODULE)}</a>
-                    {/if}
-                    {if $RECORD and $REQUEST_INSTANCE.view eq 'Detail'}
-                        <span class="current-filter-slash d-inline px-2">/</span>
-                        <a class="current-filter-name filter-name cursorPointer" title="{$RECORD->get('label')}">{$RECORD->get('label')}</a>
+                        <a class="current-filter-name filter-name cursorPointer col fs-5">{vtranslate('LBL_ADDING_NEW', $MODULE)}</a>
+                    {elseif $RECORD and $REQUEST_INSTANCE.view eq 'Detail'}
+                        <a class="current-filter-name filter-name cursorPointer col fs-5" title="{$RECORD->get('label')}">{$RECORD->get('label')}</a>
+                    {elseif $REQUEST_INSTANCE.view eq 'List' and $MODULE_MODEL and $MODULE_MODEL->isEntityModule()}
+                        {include file="partials/CustomView.tpl"|vtemplate_path:$MODULE}
+                    {else}
+                        <a class="current-filter-name filter-name col fs-5">{vtranslate($REQUEST_INSTANCE.view, $MODULE)}</a>
                     {/if}
                 </div>
             </div>
