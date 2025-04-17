@@ -2656,7 +2656,6 @@ Vtiger.Class("Vtiger_List_Js", {
 		self.registerDynamicDropdownPosition();
 		self.registerDropdownPosition();
 		self.registerConfigureColumnsEvents();
-		self.registerTagClick();
 
 		let recordSelectTrackerObj = self.getRecordSelectTrackerInstance();
 		recordSelectTrackerObj.registerEvents();
@@ -2987,54 +2986,6 @@ Vtiger.Class("Vtiger_List_Js", {
 	},
 	unMarkAllTags: function () {
 		this.getTagsContainer().find('.tag').removeClass('active');
-	},
-	registerTagClick: function () {
-		let self = this,
-			container = self.getListViewContainer();
-
-		container.on('click', '#listViewTagContainer .tag', function (e) {
-			let eventTriggerSourceElement = jQuery(e.target);
-			//if edit icon is clicked then we dont have to load the tag
-			if (eventTriggerSourceElement.is('.editTag')) {
-				return;
-			}
-
-			let element = jQuery(e.currentTarget),
-				tagId = element.data('id'),
-				viewId = element.data('cvId'),
-				isActive = element.is('.active');
-
-			self.unMarkAllTags();
-
-			let params = {};
-			params.search_params = '';
-			params.page = '';
-
-			if (isActive || !viewId || !tagId) {
-				element.removeClass('active');
-			} else {
-				element.addClass('active');
-
-				let listSearchParams = [];
-				listSearchParams[0] = [];
-
-				let tagSearchParams = [];
-				tagSearchParams.push('tags');
-				tagSearchParams.push('e');
-				tagSearchParams.push(tagId);
-				listSearchParams[0].push(tagSearchParams);
-
-				params.tag_params = JSON.stringify(listSearchParams);
-				params.tag = tagId;
-			}
-
-			self.loadListView(viewId, params);
-		});
-
-		container.on('click', '.moreTags', function (e) {
-			container.find('.moreListTags').removeClass('hide');
-			jQuery(e.currentTarget).addClass('hide');
-		});
 	},
 	loadListView: function (viewId, params) {
 		this.resetData();
