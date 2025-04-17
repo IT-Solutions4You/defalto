@@ -34,12 +34,6 @@
                             {if $REQUEST_INSTANCE.view eq 'List'}
                                 {assign var=SINGLE_MODULE_LABEL value=vtranslate($MODULE, $MODULE)}
                             {/if}
-                            {if isset($smarty.session.lvs) && isset($smarty.session.lvs.$MODULE) && isset($smarty.session.lvs.$MODULE.viewname)}
-                                {assign var=VIEWID value=$smarty.session.lvs.$MODULE.viewname}
-                            {/if}
-                            {if isset($VIEWID) && $VIEWID}
-                                {assign var=CUSTOM_VIEW_URL value=implode('', [$MODULE_MODEL->getListViewUrl(), '&viewname=', $VIEWID, '&app=', $SELECTED_MENU_CATEGORY])}
-                            {/if}
                         {else}
                             {assign var=SINGLE_MODULE_NAME value='SINGLE_Settings'}
                             {assign var=SINGLE_MODULE_LABEL value=vtranslate('SINGLE_Settings', 'Vtiger')}
@@ -85,7 +79,7 @@
                 </div>
             </div>
             <div id="navbar" class="global-actions collapse navbar navbar-expand col-lg-auto d-lg-block px-2 py-0 bg-body-secondary">
-                <div class="h-100 d-flex align-items-center">
+                <div class="h-100 d-flex align-items-center ms-auto">
                     <ul class="nav navbar-nav ms-auto align-items-center">
                     <li class="me-2">
                         <div class="dropdown">

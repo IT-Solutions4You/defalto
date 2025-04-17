@@ -237,7 +237,7 @@ class ListViewSession {
 		$_SESSION['lvs'][$module]['viewname'] = $viewId;
 	}
 
-	/**
+    /**
 	 * Function that reads current module filter
 	 * @param <String> $module - module name
 	 * @return <Integer>
@@ -247,4 +247,27 @@ class ListViewSession {
 			return $_SESSION['lvs'][$module]['viewname'];
 		}
 	}
+
+    /**
+     * @param string $module
+     * @param int $tagId
+     * @return void
+     */
+    public static function setCurrentTag(string $module, int $tagId): void
+    {
+        $_SESSION['lvs'][$module]['tag'] = $tagId;
+    }
+
+    /**
+     * @param string $module
+     * @return int
+     */
+    public static function getCurrentTag(string $module): int
+    {
+        if (!empty($_SESSION['lvs'][$module]['tag'])) {
+            return (int)$_SESSION['lvs'][$module]['tag'];
+        }
+
+        return 0;
+    }
 }

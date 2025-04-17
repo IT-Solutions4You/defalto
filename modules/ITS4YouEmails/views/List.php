@@ -40,6 +40,8 @@ class ITS4YouEmails_List_View extends Vtiger_List_View
         $tagSessionKey = $moduleName.'_TAG';
         $listViewModel = Vtiger_ListView_Model::getInstance($moduleName, $cvId, $listHeaders);
 
+        ListViewSession::setCurrentTag($moduleName, (int)$tag);
+
         if(!empty($requestViewName) && empty($tag)) {
             unset($_SESSION[$tagSessionKey]);
         }

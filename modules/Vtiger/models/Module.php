@@ -1988,6 +1988,25 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
             }
         }
 
+        $module = $this->getName();
+
+        if (!empty(ListViewSession::getCurrentTag($module))) {
+            $tagId = ListViewSession::getCurrentTag($module);
+            $tag = Vtiger_Tag_Model::getInstanceById($tagId);
+            $tag->setModuleName($module);
+
+            if($tag) {
+                $url = $tag->getListViewUrl();
+            }
+        } elseif (!empty(ListViewSession::getCurrentView($module))) {
+            $viewId = ListViewSession::getCurrentView($module);
+            $view = CustomView_Record_Model::getInstanceById($viewId);
+
+            if($view) {
+                $url = $view->getListViewUrl();
+            }
+        }
+
         if (!empty($category)) {
             $url .= '&app=' . $category;
         }

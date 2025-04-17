@@ -58,6 +58,8 @@ class Documents_List_View extends Vtiger_List_View {
 		$requestViewName = $request->get('viewname');
 		$tagSessionKey = $moduleName.'_TAG';
 
+        ListViewSession::setCurrentTag($moduleName, (int)$tag);
+
 		if(!empty($requestViewName) && empty($tag)) {
 			unset($_SESSION[$tagSessionKey]);
 		}
