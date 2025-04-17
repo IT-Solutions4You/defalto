@@ -8,12 +8,6 @@
 *}
 {strip}
 <div class="listViewTagsTemplate">
-    <div id="listViewTagContainer" class="tagContainer multiLevelTagList overflow-x-auto text-nowrap" {if $ALL_CUSTOMVIEW_MODEL} data-view-id="{$ALL_CUSTOMVIEW_MODEL->getId()}" {/if} data-list-tag-count="{Vtiger_Tag_Model::NUM_OF_TAGS_LIST}">
-        {foreach item=TAG_MODEL from=$TAGS name=tagCounter}
-            {assign var=TAG_ID value=$TAG_MODEL->getId()}
-            {include file="Tag.tpl"|vtemplate_path:$MODULE NO_DELETE=true ACTIVE=$CURRENT_TAG eq $TAG_ID ALL_CUSTOM_VIEW_ID=$ALL_CUSTOMVIEW_MODEL->getId()}
-        {/foreach}
-    </div>
     {include file="AddTagUI.tpl"|vtemplate_path:$MODULE RECORD_NAME="" TAGS_LIST=array()}
     <div id="dummyTagElement" class="hide">
         {assign var=TAG_MODEL value=Vtiger_Tag_Model::getCleanInstance()}

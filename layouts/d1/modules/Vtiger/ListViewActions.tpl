@@ -19,13 +19,9 @@
                 {* $a is added as its print the index of the array, need to find a way around it *}
             {/if}
         {/foreach}
+        {include file='ListViewTags.tpl'|vtemplate_path:$MODULE}
         <div class="row">
-            <div class="col pb-3">
-                {include file='ListViewTags.tpl'|vtemplate_path:$MODULE}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg pb-3">
+            <div class="col-sm pb-3">
                 <div class="listViewActionsContainer" role="group" aria-label="...">
                     {if $editAction}
                         <button type="button" class="btn btn-outline-secondary me-1" id={$MODULE}_listView_massAction_{$editAction->getLabel()}
@@ -45,7 +41,6 @@
                             <i class="fa fa-comment"></i>
                         </button>
                     {/if}
-
                     {if php7_count($LISTVIEW_MASSACTIONS_1) gt 0 or $LISTVIEW_LINKS['LISTVIEW']|@count gt 0}
                         <div class="listViewMassActions d-inline-block" role="group">
                             <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown">
@@ -119,7 +114,7 @@
                     {/if}
                 </div>
             </div>
-            <div class="col-lg-auto pb-3">
+            <div class="col-sm-auto pb-3">
                 {assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}
                 {include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
             </div>
