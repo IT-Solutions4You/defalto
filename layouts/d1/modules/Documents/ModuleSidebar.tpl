@@ -27,33 +27,31 @@
                     <ul id="folders-list" class="nav nav-pills flex-column">
                         {foreach item=FOLDER from=$FOLDERS name=folderView}
                             {assign var=FOLDERNAME value=vtranslate($FOLDER->get('foldername'), $MODULE)}
-                            <li class="tab-item nav-link documentFolder w-100 {if $FOLDER_VALUE eq $FOLDER->getName()}active{/if}">
+                            <li class="tab-item nav-link documentFolder w-100 {if $FOLDER_VALUE eq $FOLDER->getName()}active{/if} {if 'Default' eq $FOLDER->get('foldername')}documentFolderClone{/if}">
                                 <div class="d-flex justify-content-between flex-nowrap">
                                     <a class="filterName text-truncate text-nowrap" href="javascript:void(0);" data-filter-id="{$FOLDER->get('folderid')}" data-folder-name="{$FOLDER->get('foldername')}" title="{$FOLDERNAME}">
                                         <i class="me-2 fa {if $FOLDER_VALUE eq $FOLDER->getName()}fa-folder-open{else}fa-folder{/if}"></i>
                                         <span class="foldername">{$FOLDERNAME}</span>
                                     </a>
-                                    {if $FOLDER->isEditable()}
-                                        <div class="dropdown">
-                                            <div class="ps-2 cursorPointer" data-bs-toggle="dropdown" aria-expanded="true">
-                                                <i class="fa fa-caret-down"></i>
-                                            </div>
-                                            <ul class="dropdown-menu dropdown-menu-right vtDropDown" role="menu">
-                                                <li class="editFolder " data-folder-id="{$FOLDER->get('folderid')}">
-                                                    <a class="dropdown-item" role="menuitem">
-                                                        <i class="fa fa-pencil-square-o"></i>
-                                                        <span class="ms-2">{vtranslate('Edit',$MODULE)}</span>
-                                                    </a>
-                                                </li>
-                                                <li class="deleteFolder " data-deletable="{!$FOLDER->hasDocuments()}" data-folder-id="{$FOLDER->get('folderid')}">
-                                                    <a class="dropdown-item" role="menuitem">
-                                                        <i class="fa fa-trash"></i>
-                                                        <span class="ms-2">{vtranslate('Delete',$MODULE)}</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
+                                    <div class="dropdown folderDropdown {if !$FOLDER->isEditable()}invisible{/if}">
+                                        <div class="ps-2 pe-1 cursorPointer" data-bs-toggle="dropdown" aria-expanded="true">
+                                            <i class="fa fa-caret-down"></i>
                                         </div>
-                                    {/if}
+                                        <ul class="dropdown-menu dropdown-menu-right vtDropDown" role="menu">
+                                            <li class="editFolder " data-folder-id="{$FOLDER->get('folderid')}">
+                                                <a class="dropdown-item" role="menuitem">
+                                                    <i class="fa-solid fa-pencil text-secondary"></i>
+                                                    <span class="ms-2">{vtranslate('Edit',$MODULE)}</span>
+                                                </a>
+                                            </li>
+                                            <li class="deleteFolder " data-deletable="{!$FOLDER->hasDocuments()}" data-folder-id="{$FOLDER->get('folderid')}">
+                                                <a class="dropdown-item" role="menuitem">
+                                                    <i class="fa fa-trash text-secondary"></i>
+                                                    <span class="ms-2">{vtranslate('Delete',$MODULE)}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </li>
                         {/foreach}
