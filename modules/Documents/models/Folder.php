@@ -170,5 +170,15 @@ class Documents_Folder_Model extends Vtiger_Base_Model {
 		);
 	}
 
+    /**
+     * @return bool
+     */
+	public function isEditable(): bool
+    {
+		if('Default' === $this->getName()) {
+			return false;
+		}
+
+		return true;
+	}
 }
-?>
