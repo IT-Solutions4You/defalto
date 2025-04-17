@@ -1470,6 +1470,7 @@ $languageStrings = array(
     'LBL_AVG' => 'Avg',
     'LBL_MIN' => 'Min',
     'LBL_MAX' => 'Max',
+    'LBL_CREATE_LIST' => 'Create list',
 );
 
 $jsLanguageStrings = array(
