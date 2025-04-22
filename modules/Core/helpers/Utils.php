@@ -35,4 +35,28 @@ class Core_Utils_Helper
 
         return (string)$adb->query_result($result, 0, 'tandc');
     }
+
+    /**
+     * @param string $string
+     * @param string $search
+     * @return bool
+     */
+    public static function searchInString(string $string, string $search): bool
+    {
+        $string = self::simplifyString($string);
+        $search = self::simplifyString($search);
+
+        return str_contains($string, $search);
+    }
+
+    /**
+     * @param string $string
+     * @return string
+     */
+    public static function simplifyString(string $string): string
+    {
+        $string = strtolower($string);
+
+        return str_replace([' ', ',', '.'], ['', '', ''], $string);
+    }
 }

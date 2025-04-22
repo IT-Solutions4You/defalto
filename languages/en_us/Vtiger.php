@@ -1470,6 +1470,7 @@ $languageStrings = array(
     'LBL_AVG' => 'Avg',
     'LBL_MIN' => 'Min',
     'LBL_MAX' => 'Max',
+    'LBL_CREATE_LIST' => 'Create list',
 );
 
 $jsLanguageStrings = array(
@@ -2067,4 +2068,5 @@ $jsLanguageStrings = array(
     'JS_NEXT' => 'Next',
     'JS_UPDATE_RECORD_TAXES_QUESTION' => 'Do you want to update the taxes of all records?',
     'JS_CLEAR' => 'Clear',
+    'JS_ASSIGNED_USER_HAS_CHANGE' => 'Assigned user has change',
 );

@@ -62,6 +62,15 @@
     --dt-yellow-color: #f4cf5e;
     --dt-light-yellow-color: #fefaef;
     --bs-primary-color: var(--dt-blue-color);
+    --bs-dropdown-link-active-bg: var(--dt-blue-color);
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+    --bs-dropdown-link-hover-bg: rgb(var(--bs-secondary-bg-rgb));
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    --bs-dropdown-link-active-bg: var(--dt-blue-color);
 }
 
 .nav-link {
@@ -168,8 +177,16 @@
     min-height: calc(100vh - var(--header-height) - var(--footer-height));
 }
 
+.h-main-max {
+    max-height: calc(100vh - var(--header-height) - var(--footer-height));
+}
+
 .h-list {
     min-height: calc(100vh - var(--header-height) - var(--footer-height) - 1.5rem);
+}
+
+.h-list-max {
+    max-height: calc(100vh - var(--header-height) - var(--footer-height) - 1.5rem);
 }
 
 .h-overlay {
@@ -1214,6 +1231,7 @@ input[type=checkbox]:checked {
     right: 0;
 }
 
+#headerForm .fieldValue .editAction,
 #detailView .fieldValue .editAction {
     margin: -0.5rem 0;
     padding: 0.5rem;
@@ -1248,7 +1266,7 @@ input[type=checkbox]:checked {
 
 .overlayDetailHeader .recordBasicInfo .inputElement,
 .detailview-header .recordBasicInfo .inputElement {
-    width: 70%;
+    width: 100%;
 }
 
 .overlayDetailHeader .recordBasicInfo .referencefield-wrapper .inputElement,
@@ -4483,4 +4501,43 @@ input[type=number] {
 }
 .editElement .select2-container {
     overflow: auto;
+}
+.word-break-all {
+    word-break: break-all;
+}
+.h-2rem {
+    min-height: 2rem;
+}
+.mt-1rem {
+    margin-top: 1rem;
+}
+.w-2rem {
+    min-width: 2rem;
+}
+.h-4rem {
+    min-height: 4rem;
+}
+.w-4rem {
+    min-width: 4rem;
+}
+.h-3rem {
+    min-height: 3rem;
+}
+.w-3rem {
+    min-width: 3rem;
+}
+.w-25vw {
+    min-width: 25vw;
+}
+.w-25vw-max {
+    max-width: 25vw;
+}
+.w-30rem {
+    width: 30rem;
+}
+.dropdown-item .dropdown-action {
+    opacity: 0;
+}
+.dropdown-item:hover .dropdown-action {
+    opacity: 1;
 }

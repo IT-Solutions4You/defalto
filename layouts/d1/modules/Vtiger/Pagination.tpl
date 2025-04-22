@@ -11,7 +11,7 @@
         {assign var=CLASS_VIEW_PAGING_INPUT_SUBMIT value='listViewPagingInputSubmit'}
         {assign var=CLASS_VIEW_BASIC_ACTION value='listViewBasicAction'}
     {/if}
-    <div class="pagination-container {$CLASS_VIEW_ACTION}">
+    <div class="pagination-container text-end {$CLASS_VIEW_ACTION}">
         <div class="pagination-arrows">
             <button id="PageNumbers" class="pageNumbers showTotalCountIcon btn">
                 <span class="pageNumbersText">

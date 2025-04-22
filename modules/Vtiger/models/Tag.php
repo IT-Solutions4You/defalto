@@ -336,6 +336,33 @@ class Vtiger_Tag_Model extends Vtiger_Base_Model {
         }
         return $tagsList;
     }
-}
 
-?>
+	public static function getAllByCurrentUser($moduleName) {
+		$currenUser = Users_Record_Model::getCurrentUserModel();
+
+		return self::getAllAccessible($currenUser->getId(), $moduleName);
+	}
+
+    public function getModule(): Vtiger_Module_Model
+    {
+        $module = $this->get('module');
+
+        return Vtiger_Module_Model::getInstance($module);
+    }
+
+    public function setModuleName(string $value): void
+    {
+        $this->set('module', $value);
+    }
+
+    public function getListViewUrl(): string
+    {
+        if ($this->isEmpty('module')) {
+            throw new AppException('Missing module in tag model');
+        }
+
+        $module = $this->getModule();
+
+        return $module->getListViewUrl() . '&tag_params=' . urlencode('[[["tags","e",' . $this->getId() . ']]]') . '&tag=' . $this->getId();
+    }
+}

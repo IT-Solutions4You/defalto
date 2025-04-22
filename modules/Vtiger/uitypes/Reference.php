@@ -85,7 +85,7 @@ class Vtiger_Reference_UIType extends Vtiger_Base_UIType {
         $referenceModuleName = $referenceModule->get('name');
         $entityNames = getEntityName($referenceModuleName, [$value]);
 
-        return $entityNames[$value];
+        return $entityNames[$value] ?: '';
     }
 
     public function getListSearchTemplateName() {

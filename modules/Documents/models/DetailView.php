@@ -31,7 +31,7 @@ class Documents_DetailView_Model extends Vtiger_DetailView_Model {
                 $filePreviewLinkModel = array(
                             'linktype' => 'DETAILVIEWBASIC',
                             'linklabel' => 'LBL_VIEW_FILE',
-                            'linkicon' => '',
+                            'linkicon' => '<i class="fa-solid fa-eye"></i>',
                             'linkurl' => 'Vtiger_Header_Js.previewFile(event,'.$recordModel->getId().')',
                             'filelocationtype' => $recordModel->get('filelocationtype'),
                             'filename' => $recordModel->get('filename'),

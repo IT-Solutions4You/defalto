@@ -225,19 +225,16 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js',{},{
 
 		html += '">';
 		html += '<input name="popupReferenceModule" type="hidden" value="' + referenceModules[0] + '"/>';
-		html += '<div class="input-group">'
+		html += '<div class="input-group flex-nowrap">'
 		html += '<input class="autoComplete form-control inputElement sourceField" type="search" data-fieldtype="reference" name="' + this.getName() + '"';
-
-		let reset = false;
 
 		if (value) {
 			html += ' value="' + value + '" readonly="readonly"';
-			reset = true;
 		}
 
 		html += '/>';
 
-		if (reset) {
+		if (value) {
 			html += '<a href="#" class="input-group-text clearReferenceSelection"> X </a>';
 		} else {
 			html += '<a href="#" class="input-group-text clearReferenceSelection hide"> X </a>';

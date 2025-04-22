@@ -121,20 +121,18 @@ Vtiger_List_Js("Documents_List_Js", {
 			listInstance.noRecordSelectedAlert();
 		}
     },
-    
+
     unMarkAllFilters : function() {
-        jQuery('.listViewFilter').removeClass('active');
+        jQuery('.customViewsContainer').find('.dropdown-item').removeClass('text-primary bg-body-secondary fw-bold');
     },
-    
-    unMarkAllTags : function() {
-        var container = jQuery('#listViewTagContainer');
-        container.find('.tag').removeClass('active').find('i.activeToggleIcon').removeClass('fa-circle-o').addClass('fa-circle');
-    },
-    
-    unMarkAllFolders : function() {
-        jQuery('.documentFolder').removeClass('active');
-        jQuery('.documentFolder').find('i').removeClass('fa-folder-open')
-        .addClass('fa-folder');
+
+    unMarkAllFolders: function () {
+        let element = jQuery('.documentFolder');
+
+        element.removeClass('active');
+        element.find('.fa-folder-open')
+            .removeClass('fa-folder-open')
+            .addClass('fa-folder');
     },
 
     registerFoldersClickEvent: function () {
@@ -152,49 +150,29 @@ Vtiger_List_Js("Documents_List_Js", {
 
             self.resetData();
             self.unMarkAllFilters();
-            self.unMarkAllTags();
             self.unMarkAllFolders();
             el.closest('li').addClass('active');
-            el.closest('li').find('i').removeClass('fa-folder').addClass('fa-folder-open');
+            el.closest('li').find('.fa-folder')
+                .removeClass('fa-folder')
+                .addClass('fa-folder-open');
 
             self.loadFilter(jQuery('input[name="allCvId"]').val(), {
                 folder_id: 'folderid', folder_value: el.data('folderName')
             });
         });
     },
-    
-    registerFiltersClickEvent : function() {
-        var self = this;
-        var filters = jQuery('#module-filters');
-        filters.on('click', '.listViewFilter', function() {
-            self.unMarkAllFolders();
+    addFolderToList: function (folderDetails) {
+        let clone = $('.documentFolderClone').clone(true);
+        clone.find('.filterName').attr({
+            'data-filter-id': folderDetails['folderid'],
+            'data-folder-name': folderDetails['folderName'],
+            'title': folderDetails['folderDesc'],
         });
-    },
+        clone.find('.foldername').text(folderDetails['folderName']);
+        clone.find('[data-folder-id]').attr('data-folder-id', folderDetails['folderid'])
+        clone.find('.folderDropdown').removeClass('invisible');
 
-    addFolderToList : function(folderDetails) {
-        let html = ''+
-        '<li class="tab-item nav-link fs-6 d-flex justify-content-between documentFolder">' +
-            '<div class="d-flex justify-content-between w-100">' +
-                '<a class="filterName" href="javascript:void(0);" data-filter-id="'+folderDetails.folderid+'" data-folder-name="'+folderDetails.folderName+'" title="'+folderDetails.folderDesc+'">' +
-                    '<i class="fa fa-folder"></i> '+
-                    '<span class="foldername ms-2">'+folderDetails.folderName+'</span>' +
-                '</a>'+
-                '<div class="dropdown">'+
-                    '<div  data-bs-toggle="dropdown" aria-expanded="true">' +
-                        '<i class="fa fa-caret-down"></i>' +
-                    '</div>'+
-                    '<ul class="dropdown-menu dropdown-menu-right vtDropDown" role="menu">' +
-                        '<li class="editFolder " data-folder-id="'+folderDetails.folderid+'">' +
-                            '<a class="dropdown-item" role="menuitem" ><i class="fa fa-pencil-square-o"></i><span class="ms-2">' + app.vtranslate('Edit') + '</span></a>' +
-                        '</li>' +
-                        '<li class="deleteFolder" data-deletable="1" data-folder-id="'+folderDetails.folderid+'">' +
-                            '<a class="dropdown-item" role="menuitem"><i class="fa fa-trash"></i><span class="ms-2">' + app.vtranslate('Delete') + '</span></a>' +
-                        '</li>'+
-                    '</ul>'+
-                '</div>'+
-            '</div>'+
-        '</li>';
-        jQuery('#folders-list').append(html).find('.documentFolder:last').find('.foldername').text(folderDetails.folderName);
+        jQuery('#folders-list').append(clone);
     },
     
     registerAddFolderModalEvents : function(container) {
@@ -272,53 +250,47 @@ Vtiger_List_Js("Documents_List_Js", {
 			}
         });
     },
-    
-    registerDeleteFolderEvent : function() {
-        var filters = jQuery('#module-filters');
-        filters.on('click','li.deleteFolder',function(e) {
-            var element = jQuery(e.currentTarget);
-            
-            var deletable = element.data('deletable');
-            if(deletable == '1') {
-                app.helper.showConfirmationBox({
-                    'message' : app.vtranslate('JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_DELETE')
-                }).then(function() {
-                    var folderId = element.data('folderId');
-                    var params = {
-                        module : app.getModuleName(),
-                        mode  : 'delete',
-                        action : 'Folder',
-                        folderid : folderId
-                    };
+
+    registerDeleteFolderEvent: function () {
+        let filters = jQuery('#module-filters');
+
+        filters.on('click', 'li.deleteFolder', function (e) {
+            let element = jQuery(e.currentTarget),
+                deletable = parseInt(element.data('deletable'));
+
+            if (1 === deletable) {
+                app.helper.showConfirmationBox({'message': app.vtranslate('JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_DELETE')}).then(function () {
+                    let folderId = element.data('folderId'),
+                        params = {
+                            module: app.getModuleName(),
+                            mode: 'delete',
+                            action: 'Folder',
+                            folderid: folderId
+                        };
                     app.helper.showProgress();
-                    app.request.post({'data' : params}).then(function(e,res) {
+                    app.request.post({data: params}).then(function (error, data) {
                         app.helper.hideProgress();
-                        if(!e) {
-                            filters.find('.documentFolder').filter(function() {
-                                var currentTarget = jQuery(this);
-                                if(currentTarget.find('a.filterName').data('filterId') == folderId) {
-                                    return true;
-                                }
-                                return false;
-                            }).remove();
+                        if (!error) {
+                            element.closest('.documentFolder').remove();
+
                             app.helper.showSuccessNotification({
-                                'message' : res.message
+                                'message': data.message
                             });
                         }
                     });
                 });
             } else {
                 app.helper.showAlertNotification({
-                    'message' : app.vtranslate('JS_FOLDER_IS_NOT_EMPTY')
+                    'message': app.vtranslate('JS_FOLDER_IS_NOT_EMPTY')
                 });
             }
         });
     },
-    
-    updateFolderInList : function(folderDetails) {
-        jQuery('#folders-list').find('a.filterName[data-filter-id="'+folderDetails.folderid+'"]')
-                .attr('title', folderDetails.folderDesc)
-                .find('.foldername').text(folderDetails.folderName);
+
+    updateFolderInList: function (folderDetails) {
+        jQuery('#folders-list').find('a.filterName[data-filter-id="' + folderDetails.folderid + '"]')
+            .attr('title', folderDetails.folderDesc)
+            .find('.foldername').text(folderDetails.folderName);
     },
     
     registerEditFolderModalEvents : function(container) {
@@ -396,8 +368,7 @@ Vtiger_List_Js("Documents_List_Js", {
         this.registerFoldersSearchEvent();
         this.registerFolderEditEvent();
         this.registerDeleteFolderEvent();
-        this.registerFiltersClickEvent();
-		
+
 		//To make folder non-deletable if a document is uploaded
 		app.event.on('post.documents.save', function(event, data){
 			var folderid = data.folderid;

@@ -8,6 +8,7 @@
 Vtiger.Class("Vtiger_Detail_Js",{
 
 	detailInstance : false,
+	changeAssignedUserEvent: 'change.assigned.user',
 	PreAjaxSaveEvent : 'PreAjaxSaveEvent',
 	PostAjaxSaveEvent : 'PostAjaxSaveEvent',
 	getInstance: function(){
@@ -1127,7 +1128,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 
 			let fieldObject = Vtiger_Field_Js.getInstance(fieldInfo),
 				fieldModel = fieldObject.getUiTypeModel(),
-				ele = jQuery('<div class="editElement d-flex align-items-start w-100 pb-3"></div>'),
+				ele = jQuery('<div class="editElement d-flex align-items-start w-100"></div>'),
 				actionButtons = '<span class="pointerCursorOnHover btn btn-success input-group-addon input-group-addon-save inlineAjaxSave ms-2"><i class="fa fa-check"></i></span>';
 
 			actionButtons += '<span class="pointerCursorOnHover btn btn-danger input-group-addon input-group-addon-cancel inlineAjaxCancel ms-2"><i class="fa-solid fa-xmark"></i></span>';
@@ -1143,7 +1144,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				jQuery('input[name="' + fieldName + '"]', editElement).prop('value', jQuery.trim(detailViewValue.text()));
 				let referenceElement = jQuery('input[name="' + fieldName + '"]', editElement);
 
-				if (!referenceElement.attr('disabled')) {
+				if (referenceElement.val()) {
 					referenceElement.attr('disabled', 'disabled');
 					editElement.find('.clearReferenceSelection').removeClass('hide')
 				}
@@ -2750,6 +2751,9 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		//RegisterBasicEvents for Related-List overlay's
 		this.registerBasicEvents();
 		this.registerHeaderAjaxEditEvents();
+		this.registerAssignedUserChange();
+		this.registerAssignedUserSearch();
+		this.registerChangeDetailAssignedUser();
 
 		detailContentsHolder.on('click','.detailViewSaveComment', function(e){
 			let element = jQuery(e.currentTarget);
@@ -2950,6 +2954,94 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		}
 
 		vtUtils.registerReplaceCommaWithDot($(document));
+	},
+	registerChangeDetailAssignedUser() {
+		app.event.on(Vtiger_Detail_Js.changeAssignedUserEvent, function (event, userData) {
+			$('.related-tabs').find('.tab-item.active').trigger('click');
+		});
+	},
+	registerAssignedUserSearch() {
+		let self = this,
+			container = self.getDetailViewContainer(),
+			timeout;
+
+		container.on('keyup', '.assignedUsersSearch', function () {
+			let searchElement = $(this);
+
+			if(timeout) {
+				clearTimeout(timeout);
+			}
+
+			timeout = setTimeout(function() {
+				console.log('Test 0122', Math.random());
+
+				self.loadAssignedUsers(searchElement)
+			}, 500);
+		});
+	},
+	loadAssignedUsers(searchElement) {
+		let params = {
+			module: app.getModuleName(),
+			view: 'DetailAjax',
+			mode: 'searchAssignedUsers',
+			search: searchElement.val()
+		};
+
+		app.request.post({data: params}).then(function (error, data) {
+			if (!error) {
+				searchElement.parents('.assignedUsersSearchContainer').next('.assignedUsersContainer').html(data);
+			}
+		});
+	},
+	registerAssignedUserChange() {
+		let self = this,
+			message = app.vtranslate('JS_ASSIGNED_USER_HAS_CHANGE'),
+			container = self.getDetailViewContainer();
+
+		container.on('click', '[data-change-assigned-user]', function () {
+			let userData = $(this).data(),
+				params = {
+					record: app.getRecordId(),
+					module: app.getModuleName(),
+					action: 'SaveAjax',
+					value: userData['id'],
+					field: 'assigned_user_id',
+				};
+
+			app.request.post({data: params}).then(function (error, data) {
+				if (!error) {
+					if (parseInt(userData['id']) === parseInt(data['assigned_user_id']['value'])) {
+						let css = {
+							'background-image': 'url("layouts/d1/modules/Users/resources/user.svg")',
+							'background-size': '50%',
+						}
+
+						if ('group' === userData['changeAssignedUser']) {
+							css = {
+								'background-image': 'url("layouts/d1/modules/Users/resources/users.svg")',
+								'background-size': '50%',
+							}
+						}
+
+						if (userData['image']) {
+							css = {
+								'background-image': 'url("' + userData['image'] + '")',
+								'background-size': 'cover',
+							};
+						}
+
+						container.find('[data-assigned-user-image]').css(css);
+						container.find('[data-assigned-user-name]').text(userData['name']);
+						container.find('[data-assigned-user-id]').val(userData['id']);
+
+						app.event.trigger(Vtiger_Detail_Js.changeAssignedUserEvent, userData);
+						app.helper.showSuccessNotification({message: message});
+					} else {
+						app.helper.showErrorNotification({message: message});
+					}
+				}
+			})
+		});
 	},
 
 	/**
