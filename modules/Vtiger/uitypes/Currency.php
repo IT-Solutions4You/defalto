@@ -45,7 +45,9 @@ class Vtiger_Currency_UIType extends Vtiger_Base_UIType
             return '0';
         }
 
-        return CurrencyField::convertToUserFormat($value, null, true);
+        global $currency_user;
+
+        return CurrencyField::convertToUserFormat($value, $currency_user, true);
     }
 
     /**

@@ -31,11 +31,13 @@ class Core_Number_UIType extends Vtiger_Base_UIType {
             return '';
         }
 
-        $currentUser = Users_Record_Model::getCurrentUserModel();
-        $value = CurrencyField::convertToUserFormat($value, $currentUser, true);
+        global $number_user;
 
-        if ($currentUser->isEmpty('truncate_trailing_zeros')) {
-            $value = rtrim(rtrim($value, '0'), $currentUser->getDecimalSeparator());
+        $number_user = $number_user ?: Users_Record_Model::getCurrentUserModel();
+        $value = CurrencyField::convertToUserFormat($value, $number_user, true);
+
+        if ($number_user->isEmpty('truncate_trailing_zeros')) {
+            $value = rtrim(rtrim($value, '0'), $number_user->getDecimalSeparator());
         }
 
         return $value;
