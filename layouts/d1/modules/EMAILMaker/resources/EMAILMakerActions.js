@@ -78,31 +78,13 @@ jQuery.Class('EMAILMaker_Actions_Js', {
     },
     registerPDFTemplateInput: function (modalContainer) {
         let self = this,
-            selectElement = self.getSelectElement(modalContainer, 'use_common_pdf_template');
+            valueElement = $('#pdftemplateid'),
+            sortableElement = $('#use_common_pdf_template');
 
-        if (selectElement.length) {
-            selectElement.select2();
-
-            self.sortSelect2Element(modalContainer, 'use_common_pdf_template', $('#pdftemplateid').val().split(';'));
-
-            $('#s2id_use_common_pdf_template ul.select2-choices', modalContainer).sortable();
+        if (valueElement.length) {
+            vtUtils.showSelect2ElementView(sortableElement);
+            vtUtils.makeSelect2ElementSortable(sortableElement, valueElement);
         }
-    },
-    sortSelect2Element: function (modalContainer, selectId, sortValues) {
-        let self = this,
-            selectElement = self.getSelectElement(modalContainer, selectId),
-            selectData = selectElement.select2('data'),
-            selectDataUpdate = [];
-
-        $.each(sortValues, function (sortIndex, sortId) {
-            $.each(selectData, function (optionIndex, optionData) {
-                if (sortId === optionData.id) {
-                    selectDataUpdate.push(optionData);
-                }
-            });
-        });
-
-        selectElement.select2('data', selectDataUpdate);
     },
     getPDFTemplateIds: function (modalContainer) {
         let self = this,

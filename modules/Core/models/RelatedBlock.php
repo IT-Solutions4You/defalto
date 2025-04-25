@@ -10,6 +10,33 @@
 
 class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 {
+    public static array $currencyUserConfig = [];
+    public static array $numberUserConfig = [];
+
+    /**
+     * @var array
+     */
+    public static array $relatedModuleJoin = [
+        'Documents' => [
+            'senotesrel',
+            'vtiger_senotesrel',
+            'INNER JOIN vtiger_senotesrel',
+            'vtiger_senotesrel.notesid=vtiger_crmentity.crmid AND vtiger_senotesrel.crmid=$SOURCE_RECORD$',
+        ],
+        'ModComments' => [
+            'modcommentsrel',
+            'vtiger_modcommentsrel',
+            'INNER JOIN vtiger_modcomments',
+            'vtiger_modcommentsrel.modcommentsid=vtiger_crmentity.crmid AND vtiger_modcommentsrel.related_to=$SOURCE_RECORD$',
+        ],
+        'Products' => [
+            'seproductsrel',
+            'vtiger_seproductsrel',
+            'INNER JOIN vtiger_seproductsrel',
+            'vtiger_seproductsrel.productid=vtiger_crmentity.crmid AND vtiger_seproductsrel.crmid=$SOURCE_RECORD$',
+        ],
+    ];
+
     /**
      * @var string
      */
@@ -574,22 +601,13 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
             ];
         }
 
-        if ('Documents' === $this->getRelatedModuleName()) {
-            return [
-                'senotesrel',
-                'vtiger_senotesrel',
-                'INNER JOIN vtiger_senotesrel',
-                sprintf('vtiger_senotesrel.notesid=vtiger_crmentity.crmid AND vtiger_senotesrel.crmid=%d', $this->getSourceRecord()->getId()),
-            ];
-        }
+        $relatedModule = $this->getRelatedModuleName();
 
-        if ('ModComments' === $this->getRelatedModuleName()) {
-            return [
-                'modcommentsrel',
-                'vtiger_modcommentsrel',
-                'INNER JOIN vtiger_modcomments',
-                sprintf('vtiger_modcommentsrel.modcommentsid=vtiger_crmentity.crmid AND vtiger_modcommentsrel.related_to=%d', $this->getSourceRecord()->getId()),
-            ];
+        if (isset(self::$relatedModuleJoin[$relatedModule])) {
+            $data = self::$relatedModuleJoin[$relatedModule];
+            $data[3] = str_replace(['$SOURCE_RECORD$'], [$this->getSourceRecord()->getId()], $data[3]);
+
+            return $data;
         }
 
         return [
@@ -601,10 +619,32 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * @return void
+     */
+    public function retrieveNumberUsers(): void
+    {
+        global $number_user, $currency_user;
+
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $currency_user = clone $currentUser;
+        $number_user = clone $currentUser;
+
+        foreach (self::$currencyUserConfig as $key => $value) {
+            $currency_user->$key = $value;
+        }
+
+        foreach (self::$numberUserConfig as $key => $value) {
+            $number_user->$key = $value;
+        }
+    }
+
+    /**
      * @throws Exception
      */
     public function replaceRecords(string $content): string
     {
+        $this->retrieveNumberUsers();
+
         $relatedModule = $this->getRelatedModule();
 
         if (!$relatedModule) {
