@@ -863,16 +863,6 @@ a {
 /**********************************/
 /**** Side vertical Nav styles ****/
 /**********************************/
-.modules-menu .app-module-container a, .modules-menu .app-indicator-icon {
-    display: block;
-    z-index: 1;
-    word-break: normal;
-    text-transform: uppercase;
-    min-height: var(--menu-icon-size);
-    width: var(--menu-icon-size);
-    text-align: center;
-}
-
 .modules-menu a i {
     vertical-align: middle;
     font-size: var(--menu-icon-font-size);

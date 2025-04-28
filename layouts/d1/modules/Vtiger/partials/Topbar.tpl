@@ -12,9 +12,9 @@
     <div class="container-fluid global-nav">
         <div class="row align-items-center">
             <div class="col-auto p-0 app-navigator-container bg-body">
-                <div id="appnavigator" class="app-switcher-container h-100 cursorPointer d-flex align-items-center justify-content-center" data-bs-toggle="offcanvas" data-bs-target="#app-menu" data-app-class="{if $MODULE eq 'Home' || !$MODULE}fa-dashboard{else}{$APP_IMAGE_MAP[$SELECTED_MENU_CATEGORY]}{/if}">
-                    <div class="app-navigator dt-menu-button rounded d-flex align-items-center justify-content-center">
-                        <i class="app-icon dt-menu-icon fa fa-bars"></i>
+                <div id="appnavigator" class="app-switcher-container h-100 cursorPointer p-2" data-bs-toggle="offcanvas" data-bs-target="#app-menu" data-app-class="{if $MODULE eq 'Home' || !$MODULE}fa-dashboard{else}{$APP_IMAGE_MAP[$SELECTED_MENU_CATEGORY]}{/if}">
+                    <div class="app-navigator dt-menu-button rounded h-100 w-100 d-flex align-items-center justify-content-center">
+                        <i class="fs-4 app-icon dt-menu-icon fa fa-bars"></i>
                     </div>
                 </div>
             </div>
