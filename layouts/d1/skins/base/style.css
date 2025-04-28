@@ -4363,6 +4363,9 @@ body .fc {
 .hide {
     display: none !important;
 }
+.fs-07rem {
+    font-size: 0.7rem !important;
+}
 .fs-7 {
     font-size: 0.75rem !important;
 }

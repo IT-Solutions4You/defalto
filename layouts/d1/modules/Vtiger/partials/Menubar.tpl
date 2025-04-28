@@ -12,10 +12,10 @@
             {assign var=APP_IMAGE_MAP value=Vtiger_MenuStructure_Model::getAppIcons()}
             {foreach key=moduleName item=moduleModel from=$SELECTED_CATEGORY_MENU_LIST}
                 {assign var=translatedModuleLabel value=vtranslate($moduleModel->get('label'),$moduleName)}
-                <div class="app-module-container rounded mx-2 mb-2 {if $MODULE eq $moduleName}bg-primary bg-opacity-10 active{else}opacity-50{/if}">
-                    <a class="d-flex flex-column align-items-center justify-content-center overflow-hidden w-100 p-2" title="{$translatedModuleLabel}" href="{$moduleModel->getDefaultUrl()}&app={$SELECTED_MENU_CATEGORY}">
+                <div class="app-module-container rounded mx-1 mb-1 {if $MODULE eq $moduleName}bg-primary bg-opacity-10 active{else}opacity-50{/if}">
+                    <a class="d-flex flex-column align-items-center justify-content-center p-2" title="{$translatedModuleLabel}" href="{$moduleModel->getDefaultUrl()}&app={$SELECTED_MENU_CATEGORY}">
                         {$moduleModel->getModuleIcon('1.5rem')}
-                        <div class="pt-1 fs-7 fw-bold w-100 overflow-hidden">{$translatedModuleLabel}</div>
+                        <div class="pt-1 fs-07rem fw-bold w-100 overflow-hidden">{$translatedModuleLabel}</div>
                     </a>
                 </div>
             {/foreach}
