@@ -11,9 +11,9 @@
 <nav class="fixed-top app-fixed-navbar bg-body-secondary">
     <div class="container-fluid global-nav">
         <div class="row align-items-center">
-            <div class="col-auto app-navigator-container bg-body">
-                <div id="appnavigator" class="app-switcher-container py-2 h-100 cursorPointer d-flex align-items-end justify-content-center" data-bs-toggle="offcanvas" data-bs-target="#app-menu" data-app-class="{if $MODULE eq 'Home' || !$MODULE}fa-dashboard{else}{$APP_IMAGE_MAP[$SELECTED_MENU_CATEGORY]}{/if}">
-                    <div class="app-navigator dt-menu-button rounded">
+            <div class="col-auto p-0 app-navigator-container bg-body">
+                <div id="appnavigator" class="app-switcher-container h-100 cursorPointer d-flex align-items-center justify-content-center" data-bs-toggle="offcanvas" data-bs-target="#app-menu" data-app-class="{if $MODULE eq 'Home' || !$MODULE}fa-dashboard{else}{$APP_IMAGE_MAP[$SELECTED_MENU_CATEGORY]}{/if}">
+                    <div class="app-navigator dt-menu-button rounded d-flex align-items-center justify-content-center">
                         <i class="app-icon dt-menu-icon fa fa-bars"></i>
                     </div>
                 </div>

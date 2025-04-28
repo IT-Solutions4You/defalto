@@ -10,8 +10,8 @@
     <div class="app-menu shadow dropdown-menu p-0 bg-body" id="app-menu">
         <div class="container-fluid">
             <div class="row border-bottom border-1">
-                <div class="col-auto py-2 cursorPointer app-switcher-container d-flex align-items-end justify-content-center h-header" data-bs-toggle="offcanvas" data-bs-target="#app-menu">
-                    <div class="app-navigator dt-menu-button rounded text-primary bg-menu-icon">
+                <div class="col-auto p-0 cursorPointer app-switcher-container d-flex align-items-center justify-content-center h-header" data-bs-toggle="offcanvas" data-bs-target="#app-menu">
+                    <div class="app-navigator dt-menu-button rounded text-primary bg-menu-icon d-flex align-items-center justify-content-center">
                         <i id="menu-toggle-action" class="app-icon dt-menu-icon fa fa-bars"></i>
                     </div>
                 </div>
