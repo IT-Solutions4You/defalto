@@ -1171,7 +1171,7 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
                 'linklabel' => 'LBL_ADD_RECORD',
                 'linkurl' => $this->getCreateRecordUrl(),
                 'linkicon' => 'fa-plus',
-                'style_class' => 'btn-primary',
+                'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
             ];
             $importPermission = Users_Privileges_Model::isPermitted($this->getName(), 'Import');
 			if($importPermission && $createPermission) {

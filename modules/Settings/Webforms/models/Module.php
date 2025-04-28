@@ -115,7 +115,7 @@ class Settings_Webforms_Module_Model extends Settings_Vtiger_Module_Model {
                 'linklabel' => 'LBL_ADD_RECORD',
                 'linkurl' => $this->getCreateRecordUrl(),
                 'linkicon' => 'fa-plus',
-                'style_class' => 'btn-primary',
+                'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
             ];
         }
 

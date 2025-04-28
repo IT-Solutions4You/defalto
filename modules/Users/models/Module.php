@@ -349,7 +349,7 @@ class Users_Module_Model extends Vtiger_Module_Model {
                 'linklabel' => 'LBL_ADD_RECORD',
                 'linkurl' => $this->getCreateRecordUrl(),
                 'linkicon' => 'fa-plus',
-                'style_class' => 'btn-primary',
+                'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
             ];
 
             if (Users_Privileges_Model::isPermitted($moduleName, 'Import')) {

@@ -373,7 +373,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
                 'linklabel' => 'LBL_ADD_TEMPLATE',
                 'linkurl' => $this->getSelectThemeUrl(),
                 'linkicon' => 'fa-plus',
-                'style_class' => 'btn-primary',
+                'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
             );
             $basicLinks[] = array(
                 'linktype' => 'BASIC',

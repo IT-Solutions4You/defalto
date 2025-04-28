@@ -122,7 +122,7 @@ class Portal_Module_Model extends Vtiger_Module_Model {
             'linkurl' => 'javascript:Portal_List_Js.editBookmarkAction()',
             'linkicon' => 'fa-plus',
             'linkclass' => 'addBookmark',
-            'style_class' => 'btn-primary',
+            'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
         );
 
         return $basicLinks;

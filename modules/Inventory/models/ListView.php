@@ -43,7 +43,7 @@ class Inventory_ListView_Model extends Vtiger_ListView_Model {
                 'linklabel' => 'LBL_ADD_RECORD',
                 'linkurl' => $moduleModel->getCreateRecordUrl(),
                 'linkicon' => '',
-                'style_class' => 'btn-primary',
+                'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
             ];
         }
 

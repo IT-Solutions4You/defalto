@@ -169,6 +169,12 @@
     --bs-btn-disabled-border-color: var(--dt-red-color);
 }
 
+.btn.active:hover {
+    color: var(--dt-light-blue-color);
+    background-color: var(--dt-dark-blue-color);
+    border-color: var(--dt-dark-blue-color);
+}
+
 .h-header {
     height: var(--header-height);
 }

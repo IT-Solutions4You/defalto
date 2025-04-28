@@ -27,7 +27,7 @@ class Vtiger_Link {
     public $handler_path;
     public $handler_class;
     public $handler;
-    public $style_class = 'btn-outline-secondary';
+    public $style_class = Vtiger_Link_Model::DEFAULT_STYLE_CLASS;
 
 	// Ignore module while selection
 	const IGNORE_MODULE = -1; 
@@ -55,7 +55,7 @@ class Vtiger_Link {
         $this->handler_class = isset($valuemap['handler_class']) ? $valuemap['handler_class'] : null;
         $this->handler = isset($valuemap['handler']) ? $valuemap['handler'] : null;
         $this->parent_link = isset($valuemap['parent_link']) ? $valuemap['parent_link'] : null;
-        $this->style_class = isset($valuemap['style_class']) ? $valuemap['style_class'] : 'btn-outline-secondary';
+        $this->style_class = isset($valuemap['style_class']) ? $valuemap['style_class'] : Vtiger_Link_Model::DEFAULT_STYLE_CLASS;
     }
 
     /**

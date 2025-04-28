@@ -100,7 +100,7 @@ class Settings_Core_Taxes_View extends Settings_Vtiger_Index_View
                 'linklabel' => 'LBL_ADD_REGION',
                 'linkurl' => 'javascript:Settings_Vtiger_Taxes_Js.editRegion()',
                 'linkicon' => 'fa-plus',
-                'style_class' => 'btn-primary',
+                'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
             ]);
         } else {
             $basicLinks[] = Vtiger_Link_Model::getInstanceFromValues([
@@ -108,7 +108,7 @@ class Settings_Core_Taxes_View extends Settings_Vtiger_Index_View
                 'linklabel' => 'LBL_ADD_TAX',
                 'linkurl' => 'javascript:Settings_Vtiger_Taxes_Js.editTax()',
                 'linkicon' => 'fa-plus',
-                'style_class' => 'btn-primary',
+                'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
             ]);
         }
 

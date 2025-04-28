@@ -133,7 +133,7 @@ class Settings_Vtiger_ListView_Model extends Vtiger_Base_Model {
                 'linklabel' => 'LBL_ADD_RECORD',
                 'linkurl' => $moduleModel->getCreateRecordUrl(),
                 'linkicon' => 'fa fa-plus',
-                'style_class' => 'btn-primary',
+                'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
             ];
 
         return $basicLinks;
