@@ -1073,6 +1073,9 @@ ul.unstyled {
     display: inline-block;
     max-width: 300px;
 }
+.listViewEntries:hover td {
+    background-color: rgba(var(--bs-secondary-bg-rgb),var(--bs-bg-opacity));
+}
 
 .listview-table .table-actions span.dropdown.open,
 .listview-table-norecords .table-actions span.dropdown.open {
