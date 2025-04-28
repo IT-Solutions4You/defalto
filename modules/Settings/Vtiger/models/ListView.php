@@ -128,14 +128,15 @@ class Settings_Vtiger_ListView_Model extends Vtiger_Base_Model {
 		$basicLinks = array();
 		$moduleModel = $this->getModule();
 		if($moduleModel->hasCreatePermissions())
-			$basicLinks[] = array(
-					'linktype' => 'LISTVIEWBASIC',
-					'linklabel' => 'LBL_ADD_RECORD',
-					'linkurl' => $moduleModel->getCreateRecordUrl(),
-					'linkicon' => 'fa fa-plus'
-			);
-		
-		return $basicLinks;
+            $basicLinks[] = [
+                'linktype' => 'LISTVIEWBASIC',
+                'linklabel' => 'LBL_ADD_RECORD',
+                'linkurl' => $moduleModel->getCreateRecordUrl(),
+                'linkicon' => 'fa fa-plus',
+                'style_class' => 'btn-primary',
+            ];
+
+        return $basicLinks;
 	}
 
 	/*	 * * 

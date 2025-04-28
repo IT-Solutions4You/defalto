@@ -16,17 +16,18 @@ include_once 'vtlib/Vtiger/LinkData.php';
  * @package vtlib
  */
 class Vtiger_Link {
-	var $tabid;
-	var $linkid;
-	var $linktype;
-	var $linklabel;
-	var $linkurl;
-	var $linkicon;
-	var $sequence;
-	var $status = false;
-	var $handler_path;
-	var $handler_class;
-	var $handler;
+    public $tabid;
+    public $linkid;
+    public $linktype;
+    public $linklabel;
+    public $linkurl;
+    public $linkicon;
+    public $sequence;
+    public $status = false;
+    public $handler_path;
+    public $handler_class;
+    public $handler;
+    public $style_class = 'btn-outline-secondary';
 
 	// Ignore module while selection
 	const IGNORE_MODULE = -1; 
@@ -40,22 +41,24 @@ class Vtiger_Link {
 	/**
 	 * Initialize this instance.
 	 */
-	function initialize($valuemap) {
-		$this->tabid  = isset($valuemap['tabid']) ? $valuemap['tabid'] : null;
-		$this->linkid = isset($valuemap['linkid']) ? $valuemap['linkid'] : null;
-		$this->linktype=isset($valuemap['linktype']) ? $valuemap['linktype'] : null;
-		$this->linklabel=isset($valuemap['linklabel']) ? $valuemap['linklabel'] : null;
-		$this->linkurl  =isset($valuemap['linkurl']) ? decode_html($valuemap['linkurl']) : null;
-		$this->linkicon =isset($valuemap['linkicon']) ? decode_html($valuemap['linkicon']) : null;
-		$this->sequence =isset($valuemap['sequence']) ? $valuemap['sequence'] : null;
-		$this->status   =isset($valuemap['status']) ? $valuemap['status'] : null;
-		$this->handler_path	=isset($valuemap['handler_path']) ? $valuemap['handler_path'] : null;
-		$this->handler_class=isset($valuemap['handler_class']) ? $valuemap['handler_class'] : null;
-		$this->handler		=isset($valuemap['handler']) ? $valuemap['handler'] : null;
-		$this->parent_link	= isset($valuemap['parent_link']) ? $valuemap['parent_link'] : null;
-	}
+    function initialize($valuemap)
+    {
+        $this->tabid = isset($valuemap['tabid']) ? $valuemap['tabid'] : null;
+        $this->linkid = isset($valuemap['linkid']) ? $valuemap['linkid'] : null;
+        $this->linktype = isset($valuemap['linktype']) ? $valuemap['linktype'] : null;
+        $this->linklabel = isset($valuemap['linklabel']) ? $valuemap['linklabel'] : null;
+        $this->linkurl = isset($valuemap['linkurl']) ? decode_html($valuemap['linkurl']) : null;
+        $this->linkicon = isset($valuemap['linkicon']) ? decode_html($valuemap['linkicon']) : null;
+        $this->sequence = isset($valuemap['sequence']) ? $valuemap['sequence'] : null;
+        $this->status = isset($valuemap['status']) ? $valuemap['status'] : null;
+        $this->handler_path = isset($valuemap['handler_path']) ? $valuemap['handler_path'] : null;
+        $this->handler_class = isset($valuemap['handler_class']) ? $valuemap['handler_class'] : null;
+        $this->handler = isset($valuemap['handler']) ? $valuemap['handler'] : null;
+        $this->parent_link = isset($valuemap['parent_link']) ? $valuemap['parent_link'] : null;
+        $this->style_class = isset($valuemap['style_class']) ? $valuemap['style_class'] : 'btn-outline-secondary';
+    }
 
-	/**
+    /**
 	 * Get module name.
 	 */
 	function module() {
@@ -315,4 +318,3 @@ class Vtiger_Link {
 		}
 	}
 }
-?>

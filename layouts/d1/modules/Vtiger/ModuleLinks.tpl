@@ -10,7 +10,7 @@
     {if php7_count($MODULE_BASIC_ACTIONS)}
         {foreach item=BASIC_ACTION from=$MODULE_BASIC_ACTIONS}
             {if $BASIC_ACTION->getLabel() == 'LBL_IMPORT'}
-                <button id="{$MODULE}_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}" type="button" class="btn btn-outline-secondary addButton module-buttons me-2"
+                <button id="{$MODULE}_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}" type="button" class="btn addButton module-buttons me-2 {$BASIC_ACTION->getStyleClass()}"
                         {if stripos($BASIC_ACTION->getUrl(), 'javascript:')===0}
                     onclick='{$BASIC_ACTION->getUrl()|substr:strlen("javascript:")};'
                         {else}
@@ -20,7 +20,7 @@
                     <span class="ps-2">{vtranslate($BASIC_ACTION->getLabel(), $MODULE)}</span>
                 </button>
             {else}
-                <button id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}" type="button" class="btn btn-outline-secondary addButton module-buttons  me-2"
+                <button id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}" type="button" class="btn addButton module-buttons me-2 {$BASIC_ACTION->getStyleClass()}"
                         {if stripos($BASIC_ACTION->getUrl(), 'javascript:')===0}
                     onclick='{$BASIC_ACTION->getUrl()|substr:strlen("javascript:")};'
                         {else}
@@ -37,7 +37,7 @@
         {/if}
         {foreach item=LISTVIEW_BASICACTION from=$LISTVIEW_LINKS['LISTVIEWBASIC']}
             {if $MODULE eq 'Users'} {assign var=LANGMODULE value=$MODULE} {/if}
-            <button class="btn btn-outline-secondary addButton module-buttons me-2"
+            <button class="btn addButton module-buttons me-2 {$LISTVIEW_BASICACTION->getStyleClass()}"
                     id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($LISTVIEW_BASICACTION->getLabel())}"
                     {if $MODULE eq 'Workflows'}
                 onclick='Settings_Workflows_List_Js.triggerCreate("{$LISTVIEW_BASICACTION->getUrl()}&mode=V7Edit")'

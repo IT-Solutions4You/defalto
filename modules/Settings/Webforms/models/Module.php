@@ -110,14 +110,16 @@ class Settings_Webforms_Module_Model extends Settings_Vtiger_Module_Model {
 		$moduleName = $this->getName();
 		$basicLinks = array();
 		if($createPermission) {
-		   $basicLinks[] = array(
-			   'linktype' => 'BASIC',
-			   'linklabel' => 'LBL_ADD_RECORD',
-			   'linkurl' => $this->getCreateRecordUrl(),
-			   'linkicon' => 'fa-plus'
-		   );
-		}
-		 return $basicLinks;
+            $basicLinks[] = [
+                'linktype' => 'BASIC',
+                'linklabel' => 'LBL_ADD_RECORD',
+                'linkurl' => $this->getCreateRecordUrl(),
+                'linkicon' => 'fa-plus',
+                'style_class' => 'btn-primary',
+            ];
+        }
+
+        return $basicLinks;
 	}
 
 	function isStarredEnabled(){

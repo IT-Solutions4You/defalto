@@ -341,4 +341,9 @@ class Vtiger_Link_Model extends Vtiger_Link {
 
         return (string)$this->get('link_template');
     }
+
+    public function getStyleClass()
+    {
+        return $this->get('style_class');
+    }
 }

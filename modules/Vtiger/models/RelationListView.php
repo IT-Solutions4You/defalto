@@ -180,6 +180,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 						'linklabel' => vtranslate('LBL_ADD')." ".vtranslate('SINGLE_'.$relatedModel->getName(), $relatedModel->getName()),
 						'linkurl' => $this->getCreateViewUrl(),
 						'linkicon' => '',
+                        'style_class' => 'btn-primary',
 					)
 				);
 			}

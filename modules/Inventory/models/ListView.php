@@ -36,16 +36,18 @@ class Inventory_ListView_Model extends Vtiger_ListView_Model {
 		$basicLinks = array();
 
 		$createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'CreateView');
-		if($createPermission) {
-			$basicLinks[] = array(
-					'linktype' => 'LISTVIEWBASIC',
-					'linklabel' => 'LBL_ADD_RECORD',
-					'linkurl' => $moduleModel->getCreateRecordUrl(),
-					'linkicon' => ''
-			);
-		}
 
-		$exportPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Export');
+        if ($createPermission) {
+            $basicLinks[] = [
+                'linktype' => 'LISTVIEWBASIC',
+                'linklabel' => 'LBL_ADD_RECORD',
+                'linkurl' => $moduleModel->getCreateRecordUrl(),
+                'linkicon' => '',
+                'style_class' => 'btn-primary',
+            ];
+        }
+
+        $exportPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Export');
 		if($exportPermission) {
 			$advancedLinks[] = array(
 					'linktype' => 'LISTVIEW',
