@@ -7,7 +7,7 @@
 {strip}
     <div class="main-container container-fluid">
         <div class="row">
-            <div id="modnavigator" class="module-nav editViewModNavigator col-lg-auto text-center bg-body d-none d-lg-block h-main">
+            <div id="modnavigator" class="module-nav editViewModNavigator col-lg-auto text-center bg-body d-none d-lg-block h-main p-0">
                 <div class="hidden-xs hidden-sm mod-switcher-container">
                     {include file="partials/Menubar.tpl"|vtemplate_path:$MODULE}
                 </div>
