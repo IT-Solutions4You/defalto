@@ -4544,3 +4544,9 @@ input[type=number] {
 .dropdown-item:hover .dropdown-action {
     opacity: 1;
 }
+.h-13rem {
+    height: 1.3rem;
+}
+.w-13rem {
+    width: 1.3rem;
+}
