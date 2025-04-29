@@ -36,7 +36,7 @@
                     {elseif $FIELD_MODEL->get('uitype') eq "69" || $FIELD_MODEL->get('uitype') eq "105"}
                         <div  id="{$MODULE}_{$VIEW}_{$FIELD_MODEL->getName()}" class="py-2 col-lg-12">
                             <div class="h-100">
-                                <div class="row py-2 border-bottom border-light-subtle h-100">
+                                <div class="row py-2 border-bottom border-light-subtle h-100 align-items-center">
                                     <div class="col-lg-2 fieldLabel {$WIDTHTYPE}">
                                         <span class="muted">{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}</span>
                                     </div>
@@ -55,7 +55,7 @@
                     {else}
                         <div id="{$MODULE}_{$VIEW}_field_{$FIELD_MODEL->getName()}" class="py-2 {if $FIELD_MODEL->isTableFullWidth()}col-lg-12{else}col-lg-6{/if}">
                             <div class="h-100">
-                                <div class="row py-2 border-bottom border-light-subtle h-100">
+                                <div class="row py-2 border-bottom border-light-subtle h-100 align-items-center">
                                     <div class="fieldLabel text-truncate {if $FIELD_MODEL->isTableFullWidth()}col-lg-2{else}col-lg-4{/if} {$WIDTHTYPE}" id="{$MODULE_NAME}_detailView_fieldLabel_{$FIELD_MODEL->getName()}">
                                         <span class="muted">
                                             {if $MODULE_NAME eq 'Documents' && $FIELD_MODEL->get('label') eq "File Name" && $RECORD->get('filelocationtype') eq 'E'}

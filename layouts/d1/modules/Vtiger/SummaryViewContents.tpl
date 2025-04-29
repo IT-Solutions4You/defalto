@@ -12,7 +12,7 @@
 	<div class="container-fluid">
 	{foreach item=FIELD_MODEL key=FIELD_NAME from=$SUMMARY_RECORD_STRUCTURE['SUMMARY_FIELDS']}
         {assign var=fieldDataType value=$FIELD_MODEL->getFieldDataType()}
-			<div class="summaryViewEntries row py-2">
+			<div class="summaryViewEntries row align-items-center py-2">
 				<div class="col-lg-4 fieldLabel" >
                     <label class="muted text-truncate" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}">
                         {vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}

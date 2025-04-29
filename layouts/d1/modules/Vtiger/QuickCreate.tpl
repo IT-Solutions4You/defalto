@@ -15,7 +15,7 @@
             <form class="form-horizontal recordEditView" id="QuickCreate" name="QuickCreate" method="post" action="index.php">
                 {assign var=HEADER_TITLE value={vtranslate('LBL_QUICK_CREATE', $MODULE)}|cat:" "|cat:{vtranslate($SINGLE_MODULE, $MODULE)}}
                 {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
-                    
+                {assign var=MODAL_WINDOW value=true}
                 <div class="modal-body">
                     {if !empty($PICKIST_DEPENDENCY_DATASOURCE)}
                         <input type="hidden" name="picklistDependency" value='{Vtiger_Util_Helper::toSafeHTML($PICKIST_DEPENDENCY_DATASOURCE)}' />
@@ -28,7 +28,7 @@
                         <input type="hidden" name="sourceRecord" value="{$PARENT_ID}" />
                     {/if}
                     <div class="quickCreateContent">
-                        <div class="massEditTable">
+                        <div class="massEditTable container-fluid">
                             <div class="row">
                                 {foreach key=FIELD_NAME item=FIELD_MODEL from=$RECORD_STRUCTURE name=blockfields}
                                     {if $FIELD_MODEL->isTableCustomWidth()}
