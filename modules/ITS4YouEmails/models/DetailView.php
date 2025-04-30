@@ -36,19 +36,21 @@ class ITS4YouEmails_DetailView_Model extends Vtiger_DetailView_Model
             $linkModelList[$relatedLink->getType()][] = $relatedLink;
         }
 
-        $widgets = $this->getWidgets();
-        $widgets[] = Vtiger_Link_Model::getInstanceFromValues([
-            'linktype' => 'DETAILVIEWWIDGET',
-            'linklabel' => 'LBL_MESSAGE',
-            'linkurl' => 'module=ITS4YouEmails&view=BodyWidget&record=' . $this->getRecord()->getId(),
-            'linkicon' => '',
-        ]);
-        $widgets[] = Vtiger_Link_Model::getInstanceFromValues([
-            'linktype' => 'DETAILVIEWWIDGET',
-            'linklabel' => 'LBL_ATTACHMENTS',
-            'linkurl' => 'module=ITS4YouEmails&view=AttachmentsWidget&record=' . $this->getRecord()->getId(),
-            'linkicon' => '',
-        ]);
+        $widgets = [
+            Vtiger_Link_Model::getInstanceFromValues($this->getKeyFieldsWidgetInfo()),
+            Vtiger_Link_Model::getInstanceFromValues([
+                'linktype' => 'DETAILVIEWWIDGET',
+                'linklabel' => 'LBL_MESSAGE',
+                'linkurl' => 'module=ITS4YouEmails&view=BodyWidget&record=' . $this->getRecord()->getId(),
+                'linkicon' => '',
+            ]),
+            Vtiger_Link_Model::getInstanceFromValues([
+                'linktype' => 'DETAILVIEWWIDGET',
+                'linklabel' => 'LBL_ATTACHMENTS',
+                'linkurl' => 'module=ITS4YouEmails&view=AttachmentsWidget&record=' . $this->getRecord()->getId(),
+                'linkicon' => '',
+            ]),
+        ];
 
         foreach ($widgets as $widgetLinkModel) {
             $linkModelList['DETAILVIEWWIDGET'][] = $widgetLinkModel;
