@@ -362,7 +362,13 @@ class Vtiger_Tag_Model extends Vtiger_Base_Model {
         }
 
         $module = $this->getModule();
+        $url = $module->getListViewUrl() . '&tag_params=' . urlencode('[[["tags","e",' . $this->getId() . ']]]') . '&tag=' . $this->getId();
+        $customView = CustomView_Record_Model::getAllFilterByModule($module->getName());
 
-        return $module->getListViewUrl() . '&tag_params=' . urlencode('[[["tags","e",' . $this->getId() . ']]]') . '&tag=' . $this->getId();
+        if ($customView) {
+            $url .= '&viewname=' . $customView->getId();
+        }
+
+        return $url;
     }
 }
