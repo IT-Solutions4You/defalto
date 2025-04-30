@@ -10,7 +10,7 @@
 {assign var=APP_IMAGE_MAP value=Vtiger_MenuStructure_Model::getAppIcons()}
 <nav class="fixed-top app-fixed-navbar bg-body-secondary">
     <div class="container-fluid global-nav">
-        <div class="row align-items-center">
+        <div class="row align-items-center flex-lg-nowrap">
             <div class="col-auto p-0 app-navigator-container bg-body">
                 <div id="appnavigator" class="app-switcher-container h-100 cursorPointer p-1" data-bs-toggle="offcanvas" data-bs-target="#app-menu" data-app-class="{if $MODULE eq 'Home' || !$MODULE}fa-dashboard{else}{$APP_IMAGE_MAP[$SELECTED_MENU_CATEGORY]}{/if}">
                     <div class="app-navigator dt-menu-button rounded h-100 w-100 d-flex align-items-center justify-content-center">
@@ -18,7 +18,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col module-breadcrumb module-breadcrumb-{$REQUEST_INSTANCE.view}">
+            <div class="col overflow-hidden module-breadcrumb module-breadcrumb-{$REQUEST_INSTANCE.view}">
                 <div class="row align-items-center flex-nowrap">
                     <div class="col-auto">
                         {if 'Settings' eq $REQUEST_INSTANCE.parent}
@@ -43,11 +43,11 @@
                     </div>
                     <div class="current-filter-slash col-auto p-0 fs-3">/</div>
                     {if $RECORD and $REQUEST_INSTANCE.view eq 'Edit'}
-                        <a class="current-filter-name filter-name col cursorPointer fs-5" title="{$RECORD->get('label')}">{vtranslate('LBL_EDITING', $MODULE)} : {$RECORD->get('label')}</a>
+                        <a class="current-filter-name filter-name col cursorPointer fs-5 text-truncate" title="{$RECORD->get('label')}">{vtranslate('LBL_EDITING', $MODULE)} : {$RECORD->get('label')}</a>
                     {elseif $REQUEST_INSTANCE.view eq 'Edit'}
-                        <a class="current-filter-name filter-name cursorPointer col fs-5">{vtranslate('LBL_ADDING_NEW', $MODULE)}</a>
+                        <a class="current-filter-name filter-name col cursorPointer fs-5">{vtranslate('LBL_ADDING_NEW', $MODULE)}</a>
                     {elseif $RECORD and $REQUEST_INSTANCE.view eq 'Detail'}
-                        <a class="current-filter-name filter-name cursorPointer col fs-5" title="{$RECORD->get('label')}">{$RECORD->get('label')}</a>
+                        <a class="current-filter-name filter-name col cursorPointer fs-5 text-truncate" title="{$RECORD->get('label')}">{$RECORD->get('label')}</a>
                     {elseif $REQUEST_INSTANCE.view eq 'List' and $MODULE_MODEL and $MODULE_MODEL->isEntityModule()}
                         {include file="partials/CustomView.tpl"|vtemplate_path:$MODULE}
                     {else}
