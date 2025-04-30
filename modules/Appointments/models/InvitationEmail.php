@@ -36,7 +36,7 @@ class Appointments_InvitationEmail_Model extends Vtiger_Base_Model
         $subject = $recordModel->getName();
         $description = $recordModel->get('description');
         $location = $recordModel->get('location');
-        $assignedUserId = (int)$recordModel->get('smownerid');
+        $assignedUserId = (int)$recordModel->get('assigned_user_id');
 
         $userLabel = Vtiger_Functions::getUserRecordLabel($assignedUserId);
         $userEmail = $this->getUserEmail($assignedUserId);
@@ -191,6 +191,7 @@ class Appointments_InvitationEmail_Model extends Vtiger_Base_Model
             $emailRecord->set('subject', $this->getSubject());
             $emailRecord->set('body', $this->getBody());
             $emailRecord->set('email_flag', 'SAVED');
+            $emailRecord->set('related_to', $this->invitedUsers->getRecordModel()->getId());
             $emailRecord->set('to_email', $toAddress);
             $emailRecord->set('to_email_ids', $invitedUserId . '|' . $toAddress . '|Users');
             $emailRecord->set('email_template_ids', $this->get('template_id'));
