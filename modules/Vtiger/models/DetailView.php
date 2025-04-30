@@ -63,48 +63,45 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
         $detailViewLinks = array();
 		$linkModelList = array();
 
-        if($moduleModel->isShowMapSupported()) {
-            $detailViewLinks[] = array(
+        if ($moduleModel->isShowMapSupported()) {
+            $detailViewLinks[] = [
                 'linktype' => 'DETAILVIEWBASIC',
                 'linklabel' => 'LBL_SHOW_MAP',
                 'linkurl' => sprintf('Vtiger_Index_Js.showMap(this, "%s", "%d");', $moduleName, $recordId),
-                'linkicon' => '<i class="fa fa-map-marker"></i>'
-            );
+                'linkicon' => '<i class="fa fa-map-marker"></i>',
+            ];
         }
 
-		if(Users_Privileges_Model::isPermitted($moduleName, 'EditView', $recordId)) {
-			$detailViewLinks[] = array(
-					'linktype' => 'DETAILVIEWBASIC',
-					'linklabel' => 'LBL_EDIT',
-					'linkurl' => $recordModel->getEditViewUrl(),
-					'linkicon' => '<i class="fa fa-pencil"></i>'
-			);
-		}
+        if (Users_Privileges_Model::isPermitted($moduleName, 'EditView', $recordId)) {
+            $detailViewLinks[] = [
+                'linktype' => 'DETAILVIEWRECORD',
+                'linklabel' => 'LBL_EDIT',
+                'linkurl' => $recordModel->getEditViewUrl(),
+                'linkicon' => '<i class="fa fa-pencil"></i>',
+            ];
+        }
 
+        if (Users_Privileges_Model::isPermitted($moduleName, 'Delete', $recordId)) {
+            $detailViewLinks[] = [
+                'linktype' => 'DETAILVIEWRECORD',
+                'linklabel' => sprintf("%s %s", getTranslatedString('LBL_DELETE', $moduleName), vtranslate('SINGLE_' . $moduleName, $moduleName)),
+                'linkurl' => 'javascript:Vtiger_Detail_Js.deleteRecord("' . $recordModel->getDeleteUrl() . '")',
+                'linkicon' => '<i class="fa-solid fa-trash"></i>',
+            ];
+        }
+
+        if ($moduleModel->isDuplicateOptionAllowed('CreateView', $recordId)) {
+            $detailViewLinks[] = [
+                'linktype' => 'DETAILVIEWRECORD',
+                'linklabel' => 'LBL_DUPLICATE',
+                'linkurl' => $recordModel->getDuplicateRecordUrl(),
+                'linkicon' => '<i class="fa-solid fa-copy"></i>',
+            ];
+        }
 
         foreach ($detailViewLinks as $detailViewLink) {
-            $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);
+            $linkModelList[$detailViewLink['linktype']][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);
         }
-
-		if(Users_Privileges_Model::isPermitted($moduleName, 'Delete', $recordId)) {
-			$deletelinkModel = array(
-					'linktype' => 'DETAILVIEW',
-					'linklabel' => sprintf("%s %s", getTranslatedString('LBL_DELETE', $moduleName), vtranslate('SINGLE_'. $moduleName, $moduleName)),
-					'linkurl' => 'javascript:Vtiger_Detail_Js.deleteRecord("'.$recordModel->getDeleteUrl().'")',
-					'linkicon' => '<i class="fa-solid fa-trash"></i>'
-			);
-			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($deletelinkModel);
-		}
-
-		if($moduleModel->isDuplicateOptionAllowed('CreateView', $recordId)) {
-			$duplicateLinkModel = array(
-						'linktype' => 'DETAILVIEWBASIC',
-						'linklabel' => 'LBL_DUPLICATE',
-						'linkurl' => $recordModel->getDuplicateRecordUrl(),
-						'linkicon' => '<i class="fa-solid fa-copy"></i>'
-				);
-			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($duplicateLinkModel);
-		}
 
 		$linkModelListDetails = Vtiger_Link_Model::getAllByType($moduleModel->getId(),$linkTypes,$linkParams);
 		foreach($linkTypes as $linkType) {
