@@ -4550,3 +4550,7 @@ input[type=number] {
 .w-13rem {
     width: 1.3rem;
 }
+.tagListContainer .select2-selection__choice {
+    --bs-bg-opacity: 0.1;
+    background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
+}

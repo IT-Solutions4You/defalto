@@ -17,7 +17,7 @@
                             <div class="text-secondary">
                                 {vtranslate('LBL_CURRENT_TAGS',$MODULE)}
                             </div>
-                            <div class="py-2">
+                            <div class="py-2 tagListContainer">
                                 <select name="tagList" class="tagListSelect" multiple="multiple" id="tagList">
                                     {foreach item=TAG_MODEL from=$TAGS_LIST}
                                         <option value="{$TAG_MODEL->getId()}" {if $DELETE_OLD_TAGS}selected="selected"{/if}>{$TAG_MODEL->getName()}</option>
@@ -53,9 +53,7 @@
                                     <span class="ms-2">{vtranslate('Info', $QUALIFIED_MODULE)}</span>
                                 </h5>
                                 <div>{vtranslate('LBL_TAG_SEPARATOR_DESC', $QUALIFIED_MODULE)}</div>
-                                <br>
                                 <div>{vtranslate('LBL_SHARED_TAGS_ACCESS',$QUALIFIED_MODULE)}</div>
-                                <br>
                                 <div>{vtranslate('LBL_GOTO_TAGS', $QUALIFIED_MODULE)}</div>
                             </div>
                         </div>
