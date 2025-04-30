@@ -61,7 +61,7 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
     },
     
     constructTagElement : function (params) {
-        var tagElement = jQuery(jQuery('#dummyTagElement').html()).clone(true);
+        let tagElement = jQuery(jQuery('#dummyTagElement').html()).clone(true);
         tagElement.attr('data-id',params.id).attr('data-type',params.type);
         tagElement.find('.tagLabel').html(params.name);
         return tagElement
@@ -86,10 +86,6 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
             viewAllCurrentTagHolder.append(newTagEle.clone());
             currentTagMenu.find('[data-id="'+ tagId +'"]').closest('li.tag-item').remove();
         }
-        
-        if(currentTagHolder.find('.tag').length > 0){
-            currentTagHolder.find('.noTagsPlaceHolder').hide();
-        }
     },
     
     removeTagsFromShowTagContainer : function(tagsList, container) {
@@ -108,7 +104,6 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
             tagEle.find('.editTag,.deleteTag').remove();
             var newTagLiEle = jQuery('<li class="tag-item list-group-item"> <a style="margin-left:0px"></a> </li>').find('a').html(tagEle).closest('li');
             currentTagMenu.find('ul').append(newTagLiEle);
-            currentTagMenu.find(".noTagExistsPlaceHolder").hide();  
         }
     },
     
@@ -125,35 +120,34 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
                 registerViewAllTagEvents(modalContainer);
         }});
     },
-
-    showAllTags: function (container, callerParams) {
+    showAllTags : function (container, callerParams) {
         let self = this,
-            showTagModal = container.find('.showAllTagContainer').clone(true);
+            recordId = app.getRecordId(),
+            params = {
+            module: app.getModuleName(),
+            record: recordId ? recordId : null,
+            view: 'Detail',
+            mode: 'showTagsModalWindow',
+            deleteOldTags: 'Detail' === app.getViewName() ? '1' : '0',
+        };
+
+        app.request.post({data: params}).then(function (error, data) {
+            self.showAllTagsModal(container, callerParams, $(data));
+        });
+    },
+    showAllTagsModal: function (container, callerParams, showTagModal) {
+        let self = this;
 
         app.helper.showModal(showTagModal.find('.modal-dialog'), {
             'cb': function (modalContainer) {
                 let registerShowAllTagEvents = function (modalContainer) {
                     let currentTagsSelected = [],
                         currentTagHolder = modalContainer.find('.currentTag'),
-                        currentTagMenuHolder = modalContainer.find('.currentTagMenu'),
-                        currentTagScroll = modalContainer.find('.currentTagScroll'),
                         deletedTags = [];
-
-                    if (currentTagHolder.find(".tag").length <= 0) {
-                        currentTagHolder.find(".noTagsPlaceHolder").show();
-                    }
-
-                    if (currentTagMenuHolder.find(".tag").length <= 1) {
-                        currentTagMenuHolder.find(".noTagExistsPlaceHolder").show();
-                    } else {
-                        currentTagMenuHolder.find(".noTagExistsPlaceHolder").hide();
-                    }
 
                     modalContainer.find('.dropdown-menu').on('click', function (e) {
                         e.stopPropagation();
                     });
-
-                    app.helper.showVerticalScroll(modalContainer.find('.dropdown-menu .scrollable'));
 
                     modalContainer.find('.currentTagMenu').off('click', 'li > a').on('click', 'li > a', function (e) {
                         let element = jQuery(e.currentTarget),
@@ -163,35 +157,18 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
                         currentTagsSelected.push(selectedTag.data('id'));
                         element.remove();
                         currentTagHolder.append(selectedTag);
-                        currentTagHolder.find(".noTagsPlaceHolder").hide();
-
-                        if (currentTagMenuHolder.find(".tag").length <= 1) {
-                            currentTagMenuHolder.find(".noTagExistsPlaceHolder").show();
-                        }
                     });
 
-                    app.helper.showScroll(currentTagHolder, {alwaysVisible: false});
+                    let form = modalContainer.find('form'),
+                        tagList = modalContainer.find('.tagListSelect'),
+                        newTagList = modalContainer.find('input[name="createNewTag"]');
 
-                    let currentTagSelector = modalContainer.find('.currentTagSelector');
-
-                    if (currentTagSelector.length) {
-                        currentTagSelector.instaFilta({
-                            targets: '.currentTagMenu  li',
-                            sections: '.currentTagMenu ul',
-                            scope: modalContainer,
-                            hideEmptySections: true,
-                            beginsWith: false,
-                            caseSensitive: false,
-                            typeDelay: 0
-                        });
-                    }
-
-                    let tagInputEle = modalContainer.find('input[name="createNewTag"]'),
-                        form = modalContainer.find('form');
+                    vtUtils.showSelect2ElementView(tagList);
 
                     form.off('submit').on('submit', function (e) {
                         e.preventDefault();
-                        let modalContainerClone = modalContainer.clone(true),
+                        let formData = form.serializeFormData(),
+                            modalContainerClone = modalContainer.clone(true),
                             saveParams = {};
 
                         app.helper.hideModal();
@@ -200,19 +177,15 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
                             saveParams = callerParams;
                         }
 
-                        let saveTagList = {};
-                        saveTagList['existing'] = currentTagsSelected;
-                        saveTagList['new'] = tagInputEle.val().split(',');
-                        saveTagList['deleted'] = deletedTags;
-                        saveParams['tagsList'] = saveTagList;
-
-                        let formData = form.serializeFormData();
+                        saveParams['tagsList'] = tagList.val();
+                        saveParams['newTagList'] = newTagList.val().split(',');
                         saveParams['newTagType'] = formData['visibility'];
+                        saveParams['deleteOldTags'] = formData['deleteOldTags'];
+
                         self.saveTag(saveParams).then(function (data) {
                             app.event.trigger('post.MassTag.save', modalContainerClone, data);
-                        }, function (error) {
-                            //app.helper.showAlertBox({'message' : error})
-                        })
+                        });
+
                         return false;
                     });
 
@@ -235,10 +208,6 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
                         };
 
                         self.removeTagsFromShowTagContainer(new Array(tagInfo), modalContainer);
-
-                        if (currentTagHolder.find(".tag").length <= 0) {
-                            currentTagHolder.find(".noTagsPlaceHolder").show();
-                        }
                     });
                 }
 

@@ -2306,18 +2306,18 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	},
 
 	addTagsToSummaryTag: function (tagsList) {
-		let summaryTagList = jQuery('.detailTagList'),
+		let self = this,
+            summaryTagList = jQuery('.detailTagList'),
 			index;
 
 		for (index in tagsList) {
 			let tagInfo = tagsList[index],
 				tagId = tagInfo.id;
 
-			if (summaryTagList.find('[data-id="' + tagId + '"]').length <= 0) {
-				let newTagEle = this.constructTagElement(tagInfo);
-				summaryTagList.append(newTagEle);
-				summaryTagList.find('.noTagsPlaceHolder').addClass('hide');
-			}
+            if (summaryTagList.find('[data-id="' + tagId + '"]').length <= 0) {
+                let newTagEle = self.constructTagElement(tagInfo);
+                summaryTagList.append(newTagEle);
+            }
 		}
 
 		if (summaryTagList.find('.tag').length > 0) {
@@ -2325,25 +2325,22 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		}
 	},
 
-	removeDeletedTagsFromSummaryTag : function(deletedTags){
-		var summaryTagContainer = jQuery('.detailTagList');
-		for(var index in deletedTags) {
-			var tag = summaryTagContainer.find('.tag[data-id="'+deletedTags[index]+'"]');
-			if(tag.length > 0){
-				var showAllTagContainer = jQuery('.showAllTagContainer');
-				var currentTagHolder = showAllTagContainer.find('.currentTag');
-				var summaryLastTag = summaryTagContainer.find('.tag').filter(':last');
-				var nextTag = currentTagHolder.find('[data-id="'+ summaryLastTag.data('id') +'"]').next();
-				summaryTagContainer.find('.moreTags').before(nextTag.clone(true));
-				tag.remove();
-			}
-		}
+    removeDeletedTagsFromSummaryTag: function (deletedTags) {
+        let summaryTagContainer = jQuery('.detailTagList');
+        for (let index in deletedTags) {
+            let tag = summaryTagContainer.find('.tag[data-id="' + deletedTags[index] + '"]');
 
-		if(summaryTagContainer.find(".tag").length <=0){
-			summaryTagContainer.find(".noTagsPlaceHolder").removeClass("hide");
-		}
+            if (tag.length > 0) {
+                let showAllTagContainer = jQuery('.showAllTagContainer'),
+                    currentTagHolder = showAllTagContainer.find('.currentTag'),
+                    summaryLastTag = summaryTagContainer.find('.tag').filter(':last'),
+                    nextTag = currentTagHolder.find('[data-id="' + summaryLastTag.data('id') + '"]').next();
 
-	},
+                summaryTagContainer.find('.moreTags').before(nextTag.clone(true));
+                tag.remove();
+            }
+        }
+    },
 
 	registerTagSearch: function () {
 		let tagSearch = jQuery('#tag-search')

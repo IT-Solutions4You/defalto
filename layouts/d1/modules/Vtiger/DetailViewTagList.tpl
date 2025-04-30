@@ -15,15 +15,15 @@
             </span>
         </span>
         <span id="addTagContainer">
-            <a id="addTagTriggerer" class="btn btn-outline-secondary mb-1 me-1">
-                <i class="fa fa-plus"></i>
-                {vtranslate('LBL_ADD_NEW_TAG',$MODULE)}
+            <a id="addTagTriggerer" class="btn text-secondary mb-1 me-1">
+                <i class="fa fa-tag"></i>
+                <span class="ms-2">{vtranslate('LBL_ADD_NEW_TAG',$MODULE)}</span>
             </a>
         </span>
         <div class="viewAllTagsContainer hide">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    {assign var="TITLE" value="{vtranslate('LBL_TAG_FOR',$MODULE,$RECORD->getName())}"}
+                    {assign var=TITLE value=vtranslate('LBL_TAG_FOR',$MODULE,$RECORD->getName())}
                     {include file="ModalHeader.tpl"|vtemplate_path:$MODULE}
                     <div class="modal-body detailShowAllModal">
                         <div class="form-group">
@@ -42,7 +42,6 @@
                 </div>
             </div>
         </div>
-       {include file="AddTagUI.tpl"|vtemplate_path:$MODULE RECORD_NAME=$RECORD->getName()}
     </div>
     <div id="dummyTagElement" class="hide">
     {assign var=TAG_MODEL value=Vtiger_Tag_Model::getCleanInstance()}

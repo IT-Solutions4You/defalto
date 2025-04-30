@@ -221,8 +221,9 @@ Vtiger.Class("Vtiger_List_Js", {
 		}
 	},
 	triggerRemoveTag: function (tagId) {
-		var listInstance = app.controller();
-		var listSelectParams = listInstance.getListSelectAllParams(true);
+		let listInstance = app.controller(),
+            listSelectParams = listInstance.getListSelectAllParams(true);
+
 		if (listSelectParams) {
 			listInstance.massRemoveTag(tagId);
 		} else {
@@ -2315,39 +2316,32 @@ Vtiger.Class("Vtiger_List_Js", {
 
 		app.event.trigger('Request.MassTag.show', container, recordParams);
 	},
-	massRemoveTag: function (tagId) {
-		var self = this;
-		var tagElement = jQuery("#listViewTagContainer").find('[data-id="' + tagId + '"]');
-		var tagName = tagElement.find('.tagLabel').text();
-		var message = app.vtranslate('JS_REMOVE_MASS_TAG_WARNING', tagName);
-		app.helper.showConfirmationBox({'message': message}).then(function () {
-			var tagInstance = self.getComponentInstance('Vtiger_Tag_Js');
-			var deleteParams = {};
-			var cvId = self.getCurrentCvId();
-			deleteParams.search_params = JSON.stringify(self.getListSearchParams());
-			deleteParams = jQuery.extend(deleteParams, self.getListSelectAllParams(false));
-			deleteParams.viewname = cvId;
+    massRemoveTag: function (tagId) {
+        let self = this,
+            tagElement = jQuery("#listViewTagContainer").find('[data-id="' + tagId + '"]'),
+            tagName = tagElement.find('.tagLabel').text(),
+            message = app.vtranslate('JS_REMOVE_MASS_TAG_WARNING', tagName);
 
-			var saveTagList = {};
-			var tagIdsToDelete = new Array();
-			var tagIdsToAdd = new Array();
-			var existingTagIdList = new Array();
+        app.helper.showConfirmationBox({'message': message}).then(function () {
+            let tagInstance = self.getComponentInstance('Vtiger_Tag_Js'),
+                deleteParams = {},
+                cvId = self.getCurrentCvId();
 
-			tagIdsToDelete.push(tagId);
-			saveTagList['existing'] = existingTagIdList;
-			saveTagList['new'] = tagIdsToAdd;
-			saveTagList['deleted'] = tagIdsToDelete;
-			deleteParams['tagsList'] = saveTagList;
+            deleteParams.search_params = JSON.stringify(self.getListSearchParams());
+            deleteParams = jQuery.extend(deleteParams, self.getListSelectAllParams(false));
+            deleteParams.viewname = cvId;
+            deleteParams['deleteTagsList'] = [tagId];
+            deleteParams['deleteOldTags'] = 1;
 
-			tagInstance.saveTag(deleteParams).then(function (data) {
-				self.clearList();
-				self.loadListViewRecords().then(function (e) {
-					app.helper.showSuccessNotification({"message": ''});
-				});
-			});
-		})
+            tagInstance.saveTag(deleteParams).then(function (data) {
+                self.clearList();
+                self.loadListViewRecords().then(function (e) {
+                    app.helper.showSuccessNotification({"message": ''});
+                });
+            });
+        })
 
-	},
+    },
 	registerEditLink: function () {
 		const self = this;
 
