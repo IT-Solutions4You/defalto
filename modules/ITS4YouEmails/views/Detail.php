@@ -25,6 +25,15 @@ class ITS4YouEmails_Detail_View extends Vtiger_Detail_View
         echo parent::showModuleBasicView($request);
     }
 
+    /**
+     * @param object $recordModel
+     * @return false
+     */
+    public function isAjaxEnabled($recordModel)
+    {
+        return false;
+    }
+
     public function showModuleDetailView(Vtiger_Request $request)
     {
         $recordId = $request->get('record');
