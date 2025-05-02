@@ -67,21 +67,22 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
         return tagElement
     },
     
-    addTagsToShowAllTagContianer : function(tagsList) {
-        var showAllTagContainer = jQuery('.showAllTagContainer');
-        var viewAllTagContainer = jQuery('.viewAllTagsContainer');
-        var currentTagHolder = showAllTagContainer.find('.currentTag');
-        var viewAllCurrentTagHolder = viewAllTagContainer.find('.currentTag');
-        var currentTagMenu = showAllTagContainer.find('.currentTagMenu');
+    addTagsToShowAllTagContainer : function(tagsList) {
+        let showAllTagContainer = jQuery('.showAllTagContainer'),
+            viewAllTagContainer = jQuery('.viewAllTagsContainer'),
+            currentTagHolder = showAllTagContainer.find('.currentTag'),
+            viewAllCurrentTagHolder = viewAllTagContainer.find('.currentTag'),
+            currentTagMenu = showAllTagContainer.find('.currentTagMenu');
         
-        for(var index in tagsList) {
-            var tagInfo = tagsList[index];
-            var tagId = tagInfo.id;
+        for(let index in tagsList) {
+            let tagInfo = tagsList[index],
+                tagId = tagInfo.id;
             
             if(currentTagHolder.find('[data-id="'+ tagId +'"]').length > 0) {
                 continue;
             }
-            var newTagEle = this.constructTagElement(tagInfo);
+            
+            let newTagEle = this.constructTagElement(tagInfo);
             currentTagHolder.append(newTagEle);
             viewAllCurrentTagHolder.append(newTagEle.clone());
             currentTagMenu.find('[data-id="'+ tagId +'"]').closest('li.tag-item').remove();
@@ -106,19 +107,33 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
             currentTagMenu.find('ul').append(newTagLiEle);
         }
     },
-    
     viewAllTags : function(container) {
-        var viewAllTagContainer = container.find('.viewAllTagsContainer').clone(true);
+        let self = this,
+            recordId = app.getRecordId(),
+            params = {
+                module: app.getModuleName(),
+                record: recordId ? recordId : null,
+                view: 'Detail',
+                mode: 'showAllTagsModalWindow',
+            };
+
+        app.request.post({data: params}).then(function (error, data) {
+            self.viewAllTagsModal($(data));
+        });
+    },
+    viewAllTagsModal: function (container) {
         // There is no delete option from view All Tags
-        viewAllTagContainer.find(".deleteTag").remove();
-        app.helper.showModal(viewAllTagContainer.find('.modal-dialog'), {'cb' : function(modalContainer){
-                
-                var registerViewAllTagEvents = function(modalContainer) {
-                    var currentTagHolder = modalContainer.find('.currentTag');
+        container.find(".deleteTag").remove();
+
+        app.helper.showModal(container.find('.modal-dialog'), {
+            'cb': function (modalContainer) {
+                let registerViewAllTagEvents = function (modalContainer) {
+                    let currentTagHolder = modalContainer.find('.currentTag');
                     app.helper.showScroll(currentTagHolder);
                 }
                 registerViewAllTagEvents(modalContainer);
-        }});
+            }
+        });
     },
     showAllTags : function (container, callerParams) {
         let self = this,

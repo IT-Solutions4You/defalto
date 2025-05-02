@@ -10,42 +10,13 @@
             <span class="detailTagList" data-num-of-tags-to-show="{Vtiger_Tag_Model::NUM_OF_TAGS_DETAIL}">
                 {foreach from=$TAGS_LIST item=TAG_MODEL name=tagCounter}
                     {assign var=TAG_LABEL value=$TAG_MODEL->getName()}
-                    {include file="Tag.tpl"|vtemplate_path:$MODULE}
+                    {include file='Tag.tpl'|vtemplate_path:$MODULE}
                 {/foreach}
             </span>
         </span>
-        <span id="addTagContainer">
-            <a id="addTagTriggerer" class="btn text-secondary mb-1 me-1">
-                <i class="fa fa-tag"></i>
-                <span class="ms-2">{vtranslate('LBL_ADD_NEW_TAG',$MODULE)}</span>
-            </a>
-        </span>
-        <div class="viewAllTagsContainer hide">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    {assign var=TITLE value=vtranslate('LBL_TAG_FOR',$MODULE,$RECORD->getName())}
-                    {include file="ModalHeader.tpl"|vtemplate_path:$MODULE}
-                    <div class="modal-body detailShowAllModal">
-                        <div class="form-group">
-                            <label class="col-lg-3 col-sm-12 col-md-4 control-label">
-                                {vtranslate('LBL_CURRENT_TAGS',$MODULE)}
-                            </label>
-                            <div class="col-lg-9 col-sm-12 col-md-8 ">
-                                <div class="currentTag multiLevelTagList form-control">
-                                    {foreach item=TAG_MODEL from=$TAGS_LIST}
-                                        {include file=vtemplate_path('Tag.tpl',$MODULE) NO_EDIT=true}
-                                    {/foreach}
-                                </div>
-                           </div>
-                       </div>
-                   </div>
-                </div>
-            </div>
+        <div id="dummyTagElement" class="hide">
+            {include file=vtemplate_path('Tag.tpl',$MODULE) TAG_MODEL=Vtiger_Tag_Model::getCleanInstance()}
         </div>
-    </div>
-    <div id="dummyTagElement" class="hide">
-    {assign var=TAG_MODEL value=Vtiger_Tag_Model::getCleanInstance()}
-    {include file=vtemplate_path('Tag.tpl',$MODULE)}
     </div>
     <div>
         <div class="editTagContainer hide" >

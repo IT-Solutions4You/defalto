@@ -223,7 +223,9 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		this._moduleName = module;
 		return this;
 	},
-
+    getMainContainer() {
+        return $('main');
+    },
 		registerOverlayEditEvents: function(module, container) {
 				var editInstance = Vtiger_Edit_Js.getInstanceByModuleName(module);
 				editInstance.setModuleName(module);
@@ -2198,7 +2200,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				if(error == null) {
 					var tagContainer = jQuery('.tagContainer');
 					var tagInstance = self.getComponentInstance('Vtiger_Tag_Js');
-					tagInstance.addTagsToShowAllTagContianer(data.tags);
+					tagInstance.addTagsToShowAllTagContainer(data.tags);
 					self.addTagsToSummaryTag(data.tags);
 					if(parseInt(data.moreTagCount) > 0) {
 						tagContainer.find('.tagMoreCount').text(data.moreTagCount).closest('.moreTags').removeClass('hide');
@@ -2442,7 +2444,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			 jQuery('.showAllTagContainer .currentTagMenu').html(modalContainerClone.find('.currentTagMenu').html());
 
 			 let tagInstance = self.getComponentInstance('Vtiger_Tag_Js');
-			 tagInstance.addTagsToShowAllTagContianer(data.tags);
+			 tagInstance.addTagsToShowAllTagContainer(data.tags);
 			 self.removeDeletedTagsFromSummaryTag(data.deleted);
 			 self.addTagsToSummaryTag(data.tags);
 		})
@@ -2471,7 +2473,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			})
 		});
 
-		tagContainer.on('click', '#addTagTriggerer', function(e){
+		self.getMainContainer().on('click', '#addTagTriggerer', function(e){
 			app.event.trigger('Request.MassTag.show',tagContainer, {'record' : self.getRecordId()});
 		});
 	},

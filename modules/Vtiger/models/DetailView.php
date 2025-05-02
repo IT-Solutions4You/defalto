@@ -117,6 +117,14 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 			unset($linkModelListDetails[$linkType]);
 		}
 
+        $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues([
+            'linktype' => 'DETAILVIEWBASIC',
+            'linklabel' => 'LBL_ADD_TAG',
+            'linkurl' => sprintf('Vtiger_Index_Js.addTags(this, "%s", "%d");', $moduleName, $recordId),
+            'linkicon' => '<i class="fa fa-tag"></i>',
+            'style_class' => 'text-secondary addTagsButton',
+        ]);
+
 		$relatedLinks = $this->getDetailViewRelatedLinks();
 
 		foreach($relatedLinks as $relatedLinkEntry) {
