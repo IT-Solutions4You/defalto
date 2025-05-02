@@ -1364,4 +1364,19 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 
         return self::getDefaultFilterByModule($module);
     }
+
+    /**
+     * @throws Exception
+     */
+    public static function getActiveInstance($moduleName): self
+    {
+        $customView = new CustomView();
+        $cvId = $customView->getViewId($moduleName);
+
+        if (!empty($cvId)) {
+            return self::getInstanceById($cvId);
+        }
+
+        return self::getDefaultFilterByModule($moduleName);
+    }
 }
