@@ -17,30 +17,28 @@
         <div id="dummyTagElement" class="hide">
             {include file=vtemplate_path('Tag.tpl',$MODULE) TAG_MODEL=Vtiger_Tag_Model::getCleanInstance()}
         </div>
-    </div>
-    <div>
         <div class="editTagContainer hide" >
             <input type="hidden" name="id" value="" />
             <div class="editTagContents">
                 <div>
-                    <input type="text" class="form-control" name="tagName" value="" style="width:100%" />
+                    <input type="text" class="form-control" name="tagName" value="" />
                 </div>
                 <div class="my-2">
                     <div class="checkbox">
-                        <label>
+                        <label class="form-check">
                             <input type="hidden" name="visibility" value="{Vtiger_Tag_Model::PRIVATE_TYPE}"/>
-                            <input type="checkbox" name="visibility" value="{Vtiger_Tag_Model::PUBLIC_TYPE}" />
+                            <input type="checkbox" class="form-check-input" name="visibility" value="{Vtiger_Tag_Model::PUBLIC_TYPE}" />
                             <span class="ms-2">{vtranslate('LBL_SHARE_TAG',$MODULE)}</span>
                         </label>
                     </div>
                 </div>
             </div>
             <div class="btn-group w-100">
-                <button class="btn btn-mini btn-success saveTag" type="button" style="width:50%;float:left">
-                    <div class="text-center"> <i class="fa fa-check"></i> </div>
+                <button class="btn btn-mini btn-success saveTag" type="button">
+                    <i class="fa fa-check"></i>
                 </button>
-                <button class="btn btn-mini btn-danger cancelSaveTag" type="button" style="width:50%">
-                    <div class="text-center"> <i class="fa fa-close"></i> </div>
+                <button class="btn btn-mini btn-danger cancelSaveTag" type="button">
+                    <i class="fa fa-close"></i>
                 </button>
             </div>
         </div>
