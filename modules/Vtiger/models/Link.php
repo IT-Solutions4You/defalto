@@ -343,8 +343,36 @@ class Vtiger_Link_Model extends Vtiger_Link {
         return (string)$this->get('link_template');
     }
 
-    public function getStyleClass()
+    /**
+     * @return string
+     * @throws Exception
+     */
+    public function getStyleClass(): string
     {
-        return $this->get('style_class');
+        return (string)$this->get('style_class');
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function isTemplate(): bool
+    {
+        return str_starts_with($this->get('linkurl'), 'template:');
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    public function getTemplate(): string
+    {
+        [$type, $template, $module] = explode(':', $this->get('linkurl'), 3);
+
+        if (empty($module)) {
+            $module = 'Vtiger';
+        }
+
+        return vtemplate_path($template, $module);
     }
 }

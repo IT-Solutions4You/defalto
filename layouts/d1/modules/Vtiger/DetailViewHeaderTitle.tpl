@@ -34,7 +34,7 @@
                     <div class="col-auto">
                         {if $DETAILVIEW_LINKS['DETAILVIEWRECORD']}
                             {foreach item=DETAIL_VIEW_BASIC_LINK from=$DETAILVIEW_LINKS['DETAILVIEWRECORD']}
-                                <button type="button" class="btn btn-primary ms-2" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{vtranslate($DETAIL_VIEW_BASIC_LINK->getLabel(), $MODULE_NAME)}" id="{$MODULE_NAME}_detailView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($DETAIL_VIEW_BASIC_LINK->getLabel())}"
+                                <button type="button" class="btn btn-outline-secondary ms-2" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{vtranslate($DETAIL_VIEW_BASIC_LINK->getLabel(), $MODULE_NAME)}" id="{$MODULE_NAME}_detailView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($DETAIL_VIEW_BASIC_LINK->getLabel())}"
                                         onclick="{if $DETAIL_VIEW_BASIC_LINK->isPageLoadLink()}window.location.href='{$DETAIL_VIEW_BASIC_LINK->getUrl()}&app={$SELECTED_MENU_CATEGORY}'{else}{$DETAIL_VIEW_BASIC_LINK->getUrl()}{/if}">
                                     {$DETAIL_VIEW_BASIC_LINK->get('linkicon')}
                                 </button>

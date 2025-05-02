@@ -10,7 +10,7 @@
             <div class="me-auto buttonsTypeDetailViewBasic">
                 {assign var=STARRED value=$RECORD->get('starred')}
                 {if $MODULE_MODEL->isStarredEnabled()}
-                    <button class="btn btn-primary me-2 markStar {if $STARRED}markStarActive{/if}" id="starToggle">
+                    <button class="btn btn-outline-secondary me-2 markStar {if $STARRED}markStarActive{/if}" id="starToggle">
                         <div class="starredStatus" title="{vtranslate('LBL_STARRED', $MODULE)}">
                             <div class="unfollowMessage">
                                 <i class="bi bi-bookmark me-2"></i>
@@ -33,10 +33,10 @@
                     </button>
                 {/if}
                 {foreach item=DETAIL_VIEW_BASIC_LINK from=$DETAILVIEW_LINKS['DETAILVIEWBASIC']}
-                    {if 'PDFMaker' eq $DETAIL_VIEW_BASIC_LINK->getLabel()}
-                        {include file='GetPDFButtons.tpl'|vtemplate_path:'PDFMaker'}
+                    {if $DETAIL_VIEW_BASIC_LINK->isTemplate()}
+                        {include file=$DETAIL_VIEW_BASIC_LINK->getTemplate()}
                     {else}
-                        <button class="btn btn-primary me-2" id="{$MODULE_NAME}_detailView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($DETAIL_VIEW_BASIC_LINK->getLabel())}"
+                        <button class="btn me-2 {$DETAIL_VIEW_BASIC_LINK->getStyleClass()}" id="{$MODULE_NAME}_detailView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($DETAIL_VIEW_BASIC_LINK->getLabel())}"
                             {if $DETAIL_VIEW_BASIC_LINK->isPageLoadLink()}
                                 onclick="window.location.href = '{$DETAIL_VIEW_BASIC_LINK->getUrl()}&app={$SELECTED_MENU_CATEGORY}'"
                             {else}
