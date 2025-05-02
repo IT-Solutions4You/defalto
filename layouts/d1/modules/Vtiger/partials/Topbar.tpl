@@ -18,7 +18,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col overflow-hidden module-breadcrumb module-breadcrumb-{$REQUEST_INSTANCE.view}">
+            <div class="col-lg col-sm-4 module-breadcrumb module-breadcrumb-{$REQUEST_INSTANCE.view}">
                 <div class="row align-items-center flex-nowrap">
                     <div class="col-auto">
                         {if 'Settings' eq $REQUEST_INSTANCE.parent}
