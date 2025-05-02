@@ -1208,24 +1208,17 @@ input[type=checkbox]:checked {
 /**********************************
 **********Detail View Styles**********
 **********************************/
-#detailView .fieldValue {
-    position: relative;
-}
 #detailView .fieldValue .action {
     display: none;
 }
 
-#detailView .fieldValue:hover .action {
+#detailView .fieldValue:hover .action,
+#detailView [id*="_Detail_field_"]:hover .action {
     display: inline-block;
-    position: absolute;
-    top: 0;
-    right: 0;
 }
 
 #headerForm .fieldValue .editAction,
 #detailView .fieldValue .editAction {
-    margin: -0.5rem 0;
-    padding: 0.5rem;
     border-radius: var(--bs-border-radius) !important;
     background-color: rgba(var(--bs-body-bg-rgb),var(--bs-bg-opacity)) !important;
 }
