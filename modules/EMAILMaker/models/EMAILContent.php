@@ -1156,6 +1156,13 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             return;
         }
 
+        Core_RelatedBlock_Model::$numberUserConfig = Core_RelatedBlock_Model::$currencyUserConfig = [
+            'currency_grouping_separator' => self::$thousands_separator,
+            'currency_decimal_separator' => self::$decimal_point,
+            'truncate_trailing_zeros' => false,
+            'no_of_currency_decimals' => self::$decimals,
+        ];
+
         self::$content = Core_RelatedBlock_Model::replaceAll(self::$recordModel, self::$content);
     }
 

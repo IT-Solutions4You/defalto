@@ -11,14 +11,4 @@ class RecycleBin
     public string $moduleLabel = 'Recycle Bin';
     public string $moduleName = 'RecycleBin';
     public string $parentName = 'Tools';
-
-    /**
-     * Invoked when special actions are performed on the module.
-     * @param String $moduleName Module name
-     * @param String $eventType Event Type
-     */
-    public function vtlib_handler($moduleName, $eventType)
-    {
-        Core_Install_Model::getInstance($eventType, $moduleName)->install();
-    }
 }

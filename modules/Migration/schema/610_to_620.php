@@ -16,14 +16,11 @@ if(defined('INSTALLATION_MODE')) {
 $db = PearDatabase::getInstance();
 
 //Handle migration for http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/7552--senotesrel
-$seDeleteQuery="DELETE from vtiger_senotesrel WHERE crmid NOT IN(select crmid from vtiger_crmentity)";
-Migration_Index_View::ExecuteQuery($seDeleteQuery,array());
-$seNotesSql="ALTER TABLE vtiger_senotesrel ADD CONSTRAINT fk1_crmid FOREIGN KEY(crmid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE";
-Migration_Index_View::ExecuteQuery($seNotesSql,array());
+Migration_Index_View::ExecuteQuery('DELETE from vtiger_senotesrel WHERE crmid NOT IN(select crmid from vtiger_crmentity)',array());
+Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_senotesrel ADD CONSTRAINT fk1_crmid FOREIGN KEY IF NOT EXISTS (crmid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE',array());
 
 //Update uitype of created_user_id field of vtiger_field from 53 to 52
-$updateQuery = "UPDATE vtiger_field SET uitype = 52 WHERE fieldname = 'created_user_id'";
-Migration_Index_View::ExecuteQuery($updateQuery,array());
+Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET uitype = 52 WHERE fieldname = "created_user_id"',array());
 
 /*141*/
 //registering handlers for Google sync 

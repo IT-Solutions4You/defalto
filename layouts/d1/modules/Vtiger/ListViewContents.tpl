@@ -6,11 +6,12 @@
 *}
 {* modules/Vtiger/views/List.php *}
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
+{strip}
 {include file="PicklistColorMap.tpl"|vtemplate_path:$MODULE}
-
 <div>
     <input type="hidden" name="view" id="view" value="{$VIEW}"/>
     <input type="hidden" name="cvid" value="{$VIEWID}"/>
+    <input type="hidden" name="viewname" value="{$VIEWID}"/>
     <input type="hidden" name="pageStartRange" id="pageStartRange" value="{$PAGING_MODEL->getRecordStartRange()}"/>
     <input type="hidden" name="pageEndRange" id="pageEndRange" value="{$PAGING_MODEL->getRecordEndRange()}"/>
     <input type="hidden" name="previousPageExist" id="previousPageExist" value="{$PAGING_MODEL->isPrevPageExists()}"/>
@@ -175,21 +176,18 @@
                                             </span>
                                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}
                                             {assign var=PICKLIST_FIELD_ID value={$LISTVIEW_HEADER->getId()}}
-                                            <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$PICKLIST_FIELD_ID}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY_RAWVALUE)}" {/if}>{$LISTVIEW_ENTRY->getDisplayValue($LISTVIEW_HEADERNAME)}</span>
+                                            <span class="py-1 px-2 rounded picklist-color picklist-{$PICKLIST_FIELD_ID}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY_RAWVALUE)}">{$LISTVIEW_ENTRY->getDisplayValue($LISTVIEW_HEADERNAME)}</span>
                                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'multipicklist'}
-                                                {assign var=MULTI_RAW_PICKLIST_VALUES value=explode('|##|',$LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}
-                                                {assign var=MULTI_PICKLIST_VALUES value=explode(',',$LISTVIEW_ENTRY_VALUE)}
-                                                {assign var=ALL_MULTI_PICKLIST_VALUES value=array_flip($LISTVIEW_HEADER->getPicklistValues())}
-                                                {foreach item=MULTI_PICKLIST_VALUE key=MULTI_PICKLIST_INDEX from=$MULTI_PICKLIST_VALUES}
-                                                <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$LISTVIEW_HEADER->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen(trim($ALL_MULTI_PICKLIST_VALUES[trim($MULTI_PICKLIST_VALUE)]))}"{/if} >
-                                                        {if trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX]) eq vtranslate('LBL_NOT_ACCESSIBLE', $MODULE)}
-                                                            <font color="red">
-                                                            {trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX])}
-                                                            </font>
-                                                        {else}
-                                                            {trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX])}
-                                                        {/if}
-                                                    {if !empty($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX + 1])},{/if}
+                                            {assign var=MULTI_RAW_PICKLIST_VALUES value=explode('|##|',$LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}
+                                            {assign var=MULTI_PICKLIST_VALUES value=explode(',',$LISTVIEW_ENTRY_VALUE)}
+                                            {assign var=ALL_MULTI_PICKLIST_VALUES value=array_flip($LISTVIEW_HEADER->getPicklistValues())}
+                                            {foreach item=MULTI_PICKLIST_VALUE key=MULTI_PICKLIST_INDEX from=$MULTI_PICKLIST_VALUES}
+                                                <span class="my-1 me-1 py-1 px-2 rounded picklist-color picklist-{$LISTVIEW_HEADER->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen(trim($ALL_MULTI_PICKLIST_VALUES[trim($MULTI_PICKLIST_VALUE)]))}">
+                                                    {if trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX]) eq vtranslate('LBL_NOT_ACCESSIBLE', $MODULE)}
+                                                        <span class="text-danger">{trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX])}</span>
+                                                    {else}
+                                                        {trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX])}
+                                                    {/if}
                                                 </span>
                                             {/foreach}
                                         {else}
@@ -226,3 +224,4 @@
         <div id="scroller" class="scroller-div"></div>
     </div>
 </div>
+{/strip}

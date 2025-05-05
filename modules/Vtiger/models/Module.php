@@ -1943,4 +1943,74 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
     {
         return $this->fontIcon;
     }
+
+    /**
+     * @return array
+     */
+    public function getHeaderFieldsConfig(): array
+    {
+        $fields = $this->getFields();
+        $fieldsCount = 0;
+        $config = [];
+
+        foreach ($fields as $field) {
+            if ($field->isHeaderField() && $field->isActiveField() && $field->isViewable() && 'assigned_user_id' !== $field->getName()) {
+                $fieldsCount++;
+                $config[] = ['type' => 'field', 'field' => $field,];
+            }
+        }
+
+        while (5 > $fieldsCount) {
+            $fieldsCount++;
+            $config[] = ['type' => 'space',];
+        }
+
+        $config[] = ['type' => 'user', 'field' => $this->getField('assigned_user_id'),];
+
+        return $config;
+    }
+
+    /**
+     * @param string $category
+     * @return string
+     */
+    public function getCustomViewUrl(string $category = ''): string
+    {
+        if ($this->getDefaultViewName() !== 'List') {
+            $url = $this->getDefaultUrl();
+        } else {
+            $cvId = $this->getDefaultCustomFilter();
+
+            if ($cvId) {
+                $url = implode('', [$this->getListViewUrl(), '&viewname=', $cvId]);
+            } else {
+                $url = $this->getListViewUrlWithAllFilter();
+            }
+        }
+
+        $module = $this->getName();
+
+        if (!empty(ListViewSession::getCurrentTag($module))) {
+            $tagId = ListViewSession::getCurrentTag($module);
+            $tag = Vtiger_Tag_Model::getInstanceById($tagId);
+            $tag->setModuleName($module);
+
+            if($tag) {
+                $url = $tag->getListViewUrl();
+            }
+        } elseif (!empty(ListViewSession::getCurrentView($module))) {
+            $viewId = ListViewSession::getCurrentView($module);
+            $view = CustomView_Record_Model::getInstanceById($viewId);
+
+            if($view) {
+                $url = $view->getListViewUrl();
+            }
+        }
+
+        if (!empty($category)) {
+            $url .= '&app=' . $category;
+        }
+
+        return $url;
+    }
 }

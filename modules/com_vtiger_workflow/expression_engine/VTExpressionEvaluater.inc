@@ -37,14 +37,18 @@ function __vt_sub($arr){
 	}
 }
 
-function __vt_mul($arr){
-	return $arr[0]*$arr[1];
+function __vt_mul($arr)
+{
+    return (float)$arr[0] * (float)$arr[1];
 }
 
-function __vt_div($arr){
-	if($arr[1] == 0 || empty($arr[1]))
-		return 0;
-	return $arr[0]/$arr[1];
+function __vt_div($arr)
+{
+    if ($arr[1] == 0 || empty($arr[1])) {
+        return 0;
+    }
+
+    return (float)$arr[0] / (float)$arr[1];
 }
 
 function __vt_equals($arr){

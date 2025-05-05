@@ -202,7 +202,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         if (empty($numbers)) {
             return 0.0;
         }
-        
+
         $numbers = array_map('floatval', $numbers);
 
         return array_sum($numbers) / count($numbers);

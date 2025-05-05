@@ -32,32 +32,10 @@ jQuery.validator.addMethod("reference", function(value, element, params) {
 	}, jQuery.validator.format("Please enter the correct date")
 );
 
-jQuery.validator.addMethod("double", function(value, element, params) {
-		element = jQuery(element);
-
-		var groupSeparator = app.getGroupingSeparator();
-		var decimalSeparator = app.getDecimalSeparator();
-
-		var strippedValue = value.replace(decimalSeparator, '');
-		var spacePattern = /\s/;
-		if(spacePattern.test(decimalSeparator) || spacePattern.test(groupSeparator)) {
-			strippedValue = strippedValue.replace(/ /g, '');
-		}
-		if(groupSeparator === "$"){
-			groupSeparator = "\\$";
-		}
-		//Replace all occurence of groupSeparator with ''.
-		var regex = new RegExp(groupSeparator,'g');
-		strippedValue = strippedValue.replace(regex, '');
-
-		if(isNaN(strippedValue)) {
-			return false;
-		}
-		return true;
+jQuery.validator.addMethod("double", function (value, element, params) {
+		return !value || $.isNumeric(value);
 	}, jQuery.validator.format(app.vtranslate('JS_PLEASE_ENTER_VALID_VALUE'))
 );
-
-
 
 jQuery.validator.addMethod("WholeNumber", function(value, element, params) {
 		var regex= /[^+\-0-9.]+/; // not number?

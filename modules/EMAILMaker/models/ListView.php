@@ -222,44 +222,10 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
 
     public function getListViewEntries($pagingModel)
     {
-        $db = PearDatabase::getInstance();
-        $startIndex = $pagingModel->getStartIndex();
-        $pageLimit = $pagingModel->getPageLimit();
-        $orderBy = $this->getForSql('orderby');
-        $sortOrder = $this->getForSql('sortorder');
-
-        $listQuery = $this->getQuery();
         $sourceModule = $this->get('src_module');
         $sourceRecord = $this->get('src_record');
-        $searchKey = $this->get('search_key');
-        $searchValue = $this->get('search_value');
-
         $default_charset = vglobal('default_charset');
-        /*
-                $whereQuery .= " WHERE is_theme = '0' AND deleted = '0' AND ";
-                if(!empty($searchKey) && !empty($searchValue)) {
-                    $whereQuery .= "$searchKey LIKE '$searchValue%' AND ";
-                }
-
-                //module should be enabled or module should be empty then allow
-                $moduleActiveCheck = '(vtiger_tab.presence IN (0,2) OR vtiger_emakertemplates.module IS null OR vtiger_emakertemplates.module = "")';
-                $listQuery .= $whereQuery. $moduleActiveCheck;
-                //To retrieve only selected module records
-                if ($sourceModule) {
-                    $listQuery .= " AND (vtiger_emakertemplates.module = '".$sourceModule."' OR vtiger_emakertemplates.module = '')";
-                }
-
-                if ($orderBy) {
-                    $listQuery .= " ORDER BY $orderBy $sortOrder";
-                } else {
-                    $listQuery .= " ORDER BY templateid DESC";
-                }
-                //$listQuery .= " LIMIT $startIndex,".($pageLimit+1);
-                echo $listQuery;
-                $result = $db->pquery($listQuery, array());
-                $num_rows = $db->num_rows($result);
-        */
-        $listViewRecordModels = array();
+        $listViewRecordModels = [];
 
         $forListView = false;
 
@@ -276,33 +242,54 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
                 }
             }
 
+            $row = $this->retrieveTemplateDocuments($row);
             $recordModel->setRawData($row);
+
             foreach ($row as $key => $value) {
                 if ($key == "module") {
                     $value = vtranslate($value, $value);
                 }
+
                 if (in_array($key, $this->listViewColumns)) {
                     $value = textlength_check($value);
                 }
-                //if ($key == "body" || $key == "subtest") $value = "aaaaaaa".html_entity_decode($value, ENT_QUOTES, $default_charset);
+
                 $row[$key] = $value;
             }
             $listViewRecordModels[$row['templateid']] = $recordModel->setData($row);
         }
 
         $pagingModel->calculatePageRange($listViewRecordModels);
-
-        //if($num_rows > $pageLimit){
-        //    array_pop($listViewRecordModels);
-        //   $pagingModel->set('nextPageExists', true);
-        //}else{
         $pagingModel->set('nextPageExists', false);
-        //}
 
         return $listViewRecordModels;
     }
 
-public function getQuery()
+    /**
+     * @param array $data
+     * @return array
+     */
+    public function retrieveTemplateDocuments(array $data): array
+    {
+        $documents = [];
+        $EMAILMakerUtils = new EMAILMaker_EMAILContentUtils_Model();
+        $documentIds = $EMAILMakerUtils->getAttachmentsForId($data['templateid']);
+
+        foreach ($documentIds as $documentId) {
+            $document = Vtiger_Record_Model::getInstanceById($documentId, 'Documents');
+
+            if ($document) {
+                $documents[$documentId] = $document->getData();
+            }
+        }
+
+        $data['document_records'] = $documents;
+
+        return $data;
+    }
+
+
+    public function getQuery()
     {
         $listQuery = 'SELECT templateid,' . implode(',', $this->querySelectColumns) . ' FROM vtiger_emakertemplates
 						LEFT JOIN vtiger_tab ON vtiger_tab.name = vtiger_emakertemplates.module

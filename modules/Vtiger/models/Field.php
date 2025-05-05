@@ -590,7 +590,22 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		return $fieldModel;
 	}
 
-	/**
+    /**
+     * @param string $fieldName
+     * @param string $moduleName
+     * @return mixed
+     * @throws AppException
+     */
+    public static function getCleanInstance(string $fieldName, string $moduleName): object
+    {
+        $className = Vtiger_Loader::getComponentClassName('Model', 'Field', $moduleName);
+        $fieldModel = new $className();
+        $fieldModel->name = $fieldName;
+
+        return $fieldModel;
+    }
+
+    /**
 	 * Function to get the custom view column name transformation of the field for a date field used in date filters
 	 * @return <String> - tablename:columnname:fieldname:module_fieldlabel
 	 */

@@ -237,6 +237,9 @@ class Potentials_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'related_modules' => [
+                        'Campaigns',
+                    ],
                 ],
                 'forecast_amount' => [
                     'name' => 'forecast_amount',

@@ -7,7 +7,7 @@
  */
 
 class Users_Record_Model extends Vtiger_Record_Model {
-
+    public static int $searchUsersLimit = 20;
     /**
      * @var array
      */
@@ -1021,5 +1021,60 @@ class Users_Record_Model extends Vtiger_Record_Model {
 
         $adb->pquery('INSERT INTO df_user2profile(user_id,profile_id) VALUES(?,?)', [$userId, $profileId]);
         $log->debug('Exiting updateUser2ProfileMapping method ...');
+    }
+
+    /**
+     * @return string
+     */
+    public function getDecimalSeparator(): string
+    {
+        return decode_html($this->get('currency_decimal_separator'));
+    }
+
+    /**
+     * @param string $module
+     * @param string $search
+     * @return array
+     */
+    public function searchAccessibleUsersForModule(string $module = '', string $search = ''): array
+    {
+        $users = $this->getAccessibleUsersForModule($module);
+        $result = [];
+
+        foreach ($users as $id => $name) {
+            if (Core_Utils_Helper::searchInString($name, $search)) {
+                $result[$id] = $name;
+            }
+
+            if(self::$searchUsersLimit === count($result)) {
+                break;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $module
+     * @param string $search
+     * @return array
+     */
+    public function searchAccessibleGroupForModule(string $module = '', string $search = ''): array
+    {
+        $groups = $this->getAccessibleGroupForModule($module);
+        $result = [];
+
+        foreach ($groups as $id => $name) {
+            if (Core_Utils_Helper::searchInString($name, $search)) {
+                $result[$id] = $name;
+            }
+
+            if(self::$searchUsersLimit === count($result)) {
+                break;
+            }
+
+        }
+
+        return $result;
     }
 }

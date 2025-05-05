@@ -892,7 +892,6 @@ if(defined('VTIGER_UPGRADE')) {
 	//Multiple attachment support for comments
 	$db->pquery('ALTER TABLE vtiger_seattachmentsrel DROP PRIMARY KEY', array());
 	$db->pquery('ALTER TABLE vtiger_seattachmentsrel ADD CONSTRAINT PRIMARY KEY (crmid,attachmentsid)', array());
-	$db->pquery('ALTER TABLE vtiger_project MODIFY COLUMN projectid INT(19) PRIMARY KEY');
 
 	if (!Vtiger_Utils::TableHasForeignKey('vtiger_seattachmentsrel', 'fk_2_vtiger_seattachmentsrel')) {
 		$db->pquery('ALTER TABLE vtiger_seattachmentsrel ADD CONSTRAINT fk_2_vtiger_seattachmentsrel FOREIGN KEY (crmid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE', array());

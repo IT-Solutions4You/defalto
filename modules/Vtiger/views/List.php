@@ -172,8 +172,10 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		$tag = $request->get('tag');
 		$requestViewName = $request->get('viewname');
 		$tagSessionKey = $moduleName.'_TAG';
+
+        ListViewSession::setCurrentTag($moduleName, (int)$tag);
                 
-                if(!$this->listViewModel) {
+        if(!$this->listViewModel) {
 			$listViewModel = Vtiger_ListView_Model::getInstance($moduleName, $cvId, $listHeaders);
 		} else {
 			$listViewModel = $this->listViewModel;
@@ -185,6 +187,7 @@ class Vtiger_List_View extends Vtiger_Index_View {
 
 		if(empty($tag)) {   
 			$tagSessionVal = $listViewModel->getSortParamsSession($tagSessionKey);
+
 			if(!empty($tagSessionVal)) {
 				$tag = $tagSessionVal;
 			}

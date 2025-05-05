@@ -528,11 +528,11 @@ class Settings_Roles_Record_Model extends Settings_Vtiger_Record_Model {
     /**
      * @throws Exception
      */
-    public static function getRoleId(string $name): int
+    public static function getRoleId(string $name): string
     {
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT roleid FROM vtiger_role WHERE rolename=?', $name);
+        $result = $adb->pquery('SELECT roleid FROM vtiger_role WHERE rolename=?', [$name]);
 
-        return (int)$adb->query_result($result, 0, 'roleid');
+        return (string)$adb->query_result($result, 0, 'roleid');
     }
 }

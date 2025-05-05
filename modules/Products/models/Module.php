@@ -8,8 +8,8 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Products_Module_Model extends Vtiger_Module_Model {
-
+class Products_Module_Model extends Vtiger_Module_Model
+{
 	/**
 	 * Function to get list view query for popup window
 	 * @param <String> $sourceModule Parent module
@@ -273,4 +273,15 @@ class Products_Module_Model extends Vtiger_Module_Model {
 		return $summaryFieldsList;
 	}
 
+    /**
+     * @throws AppException
+     */
+    public function getField($fieldName)
+    {
+        if (in_array($fieldName, array_keys(PriceBooks_Module_Model::$customFieldLabels))) {
+            return PriceBooks_Module_Model::getCustomField($fieldName, $this->getName());
+        }
+
+        return parent::getField($fieldName);
+    }
 }
