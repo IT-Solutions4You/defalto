@@ -73,12 +73,17 @@ class CustomerPortal_Install_Model extends Core_Install_Model {
         }
     }
 
-    public function isPrefExists($tabId, $key)
+    /**
+     * @param int $tabId
+     * @param string $key
+     * @return bool
+     */
+    public function isPrefExists(int $tabId, string $key): bool
     {
         $adb = $this->getDB();
         $result = $adb->pquery('SELECT tabid FROM vtiger_customerportal_prefs WHERE tabid=? AND prefkey=?', [$tabId, $key]);
 
-        return $adb->num_rows($result);
+        return (bool)$adb->num_rows($result);
     }
 
     /**
