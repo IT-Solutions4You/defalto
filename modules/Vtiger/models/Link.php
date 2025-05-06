@@ -375,4 +375,45 @@ class Vtiger_Link_Model extends Vtiger_Link {
 
         return vtemplate_path($template, $module);
     }
+
+    /**
+     * @param array $links
+     * @param array $skipLabels
+     * @return array
+     */
+    public static function checkAndConvertLinks(array $links, $skipLabels = []): array
+    {
+        $convertedLinks = [];
+
+        foreach ($links as $link) {
+            if (is_array($link)) {
+                $link = Vtiger_Link_Model::getInstanceFromValues($link);
+            }
+
+            if (in_array($link->getLabel(), $skipLabels)) {
+                continue;
+            }
+
+            $convertedLinks[$link->getType()][] = $link;
+        }
+
+        return $convertedLinks;
+    }
+
+    /**
+     * @param array $links
+     * @param array $appendLinks
+     * @return array
+     */
+    public static function merge(array $links, array $appendLinks): array
+    {
+        $keys = array_merge(array_keys($links), array_keys($appendLinks));
+        $mergedLinks = [];
+
+        foreach ($keys as $key) {
+            $mergedLinks[$key] = array_merge((array)$links[$key], (array)$appendLinks[$key]);
+        }
+
+        return $mergedLinks;
+    }
 }
