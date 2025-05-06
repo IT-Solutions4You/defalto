@@ -1,56 +1,61 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- *************************************************************************************/
-/*************************************************************************************
-   * Description:  Defines the Slovak language pack for the base application.
-   * All Rights Reserved.
-   * Contributor: IT-Solutions4You s.r.o - www.its4you.sk
-**************************************************************************************/
-$languageStrings = array(
-"Assistant" => "Asistent",
-"Assistant Phone" => "Telefón na asistenta",
-"Birthdate" => "Dátum narodenia",
-"Contact Id" => "Osoba č.",
-"Contact Image" => "Fotografia",
-"Department" => "Oddelenie",
-"Do Not Call" => "Nevolať",
-"Home Phone" => "Telefón domov",
-"LBL_ADD_RECORD" => "Pridať osobu",
-"LBL_CONTACT_INFORMATION" => "Základné informácie o Osobe",
-"LBL_COPY_MAILING_ADDRESS" => "Skopírujte primárnu adresu",
-"LBL_COPY_OTHER_ADDRESS" => "Skopírujte inú adresu",
-"LBL_CUSTOMER_PORTAL_INFORMATION" => "Podrobnosti zákaznického portálu",
-"LBL_IMAGE_INFORMATION" => "Fotografia",
-"LBL_RECORDS_LIST" => "Zoznam osôb",
-"Mailing City" => "Mesto",
-"Mailing Country" => "Štát",
-"Mailing Po Box" => "P.O. Box",
-"Mailing State" => "Kraj",
-"Mailing Street" => "Ulica",
-"Mailing Zip" => "PSČ",
-"Office Phone" => "Telefón do práce",
-"Other City" => "Iné mesto",
-"Other Country" => "Iný štát",
-"Other Po Box" => "Iný P.O. Box",
-"Other State" => "Iný kraj",
-"Other Street" => "Iná ulica",
-"Other Zip" => "Iné PSČ",
-"Portal User" => "Používateľ zákazníckeho portálu",
-"Reference" => "Referencie",
-"Reports To" => "Priamy nadriadený",
-"Support End Date" => "Dátum ukončenia podpory",
-"Support Start Date" => "Dátum začatia podpory",
-"Title" => "Funkcia",
-"User List" => "Zoznam používateľov",
-"Account Name" => "Organizácia",
-"Other PO Box" => "Iný P.O. Box",
-);
+/**
+* This file is part of the IT-Solutions4You CRM Software.
+*
+* (c) IT-Solutions4You s.r.o [info@its4you.sk]
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
 
-$jsLanguageStrings = array(
+$languageStrings=array (
+  'Contacts' => 'Contacts',
+  'SINGLE_Contacts' => 'Contact',
+  'LBL_ADD_RECORD' => 'Pridať osobu',
+  'LBL_RECORDS_LIST' => 'Zoznam osôb',
+  'LBL_CONTACT_INFORMATION' => 'Základné informácie o Osobe',
+  'LBL_CUSTOMER_PORTAL_INFORMATION' => 'Podrobnosti zákaznického portálu',
+  'LBL_IMAGE_INFORMATION' => 'Fotografia',
+  'LBL_COPY_OTHER_ADDRESS' => 'Skopírujte inú adresu',
+  'LBL_COPY_MAILING_ADDRESS' => 'Skopírujte primárnu adresu',
+  'Office Phone' => 'Telefón do práce',
+  'Home Phone' => 'Telefón domov',
+  'Title' => 'Funkcia',
+  'Department' => 'Oddelenie',
+  'Birthdate' => 'Dátum narodenia',
+  'Reports To' => 'Priamy nadriadený',
+  'Assistant' => 'Asistent',
+  'Assistant Phone' => 'Telefón na asistenta',
+  'Do Not Call' => 'Nevolať',
+  'Reference' => 'Referencie',
+  'Portal User' => 'Používateľ zákazníckeho portálu',
+  'Mailing Street' => 'Ulica',
+  'Mailing City' => 'Mesto',
+  'Mailing State' => 'Kraj',
+  'Mailing Zip' => 'PSČ',
+  'Mailing Country' => 'Štát',
+  'Mailing Po Box' => 'P.O. Box',
+  'Other Street' => 'Iná ulica',
+  'Other City' => 'Iné mesto',
+  'Other State' => 'Iný kraj',
+  'Other Zip' => 'Iné PSČ',
+  'Other Country' => 'Iný štát',
+  'Other Po Box' => 'Iný P.O. Box',
+  'Contact Image' => 'Fotografia',
+  'Other Phone' => 'Secondary Phone',
+  'Email' => 'Primary Email',
+  'Secondary Email' => 'Secondary Email',
+  'Contact Id' => 'Osoba č.',
+  'Support Start Date' => 'Dátum začatia podpory',
+  'Support End Date' => 'Dátum ukončenia podpory',
+  'Mr.' => 'Mr.',
+  'Ms.' => 'Ms.',
+  'Mrs.' => 'Mrs.',
+  'Dr.' => 'Dr.',
+  'Prof.' => 'Prof.',
+  'User List' => 'Zoznam používateľov',
+  'Account Name' => 'Organizácia',
+  'Other PO Box' => 'Iný P.O. Box',
+);
+$jsLanguageStrings=array (
 );

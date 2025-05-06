@@ -9,6 +9,12 @@
 */
 
 $languageStrings=array (
+  'SINGLE_Appointments' => 'Calendar',
+  'Appointments' => 'Calendar',
+  'LBL_MODULE_FIELD' => 'Reference field and relation',
+  'LBL_MODULE_WIDGET' => 'Summary view widget',
+  'LBL_FIELD_UPDATE' => 'Reference field and relation updated',
+  'LBL_SEARCH_MODULE' => 'Search module...',
 );
 $jsLanguageStrings=array (
 );

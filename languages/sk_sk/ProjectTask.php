@@ -1,41 +1,51 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- *************************************************************************************/
-/*************************************************************************************
-   * Description:  Defines the Slovak language pack for the base application.
-   * All Rights Reserved.
-   * Contributor: IT-Solutions4You s.r.o - www.its4you.sk
-**************************************************************************************/
-$languageStrings = array(
-"LBL_ADD_RECORD" => "Pridať projektovú úlohu",
-"LBL_PROJECTS_LIST" => "Zoznam projektov",
-"LBL_PROJECT_TASK_INFORMATION" => "Informácie o projektovej úolhe",
-"LBL_RECORDS_LIST" => "Zoznam úloh",
-"LBL_TASKS_LIST" => "Zoznam úloh",
-"SINGLE_ProjectTask" => "Projektová úloha",
-"Project Task Name" => "Názov projektovej úlohy",
-"Project Task No" => "Projektová úloha č.",
-"Start Date" => "Dátum začatia úlohy ",
-"End Date" => "Dátum ukončenia úlohy",
-"Related To" => "Projekt",
-"Type" => "Typ úlohy",
-"administrative" => "Administratívna",
-"operative" => "Operatívna",
-"other" => "Iná",
-"Open" => "Otvorená",
-"Deferred" => "Odložená",
-"Canceled" => "Zrušená",
-"Project Milestone" => "Miľník",
-"Canceled " => "Zrušená",
-"Related to" => "Projekt",
-"LBL_NO_DATE_VALUE_MSG" => "alebo Projektové úlohy nemajú začiatok a/alebo koniec",
-);
+/**
+* This file is part of the IT-Solutions4You CRM Software.
+*
+* (c) IT-Solutions4You s.r.o [info@its4you.sk]
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
 
-$jsLanguageStrings = array(
+$languageStrings=array (
+  'SINGLE_ProjectTask' => 'Projektová úloha',
+  'LBL_ADD_RECORD' => 'Pridať projektovú úlohu',
+  'LBL_RECORDS_LIST' => 'Zoznam úloh',
+  'LBL_PROJECT_TASK_INFORMATION' => 'Informácie o projektovej úolhe',
+  'LBL_PROJECTS_LIST' => 'Zoznam projektov',
+  'LBL_TASKS_LIST' => 'Zoznam úloh',
+  'LBL_MILESTONES_LIST' => 'Milestones List',
+  'Project Task Name' => 'Názov projektovej úlohy',
+  'Project Task No' => 'Projektová úloha č.',
+  'Project Task Number' => 'Project Task Number',
+  'Status' => 'Status',
+  'Priority' => 'Priority',
+  'Progress' => 'Progress',
+  'Type' => 'Typ úlohy',
+  'Worked Hours' => 'Worked Hours',
+  'Start Date' => 'Dátum začatia úlohy ',
+  'End Date' => 'Dátum ukončenia úlohy',
+  'Related to' => 'Projekt',
+  'administrative' => 'Administratívna',
+  'operative' => 'Operatívna',
+  'other' => 'Iná',
+  'low' => 'Low',
+  'normal' => 'Normal',
+  'high' => 'High',
+  'Created Time' => 'Created Time',
+  'Modified Time' => 'Modified Time',
+  'description' => 'Description',
+  'Assigned To' => 'Assigned To',
+  'Open' => 'Otvorená',
+  'In Progress' => 'In Progress',
+  'Completed' => 'Completed',
+  'Deferred' => 'Odložená',
+  'Canceled' => 'Zrušená',
+  'LBL_NO_DATE_VALUE_MSG' => 'alebo Projektové úlohy nemajú začiatok a/alebo koniec',
+  'Related To' => 'Projekt',
+  'Project Milestone' => 'Miľník',
+  'Canceled ' => 'Zrušená',
+);
+$jsLanguageStrings=array (
 );
