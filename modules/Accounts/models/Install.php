@@ -10,12 +10,22 @@
 
 class Accounts_Install_Model extends Core_Install_Model {
 
+    /**
+     * [module, type, label, url, icon, sequence, handlerInfo]
+     * @return array
+     */
+    public array $registerCustomLinks = [
+        ['Accounts', 'DETAILVIEW', 'LBL_SHOW_ACCOUNT_HIERARCHY', 'javascript:Accounts_Detail_Js.triggerAccountHierarchy("index.php?module=Accounts&view=AccountHierarchy&record=$RECORD$");']
+    ];
+
     public function addCustomLinks(): void
     {
+        $this->updateCustomLinks();
     }
 
     public function deleteCustomLinks(): void
     {
+        $this->updateCustomLinks(false);
     }
 
     public function getBlocks(): array
