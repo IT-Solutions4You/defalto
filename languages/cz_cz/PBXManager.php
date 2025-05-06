@@ -1,42 +1,38 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- *************************************************************************************/
-/*************************************************************************************
-   * Description:  Defines the Slovak language pack for the base application.
-   * All Rights Reserved.
-   * Contributor: IT-Solutions4You s.r.o - www.its4you.sk
-**************************************************************************************/
-$languageStrings = array(
-"Asterisk Server Details" => "Podrobnosti",
-"Call Status" => "Stav volání",
-"Customer Number" => "Zákaznické číslo",
-"User" => "Uživatel",
-"Duration (sec)" => "Doba trvání (sek)",
-"Recording  " => "Záznam",
-"Start Time" => "Doba spuštění",
-"PBXManager" => "Správa pob. ústředen",
-"Recording URL" => "Záznam",
-"Total Duration" => "Trvání (sek)",
-"Asterisk" => "Asterisk",
-"SINGLE_PBXManager" => "Správa pob ústředny",
-"LBL_CALL_INFORMATION" => "Detaily hovoru",
-"LBL_SERVER_CONFIGURATION" => "Konfigurace serveru",
-"Call From" => "Hovor od",
-"Call To" => "Komu volat",
-"Time Of Call" => "Čas volání",
-"PBXManager ID" => "ID pob. ústř.",
-"LBL_PBXMANAGER_INFORMATION" => "PBX Manager informace",
-"LBL_CALL_FROM" => "Hovor od",
-"LBL_CALL_TO" => "Komu volat",
-"LBL_HIDDEN" => "Neznámé číslo",
-"Bill Duration" => "Fakturační čas (sek)",
-);
+/**
+* This file is part of the IT-Solutions4You CRM Software.
+*
+* (c) IT-Solutions4You s.r.o [info@its4you.sk]
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
 
-$jsLanguageStrings = array(
+$languageStrings=array (
+  'Asterisk' => 'Asterisk',
+  'Call From' => 'Hovor od',
+  'Call To' => 'Komu volat',
+  'LBL_CALL_INFORMATION' => 'Detaily hovoru',
+  'PBXManager ID' => 'ID pob. ústř.',
+  'PBXManager' => 'Správa pob. ústředen',
+  'SINGLE_PBXManager' => 'Správa pob ústředny',
+  'Time Of Call' => 'Čas volání',
+  'LBL_PBXMANAGER_INFORMATION' => 'PBX Manager informace',
+  'LBL_CUSTOM_INFORMATION' => 'Custom Information',
+  'LBL_SERVER_CONFIGURATION' => 'Konfigurace serveru',
+  'LBL_CALL_FROM' => 'Hovor od',
+  'LBL_CALL_TO' => 'Komu volat',
+  'LBL_HIDDEN' => 'Neznámé číslo',
+  'Total Duration' => 'Trvání (sek)',
+  'Bill Duration' => 'Fakturační čas (sek)',
+  'Recording URL' => 'Záznam',
+  'Asterisk Server Details' => 'Podrobnosti',
+  'Call Status' => 'Stav volání',
+  'Customer Number' => 'Zákaznické číslo',
+  'User' => 'Uživatel',
+  'Duration (sec)' => 'Doba trvání (sek)',
+  'Recording  ' => 'Záznam',
+  'Start Time' => 'Doba spuštění',
+);
+$jsLanguageStrings=array (
 );
