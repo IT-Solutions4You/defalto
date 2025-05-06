@@ -29,6 +29,8 @@ class Install_Utils_Model {
         ['ru_ru', 'Russian', 'Russian'],
         ['sv_se', 'Swedish', 'Swedish'],
         ['tr_tr', 'Turkce Dil Paketi', 'Turkce',],
+        ['sk_sk', 'Slovak', 'Slovak',],
+        ['cz_cz', 'Czech', 'Czech',],
     ];
 
     public static array $registerModules = [
