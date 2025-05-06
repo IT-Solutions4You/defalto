@@ -1,13 +1,17 @@
 <?php
-/**
- * This file is part of the IT-Solutions4You CRM Software.
- *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
+/*+***********************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is:  vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ *************************************************************************************/
+/*************************************************************************************
+   * Description:  Defines the Slovak language pack for the base application.
+   * All Rights Reserved.
+   * Contributor: IT-Solutions4You s.r.o - www.its4you.sk
+**************************************************************************************/
 $languageStrings = array(
 "--None--" => "-- Vyberte --",
 "Account Name" => "Názov organizácie",
@@ -658,8 +662,8 @@ $languageStrings = array(
 "Default Event Status" => "Predvolený stav udalosti",
 "CRM Phone Extension" => "CRM telefonná klapka",
 "Hide Completed Calendar Events" => "Skryť ukončené udalosti v kalendári",
-    "PM" => "PM (popoludní)",
-    "AM" => "AM (dopoludnia)",
+"PM" => "PM (popoludní)",
+"AM" => "AM (dopoludnia)",
 "LBL_NO_ANNOUNCEMENTS" => "Žiadne oznámenie",
 "Quick Create" => "Rýchle vytvorenie",
 "LBL_MENU_EDITOR_MESSAGE" => "Aktuálny počet zobrazených položiek bude zobrazené v závislosti na veľkosti Vašej obrazovky. Z tohto dôvodu môže byť zobrazený počet menší ako je zvolený.",
@@ -990,8 +994,8 @@ $languageStrings = array(
 "more than week days ago" => "",
 "less than week days ago" => "",
 "LBL_DUPLICATES" => "Duplikáty",
-"LBL_DUPLICATES_DETECTED" => "Duplikát(y) bol nájdený!",
-"LBL_DUPLICATES_FOUND_MESSAGE" => "Toto %s s nie je možné uložiť, pretože existuje duplicitný záznam %s v CRM systéme so zhodnými hodnotami pre %s.",
+"LBL_DUPLICATES_DETECTED" => "Duplikát (y) bol nájdený!",
+"LBL_DUPLICATES_FOUND_MESSAGE" => "Toto % s nie je možné uložiť, pretože existuje duplicitný záznam % v CRM systéme so zhodnými hodnotami pre %s.",
 "LBL_VTIGER_NOTIFICATION" => "Správa od: Oznámenia systému CRM",
 "LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS" => "Nasledujúce %s nemožno uložiť z \"% s\" workflowu, pretože už existuje iný %s s rovnakými hodnotami.",
 "LBL_DUPLICATION_FAILURE_FROM_WEBFORMS" => "Nasledujúce %s nemožno uložiť z \"% s\" webového formulára, pretože už existuje iný %s s rovnakými hodnotami.",
@@ -1160,7 +1164,7 @@ $languageStrings = array(
 "LBL_INTERNAL_COMMENT" => "Interný komentár",
 "LBL_INVALID_IMAGE" => "Neplatný obrázok",
 "LBL_JOINED" => "Pripojený",
-'LBL_LABELS' => 'Štítky',
+"LBL_LABELS" => "Názov poľa",
 "LBL_LESS_THAN_DAYS_AGO" => "Pred menej ako dňami",
 "LBL_LESS_THAN_HOURS_BEFORE" => "Menej ako hodiny predtým",
 "LBL_LESS_THAN_HOURS_LATER" => "Menej ako hodiny",
@@ -1275,8 +1279,7 @@ $languageStrings = array(
 );
 
 $jsLanguageStrings = array(
-    "PM" => "PM (popoludní)",
-    "AM" => "AM (dopoludnia)",
+"AM" => "AM (dopoludnia)",
 "INVALID_NUMBER" => "Neplatné číslo",
 "INVALID_NUMBER_OF" => "Neplatné číslo z",
 "JS_ACCEPT_ONLY_NUMBER" => "Prosím, zadajte číselnú hodnotu",
@@ -1397,6 +1400,7 @@ $jsLanguageStrings = array(
 "NONE_OF_THE_FIELD_VALUES_ARE_CHANGED_IN_MASS_EDIT" => "Žiadna z hodnôt nebola zmenená pri hromadnej úprave",
 "OVERWRITE_EXISTING_MSG1" => "Prepísať existujúci adresu s vybranou",
 "OVERWRITE_EXISTING_MSG2" => "adresou  ?",
+"PM" => "PM (popoludní)",
 "SHOULD_BE_LESS_THAN_TODAY" => "Musí nastať skôr ako dnes",
 "SINGLE_Accounts" => "Organizácia",
 "SINGLE_Contacts" => "Osoba",
@@ -1423,7 +1427,7 @@ $jsLanguageStrings = array(
 "JS_ALL" => "Všetko",
 "JS_ADD_DEMO_DATA_CONFIRMATION" => "Naozaj chcete pridať demo záznamy do všetkých modulov?",
 "JS_CLEAR_DEMO_DATA_CONFIRMATION" => "Naozaj chcete vymazať demo dáta vo všetkých moduloch?",
-"JS_ARE_YOU_SURE_TO_DELETE_DASHBOARDTAB" => "Naozaj chcete odstrániť túto záložku - %s?",
+"JS_ARE_YOU_SURE_TO_DELETE_DASHBOARDTAB" => "Naozaj chcete odstrániť túto záložku -% s?",
 "JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE" => "Ste si istí, že chcete zmazať tento záznam?",
 "JS_SOCIAL_POST_DELETE_CONFIRMATION" => "Ste si istí, že chcete zmazať tento záznam?",
 "JS_CONFIRM_MARK_AS_COMPLETED" => "Naozaj chcete označiť úlohu za dokončenú?",
