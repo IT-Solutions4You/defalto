@@ -56,6 +56,7 @@ class Install_Utils_Model {
         'ITS4YouEmails',
         'EMAILMaker',
         'PDFMaker',
+        'Reporting',
     ];
 
     /**
