@@ -15,8 +15,8 @@ class ModComments_DetailView_Model extends Vtiger_DetailView_Model {
 	 * @param <array> $linkParams - parameters which will be used to calicaulate the params
 	 * @return <array> - empty array
 	 */
-	public function getDetailViewLinks($linkParams) {
-		return array();
-	}
-
+    public function getDetailViewLinks($linkParams)
+    {
+        return [];
+    }
 }

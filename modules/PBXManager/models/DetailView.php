@@ -23,39 +23,36 @@ class PBXManager_DetailView_Model extends Vtiger_DetailView_Model {
 		$moduleName = $moduleModel->getName();
 		$recordId = $recordModel->getId();
 
-		$detailViewLink = array();
+        $links = [];
 
-		$linkModelListDetails = Vtiger_Link_Model::getAllByType($moduleModel->getId(),$linkTypes,$linkParams);
+        $linkModelListDetails = Vtiger_Link_Model::getAllByType($moduleModel->getId(),$linkTypes,$linkParams);
 		//Mark all detail view basic links as detail view links.
 		//Since ui will be look ugly if you need many basic links
-		$detailViewBasiclinks = $linkModelListDetails['DETAILVIEWBASIC'];
-		unset($linkModelListDetails['DETAILVIEWBASIC']);
+		$detailViewBasicLinks = $linkModelListDetails['DETAILVIEWBASIC'];
 
 		if(Users_Privileges_Model::isPermitted($moduleName, 'Delete', $recordId)) {
-			$deletelinkModel = array(
-					'linktype' => 'DETAILVIEW',
-					'linklabel' => sprintf("%s %s", getTranslatedString('LBL_DELETE', $moduleName), vtranslate('SINGLE_'. $moduleName, $moduleName)),
-					'linkurl' => 'javascript:Vtiger_Detail_Js.deleteRecord("'.$recordModel->getDeleteUrl().'")',
-					'linkicon' => ''
-			);
-			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($deletelinkModel);
-		}
+            $links[] = [
+                'linktype' => 'DETAILVIEW',
+                'linklabel' => vtranslate('LBL_DELETE', $moduleName),
+                'linkurl' => 'javascript:Vtiger_Detail_Js.deleteRecord("' . $recordModel->getDeleteUrl() . '")',
+                'linkicon' => '<i class="fa fa-trash"></i>',
+            ];
+        }
 
-		if(!empty($detailViewBasiclinks)) {
-			foreach($detailViewBasiclinks as $linkModel) {
-				// Remove view history, needed in vtiger5 to see history but not in vtiger6
-				if($linkModel->linklabel == 'View History') {
-					continue;
-				}
-				$linkModelList['DETAILVIEW'][] = $linkModel;
-			}
-		}
+        if (!empty($detailViewBasicLinks)) {
+            foreach ($detailViewBasicLinks as $linkModel) {
+                if ($linkModel->linklabel == 'View History') {
+                    continue;
+                }
 
-		$widgets = $this->getWidgets();
-		foreach($widgets as $widgetLinkModel) {
-			$linkModelList['DETAILVIEWWIDGET'][] = $widgetLinkModel;
+                $links[] = $linkModel;
+            }
+        }
+
+        foreach($this->getWidgets() as $widgetLinkModel) {
+            $links[] = $widgetLinkModel;
 		}
 		
-		return $linkModelList;
+		return Vtiger_Link_Model::checkAndConvertLinks($links);
 	}
 }

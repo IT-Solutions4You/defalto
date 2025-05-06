@@ -16,78 +16,62 @@ class Users_DetailView_Model extends Vtiger_DetailView_Model {
 	 * @return <array> - array of link models in the format as below
 	 *                   array('linktype'=>list of link models);
 	 */
-	public function getDetailViewLinks($linkParams) {
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$recordModel = $this->getRecord();
-		$recordId = $recordModel->getId();
+    public function getDetailViewLinks($linkParams)
+    {
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $recordModel = $this->getRecord();
+        $recordId = $recordModel->getId();
+        $links = [];
 
-		$linkModelList = array();
-		if (($currentUserModel->isAdminUser() == true || $currentUserModel->get('id') == $recordId) && $recordModel->get('status') == 'Active' ) {
-			$recordModel = $this->getRecord();
+        if (($currentUserModel->isAdminUser() == true || $currentUserModel->get('id') == $recordId) && $recordModel->get('status') == 'Active') {
+            $recordModel = $this->getRecord();
 
-			$detailViewLinks = array(
-				array(
-				'linktype' => 'DETAILVIEWBASIC',
-				'linklabel' => 'LBL_EDIT',
-				'linkurl' => $recordModel->getEditViewUrl(),
-				'linkicon' => ''
-				)
-			);
+            $links[] = [
+                'linktype' => 'DETAILVIEWBASIC',
+                'linklabel' => 'LBL_EDIT',
+                'linkurl' => $recordModel->getEditViewUrl(),
+                'linkicon' => '',
+            ];
 
-			foreach ($detailViewLinks as $detailViewLink) {
-				$linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);
-			}
-			
-			$detailViewPreferenceLinks = array(
-				array(
-					'linktype' => 'DETAILVIEWPREFERENCE',
-					'linklabel' => 'LBL_EDIT',
-					'linkurl' => $recordModel->getPreferenceEditViewUrl(),
-					'linkicon' => ''
-				)
-			);
+            $links[] = [
+                'linktype' => 'DETAILVIEWPREFERENCE',
+                'linklabel' => 'LBL_EDIT',
+                'linkurl' => $recordModel->getPreferenceEditViewUrl(),
+                'linkicon' => '',
+            ];
 
-			foreach ($detailViewPreferenceLinks as $detailViewLink) {
-				$linkModelList['DETAILVIEWPREFERENCE'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);
-			}
+            if ($currentUserModel->isAdminUser() && $currentUserModel->get('id') != $recordId) {
+                $links[] = [
+                    'linktype' => 'DETAILVIEW',
+                    'linklabel' => 'LBL_DELETE',
+                    'linkurl' => 'javascript:Users_Detail_Js.triggerDeleteUser("' . $recordModel->getDeleteUrl() . '")',
+                    'linkicon' => '',
+                ];
+            }
 
-			if($currentUserModel->isAdminUser() && $currentUserModel->get('id') != $recordId){
-				$detailViewActionLinks = array(
-					array(
-						'linktype' => 'DETAILVIEW',
-						'linklabel' => 'LBL_DELETE',
-						'linkurl' => 'javascript:Users_Detail_Js.triggerDeleteUser("' . $recordModel->getDeleteUrl() . '")',
-						'linkicon' => ''
-					)
-				);
-			}
+            if (Users_Privileges_Model::isPermittedToChangeUsername($recordId)) {
+                $links[] = [
+                    'linktype' => 'DETAILVIEW',
+                    'linklabel' => 'LBL_CHANGE_USERNAME',
+                    'linkurl' => "javascript:Users_Detail_Js.triggerChangeUsername('" . $recordModel->getChangeUsernameUrl() . "')",
+                    'linkicon' => '',
+                ];
+            }
 
-			if(Users_Privileges_Model::isPermittedToChangeUsername($recordId)){
-				$detailViewActionLinks[] = array(
-												'linktype' => 'DETAILVIEW',
-												'linklabel' => 'LBL_CHANGE_USERNAME',
-												'linkurl' => "javascript:Users_Detail_Js.triggerChangeUsername('" . $recordModel->getChangeUsernameUrl() . "')",
-												'linkicon' => ''
-											);
-			}
+            $links[] = [
+                'linktype' => 'DETAILVIEW',
+                'linklabel' => 'LBL_CHANGE_PASSWORD',
+                'linkurl' => "javascript:Users_Detail_Js.triggerChangePassword('" . $recordModel->getChangePwdUrl() . "','Users')",
+                'linkicon' => '',
+            ];
+            $links[] = [
+                'linktype' => 'DETAILVIEW',
+                'linklabel' => 'LBL_CHANGE_ACCESS_KEY',
+                'linkurl' => "javascript:Users_Detail_Js.triggerChangeAccessKey('index.php?module=Users&action=SaveAjax&mode=changeAccessKey&record=$recordId')",
+                'linkicon' => '',
+            ];
 
-			$detailViewActionLinks[] = array(
-										'linktype' => 'DETAILVIEW',
-										'linklabel' => 'LBL_CHANGE_PASSWORD',
-										'linkurl' => "javascript:Users_Detail_Js.triggerChangePassword('".$recordModel->getChangePwdUrl()."','Users')",
-										'linkicon' => ''
-									);
-			$detailViewActionLinks[] = array(
-										'linktype'	=> 'DETAILVIEW',
-										'linklabel' => 'LBL_CHANGE_ACCESS_KEY',
-										'linkurl'	=> "javascript:Users_Detail_Js.triggerChangeAccessKey('index.php?module=Users&action=SaveAjax&mode=changeAccessKey&record=$recordId')",
-										'linkicon'	=> ''
-									);
-
-			foreach ($detailViewActionLinks as $detailViewLink) {
-				$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);
-			}
-			return $linkModelList;
-		}
-	}
+            return Vtiger_Link_Model::checkAndConvertLinks($links);
+        }
+    }
 }

@@ -21,49 +21,32 @@ class EMAILMaker_DetailView_Model extends Vtiger_DetailView_Model
 
     public function getDetailViewLinks($linkParams)
     {
-        $linkTypes = array('DETAILVIEWBASIC', 'DETAILVIEW');
+        $linkTypes = ['DETAILVIEWBASIC', 'DETAILVIEW'];
         $moduleModel = $this->getModule();
         $recordModel = $this->getRecord();
-        $moduleName = $moduleModel->getName();
-        $recordId = $recordModel->getId();
-        $detailViewLink = array();
-        $detailViewLinks[] = array(
+        $links = [];
+        $links[] = [
             'linktype' => 'DETAILVIEWBASIC',
             'linklabel' => 'LBL_EDIT',
             'linkurl' => $recordModel->getEditViewUrl(),
-            'linkicon' => '<i class="fa-solid fa-pencil"></i>'
-        );
-
-        foreach ($detailViewLinks as $detailViewLink) {
-            $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);
-        }
-
-        $linkModelListDetails = Vtiger_Link_Model::getAllByType($moduleModel->getId(), $linkTypes, $linkParams);
-        $detailViewBasiclinks = $linkModelListDetails['DETAILVIEWBASIC'];
-        unset($linkModelListDetails['DETAILVIEWBASIC']);
-
-        $deletelinkModel = array(
+            'linkicon' => '<i class="fa-solid fa-pencil"></i>',
+        ];
+        $links[] = [
             'linktype' => 'DETAILVIEW',
             'linklabel' => 'LBL_DELETE',
             'linkurl' => 'javascript:Vtiger_Detail_Js.deleteRecord("' . $recordModel->getDeleteUrl() . '")',
-            'linkicon' => '<i class="fa-solid fa-trash"></i>'
-        );
-        $linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($deletelinkModel);
-
-        $duplicateLinkModel = array(
-            'linktype' => 'DETAILVIEWBASIC',
+            'linkicon' => '<i class="fa-solid fa-trash"></i>',
+        ];
+        $links[] = [
+            'linktype' => 'DETAILVIEW',
             'linklabel' => 'LBL_DUPLICATE',
             'linkurl' => $recordModel->getDuplicateRecordUrl(),
-            'linkicon' => '<i class="fa-solid fa-copy"></i>'
-        );
-        $linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($duplicateLinkModel);
+            'linkicon' => '<i class="fa-solid fa-copy"></i>',
+        ];
 
-        if (!empty($detailViewBasiclinks)) {
-            foreach ($detailViewBasiclinks as $linkModel) {
-                $linkModelList['DETAILVIEW'][] = $linkModel;
-            }
-        }
-        return $linkModelList;
+        $linkModelListDetails = Vtiger_Link_Model::getAllByType($moduleModel->getId(), $linkTypes, $linkParams);
+
+        return Vtiger_Link_Model::merge($linkModelListDetails, Vtiger_Link_Model::checkAndConvertLinks($links));
     }
 
     public function getSideBarLinks($linkParams)
