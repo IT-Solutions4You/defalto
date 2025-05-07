@@ -1380,6 +1380,8 @@ $languageStrings=array (
   'LayoutEditor' => 'Editor vzhľadu',
   'MailConverter' => 'Konvertor emailov',
   'ModuleManager' => 'Správa modulov',
+    'starred' => 'označené hviezdičkou',
+    'tags' => 'značky',
 );
 $jsLanguageStrings=array (
   'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastaveniach systému nakonfigurujte server odchádzajúcej pošty',
