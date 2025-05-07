@@ -9,10 +9,10 @@
 */
 
 $languageStrings=array (
-  'Quotes' => 'Quotes',
-  'SINGLE_Quotes' => 'Quote',
-  'LBL_EXPORT_TO_PDF' => 'Export to PDF',
-  'LBL_SEND_MAIL_PDF' => 'Send Email with PDF',
+  'Quotes' => 'Ponuky',
+  'SINGLE_Quotes' => 'Ponuka',
+  'LBL_EXPORT_TO_PDF' => 'Exportovať do PDF',
+  'LBL_SEND_MAIL_PDF' => 'Odoslať email s PDF',
   'LBL_ADD_RECORD' => 'Pridať cenovú ponuku',
   'LBL_RECORDS_LIST' => 'Zoznam cenových ponúk',
   'LBL_QUOTE_INFORMATION' => 'Informácie o cenovej ponuke',

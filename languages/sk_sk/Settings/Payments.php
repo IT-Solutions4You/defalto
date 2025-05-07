@@ -20,4 +20,3 @@ $jsLanguageStrings = array (
 "JS_SAVED_SUCCESSFULLY" => "Uložené úspešne",
 "JS_DELETED_SUCCESSFULLY" => "Odstrané úspešne",
 );
-?>

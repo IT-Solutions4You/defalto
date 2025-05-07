@@ -13,7 +13,7 @@ $languageStrings=array (
   'LBL_DATABASE_QUERY_ERROR' => 'Databázová chyba pri vykonávaní požadovanej operácie',
   'LBL_INVALID_OLD_PASSWORD' => 'Neplatná hodnota vzhľadom na staré heslo.',
   'LBL_NEW_PASSWORD_MISMATCH' => 'Nové heslo a potvrdenie hesla sa nezhodujú',
-  'LBL_PASSWORD_NOT_STRONG' => 'To keep your data safe, we suggest that you use a strong password &lt;br&gt; &lt;ul&gt; &lt;li&gt;Password should be at least 8 characters long &lt;/li&gt; &lt;li&gt;Include at least one number &lt;/li&gt; &lt;li&gt;Include at least one lowercase alphabet &lt;/li&gt; &lt;li&gt;Include at least one uppercase alphabet &lt;/li&gt; &lt;li&gt;Include at least one special character in the password &lt;/li&gt; &lt;/ul&gt;',
+  'LBL_PASSWORD_NOT_STRONG' => 'Pre ochranu vašich údajov odporúčame použiť silné heslo &lt;br&gt; &lt;ul&gt; &lt;li&gt;Heslo by malo mať aspoň 8 znakov &lt;/li&gt; &lt;li&gt;Obsahovať aspoň jedno číslo &lt;/li&gt; &lt;li&gt;Obsahovať aspoň jedno malé písmeno &lt;/li&gt; &lt;li&gt;Obsahovať aspoň jedno veľké písmeno &lt;/li&gt; &lt;li&gt;Obsahovať aspoň jeden špeciálny znak &lt;/li&gt; &lt;/ul&gt;',
 );
 $jsLanguageStrings=array (
 );

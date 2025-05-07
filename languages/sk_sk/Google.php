@@ -20,7 +20,7 @@ $languageStrings=array (
   'LBL_NOT_SYNCRONIZED' => 'You have not synchronized yet',
   'LBL_SYNC_BUTTON' => 'Synchronize Now',
   'LBL_REMOVE_SYNC' => 'Odstrániť synchronizáciu',
-  'LBL_MORE_VTIGER' => 'Existuje viac záznamov, ktoré majú byť synchronizované do vtiger CRM',
+  'LBL_MORE_VTIGER' => 'Existuje viac záznamov, ktoré majú byť synchronizované do CRM',
   'LBL_MORE_GOOGLE' => 'Existuje viac záznamov, ktoré majú byť synchronizované na Google',
   'Contact Name' => 'Contact Name',
   'Email' => 'Email',
@@ -73,14 +73,14 @@ $languageStrings=array (
   'LBL_SIGN_IN_WITH_GOOGLE' => 'Prihláste sa do služby Google',
   'LBL_GOOGLE_ACCOUNT_DETAILS' => 'Údaje účtu Google',
   'LBL_GOOGLE_ACCOUNT_SYNCED_WITH' => 'Účet Google synchronizovaný s',
-  'LBL_CHANGE_USER' => 'Change User',
   'LBL_SAVE_AND_IMPORT' => 'Uložiť a importovať',
   'LBL_IMPORT_RESULTS_GOOGLE' => 'Výsledky importu Google',
-  'LBL_REDIRECT_URL' => 'Redirect url',
-  'LBL_REDIRECT_URL_MESSAGE' => 'Copy the following redirect url and paste in your google auth project as image shows',
+  'LBL_CHANGE_USER' => 'Zmeniť používateľa',
+  'LBL_REDIRECT_URL' => 'Presmerovať URL',
+  'LBL_REDIRECT_URL_MESSAGE' => 'Skopírujte nasledujúcu presmerovaciu URL a vložte ju do vášho Google Auth projektu, ako je znázornené na obrázku',
 );
 $jsLanguageStrings=array (
   'LBL_SYNC_BUTTON' => 'Synchronizovať teraz',
-  'LBL_SYNCRONIZING' => 'Synchronizing....',
+  'LBL_SYNCRONIZING' => 'Synchronizuje sa....',
   'LBL_NOT_SYNCRONIZE' => 'Zatiaľ nie je synchronizované',
 );

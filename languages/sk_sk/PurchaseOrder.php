@@ -9,8 +9,8 @@
 */
 
 $languageStrings=array (
-  'PurchaseOrder' => 'Purchase Orders',
-  'SINGLE_PurchaseOrder' => 'Purchase Order',
+  'PurchaseOrder' => 'Nákupné objednávky',
+  'SINGLE_PurchaseOrder' => 'Nákupná objednávka',
   'LBL_EXPORT_TO_PDF' => 'Export to PDF',
   'LBL_SEND_MAIL_PDF' => 'Send Email with PDF',
   'LBL_ADD_RECORD' => 'Pridať nákupnú objednávku',

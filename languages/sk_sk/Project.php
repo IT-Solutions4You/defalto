@@ -9,8 +9,8 @@
 */
 
 $languageStrings=array (
-  'Project' => 'Projects',
-  'SINGLE_Project' => 'Project',
+  'Project' => 'Projekty',
+  'SINGLE_Project' => 'Projekt',
   'LBL_ADD_RECORD' => 'Pridať projekt',
   'LBL_RECORDS_LIST' => 'Zoznam projektov',
   'LBL_PROJECT_INFORMATION' => 'Informácie o projekte',

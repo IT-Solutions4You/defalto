@@ -9,21 +9,21 @@
 */
 
 $languageStrings=array (
-  'isactive' => 'Active',
-  'LBL_ADD_CONFIGURATION' => 'New Configuration',
-  'LBL_ADD_RECORD' => 'New Configuration',
-  'LBL_EDIT_CONFIGURATION' => 'Edit Configuration',
-  'LBL_SELECT_ONE' => 'Select One',
-  'password' => 'Password',
-  'providertype' => 'Provider',
-  'SMSNotifier' => 'SMS Provider Configuration',
-  'username' => 'User Name',
-  'ClickATellNew' => 'Clickatell (Platform)',
-  'ClickATell' => 'Clickatell (Communicator/Central)',
-  'LBL_CLICKATELLNEW_CALLBACKURL_INFO' => 'Please copy this URL to the \'Enable delivery notifications\' field in your ClickATell SMS Integration Settings page',
+  'isactive' => 'Aktívne',
+  'LBL_ADD_CONFIGURATION' => 'Nová konfigurácia',
+  'LBL_ADD_RECORD' => 'Nová konfigurácia',
+  'LBL_EDIT_CONFIGURATION' => 'Upraviť konfiguráciu',
+  'LBL_SELECT_ONE' => 'Vyberte jednu možnosť',
+  'password' => 'Heslo',
+  'providertype' => 'Poskytovateľ',
+  'SMSNotifier' => 'Konfigurácia poskytovateľa SMS',
+  'username' => 'Používateľské meno',
+  'ClickATellNew' => 'Clickatell (Platforma)',
+  'ClickATell' => 'Clickatell (Komunikátor/Centrálne)',
+  'LBL_CLICKATELLNEW_CALLBACKURL_INFO' => 'Skopírujte túto URL adresu do poľa \'Povoliť notifikácie o doručení\' na stránke nastavení integrácie ClickATell SMS',
 );
 $jsLanguageStrings=array (
-  'JS_CONFIGURATION_SAVED' => 'SMS Provider Configurations saved',
-  'JS_RECORD_DELETED_SUCCESSFULLY' => 'SMS Provider Deleted Successfully',
-  'LBL_DELETE_CONFIRMATION' => 'Are you sure, you want to delete this SMSNotifier Configuration',
+  'JS_CONFIGURATION_SAVED' => 'Konfigurácie poskytovateľa SMS boli uložené',
+  'JS_RECORD_DELETED_SUCCESSFULLY' => 'Poskytovateľ SMS bol úspešne odstránený',
+  'LBL_DELETE_CONFIRMATION' => 'Ste si istí, že chcete odstrániť túto konfiguráciu SMSNotifier?',
 );

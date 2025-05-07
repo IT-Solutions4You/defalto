@@ -13,12 +13,12 @@ $languageStrings=array (
   'SINGLE_ITS4YouEmails' => 'Emaily',
   'LBL_MODULE_NAME' => 'Emaily',
   'LBL_UNINSTALL' => 'Odinštalovať',
-  'LBL_UNINSTALL_DESC' => 'Úplne odstrániť modul z vášho vTigera.',
+  'LBL_UNINSTALL_DESC' => 'Úplne odstrániť modul z vášho CRM.',
   'LBL_MODULE' => 'Modul',
   'LBL_LICENSE_SETTINGS_INFO' => 'Spravujte svoj modulový licenčný kľúč',
   'LBL_LICENSE' => 'Nastavenia licencie',
   'LBL_LICENSE_DESC' => 'Spravujte všetky nastavenia súvisiace s vašou licenciou',
-  'LBL_URL' => 'Vaša webová adresa vtiger',
+  'LBL_URL' => 'Vaša webová adresa',
   'LBL_LICENSE_ACTIVE' => 'Rozšírenie je aktívne',
   'LBL_LICENSE_INACTIVE' => 'Rozšírenie nie je aktívne',
   'LBL_INSTALLER_NOT_ACTIVE' => 'Nainštalujte alebo aktivujte modul ITS4YouInstaller na správu vašich licencií.',
@@ -80,5 +80,5 @@ $languageStrings=array (
   'UNSUBSCRIBED' => 'ODHLÁSENÝ',
 );
 $jsLanguageStrings=array (
-  'JS_UNINSTALL_CONFIRM' => 'Ste si istí, že chcete úplne odstrániť modul z vášho vTiger?',
+  'JS_UNINSTALL_CONFIRM' => 'Ste si istí, že chcete úplne odstrániť modul z vášho CRM?',
 );

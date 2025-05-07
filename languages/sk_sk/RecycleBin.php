@@ -9,10 +9,10 @@
 */
 
 $languageStrings=array (
-  'Recycle Bin' => 'Recycle Bin',
-  'RecycleBin' => 'Recycle Bin',
-  'SINGLE_RecycleBin' => 'Recycle Bin',
-  'LBL_SELECT_MODULE' => 'Select Module',
+  'Recycle Bin' => 'Kôš',
+  'RecycleBin' => 'Kôš',
+  'SINGLE_RecycleBin' => 'Kôš',
+  'LBL_SELECT_MODULE' => 'Vyberte modul',
   'LBL_EMPTY_RECYCLEBIN' => 'Vyprázdniť celý kôš',
   'LBL_RESTORE' => 'Obnoviť',
   'LBL_NO_PERMITTED_MODULES' => 'Žiadne moduly nie sú k dispozícii',

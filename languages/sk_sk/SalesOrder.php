@@ -9,10 +9,10 @@
 */
 
 $languageStrings=array (
-  'SalesOrder' => 'Sales Orders',
-  'SINGLE_SalesOrder' => 'Sales Order',
-  'LBL_EXPORT_TO_PDF' => 'Export to PDF',
-  'LBL_SEND_MAIL_PDF' => 'Send Email with PDF',
+  'SalesOrder' => 'Objednávky',
+  'SINGLE_SalesOrder' => 'Objednávka',
+  'LBL_EXPORT_TO_PDF' => 'Exportovať do PDF',
+  'LBL_SEND_MAIL_PDF' => 'Odoslať email s PDF',
   'LBL_ADD_RECORD' => 'Pridať objednávku',
   'LBL_RECORDS_LIST' => 'Zoznam objednávok',
   'LBL_SO_INFORMATION' => 'Informácie o Objednávke',

@@ -63,8 +63,8 @@ $languageStrings=array (
   'LBL_VISIBILITY' => 'Viditeľnosť',
   'LBL_RECORD_PERMISSIONS' => 'Oprávnenie na záznam',
   'LBL_CREATE_RECORD' => 'Vytvoriť záznam',
-  'LBL_EDIT_RECORD' => 'Edit Record',
-  'SINGLE_CustomerPortal' => 'Customer Portal',
+  'LBL_EDIT_RECORD' => 'Upraviť záznam',
+  'SINGLE_CustomerPortal' => 'Zákaznícky portál',
 );
 $jsLanguageStrings=array (
   'JS_PORTAL_INFO_SAVED' => 'Nastavenia Zákaznického portálu boli uložené',

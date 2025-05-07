@@ -28,6 +28,6 @@ $languageStrings=array (
   'UA' => 'Plánované aktivity',
 );
 $jsLanguageStrings=array (
-  'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Dashboard name cannot not be empty',
-  'JS_NO_DATA_AVAILABLE' => 'No data available',
+  'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Názov záložky nemôže byť prázdny',
+  'JS_NO_DATA_AVAILABLE' => 'Nie sú dostupné žiadne údaje',
 );

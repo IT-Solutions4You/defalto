@@ -18,7 +18,6 @@ $languageStrings=array (
   'SINGLE_PBXManager' => 'Správa ústredne',
   'Time Of Call' => 'Čas hovoru',
   'LBL_PBXMANAGER_INFORMATION' => 'PBX Manager informácie',
-  'LBL_CUSTOM_INFORMATION' => 'Custom Information',
   'LBL_SERVER_CONFIGURATION' => 'Konfigurácia servera',
   'LBL_CALL_FROM' => 'Volajúci',
   'LBL_CALL_TO' => 'Volaný',
@@ -33,6 +32,7 @@ $languageStrings=array (
   'Duration (sec)' => 'Trvanie (sec)',
   'Recording  ' => 'Záznam',
   'Start Time' => 'Doba spustenia',
+  'LBL_CUSTOM_INFORMATION' => 'Vlastné informácie',
 );
 $jsLanguageStrings=array (
 );
