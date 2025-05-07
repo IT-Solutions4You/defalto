@@ -9,8 +9,8 @@
  */
 
 $languageStrings = [
-    'Invoice' => 'Invoices',
-    'SINGLE_Invoice' => 'Invoice',
+    'Invoice' => 'Faktúry',
+    'SINGLE_Invoice' => 'Faktúra',
     'LBL_EXPORT_TO_PDF' => 'Export to PDF',
     'LBL_SEND_MAIL_PDF' => 'Send Email with PDF',
     'LBL_ADD_RECORD' => 'Pridať faktúru',

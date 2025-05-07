@@ -9,7 +9,7 @@
  */
 
 $languageStrings = [
-    'Leads' => 'Leads',
+    'Leads' => 'Kontakty',
     'SINGLE_Leads' => 'Prvý kontakt',
     'LBL_RECORDS_LIST' => 'Zoznam prvých kontaktov',
     'LBL_ADD_RECORD' => 'Pridať prvý kontakt',

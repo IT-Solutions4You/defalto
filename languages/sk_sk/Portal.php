@@ -9,7 +9,7 @@
  */
 
 $languageStrings = [
-    'Portal' => 'Our Sites',
+    'Portal' => 'Naše stránky',
     'LBL_ADD_BOOKMARK' => 'Pridať záložku',
     'LBL_BOOKMARK_NAME' => 'Názov záložky',
     'LBL_BOOKMARK_URL' => 'Url',

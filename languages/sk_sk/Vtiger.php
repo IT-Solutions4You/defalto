@@ -9,7 +9,7 @@
  */
 
 $languageStrings = [
-    'APPTITLE' => 'vtiger CRM Open Source',
+    'APPTITLE' => 'CRM Open Source',
     'POWEREDBY' => 'Powered by vtiger CRM, preložené <a href=\'http://www.its4you.sk/\' target=\'_new\'>IT-Solutions4You s.r.o.</a>',
     'LBL_READ_LICENSE' => 'Prečítajte si licenciu',
     'LBL_PRIVACY_POLICY' => 'Zásady ochrany osobných údajov',

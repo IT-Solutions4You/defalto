@@ -9,8 +9,8 @@
  */
 
 $languageStrings = [
-    'SINGLE_MailManager' => 'Mail Manager',
-    'MailManager' => 'Mail Manager',
+    'SINGLE_MailManager' => 'Správca pošty',
+    'MailManager' => 'Správca pošty',
     'LBL_Folders' => 'Priečinky',
     'LBL_Newer' => 'Novšie',
     'LBL_Older' => 'Staršie',

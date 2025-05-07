@@ -9,8 +9,8 @@
  */
 
 $languageStrings = [
-    'Contacts' => 'Contacts',
-    'SINGLE_Contacts' => 'Contact',
+    'Contacts' => 'Kontakty',
+    'SINGLE_Contacts' => 'Kontakt',
     'LBL_ADD_RECORD' => 'Pridať osobu',
     'LBL_RECORDS_LIST' => 'Zoznam osôb',
     'LBL_CONTACT_INFORMATION' => 'Základné informácie o Osobe',
