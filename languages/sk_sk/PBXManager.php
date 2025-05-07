@@ -33,6 +33,11 @@ $languageStrings = [
     'Recording  ' => 'Záznam',
     'Start Time' => 'Doba spustenia',
     'LBL_CUSTOM_INFORMATION' => 'Vlastné informácie',
+    'Direction' => 'Smer',
+    'End Time' => 'Čas ukončenia',
+    'Source UUID' => 'Zdrojové UUID',
+    'Gateway' => 'Brána',
+    'Customer Type' => 'Typ zákazníka',
 ];
 $jsLanguageStrings = [
 ];

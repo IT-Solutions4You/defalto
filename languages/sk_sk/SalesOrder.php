@@ -45,6 +45,15 @@ $languageStrings = [
     'Account Name' => 'Organizácia',
     'Due Date' => 'Predpokladaný dátum dodania',
     'Subject' => 'Názov objednávky',
+    'S&amp;H Amount' => 'Čiastka za dopravu a manipuláciu',
+    'S&amp;H Percent' => 'Percento za dopravu a manipuláciu',
+    'Terms &amp; Conditions' => 'Podmienky a ustanovenia',
+    'Net 01 day' => 'Splatnosť 1 deň',
+    'Net 05 days' => 'Splatnosť 5 dní',
+    'Net 07 days' => 'Splatnosť 7 dní',
+    'Net 10 days' => 'Splatnosť 10 dní',
+    'Net 15 days' => 'Splatnosť 15 dní',
+    'Next Invoice Date' => 'Dátum ďalšej faktúry',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Objednávka obsahuje odstránené produkty alebo služby, prosím upravte objednávku',

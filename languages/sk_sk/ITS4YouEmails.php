@@ -99,6 +99,7 @@ $languageStrings = [
     'LBL_FOLDER' => 'Priečinok',
     'LBL_BANNED_WORD' => 'Banned word: ',
     'LBL_BROWSE_CRM' => 'Vybrat Dokument',
+    'Mail Message Key' => 'Kľúč správy e-mailu',
 ];
 $jsLanguageStrings = [
     'JS_UNINSTALL_CONFIRM' => 'Ste si istí, že chcete úplne odstrániť modul z vášho vTiger?',

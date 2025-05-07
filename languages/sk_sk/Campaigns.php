@@ -55,6 +55,7 @@ $languageStrings = [
     'Contacted - Never Contact Again' => 'Kontaktovaný - už viac nekontaktovať',
     'Completed' => 'Ukončená',
     'Active' => 'Aktívna',
+    'Partners' => 'Partneri',
 ];
 $jsLanguageStrings = [
     'JS_APPENDED_TO_EXISTING_LIST' => '%s so zvoleného zoznamu sa pripojí k existujúcemu zoznamu',

@@ -48,6 +48,9 @@ $languageStrings = [
     'Account Name' => 'Organizácia',
     'Contact Name' => 'Osoba',
     'Due Date' => 'Dátum splatnosti',
+    'S&amp;H Percent' => 'Percento S&amp;H',
+    'S&amp;H Amount' => 'Suma S&amp;H',
+    'Terms &amp; Conditions' => 'Podmienky &amp; ustanovenia',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Faktúra obsahuje odstránené produkty alebo služby, prosím upravte Faktúru',

@@ -30,6 +30,9 @@ $languageStrings = [
     'Account Name' => 'Organizácia',
     'Contact Name' => 'Osoba',
     'Potential Name' => 'Príležitosť',
+    'Terms &amp; Conditions' => 'Podmienky a ustanovenia',
+    'S&amp;H Amount' => 'Čiastka za dopravu a manipuláciu',
+    'S&amp;H Percent' => 'Percento za dopravu a manipuláciu',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Cenová ponuka obsahuje odstránené produkty alebo služby, prosím upravte ponuku',

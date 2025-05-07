@@ -53,6 +53,7 @@ $languageStrings = [
     'LBL_CUSTOM_FIELD_MAPPING' => 'Opportunity to Project mapping',
     'Proposal or Price Quote' => 'Cenová ponuka',
     'Negotiation or Review' => 'Prepracovanie',
+    'Creator' => 'Tvorca',
 ];
 $jsLanguageStrings = [
     'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Konverzia si vyžaduje výber Projektu',

@@ -75,6 +75,7 @@ $languageStrings = [
     'Project Task Name' => 'Projektová úloha',
     'Milestones list' => 'Zoznam miľníkov',
     'LBL_CREATING_NEW' => 'Nový',
+    'Is Converted From Opportunity' => 'Je konvertovaný z príležitosti',
 ];
 $jsLanguageStrings = [
     'JS_COLOR_SAVED_SUCESSFULLY' => 'Farba bola úspešne uložená',

@@ -23,6 +23,7 @@ $languageStrings = [
     'LBL_SMSNOTIFIER_INFORMATION' => 'SMS informácie',
     'SINGLE_SMSNotifier' => 'SMS upozornenie',
     'LBL_SEREVER_CONFIG' => 'Konfigurácia servera',
+    'StatusInformation' => 'StatusInformation',
 ];
 $jsLanguageStrings = [
 ];

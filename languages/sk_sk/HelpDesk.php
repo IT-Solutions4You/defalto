@@ -86,6 +86,11 @@ $languageStrings = [
     'LBL_OPEN_TICKETS' => 'Otvorené požiadavky',
     'LBL_CREATE_TICKET' => 'Vytvoriť novú požiadavku',
     'Product Name' => 'Produkt',
+    'First Comment Hours' => 'Hodiny prvého komentára',
+    'First Comment Time' => 'Čas prvého komentára',
+    'Last Comment Hours' => 'Hodiny posledného komentára',
+    'Last Comment Time' => 'Čas posledného komentára',
+    'Creator' => 'Tvorca',
 ];
 $jsLanguageStrings = [
     'LBL_ADD_DOCUMENT' => 'Pridať dokument',

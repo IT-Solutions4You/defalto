@@ -44,6 +44,7 @@ $languageStrings = [
     'Due date' => 'Dátum splatnosti',
     'LBL_SERVICE_REQUEST' => 'Požiadavky',
     'Subject' => 'Názov zmluvy',
+    'None' => 'Žiadne',
 ];
 $jsLanguageStrings = [
 ];
