@@ -9,7 +9,7 @@
         {foreach item=BASIC_ACTION from=$MODULE_BASIC_ACTIONS}
             {if $BASIC_ACTION->getLabel() eq 'LBL_ADD_RECORD'}
                 <div class="dropdown">
-                    <button type="button" class="btn btn-outline-secondary module-buttons me-2" data-bs-toggle="dropdown">
+                    <button type="button" class="btn module-buttons me-2 {$BASIC_ACTION->getStyleClass()}" data-bs-toggle="dropdown">
                         <span class="fa fa-plus" title="{vtranslate('LBL_NEW_DOCUMENT', $MODULE)}"></span>
                         <span class="mx-2">{vtranslate('LBL_NEW_DOCUMENT', $MODULE)}</span>
                         <i class="fa-solid fa-caret-down"></i>

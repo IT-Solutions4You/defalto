@@ -16,23 +16,22 @@ class HelpDesk_DetailView_Model extends Vtiger_DetailView_Model {
 	 * @return <array> - array of link models in the format as below
 	 *                   array('linktype'=>list of link models);
 	 */
-	public function getDetailViewLinks($linkParams) {
-		$currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+    public function getDetailViewLinks($linkParams)
+    {
+        $currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+        $recordModel = $this->getRecord();
+        $links = [];
+        $quotesModuleModel = Vtiger_Module_Model::getInstance('Faq');
 
-		$linkModelList = parent::getDetailViewLinks($linkParams);
-		$recordModel = $this->getRecord();
+        if ($currentUserModel->hasModuleActionPermission($quotesModuleModel->getId(), 'CreateView')) {
+            $links[] = [
+                'linktype' => 'DETAILVIEW',
+                'linklabel' => 'LBL_CONVERT_FAQ',
+                'linkurl' => $recordModel->getConvertFAQUrl(),
+                'linkicon' => '',
+            ];
+        }
 
-		$quotesModuleModel = Vtiger_Module_Model::getInstance('Faq');
-		if($currentUserModel->hasModuleActionPermission($quotesModuleModel->getId(), 'CreateView')) {
-			$basicActionLink = array(
-				'linktype' => 'DETAILVIEW',
-				'linklabel' => 'LBL_CONVERT_FAQ',
-				'linkurl' => $recordModel->getConvertFAQUrl(),
-				'linkicon' => ''
-			);
-			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
-		}
-
-		return $linkModelList;
-	}
+        return Vtiger_Link_Model::merge(parent::getDetailViewLinks($linkParams), Vtiger_Link_Model::checkAndConvertLinks($links));
+    }
 }

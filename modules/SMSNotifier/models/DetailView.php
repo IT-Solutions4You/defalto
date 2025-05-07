@@ -15,25 +15,24 @@ class SMSNotifier_DetailView_Model extends Vtiger_DetailView_Model {
 	 * @return <array> - array of link models in the format as below
 	 *                   array('linktype'=>list of link models);
 	 */
-	public function getDetailViewLinks($linkParams) {
-		$currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		$recordModel = $this->getRecord();
+    public function getDetailViewLinks($linkParams)
+    {
+        $recordModel = $this->getRecord();
+        $linkModelList = parent::getDetailViewLinks($linkParams);
+        $linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues(['linklabel' => 'LBL_CHECK_STATUS']);
+        unset($linkModelList['DETAILVIEWBASIC']);
+        $linkModelDetailViewList = $linkModelList['DETAILVIEW'];
+        $countOfList = php7_count($linkModelDetailViewList);
 
-		$linkModelList = parent::getDetailViewLinks($linkParams);
-		$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues(array('linklabel' => 'LBL_CHECK_STATUS'));
-		unset($linkModelList['DETAILVIEWBASIC']);
-		$linkModelDetailViewList = $linkModelList['DETAILVIEW'];
-		$countOfList = php7_count($linkModelDetailViewList);
-		
-		for ($i=0; $i<$countOfList; $i++) {
-			$linkModel = $linkModelDetailViewList[$i];
-			if ($linkModel->get('linklabel') == 'LBL_CHECK_STATUS') {
-				$linkModelList['DETAILVIEW'][$i]->set('linklabel', vtranslate('LBL_CHECK_STATUS', 'SMSNotifier'));
-				$linkModelList['DETAILVIEW'][$i]->set('linkurl', "javascript:Vtiger_Detail_Js.checkSMSStatus('".$recordModel->getCheckStatusUrl()."')");
-				break;
-			}
-		}
-		
-		return $linkModelList;
-	}
+        for ($i = 0; $i < $countOfList; $i++) {
+            $linkModel = $linkModelDetailViewList[$i];
+            if ($linkModel->get('linklabel') == 'LBL_CHECK_STATUS') {
+                $linkModelList['DETAILVIEW'][$i]->set('linklabel', vtranslate('LBL_CHECK_STATUS', 'SMSNotifier'));
+                $linkModelList['DETAILVIEW'][$i]->set('linkurl', "javascript:Vtiger_Detail_Js.checkSMSStatus('" . $recordModel->getCheckStatusUrl() . "')");
+                break;
+            }
+        }
+
+        return $linkModelList;
+    }
 }

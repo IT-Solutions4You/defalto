@@ -8,7 +8,6 @@
 *}
 {strip}
 <div class="listViewTagsTemplate">
-    {include file="AddTagUI.tpl"|vtemplate_path:$MODULE RECORD_NAME="" TAGS_LIST=array()}
     <div id="dummyTagElement" class="hide">
         {assign var=TAG_MODEL value=Vtiger_Tag_Model::getCleanInstance()}
         {include file="Tag.tpl"|vtemplate_path:$MODULE NO_DELETE=true}

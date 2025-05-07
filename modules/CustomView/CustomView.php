@@ -96,7 +96,7 @@ class CustomView extends CRMEntity {
 			$now_action = vtlib_purify(isset($_REQUEST['view']) ? $_REQUEST['view'] : '');
 		}
 		if (empty($_REQUEST['viewname'])) {
-			if (isset($_SESSION['lvs'][$module]["viewname"]) && $_SESSION['lvs'][$module]["viewname"] != '') {
+			if (!empty($_SESSION['lvs'][$module]["viewname"])) {
 				$viewid = $_SESSION['lvs'][$module]["viewname"];
 			} elseif ($this->setdefaultviewid != "") {
 				$viewid = $this->setdefaultviewid;

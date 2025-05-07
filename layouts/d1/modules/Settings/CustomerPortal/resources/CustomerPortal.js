@@ -164,11 +164,11 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 			return false
 		}
 
-		var activeWidgets = {};
-		var defaultWidgets = JSON.parse(jQuery('input[name="defaultWidgets"]').val());
+		let activeWidgets = {},
+            defaultWidgets = JSON.parse(jQuery('input[name="defaultWidgets"]').val()) ?? {'widgets': []},
+            defaultWidgetModules = ['HelpDesk', 'Faq', 'Documents'],
+            widgetsInfo = jQuery("input.widgetsInfo");
 
-		var defaultWidgetModules = ['HelpDesk', 'Faq', 'Documents'];
-		var widgetsInfo = jQuery("input.widgetsInfo");
 		jQuery.each(widgetsInfo, function (index, widget) {
 			var element = jQuery(widget);
 			if (element.is(":checked")) {
@@ -180,11 +180,11 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 		});
 		defaultWidgetModules.forEach(function (module) {
 			if (activeWidgets[module] === undefined)
-				activeWidgets[module] = parseInt(defaultWidgets.widgets[module]);
+				activeWidgets[module] = parseInt(defaultWidgets['widgets'][module]);
 		});
 
 		if (widgetsInfo.length === 0) {
-			activeWidgets = defaultWidgets.widgets;
+			activeWidgets = defaultWidgets['widgets'];
 		}
 		formData['moduleFieldsInfo'] = selectedFields;
 		formData['relatedModuleList'] = relatedModuleInfo;

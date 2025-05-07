@@ -1166,13 +1166,14 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
 		$moduleName = $this->getName();
 		$basicLinks = array();
 		if($createPermission) {
-            $basicLinks[] = array(
+            $basicLinks[] = [
                 'linktype' => 'BASIC',
                 'linklabel' => 'LBL_ADD_RECORD',
                 'linkurl' => $this->getCreateRecordUrl(),
                 'linkicon' => 'fa-plus',
-            );
-			$importPermission = Users_Privileges_Model::isPermitted($this->getName(), 'Import');
+                'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
+            ];
+            $importPermission = Users_Privileges_Model::isPermitted($this->getName(), 'Import');
 			if($importPermission && $createPermission) {
 				$basicLinks[] = array(
 					'linktype' => 'BASIC',

@@ -15,7 +15,7 @@ class ITS4YouEmails extends CRMEntity
     public $db;
     public string $moduleName = 'ITS4YouEmails';
     public string $parentName = 'Tools';
-    public string $moduleLabel = 'Emails 4 You';
+    public string $moduleLabel = 'Emails';
     public $table_name = 'its4you_emails';
     public $table_index = 'its4you_emails_id';
     public $entity_table = 'vtiger_crmentity';

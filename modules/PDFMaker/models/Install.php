@@ -15,10 +15,10 @@ class PDFMaker_Install_Model extends Core_Install_Model
 
     public array $registerCustomLinks = [
         ['PDFMaker', 'HEADERSCRIPT', 'PDFMakerFreeActionsJS', 'layouts/$LAYOUT$/modules/PDFMaker/resources/PDFMakerFreeActions.js'],
-        ['Quotes', 'DETAILVIEWBASIC', 'PDFMaker', ''],
-        ['SalesOrder', 'DETAILVIEWBASIC', 'PDFMaker', ''],
-        ['PurchaseOrder', 'DETAILVIEWBASIC', 'PDFMaker', ''],
-        ['Invoice', 'DETAILVIEWBASIC', 'PDFMaker', ''],
+        ['Quotes', 'DETAILVIEWBASIC', 'PDFMaker', 'template:GetPDFButtons.tpl:PDFMaker'],
+        ['SalesOrder', 'DETAILVIEWBASIC', 'PDFMaker', 'template:GetPDFButtons.tpl:PDFMaker'],
+        ['PurchaseOrder', 'DETAILVIEWBASIC', 'PDFMaker', 'template:GetPDFButtons.tpl:PDFMaker'],
+        ['Invoice', 'DETAILVIEWBASIC', 'PDFMaker', 'template:GetPDFButtons.tpl:PDFMaker'],
     ];
 
     public function addCustomLinks(): void

@@ -36,7 +36,7 @@
                     {elseif $FIELD_MODEL->get('uitype') eq "69" || $FIELD_MODEL->get('uitype') eq "105"}
                         <div  id="{$MODULE}_{$VIEW}_{$FIELD_MODEL->getName()}" class="py-2 col-lg-12">
                             <div class="h-100">
-                                <div class="row py-2 border-bottom border-light-subtle h-100">
+                                <div class="row py-2 border-bottom border-light-subtle h-100 align-items-center">
                                     <div class="col-lg-2 fieldLabel {$WIDTHTYPE}">
                                         <span class="muted">{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}</span>
                                     </div>
@@ -53,9 +53,9 @@
                             </div>
                         </div>
                     {else}
-                        <div id="{$MODULE}_{$VIEW}_field_{$FIELD_MODEL->getName()}" class="py-2 {if $FIELD_MODEL->isTableFullWidth()}col-lg-12{else}col-lg-6{/if}">
+                        <div id="{$MODULE}_{$REQUEST_INSTANCE.view}_field_{$FIELD_MODEL->getName()}" class="py-2 {if $FIELD_MODEL->isTableFullWidth()}col-lg-12{else}col-lg-6{/if}">
                             <div class="h-100">
-                                <div class="row py-2 border-bottom border-light-subtle h-100">
+                                <div class="row py-2 border-bottom border-light-subtle h-100 align-items-center">
                                     <div class="fieldLabel text-truncate {if $FIELD_MODEL->isTableFullWidth()}col-lg-2{else}col-lg-4{/if} {$WIDTHTYPE}" id="{$MODULE_NAME}_detailView_fieldLabel_{$FIELD_MODEL->getName()}">
                                         <span class="muted">
                                             {if $MODULE_NAME eq 'Documents' && $FIELD_MODEL->get('label') eq "File Name" && $RECORD->get('filelocationtype') eq 'E'}
@@ -75,19 +75,21 @@
                                         {else}
                                             {assign var=FIELD_DISPLAY_VALUE value=Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}
                                         {/if}
-                                        <span class="value" data-field-type="{$FIELD_MODEL->getFieldDataType()}">
-                                            {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
-                                        </span>
-                                        {if $IS_AJAX_ENABLED && $FIELD_MODEL->isEditable() eq 'true' && $FIELD_MODEL->isAjaxEditable() eq 'true'}
-                                            <span class="action"><a href="#" onclick="return false;" class="editAction fa fa-pencil"></a></span>
-                                            <div class="hide edit">
-                                                {if $fieldDataType eq 'multipicklist'}
-                                                    <input type="hidden" class="fieldBasicData" data-name='{$FIELD_MODEL->get('name')}[]' data-type="{$fieldDataType}" data-displayvalue='{$FIELD_DISPLAY_VALUE}' data-value="{$FIELD_VALUE}" />
-                                                {else}
-                                                    <input type="hidden" class="fieldBasicData" data-name='{$FIELD_MODEL->get('name')}' data-type="{$fieldDataType}" data-displayvalue='{$FIELD_DISPLAY_VALUE}' data-value="{$FIELD_VALUE}" />
-                                                {/if}
-                                            </div>
-                                        {/if}
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <span class="value" data-field-type="{$FIELD_MODEL->getFieldDataType()}">
+                                                {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
+                                            </span>
+                                            {if $IS_AJAX_ENABLED && $FIELD_MODEL->isEditable() eq 'true' && $FIELD_MODEL->isAjaxEditable() eq 'true'}
+                                                <span class="action"><a href="#" onclick="return false;" class="editAction fa fa-pencil"></a></span>
+                                                <div class="hide edit">
+                                                    {if $fieldDataType eq 'multipicklist'}
+                                                        <input type="hidden" class="fieldBasicData" data-name='{$FIELD_MODEL->get('name')}[]' data-type="{$fieldDataType}" data-displayvalue='{$FIELD_DISPLAY_VALUE}' data-value="{$FIELD_VALUE}" />
+                                                    {else}
+                                                        <input type="hidden" class="fieldBasicData" data-name='{$FIELD_MODEL->get('name')}' data-type="{$fieldDataType}" data-displayvalue='{$FIELD_DISPLAY_VALUE}' data-value="{$FIELD_VALUE}" />
+                                                    {/if}
+                                                </div>
+                                            {/if}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

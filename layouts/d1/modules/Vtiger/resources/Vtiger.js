@@ -205,6 +205,9 @@ Vtiger.Class('Vtiger_Index_Js', {
 			}
 		});
 	},
+    addTags() {
+        app.event.trigger('Request.MassTag.show', $('.tagContainer'), {'record': app.getRecordId()});
+    },
 
 	/**
 	 * Function registers event for Calendar Reminder popups

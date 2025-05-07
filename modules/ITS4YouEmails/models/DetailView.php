@@ -11,80 +11,61 @@ class ITS4YouEmails_DetailView_Model extends Vtiger_DetailView_Model
 {
     public function getDetailViewLinks($linkParams)
     {
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
         $linkTypes = array('DETAILVIEWBASIC', 'DETAILVIEW');
         $moduleModel = $this->getModule();
-        $linkModelList = array();
+        $links = [];
         $linkModelListDetails = Vtiger_Link_Model::getAllByType($moduleModel->getId(), $linkTypes, $linkParams);
 
-        foreach ($linkTypes as $linkType) {
-            if (!empty($linkModelListDetails[$linkType])) {
-                foreach ($linkModelListDetails[$linkType] as $linkModel) {
-                    // Remove view history, needed in vtiger5 to see history but not in vtiger6
-                    if ('View History' === $linkModel->linklabel) {
-                        continue;
-                    }
-                    $linkModelList[$linkType][] = $linkModel;
-                }
+        foreach ($linkModelListDetails as $linkTypes) {
+            foreach ($linkTypes as $linkModel) {
+                $links[] = $linkModel;
             }
-            unset($linkModelListDetails[$linkType]);
         }
 
-        $relatedLinks = $this->getDetailViewRelatedLinks();
-
-        foreach ($relatedLinks as $relatedLinkEntry) {
-            $relatedLink = Vtiger_Link_Model::getInstanceFromValues($relatedLinkEntry);
-            $linkModelList[$relatedLink->getType()][] = $relatedLink;
+        foreach ($this->getDetailViewRelatedLinks() as $relatedLinkEntry) {
+            $links[] = $relatedLinkEntry;
         }
 
-        $widgets = $this->getWidgets();
-        $widgets[] = Vtiger_Link_Model::getInstanceFromValues([
+        $links[] = $this->getKeyFieldsWidgetInfo();
+        $links[] = [
             'linktype' => 'DETAILVIEWWIDGET',
             'linklabel' => 'LBL_MESSAGE',
             'linkurl' => 'module=ITS4YouEmails&view=BodyWidget&record=' . $this->getRecord()->getId(),
             'linkicon' => '',
-        ]);
-        $widgets[] = Vtiger_Link_Model::getInstanceFromValues([
+        ];
+        $links[] = [
             'linktype' => 'DETAILVIEWWIDGET',
             'linklabel' => 'LBL_ATTACHMENTS',
             'linkurl' => 'module=ITS4YouEmails&view=AttachmentsWidget&record=' . $this->getRecord()->getId(),
             'linkicon' => '',
-        ]);
-
-        foreach ($widgets as $widgetLinkModel) {
-            $linkModelList['DETAILVIEWWIDGET'][] = $widgetLinkModel;
-        }
-
-        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        ];
 
         if ($currentUserModel->isAdminUser()) {
-            $settingsLinks = $moduleModel->getSettingLinks();
-
-            foreach ($settingsLinks as $settingsLink) {
-                $linkModelList['DETAILVIEWSETTING'][] = Vtiger_Link_Model::getInstanceFromValues($settingsLink);
+            foreach ($moduleModel->getSettingLinks() as $settingsLink) {
+                $links[] = $settingsLink;
             }
         }
 
-        $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues([
+        $links[] = [
             'linktype' => 'DETAILVIEWBASIC',
             'linklabel' => 'Reply to',
             'linkurl' => 'javascript:ITS4YouEmails_MassEdit_Js.replyEmail(' . $this->getRecord()->getId() . ',"' . $this->getModule()->getName() . '");',
             'linkicon' => '<i class="fa-solid fa-reply"></i>',
-        ]);
-
-        $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues([
+        ];
+        $links[] = [
             'linktype' => 'DETAILVIEWBASIC',
             'linklabel' => 'Reply to all',
             'linkurl' => 'javascript:ITS4YouEmails_MassEdit_Js.replyAllEmail(' . $this->getRecord()->getId() . ',"' . $this->getModule()->getName() . '");',
             'linkicon' => '<i class="fa-solid fa-reply-all"></i>',
-        ]);
-
-        $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues([
+        ];
+        $links[] = [
             'linktype' => 'DETAILVIEWBASIC',
             'linklabel' => 'Forward',
             'linkurl' => 'javascript:ITS4YouEmails_MassEdit_Js.forwardEmail(' . $this->getRecord()->getId() . ',"' . $this->getModule()->getName() . '");',
             'linkicon' => '<i class="fa-solid fa-reply fa-flip-horizontal"></i>',
-        ]);
+        ];
 
-        return $linkModelList;
+        return Vtiger_Link_Model::checkAndConvertLinks($links);
     }
 }

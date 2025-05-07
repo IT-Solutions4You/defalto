@@ -12,8 +12,8 @@
     {assign var=TAXES value=$UITYPE->getDetailTaxes($RECORD->getId())}
     {foreach from=$TAXES item=TAX_MODEL}
         {assign var=TAX_ID value=$TAX_MODEL->getId()}
-        <div id="{$MODULE}_{$VIEW}_{$FIELD_MODEL->getName()}" class="py-2 col-lg-6">
-            <div class="row py-2 border-bottom border-light-subtle h-100">
+        <div id="{$MODULE}_{$REQUEST_INSTANCE.view}_{$FIELD_MODEL->getName()}" class="py-2 col-lg-6">
+            <div class="row py-2 border-bottom border-light-subtle h-100 align-items-center">
                 <div id="{$MODULE}_detailView_fieldLabel_{$FIELD_MODEL->getName()}" class="fieldLabel text-secondary col-sm-4">
                     {$TAX_MODEL->getLabel()}
                 </div>

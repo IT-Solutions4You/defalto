@@ -450,9 +450,9 @@ Vtiger_Edit_Js("Products_Edit_Js", {
 				taxIdSelector = element.data('taxName');
 
 			if (element.is(":checked")) {
-				container.find('#' + taxIdSelector).removeClass('hide').addClass('show');
+				container.find('#' + taxIdSelector).removeClass('hide');
 			} else {
-				container.find('#' + taxIdSelector).removeClass('show').addClass('hide');
+				container.find('#' + taxIdSelector).addClass('hide');
 			}
 		});
 	},

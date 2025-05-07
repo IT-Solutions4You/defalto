@@ -24,19 +24,28 @@ class Products_Relation_Model extends Vtiger_Relation_Model {
 		$functionName = $this->get('name');
 		$focus = CRMEntity::getInstance($parentModuleName);
 		$focus->id = $recordModel->getId();
-		if(method_exists($parentModuleModel, $functionName)) {
-			$query = $parentModuleModel->$functionName($recordModel, $relatedModuleModel);
-		} else {
+
+        if (method_exists($parentModuleModel, $functionName)) {
+            $query = $parentModuleModel->$functionName($recordModel, $relatedModuleModel);
+        } elseif ($relatedModuleName == 'ModComments') {
+            $focus = CRMEntity::getInstance($relatedModuleName);
+            $query = $focus->$functionName($recordModel->getId());
+        } else {
             //For get_dependent_list fourth parameter should be relation id. So we are replacing actions by relation id if it is not given
-            if(!$actions && $functionName == "get_dependents_list") {
+            if (!$actions && $functionName == "get_dependents_list") {
                 $actions = $this->getId();
             }
-			$result = $focus->$functionName($recordModel->getId(), $parentModuleModel->getId(),
-											$relatedModuleModel->getId(), $actions);
-			$query = $result['query'];
-		}
 
-		//modify query if any module has summary fields, those fields we are displayed in related list of that module
+            $result = $focus->$functionName(
+                $recordModel->getId(),
+                $parentModuleModel->getId(),
+                $relatedModuleModel->getId(),
+                $actions,
+            );
+            $query = $result['query'];
+        }
+
+        //modify query if any module has summary fields, those fields we are displayed in related list of that module
 		$relatedListFields = $relatedModuleModel->getConfigureRelatedListFields();
 		if(php7_count($relatedListFields) > 0 ) {
 			$currentUser = Users_Record_Model::getCurrentUserModel();

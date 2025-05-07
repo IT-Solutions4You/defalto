@@ -585,14 +585,16 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 		$moduleModel = $this->getModule();
 		$createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'CreateView');
 		if($createPermission) {
-			$basicLinks[] = array(
-					'linktype' => 'LISTVIEWBASIC',
-					'linklabel' => 'LBL_ADD_RECORD',
-					'linkurl' => $moduleModel->getCreateRecordUrl(),
-					'linkicon' => ''
-			);
-		}
-		return $basicLinks;
+            $basicLinks[] = [
+                'linktype' => 'LISTVIEWBASIC',
+                'linklabel' => 'LBL_ADD_RECORD',
+                'linkurl' => $moduleModel->getCreateRecordUrl(),
+                'linkicon' => '',
+                'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
+            ];
+        }
+
+        return $basicLinks;
 	}
 
 	public function extendPopupFields($fieldsList) {

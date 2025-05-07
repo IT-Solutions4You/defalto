@@ -31,7 +31,7 @@
     --menu-bg-active: var(--dt-light-blue-color);
     --menu-color-active: #5E81F4;
     --menu-icon-font-size: 1rem;
-    --menu-icon-size: 3.5rem;
+    --menu-icon-size: 4.25rem;
     --footer-height: 2rem;
     --header-height: 5rem;
     --main-height: calc(100vh - var(--footer-height) - var(--header-height));
@@ -169,6 +169,12 @@
     --bs-btn-disabled-border-color: var(--dt-red-color);
 }
 
+.btn.active:hover {
+    color: var(--dt-light-blue-color);
+    background-color: var(--dt-dark-blue-color);
+    border-color: var(--dt-dark-blue-color);
+}
+
 .h-header {
     height: var(--header-height);
 }
@@ -259,7 +265,6 @@ body {
 .dt-menu-button {
     height: var(--menu-icon-size);
     width: var(--menu-icon-size);
-    line-height: var(--menu-icon-size);
     text-align: center;
 }
 
@@ -484,12 +489,6 @@ body {
     width: var(--menu-width);
     text-align: center;
 }
-
-.app-switcher-container {
-    z-index: 2;
-
-}
-
 #app-menu .app-switcher-container {
     width: var(--menu-width);
     height: var(--header-height);
@@ -864,17 +863,6 @@ a {
 /**********************************/
 /**** Side vertical Nav styles ****/
 /**********************************/
-.modules-menu .app-module-container a, .modules-menu .app-indicator-icon {
-    display: block;
-    z-index: 1;
-    word-break: break-word;
-    text-transform: uppercase;
-    height: var(--menu-icon-size);
-    width: var(--menu-icon-size);
-    line-height: var(--menu-icon-size);
-    text-align: center;
-}
-
 .modules-menu a i {
     vertical-align: middle;
     font-size: var(--menu-icon-font-size);
@@ -1085,6 +1073,9 @@ ul.unstyled {
     display: inline-block;
     max-width: 300px;
 }
+.listViewEntries:hover td {
+    background-color: rgba(var(--bs-secondary-bg-rgb),var(--bs-bg-opacity));
+}
 
 .listview-table .table-actions span.dropdown.open,
 .listview-table-norecords .table-actions span.dropdown.open {
@@ -1217,24 +1208,17 @@ input[type=checkbox]:checked {
 /**********************************
 **********Detail View Styles**********
 **********************************/
-#detailView .fieldValue {
-    position: relative;
-}
 #detailView .fieldValue .action {
     display: none;
 }
 
-#detailView .fieldValue:hover .action {
+#detailView .fieldValue:hover .action,
+#detailView [id*="_Detail_field_"]:hover .action {
     display: inline-block;
-    position: absolute;
-    top: 0;
-    right: 0;
 }
 
 #headerForm .fieldValue .editAction,
 #detailView .fieldValue .editAction {
-    margin: -0.5rem 0;
-    padding: 0.5rem;
     border-radius: var(--bs-border-radius) !important;
     background-color: rgba(var(--bs-body-bg-rgb),var(--bs-bg-opacity)) !important;
 }
@@ -4375,6 +4359,18 @@ body .fc {
 .hide {
     display: none !important;
 }
+.fs-07rem {
+    font-size: 0.7rem !important;
+}
+.fs-7 {
+    font-size: 0.75rem !important;
+}
+.fs-8 {
+    font-size: 0.50rem !important;
+}
+.fs-9 {
+    font-size: 0.25rem !important;
+}
 .fs-inherit {
     font-size: inherit !important;
 }
@@ -4540,4 +4536,14 @@ input[type=number] {
 }
 .dropdown-item:hover .dropdown-action {
     opacity: 1;
+}
+.h-13rem {
+    height: 1.3rem;
+}
+.w-13rem {
+    width: 1.3rem;
+}
+.tagListContainer .select2-selection__choice {
+    --bs-bg-opacity: 0.1;
+    background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
 }

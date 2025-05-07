@@ -17,7 +17,7 @@
                         {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)}
                     {else}
                         <div class="py-2 {if $FIELD_MODEL->isTableFullWidth()}col-lg-12{else}col-lg-6{/if}">
-                            <div class="row">
+                            <div class="row align-items-center">
                                 <div class="fieldLabel text-secondary {if $FIELD_MODEL->isTableFullWidth()}col-sm-2{else}col-sm-4{/if}">
                                     <div class="d-flex">
                                         {if $MASS_EDITION_MODE}

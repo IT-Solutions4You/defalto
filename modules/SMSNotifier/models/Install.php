@@ -56,6 +56,8 @@ class SMSNotifier_Install_Model extends Core_Install_Model
                     'presence' => 0,
                     'typeofdata' => 'V~M',
                     'summaryfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 2,
                 ],
                 'createdtime' => [
                     'uitype' => 70,
@@ -86,6 +88,8 @@ class SMSNotifier_Install_Model extends Core_Install_Model
                     'typeofdata' => 'V~M',
                     'entity_identifier' => 1,
                     'summaryfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 1,
                 ],
                 'modifiedby' => [
                     'uitype' => 52,

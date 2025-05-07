@@ -48,7 +48,7 @@
 											{assign var=IS_SELECT_BUTTON value={$RELATED_LINK->get('_selectRelation')}}
 											{assign var=LINK_LABEL value={$RELATED_LINK->get('linklabel')}}
 											{if $IS_SELECT_BUTTON || $IS_CREATE_PERMITTED}
-												<button type="button" module="{$RELATED_MODULE_NAME}" class="me-2 btn btn-outline-secondary
+												<button type="button" module="{$RELATED_MODULE_NAME}" class="me-2 btn {$RELATED_LINK->getStyleClass()}
 													{if $IS_SELECT_BUTTON eq true} selectRelation{else} addButton" name="addButton{/if}"
 													{if $IS_SELECT_BUTTON eq true} data-moduleName="{$RELATED_LINK->get('_module')->get('name')}" {/if}
 													{if ($RELATED_LINK->isPageLoadLink())}
