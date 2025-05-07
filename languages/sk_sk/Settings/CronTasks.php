@@ -7,25 +7,26 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-/*************************************************************************************
-   * Description:  Defines the Slovak language pack for the base application.
-   * All Rights Reserved.
-   * Contributor: IT-Solutions4You s.r.o - www.its4you.sk
-**************************************************************************************/
-$languageStrings = array(
-"CronTasks" => "Plánovač",
-"Id" => "ID",
-"Cron Job" => "Plánovač",
-"Frequency" => "Frekvencia",
-"Status" => "Stav",
-"Last Start" => "Naposledy spustené",
-"Last End" => "Naposledy ukončené",
-"Sequence" => "Poradie",
-"LBL_COMPLETED" => "Dokončený",
-"LBL_RUNNING" => "Prebieha",
-"LBL_ACTIVE" => "Aktívny",
-"Frequency(H:M)" => "Frekvencia (HH:MM)",
-);
 
-$jsLanguageStrings = array(
-);
+/*************************************************************************************
+ * Description:  Defines the Slovak language pack for the base application.
+ * All Rights Reserved.
+ * Contributor: IT-Solutions4You s.r.o - www.its4you.sk
+ **************************************************************************************/
+$languageStrings = [
+    "CronTasks" => "Plánovač",
+    "Id" => "ID",
+    "Cron Job" => "Plánovač",
+    "Frequency" => "Frekvencia",
+    "Status" => "Stav",
+    "Last Start" => "Naposledy spustené",
+    "Last End" => "Naposledy ukončené",
+    "Sequence" => "Poradie",
+    "LBL_COMPLETED" => "Dokončený",
+    "LBL_RUNNING" => "Prebieha",
+    "LBL_ACTIVE" => "Aktívny",
+    "Frequency(H:M)" => "Frekvencia (HH:MM)",
+];
+
+$jsLanguageStrings = [
+];

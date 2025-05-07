@@ -7,16 +7,17 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-/*************************************************************************************
-   * Description:  Defines the Slovak language pack for the base application.
-   * All Rights Reserved.
-   * Contributor: IT-Solutions4You s.r.o - www.its4you.sk
-**************************************************************************************/
-$languageStrings = Array(
-"LBL_RIGHT_CLICK_COPY" => "Kliknite pravým tlačidlom myši a kopírovanie",
-);
 
-$jsLanguageStrings = array (
-"JS_SAVED_SUCCESSFULLY" => "Uložené úspešne",
-"JS_DELETED_SUCCESSFULLY" => "Odstrané úspešne",
-);
+/*************************************************************************************
+ * Description:  Defines the Slovak language pack for the base application.
+ * All Rights Reserved.
+ * Contributor: IT-Solutions4You s.r.o - www.its4you.sk
+ **************************************************************************************/
+$languageStrings = [
+    "LBL_RIGHT_CLICK_COPY" => "Kliknite pravým tlačidlom myši a kopírovanie",
+];
+
+$jsLanguageStrings = [
+    "JS_SAVED_SUCCESSFULLY" => "Uložené úspešne",
+    "JS_DELETED_SUCCESSFULLY" => "Odstrané úspešne",
+];

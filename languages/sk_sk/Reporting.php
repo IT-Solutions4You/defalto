@@ -1,47 +1,47 @@
 <?php
 /**
-* This file is part of the IT-Solutions4You CRM Software.
-*
-* (c) IT-Solutions4You s.r.o [info@its4you.sk]
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*/
+ * This file is part of the IT-Solutions4You CRM Software.
+ *
+ * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-$languageStrings=array (
-  'SINGLE_Reporting' => 'Report',
-  'LBL_COLUMNS' => 'Stĺpce',
-  'LBL_CALCULATIONS' => 'Výpočty',
-  'LBL_LABELS' => 'Štítky',
-  'LBL_SHARING' => 'Zdieľanie',
-  'LBL_CLICK_HERE_ADD_COLUMN' => 'Kliknite sem pre pridanie stĺpca',
-  'LBL_SORT_ASCENDING' => 'Triediť vzostupne',
-  'LBL_SORT_DESCENDING' => 'Triediť zostupne',
-  'LBL_SORT_CLEAR' => 'Vymazať triedenie',
-  'LBL_MOVE_LEFT' => 'Posunúť doľava',
-  'LBL_MOVE_RIGHT' => 'Posunúť doprava',
-  'LBL_REMOVE_COLUMN' => 'Odstrániť stĺpec',
-  'ASC' => 'Vzostupne',
-  'DESC' => 'Zostupne',
-  'LBL_FIELD_LABEL' => 'Štítok poľa',
-  'LBL_EDIT_LABEL' => 'Upraviť štítok',
-  'LBL_EDIT_FIELD' => 'Upraviť pole',
-  'LBL_TABS' => 'Základné nastavenia',
-  'LBL_FIELD_NAME' => 'Názov poľa',
-  'LBL_SELECTED_FIELD' => 'Vybrané pole',
-  'LBL_CLICK_TO_RENDER_TABLE' => 'Kliknite sem pre načítanie tabuľky',
-  'LBL_RENDER_TABLE' => 'Načítať tabuľku',
-  'LBL_UPDATE' => 'Aktualizovať',
-  'LBL_SELECT_SORTING' => 'Vyberte triedenie podľa',
-  'LBL_SORT_BY' => 'Triediť podľa',
-  'LBL_WIDTH' => 'Šírka',
-);
-$jsLanguageStrings=array (
-  'JS_ASC' => 'Vzostupne',
-  'JS_DESC' => 'Zostupne',
-  'JS_FIELD_ALREADY_SELECTED' => 'Pole je už vybrané',
-  'JS_SELECT_FIELD' => 'Vyberte pole',
-  'JS_REQUIRED_LABEL' => 'Povinný štítok',
-  'JS_EDIT_LABEL' => 'Upraviť štítok',
-  'JS_SAVE' => 'Uložiť',
-);
+$languageStrings = [
+    'SINGLE_Reporting' => 'Report',
+    'LBL_COLUMNS' => 'Stĺpce',
+    'LBL_CALCULATIONS' => 'Výpočty',
+    'LBL_LABELS' => 'Štítky',
+    'LBL_SHARING' => 'Zdieľanie',
+    'LBL_CLICK_HERE_ADD_COLUMN' => 'Kliknite sem pre pridanie stĺpca',
+    'LBL_SORT_ASCENDING' => 'Triediť vzostupne',
+    'LBL_SORT_DESCENDING' => 'Triediť zostupne',
+    'LBL_SORT_CLEAR' => 'Vymazať triedenie',
+    'LBL_MOVE_LEFT' => 'Posunúť doľava',
+    'LBL_MOVE_RIGHT' => 'Posunúť doprava',
+    'LBL_REMOVE_COLUMN' => 'Odstrániť stĺpec',
+    'ASC' => 'Vzostupne',
+    'DESC' => 'Zostupne',
+    'LBL_FIELD_LABEL' => 'Štítok poľa',
+    'LBL_EDIT_LABEL' => 'Upraviť štítok',
+    'LBL_EDIT_FIELD' => 'Upraviť pole',
+    'LBL_TABS' => 'Základné nastavenia',
+    'LBL_FIELD_NAME' => 'Názov poľa',
+    'LBL_SELECTED_FIELD' => 'Vybrané pole',
+    'LBL_CLICK_TO_RENDER_TABLE' => 'Kliknite sem pre načítanie tabuľky',
+    'LBL_RENDER_TABLE' => 'Načítať tabuľku',
+    'LBL_UPDATE' => 'Aktualizovať',
+    'LBL_SELECT_SORTING' => 'Vyberte triedenie podľa',
+    'LBL_SORT_BY' => 'Triediť podľa',
+    'LBL_WIDTH' => 'Šírka',
+];
+$jsLanguageStrings = [
+    'JS_ASC' => 'Vzostupne',
+    'JS_DESC' => 'Zostupne',
+    'JS_FIELD_ALREADY_SELECTED' => 'Pole je už vybrané',
+    'JS_SELECT_FIELD' => 'Vyberte pole',
+    'JS_REQUIRED_LABEL' => 'Povinný štítok',
+    'JS_EDIT_LABEL' => 'Upraviť štítok',
+    'JS_SAVE' => 'Uložiť',
+];
