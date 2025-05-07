@@ -9,8 +9,8 @@
  */
 
 $languageStrings = [
-    'Accounts' => 'Organizations',
-    'SINGLE_Accounts' => 'Organization',
+    'Accounts' => 'Organizácie',
+    'SINGLE_Accounts' => 'Organizácia',
     'LBL_ADD_RECORD' => 'Pridať organizáciu',
     'LBL_RECORDS_LIST' => 'Zoznam organizácií',
     'LBL_ACCOUNT_INFORMATION' => 'Podrobnosti o Organizácii',
