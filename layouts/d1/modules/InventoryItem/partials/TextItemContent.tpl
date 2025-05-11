@@ -25,6 +25,9 @@
             <i class="fa fa-close fa-fw text-secondary" title="{vtranslate('LBL_CANCEL',$MODULE)}"></i>
         </a>
     </span>
+    <a class="btn editItem padding0">
+        <i class="fa fa-pencil fa-fw text-secondary" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>
+    </a>
     <a class="btn deleteRow padding0">
         <i class="fa fa-trash-o fa-fw text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i>
     </a>

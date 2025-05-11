@@ -282,6 +282,10 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             self.deleteProductLine(rowNumber);
         });
 
+        row.on('click', '.editItem', function () {
+            self.editItem(rowNumber);
+        });
+
         row.on('click', '.editRow', function () {
             self.editProductLine(rowNumber);
             let tableWidth = jQuery(this).closest('table').outerWidth();
@@ -1045,6 +1049,50 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
      ***************************************************
      ***************************************************/
 
+
+    editItem: function (rowNumber) {
+        app.helper.showProgress();
+
+        const self = this;
+        const clickedItem = jQuery(this);
+        const moduleName = clickedItem.data('modulename');
+
+        if (typeof params === 'undefined') {
+            params = {};
+        }
+
+        const requestParams = {
+            'module': 'InventoryItem',
+            'view': 'PopupItemEdit',
+            'record': jQuery('input[name="lineItemId' + rowNumber + '"]').val(),
+            'item_type': moduleName,
+            'source_module': app.getModuleName(),
+            'source_record': app.getRecordId(),
+            'data': params.data
+        };
+
+        app.request.post({data: requestParams}).then(function (err, data) {
+            app.helper.hideProgress();
+            let form = jQuery('#InventoryItemPopupForm');
+            let callbackParams = {
+                'cb': function (container) {
+                    console.log(container);
+                    self.registerItemPopupEditEvents(container);
+                    jQuery('input.item_text', container).focus();
+                    const overallDiscount = jQuery('#overall_discount_percent').val();
+                    jQuery('input.overall_discount', container).val(overallDiscount);
+                    jQuery('span.display_overall_discount', container).text(overallDiscount);
+                    app.event.trigger('post.InventoryItemPopup.show', form);
+                    app.helper.registerLeavePageWithoutSubmit(form);
+                    app.helper.registerModalDismissWithoutSubmit(form);
+                },
+                backdrop: 'static',
+                keyboard: false
+            };
+
+            app.helper.showModal(data, callbackParams);
+        });
+    },
 
     registerItemPopupEditEvents: function (container) {
         this.setupListeners(container);

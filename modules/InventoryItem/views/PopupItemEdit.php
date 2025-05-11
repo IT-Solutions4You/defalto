@@ -29,6 +29,7 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         'purchase_cost',
         'margin',
         'margin_amount',
+        'sequence',
     ];
 
     /**
@@ -50,9 +51,23 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
     {
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();
+        $recordId = $request->get('record');
+
+        if ($recordId) {
+            $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+            $productId = $recordModel->get('productid');
+
+            if ($productId) {
+                $itemType = getSalesEntityType($productId);
+            } else {
+                $itemType = '';
+            }
+        } else {
+            $recordModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
+            $itemType = $request->get('item_type');
+        }
 
         $selectedFields = InventoryItem_Module_Model::getSelectedFields(getTabid($request->get('source_module')));
-        $recordModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
         $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
         $recordStructure = [];
 
@@ -60,6 +75,20 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
             foreach ($value as $key2 => $value2) {
                 $recordStructure[$key2] = $value2;
             }
+        }
+
+        $hardCodedRecordStructure = [];
+
+        foreach ($this->hardCodedFields as $fieldName) {
+            if ($fieldName === 'productid') {
+                $seType = $itemType;
+                $entityFieldNames = getEntityFieldNames($seType);
+                $entityFieldName = $entityFieldNames['fieldname'];
+                $entityField = Vtiger_Field_Model::getInstance($entityFieldName, Vtiger_Module_Model::getInstance($seType));
+                $label = getTranslatedString($entityField->label, $seType);
+            }
+
+            $hardCodedRecordStructure[$fieldName] = [$label, $recordStructure[$fieldName]];
         }
 
         $hardFormattedRecordStructure = [];
@@ -75,7 +104,7 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
 
             if (in_array($fieldName, $this->hardCodedFields)) {
                 if ($fieldName === 'productid') {
-                    $seType = $request->get('item_type');
+                    $seType = $itemType;
                     $entityFieldNames = getEntityFieldNames($seType);
                     $entityFieldName = $entityFieldNames['fieldname'];
                     $entityField = Vtiger_Field_Model::getInstance($entityFieldName, Vtiger_Module_Model::getInstance($seType));
@@ -95,16 +124,18 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
 
         $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('MODULE', $moduleName);
-        $viewer->assign('RECORD', $request->get('record'));
+        $viewer->assign('RECORD', $recordId);
         $viewer->assign('SOURCE_MODULE', $request->get('source_module'));
         $viewer->assign('SOURCE_RECORD', $request->get('source_record'));
         $viewer->assign('INVENTORY_ITEM_COLUMNS', $selectedFields);
         $viewer->assign('RECORD_STRUCTURE', $recordStructure);
         $viewer->assign('FORMATTED_RECORD_STRUCTURE', $structure);
         $viewer->assign('HARD_FORMATTED_RECORD_STRUCTURE', $hardFormattedRecordStructure);
-        $viewer->assign('ITEM_TYPE', $request->get('item_type'));
+        $viewer->assign('HARD_CODED_RECORD_STRUCTURE', $hardCodedRecordStructure);
+        $viewer->assign('ITEM_TYPE', $itemType);
         $viewer->assign('CURRENCY_NAME', $currencyInfo['currency_name']);
         $viewer->assign('CURRENCY_SYMBOL', $currencyInfo['currency_symbol']);
+        $viewer->assign('DATA', $this->getItemData($recordId));
         $viewer->view('PopupEdit.tpl', $moduleName);
     }
 
@@ -135,5 +166,45 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
         return array_merge($headerScriptInstances, $jsScriptInstances);
+    }
+
+    private function getItemData($recordId): array
+    {
+        if (!$recordId) {
+            return [];
+        }
+
+        $db = PearDatabase::getInstance();
+        $sql = 'SELECT df_inventoryitem.*, vtiger_crmentity.description 
+            FROM df_inventoryitem
+            LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid
+            WHERE vtiger_crmentity.deleted = 0
+            AND df_inventoryitem.inventoryitemid = ?
+            ORDER BY df_inventoryitem.sequence, vtiger_crmentity.crmid';
+        $result = $db->pquery($sql, [$recordId]);
+
+        if (!$db->num_rows($result)) {
+            return [];
+        }
+
+        $row = $db->fetchByAssoc($result);
+
+        if (empty($row['productid']) && !empty($row['item_text'])) {
+            $row['entityType'] = 'Text';
+        } else {
+            $row['entityType'] = getSalesEntityType($row['productid']);
+
+            if (empty($row['item_text'])) {
+                $row['item_text'] = getEntityName($row['entityType'], $row['productid'])[$row['productid']];
+            }
+        }
+
+        foreach (InventoryItem_RoundValues_Helper::$roundValues as $fieldName) {
+            $row[$fieldName] = number_format((float)$row[$fieldName], 2);
+        }
+
+        $row['taxes'] = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$row['inventoryitemid'], (int)$row['productid'], $recordId);
+
+        return $row;
     }
 }

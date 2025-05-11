@@ -13,21 +13,6 @@ trait InventoryItem_Detail_Trait
     protected array $specialTreatmentFields = ['discount', 'overall_discount',];
     protected float $overallDiscount = 0;
     protected float $overallDiscountAmount = 0;
-    protected array $roundValues = [
-        'subtotal',
-        'discount',
-        'discount_amount',
-        'price_after_discount',
-        'overall_discount',
-        'overall_discount_amount',
-        'price_after_overall_discount',
-        'tax',
-        'tax_amount',
-        'price_total',
-        'purchase_cost',
-        'margin',
-        'margin_amount',
-    ];
 
     /**
      * Add product block into Detail View
@@ -131,7 +116,7 @@ trait InventoryItem_Detail_Trait
 
             $this->overallDiscountAmount += $row['overall_discount_amount'];
 
-            foreach ($this->roundValues as $fieldName) {
+            foreach (InventoryItem_RoundValues_Helper::$roundValues as $fieldName) {
                 $row[$fieldName] = number_format((float)$row[$fieldName], 2);
             }
 

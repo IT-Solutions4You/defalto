@@ -14,17 +14,15 @@
         <input type="hidden" name="source_module" value="{$SOURCE_MODULE}"/>
         <input type="hidden" name="source_record" value="{$SOURCE_RECORD}"/>
         <input type="hidden" name="item_type" value="{$ITEM_TYPE}"/>
-
-        {if $HARD_FORMATTED_RECORD_STRUCTURE.productid neq ''}
-            {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE['productid'][1]}
-            {assign var=FIELD_NAME value=$FIELD->get('name')}
-            <div class="d-flex flex-row py-2">
-                <div class="col-lg-12">
-                    <input type="text" id="item_text" name="item_text" value="{$data.item_text}"
-                           class="item_text form-control autoComplete" placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)} {vtranslate({$ITEM_TYPE},$ITEM_TYPE)}"
-                           data-rule-required=true {if !empty($data.item_text)}disabled="disabled"{/if}>
-                </div>
+        <div class="d-flex flex-row py-2">
+            <div class="col-lg-12">
+                <input type="text" id="item_text" name="item_text" value="{$DATA.item_text}"
+                       class="item_text form-control autoComplete" placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)} {vtranslate({$ITEM_TYPE},$ITEM_TYPE)}"
+                       data-rule-required=true>
             </div>
-        {/if}
+        </div>
+        {assign var=FIELD value=$HARD_CODED_RECORD_STRUCTURE['sequence'][1]}
+        {assign var=FIELD_NAME value=$FIELD->get('name')}
+        <input type="hidden" name="{$FIELD_NAME}" id="{$FIELD_NAME}" value="{$DATA.$FIELD_NAME}" />
     </form>
 </div>
