@@ -24,11 +24,11 @@
                     <div class="input-group">
                         <input type="text" id="item_text" name="item_text" value="{$DATA.item_text}"
                                class="item_text form-control autoComplete" placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)} {vtranslate({$ITEM_TYPE},$ITEM_TYPE)}"
-                               data-rule-required=true {if !empty($DATA.item_text)}disabled="disabled"{/if}>
-                        <input type="hidden" id="productid" name="productid" value="{$DATA.productid}" class="productid"/>
+                               data-rule-required=true />
+                        <input type="hidden" id="productid" name="productid" value="{$DATA.productid}" class="productid" />
                         <span class="input-group-text lineItemPopup cursorPointer" data-popup="{$ITEM_TYPE}Popup" title="{vtranslate($ITEM_TYPE,$MODULE)}"
                               data-module-name="{$ITEM_TYPE}" style="display: none;">{Vtiger_Module_Model::getModuleIconPath($ITEM_TYPE)}</span>
-                        <input type="hidden" id="lineItemType" name="lineItemType" value="{$ITEM_TYPE}" class="lineItemType"/>
+                        <input type="hidden" id="lineItemType" name="lineItemType" value="{$ITEM_TYPE}" class="lineItemType" />
                         {if !$DATA.$productDeleted}
                             <span class="input-group-addon input-group-text cursorPointer clearLineItem" title="{vtranslate('LBL_CLEAR',$MODULE)}">
                                                     <i class="fa fa-xmark"></i>

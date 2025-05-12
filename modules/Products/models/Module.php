@@ -10,6 +10,8 @@
 
 class Products_Module_Model extends Vtiger_Module_Model
 {
+    protected array $numberSearchFields = ['product_no', 'productcode'];
+
 	/**
 	 * Function to get list view query for popup window
 	 * @param <String> $sourceModule Parent module
@@ -134,47 +136,57 @@ class Products_Module_Model extends Vtiger_Module_Model
 		return $query;
 	}
 
-	/**
-	 * Function to search records based on sequence number
-	 * @param <String> $searchValue
-	 * @param <String> $relatedModule
-	 * @return <Array> $matchedRecordModels
-	 */
-	public function searchRecordsOnSequenceNumber($searchValue, $relatedModule) {
-		if (in_array($relatedModule, getInventoryModules())) {
-			$db = PearDatabase::getInstance();
-			$moduleName = $this->getName();
-			$tableName = $this->basetable;
-			$baseFieldName = $this->basetableid;
+    /**
+     * Function to search records based on number fields
+     *
+     * @param <String> $searchValue
+     * @param <String> $relatedModule
+     *
+     * @return array|void $matchedRecordModels
+     * @throws AppException
+     */
+    public function searchRecordsOnNumber($searchValue, $relatedModule)
+    {
+        $db = PearDatabase::getInstance();
+        $moduleName = $this->getName();
+        $tableName = $this->basetable;
+        $baseFieldName = $this->basetableid;
+        $params = [];
 
-			$fieldName = 'product_no';
-			if ($moduleName === 'Services') {
-				$fieldName = 'service_no';
-			}
+        if (empty($this->numberSearchFields)) {
+            $searchQueryPart = ' AND vtiger_crmentity.label LIKE ? ';
+            $params[] = '%' . $searchValue . '%';
+        } else {
+            $searchQueryParts = [];
 
-			$query = "SELECT label, crmid, $fieldName FROM vtiger_crmentity
-						INNER JOIN $tableName ON $tableName.$baseFieldName = vtiger_crmentity.crmid
-						WHERE $fieldName LIKE ? AND vtiger_crmentity.deleted = 0 AND discontinued = 1";
-			$result = $db->pquery($query, array("%$searchValue%"));
-			$noOfRows = $db->num_rows($result);
+            foreach ($this->numberSearchFields as $fieldName) {
+                $searchQueryParts[] = $fieldName . ' LIKE ?';
+                $params[] = '%' . $searchValue . '%';
+            }
 
-			$matchingRecords = array();
-			for($i=0; $i<$noOfRows; ++$i) {
-				$row = $db->query_result_rowdata($result, $i);
-				if(Users_Privileges_Model::isPermitted($row['setype'], 'DetailView', $row['crmid'])) {
-					$row['id'] = $row['crmid'];
-					$modelClassName = Vtiger_Loader::getComponentClassName('Model', 'Record', $moduleName);
-					$recordInstance = new $modelClassName();
-					$matchingRecords[$row['id']] = $recordInstance->setData($row)->setModuleFromInstance($this);
-				}
-			}
-			return $matchingRecords;
-		}
-	}
+            $searchQueryPart = ' AND (' . implode(' OR ', $searchQueryParts) . ')';
+        }
 
-	/*
-	 * Function to get supported utility actions for a module
-	 */
+        $query = "SELECT label, crmid, setype 
+                    FROM vtiger_crmentity
+                        INNER JOIN $tableName ON $tableName.$baseFieldName = vtiger_crmentity.crmid
+                    WHERE vtiger_crmentity.deleted = 0 
+                        AND discontinued = 1" . $searchQueryPart;
+        $result = $db->pquery($query, $params);
+        $matchingRecords = [];
+
+        while($row = $db->fetchByAssoc($result)) {
+            if (Users_Privileges_Model::isPermitted($row['setype'], 'DetailView', $row['crmid'])) {
+                $matchingRecords[$row['id']] = Vtiger_Record_Model::getInstanceById($row['crmid'], $moduleName);
+            }
+        }
+
+        return $matchingRecords;
+    }
+
+    /*
+     * Function to get supported utility actions for a module
+     */
 	function getUtilityActionsNames() {
 		return array('Import', 'Export', 'DuplicatesHandling');
 	}

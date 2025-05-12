@@ -32,7 +32,7 @@ class Inventory_BasicAjax_Action extends Vtiger_BasicAjax_Action {
 				}
 			}
 
-			$sequenceBasedRecords = $searchModuleModel->searchRecordsOnSequenceNumber($searchValue, $relatedModule);
+			$sequenceBasedRecords = $searchModuleModel->searchRecordsOnNumber($searchValue, $relatedModule);
 			if ($sequenceBasedRecords) {
 				foreach ($sequenceBasedRecords as $recordId => $recordModel) {
 					$records[$searchModule][$recordId] = $recordModel;

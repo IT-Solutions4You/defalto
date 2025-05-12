@@ -21,7 +21,13 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
         $relatedModule = $request->get('module');
 
         $searchModuleModel = Vtiger_Module_Model::getInstance($searchModule);
-        $records = $searchModuleModel->searchRecord($searchValue, $parentRecordId, $parentModuleName, $relatedModule);
+
+        if (!empty($searchValue)) {
+            $records = $searchModuleModel->searchRecord($searchValue, $parentRecordId, $parentModuleName, $relatedModule);
+        } else {
+            $records = $this->searchRecord($searchModule, $searchValue, $parentRecordId, $parentModuleName, $relatedModule);
+        }
+
         $fields = $searchModuleModel->getFields();
         $noFieldName = $possibleNoFieldName = $priceFieldName = $possiblePriceFieldName = '';
 
@@ -51,14 +57,14 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
             $priceFieldName = $possiblePriceFieldName;
         }
 
-        if (method_exists($searchModuleModel, 'searchRecordsOnSequenceNumber')) {
+        if (method_exists($searchModuleModel, 'searchRecordsOnNumber')) {
             foreach ($records as $moduleName => $recordModels) {
                 foreach ($recordModels as $recordId => $recordModel) {
                     $records[$moduleName][$recordId] = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
                 }
             }
 
-            $sequenceBasedRecords = $searchModuleModel->searchRecordsOnSequenceNumber($searchValue, $relatedModule);
+            $sequenceBasedRecords = $searchModuleModel->searchRecordsOnNumber($searchValue, $relatedModule);
 
             if ($sequenceBasedRecords) {
                 foreach ($sequenceBasedRecords as $recordId => $recordModel) {
@@ -97,5 +103,27 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
         $response = new Vtiger_Response();
         $response->setResult($result);
         $response->emit();
+    }
+
+    protected function searchRecord($searchModule, $searchValue, $parentRecordId, $parentModuleName, $relatedModule)
+    {
+        $db = PearDatabase::getInstance();
+        $matchingRecords = [];
+
+        $query = 'SELECT label, crmid, setype, createdtime 
+                FROM vtiger_crmentity 
+                WHERE vtiger_crmentity.deleted = 0
+                    AND setype = ?
+                ORDER BY label
+                LIMIT 0, 20';
+        $result = $db->pquery($query, [$searchModule]);
+
+        while ($row = $db->fetchByAssoc($result)) {
+            if (Users_Privileges_Model::isPermitted($row['setype'], 'DetailView', $row['crmid'])) {
+                $matchingRecords[$searchModule][$row['crmid']] = Vtiger_Record_Model::getInstanceById($row['crmid'], $searchModule);
+            }
+        }
+
+        return $matchingRecords;
     }
 }

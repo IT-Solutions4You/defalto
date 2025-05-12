@@ -541,7 +541,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             let recordData = responseData[id];
             jQuery('input.productid', parentRow).val(id);
             jQuery('input.lineItemType', parentRow).val(referenceModule);
-            jQuery('input.quantity', parentRow).val(1).focus();
+            jQuery('input.quantity', parentRow).val(1);
             jQuery('input.unit', parentRow).val(recordData.unit);
             jQuery('input.price', parentRow).val(recordData.listprice).trigger('change');
             jQuery('input.purchase_cost', parentRow).val(recordData.purchaseCost);
@@ -1193,8 +1193,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
 
         container.find('input.autoComplete').autocomplete({
-            'minLength': '2',
-            'source': function (request, response) {
+            minLength: 0,
+            source: function (request, response) {
                 const params = {
                     'module': 'InventoryItem',
                     'action': 'PopupBasicAjax',
@@ -1210,7 +1210,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     const responseDataList = [];
                     let serverDataFormat = data;
 
-                    if (serverDataFormat.length <= 0) {
+                    if (serverDataFormat.length <= 0 && !jQuery('#productid', container).val()) {
                         serverDataFormat = [{
                             'label': app.vtranslate('JS_NO_RESULTS_FOUND'),
                             'type': 'no results'
@@ -1224,7 +1224,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     response(responseDataList);
                 });
             },
-            'select': function (event, ui) {
+            select: function (event, ui) {
                 const selectedItemData = ui.item;
 
                 if (typeof selectedItemData.type != 'undefined' && selectedItemData.type === "no results") {
@@ -1244,6 +1244,12 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 );
             }
         });
+
+        container.find('input.autoComplete').on('focus', function () {
+            if (!jQuery(this).val()) {
+                jQuery(this).autocomplete('search', '');
+            }
+        });
     },
 
     mapResultsToFields: function (container, responseData) {
@@ -1260,7 +1266,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 editorInstance.setData(recordData.description);
             }
 
-            jQuery('input.quantity', container).val(1)/*.focus()*/;
+            jQuery('input.quantity', container).val(1);
             jQuery('input.unit', container).val(recordData.unit);
             jQuery('input.price', container).val(parseFloat(recordData.listprice).toFixed(3)).trigger('change');
             jQuery('input.purchase_cost', container).val(recordData.purchaseCost);

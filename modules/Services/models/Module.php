@@ -9,8 +9,9 @@
  *************************************************************************************/
 
 class Services_Module_Model extends Products_Module_Model {
-	
-	/**
+    protected array $numberSearchFields = ['service_no'];
+
+    /**
 	 * Function to get list view query for popup window
 	 * @param <String> $sourceModule Parent module
 	 * @param <String> $field parent fieldname
