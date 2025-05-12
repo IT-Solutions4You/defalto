@@ -89,7 +89,7 @@ class CustomerPortal_SaveRecord extends CustomerPortal_FetchRecord {
 				}
 
 				try {
-					if (vtws_recordExists($recordId)) {
+					if (!$recordId || vtws_recordExists($recordId)) {
 						// Retrieve or Initalize
 						if (!empty($recordId) && !$this->isNewRecordRequest($request)) {
 							$this->recordValues = vtws_retrieve($recordId, $current_user);
