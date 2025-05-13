@@ -27,9 +27,12 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
             }
 
             foreach ($focus->column_fields as $fieldName => $fieldValue) {
-                $fromRequest = $request->get($fieldName);
-                if (isset($fromRequest) && $fromRequest != $focus->column_fields[$fieldName]) {
-                    $focus->column_fields[$fieldName] = $fromRequest;
+                if ($request->has($fieldName)) {
+                    $fromRequest = $request->get($fieldName);
+
+                    if (isset($fromRequest) && $fromRequest != $focus->column_fields[$fieldName]) {
+                        $focus->column_fields[$fieldName] = $fromRequest;
+                    }
                 }
             }
 
@@ -40,7 +43,7 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
 
             InventoryItem_ParentEntity_Model::updateTotals((int)$focus->column_fields['parentid']);
 
-            $response->setResult($focus->id);
+            $response->setResult($focus->column_fields->getColumnFields());
         } catch (Exception $e) {
             $response->setError($e->getMessage());
         }
@@ -73,6 +76,7 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
 
         if ($db->num_rows($res)) {
             $row = $db->fetchByAssoc($res);
+
             return $row['new_sequence'];
         }
 

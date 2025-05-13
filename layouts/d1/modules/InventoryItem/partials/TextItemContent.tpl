@@ -13,9 +13,6 @@
             {*<img src="{vimage_path('drag.png')}" title="{vtranslate('LBL_DRAG',$MODULE)}"/>*}
             <i class="fa fa-arrows-v fa-fw text-secondary" title="{vtranslate('LBL_DRAG',$MODULE)}"></i>
         </a>
-        <a class="btn editRow padding0">
-            <i class="fa fa-pencil fa-fw text-secondary" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>
-        </a>
     </span>
     <span class="editLineItem hide">
         <a class="btn saveRow padding0">

@@ -1138,7 +1138,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 method: 'POST',
                 data: data,
                 success: function (response) {
-                    console.log(response);
+console.log(response);
 
                     container.trigger('lineSaved', [response]);
                     container.find('.btn-close').trigger('click');
