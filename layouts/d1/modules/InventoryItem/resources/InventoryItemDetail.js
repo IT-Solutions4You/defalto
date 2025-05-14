@@ -55,54 +55,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     registerAddButtons: function () {
         const self = this;
 
-        const addTextLineHandler = function (e) {
-            const currentTarget = jQuery(e.currentTarget);
-            const params = {'currentTarget': currentTarget};
-            let newTextLine = self.getNewTextItem(params);
-            newTextLine = newTextLine.appendTo(self.lineItemsHolder);
-            self.setupRowListeners(self.numOfLineItems);
-            jQuery('.editRow', newTextLine).trigger('click');
-            app.event.trigger('post.textLine.New', newTextLine);
-            jQuery('.item_text', newTextLine).focus();
-        };
-
-        const addLineItemEventHandler = function (e, data) {
-            const currentTarget = jQuery(e.currentTarget);
-            const params = {'currentTarget': currentTarget};
-            let newLineItem = self.getNewLineItem(params);
-            newLineItem = newLineItem.appendTo(self.lineItemsHolder);
-            newLineItem.find('input.item_text').addClass('autoComplete');
-            newLineItem.find('.ignore-ui-registration').removeClass('ignore-ui-registration');
-            vtUtils.applyFieldElementsView(newLineItem);
-            self.registerLineItemAutoCompleteOld(newLineItem);
-            self.setupRowListeners(self.numOfLineItems);
-            vtUtils.showSelect2ElementView(newLineItem.find('select.discount_type'));
-            jQuery('.editRow', newLineItem).trigger('click');
-            app.event.trigger('post.lineItem.New', newLineItem);
-
-            if (typeof data != "undefined") {
-                self.mapResultsToFieldsOld(newLineItem, data);
-            } else {
-                jQuery('.lineItemPopup', newLineItem).trigger('click');
-            }
-        };
-
-        jQuery('#addText').on('click', addTextLineHandler);
-        const addButtonsToolbar = jQuery('.inventoryItemAddButtons');
-        addButtonsToolbar.find('button').not(':eq(0)').on('click', addLineItemEventHandler);
-
-        const blockLineItemsAddDiv = jQuery('#block_line_items_add');
-        /*blockLineItemsAddDiv.on('click', 'ul.add_menu li a', function (event) {
-            const clickedItem = jQuery(this);
-            const moduleName = clickedItem.data('modulename');
-
-            if (moduleName === '') {
-                addButtonsToolbar.find('button').first().trigger('click');
-            } else {
-                addButtonsToolbar.find('button[data-module-name="' + moduleName + '"]').trigger('click');
-            }
-        });*/
-        blockLineItemsAddDiv.on('click', 'ul.add_menu li a', function (event, params) {
+        const addLineItemEventHandler = function (event, params) {
             app.helper.showProgress();
 
             const clickedItem = jQuery(this);
@@ -140,7 +93,21 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 };
 
                 app.helper.showModal(data, callbackParams);
-            });
+            });        };
+
+        const addButtonsToolbar = jQuery('.inventoryItemAddButtons');
+        addButtonsToolbar.find('button').on('click', addLineItemEventHandler);
+
+        const blockLineItemsAddDiv = jQuery('#block_line_items_add');
+        blockLineItemsAddDiv.on('click', 'ul.add_menu li a', function (event) {
+            const clickedItem = jQuery(this);
+            const moduleName = clickedItem.data('modulename');
+
+            if (moduleName === '') {
+                addButtonsToolbar.find('button').first().trigger('click');
+            } else {
+                addButtonsToolbar.find('button[data-modulename="' + moduleName + '"]').trigger('click');
+            }
         });
     },
 
