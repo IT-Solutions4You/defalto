@@ -14,14 +14,6 @@
             <i class="fa fa-arrows-v fa-fw text-secondary" title="{vtranslate('LBL_DRAG',$MODULE)}"></i>
         </a>
     </span>
-    <span class="editLineItem hide">
-        <a class="btn saveRow padding0">
-            <i class="fa fa-save fa-fw text-secondary" title="{vtranslate('LBL_SAVE',$MODULE)}"></i>
-        </a>
-        <a class="btn cancelEditRow padding0">
-            <i class="fa fa-close fa-fw text-secondary" title="{vtranslate('LBL_CANCEL',$MODULE)}"></i>
-        </a>
-    </span>
     <a class="btn editItem padding0">
         <i class="fa fa-pencil fa-fw text-secondary" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>
     </a>
@@ -38,8 +30,6 @@
     <span class="editLineItem hide">
         <input type="text" id="{$item_text}" name="{$item_text}" value="{$data.item_text}" class="item_text form-control" data-rule-required=true>
         <input type="hidden" id="productid{$row_no}" name="productid{$row_no}" value="{$data.productid}" class="selectedModuleId"/>
-        <input type="hidden" id="original_{$item_text}" name="original_{$item_text}" value="{$data.item_text}" class="original_item_text" data-rule-required=true>
-        <input type="hidden" id="original_productid{$row_no}" name="original_productid{$row_no}" value="{$data.productid}" class="original_selectedModuleId"/>
         <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="Text" class="lineItemType"/>
     </span>
 </td>
