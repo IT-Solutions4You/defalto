@@ -10,8 +10,8 @@
 
 class Installer_License_Model extends Core_DatabaseData_Model
 {
-    public const string MEMBERSHIP_PACK = 'Membership Pack';
-    public const string EXTENSION_PACKAGES = 'Extension Packages for Defalto CRM';
+    public const MEMBERSHIP_PACK = 'Membership Pack';
+    public const EXTENSION_PACKAGES = 'Extension Packages for Defalto CRM';
     protected array $columns = [
         'name',
         'info',

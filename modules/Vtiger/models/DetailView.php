@@ -6,10 +6,10 @@
  * All Rights Reserved.
  */
 class Vtiger_DetailView_Model extends Vtiger_Base_Model {
-    public const string LINK_ADVANCED = 'DETAILVIEWADVANCED';
-    public const string LINK_BASIC = 'DETAILVIEWBASIC';
-    public const string LINK_MORE = 'DETAILVIEW';
-    public const string LINK_RECORD = 'DETAILVIEWRECORD';
+    public const LINK_ADVANCED = 'DETAILVIEWADVANCED';
+    public const LINK_BASIC = 'DETAILVIEWBASIC';
+    public const LINK_MORE = 'DETAILVIEW';
+    public const LINK_RECORD = 'DETAILVIEWRECORD';
     public array $skipDetailLinkByLabel = [
         'View History',
     ];

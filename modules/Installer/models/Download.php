@@ -2,22 +2,22 @@
 
 class Installer_Download_Model
 {
-    public const string ZIP_CREATE = 'Zip file create';
-    public const string ZIP_CREATED = 'Zip file is created';
-    public const string ZIP_NOT_CREATED = 'Zip file is not created. Required to change write permissions to the root folder, files, sub folder and sub files';
-    public const string ZIP_WRITABLE = 'Zip file is writable';
-    public const string ZIP_COPIED = 'Zip file is copied';
-    public const string ZIP_NOT_COPIED = 'Zip file is not copied';
-    public const string ZIP_NOT_WRITABLE = 'Zip file is not writable';
-    public const string FILE_EXTRACTED = 'File extracted';
-    public const string FILE_RENAME = 'Folder rename';
-    public const string FILE_OPENED = 'File opened';
-    public const string FINISH = 'Finish installation';
-    public const string START = 'Start installation';
-    public const string SUCCESS = 'File extract successfully';
-    public const string SUCCESS_COMPOSER = 'Composer updated successfully';
-    public const string ERROR = 'File not opened';
-    public const string ERROR_CHMOD = 'Set permissions to the root folder, files, sub folder and sub files';
+    public const ZIP_CREATE = 'Zip file create';
+    public const ZIP_CREATED = 'Zip file is created';
+    public const ZIP_NOT_CREATED = 'Zip file is not created. Required to change write permissions to the root folder, files, sub folder and sub files';
+    public const ZIP_WRITABLE = 'Zip file is writable';
+    public const ZIP_COPIED = 'Zip file is copied';
+    public const ZIP_NOT_COPIED = 'Zip file is not copied';
+    public const ZIP_NOT_WRITABLE = 'Zip file is not writable';
+    public const FILE_EXTRACTED = 'File extracted';
+    public const FILE_RENAME = 'Folder rename';
+    public const FILE_OPENED = 'File opened';
+    public const FINISH = 'Finish installation';
+    public const START = 'Start installation';
+    public const SUCCESS = 'File extract successfully';
+    public const SUCCESS_COMPOSER = 'Composer updated successfully';
+    public const ERROR = 'File not opened';
+    public const ERROR_CHMOD = 'Set permissions to the root folder, files, sub folder and sub files';
     /**
      * @var string
      */
