@@ -103,11 +103,12 @@ class Migration_Index_View extends Vtiger_View_Controller {
      */
     public function applyDBChanges(){
 		$migrationModuleModel = Migration_Module_Model::getInstance();
-
+        $reach = null;
 		$getAllowedMigrationVersions = $migrationModuleModel->getAllowedMigrationVersions();
 		$getDBVersion = str_replace(array('.', ' '),'', $migrationModuleModel->getDBVersion());
 		$getLatestSourceVersion = str_replace(array('.', ' '),'', $migrationModuleModel->getLatestSourceVersion());
 		$migrateVersions = array();
+
 		foreach($getAllowedMigrationVersions as $getAllowedMigrationVersion) {
 			foreach($getAllowedMigrationVersion as $version => $label) {
 				if(strcasecmp($version, $getDBVersion) == 0 || $reach == 1) {
@@ -116,6 +117,7 @@ class Migration_Index_View extends Vtiger_View_Controller {
 				}
 			}
 		}
+
 		$migrateVersions[] = $getLatestSourceVersion;
 
 		$patchCount  = php7_count($migrateVersions);
