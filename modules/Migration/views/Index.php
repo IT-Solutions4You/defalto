@@ -101,46 +101,49 @@ class Migration_Index_View extends Vtiger_View_Controller {
     /**
      * @throws AppException
      */
-    public function applyDBChanges(){
-		$migrationModuleModel = Migration_Module_Model::getInstance();
+    public function applyDBChanges()
+    {
+        vglobal('debug', true);
+
+        $migrationModuleModel = Migration_Module_Model::getInstance();
         $reach = null;
-		$getAllowedMigrationVersions = $migrationModuleModel->getAllowedMigrationVersions();
-		$getDBVersion = str_replace(array('.', ' '),'', $migrationModuleModel->getDBVersion());
-		$getLatestSourceVersion = str_replace(array('.', ' '),'', $migrationModuleModel->getLatestSourceVersion());
-		$migrateVersions = array();
+        $getAllowedMigrationVersions = $migrationModuleModel->getAllowedMigrationVersions();
+        $getDBVersion = str_replace(['.', ' '], '', $migrationModuleModel->getDBVersion());
+        $getLatestSourceVersion = str_replace(['.', ' '], '', $migrationModuleModel->getLatestSourceVersion());
+        $migrateVersions = [];
 
-		foreach($getAllowedMigrationVersions as $getAllowedMigrationVersion) {
-			foreach($getAllowedMigrationVersion as $version => $label) {
-				if(strcasecmp($version, $getDBVersion) == 0 || $reach == 1) {
-					$reach = 1;
-					$migrateVersions[] = $version;
-				}
-			}
-		}
+        foreach ($getAllowedMigrationVersions as $getAllowedMigrationVersion) {
+            foreach ($getAllowedMigrationVersion as $version => $label) {
+                if (strcasecmp($version, $getDBVersion) == 0 || $reach == 1) {
+                    $reach = 1;
+                    $migrateVersions[] = $version;
+                }
+            }
+        }
 
-		$migrateVersions[] = $getLatestSourceVersion;
+        $migrateVersions[] = $getLatestSourceVersion;
 
-		$patchCount  = php7_count($migrateVersions);
+        $patchCount = php7_count($migrateVersions);
 
-		define('VTIGER_UPGRADE', $getDBVersion);
+        define('VTIGER_UPGRADE', $getDBVersion);
 
-		for($i=0; $i<$patchCount; $i++){
-			$filename =  "modules/Migration/schema/".$migrateVersions[$i]."_to_".$migrateVersions[$i+1].".php";
-			if(is_file($filename)) {
-				if(!defined('INSTALLATION_MODE')) {
-					echo "<table class='config-table'><tr><th><span><b><font color='red'>".$migrateVersions[$i]." ==> ".$migrateVersions[$i+1]." Database changes -- Starts. </font></b></span></th></tr></table>";
-					echo "<table class='config-table'>";
-				}
-				$_i_statesaved = $i;
-				include($filename);
-				$i = $_i_statesaved;
-				if(!defined('INSTALLATION_MODE')) {
-					echo "<table class='config-table'><tr><th><span><b><font color='red'>".$migrateVersions[$i]." ==> ".$migrateVersions[$i+1]." Database changes -- Ends.</font></b></span></th></tr></table>";
-				}
-			} else if(isset($migrateVersions[$patchCount+1])){
-				echo "<table class='config-table'><tr><th><span><b><font color='red'> There is no Database Changes from ".$migrateVersions[$i]." ==> ".$migrateVersions[$i+1]."</font></b></span></th></tr></table>";
-			}
-		}
+        for ($i = 0; $i < $patchCount; $i++) {
+            $filename = "modules/Migration/schema/" . $migrateVersions[$i] . "_to_" . $migrateVersions[$i + 1] . ".php";
+            if (is_file($filename)) {
+                if (!defined('INSTALLATION_MODE')) {
+                    echo "<table class='config-table'><tr><th><span><b><font color='red'>" . $migrateVersions[$i] . " ==> " . $migrateVersions[$i + 1] . " Database changes -- Starts. </font></b></span></th></tr></table>";
+                    echo "<table class='config-table'>";
+                }
+                $_i_statesaved = $i;
+                include($filename);
+                $i = $_i_statesaved;
+                if (!defined('INSTALLATION_MODE')) {
+                    echo "<table class='config-table'><tr><th><span><b><font color='red'>" . $migrateVersions[$i] . " ==> " . $migrateVersions[$i + 1] . " Database changes -- Ends.</font></b></span></th></tr></table>";
+                }
+            } elseif (isset($migrateVersions[$patchCount + 1])) {
+                echo "<table class='config-table'><tr><th><span><b><font color='red'> There is no Database Changes from " . $migrateVersions[$i] . " ==> " . $migrateVersions[$i + 1] . "</font></b></span></th></tr></table>";
+            }
+        }
 
         Install_Utils_Model::installTables();
 
@@ -148,13 +151,13 @@ class Migration_Index_View extends Vtiger_View_Controller {
 
         Install_Utils_Model::installMigrations();
 
-		//update vtiger version in db
-		$migrationModuleModel->updateVtigerVersion();
-		// To carry out all the necessary actions after migration
-		$migrationModuleModel->postMigrateActivities();
-	}
+        //update vtiger version in db
+        $migrationModuleModel->updateVtigerVersion();
+        // To carry out all the necessary actions after migration
+        $migrationModuleModel->postMigrateActivities();
+    }
 
-	public static function ExecuteQuery($query, $params){
+    public static function ExecuteQuery($query, $params){
 		$adb = PearDatabase::getInstance();
 		$status = $adb->pquery($query, $params);
 		if(!defined('INSTALLATION_MODE')) {
