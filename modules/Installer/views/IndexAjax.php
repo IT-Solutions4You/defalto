@@ -149,7 +149,7 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
         vglobal('debug', true);
         Core_Install_Model::logSuccess($download->getMessages());
 
-        new Migration_Index_View()->applyDBChanges();
+        (new Migration_Index_View())->applyDBChanges();
     }
     /**
      * @throws Exception

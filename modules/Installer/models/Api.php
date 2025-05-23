@@ -25,7 +25,7 @@ class Installer_Api_Model extends Vtiger_Net_Client
     /**
      * @throws AppException
      */
-    public function connect(): true
+    public function connect(): bool
     {
         $this->setURL($this->apiUrl . 'connect/v1/');
         $response = $this->doPost();
