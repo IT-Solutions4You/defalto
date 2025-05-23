@@ -9,7 +9,7 @@
 require_once('include/events/include.inc');
 require_once 'modules/WSAPP/Utils.php';
 
-class WSAPP {
+class WSAPP extends CRMExtension {
 
 	/**
 	 * Invoked when special actions are performed on the module.
@@ -135,5 +135,3 @@ class WSAPP {
 		wsapp_RegisterHandler($type, $className, $path);
 	}
 }
- 
-?>

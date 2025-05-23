@@ -9,6 +9,7 @@
  */
 class ITS4YouEmails extends CRMEntity
 {
+    public string $moduleVersion = '1.0';
     public $id;
     public $column_fields;
     public $log;

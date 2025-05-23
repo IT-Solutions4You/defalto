@@ -9,7 +9,7 @@
 include_once 'vtlib/Vtiger/Event.php';
 include_once 'include/Webservices/GetUpdates.php';
 
-class ModTracker {
+class ModTracker extends CRMExtension {
     public string $moduleName = 'ModTracker';
     public string $parentName = '';
 

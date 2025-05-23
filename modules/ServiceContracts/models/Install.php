@@ -18,11 +18,11 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        'Accounts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list',
-        'Contacts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list',
-        'HelpDesk', 'ServiceContracts', 'Service Contracts', ['ADD','SELECT'], 'get_dependents_list',
-        'ServiceContracts', 'HelpDesk', 'Service Contracts', ['ADD','SELECT'], 'get_dependents_list',
-        'ServiceContracts', 'Documents', 'Documents', ['ADD','SELECT'], 'get_attachments',
+        ['Accounts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list',],
+        ['Contacts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list',],
+        ['HelpDesk', 'ServiceContracts', 'Service Contracts', ['ADD', 'SELECT'], 'get_dependents_list'],
+        ['ServiceContracts', 'HelpDesk', 'Service Contracts', ['ADD', 'SELECT'], 'get_dependents_list'],
+        ['ServiceContracts', 'Documents', 'Documents', ['ADD', 'SELECT'], 'get_attachments'],
     ];
 
     /**
@@ -39,6 +39,7 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
     public function addCustomLinks(): void
     {
         $this->updateRelatedList();
+        $this->updateEventHandler();
         $this->updateNumbering();
         $this->updateComments();
         $this->updateHistory();
@@ -62,6 +63,7 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
         $this->updateRelatedList(false);
         $this->updateComments(false);
         $this->updateHistory(false);
+        $this->updateEventHandler(false);
     }
 
     /**
