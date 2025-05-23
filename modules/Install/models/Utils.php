@@ -59,6 +59,7 @@ class Install_Utils_Model {
         'EMAILMaker',
         'PDFMaker',
         'Reporting',
+        'Installer',
     ];
 
     /**
