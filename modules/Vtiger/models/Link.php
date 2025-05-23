@@ -16,6 +16,7 @@ include_once 'vtlib/Vtiger/Link.php';
 class Vtiger_Link_Model extends Vtiger_Link {
     public const string DEFAULT_STYLE_CLASS = 'btn-outline-secondary';
     public const string PRIMARY_STYLE_CLASS = 'btn-primary active';
+    public const string LINK_LISTVIEWBASIC = 'LISTVIEWBASIC';
 	// Class variable to store the child links
 	protected $childlinks = array();
 
