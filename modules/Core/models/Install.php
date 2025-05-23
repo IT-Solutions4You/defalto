@@ -249,6 +249,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     /**
      * @param string $moduleName
      * @return false|Vtiger_Module
+     * @throws AppException
      */
     public function createModule(string $moduleName): Vtiger_Module|bool
     {
@@ -264,7 +265,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $groupRelTable = $moduleFocus->groupFieldTable[0] ?? '';
 
         $versionClass = $moduleName . '_Version_Helper';
-        $version = class_exists($versionClass) ? $versionClass::getVersion() : 0.1;
+        $version = class_exists($versionClass) ? $versionClass::getVersion() : $moduleFocus->moduleVersion;
 
         if (!empty($entity) && empty($baseTableId)) {
             self::logError('Empty base table ID');
@@ -318,6 +319,15 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $moduleInstance->customtable = $cfTable;
         $moduleInstance->grouptable = $groupRelTable;
         $moduleInstance->save();
+
+        $this->getTable('vtiger_tab', 'tabid')->updateData([
+            'version' => $moduleInstance->version,
+            'parent' => $moduleInstance->parent,
+            'tablabel' => $moduleInstance->label,
+            'isentitytype' => $moduleInstance->isentitytype,
+        ], [
+            'tabid' => $moduleInstance->id,
+        ]);
 
         return $moduleInstance;
     }
@@ -415,7 +425,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                         $picklistTable = 'vtiger_' . $fieldName;
                         $currentPicklistValues = [];
 
-                        if (true === $fieldParams['picklist_overwrite']) {
+                        if (isset($fieldParams['picklist_overwrite']) && true === $fieldParams['picklist_overwrite']) {
                             $fieldInstance->deletePicklistValues();
                             $fieldInstance->setPicklistValues($picklistValues);
                         } else {
@@ -493,6 +503,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
 
         $this->install();
+
+        vtws_addDefaultModuleTypeEntity($moduleName);
 
         Vtiger_Cache::delete('module', $moduleName);
 
@@ -631,7 +643,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             return;
         }
 
-        echo '<pre style="font-size: 20px; color: red;">' . print_r($message, true) . '</pre>';
+        echo '<pre style="color: indianred;">' . print_r($message, true) . '</pre>';
     }
 
     /**
@@ -644,7 +656,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             return;
         }
 
-        echo '<pre style="font-size: 20px; color: darkolivegreen;">' . print_r($message, true) . '</pre>';
+        echo '<pre style="color: darkolivegreen;">' . print_r($message, true) . '</pre>';
     }
 
     /**
