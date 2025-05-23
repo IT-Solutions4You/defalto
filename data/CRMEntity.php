@@ -14,18 +14,30 @@ require_once('include/utils/UserInfoUtil.php');
 require_once("include/Zend/Json.php");
 require_once 'include/RelatedListView.php';
 
-class CRMEntity {
-    public int $isEntity = 1;
-	public $ownedby;
-	public $recordSource = 'CRM';
-	public $mode;
-    public $log;
-    public $db;
-    public string $parentName = '';
-    public string $moduleName = '';
-    public string $moduleLabel = '';
+class CRMExtension
+{
     public $column_fields = [];
+    public $related_tables;
+    public $db;
+    public int $isEntity = 0;
+    public $log;
+    public $mode;
+    public string $moduleLabel = '';
+    public string $moduleName = '';
+    public $ownedby;
+    public string $parentName = '';
+    public $recordSource = 'CRM';
 
+    public $popup_fields;
+
+    public $IsCustomModule;
+    public $name;
+    public string $moduleVersion = '0.1';
+}
+
+class CRMEntity extends CRMExtension
+{
+    public int $isEntity = 1;
 	/**
 	 * Detect if we are in bulk save mode, where some features can be turned-off
 	 * to improve performance.
