@@ -259,8 +259,6 @@ class PDFMaker_Install_Model extends Core_Install_Model
             $this->getTable($table, null)->insertData($data);
             $this->getTable($tableSettings, null)->insertData($dataSettings);
         }
-
-        $this->db->pquery('INSERT INTO vtiger_pdfmaker_releases (version, date, updated) VALUES(?, NOW(), 1)', array(PDFMaker_Version_Helper::$version));
     }
 
     public function install(): void
