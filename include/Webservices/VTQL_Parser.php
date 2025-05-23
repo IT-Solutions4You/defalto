@@ -33,17 +33,17 @@ class VTQL_ParseryyToken implements ArrayAccess
         return $this->_string;
     }
 
-    function offsetExists($offset)
+    #[\ReturnTypeWillChange] function offsetExists($offset)
     {
         return isset($this->metadata[$offset]);
     }
 
-    function offsetGet($offset)
+    #[ReturnTypeWillChange] function offsetGet($offset)
     {
         return $this->metadata[$offset];
     }
 
-    function offsetSet($offset, $value)
+    #[ReturnTypeWillChange] function offsetSet($offset, $value)
     {
         if ($offset === null) {
             if (isset($value[0])) {

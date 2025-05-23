@@ -38,6 +38,8 @@ class Vtiger_FieldBasic {
 	var $isunique = false;
 	var $block;
 	var $headerfield = 0;
+    public $related_modules;
+    public $quickcreatesequence;
 
 	/**
 	 * Constructor

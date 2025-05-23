@@ -20,6 +20,14 @@ class Vtiger_Module extends Vtiger_ModuleBasic {
 	const ONE_TO_MANY = '1:N';
 	const MANY_TO_ONE = 'N:1';
 	const MANY_TO_MANY = 'N:N';
+    public $source;
+    public $filter;
+    public $filter_sequence;
+    /**
+     * @var Vtiger_Module_Model
+     */
+    public $module;
+    public $relation_id;
 
 	/**
 	 * Function to get the Module/Tab id
