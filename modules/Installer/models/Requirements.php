@@ -176,11 +176,6 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
             'recommended' => 'yes',
             'minimum' => 'yes',
         ],
-        'gd2' => [
-            'type' => 'Extension',
-            'recommended' => 'yes',
-            'minimum' => 'yes',
-        ],
         'curl' => [
             'type' => 'Extension',
             'recommended' => 'yes',
