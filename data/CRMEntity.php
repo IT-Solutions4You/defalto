@@ -3095,39 +3095,45 @@ class TrackableObject implements ArrayAccess, IteratorAggregate {
 		$this->storage = $value;
 	}
 
-	function offsetExists($key) {
-		return isset($this->storage[$key]) || array_key_exists($key, $this->storage);
-	}
+    function offsetExists($key): bool
+    {
+        return isset($this->storage[$key]) || array_key_exists($key, $this->storage);
+    }
 
-	function offsetSet($key, $value) {
+    function offsetSet($key, $value): void
+    {
         if (is_array($value)) {
             $value = empty($value) ? '' : (array_key_exists(0, $value) ? $value[0] : '');
         }
 
-		if($this->tracking && $this->trackingEnabled) {
-			$olderValue = $this->offsetGet($key);
-			// decode_html only expects string
-			$olderValue = is_string($olderValue) ? decode_html($olderValue) : $olderValue ;
-			//same logic is used in vtEntityDelta to check for delta
-			if((empty($olderValue) && !empty($value)) || ($olderValue !== $value)) {
-				$this->changed[] = $key;
-			}
-		}
-		$this->storage[$key] = $value;
-	}
+        if ($this->tracking && $this->trackingEnabled) {
+            $olderValue = $this->offsetGet($key);
+            // decode_html only expects string
+            $olderValue = is_string($olderValue) ? decode_html($olderValue) : $olderValue;
+            //same logic is used in vtEntityDelta to check for delta
+            if ((empty($olderValue) && !empty($value)) || ($olderValue !== $value)) {
+                $this->changed[] = $key;
+            }
+        }
+        $this->storage[$key] = $value;
+    }
 
-	public function offsetUnset($key) {
-		unset($this->storage[$key]);
-	}
+    public function offsetUnset($key): void
+    {
+        unset($this->storage[$key]);
+    }
 
-	public function offsetGet($key) {
-		return isset($this->storage[$key]) || array_key_exists($key, $this->storage) ? $this->storage[$key] : null;
-	}
+    public function offsetGet(mixed $key): mixed
+    {
+        return isset($this->storage[$key]) || array_key_exists($key, $this->storage) ? $this->storage[$key] : null;
+    }
 
-	public function getIterator() {
-		$iterator = new ArrayObject($this->storage);
-		return $iterator->getIterator();
-	}
+    public function getIterator(): Traversable
+    {
+        $iterator = new ArrayObject($this->storage);
+
+        return $iterator->getIterator();
+    }
 
 	function getChanged() {
 		return $this->changed;
