@@ -66,7 +66,7 @@ class VTQL_ParseryyToken implements ArrayAccess
         }
     }
 
-    function offsetUnset($offset)
+    function offsetUnset($offset): void
     {
         unset($this->metadata[$offset]);
     }
