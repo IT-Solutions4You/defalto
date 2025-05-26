@@ -31,7 +31,7 @@ require_once("VTWorkflowUtils.php");
 			return;
 		}
 
-		$smarty = new vtigerCRM_Smarty();
+		$smarty = new Vtiger_Viewer();
 		$tm = new VTTaskManager($adb);
 		$smarty->assign('edit',isset($request["task_id"]));
 		if(isset($request["task_id"])){
