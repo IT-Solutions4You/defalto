@@ -15,12 +15,12 @@ class Vtiger_GuardedArray implements \ArrayAccess
         $this->data = is_null($data) || $data === false ? [] : $data;
     }
 
-    function offsetExists($key)
+    function offsetExists($key) : bool
     {
         return isset($this->data[$key]) && array_key_exists($key, $this->data);
     }
 
-    function offsetGet($key)
+    function offsetGet(mixed $key): mixed
     {
         if ($this->offsetExists($key)) {
             return $this->data[$key];
@@ -29,12 +29,12 @@ class Vtiger_GuardedArray implements \ArrayAccess
         return null;
     }
 
-    function offsetSet($key, $value)
+    function offsetSet($key, $value): void
     {
         $this->data[$key] = $value;
     }
 
-    function offsetUnset($key)
+    function offsetUnset($key): void
     {
         unset($this->data[$key]);
     }
