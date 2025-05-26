@@ -26,6 +26,7 @@ require_once 'includes/runtime/Cache.php';
  *
  */
 class Users extends CRMEntity {
+    public int $isEntity = 0;
     public $log;
     /**
      * @var PearDatabase

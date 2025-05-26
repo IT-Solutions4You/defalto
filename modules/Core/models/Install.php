@@ -373,13 +373,13 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         self::logSuccess('Webservice Setup');
 
-        if ($moduleInstance->isentitytype) {
+        $blocks = $this->getBlocks();
+
+        if (!empty($blocks)) {
             $moduleInstance->initTables($moduleInstance->basetable, $moduleInstance->basetableid);
             $entityIdentifiers = [];
             $filterFields = [];
             $filterDynamicSequence = 0;
-
-            $blocks = $this->getBlocks();
 
             if (isset($blocks['LBL_ITEM_DETAILS'])) {
                 $taxResult = $this->db->pquery('SELECT * FROM vtiger_inventorytaxinfo');
