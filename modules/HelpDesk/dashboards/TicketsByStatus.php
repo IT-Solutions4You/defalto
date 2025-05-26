@@ -10,7 +10,7 @@
 
 class HelpDesk_TicketsByStatus_Dashboard extends Vtiger_IndexAjax_View {
  
-    function getSearchParams($value,$assignedto = '',$dates) {
+    function getSearchParams($value,$assignedto = '',$dates= []) {
         $listSearchParams = array();
         $conditions = array(array('ticketstatus','e',decode_html(urlencode(escapeSlashes($value)))));
         if($assignedto != '') array_push($conditions,array('assigned_user_id','e',  decode_html(urlencode(escapeSlashes(getUserFullName($assignedto))))));
