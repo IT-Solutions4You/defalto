@@ -422,8 +422,6 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
             $viewer->assign('DF_ALL', 'checked="checked"');
         }
 
-        $viewer->assign('VERSION', PDFMaker_Version_Helper::$version);
-
         $category = getParentTab();
         $viewer->assign('CATEGORY', $category);
         $selectedModuleName = $select_module;
