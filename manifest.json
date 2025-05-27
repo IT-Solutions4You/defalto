@@ -3,12 +3,12 @@
   "name": "Defalto.com",
   "icons": [
     {
-      "src": "/test/favicon/android-chrome-192x192.png",
+      "src": "/layouts/d1/favicon/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/test/favicon/android-chrome-512x512.png",
+      "src": "/layouts/d1/favicon/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
