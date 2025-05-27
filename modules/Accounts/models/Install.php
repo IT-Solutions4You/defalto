@@ -21,11 +21,15 @@ class Accounts_Install_Model extends Core_Install_Model {
     public function addCustomLinks(): void
     {
         $this->updateCustomLinks();
+        $this->updateComments();
+        $this->updateHistory();
     }
 
     public function deleteCustomLinks(): void
     {
         $this->updateCustomLinks(false);
+        $this->updateComments(false);
+        $this->updateHistory(false);
     }
 
     public function getBlocks(): array
