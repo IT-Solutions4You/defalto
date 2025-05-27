@@ -17,7 +17,7 @@ require_once 'include/RelatedListView.php';
 class CRMExtension
 {
     public $column_fields = [];
-    public $related_tables;
+    public $related_tables = [];
     public $db;
     public int $isEntity = 0;
     public $log;
@@ -33,6 +33,8 @@ class CRMExtension
     public $IsCustomModule;
     public $name;
     public string $moduleVersion = '0.1';
+    public $list_fields_names = [];
+    public $list_fields = [];
 }
 
 class CRMEntity extends CRMExtension
