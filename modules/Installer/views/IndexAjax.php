@@ -97,12 +97,16 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
         $license->setInfo($licenseInfo);
         $license->save();
 
+        Installer_ExtensionInstall_Model::clearCache();
+        Installer_SystemInstall_Model::clearCache();
+
         header('location:' . $license->getLicenseUrl());
     }
 
     public function updateInformation(Vtiger_Request $request): void
     {
         Installer_ExtensionInstall_Model::clearCache();
+        Installer_SystemInstall_Model::clearCache();
 
         header('location:index.php?module=Installer&view=Index');
     }

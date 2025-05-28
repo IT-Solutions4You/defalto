@@ -24,9 +24,7 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
      */
     public function retrieveInfo(): void
     {
-        $api = Installer_Api_Model::getInstance();
-        $api->connect();
-        $versions = $api->getSystemInstall();
+        $versions = self::getApiInfo();
 
         if(empty($versions[$this->getVersion()])) {
             throw new AppException(vtranslate('Version not found', 'Installer') . ': ' . $this->getVersion());
@@ -38,11 +36,26 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
     /**
      * @throws AppException
      */
+    public static function getApiInfo()
+    {
+        if (empty($_SESSION['Installer_SystemInstall'])) {
+            $_SESSION['Installer_SystemInstall'] = Installer_Api_Model::getInstance()->getSystemInstall();
+        }
+
+        return $_SESSION['Installer_SystemInstall'];
+    }
+
+    public static function clearCache(): void
+    {
+        unset($_SESSION['Installer_SystemInstall']);
+    }
+
+    /**
+     * @throws AppException
+     */
     public static function getAll(): array
     {
-        $api = Installer_Api_Model::getInstance();
-        $api->connect();
-        $versions = $api->getSystemInstall();
+        $versions = self::getApiInfo();
 
         foreach ($versions as $version => $versionData) {
             $versions[$version] = self::getInstanceFromData($versionData);
