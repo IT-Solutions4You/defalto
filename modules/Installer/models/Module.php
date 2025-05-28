@@ -9,6 +9,11 @@ class Installer_Module_Model extends Vtiger_Module_Model
         return 'index.php?module=Installer&view=Index';
     }
 
+    public function getListViewUrl()
+    {
+        return 'index.php?module=Installer&view=Index';
+    }
+
     /**
      * @return array
      */
