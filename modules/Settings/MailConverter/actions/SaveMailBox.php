@@ -36,7 +36,8 @@ class Settings_MailConverter_SaveMailBox_Action extends Settings_Vtiger_Index_Ac
 			$result['listViewUrl'] = $recordModel->getListUrl();
 			$response->setResult($result);
 		} else {
-			$response->setError(vtranslate('LBL_CONNECTION_TO_MAILBOX_FAILED', $qualifiedModuleName));
+
+			$response->setError(vtranslate($recordModel->get('save_error_message'), $qualifiedModuleName));
 		}
 
 		$response->emit();

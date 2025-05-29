@@ -10,47 +10,18 @@
  require_once("include/events/SqlResultIterator.inc");
 
 class Settings_MailConverter_MailScannerEntityMethodManager_Handler {
-	
-	function __construct($adb){
-		$this->adb = $adb;
-		 if (!Vtiger_Utils::CheckTable('vtiger_mailscanner_entitymethod')) {
-                
-                $adb->pquery('CREATE TABLE IF NOT EXISTS `vtiger_mailscanner_entitymethod` (
-  `mailscanner_entitymethod_id` int(11) NOT NULL AUTO_INCREMENT,
- 	`module_name` varchar(100) ,
-	 	`method_name` varchar(100) ,
-		 	`function_path` varchar(400) ,
-			 	`function_name` varchar(100) ,
- 	PRIMARY KEY (`mailscanner_entitymethod_id`)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-', array());
 
- $adb->pquery('ALTER TABLE `vtiger_mailscanner_entitymethod`
-  ADD PRIMARY KEY (`mailscanner_entitymethod_id`),
-  ADD UNIQUE KEY `mailscanner_entitymethod_idx` (`mailscanner_entitymethod_id`);
-', array());
-/*
- $adb->pquery('CREATE TABLE IF NOT EXISTS `vtiger_mailscanner_entitymethod_seq` (
-  `id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-', array());*/
-
-$adb->pquery('ALTER TABLE `vtiger_mailscanner_actions`
-   CHANGE `actiontype` `actiontype` VARCHAR(100), CHANGE `module` `module` VARCHAR(100), CHANGE `lookup` `lookup` VARCHAR(100) ;
-', array());
+    public function __construct($adb)
+    {
+        $this->adb = $adb;
+    }
 
 
-            }
-	}
-	
-	
-	function addEntityMethod($moduleName, $methodName, $functionPath, $functionName){
+    function addEntityMethod($moduleName, $methodName, $functionPath, $functionName){
 		$adb = $this->adb;
 		$id = $adb->getUniqueId("vtiger_mailscanner_entitymethod");
 		$adb->pquery("insert into vtiger_mailscanner_entitymethod ( module_name, function_path, function_name, method_name) values (?,?,?,?)", array( $moduleName, $functionPath, $functionName, $methodName));
 	}
-	
-	
 	
 	function executeMethod($moduleName, $methodName,$params){
 		$adb = $this->adb;
