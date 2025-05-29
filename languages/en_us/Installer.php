@@ -256,6 +256,7 @@ $languageStrings = [
     'LBL_UNINSTALL_MODULE_TABLES' => 'All module tables will be deleted',
     'LBL_UNINSTALL_MODULE_FILES' => 'All module files will be deleted',
     'LBL_UNINSTALL_CONFIRM' => 'Are you sure to completely remove Extension from your CRM ?',
+    'LBL_LICENSE_DELETED' => 'License deleted successfully.',
 ];
 
 $jsLanguageStrings = [

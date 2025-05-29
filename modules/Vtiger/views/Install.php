@@ -10,6 +10,12 @@
  */
 class Vtiger_Install_View extends Vtiger_Index_View
 {
+    public function buttons(Vtiger_Request $request): void
+    {
+        $viewer = $this->getViewer($request);
+        $viewer->view('InstallView.tpl', 'Install');
+    }
+
     /**
      * @param Vtiger_Request $request
      * @return void
@@ -47,11 +53,6 @@ class Vtiger_Install_View extends Vtiger_Index_View
 
             $this->invokeExposedMethod($mode, $request);
         }
-    }
-
-    public function buttons(Vtiger_Request $request) {
-        $viewer = $this->getViewer($request);
-        $viewer->view('InstallView.tpl', 'Install');
     }
 
     /**
