@@ -63,50 +63,54 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
         let self = this;
 
         self.getMainContainer().on('click', '[data-download-system]', function (e) {
-            let version = $(this).attr('data-download-system'),
-                params = {
-                    module: 'Installer',
-                    view: 'IndexAjax',
-                    mode: 'systemModal',
-                    version: version
-                };
+            app.helper.showConfirmationBox({message: app.vtranslate('JS_CONFIRM_DOWNLOAD')}).then(function () {
+                let version = $(this).attr('data-download-system'),
+                    params = {
+                        module: 'Installer',
+                        view: 'IndexAjax',
+                        mode: 'systemModal',
+                        version: version
+                    };
 
-            app.request.post({data: params}).then(function(error, data) {
-                app.helper.showModal(data, {
-                    cb: function (container) {
-                        let downloadLogElement = container.find('[data-download-log]'),
-                            params = app.convertUrlToDataParams(downloadLogElement.attr('data-download-log'));
+                app.request.post({data: params}).then(function (error, data) {
+                    app.helper.showModal(data, {
+                        cb: function (container) {
+                            let downloadLogElement = container.find('[data-download-log]'),
+                                params = app.convertUrlToDataParams(downloadLogElement.attr('data-download-log'));
 
-                        app.request.post({data: params}).then(function (error, data) {
-                            downloadLogElement.html(data);
-                        });
-                    }
+                            app.request.post({data: params}).then(function (error, data) {
+                                downloadLogElement.html(data);
+                            });
+                        }
+                    });
                 });
-            });
+            })
         })
     },
     registerDownloadExtension() {
         let self = this;
 
         self.getMainContainer().on('click', '[data-download-extension]', function (e) {
-            let version = $(this).attr('data-download-extension'),
-                params = {
-                    module: 'Installer',
-                    view: 'IndexAjax',
-                    mode: 'extensionModal',
-                    version: version
-                };
+            app.helper.showConfirmationBox({message: app.vtranslate('JS_CONFIRM_DOWNLOAD')}).then(function () {
+                let version = $(this).attr('data-download-extension'),
+                    params = {
+                        module: 'Installer',
+                        view: 'IndexAjax',
+                        mode: 'extensionModal',
+                        version: version
+                    };
 
-            app.request.post({data: params}).then(function(error, data) {
-                app.helper.showModal(data, {
-                    cb: function (container) {
-                        let downloadLogElement = container.find('[data-download-log]'),
-                            params = app.convertUrlToDataParams(downloadLogElement.attr('data-download-log'));
+                app.request.post({data: params}).then(function(error, data) {
+                    app.helper.showModal(data, {
+                        cb: function (container) {
+                            let downloadLogElement = container.find('[data-download-log]'),
+                                params = app.convertUrlToDataParams(downloadLogElement.attr('data-download-log'));
 
-                        app.request.post({data: params}).then(function (error, data) {
-                            downloadLogElement.html(data);
-                        });
-                    }
+                            app.request.post({data: params}).then(function (error, data) {
+                                downloadLogElement.html(data);
+                            });
+                        }
+                    });
                 });
             });
         })

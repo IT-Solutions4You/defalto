@@ -277,5 +277,6 @@ $jsLanguageStrings = [
     'JS_REQUIREMENTS_YES' => 'Show System Requirements',
     'JS_REQUIREMENTS_MESSAGE' => 'Incorrectly set system requirements can result in problems and complications when using our extensions and Vtiger itself. It is important to note that incorrect settings may lead to additional support charges.',
     'JS_LICENSE_DELETE_CONFIRMATION' => 'Are you sure to completely delete License from your CRM ?',
+    'JS_CONFIRM_DOWNLOAD' => 'Do you really want to download this package?',
 ];
 
