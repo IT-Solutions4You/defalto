@@ -84,16 +84,16 @@
 		/**
 		 *
 		 */
-		public function getTasksForWorkflow($workflowId){
-			$adb = $this->adb;
-			$result = $adb->pquery("select task from com_vtiger_workflowtasks
-									where workflow_id=?",
-				array($workflowId));
-			return $this->getTasksForResult($result);
-		}
+        public function getTasksForWorkflow($workflowId)
+        {
+            $adb = $this->adb;
+            $result = $adb->pquery("select task from com_vtiger_workflowtasks where workflow_id=?", [$workflowId]);
+
+            return $this->getTasksForResult($result);
+        }
 
 
-		/**
+        /**
 		 *
 		 */
 		public function unserializeTask($str){
@@ -129,18 +129,22 @@
 			return $matches[1];
 		}
 
-		private function requireTask($taskType, $taskTypeInstance='') {
-			if(!empty($taskTypeInstance)) {
-				$taskClassPath = $taskTypeInstance->get('classpath');
-				require_once($taskClassPath);
-			} else {
-                if(!empty($taskType)) {
-					require_once("tasks/".$taskType.".inc");
-                }
-			}
-		}
+        private function requireTask($taskType, $taskTypeInstance = null)
+        {
+            $taskClassPath = 'tasks/' . $taskType . '.inc';
 
-		public function retrieveTemplatePath($moduleName, $taskTypeInstance) {
+            if (empty($taskTypeInstance)) {
+                $taskTypeInstance = VTTaskType::getInstanceFromTaskType($taskType);
+            }
+
+            if ($taskTypeInstance) {
+                $taskClassPath = $taskTypeInstance->get('classpath');
+            }
+
+            require_once($taskClassPath);
+        }
+
+        public function retrieveTemplatePath($moduleName, $taskTypeInstance) {
 			$taskTemplatePath = $taskTypeInstance->get('templatepath');
 			if(!empty($taskTemplatePath)) {
 				return $taskTemplatePath;
