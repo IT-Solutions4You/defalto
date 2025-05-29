@@ -1842,7 +1842,7 @@ class CRMEntity extends CRMExtension
                     'INSERT INTO vtiger_crmentityrel(crmid, module, relcrmid, relmodule) VALUES(?,?,?,?)',
                     [$crmid, $module, $relcrmid, $with_module]
                 );
-                $this->setTrackLinkedInfo($crmid, $relcrmid);
+                $this->setTrackLinkedInfo((int)$crmid, (int)$relcrmid);
             }
         }
     }
