@@ -300,7 +300,6 @@ jQuery.Class("Vtiger_Helper_Js",{
             show:true,
             keyboard: false,
             focus: false,
-            modalName: 'myModal',
         };
     },
 
@@ -444,37 +443,31 @@ jQuery.Class("Vtiger_Helper_Js",{
 
         return aDeferred.promise();
     },
-    retrieveModal(params) {
-        let modalName = params['modalName'],
-            modalId = '#' + modalName;
 
-        if (!$(modalId).length) {
-            let modalContent = '<div id="' + modalName + '" class="modal ' + modalName + ' fade" tabindex="-1" data-bs-focus="false"><div class="modal-dialog"></div></div>';
-
-            $('libraries').append(modalContent);
-        }
-
-        return $(modalId);
-    },
-    showModal: function (content, params = {}) {
-        params = jQuery.extend(this.defaultModalParams(), params);
-
-        let container = this.retrieveModal(params),
-            cb = params.cb;
-
+    showModal : function(content,params) {
         // we should hide all existing modal's
-        this.hideModal(params);
+        this.hideModal();
 
-        if (!container.find('.modal-dialog').length) {
-            console.error('Missing modal dialog in modal element');
+        if(typeof params === "undefined") {
+            params = {};
         }
 
-        container.on('hidden.bs.modal', function () {
-            container.html('<div class="modal-dialog"></div>');
-            window.onbeforeunload = null;
-        });
+        let defaultParams = this.defaultModalParams();
+        params = jQuery.extend(defaultParams,params);
 
-        if ('function' === typeof cb) {
+        let cb = params.cb,
+            container = jQuery('#myModal');
+
+        if(!container.find('.modal-dialog').length) {
+            console.error('Missing modal dialog in modal element')
+        }
+
+        container.on('hidden.bs.modal',function() {
+			container.html('<div class="modal-dialog"></div>');
+			window.onbeforeunload = null;
+        });
+		
+        if(typeof cb === "function") {
             container.off('shown.bs.modal');
             //This event is fired when the modal has been made visible to the user
             container.one('shown.bs.modal', function () {
@@ -489,12 +482,9 @@ jQuery.Class("Vtiger_Helper_Js",{
 
         return container;
     },
-
-    hideModal: function (params = {}) {
-        params = jQuery.extend(this.defaultModalParams(), params);
-
+    hideModal: function () {
         let aDeferred = new jQuery.Deferred(),
-            container = this.retrieveModal(params);
+            container = jQuery('#myModal');
 
         container.one('hidden.bs.modal', function () {
             container.unbind();
