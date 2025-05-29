@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-class Vtiger_Install_View extends Vtiger_Index_View
+class Vtiger_Install_View extends Vtiger_Basic_View
 {
     public function buttons(Vtiger_Request $request): void
     {
@@ -28,6 +28,14 @@ class Vtiger_Install_View extends Vtiger_Index_View
         if (!$currentUser || !$currentUser->isAdminUser()) {
             throw new AppException('Required admin user');
         }
+    }
+
+    public function preProcess(Vtiger_Request $request, $display = true)
+    {
+    }
+
+    public function postProcess(Vtiger_Request $request)
+    {
     }
 
     /**

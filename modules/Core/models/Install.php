@@ -863,21 +863,24 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     /**
      * @param $register
      * @return void
+     * @throws AppException
      */
     public function updateWorkflows($register = true)
     {
         foreach ($this->registerWorkflows as $registerWorkflow) {
-            [$moduleName, $workflowName, $workflowLabel, $modules] = $registerWorkflow;
+            [$moduleName, $workflowName, $workflowLabel, $modules, $classPath, $templatePath] = $registerWorkflow;
 
             $layout = Vtiger_Viewer::getLayoutName();
 
             if (!$register) {
                 $this->db->pquery(
-                    'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?', [$workflowName]
+                    'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?',
+                    [$workflowName],
                 );
 
                 $this->db->pquery(
-                    'DELETE FROM com_vtiger_workflowtasks WHERE task LIKE ?', ['%:"' . $workflowName . '":%']
+                    'DELETE FROM com_vtiger_workflowtasks WHERE task LIKE ?',
+                    ['%:"' . $workflowName . '":%'],
                 );
 
                 unlink(sprintf('modules/com_vtiger_workflow/tasks/%s.inc', $workflowName));
@@ -885,40 +888,25 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                 continue;
             }
 
-            $taskForm = sprintf('modules/%s/taskforms/%s.tpl', $moduleName, $workflowName);
+            $modules = $modules ?: '{"include":[],"exclude":[]}';
+            $classPath = $classPath ?: sprintf('modules/%s/workflow/%s.inc', $moduleName, $workflowName);
+            $templatePath = $templatePath ?: sprintf('layouts/%s/modules/%s/taskforms/%s.tpl', $layout, $moduleName, $workflowName);
+            $table = $this->getTable('com_vtiger_workflow_tasktypes', 'id');
+            $workflowId = $table->selectData(['id'], ['tasktypename' => $workflowName])['id'];
+            $values = [
+                'tasktypename' => $workflowName,
+                'label' => $workflowLabel,
+                'classname' => $workflowName,
+                'classpath' => $classPath,
+                'templatepath' => $templatePath,
+                'modules' => $modules,
+                'sourcemodule' => $moduleName,
+            ];
 
-            if (empty($modules)) {
-                $modules = '{"include":[],"exclude":[]}';
-            }
-
-            $phpDestination = sprintf('modules/com_vtiger_workflow/tasks/%s.inc', $workflowName);
-            $phpSource = sprintf('modules/%s/workflow/%s.inc', $moduleName, $workflowName);
-            $phpFileExist = file_exists($phpDestination) || copy($phpSource, $phpDestination);
-
-            $tplDestination = sprintf('layouts/%s/modules/Settings/Workflows/Tasks/%s.tpl', $layout, $workflowName);
-            $tplSource = sprintf('layouts/%s/modules/%s/taskforms/%s.tpl', $layout, $moduleName, $workflowName);
-            $tplFileExist = file_exists($tplDestination) || copy($tplSource, $tplDestination);
-
-            if ($phpFileExist && $tplFileExist) {
-                $result = $this->db->pquery(
-                    'SELECT * FROM com_vtiger_workflow_tasktypes WHERE tasktypename = ?', [$workflowName]
-                );
-
-                if (!$this->db->num_rows($result)) {
-                    $workflowId = $this->db->getUniqueID('com_vtiger_workflow_tasktypes');
-                    $values = [
-                        'id' => $workflowId,
-                        'tasktypename' => $workflowName,
-                        'label' => $workflowLabel,
-                        'classname' => $workflowName,
-                        'classpath' => $phpSource,
-                        'templatepath' => $taskForm,
-                        'modules' => $modules,
-                        'sourcemodule' => $moduleName,
-                    ];
-                    $sql = sprintf('INSERT INTO %s (%s) VALUES (%s)', 'com_vtiger_workflow_tasktypes', implode(',', array_keys($values)), generateQuestionMarks($values));
-                    $this->db->pquery($sql, $values);
-                }
+            if (empty($workflowId)) {
+                $table->insertData($values);
+            } else {
+                $table->updateData($values, ['id' => $workflowId]);
             }
         }
     }
