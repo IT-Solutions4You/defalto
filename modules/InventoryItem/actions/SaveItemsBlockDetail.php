@@ -58,7 +58,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
             }
         }
 
-        $items = $this->fetchItems($recordId);
+        $items = InventoryItem_Module_Model::fetchItemsForId($recordId);
 
         foreach ($items as $item) {
             if (!$item['productid']) {
@@ -135,7 +135,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         $recordModel->set('region_id', $regionId);
         $recordModel->save();
 
-        $items = $this->fetchItems($recordId);
+        $items = InventoryItem_Module_Model::fetchItemsForId($recordId);
 
         foreach ($items as $item) {
             if (!$item['productid']) {
@@ -175,7 +175,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         $recordId = (int)$request->get('for_record');
         $discount = (float)$request->get('overall_discount_percent');
 
-        $items = $this->fetchItems($recordId);
+        $items = InventoryItem_Module_Model::fetchItemsForId($recordId);
 
         foreach ($items as $item) {
             $recordModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
@@ -237,7 +237,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         $toBaseCurrency = 1 / $currenciesConversionTable[$oldCurrencyId];
         $toNewCurrency = $toBaseCurrency * $currenciesConversionTable[$currencyId];
 
-        $items = $this->fetchItems($recordId);
+        $items = InventoryItem_Module_Model::fetchItemsForId($recordId);
 
         foreach ($items as $item) {
             if (!$item['productid']) {
@@ -281,30 +281,5 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         }
 
         InventoryItem_ParentEntity_Model::updateTotals($recordId);
-    }
-
-    /**
-     * @param int $parentId
-     *
-     * @return array
-     */
-    protected function fetchItems(int $parentId): array
-    {
-        $db = PearDatabase::getInstance();
-        $items = [];
-        $sql = 'SELECT df_inventoryitem.*, df_inventoryitemcf.* 
-                FROM df_inventoryitem
-                    LEFT JOIN df_inventoryitemcf ON df_inventoryitemcf.inventoryitemid = df_inventoryitem.inventoryitemid
-                    INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid AND vtiger_crmentity.deleted = 0
-                WHERE parentid = ?   
-                    AND productid IS NOT NULL
-                    AND productid <> 0';
-        $res = $db->pquery($sql, [$parentId]);
-
-        while ($row = $db->fetchByAssoc($res)) {
-            $items[] = $row;
-        }
-
-        return $items;
     }
 }

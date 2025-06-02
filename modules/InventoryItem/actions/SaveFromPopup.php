@@ -18,6 +18,24 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
         $response = new Vtiger_Response();
 
         try {
+            if ($request->has('insert_after_sequence')) {
+                $allItems = InventoryItem_Module_Model::fetchItemsForId((int)$request->get('source_record'));
+
+                foreach ($allItems as $item) {
+                    $itemModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
+
+                    if ($itemModel->get('sequence') > $request->get('insert_after_sequence')) {
+                        $itemModel->set('sequence', $itemModel->get('sequence') + 1);
+                        $itemModel->set('mode', 'edit');
+                        $itemModel->save();
+                    }
+
+                    unset($itemModel);
+                }
+
+                $request->set('sequence', (int)$request->get('insert_after_sequence') + 1);
+            }
+
             $focus = CRMEntity::getInstance('InventoryItem');
 
             if ($request->get('record')) {

@@ -17,8 +17,11 @@
     <a class="btn editItem padding0">
         <i class="fa fa-pencil fa-fw text-secondary" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>
     </a>
-    <a class="btn deleteRow padding0">
+    <a class="btn deleteItem padding0">
         <i class="fa fa-trash-o fa-fw text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i>
+    </a>
+    <a class="btn addItemAfter padding0">
+        <i class="fa fa-plus fa-fw text-secondary" title="{vtranslate('LBL_ADD_AFTER',$MODULE)}"></i>
     </a>
     <input type="hidden" class="rowNumber" value="{$row_no}" />
     <input type="hidden" class="lineItemId" name="lineItemId{$row_no}" value="{$data.inventoryitemid}" />

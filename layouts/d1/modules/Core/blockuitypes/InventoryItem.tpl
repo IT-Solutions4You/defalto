@@ -11,6 +11,12 @@
     {assign var=IS_HIDDEN value=$BLOCK->isHidden()}
     {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
     <input type=hidden name="timeFormatOptions" data-value='{if isset($DAY_STARTS)}{$DAY_STARTS}{else}""{/if}' />
+    <ul class="dropdown-menu add_menu_template" style="display: none;">
+        <li><a class="dropdown-item" data-modulename=""><i class="fa fa-i-cursor"></i>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}</a></li>
+        {foreach item=ITEM_MODULE_NAME from=$ITEM_MODULES}
+            <li><a class="dropdown-item" data-modulename="{$ITEM_MODULE_NAME}">{Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}</a></li>
+        {/foreach}
+    </ul>
     <div class="p-3">
         <div class="d-flex align-items-center row">
             <div class="col-lg-4">

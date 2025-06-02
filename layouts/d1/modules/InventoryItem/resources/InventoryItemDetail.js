@@ -89,7 +89,8 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 };
 
                 app.helper.showModal(data, callbackParams);
-            });        };
+            });
+        };
 
         const addButtonsToolbar = jQuery('.inventoryItemAddButtons');
         addButtonsToolbar.find('button').on('click', addLineItemEventHandler);
@@ -150,12 +151,16 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const self = this;
         const row = jQuery('#row' + rowNumber);
 
-        row.on('click', '.deleteRow', function () {
+        row.on('click', '.editItem', function () {
+            self.editItem(rowNumber);
+        });
+
+        row.on('click', '.deleteItem', function () {
             self.deleteProductLine(rowNumber);
         });
 
-        row.on('click', '.editItem', function () {
-            self.editItem(rowNumber);
+        row.on('click', '.addItemAfter', function () {
+            self.addItemAfter(rowNumber);
         });
     },
 
@@ -173,6 +178,56 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 row.remove();
             });
         }
+    },
+
+    addItemAfter: function (rowNumber) {
+        jQuery('.inlineAddDropdown').remove();
+
+        const row = jQuery('#row' + rowNumber);
+        const td = row.find('td:first');
+        const button = jQuery('.addItemAfter', td);
+        const sequence = row.find('input.rowSequence').val();
+
+        const dropdown = jQuery('.add_menu_template').clone().removeClass('add_menu_template').addClass('inlineAddDropdown');
+        dropdown.css({
+            display: 'block',
+            position: 'absolute',
+            top: button.offset().top + button.outerHeight(),
+            left: button.offset().left,
+            zIndex: 1000
+        });
+
+        jQuery('body').append(dropdown);
+
+        dropdown.on('click', 'a.dropdown-item', function (event) {
+            event.preventDefault();
+            const moduleName = jQuery(this).data('modulename');
+
+            dropdown.remove();
+
+            const params = {
+                data: {
+                    insert_after_sequence: sequence
+                }
+            };
+            const addButtonsToolbar = jQuery('.inventoryItemAddButtons');
+
+            if (moduleName === '') {
+                addButtonsToolbar.find('button').first().trigger('click', [params]);
+            } else {
+                addButtonsToolbar.find('button[data-modulename="' + moduleName + '"]').trigger('click', [params]);
+            }
+        });
+
+        setTimeout(() => {
+            jQuery(document).off('click.inlineAddDropdown').on('click.inlineAddDropdown', function (e) {
+                const $target = jQuery(e.target);
+                if ($target.closest('.inlineAddDropdown').length === 0 && $target.closest('.addAfterRow').length === 0) {
+                    jQuery('.inlineAddDropdown').remove();
+                    jQuery(document).off('click.inlineAddDropdown'); // Clean up
+                }
+            });
+        }, 0);
     },
 
     recalculateTotals: function () {
@@ -501,6 +556,7 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         this.setupListeners(container);
         this.registerLineItemAutoComplete(container);
         this.registerLineItemClear(container);
+        this.registerLineItemCreate(container);
         this.registerLineItemPopup(container);
         this.registerPriceBookPopUp(container);
         this.loadCkEditor(container);
@@ -825,6 +881,45 @@ Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         let taxElement = jQuery('select.tax', container);
         taxElement.find('option:not(:first)').remove();
         this.recalculateItem(container);
+    },
+
+    registerLineItemCreate: function (container) {
+        const self = this;
+
+        jQuery('.createLineItem', container).on('click', function (e) {
+            self.createLineItemDetails(container);
+            e.preventDefault();
+        });
+    },
+
+    createLineItemDetails: function (container) {
+        const thisInstance = this;
+        const postQuickCreateSave = function (data) {
+            const module = jQuery('input[name="item_type"]', container).val();
+            let params = {};
+            params.name = data._recordLabel;
+            params.id = data._recordId;
+            params.module = module;
+            container.find('input[name="item_text"]').val(data._recordLabel);
+            container.find('input[name="productid"]').val(data._recordId);
+
+            thisInstance.autoFillElement = container.find('input[name="productid"]');
+            thisInstance.postRefrenceSearch(params, container);
+
+            container.find('input[name="productid"]').trigger(Vtiger_Edit_Js.postReferenceQuickCreateSave, {'data': data});
+        };
+
+        const referenceModuleName = jQuery('input[name="item_type"]', container).val();
+        const quickCreateNode = jQuery('#quickCreateModules').find('[data-name="' + referenceModuleName + '"]');
+
+        if (quickCreateNode.length <= 0) {
+            const notificationOptions = {
+                'title': app.vtranslate('JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED')
+            };
+            app.helper.showAlertNotification(notificationOptions);
+        }
+
+        quickCreateNode.trigger('click', [{'callbackFunction': postQuickCreateSave}]);
     },
 
     registerLineItemPopup: function (container) {

@@ -121,6 +121,11 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
 
         $sourceRecordModel = Vtiger_Record_Model::getInstanceById($request->get('source_record'), $request->get('source_module'));
         $currencyInfo = Vtiger_Functions::getCurrencyInfo($sourceRecordModel->get('currency_id'));
+        $data = $request->get('data', []);
+
+        if (isset($data['insert_after_sequence'])) {
+            $viewer->assign('INSERT_AFTER_SEQUENCE', $data['insert_after_sequence']);
+        }
 
         $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('MODULE', $moduleName);

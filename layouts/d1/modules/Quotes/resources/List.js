@@ -1,10 +1,9 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * All Rights Reserved.
+ */
 
-Vtiger_List_Js("Quotes_List_Js",{},{
-    
-});
+/** @var Quotes_List_Js */
+Vtiger_List_Js("Quotes_List_Js", {}, {});

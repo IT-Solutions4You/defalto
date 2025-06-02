@@ -8,9 +8,8 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-function handleInventoryProductRel($entity){
-	require_once("include/utils/InventoryUtils.php");
-	updateInventoryProductRel($entity);
+function handleInventoryProductRel($entity)
+{
+    require_once("include/utils/InventoryUtils.php");
+    //updateInventoryProductRel($entity);
 }
-
-?>

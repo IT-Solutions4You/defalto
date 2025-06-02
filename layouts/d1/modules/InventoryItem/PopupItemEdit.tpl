@@ -15,6 +15,7 @@
         <input type="hidden" name="source_record" value="{$SOURCE_RECORD}" />
         <input type="hidden" name="item_type" value="{$ITEM_TYPE}" />
         <input type="hidden" name="sequence" value="{$DATA.sequence}" />
+        <input type="hidden" name="insert_after_sequence" value="{$INSERT_AFTER_SEQUENCE}" />
 
         {if $HARD_FORMATTED_RECORD_STRUCTURE.productid neq ''}
             {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE['productid'][1]}
@@ -29,11 +30,8 @@
                         <span class="input-group-text lineItemPopup cursorPointer" data-popup="{$ITEM_TYPE}Popup" title="{vtranslate($ITEM_TYPE,$MODULE)}"
                               data-module-name="{$ITEM_TYPE}" style="display: none;">{Vtiger_Module_Model::getModuleIconPath($ITEM_TYPE)}</span>
                         <input type="hidden" id="lineItemType" name="lineItemType" value="{$ITEM_TYPE}" class="lineItemType" />
-                        {if !$DATA.$productDeleted}
-                            <span class="input-group-addon input-group-text cursorPointer clearLineItem" title="{vtranslate('LBL_CLEAR',$MODULE)}">
-                                                    <i class="fa fa-xmark"></i>
-                                                </span>
-                        {/if}
+                        <span class="input-group-addon input-group-text cursorPointer clearLineItem" title="{vtranslate('LBL_CLEAR',$MODULE)}"><i class="fa fa-xmark"></i></span>
+                        {*<span class="input-group-addon input-group-text cursorPointer createLineItem" title="{vtranslate('LBL_ADD',$MODULE)}"><i class="fa fa-plus"></i></span>*}
                     </div>
                 </div>
             </div>

@@ -33,7 +33,7 @@ class Quotes_Install_Model extends Core_Install_Model
         return [
             'LBL_QUOTE_INFORMATION'       =>
                 [
-                    'quote_no'          =>
+                    'quote_no'                     =>
                         [
                             'name'         => 'quote_no',
                             'uitype'       => 4,
@@ -48,7 +48,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 0,
                             'summaryfield' => 1,
                         ],
-                    'subject'           =>
+                    'subject'                      =>
                         [
                             'name'              => 'subject',
                             'uitype'            => 2,
@@ -64,7 +64,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'summaryfield'      => 1,
                             'entity_identifier' => 1,
                         ],
-                    'potential_id'      =>
+                    'potential_id'                 =>
                         [
                             'name'         => 'potential_id',
                             'uitype'       => 76,
@@ -79,7 +79,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 1,
                         ],
-                    'quotestage'        =>
+                    'quotestage'                   =>
                         [
                             'name'            => 'quotestage',
                             'uitype'          => 15,
@@ -102,7 +102,7 @@ class Quotes_Install_Model extends Core_Install_Model
                                     4 => 'Rejected',
                                 ],
                         ],
-                    'validtill'         =>
+                    'validtill'                    =>
                         [
                             'name'         => 'validtill',
                             'uitype'       => 5,
@@ -117,7 +117,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'contact_id'        =>
+                    'contact_id'                   =>
                         [
                             'name'         => 'contact_id',
                             'uitype'       => 57,
@@ -132,7 +132,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'carrier'           =>
+                    'carrier'                      =>
                         [
                             'name'            => 'carrier',
                             'uitype'          => 15,
@@ -155,7 +155,7 @@ class Quotes_Install_Model extends Core_Install_Model
                                     4 => 'BlueDart',
                                 ],
                         ],
-                    'subtotal'       =>
+                    'subtotal'                     =>
                         [
                             'name'         => 'subtotal',
                             'uitype'       => 72,
@@ -170,7 +170,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'shipping'          =>
+                    'shipping'                     =>
                         [
                             'name'         => 'shipping',
                             'uitype'       => 1,
@@ -185,7 +185,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'assigned_user_id1' =>
+                    'assigned_user_id1'            =>
                         [
                             'name'         => 'assigned_user_id1',
                             'uitype'       => 77,
@@ -200,7 +200,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'price_total'     =>
+                    'price_total'                  =>
                         [
                             'name'         => 'price_total',
                             'uitype'       => 72,
@@ -215,7 +215,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'hdnTaxType'        =>
+                    'hdnTaxType'                   =>
                         [
                             'name'            => 'hdnTaxType',
                             'uitype'          => 16,
@@ -233,7 +233,7 @@ class Quotes_Install_Model extends Core_Install_Model
                                 [
                                 ],
                         ],
-                    'hdnS_H_Amount'     =>
+                    'hdnS_H_Amount'                =>
                         [
                             'name'         => 'hdnS_H_Amount',
                             'uitype'       => 72,
@@ -248,7 +248,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'account_id'        =>
+                    'account_id'                   =>
                         [
                             'name'         => 'account_id',
                             'uitype'       => 73,
@@ -263,7 +263,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'assigned_user_id'  =>
+                    'assigned_user_id'             =>
                         [
                             'name'         => 'assigned_user_id',
                             'uitype'       => 53,
@@ -278,7 +278,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 1,
                         ],
-                    'createdtime'       =>
+                    'createdtime'                  =>
                         [
                             'name'         => 'createdtime',
                             'uitype'       => 70,
@@ -293,7 +293,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 0,
                             'summaryfield' => 0,
                         ],
-                    'modifiedtime'      =>
+                    'modifiedtime'                 =>
                         [
                             'name'         => 'modifiedtime',
                             'uitype'       => 70,
@@ -308,7 +308,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 0,
                             'summaryfield' => 0,
                         ],
-                    'modifiedby'        =>
+                    'modifiedby'                   =>
                         [
                             'name'         => 'modifiedby',
                             'uitype'       => 52,
@@ -323,7 +323,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 0,
                             'summaryfield' => 0,
                         ],
-                    'conversion_rate'   =>
+                    'conversion_rate'              =>
                         [
                             'name'         => 'conversion_rate',
                             'uitype'       => 1,
@@ -338,7 +338,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'price_after_overall_discount'     =>
+                    'price_after_overall_discount' =>
                         [
                             'name'         => 'price_after_overall_discount',
                             'uitype'       => 72,
@@ -353,7 +353,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'source'            =>
+                    'source'                       =>
                         [
                             'name'         => 'source',
                             'uitype'       => 1,
@@ -595,7 +595,7 @@ class Quotes_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'discount_amount'  => [
+                'discount_amount'    => [
                     'name'         => 'discount_amount',
                     'uitype'       => 72,
                     'column'       => 'discount_amount',
@@ -623,7 +623,7 @@ class Quotes_Install_Model extends Core_Install_Model
                     'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
-                'adjustment' => [
+                'adjustment'         => [
                     'name'         => 'adjustment',
                     'uitype'       => 72,
                     'column'       => 'adjustment',
@@ -637,7 +637,7 @@ class Quotes_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'currency_id' => [
+                'currency_id'        => [
                     'name'         => 'currency_id',
                     'uitype'       => 117,
                     'column'       => 'currency_id',
@@ -651,7 +651,7 @@ class Quotes_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'region_id'   => [
+                'region_id'          => [
                     'name'            => 'region_id',
                     'uitype'          => 29,
                     'column'          => 'region_id',
@@ -666,17 +666,17 @@ class Quotes_Install_Model extends Core_Install_Model
                     'summaryfield'    => 0,
                     'picklist_values' => [],
                 ],
-                'pricebookid' => [
-                    'name' => 'pricebookid',
-                    'uitype' => 73,
-                    'column' => 'pricebookid',
-                    'table' => 'vtiger_quotes',
-                    'label' => 'Price Book',
-                    'readonly' => 0,
-                    'presence' => 0,
-                    'typeofdata' => 'I~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 1,
+                'pricebookid'        => [
+                    'name'         => 'pricebookid',
+                    'uitype'       => 73,
+                    'column'       => 'pricebookid',
+                    'table'        => 'vtiger_quotes',
+                    'label'        => 'Price Book',
+                    'readonly'     => 0,
+                    'presence'     => 0,
+                    'typeofdata'   => 'I~O',
+                    'quickcreate'  => 1,
+                    'displaytype'  => 1,
                     'masseditable' => 0,
                     'summaryfield' => 0,
                 ],

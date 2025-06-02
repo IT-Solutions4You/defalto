@@ -16,6 +16,7 @@ class Quotes_Detail_View extends Vtiger_Detail_View
      * @param Vtiger_Request $request
      *
      * @return bool|html
+     * @throws AppException
      */
     function showModuleDetailView(Vtiger_Request $request)
     {
@@ -29,6 +30,7 @@ class Quotes_Detail_View extends Vtiger_Detail_View
      * Get the header scripts for the view.
      *
      * @param Vtiger_Request $request The request object
+     *
      * @return array Merged header script instances
      */
     public function getHeaderScripts(Vtiger_Request $request)

@@ -13,7 +13,8 @@ class Quotes_Edit_View extends Vtiger_Edit_View
     /**
      * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request) {
+    function getHeaderScripts(Vtiger_Request $request)
+    {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $jsFileNames = [
         ];
@@ -25,6 +26,5 @@ class Quotes_Edit_View extends Vtiger_Edit_View
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
         return array_merge($headerScriptInstances, $jsScriptInstances);
-
     }
 }

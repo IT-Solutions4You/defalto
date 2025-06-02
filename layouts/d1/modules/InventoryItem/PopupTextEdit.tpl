@@ -24,5 +24,6 @@
         {assign var=FIELD value=$HARD_CODED_RECORD_STRUCTURE['sequence'][1]}
         {assign var=FIELD_NAME value=$FIELD->get('name')}
         <input type="hidden" name="{$FIELD_NAME}" id="{$FIELD_NAME}" value="{$DATA.$FIELD_NAME}" />
+        <input type="hidden" name="insert_after_sequence" value="{$INSERT_AFTER_SEQUENCE}" />
     </form>
 </div>

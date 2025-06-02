@@ -1,134 +1,139 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * All Rights Reserved.
+ */
 
-Vtiger_Edit_Js("Quotes_Edit_Js",{},{
-	accountsReferenceField: false,
-	contactsReferenceField: false,
+/** @var Quotes_Edit_Js */
+Vtiger_Edit_Js("Quotes_Edit_Js", {}, {
+    accountsReferenceField: false,
+    contactsReferenceField: false,
 
-	init : function() {
-		this._super();
-		this.initializeVariables();
-	},
+    init: function () {
+        this._super();
+        this.initializeVariables();
+    },
 
-	initializeVariables : function() {
-		this._super();
-		const form = this.getForm();
-		this.accountsReferenceField = form.find('[name="account_id"]');
-		this.contactsReferenceField = form.find('[name="contact_id"]');
+    initializeVariables: function () {
+        this._super();
+        const form = this.getForm();
+        this.accountsReferenceField = form.find('[name="account_id"]');
+        this.contactsReferenceField = form.find('[name="contact_id"]');
     },
 
     /**
-	 * Function to get popup params
-	 */
-	getPopUpParams : function(container) {
-		var params = this._super(container);
-        var sourceFieldElement = jQuery('input[class="sourceField"]',container);
-		var referenceModule = jQuery('input[name=popupReferenceModule]', container).val();
-		if(!sourceFieldElement.length) {
-			sourceFieldElement = jQuery('input.sourceField',container);
-		}
+     * Function to get popup params
+     */
+    getPopUpParams: function (container) {
+        const params = this._super(container);
+        let sourceFieldElement = jQuery('input[class="sourceField"]', container);
+        const referenceModule = jQuery('input[name=popupReferenceModule]', container).val();
 
-		if((sourceFieldElement.attr('name') == 'contact_id' || sourceFieldElement.attr('name') == 'potential_id') && referenceModule != 'Leads') {
-			var form = this.getForm();
-			var parentIdElement  = form.find('[name="account_id"]');
-			if(parentIdElement.length > 0 && parentIdElement.val().length > 0 && parentIdElement.val() != 0) {
-				var closestContainer = parentIdElement.closest('td');
-				params['related_parent_id'] = parentIdElement.val();
-				params['related_parent_module'] = closestContainer.find('[name="popupReferenceModule"]').val();
-			} else if(sourceFieldElement.attr('name') == 'potential_id') {
-				parentIdElement  = form.find('[name="contact_id"]');
-				var relatedParentModule = parentIdElement.closest('td').find('input[name="popupReferenceModule"]').val()
-				if(parentIdElement.length > 0 && parentIdElement.val().length > 0 && relatedParentModule != 'Leads') {
-					closestContainer = parentIdElement.closest('td');
-					params['related_parent_id'] = parentIdElement.val();
-					params['related_parent_module'] = closestContainer.find('[name="popupReferenceModule"]').val();
-				}
-			}
+        if (!sourceFieldElement.length) {
+            sourceFieldElement = jQuery('input.sourceField', container);
+        }
+
+        if ((sourceFieldElement.attr('name') === 'contact_id' || sourceFieldElement.attr('name') === 'potential_id') && referenceModule !== 'Leads') {
+            const form = this.getForm();
+            let parentIdElement = form.find('[name="account_id"]');
+
+            if (parentIdElement.length > 0 && parentIdElement.val().length > 0 && parentIdElement.val() != 0) {
+                const closestContainer = parentIdElement.closest('td');
+                params['related_parent_id'] = parentIdElement.val();
+                params['related_parent_module'] = closestContainer.find('[name="popupReferenceModule"]').val();
+            } else if (sourceFieldElement.attr('name') === 'potential_id') {
+                parentIdElement = form.find('[name="contact_id"]');
+                const relatedParentModule = parentIdElement.closest('td').find('input[name="popupReferenceModule"]').val();
+
+                if (parentIdElement.length > 0 && parentIdElement.val().length > 0 && relatedParentModule !== 'Leads') {
+                    closestContainer = parentIdElement.closest('td');
+                    params['related_parent_id'] = parentIdElement.val();
+                    params['related_parent_module'] = closestContainer.find('[name="popupReferenceModule"]').val();
+                }
+            }
         }
         return params;
     },
 
     /**
-	 * Function which will register event for Reference Fields Selection
-	 */
-	registerReferenceSelectionEvent : function(container) {
-		/*this._super(container);
-		const self = this;
+     * Function which will register event for Reference Fields Selection
+     */
+    registerReferenceSelectionEvent: function (container) {
+        /*this._super(container);
+        const self = this;
 
-		this.accountsReferenceField.on(Vtiger_Edit_Js.referenceSelectionEvent, function(e, data){
-			self.referenceSelectionEventHandler(data, container);
-		});*/
-	},
+        this.accountsReferenceField.on(Vtiger_Edit_Js.referenceSelectionEvent, function(e, data){
+            self.referenceSelectionEventHandler(data, container);
+        });*/
+    },
 
     /**
-	 * Function to search module names
-	 */
-	searchModuleNames : function(params) {
-		var aDeferred = jQuery.Deferred();
+     * Function to search module names
+     */
+    searchModuleNames: function (params) {
+        const aDeferred = jQuery.Deferred();
 
-		if(typeof params.module == 'undefined') {
-			params.module = app.getModuleName();
-		}
-		if(typeof params.action == 'undefined') {
-			params.action = 'BasicAjax';
-		}
+        if (typeof params.module == 'undefined') {
+            params.module = app.getModuleName();
+        }
+        if (typeof params.action == 'undefined') {
+            params.action = 'BasicAjax';
+        }
 
-		if(typeof params.base_record == 'undefined') {
-			var record = jQuery('[name="record"]');
-			var recordId = app.getRecordId();
-			if(record.length) {
-				params.base_record = record.val();
-			} else if(recordId) {
-				params.base_record = recordId;
-			} else if(app.view() == 'List') {
-				var editRecordId = jQuery('#listview-table').find('tr.listViewEntries.edited').data('id');
-				if(editRecordId) {
-					params.base_record = editRecordId;
-				}
-			}
-		}
+        if (typeof params.base_record == 'undefined') {
+            const record = jQuery('[name="record"]');
+            const recordId = app.getRecordId();
 
-		if (params.search_module == 'Contacts' || params.search_module == 'Potentials') {
-			var form = this.getForm();
-			if(this.accountsReferenceField.length > 0 && this.accountsReferenceField.val().length > 0) {
-				var closestContainer = this.accountsReferenceField.closest('td');
-				params.parent_id = this.accountsReferenceField.val();
-				params.parent_module = closestContainer.find('[name="popupReferenceModule"]').val();
-			} else if(params.search_module == 'Potentials') {
+            if (record.length) {
+                params.base_record = record.val();
+            } else if (recordId) {
+                params.base_record = recordId;
+            } else if (app.view() === 'List') {
+                const editRecordId = jQuery('#listview-table').find('tr.listViewEntries.edited').data('id');
 
-				if(this.contactsReferenceField.length > 0 && this.contactsReferenceField.val().length > 0) {
-					closestContainer = this.contactsReferenceField.closest('td');
-					params.parent_id = this.contactsReferenceField.val();
-					params.parent_module = closestContainer.find('[name="popupReferenceModule"]').val();
-				}
-			}
-		}
+                if (editRecordId) {
+                    params.base_record = editRecordId;
+                }
+            }
+        }
+
+        if (params.search_module === 'Contacts' || params.search_module === 'Potentials') {
+            if (this.accountsReferenceField.length > 0 && this.accountsReferenceField.val().length > 0) {
+                let closestContainer = this.accountsReferenceField.closest('td');
+                params.parent_id = this.accountsReferenceField.val();
+                params.parent_module = closestContainer.find('[name="popupReferenceModule"]').val();
+            } else if (params.search_module === 'Potentials') {
+
+                if (this.contactsReferenceField.length > 0 && this.contactsReferenceField.val().length > 0) {
+                    closestContainer = this.contactsReferenceField.closest('td');
+                    params.parent_id = this.contactsReferenceField.val();
+                    params.parent_module = closestContainer.find('[name="popupReferenceModule"]').val();
+                }
+            }
+        }
 
         // Added for overlay edit as the module is different
-        if(params.search_module == 'Products' || params.search_module == 'Services') {
+        if (params.search_module === 'Products' || params.search_module === 'Services') {
             params.module = 'Quotes';
         }
 
-		app.request.get({'data':params}).then(
-			function(error, data){
-                if(error == null) {
+        app.request.get({'data': params}).then(
+            function (error, data) {
+                if (error == null) {
                     aDeferred.resolve(data);
                 }
-			},
-			function(error){
-				aDeferred.reject();
-			}
-		);
+            },
+            function (error) {
+                aDeferred.reject();
+            }
+        );
 
-		return aDeferred.promise();
-	},
+        return aDeferred.promise();
+    },
 
-	registerBasicEvents: function (container) {
-		this._super(container);
-		this.registerReferenceSelectionEvent(this.getForm());
-	},
+    registerBasicEvents: function (container) {
+        this._super(container);
+        this.registerReferenceSelectionEvent(this.getForm());
+    },
 });
