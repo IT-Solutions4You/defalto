@@ -14,7 +14,10 @@ include_once 'vtlib/Vtiger/Link.php';
  * Vtiger Link Model Class
  */
 class Vtiger_Link_Model extends Vtiger_Link {
-
+    public const DEFAULT_STYLE_CLASS = 'btn-outline-secondary';
+    public const PRIMARY_STYLE_CLASS = 'btn-primary active';
+    public const LINK_LISTVIEWBASIC = 'LISTVIEWBASIC';
+    public const LINK_LISTVIEWSETTING = 'LISTVIEWSETTING';
 	// Class variable to store the child links
 	protected $childlinks = array();
 
@@ -340,5 +343,79 @@ class Vtiger_Link_Model extends Vtiger_Link {
         }
 
         return (string)$this->get('link_template');
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    public function getStyleClass(): string
+    {
+        return (string)$this->get('style_class');
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function isTemplate(): bool
+    {
+        return str_starts_with($this->get('linkurl'), 'template:');
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    public function getTemplate(): string
+    {
+        [$type, $template, $module] = explode(':', $this->get('linkurl'), 3);
+
+        if (empty($module)) {
+            $module = 'Vtiger';
+        }
+
+        return vtemplate_path($template, $module);
+    }
+
+    /**
+     * @param array $links
+     * @param array $skipLabels
+     * @return array
+     */
+    public static function checkAndConvertLinks(array $links, $skipLabels = []): array
+    {
+        $convertedLinks = [];
+
+        foreach ($links as $link) {
+            if (is_array($link)) {
+                $link = Vtiger_Link_Model::getInstanceFromValues($link);
+            }
+
+            if (in_array($link->getLabel(), $skipLabels)) {
+                continue;
+            }
+
+            $convertedLinks[$link->getType()][] = $link;
+        }
+
+        return $convertedLinks;
+    }
+
+    /**
+     * @param array $links
+     * @param array $appendLinks
+     * @return array
+     */
+    public static function merge(array $links, array $appendLinks): array
+    {
+        $keys = array_merge(array_keys($links), array_keys($appendLinks));
+        $mergedLinks = [];
+
+        foreach ($keys as $key) {
+            $mergedLinks[$key] = array_merge((array)$links[$key], (array)$appendLinks[$key]);
+        }
+
+        return $mergedLinks;
     }
 }

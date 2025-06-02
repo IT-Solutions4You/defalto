@@ -12,22 +12,19 @@ class Invoice_DetailView_Model extends Vtiger_DetailView_Model
     public function getDetailViewLinks($linkParams)
     {
         $currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-
-        $linkModelList = parent::getDetailViewLinks($linkParams);
         $recordModel = $this->getRecord();
-
+        $links = [];
         $purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
 
         if ($currentUserModel->hasModuleActionPermission($purchaseOrderModuleModel->getId(), 'CreateView')) {
-            $basicActionLink = [
+            $links[] = [
                 'linktype'  => 'DETAILVIEW',
                 'linklabel' => vtranslate('LBL_GENERATE') . ' ' . vtranslate($purchaseOrderModuleModel->getSingularLabelKey(), 'PurchaseOrder'),
                 'linkurl'   => $recordModel->getCreatePurchaseOrderUrl(),
-                'linkicon'  => ''
+                'linkicon'  => '',
             ];
-            $linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
         }
 
-        return $linkModelList;
+        return Vtiger_Link_Model::merge(parent::getDetailViewLinks($linkParams), Vtiger_Link_Model::checkAndConvertLinks($links));
     }
 }

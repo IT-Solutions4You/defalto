@@ -207,7 +207,6 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $viewer->assign('CURRENT_VIEW', $request->get('view'));
         $viewer->assign('MODULE_NAME', $moduleName);
-        $viewer->assign("VERSION", EMAILMaker_Version_Helper::$version);
         $viewer->assign('MODULE_BASIC_ACTIONS', []);
 
         $mode = $request->getMode();

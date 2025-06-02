@@ -177,9 +177,10 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 					array(
 						'linktype' => 'LISTVIEWBASIC',
 						// NOTE: $relatedModel->get('label') assuming it to be a module name - we need singular label for Add action.
-						'linklabel' => vtranslate('LBL_ADD')." ".vtranslate('SINGLE_'.$relatedModel->getName(), $relatedModel->getName()),
+						'linklabel' => vtranslate('LBL_ADD_RECORD', $relatedModel->getName()),
 						'linkurl' => $this->getCreateViewUrl(),
 						'linkicon' => '',
+                        'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
 					)
 				);
 			}

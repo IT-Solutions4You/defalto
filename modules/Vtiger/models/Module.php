@@ -1166,13 +1166,14 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
 		$moduleName = $this->getName();
 		$basicLinks = array();
 		if($createPermission) {
-            $basicLinks[] = array(
+            $basicLinks[] = [
                 'linktype' => 'BASIC',
                 'linklabel' => 'LBL_ADD_RECORD',
                 'linkurl' => $this->getCreateRecordUrl(),
                 'linkicon' => 'fa-plus',
-            );
-			$importPermission = Users_Privileges_Model::isPermitted($this->getName(), 'Import');
+                'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
+            ];
+            $importPermission = Users_Privileges_Model::isPermitted($this->getName(), 'Import');
 			if($importPermission && $createPermission) {
 				$basicLinks[] = array(
 					'linktype' => 'BASIC',
@@ -1924,7 +1925,7 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         $imageFilePath = 'layouts/' . Vtiger_Viewer::getLayoutName() . "/modules/$moduleName/$moduleName.png";
 
         if (file_exists($imageFilePath)) {
-            $moduleIcon = "<img height='$height' src='$imageFilePath' title='$title'/>";
+            $moduleIcon = "<img style='height: $height;' src='$imageFilePath' title='$title'/>";
         }
 
         if (!empty($this->getFontIcon())) {

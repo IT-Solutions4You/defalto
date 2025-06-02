@@ -1366,9 +1366,10 @@ function get_contactsforol($user_name)
         $portalURL = vtranslate('Please ', $moduleName) . '<a href="' . $PORTAL_URL . '" style="font-family:Arial, Helvetica, sans-serif;font-size:13px;">' . vtranslate('click here', $moduleName) . '</a>';
 
         $language = Vtiger_Language_Handler::getLanguage();
-        $params = array('templatename' => 'Customer Login Details', 'category' => 'system');
+        $params = ['templatename' => 'Customer Login Details', 'category' => 'system'];
         $templateId = EMAILMaker_Record_Model::getTemplateId($params);
-        $contentModel = EMAILMaker_EMAILContent_Model::getInstanceById($templateId, $language, $moduleName, $entityData->getId(), $entityData->getId(), $moduleName);
+        $recordId = vtws_getIdComponents($entityData->getId())[1];
+        $contentModel = EMAILMaker_EMAILContent_Model::getInstanceById($templateId, $language, $moduleName, $recordId, $recordId, $moduleName);
         $contentModel->getContent();
 
         $body = decode_html($contentModel->getBody());

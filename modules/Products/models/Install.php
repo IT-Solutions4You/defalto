@@ -42,10 +42,13 @@ class Products_Install_Model extends Core_Install_Model
     {
         $this->updateToStandardModule();
         $this->updateRelatedList();
+        $this->updateComments();
     }
 
     public function deleteCustomLinks(): void
     {
+        $this->updateRelatedList(false);
+        $this->updateComments(false);
     }
 
     public function getBlocks(): array

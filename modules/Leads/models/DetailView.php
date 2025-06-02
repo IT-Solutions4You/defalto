@@ -15,55 +15,36 @@ class Leads_DetailView_Model extends Accounts_DetailView_Model {
 	 * @return <array> - array of link models in the format as below
 	 *                   array('linktype'=>list of link models);
 	 */
-	public function getDetailViewLinks($linkParams) {
-		$currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+    public function getDetailViewLinks($linkParams)
+    {
+        $currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+        $moduleModel = $this->getModule();
+        $recordModel = $this->getRecord();
+        $baseDetailViewModel = new Vtiger_DetailView_Model();
+        $baseDetailViewModel->setModule($moduleModel);
+        $baseDetailViewModel->setRecord($recordModel);
+        $links = [];
+        $SMSNotifierModuleModel = Vtiger_Module_Model::getInstance('SMSNotifier');
 
-		$moduleModel = $this->getModule();
-		$recordModel = $this->getRecord();
+        if ($SMSNotifierModuleModel && $currentUserModel->hasModulePermission($SMSNotifierModuleModel->getId())) {
+            $links[] = [
+                'linktype' => 'DETAILVIEWBASIC',
+                'linklabel' => 'LBL_SEND_SMS',
+                'linkurl' => 'javascript:Vtiger_Detail_Js.triggerSendSms("index.php?module=' . $this->getModule()->getName() . '&view=MassActionAjax&mode=showSendSMSForm","SMSNotifier");',
+                'linkicon' => '',
+            ];
+        }
 
-		$baseDetailViewModel = new Vtiger_DetailView_Model();
-		$baseDetailViewModel->setModule($moduleModel);
-		$baseDetailViewModel->setRecord($recordModel);
+        if (Users_Privileges_Model::isPermitted($moduleModel->getName(), 'ConvertLead', $recordModel->getId()) && Users_Privileges_Model::isPermitted($moduleModel->getName(), 'EditView', $recordModel->getId()) && !$recordModel->isLeadConverted()) {
+            $links[] = [
+                'linktype' => 'DETAILVIEWADVANCED',
+                'linklabel' => 'LBL_CONVERT_LEAD',
+                'linkurl' => 'Javascript:Leads_Detail_Js.convertLead("' . $recordModel->getConvertLeadUrl() . '",this);',
+                'linkicon' => '<i class="fa-solid fa-right-from-bracket"></i>',
+            ];
+        }
 
-		$linkModelList = $baseDetailViewModel::getDetailViewLinks($linkParams);
+        return Vtiger_Link_Model::merge($baseDetailViewModel::getDetailViewLinks($linkParams), Vtiger_Link_Model::checkAndConvertLinks($links));
+    }
 
-		//TODO: update the database so that these separate handlings are not required
-		$index=0;
-		foreach($linkModelList['DETAILVIEW'] as $link) {
-			if($link->linklabel == 'View History' || $link->linklabel == 'Send SMS') {
-				unset($linkModelList['DETAILVIEW'][$index]);
-			} else if($link->linklabel == 'LBL_SHOW_ACCOUNT_HIERARCHY') {
-				$linkURL = 'index.php?module=Accounts&view=AccountHierarchy&record='.$recordModel->getId();
-				$link->linkurl = 'javascript:Accounts_Detail_Js.triggerAccountHierarchy("'.$linkURL.'");';
-				unset($linkModelList['DETAILVIEW'][$index]);
-				$linkModelList['DETAILVIEW'][$index] = $link;
-			}
-			$index++;
-		}
-		
-		$SMSNotifierModuleModel = Vtiger_Module_Model::getInstance('SMSNotifier');
-		if($SMSNotifierModuleModel && $currentUserModel->hasModulePermission($SMSNotifierModuleModel->getId())) {
-			$basicActionLink = array(
-				'linktype' => 'DETAILVIEWBASIC',
-				'linklabel' => 'LBL_SEND_SMS',
-				'linkurl' => 'javascript:Vtiger_Detail_Js.triggerSendSms("index.php?module='.$this->getModule()->getName().
-								'&view=MassActionAjax&mode=showSendSMSForm","SMSNotifier");',
-				'linkicon' => ''
-			);
-			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
-		}
-		
-		if(Users_Privileges_Model::isPermitted($moduleModel->getName(), 'ConvertLead', $recordModel->getId()) && Users_Privileges_Model::isPermitted($moduleModel->getName(), 'EditView', $recordModel->getId()) && !$recordModel->isLeadConverted()) {
-			$basicActionLink = array(
-				'linktype' => 'DETAILVIEWBASIC',
-				'linklabel' => 'LBL_CONVERT_LEAD',
-				'linkurl' => 'Javascript:Leads_Detail_Js.convertLead("'.$recordModel->getConvertLeadUrl().'",this);',
-				'linkicon' => ''
-			);
-			$linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
-		}
-        
-		return $linkModelList;
-	}
-	
 }

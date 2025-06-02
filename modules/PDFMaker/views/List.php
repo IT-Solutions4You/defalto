@@ -90,8 +90,6 @@ class PDFMaker_List_View extends Vtiger_Index_View
 
         $viewer = $this->getViewer($request);
 
-        $viewer->assign('VERSION', PDFMaker_Version_Helper::$version);
-
         $return_data = $PDFMakerModel->GetListviewData();
         $viewer->assign('PDFTEMPLATES', $return_data);
         $category = getParentTab();

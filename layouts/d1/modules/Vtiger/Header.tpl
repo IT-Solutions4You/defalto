@@ -9,7 +9,8 @@
 <html lang="en" data-bs-theme="light">
 	<head>
 		<title>{vtranslate($PAGETITLE, $QUALIFIED_MODULE)}</title>
-        <link rel="SHORTCUT ICON" href="layouts/d1/skins/images/favicon.ico">
+		<link rel="SHORTCUT ICON" href="favicon.ico">
+		<link rel="manifest" href="manifest.json" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link type='text/css' rel='stylesheet' href='{vresource_url('vendor/twbs/bootstrap/dist/css/bootstrap.min.css')}'>

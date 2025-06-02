@@ -24,6 +24,66 @@ class CustomerPortal_Install_Model extends Core_Install_Model {
     public function addCustomLinks(): void
     {
         $this->updateSettingsLinks();
+        $this->updateToStandardModule();
+        $this->addModuleToCustomerPortal();
+        $this->updateCustomerPortalModules();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function updateCustomerPortalModules(): void
+    {
+        $portalModules = [
+            'HelpDesk',
+            'Faq',
+            'Invoice',
+            'Quotes',
+            'Products',
+            'Services',
+            'Documents',
+            'Contacts',
+            'Accounts',
+            'Project',
+            'ProjectTask',
+            'ProjectMilestone',
+            'Assets',
+        ];
+        $adb = $this->getDB();
+        $result = $adb->pquery('SELECT max(sequence) AS max_tabseq FROM vtiger_customerportal_tabs', []);
+        $i = (int)$adb->query_result($result, 0, 'max_tabseq') + 1;
+
+        foreach ($portalModules as $module) {
+            $tabId = getTabid($module);
+            $tabsResult = $adb->pquery('SELECT tabid FROM vtiger_customerportal_tabs WHERE tabid=?', [$tabId]);
+
+            if ($tabId && !$adb->num_rows($tabsResult)) {
+                ++$i;
+                $adb->pquery('INSERT INTO vtiger_customerportal_tabs(tabid,visible,sequence) VALUES (?, ?, ?)', [$tabId, 1, $i]);
+                $adb->pquery('INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?, ?, ?)', [$tabId, 'showrelatedinfo', 1]);
+            }
+        }
+
+        if(!$this->isPrefExists(0, 'userid')) {
+            $adb->pquery('INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?, ?, ?)', [0, 'userid', 1]);
+        }
+
+        if(!$this->isPrefExists(0, 'defaultassignee')) {
+            $adb->pquery('INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?, ?, ?)', [0, 'defaultassignee', 1]);
+        }
+    }
+
+    /**
+     * @param int $tabId
+     * @param string $key
+     * @return bool
+     */
+    public function isPrefExists(int $tabId, string $key): bool
+    {
+        $adb = $this->getDB();
+        $result = $adb->pquery('SELECT tabid FROM vtiger_customerportal_prefs WHERE tabid=? AND prefkey=?', [$tabId, $key]);
+
+        return (bool)$adb->num_rows($result);
     }
 
     /**

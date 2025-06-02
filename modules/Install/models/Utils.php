@@ -29,6 +29,8 @@ class Install_Utils_Model {
         ['ru_ru', 'Russian', 'Russian'],
         ['sv_se', 'Swedish', 'Swedish'],
         ['tr_tr', 'Turkce Dil Paketi', 'Turkce',],
+        ['sk_sk', 'Slovak', 'Slovak',],
+        ['cz_cz', 'Czech', 'Czech',],
     ];
 
     public static array $registerModules = [
@@ -56,6 +58,8 @@ class Install_Utils_Model {
         'ITS4YouEmails',
         'EMAILMaker',
         'PDFMaker',
+        'Reporting',
+        'Installer',
     ];
 
     /**
@@ -596,7 +600,7 @@ class Install_Utils_Model {
     public static function installModule(string $moduleName): void
     {
         if(defined('VTIGER_UPGRADE')) {
-            self::log('Upgrading Module [' . $moduleName . '] -- Starts');
+            Core_Install_Model::logSuccess('Upgrading Module [' . $moduleName . '] -- Starts');
         }
 
         $instance = Core_Install_Model::getInstance('module.postinstall', $moduleName);
@@ -604,17 +608,8 @@ class Install_Utils_Model {
         $instance->installModule();
 
         if(defined('VTIGER_UPGRADE')) {
-            self::log('Upgrading Module [' . $moduleName . '] -- Ends');
+            Core_Install_Model::logSuccess('Upgrading Module [' . $moduleName . '] -- Ends');
         }
-    }
-
-    /**
-     * @param string $message
-     * @return void
-     */
-    public static function log(string $message): void
-    {
-        echo '<div style="font-weight: bold; color: red;">' . $message . '</div>';
     }
 
     /**
@@ -624,13 +619,13 @@ class Install_Utils_Model {
     public static function installLanguage(array $languageInfo): void
     {
         if(defined('VTIGER_UPGRADE')) {
-            self::log('Upgrading Language [' . $languageInfo[0] . '] -- Starts');
+            Core_Install_Model::logSuccess('Upgrading Language [' . $languageInfo[0] . '] -- Starts');
         }
 
         Vtiger_Language::register($languageInfo[0], $languageInfo[1], $languageInfo[2]);
 
         if(defined('VTIGER_UPGRADE')) {
-            self::log('Upgrading Language [' . $languageInfo[0] . '] -- Ends');
+            Core_Install_Model::logSuccess('Upgrading Language [' . $languageInfo[0] . '] -- Ends');
         }
     }
 

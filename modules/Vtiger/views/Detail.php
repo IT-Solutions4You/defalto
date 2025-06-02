@@ -23,6 +23,8 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$this->exposeMethod('getEvents');
 		$this->exposeMethod('showRelatedRecords');
         $this->exposeMethod('DetailSharingRecord');
+        $this->exposeMethod('showTagsModalWindow');
+        $this->exposeMethod('showAllTagsModalWindow');
 	}
 
 	public function requiresPermission(Vtiger_Request $request){
@@ -713,5 +715,43 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
         }
 
         return '';
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     */
+    public function showTagsModalWindow(Vtiger_Request $request): void
+    {
+        $moduleName = $request->getModule();
+        $recordId = $request->getRecord();
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $tagsList = Vtiger_Tag_Model::getAllAccessible($currentUserModel->getId(), $moduleName, $recordId);
+        $allUserTags = Vtiger_Tag_Model::getAllUserTags($currentUserModel->getId());
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('TAGS_LIST', $tagsList);
+        $viewer->assign('ALL_USER_TAGS', $allUserTags);
+        $viewer->assign('DELETE_OLD_TAGS', $request->get('deleteOldTags'));
+        $viewer->view('AddTagUI.tpl', $request->getModule());
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     */
+    public function showAllTagsModalWindow(Vtiger_Request $request): void
+    {
+        $moduleName = $request->getModule();
+        $recordId = $request->getRecord();
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $tagsList = Vtiger_Tag_Model::getAllAccessible($currentUserModel->getId(), $moduleName, $recordId);
+        $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('TAGS_LIST', $tagsList);
+        $viewer->assign('RECORD_NAME', $recordModel ? $recordModel->getName() : '');
+        $viewer->assign('VIEW', 'Detail');
+        $viewer->view('AllTagUI.tpl', $request->getModule());
     }
 }

@@ -8,6 +8,10 @@
 
 class Vtiger_TagCloud_Action extends Vtiger_Mass_Action {
 
+    public array $existingTags = [];
+    public array $deletedTags = [];
+    public array $allAccessibleTags = [];
+
 	function __construct() {
 		parent::__construct();
 		$this->exposeMethod('save');
@@ -78,73 +82,89 @@ class Vtiger_TagCloud_Action extends Vtiger_Mass_Action {
 		$module = $request->get('module');
 		$parent = $request->get('addedFrom');
 
-		if($request->has('selected_ids')) {
-			$recordIds = $this->getRecordsListFromRequest($request);
-		}else{
-			$recordIds = array($request->get('record'));
-		}
+        if ($request->has('selected_ids')) {
+            $recordIds = $this->getRecordsListFromRequest($request);
+        } else {
+            $recordIds = [$request->get('record')];
+        }
 
-		if($parent && $parent == 'Settings'){
-			$recordIds = array();
-		}
+        if ('Settings' === $parent) {
+            $recordIds = [];
+        }
 
-		$tagsList = $request->get('tagsList');
-		$newTags = $tagsList['new'];
-		if(empty($newTags)) {
-			$newTags = array();
-		}
-
-        $existingTags = isset($tagsList['existing']);
-
-		if(empty($existingTags)) {
-			$existingTags = array();
-		}
-
-        $deletedTags = isset($tagsList['deleted']);
-
-		if(empty($deletedTags)) {
-			$deletedTags = array();
-		}
+        $recordIds = array_filter($recordIds);
+        $this->existingTags = $request->get('tagsList') ?: [];
+        $this->deletedTags = $request->get('deleteTagsList') ?: [];
+		$newTags = $request->get('newTagList') ?: [];
 		$newTagType = $request->get('newTagType');
+        $isDeleteOldTags = !$request->isEmpty('deleteOldTags');
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$userId = $currentUser->getId();
-		if(!is_array($existingTags)) {
-			$existingTags = array();
-		}
+        
+        $this->createNewTags($newTags, $newTagType);
+        $this->retrieveAllAccessibleTags($recordIds, $module, $userId);
+        $this->retrieveDeleteTags();
 
-		$result = array();
-		foreach($newTags as $tagName) {
-			if(empty($tagName)) continue;
-			$tagModel = new Vtiger_Tag_Model();
-			$tagModel->set('tag', $tagName)->setType($newTagType);
-			$tagId = $tagModel->create();
-			array_push($existingTags, $tagId);
-			$result['new'][$tagId] = array('name'=> decode_html($tagName), 'type' => $newTagType);
-		}
-		$existingTags = array_unique($existingTags);
+        foreach ($recordIds as $recordId) {
+            Vtiger_Tag_Model::saveForRecord($recordId, $this->existingTags, $userId, $module);
 
-		foreach($recordIds as $recordId) {
-			if(!empty($recordId)){
-				Vtiger_Tag_Model::saveForRecord($recordId, $existingTags, $userId, $module);
-				Vtiger_Tag_Model::deleteForRecord($recordId, $deletedTags, $userId, $module);
-			}
-		}
+            if ($isDeleteOldTags) {
+                Vtiger_Tag_Model::deleteForRecord($recordId, $this->deletedTags, $userId, $module);
+            }
+        }
 
+        $result = [];
 
-		$allAccessibleTags =  Vtiger_Tag_Model::getAllAccessible($userId, $module, $recordId);
-		foreach ($allAccessibleTags as $tagModel) {
-			$result['tags'][] = array('name'=> decode_html($tagModel->getName()), 'type'=>$tagModel->getType(),'id' => $tagModel->getId());
-		}
-		$allAccessibleTagCount = php7_count($allAccessibleTags);
-		$result['moreTagCount'] = $allAccessibleTagCount - Vtiger_Tag_Model::NUM_OF_TAGS_DETAIL;
-		$result['deleted'] = $deletedTags;
+        foreach ($this->allAccessibleTags as $tagModel) {
+            $result['tags'][] = ['name' => decode_html($tagModel->getName()), 'type' => $tagModel->getType(), 'id' => $tagModel->getId()];
+        }
 
-		$response = new Vtiger_Response();
-		$response->setResult($result);
-		$response->emit();
-	}
+        $result['moreTagCount'] = php7_count($this->allAccessibleTags) - Vtiger_Tag_Model::NUM_OF_TAGS_DETAIL;
+        $result['deleted'] = $this->deletedTags;
 
-	public function update(Vtiger_Request $request) {
+        $response = new Vtiger_Response();
+        $response->setResult($result);
+        $response->emit();
+    }
+
+    public function createNewTags($newTags, $newTagType)
+    {
+        foreach ($newTags as $tagName) {
+            if (empty($tagName)) {
+                continue;
+            }
+
+            $tagModel = new Vtiger_Tag_Model();
+            $tagModel->set('tag', trim($tagName))->setType($newTagType);
+            $tagId = $tagModel->create();
+            $this->existingTags[] = $tagId;
+        }
+    }
+
+    public function retrieveAllAccessibleTags(array $recordIds, string $module, int $userId): void
+    {
+        $this->allAccessibleTags = [];
+
+        foreach ($recordIds as $recordId) {
+            $this->allAccessibleTags += Vtiger_Tag_Model::getAllAccessible($userId, $module, $recordId);
+        }
+
+        foreach ($this->existingTags as $existingTag) {
+            $this->allAccessibleTags[$existingTag] = Vtiger_Tag_Model::getInstanceById($existingTag);
+        }
+    }
+
+    public function retrieveDeleteTags(): void
+    {
+        foreach ($this->allAccessibleTags as $accessibleTagId => $accessibleTag) {
+            if (!in_array($accessibleTagId, $this->existingTags)) {
+                $this->deletedTags[] = $accessibleTagId;
+                unset($this->allAccessibleTags[$accessibleTagId]);
+            }
+        }
+    }
+
+    public function update(Vtiger_Request $request) {
 		$module = $request->get('module');
 		$tagId = $request->get('id');
 		$tagName = $request->get('name');

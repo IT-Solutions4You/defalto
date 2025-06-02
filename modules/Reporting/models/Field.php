@@ -10,6 +10,7 @@
 
 class Reporting_Field_Model extends Vtiger_Field_Model
 {
+    public $module;
     public static array $fullWidth = ['report_type', 'primary_module', 'fields', 'sort_by', 'calculation', 'labels', 'filter', 'sharing'];
     public static array $customWidth = ['fields', 'labels', 'filter', 'calculation', 'sort_by', 'width', 'align'];
     public static array $disabledAjaxEditable = ['report_type', 'primary_module', 'fields', 'sort_by', 'calculation', 'labels', 'filter'];

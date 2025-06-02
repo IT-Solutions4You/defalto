@@ -54,6 +54,6 @@ class Documents_Field_Model extends Vtiger_Field_Model {
         $isParentEditable = parent::isAjaxEditable();
         $fieldType = $this->get('uitype');
 
-        return $isParentEditable && !in_array($fieldType, [self::UITYPE_CKEDITOR, self::UITYPE_FULL_WIDTH_TEXT_AREA]);
+        return $isParentEditable && !in_array($fieldType, [self::UITYPE_CKEDITOR, self::UITYPE_FULL_WIDTH_TEXT_AREA, self::UITYPE_FOLDER_NAME]);
     }
 }

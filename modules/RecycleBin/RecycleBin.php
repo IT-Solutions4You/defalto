@@ -6,7 +6,7 @@
  * All Rights Reserved.
  */
 
-class RecycleBin
+class RecycleBin extends CRMExtension
 {
     public string $moduleLabel = 'Recycle Bin';
     public string $moduleName = 'RecycleBin';

@@ -14,18 +14,32 @@ require_once('include/utils/UserInfoUtil.php');
 require_once("include/Zend/Json.php");
 require_once 'include/RelatedListView.php';
 
-class CRMEntity {
-    public int $isEntity = 1;
-	public $ownedby;
-	public $recordSource = 'CRM';
-	public $mode;
-    public $log;
-    public $db;
-    public string $parentName = '';
-    public string $moduleName = '';
-    public string $moduleLabel = '';
+class CRMExtension
+{
     public $column_fields = [];
+    public $related_tables = [];
+    public $db;
+    public int $isEntity = 0;
+    public $log;
+    public $mode;
+    public string $moduleLabel = '';
+    public string $moduleName = '';
+    public $ownedby;
+    public string $parentName = '';
+    public $recordSource = 'CRM';
 
+    public $popup_fields;
+
+    public $IsCustomModule;
+    public $name;
+    public string $moduleVersion = '0.1';
+    public $list_fields_names = [];
+    public $list_fields = [];
+}
+
+class CRMEntity extends CRMExtension
+{
+    public int $isEntity = 1;
 	/**
 	 * Detect if we are in bulk save mode, where some features can be turned-off
 	 * to improve performance.
@@ -1828,7 +1842,7 @@ class CRMEntity {
                     'INSERT INTO vtiger_crmentityrel(crmid, module, relcrmid, relmodule) VALUES(?,?,?,?)',
                     [$crmid, $module, $relcrmid, $with_module]
                 );
-                $this->setTrackLinkedInfo($crmid, $relcrmid);
+                $this->setTrackLinkedInfo((int)$crmid, (int)$relcrmid);
             }
         }
     }
@@ -3083,39 +3097,45 @@ class TrackableObject implements ArrayAccess, IteratorAggregate {
 		$this->storage = $value;
 	}
 
-	function offsetExists($key) {
-		return isset($this->storage[$key]) || array_key_exists($key, $this->storage);
-	}
+    function offsetExists($key): bool
+    {
+        return isset($this->storage[$key]) || array_key_exists($key, $this->storage);
+    }
 
-	function offsetSet($key, $value) {
+    function offsetSet($key, $value): void
+    {
         if (is_array($value)) {
             $value = empty($value) ? '' : (array_key_exists(0, $value) ? $value[0] : '');
         }
 
-		if($this->tracking && $this->trackingEnabled) {
-			$olderValue = $this->offsetGet($key);
-			// decode_html only expects string
-			$olderValue = is_string($olderValue) ? decode_html($olderValue) : $olderValue ;
-			//same logic is used in vtEntityDelta to check for delta
-			if((empty($olderValue) && !empty($value)) || ($olderValue !== $value)) {
-				$this->changed[] = $key;
-			}
-		}
-		$this->storage[$key] = $value;
-	}
+        if ($this->tracking && $this->trackingEnabled) {
+            $olderValue = $this->offsetGet($key);
+            // decode_html only expects string
+            $olderValue = is_string($olderValue) ? decode_html($olderValue) : $olderValue;
+            //same logic is used in vtEntityDelta to check for delta
+            if ((empty($olderValue) && !empty($value)) || ($olderValue !== $value)) {
+                $this->changed[] = $key;
+            }
+        }
+        $this->storage[$key] = $value;
+    }
 
-	public function offsetUnset($key) {
-		unset($this->storage[$key]);
-	}
+    public function offsetUnset($key): void
+    {
+        unset($this->storage[$key]);
+    }
 
-	public function offsetGet($key) {
-		return isset($this->storage[$key]) || array_key_exists($key, $this->storage) ? $this->storage[$key] : null;
-	}
+    public function offsetGet(mixed $key): mixed
+    {
+        return isset($this->storage[$key]) || array_key_exists($key, $this->storage) ? $this->storage[$key] : null;
+    }
 
-	public function getIterator() {
-		$iterator = new ArrayObject($this->storage);
-		return $iterator->getIterator();
-	}
+    public function getIterator(): Traversable
+    {
+        $iterator = new ArrayObject($this->storage);
+
+        return $iterator->getIterator();
+    }
 
 	function getChanged() {
 		return $this->changed;

@@ -10,7 +10,7 @@
     {assign var=CUSTOM_VIEWS value=CustomView_Record_Model::getAllByGroup($MODULE)}
     {assign var=ACTIVE_TAG value=Vtiger_Tag_Model::getInstanceById($REQUEST_INSTANCE.tag)}
     {assign var=TAGS value=Vtiger_Tag_Model::getAllByCurrentUser($MODULE)}
-    {assign var=ACTIVE_CUSTOM_VIEW value=CustomView_Record_Model::getInstanceByRequest($REQUEST_INSTANCE)}
+    {assign var=ACTIVE_CUSTOM_VIEW value=CustomView_Record_Model::getActiveInstance($MODULE)}
     {if $ACTIVE_TAG}
         {assign var=ACTIVE_CV_LABEL value=$ACTIVE_TAG->get('tag')}
     {else}

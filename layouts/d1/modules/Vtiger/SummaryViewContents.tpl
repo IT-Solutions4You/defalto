@@ -12,7 +12,7 @@
 	<div class="container-fluid">
 	{foreach item=FIELD_MODEL key=FIELD_NAME from=$SUMMARY_RECORD_STRUCTURE['SUMMARY_FIELDS']}
         {assign var=fieldDataType value=$FIELD_MODEL->getFieldDataType()}
-			<div class="summaryViewEntries row py-2">
+			<div class="summaryViewEntries row align-items-center py-2">
 				<div class="col-lg-4 fieldLabel" >
                     <label class="muted text-truncate" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}">
                         {vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}
@@ -22,8 +22,8 @@
                         {/if}
                     </label>
                 </div>
-				<div class="col-lg-8 fieldValue ">
-                    <div>
+				<div class="col-lg-8 fieldValue">
+                    <div class="d-flex align-items-center justify-content-between">
                         {assign var=DISPLAY_VALUE value="{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get("fieldvalue"))}"}                  
                         <span class="fw-semibold value text-break-all" title="{strip_tags($DISPLAY_VALUE)}">
                             {include file=$FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName()|@vtemplate_path:$MODULE_NAME FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}

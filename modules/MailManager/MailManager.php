@@ -8,10 +8,10 @@
 
 require_once 'include/Webservices/Query.php';
 
-class MailManager {
+class MailManager extends CRMExtension {
 
-    public $moduleName = 'MailManager';
-    public $parentName = 'Tools';
+    public string $moduleName = 'MailManager';
+    public string $parentName = 'Tools';
     public $id;
     public $allowDeleted;
 

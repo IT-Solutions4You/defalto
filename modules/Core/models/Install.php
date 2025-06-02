@@ -249,6 +249,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     /**
      * @param string $moduleName
      * @return false|Vtiger_Module
+     * @throws AppException
      */
     public function createModule(string $moduleName): Vtiger_Module|bool
     {
@@ -264,7 +265,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $groupRelTable = $moduleFocus->groupFieldTable[0] ?? '';
 
         $versionClass = $moduleName . '_Version_Helper';
-        $version = class_exists($versionClass) ? $versionClass::getVersion() : 0.1;
+        $version = class_exists($versionClass) ? $versionClass::getVersion() : $moduleFocus->moduleVersion;
 
         if (!empty($entity) && empty($baseTableId)) {
             self::logError('Empty base table ID');
@@ -319,6 +320,15 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $moduleInstance->grouptable = $groupRelTable;
         $moduleInstance->save();
 
+        $this->getTable('vtiger_tab', 'tabid')->updateData([
+            'version' => $moduleInstance->version,
+            'parent' => $moduleInstance->parent,
+            'tablabel' => $moduleInstance->label,
+            'isentitytype' => $moduleInstance->isentitytype,
+        ], [
+            'tabid' => $moduleInstance->id,
+        ]);
+
         return $moduleInstance;
     }
 
@@ -363,15 +373,28 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         self::logSuccess('Webservice Setup');
 
-        if ($moduleInstance->isentitytype) {
+        $blocks = $this->getBlocks();
+
+        if (!empty($blocks)) {
             $moduleInstance->initTables($moduleInstance->basetable, $moduleInstance->basetableid);
             $entityIdentifiers = [];
             $filterFields = [];
             $filterDynamicSequence = 0;
 
-            $blocks = $this->getBlocks();
+            if (isset($blocks['LBL_ITEM_DETAILS'])) {
+                $taxResult = $this->db->pquery('SELECT * FROM vtiger_inventorytaxinfo');
 
-            $fieldTable = $this->getTable('vtiger_field', null);
+                while ($row = $this->db->fetchByAssoc($taxResult)) {
+                    $blocks['LBL_ITEM_DETAILS'][$row['taxname']] = [
+                        'table' => 'vtiger_inventoryproductrel',
+                        'label' => $row['taxlabel'],
+                        'uitype' => 83,
+                        'typeofdata' => 'V~O',
+                        'displaytype' => 5,
+                        'masseditable' => 0,
+                    ];
+                }
+            }
 
             foreach ($blocks as $block => $fields) {
                 self::logSuccess('Block create: ' . $block);
@@ -402,7 +425,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                         $picklistTable = 'vtiger_' . $fieldName;
                         $currentPicklistValues = [];
 
-                        if (true === $fieldParams['picklist_overwrite']) {
+                        if (isset($fieldParams['picklist_overwrite']) && true === $fieldParams['picklist_overwrite']) {
                             $fieldInstance->deletePicklistValues();
                             $fieldInstance->setPicklistValues($picklistValues);
                         } else {
@@ -480,6 +503,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
 
         $this->install();
+
+        vtws_addDefaultModuleTypeEntity($moduleName);
 
         Vtiger_Cache::delete('module', $moduleName);
 
@@ -618,7 +643,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             return;
         }
 
-        echo '<pre style="font-size: 20px; color: red;">' . print_r($message, true) . '</pre>';
+        echo '<pre style="color: indianred;">' . print_r($message, true) . '</pre>';
     }
 
     /**
@@ -631,7 +656,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             return;
         }
 
-        echo '<pre style="font-size: 20px; color: darkolivegreen;">' . print_r($message, true) . '</pre>';
+        echo '<pre style="color: darkolivegreen;">' . print_r($message, true) . '</pre>';
     }
 
     /**
@@ -838,21 +863,24 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     /**
      * @param $register
      * @return void
+     * @throws AppException
      */
     public function updateWorkflows($register = true)
     {
         foreach ($this->registerWorkflows as $registerWorkflow) {
-            [$moduleName, $workflowName, $workflowLabel, $modules] = $registerWorkflow;
+            [$moduleName, $workflowName, $workflowLabel, $modules, $classPath, $templatePath] = $registerWorkflow;
 
             $layout = Vtiger_Viewer::getLayoutName();
 
             if (!$register) {
                 $this->db->pquery(
-                    'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?', [$workflowName]
+                    'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?',
+                    [$workflowName],
                 );
 
                 $this->db->pquery(
-                    'DELETE FROM com_vtiger_workflowtasks WHERE task LIKE ?', ['%:"' . $workflowName . '":%']
+                    'DELETE FROM com_vtiger_workflowtasks WHERE task LIKE ?',
+                    ['%:"' . $workflowName . '":%'],
                 );
 
                 unlink(sprintf('modules/com_vtiger_workflow/tasks/%s.inc', $workflowName));
@@ -860,40 +888,25 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                 continue;
             }
 
-            $taskForm = sprintf('modules/%s/taskforms/%s.tpl', $moduleName, $workflowName);
+            $modules = $modules ?: '{"include":[],"exclude":[]}';
+            $classPath = $classPath ?: sprintf('modules/%s/workflow/%s.inc', $moduleName, $workflowName);
+            $templatePath = $templatePath ?: sprintf('layouts/%s/modules/%s/taskforms/%s.tpl', $layout, $moduleName, $workflowName);
+            $table = $this->getTable('com_vtiger_workflow_tasktypes', 'id');
+            $workflowId = $table->selectData(['id'], ['tasktypename' => $workflowName])['id'];
+            $values = [
+                'tasktypename' => $workflowName,
+                'label' => $workflowLabel,
+                'classname' => $workflowName,
+                'classpath' => $classPath,
+                'templatepath' => $templatePath,
+                'modules' => $modules,
+                'sourcemodule' => $moduleName,
+            ];
 
-            if (empty($modules)) {
-                $modules = '{"include":[],"exclude":[]}';
-            }
-
-            $phpDestination = sprintf('modules/com_vtiger_workflow/tasks/%s.inc', $workflowName);
-            $phpSource = sprintf('modules/%s/workflow/%s.inc', $moduleName, $workflowName);
-            $phpFileExist = file_exists($phpDestination) || copy($phpSource, $phpDestination);
-
-            $tplDestination = sprintf('layouts/%s/modules/Settings/Workflows/Tasks/%s.tpl', $layout, $workflowName);
-            $tplSource = sprintf('layouts/%s/modules/%s/taskforms/%s.tpl', $layout, $moduleName, $workflowName);
-            $tplFileExist = file_exists($tplDestination) || copy($tplSource, $tplDestination);
-
-            if ($phpFileExist && $tplFileExist) {
-                $result = $this->db->pquery(
-                    'SELECT * FROM com_vtiger_workflow_tasktypes WHERE tasktypename = ?', [$workflowName]
-                );
-
-                if (!$this->db->num_rows($result)) {
-                    $workflowId = $this->db->getUniqueID('com_vtiger_workflow_tasktypes');
-                    $values = [
-                        'id' => $workflowId,
-                        'tasktypename' => $workflowName,
-                        'label' => $workflowLabel,
-                        'classname' => $workflowName,
-                        'classpath' => $phpSource,
-                        'templatepath' => $taskForm,
-                        'modules' => $modules,
-                        'sourcemodule' => $moduleName,
-                    ];
-                    $sql = sprintf('INSERT INTO %s (%s) VALUES (%s)', 'com_vtiger_workflow_tasktypes', implode(',', array_keys($values)), generateQuestionMarks($values));
-                    $this->db->pquery($sql, $values);
-                }
+            if (empty($workflowId)) {
+                $table->insertData($values);
+            } else {
+                $table->updateData($values, ['id' => $workflowId]);
             }
         }
     }

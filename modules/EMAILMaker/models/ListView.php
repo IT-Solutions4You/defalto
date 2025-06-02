@@ -114,12 +114,13 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
         $moduleModel = $this->getModule();
         $createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'EditView');
         if ($createPermission) {
-            $basicLinks[] = array(
+            $basicLinks[] = [
                 'linktype' => 'LISTVIEWBASIC',
                 'linklabel' => 'LBL_ADD_RECORD',
                 'linkurl' => $moduleModel->getCreateRecordUrl(),
-                'linkicon' => ''
-            );
+                'linkicon' => '',
+                'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
+            ];
         }
         return $basicLinks;
     }

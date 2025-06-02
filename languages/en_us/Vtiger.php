@@ -1472,6 +1472,9 @@ $languageStrings = array(
     'LBL_AVG' => 'Avg',
     'LBL_MIN' => 'Min',
     'LBL_MAX' => 'Max',
+    'LBL_CREATE_LIST' => 'Create list',
+    'starred' => 'starred',
+    'tags' => 'tags',
 );
 
 $jsLanguageStrings = array(

@@ -26,15 +26,16 @@ class Campaigns_ListView_Model extends Vtiger_ListView_Model {
 
 		$createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'CreateView');
 		if($createPermission) {
-			$basicLinks[] = array(
-					'linktype' => 'LISTVIEWBASIC',
-					'linklabel' => 'LBL_ADD_RECORD',
-					'linkurl' => $moduleModel->getCreateRecordUrl(),
-					'linkicon' => ''
-			);
-		}
+            $basicLinks[] = [
+                'linktype' => 'LISTVIEWBASIC',
+                'linklabel' => 'LBL_ADD_RECORD',
+                'linkurl' => $moduleModel->getCreateRecordUrl(),
+                'linkicon' => '',
+                'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
+            ];
+        }
 
-		foreach($basicLinks as $basicLink) {
+        foreach($basicLinks as $basicLink) {
 			$links['LISTVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($basicLink);
 		}
 

@@ -15,10 +15,10 @@ class PDFMaker_Install_Model extends Core_Install_Model
 
     public array $registerCustomLinks = [
         ['PDFMaker', 'HEADERSCRIPT', 'PDFMakerFreeActionsJS', 'layouts/$LAYOUT$/modules/PDFMaker/resources/PDFMakerFreeActions.js'],
-        ['Quotes', 'DETAILVIEWBASIC', 'PDFMaker', ''],
-        ['SalesOrder', 'DETAILVIEWBASIC', 'PDFMaker', ''],
-        ['PurchaseOrder', 'DETAILVIEWBASIC', 'PDFMaker', ''],
-        ['Invoice', 'DETAILVIEWBASIC', 'PDFMaker', ''],
+        ['Quotes', 'DETAILVIEWBASIC', 'PDFMaker', 'template:GetPDFButtons.tpl:PDFMaker'],
+        ['SalesOrder', 'DETAILVIEWBASIC', 'PDFMaker', 'template:GetPDFButtons.tpl:PDFMaker'],
+        ['PurchaseOrder', 'DETAILVIEWBASIC', 'PDFMaker', 'template:GetPDFButtons.tpl:PDFMaker'],
+        ['Invoice', 'DETAILVIEWBASIC', 'PDFMaker', 'template:GetPDFButtons.tpl:PDFMaker'],
     ];
 
     public function addCustomLinks(): void
@@ -259,8 +259,6 @@ class PDFMaker_Install_Model extends Core_Install_Model
             $this->getTable($table, null)->insertData($data);
             $this->getTable($tableSettings, null)->insertData($dataSettings);
         }
-
-        $this->db->pquery('INSERT INTO vtiger_pdfmaker_releases (version, date, updated) VALUES(?, NOW(), 1)', array(PDFMaker_Version_Helper::$version));
     }
 
     public function install(): void

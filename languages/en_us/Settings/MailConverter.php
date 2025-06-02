@@ -193,7 +193,9 @@ $languageStrings = array(
     'servertype' => 'Server Type',
     'LBL_DUPLICATE_USERNAME_ERROR' => 'There is already a Mail Converter configured with this email address. You cannot create duplicate Mail Converter with same email address.',
     'LBL_DUPLICATE_SCANNERNAME_ERROR' => 'There is already a Mail Converter configured with this name. You cannot create Mail Converter with duplicate name.',
-       
+    'LBL_INVALID_SERVER_NAME' => 'invalid server name',
+    'LBL_REQUERED_ALPHANUMERIC_SCANNER_NAME' => 'Required alphanumeric scanner name. Allowed special characters: space, underscore, hyphen.',
+    'LBL_GMAIL_SERVER' => 'Gmail server',
 );
 $jsLanguageStrings = array(
 	'JS_MAILBOX_DELETED_SUCCESSFULLY' => 'MailBox deleted Successfully',
