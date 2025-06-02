@@ -160,7 +160,7 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model {
 
     public static function getIgnoredModules()
     {
-        return ['SMSNotifier'];
+        return [];
     }
 
     function regroupMenuByParent($menuGroupedByParent) {

@@ -8,7 +8,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Vtiger_Cache_Connector_Memory {
+#[\AllowDynamicProperties] class Vtiger_Cache_Connector_Memory {
 	function set($key, $value) {
 		$this->$key = $value;
 	}

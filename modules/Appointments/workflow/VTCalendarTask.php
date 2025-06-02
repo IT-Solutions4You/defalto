@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+require_once 'modules/com_vtiger_workflow/VTTaskManager.inc';
 require_once 'modules/com_vtiger_workflow/VTEntityCache.inc';
 require_once 'modules/com_vtiger_workflow/VTWorkflowUtils.php';
 require_once 'modules/com_vtiger_workflow/VTSimpleTemplate.inc';
@@ -72,6 +73,7 @@ class VTCalendarTask extends VTTask
     public function doTask($entityData): string
     {
         $this->entityData = $entityData;
+        [$tabId, $recordId] = explode('x', $this->entityData->getId());
 
         $recordModel = Vtiger_Record_Model::getCleanInstance($this->moduleName);
         $recordModel->set('subject', $this->subject);
@@ -87,7 +89,7 @@ class VTCalendarTask extends VTTask
             $recordModel->set($fieldName, $this->get($fieldName));
         }
 
-        $recordModel->set($this->getRelationField(), $this->entityData->getId());
+        $recordModel->set($this->getRelationField(), $recordId);
         $recordModel->save();
 
         return 'Success';
@@ -146,7 +148,7 @@ class VTCalendarTask extends VTTask
     {
         $field = $isStart ? $this->start_field : $this->end_field;
 
-        list($date, $time) = explode(' ', $this->entityData->get($field));
+        [$date, $time] = explode(' ', $this->entityData->get($field));
 
         if (empty(trim($date, '-'))) {
             $date = date('Y-m-d');

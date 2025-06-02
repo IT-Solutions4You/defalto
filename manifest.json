@@ -1,0 +1,20 @@
+{
+  "short_name": "Defalto",
+  "name": "Defalto.com",
+  "icons": [
+    {
+      "src": "/layouts/d1/favicon/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/layouts/d1/favicon/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

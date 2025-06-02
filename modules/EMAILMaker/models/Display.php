@@ -15,7 +15,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
         $this->db = PearDatabase::GetInstance();
     }
 
-    public static function getInstance($moduleName, $viewId = '0', $New_Fields)
+    public static function getInstance($moduleName, $viewId = '0', $New_Fields = [])
     {
         $db = PearDatabase::getInstance();
         $currentUser = vglobal('current_user');

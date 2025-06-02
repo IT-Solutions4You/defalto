@@ -45,6 +45,8 @@ class Net_URL
     * @var string
     */
     var $url;
+    var $user;
+    var $pass;
 
     /**
     * Protocol

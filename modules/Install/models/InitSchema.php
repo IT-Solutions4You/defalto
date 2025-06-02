@@ -9,6 +9,7 @@
  * *********************************************************************************** */
 vimport('~~modules/Users/DefaultDataPopulator.php');
 vimport('~~include/PopulateComboValues.php');
+vimport('~~modules/CustomView/PopulateCustomView.php');
 
 class Install_InitSchema_Model {
 
@@ -34,9 +35,7 @@ class Install_InitSchema_Model {
 
 		create_tab_data_file();
 		create_parenttab_data_file();
-
-		// default customview population
-		vimport('~~modules/CustomView/PopulateCustomView.php');
+        create_custom_views();
 
 		// ensure required sequences are created (adodb creates them as needed, but if
 		// creation occurs within a transaction we get problems

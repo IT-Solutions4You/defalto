@@ -77,11 +77,16 @@ class Migration_Module_Model extends Vtiger_Module_Model {
 		
 		//rename the migration file and folder
 		$renamefile = uniqid(rand(), true);
-				
-		if(!@rename("migrate/", $renamefile."migrate/")) {
-			if (@copy ("migrate/", $renamefile."migrate/")) {
-				@unlink("migrate/");
-			} 
-		}
-	}
+        $dir = 'migrate/';
+
+        if (is_dir($dir)) {
+            if (!rename($dir, $renamefile . $dir)) {
+                if (copy($dir, $renamefile . $dir)) {
+                    unlink($dir);
+                }
+            }
+        } else {
+            Core_Install_Model::logError('Migration dir not exists: ' . $dir);
+        }
+    }
 }

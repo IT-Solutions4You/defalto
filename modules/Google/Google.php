@@ -9,7 +9,7 @@
 require_once 'vtlib/Vtiger/Module.php';
 require_once('include/events/include.inc');
 
-class Google {
+class Google extends CRMExtension {
 
     const module = 'Google';
 	var $LBL_GOOGLE = 'LBL_GOOGLE';
@@ -130,5 +130,3 @@ class Google {
     }
 
 }
-
-?>

@@ -50,6 +50,7 @@ abstract class CustomerPortal_API_Abstract {
 
 	function authenticatePortalUser($username, $password) {
 		global $adb;
+        $customerId = null;
 		$current_date = date("Y-m-d");
 		$sql = "SELECT id, user_name, user_password,last_login_time, isactive, support_start_date, support_end_date, cryptmode FROM vtiger_portalinfo
 					INNER JOIN vtiger_customerdetails ON vtiger_portalinfo.id=vtiger_customerdetails.customerid
@@ -67,8 +68,6 @@ abstract class CustomerPortal_API_Abstract {
 				$customerId = $adb->query_result($result, $i, 'id');
 				if (Vtiger_Functions::compareEncryptedPassword($password, $adb->query_result($result, $i, 'user_password'), $adb->query_result($result, $i, 'cryptmode'))) {
 					break;
-				} else {
-					$customerId = null;
 				}
 			}
 			$isActive = $adb->query_result($result, $i, 'isactive');

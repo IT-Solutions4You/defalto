@@ -8,26 +8,26 @@
  */
 
 class Accounts extends CRMEntity {
-	var $log;
-	var $db;
-	var $table_name = "vtiger_account";
-	var $table_index= 'accountid';
-	var $tab_name = Array('vtiger_crmentity','vtiger_account','vtiger_accountbillads','vtiger_accountshipads','vtiger_accountscf');
-	var $tab_name_index = Array('vtiger_crmentity'=>'crmid','vtiger_account'=>'accountid','vtiger_accountbillads'=>'accountaddressid','vtiger_accountshipads'=>'accountaddressid','vtiger_accountscf'=>'accountid');
+	public $log;
+	public $db;
+	public $table_name = "vtiger_account";
+	public $table_index= 'accountid';
+	public $tab_name = Array('vtiger_crmentity','vtiger_account','vtiger_accountbillads','vtiger_accountshipads','vtiger_accountscf');
+	public $tab_name_index = Array('vtiger_crmentity'=>'crmid','vtiger_account'=>'accountid','vtiger_accountbillads'=>'accountaddressid','vtiger_accountshipads'=>'accountaddressid','vtiger_accountscf'=>'accountid');
 	/**
 	 * Mandatory table for supporting custom fields.
 	 */
-	var $customFieldTable = Array('vtiger_accountscf', 'accountid');
-	var $entity_table = "vtiger_crmentity";
+	public $customFieldTable = Array('vtiger_accountscf', 'accountid');
+	public $entity_table = "vtiger_crmentity";
 
-	var $column_fields = Array();
+	public $column_fields = Array();
 
-	var $sortby_fields = Array('accountname','bill_city','website','phone','smownerid');
+	public $sortby_fields = Array('accountname','bill_city','website','phone','smownerid');
 
-	//var $groupTable = Array('vtiger_accountgrouprelation','accountid');
+	//public $groupTable = Array('vtiger_accountgrouprelation','accountid');
 
 	// This is the list of vtiger_fields that are in the lists.
-	var $list_fields = Array(
+	public $list_fields = Array(
 			'Account Name'=>Array('vtiger_account'=>'accountname'),
 			'Billing City'=>Array('vtiger_accountbillads'=>'bill_city'),
 			'Website'=>Array('vtiger_account'=>'website'),
@@ -35,41 +35,41 @@ class Accounts extends CRMEntity {
 			'Assigned To'=>Array('vtiger_crmentity'=>'smownerid')
 			);
 
-	var $list_fields_name = Array(
+	public $list_fields_name = Array(
 			'Account Name'=>'accountname',
 			'Billing City'=>'bill_city',
 			'Website'=>'website',
 			'Phone'=>'phone',
 			'Assigned To'=>'assigned_user_id'
 			);
-	var $list_link_field= 'accountname';
+	public $list_link_field= 'accountname';
 
-	var $search_fields = Array(
+	public $search_fields = Array(
 			'Account Name'=>Array('vtiger_account'=>'accountname'),
 			'Billing City'=>Array('vtiger_accountbillads'=>'bill_city'),
 			'Assigned To'=>Array('vtiger_crmentity'=>'smownerid'),
 			);
 
-	var $search_fields_name = Array(
+	public $search_fields_name = Array(
 			'Account Name'=>'accountname',
 			'Billing City'=>'bill_city',
 			'Assigned To'=>'assigned_user_id',
 			);
 	// This is the list of vtiger_fields that are required
-	var $required_fields =  array();
+	public $required_fields =  array();
 
 	// Used when enabling/disabling the mandatory fields for the module.
 	// Refers to vtiger_field.fieldname values.
-	var $mandatory_fields = Array('assigned_user_id', 'createdtime', 'modifiedtime', 'accountname');
+	public $mandatory_fields = Array('assigned_user_id', 'createdtime', 'modifiedtime', 'accountname');
 
 	//Added these variables which are used as default order by and sortorder in ListView
-	var $default_order_by = 'accountname';
-	var $default_sort_order = 'ASC';
+	public $default_order_by = 'accountname';
+	public $default_sort_order = 'ASC';
 
 	// For Alphabetical search
-	var $def_basicsearch_col = 'accountname';
+	public $def_basicsearch_col = 'accountname';
 
-	var $related_module_table_index = array(
+	public $related_module_table_index = array(
 		'Contacts' => array('table_name' => 'vtiger_contactdetails', 'table_index' => 'contactid', 'rel_index' => 'accountid'),
 		'Potentials' => array('table_name' => 'vtiger_potential', 'table_index' => 'potentialid', 'rel_index' => 'related_to'),
 		'Quotes' => array('table_name' => 'vtiger_quotes', 'table_index' => 'quoteid', 'rel_index' => 'accountid'),

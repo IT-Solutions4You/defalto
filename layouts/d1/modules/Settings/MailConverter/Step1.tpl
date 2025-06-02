@@ -26,9 +26,9 @@
 						{/if}
 						<div class="row py-2 fieldContainer">
 							<div class="col-lg-3 fieldLabel control-label">
-								<label>{vtranslate($FIELD_MODEL->get('label'), $QUALIFIED_MODULE)}{if $FIELD_MODEL->isMandatory()} <span class="redColor">*</span>{/if}</label>
+								<label>{vtranslate($FIELD_MODEL->get('label'), $QUALIFIED_MODULE)}{if $FIELD_MODEL->isMandatory()}<span class="text-danger ms-2">*</span>{/if}</label>
 							</div>
-							<div class="col-lg-6" style="word-wrap:break-word;">
+							<div class="col-lg-6">
 								{assign var=FIELD_DATA_TYPE value=$FIELD_MODEL->getFieldDataType()}
 								{if $FIELD_DATA_TYPE eq 'password'}
 									<input class="fieldValue inputElement form-control" type="password" name="{$FIELD_MODEL->getName()}" {if $RECORD_EXISTS} value="{$RECORD_MODEL->get($FIELD_NAME)}" {/if}
@@ -76,7 +76,14 @@
 										</label>
 									{/foreach}
 								{else}
-									<input type="text" class="fieldValue inputElement form-control" name="{$FIELD_MODEL->getName()}" {if $FIELD_MODEL->isMandatory()}data-validation-engine="validate[required]"{/if} value="{$RECORD_MODEL->get($FIELD_NAME)}"/>
+                                    <div class="input-group">
+									    <input type="text" class="fieldValue inputElement form-control" name="{$FIELD_MODEL->getName()}" {if $FIELD_MODEL->isMandatory()}data-validation-engine="validate[required]"{/if} value="{$RECORD_MODEL->get($FIELD_NAME)}"/>
+                                        {if 'scannername' eq $FIELD_NAME}
+                                            <div class="input-group-text" data-bs-toggle="tooltip" title="{vtranslate('LBL_REQUERED_ALPHANUMERIC_SCANNER_NAME', $QUALIFIED_MODULE)}"><i class="fa-solid fa-info"></i></div>
+                                        {elseif 'server' eq $FIELD_NAME}
+                                            <div class="input-group-text" data-bs-toggle="tooltip" title="{vtranslate('LBL_GMAIL_SERVER', $QUALIFIED_MODULE)}: imap.gmail.com:993"><i class="fa-solid fa-info"></i></div>
+                                        {/if}
+                                    </div>
 								{/if}
 							</div>
 						</div>

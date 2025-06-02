@@ -458,6 +458,8 @@ $download = Download::zip($zipFileUrl, $zipFileFolder);
             margin: 1em 0;
             padding: 0.5em;
             border: 1px solid #ddd;
+            max-height: 50vh;
+            overflow: auto;
         }
 
         .action {

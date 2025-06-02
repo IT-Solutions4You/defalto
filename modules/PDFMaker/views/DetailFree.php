@@ -94,7 +94,6 @@ class PDFMaker_DetailFree_View extends Vtiger_Index_View
         $category = getParentTab();
         $viewer->assign('CATEGORY', $category);
         $viewer->assign('PDFMAKER_RECORD_MODEL', $recordModel);
-        $viewer->assign('VERSION', PDFMaker_Version_Helper::$version);
 
         $viewer->view('DetailFree.tpl', 'PDFMaker');
     }

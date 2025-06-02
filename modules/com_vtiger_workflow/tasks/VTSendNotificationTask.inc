@@ -12,7 +12,8 @@ require_once('modules/com_vtiger_workflow/tasks/VTEmailTask.inc');
 
 class VTSendNotificationTask extends VTEmailTask {
 
-	public function doTask($entity) {
+	public function doTask($entity): void
+    {
 		global $current_user;
 		$util = new VTWorkflowUtils();
 

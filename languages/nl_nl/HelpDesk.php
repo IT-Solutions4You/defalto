@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+global $HELPDESK_SUPPORT_NAME;
 $languageStrings = array(
 	'HelpDesk'                     => 'Helpdesk'                    , 
 	'SINGLE_HelpDesk'              => 'Ticket'                      , 

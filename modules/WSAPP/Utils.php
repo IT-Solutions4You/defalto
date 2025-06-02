@@ -161,5 +161,3 @@ function wsapp_DeleteHandler($type){
 	$query = 'DELETE FROM vtiger_wsapp_handlerdetails WHERE type IN('.  generateQuestionMarks($type).')';
 	$db->pquery($query,$type);
 }
-
-?>

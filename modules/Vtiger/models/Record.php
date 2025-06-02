@@ -12,6 +12,7 @@
 class Vtiger_Record_Model extends Vtiger_Base_Model {
 
 	protected $module = false;
+    public $entity;
 
 	/**
 	 * Function to get the id of the record
