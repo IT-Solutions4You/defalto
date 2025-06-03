@@ -216,6 +216,7 @@ Vtiger.Class('InventoryItem_InventoryItemEdit_Js', {}, {
 
 });
 
+let inventoryItemEdit_Instance;
 document.addEventListener('DOMContentLoaded', function () {
-    const inventoryItemEdit_Instance = new InventoryItem_InventoryItemEdit_Js();
+    inventoryItemEdit_Instance = new InventoryItem_InventoryItemEdit_Js();
 });
