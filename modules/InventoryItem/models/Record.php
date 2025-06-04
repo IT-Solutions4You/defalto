@@ -15,14 +15,19 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
      */
     public function save()
     {
-        $this->recalculate();
+        $productId = $this->get('productid');
+
+        if ($productId) {
+            $this->recalculate();
+        }
+
         parent::save();
     }
 
     private function recalculate()
     {
-        $quantity = $this->get('quantity');
-        $price = $this->get('price');
+        $quantity = (float)$this->get('quantity');
+        $price = (float)$this->get('price');
         $subtotal = round($quantity * $price, 2);
         $discountType = $this->get('discount_type');
         $discount = $this->get('discount');
