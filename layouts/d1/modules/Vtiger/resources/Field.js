@@ -573,7 +573,7 @@ Vtiger_Field_Js('Vtiger_Currency_Field_Js',{},{
 	},
 	getUi: function () {
 		let html = '<div class="CurrencyField w-100">' +
-				'<div class="input-group">' +
+				'<div class="input-group flex-nowrap">' +
 				'<span class="input-group-addon input-group-text" id="basic-addon1">' + this.getCurrencySymbol() + '</span>' +
 				'<input class="inputElement form-control currencyField replaceCommaWithDot" type="text" name="' + this.getName() + '" data-rule-currency="true" value="' + this.getValue() + '" />' +
 				'</div>' +

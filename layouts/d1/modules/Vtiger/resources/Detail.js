@@ -1131,9 +1131,9 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			let fieldObject = Vtiger_Field_Js.getInstance(fieldInfo),
 				fieldModel = fieldObject.getUiTypeModel(),
 				ele = jQuery('<div class="editElement d-flex align-items-start w-100"></div>'),
-				actionButtons = '<span class="pointerCursorOnHover btn btn-success input-group-addon input-group-addon-save inlineAjaxSave ms-2"><i class="fa fa-check"></i></span>';
+				actionButtons = '<span class="pointerCursorOnHover btn btn-success input-group-addon input-group-addon-save inlineAjaxSave ms-1"><i class="fa fa-check"></i></span>';
 
-			actionButtons += '<span class="pointerCursorOnHover btn btn-danger input-group-addon input-group-addon-cancel inlineAjaxCancel ms-2"><i class="fa-solid fa-xmark"></i></span>';
+			actionButtons += '<span class="pointerCursorOnHover btn btn-danger input-group-addon input-group-addon-cancel inlineAjaxCancel ms-1"><i class="fa-solid fa-xmark"></i></span>';
 			// we should have atleast one submit button for the form to submit which is required for validation
 			ele.append(fieldModel.getUi()).append(actionButtons);
 			ele.find('.inputElement');
