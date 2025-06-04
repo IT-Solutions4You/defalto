@@ -23,12 +23,13 @@ class Settings_MailConverter_MailParser_Handler {
 		$this->msg = str_replace("\r\n", "\n", $this->msg);
 		$this->msg = str_replace("\r", "\n", $this->msg);
 
-		$domElement = new DOMDocument(null, 'UTF-8');
-		if(!@$domElement->loadHTML($this->msg)) {
-			return $this->msg;
-		}
+        $domElement = new DOMDocument(null, 'UTF-8');
 
-		$result = $this->parse($domElement);
+        if (!$this->msg || !$domElement->loadHTML($this->msg)) {
+            return $this->msg;
+        }
+
+        $result = $this->parse($domElement);
 		$result = preg_replace("/[ \t]*\n[ \t]*/im", "\n", $result);
 		$result = str_replace("\xc2\xa0",' ',  $result);
 		$result = trim(str_replace("Â", " ", strip_tags($result)));
