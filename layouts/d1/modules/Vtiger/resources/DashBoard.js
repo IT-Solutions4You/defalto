@@ -21,7 +21,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 		// After adding widget, we should remove that widget from Add Widget drop down menu from active tab
 		var activeTabId = Vtiger_DashBoard_Js.currentInstance.getActiveTabId();
 		jQuery('a[data-name="'+name+'"]',"#tab_"+activeTabId).parent().hide();
-		var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted border rounded bg-body d-flex flex-column" id="'+ linkId +'" data-name="'+name+'" data-mode="open"></li>');
+		var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted rounded bg-body d-flex flex-column" id="'+ linkId +'" data-name="'+name+'" data-mode="open"></li>');
 		widgetContainer.data('url', url);
 		var width = element.data('width');
 		var height = element.data('height');
@@ -134,7 +134,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			url += '&filterid='+filterid+'&data=' + JSON.stringify(data);
 			var linkId = element.data('linkid');
 			var name = element.data('name');
-			var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted border rounded bg-body d-flex flex-column" id="'+ linkId +"-" + filterid +'" data-name="'+name+'" data-mode="open"></li>');
+			var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted rounded bg-body d-flex flex-column" id="'+ linkId +"-" + filterid +'" data-name="'+name+'" data-mode="open"></li>');
 			widgetContainer.data('url', url);
 			var width = element.data('width');
 			var height = element.data('height');
@@ -181,7 +181,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 								url += '&widgetid='+widgetId;
 
 								var name = element.data('name');
-								var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted border rounded bg-body d-flex flex-column" id="'+ linkId +"-" + widgetId +'" data-name="'+name+'" data-mode="open"></li>');
+								var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted rounded bg-body d-flex flex-column" id="'+ linkId +"-" + widgetId +'" data-name="'+name+'" data-mode="open"></li>');
 								widgetContainer.data('url', url);
 								var width = element.data('width');
 								var height = element.data('height');
@@ -499,7 +499,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 								parent.remove();
 							});
 							if (jQuery.inArray(widgetName, nonReversableWidgets) == -1) {
-								var data = '<li><a onclick="Vtiger_DashBoard_Js.addWidget(this, \''+response.url+'\')" href="javascript:void(0);"';
+								var data = '<li><a class="dropdown-item" onclick="Vtiger_DashBoard_Js.addWidget(this, \''+response.url+'\')" href="javascript:void(0);"';
 								data += 'data-width='+width+' data-height='+height+ ' data-linkid='+response.linkid+' data-name='+response.name+'>'+response.title+'</a></li>';
 								var divider = jQuery('.widgetsList .divider','#tab_'+activeTabId);
 								if(divider.length) {
