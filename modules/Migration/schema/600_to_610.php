@@ -604,7 +604,6 @@ Migration_Index_View::ExecuteQuery("CREATE TABLE IF NOT EXISTS vtiger_shareduser
 						(userid INT(19) NOT NULL default 0, shareduserid INT(19) NOT NULL default 0,
 						color VARCHAR(50), visible INT(19) default 1);", array());
 
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner_rules ADD assigned_to INT(10), ADD cc VARCHAR(255), ADD bcc VARCHAR(255)', array());
 $assignedToId = Users::getActiveAdminId();
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_mailscanner_rules SET assigned_to=?", array($assignedToId));
 echo "<br> Adding assigned to, cc, bcc fields for mail scanner rules";
@@ -633,10 +632,6 @@ $result = Migration_Index_View::ExecuteQuery($query, array($relationId, $contact
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_field set typeofdata=? WHERE fieldname IN(?,?) AND tablename = ?', array('N~O', 'hours', 'days', 'vtiger_troubletickets'));
 
 //79 ends
-
-//82 starts
-Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_mailscanner CHANGE timezone time_zone VARCHAR(10)", array());
-echo "<br>Changed timezone column name for mail scanner";
 
 //82 ends
 

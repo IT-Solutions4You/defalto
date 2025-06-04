@@ -1436,19 +1436,6 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
-	$columns = $db->getColumnNames('vtiger_mailscanner');
-	if (!in_array('scanfrom', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_mailscanner ADD COLUMN scanfrom VARCHAR(10) DEFAULT "ALL"', array());
-	}
-
-	if (Vtiger_Utils::CheckTable('vtiger_mailscanner_ids')) {
-		$columns = $db->getColumnNames('vtiger_mailscanner_ids');
-		if (!in_array('refids', $columns)) {
-			$db->pquery('ALTER TABLE vtiger_mailscanner_ids ADD COLUMN refids MEDIUMTEXT', array());
-		}
-		$db->pquery('ALTER TABLE vtiger_mailscanner_ids ADD INDEX messageids_crmid_idx(crmid)',array());
-	}
-
 	//Migrating data missed in vtiger_settings_field from file to database.
 	//Start:: user management block
 	$userResult = $db->pquery('SELECT blockid FROM vtiger_settings_blocks WHERE label=?', array('LBL_USER_MANAGEMENT'));

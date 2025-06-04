@@ -767,7 +767,7 @@ if(Vtiger_Utils::CheckTable('vtiger_cron_log')) {
 // Start 2013.03.19
 // Mail Converter schema changes
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner ADD COLUMN timezone VARCHAR(10) default NULL', array());
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_mailscanner SET timezone=? WHERE server LIKE ? AND timezone IS NULL', array('-8:00', '%.gmail.com'));
+Migration_Index_View::ExecuteQuery('UPDATE vtiger_mailscanner SET time_zone=? WHERE server LIKE ? AND time_zone IS NULL', ['-8:00', '%.gmail.com']);
 
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_cvadvfilter MODIFY value VARCHAR(512)", array());
 // End 2013.03.19
@@ -1082,9 +1082,6 @@ Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET defaultvalue=1 WHERE
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_role ADD allowassignedrecordsto INT(2) NOT NULL DEFAULT 1', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE com_vtiger_workflowtask_queue ADD COLUMN task_contents text', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE com_vtiger_workflowtask_queue DROP INDEX com_vtiger_workflowtask_queue_idx',array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner_ids modify column messageid varchar(512)' , array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner_ids add index scanner_message_ids_idx (scannerid, messageid)', array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner_folders add index folderid_idx (folderid)', array());
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET leftpanelhide = ?', array(0));
 $potentialModule = Vtiger_Module::getInstance('Potentials');
 $block = Vtiger_Block::getInstance('LBL_OPPORTUNITY_INFORMATION', $potentialModule);
