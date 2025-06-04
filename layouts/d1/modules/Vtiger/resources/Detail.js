@@ -1651,6 +1651,16 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			}
 		})
 	},
+    getWidgetRelatedModule() {
+        return this.getWidgetContainer().find('[name="relatedModule"]').val()
+    },
+    summaryWidgetContainer: false,
+    setWidgetContainer(summaryWidgetContainer) {
+        this.summaryWidgetContainer = summaryWidgetContainer;
+    },
+    getWidgetContainer() {
+        return this.summaryWidgetContainer;
+    },
 	registerSummaryViewContainerEvents: function (summaryViewContainer) {
 		const self = this;
 
@@ -1682,8 +1692,11 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				form = currentElement.closest('form'),
 				recordElement = form.find('[name=record]'),
 				moduleElement = form.find('[name=module]'),
-				summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer'),
-				referenceModuleName = summaryWidgetContainer.find('[name="relatedModule"]').val(),
+				summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer');
+
+            self.setWidgetContainer(summaryWidgetContainer);
+
+            let referenceModuleName = self.getWidgetRelatedModule(summaryWidgetContainer),
 				referenceFieldName = summaryWidgetContainer.find('[name="relatedField"]').val(),
 				recordId = recordElement.length ? recordElement.val() : self.getRecordId(),
 				module = moduleElement.length ? moduleElement.val() : self.getModuleName(),
@@ -1697,20 +1710,23 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				app.helper.showErrorMessage(app.vtranslate('JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED'));
 			}
 
-			app.event.on('post.QuickCreateForm.save', function (event, data) {
-				let idList = new Array();
-				idList.push(data._recordId);
-
-				self.addRelationBetweenRecords(referenceModuleName, idList).then(function (data) {
-					self.loadWidget(summaryWidgetContainer.find('[class^="widgetContainer_"]'));
-				});
-			});
-
 			let QuickCreateParams = {};
 			QuickCreateParams['data'] = customParams;
 			QuickCreateParams['noCache'] = false;
 			quickCreateNode.trigger('click', QuickCreateParams);
 		});
+
+        app.event.on('post.QuickCreateForm.save', function (event, data) {
+            let summaryWidgetContainer = self.getWidgetContainer(),
+                referenceModuleName = self.getWidgetRelatedModule(summaryWidgetContainer),
+                idList = [];
+
+            idList.push(data['_recordId']);
+
+            self.addRelationBetweenRecords(referenceModuleName, idList).then(function (data) {
+                self.loadWidget(summaryWidgetContainer.find('[class^="widgetContainer_"]'));
+            });
+        });
 
 		/*
 		 * Register the event to edit the status for for related activities
@@ -2027,24 +2043,23 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	},
 
 
-	getRelatedRecordsCount : function(recordId, moduleName){
-		var aDeferred = jQuery.Deferred();
-		var params = {
-			'type' : 'GET',
-			'data' : {
-				'module'	: moduleName,
-				'recordId'	: recordId,
-				'action'	: 'RelatedRecordsAjax',
-				'mode'		: 'getRelatedRecordsCount'
-			}
-		};
-		app.request.get(params).then(function(err,data){
-			if(err == null){
-				aDeferred.resolve(data);
-			}
-		});
-		return aDeferred.promise();
-	},
+    getRelatedRecordsCount: function (recordId, moduleName) {
+        let aDeferred = jQuery.Deferred(),
+            params = {
+                'module': moduleName,
+                'recordId': recordId,
+                'action': 'RelatedRecordsAjax',
+                'mode': 'getRelatedRecordsCount'
+            };
+
+        app.request.post({data: params}).then(function (err, data) {
+            if (err == null) {
+                aDeferred.resolve(data);
+            }
+        });
+
+        return aDeferred.promise();
+    },
 
 	updateRelatedRecordsCount : function(){
 		var self = this;
