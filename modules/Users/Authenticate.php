@@ -151,5 +151,3 @@ if($focus->is_authenticated()) {
 	// create an error message for the user.
 	header("Location: index.php");
 }
-
-?>

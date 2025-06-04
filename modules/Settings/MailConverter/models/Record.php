@@ -212,6 +212,7 @@ class Settings_MailConverter_Record_Model extends Settings_Vtiger_Record_Model {
         $scannerName = $this->getName();
 
 		if($scannerName && !validateAlphanumericInput($scannerName)) {
+            $this->set('save_error_message', 'LBL_REQUERED_ALPHANUMERIC_SCANNER_NAME');
 			return false;
 		}
 
@@ -219,9 +220,11 @@ class Settings_MailConverter_Record_Model extends Settings_Vtiger_Record_Model {
 		$server = $this->get('server');
 
 		if($server && !validateServerName($server)) {
+            $this->set('save_error_message', 'LBL_INVALID_SERVER_NAME');
 			return false;
 		}
 
+        $this->set('save_error_message', 'LBL_CONNECTION_TO_MAILBOX_FAILED');
         $mailBox = new Settings_MailConverter_MailBox_Handler($scannerLatestInfo);
         $isConnected = $mailBox->connect();
 

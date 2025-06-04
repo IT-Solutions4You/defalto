@@ -1,6 +1,6 @@
 <?php
 
-class Import
+class Import extends CRMExtension
 {
     public string $moduleName = 'Import';
     public string $moduleLabel = 'Import';

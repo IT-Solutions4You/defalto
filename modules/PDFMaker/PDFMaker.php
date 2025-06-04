@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class PDFMaker
+class PDFMaker extends CRMExtension
 {
     public $log;
     public $db;
@@ -16,9 +16,10 @@ class PDFMaker
     public $list_fields = [];
     public $related_tables = [];
 
-    public $moduleName = 'PDFMaker';
-    public $moduleLabel = 'PDFMaker';
-    public $parentName = 'Tools';
+    public string $moduleName = 'PDFMaker';
+    public string $moduleLabel = 'PDFMaker';
+    public string $parentName = 'Tools';
+    public string $moduleVersion = '0.1';
     /**
      * @var mixed|null
      */

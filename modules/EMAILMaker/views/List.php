@@ -122,7 +122,6 @@ class EMAILMaker_List_View extends Vtiger_Index_View
         }
 
         $viewer->assign('VERSION_TYPE', 'profesional');
-        $viewer->assign('VERSION', EMAILMaker_Version_Helper::$version);
 
         if ($moduleModel->CheckPermissions('EDIT')) {
             $viewer->assign('EXPORT', 'yes');

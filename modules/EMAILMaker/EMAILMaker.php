@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-class EMAILMaker
+class EMAILMaker extends CRMExtension
 {
     public $log;
     public $db;
@@ -17,11 +17,12 @@ class EMAILMaker
     private $basicModules;
     private $profilesActions;
     private $profilesPermissions;
-    public $moduleName = 'EMAILMaker';
-    public $parentName = 'Tools';
+    public string $moduleName = 'EMAILMaker';
+    public string $parentName = 'Tools';
     public $list_fields_name  = [];
     public $list_fields = [];
     public $related_tables = [];
+    public string $moduleVersion = '1.0';
 
 
 

@@ -9,7 +9,7 @@
 require_once 'modules/Webforms/model/WebformsModel.php';
 require_once 'include/Webservices/DescribeObject.php';
 
-class Webforms {
+class Webforms extends CRMExtension {
 	public string $moduleName = 'Webforms';
 	public string $parentName = '';
 	public $LBL_WEBFORMS = 'Webforms';

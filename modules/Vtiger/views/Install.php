@@ -8,8 +8,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-class Vtiger_Install_View extends Vtiger_Index_View
+class Vtiger_Install_View extends Vtiger_Basic_View
 {
+    public function buttons(Vtiger_Request $request): void
+    {
+        $viewer = $this->getViewer($request);
+        $viewer->view('InstallView.tpl', 'Install');
+    }
+
     /**
      * @param Vtiger_Request $request
      * @return void
@@ -24,20 +30,11 @@ class Vtiger_Install_View extends Vtiger_Index_View
         }
     }
 
-    /**
-     * @param Vtiger_Request $request
-     * @return void
-     */
-    public function postProcess(Vtiger_Request $request)
+    public function preProcess(Vtiger_Request $request, $display = true)
     {
     }
 
-    /**
-     * @param Vtiger_Request $request
-     * @param bool $display
-     * @return void
-     */
-    public function preProcess(Vtiger_Request $request, $display = true): void
+    public function postProcess(Vtiger_Request $request)
     {
     }
 
@@ -45,35 +42,50 @@ class Vtiger_Install_View extends Vtiger_Index_View
      * @param Vtiger_Request $request
      * @return void
      * @throws AppException
+     * @throws Exception
      */
     public function process(Vtiger_Request $request)
     {
-        error_reporting(E_ALL);
+        $mode = $request->getMode();
+        $this->exposeMethod('install');
+        $this->exposeMethod('migrate');
+        $this->exposeMethod('delete');
 
-        $adb = PearDatabase::getInstance();
-        $adb->setDebug(true);
-        $adb->setDieOnError(true);
+        $this->buttons($request);
 
-        $mode = $request->get('mode');
+        if (!empty($mode) && $this->isMethodExposed($mode)) {
+            error_reporting(E_ALL);
+            PearDatabase::getInstance()->setDebug(true);
+            PearDatabase::getInstance()->setDieOnError(true);
+            vglobal('debug', true);
 
-        if (empty($mode)) {
-            throw new AppException('Required parameter "mode" in request "migrate, delete, install"');
+            $this->invokeExposedMethod($mode, $request);
         }
+    }
 
-        $moduleName = $request->getModule();
-
-        switch ($mode) {
-            case 'install':
-                Core_Install_Model::getInstance('module.postinstall', $moduleName)->installModule();
-                break;
-            case 'migrate':
-                Core_Install_Model::getInstance('module.postinstall', $moduleName)->migrate();
-                break;
-            case 'delete':
-                Core_Install_Model::getInstance('module.preuninstall', $moduleName)->deleteModule();
-                break;
-        }
-
+    /**
+     * @throws AppException
+     */
+    public function delete(Vtiger_Request $request): void
+    {
+        Core_Install_Model::getInstance('module.preuninstall', $request->getModule())->deleteModule();
         Core_Install_Model::updateModuleMetaFiles();
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function install(Vtiger_Request $request): void
+    {
+        Core_Install_Model::getInstance('module.postinstall', $request->getModule())->installModule();
+        Core_Install_Model::updateModuleMetaFiles();
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function migrate(Vtiger_Request $request): void
+    {
+        Core_Install_Model::getInstance('module.postinstall', $request->getModule())->migrate();
     }
 }

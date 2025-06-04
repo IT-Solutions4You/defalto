@@ -345,7 +345,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return $this->profilesPermissions;
     }
 
-    public function GetListviewData($orderby = 'templateid', $sortorder = 'asc', $formodule = '', $load_body = false, Vtiger_Request $request = null)
+    public function GetListviewData($orderby = 'templateid', $sortorder = 'asc', $formodule = '', $load_body = false, ?Vtiger_Request $request = null)
     {
         $MODULE = 'EMAILMaker';
         $current_user = Users_Record_Model::getCurrentUserModel();

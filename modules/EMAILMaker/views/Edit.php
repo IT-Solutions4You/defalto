@@ -328,7 +328,6 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
             $viewer->assign('SELECT_MODULE_FIELD_SUBJECT', $SelectModuleFields);
         }
 
-        $viewer->assign('VERSION', EMAILMaker_Version_Helper::$version);
         $viewer->assign('CATEGORY', getParentTab());
 
         if (!empty($select_module)) {
@@ -502,7 +501,6 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
 
         $viewer = $this->getViewer($request);
 
-        $viewer->assign("VERSION", EMAILMaker_Version_Helper::$version);
         $source_path = getcwd() . "/modules/EMAILMaker/templates";
 
         $dir_iterator = new RecursiveDirectoryIterator($source_path);

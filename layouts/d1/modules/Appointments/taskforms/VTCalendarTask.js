@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the IT-Solutions4You CRM Software.
  *
  * (c) IT-Solutions4You s.r.o [info@its4you.sk]
@@ -31,9 +31,9 @@ Vtiger.Class('VTCalendarTask', {
     },
     retrieveAllDay: function () {
         let startTime = $('[name="start_time"]'),
-            startTimeRow = startTime.parents('.row'),
+            startTimeRow = startTime.parents('.calendarTimeField'),
             endTime = $('[name="end_time"]'),
-            endTimeRow = endTime.parents('.row');
+            endTimeRow = endTime.parents('.calendarTimeField');
 
         if ($('[name="is_all_day"]').is(':checked')) {
             startTimeRow.hide();

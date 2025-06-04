@@ -6,7 +6,7 @@
  * All Rights Reserved.
  */
 
-class CustomerPortal
+class CustomerPortal extends CRMExtension
 {
     public string $moduleName = 'CustomerPortal';
     public string $parentName = '';

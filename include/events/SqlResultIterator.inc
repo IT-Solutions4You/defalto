@@ -17,26 +17,26 @@
 			$this->pos = 0;
 		}
 		
-		public function rewind(){
+		public function rewind() : void {
 			$this->pos = 0;
 		}
 		
-		function valid(){
+		function valid() : bool {
 			$adb = $this->adb;
 			return $this->pos < $adb->num_rows($this->result);
 		}
 		
-		public function next(){
+		public function next() : void{
 			$this->pos+=1;
 		}
 		
-		public function current(){
+		public function current(): mixed{
 			$adb = $this->adb;
 			$data = $adb->raw_query_result_rowdata($this->result, $this->pos);
 			return new SqlResultIteratorRow($data);
 		}
 		
-		public function key(){
+		public function key() : mixed{
 			return $this->pos;
 		}
 		

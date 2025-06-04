@@ -112,6 +112,13 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	const UITYPE_USER_END_HOUR = 116;
 	const UITYPE_USER_IS_ADMIN = 156;
 	const UITYPE_USER_PROFILE = 14001 ;
+    public $picklist_values;
+    public $module;
+    public $filter;
+    public $filter_sequence;
+    public $entity_identifier;
+    public $fieldDataType;
+    public $picklist_overwrite;
 
 	
 	/**

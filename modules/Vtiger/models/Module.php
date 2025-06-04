@@ -1925,7 +1925,7 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         $imageFilePath = 'layouts/' . Vtiger_Viewer::getLayoutName() . "/modules/$moduleName/$moduleName.png";
 
         if (file_exists($imageFilePath)) {
-            $moduleIcon = "<img height='$height' src='$imageFilePath' title='$title'/>";
+            $moduleIcon = "<img style='height: $height;' src='$imageFilePath' title='$title'/>";
         }
 
         if (!empty($this->getFontIcon())) {

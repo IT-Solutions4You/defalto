@@ -11,7 +11,7 @@
 /**
  * User Privileges Model Class
  */
-class Users_Privileges_Model extends Users_Record_Model {
+#[\AllowDynamicProperties] class Users_Privileges_Model extends Users_Record_Model {
 
 	/**
 	 * Function to get the Global Read Permission for the user
