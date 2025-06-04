@@ -31,8 +31,8 @@
             <div class="col-lg-8 row">
                 <div class="col-lg-1 textAlignRight" id="block_line_items_add">
                     <div class="btn-group" role="group">
-                        <button id="block_line_items_add_button" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary text-primary add-button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-plus-circle"></i>
+                        <button id="block_line_items_add_button" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-primary text-primary add-button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {vtranslate('Add Item', 'InventoryItem')}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end add_menu" aria-labelledby="btnGroupDrop1">
                             <li><a class="dropdown-item" data-modulename=""><i class="fa fa-i-cursor"></i>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}</a></li>

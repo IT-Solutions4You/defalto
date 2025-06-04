@@ -1,12 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
- *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * All Rights Reserved.
  */
+
 
 /**
  * PurchaseOrder Record Model Class
@@ -52,5 +51,27 @@ class PurchaseOrder_Record_Model extends Vtiger_Record_Model
         $purchaseOrderStatus = $db->query_result($result, 0, "postatus");
 
         return $purchaseOrderStatus;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function save() {
+        if ($this->has('conversion_rate')) {
+            $conversion_rate = $this->get('conversion_rate');
+
+            if (empty($conversion_rate)) {
+                $this->set('conversion_rate', 1);
+            }
+        }
+
+        $entity = $this->getEntity();
+
+        if (empty($entity->column_fields['conversion_rate'])) {
+            $entity->column_fields['conversion_rate'] = 1;
+            $this->setEntity($entity);
+        }
+
+        parent::save();
     }
 }

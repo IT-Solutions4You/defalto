@@ -132,19 +132,8 @@ class Quotes extends CRMEntity
         $this->column_fields = getColumnFields('Quotes');
     }
 
-    function Quotes()
-    {
-        self::__construct();
-    }
-
     function save_module()
     {
-        global $adb;
-
-        // Update the currency id and the conversion rate for the quotes
-        $update_query = "update vtiger_quotes set currency_id=?, conversion_rate=? where quoteid=?";
-        $update_params = [$this->column_fields['currency_id'], $this->column_fields['conversion_rate'], $this->id];
-        $adb->pquery($update_query, $update_params);
     }
 
     /**    function used to get the list of sales orders which are related to the Quotes
