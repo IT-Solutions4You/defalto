@@ -215,7 +215,6 @@ trait InventoryItem_Detail_Trait
             'modules.InventoryItem.resources.InventoryItemDetail',
             'modules.Vtiger.resources.Popup',
             'modules.InventoryItem.resources.ItemsPopup',
-            'modules.Products.resources.ProductRelatedProductBundles',
         ];
     }
 }

@@ -8,7 +8,7 @@
  */
 
 /** @var InventoryItem_InventoryItemDetail_Js */
-Vtiger_Detail_Js('InventoryItem_InventoryItemDetail_Js', {}, {
+Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     lineItemDetectingClass: 'lineItemRow',
     numOfLineItems: 0,
 
