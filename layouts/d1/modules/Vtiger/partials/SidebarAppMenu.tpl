@@ -52,12 +52,11 @@
                                     {break}
                                 {/if}
                             {/foreach}
-                            {* Fix for Responsive Layout Menu - Changed data-default-url to # *}
+                            <div class="cursorDefault menu-items-wrapper app-menu-items-wrapper mb-3 p-3 text-truncate fw-bold rounded {if $IS_SELECTED_CATEGORY}bg-menu-icon{else}text-secondary{/if}">
+                                <span class="app-icon-list dt-menu-icon fa {$APP_IMAGE_MAP[$APP_NAME]} {if $IS_SELECTED_CATEGORY}text-primary{/if}"></span>
+                                <span class="app-name ms-3 text-truncate">{vtranslate("LBL_$APP_NAME")}</span>
+                            </div>
                             <div class="menu-item" data-app-name="{$APP_NAME}" id="{$APP_NAME}_modules_dropdownMenu" aria-haspopup="true" aria-expanded="true" data-default-url="#">
-                                <div class="menu-items-wrapper app-menu-items-wrapper mb-3 p-3 text-truncate fw-bold rounded {if $IS_SELECTED_CATEGORY}bg-menu-icon{else}text-secondary{/if}">
-                                    <span class="app-icon-list dt-menu-icon fa {$APP_IMAGE_MAP[$APP_NAME]} {if $IS_SELECTED_CATEGORY}text-primary{/if}"></span>
-                                    <span class="app-name ms-3 text-truncate">{vtranslate("LBL_$APP_NAME")}</span>
-                                </div>
                                 <div class="container-fluid" aria-labelledby="{$APP_NAME}_modules_dropdownMenu">
                                     <div class="row">
                                         {foreach item=moduleModel key=moduleName from=$APP_GROUPED_MENU[$APP_NAME]}
