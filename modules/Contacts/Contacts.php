@@ -21,6 +21,7 @@
  ********************************************************************************/
 // Contact is used to store customer information.
 class Contacts extends CRMEntity {
+    public string $parentName = 'Marketing';
 	var $log;
 	var $db;
 
