@@ -87,6 +87,26 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('Decimal Separator ','Install')}<span class="no text-danger ms-2">*</span></div>
+                                <div class="col-lg-6">
+                                    <select name="currency_decimal_separator" class="select2" >
+                                        {foreach key=KEY item=VALUE from=$DECIMAL_SEPARATORS}
+                                            <option value="{$KEY}">{$VALUE}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row py-2">
+                                <div class="col-lg-6">{vtranslate('Digit Grouping Separator','Install')}<span class="no text-danger ms-2">*</span></div>
+                                <div class="col-lg-6">
+                                    <select name="currency_grouping_separator" class="select2" >
+                                        {foreach key=KEY item=VALUE from=$GROUPING_SEPARATORS}
+                                            <option value="{$KEY}">{$VALUE}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
                             </div>
                             <div class="fw-bold">
                             <div class="row py-2">

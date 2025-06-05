@@ -355,12 +355,50 @@ class Install_Utils_Model {
 
     /**
      * Returns list of currencies
-     * @return mixed
+     * @return array
      */
-	public static function getCurrencyList() {
-		require_once 'modules/Utilities/Currencies.php';
-		return $currencies;
-	}
+    public static function getCurrencyList()
+    {
+        $currencies = [];
+        require_once 'modules/Utilities/Currencies.php';
+
+        return $currencies;
+    }
+
+
+    /**
+     * @return array
+     */
+    public static function getDecimalList(): array
+    {
+        $values = Users_Install_Model::$currency_decimal_separator;
+        $labels = Users_Install_Model::$separator_labes;
+        $options = [];
+
+        foreach ($values as $value) {
+            $label = $labels[$value] ?? $value;
+            $options[$value] = $label;
+        }
+
+        return $options;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getGroupingList(): array
+    {
+        $values = Users_Install_Model::$currency_grouping_separator;
+        $labels = Users_Install_Model::$separator_labes;
+        $options = [];
+
+        foreach ($values as $value) {
+            $label = $labels[$value] ?? $value;
+            $options[$value] = $label;
+        }
+
+        return $options;
+    }
 
     /**
      * Returns an array with the list of languages which are available in source

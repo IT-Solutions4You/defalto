@@ -95,6 +95,8 @@ class Install_Index_view extends Vtiger_View_Controller {
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
 		$viewer->assign('CURRENCIES', Install_Utils_Model::getCurrencyList());
+		$viewer->assign('DECIMAL_SEPARATORS', Install_Utils_Model::getDecimalList());
+		$viewer->assign('GROUPING_SEPARATORS', Install_Utils_Model::getGroupingList());
 
 		require_once 'modules/Users/UserTimeZonesArray.php';
         $viewer->assign('TIMEZONES', UserTimeZones::getAll());
@@ -159,6 +161,10 @@ class Install_Index_view extends Vtiger_View_Controller {
 			$_SESSION['config_file_info']['currency_code'] = $currencies[$currencyName][0];
 			$_SESSION['config_file_info']['currency_symbol'] = $currencies[$currencyName][1];
 		}
+
+        $_SESSION['config_file_info']['currency_decimal_separator'] = $request->get('currency_decimal_separator');
+        $_SESSION['config_file_info']['currency_grouping_separator'] = $request->get('currency_grouping_separator');
+
 		$viewer->assign('DB_CONNECTION_INFO', $dbConnection);
 		$viewer->assign('INFORMATION', $requestData);
 		$viewer->assign('AUTH_KEY', $authKey);

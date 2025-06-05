@@ -27,6 +27,8 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
 	},
 
 	registerEventForStep4: function () {
+        let self = this;
+
 		jQuery('input[name="create_db"]').on('click', function () {
 			let userName = jQuery('#root_user'),
 				password = jQuery('#root_password'),
@@ -77,85 +79,86 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
 			clearPasswordError();
 		});
 
-		jQuery('input[name="step5"]').on('click', function () {
-			var error = false;
-			var validateFieldNames = ['db_hostname', 'db_username', 'db_name', 'password', 'retype_password', 'lastname', 'admin_email'];
-			for (var fieldName in validateFieldNames) {
-				var field = jQuery('input[name="' + validateFieldNames[fieldName] + '"]');
-				if (field.val() == '') {
-					field.addClass('error').focus();
-					error = true;
-					break;
-				} else {
-					field.removeClass('error');
-				}
-			}
+        jQuery('input[name="step5"]').on('click', function () {
+            let error = false;
+            let validateFieldNames = ['db_hostname', 'db_username', 'db_name', 'password', 'retype_password', 'lastname', 'admin_email'];
+            for (let fieldName in validateFieldNames) {
+                let field = jQuery('input[name="' + validateFieldNames[fieldName] + '"]');
+                if (field.val() == '') {
+                    field.addClass('error').focus();
+                    error = true;
+                    break;
+                } else {
+                    field.removeClass('error');
+                }
+            }
 
-			var createDatabase = jQuery('input[name="create_db"]:checked');
-			if (createDatabase.length > 0) {
-				var dbRootUser = jQuery('input[name="db_root_username"]');
-				if (dbRootUser.val() == '') {
-					dbRootUser.addClass('error').focus();
-					error = true;
-				} else {
-					dbRootUser.removeClass('error');
-				}
-			}
-			var password = jQuery('#passwordError');
-			if (password.html() != '') {
-				error = true;
-			}
+            let createDatabase = jQuery('input[name="create_db"]:checked');
+            if (createDatabase.length > 0) {
+                let dbRootUser = jQuery('input[name="db_root_username"]');
+                if (dbRootUser.val() == '') {
+                    dbRootUser.addClass('error').focus();
+                    error = true;
+                } else {
+                    dbRootUser.removeClass('error');
+                }
+            }
+            let password = jQuery('#passwordError');
+            if (password.html() != '') {
+                error = true;
+            }
 
-                        var passwordField = jQuery('input[name="password"]');
-                        if(passwordField.val() != ''){
-                            if(!vtUtils.isPasswordStrong(passwordField.val())) {
-                                    error = true;
-                                    var passwordNotStrong = true;
-                            }
-                        }
-			var emailField = jQuery('input[name="admin_email"]');
-			var regex = /^[_/a-zA-Z0-9*]+([!"#$%&'()*+,./:;<=>?\^_`{|}~-]?[a-zA-Z0-9/_/-])*@[a-zA-Z0-9]+([\_\-\.]?[a-zA-Z0-9]+)*\.([\-\_]?[a-zA-Z0-9])+(\.?[a-zA-Z0-9]+)?$/;
-			if (!regex.test(emailField.val()) && emailField.val() != '') {
-				var invalidEmailAddress = true;
-				emailField.addClass('error').focus();
-				error = true;
-			} else {
-				emailField.removeClass('error');
-			}
+            let passwordField = jQuery('input[name="password"]');
+            let passwordNotStrong = false;
 
-			if (error) {
-				var content;
-				if (invalidEmailAddress) {
-					content = '<div class="col-sm-12">' +
-							'<div class="alert alert-danger errorMessageContent">' +
-							'<button class="btn btn-close" data-bs-dismiss="alert" type="button"></button>' +
-							'Warning! Invalid email address.' +
-							'</div>' +
-							'</div>';
-				} else if(passwordNotStrong){
-                                        content = '<div class="col-sm-12">' +
-							'<div class="alert alert-danger errorMessageContent">' +
-							'<button class="btn btn-close" data-bs-dismiss="alert" type="button"></button>' +
-							'To keep your data safe, we suggest that you use a strong password <br>'+
-                                                        '<ul> <li>Password should be at least 8 characters long </li> <li>Include at least one number </li><li>Include at least one lowercase alphabet </li> <li>Include at least one uppercase alphabet </li>'+
-                                                        '<li>Include at least one special character in the password </li> </ul>' +
-							'</div>' +
-							'</div>';
-                                }else {
-					content = '<div class="col-sm-12">' +
-							'<div class="alert alert-danger errorMessageContent">' +
-							'<button class="btn btn-close" data-bs-dismiss="alert" type="button"></button>' +
-							'Warning! Required fields missing values.' +
-							'</div>' +
-							'</div>';
-				}
-				jQuery('#errorMessage').html(content).removeClass('hide')
-			} else {
-				jQuery('form[name="step4"]').submit();
-			}
-		});
+            if (!passwordField.val() && !vtUtils.isPasswordStrong(passwordField.val())) {
+                error = true;
+                passwordNotStrong = true;
+            }
+
+            let emailField = jQuery('input[name="admin_email"]');
+            let regex = /^[_/a-zA-Z0-9*]+([!"#$%&'()*+,./:;<=>?\^_`{|}~-]?[a-zA-Z0-9/_/-])*@[a-zA-Z0-9]+([\_\-\.]?[a-zA-Z0-9]+)*\.([\-\_]?[a-zA-Z0-9])+(\.?[a-zA-Z0-9]+)?$/;
+            let invalidEmailAddress = false;
+
+            if (!emailField.val() || !regex.test(emailField.val())) {
+                invalidEmailAddress = true;
+                emailField.addClass('error').focus();
+                error = true;
+            } else {
+                emailField.removeClass('error');
+            }
+
+            let decimalSeparator = jQuery('[name="currency_decimal_separator"]').val(),
+                groupingSeparator = jQuery('[name="currency_grouping_separator"]').val(),
+                invalidDecimalGroupingSeparator = false;
+
+            if (!decimalSeparator || !groupingSeparator || decimalSeparator === groupingSeparator) {
+                invalidDecimalGroupingSeparator = true;
+                error = true;
+            }
+
+            if (error) {
+                let content;
+
+                if(invalidDecimalGroupingSeparator) {
+                    content = self.getErrorContent('Warning! Required different values Decimal and Grouping separator.');
+                } else if (invalidEmailAddress) {
+                    content = self.getErrorContent('Warning! Invalid email address.');
+                } else if (passwordNotStrong) {
+                    content = self.getErrorContent('To keep your data safe, we suggest that you use a strong password<br><ul><li>Password should be at least 8 characters long</li><li>Include at least one number</li><li>Include at least one lowercase alphabet</li><li>Include at least one uppercase alphabet</li><li>Include at least one special character in the password</li></ul>');
+                } else {
+                    content = self.getErrorContent('Warning! Required fields missing values.');
+                }
+
+                jQuery('#errorMessage').html(content).removeClass('hide')
+            } else {
+                jQuery('form[name="step4"]').submit();
+            }
+        });
 	},
-
+    getErrorContent(message) {
+        return '<div class="col-sm-12"><div class="alert alert-danger errorMessageContent"><button class="btn btn-close me-2" data-bs-dismiss="alert" type="button"></button>' + message + '</div></div>';
+    },
 	registerEventForStep5: function () {
 		jQuery('input[name="step6"]').on('click', function () {
 			var error = jQuery('#errorMessage');

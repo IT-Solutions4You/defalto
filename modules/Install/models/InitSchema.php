@@ -807,6 +807,11 @@ class Install_InitSchema_Model {
         $user->column_fields['internal_mailer'] = '1';
         $user->column_fields['email1'] = $_SESSION['config_file_info']['admin_email'] ?? 'admin@defaltouser.com';
         $user->column_fields['roleid'] = Settings_Roles_Record_Model::getRoleId('CEO');
+        $user->column_fields['currency_decimal_separator'] = $_SESSION['config_file_info']['currency_decimal_separator'];
+        $user->column_fields['currency_grouping_separator'] = $_SESSION['config_file_info']['currency_grouping_separator'];
+        $user->column_fields['currency_grouping_pattern'] = '123,456,789';
+        $user->column_fields['currency_symbol_placement'] = '$1.0';
+
         $user->save('Users');
 
         $adminUserId = $user->id;

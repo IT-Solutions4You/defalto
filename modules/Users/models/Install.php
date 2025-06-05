@@ -10,6 +10,48 @@
 
 class Users_Install_Model extends Core_Install_Model
 {
+    public static array $separator_labes = [
+        ',' => 'Comma (,)',
+        '.' => 'Dot (.)',
+        ' ' => 'Space ( )',
+        "'" => "Apostrophe (')",
+        '$' => 'Dollar ($)',
+    ];
+
+    public static array $currency_decimal_separator = [
+        ',',
+        '.',
+        '\'',
+        '$',
+    ];
+
+    public static array $currency_grouping_separator = [
+        '.',
+        ',',
+        '\'',
+        '$',
+        ' ',
+    ];
+
+    /**
+     * @return string
+     */
+    public static function getDefaultGroupingSeparator(): string
+    {
+        global $user_config;
+
+        return $user_config['currency_grouping_separator'] ?? '.';
+    }
+
+    /**
+     * @return string
+     */
+    public static function getDefaultDecimalSeparator(): string
+    {
+        global $user_config;
+
+        return $user_config['currency_decimal_separator'] ?? ',';
+    }
 
     /**
      * @return void
@@ -318,13 +360,9 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'defaultvalue' => self::getDefaultDecimalSeparator(),
                     'picklist_overwrite' => true,
-                    'picklist_values' => [
-                        '.',
-                        ',',
-                        '\'',
-                        '$',
-                    ],
+                    'picklist_values' => self::$currency_decimal_separator,
                 ],
                 'currency_grouping_separator' => [
                     'name' => 'currency_grouping_separator',
@@ -340,14 +378,9 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'defaultvalue' => self::getDefaultGroupingSeparator(),
                     'picklist_overwrite' => true,
-                    'picklist_values' => [
-                        ' ',
-                        ',',
-                        '.',
-                        '\'',
-                        '$',
-                    ],
+                    'picklist_values' => self::$currency_grouping_separator,
                 ],
                 'currency_symbol_placement' => [
                     'name' => 'currency_symbol_placement',
