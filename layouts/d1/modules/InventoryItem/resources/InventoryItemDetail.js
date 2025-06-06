@@ -726,7 +726,13 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
             jQuery('input.quantity', container).val(1);
             jQuery('input.unit', container).val(recordData.unit);
-            jQuery('input.price', container).val(parseFloat(recordData.listprice).toFixed(3)).trigger('change');
+            let price = recordData.listprice;
+
+            if (app.getModuleName() === 'PurchaseOrder' && !isNaN(recordData.purchaseCost)) {
+                price = recordData.purchaseCost;
+            }
+
+            jQuery('input.price', container).val(parseFloat(price).toFixed(3)).trigger('change');
             jQuery('input.purchase_cost', container).val(recordData.purchaseCost);
             jQuery('div.display_purchase_cost', container).text(recordData.purchaseCost);
             jQuery('input.pricebookid', container).val(recordData.pricebookid);
