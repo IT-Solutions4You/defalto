@@ -121,7 +121,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                         valueElement.find('input.rowSequence').val(index);
                         data.push({
                             'id': valueElement.find('input.lineItemId').val(),
-                            'sequence': index,
+                            'sequence': index + 1,
                         });
                     }
                 });

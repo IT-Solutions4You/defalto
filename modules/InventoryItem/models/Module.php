@@ -47,11 +47,12 @@ class InventoryItem_Module_Model extends Vtiger_Module_Model
     /**
      * Fetches inventory items associated with a specific CRM ID.
      *
-     * @param int $crmId The CRM ID for which the inventory items should be fetched.
+     * @param int  $crmId       The CRM ID for which the inventory items should be fetched.
+     * @param bool $includeText decides whether to include text lines or not; default false
      *
      * @return array An array of inventory items corresponding to the provided CRM ID.
      */
-    public static function fetchItemsForId(int $crmId): array
+    public static function fetchItemsForId(int $crmId, bool $includeText = false): array
     {
         $db = PearDatabase::getInstance();
         $items = [];
@@ -59,9 +60,14 @@ class InventoryItem_Module_Model extends Vtiger_Module_Model
                 FROM df_inventoryitem
                     LEFT JOIN df_inventoryitemcf ON df_inventoryitemcf.inventoryitemid = df_inventoryitem.inventoryitemid
                     INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid AND vtiger_crmentity.deleted = 0
-                WHERE parentid = ?   
-                    AND productid IS NOT NULL
-                    AND productid <> 0';
+                WHERE parentid = ? ';
+
+        if (!$includeText) {
+            $sql .= ' AND productid IS NOT NULL
+                    AND productid <> 0 ';
+        }
+
+        $sql .= ' ORDER BY sequence';
         $res = $db->pquery($sql, [$crmId]);
 
         while ($row = $db->fetchByAssoc($res)) {
