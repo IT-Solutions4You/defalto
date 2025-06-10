@@ -99,19 +99,6 @@ class MailManager extends CRMExtension {
         return false;
     }
 
-    static function lookupVTEMailAssociation($emailId) {
-		global $adb;
-		$result = $adb->pquery(
-			"SELECT vtiger_mailmanager_mailrel.* FROM vtiger_mailmanager_mailrel INNER JOIN
-			vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_mailmanager_mailrel.crmid AND vtiger_crmentity.deleted=0
-			AND vtiger_mailmanager_mailrel.mailuid=? LIMIT 1", array(decode_html($mailuid)));
-		if ($adb->num_rows($result)) {
-			$resultrow = $adb->fetch_array($result);
-			return $resultrow;
-		}
-		return false;
-	}
-
 	static function checkModuleWriteAccessForCurrentUser($module) {
 		global $current_user;
 		if (isPermitted($module, 'CreateView') == "yes" && vtlib_isModuleActive($module)) {

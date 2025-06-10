@@ -345,7 +345,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
     {
         // Prepare data to create trouble ticket
         $useTitle = $mailRecord->getSubject();
-        $description = $mailRecord->getBodyText();
+        $description = $mailRecord->getBody(false);
 
         // There will be only on FROM address to email, so pick the first one
         $fromEmail = $mailRecord->getFrom()[0];

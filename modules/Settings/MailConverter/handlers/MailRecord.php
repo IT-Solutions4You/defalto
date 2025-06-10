@@ -459,7 +459,7 @@ class Settings_MailConverter_MailRecord_Handler
 
     public function replaceInlineAttachments()
     {
-        $body = $this->getBody();
+        $body = $this->getBody(false);
 
         foreach ($this->getInlineAttachments() as $attachment) {
             if (!empty($attachment['attachment_url'])) {
