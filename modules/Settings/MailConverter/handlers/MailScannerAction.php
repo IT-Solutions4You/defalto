@@ -211,7 +211,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
                 $returnId = $this->createNewEmail($mailRecord, $linkFocus, $relationIds);
 
                 $commentFocus = new ModComments();
-                $commentFocus->column_fields['commentcontent'] = $mailRecord->getBodyText();
+                $commentFocus->column_fields['commentcontent'] = Core_CKEditor_UIType::transformEditViewDisplayValue($mailRecord->getBody(false));
                 $commentFocus->column_fields['related_to'] = $linkFocus->id;
                 $commentFocus->column_fields['assigned_user_id'] = $mailScannerRule->assigned_to;
                 $commentFocus->column_fields['source'] = $this->recordSource;
