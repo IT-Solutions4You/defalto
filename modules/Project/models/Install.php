@@ -245,8 +245,6 @@ class Project_Install_Model extends Core_Install_Model
                     'typeofdata' => 'C~O',
                     'displaytype'=> 1,
                 ],
-            ],
-            'LBL_CUSTOM_INFORMATION' => [
                 'targetbudget' => [
                     'uitype' => 71,
                     'column' => 'targetbudget',
