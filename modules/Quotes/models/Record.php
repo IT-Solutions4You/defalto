@@ -16,20 +16,20 @@ class Quotes_Record_Model extends Vtiger_Record_Model
     {
         $invoiceModuleModel = Vtiger_Module_Model::getInstance('Invoice');
 
-        return "index.php?module=" . $invoiceModuleModel->getName() . "&view=" . $invoiceModuleModel->getEditViewName() . "&quote_id=" . $this->getId();
+        return 'index.php?module=' . $invoiceModuleModel->getName() . '&view=' . $invoiceModuleModel->getEditViewName() . '&sourceModule=Quotes&sourceRecord=' . $this->getId() . '&quote_id=' . $this->getId();
     }
 
     public function getCreateSalesOrderUrl()
     {
         $salesOrderModuleModel = Vtiger_Module_Model::getInstance('SalesOrder');
 
-        return "index.php?module=" . $salesOrderModuleModel->getName() . "&view=" . $salesOrderModuleModel->getEditViewName() . "&quote_id=" . $this->getId();
+        return 'index.php?module=' . $salesOrderModuleModel->getName() . '&view=' . $salesOrderModuleModel->getEditViewName() . '&sourceModule=Quotes&sourceRecord=' . $this->getId() . '&quote_id=' . $this->getId();
     }
 
     public function getCreatePurchaseOrderUrl()
     {
         $purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
 
-        return "index.php?module=" . $purchaseOrderModuleModel->getName() . "&view=" . $purchaseOrderModuleModel->getEditViewName() . "&quote_id=" . $this->getId();
+        return 'index.php?module=' . $purchaseOrderModuleModel->getName() . '&view=' . $purchaseOrderModuleModel->getEditViewName() . '&sourceModule=Quotes&sourceRecord=' . $this->getId() . '&quote_id=' . $this->getId();
     }
 }
