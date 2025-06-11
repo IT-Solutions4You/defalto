@@ -137,7 +137,7 @@ class Contacts extends CRMEntity {
 		'Services' => array('table_name' => 'vtiger_crmentityrel', 'table_index' => 'crmid', 'rel_index' => 'crmid'),
 		'Campaigns' => array('table_name' => 'vtiger_campaigncontrel', 'table_index' => 'campaignid', 'rel_index' => 'contactid'),
 		'Assets' => array('table_name' => 'vtiger_assets', 'table_index' => 'assetsid', 'rel_index' => 'contact'),
-		'Project' => array('table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'linktoaccountscontacts'),
+		'Project' => array('table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'contactid'),
         'Vendors' => array('table_name' => 'vtiger_vendorcontactrel', 'table_index' => 'vendorid', 'rel_index' => 'contactid'),
 	);
         function __construct() {
@@ -1106,28 +1106,60 @@ function get_contactsforol($user_name)
 		global $adb,$log;
 		$log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
-		$rel_table_arr = Array("Potentials"=>"vtiger_contpotentialrel","Potentials"=>"vtiger_potential",
-				"HelpDesk"=>"vtiger_troubletickets","Quotes"=>"vtiger_quotes","PurchaseOrder"=>"vtiger_purchaseorder",
-				"SalesOrder"=>"vtiger_salesorder","Products"=>"vtiger_seproductsrel","Documents"=>"vtiger_senotesrel",
-				"Attachments"=>"vtiger_seattachmentsrel","Campaigns"=>"vtiger_campaigncontrel",'Invoice'=>'vtiger_invoice',
-                'ServiceContracts'=>'vtiger_servicecontracts','Project'=>'vtiger_project','Assets'=>'vtiger_assets',
-				'Vendors'=>'vtiger_vendorcontactrel');
+        $rel_table_arr = [
+            "Potentials" => "vtiger_potential",
+            "HelpDesk" => "vtiger_troubletickets",
+            "Quotes" => "vtiger_quotes",
+            "PurchaseOrder" => "vtiger_purchaseorder",
+            "SalesOrder" => "vtiger_salesorder",
+            "Products" => "vtiger_seproductsrel",
+            "Documents" => "vtiger_senotesrel",
+            "Attachments" => "vtiger_seattachmentsrel",
+            "Campaigns" => "vtiger_campaigncontrel",
+            'Invoice' => 'vtiger_invoice',
+            'ServiceContracts' => 'vtiger_servicecontracts',
+            'Project' => 'vtiger_project',
+            'Assets' => 'vtiger_assets',
+            'Vendors' => 'vtiger_vendorcontactrel',
+        ];
 
-		$tbl_field_arr = Array("vtiger_contpotentialrel"=>"potentialid","vtiger_potential"=>"potentialid",
-				"vtiger_troubletickets"=>"ticketid","vtiger_quotes"=>"quoteid","vtiger_purchaseorder"=>"purchaseorderid",
-				"vtiger_salesorder"=>"salesorderid","vtiger_seproductsrel"=>"productid","vtiger_senotesrel"=>"notesid",
-				"vtiger_seattachmentsrel"=>"attachmentsid","vtiger_campaigncontrel"=>"campaignid",'vtiger_invoice'=>'invoiceid',
-                'vtiger_servicecontracts'=>'servicecontractsid','vtiger_project'=>'projectid','vtiger_assets'=>'assetsid',
-				'vtiger_vendorcontactrel'=>'vendorid');
+        $tbl_field_arr = [
+            "vtiger_contpotentialrel" => "potentialid",
+            "vtiger_potential" => "potentialid",
+            "vtiger_troubletickets" => "ticketid",
+            "vtiger_quotes" => "quoteid",
+            "vtiger_purchaseorder" => "purchaseorderid",
+            "vtiger_salesorder" => "salesorderid",
+            "vtiger_seproductsrel" => "productid",
+            "vtiger_senotesrel" => "notesid",
+            "vtiger_seattachmentsrel" => "attachmentsid",
+            "vtiger_campaigncontrel" => "campaignid",
+            'vtiger_invoice' => 'invoiceid',
+            'vtiger_servicecontracts' => 'servicecontractsid',
+            'vtiger_project' => 'projectid',
+            'vtiger_assets' => 'assetsid',
+            'vtiger_vendorcontactrel' => 'vendorid',
+        ];
 
-		$entity_tbl_field_arr = Array("vtiger_contpotentialrel"=>"contactid","vtiger_potential"=>"contact_id",
-				"vtiger_troubletickets"=>"contact_id","vtiger_quotes"=>"contactid","vtiger_purchaseorder"=>"contactid",
-				"vtiger_salesorder"=>"contactid","vtiger_seproductsrel"=>"crmid","vtiger_senotesrel"=>"crmid",
-				"vtiger_seattachmentsrel"=>"crmid","vtiger_campaigncontrel"=>"contactid",'vtiger_invoice'=>'contactid',
-                'vtiger_servicecontracts'=>'sc_related_to','vtiger_project'=>'linktoaccountscontacts','vtiger_assets'=>'contact',
-				'vtiger_vendorcontactrel'=>'contactid');
+        $entity_tbl_field_arr = [
+            "vtiger_contpotentialrel" => "contactid",
+            "vtiger_potential" => "contact_id",
+            "vtiger_troubletickets" => "contact_id",
+            "vtiger_quotes" => "contactid",
+            "vtiger_purchaseorder" => "contactid",
+            "vtiger_salesorder" => "contactid",
+            "vtiger_seproductsrel" => "crmid",
+            "vtiger_senotesrel" => "crmid",
+            "vtiger_seattachmentsrel" => "crmid",
+            "vtiger_campaigncontrel" => "contactid",
+            'vtiger_invoice' => 'contactid',
+            'vtiger_servicecontracts' => 'sc_related_to',
+            'vtiger_project' => 'contactid',
+            'vtiger_assets' => 'contact',
+            'vtiger_vendorcontactrel' => 'contactid',
+        ];
 
-		foreach($transferEntityIds as $transferId) {
+        foreach ($transferEntityIds as $transferId) {
 			foreach($rel_table_arr as $rel_module=>$rel_table) {
                 $relModuleModel = Vtiger_Module::getInstance($rel_module);
 				if($relModuleModel) {

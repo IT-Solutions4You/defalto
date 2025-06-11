@@ -487,11 +487,15 @@ class Potentials_Install_Model extends Core_Install_Model
      */
     public function updateMapping(): void
     {
+        /**
+         * @var $fieldMap array Potentials Field Name, Project Field Name, Editable
+         */
         $table = $this->getTable('vtiger_convertpotentialmapping', null);
         $fieldMap = [
             ['potentialname', 'projectname', 0],
             ['description', 'description', 1],
-            ['related_to', 'linktoaccountscontacts', 1],
+            ['related_to', 'account_id', 1],
+            ['contact_id', 'contact_id', 1],
         ];
         $data = $table->selectData(['cfmid'], []);
 
