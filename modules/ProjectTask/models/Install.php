@@ -10,6 +10,19 @@
 
 class ProjectTask_Install_Model extends Core_Install_Model
 {
+    public static array $progressValues = [
+        '10%' => '10%',
+        '20%' => '20%',
+        '30%' => '30%',
+        '40%' => '40%',
+        '50%' => '50%',
+        '60%' => '60%',
+        '70%' => '70%',
+        '80%' => '80%',
+        '90%' => '90%',
+        '100%' => '100%',
+    ];
+
     /**
      * @var array
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
@@ -170,18 +183,8 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'column' => 'projecttaskprogress',
                     'table' => 'vtiger_projecttask',
                     'label' => 'Progress',
-                    'picklist_values' => [
-                        '10%',
-                        '20%',
-                        '30%',
-                        '40%',
-                        '50%',
-                        '60%',
-                        '70%',
-                        '80%',
-                        '90%',
-                        '100%',
-                    ],
+                    'picklist_values' => self::$progressValues,
+                    'picklist_overwrite' => 1,
                     'filter' => 1,
                     'summaryfield' => 1,
                 ],
