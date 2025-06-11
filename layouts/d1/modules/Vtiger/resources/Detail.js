@@ -1717,8 +1717,13 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		});
 
         app.event.on('post.QuickCreateForm.save', function (event, data) {
-            let summaryWidgetContainer = self.getWidgetContainer(),
-                referenceModuleName = self.getWidgetRelatedModule(summaryWidgetContainer),
+            let summaryWidgetContainer = self.getWidgetContainer();
+
+            if (!summaryWidgetContainer) {
+                return;
+            }
+
+            let referenceModuleName = self.getWidgetRelatedModule(summaryWidgetContainer),
                 idList = [];
 
             idList.push(data['_recordId']);
