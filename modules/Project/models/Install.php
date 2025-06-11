@@ -15,8 +15,8 @@ class Project_Install_Model extends Core_Install_Model
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        ['Accounts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_merged_list'],
-        ['Contacts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_dependents_list'],
+        ['Accounts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_merged_list', 'account_id'],
+        ['Contacts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_dependents_list', 'contact_id'],
         ['HelpDesk', 'Project', 'Projects', ['SELECT'], 'get_related_list'],
 
         ['Project', 'ProjectTask', 'Project Tasks', ['ADD'], 'get_dependents_list', 'projectid'],
@@ -182,7 +182,7 @@ class Project_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'I~O',
-                    'quickcreate' => 3,
+                    'quickcreate' => 0,
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
@@ -200,7 +200,7 @@ class Project_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'I~O',
-                    'quickcreate' => 3,
+                    'quickcreate' => 0,
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
