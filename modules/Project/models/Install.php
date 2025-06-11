@@ -388,6 +388,13 @@ class Project_Install_Model extends Core_Install_Model
 
                 $table->updateData($data, ['projectid' => $row['projectid']]);
             }
+
+            $moduleModel = Vtiger_Module_Model::getInstance('Project');
+            $fieldModel = Vtiger_Field_Model::getInstance('linktoaccountscontacts', $moduleModel);
+
+            if($fieldModel) {
+                $fieldModel->delete();
+            }
         }
     }
 }
