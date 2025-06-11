@@ -186,6 +186,7 @@ class Project_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
                     'filter' => 1,
                     'related_modules' => [
                         'Accounts',
@@ -204,6 +205,7 @@ class Project_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
                     'related_modules' => [
                         'Contacts',
                     ],
