@@ -528,30 +528,6 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 	//End
-
-	$moduleSpecificHeaderFields = array(
-		'Accounts'			=> array('website', 'email1', 'phone'),
-		'Contacts'			=> array('email', 'phone'),
-		'Leads'				=> array('email', 'phone'),
-		'Potentials'		=> array('related_to', 'email', 'amount', 'sales_stage'),
-		'HelpDesk'			=> array('ticketpriorities'),
-		'Invoice'			=> array('contact_id', 'account_id', 'assigned_user_id', 'invoicestatus'),
-		'Products'			=> array('product_no', 'discontinued', 'qtyinstock', 'productcategory'),
-		'Project'			=> array('linktoaccountscontacts', 'contactid'),
-		'PurchaseOrder'		=> array('contact_id', 'assigned_user_id', 'postatus'),
-		'Quotes'			=> array('account_id', 'contact_id', 'hdnGrandTotal', 'quotestage'),
-		'SalesOrder'		=> array('contact_id', 'account_id', 'assigned_user_id', 'sostatus'),
-		'Vendors'			=> array('website', 'email', 'phone')
-	);
-	$moduleTabIds = array();
-	foreach ($moduleSpecificHeaderFields as $moduleName => $headerFields) {
-		$tabid = getTabid($moduleName);
-		if ($tabid) {
-			$sql = 'UPDATE vtiger_field SET headerfield=?, summaryfield=? WHERE tabid=? AND fieldname IN ('.generateQuestionMarks($headerFields).')';
-			$db->pquery($sql, array_merge(array(1, 0, $tabid), $headerFields));
-		}
-	}
-
 	$ignoreModules = array('SMSNotifier', 'ModComments');
 	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype=? AND name NOT IN ('.generateQuestionMarks($ignoreModules).')', array(1, $ignoreModules));
 	$modules = array();
