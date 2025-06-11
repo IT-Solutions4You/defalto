@@ -2,6 +2,9 @@
 
 class Installer_SystemInstall_Model extends Vtiger_Base_Model
 {
+    /**
+     * @throws AppException
+     */
     public static function getInstance(string $version): self
     {
         $instance = new self();
