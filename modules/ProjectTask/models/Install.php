@@ -316,7 +316,8 @@ class ProjectTask_Install_Model extends Core_Install_Model
             ->createColumn('startdate', 'date default NULL')
             ->createColumn('enddate', 'date default NULL')
             ->createColumn('projectid', 'varchar(100) default NULL')
-            ->createColumn('projecttasknumber', 'int(11) default NULL');
+            ->createColumn('projecttasknumber', 'int(11) default NULL')
+            ->createColumn('planed_hours', 'decimal(11,1) default NULL');
 
         $this->getTable('vtiger_projecttaskcf', '')
             ->createTable('projecttaskid');
