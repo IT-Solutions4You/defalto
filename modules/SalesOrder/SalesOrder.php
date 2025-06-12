@@ -158,13 +158,13 @@ class SalesOrder extends CRMEntity
             && $_REQUEST['action'] != 'MassEditSave' && $_REQUEST['action'] != 'ProcessDuplicates'
             && $_REQUEST['action'] != 'SaveAjax' && $this->isLineItemUpdate != false) {
             //Based on the total Number of rows we will save the product relationship with this entity
-            saveInventoryProductDetails($this, 'SalesOrder');
+            //saveInventoryProductDetails($this, 'SalesOrder');
         }
 
         // Update the currency id and the conversion rate for the sales order
         $update_query = "update vtiger_salesorder set currency_id=?, conversion_rate=? where salesorderid=?";
         $update_params = [$this->column_fields['currency_id'], $this->column_fields['conversion_rate'], $this->id];
-        $this->db->pquery($update_query, $update_params);
+        //$this->db->pquery($update_query, $update_params);
     }
 
     /** Function to get the invoices associated with the Sales Order

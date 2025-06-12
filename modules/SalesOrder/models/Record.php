@@ -12,17 +12,41 @@
 class SalesOrder_Record_Model extends Vtiger_Record_Model
 {
 
-    function getCreateInvoiceUrl()
+    public function getCreateInvoiceUrl()
     {
         $invoiceModuleModel = Vtiger_Module_Model::getInstance('Invoice');
 
-        return "index.php?module=" . $invoiceModuleModel->getName() . "&view=" . $invoiceModuleModel->getEditViewName() . "&salesorder_id=" . $this->getId();
+        return 'index.php?module=' . $invoiceModuleModel->getName() . '&view=' . $invoiceModuleModel->getEditViewName() . '&sourceModule=SalesOrder&sourceRecord=' . $this->getId() . '&salesorder_id=' . $this->getId();
     }
 
-    function getCreatePurchaseOrderUrl()
+    public function getCreatePurchaseOrderUrl()
     {
         $purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
 
-        return "index.php?module=" . $purchaseOrderModuleModel->getName() . "&view=" . $purchaseOrderModuleModel->getEditViewName() . "&salesorder_id=" . $this->getId();
+        return 'index.php?module=' . $purchaseOrderModuleModel->getName() . '&view=' . $purchaseOrderModuleModel->getEditViewName() . '&sourceModule=SalesOrder&sourceRecord=' . $this->getId() . '&salesorder_id=' . $this->getId();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function save()
+    {
+        if ($this->has('conversion_rate')) {
+            $conversion_rate = $this->get('conversion_rate');
+
+            if (empty($conversion_rate)) {
+                $this->set('conversion_rate', 1);
+            }
+        }
+
+        $entity = $this->getEntity();
+
+        if (empty($entity->column_fields['conversion_rate'])) {
+            $entity->column_fields['conversion_rate'] = 1;
+            $this->setEntity($entity);
+        }
+
+        parent::save();
+        InventoryItem_CopyOnCreate_Model::run($this);
     }
 }

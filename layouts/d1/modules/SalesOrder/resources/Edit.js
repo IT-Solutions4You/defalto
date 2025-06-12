@@ -172,8 +172,6 @@ Vtiger_Edit_Js("SalesOrder_Edit_Js", {}, {
     registerBasicEvents: function (container) {
         this._super(container);
         this.registerEventForEnablingRecurrence();
-        this.registerForTogglingBillingandShippingAddress();
-        this.registerEventForCopyAddress();
     },
 
 });

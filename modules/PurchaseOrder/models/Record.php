@@ -6,7 +6,6 @@
  * All Rights Reserved.
  */
 
-
 /**
  * PurchaseOrder Record Model Class
  */
@@ -28,10 +27,10 @@ class PurchaseOrder_Record_Model extends Vtiger_Record_Model
         foreach ($relatedProducts as $key => $relatedProduct) {
             if ($relatedProduct['qty' . $key]) {
                 $productId = $relatedProduct['hdnProductId' . $key];
-                $result = $db->pquery("SELECT qtyinstock FROM vtiger_products WHERE productid=?", [$productId]);
-                $qty = $db->query_result($result, 0, "qtyinstock");
+                $result = $db->pquery('SELECT qtyinstock FROM vtiger_products WHERE productid=?', [$productId]);
+                $qty = $db->query_result($result, 0, 'qtyinstock');
                 $stock = $qty + $relatedProduct['qty' . $key];
-                $db->pquery("UPDATE vtiger_products SET qtyinstock=? WHERE productid=?", [$stock, $productId]);
+                $db->pquery('UPDATE vtiger_products SET qtyinstock=? WHERE productid=?', [$stock, $productId]);
             }
         }
     }
@@ -46,9 +45,9 @@ class PurchaseOrder_Record_Model extends Vtiger_Record_Model
     function getPurchaseOrderStatus($purchaseOrderId)
     {
         $db = PearDatabase::getInstance();
-        $sql = "SELECT postatus FROM vtiger_purchaseorder WHERE purchaseorderid=?";
+        $sql = 'SELECT postatus FROM vtiger_purchaseorder WHERE purchaseorderid=?';
         $result = $db->pquery($sql, [$purchaseOrderId]);
-        $purchaseOrderStatus = $db->query_result($result, 0, "postatus");
+        $purchaseOrderStatus = $db->query_result($result, 0, 'postatus');
 
         return $purchaseOrderStatus;
     }
@@ -56,7 +55,8 @@ class PurchaseOrder_Record_Model extends Vtiger_Record_Model
     /**
      * @inheritdoc
      */
-    public function save() {
+    public function save()
+    {
         if ($this->has('conversion_rate')) {
             $conversion_rate = $this->get('conversion_rate');
 
@@ -73,5 +73,6 @@ class PurchaseOrder_Record_Model extends Vtiger_Record_Model
         }
 
         parent::save();
+        InventoryItem_CopyOnCreate_Model::run($this);
     }
 }

@@ -37,7 +37,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     registerItemsTableEvents: function () {
-        this.recalculateTotals();
+        //this.recalculateTotals();
         this.makeLineItemsSortable();
         this.addRowListeners();
         this.registerAddButtons();
@@ -230,7 +230,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }, 0);
     },
 
-    recalculateTotals: function () {
+    /*recalculateTotals: function () {
         const self = this;
         jQuery('tfoot span[class^="total_"]', this.lineItemsHolder).each(function () {
             let span = jQuery(this);
@@ -258,7 +258,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             // Update the total in the corresponding span (formatted to 2 decimal places)
             span.text(columnTotal.toFixed(app.getNumberOfDecimals()));
         });
-    },
+    },*/
 
     registerOverallDiscountActions: function () {
         const self = this;

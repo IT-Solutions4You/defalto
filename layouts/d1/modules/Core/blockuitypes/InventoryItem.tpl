@@ -114,14 +114,6 @@
         </div>
     </div>
     <div class="blockData p-3 border-top border-light-subtle {if $IS_HIDDEN}hide{/if}">
-        {*<table id="dummyLineItemTable" style="display: none;">
-            <tr id="dummyItemRow" class="hide border-bottom lineItemCloneCopy" data-row-num="0">
-                {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=$EMPTY_ROW}
-            </tr>
-            <tr id="dummyTextRow" class=" hide border-bottom" data-row-num="0">
-                {include file="partials/TextItemContent.tpl"|@vtemplate_path:'InventoryItem' row_no=0 data=$EMPTY_ROW}
-            </tr>
-        </table>*}
         <div class="lineItemTableContainer">
             <table class="table table-borderless" id="lineItemTab">
                 <thead>

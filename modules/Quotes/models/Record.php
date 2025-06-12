@@ -32,4 +32,27 @@ class Quotes_Record_Model extends Vtiger_Record_Model
 
         return 'index.php?module=' . $purchaseOrderModuleModel->getName() . '&view=' . $purchaseOrderModuleModel->getEditViewName() . '&sourceModule=Quotes&sourceRecord=' . $this->getId() . '&quote_id=' . $this->getId();
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function save() {
+        if ($this->has('conversion_rate')) {
+            $conversion_rate = $this->get('conversion_rate');
+
+            if (empty($conversion_rate)) {
+                $this->set('conversion_rate', 1);
+            }
+        }
+
+        $entity = $this->getEntity();
+
+        if (empty($entity->column_fields['conversion_rate'])) {
+            $entity->column_fields['conversion_rate'] = 1;
+            $this->setEntity($entity);
+        }
+
+        parent::save();
+        InventoryItem_CopyOnCreate_Model::run($this);
+    }
 }
