@@ -9,4 +9,3 @@ parent_tabdata.php
 vendor/*
 config.csrf-secret.php
 /portal/
-/update/
