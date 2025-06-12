@@ -30,6 +30,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
     public array $registerRelatedLists = [
         ['ProjectTask', 'Documents', 'Documents', ['ADD', 'SELECT'], 'get_attachments'],
         ['Project', 'ProjectTask', 'Project Tasks', ['ADD'], 'get_dependents_list', 'projectid'],
+        ['ProjectMilestone' , 'ProjectTask', 'Project Task', ['ADD'], 'get_dependents_list', 'milestoneid'],
     ];
 
     /**

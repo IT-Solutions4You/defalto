@@ -18,6 +18,7 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
     public array $registerRelatedLists = [
         ['ProjectTask', 'Documents', 'Documents', ['ADD', 'SELECT'], 'get_attachments'],
         ['Project', 'ProjectMilestone', 'Project Milestones', ['ADD'], 'get_dependents_list', 'projectid'],
+        ['ProjectMilestone' , 'ProjectTask', 'Project Task', ['ADD'], 'get_dependents_list', 'milestoneid'],
     ];
 
     protected string $moduleNumbering = 'PM';
@@ -119,8 +120,6 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
                     'quickcreate' => 3,
                     'masseditable' => 0,
                 ],
-            ],
-            'LBL_CUSTOM_INFORMATION' => [
                 'createdtime' => [
                     'uitype' => 70,
                     'column' => 'createdtime',
