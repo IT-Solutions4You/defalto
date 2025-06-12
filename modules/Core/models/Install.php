@@ -77,7 +77,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public static array $installedModules = [];
 
-    public static array $fieldKeySkippedForUpdate = ['presence', 'typeofdata', 'quickcreate', 'masseditable', 'summaryfield'];
+    public static array $fieldKeySkippedForUpdate = ['presence', 'typeofdata', 'quickcreate', 'masseditable', 'summaryfield', 'sequence', 'block'];
     public bool $requireInstallTables = true;
 
     /**
@@ -538,7 +538,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     public function createField(string $fieldName, array $fieldParams): Vtiger_Field_Model|bool
     {
         $moduleInstance = $fieldParams['module'];
-        $blockInstance = $fieldParams['block'];
         $fieldInstance = $this->getFieldInstance($fieldName, $moduleInstance);
 
         foreach ($fieldParams as $fieldParamName => $fieldParam) {
@@ -549,7 +548,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             $fieldInstance->$fieldParamName = $fieldParam;
         }
 
-        $fieldInstance->save($blockInstance);
+        $fieldInstance->save($fieldInstance->block);
         $fieldInstance->getFieldTable()->updateData(
             [
                 'block' => $fieldInstance->getBlockId(),
