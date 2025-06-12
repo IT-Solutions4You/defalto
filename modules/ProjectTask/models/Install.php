@@ -188,6 +188,13 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'summaryfield' => 1,
                 ],
+                'planed_hours' => [
+                    'uitype' => 7,
+                    'column' => 'planed_hours',
+                    'table' => 'vtiger_projecttask',
+                    'label' => 'Planed Hours',
+                    'typeofdata' => 'N~O',
+                ],
                 'projecttaskhours' => [
                     'uitype' => 7,
                     'column' => 'projecttaskhours',
