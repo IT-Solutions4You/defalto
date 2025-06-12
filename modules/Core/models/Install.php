@@ -263,9 +263,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $parent = $moduleFocus->parentName ?? '';
         $cfTable = $moduleFocus->customFieldTable[0] ?? '';
         $groupRelTable = $moduleFocus->groupFieldTable[0] ?? '';
-
-        $versionClass = $moduleName . '_Version_Helper';
-        $version = class_exists($versionClass) ? $versionClass::getVersion() : $moduleFocus->moduleVersion;
+        $version = $moduleFocus->moduleVersion;
 
         if (!empty($entity) && empty($baseTableId)) {
             self::logError('Empty base table ID');
