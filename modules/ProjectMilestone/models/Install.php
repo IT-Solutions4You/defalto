@@ -24,6 +24,7 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
 
     /**
      * @return void
+     * @throws Exception
      */
     public function addCustomLinks(): void
     {
@@ -54,7 +55,7 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
                     'uitype' => 2,
                     'column' => 'projectmilestonename',
                     'table' => 'vtiger_projectmilestone',
-                    'label' => 'Project Milestone Name',
+                    'label' => 'Milestone Name',
                     'typeofdata' => 'V~M',
                     'quickcreate' => 0,
                     'masseditable' => 1,
@@ -113,9 +114,9 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
                     'column' => 'projectmilestone_no',
                     'table' => 'vtiger_projectmilestone',
                     'generatedtype' => 2,
-                    'label' => 'Project Milestone No',
+                    'label' => 'Milestone No',
                     'presence' => 0,
-                    'quickcreate' => '3',
+                    'quickcreate' => 3,
                     'masseditable' => 0,
                 ],
             ],
@@ -144,8 +145,8 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
                     'table' => 'vtiger_crmentity',
                     'label' => 'Last Modified By',
                     'presence' => 0,
-                    'quickcreate' => '3',
-                    'displaytype' => '3',
+                    'quickcreate' => 3,
+                    'displaytype' => 3,
                     'masseditable' => 0,
                 ],
             ],
