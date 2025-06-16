@@ -26,11 +26,11 @@ class Users_Install_Model extends Core_Install_Model
     ];
 
     public static array $currency_grouping_separator = [
+        ' ',
         '.',
         ',',
         '\'',
         '$',
-        ' ',
     ];
 
     /**
