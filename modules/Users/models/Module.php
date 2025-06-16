@@ -195,7 +195,20 @@ class Users_Module_Model extends Vtiger_Module_Model {
 		$adb->pquery($query, $params);
 	}
 
-	/**
+    /**
+     * @param string $username
+     * @return bool
+     * @throws Exception
+     */
+    public function hasLoginHistory(string $username): bool
+    {
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery('SELECT login_id FROM vtiger_loginhistory WHERE user_name=?', [$username]);
+
+        return (bool)$adb->query_result($result, 0, 'login_id');
+    }
+
+    /**
 	 * Function to store the logout history
 	 * @param type $username
 	 */

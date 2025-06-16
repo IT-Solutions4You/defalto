@@ -16,9 +16,12 @@ class Users_Login_Action extends Vtiger_Action_Controller {
 
 	function checkPermission(Vtiger_Request $request) {
 		return true;
-	} 
+	}
 
-	function process(Vtiger_Request $request) {
+    /**
+     * @throws Exception
+     */
+    function process(Vtiger_Request $request) {
 		$username = $request->get('username');
 		$password = $request->getRaw('password');
 
@@ -42,20 +45,28 @@ class Users_Login_Action extends Vtiger_Action_Controller {
 			$_SESSION['KCFINDER']['disabled'] = false;
             $_SESSION['KCFINDER']['uploadURL'] = '../../../test/upload';
             $_SESSION['KCFINDER']['uploadDir'] = __DIR__ . '/../../../test/upload';
-			$deniedExts = implode(" ", vglobal('upload_badext'));
-			$_SESSION['KCFINDER']['deniedExts'] = $deniedExts;
+			$_SESSION['KCFINDER']['deniedExts'] = implode(" ", vglobal('upload_badext'));
 			// End
 
 			//Track the login History
+            /** @var Users_Module_Model $moduleModel */
 			$moduleModel = Users_Module_Model::getInstance('Users');
-			$moduleModel->saveLoginHistory($user->column_fields['user_name']);
+            $isFirstLogin = !$moduleModel->hasLoginHistory($username);
+            $moduleModel->saveLoginHistory($user->column_fields['user_name']);
 			//End
-						
-			if(isset($_SESSION['return_params'])){
-				$return_params = $_SESSION['return_params'];
-			}
 
-			header ('Location: index.php');
+            if (isset($_SESSION['return_params'])) {
+                $return_params = $_SESSION['return_params'];
+                header('Location: index.php?' . urldecode($return_params));
+                exit;
+            }
+
+            if ($isFirstLogin) {
+                header('Location: index.php?module=Tour&view=Index');
+                exit();
+            }
+
+            header ('Location: index.php');
 			exit();
 		} else {
 			header ('Location: index.php?module=Users&parent=Settings&view=Login&error=login');
