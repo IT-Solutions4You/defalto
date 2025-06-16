@@ -251,18 +251,24 @@
                                     </div>
                                 </div>
                                 <div id="logout-footer" class="logout-footer container-fluid px-4 py-2">
-                                    <div class="row">
+                                    <a class="row" href="{$USER_MODEL->getPreferenceDetailViewUrl()}">
                                         <div class="col-2 p-3 logout-footer-icon text-secondary text-center">
                                             <i class="fa fa-cogs"></i>
                                         </div>
-                                        <a class="col py-3 fw-semibold" id="menubar_item_right_LBL_MY_PREFERENCES" href="{$USER_MODEL->getPreferenceDetailViewUrl()}">{vtranslate('LBL_MY_PREFERENCES')}</a>
-                                    </div>
-                                    <div class="row">
+                                        <div class="col py-3 fw-semibold" id="menubar_item_right_LBL_MY_PREFERENCES">{vtranslate('LBL_MY_PREFERENCES')}</div>
+                                    </a>
+                                    <a class="row" href="index.php?module=Tour&view=Index">
+                                        <div class="col-2 p-3 logout-footer-icon text-secondary text-center">
+                                            <i class="fa-solid fa-lightbulb"></i>
+                                        </div>
+                                        <div class="col py-3 fw-semibold" id="menubar_item_right_LBL_WELCOME_GUIDES">{vtranslate('LBL_WELCOME_GUIDES')}</div>
+                                    </a>
+                                    <a class="row" href="index.php?module=Users&action=Logout">
                                         <div class="col-2 p-3 logout-footer-icon text-secondary text-center">
                                             <i class="fa fa-power-off"></i>
                                         </div>
-                                        <a class="col py-3 fw-semibold" id="menubar_item_right_LBL_SIGN_OUT" href="index.php?module=Users&action=Logout">{vtranslate('LBL_SIGN_OUT')}</a>
-                                    </div>
+                                        <div class="col py-3 fw-semibold" id="menubar_item_right_LBL_SIGN_OUT">{vtranslate('LBL_SIGN_OUT')}</div>
+                                    </a>
                                 </div>
                             </div>
                         </div>

@@ -1473,6 +1473,7 @@ $languageStrings = array(
     'LBL_CREATE_LIST' => 'Create list',
     'starred' => 'starred',
     'tags' => 'tags',
+    'LBL_WELCOME_GUIDES' => 'Welcome Guides',
 );
 
 $jsLanguageStrings = array(
