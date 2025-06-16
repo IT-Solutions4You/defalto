@@ -35,6 +35,7 @@ trait InventoryItem_Detail_Trait
         $viewer->assign('EMPTY_ROW', $this->getEmptyRow());
         $viewer->assign('OVERALL_DISCOUNT', number_format($this->overallDiscount, 2));
         $viewer->assign('OVERALL_DISCOUNT_AMOUNT', number_format($this->overallDiscountAmount, 2));
+        $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $selectedFields = InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule()));
         $selectedFieldsCount = count($selectedFields);
 

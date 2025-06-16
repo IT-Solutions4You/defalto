@@ -7,10 +7,6 @@
  * file that was distributed with this source code.
  *}
 {strip}
-    {assign var="hdnProductId" value="productid"|cat:$row_no}
-    {assign var="item_text" value="item_text"|cat:$row_no}
-    {assign var="entityType" value=$data.entityType}
-
     <td style="width: 3%" nowrap="nowrap">
         <span class="noEditLineItem">
             <a class="btn drag_drop_line_item padding0">
@@ -36,10 +32,10 @@
         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
         {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
             <td class="minWidth20per item_text_td" title="{$data.item_text}">
-                <span class="noEditLineItem display_{$item_text} font-bold">{$data.item_text}&nbsp;&nbsp;<small><a class="text-primary" href="index.php?module={$data.entityType}&view=Detail&record={$data.productid}" target="_blank"><i class="fa fa-external-link text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i></a></small></span>
-                <input type="hidden" id="{$item_text}" name="{$item_text}" value="{$data.item_text}" class="item_text form-control {if $row_no neq 0}autoComplete{/if}" placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}" data-rule-required=true {if !empty($data.$item_text)}disabled="disabled"{/if}>
-                <input type="hidden" id="{$hdnProductId}" name="{$hdnProductId}" value="{$data.productid}" class="productid"/>
-                <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="{$entityType}" class="lineItemType"/>
+                <span class="noEditLineItem display_productid{$row_no} font-bold">{$data.item_text}&nbsp;&nbsp;<small><a class="text-primary" href="index.php?module={$data.entityType}&view=Detail&record={$data.productid}" target="_blank"><i class="fa fa-external-link text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i></a></small></span>
+                <input type="hidden" id="item_text{$row_no}" name="item_text{$row_no}" value="{$data.item_text}" class="item_text" />
+                <input type="hidden" id="productid{$row_no}" name="productid{$row_no}" value="{$data.productid}" class="productid" />
+                <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="{$data.entityType}" class="lineItemType" />
             </td>
         {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
             <td style="display: none;"><input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" class="{$INVENTORY_ITEM_FIELD_NAME}" type="hidden" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"></td>

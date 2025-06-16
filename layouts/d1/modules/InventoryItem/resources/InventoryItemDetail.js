@@ -37,7 +37,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     registerItemsTableEvents: function () {
-        //this.recalculateTotals();
+        this.recalculateTotals();
         this.makeLineItemsSortable();
         this.addRowListeners();
         this.registerAddButtons();
@@ -230,7 +230,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }, 0);
     },
 
-    /*recalculateTotals: function () {
+    recalculateTotals: function () {
         const self = this;
         jQuery('tfoot span[class^="total_"]', this.lineItemsHolder).each(function () {
             let span = jQuery(this);
@@ -258,7 +258,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             // Update the total in the corresponding span (formatted to 2 decimal places)
             span.text(columnTotal.toFixed(app.getNumberOfDecimals()));
         });
-    },*/
+    },
 
     registerOverallDiscountActions: function () {
         const self = this;
@@ -493,21 +493,6 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         return jQuery('#currency_id_original').val();
     },
 
-
-    /***************************************************
-     ***************************************************
-     ***************************************************
-     ***************************************************
-     ***************************************************
-     ***************************************************
-     ***************************************************
-     ***************************************************
-     ***************************************************
-     ***************************************************
-     ***************************************************
-     ***************************************************/
-
-
     editItem: function (rowNumber) {
         app.helper.showProgress();
 
@@ -599,8 +584,32 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 success: function (response) {
                     container.trigger('lineSaved', [response]);
                     container.find('.btn-close').trigger('click');
-                    let activeRelatedTab = jQuery('div.related-tabs').find('ul');
-                    activeRelatedTab.find('li.active').click();
+                    const itemTable = jQuery('div.lineItemTableContainer');
+                    const activeRelatedTab = jQuery('div.related-tabs').find('ul');
+                    const activeRelatedItem = activeRelatedTab.find('li.active');
+
+                    if (!itemTable.length) {
+                        activeRelatedItem.click();
+                        return;
+                    }
+
+                    const blockElement = itemTable.closest('div[data-blockid]');
+                    const url = activeRelatedItem.data('url');
+                    const params = [];
+                    params.url = url;
+                    app.helper.showProgress();
+                    app.request.post(params).then(function(error,response){
+                        const newBlock = $('<div>').html(response).find('div[data-blockid="' + blockElement.data('blockid') + '"]');
+
+                        if (newBlock.length) {
+                            blockElement.replaceWith(newBlock);
+                            self.init();
+                        } else {
+                            activeRelatedItem.click();
+                        }
+
+                        app.helper.hideProgress();
+                    });
                 },
                 error: function (xhr, status, error) {
                     app.helper.showErrorNotification({message: app.vtranslate('JS_PRODUCT_LINE_SAVE_ERROR', 'InventoryItem')});
