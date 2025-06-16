@@ -51,8 +51,7 @@ class Users_Login_Action extends Vtiger_Action_Controller {
 			//Track the login History
             /** @var Users_Module_Model $moduleModel */
 			$moduleModel = Users_Module_Model::getInstance('Users');
-            $isFirstLogin = !$moduleModel->hasLoginHistory($username);
-            $moduleModel->saveLoginHistory($user->column_fields['user_name']);
+            $moduleModel->saveLoginHistory($username);
 			//End
 
             if (isset($_SESSION['return_params'])) {
@@ -61,10 +60,11 @@ class Users_Login_Action extends Vtiger_Action_Controller {
                 exit;
             }
 
-            if ($isFirstLogin) {
+            if ($moduleModel->isFirstLoginHistory($username)) {
                 header('Location: index.php?module=Tour&view=Index');
-                exit();
+                exit;
             }
+
 
             header ('Location: index.php');
 			exit();

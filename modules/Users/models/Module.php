@@ -200,12 +200,12 @@ class Users_Module_Model extends Vtiger_Module_Model {
      * @return bool
      * @throws Exception
      */
-    public function hasLoginHistory(string $username): bool
+    public function isFirstLoginHistory(string $username): bool
     {
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT login_id FROM vtiger_loginhistory WHERE user_name=?', [$username]);
+        $result = $adb->pquery('SELECT count(login_id) as counts FROM vtiger_loginhistory WHERE user_name=?', [$username]);
 
-        return (bool)$adb->query_result($result, 0, 'login_id');
+        return 1 === (int)$adb->query_result($result, 0, 'counts');
     }
 
     /**
