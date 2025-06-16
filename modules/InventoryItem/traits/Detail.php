@@ -40,7 +40,7 @@ trait InventoryItem_Detail_Trait
         $selectedFieldsCount = count($selectedFields);
 
         foreach ($selectedFields as $value) {
-            if (in_array($value, InventoryItem_Field_Model::computedFields)) {
+            if (in_array($value, InventoryItem_Field_Model::preventDisplay)) {
                 $selectedFieldsCount--;
             }
         }
@@ -55,7 +55,7 @@ trait InventoryItem_Detail_Trait
         }
 
         $viewer->assign('INVENTORY_ITEM_COLUMNS', $selectedFields);
-        $viewer->assign('DISPLAYED_FIELDS_COUNT', $selectedFieldsCount);
+        $viewer->assign('FINALS_COLSPAN', $selectedFieldsCount);
 
         $recordModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
         $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);

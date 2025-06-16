@@ -169,7 +169,7 @@
                 {if !empty($SPECIAL_TREATMENT_FIELDS)}
                     {if in_array('overall_discount', $SPECIAL_TREATMENT_FIELDS) and in_array('overall_discount', $INVENTORY_ITEM_COLUMNS)}
                         <tr>
-                            <td colspan="{$DISPLAYED_FIELDS_COUNT}" class="textAlignRight">
+                            <td colspan="{$FINALS_COLSPAN}" class="textAlignRight">
                                 <div class="position-relative">
                                     <i class="fa fa-pencil fa-fw text-secondary editOverallDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Overal Discount %', 'InventoryItem')}</strong>
                                 <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="overallDiscountSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
@@ -215,7 +215,7 @@
                     {/if}
                 {/if}
                 <tr>
-                    <td colspan="{$DISPLAYED_FIELDS_COUNT}" class="textAlignRight">
+                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight">
                         <div class="position-relative">
                             <i class="fa fa-pencil fa-fw text-secondary editAdjustment" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Adjustment', 'InventoryItem')}</strong>
                             <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="adjustmentSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">

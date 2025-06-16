@@ -109,6 +109,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     makeLineItemsSortable: function () {
+        const self = this;
         jQuery('#lineItemTab tbody').sortable({
             handle: '.drag_drop_line_item',
             update: function () {
@@ -134,6 +135,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 };
 
                 app.request.post({"data": requestParams}).then(function (err, res) {
+                    self.reloadInventoryItemsBlock();
                 });
             }
         });
@@ -166,7 +168,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     deleteProductLine: function (rowNumber) {
         if (confirm(app.vtranslate('JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE')) === true) {
-            const row = jQuery('#row' + rowNumber);
+            const self = this;
             app.request.post({
                 'data': {
                     module: 'InventoryItem',
@@ -175,7 +177,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     lineItemId: jQuery('input[name="lineItemId' + rowNumber + '"]').val()
                 }
             }).then(function () {
-                row.remove();
+                self.reloadInventoryItemsBlock();
             });
         }
     },
@@ -584,32 +586,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 success: function (response) {
                     container.trigger('lineSaved', [response]);
                     container.find('.btn-close').trigger('click');
-                    const itemTable = jQuery('div.lineItemTableContainer');
-                    const activeRelatedTab = jQuery('div.related-tabs').find('ul');
-                    const activeRelatedItem = activeRelatedTab.find('li.active');
-
-                    if (!itemTable.length) {
-                        activeRelatedItem.click();
-                        return;
-                    }
-
-                    const blockElement = itemTable.closest('div[data-blockid]');
-                    const url = activeRelatedItem.data('url');
-                    const params = [];
-                    params.url = url;
-                    app.helper.showProgress();
-                    app.request.post(params).then(function(error,response){
-                        const newBlock = $('<div>').html(response).find('div[data-blockid="' + blockElement.data('blockid') + '"]');
-
-                        if (newBlock.length) {
-                            blockElement.replaceWith(newBlock);
-                            self.init();
-                        } else {
-                            activeRelatedItem.click();
-                        }
-
-                        app.helper.hideProgress();
-                    });
+                    self.reloadInventoryItemsBlock();
                 },
                 error: function (xhr, status, error) {
                     app.helper.showErrorNotification({message: app.vtranslate('JS_PRODUCT_LINE_SAVE_ERROR', 'InventoryItem')});
@@ -649,6 +626,36 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             }
 
             self.recalculateItem(container);
+        });
+    },
+
+    reloadInventoryItemsBlock: function () {
+        const self = this;
+        const itemTable = jQuery('div.lineItemTableContainer');
+        const activeRelatedTab = jQuery('div.related-tabs').find('ul');
+        const activeRelatedItem = activeRelatedTab.find('li.active');
+
+        if (!itemTable.length) {
+            activeRelatedItem.click();
+            return;
+        }
+
+        const blockElement = itemTable.closest('div[data-blockid]');
+        const url = activeRelatedItem.data('url');
+        const params = [];
+        params.url = url;
+        app.helper.showProgress();
+        app.request.post(params).then(function(error,response){
+            const newBlock = $('<div>').html(response).find('div[data-blockid="' + blockElement.data('blockid') + '"]');
+
+            if (newBlock.length) {
+                blockElement.replaceWith(newBlock);
+                self.init();
+            } else {
+                activeRelatedItem.click();
+            }
+
+            app.helper.hideProgress();
         });
     },
 
