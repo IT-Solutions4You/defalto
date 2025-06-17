@@ -404,6 +404,14 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
                     'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
+                'creator' => [
+                    'column' => 'smcreatorid',
+                    'label' => 'Creator',
+                    'uitype' => 52,
+                    'typeofdata' => 'V~O',
+                    'displaytype' => 2,
+                    'table' => 'vtiger_crmentity',
+                ],
             ],
             'LBL_DESCRIPTION_INFORMATION' => [
                 'description' => [
@@ -504,5 +512,10 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
 
             $this->registerRelatedLists[] = [$supportedModuleName, 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list'];
         }
+    }
+
+    public function retrieveBlocks(): void
+    {
+        self::$fieldsConfig = $this->getBlocks();
     }
 }

@@ -85,6 +85,11 @@ class Users_Install_Model extends Core_Install_Model
     {
     }
 
+    public function retrieveBlocks(): void
+    {
+        self::$fieldsConfig = $this->getBlocks();
+    }
+
     /**
      * @return array[]
      */

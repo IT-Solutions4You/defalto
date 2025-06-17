@@ -110,6 +110,17 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'filter' => 1,
                 ],
+            ],
+            'LBL_DESCRIPTION_INFORMATION' => [
+                'description' => [
+                    'uitype' => 19,
+                    'column' => 'description',
+                    'table' => 'vtiger_crmentity',
+                    'label' => 'Description',
+                    'masseditable' => 1,
+                ],
+            ],
+            'LBL_SYSTEM_INFORMATION' => [
                 'projectmilestone_no' => [
                     'uitype' => 4,
                     'column' => 'projectmilestone_no',
@@ -119,43 +130,6 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
                     'presence' => 0,
                     'quickcreate' => 3,
                     'masseditable' => 0,
-                ],
-                'createdtime' => [
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'typeofdata' => 'DT~O',
-                    'displaytype' => 2,
-                    'masseditable' => 1,
-                ],
-                'modifiedtime' => [
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'typeofdata' => 'DT~O',
-                    'displaytype' => 2,
-                    'masseditable' => 1,
-                ],
-                'modifiedby' => [
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'presence' => 0,
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
-                    'masseditable' => 0,
-                ],
-            ],
-            'LBL_DESCRIPTION_INFORMATION' => [
-                'description' => [
-                    'uitype' => 19,
-                    'column' => 'description',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Description',
-                    'masseditable' => 1,
                 ],
             ],
         ];

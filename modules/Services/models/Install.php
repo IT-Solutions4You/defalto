@@ -70,17 +70,6 @@ class Services_Install_Model extends Core_Install_Model
                     'summaryfield' => 1,
                     'filter' => 1,
                 ],
-                'service_no' => [
-                    'uitype' => 4,
-                    'column' => 'service_no',
-                    'table' => 'vtiger_service',
-                    'label' => 'Service No',
-                    'presence' => 0,
-                    'quickcreate' => 3,
-                    'masseditable' => 0,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                ],
                 'discontinued' => [
                     'uitype' => 56,
                     'column' => 'discontinued',
@@ -122,38 +111,6 @@ class Services_Install_Model extends Core_Install_Model
                     'column' => 'website',
                     'table' => 'vtiger_service',
                     'label' => 'Website',
-                ],
-                'createdtime' => [
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                ],
-                'modifiedtime' => [
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                ],
-                'modifiedby' => [
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'presence' => 0,
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
-                    'masseditable' => 0,
                 ],
                 'service_usageunit' => [
                     'uitype' => 15,
@@ -237,6 +194,19 @@ class Services_Install_Model extends Core_Install_Model
                     'label' => 'Description',
                 ],
             ],
+            'LBL_SYSTEM_INFORMATION' => [
+                'service_no' => [
+                    'uitype' => 4,
+                    'column' => 'service_no',
+                    'table' => 'vtiger_service',
+                    'label' => 'Service No',
+                    'presence' => 0,
+                    'quickcreate' => 3,
+                    'masseditable' => 0,
+                    'summaryfield' => 1,
+                    'filter' => 1,
+                ],
+            ]
         ];
     }
 

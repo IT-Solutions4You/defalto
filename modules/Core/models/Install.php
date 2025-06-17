@@ -72,6 +72,69 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public static array $blocks = [];
 
+    public static array $fieldsConfig = [
+        'LBL_SYSTEM_INFORMATION' => [
+            'source' => [
+                'name' => 'source',
+                'uitype' => 1,
+                'column' => 'source',
+                'table' => 'vtiger_crmentity',
+                'label' => 'Source',
+                'readonly' => 1,
+                'presence' => 2,
+                'typeofdata' => 'V~O',
+                'quickcreate' => 3,
+                'displaytype' => 2,
+                'masseditable' => 0,
+                'summaryfield' => 0,
+            ],
+            'createdtime' => [
+                'name' => 'createdtime',
+                'uitype' => 70,
+                'column' => 'createdtime',
+                'table' => 'vtiger_crmentity',
+                'label' => 'Created Time',
+                'readonly' => 1,
+                'presence' => 0,
+                'typeofdata' => 'DT~O',
+                'quickcreate' => 3,
+                'displaytype' => 2,
+                'masseditable' => 0,
+                'summaryfield' => 0,
+            ],
+            'modifiedtime' => [
+                'name' => 'modifiedtime',
+                'uitype' => 70,
+                'column' => 'modifiedtime',
+                'table' => 'vtiger_crmentity',
+                'label' => 'Modified Time',
+                'readonly' => 1,
+                'presence' => 0,
+                'typeofdata' => 'DT~O',
+                'quickcreate' => 3,
+                'displaytype' => 2,
+                'masseditable' => 0,
+                'summaryfield' => 0,
+            ],
+            'creator' => [
+                'column' => 'smcreatorid',
+                'label' => 'Creator',
+                'uitype' => 52,
+                'typeofdata' => 'V~O',
+                'displaytype' => 2,
+                'table' => 'vtiger_crmentity',
+            ],
+            'modifiedby' => [
+                'column' => 'modifiedby',
+                'label' => 'Last Modified By',
+                'uitype' => 52,
+                'typeofdata' => 'V~O',
+                'displaytype' => 2,
+                'table' => 'vtiger_crmentity',
+            ],
+        ],
+    ];
+
     /**
      * @var array
      */
@@ -371,30 +434,15 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         self::logSuccess('Webservice Setup');
 
-        $blocks = $this->getBlocks();
+        $this->retrieveBlocks();
 
-        if (!empty($blocks)) {
+        if (!empty(self::$fieldsConfig)) {
             $moduleInstance->initTables($moduleInstance->basetable, $moduleInstance->basetableid);
             $entityIdentifiers = [];
             $filterFields = [];
             $filterDynamicSequence = 0;
 
-            if (isset($blocks['LBL_ITEM_DETAILS'])) {
-                $taxResult = $this->db->pquery('SELECT * FROM vtiger_inventorytaxinfo');
-
-                while ($row = $this->db->fetchByAssoc($taxResult)) {
-                    $blocks['LBL_ITEM_DETAILS'][$row['taxname']] = [
-                        'table' => 'vtiger_inventoryproductrel',
-                        'label' => $row['taxlabel'],
-                        'uitype' => 83,
-                        'typeofdata' => 'V~O',
-                        'displaytype' => 5,
-                        'masseditable' => 0,
-                    ];
-                }
-            }
-
-            foreach ($blocks as $block => $fields) {
+            foreach (self::$fieldsConfig as $block => $fields) {
                 self::logSuccess('Block create: ' . $block);
                 $fieldSequence = 0;
                 $blockInstance = $this->createBlock($block, $moduleInstance);
@@ -954,5 +1002,19 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         require_once 'vtlib/Vtiger/Deprecated.php';
         Vtiger_Deprecated::createModuleMetaFile();
         Vtiger_Deprecated::createModuleGroupMetaFile();
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function retrieveBlocks(): void
+    {
+        $blocks = $this->getBlocks();
+
+        if (empty($blocks)) {
+            self::$fieldsConfig = [];
+        }
+
+        self::$fieldsConfig = array_merge_recursive($blocks, self::$fieldsConfig);
     }
 }

@@ -225,22 +225,16 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'summaryfield' => 1,
                 ],
-                'source' => [
-                    'name' => 'source',
-                    'uitype' => 1,
-                    'column' => 'source',
+            ],
+            'LBL_DESCRIPTION_INFORMATION' => [
+                'description' => [
+                    'uitype' => 19,
+                    'column' => 'description',
                     'table' => 'vtiger_crmentity',
-                    'generatedtype' => 1,
-                    'label' => 'Source',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'maximumlength' => 100,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
+                    'label' => 'description',
                 ],
+            ],
+            'LBL_SYSTEM_INFORMATION' => [
                 'projecttask_no' => [
                     'uitype' => 4,
                     'column' => 'projecttask_no',
@@ -251,41 +245,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'quickcreate' => 3,
                     'masseditable' => 0,
                 ],
-                'createdtime' => [
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'typeofdata' => 'DT~O',
-                    'displaytype' => 2,
-                ],
-                'modifiedtime' => [
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'typeofdata' => 'DT~O',
-                    'displaytype' => 2,
-                ],
-                'modifiedby' => [
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'presence' => 0,
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
-                    'masseditable' => 0,
-                ],
-            ],
-            'LBL_DESCRIPTION_INFORMATION' => [
-                'description' => [
-                    'uitype' => 19,
-                    'column' => 'description',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'description',
-                ],
-            ],
+            ]
         ];
     }
 
