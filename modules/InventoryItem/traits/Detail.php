@@ -92,6 +92,8 @@ trait InventoryItem_Detail_Trait
     {
         $inventoryItems = [[],];
         $db = PearDatabase::getInstance();
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+
         $sql = 'SELECT df_inventoryitem.*, vtiger_crmentity.description 
             FROM df_inventoryitem
             LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid
@@ -118,7 +120,8 @@ trait InventoryItem_Detail_Trait
             $this->overallDiscountAmount += $row['overall_discount_amount'];
 
             foreach (InventoryItem_RoundValues_Helper::$roundValues as $fieldName) {
-                $row[$fieldName] = number_format((float)$row[$fieldName], 2);
+                $row[$fieldName] = number_format((float)$row[$fieldName], 2, '.', '');
+                $row[$fieldName . '_display'] = CurrencyField::convertToUserFormat($row[$fieldName], $currentUser, true);
             }
 
             $row['taxes'] = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$row['inventoryitemid'], (int)$row['productid'], $record);

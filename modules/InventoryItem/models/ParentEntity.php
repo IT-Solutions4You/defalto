@@ -73,6 +73,15 @@ class InventoryItem_ParentEntity_Model extends Vtiger_Base_Model
                     }
                 }
 
+                $adjustment = (float)$parentRecordModel->get('adjustment');
+                $priceTotal = (float)$parentRecordModel->get('price_total');
+                $grandTotal = (float)$parentRecordModel->get('grand_total');
+
+                if ($grandTotal !== $priceTotal + $adjustment) {
+                    $parentRecordModel->set('grand_total', $priceTotal + $adjustment);
+                    $changed = true;
+                }
+
                 if ($changed) {
                     $parentRecordModel->set('mode', 'edit');
                     $parentRecordModel->save();

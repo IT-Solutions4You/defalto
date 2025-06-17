@@ -234,6 +234,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     recalculateTotals: function () {
         const self = this;
+        let grand_total = 0;
         jQuery('tfoot span[class^="total_"]', this.lineItemsHolder).each(function () {
             let span = jQuery(this);
 
@@ -250,16 +251,20 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             });
 
             if (targetClass === 'price_total') {
-                let adjustment = parseFloat(jQuery('#adjustment').val());
-
-                if (!isNaN(adjustment)) {
-                    columnTotal += adjustment;
-                }
+                grand_total = columnTotal;
             }
 
-            // Update the total in the corresponding span (formatted to 2 decimal places)
-            span.text(columnTotal.toFixed(app.getNumberOfDecimals()));
+            span.text(app.convertCurrencyToUserFormat(columnTotal));
         });
+
+        jQuery('td.priceTotalDisplay').text(app.convertCurrencyToUserFormat(grand_total));
+        let adjustment = parseFloat(jQuery('#adjustment').val());
+
+        if (!isNaN(adjustment)) {
+            grand_total += adjustment;
+        }
+
+        jQuery('td.grandTotalDisplay').text(app.convertCurrencyToUserFormat(grand_total));
     },
 
     registerOverallDiscountActions: function () {
@@ -297,7 +302,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 };
 
                 app.request.post({"data": params}).then(function (err, res) {
-                    location.reload();
+                    self.reloadInventoryItemsBlock();
                 });
             } else {
                 app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});
@@ -353,7 +358,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 app.request.post({"data": params}).then(function (err, res) {
                     app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});
                     jQuery('#original_adjustment').val(adjustment);
-                    jQuery('.total_price_total').text(jQuery('#total_with_adjustment').val());
+                    jQuery('.grandTotalDisplay').text(app.convertCurrencyToUserFormat(jQuery('#total_with_adjustment').val()));
                     jQuery('.adjustmentDisplay').text(jQuery('#adjustment').val());
                     app.helper.hideProgress();
                     jQuery('#adjustmentSettingDiv').hide();
@@ -396,7 +401,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                             jQuery('#currency_id_original').val(currency);
                             app.helper.hideProgress();
                             jQuery('button.currency-button').text(clickedItem.text());
-                            location.reload();
+                            self.reloadInventoryItemsBlock();
                         });
                     },
                     function (error, err) {
@@ -439,7 +444,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                             jQuery('#region_id_original').val(region);
                             app.helper.hideProgress();
                             jQuery('button.region-button').text(clickedItem.text());
-                            location.reload();
+                            self.reloadInventoryItemsBlock();
                         });
                     },
                     function (error, err) {
@@ -481,7 +486,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                             jQuery('#pricebookid_original').val(priceBook);
                             app.helper.hideProgress();
                             jQuery('button.pricebook-button').text(clickedItem.text());
-                            location.reload();
+                            self.reloadInventoryItemsBlock();
                         });
                     },
                     function (error, err) {

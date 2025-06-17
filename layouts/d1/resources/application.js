@@ -488,25 +488,28 @@ window.app = (function () {
 			return appendedValue;
 		},
 		convertCurrencyToUserFormat: function (value, appendCurrencySymbol) {
-			var displayValue;
-			var isNegative = false;
+			let displayValue;
+			let isNegative = false;
 			value = value.toString();
+
 			if (parseFloat(value) < 0) {
 				isNegative = true;
 				value = value.replace('-', '');
 			}
-			var groupingPattern = _USERMETA.currencyGroupingPattern;
-			var numberOfDecimals = app.getNumberOfDecimals();
-			var decimalSeparator = app.getDecimalSeparator();
-			var groupingSeparator = app.getGroupingSeparator();
+
+			const groupingPattern = _USERMETA.currencyGroupingPattern;
+			const numberOfDecimals = app.getNumberOfDecimals();
+			const decimalSeparator = app.getDecimalSeparator();
+			const groupingSeparator = app.getGroupingSeparator();
 			value = parseFloat(value).toFixed(parseInt(numberOfDecimals));
 			value = value.toString();
-			var valueParts = value.split('.');
-			var wholePart = valueParts[0];
-			var decimalPart = valueParts[1];
-			var truncateTrailingZeros = _USERMETA.truncateTrailingZeros;
-			var finalWholePart;
-			var ignoreDecimal = false;
+			const valueParts = value.split('.');
+			let wholePart = valueParts[0];
+			let decimalPart = valueParts[1];
+			const truncateTrailingZeros = _USERMETA.truncateTrailingZeros;
+			let finalWholePart;
+			let ignoreDecimal = false;
+
 			if (truncateTrailingZeros == '1' && parseInt(decimalPart) === 0) {
 				ignoreDecimal = true;
 			}
@@ -514,31 +517,44 @@ window.app = (function () {
 			if (groupingPattern == '123456789') {
 				finalWholePart = wholePart;
 			} else if (groupingPattern == '123456,789') {
+				let wholeFirstPart = false;
+
 				if (wholePart.length > 3) {
-					var wholeFirstPart = wholePart.substr(0, (wholePart.length - 3));
+					wholeFirstPart = wholePart.substring(0, (wholePart.length - 3));
 				}
-				var wholeLastPart = wholePart.substr(wholePart.length - 3);
+
+				let  wholeLastPart = wholePart.substring(wholePart.length - 3);
+
 				if (wholeFirstPart) {
 					wholePart = wholeFirstPart+groupingSeparator+wholeLastPart;
 				}
+
 				finalWholePart = wholePart;
 			} else if (groupingPattern == '123,456,789') {
-				var wholeParts = wholePart.toString().split('').reverse().join('').match(/.{1,3}/g).reverse();
-				for (var i = 0; i < wholeParts.length; i++) {
+				const wholeParts = wholePart.toString().split('').reverse().join('').match(/.{1,3}/g).reverse();
+
+				for (let i = 0; i < wholeParts.length; i++) {
 					wholeParts[i] = wholeParts[i].toString().split('').reverse().join('');
 				}
+
 				finalWholePart = wholeParts.join(groupingSeparator);
 			} else if (groupingPattern == '12,34,56,789') {
+				let wholeFirstPart = false;
+
 				if (wholePart.length > 3) {
-					var wholeFirstPart = wholePart.substr(0, (wholePart.length - 3));
+					wholeFirstPart = wholePart.substring(0, (wholePart.length - 3));
 				}
-				var wholeLastPart = wholePart.substr(wholePart.length - 3);
+
+				let wholeLastPart = wholePart.substring(wholePart.length - 3);
+
 				if (wholeFirstPart) {
 					wholeLastPart = groupingSeparator+wholeLastPart;
-					var wholeFirstParts = wholeFirstPart.toString().split('').reverse().join('').match(/.{1,2}/g).reverse();
-					for (var i = 0; i < wholeFirstParts.length; i++) {
+					const wholeFirstParts = wholeFirstPart.toString().split('').reverse().join('').match(/.{1,2}/g).reverse();
+
+					for (let i = 0; i < wholeFirstParts.length; i++) {
 						wholeFirstParts[i] = wholeFirstParts[i].toString().split('').reverse().join('');
 					}
+
 					wholeFirstPart = wholeFirstParts.join(groupingSeparator);
 					finalWholePart = wholeFirstPart+wholeLastPart;
 				} else {
@@ -563,7 +579,7 @@ window.app = (function () {
 			return displayValue;
 		}
 
-	}
+	};
 })();
 
 

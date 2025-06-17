@@ -215,6 +215,10 @@
                     {/if}
                 {/if}
                 <tr>
+                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('Price Total', 'InventoryItem')}</strong></td>
+                    <td class="textAlignRight font-bold priceTotalDisplay"></td>
+                </tr>
+                <tr>
                     <td colspan="{$FINALS_COLSPAN}" class="textAlignRight">
                         <div class="position-relative">
                             <i class="fa fa-pencil fa-fw text-secondary editAdjustment" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Adjustment', 'InventoryItem')}</strong>
@@ -256,6 +260,10 @@
                         </div>
                     </td>
                     <td class="textAlignRight font-bold adjustmentDisplay">{$ADJUSTMENT}</td>
+                </tr>
+                <tr>
+                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('Grand Total', 'InventoryItem')}</strong></td>
+                    <td class="textAlignRight font-bold grandTotalDisplay"></td>
                 </tr>
                 </tfoot>
             </table>

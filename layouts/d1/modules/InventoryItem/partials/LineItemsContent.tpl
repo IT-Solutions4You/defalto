@@ -40,23 +40,23 @@
         {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
             <td style="display: none;"><input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" class="{$INVENTORY_ITEM_FIELD_NAME}" type="hidden" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"></td>
         {elseif $INVENTORY_ITEM_FIELD_NAME eq 'discount_amount'}
-            <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}" style="min-width: 80px;">
-                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
+            <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}" style="min-width: 80px;" nowrap="nowrap">
+                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
                 <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" readonly="readonly" />
             </td>
         {elseif $INVENTORY_ITEM_FIELD_NAME eq 'price'}
-            <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}" nowrap="nowrap" style="min-width: 80px;">
-                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
+            <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}" nowrap="nowrap" style="min-width: 80px;" nowrap="nowrap">
+                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
                 <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" />
                 <input id="pricebookid{$row_no}" name="pricebookid{$row_no}" class="pricebookid" type="hidden" value="{$data.pricebookid}" />
             </td>
         {elseif $INVENTORY_ITEM_FIELD_NAME eq 'tax'}
-            <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}">
-                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
+            <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}" nowrap="nowrap">
+                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
             </td>
         {elseif $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'percentage'}
-            <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}">
-                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{$data.$INVENTORY_ITEM_FIELD_NAME}</span>
+            <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}" nowrap="nowrap">
+                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
                 <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" {if in_array($INVENTORY_ITEM_FIELD_NAME, $COMPUTED_FIELDS)}readonly="readonly"{/if}/>
             </td>
         {else}

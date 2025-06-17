@@ -680,6 +680,36 @@ class Quotes_Install_Model extends Core_Install_Model
                     'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
+                'grand_total' => [
+                    'name' => 'grand_total',
+                    'uitype' => 72,
+                    'column' => 'grand_total',
+                    'table' => 'vtiger_quotes',
+                    'label' => 'Grand Total',
+                    'readonly' => 1,
+                    'presence' => 2,
+                    'typeofdata' => 'N~O',
+                    'quickcreate' => 3,
+                    'displaytype' => 3,
+                    'masseditable' => 1,
+                    'summaryfield' => 1,
+                ],
+                'margin_amount' => [
+                    'name'          => 'margin_amount',
+                    'uitype'        => 71,
+                    'column'        => 'margin_amount',
+                    'table'         => 'vtiger_quotes',
+                    'generatedtype' => 1,
+                    'label'         => 'Margin Amount',
+                    'readonly'      => 1,
+                    'presence'      => 0,
+                    'maximumlength' => 100,
+                    'typeofdata'    => 'N~O',
+                    'quickcreate'   => 1,
+                    'displaytype'   => 1,
+                    'masseditable'  => 1,
+                    'summaryfield'  => 0,
+                ],
             ],
         ];
     }
@@ -727,6 +757,8 @@ class Quotes_Install_Model extends Core_Install_Model
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createColumn('region_id', 'int(19) DEFAULT NULL')
             ->createColumn('pricebookid', 'int(19) DEFAULT NULL')
+            ->createColumn('grand_total', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('margin_amount', 'decimal(25,8) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`quoteid`)')
             ->createKey('KEY IF NOT EXISTS `quote_quotestage_idx` (`quotestage`)')
             ->createKey('KEY IF NOT EXISTS `quotes_potentialid_idx` (`potentialid`)')
