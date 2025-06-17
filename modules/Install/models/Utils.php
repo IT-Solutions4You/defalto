@@ -60,6 +60,7 @@ class Install_Utils_Model {
         'PDFMaker',
         'Reporting',
         'Installer',
+        'Tour',
     ];
 
     /**
