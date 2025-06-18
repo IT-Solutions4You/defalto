@@ -579,7 +579,12 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		if(!$this->isEditable() || in_array($this->get('uitype'), $ajaxRestrictedFields)) {
 			return false;
 		}
-		return true;
+
+        if ($this->block && 'LBL_SYSTEM_INFORMATION' === $this->block->label) {
+            return Users_Record_Model::getCurrentUserModel()->isAdminUser();
+        }
+
+        return true;
 	}
 
 	/**

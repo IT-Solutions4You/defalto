@@ -154,7 +154,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             ],
             'creator' => [
                 'column' => 'smcreatorid',
-                'label' => 'Creator',
+                'label' => 'Created By',
                 'uitype' => 52,
                 'typeofdata' => 'V~O',
                 'displaytype' => 2,
