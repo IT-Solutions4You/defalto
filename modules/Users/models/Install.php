@@ -87,7 +87,7 @@ class Users_Install_Model extends Core_Install_Model
 
     public function retrieveBlocks(): void
     {
-        self::$fieldsConfig = $this->getBlocks();
+        self::$fieldsConfig['Users'] = $this->getBlocks();
     }
 
     /**
@@ -267,25 +267,6 @@ class Users_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'filter_sequence' => 10,
                 ],
-                'lead_view' => [
-                    'name' => 'lead_view',
-                    'uitype' => 16,
-                    'column' => 'lead_view',
-                    'table' => 'vtiger_users',
-                    'label' => 'Default Lead View',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 1,
-                    'masseditable' => 1,
-                    'summaryfield' => 0,
-                    'picklist_values' => [
-                        'Today',
-                        'Last 2 Days',
-                        'Last Week',
-                    ],
-                ],
                 'end_hour' => [
                     'name' => 'end_hour',
                     'uitype' => 116,
@@ -312,6 +293,20 @@ class Users_Install_Model extends Core_Install_Model
                     'quickcreate' => 0,
                     'displaytype' => 5,
                     'masseditable' => 0,
+                    'summaryfield' => 0,
+                ],
+                'language' => [
+                    'name' => 'language',
+                    'uitype' => 32,
+                    'column' => 'language',
+                    'table' => 'vtiger_users',
+                    'label' => 'Language',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
             ],
@@ -451,8 +446,7 @@ class Users_Install_Model extends Core_Install_Model
                         "currency field type - shows 89.00<br/>",
                 ],
             ],
-            'LBL_MORE_INFORMATION' =>
-                [
+            'LBL_MORE_INFORMATION' => [
                     'title' => [
                         'name' => 'title',
                         'uitype' => 1,
@@ -473,7 +467,7 @@ class Users_Install_Model extends Core_Install_Model
                         'uitype' => 11,
                         'column' => 'phone_work',
                         'table' => 'vtiger_users',
-                        'label' => 'Office Phone',
+                        'label' => 'Phone',
                         'readonly' => 1,
                         'presence' => 0,
                         'maximumlength' => 50,
@@ -492,21 +486,6 @@ class Users_Install_Model extends Core_Install_Model
                         'column' => 'department',
                         'table' => 'vtiger_users',
                         'label' => 'Department',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'maximumlength' => 50,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'phone_mobile' => [
-                        'name' => 'phone_mobile',
-                        'uitype' => 11,
-                        'column' => 'phone_mobile',
-                        'table' => 'vtiger_users',
-                        'label' => 'Mobile',
                         'readonly' => 1,
                         'presence' => 0,
                         'maximumlength' => 50,
@@ -546,23 +525,6 @@ class Users_Install_Model extends Core_Install_Model
                         'masseditable' => 1,
                         'summaryfield' => 0,
                     ],
-                    'email2' => [
-                        'name' => 'email2',
-                        'uitype' => 13,
-                        'column' => 'email2',
-                        'table' => 'vtiger_users',
-                        'label' => 'Other Email',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'typeofdata' => 'E~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                        'headerfield' => 0,
-                        'filter' => 1,
-                        'filter_sequence' => 6,
-                    ],
                     'secondaryemail' => [
                         'name' => 'secondaryemail',
                         'uitype' => 13,
@@ -577,42 +539,12 @@ class Users_Install_Model extends Core_Install_Model
                         'masseditable' => 1,
                         'summaryfield' => 0,
                     ],
-                    'phone_home' => [
-                        'name' => 'phone_home',
-                        'uitype' => 11,
-                        'column' => 'phone_home',
-                        'table' => 'vtiger_users',
-                        'label' => 'Home Phone',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'maximumlength' => 50,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
                     'signature' => [
                         'name' => 'signature',
                         'uitype' => 21,
                         'column' => 'signature',
                         'table' => 'vtiger_users',
                         'label' => 'Signature',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'maximumlength' => 250,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'description' => [
-                        'name' => 'description',
-                        'uitype' => 21,
-                        'column' => 'description',
-                        'table' => 'vtiger_users',
-                        'label' => 'Documents',
                         'readonly' => 1,
                         'presence' => 0,
                         'maximumlength' => 250,
@@ -643,20 +575,6 @@ class Users_Install_Model extends Core_Install_Model
                         'column' => 'theme',
                         'table' => 'vtiger_users',
                         'label' => 'Theme',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'language' => [
-                        'name' => 'language',
-                        'uitype' => 32,
-                        'column' => 'language',
-                        'table' => 'vtiger_users',
-                        'label' => 'Language',
                         'readonly' => 1,
                         'presence' => 0,
                         'typeofdata' => 'V~O',
@@ -697,20 +615,6 @@ class Users_Install_Model extends Core_Install_Model
                                 'Summary',
                                 'Detail',
                             ],
-                    ],
-                    'leftpanelhide' => [
-                        'name' => 'leftpanelhide',
-                        'uitype' => 56,
-                        'column' => 'leftpanelhide',
-                        'table' => 'vtiger_users',
-                        'label' => 'Left Panel Hide',
-                        'readonly' => 1,
-                        'presence' => 2,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
                     ],
                     'rowheight' => [
                         'name' => 'rowheight',
@@ -1318,19 +1222,14 @@ class Users_Install_Model extends Core_Install_Model
             ->createColumn('reports_to_id', 'varchar(36) DEFAULT NULL')
             ->createColumn('is_admin', 'varchar(3) DEFAULT \'0\'')
             ->createColumn('currency_id', 'int(19) NOT NULL DEFAULT 1')
-            ->createColumn('description', 'text DEFAULT NULL')
             ->createColumn('date_entered', 'timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()')
             ->createColumn('date_modified', 'datetime DEFAULT NULL')
             ->createColumn('modified_user_id', 'varchar(36) DEFAULT NULL')
             ->createColumn('title', 'varchar(50) DEFAULT NULL')
             ->createColumn('department', 'varchar(50) DEFAULT NULL')
-            ->createColumn('phone_home', 'varchar(50) DEFAULT NULL')
-            ->createColumn('phone_mobile', 'varchar(50) DEFAULT NULL')
             ->createColumn('phone_work', 'varchar(50) DEFAULT NULL')
             ->createColumn('phone_other', 'varchar(50) DEFAULT NULL')
-            ->createColumn('phone_fax', 'varchar(50) DEFAULT NULL')
             ->createColumn('email1', 'varchar(100) DEFAULT NULL')
-            ->createColumn('email2', 'varchar(100) DEFAULT NULL')
             ->createColumn('secondaryemail', 'varchar(100) DEFAULT NULL')
             ->createColumn('status', 'varchar(25) DEFAULT NULL')
             ->createColumn('signature', 'text DEFAULT NULL')
@@ -1351,7 +1250,6 @@ class Users_Install_Model extends Core_Install_Model
             ->createColumn('end_hour', 'varchar(30) DEFAULT \'23:00\'')
             ->createColumn('is_owner', 'varchar(100) DEFAULT \'0\'')
             ->createColumn('activity_view', 'varchar(200) DEFAULT \'Today\'')
-            ->createColumn('lead_view', 'varchar(200) DEFAULT \'Today\'')
             ->createColumn('imagename', 'varchar(250) DEFAULT NULL')
             ->createColumn('deleted', 'int(1) NOT NULL DEFAULT \'0\'')
             ->createColumn('confirm_password', 'varchar(300) DEFAULT NULL')
@@ -1376,7 +1274,6 @@ class Users_Install_Model extends Core_Install_Model
             ->createColumn('othereventduration', 'varchar(100) DEFAULT NULL')
             ->createColumn('calendarsharedtype', 'varchar(100) DEFAULT NULL')
             ->createColumn('default_record_view', 'varchar(10) DEFAULT NULL')
-            ->createColumn('leftpanelhide', 'varchar(3) DEFAULT NULL')
             ->createColumn('rowheight', 'varchar(10) DEFAULT NULL')
             ->createColumn('defaulteventstatus', 'varchar(50) DEFAULT NULL')
             ->createColumn('defaultactivitytype', 'varchar(50) DEFAULT NULL')
