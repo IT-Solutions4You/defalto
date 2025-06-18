@@ -671,23 +671,28 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
         if ($currentUserPrivilegesModel->hasModulePermission($activitiesModule->getId()) && in_array($request->getModule(), $parentModules)) {
             $moduleName = $request->getModule();
             $recordId = $request->get('record');
-
-            $pageNumber = $request->get('page');
-            if (empty ($pageNumber)) {
-                $pageNumber = 1;
-            }
+            $pageNumber = $request->get('page', 1);
+            $pageLimit = $request->get('limit', 5);
             $pagingModel = new Vtiger_Paging_Model();
             $pagingModel->set('page', $pageNumber);
-            $pagingModel->set('limit', 10);
+            $pagingModel->set('limit', $pageLimit);
 
             if (!$this->record) {
                 $this->record = Vtiger_DetailView_Model::getInstance($moduleName, $recordId);
             }
+
+            $currentUser = Users_Record_Model::getCurrentUserModel();
+            $skipCalendarStatus = ['Cancelled'];
+
+            if (!$currentUser->isEmpty('hidecompletedevents')) {
+                $skipCalendarStatus[] = 'Completed';
+            }
+
             $recordModel = $this->record->getRecord();
             /** @var Vtiger_RelationListView_Model $relationListView */
             $relationListView = Vtiger_RelationListView_Model::getInstance($recordModel, $activitiesModuleName, '');
             $relationListView->set('whereCondition', [
-                'calendar_status' => ['its4you_calendar.status', 'n', ['Completed', 'Cancelled'], 'picklist'],
+                'calendar_status' => ['its4you_calendar.status', 'n', $skipCalendarStatus, 'picklist'],
             ]);
             $relationListView->set('orderby', 'datetime_start');
             $relationListView->set('sortorder', 'ASC');

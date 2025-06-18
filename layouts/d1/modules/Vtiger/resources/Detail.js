@@ -1785,6 +1785,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 						if (!error) {
 							jQuery('.vt-notification').remove();
 							fieldnameElement.data('prevValue', ajaxEditNewValue);
+                            self.loadWidget(fieldnameElement.parents('[class^="widgetContainer_"]'));
 						} else {
 							app.event.trigger('post.save.failed', error);
 							fieldElement.select2('val', previousValue);
