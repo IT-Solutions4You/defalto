@@ -689,6 +689,8 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
             $relationListView->set('whereCondition', [
                 'calendar_status' => ['its4you_calendar.status', 'n', ['Completed', 'Cancelled'], 'picklist'],
             ]);
+            $relationListView->set('orderby', 'datetime_start');
+            $relationListView->set('sortorder', 'ASC');
 
             if(!$relationListView->getRelationModel()) {
                 return '';
