@@ -343,12 +343,11 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
-                    'picklist_values' =>
-                        [
-                            0 => '123,456,789',
-                            1 => '123456789',
-                            2 => '123456,789',
-                            3 => '12,34,56,789',
+                    'picklist_values' => [
+                            '123,456,789',
+                            '123456789',
+                            '123456,789',
+                            '12,34,56,789',
                         ],
                 ],
                 'currency_decimal_separator' => [
@@ -401,8 +400,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
-                    'picklist_values' =>
-                        [
+                    'picklist_values' => [
                             '$1.0',
                             '1.0$',
                         ],
@@ -430,7 +428,6 @@ class Users_Install_Model extends Core_Install_Model
                         '2',
                         '3',
                         '4',
-                        '5',
                     ],
                 ],
                 'truncate_trailing_zeros' => [
@@ -947,8 +944,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
-                    'picklist_values' =>
-                        [
+                    'picklist_values' => [
                             'dd-mm-yyyy',
                             'mm-dd-yyyy',
                             'yyyy-mm-dd',

@@ -329,7 +329,7 @@ class Project_Install_Model extends Core_Install_Model
             ->createColumn('startdate', 'date default NULL')
             ->createColumn('targetenddate', 'date default NULL')
             ->createColumn('actualenddate', 'date default NULL')
-            ->createColumn('targetbudget', 'decimal(11,5) default NULL')
+            ->createColumn('targetbudget', self::$COLUMN_DECIMAL)
             ->createColumn('projecturl', 'varchar(255) default NULL')
             ->createColumn('projectstatus', 'varchar(100) default NULL')
             ->createColumn('projectpriority', 'varchar(100) default NULL')

@@ -551,7 +551,7 @@ class Products_Install_Model extends Core_Install_Model
             ->createColumn('productcategory', 'varchar(200) DEFAULT NULL')
             ->createColumn('manufacturer', 'varchar(200) DEFAULT NULL')
             ->createColumn('qty_per_unit', 'decimal(11,2) DEFAULT 0.00')
-            ->createColumn('unit_price', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('unit_price', self::$COLUMN_DECIMAL)
             ->createColumn('weight', 'decimal(11,3) DEFAULT NULL')
             ->createColumn('pack_size', 'int(11) DEFAULT NULL')
             ->createColumn('sales_start_date', 'date DEFAULT NULL')
@@ -577,7 +577,7 @@ class Products_Install_Model extends Core_Install_Model
             ->createColumn('imagename', 'text DEFAULT NULL')
             ->createColumn('currency_id', 'int(19) NOT NULL DEFAULT 1')
             ->createColumn('is_subproducts_viewable', 'int(1) DEFAULT 1')
-            ->createColumn('purchase_cost', 'decimal(27,8) DEFAULT NULL')
+            ->createColumn('purchase_cost', self::$COLUMN_DECIMAL)
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createColumn('conversion_rate', 'decimal(10,3) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`productid`)')
@@ -591,8 +591,8 @@ class Products_Install_Model extends Core_Install_Model
         $this->getTable('vtiger_productcurrencyrel', null)
             ->createTable('productid')
             ->createColumn('currencyid', 'int(11) NOT NULL')
-            ->createColumn('converted_price', 'decimal(28,8) DEFAULT NULL')
-            ->createColumn('actual_price', 'decimal(28,8) DEFAULT NULL');
+            ->createColumn('converted_price', self::$COLUMN_DECIMAL)
+            ->createColumn('actual_price', self::$COLUMN_DECIMAL);
 
         $this->getTable('vtiger_producttaxrel', null)
             ->createTable('productid')

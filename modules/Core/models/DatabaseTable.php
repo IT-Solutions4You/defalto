@@ -10,6 +10,8 @@
 
 class Core_DatabaseTable_Model extends Vtiger_Base_Model
 {
+    public static string $COLUMN_DECIMAL = 'decimal(25,4) DEFAULT NULL';
+
     /**
      * @var PearDatabase
      */

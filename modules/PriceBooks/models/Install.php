@@ -169,7 +169,7 @@ class PriceBooks_Install_Model extends Core_Install_Model
         $this->getTable('vtiger_pricebookproductrel', null)
             ->createTable('pricebookid')
             ->createColumn('productid', 'int(19) NOT NULL')
-            ->createColumn('listprice', 'decimal(27,8) DEFAULT NULL')
+            ->createColumn('listprice', self::$COLUMN_DECIMAL)
             ->createColumn('usedcurrency', 'int(11) NOT NULL DEFAULT 1')
             ->createKey('PRIMARY KEY IF NOT EXISTS(`pricebookid`,`productid`)')
             ->createKey('KEY IF NOT EXISTS`pricebookproductrel_pricebookid_idx` (`pricebookid`)')

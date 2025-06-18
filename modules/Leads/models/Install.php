@@ -516,7 +516,7 @@ class Leads_Install_Model extends Core_Install_Model {
             ->createColumn('salutation', 'varchar(200) DEFAULT NULL')
             ->createColumn('lastname', 'varchar(80) NOT NULL')
             ->createColumn('company', 'varchar(100) NOT NULL')
-            ->createColumn('annualrevenue', 'decimal(25,5) DEFAULT NULL')
+            ->createColumn('annualrevenue', self::$COLUMN_DECIMAL)
             ->createColumn('industry', 'varchar(200) DEFAULT NULL')
             ->createColumn('campaign', 'varchar(30) DEFAULT NULL')
             ->createColumn('rating', 'varchar(200) DEFAULT NULL')

@@ -695,7 +695,7 @@ class Accounts_Install_Model extends Core_Install_Model {
             ->createColumn('parentid', 'int(19) DEFAULT 0')
             ->createColumn('account_type', 'varchar(200) DEFAULT NULL')
             ->createColumn('industry', 'varchar(200) DEFAULT NULL')
-            ->createColumn('annualrevenue', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('annualrevenue', self::$COLUMN_DECIMAL)
             ->createColumn('rating', 'varchar(200) DEFAULT NULL')
             ->createColumn('ownership', 'varchar(50) DEFAULT NULL')
             ->createColumn('siccode', 'varchar(50) DEFAULT NULL')
