@@ -516,6 +516,6 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
 
     public function retrieveBlocks(): void
     {
-        self::$fieldsConfig = $this->getBlocks();
+        self::$fieldsConfig['ITS4YouEmails'] = $this->getBlocks();
     }
 }
