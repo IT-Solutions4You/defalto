@@ -585,7 +585,7 @@ function decode_html($str) {
         return html_entity_decode($str);
     }
 
-    if ($str) {
+    if (is_string($str)) {
         return html_entity_decode($str, ENT_QUOTES, $default_charset);
     }
 

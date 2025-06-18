@@ -72,7 +72,43 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public static array $blocks = [];
 
-    public static array $fieldsConfig = [
+    /**
+     * @var array
+     */
+    public static array $modules = [];
+
+    /**
+     * @var array
+     */
+    public static array $blocksConfig = [];
+
+    /**
+     * @var array
+     */
+    public static array $fieldsConfig = [];
+
+    /**
+     * @var array
+     */
+    public static array $blocksConfigDefault = [
+        'LBL_SYSTEM_INFORMATION' => [
+            'name' => 'System',
+        ],
+        'LBL_CUSTOM_INFORMATION' => [
+            'name' => 'Base',
+        ],
+        'LBL_DESCRIPTION_INFORMATION' => [
+            'name' => 'Base',
+        ],
+        'LBL_ADDRESS_INFORMATION' => [
+            'name' => 'Base',
+        ],
+    ];
+
+    /**
+     * @var array
+     */
+    public static array $fieldsConfigDefault = [
         'LBL_SYSTEM_INFORMATION' => [
             'source' => [
                 'name' => 'source',
@@ -316,6 +352,10 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public function createModule(string $moduleName): Vtiger_Module|bool
     {
+        if (self::$modules[$moduleName]) {
+            return self::$modules[$moduleName];
+        }
+
         $moduleFocus = CRMEntity::getInstance($moduleName);
 
         $entity = !empty($moduleFocus->isEntity) ? 1 : 0;
@@ -390,6 +430,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'tabid' => $moduleInstance->id,
         ]);
 
+        self::$modules[$moduleName] = $moduleInstance;
+
         return $moduleInstance;
     }
 
@@ -401,9 +443,21 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         return $this->requireInstallTables;
     }
 
+    public function getBlockConfig($block): array
+    {
+        $moduleName = $this->getModuleName();
+
+        if (!empty(self::$blocksConfig[$moduleName][$block])) {
+            return self::$blocksConfig[$moduleName][$block];
+        }
+
+        return self::$blocksConfigDefault[$block] ?? ['name' => 'Base'];
+    }
+
     /**
      * @return void
      * @throws AppException
+     * @throws Exception
      */
     public function installModule()
     {
@@ -436,16 +490,17 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         $this->retrieveBlocks();
 
-        if (!empty(self::$fieldsConfig)) {
+        if (!empty($this->getFieldsConfig())) {
             $moduleInstance->initTables($moduleInstance->basetable, $moduleInstance->basetableid);
             $entityIdentifiers = [];
             $filterFields = [];
             $filterDynamicSequence = 0;
 
-            foreach (self::$fieldsConfig as $block => $fields) {
+            foreach ($this->getFieldsConfig() as $block => $fields) {
                 self::logSuccess('Block create: ' . $block);
                 $fieldSequence = 0;
-                $blockInstance = $this->createBlock($block, $moduleInstance);
+                $blockParams = $this->getBlockConfig($block);
+                $blockInstance = $this->createBlock($block, $blockParams);
 
                 foreach ($fields as $fieldName => $fieldParams) {
                     if (empty($fieldName)) {
@@ -583,7 +638,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public function createField(string $fieldName, array $fieldParams): Vtiger_Field_Model|bool
     {
-        $moduleInstance = $fieldParams['module'];
+        $moduleName = $this->getModuleName();
+        $moduleInstance = $this->getModuleInstance($moduleName);
         $fieldInstance = $this->getFieldInstance($fieldName, $moduleInstance);
 
         foreach ($fieldParams as $fieldParamName => $fieldParam) {
@@ -625,12 +681,21 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         return $fieldInstance;
     }
 
-    public function createBlock($blockName, $moduleInstance)
+    public function getModuleInstance($moduleName): object
     {
-        $moduleName = $moduleInstance->name;
+        return self::$modules[$moduleName];
+    }
 
-        if (!empty(self::$blocks[$blockName][$moduleName])) {
-            return self::$blocks[$blockName][$moduleName];
+    /**
+     * @throws Exception
+     */
+    public function createBlock($blockName, $blockParams = [])
+    {
+        $moduleName = $this->getModuleName();
+        $moduleInstance = $this->getModuleInstance($moduleName);
+
+        if (!empty(self::$blocks[$moduleName][$blockName])) {
+            return self::$blocks[$moduleName][$blockName];
         }
 
         $blockInstance = Vtiger_Block::getInstance($blockName, $moduleInstance);
@@ -640,10 +705,18 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
 
         $blockInstance->label = $blockName;
+        $blockInstance->blockuitype = Core_BlockUiType_Model::addBlockUiType($blockParams['name']);
+        $blockInstance->save($moduleInstance);
+        $blockInstance->getBlockTable()->updateData(
+            [
+                'blockuitype' => $blockInstance->blockuitype,
+            ],
+            [
+                'blockid' => $blockInstance->id,
+            ],
+        );
 
-        $moduleInstance->addBlock($blockInstance);
-
-        self::$blocks[$blockName][$moduleName] = $blockInstance;
+        self::$blocks[$moduleName][$blockName] = $blockInstance;
 
         return $blockInstance;
     }
@@ -819,7 +892,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     }
 
 
-
     /**
      * @return void
      */
@@ -885,12 +957,14 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                 }
 
                 $sequenceResult = $this->db->pquery(
-                    'SELECT max(sequence) AS max_seq FROM vtiger_settings_field WHERE blockid=?', [$blockId]
+                    'SELECT max(sequence) AS max_seq FROM vtiger_settings_field WHERE blockid=?',
+                    [$blockId]
                 );
                 $sequence = intval($this->db->query_result($sequenceResult, 0, 'max_seq')) + 1;
 
                 $this->db->pquery(
-                    'INSERT INTO vtiger_settings_field(fieldid, blockid, name, linkto, sequence) VALUES (?,?,?,?,?)', [$fieldId, $blockId, $name, $link, $sequence]
+                    'INSERT INTO vtiger_settings_field(fieldid, blockid, name, linkto, sequence) VALUES (?,?,?,?,?)',
+                    [$fieldId, $blockId, $name, $link, $sequence]
                 );
             }
         }
@@ -1009,12 +1083,22 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public function retrieveBlocks(): void
     {
+        $moduleName = $this->getModuleName();
         $blocks = $this->getBlocks();
 
-        if (empty($blocks)) {
-            self::$fieldsConfig = [];
+        if (!empty($blocks)) {
+            self::$fieldsConfig[$moduleName] = array_merge_recursive($blocks, self::$fieldsConfigDefault);
+        }
+    }
+
+    public function getFieldsConfig(): array
+    {
+        $moduleName = $this->getModuleName();
+
+        if (!empty(self::$fieldsConfig[$moduleName])) {
+            return self::$fieldsConfig[$moduleName];
         }
 
-        self::$fieldsConfig = array_merge_recursive($blocks, self::$fieldsConfig);
+        return [];
     }
 }
