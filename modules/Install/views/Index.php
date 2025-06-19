@@ -181,6 +181,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 
     /**
      * @throws AppException
+     * @throws Exception
      */
     public function Step7(Vtiger_Request $request) {
         $moduleName = $request->getModule();
@@ -202,9 +203,6 @@ class Install_Index_view extends Vtiger_View_Controller {
 
 			// Initialize and set up tables
 			Install_InitSchema_Model::initialize();
-
-			// Install all the available modules
-			Install_Utils_Model::installAdditionalModulesAndLanguages();
 
 			Install_InitSchema_Model::upgrade();
 

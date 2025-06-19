@@ -13,9 +13,10 @@ vimport('~~modules/CustomView/PopulateCustomView.php');
 
 class Install_InitSchema_Model {
 
-	/**
-	 * Function starts applying schema changes
-	 */
+    /**
+     * Function starts applying schema changes
+     * @throws Exception
+     */
 	public static function initialize() {
 		global $adb;
 		$adb = PearDatabase::getInstance();
@@ -32,6 +33,9 @@ class Install_InitSchema_Model {
 		$combo = new PopulateComboValues();
 		$combo->create_tables();
 		$combo->create_nonpicklist_tables();
+
+        // Install all the available modules
+        Install_Utils_Model::installAdditionalModulesAndLanguages();
 
 		create_tab_data_file();
 		create_parenttab_data_file();
@@ -902,8 +906,7 @@ class Install_InitSchema_Model {
 		// Workflow manager
 		$dependentEventHandlers = array('VTEntityDelta');
 		$dependentEventHandlersJson = Zend_Json::encode($dependentEventHandlers);
-		$em->registerHandler('vtiger.entity.aftersave', 'modules/com_vtiger_workflow/VTEventHandler.inc', 'VTWorkflowEventHandler',
-									'',$dependentEventHandlersJson);
+		$em->registerHandler('vtiger.entity.aftersave', 'modules/com_vtiger_workflow/VTEventHandler.inc', 'VTWorkflowEventHandler', $dependentEventHandlersJson);
 
 		//Registering events for On modify
 		$em->registerHandler('vtiger.entity.afterrestore', 'modules/com_vtiger_workflow/VTEventHandler.inc', 'VTWorkflowEventHandler');
