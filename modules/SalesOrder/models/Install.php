@@ -665,6 +665,16 @@ class SalesOrder_Install_Model extends Core_Install_Model {
                         'Cancel',
                     ],
                 ],
+                'last_recurring_date' => [
+                    'name' => 'last_recurring_date',
+                    'uitype' => 5,
+                    'column' => 'last_recurring_date',
+                    'table' => 'vtiger_invoice_recurring_info',
+                    'label' => 'Next Invoice Date',
+                    'typeofdata' => 'D~O',
+                    'displaytype' => 2,
+                    'columntype' => 'date',
+                ],
             ],
             'LBL_ITEM_DETAILS' => [
                 'hdnDiscountPercent' => [
