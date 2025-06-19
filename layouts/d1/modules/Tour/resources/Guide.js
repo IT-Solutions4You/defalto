@@ -28,7 +28,7 @@ Vtiger.Class('Tour_HeaderScript_Js', {
         }
 
         app.request.post({data: params}).then(function(error, data) {
-            if (data) {
+            if (data && $(data).find('.modal-body').length) {
                 app.helper.showModal(data, {
                     modalName: 'tourGuideModal',
                 });
