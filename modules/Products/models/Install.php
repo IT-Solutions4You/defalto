@@ -540,6 +540,9 @@ class Products_Install_Model extends Core_Install_Model
         ];
     }
 
+    /**
+     * @throws AppException
+     */
     public function installTables(): void
     {
         $this->disableForeignKeyCheck();
@@ -602,5 +605,10 @@ class Products_Install_Model extends Core_Install_Model
             ->createKey('KEY IF NOT EXISTS `producttaxrel_productid_idx` (`productid`)')
             ->createKey('KEY IF NOT EXISTS `producttaxrel_taxid_idx` (`taxid`)')
             ->createKey('CONSTRAINT `fk_crmid_vtiger_producttaxrel` FOREIGN KEY IF NOT EXISTS (`productid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
+        
+        $this->createPicklistTable('vtiger_manufacturer', '', 'manufacturer');
+        $this->createPicklistTable('vtiger_productcategory', '', 'productcategory');
+        $this->createPicklistTable('vtiger_glacct', '', 'glacct');
+        $this->createPicklistTable('vtiger_usageunit', '', 'usageunit');
     }
 }

@@ -567,5 +567,7 @@ class Leads_Install_Model extends Core_Install_Model {
             ->createKey('PRIMARY KEY IF NOT EXISTS (`leadaddressid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_leadaddress` FOREIGN KEY IF NOT EXISTS (`leadaddressid`) REFERENCES `vtiger_leaddetails` (`leadid`) ON DELETE CASCADE')
         ;
+        
+        $this->createPicklistTable('vtiger_leadstatus', 'leadstatusid', 'leadstatus');
     }
 }

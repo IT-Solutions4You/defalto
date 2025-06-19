@@ -1101,4 +1101,28 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         return [];
     }
+
+    /**
+     * @throws AppException
+     */
+    public function createPicklistTable(string $table, string $tableId, string $columnName): void
+    {
+        if (empty($tableId)) {
+            $tableId = $columnName . 'id';
+        }
+
+        if (empty($table)) {
+            $tableId = 'vtiger_' . $columnName;
+        }
+
+        $this->getTable($table, $tableId)
+            ->createTable()
+            ->createColumn($columnName, 'VARCHAR(200) NOT NULL')
+            ->createColumn('presence', 'INT (1) NOT NULL DEFAULT 1')
+            ->createColumn('picklist_valueid', 'INT NOT NULL DEFAULT \'0\'')
+            ->createColumn('sortorderid', 'INT DEFAULT \'0\'')
+            ->createColumn('color', 'VARCHAR(10)')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (' . $tableId . ')')
+            ->createKey('UNIQUE KEY IF NOT EXISTS ' . $columnName . '_' . $columnName . '_idx (' . $columnName . ')');
+    }
 }

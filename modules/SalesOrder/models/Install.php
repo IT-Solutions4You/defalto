@@ -953,5 +953,9 @@ class SalesOrder_Install_Model extends Core_Install_Model {
             ->createKey('PRIMARY KEY IF NOT EXISTS (`soshipaddressid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_soshipads` FOREIGN KEY IF NOT EXISTS (`soshipaddressid`) REFERENCES `vtiger_salesorder` (`salesorderid`) ON DELETE CASCADE')
         ;
+
+        $this->createPicklistTable('vtiger_sostatus', 'sostatusid', 'sostatus');
+        $this->createPicklistTable('vtiger_recurring_frequency', 'recurring_frequency_id', 'recurring_frequency');
+        $this->createPicklistTable('vtiger_payment_duration', 'payment_duration_id', 'payment_duration');
     }
 }

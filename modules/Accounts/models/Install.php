@@ -744,5 +744,9 @@ class Accounts_Install_Model extends Core_Install_Model {
             ->createColumn('bill_street', 'varchar(250) DEFAULT NULL')
             ->createColumn('bill_pobox', 'varchar(30) DEFAULT NULL')
             ;
+        
+        $this->createPicklistTable('vtiger_rating', 'rating_id', 'rating');
+        $this->createPicklistTable('vtiger_industry', '', 'industry');
+        $this->createPicklistTable('vtiger_accounttype', 'accounttypeid', 'accounttype');
     }
 }

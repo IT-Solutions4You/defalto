@@ -731,5 +731,7 @@ class Contacts_Install_Model extends Core_Install_Model
             ->createColumn('support_end_date', 'date DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`customerid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_customerdetails` FOREIGN KEY IF NOT EXISTS (`customerid`) REFERENCES `vtiger_contactdetails` (`contactid`) ON DELETE CASCADE');
+        
+        $this->createPicklistTable('vtiger_salutationtype', 'salutationid', 'salutationtype');
     }
 }

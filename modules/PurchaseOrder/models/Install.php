@@ -803,5 +803,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
             ->createKey('CONSTRAINT `fk_4_vtiger_purchaseorder` FOREIGN KEY IF NOT EXISTS (`vendorid`) REFERENCES `vtiger_vendor` (`vendorid`) ON DELETE CASCADE')
             ->createKey('CONSTRAINT `fk_crmid_vtiger_purchaseorder` FOREIGN KEY IF NOT EXISTS (`purchaseorderid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
         ;
+        
+        $this->createPicklistTable('vtiger_postatus', 'postatusid', 'postatus');
     }
 }

@@ -446,5 +446,8 @@ class Campaigns_Install_Model extends Core_Install_Model {
             ->createKey('PRIMARY KEY IF NOT EXISTS (`campaignid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_campaignscf` FOREIGN KEY IF NOT EXISTS (`campaignid`) REFERENCES `vtiger_campaign` (`campaignid`) ON DELETE CASCADE')
         ;
+        
+        $this->createPicklistTable('vtiger_campaigntype', 'campaigntypeid', 'campaigntype');
+        $this->createPicklistTable('vtiger_expectedresponse', 'expectedresponseid', 'expectedresponse');
     }
 }

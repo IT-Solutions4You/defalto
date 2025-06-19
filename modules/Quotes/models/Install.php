@@ -787,5 +787,8 @@ class Quotes_Install_Model extends Core_Install_Model
             ->createColumn('ship_pobox', 'varchar(30) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`quoteshipaddressid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_quotesshipads` FOREIGN KEY IF NOT EXISTS (`quoteshipaddressid`) REFERENCES `vtiger_quotes` (`quoteid`) ON DELETE CASCADE');
+        
+        $this->createPicklistTable('vtiger_quotestage', '', 'quotestage');
+        $this->createPicklistTable('vtiger_carrier', '', 'carrier');
     }
 }
