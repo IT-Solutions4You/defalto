@@ -853,6 +853,10 @@ function create_custom_views()
     ];
 
     foreach ($customviews as $key => $customview) {
+        if (isCustomViewExists($customview['viewname'], $customview['cvmodule'])) {
+            continue;
+        }
+
         $queryid = insertCustomView($customview['viewname'], $customview['setdefault'], $customview['setmetrics'], $customview['cvmodule'], $customview['status'], $customview['userid']);
         insertCvColumns($queryid, $cvcolumns[$key]);
 
@@ -889,7 +893,15 @@ function insertCustomView($viewname,$setdefault,$setmetrics,$cvmodule,$status,$u
 	return $genCVid;
 }
 
-	/** to store the custom view columns of the customview in vtiger_cvcolumnlist table
+function isCustomViewExists($viewName, $module)
+{
+    $adb = PearDatabase::getInstance();
+    $result = $adb->pquery('SELECT cvid FROM vtiger_customview WHERE viewname=? AND entitytype=?', [$viewName, $module]);
+
+    return !empty($adb->query_result($result, 0, 'cvid'));
+}
+
+/** to store the custom view columns of the customview in vtiger_cvcolumnlist table
 	  * @param $cvid :: Type Integer
 	  * @param $columnlist :: Type Array of columnlists
 	 */
