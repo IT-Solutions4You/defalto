@@ -61,6 +61,19 @@ class Install_Utils_Model {
         'Reporting',
         'Installer',
         'Tour',
+        'Campaigns',
+        'Leads',
+        'Accounts',
+        'Contacts',
+        'Documents',
+        'Products',
+        'Faq',
+        'Vendors',
+        'PriceBooks',
+        'Quotes',
+        'PurchaseOrder',
+        'SalesOrder',
+        'Invoice',
     ];
 
     /**
