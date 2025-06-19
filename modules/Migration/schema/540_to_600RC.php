@@ -1082,7 +1082,6 @@ Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET defaultvalue=1 WHERE
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_role ADD allowassignedrecordsto INT(2) NOT NULL DEFAULT 1', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE com_vtiger_workflowtask_queue ADD COLUMN task_contents text', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE com_vtiger_workflowtask_queue DROP INDEX com_vtiger_workflowtask_queue_idx',array());
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET leftpanelhide = ?', array(0));
 $potentialModule = Vtiger_Module::getInstance('Potentials');
 $block = Vtiger_Block::getInstance('LBL_OPPORTUNITY_INFORMATION', $potentialModule);
 

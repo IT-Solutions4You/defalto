@@ -167,7 +167,6 @@ class Users extends CRMEntity {
     public $truncate_trailing_zeros;
     public $phone_crm_extension;
     public $default_record_view;
-    public $leftpanelhide;
     public $rowheight;
     public $userlabel;
     public $address_country_id;
