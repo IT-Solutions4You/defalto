@@ -46,6 +46,11 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
             $recordModel = Vtiger_Record_Model::getInstanceById($id);
 
             $taxesList[$id] = InventoryItem_Utils_Helper::getTaxesForProduct($id);
+
+            if (empty($taxesList[$id])) {
+
+            }
+
             $namesList[$id] = decode_html($recordModel->getName());
             $descriptionsList[$id] = decode_html($recordModel->get('description'));
             $listPriceValuesList[$id] = [];

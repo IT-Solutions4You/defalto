@@ -282,7 +282,10 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
 
         this.lineItemsHolder.on('change', '#overall_discount_percent', function () {
-            let price = parseFloat(jQuery('.total_price_after_discount').text());
+            let price = 0;
+            jQuery('tbody input.price_after_discount', self.lineItemsHolder).each(function () {
+                price += parseFloat(jQuery(this).val()) || 0;
+            });
             let overall_discount_amount = price * (jQuery('#overall_discount_percent').val() / 100);
             jQuery('#overall_discount_amount').val(overall_discount_amount.toFixed(2));
         });
