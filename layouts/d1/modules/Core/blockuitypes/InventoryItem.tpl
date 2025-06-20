@@ -141,7 +141,7 @@
                 {/foreach}
                 </tbody>
                 <tfoot>
-                <tr>
+                <tr style="display: none;">
                     <td></td>
                     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
                         {if in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
@@ -166,57 +166,65 @@
                         {/if}
                     {/foreach}
                 </tr>
-                {if !empty($SPECIAL_TREATMENT_FIELDS)}
-                    {if in_array('overall_discount', $SPECIAL_TREATMENT_FIELDS) and in_array('overall_discount', $INVENTORY_ITEM_COLUMNS)}
-                        <tr>
-                            <td colspan="{$FINALS_COLSPAN}" class="textAlignRight">
-                                <div class="position-relative">
-                                    <i class="fa fa-pencil fa-fw text-secondary editOverallDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Overal Discount %', 'InventoryItem')}</strong>
-                                <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="overallDiscountSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
-                                    <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Overal Discount %', 'InventoryItem')}</h3>
-                                    <div class="popover-body popover-content">
-                                        <div class="validCheck">
-                                            <table class="table table-borderless popupTable m-0">
-                                                <tbody>
-                                                <tr>
-                                                    <td class="p-3">{vtranslate('Discount', 'InventoryItem')}</td>
-                                                    <td>
-                                                        <div class="input-group">
-                                                            <input type="text" size="5" data-compound-on="" name="overall_discount_percent" id="overall_discount_percent" value="{$OVERALL_DISCOUNT}" class="form-control overallDiscountPercent replaceCommaWithDot textAlignRight" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
-                                                            <input type="hidden" id="original_overall_discount_percent" name="original_overall_discount_percent" value="{$OVERALL_DISCOUNT}" class="original_overall_discount_percent">
-                                                            <div class="input-group-text">%</div>
-                                                        </div>
-                                                    </td>
-                                                    <td class="text-end">
-                                                        <input type="text" size="6" name="overall_discount_amount" id="overall_discount_amount" style="cursor:pointer;" value="{$OVERALL_DISCOUNT_AMOUNT}" readonly="" class="form-control overallDiscountAmount textAlignRight" aria-invalid="false">
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
+                <tr>
+                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('Subtotal', 'InventoryItem')}</strong></td>
+                    <td class="textAlignRight font-bold subTotalDisplay">{$SUBTOTAL_DISPLAY}</td>
+                </tr>
+                <tr>
+                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight">
+                        <div class="position-relative">
+                            <i class="fa fa-pencil fa-fw text-secondary editOverallDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Overal Discount', 'InventoryItem')}: <span class="overallDiscountPercentage">{$OVERALL_DISCOUNT}</span>%</strong>
+                        <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="overallDiscountSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
+                            <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Overal Discount %', 'InventoryItem')}</h3>
+                            <div class="popover-body popover-content">
+                                <div class="validCheck">
+                                    <table class="table table-borderless popupTable m-0">
+                                        <tbody>
+                                        <tr>
+                                            <td class="p-3">{vtranslate('Discount', 'InventoryItem')}</td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <input type="text" size="5" data-compound-on="" name="overall_discount_percent" id="overall_discount_percent" value="{$OVERALL_DISCOUNT}" class="form-control overallDiscountPercent replaceCommaWithDot textAlignRight" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
+                                                    <input type="hidden" id="original_overall_discount_percent" name="original_overall_discount_percent" value="{$OVERALL_DISCOUNT}" class="original_overall_discount_percent">
+                                                    <div class="input-group-text">%</div>
+                                                </div>
+                                            </td>
+                                            <td class="text-end">
+                                                <input type="text" size="6" name="overall_discount_amount" id="overall_discount_amount" style="cursor:pointer;" value="{$OVERALL_DISCOUNT_AMOUNT}" readonly="" class="form-control overallDiscountAmount textAlignRight" aria-invalid="false">
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer lineItemPopupModalFooter p-3">
+                                <div class="container-fluid p-0">
+                                    <div class="row">
+                                        <div class="col-6 text-end">
+                                            <a class="btn btn-outline-primary popoverCancel closeOverallDiscountDiv">{vtranslate('LBL_CANCEL')}</a>
                                         </div>
-                                    </div>
-                                    <div class="modal-footer lineItemPopupModalFooter p-3">
-                                        <div class="container-fluid p-0">
-                                            <div class="row">
-                                                <div class="col-6 text-end">
-                                                    <a class="btn btn-outline-primary popoverCancel closeOverallDiscountDiv">{vtranslate('LBL_CANCEL')}</a>
-                                                </div>
-                                                <div class="col-6 text-start">
-                                                    <a class="btn btn-primary active popoverButton saveOverallDiscount font-bold">{vtranslate('LBL_SAVE')}</a>
-                                                </div>
-                                            </div>
+                                        <div class="col-6 text-start">
+                                            <a class="btn btn-primary active popoverButton saveOverallDiscount font-bold">{vtranslate('LBL_SAVE')}</a>
                                         </div>
                                     </div>
                                 </div>
-                                </div>
-                            </td>
-                            <td class="textAlignRight font-bold">{$OVERALL_DISCOUNT}</td>
-                        </tr>
-                    {/if}
-                {/if}
+                            </div>
+                        </div>
+                        </div>
+                    </td>
+                    <td class="textAlignRight font-bold overallDiscountAmount">{$OVERALL_DISCOUNT_AMOUNT_DISPLAY}</td>
+                </tr>
+                <tr>
+                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('Price Without VAT', 'InventoryItem')}</strong></td>
+                    <td class="textAlignRight font-bold priceWithoutVatDisplay">{$PRICE_WITHOUT_VAT_DISPLAY}</td>
+                </tr>
+                <tr>
+                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('VAT', 'InventoryItem')}</strong></td>
+                    <td class="textAlignRight font-bold vatDisplay">{$VAT_DISPLAY}</td>
+                </tr>
                 <tr>
                     <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('Price Total', 'InventoryItem')}</strong></td>
-                    <td class="textAlignRight font-bold priceTotalDisplay"></td>
+                    <td class="textAlignRight font-bold priceTotalDisplay">{$PRICE_TOTAL_DISPLAY}</td>
                 </tr>
                 <tr>
                     <td colspan="{$FINALS_COLSPAN}" class="textAlignRight">
@@ -259,11 +267,11 @@
                             </div>
                         </div>
                     </td>
-                    <td class="textAlignRight font-bold adjustmentDisplay">{$ADJUSTMENT}</td>
+                    <td class="textAlignRight font-bold adjustmentDisplay">{$ADJUSTMENT_DISPLAY}</td>
                 </tr>
                 <tr>
                     <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('Grand Total', 'InventoryItem')}</strong></td>
-                    <td class="textAlignRight font-bold grandTotalDisplay"></td>
+                    <td class="textAlignRight font-bold grandTotalDisplay">{$GRAND_TOTAL_DISPLAY}</td>
                 </tr>
                 </tfoot>
             </table>

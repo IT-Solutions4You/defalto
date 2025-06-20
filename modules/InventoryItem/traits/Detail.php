@@ -69,7 +69,17 @@ trait InventoryItem_Detail_Trait
 
         $viewer->assign('INVENTORY_ITEM_RECORD_STRUCTURE', $recordStructure);
 
+        $currentUser = Users_Record_Model::getCurrentUserModel();
         $entityRecordModel = Vtiger_Record_Model::getInstanceById($recordId);
+        $viewer->assign('RECORD', $entityRecordModel);
+        $viewer->assign('SUBTOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_after_discount'), $currentUser, true));
+        $viewer->assign('OVERALL_DISCOUNT_AMOUNT_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('overall_discount_amount'), $currentUser, true));
+        $viewer->assign('PRICE_WITHOUT_VAT_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_after_overall_discount'), $currentUser, true));
+        $viewer->assign('VAT_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('tax_amount'), $currentUser, true));
+        $viewer->assign('PRICE_TOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_total'), $currentUser, true));
+
+        $focus = $entityRecordModel->getEntity();
+        show($focus->column_fields);
         $adjustment = $entityRecordModel->get('adjustment');
 
         if (!$adjustment) {
@@ -77,6 +87,8 @@ trait InventoryItem_Detail_Trait
         }
 
         $viewer->assign('ADJUSTMENT', number_format($adjustment, 2));
+        $viewer->assign('ADJUSTMENT_DISPLAY', CurrencyField::convertToUserFormat($adjustment, $currentUser, true));
+        $viewer->assign('GRAND_TOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('grand_total'), $currentUser, true));
         $viewer->assign('PRICEBOOKS', $this->fetchPriceBooks($request));
     }
 
