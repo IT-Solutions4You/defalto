@@ -78,8 +78,6 @@ trait InventoryItem_Detail_Trait
         $viewer->assign('VAT_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('tax_amount'), $currentUser, true));
         $viewer->assign('PRICE_TOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_total'), $currentUser, true));
 
-        $focus = $entityRecordModel->getEntity();
-        show($focus->column_fields);
         $adjustment = $entityRecordModel->get('adjustment');
 
         if (!$adjustment) {
