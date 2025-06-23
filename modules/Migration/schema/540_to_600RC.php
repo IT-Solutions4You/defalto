@@ -153,10 +153,6 @@ if(!defined('INSTALLATION_MODE')) {
 	}
 }
 
-$invoiceModuleInstance = Vtiger_Module::getInstance('Invoice');
-$fieldInstance = Vtiger_Field::getInstance('invoicestatus', $invoiceModuleInstance);
-$fieldInstance->setPicklistValues( Array ('Cancel'));
-
 //Currency Decimal places handling
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET typeofdata='N~O' WHERE fieldlabel='Annual Revenue' and typeofdata='I~O'",array());
 
@@ -607,20 +603,6 @@ $inventoryModules = array(
 foreach ($inventoryModules as $module => $details) {
     $tableName = $details[1];
     $moduleInstance = Vtiger_Module::getInstance($module);
-    $block = Vtiger_Block::getInstance($details[0], $moduleInstance);
-
-    $preTaxTotalField = new Vtiger_Field();
-    $preTaxTotalField->name = 'pre_tax_total';
-    $preTaxTotalField->label = 'Pre Tax Total';
-    $preTaxTotalField->table = $tableName;
-    $preTaxTotalField->column = 'pre_tax_total';
-    $preTaxTotalField->columntype = 'decimal(25,8)';
-    $preTaxTotalField->typeofdata = 'N~O';
-    $preTaxTotalField->uitype = '72';
-    $preTaxTotalField->masseditable = '1';
-    $preTaxTotalField->displaytype = '3';
-    $block->addField($preTaxTotalField);
-
     $tableId = $details[2];
 
     $result = $adb->pquery("SELECT $tableId, subtotal, s_h_amount, discount_percent, discount_amount FROM $tableName", array());
@@ -636,6 +618,7 @@ foreach ($inventoryModules as $module => $details) {
         if ($discountPercent != '0') {
             $discountAmount = ($subTotal * $discountPercent) / 100;
         }
+
         $preTaxTotalValue = $subTotal + $shAmount - $discountAmount;
 
         Migration_Index_View::ExecuteQuery("UPDATE $tableName set pre_tax_total = ? WHERE $tableId = ?", array($preTaxTotalValue, $id));
@@ -653,59 +636,6 @@ Vtiger_Event::register($InvoiceInstance, 'vtiger.entity.aftersave', 'InvoiceHand
 
 $POInstance = Vtiger_Module::getInstance('PurchaseOrder');
 Vtiger_Event::register($POInstance, 'vtiger.entity.aftersave', 'PurchaseOrderHandler', 'modules/PurchaseOrder/PurchaseOrderHandler.php');
-
-$InvoiceBlockInstance = Vtiger_Block::getInstance('LBL_INVOICE_INFORMATION', $InvoiceInstance);
-$field1 = Vtiger_Field::getInstance('received', $InvoiceInstance);
-if (!$field1) {
-    $field1 = new Vtiger_Field();
-    $field1->name = 'received';
-    $field1->label = 'Received';
-    $field1->table = 'vtiger_invoice';
-    $field1->uitype = 72;
-    $field1->displaytype = 3;
-    $field1->typeofdata = 'N~O';
-    $field1->defaultvalue = 0;
-    $InvoiceBlockInstance->addField($field1);
-}
-$field2 = Vtiger_Field::getInstance('balance', $InvoiceInstance);
-if (!$field2) {
-    $field2 = new Vtiger_Field();
-    $field2->name = 'balance';
-    $field2->label = 'Balance';
-    $field1->table = 'vtiger_invoice';
-    $field2->uitype = 72;
-    $field2->typeofdata = 'N~O';
-    $field2->defaultvalue = 0;
-    $field2->displaytype = 3;
-    $InvoiceBlockInstance->addField($field2);
-}
-
-$POBlockInstance = Vtiger_Block::getInstance('LBL_PO_INFORMATION', $POInstance);
-$field3 = Vtiger_Field::getInstance('paid', $POInstance);
-if (!$field3) {
-    $field3 = new Vtiger_Field();
-    $field3->name = 'paid';
-    $field3->label = 'Paid';
-    $field3->table = 'vtiger_purchaseorder';
-    $field3->uitype = 72;
-    $field3->displaytype = 3;
-    $field3->typeofdata = 'N~O';
-    $field3->defaultvalue = 0;
-    $POBlockInstance->addField($field3);
-}
-$field4 = Vtiger_Field::getInstance('balance', $POInstance);
-if (!$field4) {
-    $field4 = new Vtiger_Field();
-    $field4->name = 'balance';
-    $field4->label = 'Balance';
-    $field4->table = 'vtiger_purchaseorder';
-    $field4->uitype = 72;
-    $field4->typeofdata = 'N~O';
-    $field4->defaultvalue = 0;
-    $field4->displaytype = 3;
-    $POBlockInstance->addField($field4);
-}
-
 
 $sqltimelogTable = "CREATE TABLE vtiger_sqltimelog ( id integer, type VARCHAR(10),
 					data text, started decimal(18,2), ended decimal(18,2), loggedon datetime)";
@@ -896,23 +826,6 @@ $home->addLink('DASHBOARDWIDGET', 'Funnel Amount', 'index.php?module=Potentials&
 
 // Enable Sharing-Access for Vendors
 $vendorInstance = Vtiger_Module::getInstance('Vendors');
-$vendorAssignedToField = Vtiger_Field::getInstance('assigned_user_id', $vendorInstance);
-if (!$vendorAssignedToField) {
-	$vendorBlock = Vtiger_Block::getInstance('LBL_VENDOR_INFORMATION', $vendorInstance);
-
-	$vendorAssignedToField = new Vtiger_Field();
-	$vendorAssignedToField->name = 'assigned_user_id';
-	$vendorAssignedToField->label = 'Assigned To';
-	$vendorAssignedToField->table = 'vtiger_crmentity';
-	$vendorAssignedToField->column = 'smownerid';
-	$vendorAssignedToField->uitype = 53;
-	$vendorAssignedToField->typeofdata = 'V~M';
-	$vendorBlock->addField($vendorAssignedToField);
-
-	$vendorAllFilter = Vtiger_Filter::getInstance('All', $vendorInstance);
-	$vendorAllFilter->addField($vendorAssignedToField, 5);
-}
-
 // Allow Sharing access and role-based security for Vendors
 Vtiger_Access::deleteSharing($vendorInstance);
 Vtiger_Access::initSharing($vendorInstance);
@@ -922,24 +835,7 @@ Vtiger_Access::setDefaultSharing($vendorInstance);
 Vtiger_Module::syncfile();
 
 // Add Email Opt-out for Leads
-$leadsInstance = Vtiger_Module::getInstance('Leads');
-$leadsOptOutField= Vtiger_Field::getInstance('emailoptout', $leadsInstance);
-
-if (!$leadsOptOutField) {
-	$leadsOptOutField = new Vtiger_Field();
-	$leadsOptOutField->name = 'emailoptout';
-	$leadsOptOutField->label = 'Email Opt Out';
-	$leadsOptOutField->table = 'vtiger_leaddetails';
-	$leadsOptOutField->column = $leadsOptOutField->name;
-	$leadsOptOutField->columntype = 'VARCHAR(3)';
-	$leadsOptOutField->uitype = 56;
-	$leadsOptOutField->typeofdata = 'C~O';
-
-	$leadsInformationBlock = Vtiger_Block::getInstance('LBL_LEAD_INFORMATION', $leadsInstance);
-	$leadsInformationBlock->addField($leadsOptOutField);
-
-	Migration_Index_View::ExecuteQuery('UPDATE vtiger_leaddetails SET emailoptout=0 WHERE emailoptout IS NULL', array());
-}
+Migration_Index_View::ExecuteQuery('UPDATE vtiger_leaddetails SET emailoptout=0 WHERE emailoptout IS NULL', array());
 
 $module = Vtiger_Module::getInstance('Home');
 $module->addLink('DASHBOARDWIDGET', 'Notebook', 'index.php?module=Home&view=ShowWidget&name=Notebook');
@@ -1278,24 +1174,6 @@ if($adb->num_rows($checkResult) <= 0) {
 	Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_currencies VALUES ('.$adb->getUniqueID("vtiger_currencies").',"Maldivian Ruffiya","MVR","MVR")',array());
 }
 
-$moduleInstance = Vtiger_Module::getInstance('HelpDesk');
-$block = Vtiger_Block::getInstance('LBL_TICKET_INFORMATION', $moduleInstance);
-$fromPortal = Vtiger_Field_Model::getInstance('from_portal', $moduleInstance);
-
-if(!$fromPortal){
-    $field = new Vtiger_Field();
-    $field->name = 'from_portal';
-    $field->label = 'From Portal';
-    $field->table ='vtiger_ticketcf';
-    $field->column = 'from_portal';
-    $field->columntype = 'varchar(3)';
-    $field->typeofdata = 'C~O';
-    $field->uitype = 56;
-    $field->displaytype = 3;
-    $field->presence = 0;
-    $block->addField($field);
-}
-
 //Start: Customer - Feature #10254 Configuring all Email notifications including Ticket notifications
 $moduleName = 'HelpDesk';
 $workflowManager = new VTWorkflowManager($adb);
@@ -1329,6 +1207,7 @@ $commentsWorkflow->executionCondition = VTWorkflowManager::$ON_FIRST_SAVE;
 $commentsWorkflow->defaultworkflow = 1;
 $workflowManager->save($commentsWorkflow);
 
+include_once 'modules/com_vtiger_workflow/tasks/VTEmailTask.inc';
 $emailTask = new VTEmailTask();
 $emailTask->id = '';
 $emailTask->executeImmediately = 0;

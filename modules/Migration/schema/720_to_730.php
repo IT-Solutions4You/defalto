@@ -89,34 +89,6 @@ if (defined('VTIGER_UPGRADE')) {
     $params = array('69', 'image');
     $db->pquery($sql, $params);
     
-    //add options to payment_duration field in SalesOrder module
-    $moduleInstance = Vtiger_Module_Model::getInstance('SalesOrder');
-    $fieldInstance = Vtiger_Field_Model::getInstance('payment_duration', $moduleInstance);
-    $fieldInstance->setPicklistValues(array('Net 01 day', 'Net 05 days', 'Net 07 days', 'Net 10 days', 'Net 15 days'));
-    
-    $paymentList = array('Net 01 day' => '1', 'Net 05 days' => '2', 'Net 07 days' => '3', 'Net 10 days' => '4', 'Net 15 days' => '5',
-                         'Net 30 days' => '6', 'Net 45 days' => '7', 'Net 60 days' => '8');
-    $query = 'UPDATE vtiger_payment_duration SET sortorderid = CASE payment_duration';
-    foreach ($paymentList as $label => $sortOrderId) {
-        $query .= " WHEN '$label' THEN $sortOrderId ";
-    }
-    $query .= ' ELSE sortorderid END';
-    $db->pquery($query, array());
-    
-    //Create new read-only field to display the date of the next invoice creation in recurring sales orders.
-    $field  = new Vtiger_Field();
-    $field->name = 'last_recurring_date';
-    $field->label= 'Next Invoice Date';
-    $field->column = 'last_recurring_date';
-    $field->table = 'vtiger_invoice_recurring_info';
-    $field->displaytype = 2;
-    $field->uitype= 5;
-    $field->columntype = "date";
-    $field->typeofdata = 'D~O';
-    
-    $block = Vtiger_Block::getInstance('Recurring Invoice Information', $moduleInstance);
-    $block->addField($field);
-    
     //Remove unwanted Files
     global $root_directory;
     $filesPath = array(

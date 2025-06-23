@@ -576,18 +576,7 @@ if(defined('VTIGER_UPGRADE')) {
 		vtws_addWebserviceOperationParam($operationId, 'element', 'encoded', 1);
 	}
 
-	//Start : Change fieldLabel of description field to Description - Project module.
-
-	$fieldModel = Vtiger_Field_Model::getInstance('description', Vtiger_Module_Model::getInstance('Project'));
-	$fieldModel->set('label', 'Description');
-	$fieldModel->__update();
-
 	$db->pquery('ALTER TABLE vtiger_mail_accounts MODIFY mail_password TEXT', array());
-
-	//making priority as mandatory field in Tickets.
-	$fieldInstance = Vtiger_Field_Model::getInstance('ticketpriorities', Vtiger_Module_Model::getInstance('HelpDesk'));
-	$fieldInstance->set('typeofdata', 'V~M');
-	$fieldInstance->save();
 
 	if (Vtiger_Utils::CheckTable('vtiger_customerportal_tabs')) {
 		$db->pquery('UPDATE vtiger_customerportal_tabs SET visible=? WHERE tabid IN(?,?)', array(0, getTabid('Contacts'), getTabid('Accounts')));
@@ -690,10 +679,6 @@ if(defined('VTIGER_UPGRADE')) {
 	$query = 'ALTER TABLE vtiger_portalinfo MODIFY user_password VARCHAR(255)';
 	$db->pquery($query, array());
 
-	//Enable mass edit for portal field under Contacts
-	$contactsFieldInstance = Vtiger_Field_Model::getInstance('portal', Vtiger_Module_Model::getInstance('Contacts'));
-	$contactsFieldInstance->set('masseditable', '1');
-	$contactsFieldInstance->save();
 	//Customer portal changes end
 
 	 $relatedWebservicesOperations = array(
@@ -789,15 +774,6 @@ if(defined('VTIGER_UPGRADE')) {
 				PRIMARY KEY (`rollupid`))", true);
 	}
 
-	$modulesList = array('Products', 'Services');
-	foreach ($modulesList as $moduleName) {
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$taxFieldModel = Vtiger_Field_Model::getInstance('taxclass', $moduleModel);
-		$taxFieldModel->set('label', 'Taxes');
-		$taxFieldModel->set('quickcreate', 2);
-		$taxFieldModel->save();
-	}
-
 	$columns = $db->getColumnNames('com_vtiger_workflowtask_queue');
 	if (!in_array('relatedinfo', $columns)) {
 		$db->pquery('ALTER TABLE com_vtiger_workflowtask_queue ADD COLUMN relatedinfo VARCHAR(255)', array());
@@ -827,14 +803,6 @@ if(defined('VTIGER_UPGRADE')) {
 			$potentialModuleModel = Vtiger_Module_Model::getInstance('Potentials');
 			$potentialModuleModel->setRelatedList($projectModuleModel, 'Projects', array('ADD', 'SELECT'), 'get_dependents_list', $fieldModel->id);
 		}
-	}
-	//End
-
-	//Start : Change fieldLabel of description field to Description - ProjectMilestone module.
-	$fieldModel = Vtiger_Field_Model::getInstance('description', Vtiger_Module_Model::getInstance('ProjectMilestone'));
-	if ($fieldModel) {
-		$fieldModel->set('label', 'Description');
-		$fieldModel->__update();
 	}
 	//End
 
