@@ -369,7 +369,7 @@ class DefaultDataPopulator extends CRMEntity
 
         // Populate the vtiger_blocks vtiger_table
         /** Users */
-        Core_Install_Model::getInstance('module.postupdate', 'Users')->installModule();
+        Core_Install_Model::getInstance(Vtiger_ModuleBasic::EVENT_MODULE_POSTINSTALL, 'Users')->installModule();
 
         //The Entity Name for the modules are maintained in this table
         $this->db->query("insert into vtiger_entityname values(7,'Leads','vtiger_leaddetails','firstname,lastname','leadid','leadid')");

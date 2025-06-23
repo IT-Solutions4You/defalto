@@ -14,6 +14,35 @@ vimport('~~modules/CustomView/PopulateCustomView.php');
 class Install_InitSchema_Model {
 
     /**
+     * @var Vtiger_Request
+     */
+    public static object $request;
+
+    /**
+     * @throws Exception
+     */
+    public static function install()
+    {
+        vglobal('debug', true);
+
+        // Create configuration file
+        $configParams = $_SESSION['config_file_info'];
+        $configFile = new Install_ConfigFileUtils_Model($configParams);
+        $configFile->createConfigFile();
+
+        global $adb;
+        $adb->resetSettings($configParams['db_type'], $configParams['db_hostname'], $configParams['db_name'], $configParams['db_username'], $configParams['db_password']);
+        $adb->query('SET NAMES utf8');
+
+        // Initialize and set up tables
+        self::initialize();
+
+        self::upgrade();
+
+        Install_Utils_Model::saveSMTPServer(self::$request);
+    }
+
+    /**
      * Function starts applying schema changes
      * @throws Exception
      */
@@ -811,6 +840,7 @@ class Install_InitSchema_Model {
         $user->column_fields['internal_mailer'] = '1';
         $user->column_fields['email1'] = $_SESSION['config_file_info']['admin_email'] ?? 'admin@defaltouser.com';
         $user->column_fields['roleid'] = Settings_Roles_Record_Model::getRoleId('CEO');
+        $user->column_fields['profile_id'] = 1;
         $user->column_fields['currency_decimal_separator'] = $_SESSION['config_file_info']['currency_decimal_separator'];
         $user->column_fields['currency_grouping_separator'] = $_SESSION['config_file_info']['currency_grouping_separator'];
         $user->column_fields['currency_grouping_pattern'] = '123,456,789';

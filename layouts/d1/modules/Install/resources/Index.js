@@ -11,18 +11,20 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
 			window.location.reload();
 		});
 
-		jQuery('input[name="step4"]').on('click', function (e) {
-			var elements = jQuery('.no')
-			if (elements.length > 0) {
-				var msg = "Some of the PHP Settings do not meet the recommended values. This might affect some of the features of vtiger CRM. Are you sure, you want to proceed?";
-				if (confirm(msg)) {
-					jQuery('form[name="step3"]').submit();
-					return true;
-				} else {
-					return false;
-				}
-			}
-			jQuery('form[name="step3"]').submit();
+		jQuery('input[name="step4"]').off('click').on('click', function (e) {
+			let elements = jQuery('.no')
+
+            if (elements.length > 0) {
+                elements.addClass('text-danger');
+
+                let msg = 'Some of the PHP Settings do not meet the recommended values. This might affect some of the features of vtiger CRM. Are you sure, you want to proceed?';
+
+                app.helper.showConfirmationBox({message: msg}).then(function () {
+                    jQuery('form[name="step3"]').submit();
+                });
+            } else {
+                jQuery('form[name="step3"]').submit();
+            }
 		});
 	},
 
@@ -178,6 +180,13 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
 			jQuery('#formContainer').addClass('hide');
 		});
 	},
+    registerEventForStep7: function () {
+        let form = jQuery('form[name="step7"]');
+
+        if (form.length) {
+            form.submit();
+        }
+    },
 
 	registerEvents: function () {
 		jQuery('input[name="back"]').on('click', function () {
@@ -191,6 +200,7 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
 		this.registerEventForStep4();
 		this.registerEventForStep5();
 		this.registerEventForStep6();
+        this.registerEventForStep7();
 	}
 });
 jQuery(document).ready(function() {

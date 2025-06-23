@@ -192,21 +192,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 				die(vtranslate('ERR_NOT_AUTHORIZED_TO_PERFORM_THE_OPERATION', $moduleName));
 			}
 
-			// Create configuration file
-			$configParams = $_SESSION['config_file_info'];
-			$configFile = new Install_ConfigFileUtils_Model($configParams);
-			$configFile->createConfigFile();
-
-			global $adb;
-			$adb->resetSettings($configParams['db_type'], $configParams['db_hostname'], $configParams['db_name'], $configParams['db_username'], $configParams['db_password']);
-			$adb->query('SET NAMES utf8');
-
-			// Initialize and set up tables
-			Install_InitSchema_Model::initialize();
-
-			Install_InitSchema_Model::upgrade();
-
-            Install_Utils_Model::saveSMTPServer($request);
+            Install_InitSchema_Model::$request = $request;
 
 			$viewer = $this->getViewer($request);
 			$viewer->assign('PASSWORD', $_SESSION['config_file_info']['password']);
