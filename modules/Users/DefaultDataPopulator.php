@@ -337,6 +337,7 @@ class DefaultDataPopulator extends CRMEntity
     }
 
     /** Function to populate the default required data during installation
+     * @throws AppException
      */
     function create_tables()
     {
@@ -368,89 +369,7 @@ class DefaultDataPopulator extends CRMEntity
 
         // Populate the vtiger_blocks vtiger_table
         /** Users */
-        [$userLogin, $userCurrency, $userMore, $userAddress, $userImage, $userAdvance] = $this->createBlocks(29, ['LBL_USERLOGIN_ROLE', 'LBL_CURRENCY_CONFIGURATION', 'LBL_MORE_INFORMATION', 'LBL_ADDRESS_INFORMATION', 'LBL_USER_IMAGE_INFORMATION', 'LBL_USER_ADV_OPTIONS']);
-
-        $fields = [
-            //users Details Starts Block 79,80,81
-            [29, null, 'user_name', 'vtiger_users', 1, '106', 'user_name', 'User Name', 1, 0, '', 11, 1, $userLogin, 1, 'V~M', 1, null, 'BAS', 1],
-            [29, null, 'is_admin', 'vtiger_users', 1, '156', 'is_admin', 'Admin', 1, 0, '', 3, 2, $userLogin, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'user_password', 'vtiger_users', 1, '99', 'user_password', 'Password', 1, 0, '', 30, 3, $userLogin, 4, 'P~M', 1, null, 'BAS', 1],
-            [29, null, 'confirm_password', 'vtiger_users', 1, '99', 'confirm_password', 'Confirm Password', 1, 0, '', 30, 5, $userLogin, 4, 'P~M', 1, null, 'BAS', 1],
-            [29, null, 'first_name', 'vtiger_users', 1, '1', 'first_name', 'First Name', 1, 0, '', 30, 7, $userLogin, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'last_name', 'vtiger_users', 1, '2', 'last_name', 'Last Name', 1, 0, '', 30, 9, $userLogin, 1, 'V~M', 1, null, 'BAS', 1],
-            [29, null, 'roleid', 'vtiger_user2role', 1, '98', 'roleid', 'Role', 1, 0, '', 200, 11, $userLogin, 1, 'V~M', 1, null, 'BAS', 1],
-            [29, null, 'profile_id', 'df_user2profile', 1, '14001', 'profile_id', 'Profile', 1, 0, '', 20, 5, $userMore, 1, 'V~M', 1, null, 'BAS', 1],
-            [29, null, 'email1', 'vtiger_users', 1, '104', 'email1', 'Email', 1, 0, '', 100, 4, $userLogin, 1, 'E~M', 1, null, 'BAS', 1],
-            [29, null, 'status', 'vtiger_users', 1, '115', 'status', 'Status', 1, 0, '', 100, 6, $userLogin, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'activity_view', 'vtiger_users', 1, '16', 'activity_view', 'Default Activity View', 1, 0, '', 100, 12, $userLogin, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'lead_view', 'vtiger_users', 1, '16', 'lead_view', 'Default Lead View', 1, 0, '', 100, 10, $userLogin, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'hour_format', 'vtiger_users', 1, '116', 'hour_format', 'Calendar Hour Format', 1, 0, '', 100, 13, $userLogin, 3, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'end_hour', 'vtiger_users', 1, '116', 'end_hour', 'Day ends at', 1, 0, '', 100, 15, $userLogin, 3, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'start_hour', 'vtiger_users', 1, '116', 'start_hour', 'Day starts at', 1, 0, '', 100, 14, $userLogin, 3, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'is_owner', 'vtiger_users', 1, '1', 'is_owner', 'Account Owner', 0, 2, 0, 100, 12, $userLogin, 5, 'V~O', 0, 1, 'BAS', 0],
-            [29, null, 'title', 'vtiger_users', 1, '1', 'title', 'Title', 1, 0, '', 50, 1, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'phone_work', 'vtiger_users', 1, '11', 'phone_work', 'Office Phone', 1, 0, '', 50, 5, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'department', 'vtiger_users', 1, '1', 'department', 'Department', 1, 0, '', 50, 3, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'phone_mobile', 'vtiger_users', 1, '11', 'phone_mobile', 'Mobile', 1, 0, '', 50, 7, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'reports_to_id', 'vtiger_users', 1, '101', 'reports_to_id', 'Reports To', 1, 0, '', 50, 8, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'phone_other', 'vtiger_users', 1, '11', 'phone_other', 'Other Phone', 1, 0, '', 50, 11, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'email2', 'vtiger_users', 1, '13', 'email2', 'Other Email', 1, 0, '', 100, 4, $userMore, 1, 'E~O', 1, null, 'BAS', 1],
-            [29, null, 'phone_fax', 'vtiger_users', 1, '11', 'phone_fax', 'Fax', 1, 0, '', 50, 2, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'secondaryemail', 'vtiger_users', 1, '13', 'secondaryemail', 'Secondary Email', 1, 0, '', 100, 6, $userMore, 1, 'E~O', 1, null, 'BAS', 1],
-            [29, null, 'phone_home', 'vtiger_users', 1, '11', 'phone_home', 'Home Phone', 1, 0, '', 50, 9, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'date_format', 'vtiger_users', 1, '16', 'date_format', 'Date Format', 1, 0, '', 30, 12, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'signature', 'vtiger_users', 1, '21', 'signature', 'Signature', 1, 0, '', 250, 13, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'description', 'vtiger_users', 1, '21', 'description', 'Documents', 1, 0, '', 250, 14, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'address_street', 'vtiger_users', 1, '21', 'address_street', 'Street Address', 1, 0, '', 250, 1, $userAddress, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'address_city', 'vtiger_users', 1, '1', 'address_city', 'City', 1, 0, '', 100, 3, $userAddress, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'address_state', 'vtiger_users', 1, '1', 'address_state', 'State', 1, 0, '', 100, 5, $userAddress, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'address_postalcode', 'vtiger_users', 1, '1', 'address_postalcode', 'Postal Code', 1, 0, '', 100, 4, $userAddress, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'accesskey', 'vtiger_users', 1, 3, 'accesskey', 'Webservice Access Key', 1, 0, '', 100, 2, $userAdvance, 2, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'time_zone', 'vtiger_users', 1, '16', 'time_zone', 'Time Zone', 1, 0, '', 200, 15, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'currency_id', 'vtiger_users', 1, '117', 'currency_id', 'Currency', 1, 0, '', 100, 1, $userCurrency, 1, 'I~O', 1, null, 'BAS', 1],
-            [29, null, 'currency_grouping_pattern', 'vtiger_users', 1, '16', 'currency_grouping_pattern', 'Digit Grouping Pattern', 1, 0, '', 100, 2, $userCurrency, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'currency_decimal_separator', 'vtiger_users', 1, '16', 'currency_decimal_separator', 'Decimal Separator', 1, 0, '', 2, 3, $userCurrency, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'currency_grouping_separator', 'vtiger_users', 1, '16', 'currency_grouping_separator', 'Digit Grouping Separator', 1, 0, '', 2, 4, $userCurrency, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'currency_symbol_placement', 'vtiger_users', 1, '16', 'currency_symbol_placement', 'Symbol Placement', 1, 0, '', 20, 5, $userCurrency, 1, 'V~O', 1, null, 'BAS', 1],
-            //User Image Information
-            [29, null, 'imagename', 'vtiger_users', 1, '105', 'imagename', 'User Image', 1, 0, '', 250, 10, $userImage, 1, 'V~O', 1, null, 'BAS', 1],
-            //added for internl_mailer
-            [29, null, 'internal_mailer', 'vtiger_users', 1, '56', 'internal_mailer', 'INTERNAL_MAIL_COMPOSER', 1, 0, '', 50, 15, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'theme', 'vtiger_users', 1, '31', 'theme', 'Theme', 1, 0, '', 100, 16, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'language', 'vtiger_users', 1, '32', 'language', 'Language', 1, 0, '', 100, 17, $userMore, 1, 'V~O', 1, null, 'BAS', 1],
-            [29, null, 'reminder_interval', 'vtiger_users', 1, '16', 'reminder_interval', 'Reminder Interval', 1, 0, '', 100, 1, $userAdvance, 1, 'V~O', 1, null, 'BAS', 1],
-            //user Details End
-        ];
-        $fieldIds = $this->createFields($fields);
-
-        //entry to vtiger_field to maintain account,contact,lead relationships
-
-        $this->db->query("INSERT INTO vtiger_field(tabid, fieldid, columnname, tablename, generatedtype, uitype, fieldname, fieldlabel, readonly, presence, defaultvalue, maximumlength, sequence, block, displaytype, typeofdata, quickcreate, quickcreatesequence, info_type, masseditable) VALUES (" . getTabid('Contacts') . "," . $this->db->getUniqueID('vtiger_field') . ", 'campaignrelstatus', 'vtiger_campaignrelstatus', 1, '16', 'campaignrelstatus', 'Status', 1, 0, 0, 100, 1, NULL, 1, 'V~O', 1, NULL, 'BAS', 0)");
-        $this->db->query("INSERT INTO vtiger_field(tabid, fieldid, columnname, tablename, generatedtype, uitype, fieldname, fieldlabel, readonly, presence, defaultvalue, maximumlength, sequence, block, displaytype, typeofdata, quickcreate, quickcreatesequence, info_type, masseditable) VALUES (" . getTabid('Accounts') . "," . $this->db->getUniqueID('vtiger_field') . ", 'campaignrelstatus', 'vtiger_campaignrelstatus', 1, '16', 'campaignrelstatus', 'Status', 1, 0, 0, 100, 1, NULL, 1, 'V~O', 1, NULL, 'BAS', 0)");
-        $this->db->query("INSERT INTO vtiger_field(tabid, fieldid, columnname, tablename, generatedtype, uitype, fieldname, fieldlabel, readonly, presence, defaultvalue, maximumlength, sequence, block, displaytype, typeofdata, quickcreate, quickcreatesequence, info_type, masseditable) VALUES (" . getTabid('Leads') . "," . $this->db->getUniqueID('vtiger_field') . ", 'campaignrelstatus', 'vtiger_campaignrelstatus', 1, '16', 'campaignrelstatus', 'Status', 1, 0, 0, 100, 1, NULL, 1, 'V~O', 1, NULL, 'BAS', 0)");
-        $this->db->query("INSERT INTO vtiger_field(tabid, fieldid, columnname, tablename, generatedtype, uitype, fieldname, fieldlabel, readonly, presence, defaultvalue, maximumlength, sequence, block, displaytype, typeofdata, quickcreate, quickcreatesequence, info_type, masseditable) VALUES (" . getTabid('Campaigns') . "," . $this->db->getUniqueID('vtiger_field') . ", 'campaignrelstatus', 'vtiger_campaignrelstatus', 1, '16', 'campaignrelstatus', 'Status', 1, 0, 0, 100, 1, NULL, 1, 'V~O', 1, NULL, 'BAS', 0)");
-
-        // Updated Phone field uitype
-        $this->db->query("update vtiger_field set uitype='11' where fieldname='mobile' and tabid=" . getTabid('Leads'));
-        $this->db->query("update vtiger_field set uitype='11' where fieldname='mobile' and tabid=" . getTabid('Contacts'));
-        $this->db->query("update vtiger_field set uitype='11' where fieldname='fax' and tabid=" . getTabid('Leads'));
-        $this->db->query("update vtiger_field set uitype='11' where fieldname='fax' and tabid=" . getTabid('Contacts'));
-        $this->db->query("update vtiger_field set uitype='11' where fieldname='fax' and tabid=" . getTabid('Accounts'));
-
-        $tab_field_array = [
-            'Accounts' => ['accountname'],
-            'Contacts' => ['imagename'],
-            'Products' => ['imagename', 'product_id'],
-            'Invoice' => ['invoice_no', 'salesorder_id'],
-            'SalesOrder' => ['quote_id', 'salesorder_no'],
-            'PurchaseOrder' => ['purchaseorder_no'],
-            'Quotes' => ['quote_no'],
-            'HelpDesk' => ['filename'],
-        ];
-        foreach ($tab_field_array as $index => $value) {
-            $tabid = getTabid($index);
-            $this->db->pquery("UPDATE vtiger_field SET masseditable=0 WHERE tabid=? AND fieldname IN (" . generateQuestionMarks($value) . ")", [$tabid, $value]);
-        }
+        Core_Install_Model::getInstance('module.postupdate', 'Users')->installModule();
 
         //The Entity Name for the modules are maintained in this table
         $this->db->query("insert into vtiger_entityname values(7,'Leads','vtiger_leaddetails','firstname,lastname','leadid','leadid')");
