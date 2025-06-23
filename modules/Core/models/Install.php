@@ -658,6 +658,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                 'presence' => $fieldInstance->presence,
                 'displaytype' => $fieldInstance->displaytype,
                 'sequence' => $fieldInstance->sequence,
+                'isunique' => $fieldInstance->isunique,
             ],
             [
                 'fieldid' => $fieldInstance->id,

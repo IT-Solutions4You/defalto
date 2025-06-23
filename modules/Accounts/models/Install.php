@@ -52,6 +52,7 @@ class Accounts_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 1,
                     'entity_identifier' => 1,
+                    'isunique' => 1,
                 ],
                 'phone' => [
                     'name' => 'phone',
