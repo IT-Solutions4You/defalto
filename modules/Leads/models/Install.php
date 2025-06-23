@@ -480,6 +480,20 @@ class Leads_Install_Model extends Core_Install_Model {
                     'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
+                'campaignrelstatus' => [
+                    'name' => 'campaignrelstatus',
+                    'uitype' => 16,
+                    'column' => 'campaignrelstatus',
+                    'table' => 'vtiger_campaignrelstatus',
+                    'label' => 'Status',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 0,
+                ],
             ],
         ];
     }
