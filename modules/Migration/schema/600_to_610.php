@@ -613,9 +613,6 @@ echo "<br> Adding assigned to, cc, bcc fields for mail scanner rules";
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_troubletickets MODIFY hours decimal(25,8)', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_troubletickets MODIFY days decimal(25,8)', array());
 
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET defaultvalue=? WHERE tablename=? and fieldname=?", array('1', 'vtiger_pricebook', 'active'));
-echo "<br> updated default value for pricebooks active";
-
 $relationId = $adb->getUniqueID('vtiger_relatedlists');
 $contactTabId = getTabid('Contacts');
 $vendorTabId = getTabId('Vendors');
@@ -627,9 +624,6 @@ $sequence = $adb->query_result($result, 0 ,'maxsequence');
 
 $query = 'INSERT INTO vtiger_relatedlists VALUES(?,?,?,?,?,?,?,?,?,?,?)';
 $result = Migration_Index_View::ExecuteQuery($query, array($relationId, $contactTabId,$vendorTabId,'get_vendors',($sequence+1),'Vendors',0,$actions,null,'',''));
-
-//Schema changes for vtiger_troubletickets hours & days column
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field set typeofdata=? WHERE fieldname IN(?,?) AND tablename = ?', array('N~O', 'hours', 'days', 'vtiger_troubletickets'));
 
 //79 ends
 
@@ -893,41 +887,7 @@ echo "<br> added print to vtiger_actionnmapping";
 
 //95 starts
 require_once 'vtlib/Vtiger/Module.php';
-$entityModulesModels = Vtiger_Module_Model::getEntityModules();
-$modules = array();
 
-if($entityModulesModels){
-    foreach($entityModulesModels as $model){
-       $modules[] =  $model->getName();
-    }
-}
-
-foreach($modules as $module){
-    $moduleInstance = Vtiger_Module::getInstance($module);
-    if($moduleInstance){
-        $result = Migration_Index_View::ExecuteQuery("select blocklabel from vtiger_blocks where tabid=? and sequence = ?", array($moduleInstance->id, 1));
-        $block = $adb->query_result($result,0,'blocklabel');
-        if($block){
-            $blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
-            $field = new Vtiger_Field();
-            $field->name = 'created_user_id';
-            $field->label = 'Created By';
-            $field->table = 'vtiger_crmentity';
-            $field->column = 'smcreatorid';
-            $field->uitype = 52;
-            $field->typeofdata = 'V~O';
-            $field->displaytype= 2;
-            $field->quickcreate = 3;
-            $field->masseditable = 0;
-            $blockInstance->addField($field);
-            echo "Creator field added for $module";
-            echo '<br>';
-        }
-    }else{
-        echo "Unable to find $module instance";
-        echo '<br>';
-    }
-}
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET presence=0 WHERE fieldname='unit_price' and columnname='unit_price'", array());
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_portal ADD createdtime datetime", array());
 
@@ -1197,14 +1157,6 @@ Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET presence=? WHERE tab
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET presence=? WHERE tabid=? AND fieldname=?;", array(1, $tabId, "status"));
 echo '<br>Hiding previous PBXManager fields done.<br>'; 
 //PBXManager porting ends.
-
-//Making document module fields masseditable
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET masseditable = ? WHERE tabid = 8 AND fieldname = ?;", array(1,"notes_title")); 
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET masseditable = ? WHERE tabid = 8 AND fieldname = ?;", array(1,"assigned_user_id")); 
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET masseditable = ? WHERE tabid = 8 AND fieldname = ?;", array(1,"notecontent")); 
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET masseditable = ? WHERE tabid = 8 AND fieldname = ?;", array(1,"fileversion")); 
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET masseditable = ? WHERE tabid = 8 AND fieldname = ?;", array(1,"filestatus")); 
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET masseditable = ? WHERE tabid = 8 AND fieldname = ?;", array(1,"folderid")); 
 
 //Add Column trial for vtiger_tab table if not exists
 if (!columnExists('trial', 'vtiger_tab')) {

@@ -19,9 +19,6 @@ $db = PearDatabase::getInstance();
 Migration_Index_View::ExecuteQuery('DELETE from vtiger_senotesrel WHERE crmid NOT IN(select crmid from vtiger_crmentity)',array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_senotesrel ADD CONSTRAINT fk1_crmid FOREIGN KEY IF NOT EXISTS (crmid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE',array());
 
-//Update uitype of created_user_id field of vtiger_field from 53 to 52
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET uitype = 52 WHERE fieldname = "created_user_id"',array());
-
 /*141*/
 //registering handlers for Google sync 
 require_once 'includes/main/WebUI.php';

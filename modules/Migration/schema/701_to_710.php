@@ -49,7 +49,6 @@ if (defined('VTIGER_UPGRADE')) {
 
 	//START - Enable prevention for Accounts module
 	$accounts = 'Accounts';
-	$db->pquery('UPDATE vtiger_field SET isunique=? WHERE fieldname=? AND tabid=(SELECT tabid FROM vtiger_tab WHERE name=?)', array(1, 'accountname', $accounts));
 	$db->pquery('UPDATE vtiger_tab SET allowduplicates=? WHERE name=?', array(0, $accounts));
 	//End - Enable prevention for Accounts module
 
