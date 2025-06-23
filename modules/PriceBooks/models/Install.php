@@ -65,6 +65,7 @@ class PriceBooks_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+                    'defaultvalue' => '1',
                     'filter' => 1,
                     'filter_sequence' => 2,
                 ],

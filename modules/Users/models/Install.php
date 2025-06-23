@@ -264,6 +264,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'defaultvalue' => 'Active',
                     'filter' => 1,
                     'filter_sequence' => 10,
                 ],
@@ -582,6 +583,7 @@ class Users_Install_Model extends Core_Install_Model
                         'displaytype' => 1,
                         'masseditable' => 1,
                         'summaryfield' => 0,
+                        'defaultvalue' => 'softed',
                     ],
                     'phone_crm_extension' => [
                         'name' => 'phone_crm_extension',
@@ -789,6 +791,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'defaultvalue' => '12',
                     'picklist_values' => [
                         '12',
                         '24',

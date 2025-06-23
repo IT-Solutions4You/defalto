@@ -261,7 +261,7 @@ class Documents_Install_Model extends Core_Install_Model
                     'typeofdata' => 'V~O',
                     'quickcreate' => 1,
                     'displaytype' => 1,
-                    'masseditable' => 0,
+                    'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
             ],
