@@ -241,20 +241,6 @@ class Potentials_Install_Model extends Core_Install_Model
                         'Campaigns',
                     ],
                 ],
-                'forecast_amount' => [
-                    'name' => 'forecast_amount',
-                    'uitype' => 71,
-                    'column' => 'forecast_amount',
-                    'table' => 'vtiger_potential',
-                    'label' => 'Forecast Amount',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'N~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 1,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
                 'contact_id' => [
                     'name' => 'contact_id',
                     'uitype' => 10,
@@ -370,7 +356,6 @@ class Potentials_Install_Model extends Core_Install_Model
             ->createColumn('description', 'text DEFAULT NULL')
             ->createColumn('forecastcategory', 'int(19) DEFAULT \'0\'')
             ->createColumn('outcomeanalysis', 'int(19) DEFAULT \'0\'')
-            ->createColumn('forecast_amount', self::$COLUMN_DECIMAL)
             ->createColumn('isconvertedfromlead', 'varchar(3) DEFAULT \'0\'')
             ->createColumn('contact_id', 'int(19) DEFAULT NULL')
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')

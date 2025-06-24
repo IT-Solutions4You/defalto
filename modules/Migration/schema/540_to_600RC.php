@@ -124,21 +124,6 @@ Migration_Index_View::ExecuteQuery("CREATE TABLE IF NOT EXISTS vtiger_shorturls 
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8", array());
 
 global $adb;
-$workflowManager = new VTWorkflowManager($adb);
-$taskManager = new VTTaskManager($adb);
-
-$potentailsWorkFlow = $workflowManager->newWorkFlow("Potentials");
-$potentailsWorkFlow->test = '';
-$potentailsWorkFlow->description = "Calculate or Update forecast amount";
-$potentailsWorkFlow->executionCondition = VTWorkflowManager::$ON_EVERY_SAVE;
-$potentailsWorkFlow->defaultworkflow = 1;
-$workflowManager->save($potentailsWorkFlow);
-
-$task = $taskManager->createTask('VTUpdateFieldsTask', $potentailsWorkFlow->id);
-$task->active = true;
-$task->summary = 'update forecast amount';
-$task->field_value_mapping = '[{"fieldname":"forecast_amount","valuetype":"expression","value":"amount * probability / 100"}]';
-$taskManager->saveTask($task);
 
 // Change default Sales Man rolename to Sales Person
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_role SET rolename=? WHERE rolename=? and roleid=?", array('Sales Person', 'Sales Man', 'H5'));
