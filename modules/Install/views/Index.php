@@ -40,12 +40,14 @@ class Install_Index_view extends Vtiger_View_Controller {
 
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
-		if ($chosenLanguage = $request->get('lang')) {
-			$_SESSION['config_file_info']['default_language'] = $chosenLanguage;
-		} elseif (empty($_SESSION['config_file_info']['default_language'])) {
-			$_SESSION['config_file_info']['default_language'] = 'en_us';
-		}
-		vglobal('default_language', $_SESSION['config_file_info']['default_language']);
+
+        if (!$request->isEmpty('lang')) {
+            $_SESSION['config_file_info']['default_language'] = $request->get('lang');
+        } elseif (empty($_SESSION['config_file_info']['default_language'])) {
+            $_SESSION['config_file_info']['default_language'] = 'en_us';
+        }
+
+        vglobal('default_language', $_SESSION['config_file_info']['default_language']);
 
 		define('INSTALLATION_MODE', true);
 		define('INSTALLATION_MODE_DEBUG', $this->debug);

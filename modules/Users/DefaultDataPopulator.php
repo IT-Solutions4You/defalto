@@ -368,8 +368,10 @@ class DefaultDataPopulator extends CRMEntity
         $tabIds = $this->createTabs($tabs);
 
         // Populate the vtiger_blocks vtiger_table
+        /** Default language */
+        Install_Utils_Model::installDefaultLanguage();
         /** Users */
-        Core_Install_Model::getInstance(Vtiger_ModuleBasic::EVENT_MODULE_POSTINSTALL, 'Users')->installModule();
+        $usersInstall = Core_Install_Model::getInstance(Vtiger_ModuleBasic::EVENT_MODULE_POSTINSTALL, 'Users')->installModule();
 
         //The Entity Name for the modules are maintained in this table
         $this->db->query("insert into vtiger_entityname values(7,'Leads','vtiger_leaddetails','firstname,lastname','leadid','leadid')");

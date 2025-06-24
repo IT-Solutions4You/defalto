@@ -53,6 +53,19 @@ class Users_Install_Model extends Core_Install_Model
         return $user_config['currency_decimal_separator'] ?? ',';
     }
 
+    public static function getDefaultLanguage(): string
+    {
+        if (!empty($_SESSION['config_file_info']['default_language'])) {
+            $language = $_SESSION['config_file_info']['default_language'];
+        } else {
+            $language = vglobal('default_language');
+        }
+
+        log_data('log_data', [$language]);
+
+        return !empty($language) ? $language : 'en_us';
+    }
+
     /**
      * @return void
      */
@@ -309,6 +322,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'defaultvalue' => self::getDefaultLanguage(),
                 ],
             ],
             'LBL_CURRENCY_CONFIGURATION' => [
