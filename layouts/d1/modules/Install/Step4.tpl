@@ -148,8 +148,8 @@
                                         <option value="dd-mm-yyyy">dd-mm-yyyy</option>
                                         <option value="yyyy-mm-dd">yyyy-mm-dd</option>
                                         <option value="mm-dd-yyyy">mm-dd-yyyy</option>
-                                        <option value="dd-mm-yyyy">dd.mm.yyyy</option>
-                                        <option value="dd-mm-yyyy">dd/mm/yyyy</option>
+                                        <option value="dd.mm.yyyy">dd.mm.yyyy</option>
+                                        <option value="dd/mm/yyyy">dd/mm/yyyy</option>
                                     </select>
                                 </div>
                             </div>
