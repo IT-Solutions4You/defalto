@@ -162,6 +162,8 @@ $languageStrings = array(
 	'LBL_PREFER_INTERNAL_RECORD' => 'Prefer internal record',
 	'LBL_PREFER_EXTERNAL_RECORD' => 'Prefer external record',
 	'LBL_SYNC_TOOLTIP_MESSAGE' => 'Prefer latest record - Most recently modified record data will be retained<br>Prefer internal record - Existing record will be retained as it is<br>Prefer external record - Data from the external application will be copied',
+    'LBL_HEADER_FIELDS' => 'Header Fields',
+    'LBL_CLICK_HERE_ADD_COLUMN' => 'Click here to add column',
 );
 
 $jsLanguageStrings = array(
@@ -226,4 +228,5 @@ $jsLanguageStrings = array(
 	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Successfully updated to consider selected fields in duplicates prevention',
 	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Failed to consider selected fields in duplicates prevention',
 	'JS_DUPLICATE_CHECK_DISABLED' => 'Duplicate check is disabled',
+    'JS_SELECT_FIELD' => 'Select field',
 );

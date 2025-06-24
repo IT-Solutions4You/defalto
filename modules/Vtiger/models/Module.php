@@ -1951,15 +1951,24 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
     public function getHeaderFieldsConfig(): array
     {
         $fields = $this->getFields();
+
+        $headerFieldsModel = new Settings_LayoutEditor_HeaderFields_Model();
+        $headerFieldsSelected = $headerFieldsModel->getHeaderFieldNames($this->getName());
+
         $fieldsCount = 0;
         $config = [];
 
         foreach ($fields as $field) {
-            if ($field->isHeaderField() && $field->isActiveField() && $field->isViewable() && 'assigned_user_id' !== $field->getName()) {
+            if (in_array($field->getName(), $headerFieldsSelected)
+                && $field->isActiveField()
+                && $field->isViewable()
+                && 'assigned_user_id' !== $field->getName()) {
+
                 $fieldsCount++;
-                $config[] = ['type' => 'field', 'field' => $field,];
+                $config[array_search($field->getName(), $headerFieldsSelected)] = ['type' => 'field', 'field' => $field,];
             }
         }
+        ksort($config);
 
         while (5 > $fieldsCount) {
             $fieldsCount++;

@@ -72,6 +72,8 @@ $languageStrings = [
     "URL" => "URL",
     "Events" => "Událosť",
     "Faq" => "FAQ",
+    'LBL_HEADER_FIELDS' => 'Polia v hlavičke',
+    'LBL_CLICK_HERE_ADD_COLUMN' => 'Kliknite pre pridanie poľa',
 ];
 
 $jsLanguageStrings = [
@@ -94,4 +96,5 @@ $jsLanguageStrings = [
     "JS_SAVE_THE_CHANGES_TO_UPDATE_FIELD_SEQUENCE" => "Uložte zmeny pre aktualizáciu poradia",
     "JS_SELECTED_FIELDS_REACTIVATED" => "Vybrané polia boli aktivované",
     "JS_SPECIAL_CHARACTERS" => "Špeciálne znaky, ako je",
+    'JS_SELECT_FIELD' => 'Vyberte pole',
 ];

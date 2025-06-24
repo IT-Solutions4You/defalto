@@ -14,6 +14,7 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 	function __construct() {
 		parent::__construct();
 		$this->exposeMethod('showFieldLayout');
+		$this->exposeMethod('showHeaderFieldsLayout');
 		$this->exposeMethod('showRelatedListLayout');
 		$this->exposeMethod('showFieldEdit');
 		$this->exposeMethod('showDuplicationHandling');
@@ -24,6 +25,7 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 		switch($mode) {
 			case 'showRelatedListLayout'	:	$selectedTab = 'relatedListTab';	break;
 			case 'showDuplicationHandling'	:	$selectedTab = 'duplicationTab';	break;
+			case 'showHeaderFieldsLayout'	:	$selectedTab = 'headerFieldsTab';	break;
 			default							:	$selectedTab = 'detailViewTab';
 												if (!$mode) {
 													$mode = 'showFieldLayout';
@@ -118,6 +120,51 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 			$viewer->view('Index.tpl', $qualifiedModule);
 		}
 	}
+
+    public function showHeaderFieldsLayout(Vtiger_Request $request)
+    {
+        $qualifiedModule = $request->getModule(false);
+        $sourceModuleName = $request->get('sourceModule');
+        $moduleModel = Vtiger_Module_Model::getInstance($sourceModuleName);
+        $blocks = $moduleModel->getBlocks();
+
+        $fields = array();
+        foreach ($blocks as $blockId => $blockModel) {
+            $blockFields = $blockModel->getFields();
+            foreach ($blockFields as $key => $fieldModel) {
+                if ($fieldModel->isEditable()
+                    && $fieldModel->get('displaytype') != 5
+                    && !in_array($fieldModel->get('uitype'), array(28, 30, 53, 56, 69, 83))
+                    && !in_array($fieldModel->getFieldDataType(), array('text', 'multireference'))) {
+                    $fields[$blockModel->get('label')][$fieldModel->getName()] = $fieldModel;
+                }
+            }
+        }
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('FIELDS', $fields);
+        $viewer->assign('SOURCE_MODULE', $sourceModuleName);
+        $viewer->assign('PRIMARY_MODULE', $sourceModuleName);
+        $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
+        $viewer->assign('SOURCE_MODULE_MODEL', $moduleModel);
+        $viewer->assign('ACTIONS', Vtiger_Module_Model::getSyncActionsInDuplicatesCheck());
+        $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        $fieldUiType = new Reporting_Fields_UIType();
+        $viewer->assign('UITYPE_MODEL', $fieldUiType);
+
+        $reportFields = new Reporting_Fields_UIType();
+        $viewer->assign('MODULE_OPTIONS', $reportFields->getModuleOptions($sourceModuleName));
+
+        $headerFieldsModel = new Settings_LayoutEditor_HeaderFields_Model();
+        $viewer->assign('SELECTED_FIELDS', $headerFieldsModel->getHeaderFields($sourceModuleName));
+
+        if ($request->isAjax() && !$request->get('showFullContents')) {
+            $viewer->view('HeaderFields.tpl', $qualifiedModule);
+        } else {
+            $viewer->view('Index.tpl', $qualifiedModule);
+        }
+    }
 
 	public function showRelatedListLayout(Vtiger_Request $request) {
 		$sourceModule = $request->get('sourceModule');

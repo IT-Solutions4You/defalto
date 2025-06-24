@@ -138,6 +138,8 @@ $languageStrings = array(
 "LBL_TAB_IN_RELATED_HELP_TEXT" => "Tabulka / karta modulu %s",
 "LBL_SHOW_HIDDEN_FIELDS" => "Zobrazit skryté pole",
 "LBL_PROP_MANDATORY" => "povinné",
+    'LBL_HEADER_FIELDS' => 'Pole v hlavičce',
+    'LBL_CLICK_HERE_ADD_COLUMN' => 'Klikněte pro přidání pole',
 );
 
 $jsLanguageStrings = array(
@@ -194,4 +196,5 @@ $jsLanguageStrings = array(
 "JS_TAB_TAB_DELETION" => "Tímto odstraníte kartu %s v modulu %s a jeho dat. Chtěli byste pokračovat?",
 "JS_CUSTOM_FIELDS_MAX_LIMIT" => "Do bloku %s můžete přidat maximálně %s vlastní pole",
 "JS_PROP_MANDATORY" => "povinné",
+    'JS_SELECT_FIELD' => 'Vyberte pole',
 );
