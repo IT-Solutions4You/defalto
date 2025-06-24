@@ -10,6 +10,8 @@
 
 class Tour_Module_Model extends Vtiger_Module_Model
 {
+    protected string $fontIcon = 'fa-solid fa-lightbulb';
+
     /**
      * @return string
      */
