@@ -164,6 +164,10 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         row.on('click', '.addItemAfter', function () {
             self.addItemAfter(rowNumber);
         });
+
+        row.on('click', '.item_edit', function () {
+            self.editItem(rowNumber);
+        });
     },
 
     deleteProductLine: function (rowNumber) {

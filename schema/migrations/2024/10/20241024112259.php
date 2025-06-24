@@ -38,22 +38,19 @@ if (!class_exists('Migration_20241024112259')) {
             }
 
             $this->db->query(
-                '
-                CREATE TABLE IF NOT EXISTS `df_inventoryitemcolumns` (
+                'CREATE TABLE IF NOT EXISTS `df_inventoryitemcolumns` (
                     `tabid` int(11) NOT NULL,
                     `columnslist` varchar(500) DEFAULT NULL,
                     PRIMARY KEY (`tabid`)
-                ) ENGINE=innodb DEFAULT CHARSET=utf8
-            '
+                ) ENGINE=innodb DEFAULT CHARSET=utf8'
             );
+            $this->db->pquery('INSERT INTO df_inventoryitemcolumns VALUES(?,?)', [0, 'productid,quantity,unit,price,subtotal,discount,discount_amount,price_after_discount,overall_discount,overall_discount_amount,price_after_overall_discount,tax,tax_amount,price_total']);
 
             $this->db->query(
-                '
-                CREATE TABLE IF NOT EXISTS `df_inventoryitem_itemmodules` (
+                'CREATE TABLE IF NOT EXISTS `df_inventoryitem_itemmodules` (
                   `tabid` int(19) NOT NULL,
                   PRIMARY KEY (`tabid`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8
-            '
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
             );
 
             $this->db->pquery('INSERT INTO df_inventoryitem_itemmodules (tabid) VALUES (?), (?)', [getTabid('Products'), getTabid('Services')]);

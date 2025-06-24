@@ -76,51 +76,6 @@
         {/if}
 
         <div class="d-flex flex-row py-2">
-            {if $HARD_FORMATTED_RECORD_STRUCTURE.unit neq ''}
-                <div class="col-lg-2">
-                    <div class="py-2 h-100 paddingLeft5px">
-                        <div class="fieldlabel text-truncate medium">
-                            {$HARD_FORMATTED_RECORD_STRUCTURE['unit'][0]}
-                        </div>
-                    </div>
-                </div>
-                {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE['unit'][1]}
-                {assign var=FIELD_NAME value=$FIELD->get('name')}
-                <div class="col-lg-3">
-                    <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>
-                </div>
-            {else}
-                <div class="col-lg-5">
-                </div>
-            {/if}
-            {if $HARD_FORMATTED_RECORD_STRUCTURE.purchase_cost neq ''}
-                {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.purchase_cost.1}
-                {assign var=FIELD_NAME value=$FIELD->get('name')}
-                <div class="col-lg-2">
-                    <div class="py-2 h-100 paddingLeft5px">
-                        <div class="fieldlabel text-truncate medium">
-                            {$HARD_FORMATTED_RECORD_STRUCTURE.purchase_cost.0}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="input-group">
-                        <input type="text" id="{$FIELD_NAME}" name="{$FIELD_NAME}" value="{$DATA[$FIELD_NAME]}"
-                               class="{$FIELD_NAME} inputElement form-control textAlignRight allowOnlyNumbers replaceCommaWithDot"/>
-                        <span class="input-group-addon input-group-text">{$CURRENCY_SYMBOL}</span>
-                    </div>
-                    <div class="display_{$FIELD_NAME} textAlignRight hide">{$DATA[$FIELD_NAME]}</div>
-                </div>
-            {else}
-                <div class="col-lg-5">
-                </div>
-            {/if}
-            <div class="col-lg-2 textAlignRight">
-                {vtranslate('Amount', 'InventoryItem')}
-            </div>
-        </div>
-
-        <div class="d-flex flex-row py-2">
             {if $HARD_FORMATTED_RECORD_STRUCTURE.quantity neq ''}
                 <div class="col-lg-2">
                     <div class="py-2 h-100 paddingLeft5px">
@@ -168,6 +123,49 @@
                 </div>
                 <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="hidden" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>
             {/if}
+        </div>
+
+        <div class="d-flex flex-row py-2">
+            {if $HARD_FORMATTED_RECORD_STRUCTURE.unit neq ''}
+                <div class="col-lg-2">
+                    <div class="py-2 h-100 paddingLeft5px">
+                        <div class="fieldlabel text-truncate medium">
+                            {$HARD_FORMATTED_RECORD_STRUCTURE['unit'][0]}
+                        </div>
+                    </div>
+                </div>
+                {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE['unit'][1]}
+                {assign var=FIELD_NAME value=$FIELD->get('name')}
+                <div class="col-lg-3">
+                    <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>
+                </div>
+            {else}
+                <div class="col-lg-5">
+                </div>
+            {/if}
+            {if $HARD_FORMATTED_RECORD_STRUCTURE.purchase_cost neq ''}
+                {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.purchase_cost.1}
+                {assign var=FIELD_NAME value=$FIELD->get('name')}
+                <div class="col-lg-2">
+                    <div class="py-2 h-100 paddingLeft5px">
+                        <div class="fieldlabel text-truncate medium">
+                            {$HARD_FORMATTED_RECORD_STRUCTURE.purchase_cost.0}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="input-group">
+                        <input type="text" id="{$FIELD_NAME}" name="{$FIELD_NAME}" value="{$DATA[$FIELD_NAME]}"
+                               class="{$FIELD_NAME} inputElement form-control textAlignRight allowOnlyNumbers replaceCommaWithDot"/>
+                        <span class="input-group-addon input-group-text">{$CURRENCY_SYMBOL}</span>
+                    </div>
+                    <div class="display_{$FIELD_NAME} textAlignRight hide">{$DATA[$FIELD_NAME]}</div>
+                </div>
+            {else}
+                <div class="col-lg-5">
+                </div>
+            {/if}
+            <div class="col-lg-2 textAlignRight"></div>
         </div>
 
         {if $HARD_FORMATTED_RECORD_STRUCTURE.discount neq ''}

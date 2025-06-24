@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *}
 {strip}
-<td style="width: 3%" nowrap="nowrap">
+<td style="width: 3%" nowrap="nowrap" class="bg-primary-subtle">
     <span class="noEditLineItem">
         <a class="btn drag_drop_line_item padding0">
             {*<img src="{vimage_path('drag.png')}" title="{vtranslate('LBL_DRAG',$MODULE)}"/>*}
@@ -27,9 +27,9 @@
     <input type="hidden" class="lineItemId" name="lineItemId{$row_no}" value="{$data.inventoryitemid}" />
     <input type="hidden" class="rowSequence" name="sequence{$row_no}" value="{$row_no}" />
 </td>
-<td colspan="50" title="{vtranslate('Item text', 'InventoryItem')}">
+<td colspan="50" title="{vtranslate('Item text', 'InventoryItem')}" class="bg-primary-subtle">
     {assign var="item_text" value="item_text"|cat:$row_no}
-    <span class="noEditLineItem display_{$item_text}"><strong>{$data.item_text}</strong></span>
+    <span class="noEditLineItem display_{$item_text}"><a href="javascript: void;" class="item_edit"><strong>{$data.item_text}</strong></a></span>
     <span class="editLineItem hide">
         <input type="text" id="{$item_text}" name="{$item_text}" value="{$data.item_text}" class="item_text form-control" data-rule-required=true>
         <input type="hidden" id="productid{$row_no}" name="productid{$row_no}" value="{$data.productid}" class="selectedModuleId"/>
