@@ -46,6 +46,32 @@ class Users_Install_Model extends Core_Install_Model
     /**
      * @return string
      */
+    public static function getDefaultModule(): string
+    {
+        $moduleModel = Settings_Vtiger_ConfigModule_Model::getInstance();
+        $configFieldData = $moduleModel->getViewableData();
+        $defaultModule = $configFieldData['default_module'] ?? '';
+
+        if (empty($defaultModule)) {
+            $defaultModule = 'Home';
+        }
+
+        return (string)$defaultModule;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getDefaultModules(): array
+    {
+        $configModuleInstance = Settings_Vtiger_ConfigModule_Model::getInstance();
+
+        return $configModuleInstance->getPicklistValues('default_module');
+    }
+
+    /**
+     * @return string
+     */
     public static function getDefaultDecimalSeparator(): string
     {
         global $user_config;
@@ -664,6 +690,22 @@ class Users_Install_Model extends Core_Install_Model
                         'displaytype' => 3,
                         'masseditable' => 1,
                         'summaryfield' => 0,
+                    ],
+                    'defaultlandingpage' => [
+                        'name' => 'defaultlandingpage',
+                        'uitype' => 32,
+                        'column' => 'defaultlandingpage',
+                        'table' => 'vtiger_users',
+                        'label' => 'Default Landing Page',
+                        'readonly' => 1,
+                        'presence' => 0,
+                        'typeofdata' => 'V~O',
+                        'quickcreate' => 1,
+                        'displaytype' => 3,
+                        'masseditable' => 1,
+                        'summaryfield' => 0,
+                        'defaultvalue' => self::getDefaultModule(),
+                        'picklist_values' => self::getDefaultModules(),
                     ],
                 ],
             'LBL_ADDRESS_INFORMATION' => [
