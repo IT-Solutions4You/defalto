@@ -709,32 +709,6 @@ echo '<br> made projecttaskstatus picklist values as non editable';
 //89 starts
 //89 ends
 
-//90 starts
-//Updating User fields Sequence
-$userFields = array('user_name', 'email1', 'first_name', 'last_name', 'user_password', 'confirm_password', 'is_admin', 'roleid',
-                                        'lead_view', 'status', 'end_hour', 'is_owner',
-                                        'dayoftheweek', 'start_hour', 'date_format', 'hour_format', 'time_zone', 'activity_view', 'callduration',
-                                        'othereventduration', 'defaulteventstatus', 'defaultactivitytype', 'reminder_interval', 'calendarsharedtype',);
-$sequence = 0;
-$usersTabId = getTabId('Users');
-$blockIds = array();
-$blockIds[] = getBlockId($usersTabId, 'LBL_USERLOGIN_ROLE');
-$blockIds[] = getBlockId($usersTabId, 'LBL_CALENDAR_SETTINGS');
-
-$updateQuery = "UPDATE vtiger_field SET sequence = CASE fieldname ";
-foreach($userFields as $fieldName) {
-        if($fieldName == 'dayoftheweek') {
-                $sequence = 0;
-        }
-        $updateQuery .= " WHEN '$fieldName' THEN  ". ++$sequence ;
-}
-$updateQuery .= " END WHERE tabid = $usersTabId AND block IN (". generateQuestionMarks($blockIds) .")";
-
-Migration_Index_View::ExecuteQuery($updateQuery, $blockIds);
-
-echo "<br>User Fields Sequence Updated";
-//90 ends
-
 //91 starts
 $pathToFile = "layouts/vlayout/modules/Products/PopupContents.tpl";
 shell_exec("rm -rf $pathToFile");
