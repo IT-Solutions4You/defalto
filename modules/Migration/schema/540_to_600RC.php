@@ -806,29 +806,6 @@ for($i=0; $i<$adb->num_rows($result); $i++) {
 	Migration_Index_View::ExecuteQuery($query, $params);
 }
 
-$moduleInstance = Vtiger_Module::getInstance('ModComments');
-$modCommentsUserId = Vtiger_Field::getInstance("userid", $moduleInstance);
-$modCommentsReasonToEdit = Vtiger_Field::getInstance("reasontoedit", $moduleInstance);
-
-if(!$modCommentsUserId){
-	$blockInstance = Vtiger_Block::getInstance('LBL_MODCOMMENTS_INFORMATION', $moduleInstance);
-	$userId = new Vtiger_Field();
-	$userId->name = 'userid';
-	$userId->label = 'UserId';
-	$userId->uitype = '10';
-	$userId->displaytype = '3';
-	$blockInstance->addField($userId);
-}
-if(!$modCommentsReasonToEdit){
-	$blockInstance = Vtiger_Block::getInstance('LBL_MODCOMMENTS_INFORMATION', $moduleInstance);
-	$reasonToEdit = new Vtiger_Field();
-	$reasonToEdit->name = 'reasontoedit';
-	$reasonToEdit->label = 'ReasonToEdit';
-	$reasonToEdit->uitype = '19';
-	$reasonToEdit->displaytype = '1';
-	$blockInstance->addField($reasonToEdit);
-}
-
 $labels = array('LBL_ADD_NOTE', 'Add Note');
 $sql = 'UPDATE vtiger_links SET handler = ?, handler_class = ?, handler_path = ? WHERE linklabel IN (?, ?)';
 Migration_Index_View::ExecuteQuery($sql, array('isLinkPermitted', 'Documents', 'modules/Documents/Documents.php', $labels));
@@ -860,27 +837,6 @@ Migration_Index_View::ExecuteQuery("UPDATE vtiger_contactdetails SET salutation=
 // Start 2013-09-24
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_eventhandlers SET handler_path = ? WHERE handler_class = ?',
 				array('modules/Vtiger/handlers/RecordLabelUpdater.php', 'Vtiger_RecordLabelUpdater_Handler'));
-
-$inventoryModules = array('Invoice','Quotes','PurchaseOrder','SalesOrder');
-foreach ($inventoryModules as $key => $moduleName) {
-	$moduleInstance = Vtiger_Module::getInstance($moduleName);
-	$focus = CRMEntity::getInstance($moduleName);
-	$blockInstance = Vtiger_Block::getInstance('LBL_ITEM_DETAILS',$moduleInstance);
-
-	$field = new Vtiger_Field();
-	$field->name = 'hdnS_H_Percent';
-	$field->label = 'S&H Percent';
-	$field->column = 's_h_percent';
-	$field->table = $focus->table_name;
-	$field->uitype = 1;
-	$field->typeofdata = 'N~O';
-	$field->readonly = '0';
-	$field->displaytype = '5';
-	$field->masseditable = '0';
-	$field->quickcreate = '0';
-	$field->columntype = 'INT(11)';
-	$blockInstance->addField($field);
-}
 
 $result = $adb->pquery('SELECT taxname FROM vtiger_shippingtaxinfo', array());
 $numOfRows = $adb->num_rows($result);

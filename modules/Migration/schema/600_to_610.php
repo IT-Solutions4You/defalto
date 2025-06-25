@@ -886,8 +886,6 @@ if ($adb->num_rows($result) <= 0) {
     }
 }
 
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET quickcreate = ? WHERE tabid = 8 AND (fieldname = ? OR fieldname = ?);", array(0,"filename","filelocationtype"));
-
 //95 ends
 
 //96 starts

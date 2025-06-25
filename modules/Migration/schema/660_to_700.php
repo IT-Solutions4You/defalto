@@ -67,28 +67,6 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery('UPDATE vtiger_field SET presence=0 WHERE columnname=? AND fieldname=?', array('emailoptout', 'emailoptout'));
 	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('1', 'discontinued'));
 
-	$lineItemModules = array('Products' => 'vtiger_products', 'Services' => 'vtiger_service');
-	foreach ($lineItemModules as $moduleName => $tableName) {
-		$moduleInstance = Vtiger_Module::getInstance($moduleName);
-		$blockInstance = Vtiger_Block::getInstance('LBL_PRICING_INFORMATION', $moduleInstance);
-		if ($blockInstance) {
-			$fieldInstance = Vtiger_Field::getInstance('purchase_cost', $moduleInstance);
-			if (!$fieldInstance) {
-				$fieldInstance = new Vtiger_Field();
-				$fieldInstance->name		= 'purchase_cost';
-				$fieldInstance->column		= 'purchase_cost';
-				$fieldInstance->label		= 'Purchase Cost';
-				$fieldInstance->columntype	= 'decimal(27,8)';
-				$fieldInstance->table		= $tableName;
-				$fieldInstance->typeofdata	= 'N~O';
-				$fieldInstance->uitype		= '71';
-				$fieldInstance->presence	= '0';
-
-				$blockInstance->addField($fieldInstance);
-			}
-		}
-	}
-
 	$columns = $db->getColumnNames('vtiger_relatedlists');
 	if (!in_array('relationfieldid', $columns)) {
 		$db->pquery('ALTER TABLE vtiger_relatedlists ADD COLUMN relationfieldid INT(19)', array());
@@ -1127,16 +1105,6 @@ if(defined('VTIGER_UPGRADE')) {
 		if (!in_array('color', $columns)) {
 			$db->pquery("ALTER TABLE vtiger_$fieldName ADD COLUMN color VARCHAR(10)", array());
 		}
-	}
-
-	//Adding Agenda view in default my calendar view settings
-	$usersModuleModel = Vtiger_Module_Model::getInstance('Users');
-	$activityViewFieldModel = Vtiger_Field_Model::getInstance('activity_view', $usersModuleModel);
-
-	$existingActivityViewTypes = $activityViewFieldModel->getPicklistValues();
-	$newActivityView = 'Agenda';
-	if (!in_array($newActivityView, $existingActivityViewTypes)) {
-		$activityViewFieldModel->setPicklistValues(array($newActivityView));
 	}
 
 	//deleting orphan picklist fields that were delete from vtiger_field table but not from vtiger_role2picklist table
