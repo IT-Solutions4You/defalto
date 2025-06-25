@@ -10,28 +10,6 @@
 
 class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
 {
-    protected array $hardCodedFields = [
-        'productid',
-        'description',
-        'quantity',
-        'unit',
-        'price',
-        'subtotal',
-        'discount',
-        'discount_amount',
-        'price_after_discount',
-        'overall_discount',
-        'overall_discount_amount',
-        'price_after_overall_discount',
-        'tax',
-        'tax_amount',
-        'price_total',
-        'purchase_cost',
-        'margin',
-        'margin_amount',
-        'sequence',
-    ];
-
     /**
      * @inheritDoc
      */
@@ -143,6 +121,29 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $viewer->assign('DATA', $this->getItemData($recordId));
         $viewer->view('PopupEdit.tpl', $moduleName);
     }
+
+    protected array $hardCodedFields = [
+        'productid',
+        'description',
+        'quantity',
+        'unit',
+        'price',
+        'subtotal',
+        'discount',
+        'discount_amount',
+        'price_after_discount',
+        'overall_discount',
+        'overall_discount_amount',
+        'price_after_overall_discount',
+        'discounts_amount',
+        'tax',
+        'tax_amount',
+        'price_total',
+        'purchase_cost',
+        'margin',
+        'margin_amount',
+        'sequence',
+    ];
 
     /**
      * @inheritDoc

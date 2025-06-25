@@ -8,7 +8,8 @@
  * file that was distributed with this source code.
  */
 
-class InventoryItem_RoundValues_Helper {
+class InventoryItem_RoundValues_Helper
+{
     public static array $roundValues = [
         'subtotal',
         'discount',
@@ -17,6 +18,7 @@ class InventoryItem_RoundValues_Helper {
         'overall_discount',
         'overall_discount_amount',
         'price_after_overall_discount',
+        'discounts_amount',
         'tax',
         'tax_amount',
         'price_total',

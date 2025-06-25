@@ -184,82 +184,20 @@ class InventoryItem extends CRMEntity
     /**
      * @param string    $module
      * @param int       $crmid
-     * @param string    $with_module
-     * @param int|array $with_crmids
+     * @param string    $withModule
+     * @param int|array $withCrmids
      * @param array     $otherParams
      *
      * @return void
      */
-    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = [])
+    public function save_related_module($module, $crmid, $withModule, $withCrmids, $otherParams = [])
     {
-        if (!is_array($with_crmids)) {
-            $with_crmids = [$with_crmids];
+        if (!is_array($withCrmids)) {
+            $withCrmids = [$withCrmids];
         }
 
-        foreach ($with_crmids as $with_crmid) {
-            parent::save_related_module($module, $crmid, $with_module, $with_crmid);
+        foreach ($withCrmids as $withCrmid) {
+            parent::save_related_module($module, $crmid, $withModule, $withCrmid);
         }
-    }
-
-    /**
-     * @param int $taxId
-     *
-     * @return void
-     */
-    public function saveTaxId(int $taxId)
-    {
-        if (!$this->id) {
-            return;
-        }
-
-        $taxRel = $this->retrieveTaxRel();
-        $oldTaxId = $taxRel['taxid'];
-        $oldTaxPercentage = $taxRel['percentage'];
-
-        if ($oldTaxId === $taxId && $oldTaxPercentage == $this->column_fields['tax']) {
-            return;
-        }
-
-        $sql = 'INSERT INTO df_inventoryitemtaxrel (inventoryitemid, taxid, percentage, amount) VALUES (?, ?, ?, ?) 
-                            ON DUPLICATE KEY UPDATE taxid = ?, percentage = ?, amount = ?';
-        $params = [
-            $this->id,
-            $taxId,
-            $this->column_fields['tax'],
-            $this->column_fields['tax_amount'],
-            $taxId,
-            $this->column_fields['tax'],
-            $this->column_fields['tax_amount']
-        ];
-        $this->db->pquery($sql, $params);
-    }
-
-    /**
-     * @return array
-     */
-    public function retrieveTaxRel(): array
-    {
-        $taxId = 0;
-        $percentage = 0.0;
-
-        if (!$this->id) {
-            return [
-                'taxId' => $taxId,
-                'percentage' => $percentage,
-            ];
-        }
-
-        $result = $this->db->pquery('SELECT taxid, percentage FROM df_inventoryitemtaxrel WHERE inventoryitemid = ?', [$this->id]);
-
-        if ($this->db->num_rows($result)) {
-            $row = $this->db->fetchByAssoc($result);
-            $taxId = (int)$row['taxid'];
-            $percentage = (float)$row['percentage'];
-        }
-
-        return [
-            'taxId' => $taxId,
-            'percentage' => $percentage,
-        ];
     }
 }

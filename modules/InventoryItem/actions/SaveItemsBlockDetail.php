@@ -155,8 +155,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
                     $recordModel->set('tax', $tax['percentage']);
                     $recordModel->set('mode', 'edit');
                     $recordModel->save();
-                    $entity = $recordModel->getEntity();
-                    $entity->saveTaxId($tax['taxid']);
+                    $recordModel->saveTaxId($tax['taxid']);
                 }
             }
         }

@@ -28,7 +28,6 @@ trait InventoryItem_Detail_Trait
         $recordId = (int)$request->get('record');
         $viewer->assign('ITEM_MODULES', InventoryItem_ItemModules_Model::getItemModules());
         $viewer->assign('EXCLUDED_FIELDS', InventoryItem_Field_Model::excludedFields);
-        $viewer->assign('COMPUTED_FIELDS', InventoryItem_Field_Model::computedFields);
         $viewer->assign('TOTAL_FIELDS', InventoryItem_Field_Model::totalFields);
         $viewer->assign('SPECIAL_TREATMENT_FIELDS', $this->specialTreatmentFields);
         $viewer->assign('INVENTORY_ITEMS', $this->fetchItems($recordId));

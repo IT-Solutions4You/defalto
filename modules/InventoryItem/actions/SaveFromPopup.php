@@ -37,31 +37,32 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
             }
 
             $focus = CRMEntity::getInstance('InventoryItem');
+            $itemModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
 
             if ($request->get('record')) {
-                $focus->id = $request->get('record');
-                $focus->mode = 'edit';
-                $focus->retrieve_entity_info($focus->id, 'InventoryItem');
+                $itemModel = Vtiger_Record_Model::getInstanceById($request->get('record'), 'InventoryItem');
+                $itemModel->set('mode', 'edit');
             }
 
             foreach ($focus->column_fields as $fieldName => $fieldValue) {
                 if ($request->has($fieldName)) {
                     $fromRequest = $request->get($fieldName);
 
-                    if (isset($fromRequest) && $fromRequest != $focus->column_fields[$fieldName]) {
-                        $focus->column_fields[$fieldName] = $fromRequest;
+                    if (isset($fromRequest) && $fromRequest != $itemModel->get($fieldName)) {
+                        $itemModel->set($fieldName, $fromRequest);
                     }
                 }
             }
 
-            $focus->column_fields['parentid'] = $request->get('source_record');
-            $focus->column_fields['sequence'] = $this->decideSequence((int)$request->get('sequence'), (int)$focus->column_fields['parentid']);
-            $focus->save('InventoryItem');
-            $focus->saveTaxId((int)$request->get('taxid'));
+            $itemModel->set('parentid', $request->get('source_record'));
+            $itemModel->set('sequence', $this->decideSequence((int)$request->get('sequence'), (int)$request->get('source_record')));
+            $itemModel->save();
+            $itemModel->saveTaxId((int)$request->get('taxid'));
 
-            InventoryItem_ParentEntity_Model::updateTotals((int)$focus->column_fields['parentid']);
+            InventoryItem_ParentEntity_Model::updateTotals((int)$request->get('source_record'));
 
-            $response->setResult($focus->column_fields->getColumnFields());
+            $entity = $itemModel->getEntity();
+            $response->setResult($entity->column_fields->getColumnFields());
         } catch (Exception $e) {
             $response->setError($e->getMessage());
         }
