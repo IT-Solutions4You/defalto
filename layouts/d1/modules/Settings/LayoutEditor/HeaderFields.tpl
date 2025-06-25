@@ -75,8 +75,8 @@
                         </button>
 
                         {if $PRIMARY_MODULE}
-                            {assign var=FIELD_OPTIONS value=$UITYPE_MODEL->getFieldOptions($PRIMARY_MODULE)}
-                            {assign var=LABEL_OPTIONS value=$UITYPE_MODEL->getLabelOptions($PRIMARY_MODULE, [])}
+                            {assign var=FIELD_OPTIONS value=$HEADER_FIELDS_MODEL->getFieldOptions($PRIMARY_MODULE)}
+                            {assign var=LABEL_OPTIONS value=$HEADER_FIELDS_MODEL->getLabelOptions($PRIMARY_MODULE, [])}
                             <div class="labelFields visually-hidden">{json_encode($LABEL_OPTIONS)}</div>
                             <div class="fieldOptions visually-hidden">{json_encode($FIELD_OPTIONS)}</div>
                         {/if}

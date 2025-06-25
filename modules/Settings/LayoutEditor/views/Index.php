@@ -150,13 +150,9 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
         $viewer->assign('ACTIONS', Vtiger_Module_Model::getSyncActionsInDuplicatesCheck());
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
-        $fieldUiType = new Reporting_Fields_UIType();
-        $viewer->assign('UITYPE_MODEL', $fieldUiType);
-
-        $reportFields = new Reporting_Fields_UIType();
-        $viewer->assign('MODULE_OPTIONS', $reportFields->getModuleOptions($sourceModuleName));
-
         $headerFieldsModel = new Settings_LayoutEditor_HeaderFields_Model();
+        $viewer->assign('HEADER_FIELDS_MODEL', $headerFieldsModel);
+        $viewer->assign('MODULE_OPTIONS', $headerFieldsModel->getModuleOptions($sourceModuleName));
         $viewer->assign('SELECTED_FIELDS', $headerFieldsModel->getHeaderFields($sourceModuleName));
 
         if ($request->isAjax() && !$request->get('showFullContents')) {
