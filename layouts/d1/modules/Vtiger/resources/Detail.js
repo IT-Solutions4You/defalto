@@ -2993,8 +2993,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			}
 
 			timeout = setTimeout(function() {
-				console.log('Test 0122', Math.random());
-
 				self.loadAssignedUsers(searchElement)
 			}, 500);
 		});

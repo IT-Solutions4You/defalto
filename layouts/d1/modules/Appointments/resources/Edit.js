@@ -210,8 +210,6 @@ Vtiger_Edit_Js('Appointments_Edit_Js', {}, {
     },
     setMinutesToAdd: function (minutes) {
         this.minutesToAdd = minutes;
-
-        console.log(this.minutesToAdd);
     },
     updateMinutesToAdd: function (container) {
         let self = this,
