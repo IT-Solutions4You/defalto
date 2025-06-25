@@ -44,7 +44,7 @@ if (!class_exists('Migration_20241024112259')) {
                     PRIMARY KEY (`tabid`)
                 ) ENGINE=innodb DEFAULT CHARSET=utf8'
             );
-            $this->db->pquery('INSERT INTO df_inventoryitemcolumns VALUES(?,?)', [0, 'productid,quantity,unit,price,subtotal,discount,discount_amount,price_after_discount,overall_discount,overall_discount_amount,price_after_overall_discount,tax,tax_amount,price_total']);
+            $this->db->pquery('INSERT INTO df_inventoryitemcolumns VALUES(?,?)', [0, 'productid,quantity,unit,price,subtotal,discounts_amount,price_after_overall_discount,tax,tax_amount,price_total']);
 
             $this->db->query(
                 'CREATE TABLE IF NOT EXISTS `df_inventoryitem_itemmodules` (

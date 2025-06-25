@@ -55,9 +55,12 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
             }
         }
 
-        $hardCodedRecordStructure = [];
+        $hardFormattedRecordStructure = [];
+        $processed = [];
 
         foreach ($this->hardCodedFields as $fieldName) {
+            $label = vtranslate($recordStructure[$fieldName]->get('label'), 'InventoryItem');
+
             if ($fieldName === 'productid') {
                 $seType = $itemType;
                 $entityFieldNames = getEntityFieldNames($seType);
@@ -66,35 +69,24 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
                 $label = getTranslatedString($entityField->label, $seType);
             }
 
-            $hardCodedRecordStructure[$fieldName] = [$label, $recordStructure[$fieldName]];
+            $hardFormattedRecordStructure[$fieldName] = [$label, $recordStructure[$fieldName]];
+            $processed[] = $fieldName;
         }
 
-        $hardFormattedRecordStructure = [];
         $structure = [];
-        $processed = [];
 
         foreach ($selectedFields as $fieldName) {
             if (in_array($fieldName, $processed)) {
                 continue;
             }
 
-            $label = vtranslate($recordStructure[$fieldName]->get('label'), 'InventoryItem');
-
             if (in_array($fieldName, $this->hardCodedFields)) {
-                if ($fieldName === 'productid') {
-                    $seType = $itemType;
-                    $entityFieldNames = getEntityFieldNames($seType);
-                    $entityFieldName = $entityFieldNames['fieldname'];
-                    $entityField = Vtiger_Field_Model::getInstance($entityFieldName, Vtiger_Module_Model::getInstance($seType));
-                    $label = getTranslatedString($entityField->label, $seType);
-                }
-
-                $hardFormattedRecordStructure[$fieldName] = [$label, $recordStructure[$fieldName]];
                 continue;
             }
 
-            $processed[] = $fieldName;
+            $label = vtranslate($recordStructure[$fieldName]->get('label'), 'InventoryItem');
             $structure[$fieldName] = [$label, $recordStructure[$fieldName]];
+            $processed[] = $fieldName;
         }
 
         $sourceRecordModel = Vtiger_Record_Model::getInstanceById($request->get('source_record'), $request->get('source_module'));
@@ -114,7 +106,6 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $viewer->assign('RECORD_STRUCTURE', $recordStructure);
         $viewer->assign('FORMATTED_RECORD_STRUCTURE', $structure);
         $viewer->assign('HARD_FORMATTED_RECORD_STRUCTURE', $hardFormattedRecordStructure);
-        $viewer->assign('HARD_CODED_RECORD_STRUCTURE', $hardCodedRecordStructure);
         $viewer->assign('ITEM_TYPE', $itemType);
         $viewer->assign('CURRENCY_NAME', $currencyInfo['currency_name']);
         $viewer->assign('CURRENCY_SYMBOL', $currencyInfo['currency_symbol']);

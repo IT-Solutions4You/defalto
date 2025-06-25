@@ -30,7 +30,6 @@ trait InventoryItem_Detail_Trait
         $viewer->assign('EXCLUDED_FIELDS', InventoryItem_Field_Model::excludedFields);
         $viewer->assign('TOTAL_FIELDS', InventoryItem_Field_Model::totalFields);
         $viewer->assign('SPECIAL_TREATMENT_FIELDS', $this->specialTreatmentFields);
-        $viewer->assign('INVENTORY_ITEMS', $this->fetchItems($recordId));
         $viewer->assign('EMPTY_ROW', $this->getEmptyRow());
         $viewer->assign('OVERALL_DISCOUNT', number_format($this->overallDiscount, 2));
         $viewer->assign('OVERALL_DISCOUNT_AMOUNT', number_format($this->overallDiscountAmount, 2));
@@ -55,6 +54,16 @@ trait InventoryItem_Detail_Trait
 
         $viewer->assign('INVENTORY_ITEM_COLUMNS', $selectedFields);
         $viewer->assign('FINALS_COLSPAN', $selectedFieldsCount);
+
+        $items = $this->fetchItems($recordId);
+
+        if (!in_array('margin', $selectedFields)) {
+            foreach ($items as &$item) {
+                $item['margin_amount_display'] = $item['margin_amount_display'] . '&nbsp;<small>(' . $item['margin_display'] . '%)</small>';
+            }
+        }
+
+        $viewer->assign('INVENTORY_ITEMS', $items);
 
         $recordModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
         $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
