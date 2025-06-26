@@ -4,7 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
-
+/** @var Install_Index_Js */
 Vtiger_Index_Js('Install_Index_Js', {}, {
 	registerEventForStep3: function () {
 		jQuery('#recheck').on('click', function () {
@@ -204,6 +204,6 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
 	}
 });
 jQuery(document).ready(function() {
-	var indexInstance = new Install_Index_Js();
+	let indexInstance = new Install_Index_Js();
 	indexInstance.registerEvents();
 });
