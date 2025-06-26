@@ -31,8 +31,6 @@ trait InventoryItem_Detail_Trait
         $viewer->assign('TOTAL_FIELDS', InventoryItem_Field_Model::totalFields);
         $viewer->assign('SPECIAL_TREATMENT_FIELDS', $this->specialTreatmentFields);
         $viewer->assign('EMPTY_ROW', $this->getEmptyRow());
-        $viewer->assign('OVERALL_DISCOUNT', number_format($this->overallDiscount, 2));
-        $viewer->assign('OVERALL_DISCOUNT_AMOUNT', number_format($this->overallDiscountAmount, 2));
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $selectedFields = InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule()));
         $selectedFieldsCount = count($selectedFields);
@@ -64,6 +62,8 @@ trait InventoryItem_Detail_Trait
         }
 
         $viewer->assign('INVENTORY_ITEMS', $items);
+        $viewer->assign('OVERALL_DISCOUNT', number_format($this->overallDiscount, 2));
+        $viewer->assign('OVERALL_DISCOUNT_AMOUNT', number_format($this->overallDiscountAmount, 2));
 
         $recordModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
         $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);

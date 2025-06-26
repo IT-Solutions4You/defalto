@@ -330,7 +330,7 @@
                     {assign var=FIELD_NAME value=$FIELD->get('name')}
                     <div class="col-lg-10 textAlignRight">
                         <div class="fieldlabel text-truncate medium">
-                            {$HARD_FORMATTED_RECORD_STRUCTURE.margin.0} (<span class="display_{$FIELD_NAME}"></span> %)
+                            {vtranslate('LBL_MARGIN', 'InventoryItem')} (<span class="display_{$FIELD_NAME}">{$DATA[$FIELD_NAME]}</span> %)
                         </div>
                         <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="hidden" class="{$FIELD_NAME} inputElement form-control"
                                value="{$DATA[$FIELD_NAME]}"/>
