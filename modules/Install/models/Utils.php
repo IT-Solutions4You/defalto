@@ -15,6 +15,7 @@ class Install_Utils_Model {
      * [prefix, label, name]
      */
     public static array $registerLanguages = [
+        'en_us' => ['en_us', 'US English', 'English',],
         'ar_ae' => ['ar_ae', 'Arabic', 'Arabic',],
         'en_gb' => ['en_gb', 'British English', 'British English',],
         'pt_br' => ['pt_br', 'PT Brasil', 'Brazilian'],
@@ -609,7 +610,8 @@ class Install_Utils_Model {
 
     public static function installDefaultLanguage(): void
     {
-        self::installLanguage(self::$registerLanguages[$_SESSION['config_file_info']['default_language']]);
+        $language = Users_Install_Model::getDefaultLanguage();
+        self::installLanguage(self::$registerLanguages[$language]);
     }
 
     public static function isInstalledTables(): bool
