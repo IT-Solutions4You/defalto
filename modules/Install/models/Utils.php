@@ -63,9 +63,10 @@ class Install_Utils_Model {
         'Installer',
         'Tour',
         'Campaigns',
-        'Leads',
         'Accounts',
         'Contacts',
+        // Leads must be after Accounts, Contacts, Potentials required for lead mapping
+        'Leads',
         'Documents',
         'Products',
         'Faq',

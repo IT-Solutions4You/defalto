@@ -20,11 +20,11 @@ class Leads_SaveConvertLead_View extends Vtiger_View_Controller {
 
 	public function process(Vtiger_Request $request) {
 		$recordId = $request->get('record');
-		$modules = $request->get('modules');
 		$assignId = $request->get('assigned_user_id');
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 
 		$entityValues = array();
+        $modules = ['Accounts', 'Contacts', 'Potentials'];
 
 		$entityValues['transferRelatedRecordsTo'] = $request->get('transferModule');
 		$entityValues['assignedTo'] = vtws_getWebserviceEntityId(vtws_getOwnerType($assignId), $assignId);
@@ -72,24 +72,16 @@ class Leads_SaveConvertLead_View extends Vtiger_View_Controller {
 			exit;
 		}
 
-		if(!empty($result['Accounts'])) {
-			$accountIdComponents = vtws_getIdComponents($result['Accounts']);
-			$accountId = $accountIdComponents[1];
-		}
-		if(!empty($result['Contacts'])) {
-			$contactIdComponents = vtws_getIdComponents($result['Contacts']);
-			$contactId = $contactIdComponents[1];
-		}
+        if (!empty($result['Potentials'])) {
+            $potentialsIdComponents = vtws_getIdComponents($result['Potentials']);
+            $potentialId = $potentialsIdComponents[1];
 
-		if(!empty($accountId)) {
-			header("Location: index.php?view=Detail&module=Accounts&record=$accountId");
-		} elseif (!empty($contactId)) {
-			header("Location: index.php?view=Detail&module=Contacts&record=$contactId");
-		} else {
-			$this->showError($request);
-			exit;
-		}
-	}
+            header("Location: index.php?view=Detail&module=Potentials&record=$potentialId");
+        } else {
+            $this->showError($request);
+            exit;
+        }
+    }
 
 	function showError($request, $exception=false) {
 		$viewer = $this->getViewer($request);

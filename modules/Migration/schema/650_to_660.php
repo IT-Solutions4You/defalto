@@ -45,10 +45,6 @@ if(defined('VTIGER_UPGRADE')) {
 
 	echo '<br>#141 - Successfully updated create and edit permissions<br>';
 
-	// Migration for - #117 - Convert lead field mapping NULL values and redundant rows
-	$phoneFieldId = getFieldid(getTabid('Leads'), 'phone');
-	$adb->pquery('UPDATE vtiger_convertleadmapping SET editable=? WHERE leadfid=?', array(1, $phoneFieldId));
-
 	// Migration for #261 - vtiger_portalinfo doesn't update contact
 	$columns = $adb->getColumnNames('com_vtiger_workflows');
 	if (in_array('status', $columns)) {
