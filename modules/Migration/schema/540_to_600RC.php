@@ -276,13 +276,6 @@ $fieldTypeId = $adb->getUniqueID("vtiger_ws_entity_fieldtype");
 Migration_Index_View::ExecuteQuery("INSERT INTO vtiger_ws_entity_fieldtype(fieldtypeid,table_name,field_name,fieldtype) VALUES (?,?,?,?);", array($fieldTypeId,'vtiger_producttaxrel', 'taxid',"reference"));
 Migration_Index_View::ExecuteQuery("INSERT INTO vtiger_ws_entity_referencetype(fieldtypeid,type) VALUES (?,?)",array($fieldTypeId,'Tax'));
 
-//--
-//Changed Columns Display in List view of Leads
-$leadsFirstName = 'vtiger_leaddetails:firstname:firstname:Leads_First_Name:V';
-$leadsLastName = 'vtiger_leaddetails:lastname:lastname:Leads_Last_Name:V';
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_cvcolumnlist SET columnname=? WHERE cvid=? AND columnindex=?", array($leadsFirstName, '1', '1'));
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_cvcolumnlist SET columnname=? WHERE cvid=? AND columnindex=?", array($leadsLastName, '1', '2'));
-
 //Changed the Currency Symbol of Moroccan, Dirham to DH
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_currencies SET currency_symbol=? WHERE currency_name=? AND currency_code=?", array('DH', 'Moroccan, Dirham', 'MAD'));
 

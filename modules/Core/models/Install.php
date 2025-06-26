@@ -499,8 +499,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             foreach ($this->getFieldsConfig() as $block => $fields) {
                 self::logSuccess('Block create: ' . $block);
                 $fieldSequence = 0;
-                $blockParams = $this->getBlockConfig($block);
-                $blockInstance = $this->createBlock($block, $blockParams);
+                $blockInstance = $this->createBlock($block);
 
                 foreach ($fields as $fieldName => $fieldParams) {
                     if (empty($fieldName)) {
@@ -562,7 +561,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                     }
 
                     if (isset($fieldParams['filter'])) {
-                        self::logSuccess('Filter create: ' . $fieldName);
+                        self::logSuccess('Filter field config: ' . $fieldName);
 
                         $filterDynamicSequence++;
                         $filterSequence = !empty($fieldParams['filter_sequence']) ? $fieldParams['filter_sequence'] : $filterDynamicSequence;
@@ -586,6 +585,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                 ksort($filterFields);
 
                 foreach ($filterFields as $filterSequence => $filterField) {
+                    self::logSuccess('Filter add field: ' . $filterField->get('table') . ':' . $filterField->getName());
+
                     $filterInstance->addField($filterField, $filterSequence);
                 }
             }
@@ -638,9 +639,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public function createField(string $fieldName, array $fieldParams): Vtiger_Field_Model|bool
     {
-        $moduleName = $this->getModuleName();
-        $moduleInstance = $this->getModuleInstance($moduleName);
-        $fieldInstance = $this->getFieldInstance($fieldName, $moduleInstance);
+        $fieldInstance = $this->getFieldInstance($fieldName);
 
         foreach ($fieldParams as $fieldParamName => $fieldParam) {
             if ($fieldInstance->getId() && $this->isFieldKeySkippedForUpdate($fieldParamName)) {
@@ -668,8 +667,10 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         return $fieldInstance;
     }
 
-    public function getFieldInstance($fieldName, $moduleInstance)
+    public function getFieldInstance($fieldName)
     {
+        $moduleName = $this->getModuleName();
+        $moduleInstance = $this->getModuleInstance($moduleName);
         $fieldInstance = Vtiger_Field_Model::getInstance($fieldName, $moduleInstance);
 
         if (!$fieldInstance) {
@@ -690,8 +691,9 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     /**
      * @throws Exception
      */
-    public function createBlock($blockName, $blockParams = [])
+    public function createBlock($blockName)
     {
+        $blockParams = $this->getBlockConfig($blockName);
         $moduleName = $this->getModuleName();
         $moduleInstance = $this->getModuleInstance($moduleName);
 
