@@ -67,22 +67,6 @@ class Leads_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
-                    'picklist_values' => [
-                    ],
-                ],
-                'lead_no' => [
-                    'name' => 'lead_no',
-                    'uitype' => 4,
-                    'column' => 'lead_no',
-                    'table' => 'vtiger_leaddetails',
-                    'label' => 'Lead No',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 1,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
                 ],
                 'phone' => [
                     'name' => 'phone',
@@ -257,8 +241,7 @@ class Leads_Install_Model extends Core_Install_Model {
                         'Other',
                     ],
                 ],
-                'leadstatus' =>
-                    [
+                'leadstatus' => [
                         'name' => 'leadstatus',
                         'uitype' => 15,
                         'column' => 'leadstatus',
@@ -285,8 +268,7 @@ class Leads_Install_Model extends Core_Install_Model {
                             'Warm',
                         ],
                     ],
-                'annualrevenue' =>
-                    [
+                'annualrevenue' => [
                         'name' => 'annualrevenue',
                         'uitype' => 71,
                         'column' => 'annualrevenue',
@@ -363,48 +345,6 @@ class Leads_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'createdtime' => [
-                    'name' => 'createdtime',
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'modifiedtime' => [
-                    'name' => 'modifiedtime',
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'modifiedby' => [
-                    'name' => 'modifiedby',
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
                 'emailoptout' => [
                     'name' => 'emailoptout',
                     'uitype' => 56,
@@ -417,20 +357,6 @@ class Leads_Install_Model extends Core_Install_Model {
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
-                ],
-                'source' => [
-                    'name' => 'source',
-                    'uitype' => 1,
-                    'column' => 'source',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Source',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
             ],
@@ -539,6 +465,36 @@ class Leads_Install_Model extends Core_Install_Model {
                     'summaryfield' => 0,
                 ],
             ],
+            'LBL_SYSTEM_INFORMATION' => [
+                'lead_no' => [
+                    'name' => 'lead_no',
+                    'uitype' => 4,
+                    'column' => 'lead_no',
+                    'table' => 'vtiger_leaddetails',
+                    'label' => 'Lead No',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 3,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 0,
+                ],
+                'campaignrelstatus' => [
+                    'name' => 'campaignrelstatus',
+                    'uitype' => 16,
+                    'column' => 'campaignrelstatus',
+                    'table' => 'vtiger_campaignrelstatus',
+                    'label' => 'Status',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 0,
+                ],
+            ],
         ];
     }
 
@@ -574,7 +530,7 @@ class Leads_Install_Model extends Core_Install_Model {
             ->createColumn('salutation', 'varchar(200) DEFAULT NULL')
             ->createColumn('lastname', 'varchar(80) NOT NULL')
             ->createColumn('company', 'varchar(100) NOT NULL')
-            ->createColumn('annualrevenue', 'decimal(25,5) DEFAULT NULL')
+            ->createColumn('annualrevenue', self::$COLUMN_DECIMAL)
             ->createColumn('industry', 'varchar(200) DEFAULT NULL')
             ->createColumn('campaign', 'varchar(30) DEFAULT NULL')
             ->createColumn('rating', 'varchar(200) DEFAULT NULL')
@@ -625,5 +581,7 @@ class Leads_Install_Model extends Core_Install_Model {
             ->createKey('PRIMARY KEY IF NOT EXISTS (`leadaddressid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_leadaddress` FOREIGN KEY IF NOT EXISTS (`leadaddressid`) REFERENCES `vtiger_leaddetails` (`leadid`) ON DELETE CASCADE')
         ;
+        
+        $this->createPicklistTable('vtiger_leadstatus', 'leadstatusid', 'leadstatus');
     }
 }

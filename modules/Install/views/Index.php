@@ -40,12 +40,14 @@ class Install_Index_view extends Vtiger_View_Controller {
 
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
-		if ($chosenLanguage = $request->get('lang')) {
-			$_SESSION['config_file_info']['default_language'] = $chosenLanguage;
-		} elseif (empty($_SESSION['config_file_info']['default_language'])) {
-			$_SESSION['config_file_info']['default_language'] = 'en_us';
-		}
-		vglobal('default_language', $_SESSION['config_file_info']['default_language']);
+
+        if (!$request->isEmpty('lang')) {
+            $_SESSION['config_file_info']['default_language'] = $request->get('lang');
+        } elseif (empty($_SESSION['config_file_info']['default_language'])) {
+            $_SESSION['config_file_info']['default_language'] = 'en_us';
+        }
+
+        vglobal('default_language', $_SESSION['config_file_info']['default_language']);
 
 		define('INSTALLATION_MODE', true);
 		define('INSTALLATION_MODE_DEBUG', $this->debug);
@@ -95,6 +97,8 @@ class Install_Index_view extends Vtiger_View_Controller {
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
 		$viewer->assign('CURRENCIES', Install_Utils_Model::getCurrencyList());
+		$viewer->assign('DECIMAL_SEPARATORS', Install_Utils_Model::getDecimalList());
+		$viewer->assign('GROUPING_SEPARATORS', Install_Utils_Model::getGroupingList());
 
 		require_once 'modules/Users/UserTimeZonesArray.php';
         $viewer->assign('TIMEZONES', UserTimeZones::getAll());
@@ -159,6 +163,10 @@ class Install_Index_view extends Vtiger_View_Controller {
 			$_SESSION['config_file_info']['currency_code'] = $currencies[$currencyName][0];
 			$_SESSION['config_file_info']['currency_symbol'] = $currencies[$currencyName][1];
 		}
+
+        $_SESSION['config_file_info']['currency_decimal_separator'] = $request->get('currency_decimal_separator');
+        $_SESSION['config_file_info']['currency_grouping_separator'] = $request->get('currency_grouping_separator');
+
 		$viewer->assign('DB_CONNECTION_INFO', $dbConnection);
 		$viewer->assign('INFORMATION', $requestData);
 		$viewer->assign('AUTH_KEY', $authKey);
@@ -175,6 +183,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 
     /**
      * @throws AppException
+     * @throws Exception
      */
     public function Step7(Vtiger_Request $request) {
         $moduleName = $request->getModule();
@@ -185,24 +194,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 				die(vtranslate('ERR_NOT_AUTHORIZED_TO_PERFORM_THE_OPERATION', $moduleName));
 			}
 
-			// Create configuration file
-			$configParams = $_SESSION['config_file_info'];
-			$configFile = new Install_ConfigFileUtils_Model($configParams);
-			$configFile->createConfigFile();
-
-			global $adb;
-			$adb->resetSettings($configParams['db_type'], $configParams['db_hostname'], $configParams['db_name'], $configParams['db_username'], $configParams['db_password']);
-			$adb->query('SET NAMES utf8');
-
-			// Initialize and set up tables
-			Install_InitSchema_Model::initialize();
-
-			// Install all the available modules
-			Install_Utils_Model::installAdditionalModulesAndLanguages();
-
-			Install_InitSchema_Model::upgrade();
-
-            Install_Utils_Model::saveSMTPServer($request);
+            Install_InitSchema_Model::$request = $request;
 
 			$viewer = $this->getViewer($request);
 			$viewer->assign('PASSWORD', $_SESSION['config_file_info']['password']);

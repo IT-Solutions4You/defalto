@@ -604,7 +604,6 @@ Migration_Index_View::ExecuteQuery("CREATE TABLE IF NOT EXISTS vtiger_shareduser
 						(userid INT(19) NOT NULL default 0, shareduserid INT(19) NOT NULL default 0,
 						color VARCHAR(50), visible INT(19) default 1);", array());
 
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner_rules ADD assigned_to INT(10), ADD cc VARCHAR(255), ADD bcc VARCHAR(255)', array());
 $assignedToId = Users::getActiveAdminId();
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_mailscanner_rules SET assigned_to=?", array($assignedToId));
 echo "<br> Adding assigned to, cc, bcc fields for mail scanner rules";
@@ -613,9 +612,6 @@ echo "<br> Adding assigned to, cc, bcc fields for mail scanner rules";
 //Schema changes for vtiger_troubletickets hours & days column
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_troubletickets MODIFY hours decimal(25,8)', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_troubletickets MODIFY days decimal(25,8)', array());
-
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET defaultvalue=? WHERE tablename=? and fieldname=?", array('1', 'vtiger_pricebook', 'active'));
-echo "<br> updated default value for pricebooks active";
 
 $relationId = $adb->getUniqueID('vtiger_relatedlists');
 $contactTabId = getTabid('Contacts');
@@ -629,14 +625,7 @@ $sequence = $adb->query_result($result, 0 ,'maxsequence');
 $query = 'INSERT INTO vtiger_relatedlists VALUES(?,?,?,?,?,?,?,?,?,?,?)';
 $result = Migration_Index_View::ExecuteQuery($query, array($relationId, $contactTabId,$vendorTabId,'get_vendors',($sequence+1),'Vendors',0,$actions,null,'',''));
 
-//Schema changes for vtiger_troubletickets hours & days column
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field set typeofdata=? WHERE fieldname IN(?,?) AND tablename = ?', array('N~O', 'hours', 'days', 'vtiger_troubletickets'));
-
 //79 ends
-
-//82 starts
-Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_mailscanner CHANGE timezone time_zone VARCHAR(10)", array());
-echo "<br>Changed timezone column name for mail scanner";
 
 //82 ends
 
@@ -719,32 +708,6 @@ echo '<br> made projecttaskstatus picklist values as non editable';
 
 //89 starts
 //89 ends
-
-//90 starts
-//Updating User fields Sequence
-$userFields = array('user_name', 'email1', 'first_name', 'last_name', 'user_password', 'confirm_password', 'is_admin', 'roleid',
-                                        'lead_view', 'status', 'end_hour', 'is_owner',
-                                        'dayoftheweek', 'start_hour', 'date_format', 'hour_format', 'time_zone', 'activity_view', 'callduration',
-                                        'othereventduration', 'defaulteventstatus', 'defaultactivitytype', 'reminder_interval', 'calendarsharedtype',);
-$sequence = 0;
-$usersTabId = getTabId('Users');
-$blockIds = array();
-$blockIds[] = getBlockId($usersTabId, 'LBL_USERLOGIN_ROLE');
-$blockIds[] = getBlockId($usersTabId, 'LBL_CALENDAR_SETTINGS');
-
-$updateQuery = "UPDATE vtiger_field SET sequence = CASE fieldname ";
-foreach($userFields as $fieldName) {
-        if($fieldName == 'dayoftheweek') {
-                $sequence = 0;
-        }
-        $updateQuery .= " WHEN '$fieldName' THEN  ". ++$sequence ;
-}
-$updateQuery .= " END WHERE tabid = $usersTabId AND block IN (". generateQuestionMarks($blockIds) .")";
-
-Migration_Index_View::ExecuteQuery($updateQuery, $blockIds);
-
-echo "<br>User Fields Sequence Updated";
-//90 ends
 
 //91 starts
 $pathToFile = "layouts/vlayout/modules/Products/PopupContents.tpl";
@@ -898,41 +861,7 @@ echo "<br> added print to vtiger_actionnmapping";
 
 //95 starts
 require_once 'vtlib/Vtiger/Module.php';
-$entityModulesModels = Vtiger_Module_Model::getEntityModules();
-$modules = array();
 
-if($entityModulesModels){
-    foreach($entityModulesModels as $model){
-       $modules[] =  $model->getName();
-    }
-}
-
-foreach($modules as $module){
-    $moduleInstance = Vtiger_Module::getInstance($module);
-    if($moduleInstance){
-        $result = Migration_Index_View::ExecuteQuery("select blocklabel from vtiger_blocks where tabid=? and sequence = ?", array($moduleInstance->id, 1));
-        $block = $adb->query_result($result,0,'blocklabel');
-        if($block){
-            $blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
-            $field = new Vtiger_Field();
-            $field->name = 'created_user_id';
-            $field->label = 'Created By';
-            $field->table = 'vtiger_crmentity';
-            $field->column = 'smcreatorid';
-            $field->uitype = 52;
-            $field->typeofdata = 'V~O';
-            $field->displaytype= 2;
-            $field->quickcreate = 3;
-            $field->masseditable = 0;
-            $blockInstance->addField($field);
-            echo "Creator field added for $module";
-            echo '<br>';
-        }
-    }else{
-        echo "Unable to find $module instance";
-        echo '<br>';
-    }
-}
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET presence=0 WHERE fieldname='unit_price' and columnname='unit_price'", array());
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_portal ADD createdtime datetime", array());
 
@@ -956,8 +885,6 @@ if ($adb->num_rows($result) <= 0) {
             }
     }
 }
-
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET quickcreate = ? WHERE tabid = 8 AND (fieldname = ? OR fieldname = ?);", array(0,"filename","filelocationtype"));
 
 //95 ends
 
@@ -1202,14 +1129,6 @@ Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET presence=? WHERE tab
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET presence=? WHERE tabid=? AND fieldname=?;", array(1, $tabId, "status"));
 echo '<br>Hiding previous PBXManager fields done.<br>'; 
 //PBXManager porting ends.
-
-//Making document module fields masseditable
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET masseditable = ? WHERE tabid = 8 AND fieldname = ?;", array(1,"notes_title")); 
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET masseditable = ? WHERE tabid = 8 AND fieldname = ?;", array(1,"assigned_user_id")); 
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET masseditable = ? WHERE tabid = 8 AND fieldname = ?;", array(1,"notecontent")); 
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET masseditable = ? WHERE tabid = 8 AND fieldname = ?;", array(1,"fileversion")); 
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET masseditable = ? WHERE tabid = 8 AND fieldname = ?;", array(1,"filestatus")); 
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET masseditable = ? WHERE tabid = 8 AND fieldname = ?;", array(1,"folderid")); 
 
 //Add Column trial for vtiger_tab table if not exists
 if (!columnExists('trial', 'vtiger_tab')) {

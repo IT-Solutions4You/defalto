@@ -8,7 +8,7 @@
 {strip}
 {if $FIELD_MODEL->getFieldDataType() eq 'picklist' and $MODULE neq 'Users'}
     {assign var=PICKLIST_COLOR value=Settings_Picklist_Module_Model::getPicklistColorByValue($FIELD_MODEL->getName(), $FIELD_MODEL->get('fieldvalue'))}
-    <span {if !empty($PICKLIST_COLOR)} class="picklist-color py-1 px-2 rounded" style="background-color: {$PICKLIST_COLOR}; line-height:15px; color: {Settings_Picklist_Module_Model::getTextColor($PICKLIST_COLOR)};" {/if}>
+    <span class="picklist-color py-1 px-2 rounded" {if !empty($PICKLIST_COLOR)} style="background-color: {$PICKLIST_COLOR}; line-height:15px; color: {Settings_Picklist_Module_Model::getTextColor($PICKLIST_COLOR)};" {/if}>
         {$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'), $RECORD->getId(), $RECORD)}
     </span>
 {elseif $FIELD_MODEL->getFieldDataType() eq 'multipicklist' and $MODULE neq 'Users'}

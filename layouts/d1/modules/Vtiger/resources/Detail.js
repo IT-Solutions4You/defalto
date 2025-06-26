@@ -1131,9 +1131,9 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			let fieldObject = Vtiger_Field_Js.getInstance(fieldInfo),
 				fieldModel = fieldObject.getUiTypeModel(),
 				ele = jQuery('<div class="editElement d-flex align-items-start w-100"></div>'),
-				actionButtons = '<span class="pointerCursorOnHover btn btn-success input-group-addon input-group-addon-save inlineAjaxSave ms-2"><i class="fa fa-check"></i></span>';
+				actionButtons = '<span class="pointerCursorOnHover btn btn-success input-group-addon input-group-addon-save inlineAjaxSave ms-1"><i class="fa fa-check"></i></span>';
 
-			actionButtons += '<span class="pointerCursorOnHover btn btn-danger input-group-addon input-group-addon-cancel inlineAjaxCancel ms-2"><i class="fa-solid fa-xmark"></i></span>';
+			actionButtons += '<span class="pointerCursorOnHover btn btn-danger input-group-addon input-group-addon-cancel inlineAjaxCancel ms-1"><i class="fa-solid fa-xmark"></i></span>';
 			// we should have atleast one submit button for the form to submit which is required for validation
 			ele.append(fieldModel.getUi()).append(actionButtons);
 			ele.find('.inputElement');
@@ -1651,6 +1651,16 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			}
 		})
 	},
+    getWidgetRelatedModule() {
+        return this.getWidgetContainer().find('[name="relatedModule"]').val()
+    },
+    summaryWidgetContainer: false,
+    setWidgetContainer(summaryWidgetContainer) {
+        this.summaryWidgetContainer = summaryWidgetContainer;
+    },
+    getWidgetContainer() {
+        return this.summaryWidgetContainer;
+    },
 	registerSummaryViewContainerEvents: function (summaryViewContainer) {
 		const self = this;
 
@@ -1682,8 +1692,11 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				form = currentElement.closest('form'),
 				recordElement = form.find('[name=record]'),
 				moduleElement = form.find('[name=module]'),
-				summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer'),
-				referenceModuleName = summaryWidgetContainer.find('[name="relatedModule"]').val(),
+				summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer');
+
+            self.setWidgetContainer(summaryWidgetContainer);
+
+            let referenceModuleName = self.getWidgetRelatedModule(summaryWidgetContainer),
 				referenceFieldName = summaryWidgetContainer.find('[name="relatedField"]').val(),
 				recordId = recordElement.length ? recordElement.val() : self.getRecordId(),
 				module = moduleElement.length ? moduleElement.val() : self.getModuleName(),
@@ -1697,20 +1710,28 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				app.helper.showErrorMessage(app.vtranslate('JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED'));
 			}
 
-			app.event.on('post.QuickCreateForm.save', function (event, data) {
-				let idList = new Array();
-				idList.push(data._recordId);
-
-				self.addRelationBetweenRecords(referenceModuleName, idList).then(function (data) {
-					self.loadWidget(summaryWidgetContainer.find('[class^="widgetContainer_"]'));
-				});
-			});
-
 			let QuickCreateParams = {};
 			QuickCreateParams['data'] = customParams;
 			QuickCreateParams['noCache'] = false;
 			quickCreateNode.trigger('click', QuickCreateParams);
 		});
+
+        app.event.on('post.QuickCreateForm.save', function (event, data) {
+            let summaryWidgetContainer = self.getWidgetContainer();
+
+            if (!summaryWidgetContainer) {
+                return;
+            }
+
+            let referenceModuleName = self.getWidgetRelatedModule(summaryWidgetContainer),
+                idList = [];
+
+            idList.push(data['_recordId']);
+
+            self.addRelationBetweenRecords(referenceModuleName, idList).then(function (data) {
+                self.loadWidget(summaryWidgetContainer.find('[class^="widgetContainer_"]'));
+            });
+        });
 
 		/*
 		 * Register the event to edit the status for for related activities
@@ -1764,6 +1785,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 						if (!error) {
 							jQuery('.vt-notification').remove();
 							fieldnameElement.data('prevValue', ajaxEditNewValue);
+                            self.loadWidget(fieldnameElement.parents('[class^="widgetContainer_"]'));
 						} else {
 							app.event.trigger('post.save.failed', error);
 							fieldElement.select2('val', previousValue);
@@ -2027,24 +2049,23 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	},
 
 
-	getRelatedRecordsCount : function(recordId, moduleName){
-		var aDeferred = jQuery.Deferred();
-		var params = {
-			'type' : 'GET',
-			'data' : {
-				'module'	: moduleName,
-				'recordId'	: recordId,
-				'action'	: 'RelatedRecordsAjax',
-				'mode'		: 'getRelatedRecordsCount'
-			}
-		};
-		app.request.get(params).then(function(err,data){
-			if(err == null){
-				aDeferred.resolve(data);
-			}
-		});
-		return aDeferred.promise();
-	},
+    getRelatedRecordsCount: function (recordId, moduleName) {
+        let aDeferred = jQuery.Deferred(),
+            params = {
+                'module': moduleName,
+                'recordId': recordId,
+                'action': 'RelatedRecordsAjax',
+                'mode': 'getRelatedRecordsCount'
+            };
+
+        app.request.post({data: params}).then(function (err, data) {
+            if (err == null) {
+                aDeferred.resolve(data);
+            }
+        });
+
+        return aDeferred.promise();
+    },
 
 	updateRelatedRecordsCount : function(){
 		var self = this;
@@ -2972,8 +2993,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			}
 
 			timeout = setTimeout(function() {
-				console.log('Test 0122', Math.random());
-
 				self.loadAssignedUsers(searchElement)
 			}, 500);
 		});

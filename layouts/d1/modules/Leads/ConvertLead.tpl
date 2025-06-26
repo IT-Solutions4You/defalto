@@ -26,7 +26,7 @@
                                 <div class="col-lg-12 moduleContent">
                                     <div class="accordion-group convertLeadModules">
                                         <div class="header accordion-heading">
-                                            <div data-bs-parent="#leadAccordion" data-bs-toggle="collapse" class="accordion-toggle moduleSelection" href="#{$MODULE_NAME}_FieldInfo">
+                                            <label data-bs-parent="#leadAccordion" data-bs-toggle="collapse" class="accordion-toggle moduleSelection" href="#{$MODULE_NAME}_FieldInfo">
                                                 {if $ACCOUNT_FIELD_MODEL->isMandatory()}
                                                     <input type="hidden" id="oppAccMandatory" value={$ACCOUNT_FIELD_MODEL->isMandatory()}/>
                                                 {/if}
@@ -37,18 +37,19 @@
                                                     <input type="hidden" id="conAccMandatory" value={$CONTACT_ACCOUNT_FIELD_MODEL->isMandatory()}/>
                                                 {/if}
                                                 {assign var=SINGLE_MODULE_NAME value="SINGLE_$MODULE_NAME"}
+                                                {assign var=IS_CHECKED_MODULE value=$MODULE_NAME eq 'Contacts' or ($LEAD_COMPANY_NAME neq '' and $MODULE_NAME eq 'Accounts') or ($CONTACT_ACCOUNT_FIELD_MODEL and $CONTACT_ACCOUNT_FIELD_MODEL->isMandatory() and $MODULE_NAME neq 'Potentials')}
                                                 <h5>
                                                     <input id="{$MODULE_NAME}Module" class="convertLeadModuleSelection me-2" data-module="{vtranslate($MODULE_NAME,$MODULE_NAME)}" value="{$MODULE_NAME}" type="checkbox"
-                                                        {if $MODULE_NAME eq 'Contacts' or ($LEAD_COMPANY_NAME neq '' and $MODULE_NAME eq 'Accounts') or ($CONTACT_ACCOUNT_FIELD_MODEL and $CONTACT_ACCOUNT_FIELD_MODEL->isMandatory() and $MODULE_NAME neq 'Potentials')}
+                                                        {if $IS_CHECKED_MODULE}
                                                             {if $MODULE_NAME == 'Accounts' && $CONTACT_ACCOUNT_FIELD_MODEL && $CONTACT_ACCOUNT_FIELD_MODEL->isMandatory()} disabled="disabled" {/if} checked="checked"
                                                         {/if}/>
                                                     <span class="me-2">{vtranslate('LBL_CREATE', $MODULE)}</span>
                                                     <span>{vtranslate($SINGLE_MODULE_NAME, $MODULE_NAME)}</span>
                                                 </h5>
-                                            </div>
+                                            </label>
                                         </div>
                                         <hr>
-                                        <div id="{$MODULE_NAME}_FieldInfo" class="accordion-body accordion-collapse collapse fieldInfo {$MODULE_NAME}_FieldInfo {if $CONVERT_LEAD_FIELDS['Accounts'] && $MODULE_NAME eq 'Accounts'}show{elseif !$CONVERT_LEAD_FIELDS['Accounts'] && $MODULE_NAME eq 'Contacts'}show{/if}">
+                                        <div id="{$MODULE_NAME}_FieldInfo" class="accordion-body accordion-collapse collapse fieldInfo {$MODULE_NAME}_FieldInfo {if $IS_CHECKED_MODULE}show{/if}">
                                             {foreach item=FIELD_MODEL from=$MODULE_FIELD_MODEL}
                                                 <div class="row">
                                                     <div class="fieldLabel col-lg-4 text-end">
@@ -75,10 +76,10 @@
                                     <div class="my-3">
                                         <div class="row">
                                             {assign var=FIELD_MODEL value=$ASSIGN_TO}
-                                            <div class="fieldLabel col-lg-4">
-                                                <label class='muted pull-right'>
-                                                    {vtranslate($FIELD_MODEL->get('label'), $MODULE_NAME)}&nbsp;
-                                                    <span class="redColor">*</span>
+                                            <div class="fieldLabel col-lg-4 text-secondary text-end">
+                                                <label>
+                                                    <span>{vtranslate($FIELD_MODEL->get('label'), $MODULE_NAME)}</span>
+                                                    <span class="text-danger ms-2">*</span>
                                                 </label>
                                             </div>
                                             <div class="fieldValue col-lg-8">
@@ -87,16 +88,14 @@
                                         </div>
                                         <br>
                                         <div class="row">
-                                            <div class="fieldLabel col-lg-4">
-                                                <label class='muted pull-right'>
-                                                    {vtranslate('LBL_TRANSFER_RELATED_RECORD', $MODULE)}
-                                                </label>
+                                            <div class="fieldLabel col-lg-4 text-secondary text-end">
+                                                <label>{vtranslate('LBL_TRANSFER_RELATED_RECORD', $MODULE)}</label>
                                             </div>
                                             <div class="fieldValue col-lg-8">
                                                 {foreach item=MODULE_FIELD_MODEL key=MODULE_NAME from=$CONVERT_LEAD_FIELDS}
                                                     {if $MODULE_NAME != 'Potentials'}
                                                         <label class="me-4">
-                                                            <input type="radio" id="transfer{$MODULE_NAME}" class="transferModule me-2" name="transferModule" value="{$MODULE_NAME}" {if $CONVERT_LEAD_FIELDS['Contacts'] && $MODULE_NAME=="Contacts"} checked="" {elseif !$CONVERT_LEAD_FIELDS['Contacts'] && $MODULE_NAME=="Accounts"} checked="" {/if}/>
+                                                            <input type="radio" id="transfer{$MODULE_NAME}" class="transferModule me-2" name="transferModule" value="{$MODULE_NAME}" {if ($CONVERT_LEAD_FIELDS['Contacts'] && $MODULE_NAME=="Contacts") or (!$CONVERT_LEAD_FIELDS['Contacts'] && $MODULE_NAME=="Accounts")}checked="checked"{/if}/>
                                                             {if $MODULE_NAME eq 'Contacts'}
                                                                 <span>{vtranslate('SINGLE_Contacts',$MODULE_NAME)}</span>
                                                             {else}

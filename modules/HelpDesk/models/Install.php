@@ -295,36 +295,6 @@ class HelpDesk_Install_Model extends Core_Install_Model {
                 ],
             ],
             'LBL_SYSTEM_INFORMATION' => [
-                'ticket_no' => [
-                    'name' => 'ticket_no',
-                    'uitype' => 4,
-                    'column' => 'ticket_no',
-                    'table' => 'vtiger_troubletickets',
-                    'label' => 'Ticket No',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 1,
-                    'masseditable' => 0,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 1,
-                ],
-                'source' => [
-                    'name' => 'source',
-                    'uitype' => 1,
-                    'column' => 'source',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Source',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
                 'first_comment_hours' => [
                     'name' => 'first_comment_hours',
                     'uitype' => 1,
@@ -381,52 +351,21 @@ class HelpDesk_Install_Model extends Core_Install_Model {
                     'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
-                'creator' => [
-                    'name' => 'creator',
-                    'column' => 'smcreatorid',
-                    'label' => 'Creator',
-                    'uitype' => 52,
-                    'typeofdata' => 'V~O',
-                    'displaytype' => 2,
-                    'table' => 'vtiger_crmentity',
-                ],
-                'createdtime' => [
-                    'name' => 'createdtime',
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
+                'ticket_no' => [
+                    'name' => 'ticket_no',
+                    'uitype' => 4,
+                    'column' => 'ticket_no',
+                    'table' => 'vtiger_troubletickets',
+                    'label' => 'Ticket No',
                     'readonly' => 1,
                     'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                    'headerfield' => 1,
-                ],
-                'modifiedby' => [
-                    'name' => 'modifiedby',
-                    'column' => 'modifiedby',
-                    'label' => 'Last Modified By',
-                    'uitype' => 52,
                     'typeofdata' => 'V~O',
-                    'displaytype' => 2,
-                    'table' => 'vtiger_crmentity',
-                ],
-                'modifiedtime' => [
-                    'name' => 'modifiedtime',
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
                     'quickcreate' => 3,
-                    'displaytype' => 2,
+                    'displaytype' => 1,
                     'masseditable' => 0,
-                    'summaryfield' => 0,
+                    'summaryfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 1,
                 ],
             ],
         ];
@@ -497,7 +436,7 @@ class HelpDesk_Install_Model extends Core_Install_Model {
             ->createColumn('title','varchar(255) NOT NULL')
             ->createColumn('solution','text DEFAULT NULL')
             ->createColumn('version_id','int(11) DEFAULT NULL')
-            ->createColumn('hours','decimal(25,8) DEFAULT NULL')
+            ->createColumn('hours',self::$COLUMN_DECIMAL)
             ->createColumn('contact_id','int(19) DEFAULT NULL')
             ->createColumn('tags','varchar(1) DEFAULT NULL')
             ->createColumn('currency_id','int(19) DEFAULT NULL')

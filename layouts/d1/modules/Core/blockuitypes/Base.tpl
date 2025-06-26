@@ -76,7 +76,7 @@
                                             {assign var=FIELD_DISPLAY_VALUE value=Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}
                                         {/if}
                                         <div class="d-flex align-items-center justify-content-between">
-                                            <span class="value" data-field-type="{$FIELD_MODEL->getFieldDataType()}">
+                                            <span class="value w-100" data-field-type="{$FIELD_MODEL->getFieldDataType()}">
                                                 {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                                             </span>
                                             {if $IS_AJAX_ENABLED && $FIELD_MODEL->isEditable() eq 'true' && $FIELD_MODEL->isAjaxEditable() eq 'true'}

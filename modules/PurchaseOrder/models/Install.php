@@ -31,20 +31,6 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
     {
         return [
             'LBL_PO_INFORMATION' => [
-                'purchaseorder_no' => [
-                    'name' => 'purchaseorder_no',
-                    'uitype' => 4,
-                    'column' => 'purchaseorder_no',
-                    'table' => 'vtiger_purchaseorder',
-                    'label' => 'PurchaseOrder No',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 1,
-                    'masseditable' => 0,
-                    'summaryfield' => 1,
-                ],
                 'subject' => [
                     'name' => 'subject',
                     'uitype' => 2,
@@ -285,48 +271,6 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'createdtime' => [
-                    'name' => 'createdtime',
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'modifiedtime' => [
-                    'name' => 'modifiedtime',
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'modifiedby' => [
-                    'name' => 'modifiedby',
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
                 'currency_id' => [
                     'name' => 'currency_id',
                     'uitype' => 117,
@@ -395,20 +339,6 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'quickcreate' => 1,
                     'displaytype' => 3,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
-                ],
-                'source' => [
-                    'name' => 'source',
-                    'uitype' => 1,
-                    'column' => 'source',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Source',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
             ],
@@ -777,6 +707,22 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'picklist_values' => [],
                 ],
             ],
+            'LBL_SYSTEM_INFORMATION' => [
+                'purchaseorder_no' => [
+                    'name' => 'purchaseorder_no',
+                    'uitype' => 4,
+                    'column' => 'purchaseorder_no',
+                    'table' => 'vtiger_purchaseorder',
+                    'label' => 'PurchaseOrder No',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 3,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 1,
+                ],
+            ],
         ];
     }
 
@@ -830,24 +776,24 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
             ->createColumn('duedate', 'date DEFAULT NULL')
             ->createColumn('carrier', 'varchar(200) DEFAULT NULL')
             ->createColumn('type', 'varchar(100) DEFAULT NULL')
-            ->createColumn('adjustment', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('salescommission', 'decimal(25,3) DEFAULT NULL')
-            ->createColumn('exciseduty', 'decimal(25,3) DEFAULT NULL')
-            ->createColumn('total', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('subtotal', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('adjustment', self::$COLUMN_DECIMAL)
+            ->createColumn('salescommission', self::$COLUMN_DECIMAL)
+            ->createColumn('exciseduty', self::$COLUMN_DECIMAL)
+            ->createColumn('total', self::$COLUMN_DECIMAL)
+            ->createColumn('subtotal', self::$COLUMN_DECIMAL)
             ->createColumn('taxtype', 'varchar(25) DEFAULT NULL')
-            ->createColumn('discount_percent', 'decimal(25,3) DEFAULT NULL')
-            ->createColumn('discount_amount', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('s_h_amount', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('discount_percent', self::$COLUMN_DECIMAL)
+            ->createColumn('discount_amount', self::$COLUMN_DECIMAL)
+            ->createColumn('s_h_amount', self::$COLUMN_DECIMAL)
             ->createColumn('terms_conditions', 'text DEFAULT NULL')
             ->createColumn('postatus', 'varchar(200) DEFAULT NULL')
             ->createColumn('currency_id', 'int(19) NOT NULL DEFAULT 1')
             ->createColumn('conversion_rate', 'decimal(10,3) NOT NULL DEFAULT 1.000')
             ->createColumn('compound_taxes_info', 'text DEFAULT NULL')
-            ->createColumn('pre_tax_total', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('paid', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('balance', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('s_h_percent', 'DECIMAL(25,3) DEFAULT NULL')
+            ->createColumn('pre_tax_total', self::$COLUMN_DECIMAL)
+            ->createColumn('paid', self::$COLUMN_DECIMAL)
+            ->createColumn('balance', self::$COLUMN_DECIMAL)
+            ->createColumn('s_h_percent', self::$COLUMN_DECIMAL)
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createColumn('region_id', 'int(19) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`purchaseorderid`)')
@@ -857,5 +803,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
             ->createKey('CONSTRAINT `fk_4_vtiger_purchaseorder` FOREIGN KEY IF NOT EXISTS (`vendorid`) REFERENCES `vtiger_vendor` (`vendorid`) ON DELETE CASCADE')
             ->createKey('CONSTRAINT `fk_crmid_vtiger_purchaseorder` FOREIGN KEY IF NOT EXISTS (`purchaseorderid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
         ;
+        
+        $this->createPicklistTable('vtiger_postatus', 'postatusid', 'postatus');
     }
 }

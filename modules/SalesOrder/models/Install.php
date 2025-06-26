@@ -31,20 +31,6 @@ class SalesOrder_Install_Model extends Core_Install_Model {
     {
         return [
             'LBL_SO_INFORMATION' => [
-                'salesorder_no' => [
-                    'name' => 'salesorder_no',
-                    'uitype' => 4,
-                    'column' => 'salesorder_no',
-                    'table' => 'vtiger_salesorder',
-                    'label' => 'SalesOrder No',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 1,
-                    'masseditable' => 0,
-                    'summaryfield' => 1,
-                ],
                 'subject' => [
                     'name' => 'subject',
                     'uitype' => 2,
@@ -326,48 +312,6 @@ class SalesOrder_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'createdtime' => [
-                    'name' => 'createdtime',
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'modifiedtime' => [
-                    'name' => 'modifiedtime',
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'modifiedby' => [
-                    'name' => 'modifiedby',
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
                 'currency_id' => [
                     'name' => 'currency_id',
                     'uitype' => 117,
@@ -408,20 +352,6 @@ class SalesOrder_Install_Model extends Core_Install_Model {
                     'quickcreate' => 1,
                     'displaytype' => 3,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
-                ],
-                'source' => [
-                    'name' => 'source',
-                    'uitype' => 1,
-                    'column' => 'source',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Source',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
             ],
@@ -735,6 +665,16 @@ class SalesOrder_Install_Model extends Core_Install_Model {
                         'Cancel',
                     ],
                 ],
+                'last_recurring_date' => [
+                    'name' => 'last_recurring_date',
+                    'uitype' => 5,
+                    'column' => 'last_recurring_date',
+                    'table' => 'vtiger_invoice_recurring_info',
+                    'label' => 'Next Invoice Date',
+                    'typeofdata' => 'D~O',
+                    'displaytype' => 2,
+                    'columntype' => 'date',
+                ],
             ],
             'LBL_ITEM_DETAILS' => [
                 'hdnDiscountPercent' => [
@@ -925,6 +865,22 @@ class SalesOrder_Install_Model extends Core_Install_Model {
                     'picklist_values' => [],
                 ],
             ],
+            'LBL_SYSTEM_INFORMATION' => [
+                'salesorder_no' => [
+                    'name' => 'salesorder_no',
+                    'uitype' => 4,
+                    'column' => 'salesorder_no',
+                    'table' => 'vtiger_salesorder',
+                    'label' => 'SalesOrder No',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 3,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 1,
+                ],
+            ]
         ];
     }
 
@@ -956,15 +912,15 @@ class SalesOrder_Install_Model extends Core_Install_Model {
             ->createColumn('carrier', 'varchar(200) DEFAULT NULL')
             ->createColumn('pending', 'varchar(200) DEFAULT NULL')
             ->createColumn('type', 'varchar(100) DEFAULT NULL')
-            ->createColumn('adjustment', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('salescommission', 'decimal(25,3) DEFAULT NULL')
-            ->createColumn('exciseduty', 'decimal(25,3) DEFAULT NULL')
-            ->createColumn('total', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('subtotal', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('adjustment', self::$COLUMN_DECIMAL)
+            ->createColumn('salescommission', self::$COLUMN_DECIMAL)
+            ->createColumn('exciseduty', self::$COLUMN_DECIMAL)
+            ->createColumn('total', self::$COLUMN_DECIMAL)
+            ->createColumn('subtotal', self::$COLUMN_DECIMAL)
             ->createColumn('taxtype', 'varchar(25) DEFAULT NULL')
-            ->createColumn('discount_percent', 'decimal(25,3) DEFAULT NULL')
-            ->createColumn('discount_amount', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('s_h_amount', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('discount_percent', self::$COLUMN_DECIMAL)
+            ->createColumn('discount_amount', self::$COLUMN_DECIMAL)
+            ->createColumn('s_h_amount', self::$COLUMN_DECIMAL)
             ->createColumn('accountid', 'int(19) DEFAULT NULL')
             ->createColumn('terms_conditions', 'text DEFAULT NULL')
             ->createColumn('purchaseorder', 'varchar(200) DEFAULT NULL')
@@ -973,8 +929,8 @@ class SalesOrder_Install_Model extends Core_Install_Model {
             ->createColumn('conversion_rate', 'decimal(10,3) NOT NULL DEFAULT \'1.000\'')
             ->createColumn('enable_recurring', 'int(11) DEFAULT \'0\'')
             ->createColumn('compound_taxes_info', 'text DEFAULT NULL')
-            ->createColumn('pre_tax_total', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('s_h_percent', 'DECIMAL(25,3) DEFAULT NULL')
+            ->createColumn('pre_tax_total', self::$COLUMN_DECIMAL)
+            ->createColumn('s_h_percent', self::$COLUMN_DECIMAL)
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createColumn('region_id', 'int(19) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`salesorderid`)')
@@ -1007,5 +963,9 @@ class SalesOrder_Install_Model extends Core_Install_Model {
             ->createKey('PRIMARY KEY IF NOT EXISTS (`soshipaddressid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_soshipads` FOREIGN KEY IF NOT EXISTS (`soshipaddressid`) REFERENCES `vtiger_salesorder` (`salesorderid`) ON DELETE CASCADE')
         ;
+
+        $this->createPicklistTable('vtiger_sostatus', 'sostatusid', 'sostatus');
+        $this->createPicklistTable('vtiger_recurring_frequency', 'recurring_frequency_id', 'recurring_frequency');
+        $this->createPicklistTable('vtiger_payment_duration', 'payment_duration_id', 'payment_duration');
     }
 }

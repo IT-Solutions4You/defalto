@@ -31,25 +31,9 @@ class Quotes_Install_Model extends Core_Install_Model
     public function getBlocks(): array
     {
         return [
-            'LBL_QUOTE_INFORMATION' =>
-                [
-                    'quote_no' =>
-                        [
-                            'name' => 'quote_no',
-                            'uitype' => 4,
-                            'column' => 'quote_no',
-                            'table' => 'vtiger_quotes',
-                            'label' => 'Quote No',
-                            'readonly' => 1,
-                            'presence' => 0,
-                            'typeofdata' => 'V~O',
-                            'quickcreate' => 3,
-                            'displaytype' => 1,
-                            'masseditable' => 0,
-                            'summaryfield' => 1,
-                        ],
-                    'subject' =>
-                        [
+            'LBL_QUOTE_INFORMATION' => [
+
+                    'subject' => [
                             'name' => 'subject',
                             'uitype' => 2,
                             'column' => 'subject',
@@ -64,8 +48,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'summaryfield' => 1,
                             'entity_identifier' => 1,
                         ],
-                    'potential_id' =>
-                        [
+                    'potential_id' => [
                             'name' => 'potential_id',
                             'uitype' => 76,
                             'column' => 'potentialid',
@@ -79,8 +62,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 1,
                         ],
-                    'quotestage' =>
-                        [
+                    'quotestage' => [
                             'name' => 'quotestage',
                             'uitype' => 15,
                             'column' => 'quotestage',
@@ -102,8 +84,7 @@ class Quotes_Install_Model extends Core_Install_Model
                                     4 => 'Rejected',
                                 ],
                         ],
-                    'validtill' =>
-                        [
+                    'validtill' => [
                             'name' => 'validtill',
                             'uitype' => 5,
                             'column' => 'validtill',
@@ -117,8 +98,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'contact_id' =>
-                        [
+                    'contact_id' => [
                             'name' => 'contact_id',
                             'uitype' => 57,
                             'column' => 'contactid',
@@ -132,8 +112,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'carrier' =>
-                        [
+                    'carrier' => [
                             'name' => 'carrier',
                             'uitype' => 15,
                             'column' => 'carrier',
@@ -146,17 +125,15 @@ class Quotes_Install_Model extends Core_Install_Model
                             'displaytype' => 1,
                             'masseditable' => 1,
                             'summaryfield' => 0,
-                            'picklist_values' =>
-                                [
-                                    0 => 'FedEx',
-                                    1 => 'UPS',
-                                    2 => 'USPS',
-                                    3 => 'DHL',
-                                    4 => 'BlueDart',
+                            'picklist_values' => [
+                                    'FedEx',
+                                    'UPS',
+                                    'USPS',
+                                    'DHL',
+                                    'BlueDart',
                                 ],
                         ],
-                    'hdnSubTotal' =>
-                        [
+                    'hdnSubTotal' => [
                             'name' => 'hdnSubTotal',
                             'uitype' => 72,
                             'column' => 'subtotal',
@@ -170,8 +147,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'shipping' =>
-                        [
+                    'shipping' => [
                             'name' => 'shipping',
                             'uitype' => 1,
                             'column' => 'shipping',
@@ -185,8 +161,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'assigned_user_id1' =>
-                        [
+                    'assigned_user_id1' => [
                             'name' => 'assigned_user_id1',
                             'uitype' => 77,
                             'column' => 'inventorymanager',
@@ -200,8 +175,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'txtAdjustment' =>
-                        [
+                    'txtAdjustment' => [
                             'name' => 'txtAdjustment',
                             'uitype' => 72,
                             'column' => 'adjustment',
@@ -215,8 +189,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'hdnGrandTotal' =>
-                        [
+                    'hdnGrandTotal' => [
                             'name' => 'hdnGrandTotal',
                             'uitype' => 72,
                             'column' => 'total',
@@ -230,8 +203,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'hdnTaxType' =>
-                        [
+                    'hdnTaxType' => [
                             'name' => 'hdnTaxType',
                             'uitype' => 16,
                             'column' => 'taxtype',
@@ -248,8 +220,7 @@ class Quotes_Install_Model extends Core_Install_Model
                                 [
                                 ],
                         ],
-                    'hdnS_H_Amount' =>
-                        [
+                    'hdnS_H_Amount' => [
                             'name' => 'hdnS_H_Amount',
                             'uitype' => 72,
                             'column' => 's_h_amount',
@@ -263,8 +234,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'account_id' =>
-                        [
+                    'account_id' => [
                             'name' => 'account_id',
                             'uitype' => 73,
                             'column' => 'accountid',
@@ -278,8 +248,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'assigned_user_id' =>
-                        [
+                    'assigned_user_id' => [
                             'name' => 'assigned_user_id',
                             'uitype' => 53,
                             'column' => 'smownerid',
@@ -293,53 +262,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 1,
                         ],
-                    'createdtime' =>
-                        [
-                            'name' => 'createdtime',
-                            'uitype' => 70,
-                            'column' => 'createdtime',
-                            'table' => 'vtiger_crmentity',
-                            'label' => 'Created Time',
-                            'readonly' => 1,
-                            'presence' => 0,
-                            'typeofdata' => 'DT~O',
-                            'quickcreate' => 3,
-                            'displaytype' => 2,
-                            'masseditable' => 0,
-                            'summaryfield' => 0,
-                        ],
-                    'modifiedtime' =>
-                        [
-                            'name' => 'modifiedtime',
-                            'uitype' => 70,
-                            'column' => 'modifiedtime',
-                            'table' => 'vtiger_crmentity',
-                            'label' => 'Modified Time',
-                            'readonly' => 1,
-                            'presence' => 0,
-                            'typeofdata' => 'DT~O',
-                            'quickcreate' => 3,
-                            'displaytype' => 2,
-                            'masseditable' => 0,
-                            'summaryfield' => 0,
-                        ],
-                    'modifiedby' =>
-                        [
-                            'name' => 'modifiedby',
-                            'uitype' => 52,
-                            'column' => 'modifiedby',
-                            'table' => 'vtiger_crmentity',
-                            'label' => 'Last Modified By',
-                            'readonly' => 1,
-                            'presence' => 0,
-                            'typeofdata' => 'V~O',
-                            'quickcreate' => 3,
-                            'displaytype' => 3,
-                            'masseditable' => 0,
-                            'summaryfield' => 0,
-                        ],
-                    'currency_id' =>
-                        [
+                    'currency_id' => [
                             'name' => 'currency_id',
                             'uitype' => 117,
                             'column' => 'currency_id',
@@ -353,8 +276,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'conversion_rate' =>
-                        [
+                    'conversion_rate' => [
                             'name' => 'conversion_rate',
                             'uitype' => 1,
                             'column' => 'conversion_rate',
@@ -368,8 +290,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'pre_tax_total' =>
-                        [
+                    'pre_tax_total' => [
                             'name' => 'pre_tax_total',
                             'uitype' => 72,
                             'column' => 'pre_tax_total',
@@ -383,29 +304,11 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'source' =>
-                        [
-                            'name' => 'source',
-                            'uitype' => 1,
-                            'column' => 'source',
-                            'table' => 'vtiger_crmentity',
-                            'label' => 'Source',
-                            'readonly' => 1,
-                            'presence' => 2,
-                            'typeofdata' => 'V~O',
-                            'quickcreate' => 3,
-                            'displaytype' => 2,
-                            'masseditable' => 0,
-                            'summaryfield' => 0,
-                        ],
                 ],
-            'LBL_CUSTOM_INFORMATION' =>
-                [
+            'LBL_CUSTOM_INFORMATION' => [
                 ],
-            'LBL_ADDRESS_INFORMATION' =>
-                [
-                    'bill_street' =>
-                        [
+            'LBL_ADDRESS_INFORMATION' => [
+                    'bill_street' => [
                             'name' => 'bill_street',
                             'uitype' => 24,
                             'column' => 'bill_street',
@@ -419,8 +322,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'ship_street' =>
-                        [
+                    'ship_street' => [
                             'name' => 'ship_street',
                             'uitype' => 24,
                             'column' => 'ship_street',
@@ -434,8 +336,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'bill_city' =>
-                        [
+                    'bill_city' => [
                             'name' => 'bill_city',
                             'uitype' => 1,
                             'column' => 'bill_city',
@@ -449,8 +350,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'ship_city' =>
-                        [
+                    'ship_city' => [
                             'name' => 'ship_city',
                             'uitype' => 1,
                             'column' => 'ship_city',
@@ -464,8 +364,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'bill_state' =>
-                        [
+                    'bill_state' => [
                             'name' => 'bill_state',
                             'uitype' => 1,
                             'column' => 'bill_state',
@@ -799,6 +698,22 @@ class Quotes_Install_Model extends Core_Install_Model
                     'picklist_values' => [],
                 ],
             ],
+            'LBL_SYSTEM_INFORMATION' => [
+                'quote_no' => [
+                    'name' => 'quote_no',
+                    'uitype' => 4,
+                    'column' => 'quote_no',
+                    'table' => 'vtiger_quotes',
+                    'label' => 'Quote No',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 3,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 1,
+                ],
+            ]
         ];
     }
 
@@ -824,24 +739,24 @@ class Quotes_Install_Model extends Core_Install_Model
             ->createColumn('validtill', 'date DEFAULT NULL')
             ->createColumn('contactid', 'int(19) DEFAULT NULL')
             ->createColumn('quote_no', 'varchar(100) DEFAULT NULL')
-            ->createColumn('subtotal', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('subtotal', self::$COLUMN_DECIMAL)
             ->createColumn('carrier', 'varchar(200) DEFAULT NULL')
             ->createColumn('shipping', 'varchar(100) DEFAULT NULL')
             ->createColumn('inventorymanager', 'int(19) DEFAULT NULL')
             ->createColumn('type', 'varchar(100) DEFAULT NULL')
-            ->createColumn('adjustment', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('total', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('adjustment', self::$COLUMN_DECIMAL)
+            ->createColumn('total', self::$COLUMN_DECIMAL)
             ->createColumn('taxtype', 'varchar(25) DEFAULT NULL')
-            ->createColumn('discount_percent', 'decimal(25,3) DEFAULT NULL')
-            ->createColumn('discount_amount', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('s_h_amount', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('discount_percent', self::$COLUMN_DECIMAL)
+            ->createColumn('discount_amount', self::$COLUMN_DECIMAL)
+            ->createColumn('s_h_amount', self::$COLUMN_DECIMAL)
             ->createColumn('accountid', 'int(19) DEFAULT NULL')
             ->createColumn('terms_conditions', 'text DEFAULT NULL')
             ->createColumn('currency_id', 'int(19) NOT NULL DEFAULT \'1\'')
             ->createColumn('conversion_rate', 'decimal(10,3) NOT NULL DEFAULT \'1.000\'')
             ->createColumn('compound_taxes_info', 'text DEFAULT NULL')
-            ->createColumn('pre_tax_total', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('s_h_percent', 'DECIMAL(25,3) DEFAULT NULL')
+            ->createColumn('pre_tax_total', self::$COLUMN_DECIMAL)
+            ->createColumn('s_h_percent', self::$COLUMN_DECIMAL)
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createColumn('region_id', 'int(19) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`quoteid`)')
@@ -872,5 +787,8 @@ class Quotes_Install_Model extends Core_Install_Model
             ->createColumn('ship_pobox', 'varchar(30) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`quoteshipaddressid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_quotesshipads` FOREIGN KEY IF NOT EXISTS (`quoteshipaddressid`) REFERENCES `vtiger_quotes` (`quoteid`) ON DELETE CASCADE');
+        
+        $this->createPicklistTable('vtiger_quotestage', '', 'quotestage');
+        $this->createPicklistTable('vtiger_carrier', '', 'carrier');
     }
 }

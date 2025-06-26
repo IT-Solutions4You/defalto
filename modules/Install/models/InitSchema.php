@@ -13,9 +13,39 @@ vimport('~~modules/CustomView/PopulateCustomView.php');
 
 class Install_InitSchema_Model {
 
-	/**
-	 * Function starts applying schema changes
-	 */
+    /**
+     * @var Vtiger_Request
+     */
+    public static object $request;
+
+    /**
+     * @throws Exception
+     */
+    public static function install()
+    {
+        vglobal('debug', true);
+
+        // Create configuration file
+        $configParams = $_SESSION['config_file_info'];
+        $configFile = new Install_ConfigFileUtils_Model($configParams);
+        $configFile->createConfigFile();
+
+        global $adb;
+        $adb->resetSettings($configParams['db_type'], $configParams['db_hostname'], $configParams['db_name'], $configParams['db_username'], $configParams['db_password']);
+        $adb->query('SET NAMES utf8');
+
+        // Initialize and set up tables
+        self::initialize();
+
+        self::upgrade();
+
+        Install_Utils_Model::saveSMTPServer(self::$request);
+    }
+
+    /**
+     * Function starts applying schema changes
+     * @throws Exception
+     */
 	public static function initialize() {
 		global $adb;
 		$adb = PearDatabase::getInstance();
@@ -32,6 +62,9 @@ class Install_InitSchema_Model {
 		$combo = new PopulateComboValues();
 		$combo->create_tables();
 		$combo->create_nonpicklist_tables();
+
+        // Install all the available modules
+        Install_Utils_Model::installAdditionalModulesAndLanguages();
 
 		create_tab_data_file();
 		create_parenttab_data_file();
@@ -807,6 +840,12 @@ class Install_InitSchema_Model {
         $user->column_fields['internal_mailer'] = '1';
         $user->column_fields['email1'] = $_SESSION['config_file_info']['admin_email'] ?? 'admin@defaltouser.com';
         $user->column_fields['roleid'] = Settings_Roles_Record_Model::getRoleId('CEO');
+        $user->column_fields['profile_id'] = 1;
+        $user->column_fields['currency_decimal_separator'] = $_SESSION['config_file_info']['currency_decimal_separator'];
+        $user->column_fields['currency_grouping_separator'] = $_SESSION['config_file_info']['currency_grouping_separator'];
+        $user->column_fields['currency_grouping_pattern'] = '123,456,789';
+        $user->column_fields['currency_symbol_placement'] = '$1.0';
+
         $user->save('Users');
 
         $adminUserId = $user->id;
@@ -897,8 +936,7 @@ class Install_InitSchema_Model {
 		// Workflow manager
 		$dependentEventHandlers = array('VTEntityDelta');
 		$dependentEventHandlersJson = Zend_Json::encode($dependentEventHandlers);
-		$em->registerHandler('vtiger.entity.aftersave', 'modules/com_vtiger_workflow/VTEventHandler.inc', 'VTWorkflowEventHandler',
-									'',$dependentEventHandlersJson);
+		$em->registerHandler('vtiger.entity.aftersave', 'modules/com_vtiger_workflow/VTEventHandler.inc', 'VTWorkflowEventHandler', $dependentEventHandlersJson);
 
 		//Registering events for On modify
 		$em->registerHandler('vtiger.entity.afterrestore', 'modules/com_vtiger_workflow/VTEventHandler.inc', 'VTWorkflowEventHandler');

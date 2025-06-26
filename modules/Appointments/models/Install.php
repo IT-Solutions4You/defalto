@@ -259,51 +259,11 @@ class Appointments_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                 ],
             ],
-            'LBL_SYSTEM_INFO' => [
+            'LBL_SYSTEM_INFORMATION' => [
                 'its4you_calendar_no' => [
                     'label' => 'Calendar No',
                     'uitype' => 4,
                     'typeofdata' => 'V~O',
-                ],
-                'source' => [
-                    'label' => 'Source',
-                    'uitype' => 1,
-                    'typeofdata' => 'V~O',
-                    'displaytype' => 2,
-                    'table' => 'vtiger_crmentity',
-                    'summaryfield' => 1,
-                ],
-                'creator' => [
-                    'column' => 'smcreatorid',
-                    'label' => 'Creator',
-                    'uitype' => 52,
-                    'typeofdata' => 'V~O',
-                    'displaytype' => 2,
-                    'table' => 'vtiger_crmentity',
-                ],
-                'createdtime' => [
-                    'label' => 'Created Time',
-                    'uitype' => 70,
-                    'typeofdata' => 'DT~O',
-                    'displaytype' => 2,
-                    'table' => 'vtiger_crmentity',
-                    'headerfield' => 0,
-                    'summaryfield' => 1,
-                ],
-                'modifiedby' => [
-                    'label' => 'Last Modified By',
-                    'uitype' => 52,
-                    'typeofdata' => 'V~O',
-                    'displaytype' => 2,
-                    'table' => 'vtiger_crmentity',
-                ],
-                'modifiedtime' => [
-                    'label' => 'Modified Time',
-                    'uitype' => 70,
-                    'typeofdata' => 'DT~O',
-                    'displaytype' => 2,
-                    'table' => 'vtiger_crmentity',
-                    'summaryfield' => 1,
                 ],
                 'duration_hours' => [
                     'column' => 'duration_hours',

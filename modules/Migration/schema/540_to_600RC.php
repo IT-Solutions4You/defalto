@@ -124,21 +124,6 @@ Migration_Index_View::ExecuteQuery("CREATE TABLE IF NOT EXISTS vtiger_shorturls 
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8", array());
 
 global $adb;
-$workflowManager = new VTWorkflowManager($adb);
-$taskManager = new VTTaskManager($adb);
-
-$potentailsWorkFlow = $workflowManager->newWorkFlow("Potentials");
-$potentailsWorkFlow->test = '';
-$potentailsWorkFlow->description = "Calculate or Update forecast amount";
-$potentailsWorkFlow->executionCondition = VTWorkflowManager::$ON_EVERY_SAVE;
-$potentailsWorkFlow->defaultworkflow = 1;
-$workflowManager->save($potentailsWorkFlow);
-
-$task = $taskManager->createTask('VTUpdateFieldsTask', $potentailsWorkFlow->id);
-$task->active = true;
-$task->summary = 'update forecast amount';
-$task->field_value_mapping = '[{"fieldname":"forecast_amount","valuetype":"expression","value":"amount * probability / 100"}]';
-$taskManager->saveTask($task);
 
 // Change default Sales Man rolename to Sales Person
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_role SET rolename=? WHERE rolename=? and roleid=?", array('Sales Person', 'Sales Man', 'H5'));
@@ -152,13 +137,6 @@ if(!defined('INSTALLATION_MODE')) {
 		Migration_Index_View::ExecuteQuery($query, array());
 	}
 }
-
-$invoiceModuleInstance = Vtiger_Module::getInstance('Invoice');
-$fieldInstance = Vtiger_Field::getInstance('invoicestatus', $invoiceModuleInstance);
-$fieldInstance->setPicklistValues( Array ('Cancel'));
-
-//Currency Decimal places handling
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET typeofdata='N~O' WHERE fieldlabel='Annual Revenue' and typeofdata='I~O'",array());
 
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_currency_info MODIFY COLUMN conversion_rate decimal(12,5)", array());
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_productcurrencyrel MODIFY COLUMN actual_price decimal(28,5)", array());
@@ -274,12 +252,6 @@ Migration_Index_View::ExecuteQuery("UPDATE vtiger_ws_entity SET handler_path='in
 
 $purchaseOrderTabId = getTabid("PurchaseOrder");
 
-$purchaseOrderAddressInformationBlockId = getBlockId($purchaseOrderTabId, "LBL_ADDRESS_INFORMATION");
-
-$invoiceTabId = getTabid("Invoice");
-$invoiceTabIdAddressInformationBlockId = getBlockId($invoiceTabId, "LBL_ADDRESS_INFORMATION");
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET block=? where tabid=? and block=?;',
-		array($invoiceTabIdAddressInformationBlockId,$invoiceTabId,$purchaseOrderAddressInformationBlockId));
 
 vtws_addActorTypeWebserviceEntityWithName('Tax',
 		'include/Webservices/LineItem/VtigerTaxOperation.php',
@@ -303,13 +275,6 @@ Migration_Index_View::ExecuteQuery("INSERT INTO vtiger_ws_entity_referencetype(f
 $fieldTypeId = $adb->getUniqueID("vtiger_ws_entity_fieldtype");
 Migration_Index_View::ExecuteQuery("INSERT INTO vtiger_ws_entity_fieldtype(fieldtypeid,table_name,field_name,fieldtype) VALUES (?,?,?,?);", array($fieldTypeId,'vtiger_producttaxrel', 'taxid',"reference"));
 Migration_Index_View::ExecuteQuery("INSERT INTO vtiger_ws_entity_referencetype(fieldtypeid,type) VALUES (?,?)",array($fieldTypeId,'Tax'));
-
-//--
-//Changed Columns Display in List view of Leads
-$leadsFirstName = 'vtiger_leaddetails:firstname:firstname:Leads_First_Name:V';
-$leadsLastName = 'vtiger_leaddetails:lastname:lastname:Leads_Last_Name:V';
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_cvcolumnlist SET columnname=? WHERE cvid=? AND columnindex=?", array($leadsFirstName, '1', '1'));
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_cvcolumnlist SET columnname=? WHERE cvid=? AND columnindex=?", array($leadsLastName, '1', '2'));
 
 //Changed the Currency Symbol of Moroccan, Dirham to DH
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_currencies SET currency_symbol=? WHERE currency_name=? AND currency_code=?", array('DH', 'Moroccan, Dirham', 'MAD'));
@@ -352,13 +317,6 @@ for($i=0;$i<$count;$i++) {
 }
 
 Migration_Index_View::ExecuteQuery('DELETE FROM vtiger_no_of_currency_decimals WHERE no_of_currency_decimalsid=?', array(1));
-
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET uitype=?, typeofdata=? WHERE fieldname=?',array(71, 'N~O', 'listprice'));
-
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET typeofdata=? WHERE fieldname=?',array('N~O', 'quantity'));
-
-//--
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET typeofdata=?, uitype =?, fieldlabel=? WHERE fieldname =? and tablename=?', array('N~O', 71, 'Discount', 'discount_amount', 'vtiger_inventoryproductrel'));
 
 //deleting default workflows
 Migration_Index_View::ExecuteQuery("delete from com_vtiger_workflowtasks where task_id=?", array(11));
@@ -433,14 +391,9 @@ $projectTaskTabId = getTabid('ProjectTask');
 $projectMilestoneTabId = getTabid('ProjectMilestone');
 $contactsTabId = getTabid('Contacts');
 $accountsTabId = getTabid('Accounts');
-$helpDeskTabId = getTabid('HelpDesk');
 
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_relatedlists SET actions=? WHERE tabid in(?, ?) and related_tabid in (?)',
         array('add', $contactsTabId, $accountsTabId, $projectTabId));
-
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET presence = 1 WHERE tabid = ? AND fieldname = ?', array($helpDeskTabId, 'comments'));
-$faqTabId = getTabid('Faq');
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET presence = 1 WHERE tabid = ? AND fieldname = ?', array($faqTabId, 'comments'));
 
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET truncate_trailing_zeros = ?', array(1));
 
@@ -607,20 +560,6 @@ $inventoryModules = array(
 foreach ($inventoryModules as $module => $details) {
     $tableName = $details[1];
     $moduleInstance = Vtiger_Module::getInstance($module);
-    $block = Vtiger_Block::getInstance($details[0], $moduleInstance);
-
-    $preTaxTotalField = new Vtiger_Field();
-    $preTaxTotalField->name = 'pre_tax_total';
-    $preTaxTotalField->label = 'Pre Tax Total';
-    $preTaxTotalField->table = $tableName;
-    $preTaxTotalField->column = 'pre_tax_total';
-    $preTaxTotalField->columntype = 'decimal(25,8)';
-    $preTaxTotalField->typeofdata = 'N~O';
-    $preTaxTotalField->uitype = '72';
-    $preTaxTotalField->masseditable = '1';
-    $preTaxTotalField->displaytype = '3';
-    $block->addField($preTaxTotalField);
-
     $tableId = $details[2];
 
     $result = $adb->pquery("SELECT $tableId, subtotal, s_h_amount, discount_percent, discount_amount FROM $tableName", array());
@@ -636,6 +575,7 @@ foreach ($inventoryModules as $module => $details) {
         if ($discountPercent != '0') {
             $discountAmount = ($subTotal * $discountPercent) / 100;
         }
+
         $preTaxTotalValue = $subTotal + $shAmount - $discountAmount;
 
         Migration_Index_View::ExecuteQuery("UPDATE $tableName set pre_tax_total = ? WHERE $tableId = ?", array($preTaxTotalValue, $id));
@@ -653,59 +593,6 @@ Vtiger_Event::register($InvoiceInstance, 'vtiger.entity.aftersave', 'InvoiceHand
 
 $POInstance = Vtiger_Module::getInstance('PurchaseOrder');
 Vtiger_Event::register($POInstance, 'vtiger.entity.aftersave', 'PurchaseOrderHandler', 'modules/PurchaseOrder/PurchaseOrderHandler.php');
-
-$InvoiceBlockInstance = Vtiger_Block::getInstance('LBL_INVOICE_INFORMATION', $InvoiceInstance);
-$field1 = Vtiger_Field::getInstance('received', $InvoiceInstance);
-if (!$field1) {
-    $field1 = new Vtiger_Field();
-    $field1->name = 'received';
-    $field1->label = 'Received';
-    $field1->table = 'vtiger_invoice';
-    $field1->uitype = 72;
-    $field1->displaytype = 3;
-    $field1->typeofdata = 'N~O';
-    $field1->defaultvalue = 0;
-    $InvoiceBlockInstance->addField($field1);
-}
-$field2 = Vtiger_Field::getInstance('balance', $InvoiceInstance);
-if (!$field2) {
-    $field2 = new Vtiger_Field();
-    $field2->name = 'balance';
-    $field2->label = 'Balance';
-    $field1->table = 'vtiger_invoice';
-    $field2->uitype = 72;
-    $field2->typeofdata = 'N~O';
-    $field2->defaultvalue = 0;
-    $field2->displaytype = 3;
-    $InvoiceBlockInstance->addField($field2);
-}
-
-$POBlockInstance = Vtiger_Block::getInstance('LBL_PO_INFORMATION', $POInstance);
-$field3 = Vtiger_Field::getInstance('paid', $POInstance);
-if (!$field3) {
-    $field3 = new Vtiger_Field();
-    $field3->name = 'paid';
-    $field3->label = 'Paid';
-    $field3->table = 'vtiger_purchaseorder';
-    $field3->uitype = 72;
-    $field3->displaytype = 3;
-    $field3->typeofdata = 'N~O';
-    $field3->defaultvalue = 0;
-    $POBlockInstance->addField($field3);
-}
-$field4 = Vtiger_Field::getInstance('balance', $POInstance);
-if (!$field4) {
-    $field4 = new Vtiger_Field();
-    $field4->name = 'balance';
-    $field4->label = 'Balance';
-    $field4->table = 'vtiger_purchaseorder';
-    $field4->uitype = 72;
-    $field4->typeofdata = 'N~O';
-    $field4->defaultvalue = 0;
-    $field4->displaytype = 3;
-    $POBlockInstance->addField($field4);
-}
-
 
 $sqltimelogTable = "CREATE TABLE vtiger_sqltimelog ( id integer, type VARCHAR(10),
 					data text, started decimal(18,2), ended decimal(18,2), loggedon datetime)";
@@ -751,8 +638,6 @@ Migration_Index_View::ExecuteQuery('UPDATE vtiger_cvadvfilter SET comparator = ?
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_relatedlists SET actions = ? WHERE tabid = ? AND related_tabid IN (?, ?)",
 	array('ADD', getTabid('Project'), getTabid('ProjectTask'), getTabid('ProjectMilestone')));
 
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET typeofdata = ? WHERE columnname = ? AND tablename = ?", array("V~O", "company", "vtiger_leaddetails"));
-
 if(Vtiger_Utils::CheckTable('vtiger_cron_task')) {
 	Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_cron_task MODIFY COLUMN laststart INT(11) UNSIGNED',Array());
 	Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_cron_task MODIFY COLUMN lastend INT(11) UNSIGNED',Array());
@@ -767,7 +652,7 @@ if(Vtiger_Utils::CheckTable('vtiger_cron_log')) {
 // Start 2013.03.19
 // Mail Converter schema changes
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner ADD COLUMN timezone VARCHAR(10) default NULL', array());
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_mailscanner SET timezone=? WHERE server LIKE ? AND timezone IS NULL', array('-8:00', '%.gmail.com'));
+Migration_Index_View::ExecuteQuery('UPDATE vtiger_mailscanner SET time_zone=? WHERE server LIKE ? AND time_zone IS NULL', ['-8:00', '%.gmail.com']);
 
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_cvadvfilter MODIFY value VARCHAR(512)", array());
 // End 2013.03.19
@@ -814,20 +699,6 @@ $adb->query("CREATE TABLE IF NOT EXISTS vtiger_notescf (notesid INT(19), FOREIGN
 if(!defined('INSTALLATION_MODE')) {
 	Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_salutationtype ADD COLUMN sortorderid INT(1)', array());
 }
-
-$summaryFields = array(
-	'HelpDesk'	=> array('assigned_user_id', 'ticketstatus', 'parent_id', 'ticketseverities', 'description'),
-	'Potentials'=> array('assigned_user_id', 'amount', 'sales_stage', 'closingdate'),
-	'Project'	=> array('assigned_user_id', 'targetenddate'));
-
-foreach ($summaryFields as $moduleName => $fieldsList) {
-	$updateQuery = 'UPDATE vtiger_field SET summaryfield = 1
-						WHERE fieldname IN ('.generateQuestionMarks($fieldsList) .') AND tabid = '. getTabid($moduleName);
-	Migration_Index_View::ExecuteQuery($updateQuery, $fieldsList);
-}
-
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET defaultvalue=? WHERE tablename=? AND fieldname= ?', array('Active', 'vtiger_users', 'status'));
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET defaultvalue=? WHERE tablename=? AND fieldname= ?', array('12', 'vtiger_users', 'hour_format'));
 
 // Adding users field into all the available profiles, this is used in email templates
 // when non-admin sends an email with users field in the template
@@ -896,23 +767,6 @@ $home->addLink('DASHBOARDWIDGET', 'Funnel Amount', 'index.php?module=Potentials&
 
 // Enable Sharing-Access for Vendors
 $vendorInstance = Vtiger_Module::getInstance('Vendors');
-$vendorAssignedToField = Vtiger_Field::getInstance('assigned_user_id', $vendorInstance);
-if (!$vendorAssignedToField) {
-	$vendorBlock = Vtiger_Block::getInstance('LBL_VENDOR_INFORMATION', $vendorInstance);
-
-	$vendorAssignedToField = new Vtiger_Field();
-	$vendorAssignedToField->name = 'assigned_user_id';
-	$vendorAssignedToField->label = 'Assigned To';
-	$vendorAssignedToField->table = 'vtiger_crmentity';
-	$vendorAssignedToField->column = 'smownerid';
-	$vendorAssignedToField->uitype = 53;
-	$vendorAssignedToField->typeofdata = 'V~M';
-	$vendorBlock->addField($vendorAssignedToField);
-
-	$vendorAllFilter = Vtiger_Filter::getInstance('All', $vendorInstance);
-	$vendorAllFilter->addField($vendorAssignedToField, 5);
-}
-
 // Allow Sharing access and role-based security for Vendors
 Vtiger_Access::deleteSharing($vendorInstance);
 Vtiger_Access::initSharing($vendorInstance);
@@ -922,24 +776,7 @@ Vtiger_Access::setDefaultSharing($vendorInstance);
 Vtiger_Module::syncfile();
 
 // Add Email Opt-out for Leads
-$leadsInstance = Vtiger_Module::getInstance('Leads');
-$leadsOptOutField= Vtiger_Field::getInstance('emailoptout', $leadsInstance);
-
-if (!$leadsOptOutField) {
-	$leadsOptOutField = new Vtiger_Field();
-	$leadsOptOutField->name = 'emailoptout';
-	$leadsOptOutField->label = 'Email Opt Out';
-	$leadsOptOutField->table = 'vtiger_leaddetails';
-	$leadsOptOutField->column = $leadsOptOutField->name;
-	$leadsOptOutField->columntype = 'VARCHAR(3)';
-	$leadsOptOutField->uitype = 56;
-	$leadsOptOutField->typeofdata = 'C~O';
-
-	$leadsInformationBlock = Vtiger_Block::getInstance('LBL_LEAD_INFORMATION', $leadsInstance);
-	$leadsInformationBlock->addField($leadsOptOutField);
-
-	Migration_Index_View::ExecuteQuery('UPDATE vtiger_leaddetails SET emailoptout=0 WHERE emailoptout IS NULL', array());
-}
+Migration_Index_View::ExecuteQuery('UPDATE vtiger_leaddetails SET emailoptout=0 WHERE emailoptout IS NULL', array());
 
 $module = Vtiger_Module::getInstance('Home');
 $module->addLink('DASHBOARDWIDGET', 'Notebook', 'index.php?module=Home&view=ShowWidget&name=Notebook');
@@ -960,29 +797,6 @@ for($i=0; $i<$adb->num_rows($result); $i++) {
 	$query = 'INSERT INTO vtiger_module_dashboard_widgets(linkid, userid, filterid, title, data) VALUES(?,?,?,?,?)';
 	$params= array($noteBookLinkId,$userId,0,$noteBookTitle,$noteBookContent);
 	Migration_Index_View::ExecuteQuery($query, $params);
-}
-
-$moduleInstance = Vtiger_Module::getInstance('ModComments');
-$modCommentsUserId = Vtiger_Field::getInstance("userid", $moduleInstance);
-$modCommentsReasonToEdit = Vtiger_Field::getInstance("reasontoedit", $moduleInstance);
-
-if(!$modCommentsUserId){
-	$blockInstance = Vtiger_Block::getInstance('LBL_MODCOMMENTS_INFORMATION', $moduleInstance);
-	$userId = new Vtiger_Field();
-	$userId->name = 'userid';
-	$userId->label = 'UserId';
-	$userId->uitype = '10';
-	$userId->displaytype = '3';
-	$blockInstance->addField($userId);
-}
-if(!$modCommentsReasonToEdit){
-	$blockInstance = Vtiger_Block::getInstance('LBL_MODCOMMENTS_INFORMATION', $moduleInstance);
-	$reasonToEdit = new Vtiger_Field();
-	$reasonToEdit->name = 'reasontoedit';
-	$reasonToEdit->label = 'ReasonToEdit';
-	$reasonToEdit->uitype = '19';
-	$reasonToEdit->displaytype = '1';
-	$blockInstance->addField($reasonToEdit);
 }
 
 $labels = array('LBL_ADD_NOTE', 'Add Note');
@@ -1017,30 +831,6 @@ Migration_Index_View::ExecuteQuery("UPDATE vtiger_contactdetails SET salutation=
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_eventhandlers SET handler_path = ? WHERE handler_class = ?',
 				array('modules/Vtiger/handlers/RecordLabelUpdater.php', 'Vtiger_RecordLabelUpdater_Handler'));
 
-$inventoryModules = array('Invoice','Quotes','PurchaseOrder','SalesOrder');
-foreach ($inventoryModules as $key => $moduleName) {
-	$moduleInstance = Vtiger_Module::getInstance($moduleName);
-	$focus = CRMEntity::getInstance($moduleName);
-	$blockInstance = Vtiger_Block::getInstance('LBL_ITEM_DETAILS',$moduleInstance);
-
-	$field = new Vtiger_Field();
-	$field->name = 'hdnS_H_Percent';
-	$field->label = 'S&H Percent';
-	$field->column = 's_h_percent';
-	$field->table = $focus->table_name;
-	$field->uitype = 1;
-	$field->typeofdata = 'N~O';
-	$field->readonly = '0';
-	$field->displaytype = '5';
-	$field->masseditable = '0';
-	$field->quickcreate = '0';
-	$field->columntype = 'INT(11)';
-	$blockInstance->addField($field);
-}
-
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET masseditable = ? where fieldname = ? and tabid = ?',
-			array('1', 'accountname', getTabid('Accounts')));
-
 $result = $adb->pquery('SELECT taxname FROM vtiger_shippingtaxinfo', array());
 $numOfRows = $adb->num_rows($result);
 $shippingTaxes = array();
@@ -1061,51 +851,18 @@ for ($i = 0; $i < $num_rows; $i++) {
 $query = 'DELETE FROM vtiger_field WHERE tabid IN (' . generateQuestionMarks($tabIds) . ') AND fieldname IN (' . generateQuestionMarks($shippingTaxes) . ')';
 Migration_Index_View::ExecuteQuery($query, array_merge($tabIds, $shippingTaxes));
 
-$entityModules = Vtiger_Module_Model::getEntityModules();
-
-foreach($entityModules as $moduleModel) {
-	$crmInstance = CRMEntity::getInstance($moduleModel->getName());
-	$tabId = $moduleModel->getId();
-    $defaultRelatedFields = $crmInstance->list_fields_name;
-
-    if ($defaultRelatedFields) {
-        $updateQuery = 'UPDATE vtiger_field SET summaryfield=1  where tabid=? and fieldname IN (' . generateQuestionMarks($defaultRelatedFields) . ')';
-        Migration_Index_View::ExecuteQuery($updateQuery, array_merge([$tabId], array_values($defaultRelatedFields)));
-    }
-}
-
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_currencies SET currency_name = ? where currency_name = ? and currency_code = ?',
 		array('Hong Kong, Dollars', 'LvHong Kong, Dollars', 'HKD'));
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_currency_info SET currency_name = ? where currency_name = ?',
 		array('Hong Kong, Dollars', 'LvHong Kong, Dollars'));
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET defaultvalue=1 WHERE fieldname = ?',array("filestatus"));
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_role ADD allowassignedrecordsto INT(2) NOT NULL DEFAULT 1', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE com_vtiger_workflowtask_queue ADD COLUMN task_contents text', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE com_vtiger_workflowtask_queue DROP INDEX com_vtiger_workflowtask_queue_idx',array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner_ids modify column messageid varchar(512)' , array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner_ids add index scanner_message_ids_idx (scannerid, messageid)', array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_mailscanner_folders add index folderid_idx (folderid)', array());
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET leftpanelhide = ?', array(0));
 $potentialModule = Vtiger_Module::getInstance('Potentials');
 $block = Vtiger_Block::getInstance('LBL_OPPORTUNITY_INFORMATION', $potentialModule);
 
 $relatedToField = Vtiger_Field::getInstance('related_to', $potentialModule);
 $relatedToField->unsetRelatedModules(array('Contacts'));
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET typeofdata = ? WHERE fieldid = ?', array('V~O', $relatedToField->id));
-
-$contactField = Vtiger_Field::getInstance('contact_id', $potentialModule);
-if(!$contactField) {
-	$contactField = new Vtiger_Field();
-	$contactField->name = 'contact_id';
-	$contactField->label = 'Contact Name';
-	$contactField->uitype = '10';
-	$contactField->column = 'contact_id';
-	$contactField->table = 'vtiger_potential';
-	$contactField->columntype = 'INT(19)';
-	$block->addField($contactField);
-	$contactField->setRelatedModules(array('Contacts'));
-	Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET summaryfield=1 WHERE fieldid = ?', array($contactField->id));
-}
 
 $lastPotentialId = 0;
 do {
@@ -1166,23 +923,7 @@ $ticketsModule = Vtiger_Module::getInstance('HelpDesk');
 $ticketsBlock = Vtiger_Block::getInstance('LBL_TICKET_INFORMATION', $ticketsModule);
 
 $relatedToField = Vtiger_Field::getInstance('parent_id', $ticketsModule);
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET uitype = 10 WHERE fieldid = ?', array($relatedToField->id));
 $relatedToField->setRelatedModules(array('Accounts'));
-
-$contactField = Vtiger_Field::getInstance('contact_id', $ticketsModule);
-if(!$contactField) {
-	$contactField = new Vtiger_Field();
-	$contactField->name = 'contact_id';
-	$contactField->label = 'Contact Name';
-	$contactField->table = 'vtiger_troubletickets';
-	$contactField->column = 'contact_id';
-	$contactField->columntype = 'INT(19)';
-	$contactField->uitype = '10';
-	$ticketsBlock->addField($contactField);
-
-	$contactField->setRelatedModules(array('Contacts'));
-	Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET summaryfield = 1 WHERE fieldid = ?', array($contactField->id));
-}
 
 $lastTicketId = 0;
 do {
@@ -1238,10 +979,6 @@ for($j=0; $j<$filterColumnRows; $j++) {
 }
 unset($filterColumnList);
 
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET defaultvalue=? WHERE tablename=? AND fieldname= ? ', array('Active', 'vtiger_users', 'status'));
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET defaultvalue=? WHERE tablename=? AND fieldname= ? ', array('12', 'vtiger_users', 'hour_format'));
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET defaultvalue=? WHERE tablename=? AND fieldname= ? ', array('softed', 'vtiger_users', 'theme'));
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET defaultvalue=? WHERE tablename=? AND fieldname= ? ', array('Monday', 'vtiger_users', 'dayoftheweek'));
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_shorturls ADD COLUMN onetime int(5)', array());
 
 $checkQuery = 'SELECT 1 FROM vtiger_currencies  WHERE currency_name=?';
@@ -1250,54 +987,10 @@ if($adb->num_rows($checkResult) <= 0) {
 	Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_currencies VALUES ('.$adb->getUniqueID("vtiger_currencies").',"Iraqi Dinar","IQD","ID")',array());
 }
 
-$potentialModule = Vtiger_Module::getInstance('Potentials');
-$potentialTabId = getTabid('Potentials');
-
-$contactField = Vtiger_Field::getInstance('contact_id', $potentialModule);
-$relatedToField = Vtiger_Field::getInstance('related_to', $potentialModule);
-
-$result = $adb->pquery('SELECT sequence,block FROM vtiger_field WHERE fieldid = ? and tabid = ?', array($relatedToField->id, $potentialTabId));
-$relatedToFieldSequence = $adb->query_result($result, 0, 'sequence');
-$relatedToFieldBlock = $adb->query_result($result, 0, 'block');
-
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET sequence = sequence+1 WHERE sequence > ? and tabid = ? and block = ?', array($relatedToFieldSequence, $potentialTabId, $relatedToFieldBlock));
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET sequence = ? WHERE fieldid = ?', array($relatedToFieldSequence+1, $contactField->id));
-
-$ticketsModule = Vtiger_Module::getInstance('HelpDesk');
-$ticketsTabId = getTabid('HelpDesk');
-
-$contactField = Vtiger_Field::getInstance('contact_id', $ticketsModule);
-$relatedToField = Vtiger_Field::getInstance('parent_id', $ticketsModule);
-
-$result = $adb->pquery('SELECT sequence,block FROM vtiger_field WHERE fieldid = ? and tabid = ?', array($relatedToField->id, $ticketsTabId));
-$relatedToFieldSequence = $adb->query_result($result, 0, 'sequence');
-$relatedToFieldBlock = $adb->query_result($result, 0, 'block');
-
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET sequence = sequence+1 WHERE sequence > ? and tabid = ? and block = ?', array($relatedToFieldSequence, $ticketsTabId, $relatedToFieldBlock));
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET sequence = ? WHERE fieldid = ?', array($relatedToFieldSequence+1, $contactField->id));
-
 $checkQuery = 'SELECT 1 FROM vtiger_currencies  WHERE currency_name=?';
 $checkResult = $adb->pquery($checkQuery,array('Maldivian Ruffiya'));
 if($adb->num_rows($checkResult) <= 0) {
 	Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_currencies VALUES ('.$adb->getUniqueID("vtiger_currencies").',"Maldivian Ruffiya","MVR","MVR")',array());
-}
-
-$moduleInstance = Vtiger_Module::getInstance('HelpDesk');
-$block = Vtiger_Block::getInstance('LBL_TICKET_INFORMATION', $moduleInstance);
-$fromPortal = Vtiger_Field_Model::getInstance('from_portal', $moduleInstance);
-
-if(!$fromPortal){
-    $field = new Vtiger_Field();
-    $field->name = 'from_portal';
-    $field->label = 'From Portal';
-    $field->table ='vtiger_ticketcf';
-    $field->column = 'from_portal';
-    $field->columntype = 'varchar(3)';
-    $field->typeofdata = 'C~O';
-    $field->uitype = 56;
-    $field->displaytype = 3;
-    $field->presence = 0;
-    $block->addField($field);
 }
 
 //Start: Customer - Feature #10254 Configuring all Email notifications including Ticket notifications
@@ -1333,6 +1026,7 @@ $commentsWorkflow->executionCondition = VTWorkflowManager::$ON_FIRST_SAVE;
 $commentsWorkflow->defaultworkflow = 1;
 $workflowManager->save($commentsWorkflow);
 
+include_once 'modules/com_vtiger_workflow/tasks/VTEmailTask.inc';
 $emailTask = new VTEmailTask();
 $emailTask->id = '';
 $emailTask->executeImmediately = 0;

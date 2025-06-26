@@ -19,7 +19,51 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model {
 
 	protected $menuGroupByParent = array();
 
-	/**
+    /**
+     * @var array
+     */
+    public static array $additionsToAppMap = [
+        'Home' => ['HOME'],
+        'Contacts' => ['MARKETING', 'SALES', 'INVENTORY', 'SUPPORT', 'PROJECT'],
+        'Accounts' => ['HOME', 'MARKETING', 'SALES', 'INVENTORY', 'SUPPORT', 'PROJECT'],
+        'Campaigns' => ['MARKETING'],
+        'Leads' => ['HOME', 'MARKETING'],
+        'Potentials' => ['HOME', 'SALES'],
+        'Quotes' => ['SALES'],
+        'Invoice' => ['INVENTORY'],
+        'HelpDesk' => ['SUPPORT'],
+        'Faq' => ['SUPPORT'],
+        'Assets' => ['SUPPORT'],
+        'Products' => ['SALES', 'INVENTORY'],
+        'Services' => ['SALES', 'INVENTORY'],
+        'PriceBooks' => ['INVENTORY'],
+        'Vendors' => ['INVENTORY'],
+        'PurchaseOrder' => ['INVENTORY'],
+        'SalesOrder' => ['INVENTORY'],
+        'Project' => ['PROJECT'],
+        'ProjectTask' => ['PROJECT'],
+        'ProjectMilestone' => ['PROJECT'],
+        'ServiceContracts' => ['SUPPORT'],
+        'Rss' => ['TOOLS'],
+        'Portal' => ['TOOLS'],
+        'RecycleBin' => ['TOOLS'],
+        'PDFMaker' => ['TOOLS'],
+        'EMAILMaker' => ['TOOLS'],
+        'Reporting' => ['TOOLS'],
+        'ITS4YouEmails' => ['TOOLS'],
+        'Installer' => ['TOOLS'],
+        'Appointments' => ['HOME', 'TOOLS'],
+        'Documents' => ['HOME', 'TOOLS'],
+    ];
+
+    /**
+     * @var array
+     */
+    public static array $ignoredModules = [
+        'ModComments',
+    ];
+
+    /**
 	 * Function to get all the top menu models
 	 * @return <array> - list of Vtiger_Menu_Model instances
 	 */
@@ -160,56 +204,40 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model {
 
     public static function getIgnoredModules()
     {
-        return [];
+        return self::$ignoredModules;
     }
 
-    function regroupMenuByParent($menuGroupedByParent) {
-		$editionsToAppMap = array(
-									'Contacts'		=> array('MARKETING', 'SALES', 'INVENTORY', 'SUPPORT', 'PROJECT'),
-									'Accounts'		=> array('MARKETING', 'SALES', 'INVENTORY', 'SUPPORT', 'PROJECT'),
-									'Campaigns'		=> array('MARKETING'),
-									'Leads'			=> array('MARKETING'),
-									'Potentials'	=> array('SALES'),
-									'Quotes'		=> array('SALES'),
-									'Invoice'		=> array('INVENTORY'),
-									'HelpDesk'		=> array('SUPPORT'),
-									'Faq'			=> array('SUPPORT'),
-									'Assets'		=> array('SUPPORT'),
-									'Products'		=> array('SALES', 'INVENTORY'),
-									'Services'		=> array('SALES', 'INVENTORY'),
-									'Pricebooks'	=> array('INVENTORY'),
-									'Vendors'		=> array('INVENTORY'),
-									'PurchaseOrder'	=> array('INVENTORY'),
-									'SalesOrder'	=> array('INVENTORY'),
-									'Project'		=> array('PROJECT'),
-									'ProjectTask'	=> array('PROJECT'),
-									'ProjectMilestone'	=> array('PROJECT'),
-									'ServiceContracts'	=> array('SUPPORT'),
-									'Rss'			=> array('TOOLS'),
-									'Portal'		=> array('TOOLS'),
-									'RecycleBin'	=> array('TOOLS'),
-							);
+    public static function getAdditionsToAppMap()
+    {
+        return self::$additionsToAppMap;
+    }
 
-		$oldToNewAppMap = Vtiger_MenuStructure_Model::getOldToNewAppMapping();
-		$ignoredModules = self::getIgnoredModules();
-		$regroupMenuByParent = array();
-		foreach($menuGroupedByParent as $appName => $appModules) {
-			foreach ($appModules as $moduleName => $moduleModel) {
-				if(!empty($editionsToAppMap[$moduleName])) {
-					foreach ($editionsToAppMap[$moduleName] as $app) {
-						$regroupMenuByParent[$app][$moduleName] = $moduleModel;
-					}
-				} else {
-                    if(!in_array($moduleName, $ignoredModules) && isset($oldToNewAppMap[$appName])) {
-						$app = $oldToNewAppMap[$appName];
-						$regroupMenuByParent[$app][$moduleName] = $moduleModel;
-					}                
-				}
-			}
-		}
+    public function regroupMenuByParent($menuGroupedByParent): array
+    {
+        $additionsToAppMap = self::getAdditionsToAppMap();
+        $ignoredModules = self::getIgnoredModules();
+        $oldToNewAppMap = self::getOldToNewAppMapping();
+        $regroupMenuByParent = [];
 
-		return $regroupMenuByParent;
-	}
+        foreach ($menuGroupedByParent as $appName => $appModules) {
+            foreach ($appModules as $moduleName => $moduleModel) {
+                if (in_array($moduleName, $ignoredModules)) {
+                    continue;
+                }
+
+                if (!empty($additionsToAppMap[$moduleName])) {
+                    foreach ($additionsToAppMap[$moduleName] as $app) {
+                        $regroupMenuByParent[$app][$moduleName] = $moduleModel;
+                    }
+                } elseif (isset($oldToNewAppMap[$appName])) {
+                    $app = $oldToNewAppMap[$appName];
+                    $regroupMenuByParent[$app][$moduleName] = $moduleModel;
+                }
+            }
+        }
+
+        return $regroupMenuByParent;
+    }
 
     public static function getOldToNewAppMapping()
     {

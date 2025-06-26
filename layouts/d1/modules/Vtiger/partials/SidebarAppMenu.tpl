@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div class="col-auto d-flex align-items-center justify-content-center">
-                    <div class="fs-3 text-primary">{$COMPANY_NAME}</div>
+                    <a href="index.php" class="fs-3 text-primary">{$COMPANY_NAME}</a>
                 </div>
                 <div class="col-lg text-end text-secondary d-flex flex-wrap align-items-center justify-content-end">
                     {if $USER_MODEL->isAdminUser()}
@@ -52,19 +52,18 @@
                                     {break}
                                 {/if}
                             {/foreach}
-                            {* Fix for Responsive Layout Menu - Changed data-default-url to # *}
+                            <div class="cursorDefault menu-items-wrapper app-menu-items-wrapper mb-1 py-2 px-3 text-truncate fw-bold border-bottom border-2 text-uppercase">
+                                <span class="app-icon-list dt-menu-icon fa {$APP_IMAGE_MAP[$APP_NAME]}"></span>
+                                <span class="app-name ms-3 text-truncate">{vtranslate("LBL_$APP_NAME")}</span>
+                            </div>
                             <div class="menu-item" data-app-name="{$APP_NAME}" id="{$APP_NAME}_modules_dropdownMenu" aria-haspopup="true" aria-expanded="true" data-default-url="#">
-                                <div class="menu-items-wrapper app-menu-items-wrapper mb-3 p-3 text-truncate fw-bold rounded {if $IS_SELECTED_CATEGORY}bg-menu-icon{else}text-secondary{/if}">
-                                    <span class="app-icon-list dt-menu-icon fa {$APP_IMAGE_MAP[$APP_NAME]} {if $IS_SELECTED_CATEGORY}text-primary{/if}"></span>
-                                    <span class="app-name ms-3 text-truncate">{vtranslate("LBL_$APP_NAME")}</span>
-                                </div>
                                 <div class="container-fluid" aria-labelledby="{$APP_NAME}_modules_dropdownMenu">
                                     <div class="row">
                                         {foreach item=moduleModel key=moduleName from=$APP_GROUPED_MENU[$APP_NAME]}
                                             {assign var=translatedModuleLabel value=vtranslate($moduleModel->get('label'),$moduleName)}
                                             {assign var=IS_SELECTED_MODULE value=$IS_SELECTED_CATEGORY and $moduleName eq $MODULE}
                                             <div class="col-lg-12 p-0">
-                                                <a class="menu-items-link rounded d-block mb-2 p-3 text-truncate fw-bold {if !$IS_SELECTED_MODULE}text-secondary{/if}" href="{$moduleModel->getDefaultUrl()}&app={$APP_NAME}" title="{$translatedModuleLabel}">
+                                                <a class="menu-items-link rounded d-flex align-items-center mb-1 py-3 px-3 text-truncate fw-bold rounded {if $IS_SELECTED_MODULE}bg-menu-icon text-primary{else}text-secondary{/if}" href="{$moduleModel->getDefaultUrl()}&app={$APP_NAME}" title="{$translatedModuleLabel}">
                                                     <span class="dt-menu-icon module-icon {if $IS_SELECTED_MODULE}text-primary{/if}">{$moduleModel->getModuleIcon('14px')}</span>
                                                     <span class="ms-3 module-name text-truncate">{$translatedModuleLabel}</span>
                                                 </a>

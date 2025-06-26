@@ -241,20 +241,6 @@ class Potentials_Install_Model extends Core_Install_Model
                         'Campaigns',
                     ],
                 ],
-                'forecast_amount' => [
-                    'name' => 'forecast_amount',
-                    'uitype' => 71,
-                    'column' => 'forecast_amount',
-                    'table' => 'vtiger_potential',
-                    'label' => 'Forecast Amount',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'N~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 1,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
                 'contact_id' => [
                     'name' => 'contact_id',
                     'uitype' => 10,
@@ -293,71 +279,6 @@ class Potentials_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'filter' => 1,
                     'filter_sequence' => 1,
-                ],
-                'source' => [
-                    'name' => 'source',
-                    'uitype' => 1,
-                    'column' => 'source',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Source',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'creator' => [
-                    'name' => 'creator',
-                    'column' => 'smcreatorid',
-                    'label' => 'Creator',
-                    'uitype' => 52,
-                    'typeofdata' => 'V~O',
-                    'displaytype' => 2,
-                    'table' => 'vtiger_crmentity',
-                ],
-                'createdtime' => [
-                    'name' => 'createdtime',
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'modifiedby' => [
-                    'name' => 'modifiedby',
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'modifiedtime' => [
-                    'name' => 'modifiedtime',
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
                 ],
                 'isconvertedfromlead' => [
                     'name' => 'isconvertedfromlead',
@@ -413,7 +334,7 @@ class Potentials_Install_Model extends Core_Install_Model
             ->createColumn('potential_no', 'varchar(100) NOT NULL')
             ->createColumn('related_to', 'int(19) DEFAULT NULL')
             ->createColumn('potentialname', 'varchar(120) NOT NULL')
-            ->createColumn('amount', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('amount', self::$COLUMN_DECIMAL)
             ->createColumn('currency', 'varchar(20) DEFAULT NULL')
             ->createColumn('closingdate', 'date DEFAULT NULL')
             ->createColumn('typeofrevenue', 'varchar(50) DEFAULT NULL')
@@ -435,7 +356,6 @@ class Potentials_Install_Model extends Core_Install_Model
             ->createColumn('description', 'text DEFAULT NULL')
             ->createColumn('forecastcategory', 'int(19) DEFAULT \'0\'')
             ->createColumn('outcomeanalysis', 'int(19) DEFAULT \'0\'')
-            ->createColumn('forecast_amount', 'decimal(25,8) DEFAULT NULL')
             ->createColumn('isconvertedfromlead', 'varchar(3) DEFAULT \'0\'')
             ->createColumn('contact_id', 'int(19) DEFAULT NULL')
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
@@ -487,11 +407,15 @@ class Potentials_Install_Model extends Core_Install_Model
      */
     public function updateMapping(): void
     {
+        /**
+         * @var $fieldMap array Potentials Field Name, Project Field Name, Editable
+         */
         $table = $this->getTable('vtiger_convertpotentialmapping', null);
         $fieldMap = [
             ['potentialname', 'projectname', 0],
             ['description', 'description', 1],
-            ['related_to', 'linktoaccountscontacts', 1],
+            ['related_to', 'account_id', 1],
+            ['contact_id', 'contact_id', 1],
         ];
         $data = $table->selectData(['cfmid'], []);
 

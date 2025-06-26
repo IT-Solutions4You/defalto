@@ -252,7 +252,10 @@ class Vtiger_Block {
         return (new Core_DatabaseData_Model())->getTable('vtiger_blocks', 'blockid');
     }
 
-    public function createTables()
+    /**
+     * @throws AppException
+     */
+    public function createTables(): void
     {
         $this->getBlockTable()
             ->createTable('blockid')

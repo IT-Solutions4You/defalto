@@ -201,7 +201,6 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 			$viewer->assign('RELATED_MODULE_NAME', '');
 
 			// Editview
-			$viewer->assign('LEFTPANELHIDE', false);
 			$viewer->assign('RECORD_ID', '');
 			$viewer->assign('RETURN_VIEW', '');
 			$viewer->assign('MASS_EDITION_MODE', false);

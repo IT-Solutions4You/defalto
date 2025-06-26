@@ -209,4 +209,25 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model
 
         return parent::getField($fieldName);
     }
+
+    public static function retrieveHeaderFieldListPrice($headerFields)
+    {
+        $newHeaderFields = [];
+
+        foreach ($headerFields as $headerField) {
+            $newHeaderFields[$headerField->getName()] = $headerField;
+
+            if (1 === count($newHeaderFields)) {
+                //Added to support List Price
+                $field = new Vtiger_Field_Model();
+                $field->set('name', 'listprice');
+                $field->set('column', 'listprice');
+                $field->set('label', 'List Price');
+
+                $newHeaderFields['listprice'] = $field;
+            }
+        }
+
+        return $newHeaderFields;
+    }
 }

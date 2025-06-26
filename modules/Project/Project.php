@@ -31,10 +31,11 @@ class Project extends CRMEntity {
     /**
      * Mandatory for Saving, Include tablename and tablekey columnname here.
      */
-    var $tab_name_index = Array(
-		'vtiger_crmentity' => 'crmid',
-		'vtiger_project'   => 'projectid',
-	    'vtiger_projectcf' => 'projectid');
+    public $tab_name_index = [
+        'vtiger_crmentity' => 'crmid',
+        'vtiger_project' => 'projectid',
+        'vtiger_projectcf' => 'projectid',
+    ];
 
     /**
      * Mandatory for Listing (Related listview)

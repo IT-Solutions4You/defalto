@@ -9,7 +9,6 @@
         <div class="row">
             <div class="col">
                 <div class="listViewContentDiv" id="listViewContents">
-                    {assign var=LEFTPANELHIDE value=$CURRENT_USER_MODEL->get('leftpanelhide')}
                     <input type="hidden" id="sourceModule" value="{$SOURCE_MODULE}"/>
                     <div class="listViewEntriesDiv">
                         <div class="listViewLoadingImageBlock hide modal" id="loadingListViewModal">

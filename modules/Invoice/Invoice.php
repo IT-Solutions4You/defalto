@@ -22,6 +22,7 @@
  ********************************************************************************/
 
 class Invoice extends CRMEntity {
+    public string $parentName = 'Inventory';
 	var $log;
 	var $db;
 

@@ -210,44 +210,6 @@ class Potentials_Module_Model extends Vtiger_Module_Model {
 	}
 
 	/**
-	 * Function returns Potentials Forecast Amount
-	 * @return <Array>
-	 */
-	function getForecast($closingdateFilter,$dateFilter) {
-		$currentUser = Users_Record_Model::getCurrentUserModel();
-		$db = PearDatabase::getInstance();
-
-		$params = array();
-		$params[] = $currentUser->getId();
-		if(!empty($closingdateFilter)) {
-			$closingdateFilterSql = ' AND closingdate BETWEEN ? AND ? ';
-			$params[] = $closingdateFilter['start'];
-			$params[] = $closingdateFilter['end'];
-		}
-		
-		if(!empty($dateFilter)) {
-			$dateFilterSql = ' AND createdtime BETWEEN ? AND ? ';
-			//client is not giving time frame so we are appending it
-			$params[] = $dateFilter['start'];
-			$params[] = $dateFilter['end'];
-		}
-		
-		$result = $db->pquery('SELECT forecast_amount, DATE_FORMAT(closingdate, "%m-%d-%Y") AS closingdate FROM vtiger_potential
-					INNER JOIN vtiger_crmentity ON vtiger_potential.potentialid = vtiger_crmentity.crmid
-					AND deleted = 0 AND smownerid = ? WHERE closingdate >= CURDATE() AND sales_stage NOT IN ("Closed Won", "Closed Lost")'.
-					' '.$closingdateFilterSql.$dateFilterSql,
-					$params);
-
-		$forecast = array();
-		for($i=0; $i<$db->num_rows($result); $i++) {
-			$row = $db->query_result_rowdata($result, $i);
-			$forecast[] = $row;
-		}
-		return $forecast;
-
-	}
-
-	/**
 	 * Function returns Potentials Amount for each Sales Stage
 	 * @return <Array>
 	 */
