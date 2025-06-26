@@ -1081,6 +1081,7 @@ Faceți clic pe autorizați și de a obține Contacte din Google.',
 	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Puteți% de a modifica normele de prevenire duplicat.',
 	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Contactați administratorul pentru revizuirea normelor duplicat',
 	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplica%s (e):',
+    'LBL_ADD_AFTER' => 'Add After',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page',

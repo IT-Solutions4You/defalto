@@ -1382,6 +1382,7 @@ $languageStrings=array (
   'LBL_VTIGER6_RETIREMENT_NOTICE' => 'Tato verze bude zrušena 15. února 2016',
   'LBL_FEEDBACK_ON_REMOVING_OLD_VERSION' => 'We are happy to share that old look will be available until February, 2014 . We added the following features to the new look recently<br /><br />1. Pivot Reports<br />2. Custom Charts<br />3. Quick Search in Lists<br /><br />If you have suggestions on new look, please share with us below.',
   'Recurring Invoice Information' => 'Informace o opakujících se fakturách',
+  "LBL_ADD_AFTER" => "Přidat po",
 );
 $jsLanguageStrings=array (
   'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastavení systému nakonfigurujte server odchozí pošty',

@@ -1379,7 +1379,7 @@ $languageStrings = array(
 	'LBL_RECENT_UPDATES' => 'Atualizações recentes',
 	'LBL_VIEW_UPDATES_IN_DETAIL' => 'Ler Mais...',
 	'LBL_DEFAULT_DASHBOARD_TOOLTIP' => 'Tornar este Painel como padrão, reordenando-o como primeira aba!',
-
+    'LBL_ADD_AFTER' => 'Adicionar Depois',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Por favor, ajuste as configurações do Servidor Envio Mensagens a partir do menu Configurações',

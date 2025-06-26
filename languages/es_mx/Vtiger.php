@@ -1083,6 +1083,7 @@ fuera de Vtiger.',
 	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplicar%s (s):',
     
     'LBL_LISTVIEW_JUMP_TO' => 'Saltar a',
+    'LBL_ADD_AFTER' => 'Agregar después de',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Por favor configure el servidor de salida desde la página de configuración ',

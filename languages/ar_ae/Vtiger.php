@@ -1221,6 +1221,7 @@ Vtiger الاتصالات جوجل اتصالات(مجموعة مختارة مح
 	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'يمكنك٪ s إلى تعديل قواعد الوقاية مكررة.',
 	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'اتصل بالمسؤول لتعديل قواعد مكررة',
 	'LBL_DUPLICATE_RECORD_LISTS' => 'مكررة٪ ق (ق):',
+    'LBL_ADD_AFTER' => 'إضافة بعد',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'يرجى تكوين إعدادات ملقم البريد الصادر الخاص بك من صفحة الاعدادات',

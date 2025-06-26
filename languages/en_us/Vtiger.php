@@ -1475,6 +1475,7 @@ $languageStrings = array(
     'LBL_CREATE_LIST' => 'Create list',
     'starred' => 'starred',
     'tags' => 'tags',
+    'LBL_ADD_AFTER' => 'Add After',
 );
 
 $jsLanguageStrings = array(

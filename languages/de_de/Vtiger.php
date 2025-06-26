@@ -1079,6 +1079,7 @@ außerhalb Vtiger.',
 	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplizieren%s (e):',
 
     'LBL_FILTER_SORTING' => 'Listesortierung',
+    'LBL_ADD_AFTER' => 'Fügen Sie nach',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page', 

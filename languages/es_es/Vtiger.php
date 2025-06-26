@@ -1096,6 +1096,7 @@ fuera de Vtiger.',
 	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Puede%s para modificar las normas de prevención de duplicados.',
 	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Póngase en contacto con el administrador para obtener la revisión de las reglas duplicadas',
 	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplicar%s (s):',
+    'LBL_ADD_AFTER' => 'añadir Después',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Por favor, configura el servidor de correo saliente en la sección de configuración',

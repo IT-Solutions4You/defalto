@@ -1221,6 +1221,7 @@ utanför Vtiger.',
 	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Du kan%s för att ändra dubbla regler förebyggande.',
 	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Kontakta administratören för att revidera de dubbla regler',
 	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplicera%s (n):',
+    'LBL_ADD_AFTER' => 'Lägg till Efter',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Vänligen konfigurera utgående serverinställningar från inställningssidan',

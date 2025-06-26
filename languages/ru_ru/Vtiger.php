@@ -1080,6 +1080,7 @@ $languageStrings = array(
 	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Вы можете%s изменить дублирующие правила профилактики.',
 	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Обратитесь к администратору для пересмотра правил дублирующих',
 	'LBL_DUPLICATE_RECORD_LISTS' => 'Дубликат%s (S):',
+    'LBL_ADD_AFTER' => 'Добавить После',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Пожалуйста, настроить параметры исходящей сервера на странице настроек',

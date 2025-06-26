@@ -19,8 +19,6 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     initializeVariables: function () {
-        this.dummyLineItemRow = jQuery('#dummyItemRow');
-        this.dummyTextRow = jQuery('#dummyTextRow');
         this.lineItemsHolder = jQuery('#lineItemTab');
         this.numOfLineItems = this.lineItemsHolder.find('.' + this.lineItemDetectingClass).length;
     },
@@ -167,6 +165,56 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         row.on('click', '.item_edit', function () {
             self.editItem(rowNumber);
+        });
+
+        row.on('click', '.dropdown', function (e) {
+            let content = jQuery(this).closest(".dropdown"),
+                dropdown = jQuery(e.currentTarget);
+
+            if (dropdown.find('.table-actions-toggle').length <= 0) {
+                return;
+            }
+
+            let dropdown_menu = dropdown.find('.dropdown-menu'),
+                dropdownStyle = dropdown_menu.find('li a');
+
+            dropdownStyle.css('padding', "0 6px", 'important');
+
+            let fixed_dropdown_menu = dropdown_menu.clone(true);
+            fixed_dropdown_menu.data('original-menu', dropdown_menu);
+            dropdown_menu.css('position', 'relative');
+            dropdown_menu.css('display', 'none');
+            let currtargetTop,
+                currtargetLeft,
+                dropdownBottom,
+                ftop = 'auto',
+                fbottom = 'auto';
+
+            if (container === "#page") {
+                currtargetTop = dropdown.offset().top + dropdown.height();
+                currtargetLeft = dropdown.offset().left;
+                dropdownBottom = jQuery(window).height() - currtargetTop + dropdown.height();
+
+            }
+
+            let windowBottom = jQuery(window).height() - dropdown.offset().top;
+
+            if (windowBottom < 250) {
+                ftop = 'auto';
+                fbottom = dropdownBottom + 'px';
+            } else {
+                ftop = currtargetTop + 'px';
+                fbottom = "auto";
+            }
+
+            fixed_dropdown_menu.css({
+                'display': 'block',
+                'position': 'absolute',
+                'top': ftop,
+                'left': currtargetLeft + 'px',
+                'bottom': fbottom
+            }).appendTo(row);
+
         });
     },
 
@@ -645,7 +693,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const self = this;
         const itemTable = jQuery('div.lineItemTableContainer');
         const activeRelatedTab = jQuery('div.related-tabs').find('ul');
-        const activeRelatedItem = activeRelatedTab.find('li.active');
+        const activeRelatedItem = activeRelatedTab.find('li[data-link-key="LBL_RECORD_DETAILS"]');
 
         if (!itemTable.length) {
             activeRelatedItem.click();

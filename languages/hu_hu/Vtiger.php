@@ -1086,6 +1086,7 @@ kívül Vtiger.',
 	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Akkor%s módosítani ismétlődő megelőzési szabályokat.',
 	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Kérje a rendszergazda felülvizsgálata az ismétlődő szabályok',
 	'LBL_DUPLICATE_RECORD_LISTS' => 'Ismétlődő%s (s):',
+    'LBL_ADD_AFTER' => 'Hozzáadása után',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Kérjük, hogy állítsd be a kimenő email szerver (SMTP) beállításait a Beállítások oldalon',

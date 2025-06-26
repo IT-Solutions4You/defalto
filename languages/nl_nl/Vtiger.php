@@ -1079,6 +1079,7 @@ buiten Vtiger.',
 	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'U kunt%s om dubbele preventie regels te wijzigen.',
 	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Neem contact op met uw beheerder voor de herziening van de dubbele regels',
 	'LBL_DUPLICATE_RECORD_LISTS' => 'Dupliceren%s (s):',
+    'LBL_ADD_AFTER' => 'Add After',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Configureer a.u.b. uw uitgaande server instellingen op de instellingenpagina', 

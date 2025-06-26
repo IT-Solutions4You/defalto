@@ -1383,6 +1383,7 @@ $languageStrings = [
     'starred' => 'označené hviezdičkou',
     'tags' => 'značky',
     'Creator' => 'Tvorca',
+    "LBL_ADD_AFTER" => "Pridať po",
 ];
 $jsLanguageStrings = [
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastaveniach systému nakonfigurujte server odchádzajúcej pošty',

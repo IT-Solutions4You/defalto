@@ -1066,6 +1066,7 @@ $languageStrings = array(
     'LBL_SLA_INFORMATION' => 'SLA de l\'Information',
     'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'Pour utiliser <b>%s</b>, nous vous recommandons de passer à nouveau look.',
     'LBL_DELETE_USER_CONFIRMATION' => "Lorsqu'un utilisateur est supprimé, l'utilisateur sera marqué comme «inactif» et aucun de nouveaux enregistrements peuvent être affectés à l'utilisateur, et l'utilisateur ne sera pas capable de se connecter. Etes-vous sûr que vous voulez supprimer?",
+    'LBL_ADD_AFTER' => 'Ajouter après',
     );
     $jsLanguageStrings = array(
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page', 

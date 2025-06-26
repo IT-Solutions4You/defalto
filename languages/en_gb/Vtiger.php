@@ -1079,6 +1079,7 @@ $languageStrings = array(
 	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplicate %s(s) :',
 
     'LBL_FILTER_SORTING' => 'Filter sorting',
+    'LBL_ADD_AFTER' => 'Add After',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page',

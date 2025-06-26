@@ -1079,6 +1079,7 @@ al di fuori di Vtiger.',
 	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'È possibile %s per modificare le regole di prevenzione duplicati.',
 	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => "Contattare l'amministratore per la revisione delle regole duplicati",
 	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplicato/i %s :',
+    'LBL_ADD_AFTER' => 'Aggiungere dopo',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Configura il serve in uscita dalla pagina delle impostazioni',

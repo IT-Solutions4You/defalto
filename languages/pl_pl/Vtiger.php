@@ -1210,6 +1210,7 @@ na zewnątrz free rosyjska.',
 	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Można%s modyfikować duplikaty zasady profilaktyki.',
 	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Skontaktuj się z administratorem w celu rewizji zasad duplikaty',
 	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplikat%s (s):',
+    'LBL_ADD_AFTER' => 'Dodać po',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Należy skonfigurować ustawienia serwera poczty wychodzącej - SMTP',

@@ -1079,6 +1079,7 @@ Vtiger dışında.',
 	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => '%s yinelenen önleme kurallarını değiştirmek olabilir.',
 	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'yinelenen kurallarını revize için yöneticinize başvurun',
 	'LBL_DUPLICATE_RECORD_LISTS' => '%s (ler) Çift:',
+    'LBL_ADD_AFTER' => 'Sonra Ekle',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page', 
