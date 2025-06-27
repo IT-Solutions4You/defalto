@@ -12,10 +12,11 @@ class Leads_Install_Model extends Core_Install_Model {
 
     /**
      * @return void
+     * @throws AppException
      */
     public function addCustomLinks(): void
     {
-        // TODO: Implement addCustomLinks() method.
+        self::addDefaultLeadMapping();
     }
 
     /**
@@ -25,6 +26,72 @@ class Leads_Install_Model extends Core_Install_Model {
     {
         // TODO: Implement deleteCustomLinks() method.
     }
+
+    /**
+     * @throws AppException
+     */
+    public static function addDefaultLeadMapping(): void
+    {
+        $fieldMap = [
+            ['company', 'accountname', null, 'potentialname', 0],
+            ['industry', 'industry', null, null, 1],
+            ['phone', 'phone', 'phone', null, 1],
+            ['fax', 'fax', 'fax', null, 1],
+            ['rating', 'rating', null, null, 1],
+            ['email', 'email1', 'email', null, 0],
+            ['website', 'website', null, null, 1],
+            ['city', 'bill_city', 'mailingcity', null, 1],
+            ['code', 'bill_code', 'mailingcode', null, 1],
+            ['country_id', 'bill_country_id', 'mailingcountry_id', null, 1],
+            ['state', 'bill_state', 'mailingstate', null, 1],
+            ['lane', 'bill_street', 'mailingstreet', null, 1],
+            ['pobox', 'bill_pobox', 'mailingpobox', null, 1],
+            ['city', 'ship_city', null, null, 1],
+            ['code', 'ship_code', null, null, 1],
+            ['country_id', 'ship_country_id', null, null, 1],
+            ['state', 'ship_state', null, null, 1],
+            ['lane', 'ship_street', null, null, 1],
+            ['pobox', 'ship_pobox', null, null, 1],
+            ['description', 'description', 'description', 'description', 1],
+            ['salutationtype', null, 'salutationtype', null, 1],
+            ['firstname', null, 'firstname', null, 0],
+            ['lastname', null, 'lastname', null, 0],
+            ['mobile', null, 'mobile', null, 1],
+            ['designation', null, 'title', null, 1],
+            ['secondaryemail', null, 'secondaryemail', null, 1],
+            ['leadsource', null, 'leadsource', 'leadsource', 1],
+            ['leadstatus', null, null, null, 1],
+            ['noofemployees', 'employees', null, null, 1],
+            ['annualrevenue', 'annual_revenue', null, null, 1],
+        ];
+        $leadTab = getTabid('Leads');
+        $accountTab = getTabid('Accounts');
+        $contactTab = getTabid('Contacts');
+        $potentialTab = getTabid('Potentials');
+        $table = (new self())->getTable('vtiger_convertleadmapping', 'leadfid');
+        $table->deleteData(['leadfid' => 0]);
+
+        foreach ($fieldMap as $values) {
+            $leadFieldId = getFieldid($leadTab, $values[0]);
+            $accountFieldId = getFieldid($accountTab, $values[1]);
+            $contactFieldId = getFieldid($contactTab, $values[2]);
+            $potentialFieldId = getFieldid($potentialTab, $values[3]);
+            $editable = $values[4];
+
+            $data = $table->selectData(['leadfid as id'], ['leadfid' => $leadFieldId]);
+
+            if (empty($data['id']) && !empty($leadFieldId)) {
+                $table->insertData([
+                    'leadfid' => $leadFieldId,
+                    'accountfid' => $accountFieldId,
+                    'contactfid' => $contactFieldId,
+                    'potentialfid' => $potentialFieldId,
+                    'editable' => $editable,
+                ]);
+            }
+        }
+    }
+
 
     /**
      * @return array
