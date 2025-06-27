@@ -184,6 +184,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 		$moduleName = $request->getModule();
 		$viewer = $this->getViewer($request);
 
+		$viewer->assign('DEFAULT_PARAMETERS', $_SESSION['config_file_info']);
 		$viewer->assign('AUTH_KEY', $_SESSION['config_file_info']['authentication_key']);
 		$viewer->view('Step6.tpl', $moduleName);
 	}
