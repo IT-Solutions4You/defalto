@@ -4,6 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 *}
+{strip}
 <div class="px-3 py-2">
 	{if $HISTORIES neq false}
 		{foreach key=$index item=HISTORY from=$HISTORIES}
@@ -34,26 +35,28 @@
 								{assign var=FIELDS value=$HISTORY->getFieldInstances()}
 								<div>
 									<div>
-										<b>{$USER->getName()}</b>
-										<span class="me-2">{vtranslate('LBL_UPDATED')}</span>
-										<a class="cursorPointer me-2" {if stripos($DETAILVIEW_URL, 'javascript:')===0} onclick='{$DETAILVIEW_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$DETAILVIEW_URL}"' {/if}>{$PARENT->getName()}</a>
+										<b class="me-1">{$USER->getName()}</b>
+										<span class="me-1">{vtranslate('LBL_UPDATED')}</span>
+										<a class="cursorPointer" {if stripos($DETAILVIEW_URL, 'javascript:')===0} onclick='{$DETAILVIEW_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$DETAILVIEW_URL}"' {/if}>
+                                            <b>{$PARENT->getName()}</b>
+                                        </a>
 									</div>
 									{foreach from=$FIELDS key=INDEX item=FIELD}
 										{if $INDEX lt 2}
 											{if $FIELD && $FIELD->getFieldInstance() && $FIELD->getFieldInstance()->isViewableInDetailView()}
 												<div>
-													<i>{vtranslate($FIELD->getName(), $FIELD->getModuleName())}</i>
+													<i class="me-1">{vtranslate($FIELD->getName(), $FIELD->getModuleName())}</i>
 													{if $FIELD->get('prevalue') neq '' && $FIELD->get('postvalue') neq '' && !($FIELD->getFieldInstance()->getFieldDataType() eq 'reference' && ($FIELD->get('postvalue') eq '0' || $FIELD->get('prevalue') eq '0'))}
-														<span class="me-2">{vtranslate('LBL_FROM')}</span>
-														<b class="me-2">{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELD->getDisplayValue(decode_html($FIELD->get('prevalue'))))}</b>
+														<span class="me-1 text-lowercase">{vtranslate('LBL_FROM')}</span>
+														<span class="me-1">"{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELD->getDisplayValue(decode_html($FIELD->get('prevalue'))))}"</span>
 													{elseif $FIELD->get('postvalue') eq '' || ($FIELD->getFieldInstance()->getFieldDataType() eq 'reference' && $FIELD->get('postvalue') eq '0')}
-														<b class="me-2">{vtranslate('LBL_DELETED')}</b>(<del>{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELD->getDisplayValue(decode_html($FIELD->get('prevalue'))))}</del>)
+														<b class="me-1">{vtranslate('LBL_DELETED')}</b>(<del>{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELD->getDisplayValue(decode_html($FIELD->get('prevalue'))))}</del>)
 													{else}
-														<span class="me-2">{vtranslate('LBL_CHANGED')}</span>
+														<span class="me-1">{vtranslate('LBL_CHANGED')}</span>
 													{/if}
 													{if $FIELD->get('postvalue') neq '' && !($FIELD->getFieldInstance()->getFieldDataType() eq 'reference' && $FIELD->get('postvalue') eq '0')}
-														<span class="me-2">{vtranslate('LBL_TO')}</span>
-														<b>{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELD->getDisplayValue(decode_html($FIELD->get('postvalue'))))}</b>
+														<span class="me-1 text-lowercase">{vtranslate('LBL_TO')}</span>
+														<span>"{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELD->getDisplayValue(decode_html($FIELD->get('postvalue'))))}"</span>
 													{/if}
 												</div>
 											{/if}
@@ -65,42 +68,38 @@
 								</div>
 							{elseif $HISTORY->isCreate()}
 								<div>
-									<b class="me-2">{$USER->getName()}</b>
-									<span class="me-2">{vtranslate('LBL_ADDED')}</span>
-									<a class="cursorPointer" {if stripos($DETAILVIEW_URL, 'javascript:')===0} onclick='{$DETAILVIEW_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$DETAILVIEW_URL}"' {/if}>{$PARENT->getName()}</a>
+									<b class="me-1">{$USER->getName()}</b>
+									<span class="me-1">{vtranslate('LBL_ADDED')}</span>
+									<a class="cursorPointer" {if stripos($DETAILVIEW_URL, 'javascript:')===0} onclick='{$DETAILVIEW_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$DETAILVIEW_URL}"' {/if}>
+                                        <b>{$PARENT->getName()}</b>
+                                    </a>
 								</div>
 							{elseif ($HISTORY->isRelationLink() || $HISTORY->isRelationUnLink())}
 								{assign var=RELATION value=$HISTORY->getRelationInstance()}
 								{assign var=LINKED_RECORD_DETAIL_URL value=$RELATION->getLinkedRecord()->getDetailViewUrl()}
 								{assign var=PARENT_DETAIL_URL value=$HISTORY->getParent()->getDetailViewUrl()}
 								<div>
-									<b>{$USER->getName()}</b>
-                                    <span>
-                                        {if $HISTORY->isRelationLink()}
-                                            {vtranslate('LBL_ADDED', $MODULE_NAME)}
-                                        {else}
-                                            {vtranslate('LBL_REMOVED', $MODULE_NAME)}
-                                        {/if}
-                                    </span>
-                                    <span>{vtranslate($RELATION->getLinkedRecord()->getModuleName(), $RELATION->getLinkedRecord()->getModuleName())}</span>
+									<b class="me-1">{$USER->getName()}</b>
+                                    <span class="me-1">{if $HISTORY->isRelationLink()}{vtranslate('LBL_ADDED', $MODULE_NAME)}{else}{vtranslate('LBL_REMOVED', $MODULE_NAME)}{/if}</span>
+                                    <span class="me-1 text-lowercase">{vtranslate($RELATION->getLinkedRecord()->getModuleName(), $RELATION->getLinkedRecord()->getModuleName())}</span>
                                     {if $RELATION->getLinkedRecord()->getModuleName() == 'ModComments'}
-                                        <i>"{$RELATION->getLinkedRecord()->getName()}"</i>
+                                        <i class="me-1">"{$RELATION->getLinkedRecord()->getName()}"</i>
                                     {else}
-                                        <a class="cursorPointer" {if stripos($LINKED_RECORD_DETAIL_URL, 'javascript:')===0} onclick='{$LINKED_RECORD_DETAIL_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$LINKED_RECORD_DETAIL_URL}"' {/if}>
-                                            <span>{$RELATION->getLinkedRecord()->getName()}</span>
+                                        <a class="cursorPointer me-1" {if stripos($LINKED_RECORD_DETAIL_URL, 'javascript:')===0} onclick='{$LINKED_RECORD_DETAIL_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$LINKED_RECORD_DETAIL_URL}"' {/if}>
+                                            <b>{$RELATION->getLinkedRecord()->getName()}</b>
                                         </a>
                                     {/if}
-                                    <span class="mx-2">{vtranslate('LBL_FOR')}</span>
+                                    <span class="me-1">{vtranslate('LBL_FOR')}</span>
                                     <a class="cursorPointer" {if stripos($PARENT_DETAIL_URL, 'javascript:')===0} onclick='{$PARENT_DETAIL_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$PARENT_DETAIL_URL}"' {/if}>
-                                        <span>{$HISTORY->getParent()->getName()}</span>
+                                        <b>{$HISTORY->getParent()->getName()}</b>
                                     </a>
                                 </div>
                             {elseif $HISTORY->isRestore()}
                                 <div>
-                                    <b>{$USER->getName()}</b>
-                                    <span class="ms-2">{vtranslate('LBL_RESTORED')}</span>
-                                    <a class="ms-2 cursorPointer" {if stripos($DETAILVIEW_URL, 'javascript:')===0} onclick='{$DETAILVIEW_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$DETAILVIEW_URL}"' {/if}>
-                                        <span>{$PARENT->getName()}</span>
+                                    <b class="me-1">{$USER->getName()}</b>
+                                    <span class="me-1">{vtranslate('LBL_RESTORED')}</span>
+                                    <a class="cursorPointer" {if stripos($DETAILVIEW_URL, 'javascript:')===0} onclick='{$DETAILVIEW_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$DETAILVIEW_URL}"' {/if}>
+                                        <b>{$PARENT->getName()}</b>
                                     </a>
                                 </div>
                             {elseif $HISTORY->isDelete()}
@@ -118,7 +117,7 @@
 				    </div>
                 {/if}
 			{elseif $MODELNAME == 'ModComments_Record_Model'}
-				<div class="row">
+				<div class="row align-items-center py-2">
 					<div class="col-lg-auto">
 						<span>
 							<i class="vicon-chat entryIcon" title={$TRANSLATED_MODULE_NAME}></i>
@@ -127,12 +126,17 @@
 					<div class="col-lg">
 						{assign var=COMMENT_TIME value=$HISTORY->getCommentedTime()}
 						<div>
-							<b>{$HISTORY->getCommentedByName()}</b> {vtranslate('LBL_COMMENTED')} {vtranslate('LBL_ON')} <a class="text-truncate" href="{$HISTORY->getParentRecordModel()->getDetailViewUrl()}">{$HISTORY->getParentRecordModel()->getName()}</a>
+							<b class="me-1">{$HISTORY->getCommentedByName()}</b>
+                            <span class="me-1 text-lowercase">{vtranslate('LBL_COMMENTED')}</span>
+                            <span class="me-1">{vtranslate('LBL_ON')}</span>
+                            <a class="cursorPointer text-truncate" href="{$HISTORY->getParentRecordModel()->getDetailViewUrl()}">
+                                <b>{$HISTORY->getParentRecordModel()->getName()}</b>
+                            </a>
 						</div>
 						<div>
 							<i>"{nl2br($HISTORY->get('commentcontent'))}"</i>
 						</div>
-						<p class="muted text-end"><small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString("$COMMENT_TIME")}">{Vtiger_Util_Helper::formatDateDiffInStrings("$COMMENT_TIME")}</small></p>
+						<p class="muted m-0"><small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString("$COMMENT_TIME")}">{Vtiger_Util_Helper::formatDateDiffInStrings("$COMMENT_TIME")}</small></p>
 					</div>
 				</div>
 			{/if}
@@ -156,3 +160,4 @@
 		</span>
 	{/if}
 </div>
+{/strip}

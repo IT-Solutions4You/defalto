@@ -23,6 +23,7 @@
  ********************************************************************************/
 class Quotes extends CRMEntity
 {
+    public string $parentName = 'Sales';
     var $log;
     var $db;
 

@@ -47,7 +47,7 @@ class Appointments_Datetime_UIType extends Vtiger_Datetime_UIType
                 case 'datetime_start':
                     $value = date('Y-m-d H:i:s');
                     break;
-                case'datetime_end':
+                case 'datetime_end':
                     $currentUser = Users_Record_Model::getCurrentUserModel();
                     $minutes = $currentUser->get('callduration');
                     $value = date('Y-m-d H:i:s', strtotime("+$minutes minutes"));

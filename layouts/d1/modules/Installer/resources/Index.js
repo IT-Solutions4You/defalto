@@ -63,9 +63,10 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
         let self = this;
 
         self.getMainContainer().on('click', '[data-download-system]', function (e) {
+            let version = $(this).attr('data-download-system');
+
             app.helper.showConfirmationBox({message: app.vtranslate('JS_CONFIRM_DOWNLOAD')}).then(function () {
-                let version = $(this).attr('data-download-system'),
-                    params = {
+                let params = {
                         module: 'Installer',
                         view: 'IndexAjax',
                         mode: 'systemModal',
@@ -91,9 +92,10 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
         let self = this;
 
         self.getMainContainer().on('click', '[data-download-extension]', function (e) {
+            let version = $(this).attr('data-download-extension');
+
             app.helper.showConfirmationBox({message: app.vtranslate('JS_CONFIRM_DOWNLOAD')}).then(function () {
-                let version = $(this).attr('data-download-extension'),
-                    params = {
+                let params = {
                         module: 'Installer',
                         view: 'IndexAjax',
                         mode: 'extensionModal',

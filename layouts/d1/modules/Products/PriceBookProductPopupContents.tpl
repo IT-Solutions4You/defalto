@@ -43,18 +43,21 @@
                                     <input type="checkbox"  class="selectAllInCurrentPage form-check-input" />
                                 </th>
                                 {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
-                                    <th class="{$WIDTHTYPE}">
-                                        <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues cursorPointer text-secondary text-nowrap" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('column')}">
-                                            {if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}
-                                                <i class="fa {$FASORT_IMAGE}"></i>
-                                            {else}
-                                                <i class="fa fa-sort customsort"></i>
-                                            {/if}
-                                            <span class="ms-2">{vtranslate($LISTVIEW_HEADER->get('label'), $MODULE_NAME)}</span>
-                                        </a>
-                                    </th>
+                                    {if 'listprice' eq $LISTVIEW_HEADER->getName()}
+                                        <th class="listViewHeaderValues noSorting text-nowrap text-secondary {$WIDTHTYPE}">{vtranslate('LBL_LIST_PRICE',$MODULE)}</th>
+                                    {else}
+                                        <th class="{$WIDTHTYPE}">
+                                            <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues cursorPointer text-secondary text-nowrap" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('column')}">
+                                                {if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}
+                                                    <i class="fa {$FASORT_IMAGE}"></i>
+                                                {else}
+                                                    <i class="fa fa-sort customsort"></i>
+                                                {/if}
+                                                <span class="ms-2">{vtranslate($LISTVIEW_HEADER->get('label'), $MODULE_NAME)}</span>
+                                            </a>
+                                        </th>
+                                    {/if}
                                 {/foreach}
-                                <th class="listViewHeaderValues noSorting text-nowrap text-secondary {$WIDTHTYPE}">{vtranslate('LBL_LIST_PRICE',$MODULE)}</th>
                             </tr>
                         </thead>
                         {if $MODULE_MODEL->isQuickSearchEnabled()}
@@ -83,20 +86,23 @@
                                     <input class="entryCheckBox form-check-input" type="checkbox" {if $EDITED_VALUE}checked{/if}/>
                                 </td>
                                 {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
-                                {assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
-                                <td class="listViewEntryValue text-truncate {$WIDTHTYPE}">
-                                    {if $LISTVIEW_HEADER->getFieldDataType() eq 'currency'}
-                                        {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($LISTVIEW_ENTRY->getCurrencyId())}
-                                        {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_INFO['symbol'])}
+                                    {assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
+                                    {if 'listprice' eq $LISTVIEW_HEADERNAME}
+                                        <td class="listViewEntryValue {$WIDTHTYPE}">
+                                            <input type="text" value="{if $EDITED_VALUE}{$EDITED_VALUE["price"]}{else}{$LISTVIEW_ENTRY->get('unit_price')}{/if}" name="unit_price" class="inputElement zeroPaddingAndMargin form-control replaceCommaWithDot {if !$EDITED_VALUE}hide{/if}" data-rule-required="true" data-rule-currency="true"
+                                                   data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}'/>
+                                        </td>
                                     {else}
-                                        <a>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
+                                        <td class="listViewEntryValue text-truncate {$WIDTHTYPE}">
+                                            {if $LISTVIEW_HEADER->getFieldDataType() eq 'currency'}
+                                                {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($LISTVIEW_ENTRY->getCurrencyId())}
+                                                {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_INFO['symbol'])}
+                                            {else}
+                                                <a>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
+                                            {/if}
+                                        </td>
                                     {/if}
-                                </td>
                                 {/foreach}
-                                <td class="listViewEntryValue {$WIDTHTYPE}">
-                                    <input type="text" value="{if $EDITED_VALUE}{$EDITED_VALUE["price"]}{else}{$LISTVIEW_ENTRY->get('unit_price')}{/if}" name="unit_price" class="inputElement zeroPaddingAndMargin form-control replaceCommaWithDot {if !$EDITED_VALUE}hide{/if}" data-rule-required="true" data-rule-currency="true"
-                                               data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}'/>
-                                </td>
                             </tr>
                         {/foreach}
                     </table>

@@ -18,12 +18,14 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
     public array $registerRelatedLists = [
         ['ProjectTask', 'Documents', 'Documents', ['ADD', 'SELECT'], 'get_attachments'],
         ['Project', 'ProjectMilestone', 'Project Milestones', ['ADD'], 'get_dependents_list', 'projectid'],
+        ['ProjectMilestone' , 'ProjectTask', 'Project Task', ['ADD'], 'get_dependents_list', 'milestoneid'],
     ];
 
     protected string $moduleNumbering = 'PM';
 
     /**
      * @return void
+     * @throws Exception
      */
     public function addCustomLinks(): void
     {
@@ -54,7 +56,7 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
                     'uitype' => 2,
                     'column' => 'projectmilestonename',
                     'table' => 'vtiger_projectmilestone',
-                    'label' => 'Project Milestone Name',
+                    'label' => 'Milestone Name',
                     'typeofdata' => 'V~M',
                     'quickcreate' => 0,
                     'masseditable' => 1,
@@ -108,46 +110,6 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'filter' => 1,
                 ],
-                'projectmilestone_no' => [
-                    'uitype' => 4,
-                    'column' => 'projectmilestone_no',
-                    'table' => 'vtiger_projectmilestone',
-                    'generatedtype' => 2,
-                    'label' => 'Project Milestone No',
-                    'presence' => 0,
-                    'quickcreate' => '3',
-                    'masseditable' => 0,
-                ],
-            ],
-            'LBL_CUSTOM_INFORMATION' => [
-                'createdtime' => [
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'typeofdata' => 'DT~O',
-                    'displaytype' => 2,
-                    'masseditable' => 1,
-                ],
-                'modifiedtime' => [
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'typeofdata' => 'DT~O',
-                    'displaytype' => 2,
-                    'masseditable' => 1,
-                ],
-                'modifiedby' => [
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'presence' => 0,
-                    'quickcreate' => '3',
-                    'displaytype' => '3',
-                    'masseditable' => 0,
-                ],
             ],
             'LBL_DESCRIPTION_INFORMATION' => [
                 'description' => [
@@ -156,6 +118,18 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
                     'table' => 'vtiger_crmentity',
                     'label' => 'Description',
                     'masseditable' => 1,
+                ],
+            ],
+            'LBL_SYSTEM_INFORMATION' => [
+                'projectmilestone_no' => [
+                    'uitype' => 4,
+                    'column' => 'projectmilestone_no',
+                    'table' => 'vtiger_projectmilestone',
+                    'generatedtype' => 2,
+                    'label' => 'Milestone No',
+                    'presence' => 0,
+                    'quickcreate' => 3,
+                    'masseditable' => 0,
                 ],
             ],
         ];

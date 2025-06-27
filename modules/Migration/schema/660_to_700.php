@@ -66,30 +66,6 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery('UPDATE vtiger_field SET typeofdata=? WHERE fieldname IN (?, ?)', array('DT~O', 'createdtime', 'modifiedtime'));
 	$db->pquery('UPDATE vtiger_field SET presence=0 WHERE columnname=? AND fieldname=?', array('emailoptout', 'emailoptout'));
 	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('1', 'discontinued'));
-	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('.', 'currency_decimal_separator'));
-	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array(',', 'currency_grouping_separator'));
-
-	$lineItemModules = array('Products' => 'vtiger_products', 'Services' => 'vtiger_service');
-	foreach ($lineItemModules as $moduleName => $tableName) {
-		$moduleInstance = Vtiger_Module::getInstance($moduleName);
-		$blockInstance = Vtiger_Block::getInstance('LBL_PRICING_INFORMATION', $moduleInstance);
-		if ($blockInstance) {
-			$fieldInstance = Vtiger_Field::getInstance('purchase_cost', $moduleInstance);
-			if (!$fieldInstance) {
-				$fieldInstance = new Vtiger_Field();
-				$fieldInstance->name		= 'purchase_cost';
-				$fieldInstance->column		= 'purchase_cost';
-				$fieldInstance->label		= 'Purchase Cost';
-				$fieldInstance->columntype	= 'decimal(27,8)';
-				$fieldInstance->table		= $tableName;
-				$fieldInstance->typeofdata	= 'N~O';
-				$fieldInstance->uitype		= '71';
-				$fieldInstance->presence	= '0';
-
-				$blockInstance->addField($fieldInstance);
-			}
-		}
-	}
 
 	$columns = $db->getColumnNames('vtiger_relatedlists');
 	if (!in_array('relationfieldid', $columns)) {
@@ -148,34 +124,6 @@ if(defined('VTIGER_UPGRADE')) {
 		$defaultEventStatusFieldModel->set('defaultvalue', 'Planned');
 		$defaultEventStatusFieldModel->save();
 		$db->pquery('UPDATE vtiger_users SET defaulteventstatus=? WHERE defaulteventstatus=? OR defaulteventstatus IS NULL', array('Planned', ''));
-	}
-
-	$moduleInstance = Vtiger_Module::getInstance('Users');
-	$blockInstance = Vtiger_Block::getInstance('LBL_CALENDAR_SETTINGS', $moduleInstance);
-	if ($blockInstance) {
-		$fieldInstance = Vtiger_Field::getInstance('defaultcalendarview', $moduleInstance);
-		if (!$fieldInstance) {
-			$fieldInstance				= new Vtiger_Field();
-			$fieldInstance->name		= 'defaultcalendarview';
-			$fieldInstance->label		= 'Default Calendar View';
-			$fieldInstance->table		= 'vtiger_users';
-			$fieldInstance->column		= 'defaultcalendarview';
-			$fieldInstance->uitype		= '16';
-			$fieldInstance->presence	= '0';
-			$fieldInstance->typeofdata	= 'V~O';
-			$fieldInstance->columntype	= 'VARCHAR(100)';
-			$fieldInstance->defaultvalue= 'MyCalendar';
-
-			$blockInstance->addField($fieldInstance);
-			$fieldInstance->setPicklistValues(array('ListView', 'MyCalendar', 'SharedCalendar'));
-			echo '<br>Default Calendar view field added <br>';
-		}
-	}
-
-	$fieldInstance = Vtiger_Field_Model::getInstance('language', $moduleInstance);
-	if ($fieldInstance) {
-		$fieldInstance->set('defaultvalue', 'en_us');
-		$fieldInstance->save();
 	}
 
 	$allUsers = Users_Record_Model::getAll(true);
@@ -528,30 +476,6 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 	//End
-
-	$moduleSpecificHeaderFields = array(
-		'Accounts'			=> array('website', 'email1', 'phone'),
-		'Contacts'			=> array('email', 'phone'),
-		'Leads'				=> array('email', 'phone'),
-		'Potentials'		=> array('related_to', 'email', 'amount', 'sales_stage'),
-		'HelpDesk'			=> array('ticketpriorities'),
-		'Invoice'			=> array('contact_id', 'account_id', 'assigned_user_id', 'invoicestatus'),
-		'Products'			=> array('product_no', 'discontinued', 'qtyinstock', 'productcategory'),
-		'Project'			=> array('linktoaccountscontacts', 'contactid'),
-		'PurchaseOrder'		=> array('contact_id', 'assigned_user_id', 'postatus'),
-		'Quotes'			=> array('account_id', 'contact_id', 'hdnGrandTotal', 'quotestage'),
-		'SalesOrder'		=> array('contact_id', 'account_id', 'assigned_user_id', 'sostatus'),
-		'Vendors'			=> array('website', 'email', 'phone')
-	);
-	$moduleTabIds = array();
-	foreach ($moduleSpecificHeaderFields as $moduleName => $headerFields) {
-		$tabid = getTabid($moduleName);
-		if ($tabid) {
-			$sql = 'UPDATE vtiger_field SET headerfield=?, summaryfield=? WHERE tabid=? AND fieldname IN ('.generateQuestionMarks($headerFields).')';
-			$db->pquery($sql, array_merge(array(1, 0, $tabid), $headerFields));
-		}
-	}
-
 	$ignoreModules = array('SMSNotifier', 'ModComments');
 	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype=? AND name NOT IN ('.generateQuestionMarks($ignoreModules).')', array(1, $ignoreModules));
 	$modules = array();
@@ -600,18 +524,7 @@ if(defined('VTIGER_UPGRADE')) {
 		vtws_addWebserviceOperationParam($operationId, 'element', 'encoded', 1);
 	}
 
-	//Start : Change fieldLabel of description field to Description - Project module.
-
-	$fieldModel = Vtiger_Field_Model::getInstance('description', Vtiger_Module_Model::getInstance('Project'));
-	$fieldModel->set('label', 'Description');
-	$fieldModel->__update();
-
 	$db->pquery('ALTER TABLE vtiger_mail_accounts MODIFY mail_password TEXT', array());
-
-	//making priority as mandatory field in Tickets.
-	$fieldInstance = Vtiger_Field_Model::getInstance('ticketpriorities', Vtiger_Module_Model::getInstance('HelpDesk'));
-	$fieldInstance->set('typeofdata', 'V~M');
-	$fieldInstance->save();
 
 	if (Vtiger_Utils::CheckTable('vtiger_customerportal_tabs')) {
 		$db->pquery('UPDATE vtiger_customerportal_tabs SET visible=? WHERE tabid IN(?,?)', array(0, getTabid('Contacts'), getTabid('Accounts')));
@@ -714,10 +627,6 @@ if(defined('VTIGER_UPGRADE')) {
 	$query = 'ALTER TABLE vtiger_portalinfo MODIFY user_password VARCHAR(255)';
 	$db->pquery($query, array());
 
-	//Enable mass edit for portal field under Contacts
-	$contactsFieldInstance = Vtiger_Field_Model::getInstance('portal', Vtiger_Module_Model::getInstance('Contacts'));
-	$contactsFieldInstance->set('masseditable', '1');
-	$contactsFieldInstance->save();
 	//Customer portal changes end
 
 	 $relatedWebservicesOperations = array(
@@ -813,15 +722,6 @@ if(defined('VTIGER_UPGRADE')) {
 				PRIMARY KEY (`rollupid`))", true);
 	}
 
-	$modulesList = array('Products', 'Services');
-	foreach ($modulesList as $moduleName) {
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$taxFieldModel = Vtiger_Field_Model::getInstance('taxclass', $moduleModel);
-		$taxFieldModel->set('label', 'Taxes');
-		$taxFieldModel->set('quickcreate', 2);
-		$taxFieldModel->save();
-	}
-
 	$columns = $db->getColumnNames('com_vtiger_workflowtask_queue');
 	if (!in_array('relatedinfo', $columns)) {
 		$db->pquery('ALTER TABLE com_vtiger_workflowtask_queue ADD COLUMN relatedinfo VARCHAR(255)', array());
@@ -851,14 +751,6 @@ if(defined('VTIGER_UPGRADE')) {
 			$potentialModuleModel = Vtiger_Module_Model::getInstance('Potentials');
 			$potentialModuleModel->setRelatedList($projectModuleModel, 'Projects', array('ADD', 'SELECT'), 'get_dependents_list', $fieldModel->id);
 		}
-	}
-	//End
-
-	//Start : Change fieldLabel of description field to Description - ProjectMilestone module.
-	$fieldModel = Vtiger_Field_Model::getInstance('description', Vtiger_Module_Model::getInstance('ProjectMilestone'));
-	if ($fieldModel) {
-		$fieldModel->set('label', 'Description');
-		$fieldModel->__update();
 	}
 	//End
 
@@ -1215,16 +1107,6 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
-	//Adding Agenda view in default my calendar view settings
-	$usersModuleModel = Vtiger_Module_Model::getInstance('Users');
-	$activityViewFieldModel = Vtiger_Field_Model::getInstance('activity_view', $usersModuleModel);
-
-	$existingActivityViewTypes = $activityViewFieldModel->getPicklistValues();
-	$newActivityView = 'Agenda';
-	if (!in_array($newActivityView, $existingActivityViewTypes)) {
-		$activityViewFieldModel->setPicklistValues(array($newActivityView));
-	}
-
 	//deleting orphan picklist fields that were delete from vtiger_field table but not from vtiger_role2picklist table
 	$deletedPicklistResult = $db->pquery('SELECT DISTINCT(picklistid) AS picklistid FROM vtiger_role2picklist 
 								WHERE picklistid NOT IN (SELECT vtiger_picklist.picklistid FROM vtiger_picklist
@@ -1434,19 +1316,6 @@ if(defined('VTIGER_UPGRADE')) {
 			$db->pquery('DELETE FROM vtiger_mailmanager_mailrecord WHERE muid IN ('.generateQuestionMarks($duplicateMuid).')', $duplicateMuid);
 			$db->pquery('DELETE FROM vtiger_mailmanager_mailattachments WHERE muid IN ('.generateQuestionMarks($duplicateMuid).')', $duplicateMuid);
 		}
-	}
-
-	$columns = $db->getColumnNames('vtiger_mailscanner');
-	if (!in_array('scanfrom', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_mailscanner ADD COLUMN scanfrom VARCHAR(10) DEFAULT "ALL"', array());
-	}
-
-	if (Vtiger_Utils::CheckTable('vtiger_mailscanner_ids')) {
-		$columns = $db->getColumnNames('vtiger_mailscanner_ids');
-		if (!in_array('refids', $columns)) {
-			$db->pquery('ALTER TABLE vtiger_mailscanner_ids ADD COLUMN refids MEDIUMTEXT', array());
-		}
-		$db->pquery('ALTER TABLE vtiger_mailscanner_ids ADD INDEX messageids_crmid_idx(crmid)',array());
 	}
 
 	//Migrating data missed in vtiger_settings_field from file to database.

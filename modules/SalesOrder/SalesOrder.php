@@ -21,6 +21,7 @@
  */
 class SalesOrder extends CRMEntity
 {
+    public string $parentName = 'Inventory';
     public $log;
     public $db;
 

@@ -82,28 +82,6 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
                     'quickcreate' => 2,
                     'filter' => 1,
                 ],
-                'createdtime' => [
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                ],
-                'modifiedtime' => [
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                ],
                 'start_date' => [
                     'uitype' => 5,
                     'column' => 'start_date',
@@ -247,6 +225,9 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
                     'masseditable' => 0,
                     'filter' => 1,
                 ],
+            ],
+            'LBL_CUSTOM_INFORMATION' => [],
+            'LBL_SYSTEM_INFORMATION' => [
                 'contract_no' => [
                     'uitype' => 4,
                     'column' => 'contract_no',
@@ -257,20 +238,7 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
                     'masseditable' => 0,
                     'filter' => 1,
                 ],
-                'modifiedby' => [
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'presence' => 0,
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
-                    'masseditable' => 0,
-                ],
-            ],
-            'LBL_CUSTOM_INFORMATION' => [
-
-            ],
+            ]
         ];
     }
 

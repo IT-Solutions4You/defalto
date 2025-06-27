@@ -31,6 +31,7 @@
 
 class PurchaseOrder extends CRMEntity
 {
+    public string $parentName = 'Inventory';
     public $log;
     public $db;
 

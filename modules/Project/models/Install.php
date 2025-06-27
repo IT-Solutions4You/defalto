@@ -10,13 +10,26 @@
 
 class Project_Install_Model extends Core_Install_Model
 {
+    public static array $progressValues = [
+        '10%' => '10%',
+        '20%' => '20%',
+        '30%' => '30%',
+        '40%' => '40%',
+        '50%' => '50%',
+        '60%' => '60%',
+        '70%' => '70%',
+        '80%' => '80%',
+        '90%' => '90%',
+        '100%' => '100%',
+    ];
+
     /**
      * @var array
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        ['Accounts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_merged_list'],
-        ['Contacts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_dependents_list'],
+        ['Accounts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_merged_list', 'account_id'],
+        ['Contacts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_dependents_list', 'contact_id'],
         ['HelpDesk', 'Project', 'Projects', ['SELECT'], 'get_related_list'],
 
         ['Project', 'ProjectTask', 'Project Tasks', ['ADD'], 'get_dependents_list', 'projectid'],
@@ -173,16 +186,42 @@ class Project_Install_Model extends Core_Install_Model
                         'other',
                     ],
                 ],
-                'linktoaccountscontacts' => [
+                'account_id' => [
+                    'name' => 'account_id',
                     'uitype' => 10,
-                    'column' => 'linktoaccountscontacts',
+                    'column' => 'accountid',
                     'table' => 'vtiger_project',
-                    'label' => 'Related to',
+                    'label' => 'Account Name',
+                    'readonly' => 1,
+                    'presence' => 2,
+                    'typeofdata' => 'I~O',
+                    'quickcreate' => 0,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                    'headerfield' => 1,
+                    'filter' => 1,
                     'related_modules' => [
                         'Accounts',
+                    ],
+                ],
+                'contact_id' => [
+                    'name' => 'contact_id',
+                    'uitype' => 10,
+                    'column' => 'contactid',
+                    'table' => 'vtiger_project',
+                    'label' => 'Contact Name',
+                    'readonly' => 1,
+                    'presence' => 2,
+                    'typeofdata' => 'I~O',
+                    'quickcreate' => 0,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                    'headerfield' => 1,
+                    'related_modules' => [
                         'Contacts',
                     ],
-                    'filter' => 1,
                 ],
                 'assigned_user_id' => [
                     'uitype' => 53,
@@ -194,16 +233,6 @@ class Project_Install_Model extends Core_Install_Model
                     'summaryfield' => 1,
                     'filter' => 1,
                 ],
-                'project_no' => [
-                    'uitype' => 4,
-                    'column' => 'project_no',
-                    'table' => 'vtiger_project',
-                    'generatedtype' => 2,
-                    'label' => 'Project No',
-                    'presence' => 0,
-                    'quickcreate' => 3,
-                    'masseditable' => 0,
-                ],
                 'potentialid' => [
                     'uitype' => 10,
                     'column' => 'potentialid',
@@ -211,16 +240,6 @@ class Project_Install_Model extends Core_Install_Model
                     'label' => 'Potential Name',
                     'typeofdata' => 'I~O',
                 ],
-                'isconvertedfrompotential' => [
-                    'uitype' => 56,
-                    'column' => 'isconvertedfrompotential',
-                    'table' => 'vtiger_project',
-                    'label' => 'Is Converted From Opportunity',
-                    'typeofdata' => 'C~O',
-                    'displaytype'=> 1,
-                ],
-            ],
-            'LBL_CUSTOM_INFORMATION' => [
                 'targetbudget' => [
                     'uitype' => 71,
                     'column' => 'targetbudget',
@@ -251,45 +270,8 @@ class Project_Install_Model extends Core_Install_Model
                     'column' => 'progress',
                     'table' => 'vtiger_project',
                     'label' => 'Progress',
-                    'picklist_values' => [
-                        '10%',
-                        '20%',
-                        '30%',
-                        '40%',
-                        '50%',
-                        '60%',
-                        '70%',
-                        '80%',
-                        '90%',
-                        '100%',
-                    ],
+                    'picklist_values' => self::$progressValues,
                     'filter' => 1,
-                ],
-                'createdtime' => [
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'typeofdata' => 'DT~O',
-                    'displaytype' => 2,
-                ],
-                'modifiedtime' => [
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'typeofdata' => 'DT~O',
-                    'displaytype' => 2,
-                ],
-                'modifiedby' => [
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'presence' => 0,
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
-                    'masseditable' => 0,
                 ],
             ],
             'LBL_DESCRIPTION_INFORMATION' => [
@@ -298,6 +280,26 @@ class Project_Install_Model extends Core_Install_Model
                     'column' => 'description',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Description',
+                ],
+            ],
+            'LBL_SYSTEM_INFORMATION' => [
+                'isconvertedfrompotential' => [
+                    'uitype' => 56,
+                    'column' => 'isconvertedfrompotential',
+                    'table' => 'vtiger_project',
+                    'label' => 'Is Converted From Opportunity',
+                    'typeofdata' => 'C~O',
+                    'displaytype'=> 1,
+                ],
+                'project_no' => [
+                    'uitype' => 4,
+                    'column' => 'project_no',
+                    'table' => 'vtiger_project',
+                    'generatedtype' => 2,
+                    'label' => 'Project No',
+                    'presence' => 0,
+                    'quickcreate' => 3,
+                    'masseditable' => 0,
                 ],
             ],
         ];
@@ -327,13 +329,14 @@ class Project_Install_Model extends Core_Install_Model
             ->createColumn('startdate', 'date default NULL')
             ->createColumn('targetenddate', 'date default NULL')
             ->createColumn('actualenddate', 'date default NULL')
-            ->createColumn('targetbudget', 'varchar(255) default NULL')
+            ->createColumn('targetbudget', self::$COLUMN_DECIMAL)
             ->createColumn('projecturl', 'varchar(255) default NULL')
             ->createColumn('projectstatus', 'varchar(100) default NULL')
             ->createColumn('projectpriority', 'varchar(100) default NULL')
             ->createColumn('projecttype', 'varchar(100) default NULL')
             ->createColumn('progress', 'varchar(100) default NULL')
-            ->createColumn('linktoaccountscontacts', 'varchar(100) default NULL')
+            ->createColumn('accountid', 'int(19) default NULL')
+            ->createColumn('contactid', 'int(19) default NULL')
             ->createColumn('potentialid', 'int(19) default NULL')
             ->createColumn('isconvertedfrompotential', 'INT(1) NOT NULL DEFAULT \'0\'')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`projectid`)')
@@ -341,5 +344,35 @@ class Project_Install_Model extends Core_Install_Model
 
         $this->getTable('vtiger_projectcf', null)
             ->createTable('projectid');
+    }
+
+    public function migrate(): void
+    {
+        $table = $this->getTable('vtiger_project', 'projectid');
+
+        if (columnExists('linktoaccountscontacts', 'vtiger_project')) {
+            $adb = $this->getDB();
+            $result = $adb->pquery('SELECT projectid, linktoaccountscontacts FROM vtiger_project WHERE linktoaccountscontacts > 0');
+
+            while ($row = $adb->fetchByAssoc($result)) {
+                $recordId = $row['linktoaccountscontacts'];
+                $data = ['linktoaccountscontacts' => null];
+
+                if ('Accounts' === getSalesEntityType($recordId)) {
+                    $data['accountid'] = $recordId;
+                } else {
+                    $data['contactid'] = $recordId;
+                }
+
+                $table->updateData($data, ['projectid' => $row['projectid']]);
+            }
+
+            $moduleModel = Vtiger_Module_Model::getInstance('Project');
+            $fieldModel = Vtiger_Field_Model::getInstance('linktoaccountscontacts', $moduleModel);
+
+            if($fieldModel) {
+                $fieldModel->delete();
+            }
+        }
     }
 }

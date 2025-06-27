@@ -1476,6 +1476,7 @@ $languageStrings = array(
     'starred' => 'starred',
     'tags' => 'tags',
     'LBL_ADD_AFTER' => 'Add After',
+    'LBL_WELCOME_GUIDES' => 'Welcome Guides',
 );
 
 $jsLanguageStrings = array(

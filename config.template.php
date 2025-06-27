@@ -52,6 +52,9 @@ $dbconfig['db_name'] = '_DBC_NAME_';
 $dbconfig['db_type'] = '_DBC_TYPE_';
 $dbconfig['db_status'] = '_DB_STAT_';
 
+$user_config['currency_decimal_separator'] = '_CURRENCY_DECIMAL_SEPARATOR_';
+$user_config['currency_grouping_separator'] = '_CURRENCY_GROUPING_SEPARATOR_';
+
 // TODO: test if port is empty
 // TODO: set db_hostname dependending on db_type
 $dbconfig['db_hostname'] = $dbconfig['db_server'].$dbconfig['db_port'];

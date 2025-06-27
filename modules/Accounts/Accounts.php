@@ -8,6 +8,7 @@
  */
 
 class Accounts extends CRMEntity {
+    public string $parentName = 'Marketing';
 	public $log;
 	public $db;
 	public $table_name = "vtiger_account";
@@ -82,7 +83,7 @@ class Accounts extends CRMEntity {
 		'Services' => array('table_name' => 'vtiger_crmentityrel', 'table_index' => 'crmid', 'rel_index' => 'crmid'),
 		'Campaigns' => array('table_name' => 'vtiger_campaignaccountrel', 'table_index' => 'campaignid', 'rel_index' => 'accountid'),
 		'Assets' => array('table_name' => 'vtiger_assets', 'table_index' => 'assetsid', 'rel_index' => 'account'),
-		'Project' => array('table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'linktoaccountscontacts'),
+		'Project' => array('table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'accountid'),
 		'PurchaseOrder' => array('table_name' => 'vtiger_purchaseorder', 'table_index' => 'purchaseorderid', 'rel_index' => 'accountid'),
 	);
         function __construct()
@@ -854,7 +855,7 @@ class Accounts extends CRMEntity {
             'vtiger_servicecontracts'   => 'sc_related_to',
             'vtiger_campaignaccountrel' => 'accountid',
             'vtiger_assets'             => 'account',
-            'vtiger_project'            => 'linktoaccountscontacts'
+            'vtiger_project'            => 'accountid',
         ];
 
         foreach ($transferEntityIds as $transferId) {

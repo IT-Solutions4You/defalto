@@ -269,10 +269,6 @@ window.app = (function () {
 			if (_USERMETA)
 				return _USERMETA.id;
 		},
-		getMenuStatus: function () {
-			if (_USERMETA)
-				return _USERMETA.menustatus;
-		},
 		getRecordId: function () {
 			var record = jQuery('#recordId')
 			if (record.length) {

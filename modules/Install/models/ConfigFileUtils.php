@@ -23,6 +23,8 @@ class Install_ConfigFileUtils_Model {
 	private $vtDefaultLanguage = 'en_us';
 	private $currencyName;
 	private $adminEmail;
+	private $currencyDecimalSeparator;
+	private $currencyGroupingSeparator;
 
         function __construct($configFileParameters) {
             if (isset($configFileParameters['root_directory'])){
@@ -31,7 +33,7 @@ class Install_ConfigFileUtils_Model {
 
         if (isset($configFileParameters['db_hostname'])) {
                     if(strpos($configFileParameters['db_hostname'], ":")) {
-                            list($this->dbHostname,$this->dbPort) = explode(":",$configFileParameters['db_hostname']);
+                            [$this->dbHostname,$this->dbPort] = explode(":",$configFileParameters['db_hostname']);
                     } else {
                             $this->dbHostname = $configFileParameters['db_hostname'];
                     }
@@ -46,6 +48,8 @@ class Install_ConfigFileUtils_Model {
             if (isset($configFileParameters['currency_name'])) $this->currencyName = $configFileParameters['currency_name'];
             if (isset($configFileParameters['vt_charset'])) $this->vtCharset = $configFileParameters['vt_charset'];
             if (isset($configFileParameters['default_language'])) $this->vtDefaultLanguage = $configFileParameters['default_language'];
+            if (isset($configFileParameters['currency_decimal_separator'])) $this->currencyDecimalSeparator = $configFileParameters['currency_decimal_separator'];
+            if (isset($configFileParameters['currency_grouping_separator'])) $this->currencyGroupingSeparator = $configFileParameters['currency_grouping_separator'];
 
             // update default port
             if ($this->dbPort == '') $this->dbPort = self::getDbDefaultPort($this->dbType);
@@ -104,7 +108,11 @@ class Install_ConfigFileUtils_Model {
 		      		$buffer = str_replace( "_VT_APP_UNIQKEY_", md5(sprintf("%d%s", (time() + rand(1,9999999)), md5($this->rootDirectory))) , $buffer);
 
 					/* replace support email variable */
-					$buffer = str_replace( "_USER_SUPPORT_EMAIL_", $this->adminEmail, $buffer);
+                    $buffer = str_replace( "_USER_SUPPORT_EMAIL_", $this->adminEmail, $buffer);
+
+                    /* replace users config */
+					$buffer = str_replace( "_CURRENCY_DECIMAL_SEPARATOR_", addslashes($this->currencyDecimalSeparator), $buffer);
+					$buffer = str_replace( "_CURRENCY_GROUPING_SEPARATOR_", addslashes($this->currencyGroupingSeparator), $buffer);
 
 		      		fwrite($includeHandle, $buffer);
 	      		}
@@ -119,162 +127,8 @@ class Install_ConfigFileUtils_Model {
 	  	return false;
 	}
 
-	function getConfigFileContents() {
-
-		$configFileContents = "<?php
-/* +***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * (License); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- * *********************************************************************************** */
-
-include('vtigerversion.php');
-
-// more than 8MB memory needed for graphics
-// memory limit default value = 64M
-ini_set('memory_limit','64M');
-
-// helpdesk support email id and support name (Example: 'support@vtiger.com' and 'vtiger support')
-\$HELPDESK_SUPPORT_EMAIL_ID = '{$this->adminEmail}';
-\$HELPDESK_SUPPORT_NAME = 'your-support name';
-\$HELPDESK_SUPPORT_EMAIL_REPLY_ID = \$HELPDESK_SUPPORT_EMAIL_ID;
-
-\$dbconfig['db_server'] = '{$this->dbHostname}';
-\$dbconfig['db_port'] = ':{$this->dbPort}';
-\$dbconfig['db_username'] = '{$this->dbUsername}';
-\$dbconfig['db_password'] = '{$this->dbPassword}';
-\$dbconfig['db_name'] = '{$this->dbName}';
-\$dbconfig['db_type'] = '{$this->dbType}';
-\$dbconfig['db_status'] = 'true';
-
-// TODO: test if port is empty
-// TODO: set db_hostname dependending on db_type
-\$dbconfig['db_hostname'] = \$dbconfig['db_server'].\$dbconfig['db_port'];
-
-// log_sql default value = false
-\$dbconfig['log_sql'] = false;
-
-// persistent default value = true
-\$dbconfigoption['persistent'] = true;
-
-// autofree default value = false
-\$dbconfigoption['autofree'] = false;
-
-// debug default value = 0
-\$dbconfigoption['debug'] = 0;
-
-// seqname_format default value = '%s_seq'
-\$dbconfigoption['seqname_format'] = '%s_seq';
-
-// portability default value = 0
-\$dbconfigoption['portability'] = 0;
-
-// ssl default value = false
-\$dbconfigoption['ssl'] = false;
-
-\$host_name = \$dbconfig['db_hostname'];
-
-\$site_URL = '{$this->siteUrl}';
-
-// root directory path
-\$root_directory = '{$this->rootDirectory}';
-
-// cache direcory path
-\$cache_dir = '{$this->cacheDir}';
-
-// tmp_dir default value prepended by cache_dir = images/
-\$tmp_dir = '{$this->cacheDir}images/';
-
-// import_dir default value prepended by cache_dir = import/
-\$import_dir = 'cache/import/';
-
-// upload_dir default value prepended by cache_dir = upload/
-\$upload_dir = '{$this->cacheDir}upload/';
-
-// maximum file size for uploaded files in bytes also used when uploading import files
-// upload_maxsize default value = 3000000
-\$upload_maxsize = 3000000;
-
-// flag to allow export functionality
-// 'all' to allow anyone to use exports
-// 'admin' to only allow admins to export
-// 'none' to block exports completely
-// allow_exports default value = all
-\$allow_exports = 'all';
-
-// files with one of these extensions will have '.txt' appended to their filename on upload
-\$upload_badext = array('php', 'php3', 'php4', 'php5', 'pl', 'cgi', 'py', 'asp', 'cfm', 'js', 'vbs', 'html', 'htm', 'exe', 'bin', 'bat', 'sh', 'dll', 'phps', 'phtml', 'xhtml', 'rb', 'msi', 'jsp', 'shtml', 'sth', 'shtm');
-
-// list_max_entries_per_page default value = 20
-\$list_max_entries_per_page = '20';
-
-// history_max_viewed default value = 5
-\$history_max_viewed = '5';
-
-// default_action default value = index
-\$default_action = 'index';
-
-// set default theme
-// default_theme default value = blue
-\$default_theme = 'softed';
-
-// default text that is placed initially in the login form for user name
-// no default_user_name default value
-\$default_user_name = '';
-
-// default text that is placed initially in the login form for password
-// no default_password default value
-\$default_password = '';
-
-// create user with default username and password
-// create_default_user default value = false
-\$create_default_user = false;
-
-//Master currency name
-\$currency_name = '{$this->currencyName}';
-
-// default charset
-// default charset default value = 'UTF-8' or 'ISO-8859-1'
-\$default_charset = '{$this->vtCharset}';
-
-// default language
-// default_language default value = en_us
-\$default_language = '{$this->vtDefaultLanguage}';
-
-//Option to hide empty home blocks if no entries.
-\$display_empty_home_blocks = false;
-
-//Disable Stat Tracking of vtiger CRM instance
-\$disable_stats_tracking = false;
-
-// Generating Unique Application Key
-\$application_unique_key = '".md5(time() + rand(1,9999999) + md5($this->rootDirectory)) ."';
-
-// trim descriptions, titles in listviews to this value
-\$listview_max_textlength = 40;
-
-// Maximum time limit for PHP script execution (in seconds)
-\$php_max_execution_time = 0;
-
-// Maximum number of  Mailboxes in mail converter
-\$max_mailboxes = 3;
-
-// Set the default timezone as per your preference
-//\$default_timezone = '';
-
-
-/** If timezone is configured, try to set it */
-if(isset(\$default_timezone) && function_exists('date_default_timezone_set')) {
-	@date_default_timezone_set(\$default_timezone);
-}
-
-//Set the default layout 
-\$default_layout = 'v7';
-
-include_once 'config.security.php';";
-		return $configFileContents;
-	}
+    function getConfigFileContents()
+    {
+        return '';
+    }
 }

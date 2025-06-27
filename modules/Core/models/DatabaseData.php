@@ -309,4 +309,14 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
         $this->setId((int)$data[$this->tableId]);
     }
+
+    /**
+     * @param string $table
+     * @param string|null $tableId
+     * @return self
+     */
+    public static function getTableInstance(string $table, string $tableId = null): self
+    {
+        return (new self())->getTable($table, $tableId);
+    }
 }

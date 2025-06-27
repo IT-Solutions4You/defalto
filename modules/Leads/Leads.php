@@ -13,6 +13,7 @@
  * Contributor(s): ______________________________________.
  ********************************************************************************/
 class Leads extends CRMEntity {
+    public string $parentName = 'Marketing';
 	var $log;
 	var $db;
 

@@ -579,7 +579,12 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		if(!$this->isEditable() || in_array($this->get('uitype'), $ajaxRestrictedFields)) {
 			return false;
 		}
-		return true;
+
+        if ($this->block && 'LBL_SYSTEM_INFORMATION' === $this->block->label) {
+            return Users_Record_Model::getCurrentUserModel()->isAdminUser();
+        }
+
+        return true;
 	}
 
 	/**
@@ -1377,27 +1382,34 @@ class Vtiger_Field_Model extends Vtiger_Field {
 				return $modulePermission;
 	}
 
-	public function __update() {
-		$db = PearDatabase::getInstance();
-		$query = 'UPDATE vtiger_field SET typeofdata=?,presence=?,quickcreate=?,masseditable=?,defaultvalue=?,summaryfield=?,headerfield=?';
-		$params = array($this->get('typeofdata'), $this->get('presence'), $this->get('quickcreate'),
-						$this->get('masseditable'), $this->get('defaultvalue'), $this->get('summaryfield'), $this->get('headerfield'));
+    /**
+     * @throws AppException
+     * @throws Exception
+     */
+    public function __update()
+    {
+        $params = [
+            'typeofdata' => $this->get('typeofdata'),
+            'presence' => $this->get('presence'),
+            'quickcreate' => $this->get('quickcreate'),
+            'masseditable' => $this->get('masseditable'),
+            'defaultvalue' => $this->get('defaultvalue'),
+            'summaryfield' => $this->get('summaryfield'),
+            'headerfield' => $this->get('headerfield'),
+        ];
 
-		if ($this->get('uitype')) {
-			$query .= ', uitype=?';
-			$params[] = $this->get('uitype');
-		}
-		if ($this->get('label')) {
-			$query .= ', fieldlabel=?';
-			$params[] = decode_html($this->get('label'));
-		}
-		$query .= ' WHERE fieldid=?';
-		$params[] = $this->get('id');
+        if ($this->get('uitype')) {
+            $params['uitype'] = $this->get('uitype');
+        }
 
-		$db->pquery($query,$params);
-	}
+        if ($this->get('label')) {
+            $params['fieldlabel'] = decode_html($this->get('label'));
+        }
 
-	public function updateTypeofDataFromMandatory($mandatoryValue='O') {
+        $this->getFieldTable()->updateData($params, ['fieldid' => $this->get('id')]);
+    }
+
+    public function updateTypeofDataFromMandatory($mandatoryValue='O') {
 		$mandatoryValue = strtoupper($mandatoryValue);
 		$supportedMandatoryLiterals = array('O','M');
 		if(!in_array($mandatoryValue, $supportedMandatoryLiterals)) {

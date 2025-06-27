@@ -47,8 +47,7 @@ class VTWorkflowEventHandler extends VTEventHandler {
 		}
 
 		$wsModuleName = $util->toWSModuleName($entityData);
-		$wsId = vtws_getWebserviceEntityId($wsModuleName,
-						$entityData->getId());
+		$wsId = vtws_getWebserviceEntityId($wsModuleName, $entityData->getId());
 		$entityData = $entityCache->forId($wsId);
 
 		/*

@@ -223,15 +223,14 @@ class Invoice_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
-                    'picklist_values' =>
-                        [
-                            0 => 'AutoCreated',
-                            1 => 'Created',
-                            2 => 'Approved',
-                            3 => 'Sent',
-                            4 => 'Credit Invoice',
-                            5 => 'Paid',
-                            6 => 'Cancel',
+                    'picklist_values' => [
+                            'AutoCreated',
+                            'Created',
+                            'Approved',
+                            'Sent',
+                            'Credit Invoice',
+                            'Paid',
+                            'Cancel',
                         ],
                 ],
                 'assigned_user_id' => [
@@ -248,46 +247,18 @@ class Invoice_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'createdtime' => [
-                    'name' => 'createdtime',
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
+                'currency_id' => [
+                    'name' => 'currency_id',
+                    'uitype' => 117,
+                    'column' => 'currency_id',
+                    'table' => 'vtiger_invoice',
+                    'label' => 'Currency',
                     'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'modifiedtime' => [
-                    'name' => 'modifiedtime',
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'modifiedby' => [
-                    'name' => 'modifiedby',
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
+                    'presence' => 2,
+                    'typeofdata' => 'I~O',
                     'quickcreate' => 3,
                     'displaytype' => 3,
-                    'masseditable' => 0,
+                    'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
                 'conversion_rate' => [
@@ -303,20 +274,6 @@ class Invoice_Install_Model extends Core_Install_Model
                     'displaytype' => 3,
                     'masseditable' => 1,
                     'summaryfield' => 0,
-                ],
-                'invoice_no' => [
-                    'name' => 'invoice_no',
-                    'uitype' => 4,
-                    'column' => 'invoice_no',
-                    'table' => 'vtiger_invoice',
-                    'label' => 'Invoice No',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 1,
-                    'masseditable' => 0,
-                    'summaryfield' => 1,
                 ],
                 'price_after_overall_discount' => [
                     'name' => 'price_after_overall_discount',
@@ -740,6 +697,22 @@ class Invoice_Install_Model extends Core_Install_Model
                     'summaryfield'  => 0,
                 ],
             ],
+            'LBL_SYSTEM_INFORMATION' => [
+                'invoice_no' => [
+                    'name' => 'invoice_no',
+                    'uitype' => 4,
+                    'column' => 'invoice_no',
+                    'table' => 'vtiger_invoice',
+                    'label' => 'Invoice No',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 3,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 1,
+                ],
+            ]
         ];
     }
 
@@ -764,15 +737,15 @@ class Invoice_Install_Model extends Core_Install_Model
             ->createColumn('duedate', 'date DEFAULT NULL')
             ->createColumn('invoiceterms', 'varchar(100) DEFAULT NULL')
             ->createColumn('type', 'varchar(100) DEFAULT NULL')
-            ->createColumn('adjustment', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('salescommission', 'decimal(25,3) DEFAULT NULL')
-            ->createColumn('exciseduty', 'decimal(25,3) DEFAULT NULL')
-            ->createColumn('subtotal', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('price_total', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('adjustment', self::$COLUMN_DECIMAL)
+            ->createColumn('salescommission', self::$COLUMN_DECIMAL)
+            ->createColumn('exciseduty', self::$COLUMN_DECIMAL)
+            ->createColumn('subtotal', self::$COLUMN_DECIMAL)
+            ->createColumn('price_total', self::$COLUMN_DECIMAL)
             ->createColumn('taxtype', 'varchar(25) DEFAULT NULL')
-            ->createColumn('discount_percent', 'decimal(25,3) DEFAULT NULL')
-            ->createColumn('discount_amount', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('s_h_amount', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('discount_percent', self::$COLUMN_DECIMAL)
+            ->createColumn('discount_amount', self::$COLUMN_DECIMAL)
+            ->createColumn('s_h_amount', self::$COLUMN_DECIMAL)
             ->createColumn('shipping', 'varchar(100) DEFAULT NULL')
             ->createColumn('accountid', 'int(19) DEFAULT NULL')
             ->createColumn('terms_conditions', 'text DEFAULT NULL')
@@ -783,9 +756,9 @@ class Invoice_Install_Model extends Core_Install_Model
             ->createColumn('conversion_rate', 'decimal(10,3) NOT NULL DEFAULT 1.000')
             ->createColumn('compound_taxes_info', 'text DEFAULT NULL')
             ->createColumn('price_after_overall_discount', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('received', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('balance', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('s_h_percent', 'decimal(25,3) DEFAULT NULL')
+            ->createColumn('received', self::$COLUMN_DECIMAL)
+            ->createColumn('balance', self::$COLUMN_DECIMAL)
+            ->createColumn('s_h_percent', self::$COLUMN_DECIMAL)
             ->createColumn('potential_id', 'varchar(100) DEFAULT NULL')
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createColumn('region_id', 'int(19) DEFAULT NULL')
@@ -831,5 +804,7 @@ class Invoice_Install_Model extends Core_Install_Model
             ->createKey('PRIMARY KEY IF NOT EXISTS (`salesorderid`)')
             ->createKey('CONSTRAINT `fk_salesorderid_vtiger_invoice_recurring_info` FOREIGN KEY IF NOT EXISTS (`salesorderid`) REFERENCES `vtiger_salesorder` (`salesorderid`) ON DELETE CASCADE')
             ;
+
+        $this->createPicklistTable('vtiger_invoicestatus', 'invoicestatusid', 'invoicestatus');
     }
 }

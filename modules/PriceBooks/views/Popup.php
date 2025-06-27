@@ -76,16 +76,8 @@ class PriceBooks_Popup_View extends Vtiger_Popup_View {
             $listViewModel->set('search_params',$transformedSearchParams);
         }
 
-        if(!$this->listViewHeaders){
-            $this->listViewHeaders = $listViewModel->getListViewHeaders();
-        }
-        //Added to support List Price
-        $field = new Vtiger_Field_Model();
-        $field->set('name', 'listprice');
-        $field->set('column', 'listprice');
-        $field->set('label', 'List Price');
-
-        $this->listViewHeaders['listprice'] = $field;
+        $this->listViewHeaders = $listViewModel->getListViewHeaders();
+        $this->listViewHeaders = PriceBooks_Module_Model::retrieveHeaderFieldListPrice($this->listViewHeaders);
 
         if(!$this->listViewEntries){
             $this->listViewEntries = $listViewModel->getListViewEntries($pagingModel);

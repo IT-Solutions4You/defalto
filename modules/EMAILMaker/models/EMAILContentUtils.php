@@ -500,7 +500,6 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
             'product',
             'account',
             'invoiceid',
-            'linktoaccountscontacts',
             'projectid',
             'sc_related_to',
             'account_id',

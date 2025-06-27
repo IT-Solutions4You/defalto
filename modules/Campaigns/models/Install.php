@@ -56,20 +56,6 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'filter' => 1,
                     'filter_sequence' => 1,
                 ],
-                'campaign_no' => [
-                    'name' => 'campaign_no',
-                    'uitype' => 4,
-                    'column' => 'campaign_no',
-                    'table' => 'vtiger_campaign',
-                    'label' => 'Campaign No',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 1,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
                 'campaigntype' => [
                     'name' => 'campaigntype',
                     'uitype' => 15,
@@ -223,62 +209,6 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
-                ],
-                'createdtime' => [
-                    'name' => 'createdtime',
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'modifiedtime' => [
-                    'name' => 'modifiedtime',
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'modifiedby' => [
-                    'name' => 'modifiedby',
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'source' => [
-                    'name' => 'source',
-                    'uitype' => 1,
-                    'column' => 'source',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Source',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
             ],
@@ -450,6 +380,36 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'summaryfield' => 0,
                 ],
             ],
+            'LBL_SYSTEM_INFORMATIONS' => [
+                'campaign_no' => [
+                    'name' => 'campaign_no',
+                    'uitype' => 4,
+                    'column' => 'campaign_no',
+                    'table' => 'vtiger_campaign',
+                    'label' => 'Campaign No',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 3,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 0,
+                ],
+                'campaignrelstatus' => [
+                    'name' => 'campaignrelstatus',
+                    'uitype' => 16,
+                    'column' => 'campaignrelstatus',
+                    'table' => 'vtiger_campaignrelstatus',
+                    'label' => 'Status',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 0,
+                ],
+            ]
         ];
     }
 
@@ -469,9 +429,9 @@ class Campaigns_Install_Model extends Core_Install_Model {
             ->createColumn('campaignname','varchar(255) DEFAULT NULL')
             ->createColumn('campaigntype','varchar(200) DEFAULT NULL')
             ->createColumn('campaignstatus','varchar(200) DEFAULT NULL')
-            ->createColumn('expectedrevenue','decimal(25,8) DEFAULT NULL')
-            ->createColumn('budgetcost','decimal(25,8) DEFAULT NULL')
-            ->createColumn('actualcost','decimal(25,8) DEFAULT NULL')
+            ->createColumn('expectedrevenue',self::$COLUMN_DECIMAL)
+            ->createColumn('budgetcost',self::$COLUMN_DECIMAL)
+            ->createColumn('actualcost',self::$COLUMN_DECIMAL)
             ->createColumn('expectedresponse','varchar(200) DEFAULT NULL')
             ->createColumn('numsent','decimal(11,0) DEFAULT NULL')
             ->createColumn('product_id','int(19) DEFAULT NULL')
@@ -480,10 +440,10 @@ class Campaigns_Install_Model extends Core_Install_Model {
             ->createColumn('targetsize','int(19) DEFAULT NULL')
             ->createColumn('expectedresponsecount','int(19) DEFAULT NULL')
             ->createColumn('expectedsalescount','int(19) DEFAULT NULL')
-            ->createColumn('expectedroi','decimal(25,8) DEFAULT NULL')
+            ->createColumn('expectedroi',self::$COLUMN_DECIMAL)
             ->createColumn('actualresponsecount','int(19) DEFAULT NULL')
             ->createColumn('actualsalescount','int(19) DEFAULT NULL')
-            ->createColumn('actualroi','decimal(25,8) DEFAULT NULL')
+            ->createColumn('actualroi',self::$COLUMN_DECIMAL)
             ->createColumn('closingdate','date DEFAULT NULL')
             ->createColumn('tags','varchar(1) DEFAULT NULL')
             ->createColumn('currency_id','int(19) DEFAULT NULL')
@@ -500,5 +460,8 @@ class Campaigns_Install_Model extends Core_Install_Model {
             ->createKey('PRIMARY KEY IF NOT EXISTS (`campaignid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_campaignscf` FOREIGN KEY IF NOT EXISTS (`campaignid`) REFERENCES `vtiger_campaign` (`campaignid`) ON DELETE CASCADE')
         ;
+        
+        $this->createPicklistTable('vtiger_campaigntype', 'campaigntypeid', 'campaigntype');
+        $this->createPicklistTable('vtiger_expectedresponse', 'expectedresponseid', 'expectedresponse');
     }
 }

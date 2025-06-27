@@ -10,6 +10,87 @@
 
 class Users_Install_Model extends Core_Install_Model
 {
+    public static array $separator_labes = [
+        ',' => 'Comma (,)',
+        '.' => 'Dot (.)',
+        ' ' => 'Space ( )',
+        "'" => "Apostrophe (')",
+        '$' => 'Dollar ($)',
+    ];
+
+    public static array $currency_decimal_separator = [
+        ',',
+        '.',
+        '\'',
+        '$',
+    ];
+
+    public static array $currency_grouping_separator = [
+        ' ',
+        '.',
+        ',',
+        '\'',
+        '$',
+    ];
+
+    /**
+     * @return string
+     */
+    public static function getDefaultGroupingSeparator(): string
+    {
+        global $user_config;
+
+        return $user_config['currency_grouping_separator'] ?? '.';
+    }
+
+    /**
+     * @return string
+     */
+    public static function getDefaultModule(): string
+    {
+        $moduleModel = Settings_Vtiger_ConfigModule_Model::getInstance();
+        $configFieldData = $moduleModel->getViewableData();
+        $defaultModule = $configFieldData['default_module'] ?? '';
+
+        if (empty($defaultModule)) {
+            $defaultModule = 'Home';
+        }
+
+        return (string)$defaultModule;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getDefaultModules(): array
+    {
+        $configModuleInstance = Settings_Vtiger_ConfigModule_Model::getInstance();
+
+        return $configModuleInstance->getPicklistValues('default_module');
+    }
+
+    /**
+     * @return string
+     */
+    public static function getDefaultDecimalSeparator(): string
+    {
+        global $user_config;
+
+        return $user_config['currency_decimal_separator'] ?? ',';
+    }
+
+    public static function getDefaultLanguage(): string
+    {
+        if (!empty($_SESSION['config_file_info']['default_language'])) {
+            $language = $_SESSION['config_file_info']['default_language'];
+        } else {
+            $language = vglobal('default_language');
+        }
+
+        log_data('log_data', [$language]);
+
+        return !empty($language) ? $language : 'en_us';
+    }
 
     /**
      * @return void
@@ -41,6 +122,11 @@ class Users_Install_Model extends Core_Install_Model
      */
     public function deleteCustomLinks(): void
     {
+    }
+
+    public function retrieveBlocks(): void
+    {
+        self::$fieldsConfig['Users'] = $this->getBlocks();
     }
 
     /**
@@ -217,27 +303,9 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'defaultvalue' => 'Active',
                     'filter' => 1,
                     'filter_sequence' => 10,
-                ],
-                'lead_view' => [
-                    'name' => 'lead_view',
-                    'uitype' => 16,
-                    'column' => 'lead_view',
-                    'table' => 'vtiger_users',
-                    'label' => 'Default Lead View',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 1,
-                    'masseditable' => 1,
-                    'summaryfield' => 0,
-                    'picklist_values' => [
-                        'Today',
-                        'Last 2 Days',
-                        'Last Week',
-                    ],
                 ],
                 'end_hour' => [
                     'name' => 'end_hour',
@@ -266,6 +334,21 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 5,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                ],
+                'language' => [
+                    'name' => 'language',
+                    'uitype' => 32,
+                    'column' => 'language',
+                    'table' => 'vtiger_users',
+                    'label' => 'Language',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                    'defaultvalue' => self::getDefaultLanguage(),
                 ],
             ],
             'LBL_CURRENCY_CONFIGURATION' => [
@@ -296,12 +379,11 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
-                    'picklist_values' =>
-                        [
-                            0 => '123,456,789',
-                            1 => '123456789',
-                            2 => '123456,789',
-                            3 => '12,34,56,789',
+                    'picklist_values' => [
+                            '123,456,789',
+                            '123456789',
+                            '123456,789',
+                            '12,34,56,789',
                         ],
                 ],
                 'currency_decimal_separator' => [
@@ -318,13 +400,9 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'defaultvalue' => self::getDefaultDecimalSeparator(),
                     'picklist_overwrite' => true,
-                    'picklist_values' => [
-                        '.',
-                        ',',
-                        '\'',
-                        '$',
-                    ],
+                    'picklist_values' => self::$currency_decimal_separator,
                 ],
                 'currency_grouping_separator' => [
                     'name' => 'currency_grouping_separator',
@@ -340,14 +418,9 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'defaultvalue' => self::getDefaultGroupingSeparator(),
                     'picklist_overwrite' => true,
-                    'picklist_values' => [
-                        ' ',
-                        ',',
-                        '.',
-                        '\'',
-                        '$',
-                    ],
+                    'picklist_values' => self::$currency_grouping_separator,
                 ],
                 'currency_symbol_placement' => [
                     'name' => 'currency_symbol_placement',
@@ -363,8 +436,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
-                    'picklist_values' =>
-                        [
+                    'picklist_values' => [
                             '$1.0',
                             '1.0$',
                         ],
@@ -392,7 +464,6 @@ class Users_Install_Model extends Core_Install_Model
                         '2',
                         '3',
                         '4',
-                        '5',
                     ],
                 ],
                 'truncate_trailing_zeros' => [
@@ -416,301 +487,227 @@ class Users_Install_Model extends Core_Install_Model
                         "currency field type - shows 89.00<br/>",
                 ],
             ],
-            'LBL_MORE_INFORMATION' =>
-                [
-                    'title' => [
-                        'name' => 'title',
-                        'uitype' => 1,
-                        'column' => 'title',
-                        'table' => 'vtiger_users',
-                        'label' => 'Title',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'maximumlength' => 50,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'phone_work' => [
-                        'name' => 'phone_work',
-                        'uitype' => 11,
-                        'column' => 'phone_work',
-                        'table' => 'vtiger_users',
-                        'label' => 'Office Phone',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'maximumlength' => 50,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                        'headerfield' => 0,
-                        'filter' => 1,
-                        'filter_sequence' => 7,
-                    ],
-                    'department' => [
-                        'name' => 'department',
-                        'uitype' => 1,
-                        'column' => 'department',
-                        'table' => 'vtiger_users',
-                        'label' => 'Department',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'maximumlength' => 50,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'phone_mobile' => [
-                        'name' => 'phone_mobile',
-                        'uitype' => 11,
-                        'column' => 'phone_mobile',
-                        'table' => 'vtiger_users',
-                        'label' => 'Mobile',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'maximumlength' => 50,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'reports_to_id' => [
-                        'name' => 'reports_to_id',
-                        'uitype' => 101,
-                        'column' => 'reports_to_id',
-                        'table' => 'vtiger_users',
-                        'label' => 'Reports To',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'maximumlength' => 50,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'phone_other' => [
-                        'name' => 'phone_other',
-                        'uitype' => 11,
-                        'column' => 'phone_other',
-                        'table' => 'vtiger_users',
-                        'label' => 'Other Phone',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'maximumlength' => 50,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'email2' => [
-                        'name' => 'email2',
-                        'uitype' => 13,
-                        'column' => 'email2',
-                        'table' => 'vtiger_users',
-                        'label' => 'Other Email',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'typeofdata' => 'E~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                        'headerfield' => 0,
-                        'filter' => 1,
-                        'filter_sequence' => 6,
-                    ],
-                    'secondaryemail' => [
-                        'name' => 'secondaryemail',
-                        'uitype' => 13,
-                        'column' => 'secondaryemail',
-                        'table' => 'vtiger_users',
-                        'label' => 'Secondary Email',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'typeofdata' => 'E~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'phone_home' => [
-                        'name' => 'phone_home',
-                        'uitype' => 11,
-                        'column' => 'phone_home',
-                        'table' => 'vtiger_users',
-                        'label' => 'Home Phone',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'maximumlength' => 50,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'signature' => [
-                        'name' => 'signature',
-                        'uitype' => 21,
-                        'column' => 'signature',
-                        'table' => 'vtiger_users',
-                        'label' => 'Signature',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'maximumlength' => 250,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'description' => [
-                        'name' => 'description',
-                        'uitype' => 21,
-                        'column' => 'description',
-                        'table' => 'vtiger_users',
-                        'label' => 'Documents',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'maximumlength' => 250,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'internal_mailer' => [
-                        'name' => 'internal_mailer',
-                        'uitype' => 56,
-                        'column' => 'internal_mailer',
-                        'table' => 'vtiger_users',
-                        'label' => 'INTERNAL_MAIL_COMPOSER',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'maximumlength' => 50,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'theme' => [
-                        'name' => 'theme',
-                        'uitype' => 31,
-                        'column' => 'theme',
-                        'table' => 'vtiger_users',
-                        'label' => 'Theme',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'language' => [
-                        'name' => 'language',
-                        'uitype' => 32,
-                        'column' => 'language',
-                        'table' => 'vtiger_users',
-                        'label' => 'Language',
-                        'readonly' => 1,
-                        'presence' => 0,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'phone_crm_extension' => [
-                        'name' => 'phone_crm_extension',
-                        'uitype' => 11,
-                        'column' => 'phone_crm_extension',
-                        'table' => 'vtiger_users',
-                        'label' => 'CRM Phone Extension',
-                        'readonly' => 1,
-                        'presence' => 2,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'default_record_view' => [
-                        'name' => 'default_record_view',
-                        'uitype' => 16,
-                        'column' => 'default_record_view',
-                        'table' => 'vtiger_users',
-                        'label' => 'Default Record View',
-                        'readonly' => 1,
-                        'presence' => 2,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                        'picklist_values' =>
-                            [
-                                'Summary',
-                                'Detail',
-                            ],
-                    ],
-                    'leftpanelhide' => [
-                        'name' => 'leftpanelhide',
-                        'uitype' => 56,
-                        'column' => 'leftpanelhide',
-                        'table' => 'vtiger_users',
-                        'label' => 'Left Panel Hide',
-                        'readonly' => 1,
-                        'presence' => 2,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                    ],
-                    'rowheight' => [
-                        'name' => 'rowheight',
-                        'uitype' => 16,
-                        'column' => 'rowheight',
-                        'table' => 'vtiger_users',
-                        'label' => 'Row Height',
-                        'readonly' => 1,
-                        'presence' => 2,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 1,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
-                        'picklist_values' => [
-                            'wide',
-                            'medium',
-                            'narrow',
+            'LBL_MORE_INFORMATION' => [
+                'title' => [
+                    'name' => 'title',
+                    'uitype' => 1,
+                    'column' => 'title',
+                    'table' => 'vtiger_users',
+                    'label' => 'Title',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'maximumlength' => 50,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                ],
+                'phone_work' => [
+                    'name' => 'phone_work',
+                    'uitype' => 11,
+                    'column' => 'phone_work',
+                    'table' => 'vtiger_users',
+                    'label' => 'Phone',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'maximumlength' => 50,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                    'headerfield' => 0,
+                    'filter' => 1,
+                    'filter_sequence' => 7,
+                ],
+                'department' => [
+                    'name' => 'department',
+                    'uitype' => 1,
+                    'column' => 'department',
+                    'table' => 'vtiger_users',
+                    'label' => 'Department',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'maximumlength' => 50,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                ],
+                'reports_to_id' => [
+                    'name' => 'reports_to_id',
+                    'uitype' => 101,
+                    'column' => 'reports_to_id',
+                    'table' => 'vtiger_users',
+                    'label' => 'Reports To',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'maximumlength' => 50,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                ],
+                'phone_other' => [
+                    'name' => 'phone_other',
+                    'uitype' => 11,
+                    'column' => 'phone_other',
+                    'table' => 'vtiger_users',
+                    'label' => 'Other Phone',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'maximumlength' => 50,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                ],
+                'secondaryemail' => [
+                    'name' => 'secondaryemail',
+                    'uitype' => 13,
+                    'column' => 'secondaryemail',
+                    'table' => 'vtiger_users',
+                    'label' => 'Secondary Email',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'E~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                ],
+                'signature' => [
+                    'name' => 'signature',
+                    'uitype' => 21,
+                    'column' => 'signature',
+                    'table' => 'vtiger_users',
+                    'label' => 'Signature',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'maximumlength' => 250,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                ],
+                'internal_mailer' => [
+                    'name' => 'internal_mailer',
+                    'uitype' => 56,
+                    'column' => 'internal_mailer',
+                    'table' => 'vtiger_users',
+                    'label' => 'INTERNAL_MAIL_COMPOSER',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'maximumlength' => 50,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                ],
+                'theme' => [
+                    'name' => 'theme',
+                    'uitype' => 31,
+                    'column' => 'theme',
+                    'table' => 'vtiger_users',
+                    'label' => 'Theme',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                    'defaultvalue' => 'softed',
+                ],
+                'phone_crm_extension' => [
+                    'name' => 'phone_crm_extension',
+                    'uitype' => 11,
+                    'column' => 'phone_crm_extension',
+                    'table' => 'vtiger_users',
+                    'label' => 'CRM Phone Extension',
+                    'readonly' => 1,
+                    'presence' => 2,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                ],
+                'default_record_view' => [
+                    'name' => 'default_record_view',
+                    'uitype' => 16,
+                    'column' => 'default_record_view',
+                    'table' => 'vtiger_users',
+                    'label' => 'Default Record View',
+                    'readonly' => 1,
+                    'presence' => 2,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                    'picklist_values' =>
+                        [
+                            'Summary',
+                            'Detail',
                         ],
-                    ],
-                    'userlabel' => [
-                        'name' => 'userlabel',
-                        'uitype' => 1,
-                        'column' => 'userlabel',
-                        'table' => 'vtiger_users',
-                        'label' => 'User Label',
-                        'readonly' => 1,
-                        'presence' => 2,
-                        'typeofdata' => 'V~O',
-                        'quickcreate' => 1,
-                        'displaytype' => 3,
-                        'masseditable' => 1,
-                        'summaryfield' => 0,
+                ],
+                'rowheight' => [
+                    'name' => 'rowheight',
+                    'uitype' => 16,
+                    'column' => 'rowheight',
+                    'table' => 'vtiger_users',
+                    'label' => 'Row Height',
+                    'readonly' => 1,
+                    'presence' => 2,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                    'picklist_values' => [
+                        'wide',
+                        'medium',
+                        'narrow',
                     ],
                 ],
+                'userlabel' => [
+                    'name' => 'userlabel',
+                    'uitype' => 1,
+                    'column' => 'userlabel',
+                    'table' => 'vtiger_users',
+                    'label' => 'User Label',
+                    'readonly' => 1,
+                    'presence' => 2,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 3,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                ],
+                'defaultlandingpage' => [
+                    'name' => 'defaultlandingpage',
+                    'uitype' => 32,
+                    'column' => 'defaultlandingpage',
+                    'table' => 'vtiger_users',
+                    'label' => 'Default Landing Page',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 3,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                    'defaultvalue' => self::getDefaultModule(),
+                    'picklist_values' => self::getDefaultModules(),
+                ],
+            ],
             'LBL_ADDRESS_INFORMATION' => [
                 'address_street' => [
                     'name' => 'address_street',
@@ -850,6 +847,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'defaultvalue' => '12',
                     'picklist_values' => [
                         '12',
                         '24',
@@ -909,8 +907,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
-                    'picklist_values' =>
-                        [
+                    'picklist_values' => [
                             'dd-mm-yyyy',
                             'mm-dd-yyyy',
                             'yyyy-mm-dd',
@@ -1284,19 +1281,14 @@ class Users_Install_Model extends Core_Install_Model
             ->createColumn('reports_to_id', 'varchar(36) DEFAULT NULL')
             ->createColumn('is_admin', 'varchar(3) DEFAULT \'0\'')
             ->createColumn('currency_id', 'int(19) NOT NULL DEFAULT 1')
-            ->createColumn('description', 'text DEFAULT NULL')
             ->createColumn('date_entered', 'timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()')
             ->createColumn('date_modified', 'datetime DEFAULT NULL')
             ->createColumn('modified_user_id', 'varchar(36) DEFAULT NULL')
             ->createColumn('title', 'varchar(50) DEFAULT NULL')
             ->createColumn('department', 'varchar(50) DEFAULT NULL')
-            ->createColumn('phone_home', 'varchar(50) DEFAULT NULL')
-            ->createColumn('phone_mobile', 'varchar(50) DEFAULT NULL')
             ->createColumn('phone_work', 'varchar(50) DEFAULT NULL')
             ->createColumn('phone_other', 'varchar(50) DEFAULT NULL')
-            ->createColumn('phone_fax', 'varchar(50) DEFAULT NULL')
             ->createColumn('email1', 'varchar(100) DEFAULT NULL')
-            ->createColumn('email2', 'varchar(100) DEFAULT NULL')
             ->createColumn('secondaryemail', 'varchar(100) DEFAULT NULL')
             ->createColumn('status', 'varchar(25) DEFAULT NULL')
             ->createColumn('signature', 'text DEFAULT NULL')
@@ -1317,7 +1309,6 @@ class Users_Install_Model extends Core_Install_Model
             ->createColumn('end_hour', 'varchar(30) DEFAULT \'23:00\'')
             ->createColumn('is_owner', 'varchar(100) DEFAULT \'0\'')
             ->createColumn('activity_view', 'varchar(200) DEFAULT \'Today\'')
-            ->createColumn('lead_view', 'varchar(200) DEFAULT \'Today\'')
             ->createColumn('imagename', 'varchar(250) DEFAULT NULL')
             ->createColumn('deleted', 'int(1) NOT NULL DEFAULT \'0\'')
             ->createColumn('confirm_password', 'varchar(300) DEFAULT NULL')
@@ -1342,7 +1333,6 @@ class Users_Install_Model extends Core_Install_Model
             ->createColumn('othereventduration', 'varchar(100) DEFAULT NULL')
             ->createColumn('calendarsharedtype', 'varchar(100) DEFAULT NULL')
             ->createColumn('default_record_view', 'varchar(10) DEFAULT NULL')
-            ->createColumn('leftpanelhide', 'varchar(3) DEFAULT NULL')
             ->createColumn('rowheight', 'varchar(10) DEFAULT NULL')
             ->createColumn('defaulteventstatus', 'varchar(50) DEFAULT NULL')
             ->createColumn('defaultactivitytype', 'varchar(50) DEFAULT NULL')
