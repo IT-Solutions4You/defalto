@@ -56,34 +56,38 @@ class Leads_Record_Model extends Vtiger_Record_Model {
 	 * Function returns Account fields for Lead Convert
 	 * @return Array
 	 */
-	function getAccountFieldsForLeadConvert() {
+	function getAccountFieldsForLeadConvert(): array
+    {
 		$accountsFields = array();
-		$privilegeModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		$moduleName = 'Accounts';
 
-		if(!Users_Privileges_Model::isPermitted($moduleName, 'CreateView')) {
-			return;
-		}
+        $relatedToField = Vtiger_Module_Model::getInstance('Potentials')->getField('related_to');
 
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        if (!Users_Privileges_Model::isPermitted($moduleName, 'CreateView')) {
+            return [];
+        }
+
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+
 		if ($moduleModel->isActive()) {
-            $compulsoryFields = ['accountname'];
+            $fieldName = 'accountname';
+            $fieldModel = Vtiger_Field_Model::getInstance('accountname', $moduleModel);
 
-            foreach ($compulsoryFields as $complusoryField) {
-                $fieldModel = Vtiger_Field_Model::getInstance($complusoryField, $moduleModel);
+            if ($fieldModel->getPermissions('readwrite') && $fieldModel->isEditable()) {
+                $fieldModel = $moduleModel->getField($fieldName);
+                $fieldLeadMappedField = $this->getConvertLeadMappedField($fieldName, $moduleName);
 
-                if ($fieldModel->getPermissions('readwrite') && $fieldModel->isEditable()) {
-                    $industryFieldModel = $moduleModel->getField($complusoryField);
-                    $industryLeadMappedField = $this->getConvertLeadMappedField($complusoryField, $moduleName);
-
-                    if ($this->get($industryLeadMappedField)) {
-                        $industryFieldModel->set('fieldvalue', $this->get($industryLeadMappedField));
-                    } else {
-                        $industryFieldModel->set('fieldvalue', $industryFieldModel->getDefaultFieldValue());
-                    }
-
-                    $accountsFields[] = $industryFieldModel;
+                if ($this->get($fieldLeadMappedField)) {
+                    $fieldModel->set('fieldvalue', $this->get($fieldLeadMappedField));
+                } else {
+                    $fieldModel->set('fieldvalue', $fieldModel->getDefaultFieldValue());
                 }
+
+                if(!$relatedToField->isMandatory()) {
+                    $fieldModel->set('typeofdata', 'V~O');
+                }
+
+                $accountsFields[] = $fieldModel;
             }
         }
 

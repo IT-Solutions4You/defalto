@@ -18,41 +18,43 @@ class Leads_SaveConvertLead_View extends Vtiger_View_Controller {
 		return $permissions;
 	}
 
-	public function process(Vtiger_Request $request) {
-		$recordId = $request->get('record');
-		$assignId = $request->get('assigned_user_id');
-		$currentUser = Users_Record_Model::getCurrentUserModel();
+    public function process(Vtiger_Request $request)
+    {
+        $recordId = $request->get('record');
+        $assignId = $request->get('assigned_user_id');
+        $currentUser = Users_Record_Model::getCurrentUserModel();
 
-		$entityValues = array();
+        $entityValues = [];
         $modules = ['Accounts', 'Contacts', 'Potentials'];
 
-		$entityValues['transferRelatedRecordsTo'] = $request->get('transferModule');
-		$entityValues['assignedTo'] = vtws_getWebserviceEntityId(vtws_getOwnerType($assignId), $assignId);
-		$entityValues['leadId'] =  vtws_getWebserviceEntityId($request->getModule(), $recordId);
-		$entityValues['imageAttachmentId'] = $request->get('imageAttachmentId');
+        $entityValues['transferRelatedRecordsTo'] = $request->get('transferModule');
+        $entityValues['assignedTo'] = vtws_getWebserviceEntityId(vtws_getOwnerType($assignId), $assignId);
+        $entityValues['leadId'] = vtws_getWebserviceEntityId($request->getModule(), $recordId);
+        $entityValues['imageAttachmentId'] = $request->get('imageAttachmentId');
 
-		$recordModel = Vtiger_Record_Model::getInstanceById($recordId, $request->getModule());
-		$convertLeadFields = $recordModel->getConvertLeadFields();
+        $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $request->getModule());
+        $convertLeadFields = $recordModel->getConvertLeadFields();
 
-		$availableModules = array('Accounts', 'Contacts', 'Potentials');
-		foreach ($availableModules as $module) {
-			if(vtlib_isModuleActive($module)&& in_array($module, $modules)) {
-				$entityValues['entities'][$module]['create'] = true;
-				$entityValues['entities'][$module]['name'] = $module;
+        $availableModules = ['Accounts', 'Contacts', 'Potentials'];
 
-				// Converting lead should save records source as CRM instead of WEBSERVICE
-				$entityValues['entities'][$module]['source'] = 'CRM';
-				foreach ($convertLeadFields[$module] as $fieldModel) {
-					$fieldName = $fieldModel->getName();
-					$fieldValue = $request->get($fieldName);
+        foreach ($availableModules as $module) {
+            if (vtlib_isModuleActive($module) && in_array($module, $modules)) {
+                $entityValues['entities'][$module]['create'] = !('Accounts' === $module && $request->isEmpty('accountname'));
+                $entityValues['entities'][$module]['name'] = $module;
 
-					//Potential Amount Field value converting into DB format
-					if ($fieldModel->getFieldDataType() === 'currency') {
+                // Converting lead should save records source as CRM instead of WEBSERVICE
+                $entityValues['entities'][$module]['source'] = 'CRM';
+                foreach ($convertLeadFields[$module] as $fieldModel) {
+                    $fieldName = $fieldModel->getName();
+                    $fieldValue = $request->get($fieldName);
+
+                    //Potential Amount Field value converting into DB format
+                    if ($fieldModel->getFieldDataType() === 'currency') {
                         $fieldValue = Vtiger_Currency_UIType::convertToDBFormat($fieldValue, null, true);
-					} elseif ($fieldModel->getFieldDataType() === 'date') {
-						$fieldValue = DateTimeField::convertToDBFormat($fieldValue);
-					} elseif ($fieldModel->getFieldDataType() === 'reference' && $fieldValue) {
-						if($fieldModel->get('uitype') == 77){
+                    } elseif ($fieldModel->getFieldDataType() === 'date') {
+                        $fieldValue = DateTimeField::convertToDBFormat($fieldValue);
+                    } elseif ($fieldModel->getFieldDataType() === 'reference' && $fieldValue) {
+                        if ($fieldModel->get('uitype') == 77) {
                             $fieldValue = vtws_getWebserviceEntityId(vtws_getOwnerType($fieldValue), $fieldValue);
                         } else {
                             $ids = vtws_getIdComponents($fieldValue);
@@ -60,17 +62,18 @@ class Leads_SaveConvertLead_View extends Vtiger_View_Controller {
                                 $fieldValue = vtws_getWebserviceEntityId(getSalesEntityType($fieldValue), $fieldValue);
                             }
                         }
-					}
-					$entityValues['entities'][$module][$fieldName] = $fieldValue;
-				}
-			}
-		}
-		try {
-			$result = vtws_convertlead($entityValues, $currentUser);
-		} catch(Exception $e) {
-			$this->showError($request, $e);
-			exit;
-		}
+                    }
+                    $entityValues['entities'][$module][$fieldName] = $fieldValue;
+                }
+            }
+        }
+
+        try {
+            $result = vtws_convertlead($entityValues, $currentUser);
+        } catch (Exception $e) {
+            $this->showError($request, $e);
+            exit;
+        }
 
         if (!empty($result['Potentials'])) {
             $potentialsIdComponents = vtws_getIdComponents($result['Potentials']);
@@ -83,7 +86,7 @@ class Leads_SaveConvertLead_View extends Vtiger_View_Controller {
         }
     }
 
-	function showError($request, $exception=false) {
+    function showError($request, $exception=false) {
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
 
