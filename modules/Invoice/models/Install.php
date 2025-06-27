@@ -401,7 +401,7 @@ class Invoice_Install_Model extends Core_Install_Model
                         'label' => 'Shipping Address',
                         'readonly' => 1,
                         'presence' => 2,
-                        'typeofdata' => 'V~M',
+                        'typeofdata' => 'V~O',
                         'quickcreate' => 3,
                         'displaytype' => 1,
                         'masseditable' => 1,
