@@ -266,9 +266,15 @@ class Install_Utils_Model {
 			'db_password' => '',
 			'db_name'     => '',
 			'admin_name'  => 'admin',
+			'admin_firstname'=> '',
 			'admin_lastname'=> 'Administrator',
 			'admin_password'=>'',
 			'admin_email' => '',
+			'date_format' => '',
+			'timezone' => 'Europe/Belgrade',
+			'currency_name' => 'Euro',
+			'currency_decimal_separator' => '.',
+			'currency_grouping_separator' => ' ',
 		);
 		
 		if (isset($dbconfig) && isset($vtconfig)) {
@@ -282,8 +288,24 @@ class Install_Utils_Model {
 				$parameters['admin_email']    = $vtconfig['adminEmail'];
 			}
 		}
-		
-		return $parameters;
+
+        if (!empty($_SESSION['config_file_info'])) {
+            $mapping = [
+                'firstname' => 'admin_firstname',
+                'password' => 'admin_password',
+                'dateformat' => 'date_format',
+            ];
+
+            foreach ($_SESSION['config_file_info'] as $key => $value) {
+                $key = $mapping[$key] ?: $key;
+
+                if (array_key_exists($key, $parameters) && !empty($value)) {
+                    $parameters[$key] = $value;
+                }
+            }
+        }
+
+        return $parameters;
 	}
 
 	/**
@@ -411,6 +433,31 @@ class Install_Utils_Model {
         foreach ($values as $value) {
             $label = $labels[$value] ?? $value;
             $options[$value] = $label;
+        }
+
+        return $options;
+    }
+
+    public static function getDateFormats(): array
+    {
+        return [
+            'dd-mm-yyyy' => 'dd-mm-yyyy',
+            'yyyy-mm-dd' => 'yyyy-mm-dd',
+            'mm-dd-yyyy' => 'mm-dd-yyyy',
+            'dd.mm.yyyy' => 'dd.mm.yyyy',
+            'dd/mm/yyyy' => 'dd/mm/yyyy',
+        ];
+    }
+
+    public static function getTimeZones(): array
+    {
+        require_once 'modules/Users/UserTimeZonesArray.php';
+
+        $options = [];
+        $timeZones = UserTimeZones::getAll();
+
+        foreach ($timeZones as $timeZone) {
+            $options[$timeZone] = vtranslate($timeZone, 'Users');
         }
 
         return $options;
