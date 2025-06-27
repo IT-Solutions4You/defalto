@@ -93,29 +93,36 @@ class Install_Index_view extends Vtiger_View_Controller {
 		$viewer->view('Step3.tpl', $moduleName);
 	}
 
-	public function Step4(Vtiger_Request $request) {
+	public function Step4(Vtiger_Request $request)
+	{
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
 		$viewer->assign('CURRENCIES', Install_Utils_Model::getCurrencyList());
 		$viewer->assign('DECIMAL_SEPARATORS', Install_Utils_Model::getDecimalList());
 		$viewer->assign('GROUPING_SEPARATORS', Install_Utils_Model::getGroupingList());
-
-		require_once 'modules/Users/UserTimeZonesArray.php';
-        $viewer->assign('TIMEZONES', UserTimeZones::getAll());
+		$viewer->assign('DATE_FORMATS', Install_Utils_Model::getDateFormats());
+		$viewer->assign('TIMEZONES', Install_Utils_Model::getTimeZones());
 
 		$defaultParameters = Install_Utils_Model::getDefaultPreInstallParameters();
+
+		$viewer->assign('DEFAULT_PARAMETERS', $defaultParameters);
 		$viewer->assign('DB_HOSTNAME', $defaultParameters['db_hostname']);
 		$viewer->assign('DB_USERNAME', $defaultParameters['db_username']);
 		$viewer->assign('DB_PASSWORD', $defaultParameters['db_password']);
 		$viewer->assign('DB_NAME', $defaultParameters['db_name']);
 		$viewer->assign('ADMIN_NAME', $defaultParameters['admin_name']);
 		$viewer->assign('ADMIN_LASTNAME', $defaultParameters['admin_lastname']);
+		$viewer->assign('ADMIN_FIRSTNAME', $defaultParameters['admin_firstname']);
 		$viewer->assign('ADMIN_PASSWORD', $defaultParameters['admin_password']);
 		$viewer->assign('ADMIN_EMAIL', $defaultParameters['admin_email']);
-                
-                $runtime_configs = Vtiger_Runtime_Configs::getInstance();
-                $password_regex = $runtime_configs->getValidationRegex('password_regex');
-                $viewer->assign('PWD_REGEX', $password_regex);
+		$viewer->assign('DATE_FORMAT', $defaultParameters['date_format']);
+		$viewer->assign('TIMEZONE', $defaultParameters['timezone']);
+		$viewer->assign('DECIMAL_SEPARATOR', $defaultParameters['currency_decimal_separator']);
+		$viewer->assign('GROUPING_SEPARATOR', $defaultParameters['currency_grouping_separator']);
+
+		$runtime_configs = Vtiger_Runtime_Configs::getInstance();
+		$password_regex = $runtime_configs->getValidationRegex('password_regex');
+		$viewer->assign('PWD_REGEX', $password_regex);
 
 		$viewer->view('Step4.tpl', $moduleName);
 	}
@@ -177,6 +184,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 		$moduleName = $request->getModule();
 		$viewer = $this->getViewer($request);
 
+		$viewer->assign('DEFAULT_PARAMETERS', $_SESSION['config_file_info']);
 		$viewer->assign('AUTH_KEY', $_SESSION['config_file_info']['authentication_key']);
 		$viewer->view('Step6.tpl', $moduleName);
 	}

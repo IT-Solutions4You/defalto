@@ -22,14 +22,6 @@
                     <input type="hidden" name="transferModule" value="Contacts"/>
                     {assign var=LEAD_COMPANY_NAME value=$RECORD->get('company')}
                     <div class="modal-body accordion container-fluid" id="leadAccordion">
-                        <div class="row">
-                            <div class="col-lg-4 text-end">
-                                <h5>
-                                    <span class="me-2">{vtranslate('LBL_CREATE', $MODULE)}</span>
-                                    <span>{vtranslate('SINGLE_Potentials', $MODULE_NAME)}</span>
-                                </h5>
-                            </div>
-                        </div>
                         {foreach item=MODULE_FIELD_MODEL key=MODULE_NAME from=$CONVERT_LEAD_FIELDS}
                             <div class="row">
                                 <div class="col-lg-12 moduleContent">
