@@ -82,7 +82,7 @@
                                 <div class="col-lg-6">
                                     <select name="currency_name" class="select2" >
                                         {foreach key=CURRENCY_NAME item=CURRENCY_INFO from=$CURRENCIES}
-                                            <option value="{$CURRENCY_NAME}" {if $CURRENCY_NAME eq 'Euro'} selected {/if}>{$CURRENCY_NAME} ({$CURRENCY_INFO.1})</option>
+                                            <option value="{$CURRENCY_NAME}" {if $CURRENCY_NAME eq $DEFAULT_PARAMETERS['currency_name']} selected {/if}>{$CURRENCY_NAME} ({$CURRENCY_INFO.1})</option>
                                         {/foreach}
                                     </select>
                                 </div>
@@ -91,9 +91,7 @@
                                 <div class="col-lg-6">{vtranslate('Decimal Separator ','Install')}<span class="no text-danger ms-2">*</span></div>
                                 <div class="col-lg-6">
                                     <select name="currency_decimal_separator" class="select2" >
-                                        {foreach key=KEY item=VALUE from=$DECIMAL_SEPARATORS}
-                                            <option value="{$KEY}">{$VALUE}</option>
-                                        {/foreach}
+                                        {html_options options=$DECIMAL_SEPARATORS selected=$DECIMAL_SEPARATOR}
                                     </select>
                                 </div>
                             </div>
@@ -101,9 +99,7 @@
                                 <div class="col-lg-6">{vtranslate('Digit Grouping Separator','Install')}<span class="no text-danger ms-2">*</span></div>
                                 <div class="col-lg-6">
                                     <select name="currency_grouping_separator" class="select2" >
-                                        {foreach key=KEY item=VALUE from=$GROUPING_SEPARATORS}
-                                            <option value="{$KEY}">{$VALUE}</option>
-                                        {/foreach}
+                                        {html_options options=$GROUPING_SEPARATORS selected=$GROUPING_SEPARATOR}
                                     </select>
                                 </div>
                             </div>
@@ -131,7 +127,7 @@
                             </div>
                             <div class="row py-2">
                                 <div class="col-lg-6">{vtranslate('First Name', 'Install')}</div>
-                                <div class="col-lg-6"><input type="text" class="form-control" value="" name="firstname"/></div>
+                                <div class="col-lg-6"><input type="text" class="form-control" value="{$ADMIN_FIRSTNAME}" name="firstname"/></div>
                             </div>
                             <div class="row py-2">
                                 <div class="col-lg-6">{vtranslate('Last Name', 'Install')} <span class="no text-danger ms-2">*</span></div>
@@ -145,11 +141,7 @@
                                 <div class="col-lg-6">{vtranslate('LBL_DATE_FORMAT','Install')} <span class="no text-danger ms-2">*</span></div>
                                 <div class="col-lg-6">
                                     <select class="select2"  name="dateformat">
-                                        <option value="dd-mm-yyyy">dd-mm-yyyy</option>
-                                        <option value="yyyy-mm-dd">yyyy-mm-dd</option>
-                                        <option value="mm-dd-yyyy">mm-dd-yyyy</option>
-                                        <option value="dd.mm.yyyy">dd.mm.yyyy</option>
-                                        <option value="dd/mm/yyyy">dd/mm/yyyy</option>
+                                        {html_options options=$DATE_FORMATS selected=$DATE_FORMAT}
                                     </select>
                                 </div>
                             </div>
@@ -160,9 +152,7 @@
                                 <div class="col-lg-6">
                                     <div>
                                         <select class="select2" name="timezone">
-                                            {foreach item=TIMEZONE from=$TIMEZONES}
-                                                <option value="{$TIMEZONE}" {if $TIMEZONE eq 'Europe/Belgrade'}selected{/if}>{vtranslate($TIMEZONE, 'Users')}</option>
-                                            {/foreach}
+                                            {html_options options=$TIMEZONES selected=$TIMEZONE}
                                         </select>
                                     </div>
                                 </div>

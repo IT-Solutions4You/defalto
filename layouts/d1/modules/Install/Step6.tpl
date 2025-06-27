@@ -23,7 +23,7 @@
                                             <strong>{vtranslate('Server')}</strong>
                                         </span>
                                         <span class="col-sm">
-                                            <input name="smtp_server" placeholder="ssl://smtp.example.com:465" class="form-control">
+                                            <input name="smtp_server" placeholder="ssl://smtp.example.com:465" class="form-control" value="{$DEFAULT_PARAMETERS['smtp_server']}">
                                         </span>
                                     </label>
                                     <label class="row py-2">
@@ -31,7 +31,7 @@
                                             <strong>{vtranslate('Username')}</strong>
                                         </span>
                                         <span class="col-sm">
-                                            <input name="smtp_username" placeholder="email.address@example.com" class="form-control">
+                                            <input name="smtp_username" placeholder="email.address@example.com" class="form-control" value="{$DEFAULT_PARAMETERS['smtp_username']}">
                                         </span>
                                     </label>
                                     <label class="row py-2">
@@ -39,7 +39,7 @@
                                             <strong>{vtranslate('Password')}</strong>
                                         </span>
                                         <span class="col-sm">
-                                            <input name="smtp_password" placeholder="********" type="password" class="form-control">
+                                            <input name="smtp_password" placeholder="********" type="password" class="form-control" value="{$DEFAULT_PARAMETERS['smtp_password']}">
                                         </span>
                                     </label>
                                     <label class="row py-2">
@@ -47,7 +47,7 @@
                                             <strong>{vtranslate('From Email')}</strong>
                                         </span>
                                         <span class="col-sm">
-                                            <input name="smtp_from_email" placeholder="email.address@example.com" type="email" class="form-control">
+                                            <input name="smtp_from_email" placeholder="email.address@example.com" type="email" class="form-control" value="{$DEFAULT_PARAMETERS['smtp_from_email']}">
                                         </span>
                                     </label>
                                     <label class="row py-2">
@@ -55,7 +55,7 @@
                                             <strong>{vtranslate('Requires Authentication')}</strong>
                                         </span>
                                         <span class="col-sm">
-                                            <input name="smtp_authentication" type="checkbox" checked="checked" value="on" class="form-check-input">
+                                            <input name="smtp_authentication" type="checkbox" checked="checked" value="on" class="form-check-input" {if 'on' eq $DEFAULT_PARAMETERS['smtp_authentication']}checked="checked"{/if}>
                                         </span>
                                     </label>
                                 </div>
