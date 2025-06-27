@@ -150,6 +150,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     setupRowListeners: function (rowNumber) {
         const self = this;
         const row = jQuery('#row' + rowNumber);
+        const sequence = row.find('input.rowSequence').val();
 
         row.on('click', '.editItem', function () {
             self.editItem(rowNumber);
@@ -165,6 +166,23 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         row.on('click', '.item_edit', function () {
             self.editItem(rowNumber);
+        });
+
+        row.on('click', '.addAfter', function () {
+            const addButtonsToolbar = jQuery('.inventoryItemAddButtons');
+            const clickedItem = jQuery(this);
+            const moduleName = clickedItem.data('modulename');
+            const params = {
+                data: {
+                    insert_after_sequence: sequence
+                }
+            };
+
+            if (moduleName === '') {
+                addButtonsToolbar.find('button').first().trigger('click', [params]);
+            } else {
+                addButtonsToolbar.find('button[data-modulename="' + moduleName + '"]').trigger('click', [params]);
+            }
         });
 
         row.on('click', '.dropdown', function (e) {

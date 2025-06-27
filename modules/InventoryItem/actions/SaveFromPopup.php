@@ -87,7 +87,7 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
         }
 
         $db = PearDatabase::getInstance();
-        $sql = 'SELECT MAX(sequence)+1 AS new_sequence 
+        $sql = 'SELECT COALESCE(MAX(sequence)+1, 1) AS new_sequence 
                 FROM df_inventoryitem
                 INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid AND vtiger_crmentity.deleted = 0
                 WHERE parentid = ?';

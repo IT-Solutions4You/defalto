@@ -11,12 +11,12 @@
     {assign var=IS_HIDDEN value=$BLOCK->isHidden()}
     {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
     <input type=hidden name="timeFormatOptions" data-value='{if isset($DAY_STARTS)}{$DAY_STARTS}{else}""{/if}' />
-    <ul class="dropdown-menu add_menu_template" style="display: none;">
+    {*<ul class="dropdown-menu add_menu_template" style="display: none;">
         <li><a class="dropdown-item" data-modulename=""><i class="fa fa-i-cursor"></i>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}</a></li>
         {foreach item=ITEM_MODULE_NAME from=$ITEM_MODULES}
             <li><a class="dropdown-item" data-modulename="{$ITEM_MODULE_NAME}">{Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}</a></li>
         {/foreach}
-    </ul>
+    </ul>*}
     <div class="p-3">
         <div class="d-flex align-items-center row">
             <div class="col-lg-4">
@@ -30,7 +30,7 @@
             </div>
             <div class="col-lg-8 row">
                 <div class="col-lg-1 textAlignRight" id="block_line_items_add">
-                    <div class="btn-group" role="group">
+                    {*<div class="btn-group" role="group">
                         <button id="block_line_items_add_button" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-primary text-primary add-button" data-bs-toggle="dropdown" aria-expanded="false">
                             {vtranslate('Add Item', 'InventoryItem')}
                         </button>
@@ -40,7 +40,7 @@
                                 <li><a class="dropdown-item" data-modulename="{$ITEM_MODULE_NAME}">{Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}</a></li>
                             {/foreach}
                         </ul>
-                    </div>
+                    </div>*}
                 </div>
                 <div class="col-lg-5 textAlignRight" id="block_line_items_pricebook">
                     <div class="btn-group" role="group">
@@ -115,7 +115,7 @@
     </div>
     <div class="blockData p-3 border-top border-light-subtle {if $IS_HIDDEN}hide{/if}">
         <div class="lineItemTableContainer">
-            <table class="table table-borderless" id="lineItemTab">
+            <table class="table table-borderless table-hover" id="lineItemTab">
                 <thead>
                 <tr class="border-bottom">
                     <td class="font-bold">{vtranslate('LBL_TOOLS',$MODULE)}</td>
