@@ -78,9 +78,9 @@ class Leads_Install_Model extends Core_Install_Model {
             $potentialFieldId = getFieldid($potentialTab, $values[3]);
             $editable = $values[4];
 
-            $data = $table->selectData(['leadfid'], ['leadfid' => $leadFieldId]);
+            $data = $table->selectData(['leadfid as id'], ['leadfid' => $leadFieldId]);
 
-            if (empty($data['leadFieldId'])) {
+            if (empty($data['id']) && !empty($leadFieldId)) {
                 $table->insertData([
                     'leadfid' => $leadFieldId,
                     'accountfid' => $accountFieldId,
