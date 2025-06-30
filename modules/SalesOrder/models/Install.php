@@ -115,6 +115,7 @@ class SalesOrder_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
                 ],
                 'duedate' => [
                     'name' => 'duedate',
@@ -297,6 +298,7 @@ class SalesOrder_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
                 ],
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',
@@ -664,6 +666,7 @@ class SalesOrder_Install_Model extends Core_Install_Model {
                         'Paid',
                         'Cancel',
                     ],
+                    'headerfield' => 1,
                 ],
                 'last_recurring_date' => [
                     'name' => 'last_recurring_date',
