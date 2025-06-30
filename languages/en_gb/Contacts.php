@@ -51,7 +51,7 @@ $languageStrings = array(
     'Support Start Date'           => 'Support Start Date'          ,
     'Support End Date'             => 'Support End Date'            ,
 
-  'Other Phone' => 'Secondary Phone',
+  'Other Phone' => 'Other Phone',
   'Email' => 'Primary Email',
   'Secondary Email' => 'Secondary Email',
 

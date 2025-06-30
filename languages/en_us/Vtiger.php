@@ -699,7 +699,7 @@ $languageStrings = array(
 	'Mobile' => 'Mobile Phone',
 
 	'Notify Owner' => 'Notify Owner',
-	'Other Phone' => 'Secondary Phone',
+	'Other Phone' => 'Other Phone',
 	'Phone' => 'Phone',
 
 	'State' => 'State',
