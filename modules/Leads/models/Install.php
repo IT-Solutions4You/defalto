@@ -134,6 +134,8 @@ class Leads_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 1,
                 ],
                 'phone' => [
                     'name' => 'phone',
@@ -148,6 +150,9 @@ class Leads_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'headerfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 4,
                 ],
                 'lastname' => [
                     'name' => 'lastname',
@@ -162,6 +167,8 @@ class Leads_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 2,
                 ],
                 'mobile' => [
                     'name' => 'mobile',
@@ -190,6 +197,8 @@ class Leads_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 3,
                 ],
                 'designation' => [
                     'name' => 'designation',
@@ -218,6 +227,9 @@ class Leads_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'headerfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 6,
                 ],
                 'leadsource' => [
                     'name' => 'leadsource',
@@ -260,6 +272,8 @@ class Leads_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 5,
                 ],
                 'industry' => [
                     'name' => 'industry',
@@ -397,6 +411,8 @@ class Leads_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 7,
                 ],
                 'secondaryemail' => [
                     'name' => 'secondaryemail',
