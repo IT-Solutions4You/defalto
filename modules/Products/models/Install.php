@@ -102,6 +102,7 @@ class Products_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'defaultvalue' => 1,
+                    'headerfield' => 1,
                 ],
                 'manufacturer' => [
                     'name' => 'manufacturer',
@@ -140,6 +141,7 @@ class Products_Install_Model extends Core_Install_Model
                         'Software',
                         'CRM Applications',
                     ],
+                    'headerfield' => 1,
                 ],
                 'sales_start_date' => [
                     'name' => 'sales_start_date',
@@ -433,6 +435,7 @@ class Products_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'filter' => 1,
                     'filter_sequence' => 4,
+                    'headerfield' => 1,
                 ],
                 'reorderlevel' => [
                     'name' => 'reorderlevel',
@@ -525,6 +528,7 @@ class Products_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
                 ],
             ],
         ];

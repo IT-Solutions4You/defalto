@@ -75,6 +75,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'displaytype' => 1,
                             'masseditable' => 1,
                             'summaryfield' => 0,
+                            'headerfield' => 1,
                             'picklist_values' =>
                                 [
                                     0 => 'Created',
@@ -111,6 +112,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'displaytype' => 1,
                             'masseditable' => 1,
                             'summaryfield' => 0,
+	                        'headerfield' => 1,
                         ],
                     'carrier' => [
                             'name' => 'carrier',
@@ -189,6 +191,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'displaytype'  => 3,
                             'masseditable' => 1,
                             'summaryfield' => 0,
+                            'headerfield' => 1,
                         ],
                     'hdnTaxType'                   =>
                         [
@@ -235,6 +238,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'displaytype' => 1,
                             'masseditable' => 1,
                             'summaryfield' => 0,
+                            'headerfield' => 1,
                         ],
                     'assigned_user_id' => [
                             'name' => 'assigned_user_id',
@@ -289,7 +293,7 @@ class Quotes_Install_Model extends Core_Install_Model
                             'uitype' => 24,
                             'column' => 'bill_street',
                             'table' => 'vtiger_quotesbillads',
-                            'label' => 'Billing Address',
+                            'label' => 'Billing Street',
                             'readonly' => 1,
                             'presence' => 2,
                             'typeofdata' => 'V~M',
@@ -303,10 +307,10 @@ class Quotes_Install_Model extends Core_Install_Model
                             'uitype' => 24,
                             'column' => 'ship_street',
                             'table' => 'vtiger_quotesshipads',
-                            'label' => 'Shipping Address',
+                            'label' => 'Shipping Street',
                             'readonly' => 1,
                             'presence' => 2,
-                            'typeofdata' => 'V~M',
+                            'typeofdata' => 'V~O',
                             'quickcreate' => 3,
                             'displaytype' => 1,
                             'masseditable' => 1,

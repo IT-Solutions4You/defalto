@@ -61,6 +61,7 @@ class Vendors_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
                 ],
                 'email' => [
                     'name' => 'email',
@@ -75,6 +76,7 @@ class Vendors_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
                 ],
                 'website' => [
                     'name' => 'website',
@@ -89,6 +91,7 @@ class Vendors_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
                 ],
                 'glacct' => [
                     'name' => 'glacct',

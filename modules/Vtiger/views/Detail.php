@@ -158,7 +158,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$viewer->assign('ALL_USER_TAGS', $allUserTags);
 
 		$relationId = $request->get('relationId');
-        $viewer->assign('SELECTED_TAB_LABEL', $request->get('tab_label'));
+        $viewer->assign('SELECTED_TAB_LABEL', $request->get('tab_label', $currentUserModel->getDefaultTabLabel()));
 		$viewer->assign('SELECTED_RELATION_ID',$relationId);
 
 		//Vtiger7 - TO show custom view name in Module Header

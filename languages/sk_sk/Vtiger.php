@@ -1383,6 +1383,8 @@ $languageStrings = [
     'starred' => 'označené hviezdičkou',
     'tags' => 'značky',
     'Creator' => 'Tvorca',
+	'Shipping Street' => 'Ulica doručenia',
+	'Billing Street' => 'Fakturačná ulica',
     "LBL_ADD_AFTER" => "Pridať po",
 ];
 $jsLanguageStrings = [

@@ -6,6 +6,9 @@
  * All Rights Reserved.
  */
 class Contacts_Module_Model extends Vtiger_Module_Model {
+
+	protected string $fontIcon = 'fa-solid fa-user';
+
 	/**
 	 * Function to get the Quick Links for the module
 	 * @param <Array> $linkParams

@@ -31,8 +31,8 @@ $languageStrings = array(
 	'Ownership' => 'Ownership',
 	'SIC Code' => 'SIC Code',
 	'Other Email' => 'Secondary Email',
-	'Other Phone' => 'Secondary Phone',
-	'Phone' => 'Primary Phone',
+	'Other Phone' => 'Other Phone',
+	'Phone' => 'Phone',
 	'Email' => 'Primary Email',
 	'Type' => 'Type',
 
