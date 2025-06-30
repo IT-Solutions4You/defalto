@@ -700,7 +700,7 @@ $languageStrings = array(
 
 	'Notify Owner' => 'Notify Owner',
 	'Other Phone' => 'Secondary Phone',
-	'Phone' => 'Primary Phone',
+	'Phone' => 'Phone',
 
 	'State' => 'State',
 	'Po Box' => 'PO Box',

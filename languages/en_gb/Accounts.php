@@ -42,7 +42,7 @@ $languageStrings = array(
     'Type'                         => 'Type'                        , 
 
   'Other Phone' => 'Secondary Phone',
-  'Phone' => 'Primary Phone',
+  'Phone' => 'Phone',
   'Email' => 'Primary Email',
 
     'Company Reg. No.' => 'Company Reg. No.',

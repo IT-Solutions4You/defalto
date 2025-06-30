@@ -73,7 +73,7 @@ class Contacts_Install_Model extends Core_Install_Model
                     'uitype' => 11,
                     'column' => 'phone',
                     'table' => 'vtiger_contactdetails',
-                    'label' => 'Office Phone',
+                    'label' => 'Phone',
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',

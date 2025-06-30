@@ -28,7 +28,7 @@ $languageStrings = array(
 	'307-Service-Hardware Labor'   => '307-Service-Hardware Labor'  , 
 	'308-Sales-Books'              => '308-Sales-Books'             , 
 
-  'Phone' => 'Primary Phone',
+  'Phone' => 'Phone',
   'Email' => 'Primary Email',
 
 );

@@ -32,7 +32,7 @@ $languageStrings = array(
 	'SIC Code' => 'SIC Code',
 	'Other Email' => 'Secondary Email',
 	'Other Phone' => 'Secondary Phone',
-	'Phone' => 'Primary Phone',
+	'Phone' => 'Phone',
 	'Email' => 'Primary Email',
 	'Type' => 'Type',
 
