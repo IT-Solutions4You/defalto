@@ -79,6 +79,7 @@ class Invoice_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
                 ],
                 'invoicedate' => [
                     'name' => 'invoicedate',
@@ -223,6 +224,7 @@ class Invoice_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
                 ],
                 'invoicestatus' => [
                     'name' => 'invoicestatus',
@@ -246,6 +248,7 @@ class Invoice_Install_Model extends Core_Install_Model
                             'Paid',
                             'Cancel',
                         ],
+                    'headerfield' => 1,
                 ],
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',
