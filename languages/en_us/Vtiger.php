@@ -1474,6 +1474,8 @@ $languageStrings = array(
     'starred' => 'starred',
     'tags' => 'tags',
     'LBL_WELCOME_GUIDES' => 'Welcome Guides',
+    'Shipping Street' => 'Shipping Street',
+	'Billing Street' => 'Billing Street',
 );
 
 $jsLanguageStrings = array(
