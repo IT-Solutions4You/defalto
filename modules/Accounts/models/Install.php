@@ -69,6 +69,7 @@ class Accounts_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
                 ],
                 'website' => [
                     'name' => 'website',
@@ -84,7 +85,8 @@ class Accounts_Install_Model extends Core_Install_Model {
                     'quickcreate' => 2,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
+	                'headerfield' => 1,
                 ],
                 'tickersymbol' => [
                     'name' => 'tickersymbol',
@@ -147,8 +149,9 @@ class Accounts_Install_Model extends Core_Install_Model {
                     'typeofdata' => 'E~O',
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
                     'quickcreate' => 2,
+	                'headerfield' => 1,
                 ],
                 'employees' => [
                     'name' => 'employees',
