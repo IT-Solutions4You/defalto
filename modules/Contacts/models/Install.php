@@ -660,25 +660,8 @@ class Contacts_Install_Model extends Core_Install_Model
      */
     public function installTables(): void
     {
-        $this->getTable('vtiger_contactaddress', null)
-            ->createTable('contactaddressid', 'int(19) NOT NULL DEFAULT \'0\'')
-            ->createColumn('mailingcity', 'varchar(150) DEFAULT NULL')
-            ->createColumn('mailingstreet', 'varchar(250) DEFAULT NULL')
-            ->createColumn('mailingcountry_id', 'varchar(2) DEFAULT NULL')
-            ->createColumn('othercountry_id', 'varchar(2) DEFAULT NULL')
-            ->createColumn('mailingstate', 'varchar(150) DEFAULT NULL')
-            ->createColumn('mailingpobox', 'varchar(30) DEFAULT NULL')
-            ->createColumn('othercity', 'varchar(150) DEFAULT NULL')
-            ->createColumn('otherstate', 'varchar(150) DEFAULT NULL')
-            ->createColumn('mailingzip', 'varchar(150) DEFAULT NULL')
-            ->createColumn('otherzip', 'varchar(150) DEFAULT NULL')
-            ->createColumn('otherstreet', 'varchar(250) DEFAULT NULL')
-            ->createColumn('otherpobox', 'varchar(30) DEFAULT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`contactaddressid`)')
-            ->createKey('CONSTRAINT `fk_1_vtiger_contactaddress` FOREIGN KEY IF NOT EXISTS (`contactaddressid`) REFERENCES `vtiger_contactdetails` (`contactid`) ON DELETE CASCADE');
-
         $this->getTable('vtiger_contactdetails', null)
-            ->createTable('contactid', 'int(19) NOT NULL DEFAULT \'0\'')
+            ->createTable('contactid', 'int(19) NOT NULL')
             ->createColumn('contact_no', 'varchar(100) NOT NULL')
             ->createColumn('accountid', 'int(19) DEFAULT NULL')
             ->createColumn('salutation', 'varchar(200) DEFAULT NULL')
@@ -710,6 +693,23 @@ class Contacts_Install_Model extends Core_Install_Model
             ->createKey('KEY IF NOT EXISTS `email_idx` (`email`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_contactdetails` FOREIGN KEY IF NOT EXISTS (`contactid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
             ->createKey('INDEX IF NOT EXISTS email_idx (email)');
+
+	    $this->getTable('vtiger_contactaddress', null)
+		    ->createTable('contactaddressid', 'int(19) NOT NULL DEFAULT \'0\'')
+		    ->createColumn('mailingcity', 'varchar(150) DEFAULT NULL')
+		    ->createColumn('mailingstreet', 'varchar(250) DEFAULT NULL')
+		    ->createColumn('mailingcountry_id', 'varchar(2) DEFAULT NULL')
+		    ->createColumn('othercountry_id', 'varchar(2) DEFAULT NULL')
+		    ->createColumn('mailingstate', 'varchar(150) DEFAULT NULL')
+		    ->createColumn('mailingpobox', 'varchar(30) DEFAULT NULL')
+		    ->createColumn('othercity', 'varchar(150) DEFAULT NULL')
+		    ->createColumn('otherstate', 'varchar(150) DEFAULT NULL')
+		    ->createColumn('mailingzip', 'varchar(150) DEFAULT NULL')
+		    ->createColumn('otherzip', 'varchar(150) DEFAULT NULL')
+		    ->createColumn('otherstreet', 'varchar(250) DEFAULT NULL')
+		    ->createColumn('otherpobox', 'varchar(30) DEFAULT NULL')
+		    ->createKey('PRIMARY KEY IF NOT EXISTS (`contactaddressid`)')
+		    ->createKey('CONSTRAINT `fk_1_vtiger_contactaddress` FOREIGN KEY IF NOT EXISTS (`contactaddressid`) REFERENCES `vtiger_contactdetails` (`contactid`) ON DELETE CASCADE');
 
         $this->getTable('vtiger_contactsubdetails', null)
             ->createTable('contactsubscriptionid', 'int(19) NOT NULL DEFAULT \'0\'')
