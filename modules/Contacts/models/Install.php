@@ -67,6 +67,9 @@ class Contacts_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 1,
                     'picklist_values' => [],
+	                'filter' => 1,
+	                'filter_sequence' => 1,
+	                'entity_identifier' => 1,
                 ],
                 'phone' => [
                     'name' => 'phone',
@@ -81,6 +84,9 @@ class Contacts_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'headerfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 6,
                 ],
                 'lastname' => [
                     'name' => 'lastname',
@@ -95,6 +101,9 @@ class Contacts_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 2,
+	                'entity_identifier' => 1,
                 ],
                 'mobile' => [
                     'name' => 'mobile',
@@ -123,6 +132,8 @@ class Contacts_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 4,
                 ],
                 'homephone' => [
                     'name' => 'homephone',
@@ -193,6 +204,8 @@ class Contacts_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 3,
                 ],
                 'department' => [
                     'name' => 'department',
@@ -235,6 +248,9 @@ class Contacts_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 5,
+	                'headerfield' => 1,
                 ],
                 'contact_id' => [
                     'name' => 'contact_id',
@@ -319,6 +335,8 @@ class Contacts_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 7,
                 ],
                 'reference' => [
                     'name' => 'reference',
