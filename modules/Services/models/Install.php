@@ -187,7 +187,7 @@ class Services_Install_Model extends Core_Install_Model
                     'name' => 'purchase_cost',
                     'uitype' => 71,
                     'column' => 'purchase_cost',
-                    'table' => 'vtiger_products',
+                    'table' => 'vtiger_service',
                     'label' => 'Purchase Cost',
                     'readonly' => 1,
                     'presence' => 0,
@@ -244,6 +244,7 @@ class Services_Install_Model extends Core_Install_Model
             ->createColumn('servicecategory','varchar(200) default NULL')
             ->createColumn('qty_per_unit','decimal(11,2) default \'0.00\'')
             ->createColumn('unit_price',self::$COLUMN_DECIMAL)
+            ->createColumn('purchase_cost',self::$COLUMN_DECIMAL)
             ->createColumn('sales_start_date','date default NULL')
             ->createColumn('sales_end_date','date default NULL')
             ->createColumn('start_date','date default NULL')

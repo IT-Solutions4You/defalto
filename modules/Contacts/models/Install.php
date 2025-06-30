@@ -67,13 +67,16 @@ class Contacts_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 1,
                     'picklist_values' => [],
+	                'filter' => 1,
+	                'filter_sequence' => 1,
+	                'entity_identifier' => 1,
                 ],
                 'phone' => [
                     'name' => 'phone',
                     'uitype' => 11,
                     'column' => 'phone',
                     'table' => 'vtiger_contactdetails',
-                    'label' => 'Office Phone',
+                    'label' => 'Phone',
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
@@ -81,6 +84,9 @@ class Contacts_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'headerfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 6,
                 ],
                 'lastname' => [
                     'name' => 'lastname',
@@ -95,13 +101,16 @@ class Contacts_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 2,
+	                'entity_identifier' => 1,
                 ],
                 'mobile' => [
                     'name' => 'mobile',
                     'uitype' => 11,
                     'column' => 'mobile',
                     'table' => 'vtiger_contactdetails',
-                    'label' => 'Mobile',
+                    'label' => 'Private Phone',
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
@@ -123,6 +132,8 @@ class Contacts_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 4,
                 ],
                 'homephone' => [
                     'name' => 'homephone',
@@ -193,6 +204,8 @@ class Contacts_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 3,
                 ],
                 'department' => [
                     'name' => 'department',
@@ -235,6 +248,9 @@ class Contacts_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 5,
+	                'headerfield' => 1,
                 ],
                 'contact_id' => [
                     'name' => 'contact_id',
@@ -273,20 +289,6 @@ class Contacts_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'E~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 1,
-                    'masseditable' => 1,
-                    'summaryfield' => 0,
-                ],
-                'assistantphone' => [
-                    'name' => 'assistantphone',
-                    'uitype' => 11,
-                    'column' => 'assistantphone',
-                    'table' => 'vtiger_contactsubdetails',
-                    'label' => 'Assistant Phone',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
@@ -333,6 +335,8 @@ class Contacts_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+	                'filter' => 1,
+	                'filter_sequence' => 7,
                 ],
                 'reference' => [
                     'name' => 'reference',
@@ -674,25 +678,8 @@ class Contacts_Install_Model extends Core_Install_Model
      */
     public function installTables(): void
     {
-        $this->getTable('vtiger_contactaddress', null)
-            ->createTable('contactaddressid', 'int(19) NOT NULL DEFAULT \'0\'')
-            ->createColumn('mailingcity', 'varchar(150) DEFAULT NULL')
-            ->createColumn('mailingstreet', 'varchar(250) DEFAULT NULL')
-            ->createColumn('mailingcountry_id', 'varchar(2) DEFAULT NULL')
-            ->createColumn('othercountry_id', 'varchar(2) DEFAULT NULL')
-            ->createColumn('mailingstate', 'varchar(150) DEFAULT NULL')
-            ->createColumn('mailingpobox', 'varchar(30) DEFAULT NULL')
-            ->createColumn('othercity', 'varchar(150) DEFAULT NULL')
-            ->createColumn('otherstate', 'varchar(150) DEFAULT NULL')
-            ->createColumn('mailingzip', 'varchar(150) DEFAULT NULL')
-            ->createColumn('otherzip', 'varchar(150) DEFAULT NULL')
-            ->createColumn('otherstreet', 'varchar(250) DEFAULT NULL')
-            ->createColumn('otherpobox', 'varchar(30) DEFAULT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`contactaddressid`)')
-            ->createKey('CONSTRAINT `fk_1_vtiger_contactaddress` FOREIGN KEY IF NOT EXISTS (`contactaddressid`) REFERENCES `vtiger_contactdetails` (`contactid`) ON DELETE CASCADE');
-
         $this->getTable('vtiger_contactdetails', null)
-            ->createTable('contactid', 'int(19) NOT NULL DEFAULT \'0\'')
+            ->createTable('contactid', 'int(19) NOT NULL')
             ->createColumn('contact_no', 'varchar(100) NOT NULL')
             ->createColumn('accountid', 'int(19) DEFAULT NULL')
             ->createColumn('salutation', 'varchar(200) DEFAULT NULL')
@@ -724,6 +711,23 @@ class Contacts_Install_Model extends Core_Install_Model
             ->createKey('KEY IF NOT EXISTS `email_idx` (`email`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_contactdetails` FOREIGN KEY IF NOT EXISTS (`contactid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
             ->createKey('INDEX IF NOT EXISTS email_idx (email)');
+
+	    $this->getTable('vtiger_contactaddress', null)
+		    ->createTable('contactaddressid', 'int(19) NOT NULL DEFAULT \'0\'')
+		    ->createColumn('mailingcity', 'varchar(150) DEFAULT NULL')
+		    ->createColumn('mailingstreet', 'varchar(250) DEFAULT NULL')
+		    ->createColumn('mailingcountry_id', 'varchar(2) DEFAULT NULL')
+		    ->createColumn('othercountry_id', 'varchar(2) DEFAULT NULL')
+		    ->createColumn('mailingstate', 'varchar(150) DEFAULT NULL')
+		    ->createColumn('mailingpobox', 'varchar(30) DEFAULT NULL')
+		    ->createColumn('othercity', 'varchar(150) DEFAULT NULL')
+		    ->createColumn('otherstate', 'varchar(150) DEFAULT NULL')
+		    ->createColumn('mailingzip', 'varchar(150) DEFAULT NULL')
+		    ->createColumn('otherzip', 'varchar(150) DEFAULT NULL')
+		    ->createColumn('otherstreet', 'varchar(250) DEFAULT NULL')
+		    ->createColumn('otherpobox', 'varchar(30) DEFAULT NULL')
+		    ->createKey('PRIMARY KEY IF NOT EXISTS (`contactaddressid`)')
+		    ->createKey('CONSTRAINT `fk_1_vtiger_contactaddress` FOREIGN KEY IF NOT EXISTS (`contactaddressid`) REFERENCES `vtiger_contactdetails` (`contactid`) ON DELETE CASCADE');
 
         $this->getTable('vtiger_contactsubdetails', null)
             ->createTable('contactsubscriptionid', 'int(19) NOT NULL DEFAULT \'0\'')

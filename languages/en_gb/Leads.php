@@ -47,7 +47,7 @@ $languageStrings = array(
     'Lead Image' => 'Lead Image',
 	
 
-  'Phone' => 'Primary Phone',
+  'Phone' => 'Phone',
   'Secondary Email' => 'Secondary Email',
   'Email' => 'Primary Email',
 

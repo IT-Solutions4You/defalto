@@ -1383,6 +1383,8 @@ $languageStrings = [
     'starred' => 'označené hviezdičkou',
     'tags' => 'značky',
     'Creator' => 'Tvorca',
+	'Shipping Street' => 'Ulica doručenia',
+	'Billing Street' => 'Fakturačná ulica',
 ];
 $jsLanguageStrings = [
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastaveniach systému nakonfigurujte server odchádzajúcej pošty',

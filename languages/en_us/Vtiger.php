@@ -699,8 +699,8 @@ $languageStrings = array(
 	'Mobile' => 'Mobile Phone',
 
 	'Notify Owner' => 'Notify Owner',
-	'Other Phone' => 'Secondary Phone',
-	'Phone' => 'Primary Phone',
+	'Other Phone' => 'Other Phone',
+	'Phone' => 'Phone',
 
 	'State' => 'State',
 	'Po Box' => 'PO Box',
@@ -1474,6 +1474,8 @@ $languageStrings = array(
     'starred' => 'starred',
     'tags' => 'tags',
     'LBL_WELCOME_GUIDES' => 'Welcome Guides',
+    'Shipping Street' => 'Shipping Street',
+	'Billing Street' => 'Billing Street',
 );
 
 $jsLanguageStrings = array(

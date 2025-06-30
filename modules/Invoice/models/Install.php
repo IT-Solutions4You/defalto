@@ -79,6 +79,7 @@ class Invoice_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
                 ],
                 'invoicedate' => [
                     'name' => 'invoicedate',
@@ -223,6 +224,7 @@ class Invoice_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
                 ],
                 'invoicestatus' => [
                     'name' => 'invoicestatus',
@@ -246,6 +248,7 @@ class Invoice_Install_Model extends Core_Install_Model
                             'Paid',
                             'Cancel',
                         ],
+                    'headerfield' => 1,
                 ],
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',
@@ -384,7 +387,7 @@ class Invoice_Install_Model extends Core_Install_Model
                         'uitype' => 24,
                         'column' => 'bill_street',
                         'table' => 'vtiger_invoicebillads',
-                        'label' => 'Billing Address',
+                        'label' => 'Billing Street',
                         'readonly' => 1,
                         'presence' => 2,
                         'typeofdata' => 'V~M',
@@ -398,7 +401,7 @@ class Invoice_Install_Model extends Core_Install_Model
                         'uitype' => 24,
                         'column' => 'ship_street',
                         'table' => 'vtiger_invoiceshipads',
-                        'label' => 'Shipping Address',
+                        'label' => 'Shipping Street',
                         'readonly' => 1,
                         'presence' => 2,
                         'typeofdata' => 'V~O',
