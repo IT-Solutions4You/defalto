@@ -101,7 +101,7 @@ class Contacts_Install_Model extends Core_Install_Model
                     'uitype' => 11,
                     'column' => 'mobile',
                     'table' => 'vtiger_contactdetails',
-                    'label' => 'Mobile',
+                    'label' => 'Private Phone',
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
