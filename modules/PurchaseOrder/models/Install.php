@@ -101,6 +101,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 1,
                 ],
                 'duedate' => [
                     'name' => 'duedate',
@@ -256,6 +257,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                         'Cancelled',
                         'Received Shipment',
                     ],
+                    'headerfield' => 1,
                 ],
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',
