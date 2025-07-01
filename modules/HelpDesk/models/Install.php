@@ -39,7 +39,7 @@ class HelpDesk_Install_Model extends Core_Install_Model {
     /**
      * @throws AppException
      */
-    public function updateWorkflowTasks($register = true): void
+    public function updateWorkflowTasks(): void
     {
         $name = 'Employee response to ticket';
         $moduleName = 'HelpDesk';

@@ -153,14 +153,56 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 	}
 
 	public static function getInstance() {
-            list($workflowId) = func_get_args();
+            [$workflowId] = func_get_args();
             $db = PearDatabase::getInstance();
             $wm = new VTWorkflowManager($db);
             $wf = $wm->retrieve($workflowId);
             return self::getInstanceFromWorkflowObject($wf);
 	}
 
-	public static function getCleanInstance($moduleName) {
+    /**
+     * @throws AppException
+     */
+    public static function getInstanceByName(string $workflowName): bool|self
+    {
+        $data = (new self())->getWorkflowTable()->selectData(['workflow_id as id'], ['workflowname' => $workflowName]);
+
+        return !empty($data['id']) ? self::getInstance((int)$data['id']) : false;
+    }
+
+    public function getWorkflowTable()
+    {
+        return (new Core_DatabaseData_Model())->getTable('com_vtiger_workflows', 'workflow_id');
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function createTables(): void
+    {
+        $this->getWorkflowTable()
+            ->createTable()
+            ->createColumn('module_name','varchar(100) DEFAULT NULL')
+            ->createColumn('summary','varchar(400) NOT NULL')
+            ->createColumn('test','text NOT NULL')
+            ->createColumn('execution_condition','int(11) NOT NULL')
+            ->createColumn('defaultworkflow','int(1) DEFAULT NULL')
+            ->createColumn('type','varchar(255) DEFAULT NULL')
+            ->createColumn('filtersavedinnew','int(1) DEFAULT NULL')
+            ->createColumn('schtypeid','int(10) DEFAULT NULL')
+            ->createColumn('schdayofmonth','varchar(100) DEFAULT NULL')
+            ->createColumn('schdayofweek','varchar(100) DEFAULT NULL')
+            ->createColumn('schannualdates','varchar(500) DEFAULT NULL')
+            ->createColumn('schtime','varchar(50) DEFAULT NULL')
+            ->createColumn('nexttrigger_time','datetime DEFAULT NULL')
+            ->createColumn('status','tinyint(1) DEFAULT 1')
+            ->createColumn('workflowname','varchar(100) DEFAULT NULL')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (workflow_id)')
+            ->createKey('UNIQUE KEY IF NOT EXISTS com_vtiger_workflows_idx (workflow_id)')
+        ;
+    }
+
+    public static function getCleanInstance($moduleName) {
 		$db = PearDatabase::getInstance();
 		$wm = new VTWorkflowManager($db);
 		$wf = $wm->newWorkflow($moduleName);
@@ -454,7 +496,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 						$fieldLabel = $fieldName;
 					}
 				} else {
-					list($full, $referenceField, $referenceModule, $fieldName) = $matches;
+					[$full, $referenceField, $referenceModule, $fieldName] = $matches;
 					$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
 					$fieldModel = Vtiger_Field_Model::getInstance($fieldName, $referenceModuleModel);
 					$referenceFieldModel = Vtiger_Field_Model::getInstance($referenceField, $moduleModel);

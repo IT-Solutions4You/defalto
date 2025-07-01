@@ -96,7 +96,7 @@ class Settings_Workflows_TaskRecord_Model extends Settings_Vtiger_Record_Model {
 	}
 
 	public static function getInstance() {
-                list($taskId, $workflowModel) = func_get_args();
+                [$taskId, $workflowModel] = func_get_args();
 		$db = PearDatabase::getInstance();
 		$tm = new VTTaskManager($db);
 		$task = $tm->retrieveTask($taskId);
@@ -106,7 +106,40 @@ class Settings_Workflows_TaskRecord_Model extends Settings_Vtiger_Record_Model {
 		return self::getInstanceFromTaskObject($task, $workflowModel, $tm);
 	}
 
-	public static function getCleanInstance($workflowModel, $taskName) {
+    /**
+     * @param string $taskName
+     * @param object $workflowModel
+     * @return bool|self
+     * @throws AppException
+     */
+    public static function getInstanceByName(string $taskName, object $workflowModel): bool|self
+    {
+        $data = (new self())->getTaskTable()->selectData(['task_id as id'], ['workflow_id' => $workflowModel->getId(), 'summary' => $taskName]);
+
+        return $data['id'] ? self::getInstance((int)$data['id'], $workflowModel) : false;
+    }
+
+    public function getTaskTable(): Core_DatabaseData_Model
+    {
+        return (new Core_DatabaseData_Model())->getTable('com_vtiger_workflowtasks', 'task_id');
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function createTables(): void
+    {
+        $this->getTaskTable()
+            ->createTable()
+            ->createColumn('workflow_id','int(11) DEFAULT NULL')
+            ->createColumn('summary','varchar(400) NOT NULL')
+            ->createColumn('task','text NOT NULL')
+            ->createKey('PRIMARY KEY (task_id)')
+            ->createKey('UNIQUE KEY com_vtiger_workflowtasks_idx (task_id)')
+        ;
+    }
+
+    public static function getCleanInstance($workflowModel, $taskName) {
 		$db = PearDatabase::getInstance();
 		$tm = new VTTaskManager($db);
 		$task = $tm->createTask($taskName, $workflowModel->getId());

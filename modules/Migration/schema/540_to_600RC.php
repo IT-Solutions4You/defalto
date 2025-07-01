@@ -18,28 +18,10 @@ require_once 'modules/com_vtiger_workflow/VTEntityMethodManager.inc';
 require_once 'modules/com_vtiger_workflow/VTWorkflowManager.inc';
 require_once 'modules/com_vtiger_workflow/VTTaskManager.inc';
 
-if(!defined('INSTALLATION_MODE')) {
-	Migration_Index_View::ExecuteQuery('ALTER TABLE com_vtiger_workflows ADD COLUMN filtersavedinnew int(1)', array());
-}
-
-Migration_Index_View::ExecuteQuery('UPDATE com_vtiger_workflows SET filtersavedinnew = 5', array());
+Migration_Index_View::ExecuteQuery('UPDATE com_vtiger_workflows SET filtersavedinnew = 5 WHERE filtersavedinnew < 1', []);
 
 // Core workflow schema dependecy introduced in 6.1.0
 $adb = PearDatabase::getInstance();
-$columns = [
-    'schtypeid' => 'INT(10)',
-    'schtime' => 'TIME',
-    'schdayofmonth' => 'VARCHAR(100)',
-    'schdayofweek' => 'VARCHAR(100)',
-    'schannualdates' => 'VARCHAR(100)',
-    'nexttrigger_time' => 'DATETIME',
-];
-
-foreach ($columns as $column => $type) {
-    if (!columnExists($column, 'com_vtiger_workflows')) {
-        $adb->pquery(sprintf('ALTER TABLE com_vtiger_workflows ADD %s %s', $column, $type));
-    }
-}
 
 if(!defined('INSTALLATION_MODE')) {
 	Migration_Index_View::ExecuteQuery("CREATE TABLE IF NOT EXISTS com_vtiger_workflow_tasktypes (

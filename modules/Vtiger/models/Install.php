@@ -109,5 +109,7 @@ class Vtiger_Install_Model extends Core_Install_Model {
         ;
 
         (new Core_BlockUiType_Model())->createTables();
+        (new Settings_Workflows_Record_Model())->createTables();
+        (new Settings_Workflows_TaskRecord_Model())->createTables();
     }
 }
