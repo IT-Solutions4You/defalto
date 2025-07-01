@@ -82,7 +82,7 @@ class Google_Setting_View extends Vtiger_PopupAjax_View {
 		$syncDirection = Google_Utils_Helper::getSyncDirectionForUser($user);
 		$contactsModuleModel = Vtiger_Module_Model::getInstance($request->get('sourcemodule'));
 		$mandatoryMapFields = array('salutationtype','firstname','lastname','title','account_id','birthday',
-			'email','secondaryemail','mobile','phone','homephone','mailingstreet','otherstreet','mailingpobox',
+			'email','secondaryemail','mobile','phone','mailingstreet','otherstreet','mailingpobox',
 			'otherpobox','mailingcity','othercity','mailingstate','otherstate','mailingzip','otherzip','mailingcountry',
 			'othercountry','otheraddress','description','mailingaddress','otheraddress');
 		$customFieldMapping = array();
