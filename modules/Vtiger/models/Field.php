@@ -1396,6 +1396,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
             'defaultvalue' => $this->get('defaultvalue'),
             'summaryfield' => $this->get('summaryfield'),
             'headerfield' => $this->get('headerfield'),
+            'headerfieldsequence' => $this->get('headerfieldsequence'),
         ];
 
         if ($this->get('uitype')) {
@@ -1653,14 +1654,6 @@ class Vtiger_Field_Model extends Vtiger_Field {
     public function getUIType(): int
     {
         return (int)$this->get('uitype');
-    }
-
-    /**
-     * @return Core_DatabaseData_Model
-     */
-    public function getFieldTable(): Core_DatabaseData_Model
-    {
-        return (new Core_DatabaseData_Model())->getTable('vtiger_field', 'fieldid');
     }
 
     /**

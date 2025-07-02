@@ -1957,9 +1957,12 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         foreach ($fields as $field) {
             if ($field->isHeaderField() && $field->isActiveField() && $field->isViewable() && 'assigned_user_id' !== $field->getName()) {
                 $fieldsCount++;
-                $config[] = ['type' => 'field', 'field' => $field,];
+                $sequence = (int)$field->get('headerfieldsequence') ?: $fieldsCount + 5;
+                $config[$sequence] = ['type' => 'field', 'field' => $field,];
             }
         }
+
+        ksort($config);
 
         while (5 > $fieldsCount) {
             $fieldsCount++;
