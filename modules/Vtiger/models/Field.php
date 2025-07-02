@@ -1392,6 +1392,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
             'typeofdata' => $this->get('typeofdata'),
             'presence' => $this->get('presence'),
             'quickcreate' => $this->get('quickcreate'),
+            'quickcreatesequence' => $this->get('quicksequence'),
             'masseditable' => $this->get('masseditable'),
             'defaultvalue' => $this->get('defaultvalue'),
             'summaryfield' => $this->get('summaryfield'),

@@ -72,6 +72,7 @@ class Vtiger_FieldBasic {
 		$this->presence      = $valuemap['presence'];
 		$this->defaultvalue  = $valuemap['defaultvalue'];
 		$this->quickcreate = $valuemap['quickcreate'];
+		$this->quicksequence = $valuemap['quickcreatesequence'];
 		$this->sequence = $valuemap['sequence'];
 		$this->summaryfield = $valuemap['summaryfield'];
 		$this->isunique = $valuemap['isunique'];
