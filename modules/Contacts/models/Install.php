@@ -49,8 +49,6 @@ class Contacts_Install_Model extends Core_Install_Model
                         'Mr.',
                         'Ms.',
                         'Mrs.',
-                        'Dr.',
-                        'Prof.',
                     ],
                 ],
                 'firstname' => [
