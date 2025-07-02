@@ -112,7 +112,7 @@ class Leads_Install_Model extends Core_Install_Model {
                     'quickcreate' => 1,
                     'displaytype' => 3,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
+                    'summaryfield' => 1,
                     'picklist_values' => [
                         'Mr.',
                         'Ms.',
@@ -245,7 +245,7 @@ class Leads_Install_Model extends Core_Install_Model {
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
+                    'summaryfield' => 1,
                     'headerfield' => 1,
                     'headerfieldsequence' => 4,
                     'picklist_values' => [
@@ -275,7 +275,7 @@ class Leads_Install_Model extends Core_Install_Model {
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
 	                'filter' => 1,
 	                'filter_sequence' => 5,
                 ],
@@ -338,7 +338,7 @@ class Leads_Install_Model extends Core_Install_Model {
                         'quickcreate' => 1,
                         'displaytype' => 1,
                         'masseditable' => 1,
-                        'summaryfield' => 0,
+                        'summaryfield' => 1,
                         'headerfield' => 1,
                         'headerfieldsequence' => 1,
                         'picklist_values' => [
@@ -493,7 +493,7 @@ class Leads_Install_Model extends Core_Install_Model {
                         'quickcreate' => 1,
                         'displaytype' => 1,
                         'masseditable' => 1,
-                        'summaryfield' => 1,
+                        'summaryfield' => 0,
                     ],
                     'country_id' => [
                         'name' => 'country_id',
@@ -507,7 +507,7 @@ class Leads_Install_Model extends Core_Install_Model {
                         'quickcreate' => 1,
                         'displaytype' => 1,
                         'masseditable' => 1,
-                        'summaryfield' => 1,
+                        'summaryfield' => 0,
                     ],
                     'state' => [
                         'name' => 'state',
