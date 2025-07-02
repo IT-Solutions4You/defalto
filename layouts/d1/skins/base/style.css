@@ -3597,8 +3597,9 @@ li.select2-search-choice div {
 
 .ui-autocomplete {
     border-radius: 1px !important;
-    max-height: 150px;
-    overflow: auto;
+    max-height: 360px;
+    overflow-y: auto;
+    overflow-x: hidden;
     height: auto;
     min-height: 30px;
 }

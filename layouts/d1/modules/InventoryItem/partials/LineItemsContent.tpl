@@ -18,7 +18,6 @@
         <ul class="dropdown-menu" style="">
             <li><a class="dropdown-item editItem"><i class="fa fa-pencil fa-fw text-secondary" title="{vtranslate('LBL_EDIT',$MODULE)}"></i><span class="ms-2">{vtranslate('LBL_EDIT',$MODULE)}</span></a></li>
             <li><a class="dropdown-item deleteItem"><i class="fa fa-trash-o fa-fw text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i><span class="ms-2">{vtranslate('LBL_DELETE',$MODULE)}</span></a></li>
-            {*<li><a class="dropdown-item addItemAfter"><i class="fa fa-plus fa-fw text-secondary" title="{vtranslate('LBL_ADD_AFTER',$MODULE)}"></i><span class="ms-2">{vtranslate('LBL_ADD_AFTER',$MODULE)}</span></a></li>*}
             <li><a class="dropdown-item addAfter" data-modulename=""><i class="fa fa-i-cursor fa-fw text-secondary"></i><span class="ms-2">{vtranslate('Add', $MODULE)} {vtranslate('TEXT', $MODULE)}</span></a></li>
             {foreach item=ITEM_MODULE_NAME from=$ITEM_MODULES}
                 <li><a class="dropdown-item addAfter" data-modulename="{$ITEM_MODULE_NAME}"><span class="text-secondary">{Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}</span>&nbsp;<span class="ms-2">{vtranslate('Add', $MODULE)} {vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}</span></a></li>
@@ -38,6 +37,12 @@
                 <input type="hidden" id="item_text{$row_no}" name="item_text{$row_no}" value="{$data.item_text}" class="item_text" />
                 <input type="hidden" id="productid{$row_no}" name="productid{$row_no}" value="{$data.productid}" class="productid" />
                 <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="{$data.entityType}" class="lineItemType" />
+                {if $data.subProducts neq ''}
+                    {foreach from=$data.subProducts item=subProduct}
+                        <br />
+                        <i>{$subProduct->get('productname')}</i>
+                    {/foreach}
+                {/if}
             </td>
         {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
             <td style="display: none;"><input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" class="{$INVENTORY_ITEM_FIELD_NAME}" type="hidden" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"></td>

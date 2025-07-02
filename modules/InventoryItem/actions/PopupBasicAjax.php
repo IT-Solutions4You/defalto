@@ -10,7 +10,9 @@
 
 class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
 {
-
+    /**
+     * @inheritDoc
+     */
     public function process(Vtiger_Request $request)
     {
         $searchValue = $request->get('search_value');
@@ -20,12 +22,17 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
         $parentModuleName = $request->get('parent_module');
         $relatedModule = $request->get('module');
 
+        $baseRecordId = $request->get('base_record');
+        $baseRecordModel = Vtiger_Record_Model::getInstanceById($baseRecordId);
+        $currencyInfo = getCurrencySymbolandCRate($baseRecordModel->get('currency_id'));
+        $currencySymbol = $currencyInfo['symbol'];
+
         $searchModuleModel = Vtiger_Module_Model::getInstance($searchModule);
 
         if (!empty($searchValue)) {
             $records = $searchModuleModel->searchRecord($searchValue, $parentRecordId, $parentModuleName, $relatedModule);
         } else {
-            $records = $this->searchRecord($searchModule, $searchValue, $parentRecordId, $parentModuleName, $relatedModule);
+            $records = $this->searchRecord($searchModule);
         }
 
         $fields = $searchModuleModel->getFields();
@@ -85,14 +92,19 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
                         $recordLabel = $recordModel->get($noFieldName) . ' - ';
                     }
 
-                    $recordLabel .= decode_html($recordModel->getName());
+                    $recordLabel .= '<b>' . decode_html($recordModel->getName()) . '</b>';
 
                     if ($searchModule === 'Products' && $recordModel->get('productcode')) {
                         $recordLabel .= ' - ' . $recordModel->get('productcode');
                     }
 
                     if ($priceFieldName) {
-                        $recordLabel .= ' (' . $recordModel->get($priceFieldName) . ')';
+                        $priceData = InventoryItem_Utils_Helper::decideItemPriceAndPriceBook((int)$recordModel->getId(), (int)$baseRecordModel->get('currency_id'), (int)$baseRecordModel->get('pricebookid'));
+                        $recordLabel .= ' (' . $priceData['price'] . ' ' . $currencySymbol . ')';
+                    }
+
+                    if (method_exists($recordModel, 'isBundle') && $recordModel->isBundle()) {
+                        $recordLabel .= ' - <i>' . vtranslate('LBL_PRODUCT_BUNDLE') . '</i>';
                     }
 
                     $result[] = ['label' => $recordLabel, 'value' => $recordLabel, 'id' => $recordModel->getId()];
@@ -105,7 +117,12 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
         $response->emit();
     }
 
-    protected function searchRecord($searchModule, $searchValue, $parentRecordId, $parentModuleName, $relatedModule)
+    /**
+     * @param string $searchModule
+     *
+     * @return array
+     */
+    protected function searchRecord(string $searchModule)
     {
         $db = PearDatabase::getInstance();
         $matchingRecords = [];

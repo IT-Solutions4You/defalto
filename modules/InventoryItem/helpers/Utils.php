@@ -68,4 +68,57 @@ class InventoryItem_Utils_Helper
 
         return $taxes;
     }
+
+    /**
+     * @param int            $itemId
+     *
+     * @return array
+     */
+    public static function decideItemPriceAndPriceBook(int $itemId, int $currencyId, int $priceBookId): array
+    {
+        $recordModel = Vtiger_Record_Model::getInstanceById($itemId);
+        $listPriceValuesList = [];
+        $conversionRate = 1;
+        $setPriceBookId = 0;
+
+        if (method_exists($recordModel, 'getListPriceValues')) {
+            $listPriceValuesList = $recordModel::getListPriceValues($recordModel->getId());
+        }
+
+        if (method_exists($recordModel, 'getPriceDetails')) {
+            $priceDetails = $recordModel->getPriceDetails();
+
+            foreach ($priceDetails as $currencyDetails) {
+                if ($currencyId == $currencyDetails['curid']) {
+                    $conversionRate = $currencyDetails['conversionrate'];
+                }
+            }
+        }
+
+        $priceBookPrice = 0;
+
+        if ($priceBookId) {
+            $priceBookModel = Vtiger_Record_Model::getInstanceById($priceBookId, 'PriceBooks');
+            $priceBookPrice = $priceBookModel->getProductsListPrice($itemId);
+            $priceBookCurrency = $priceBookModel->get('currency_id');
+
+            if ($priceBookCurrency != $currencyId) {
+                $currenciesConversionTable = InventoryItem_Utils_Helper::getCurrenciesConversionTable();
+                $toBaseCurrency = 1 / $currenciesConversionTable[$priceBookCurrency];
+                $toNewCurrency = $toBaseCurrency * $currenciesConversionTable[$currencyId];
+                $priceBookPrice *= $toNewCurrency;
+            }
+        }
+
+        if ($priceBookPrice) {
+            $price = (float)$priceBookPrice;
+            $setPriceBookId = $priceBookId;
+        } elseif (isset($listPriceValuesList[$currencyId])) {
+            $price = (float)$listPriceValuesList[$currencyId];
+        } else {
+            $price = (float)$recordModel->get('unit_price') * (float)$conversionRate;
+        }
+
+        return ['price' => $price, 'priceBookId' => $setPriceBookId];
+    }
 }

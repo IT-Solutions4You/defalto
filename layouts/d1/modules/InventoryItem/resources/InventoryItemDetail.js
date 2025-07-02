@@ -160,10 +160,6 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             self.deleteProductLine(rowNumber);
         });
 
-        row.on('click', '.addItemAfter', function () {
-            self.addItemAfter(rowNumber);
-        });
-
         row.on('click', '.item_edit', function () {
             self.editItem(rowNumber);
         });
@@ -250,56 +246,6 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 self.reloadInventoryItemsBlock();
             });
         }
-    },
-
-    addItemAfter: function (rowNumber) {
-        jQuery('.inlineAddDropdown').remove();
-
-        const row = jQuery('#row' + rowNumber);
-        const td = row.find('td:first');
-        const button = jQuery('.addItemAfter', td);
-        const sequence = row.find('input.rowSequence').val();
-
-        const dropdown = jQuery('.add_menu_template').clone().removeClass('add_menu_template').addClass('inlineAddDropdown');
-        dropdown.css({
-            display: 'block',
-            position: 'absolute',
-            top: button.offset().top + button.outerHeight(),
-            left: button.offset().left,
-            zIndex: 1000
-        });
-
-        jQuery('body').append(dropdown);
-
-        dropdown.on('click', 'a.dropdown-item', function (event) {
-            event.preventDefault();
-            const moduleName = jQuery(this).data('modulename');
-
-            dropdown.remove();
-
-            const params = {
-                data: {
-                    insert_after_sequence: sequence
-                }
-            };
-            const addButtonsToolbar = jQuery('.inventoryItemAddButtons');
-
-            if (moduleName === '') {
-                addButtonsToolbar.find('button').first().trigger('click', [params]);
-            } else {
-                addButtonsToolbar.find('button[data-modulename="' + moduleName + '"]').trigger('click', [params]);
-            }
-        });
-
-        setTimeout(() => {
-            jQuery(document).off('click.inlineAddDropdown').on('click.inlineAddDropdown', function (e) {
-                const $target = jQuery(e.target);
-                if ($target.closest('.inlineAddDropdown').length === 0 && $target.closest('.addAfterRow').length === 0) {
-                    jQuery('.inlineAddDropdown').remove();
-                    jQuery(document).off('click.inlineAddDropdown'); // Clean up
-                }
-            });
-        }, 0);
     },
 
     recalculateTotals: function () {
@@ -795,7 +741,13 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     }
                 );
             }
-        });
+        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+            if (!item.id) {
+                return;
+            }
+
+            return jQuery("<li>").append("<div>" + item.label + "</div>").appendTo(ul);
+        };
 
         container.find('input.autoComplete').on('focus', function () {
             if (!jQuery(this).val()) {

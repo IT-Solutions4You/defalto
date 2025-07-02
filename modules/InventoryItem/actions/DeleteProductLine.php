@@ -20,11 +20,11 @@ class InventoryItem_DeleteProductLine_Action extends Vtiger_Delete_Action
             $recordId = $request->get('lineItemId');
             $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
             $sequence = $recordModel->get('sequence');
-            $parentId = $recordModel->get('parentid');
+            $parentId = (int)$recordModel->get('parentid');
             $recordModel->delete();
             $response->setResult('OK');
 
-            $allItems = InventoryItem_Module_Model::fetchItemsForId((int)$parentId, true);
+            $allItems = InventoryItem_Module_Model::fetchItemsForId($parentId, true);
 
             foreach ($allItems as $item) {
                 $itemModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
@@ -37,6 +37,8 @@ class InventoryItem_DeleteProductLine_Action extends Vtiger_Delete_Action
 
                 unset($itemModel);
             }
+
+            InventoryItem_ParentEntity_Model::updateTotals($parentId);
         } catch (Exception $e) {
             $response->setError($e->getMessage());
         }

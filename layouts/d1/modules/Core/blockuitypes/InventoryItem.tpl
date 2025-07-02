@@ -167,11 +167,26 @@
                     {/foreach}
                 </tr>
                 <tr>
-                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('Total', 'InventoryItem')}</strong></td>
-                    <td class="textAlignRight font-bold subTotalDisplay">{$SUBTOTAL_DISPLAY}</td>
+                    <td rowspan="2" {if !$INVENTORY_ITEMS} colspan="{$FINALS_COLSPAN + 2}" class="textAlignCenter"{else} colspan="{$FINALS_COLSPAN - 2}"{/if}>
+                        <div class="px-4">
+                            <div class="btn-toolbar inventoryItemAddButtons" style="display:inline;">
+                                <div class="recordLabel verticalAlignMiddle me-2 font-bold" style="display:inline;">Add: </div>
+                                <button type="button" class="btn btn-primary active mb-2 me-2" id="addText" data-modulename="">
+                                    <i class="fa fa-i-cursor"></i>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}
+                                </button>
+                                {foreach from=$ITEM_MODULES item=ITEM_MODULE_NAME}
+                                    <button type="button" class="btn btn-primary active mb-2 me-2" id="add{$ITEM_MODULE_NAME}" data-modulename="{$ITEM_MODULE_NAME}">
+                                        {Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}
+                                    </button>
+                                {/foreach}
+                            </div>
+                        </div>
+                    </td>
+                    <td colspan="2" class="textAlignRight" {if !$INVENTORY_ITEMS}style="display: none;"{/if}><strong>{vtranslate('Total', 'InventoryItem')}</strong></td>
+                    <td class="textAlignRight font-bold subTotalDisplay" {if !$INVENTORY_ITEMS}style="display: none;"{/if}>{$SUBTOTAL_DISPLAY}</td>
                 </tr>
-                <tr>
-                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight">
+                <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
+                    <td colspan="2" class="textAlignRight">
                         <div class="position-relative">
                             <i class="fa fa-pencil fa-fw text-secondary editOverallDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Overal Discount', 'InventoryItem')}: <span class="overallDiscountPercentage">{$OVERALL_DISCOUNT}</span>%</strong>
                         <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="overallDiscountSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
@@ -214,19 +229,19 @@
                     </td>
                     <td class="textAlignRight font-bold overallDiscountAmount">{$OVERALL_DISCOUNT_AMOUNT_DISPLAY}</td>
                 </tr>
-                <tr>
+                <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
                     <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('Total without VAT', 'InventoryItem')}</strong></td>
                     <td class="textAlignRight font-bold priceWithoutVatDisplay">{$PRICE_WITHOUT_VAT_DISPLAY}</td>
                 </tr>
-                <tr>
+                <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
                     <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('VAT', 'InventoryItem')}</strong></td>
                     <td class="textAlignRight font-bold vatDisplay">{$VAT_DISPLAY}</td>
                 </tr>
-                <tr>
+                <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
                     <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('Total with VAT', 'InventoryItem')}</strong></td>
                     <td class="textAlignRight font-bold priceTotalDisplay">{$PRICE_TOTAL_DISPLAY}</td>
                 </tr>
-                <tr>
+                <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
                     <td colspan="{$FINALS_COLSPAN}" class="textAlignRight">
                         <div class="position-relative">
                             <i class="fa fa-pencil fa-fw text-secondary editAdjustment" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Adjustment', 'InventoryItem')}</strong>
@@ -269,25 +284,12 @@
                     </td>
                     <td class="textAlignRight font-bold adjustmentDisplay">{$ADJUSTMENT_DISPLAY}</td>
                 </tr>
-                <tr>
+                <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
                     <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('Grand Total', 'InventoryItem')}</strong></td>
                     <td class="textAlignRight font-bold grandTotalDisplay">{$GRAND_TOTAL_DISPLAY}</td>
                 </tr>
                 </tfoot>
             </table>
-        </div>
-        <div class="px-4">
-            <div class="btn-toolbar inventoryItemAddButtons" style="display:inline;">
-                <div class="recordLabel verticalAlignMiddle me-2 font-bold" style="display:inline;">Add </div>
-                <button type="button" class="btn btn-outline-primary mb-1 me-1 font-bold" id="addText" data-modulename="">
-                    <i class="fa fa-i-cursor"></i>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}
-                </button>
-                {foreach from=$ITEM_MODULES item=ITEM_MODULE_NAME}
-                    <button type="button" class="btn btn-outline-primary mb-1 me-1 font-bold" id="add{$ITEM_MODULE_NAME}" data-modulename="{$ITEM_MODULE_NAME}">
-                        {Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}
-                    </button>
-                {/foreach}
-            </div>
         </div>
     </div>
 </div>

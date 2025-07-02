@@ -18,7 +18,6 @@
         <ul class="dropdown-menu" style="">
             <li><a class="dropdown-item editItem"><i class="fa fa-pencil fa-fw text-secondary" title="{vtranslate('LBL_EDIT',$MODULE)}"></i><span class="ms-2">{vtranslate('LBL_EDIT',$MODULE)}</span></a></li>
             <li><a class="dropdown-item deleteItem"><i class="fa fa-trash-o fa-fw text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i><span class="ms-2">{vtranslate('LBL_DELETE',$MODULE)}</span></a></li>
-            {*<li><a class="dropdown-item addItemAfter"><i class="fa fa-plus fa-fw text-secondary" title="{vtranslate('LBL_ADD_AFTER',$MODULE)}"></i><span class="ms-2">{vtranslate('LBL_ADD_AFTER',$MODULE)}</span></a></li>*}
             <li><a class="dropdown-item addAfter" data-modulename=""><i class="fa fa-i-cursor fa-fw text-secondary"></i><span class="ms-2">{vtranslate('Add', $MODULE)} {vtranslate('TEXT', $MODULE)}</span></a></li>
             {foreach item=ITEM_MODULE_NAME from=$ITEM_MODULES}
                 <li><a class="dropdown-item addAfter" data-modulename="{$ITEM_MODULE_NAME}"><span class="text-secondary">{Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}</span>&nbsp;<span class="ms-2">{vtranslate('Add', $MODULE)} {vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}</span></a></li>

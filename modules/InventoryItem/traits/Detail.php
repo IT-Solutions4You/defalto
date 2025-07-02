@@ -79,19 +79,23 @@ trait InventoryItem_Detail_Trait
 
         $currentUser = Users_Record_Model::getCurrentUserModel();
         $entityRecordModel = Vtiger_Record_Model::getInstanceById($recordId);
+        $overallDiscountAmount = $entityRecordModel->get('overall_discount_amount');
+        $adjustment = $entityRecordModel->get('adjustment');
+
+        if (!$overallDiscountAmount) {
+            $overallDiscountAmount = 0.00001;
+        }
+
+        if (!$adjustment) {
+            $adjustment = 0.00001;
+        }
+
         $viewer->assign('RECORD', $entityRecordModel);
         $viewer->assign('SUBTOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_after_discount'), $currentUser, true));
-        $viewer->assign('OVERALL_DISCOUNT_AMOUNT_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('overall_discount_amount'), $currentUser, true));
+        $viewer->assign('OVERALL_DISCOUNT_AMOUNT_DISPLAY', CurrencyField::convertToUserFormat($overallDiscountAmount, $currentUser, true));
         $viewer->assign('PRICE_WITHOUT_VAT_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_after_overall_discount'), $currentUser, true));
         $viewer->assign('VAT_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('tax_amount'), $currentUser, true));
         $viewer->assign('PRICE_TOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_total'), $currentUser, true));
-
-        $adjustment = $entityRecordModel->get('adjustment');
-
-        if (!$adjustment) {
-            $adjustment = 0;
-        }
-
         $viewer->assign('ADJUSTMENT', number_format($adjustment, 2));
         $viewer->assign('ADJUSTMENT_DISPLAY', CurrencyField::convertToUserFormat($adjustment, $currentUser, true));
         $viewer->assign('GRAND_TOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('grand_total'), $currentUser, true));
@@ -128,6 +132,13 @@ trait InventoryItem_Detail_Trait
 
                 if (empty($row['item_text'])) {
                     $row['item_text'] = getEntityName($row['entityType'], $row['productid'])[$row['productid']];
+                }
+
+                $recordModel = Vtiger_Record_Model::getInstanceById($row['productid'], $row['entityType']);
+
+                if (method_exists($recordModel, 'isBundle') && $recordModel->isBundle() && method_exists($recordModel, 'isBundleViewable') && $recordModel->isBundleViewable()) {
+                    $subProducts = $recordModel->getSubProducts();
+                    $row['subProducts'] = $subProducts;
                 }
             }
 
