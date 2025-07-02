@@ -113,6 +113,8 @@ class Leads_Install_Model extends Core_Install_Model {
                     'displaytype' => 3,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 1,
                     'picklist_values' => [
                         'Mr.',
                         'Ms.',
@@ -135,7 +137,7 @@ class Leads_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 1,
 	                'filter' => 1,
-	                'filter_sequence' => 1,
+	                'filter_sequence' => 2,
                 ],
                 'phone' => [
                     'name' => 'phone',
@@ -153,7 +155,7 @@ class Leads_Install_Model extends Core_Install_Model {
 	                'headerfield' => 1,
 	                'headerfieldsequence' => 2,
 	                'filter' => 1,
-	                'filter_sequence' => 4,
+	                'filter_sequence' => 5,
                 ],
                 'lastname' => [
                     'name' => 'lastname',
@@ -169,7 +171,7 @@ class Leads_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 1,
 	                'filter' => 1,
-	                'filter_sequence' => 2,
+	                'filter_sequence' => 3,
                 ],
                 'mobile' => [
                     'name' => 'mobile',
@@ -198,8 +200,8 @@ class Leads_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
-	                'filter' => 1,
-	                'filter_sequence' => 3,
+                    'filter' => 1,
+                    'filter_sequence' => 6,
                 ],
                 'designation' => [
                     'name' => 'designation',
@@ -230,8 +232,8 @@ class Leads_Install_Model extends Core_Install_Model {
                     'summaryfield' => 1,
                     'headerfield' => 1,
                     'headerfieldsequence' => 3,
-	                'filter' => 1,
-	                'filter_sequence' => 6,
+                    'filter' => 1,
+                    'filter_sequence' => 7,
                 ],
                 'leadsource' => [
                     'name' => 'leadsource',
@@ -262,6 +264,8 @@ class Leads_Install_Model extends Core_Install_Model {
                         'Word of mouth',
                         'Other',
                     ],
+                    'filter' => 1,
+                    'filter_sequence' => 8,
                 ],
                 'website' => [
                     'name' => 'website',
@@ -276,8 +280,6 @@ class Leads_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
-	                'filter' => 1,
-	                'filter_sequence' => 5,
                 ],
                 'industry' => [
                     'name' => 'industry',
@@ -341,6 +343,8 @@ class Leads_Install_Model extends Core_Install_Model {
                         'summaryfield' => 1,
                         'headerfield' => 1,
                         'headerfieldsequence' => 1,
+                        'filter' => 1,
+                        'filter_sequence' => 4,
                         'picklist_values' => [
                             'Attempted to Contact',
                             'Cold',
@@ -417,8 +421,8 @@ class Leads_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
-	                'filter' => 1,
-	                'filter_sequence' => 7,
+                    'filter' => 1,
+                    'filter_sequence' => 9,
                 ],
                 'secondaryemail' => [
                     'name' => 'secondaryemail',
