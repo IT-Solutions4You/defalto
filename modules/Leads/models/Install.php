@@ -36,7 +36,6 @@ class Leads_Install_Model extends Core_Install_Model {
     {
         $fieldMap = [
             ['company', 'accountname', null, 'potentialname', 0],
-            ['industry', 'industry', null, null, 1],
             ['phone', 'phone', 'phone', null, 1],
             ['fax', 'fax', 'fax', null, 1],
             ['email', 'email1', 'email', null, 0],
@@ -354,53 +353,6 @@ class Leads_Install_Model extends Core_Install_Model {
                     'filter' => 1,
                     'filter_sequence' => 9,
                 ],
-                'industry' => [
-                    'name' => 'industry',
-                    'uitype' => 15,
-                    'column' => 'industry',
-                    'table' => 'vtiger_leaddetails',
-                    'label' => 'Industry',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 1,
-                    'masseditable' => 1,
-                    'summaryfield' => 0,
-                    'picklist_values' => [
-                        'Apparel',
-                        'Banking',
-                        'Biotechnology',
-                        'Chemicals',
-                        'Communications',
-                        'Construction',
-                        'Consulting',
-                        'Education',
-                        'Electronics',
-                        'Energy',
-                        'Engineering',
-                        'Entertainment',
-                        'Environmental',
-                        'Finance',
-                        'Food & Beverage',
-                        'Government',
-                        'Healthcare',
-                        'Hospitality',
-                        'Insurance',
-                        'Machinery',
-                        'Manufacturing',
-                        'Media',
-                        'Not For Profit',
-                        'Recreation',
-                        'Retail',
-                        'Shipping',
-                        'Technology',
-                        'Telecommunications',
-                        'Transportation',
-                        'Utilities',
-                        'Other',
-                    ],
-                ],
             ],
             'LBL_CUSTOM_INFORMATION' => [
             ],
@@ -562,8 +514,6 @@ class Leads_Install_Model extends Core_Install_Model {
             ->createColumn('salutation', 'varchar(200) DEFAULT NULL')
             ->createColumn('lastname', 'varchar(80) NOT NULL')
             ->createColumn('company', 'varchar(100) NOT NULL')
-            ->createColumn('annualrevenue', self::$COLUMN_DECIMAL)
-            ->createColumn('industry', 'varchar(200) DEFAULT NULL')
             ->createColumn('campaign', 'varchar(30) DEFAULT NULL')
             ->createColumn('leadstatus', 'varchar(200) DEFAULT NULL')
             ->createColumn('leadsource', 'varchar(200) DEFAULT NULL')
