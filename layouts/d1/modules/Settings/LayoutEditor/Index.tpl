@@ -43,6 +43,11 @@
 									<strong>{vtranslate('LBL_DETAILVIEW_LAYOUT', $QUALIFIED_MODULE)}</strong>
 								</a>
 							</li>
+							<li class="nav-item headerFieldsTab ms-3">
+								<a class="nav-link {if $SELECTED_TAB eq 'headerFieldsTab'}active{/if}" data-bs-toggle="tab" href="#headerFieldsLayout" data-url="{$URL}" data-mode="showHeaderFieldsLayout">
+									<strong>{vtranslate('LBL_HEADER_FIELDS', $QUALIFIED_MODULE)}</strong>
+								</a>
+							</li>
 							<li class="nav-item relatedListTab ms-3">
 								<a class="nav-link {if $SELECTED_TAB eq 'relatedListTab'}active{/if}" data-bs-toggle="tab" href="#relatedTabOrder" data-url="{$URL}" data-mode="showRelatedListLayout">
 									<strong>{vtranslate('LBL_RELATION_SHIPS', $QUALIFIED_MODULE)}</strong>
@@ -58,6 +63,11 @@
 							<div class="tab-pane{if $SELECTED_TAB eq 'detailViewTab'} active{/if}" id="detailViewLayout">
 								{if $SELECTED_TAB eq 'detailViewTab'}
 									{include file=vtemplate_path('FieldsList.tpl', $QUALIFIED_MODULE)}
+								{/if}
+							</div>
+							<div class="tab-pane{if $SELECTED_TAB eq 'headerFieldsTab'} active{/if}" id="headerFieldsLayout">
+								{if $SELECTED_TAB eq 'headerFieldsTab'}
+									{include file=vtemplate_path('HeaderFields.tpl', $QUALIFIED_MODULE)}
 								{/if}
 							</div>
 							<div class="tab-pane {if $SELECTED_TAB eq 'relatedListTab'} active{/if}" id="relatedTabOrder">

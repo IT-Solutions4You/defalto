@@ -5,7 +5,10 @@
 * All Rights Reserved.
 */
 
-Vtiger.Class('Settings_LayoutEditor_Js', {}, {
+/** @var Settings_LayoutEditor_Js */
+Vtiger.Class('Settings_LayoutEditor_Js', {
+    fieldLabels: false,
+}, {
     updatedBlockSequence: {},
     reactiveFieldsList: [],
     updatedRelatedList: {'updated': [], 'deleted': []},
@@ -18,6 +21,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
     maxNumberOfHeaderFields: 5,
     nameFields: [],
     headerFieldsMeta: {},
+    editFieldElement: false,
     getModuleName: function () {
         return 'LayoutEditor';
     },
@@ -166,6 +170,43 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
         var saveButton = relatedList.find('.saveRelatedList');
         relatedList.find('.saveRelatedListContainer').addClass('hide');
     },
+
+    /**
+     * Function which will save the header fields list
+     */
+    saveHeaderFields: function () {
+        let thisInstance = this,
+            aDeferred = jQuery.Deferred(),
+            params = {};
+
+        let fieldNames = $('.headerFieldBtn')
+            .map(function() {
+                return $(this).data('fieldvalue');
+            })
+            .get()
+            .filter(function(name) {
+                return name !== undefined && name !== null && name !== '';
+            });
+
+        params['module'] = app.getModuleName();
+        params['parent'] = app.getParentModuleName();
+        params['selected_module'] = thisInstance.getSelectedModuleName();
+        params['action'] = 'SaveHeaderFieldsAjax';
+        params['header_fields'] = fieldNames;
+
+        app.request.post({"data":params}).then(
+            function(err,data) {
+                if(err === null) {
+                    window.location.reload();
+                }else {
+                    aDeferred.reject(err);
+                }
+            }
+        );
+
+        return aDeferred.promise();
+    },
+
     /**
      * Function to register all the relatedList Events
      */
@@ -419,6 +460,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
     registerFieldSequenceSaveClick: function () {
         var thisInstance = this;
         var layout = jQuery('#detailViewLayout');
+
         layout.on('click', '.saveFieldSequence', function () {
             thisInstance.hideSaveFieldSequenceButton();
             thisInstance.createUpdatedBlockFieldsList();
@@ -2125,6 +2167,41 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
             });
         });
     },
+
+    triggerHeaderFieldTabClickEvent: function () {
+        let thisInstance = this;
+        let contents = jQuery('#layoutEditorContainer').find('.contents');
+
+        contents.find('.headerFieldsTab').click(function (e) {
+            let headerFieldsLayout = contents.find('#headerFieldsLayout');
+
+            let aDeferred = jQuery.Deferred();
+            let duplicateUiContainer = headerFieldsLayout.find('.headerFieldsDiv');
+
+            let selectedTab = jQuery(e.currentTarget).find('a');
+            let mode = selectedTab.data('mode');
+            let url = selectedTab.data('url') + '&sourceModule=' + jQuery('#selectedModuleName').val() + '&mode=' + mode;
+            jQuery('.selectedMode').val(mode);
+
+            if (duplicateUiContainer.length == 0) {
+                app.helper.showProgress();
+                app.request.pjax({'url': url}).then(function (error, data) {
+                    if (error === null) {
+                        app.helper.hideProgress();
+                        headerFieldsLayout.html(data);
+                       aDeferred.resolve(headerFieldsLayout);
+                    } else {
+                        aDeferred.reject(error);
+                    }
+                });
+            } else {
+                window.history.pushState('headerFieldsDiv', '', url);
+                aDeferred.resolve();
+            }
+            return aDeferred.promise();
+        });
+    },
+
     showFieldsListUI: function (detailViewLayout, e) {
         var aDeferred = jQuery.Deferred();
         var fieldUiContainer = detailViewLayout.find('.fieldsListContainer');
@@ -2267,6 +2344,225 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
         }
         return aDeferred.promise();
     },
+
+    getContainer() {
+        return jQuery(".containerSelectFields");
+    },
+
+    getFieldsContainer() {
+        return this.getContainer().find('.containerFields');
+    },
+
+    updateModalFieldValues(modalContainer) {
+        let self = this,
+            value = modalContainer.find('.selectFields').val(),
+            label = self.getFieldLabel(modalContainer.find('.selectFields').val());
+
+        modalContainer.find('.selectedFieldLabel').val(label);
+        modalContainer.find('.selectedFieldName').val(value);
+    },
+
+    getNewFieldModal() {
+        let modalContainer = $(Settings_LayoutEditor_Js.modalFields).clone(true, true);
+
+        modalContainer.find('#addSelectFields').addClass('selectFieldsButton');
+
+        return modalContainer;
+    },
+
+    setEditField(element) {
+        this.editFieldElement = element;
+    },
+
+    getEditField() {
+        return this.editFieldElement;
+    },
+
+    getFieldLabel(field) {
+        if (!Settings_LayoutEditor_Js.fieldLabels) {
+            Settings_LayoutEditor_Js.fieldLabels = JSON.parse($('.labelFields').text())
+        }
+
+        return Settings_LayoutEditor_Js.fieldLabels[field];
+    },
+
+    registerFields() {
+        let self = this,
+            containerElement = self.getFieldsContainer();
+
+        self.retrieveFieldModal();
+
+        containerElement.on('click', '.openSelectFields', function() {
+            self.setEditField($(this));
+
+            let modalContainer = self.getNewFieldModal();
+
+            app.helper.showModal(modalContainer, {
+                cb: function () {
+                    self.registerSelectFields(modalContainer);
+                }
+            });
+        });
+
+        containerElement.on('click', '.clearHeaderField', function () {
+            let clickHereLabel = $('input[name="click_here_label"]').val();
+
+            $(this).parent().removeAttr('data-fieldvalue');
+            $(this).parent().html(clickHereLabel);
+
+            self.saveHeaderFields();
+        });
+    },
+
+    retrieveFieldModal() {
+        let containerElement = this.getFieldsContainer();
+
+        Settings_LayoutEditor_Js.modalFields = containerElement.find('.fieldsNewFieldModal').detach();
+    },
+
+    getFieldOptions() {
+        return JSON.parse(this.getContainer().find('.fieldOptions').text());
+    },
+
+    updateFields(container) {
+        let self = this,
+            selectField = container.find('.selectFields'),
+            selectModule = container.find('.selectModules'),
+            fieldOptions = self.getFieldOptions(),
+            module = selectModule.val() ? selectModule.val() : 'default';
+
+        let html = '<optgroup label=""><option value="">' + app.vtranslate('JS_SELECT_FIELD') + '</option>',
+            prevGroup = '';
+
+        $.each(fieldOptions[module], function(key, value) {
+            let valueInfo = value.split('##'),
+                group = valueInfo[0];
+
+            if(prevGroup !== group) {
+                html += '</optgroup><optgroup label="' + valueInfo[0] + '">';
+            }
+
+            html += '<option value="' + key + '">' + valueInfo[1] + '</option>';
+
+            prevGroup = group;
+        })
+
+        html += '</optgroup>';
+
+        selectField.html(html);
+        selectField.trigger('change');
+    },
+
+    isCreateFieldAllowed(value) {
+        let self = this,
+            duplicateElement = self.getFieldsByName(value);
+
+        if (self.getEditField()) {
+            if (!duplicateElement.length) {
+                return true;
+            }
+
+            if (self.getEditField().val() === value) {
+                return true;
+            }
+
+            if (self.getEditField() !== duplicateElement) {
+                return false;
+            }
+        } else if (duplicateElement.length) {
+            return false;
+        }
+
+        return true;
+    },
+
+    getFieldsByName(value) {
+        return this.getContainer().find('[name="fields[]"][value="' + value + '"]');
+    },
+
+    registerSelectFields(modalContainer) {
+        let self = this,
+            selectModules = modalContainer.find('.selectModules'),
+            selectSortBy = modalContainer.find('.selectedSortBy'),
+            selectedFieldName = modalContainer.find('.selectedFieldName'),
+            selectedWidth = modalContainer.find('.selectedWidth'),
+            selectedFieldLabel = modalContainer.find('.selectedFieldLabel');
+
+        vtUtils.showSelect2ElementView(modalContainer.find('select'));
+
+        self.updateFields(modalContainer);
+        self.registerModalFieldEvents(modalContainer);
+
+        if (self.getEditField()) {
+            let editFieldData = self.getEditField(),
+                editFieldId = editFieldData.val(),
+                editFieldInfo = editFieldId.split(':');
+
+            if(3 === editFieldInfo.length) {
+                selectModules.val(editFieldInfo[0] + ':' + editFieldInfo[1]);
+                selectModules.trigger('change');
+            }
+
+            selectedFieldName.val(editFieldId);
+            selectedFieldLabel.val(self.getFieldLabel(editFieldId));
+        }
+    },
+
+    registerModalFieldEvents(modalContainer) {
+        let self = this,
+            containerElement = self.getFieldsContainer(),
+            selectedElement = containerElement.find('.containerSelectedFields'),
+            cloneHtml = containerElement.find('.containerCloneFields').html(),
+            selectedFieldName = modalContainer.find('.selectedFieldName');
+
+        modalContainer.on('click', '#selectFieldsButton', function() {
+            let value = selectedFieldName.val(),
+                cloneElement = $(cloneHtml),
+                data = {
+                    field: value,
+                };
+
+            if (!value) {
+                app.helper.showErrorNotification({message: app.vtranslate('JS_SELECT_FIELD')})
+                return;
+            }
+
+            if (!self.isCreateFieldAllowed(value)) {
+                app.helper.showErrorNotification({message: app.vtranslate('JS_FIELD_ALREADY_SELECTED')})
+                return;
+            }
+
+            cloneElement.find('.fieldValue').val(value);
+            cloneElement.find('[data-field]').attr('data-field', value);
+
+            let displayValue = $('.fieldsNewFieldModal .selectFields').find('option:selected').html();
+
+            $('.openSelectFields[data-id="' + self.getEditField().data('id') + '"]')
+                .attr('data-fieldvalue', value)
+                .html(displayValue);
+
+            app.event.trigger('add.selected.fields', cloneElement, data);
+            app.helper.hideModal();
+        });
+
+        modalContainer.on('click', '.selectedAlign', function() {
+            modalContainer.find('.selectedAlign').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        modalContainer.on('change', '.selectModules', function () {
+            self.updateFields(modalContainer);
+        });
+
+        modalContainer.on('change', '.selectFields', function (e) {
+            self.updateModalFieldValues(modalContainer);
+        });
+
+        app.event.on('add.selected.fields', function () {
+            self.saveHeaderFields();
+        });
+    },
+
     /**
      * register events for layout editor
      */
@@ -2274,8 +2570,10 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
         var thisInstance = this;
         thisInstance.registerModulesChangeEvent();
         thisInstance.triggerFieldListTabClickEvent();
+        thisInstance.triggerHeaderFieldTabClickEvent();
         thisInstance.triggerRelatedModulesTabClickEvent();
         thisInstance.triggerDuplicationTabClickEvent();
+        thisInstance.registerFields();
 
         var selectedTab = jQuery('.selectedTab').val();
         jQuery('#layoutEditorContainer').find('.contents').find('.' + selectedTab).trigger('click');
