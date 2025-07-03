@@ -1128,4 +1128,65 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             ->createKey('PRIMARY KEY IF NOT EXISTS (' . $tableId . ')')
             ->createKey('UNIQUE KEY IF NOT EXISTS ' . $columnName . '_' . $columnName . '_idx (' . $columnName . ')');
     }
+
+    /**
+     * @param string $name
+     * @param string $moduleName
+     * @param array $conditions
+     * @param string $trigger
+     * @param string $recurrence
+     * @return bool|object
+     * @throws AppException
+     */
+    public function updateWorkflowTask(string $name, string $moduleName, array $conditions, string $trigger, string $recurrence): bool|object
+    {
+        $workflowModel = Settings_Workflows_Record_Model::getInstanceByName($name);
+
+        if (!$workflowModel) {
+            $workflowModel = Settings_Workflows_Record_Model::getCleanInstance($moduleName);
+            $workflowModel->set('status', 1);
+        }
+
+        $workflowModel->set('name', $name);
+        $workflowModel->set('summary', $name);
+        $workflowModel->set('conditions', $conditions);
+        $workflowModel->set('workflow_trigger', $trigger);
+        $workflowModel->set('workflow_recurrence', $recurrence);
+        $workflowModel->set('filtersavedinnew', 6);
+        $workflowModel->save();
+
+        return $workflowModel;
+    }
+
+    /**
+     * @param string $taskType
+     * @param string $taskName
+     * @param array $data
+     * @param object $workflowModel
+     * @return object|bool
+     * @throws AppException
+     */
+    public function updateWorkflowAction(string $taskType, string $taskName, array $data, object $workflowModel): object|bool
+    {
+        $taskModel = Settings_Workflows_TaskRecord_Model::getInstanceByName($taskName, $workflowModel);
+        $taskObject = new $taskType();
+
+        if (!$taskModel) {
+            $taskModel = Settings_Workflows_TaskRecord_Model::getCleanInstance($workflowModel, $taskType);
+        }
+
+        $taskObject->active = true;
+        $taskObject->id = $taskModel->getId();
+        $taskObject->workflowId = $workflowModel->getId();
+        $taskObject->summary = $taskName;
+
+        foreach ($data as $key => $value) {
+            $taskObject->$key = $value;
+        }
+
+        $taskModel->setTaskObject($taskObject);
+        $taskModel->save();
+
+        return $taskModel;
+    }
 }
