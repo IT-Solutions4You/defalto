@@ -483,7 +483,10 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
             foreach ($fieldList as $fieldName => $fieldModel) {
                 if ($fieldModel->isQuickCreateEnabled() && $fieldModel->isEditable()) {
                     $quickCreateFieldList[$fieldName] = $fieldModel;
-                    $sequences[$fieldModel->get('quicksequence')] = $fieldModel->get('name');
+
+                    if ($fieldModel->get('quicksequence')) {
+                        $sequences[$fieldModel->get('quicksequence')] = $fieldModel->get('name');
+                    }
                 }
             }
         }
