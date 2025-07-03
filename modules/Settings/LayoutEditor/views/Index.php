@@ -152,7 +152,6 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 
         $headerFieldsModel = new Settings_LayoutEditor_HeaderFields_Model();
         $viewer->assign('HEADER_FIELDS_MODEL', $headerFieldsModel);
-        $viewer->assign('MODULE_OPTIONS', $headerFieldsModel->getModuleOptions($sourceModuleName));
         $viewer->assign('SELECTED_FIELDS', $headerFieldsModel->getHeaderFields($sourceModuleName));
 
         if ($request->isAjax() && !$request->get('showFullContents')) {

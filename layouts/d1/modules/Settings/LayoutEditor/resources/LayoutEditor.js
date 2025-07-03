@@ -2169,18 +2169,18 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
     },
 
     triggerHeaderFieldTabClickEvent: function () {
-        var thisInstance = this;
-        var contents = jQuery('#layoutEditorContainer').find('.contents');
+        let thisInstance = this;
+        let contents = jQuery('#layoutEditorContainer').find('.contents');
 
         contents.find('.headerFieldsTab').click(function (e) {
-            var headerFieldsLayout = contents.find('#headerFieldsLayout');
+            let headerFieldsLayout = contents.find('#headerFieldsLayout');
 
             var aDeferred = jQuery.Deferred();
-            var duplicateUiContainer = headerFieldsLayout.find('.headerFieldsDiv');
+            let duplicateUiContainer = headerFieldsLayout.find('.headerFieldsDiv');
 
-            var selectedTab = jQuery(e.currentTarget).find('a');
-            var mode = selectedTab.data('mode');
-            var url = selectedTab.data('url') + '&sourceModule=' + jQuery('#selectedModuleName').val() + '&mode=' + mode;
+            let selectedTab = jQuery(e.currentTarget).find('a');
+            let mode = selectedTab.data('mode');
+            let url = selectedTab.data('url') + '&sourceModule=' + jQuery('#selectedModuleName').val() + '&mode=' + mode;
             jQuery('.selectedMode').val(mode);
 
             if (duplicateUiContainer.length == 0) {
@@ -2378,13 +2378,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
         return this.editFieldElement;
     },
 
-    getFieldLabel(field, useUpdatedLabel = true) {
-        let labelElement = this.getContainer().find('[name="labels[' + field + ']"]')
-
-        if (useUpdatedLabel && labelElement.length) {
-            return labelElement.val();
-        }
-
+    getFieldLabel(field) {
         if (!Settings_LayoutEditor_Js.fieldLabels) {
             Settings_LayoutEditor_Js.fieldLabels = JSON.parse($('.labelFields').text())
         }

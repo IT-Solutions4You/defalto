@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  ************************************************************************************/
 
-
 class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
 
     protected PearDatabase $db;
@@ -22,16 +21,16 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
         return $this->db;
     }
 
+    /**
+     * @throws AppException
+     */
     public function saveHeaderFields($moduleName, $headerFields)
     {
-        $this->db()->pquery('UPDATE vtiger_field SET headerfieldsequence=NULL WHERE tabid=?', [getTabid($moduleName)]);
+        $table = (new Vtiger_Field_Model())->getFieldTable();
+        $table->updateData(['headerfieldsequence' => NULL, 'headerfield' => NULL,], ['tabid' => getTabid($moduleName)]);
 
         foreach ($headerFields as $key => $fieldName) {
-            $this->db()->pquery('UPDATE vtiger_field SET headerfieldsequence=? WHERE tabid=? AND fieldname=?', [
-                $key + 1,
-                getTabid($moduleName),
-                $fieldName
-            ]);
+            $table->updateData(['headerfieldsequence' => $key + 1, 'headerfield' => 1,], ['tabid' => getTabid($moduleName), 'fieldname' => $fieldName]);
         }
     }
 
@@ -77,34 +76,6 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
         }
 
         return $modules;
-    }
-
-    public function getModuleOptions($moduleName): array
-    {
-        $options = [
-            '' => vtranslate($moduleName, $moduleName),
-        ];
-
-        if (empty($moduleName)) {
-            return $options;
-        }
-
-        $module = Vtiger_Module_Model::getInstance($moduleName);
-        $fields = $module->getFieldsByType(['reference', 'owner']);
-
-        /**
-         * @var Vtiger_Field_Model $field
-         * @var Vtiger_Field_Model $referenceField
-         */
-        foreach ($fields as $field) {
-            $modules = self::getFieldModules($field);
-
-            foreach ($modules as $module) {
-                $options[sprintf('%s:%s', $field->get('name'), $module)] = sprintf('%s (%s)', vtranslate($field->get('label'), $moduleName), vtranslate($module, $module));
-            }
-        }
-
-        return $options;
     }
 
     public function getFieldOptions($moduleName): array
