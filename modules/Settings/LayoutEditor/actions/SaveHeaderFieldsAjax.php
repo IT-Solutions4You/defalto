@@ -9,8 +9,13 @@
  ************************************************************************************/
 
 class Settings_LayoutEditor_SaveHeaderFieldsAjax_Action extends Settings_Vtiger_Basic_Action {
-    
-    public function process(Vtiger_Request $request) {
+
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     */
+    public function process(Vtiger_Request $request): void
+    {
         $response = new Vtiger_Response();
         try{
             $selectedModule = $request->get('selected_module');
@@ -25,8 +30,14 @@ class Settings_LayoutEditor_SaveHeaderFieldsAjax_Action extends Settings_Vtiger_
         }
         $response->emit();
     }
-    
-    public function validateRequest(Vtiger_Request $request) {
+
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     * @throws Exception
+     */
+    public function validateRequest(Vtiger_Request $request): void
+    {
         $request->validateWriteAccess();
     }
 }

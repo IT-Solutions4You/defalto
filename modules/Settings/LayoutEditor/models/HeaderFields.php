@@ -10,8 +10,14 @@
 
 class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
 
+    /**
+     * @var PearDatabase
+     */
     protected PearDatabase $db;
 
+    /**
+     * @return PearDatabase
+     */
     protected function db()
     {
         if (!isset($this->db)) {
@@ -24,7 +30,7 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
     /**
      * @throws AppException
      */
-    public function saveHeaderFields($moduleName, $headerFields)
+    public function saveHeaderFields($moduleName, $headerFields): void
     {
         $table = (new Vtiger_Field_Model())->getFieldTable();
         $table->updateData(['headerfieldsequence' => NULL, 'headerfield' => NULL,], ['tabid' => getTabid($moduleName)]);
@@ -34,7 +40,11 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
         }
     }
 
-    public function getHeaderFields($moduleName)
+    /**
+     * @param $moduleName
+     * @return array
+     */
+    public function getHeaderFields($moduleName): array
     {
         return $this->db()->run_query_allrecords(sprintf(
             'SELECT fieldname, headerfieldsequence, fieldlabel 
@@ -47,6 +57,10 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
         ));
     }
 
+    /**
+     * @param $moduleName
+     * @return array
+     */
     public function getHeaderFieldNames($moduleName): array
     {
         $fieldNames = [];
@@ -67,6 +81,10 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
         return $fieldNames;
     }
 
+    /**
+     * @param $field
+     * @return string[]
+     */
     public static function getFieldModules($field)
     {
         if ('owner' === $field->getFieldDataType()) {
@@ -78,6 +96,11 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
         return $modules;
     }
 
+    /**
+     * @param $moduleName
+     * @return array
+     * @throws Exception
+     */
     public function getFieldOptions($moduleName): array
     {
         $options = [];
@@ -120,6 +143,12 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
         return $options;
     }
 
+    /**
+     * @param string $moduleName
+     * @param array $labels
+     * @return array
+     * @throws Exception
+     */
     public function getLabelOptions(string $moduleName, array $labels): array
     {
         $options = [];

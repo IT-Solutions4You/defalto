@@ -127,10 +127,11 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
         $sourceModuleName = $request->get('sourceModule');
         $moduleModel = Vtiger_Module_Model::getInstance($sourceModuleName);
         $blocks = $moduleModel->getBlocks();
+        $fields = [];
 
-        $fields = array();
         foreach ($blocks as $blockId => $blockModel) {
             $blockFields = $blockModel->getFields();
+
             foreach ($blockFields as $key => $fieldModel) {
                 if ($fieldModel->isEditable()
                     && $fieldModel->get('displaytype') != 5

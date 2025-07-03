@@ -175,7 +175,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
      * Function which will save the header fields list
      */
     saveHeaderFields: function () {
-        var thisInstance = this,
+        let thisInstance = this,
             aDeferred = jQuery.Deferred(),
             params = {};
 
@@ -2175,7 +2175,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
         contents.find('.headerFieldsTab').click(function (e) {
             let headerFieldsLayout = contents.find('#headerFieldsLayout');
 
-            var aDeferred = jQuery.Deferred();
+            let aDeferred = jQuery.Deferred();
             let duplicateUiContainer = headerFieldsLayout.find('.headerFieldsDiv');
 
             let selectedTab = jQuery(e.currentTarget).find('a');
