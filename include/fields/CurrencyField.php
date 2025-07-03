@@ -112,16 +112,20 @@ class CurrencyField {
 		return $this->currencySymbol;
 	}
 
-
     /**
      * Returns the Formatted Currency value for the User
-     * @global Users $current_user
-     * @param Users $user
-	 * @param Boolean $skipConversion
+     *
+     * @param         $value
+     * @param         $user
+     * @param bool    $skipConversion
+     * @param bool    $skipFormatting
+     * @param bool    $formatZero - if true, zero will be formatted to user format; otherwise it returns the incoming value
+     *
      * @return String - Formatted Currency
      */
-    public static function convertToUserFormat($value, $user=null, $skipConversion=false, $skipFormatting=false) {
-        if (!$value) {
+    public static function convertToUserFormat($value, $user = null, $skipConversion = false, $skipFormatting = false, $formatZero = false)
+    {
+        if (!$value && !$formatZero) {
             return $value;
         }
 

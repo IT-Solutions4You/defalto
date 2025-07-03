@@ -121,4 +121,22 @@ class InventoryItem_Utils_Helper
 
         return ['price' => $price, 'priceBookId' => $setPriceBookId];
     }
+
+    /**
+     * @return int
+     */
+    public static function fetchQuantityDecimals(): int
+    {
+        $db = PearDatabase::getInstance();
+        $decimals = 2;
+        $sql = 'SELECT decimals FROM df_inventoryitem_quantitydecimals';
+        $res = $db->query($sql);
+
+        if ($db->num_rows($res)) {
+            $row = $db->fetchByAssoc($res);
+            $decimals = (int)$row['decimals'];
+        }
+
+        return $decimals;
+    }
 }

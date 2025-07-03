@@ -196,9 +196,8 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
             }
         }
 
-        foreach (InventoryItem_RoundValues_Helper::$roundValues as $fieldName) {
-            $row[$fieldName] = number_format((float)$row[$fieldName], 2);
-        }
+        $quantityDecimals = InventoryItem_Utils_Helper::fetchQuantityDecimals();
+        $row['quantity'] = number_format($row['quantity'], $quantityDecimals, '.', '');
 
         $row['taxes'] = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$row['inventoryitemid'], (int)$row['productid'], $recordId);
 

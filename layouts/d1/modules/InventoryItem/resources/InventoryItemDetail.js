@@ -360,8 +360,13 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
 
         this.lineItemsHolder.on('click', '.saveAdjustment', function () {
-            const adjustment = parseFloat(jQuery('#adjustment').val());
+            let adjustment = parseFloat(jQuery('#adjustment').val());
             const originalAdjustment = parseFloat(jQuery('#original_adjustment').val());
+
+            if (isNaN(adjustment)) {
+                adjustment = 0.0;
+                jQuery('#adjustment').val(adjustment);
+            }
 
             if (originalAdjustment !== adjustment) {
                 app.helper.showProgress();
@@ -378,7 +383,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESS')});
                     jQuery('#original_adjustment').val(adjustment);
                     jQuery('.grandTotalDisplay').text(app.convertCurrencyToUserFormat(jQuery('#total_with_adjustment').val()));
-                    jQuery('.adjustmentDisplay').text(jQuery('#adjustment').val());
+                    jQuery('.adjustmentDisplay').text(app.convertCurrencyToUserFormat(adjustment));
                     app.helper.hideProgress();
                     jQuery('#adjustmentSettingDiv').hide();
                 });
@@ -554,6 +559,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     app.event.trigger('post.InventoryItemPopup.show', form);
                     app.helper.registerLeavePageWithoutSubmit(form);
                     app.helper.registerModalDismissWithoutSubmit(form);
+                    self.recalculateItem(container);
                 },
                 backdrop: 'static',
                 keyboard: false
@@ -778,7 +784,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 price = recordData.purchaseCost;
             }
 
-            jQuery('input.price', container).val(parseFloat(price).toFixed(3)).trigger('change');
+            jQuery('input.price', container).val(parseFloat(price).toFixed(4)).trigger('change');
             jQuery('input.purchase_cost', container).val(recordData.purchaseCost);
             jQuery('div.display_purchase_cost', container).text(recordData.purchaseCost);
             jQuery('input.pricebookid', container).val(recordData.pricebookid);
@@ -1044,7 +1050,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             const postPriceBookPopupHandler = function (e, data) {
                 const responseData = JSON.parse(data);
 
-                let listPrice = parseFloat(responseData.price).toFixed(3);
+                let listPrice = parseFloat(responseData.price).toFixed(4);
                 let priceElement = container.find('.price');
                 priceElement.val(listPrice);
                 priceElement.trigger('change');
