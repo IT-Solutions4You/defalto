@@ -14,7 +14,7 @@ require_once 'include/utils/VtlibUtils.php';
 class ModComments extends ModCommentsCore {
 	public string $moduleName = 'ModComments';
 	public string $moduleLabel = 'Comments';
-	public string $parentName = '';
+	public string $parentName = 'Settings';
 
 	/**
 	 * Invoked when special actions are performed on the module.

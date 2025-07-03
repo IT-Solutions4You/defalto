@@ -27,33 +27,43 @@ class Products_RelationListView_Model extends Vtiger_RelationListView_Model {
 			return parent::getLinks();
 		}
 	}
-	
-	public function getHeaders() {
-		$headerFields = parent::getHeaders();
-		if($this->getRelationModel()->getRelationModuleModel()->getName() == 'PriceBooks') {
-			//Added to support Unit Price
-			$unitPriceField = new Vtiger_Field_Model();
-			$unitPriceField->set('name', 'unit_price');
-			$unitPriceField->set('column', 'unit_price');
-			$unitPriceField->set('label', 'Unit Price');
-            $unitPriceField->set('uitype', '71');
-			
-			$headerFields['unit_price'] = $unitPriceField;
-			
-			//Added to support List Price
-			$field = new Vtiger_Field_Model();
-			$field->set('name', 'listprice');
-			$field->set('column', 'listprice');
-			$field->set('label', 'List Price');
-			$field->set('uitype', '71');
 
-			$headerFields['listprice'] = $field;
-		}
-		
-		return $headerFields;
-	}
-	
-	public function getRelationQuery() {
+    public function getHeaders()
+    {
+        $headerFields = parent::getHeaders();
+
+        if ($this->getRelationModel()->getRelationModuleModel()->getName() == 'PriceBooks') {
+            $newHeaderFields = [];
+
+            foreach ($headerFields as $headerField) {
+                $newHeaderFields[$headerField->getName()] = $headerField;
+
+                if (1 === count($newHeaderFields)) {
+                    //Added to support List Price
+                    $field = new Vtiger_Field_Model();
+                    $field->set('name', 'listprice');
+                    $field->set('column', 'listprice');
+                    $field->set('label', 'List Price');
+                    $field->set('uitype', 71);
+                    $newHeaderFields['listprice'] = $field;
+
+                    //Added to support Unit Price
+                    $unitPriceField = new Vtiger_Field_Model();
+                    $unitPriceField->set('name', 'unit_price');
+                    $unitPriceField->set('column', 'unit_price');
+                    $unitPriceField->set('label', 'Unit Price');
+                    $unitPriceField->set('uitype', 71);
+                    $newHeaderFields['unit_price'] = $unitPriceField;
+                }
+            }
+
+            $headerFields = $newHeaderFields;
+        }
+
+        return $headerFields;
+    }
+
+    public function getRelationQuery() {
 		$query = parent::getRelationQuery();
 
 		$relationModel = $this->getRelationModel();

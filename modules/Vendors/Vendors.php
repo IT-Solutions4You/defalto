@@ -9,6 +9,7 @@
 *
  ********************************************************************************/
 class Vendors extends CRMEntity {
+    public string $parentName = 'Inventory';
 	var $log;
 	var $db;
 	var $table_name = "vtiger_vendor";

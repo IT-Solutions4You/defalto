@@ -320,7 +320,11 @@ class VTTaskType {
 		$taskTypes['templatepath'] = $adb->query_result($result, 0, 'templatepath');
 		$taskTypes['sourcemodule'] = $adb->query_result($result, 0, 'sourcemodule');
 
-		$taskDetails = self::getInstance($taskTypes);
-		return $taskDetails;
+        if (empty($taskTypes['classname'])) {
+            $taskTypes['classname'] = $taskType;
+            $taskTypes['classpath'] = sprintf('modules/com_vtiger_workflow/tasks/%s.inc', $taskType);
+        }
+
+        return self::getInstance($taskTypes);
 	}
 }

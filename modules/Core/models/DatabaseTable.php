@@ -10,6 +10,8 @@
 
 class Core_DatabaseTable_Model extends Vtiger_Base_Model
 {
+    public static string $COLUMN_DECIMAL = 'decimal(25,4) DEFAULT NULL';
+
     /**
      * @var PearDatabase
      */
@@ -75,7 +77,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
         $this->requireTable('Table is empty for create table');
 
         if (!empty($firstColumn)) {
-            $criteria = sprintf('(%s %s)', $firstColumn, $firstType);
+            $criteria = sprintf(' (%s %s)', $firstColumn, $firstType);
         }
 
         if (!$this->isEmpty('table_id')) {

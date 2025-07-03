@@ -33,15 +33,27 @@
 		<script src="{vresource_url('layouts/$LAYOUT$/lib/jquery/jquery.min.js')}"></script>
 		<script src="{vresource_url('layouts/$LAYOUT$/lib/jquery/jquery-migrate-1.4.1.js')}"></script>
 		<script type="text/javascript">
-			var _META = { 'module': "{$MODULE}", view: "{$VIEW}", 'parent': "{$PARENT_MODULE}", 'notifier':"{$NOTIFIER_URL}", 'app':"{if isset($SELECTED_MENU_CATEGORY)}{$SELECTED_MENU_CATEGORY}{/if}" };
+            let _USERMETA,
+                _EXTENSIONMETA,
+                _META = {
+                    'module': "{$MODULE}",
+                    view: "{$VIEW}",
+                    'parent': "{$PARENT_MODULE}",
+                    'notifier': "{$NOTIFIER_URL}",
+                    'app': "{if isset($SELECTED_MENU_CATEGORY)}{$SELECTED_MENU_CATEGORY}{/if}"
+                };
             {if $EXTENSION_MODULE}
-                var _EXTENSIONMETA = { 'module': "{$EXTENSION_MODULE}", view: "{$EXTENSION_VIEW}"};
+                _EXTENSIONMETA = { 'module': "{$EXTENSION_MODULE}", view: "{$EXTENSION_VIEW}"};
             {/if}
-            var _USERMETA;
             {if $CURRENT_USER_MODEL}
-               _USERMETA =  { 'id' : "{$CURRENT_USER_MODEL->get('id')}", 'menustatus' : "{$CURRENT_USER_MODEL->get('leftpanelhide')}",
-                              'currency' : "{decode_html($USER_CURRENCY_SYMBOL)}", 'currencySymbolPlacement' : "{$CURRENT_USER_MODEL->get('currency_symbol_placement')}",
-                          'currencyGroupingPattern' : "{$CURRENT_USER_MODEL->get('currency_grouping_pattern')}", 'truncateTrailingZeros' : "{$CURRENT_USER_MODEL->get('truncate_trailing_zeros')}",'userlabel':"{($CURRENT_USER_MODEL->get('userlabel'))|escape:html}",};
+                _USERMETA = {
+                    'id': "{$CURRENT_USER_MODEL->get('id')}",
+                    'currency': "{decode_html($USER_CURRENCY_SYMBOL)}",
+                    'currencySymbolPlacement': "{$CURRENT_USER_MODEL->get('currency_symbol_placement')}",
+                    'currencyGroupingPattern': "{$CURRENT_USER_MODEL->get('currency_grouping_pattern')}",
+                    'truncateTrailingZeros': "{$CURRENT_USER_MODEL->get('truncate_trailing_zeros')}",
+                    'userlabel': "{($CURRENT_USER_MODEL->get('userlabel'))|escape:html}",
+                };
             {/if}
 		</script>
 	</head>

@@ -24,12 +24,93 @@ class HelpDesk_Install_Model extends Core_Install_Model {
         [['vtiger.entity.aftersave'], 'modules/HelpDesk/handlers/Comments.php', 'HelpDesk_Comments_Handler', '', ['ModComments']],
     ];
 
+    /**
+     * @throws AppException
+     */
     public function addCustomLinks(): void
     {
         $this->updateComments();
         $this->updateHistory();
         $this->updateRelatedList();
         $this->updateEventHandler();
+        $this->updateWorkflowTasks();
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function updateWorkflowTasks(): void
+    {
+        $name = 'Employee response to ticket';
+        $moduleName = 'HelpDesk';
+        $conditions = [
+            0 => (object)[
+                'fieldname' => '_VT_add_comment',
+                'operation' => 'is added',
+                'value' => null,
+                'valuetype' => 'rawtext',
+                'joincondition' => 'and',
+                'groupjoin' => 'and',
+                'groupid' => '0',
+            ],
+            1 => (object)[
+                'fieldname' => '_VT_add_comment',
+                'operation' => 'is comment source',
+                'value' => 'CRM',
+                'valuetype' => 'rawtext',
+                'joincondition' => '',
+                'groupjoin' => 'and',
+                'groupid' => '0',
+            ],
+        ];
+        $trigger = '3';
+        $recurrence = '3';
+
+        $workflowModel = $this->updateWorkflowTask($name, $moduleName, $conditions, $trigger, $recurrence);
+
+        require_once 'modules/com_vtiger_workflow/tasks/VTEmailTask.inc';
+        $taskName = 'Send notification to employee';
+        $taskType = 'VTEmailTask';
+        $data = [
+            'subject' => '$ticket_no: $ticket_title$(general : (__VtigerMeta__) supportEmailid)',
+            'executeImmediately' => '1',
+            'signature' => 'on',
+            'content' => '<html>
+                <head>
+                    <title></title>
+                    <style type="text/css">
+                        .comment-box {
+                            border: 1px solid #ddd;
+                            background-color: #f9f9f9;
+                            padding: 10px;
+                            margin: 10px 0;
+                            min-width: 30%;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <p>Dobrý deň,</p>
+                    <p><strong>$(assigned_user_id : (Users) first_name) $(assigned_user_id : (Users) last_name)</strong> responded to your suggestion: <strong>$ticket_title</strong>.</p>
+                    <p class="comment-box">$lastComment</p>
+                    <a href="mailto:$(modifiedby : (Users) email1)?subject=$ticket_no: $ticket_title">Reply to ticket: $ticket_no </a><br />
+                </body>
+            </html>',
+            'fromEmail' => '$(general : (__VtigerMeta__) supportName)<$(general : (__VtigerMeta__) supportEmailId)>',
+            'recepient' => ['$(contact_id : (Contacts) email)'],
+            'template_language' => 'en_us',
+            'template' => 'custom_template',
+        ];
+
+        $this->updateWorkflowAction($taskType, $taskName, $data, $workflowModel);
+
+        require_once 'modules/com_vtiger_workflow/tasks/VTUpdateFieldsTask.inc';
+        $taskName = 'Update fields';
+        $taskType = 'VTUpdateFieldsTask';
+        $data = [
+            'field_value_mapping' => '[{"fieldname":"ticketstatus","value":"Wait For Response","valuetype":"rawtext"}]',
+        ];
+
+        $this->updateWorkflowAction($taskType, $taskName, $data, $workflowModel);
     }
 
     public function deleteCustomLinks(): void
@@ -295,36 +376,6 @@ class HelpDesk_Install_Model extends Core_Install_Model {
                 ],
             ],
             'LBL_SYSTEM_INFORMATION' => [
-                'ticket_no' => [
-                    'name' => 'ticket_no',
-                    'uitype' => 4,
-                    'column' => 'ticket_no',
-                    'table' => 'vtiger_troubletickets',
-                    'label' => 'Ticket No',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 1,
-                    'masseditable' => 0,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 1,
-                ],
-                'source' => [
-                    'name' => 'source',
-                    'uitype' => 1,
-                    'column' => 'source',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Source',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
                 'first_comment_hours' => [
                     'name' => 'first_comment_hours',
                     'uitype' => 1,
@@ -381,52 +432,21 @@ class HelpDesk_Install_Model extends Core_Install_Model {
                     'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
-                'creator' => [
-                    'name' => 'creator',
-                    'column' => 'smcreatorid',
-                    'label' => 'Creator',
-                    'uitype' => 52,
-                    'typeofdata' => 'V~O',
-                    'displaytype' => 2,
-                    'table' => 'vtiger_crmentity',
-                ],
-                'createdtime' => [
-                    'name' => 'createdtime',
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
+                'ticket_no' => [
+                    'name' => 'ticket_no',
+                    'uitype' => 4,
+                    'column' => 'ticket_no',
+                    'table' => 'vtiger_troubletickets',
+                    'label' => 'Ticket No',
                     'readonly' => 1,
                     'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                    'headerfield' => 1,
-                ],
-                'modifiedby' => [
-                    'name' => 'modifiedby',
-                    'column' => 'modifiedby',
-                    'label' => 'Last Modified By',
-                    'uitype' => 52,
                     'typeofdata' => 'V~O',
-                    'displaytype' => 2,
-                    'table' => 'vtiger_crmentity',
-                ],
-                'modifiedtime' => [
-                    'name' => 'modifiedtime',
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
                     'quickcreate' => 3,
-                    'displaytype' => 2,
+                    'displaytype' => 1,
                     'masseditable' => 0,
-                    'summaryfield' => 0,
+                    'summaryfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 1,
                 ],
             ],
         ];
@@ -497,7 +517,7 @@ class HelpDesk_Install_Model extends Core_Install_Model {
             ->createColumn('title','varchar(255) NOT NULL')
             ->createColumn('solution','text DEFAULT NULL')
             ->createColumn('version_id','int(11) DEFAULT NULL')
-            ->createColumn('hours','decimal(25,8) DEFAULT NULL')
+            ->createColumn('hours',self::$COLUMN_DECIMAL)
             ->createColumn('contact_id','int(19) DEFAULT NULL')
             ->createColumn('tags','varchar(1) DEFAULT NULL')
             ->createColumn('currency_id','int(19) DEFAULT NULL')

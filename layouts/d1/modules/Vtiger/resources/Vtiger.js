@@ -327,29 +327,6 @@ Vtiger.Class('Vtiger_Index_Js', {
 	addComponents : function() {
 		this.addComponent('Vtiger_BasicSearch_Js');
 	},
-
-	registerListEssentialsToggleEvent : function() {
-		jQuery('.main-container').on('click', '.essentials-toggle', function() {
-			jQuery('.sidebar-essentials').toggleClass('hide');
-			jQuery(".content-area").toggleClass("full-width");
-			var params = {
-				'module' : 'Users',
-				'action' : 'IndexAjax',
-				'mode' : 'toggleLeftPanel',
-				'showPanel' : +jQuery('.sidebar-essentials').hasClass('hide')
-			}
-			app.request.post({data: params});
-			if(jQuery('.sidebar-essentials').hasClass('hide')) {
-				jQuery('.essentials-toggle-marker').removeClass('fa-chevron-left')
-					.addClass('fa-chevron-right');
-			} else {
-				jQuery('.essentials-toggle-marker').removeClass('fa-chevron-right')
-					.addClass('fa-chevron-left');
-			}
-			app.event.trigger("Vtiger.Post.MenuToggle");
-		});
-	},
-
 	registerModuleQtips : function() {
 		jQuery('.module-qtip').qtip({
 			position: {
@@ -369,10 +346,8 @@ Vtiger.Class('Vtiger_Index_Js', {
 	},
 
 	registerEvents: function() {
-		this.registerMenuToggle();
 		this.registerGlobalSearch();
 		this.registerModuleQtips();
-		this.registerListEssentialsToggleEvent();
 		this.registerAdvanceSeachIntiator();
 		this.registerQuickCreateEvent();
 		this.registerQuickCreateSubMenus();
@@ -624,23 +599,6 @@ Vtiger.Class('Vtiger_Index_Js', {
 		});
 		return aDeferred.promise();
 	},
-
-	registerMenuToggle : function(){
-		jQuery("#menu-toggle").on('click', function(e) {
-			e.preventDefault();
-			$("#modnavigator").toggleClass('hide');
-			$(".content-area").toggleClass("full-width");
-			var params = {
-				'module' : 'Users',
-				'action' : 'IndexAjax',
-				'mode' : 'toggleLeftPanel',
-				'showPanel' : +jQuery("#modnavigator").hasClass('hide')
-			}
-			app.request.post({data: params});
-			app.event.trigger("Vtiger.Post.MenuToggle");
-		});
-	},
-
 	registerAppTriggerEvent : function() {
 		console.log('Remove function registerAppTriggerEvent');
 	},

@@ -23,7 +23,7 @@ $languageStrings = array(
 	'Vendor No' => 'Vendor Number',
 	'Website' => 'Website',
 	'GL Account' => 'GL Account',
-	'Phone' => 'Primary Phone',
+	'Phone' => 'Phone',
 	'Email' => 'Primary Email',
 
 	//Added for existing Picklist entries

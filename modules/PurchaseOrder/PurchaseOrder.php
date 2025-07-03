@@ -21,6 +21,7 @@
  * Contributor(s): ______________________________________..
  ********************************************************************************/
 class PurchaseOrder extends CRMEntity {
+    public string $parentName = 'Inventory';
 	var $log;
 	var $db;
 

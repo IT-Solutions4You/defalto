@@ -21,6 +21,7 @@
  ********************************************************************************/
 // Contact is used to store customer information.
 class Contacts extends CRMEntity {
+    public string $parentName = 'Marketing';
 	var $log;
 	var $db;
 
@@ -136,7 +137,7 @@ class Contacts extends CRMEntity {
 		'Services' => array('table_name' => 'vtiger_crmentityrel', 'table_index' => 'crmid', 'rel_index' => 'crmid'),
 		'Campaigns' => array('table_name' => 'vtiger_campaigncontrel', 'table_index' => 'campaignid', 'rel_index' => 'contactid'),
 		'Assets' => array('table_name' => 'vtiger_assets', 'table_index' => 'assetsid', 'rel_index' => 'contact'),
-		'Project' => array('table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'linktoaccountscontacts'),
+		'Project' => array('table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'contactid'),
         'Vendors' => array('table_name' => 'vtiger_vendorcontactrel', 'table_index' => 'vendorid', 'rel_index' => 'contactid'),
 	);
         function __construct() {
@@ -178,7 +179,7 @@ class Contacts extends CRMEntity {
     {
 	global $log;
 	$log->debug("Entering get_contacts(".$user_name.",".$from_index.",".$offset.") method ...");
-      $query = "select vtiger_users.user_name,vtiger_groups.groupname,vtiger_contactdetails.department department, vtiger_contactdetails.phone office_phone, vtiger_contactdetails.fax fax, vtiger_contactsubdetails.assistant assistant_name, vtiger_contactsubdetails.otherphone other_phone, vtiger_contactsubdetails.homephone home_phone,vtiger_contactsubdetails.birthday birthdate, vtiger_contactdetails.lastname last_name,vtiger_contactdetails.firstname first_name,vtiger_contactdetails.contactid as id, vtiger_contactdetails.salutation as salutation, vtiger_contactdetails.email as email1,vtiger_contactdetails.title as title,vtiger_contactdetails.mobile as phone_mobile,vtiger_account.accountname as account_name,vtiger_account.accountid as account_id, vtiger_contactaddress.mailingcity as primary_address_city,vtiger_contactaddress.mailingstreet as primary_address_street, vtiger_contactaddress.mailingcountry_id as primary_address_country_id,vtiger_contactaddress.mailingstate as primary_address_state, vtiger_contactaddress.mailingzip as primary_address_postalcode,   vtiger_contactaddress.othercity as alt_address_city,vtiger_contactaddress.otherstreet as alt_address_street, vtiger_contactaddress.othercountry_id as alt_address_country_id,vtiger_contactaddress.otherstate as alt_address_state, vtiger_contactaddress.otherzip as alt_address_postalcode  from vtiger_contactdetails inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_contactdetails.contactid inner join vtiger_users on vtiger_users.id=vtiger_crmentity.smownerid left join vtiger_account on vtiger_account.accountid=vtiger_contactdetails.accountid left join vtiger_contactaddress on vtiger_contactaddress.contactaddressid=vtiger_contactdetails.contactid left join vtiger_contactsubdetails on vtiger_contactsubdetails.contactsubscriptionid = vtiger_contactdetails.contactid left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.smownerid left join vtiger_users on vtiger_crmentity.smownerid=vtiger_users.id where user_name='" .$user_name ."' and vtiger_crmentity.deleted=0 limit " .$from_index ."," .$offset;
+      $query = "select vtiger_users.user_name,vtiger_groups.groupname,vtiger_contactdetails.department department, vtiger_contactdetails.phone office_phone, vtiger_contactdetails.fax fax, vtiger_contactsubdetails.assistant assistant_name, vtiger_contactsubdetails.birthday birthdate, vtiger_contactdetails.lastname last_name,vtiger_contactdetails.firstname first_name,vtiger_contactdetails.contactid as id, vtiger_contactdetails.salutation as salutation, vtiger_contactdetails.email as email1,vtiger_contactdetails.title as title,vtiger_contactdetails.mobile as phone_mobile,vtiger_account.accountname as account_name,vtiger_account.accountid as account_id, vtiger_contactaddress.mailingcity as primary_address_city,vtiger_contactaddress.mailingstreet as primary_address_street, vtiger_contactaddress.mailingcountry_id as primary_address_country_id,vtiger_contactaddress.mailingstate as primary_address_state, vtiger_contactaddress.mailingzip as primary_address_postalcode,   vtiger_contactaddress.othercity as alt_address_city,vtiger_contactaddress.otherstreet as alt_address_street, vtiger_contactaddress.othercountry_id as alt_address_country_id,vtiger_contactaddress.otherstate as alt_address_state, vtiger_contactaddress.otherzip as alt_address_postalcode  from vtiger_contactdetails inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_contactdetails.contactid inner join vtiger_users on vtiger_users.id=vtiger_crmentity.smownerid left join vtiger_account on vtiger_account.accountid=vtiger_contactdetails.accountid left join vtiger_contactaddress on vtiger_contactaddress.contactaddressid=vtiger_contactdetails.contactid left join vtiger_contactsubdetails on vtiger_contactsubdetails.contactsubscriptionid = vtiger_contactdetails.contactid left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.smownerid left join vtiger_users on vtiger_crmentity.smownerid=vtiger_users.id where user_name='" .$user_name ."' and vtiger_crmentity.deleted=0 limit " .$from_index ."," .$offset;
 
 	$log->debug("Exiting get_contacts method ...");
       return $this->process_list_query1($query);
@@ -1105,28 +1106,60 @@ function get_contactsforol($user_name)
 		global $adb,$log;
 		$log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
-		$rel_table_arr = Array("Potentials"=>"vtiger_contpotentialrel","Potentials"=>"vtiger_potential",
-				"HelpDesk"=>"vtiger_troubletickets","Quotes"=>"vtiger_quotes","PurchaseOrder"=>"vtiger_purchaseorder",
-				"SalesOrder"=>"vtiger_salesorder","Products"=>"vtiger_seproductsrel","Documents"=>"vtiger_senotesrel",
-				"Attachments"=>"vtiger_seattachmentsrel","Campaigns"=>"vtiger_campaigncontrel",'Invoice'=>'vtiger_invoice',
-                'ServiceContracts'=>'vtiger_servicecontracts','Project'=>'vtiger_project','Assets'=>'vtiger_assets',
-				'Vendors'=>'vtiger_vendorcontactrel');
+        $rel_table_arr = [
+            "Potentials" => "vtiger_potential",
+            "HelpDesk" => "vtiger_troubletickets",
+            "Quotes" => "vtiger_quotes",
+            "PurchaseOrder" => "vtiger_purchaseorder",
+            "SalesOrder" => "vtiger_salesorder",
+            "Products" => "vtiger_seproductsrel",
+            "Documents" => "vtiger_senotesrel",
+            "Attachments" => "vtiger_seattachmentsrel",
+            "Campaigns" => "vtiger_campaigncontrel",
+            'Invoice' => 'vtiger_invoice',
+            'ServiceContracts' => 'vtiger_servicecontracts',
+            'Project' => 'vtiger_project',
+            'Assets' => 'vtiger_assets',
+            'Vendors' => 'vtiger_vendorcontactrel',
+        ];
 
-		$tbl_field_arr = Array("vtiger_contpotentialrel"=>"potentialid","vtiger_potential"=>"potentialid",
-				"vtiger_troubletickets"=>"ticketid","vtiger_quotes"=>"quoteid","vtiger_purchaseorder"=>"purchaseorderid",
-				"vtiger_salesorder"=>"salesorderid","vtiger_seproductsrel"=>"productid","vtiger_senotesrel"=>"notesid",
-				"vtiger_seattachmentsrel"=>"attachmentsid","vtiger_campaigncontrel"=>"campaignid",'vtiger_invoice'=>'invoiceid',
-                'vtiger_servicecontracts'=>'servicecontractsid','vtiger_project'=>'projectid','vtiger_assets'=>'assetsid',
-				'vtiger_vendorcontactrel'=>'vendorid');
+        $tbl_field_arr = [
+            "vtiger_contpotentialrel" => "potentialid",
+            "vtiger_potential" => "potentialid",
+            "vtiger_troubletickets" => "ticketid",
+            "vtiger_quotes" => "quoteid",
+            "vtiger_purchaseorder" => "purchaseorderid",
+            "vtiger_salesorder" => "salesorderid",
+            "vtiger_seproductsrel" => "productid",
+            "vtiger_senotesrel" => "notesid",
+            "vtiger_seattachmentsrel" => "attachmentsid",
+            "vtiger_campaigncontrel" => "campaignid",
+            'vtiger_invoice' => 'invoiceid',
+            'vtiger_servicecontracts' => 'servicecontractsid',
+            'vtiger_project' => 'projectid',
+            'vtiger_assets' => 'assetsid',
+            'vtiger_vendorcontactrel' => 'vendorid',
+        ];
 
-		$entity_tbl_field_arr = Array("vtiger_contpotentialrel"=>"contactid","vtiger_potential"=>"contact_id",
-				"vtiger_troubletickets"=>"contact_id","vtiger_quotes"=>"contactid","vtiger_purchaseorder"=>"contactid",
-				"vtiger_salesorder"=>"contactid","vtiger_seproductsrel"=>"crmid","vtiger_senotesrel"=>"crmid",
-				"vtiger_seattachmentsrel"=>"crmid","vtiger_campaigncontrel"=>"contactid",'vtiger_invoice'=>'contactid',
-                'vtiger_servicecontracts'=>'sc_related_to','vtiger_project'=>'linktoaccountscontacts','vtiger_assets'=>'contact',
-				'vtiger_vendorcontactrel'=>'contactid');
+        $entity_tbl_field_arr = [
+            "vtiger_contpotentialrel" => "contactid",
+            "vtiger_potential" => "contact_id",
+            "vtiger_troubletickets" => "contact_id",
+            "vtiger_quotes" => "contactid",
+            "vtiger_purchaseorder" => "contactid",
+            "vtiger_salesorder" => "contactid",
+            "vtiger_seproductsrel" => "crmid",
+            "vtiger_senotesrel" => "crmid",
+            "vtiger_seattachmentsrel" => "crmid",
+            "vtiger_campaigncontrel" => "contactid",
+            'vtiger_invoice' => 'contactid',
+            'vtiger_servicecontracts' => 'sc_related_to',
+            'vtiger_project' => 'contactid',
+            'vtiger_assets' => 'contact',
+            'vtiger_vendorcontactrel' => 'contactid',
+        ];
 
-		foreach($transferEntityIds as $transferId) {
+        foreach ($transferEntityIds as $transferId) {
 			foreach($rel_table_arr as $rel_module=>$rel_table) {
                 $relModuleModel = Vtiger_Module::getInstance($rel_module);
 				if($relModuleModel) {

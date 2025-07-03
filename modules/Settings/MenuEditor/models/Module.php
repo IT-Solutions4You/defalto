@@ -16,6 +16,7 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
     ];
 
     public array $defaultSequenceList = [
+        'HOME' => ['Home', 'Leads', 'Accounts', 'Potentials', 'Appointments', 'Documents'],
         'MARKETING' => ['Campaigns', 'Leads', 'Contacts', 'Accounts',],
         'SALES' => ['Potentials', 'Quotes', 'Invoice', 'Products', 'Services', 'SMSNotifier', 'Contacts', 'Accounts',],
         'SUPPORT' => ['HelpDesk', 'Faq', 'ServiceContracts', 'Assets', 'SMSNotifier', 'Contacts', 'Accounts',],
@@ -229,33 +230,14 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
 
     public function addModules()
     {
-        $restrictedModules = ['ModComments'];
-        $appsList = [
-            'SALES' => ['Potentials', 'Quotes', 'Contacts', 'Accounts'],
-            'PROJECT' => ['Project', 'ProjectTask', 'ProjectMilestone', 'Contacts', 'Accounts'],
-        ];
-        $menuModelsList = Vtiger_Module_Model::getEntityModules();
+        $menuModelsList = Vtiger_Module_Model::getAll();
         $menuStructure = Vtiger_MenuStructure_Model::getInstanceFromMenuList($menuModelsList);
         $menuGroupedByParent = $menuStructure->getMenuGroupedByParent();
         $menuGroupedByParent = $menuStructure->regroupMenuByParent($menuGroupedByParent);
 
         foreach ($menuGroupedByParent as $app => $appModules) {
-            $modules = [];
-
-            if (isset($appsList[$app]) && $appsList[$app]) {
-                $modules = $appsList[$app];
-            }
-
-            foreach ($appModules as $moduleName => $moduleModel) {
-                if (!in_array($moduleName, $modules)) {
-                    $modules[] = $moduleName;
-                }
-            }
-
-            foreach ($modules as $moduleName) {
-                if (!in_array($moduleName, $restrictedModules)) {
-                    Settings_MenuEditor_Module_Model::addModuleToApp($moduleName, $app);
-                }
+            foreach (array_keys($appModules) as $moduleName) {
+                Settings_MenuEditor_Module_Model::addModuleToApp($moduleName, $app);
             }
         }
 

@@ -72,20 +72,6 @@ class Products_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'filter_sequence' => 1,
                 ],
-                'product_no' => [
-                    'name' => 'product_no',
-                    'uitype' => 4,
-                    'column' => 'product_no',
-                    'table' => 'vtiger_products',
-                    'label' => 'Product No',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 1,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
                 'productcode' => [
                     'name' => 'productcode',
                     'uitype' => 1,
@@ -116,6 +102,7 @@ class Products_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'defaultvalue' => 1,
+                    'headerfield' => 1,
                 ],
                 'manufacturer' => [
                     'name' => 'manufacturer',
@@ -154,6 +141,7 @@ class Products_Install_Model extends Core_Install_Model
                         'Software',
                         'CRM Applications',
                     ],
+                    'headerfield' => 1,
                 ],
                 'sales_start_date' => [
                     'name' => 'sales_start_date',
@@ -320,62 +308,6 @@ class Products_Install_Model extends Core_Install_Model
                         '308-Sales-Books',
                     ],
                 ],
-                'createdtime' => [
-                    'name' => 'createdtime',
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'modifiedtime' => [
-                    'name' => 'modifiedtime',
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'modifiedby' => [
-                    'name' => 'modifiedby',
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'source' => [
-                    'name' => 'source',
-                    'uitype' => 1,
-                    'column' => 'source',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Source',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
             ],
             'LBL_PRICING_INFORMATION' => [
                 'unit_price' => [
@@ -503,6 +435,7 @@ class Products_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'filter' => 1,
                     'filter_sequence' => 4,
+                    'headerfield' => 1,
                 ],
                 'reorderlevel' => [
                     'name' => 'reorderlevel',
@@ -581,6 +514,23 @@ class Products_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                 ],
             ],
+            'LBL_SYSTEM_INFORMATION' => [
+                'product_no' => [
+                    'name' => 'product_no',
+                    'uitype' => 4,
+                    'column' => 'product_no',
+                    'table' => 'vtiger_products',
+                    'label' => 'Product No',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 3,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 0,
+                    'headerfield' => 1,
+                ],
+            ],
         ];
     }
 
@@ -594,6 +544,9 @@ class Products_Install_Model extends Core_Install_Model
         ];
     }
 
+    /**
+     * @throws AppException
+     */
     public function installTables(): void
     {
         $this->disableForeignKeyCheck();
@@ -605,7 +558,7 @@ class Products_Install_Model extends Core_Install_Model
             ->createColumn('productcategory', 'varchar(200) DEFAULT NULL')
             ->createColumn('manufacturer', 'varchar(200) DEFAULT NULL')
             ->createColumn('qty_per_unit', 'decimal(11,2) DEFAULT 0.00')
-            ->createColumn('unit_price', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('unit_price', self::$COLUMN_DECIMAL)
             ->createColumn('weight', 'decimal(11,3) DEFAULT NULL')
             ->createColumn('pack_size', 'int(11) DEFAULT NULL')
             ->createColumn('sales_start_date', 'date DEFAULT NULL')
@@ -631,7 +584,7 @@ class Products_Install_Model extends Core_Install_Model
             ->createColumn('imagename', 'text DEFAULT NULL')
             ->createColumn('currency_id', 'int(19) NOT NULL DEFAULT 1')
             ->createColumn('is_subproducts_viewable', 'int(1) DEFAULT 1')
-            ->createColumn('purchase_cost', 'decimal(27,8) DEFAULT NULL')
+            ->createColumn('purchase_cost', self::$COLUMN_DECIMAL)
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createColumn('conversion_rate', 'decimal(10,3) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`productid`)')
@@ -645,8 +598,8 @@ class Products_Install_Model extends Core_Install_Model
         $this->getTable('vtiger_productcurrencyrel', null)
             ->createTable('productid')
             ->createColumn('currencyid', 'int(11) NOT NULL')
-            ->createColumn('converted_price', 'decimal(28,8) DEFAULT NULL')
-            ->createColumn('actual_price', 'decimal(28,8) DEFAULT NULL');
+            ->createColumn('converted_price', self::$COLUMN_DECIMAL)
+            ->createColumn('actual_price', self::$COLUMN_DECIMAL);
 
         $this->getTable('vtiger_producttaxrel', null)
             ->createTable('productid')
@@ -656,5 +609,10 @@ class Products_Install_Model extends Core_Install_Model
             ->createKey('KEY IF NOT EXISTS `producttaxrel_productid_idx` (`productid`)')
             ->createKey('KEY IF NOT EXISTS `producttaxrel_taxid_idx` (`taxid`)')
             ->createKey('CONSTRAINT `fk_crmid_vtiger_producttaxrel` FOREIGN KEY IF NOT EXISTS (`productid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
+        
+        $this->createPicklistTable('vtiger_manufacturer', '', 'manufacturer');
+        $this->createPicklistTable('vtiger_productcategory', '', 'productcategory');
+        $this->createPicklistTable('vtiger_glacct', '', 'glacct');
+        $this->createPicklistTable('vtiger_usageunit', '', 'usageunit');
     }
 }

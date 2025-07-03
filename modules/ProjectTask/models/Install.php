@@ -10,6 +10,19 @@
 
 class ProjectTask_Install_Model extends Core_Install_Model
 {
+    public static array $progressValues = [
+        '10%' => '10%',
+        '20%' => '20%',
+        '30%' => '30%',
+        '40%' => '40%',
+        '50%' => '50%',
+        '60%' => '60%',
+        '70%' => '70%',
+        '80%' => '80%',
+        '90%' => '90%',
+        '100%' => '100%',
+    ];
+
     /**
      * @var array
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
@@ -17,6 +30,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
     public array $registerRelatedLists = [
         ['ProjectTask', 'Documents', 'Documents', ['ADD', 'SELECT'], 'get_attachments'],
         ['Project', 'ProjectTask', 'Project Tasks', ['ADD'], 'get_dependents_list', 'projectid'],
+        ['ProjectMilestone' , 'ProjectTask', 'Project Task', ['ADD'], 'get_dependents_list', 'milestoneid'],
     ];
 
     /**
@@ -73,12 +87,19 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'uitype' => 2,
                     'column' => 'projecttaskname',
                     'table' => 'vtiger_projecttask',
-                    'label' => 'Project Task Name',
+                    'label' => 'Task Name',
                     'typeofdata' => 'V~M',
                     'quickcreate' => 0,
                     'entity_identifier' => 1,
                     'filter' => 1,
                     'summaryfield' => 1,
+                ],
+                'projecttasknumber' => [
+                    'uitype' => 7,
+                    'column' => 'projecttasknumber',
+                    'table' => 'vtiger_projecttask',
+                    'label' => 'Task Number',
+                    'typeofdata' => 'I~O',
                 ],
                 'projecttasktype' => [
                     'uitype' => 15,
@@ -108,9 +129,9 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'uitype' => 10,
                     'column' => 'projectid',
                     'table' => 'vtiger_projecttask',
-                    'label' => 'Related to',
+                    'label' => 'Project',
                     'presence' => 0,
-                    'typeofdata' => 'V~M',
+                    'typeofdata' => 'I~M',
                     'quickcreate' => 0,
                     'related_modules' => [
                         'Project',
@@ -118,32 +139,19 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'headerfield' => 1,
                 ],
-                'assigned_user_id' => [
-                    'uitype' => 53,
-                    'column' => 'smownerid',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Assigned To',
-                    'typeofdata' => 'V~M',
-                    'quickcreate' => 0,
-                    'filter' => 1,
-                    'summaryfield' => 1,
-                ],
-                'projecttasknumber' => [
-                    'uitype' => 7,
-                    'column' => 'projecttasknumber',
+                'milestoneid' => [
+                    'uitype' => 10,
+                    'column' => 'milestoneid',
                     'table' => 'vtiger_projecttask',
-                    'label' => 'Project Task Number',
-                    'typeofdata' => 'I~O',
-                ],
-                'projecttask_no' => [
-                    'uitype' => 4,
-                    'column' => 'projecttask_no',
-                    'table' => 'vtiger_projecttask',
-                    'generatedtype' => 2,
-                    'label' => 'Project Task No',
+                    'label' => 'Milestone',
                     'presence' => 0,
-                    'quickcreate' => 3,
-                    'masseditable' => 0,
+                    'typeofdata' => 'I~O',
+                    'quickcreate' => 0,
+                    'related_modules' => [
+                        'ProjectMilestone',
+                    ],
+                    'filter' => 1,
+                    'headerfield' => 1,
                 ],
                 'projecttaskstatus' => [
                     'uitype' => 15,
@@ -163,27 +171,22 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     ],
                     'headerfield' => 1,
                 ],
-            ],
-            'LBL_CUSTOM_INFORMATION' => [
                 'projecttaskprogress' => [
                     'uitype' => 15,
                     'column' => 'projecttaskprogress',
                     'table' => 'vtiger_projecttask',
                     'label' => 'Progress',
-                    'picklist_values' => [
-                        '10%',
-                        '20%',
-                        '30%',
-                        '40%',
-                        '50%',
-                        '60%',
-                        '70%',
-                        '80%',
-                        '90%',
-                        '100%',
-                    ],
+                    'picklist_values' => self::$progressValues,
+                    'picklist_overwrite' => 1,
                     'filter' => 1,
                     'summaryfield' => 1,
+                ],
+                'planed_hours' => [
+                    'uitype' => 7,
+                    'column' => 'planed_hours',
+                    'table' => 'vtiger_projecttask',
+                    'label' => 'Planed Hours',
+                    'typeofdata' => 'N~O',
                 ],
                 'projecttaskhours' => [
                     'uitype' => 7,
@@ -212,31 +215,15 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'summaryfield' => 1,
                 ],
-                'createdtime' => [
-                    'uitype' => 70,
-                    'column' => 'createdtime',
+                'assigned_user_id' => [
+                    'uitype' => 53,
+                    'column' => 'smownerid',
                     'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'typeofdata' => 'DT~O',
-                    'displaytype' => 2,
-                ],
-                'modifiedtime' => [
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'typeofdata' => 'DT~O',
-                    'displaytype' => 2,
-                ],
-                'modifiedby' => [
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'presence' => 0,
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
-                    'masseditable' => 0,
+                    'label' => 'Assigned To',
+                    'typeofdata' => 'V~M',
+                    'quickcreate' => 0,
+                    'filter' => 1,
+                    'summaryfield' => 1,
                 ],
             ],
             'LBL_DESCRIPTION_INFORMATION' => [
@@ -247,6 +234,18 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'label' => 'description',
                 ],
             ],
+            'LBL_SYSTEM_INFORMATION' => [
+                'projecttask_no' => [
+                    'uitype' => 4,
+                    'column' => 'projecttask_no',
+                    'table' => 'vtiger_projecttask',
+                    'generatedtype' => 2,
+                    'label' => 'Task No',
+                    'presence' => 0,
+                    'quickcreate' => 3,
+                    'masseditable' => 0,
+                ],
+            ]
         ];
     }
 
@@ -278,7 +277,8 @@ class ProjectTask_Install_Model extends Core_Install_Model
             ->createColumn('startdate', 'date default NULL')
             ->createColumn('enddate', 'date default NULL')
             ->createColumn('projectid', 'varchar(100) default NULL')
-            ->createColumn('projecttasknumber', 'int(11) default NULL');
+            ->createColumn('projecttasknumber', 'int(11) default NULL')
+            ->createColumn('planed_hours', 'decimal(11,1) default NULL');
 
         $this->getTable('vtiger_projecttaskcf', '')
             ->createTable('projecttaskid');

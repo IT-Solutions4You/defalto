@@ -41,8 +41,8 @@ $languageStrings = array(
     'Organization Image' => 'Organisation Image',
     'Type'                         => 'Type'                        , 
 
-  'Other Phone' => 'Secondary Phone',
-  'Phone' => 'Primary Phone',
+  'Other Phone' => 'Other Phone',
+  'Phone' => 'Phone',
   'Email' => 'Primary Email',
 
     'Company Reg. No.' => 'Company Reg. No.',

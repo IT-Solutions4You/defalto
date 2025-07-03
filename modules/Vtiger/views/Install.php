@@ -48,9 +48,9 @@ class Vtiger_Install_View extends Vtiger_Basic_View
     {
         $mode = $request->getMode();
         $this->exposeMethod('install');
+        $this->exposeMethod('update');
         $this->exposeMethod('migrate');
         $this->exposeMethod('delete');
-
         $this->buttons($request);
 
         if (!empty($mode) && $this->isMethodExposed($mode)) {
@@ -78,6 +78,17 @@ class Vtiger_Install_View extends Vtiger_Basic_View
     public function install(Vtiger_Request $request): void
     {
         Core_Install_Model::getInstance('module.postinstall', $request->getModule())->installModule();
+        Core_Install_Model::updateModuleMetaFiles();
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function update(Vtiger_Request $request): void
+    {
+        define('VTIGER_UPGRADE', true);
+
+        Core_Install_Model::getInstance('module.postupdate', $request->getModule())->installModule();
         Core_Install_Model::updateModuleMetaFiles();
     }
 

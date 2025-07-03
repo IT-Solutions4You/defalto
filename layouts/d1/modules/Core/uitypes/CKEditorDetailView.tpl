@@ -9,6 +9,6 @@
 {strip}
     {assign var=FIELD_NAME value=$FIELD_MODEL->getName()}
     <div id="{$MODULE}_{$VIEW}_{$FIELD_NAME}" class="h-iframe Core_CKEditor_UIType">
-        <iframe class="w-100 h-100" src="index.php?module={$MODULE}&record={$RECORD->getId()}&view=Iframe&field={$FIELD_MODEL->getName()}"></iframe>
+        <iframe class="w-100 h-100" sandbox="" src="index.php?module={$MODULE}&record={$RECORD->getId()}&view=Iframe&field={$FIELD_MODEL->getName()}"></iframe>
     </div>
 {/strip}

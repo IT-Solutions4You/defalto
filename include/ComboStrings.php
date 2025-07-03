@@ -103,8 +103,6 @@ $combo_strings = Array(
                 , 'Mr.'=>'Mr.'
                 , 'Ms.'=>'Ms.'
                 , 'Mrs.'=>'Mrs.'
-                , 'Dr.'=>'Dr.'
-                , 'Prof.'=>'Prof.'
                 ),
 'duration_minutes_dom' => Array('00'=>'00'
                 , '15'=>'15'

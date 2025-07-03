@@ -195,7 +195,20 @@ class Users_Module_Model extends Vtiger_Module_Model {
 		$adb->pquery($query, $params);
 	}
 
-	/**
+    /**
+     * @param string $username
+     * @return bool
+     * @throws Exception
+     */
+    public function isFirstLoginHistory(string $username): bool
+    {
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery('SELECT count(login_id) as counts FROM vtiger_loginhistory WHERE user_name=?', [$username]);
+
+        return 1 === (int)$adb->query_result($result, 0, 'counts');
+    }
+
+    /**
 	 * Function to store the logout history
 	 * @param type $username
 	 */

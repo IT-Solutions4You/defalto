@@ -472,21 +472,33 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
 	 * Function that returns all the quickcreate fields for the module
 	 * @return <Array of Vtiger_Field_Model> - list of field models
 	 */
-	public function getQuickCreateFields() {
-		$blocksList = $this->getBlocks();
-		$quickCreateFieldList = array();
-		foreach($blocksList as $blockName => $blockModel) {
-			$fieldList = $blockModel->getFields();
-			foreach($fieldList as $fieldName => $fieldModel) {
-				if($fieldModel->isQuickCreateEnabled() && $fieldModel->isEditable()) {
-					$quickCreateFieldList[$fieldName] = $fieldModel;
-				}
-			}
-		}
-		return $quickCreateFieldList;
-	}
+    public function getQuickCreateFields(): array
+    {
+        $sequences = [];
+        $blocksList = $this->getBlocks();
+        $quickCreateFieldList = [];
 
-	/**
+        foreach ($blocksList as $blockName => $blockModel) {
+            $fieldList = $blockModel->getFields();
+            foreach ($fieldList as $fieldName => $fieldModel) {
+                if ($fieldModel->isQuickCreateEnabled() && $fieldModel->isEditable()) {
+                    $quickCreateFieldList[$fieldName] = $fieldModel;
+
+                    if ($fieldModel->get('quicksequence')) {
+                        $sequences[$fieldModel->get('quicksequence')] = $fieldModel->get('name');
+                    }
+                }
+            }
+        }
+
+        ksort($sequences);
+
+        $sequences = array_filter($sequences);
+
+        return array_merge(array_flip($sequences), $quickCreateFieldList);
+    }
+
+    /**
 	 * Function to get the field mode
 	 * @param <String> $fieldName - field name
 	 * @return <Vtiger_Field_Model>
@@ -1951,23 +1963,17 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
     public function getHeaderFieldsConfig(): array
     {
         $fields = $this->getFields();
-
-        $headerFieldsModel = new Settings_LayoutEditor_HeaderFields_Model();
-        $headerFieldsSelected = $headerFieldsModel->getHeaderFieldNames($this->getName());
-
         $fieldsCount = 0;
         $config = [];
 
         foreach ($fields as $field) {
-            if (in_array($field->getName(), $headerFieldsSelected)
-                && $field->isActiveField()
-                && $field->isViewable()
-                && 'assigned_user_id' !== $field->getName()) {
-
+            if ($field->isHeaderField() && $field->isActiveField() && $field->isViewable() && 'assigned_user_id' !== $field->getName()) {
                 $fieldsCount++;
-                $config[array_search($field->getName(), $headerFieldsSelected)] = ['type' => 'field', 'field' => $field,];
+                $sequence = (int)$field->get('headerfieldsequence') ?: $fieldsCount + 5;
+                $config[$sequence] = ['type' => 'field', 'field' => $field,];
             }
         }
+
         ksort($config);
 
         while (5 > $fieldsCount) {

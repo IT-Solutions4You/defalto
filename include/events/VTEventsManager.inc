@@ -85,7 +85,7 @@
 		/**
 		 * Unregister a registered handler
 		 *
-		 * @param $className The name of teh VTEventHandler class to unregister
+		 * @param $className string The name of teh VTEventHandler class to unregister
 		 */
 		function unregisterHandler($className){
 			$adb = $this->adb;

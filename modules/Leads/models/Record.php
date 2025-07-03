@@ -56,49 +56,41 @@ class Leads_Record_Model extends Vtiger_Record_Model {
 	 * Function returns Account fields for Lead Convert
 	 * @return Array
 	 */
-	function getAccountFieldsForLeadConvert() {
+	function getAccountFieldsForLeadConvert(): array
+    {
 		$accountsFields = array();
-		$privilegeModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		$moduleName = 'Accounts';
 
-		if(!Users_Privileges_Model::isPermitted($moduleName, 'CreateView')) {
-			return;
-		}
+        $relatedToField = Vtiger_Module_Model::getInstance('Potentials')->getField('related_to');
 
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        if (!Users_Privileges_Model::isPermitted($moduleName, 'CreateView')) {
+            return [];
+        }
+
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+
 		if ($moduleModel->isActive()) {
-			$fieldModels = $moduleModel->getFields();
-            //Fields that need to be shown
-            $complusoryFields = array('industry');
-			foreach ($fieldModels as $fieldName => $fieldModel) {
-				if($fieldModel->isMandatory() && $fieldName != 'assigned_user_id') {
-                    $keyIndex = array_search($fieldName,$complusoryFields);
-                    if($keyIndex !== false) {
-                        unset($complusoryFields[$keyIndex]);
-                    }
-					$leadMappedField = $this->getConvertLeadMappedField($fieldName, $moduleName);
-                    if($this->get($leadMappedField)) {
-                        $fieldModel->set('fieldvalue', $this->get($leadMappedField));
-                    } else {
-                        $fieldModel->set('fieldvalue', $fieldModel->getDefaultFieldValue());
-                    } 
-					$accountsFields[] = $fieldModel;
-				}
-			}
-            foreach($complusoryFields as $complusoryField) {
-                $fieldModel = Vtiger_Field_Model::getInstance($complusoryField, $moduleModel);
-				if($fieldModel->getPermissions('readwrite') && $fieldModel->isEditable()) {
-                    $industryFieldModel = $moduleModel->getField($complusoryField);
-                    $industryLeadMappedField = $this->getConvertLeadMappedField($complusoryField, $moduleName);
-                    if($this->get($industryLeadMappedField)) {
-                        $industryFieldModel->set('fieldvalue', $this->get($industryLeadMappedField));
-                    } else {
-                        $industryFieldModel->set('fieldvalue', $industryFieldModel->getDefaultFieldValue());
-                    }
-                    $accountsFields[] = $industryFieldModel;
+            $fieldName = 'accountname';
+            $fieldModel = Vtiger_Field_Model::getInstance('accountname', $moduleModel);
+
+            if ($fieldModel->getPermissions('readwrite') && $fieldModel->isEditable()) {
+                $fieldModel = $moduleModel->getField($fieldName);
+                $fieldLeadMappedField = $this->getConvertLeadMappedField($fieldName, $moduleName);
+
+                if ($this->get($fieldLeadMappedField)) {
+                    $fieldModel->set('fieldvalue', $this->get($fieldLeadMappedField));
+                } else {
+                    $fieldModel->set('fieldvalue', $fieldModel->getDefaultFieldValue());
                 }
+
+                if(!$relatedToField->isMandatory()) {
+                    $fieldModel->set('typeofdata', 'V~O');
+                }
+
+                $accountsFields[] = $fieldModel;
             }
-		}
+        }
+
 		return $accountsFields;
 	}
 
@@ -268,20 +260,17 @@ class Leads_Record_Model extends Vtiger_Record_Model {
 	 */
 	function getConvertLeadFields() {
 		$convertFields = array();
+        $potentialsFields = $this->getPotentialsFieldsForLeadConvert();
 		$accountFields = $this->getAccountFieldsForLeadConvert();
-		if(!empty($accountFields)) {
-			$convertFields['Accounts'] = $accountFields;
-		}
 
-		$contactFields = $this->getContactFieldsForLeadConvert();
-		if(!empty($contactFields)) {
-			$convertFields['Contacts'] = $contactFields;
-		}
-
-		$potentialsFields = $this->getPotentialsFieldsForLeadConvert();
 		if(!empty($potentialsFields)) {
 			$convertFields['Potentials'] = $potentialsFields;
 		}
+
+        if(!empty($accountFields)) {
+            $convertFields['Accounts'] = $accountFields;
+        }
+
 		return $convertFields;
 	}
 

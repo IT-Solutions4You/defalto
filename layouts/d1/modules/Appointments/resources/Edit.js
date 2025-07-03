@@ -186,20 +186,59 @@ Vtiger_Edit_Js('Appointments_Edit_Js', {}, {
         const self = this;
 
         container.on('focusout change', '.dateTimeField .date input, .dateTimeField .time input', function () {
-            const dateTimeContainer = $(this).closest('.dateTimeField'),
-                date = dateTimeContainer.find('.date input'),
-                time = dateTimeContainer.find('.time input'),
+            const dateTimeContainer = self.getDateTimeField($(this)),
                 datetime = dateTimeContainer.find('.datetime input');
 
-            datetime.val(self.getRawDateTime(date.val() + ' ' + time.val()));
+            datetime.val(self.getDateTimeFieldValue($(this)));
             datetime.trigger('change');
         });
+    },
+    getDateTimeField(element) {
+        return element.closest('.dateTimeField');
+    },
+    getDateTimeFieldValue(element) {
+        const self = this,
+            dateTimeContainer = self.getDateTimeField(element),
+            date = dateTimeContainer.find('.date input'),
+            time = dateTimeContainer.find('.time input');
+
+        return self.getRawDateTime(date.val() + ' ' + time.val());
+    },
+    minutesToAdd: 0,
+    getMinutesToAdd: function () {
+        return this.minutesToAdd;
+    },
+    setMinutesToAdd: function (minutes) {
+        this.minutesToAdd = minutes;
+    },
+    updateMinutesToAdd: function (container) {
+        let self = this,
+            startInput = container.find('[name="datetime_start"]'),
+            endInput = container.find('[name="datetime_end"]');
+
+        if(startInput.val() && endInput.val()) {
+            let startValue = self.getDateTimeFieldValue(startInput),
+                endValue = self.getDateTimeFieldValue(endInput),
+                startDate = moment(startValue),
+                endDate = moment(endValue);
+
+            if (startDate.isValid() && endDate.isValid()) {
+                let diff = endDate.unix() - startDate.unix();
+                this.setMinutesToAdd(diff / 60);
+            } else {
+                this.setMinutesToAdd(0);
+            }
+        }
     },
     registerDateTimeStartChange: function (container) {
         const self = this;
 
+        self.updateMinutesToAdd(container);
+
         container.on('change', '[name="datetime_start"]', function () {
-            let minutesToAdd = self.calendarConfig['other_duration'];
+            let endDateElement = container.find('[name="datetime_end_date"]'),
+                endTimeElement = container.find('[name="datetime_end_time"]'),
+                minutesToAdd = self.calendarConfig['other_duration'];
 
             if (container.find('[name="calendar_type"]').val() === 'Call') {
                 minutesToAdd = self.calendarConfig['call_duration'];
@@ -207,6 +246,8 @@ Vtiger_Edit_Js('Appointments_Edit_Js', {}, {
 
             if (container.find('[name="is_all_day"]').is(':checked')) {
                 minutesToAdd = 1439;
+            } else if (self.getMinutesToAdd()) {
+                minutesToAdd = self.getMinutesToAdd()
             }
 
             let m = moment($(this).val());
@@ -217,12 +258,14 @@ Vtiger_Edit_Js('Appointments_Edit_Js', {}, {
                 endTime = m.format(vtUtils.getMomentTimeFormat());
 
             if ('Invalid date' !== endDate && 'Invalid date' !== endTime) {
-                container.find('[name="datetime_end_date"]').val(endDate).trigger('change');
-                container.find('[name="datetime_end_time"]').val(endTime).trigger('change');
+                endDateElement.val(endDate).trigger('change');
+                endTimeElement.val(endTime).trigger('change');
             }
         });
     },
     registerDateTimeEndChange: function (container) {
+        const self = this;
+
         container.on('change', '[name="datetime_end"]', function () {
             const startElement = container.find('input[name="datetime_start"]'),
                 endElement = container.find('input[name="datetime_end"]'),
@@ -235,6 +278,8 @@ Vtiger_Edit_Js('Appointments_Edit_Js', {}, {
                 vtUtils.showValidationMessage(endDateElement, app.vtranslate('JS_CHECK_START_AND_END_DATE'));
             } else {
                 vtUtils.hideValidationMessage(endDateElement);
+
+                self.updateMinutesToAdd(container);
             }
         });
     },

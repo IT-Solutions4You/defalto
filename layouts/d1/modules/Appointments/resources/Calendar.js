@@ -929,13 +929,18 @@ Vtiger_Index_Js('Appointments_Calendar_Js', {
                             return dayNames[arg.date.getDay()] + ' ' + arg.date.getDate();
                         },
                         titleFormat: function (arg) {
-                            arg.endMonth = '';
+                            arg.startMonth = '';
+                            arg.startYear = '';
 
                             if (arg.start['month'] !== arg.end['month']) {
-                                arg.endMonth = monthNames[arg.end.month] + ' ';
+                                arg.startMonth = monthNames[arg.start.month] + ' ';
                             }
 
-                            return arg.start.day + arg.defaultSeparator + arg.endMonth + arg.end.day + ' ' + monthNames[arg.start.month] + ' ' + arg.date.year;
+                            if (arg.start['year'] !== arg.end['year']) {
+                                arg.startYear = arg.start.year + ' ';
+                            }
+
+                            return arg.start.day + ' ' + arg.startMonth + arg.startYear + arg['defaultSeparator'] + arg.end.day + ' ' + monthNames[arg.end.month] + ' ' + arg.end.year;
                         },
                         dayMaxEventRows: 4,
                         hiddenDays: hideDays,

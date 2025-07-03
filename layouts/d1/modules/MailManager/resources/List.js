@@ -1097,16 +1097,20 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 					if (this.numberOfInvalids() > 0) {
 						return false;
 					}
-					let formData = jQuery(form).serialize(),
+					let formData = jQuery(form).serializeFormData(),
 						requestParams = invokeParams.requestParams;
 
-					// replacing default parameters for custom handlings in mail manager
-					formData = formData.replace('module=', 'xmodule=').replace('action=', 'xaction=');
+                    formData['xmodule'] = formData['module'];
+                    formData['xaction'] = formData['action'];
+                    delete formData['module'];
+                    delete formData['action'];
+
 					if (requestParams) {
 						requestParams['_operationarg'] = 'create';
-						jQuery.each(requestParams, function (key, value) {
-							formData += "&" + key + "=" + value;
-						});
+
+                        jQuery.each(requestParams, function (key, value) {
+                            formData[key] = value;
+                        });
 					}
 
 					app.request.post({data: formData}).then(function (error, data) {

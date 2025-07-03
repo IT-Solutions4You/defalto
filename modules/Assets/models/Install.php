@@ -58,17 +58,6 @@ class Assets_Install_Model extends Core_Install_Model
     {
         return [
             'LBL_ASSET_INFORMATION' => [
-                'asset_no' => [
-                    'uitype' => 4,
-                    'column' => 'asset_no',
-                    'table' => 'vtiger_assets',
-                    'label' => 'Asset No',
-                    'presence' => 0,
-                    'quickcreate' => 3,
-                    'masseditable' => 0,
-                    'filter' => 1,
-                    'summaryfield' => 1,
-                ],
                 'product' => [
                     'uitype' => 10,
                     'column' => 'product',
@@ -189,38 +178,6 @@ class Assets_Install_Model extends Core_Install_Model
                     ],
                     'summaryfield' => 0,
                 ],
-                'createdtime' => [
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                ],
-                'modifiedtime' => [
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                ],
-                'modifiedby' => [
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'presence' => 0,
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
-                    'masseditable' => 0,
-                ],
             ],
             'LBL_CUSTOM_INFORMATION' => [
             ],
@@ -230,6 +187,19 @@ class Assets_Install_Model extends Core_Install_Model
                     'column' => 'description',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Notes',
+                ],
+            ],
+            'LBL_SYSTEM_INFORMATION' => [
+                'asset_no' => [
+                    'uitype' => 4,
+                    'column' => 'asset_no',
+                    'table' => 'vtiger_assets',
+                    'label' => 'Asset No',
+                    'presence' => 0,
+                    'quickcreate' => 3,
+                    'masseditable' => 0,
+                    'filter' => 1,
+                    'summaryfield' => 1,
                 ],
             ],
         ];

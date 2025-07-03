@@ -251,6 +251,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
         }
 
         $recordModel->set('source', 'Mail Manager');
+        $recordModel->set('description', $request->getRaw('description'));
 
         switch ($linkModule) {
             case 'HelpDesk' :

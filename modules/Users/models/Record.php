@@ -1077,4 +1077,9 @@ class Users_Record_Model extends Vtiger_Record_Model {
 
         return $result;
     }
+
+	public function getDefaultTabLabel(): string
+	{
+		return 'Detail' === $this->get('default_record_view') ? 'Details' : 'Summary';
+	}
 }

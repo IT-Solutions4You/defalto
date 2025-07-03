@@ -20,25 +20,25 @@
                         <div class="row text-secondary fieldName h-2rem">
                             <div class="col">{vtranslate($FIELD_MODEL->get('label'),$MODULE)}</div>
                         </div>
-                        <div class="row position-relative h-2rem">
+                        <div class="row position-relative h-2rem align-items-center">
                             {assign var=DISPLAY_VALUE value="{$FIELD_MODEL->getDisplayValue($RECORD->get($FIELD_NAME))}"}
                             <div class="col value fw-semibold fs-inherit bg-inherit h-100 word-break-all {$FIELD_NAME}" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {strip_tags($DISPLAY_VALUE)}">
                                 {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                             </div>
                             {if $FIELD_MODEL->isEditable() eq 'true' && $LIST_PREVIEW neq true && $IS_AJAX_ENABLED eq true}
-                                <span class="hide edit w-100">
+                                <div class="edit col hide">
                                     {assign var=HEADER_FIELD_NAME value=$FIELD_MODEL->get('name')}
                                     {if $FIELD_DATA_TYPE eq 'multipicklist'}
                                         <input type="hidden" class="fieldBasicData" data-name="{$HEADER_FIELD_NAME}[]" data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue="{Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}" data-value="{$FIELD_MODEL->get('fieldvalue')}" />
                                     {else}
                                         <input type="hidden" class="fieldBasicData" data-name="{$HEADER_FIELD_NAME}" data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue="{Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}" data-value="{$FIELD_MODEL->get('fieldvalue')}" />
                                     {/if}
-                                </span>
-                                <span class="action position-absolute text-end">
-                                    <a href="#" onclick="return false;" class="editAction btn btn-sm bg-body">
+                                </div>
+                                <div class="action col-auto p-0">
+                                    <a href="#" onclick="return false;" class="editAction bg-body p-2">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                </span>
+                                </div>
                             {/if}
                         </div>
                     </div>

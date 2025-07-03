@@ -42,13 +42,13 @@
                                                 <span class="fieldValue">{$RELATED_RECORD->getDisplayValue('projecttaskprogress')}</span>
                                                 <i class="ms-2 text-secondary fa-solid fa-caret-down"></i>
                                             </a>
-                                            <ul class="dropdown-menu widgetsList" data-recordid="{$RELATED_RECORD->getId()}" data-fieldname="projecttaskprogress" data-old-value="{$RELATED_RECORD->getDisplayValue('projecttaskprogress')}" data-mandatory="{$FIELD_MODEL->isMandatory()}">
+                                            <ul class="dropdown-menu widgetsList" data-recordid="{$RELATED_RECORD->getId()}" data-fieldname="projecttaskprogress" data-old-value="{$RELATED_RECORD->get('projecttaskprogress')}" data-mandatory="{$FIELD_MODEL->isMandatory()}">
                                                 {assign var=PICKLIST_VALUES value=$FIELD_MODEL->getPicklistValues()}
                                                 <li class="editTaskDetails emptyOption">
                                                     <a class="dropdown-item">{vtranslate('LBL_SELECT_OPTION',$MODULE_NAME)}</a>
                                                 </li>
                                                 {foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
-                                                    <li class="editTaskDetails">
+                                                    <li class="editTaskDetails" data-value="{$PICKLIST_NAME}">
                                                         <a class="dropdown-item">{$PICKLIST_VALUE}</a>
                                                     </li>
                                                 {/foreach}
@@ -75,13 +75,13 @@
                                                     <span class="fieldValue">{$RELATED_RECORD->getDisplayValue('projecttaskstatus')}</span>
                                                     <i class="ms-2 text-secondary fa-solid fa-caret-down"></i>
                                                 </a>
-                                                <ul class="dropdown-menu widgetsList" data-recordid="{$RELATED_RECORD->getId()}" data-fieldname="projecttaskstatus" data-old-value="{$RELATED_RECORD->getDisplayValue('projecttaskstatus')}" data-mandatory="{$FIELD_MODEL->isMandatory()}">
+                                                <ul class="dropdown-menu widgetsList" data-recordid="{$RELATED_RECORD->getId()}" data-fieldname="projecttaskstatus" data-old-value="{$RELATED_RECORD->get('projecttaskstatus')}" data-mandatory="{$FIELD_MODEL->isMandatory()}">
                                                     {assign var=PICKLIST_VALUES value=$FIELD_MODEL->getPicklistValues()}
-                                                    <li class="editTaskDetails emptyOption" value="">
+                                                    <li class="editTaskDetails emptyOption" data-value="">
                                                         <a class="dropdown-item">{vtranslate('LBL_SELECT_OPTION',$MODULE_NAME)}</a>
                                                     </li>
                                                     {foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
-                                                        <li class="editTaskDetails" value="{$PICKLIST_VALUE}">
+                                                        <li class="editTaskDetails" data-value="{$PICKLIST_NAME}">
                                                             <a class="dropdown-item">{$PICKLIST_VALUE}</a>
                                                         </li>
                                                     {/foreach}

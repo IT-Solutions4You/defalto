@@ -15,22 +15,23 @@ class Install_Utils_Model {
      * [prefix, label, name]
      */
     public static array $registerLanguages = [
-        ['ar_ae', 'Arabic', 'Arabic',],
-        ['en_gb', 'British English', 'British English',],
-        ['pt_br', 'PT Brasil', 'Brazilian'],
-        ['es_es', 'ES Spanish', 'Spanish',],
-        ['es_mx', 'ES Mexico', 'Mexican Spanish',],
-        ['fr_fr', 'Pack de langue français', 'Pack de langue français',],
-        ['hu_hu', 'HU Magyar', 'Hungarian',],
-        ['it_it', 'IT Italian', 'Italian',],
-        ['nl_nl', 'NL-Dutch', 'Dutch',],
-        ['pl_pl', 'Język Polski', 'Język Polski',],
-        ['ro_ro', 'Romana', 'Romana',],
-        ['ru_ru', 'Russian', 'Russian'],
-        ['sv_se', 'Swedish', 'Swedish'],
-        ['tr_tr', 'Turkce Dil Paketi', 'Turkce',],
-        ['sk_sk', 'Slovak', 'Slovak',],
-        ['cz_cz', 'Czech', 'Czech',],
+        'en_us' => ['en_us', 'US English', 'English',],
+        'ar_ae' => ['ar_ae', 'Arabic', 'Arabic',],
+        'en_gb' => ['en_gb', 'British English', 'British English',],
+        'pt_br' => ['pt_br', 'PT Brasil', 'Brazilian'],
+        'es_es' => ['es_es', 'ES Spanish', 'Spanish',],
+        'es_mx' => ['es_mx', 'ES Mexico', 'Mexican Spanish',],
+        'fr_fr' => ['fr_fr', 'Pack de langue français', 'Pack de langue français',],
+        'hu_hu' => ['hu_hu', 'HU Magyar', 'Hungarian',],
+        'it_it' => ['it_it', 'IT Italian', 'Italian',],
+        'nl_nl' => ['nl_nl', 'NL-Dutch', 'Dutch',],
+        'pl_pl' => ['pl_pl', 'Język Polski', 'Język Polski',],
+        'ro_ro' => ['ro_ro', 'Romana', 'Romana',],
+        'ru_ru' => ['ru_ru', 'Russian', 'Russian'],
+        'sv_se' => ['sv_se', 'Swedish', 'Swedish'],
+        'tr_tr' => ['tr_tr', 'Turkce Dil Paketi', 'Turkce',],
+        'sk_sk' => ['sk_sk', 'Slovak', 'Slovak',],
+        'cz_cz' => ['cz_cz', 'Czech', 'Czech',],
     ];
 
     public static array $registerModules = [
@@ -60,6 +61,21 @@ class Install_Utils_Model {
         'PDFMaker',
         'Reporting',
         'Installer',
+        'Tour',
+        'Campaigns',
+        'Accounts',
+        'Contacts',
+        // Leads must be after Accounts, Contacts, Potentials required for lead mapping
+        'Leads',
+        'Documents',
+        'Products',
+        'Faq',
+        'Vendors',
+        'PriceBooks',
+        'Quotes',
+        'PurchaseOrder',
+        'SalesOrder',
+        'Invoice',
     ];
 
     /**
@@ -250,9 +266,15 @@ class Install_Utils_Model {
 			'db_password' => '',
 			'db_name'     => '',
 			'admin_name'  => 'admin',
+			'admin_firstname'=> '',
 			'admin_lastname'=> 'Administrator',
 			'admin_password'=>'',
 			'admin_email' => '',
+			'date_format' => '',
+			'timezone' => 'Europe/Belgrade',
+			'currency_name' => 'Euro',
+			'currency_decimal_separator' => '.',
+			'currency_grouping_separator' => ' ',
 		);
 		
 		if (isset($dbconfig) && isset($vtconfig)) {
@@ -266,8 +288,24 @@ class Install_Utils_Model {
 				$parameters['admin_email']    = $vtconfig['adminEmail'];
 			}
 		}
-		
-		return $parameters;
+
+        if (!empty($_SESSION['config_file_info'])) {
+            $mapping = [
+                'firstname' => 'admin_firstname',
+                'password' => 'admin_password',
+                'dateformat' => 'date_format',
+            ];
+
+            foreach ($_SESSION['config_file_info'] as $key => $value) {
+                $key = $mapping[$key] ?: $key;
+
+                if (array_key_exists($key, $parameters) && !empty($value)) {
+                    $parameters[$key] = $value;
+                }
+            }
+        }
+
+        return $parameters;
 	}
 
 	/**
@@ -355,12 +393,75 @@ class Install_Utils_Model {
 
     /**
      * Returns list of currencies
-     * @return mixed
+     * @return array
      */
-	public static function getCurrencyList() {
-		require_once 'modules/Utilities/Currencies.php';
-		return $currencies;
-	}
+    public static function getCurrencyList()
+    {
+        $currencies = [];
+        require_once 'modules/Utilities/Currencies.php';
+
+        return $currencies;
+    }
+
+
+    /**
+     * @return array
+     */
+    public static function getDecimalList(): array
+    {
+        $values = Users_Install_Model::$currency_decimal_separator;
+        $labels = Users_Install_Model::$separator_labes;
+        $options = [];
+
+        foreach ($values as $value) {
+            $label = $labels[$value] ?? $value;
+            $options[$value] = $label;
+        }
+
+        return $options;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getGroupingList(): array
+    {
+        $values = Users_Install_Model::$currency_grouping_separator;
+        $labels = Users_Install_Model::$separator_labes;
+        $options = [];
+
+        foreach ($values as $value) {
+            $label = $labels[$value] ?? $value;
+            $options[$value] = $label;
+        }
+
+        return $options;
+    }
+
+    public static function getDateFormats(): array
+    {
+        return [
+            'dd-mm-yyyy' => 'dd-mm-yyyy',
+            'yyyy-mm-dd' => 'yyyy-mm-dd',
+            'mm-dd-yyyy' => 'mm-dd-yyyy',
+            'dd.mm.yyyy' => 'dd.mm.yyyy',
+            'dd/mm/yyyy' => 'dd/mm/yyyy',
+        ];
+    }
+
+    public static function getTimeZones(): array
+    {
+        require_once 'modules/Users/UserTimeZonesArray.php';
+
+        $options = [];
+        $timeZones = UserTimeZones::getAll();
+
+        foreach ($timeZones as $timeZone) {
+            $options[$timeZone] = vtranslate($timeZone, 'Users');
+        }
+
+        return $options;
+    }
 
     /**
      * Returns an array with the list of languages which are available in source
@@ -546,13 +647,19 @@ class Install_Utils_Model {
         require_once('vtlib/Vtiger/Module.php');
         require_once('include/utils/utils.php');
 
-        foreach (self::$registerModules as $moduleName) {
-            self::installModule($moduleName);
-        }
-
         foreach (self::$registerLanguages as $languageInfo) {
             self::installLanguage($languageInfo);
         }
+
+        foreach (self::$registerModules as $moduleName) {
+            self::installModule($moduleName);
+        }
+    }
+
+    public static function installDefaultLanguage(): void
+    {
+        $language = Users_Install_Model::getDefaultLanguage();
+        self::installLanguage(self::$registerLanguages[$language]);
     }
 
     public static function isInstalledTables(): bool
@@ -642,32 +749,41 @@ class Install_Utils_Model {
      * @param Vtiger_Request $request
      * @return bool
      */
-    public static function saveSMTPServer(Vtiger_Request $request): bool
-    {
-        [$server, $port] = explode(':', $request->get('smtp_server', ''));
-        $username = $request->get('smtp_username', '');
-        $password = $request->get('smtp_password', '');
+	public static function saveSMTPServer(Vtiger_Request $request): bool
+	{
+		$_SESSION['config_file_info']['smtp_server'] = $request->get('smtp_server');
+		$_SESSION['config_file_info']['smtp_username'] = $request->get('smtp_username');
+		$_SESSION['config_file_info']['smtp_password'] = $request->getRaw('smtp_password');
+		$_SESSION['config_file_info']['smtp_authentication'] = $request->get('smtp_authentication', 'off');
+		$_SESSION['config_file_info']['smtp_from_email'] = $request->get('smtp_from_email', '');
 
-        if (empty($server) || empty($username) || empty($password)) {
-            return false;
-        }
+		$config = $_SESSION['config_file_info'];
+		[$server, $port] = explode(':', $config['smtp_server']);
+		$username = $config['smtp_username'];
+		$password = $config['smtp_password'];
+		$smtp_auth = $config['smtp_authentication'];
+		$smtp_from = $config['smtp_from_email'];
 
-        $outgoingServerModel = new Settings_Vtiger_Systems_Model();
-        $outgoingServerModel->setData([
-            'server' => $server,
-            'server_port' => $port,
-            'server_username' => $username,
-            'server_password' => $password,
-            'server_type' => 'email',
-            'smtp_auth' => $request->get('smtp_authentication', 'off'),
-            'from_email_field' => $request->get('smtp_from_email', ''),
-        ]);
-        $outgoingServerModel->save($request);
+		if (empty($server) || empty($username) || empty($password)) {
+			return false;
+		}
 
-        return true;
-    }
+		$outgoingServerModel = new Settings_Vtiger_Systems_Model();
+		$outgoingServerModel->setData([
+			'server' => $server,
+			'server_port' => $port,
+			'server_username' => $username,
+			'server_password' => $password,
+			'server_type' => 'email',
+			'smtp_auth' => $smtp_auth,
+			'from_email_field' => $smtp_from,
+		]);
+		$outgoingServerModel->save($request);
 
-    public static function installMigrations(): void
+		return true;
+	}
+
+	public static function installMigrations(): void
     {
         require_once('include/Migrations/Migrations.php');
 

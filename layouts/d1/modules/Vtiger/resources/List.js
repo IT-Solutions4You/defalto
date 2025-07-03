@@ -2443,6 +2443,21 @@ Vtiger.Class("Vtiger_List_Js", {
 			}
 		})
 	},
+    updateColumnsVisibility(matchedItems) {
+        if (!matchedItems.length) {
+            return;
+        }
+
+        matchedItems.each(function (i, e) {
+            let element = jQuery(e),
+                container = element.parents('.collapse-container'),
+                collapseId = container.find('.collapse-fields').attr('data-bs-target');
+
+            if ($(collapseId).not(':visible').length) {
+                (new bootstrap.Collapse(collapseId)).show();
+            }
+        });
+    },
 	registerConfigureColumnsEvents: function () {
 		let self = this,
 			listViewContentDiv = self.getListViewContainer();
@@ -2481,24 +2496,15 @@ Vtiger.Class("Vtiger_List_Js", {
 
 					container.find('.searchAvailFields').instaFilta({
 						onFilterComplete: function (matchedItems) {
-							if (matchedItems.length > 0) {
-								jQuery.each(matchedItems, function (i, e) {
-									let element = jQuery(e).parents('.collapse-container'),
-										collapseId = element.find('.collapse-fields').attr('data-bs-target'),
-										collapse = new bootstrap.Collapse(collapseId);
-
-									collapse.show();
-
-									self.updateColumnsCarets();
-								});
-							}
+                            self.updateColumnsVisibility(matchedItems);
+                            self.updateColumnsCarets();
 						}
 					});
 
 					availFieldsListContainer.on('click', '.collapse-fields', function (e) {
 						self.updateColumnsCarets();
 
-						if (params && params.autoIconChangeForOthers) {
+						if (params && params['autoIconChangeForOthers']) {
 							return true;
 						}
 					});

@@ -70,17 +70,6 @@ class Services_Install_Model extends Core_Install_Model
                     'summaryfield' => 1,
                     'filter' => 1,
                 ],
-                'service_no' => [
-                    'uitype' => 4,
-                    'column' => 'service_no',
-                    'table' => 'vtiger_service',
-                    'label' => 'Service No',
-                    'presence' => 0,
-                    'quickcreate' => 3,
-                    'masseditable' => 0,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                ],
                 'discontinued' => [
                     'uitype' => 56,
                     'column' => 'discontinued',
@@ -122,38 +111,6 @@ class Services_Install_Model extends Core_Install_Model
                     'column' => 'website',
                     'table' => 'vtiger_service',
                     'label' => 'Website',
-                ],
-                'createdtime' => [
-                    'uitype' => 70,
-                    'column' => 'createdtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Created Time',
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                ],
-                'modifiedtime' => [
-                    'uitype' => 70,
-                    'column' => 'modifiedtime',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Modified Time',
-                    'presence' => 0,
-                    'typeofdata' => 'DT~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 2,
-                    'masseditable' => 0,
-                ],
-                'modifiedby' => [
-                    'uitype' => 52,
-                    'column' => 'modifiedby',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Last Modified By',
-                    'presence' => 0,
-                    'quickcreate' => 3,
-                    'displaytype' => 3,
-                    'masseditable' => 0,
                 ],
                 'service_usageunit' => [
                     'uitype' => 15,
@@ -226,6 +183,20 @@ class Services_Install_Model extends Core_Install_Model
                     'typeofdata' => 'N~O',
                     'summaryfield' => 1,
                 ],
+                'purchase_cost' => [
+                    'name' => 'purchase_cost',
+                    'uitype' => 71,
+                    'column' => 'purchase_cost',
+                    'table' => 'vtiger_service',
+                    'label' => 'Purchase Cost',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'N~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                ],
             ],
             'LBL_CUSTOM_INFORMATION' => [
             ],
@@ -237,6 +208,19 @@ class Services_Install_Model extends Core_Install_Model
                     'label' => 'Description',
                 ],
             ],
+            'LBL_SYSTEM_INFORMATION' => [
+                'service_no' => [
+                    'uitype' => 4,
+                    'column' => 'service_no',
+                    'table' => 'vtiger_service',
+                    'label' => 'Service No',
+                    'presence' => 0,
+                    'quickcreate' => 3,
+                    'masseditable' => 0,
+                    'summaryfield' => 1,
+                    'filter' => 1,
+                ],
+            ]
         ];
     }
 
@@ -259,7 +243,8 @@ class Services_Install_Model extends Core_Install_Model
             ->createColumn('servicename','varchar(50) NOT NULL')
             ->createColumn('servicecategory','varchar(200) default NULL')
             ->createColumn('qty_per_unit','decimal(11,2) default \'0.00\'')
-            ->createColumn('unit_price','decimal(25,2) default NULL')
+            ->createColumn('unit_price',self::$COLUMN_DECIMAL)
+            ->createColumn('purchase_cost',self::$COLUMN_DECIMAL)
             ->createColumn('sales_start_date','date default NULL')
             ->createColumn('sales_end_date','date default NULL')
             ->createColumn('start_date','date default NULL')
