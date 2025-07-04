@@ -834,7 +834,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         price = (quantity * price).toFixed(decimalPlaces);
         jQuery('.subtotal', container).val(price);
-        jQuery('.display_subtotal', container).html(price);
+        jQuery('.display_subtotal', container).html(app.convertCurrencyToUserFormat(price));
         jQuery('.subtotal_in_discount_div', container).html(price);
         price = parseFloat(price);
 
@@ -858,12 +858,12 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         discount_amount = discount_amount.toFixed(decimalPlaces);
         jQuery('.discount_amount', container).val(discount_amount);
-        jQuery('.display_discount_amount', container).html(discount_amount);
+        jQuery('.display_discount_amount', container).html(app.convertCurrencyToUserFormat(discount_amount));
         discount_amount = parseFloat(discount_amount);
 
         price = (price - discount_amount).toFixed(decimalPlaces);
         jQuery('.price_after_discount', container).val(price);
-        jQuery('.display_price_after_discount', container).html(price);
+        jQuery('.display_price_after_discount', container).html(app.convertCurrencyToUserFormat(price));
         price = parseFloat(price);
 
         const overall_discount = parseFloat(jQuery('.overall_discount', container).val());
@@ -879,12 +879,12 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         overall_discount_amount = overall_discount_amount.toFixed(decimalPlaces);
         jQuery('.overall_discount_amount', container).val(overall_discount_amount);
-        jQuery('.display_overall_discount_amount', container).html(overall_discount_amount);
+        jQuery('.display_overall_discount_amount', container).html(app.convertCurrencyToUserFormat(overall_discount_amount));
         overall_discount_amount = parseFloat(overall_discount_amount);
 
         price = (price - overall_discount_amount).toFixed(decimalPlaces);
         jQuery('.price_after_overall_discount', container).val(price);
-        jQuery('.display_price_after_overall_discount', container).html(price);
+        jQuery('.display_price_after_overall_discount', container).html(app.convertCurrencyToUserFormat(price));
         price = parseFloat(price);
 
         let purchaseCost = parseFloat(jQuery('.purchase_cost', container).val());
@@ -897,9 +897,9 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
 
         jQuery('.margin', container).val(margin);
-        jQuery('.display_margin', container).html(margin);
+        jQuery('.display_margin', container).html(app.convertCurrencyToUserFormat(margin));
         jQuery('.margin_amount', container).val(margin_amount);
-        jQuery('.display_margin_amount', container).html(margin_amount);
+        jQuery('.display_margin_amount', container).html(app.convertCurrencyToUserFormat(margin_amount));
 
         let tax = parseFloat(jQuery('.tax', container).val());
 
@@ -915,12 +915,12 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         tax_amount = tax_amount.toFixed(decimalPlaces);
         jQuery('.tax_amount', container).val(tax_amount);
-        jQuery('.display_tax_amount', container).html(tax_amount);
+        jQuery('.display_tax_amount', container).html(app.convertCurrencyToUserFormat(tax_amount));
         tax_amount = parseFloat(tax_amount);
 
         price = (price + tax_amount).toFixed(decimalPlaces);
         jQuery('.price_total', container).val(price);
-        jQuery('.display_price_total', container).html(price);
+        jQuery('.display_price_total', container).html(app.convertCurrencyToUserFormat(price));
     },
 
     registerLineItemClear: function (container) {
