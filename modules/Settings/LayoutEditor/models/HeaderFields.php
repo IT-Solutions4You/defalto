@@ -46,38 +46,15 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
      */
     public function getHeaderFields($moduleName): array
     {
-        return $this->db()->run_query_allrecords(sprintf(
-            'SELECT fieldname, headerfieldsequence, fieldlabel 
+        return $this->db()->run_query_allrecords(
+            sprintf(
+                'SELECT fieldname, headerfieldsequence, fieldlabel 
                 FROM vtiger_field 
-                WHERE tabid="%s" AND headerfield=1
-                ORDER BY headerfieldsequence ASC
-            ',
-            getTabid($moduleName)
-        ));
-    }
-
-    /**
-     * @param $moduleName
-     * @return array
-     */
-    public function getHeaderFieldNames($moduleName): array
-    {
-        $fieldNames = [];
-        $fieldNameRows = $this->db()->run_query_allrecords(sprintf(
-            'SELECT fieldname 
-                FROM vtiger_field 
-                WHERE tabid="%s" 
-                AND headerfieldsequence IS NOT NULL
-                ORDER BY headerfieldsequence ASC
-            ',
-            getTabid($moduleName)
-        ));
-
-        foreach ($fieldNameRows as $fieldNameRow) {
-            $fieldNames[] = $fieldNameRow['fieldname'];
-        }
-
-        return $fieldNames;
+                WHERE tabid="%s" AND headerfield=1 
+                ORDER BY headerfieldsequence ASC',
+                getTabid($moduleName),
+            ),
+        );
     }
 
     /**
