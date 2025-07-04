@@ -392,9 +392,9 @@ class Accounts_Install_Model extends Core_Install_Model {
                     'presence' => 0,
                     'maximumlength' => 100,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 0,
+                    'quickcreate' => 2,
                     'displaytype' => 1,
-                    'masseditable' => 0,
+                    'masseditable' => 2,
                     'summaryfield' => 0,
                 ],
                 'vat_id' => [
@@ -408,9 +408,9 @@ class Accounts_Install_Model extends Core_Install_Model {
                     'presence' => 0,
                     'maximumlength' => 100,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 0,
+                    'quickcreate' => 2,
                     'displaytype' => 1,
-                    'masseditable' => 0,
+                    'masseditable' => 2,
                     'summaryfield' => 0,
                 ],
                 'currency_id' => [
