@@ -49,8 +49,7 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
         return $this->db()->run_query_allrecords(sprintf(
             'SELECT fieldname, headerfieldsequence, fieldlabel 
                 FROM vtiger_field 
-                WHERE tabid="%s" 
-                AND headerfieldsequence IS NOT NULL
+                WHERE tabid="%s" AND headerfield=1
                 ORDER BY headerfieldsequence ASC
             ',
             getTabid($moduleName)
