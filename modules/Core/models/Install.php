@@ -352,7 +352,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public function createModule(string $moduleName): Vtiger_Module|bool
     {
-        if (self::$modules[$moduleName]) {
+        if (isset(self::$modules[$moduleName])) {
             return self::$modules[$moduleName];
         }
 
