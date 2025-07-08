@@ -50,7 +50,7 @@ class Tour_Guide_View extends Tour_Index_View
         $moduleName = $request->getModule();
         $guide = Tour_Base_Guide::getCurrentInstance();
 
-        if (!$guide->getStep()) {
+        if (!$guide || !$guide->getStep()) {
             return;
         }
 

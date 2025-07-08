@@ -753,20 +753,10 @@ Vtiger.Class("Vtiger_List_Js", {
 
 			let value = jQuery.trim(valueElement.text()),
 				//adding string,text,url,currency in customhandling list as string will be textlengthchecked
-				customHandlingFields = ['owner', 'ownergroup', 'picklist', 'multipicklist', 'reference', 'string', 'url', 'text', 'email', 'boolean', 'country', 'region'];
+				customHandlingFields = ['owner', 'ownergroup', 'picklist', 'multipicklist', 'reference', 'string', 'url', 'text', 'email', 'boolean', 'country', 'region', 'currency', 'percentage', 'integer'];
 
 			if (jQuery.inArray(fieldType, customHandlingFields) !== -1) {
 				value = tdElement.data('rawvalue');
-			}
-
-			let numberHandlingFields = ['currency', 'percentage', 'integer'];
-
-			if (jQuery.inArray(fieldType, numberHandlingFields) !== -1) {
-				value = parseFloat(tdElement.data('rawvalue')).toFixed(app.getNumberOfDecimals());
-
-				if ('integer' === fieldType) {
-					value = parseInt(value);
-				}
 			}
 
 			fieldData['value'] = value;

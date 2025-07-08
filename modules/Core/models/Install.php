@@ -605,13 +605,22 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
 
         $this->install();
+        $this->postInstall();
+
+        self::logSuccess('Module result: ' . $moduleName);
+        self::logSuccess($moduleInstance);
+    }
+
+    public function postInstall(): void
+    {
+        $moduleName = $this->getModuleName();
 
         vtws_addDefaultModuleTypeEntity($moduleName);
 
         Vtiger_Cache::delete('module', $moduleName);
 
-        self::logSuccess('Module result: ' . $moduleName);
-        self::logSuccess($moduleInstance);
+        unset($_SESSION[$moduleName . '_listquery']);
+        unset($_SESSION['lvs'][$moduleName]);
     }
 
     /**
