@@ -51,21 +51,6 @@ class Vtiger_Currency_UIType extends Vtiger_Base_UIType
     }
 
     /**
-     * Function to get the display value in edit view
-     * @param <String> $value
-     * @param bool $skipConversion
-     * @return String|null
-     */
-    public function getEditViewDisplayValue($value)
-    {
-        if (empty($value)) {
-            return '';
-        }
-
-        return CurrencyField::convertToUserFormatForEdit($value, null, true);
-    }
-
-    /**
      * Function to get the Template name for the current UI Type object
      * @return <String> - Template Name
      */

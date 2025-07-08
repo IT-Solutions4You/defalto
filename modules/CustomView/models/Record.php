@@ -1282,6 +1282,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 				$instance = self::getInstanceById($viewId);
 			} else {
 				$instance = self::getCleanInstance();
+                $instance->setModule($module);
 			}
 			Vtiger_Cache::set("AllCustomViewInstance",$module,$instance);
 		}
@@ -1377,6 +1378,12 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
             return self::getInstanceById($cvId);
         }
 
-        return self::getDefaultFilterByModule($moduleName);
+        $defaultFilter = self::getDefaultFilterByModule($moduleName);
+
+        if($defaultFilter) {
+            return $defaultFilter;
+        }
+
+        return self::getCleanInstance($moduleName);
     }
 }

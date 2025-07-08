@@ -31,17 +31,4 @@ class Vtiger_Double_UIType extends Core_Number_UIType
 
         return strip_tags($value);
     }
-
-    /**
-     * @param mixed $value
-     * @return float
-     */
-    public function getEditViewDisplayValue($value)
-    {
-        if (empty($value)) {
-            return '';
-        }
-
-        return $value;
-    }
 }

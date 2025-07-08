@@ -1087,20 +1087,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			fieldName = multiPicklistFieldName[0];
 		}
 
-		let customHandlingFields = ['owner', 'ownergroup', 'picklist', 'multipicklist', 'reference', 'currencyList', 'text', 'documentsFolder', 'country'];
+		let customHandlingFields = ['owner', 'ownergroup', 'picklist', 'multipicklist', 'reference', 'currencyList', 'text', 'documentsFolder', 'country', 'currency', 'percentage', 'integer'];
 
 		if (jQuery.inArray(fieldType, customHandlingFields) !== -1) {
 			value = rawValue;
-		}
-
-		let numberHandlingFields = ['currency', 'percentage', 'integer'];
-
-		if (jQuery.inArray(fieldType, numberHandlingFields) !== -1) {
-			value = parseFloat(rawValue).toFixed(app.getNumberOfDecimals());
-
-			if ('integer' === fieldType) {
-				value = parseInt(value);
-			}
 		}
 
 		if (jQuery('.editElement', editElement).length === 0) {

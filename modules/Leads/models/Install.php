@@ -478,11 +478,7 @@ class Leads_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 0,
                     'summaryfield' => 0,
-                    'picklist_values' => [
-                        'Contacted - Successful',
-                        'Contacted - Unsuccessful',
-                        'Contacted - Never Contact Again',
-                    ],
+                    'picklist_values' => Campaigns_Install_Model::$CAMPAIGN_STATUS,
                 ],
             ],
         ];

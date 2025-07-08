@@ -10,3 +10,4 @@
 </div>
 </div>
 </div>
+{include file='Footer.tpl'|vtemplate_path:$MODULE}

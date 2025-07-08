@@ -2,6 +2,12 @@
 
 class Campaigns_Install_Model extends Core_Install_Model {
 
+    public static array $CAMPAIGN_STATUS = [
+        'Contacted - Successful',
+        'Contacted - Unsuccessful',
+        'Contacted - Never Contact Again',
+    ];
+
     /**
      * @var array
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
@@ -408,6 +414,7 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                    'picklist_values' => self::$CAMPAIGN_STATUS,
                 ],
             ]
         ];

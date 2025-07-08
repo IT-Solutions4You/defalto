@@ -43,22 +43,6 @@ class Core_Number_UIType extends Vtiger_Base_UIType {
         return $value;
     }
 
-
-    /**
-     * @param mixed $value
-     * @return float
-     */
-    public function getEditViewDisplayValue($value)
-    {
-        if (empty($value)) {
-            return '';
-        }
-
-        $value = CurrencyField::convertToUserFormatForEdit($value, null, true, false);
-
-        return decimalFormat($value);
-    }
-
     /**
      * @param int|string $value
      * @return string
