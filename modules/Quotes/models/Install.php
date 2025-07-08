@@ -76,13 +76,12 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                             'headerfield' => 1,
-                            'picklist_values' =>
-                                [
-                                    0 => 'Created',
-                                    1 => 'Delivered',
-                                    2 => 'Reviewed',
-                                    3 => 'Accepted',
-                                    4 => 'Rejected',
+                            'picklist_values' => [
+                                    'Created',
+                                    'Delivered',
+                                    'Reviewed',
+                                    'Accepted',
+                                    'Rejected',
                                 ],
                         ],
                     'validtill' => [

@@ -24,12 +24,6 @@ class Accounts_Install_Model extends Core_Install_Model {
         'Other',
     ];
 
-    public static array $CAMPAIGN_STATUS = [
-        'Contacted - Successful',
-        'Contacted - Unsuccessful',
-        'Contacted - Never Contact Again',
-    ];
-
     public function addCustomLinks(): void
     {
         $this->updateCustomLinks();
@@ -582,7 +576,7 @@ class Accounts_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 0,
                     'summaryfield' => 0,
-                    'picklist_values' => self::$CAMPAIGN_STATUS,
+                    'picklist_values' => Campaigns_Install_Model::$CAMPAIGN_STATUS,
                 ],
             ],
         ];
