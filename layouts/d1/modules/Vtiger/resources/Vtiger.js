@@ -483,7 +483,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 					Options = {
 						scrollInertia: 200,
 						autoHideScrollbar: true,
-						setHeight: (jQuery(window).height() - jQuery('form[name="QuickCreate"] .modal-body').find('.modal-header').height() - jQuery('form[name="QuickCreate"] .modal-body').find('.modal-footer').height() - 135),
+						setHeight: '80vh',
 					}
 
 				app.helper.showVerticalScroll(jQuery('form[name="QuickCreate"] .modal-body'), Options);
