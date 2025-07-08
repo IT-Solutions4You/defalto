@@ -2158,7 +2158,6 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
     },
 
     triggerHeaderFieldTabClickEvent: function () {
-        let thisInstance = this;
         let contents = jQuery('#layoutEditorContainer').find('.contents');
 
         contents.find('.headerFieldsTab').click(function (e) {
@@ -2178,7 +2177,8 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
                     if (error === null) {
                         app.helper.hideProgress();
                         headerFieldsLayout.html(data);
-                       aDeferred.resolve(headerFieldsLayout);
+                        aDeferred.resolve(headerFieldsLayout);
+                        window.location.reload();
                     } else {
                         aDeferred.reject(error);
                     }
@@ -2376,31 +2376,11 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
     },
 
     registerFields() {
-        let self = this,
-            containerElement = self.getFieldsContainer();
+        let self = this;
 
         self.retrieveFieldModal();
 
-        containerElement.on('click', '.openSelectFields', function() {
-            self.setEditField($(this));
-
-            let modalContainer = self.getNewFieldModal();
-
-            app.helper.showModal(modalContainer, {
-                cb: function () {
-                    self.registerSelectFields(modalContainer);
-                }
-            });
-        });
-
-        containerElement.on('click', '.clearHeaderField', function () {
-            let clickHereLabel = $('input[name="click_here_label"]').val();
-
-            $(this).parent().removeAttr('data-fieldvalue');
-            $(this).parent().html(clickHereLabel);
-
-            self.saveHeaderFields();
-        });
+        self.registerHeaderFieldEvents();
     },
 
     retrieveFieldModal() {
@@ -2566,6 +2546,32 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
 
         var selectedTab = jQuery('.selectedTab').val();
         jQuery('#layoutEditorContainer').find('.contents').find('.' + selectedTab).trigger('click');
+    },
+
+    registerHeaderFieldEvents: function () {
+        let self = this,
+            containerElement = self.getFieldsContainer();
+
+        containerElement.on('click', '.openSelectFields', function() {
+            self.setEditField($(this));
+
+            let modalContainer = self.getNewFieldModal();
+
+            app.helper.showModal(modalContainer, {
+                cb: function () {
+                    self.registerSelectFields(modalContainer);
+                }
+            });
+        });
+
+        containerElement.on('click', '.clearHeaderField', function () {
+            let clickHereLabel = $('input[name="click_here_label"]').val();
+
+            $(this).parent().removeAttr('data-fieldvalue');
+            $(this).parent().html(clickHereLabel);
+
+            self.saveHeaderFields();
+        });
     }
 });
 
