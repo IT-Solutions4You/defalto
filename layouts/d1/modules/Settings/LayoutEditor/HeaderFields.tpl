@@ -23,7 +23,7 @@
                         {section name=FIELD_LOOP start=0 loop=5}
                             {assign var=INDEX value=$smarty.section.FIELD_LOOP.index}
                             {assign var=IS_SAVED value=array_key_exists($INDEX, $SELECTED_FIELDS)}
-                            <button type="button" class="{if empty($IS_SAVED)}openSelectFields{/if} headerFieldBtn p-2 bg-body-secondary border-dashed text-nowrap me-1" data-id="{$INDEX+1}" {if $IS_SAVED}data-fieldvalue="{$SELECTED_FIELDS[$INDEX]['fieldname']}"{/if}>
+                            <button type="button" class="{if empty($IS_SAVED)}openSelectFields{/if} headerFieldBtn p-2 bg-body-secondary border-dashed text-nowrap me-1 border-dark" data-id="{$INDEX+1}" {if $IS_SAVED}data-fieldvalue="{$SELECTED_FIELDS[$INDEX]['fieldname']}"{/if}>
 
                                 {if $IS_SAVED}
                                     {vtranslate($SELECTED_FIELDS[$INDEX]['fieldlabel'], $SOURCE_MODULE)}

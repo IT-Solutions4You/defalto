@@ -239,7 +239,7 @@ class Vtiger_Field extends Vtiger_FieldBasic {
 				$fieldInfo = Vtiger_Functions::getModuleFieldInfoWithId($value);
 				if ($fieldInfo) {
 					$moduleInstance = Vtiger_Module_Model::getInstance($fieldInfo["tabid"]);
-				} 
+				}
 			}
 		}
 		if (!$moduleInstance) return null;
@@ -292,8 +292,14 @@ class Vtiger_Field extends Vtiger_FieldBasic {
 		global $adb;
 		$instances = [];
 
-		$query = "SELECT * FROM vtiger_field WHERE tabid=? ORDER BY sequence";
-		$queryParams = Array($moduleInstance->id);
+		$query = 'SELECT vtiger_field.* 
+                    FROM vtiger_field 
+                    INNER JOIN vtiger_blocks ON block = blockid 
+                    WHERE vtiger_field.tabid=? 
+                    ORDER BY vtiger_blocks.sequence, vtiger_field.sequence';
+        $queryParams = [
+            $moduleInstance->id
+        ];
 
 		$result = $adb->pquery($query, $queryParams);
 		for($index = 0; $index < $adb->num_rows($result); ++$index) {
