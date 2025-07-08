@@ -2080,17 +2080,6 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
                 }
             }
 
-            if (fieldPropertyName === 'summaryfield' || fieldPropertyName === 'headerfield') {
-                //Field can either be summary or header enabled
-                var dependentFieldPropertySelector = fieldPropertyName === 'summaryfield' ? '.header' : '.summary';
-                var dependentPropertyElement = jQuery(dependentFieldPropertySelector, fieldPropertiesHolder);
-                if (!dependentPropertyElement.hasClass('disabled')) {
-                    app.helper.showAlertNotification({
-                        'message': app.vtranslate('JS_FIELD_CAN_EITHER_BE_HEADER_OR_SUMMARY_ENABLED')
-                    });
-                    return;
-                }
-            }
             app.helper.showProgress();
 
             var params = {};
