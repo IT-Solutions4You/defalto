@@ -10,8 +10,8 @@
 
 require_once 'vtlib/Vtiger/Cron.php';
 
-if (!class_exists('Migration_20240411112311')) {
-    class Migration_20240411112311 extends AbstractMigrations
+if (!class_exists('Migration_20250709123459')) {
+    class Migration_20250709123459 extends AbstractMigrations
     {
         /**
          * @param string $fileName
