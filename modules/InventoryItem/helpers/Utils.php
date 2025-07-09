@@ -123,20 +123,20 @@ class InventoryItem_Utils_Helper
     }
 
     /**
-     * @return int
+     * @return array
      */
-    public static function fetchQuantityDecimals(): int
+    public static function fetchDecimals(): array
     {
         $db = PearDatabase::getInstance();
-        $decimals = 2;
-        $sql = 'SELECT decimals FROM df_inventoryitem_quantitydecimals';
+        $return = [];
+        $sql = 'SELECT * FROM df_inventoryitem_quantitydecimals';
         $res = $db->query($sql);
 
-        if ($db->num_rows($res)) {
-            $row = $db->fetchByAssoc($res);
-            $decimals = (int)$row['decimals'];
+        while ($row = $db->fetchByAssoc($res)) {
+
+            $return[$row['field']] = (int)$row['decimals'];
         }
 
-        return $decimals;
+        return $return;
     }
 }

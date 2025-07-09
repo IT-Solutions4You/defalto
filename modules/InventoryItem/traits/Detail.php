@@ -153,8 +153,13 @@ trait InventoryItem_Detail_Trait
                 $row[$fieldName . '_display'] = CurrencyField::convertToUserFormat($row[$fieldName], $currentUser, true);
             }
 
-            $quantityDecimals = InventoryItem_Utils_Helper::fetchQuantityDecimals();
-            $row['quantity_display'] = number_format($row['quantity'], $quantityDecimals, '.', '');
+            $decimals = InventoryItem_Utils_Helper::fetchDecimals();
+
+            foreach ($decimals as $fieldName => $decimalCount) {
+                if (isset($row[$fieldName])) {
+                    $row[$fieldName . '_display'] = number_format($row[$fieldName], $decimalCount, '.', '');
+                }
+            }
 
             $row['taxes'] = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$row['inventoryitemid'], (int)$row['productid'], $record);
 

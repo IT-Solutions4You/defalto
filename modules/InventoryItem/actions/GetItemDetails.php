@@ -79,15 +79,17 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
             }
         }
 
+        $decimals = InventoryItem_Utils_Helper::fetchDecimals();
         $info = [];
 
         foreach ($idList as $id) {
             $resultData = [
                 'id'              => $id,
                 'name'            => $namesList[$id],
+                'quantity'        => number_format(1, $decimals['quantity'], '.', ''),
                 'taxes'           => $taxesList[$id],
-                'listprice'       => $listPricesList[$id],
-                'purchaseCost'    => $purchaseCostsList[$id],
+                'listprice'       => number_format($listPricesList[$id], $decimals['price'], '.', ''),
+                'purchaseCost'    => $request->get('sourceModule') === 'PurchaseOrder' ? number_format($purchaseCostsList[$id], $decimals['price'], '.', '') : $purchaseCostsList[$id],
                 'description'     => $descriptionsList[$id],
                 'quantityInStock' => $quantitiesList[$id],
                 'imageSource'     => $imageSourcesList[$id],

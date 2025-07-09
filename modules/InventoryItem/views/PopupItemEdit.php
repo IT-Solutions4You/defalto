@@ -196,8 +196,13 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
             }
         }
 
-        $quantityDecimals = InventoryItem_Utils_Helper::fetchQuantityDecimals();
-        $row['quantity'] = number_format($row['quantity'], $quantityDecimals, '.', '');
+        $decimals = InventoryItem_Utils_Helper::fetchDecimals();
+
+        foreach ($decimals as $fieldName => $decimalsCount) {
+            if (isset($row[$fieldName])) {
+                $row[$fieldName] = number_format($row[$fieldName], $decimalsCount, '.', '');
+            }
+        }
 
         $row['taxes'] = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$row['inventoryitemid'], (int)$row['productid'], $recordId);
 

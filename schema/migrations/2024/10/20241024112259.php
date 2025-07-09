@@ -52,25 +52,15 @@ if (!class_exists('Migration_20241024112259')) {
                   PRIMARY KEY (`tabid`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
             );
-
             $this->db->pquery('INSERT INTO df_inventoryitem_itemmodules (tabid) VALUES (?), (?)', [getTabid('Products'), getTabid('Services')]);
-
-            $quantityDecimalslink = Settings_Vtiger_MenuItem_Model::getInstance('Quantity decimals', $menu);
-
-            if (!$quantityDecimalslink) {
-                $quantityDecimalslink = Settings_Vtiger_MenuItem_Model::getInstanceFromArray(
-                    ['name' => 'Quantity decimals', 'blockid' => $menu->getId(), 'linkto' => 'index.php?module=InventoryItem&parent=Settings&view=QuantityDecimals']
-                );
-                $quantityDecimalslink->save();
-            }
 
             $this->db->query(
                 'CREATE TABLE IF NOT EXISTS `df_inventoryitem_quantitydecimals` (
-                  `decimals` int(19) NOT NULL
+                  `field` VARCHAR(255) NOT NULL,
+                  `decimals` INT(19) NOT NULL
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
             );
-
-            $this->db->pquery('INSERT INTO df_inventoryitem_quantitydecimals (decimals) VALUES (?)', [2]);
+            $this->db->pquery('INSERT INTO df_inventoryitem_quantitydecimals (decimals) VALUES (?, ?), (?, ?)', ['price', 2, 'quantity', 2]);
 
             $this->db->pquery(
                 'UPDATE vtiger_field SET displaytype = 1, presence = 0, quickcreate = 1 WHERE fieldname = ? AND tablename IN (?, ?, ?, ?)',

@@ -24,6 +24,7 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
         $selectedFields = InventoryItem_Module_Model::getSelectedFields($selectedModule);
         $moduleModel = Vtiger_Module_Model::getInstance('InventoryItem');
         $fieldModelList = $moduleModel->getFields();
+        $decimals = InventoryItem_Utils_Helper::fetchDecimals();
 
         $viewer = $this->getViewer($request);
         $viewer->assign('MODULE_NAME', $moduleName);
@@ -33,6 +34,7 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
         $viewer->assign('FIELD_MODEL_LIST', $fieldModelList);
         $viewer->assign('SELECTED_FIELDS', $selectedFields);
         $viewer->assign('MANDATORY_FIELDS', ['productid', 'quantity']);
+        $viewer->assign('DECIMALS', $decimals);
 
         $viewer->view('Index.tpl', $qualifiedName);
     }

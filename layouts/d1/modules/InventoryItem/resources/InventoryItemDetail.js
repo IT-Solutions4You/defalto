@@ -776,7 +776,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 editorInstance.setData(recordData.description);
             }
 
-            jQuery('input.quantity', container).val(1);
+            jQuery('input.quantity', container).val(recordData.quantity);
             jQuery('input.unit', container).val(recordData.unit);
             let price = recordData.listprice;
 
@@ -784,7 +784,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 price = recordData.purchaseCost;
             }
 
-            jQuery('input.price', container).val(parseFloat(price).toFixed(4)).trigger('change');
+            jQuery('input.price', container).val(price).trigger('change');
             jQuery('input.purchase_cost', container).val(recordData.purchaseCost);
             jQuery('div.display_purchase_cost', container).text(recordData.purchaseCost);
             jQuery('input.pricebookid', container).val(recordData.pricebookid);

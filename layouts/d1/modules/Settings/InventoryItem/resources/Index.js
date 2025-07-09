@@ -7,14 +7,15 @@
  * file that was distributed with this source code.
  */
 
+/** @var Settings_InventoryItem_Index_Js **/
 Settings_Vtiger_Index_Js("Settings_InventoryItem_Index_Js", {}, {
-    registerEvents: function() {
+    registerEvents: function () {
         this._super();
         this.makeColumnListSortable();
         this.registerModuleChange();
     },
 
-    makeColumnListSortable: function() {
+    makeColumnListSortable: function () {
         const inventoryItemFieldsForm = jQuery('#inventoryItemFields'),
             selectElement = $('#selectedFields'),
             valueElement = $('input[name="columnslist"]', inventoryItemFieldsForm);
@@ -22,19 +23,19 @@ Settings_Vtiger_Index_Js("Settings_InventoryItem_Index_Js", {}, {
         vtUtils.makeSelect2ElementSortable(
             selectElement,
             valueElement,
-            function(valueElement) {
+            function (valueElement) {
                 return JSON.parse(valueElement.val());
             },
-            function(valueElement, selectedValues) {
+            function (valueElement, selectedValues) {
                 valueElement.val(JSON.stringify(selectedValues));
             }
         );
     },
 
-    registerModuleChange: function() {
+    registerModuleChange: function () {
         const moduleElement = $('#selectedModule');
 
-        moduleElement.on('change', function() {
+        moduleElement.on('change', function () {
             window.location.href = 'index.php?module=InventoryItem&parent=Settings&view=Index&selectedModule=' + moduleElement.val();
         });
     },
