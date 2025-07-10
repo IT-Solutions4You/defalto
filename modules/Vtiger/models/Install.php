@@ -30,7 +30,7 @@ class Vtiger_Install_Model extends Core_Install_Model {
 
     public function installModule()
     {
-        (new Vtiger_Field_Model())->insertFieldTypes();
+        (new Vtiger_Field_Model())->insertDefaultData();
     }
 
     /**
