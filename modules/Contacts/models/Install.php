@@ -168,7 +168,7 @@ class Contacts_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'headerfield' => 1,
-                    'headerfieldsequence' => 4,
+                    'headerfieldsequence' => 5,
                 ],
                 'phone' => [
                     'name' => 'phone',
@@ -219,7 +219,8 @@ class Contacts_Install_Model extends Core_Install_Model
                     'summaryfield' => 1,
                     'filter' => 1,
                     'filter_sequence' => 6,
-                    'headerfield' => 0,
+                    'headerfield' => 1,
+                    'headerfieldsequence' => 3,
                 ],
                 'secondaryemail' => [
                     'name' => 'secondaryemail',
@@ -291,7 +292,7 @@ class Contacts_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'headerfield' => 1,
-                    'headerfieldsequence' => 3,
+                    'headerfieldsequence' => 4,
                 ],
                 'donotcall' => [
                     'name' => 'donotcall',
