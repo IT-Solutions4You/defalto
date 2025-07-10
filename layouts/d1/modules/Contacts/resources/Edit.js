@@ -162,11 +162,16 @@ Vtiger_Edit_Js("Contacts_Edit_Js",{},{
         self.updateCopyAddressVisibility(container);
     },
     updateCopyAddressVisibility: function (container) {
-        let self = this;
+        let self = this,
+            limit = 1;
 
         $.each(self.addressFieldsMappingInModule, function (fromField, toField) {
-            if (!container.find('[name="' + fromField + '"]').length || !container.find('[name="' + toField + '"]').length) {
-                $('[name="copyAddress"]').addClass('hide');
+            if (limit) {
+                if (!container.find('[name="' + fromField + '"]').length || !container.find('[name="' + toField + '"]').length) {
+                    $('[name="copyAddress"]').addClass('hide');
+                }
+
+                limit--;
             }
         });
     },
