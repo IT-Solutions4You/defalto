@@ -18,6 +18,17 @@ class Vtiger_Percentage_UIType extends Core_Number_UIType
 
     public function getDisplayValue($value, $record = false, $recordInstance = false): string
     {
-        return parent::getDisplayValue($value, $record, $recordInstance) . ' %';
+        $value = parent::getDisplayValue($value, $record, $recordInstance);
+
+        return $value ? $value . ' %' : '';
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public static function transformDisplayValue($value): string
+    {
+        return (new self())->getDisplayValue($value);
     }
 }

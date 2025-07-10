@@ -361,7 +361,7 @@ class ListViewController {
                 } elseif ($fieldDataType == 'currency') {
                     $value = Vtiger_Currency_UIType::transformDisplayValue($value, null, true);
                 } elseif($fieldDataType == 'percentage') {
-                    $value = Core_Number_UIType::transformDisplayValue($value) . ' %';
+                    $value = Vtiger_Percentage_UIType::transformDisplayValue($value);
                 } elseif ($fieldDataType == 'integer') {
                     $value = Core_Number_UIType::transformDisplayValue($value);
                 } elseif ($fieldDataType == 'double') {
