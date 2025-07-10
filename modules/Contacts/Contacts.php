@@ -20,138 +20,145 @@
  * Contributor(s): ______________________________________..
  ********************************************************************************/
 // Contact is used to store customer information.
-class Contacts extends CRMEntity {
+class Contacts extends CRMEntity
+{
     public string $parentName = 'Marketing';
-	var $log;
-	var $db;
+    public $log;
+    public $db;
 
-	var $table_name = "vtiger_contactdetails";
-	var $table_index= 'contactid';
-	var $tab_name = Array('vtiger_crmentity','vtiger_contactdetails','vtiger_contactaddress','vtiger_contactsubdetails','vtiger_contactscf','vtiger_customerdetails');
-	var $tab_name_index = Array('vtiger_crmentity'=>'crmid','vtiger_contactdetails'=>'contactid','vtiger_contactaddress'=>'contactaddressid','vtiger_contactsubdetails'=>'contactsubscriptionid','vtiger_contactscf'=>'contactid','vtiger_customerdetails'=>'customerid');
-	/**
-	 * Mandatory table for supporting custom fields.
-	 */
-	var $customFieldTable = Array('vtiger_contactscf', 'contactid');
+    public $table_name = "vtiger_contactdetails";
+    public $table_index = 'contactid';
+    public $tab_name = ['vtiger_crmentity', 'vtiger_contactdetails', 'vtiger_contactaddress', 'vtiger_contactsubdetails', 'vtiger_contactscf', 'vtiger_customerdetails', 'vtiger_portalinfo'];
+    public $tab_name_index = ['vtiger_crmentity' => 'crmid', 'vtiger_contactdetails' => 'contactid', 'vtiger_contactaddress' => 'contactaddressid', 'vtiger_contactsubdetails' => 'contactsubscriptionid', 'vtiger_contactscf' => 'contactid', 'vtiger_customerdetails' => 'customerid', 'vtiger_portalinfo' => 'id'];
+    /**
+     * Mandatory table for supporting custom fields.
+     */
+    public $customFieldTable = ['vtiger_contactscf', 'contactid'];
 
-	var $column_fields = Array();
+    public $column_fields = [];
 
-	var $sortby_fields = Array('lastname','firstname','title','email','phone','smownerid','accountname');
+    public $sortby_fields = ['lastname', 'firstname', 'title', 'email', 'phone', 'smownerid', 'accountname'];
 
-	var $list_link_field= 'lastname';
+    public $list_link_field = 'lastname';
 
-	// This is the list of vtiger_fields that are in the lists.
-	var $list_fields = Array(
-	'First Name' => Array('contactdetails'=>'firstname'),
-	'Last Name' => Array('contactdetails'=>'lastname'),
-	'Title' => Array('contactdetails'=>'title'),
-	'Account Name' => Array('account'=>'accountid'),
-	'Email' => Array('contactdetails'=>'email'),
-	'Office Phone' => Array('contactdetails'=>'phone'),
-	'Assigned To' => Array('crmentity'=>'smownerid')
-	);
+    // This is the list of vtiger_fields that are in the lists.
+    public $list_fields = [
+        'First Name' => ['contactdetails' => 'firstname'],
+        'Last Name' => ['contactdetails' => 'lastname'],
+        'Title' => ['contactdetails' => 'title'],
+        'Account Name' => ['account' => 'accountid'],
+        'Email' => ['contactdetails' => 'email'],
+        'Office Phone' => ['contactdetails' => 'phone'],
+        'Assigned To' => ['crmentity' => 'smownerid'],
+    ];
 
-	var $range_fields = Array(
-		'first_name',
-		'last_name',
-		'primary_address_city',
-		'account_name',
-		'account_id',
-		'id',
-		'email1',
-		'salutation',
-		'title',
-		'phone_mobile',
-		'reports_to_name',
-		'primary_address_street',
-		'primary_address_city',
-		'primary_address_state',
-		'primary_address_postalcode',
-		'primary_address_country_id',
-		'alt_address_city',
-		'alt_address_street',
-		'alt_address_city',
-		'alt_address_state',
-		'alt_address_postalcode',
-		'alt_address_country_id',
-		'office_phone',
-		'home_phone',
-		'other_phone',
-		'fax',
-		'department',
-		'birthdate',
-		'assistant_name',
-		'assistant_phone');
+    public $range_fields = [
+        'first_name',
+        'last_name',
+        'primary_address_city',
+        'account_name',
+        'account_id',
+        'id',
+        'email1',
+        'salutation',
+        'title',
+        'phone_mobile',
+        'reports_to_name',
+        'primary_address_street',
+        'primary_address_city',
+        'primary_address_state',
+        'primary_address_postalcode',
+        'primary_address_country_id',
+        'alt_address_city',
+        'alt_address_street',
+        'alt_address_city',
+        'alt_address_state',
+        'alt_address_postalcode',
+        'alt_address_country_id',
+        'office_phone',
+        'home_phone',
+        'other_phone',
+        'fax',
+        'department',
+        'birthdate',
+        'assistant_name',
+        'assistant_phone',
+    ];
 
 
-	var $list_fields_name = Array(
-	'First Name' => 'firstname',
-	'Last Name' => 'lastname',
-	'Title' => 'title',
-	'Account Name' => 'account_id',
-	'Email' => 'email',
-	'Office Phone' => 'phone',
-	'Assigned To' => 'assigned_user_id'
-	);
+    public $list_fields_name = [
+        'First Name' => 'firstname',
+        'Last Name' => 'lastname',
+        'Title' => 'title',
+        'Account Name' => 'account_id',
+        'Email' => 'email',
+        'Office Phone' => 'phone',
+        'Assigned To' => 'assigned_user_id',
+    ];
 
-	var $search_fields = Array(
-	'First Name' => Array('contactdetails'=>'firstname'),
-	'Last Name' => Array('contactdetails'=>'lastname'),
-	'Title' => Array('contactdetails'=>'title'),
-	'Account Name'=>Array('contactdetails'=>'account_id'),
-	'Assigned To'=>Array('crmentity'=>'smownerid'),
-		);
+    public $search_fields = [
+        'First Name' => ['contactdetails' => 'firstname'],
+        'Last Name' => ['contactdetails' => 'lastname'],
+        'Title' => ['contactdetails' => 'title'],
+        'Account Name' => ['contactdetails' => 'account_id'],
+        'Assigned To' => ['crmentity' => 'smownerid'],
+    ];
 
-	var $search_fields_name = Array(
-	'First Name' => 'firstname',
-	'Last Name' => 'lastname',
-	'Title' => 'title',
-	'Account Name'=>'account_id',
-	'Assigned To'=>'assigned_user_id'
-	);
+    public $search_fields_name = [
+        'First Name' => 'firstname',
+        'Last Name' => 'lastname',
+        'Title' => 'title',
+        'Account Name' => 'account_id',
+        'Assigned To' => 'assigned_user_id',
+    ];
 
-	// This is the list of vtiger_fields that are required
-	var $required_fields =  array("lastname"=>1);
+    // This is the list of vtiger_fields that are required
+    public $required_fields = ["lastname" => 1];
 
-	// Used when enabling/disabling the mandatory fields for the module.
-	// Refers to vtiger_field.fieldname values.
-	var $mandatory_fields = Array('assigned_user_id','lastname','createdtime' ,'modifiedtime');
+    // Used when enabling/disabling the mandatory fields for the module.
+    // Refers to vtiger_field.fieldname values.
+    public $mandatory_fields = ['assigned_user_id', 'lastname', 'createdtime', 'modifiedtime'];
 
-	//Added these variables which are used as default order by and sortorder in ListView
-	var $default_order_by = 'lastname';
-	var $default_sort_order = 'ASC';
+    //Added these variables which are used as default order by and sortorder in ListView
+    public $default_order_by = 'lastname';
+    public $default_sort_order = 'ASC';
 
-	// For Alphabetical search
-	var $def_basicsearch_col = 'lastname';
+    // For Alphabetical search
+    public $def_basicsearch_col = 'lastname';
 
-	var $related_module_table_index = array(
-		'Potentials' => array('table_name' => 'vtiger_potential', 'table_index' => 'potentialid', 'rel_index' => 'contact_id'),
-		'Quotes' => array('table_name' => 'vtiger_quotes', 'table_index' => 'quoteid', 'rel_index' => 'contactid'),
-		'SalesOrder' => array('table_name' => 'vtiger_salesorder', 'table_index' => 'salesorderid', 'rel_index' => 'contactid'),
-		'PurchaseOrder' => array('table_name' => 'vtiger_purchaseorder', 'table_index' => 'purchaseorderid', 'rel_index' => 'contactid'),
-		'Invoice' => array('table_name' => 'vtiger_invoice', 'table_index' => 'invoiceid', 'rel_index' => 'contactid'),
-		'HelpDesk' => array('table_name' => 'vtiger_troubletickets', 'table_index' => 'ticketid', 'rel_index' => 'contact_id'),
-		'Products' => array('table_name' => 'vtiger_seproductsrel', 'table_index' => 'productid', 'rel_index' => 'crmid'),
-		'Documents' => array('table_name' => 'vtiger_senotesrel', 'table_index' => 'notesid', 'rel_index' => 'crmid'),
-		'ServiceContracts' => array('table_name' => 'vtiger_servicecontracts', 'table_index' => 'servicecontractsid', 'rel_index' => 'sc_related_to'),
-		'Services' => array('table_name' => 'vtiger_crmentityrel', 'table_index' => 'crmid', 'rel_index' => 'crmid'),
-		'Campaigns' => array('table_name' => 'vtiger_campaigncontrel', 'table_index' => 'campaignid', 'rel_index' => 'contactid'),
-		'Assets' => array('table_name' => 'vtiger_assets', 'table_index' => 'assetsid', 'rel_index' => 'contact'),
-		'Project' => array('table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'contactid'),
-        'Vendors' => array('table_name' => 'vtiger_vendorcontactrel', 'table_index' => 'vendorid', 'rel_index' => 'contactid'),
-	);
-        function __construct() {
-            $this->log = Logger::getLogger('contact');
-            $this->db = PearDatabase::getInstance();
-            $this->column_fields = getColumnFields('Contacts');
-        }       
-	function Contacts() {
-            self::__construct();
-	}
+    public $related_module_table_index = [
+        'Potentials' => ['table_name' => 'vtiger_potential', 'table_index' => 'potentialid', 'rel_index' => 'contact_id'],
+        'Quotes' => ['table_name' => 'vtiger_quotes', 'table_index' => 'quoteid', 'rel_index' => 'contactid'],
+        'SalesOrder' => ['table_name' => 'vtiger_salesorder', 'table_index' => 'salesorderid', 'rel_index' => 'contactid'],
+        'PurchaseOrder' => ['table_name' => 'vtiger_purchaseorder', 'table_index' => 'purchaseorderid', 'rel_index' => 'contactid'],
+        'Invoice' => ['table_name' => 'vtiger_invoice', 'table_index' => 'invoiceid', 'rel_index' => 'contactid'],
+        'HelpDesk' => ['table_name' => 'vtiger_troubletickets', 'table_index' => 'ticketid', 'rel_index' => 'contact_id'],
+        'Products' => ['table_name' => 'vtiger_seproductsrel', 'table_index' => 'productid', 'rel_index' => 'crmid'],
+        'Documents' => ['table_name' => 'vtiger_senotesrel', 'table_index' => 'notesid', 'rel_index' => 'crmid'],
+        'ServiceContracts' => ['table_name' => 'vtiger_servicecontracts', 'table_index' => 'servicecontractsid', 'rel_index' => 'sc_related_to'],
+        'Services' => ['table_name' => 'vtiger_crmentityrel', 'table_index' => 'crmid', 'rel_index' => 'crmid'],
+        'Campaigns' => ['table_name' => 'vtiger_campaigncontrel', 'table_index' => 'campaignid', 'rel_index' => 'contactid'],
+        'Assets' => ['table_name' => 'vtiger_assets', 'table_index' => 'assetsid', 'rel_index' => 'contact'],
+        'Project' => ['table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'contactid'],
+        'Vendors' => ['table_name' => 'vtiger_vendorcontactrel', 'table_index' => 'vendorid', 'rel_index' => 'contactid'],
+    ];
 
-	// Mike Crowe Mod --------------------------------------------------------Default ordering for us
-	/** Function to get the number of Contacts assigned to a particular User.
-	*  @param varchar $user name - Assigned to User
+    function __construct()
+    {
+        $this->log = Logger::getLogger('contact');
+        $this->db = PearDatabase::getInstance();
+        $this->column_fields = getColumnFields('Contacts');
+    }
+
+    function Contacts()
+    {
+        self::__construct();
+    }
+
+    // Mike Crowe Mod --------------------------------------------------------Default ordering for us
+
+    /** Function to get the number of Contacts assigned to a particular User.
+     * @param varchar $user name - Assigned to User
 	*  Returns the count of contacts assigned to user.
 	*/
 	function getCount($user_name)
