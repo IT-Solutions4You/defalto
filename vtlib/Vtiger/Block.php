@@ -263,12 +263,15 @@ class Vtiger_Block {
             ->createColumn('blocklabel', 'varchar(100) NOT NULL')
             ->createColumn('sequence', 'int(10) DEFAULT NULL')
             ->createColumn('show_title', 'int(2) DEFAULT NULL')
-            ->createColumn('visible', 'int(2) NOT NULL DEFAULT \'0\'')
-            ->createColumn('create_view', 'int(2) NOT NULL DEFAULT \'0\'')
-            ->createColumn('edit_view', 'int(2) NOT NULL DEFAULT \'0\'')
-            ->createColumn('detail_view', 'int(2) NOT NULL DEFAULT \'0\'')
-            ->createColumn('display_status', 'int(1) NOT NULL DEFAULT \'1\'')
-            ->createColumn('iscustom', 'int(1) NOT NULL DEFAULT \'0\'')
-            ->createColumn('blockuitype', 'int(11) NOT NULL DEFAULT \'1\'');
+            ->createColumn('visible', 'int(2) NOT NULL DEFAULT "0"')
+            ->createColumn('create_view', 'int(2) NOT NULL DEFAULT "0"')
+            ->createColumn('edit_view', 'int(2) NOT NULL DEFAULT "0"')
+            ->createColumn('detail_view', 'int(2) NOT NULL DEFAULT "0"')
+            ->createColumn('display_status', 'int(1) NOT NULL DEFAULT 1')
+            ->createColumn('iscustom', 'int(1) NOT NULL DEFAULT "0"')
+            ->createColumn('blockuitype', 'int(11) NOT NULL DEFAULT 1')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (blockid)')
+            ->createKey('KEY IF NOT EXISTS block_tabid_idx (tabid)')
+            ->createKey('CONSTRAINT fk_1_vtiger_blocks FOREIGN KEY IF NOT EXISTS (tabid) REFERENCES vtiger_tab (tabid) ON DELETE CASCADE');
     }
 }
