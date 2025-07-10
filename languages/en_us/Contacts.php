@@ -15,7 +15,7 @@ $languageStrings = array(
 	'LBL_RECORDS_LIST' => 'Contacts List',
 
 	// Blocks
-	'LBL_CONTACT_INFORMATION' => 'Basic Information',
+	'LBL_CONTACT_INFORMATION' => 'Contact Details',
 	'LBL_CUSTOMER_PORTAL_INFORMATION' => 'Customer Portal Details',
 	'LBL_IMAGE_INFORMATION' => 'Profile Picture',
 	'LBL_COPY_OTHER_ADDRESS' => 'Copy Other Address',
