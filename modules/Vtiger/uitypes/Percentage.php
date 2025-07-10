@@ -15,4 +15,9 @@ class Vtiger_Percentage_UIType extends Core_Number_UIType
     {
         return 'uitypes/Percentage.tpl';
     }
+
+    public function getDisplayValue($value, $record = false, $recordInstance = false): string
+    {
+        return parent::getDisplayValue($value, $record, $recordInstance) . ' %';
+    }
 }
