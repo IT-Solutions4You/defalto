@@ -386,7 +386,7 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'summaryfield' => 0,
                 ],
             ],
-            'LBL_SYSTEM_INFORMATIONS' => [
+            'LBL_SYSTEM_INFORMATION' => [
                 'campaign_no' => [
                     'name' => 'campaign_no',
                     'uitype' => 4,
