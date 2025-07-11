@@ -1295,7 +1295,6 @@ class CustomView extends CRMEntity {
 			"quoteid" => "vtiger_quotes.subject",
 			"salesorderid" => "vtiger_salesorder.subject",
 			"campaignid" => "vtiger_campaign.campaignname",
-			"vtiger_contactdetails.reportsto" => getSqlForNameInDisplayFormat(array('lastname' => 'vtiger_contactdetails2.lastname', 'firstname' => 'vtiger_contactdetails2.firstname'), 'Contacts'),
 			"vtiger_pricebook.currency_id" => "vtiger_currency_info.currency_name",
 		);
 

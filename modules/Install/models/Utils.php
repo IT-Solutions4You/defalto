@@ -35,6 +35,7 @@ class Install_Utils_Model {
     ];
 
     public static array $registerModules = [
+        'Vtiger',
         'Users',
         'ModTracker',
         'ModComments',
@@ -754,7 +755,7 @@ class Install_Utils_Model {
 	{
 		$_SESSION['config_file_info']['smtp_server'] = $request->get('smtp_server');
 		$_SESSION['config_file_info']['smtp_username'] = $request->get('smtp_username');
-		$_SESSION['config_file_info']['smtp_password'] = $request->get('smtp_password');
+		$_SESSION['config_file_info']['smtp_password'] = $request->getRaw('smtp_password');
 		$_SESSION['config_file_info']['smtp_authentication'] = $request->get('smtp_authentication', 'off');
 		$_SESSION['config_file_info']['smtp_from_email'] = $request->get('smtp_from_email', '');
 

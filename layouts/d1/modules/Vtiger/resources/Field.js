@@ -513,13 +513,13 @@ Vtiger_Field_Js('Vtiger_Boolean_Field_Js',{},{
 	 * @return - checkbox element
 	 */
 	getUi : function() {
-		let	html = '<div class="input-group-text"><input type="hidden" name="'+this.getName() +'"/><input class="BooleanField inputElement form-check-input m-0" type="checkbox" name="'+ this.getName() +'" ';
+		let	html = '<label class="btn btn-outline-secondary w-100"><div class="form-check form-switch p-0"><input type="hidden" name="'+this.getName() +'"/><input class="BooleanField form-check-input m-0 p-0" type="checkbox" name="'+ this.getName() +'" ';
 
 		if(this.isChecked()) {
 			html += 'checked';
 		}
 
-		html += ' /></div>';
+		html += ' /></div></label>';
 
 		return this.addValidationToElement(html);
 	}

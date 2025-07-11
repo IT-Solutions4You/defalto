@@ -129,11 +129,6 @@
 																<img src="{vimage_path('MassEdit.png')}" data-name="masseditable" data-enable-value="1" data-disable-value="2" title="{vtranslate('LBL_MASS_EDIT',$QUALIFIED_MODULE)}" {if $FIELD_MODEL->isMassEditOptionDisabled()}readonly="readonly"{/if} height=14 width=14 />
 																<span class="ms-2">{vtranslate('LBL_MASS_EDIT',$QUALIFIED_MODULE)}</span>
 															</div>
-															{assign var=IS_HEADER_FIELD value=$FIELD_MODEL->isHeaderField()}
-															<div class="header switch {if (!$IS_HEADER_FIELD)}disabled{/if} {if $FIELD_MODEL->isHeaderFieldOptionDisabled()}cursorPointerNotAllowed{else}cursorPointer{/if}" data-bs-toggle="tooltip" title="{if $IS_HEADER_FIELD}{$NOT_H_FIELD_TITLE}{else}{$H_FIELD_TITLE}{/if}">
-																<i class="fa fa-flag-o" data-name="headerfield" data-enable-value="1" data-disable-value="0" {if $FIELD_MODEL->isHeaderFieldOptionDisabled()}readonly="readonly"{/if} title="{vtranslate('LBL_HEADER',$QUALIFIED_MODULE)}"></i>
-																<span class="ms-2">{vtranslate('LBL_HEADER',$QUALIFIED_MODULE)}</span>
-															</div>
 															{assign var=IS_SUMMARY_VIEW_ENABLED value=$FIELD_MODEL->isSummaryField()}
 															<div class="summary switch {if (!$IS_SUMMARY_VIEW_ENABLED)} disabled {/if} {if $FIELD_MODEL->isSummaryFieldOptionDisabled()} cursorPointerNotAllowed {else} cursorPointer {/if}" data-toggle="tooltip" title="{if $IS_SUMMARY_VIEW_ENABLED}{$NOT_S_FIELD_TITLE}{else}{$S_FIELD_TITLE}{/if}">
 																<i class="fa fa-key" data-name="summaryfield" data-enable-value="1" data-disable-value="0" {if $FIELD_MODEL->isSummaryFieldOptionDisabled()}readonly="readonly"{/if} title="{vtranslate('LBL_KEY_FIELD',$QUALIFIED_MODULE)}"></i>
@@ -280,11 +275,6 @@
 															<div class="massEdit switch {if (!$IS_MASS_EDIT_ENABLED)} disabled {/if} {if $FIELD_MODEL->isMassEditOptionDisabled()} cursorPointerNotAllowed {else} cursorPointer {/if}" data-bs-toggle="tooltip" title="{if $IS_MASS_EDIT_ENABLED}{$NOT_M_E_FIELD_TITLE}{else}{$M_E_FIELD_TITLE}{/if}">
 																<img src="{vimage_path('MassEdit.png')}" data-name="masseditable" data-enable-value="1" data-disable-value="2" title="{vtranslate('LBL_MASS_EDIT',$QUALIFIED_MODULE)}" {if $FIELD_MODEL->isMassEditOptionDisabled()}readonly="readonly"{/if} height=14 width=14 />
 																<span class="ms-2">{vtranslate('LBL_MASS_EDIT',$QUALIFIED_MODULE)}</span>
-															</div>
-															{assign var=IS_HEADER_FIELD value=$FIELD_MODEL->isHeaderField()}
-															<div class="header switch {if (!$IS_HEADER_FIELD)} disabled {/if} {if $FIELD_MODEL->isHeaderFieldOptionDisabled()} cursorPointerNotAllowed {else} cursorPointer {/if}" data-bs-toggle="tooltip" title="{if $IS_HEADER_FIELD}{$NOT_H_FIELD_TITLE}{else}{$H_FIELD_TITLE}{/if}">
-																<i class="fa fa-flag-o" data-name="headerfield" data-enable-value="1" data-disable-value="0" {if $FIELD_MODEL->isHeaderFieldOptionDisabled()}readonly="readonly"{/if} title="{vtranslate('LBL_HEADER',$QUALIFIED_MODULE)}"></i>
-																<span class="ms-2">{vtranslate('LBL_HEADER',$QUALIFIED_MODULE)}</span>
 															</div>
 															{assign var=IS_SUMMARY_VIEW_ENABLED value=$FIELD_MODEL->isSummaryField()}
 															<div class="summary switch {if (!$IS_SUMMARY_VIEW_ENABLED)} disabled {/if} {if $FIELD_MODEL->isSummaryFieldOptionDisabled()} cursorPointerNotAllowed {else} cursorPointer {/if}" data-bs-toggle="tooltip" title="{if $IS_SUMMARY_VIEW_ENABLED}{$NOT_S_FIELD_TITLE}{else}{$S_FIELD_TITLE}{/if}">
@@ -471,10 +461,6 @@
 						<div class="massEdit switch">
 							<img src="{vimage_path('MassEdit.png')}" data-name="masseditable" data-enable-value="1" data-disable-value="2" title="{vtranslate('LBL_MASS_EDIT',$QUALIFIED_MODULE)}" height=14 width=14 />
 							<span class="ms-2">{vtranslate('LBL_MASS_EDIT',$QUALIFIED_MODULE)}</span>
-						</div>
-						<div class="header switch">
-							<i class="fa fa-flag-o" data-name="headerfield" data-enable-value="1" data-disable-value="0" title="{vtranslate('LBL_HEADER',$QUALIFIED_MODULE)}"></i>
-							<span class="ms-2">{vtranslate('LBL_HEADER',$QUALIFIED_MODULE)}</span>
 						</div>
 						<div class="summary switch">
 							<i class="fa fa-key" data-name="summaryfield" data-enable-value="1" data-disable-value="0" title="{vtranslate('LBL_KEY_FIELD',$QUALIFIED_MODULE)}"></i>

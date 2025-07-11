@@ -24,12 +24,93 @@ class HelpDesk_Install_Model extends Core_Install_Model {
         [['vtiger.entity.aftersave'], 'modules/HelpDesk/handlers/Comments.php', 'HelpDesk_Comments_Handler', '', ['ModComments']],
     ];
 
+    /**
+     * @throws AppException
+     */
     public function addCustomLinks(): void
     {
         $this->updateComments();
         $this->updateHistory();
         $this->updateRelatedList();
         $this->updateEventHandler();
+        $this->updateWorkflowTasks();
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function updateWorkflowTasks(): void
+    {
+        $name = 'Employee response to ticket';
+        $moduleName = 'HelpDesk';
+        $conditions = [
+            0 => (object)[
+                'fieldname' => '_VT_add_comment',
+                'operation' => 'is added',
+                'value' => null,
+                'valuetype' => 'rawtext',
+                'joincondition' => 'and',
+                'groupjoin' => 'and',
+                'groupid' => '0',
+            ],
+            1 => (object)[
+                'fieldname' => '_VT_add_comment',
+                'operation' => 'is comment source',
+                'value' => 'CRM',
+                'valuetype' => 'rawtext',
+                'joincondition' => '',
+                'groupjoin' => 'and',
+                'groupid' => '0',
+            ],
+        ];
+        $trigger = '3';
+        $recurrence = '3';
+
+        $workflowModel = $this->updateWorkflowTask($name, $moduleName, $conditions, $trigger, $recurrence);
+
+        require_once 'modules/com_vtiger_workflow/tasks/VTEmailTask.inc';
+        $taskName = 'Send notification to employee';
+        $taskType = 'VTEmailTask';
+        $data = [
+            'subject' => '$ticket_no: $ticket_title$(general : (__VtigerMeta__) supportEmailid)',
+            'executeImmediately' => '1',
+            'signature' => 'on',
+            'content' => '<html>
+                <head>
+                    <title></title>
+                    <style type="text/css">
+                        .comment-box {
+                            border: 1px solid #ddd;
+                            background-color: #f9f9f9;
+                            padding: 10px;
+                            margin: 10px 0;
+                            min-width: 30%;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <p>Dobrý deň,</p>
+                    <p><strong>$(assigned_user_id : (Users) first_name) $(assigned_user_id : (Users) last_name)</strong> responded to your suggestion: <strong>$ticket_title</strong>.</p>
+                    <p class="comment-box">$lastComment</p>
+                    <a href="mailto:$(modifiedby : (Users) email1)?subject=$ticket_no: $ticket_title">Reply to ticket: $ticket_no </a><br />
+                </body>
+            </html>',
+            'fromEmail' => '$(general : (__VtigerMeta__) supportName)<$(general : (__VtigerMeta__) supportEmailId)>',
+            'recepient' => ['$(contact_id : (Contacts) email)'],
+            'template_language' => 'en_us',
+            'template' => 'custom_template',
+        ];
+
+        $this->updateWorkflowAction($taskType, $taskName, $data, $workflowModel);
+
+        require_once 'modules/com_vtiger_workflow/tasks/VTUpdateFieldsTask.inc';
+        $taskName = 'Update fields';
+        $taskType = 'VTUpdateFieldsTask';
+        $data = [
+            'field_value_mapping' => '[{"fieldname":"ticketstatus","value":"Wait For Response","valuetype":"rawtext"}]',
+        ];
+
+        $this->updateWorkflowAction($taskType, $taskName, $data, $workflowModel);
     }
 
     public function deleteCustomLinks(): void

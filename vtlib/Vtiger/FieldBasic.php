@@ -40,6 +40,7 @@ class Vtiger_FieldBasic {
 	var $headerfield = 0;
     public $related_modules;
     public $quickcreatesequence;
+    public $headerfieldsequence;
 
 	/**
 	 * Constructor
@@ -71,11 +72,13 @@ class Vtiger_FieldBasic {
 		$this->presence      = $valuemap['presence'];
 		$this->defaultvalue  = $valuemap['defaultvalue'];
 		$this->quickcreate = $valuemap['quickcreate'];
+		$this->quicksequence = $valuemap['quickcreatesequence'];
 		$this->sequence = $valuemap['sequence'];
 		$this->summaryfield = $valuemap['summaryfield'];
 		$this->isunique = $valuemap['isunique'];
 		$this->block= $blockInstance? $blockInstance : Vtiger_Block::getInstance($valuemap['block'], $moduleInstance);
 		$this->headerfield = $valuemap['headerfield'];
+		$this->headerfieldsequence = $valuemap['headerfieldsequence'];
 	}
 
 	/** Cache (Record) the schema changes to improve performance */
@@ -140,11 +143,12 @@ class Vtiger_FieldBasic {
 		return $max_quickcreateseq;
 	}
 
-	/**
-	 * Create this field instance
-	 * @param Vtiger_Block Instance of the block to use
-	 * @access private
-	 */
+    /**
+     * Create this field instance
+     * @param Vtiger_Block Instance of the block to use
+     * @access private
+     * @throws AppException
+     */
 	function __create($blockInstance) {
 		$this->__handleVtigerCoreSchemaChanges();
 
@@ -200,16 +204,33 @@ class Vtiger_FieldBasic {
 			$this->label = $this->name;
 		}
 
-		$adb->pquery("INSERT INTO vtiger_field (tabid, fieldid, columnname, tablename, generatedtype,
-			uitype, fieldname, fieldlabel, readonly, presence, defaultvalue, maximumlength, sequence,
-			block, displaytype, typeofdata, quickcreate, quickcreatesequence, info_type, helpinfo,summaryfield,headerfield)
-			VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Array($this->getModuleId(), $this->id, $this->column, $this->table, intval($this->generatedtype),
-			$this->uitype, $this->name, $this->label, $this->readonly, $this->presence, $this->defaultvalue,
-			$this->maximumlength, $this->sequence, $this->getBlockId(), $this->displaytype, $this->typeofdata,
-				intval($this->quickcreate), intval($this->quicksequence), $this->info_type, $this->helpinfo, intval($this->summaryfield), $this->headerfield));
-
-		// Set the field status for mass-edit (if set)
-		$adb->pquery('UPDATE vtiger_field SET masseditable=? WHERE fieldid=?', Array($this->masseditable, $this->id));
+        $params = [
+            'tabid' => $this->getModuleId(),
+            'fieldid' => $this->id,
+            'columnname' => $this->column,
+            'tablename' => $this->table,
+            'generatedtype' => intval($this->generatedtype),
+            'uitype' => $this->uitype,
+            'fieldname' => $this->name,
+            'fieldlabel' => $this->label,
+            'readonly' => $this->readonly,
+            'presence' => $this->presence,
+            'defaultvalue' => $this->defaultvalue,
+            'maximumlength' => $this->maximumlength,
+            'sequence' => $this->sequence,
+            'block' => $this->getBlockId(),
+            'displaytype' => $this->displaytype,
+            'typeofdata' => $this->typeofdata,
+            'quickcreate' => intval($this->quickcreate),
+            'quickcreatesequence' => intval($this->quicksequence),
+            'info_type' => $this->info_type,
+            'helpinfo' => $this->helpinfo,
+            'summaryfield' => intval($this->summaryfield),
+            'headerfield' => $this->headerfield,
+            'headerfieldsequence' => $this->headerfieldsequence,
+            'masseditable' => $this->masseditable,
+        ];
+        $this->getFieldTable()->insertData($params);
 
 		Vtiger_Profile::initForField($this);
 
@@ -217,7 +238,55 @@ class Vtiger_FieldBasic {
 		self::log("Module language mapping for $this->label ... CHECK");
 	}
 
-	/**
+    /**
+     * @return Core_DatabaseData_Model
+     */
+    public function getFieldTable(): Core_DatabaseData_Model
+    {
+        return (new Core_DatabaseData_Model())->getTable('vtiger_field', 'fieldid');
+    }
+
+    /**
+     * @return void
+     * @throws AppException
+     */
+    public function createTables(): void
+    {
+        $this->getFieldTable()
+            ->createTable()
+            ->createColumn('tabid', 'int(19) NOT NULL')
+            ->createColumn('columnname', 'varchar(30) NOT NULL')
+            ->createColumn('tablename', 'varchar(100) DEFAULT NULL')
+            ->createColumn('generatedtype', 'int(19) NOT NULL DEFAULT 0')
+            ->createColumn('uitype', 'varchar(30) NOT NULL')
+            ->createColumn('fieldname', 'varchar(50) NOT NULL')
+            ->createColumn('fieldlabel', 'varchar(50) NOT NULL')
+            ->createColumn('readonly', 'int(1) NOT NULL')
+            ->createColumn('presence', 'int(19) NOT NULL DEFAULT 1')
+            ->createColumn('defaultvalue', 'text DEFAULT NULL')
+            ->createColumn('maximumlength', 'int(19) DEFAULT NULL')
+            ->createColumn('sequence', 'int(19) DEFAULT NULL')
+            ->createColumn('block', 'int(19) DEFAULT NULL')
+            ->createColumn('displaytype', 'int(19) DEFAULT NULL')
+            ->createColumn('typeofdata', 'varchar(100) DEFAULT NULL')
+            ->createColumn('quickcreate', 'int(10) NOT NULL DEFAULT 1')
+            ->createColumn('quickcreatesequence', 'int(19) DEFAULT NULL')
+            ->createColumn('info_type', 'varchar(20) DEFAULT NULL')
+            ->createColumn('masseditable', 'int(10) NOT NULL DEFAULT 1')
+            ->createColumn('helpinfo', 'text DEFAULT NULL')
+            ->createColumn('summaryfield', 'int(10) NOT NULL DEFAULT 0')
+            ->createColumn('headerfield', 'int(1) DEFAULT 0')
+            ->createColumn('headerfieldsequence', 'int(19) DEFAULT 0')
+            ->createColumn('isunique', 'tinyint(1) DEFAULT 0')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (fieldid)')
+            ->createKey('KEY IF NOT EXISTS field_tabid_idx (tabid)')
+            ->createKey('KEY IF NOT EXISTS field_fieldname_idx (fieldname)')
+            ->createKey('KEY IF NOT EXISTS field_block_idx (block)')
+            ->createKey('KEY IF NOT EXISTS field_displaytype_idx (displaytype)')
+            ->createKey('CONSTRAINT fk_1_vtiger_field FOREIGN KEY IF NOT EXISTS (tabid) REFERENCES vtiger_tab(tabid) ON DELETE CASCADE');
+    }
+
+    /**
 	 * Update this field instance
 	 * @access private
 	 * @internal TODO

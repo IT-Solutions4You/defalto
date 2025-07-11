@@ -1392,10 +1392,12 @@ class Vtiger_Field_Model extends Vtiger_Field {
             'typeofdata' => $this->get('typeofdata'),
             'presence' => $this->get('presence'),
             'quickcreate' => $this->get('quickcreate'),
+            'quickcreatesequence' => $this->get('quicksequence'),
             'masseditable' => $this->get('masseditable'),
             'defaultvalue' => $this->get('defaultvalue'),
             'summaryfield' => $this->get('summaryfield'),
             'headerfield' => $this->get('headerfield'),
+            'headerfieldsequence' => $this->get('headerfieldsequence'),
         ];
 
         if ($this->get('uitype')) {
@@ -1656,14 +1658,6 @@ class Vtiger_Field_Model extends Vtiger_Field {
     }
 
     /**
-     * @return Core_DatabaseData_Model
-     */
-    public function getFieldTable(): Core_DatabaseData_Model
-    {
-        return (new Core_DatabaseData_Model())->getTable('vtiger_field', 'fieldid');
-    }
-
-    /**
      * @param string $value
      * @return string
      * @throws Exception
@@ -1678,6 +1672,35 @@ class Vtiger_Field_Model extends Vtiger_Field {
         $value = Vtiger_Util_Helper::escapeCssSpecialCharacters($value);
 
         return sprintf('picklist-option-%s-%s', $this->getId(), $value);
+    }
+
+    /**
+     * @return Core_DatabaseData_Model
+     */
+    public function getFieldTypeTable(): Core_DatabaseData_Model
+    {
+        return (new Core_DatabaseData_Model())->getTable('vtiger_ws_fieldtype', 'fieldtypeid');
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function insertFieldType($uiType, $fieldType): void
+    {
+        $table = $this->getFieldTypeTable();
+        $data = $table->selectData(['uitype as id'], ['uitype' => $uiType]);
+
+        if (empty($data['id'])) {
+            $table->insertData(['uitype' => $uiType, 'fieldtype' => $fieldType]);
+        }
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function insertDefaultData(): void
+    {
+        $this->insertFieldType(self::UITYPE_PERCENTAGE, 'percentage');
     }
 
     /**

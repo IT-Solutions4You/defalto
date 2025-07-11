@@ -142,20 +142,39 @@ Vtiger_Edit_Js("Contacts_Edit_Js",{},{
 	/**
 	 * Function to register event for copying address between two fileds
 	 */
-	registerEventForCopyingAddress : function(container){
-		var thisInstance = this;
-		var swapMode;
-		jQuery('[name="copyAddress"]').on('click',function(e){
-			var element = jQuery(e.currentTarget);
-			var target = element.data('target');
-			if(target == "other"){
-				swapMode = "false";
-			} else if(target == "mailing"){
-				swapMode = "true";
-			}
-			thisInstance.copyAddress(swapMode, container);
-		})
-	},
+    registerEventForCopyingAddress: function (container) {
+        let self = this,
+            swapMode;
+
+        jQuery('[name="copyAddress"]').on('click', function (e) {
+            let element = jQuery(e.currentTarget),
+                target = element.data('target');
+
+            if (target === 'other') {
+                swapMode = 'false';
+            } else if (target === 'mailing') {
+                swapMode = 'true';
+            }
+
+            self.copyAddress(swapMode, container);
+        });
+
+        self.updateCopyAddressVisibility(container);
+    },
+    updateCopyAddressVisibility: function (container) {
+        let self = this,
+            limit = 1;
+
+        $.each(self.addressFieldsMappingInModule, function (fromField, toField) {
+            if (limit) {
+                if (!container.find('[name="' + fromField + '"]').length || !container.find('[name="' + toField + '"]').length) {
+                    $('[name="copyAddress"]').addClass('hide');
+                }
+
+                limit--;
+            }
+        });
+    },
 
 	/**
 	 * Function to check for Portal User

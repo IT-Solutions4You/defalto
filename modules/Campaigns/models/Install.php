@@ -2,6 +2,41 @@
 
 class Campaigns_Install_Model extends Core_Install_Model {
 
+    public static array $PICKLIST_EXPECTED_RESPONSE = [
+        'Excellent',
+        'Good',
+        'Average',
+        'Poor',
+    ];
+
+    public static array $PICKLIST_CAMPAIGN_STATUS = [
+        'Planning',
+        'Active',
+        'Inactive',
+        'Completed',
+        'Cancelled',
+    ];
+    public static array $PICKLIST_CAMPAIGN_TYPE = [
+        'Conference',
+        'Webinar',
+        'Trade Show',
+        'Public Relations',
+        'Partners',
+        'Referral Program',
+        'Advertisement',
+        'Banner Ads',
+        'Direct Mail',
+        'Email',
+        'Telemarketing',
+        'Others',
+    ];
+
+    public static array $CAMPAIGN_STATUS = [
+        'Contacted - Successful',
+        'Contacted - Unsuccessful',
+        'Contacted - Never Contact Again',
+    ];
+
     /**
      * @var array
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
@@ -49,12 +84,56 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'presence' => 0,
                     'typeofdata' => 'V~M',
                     'quickcreate' => 0,
+                    'quicksequence' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
                     'entity_identifier' => 1,
                     'filter' => 1,
                     'filter_sequence' => 1,
+                ],
+                'related_to' => [
+                    'name' => 'related_to',
+                    'uitype' => 10,
+                    'column' => 'related_to',
+                    'table' => 'vtiger_campaign',
+                    'label' => 'Related To',
+                    'readonly' => 1,
+                    'presence' => 2,
+                    'typeofdata' => 'I~O',
+                    'quickcreate' => 2,
+                    'quicksequence' => 3,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 1,
+                    'headerfield' => 1,
+                    'headerfieldsequence' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 2,
+                    'related_modules' => [
+                        'Products',
+                        'Services',
+                    ],
+                ],
+                'campaignstatus' => [
+                    'name' => 'campaignstatus',
+                    'uitype' => 15,
+                    'column' => 'campaignstatus',
+                    'table' => 'vtiger_campaign',
+                    'label' => 'Campaign Status',
+                    'readonly' => 1,
+                    'presence' => 2,
+                    'typeofdata' => 'V~M',
+                    'quickcreate' => 0,
+                    'quicksequence' => 4,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 1,
+                    'headerfield' => 1,
+                    'headerfieldsequence' => 2,
+                    'filter' => 1,
+                    'filter_sequence' => 3,
+                    'picklist_values' => self::$PICKLIST_CAMPAIGN_STATUS,
                 ],
                 'campaigntype' => [
                     'name' => 'campaigntype',
@@ -66,62 +145,15 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'presence' => 2,
                     'typeofdata' => 'V~O',
                     'quickcreate' => 2,
+                    'quicksequence' => 2,
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
-                    'picklist_values' => [
-                        'Conference',
-                        'Webinar',
-                        'Trade Show',
-                        'Public Relations',
-                        'Partners',
-                        'Referral Program',
-                        'Advertisement',
-                        'Banner Ads',
-                        'Direct Mail',
-                        'Email',
-                        'Telemarketing',
-                        'Others',
-                    ],
+                    'headerfield' => 1,
+                    'headerfieldsequence' => 3,
                     'filter' => 1,
-                    'filter_sequence' => 2,
-                ],
-                'product_id' => [
-                    'name' => 'product_id',
-                    'uitype' => 59,
-                    'column' => 'product_id',
-                    'table' => 'vtiger_campaign',
-                    'label' => 'Product',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'I~O',
-                    'quickcreate' => 2,
-                    'displaytype' => 1,
-                    'masseditable' => 1,
-                    'summaryfield' => 0,
-                ],
-                'campaignstatus' => [
-                    'name' => 'campaignstatus',
-                    'uitype' => 15,
-                    'column' => 'campaignstatus',
-                    'table' => 'vtiger_campaign',
-                    'label' => 'Campaign Status',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 2,
-                    'displaytype' => 1,
-                    'masseditable' => 1,
-                    'summaryfield' => 1,
-                    'picklist_values' => [
-                        'Planning',
-                        'Active',
-                        'Inactive',
-                        'Completed',
-                        'Cancelled',
-                    ],
-                    'filter' => 1,
-                    'filter_sequence' => 3,
+                    'filter_sequence' => 4,
+                    'picklist_values' => self::$PICKLIST_CAMPAIGN_TYPE,
                 ],
                 'closingdate' => [
                     'name' => 'closingdate',
@@ -136,38 +168,10 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+                    'headerfield' => 1,
+                    'headerfieldsequence' => 4,
                     'filter' => 1,
                     'filter_sequence' => 5,
-                ],
-                'assigned_user_id' => [
-                    'name' => 'assigned_user_id',
-                    'uitype' => 53,
-                    'column' => 'smownerid',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Assigned To',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'V~M',
-                    'quickcreate' => 0,
-                    'displaytype' => 1,
-                    'masseditable' => 1,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 6,
-                ],
-                'numsent' => [
-                    'name' => 'numsent',
-                    'uitype' => 9,
-                    'column' => 'numsent',
-                    'table' => 'vtiger_campaign',
-                    'label' => 'Num Sent',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'N~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 1,
-                    'masseditable' => 1,
-                    'summaryfield' => 0,
                 ],
                 'sponsor' => [
                     'name' => 'sponsor',
@@ -181,7 +185,9 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
+                    'summaryfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 6,
                 ],
                 'targetaudience' => [
                     'name' => 'targetaudience',
@@ -195,7 +201,11 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
+                    'summaryfield' => 1,
+                    'headerfield' => 1,
+                    'headerfieldsequence' => 5,
+                    'filter' => 1,
+                    'filter_sequence' => 7,
                 ],
                 'targetsize' => [
                     'name' => 'targetsize',
@@ -206,6 +216,39 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'I~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 1,
+                    'filter' => 1,
+                    'filter_sequence' => 8,
+                ],
+                'assigned_user_id' => [
+                    'name' => 'assigned_user_id',
+                    'uitype' => 53,
+                    'column' => 'smownerid',
+                    'table' => 'vtiger_crmentity',
+                    'label' => 'Assigned To',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~M',
+                    'quickcreate' => 0,
+                    'quicksequence' => 6,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                    'filter' => 1,
+                    'filter_sequence' => 10,
+                ],
+                'numsent' => [
+                    'name' => 'numsent',
+                    'uitype' => 9,
+                    'column' => 'numsent',
+                    'table' => 'vtiger_campaign',
+                    'label' => 'Num Sent',
+                    'readonly' => 1,
+                    'presence' => 2,
+                    'typeofdata' => 'N~O',
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
@@ -224,16 +267,11 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 2,
+                    'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
-                    'picklist_values' => [
-                        'Excellent',
-                        'Good',
-                        'Average',
-                        'Poor',
-                    ],
+                    'picklist_values' => self::$PICKLIST_EXPECTED_RESPONSE,
                 ],
                 'expectedrevenue' => [
                     'name' => 'expectedrevenue',
@@ -249,7 +287,7 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 1,
                     'filter' => 1,
-                    'filter_sequence' => 4,
+                    'filter_sequence' => 9,
                 ],
                 'budgetcost' => [
                     'name' => 'budgetcost',
@@ -374,13 +412,14 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
+                    'quickcreate' => 2,
+                    'quicksequence' => 7,
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
             ],
-            'LBL_SYSTEM_INFORMATIONS' => [
+            'LBL_SYSTEM_INFORMATION' => [
                 'campaign_no' => [
                     'name' => 'campaign_no',
                     'uitype' => 4,
@@ -393,7 +432,7 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'quickcreate' => 3,
                     'displaytype' => 1,
                     'masseditable' => 0,
-                    'summaryfield' => 0,
+                    'summaryfield' => 1,
                 ],
                 'campaignrelstatus' => [
                     'name' => 'campaignrelstatus',
@@ -402,12 +441,13 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'table' => 'vtiger_campaignrelstatus',
                     'label' => 'Status',
                     'readonly' => 1,
-                    'presence' => 0,
+                    'presence' => 1,
                     'typeofdata' => 'V~O',
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                    'picklist_values' => self::$CAMPAIGN_STATUS,
                 ],
             ]
         ];
@@ -434,7 +474,7 @@ class Campaigns_Install_Model extends Core_Install_Model {
             ->createColumn('actualcost',self::$COLUMN_DECIMAL)
             ->createColumn('expectedresponse','varchar(200) DEFAULT NULL')
             ->createColumn('numsent','decimal(11,0) DEFAULT NULL')
-            ->createColumn('product_id','int(19) DEFAULT NULL')
+            ->createColumn('related_to','int(19) DEFAULT NULL')
             ->createColumn('sponsor','varchar(255) DEFAULT NULL')
             ->createColumn('targetaudience','varchar(255) DEFAULT NULL')
             ->createColumn('targetsize','int(19) DEFAULT NULL')
@@ -463,5 +503,30 @@ class Campaigns_Install_Model extends Core_Install_Model {
         
         $this->createPicklistTable('vtiger_campaigntype', 'campaigntypeid', 'campaigntype');
         $this->createPicklistTable('vtiger_expectedresponse', 'expectedresponseid', 'expectedresponse');
+    }
+
+    /**
+     * @return void
+     * @throws AppException
+     */
+    public function migrate()
+    {
+        if (!columnExists('product_id', 'vtiger_campaign')) {
+            return;
+        }
+
+        $table = $this->getTable('vtiger_campaign', '');
+        $result = $table->selectResult(['campaignid', 'related_to', 'product_id'], []);
+
+        while ($row = $table->getDB()->fetchByAssoc($result)) {
+            if (empty($row['product_id']) || !empty($row['related_to'])) {
+                continue;
+            }
+
+            $table->updateData(
+                ['related_to' => $row['product_id']],
+                ['campaignid' => $row['campaignid']],
+            );
+        }
     }
 }

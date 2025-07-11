@@ -102,10 +102,6 @@ function getFieldsListFromQuery($query)
 		{
 			$fields .= "vtiger_account.accountname as '".$fieldlabel."',";
 		}
-		elseif($tablename == 'vtiger_contactdetails' && $columnName == 'reportsto')//Contact - Reports To
-		{
-			$fields .= " concat(vtiger_contactdetails2.lastname,' ',vtiger_contactdetails2.firstname) as 'Reports To Contact',";
-		}
 		elseif($tablename == 'vtiger_potential' && $columnName == 'related_to')//Potential - Related to (changed for B2C model support)
 		{
 			$fields .= "vtiger_potential.related_to as '".$fieldlabel."',";

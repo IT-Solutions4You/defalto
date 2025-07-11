@@ -18,28 +18,10 @@ require_once 'modules/com_vtiger_workflow/VTEntityMethodManager.inc';
 require_once 'modules/com_vtiger_workflow/VTWorkflowManager.inc';
 require_once 'modules/com_vtiger_workflow/VTTaskManager.inc';
 
-if(!defined('INSTALLATION_MODE')) {
-	Migration_Index_View::ExecuteQuery('ALTER TABLE com_vtiger_workflows ADD COLUMN filtersavedinnew int(1)', array());
-}
-
-Migration_Index_View::ExecuteQuery('UPDATE com_vtiger_workflows SET filtersavedinnew = 5', array());
+Migration_Index_View::ExecuteQuery('UPDATE com_vtiger_workflows SET filtersavedinnew = 5 WHERE filtersavedinnew < 1', []);
 
 // Core workflow schema dependecy introduced in 6.1.0
 $adb = PearDatabase::getInstance();
-$columns = [
-    'schtypeid' => 'INT(10)',
-    'schtime' => 'TIME',
-    'schdayofmonth' => 'VARCHAR(100)',
-    'schdayofweek' => 'VARCHAR(100)',
-    'schannualdates' => 'VARCHAR(100)',
-    'nexttrigger_time' => 'DATETIME',
-];
-
-foreach ($columns as $column => $type) {
-    if (!columnExists($column, 'com_vtiger_workflows')) {
-        $adb->pquery(sprintf('ALTER TABLE com_vtiger_workflows ADD %s %s', $column, $type));
-    }
-}
 
 if(!defined('INSTALLATION_MODE')) {
 	Migration_Index_View::ExecuteQuery("CREATE TABLE IF NOT EXISTS com_vtiger_workflow_tasktypes (
@@ -363,7 +345,6 @@ $leads->addLink('DASHBOARDWIDGET', 'History', 'index.php?module=Leads&view=ShowW
 //$leads->addLink('DASHBOARDWIDGET', 'Leads Created', 'index.php?module=Leads&view=ShowWidget&name=LeadsCreated','', '3');
 $leads->addLink('DASHBOARDWIDGET', 'Leads by Status', 'index.php?module=Leads&view=ShowWidget&name=LeadsByStatus','', '4');
 $leads->addLink('DASHBOARDWIDGET', 'Leads by Source', 'index.php?module=Leads&view=ShowWidget&name=LeadsBySource','', '5');
-$leads->addLink('DASHBOARDWIDGET', 'Leads by Industry', 'index.php?module=Leads&view=ShowWidget&name=LeadsByIndustry','', '6');
 
 $helpDesk = Vtiger_Module::getInstance('HelpDesk');
 $helpDesk->addLink('DASHBOARDWIDGET', 'Tickets by Status', 'index.php?module=HelpDesk&view=ShowWidget&name=TicketsByStatus','', '1');
@@ -381,7 +362,6 @@ $home->addLink('DASHBOARDWIDGET', 'Top Potentials', 'index.php?module=Potentials
 //$home->addLink('DASHBOARDWIDGET', 'Leads Created', 'index.php?module=Leads&view=ShowWidget&name=LeadsCreated','', '9');
 $home->addLink('DASHBOARDWIDGET', 'Leads by Status', 'index.php?module=Leads&view=ShowWidget&name=LeadsByStatus','', '10');
 $home->addLink('DASHBOARDWIDGET', 'Leads by Source', 'index.php?module=Leads&view=ShowWidget&name=LeadsBySource','', '11');
-$home->addLink('DASHBOARDWIDGET', 'Leads by Industry', 'index.php?module=Leads&view=ShowWidget&name=LeadsByIndustry','', '12');
 
 $home->addLink('DASHBOARDWIDGET', 'Tickets by Status', 'index.php?module=HelpDesk&view=ShowWidget&name=TicketsByStatus','', '13');
 $home->addLink('DASHBOARDWIDGET', 'Open Tickets', 'index.php?module=HelpDesk&view=ShowWidget&name=OpenTickets','', '14');

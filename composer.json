@@ -48,8 +48,7 @@
   },
   "require-dev": {
     "phpstan/phpstan": "1.9.*",
-    "rector/rector": "0.15.*",
-    "tracy/tracy": "v2.9.7"
+    "rector/rector": "0.15.*"
   },
   "scripts": {
     "pre-autoload-dump": "Google\\Task\\Composer::cleanup"

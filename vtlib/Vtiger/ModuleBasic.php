@@ -471,4 +471,41 @@ class Vtiger_ModuleBasic {
 		create_tab_data_file();
 		self::log("DONE");
 	}
+
+    /**
+     * @return Core_DatabaseData_Model
+     */
+    public function getTabTable(): Core_DatabaseData_Model
+    {
+        return (new Core_DatabaseData_Model())->getTable('vtiger_tab', 'tabid');
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function createTables(): void
+    {
+        $this->getTabTable()
+            ->createColumn('tabid', 'int(19) NOT NULL')
+            ->createColumn('name', 'varchar(50) NOT NULL')
+            ->createColumn('presence', 'int(19) NOT NULL DEFAULT 1')
+            ->createColumn('tabsequence', 'int(10) DEFAULT NULL')
+            ->createColumn('tablabel', 'varchar(100) DEFAULT NULL')
+            ->createColumn('modifiedby', 'int(19) DEFAULT NULL')
+            ->createColumn('modifiedtime', 'int(19) DEFAULT NULL')
+            ->createColumn('customized', 'int(19) DEFAULT NULL')
+            ->createColumn('ownedby', 'int(19) DEFAULT NULL')
+            ->createColumn('isentitytype', 'int(11) NOT NULL DEFAULT 1')
+            ->createColumn('trial', 'int(1) NOT NULL DEFAULT \'0\'')
+            ->createColumn('version', 'varchar(10) DEFAULT NULL')
+            ->createColumn('parent', 'varchar(30) DEFAULT NULL')
+            ->createColumn('source', 'varchar(255) DEFAULT \'custom\'')
+            ->createColumn('issyncable', 'tinyint(1) DEFAULT \'0\'')
+            ->createColumn('allowduplicates', 'tinyint(1) DEFAULT 1')
+            ->createColumn('sync_action_for_duplicates', 'int(1) DEFAULT 1')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`tabid`)')
+            ->createKey('UNIQUE KEY IF NOT EXISTS `tab_name_idx` (`name`)')
+            ->createKey('KEY IF NOT EXISTS `tab_modifiedby_idx` (`modifiedby`)')
+            ->createKey('KEY IF NOT EXISTS `tab_tabid_idx` (`tabid`)');
+    }
 }

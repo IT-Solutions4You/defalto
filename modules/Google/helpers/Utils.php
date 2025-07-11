@@ -247,11 +247,6 @@ class Google_Utils_Helper {
                 'google_field_type' => 'work',
                 'google_custom_label' => ''
             ),
-            'homephone' => array(
-                'google_field_name' => 'gd:phoneNumber',
-                'google_field_type' => 'home',
-                'google_custom_label' => ''
-            ),
             'mailingaddress' => array(
                 'google_field_name' => 'gd:structuredPostalAddress',
                 'google_field_type' => 'home',

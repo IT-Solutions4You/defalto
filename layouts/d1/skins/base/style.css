@@ -1213,7 +1213,8 @@ input[type=checkbox]:checked {
 }
 
 #detailView .fieldValue:hover .action,
-#detailView [id*="_Detail_field_"]:hover .action {
+#detailView [id*="_Detail_field_"]:hover .action,
+#detailView .summaryViewEntries:hover .action {
     display: inline-block;
 }
 

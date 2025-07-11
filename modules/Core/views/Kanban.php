@@ -15,10 +15,10 @@ class Core_Kanban_View extends Vtiger_Index_View
         $moduleName = $request->getModule();
         $view = $request->get('view');
         $layout = Vtiger_Viewer::getLayoutName();
-        $jsFileNames = array(
+        $jsFileNames = [
             "layouts.$layout.modules.Vtiger.resources.$view",
             "layouts.$layout.modules.$moduleName.resources.$view",
-        );
+        ];
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
         return array_merge(parent::getHeaderScripts($request), $jsScriptInstances);

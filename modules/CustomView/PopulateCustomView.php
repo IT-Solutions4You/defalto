@@ -471,7 +471,6 @@ function create_custom_views()
             'vtiger_contactdetails:title:title:Contacts_Title:V',
             'vtiger_contactdetails:accountid:account_id:Contacts_Account_Name:I',
             'vtiger_contactdetails:email:email:Contacts_Email:E',
-            'vtiger_contactsubdetails:otherphone:otherphone:Contacts_Phone:V',
             'vtiger_crmentity:smownerid:assigned_user_id:Contacts_Assigned_To:V',
         ],
 
