@@ -474,7 +474,7 @@ class Campaigns_Install_Model extends Core_Install_Model {
             ->createColumn('actualcost',self::$COLUMN_DECIMAL)
             ->createColumn('expectedresponse','varchar(200) DEFAULT NULL')
             ->createColumn('numsent','decimal(11,0) DEFAULT NULL')
-            ->createColumn('product_id','int(19) DEFAULT NULL')
+            ->createColumn('related_to','int(19) DEFAULT NULL')
             ->createColumn('sponsor','varchar(255) DEFAULT NULL')
             ->createColumn('targetaudience','varchar(255) DEFAULT NULL')
             ->createColumn('targetsize','int(19) DEFAULT NULL')
@@ -503,5 +503,26 @@ class Campaigns_Install_Model extends Core_Install_Model {
         
         $this->createPicklistTable('vtiger_campaigntype', 'campaigntypeid', 'campaigntype');
         $this->createPicklistTable('vtiger_expectedresponse', 'expectedresponseid', 'expectedresponse');
+    }
+
+    public function migrate()
+    {
+        if (!columnExists('product_id', 'vtiger_campaign')) {
+            return;
+        }
+
+        $table = $this->getTable('vtiger_campaign', '');
+        $result = $table->selectResult(['campaignid', 'related_to', 'product_id'], []);
+
+        while ($row = $table->getDB()->fetchByAssoc($result)) {
+            if (empty($row['product_id']) || !empty($row['related_to'])) {
+                continue;
+            }
+
+            $table->updateData(
+                ['related_to' => $row['product_id']],
+                ['campaignid' => $row['campaignid']],
+            );
+        }
     }
 }
