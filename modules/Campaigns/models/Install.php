@@ -505,6 +505,10 @@ class Campaigns_Install_Model extends Core_Install_Model {
         $this->createPicklistTable('vtiger_expectedresponse', 'expectedresponseid', 'expectedresponse');
     }
 
+    /**
+     * @return void
+     * @throws AppException
+     */
     public function migrate()
     {
         if (!columnExists('product_id', 'vtiger_campaign')) {
