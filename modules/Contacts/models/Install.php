@@ -340,21 +340,6 @@ class Contacts_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'filter_sequence' => 9,
                 ],
-                'reference' => [
-                    'name' => 'reference',
-                    'uitype' => 56,
-                    'column' => 'reference',
-                    'table' => 'vtiger_contactdetails',
-                    'label' => 'Reference',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'maximumlength' => 10,
-                    'typeofdata' => 'C~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 1,
-                    'masseditable' => 1,
-                    'summaryfield' => 0,
-                ],
             ],
 
             'LBL_ADDRESS_INFORMATION' => [
@@ -691,7 +676,6 @@ class Contacts_Install_Model extends Core_Install_Model
             ->createColumn('donotcall', 'varchar(3) DEFAULT NULL')
             ->createColumn('emailoptout', 'varchar(3) DEFAULT \'0\'')
             ->createColumn('imagename', 'varchar(150) DEFAULT NULL')
-            ->createColumn('reference', 'varchar(3) DEFAULT NULL')
             ->createColumn('notify_owner', 'varchar(3) DEFAULT \'0\'')
             ->createColumn('isconvertedfromlead', 'varchar(3) DEFAULT \'0\'')
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
