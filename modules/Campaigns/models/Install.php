@@ -408,7 +408,7 @@ class Campaigns_Install_Model extends Core_Install_Model {
                     'table' => 'vtiger_campaignrelstatus',
                     'label' => 'Status',
                     'readonly' => 1,
-                    'presence' => 0,
+                    'presence' => 1,
                     'typeofdata' => 'V~O',
                     'quickcreate' => 1,
                     'displaytype' => 1,
