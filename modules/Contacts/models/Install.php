@@ -340,20 +340,6 @@ class Contacts_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'filter_sequence' => 9,
                 ],
-                'assistant' => [
-                    'name' => 'assistant',
-                    'uitype' => 1,
-                    'column' => 'assistant',
-                    'table' => 'vtiger_contactsubdetails',
-                    'label' => 'Assistant',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 1,
-                    'masseditable' => 1,
-                    'summaryfield' => 0,
-                ],
                 'reference' => [
                     'name' => 'reference',
                     'uitype' => 56,
@@ -734,7 +720,6 @@ class Contacts_Install_Model extends Core_Install_Model
 
         $this->getTable('vtiger_contactsubdetails', null)
             ->createTable('contactsubscriptionid', 'int(19) NOT NULL DEFAULT \'0\'')
-            ->createColumn('assistant', 'varchar(30) DEFAULT NULL')
             ->createColumn('birthday', 'date DEFAULT NULL')
             ->createColumn('laststayintouchrequest', 'int(30) DEFAULT \'0\'')
             ->createColumn('laststayintouchsavedate', 'int(19) DEFAULT \'0\'')
