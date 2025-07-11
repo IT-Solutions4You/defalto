@@ -1673,4 +1673,33 @@ class Vtiger_Field_Model extends Vtiger_Field {
 
         return sprintf('picklist-option-%s-%s', $this->getId(), $value);
     }
+
+    /**
+     * @return Core_DatabaseData_Model
+     */
+    public function getFieldTypeTable(): Core_DatabaseData_Model
+    {
+        return (new Core_DatabaseData_Model())->getTable('vtiger_ws_fieldtype', 'fieldtypeid');
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function insertFieldType($uiType, $fieldType): void
+    {
+        $table = $this->getFieldTypeTable();
+        $data = $table->selectData(['uitype as id'], ['uitype' => $uiType]);
+
+        if (empty($data['id'])) {
+            $table->insertData(['uitype' => $uiType, 'fieldtype' => $fieldType]);
+        }
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function insertDefaultData(): void
+    {
+        $this->insertFieldType(self::UITYPE_PERCENTAGE, 'percentage');
+    }
 }

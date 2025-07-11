@@ -20,10 +20,12 @@
                     <div class="col">
                         <span class="fs-3 recordLabel pushDown" title="{$RECORD->getName()}">
                             {foreach item=NAME_FIELD from=$MODULE_MODEL->getNameFields()}
-                                {assign var=FIELD_MODEL value=$MODULE_MODEL->getField($NAME_FIELD)}
-                                {assign var=FIELD_VALUE value=trim($RECORD->get($NAME_FIELD))}
-                                {if $FIELD_MODEL->getPermissions() && $FIELD_VALUE}
-                                    <span class="me-2 {$NAME_FIELD}">{$FIELD_VALUE}</span>
+                                {assign var=FIELD_MODEL value=$MODULE_MODEL->getFieldByColumn($NAME_FIELD)}
+                                {if $FIELD_MODEL}
+                                    {assign var=FIELD_VALUE value=trim($RECORD->get($FIELD_MODEL->getName()))}
+                                    {if $FIELD_MODEL->getPermissions() && $FIELD_VALUE}
+                                        <span class="me-2 {$NAME_FIELD}">{$FIELD_VALUE}</span>
+                                    {/if}
                                 {/if}
                             {/foreach}
                         </span>

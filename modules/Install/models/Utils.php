@@ -35,6 +35,7 @@ class Install_Utils_Model {
     ];
 
     public static array $registerModules = [
+        'Vtiger',
         'Users',
         'ModTracker',
         'ModComments',

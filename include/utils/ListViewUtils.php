@@ -192,8 +192,6 @@ function getListQuery($module, $where = '') {
 				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
 			LEFT JOIN vtiger_users
 				ON vtiger_users.id = vtiger_crmentity.smownerid
-			LEFT JOIN vtiger_contactdetails vtiger_contactdetails2
-				ON vtiger_contactdetails.reportsto = vtiger_contactdetails2.contactid
 			LEFT JOIN vtiger_customerdetails
 				ON vtiger_customerdetails.customerid = vtiger_contactdetails.contactid";
 			if ((isset($_REQUEST["from_dashboard"]) && $_REQUEST["from_dashboard"] == true) &&

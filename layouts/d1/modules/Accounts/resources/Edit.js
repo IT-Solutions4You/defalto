@@ -4,9 +4,7 @@
  * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
  */
-Vtiger_Edit_Js("Accounts_Edit_Js",{
-   
-},{
+Vtiger_Edit_Js("Accounts_Edit_Js",{},{
    
 	//This will store the editview form
 	editViewForm : false,
@@ -83,20 +81,23 @@ Vtiger_Edit_Js("Accounts_Edit_Js",{
 	/**
 	 * Function to register event for copying address between two fileds
 	 */
-	registerEventForCopyingAddress : function(container){
-		var thisInstance = this;
-		var swapMode;
-		jQuery('[name="copyAddress"]').on('click',function(e){
-			var element = jQuery(e.currentTarget);
-			var target = element.data('target');
-			if(target == "billing"){
-				swapMode = "false";
-			}else if(target == "shipping"){
-				swapMode = "true";
-			}
-			thisInstance.copyAddress(swapMode, container);
-		})
-	},
+    registerEventForCopyingAddress: function (container) {
+        let self = this,
+            swapMode;
+
+        jQuery('[name="copyAddress"]').on('click', function (e) {
+            let element = jQuery(e.currentTarget),
+                target = element.data('target');
+
+            if (target === 'billing') {
+                swapMode = 'false';
+            } else if (target === 'shipping') {
+                swapMode = 'true';
+            }
+
+            self.copyAddress(swapMode, container);
+        })
+    },
 	
 	/**
 	 * Function which will copy the address details - without Confirmation
