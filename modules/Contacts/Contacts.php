@@ -862,46 +862,45 @@ class Contacts extends CRMEntity
 	* @param reference variable - where condition is passed when the query is executed
 	* Returns Export Contacts Query.
 	*/
-        function create_export_query($where)
-        {
-		global $log;
-		global $current_user;
-		$log->debug("Entering create_export_query(".$where.") method ...");
+    function create_export_query($where)
+    {
+        global $log;
+        global $current_user;
+        $log->debug("Entering create_export_query(" . $where . ") method ...");
 
-		include("include/utils/ExportUtils.php");
+        include("include/utils/ExportUtils.php");
 
-		//To get the Permitted fields query and the permitted fields list
-		$sql = getPermittedFieldsQuery("Contacts", "detail_view");
-		$fields_list = getFieldsListFromQuery($sql);
+        //To get the Permitted fields query and the permitted fields list
+        $sql = getPermittedFieldsQuery("Contacts", "detail_view");
+        $fields_list = getFieldsListFromQuery($sql);
 
-		$query = "SELECT vtiger_contactdetails.salutation as 'Salutation',$fields_list,case when (vtiger_users.user_name not like '') then vtiger_users.user_name else vtiger_groups.groupname end as user_name
-                                FROM vtiger_contactdetails
-                                inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_contactdetails.contactid
-                                LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid=vtiger_users.id and vtiger_users.status='Active'
-                                LEFT JOIN vtiger_account on vtiger_contactdetails.accountid=vtiger_account.accountid
-				left join vtiger_contactaddress on vtiger_contactaddress.contactaddressid=vtiger_contactdetails.contactid
-				left join vtiger_contactsubdetails on vtiger_contactsubdetails.contactsubscriptionid=vtiger_contactdetails.contactid
-			        left join vtiger_contactscf on vtiger_contactscf.contactid=vtiger_contactdetails.contactid
-			        left join vtiger_customerdetails on vtiger_customerdetails.customerid=vtiger_contactdetails.contactid
-	                        LEFT JOIN vtiger_groups
-                        	        ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_contactdetails vtiger_contactdetails2
-					ON vtiger_contactdetails2.contactid = vtiger_contactdetails.reportsto";
-		$query .= getNonAdminAccessControlQuery('Contacts',$current_user);
-		$where_auto = " vtiger_crmentity.deleted = 0 ";
+        $query = "SELECT vtiger_contactdetails.salutation as 'Salutation',$fields_list,case when (vtiger_users.user_name not like '') then vtiger_users.user_name else vtiger_groups.groupname end as user_name
+            FROM vtiger_contactdetails
+            inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_contactdetails.contactid
+            LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid=vtiger_users.id and vtiger_users.status='Active'
+            LEFT JOIN vtiger_account on vtiger_contactdetails.accountid=vtiger_account.accountid
+            left join vtiger_contactaddress on vtiger_contactaddress.contactaddressid=vtiger_contactdetails.contactid
+            left join vtiger_contactsubdetails on vtiger_contactsubdetails.contactsubscriptionid=vtiger_contactdetails.contactid
+            left join vtiger_contactscf on vtiger_contactscf.contactid=vtiger_contactdetails.contactid
+			left join vtiger_customerdetails on vtiger_customerdetails.customerid=vtiger_contactdetails.contactid
+	        LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid ";
+        $query .= getNonAdminAccessControlQuery('Contacts', $current_user);
+        $where_auto = " vtiger_crmentity.deleted = 0 ";
 
-                if($where != "")
-                   $query .= "  WHERE ($where) AND ".$where_auto;
-                else
-                   $query .= "  WHERE ".$where_auto;
-
-		$log->info("Export Query Constructed Successfully");
-		$log->debug("Exiting create_export_query method ...");
-		return $query;
+        if ($where != "") {
+            $query .= "  WHERE ($where) AND " . $where_auto;
+        } else {
+            $query .= "  WHERE " . $where_auto;
         }
 
+        $log->info("Export Query Constructed Successfully");
+        $log->debug("Exiting create_export_query method ...");
 
-/** Function to get the Columnnames of the Contacts
+        return $query;
+    }
+
+
+    /** Function to get the Columnnames of the Contacts
 * Used By vtigerCRM Word Plugin
 * Returns the Merge Fields for Word Plugin
 */
@@ -1213,9 +1212,6 @@ function get_contactsforol($user_name)
 
 		if ($queryPlanner->requireTable("vtiger_crmentityContacts",$matrix)){
 			$query .= " left join vtiger_crmentity as vtiger_crmentityContacts on vtiger_crmentityContacts.crmid = vtiger_contactdetails.contactid  and vtiger_crmentityContacts.deleted=0";
-		}
-		if ($queryPlanner->requireTable("vtiger_contactdetailsContacts")){
-			$query .= " left join vtiger_contactdetails as vtiger_contactdetailsContacts on vtiger_contactdetailsContacts.contactid = vtiger_contactdetails.reportsto";
 		}
 		if ($queryPlanner->requireTable("vtiger_contactaddress")){
 			$query .= " left join vtiger_contactaddress on vtiger_contactdetails.contactid = vtiger_contactaddress.contactaddressid";

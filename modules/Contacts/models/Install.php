@@ -340,20 +340,6 @@ class Contacts_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'filter_sequence' => 9,
                 ],
-                'contact_id' => [
-                    'name' => 'contact_id',
-                    'uitype' => 57,
-                    'column' => 'reportsto',
-                    'table' => 'vtiger_contactdetails',
-                    'label' => 'Reports To',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 1,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
                 'assistant' => [
                     'name' => 'assistant',
                     'uitype' => 1,
@@ -711,7 +697,6 @@ class Contacts_Install_Model extends Core_Install_Model
             ->createColumn('title', 'varchar(50) DEFAULT NULL')
             ->createColumn('department', 'varchar(30) DEFAULT NULL')
             ->createColumn('fax', 'varchar(50) DEFAULT NULL')
-            ->createColumn('reportsto', 'varchar(30) DEFAULT NULL')
             ->createColumn('training', 'varchar(50) DEFAULT NULL')
             ->createColumn('usertype', 'varchar(50) DEFAULT NULL')
             ->createColumn('contacttype', 'varchar(50) DEFAULT NULL')
