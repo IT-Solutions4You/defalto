@@ -533,7 +533,7 @@ function create_custom_views()
             'vtiger_quotes:quotestage:quotestage:Quotes_Quote_Stage:V',
             'vtiger_quotes:potentialid:potential_id:Quotes_Potential_Name:I',
             'vtiger_quotes:accountid:account_id:Quotes_Account_Name:I',
-            'vtiger_quotes:total:hdnGrandTotal:Quotes_Total:I',
+            'vtiger_quotes:total:price_total:Quotes_Total:I',
             'vtiger_crmentity:smownerid:assigned_user_id:Quotes_Assigned_To:V',
         ],
 
@@ -559,7 +559,7 @@ function create_custom_views()
             'vtiger_invoice:subject:subject:Invoice_Subject:V',
             'vtiger_invoice:salesorderid:salesorder_id:Invoice_Sales_Order:I',
             'vtiger_invoice:invoicestatus:invoicestatus:Invoice_Status:V',
-            'vtiger_invoice:total:hdnGrandTotal:Invoice_Total:I',
+            'vtiger_invoice:total:price_total:Invoice_Total:I',
             'vtiger_crmentity:smownerid:assigned_user_id:Invoice_Assigned_To:V',
         ],
 
@@ -593,7 +593,7 @@ function create_custom_views()
             'vtiger_purchaseorder:subject:subject:PurchaseOrder_Subject:V',
             'vtiger_purchaseorder:vendorid:vendor_id:PurchaseOrder_Vendor_Name:I',
             'vtiger_purchaseorder:tracking_no:tracking_no:PurchaseOrder_Tracking_Number:V',
-            'vtiger_purchaseorder:total:hdnGrandTotal:PurchaseOrder_Total:V',
+            'vtiger_purchaseorder:total:price_total:PurchaseOrder_Total:V',
             'vtiger_crmentity:smownerid:assigned_user_id:PurchaseOrder_Assigned_To:V',
         ],
 
@@ -602,7 +602,7 @@ function create_custom_views()
             'vtiger_salesorder:subject:subject:SalesOrder_Subject:V',
             'vtiger_salesorder:accountid:account_id:SalesOrder_Account_Name:I',
             'vtiger_salesorder:quoteid:quote_id:SalesOrder_Quote_Name:I',
-            'vtiger_salesorder:total:hdnGrandTotal:SalesOrder_Total:V',
+            'vtiger_salesorder:total:price_total:SalesOrder_Total:V',
             'vtiger_crmentity:smownerid:assigned_user_id:SalesOrder_Assigned_To:V',
         ],
 

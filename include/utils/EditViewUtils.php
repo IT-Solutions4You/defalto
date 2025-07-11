@@ -65,7 +65,7 @@ function getConvertSoToInvoice($focus,$so_focus,$soid)
 	$focus->column_fields['terms_conditions'] = $so_focus->column_fields['terms_conditions'];
     $focus->column_fields['currency_id'] = $so_focus->column_fields['currency_id'];
     $focus->column_fields['conversion_rate'] = $so_focus->column_fields['conversion_rate'];
-    $focus->column_fields['pre_tax_total'] = $so_focus->column_fields['pre_tax_total'];
+    $focus->column_fields['price_after_overall_discount'] = $so_focus->column_fields['price_after_overall_discount'];
 
 	$log->debug("Exiting getConvertSoToInvoice method ...");
 
@@ -400,14 +400,14 @@ function getAssociatedProducts($module, $focus, $seid = '', $refModuleName = fal
 	$finalDiscount = 0;
 	$product_Detail[1]['final_details']['discount_type_final'] = 'zero';
 
-	$subTotal = ($focus->column_fields['hdnSubTotal'] != '')?$focus->column_fields['hdnSubTotal']:0;
+	$subTotal = ($focus->column_fields['subtotal'] != '')?$focus->column_fields['subtotal']:0;
 	$subTotal = number_format($subTotal, $no_of_decimal_places,'.','');
 
-	$product_Detail[1]['final_details']['hdnSubTotal'] = $subTotal;
+	$product_Detail[1]['final_details']['subtotal'] = $subTotal;
 	$discountPercent = ($focus->column_fields['hdnDiscountPercent'] != '')?$focus->column_fields['hdnDiscountPercent']:0;
-	$discountAmount = ($focus->column_fields['hdnDiscountAmount'] != '')?$focus->column_fields['hdnDiscountAmount']:0;
+	$discountAmount = ($focus->column_fields['discount_amount'] != '')?$focus->column_fields['discount_amount']:0;
     if($discountPercent != '0'){
-        $discountAmount = ($product_Detail[1]['final_details']['hdnSubTotal'] * $discountPercent / 100);
+        $discountAmount = ($product_Detail[1]['final_details']['subtotal'] * $discountPercent / 100);
     }
 
 	//To avoid NaN javascript error, here we assign 0 initially to' %of price' and 'Direct Price reduction'(For Final Discount)
@@ -417,7 +417,7 @@ function getAssociatedProducts($module, $focus, $seid = '', $refModuleName = fal
 	$product_Detail[1]['final_details']['discount_amount_final'] = $discount_amount_final;
 
 	$hdnDiscountPercent = (float) $focus->column_fields['hdnDiscountPercent'];
-	$hdnDiscountAmount	= (float) $focus->column_fields['hdnDiscountAmount'];
+	$hdnDiscountAmount	= (float) $focus->column_fields['discount_amount'];
 
 	if(!empty($hdnDiscountPercent)) {
 		$finalDiscount = ($subTotal*$discountPercent/100);
@@ -427,7 +427,7 @@ function getAssociatedProducts($module, $focus, $seid = '', $refModuleName = fal
 		$product_Detail[1]['final_details']['style_discount_percentage_final'] = ' style="visibility:visible"';
 		$product_Detail[1]['final_details']['style_discount_amount_final'] = ' style="visibility:hidden"';
 	} elseif(!empty($hdnDiscountAmount)) {
-		$finalDiscount = $focus->column_fields['hdnDiscountAmount'];
+		$finalDiscount = $focus->column_fields['discount_amount'];
 		$product_Detail[1]['final_details']['discount_type_final'] = 'amount';
 		$product_Detail[1]['final_details']['discount_amount_final'] = $discountAmount;
 		$product_Detail[1]['final_details']['checked_discount_amount_final'] = ' checked';
@@ -555,12 +555,12 @@ function getAssociatedProducts($module, $focus, $seid = '', $refModuleName = fal
 	$product_Detail[1]['final_details']['shtax_totalamount'] = $shtaxtotal;
 
 	//To set the Adjustment value
-	$adjustment = ($focus->column_fields['txtAdjustment'] != '')?$focus->column_fields['txtAdjustment']:0;
+	$adjustment = ($focus->column_fields['adjustment'] != '')?$focus->column_fields['adjustment']:0;
 	$adjustment = number_format($adjustment, $no_of_decimal_places,'.','');
 	$product_Detail[1]['final_details']['adjustment'] = $adjustment;
 
 	//To set the grand total
-	$grandTotal = ($focus->column_fields['hdnGrandTotal'] != '')?$focus->column_fields['hdnGrandTotal']:0;
+	$grandTotal = ($focus->column_fields['price_total'] != '')?$focus->column_fields['price_total']:0;
 	$grandTotal = number_format($grandTotal, $no_of_decimal_places,'.','');
 	$product_Detail[1]['final_details']['grandTotal'] = $grandTotal;
 

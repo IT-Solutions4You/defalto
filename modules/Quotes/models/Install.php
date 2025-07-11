@@ -142,10 +142,10 @@ class Quotes_Install_Model extends Core_Install_Model
                             'table' => 'vtiger_quotes',
                             'label' => 'Sub Total',
                             'readonly' => 1,
-                            'presence' => 2,
+                            'presence' => 0,
                             'typeofdata' => 'N~O',
                             'quickcreate' => 3,
-                            'displaytype' => 3,
+                            'displaytype' => 1,
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
@@ -185,10 +185,10 @@ class Quotes_Install_Model extends Core_Install_Model
                             'table'        => 'vtiger_quotes',
                             'label'        => 'Total',
                             'readonly'     => 1,
-                            'presence'     => 2,
+                            'presence'     => 0,
                             'typeofdata'   => 'N~O',
                             'quickcreate'  => 3,
-                            'displaytype'  => 3,
+                            'displaytype'  => 1,
                             'masseditable' => 1,
                             'summaryfield' => 0,
                             'headerfield' => 1,
@@ -210,20 +210,6 @@ class Quotes_Install_Model extends Core_Install_Model
                             'picklist_values' =>
                                 [
                                 ],
-                        ],
-                    'hdnS_H_Amount' => [
-                            'name' => 'hdnS_H_Amount',
-                            'uitype' => 72,
-                            'column' => 's_h_amount',
-                            'table' => 'vtiger_quotes',
-                            'label' => 'S&H Amount',
-                            'readonly' => 1,
-                            'presence' => 2,
-                            'typeofdata' => 'N~O',
-                            'quickcreate' => 3,
-                            'displaytype' => 3,
-                            'masseditable' => 1,
-                            'summaryfield' => 0,
                         ],
                     'account_id' => [
                             'name' => 'account_id',
@@ -266,21 +252,6 @@ class Quotes_Install_Model extends Core_Install_Model
                             'typeofdata' => 'N~O',
                             'quickcreate' => 3,
                             'displaytype' => 3,
-                            'masseditable' => 1,
-                            'summaryfield' => 0,
-                        ],
-                    'price_after_overall_discount' =>
-                        [
-                            'name'         => 'price_after_overall_discount',
-                            'uitype'       => 72,
-                            'column'       => 'price_after_overall_discount',
-                            'table'        => 'vtiger_quotes',
-                            'label'        => 'Price After Overall Discount',
-                            'readonly'     => 1,
-                            'presence'     => 2,
-                            'typeofdata'   => 'N~O',
-                            'quickcreate'  => 1,
-                            'displaytype'  => 3,
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
@@ -490,46 +461,18 @@ class Quotes_Install_Model extends Core_Install_Model
                 ],
             ],
             'LBL_ITEM_DETAILS' => [
-                'hdnDiscountPercent' => [
-                    'name' => 'hdnDiscountPercent',
-                    'uitype' => 1,
-                    'column' => 'discount_percent',
-                    'table' => 'vtiger_quotes',
-                    'label' => 'Discount Percent',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'N~O',
-                    'quickcreate' => 3,
-                    'displaytype' => 5,
-                    'masseditable' => 1,
-                    'summaryfield' => 0,
-                ],
-                'hdnDiscountAmount' => [
-                    'name' => 'hdnDiscountAmount',
+                'discount_amount' => [
+                    'name' => 'discount_amount',
                     'uitype' => 72,
                     'column' => 'discount_amount',
                     'table' => 'vtiger_quotes',
                     'label' => 'Discount Amount',
                     'readonly' => 1,
-                    'presence' => 2,
+                    'presence' => 0,
                     'typeofdata' => 'N~O',
                     'quickcreate' => 3,
-                    'displaytype' => 5,
+                    'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
-                ],
-                'hdnS_H_Percent'     => [
-                    'name'         => 'hdnS_H_Percent',
-                    'uitype'       => 1,
-                    'column'       => 's_h_percent',
-                    'table'        => 'vtiger_quotes',
-                    'label'        => 'S&H Percent',
-                    'readonly'     => 0,
-                    'presence'     => 2,
-                    'typeofdata'   => 'N~O',
-                    'quickcreate'  => 0,
-                    'displaytype'  => 5,
-                    'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
                 'adjustment'         => [
@@ -577,7 +520,7 @@ class Quotes_Install_Model extends Core_Install_Model
                 ],
                 'pricebookid'        => [
                     'name'         => 'pricebookid',
-                    'uitype'       => 73,
+                    'uitype'       => 10,
                     'column'       => 'pricebookid',
                     'table'        => 'vtiger_quotes',
                     'label'        => 'Price Book',
@@ -588,6 +531,9 @@ class Quotes_Install_Model extends Core_Install_Model
                     'displaytype'  => 1,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                    'related_modules' => [
+                        'PriceBooks',
+                    ],
                 ],
                 'grand_total' => [
                     'name' => 'grand_total',
@@ -610,6 +556,70 @@ class Quotes_Install_Model extends Core_Install_Model
                     'table'         => 'vtiger_quotes',
                     'generatedtype' => 1,
                     'label'         => 'Margin Amount',
+                    'readonly'      => 1,
+                    'presence'      => 0,
+                    'maximumlength' => 100,
+                    'typeofdata'    => 'N~O',
+                    'quickcreate'   => 1,
+                    'displaytype'   => 1,
+                    'masseditable'  => 1,
+                    'summaryfield'  => 0,
+                ],
+                'overall_discount_amount' => [
+                    'name'          => 'overall_discount_amount',
+                    'uitype'        => 71,
+                    'column'        => 'overall_discount_amount',
+                    'table'         => 'vtiger_quotes',
+                    'generatedtype' => 1,
+                    'label'         => 'Overall Discount Amount',
+                    'readonly'      => 1,
+                    'presence'      => 0,
+                    'maximumlength' => 100,
+                    'typeofdata'    => 'N~O',
+                    'quickcreate'   => 1,
+                    'displaytype'   => 1,
+                    'masseditable'  => 1,
+                    'summaryfield'  => 0,
+                ],
+                'price_after_discount' => [
+                    'name'          => 'price_after_discount',
+                    'uitype'        => 71,
+                    'column'        => 'price_after_discount',
+                    'table'         => 'vtiger_quotes',
+                    'generatedtype' => 1,
+                    'label'         => 'Price After Discount',
+                    'readonly'      => 1,
+                    'presence'      => 0,
+                    'maximumlength' => 100,
+                    'typeofdata'    => 'N~O',
+                    'quickcreate'   => 1,
+                    'displaytype'   => 1,
+                    'masseditable'  => 1,
+                    'summaryfield'  => 0,
+                ],
+                'price_after_overall_discount' => [
+                    'name'          => 'price_after_overall_discount',
+                    'uitype'        => 71,
+                    'column'        => 'price_after_overall_discount',
+                    'table'         => 'vtiger_quotes',
+                    'generatedtype' => 1,
+                    'label'         => 'Price After Overall Discount',
+                    'readonly'      => 1,
+                    'presence'      => 0,
+                    'maximumlength' => 100,
+                    'typeofdata'    => 'N~O',
+                    'quickcreate'   => 1,
+                    'displaytype'   => 1,
+                    'masseditable'  => 1,
+                    'summaryfield'  => 0,
+                ],
+                'tax_amount' => [
+                    'name'          => 'tax_amount',
+                    'uitype'        => 71,
+                    'column'        => 'tax_amount',
+                    'table'         => 'vtiger_quotes',
+                    'generatedtype' => 1,
+                    'label'         => 'Tax Amount',
                     'readonly'      => 1,
                     'presence'      => 0,
                     'maximumlength' => 100,
@@ -677,13 +687,16 @@ class Quotes_Install_Model extends Core_Install_Model
             ->createColumn('currency_id', 'int(19) NOT NULL DEFAULT \'1\'')
             ->createColumn('conversion_rate', 'decimal(10,3) NOT NULL DEFAULT \'1.000\'')
             ->createColumn('compound_taxes_info', 'text DEFAULT NULL')
+            ->createColumn('price_after_discount', self::$COLUMN_DECIMAL)
+            ->createColumn('overall_discount_amount', self::$COLUMN_DECIMAL)
             ->createColumn('price_after_overall_discount', self::$COLUMN_DECIMAL)
             ->createColumn('s_h_percent', self::$COLUMN_DECIMAL)
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createColumn('region_id', 'int(19) DEFAULT NULL')
             ->createColumn('pricebookid', 'int(19) DEFAULT NULL')
-            ->createColumn('grand_total', 'decimal(25,8) DEFAULT NULL')
-            ->createColumn('margin_amount', 'decimal(25,8) DEFAULT NULL')
+            ->createColumn('tax_amount', self::$COLUMN_DECIMAL)
+            ->createColumn('grand_total', self::$COLUMN_DECIMAL)
+            ->createColumn('margin_amount', self::$COLUMN_DECIMAL)
             ->createKey('PRIMARY KEY IF NOT EXISTS (`quoteid`)')
             ->createKey('KEY IF NOT EXISTS `quote_quotestage_idx` (`quotestage`)')
             ->createKey('KEY IF NOT EXISTS `quotes_potentialid_idx` (`potentialid`)')

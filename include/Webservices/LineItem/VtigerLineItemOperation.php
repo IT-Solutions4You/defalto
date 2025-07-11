@@ -449,7 +449,7 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 		$parentId = vtws_getIdComponents($parent['id']);
 		$parentId = $parentId[1];
 		$lineItemList = $this->getAllLineItemForParent($parentId);
-		$parent['hdnSubTotal'] = 0;
+		$parent['subtotal'] = 0;
 		$taxAmount = 0;
 
 		$compoundOn = $allTaxes = array();
@@ -475,7 +475,7 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 			}
 			$this->initTax($lineItem, $parent);
 			$lineItemTotal = $lineItemTotal - $discount;
-			$parent['hdnSubTotal'] = ($parent['hdnSubTotal'] ) + $lineItemTotal;
+			$parent['subtotal'] = ($parent['subtotal'] ) + $lineItemTotal;
 			if(strcasecmp($parent['hdnTaxType'], $this->Individual) ===0){
 				$taxAmountsList = array();
 				foreach ($this->taxList as $taxName => $taxInfo) {
@@ -491,25 +491,25 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 						$taxAmountsList[$taxId]['amount'] = ($amount * $taxInfo['percentage']) / 100;
 					}
 
-					$parent['hdnSubTotal'] += $taxInfo['amount'];
+					$parent['subtotal'] += $taxInfo['amount'];
 				}
 				$individualPreTaxTotal += $lineItemTotal;
 			}
 		}
 
-		if(!empty($parent['hdnDiscountAmount']) && ((double)$parent['hdnDiscountAmount']) > 0){
-			$discount = ($parent['hdnDiscountAmount']);
+		if(!empty($parent['discount_amount']) && ((double)$parent['discount_amount']) > 0){
+			$discount = ($parent['discount_amount']);
 		} elseif(!empty($parent['hdnDiscountPercent'])){
-			$discount = ($parent['hdnDiscountPercent']/100 * $parent['hdnSubTotal']);
+			$discount = ($parent['hdnDiscountPercent']/100 * $parent['subtotal']);
 		} else {
 			$discount = 0;
 		}
-		$parent['pre_tax_total'] = $total = $parent['hdnSubTotal'] - $discount + $parent['hdnS_H_Amount'];
+		$parent['price_after_overall_discount'] = $total = $parent['subtotal'] - $discount + $parent['hdnS_H_Amount'];
 		if ($parent['hdnTaxType'] === 'individual') {
-			$parent['pre_tax_total'] = $individualPreTaxTotal - $discount + $parent['hdnS_H_Amount'];
+			$parent['price_after_overall_discount'] = $individualPreTaxTotal - $discount + $parent['hdnS_H_Amount'];
 		}
 
-		$taxTotal = $parent['hdnSubTotal'] - $discount;
+		$taxTotal = $parent['subtotal'] - $discount;
 		if (strcasecmp($parent['hdnTaxType'], $this->Individual) !== 0) {
 			$newTaxList = array();
 			foreach ($createdElement as $element) {
@@ -571,16 +571,16 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 				}
 			}
 		}
-		$parent['hdnGrandTotal'] = $total + $taxAmount + $parent['txtAdjustment'];
+		$parent['price_total'] = $total + $taxAmount + $parent['adjustment'];
 
 		$parentTypeHandler = vtws_getModuleHandlerFromId($parent['id'], $this->user);
 		$parentTypeMeta = $parentTypeHandler->getMeta();
 		$parentType = $parentTypeMeta->getEntityName();
 
 		$parentInstance = CRMEntity::getInstance($parentType);
-		$sql = 'update '.$parentInstance->table_name.' set subtotal=?, total=?, pre_tax_total=? where '.
+		$sql = 'update '.$parentInstance->table_name.' set subtotal=?, total=?, price_after_overall_discount=? where '.
 		$parentInstance->tab_name_index[$parentInstance->table_name].'=?';
-		$params = array($parent['hdnSubTotal'],$parent['hdnGrandTotal'],$parent['pre_tax_total'],$parentId);
+		$params = array($parent['subtotal'],$parent['price_total'],$parent['price_after_overall_discount'],$parentId);
 		$transactionSuccessful = vtws_runQueryAsTransaction($sql,$params,$result);
 		$this->setParent($parent['id'], $parent);
 		if(!$transactionSuccessful){

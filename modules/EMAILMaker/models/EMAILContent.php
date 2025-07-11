@@ -847,7 +847,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     private function fillInventoryData($module, $focus)
     {
-        if (isset($focus->column_fields["currency_id"]) && isset($focus->column_fields["conversion_rate"]) && isset($focus->column_fields["hdnGrandTotal"])) {
+        if (isset($focus->column_fields["currency_id"]) && isset($focus->column_fields["conversion_rate"]) && isset($focus->column_fields["price_total"])) {
             self::$inventory_table_array[$module] = $focus->table_name;
             self::$inventory_id_array[$module] = $focus->table_index;
         }
@@ -898,7 +898,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             $totalVatSum = $totalwithoutwat = $totalAfterDiscount_subtotal = $total_subtotal = $totalsum_subtotal = 0;
             [$images, $bacImgs] = $this->getInventoryImages($focus->id);
 
-            $recordModel = Inventory_Record_Model::getInstanceById($focus->id);
+            $recordModel = Vtiger_Record_Model::getInstanceById($focus->id);
             $relatedProducts = $recordModel->getProducts();
             //##Final details convertion started
             $finalDetails = $relatedProducts[1]['final_details'];
@@ -907,7 +907,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             $chargesAndItsTaxes = $finalDetails['chargesAndItsTaxes'];
 
             $currencyFieldsList = array(
-                'NETTOTAL' => 'hdnSubTotal',
+                'NETTOTAL' => 'subtotal',
                 'TAXTOTAL' => 'tax_totalamount',
                 'SHTAXTOTAL' => 'shtax_totalamount',
                 'TOTALAFTERDISCOUNT' => 'preTaxTotal',
@@ -1117,7 +1117,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $Details["TOTAL"]["TAXTOTALPERCENT"] = $this->formatNumberToEMAIL($totalVatPercent);
 
         $hdnDiscountPercent = (float)$focus->column_fields['hdnDiscountPercent'];
-        $hdnDiscountAmount = (float)$focus->column_fields['hdnDiscountAmount'];
+        $hdnDiscountAmount = (float)$focus->column_fields['discount_amount'];
 
         if (!empty($hdnDiscountPercent)) {
             $finalDiscountPercent = $hdnDiscountPercent;

@@ -76,6 +76,7 @@ class Install_Utils_Model {
         'PurchaseOrder',
         'SalesOrder',
         'Invoice',
+        'InventoryItem',
     ];
 
     /**

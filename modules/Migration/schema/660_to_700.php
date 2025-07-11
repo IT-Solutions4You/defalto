@@ -147,53 +147,6 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery($updateQuery, $fieldNamesList);
 	$db->pquery('UPDATE vtiger_field SET fieldlabel=? WHERE displaytype=? AND fieldname=?', array('Item Discount Amount', 5, 'discount_amount'));
 
-	$inventoryModules = getInventoryModules();
-	foreach ($inventoryModules as $moduleName) {
-		$tabId = getTabid($moduleName);
-		$blockId = getBlockId($tabId, 'LBL_ITEM_DETAILS');
-		$db->pquery('UPDATE vtiger_field SET displaytype=?, block=? WHERE tabid=? AND fieldname IN (?, ?)', array(5, $blockId, $tabId, 'hdnDiscountAmount', 'hdnDiscountPercent'));
-	}
-
-	$itemFieldsName = array('image','purchase_cost','margin');
-	$itemFieldsLabel = array('Image','Purchase Cost','Margin');
-	$itemFieldsTypeOfData = array('V~O','N~O','N~O');
-	$itemFieldsDisplayType = array('56', '71', '71');
-	$itemFieldsDataType = array('VARCHAR(2)', 'decimal(27,8)', 'decimal(27,8)');
-
-	$fieldIdsList = array();
-	foreach ($inventoryModules as $moduleName) {
-		$moduleInstance = Vtiger_Module::getInstance($moduleName);
-		$blockInstance = Vtiger_Block::getInstance('LBL_ITEM_DETAILS', $moduleInstance);
-
-		for($i=0; $i<php7_count($itemFieldsName); $i++) {
-			$fieldName = $itemFieldsName[$i];
-
-			if ($moduleName === 'PurchaseOrder' && $fieldName !== 'image') {
-				continue;
-			}
-
-			$fieldInstance = Vtiger_Field::getInstance($fieldName, $moduleInstance);
-			if (!$fieldInstance) {
-				$fieldInstance = new Vtiger_Field();
-
-				$fieldInstance->name		= $fieldName;
-				$fieldInstance->column		= $fieldName;
-				$fieldInstance->label		= $itemFieldsLabel[$i];
-				$fieldInstance->columntype	= $itemFieldsDataType[$i];
-				$fieldInstance->typeofdata	= $itemFieldsTypeOfData[$i];
-				$fieldInstance->uitype		= $itemFieldsDisplayType[$i];
-				$fieldInstance->table		= 'vtiger_inventoryproductrel';
-				$fieldInstance->presence	= '1';
-				$fieldInstance->readonly	= '0';
-				$fieldInstance->displaytype = '5';
-				$fieldInstance->masseditable = '0';
-
-				$blockInstance->addField($fieldInstance);
-				$fieldIdsList[] = $fieldInstance->id;
-			}
-		}
-	}
-
 	$columns = $db->getColumnNames('vtiger_products');
 	if (!in_array('is_subproducts_viewable', $columns)) {
 		$db->pquery('ALTER TABLE vtiger_products ADD COLUMN is_subproducts_viewable INT(1) DEFAULT 1', array());

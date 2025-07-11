@@ -648,8 +648,8 @@ function saveInventoryProductDetails(&$focus, $module, $update_prod_stock='false
 	$updatequery .= " subtotal=?,";
 	array_push($updateparams, $subtotal);
 
-    $pretaxTotal = vtlib_purify($_REQUEST['pre_tax_total']); 
- 	$updatequery .= " pre_tax_total=?,"; 
+    $pretaxTotal = vtlib_purify($_REQUEST['price_after_overall_discount']);
+ 	$updatequery .= " price_after_overall_discount=?,";
  	array_push($updateparams, $pretaxTotal);
 
 	$updatequery .= " taxtype=?,";

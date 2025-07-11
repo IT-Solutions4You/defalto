@@ -433,7 +433,7 @@ class Accounts_Install_Model extends Core_Install_Model {
                 ],
                 'pricebookid' => [
                     'name' => 'pricebookid',
-                    'uitype' => 73,
+                    'uitype' => 10,
                     'column' => 'pricebookid',
                     'table' => 'vtiger_account',
                     'label' => 'Price Book',
@@ -444,6 +444,9 @@ class Accounts_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                    'related_modules' => [
+                        'PriceBooks',
+                    ],
                 ],
             ],
             'LBL_CUSTOM_INFORMATION' => [],

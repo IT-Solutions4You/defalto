@@ -7,7 +7,7 @@
  */
 
 /**
- * Inventory Record Model Class
+ * Record Model Class
  */
 class SalesOrder_Record_Model extends Vtiger_Record_Model
 {

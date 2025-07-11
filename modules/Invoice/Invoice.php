@@ -30,14 +30,13 @@ class Invoice extends CRMEntity
 
     public $table_name = "vtiger_invoice";
     public $table_index = 'invoiceid';
-    public $tab_name = ['vtiger_crmentity', 'vtiger_invoice', 'vtiger_invoicebillads', 'vtiger_invoiceshipads', 'vtiger_invoicecf', 'vtiger_inventoryproductrel'];
+    public $tab_name = ['vtiger_crmentity', 'vtiger_invoice', 'vtiger_invoicebillads', 'vtiger_invoiceshipads', 'vtiger_invoicecf'];
     public $tab_name_index = [
         'vtiger_crmentity'           => 'crmid',
         'vtiger_invoice'             => 'invoiceid',
         'vtiger_invoicebillads'      => 'invoicebilladdressid',
         'vtiger_invoiceshipads'      => 'invoiceshipaddressid',
         'vtiger_invoicecf'           => 'invoiceid',
-        'vtiger_inventoryproductrel' => 'id'
     ];
     public $customFieldTable = ['vtiger_invoicecf', 'invoiceid'];
 
@@ -153,15 +152,8 @@ class Invoice extends CRMEntity
         if (isset($this->_recurring_mode) && $this->_recurring_mode == 'recurringinvoice_from_so' && isset($this->_salesorderid) && $this->_salesorderid != '') {
             // We are getting called from the RecurringInvoice cron service!
             $this->createRecurringInvoiceFromSO();
-        } elseif (isset($_REQUEST)) {
-            if ($_REQUEST['action'] != 'InvoiceAjax' && $_REQUEST['ajxaction'] != 'DETAILVIEW'
-                && $_REQUEST['action'] != 'MassEditSave' && $_REQUEST['action'] != 'ProcessDuplicates'
-                && $_REQUEST['action'] != 'SaveAjax' && $this->isLineItemUpdate != false && $_REQUEST['action'] != 'FROM_WS') {
-                //Based on the total Number of rows we will save the product relationship with this entity
-                saveInventoryProductDetails($this, 'Invoice');
-            } elseif ($_REQUEST['action'] == 'InvoiceAjax' || $_REQUEST['action'] == 'MassEditSave' || $_REQUEST['action'] == 'FROM_WS') {
-                $updateInventoryProductRel_deduct_stock = false;
-            }
+        } elseif (isset($_REQUEST) && $_REQUEST['action'] == 'InvoiceAjax' || $_REQUEST['action'] == 'MassEditSave' || $_REQUEST['action'] == 'FROM_WS') {
+            $updateInventoryProductRel_deduct_stock = false;
         }
         // Update the currency id and the conversion rate for the invoice
         $update_query = "update vtiger_invoice set currency_id=?, conversion_rate=? where invoiceid=?";
@@ -230,7 +222,6 @@ class Invoice extends CRMEntity
         // Define the dependency matrix ahead
         $matrix = $queryPlanner->newDependencyMatrix();
         $matrix->setDependency('vtiger_crmentityInvoice', ['vtiger_usersInvoice', 'vtiger_groupsInvoice', 'vtiger_lastModifiedByInvoice']);
-        $matrix->setDependency('vtiger_inventoryproductrelInvoice', ['vtiger_productsInvoice', 'vtiger_serviceInvoice']);
 
         if (!$queryPlanner->requireTable('vtiger_invoice', $matrix)) {
             return '';
@@ -243,7 +234,6 @@ class Invoice extends CRMEntity
             'vtiger_salesorderInvoice',
             'vtiger_invoicebillads',
             'vtiger_invoiceshipads',
-            'vtiger_inventoryproductrelInvoice',
             'vtiger_contactdetailsInvoice',
             'vtiger_accountInvoice'
         ]);
@@ -267,14 +257,6 @@ class Invoice extends CRMEntity
         }
         if ($queryPlanner->requireTable('vtiger_invoiceshipads')) {
             $query .= " left join vtiger_invoiceshipads on vtiger_invoice.invoiceid=vtiger_invoiceshipads.invoiceshipaddressid";
-        }
-        if ($queryPlanner->requireTable('vtiger_inventoryproductrelInvoice', $matrix)) {
-        }
-        if ($queryPlanner->requireTable('vtiger_productsInvoice')) {
-            $query .= " left join vtiger_products as vtiger_productsInvoice on vtiger_productsInvoice.productid = vtiger_inventoryproductreltmpInvoice.productid";
-        }
-        if ($queryPlanner->requireTable('vtiger_serviceInvoice')) {
-            $query .= " left join vtiger_service as vtiger_serviceInvoice on vtiger_serviceInvoice.serviceid = vtiger_inventoryproductreltmpInvoice.productid";
         }
         if ($queryPlanner->requireTable('vtiger_groupsInvoice')) {
             $query .= " left join vtiger_groups as vtiger_groupsInvoice on vtiger_groupsInvoice.groupid = vtiger_crmentityInvoice.smownerid";
@@ -402,11 +384,8 @@ class Invoice extends CRMEntity
             'subtotal'         => 'subtotal',
             'total'            => 'total',
             'taxtype'          => 'hdnTaxType',
-            'discount_percent' => 'hdnDiscountPercent',
             'discount_amount'  => 'discount_amount',
-            's_h_amount'       => 'hdnS_H_Amount',
             'region_id'        => 'region_id',
-            's_h_percent'      => 'hdnS_H_Percent',
             'balance'          => 'total'
         ];
         $updatecols = [];
@@ -422,15 +401,6 @@ class Invoice extends CRMEntity
 
             $adb->pquery($updatequery, $updateparams);
         }
-    }
-
-    public function insertIntoEntityTable($table_name, $module, $fileid = '')
-    {
-        //Ignore relation table insertions while saving of the record
-        if ($table_name == 'vtiger_inventoryproductrel') {
-            return;
-        }
-        parent::insertIntoEntityTable($table_name, $module, $fileid);
     }
 
     /*Function to create records in current module.
@@ -490,9 +460,6 @@ class Invoice extends CRMEntity
 				LEFT JOIN vtiger_salesorder ON vtiger_salesorder.salesorderid = vtiger_invoice.salesorderid
 				LEFT JOIN vtiger_invoicebillads ON vtiger_invoicebillads.invoicebilladdressid = vtiger_invoice.invoiceid
 				LEFT JOIN vtiger_invoiceshipads ON vtiger_invoiceshipads.invoiceshipaddressid = vtiger_invoice.invoiceid
-				LEFT JOIN vtiger_inventoryproductrel ON vtiger_inventoryproductrel.id = vtiger_invoice.invoiceid
-				LEFT JOIN vtiger_products ON vtiger_products.productid = vtiger_inventoryproductrel.productid
-				LEFT JOIN vtiger_service ON vtiger_service.serviceid = vtiger_inventoryproductrel.productid
 				LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_invoice.contactid
 				LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_invoice.accountid
 				LEFT JOIN vtiger_currency_info ON vtiger_currency_info.id = vtiger_invoice.currency_id

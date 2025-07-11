@@ -34,7 +34,6 @@ class SalesOrder extends CRMEntity
         'vtiger_soshipads',
         'vtiger_salesordercf',
         'vtiger_invoice_recurring_info',
-        'vtiger_inventoryproductrel'
     ];
     public $tab_name_index = [
         'vtiger_crmentity'              => 'crmid',
@@ -43,7 +42,6 @@ class SalesOrder extends CRMEntity
         'vtiger_soshipads'              => 'soshipaddressid',
         'vtiger_salesordercf'           => 'salesorderid',
         'vtiger_invoice_recurring_info' => 'salesorderid',
-        'vtiger_inventoryproductrel'    => 'id'
     ];
     /**
      * Mandatory table for supporting custom fields.
@@ -145,27 +143,6 @@ class SalesOrder extends CRMEntity
 
     public function save_module($module)
     {
-        /* $_REQUEST['REQUEST_FROM_WS'] is set from webservices script.
-         * Depending on $_REQUEST['totalProductCount'] value inserting line items into DB.
-         * This should be done by webservices, not be normal save of Inventory record.
-         * So unsetting the value $_REQUEST['totalProductCount'] through check point
-         */
-        if (isset($_REQUEST['REQUEST_FROM_WS']) && $_REQUEST['REQUEST_FROM_WS']) {
-            unset($_REQUEST['totalProductCount']);
-        }
-
-        //in ajax save we should not call this function, because this will delete all the existing product values
-        if ($_REQUEST['action'] != 'SalesOrderAjax' && $_REQUEST['ajxaction'] != 'DETAILVIEW'
-            && $_REQUEST['action'] != 'MassEditSave' && $_REQUEST['action'] != 'ProcessDuplicates'
-            && $_REQUEST['action'] != 'SaveAjax' && $this->isLineItemUpdate != false) {
-            //Based on the total Number of rows we will save the product relationship with this entity
-            //saveInventoryProductDetails($this, 'SalesOrder');
-        }
-
-        // Update the currency id and the conversion rate for the sales order
-        $update_query = "update vtiger_salesorder set currency_id=?, conversion_rate=? where salesorderid=?";
-        $update_params = [$this->column_fields['currency_id'], $this->column_fields['conversion_rate'], $this->id];
-        //$this->db->pquery($update_query, $update_params);
     }
 
     /** Function to get the invoices associated with the Sales Order
@@ -221,7 +198,6 @@ class SalesOrder extends CRMEntity
     {
         $matrix = $queryPlanner->newDependencyMatrix();
         $matrix->setDependency('vtiger_crmentitySalesOrder', ['vtiger_usersSalesOrder', 'vtiger_groupsSalesOrder', 'vtiger_lastModifiedBySalesOrder']);
-        $matrix->setDependency('vtiger_inventoryproductrelSalesOrder', ['vtiger_productsSalesOrder', 'vtiger_serviceSalesOrder']);
         if (!$queryPlanner->requireTable('vtiger_salesorder', $matrix)) {
             return '';
         }
@@ -232,7 +208,6 @@ class SalesOrder extends CRMEntity
             'vtiger_potentialRelSalesOrder',
             'vtiger_sobillads',
             'vtiger_soshipads',
-            'vtiger_inventoryproductrelSalesOrder',
             'vtiger_contactdetailsSalesOrder',
             'vtiger_accountSalesOrder',
             'vtiger_invoice_recurring_info',
@@ -254,14 +229,6 @@ class SalesOrder extends CRMEntity
         }
         if ($queryPlanner->requireTable("vtiger_currency_info$secmodule")) {
             $query .= " left join vtiger_currency_info as vtiger_currency_info$secmodule on vtiger_currency_info$secmodule.id = vtiger_salesorder.currency_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_inventoryproductrelSalesOrder", $matrix)) {
-        }
-        if ($queryPlanner->requireTable("vtiger_productsSalesOrder")) {
-            $query .= " left join vtiger_products as vtiger_productsSalesOrder on vtiger_productsSalesOrder.productid = vtiger_inventoryproductreltmpSalesOrder.productid";
-        }
-        if ($queryPlanner->requireTable("vtiger_serviceSalesOrder")) {
-            $query .= " left join vtiger_service as vtiger_serviceSalesOrder on vtiger_serviceSalesOrder.serviceid = vtiger_inventoryproductreltmpSalesOrder.productid";
         }
         if ($queryPlanner->requireTable("vtiger_groupsSalesOrder")) {
             $query .= " left join vtiger_groups as vtiger_groupsSalesOrder on vtiger_groupsSalesOrder.groupid = vtiger_crmentitySalesOrder.smownerid";
@@ -348,15 +315,6 @@ class SalesOrder extends CRMEntity
         return parent::getJoinClause($tableName);
     }
 
-    public function insertIntoEntityTable($table_name, $module, $fileid = '')
-    {
-        //Ignore relation table insertions while saving of the record
-        if ($table_name == 'vtiger_inventoryproductrel') {
-            return;
-        }
-        parent::insertIntoEntityTable($table_name, $module, $fileid);
-    }
-
     /*Function to create records in current module.
     **This function called while importing records to this module*/
     public function createRecords($obj)
@@ -413,9 +371,6 @@ class SalesOrder extends CRMEntity
 				LEFT JOIN vtiger_salesordercf ON vtiger_salesordercf.salesorderid = vtiger_salesorder.salesorderid
 				LEFT JOIN vtiger_sobillads ON vtiger_sobillads.sobilladdressid = vtiger_salesorder.salesorderid
 				LEFT JOIN vtiger_soshipads ON vtiger_soshipads.soshipaddressid = vtiger_salesorder.salesorderid
-				LEFT JOIN vtiger_inventoryproductrel ON vtiger_inventoryproductrel.id = vtiger_salesorder.salesorderid
-				LEFT JOIN vtiger_products ON vtiger_products.productid = vtiger_inventoryproductrel.productid
-				LEFT JOIN vtiger_service ON vtiger_service.serviceid = vtiger_inventoryproductrel.productid
 				LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_salesorder.contactid
 				LEFT JOIN vtiger_invoice_recurring_info ON vtiger_invoice_recurring_info.salesorderid = vtiger_salesorder.salesorderid
 				LEFT JOIN vtiger_potential ON vtiger_potential.potentialid = vtiger_salesorder.potentialid
@@ -469,7 +424,7 @@ class SalesOrder extends CRMEntity
 
         if ($this->tab_name) {
             foreach ($this->tab_name as $tableName) {
-                if ($tableName != 'vtiger_crmentity' && $tableName != $this->table_name && $tableName != 'vtiger_inventoryproductrel' && in_array($tableName, $requiredTables)) {
+                if ($tableName != 'vtiger_crmentity' && $tableName != $this->table_name && in_array($tableName, $requiredTables)) {
                     if ($tableName == 'vtiger_invoice_recurring_info') {
                         $fromClause .= " LEFT JOIN " . $tableName . " ON " . $tableName . '.' . $this->tab_name_index[$tableName] .
                             " = $this->table_name.$this->table_index";

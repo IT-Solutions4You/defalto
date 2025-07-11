@@ -228,51 +228,29 @@ class Products_Module_Model extends Vtiger_Module_Model
 		}
 	}
 
-	public function getAdditionalImportFields() {
-		if (!$this->importableFields) {
-			$taxModels = Inventory_TaxRecord_Model::getProductTaxes();
-			foreach ($taxModels as $taxId => $taxModel) {
-				if ($taxModel->isDeleted()) {
-					unset($taxModels[$taxId]);
-				}
-			}
+    public function getAdditionalImportFields()
+    {
+        if (!$this->importableFields) {
+            $taxHeaders = [];
+            $this->importableFields = [];
+            foreach ($taxHeaders as $fieldName => $fieldLabel) {
+                $fieldModel = new Vtiger_Field_Model();
+                $fieldModel->name = $fieldName;
+                $fieldModel->label = $fieldLabel;
+                $fieldModel->column = $fieldName;
+                $fieldModel->uitype = '83';
+                $webServiceField = $fieldModel->getWebserviceFieldObject();
+                $webServiceField->setFieldDataType($fieldModel->getFieldDataType());
+                $fieldModel->webserviceField = $webServiceField;
+                $this->importableFields[$fieldName] = $fieldModel;
+            }
+        }
 
-			$taxHeaders = array();
-			$allRegions = Inventory_TaxRegion_Model::getAllTaxRegions();
-			foreach ($taxModels as $taxId => $taxModel) {
-				$tax = $taxModel->get('taxname');
-				$taxName = $taxModel->getName();
-				$taxHeaders[$tax] = decode_html($taxName);
+        return $this->importableFields;
+    }
 
-				$regions = $taxModel->getRegionTaxes();
-				foreach ($regions as $regionsTaxInfo) {
-					foreach(array_fill_keys($regionsTaxInfo['list'], $regionsTaxInfo['value']) as $regionId => $taxPercentage) {
-						if ($allRegions[$regionId]) {
-							$taxRegionName = $taxName.'-'.$allRegions[$regionId]->getName();
-							$taxHeaders[$tax."_$regionId"] = decode_html($taxRegionName);
-						}
-					}
-				}
-			}
-
-			$this->importableFields = array();
-			foreach ($taxHeaders as $fieldName => $fieldLabel) {
-				$fieldModel = new Vtiger_Field_Model();
-				$fieldModel->name = $fieldName;
-				$fieldModel->label = $fieldLabel;
-				$fieldModel->column = $fieldName;
-				$fieldModel->uitype = '83';
-				$webServiceField = $fieldModel->getWebserviceFieldObject();
-				$webServiceField->setFieldDataType($fieldModel->getFieldDataType());
-				$fieldModel->webserviceField = $webServiceField;
-				$this->importableFields[$fieldName] = $fieldModel;
-			}
-		}
-		return $this->importableFields;
-	}
-
-	/**
-	 * Function to get popup view fields
+    /**
+     * Function to get popup view fields
 	 */
 	public function getPopupViewFieldsList(){
 		$summaryFieldsList = parent::getPopupViewFieldsList();

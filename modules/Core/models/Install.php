@@ -103,6 +103,9 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         'LBL_ADDRESS_INFORMATION' => [
             'name' => 'Base',
         ],
+        'LBL_ITEM_DETAILS' => [
+            'name' => 'InventoryItem',
+        ],
     ];
 
     /**

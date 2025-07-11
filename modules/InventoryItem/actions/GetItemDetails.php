@@ -28,7 +28,7 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
     {
         $decimalPlace = getCurrencyDecimalPlaces();
         $currencyId = $request->get('currency_id');
-        $currencies = Inventory_Module_Model::getAllCurrencies();
+        $currencies = getAllCurrencies();
         $priceBookId = $request->get('pricebookid');
         $conversionRateForPurchaseCost = 1;
         $idList = $request->get('idlist');

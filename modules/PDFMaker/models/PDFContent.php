@@ -518,8 +518,8 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
             $prefix = 'R_' . strtoupper($is_related) . '_';
         }
 
-        self::$rep['$' . $prefix . 'SUBTOTAL$'] = $this->formatNumberToPDF($focus->column_fields['hdnSubTotal']);
-        self::$rep['$' . $prefix . 'TOTAL$'] = $this->formatNumberToPDF($focus->column_fields['hdnGrandTotal']);
+        self::$rep['$' . $prefix . 'SUBTOTAL$'] = $this->formatNumberToPDF($focus->column_fields['subtotal']);
+        self::$rep['$' . $prefix . 'TOTAL$'] = $this->formatNumberToPDF($focus->column_fields['price_total']);
 
         $currencytype = $this->getInventoryCurrencyInfoCustom($module, $focus);
         $currencytype['currency_symbol'] = str_replace('€', '&euro;', $currencytype['currency_symbol']);
@@ -631,7 +631,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
             self::$is_inventory_module[$module] = $this->isInventoryModule($module);
         }
 
-        if (self::$is_inventory_module[$module] || (isset($focus->column_fields['currency_id']) && isset($focus->column_fields['conversion_rate']) && isset($focus->column_fields['hdnGrandTotal']))) {
+        if (self::$is_inventory_module[$module] || (isset($focus->column_fields['currency_id']) && isset($focus->column_fields['conversion_rate']) && isset($focus->column_fields['price_total']))) {
             self::$inventory_table_array[$module] = $focus->table_name;
             self::$inventory_id_array[$module] = $focus->table_index;
         }
@@ -685,14 +685,14 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
             [$images, $bacImgs] = $this->getInventoryImages($focus->id);
 
-            $recordModel = Inventory_Record_Model::getInstanceById($focus->id);
+            $recordModel = Vtiger_Record_Model::getInstanceById($focus->id);
             $relatedProducts = $recordModel->getProducts();
             //##Final details convertion started
             $finalDetails = $relatedProducts[1]['final_details'];
             $taxtype = $finalDetails['taxtype'];
 
             $currencyFieldsList = array(
-                'NETTOTAL' => 'hdnSubTotal',
+                'NETTOTAL' => 'subtotal',
                 'TAXTOTAL' => 'tax_totalamount',
                 'SHTAXTOTAL' => 'shtax_totalamount',
                 'TOTALAFTERDISCOUNT' => 'preTaxTotal',
@@ -943,7 +943,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         $Details['TOTAL']['TAXTOTALPERCENT'] = $this->formatNumberToPDF($total_vat_percent);
 
         $hdnDiscountPercent = (float)$focus->column_fields['hdnDiscountPercent'];
-        $hdnDiscountAmount = (float)$focus->column_fields['hdnDiscountAmount'];
+        $hdnDiscountAmount = (float)$focus->column_fields['discount_amount'];
 
         if (!empty($hdnDiscountPercent)) {
             $finalDiscountPercent = $hdnDiscountPercent;

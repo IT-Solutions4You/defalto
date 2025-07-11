@@ -13,6 +13,8 @@ class InventoryItem_Install_Model extends Core_Install_Model
 
     public function addCustomLinks(): void
     {
+        $this->updateHistory();
+        $this->updateComments();
     }
 
     public function deleteCustomLinks(): void
@@ -39,6 +41,8 @@ class InventoryItem_Install_Model extends Core_Install_Model
                     'masseditable'      => 0,
                     'summaryfield'      => 1,
                     'entity_identifier' => 1,
+                    'filter'            => 1,
+                    'filter_sequence'   => 1,
                 ],
                 'parentid'                     => [
                     'name'            => 'parentid',
@@ -59,6 +63,8 @@ class InventoryItem_Install_Model extends Core_Install_Model
                         'Accounts',
                     ],
                     'columntype'      => 'INT(11)',
+                    'filter'          => 1,
+                    'filter_sequence' => 2,
                 ],
                 'productid'                    => [
                     'name'            => 'productid',
@@ -461,25 +467,25 @@ class InventoryItem_Install_Model extends Core_Install_Model
             ->createTable('inventoryitemid')
             ->createColumn('item_text', 'varchar(255) DEFAULT NULL')
             ->createColumn('productid', 'int(19) DEFAULT NULL')
-            ->createColumn('quantity', 'decimal(25,4) DEFAULT NULL')
-            ->createColumn('price', 'decimal(25,4) DEFAULT NULL')
-            ->createColumn('subtotal', 'decimal(25,4) DEFAULT NULL')
-            ->createColumn('discount', 'decimal(25,4) DEFAULT NULL')
-            ->createColumn('discount_amount', 'decimal(25,4) DEFAULT NULL')
-            ->createColumn('price_after_discount', 'decimal(25,4) DEFAULT NULL')
-            ->createColumn('overall_discount', 'decimal(25,4) DEFAULT NULL')
-            ->createColumn('overall_discount_amount', 'decimal(25,4) DEFAULT NULL')
-            ->createColumn('price_after_overall_discount', 'decimal(25,4) DEFAULT NULL')
-            ->createColumn('tax_amount', 'decimal(25,4) DEFAULT NULL')
-            ->createColumn('price_total', 'decimal(25,4) DEFAULT NULL')
-            ->createColumn('purchase_cost', 'decimal(25,4) DEFAULT NULL')
-            ->createColumn('margin', 'decimal(25,4) DEFAULT NULL')
-            ->createColumn('margin_amount', 'decimal(25,4) DEFAULT NULL')
+            ->createColumn('quantity', self::$COLUMN_DECIMAL)
+            ->createColumn('price', self::$COLUMN_DECIMAL)
+            ->createColumn('subtotal', self::$COLUMN_DECIMAL)
+            ->createColumn('discount', self::$COLUMN_DECIMAL)
+            ->createColumn('discount_amount', self::$COLUMN_DECIMAL)
+            ->createColumn('price_after_discount', self::$COLUMN_DECIMAL)
+            ->createColumn('overall_discount', self::$COLUMN_DECIMAL)
+            ->createColumn('overall_discount_amount', self::$COLUMN_DECIMAL)
+            ->createColumn('price_after_overall_discount', self::$COLUMN_DECIMAL)
+            ->createColumn('tax_amount', self::$COLUMN_DECIMAL)
+            ->createColumn('price_total', self::$COLUMN_DECIMAL)
+            ->createColumn('purchase_cost', self::$COLUMN_DECIMAL)
+            ->createColumn('margin', self::$COLUMN_DECIMAL)
+            ->createColumn('margin_amount', self::$COLUMN_DECIMAL)
             ->createColumn('unit', 'varchar(255) DEFAULT NULL')
             ->createColumn('parentitemid', 'int(19) DEFAULT NULL')
             ->createColumn('sequence', 'int(19) DEFAULT 1')
             ->createColumn('parentid', 'int(19) DEFAULT NULL')
-            ->createColumn('tax', 'decimal(25,4) DEFAULT NULL')
+            ->createColumn('tax', self::$COLUMN_DECIMAL)
             ->createColumn('discount_type', 'varchar(255) DEFAULT NULL')
             ->createColumn('pricebookid', 'int(19) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`inventoryitemid`)')
@@ -509,5 +515,10 @@ class InventoryItem_Install_Model extends Core_Install_Model
             ->createTable('tabid')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`tabid`)')
             ->createKey('CONSTRAINT `fk_1_df_inventoryitem_itemmodules` FOREIGN KEY IF NOT EXISTS (`tabid`) REFERENCES `vtiger_tab` (`tabid`) ON DELETE CASCADE');
+
+        $this->getTable('df_inventoryitem_quantitydecimals', null)
+            ->createTable('field', 'varchar(255) NOT NULL')
+            ->createColumn('decimals', 'int(19) NOT NULL DEFAULT 0')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`field`)');
     }
 }
