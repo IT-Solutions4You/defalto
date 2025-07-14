@@ -45,6 +45,16 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
             $itemType = $request->get('item_type');
         }
 
+        $itemData = $this->getItemData($recordId);
+
+        if ($request->get('duplicate') == true) {
+            $recordModel->set('sequence', '');
+            $recordModel->set('id', '');
+            $recordId = '';
+            $itemData['sequence'] = '';
+            $itemData['inventoryitemid'] = '';
+        }
+
         $selectedFields = InventoryItem_Module_Model::getSelectedFields(getTabid($request->get('source_module')));
         $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
         $recordStructure = [];
@@ -109,7 +119,7 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $viewer->assign('ITEM_TYPE', $itemType);
         $viewer->assign('CURRENCY_NAME', $currencyInfo['currency_name']);
         $viewer->assign('CURRENCY_SYMBOL', $currencyInfo['currency_symbol']);
-        $viewer->assign('DATA', $this->getItemData($recordId));
+        $viewer->assign('DATA', $itemData);
         $viewer->view('PopupEdit.tpl', $moduleName);
     }
 

@@ -156,6 +156,10 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             self.editItem(rowNumber);
         });
 
+        row.on('click', '.duplicateItem', function () {
+            self.duplicateItem(rowNumber);
+        });
+
         row.on('click', '.deleteItem', function () {
             self.deleteProductLine(rowNumber);
         });
@@ -543,6 +547,52 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             'source_module': app.getModuleName(),
             'source_record': app.getRecordId(),
             'data': params.data
+        };
+
+        app.request.post({data: requestParams}).then(function (err, data) {
+            app.helper.hideProgress();
+            let form = jQuery('#InventoryItemPopupForm');
+            let callbackParams = {
+                'cb': function (container) {
+                    console.log(container);
+                    self.registerItemPopupEditEvents(container);
+                    jQuery('input.item_text', container).focus();
+                    const overallDiscount = jQuery('#overall_discount_percent').val();
+                    jQuery('input.overall_discount', container).val(overallDiscount);
+                    jQuery('span.display_overall_discount', container).text(overallDiscount);
+                    app.event.trigger('post.InventoryItemPopup.show', form);
+                    app.helper.registerLeavePageWithoutSubmit(form);
+                    app.helper.registerModalDismissWithoutSubmit(form);
+                    self.recalculateItem(container);
+                },
+                backdrop: 'static',
+                keyboard: false
+            };
+
+            app.helper.showModal(data, callbackParams);
+        });
+    },
+
+    duplicateItem: function (rowNumber) {
+        app.helper.showProgress();
+
+        const self = this;
+        const clickedItem = jQuery(this);
+        const moduleName = clickedItem.data('modulename');
+
+        if (typeof params === 'undefined') {
+            params = {};
+        }
+
+        const requestParams = {
+            'module': 'InventoryItem',
+            'view': 'PopupItemEdit',
+            'record': jQuery('input[name="lineItemId' + rowNumber + '"]').val(),
+            'item_type': moduleName,
+            'source_module': app.getModuleName(),
+            'source_record': app.getRecordId(),
+            'data': params.data,
+            'duplicate': true
         };
 
         app.request.post({data: requestParams}).then(function (err, data) {
