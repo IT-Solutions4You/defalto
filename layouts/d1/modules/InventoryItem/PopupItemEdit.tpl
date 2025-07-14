@@ -60,10 +60,18 @@
                     </div>
                 </div>
                 {assign var=FIELD value=$FIELD_DATA.1}
-                <div class="col-lg-3">
+                <div class="col-lg-3">{$FIELD->getFieldDataType()} -> {$DATA[$FIELD_NAME]} -> {$FIELD_NAME}
                     {if $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'percentage'}
                         <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text"
                                class="{$FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$DATA[$FIELD_NAME]}"/>
+                    {elseif $FIELD->getFieldDataType() eq 'boolean'}
+                        <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="checkbox" class="{$FIELD_NAME} inputElement form-check-input" {if $DATA[$FIELD_NAME] eq 1}checked{/if} />
+                    {elseif $FIELD->getFieldDataType() eq 'date'}
+                        <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>
+                    {elseif $FIELD->getFieldDataType() eq 'picklist'}
+                        <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>
+                    {elseif $FIELD->getFieldDataType() eq 'multipicklist'}
+                        <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>
                     {else}
                         <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>
                     {/if}

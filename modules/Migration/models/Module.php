@@ -74,19 +74,5 @@ class Migration_Module_Model extends Vtiger_Module_Model {
 	public function postMigrateActivities(){
 		//Writing tab data in flat file
 		perform_post_migration_activities();
-		
-		//rename the migration file and folder
-		$renamefile = uniqid(rand(), true);
-        $dir = 'migrate/';
-
-        if (is_dir($dir)) {
-            if (!rename($dir, $renamefile . $dir)) {
-                if (copy($dir, $renamefile . $dir)) {
-                    unlink($dir);
-                }
-            }
-        } else {
-            Core_Install_Model::logError('Migration dir not exists: ' . $dir);
-        }
     }
 }

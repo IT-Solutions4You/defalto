@@ -35,11 +35,11 @@ if (!class_exists('Migration_20250709123459')) {
             }
 
             $this->db->pquery(
-                'INSERT INTO df_inventoryitemcolumns VALUES(?,?)',
+                'INSERT INTO df_inventoryitemcolumns VALUES(?,?) ON DUPLICATE KEY UPDATE columnslist = columnslist',
                 [0, 'productid,quantity,unit,price,subtotal,discounts_amount,price_after_overall_discount,tax,tax_amount,price_total']
             );
-            $this->db->pquery('INSERT INTO df_inventoryitem_itemmodules (tabid) VALUES (?), (?)', [getTabid('Products'), getTabid('Services')]);
-            $this->db->pquery('INSERT INTO df_inventoryitem_quantitydecimals (decimals) VALUES (?, ?), (?, ?)', ['price', 2, 'quantity', 2]);
+            $this->db->pquery('INSERT INTO df_inventoryitem_itemmodules (tabid) VALUES (?), (?) ON DUPLICATE KEY UPDATE tabid = tabid', [getTabid('Products'), getTabid('Services')]);
+            $this->db->pquery('INSERT INTO df_inventoryitem_quantitydecimals (field, decimals) VALUES (?, ?), (?, ?) ON DUPLICATE KEY UPDATE decimals = decimals', ['price', 2, 'quantity', 2]);
 
             $inventoryModules = ['Invoice', 'PurchaseOrder', 'Quotes', 'SalesOrder'];
 

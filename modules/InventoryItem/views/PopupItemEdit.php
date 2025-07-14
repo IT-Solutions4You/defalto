@@ -182,9 +182,10 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         }
 
         $db = PearDatabase::getInstance();
-        $sql = 'SELECT df_inventoryitem.*, vtiger_crmentity.description 
+        $sql = 'SELECT df_inventoryitem.*, df_inventoryitemcf.*, vtiger_crmentity.description 
             FROM df_inventoryitem
             LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid
+            LEFT JOIN df_inventoryitemcf ON df_inventoryitemcf.inventoryitemid = df_inventoryitem.inventoryitemid
             WHERE vtiger_crmentity.deleted = 0
             AND df_inventoryitem.inventoryitemid = ?
             ORDER BY df_inventoryitem.sequence, vtiger_crmentity.crmid';
