@@ -23,9 +23,7 @@
     --bs-switch-bg: rgba(var(--bs-secondary-bg-rgb), 1);
     --bs-switch-bg-active: #ddd;
     --bs-switch-border: var(--bs-border-width) solid var(--bs-border-color);
-    --bs-switch-border-white: var(--bs-border-width) solid #fff;
-    --bs-switch-border-active: var(--bs-border-width) solid rgb(var(--bs-primary-rgb));
-    --bs-switch-radius: var(--bs-border-radius)
+    --bs-switch-radius: var(--bs-border-radius);
 }
 
 .clearfix:after, .clearfix:before {
@@ -43,6 +41,10 @@
     text-shadow: none;
     background-color: transparent;
     border: 0
+}
+
+.bootstrap-switch-off {
+    background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity, 1)) !important
 }
 
 .input-block-level {
@@ -145,7 +147,6 @@
     text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
     background-color: #58b058;
     background-repeat: repeat-x;
-    border: var(--bs-switch-border-white);
 }
 
 .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-success.active, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-success.disabled, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-success:active, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-success:focus, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-success:hover, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-success[disabled], .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-success.active, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-success.disabled, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-success:active, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-success:focus, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-success:hover, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-success[disabled] {

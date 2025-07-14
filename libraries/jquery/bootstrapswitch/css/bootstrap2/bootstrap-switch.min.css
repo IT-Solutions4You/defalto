@@ -117,7 +117,6 @@
 
 .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary {
     color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
     background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity, 1)) !important;
     border: var(--bs-switch-border-active)
 }
@@ -129,7 +128,6 @@
 
 .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-info, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-info {
     color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
     background-color: #41a7c5;
     background-repeat: repeat-x;
     border: var(--bs-switch-border-active)
@@ -142,7 +140,6 @@
 
 .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-success, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-success {
     color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
     background-color: #58b058;
     background-repeat: repeat-x;
     border: var(--bs-switch-border-white);
@@ -155,7 +152,6 @@
 
 .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-warning, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-warning {
     color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
     background-color: #f9a123;
     background-repeat: repeat-x;
     border-color: rgba(0, 0, 0, .1) rgba(0, 0, 0, .1) rgba(0, 0, 0, .25)
@@ -168,7 +164,6 @@
 
 .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-danger, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-danger {
     color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
     background-color: #d14641;
     background-repeat: repeat-x;
     border-color: rgba(0, 0, 0, .1) rgba(0, 0, 0, .1) rgba(0, 0, 0, .25)
@@ -212,7 +207,6 @@
     margin-bottom: -1px;
     z-index: 100;
     color: #333;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
     background-color: var(--bs-switch-bg);
     border: var(--bs-switch-border-white);
 }

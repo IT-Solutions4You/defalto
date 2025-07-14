@@ -3013,7 +3013,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
             offText: app.vtranslate('LBL_NO'),
             labelWidth: '3rem',
             handleWidth: '3rem',
-            theme: 'bootstrap4',
             onSwitchChange() {
                 let element = $(this),
                     params = {
