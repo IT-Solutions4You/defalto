@@ -1970,7 +1970,12 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
             if ($field->isHeaderField() && $field->isActiveField() && $field->isViewable() && 'assigned_user_id' !== $field->getName()) {
                 $fieldsCount++;
                 $sequence = (int)$field->get('headerfieldsequence') ?: $fieldsCount + 5;
-                $config[$sequence] = ['type' => 'field', 'field' => $field,];
+
+                if('boolean' === $field->getFieldDataType()) {
+                    $config[$sequence] = ['type' => 'check', 'field' => $field,];
+                } else {
+                    $config[$sequence] = ['type' => 'field', 'field' => $field,];
+                }
             }
         }
 
