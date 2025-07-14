@@ -80,15 +80,11 @@
     font-weight: 900;
 }
 
-.bootstrap-switch-container {
+.bootstrap-switch .bootstrap-switch-container {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-    justify-content: center
-}
-
-.bootstrap-switch .bootstrap-switch-container {
-    display: inline-block;
+    justify-content: center;
     top: 0;
     -webkit-border-radius: var(--bs-border-radius);
     -moz-border-radius: var(--bs-border-radius);
@@ -118,13 +114,13 @@
 
 .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary {
     color: #fff;
-    background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity, 1)) !important;
+    background-color: var(--dt-blue-color);
     border: var(--bs-switch-border-active)
 }
 
 .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary.active, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary.disabled, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary:active, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary:focus, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary:hover, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary[disabled], .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary.active, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary.disabled, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary:active, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary:focus, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary:hover, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary[disabled] {
     color: #fff;
-    background-color: #08c
+    background-color: var(--dt-dark-blue-color)
 }
 
 .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-info, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-info {
@@ -184,7 +180,8 @@
 
 .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default.active, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default.disabled, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default:active, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default:focus, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default:hover, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default[disabled], .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-default.active, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-default.disabled, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-default:active, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-default:focus, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-default:hover, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-default[disabled] {
     color: #333;
-    background-color: #fff
+    background-color: #fbfbfb;
+    border-color: #fbfbfb;
 }
 
 .bootstrap-switch .bootstrap-switch-label.active, .bootstrap-switch .bootstrap-switch-label.disabled, .bootstrap-switch .bootstrap-switch-label:active, .bootstrap-switch .bootstrap-switch-label:focus, .bootstrap-switch .bootstrap-switch-label:hover, .bootstrap-switch .bootstrap-switch-label[disabled] {
