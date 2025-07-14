@@ -542,7 +542,7 @@ Vtiger_Field_Js('Vtiger_Date_Field_Js',{},{
 	getUi: function () {
 		//wrappig with another div for consistency
 		let html = '<div class="DateField w-100">' +
-				'<div class="input-group date">' +
+				'<div class="input-group date flex-nowrap">' +
 				'<input class="inputElement dateField form-control" type="text" data-rule-date="true" data-format="' + this.getDateFormat() + '" name="' + this.getName() + '" value="' + this.getValue() + '" />' +
 				'<span class="input-group-addon input-group-text"><i class="fa fa-calendar"></i></span>' +
 				'</div>' +

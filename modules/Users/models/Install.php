@@ -87,8 +87,6 @@ class Users_Install_Model extends Core_Install_Model
             $language = vglobal('default_language');
         }
 
-        log_data('log_data', [$language]);
-
         return !empty($language) ? $language : 'en_us';
     }
 

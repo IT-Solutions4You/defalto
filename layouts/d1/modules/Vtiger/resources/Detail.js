@@ -9,6 +9,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 
 	detailInstance : false,
 	changeAssignedUserEvent: 'change.assigned.user',
+    changeCheckEvent: 'change.check.field',
 	PreAjaxSaveEvent : 'PreAjaxSaveEvent',
 	PostAjaxSaveEvent : 'PostAjaxSaveEvent',
 	relatedListLoad: 'post.relatedListLoad.click',
@@ -2764,6 +2765,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		this.registerBasicEvents();
 		this.registerHeaderAjaxEditEvents();
 		this.registerAssignedUserChange();
+        this.registerCheckboxFieldChange();
 		this.registerAssignedUserSearch();
 		this.registerChangeDetailAssignedUser();
 
@@ -3004,6 +3006,41 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			}
 		});
 	},
+    registerCheckboxFieldChange() {
+        let self = this,
+            message = app.vtranslate('JS_RECORD_UPDATED'),
+            container = self.getDetailViewContainer();
+
+        container.find('[data-change-check-field]').bootstrapSwitch({
+            onText: app.vtranslate('LBL_YES'),
+            offText: app.vtranslate('LBL_NO'),
+            labelWidth: '3rem',
+            handleWidth: '3rem',
+            onSwitchChange() {
+                let element = $(this),
+                    params = {
+                        record: app.getRecordId(),
+                        module: app.getModuleName(),
+                        action: 'SaveAjax',
+                        value: element.is(':checked') ? 1 : 0,
+                        field: element.attr('name'),
+                    };
+
+                app.request.post({data: params}).then(function (error, data) {
+                    if (!error) {
+                        let field = params['field'];
+
+                        if (params['value'] === parseInt(data[field]['value'])) {
+                            app.event.trigger(Vtiger_Detail_Js.changeCheckEvent, element);
+                            app.helper.showSuccessNotification({message: message});
+                        } else {
+                            app.helper.showErrorNotification({message: message});
+                        }
+                    }
+                })
+            }
+        });
+    },
 	registerAssignedUserChange() {
 		let self = this,
 			message = app.vtranslate('JS_ASSIGNED_USER_HAS_CHANGE'),
