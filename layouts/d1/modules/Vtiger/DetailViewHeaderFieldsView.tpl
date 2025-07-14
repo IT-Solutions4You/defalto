@@ -10,6 +10,7 @@
     <input type="hidden" name="module" value="{$RECORD->getModuleName()}">
     <div class="row pt-3">
         {foreach item=FIELD_CONFIG from=$MODULE_MODEL->getHeaderFieldsConfig()}
+            {assign var=IS_EDITABLE value=$FIELD_MODEL->isEditable() eq 'true' && $LIST_PREVIEW neq true && $IS_AJAX_ENABLED eq true && $REQUEST_INSTANCE->get('displayMode') neq 'overlay'}
             {if 'field' eq $FIELD_CONFIG['type']}
                 {assign var=FIELD_MODEL value=$FIELD_CONFIG['field']}
                 {assign var=FIELD_DATA_TYPE value=$FIELD_MODEL->getFieldDataType()}
@@ -43,12 +44,37 @@
                         </div>
                     </div>
                 </div>
+            {elseif 'check' eq $FIELD_CONFIG['type']}
+                {assign var=FIELD_MODEL value=$FIELD_CONFIG['field']}
+                {assign var=FIELD_NAME value=$FIELD_MODEL->getName()}
+                {assign var=FIELD_VALUE value=$RECORD->get($FIELD_NAME)}
+                <div class="col-xl-2 col-lg-6 {if $IS_EDITABLE}cursorPointer{else}cursorDefault{/if}">
+                    <div class="fieldLabel">
+                        <div class="row text-secondary fieldName h-2rem">
+                            <div class="col">{vtranslate($FIELD_MODEL->get('label'),$MODULE)}</div>
+                        </div>
+                        <div class="row">
+                            {if $IS_EDITABLE}
+                                <div class="col">
+                                    <input type="hidden" name="{$FIELD_NAME}" value="0">
+                                    <div class="form-check form-switch d-flex align-items-center p-0">
+                                        <input id="headerFieldSwitch{$FIELD_NAME}" class="form-check-input m-0 float-none" data-change-check-field="1" type="checkbox" name="{$FIELD_NAME}" {if !empty($FIELD_VALUE)}checked="checked"{/if} value="1">
+                                    </div>
+                                </div>
+                            {else}
+                                {assign var=DISPLAY_VALUE value="{$FIELD_MODEL->getDisplayValue($RECORD->get($FIELD_NAME))}"}
+                                <div class="col value fw-semibold fs-inherit bg-inherit h-100 word-break-all {$FIELD_NAME}" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {strip_tags($DISPLAY_VALUE)}">
+                                    {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
+                                </div>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
             {elseif 'user' eq $FIELD_CONFIG['type']}
                 {assign var=FIELD_MODEL value=$FIELD_CONFIG['field']}
                 {assign var=FIELD_NAME value=$FIELD_MODEL->getName()}
                 {assign var=FIELD_VALUE value=$RECORD->get($FIELD_NAME)}
                 {assign var=ASSIGNED_USER value=Users_Record_Model::getInstanceById($FIELD_VALUE, 'Users')}
-                {assign var=IS_EDITABLE value=$FIELD_MODEL->isEditable() eq 'true' && $LIST_PREVIEW neq true && $IS_AJAX_ENABLED eq true && $REQUEST_INSTANCE->get('displayMode') neq 'overlay'}
                 {assign var=ASSIGNED_USER_IMAGE value=$ASSIGNED_USER->getImageUrl()}
                 <div class="col-xl-2 col-lg-6 {if $IS_EDITABLE}cursorPointer{else}cursorDefault{/if}">
                     <div class="row flex-nowrap align-items-center" data-bs-toggle="dropdown">
