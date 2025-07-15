@@ -330,8 +330,16 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 	public function getHeaders() {
 		$relationModel = $this->getRelationModel();
 		$relatedModuleModel = $relationModel->getRelationModuleModel();
-		$summaryFieldsList = $relatedModuleModel->getHeaderAndSummaryViewFieldsList();
 		$headerFields = array();
+        $nameFields = $relatedModuleModel->getNameFields();
+
+        foreach($nameFields as $fieldName){
+            if(!isset($headerFields[$fieldName]) || !$headerFields[$fieldName]) {
+                $headerFields[$fieldName] = $relatedModuleModel->getFieldByColumn($fieldName);
+            }
+        }
+
+        $summaryFieldsList = $relatedModuleModel->getHeaderAndSummaryViewFieldsList();
 
 		if(php7_count($summaryFieldsList) > 0) {
 			foreach($summaryFieldsList as $fieldName => $fieldModel) {
@@ -342,14 +350,6 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 
 			foreach($headerFieldNames as $fieldName) {
 				$headerFields[$fieldName] = $relatedModuleModel->getField($fieldName);
-			}
-		}
-
-		$nameFields = $relatedModuleModel->getNameFields();
-
-        foreach($nameFields as $fieldName){
-			if(!isset($headerFields[$fieldName]) || !$headerFields[$fieldName]) {
-				$headerFields[$fieldName] = $relatedModuleModel->getFieldByColumn($fieldName);
 			}
 		}
 
