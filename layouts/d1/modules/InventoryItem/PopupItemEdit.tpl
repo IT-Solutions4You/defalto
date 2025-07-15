@@ -60,20 +60,15 @@
                     </div>
                 </div>
                 {assign var=FIELD value=$FIELD_DATA.1}
-                <div class="col-lg-3">{$FIELD->getFieldDataType()} -> {$DATA[$FIELD_NAME]} -> {$FIELD_NAME}
+                <div class="col-lg-3">
                     {if $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'percentage'}
                         <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text"
                                class="{$FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$DATA[$FIELD_NAME]}"/>
-                    {elseif $FIELD->getFieldDataType() eq 'boolean'}
-                        <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="checkbox" class="{$FIELD_NAME} inputElement form-check-input" {if $DATA[$FIELD_NAME] eq 1}checked{/if} />
-                    {elseif $FIELD->getFieldDataType() eq 'date'}
-                        <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>
-                    {elseif $FIELD->getFieldDataType() eq 'picklist'}
-                        <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>
-                    {elseif $FIELD->getFieldDataType() eq 'multipicklist'}
-                        <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>
                     {else}
-                        <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>
+                        {assign var="FIELD_MODEL" value=$FIELD}
+                        {assign var="dummy" value=$FIELD_MODEL->set('fieldvalue', $DATA[$FIELD_NAME])}
+                        {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
+                        {*<input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>*}
                     {/if}
                 </div>
                 {*<div class="col-lg-1"></div>*}

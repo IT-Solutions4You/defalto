@@ -120,6 +120,7 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $viewer->assign('CURRENCY_NAME', $currencyInfo['currency_name']);
         $viewer->assign('CURRENCY_SYMBOL', $currencyInfo['currency_symbol']);
         $viewer->assign('DATA', $itemData);
+        $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $viewer->view('PopupEdit.tpl', $moduleName);
     }
 

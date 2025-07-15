@@ -18,11 +18,13 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
         $response = new Vtiger_Response();
 
         try {
+            $moduleName = 'InventoryItem';
+
             if ($request->has('insert_after_sequence') && !empty($request->get('insert_after_sequence'))) {
                 $allItems = InventoryItem_Module_Model::fetchItemsForId((int)$request->get('source_record'), true);
 
                 foreach ($allItems as $item) {
-                    $itemModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
+                    $itemModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], $moduleName);
 
                     if ($itemModel->get('sequence') > $request->get('insert_after_sequence')) {
                         $itemModel->set('sequence', $itemModel->get('sequence') + 1);
@@ -36,21 +38,22 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
                 $request->set('sequence', (int)$request->get('insert_after_sequence') + 1);
             }
 
-            $focus = CRMEntity::getInstance('InventoryItem');
-            $itemModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
+            $itemModel = Vtiger_Record_Model::getCleanInstance($moduleName);
 
             if ($request->get('record')) {
-                $itemModel = Vtiger_Record_Model::getInstanceById($request->get('record'), 'InventoryItem');
+                $itemModel = Vtiger_Record_Model::getInstanceById($request->get('record'), $moduleName);
                 $itemModel->set('mode', 'edit');
             }
 
-            foreach ($focus->column_fields as $fieldName => $fieldValue) {
-                if ($request->has($fieldName)) {
-                    $fromRequest = $request->get($fieldName);
+            $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+            $fieldModelList = $moduleModel->getFields();
 
-                    if (isset($fromRequest) && $fromRequest != $itemModel->get($fieldName)) {
-                        $itemModel->set($fieldName, $fromRequest);
-                    }
+            foreach ($fieldModelList as $fieldName => $fieldModel) {
+                $fieldValue = $request->get($fieldName, null);
+                $fieldValue = $fieldModel->getUITypeModel()->getRequestValue($fieldValue);
+
+                if (null !== $fieldValue) {
+                    $itemModel->set($fieldName, $fieldValue);
                 }
             }
 

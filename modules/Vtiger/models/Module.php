@@ -641,7 +641,7 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
 			$nameFields = $this->getNameFields();
 			foreach($nameFields as $fieldName){
 				if(!isset($relatedListFields[$fieldName]) || !$relatedListFields[$fieldName]) {
-					$fieldModel = $this->getField($fieldName);
+					$fieldModel = $this->getFieldByColumn($fieldName);
 					$relatedListFields[$fieldModel->get('column')] = $fieldModel->get('name');
 				}
 			}
