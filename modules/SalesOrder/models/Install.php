@@ -539,6 +539,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
                         'Weekly',
                         'Monthly',
                         'Quarterly',
+                        'Half-yearly',
                         'Yearly',
                     ],
                 ],

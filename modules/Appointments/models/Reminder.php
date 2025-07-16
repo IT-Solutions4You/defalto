@@ -103,7 +103,7 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
     public static function getReminderFrequency(): int
     {
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT frequency FROM vtiger_cron_task WHERE name = ? AND handler_file = ?', ['SendReminder', 'cron/SendReminder.service']);
+        $result = $adb->pquery('SELECT frequency FROM vtiger_cron_task WHERE name = ? AND handler_file = ?', ['SendReminder', 'cron/SendReminder.php']);
 
         return (int)$adb->query_result($result, 0, 'frequency');
     }

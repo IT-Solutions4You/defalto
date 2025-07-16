@@ -91,19 +91,19 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      * @var array
      */
     public static array $blocksConfigDefault = [
-        'LBL_SYSTEM_INFORMATION' => [
+        'LBL_SYSTEM_INFORMATION'      => [
             'name' => 'System',
         ],
-        'LBL_CUSTOM_INFORMATION' => [
+        'LBL_CUSTOM_INFORMATION'      => [
             'name' => 'Base',
         ],
         'LBL_DESCRIPTION_INFORMATION' => [
             'name' => 'Base',
         ],
-        'LBL_ADDRESS_INFORMATION' => [
+        'LBL_ADDRESS_INFORMATION'     => [
             'name' => 'Base',
         ],
-        'LBL_ITEM_DETAILS' => [
+        'LBL_ITEM_DETAILS'            => [
             'name' => 'InventoryItem',
         ],
     ];
@@ -113,63 +113,63 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public static array $fieldsConfigDefault = [
         'LBL_SYSTEM_INFORMATION' => [
-            'source' => [
-                'name' => 'source',
-                'uitype' => 1,
-                'column' => 'source',
-                'table' => 'vtiger_crmentity',
-                'label' => 'Source',
-                'readonly' => 1,
-                'presence' => 2,
-                'typeofdata' => 'V~O',
-                'quickcreate' => 3,
-                'displaytype' => 2,
+            'source'       => [
+                'name'         => 'source',
+                'uitype'       => 1,
+                'column'       => 'source',
+                'table'        => 'vtiger_crmentity',
+                'label'        => 'Source',
+                'readonly'     => 1,
+                'presence'     => 2,
+                'typeofdata'   => 'V~O',
+                'quickcreate'  => 3,
+                'displaytype'  => 2,
                 'masseditable' => 0,
                 'summaryfield' => 0,
             ],
-            'createdtime' => [
-                'name' => 'createdtime',
-                'uitype' => 70,
-                'column' => 'createdtime',
-                'table' => 'vtiger_crmentity',
-                'label' => 'Created Time',
-                'readonly' => 1,
-                'presence' => 0,
-                'typeofdata' => 'DT~O',
-                'quickcreate' => 3,
-                'displaytype' => 2,
+            'createdtime'  => [
+                'name'         => 'createdtime',
+                'uitype'       => 70,
+                'column'       => 'createdtime',
+                'table'        => 'vtiger_crmentity',
+                'label'        => 'Created Time',
+                'readonly'     => 1,
+                'presence'     => 0,
+                'typeofdata'   => 'DT~O',
+                'quickcreate'  => 3,
+                'displaytype'  => 2,
                 'masseditable' => 0,
                 'summaryfield' => 0,
             ],
             'modifiedtime' => [
-                'name' => 'modifiedtime',
-                'uitype' => 70,
-                'column' => 'modifiedtime',
-                'table' => 'vtiger_crmentity',
-                'label' => 'Modified Time',
-                'readonly' => 1,
-                'presence' => 0,
-                'typeofdata' => 'DT~O',
-                'quickcreate' => 3,
-                'displaytype' => 2,
+                'name'         => 'modifiedtime',
+                'uitype'       => 70,
+                'column'       => 'modifiedtime',
+                'table'        => 'vtiger_crmentity',
+                'label'        => 'Modified Time',
+                'readonly'     => 1,
+                'presence'     => 0,
+                'typeofdata'   => 'DT~O',
+                'quickcreate'  => 3,
+                'displaytype'  => 2,
                 'masseditable' => 0,
                 'summaryfield' => 0,
             ],
-            'creator' => [
-                'column' => 'smcreatorid',
-                'label' => 'Created By',
-                'uitype' => 52,
-                'typeofdata' => 'V~O',
+            'creator'      => [
+                'column'      => 'smcreatorid',
+                'label'       => 'Created By',
+                'uitype'      => 52,
+                'typeofdata'  => 'V~O',
                 'displaytype' => 2,
-                'table' => 'vtiger_crmentity',
+                'table'       => 'vtiger_crmentity',
             ],
-            'modifiedby' => [
-                'column' => 'modifiedby',
-                'label' => 'Last Modified By',
-                'uitype' => 52,
-                'typeofdata' => 'V~O',
+            'modifiedby'   => [
+                'column'      => 'modifiedby',
+                'label'       => 'Last Modified By',
+                'uitype'      => 52,
+                'typeofdata'  => 'V~O',
                 'displaytype' => 2,
-                'table' => 'vtiger_crmentity',
+                'table'       => 'vtiger_crmentity',
             ],
         ],
     ];
@@ -288,6 +288,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     /**
      * @param string $eventType
      * @param string $moduleName
+     *
      * @return self
      */
     public static function getInstance(string $eventType, string $moduleName): self
@@ -350,6 +351,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param string $moduleName
+     *
      * @return false|Vtiger_Module
      * @throws AppException
      */
@@ -425,9 +427,9 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $moduleInstance->save();
 
         $this->getTable('vtiger_tab', 'tabid')->updateData([
-            'version' => $moduleInstance->version,
-            'parent' => $moduleInstance->parent,
-            'tablabel' => $moduleInstance->label,
+            'version'      => $moduleInstance->version,
+            'parent'       => $moduleInstance->parent,
+            'tablabel'     => $moduleInstance->label,
             'isentitytype' => $moduleInstance->isentitytype,
         ], [
             'tabid' => $moduleInstance->id,
@@ -636,6 +638,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param string $key
+     *
      * @return bool
      */
     public function isFieldKeySkippedForUpdate(string $key): bool
@@ -645,7 +648,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param string $fieldName
-     * @param array $fieldParams
+     * @param array  $fieldParams
+     *
      * @return Vtiger_Field_Model|bool
      * @throws AppException
      */
@@ -664,12 +668,12 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $fieldInstance->save($fieldInstance->block);
         $fieldInstance->getFieldTable()->updateData(
             [
-                'block' => $fieldInstance->getBlockId(),
-                'tablename' => $fieldInstance->table,
-                'presence' => $fieldInstance->presence,
+                'block'       => $fieldInstance->getBlockId(),
+                'tablename'   => $fieldInstance->table,
+                'presence'    => $fieldInstance->presence,
                 'displaytype' => $fieldInstance->displaytype,
-                'sequence' => $fieldInstance->sequence,
-                'isunique' => $fieldInstance->isunique,
+                'sequence'    => $fieldInstance->sequence,
+                'isunique'    => $fieldInstance->isunique,
             ],
             [
                 'fieldid' => $fieldInstance->id,
@@ -768,6 +772,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param mixed $message
+     *
      * @return void
      */
     public static function logError($message): void
@@ -781,6 +786,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param mixed $message
+     *
      * @return void
      */
     public static function logSuccess($message): void
@@ -803,6 +809,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param $register
+     *
      * @return void
      */
     public function updateComments($register = true)
@@ -816,6 +823,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param bool $register
+     *
      * @return void
      */
     public function updateCron($register = true)
@@ -833,6 +841,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param $register
+     *
      * @return void
      */
     public function updateCustomLinks($register = true)
@@ -854,6 +863,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param $register
+     *
      * @return void
      */
     public function updateEventHandler($register = true)
@@ -881,6 +891,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param $register
+     *
      * @return void
      */
     public function updateHistory($register = true)
@@ -906,7 +917,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
     }
 
-
     /**
      * @return void
      */
@@ -923,6 +933,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param $register
+     *
      * @return void
      */
     public function updateRelatedList($register = true)
@@ -950,6 +961,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param bool $register
+     *
      * @return void
      * @throws Exception
      */
@@ -996,6 +1008,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param $register
+     *
      * @return void
      * @throws AppException
      */
@@ -1029,11 +1042,11 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             $workflowId = $table->selectData(['id'], ['tasktypename' => $workflowName])['id'];
             $values = [
                 'tasktypename' => $workflowName,
-                'label' => $workflowLabel,
-                'classname' => $workflowName,
-                'classpath' => $classPath,
+                'label'        => $workflowLabel,
+                'classname'    => $workflowName,
+                'classpath'    => $classPath,
                 'templatepath' => $templatePath,
-                'modules' => $modules,
+                'modules'      => $modules,
                 'sourcemodule' => $moduleName,
             ];
 
@@ -1047,6 +1060,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param bool $register
+     *
      * @return void
      */
     public function updateAppointments(bool $register = true): void
@@ -1065,6 +1079,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param bool $register
+     *
      * @return void
      */
     public function updateEmails(bool $register = true): void
@@ -1144,9 +1159,10 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     /**
      * @param string $name
      * @param string $moduleName
-     * @param array $conditions
+     * @param array  $conditions
      * @param string $trigger
      * @param string $recurrence
+     *
      * @return bool|object
      * @throws AppException
      */
@@ -1173,8 +1189,9 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     /**
      * @param string $taskType
      * @param string $taskName
-     * @param array $data
+     * @param array  $data
      * @param object $workflowModel
+     *
      * @return object|bool
      * @throws AppException
      */

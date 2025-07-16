@@ -15,7 +15,7 @@ class Appointments_Install_Model extends Core_Install_Model
      * [name, handler, frequency, module, sequence, description]
      */
     public array $registerCron = [
-        ['AppointmentsReminder', 'modules/Appointments/cron/Reminder.service', 900, 'Appointments', 0, ''],
+        ['AppointmentsReminder', 'modules/Appointments/cron/Reminder.php', 900, 'Appointments', 0, ''],
     ];
 
     public array $registerWorkflows = [

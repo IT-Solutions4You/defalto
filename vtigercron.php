@@ -100,7 +100,3 @@ if(vtigercron_detect_run_in_cli() || (isset($_SESSION["authenticated_user_id"]) 
 } else {
 	echo("Access denied!");
 }
-
-
-
-?>
