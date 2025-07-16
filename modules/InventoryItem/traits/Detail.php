@@ -115,10 +115,14 @@ trait InventoryItem_Detail_Trait
         $inventoryItems = [[],];
         $db = PearDatabase::getInstance();
         $currentUser = Users_Record_Model::getCurrentUserModel();
+        $moduleName = 'InventoryItem';
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        $fieldModelList = $moduleModel->getFields();
 
-        $sql = 'SELECT df_inventoryitem.*, vtiger_crmentity.description 
+        $sql = 'SELECT df_inventoryitem.*, df_inventoryitemcf.*, vtiger_crmentity.description 
             FROM df_inventoryitem
             LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid
+            LEFT JOIN df_inventoryitemcf ON df_inventoryitemcf.inventoryitemid = df_inventoryitem.inventoryitemid
             WHERE vtiger_crmentity.deleted = 0
             AND df_inventoryitem.parentid = ?
             ORDER BY df_inventoryitem.sequence, vtiger_crmentity.crmid';
@@ -139,6 +143,14 @@ trait InventoryItem_Detail_Trait
                 if (method_exists($recordModel, 'isBundle') && $recordModel->isBundle() && method_exists($recordModel, 'isBundleViewable') && $recordModel->isBundleViewable()) {
                     $subProducts = $recordModel->getSubProducts();
                     $row['subProducts'] = $subProducts;
+                }
+
+                $recordModel = Vtiger_Record_Model::getInstanceById($row['inventoryitemid'], $moduleName);
+
+                foreach ($fieldModelList as $fieldName => $fieldModel) {
+                    $fieldValue = $recordModel->get($fieldName);
+                    $fieldValue = $fieldModel->getUITypeModel()->getDisplayValue($fieldValue);
+                    $row[$fieldName . '_display'] = $fieldValue;
                 }
             }
 
