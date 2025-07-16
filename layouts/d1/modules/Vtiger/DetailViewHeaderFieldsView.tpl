@@ -10,7 +10,7 @@
     <input type="hidden" name="module" value="{$RECORD->getModuleName()}">
     <div class="row pt-3">
         {foreach item=FIELD_CONFIG from=$MODULE_MODEL->getHeaderFieldsConfig()}
-            {assign var=IS_EDITABLE value=$FIELD_MODEL->isEditable() eq 'true' && $LIST_PREVIEW neq true && $IS_AJAX_ENABLED eq true && $REQUEST_INSTANCE->get('displayMode') neq 'overlay'}
+            {assign var=IS_EDITABLE value=$FIELD_MODEL->isAjaxEditable() && $LIST_PREVIEW neq true && $IS_AJAX_ENABLED eq true && $REQUEST_INSTANCE->get('displayMode') neq 'overlay'}
             {if 'field' eq $FIELD_CONFIG['type']}
                 {assign var=FIELD_MODEL value=$FIELD_CONFIG['field']}
                 {assign var=FIELD_DATA_TYPE value=$FIELD_MODEL->getFieldDataType()}
@@ -26,7 +26,7 @@
                             <div class="col value fw-semibold fs-inherit bg-inherit h-100 word-break-all {$FIELD_NAME}" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {strip_tags($DISPLAY_VALUE)}">
                                 {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                             </div>
-                            {if $FIELD_MODEL->isEditable() eq 'true' && $LIST_PREVIEW neq true && $IS_AJAX_ENABLED eq true}
+                            {if $IS_EDITABLE}
                                 <div class="edit col hide">
                                     {assign var=HEADER_FIELD_NAME value=$FIELD_MODEL->get('name')}
                                     {if $FIELD_DATA_TYPE eq 'multipicklist'}

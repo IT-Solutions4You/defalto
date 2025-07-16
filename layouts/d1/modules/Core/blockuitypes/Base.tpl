@@ -79,7 +79,7 @@
                                             <span class="value w-100" data-field-type="{$FIELD_MODEL->getFieldDataType()}">
                                                 {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                                             </span>
-                                            {if $IS_AJAX_ENABLED && $FIELD_MODEL->isEditable() eq 'true' && $FIELD_MODEL->isAjaxEditable() eq 'true'}
+                                            {if $IS_AJAX_ENABLED && $FIELD_MODEL->isEditable() && $FIELD_MODEL->isAjaxEditable()}
                                                 <span class="action"><a href="#" onclick="return false;" class="editAction fa fa-pencil"></a></span>
                                                 <div class="hide edit">
                                                     {if $fieldDataType eq 'multipicklist'}
