@@ -290,20 +290,7 @@ class CRMEntity extends CRMExtension
 			$ownerid = $current_user->id;
 		}
 
-		$entityFields = Vtiger_Functions::getEntityModuleInfo($module);
-        $entityFieldNames  = explode(',', $entityFields['fieldname']);
-        switch ($module) {
-            case 'HelpDesk': $entityFieldNames = array('ticket_title');
-                break;
-            case 'Documents': $entityFieldNames = array('notes_title');
-                break;
-		}
-		
-		$record_label = '';
-		foreach($entityFieldNames as $entityFieldName) {
-			$record_label .= $this->column_fields[$entityFieldName]." ";
-		}
-        $label = decode_html($record_label);
+        $label = decode_html(Vtiger_Record_Model::generateLabel($module, $this->column_fields->getColumnFields()));
         $this->column_fields['label'] = $label;
 
 		if ($this->mode == 'edit') {
@@ -928,20 +915,7 @@ class CRMEntity extends CRMExtension
 						throw new Exception($app_strings['LBL_RECORD_DELETE'], 1);
 					}
 				}
-				if(!empty($resultrow['label'])){
-					$this->column_fields['label'] = $resultrow['label'];
-				} else {
-					// added to compute label needed in event handlers
-					$entityFields = Vtiger_Functions::getEntityModuleInfo($module);
-					if(!empty($entityFields['fieldname'])) {
-						$entityFieldNames  = explode(',', $entityFields['fieldname']);
-						if(php7_count($entityFieldNames) > 1) {
-							 $this->column_fields['label'] = $resultrow[$entityFields['tablename'].$entityFieldNames[0]].' '.$resultrow[$entityFields['tablename'].$entityFieldNames[1]];
-						} else {
-							$this->column_fields['label'] = $resultrow[$entityFields['tablename'].$entityFieldNames[0]];
-						}
-					}
-				}
+
 				foreach ($cachedModuleFields as $fieldinfo) {
 					$fieldvalue = '';
 					$fieldkey = $this->createColumnAliasForField($fieldinfo);
@@ -951,6 +925,8 @@ class CRMEntity extends CRMExtension
 					}
 					$this->column_fields[$fieldinfo['fieldname']] = $fieldvalue;
 				}
+
+                $this->column_fields['label'] = !empty($resultrow['label']) ? $resultrow['label'] : Vtiger_Record_Model::generateLabel($module, $this->column_fields->getColumnFields());
 			}
 		}
         
