@@ -57,8 +57,10 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
             $name = [];
 
 			foreach($entityFields as $field){
-				if($this->get($field)){
-					$name[] = $this->get($field);
+                $fieldModel = $module->getFieldByColumn($field);
+
+				if($fieldModel && $this->get($fieldModel->getName())){
+					$name[] = $this->get($fieldModel->getName());
 				}
 			}
 
@@ -70,6 +72,7 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 		if(empty($displayName)) {
 			$displayName = $this->getDisplayName();
 		}
+
 		return Vtiger_Util_Helper::toSafeHTML(decode_html($displayName));
 	}
 
@@ -882,5 +885,40 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
         }
 
         return '';
+    }
+
+    /**
+     * @param string $moduleName
+     * @param array $fieldData
+     * @return string
+     */
+    public static function generateLabel(string $moduleName, array $fieldData): string
+    {
+        $label = '';
+        $entityFields = getEntityFieldNames($moduleName);
+        $fieldNames = $entityFields['fieldname'];
+
+        if (is_array($fieldNames)) {
+            foreach ($fieldNames as $field) {
+                $label .= $fieldData[$field] . " ";
+            }
+        } else {
+            $label = $fieldData[$fieldNames];
+        }
+
+        return trim($label);
+    }
+
+    /**
+     * @param int $recordId
+     * @param string $recordLabel
+     * @return string
+     */
+    public static function updateLabel(int $recordId, string $recordLabel): string
+    {
+        $recordLabel = decode_html($recordLabel);
+        PearDatabase::getInstance()->pquery('UPDATE vtiger_crmentity SET label=? WHERE crmid=?', [$recordLabel, $recordId]);
+
+        return $recordLabel;
     }
 }
