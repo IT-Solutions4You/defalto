@@ -894,19 +894,15 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
      */
     public static function generateLabel(string $moduleName, array $fieldData): string
     {
-        $label = '';
-        $entityFields = getEntityFieldNames($moduleName);
-        $fieldNames = $entityFields['fieldname'];
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        $fieldNames = $moduleModel->getNameFields();
+        $label = [];
 
-        if (is_array($fieldNames)) {
-            foreach ($fieldNames as $field) {
-                $label .= $fieldData[$field] . " ";
-            }
-        } else {
-            $label = $fieldData[$fieldNames];
+        foreach ($fieldNames as $fieldName) {
+            $label[] = trim($fieldData[$fieldName]);
         }
 
-        return trim($label);
+        return trim(implode(' ', array_filter($label)));
     }
 
     /**
