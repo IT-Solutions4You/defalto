@@ -580,7 +580,6 @@ function create_custom_views()
         [
             'vtiger_products:product_no:product_no:Products_Product_No:V',
             'vtiger_products:productname:productname:Products_Product_Name:V',
-            'vtiger_products:productcode:productcode:Products_Part_Number:V',
             'vtiger_products:commissionrate:commissionrate:Products_Commission_Rate:V',
             'vtiger_products:qtyinstock:qtyinstock:Products_Quantity_In_Stock:V',
             'vtiger_products:qty_per_unit:qty_per_unit:Products_Qty/Unit:V',

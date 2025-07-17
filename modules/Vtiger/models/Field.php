@@ -566,28 +566,29 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	 * Function to check whether field is ajax editable'
 	 * @return <Boolean>
 	 */
-	public function isAjaxEditable() {
-	    $ajaxRestrictedFields = array(
-	        self::UITYPE_RECORD_NO, 
-            self::UITYPE_LINEITEMS_CURRENCY_AMOUNT,
+    public function isAjaxEditable()
+    {
+        $ajaxRestrictedFields = [
+            self::UITYPE_RECORD_NO,
             self::UITYPE_ATTACHMENT,
-	        self::UITYPE_DOWNLOAD_TYPE,
-	        self::UITYPE_FILENAME,
+            self::UITYPE_DOWNLOAD_TYPE,
+            self::UITYPE_FILENAME,
             self::UITYPE_CKEDITOR,
             self::UITYPE_MAILMANAGER_REFERENCE,
-	    );
-		if(!$this->isEditable() || in_array($this->get('uitype'), $ajaxRestrictedFields)) {
-			return false;
-		}
+            self::UITYPE_TAX,
+        ];
+        if (!$this->isEditable() || in_array($this->get('uitype'), $ajaxRestrictedFields)) {
+            return false;
+        }
 
         if ($this->block && 'LBL_SYSTEM_INFORMATION' === $this->block->label) {
             return Users_Record_Model::getCurrentUserModel()->isAdminUser();
         }
 
         return true;
-	}
+    }
 
-	/**
+    /**
 	 * Static Function to get the instance fo Vtiger Field Model from a given Vtiger_Field object
 	 * @param Vtiger_Field $fieldObj - vtlib field object
 	 * @return Vtiger_Field_Model instance
@@ -1599,7 +1600,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
         $fieldName = $this->getName();
 
         if (in_array($fieldName, ['description', 'signature', 'accesskey', 'imagename']) ||
-            in_array((int)$this->get('uitype'), [19, 69]) ||
+            in_array((int)$this->get('uitype'), [self::UITYPE_FULL_WIDTH_TEXT_AREA, self::UITYPE_IMAGE]) ||
             in_array($this->getFieldDataType(), ['recurrence', 'reminder'])
         ) {
             return true;
@@ -1614,10 +1615,6 @@ class Vtiger_Field_Model extends Vtiger_Field {
      */
     public function isTableCustomWidth(): bool
     {
-        if (83 === (int)$this->get('uitype')) {
-            return true;
-        }
-
         return false;
     }
 

@@ -157,7 +157,7 @@ Vtiger_Edit_Js("Products_Edit_Js", {
 						moreCurrenciesUi.find('#' + dataId).val(dataValue);
 					});
 
-					app.helper.showModal(moreCurrenciesUi, {cb: callback});
+					app.helper.showModal(moreCurrenciesUi, {cb: callback, modalName: 'currencyModal'});
 				}
 			});
 		});
@@ -167,7 +167,7 @@ Vtiger_Edit_Js("Products_Edit_Js", {
 			errorMessage,
 			form = jQuery('#currencyContainer'),
 			editViewForm = thisInstance.getForm(),
-			modalContainer = jQuery('.myModal'),
+			modalContainer = jQuery('#currencyModal'),
 			enabledBaseCurrency = modalContainer.find('.enableCurrency').filter(':checked');
 
 		if(enabledBaseCurrency.length < 1){
@@ -212,7 +212,7 @@ Vtiger_Edit_Js("Products_Edit_Js", {
 
 			moreCurrenciesContainer.find('.currencyContent').find('#' + dataId).val(dataValue);
 		});
-		app.helper.hideModal();
+		app.helper.hideModal({modalName: 'currencyModal'});
 	},
 
 	calculateConversionRate: function() {

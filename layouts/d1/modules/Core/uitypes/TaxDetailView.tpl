@@ -12,23 +12,23 @@
     {assign var=TAXES value=$UITYPE->getDetailTaxes($RECORD->getId())}
     {foreach from=$TAXES item=TAX_MODEL}
         {assign var=TAX_ID value=$TAX_MODEL->getId()}
-        <div id="{$MODULE}_{$REQUEST_INSTANCE.view}_{$FIELD_MODEL->getName()}" class="py-2 col-lg-6">
-            <div class="row py-2 border-bottom border-light-subtle h-100 align-items-center">
-                <div id="{$MODULE}_detailView_fieldLabel_{$FIELD_MODEL->getName()}" class="fieldLabel text-secondary col-sm-4">
+        {if $TAX_MODEL->isActiveForRecord()}
+            <div class="row align-items-center py-2">
+                <div class="col-4">
                     {$TAX_MODEL->getLabel()}
                 </div>
-                <div id="{$MODULE}_detailView_fieldValue_{$FIELD_MODEL->getName()}" class="fieldValue fw-semibold col-lg-8 {if !$TAX_MODEL->isActiveForRecord()}hide{/if}">
-                    <label class="input-group py-1">
+                <div class="col-8">
+                    <label class="input-group">
                         {$TAX_MODEL->getPercentage()} %
                     </label>
                     {foreach from=$TAX_MODEL->getRegions() item=REGION_MODEL}
                         {assign var=REGION_ID value=$REGION_MODEL->getId()}
-                        <label class="input-group py-1">
+                        <label class="input-group">
                             {$REGION_MODEL->getName()}: {$REGION_MODEL->getPercentage()} %
                         </label>
                     {/foreach}
                 </div>
             </div>
-        </div>
+        {/if}
     {/foreach}
 {/strip}
