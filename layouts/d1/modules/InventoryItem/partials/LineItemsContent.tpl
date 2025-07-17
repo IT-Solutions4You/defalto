@@ -16,13 +16,17 @@
         <span class="more dropdown action">
         <div class="btn btn-sm text-secondary" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis icon"></i></div>
         <ul class="dropdown-menu" style="">
+            {if !$data.isDeleted}
             <li><a class="dropdown-item editItem"><i class="fa fa-pencil fa-fw text-secondary" title="{vtranslate('LBL_EDIT',$MODULE)}"></i><span class="ms-2">{vtranslate('LBL_EDIT',$MODULE)}</span></a></li>
             <li><a class="dropdown-item duplicateItem"><i class="fa fa-clone fa-fw text-secondary" title="{vtranslate('LBL_EDIT',$MODULE)}"></i><span class="ms-2">{vtranslate('LBL_DUPLICATE',$MODULE)}</span></a></li>
+            {/if}
             <li><a class="dropdown-item deleteItem"><i class="fa fa-trash-o fa-fw text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i><span class="ms-2">{vtranslate('LBL_DELETE',$MODULE)}</span></a></li>
+            {if !$data.isDeleted}
             <li><a class="dropdown-item addAfter" data-modulename=""><i class="fa fa-i-cursor fa-fw text-secondary"></i><span class="ms-2">{vtranslate('Add', $MODULE)} {vtranslate('TEXT', $MODULE)}</span></a></li>
             {foreach item=ITEM_MODULE_NAME from=$ITEM_MODULES}
                 <li><a class="dropdown-item addAfter" data-modulename="{$ITEM_MODULE_NAME}"><span class="text-secondary">{Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}</span>&nbsp;<span class="ms-2">{vtranslate('Add', $MODULE)} {vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}</span></a></li>
             {/foreach}
+            {/if}
         </ul>
     </span>
         <input type="hidden" class="rowNumber" value="{$row_no}" />
@@ -34,7 +38,16 @@
         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
         {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
             <td class="minWidth20per item_text_td" title="{$data.item_text}">
-                <span class="noEditLineItem display_productid{$row_no} font-bold"><a href="javascript: void;" class="item_edit">{$data.item_text}</a>&nbsp;&nbsp;<small><a class="text-primary" href="index.php?module={$data.entityType}&view=Detail&record={$data.productid}" target="_blank"><i class="fa fa-external-link text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i></a></small></span>
+                <span class="noEditLineItem display_productid{$row_no} font-bold" {if $data.isDeleted}style="text-decoration: line-through;"{/if}>
+                    <a href="javascript: void;" {if !$data.isDeleted}class="item_edit"{/if}>{$data.item_text}</a>&nbsp;&nbsp;
+                    {if !$data.isDeleted}
+                    <small>
+                        <a class="text-primary" href="index.php?module={$data.entityType}&view=Detail&record={$data.productid}" target="_blank">
+                            <i class="fa fa-external-link text-secondary" title="{vtranslate('LBL_DELETE',$MODULE)}"></i>
+                        </a>
+                    </small>
+                    {/if}
+                </span>
                 <input type="hidden" id="item_text{$row_no}" name="item_text{$row_no}" value="{$data.item_text}" class="item_text" />
                 <input type="hidden" id="productid{$row_no}" name="productid{$row_no}" value="{$data.productid}" class="productid" />
                 <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="{$data.entityType}" class="lineItemType" />

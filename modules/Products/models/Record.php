@@ -7,51 +7,6 @@
  */
 
 class Products_Record_Model extends Vtiger_Record_Model {
-
-	/**
-	 * Function to get Taxes Url
-	 * @return <String> Url
-	 */
-	function getTaxesURL() {
-		return 'index.php?module=Inventory&action=GetTaxes&record='. $this->getId();
-	}
-
-	function getPurchaseOrderTaxesURL() {
-		return 'index.php?module=PurchaseOrder&action=GetTaxes&record='. $this->getId();
-	}
-	/**
-	 * Function to get available taxes for this record
-	 * @return <Array> List of available taxes
-	 */
-	function getTaxes() {
-		$db = PearDatabase::getInstance();
-
-		$result = $db->pquery('SELECT vtiger_producttaxrel.*, vtiger_inventorytaxinfo.taxname, vtiger_inventorytaxinfo.taxlabel, vtiger_inventorytaxinfo.compoundon FROM vtiger_producttaxrel
-								INNER JOIN vtiger_inventorytaxinfo ON vtiger_inventorytaxinfo.taxid = vtiger_producttaxrel.taxid
-								INNER JOIN vtiger_crmentity ON vtiger_producttaxrel.productid = vtiger_crmentity.crmid AND vtiger_crmentity.deleted = 0
-								WHERE vtiger_producttaxrel.productid = ? AND vtiger_inventorytaxinfo.deleted = 0', array($this->getId()));
-		$taxes = array();
-		while ($rowData = $db->fetch_array($result)) {
-			$rowData['regions']			= Zend_Json::decode(html_entity_decode($rowData['regions']));
-			$rowData['compoundOn']		= Zend_Json::decode(html_entity_decode($rowData['compoundon']));
-			$taxes[$rowData['taxname']]	= $rowData;
-		}
-
-		$regionsList = array();
-		foreach ($taxes as $taxName => $taxInfo) {
-			$regionsInfo = array('default' => $taxInfo['taxpercentage']);
-			foreach ($taxInfo['regions'] as $list) {
-				if (is_array($list['list'])) {
-					foreach(array_fill_keys($list['list'], $list['value']) as $key => $value) {
-						$regionsInfo[$key] = $value;
-					}
-				}
-			}
-			$taxes[$taxName]['regionsList'] = Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($regionsInfo));
-		}
-		return $taxes;
-	}
-
 	/**
 	 * Function to get values of more currencies listprice
 	 * @return <Array> of listprice values
@@ -93,50 +48,6 @@ class Products_Record_Model extends Vtiger_Record_Model {
 		}
 
 		return $subProductList;
-	}
-
-	/**
-	 * Function to get Url to Create a new Quote from this record
-	 * @return <String> Url to Create new Quote
-	 */
-	function getCreateQuoteUrl() {
-		$quotesModuleModel = Vtiger_Module_Model::getInstance('Quotes');
-
-		return "index.php?module=".$quotesModuleModel->getName()."&view=".$quotesModuleModel->getEditViewName()."&product_id=".$this->getId().
-				"&sourceModule=".$this->getModuleName()."&sourceRecord=".$this->getId()."&relationOperation=true";
-	}
-
-	/**
-	 * Function to get Url to Create a new Invoice from this record
-	 * @return <String> Url to Create new Invoice
-	 */
-	function getCreateInvoiceUrl() {
-		$invoiceModuleModel = Vtiger_Module_Model::getInstance('Invoice');
-
-		return "index.php?module=".$invoiceModuleModel->getName()."&view=".$invoiceModuleModel->getEditViewName()."&product_id=".$this->getId().
-				"&sourceModule=".$this->getModuleName()."&sourceRecord=".$this->getId()."&relationOperation=true";
-	}
-
-	/**
-	 * Function to get Url to Create a new PurchaseOrder from this record
-	 * @return <String> Url to Create new PurchaseOrder
-	 */
-	function getCreatePurchaseOrderUrl() {
-		$purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
-
-		return "index.php?module=".$purchaseOrderModuleModel->getName()."&view=".$purchaseOrderModuleModel->getEditViewName()."&product_id=".$this->getId().
-				"&sourceModule=".$this->getModuleName()."&sourceRecord=".$this->getId()."&relationOperation=true&vendor_id=".$this->get('vendor_id');
-	}
-
-	/**
-	 * Function to get Url to Create a new SalesOrder from this record
-	 * @return <String> Url to Create new SalesOrder
-	 */
-	function getCreateSalesOrderUrl() {
-		$salesOrderModuleModel = Vtiger_Module_Model::getInstance('SalesOrder');
-
-		return "index.php?module=".$salesOrderModuleModel->getName()."&view=".$salesOrderModuleModel->getEditViewName()."&product_id=".$this->getId().
-				"&sourceModule=".$this->getModuleName()."&sourceRecord=".$this->getId()."&relationOperation=true";
 	}
 
 	/**

@@ -124,7 +124,7 @@ function createInvoice(int $salesOrderId, string $recurringDate = '')
     $focus->column_fields['duedate'] = date('Y-m-d', mktime(0, 0, 0, $m, $d + $dueDuration, $y));
 
     $focus->_salesorderid = $salesOrderId;
-    $focus->column_fields['source'] = 'Recurring Invoice';
+    $focus->column_fields['source'] = 'RECURRING INVOICE';
 
     try {
         $focus->save('Invoice');

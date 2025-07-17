@@ -499,14 +499,16 @@ class Services extends CRMEntity {
 			vtiger_quotes.*,
 			vtiger_potential.potentialname,
 			vtiger_account.accountname,
-			vtiger_inventoryproductrel.productid,
+			df_inventoryitem.productid,
 			case when (vtiger_users.user_name not like '') then $userNameSql
 				else vtiger_groups.groupname end as user_name
 			FROM vtiger_quotes
 			INNER JOIN vtiger_crmentity
 				ON vtiger_crmentity.crmid = vtiger_quotes.quoteid
-			INNER JOIN vtiger_inventoryproductrel
-				ON vtiger_inventoryproductrel.id = vtiger_quotes.quoteid
+			INNER JOIN df_inventoryitem
+				ON df_inventoryitem.parentid = vtiger_quotes.quoteid
+			INNER JOIN vtiger_crmentity AS crmentityInventoryItem
+				ON crmentityInventoryItem.crmid = df_inventoryitem.inventoryitemid AND crmentityInventoryItem.deleted = 0
 			LEFT OUTER JOIN vtiger_account
 				ON vtiger_account.accountid = vtiger_quotes.accountid
 			LEFT OUTER JOIN vtiger_potential
@@ -522,7 +524,7 @@ class Services extends CRMEntity {
 			LEFT JOIN vtiger_users
 				ON vtiger_users.id = vtiger_crmentity.smownerid
 			WHERE vtiger_crmentity.deleted = 0
-			AND vtiger_inventoryproductrel.productid = ".$id;
+			AND df_inventoryitem.productid = ".$id;
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -576,16 +578,18 @@ class Services extends CRMEntity {
 		$query = "SELECT vtiger_crmentity.*,
 			vtiger_purchaseorder.*,
 			vtiger_service.servicename,
-			vtiger_inventoryproductrel.productid,
+			df_inventoryitem.productid,
 			case when (vtiger_users.user_name not like '') then $userNameSql
 				else vtiger_groups.groupname end as user_name
 			FROM vtiger_purchaseorder
 			INNER JOIN vtiger_crmentity
 				ON vtiger_crmentity.crmid = vtiger_purchaseorder.purchaseorderid
-			INNER JOIN vtiger_inventoryproductrel
-				ON vtiger_inventoryproductrel.id = vtiger_purchaseorder.purchaseorderid
+            INNER JOIN df_inventoryitem
+                ON df_inventoryitem.parentid = vtiger_purchaseorder.purchaseorderid
+            INNER JOIN vtiger_crmentity AS crmentityInventoryItem
+                ON crmentityInventoryItem.crmid = df_inventoryitem.inventoryitemid AND crmentityInventoryItem.deleted = 0
 			INNER JOIN vtiger_service
-				ON vtiger_service.serviceid = vtiger_inventoryproductrel.productid
+				ON vtiger_service.serviceid = df_inventoryitem.productid
 			LEFT JOIN vtiger_groups
 				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
 			LEFT JOIN vtiger_purchaseordercf
@@ -657,10 +661,12 @@ class Services extends CRMEntity {
 			FROM vtiger_salesorder
 			INNER JOIN vtiger_crmentity
 				ON vtiger_crmentity.crmid = vtiger_salesorder.salesorderid
-			INNER JOIN vtiger_inventoryproductrel
-				ON vtiger_inventoryproductrel.id = vtiger_salesorder.salesorderid
+            INNER JOIN df_inventoryitem
+                ON df_inventoryitem.parentid = vtiger_salesorder.salesorderid
+            INNER JOIN vtiger_crmentity AS crmentityInventoryItem
+                ON crmentityInventoryItem.crmid = df_inventoryitem.inventoryitemid AND crmentityInventoryItem.deleted = 0
 			INNER JOIN vtiger_service
-				ON vtiger_service.serviceid = vtiger_inventoryproductrel.productid
+				ON vtiger_service.serviceid = df_inventoryitem.productid
 			LEFT OUTER JOIN vtiger_account
 				ON vtiger_account.accountid = vtiger_salesorder.accountid
 			LEFT JOIN vtiger_invoice_recurring_info
@@ -729,7 +735,7 @@ class Services extends CRMEntity {
 							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 		$query = "SELECT vtiger_crmentity.*,
 			vtiger_invoice.*,
-			vtiger_inventoryproductrel.quantity,
+			df_inventoryitem.quantity,
 			vtiger_account.accountname,
 			case when (vtiger_users.user_name not like '') then $userNameSql
 				else vtiger_groups.groupname end as user_name
@@ -738,8 +744,10 @@ class Services extends CRMEntity {
 				ON vtiger_crmentity.crmid = vtiger_invoice.invoiceid
 			LEFT OUTER JOIN vtiger_account
 				ON vtiger_account.accountid = vtiger_invoice.accountid
-			INNER JOIN vtiger_inventoryproductrel
-				ON vtiger_inventoryproductrel.id = vtiger_invoice.invoiceid
+            INNER JOIN df_inventoryitem
+                ON df_inventoryitem.parentid = vtiger_invoice.invoiceid
+            INNER JOIN vtiger_crmentity AS crmentityInventoryItem
+                ON crmentityInventoryItem.crmid = df_inventoryitem.inventoryitemid AND crmentityInventoryItem.deleted = 0
 			LEFT JOIN vtiger_groups
 				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
 			LEFT JOIN vtiger_invoicecf
@@ -751,7 +759,7 @@ class Services extends CRMEntity {
 			LEFT JOIN vtiger_users
 				ON  vtiger_users.id = vtiger_crmentity.smownerid
 			WHERE vtiger_crmentity.deleted = 0
-			AND vtiger_inventoryproductrel.productid = ".$id;
+			AND df_inventoryitem.productid = ".$id;
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -936,12 +944,12 @@ class Services extends CRMEntity {
 		global $adb,$log;
 		$log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
-		$rel_table_arr = Array("Quotes"=>"vtiger_inventoryproductrel","PurchaseOrder"=>"vtiger_inventoryproductrel","SalesOrder"=>"vtiger_inventoryproductrel",
-				"Invoice"=>"vtiger_inventoryproductrel","PriceBooks"=>"vtiger_pricebookproductrel","Documents"=>"vtiger_senotesrel");
+		$rel_table_arr = Array("Quotes"=>"df_inventoryitem","PurchaseOrder"=>"df_inventoryitem","SalesOrder"=>"df_inventoryitem",
+				"Invoice"=>"df_inventoryitem","PriceBooks"=>"vtiger_pricebookproductrel","Documents"=>"vtiger_senotesrel");
 
-		$tbl_field_arr = Array("vtiger_inventoryproductrel"=>"id","vtiger_pricebookproductrel"=>"pricebookid","vtiger_senotesrel"=>"notesid");
+		$tbl_field_arr = Array("df_inventoryitem"=>"inventoryitemid","vtiger_pricebookproductrel"=>"pricebookid","vtiger_senotesrel"=>"notesid");
 
-		$entity_tbl_field_arr = Array("vtiger_inventoryproductrel"=>"productid","vtiger_pricebookproductrel"=>"productid","vtiger_senotesrel"=>"crmid");
+		$entity_tbl_field_arr = Array("df_inventoryitem"=>"productid","vtiger_pricebookproductrel"=>"productid","vtiger_senotesrel"=>"crmid");
 
 		foreach($transferEntityIds as $transferId) {
 			foreach($rel_table_arr as $rel_module=>$rel_table) {
@@ -1025,10 +1033,10 @@ class Services extends CRMEntity {
 	 */
 	function setRelationTables($secmodule){
 		$rel_tables = array (
-			"Quotes" => array("vtiger_inventoryproductrel"=>array("productid","id"),"vtiger_service"=>"serviceid"),
-			"PurchaseOrder" => array("vtiger_inventoryproductrel"=>array("productid","id"),"vtiger_service"=>"serviceid"),
-			"SalesOrder" => array("vtiger_inventoryproductrel"=>array("productid","id"),"vtiger_service"=>"serviceid"),
-			"Invoice" => array("vtiger_inventoryproductrel"=>array("productid","id"),"vtiger_service"=>"serviceid"),
+			"Quotes" => array("df_inventoryitem"=>array("productid","inventoryitemid"),"vtiger_service"=>"serviceid"),
+			"PurchaseOrder" => array("df_inventoryitem"=>array("productid","inventoryitemid"),"vtiger_service"=>"serviceid"),
+			"SalesOrder" => array("df_inventoryitem"=>array("productid","inventoryitemid"),"vtiger_service"=>"serviceid"),
+			"Invoice" => array("df_inventoryitem"=>array("productid","inventoryitemid"),"vtiger_service"=>"serviceid"),
 			"PriceBooks" => array("vtiger_pricebookproductrel"=>array("productid","pricebookid"),"vtiger_service"=>"serviceid"),
 			"Documents" => array("vtiger_senotesrel"=>array("crmid","notesid"),"vtiger_service"=>"serviceid"),
 		);

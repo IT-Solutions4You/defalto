@@ -133,16 +133,20 @@ trait InventoryItem_Detail_Trait
                 $row['entityType'] = 'Text';
             } else {
                 $row['entityType'] = getSalesEntityType($row['productid']);
+                $row['isDeleted'] = !isRecordExists($row['productid']);
 
                 if (empty($row['item_text'])) {
                     $row['item_text'] = getEntityName($row['entityType'], $row['productid'])[$row['productid']];
                 }
 
-                $recordModel = Vtiger_Record_Model::getInstanceById($row['productid'], $row['entityType']);
+                if (!$row['isDeleted']) {
+                    $recordModel = Vtiger_Record_Model::getInstanceById($row['productid'], $row['entityType']);
 
-                if (method_exists($recordModel, 'isBundle') && $recordModel->isBundle() && method_exists($recordModel, 'isBundleViewable') && $recordModel->isBundleViewable()) {
-                    $subProducts = $recordModel->getSubProducts();
-                    $row['subProducts'] = $subProducts;
+                    if (method_exists($recordModel, 'isBundle') && $recordModel->isBundle() && method_exists($recordModel,
+                            'isBundleViewable') && $recordModel->isBundleViewable()) {
+                        $subProducts = $recordModel->getSubProducts();
+                        $row['subProducts'] = $subProducts;
+                    }
                 }
 
                 $recordModel = Vtiger_Record_Model::getInstanceById($row['inventoryitemid'], $moduleName);
