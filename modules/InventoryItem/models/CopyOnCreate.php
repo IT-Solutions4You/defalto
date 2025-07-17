@@ -10,18 +10,22 @@
 
 class InventoryItem_CopyOnCreate_Model extends Vtiger_Base_Model
 {
-    public static function run(Vtiger_Record_Model $recordModel): void
+    public static function run(CRMEntity $entity, int $forceConversionFrom = 0): void
     {
-        if (!empty($recordModel->get('mode')) && $recordModel->get('mode') !== 'create') {
+        if (!empty($entity->mode) && $entity->mode !== 'create' && $entity->mode !== '') {
             return;
         }
 
-        $request = new Vtiger_Request($_REQUEST, $_REQUEST);
-        $sourceModule = $request->get('sourceModule');
-        $sourceRecord = (int)$request->get('sourceRecord');
+        if ($forceConversionFrom) {
+            $sourceRecord = $forceConversionFrom;
+        } else {
+            $request = new Vtiger_Request($_REQUEST, $_REQUEST);
+            $sourceModule = $request->get('sourceModule');
+            $sourceRecord = (int)$request->get('sourceRecord');
 
-        if (empty($sourceModule) || empty($sourceRecord)) {
-            return;
+            if (empty($sourceModule) || empty($sourceRecord)) {
+                return;
+            }
         }
 
         $allItems = InventoryItem_Module_Model::fetchItemsForId($sourceRecord, true);
@@ -31,12 +35,12 @@ class InventoryItem_CopyOnCreate_Model extends Vtiger_Base_Model
             $itemModel->set('mode', '');
             $itemModel->set('id', '');
             $itemModel->set('recordId', '');
-            $itemModel->set('parentid', $recordModel->get('id'));
+            $itemModel->set('parentid', $entity->id);
             $itemModel->set('parentitemid', $item['inventoryitemid']);
             $itemModel->save();
             unset($itemModel);
         }
 
-        InventoryItem_ParentEntity_Model::updateTotals($recordModel->get('id'));
+        InventoryItem_ParentEntity_Model::updateTotals($entity->id);
     }
 }

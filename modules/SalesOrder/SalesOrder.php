@@ -143,6 +143,7 @@ class SalesOrder extends CRMEntity
 
     public function save_module($module)
     {
+        InventoryItem_CopyOnCreate_Model::run($this);
     }
 
     /** Function to get the invoices associated with the Sales Order

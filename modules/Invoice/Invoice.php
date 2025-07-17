@@ -111,7 +111,6 @@ class Invoice extends CRMEntity
 
     public $mandatory_fields = ['subject', 'createdtime', 'modifiedtime', 'assigned_user_id', 'quantity', 'listprice', 'productid'];
     public $_salesorderid;
-    public $_recurring_mode;
 
     // For Alphabetical search
     public $def_basicsearch_col = 'subject';
@@ -137,29 +136,11 @@ class Invoice extends CRMEntity
      */
     public function save_module($module)
     {
-        global $updateInventoryProductRel_deduct_stock;
-        $updateInventoryProductRel_deduct_stock = true;
-
-        /* $_REQUEST['REQUEST_FROM_WS'] is set from webservices script.
-         * Depending on $_REQUEST['totalProductCount'] value inserting line items into DB.
-         * This should be done by webservices, not be normal save of Inventory record.
-         * So unsetting the value $_REQUEST['totalProductCount'] through check point
-         */
-        if (isset($_REQUEST['REQUEST_FROM_WS']) && $_REQUEST['REQUEST_FROM_WS']) {
-            unset($_REQUEST['totalProductCount']);
+        if (!empty($this->_salesorderid)) {
+            InventoryItem_CopyOnCreate_Model::run($this, $this->_salesorderid);
         }
-        //in ajax save we should not call this function, because this will delete all the existing product values
-        if (isset($this->_recurring_mode) && $this->_recurring_mode == 'recurringinvoice_from_so' && isset($this->_salesorderid) && $this->_salesorderid != '') {
-            // We are getting called from the RecurringInvoice cron service!
-            $this->createRecurringInvoiceFromSO();
-        } elseif (isset($_REQUEST) && $_REQUEST['action'] == 'InvoiceAjax' || $_REQUEST['action'] == 'MassEditSave' || $_REQUEST['action'] == 'FROM_WS') {
-            $updateInventoryProductRel_deduct_stock = false;
-        }
-        // Update the currency id and the conversion rate for the invoice
-        $update_query = "update vtiger_invoice set currency_id=?, conversion_rate=? where invoiceid=?";
 
-        $update_params = [$this->column_fields['currency_id'], $this->column_fields['conversion_rate'], $this->id];
-        $this->db->pquery($update_query, $update_params);
+        InventoryItem_CopyOnCreate_Model::run($this);
     }
 
     /**
@@ -317,89 +298,6 @@ class Invoice extends CRMEntity
             $this->db->pquery($sql, [$id, $return_id]);
         } else {
             parent::unlinkRelationship($id, $return_module, $return_id);
-        }
-    }
-
-    /*
-     * Function to get the relations of salesorder to invoice for recurring invoice procedure
-     * @param - $salesorder_id Salesorder ID
-     */
-    public function createRecurringInvoiceFromSO()
-    {
-        global $adb;
-        $salesorder_id = $this->_salesorderid;
-        $query1 = "SELECT * FROM vtiger_inventoryproductrel WHERE id=?";
-        $res = $adb->pquery($query1, [$salesorder_id]);
-        $no_of_products = $adb->num_rows($res);
-        $fieldsList = $adb->getFieldsArray($res);
-        $update_stock = [];
-        for ($j = 0; $j < $no_of_products; $j++) {
-            $row = $adb->query_result_rowdata($res, $j);
-            $col_value = [];
-            for ($k = 0; $k < php7_count($fieldsList); $k++) {
-                if ($fieldsList[$k] != 'lineitem_id') {
-                    $col_value[$fieldsList[$k]] = $row[$fieldsList[$k]];
-                }
-            }
-            if (php7_count($col_value) > 0) {
-                $col_value['id'] = $this->id;
-                $columns = array_keys($col_value);
-                $values = array_values($col_value);
-                $query2 = "INSERT INTO vtiger_inventoryproductrel(" . implode(",", $columns) . ") VALUES (" . generateQuestionMarks($values) . ")";
-                $adb->pquery($query2, [$values]);
-                $qty = $col_value['quantity'];
-                $update_stock[$col_value['sequence_no']] = $qty;
-            }
-        }
-
-        $query1 = "SELECT * FROM vtiger_inventorysubproductrel WHERE id=?";
-        $res = $adb->pquery($query1, [$salesorder_id]);
-        $no_of_products = $adb->num_rows($res);
-        $fieldsList = $adb->getFieldsArray($res);
-        for ($j = 0; $j < $no_of_products; $j++) {
-            $row = $adb->query_result_rowdata($res, $j);
-            $col_value = [];
-            for ($k = 0; $k < php7_count($fieldsList); $k++) {
-                $col_value[$fieldsList[$k]] = $row[$fieldsList[$k]];
-            }
-            if (php7_count($col_value) > 0) {
-                $col_value['id'] = $this->id;
-                $columns = array_keys($col_value);
-                $values = array_values($col_value);
-                $query2 = "INSERT INTO vtiger_inventorysubproductrel(" . implode(",", $columns) . ") VALUES (" . generateQuestionMarks($values) . ")";
-                $adb->pquery($query2, [$values]);
-            }
-        }
-
-        //Adding charge values
-        $adb->pquery('DELETE FROM vtiger_inventorychargesrel WHERE recordid = ?', [$this->id]);
-        $adb->pquery('INSERT INTO vtiger_inventorychargesrel SELECT ?, charges FROM vtiger_inventorychargesrel WHERE recordid = ?', [$this->id, $salesorder_id]);
-
-        //Update the netprice (subtotal), taxtype, discount, S&H charge, adjustment and total for the Invoice
-        $updatequery = " UPDATE vtiger_invoice SET ";
-        $updateparams = [];
-        // Remaining column values to be updated -> column name to field name mapping
-        $invoice_column_field = [
-            'adjustment'       => 'adjustment',
-            'subtotal'         => 'subtotal',
-            'total'            => 'total',
-            'taxtype'          => 'hdnTaxType',
-            'discount_amount'  => 'discount_amount',
-            'region_id'        => 'region_id',
-            'balance'          => 'total'
-        ];
-        $updatecols = [];
-        foreach ($invoice_column_field as $col => $field) {
-            $updatecols[] = "$col=?";
-            $updateparams[] = $this->column_fields[$field];
-        }
-        if (php7_count($updatecols) > 0) {
-            $updatequery .= implode(",", $updatecols);
-
-            $updatequery .= " WHERE invoiceid=?";
-            array_push($updateparams, $this->id);
-
-            $adb->pquery($updatequery, $updateparams);
         }
     }
 

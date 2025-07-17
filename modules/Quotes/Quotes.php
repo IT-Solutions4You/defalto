@@ -135,6 +135,7 @@ class Quotes extends CRMEntity
 
     function save_module()
     {
+        InventoryItem_CopyOnCreate_Model::run($this);
     }
 
     /**    function used to get the list of sales orders which are related to the Quotes

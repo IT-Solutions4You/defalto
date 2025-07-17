@@ -137,6 +137,7 @@ class PurchaseOrder extends CRMEntity
 
     public function save_module($module)
     {
+        InventoryItem_CopyOnCreate_Model::run($this);
     }
 
     /*

@@ -16,7 +16,7 @@ class Vtiger_Install_Model extends Core_Install_Model
      */
     public array $registerCron = [
         ['Workflow', 'cron/modules/com_vtiger_workflow/com_vtiger_workflow.php', 900, 'com_vtiger_workflow', 1, 'Recommended frequency for Workflow is 15 mins'],
-        ['RecurringInvoice', 'cron/modules/SalesOrder/RecurringInvoice.php', 43200, 'SalesOrder', 2, 'Recommended frequency for RecurringInvoice is 12 hours'],
+        ['RecurringInvoice', 'cron/modules/SalesOrder/RecurringInvoice.php', 3600, 'SalesOrder', 2, 'Recommended frequency for RecurringInvoice is 1 hour'],
         ['SendReminder', 'cron/SendReminder.php', 900, 'Appointments', 3, 'Recommended frequency for SendReminder is 15 mins'],
         ['MailScanner', 'cron/MailScanner.php', 900, 'Settings', 4, 'Recommended frequency for MailScanner is 15 mins'],
     ];

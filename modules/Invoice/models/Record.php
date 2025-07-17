@@ -37,6 +37,5 @@ class Invoice_Record_Model extends Vtiger_Record_Model
         }
 
         parent::save();
-        InventoryItem_CopyOnCreate_Model::run($this);
     }
 }

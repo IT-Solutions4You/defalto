@@ -817,7 +817,6 @@ class Invoice_Install_Model extends Core_Install_Model
             ->createColumn('end_period','date DEFAULT NULL')
             ->createColumn('last_recurring_date','date DEFAULT NULL')
             ->createColumn('payment_duration','varchar(200) DEFAULT NULL')
-            ->createColumn('invoice_status','varchar(200) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`salesorderid`)')
             ->createKey('CONSTRAINT `fk_salesorderid_vtiger_invoice_recurring_info` FOREIGN KEY IF NOT EXISTS (`salesorderid`) REFERENCES `vtiger_salesorder` (`salesorderid`) ON DELETE CASCADE')
             ;

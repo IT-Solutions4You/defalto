@@ -48,7 +48,7 @@ Vtiger_Edit_Js("SalesOrder_Edit_Js", {}, {
         const thisInstance = this;
         const form = this.getForm();
         const enableRecurrenceField = form.find('[name="enable_recurring"]');
-        const fieldNamesForValidation = ['recurring_frequency', 'start_period', 'end_period', 'payment_duration', 'invoicestatus'];
+        const fieldNamesForValidation = ['recurring_frequency', 'start_period', 'payment_duration'];
         const selectors = [];
 
         for (let index in fieldNamesForValidation) {

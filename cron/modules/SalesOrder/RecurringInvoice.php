@@ -1,188 +1,207 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
 
 require_once('include/utils/utils.php');
 require_once('include/logging.php');
 
 global $adb, $log;
 $log = Logger::getLogger('RecurringInvoice');
-$log->debug("invoked RecurringInvoice");
+$log->debug('invoked RecurringInvoice');
 
 $currentDate = date('Y-m-d');
 $currentDateStrTime = strtotime($currentDate);
 
-$sql="SELECT vtiger_salesorder.salesorderid, recurring_frequency, start_period, end_period, last_recurring_date,
-		 payment_duration, invoice_status FROM vtiger_salesorder
+$sql = 'SELECT vtiger_salesorder.salesorderid, recurring_frequency, start_period, end_period, last_recurring_date,
+		 payment_duration FROM vtiger_salesorder
 		 INNER JOIN vtiger_crmentity ON vtiger_salesorder.salesorderid = vtiger_crmentity.crmid AND vtiger_crmentity.deleted = 0
 		 INNER JOIN vtiger_invoice_recurring_info ON vtiger_salesorder.salesorderid = vtiger_invoice_recurring_info.salesorderid
-		 WHERE DATE_FORMAT(start_period,'%Y-%m-%d') <= ? AND DATE_FORMAT(end_period,'%Y-%m-%d') >= ?";
-$result = $adb->pquery($sql, array($currentDate, $currentDate));
-$no_of_salesorder = $adb->num_rows($result);
+		 WHERE
+		    sostatus != "Cancelled"
+		    AND DATE_FORMAT(start_period, "%Y-%m-%d") <= ?
+		    AND (DATE_FORMAT(end_period, "%Y-%m-%d") >= ? OR end_period = "0000-00-00" OR end_period = "" OR end_period IS NULL)
+		    AND DATE_FORMAT(last_recurring_date, "%Y-%m-%d") <= ?
+		 ORDER BY salesorderid
+		 LIMIT 50
+		 ';
+$result = $adb->pquery($sql, [$currentDate, $currentDate, $currentDate]);
 
-for($i=0; $i<$no_of_salesorder;$i++) {
-	$salesorder_id		= $adb->query_result($result, $i, 'salesorderid');
-	$start_period		= $adb->query_result($result, $i, 'start_period');
-	$end_period			= $adb->query_result($result, $i, 'end_period');
-	$recurring_date		= $adb->query_result($result, $i, 'last_recurring_date');
-	$recurringFrequency = $adb->query_result($result, $i, 'recurring_frequency');
+while ($row = $adb->fetchByAssoc($result)) {
+    $salesOrderId = (int)$row['salesorderid'];
+    $startPeriod = $row['start_period'];
+    $endPeriod = $row['end_period'];
+    $recurringDate = $row['last_recurring_date'];
+    $recurringFrequency = $row['recurring_frequency'];
 
-	if ($recurring_date == NULL  || $recurring_date == '' || $recurring_date == '0000-00-00') {
-		$recurring_date = $start_period;
-	}
+    if ($recurringDate == null || $recurringDate == '' || $recurringDate == '0000-00-00') {
+        $recurringDate = $startPeriod;
+    }
 
-	$endDateStrTime = strtotime($end_period);
-	$recurringDateStrTime = strtotime($recurring_date);
+    if ($endPeriod == null || $endPeriod == '' || $endPeriod == '0000-00-00') {
+        $date = new DateTime($startPeriod);
+        $date->modify('+10 years');
 
-	if($recurringDateStrTime < $currentDateStrTime) {
-		$recurringDatesList = array();
-		$nextRecurringDate = $validNextRecurringDate = $recurring_date;
+        $endPeriod = $date->format('Y-m-d');
+    }
 
-		while(strtotime($validNextRecurringDate) <= $currentDateStrTime && $currentDateStrTime <= $endDateStrTime) {
-			$recurringDatesList[]	= $validNextRecurringDate;
-			$nextRecurringDatesInfo = getRecurringDate($nextRecurringDate, $recurringFrequency);
+    $endDateStrTime = strtotime($endPeriod);
+    $recurringDateStrTime = strtotime($recurringDate);
 
-			//Updating the existing values
-			$validNextRecurringDate = $nextRecurringDatesInfo['validDate'];
-			$nextRecurringDate		= $nextRecurringDatesInfo['nextRecurringDate'];
-		}
+    if ($recurringDateStrTime < $currentDateStrTime) {
+        $recurringDatesList = [];
+        $nextRecurringDate = $validNextRecurringDate = $recurringDate;
 
-		if ($recurringDatesList) {
-			foreach ($recurringDatesList as $recurringDate) {
-				createInvoice($salesorder_id, $recurringDate);
-			}
-			$adb->pquery('UPDATE vtiger_invoice_recurring_info SET last_recurring_date = ? WHERE salesorderid = ?', array($validNextRecurringDate, $salesorder_id));
-		}
+        while (strtotime($validNextRecurringDate) <= $currentDateStrTime && $currentDateStrTime <= $endDateStrTime) {
+            $recurringDatesList[] = $validNextRecurringDate;
+            $nextRecurringDatesInfo = getRecurringDate($nextRecurringDate, $recurringFrequency);
+            $validNextRecurringDate = $nextRecurringDatesInfo['validDate'];
+            $nextRecurringDate = $nextRecurringDatesInfo['nextRecurringDate'];
+        }
 
-	} elseif($recurringDateStrTime == $currentDateStrTime && $recurringDateStrTime <= $endDateStrTime) {
-		createInvoice($salesorder_id, $recurringDate);
+        if ($recurringDatesList) {
+            foreach ($recurringDatesList as $recurringDateFromList) {
+                createInvoice($salesOrderId, $recurringDateFromList);
+            }
 
-		$nextRecurringDatesInfo = getRecurringDate($recurring_date, $recurringFrequency);
-		$nextRecurringDate = $nextRecurringDatesInfo['validDate'];
-		$adb->pquery('UPDATE vtiger_invoice_recurring_info SET last_recurring_date = ? WHERE salesorderid = ?', array($nextRecurringDate, $salesorder_id));
-	}
+            $adb->pquery('UPDATE vtiger_invoice_recurring_info SET last_recurring_date = ? WHERE salesorderid = ?', [$validNextRecurringDate, $salesOrderId]);
+        }
+    } elseif ($recurringDateStrTime == $currentDateStrTime && $recurringDateStrTime <= $endDateStrTime) {
+        createInvoice($salesOrderId, $recurringDate);
+
+        $nextRecurringDatesInfo = getRecurringDate($recurringDate, $recurringFrequency);
+        $nextRecurringDate = $nextRecurringDatesInfo['validDate'];
+        $adb->pquery('UPDATE vtiger_invoice_recurring_info SET last_recurring_date = ? WHERE salesorderid = ?', [$nextRecurringDate, $salesOrderId]);
+    }
+
+    // Add some free time for the case when automatic workflow generates a .pdf file and sends it to the customer to prevent the mail server from limit errors
+    sleep(5);
 }
 
-/* Function to create a new Invoice using the given Sales Order id */
-function createInvoice($salesorder_id, $recurringDate = false) {
-	require_once('include/utils/utils.php');
-	require_once('modules/SalesOrder/SalesOrder.php');
-	require_once('modules/Invoice/Invoice.php');
-	require_once('modules/Users/Users.php');
+/**
+ * Function to create a new Invoice using the given Sales Order id
+ *
+ * @param int    $salesOrderId
+ * @param string $recurringDate
+ *
+ * @return void
+ */
+function createInvoice(int $salesOrderId, string $recurringDate = '')
+{
+    global $current_user, $log;
 
-	global $log, $adb;
-	global $current_user;
+    if (!$recurringDate) {
+        $recurringDate = date('Y-m-d');
+    }
 
-	// Payment duration in days
-	$payment_duration_values = Array(
-        'net 01 day' => '1',
-        'net 05 days' => '5',
-        'net 07 days' => '7',
-        'net 10 days' => '10',
-        'net 15 days' => '15',
-		'net 30 days' => '30',
-		'net 45 days' => '45',
-		'net 60 days' => '60'
-	);
+    if (!$current_user) {
+        $current_user = Users::getActiveAdminUser();
+    }
 
-	if (!$recurringDate) {
-		$recurringDate = date('Y-m-d');
-	}
+    $soFocus = CRMEntity::getInstance('SalesOrder');
+    $soFocus->id = $salesOrderId;
+    $soFocus->retrieve_entity_info($salesOrderId, 'SalesOrder');
 
-	if(!$current_user) {
-		$current_user = Users::getActiveAdminUser();
-	}
-	$so_focus = CRMEntity::getInstance('SalesOrder');
-	$so_focus->id = $salesorder_id;
-	$so_focus->retrieve_entity_info($salesorder_id,"SalesOrder");
-	foreach($so_focus->column_fields as $fieldname=>$value) {
-		$so_focus->column_fields[$fieldname] = decode_html($value);
-	}
+    $focus = CRMEntity::getInstance('Invoice');
+    $focus->column_fields['salesorder_id'] = $salesOrderId;
 
-	$focus = new Invoice();
-	// This will only fill in the basic columns from SO to Invoice and also Update the SO id in new Invoice
-	$focus = getConvertSoToInvoice($focus,$so_focus,$salesorder_id);
+    foreach ($soFocus->column_fields as $fieldName => $fieldValue) {
+        if (isset($focus->column_fields[$fieldName])) {
+            $focus->column_fields[$fieldName] = decode_html($fieldValue);
+        }
+    }
 
-	// Pick up the Payment due date based on the Configuration in SO
-	$payment_duration = $so_focus->column_fields['payment_duration'];
-	$due_duration = $payment_duration_values[trim(strtolower($payment_duration))];
+    $focus->id = '';
+    $focus->mode = '';
+    $focus->column_fields['invoicestatus'] = 'Auto Created';
+    $focus->column_fields['invoicedate'] = $recurringDate;
 
-	// Cleanup focus object, to duplicate the Invoice.
-	$focus->id = '';
-	$focus->mode = '';
-	$focus->column_fields['invoicestatus'] = $so_focus->column_fields['invoicestatus'];
-	$focus->column_fields['invoicedate'] = $recurringDate;
+    $dueDuration = decidePaymentDuration($soFocus->column_fields['payment_duration']);
+    [$y, $m, $d] = explode('-', $recurringDate);
+    $focus->column_fields['duedate'] = date('Y-m-d', mktime(0, 0, 0, $m, $d + $dueDuration, $y));
 
-	list($y, $m, $d) = explode('-', $recurringDate);
-	$focus->column_fields['duedate'] = date('Y-m-d', mktime(0, 0, 0, $m, $d + $due_duration, $y));
+    $focus->_salesorderid = $salesOrderId;
+    $focus->column_fields['source'] = 'Recurring Invoice';
 
-	// Additional SO fields to copy -> Invoice field name mapped to equivalent SO field name
-	$invoice_so_fields = Array (
-		'adjustment' => 'adjustment',
-		'subtotal' => 'subtotal',
-		'price_total' => 'price_total',
-		'hdnTaxType' => 'hdnTaxType',
-		'hdnDiscountPercent' => 'hdnDiscountPercent',
-		'discount_amount' => 'discount_amount',
-		'hdnS_H_Amount' => 'hdnS_H_Amount',
-		'assigned_user_id' => 'assigned_user_id',
-		'currency_id' => 'currency_id',
-		'conversion_rate' => 'conversion_rate',
-		'balance' => 'price_total'
-	);
-	foreach($invoice_so_fields as $invoice_field => $so_field) {
-		$focus->column_fields[$invoice_field] = $so_focus->column_fields[$so_field];
-	}
-	$focus->_salesorderid = $salesorder_id;
-	$focus->_recurring_mode = 'recurringinvoice_from_so';
-	try {
-		$focus->save("Invoice");
-	} catch (Exception $e) {
-		//TODO - Review
-	}
+    try {
+        $focus->save('Invoice');
+    } catch (Exception $e) {
+        $log->error($e->getMessage());
+    }
 }
 
-function getRecurringDate($recurringDate, $recurringFrequency) {
-	$currentDate = date('Y-m-d');
-	list($y, $m, $d) = explode('-', $recurringDate);
+/**
+ * @param string $recurringDate
+ * @param string $recurringFrequency
+ *
+ * @return array{validDate: string, nextRecurringDate: string}
+ */
+function getRecurringDate(string $recurringDate, string $recurringFrequency): array
+{
+    [$y, $m, $d] = explode('-', $recurringDate);
+    $period = false;
 
-	$period = false;
-	switch(strtolower($recurringFrequency)) {
-		case 'daily'		:	$period = '+1 day';		break;
-		case 'weekly'		:	$period = '+1 week';	break;
+    switch (strtolower($recurringFrequency)) {
+        case 'daily':
+            $period = '+1 day';
+            break;
+        case 'weekly':
+            $period = '+1 week';
+            break;
+        case 'monthly':
+            $m = $m + 1;
+            break;
+        case 'quarterly':
+            $m = $m + 3;
+            break;
+        case 'every 4 months':
+            $m = $m + 4;
+            break;
+        case 'half-yearly':
+            $m = $m + 6;
+            break;
+        case 'yearly':
+            $y = $y + 1;
+            break;
+    }
 
-		case 'monthly'		:	$m = $m + 1;			break;
-		case 'quarterly'	:	$m = $m + 3;			break;
-		case 'every 4 months':	$m = $m + 4;			break;
-		case 'half-yearly'	:	$m = $m + 6;			break;
-		case 'yearly'		:	$y = $y + 1;			break;
+    if ($period !== false) {
+        $nextRecurringDate = $validNextRecurringDate = date('Y-m-d', strtotime($period, mktime(0, 0, 0, $m, $d, $y)));
+    } else {
+        if ($m > 12) {
+            $m = $m - 12;
+            $y = $y + 1;
+        }
 
-		default				:	$period = '';
-	}
+        if (strlen($m) === 1) {
+            $m = "0$m";
+        }
 
-	if ($period !== false) {
-		$nextRecurringDate = $validNextRecurringDate = date('Y-m-d', strtotime($period, mktime(0, 0, 0, $m, $d, $y)));
-	} else {
+        $nextRecurringDate = $validNextRecurringDate = "$y-$m-$d";
 
-		if ($m > 12) {
-			$m = $m - 12;
-			$y = $y + 1;
-		}
-		if (strlen($m) === 1) {
-			$m = "0$m";
-		}
+        if (!checkdate($m, $d, $y)) {
+            $validNextRecurringDate = date('Y-m-d', mktime(0, 0, 0, $m, cal_days_in_month(CAL_GREGORIAN, $m, $y), $y));
+        }
+    }
 
-		$nextRecurringDate = $validNextRecurringDate = "$y-$m-$d";
-		if (!checkdate($m, $d, $y)) {
-			$validNextRecurringDate = date('Y-m-d', mktime(0, 0, 0, $m, cal_days_in_month(CAL_GREGORIAN, $m, $y), $y));
-		}
-	}
+    return ['validDate' => $validNextRecurringDate, 'nextRecurringDate' => $nextRecurringDate];
+}
 
-	return array('validDate' => $validNextRecurringDate, 'nextRecurringDate' => $nextRecurringDate);
+/**
+ * Determines the payment duration based on the provided input string.
+ *
+ * @param string $paymentDuration A string containing the payment duration, typically in numeric form.
+ *
+ * @return int The extracted numeric payment duration. If no valid number is found, a default value of 15 is returned.
+ */
+function decidePaymentDuration(string $paymentDuration): int
+{
+    if (preg_match('/\d+/', $paymentDuration, $matches)) {
+        return (int)$matches[0];
+    }
+
+    return 15;
 }
