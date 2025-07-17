@@ -373,18 +373,11 @@ class PriceBooks extends CRMEntity
 
             $entityIdComponents = vtws_getIdComponents($entityInfo['id']);
             $recordId = $entityIdComponents[1];
-            if (!empty($recordId)) {
-                $entityfields = getEntityFieldNames($moduleName);
-                $label = '';
-                if (is_array($entityfields['fieldname'])) {
-                    foreach ($entityfields['fieldname'] as $field) {
-                        $label .= $fieldData[$field] . " ";
-                    }
-                } else {
-                    $label = $fieldData[$entityfields['fieldname']];
-                }
+            $label = '';
 
-                $adb->pquery('UPDATE vtiger_crmentity SET label=? WHERE crmid=?', [trim($label), $recordId]);
+            if (!empty($recordId)) {
+                $label = Vtiger_Record_Model::generateLabel($moduleName, $fieldData);
+                $label = Vtiger_Record_Model::updateLabel((int)$recordId, $label);
                 //updating solr while import records
                 $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
                 $focus = $recordModel->getEntity();
@@ -393,8 +386,7 @@ class PriceBooks extends CRMEntity
                 $this->entityData[] = VTEntityData::fromCRMEntity($focus);
             }
 
-            $label = trim($label);
-            $adb->pquery('UPDATE vtiger_crmentity SET label=? WHERE crmid=?', [$label, $recordId]);
+            Vtiger_Record_Model::updateLabel((int)$recordId, $label);
             //Creating entity data of updated records for post save events
             if ($entityInfo['status'] !== Import_Data_Action::$IMPORT_RECORD_CREATED) {
                 $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);

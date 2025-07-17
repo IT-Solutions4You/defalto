@@ -390,22 +390,11 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 			if ($createRecord || $mergeType == Import_Utils_Helper::$AUTO_MERGE_MERGEFIELDS || $mergeType == Import_Utils_Helper::$AUTO_MERGE_OVERWRITE) {
 				$entityIdComponents = vtws_getIdComponents($entityInfo['id']);
 				$recordId = $entityIdComponents[1];
-				if (!empty($recordId)) {
-					$entityfields = getEntityFieldNames($this->module);
-					switch ($this->module) {
-						case 'HelpDesk'	: $entityfields['fieldname'] = array('ticket_title');	break;
-						case 'Documents': $entityfields['fieldname'] = array('notes_title');	break;
-					}
-					$label = '';
-					if (is_array($entityfields['fieldname'])) {
-						foreach ($entityfields['fieldname'] as $field) {
-							$label .= $fieldData[$field]." ";
-						}
-					} else {
-						$label = $fieldData[$entityfields['fieldname']];
-					}
+                $label = '';
 
-					$adb->pquery('UPDATE vtiger_crmentity SET label=? WHERE crmid=?', array(trim($label), $recordId));
+				if (!empty($recordId)) {
+					$label = Vtiger_Record_Model::generateLabel($moduleName, $fieldData);
+                    $label = Vtiger_Record_Model::updateLabel((int)$recordId, $label);
 					//updating solr while import records
 					$recordModel = Vtiger_Record_Model::getCleanInstance($this->module);
 					$focus = $recordModel->getEntity();
@@ -414,8 +403,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 					$this->entityData[] = VTEntityData::fromCRMEntity($focus);
 				}
 
-				$label = trim($label);
-				$adb->pquery('UPDATE vtiger_crmentity SET label=? WHERE crmid=?', array($label, $recordId));
+                Vtiger_Record_Model::updateLabel((int)$recordId, $label);
 				//Creating entity data of updated records for post save events
 				if (in_array($entityInfo['status'], array(self::$IMPORT_RECORD_MERGED, self::$IMPORT_RECORD_UPDATED))) {
 					$recordModel = Vtiger_Record_Model::getCleanInstance($this->module);
@@ -775,23 +763,8 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 		$adb = PearDatabase::getInstance();
 		$entityIdComponents = vtws_getIdComponents($entityIdInfo['id']);
 		$recordId = $entityIdComponents[1];
-		$entityfields = getEntityFieldNames($moduleName);
-		switch ($moduleName) {
-			case 'HelpDesk'	: $entityfields['fieldname'] = array('ticket_title');	break;
-			case 'Documents': $entityfields['fieldname'] = array('notes_title');	break;
-		}
-		$label = '';
-		if (is_array($entityfields['fieldname'])) {
-			foreach ($entityfields['fieldname'] as $field) {
-				$label .= $fieldData[$field]." ";
-			}
-		} else {
-			$label = $fieldData[$entityfields['fieldname']];
-		}
-
-		$label = trim($label);
-		$adb->pquery('UPDATE vtiger_crmentity SET label=? WHERE crmid=?', array($label, $recordId));
-
+        $label = Vtiger_Record_Model::generateLabel($moduleName, $fieldData);
+        Vtiger_Record_Model::updateLabel((int)$recordId, $label);
 		$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
 		$focus = $recordModel->getEntity();
 		$focus->id = $recordId;
