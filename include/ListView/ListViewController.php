@@ -247,6 +247,7 @@ class ListViewController {
 			}else {
 				$baseRecordId = $recordId = $db->query_result($result,$i,"id");
 			}
+
 			$row = array();
 
 			foreach ($listViewFields as $fieldName) {
@@ -473,8 +474,7 @@ class ListViewController {
                 } elseif($field->getUIType() == Vtiger_Field_Model::UITYPE_USER_PROFILE) {
                     $value = '<a href="index.php?module=Profiles&parent=Settings&view=Detail&record=' . $value . '">' . textlength_check(Settings_Profiles_Record_Model::getProfileName((int)$value)) . '</a>';
                 } elseif ($field->getUIType() == Vtiger_Field_Model::UITYPE_TAX) {
-                    $rawValue = $recordId;
-                    $value = Core_Tax_UIType::transformDisplayValue($rawValue);
+                    $value = Core_Tax_UIType::transformDisplayValue($baseRecordId);
                 } else {
 					$value = textlength_check($value);
 				}

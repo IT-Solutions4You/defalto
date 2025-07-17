@@ -88,6 +88,9 @@ class Core_TaxRecord_Model extends Core_DatabaseData_Model
             if (isset($taxesInfo[$taxId]['default'])) {
                 $tax->setPercentage($taxesInfo[$taxId]['default']);
                 $tax->setActiveForRecord(true);
+            } else {
+                $tax->setPercentage(0);
+                $tax->setActiveForRecord(false);
             }
 
             $regions = array_filter($tax->getRegions());
@@ -97,6 +100,8 @@ class Core_TaxRecord_Model extends Core_DatabaseData_Model
 
                 if (isset($taxesInfo[$taxId][$regionId])) {
                     $region->setPercentage($taxesInfo[$taxId][$regionId]);
+                } else {
+                    $region->setPercentage(0);
                 }
             }
 

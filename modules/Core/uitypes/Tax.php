@@ -66,9 +66,7 @@ class Core_Tax_UIType extends Vtiger_Base_UIType
         $data = [];
 
         foreach ($taxes as $tax) {
-            if ($tax->isActive()) {
-                $data[] = sprintf('%s: %s%s', $tax->getName(), $tax->getTax(), '%');
-            }
+            $data[] = sprintf('%s: %s%s', $tax->getName(), $tax->getTax(), '%');
         }
 
         return implode(', ', $data);
