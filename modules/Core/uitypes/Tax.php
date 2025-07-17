@@ -53,7 +53,7 @@ class Core_Tax_UIType extends Vtiger_Base_UIType
      */
     public function isLabelTemplate(): bool
     {
-        return true;
+        return false;
     }
 
     /**
