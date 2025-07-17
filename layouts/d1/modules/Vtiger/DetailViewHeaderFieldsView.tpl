@@ -10,12 +10,15 @@
     <input type="hidden" name="module" value="{$RECORD->getModuleName()}">
     <div class="row pt-3">
         {foreach item=FIELD_CONFIG from=$MODULE_MODEL->getHeaderFieldsConfig()}
-            {assign var=IS_EDITABLE value=$FIELD_MODEL->isEditable() eq 'true' && $LIST_PREVIEW neq true && $IS_AJAX_ENABLED eq true && $REQUEST_INSTANCE->get('displayMode') neq 'overlay'}
-            {if 'field' eq $FIELD_CONFIG['type']}
-                {assign var=FIELD_MODEL value=$FIELD_CONFIG['field']}
-                {assign var=FIELD_DATA_TYPE value=$FIELD_MODEL->getFieldDataType()}
-                {assign var=FIELD_NAME value=$FIELD_MODEL->getName()}
+            {assign var=FIELD_MODEL value=$FIELD_CONFIG['field']}
+            {if $FIELD_MODEL}
                 {assign var=FIELD_MODEL value=$FIELD_MODEL->set('fieldvalue', $RECORD->get($FIELD_NAME))}
+                {assign var=FIELD_NAME value=$FIELD_MODEL->getName()}
+                {assign var=FIELD_VALUE value=$RECORD->get($FIELD_NAME)}
+                {assign var=IS_EDITABLE value=$FIELD_MODEL->isAjaxEditable() && $LIST_PREVIEW neq true && $IS_AJAX_ENABLED eq true && $REQUEST_INSTANCE->get('displayMode') neq 'overlay'}
+            {/if}
+            {if 'field' eq $FIELD_CONFIG['type']}
+                {assign var=FIELD_DATA_TYPE value=$FIELD_MODEL->getFieldDataType()}
                 <div class="col-xl-2 col-lg-6 headerAjaxEdit td">
                     <div class="fieldLabel">
                         <div class="row text-secondary fieldName h-2rem">
@@ -26,7 +29,7 @@
                             <div class="col value fw-semibold fs-inherit bg-inherit h-100 word-break-all {$FIELD_NAME}" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {strip_tags($DISPLAY_VALUE)}">
                                 {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                             </div>
-                            {if $FIELD_MODEL->isEditable() eq 'true' && $LIST_PREVIEW neq true && $IS_AJAX_ENABLED eq true}
+                            {if $IS_EDITABLE}
                                 <div class="edit col hide">
                                     {assign var=HEADER_FIELD_NAME value=$FIELD_MODEL->get('name')}
                                     {if $FIELD_DATA_TYPE eq 'multipicklist'}
@@ -45,9 +48,6 @@
                     </div>
                 </div>
             {elseif 'check' eq $FIELD_CONFIG['type']}
-                {assign var=FIELD_MODEL value=$FIELD_CONFIG['field']}
-                {assign var=FIELD_NAME value=$FIELD_MODEL->getName()}
-                {assign var=FIELD_VALUE value=$RECORD->get($FIELD_NAME)}
                 <div class="col-xl-2 col-lg-6 {if $IS_EDITABLE}cursorPointer{else}cursorDefault{/if}">
                     <div class="fieldLabel">
                         <div class="row text-secondary fieldName h-2rem">
@@ -71,9 +71,6 @@
                     </div>
                 </div>
             {elseif 'user' eq $FIELD_CONFIG['type']}
-                {assign var=FIELD_MODEL value=$FIELD_CONFIG['field']}
-                {assign var=FIELD_NAME value=$FIELD_MODEL->getName()}
-                {assign var=FIELD_VALUE value=$RECORD->get($FIELD_NAME)}
                 {assign var=ASSIGNED_USER value=Users_Record_Model::getInstanceById($FIELD_VALUE, 'Users')}
                 {assign var=ASSIGNED_USER_IMAGE value=$ASSIGNED_USER->getImageUrl()}
                 <div class="col-xl-2 col-lg-6 {if $IS_EDITABLE}cursorPointer{else}cursorDefault{/if}">

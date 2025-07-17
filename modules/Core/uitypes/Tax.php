@@ -53,7 +53,7 @@ class Core_Tax_UIType extends Vtiger_Base_UIType
      */
     public function isLabelTemplate(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -66,11 +66,23 @@ class Core_Tax_UIType extends Vtiger_Base_UIType
         $data = [];
 
         foreach ($taxes as $tax) {
-            if ($tax->isActive()) {
-                $data[] = sprintf('%s: %s%s', $tax->getName(), $tax->getTax(), '%');
-            }
+            $data[] = sprintf('%s: %s%s', $tax->getName(), $tax->getTax(), '%');
         }
 
         return implode(', ', $data);
+    }
+
+    /**
+     * @param int|string $value
+     * @return string
+     * @throws AppException
+     */
+    public static function transformDisplayValue($value)
+    {
+        if (!empty($value)) {
+            return (new self())->getDisplayValue(null, $value);
+        }
+
+        return '';
     }
 }
