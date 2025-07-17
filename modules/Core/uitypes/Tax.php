@@ -73,4 +73,18 @@ class Core_Tax_UIType extends Vtiger_Base_UIType
 
         return implode(', ', $data);
     }
+
+    /**
+     * @param int|string $value
+     * @return string
+     * @throws AppException
+     */
+    public static function transformDisplayValue($value)
+    {
+        if (!empty($value)) {
+            return (new self())->getDisplayValue(null, $value);
+        }
+
+        return '';
+    }
 }

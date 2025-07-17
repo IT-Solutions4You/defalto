@@ -472,6 +472,9 @@ class ListViewController {
                     $value = !empty($rawValue) ? Core_Region_UIType::transformDisplayValue($rawValue) : '';
                 } elseif($field->getUIType() == Vtiger_Field_Model::UITYPE_USER_PROFILE) {
                     $value = '<a href="index.php?module=Profiles&parent=Settings&view=Detail&record=' . $value . '">' . textlength_check(Settings_Profiles_Record_Model::getProfileName((int)$value)) . '</a>';
+                } elseif ($field->getUIType() == Vtiger_Field_Model::UITYPE_TAX) {
+                    $rawValue = $recordId;
+                    $value = Core_Tax_UIType::transformDisplayValue($rawValue);
                 } else {
 					$value = textlength_check($value);
 				}
