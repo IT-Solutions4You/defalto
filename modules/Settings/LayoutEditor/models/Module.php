@@ -357,9 +357,7 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 	 * @return <Boolean> true/false
 	 */
 	public function isBlockSortableAllowed($blockName) {
-		$moduleName = $this->getName();
-
-        return !(($blockName === 'LBL_INVITE_USER_BLOCK') || (in_array($moduleName, getInventoryModules()) && $blockName === 'LBL_ITEM_DETAILS'));
+        return $blockName !== 'LBL_INVITE_USER_BLOCK';
     }
 
 	/**
@@ -370,10 +368,6 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 		$moduleName = $this->getName();
 		$blocksEliminatedArray = array('HelpDesk' => array('LBL_TICKET_RESOLUTION', 'LBL_COMMENTS'),
 										'Faq' => array('LBL_COMMENT_INFORMATION'),
-										'Invoice' => array('LBL_ITEM_DETAILS'),
-										'Quotes' => array('LBL_ITEM_DETAILS'),
-										'SalesOrder' => array('LBL_ITEM_DETAILS'),
-										'PurchaseOrder' => array('LBL_ITEM_DETAILS'),
 										);
 		if (in_array($moduleName, array_merge(getInventoryModules(), array('HelpDesk', 'Faq')))) {
 			if(!empty($blocksEliminatedArray[$moduleName])) {

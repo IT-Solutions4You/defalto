@@ -26,10 +26,6 @@ class Settings_LayoutEditor_Block_Model extends Vtiger_Block_Model {
         $actionNotSupportedModules = array_merge(getInventoryModules(), array('Faq', 'HelpDesk'));
 		$blocksEliminatedArray = array(	'HelpDesk'		=> array('LBL_TICKET_RESOLUTION', 'LBL_COMMENTS'),
 										'Faq'			=> array('LBL_COMMENT_INFORMATION'),
-										'Invoice'		=> array('LBL_ITEM_DETAILS'),
-										'Quotes'		=> array('LBL_ITEM_DETAILS'),
-										'SalesOrder'	=> array('LBL_ITEM_DETAILS'),
-										'PurchaseOrder'	=> array('LBL_ITEM_DETAILS'),
             );
         if(in_array($this->module->name, $actionNotSupportedModules)) {
 			if(!empty($blocksEliminatedArray[$this->module->name])) {

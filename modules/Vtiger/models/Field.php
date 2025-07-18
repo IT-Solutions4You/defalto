@@ -352,11 +352,6 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	 * @return <Boolean> - true/false
 	 */
 	public function isReadOnly() {
-		if($this->block) {
-			if($this->block->label == "LBL_ITEM_DETAILS"){
-				return false;
-			}
-		}
 		$webserviceField = $this->getWebserviceFieldObject();
 		return $webserviceField->isReadOnly();
 	}
