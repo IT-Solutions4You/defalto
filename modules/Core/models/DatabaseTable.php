@@ -10,6 +10,7 @@
 
 class Core_DatabaseTable_Model extends Vtiger_Base_Model
 {
+    public static array $tableColumns = [];
     public static string $COLUMN_DECIMAL = 'decimal(25,4) DEFAULT NULL';
 
     /**
@@ -27,7 +28,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
     {
         $this->requireTable('Table is empty for create column');
 
-        if (!columnExists($column, $this->get('table'))) {
+        if (!$this->checkColumn($column, $this->get('table'), true)) {
             $sql = sprintf('ALTER TABLE %s ADD %s %s', $this->get('table'), $column, $type);
         } else {
             $sql = sprintf('ALTER TABLE %s CHANGE %s %s %s', $this->get('table'), $column, $column, $type);
@@ -36,6 +37,40 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
         $this->db->query($sql);
 
         return $this;
+    }
+
+    /**
+     * @param string $fromColumn
+     * @param string $toColumn
+     * @return $this
+     */
+    public function renameColumn(string $fromColumn, string $toColumn): static
+    {
+        $table = $this->get('table');
+        $sql = sprintf('ALTER TABLE %s RENAME COLUMN %s to %s', $table, $fromColumn, $toColumn);
+
+        if ($this->checkColumn($fromColumn, $table, true) && !$this->checkColumn($toColumn, $table, true)) {
+            $this->db->query($sql);
+        }
+
+        return $this;
+    }
+
+    public function checkColumn($columnName, $tableName, $cache = false): bool
+    {
+        if (!$cache) {
+            self::$tableColumns[$tableName] = [];
+        }
+
+        if (empty(self::$tableColumns[$tableName])) {
+            self::$tableColumns[$tableName] = $this->getDB()->getColumnNames($tableName);
+        }
+
+        if (in_array($columnName, self::$tableColumns[$tableName])) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
