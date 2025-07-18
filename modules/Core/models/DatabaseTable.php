@@ -56,7 +56,13 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
         return $this;
     }
 
-    public function checkColumn($columnName, $tableName, $cache = false): bool
+    /**
+     * @param string $columnName
+     * @param string $tableName
+     * @param bool $cache
+     * @return bool
+     */
+    public function checkColumn(string $columnName, string $tableName, bool $cache = false): bool
     {
         if (!$cache) {
             $this->setTableColumns([]);
@@ -73,16 +79,36 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @param $columns
+     * @return void
+     */
     public function setTableColumns($columns): void
     {
         self::$tableColumns[$this->get('table')] = $columns;
     }
 
+    /**
+     * @return self
+     */
+    public function clearTableColumns(): static
+    {
+        $this->setTableColumns([]);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
     public function hasTableColumns(): bool
     {
         return empty($this->getTableColumns());
     }
 
+    /**
+     * @return array
+     */
     public function getTableColumns(): array
     {
         return self::$tableColumns[$this->get('table')];
