@@ -59,18 +59,33 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
     public function checkColumn($columnName, $tableName, $cache = false): bool
     {
         if (!$cache) {
-            self::$tableColumns[$tableName] = [];
+            $this->setTableColumns([]);
         }
 
-        if (empty(self::$tableColumns[$tableName])) {
-            self::$tableColumns[$tableName] = $this->getDB()->getColumnNames($tableName);
+        if ($this->hasTableColumns()) {
+            $this->setTableColumns($this->getDB()->getColumnNames($tableName));
         }
 
-        if (in_array($columnName, self::$tableColumns[$tableName])) {
+        if (in_array($columnName, $this->getTableColumns())) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public function setTableColumns($columns): void
+    {
+        self::$tableColumns[$this->get('table')] = $columns;
+    }
+
+    public function hasTableColumns(): bool
+    {
+        return empty($this->getTableColumns());
+    }
+
+    public function getTableColumns(): array
+    {
+        return self::$tableColumns[$this->get('table')];
     }
 
     /**
