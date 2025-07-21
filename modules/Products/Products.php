@@ -598,8 +598,8 @@ class Products extends CRMEntity
         $query = "SELECT  case when (vtiger_users.user_name not like \"\") then $userNameSql else vtiger_groups.groupname end as user_name, vtiger_users.id,
 			vtiger_products.productid, vtiger_products.productname,
 			vtiger_troubletickets.ticketid,
-			vtiger_troubletickets.parent_id, vtiger_troubletickets.title,
-			vtiger_troubletickets.status, vtiger_troubletickets.priority,
+			vtiger_troubletickets.parent_id, vtiger_troubletickets.ticket_title,
+			vtiger_troubletickets.ticketstatus, vtiger_troubletickets.ticketpriorities,
 			vtiger_crmentity.crmid, vtiger_crmentity.smownerid,
 			vtiger_crmentity.modifiedtime, vtiger_troubletickets.ticket_no
 			FROM vtiger_troubletickets

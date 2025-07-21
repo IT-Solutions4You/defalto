@@ -337,7 +337,7 @@ class Settings_MailConverter_MailScanner_Handler {
         $checkTicketId = $this->__toInteger($subjectOrId);
 
         if (!$checkTicketId) {
-            $ticketres = $adb->pquery("SELECT ticketid FROM vtiger_troubletickets WHERE title = ? OR ticket_no = ?", [$subjectOrId, $subjectOrId]);
+            $ticketres = $adb->pquery("SELECT ticketid FROM vtiger_troubletickets WHERE ticket_title = ? OR ticket_no = ?", [$subjectOrId, $subjectOrId]);
             if ($adb->num_rows($ticketres)) {
                 $checkTicketId = $adb->query_result($ticketres, 0, 'ticketid');
             }

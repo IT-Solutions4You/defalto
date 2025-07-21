@@ -22,18 +22,18 @@ class HelpDesk extends CRMEntity {
     //Pavani: Assign value to entity_table
     public $entity_table = 'vtiger_crmentity';
 
-    public $sortby_fields = ['title', 'status', 'priority', 'crmid', 'firstname', 'smownerid'];
+    public $sortby_fields = ['ticket_title', 'ticketstatus', 'ticketpriorities', 'crmid', 'firstname', 'smownerid'];
 
     public $list_fields = [
         //Module Sequence Numbering
         //'Ticket ID'=>Array('crmentity'=>'crmid'),
         'Ticket No' => ['troubletickets' => 'ticket_no'],
         // END
-        'Subject' => ['troubletickets' => 'title'],
+        'Subject' => ['troubletickets' => 'ticket_title'],
         'Related to' => ['troubletickets' => 'parent_id'],
         'Contact Name' => ['troubletickets' => 'contact_id'],
-        'Status' => ['troubletickets' => 'status'],
-        'Priority' => ['troubletickets' => 'priority'],
+        'Status' => ['troubletickets' => 'ticketstatus'],
+        'Priority' => ['troubletickets' => 'ticketpriorities'],
         'Assigned To' => ['crmentity', 'smownerid'],
     ];
 
@@ -51,16 +51,16 @@ class HelpDesk extends CRMEntity {
 
     public $range_fields = [
         'ticketid',
-        'title',
+        'ticket_title',
         'firstname',
         'lastname',
         'parent_id',
         'productid',
         'productname',
-        'priority',
-        'severity',
-        'status',
-        'category',
+        'ticketpriorities',
+        'ticketseverities',
+        'ticketstatus',
+        'ticketcategories',
         'description',
         'solution',
         'modifiedtime',
@@ -69,7 +69,7 @@ class HelpDesk extends CRMEntity {
     public $search_fields = [
         //'Ticket ID' => Array('vtiger_crmentity'=>'crmid'),
         'Ticket No' => ['vtiger_troubletickets' => 'ticket_no'],
-        'Title' => ['vtiger_troubletickets' => 'title'],
+        'Title' => ['vtiger_troubletickets' => 'ticket_title'],
     ];
     public $search_fields_name = [
         'Ticket No' => 'ticket_no',

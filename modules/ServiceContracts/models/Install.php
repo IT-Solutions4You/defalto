@@ -18,10 +18,10 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        ['Accounts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list',],
-        ['Contacts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list',],
-        ['HelpDesk', 'ServiceContracts', 'Service Contracts', ['ADD', 'SELECT'], 'get_dependents_list'],
-        ['ServiceContracts', 'HelpDesk', 'Service Contracts', ['ADD', 'SELECT'], 'get_dependents_list'],
+        ['Accounts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list', 'sc_related_to'],
+        ['Contacts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list', 'sc_related_to'],
+        ['HelpDesk', 'ServiceContracts', 'Service Contracts', ['ADD', 'SELECT'], 'get_dependents_list', 'sc_related_to'],
+        ['ServiceContracts', 'HelpDesk', 'HelpDesk', [], 'get_related_list'],
         ['ServiceContracts', 'Documents', 'Documents', ['ADD', 'SELECT'], 'get_attachments'],
     ];
 
@@ -110,6 +110,7 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
                     'related_modules' => [
                         'Contacts',
                         'Accounts',
+                        'HelpDesk',
                     ],
                     'filter' => 1,
                 ],

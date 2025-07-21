@@ -75,7 +75,7 @@ class HelpDesk_Module_Model extends Vtiger_Module_Model {
 						LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.smownerid AND vtiger_users.status="ACTIVE"
 						LEFT JOIN vtiger_groups ON vtiger_groups.groupid=vtiger_crmentity.smownerid
 						'.Users_Privileges_Model::getNonAdminAccessControlQuery($this->getName()).
-						' WHERE vtiger_troubletickets.status = ? AND vtiger_crmentity.deleted = 0 GROUP BY smownerid', $params);
+						' WHERE vtiger_troubletickets.ticketstatus = ? AND vtiger_crmentity.deleted = 0 GROUP BY smownerid', $params);
 		}
 		$data = array();
 		for($i=0; $i<$db->num_rows($result); $i++) {
@@ -111,11 +111,11 @@ class HelpDesk_Module_Model extends Vtiger_Module_Model {
             $params[] = $picklistValue;
         }
 
-		$result = $db->pquery('SELECT COUNT(*) as count, CASE WHEN vtiger_troubletickets.status IS NULL OR vtiger_troubletickets.status = "" THEN "" ELSE vtiger_troubletickets.status END AS statusvalue 
+		$result = $db->pquery('SELECT COUNT(*) as count, CASE WHEN vtiger_troubletickets.ticketstatus IS NULL OR vtiger_troubletickets.ticketstatus = "" THEN "" ELSE vtiger_troubletickets.ticketstatus END AS statusvalue 
 							FROM vtiger_troubletickets INNER JOIN vtiger_crmentity ON vtiger_troubletickets.ticketid = vtiger_crmentity.crmid AND vtiger_crmentity.deleted=0
 							'.Users_Privileges_Model::getNonAdminAccessControlQuery($this->getName()). $ownerSql .' '.$dateFilterSql.
-							' INNER JOIN vtiger_ticketstatus ON vtiger_troubletickets.status = vtiger_ticketstatus.ticketstatus 
-							WHERE vtiger_troubletickets.status IN ('.generateQuestionMarks($picklistvaluesmap).') 
+							' INNER JOIN vtiger_ticketstatus ON vtiger_troubletickets.ticketstatus = vtiger_ticketstatus.ticketstatus 
+							WHERE vtiger_troubletickets.ticketstatus IN ('.generateQuestionMarks($picklistvaluesmap).') 
 							GROUP BY statusvalue ORDER BY vtiger_ticketstatus.sortorderid', $params);
 
 		$response = array();

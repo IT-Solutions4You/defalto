@@ -227,7 +227,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
                 $commentFocus->save('ModComments');
 
                 // Set the ticket status to Open if its Closed
-                $adb->pquery("UPDATE vtiger_troubletickets set status=? WHERE ticketid=? AND status='Closed'", ['Open', $linkFocus->id]);
+                $adb->pquery("UPDATE vtiger_troubletickets set ticketstatus=? WHERE ticketid=? AND ticketstatus=?", ['Open', $linkFocus->id, 'Closed']);
             }
         }
 

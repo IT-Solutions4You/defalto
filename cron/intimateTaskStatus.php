@@ -50,7 +50,7 @@ $result = $adb->pquery($sql, array());
 $activevalue = $adb->fetch_array($result);
 if($activevalue[0] == 1)
 {
-	$result = $adb->pquery("SELECT vtiger_troubletickets.status,ticketid FROM vtiger_troubletickets INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_troubletickets.ticketid WHERE vtiger_crmentity.deleted='0' AND vtiger_troubletickets.status <> 'Completed' AND vtiger_troubletickets.status <> 'Closed'", array());
+	$result = $adb->pquery("SELECT ticketid FROM vtiger_troubletickets INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_troubletickets.ticketid WHERE vtiger_crmentity.deleted='0' AND vtiger_troubletickets.ticketstatus <> 'Completed' AND vtiger_troubletickets.ticketstatus <> 'Closed'", array());
 
 	while ($myrow = $adb->fetch_array($result))
 	{
@@ -66,7 +66,7 @@ $result = $adb->pquery($sql, array());
 $activevalue = $adb->fetch_array($result);
 if($activevalue[0] == 1)
 {
-	$result = $adb->pquery("SELECT count(*) as count FROM vtiger_troubletickets INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_troubletickets.ticketid WHERE vtiger_crmentity.deleted='0' AND vtiger_troubletickets.status <> 'Completed' AND vtiger_troubletickets.status <> 'Closed'", array());
+	$result = $adb->pquery("SELECT count(*) as count FROM vtiger_troubletickets INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_troubletickets.ticketid WHERE vtiger_crmentity.deleted='0' AND vtiger_troubletickets.ticketstatus <> 'Completed' AND vtiger_troubletickets.ticketstatus <> 'Closed'", array());
 $count = $adb->query_result($result,0,'count');
 //changes made to get too many tickets notification only when tickets count is greater than or equal to 5
 	if($count >= 5)

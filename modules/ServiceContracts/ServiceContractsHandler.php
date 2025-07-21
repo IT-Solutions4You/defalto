@@ -17,9 +17,9 @@ class ServiceContractsHandler extends VTEventHandler {
 				$ticketId = $entityData->getId();
 				$oldStatus = '';
 				if(!empty($ticketId)) {
-					$tktResult = $adb->pquery('SELECT status FROM vtiger_troubletickets WHERE ticketid = ?', array($ticketId));
+					$tktResult = $adb->pquery('SELECT ticketstatus FROM vtiger_troubletickets WHERE ticketid = ?', array($ticketId));
 					if($adb->num_rows($tktResult) > 0) {
-						$oldStatus = $adb->query_result($tktResult,0,'status');
+						$oldStatus = $adb->query_result($tktResult,0,'ticketstatus');
 					}
 				}
 				$entityData->oldStatus = $oldStatus;

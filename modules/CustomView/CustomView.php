@@ -1439,9 +1439,9 @@ class CustomView extends CRMEntity {
 			}
 			if ($modulename == 'HelpDesk') {
 				if (($comparator == 'e' || $comparator == 's' || $comparator == 'c') && trim($adv_chk_value) == '') {
-					$value .= ' vtiger_troubletickets.title IS NULL or ';
+					$value .= ' vtiger_troubletickets.ticket_title IS NULL or ';
 				}
-				$value .= ' vtiger_troubletickets.title';
+				$value .= ' vtiger_troubletickets.ticket_title';
 			}
 			if ($modulename == 'Campaigns') {
 				if (($comparator == 'e' || $comparator == 's' || $comparator == 'c') && trim($adv_chk_value) == '') {
