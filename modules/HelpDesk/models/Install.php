@@ -128,7 +128,7 @@ class HelpDesk_Install_Model extends Core_Install_Model {
                 'ticket_title' => [
                     'name' => 'ticket_title',
                     'uitype' => 22,
-                    'column' => 'title',
+                    'column' => 'ticket_title',
                     'table' => 'vtiger_troubletickets',
                     'label' => 'Title',
                     'readonly' => 1,
@@ -180,7 +180,7 @@ class HelpDesk_Install_Model extends Core_Install_Model {
                 'ticketpriorities' => [
                     'name' => 'ticketpriorities',
                     'uitype' => 15,
-                    'column' => 'priority',
+                    'column' => 'ticketpriorities',
                     'table' => 'vtiger_troubletickets',
                     'label' => 'Priority',
                     'readonly' => 1,
@@ -217,7 +217,7 @@ class HelpDesk_Install_Model extends Core_Install_Model {
                 'ticketseverities' => [
                     'name' => 'ticketseverities',
                     'uitype' => 15,
-                    'column' => 'severity',
+                    'column' => 'ticketseverities',
                     'table' => 'vtiger_troubletickets',
                     'label' => 'Severity',
                     'readonly' => 1,
@@ -237,7 +237,7 @@ class HelpDesk_Install_Model extends Core_Install_Model {
                 'ticketstatus' => [
                     'name' => 'ticketstatus',
                     'uitype' => 15,
-                    'column' => 'status',
+                    'column' => 'ticketstatus',
                     'table' => 'vtiger_troubletickets',
                     'label' => 'Status',
                     'readonly' => 1,
@@ -259,7 +259,7 @@ class HelpDesk_Install_Model extends Core_Install_Model {
                 'ticketcategories' => [
                     'name' => 'ticketcategories',
                     'uitype' => 15,
-                    'column' => 'category',
+                    'column' => 'ticketcategories',
                     'table' => 'vtiger_troubletickets',
                     'label' => 'Category',
                     'readonly' => 1,
@@ -468,59 +468,40 @@ class HelpDesk_Install_Model extends Core_Install_Model {
         ];
     }
 
+    /**
+     * @throws AppException
+     */
     public function installTables(): void
     {
         $this->db->pquery('SET FOREIGN_KEY_CHECKS=0');
-
-        $this->getTable('vtiger_ticketcategories', 'ticketcategories_id')
-            ->createTable('ticketcategories_id')
-            ->createColumn('ticketcategories','varchar(200) DEFAULT NULL')
-            ->createColumn('presence','int(1) NOT NULL DEFAULT \'0\'')
-            ->createColumn('picklist_valueid','int(19) NOT NULL DEFAULT \'0\'')
-            ->createColumn('sortorderid','int(11) DEFAULT NULL')
-            ->createColumn('color','varchar(10) DEFAULT NULL');
-
-        $this->getTable('vtiger_ticketpriorities', 'ticketpriorities_id')
-            ->createTable()
-            ->createColumn('ticketpriorities','varchar(200) DEFAULT NULL')
-            ->createColumn('presence','int(1) NOT NULL DEFAULT \'0\'')
-            ->createColumn('picklist_valueid','int(19) NOT NULL DEFAULT \'0\'')
-            ->createColumn('sortorderid','int(11) DEFAULT NULL')
-            ->createColumn('color','varchar(10) DEFAULT NULL');
-
-        $this->getTable('vtiger_ticketseverities', 'ticketseverities_id')
-            ->createTable()
-            ->createColumn('ticketseverities','varchar(200) DEFAULT NULL')
-            ->createColumn('presence','int(1) NOT NULL DEFAULT \'0\'')
-            ->createColumn('picklist_valueid','int(19) NOT NULL DEFAULT \'0\'')
-            ->createColumn('sortorderid','int(11) DEFAULT NULL')
-            ->createColumn('color','varchar(10) DEFAULT NULL');
-
-        $this->getTable('vtiger_ticketstatus', 'ticketstatus_id')
-            ->createTable()
-            ->createColumn('ticketstatus','varchar(200) DEFAULT NULL')
-            ->createColumn('presence','int(1) NOT NULL DEFAULT \'0\'')
-            ->createColumn('picklist_valueid','int(19) NOT NULL DEFAULT \'0\'')
-            ->createColumn('sortorderid','int(11) DEFAULT NULL')
-            ->createColumn('color','varchar(10) DEFAULT NULL');
+        $this->createPicklistTable('vtiger_ticketcategories', 'ticketcategories_id', 'ticketcategories');
+        $this->createPicklistTable('vtiger_ticketpriorities', 'ticketpriorities_id', 'ticketpriorities');
+        $this->createPicklistTable('vtiger_ticketseverities', 'ticketseverities_id', 'ticketseverities');
+        $this->createPicklistTable('vtiger_ticketstatus', 'ticketstatus_id', 'ticketstatus');
 
         $this->getTable('vtiger_troubletickets', null)
-            ->createTable('ticketid','int(19) NOT NULL')
+            ->createTable('ticketid',self::$COLUMN_INT)
+            ->renameColumn('title', 'ticket_title')
+            ->renameColumn('priority', 'ticketpriorities')
+            ->renameColumn('severity', 'ticketseverities')
+            ->renameColumn('status', 'ticketstatus')
+            ->renameColumn('category', 'ticketcategories')
+            ->clearTableColumns()
             ->createColumn('ticket_no','varchar(100) NOT NULL')
             ->createColumn('groupname','varchar(100) DEFAULT NULL')
-            ->createColumn('parent_id','varchar(100) DEFAULT NULL')
-            ->createColumn('product_id','varchar(100) DEFAULT NULL')
-            ->createColumn('priority','varchar(200) DEFAULT NULL')
-            ->createColumn('severity','varchar(200) DEFAULT NULL')
-            ->createColumn('status','varchar(200) DEFAULT NULL')
-            ->createColumn('category','varchar(200) DEFAULT NULL')
-            ->createColumn('title','varchar(255) NOT NULL')
+            ->createColumn('parent_id',self::$COLUMN_INT)
+            ->createColumn('product_id',self::$COLUMN_INT)
+            ->createColumn('ticketpriorities','varchar(200) DEFAULT NULL')
+            ->createColumn('ticketseverities','varchar(200) DEFAULT NULL')
+            ->createColumn('ticketstatus','varchar(200) DEFAULT NULL')
+            ->createColumn('ticketcategories','varchar(200) DEFAULT NULL')
+            ->createColumn('ticket_title','varchar(255) NOT NULL')
             ->createColumn('solution','text DEFAULT NULL')
-            ->createColumn('version_id','int(11) DEFAULT NULL')
+            ->createColumn('version_id',self::$COLUMN_INT)
             ->createColumn('hours',self::$COLUMN_DECIMAL)
-            ->createColumn('contact_id','int(19) DEFAULT NULL')
+            ->createColumn('contact_id',self::$COLUMN_INT)
             ->createColumn('tags','varchar(1) DEFAULT NULL')
-            ->createColumn('currency_id','int(19) DEFAULT NULL')
+            ->createColumn('currency_id',self::$COLUMN_INT)
             ->createColumn('conversion_rate','decimal(10,3) DEFAULT NULL')
             ->createColumn('first_comment','datetime DEFAULT NULL')
             ->createColumn('first_comment_hours','decimal(10,3) DEFAULT NULL')
@@ -528,7 +509,24 @@ class HelpDesk_Install_Model extends Core_Install_Model {
             ->createColumn('last_comment_hours','decimal(10,3) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`ticketid`)')
             ->createKey('KEY IF NOT EXISTS `troubletickets_ticketid_idx` (`ticketid`)')
-            ->createKey('KEY IF NOT EXISTS `troubletickets_status_idx` (`status`)')
+            ->createKey('KEY IF NOT EXISTS `troubletickets_ticketstatus_idx` (`ticketstatus`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_troubletickets` FOREIGN KEY IF NOT EXISTS (`ticketid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrate(): void
+    {
+        /** @var $fields array column name => field name */
+        $fields = [
+            'title' => 'ticket_title',
+            'priority' => 'ticketpriorities',
+            'severity' => 'ticketseverities',
+            'status' => 'ticketstatus',
+            'category' => 'ticketcategories',
+        ];
+
+        CustomView_Record_Model::updateColumnNames('HelpDesk', $fields);
     }
 }
