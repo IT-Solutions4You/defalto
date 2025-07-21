@@ -524,10 +524,10 @@ class Contacts_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'portal_user' => [
-                    'name' => 'portal_user',
+                'user_name' => [
+                    'name' => 'user_name',
                     'uitype' => Vtiger_Field_Model::UITYPE_EMAIL,
-                    'column' => 'portal_user',
+                    'column' => 'user_name',
                     'table' => 'vtiger_portalinfo',
                     'label' => 'Portal User Name',
                     'readonly' => 0,
@@ -563,10 +563,10 @@ class Contacts_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'portal_last_login' => [
-                    'name' => 'portal_last_login',
+                'last_login_time' => [
+                    'name' => 'last_login_time',
                     'uitype' => Vtiger_Field_Model::UITYPE_DATE_TIME,
-                    'column' => 'portal_last_login',
+                    'column' => 'last_login_time',
                     'table' => 'vtiger_portalinfo',
                     'label' => 'Portal Last Login',
                     'readonly' => 0,
@@ -724,14 +724,11 @@ class Contacts_Install_Model extends Core_Install_Model
 
         $this->getTable('vtiger_portalinfo', null)
             ->createTable('id',self::$COLUMN_INT)
-            ->renameColumn('last_login_time', 'portal_last_login')
-            ->renameColumn('user_name', 'portal_user')
-            ->clearTableColumns()
-            ->createColumn('portal_user','varchar(50) DEFAULT NULL')
+            ->createColumn('user_name','varchar(50) DEFAULT NULL')
             ->createColumn('user_password','varchar(255) DEFAULT NULL')
             ->createColumn('type','varchar(5) DEFAULT NULL')
             ->createColumn('cryptmode','varchar(20) DEFAULT NULL')
-            ->createColumn('portal_last_login','datetime DEFAULT NULL')
+            ->createColumn('last_login_time','datetime DEFAULT NULL')
             ->createColumn('login_time','datetime DEFAULT NULL')
             ->createColumn('logout_time','datetime DEFAULT NULL')
             ->createColumn('isactive','int(1) DEFAULT NULL')
@@ -751,10 +748,22 @@ class Contacts_Install_Model extends Core_Install_Model
         $fields = [
             'salutation' => 'salutationtype',
             'accountid' => 'account_id',
-            'user_name' => 'portal_user',
-            'last_login_time' => 'portal_last_login',
         ];
 
         CustomView_Record_Model::updateColumnNames($moduleName, $fields);
+
+        $deleteFields = [
+            'portal_user',
+            'portal_last_login',
+        ];
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+
+        foreach ($deleteFields as $fieldName) {
+            $fieldModel = $moduleModel->getField($fieldName);
+
+            if ($fieldModel) {
+                $fieldModel->delete();
+            }
+        }
     }
 }

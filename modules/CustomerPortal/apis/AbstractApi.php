@@ -71,8 +71,9 @@ abstract class CustomerPortal_API_Abstract {
 				}
 			}
 			$isActive = $adb->query_result($result, $i, 'isactive');
+            $support_end_date = $adb->query_result($result, $i, 'support_end_date');
+
 			if ($customerId) {
-				$support_end_date = $adb->query_result($result, $i, 'support_end_date');
 				if ($isActive && ($support_end_date >= $current_date || $support_end_date == null)) {
 					$current_customer = CRMEntity::getInstance('Contacts');
 					$current_customer->id = $customerId;
