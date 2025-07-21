@@ -62,7 +62,7 @@ class Contacts_Install_Model extends Core_Install_Model
                 'salutationtype' => [
                     'name' => 'salutationtype',
                     'uitype' => 55,
-                    'column' => 'salutation',
+                    'column' => 'salutationtype',
                     'table' => 'vtiger_contactdetails',
                     'label' => 'Salutation',
                     'readonly' => 1,
@@ -137,7 +137,7 @@ class Contacts_Install_Model extends Core_Install_Model
                 'account_id' => [
                     'name' => 'account_id',
                     'uitype' => 51,
-                    'column' => 'accountid',
+                    'column' => 'account_id',
                     'table' => 'vtiger_contactdetails',
                     'label' => 'Account Name',
                     'readonly' => 1,
@@ -527,7 +527,7 @@ class Contacts_Install_Model extends Core_Install_Model
                 'portal_user' => [
                     'name' => 'portal_user',
                     'uitype' => Vtiger_Field_Model::UITYPE_EMAIL,
-                    'column' => 'user_name',
+                    'column' => 'portal_user',
                     'table' => 'vtiger_portalinfo',
                     'label' => 'Portal User Name',
                     'readonly' => 0,
@@ -566,7 +566,7 @@ class Contacts_Install_Model extends Core_Install_Model
                 'portal_last_login' => [
                     'name' => 'portal_last_login',
                     'uitype' => Vtiger_Field_Model::UITYPE_DATE_TIME,
-                    'column' => 'last_login_time',
+                    'column' => 'portal_last_login',
                     'table' => 'vtiger_portalinfo',
                     'label' => 'Portal Last Login',
                     'readonly' => 0,
@@ -656,10 +656,13 @@ class Contacts_Install_Model extends Core_Install_Model
     public function installTables(): void
     {
         $this->getTable('vtiger_contactdetails', null)
-            ->createTable('contactid', 'int(19) NOT NULL')
+            ->createTable('contactid', self::$COLUMN_INT)
+            ->renameColumn('salutation', 'salutationtype')
+            ->renameColumn('accountid', 'account_id')
+            ->clearTableColumns()
             ->createColumn('contact_no', 'varchar(100) NOT NULL')
-            ->createColumn('accountid', 'int(19) DEFAULT NULL')
-            ->createColumn('salutation', 'varchar(200) DEFAULT NULL')
+            ->createColumn('account_id', self::$COLUMN_INT)
+            ->createColumn('salutationtype', 'varchar(200) DEFAULT NULL')
             ->createColumn('firstname', 'varchar(40) DEFAULT NULL')
             ->createColumn('lastname', 'varchar(80) NOT NULL')
             ->createColumn('email', 'varchar(100) DEFAULT NULL')
@@ -679,10 +682,10 @@ class Contacts_Install_Model extends Core_Install_Model
             ->createColumn('notify_owner', 'varchar(3) DEFAULT \'0\'')
             ->createColumn('isconvertedfromlead', 'varchar(3) DEFAULT \'0\'')
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
-            ->createColumn('currency_id', 'int(19) DEFAULT NULL')
+            ->createColumn('currency_id', self::$COLUMN_INT)
             ->createColumn('conversion_rate', 'decimal(10,3) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`contactid`)')
-            ->createKey('KEY IF NOT EXISTS `contactdetails_accountid_idx` (`accountid`)')
+            ->createKey('KEY IF NOT EXISTS `contactdetails_accountid_idx` (`account_id`)')
             ->createKey('KEY IF NOT EXISTS `email_idx` (`email`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_contactdetails` FOREIGN KEY IF NOT EXISTS (`contactid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
             ->createKey('INDEX IF NOT EXISTS email_idx (email)');
@@ -718,7 +721,40 @@ class Contacts_Install_Model extends Core_Install_Model
             ->createColumn('support_end_date', 'date DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`customerid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_customerdetails` FOREIGN KEY IF NOT EXISTS (`customerid`) REFERENCES `vtiger_contactdetails` (`contactid`) ON DELETE CASCADE');
-        
+
+        $this->getTable('vtiger_portalinfo', null)
+            ->createTable('id',self::$COLUMN_INT)
+            ->renameColumn('last_login_time', 'portal_last_login')
+            ->renameColumn('user_name', 'portal_user')
+            ->clearTableColumns()
+            ->createColumn('portal_user','varchar(50) DEFAULT NULL')
+            ->createColumn('user_password','varchar(255) DEFAULT NULL')
+            ->createColumn('type','varchar(5) DEFAULT NULL')
+            ->createColumn('cryptmode','varchar(20) DEFAULT NULL')
+            ->createColumn('portal_last_login','datetime DEFAULT NULL')
+            ->createColumn('login_time','datetime DEFAULT NULL')
+            ->createColumn('logout_time','datetime DEFAULT NULL')
+            ->createColumn('isactive','int(1) DEFAULT NULL')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`id`)')
+            ->createKey('CONSTRAINT `fk_1_vtiger_portalinfo` FOREIGN KEY IF NOT EXISTS (`id`) REFERENCES `vtiger_contactdetails` (`contactid`) ON DELETE CASCADE')
+        ;
+
         $this->createPicklistTable('vtiger_salutationtype', 'salutationid', 'salutationtype');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrate(): void
+    {
+        $moduleName = $this->getModuleName();
+        $fields = [
+            'salutation' => 'salutationtype',
+            'accountid' => 'account_id',
+            'user_name' => 'portal_user',
+            'last_login_time' => 'portal_last_login',
+        ];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $fields);
     }
 }
