@@ -411,7 +411,7 @@ class Documents extends CRMEntity
         if (empty($return_module) || empty($return_id)) return;
 
         if ($return_module == 'Accounts') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE notesid = ? AND (crmid = ? OR crmid IN (SELECT contactid FROM vtiger_contactdetails WHERE accountid=?))';
+            $sql = 'DELETE FROM vtiger_senotesrel WHERE notesid = ? AND (crmid = ? OR crmid IN (SELECT contactid FROM vtiger_contactdetails WHERE account_id=?))';
             $this->db->pquery($sql, [$id, $return_id, $return_id]);
         } else {
             $sql = 'DELETE FROM vtiger_senotesrel WHERE notesid = ? AND crmid = ?';

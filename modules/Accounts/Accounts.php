@@ -71,7 +71,7 @@ class Accounts extends CRMEntity {
 	public $def_basicsearch_col = 'accountname';
 
 	public $related_module_table_index = array(
-		'Contacts' => array('table_name' => 'vtiger_contactdetails', 'table_index' => 'contactid', 'rel_index' => 'accountid'),
+		'Contacts' => array('table_name' => 'vtiger_contactdetails', 'table_index' => 'contactid', 'rel_index' => 'account_id'),
 		'Potentials' => array('table_name' => 'vtiger_potential', 'table_index' => 'potentialid', 'rel_index' => 'related_to'),
 		'Quotes' => array('table_name' => 'vtiger_quotes', 'table_index' => 'quoteid', 'rel_index' => 'accountid'),
 		'SalesOrder' => array('table_name' => 'vtiger_salesorder', 'table_index' => 'salesorderid', 'rel_index' => 'accountid'),
@@ -219,7 +219,7 @@ class Accounts extends CRMEntity {
 			case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
 			FROM vtiger_contactdetails
 			INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_contactdetails.contactid
-			LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_contactdetails.accountid
+			LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_contactdetails.account_id
 			INNER JOIN vtiger_contactaddress ON vtiger_contactdetails.contactid = vtiger_contactaddress.contactaddressid
 			INNER JOIN vtiger_contactsubdetails ON vtiger_contactdetails.contactid = vtiger_contactsubdetails.contactsubscriptionid
 			INNER JOIN vtiger_customerdetails ON vtiger_contactdetails.contactid = vtiger_customerdetails.customerid
@@ -227,7 +227,7 @@ class Accounts extends CRMEntity {
 			LEFT JOIN vtiger_groups	ON vtiger_groups.groupid = vtiger_crmentity.smownerid
 			LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid = vtiger_users.id
 			WHERE vtiger_crmentity.deleted = 0
-			AND vtiger_contactdetails.accountid = ".$id;
+			AND vtiger_contactdetails.account_id = ".$id;
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -844,7 +844,7 @@ class Accounts extends CRMEntity {
         ];
 
         $entity_tbl_field_arr = [
-            'vtiger_contactdetails'     => 'accountid',
+            'vtiger_contactdetails'     => 'account_id',
             'vtiger_potential'          => 'related_to',
             'vtiger_quotes'             => 'accountid',
             'vtiger_salesorder'         => 'accountid',
@@ -888,7 +888,7 @@ class Accounts extends CRMEntity {
 	 */
 	function setRelationTables($secmodule){
 		$rel_tables =  array (
-			"Contacts" => array("vtiger_contactdetails"=>array("accountid","contactid"),"vtiger_account"=>"accountid"),
+			"Contacts" => array("vtiger_contactdetails"=>array("account_id","contactid"),"vtiger_account"=>"accountid"),
 			"Potentials" => array("vtiger_potential"=>array("related_to","potentialid"),"vtiger_account"=>"accountid"),
 			"Quotes" => array("vtiger_quotes"=>array("accountid","quoteid"),"vtiger_account"=>"accountid"),
 			"SalesOrder" => array("vtiger_salesorder"=>array("accountid","salesorderid"),"vtiger_account"=>"accountid"),
@@ -1180,7 +1180,7 @@ class Accounts extends CRMEntity {
 		$this->db->pquery('INSERT INTO vtiger_relatedlists_rb VALUES(?,?,?,?,?,?)', $params);
 
 		//Backup Contact-Account Relation
-		$con_q = 'SELECT contactid FROM vtiger_contactdetails WHERE accountid = ?';
+		$con_q = 'SELECT contactid FROM vtiger_contactdetails WHERE account_id = ?';
 		$con_res = $this->db->pquery($con_q, array($id));
 		if ($this->db->num_rows($con_res) > 0) {
 			$con_ids_list = array();
@@ -1188,11 +1188,11 @@ class Accounts extends CRMEntity {
 			{
 				$con_ids_list[] = $this->db->query_result($con_res,$k,"contactid");
 			}
-			$params = array($id, RB_RECORD_UPDATED, 'vtiger_contactdetails', 'accountid', 'contactid', implode(",", $con_ids_list));
+			$params = array($id, RB_RECORD_UPDATED, 'vtiger_contactdetails', 'account_id', 'contactid', implode(",", $con_ids_list));
 			$this->db->pquery('INSERT INTO vtiger_relatedlists_rb VALUES(?,?,?,?,?,?)', $params);
 		}
 		//Deleting Contact-Account Relation.
-		$con_q = 'UPDATE vtiger_contactdetails SET accountid = 0 WHERE accountid = ?';
+		$con_q = 'UPDATE vtiger_contactdetails SET account_id = 0 WHERE account_id = ?';
 		$this->db->pquery($con_q, array($id));
 
 		//Backup Trouble Tickets-Account Relation
@@ -1545,7 +1545,7 @@ class Accounts extends CRMEntity {
 		$entityIds = array();
 		$query = 'SELECT contactid FROM vtiger_contactdetails
 				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_contactdetails.contactid
-				WHERE vtiger_contactdetails.accountid = ? AND vtiger_crmentity.deleted = 0';
+				WHERE vtiger_contactdetails.account_id = ? AND vtiger_crmentity.deleted = 0';
 		$accountContacts = $adb->pquery($query, array($id));
 		$numOfContacts = $adb->num_rows($accountContacts);
 		if($accountContacts && $numOfContacts > 0) {

@@ -281,7 +281,7 @@ class Vendors extends CRMEntity {
 				INNER JOIN vtiger_customerdetails ON vtiger_contactdetails.contactid = vtiger_customerdetails.customerid
 				INNER JOIN vtiger_contactscf ON vtiger_contactdetails.contactid = vtiger_contactscf.contactid
 				left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.smownerid
-				left join vtiger_account on vtiger_account.accountid = vtiger_contactdetails.accountid
+				left join vtiger_account on vtiger_account.accountid = vtiger_contactdetails.account_id
 				left join vtiger_users on vtiger_users.id=vtiger_crmentity.smownerid
 				where vtiger_crmentity.deleted=0 and vtiger_vendorcontactrel.vendorid = ".$id;
 

@@ -233,10 +233,9 @@ class Potentials extends CRMEntity {
 			}
 		}
 
-		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
-							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query = 'select case when (vtiger_users.user_name not like "") then '.$userNameSql.' else vtiger_groups.groupname end as user_name,
-					vtiger_contactdetails.accountid,vtiger_potential.potentialid, vtiger_potential.potentialname, vtiger_contactdetails.contactid,
+		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=> 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
+		$query = "select case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,
+					vtiger_contactdetails.account_id,vtiger_potential.potentialid, vtiger_potential.potentialname, vtiger_contactdetails.contactid,
 					vtiger_contactdetails.lastname, vtiger_contactdetails.firstname, vtiger_contactdetails.title, vtiger_contactdetails.department,
 					vtiger_contactdetails.email, vtiger_contactdetails.phone, vtiger_crmentity.crmid, vtiger_crmentity.smownerid,
 					vtiger_crmentity.modifiedtime , vtiger_account.accountname from vtiger_potential
@@ -247,10 +246,10 @@ class Potentials extends CRMEntity {
 					INNER JOIN vtiger_customerdetails ON vtiger_contactdetails.contactid = vtiger_customerdetails.customerid
 					INNER JOIN vtiger_contactscf ON vtiger_contactdetails.contactid = vtiger_contactscf.contactid
 					inner join vtiger_crmentity on vtiger_crmentity.crmid = vtiger_contactdetails.contactid
-					left join vtiger_account on vtiger_account.accountid = vtiger_contactdetails.accountid
+					left join vtiger_account on vtiger_account.accountid = vtiger_contactdetails.account_id
 					left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.smownerid
 					left join vtiger_users on vtiger_crmentity.smownerid=vtiger_users.id
-					where vtiger_potential.potentialid = '.$id.' and vtiger_crmentity.deleted=0';
+					where vtiger_potential.potentialid = $id and vtiger_crmentity.deleted=0";
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -524,8 +523,7 @@ class Potentials extends CRMEntity {
 		if (!$queryPlanner->requireTable("vtiger_potential",$matrix)){
 			return '';
 		}
-        $matrix->setDependency('vtiger_potential', array('vtiger_crmentityPotentials','vtiger_accountPotentials',
-											'vtiger_contactdetailsPotentials','vtiger_campaignPotentials','vtiger_potentialscf'));
+        $matrix->setDependency('vtiger_potential', array('vtiger_crmentityPotentials','vtiger_accountPotentials', 'vtiger_contactdetailsPotentials','vtiger_campaignPotentials','vtiger_potentialscf'));
 
 		$query = $this->getRelationQuery($module,$secmodule,"vtiger_potential","potentialid", $queryPlanner);
 

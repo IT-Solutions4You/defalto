@@ -960,7 +960,7 @@ class Vtiger_Functions {
 
 		static $new_field_details = Array(
 			//Contacts Related Fields
-			"vtiger_contactdetails:accountid" => "V",
+			"vtiger_contactdetails:account_id" => "V",
 			"vtiger_contactsubdetails:birthday" => "D",
 			"vtiger_contactdetails:email" => "V",
 			"vtiger_contactdetails:secondaryemail" => "V",

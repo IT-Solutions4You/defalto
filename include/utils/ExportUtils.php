@@ -98,7 +98,7 @@ function getFieldsListFromQuery($query)
 		{
 			 $fields .= "vtiger_account2.accountname as '".$fieldlabel."',";
 		}
-		elseif($tablename == 'vtiger_contactdetails' && $columnName == 'accountid')//Contact - Account Name
+		elseif($tablename == 'vtiger_contactdetails' && $columnName == 'account_id')//Contact - Account Name
 		{
 			$fields .= "vtiger_account.accountname as '".$fieldlabel."',";
 		}

@@ -47,7 +47,7 @@ class Contacts_Module_Model extends Vtiger_Module_Model {
         if($parentId && $parentModule == 'Accounts') {
 			$query = "SELECT ".implode(',',$searchFields)." FROM vtiger_crmentity
 						INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
-						WHERE deleted = 0 AND vtiger_contactdetails.accountid = ? AND label like ?";
+						WHERE deleted = 0 AND vtiger_contactdetails.account_id = ? AND label like ?";
             $params = array($parentId, "%$searchValue%");
             $returnQuery = $db->convert2Sql($query, $params);
 			return $returnQuery;

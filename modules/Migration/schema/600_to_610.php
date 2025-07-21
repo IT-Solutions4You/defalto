@@ -651,9 +651,9 @@ foreach ($productImageMap as $productId => $imageNames) {
 }
 echo 'updating image information for products table is completed';
 
-$ContactIdSql = 'SELECT contactid,name FROM vtiger_seattachmentsrel INNER JOIN vtiger_attachments ON
-                                        vtiger_seattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid INNER JOIN vtiger_contactdetails ON
-                                        vtiger_contactdetails.contactid = vtiger_seattachmentsrel.crmid';
+$ContactIdSql = 'SELECT contactid,name FROM vtiger_seattachmentsrel 
+    INNER JOIN vtiger_attachments ON vtiger_seattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid 
+    INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_seattachmentsrel.crmid';
 $contactIds = $adb->pquery($ContactIdSql,array());
 $numOfRows = $adb->num_rows($contactIds);
 

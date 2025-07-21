@@ -133,8 +133,7 @@ function HelpDesk_notifyParentOnTicketChange($entityData) {
 	$accountId = explode('x', $wsAccountId);
 	//To get the emailoptout vtiger_field value and then decide whether send mail about the tickets or not
 	if(!empty($contactId[0])) {
-		$result = $adb->pquery('SELECT email, emailoptout, lastname, firstname FROM vtiger_contactdetails WHERE
-						contactid=?', array($contactId[1]));
+		$result = $adb->pquery('SELECT email, emailoptout, lastname, firstname FROM vtiger_contactdetails WHERE contactid=?', array($contactId[1]));
 		$emailoptout = $adb->query_result($result,0,'emailoptout');
 		$parent_email = $contact_mailid = $adb->query_result($result,0,'email');
 		$parentname = $adb->query_result($result,0,'firstname').' '.$adb->query_result($result,0,'firstname');

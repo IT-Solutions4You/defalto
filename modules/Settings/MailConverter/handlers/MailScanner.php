@@ -500,7 +500,7 @@ class Settings_MailConverter_MailScanner_Handler {
 
 	function getAccountId($contactId) {
 		global $adb;
-		$result = $adb->pquery("SELECT accountid FROM vtiger_contactdetails WHERE contactid=?", array($contactId));
+		$result = $adb->pquery("SELECT account_id FROM vtiger_contactdetails WHERE contactid=?", array($contactId));
 		$accountId = $adb->query_result($result, 0, 'accountid');
 		return $accountId;
 	}

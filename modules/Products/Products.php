@@ -466,7 +466,7 @@ class Products extends CRMEntity
 			INNER JOIN vtiger_products ON vtiger_seproductsrel.productid = vtiger_products.productid
 			LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
 			LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-			LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_contactdetails.accountid
+			LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_contactdetails.account_id
 			WHERE vtiger_crmentity.deleted = 0 AND vtiger_products.productid = " . $id;
 
         $return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
@@ -1413,7 +1413,7 @@ class Products extends CRMEntity
             $sql = 'UPDATE vtiger_products SET vendor_id = ? WHERE productid = ?';
             $this->db->pquery($sql, [null, $id]);
         } elseif ($return_module == 'Accounts') {
-            $sql = 'DELETE FROM vtiger_seproductsrel WHERE productid = ? AND (crmid = ? OR crmid IN (SELECT contactid FROM vtiger_contactdetails WHERE accountid=?))';
+            $sql = 'DELETE FROM vtiger_seproductsrel WHERE productid = ? AND (crmid = ? OR crmid IN (SELECT contactid FROM vtiger_contactdetails WHERE account_id=?))';
             $param = [$id, $return_id, $return_id];
             $this->db->pquery($sql, $param);
         } elseif ($return_module == 'Documents') {

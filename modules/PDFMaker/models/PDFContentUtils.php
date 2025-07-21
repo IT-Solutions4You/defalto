@@ -332,14 +332,11 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
     public function getContactImageQuery()
     {
         $query = 'SELECT vtiger_attachments.*
-                FROM vtiger_contactdetails
-                INNER JOIN vtiger_seattachmentsrel
-                ON vtiger_contactdetails.contactid=vtiger_seattachmentsrel.crmid
-                INNER JOIN vtiger_attachments
-                ON vtiger_attachments.attachmentsid=vtiger_seattachmentsrel.attachmentsid
-                INNER JOIN vtiger_crmentity
-                ON vtiger_attachments.attachmentsid=vtiger_crmentity.crmid
-                WHERE deleted=0 AND vtiger_contactdetails.contactid=?';
+            FROM vtiger_contactdetails
+            INNER JOIN vtiger_seattachmentsrel ON vtiger_contactdetails.contactid=vtiger_seattachmentsrel.crmid
+            INNER JOIN vtiger_attachments ON vtiger_attachments.attachmentsid=vtiger_seattachmentsrel.attachmentsid
+            INNER JOIN vtiger_crmentity ON vtiger_attachments.attachmentsid=vtiger_crmentity.crmid
+            WHERE deleted=0 AND vtiger_contactdetails.contactid=?';
 
         return $query;
     }
@@ -348,7 +345,7 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
     {
         $productid = $id;
 
-        list($images, $bacImgs) = $this->getInventoryImages($productid, true);
+        [$images, $bacImgs] = $this->getInventoryImages($productid, true);
 
         $sequence = '1';
         $retImage = '';
@@ -400,7 +397,7 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
         }
 
         foreach ($products as $productnameid => $data) {
-            list($productid, $seq) = explode('#_#', $productnameid, 2);
+            [$productid, $seq] = explode('#_#', $productnameid, 2);
 
             foreach ($data as $attid => $images) {
                 if ($attid != '') {
