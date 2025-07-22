@@ -1013,30 +1013,27 @@ class Accounts extends CRMEntity {
 		return $account_hierarchy;
 	}
 
-	/**
-	* Function to Recursively get all the upper accounts of a given Account
-	* @param  integer   $id      		- accountid
-	* @param  array   $parent_accounts   - Array of all the parent accounts
-	* returns All the parent accounts of the given accountid in array format
-	*/
+    /**
+     * Function to Recursively get all the upper accounts of a given Account
+     * @param integer $id - accountid
+     * @param array $parent_accounts - Array of all the parent accounts
+     * returns All the parent accounts of the given accountid in array format
+     * @throws Exception
+     */
 	function __getParentAccounts($id, &$parent_accounts, &$encountered_accounts) {
 		global $log, $adb;
         $log->debug("Entering __getParentAccounts(".$id.",".$parent_accounts.") method ...");
 
-		$query = "SELECT parentid FROM vtiger_account " .
-				" INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_account.accountid" .
-				" WHERE vtiger_crmentity.deleted = 0 and vtiger_account.accountid = ?";
+		$query = 'SELECT vtiger_account.account_id FROM vtiger_account 
+		    INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_account.accountid
+		    WHERE vtiger_crmentity.deleted = 0 and vtiger_account.accountid = ?';
 		$params = array($id);
+        $res = $adb->pquery($query, $params);
+        $parentId = $adb->query_result($res, 0, 'account_id');
 
-		$res = $adb->pquery($query, $params);
-
-		if ($adb->num_rows($res) > 0 &&
-			$adb->query_result($res, 0, 'parentid') != '' && $adb->query_result($res, 0, 'parentid') != 0 &&
-			!in_array($adb->query_result($res, 0, 'parentid'),$encountered_accounts)) {
-
-			$parentid = $adb->query_result($res, 0, 'parentid');
-			$encountered_accounts[] = $parentid;
-			$this->__getParentAccounts($parentid,$parent_accounts,$encountered_accounts);
+		if ($adb->num_rows($res) > 0 && !empty($accountId) && !in_array($accountId,$encountered_accounts)) {
+			$encountered_accounts[] = $parentId;
+			$this->__getParentAccounts($parentId,$parent_accounts,$encountered_accounts);
 		}
 
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=> 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
@@ -1052,7 +1049,7 @@ class Accounts extends CRMEntity {
 
 		$parent_account_info = array();
 		$depth = 0;
-		$immediate_parentid = $adb->query_result($res, 0, 'parentid');
+		$immediate_parentid = $adb->query_result($res, 0, 'account_id');
 		if (isset($parent_accounts[$immediate_parentid])) {
 			$depth = $parent_accounts[$immediate_parentid]['depth'] + 1;
 		}
@@ -1088,7 +1085,7 @@ class Accounts extends CRMEntity {
 		    INNER JOIN vtiger_accountbillads ON vtiger_account.accountid = vtiger_accountbillads.accountaddressid
 		    LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
 		    LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
-		    WHERE vtiger_crmentity.deleted = 0 and parentid = ?";
+		    WHERE vtiger_crmentity.deleted = 0 and vtiger_account.account_id = ?";
 		$params = array($id);
 		$res = $adb->pquery($query, $params);
 
