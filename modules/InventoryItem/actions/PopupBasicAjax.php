@@ -75,7 +75,9 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
 
             if ($sequenceBasedRecords) {
                 foreach ($sequenceBasedRecords as $recordId => $recordModel) {
-                    $records[$searchModule][$recordId] = $recordModel;
+                    if ($recordId) {
+                        $records[$searchModule][$recordId] = $recordModel;
+                    }
                 }
             }
         }
@@ -127,7 +129,7 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
         $db = PearDatabase::getInstance();
         $matchingRecords = [];
 
-        $query = 'SELECT label, crmid, setype, createdtime 
+        $query = 'SELECT DISTINCT crmid, setype, createdtime 
                 FROM vtiger_crmentity 
                 WHERE vtiger_crmentity.deleted = 0
                     AND setype = ?
