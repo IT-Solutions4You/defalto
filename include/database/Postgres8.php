@@ -134,7 +134,7 @@ function expandRecord($table,$log)
 
     //vtiger_notes table
     elseif( $table == "vtiger_notes")
-	$subfields = array ( "notesid", "contact_id", "title", "filename", "notecontent");
+	$subfields = array ( "notesid", "contact_id", "notes_title", "filename", "notecontent");
 
     //vtiger_faq table
     elseif( $table == "vtiger_faq")

@@ -29,23 +29,23 @@ class Documents_Install_Model extends Core_Install_Model
         ['ProjectTask', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
         ['Project', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
         ['ITS4YouEmails', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
-        ['Documents', 'Contacts', 'Contacts', '1', 'get_related_list', '',],
-        ['Documents', 'Accounts', 'Accounts', '1', 'get_related_list', '',],
-        ['Documents', 'Potentials', 'Potentials', '1', 'get_related_list', '',],
-        ['Documents', 'Leads', 'Leads', '1', 'get_related_list', '',],
-        ['Documents', 'Products', 'Products', '1', 'get_related_list', '',],
-        ['Documents', 'Services', 'Services', '1', 'get_related_list', '',],
-        ['Documents', 'Project', 'Project', '1', 'get_related_list', '',],
-        ['Documents', 'Assets', 'Assets', '1', 'get_related_list', '',],
-        ['Documents', 'ServiceContracts', 'ServiceContracts', '1', 'get_related_list', '',],
-        ['Documents', 'Quotes', 'Quotes', '1', 'get_related_list', '',],
-        ['Documents', 'Invoice', 'Invoice', '1', 'get_related_list', '',],
-        ['Documents', 'SalesOrder', 'SalesOrder', '1', 'get_related_list', '',],
-        ['Documents', 'PurchaseOrder', 'PurchaseOrder', '1', 'get_related_list', '',],
-        ['Documents', 'HelpDesk', 'HelpDesk', '1', 'get_related_list', '',],
-        ['Documents', 'Faq', 'Faq', '1', 'get_related_list', '',],
+        ['Documents', 'Contacts', 'Contacts', '', 'get_related_list', '',],
+        ['Documents', 'Accounts', 'Accounts', '', 'get_related_list', '',],
+        ['Documents', 'Potentials', 'Potentials', '', 'get_related_list', '',],
+        ['Documents', 'Leads', 'Leads', '', 'get_related_list', '',],
+        ['Documents', 'Products', 'Products', '', 'get_related_list', '',],
+        ['Documents', 'Services', 'Services', '', 'get_related_list', '',],
+        ['Documents', 'Project', 'Project', '', 'get_related_list', '',],
+        ['Documents', 'Assets', 'Assets', '', 'get_related_list', '',],
+        ['Documents', 'ServiceContracts', 'ServiceContracts', '', 'get_related_list', '',],
+        ['Documents', 'Quotes', 'Quotes', '', 'get_related_list', '',],
+        ['Documents', 'Invoice', 'Invoice', '', 'get_related_list', '',],
+        ['Documents', 'SalesOrder', 'SalesOrder', '', 'get_related_list', '',],
+        ['Documents', 'PurchaseOrder', 'PurchaseOrder', '', 'get_related_list', '',],
+        ['Documents', 'HelpDesk', 'HelpDesk', '', 'get_related_list', '',],
+        ['Documents', 'Faq', 'Faq', '', 'get_related_list', '',],
         ['Documents', 'Appointments', 'Appointments', '', 'get_related_list', '',],
-        ['Documents', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
+        ['Documents', 'ITS4YouEmails', 'ITS4YouEmails', '', 'get_related_list', '',],
     ];
 
     public function addCustomLinks(): void
@@ -66,7 +66,7 @@ class Documents_Install_Model extends Core_Install_Model
                 'notes_title' => [
                     'name' => 'notes_title',
                     'uitype' => 2,
-                    'column' => 'title',
+                    'column' => 'notes_title',
                     'table' => 'vtiger_notes',
                     'label' => 'Title',
                     'readonly' => 1,
@@ -294,12 +294,17 @@ class Documents_Install_Model extends Core_Install_Model
         ];
     }
 
+    /**
+     * @throws AppException
+     */
     public function installTables(): void
     {
         $this->getTable('vtiger_notes', null)
             ->createTable('notesid', 'INT(19)')
+            ->renameColumn('title', 'notes_title')
+            ->clearTableColumns()
             ->createColumn('note_no', 'varchar(100) NOT NULL')
-            ->createColumn('title', 'varchar(50) NOT NULL')
+            ->createColumn('notes_title', 'varchar(50) NOT NULL')
             ->createColumn('filename', 'varchar(200) DEFAULT NULL')
             ->createColumn('notecontent', 'text DEFAULT NULL')
             ->createColumn('folderid', 'int(19) NOT NULL DEFAULT 1')
@@ -313,7 +318,7 @@ class Documents_Install_Model extends Core_Install_Model
             ->createColumn('currency_id', 'int(19) DEFAULT NULL')
             ->createColumn('conversion_rate', 'decimal(10,3) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`notesid`)')
-            ->createKey('KEY IF NOT EXISTS `notes_title_idx` (`title`)')
+            ->createKey('KEY IF NOT EXISTS `notes_title_idx` (`notes_title`)')
             ->createKey('KEY IF NOT EXISTS `notes_notesid_idx` (`notesid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_notes` FOREIGN KEY IF NOT EXISTS (`notesid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
 
@@ -330,5 +335,15 @@ class Documents_Install_Model extends Core_Install_Model
             ->createKey('KEY IF NOT EXISTS `senotesrel_crmid_idx` (`crmid`)')
             ->createKey('CONSTRAINT `fk1_crmid` FOREIGN KEY IF NOT EXISTS (`crmid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
             ->createKey('CONSTRAINT `fk_2_vtiger_senotesrel` FOREIGN KEY IF NOT EXISTS (`notesid`) REFERENCES `vtiger_notes` (`notesid`) ON DELETE CASCADE');
+    }
+
+    public function migrate()
+    {
+        $moduleName = $this->getModuleName();
+        $fields = [
+            'title' => 'notes_title',
+        ];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $fields);
     }
 }

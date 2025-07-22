@@ -177,17 +177,13 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
 
     public function getAttachmentsForId($templateid)
     {
-
         $adb = PearDatabase::getInstance();
-        $Att_Documents = array();
-
-        $sql = "SELECT vtiger_notes.notesid, vtiger_notes.title FROM vtiger_notes 
-                      INNER JOIN vtiger_crmentity 
-                         ON vtiger_crmentity.crmid = vtiger_notes.notesid
-                      INNER JOIN vtiger_emakertemplates_documents 
-                         ON vtiger_emakertemplates_documents.documentid = vtiger_notes.notesid
-                      WHERE vtiger_crmentity.deleted = '0' AND vtiger_emakertemplates_documents.templateid = ?";
-        $result = $adb->pquery($sql, array($templateid));
+        $Att_Documents = [];
+        $sql = "SELECT vtiger_notes.notesid, vtiger_notes.notes_title FROM vtiger_notes 
+            INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_notes.notesid
+            INNER JOIN vtiger_emakertemplates_documents ON vtiger_emakertemplates_documents.documentid = vtiger_notes.notesid
+            WHERE vtiger_crmentity.deleted = '0' AND vtiger_emakertemplates_documents.templateid = ?";
+        $result = $adb->pquery($sql, [$templateid]);
         $num_rows = $adb->num_rows($result);
 
         if ($num_rows > 0) {
@@ -215,7 +211,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
                 } else {
                     $delimiter = '|';
                 }
-                list($Params[], $val) = explode($delimiter, $val, 2);
+                [$Params[], $val] = explode($delimiter, $val, 2);
             } else {
                 $Params[] = $val;
                 $end = true;
@@ -371,7 +367,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
     public function getProductImage($id, $site_url = "")
     {
         $productid = $id;
-        list($images, $bacImgs) = $this->getInventoryImages($productid, true);
+        [$images, $bacImgs] = $this->getInventoryImages($productid, true);
         $sequence = "1";
         $retImage = "";
         $site_url = self::fixSiteUrl($site_url);
@@ -419,7 +415,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
         }
 
         foreach ($products as $productnameid => $data) {
-            list($productid, $seq) = explode("#_#", $productnameid, 2);
+            [$productid, $seq] = explode("#_#", $productnameid, 2);
             foreach ($data as $attid => $images) {
                 if ($attid != "") {
                     if (isset($saved_products[$productid . "_" . $seq])) {

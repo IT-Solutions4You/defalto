@@ -36,11 +36,11 @@ class Documents_Folder_Model extends Vtiger_Base_Model {
 		$folderId = $this->getId();
 
 		$result = $db->pquery("SELECT 1 FROM vtiger_notes
-						INNER JOIN vtiger_attachmentsfolder ON vtiger_attachmentsfolder.folderid = vtiger_notes.folderid
-						INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_notes.notesid
-						WHERE vtiger_attachmentsfolder.folderid = ?
-						AND vtiger_attachmentsfolder.foldername != 'Default'
-						AND vtiger_crmentity.deleted = 0", array($folderId));
+            INNER JOIN vtiger_attachmentsfolder ON vtiger_attachmentsfolder.folderid = vtiger_notes.folderid
+            INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_notes.notesid
+            WHERE vtiger_attachmentsfolder.folderid = ?
+            AND vtiger_attachmentsfolder.foldername != 'Default'
+            AND vtiger_crmentity.deleted = 0", array($folderId));
 		$num_rows = $db->num_rows($result);
 		if ($num_rows>0) {
 			return true;
