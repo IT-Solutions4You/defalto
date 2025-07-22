@@ -43,7 +43,7 @@ class Faq extends CRMEntity {
 	public $list_fields = [
 		'FAQ Id' => ['faq' => 'id'],
 		'Question' => ['faq' => 'question'],
-		'Category' => ['faq' => 'category'],
+		'Category' => ['faq' => 'faqcategories'],
 		'Product Name' => ['faq' => 'product_id'],
 		'Created Time' => ['crmentity' => 'createdtime'],
 		'Modified Time' => ['crmentity' => 'modifiedtime'],

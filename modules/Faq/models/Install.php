@@ -57,7 +57,7 @@ class Faq_Install_Model extends Core_Install_Model
                 'faqcategories' => [
                     'name' => 'faqcategories',
                     'uitype' => 15,
-                    'column' => 'category',
+                    'column' => 'faqcategories',
                     'table' => 'vtiger_faq',
                     'label' => 'Category',
                     'readonly' => 1,
@@ -76,7 +76,7 @@ class Faq_Install_Model extends Core_Install_Model
                 'faqstatus' => [
                     'name' => 'faqstatus',
                     'uitype' => 15,
-                    'column' => 'status',
+                    'column' => 'faqstatus',
                     'table' => 'vtiger_faq',
                     'label' => 'Status',
                     'readonly' => 1,
@@ -113,7 +113,7 @@ class Faq_Install_Model extends Core_Install_Model
                 'faq_answer' => [
                     'name' => 'faq_answer',
                     'uitype' => 20,
-                    'column' => 'answer',
+                    'column' => 'faq_answer',
                     'table' => 'vtiger_faq',
                     'label' => 'Answer',
                     'readonly' => 1,
@@ -191,12 +191,16 @@ class Faq_Install_Model extends Core_Install_Model
     {
         $this->getTable('vtiger_faq', null)
             ->createTable('id')
+            ->renameColumn('category', 'faqcategories')
+            ->renameColumn('status', 'faqstatus')
+            ->renameColumn('answer', 'faq_answer')
+            ->clearTableColumns()
             ->createColumn('faq_no', 'varchar(100) NOT NULL')
             ->createColumn('product_id', 'varchar(100) DEFAULT NULL')
             ->createColumn('question', 'text DEFAULT NULL')
-            ->createColumn('answer', 'text DEFAULT NULL')
-            ->createColumn('category', 'varchar(200) NOT NULL')
-            ->createColumn('status', 'varchar(200) NOT NULL')
+            ->createColumn('faq_answer', 'text DEFAULT NULL')
+            ->createColumn('faqcategories', 'varchar(200) NOT NULL')
+            ->createColumn('faqstatus', 'varchar(200) NOT NULL')
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`id`)')
             ->createKey('KEY IF NOT EXISTS `faq_id_idx` (`id`)')
@@ -231,5 +235,17 @@ class Faq_Install_Model extends Core_Install_Model
             ->createColumn('picklist_valueid', 'int(19) NOT NULL DEFAULT "0"')
             ->createColumn('sortorderid', 'int(11) DEFAULT NULL')
             ->createColumn('color', 'varchar(10) DEFAULT NULL');
+    }
+
+    public function migrate(): void
+    {
+        $moduleName = $this->getModuleName();
+        $fields = [
+            'category' => 'faqcategories',
+            'status' => 'faqstatus',
+            'answer' => 'faq_answer',
+        ];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $fields);
     }
 }

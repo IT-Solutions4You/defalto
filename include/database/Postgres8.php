@@ -138,7 +138,7 @@ function expandRecord($table,$log)
 
     //vtiger_faq table
     elseif( $table == "vtiger_faq")
-	$subfields = array ( "id", "product_id", "question", "answer", "category", "status");
+	$subfields = array ( "id", "product_id", "question", "faq_answer", "faqcategories", "faqstatus");
 
     //vtiger_profile2field
     elseif( $table == "vtiger_profile2field")

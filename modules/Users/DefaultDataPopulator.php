@@ -330,7 +330,6 @@ class DefaultDataPopulator extends CRMEntity
         $this->db->query("insert into vtiger_entityname values(18,'Vendors','vtiger_vendor','vendorname','vendorid','vendor_id')");
         $this->db->query("insert into vtiger_entityname values(19,'PriceBooks','vtiger_pricebook','bookname','pricebookid','pricebookid')");
         $this->db->query("insert into vtiger_entityname values(26,'Campaigns','vtiger_campaign','campaignname','campaignid','campaignid')");
-        $this->db->query("insert into vtiger_entityname values(15,'Faq','vtiger_faq','question','id','id')");
         // Insert End
         //Inserting values into org share action mapping
         $this->db->query("insert into vtiger_org_share_action_mapping values(0,'Public: Read Only')");

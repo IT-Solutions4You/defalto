@@ -84,18 +84,6 @@ function getListQuery($module, $where = '') {
 			$query .= getNonAdminAccessControlQuery($module, $current_user);
 			$query .= "WHERE vtiger_crmentity.deleted = 0 " . $where;
 			break;
-		Case "Faq":
-			$query = "SELECT vtiger_crmentity.crmid, vtiger_crmentity.createdtime, vtiger_crmentity.modifiedtime,
-			vtiger_faq.*
-			FROM vtiger_faq
-			INNER JOIN vtiger_crmentity
-				ON vtiger_crmentity.crmid = vtiger_faq.id
-			LEFT JOIN vtiger_products
-				ON vtiger_faq.product_id = vtiger_products.productid";
-			$query .= getNonAdminAccessControlQuery($module, $current_user);
-			$query .= "WHERE vtiger_crmentity.deleted = 0 " . $where;
-			break;
-
 		Case "Vendors":
 			$query = "SELECT vtiger_crmentity.crmid, vtiger_vendor.*
 			FROM vtiger_vendor
