@@ -34,28 +34,6 @@ function getListQuery($module, $where = '') {
 	$tab_id = getTabid($module);
 	$userNameSql = getSqlForNameInDisplayFormat(array('first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 	switch ($module) {
-		Case "Leads":
-			$query = "SELECT vtiger_crmentity.crmid, vtiger_crmentity.smownerid,
-			vtiger_leaddetails.firstname, vtiger_leaddetails.lastname,
-			vtiger_leaddetails.company, vtiger_leadaddress.phone,
-			vtiger_leadsubdetails.website, vtiger_leaddetails.email,
-			vtiger_leadscf.*
-			FROM vtiger_leaddetails
-			INNER JOIN vtiger_crmentity
-				ON vtiger_crmentity.crmid = vtiger_leaddetails.leadid
-			INNER JOIN vtiger_leadsubdetails
-				ON vtiger_leadsubdetails.leadsubscriptionid = vtiger_leaddetails.leadid
-			INNER JOIN vtiger_leadaddress
-				ON vtiger_leadaddress.leadaddressid = vtiger_leadsubdetails.leadsubscriptionid
-			INNER JOIN vtiger_leadscf
-				ON vtiger_leaddetails.leadid = vtiger_leadscf.leadid
-			LEFT JOIN vtiger_groups
-				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-			LEFT JOIN vtiger_users
-				ON vtiger_users.id = vtiger_crmentity.smownerid";
-			$query .= getNonAdminAccessControlQuery($module, $current_user);
-			$query .= "WHERE vtiger_crmentity.deleted = 0 AND vtiger_leaddetails.converted = 0 " . $where;
-			break;
 		Case "Products":
 			$query = "SELECT vtiger_crmentity.crmid, vtiger_crmentity.smownerid, vtiger_crmentity.description, vtiger_products.*, vtiger_productcf.*
 			FROM vtiger_products

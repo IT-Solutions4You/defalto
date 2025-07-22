@@ -117,24 +117,17 @@ class Leads extends CRMEntity {
 		//To get the Permitted fields query and the permitted fields list
 		$sql = getPermittedFieldsQuery("Leads", "detail_view");
 		$fields_list = getFieldsListFromQuery($sql);
-
+        $table = $this->entity_table;
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
 							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 		$query = "SELECT $fields_list,case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
-					FROM ".$this->entity_table."
-				INNER JOIN vtiger_leaddetails
-					ON vtiger_crmentity.crmid=vtiger_leaddetails.leadid
-				LEFT JOIN vtiger_leadsubdetails
-					ON vtiger_leaddetails.leadid = vtiger_leadsubdetails.leadsubscriptionid
-				LEFT JOIN vtiger_leadaddress
-					ON vtiger_leaddetails.leadid=vtiger_leadaddress.leadaddressid
-				LEFT JOIN vtiger_leadscf
-					ON vtiger_leadscf.leadid=vtiger_leaddetails.leadid
-							LEFT JOIN vtiger_groups
-									ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_users
-					ON vtiger_crmentity.smownerid = vtiger_users.id and vtiger_users.status='Active'
-				";
+			FROM $table
+			INNER JOIN vtiger_leaddetails ON vtiger_crmentity.crmid=vtiger_leaddetails.leadid
+            LEFT JOIN vtiger_leadsubdetails ON vtiger_leaddetails.leadid = vtiger_leadsubdetails.leadsubscriptionid
+            LEFT JOIN vtiger_leadaddress ON vtiger_leaddetails.leadid=vtiger_leadaddress.leadaddressid
+            LEFT JOIN vtiger_leadscf ON vtiger_leadscf.leadid=vtiger_leaddetails.leadid
+            LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+            LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid = vtiger_users.id and vtiger_users.status='Active'";
 
 		$query .= $this->getNonAdminAccessControlQuery('Leads',$current_user);
 		$where_auto = " vtiger_crmentity.deleted=0 AND vtiger_leaddetails.converted =0";
@@ -183,16 +176,16 @@ class Leads extends CRMEntity {
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 
 		$query = "SELECT vtiger_crmentity.*, vtiger_quotes.*, vtiger_leaddetails.leadid,
-					case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
-					FROM vtiger_quotes
-					INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_quotes.quoteid
-					LEFT JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid = vtiger_quotes.contactid
-					LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-					LEFT JOIN vtiger_quotescf ON vtiger_quotescf.quoteid = vtiger_quotes.quoteid
-					LEFT JOIN vtiger_quotesbillads ON vtiger_quotesbillads.quotebilladdressid = vtiger_quotes.quoteid
-					LEFT JOIN vtiger_quotesshipads ON vtiger_quotesshipads.quoteshipaddressid = vtiger_quotes.quoteid
-					LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
-					WHERE vtiger_crmentity.deleted = 0 AND vtiger_leaddetails.leadid = $id";
+            case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
+            FROM vtiger_quotes
+            INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_quotes.quoteid
+            LEFT JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid = vtiger_quotes.contactid
+            LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+            LEFT JOIN vtiger_quotescf ON vtiger_quotescf.quoteid = vtiger_quotes.quoteid
+            LEFT JOIN vtiger_quotesbillads ON vtiger_quotesbillads.quotebilladdressid = vtiger_quotes.quoteid
+            LEFT JOIN vtiger_quotesshipads ON vtiger_quotesshipads.quoteshipaddressid = vtiger_quotes.quoteid
+            LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
+            WHERE vtiger_crmentity.deleted = 0 AND vtiger_leaddetails.leadid = $id";
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -298,20 +291,16 @@ class Leads extends CRMEntity {
 			}
 		}
 
-		$query = "SELECT vtiger_products.productid, vtiger_products.productname
-				vtiger_products.commissionrate, vtiger_products.qty_per_unit, vtiger_products.unit_price,
-				vtiger_crmentity.crmid, vtiger_crmentity.smownerid
-				FROM vtiger_products
-				INNER JOIN vtiger_seproductsrel ON vtiger_products.productid = vtiger_seproductsrel.productid  and vtiger_seproductsrel.setype = 'Leads'
-				INNER JOIN vtiger_productcf
-					ON vtiger_products.productid = vtiger_productcf.productid
-				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_products.productid
-				INNER JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid = vtiger_seproductsrel.crmid
-				LEFT JOIN vtiger_users
-					ON vtiger_users.id=vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_groups
-					ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-			   WHERE vtiger_crmentity.deleted = 0 AND vtiger_leaddetails.leadid = $id";
+		$query = "SELECT vtiger_products.productid, vtiger_products.productname, vtiger_products.commissionrate, vtiger_products.qty_per_unit, vtiger_products.unit_price,
+            vtiger_crmentity.crmid, vtiger_crmentity.smownerid
+            FROM vtiger_products
+            INNER JOIN vtiger_seproductsrel ON vtiger_products.productid = vtiger_seproductsrel.productid  and vtiger_seproductsrel.setype = 'Leads'
+            INNER JOIN vtiger_productcf ON vtiger_products.productid = vtiger_productcf.productid
+            INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_products.productid
+            INNER JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid = vtiger_seproductsrel.crmid
+            LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.smownerid
+            LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+			WHERE vtiger_crmentity.deleted = 0 AND vtiger_leaddetails.leadid = $id";
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 

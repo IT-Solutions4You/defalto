@@ -801,7 +801,7 @@ for ($i = 0; $i < $numrows; $i++) {
 }
 
 //Update leads salutation value of none to empty value
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_leaddetails SET salutation='' WHERE salutation = ?", array('--None--'));
+Migration_Index_View::ExecuteQuery("UPDATE vtiger_leaddetails SET salutationtype='' WHERE salutationtype = ?", array('--None--'));
 
 //Update contacts salutation value of none to empty value
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_contactdetails SET salutationtype='' WHERE salutationtype = ?", array('--None--'));

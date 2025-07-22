@@ -70,10 +70,9 @@ class Leads_Module_Model extends Vtiger_Module_Model {
 
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
         $deletedCondition = $this->getDeletedRecordCondition();
-		$query = 'SELECT * FROM vtiger_crmentity '.
-            ' INNER JOIN vtiger_leaddetails ON
-                vtiger_leaddetails.leadid = vtiger_crmentity.crmid
-                WHERE setype=? AND '.$deletedCondition.' AND modifiedby = ? ORDER BY modifiedtime DESC LIMIT ?';
+        $query = 'SELECT * FROM vtiger_crmentity 
+		    INNER JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid = vtiger_crmentity.crmid
+            WHERE setype=? AND ' . $deletedCondition . ' AND modifiedby = ? ORDER BY modifiedtime DESC LIMIT ?';
 		$params = array($this->get('name'), $currentUserModel->id, $limit);
 		$result = $db->pquery($query, $params);
 		$noOfRows = $db->num_rows($result);
