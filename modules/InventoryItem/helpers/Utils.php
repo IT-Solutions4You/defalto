@@ -37,9 +37,8 @@ class InventoryItem_Utils_Helper
     {
         $taxRecordModel = Core_TaxRecord_Model::getInstance($productId);
         $taxModels = $taxRecordModel->getTaxes();
-
-        $taxes = [];
         $taxInfo = $taxRecordModel->getTaxesInfo();
+        $taxes = [];
 
         if (count($taxInfo)) {
             foreach ($taxInfo as $taxId => $taxData) {
@@ -52,6 +51,7 @@ class InventoryItem_Utils_Helper
             }
         } else {
             foreach ($taxModels as $taxId => $taxModel) {
+                $taxModel = Core_Tax_Model::getInstanceById($taxId);
                 $taxes[$taxId] = $taxModel->getSaveParams();
                 $taxRegions = $taxModel->getRegions();
                 $regions = [];

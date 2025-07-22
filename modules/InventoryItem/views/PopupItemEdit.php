@@ -216,7 +216,7 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
             }
         }
 
-        $row['taxes'] = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$row['inventoryitemid'], (int)$row['productid'], $recordId);
+        $row['taxes'] = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$row['inventoryitemid'], (int)$row['productid'], (int)$row['parentid']);
 
         return $row;
     }
