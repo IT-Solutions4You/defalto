@@ -212,10 +212,7 @@ class Accounts extends CRMEntity {
 
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
 							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query = "SELECT vtiger_contactdetails.*,
-			vtiger_crmentity.crmid,
-                        vtiger_crmentity.smownerid,
-			vtiger_account.accountname,
+		$query = "SELECT vtiger_contactdetails.*, vtiger_crmentity.crmid, vtiger_crmentity.smownerid, vtiger_account.accountname,
 			case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
 			FROM vtiger_contactdetails
 			INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_contactdetails.contactid
@@ -736,22 +733,15 @@ class Accounts extends CRMEntity {
 		$fields_list = getFieldsListFromQuery($sql);
 
 		$query = "SELECT $fields_list,case when (vtiger_users.user_name not like '') then vtiger_users.user_name else vtiger_groups.groupname end as user_name
-	       			FROM ".$this->entity_table."
-				INNER JOIN vtiger_account
-					ON vtiger_account.accountid = vtiger_crmentity.crmid
-				LEFT JOIN vtiger_accountbillads
-					ON vtiger_accountbillads.accountaddressid = vtiger_account.accountid
-				LEFT JOIN vtiger_accountshipads
-					ON vtiger_accountshipads.accountaddressid = vtiger_account.accountid
-				LEFT JOIN vtiger_accountscf
-					ON vtiger_accountscf.accountid = vtiger_account.accountid
-	                        LEFT JOIN vtiger_groups
-                        	        ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_users
-					ON vtiger_users.id = vtiger_crmentity.smownerid and vtiger_users.status = 'Active'
-				LEFT JOIN vtiger_account vtiger_account2
-					ON vtiger_account2.accountid = vtiger_account.parentid
-				";//vtiger_account2 is added to get the Member of account
+            FROM ".$this->entity_table."
+            INNER JOIN vtiger_account ON vtiger_account.accountid = vtiger_crmentity.crmid
+            LEFT JOIN vtiger_accountbillads ON vtiger_accountbillads.accountaddressid = vtiger_account.accountid
+            LEFT JOIN vtiger_accountshipads ON vtiger_accountshipads.accountaddressid = vtiger_account.accountid
+            LEFT JOIN vtiger_accountscf ON vtiger_accountscf.accountid = vtiger_account.accountid
+            LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+            LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid and vtiger_users.status = 'Active'
+            LEFT JOIN vtiger_account vtiger_account2 ON vtiger_account2.accountid = vtiger_account.account_id";
+        //vtiger_account2 is added to get the Member of account
 
 		$query .= $this->getNonAdminAccessControlQuery('Accounts',$current_user);
 		$where_auto = " vtiger_crmentity.deleted = 0 ";
@@ -932,10 +922,10 @@ class Accounts extends CRMEntity {
 			$query .= " left join vtiger_accountscf on vtiger_account.accountid = vtiger_accountscf.accountid";
 		}
 		if ($queryPlanner->requireTable('vtiger_accountAccounts', $matrix)) {
-			$query .= "	left join vtiger_account as vtiger_accountAccounts on vtiger_accountAccounts.accountid = vtiger_account.parentid";
+			$query .= "	left join vtiger_account as vtiger_accountAccounts on vtiger_accountAccounts.accountid = vtiger_account.account_id";
 		}
 		if ($queryPlanner->requireTable('vtiger_email_track')) {
-			$query .= " LEFT JOIN vtiger_email_track AS vtiger_email_trackAccounts ON vtiger_email_trackAccounts .crmid = vtiger_account.accountid";
+			$query .= " LEFT JOIN vtiger_email_track AS vtiger_email_trackAccounts ON vtiger_email_trackAccounts.crmid = vtiger_account.accountid";
 		}
 		if ($queryPlanner->requireTable('vtiger_groupsAccounts')) {
 			$query .= "	left join vtiger_groups as vtiger_groupsAccounts on vtiger_groupsAccounts.groupid = vtiger_crmentityAccounts.smownerid";
@@ -1049,22 +1039,16 @@ class Accounts extends CRMEntity {
 			$this->__getParentAccounts($parentid,$parent_accounts,$encountered_accounts);
 		}
 
-		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
-							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query = "SELECT vtiger_account.*, vtiger_accountbillads.*," .
-				" CASE when (vtiger_users.user_name not like '') THEN $userNameSql ELSE vtiger_groups.groupname END as user_name " .
-				" FROM vtiger_account" .
-				" INNER JOIN vtiger_crmentity " .
-				" ON vtiger_crmentity.crmid = vtiger_account.accountid" .
-				" INNER JOIN vtiger_accountbillads" .
-				" ON vtiger_account.accountid = vtiger_accountbillads.accountaddressid " .
-				" LEFT JOIN vtiger_groups" .
-				" ON vtiger_groups.groupid = vtiger_crmentity.smownerid" .
-				" LEFT JOIN vtiger_users" .
-				" ON vtiger_users.id = vtiger_crmentity.smownerid" .
-				" WHERE vtiger_crmentity.deleted = 0 and vtiger_account.accountid = ?";
-		$params = array($id);
-		$res = $adb->pquery($query, $params);
+		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=> 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
+        $query = "SELECT vtiger_account.*, vtiger_accountbillads.*, CASE when (vtiger_users.user_name not like '') THEN $userNameSql ELSE vtiger_groups.groupname END as user_name 
+		    FROM vtiger_account
+		    INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_account.accountid 
+            INNER JOIN vtiger_accountbillads ON vtiger_account.accountid = vtiger_accountbillads.accountaddressid
+            LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+            LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
+            WHERE vtiger_crmentity.deleted = 0 and vtiger_account.accountid = ?";
+        $params = [$id];
+        $res = $adb->pquery($query, $params);
 
 		$parent_account_info = array();
 		$depth = 0;
@@ -1098,18 +1082,13 @@ class Accounts extends CRMEntity {
 
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
 							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query = "SELECT vtiger_account.*, vtiger_accountbillads.*," .
-				" CASE when (vtiger_users.user_name not like '') THEN $userNameSql ELSE vtiger_groups.groupname END as user_name " .
-				" FROM vtiger_account" .
-				" INNER JOIN vtiger_crmentity " .
-				" ON vtiger_crmentity.crmid = vtiger_account.accountid" .
-				" INNER JOIN vtiger_accountbillads" .
-				" ON vtiger_account.accountid = vtiger_accountbillads.accountaddressid " .
-				" LEFT JOIN vtiger_groups" .
-				" ON vtiger_groups.groupid = vtiger_crmentity.smownerid" .
-				" LEFT JOIN vtiger_users" .
-				" ON vtiger_users.id = vtiger_crmentity.smownerid" .
-				" WHERE vtiger_crmentity.deleted = 0 and parentid = ?";
+		$query = "SELECT vtiger_account.*, vtiger_accountbillads.*, CASE when (vtiger_users.user_name not like '') THEN $userNameSql ELSE vtiger_groups.groupname END as user_name 
+		    FROM vtiger_account
+		    INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_account.accountid
+		    INNER JOIN vtiger_accountbillads ON vtiger_account.accountid = vtiger_accountbillads.accountaddressid
+		    LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+		    LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
+		    WHERE vtiger_crmentity.deleted = 0 and parentid = ?";
 		$params = array($id);
 		$res = $adb->pquery($query, $params);
 

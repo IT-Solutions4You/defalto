@@ -322,7 +322,6 @@ class DefaultDataPopulator extends CRMEntity
 
         //The Entity Name for the modules are maintained in this table
         $this->db->query("insert into vtiger_entityname values(7,'Leads','vtiger_leaddetails','firstname,lastname','leadid','leadid')");
-        $this->db->query("insert into vtiger_entityname values(6,'Accounts','vtiger_account','accountname','accountid','account_id')");
         $this->db->query("insert into vtiger_entityname values(2,'Potentials','vtiger_potential','potentialname','potentialid','potential_id')");
         $this->db->query("insert into vtiger_entityname values(8,'Documents','vtiger_notes','title','notesid','notesid')");
         $this->db->query("insert into vtiger_entityname values(14,'Products','vtiger_products','productname','productid','product_id')");

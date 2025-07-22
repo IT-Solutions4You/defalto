@@ -967,7 +967,7 @@ class Vtiger_Functions {
 			//Potential Related Fields
 			"vtiger_potential:campaignid" => "V",
 			//Account Related Fields
-			"vtiger_account:parentid" => "V",
+			"vtiger_account:account_id" => "V",
 			"vtiger_account:email1" => "V",
 			"vtiger_account:email2" => "V",
 			//Lead Related Fields

@@ -94,7 +94,7 @@ function getFieldsListFromQuery($query)
 		{
 			$fields .= "case when (vtiger_users.user_name not like '') then vtiger_users.user_name else vtiger_groups.groupname end as '".$fieldlabel."',";
 		}
-		elseif($tablename == 'vtiger_account' && $columnName == 'parentid')//Account - Member Of
+		elseif($tablename == 'vtiger_account' && $columnName == 'account_id')//Account - Member Of
 		{
 			 $fields .= "vtiger_account2.accountname as '".$fieldlabel."',";
 		}

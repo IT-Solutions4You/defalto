@@ -157,7 +157,7 @@ class Accounts_Install_Model extends Core_Install_Model {
                 'accounttype' => [
                     'name' => 'accounttype',
                     'uitype' => 15,
-                    'column' => 'account_type',
+                    'column' => 'accounttype',
                     'table' => 'vtiger_account',
                     'generatedtype' => 1,
                     'label' => 'Type',
@@ -179,7 +179,7 @@ class Accounts_Install_Model extends Core_Install_Model {
                 'account_id' => [
                     'name' => 'account_id',
                     'uitype' => 51,
-                    'column' => 'parentid',
+                    'column' => 'account_id',
                     'table' => 'vtiger_account',
                     'generatedtype' => 1,
                     'label' => 'Member Of',
@@ -257,7 +257,7 @@ class Accounts_Install_Model extends Core_Install_Model {
                 'annual_revenue' => [
                     'name' => 'annual_revenue',
                     'uitype' => 71,
-                    'column' => 'annualrevenue',
+                    'column' => 'annual_revenue',
                     'table' => 'vtiger_account',
                     'generatedtype' => 1,
                     'label' => 'Annual Revenue',
@@ -594,11 +594,15 @@ class Accounts_Install_Model extends Core_Install_Model {
     {
         $this->getTable('vtiger_account', null)
             ->createTable('accountid')
+            ->renameColumn('account_type', 'accounttype')
+            ->renameColumn('annualrevenue', 'annual_revenue')
+            ->renameColumn('parentid', 'account_id')
+            ->clearTableColumns()
             ->createColumn('account_no', 'varchar(100) NOT NULL')
             ->createColumn('accountname', 'varchar(100) NOT NULL')
-            ->createColumn('parentid', 'int(19) DEFAULT 0')
-            ->createColumn('account_type', 'varchar(200) DEFAULT NULL')
-            ->createColumn('annualrevenue', self::$COLUMN_DECIMAL)
+            ->createColumn('account_id', 'int(19) DEFAULT 0')
+            ->createColumn('accounttype', 'varchar(200) DEFAULT NULL')
+            ->createColumn('annual_revenue', self::$COLUMN_DECIMAL)
             ->createColumn('phone', 'varchar(30) DEFAULT NULL')
             ->createColumn('otherphone', 'varchar(30) DEFAULT NULL')
             ->createColumn('email1', 'varchar(100) DEFAULT NULL')
@@ -615,7 +619,7 @@ class Accounts_Install_Model extends Core_Install_Model {
             ->createColumn('currency_id', 'int(19) DEFAULT NULL')
             ->createColumn('conversion_rate', 'decimal(10,3) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`accountid`)')
-            ->createKey('KEY IF NOT EXISTS `account_account_type_idx` (`account_type`)')
+            ->createKey('KEY IF NOT EXISTS `account_account_type_idx` (`accounttype`)')
             ->createKey('KEY IF NOT EXISTS `email_idx` (`email1`,`email2`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_account` FOREIGN KEY IF NOT EXISTS (`accountid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
             ->createKey('INDEX IF NOT EXISTS email_idx (email1, email2)')
@@ -643,5 +647,20 @@ class Accounts_Install_Model extends Core_Install_Model {
             ;
         
         $this->createPicklistTable('vtiger_accounttype', 'accounttypeid', 'accounttype');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrate(): void
+    {
+        $moduleName = $this->getModuleName();
+        $fields = [
+            'account_type' => 'accounttype',
+            'annualrevenue' => 'annual_revenue',
+            'parentid' => 'account_id',
+        ];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $fields);
     }
 }

@@ -370,21 +370,20 @@ class Contacts extends CRMEntity
 		// Useful when the Reseller are working to gain Potential for other Organization.
 		$ignoreOrganizationCheck = true;
 
-		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
-							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query ='select case when (vtiger_users.user_name not like "") then '.$userNameSql.' else vtiger_groups.groupname end as user_name,
-		vtiger_contactdetails.account_id, vtiger_contactdetails.contactid , vtiger_potential.potentialid, vtiger_potential.potentialname,
-		vtiger_potential.opportunity_type, vtiger_potential.sales_stage, vtiger_potential.amount, vtiger_potential.closingdate,
-		vtiger_potential.related_to, vtiger_potential.contact_id, vtiger_crmentity.crmid, vtiger_crmentity.smownerid, vtiger_account.accountname
-		from vtiger_contactdetails
-		left join vtiger_contpotentialrel on vtiger_contpotentialrel.contactid=vtiger_contactdetails.contactid
-		left join vtiger_potential on (vtiger_potential.potentialid = vtiger_contpotentialrel.potentialid or vtiger_potential.contact_id=vtiger_contactdetails.contactid)
-		inner join vtiger_crmentity on vtiger_crmentity.crmid = vtiger_potential.potentialid
-		left join vtiger_account on vtiger_account.accountid=vtiger_contactdetails.account_id
-		LEFT JOIN vtiger_potentialscf ON vtiger_potential.potentialid = vtiger_potentialscf.potentialid
-		left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.smownerid
-		left join vtiger_users on vtiger_users.id=vtiger_crmentity.smownerid
-		where  vtiger_crmentity.deleted=0 and vtiger_contactdetails.contactid ='.$id;
+		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=> 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
+		$query ="select case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,
+            vtiger_contactdetails.account_id, vtiger_contactdetails.contactid , vtiger_potential.potentialid, vtiger_potential.potentialname,
+            vtiger_potential.opportunity_type, vtiger_potential.sales_stage, vtiger_potential.amount, vtiger_potential.closingdate,
+            vtiger_potential.related_to, vtiger_potential.contact_id, vtiger_crmentity.crmid, vtiger_crmentity.smownerid, vtiger_account.accountname
+            from vtiger_contactdetails
+            left join vtiger_contpotentialrel on vtiger_contpotentialrel.contactid=vtiger_contactdetails.contactid
+            left join vtiger_potential on (vtiger_potential.potentialid = vtiger_contpotentialrel.potentialid or vtiger_potential.contact_id=vtiger_contactdetails.contactid)
+            inner join vtiger_crmentity on vtiger_crmentity.crmid = vtiger_potential.potentialid
+            left join vtiger_account on vtiger_account.accountid=vtiger_contactdetails.account_id
+            LEFT JOIN vtiger_potentialscf ON vtiger_potential.potentialid = vtiger_potentialscf.potentialid
+            left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.smownerid
+            left join vtiger_users on vtiger_users.id=vtiger_crmentity.smownerid
+            where  vtiger_crmentity.deleted=0 and vtiger_contactdetails.contactid =$id";
 
 		if (!$ignoreOrganizationCheck) {
 			// Restrict the scope of listing to only related contacts of the organization linked to potential via related_to of Potential

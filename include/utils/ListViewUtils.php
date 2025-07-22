@@ -34,31 +34,6 @@ function getListQuery($module, $where = '') {
 	$tab_id = getTabid($module);
 	$userNameSql = getSqlForNameInDisplayFormat(array('first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 	switch ($module) {
-		Case "Accounts":
-			//Query modified to sort by assigned to
-			$query = "SELECT vtiger_crmentity.crmid, vtiger_crmentity.smownerid,
-			vtiger_account.accountname, vtiger_account.email1,
-			vtiger_account.email2, vtiger_account.website, vtiger_account.phone,
-			vtiger_accountbillads.bill_city,
-			vtiger_accountscf.*
-			FROM vtiger_account
-			INNER JOIN vtiger_crmentity
-				ON vtiger_crmentity.crmid = vtiger_account.accountid
-			INNER JOIN vtiger_accountbillads
-				ON vtiger_account.accountid = vtiger_accountbillads.accountaddressid
-			INNER JOIN vtiger_accountshipads
-				ON vtiger_account.accountid = vtiger_accountshipads.accountaddressid
-			INNER JOIN vtiger_accountscf
-				ON vtiger_account.accountid = vtiger_accountscf.accountid
-			LEFT JOIN vtiger_groups
-				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-			LEFT JOIN vtiger_users
-				ON vtiger_users.id = vtiger_crmentity.smownerid
-			LEFT JOIN vtiger_account vtiger_account2
-				ON vtiger_account.parentid = vtiger_account2.accountid";
-			$query .= getNonAdminAccessControlQuery($module, $current_user);
-			$query .= "WHERE vtiger_crmentity.deleted = 0 " . $where;
-			break;
 		Case "Leads":
 			$query = "SELECT vtiger_crmentity.crmid, vtiger_crmentity.smownerid,
 			vtiger_leaddetails.firstname, vtiger_leaddetails.lastname,
