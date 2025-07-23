@@ -692,7 +692,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
             /** @var Vtiger_RelationListView_Model $relationListView */
             $relationListView = Vtiger_RelationListView_Model::getInstance($recordModel, $activitiesModuleName, '');
             $relationListView->set('whereCondition', [
-                'calendar_status' => ['its4you_calendar.status', 'n', $skipCalendarStatus, 'picklist'],
+                'calendar_status' => ['its4you_calendar.calendar_status', 'n', $skipCalendarStatus, 'picklist'],
             ]);
             $relationListView->set('orderby', 'datetime_start');
             $relationListView->set('sortorder', 'ASC');

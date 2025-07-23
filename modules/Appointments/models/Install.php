@@ -97,7 +97,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'headerfield' => 1,
                 ],
                 'calendar_status' => [
-                    'column' => 'status',
+                    'column' => 'calendar_status',
                     'label' => 'Status',
                     'uitype' => 15,
                     'typeofdata' => 'V~M',
@@ -122,7 +122,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'quickcreate' => 0,
                 ],
                 'calendar_priority' => [
-                    'column' => 'priority',
+                    'column' => 'calendar_priority',
                     'label' => 'Priority',
                     'uitype' => 15,
                     'typeofdata' => 'V~O',
@@ -136,7 +136,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                 ],
                 'calendar_type' => [
-                    'column' => 'type',
+                    'column' => 'calendar_type',
                     'label' => 'Type',
                     'uitype' => 15,
                     'typeofdata' => 'V~M',
@@ -151,7 +151,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'summaryfield' => 1,
                 ],
                 'calendar_visibility' => [
-                    'column' => 'visibility',
+                    'column' => 'calendar_visibility',
                     'label' => 'Visibility',
                     'uitype' => 16,
                     'typeofdata' => 'V~O',
@@ -277,6 +277,7 @@ class Appointments_Install_Model extends Core_Install_Model
             ],
         ];
     }
+
 
     public function getTables(): array
     {
@@ -420,6 +421,35 @@ class Appointments_Install_Model extends Core_Install_Model
      */
     public function installTables(): void
     {
+        $this->getTable('its4you_calendar', null)
+            ->createTable('its4you_calendar_id',self::$COLUMN_INT)
+            ->renameColumn('status','calendar_status')
+            ->renameColumn('priority','calendar_priority')
+            ->renameColumn('type','calendar_type')
+            ->renameColumn('visibility','calendar_visibility')
+            ->clearTableColumns()
+            ->createColumn('subject','varchar(255) DEFAULT NULL')
+            ->createColumn('is_all_day','varchar(3) DEFAULT NULL')
+            ->createColumn('datetime_start','datetime DEFAULT NULL')
+            ->createColumn('datetime_end','datetime DEFAULT NULL')
+            ->createColumn('calendar_status','varchar(200) DEFAULT NULL')
+            ->createColumn('location','varchar(150) DEFAULT NULL')
+            ->createColumn('calendar_priority','varchar(200) DEFAULT NULL')
+            ->createColumn('calendar_type','varchar(200) DEFAULT NULL')
+            ->createColumn('calendar_visibility','varchar(50) DEFAULT NULL')
+            ->createColumn('send_notification','varchar(3) DEFAULT NULL')
+            ->createColumn('recurring_type','varchar(200) DEFAULT NULL')
+            ->createColumn('parent_id',self::$COLUMN_INT)
+            ->createColumn('contact_id','varchar(255) DEFAULT NULL')
+            ->createColumn('account_id',self::$COLUMN_INT)
+            ->createColumn('invite_users','varchar(255) DEFAULT NULL')
+            ->createColumn('its4you_calendar_no','varchar(100) DEFAULT NULL')
+            ->createColumn('duration_hours','varchar(200) DEFAULT NULL')
+            ->createColumn('tags','varchar(1) DEFAULT NULL')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`its4you_calendar_id`)')
+            ->createKey('CONSTRAINT `fk_crmid_its4you_calendar` FOREIGN KEY IF NOT EXISTS (`its4you_calendar_id`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
+        ;
+
         $this->getTable('its4you_remindme', 'remindme_id')
             ->createTable()
             ->createColumn('record_id', 'INT(11)')
@@ -469,6 +499,22 @@ class Appointments_Install_Model extends Core_Install_Model
     }
 
     /**
+     * @throws Exception
+     */
+    public function migrate(): void
+    {
+        $moduleName = $this->getModuleName();
+        $fields = [
+            'status' => 'calendar_status',
+            'priority' => 'calendar_priority',
+            'type' => 'calendar_type',
+            'visibility' => 'calendar_visibility',
+        ];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $fields);
+    }
+
+    /**
      * @return void
      */
     protected function updateFilters()
@@ -494,7 +540,7 @@ class Appointments_Install_Model extends Core_Install_Model
 
             $today = date('Y-m-d');
             $rules = [
-                [$filter->id, 0, 'its4you_calendar:status:calendar_status:Appointments_Status:V', 'n', 'Completed,Cancelled', 1, ''],
+                [$filter->id, 0, 'its4you_calendar:calendar_status:calendar_status:Appointments_Status:V', 'n', 'Completed,Cancelled', 1, ''],
                 [$filter->id, 1, 'its4you_calendar:datetime_start:datetime_start:Appointments_Start_Datetime:DT', 'today', $today, 2, 'or'],
                 [$filter->id, 2, 'its4you_calendar:datetime_end:datetime_end:Appointments_End_Datetime:DT', 'today', $today, 2, ''],
             ];

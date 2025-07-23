@@ -237,7 +237,7 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
 		  AND vtiger_crmentity.crmid != 0 
 		  AND its4you_remindme.reminder_sent = 0 
 		  AND its4you_remindme.reminder_time != 0
-		  AND (its4you_calendar.status is NULL OR its4you_calendar.status NOT IN (?,?))
+		  AND (its4you_calendar.calendar_status is NULL OR its4you_calendar.calendar_status NOT IN (?,?))
 		GROUP BY its4you_calendar.its4you_calendar_id';
         $result = $adb->pquery($query, ['Held', 'Cancelled']);
 
