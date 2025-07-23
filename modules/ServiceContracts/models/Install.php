@@ -195,7 +195,7 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
                 ],
                 'contract_priority' => [
                     'uitype' => 15,
-                    'column' => 'priority',
+                    'column' => 'contract_priority',
                     'table' => 'vtiger_servicecontracts',
                     'label' => 'Priority',
                     'picklist_values' => [
@@ -262,6 +262,8 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
     {
         $this->getTable('vtiger_servicecontracts', null)
             ->createTable('servicecontractsid')
+            ->renameColumn('priority', 'contract_priority')
+            ->clearTableColumns()
             ->createColumn('start_date','date default NULL')
             ->createColumn('end_date','date default NULL')
             ->createColumn('sc_related_to','int(11) default NULL')
@@ -273,7 +275,7 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
             ->createColumn('planned_duration','varchar(256) default NULL')
             ->createColumn('actual_duration','varchar(256) default NULL')
             ->createColumn('contract_status','varchar(200) default NULL')
-            ->createColumn('priority','varchar(200) default NULL')
+            ->createColumn('contract_priority','varchar(200) default NULL')
             ->createColumn('contract_type','varchar(200) default NULL')
             ->createColumn('progress','decimal(5,2) default NULL')
             ->createColumn('contract_no','varchar(100) default NULL')
@@ -282,5 +284,18 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
         $this->getTable('vtiger_servicecontractscf', null)
             ->createTable('servicecontractsid')
             ;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrate(): void
+    {
+        $moduleName = $this->getModuleName();
+        $data = [
+            'priority' => 'contract_priority',
+        ];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $data);
     }
 }
