@@ -137,7 +137,7 @@ class Contacts extends CRMEntity
         'Services' => ['table_name' => 'vtiger_crmentityrel', 'table_index' => 'crmid', 'rel_index' => 'crmid'],
         'Campaigns' => ['table_name' => 'vtiger_campaigncontrel', 'table_index' => 'campaignid', 'rel_index' => 'contactid'],
         'Assets' => ['table_name' => 'vtiger_assets', 'table_index' => 'assetsid', 'rel_index' => 'contact'],
-        'Project' => ['table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'contactid'],
+        'Project' => ['table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'contact_id'],
         'Vendors' => ['table_name' => 'vtiger_vendorcontactrel', 'table_index' => 'vendorid', 'rel_index' => 'contactid'],
     ];
 
@@ -1217,7 +1217,7 @@ function getColumnNames()
             "vtiger_campaigncontrel" => "contactid",
             'vtiger_invoice' => 'contactid',
             'vtiger_servicecontracts' => 'sc_related_to',
-            'vtiger_project' => 'contactid',
+            'vtiger_project' => 'contact_id',
             'vtiger_assets' => 'contact',
             'vtiger_vendorcontactrel' => 'contactid',
         ];
