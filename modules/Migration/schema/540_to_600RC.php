@@ -425,7 +425,7 @@ do {
 		$modComments->column_fields['assigned_user_id'] = $modComments->column_fields['creator'] = $ownerId;
 		
 		$modComments->save('ModComments');
-		Migration_Index_View::ExecuteQuery('UPDATE vtiger_crmentity SET modifiedtime = ?, smcreatorid = ?, modifiedby = ? WHERE crmid = ?',
+		Migration_Index_View::ExecuteQuery('UPDATE vtiger_crmentity SET modifiedtime = ?, creator_user_id = ?, modifiedby = ? WHERE crmid = ?',
 			array($modComments->column_fields['createdtime'], $ownerId, $ownerId, $modComments->id));
 	}
 	++$pageCount;
@@ -451,7 +451,7 @@ do {
 		$modComments->column_fields['modifiedtime'] = $adb->query_result($faqComments, $i, 'createdtime');
 		$modComments->column_fields['related_to'] = $adb->query_result($faqComments, $i, 'faqid');
 		$modComments->save('ModComments');
-		Migration_Index_View::ExecuteQuery('UPDATE vtiger_crmentity SET modifiedtime = ?, smcreatorid = ?, modifiedby = ? WHERE crmid = ?',
+		Migration_Index_View::ExecuteQuery('UPDATE vtiger_crmentity SET modifiedtime = ?, creator_user_id = ?, modifiedby = ? WHERE crmid = ?',
 			array($modComments->column_fields['createdtime'], $current_user->id, $current_user->id, $modComments->id));
 	}
 	++$pageCount;

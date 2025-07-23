@@ -1073,11 +1073,10 @@ class CustomView extends CRMEntity {
 					//Added For getting status for Activities -Jaguar
 					$sqllist_column = $list[0] . "." . $list[1];
 					//Added for assigned to sorting
-					if ($list[1] == "smownerid") {
-						$userNameSql = getSqlForNameInDisplayFormat(array('first_name' =>
-							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-						$sqllist_column = "case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name";
-					}
+					if ($list[1] == "assigned_user_id") {
+                        $userNameSql = getSqlForNameInDisplayFormat(['first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'], 'Users');
+                        $sqllist_column = "case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name";
+                    }
 					if ($list[0] == "vtiger_contactdetails" && $list[1] == "lastname")
 						$sqllist_column = "vtiger_contactdetails.lastname,vtiger_contactdetails.firstname";
 					$sqllist[] = $sqllist_column;
@@ -1298,8 +1297,8 @@ class CustomView extends CRMEntity {
 			"vtiger_pricebook.currency_id" => "vtiger_currency_info.currency_name",
 		);
 
-		if ($fieldname == "smownerid" || $fieldname == 'modifiedby') {
-			if($fieldname == "smownerid") {
+		if ($fieldname == "assigned_user_id" || $fieldname == 'modifiedby') {
+			if($fieldname == "assigned_user_id") {
 				$tableNameSuffix = '';
 			} elseif($fieldname == "modifiedby") {
 				$tableNameSuffix = '2';

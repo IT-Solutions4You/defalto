@@ -90,7 +90,7 @@ function getFieldsListFromQuery($query)
 		$tablename = $adb->query_result($result,$i,"tablename");
 
 		//HANDLE HERE - Mismatch fieldname-tablename in field table, in future we have to avoid these if elses
-		if($columnName == 'smownerid')//for all assigned to user name
+		if($columnName == 'assigned_user_id')//for all assigned to user name
 		{
 			$fields .= "case when (vtiger_users.user_name not like '') then vtiger_users.user_name else vtiger_groups.groupname end as '".$fieldlabel."',";
 		}

@@ -152,8 +152,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                 'masseditable' => 0,
                 'summaryfield' => 0,
             ],
-            'creator' => [
-                'column' => 'smcreatorid',
+            'creator_user_id' => [
+                'column' => 'creator_user_id',
                 'label' => 'Created By',
                 'uitype' => 52,
                 'typeofdata' => 'V~O',

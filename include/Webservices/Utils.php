@@ -751,7 +751,7 @@ function vtws_transferComments($sourceRecordId, $destinationRecordId) {
 function vtws_transferOwnership($ownerId, $newOwnerId, $delete=true) {
 	$db = PearDatabase::getInstance();
 	//Updating the smownerid, modifiedby in vtiger_crmentity
-	$db->pquery('UPDATE vtiger_crmentity SET smownerid=?, modifiedtime = ? WHERE smownerid=? AND setype<>?', array($newOwnerId, date('Y-m-d H:i:s'), $ownerId, 'ModComments'));
+	$db->pquery('UPDATE vtiger_crmentity SET assigned_user_id=?, modifiedtime = ? WHERE assigned_user_id=? AND setype<>?', array($newOwnerId, date('Y-m-d H:i:s'), $ownerId, 'ModComments'));
 	$db->pquery('UPDATE vtiger_crmentity SET modifiedby=? WHERE modifiedby=?', array($newOwnerId, $ownerId));
 
 	//deleting from vtiger_tracker
@@ -772,7 +772,7 @@ function vtws_transferOwnership($ownerId, $newOwnerId, $delete=true) {
 	$sql = "SELECT tablename,columnname FROM vtiger_field 
             LEFT JOIN vtiger_fieldmodulerel ON vtiger_field.fieldid=vtiger_fieldmodulerel.fieldid 
             WHERE (uitype IN (?,?,?,?) OR (uitype=? AND relmodule=?)) AND columnname <> ? GROUP BY tablename,columnname ORDER BY NULL";
-	$result = $db->pquery($sql, array(52, 53, 77, 101, 10, 'Users', 'smcreatorid'));
+	$result = $db->pquery($sql, array(52, 53, 77, 101, 10, 'Users', 'creator_user_id'));
 
 	$it = new SqlResultIterator($db, $result);
 	$columnList = array();
@@ -780,7 +780,7 @@ function vtws_transferOwnership($ownerId, $newOwnerId, $delete=true) {
 		$column = $row->tablename.'.'.$row->columnname;
 		if (!in_array($column, $columnList)) {
 			$columnList[] = $column;
-			if ($row->columnname == 'smownerid') {
+			if ($row->columnname == 'assigned_user_id') {
 				$sql = "UPDATE $row->tablename set $row->columnname=? WHERE $row->columnname=? AND setype<>?";
 				$db->pquery($sql, array($newOwnerId, $ownerId, 'ModComments'));
 			} elseif ($row->tablename == 'vtiger_users' && $row->columnname == 'reports_to_id') {

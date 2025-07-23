@@ -398,7 +398,7 @@ function create_custom_views()
             'vtiger_leadaddress:phone:phone:Leads_Phone:V',
             'vtiger_leadsubdetails:website:website:Leads_Website:V',
             'vtiger_leaddetails:email:email:Leads_Email:E',
-            'vtiger_crmentity:smownerid:assigned_user_id:Leads_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Leads_Assigned_To:V',
         ],
 
         [
@@ -425,7 +425,7 @@ function create_custom_views()
             'vtiger_accountbillads:bill_city:bill_city:Accounts_City:V',
             'vtiger_account:website:website:Accounts_Website:V',
             'vtiger_account:phone:phone:Accounts_Phone:V',
-            'vtiger_crmentity:smownerid:assigned_user_id:Accounts_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Accounts_Assigned_To:V',
         ],
 
         [
@@ -433,7 +433,7 @@ function create_custom_views()
             'vtiger_account:phone:phone:Accounts_Phone:V',
             'vtiger_account:website:website:Accounts_Website:V',
             'vtiger_account:rating:rating:Accounts_Rating:V',
-            'vtiger_crmentity:smownerid:assigned_user_id:Accounts_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Accounts_Assigned_To:V',
         ],
 
         [
@@ -441,7 +441,7 @@ function create_custom_views()
             'vtiger_account:phone:phone:Accounts_Phone:V',
             'vtiger_account:website:website:Accounts_Website:V',
             'vtiger_accountbillads:bill_city:bill_city:Accounts_City:V',
-            'vtiger_crmentity:smownerid:assigned_user_id:Accounts_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Accounts_Assigned_To:V',
         ],
 
         [
@@ -449,10 +449,10 @@ function create_custom_views()
             'vtiger_contactdetails:firstname:firstname:Contacts_First_Name:V',
             'vtiger_contactdetails:lastname:lastname:Contacts_Last_Name:V',
             'vtiger_contactdetails:title:title:Contacts_Title:V',
-            'vtiger_contactdetails:accountid:account_id:Contacts_Account_Name:I',
+            'vtiger_contactdetails:account_id:account_id:Contacts_Account_Name:I',
             'vtiger_contactdetails:email:email:Contacts_Email:E',
             'vtiger_contactdetails:phone:phone:Contacts_Office_Phone:V',
-            'vtiger_crmentity:smownerid:assigned_user_id:Contacts_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Contacts_Assigned_To:V',
         ],
 
         [
@@ -469,9 +469,9 @@ function create_custom_views()
             'vtiger_contactdetails:firstname:firstname:Contacts_First_Name:V',
             'vtiger_contactdetails:lastname:lastname:Contacts_Last_Name:V',
             'vtiger_contactdetails:title:title:Contacts_Title:V',
-            'vtiger_contactdetails:accountid:account_id:Contacts_Account_Name:I',
+            'vtiger_contactdetails:account_id:account_id:Contacts_Account_Name:I',
             'vtiger_contactdetails:email:email:Contacts_Email:E',
-            'vtiger_crmentity:smownerid:assigned_user_id:Contacts_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Contacts_Assigned_To:V',
         ],
 
         [
@@ -481,7 +481,7 @@ function create_custom_views()
             'vtiger_potential:sales_stage:sales_stage:Potentials_Sales_Stage:V',
             'vtiger_potential:leadsource:leadsource:Potentials_Lead_Source:V',
             'vtiger_potential:closingdate:closingdate:Potentials_Expected_Close_Date:D',
-            'vtiger_crmentity:smownerid:assigned_user_id:Potentials_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Potentials_Assigned_To:V',
         ],
 
         [
@@ -489,7 +489,7 @@ function create_custom_views()
             'vtiger_potential:related_to:related_to:Potentials_Related_To:V',
             'vtiger_potential:amount:amount:Potentials_Amount:N',
             'vtiger_potential:closingdate:closingdate:Potentials_Expected_Close_Date:D',
-            'vtiger_crmentity:smownerid:assigned_user_id:Potentials_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Potentials_Assigned_To:V',
         ],
 
         [
@@ -498,32 +498,32 @@ function create_custom_views()
             'vtiger_potential:amount:amount:Potentials_Amount:N',
             'vtiger_potential:leadsource:leadsource:Potentials_Lead_Source:V',
             'vtiger_potential:closingdate:closingdate:Potentials_Expected_Close_Date:D',
-            'vtiger_crmentity:smownerid:assigned_user_id:Potentials_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Potentials_Assigned_To:V',
         ],
 
         [//'vtiger_crmentity:crmid::HelpDesk_Ticket_ID:I',
             'vtiger_troubletickets:ticket_no:ticket_no:HelpDesk_Ticket_No:V',
-            'vtiger_troubletickets:title:ticket_title:HelpDesk_Title:V',
+            'vtiger_troubletickets:ticket_title:ticket_title:HelpDesk_Title:V',
             'vtiger_troubletickets:parent_id:parent_id:HelpDesk_Related_To:I',
-            'vtiger_troubletickets:status:ticketstatus:HelpDesk_Status:V',
-            'vtiger_troubletickets:priority:ticketpriorities:HelpDesk_Priority:V',
-            'vtiger_crmentity:smownerid:assigned_user_id:HelpDesk_Assigned_To:V',
+            'vtiger_troubletickets:ticketstatus:ticketstatus:HelpDesk_Status:V',
+            'vtiger_troubletickets:ticketpriorities:ticketpriorities:HelpDesk_Priority:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:HelpDesk_Assigned_To:V',
         ],
 
         [
-            'vtiger_troubletickets:title:ticket_title:HelpDesk_Title:V',
+            'vtiger_troubletickets:ticket_title:ticket_title:HelpDesk_Title:V',
             'vtiger_troubletickets:parent_id:parent_id:HelpDesk_Related_To:I',
-            'vtiger_troubletickets:priority:ticketpriorities:HelpDesk_Priority:V',
+            'vtiger_troubletickets:ticketpriorities:ticketpriorities:HelpDesk_Priority:V',
             'vtiger_troubletickets:product_id:product_id:HelpDesk_Product_Name:I',
-            'vtiger_crmentity:smownerid:assigned_user_id:HelpDesk_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:HelpDesk_Assigned_To:V',
         ],
 
         [
-            'vtiger_troubletickets:title:ticket_title:HelpDesk_Title:V',
+            'vtiger_troubletickets:ticket_title:ticket_title:HelpDesk_Title:V',
             'vtiger_troubletickets:parent_id:parent_id:HelpDesk_Related_To:I',
-            'vtiger_troubletickets:status:ticketstatus:HelpDesk_Status:V',
+            'vtiger_troubletickets:ticketstatus:ticketstatus:HelpDesk_Status:V',
             'vtiger_troubletickets:product_id:product_id:HelpDesk_Product_Name:I',
-            'vtiger_crmentity:smownerid:assigned_user_id:HelpDesk_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:HelpDesk_Assigned_To:V',
         ],
 
         [
@@ -533,7 +533,7 @@ function create_custom_views()
             'vtiger_quotes:potentialid:potential_id:Quotes_Potential_Name:I',
             'vtiger_quotes:accountid:account_id:Quotes_Account_Name:I',
             'vtiger_quotes:total:hdnGrandTotal:Quotes_Total:I',
-            'vtiger_crmentity:smownerid:assigned_user_id:Quotes_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Quotes_Assigned_To:V',
         ],
 
         [
@@ -542,7 +542,7 @@ function create_custom_views()
             'vtiger_quotes:potentialid:potential_id:Quotes_Potential_Name:I',
             'vtiger_quotes:accountid:account_id:Quotes_Account_Name:I',
             'vtiger_quotes:validtill:validtill:Quotes_Valid_Till:D',
-            'vtiger_crmentity:smownerid:assigned_user_id:Quotes_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Quotes_Assigned_To:V',
         ],
 
         [
@@ -550,7 +550,7 @@ function create_custom_views()
             'vtiger_quotes:potentialid:potential_id:Quotes_Potential_Name:I',
             'vtiger_quotes:accountid:account_id:Quotes_Account_Name:I',
             'vtiger_quotes:validtill:validtill:Quotes_Valid_Till:D',
-            'vtiger_crmentity:smownerid:assigned_user_id:Quotes_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Quotes_Assigned_To:V',
         ],
 
         [
@@ -559,15 +559,15 @@ function create_custom_views()
             'vtiger_invoice:salesorderid:salesorder_id:Invoice_Sales_Order:I',
             'vtiger_invoice:invoicestatus:invoicestatus:Invoice_Status:V',
             'vtiger_invoice:total:hdnGrandTotal:Invoice_Total:I',
-            'vtiger_crmentity:smownerid:assigned_user_id:Invoice_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Invoice_Assigned_To:V',
         ],
 
         [
             'vtiger_notes:note_no:note_no:Notes_Note_No:V',
-            'vtiger_notes:title:notes_title:Notes_Title:V',
+            'vtiger_notes:notes_title:notes_title:Notes_Title:V',
             'vtiger_notes:filename:filename:Notes_File:V',
             'vtiger_crmentity:modifiedtime:modifiedtime:Notes_Modified_Time:DT',
-            'vtiger_crmentity:smownerid:assigned_user_id:Notes_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Notes_Assigned_To:V',
         ],
 
         [
@@ -592,7 +592,7 @@ function create_custom_views()
             'vtiger_purchaseorder:vendorid:vendor_id:PurchaseOrder_Vendor_Name:I',
             'vtiger_purchaseorder:tracking_no:tracking_no:PurchaseOrder_Tracking_Number:V',
             'vtiger_purchaseorder:total:hdnGrandTotal:PurchaseOrder_Total:V',
-            'vtiger_crmentity:smownerid:assigned_user_id:PurchaseOrder_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:PurchaseOrder_Assigned_To:V',
         ],
 
         [
@@ -601,7 +601,7 @@ function create_custom_views()
             'vtiger_salesorder:accountid:account_id:SalesOrder_Account_Name:I',
             'vtiger_salesorder:quoteid:quote_id:SalesOrder_Quote_Name:I',
             'vtiger_salesorder:total:hdnGrandTotal:SalesOrder_Total:V',
-            'vtiger_crmentity:smownerid:assigned_user_id:SalesOrder_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:SalesOrder_Assigned_To:V',
         ],
 
         [
@@ -616,7 +616,7 @@ function create_custom_views()
         [//'vtiger_faq:id::Faq_FAQ_Id:I',
             'vtiger_faq:faq_no:faq_no:Faq_Faq_No:V',
             'vtiger_faq:question:question:Faq_Question:V',
-            'vtiger_faq:category:faqcategories:Faq_Category:V',
+            'vtiger_faq:faqcategories:faqcategories:Faq_Category:V',
             'vtiger_faq:product_id:product_id:Faq_Product_Name:I',
             'vtiger_crmentity:createdtime:createdtime:Faq_Created_Time:DT',
             'vtiger_crmentity:modifiedtime:modifiedtime:Faq_Modified_Time:DT',
@@ -629,7 +629,7 @@ function create_custom_views()
             'vtiger_campaign:campaignstatus:campaignstatus:Campaigns_Campaign_Status:N',
             'vtiger_campaign:expectedrevenue:expectedrevenue:Campaigns_Expected_Revenue:V',
             'vtiger_campaign:closingdate:closingdate:Campaigns_Expected_Close_Date:D',
-            'vtiger_crmentity:smownerid:assigned_user_id:Campaigns_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Campaigns_Assigned_To:V',
         ],
 
 
@@ -642,18 +642,18 @@ function create_custom_views()
 
         [
             'vtiger_faq:question:question:Faq_Question:V',
-            'vtiger_faq:status:faqstatus:Faq_Status:V',
+            'vtiger_faq:faqstatus:faqstatus:Faq_Status:V',
             'vtiger_faq:product_id:product_id:Faq_Product_Name:I',
-            'vtiger_faq:category:faqcategories:Faq_Category:V',
+            'vtiger_faq:faqcategories:faqcategories:Faq_Category:V',
             'vtiger_crmentity:createdtime:createdtime:Faq_Created_Time:DT',
         ],
 
         [
             'vtiger_faq:question:question:Faq_Question:V',
-            'vtiger_faq:answer:faq_answer:Faq_Answer:V',
-            'vtiger_faq:status:faqstatus:Faq_Status:V',
+            'vtiger_faq:faq_answer:faq_answer:Faq_Answer:V',
+            'vtiger_faq:faqstatus:faqstatus:Faq_Status:V',
             'vtiger_faq:product_id:product_id:Faq_Product_Name:I',
-            'vtiger_faq:category:faqcategories:Faq_Category:V',
+            'vtiger_faq:faqcategories:faqcategories:Faq_Category:V',
             'vtiger_crmentity:createdtime:createdtime:Faq_Created_Time:DT',
         ],
 
@@ -661,14 +661,14 @@ function create_custom_views()
             'vtiger_purchaseorder:subject:subject:PurchaseOrder_Subject:V',
             'vtiger_purchaseorder:postatus:postatus:PurchaseOrder_Status:V',
             'vtiger_purchaseorder:vendorid:vendor_id:PurchaseOrder_Vendor_Name:I',
-            'vtiger_crmentity:smownerid:assigned_user_id:PurchaseOrder_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:PurchaseOrder_Assigned_To:V',
             'vtiger_purchaseorder:duedate:duedate:PurchaseOrder_Due_Date:V',
         ],
 
         [
             'vtiger_purchaseorder:subject:subject:PurchaseOrder_Subject:V',
             'vtiger_purchaseorder:vendorid:vendor_id:PurchaseOrder_Vendor_Name:I',
-            'vtiger_crmentity:smownerid:assigned_user_id:PurchaseOrder_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:PurchaseOrder_Assigned_To:V',
             'vtiger_purchaseorder:postatus:postatus:PurchaseOrder_Status:V',
             'vtiger_purchaseorder:carrier:carrier:PurchaseOrder_Carrier:V',
             'vtiger_poshipads:ship_street:ship_street:PurchaseOrder_Shipping_Address:V',
@@ -680,7 +680,7 @@ function create_custom_views()
             'vtiger_invoice:accountid:account_id:Invoice_Account_Name:I',
             'vtiger_invoice:salesorderid:salesorder_id:Invoice_Sales_Order:I',
             'vtiger_invoice:invoicestatus:invoicestatus:Invoice_Status:V',
-            'vtiger_crmentity:smownerid:assigned_user_id:Invoice_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Invoice_Assigned_To:V',
             'vtiger_crmentity:createdtime:createdtime:Invoice_Created_Time:DT',
         ],
 
@@ -691,14 +691,14 @@ function create_custom_views()
             'vtiger_invoice:salesorderid:salesorder_id:Invoice_Sales_Order:I',
             'vtiger_invoice:invoicestatus:invoicestatus:Invoice_Status:V',
             'vtiger_invoiceshipads:ship_street:ship_street:Invoice_Shipping_Address:V',
-            'vtiger_crmentity:smownerid:assigned_user_id:Invoice_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:Invoice_Assigned_To:V',
         ],
 
         [
             'vtiger_salesorder:subject:subject:SalesOrder_Subject:V',
             'vtiger_salesorder:accountid:account_id:SalesOrder_Account_Name:I',
             'vtiger_salesorder:sostatus:sostatus:SalesOrder_Status:V',
-            'vtiger_crmentity:smownerid:assigned_user_id:SalesOrder_Assigned_To:V',
+            'vtiger_crmentity:assigned_user_id:assigned_user_id:SalesOrder_Assigned_To:V',
             'vtiger_soshipads:ship_street:ship_street:SalesOrder_Shipping_Address:V',
             'vtiger_salesorder:carrier:carrier:SalesOrder_Carrier:V',
         ],
@@ -739,7 +739,7 @@ function create_custom_views()
         ],
         [
             [
-                'columnname' => 'vtiger_account:account_type:accounttype:Accounts_Type:V',
+                'columnname' => 'vtiger_account:accounttype:accounttype:Accounts_Type:V',
                 'comparator' => 'e',
                 'value' => 'Prospect',
             ],
@@ -760,14 +760,14 @@ function create_custom_views()
         ],
         [
             [
-                'columnname' => 'vtiger_troubletickets:status:ticketstatus:HelpDesk_Status:V',
+                'columnname' => 'vtiger_troubletickets:ticketstatus:ticketstatus:HelpDesk_Status:V',
                 'comparator' => 'n',
                 'value' => 'Closed',
             ],
         ],
         [
             [
-                'columnname' => 'vtiger_troubletickets:priority:ticketpriorities:HelpDesk_Priority:V',
+                'columnname' => 'vtiger_troubletickets:ticketpriorities:ticketpriorities:HelpDesk_Priority:V',
                 'comparator' => 'e',
                 'value' => 'High',
             ],
@@ -794,7 +794,7 @@ function create_custom_views()
 
         [
             [
-                'columnname' => 'vtiger_faq:status:faqstatus:Faq_Status:V',
+                'columnname' => 'vtiger_faq:faqstatus:faqstatus:Faq_Status:V',
                 'comparator' => 'e',
                 'value' => 'Draft',
             ],
@@ -802,7 +802,7 @@ function create_custom_views()
 
         [
             [
-                'columnname' => 'vtiger_faq:status:faqstatus:Faq_Status:V',
+                'columnname' => 'vtiger_faq:faqstatus:faqstatus:Faq_Status:V',
                 'comparator' => 'e',
                 'value' => 'Published',
             ],

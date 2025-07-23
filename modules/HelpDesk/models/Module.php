@@ -72,10 +72,10 @@ class HelpDesk_Module_Model extends Vtiger_Module_Model {
 		if(php7_count($params) > 0) {
 		$result = $db->pquery('SELECT count(*) AS count, COALESCE(vtiger_groups.groupname,vtiger_users.userlabel) as name, COALESCE(vtiger_groups.groupid,vtiger_users.id) as id  FROM vtiger_troubletickets
 						INNER JOIN vtiger_crmentity ON vtiger_troubletickets.ticketid = vtiger_crmentity.crmid
-						LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.smownerid AND vtiger_users.status="ACTIVE"
-						LEFT JOIN vtiger_groups ON vtiger_groups.groupid=vtiger_crmentity.smownerid
+						LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.assigned_user_id AND vtiger_users.status="ACTIVE"
+						LEFT JOIN vtiger_groups ON vtiger_groups.groupid=vtiger_crmentity.assigned_user_id
 						'.Users_Privileges_Model::getNonAdminAccessControlQuery($this->getName()).
-						' WHERE vtiger_troubletickets.ticketstatus = ? AND vtiger_crmentity.deleted = 0 GROUP BY smownerid', $params);
+						' WHERE vtiger_troubletickets.ticketstatus = ? AND vtiger_crmentity.deleted = 0 GROUP BY assigned_user_id', $params);
 		}
 		$data = array();
 		for($i=0; $i<$db->num_rows($result); $i++) {

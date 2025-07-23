@@ -170,7 +170,7 @@ function expandRecord($table,$log)
 
 	//vtiger_crmentity
 	elseif( $table == "vtiger_crmentity")
-	$subfields = array("crmid", "smcreatorid", "smownerid", "modifiedby", "setype", "description", "createdtime", "modifiedtime", "viewedtime", "status", "version", "presence", "deleted");
+	$subfields = array("crmid", "creator_user_id", "assigned_user_id", "modifiedby", "setype", "description", "createdtime", "modifiedtime", "viewedtime", "status", "version", "presence", "deleted");
 
 	//vtiger_salesorder
 	elseif( $table == "vtiger_salesorder")

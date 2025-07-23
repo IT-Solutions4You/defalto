@@ -39,10 +39,10 @@ class Invoice extends CRMEntity {
 
 	var $update_product_array = Array();
 
-	var $sortby_fields = Array('subject','invoice_no','invoicestatus','smownerid','accountname','lastname');
+	var $sortby_fields = Array('subject','invoice_no','invoicestatus','assigned_user_id','accountname','lastname');
 
 	// This is used to retrieve related vtiger_fields from form posts.
-	var $additional_column_fields = Array('assigned_user_name', 'smownerid', 'opportunity_id', 'case_id', 'contact_id', 'task_id', 'note_id', 'meeting_id', 'call_id', 'email_id', 'parent_name', 'member_id' );
+	var $additional_column_fields = Array('assigned_user_name', 'assigned_user_id', 'opportunity_id', 'case_id', 'contact_id', 'task_id', 'note_id', 'meeting_id', 'call_id', 'email_id', 'parent_name', 'member_id' );
 
 	// This is the list of vtiger_fields that are in the lists.
 	var $list_fields = Array(
@@ -52,7 +52,7 @@ class Invoice extends CRMEntity {
 				'Sales Order'=>Array('invoice'=>'salesorderid'),
 				'Status'=>Array('invoice'=>'invoicestatus'),
 				'Total'=>Array('invoice'=>'total'),
-				'Assigned To'=>Array('crmentity'=>'smownerid')
+				'Assigned To'=>Array('crmentity'=>'assigned_user_id')
 				);
 
 	var $list_fields_name = Array(
@@ -71,7 +71,7 @@ class Invoice extends CRMEntity {
 				'Subject'=>Array('purchaseorder'=>'subject'),
 				'Account Name'=>Array('contactdetails'=>'account_id'),
 				'Created Date' => Array('crmentity'=>'createdtime'),
-				'Assigned To'=>Array('crmentity'=>'smownerid'),
+				'Assigned To'=>Array('crmentity'=>'assigned_user_id'),
 				);
 
 	var $search_fields_name = Array(
@@ -247,10 +247,10 @@ class Invoice extends CRMEntity {
 			$query .= " left join vtiger_service as vtiger_serviceInvoice on vtiger_serviceInvoice.serviceid = vtiger_inventoryproductreltmpInvoice.productid";
 		}
 		if ($queryPlanner->requireTable('vtiger_groupsInvoice')) {
-			$query .= " left join vtiger_groups as vtiger_groupsInvoice on vtiger_groupsInvoice.groupid = vtiger_crmentityInvoice.smownerid";
+			$query .= " left join vtiger_groups as vtiger_groupsInvoice on vtiger_groupsInvoice.groupid = vtiger_crmentityInvoice.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable('vtiger_usersInvoice')) {
-			$query .= " left join vtiger_users as vtiger_usersInvoice on vtiger_usersInvoice.id = vtiger_crmentityInvoice.smownerid";
+			$query .= " left join vtiger_users as vtiger_usersInvoice on vtiger_usersInvoice.id = vtiger_crmentityInvoice.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable('vtiger_contactdetailsInvoice')) {
 			$query .= " left join vtiger_contactdetails as vtiger_contactdetailsInvoice on vtiger_invoice.contactid = vtiger_contactdetailsInvoice.contactid";
@@ -262,7 +262,7 @@ class Invoice extends CRMEntity {
 			$query .= " left join vtiger_users as vtiger_lastModifiedByInvoice on vtiger_lastModifiedByInvoice.id = vtiger_crmentityInvoice.modifiedby ";
 		}
 		if ($queryPlanner->requireTable("vtiger_createdbyInvoice")){
-			$query .= " left join vtiger_users as vtiger_createdbyInvoice on vtiger_createdbyInvoice.id = vtiger_crmentityInvoice.smcreatorid ";
+			$query .= " left join vtiger_users as vtiger_createdbyInvoice on vtiger_createdbyInvoice.id = vtiger_crmentityInvoice.creator_user_id ";
 		}
 
 		//if secondary modules custom reference field is selected
@@ -451,8 +451,8 @@ class Invoice extends CRMEntity {
 				LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_invoice.contactid
 				LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_invoice.accountid
 				LEFT JOIN vtiger_currency_info ON vtiger_currency_info.id = vtiger_invoice.currency_id
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid";
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
+				LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id";
 
 		$query .= $this->getNonAdminAccessControlQuery('Invoice',$current_user);
 		$where_auto = " vtiger_crmentity.deleted=0";

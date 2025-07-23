@@ -39,7 +39,7 @@ class ModuleName extends Vtiger_CRMEntity {
 		/* Format: Field Label => Array(tablename, columnname) */
 		// tablename should not have prefix 'vtiger_'
 		'<entityfieldlabel>' => Array('<modulename>', '<entitycolumn>'),
-		'Assigned To' => Array('crmentity','smownerid')
+		'Assigned To' => Array('crmentity','assigned_user_id')
 	);
 	var $list_fields_name = Array (
 		/* Format: Field Label => fieldname */

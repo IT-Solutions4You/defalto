@@ -138,14 +138,14 @@ class PriceBooks extends CRMEntity
         }
 
         $query = 'SELECT vtiger_products.productid, vtiger_products.productname, vtiger_products.productcode, vtiger_products.commissionrate,
-						vtiger_products.qty_per_unit, vtiger_products.unit_price, vtiger_crmentity.crmid, vtiger_crmentity.smownerid,
+						vtiger_products.qty_per_unit, vtiger_products.unit_price, vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id,
 						vtiger_pricebookproductrel.listprice
 				FROM vtiger_products
 				INNER JOIN vtiger_pricebookproductrel ON vtiger_products.productid = vtiger_pricebookproductrel.productid
 				INNER JOIN vtiger_crmentity on vtiger_crmentity.crmid = vtiger_products.productid
 				INNER JOIN vtiger_pricebook on vtiger_pricebook.pricebookid = vtiger_pricebookproductrel.pricebookid
-				LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid '
+				LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.assigned_user_id
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id '
             . getNonAdminAccessControlQuery($related_module, $current_user) . '
 				WHERE vtiger_pricebook.pricebookid = ' . $id . ' and vtiger_crmentity.deleted = 0';
 
@@ -194,14 +194,14 @@ class PriceBooks extends CRMEntity
         }
 
         $query = 'SELECT vtiger_service.serviceid, vtiger_service.servicename, vtiger_service.commissionrate,
-					vtiger_service.qty_per_unit, vtiger_service.unit_price, vtiger_crmentity.crmid, vtiger_crmentity.smownerid,
+					vtiger_service.qty_per_unit, vtiger_service.unit_price, vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id,
 					vtiger_pricebookproductrel.listprice
 			FROM vtiger_service
 			INNER JOIN vtiger_pricebookproductrel on vtiger_service.serviceid = vtiger_pricebookproductrel.productid
 			INNER JOIN vtiger_crmentity on vtiger_crmentity.crmid = vtiger_service.serviceid
 			INNER JOIN vtiger_pricebook on vtiger_pricebook.pricebookid = vtiger_pricebookproductrel.pricebookid
-			LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.smownerid
-			LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid '
+			LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.assigned_user_id
+			LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id '
             . getNonAdminAccessControlQuery($related_module, $current_user) . '
 			WHERE vtiger_pricebook.pricebookid = ' . $id . ' and vtiger_crmentity.deleted = 0';
 
@@ -276,16 +276,16 @@ class PriceBooks extends CRMEntity
             $query .= " left join vtiger_currency_info as vtiger_currency_infoPriceBooks on vtiger_currency_infoPriceBooks.id = vtiger_pricebook.currency_id";
         }
         if ($queryPlanner->requireTable("vtiger_usersPriceBooks")) {
-            $query .= " left join vtiger_users as vtiger_usersPriceBooks on vtiger_usersPriceBooks.id = vtiger_crmentityPriceBooks.smownerid";
+            $query .= " left join vtiger_users as vtiger_usersPriceBooks on vtiger_usersPriceBooks.id = vtiger_crmentityPriceBooks.assigned_user_id";
         }
         if ($queryPlanner->requireTable("vtiger_groupsPriceBooks")) {
-            $query .= " left join vtiger_groups as vtiger_groupsPriceBooks on vtiger_groupsPriceBooks.groupid = vtiger_crmentityPriceBooks.smownerid";
+            $query .= " left join vtiger_groups as vtiger_groupsPriceBooks on vtiger_groupsPriceBooks.groupid = vtiger_crmentityPriceBooks.assigned_user_id";
         }
         if ($queryPlanner->requireTable("vtiger_lastModifiedByPriceBooks")) {
-            $query .= " left join vtiger_users as vtiger_lastModifiedByPriceBooks on vtiger_lastModifiedByPriceBooks.id = vtiger_crmentityPriceBooks.smownerid";
+            $query .= " left join vtiger_users as vtiger_lastModifiedByPriceBooks on vtiger_lastModifiedByPriceBooks.id = vtiger_crmentityPriceBooks.assigned_user_id";
         }
         if ($queryPlanner->requireTable("vtiger_createdbyPriceBooks")) {
-            $query .= " left join vtiger_users as vtiger_createdbyPriceBooks on vtiger_createdbyPriceBooks.id = vtiger_crmentityPriceBooks.smcreatorid ";
+            $query .= " left join vtiger_users as vtiger_createdbyPriceBooks on vtiger_createdbyPriceBooks.id = vtiger_crmentityPriceBooks.creator_user_id ";
         }
 
         //if secondary modules custom reference field is selected

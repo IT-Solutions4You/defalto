@@ -145,7 +145,7 @@ class Reporting_Install_Model extends Core_Install_Model
             'LBL_SHARING' => [
                 'assigned_user_id' => [
                     'uitype' => 53,
-                    'column' => 'smownerid',
+                    'column' => 'assigned_user_id',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Assigned To',
                     'typeofdata' => 'V~M',

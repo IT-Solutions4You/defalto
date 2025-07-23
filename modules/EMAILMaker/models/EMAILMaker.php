@@ -1299,7 +1299,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
 
         if ($num_rows > 0) {
             while ($row = $this->db->fetchByAssoc($list_result)) {
-                $assigned_to_name = getUserFullName($row["smownerid"]);
+                $assigned_to_name = getUserFullName($row["assigned_user_id"]);
                 $Documents_Records[] = array("id" => $row["notesid"], "title" => $row["notes_title"], "name" => $row["filename"], "assigned_to" => $assigned_to_name, "folder" => $row["foldername"], "filesize" => $row["filesize"]);
             }
         }

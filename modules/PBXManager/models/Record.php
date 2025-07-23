@@ -108,7 +108,7 @@ class PBXManager_Record_Model extends Vtiger_Record_Model{
     public function updateAssignedUser($userid){
         $callid = $this->get('pbxmanagerid');
         $db = PearDatabase::getInstance();
-        $query = 'UPDATE '.self::entitytableName.' SET smownerid=? WHERE crmid=?';
+        $query = 'UPDATE '.self::entitytableName.' SET assigned_user_id=? WHERE crmid=?';
         $params = array($userid, $callid);
         $db->pquery($query, $params);
         return true;

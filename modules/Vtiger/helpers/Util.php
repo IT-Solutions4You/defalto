@@ -506,8 +506,8 @@ class Vtiger_Util_Helper {
 		}
 
 		$db = PearDatabase::getInstance();
-		$result = $db->pquery('SELECT smcreatorid FROM vtiger_crmentity WHERE crmid = ?', array($recordId));
-		$creatorId = $db->query_result($result, 0, 'smcreatorid');
+		$result = $db->pquery('SELECT creator_user_id FROM vtiger_crmentity WHERE crmid = ?', array($recordId));
+		$creatorId = $db->query_result($result, 0, 'creator_user_id');
 
 		if ($creatorId) {
 			$cache->setCreator($recordId, $creatorId);

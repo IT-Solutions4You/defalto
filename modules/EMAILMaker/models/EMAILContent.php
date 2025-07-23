@@ -315,8 +315,8 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             $this->convertInventoryModules();
 
             if ($this->focus->column_fields["assigned_user_id"] == "" && $this->focus->id != "") {
-                $result = self::$db->pquery("SELECT smownerid FROM vtiger_crmentity WHERE crmid=?", array(self::$focus->id));
-                $this->focus->column_fields["assigned_user_id"] = self::$db->query_result($result, 0, "smownerid");
+                $result = self::$db->pquery("SELECT assigned_user_id FROM vtiger_crmentity WHERE crmid=?", array(self::$focus->id));
+                $this->focus->column_fields["assigned_user_id"] = self::$db->query_result($result, 0, "assigned_user_id");
             }
 
             self::$content = $this->convertListViewBlock(self::$content);
@@ -400,7 +400,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $recordData = self::$focus->column_fields;
 
         self::$rep['$s-users-imagename$'] = $this->getUserImage($recordData['assigned_user_id'], self::$site_url);
-        self::$rep['$c-users-imagename$'] = $this->getUserImage($recordData['creator'] ? $recordData['creator'] : $recordData['smcreatorid'], self::$site_url);
+        self::$rep['$c-users-imagename$'] = $this->getUserImage($recordData['creator'] ? $recordData['creator'] : $recordData['creator_user_id'], self::$site_url);
         self::$rep['$m-users-imagename$'] = $this->getUserImage($recordData['modifiedby'], self::$site_url);
         self::$rep['$l-users-imagename$'] = $this->getUserImage($_SESSION['authenticated_user_id'], self::$site_url);
 
@@ -1431,7 +1431,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $this->replaceFieldsToContent("Users", $modifiedby_user_focus, true, false, false, 'm-');
         self::$rep["$" . "m-users_crmid$"] = $modifiedby_user_focus->id;
 
-        $smcreatorid_user_res = self::$db->pquery("SELECT vtiger_users.* FROM vtiger_users INNER JOIN vtiger_crmentity ON vtiger_crmentity.smcreatorid = vtiger_users.id  WHERE  vtiger_crmentity.crmid = ?", array(self::$focus->id));
+        $smcreatorid_user_res = self::$db->pquery("SELECT vtiger_users.* FROM vtiger_users INNER JOIN vtiger_crmentity ON vtiger_crmentity.creator_user_id = vtiger_users.id  WHERE  vtiger_crmentity.crmid = ?", array(self::$focus->id));
         $smcreatorid_user_row = self::$db->fetchByAssoc($smcreatorid_user_res);
         $this->replaceUserData($smcreatorid_user_row["id"], $smcreatorid_user_row, "c");
         $smcreatorid_user_focus = CRMEntity::getInstance("Users");

@@ -22,7 +22,7 @@ class HelpDesk extends CRMEntity {
     //Pavani: Assign value to entity_table
     public $entity_table = 'vtiger_crmentity';
 
-    public $sortby_fields = ['ticket_title', 'ticketstatus', 'ticketpriorities', 'crmid', 'firstname', 'smownerid'];
+    public $sortby_fields = ['ticket_title', 'ticketstatus', 'ticketpriorities', 'crmid', 'firstname', 'assigned_user_id'];
 
     public $list_fields = [
         //Module Sequence Numbering
@@ -34,7 +34,7 @@ class HelpDesk extends CRMEntity {
         'Contact Name' => ['troubletickets' => 'contact_id'],
         'Status' => ['troubletickets' => 'ticketstatus'],
         'Priority' => ['troubletickets' => 'ticketpriorities'],
-        'Assigned To' => ['crmentity', 'smownerid'],
+        'Assigned To' => ['crmentity', 'assigned_user_id'],
     ];
 
     public $list_fields_name = [
@@ -319,8 +319,8 @@ class HelpDesk extends CRMEntity {
 				    LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_troubletickets.parent_id
 				    LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_troubletickets.contact_id
 				    LEFT JOIN vtiger_ticketcf ON vtiger_ticketcf.ticketid=vtiger_troubletickets.ticketid
-				    LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-				    LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.smownerid and vtiger_users.status='Active'
+				    LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
+				    LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.assigned_user_id and vtiger_users.status='Active'
 				    LEFT JOIN vtiger_products ON vtiger_products.productid=vtiger_troubletickets.product_id";
         //end
         $query .= getNonAdminAccessControlQuery('HelpDesk', $current_user);
@@ -414,16 +414,16 @@ class HelpDesk extends CRMEntity {
 		    $query .=" left join vtiger_products as vtiger_productsRel on vtiger_productsRel.productid = vtiger_troubletickets.product_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_groupsHelpDesk")){
-		    $query .=" left join vtiger_groups as vtiger_groupsHelpDesk on vtiger_groupsHelpDesk.groupid = vtiger_crmentityHelpDesk.smownerid";
+		    $query .=" left join vtiger_groups as vtiger_groupsHelpDesk on vtiger_groupsHelpDesk.groupid = vtiger_crmentityHelpDesk.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_usersHelpDesk")){
-		    $query .=" left join vtiger_users as vtiger_usersHelpDesk on vtiger_usersHelpDesk.id = vtiger_crmentityHelpDesk.smownerid";
+		    $query .=" left join vtiger_users as vtiger_usersHelpDesk on vtiger_usersHelpDesk.id = vtiger_crmentityHelpDesk.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_lastModifiedByHelpDesk")){
 		    $query .=" left join vtiger_users as vtiger_lastModifiedByHelpDesk on vtiger_lastModifiedByHelpDesk.id = vtiger_crmentityHelpDesk.modifiedby ";
 		}
         if ($queryPlanner->requireTable("vtiger_createdbyHelpDesk")){
-			$query .= " left join vtiger_users as vtiger_createdbyHelpDesk on vtiger_createdbyHelpDesk.id = vtiger_crmentityHelpDesk.smcreatorid ";
+			$query .= " left join vtiger_users as vtiger_createdbyHelpDesk on vtiger_createdbyHelpDesk.id = vtiger_crmentityHelpDesk.creator_user_id ";
 		}
 
 		//if secondary modules custom reference field is selected

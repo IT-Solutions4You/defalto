@@ -82,7 +82,7 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
 				WHERE its4you_remindme_popup.status = 0 
                 AND vtiger_crmentity.deleted = 0 
 				AND its4you_remindme.reminder_time > 0 
-                AND vtiger_crmentity.smownerid = ? 
+                AND vtiger_crmentity.assigned_user_id = ? 
 				AND its4you_remindme_popup.datetime_start <= ? 
 				LIMIT 20';
             $result = $db->pquery($reminderActivitiesResult, [$currentUserModel->getId(), $date . ' ' . $time]);
@@ -224,7 +224,7 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
         $adb = PearDatabase::getInstance();
         $query = 'SELECT vtiger_crmentity.crmid AS record_id, 
        vtiger_crmentity.description, 
-       vtiger_crmentity.smownerid AS owner_id, 
+       vtiger_crmentity.assigned_user_id AS owner_id, 
        its4you_calendar.datetime_start AS calendar_datetime,
        its4you_remindme.reminder_time,
        its4you_remindme.reminder_sent,

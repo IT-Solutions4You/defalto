@@ -23,7 +23,7 @@ class Accounts extends CRMEntity {
 
 	public $column_fields = Array();
 
-	public $sortby_fields = Array('accountname','bill_city','website','phone','smownerid');
+	public $sortby_fields = Array('accountname','bill_city','website','phone','assigned_user_id');
 
 	//public $groupTable = Array('vtiger_accountgrouprelation','accountid');
 
@@ -33,7 +33,7 @@ class Accounts extends CRMEntity {
 			'Billing City'=>Array('vtiger_accountbillads'=>'bill_city'),
 			'Website'=>Array('vtiger_account'=>'website'),
 			'Phone'=>Array('vtiger_account'=> 'phone'),
-			'Assigned To'=>Array('vtiger_crmentity'=>'smownerid')
+			'Assigned To'=>Array('vtiger_crmentity'=>'assigned_user_id')
 			);
 
 	public $list_fields_name = Array(
@@ -48,7 +48,7 @@ class Accounts extends CRMEntity {
 	public $search_fields = Array(
 			'Account Name'=>Array('vtiger_account'=>'accountname'),
 			'Billing City'=>Array('vtiger_accountbillads'=>'bill_city'),
-			'Assigned To'=>Array('vtiger_crmentity'=>'smownerid'),
+			'Assigned To'=>Array('vtiger_crmentity'=>'assigned_user_id'),
 			);
 
 	public $search_fields_name = Array(
@@ -145,15 +145,15 @@ class Accounts extends CRMEntity {
 
 		$query = "SELECT case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,
 				vtiger_campaign.campaignid, vtiger_campaign.campaignname, vtiger_campaign.campaigntype, vtiger_campaign.campaignstatus,
-				vtiger_campaign.expectedrevenue, vtiger_campaign.closingdate, vtiger_crmentity.crmid, vtiger_crmentity.smownerid,
+				vtiger_campaign.expectedrevenue, vtiger_campaign.closingdate, vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id,
 				vtiger_crmentity.modifiedtime
 				from vtiger_campaign
 				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_campaign.campaignid
 				INNER JOIN vtiger_campaignscf ON vtiger_campaignscf.campaignid = vtiger_campaign.campaignid
 				LEFT JOIN vtiger_campaignaccountrel ON vtiger_campaignaccountrel.campaignid=vtiger_campaign.campaignid
 				LEFT JOIN vtiger_campaigncontrel ON vtiger_campaigncontrel.campaignid=vtiger_campaign.campaignid
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid=vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid=vtiger_crmentity.assigned_user_id
+				LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id
 				WHERE vtiger_crmentity.deleted=0 AND (vtiger_campaignaccountrel.accountid=$id";
 
 		if(!empty ($entityIds)){
@@ -212,7 +212,7 @@ class Accounts extends CRMEntity {
 
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
 							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query = "SELECT vtiger_contactdetails.*, vtiger_crmentity.crmid, vtiger_crmentity.smownerid, vtiger_account.accountname,
+		$query = "SELECT vtiger_contactdetails.*, vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id, vtiger_account.accountname,
 			case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
 			FROM vtiger_contactdetails
 			INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_contactdetails.contactid
@@ -221,8 +221,8 @@ class Accounts extends CRMEntity {
 			INNER JOIN vtiger_contactsubdetails ON vtiger_contactdetails.contactid = vtiger_contactsubdetails.contactsubscriptionid
 			INNER JOIN vtiger_customerdetails ON vtiger_contactdetails.contactid = vtiger_customerdetails.customerid
 			INNER JOIN vtiger_contactscf ON vtiger_contactdetails.contactid = vtiger_contactscf.contactid
-			LEFT JOIN vtiger_groups	ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-			LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid = vtiger_users.id
+			LEFT JOIN vtiger_groups	ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
+			LEFT JOIN vtiger_users ON vtiger_crmentity.assigned_user_id = vtiger_users.id
 			WHERE vtiger_crmentity.deleted = 0
 			AND vtiger_contactdetails.account_id = ".$id;
 
@@ -274,7 +274,7 @@ class Accounts extends CRMEntity {
 
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
 							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query = "SELECT vtiger_purchaseorder.*, vtiger_crmentity.crmid, vtiger_crmentity.smownerid,
+		$query = "SELECT vtiger_purchaseorder.*, vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id,
 			case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
 			FROM vtiger_purchaseorder
 			INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_purchaseorder.purchaseorderid
@@ -282,8 +282,8 @@ class Accounts extends CRMEntity {
 			LEFT JOIN vtiger_poshipads ON vtiger_poshipads.poshipaddressid = vtiger_purchaseorder.purchaseorderid
 			LEFT JOIN vtiger_pobillads ON vtiger_pobillads.pobilladdressid = vtiger_purchaseorder.purchaseorderid
 			LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_purchaseorder.accountid
-			LEFT JOIN vtiger_groups	ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-			LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid = vtiger_users.id
+			LEFT JOIN vtiger_groups	ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
+			LEFT JOIN vtiger_users ON vtiger_crmentity.assigned_user_id = vtiger_users.id
 			WHERE vtiger_crmentity.deleted = 0
 			AND vtiger_purchaseorder.accountid = ".$id;
 
@@ -347,13 +347,13 @@ class Accounts extends CRMEntity {
 
 		$query = "SELECT vtiger_potential.potentialid, vtiger_potential.related_to, vtiger_potential.potentialname, vtiger_potential.sales_stage,vtiger_potential.contact_id,
 				vtiger_potential.opportunity_type, vtiger_potential.amount, vtiger_potential.closingdate, vtiger_account.accountname,
-				case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,vtiger_crmentity.crmid, vtiger_crmentity.smownerid
+				case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id
 				FROM vtiger_potential
 				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_potential.potentialid
 				LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_potential.related_to
 				INNER JOIN vtiger_potentialscf ON vtiger_potential.potentialid = vtiger_potentialscf.potentialid
-				LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid = vtiger_users.id
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+				LEFT JOIN vtiger_users ON vtiger_crmentity.assigned_user_id = vtiger_users.id
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 				WHERE vtiger_crmentity.deleted = 0 AND (vtiger_potential.related_to = $id ";
 		if(!empty($entityIds)) {
 			$query .= " OR vtiger_potential.contact_id IN (".$entityIds.")";
@@ -420,11 +420,11 @@ class Accounts extends CRMEntity {
 				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_quotes.quoteid
 				LEFT OUTER JOIN vtiger_account ON vtiger_account.accountid = vtiger_quotes.accountid
 				LEFT OUTER JOIN vtiger_potential ON vtiger_potential.potentialid = vtiger_quotes.potentialid
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
                 LEFT JOIN vtiger_quotescf ON vtiger_quotescf.quoteid = vtiger_quotes.quoteid
 				LEFT JOIN vtiger_quotesbillads ON vtiger_quotesbillads.quotebilladdressid = vtiger_quotes.quoteid
 				LEFT JOIN vtiger_quotesshipads ON vtiger_quotesshipads.quoteshipaddressid = vtiger_quotes.quoteid
-				LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid = vtiger_users.id
+				LEFT JOIN vtiger_users ON vtiger_crmentity.assigned_user_id = vtiger_users.id
 				WHERE vtiger_crmentity.deleted = 0 AND (vtiger_account.accountid = $id";
 
 		if(!empty ($entityIds)){
@@ -494,8 +494,8 @@ class Accounts extends CRMEntity {
                 LEFT JOIN vtiger_invoicecf ON vtiger_invoicecf.invoiceid = vtiger_invoice.invoiceid
 				LEFT JOIN vtiger_invoicebillads ON vtiger_invoicebillads.invoicebilladdressid = vtiger_invoice.invoiceid
 				LEFT JOIN vtiger_invoiceshipads ON vtiger_invoiceshipads.invoiceshipaddressid = vtiger_invoice.invoiceid
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid = vtiger_users.id
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
+				LEFT JOIN vtiger_users ON vtiger_crmentity.assigned_user_id = vtiger_users.id
 				WHERE vtiger_crmentity.deleted = 0 AND (vtiger_invoice.accountid = $id";
 
 		if(!empty ($entityIds)){
@@ -563,12 +563,12 @@ class Accounts extends CRMEntity {
 				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_salesorder.salesorderid
 				LEFT OUTER JOIN vtiger_quotes ON vtiger_quotes.quoteid = vtiger_salesorder.quoteid
 				LEFT OUTER JOIN vtiger_account ON vtiger_account.accountid = vtiger_salesorder.accountid
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
                 LEFT JOIN vtiger_invoice_recurring_info ON vtiger_invoice_recurring_info.salesorderid = vtiger_salesorder.salesorderid
                 LEFT JOIN vtiger_salesordercf ON vtiger_salesordercf.salesorderid = vtiger_salesorder.salesorderid
 				LEFT JOIN vtiger_sobillads ON vtiger_sobillads.sobilladdressid = vtiger_salesorder.salesorderid
 				LEFT JOIN vtiger_soshipads ON vtiger_soshipads.soshipaddressid = vtiger_salesorder.salesorderid
-				LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid = vtiger_users.id
+				LEFT JOIN vtiger_users ON vtiger_crmentity.assigned_user_id = vtiger_users.id
 				WHERE vtiger_crmentity.deleted = 0 AND (vtiger_salesorder.accountid = $id";
 
 		if(!empty ($entityIds)){
@@ -631,12 +631,12 @@ class Accounts extends CRMEntity {
 
 		$query = "SELECT case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name, vtiger_users.id,
 				vtiger_troubletickets.ticket_title, vtiger_troubletickets.ticketid AS crmid, vtiger_troubletickets.ticketstatus, vtiger_troubletickets.ticketpriorities,
-				vtiger_troubletickets.parent_id, vtiger_troubletickets.contact_id, vtiger_troubletickets.ticket_no, vtiger_crmentity.smownerid, vtiger_crmentity.modifiedtime
+				vtiger_troubletickets.parent_id, vtiger_troubletickets.contact_id, vtiger_troubletickets.ticket_no, vtiger_crmentity.assigned_user_id, vtiger_crmentity.modifiedtime
 				FROM vtiger_troubletickets
 				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_troubletickets.ticketid
 				LEFT JOIN vtiger_ticketcf ON vtiger_troubletickets.ticketid = vtiger_ticketcf.ticketid
-				LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+				LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.assigned_user_id
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 				WHERE  vtiger_crmentity.deleted = 0 and (vtiger_troubletickets.parent_id = $id";
 
 		if(!empty ($entityIds)){
@@ -697,14 +697,14 @@ class Accounts extends CRMEntity {
 		$entityIds = implode(',', $entityIds);
 
 		$query = "SELECT vtiger_products.productid, vtiger_products.productname, vtiger_products.commissionrate,
-				vtiger_products.qty_per_unit, vtiger_products.unit_price, vtiger_crmentity.crmid, vtiger_crmentity.smownerid
+				vtiger_products.qty_per_unit, vtiger_products.unit_price, vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id
 				FROM vtiger_products
 				INNER JOIN vtiger_seproductsrel ON vtiger_products.productid = vtiger_seproductsrel.productid
 				and vtiger_seproductsrel.setype IN ('Accounts', 'Contacts')
 				INNER JOIN vtiger_productcf ON vtiger_products.productid = vtiger_productcf.productid
 				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_products.productid
-				LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+				LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.assigned_user_id
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 				WHERE vtiger_crmentity.deleted = 0 AND vtiger_seproductsrel.crmid IN (".$entityIds.")";
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
@@ -738,8 +738,8 @@ class Accounts extends CRMEntity {
             LEFT JOIN vtiger_accountbillads ON vtiger_accountbillads.accountaddressid = vtiger_account.accountid
             LEFT JOIN vtiger_accountshipads ON vtiger_accountshipads.accountaddressid = vtiger_account.accountid
             LEFT JOIN vtiger_accountscf ON vtiger_accountscf.accountid = vtiger_account.accountid
-            LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-            LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid and vtiger_users.status = 'Active'
+            LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
+            LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id and vtiger_users.status = 'Active'
             LEFT JOIN vtiger_account vtiger_account2 ON vtiger_account2.accountid = vtiger_account.account_id";
         //vtiger_account2 is added to get the Member of account
 
@@ -928,16 +928,16 @@ class Accounts extends CRMEntity {
 			$query .= " LEFT JOIN vtiger_email_track AS vtiger_email_trackAccounts ON vtiger_email_trackAccounts.crmid = vtiger_account.accountid";
 		}
 		if ($queryPlanner->requireTable('vtiger_groupsAccounts')) {
-			$query .= "	left join vtiger_groups as vtiger_groupsAccounts on vtiger_groupsAccounts.groupid = vtiger_crmentityAccounts.smownerid";
+			$query .= "	left join vtiger_groups as vtiger_groupsAccounts on vtiger_groupsAccounts.groupid = vtiger_crmentityAccounts.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable('vtiger_usersAccounts')) {
-			$query .= " left join vtiger_users as vtiger_usersAccounts on vtiger_usersAccounts.id = vtiger_crmentityAccounts.smownerid";
+			$query .= " left join vtiger_users as vtiger_usersAccounts on vtiger_usersAccounts.id = vtiger_crmentityAccounts.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable('vtiger_lastModifiedByAccounts')) {
             $query .= " left join vtiger_users as vtiger_lastModifiedByAccounts on vtiger_lastModifiedByAccounts.id = vtiger_crmentityAccounts.modifiedby ";
 		}
         if ($queryPlanner->requireTable("vtiger_createdbyAccounts")){
-			$query .= " left join vtiger_users as vtiger_createdbyAccounts on vtiger_createdbyAccounts.id = vtiger_crmentityAccounts.smcreatorid ";
+			$query .= " left join vtiger_users as vtiger_createdbyAccounts on vtiger_createdbyAccounts.id = vtiger_crmentityAccounts.creator_user_id ";
 		}
 		//if secondary modules custom reference field is selected
         $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
@@ -1041,8 +1041,8 @@ class Accounts extends CRMEntity {
 		    FROM vtiger_account
 		    INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_account.accountid 
             INNER JOIN vtiger_accountbillads ON vtiger_account.accountid = vtiger_accountbillads.accountaddressid
-            LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-            LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
+            LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
+            LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id
             WHERE vtiger_crmentity.deleted = 0 and vtiger_account.accountid = ?";
         $params = [$id];
         $res = $adb->pquery($query, $params);
@@ -1083,8 +1083,8 @@ class Accounts extends CRMEntity {
 		    FROM vtiger_account
 		    INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_account.accountid
 		    INNER JOIN vtiger_accountbillads ON vtiger_account.accountid = vtiger_accountbillads.accountaddressid
-		    LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-		    LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
+		    LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
+		    LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id
 		    WHERE vtiger_crmentity.deleted = 0 and vtiger_account.account_id = ?";
 		$params = array($id);
 		$res = $adb->pquery($query, $params);
@@ -1306,10 +1306,10 @@ class Accounts extends CRMEntity {
 				LEFT JOIN vtiger_notescf ON vtiger_notescf.notesid= vtiger_notes.notesid
 				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid= vtiger_notes.notesid and vtiger_crmentity.deleted=0
 				INNER JOIN vtiger_crmentity crm2 ON crm2.crmid=vtiger_senotesrel.crmid
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 				LEFT JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.crmid =vtiger_notes.notesid
 				LEFT JOIN vtiger_attachments ON vtiger_seattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid
-				LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid= vtiger_users.id
+				LEFT JOIN vtiger_users ON vtiger_crmentity.assigned_user_id= vtiger_users.id
 				WHERE crm2.crmid IN (".$entityIds.")";
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
@@ -1410,8 +1410,8 @@ class Accounts extends CRMEntity {
 			$query .= " FROM $other->table_name";
 			$query .= " INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = $other->table_name.$other->table_index";
 			$query .= $more_relation;
-			$query .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid";
-			$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
+			$query .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id";
+			$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id";
 			$query .= " WHERE vtiger_crmentity.deleted = 0 AND ( ($other->table_name.$dependentColumn = $id) ";
 
 			if(!empty($entityIds)) {
@@ -1500,8 +1500,8 @@ class Accounts extends CRMEntity {
 				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = $other->table_name.$other->table_index
 				INNER JOIN vtiger_crmentityrel ON (vtiger_crmentityrel.relcrmid = vtiger_crmentity.crmid OR vtiger_crmentityrel.crmid = vtiger_crmentity.crmid)
 				$more_relation
-				LEFT  JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
-				LEFT  JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+				LEFT  JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id
+				LEFT  JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 				WHERE vtiger_crmentity.deleted = 0 AND (vtiger_crmentityrel.crmid IN (" .$entityIds. ") OR vtiger_crmentityrel.relcrmid IN (". $entityIds . "))";
 
 		$return_value = GetRelatedList($currentModule, $related_module, $other, $query, $button, $returnset);

@@ -226,7 +226,7 @@ class Settings_Groups_Record_Model extends Settings_Vtiger_Record_Model {
 		$groupId = $this->getId();
 		$transferGroupId = $transferToGroup->getId();
 
-		$query = 'UPDATE vtiger_crmentity SET smownerid=? WHERE smownerid=?';
+		$query = 'UPDATE vtiger_crmentity SET assigned_user_id=? WHERE assigned_user_id=?';
 		$params = array($transferGroupId, $groupId);
 		$db->pquery($query, $params);
 

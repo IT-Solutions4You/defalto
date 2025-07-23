@@ -169,7 +169,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'columntype' => 'VARCHAR(3)',
                 ],
                 'assigned_user_id' => [
-                    'column' => 'smownerid',
+                    'column' => 'assigned_user_id',
                     'label' => 'Assigned To',
                     'uitype' => 53,
                     'typeofdata' => 'V~M',

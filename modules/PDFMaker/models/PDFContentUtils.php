@@ -467,9 +467,9 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
                 $type = 'u';
 
                 if (in_array($fieldname, $UITypes['userorotherfields'])) {
-                    $culumnname = 'smcreatorid';
+                    $culumnname = 'creator_user_id';
                 } else {
-                    $culumnname = 'smownerid';
+                    $culumnname = 'assigned_user_id';
                 }
 
                 $field_res = $db->pquery(

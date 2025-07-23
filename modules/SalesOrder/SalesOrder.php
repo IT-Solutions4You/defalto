@@ -45,10 +45,10 @@ class SalesOrder extends CRMEntity {
 
 	var $column_fields = Array();
 
-	var $sortby_fields = Array('subject','smownerid','accountname','lastname');
+	var $sortby_fields = Array('subject','assigned_user_id','accountname','lastname');
 
 	// This is used to retrieve related vtiger_fields from form posts.
-	var $additional_column_fields = Array('assigned_user_name', 'smownerid', 'opportunity_id', 'case_id', 'contact_id', 'task_id', 'note_id', 'meeting_id', 'call_id', 'email_id', 'parent_name', 'member_id' );
+	var $additional_column_fields = Array('assigned_user_name', 'assigned_user_id', 'opportunity_id', 'case_id', 'contact_id', 'task_id', 'note_id', 'meeting_id', 'call_id', 'email_id', 'parent_name', 'member_id' );
 
 	// This is the list of vtiger_fields that are in the lists.
 	var $list_fields = Array(
@@ -60,7 +60,7 @@ class SalesOrder extends CRMEntity {
 				'Account Name'=>Array('account'=>'accountid'),
 				'Quote Name'=>Array('quotes'=>'quoteid'),
 				'Total'=>Array('salesorder'=>'total'),
-				'Assigned To'=>Array('crmentity'=>'smownerid')
+				'Assigned To'=>Array('crmentity'=>'assigned_user_id')
 				);
 
 	var $list_fields_name = Array(
@@ -172,8 +172,8 @@ class SalesOrder extends CRMEntity {
             LEFT JOIN vtiger_invoicecf ON vtiger_invoicecf.invoiceid = vtiger_invoice.invoiceid
 			LEFT JOIN vtiger_invoicebillads ON vtiger_invoicebillads.invoicebilladdressid = vtiger_invoice.invoiceid
 			LEFT JOIN vtiger_invoiceshipads ON vtiger_invoiceshipads.invoiceshipaddressid = vtiger_invoice.invoiceid
-			left join vtiger_users on vtiger_users.id=vtiger_crmentity.smownerid
-			left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.smownerid
+			left join vtiger_users on vtiger_users.id=vtiger_crmentity.assigned_user_id
+			left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.assigned_user_id
 			where vtiger_crmentity.deleted=0 and vtiger_salesorder.salesorderid=".$id;
 
 		$log->debug("Exiting get_invoices method ...");
@@ -225,10 +225,10 @@ class SalesOrder extends CRMEntity {
 			$query .= " left join vtiger_service as vtiger_serviceSalesOrder on vtiger_serviceSalesOrder.serviceid = vtiger_inventoryproductreltmpSalesOrder.productid";
 		}
 		if ($queryPlanner->requireTable("vtiger_groupsSalesOrder")){
-			$query .= " left join vtiger_groups as vtiger_groupsSalesOrder on vtiger_groupsSalesOrder.groupid = vtiger_crmentitySalesOrder.smownerid";
+			$query .= " left join vtiger_groups as vtiger_groupsSalesOrder on vtiger_groupsSalesOrder.groupid = vtiger_crmentitySalesOrder.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_usersSalesOrder")){
-			$query .= " left join vtiger_users as vtiger_usersSalesOrder on vtiger_usersSalesOrder.id = vtiger_crmentitySalesOrder.smownerid";
+			$query .= " left join vtiger_users as vtiger_usersSalesOrder on vtiger_usersSalesOrder.id = vtiger_crmentitySalesOrder.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_potentialRelSalesOrder")){
 			$query .= " left join vtiger_potential as vtiger_potentialRelSalesOrder on vtiger_potentialRelSalesOrder.potentialid = vtiger_salesorder.potentialid";
@@ -249,7 +249,7 @@ class SalesOrder extends CRMEntity {
 			$query .= " left join vtiger_users as vtiger_lastModifiedBySalesOrder on vtiger_lastModifiedBySalesOrder.id = vtiger_crmentitySalesOrder.modifiedby ";
 		}
 		if ($queryPlanner->requireTable("vtiger_createdbySalesOrder")){
-			$query .= " left join vtiger_users as vtiger_createdbySalesOrder on vtiger_createdbySalesOrder.id = vtiger_crmentitySalesOrder.smcreatorid ";
+			$query .= " left join vtiger_users as vtiger_createdbySalesOrder on vtiger_createdbySalesOrder.id = vtiger_crmentitySalesOrder.creator_user_id ";
 		}
 
 		//if secondary modules custom reference field is selected
@@ -370,8 +370,8 @@ class SalesOrder extends CRMEntity {
 				LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_salesorder.accountid
 				LEFT JOIN vtiger_currency_info ON vtiger_currency_info.id = vtiger_salesorder.currency_id
 				LEFT JOIN vtiger_quotes ON vtiger_quotes.quoteid = vtiger_salesorder.quoteid
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid";
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
+				LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id";
 
 		$query .= $this->getNonAdminAccessControlQuery('SalesOrder',$current_user);
 		$where_auto = " vtiger_crmentity.deleted=0";
@@ -423,8 +423,8 @@ class SalesOrder extends CRMEntity {
 				}
 			}
 		}
-        $fromClause .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
-						LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
+        $fromClause .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id
+						LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id";
 
         $whereClause = " WHERE vtiger_crmentity.deleted = 0";
         $whereClause .= $this->getListViewSecurityParameter($module);

@@ -963,8 +963,8 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $currentDate = $adb->formatDate(date('Y-m-d H:i:s'), true);
         $params1 = array(
             'crmid' => $recordId,
-            'smcreatorid' => $currentUser->id,
-            'smownerid' => $ownerId,
+            'creator_user_id' => $currentUser->id,
+            'assigned_user_id' => $ownerId,
             'setype' => 'Documents Attachment',
             'description' => $description,
             'createdtime' => $currentDate,

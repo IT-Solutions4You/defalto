@@ -27,7 +27,7 @@ class Home_Module_Model extends Vtiger_Module_Model {
 	public function getComments($pagingModel, $user, $dateFilter='') {
 		$db = PearDatabase::getInstance();
 
-		$sql = 'SELECT vtiger_modcomments.*,vtiger_crmentity.setype AS setype,vtiger_crmentity.createdtime AS createdtime, vtiger_crmentity.smownerid AS smownerid,
+		$sql = 'SELECT vtiger_modcomments.*,vtiger_crmentity.setype AS setype,vtiger_crmentity.createdtime AS createdtime, vtiger_crmentity.assigned_user_id AS assigned_user_id,
 				crmentity2.crmid AS parentId, crmentity2.setype AS parentModule FROM vtiger_modcomments
 				INNER JOIN vtiger_crmentity ON vtiger_modcomments.modcommentsid = vtiger_crmentity.crmid
 				AND vtiger_crmentity.deleted = 0
