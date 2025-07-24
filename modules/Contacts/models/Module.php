@@ -118,7 +118,7 @@ class Contacts_Module_Model extends Vtiger_Module_Model {
         } else if ($parentId && $parentModule == 'Invoice') {
             $query = "SELECT ".implode(',',$searchFields)." FROM vtiger_crmentity
                         INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
-                        INNER JOIN vtiger_invoice ON vtiger_invoice.contactid = vtiger_contactdetails.contactid
+                        INNER JOIN vtiger_invoice ON vtiger_invoice.contact_id = vtiger_contactdetails.contactid
                         WHERE deleted=0 AND vtiger_invoice.invoiceid  = ?  AND label like ?";
 
             $params = array($parentId, "%$searchValue%");

@@ -41,7 +41,7 @@ class Invoice_Install_Model extends Core_Install_Model
                 'salesorder_id' => [
                     'name' => 'salesorder_id',
                     'uitype' => 80,
-                    'column' => 'salesorderid',
+                    'column' => 'salesorder_id',
                     'table' => 'vtiger_invoice',
                     'label' => 'Sales Order',
                     'readonly' => 1,
@@ -69,7 +69,7 @@ class Invoice_Install_Model extends Core_Install_Model
                 'contact_id' => [
                     'name' => 'contact_id',
                     'uitype' => 57,
-                    'column' => 'contactid',
+                    'column' => 'contact_id',
                     'table' => 'vtiger_invoice',
                     'label' => 'Contact Name',
                     'readonly' => 1,
@@ -109,10 +109,10 @@ class Invoice_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'vtiger_purchaseorder' => [
-                    'name' => 'vtiger_purchaseorder',
+                'purchaseorder_id' => [
+                    'name' => 'purchaseorder_id',
                     'uitype' => 1,
-                    'column' => 'purchaseorder',
+                    'column' => 'purchaseorder_id',
                     'table' => 'vtiger_invoice',
                     'label' => 'Purchase Order',
                     'readonly' => 1,
@@ -123,8 +123,8 @@ class Invoice_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'txtAdjustment' => [
-                    'name' => 'txtAdjustment',
+                'adjustment' => [
+                    'name' => 'adjustment',
                     'uitype' => 72,
                     'column' => 'adjustment',
                     'table' => 'vtiger_invoice',
@@ -166,8 +166,8 @@ class Invoice_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'hdnSubTotal' => [
-                    'name' => 'hdnSubTotal',
+                'subtotal' => [
+                    'name' => 'subtotal',
                     'uitype' => 72,
                     'column' => 'subtotal',
                     'table' => 'vtiger_invoice',
@@ -180,10 +180,10 @@ class Invoice_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'hdnGrandTotal' => [
-                    'name' => 'hdnGrandTotal',
+                'grand_total' => [
+                    'name' => 'grand_total',
                     'uitype' => 72,
-                    'column' => 'total',
+                    'column' => 'grand_total',
                     'table' => 'vtiger_invoice',
                     'label' => 'Total',
                     'readonly' => 1,
@@ -194,8 +194,8 @@ class Invoice_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 1,
                 ],
-                'hdnTaxType' => [
-                    'name' => 'hdnTaxType',
+                'taxtype' => [
+                    'name' => 'taxtype',
                     'uitype' => 16,
                     'column' => 'taxtype',
                     'table' => 'vtiger_invoice',
@@ -214,7 +214,7 @@ class Invoice_Install_Model extends Core_Install_Model
                 'account_id' => [
                     'name' => 'account_id',
                     'uitype' => 73,
-                    'column' => 'accountid',
+                    'column' => 'account_id',
                     'table' => 'vtiger_invoice',
                     'label' => 'Account Name',
                     'readonly' => 1,
@@ -368,8 +368,8 @@ class Invoice_Install_Model extends Core_Install_Model
             ],
             'LBL_ADDRESS_INFORMATION' =>
                 [
-                    'hdnS_H_Amount' => [
-                        'name' => 'hdnS_H_Amount',
+                    's_h_amount' => [
+                        'name' => 's_h_amount',
                         'uitype' => 72,
                         'column' => 's_h_amount',
                         'table' => 'vtiger_invoice',
@@ -584,8 +584,8 @@ class Invoice_Install_Model extends Core_Install_Model
                 ],
             ],
             'LBL_ITEM_DETAILS' => [
-                'hdnDiscountPercent' => [
-                    'name' => 'hdnDiscountPercent',
+                'discount_percent' => [
+                    'name' => 'discount_percent',
                     'uitype' => 1,
                     'column' => 'discount_percent',
                     'table' => 'vtiger_invoice',
@@ -598,8 +598,8 @@ class Invoice_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'hdnDiscountAmount' => [
-                    'name' => 'hdnDiscountAmount',
+                'discount_amount' => [
+                    'name' => 'discount_amount',
                     'uitype' => 72,
                     'column' => 'discount_amount',
                     'table' => 'vtiger_invoice',
@@ -672,36 +672,8 @@ class Invoice_Install_Model extends Core_Install_Model
                     'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
-                'discount_amount' => [
-                    'name' => 'discount_amount',
-                    'uitype' => 71,
-                    'column' => 'discount_amount',
-                    'table' => 'vtiger_inventoryproductrel',
-                    'label' => 'Item Discount Amount',
-                    'readonly' => 0,
-                    'presence' => 2,
-                    'typeofdata' => 'N~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 5,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'discount_percent' => [
-                    'name' => 'discount_percent',
-                    'uitype' => 7,
-                    'column' => 'discount_percent',
-                    'table' => 'vtiger_inventoryproductrel',
-                    'label' => 'Item Discount Percent',
-                    'readonly' => 0,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 5,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'hdnS_H_Percent' => [
-                    'name' => 'hdnS_H_Percent',
+                's_h_percent' => [
+                    'name' => 's_h_percent',
                     'uitype' => 1,
                     'column' => 's_h_percent',
                     'table' => 'vtiger_invoice',
@@ -796,6 +768,39 @@ class Invoice_Install_Model extends Core_Install_Model
         return [];
     }
 
+    public function migrate()
+    {
+        $moduleName = $this->getModuleName();
+        $updateFields = [
+            'salesorderid' => 'salesorder_id',
+            'contactid' => 'contact_id',
+            'purchaseorder' => 'purchaseorder_id',
+            'adjustment' => 'adjustment',
+            'subtotal' => 'subtotal',
+            'total' => 'grand_total',
+            'taxtype' => 'taxtype',
+            'accountid' => 'account_id',
+            's_h_amount' => 's_h_amount',
+            's_h_percent' => 's_h_percent',
+        ];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $updateFields);
+
+        $deleteFields = [
+            'vtiger_purchaseorder',
+            'txtAdjustment',
+            'hdnSubTotal',
+            'hdnGrandTotal',
+            'hdnTaxType',
+            'hdnS_H_Percent',
+            'hdnDiscountPercent',
+            'hdnDiscountAmount',
+            'hdnS_H_Amount',
+        ];
+
+        Vtiger_Module_Model::deleteFields($moduleName, $deleteFields);
+    }
+
     /**
      * @throws AppException
      */
@@ -803,10 +808,16 @@ class Invoice_Install_Model extends Core_Install_Model
     {
         $this->getTable('vtiger_invoice', null)
             ->createTable('invoiceid', 'int(19) NOT NULL DEFAULT \'0\'')
+            ->renameColumn('salesorderid','salesorder_id')
+            ->renameColumn('contactid','contact_id')
+            ->renameColumn('purchaseorder','purchaseorder_id')
+            ->renameColumn('accountid','account_id')
+            ->renameColumn('total','grand_total')
+            ->clearTableColumns()
             ->createColumn('subject', 'varchar(100) DEFAULT NULL')
-            ->createColumn('salesorderid', 'int(19) DEFAULT NULL')
+            ->createColumn('salesorder_id', 'int(19) DEFAULT NULL')
             ->createColumn('customerno', 'varchar(100) DEFAULT NULL')
-            ->createColumn('contactid', 'int(19) DEFAULT NULL')
+            ->createColumn('contact_idcontact_id', 'int(19) DEFAULT NULL')
             ->createColumn('notes', 'varchar(100) DEFAULT NULL')
             ->createColumn('invoicedate', 'date DEFAULT NULL')
             ->createColumn('duedate', 'date DEFAULT NULL')
@@ -816,15 +827,15 @@ class Invoice_Install_Model extends Core_Install_Model
             ->createColumn('salescommission', self::$COLUMN_DECIMAL)
             ->createColumn('exciseduty', self::$COLUMN_DECIMAL)
             ->createColumn('subtotal', self::$COLUMN_DECIMAL)
-            ->createColumn('total', self::$COLUMN_DECIMAL)
+            ->createColumn('grand_total', self::$COLUMN_DECIMAL)
             ->createColumn('taxtype', 'varchar(25) DEFAULT NULL')
             ->createColumn('discount_percent', self::$COLUMN_DECIMAL)
             ->createColumn('discount_amount', self::$COLUMN_DECIMAL)
             ->createColumn('s_h_amount', self::$COLUMN_DECIMAL)
             ->createColumn('shipping', 'varchar(100) DEFAULT NULL')
-            ->createColumn('accountid', 'int(19) DEFAULT NULL')
+            ->createColumn('account_id', 'int(19) DEFAULT NULL')
             ->createColumn('terms_conditions', 'text DEFAULT NULL')
-            ->createColumn('purchaseorder', 'varchar(200) DEFAULT NULL')
+            ->createColumn('purchaseorder_id', 'varchar(200) DEFAULT NULL')
             ->createColumn('invoicestatus', 'varchar(200) DEFAULT NULL')
             ->createColumn('invoice_no', 'varchar(100) DEFAULT NULL')
             ->createColumn('currency_id', 'int(19) NOT NULL DEFAULT 1')
@@ -839,8 +850,8 @@ class Invoice_Install_Model extends Core_Install_Model
             ->createColumn('region_id', 'int(19) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (invoiceid)')
             ->createKey('KEY IF NOT EXISTS invoice_purchaseorderid_idx (invoiceid)')
-            ->createKey('KEY IF NOT EXISTS fk_2_vtiger_invoice (salesorderid)')
-            ->createKey('CONSTRAINT fk_2_vtiger_invoice FOREIGN KEY IF NOT EXISTS (salesorderid) REFERENCES vtiger_salesorder (salesorderid) ON DELETE CASCADE')
+            ->createKey('KEY IF NOT EXISTS fk_2_vtiger_invoice (salesorder_id)')
+            ->createKey('CONSTRAINT fk_2_vtiger_invoice FOREIGN KEY IF NOT EXISTS (salesorder_id) REFERENCES vtiger_salesorder (salesorder_id) ON DELETE CASCADE')
             ->createKey('CONSTRAINT fk_crmid_vtiger_invoice FOREIGN KEY IF NOT EXISTS (invoiceid) REFERENCES vtiger_crmentity (crmid) ON DELETE CASCADE');
 
         $this->getTable('vtiger_invoicebillads', null)

@@ -999,9 +999,9 @@ class Vtiger_Functions {
 			"vtiger_salesorder:contact_id" => "V",
 			"vtiger_salesorder:account_id" => "V",
 			//Invoice Related Fields
-			"vtiger_invoice:salesorderid" => "V",
-			"vtiger_invoice:contactid" => "V",
-			"vtiger_invoice:accountid" => "V",
+			"vtiger_invoice:salesorder_id" => "V",
+			"vtiger_invoice:contact_id" => "V",
+			"vtiger_invoice:account_id" => "V",
 			//Campaign Related Fields
 			"vtiger_campaign:product_id" => "V",
 			//Related List Entries(For Report Module)

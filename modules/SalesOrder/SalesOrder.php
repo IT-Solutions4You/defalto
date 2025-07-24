@@ -167,8 +167,8 @@ class SalesOrder extends CRMEntity {
 			(vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname
 			end as user_name from vtiger_invoice
 			inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_invoice.invoiceid
-			left outer join vtiger_account on vtiger_account.accountid=vtiger_invoice.accountid
-			inner join vtiger_salesorder on vtiger_salesorder.salesorderid=vtiger_invoice.salesorderid
+			left outer join vtiger_account on vtiger_account.accountid=vtiger_invoice.account_id
+			inner join vtiger_salesorder on vtiger_salesorder.salesorderid=vtiger_invoice.salesorder_id
             LEFT JOIN vtiger_invoicecf ON vtiger_invoicecf.invoiceid = vtiger_invoice.invoiceid
 			LEFT JOIN vtiger_invoicebillads ON vtiger_invoicebillads.invoicebilladdressid = vtiger_invoice.invoiceid
 			LEFT JOIN vtiger_invoiceshipads ON vtiger_invoiceshipads.invoiceshipaddressid = vtiger_invoice.invoiceid
@@ -265,7 +265,7 @@ class SalesOrder extends CRMEntity {
 	 */
 	function setRelationTables($secmodule){
 		$rel_tables = array (
-			"Invoice" =>array("vtiger_invoice"=>array("salesorderid","invoiceid"),"vtiger_salesorder"=>"salesorderid"),
+			"Invoice" =>array("vtiger_invoice"=>array("salesorder_id","invoiceid"),"vtiger_salesorder"=>"salesorderid"),
 			"Documents" => array("vtiger_senotesrel"=>array("crmid","notesid"),"vtiger_salesorder"=>"salesorderid"),
 		);
 		return $rel_tables[$secmodule];
