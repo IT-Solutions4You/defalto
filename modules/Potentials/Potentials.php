@@ -367,13 +367,13 @@ class Potentials extends CRMEntity {
 		$query = "select case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,
 					vtiger_account.accountname, vtiger_crmentity.*, vtiger_quotes.*, vtiger_potential.potentialname from vtiger_quotes
 					inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_quotes.quoteid
-					left outer join vtiger_potential on vtiger_potential.potentialid=vtiger_quotes.potentialid
+					left outer join vtiger_potential on vtiger_potential.potentialid=vtiger_quotes.potential_id
 					left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.assigned_user_id
                     LEFT JOIN vtiger_quotescf ON vtiger_quotescf.quoteid = vtiger_quotes.quoteid
 					LEFT JOIN vtiger_quotesbillads ON vtiger_quotesbillads.quotebilladdressid = vtiger_quotes.quoteid
 					LEFT JOIN vtiger_quotesshipads ON vtiger_quotesshipads.quoteshipaddressid = vtiger_quotes.quoteid
 					left join vtiger_users on vtiger_users.id=vtiger_crmentity.assigned_user_id
-					LEFT join vtiger_account on vtiger_account.accountid=vtiger_quotes.accountid
+					LEFT join vtiger_account on vtiger_account.accountid=vtiger_quotes.account_id
 					where vtiger_crmentity.deleted=0 and vtiger_potential.potentialid=".$id;
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
@@ -483,7 +483,7 @@ class Potentials extends CRMEntity {
             'vtiger_contpotentialrel' => 'potentialid',
             'vtiger_seproductsrel'    => 'crmid',
             'vtiger_seattachmentsrel' => 'crmid',
-            'vtiger_quotes'           => 'potentialid',
+            'vtiger_quotes'           => 'potential_id',
             'vtiger_salesorder'       => 'potentialid',
             'vtiger_senotesrel'       => 'crmid'
         ];
@@ -569,7 +569,7 @@ class Potentials extends CRMEntity {
 	function setRelationTables($secmodule){
 		$rel_tables = array (
 			"Products" => array("vtiger_seproductsrel"=>array("crmid","productid"),"vtiger_potential"=>"potentialid"),
-			"Quotes" => array("vtiger_quotes"=>array("potentialid","quoteid"),"vtiger_potential"=>"potentialid"),
+			"Quotes" => array("vtiger_quotes"=>array("potential_id","quoteid"),"vtiger_potential"=>"potentialid"),
 			"SalesOrder" => array("vtiger_salesorder"=>array("potentialid","salesorderid"),"vtiger_potential"=>"potentialid"),
 			"Documents" => array("vtiger_senotesrel"=>array("crmid","notesid"),"vtiger_potential"=>"potentialid"),
 			"Accounts" => array("vtiger_potential"=>array("potentialid","related_to")),

@@ -142,16 +142,16 @@ function getFieldsListFromQuery($query)
         elseif($tablename == 'vtiger_notes' && ($columnName == 'filename' || $columnName == 'filetype' || $columnName == 'filesize' || $columnName == 'filelocationtype' || $columnName == 'filestatus' || $columnName == 'filedownloadcount' ||$columnName == 'folderid')){
 			continue;
 		}
-		elseif(($tablename == 'vtiger_invoice' || $tablename == 'vtiger_quotes' || $tablename == 'vtiger_salesorder')&& $columnName == 'accountid') {
+		elseif(($tablename == 'vtiger_invoice' || $tablename == 'vtiger_quotes' || $tablename == 'vtiger_salesorder')&& $columnName == 'account_id') {
 			$fields .= 'concat("Accounts::::",vtiger_account.accountname) as "'.$fieldlabel.'",';
 		}
-		elseif(($tablename == 'vtiger_invoice' || $tablename == 'vtiger_quotes' || $tablename == 'vtiger_salesorder' || $tablename == 'vtiger_purchaseorder') && $columnName == 'contactid') {
+		elseif(($tablename == 'vtiger_invoice' || $tablename == 'vtiger_quotes' || $tablename == 'vtiger_salesorder' || $tablename == 'vtiger_purchaseorder') && $columnName == 'contact_id') {
 			$fields .= 'concat("Contacts::::",vtiger_contactdetails.lastname," ",vtiger_contactdetails.firstname) as "'.$fieldlabel.'",';
 		}
 		elseif($tablename == 'vtiger_invoice' && $columnName == 'salesorderid') {
 			$fields .= 'concat("SalesOrder::::",vtiger_salesorder.subject) as "'.$fieldlabel.'",';
 		}
-		elseif(($tablename == 'vtiger_quotes' || $tablename == 'vtiger_salesorder') && $columnName == 'potentialid') {
+		elseif(($tablename == 'vtiger_quotes' || $tablename == 'vtiger_salesorder') && $columnName == 'potential_id') {
 			$fields .= 'concat("Potentials::::",vtiger_potential.potentialname) as "'.$fieldlabel.'",';
 		}
 		elseif($tablename == 'vtiger_quotes' && $columnName == 'inventorymanager') {

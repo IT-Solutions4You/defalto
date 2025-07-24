@@ -987,9 +987,9 @@ class Vtiger_Functions {
 			//Vendor Related Fields
 			"vtiger_vendor:email" => "V",
 			//Quotes Related Fields
-			"vtiger_quotes:potentialid" => "V",
+			"vtiger_quotes:potential_id" => "V",
 			"vtiger_quotes:inventorymanager" => "V",
-			"vtiger_quotes:accountid" => "V",
+			"vtiger_quotes:account_id" => "V",
 			//Purchase Order Related Fields
 			"vtiger_purchaseorder:vendorid" => "V",
 			"vtiger_purchaseorder:contactid" => "V",

@@ -126,7 +126,7 @@ class Contacts extends CRMEntity
 
     public $related_module_table_index = [
         'Potentials' => ['table_name' => 'vtiger_potential', 'table_index' => 'potentialid', 'rel_index' => 'contact_id'],
-        'Quotes' => ['table_name' => 'vtiger_quotes', 'table_index' => 'quoteid', 'rel_index' => 'contactid'],
+        'Quotes' => ['table_name' => 'vtiger_quotes', 'table_index' => 'quoteid', 'rel_index' => 'contact_id'],
         'SalesOrder' => ['table_name' => 'vtiger_salesorder', 'table_index' => 'salesorderid', 'rel_index' => 'contactid'],
         'PurchaseOrder' => ['table_name' => 'vtiger_purchaseorder', 'table_index' => 'purchaseorderid', 'rel_index' => 'contactid'],
         'Invoice' => ['table_name' => 'vtiger_invoice', 'table_index' => 'invoiceid', 'rel_index' => 'contactid'],
@@ -505,9 +505,9 @@ class Contacts extends CRMEntity
             vtiger_crmentity.*, vtiger_quotes.*,vtiger_potential.potentialname,vtiger_contactdetails.lastname,vtiger_account.accountname 
             from vtiger_quotes 
             inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_quotes.quoteid 
-            left outer join vtiger_contactdetails on vtiger_contactdetails.contactid=vtiger_quotes.contactid 
-            left outer join vtiger_potential on vtiger_potential.potentialid=vtiger_quotes.potentialid  
-            left join vtiger_account on vtiger_account.accountid = vtiger_quotes.accountid 
+            left outer join vtiger_contactdetails on vtiger_contactdetails.contactid=vtiger_quotes.contact_id 
+            left outer join vtiger_potential on vtiger_potential.potentialid=vtiger_quotes.potential_id  
+            left join vtiger_account on vtiger_account.accountid = vtiger_quotes.account_id 
             LEFT JOIN vtiger_quotescf ON vtiger_quotescf.quoteid = vtiger_quotes.quoteid 
             LEFT JOIN vtiger_quotesbillads ON vtiger_quotesbillads.quotebilladdressid = vtiger_quotes.quoteid 
             LEFT JOIN vtiger_quotesshipads ON vtiger_quotesshipads.quoteshipaddressid = vtiger_quotes.quoteid 
@@ -1208,7 +1208,7 @@ function getColumnNames()
             "vtiger_contpotentialrel" => "contactid",
             "vtiger_potential" => "contact_id",
             "vtiger_troubletickets" => "contact_id",
-            "vtiger_quotes" => "contactid",
+            "vtiger_quotes" => "contact_id",
             "vtiger_purchaseorder" => "contactid",
             "vtiger_salesorder" => "contactid",
             "vtiger_seproductsrel" => "crmid",
@@ -1315,7 +1315,7 @@ function getColumnNames()
 	function setRelationTables($secmodule){
 		$rel_tables = array (
 			"HelpDesk" => array("vtiger_troubletickets"=>array("contact_id","ticketid"),"vtiger_contactdetails"=>"contactid"),
-			"Quotes" => array("vtiger_quotes"=>array("contactid","quoteid"),"vtiger_contactdetails"=>"contactid"),
+			"Quotes" => array("vtiger_quotes"=>array("contact_id","quoteid"),"vtiger_contactdetails"=>"contactid"),
 			"PurchaseOrder" => array("vtiger_purchaseorder"=>array("contactid","purchaseorderid"),"vtiger_contactdetails"=>"contactid"),
 			"SalesOrder" => array("vtiger_salesorder"=>array("contactid","salesorderid"),"vtiger_contactdetails"=>"contactid"),
 			"Products" => array("vtiger_seproductsrel"=>array("crmid","productid"),"vtiger_contactdetails"=>"contactid"),
@@ -1396,7 +1396,7 @@ function getColumnNames()
 		$this->db->pquery('UPDATE vtiger_salesorder SET contactid=0 WHERE contactid=?', array($id));
 
 		//Backup Contact-Quotes Relation
-		$quo_q = 'SELECT quoteid FROM vtiger_quotes WHERE contactid=?';
+		$quo_q = 'SELECT quoteid FROM vtiger_quotes WHERE contact_id=?';
 		$quo_res = $this->db->pquery($quo_q, array($id));
 		if ($this->db->num_rows($quo_res) > 0) {
 			$quo_ids_list = array();
@@ -1404,11 +1404,11 @@ function getColumnNames()
 			{
 				$quo_ids_list[] = $this->db->query_result($quo_res,$k,"quoteid");
 			}
-			$params = array($id, RB_RECORD_UPDATED, 'vtiger_quotes', 'contactid', 'quoteid', implode(",", $quo_ids_list));
+			$params = array($id, RB_RECORD_UPDATED, 'vtiger_quotes', 'contact_id', 'quoteid', implode(",", $quo_ids_list));
 			$this->db->pquery('INSERT INTO vtiger_relatedlists_rb VALUES (?,?,?,?,?,?)', $params);
 		}
 		//removing the relationship of contacts with Quotes
-		$this->db->pquery('UPDATE vtiger_quotes SET contactid=0 WHERE contactid=?', array($id));
+		$this->db->pquery('UPDATE vtiger_quotes SET contact_id=0 WHERE contact_id=?', array($id));
 		//remove the portal info the contact
 		$this->db->pquery('DELETE FROM vtiger_portalinfo WHERE id = ?', array($id));
 		$this->db->pquery('UPDATE vtiger_customerdetails SET portal=0,support_start_date=NULL,support_end_date=NULl WHERE customerid=?', array($id));

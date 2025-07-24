@@ -56,8 +56,8 @@ class Quotes extends CRMEntity {
 				// END
 				'Subject'=>Array('quotes'=>'subject'),
 				'Quote Stage'=>Array('quotes'=>'quotestage'),
-				'Potential Name'=>Array('quotes'=>'potentialid'),
-				'Account Name'=>Array('account'=> 'accountid'),
+				'Potential Name'=>Array('quotes'=>'potential_id'),
+				'Account Name'=>Array('account'=> 'account_id'),
 				'Total'=>Array('quotes'=> 'total'),
 				'Assigned To'=>Array('crmentity'=>'assigned_user_id')
 				);
@@ -76,7 +76,7 @@ class Quotes extends CRMEntity {
 	var $search_fields = Array(
 				'Quote No'=>Array('quotes'=>'quote_no'),
 				'Subject'=>Array('quotes'=>'subject'),
-				'Account Name'=>Array('quotes'=>'accountid'),
+				'Account Name'=>Array('quotes'=>'account_id'),
 				'Quote Stage'=>Array('quotes'=>'quotestage'),
 				);
 
@@ -240,13 +240,13 @@ class Quotes extends CRMEntity {
 			$query .= " left join vtiger_users as vtiger_usersRel1 on vtiger_usersRel1.id = vtiger_quotes.inventorymanager";
 		}
 		if ($queryPlanner->requireTable("vtiger_potentialRelQuotes")){
-			$query .= " left join vtiger_potential as vtiger_potentialRelQuotes on vtiger_potentialRelQuotes.potentialid = vtiger_quotes.potentialid";
+			$query .= " left join vtiger_potential as vtiger_potentialRelQuotes on vtiger_potentialRelQuotes.potentialid = vtiger_quotes.potential_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_contactdetailsQuotes")){
-			$query .= " left join vtiger_contactdetails as vtiger_contactdetailsQuotes on vtiger_contactdetailsQuotes.contactid = vtiger_quotes.contactid";
+			$query .= " left join vtiger_contactdetails as vtiger_contactdetailsQuotes on vtiger_contactdetailsQuotes.contactid = vtiger_quotes.contact_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_accountQuotes")){
-			$query .= " left join vtiger_account as vtiger_accountQuotes on vtiger_accountQuotes.accountid = vtiger_quotes.accountid";
+			$query .= " left join vtiger_account as vtiger_accountQuotes on vtiger_accountQuotes.accountid = vtiger_quotes.account_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_lastModifiedByQuotes")){
 			$query .= " left join vtiger_users as vtiger_lastModifiedByQuotes on vtiger_lastModifiedByQuotes.id = vtiger_crmentityQuotes.modifiedby ";
@@ -270,9 +270,9 @@ class Quotes extends CRMEntity {
 		$rel_tables = array (
 			"SalesOrder" =>array("vtiger_salesorder"=>array("quoteid","salesorderid"),"vtiger_quotes"=>"quoteid"),
 			"Documents" => array("vtiger_senotesrel"=>array("crmid","notesid"),"vtiger_quotes"=>"quoteid"),
-			"Accounts" => array("vtiger_quotes"=>array("quoteid","accountid")),
-			"Contacts" => array("vtiger_quotes"=>array("quoteid","contactid")),
-			"Potentials" => array("vtiger_quotes"=>array("quoteid","potentialid")),
+			"Accounts" => array("vtiger_quotes"=>array("quoteid","account_id")),
+			"Contacts" => array("vtiger_quotes"=>array("quoteid","contact_id")),
+			"Potentials" => array("vtiger_quotes"=>array("quoteid","potential_id")),
 		);
 		return $rel_tables[$secmodule];
 	}
@@ -285,16 +285,16 @@ class Quotes extends CRMEntity {
 		if($return_module == 'Accounts' ) {
 			$this->trash('Quotes',$id);
 		} elseif($return_module == 'Potentials') {
-			$relation_query = 'UPDATE vtiger_quotes SET potentialid=? WHERE quoteid=?';
+			$relation_query = 'UPDATE vtiger_quotes SET potential_id=? WHERE quoteid=?';
 			$this->db->pquery($relation_query, array(null, $id));
 		} elseif($return_module == 'Contacts') {
-			$relation_query = 'UPDATE vtiger_quotes SET contactid=? WHERE quoteid=?';
+			$relation_query = 'UPDATE vtiger_quotes SET contact_id=? WHERE quoteid=?';
 			$this->db->pquery($relation_query, array(null, $id));
 		} elseif($return_module == 'Documents') {
             $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
             $this->db->pquery($sql, array($id, $return_id));
         } elseif($return_module == 'Leads'){
-            $relation_query = 'UPDATE vtiger_quotes SET contactid=? WHERE quoteid=?';
+            $relation_query = 'UPDATE vtiger_quotes SET contact_id=? WHERE quoteid=?';
             $this->db->pquery($relation_query, array(null, $id));
 		} else {
 			parent::unlinkRelationship($id, $return_module, $return_id);
@@ -360,9 +360,9 @@ class Quotes extends CRMEntity {
 				LEFT JOIN vtiger_inventoryproductrel ON vtiger_inventoryproductrel.id = vtiger_quotes.quoteid
 				LEFT JOIN vtiger_products ON vtiger_products.productid = vtiger_inventoryproductrel.productid
 				LEFT JOIN vtiger_service ON vtiger_service.serviceid = vtiger_inventoryproductrel.productid
-				LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_quotes.contactid
-				LEFT JOIN vtiger_potential ON vtiger_potential.potentialid = vtiger_quotes.potentialid
-				LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_quotes.accountid
+				LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_quotes.contact_id
+				LEFT JOIN vtiger_potential ON vtiger_potential.potentialid = vtiger_quotes.potential_id
+				LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_quotes.account_id
 				LEFT JOIN vtiger_currency_info ON vtiger_currency_info.id = vtiger_quotes.currency_id
 				LEFT JOIN vtiger_users AS vtiger_inventoryManager ON vtiger_inventoryManager.id = vtiger_quotes.inventorymanager
 				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id

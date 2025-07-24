@@ -73,7 +73,7 @@ class Accounts extends CRMEntity {
 	public $related_module_table_index = array(
 		'Contacts' => array('table_name' => 'vtiger_contactdetails', 'table_index' => 'contactid', 'rel_index' => 'account_id'),
 		'Potentials' => array('table_name' => 'vtiger_potential', 'table_index' => 'potentialid', 'rel_index' => 'related_to'),
-		'Quotes' => array('table_name' => 'vtiger_quotes', 'table_index' => 'quoteid', 'rel_index' => 'accountid'),
+		'Quotes' => array('table_name' => 'vtiger_quotes', 'table_index' => 'quoteid', 'rel_index' => 'account_id'),
 		'SalesOrder' => array('table_name' => 'vtiger_salesorder', 'table_index' => 'salesorderid', 'rel_index' => 'accountid'),
 		'Invoice' => array('table_name' => 'vtiger_invoice', 'table_index' => 'invoiceid', 'rel_index' => 'accountid'),
 		'HelpDesk' => array('table_name' => 'vtiger_troubletickets', 'table_index' => 'ticketid', 'rel_index' => 'parent_id'),
@@ -418,8 +418,8 @@ class Accounts extends CRMEntity {
 				vtiger_crmentity.*, vtiger_quotes.*, vtiger_potential.potentialname, vtiger_account.accountname
 				FROM vtiger_quotes
 				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_quotes.quoteid
-				LEFT OUTER JOIN vtiger_account ON vtiger_account.accountid = vtiger_quotes.accountid
-				LEFT OUTER JOIN vtiger_potential ON vtiger_potential.potentialid = vtiger_quotes.potentialid
+				LEFT OUTER JOIN vtiger_account ON vtiger_account.accountid = vtiger_quotes.account_id
+				LEFT OUTER JOIN vtiger_potential ON vtiger_potential.potentialid = vtiger_quotes.potential_id
 				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
                 LEFT JOIN vtiger_quotescf ON vtiger_quotescf.quoteid = vtiger_quotes.quoteid
 				LEFT JOIN vtiger_quotesbillads ON vtiger_quotesbillads.quotebilladdressid = vtiger_quotes.quoteid
@@ -428,7 +428,7 @@ class Accounts extends CRMEntity {
 				WHERE vtiger_crmentity.deleted = 0 AND (vtiger_account.accountid = $id";
 
 		if(!empty ($entityIds)){
-			$query .= " OR vtiger_quotes.contactid IN (".$entityIds."))";
+			$query .= " OR vtiger_quotes.contact_id IN (".$entityIds."))";
 		} else {
 			$query .= ")";
 		}
@@ -836,7 +836,7 @@ class Accounts extends CRMEntity {
         $entity_tbl_field_arr = [
             'vtiger_contactdetails'     => 'account_id',
             'vtiger_potential'          => 'related_to',
-            'vtiger_quotes'             => 'accountid',
+            'vtiger_quotes'             => 'account_id',
             'vtiger_salesorder'         => 'accountid',
             'vtiger_invoice'            => 'accountid',
             'vtiger_senotesrel'         => 'crmid',
@@ -880,7 +880,7 @@ class Accounts extends CRMEntity {
 		$rel_tables =  array (
 			"Contacts" => array("vtiger_contactdetails"=>array("account_id","contactid"),"vtiger_account"=>"accountid"),
 			"Potentials" => array("vtiger_potential"=>array("related_to","potentialid"),"vtiger_account"=>"accountid"),
-			"Quotes" => array("vtiger_quotes"=>array("accountid","quoteid"),"vtiger_account"=>"accountid"),
+			"Quotes" => array("vtiger_quotes"=>array("account_id","quoteid"),"vtiger_account"=>"accountid"),
 			"SalesOrder" => array("vtiger_salesorder"=>array("accountid","salesorderid"),"vtiger_account"=>"accountid"),
 			"Invoice" => array("vtiger_invoice"=>array("accountid","invoiceid"),"vtiger_account"=>"accountid"),
 			"HelpDesk" => array("vtiger_troubletickets"=>array("parent_id","ticketid"),"vtiger_account"=>"accountid"),
@@ -1140,8 +1140,8 @@ class Accounts extends CRMEntity {
 		//Deleting Account related Quotes.
 		$quo_q = 'SELECT vtiger_crmentity.crmid FROM vtiger_crmentity
 			INNER JOIN vtiger_quotes ON vtiger_crmentity.crmid=vtiger_quotes.quoteid
-			INNER JOIN vtiger_account ON vtiger_account.accountid=vtiger_quotes.accountid
-			WHERE vtiger_crmentity.deleted=0 AND vtiger_quotes.accountid=?';
+			INNER JOIN vtiger_account ON vtiger_account.accountid=vtiger_quotes.account_id
+			WHERE vtiger_crmentity.deleted=0 AND vtiger_quotes.account_id=?';
 		$quo_res = $this->db->pquery($quo_q, array($id));
 		$quo_ids_list = array();
 		for($k=0;$k < $this->db->num_rows($quo_res);$k++)

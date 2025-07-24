@@ -684,9 +684,9 @@ class Products extends CRMEntity
 			INNER JOIN vtiger_inventoryproductrel
 				ON vtiger_inventoryproductrel.id = vtiger_quotes.quoteid
 			LEFT OUTER JOIN vtiger_account
-				ON vtiger_account.accountid = vtiger_quotes.accountid
+				ON vtiger_account.accountid = vtiger_quotes.account_id
 			LEFT OUTER JOIN vtiger_potential
-				ON vtiger_potential.potentialid = vtiger_quotes.potentialid
+				ON vtiger_potential.potentialid = vtiger_quotes.potential_id
 			LEFT JOIN vtiger_groups
 				ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 			LEFT JOIN vtiger_quotescf

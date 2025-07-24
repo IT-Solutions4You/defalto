@@ -1017,7 +1017,7 @@ function vtws_transferRelatedPotentialQuotes($entityId, $relatedId) {
 
 	$query = 'SELECT vtiger_quotes.quoteid FROM vtiger_quotes
 				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_quotes.quoteid
-				INNER JOIN vtiger_potential on vtiger_potential.potentialid=vtiger_quotes.potentialid
+				INNER JOIN vtiger_potential on vtiger_potential.potentialid=vtiger_quotes.potential_id
 				WHERE vtiger_crmentity.deleted=0 and vtiger_potential.potentialid=?';
 	$result = $db->pquery($query, array($entityId));
 	if ($result == false) {
