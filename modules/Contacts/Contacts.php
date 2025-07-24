@@ -127,7 +127,7 @@ class Contacts extends CRMEntity
     public $related_module_table_index = [
         'Potentials' => ['table_name' => 'vtiger_potential', 'table_index' => 'potentialid', 'rel_index' => 'contact_id'],
         'Quotes' => ['table_name' => 'vtiger_quotes', 'table_index' => 'quoteid', 'rel_index' => 'contact_id'],
-        'SalesOrder' => ['table_name' => 'vtiger_salesorder', 'table_index' => 'salesorderid', 'rel_index' => 'contactid'],
+        'SalesOrder' => ['table_name' => 'vtiger_salesorder', 'table_index' => 'salesorderid', 'rel_index' => 'contact_id'],
         'PurchaseOrder' => ['table_name' => 'vtiger_purchaseorder', 'table_index' => 'purchaseorderid', 'rel_index' => 'contact_id'],
         'Invoice' => ['table_name' => 'vtiger_invoice', 'table_index' => 'invoiceid', 'rel_index' => 'contactid'],
         'HelpDesk' => ['table_name' => 'vtiger_troubletickets', 'table_index' => 'ticketid', 'rel_index' => 'contact_id'],
@@ -581,12 +581,12 @@ class Contacts extends CRMEntity
             LEFT JOIN vtiger_sobillads ON vtiger_sobillads.sobilladdressid = vtiger_salesorder.salesorderid 
             LEFT JOIN vtiger_soshipads ON vtiger_soshipads.soshipaddressid = vtiger_salesorder.salesorderid 
             left join vtiger_users on vtiger_users.id=vtiger_crmentity.assigned_user_id 
-            left outer join vtiger_quotes on vtiger_quotes.quoteid=vtiger_salesorder.quoteid 
-            left outer join vtiger_account on vtiger_account.accountid=vtiger_salesorder.accountid 
+            left outer join vtiger_quotes on vtiger_quotes.quoteid=vtiger_salesorder.quote_id 
+            left outer join vtiger_account on vtiger_account.accountid=vtiger_salesorder.account_id 
             LEFT JOIN vtiger_invoice_recurring_info ON vtiger_invoice_recurring_info.salesorderid = vtiger_salesorder.salesorderid 
-            left outer join vtiger_contactdetails on vtiger_contactdetails.contactid=vtiger_salesorder.contactid 
+            left outer join vtiger_contactdetails on vtiger_contactdetails.contactid=vtiger_salesorder.contact_id 
             left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.assigned_user_id 
-            where vtiger_crmentity.deleted=0 and vtiger_salesorder.contactid = " . $id;
+            where vtiger_crmentity.deleted=0 and vtiger_salesorder.contact_id = " . $id;
 
         $return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -1210,7 +1210,7 @@ function getColumnNames()
             "vtiger_troubletickets" => "contact_id",
             "vtiger_quotes" => "contact_id",
             "vtiger_purchaseorder" => "contact_id",
-            "vtiger_salesorder" => "contactid",
+            "vtiger_salesorder" => "contact_id",
             "vtiger_seproductsrel" => "crmid",
             "vtiger_senotesrel" => "crmid",
             "vtiger_seattachmentsrel" => "crmid",
@@ -1317,7 +1317,7 @@ function getColumnNames()
 			"HelpDesk" => array("vtiger_troubletickets"=>array("contact_id","ticketid"),"vtiger_contactdetails"=>"contactid"),
 			"Quotes" => array("vtiger_quotes"=>array("contact_id","quoteid"),"vtiger_contactdetails"=>"contactid"),
 			"PurchaseOrder" => array("vtiger_purchaseorder"=>array("contact_id","purchaseorderid"),"vtiger_contactdetails"=>"contactid"),
-			"SalesOrder" => array("vtiger_salesorder"=>array("contactid","salesorderid"),"vtiger_contactdetails"=>"contactid"),
+			"SalesOrder" => array("vtiger_salesorder"=>array("contact_id","salesorderid"),"vtiger_contactdetails"=>"contactid"),
 			"Products" => array("vtiger_seproductsrel"=>array("crmid","productid"),"vtiger_contactdetails"=>"contactid"),
 			"Campaigns" => array("vtiger_campaigncontrel"=>array("contactid","campaignid"),"vtiger_contactdetails"=>"contactid"),
 			"Documents" => array("vtiger_senotesrel"=>array("crmid","notesid"),"vtiger_contactdetails"=>"contactid"),
@@ -1393,7 +1393,7 @@ function getColumnNames()
 			$this->db->pquery('INSERT INTO vtiger_relatedlists_rb VALUES (?,?,?,?,?,?)', $params);
 		}
 		//removing the relationship of contacts with SalesOrder
-		$this->db->pquery('UPDATE vtiger_salesorder SET contactid=0 WHERE contactid=?', array($id));
+		$this->db->pquery('UPDATE vtiger_salesorder SET contact_id=0 WHERE contact_id=?', array($id));
 
 		//Backup Contact-Quotes Relation
 		$quo_q = 'SELECT quoteid FROM vtiger_quotes WHERE contact_id=?';

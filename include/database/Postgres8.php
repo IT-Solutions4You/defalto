@@ -174,7 +174,7 @@ function expandRecord($table,$log)
 
 	//vtiger_salesorder
 	elseif( $table == "vtiger_salesorder")
-	$subfields = array("salesorderid", "subject", "potentialid", "customerno", "quoteid", "vendorterms", "contactid", "vendorid", "duedate", "carrier", "pending", "type", "adjustment", "salescommission", "exciseduty","total", "subtotal", "taxtype", "discount_percent", "discount_amount", "s_h_amount", "accountid", "terms_conditions", "purchaseorder", "sostatus");
+	$subfields = array("salesorderid", "subject", "potential_id", "customerno", "quote_id", "vendorterms", "contact_id", "vendorid", "duedate", "carrier", "pending", "type", "adjustment", "salescommission", "exciseduty","grand_total", "subtotal", "taxtype", "discount_percent", "discount_amount", "s_h_amount", "account_id", "terms_conditions", "purchaseorder_id", "sostatus");
 
 	//vtiger_invoice
 	elseif( $table == "vtiger_invoice")

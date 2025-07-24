@@ -58,8 +58,8 @@ class SalesOrder extends CRMEntity {
 				// END
 				'Subject'=>Array('salesorder'=>'subject'),
 				'Account Name'=>Array('account'=>'accountid'),
-				'Quote Name'=>Array('quotes'=>'quoteid'),
-				'Total'=>Array('salesorder'=>'total'),
+				'Quote Name'=>Array('quotes'=>'quote_id'),
+				'Total'=>Array('salesorder'=>'grand_total'),
 				'Assigned To'=>Array('crmentity'=>'assigned_user_id')
 				);
 
@@ -231,19 +231,19 @@ class SalesOrder extends CRMEntity {
 			$query .= " left join vtiger_users as vtiger_usersSalesOrder on vtiger_usersSalesOrder.id = vtiger_crmentitySalesOrder.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_potentialRelSalesOrder")){
-			$query .= " left join vtiger_potential as vtiger_potentialRelSalesOrder on vtiger_potentialRelSalesOrder.potentialid = vtiger_salesorder.potentialid";
+			$query .= " left join vtiger_potential as vtiger_potentialRelSalesOrder on vtiger_potentialRelSalesOrder.potentialid = vtiger_salesorder.potential_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_contactdetailsSalesOrder")){
-			$query .= " left join vtiger_contactdetails as vtiger_contactdetailsSalesOrder on vtiger_salesorder.contactid = vtiger_contactdetailsSalesOrder.contactid";
+			$query .= " left join vtiger_contactdetails as vtiger_contactdetailsSalesOrder on vtiger_salesorder.contact_id = vtiger_contactdetailsSalesOrder.contactid";
 		}
 		if ($queryPlanner->requireTable("vtiger_invoice_recurring_info")){
 			$query .= " left join vtiger_invoice_recurring_info on vtiger_salesorder.salesorderid = vtiger_invoice_recurring_info.salesorderid";
 		}
 		if ($queryPlanner->requireTable("vtiger_quotesSalesOrder")){
-			$query .= " left join vtiger_quotes as vtiger_quotesSalesOrder on vtiger_salesorder.quoteid = vtiger_quotesSalesOrder.quoteid";
+			$query .= " left join vtiger_quotes as vtiger_quotesSalesOrder on vtiger_salesorder.quote_id = vtiger_quotesSalesOrder.quoteid";
 		}
 		if ($queryPlanner->requireTable("vtiger_accountSalesOrder")){
-			$query .= " left join vtiger_account as vtiger_accountSalesOrder on vtiger_accountSalesOrder.accountid = vtiger_salesorder.accountid";
+			$query .= " left join vtiger_account as vtiger_accountSalesOrder on vtiger_accountSalesOrder.accountid = vtiger_salesorder.account_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_lastModifiedBySalesOrder")){
 			$query .= " left join vtiger_users as vtiger_lastModifiedBySalesOrder on vtiger_lastModifiedBySalesOrder.id = vtiger_crmentitySalesOrder.modifiedby ";
@@ -280,15 +280,15 @@ class SalesOrder extends CRMEntity {
 			$this->trash('SalesOrder',$id);
 		}
 		elseif($return_module == 'Quotes') {
-			$relation_query = 'UPDATE vtiger_salesorder SET quoteid=? WHERE salesorderid=?';
+			$relation_query = 'UPDATE vtiger_salesorder SET quote_id=? WHERE salesorderid=?';
 			$this->db->pquery($relation_query, array(null, $id));
 		}
 		elseif($return_module == 'Potentials') {
-			$relation_query = 'UPDATE vtiger_salesorder SET potentialid=? WHERE salesorderid=?';
+			$relation_query = 'UPDATE vtiger_salesorder SET potential_id=? WHERE salesorderid=?';
 			$this->db->pquery($relation_query, array(null, $id));
 		}
 		elseif($return_module == 'Contacts') {
-			$relation_query = 'UPDATE vtiger_salesorder SET contactid=? WHERE salesorderid=?';
+			$relation_query = 'UPDATE vtiger_salesorder SET contact_id=? WHERE salesorderid=?';
 			$this->db->pquery($relation_query, array(null, $id));
 		} elseif($return_module == 'Documents') {
             $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
@@ -364,12 +364,12 @@ class SalesOrder extends CRMEntity {
 				LEFT JOIN vtiger_inventoryproductrel ON vtiger_inventoryproductrel.id = vtiger_salesorder.salesorderid
 				LEFT JOIN vtiger_products ON vtiger_products.productid = vtiger_inventoryproductrel.productid
 				LEFT JOIN vtiger_service ON vtiger_service.serviceid = vtiger_inventoryproductrel.productid
-				LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_salesorder.contactid
+				LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_salesorder.contact_id
 				LEFT JOIN vtiger_invoice_recurring_info ON vtiger_invoice_recurring_info.salesorderid = vtiger_salesorder.salesorderid
-				LEFT JOIN vtiger_potential ON vtiger_potential.potentialid = vtiger_salesorder.potentialid
-				LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_salesorder.accountid
+				LEFT JOIN vtiger_potential ON vtiger_potential.potentialid = vtiger_salesorder.potential_id
+				LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_salesorder.account_id
 				LEFT JOIN vtiger_currency_info ON vtiger_currency_info.id = vtiger_salesorder.currency_id
-				LEFT JOIN vtiger_quotes ON vtiger_quotes.quoteid = vtiger_salesorder.quoteid
+				LEFT JOIN vtiger_quotes ON vtiger_quotes.quoteid = vtiger_salesorder.quote_id
 				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 				LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id";
 

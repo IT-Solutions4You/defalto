@@ -431,9 +431,9 @@ class Potentials extends CRMEntity {
 			(vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname
 			end as user_name from vtiger_salesorder
 			inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_salesorder.salesorderid
-			left outer join vtiger_quotes on vtiger_quotes.quoteid=vtiger_salesorder.quoteid
-			left outer join vtiger_account on vtiger_account.accountid=vtiger_salesorder.accountid
-			left outer join vtiger_potential on vtiger_potential.potentialid=vtiger_salesorder.potentialid
+			left outer join vtiger_quotes on vtiger_quotes.quoteid=vtiger_salesorder.quote_id
+			left outer join vtiger_account on vtiger_account.accountid=vtiger_salesorder.account_id
+			left outer join vtiger_potential on vtiger_potential.potentialid=vtiger_salesorder.potential_id
 			left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.assigned_user_id
             LEFT JOIN vtiger_salesordercf ON vtiger_salesordercf.salesorderid = vtiger_salesorder.salesorderid
             LEFT JOIN vtiger_invoice_recurring_info ON vtiger_invoice_recurring_info.salesorderid = vtiger_salesorder.salesorderid
@@ -484,7 +484,7 @@ class Potentials extends CRMEntity {
             'vtiger_seproductsrel'    => 'crmid',
             'vtiger_seattachmentsrel' => 'crmid',
             'vtiger_quotes'           => 'potential_id',
-            'vtiger_salesorder'       => 'potentialid',
+            'vtiger_salesorder'       => 'potential_id',
             'vtiger_senotesrel'       => 'crmid'
         ];
 
@@ -570,7 +570,7 @@ class Potentials extends CRMEntity {
 		$rel_tables = array (
 			"Products" => array("vtiger_seproductsrel"=>array("crmid","productid"),"vtiger_potential"=>"potentialid"),
 			"Quotes" => array("vtiger_quotes"=>array("potential_id","quoteid"),"vtiger_potential"=>"potentialid"),
-			"SalesOrder" => array("vtiger_salesorder"=>array("potentialid","salesorderid"),"vtiger_potential"=>"potentialid"),
+			"SalesOrder" => array("vtiger_salesorder"=>array("potential_id","salesorderid"),"vtiger_potential"=>"potentialid"),
 			"Documents" => array("vtiger_senotesrel"=>array("crmid","notesid"),"vtiger_potential"=>"potentialid"),
 			"Accounts" => array("vtiger_potential"=>array("potentialid","related_to")),
 			"Contacts" => array("vtiger_potential"=>array("potentialid","contact_id")),

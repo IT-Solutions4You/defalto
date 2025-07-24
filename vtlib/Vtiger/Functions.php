@@ -994,10 +994,10 @@ class Vtiger_Functions {
 			"vtiger_purchaseorder:vendorid" => "V",
 			"vtiger_purchaseorder:contactid" => "V",
 			//SalesOrder Related Fields
-			"vtiger_salesorder:potentialid" => "V",
-			"vtiger_salesorder:quoteid" => "V",
-			"vtiger_salesorder:contactid" => "V",
-			"vtiger_salesorder:accountid" => "V",
+			"vtiger_salesorder:potential_id" => "V",
+			"vtiger_salesorder:quote_id" => "V",
+			"vtiger_salesorder:contact_id" => "V",
+			"vtiger_salesorder:account_id" => "V",
 			//Invoice Related Fields
 			"vtiger_invoice:salesorderid" => "V",
 			"vtiger_invoice:contactid" => "V",
@@ -1013,7 +1013,6 @@ class Vtiger_Functions {
 			"vtiger_contpotentialrel:potentialid" => "V",
 			"vtiger_pricebookproductrel:pricebookid" => "V",
 			"vtiger_pricebookproductrel:productid" => "V",
-			"vtiger_senotesrel:crmid" => "V",
 			"vtiger_senotesrel:notesid" => "V",
 			"vtiger_seproductsrel:crmid" => "V",
 			"vtiger_seproductsrel:productid" => "V",

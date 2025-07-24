@@ -74,7 +74,7 @@ class Accounts extends CRMEntity {
 		'Contacts' => array('table_name' => 'vtiger_contactdetails', 'table_index' => 'contactid', 'rel_index' => 'account_id'),
 		'Potentials' => array('table_name' => 'vtiger_potential', 'table_index' => 'potentialid', 'rel_index' => 'related_to'),
 		'Quotes' => array('table_name' => 'vtiger_quotes', 'table_index' => 'quoteid', 'rel_index' => 'account_id'),
-		'SalesOrder' => array('table_name' => 'vtiger_salesorder', 'table_index' => 'salesorderid', 'rel_index' => 'accountid'),
+		'SalesOrder' => array('table_name' => 'vtiger_salesorder', 'table_index' => 'salesorderid', 'rel_index' => 'account_id'),
 		'Invoice' => array('table_name' => 'vtiger_invoice', 'table_index' => 'invoiceid', 'rel_index' => 'accountid'),
 		'HelpDesk' => array('table_name' => 'vtiger_troubletickets', 'table_index' => 'ticketid', 'rel_index' => 'parent_id'),
 		'Products' => array('table_name' => 'vtiger_seproductsrel', 'table_index' => 'productid', 'rel_index' => 'crmid'),
@@ -561,18 +561,18 @@ class Accounts extends CRMEntity {
 				case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
 				FROM vtiger_salesorder
 				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_salesorder.salesorderid
-				LEFT OUTER JOIN vtiger_quotes ON vtiger_quotes.quoteid = vtiger_salesorder.quoteid
-				LEFT OUTER JOIN vtiger_account ON vtiger_account.accountid = vtiger_salesorder.accountid
+				LEFT OUTER JOIN vtiger_quotes ON vtiger_quotes.quoteid = vtiger_salesorder.quote_id
+				LEFT OUTER JOIN vtiger_account ON vtiger_account.accountid = vtiger_salesorder.account_id
 				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
                 LEFT JOIN vtiger_invoice_recurring_info ON vtiger_invoice_recurring_info.salesorderid = vtiger_salesorder.salesorderid
                 LEFT JOIN vtiger_salesordercf ON vtiger_salesordercf.salesorderid = vtiger_salesorder.salesorderid
 				LEFT JOIN vtiger_sobillads ON vtiger_sobillads.sobilladdressid = vtiger_salesorder.salesorderid
 				LEFT JOIN vtiger_soshipads ON vtiger_soshipads.soshipaddressid = vtiger_salesorder.salesorderid
 				LEFT JOIN vtiger_users ON vtiger_crmentity.assigned_user_id = vtiger_users.id
-				WHERE vtiger_crmentity.deleted = 0 AND (vtiger_salesorder.accountid = $id";
+				WHERE vtiger_crmentity.deleted = 0 AND (vtiger_salesorder.account_id = $id";
 
 		if(!empty ($entityIds)){
-			$query .= " OR vtiger_salesorder.contactid IN (".$entityIds."))";
+			$query .= " OR vtiger_salesorder.contact_id IN (".$entityIds."))";
 		} else {
 			$query .= ")";
 		}
@@ -837,7 +837,7 @@ class Accounts extends CRMEntity {
             'vtiger_contactdetails'     => 'account_id',
             'vtiger_potential'          => 'related_to',
             'vtiger_quotes'             => 'account_id',
-            'vtiger_salesorder'         => 'accountid',
+            'vtiger_salesorder'         => 'account_id',
             'vtiger_invoice'            => 'accountid',
             'vtiger_senotesrel'         => 'crmid',
             'vtiger_seattachmentsrel'   => 'crmid',
@@ -881,7 +881,7 @@ class Accounts extends CRMEntity {
 			"Contacts" => array("vtiger_contactdetails"=>array("account_id","contactid"),"vtiger_account"=>"accountid"),
 			"Potentials" => array("vtiger_potential"=>array("related_to","potentialid"),"vtiger_account"=>"accountid"),
 			"Quotes" => array("vtiger_quotes"=>array("account_id","quoteid"),"vtiger_account"=>"accountid"),
-			"SalesOrder" => array("vtiger_salesorder"=>array("accountid","salesorderid"),"vtiger_account"=>"accountid"),
+			"SalesOrder" => array("vtiger_salesorder"=>array("account_id","salesorderid"),"vtiger_account"=>"accountid"),
 			"Invoice" => array("vtiger_invoice"=>array("accountid","invoiceid"),"vtiger_account"=>"accountid"),
 			"HelpDesk" => array("vtiger_troubletickets"=>array("parent_id","ticketid"),"vtiger_account"=>"accountid"),
 			"Products" => array("vtiger_seproductsrel"=>array("crmid","productid"),"vtiger_account"=>"accountid"),
