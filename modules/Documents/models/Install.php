@@ -78,6 +78,7 @@ class Documents_Install_Model extends Core_Install_Model
                     'summaryfield' => 1,
                     'filter' => 1,
                     'filter_sequence' => 1,
+                    'entity_identifier' => 1,
                 ],
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',
