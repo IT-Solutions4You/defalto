@@ -51,9 +51,9 @@ class PurchaseOrder extends CRMEntity {
 				'Order No'=>Array('purchaseorder'=>'purchaseorder_no'),
 				// END
 				'Subject'=>Array('purchaseorder'=>'subject'),
-				'Vendor Name'=>Array('purchaseorder'=>'vendorid'),
+				'Vendor Name'=>Array('purchaseorder'=>'vendor_id'),
 				'Tracking Number'=>Array('purchaseorder'=> 'tracking_no'),
-				'Total'=>Array('purchaseorder'=>'total'),
+				'Total'=>Array('purchaseorder'=>'grand_total'),
 				'Assigned To'=>Array('crmentity'=>'assigned_user_id')
 				);
 
@@ -62,7 +62,7 @@ class PurchaseOrder extends CRMEntity {
 				        'Subject'=>'subject',
 				        'Vendor Name'=>'vendor_id',
 					'Tracking Number'=>'tracking_no',
-					'Total'=>'hdnGrandTotal',
+					'Total'=>'grand_total',
 				        'Assigned To'=>'assigned_user_id'
 				      );
 	var $list_link_field= 'subject';
@@ -338,10 +338,10 @@ class PurchaseOrder extends CRMEntity {
 			$query .= " left join vtiger_groups as vtiger_groupsPurchaseOrder on vtiger_groupsPurchaseOrder.groupid = vtiger_crmentityPurchaseOrder.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_vendorRelPurchaseOrder")){
-			$query .= " left join vtiger_vendor as vtiger_vendorRelPurchaseOrder on vtiger_vendorRelPurchaseOrder.vendorid = vtiger_purchaseorder.vendorid";
+			$query .= " left join vtiger_vendor as vtiger_vendorRelPurchaseOrder on vtiger_vendorRelPurchaseOrder.vendorid = vtiger_purchaseorder.vendor_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_contactdetailsPurchaseOrder")){
-			$query .= " left join vtiger_contactdetails as vtiger_contactdetailsPurchaseOrder on vtiger_contactdetailsPurchaseOrder.contactid = vtiger_purchaseorder.contactid";
+			$query .= " left join vtiger_contactdetails as vtiger_contactdetailsPurchaseOrder on vtiger_contactdetailsPurchaseOrder.contactid = vtiger_purchaseorder.contact_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_lastModifiedByPurchaseOrder")){
 			$query .= " left join vtiger_users as vtiger_lastModifiedByPurchaseOrder on vtiger_lastModifiedByPurchaseOrder.id = vtiger_crmentityPurchaseOrder.modifiedby ";
@@ -364,7 +364,7 @@ class PurchaseOrder extends CRMEntity {
 	function setRelationTables($secmodule){
 		$rel_tables = array (
 			"Documents" => array("vtiger_senotesrel"=>array("crmid","notesid"),"vtiger_purchaseorder"=>"purchaseorderid"),
-			"Contacts" => array("vtiger_purchaseorder"=>array("purchaseorderid","contactid")),
+			"Contacts" => array("vtiger_purchaseorder"=>array("purchaseorderid","contact_id")),
 		);
 		return $rel_tables[$secmodule];
 	}
@@ -378,11 +378,11 @@ class PurchaseOrder extends CRMEntity {
 
         switch ($return_module) {
             case 'Vendors':
-                $sql_req = 'UPDATE vtiger_purchaseorder SET vendorid = ? WHERE purchaseorderid = ?';
+                $sql_req = 'UPDATE vtiger_purchaseorder SET vendor_id = ? WHERE purchaseorderid = ?';
                 $this->db->pquery($sql_req, [$id]);
                 break;
             case 'Contacts':
-                $sql_req = 'UPDATE vtiger_purchaseorder SET contactid=? WHERE purchaseorderid = ?';
+                $sql_req = 'UPDATE vtiger_purchaseorder SET contact_id=? WHERE purchaseorderid = ?';
                 $this->db->pquery($sql_req, [null, $id]);
                 break;
             case 'Documents':
@@ -390,7 +390,7 @@ class PurchaseOrder extends CRMEntity {
                 $this->db->pquery($sql, [$id, $return_id]);
                 break;
             case 'Accounts':
-                $sql = 'UPDATE vtiger_purchaseorder SET accountid=? WHERE purchaseorderid=?';
+                $sql = 'UPDATE vtiger_purchaseorder SET account_id=? WHERE purchaseorderid=?';
                 $this->db->pquery($sql, [null, $id]);
                 break;
             default:
@@ -457,8 +457,8 @@ class PurchaseOrder extends CRMEntity {
 				LEFT JOIN vtiger_inventoryproductrel ON vtiger_inventoryproductrel.id = vtiger_purchaseorder.purchaseorderid
 				LEFT JOIN vtiger_products ON vtiger_products.productid = vtiger_inventoryproductrel.productid
 				LEFT JOIN vtiger_service ON vtiger_service.serviceid = vtiger_inventoryproductrel.productid
-				LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_purchaseorder.contactid
-				LEFT JOIN vtiger_vendor ON vtiger_vendor.vendorid = vtiger_purchaseorder.vendorid
+				LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_purchaseorder.contact_id
+				LEFT JOIN vtiger_vendor ON vtiger_vendor.vendorid = vtiger_purchaseorder.vendor_id
 				LEFT JOIN vtiger_currency_info ON vtiger_currency_info.id = vtiger_purchaseorder.currency_id
 				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 				LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id";

@@ -161,7 +161,7 @@ function getFieldsListFromQuery($query)
 		elseif($tablename == 'vtiger_salesorder' && $columnName == 'quoteid') {
 			$fields .= 'concat("Quotes::::",vtiger_quotes.subject) as "'.$fieldlabel.'",';
 		}
-		elseif($tablename == 'vtiger_purchaseorder' && $columnName == 'vendorid') {
+		elseif($tablename == 'vtiger_purchaseorder' && $columnName == 'vendor_id') {
 			$fields .= 'concat("Vendors::::",vtiger_vendor.vendorname) as "'.$fieldlabel.'",';
 		}
 		else

@@ -281,7 +281,7 @@ class Accounts extends CRMEntity {
 			LEFT JOIN vtiger_purchaseordercf ON vtiger_purchaseordercf.purchaseorderid = vtiger_purchaseorder.purchaseorderid
 			LEFT JOIN vtiger_poshipads ON vtiger_poshipads.poshipaddressid = vtiger_purchaseorder.purchaseorderid
 			LEFT JOIN vtiger_pobillads ON vtiger_pobillads.pobilladdressid = vtiger_purchaseorder.purchaseorderid
-			LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_purchaseorder.accountid
+			LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_purchaseorder.account_id
 			LEFT JOIN vtiger_groups	ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 			LEFT JOIN vtiger_users ON vtiger_crmentity.assigned_user_id = vtiger_users.id
 			WHERE vtiger_crmentity.deleted = 0

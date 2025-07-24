@@ -182,7 +182,7 @@ function expandRecord($table,$log)
 
 	//vtiger_purchaseorder
 	elseif( $table == "vtiger_purchaseorder")
-	$subfields = array("purchaseorderid", "subject", "quoteid", "vendorid", "requisition_no", "tracking_no", "contactid", "duedate", "carrier", "type", "adjustment", "salescommission", "exciseduty", "total", "subtotal", "taxtype", "discount_percent","discount_amount", "s_h_amount", "terms_conditions", "postatus");
+	$subfields = array("purchaseorderid", "subject", "quoteid", "vendor_id", "requisition_no", "tracking_no", "contact_id", "duedate", "carrier", "type", "adjustment", "salescommission", "exciseduty", "grand_total", "subtotal", "taxtype", "discount_percent","discount_amount", "s_h_amount", "terms_conditions", "postatus");
 
 	//vtiger_leaddetails
 	elseif( $table == "vtiger_leaddetails")

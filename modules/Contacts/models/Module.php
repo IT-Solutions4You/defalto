@@ -100,7 +100,7 @@ class Contacts_Module_Model extends Vtiger_Module_Model {
         } else if ($parentId && $parentModule == 'PurchaseOrder') {
             $query = "SELECT ".implode(',',$searchFields)." FROM vtiger_crmentity
                         INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
-                        INNER JOIN vtiger_purchaseorder ON vtiger_purchaseorder.contactid = vtiger_contactdetails.contactid
+                        INNER JOIN vtiger_purchaseorder ON vtiger_purchaseorder.contact_id = vtiger_contactdetails.contactid
                         WHERE deleted=0 AND vtiger_purchaseorder.purchaseorderid  = ?  AND label like ?";
 
             $params = array($parentId, "%$searchValue%");

@@ -182,7 +182,16 @@ class Vendors extends CRMEntity {
 
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
 							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query = "select case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,vtiger_crmentity.*, vtiger_purchaseorder.*,vtiger_vendor.vendorname from vtiger_purchaseorder inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_purchaseorder.purchaseorderid left outer join vtiger_vendor on vtiger_purchaseorder.vendorid=vtiger_vendor.vendorid LEFT JOIN vtiger_purchaseordercf ON vtiger_purchaseordercf.purchaseorderid = vtiger_purchaseorder.purchaseorderid LEFT JOIN vtiger_pobillads ON vtiger_pobillads.pobilladdressid = vtiger_purchaseorder.purchaseorderid LEFT JOIN vtiger_poshipads ON vtiger_poshipads.poshipaddressid = vtiger_purchaseorder.purchaseorderid  left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.assigned_user_id left join vtiger_users on vtiger_users.id=vtiger_crmentity.assigned_user_id where vtiger_crmentity.deleted=0 and vtiger_purchaseorder.vendorid=".$id;
+		$query = "select case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,vtiger_crmentity.*, vtiger_purchaseorder.*,vtiger_vendor.vendorname 
+            from vtiger_purchaseorder 
+            inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_purchaseorder.purchaseorderid 
+            left outer join vtiger_vendor on vtiger_purchaseorder.vendor_id=vtiger_vendor.vendorid 
+            LEFT JOIN vtiger_purchaseordercf ON vtiger_purchaseordercf.purchaseorderid = vtiger_purchaseorder.purchaseorderid 
+            LEFT JOIN vtiger_pobillads ON vtiger_pobillads.pobilladdressid = vtiger_purchaseorder.purchaseorderid 
+            LEFT JOIN vtiger_poshipads ON vtiger_poshipads.poshipaddressid = vtiger_purchaseorder.purchaseorderid 
+            left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.assigned_user_id 
+            left join vtiger_users on vtiger_users.id=vtiger_crmentity.assigned_user_id 
+            where vtiger_crmentity.deleted=0 and vtiger_purchaseorder.vendor_id=".$id;
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -308,7 +317,7 @@ class Vendors extends CRMEntity {
 
         $tbl_field_arr = ["vtiger_products" => "productid", "vtiger_vendorcontactrel" => "contactid", "vtiger_purchaseorder" => "purchaseorderid"];
 
-        $entity_tbl_field_arr = ["vtiger_products" => "vendor_id", "vtiger_vendorcontactrel" => "vendorid", "vtiger_purchaseorder" => "vendorid"];
+        $entity_tbl_field_arr = ["vtiger_products" => "vendor_id", "vtiger_vendorcontactrel" => "vendorid", "vtiger_purchaseorder" => "vendor_id"];
 
         foreach ($transferEntityIds as $transferId) {
 			foreach($rel_table_arr as $rel_module=>$rel_table) {
@@ -380,7 +389,7 @@ class Vendors extends CRMEntity {
 	function setRelationTables($secmodule){
 		$rel_tables = array (
 			"Products" =>array("vtiger_products"=>array("vendor_id","productid"),"vtiger_vendor"=>"vendorid"),
-			"PurchaseOrder" =>array("vtiger_purchaseorder"=>array("vendorid","purchaseorderid"),"vtiger_vendor"=>"vendorid"),
+			"PurchaseOrder" =>array("vtiger_purchaseorder"=>array("vendor_id","purchaseorderid"),"vtiger_vendor"=>"vendorid"),
 			"Contacts" =>array("vtiger_vendorcontactrel"=>array("vendorid","contactid"),"vtiger_vendor"=>"vendorid"),
 		);
 		return $rel_tables[$secmodule];
@@ -392,8 +401,8 @@ class Vendors extends CRMEntity {
 		//Deleting Vendor related PO.
 		$po_q = 'SELECT vtiger_crmentity.crmid FROM vtiger_crmentity
 			INNER JOIN vtiger_purchaseorder ON vtiger_crmentity.crmid=vtiger_purchaseorder.purchaseorderid
-			INNER JOIN vtiger_vendor ON vtiger_vendor.vendorid=vtiger_purchaseorder.vendorid
-			WHERE vtiger_crmentity.deleted=0 AND vtiger_purchaseorder.vendorid=?';
+			INNER JOIN vtiger_vendor ON vtiger_vendor.vendorid=vtiger_purchaseorder.vendor_id
+			WHERE vtiger_crmentity.deleted=0 AND vtiger_purchaseorder.vendor_id=?';
 		$po_res = $this->db->pquery($po_q, array($id));
 		$po_ids_list = array();
 		for($k=0;$k < $this->db->num_rows($po_res);$k++)
