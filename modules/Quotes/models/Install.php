@@ -778,14 +778,14 @@ class Quotes_Install_Model extends Core_Install_Model
     public function migrate(): void
     {
         $moduleName = $this->getModuleName();
-        $fields = [
+        $updateFields = [
             'potentialid' => 'potential_id',
             'contactid' => 'contact_id',
             'accountid' => 'account_id',
             'total' => 'grand_total',
         ];
 
-        CustomView_Record_Model::updateColumnNames($moduleName, $fields);
+        CustomView_Record_Model::updateColumnNames($moduleName, $updateFields);
 
         $deleteFields = [
             'assigned_user_id1',
@@ -798,14 +798,7 @@ class Quotes_Install_Model extends Core_Install_Model
             'hdnDiscountPercent',
             'hdnDiscountAmount',
         ];
-        $moduleModels = Vtiger_Module_Model::getInstance($moduleName);
 
-        foreach ($deleteFields as $fieldName) {
-            $fieldModel = $moduleModels->getField($fieldName);
-
-            if ($fieldModel) {
-                $fieldModel->delete();
-            }
-        }
+        Vtiger_Module_Model::deleteFields($moduleName, $deleteFields);
     }
 }
