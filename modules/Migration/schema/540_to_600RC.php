@@ -459,9 +459,6 @@ do {
 
 $VTIGER_BULK_SAVE_MODE = false;
 
-// Added label column in vtiger_crmentity table for easier lookup - Also added Event handler to update the label on save of a record
-Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_crmentity ADD COLUMN label varchar(255)", array());
-
 // To avoid infinite-loop if we not able fix label for non-entity/special modules.
 $lastMaxCRMId = 0;
 do {
@@ -488,8 +485,6 @@ do {
 	$rs = null;
 	unset($rs);
 } while(true);
-
-Migration_Index_View::ExecuteQuery('CREATE INDEX vtiger_crmentity_labelidx ON vtiger_crmentity(label)', array());
 
 $homeModule = Vtiger_Module::getInstance('Home');
 Vtiger_Event::register($homeModule, 'vtiger.entity.aftersave', 'Vtiger_RecordLabelUpdater_Handler', 'modules/Vtiger/RecordLabelUpdater.php');
