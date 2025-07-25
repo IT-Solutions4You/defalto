@@ -191,8 +191,8 @@ class Quotes_Install_Model extends Core_Install_Model
                             'summaryfield' => 0,
                             'headerfield' => 1,
                         ],
-                    'hdnTaxType' => [
-                            'name' => 'hdnTaxType',
+                    'taxtype' => [
+                            'name' => 'taxtype',
                             'uitype' => 16,
                             'column' => 'taxtype',
                             'table' => 'vtiger_quotes',
