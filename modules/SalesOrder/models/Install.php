@@ -927,7 +927,7 @@ class SalesOrder_Install_Model extends Core_Install_Model {
             ->createColumn('potentialid', 'int(19) DEFAULT NULL')
             ->createColumn('customerno', 'varchar(100) DEFAULT NULL')
             ->createColumn('salesorder_no', 'varchar(100) DEFAULT NULL')
-            ->createColumn('quote_idquote_id', 'int(19) DEFAULT NULL')
+            ->createColumn('quote_id', 'int(19) DEFAULT NULL')
             ->createColumn('vendorterms', 'varchar(100) DEFAULT NULL')
             ->createColumn('contact_id', 'int(19) DEFAULT NULL')
             ->createColumn('vendorid', 'int(19) DEFAULT NULL')
