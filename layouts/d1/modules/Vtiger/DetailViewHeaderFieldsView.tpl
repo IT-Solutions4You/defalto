@@ -12,9 +12,10 @@
         {foreach item=FIELD_CONFIG from=$MODULE_MODEL->getHeaderFieldsConfig()}
             {assign var=FIELD_MODEL value=$FIELD_CONFIG['field']}
             {if $FIELD_MODEL}
-                {assign var=FIELD_MODEL value=$FIELD_MODEL->set('fieldvalue', $RECORD->get($FIELD_NAME))}
                 {assign var=FIELD_NAME value=$FIELD_MODEL->getName()}
-                {assign var=FIELD_VALUE value=$RECORD->get($FIELD_NAME)}
+                {assign var=FIELD_MODEL value=$FIELD_MODEL->set('fieldvalue', $RECORD->get($FIELD_NAME))}
+                {assign var=FIELD_VALUE value=$FIELD_MODEL->get('fieldvalue')}
+                {assign var=DISPLAY_VALUE value=$FIELD_MODEL->getDisplayValue($FIELD_VALUE)}
                 {assign var=IS_EDITABLE value=$FIELD_MODEL->isAjaxEditable() && $LIST_PREVIEW neq true && $IS_AJAX_ENABLED eq true && $REQUEST_INSTANCE->get('displayMode') neq 'overlay'}
             {/if}
             {if 'field' eq $FIELD_CONFIG['type']}
@@ -25,7 +26,6 @@
                             <div class="col">{vtranslate($FIELD_MODEL->get('label'),$MODULE)}</div>
                         </div>
                         <div class="row position-relative h-2rem align-items-center">
-                            {assign var=DISPLAY_VALUE value="{$FIELD_MODEL->getDisplayValue($RECORD->get($FIELD_NAME))}"}
                             <div class="col value fw-semibold fs-inherit bg-inherit h-100 word-break-all {$FIELD_NAME}" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {strip_tags($DISPLAY_VALUE)}">
                                 {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                             </div>
@@ -33,9 +33,9 @@
                                 <div class="edit col hide">
                                     {assign var=HEADER_FIELD_NAME value=$FIELD_MODEL->get('name')}
                                     {if $FIELD_DATA_TYPE eq 'multipicklist'}
-                                        <input type="hidden" class="fieldBasicData" data-name="{$HEADER_FIELD_NAME}[]" data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue="{Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}" data-value="{$FIELD_MODEL->get('fieldvalue')}" />
+                                        <input type="hidden" class="fieldBasicData" data-name="{$HEADER_FIELD_NAME}[]" data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue="{Vtiger_Util_Helper::toSafeHTML($DISPLAY_VALUE)}" data-value="{$FIELD_MODEL->get('fieldvalue')}" />
                                     {else}
-                                        <input type="hidden" class="fieldBasicData" data-name="{$HEADER_FIELD_NAME}" data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue="{Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}" data-value="{$FIELD_MODEL->get('fieldvalue')}" />
+                                        <input type="hidden" class="fieldBasicData" data-name="{$HEADER_FIELD_NAME}" data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue="{Vtiger_Util_Helper::toSafeHTML($DISPLAY_VALUE)}" data-value="{$FIELD_MODEL->get('fieldvalue')}" />
                                     {/if}
                                 </div>
                                 <div class="action col-auto p-0">
@@ -62,7 +62,6 @@
                                     </div>
                                 </div>
                             {else}
-                                {assign var=DISPLAY_VALUE value=$FIELD_MODEL->getDisplayValue($RECORD->get($FIELD_NAME))}
                                 <div class="col value fw-semibold fs-inherit bg-inherit h-100 word-break-all {$FIELD_NAME}" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {strip_tags($DISPLAY_VALUE)}">
                                     {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                                 </div>
