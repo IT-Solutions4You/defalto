@@ -129,16 +129,6 @@ class MailManager_Install_Model extends Core_Install_Model {
             ->createColumn('client_access_token', 'text DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`scannerid`)')
             ;
-        
-        $this->getTable('vtiger_mailscanner_entitymethod', 'mailscanner_entitymethod_id')
-            ->createTable()
-            ->createColumn('module_name','varchar(100) DEFAULT NULL')
-            ->createColumn('method_name','varchar(100) DEFAULT NULL')
-            ->createColumn('function_path','varchar(400) DEFAULT NULL')
-            ->createColumn('function_name','varchar(100) DEFAULT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`mailscanner_entitymethod_id`)')
-            ->createKey('UNIQUE KEY IF NOT EXISTS `mailscanner_entitymethod_idx` (`mailscanner_entitymethod_id`)')
-            ;
 
         $this->getTable('vtiger_mailscanner_folders', 'folderid')
             ->createTable()
