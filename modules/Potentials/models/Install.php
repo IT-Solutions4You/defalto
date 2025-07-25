@@ -356,7 +356,6 @@ class Potentials_Install_Model extends Core_Install_Model
         $this->getTable('vtiger_potential', 'potentialid')
             ->createTable('potentialid')
             ->renameColumn('potentialtype', 'opportunity_type')
-            ->clearTableColumns()
             ->createColumn('potential_no', 'varchar(100) NOT NULL')
             ->createColumn('related_to', 'int(19) DEFAULT NULL')
             ->createColumn('potentialname', 'varchar(120) NOT NULL')

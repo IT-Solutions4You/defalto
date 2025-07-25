@@ -326,7 +326,6 @@ class Project_Install_Model extends Core_Install_Model
             ->createTable('projectid')
             ->renameColumn('accountid', 'account_id')
             ->renameColumn('contactid', 'contact_id')
-            ->clearTableColumns()
             ->createColumn('projectname', 'varchar(255) default NULL')
             ->createColumn('project_no', 'varchar(100) default NULL')
             ->createColumn('startdate', 'date default NULL')

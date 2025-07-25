@@ -712,7 +712,6 @@ class Quotes_Install_Model extends Core_Install_Model
             ->renameColumn('contactid','contact_id')
             ->renameColumn('accountid','account_id')
             ->renameColumn('total','grand_total')
-            ->clearTableColumns()
             ->createColumn('subject', 'varchar(100) DEFAULT NULL')
             ->createColumn('potential_id', 'int(19) DEFAULT NULL')
             ->createColumn('quotestage', 'varchar(200) DEFAULT NULL')

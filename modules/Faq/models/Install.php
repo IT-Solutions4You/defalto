@@ -194,7 +194,6 @@ class Faq_Install_Model extends Core_Install_Model
             ->renameColumn('category', 'faqcategories')
             ->renameColumn('status', 'faqstatus')
             ->renameColumn('answer', 'faq_answer')
-            ->clearTableColumns()
             ->createColumn('faq_no', 'varchar(100) NOT NULL')
             ->createColumn('product_id', 'varchar(100) DEFAULT NULL')
             ->createColumn('question', 'text DEFAULT NULL')

@@ -509,7 +509,6 @@ class Leads_Install_Model extends Core_Install_Model {
         $this->getTable('vtiger_leaddetails', null)
             ->createTable('leadid', 'int(19) NOT NULL')
             ->renameColumn('salutation', 'salutationtype')
-            ->clearTableColumns()
             ->createColumn('lead_no', 'varchar(100) NOT NULL')
             ->createColumn('email', 'varchar(100) DEFAULT NULL')
             ->createColumn('interest', 'varchar(50) DEFAULT NULL')

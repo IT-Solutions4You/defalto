@@ -303,7 +303,6 @@ class Documents_Install_Model extends Core_Install_Model
         $this->getTable('vtiger_notes', null)
             ->createTable('notesid', 'INT(19)')
             ->renameColumn('title', 'notes_title')
-            ->clearTableColumns()
             ->createColumn('note_no', 'varchar(100) NOT NULL')
             ->createColumn('notes_title', 'varchar(50) NOT NULL')
             ->createColumn('filename', 'varchar(200) DEFAULT NULL')

@@ -263,7 +263,6 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
         $this->getTable('vtiger_servicecontracts', null)
             ->createTable('servicecontractsid')
             ->renameColumn('priority', 'contract_priority')
-            ->clearTableColumns()
             ->createColumn('start_date','date default NULL')
             ->createColumn('end_date','date default NULL')
             ->createColumn('sc_related_to','int(11) default NULL')

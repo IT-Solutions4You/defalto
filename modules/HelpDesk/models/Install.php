@@ -486,7 +486,6 @@ class HelpDesk_Install_Model extends Core_Install_Model {
             ->renameColumn('severity', 'ticketseverities')
             ->renameColumn('status', 'ticketstatus')
             ->renameColumn('category', 'ticketcategories')
-            ->clearTableColumns()
             ->createColumn('ticket_no','varchar(100) NOT NULL')
             ->createColumn('groupname','varchar(100) DEFAULT NULL')
             ->createColumn('parent_id',self::$COLUMN_INT)

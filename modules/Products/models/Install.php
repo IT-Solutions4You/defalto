@@ -513,7 +513,6 @@ class Products_Install_Model extends Core_Install_Model
         $this->getTable('vtiger_products', null)
             ->createTable('productid')
             ->renameColumn('serialno', 'serial_no')
-            ->clearTableColumns()
             ->createColumn('product_no', 'varchar(100) NOT NULL')
             ->createColumn('productname', 'varchar(255) DEFAULT NULL')
             ->createColumn('productcode', 'varchar(40) DEFAULT NULL')

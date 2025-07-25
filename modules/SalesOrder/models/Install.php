@@ -923,7 +923,6 @@ class SalesOrder_Install_Model extends Core_Install_Model {
             ->renameColumn('contactid','contact_id')
             ->renameColumn('total','grand_total')
             ->renameColumn('accountid','account_id')
-            ->clearTableColumns()
             ->createColumn('subject', 'varchar(100) DEFAULT NULL')
             ->createColumn('potentialid', 'int(19) DEFAULT NULL')
             ->createColumn('customerno', 'varchar(100) DEFAULT NULL')

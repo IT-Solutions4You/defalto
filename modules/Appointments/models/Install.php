@@ -427,7 +427,6 @@ class Appointments_Install_Model extends Core_Install_Model
             ->renameColumn('priority','calendar_priority')
             ->renameColumn('type','calendar_type')
             ->renameColumn('visibility','calendar_visibility')
-            ->clearTableColumns()
             ->createColumn('subject','varchar(255) DEFAULT NULL')
             ->createColumn('is_all_day','varchar(3) DEFAULT NULL')
             ->createColumn('datetime_start','datetime DEFAULT NULL')

@@ -813,7 +813,6 @@ class Invoice_Install_Model extends Core_Install_Model
             ->renameColumn('purchaseorder','purchaseorder_id')
             ->renameColumn('accountid','account_id')
             ->renameColumn('total','grand_total')
-            ->clearTableColumns()
             ->createColumn('subject', 'varchar(100) DEFAULT NULL')
             ->createColumn('salesorder_id', 'int(19) DEFAULT NULL')
             ->createColumn('customerno', 'varchar(100) DEFAULT NULL')

@@ -935,7 +935,6 @@ class Vtiger_Record_Model extends Core_DatabaseTable_Model {
             ->createTable('crmid')
             ->renameColumn('smownerid', 'assigned_user_id')
             ->renameColumn('smcreatorid', 'creator_user_id')
-            ->clearTableColumns()
             ->createColumn('creator_user_id', 'int(19) NOT NULL DEFAULT 0')
             ->createColumn('assigned_user_id', 'int(19) NOT NULL DEFAULT 0')
             ->createColumn('modifiedby', 'int(19) NOT NULL DEFAULT 0')

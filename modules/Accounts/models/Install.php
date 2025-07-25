@@ -597,7 +597,6 @@ class Accounts_Install_Model extends Core_Install_Model {
             ->renameColumn('account_type', 'accounttype')
             ->renameColumn('annualrevenue', 'annual_revenue')
             ->renameColumn('parentid', 'account_id')
-            ->clearTableColumns()
             ->createColumn('account_no', 'varchar(100) NOT NULL')
             ->createColumn('accountname', 'varchar(100) NOT NULL')
             ->createColumn('account_id', 'int(19) DEFAULT 0')

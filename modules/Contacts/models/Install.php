@@ -659,7 +659,6 @@ class Contacts_Install_Model extends Core_Install_Model
             ->createTable('contactid', self::$COLUMN_INT)
             ->renameColumn('salutation', 'salutationtype')
             ->renameColumn('accountid', 'account_id')
-            ->clearTableColumns()
             ->createColumn('contact_no', 'varchar(100) NOT NULL')
             ->createColumn('account_id', self::$COLUMN_INT)
             ->createColumn('salutationtype', 'varchar(200) DEFAULT NULL')
