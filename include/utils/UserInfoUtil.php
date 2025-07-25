@@ -1642,187 +1642,150 @@ function constructList($array,$data_type)
 
 function getListViewSecurityParameter($module)
 {
-	global $log;
-	$log->debug("Entering getListViewSecurityParameter(".$module.") method ...");
-	global $adb;
+    global $log, $adb, $current_user;;
+    $log->debug("Entering getListViewSecurityParameter(" . $module . ") method ...");
+    $tabid = getTabid($module);
+    $current_user_parent_role_seq = null;
+    $current_user_groups = [];
+    $sec_query = '';
 
-	$tabid=getTabid($module);
-	global $current_user;
-	if($current_user)
-	{
-			require('user_privileges/user_privileges_'.$current_user->id.'.php');
-			require('user_privileges/sharing_privileges_'.$current_user->id.'.php');
-	}
-	if($module == 'Leads')
-	{
-		$sec_query .= " and (
-						vtiger_crmentity.smownerid in($current_user->id)
-						or vtiger_crmentity.smownerid in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%')
-						or vtiger_crmentity.smownerid in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=".$current_user->id." and tabid=".$tabid.")
-						or (";
+    if ($current_user) {
+        require('user_privileges/user_privileges_' . $current_user->id . '.php');
+        require('user_privileges/sharing_privileges_' . $current_user->id . '.php');
+    }
 
-						if(php7_count($current_user_groups) > 0)
-						{
-							  $sec_query .= " vtiger_groups.groupid in (". implode(",", $current_user_groups) .") or ";
-						}
-						 $sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=".$current_user->id." and tabid=".$tabid."))) ";
-	}
-	elseif($module == 'Accounts')
-	{
-		$sec_query .= " and (vtiger_crmentity.smownerid in($current_user->id) " .
-				"or vtiger_crmentity.smownerid in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%') " .
-				"or vtiger_crmentity.smownerid in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=".$current_user->id." and tabid=".$tabid.") or (";
+    if ($module == 'Leads') {
+        $sec_query .= " and (
+            vtiger_crmentity.assigned_user_id in($current_user->id)
+            or vtiger_crmentity.assigned_user_id in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '" . $current_user_parent_role_seq . "::%')
+            or vtiger_crmentity.assigned_user_id in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ")
+            or (";
 
-				if(php7_count($current_user_groups) > 0)
-				{
-					$sec_query .= " vtiger_groups.groupid in (". implode(",", $current_user_groups) .") or ";
-				}
-		$sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=".$current_user->id." and tabid=".$tabid."))) ";
+        if (php7_count($current_user_groups) > 0) {
+            $sec_query .= " vtiger_groups.groupid in (" . implode(",", $current_user_groups) . ") or ";
+        }
+        $sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . "))) ";
+    } elseif ($module == 'Accounts') {
+        $sec_query .= " and (vtiger_crmentity.assigned_user_id in($current_user->id) 
+            or vtiger_crmentity.assigned_user_id in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '" . $current_user_parent_role_seq . "::%') 
+            or vtiger_crmentity.assigned_user_id in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ") or (";
 
-	}
-	elseif($module == 'Contacts')
-	{
-		$sec_query .= " and (vtiger_crmentity.smownerid in($current_user->id) " .
-				"or vtiger_crmentity.smownerid in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%') " .
-				"or vtiger_crmentity.smownerid in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=".$current_user->id." and tabid=".$tabid.") or (";
+        if (php7_count($current_user_groups) > 0) {
+            $sec_query .= " vtiger_groups.groupid in (" . implode(",", $current_user_groups) . ") or ";
+        }
 
-				if(php7_count($current_user_groups) > 0)
-				{
-					$sec_query .= " vtiger_groups.groupid in (". implode(",", $current_user_groups) .") or ";
-				}
-		$sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=".$current_user->id." and tabid=".$tabid."))) ";
+        $sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . "))) ";
+    } elseif ($module == 'Contacts') {
+        $sec_query .= " and (vtiger_crmentity.assigned_user_id in($current_user->id) 
+            or vtiger_crmentity.assigned_user_id in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '" . $current_user_parent_role_seq . "::%') 
+            or vtiger_crmentity.assigned_user_id in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ") or (";
 
-	}
-	elseif($module == 'Potentials')
-	{
-		$sec_query .= " and (vtiger_crmentity.smownerid in($current_user->id) " .
-				"or vtiger_crmentity.smownerid in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%') " .
-				"or vtiger_crmentity.smownerid in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=".$current_user->id." and tabid=".$tabid.")";
+        if (php7_count($current_user_groups) > 0) {
+            $sec_query .= " vtiger_groups.groupid in (" . implode(",", $current_user_groups) . ") or ";
+        }
+        $sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . "))) ";
+    } elseif ($module == 'Potentials') {
+        $sec_query .= " and (vtiger_crmentity.assigned_user_id in($current_user->id) 
+            or vtiger_crmentity.assigned_user_id in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '" . $current_user_parent_role_seq . "::%')
+            or vtiger_crmentity.assigned_user_id in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ")";
 
-		$sec_query .= " or (";
+        $sec_query .= " or (";
 
-		if(php7_count($current_user_groups) > 0)
-		{
-			$sec_query .= " vtiger_groups.groupid in (". implode(",", $current_user_groups) .") or ";
-		}
-		$sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=".$current_user->id." and tabid=".$tabid."))) ";
+        if (php7_count($current_user_groups) > 0) {
+            $sec_query .= " vtiger_groups.groupid in (" . implode(",", $current_user_groups) . ") or ";
+        }
+        $sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . "))) ";
+    } elseif ($module == 'HelpDesk') {
+        $sec_query .= " and (vtiger_crmentity.assigned_user_id in($current_user->id) 
+            or vtiger_crmentity.assigned_user_id in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '" . $current_user_parent_role_seq . "::%') 
+            or vtiger_crmentity.assigned_user_id in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ") ";
 
-	}
-	elseif($module == 'HelpDesk')
-	{
-		$sec_query .= " and (vtiger_crmentity.smownerid in($current_user->id) or vtiger_crmentity.smownerid in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%') or vtiger_crmentity.smownerid in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=".$current_user->id." and tabid=".$tabid.") ";
+        $sec_query .= " or (";
+        if (php7_count($current_user_groups) > 0) {
+            $sec_query .= " vtiger_groups.groupid in (" . implode(",", $current_user_groups) . ") or ";
+        }
+        $sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . "))) ";
+    } elseif ($module == 'Quotes') {
+        $sec_query .= " and (vtiger_crmentity.assigned_user_id in($current_user->id) 
+            or vtiger_crmentity.assigned_user_id in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '" . $current_user_parent_role_seq . "::%') 
+            or vtiger_crmentity.assigned_user_id in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ")";
 
-		$sec_query .= " or (";
-				if(php7_count($current_user_groups) > 0)
-				{
-					$sec_query .= " vtiger_groups.groupid in (". implode(",", $current_user_groups) .") or ";
-				}
-		$sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=".$current_user->id." and tabid=".$tabid."))) ";
+        //Adding crteria for group sharing
+        $sec_query .= " or ((";
 
-	}
-	elseif($module == 'Quotes')
-	{
-		$sec_query .= " and (vtiger_crmentity.smownerid in($current_user->id) or vtiger_crmentity.smownerid in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%') or vtiger_crmentity.smownerid in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=".$current_user->id." and tabid=".$tabid.")";
+        if (php7_count($current_user_groups) > 0) {
+            $sec_query .= " vtiger_groups.groupid in (" . implode(",", $current_user_groups) . ") or ";
+        }
+        $sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ")))) ";
+    } elseif ($module == 'PurchaseOrder') {
+        $sec_query .= " and (vtiger_crmentity.assigned_user_id in($current_user->id) 
+            or vtiger_crmentity.assigned_user_id in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '" . $current_user_parent_role_seq . "::%') 
+            or vtiger_crmentity.assigned_user_id in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ") or (";
 
-		//Adding crteria for group sharing
-		 $sec_query .= " or ((";
+        if (php7_count($current_user_groups) > 0) {
+            $sec_query .= " vtiger_groups.groupid in (" . implode(",", $current_user_groups) . ") or ";
+        }
+        $sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . "))) ";
+    } elseif ($module == 'SalesOrder') {
+        $sec_query .= " and (vtiger_crmentity.assigned_user_id in($current_user->id) 
+            or vtiger_crmentity.assigned_user_id in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '" . $current_user_parent_role_seq . "::%') 
+            or vtiger_crmentity.assigned_user_id in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ")";
 
-				if(php7_count($current_user_groups) > 0)
-				{
-					$sec_query .= " vtiger_groups.groupid in (". implode(",", $current_user_groups) .") or ";
-				}
-		$sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=".$current_user->id." and tabid=".$tabid.")))) ";
+        //Adding crteria for group sharing
+        $sec_query .= " or (";
 
-	}
-	elseif($module == 'PurchaseOrder')
-	{
-		$sec_query .= " and (vtiger_crmentity.smownerid in($current_user->id) or vtiger_crmentity.smownerid in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%') or vtiger_crmentity.smownerid in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=".$current_user->id." and tabid=".$tabid.") or (";
+        if (php7_count($current_user_groups) > 0) {
+            $sec_query .= " vtiger_groups.groupid in (" . implode(",", $current_user_groups) . ") or ";
+        }
+        $sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . "))) ";
+    } elseif ($module == 'Invoice') {
+        $sec_query .= " and (vtiger_crmentity.assigned_user_id in($current_user->id) 
+            or vtiger_crmentity.assigned_user_id in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '" . $current_user_parent_role_seq . "::%') 
+            or vtiger_crmentity.assigned_user_id in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ")";
 
-				if(php7_count($current_user_groups) > 0)
-				{
-					$sec_query .= " vtiger_groups.groupid in (". implode(",", $current_user_groups) .") or ";
-				}
-		$sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=".$current_user->id." and tabid=".$tabid."))) ";
+        //Adding crteria for group sharing
+        $sec_query .= " or ((";
 
-	}
-	elseif($module == 'SalesOrder')
-	{
-		$sec_query .= " and (vtiger_crmentity.smownerid in($current_user->id) or vtiger_crmentity.smownerid in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%') or vtiger_crmentity.smownerid in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=".$current_user->id." and tabid=".$tabid.")";
+        if (php7_count($current_user_groups) > 0) {
+            $sec_query .= " vtiger_groups.groupid in (" . implode(",", $current_user_groups) . ") or ";
+        }
+        $sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ")))) ";
+    } elseif ($module == 'Campaigns') {
+        $sec_query .= " and (vtiger_crmentity.assigned_user_id in($current_user->id) 
+            or vtiger_crmentity.assigned_user_id in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '" . $current_user_parent_role_seq . "::%') 
+            or vtiger_crmentity.assigned_user_id in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ") or ((";
 
-		//Adding crteria for group sharing
-		 $sec_query .= " or (";
+        if (php7_count($current_user_groups) > 0) {
+            $sec_query .= " vtiger_groups.groupid in (" . implode(",", $current_user_groups) . ") or ";
+        }
+        $sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ")))) ";
+    } elseif ($module == 'Documents') {
+        $sec_query .= " and (vtiger_crmentity.assigned_user_id in($current_user->id) 
+            or vtiger_crmentity.assigned_user_id in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '" . $current_user_parent_role_seq . "::%') 
+		    or vtiger_crmentity.assigned_user_id in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ") or ((";
 
-				if(php7_count($current_user_groups) > 0)
-				{
-					$sec_query .= " vtiger_groups.groupid in (". implode(",", $current_user_groups) .") or ";
-				}
-		$sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=".$current_user->id." and tabid=".$tabid."))) ";
+        if (php7_count($current_user_groups) > 0) {
+            $sec_query .= " vtiger_groups.groupid in (" . implode(",", $current_user_groups) . ") or ";
+        }
+        $sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ")))) ";
+    } elseif ($module == 'Products') {
+        $sec_query .= " and (vtiger_crmentity.assigned_user_id in($current_user->id) 
+            or vtiger_crmentity.assigned_user_id in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '" . $current_user_parent_role_seq . "::%') 
+            or vtiger_crmentity.assigned_user_id in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . ")";
 
-	}
-	elseif($module == 'Invoice')
-	{
-		$sec_query .= " and (vtiger_crmentity.smownerid in($current_user->id) or vtiger_crmentity.smownerid in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%') or vtiger_crmentity.smownerid in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=".$current_user->id." and tabid=".$tabid.")";
+        $sec_query .= " or (";
 
-		//Adding crteria for group sharing
-		 $sec_query .= " or ((";
+        if (php7_count($current_user_groups) > 0) {
+            $sec_query .= " vtiger_groups.groupid in (" . implode(",", $current_user_groups) . ") or ";
+        }
+        $sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=" . $current_user->id . " and tabid=" . $tabid . "))) ";
+    } else {
+        $modObj = CRMEntity::getInstance($module);
+        $sec_query = $modObj->getListViewSecurityParameter($module);
+    }
+    $log->debug("Exiting getListViewSecurityParameter method ...");
 
-				if(php7_count($current_user_groups) > 0)
-				{
-					$sec_query .= " vtiger_groups.groupid in (". implode(",", $current_user_groups) .") or ";
-				}
-		$sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=".$current_user->id." and tabid=".$tabid.")))) ";
-
-	}
-	elseif($module == 'Campaigns')
-	{
-
-		$sec_query .= " and (vtiger_crmentity.smownerid in($current_user->id) or vtiger_crmentity.smownerid in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%') or vtiger_crmentity.smownerid in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=".$current_user->id." and tabid=".$tabid.") or ((";
-
-		if(php7_count($current_user_groups) > 0)
-		{
-			$sec_query .= " vtiger_groups.groupid in (". implode(",", $current_user_groups) .") or ";
-		}
-		$sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=".$current_user->id." and tabid=".$tabid.")))) ";
-
-
-	}
-
-	elseif($module == 'Documents')
-	{
-		$sec_query .= " and (vtiger_crmentity.smownerid in($current_user->id) or vtiger_crmentity.smownerid in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%') or vtiger_crmentity.smownerid in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=".$current_user->id." and tabid=".$tabid.") or ((";
-
-				if(php7_count($current_user_groups) > 0)
-				{
-					$sec_query .= " vtiger_groups.groupid in (". implode(",", $current_user_groups) .") or ";
-				}
-		$sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=".$current_user->id." and tabid=".$tabid.")))) ";
-
-	}
-
-	elseif($module == 'Products')
-	{
-		$sec_query .= " and (vtiger_crmentity.smownerid in($current_user->id) " .
-				"or vtiger_crmentity.smownerid in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%') " .
-				"or vtiger_crmentity.smownerid in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=".$current_user->id." and tabid=".$tabid.")";
-
-		$sec_query .= " or (";
-
-		if(php7_count($current_user_groups) > 0)
-		{
-			$sec_query .= " vtiger_groups.groupid in (". implode(",", $current_user_groups) .") or ";
-		}
-		$sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=".$current_user->id." and tabid=".$tabid."))) ";
-
-	}
-
-	else
-	{
-		$modObj = CRMEntity::getInstance($module);
-		$sec_query = $modObj->getListViewSecurityParameter($module);
-
-	}
-	$log->debug("Exiting getListViewSecurityParameter method ...");
-	return $sec_query;
+    return $sec_query;
 }
 
 function get_current_user_access_groups($module)

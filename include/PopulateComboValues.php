@@ -88,12 +88,8 @@ class PopulateComboValues
 		for($i=0; $i<$noOfCombos; $i++)
 		{
 			$comTab = $adb->query_result($comboRes, $i, 'fieldname');
-			$picklistid = $adb->getUniqueID("vtiger_picklist");
-			$params = array($picklistid, $comTab);
-			$picklist_qry = "insert into vtiger_picklist values(?,?)";
-			$adb->pquery($picklist_qry, $params);
-
-			$this->insertComboValues($combo_strings[$comTab."_dom"],$comTab,$picklistid);
+            $picklistId = Vtiger_Field_Model::savePicklist($comTab);
+			$this->insertComboValues($combo_strings[$comTab."_dom"],$comTab,$picklistId);
 		}
 		
 		//we have to decide what are all the picklist and picklist values are non editable

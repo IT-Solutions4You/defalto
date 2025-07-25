@@ -609,10 +609,6 @@ Migration_Index_View::ExecuteQuery("UPDATE vtiger_mailscanner_rules SET assigned
 echo "<br> Adding assigned to, cc, bcc fields for mail scanner rules";
 
 
-//Schema changes for vtiger_troubletickets hours & days column
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_troubletickets MODIFY hours decimal(25,8)', array());
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_troubletickets MODIFY days decimal(25,8)', array());
-
 $relationId = $adb->getUniqueID('vtiger_relatedlists');
 $contactTabId = getTabid('Contacts');
 $vendorTabId = getTabId('Vendors');
@@ -655,9 +651,9 @@ foreach ($productImageMap as $productId => $imageNames) {
 }
 echo 'updating image information for products table is completed';
 
-$ContactIdSql = 'SELECT contactid,name FROM vtiger_seattachmentsrel INNER JOIN vtiger_attachments ON
-                                        vtiger_seattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid INNER JOIN vtiger_contactdetails ON
-                                        vtiger_contactdetails.contactid = vtiger_seattachmentsrel.crmid';
+$ContactIdSql = 'SELECT contactid,name FROM vtiger_seattachmentsrel 
+    INNER JOIN vtiger_attachments ON vtiger_seattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid 
+    INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_seattachmentsrel.crmid';
 $contactIds = $adb->pquery($ContactIdSql,array());
 $numOfRows = $adb->num_rows($contactIds);
 

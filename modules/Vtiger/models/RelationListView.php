@@ -299,10 +299,6 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 					$newRow[$relatedColumnFields[$col]] = $val;
 				}
 			}
-			//To show the value of "Assigned to"
-            if(isset($row['smownerid'])) {
-                $newRow['assigned_user_id'] = $row['smownerid'];
-            }
 
 			$record = Vtiger_Record_Model::getCleanInstance($relationModule->get('name'));
 			$record->setData($newRow)->setModuleFromInstance($relationModule)->setRawData($row);

@@ -50,7 +50,7 @@ class SMSNotifier_Install_Model extends Core_Install_Model
             'LBL_SMSNOTIFIER_INFORMATION' => [
                 'assigned_user_id' => [
                     'uitype' => 53,
-                    'column' => 'smownerid',
+                    'column' => 'assigned_user_id',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Assigned To',
                     'presence' => 0,

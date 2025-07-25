@@ -51,7 +51,7 @@ class Quotes_Install_Model extends Core_Install_Model
                     'potential_id' => [
                             'name' => 'potential_id',
                             'uitype' => 76,
-                            'column' => 'potentialid',
+                            'column' => 'potential_id',
                             'table' => 'vtiger_quotes',
                             'label' => 'Potential Name',
                             'readonly' => 1,
@@ -101,7 +101,7 @@ class Quotes_Install_Model extends Core_Install_Model
                     'contact_id' => [
                             'name' => 'contact_id',
                             'uitype' => 57,
-                            'column' => 'contactid',
+                            'column' => 'contact_id',
                             'table' => 'vtiger_quotes',
                             'label' => 'Contact Name',
                             'readonly' => 1,
@@ -134,8 +134,8 @@ class Quotes_Install_Model extends Core_Install_Model
                                     'BlueDart',
                                 ],
                         ],
-                    'hdnSubTotal' => [
-                            'name' => 'hdnSubTotal',
+                    'subtotal' => [
+                            'name' => 'subtotal',
                             'uitype' => 72,
                             'column' => 'subtotal',
                             'table' => 'vtiger_quotes',
@@ -162,8 +162,8 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'assigned_user_id1' => [
-                            'name' => 'assigned_user_id1',
+                    'inventorymanager' => [
+                            'name' => 'inventorymanager',
                             'uitype' => 77,
                             'column' => 'inventorymanager',
                             'table' => 'vtiger_quotes',
@@ -176,8 +176,8 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'txtAdjustment' => [
-                            'name' => 'txtAdjustment',
+                    'adjustment' => [
+                            'name' => 'adjustment',
                             'uitype' => 72,
                             'column' => 'adjustment',
                             'table' => 'vtiger_quotes',
@@ -190,10 +190,10 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'hdnGrandTotal' => [
-                            'name' => 'hdnGrandTotal',
+                    'grand_total' => [
+                            'name' => 'grand_total',
                             'uitype' => 72,
-                            'column' => 'total',
+                            'column' => 'grand_total',
                             'table' => 'vtiger_quotes',
                             'label' => 'Total',
                             'readonly' => 1,
@@ -205,8 +205,8 @@ class Quotes_Install_Model extends Core_Install_Model
                             'summaryfield' => 0,
                             'headerfield' => 1,
                         ],
-                    'hdnTaxType' => [
-                            'name' => 'hdnTaxType',
+                    'taxtype' => [
+                            'name' => 'taxtype',
                             'uitype' => 16,
                             'column' => 'taxtype',
                             'table' => 'vtiger_quotes',
@@ -222,8 +222,8 @@ class Quotes_Install_Model extends Core_Install_Model
                                 [
                                 ],
                         ],
-                    'hdnS_H_Amount' => [
-                            'name' => 'hdnS_H_Amount',
+                    's_h_amount' => [
+                            'name' => 's_h_amount',
                             'uitype' => 72,
                             'column' => 's_h_amount',
                             'table' => 'vtiger_quotes',
@@ -239,7 +239,7 @@ class Quotes_Install_Model extends Core_Install_Model
                     'account_id' => [
                             'name' => 'account_id',
                             'uitype' => 73,
-                            'column' => 'accountid',
+                            'column' => 'account_id',
                             'table' => 'vtiger_quotes',
                             'label' => 'Account Name',
                             'readonly' => 1,
@@ -254,7 +254,7 @@ class Quotes_Install_Model extends Core_Install_Model
                     'assigned_user_id' => [
                             'name' => 'assigned_user_id',
                             'uitype' => 53,
-                            'column' => 'smownerid',
+                            'column' => 'assigned_user_id',
                             'table' => 'vtiger_crmentity',
                             'label' => 'Assigned To',
                             'readonly' => 1,
@@ -513,8 +513,8 @@ class Quotes_Install_Model extends Core_Install_Model
                 ],
             ],
             'LBL_ITEM_DETAILS' => [
-                'hdnDiscountPercent' => [
-                    'name' => 'hdnDiscountPercent',
+                'discount_percent' => [
+                    'name' => 'discount_percent',
                     'uitype' => 1,
                     'column' => 'discount_percent',
                     'table' => 'vtiger_quotes',
@@ -527,8 +527,8 @@ class Quotes_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'hdnDiscountAmount' => [
-                    'name' => 'hdnDiscountAmount',
+                'discount_amount' => [
+                    'name' => 'discount_amount',
                     'uitype' => 72,
                     'column' => 'discount_amount',
                     'table' => 'vtiger_quotes',
@@ -601,36 +601,8 @@ class Quotes_Install_Model extends Core_Install_Model
                     'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
-                'discount_amount' => [
-                    'name' => 'discount_amount',
-                    'uitype' => 71,
-                    'column' => 'discount_amount',
-                    'table' => 'vtiger_inventoryproductrel',
-                    'label' => 'Item Discount Amount',
-                    'readonly' => 0,
-                    'presence' => 2,
-                    'typeofdata' => 'N~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 5,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'discount_percent' => [
-                    'name' => 'discount_percent',
-                    'uitype' => 7,
-                    'column' => 'discount_percent',
-                    'table' => 'vtiger_inventoryproductrel',
-                    'label' => 'Item Discount Percent',
-                    'readonly' => 0,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 5,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'hdnS_H_Percent' => [
-                    'name' => 'hdnS_H_Percent',
+                's_h_percent' => [
+                    'name' => 's_h_percent',
                     'uitype' => 1,
                     'column' => 's_h_percent',
                     'table' => 'vtiger_quotes',
@@ -736,11 +708,15 @@ class Quotes_Install_Model extends Core_Install_Model
     {
         $this->getTable('vtiger_quotes', null)
             ->createTable('quoteid', 'int(19) NOT NULL DEFAULT \'0\'')
+            ->renameColumn('potentialid','potential_id')
+            ->renameColumn('contactid','contact_id')
+            ->renameColumn('accountid','account_id')
+            ->renameColumn('total','grand_total')
             ->createColumn('subject', 'varchar(100) DEFAULT NULL')
-            ->createColumn('potentialid', 'int(19) DEFAULT NULL')
+            ->createColumn('potential_id', 'int(19) DEFAULT NULL')
             ->createColumn('quotestage', 'varchar(200) DEFAULT NULL')
             ->createColumn('validtill', 'date DEFAULT NULL')
-            ->createColumn('contactid', 'int(19) DEFAULT NULL')
+            ->createColumn('contact_id', 'int(19) DEFAULT NULL')
             ->createColumn('quote_no', 'varchar(100) DEFAULT NULL')
             ->createColumn('subtotal', self::$COLUMN_DECIMAL)
             ->createColumn('carrier', 'varchar(200) DEFAULT NULL')
@@ -748,12 +724,12 @@ class Quotes_Install_Model extends Core_Install_Model
             ->createColumn('inventorymanager', 'int(19) DEFAULT NULL')
             ->createColumn('type', 'varchar(100) DEFAULT NULL')
             ->createColumn('adjustment', self::$COLUMN_DECIMAL)
-            ->createColumn('total', self::$COLUMN_DECIMAL)
+            ->createColumn('grand_total', self::$COLUMN_DECIMAL)
             ->createColumn('taxtype', 'varchar(25) DEFAULT NULL')
             ->createColumn('discount_percent', self::$COLUMN_DECIMAL)
             ->createColumn('discount_amount', self::$COLUMN_DECIMAL)
             ->createColumn('s_h_amount', self::$COLUMN_DECIMAL)
-            ->createColumn('accountid', 'int(19) DEFAULT NULL')
+            ->createColumn('account_id', 'int(19) DEFAULT NULL')
             ->createColumn('terms_conditions', 'text DEFAULT NULL')
             ->createColumn('currency_id', 'int(19) NOT NULL DEFAULT \'1\'')
             ->createColumn('conversion_rate', 'decimal(10,3) NOT NULL DEFAULT \'1.000\'')
@@ -764,9 +740,9 @@ class Quotes_Install_Model extends Core_Install_Model
             ->createColumn('region_id', 'int(19) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`quoteid`)')
             ->createKey('KEY IF NOT EXISTS `quote_quotestage_idx` (`quotestage`)')
-            ->createKey('KEY IF NOT EXISTS `quotes_potentialid_idx` (`potentialid`)')
-            ->createKey('KEY IF NOT EXISTS `quotes_contactid_idx` (`contactid`)')
-            ->createKey('CONSTRAINT `fk_3_vtiger_quotes` FOREIGN KEY IF NOT EXISTS (`potentialid`) REFERENCES `vtiger_potential` (`potentialid`) ON DELETE CASCADE')
+            ->createKey('KEY IF NOT EXISTS `quotes_potential_id_idx` (`potential_id`)')
+            ->createKey('KEY IF NOT EXISTS `quotes_contact_id_idx` (`contact_id`)')
+            ->createKey('CONSTRAINT `fk_3_vtiger_quotes` FOREIGN KEY IF NOT EXISTS (`potential_id`) REFERENCES `vtiger_potential` (`potential_id`) ON DELETE CASCADE')
             ->createKey('CONSTRAINT `fk_crmid_vtiger_quotes` FOREIGN KEY IF NOT EXISTS (`quoteid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
 
         $this->getTable('vtiger_quotesbillads', null)
@@ -793,5 +769,35 @@ class Quotes_Install_Model extends Core_Install_Model
         
         $this->createPicklistTable('vtiger_quotestage', '', 'quotestage');
         $this->createPicklistTable('vtiger_carrier', '', 'carrier');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrate(): void
+    {
+        $moduleName = $this->getModuleName();
+        $updateFields = [
+            'potentialid' => 'potential_id',
+            'contactid' => 'contact_id',
+            'accountid' => 'account_id',
+            'total' => 'grand_total',
+        ];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $updateFields);
+
+        $deleteFields = [
+            'assigned_user_id1',
+            'hdnGrandTotal',
+            'hdnSubTotal',
+            'txtAdjustment',
+            'hdnS_H_Percent',
+            'hdnS_H_Amount',
+            'hdnTaxType',
+            'hdnDiscountPercent',
+            'hdnDiscountAmount',
+        ];
+
+        Vtiger_Module_Model::deleteFields($moduleName, $deleteFields);
     }
 }

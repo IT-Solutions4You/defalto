@@ -960,14 +960,14 @@ class Vtiger_Functions {
 
 		static $new_field_details = Array(
 			//Contacts Related Fields
-			"vtiger_contactdetails:accountid" => "V",
+			"vtiger_contactdetails:account_id" => "V",
 			"vtiger_contactsubdetails:birthday" => "D",
 			"vtiger_contactdetails:email" => "V",
 			"vtiger_contactdetails:secondaryemail" => "V",
 			//Potential Related Fields
 			"vtiger_potential:campaignid" => "V",
 			//Account Related Fields
-			"vtiger_account:parentid" => "V",
+			"vtiger_account:account_id" => "V",
 			"vtiger_account:email1" => "V",
 			"vtiger_account:email2" => "V",
 			//Lead Related Fields
@@ -987,21 +987,21 @@ class Vtiger_Functions {
 			//Vendor Related Fields
 			"vtiger_vendor:email" => "V",
 			//Quotes Related Fields
-			"vtiger_quotes:potentialid" => "V",
+			"vtiger_quotes:potential_id" => "V",
 			"vtiger_quotes:inventorymanager" => "V",
-			"vtiger_quotes:accountid" => "V",
+			"vtiger_quotes:account_id" => "V",
 			//Purchase Order Related Fields
 			"vtiger_purchaseorder:vendorid" => "V",
 			"vtiger_purchaseorder:contactid" => "V",
 			//SalesOrder Related Fields
-			"vtiger_salesorder:potentialid" => "V",
-			"vtiger_salesorder:quoteid" => "V",
-			"vtiger_salesorder:contactid" => "V",
-			"vtiger_salesorder:accountid" => "V",
+			"vtiger_salesorder:potential_id" => "V",
+			"vtiger_salesorder:quote_id" => "V",
+			"vtiger_salesorder:contact_id" => "V",
+			"vtiger_salesorder:account_id" => "V",
 			//Invoice Related Fields
-			"vtiger_invoice:salesorderid" => "V",
-			"vtiger_invoice:contactid" => "V",
-			"vtiger_invoice:accountid" => "V",
+			"vtiger_invoice:salesorder_id" => "V",
+			"vtiger_invoice:contact_id" => "V",
+			"vtiger_invoice:account_id" => "V",
 			//Campaign Related Fields
 			"vtiger_campaign:product_id" => "V",
 			//Related List Entries(For Report Module)
@@ -1013,7 +1013,6 @@ class Vtiger_Functions {
 			"vtiger_contpotentialrel:potentialid" => "V",
 			"vtiger_pricebookproductrel:pricebookid" => "V",
 			"vtiger_pricebookproductrel:productid" => "V",
-			"vtiger_senotesrel:crmid" => "V",
 			"vtiger_senotesrel:notesid" => "V",
 			"vtiger_seproductsrel:crmid" => "V",
 			"vtiger_seproductsrel:productid" => "V",

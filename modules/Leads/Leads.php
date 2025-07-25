@@ -32,10 +32,10 @@ class Leads extends CRMEntity {
 
 	//construct this from database;
 	var $column_fields = Array();
-	var $sortby_fields = Array('lastname','firstname','email','phone','company','smownerid','website');
+	var $sortby_fields = Array('lastname','firstname','email','phone','company','assigned_user_id','website');
 
 	// This is used to retrieve related vtiger_fields from form posts.
-	var $additional_column_fields = Array('smcreatorid', 'smownerid', 'contactid','potentialid' ,'crmid');
+	var $additional_column_fields = Array('creator_user_id', 'assigned_user_id', 'contactid','potentialid' ,'crmid');
 
 	// This is the list of vtiger_fields that are in the lists.
 	var $list_fields = Array(
@@ -45,7 +45,7 @@ class Leads extends CRMEntity {
 		'Phone'=>Array('leadaddress'=>'phone'),
 		'Website'=>Array('leadsubdetails'=>'website'),
 		'Email'=>Array('leaddetails'=>'email'),
-		'Assigned To'=>Array('crmentity'=>'smownerid')
+		'Assigned To'=>Array('crmentity'=>'assigned_user_id')
 	);
 	var $list_fields_name = Array(
 		'First Name'=>'firstname',
@@ -117,24 +117,17 @@ class Leads extends CRMEntity {
 		//To get the Permitted fields query and the permitted fields list
 		$sql = getPermittedFieldsQuery("Leads", "detail_view");
 		$fields_list = getFieldsListFromQuery($sql);
-
+        $table = $this->entity_table;
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
 							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 		$query = "SELECT $fields_list,case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
-					FROM ".$this->entity_table."
-				INNER JOIN vtiger_leaddetails
-					ON vtiger_crmentity.crmid=vtiger_leaddetails.leadid
-				LEFT JOIN vtiger_leadsubdetails
-					ON vtiger_leaddetails.leadid = vtiger_leadsubdetails.leadsubscriptionid
-				LEFT JOIN vtiger_leadaddress
-					ON vtiger_leaddetails.leadid=vtiger_leadaddress.leadaddressid
-				LEFT JOIN vtiger_leadscf
-					ON vtiger_leadscf.leadid=vtiger_leaddetails.leadid
-							LEFT JOIN vtiger_groups
-									ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_users
-					ON vtiger_crmentity.smownerid = vtiger_users.id and vtiger_users.status='Active'
-				";
+			FROM $table
+			INNER JOIN vtiger_leaddetails ON vtiger_crmentity.crmid=vtiger_leaddetails.leadid
+            LEFT JOIN vtiger_leadsubdetails ON vtiger_leaddetails.leadid = vtiger_leadsubdetails.leadsubscriptionid
+            LEFT JOIN vtiger_leadaddress ON vtiger_leaddetails.leadid=vtiger_leadaddress.leadaddressid
+            LEFT JOIN vtiger_leadscf ON vtiger_leadscf.leadid=vtiger_leaddetails.leadid
+            LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
+            LEFT JOIN vtiger_users ON vtiger_crmentity.assigned_user_id = vtiger_users.id and vtiger_users.status='Active'";
 
 		$query .= $this->getNonAdminAccessControlQuery('Leads',$current_user);
 		$where_auto = " vtiger_crmentity.deleted=0 AND vtiger_leaddetails.converted =0";
@@ -183,16 +176,16 @@ class Leads extends CRMEntity {
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 
 		$query = "SELECT vtiger_crmentity.*, vtiger_quotes.*, vtiger_leaddetails.leadid,
-					case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
-					FROM vtiger_quotes
-					INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_quotes.quoteid
-					LEFT JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid = vtiger_quotes.contactid
-					LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-					LEFT JOIN vtiger_quotescf ON vtiger_quotescf.quoteid = vtiger_quotes.quoteid
-					LEFT JOIN vtiger_quotesbillads ON vtiger_quotesbillads.quotebilladdressid = vtiger_quotes.quoteid
-					LEFT JOIN vtiger_quotesshipads ON vtiger_quotesshipads.quoteshipaddressid = vtiger_quotes.quoteid
-					LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
-					WHERE vtiger_crmentity.deleted = 0 AND vtiger_leaddetails.leadid = $id";
+            case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
+            FROM vtiger_quotes
+            INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_quotes.quoteid
+            LEFT JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid = vtiger_quotes.contactid
+            LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
+            LEFT JOIN vtiger_quotescf ON vtiger_quotescf.quoteid = vtiger_quotes.quoteid
+            LEFT JOIN vtiger_quotesbillads ON vtiger_quotesbillads.quotebilladdressid = vtiger_quotes.quoteid
+            LEFT JOIN vtiger_quotesshipads ON vtiger_quotesshipads.quoteshipaddressid = vtiger_quotes.quoteid
+            LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id
+            WHERE vtiger_crmentity.deleted = 0 AND vtiger_leaddetails.leadid = $id";
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -241,13 +234,13 @@ class Leads extends CRMEntity {
 							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 		$query = "SELECT case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name ,
 				vtiger_campaign.campaignid, vtiger_campaign.campaignname, vtiger_campaign.campaigntype, vtiger_campaign.campaignstatus,
-				vtiger_campaign.expectedrevenue, vtiger_campaign.closingdate, vtiger_crmentity.crmid, vtiger_crmentity.smownerid,
+				vtiger_campaign.expectedrevenue, vtiger_campaign.closingdate, vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id,
 				vtiger_crmentity.modifiedtime from vtiger_campaign
 				inner join vtiger_campaignleadrel on vtiger_campaignleadrel.campaignid=vtiger_campaign.campaignid
 				inner join vtiger_crmentity on vtiger_crmentity.crmid = vtiger_campaign.campaignid
 				inner join vtiger_campaignscf ON vtiger_campaignscf.campaignid = vtiger_campaign.campaignid
-				left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.smownerid
-				left join vtiger_users on vtiger_users.id = vtiger_crmentity.smownerid
+				left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.assigned_user_id
+				left join vtiger_users on vtiger_users.id = vtiger_crmentity.assigned_user_id
 				where vtiger_campaignleadrel.leadid=".$id." and vtiger_crmentity.deleted=0";
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
@@ -298,20 +291,16 @@ class Leads extends CRMEntity {
 			}
 		}
 
-		$query = "SELECT vtiger_products.productid, vtiger_products.productname
-				vtiger_products.commissionrate, vtiger_products.qty_per_unit, vtiger_products.unit_price,
-				vtiger_crmentity.crmid, vtiger_crmentity.smownerid
-				FROM vtiger_products
-				INNER JOIN vtiger_seproductsrel ON vtiger_products.productid = vtiger_seproductsrel.productid  and vtiger_seproductsrel.setype = 'Leads'
-				INNER JOIN vtiger_productcf
-					ON vtiger_products.productid = vtiger_productcf.productid
-				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_products.productid
-				INNER JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid = vtiger_seproductsrel.crmid
-				LEFT JOIN vtiger_users
-					ON vtiger_users.id=vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_groups
-					ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-			   WHERE vtiger_crmentity.deleted = 0 AND vtiger_leaddetails.leadid = $id";
+		$query = "SELECT vtiger_products.productid, vtiger_products.productname, vtiger_products.commissionrate, vtiger_products.qty_per_unit, vtiger_products.unit_price,
+            vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id
+            FROM vtiger_products
+            INNER JOIN vtiger_seproductsrel ON vtiger_products.productid = vtiger_seproductsrel.productid  and vtiger_seproductsrel.setype = 'Leads'
+            INNER JOIN vtiger_productcf ON vtiger_products.productid = vtiger_productcf.productid
+            INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_products.productid
+            INNER JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid = vtiger_seproductsrel.crmid
+            LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.assigned_user_id
+            LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
+			WHERE vtiger_crmentity.deleted = 0 AND vtiger_leaddetails.leadid = $id";
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -445,16 +434,16 @@ class Leads extends CRMEntity {
 			$query .= " LEFT JOIN vtiger_email_track AS vtiger_email_trackLeads ON vtiger_email_trackLeads.crmid = vtiger_leaddetails.leadid";
 		}
 		if ($queryPlanner->requireTable("vtiger_groupsLeads")){
-			$query .= " left join vtiger_groups as vtiger_groupsLeads on vtiger_groupsLeads.groupid = vtiger_crmentityLeads.smownerid";
+			$query .= " left join vtiger_groups as vtiger_groupsLeads on vtiger_groupsLeads.groupid = vtiger_crmentityLeads.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_usersLeads")){
-			$query .= " left join vtiger_users as vtiger_usersLeads on vtiger_usersLeads.id = vtiger_crmentityLeads.smownerid";
+			$query .= " left join vtiger_users as vtiger_usersLeads on vtiger_usersLeads.id = vtiger_crmentityLeads.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_lastModifiedByLeads")){
 			$query .= " left join vtiger_users as vtiger_lastModifiedByLeads on vtiger_lastModifiedByLeads.id = vtiger_crmentityLeads.modifiedby ";
 		}
 		if ($queryPlanner->requireTable("vtiger_createdbyLeads")){
-			$query .= " left join vtiger_users as vtiger_createdbyLeads on vtiger_createdbyLeads.id = vtiger_crmentityLeads.smcreatorid ";
+			$query .= " left join vtiger_users as vtiger_createdbyLeads on vtiger_createdbyLeads.id = vtiger_crmentityLeads.creator_user_id ";
 		}
 
 		//if secondary modules custom reference field is selected

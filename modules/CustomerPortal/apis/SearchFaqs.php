@@ -27,7 +27,7 @@ class CustomerPortal_SearchFaqs extends CustomerPortal_API_Abstract {
 			$searchKey = addslashes(addslashes($searchKey));
 			$searchFields = array('question', 'answer');
 
-			$sql = sprintf('SELECT id,question,answer,status FROM vtiger_faq WHERE status=? AND (');
+			$sql = sprintf('SELECT id,question,faq_answer,faqstatus FROM vtiger_faq WHERE faqstatus=? AND (');
 			$sql.= implode(" LIKE '%$searchKey%' OR ", $searchFields);
 			$sql.= " LIKE '%".$searchKey."%') ;";
 			$sqlResult = $adb->pquery($sql, array("Published"));
@@ -36,8 +36,8 @@ class CustomerPortal_SearchFaqs extends CustomerPortal_API_Abstract {
 			for ($i = 0; $i < $num_rows; $i++) {
 				$record = array();
 				$record['question'] = decode_html($adb->query_result($sqlResult, $i, 'question'));
-				$record['faq_answer'] = decode_html($adb->query_result($sqlResult, $i, 'answer'));
-				$record['faqstatus'] = decode_html($adb->query_result($sqlResult, $i, 'status'));
+				$record['faq_answer'] = decode_html($adb->query_result($sqlResult, $i, 'faq_answer'));
+				$record['faqstatus'] = decode_html($adb->query_result($sqlResult, $i, 'faqstatus'));
 				$record['id'] = vtws_getWebserviceEntityId("Faq", $adb->query_result($sqlResult, $i, 'id'));
 				$data[] = $record;
 			}

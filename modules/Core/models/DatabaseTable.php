@@ -12,6 +12,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
 {
     public static array $tableColumns = [];
     public static string $COLUMN_DECIMAL = 'decimal(25,4) DEFAULT NULL';
+    public static string $COLUMN_INT = 'int(19) DEFAULT NULL';
 
     /**
      * @var PearDatabase
@@ -35,6 +36,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
         }
 
         $this->db->query($sql);
+        $this->addTableColumns([$column]);
 
         return $this;
     }
@@ -51,6 +53,8 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
 
         if ($this->checkColumn($fromColumn, $table, true) && !$this->checkColumn($toColumn, $table, true)) {
             $this->db->query($sql);
+            $this->removeTableColumns([$fromColumn]);
+            $this->addTableColumns([$toColumn]);
         }
 
         return $this;
@@ -88,6 +92,29 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
         self::$tableColumns[$this->get('table')] = $columns;
     }
 
+    public function addTableColumns($columns): void
+    {
+        $table = $this->get('table');
+
+        foreach ($columns as $column) {
+            if (!in_array($column, self::$tableColumns[$table])) {
+                self::$tableColumns[$table][] = $column;
+            }
+        }
+    }
+
+    public function removeTableColumns($columns): void
+    {
+        $table = $this->get('table');
+        $columnKeys = array_flip(self::$tableColumns[$table]);
+
+        foreach ($columns as $column) {
+            if (isset($columnKeys[$column])) {
+                unset(self::$tableColumns[$table][$columnKeys[$column]]);
+            }
+        }
+    }
+
     /**
      * @return self
      */
@@ -111,7 +138,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
      */
     public function getTableColumns(): array
     {
-        return self::$tableColumns[$this->get('table')];
+        return self::$tableColumns[$this->get('table')] ?? [];
     }
 
     /**

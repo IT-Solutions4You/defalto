@@ -79,7 +79,7 @@ class MailManager_UploadFileXHR extends qqUploadedFileXhr {
 				$date_var = $db->formatDate(date('YmdHis'), true);
 				$usetime = $db->formatDate($date_var, true);
 
-				$db->pquery("INSERT INTO vtiger_crmentity(crmid, smcreatorid, smownerid,
+				$db->pquery("INSERT INTO vtiger_crmentity(crmid, creator_user_id, assigned_user_id,
 				modifiedby, setype, description, createdtime, modifiedtime, presence, deleted)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 						Array($attachid, $currentUserModel->getId(), $currentUserModel->getId(), $currentUserModel->getId(), "Documents Attachment", $description, $usetime, $usetime, 1, 0));
@@ -195,7 +195,7 @@ class MailManager_UploadFileForm extends qqUploadedFileForm {
 				$date_var = $db->formatDate(date('YmdHis'), true);
 				$usetime = $db->formatDate($date_var, true);
 
-				$db->pquery("INSERT INTO vtiger_crmentity(crmid, smcreatorid, smownerid,
+				$db->pquery("INSERT INTO vtiger_crmentity(crmid, creator_user_id, assigned_user_id,
 				modifiedby, setype, description, createdtime, modifiedtime, presence, deleted)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 						Array($attachid, $currentUserModel->getId(), $currentUserModel->getId(), $currentUserModel->getId(), "Documents Attachment", $description, $usetime, $usetime, 1, 0));

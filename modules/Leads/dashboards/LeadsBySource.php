@@ -34,10 +34,10 @@ class Leads_LeadsBySource_Dashboard extends Vtiger_IndexAjax_View {
 		$dates = $request->get('createdtime');
 		
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$data = $moduleModel->getLeadsBySource($request->get('smownerid'),$dates);
+		$data = $moduleModel->getLeadsBySource($request->get('assigned_user_id'),$dates);
         $listViewUrl = $moduleModel->getListViewUrlWithAllFilter();
         for($i = 0;$i<php7_count($data);$i++){
-            $data[$i]["links"] = $listViewUrl.$this->getSearchParams($data[$i][2],$request->get('smownerid'), $request->get('dateFilter')).'&nolistcache=1';
+            $data[$i]["links"] = $listViewUrl.$this->getSearchParams($data[$i][2],$request->get('assigned_user_id'), $request->get('dateFilter')).'&nolistcache=1';
         }
 
 		$widget = Vtiger_Widget_Model::getInstance($linkId, $currentUser->getId());

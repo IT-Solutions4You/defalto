@@ -1087,7 +1087,7 @@ class Users extends CRMEntity {
 		$upload_status = move_uploaded_file($filetmp_name,$upload_file_path.$current_id."_".$encryptFileName);
 
         if ($upload_status) {
-            $sql1 = 'insert into vtiger_crmentity (crmid,smcreatorid,smownerid,setype,description,createdtime,modifiedtime) values(?,?,?,?,?,?,?)';
+            $sql1 = 'INSERT INTO vtiger_crmentity (crmid,creator_user_id,assigned_user_id,setype,description,createdtime,modifiedtime) VALUES (?,?,?,?,?,?,?)';
             $params1 = [
                 $current_id,
                 $current_user->id,

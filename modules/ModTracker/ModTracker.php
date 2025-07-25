@@ -210,7 +210,7 @@ class ModTracker extends CRMExtension {
 
         if(empty($accessibleModules)) throw new Exception('Modtracker not enabled for any modules');
         
-        $query = "SELECT id, module, modifiedtime, vtiger_crmentity.crmid, smownerid, vtiger_modtracker_basic.status
+        $query = "SELECT id, module, modifiedtime, vtiger_crmentity.crmid, assigned_user_id, vtiger_modtracker_basic.status
                 FROM vtiger_modtracker_basic
                 INNER JOIN vtiger_crmentity ON vtiger_modtracker_basic.crmid = vtiger_crmentity.crmid
                     AND vtiger_modtracker_basic.changedon = vtiger_crmentity.modifiedtime
@@ -237,7 +237,7 @@ class ModTracker extends CRMExtension {
             $record['modifiedtime'] = $adb->query_result($result,$i,'modifiedtime');
             $record['module']       = $adb->query_result($result,$i,'module');
             $record['crmid']        = $adb->query_result($result,$i,'crmid');
-            $record['assigneduserid'] = $adb->query_result($result,$i,'smownerid');
+            $record['assigneduserid'] = $adb->query_result($result,$i,'assigned_user_id');
             
             if($status == ModTracker::$DELETED) {
                 $deletedRecords[] = $record;

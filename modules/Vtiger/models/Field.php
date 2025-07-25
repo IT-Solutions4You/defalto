@@ -688,9 +688,9 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		$escapedFieldLabel = str_replace(' ', '_', $fieldLabel);
 		$moduleFieldLabel = $moduleName.'_'.$escapedFieldLabel;
 
-		if($tableName == 'vtiger_crmentity' && $columnName !='smownerid'){
+		if($tableName == 'vtiger_crmentity' && $columnName !='assigned_user_id'){
 			$tableName = 'vtiger_crmentity'.$moduleName;
-		} elseif($columnName == 'smownerid') {
+		} elseif($columnName == 'assigned_user_id') {
 			$tableName = 'vtiger_users'.$moduleName;
 			$columnName ='user_name';
 		}

@@ -69,7 +69,7 @@ class Settings_Vtiger_ListView_Model extends Vtiger_Base_Model {
 		$pageLimit = $pagingModel->getPageLimit();
 
 		$orderBy = $this->getForSql('orderby');
-		if (!empty($orderBy) && $orderBy === 'smownerid') { 
+		if (!empty($orderBy) && $orderBy === 'assigned_user_id') {
 			$fieldModel = Vtiger_Field_Model::getInstance('assigned_user_id', $moduleModel); 
 			if ($fieldModel->getFieldDataType() == 'owner') { 
 				$orderBy = 'COALESCE(vtiger_users.userlabel,vtiger_groups.groupname)'; 

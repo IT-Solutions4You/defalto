@@ -128,7 +128,7 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
                 ],
                 'assigned_user_id' => [
                     'uitype' => 53,
-                    'column' => 'smownerid',
+                    'column' => 'assigned_user_id',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Assigned To',
                     'typeofdata' => 'V~M',
@@ -350,9 +350,9 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
                     'label' => 'Workflow',
                     'masseditable' => '0',
                 ],
-                'smcreatorid' => [
+                'creator_user_id' => [
                     'uitype' => 52,
-                    'column' => 'smcreatorid',
+                    'column' => 'creator_user_id',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Creator',
                     'displaytype' => '2',
@@ -403,14 +403,6 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 0,
                     'summaryfield' => 0,
-                ],
-                'creator' => [
-                    'column' => 'smcreatorid',
-                    'label' => 'Creator',
-                    'uitype' => 52,
-                    'typeofdata' => 'V~O',
-                    'displaytype' => 2,
-                    'table' => 'vtiger_crmentity',
                 ],
             ],
             'LBL_DESCRIPTION_INFORMATION' => [

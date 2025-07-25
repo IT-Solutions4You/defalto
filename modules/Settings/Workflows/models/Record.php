@@ -527,7 +527,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 				if($value == 'false:boolean' || ($fieldModel && $fieldDataType == 'boolean' && $value == '0')) {
 					$value = vtranslate('LBL_DISABLED', $moduleName);
                 }
-				if ($fieldModel && (($fieldModel->column === 'smownerid') || (($fieldModel->column === 'smgroupid')))) {
+				if ($fieldModel && (($fieldModel->column === 'assigned_user_id') || (($fieldModel->column === 'smgroupid')))) {
 					if (vtws_getOwnerType($value) == 'Users') {
 						$value = getUserFullName($value);
 					} else {

@@ -47,7 +47,7 @@ class ProjectTask extends CRMEntity {
         'End Date'          => ['projecttask' => 'enddate'],
         'Type'              => ['projecttask' => 'projecttasktype'],
         'Progress'          => ['projecttask' => 'projecttaskprogress'],
-        'Assigned To'       => ['crmentity' => 'smownerid'],
+        'Assigned To'       => ['crmentity' => 'assigned_user_id'],
     ];
 
     var $list_fields_name = array(
@@ -70,7 +70,7 @@ class ProjectTask extends CRMEntity {
         'Project Task Name' => ['projecttask' => 'projecttaskname'],
         'Start Date'        => ['projecttask' => 'startdate'],
         'Type'              => ['projecttask' => 'projecttasktype'],
-        'Assigned To'       => ['crmentity' => 'smownerid'],
+        'Assigned To'       => ['crmentity' => 'assigned_user_id'],
     ];
 
     var $search_fields_name = Array(
@@ -148,8 +148,8 @@ class ProjectTask extends CRMEntity {
 					  " = $this->table_name.$this->table_index";
 			$joinedTables[] = $this->customFieldTable[0];
 		}
-		$query .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid";
-		$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
+		$query .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id";
+		$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id";
 
 		$joinedTables[] = 'vtiger_users';
 		$joinedTables[] = 'vtiger_groups';
@@ -193,14 +193,14 @@ class ProjectTask extends CRMEntity {
 		if($is_admin==false && $profileGlobalPermission[1] == 1 && $profileGlobalPermission[2] == 1
 			&& $defaultOrgSharingPermission[$tabid] == 3) {
 
-				$sec_query .= " AND (vtiger_crmentity.smownerid in($current_user->id) OR vtiger_crmentity.smownerid IN
+				$sec_query .= " AND (vtiger_crmentity.assigned_user_id in($current_user->id) OR vtiger_crmentity.assigned_user_id IN
 					(
 						SELECT vtiger_user2role.userid FROM vtiger_user2role
 						INNER JOIN vtiger_users ON vtiger_users.id=vtiger_user2role.userid
 						INNER JOIN vtiger_role ON vtiger_role.roleid=vtiger_user2role.roleid
 						WHERE vtiger_role.parentrole LIKE '".$current_user_parent_role_seq."::%'
 					)
-					OR vtiger_crmentity.smownerid IN
+					OR vtiger_crmentity.assigned_user_id IN
 					(
 						SELECT shareduserid FROM vtiger_tmp_read_user_sharing_per
 						WHERE userid=".$current_user->id." AND tabid=".$tabid."
@@ -246,8 +246,8 @@ class ProjectTask extends CRMEntity {
 					  " = $this->table_name.$this->table_index";
 		}
 
-		$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
-		$query .= " LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid = vtiger_users.id and vtiger_users.status='Active'";
+		$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id";
+		$query .= " LEFT JOIN vtiger_users ON vtiger_crmentity.assigned_user_id = vtiger_users.id and vtiger_users.status='Active'";
 
 		$linkedModulesQuery = $this->db->pquery("SELECT distinct fieldname, columnname, relmodule FROM vtiger_field" .
 				" INNER JOIN vtiger_fieldmodulerel ON vtiger_fieldmodulerel.fieldid = vtiger_field.fieldid" .
@@ -299,8 +299,8 @@ class ProjectTask extends CRMEntity {
 			$from_clause .= " INNER JOIN ".$this->customFieldTable[0]." ON ".$this->customFieldTable[0].'.'.$this->customFieldTable[1] .
 					  " = $this->table_name.$this->table_index";
 		}
-		$from_clause .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
-						LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
+		$from_clause .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id
+						LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id";
 
 		$where_clause = "	WHERE vtiger_crmentity.deleted = 0";
 		$where_clause .= $this->getListViewSecurityParameter($module);
@@ -402,16 +402,16 @@ class ProjectTask extends CRMEntity {
 			$query .= " left join vtiger_projecttaskcf on vtiger_projecttask.projecttaskid = vtiger_projecttaskcf.projecttaskid";
 		}
 		if ($queryPlanner->requireTable('vtiger_groupsProjectTask')) {
-			$query .= "	left join vtiger_groups as vtiger_groupsProjectTask on vtiger_groupsProjectTask.groupid = vtiger_crmentityProjectTask.smownerid";
+			$query .= "	left join vtiger_groups as vtiger_groupsProjectTask on vtiger_groupsProjectTask.groupid = vtiger_crmentityProjectTask.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable('vtiger_usersProjectTask')) {
-			$query .= " left join vtiger_users as vtiger_usersProjectTask on vtiger_usersProjectTask.id = vtiger_crmentityProjectTask.smownerid";
+			$query .= " left join vtiger_users as vtiger_usersProjectTask on vtiger_usersProjectTask.id = vtiger_crmentityProjectTask.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable('vtiger_lastModifiedByProjectTask')) {
 			$query .= " left join vtiger_users as vtiger_lastModifiedByProjectTask on vtiger_lastModifiedByProjectTask.id = vtiger_crmentityProjectTask.modifiedby ";
 		}
 		if ($queryPlanner->requireTable("vtiger_createdbyProjectTask")){
-			$query .= " left join vtiger_users as vtiger_createdbyProjectTask on vtiger_createdbyProjectTask.id = vtiger_crmentityProjectTask.smcreatorid ";
+			$query .= " left join vtiger_users as vtiger_createdbyProjectTask on vtiger_createdbyProjectTask.id = vtiger_crmentityProjectTask.creator_user_id ";
 		}
 		//if secondary modules custom reference field is selected
         $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);

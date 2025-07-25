@@ -166,11 +166,11 @@ function vtws_convertlead($entityvalues, $user) {
 			}
 		}
 		if($quoteIds){
-			$queryUpdate = 'UPDATE vtiger_quotes SET contactid=?, potentialid=? WHERE quoteid IN('. generateQuestionMarks($quoteIds).') ';
+			$queryUpdate = 'UPDATE vtiger_quotes SET contact_id=?, potential_id=? WHERE quoteid IN('. generateQuestionMarks($quoteIds).') ';
 			$adb->pquery($queryUpdate, array($contactId, $potentialId, $quoteIds));
 
 			if($accountId){
-				$queryUpdate = 'UPDATE vtiger_quotes SET accountid=? WHERE quoteid IN('. generateQuestionMarks($quoteIds).')';
+				$queryUpdate = 'UPDATE vtiger_quotes SET account_id=? WHERE quoteid IN('. generateQuestionMarks($quoteIds).')';
 				$adb->pquery($queryUpdate, array($accountId, $quoteIds));
 			}
 		}

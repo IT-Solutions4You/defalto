@@ -49,7 +49,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                 'vendor_id' => [
                     'name' => 'vendor_id',
                     'uitype' => 81,
-                    'column' => 'vendorid',
+                    'column' => 'vendor_id',
                     'table' => 'vtiger_purchaseorder',
                     'label' => 'Vendor Name',
                     'readonly' => 1,
@@ -91,7 +91,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                 'contact_id' => [
                     'name' => 'contact_id',
                     'uitype' => 57,
-                    'column' => 'contactid',
+                    'column' => 'contact_id',
                     'table' => 'vtiger_purchaseorder',
                     'label' => 'Contact Name',
                     'readonly' => 1,
@@ -138,8 +138,8 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                         'BlueDart',
                     ],
                 ],
-                'txtAdjustment' => [
-                    'name' => 'txtAdjustment',
+                'adjustment' => [
+                    'name' => 'adjustment',
                     'uitype' => 72,
                     'column' => 'adjustment',
                     'table' => 'vtiger_purchaseorder',
@@ -180,10 +180,10 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'hdnGrandTotal' => [
-                    'name' => 'hdnGrandTotal',
+                'grand_total' => [
+                    'name' => 'grand_total',
                     'uitype' => 72,
-                    'column' => 'total',
+                    'column' => 'grand_total',
                     'table' => 'vtiger_purchaseorder',
                     'label' => 'Total',
                     'readonly' => 1,
@@ -194,8 +194,8 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 1,
                 ],
-                'hdnSubTotal' => [
-                    'name' => 'hdnSubTotal',
+                'subtotal' => [
+                    'name' => 'subtotal',
                     'uitype' => 72,
                     'column' => 'subtotal',
                     'table' => 'vtiger_purchaseorder',
@@ -208,8 +208,8 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'hdnTaxType' => [
-                    'name' => 'hdnTaxType',
+                'taxtype' => [
+                    'name' => 'taxtype',
                     'uitype' => 16,
                     'column' => 'taxtype',
                     'table' => 'vtiger_purchaseorder',
@@ -223,8 +223,8 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'summaryfield' => 0,
                     'picklist_values' => [],
                 ],
-                'hdnS_H_Amount' => [
-                    'name' => 'hdnS_H_Amount',
+                's_h_amount' => [
+                    'name' => 's_h_amount',
                     'uitype' => 72,
                     'column' => 's_h_amount',
                     'table' => 'vtiger_purchaseorder',
@@ -262,7 +262,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',
                     'uitype' => 53,
-                    'column' => 'smownerid',
+                    'column' => 'assigned_user_id',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Assigned To',
                     'readonly' => 1,
@@ -549,8 +549,8 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                 ],
             ],
             'LBL_ITEM_DETAILS' => [
-                'hdnDiscountPercent' => [
-                    'name' => 'hdnDiscountPercent',
+                'discount_percent' => [
+                    'name' => 'discount_percent',
                     'uitype' => 1,
                     'column' => 'discount_percent',
                     'table' => 'vtiger_purchaseorder',
@@ -563,8 +563,8 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'hdnDiscountAmount' => [
-                    'name' => 'hdnDiscountAmount',
+                'discount_amount' => [
+                    'name' => 'discount_amount',
                     'uitype' => 72,
                     'column' => 'discount_amount',
                     'table' => 'vtiger_purchaseorder',
@@ -637,36 +637,8 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
-                'discount_amount' => [
-                    'name' => 'discount_amount',
-                    'uitype' => 71,
-                    'column' => 'discount_amount',
-                    'table' => 'vtiger_inventoryproductrel',
-                    'label' => 'Item Discount Amount',
-                    'readonly' => 0,
-                    'presence' => 2,
-                    'typeofdata' => 'N~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 5,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'discount_percent' => [
-                    'name' => 'discount_percent',
-                    'uitype' => 7,
-                    'column' => 'discount_percent',
-                    'table' => 'vtiger_inventoryproductrel',
-                    'label' => 'Item Discount Percent',
-                    'readonly' => 0,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 5,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'hdnS_H_Percent' => [
-                    'name' => 'hdnS_H_Percent',
+                's_h_percent' => [
+                    'name' => 's_h_percent',
                     'uitype' => 1,
                     'column' => 's_h_percent',
                     'table' => 'vtiger_purchaseorder',
@@ -767,21 +739,24 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
         ;
 
         $this->getTable('vtiger_purchaseorder', null)
-            ->createColumn('purchaseorderid', 'int(19) NOT NULL DEFAULT 0')
+            ->createColumn('purchaseorderid', self::$COLUMN_INT)
+            ->renameColumn('vendorid','vendor_id')
+            ->renameColumn('contactid','contact_id')
+            ->renameColumn('total','grand_total')
             ->createColumn('subject', 'varchar(100) DEFAULT NULL')
             ->createColumn('quoteid', 'int(19) DEFAULT NULL')
-            ->createColumn('vendorid', 'int(19) DEFAULT NULL')
+            ->createColumn('vendor_id', 'int(19) DEFAULT NULL')
             ->createColumn('requisition_no', 'varchar(100) DEFAULT NULL')
             ->createColumn('purchaseorder_no', 'varchar(100) DEFAULT NULL')
             ->createColumn('tracking_no', 'varchar(100) DEFAULT NULL')
-            ->createColumn('contactid', 'int(19) DEFAULT NULL')
+            ->createColumn('contact_id', 'int(19) DEFAULT NULL')
             ->createColumn('duedate', 'date DEFAULT NULL')
             ->createColumn('carrier', 'varchar(200) DEFAULT NULL')
             ->createColumn('type', 'varchar(100) DEFAULT NULL')
             ->createColumn('adjustment', self::$COLUMN_DECIMAL)
             ->createColumn('salescommission', self::$COLUMN_DECIMAL)
             ->createColumn('exciseduty', self::$COLUMN_DECIMAL)
-            ->createColumn('total', self::$COLUMN_DECIMAL)
+            ->createColumn('grand_total', self::$COLUMN_DECIMAL)
             ->createColumn('subtotal', self::$COLUMN_DECIMAL)
             ->createColumn('taxtype', 'varchar(25) DEFAULT NULL')
             ->createColumn('discount_percent', self::$COLUMN_DECIMAL)
@@ -799,13 +774,44 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createColumn('region_id', 'int(19) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`purchaseorderid`)')
-            ->createKey('KEY IF NOT EXISTS `purchaseorder_vendorid_idx` (`vendorid`)')
+            ->createKey('KEY IF NOT EXISTS `purchaseorder_vendor_id_idx` (`vendor_id`)')
             ->createKey('KEY IF NOT EXISTS `purchaseorder_quoteid_idx` (`quoteid`)')
-            ->createKey('KEY IF NOT EXISTS `purchaseorder_contactid_idx` (`contactid`)')
-            ->createKey('CONSTRAINT `fk_4_vtiger_purchaseorder` FOREIGN KEY IF NOT EXISTS (`vendorid`) REFERENCES `vtiger_vendor` (`vendorid`) ON DELETE CASCADE')
+            ->createKey('KEY IF NOT EXISTS `purchaseorder_contact_id_idx` (`contact_id`)')
+            ->createKey('CONSTRAINT `fk_4_vtiger_purchaseorder` FOREIGN KEY IF NOT EXISTS (`vendor_id`) REFERENCES `vtiger_vendor` (`vendor_id`) ON DELETE CASCADE')
             ->createKey('CONSTRAINT `fk_crmid_vtiger_purchaseorder` FOREIGN KEY IF NOT EXISTS (`purchaseorderid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
         ;
         
         $this->createPicklistTable('vtiger_postatus', 'postatusid', 'postatus');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrate()
+    {
+        $moduleName = $this->getModuleName();
+        $updateFields = [
+            'vendorid' => 'vendor_id',
+            'contactid' => 'contact_id',
+            'total' => 'grand_total',
+            'taxtype' => 'taxtype',
+            'adjustment' => 'adjustment',
+            'subtotal' => 'subtotal',
+        ];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $updateFields);
+
+        $deleteFields = [
+            'hdnGrandTotal',
+            'hdnSubTotal',
+            'txtAdjustment',
+            'hdnS_H_Percent',
+            'hdnS_H_Amount',
+            'hdnTaxType',
+            'hdnDiscountPercent',
+            'hdnDiscountAmount',
+        ];
+
+        Vtiger_Module_Model::deleteFields($moduleName, $deleteFields);
     }
 }

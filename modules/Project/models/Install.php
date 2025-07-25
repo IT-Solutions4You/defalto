@@ -189,7 +189,7 @@ class Project_Install_Model extends Core_Install_Model
                 'account_id' => [
                     'name' => 'account_id',
                     'uitype' => 10,
-                    'column' => 'accountid',
+                    'column' => 'account_id',
                     'table' => 'vtiger_project',
                     'label' => 'Account Name',
                     'readonly' => 1,
@@ -208,7 +208,7 @@ class Project_Install_Model extends Core_Install_Model
                 'contact_id' => [
                     'name' => 'contact_id',
                     'uitype' => 10,
-                    'column' => 'contactid',
+                    'column' => 'contact_id',
                     'table' => 'vtiger_project',
                     'label' => 'Contact Name',
                     'readonly' => 1,
@@ -225,7 +225,7 @@ class Project_Install_Model extends Core_Install_Model
                 ],
                 'assigned_user_id' => [
                     'uitype' => 53,
-                    'column' => 'smownerid',
+                    'column' => 'assigned_user_id',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Assigned To',
                     'typeofdata' => 'V~M',
@@ -324,6 +324,8 @@ class Project_Install_Model extends Core_Install_Model
     {
         $this->getTable('vtiger_project', null)
             ->createTable('projectid')
+            ->renameColumn('accountid', 'account_id')
+            ->renameColumn('contactid', 'contact_id')
             ->createColumn('projectname', 'varchar(255) default NULL')
             ->createColumn('project_no', 'varchar(100) default NULL')
             ->createColumn('startdate', 'date default NULL')
@@ -335,9 +337,9 @@ class Project_Install_Model extends Core_Install_Model
             ->createColumn('projectpriority', 'varchar(100) default NULL')
             ->createColumn('projecttype', 'varchar(100) default NULL')
             ->createColumn('progress', 'varchar(100) default NULL')
-            ->createColumn('accountid', 'int(19) default NULL')
-            ->createColumn('contactid', 'int(19) default NULL')
-            ->createColumn('potentialid', 'int(19) default NULL')
+            ->createColumn('account_id', self::$COLUMN_INT)
+            ->createColumn('contact_id', self::$COLUMN_INT)
+            ->createColumn('potentialid', self::$COLUMN_INT)
             ->createColumn('isconvertedfrompotential', 'INT(1) NOT NULL DEFAULT \'0\'')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`projectid`)')
         ;
@@ -346,8 +348,20 @@ class Project_Install_Model extends Core_Install_Model
             ->createTable('projectid');
     }
 
+    /**
+     * @throws AppException
+     * @throws Exception
+     */
     public function migrate(): void
     {
+        $moduleName = $this->getModuleName();
+        $fields = [
+            'accountid' => 'account_id',
+            'contactid' => 'contact_id',
+        ];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $fields);
+
         $table = $this->getTable('vtiger_project', 'projectid');
 
         if (columnExists('linktoaccountscontacts', 'vtiger_project')) {
@@ -359,9 +373,9 @@ class Project_Install_Model extends Core_Install_Model
                 $data = ['linktoaccountscontacts' => null];
 
                 if ('Accounts' === getSalesEntityType($recordId)) {
-                    $data['accountid'] = $recordId;
+                    $data['account_id'] = $recordId;
                 } else {
-                    $data['contactid'] = $recordId;
+                    $data['contact_id'] = $recordId;
                 }
 
                 $table->updateData($data, ['projectid' => $row['projectid']]);

@@ -23,17 +23,17 @@ class Documents extends CRMEntity
      */
     public $customFieldTable = ['vtiger_notescf', 'notesid'];
     public $column_fields = [];
-    public $sortby_fields = ['title', 'modifiedtime', 'filename', 'createdtime', 'lastname', 'filedownloadcount', 'smownerid'];
+    public $sortby_fields = ['notes_title', 'modifiedtime', 'filename', 'createdtime', 'lastname', 'filedownloadcount', 'assigned_user_id'];
 
     // This is used to retrieve related vtiger_fields from form posts.
     public $additional_column_fields = ['', '', '', ''];
 
     // This is the list of vtiger_fields that are in the lists.
     public $list_fields = [
-        'Title' => ['notes' => 'title'],
+        'Title' => ['notes' => 'notes_title'],
         'File Name' => ['notes' => 'filename'],
         'Modified Time' => ['crmentity' => 'modifiedtime'],
-        'Assigned To' => ['crmentity' => 'smownerid'],
+        'Assigned To' => ['crmentity' => 'assigned_user_id'],
         'Folder Name' => ['attachmentsfolder' => 'folderid'],
     ];
     public $list_fields_name = [
@@ -47,7 +47,7 @@ class Documents extends CRMEntity
     public $search_fields = [
         'Title' => ['notes' => 'notes_title'],
         'File Name' => ['notes' => 'filename'],
-        'Assigned To' => ['crmentity' => 'smownerid'],
+        'Assigned To' => ['crmentity' => 'assigned_user_id'],
         'Folder Name' => ['attachmentsfolder' => 'foldername'],
     ];
 
@@ -61,7 +61,7 @@ class Documents extends CRMEntity
     public $old_filename = '';
     public $mandatory_fields = ['notes_title', 'createdtime', 'modifiedtime', 'filename', 'filesize', 'filetype', 'filedownloadcount', 'assigned_user_id', 'document_source', 'notecontent', 'filelocationtype', 'folderid'];
     //Added these variables which are used as default order by and sortorder in ListView
-    public $default_order_by = 'title';
+    public $default_order_by = 'notes_title';
     public $default_sort_order = 'ASC';
 
     public function __construct()
@@ -275,25 +275,20 @@ class Documents extends CRMEntity
         //To get the Permitted fields query and the permitted fields list
         $sql = getPermittedFieldsQuery("Documents", "detail_view");
         $fields_list = getFieldsListFromQuery($sql);
-
-        $userNameSql = getSqlForNameInDisplayFormat([
-            'first_name' =>
-                'vtiger_users.first_name',
-            'last_name' => 'vtiger_users.last_name',
-        ], 'Users');
-        $query = "SELECT $fields_list, case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name" .
-            " FROM vtiger_notes
-				inner join vtiger_crmentity
-					on vtiger_crmentity.crmid=vtiger_notes.notesid
-				LEFT JOIN vtiger_attachmentsfolder on vtiger_notes.folderid=vtiger_attachmentsfolder.folderid
-				LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid=vtiger_users.id " .
-            " LEFT JOIN vtiger_groups ON vtiger_crmentity.smownerid=vtiger_groups.groupid ";
+        $userNameSql = getSqlForNameInDisplayFormat(['first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name',], 'Users');
+        $query = "SELECT $fields_list, case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name FROM vtiger_notes
+            inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_notes.notesid
+            LEFT JOIN vtiger_attachmentsfolder on vtiger_notes.folderid=vtiger_attachmentsfolder.folderid
+            LEFT JOIN vtiger_users ON vtiger_crmentity.assigned_user_id=vtiger_users.id 
+            LEFT JOIN vtiger_groups ON vtiger_crmentity.assigned_user_id=vtiger_groups.groupid ";
         $query .= getNonAdminAccessControlQuery('Documents', $current_user);
         $where_auto = " vtiger_crmentity.deleted=0";
-        if ($where != "")
+
+        if ($where != "") {
             $query .= "  WHERE ($where) AND " . $where_auto;
-        else
+        } else {
             $query .= "  WHERE " . $where_auto;
+        }
 
         $log->debug("Exiting create_export_query method ...");
 
@@ -353,16 +348,16 @@ class Documents extends CRMEntity
             $query .= " left join vtiger_attachmentsfolder on vtiger_attachmentsfolder.folderid=vtiger_notes.folderid";
         }
         if ($queryPlanner->requireTable("vtiger_groupsDocuments")) {
-            $query .= " left join vtiger_groups as vtiger_groupsDocuments on vtiger_groupsDocuments.groupid = vtiger_crmentityDocuments.smownerid";
+            $query .= " left join vtiger_groups as vtiger_groupsDocuments on vtiger_groupsDocuments.groupid = vtiger_crmentityDocuments.assigned_user_id";
         }
         if ($queryPlanner->requireTable("vtiger_usersDocuments")) {
-            $query .= " left join vtiger_users as vtiger_usersDocuments on vtiger_usersDocuments.id = vtiger_crmentityDocuments.smownerid";
+            $query .= " left join vtiger_users as vtiger_usersDocuments on vtiger_usersDocuments.id = vtiger_crmentityDocuments.assigned_user_id";
         }
         if ($queryPlanner->requireTable("vtiger_lastModifiedByDocuments")) {
             $query .= " left join vtiger_users as vtiger_lastModifiedByDocuments on vtiger_lastModifiedByDocuments.id = vtiger_crmentityDocuments.modifiedby ";
         }
         if ($queryPlanner->requireTable("vtiger_createdbyDocuments")) {
-            $query .= " left join vtiger_users as vtiger_createdbyDocuments on vtiger_createdbyDocuments.id = vtiger_crmentityDocuments.smcreatorid ";
+            $query .= " left join vtiger_users as vtiger_createdbyDocuments on vtiger_createdbyDocuments.id = vtiger_crmentityDocuments.creator_user_id ";
         }
 
         //if secondary modules custom reference field is selected
@@ -411,7 +406,7 @@ class Documents extends CRMEntity
         if (empty($return_module) || empty($return_id)) return;
 
         if ($return_module == 'Accounts') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE notesid = ? AND (crmid = ? OR crmid IN (SELECT contactid FROM vtiger_contactdetails WHERE accountid=?))';
+            $sql = 'DELETE FROM vtiger_senotesrel WHERE notesid = ? AND (crmid = ? OR crmid IN (SELECT contactid FROM vtiger_contactdetails WHERE account_id=?))';
             $this->db->pquery($sql, [$id, $return_id, $return_id]);
         } else {
             $sql = 'DELETE FROM vtiger_senotesrel WHERE notesid = ? AND crmid = ?';
@@ -538,21 +533,35 @@ class Documents extends CRMEntity
 
         $userNameSql = getSqlForNameInDisplayFormat(['first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'], 'Users');
 
+        if(!empty($other->tab_name_index)) {
+            foreach ($other->tab_name_index as $tableName => $tableId) {
+                if(in_array($tableName, ['vtiger_crmentity', $other->table_name])) {
+                    continue;
+                }
+
+                $query .= ", $tableName.*";
+                $more_relation .= " INNER JOIN $tableName ON $tableName.$tableId = vtiger_crmentity.crmid";
+            }
+        }
+
         if (!empty($other->related_tables)) {
             foreach ($other->related_tables as $tname => $relmap) {
                 $query .= ", $tname.*";
-                if (empty($relmap[1]))
+                if (empty($relmap[1])) {
                     $relmap[1] = $other->table_name;
-                if (empty($relmap[2]))
+                }
+                if (empty($relmap[2])) {
                     $relmap[2] = $relmap[0];
+                }
                 $more_relation .= " LEFT JOIN $tname ON $tname.$relmap[0] = $relmap[1].$relmap[2]";
             }
         }
+
         $query .= " FROM $other->table_name";
         $query .= " INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = $other->table_name.$other->table_index";
         $query .= " INNER JOIN vtiger_senotesrel ON vtiger_senotesrel.crmid = vtiger_crmentity.crmid " . $more_relation;
-        $query .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid";
-        $query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
+        $query .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id";
+        $query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id";
         $query .= " WHERE vtiger_crmentity.deleted = 0 AND vtiger_senotesrel.notesid=$id";
 
         //eliminate lead converted

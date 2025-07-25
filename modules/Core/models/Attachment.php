@@ -135,8 +135,8 @@ class Core_Attachment_Model extends Core_DatabaseData_Model {
         $entityTable = $this->getTable('vtiger_crmentity', 'crmid');
         $entityParams = [
             'crmid' => $this->getId(),
-            'smcreatorid' => $currentUserModel->getId(),
-            'smownerid' => $currentUserModel->getId(),
+            'creator_user_id' => $currentUserModel->getId(),
+            'assigned_user_id' => $currentUserModel->getId(),
             'modifiedby' => $currentUserModel->getId(),
             'setype' => $this->get('module') . ' Attachment',
             'description' => $this->getName(),

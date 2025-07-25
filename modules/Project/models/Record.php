@@ -22,7 +22,7 @@ class Project_Record_Model extends Vtiger_Record_Model
 		if ($userPrivilegesModel->hasModulePermission($projectTaskInstance->getId())) {
 			$adb = PearDatabase::getInstance();
 
-			$query = 'SELECT smownerid,enddate,projecttaskstatus,projecttaskpriority
+			$query = 'SELECT assigned_user_id,enddate,projecttaskstatus,projecttaskpriority
 					FROM vtiger_projecttask
 							INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_projecttask.projecttaskid
 								AND vtiger_crmentity.deleted=0
@@ -69,7 +69,7 @@ class Project_Record_Model extends Vtiger_Record_Model
 					(in_array($row['projecttaskstatus'], $inProgressStatus))) {
 					$taskDue++;
 				}
-				$usersList[] = $row['smownerid'];
+				$usersList[] = $row['assigned_user_id'];
 			}
 
 			$usersList = array_unique($usersList);

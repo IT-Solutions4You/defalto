@@ -1386,4 +1386,29 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 
         return self::getCleanInstance($moduleName);
     }
+
+    /**
+     * @param string $moduleName
+     * @param array $data
+     * @return void
+     * @throws Exception
+     */
+    public static function updateColumnNames(string $moduleName, array $fieldNames): void
+    {
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        $db = PearDatabase::getInstance();
+
+        foreach ($fieldNames as $columnName => $fieldName) {
+            $fieldModel = $moduleModel->getField($fieldName);
+
+            if ($fieldModel) {
+                $fieldTable = $fieldModel->get('table');
+                $cvColumnName = $fieldModel->getCustomViewColumnName();
+
+                $db->pquery('UPDATE vtiger_cvadvfilter SET columnname=? WHERE columnname LIKE ?', [$cvColumnName, '%' . $fieldTable . ':' . $columnName . ':%']);
+                $db->pquery('UPDATE vtiger_cvcolumnlist SET columnname=? WHERE columnname LIKE ?', [$cvColumnName, '%' . $fieldTable . ':' . $columnName . ':%']);
+                $db->pquery('UPDATE vtiger_cvstdfilter SET columnname=? WHERE columnname LIKE ?', [$cvColumnName, '%' . $fieldTable . ':' . $columnName . ':%']);
+            }
+        }
+    }
 }
