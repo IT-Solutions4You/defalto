@@ -208,8 +208,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
         $this->requireTable('Table is empty for update data');
 
         $query = $this->getUpdateQuery($this->get('table'), $data, $search);
-        $params = array_merge($data, $search);
-
+        $params = array_merge(array_values($data), array_values($search));
         $this->retrieveDB();
 
         return (bool)$this->db->pquery($query, $params);

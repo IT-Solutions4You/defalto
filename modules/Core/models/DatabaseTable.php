@@ -12,6 +12,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
 {
     public static array $tableColumns = [];
     public static string $COLUMN_DECIMAL = 'decimal(25,4) DEFAULT NULL';
+    public static string $COLUMN_INT = 'int(19) DEFAULT NULL';
 
     /**
      * @var PearDatabase
@@ -111,7 +112,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
      */
     public function getTableColumns(): array
     {
-        return self::$tableColumns[$this->get('table')];
+        return self::$tableColumns[$this->get('table')] ?? [];
     }
 
     /**
