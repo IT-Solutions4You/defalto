@@ -32,7 +32,7 @@ if (!class_exists('Migration_20240312140500')) {
                     $fieldModel->name = 'assigned_user_id';
                     $fieldModel->label= 'Assigned To';
                     $fieldModel->uitype= 53;
-                    $fieldModel->column = 'smownerid';
+                    $fieldModel->column = 'assigned_user_id';
                     $fieldModel->columntype = 'VARCHAR(255)';
                     $fieldModel->typeofdata = 'V~M';
 

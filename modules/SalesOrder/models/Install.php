@@ -50,7 +50,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
                 'potential_id' => [
                     'name' => 'potential_id',
                     'uitype' => 76,
-                    'column' => 'potentialid',
+                    'column' => 'potential_id',
                     'table' => 'vtiger_salesorder',
                     'label' => 'Potential Name',
                     'readonly' => 1,
@@ -78,7 +78,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
                 'quote_id' => [
                     'name' => 'quote_id',
                     'uitype' => 78,
-                    'column' => 'quoteid',
+                    'column' => 'quote_id',
                     'table' => 'vtiger_salesorder',
                     'label' => 'Quote Name',
                     'readonly' => 1,
@@ -89,10 +89,10 @@ class SalesOrder_Install_Model extends Core_Install_Model
                     'masseditable' => 0,
                     'summaryfield' => 1,
                 ],
-                'vtiger_purchaseorder' => [
-                    'name' => 'vtiger_purchaseorder',
+                'purchaseorder_id' => [
+                    'name' => 'purchaseorder_id',
                     'uitype' => 1,
-                    'column' => 'purchaseorder',
+                    'column' => 'purchaseorder_id',
                     'table' => 'vtiger_salesorder',
                     'label' => 'Purchase Order',
                     'readonly' => 1,
@@ -106,7 +106,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
                 'contact_id' => [
                     'name' => 'contact_id',
                     'uitype' => 57,
-                    'column' => 'contactid',
+                    'column' => 'contact_id',
                     'table' => 'vtiger_salesorder',
                     'label' => 'Contact Name',
                     'readonly' => 1,
@@ -215,8 +215,8 @@ class SalesOrder_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'hdnTaxType' => [
-                    'name' => 'hdnTaxType',
+                'taxtype' => [
+                    'name' => 'taxtype',
                     'uitype' => 16,
                     'column' => 'taxtype',
                     'table' => 'vtiger_salesorder',
@@ -233,7 +233,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
                 'account_id' => [
                     'name' => 'account_id',
                     'uitype' => 73,
-                    'column' => 'accountid',
+                    'column' => 'account_id',
                     'table' => 'vtiger_salesorder',
                     'label' => 'Account Name',
                     'readonly' => 1,
@@ -248,7 +248,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',
                     'uitype' => 53,
-                    'column' => 'smownerid',
+                    'column' => 'assigned_user_id',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Assigned To',
                     'readonly' => 1,
@@ -815,6 +815,48 @@ class SalesOrder_Install_Model extends Core_Install_Model
     }
 
     /**
+     * @throws Exception
+     */
+    public function migrate()
+    {
+        $moduleName = $this->getModuleName();
+        $updateFields = [
+            'potentialid' => 'potential_id',
+            'quoteid' => 'quote_id',
+            'purchaseorder' => 'purchaseorder_id',
+            'contactid' => 'contact_id',
+            'total' => 'grand_total',
+            'accountid' => 'account_id',
+            'adjustment' => 'adjustment',
+
+            'subtotal' => 'subtotal',
+            'taxtype' => 'taxtype',
+            's_h_amount' => 's_h_amount',
+
+            'invoice_status' => 'invoice_status',
+            's_h_percent' => 's_h_percent',
+        ];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $updateFields);
+
+        $deleteFields = [
+            'vtiger_purchaseorder',
+            'invoicestatus',
+
+            'hdnS_H_Percent',
+            'hdnS_H_Amount',
+            'hdnTaxType',
+            'hdnSubTotal',
+            'hdnGrandTotal',
+            'txtAdjustment',
+            'hdnDiscountPercent',
+            'hdnDiscountAmount',
+        ];
+
+        Vtiger_Module_Model::deleteFields($moduleName, $deleteFields);
+    }
+
+    /**
      * @return void
      * @throws AppException
      */
@@ -822,13 +864,19 @@ class SalesOrder_Install_Model extends Core_Install_Model
     {
         $this->getTable('vtiger_salesorder', null)
             ->createTable('salesorderid', 'int(19) NOT NULL DEFAULT \'0\'')
+            ->renameColumn('potentialid','potential_id')
+            ->renameColumn('quoteid','quote_id')
+            ->renameColumn('purchaseorder','purchaseorder_id')
+            ->renameColumn('contactid','contact_id')
+            ->renameColumn('total','grand_total')
+            ->renameColumn('accountid','account_id')
             ->createColumn('subject', 'varchar(100) DEFAULT NULL')
             ->createColumn('potentialid', 'int(19) DEFAULT NULL')
             ->createColumn('customerno', 'varchar(100) DEFAULT NULL')
             ->createColumn('salesorder_no', 'varchar(100) DEFAULT NULL')
-            ->createColumn('quoteid', 'int(19) DEFAULT NULL')
+            ->createColumn('quote_id', 'int(19) DEFAULT NULL')
             ->createColumn('vendorterms', 'varchar(100) DEFAULT NULL')
-            ->createColumn('contactid', 'int(19) DEFAULT NULL')
+            ->createColumn('contact_id', 'int(19) DEFAULT NULL')
             ->createColumn('vendorid', 'int(19) DEFAULT NULL')
             ->createColumn('duedate', 'date DEFAULT NULL')
             ->createColumn('carrier', 'varchar(200) DEFAULT NULL')
@@ -843,9 +891,9 @@ class SalesOrder_Install_Model extends Core_Install_Model
             ->createColumn('discount_percent', self::$COLUMN_DECIMAL)
             ->createColumn('discount_amount', self::$COLUMN_DECIMAL)
             ->createColumn('s_h_amount', self::$COLUMN_DECIMAL)
-            ->createColumn('accountid', 'int(19) DEFAULT NULL')
+            ->createColumn('account_id', 'int(19) DEFAULT NULL')
             ->createColumn('terms_conditions', 'text DEFAULT NULL')
-            ->createColumn('purchaseorder', 'varchar(200) DEFAULT NULL')
+            ->createColumn('purchaseorder_id', 'varchar(200) DEFAULT NULL')
             ->createColumn('sostatus', 'varchar(200) DEFAULT NULL')
             ->createColumn('currency_id', 'int(19) NOT NULL DEFAULT \'1\'')
             ->createColumn('conversion_rate', 'decimal(10,3) NOT NULL DEFAULT \'1.000\'')
@@ -864,7 +912,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
             ->createColumn('margin_amount', self::$COLUMN_DECIMAL)
             ->createKey('PRIMARY KEY IF NOT EXISTS (`salesorderid`)')
             ->createKey('KEY IF NOT EXISTS `salesorder_vendorid_idx` (`vendorid`)')
-            ->createKey('KEY IF NOT EXISTS `salesorder_contactid_idx` (`contactid`)')
+            ->createKey('KEY IF NOT EXISTS `salesorder_contact_id_idx` (`contact_id`)')
             ->createKey('CONSTRAINT `fk_3_vtiger_salesorder` FOREIGN KEY IF NOT EXISTS (`vendorid`) REFERENCES `vtiger_vendor` (`vendorid`) ON DELETE CASCADE')
             ->createKey('CONSTRAINT `fk_crmid_vtiger_salesorder` FOREIGN KEY IF NOT EXISTS (`salesorderid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
 

@@ -161,7 +161,7 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
     {
         $db = PearDatabase::getInstance();
         $result = $db->pquery(
-            'SELECT vtiger_modcomments.*, vtiger_crmentity.smownerid, vtiger_crmentity.createdtime, vtiger_crmentity.modifiedtime FROM vtiger_modcomments
+            'SELECT vtiger_modcomments.*, vtiger_crmentity.assigned_user_id, vtiger_crmentity.createdtime, vtiger_crmentity.modifiedtime FROM vtiger_modcomments
                 INNER JOIN vtiger_crmentity ON vtiger_modcomments.modcommentsid = vtiger_crmentity.crmid
                 WHERE modcommentsid = ? AND deleted = 0',
             [$recordId],
@@ -213,7 +213,7 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 				return false;
 			}
 		} else {
-			$commentedBy = $this->get('smownerid');
+			$commentedBy = $this->get('assigned_user_id');
 			if($commentedBy) {
 				$commentedByModel = Vtiger_Record_Model::getInstanceById($commentedBy, 'Users');
 				if(empty($commentedByModel->entity->column_fields['user_name'])) {

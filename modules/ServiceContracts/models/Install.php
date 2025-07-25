@@ -18,10 +18,10 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        ['Accounts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list',],
-        ['Contacts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list',],
-        ['HelpDesk', 'ServiceContracts', 'Service Contracts', ['ADD', 'SELECT'], 'get_dependents_list'],
-        ['ServiceContracts', 'HelpDesk', 'Service Contracts', ['ADD', 'SELECT'], 'get_dependents_list'],
+        ['Accounts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list', 'sc_related_to'],
+        ['Contacts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list', 'sc_related_to'],
+        ['HelpDesk', 'ServiceContracts', 'Service Contracts', ['ADD', 'SELECT'], 'get_dependents_list', 'sc_related_to'],
+        ['ServiceContracts', 'HelpDesk', 'HelpDesk', [], 'get_related_list'],
         ['ServiceContracts', 'Documents', 'Documents', ['ADD', 'SELECT'], 'get_attachments'],
     ];
 
@@ -75,7 +75,7 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
             'LBL_SERVICE_CONTRACT_INFORMATION' => [
                 'assigned_user_id' => [
                     'uitype' => 53,
-                    'column' => 'smownerid',
+                    'column' => 'assigned_user_id',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Assigned To',
                     'typeofdata' => 'V~M',
@@ -110,6 +110,7 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
                     'related_modules' => [
                         'Contacts',
                         'Accounts',
+                        'HelpDesk',
                     ],
                     'filter' => 1,
                 ],
@@ -194,7 +195,7 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
                 ],
                 'contract_priority' => [
                     'uitype' => 15,
-                    'column' => 'priority',
+                    'column' => 'contract_priority',
                     'table' => 'vtiger_servicecontracts',
                     'label' => 'Priority',
                     'picklist_values' => [
@@ -261,6 +262,7 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
     {
         $this->getTable('vtiger_servicecontracts', null)
             ->createTable('servicecontractsid')
+            ->renameColumn('priority', 'contract_priority')
             ->createColumn('start_date','date default NULL')
             ->createColumn('end_date','date default NULL')
             ->createColumn('sc_related_to','int(11) default NULL')
@@ -272,7 +274,7 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
             ->createColumn('planned_duration','varchar(256) default NULL')
             ->createColumn('actual_duration','varchar(256) default NULL')
             ->createColumn('contract_status','varchar(200) default NULL')
-            ->createColumn('priority','varchar(200) default NULL')
+            ->createColumn('contract_priority','varchar(200) default NULL')
             ->createColumn('contract_type','varchar(200) default NULL')
             ->createColumn('progress','decimal(5,2) default NULL')
             ->createColumn('contract_no','varchar(100) default NULL')
@@ -281,5 +283,18 @@ class ServiceContracts_Install_Model extends Core_Install_Model {
         $this->getTable('vtiger_servicecontractscf', null)
             ->createTable('servicecontractsid')
             ;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrate(): void
+    {
+        $moduleName = $this->getModuleName();
+        $data = [
+            'priority' => 'contract_priority',
+        ];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $data);
     }
 }

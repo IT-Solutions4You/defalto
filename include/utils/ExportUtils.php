@@ -90,15 +90,15 @@ function getFieldsListFromQuery($query)
 		$tablename = $adb->query_result($result,$i,"tablename");
 
 		//HANDLE HERE - Mismatch fieldname-tablename in field table, in future we have to avoid these if elses
-		if($columnName == 'smownerid')//for all assigned to user name
+		if($columnName == 'assigned_user_id')//for all assigned to user name
 		{
 			$fields .= "case when (vtiger_users.user_name not like '') then vtiger_users.user_name else vtiger_groups.groupname end as '".$fieldlabel."',";
 		}
-		elseif($tablename == 'vtiger_account' && $columnName == 'parentid')//Account - Member Of
+		elseif($tablename == 'vtiger_account' && $columnName == 'account_id')//Account - Member Of
 		{
 			 $fields .= "vtiger_account2.accountname as '".$fieldlabel."',";
 		}
-		elseif($tablename == 'vtiger_contactdetails' && $columnName == 'accountid')//Contact - Account Name
+		elseif($tablename == 'vtiger_contactdetails' && $columnName == 'account_id')//Contact - Account Name
 		{
 			$fields .= "vtiger_account.accountname as '".$fieldlabel."',";
 		}
@@ -142,16 +142,16 @@ function getFieldsListFromQuery($query)
         elseif($tablename == 'vtiger_notes' && ($columnName == 'filename' || $columnName == 'filetype' || $columnName == 'filesize' || $columnName == 'filelocationtype' || $columnName == 'filestatus' || $columnName == 'filedownloadcount' ||$columnName == 'folderid')){
 			continue;
 		}
-		elseif(($tablename == 'vtiger_invoice' || $tablename == 'vtiger_quotes' || $tablename == 'vtiger_salesorder')&& $columnName == 'accountid') {
+		elseif(($tablename == 'vtiger_invoice' || $tablename == 'vtiger_quotes' || $tablename == 'vtiger_salesorder')&& $columnName == 'account_id') {
 			$fields .= 'concat("Accounts::::",vtiger_account.accountname) as "'.$fieldlabel.'",';
 		}
-		elseif(($tablename == 'vtiger_invoice' || $tablename == 'vtiger_quotes' || $tablename == 'vtiger_salesorder' || $tablename == 'vtiger_purchaseorder') && $columnName == 'contactid') {
+		elseif(($tablename == 'vtiger_invoice' || $tablename == 'vtiger_quotes' || $tablename == 'vtiger_salesorder' || $tablename == 'vtiger_purchaseorder') && $columnName == 'contact_id') {
 			$fields .= 'concat("Contacts::::",vtiger_contactdetails.lastname," ",vtiger_contactdetails.firstname) as "'.$fieldlabel.'",';
 		}
 		elseif($tablename == 'vtiger_invoice' && $columnName == 'salesorderid') {
 			$fields .= 'concat("SalesOrder::::",vtiger_salesorder.subject) as "'.$fieldlabel.'",';
 		}
-		elseif(($tablename == 'vtiger_quotes' || $tablename == 'vtiger_salesorder') && $columnName == 'potentialid') {
+		elseif(($tablename == 'vtiger_quotes' || $tablename == 'vtiger_salesorder') && $columnName == 'potential_id') {
 			$fields .= 'concat("Potentials::::",vtiger_potential.potentialname) as "'.$fieldlabel.'",';
 		}
 		elseif($tablename == 'vtiger_quotes' && $columnName == 'inventorymanager') {
@@ -161,7 +161,7 @@ function getFieldsListFromQuery($query)
 		elseif($tablename == 'vtiger_salesorder' && $columnName == 'quoteid') {
 			$fields .= 'concat("Quotes::::",vtiger_quotes.subject) as "'.$fieldlabel.'",';
 		}
-		elseif($tablename == 'vtiger_purchaseorder' && $columnName == 'vendorid') {
+		elseif($tablename == 'vtiger_purchaseorder' && $columnName == 'vendor_id') {
 			$fields .= 'concat("Vendors::::",vtiger_vendor.vendorname) as "'.$fieldlabel.'",';
 		}
 		else

@@ -61,8 +61,8 @@ class Vtiger_CRMEntity extends CRMEntity {
 			$query .= " INNER JOIN ".$this->customFieldTable[0]." ON ".$this->customFieldTable[0].'.'.$this->customFieldTable[1] .
 				      " = $this->table_name.$this->table_index";
 		}
-		$query .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid";
-		$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
+		$query .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id";
+		$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id";
 
 		$linkedModulesQuery = $this->db->pquery("SELECT distinct fieldname, columnname, relmodule FROM vtiger_field" .
 				" INNER JOIN vtiger_fieldmodulerel ON vtiger_fieldmodulerel.fieldid = vtiger_field.fieldid" .
@@ -101,14 +101,14 @@ class Vtiger_CRMEntity extends CRMEntity {
 		if($is_admin==false && $profileGlobalPermission[1] == 1 && $profileGlobalPermission[2] == 1
 			&& $defaultOrgSharingPermission[$tabid] == 3) {
 
-				$sec_query .= " AND (vtiger_crmentity.smownerid in($current_user->id) OR vtiger_crmentity.smownerid IN
+				$sec_query .= " AND (vtiger_crmentity.assigned_user_id in($current_user->id) OR vtiger_crmentity.assigned_user_id IN
 					(
 						SELECT vtiger_user2role.userid FROM vtiger_user2role
 						INNER JOIN vtiger_users ON vtiger_users.id=vtiger_user2role.userid
 						INNER JOIN vtiger_role ON vtiger_role.roleid=vtiger_user2role.roleid
 						WHERE vtiger_role.parentrole LIKE '".$current_user_parent_role_seq."::%'
 					)
-					OR vtiger_crmentity.smownerid IN
+					OR vtiger_crmentity.assigned_user_id IN
 					(
 						SELECT shareduserid FROM vtiger_tmp_read_user_sharing_per
 						WHERE userid=".$current_user->id." AND tabid=".$tabid."
@@ -118,9 +118,9 @@ class Vtiger_CRMEntity extends CRMEntity {
 
 					// Build the query based on the group association of current user.
 					if(php7_count($current_user_groups) > 0) {
-						$sec_query .= " vtiger_crmentity.smownerid IN (". implode(",", $current_user_groups) .") OR ";
+						$sec_query .= " vtiger_crmentity.assigned_user_id IN (". implode(",", $current_user_groups) .") OR ";
 					}
-					$sec_query .= " vtiger_crmentity.smownerid IN
+					$sec_query .= " vtiger_crmentity.assigned_user_id IN
 						(
 							SELECT vtiger_tmp_read_group_sharing_per.sharedgroupid
 							FROM vtiger_tmp_read_group_sharing_per
@@ -154,8 +154,8 @@ class Vtiger_CRMEntity extends CRMEntity {
 				      " = $this->table_name.$this->table_index";
 		}
 
-		$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
-		$query .= " LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid = vtiger_users.id and ".
+		$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id";
+		$query .= " LEFT JOIN vtiger_users ON vtiger_crmentity.assigned_user_id = vtiger_users.id and ".
 		"vtiger_users.status='Active'";
 
 		$linkedModulesQuery = $this->db->pquery("SELECT distinct fieldname, columnname, relmodule FROM vtiger_field" .
@@ -202,8 +202,8 @@ class Vtiger_CRMEntity extends CRMEntity {
 			$from_clause .= " INNER JOIN ".$this->customFieldTable[0]." ON ".$this->customFieldTable[0].'.'.$this->customFieldTable[1] .
 				      " = $this->table_name.$this->table_index";
 		}
-		$from_clause .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
+		$from_clause .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id";
 
 		$where_clause = "	WHERE vtiger_crmentity.deleted = 0";
 		$where_clause .= $this->getListViewSecurityParameter($module);

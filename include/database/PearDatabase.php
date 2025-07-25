@@ -1110,6 +1110,17 @@ class PearDatabase{
 		}
 		return $db_character_set;
 	}
+
+    /**
+     * @param string $tableName
+     * @return bool
+     */
+    public function tableExists(string $tableName): bool
+    {
+        $result = $this->database->query("show tables like '$tableName' ");
+
+        return !empty($result->fields[0]);
+    }
 } /* End of class */
 
 if(empty($adb)) {

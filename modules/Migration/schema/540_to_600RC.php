@@ -425,7 +425,7 @@ do {
 		$modComments->column_fields['assigned_user_id'] = $modComments->column_fields['creator'] = $ownerId;
 		
 		$modComments->save('ModComments');
-		Migration_Index_View::ExecuteQuery('UPDATE vtiger_crmentity SET modifiedtime = ?, smcreatorid = ?, modifiedby = ? WHERE crmid = ?',
+		Migration_Index_View::ExecuteQuery('UPDATE vtiger_crmentity SET modifiedtime = ?, creator_user_id = ?, modifiedby = ? WHERE crmid = ?',
 			array($modComments->column_fields['createdtime'], $ownerId, $ownerId, $modComments->id));
 	}
 	++$pageCount;
@@ -451,16 +451,13 @@ do {
 		$modComments->column_fields['modifiedtime'] = $adb->query_result($faqComments, $i, 'createdtime');
 		$modComments->column_fields['related_to'] = $adb->query_result($faqComments, $i, 'faqid');
 		$modComments->save('ModComments');
-		Migration_Index_View::ExecuteQuery('UPDATE vtiger_crmentity SET modifiedtime = ?, smcreatorid = ?, modifiedby = ? WHERE crmid = ?',
+		Migration_Index_View::ExecuteQuery('UPDATE vtiger_crmentity SET modifiedtime = ?, creator_user_id = ?, modifiedby = ? WHERE crmid = ?',
 			array($modComments->column_fields['createdtime'], $current_user->id, $current_user->id, $modComments->id));
 	}
 	++$pageCount;
 } while (!$stopLoop);
 
 $VTIGER_BULK_SAVE_MODE = false;
-
-// Added label column in vtiger_crmentity table for easier lookup - Also added Event handler to update the label on save of a record
-Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_crmentity ADD COLUMN label varchar(255)", array());
 
 // To avoid infinite-loop if we not able fix label for non-entity/special modules.
 $lastMaxCRMId = 0;
@@ -488,8 +485,6 @@ do {
 	$rs = null;
 	unset($rs);
 } while(true);
-
-Migration_Index_View::ExecuteQuery('CREATE INDEX vtiger_crmentity_labelidx ON vtiger_crmentity(label)', array());
 
 $homeModule = Vtiger_Module::getInstance('Home');
 Vtiger_Event::register($homeModule, 'vtiger.entity.aftersave', 'Vtiger_RecordLabelUpdater_Handler', 'modules/Vtiger/RecordLabelUpdater.php');
@@ -801,10 +796,10 @@ for ($i = 0; $i < $numrows; $i++) {
 }
 
 //Update leads salutation value of none to empty value
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_leaddetails SET salutation='' WHERE salutation = ?", array('--None--'));
+Migration_Index_View::ExecuteQuery("UPDATE vtiger_leaddetails SET salutationtype='' WHERE salutationtype = ?", array('--None--'));
 
 //Update contacts salutation value of none to empty value
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_contactdetails SET salutation='' WHERE salutation = ?", array('--None--'));
+Migration_Index_View::ExecuteQuery("UPDATE vtiger_contactdetails SET salutationtype='' WHERE salutationtype = ?", array('--None--'));
 // END 2013-06-25
 
 // Start 2013-09-24

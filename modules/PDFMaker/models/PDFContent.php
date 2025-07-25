@@ -237,9 +237,9 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
     public function retrieveAssignedUserId()
     {
         if (self::$focus->column_fields['assigned_user_id'] == '') {
-            $result = self::$db->pquery('SELECT smownerid FROM vtiger_crmentity WHERE crmid = ?', array(self::$focus->id));
+            $result = self::$db->pquery('SELECT assigned_user_id FROM vtiger_crmentity WHERE crmid = ?', array(self::$focus->id));
 
-            self::$focus->column_fields['assigned_user_id'] = self::$db->query_result($result, 0, 'smownerid');
+            self::$focus->column_fields['assigned_user_id'] = self::$db->query_result($result, 0, 'assigned_user_id');
         }
     }
 
@@ -1326,7 +1326,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         $this->replaceFieldsToContent('Users', $modifiedby_user_focus, true, false, 'M_');
 
         $smcreatorid_user_res = self::$db->pquery(
-            'SELECT vtiger_users.* FROM vtiger_users INNER JOIN vtiger_crmentity ON vtiger_crmentity.smcreatorid = vtiger_users.id  WHERE  vtiger_crmentity.crmid = ?',
+            'SELECT vtiger_users.* FROM vtiger_users INNER JOIN vtiger_crmentity ON vtiger_crmentity.creator_user_id = vtiger_users.id  WHERE  vtiger_crmentity.crmid = ?',
             array(self::$focus->id)
         );
         $smcreatorid_user_row = self::$db->fetchByAssoc($smcreatorid_user_res);

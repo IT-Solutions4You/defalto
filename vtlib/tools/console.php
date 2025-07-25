@@ -266,7 +266,7 @@ class Vtiger_Tools_Console_ModuleController extends Vtiger_Tools_Console_Control
 		$field2->name = 'assigned_user_id';
 		$field2->label = 'Assigned To';
 		$field2->table = 'vtiger_crmentity';
-		$field2->column = 'smownerid';
+		$field2->column = 'assigned_user_id';
 		$field2->uitype = 53;
 		$field2->typeofdata = 'V~M';
 		$block->addField($field2);

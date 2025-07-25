@@ -106,7 +106,7 @@ require_once 'include/Webservices/DescribeObject.php';
 			$params[] = $entityModule;
 		}
 		if(!$applicationSync){
-			$q .= ' and smownerid IN('.generateQuestionMarks($ownerIds).')';
+			$q .= ' and assigned_user_id IN('.generateQuestionMarks($ownerIds).')';
 			$params = array_merge($params,$ownerIds);
 		}
 		
@@ -157,7 +157,7 @@ require_once 'include/Webservices/DescribeObject.php';
 
 			$fromClause .= " INNER JOIN (select modifiedtime, crmid,deleted,setype FROM $baseCRMTable WHERE setype=? and modifiedtime >? and modifiedtime<=?";
 			if(!$applicationSync){
-				$fromClause.= 'and smownerid IN('.generateQuestionMarks($ownerIds).')';
+				$fromClause.= 'and assigned_user_id IN('.generateQuestionMarks($ownerIds).')';
 				$params = array_merge($params,$ownerIds);
 			}
 			$fromClause.= ' ) vtiger_ws_sync ON (vtiger_crmentity.crmid = vtiger_ws_sync.crmid)';
@@ -196,7 +196,7 @@ require_once 'include/Webservices/DescribeObject.php';
 			$params[] = $entityModule;
 		}
 		if(!$applicationSync){
-			$q.='and smownerid IN('.generateQuestionMarks($ownerIds).')';
+			$q.='and assigned_user_id IN('.generateQuestionMarks($ownerIds).')';
 			$params = array_merge($params,$ownerIds);
 		}
 		

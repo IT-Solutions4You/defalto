@@ -102,7 +102,7 @@ class Leads_Install_Model extends Core_Install_Model {
                 'salutationtype' => [
                     'name' => 'salutationtype',
                     'uitype' => 55,
-                    'column' => 'salutation',
+                    'column' => 'salutationtype',
                     'table' => 'vtiger_leaddetails',
                     'label' => 'Salutation',
                     'readonly' => 1,
@@ -339,7 +339,7 @@ class Leads_Install_Model extends Core_Install_Model {
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',
                     'uitype' => 53,
-                    'column' => 'smownerid',
+                    'column' => 'assigned_user_id',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Assigned To',
                     'readonly' => 1,
@@ -508,11 +508,12 @@ class Leads_Install_Model extends Core_Install_Model {
 
         $this->getTable('vtiger_leaddetails', null)
             ->createTable('leadid', 'int(19) NOT NULL')
+            ->renameColumn('salutation', 'salutationtype')
             ->createColumn('lead_no', 'varchar(100) NOT NULL')
             ->createColumn('email', 'varchar(100) DEFAULT NULL')
             ->createColumn('interest', 'varchar(50) DEFAULT NULL')
             ->createColumn('firstname', 'varchar(40) DEFAULT NULL')
-            ->createColumn('salutation', 'varchar(200) DEFAULT NULL')
+            ->createColumn('salutationtype', 'varchar(200) DEFAULT NULL')
             ->createColumn('lastname', 'varchar(80) NOT NULL')
             ->createColumn('company', 'varchar(100) NOT NULL')
             ->createColumn('campaign', 'varchar(30) DEFAULT NULL')
@@ -565,5 +566,18 @@ class Leads_Install_Model extends Core_Install_Model {
         ;
         
         $this->createPicklistTable('vtiger_leadstatus', 'leadstatusid', 'leadstatus');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrate(): void
+    {
+        $moduleName = 'Leads';
+        $fields = [
+            'salutation' => 'salutationtype',
+        ];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $fields);
     }
 }

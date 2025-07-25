@@ -158,9 +158,9 @@ class ModComments extends ModCommentsCore {
 				$parentComments = $relatedIdMap[$parentComments]; // should be mapped with copied comment
 			}
 
-			$crmEntityResult = $db->pquery('SELECT *FROM vtiger_crmentity where crmid = ?', array($commentId));
-			$smcreatorId = $db->query_result($crmEntityResult, 0, 'smcreatorid');
-			$smownerId = $db->query_result($crmEntityResult, 0, 'smownerid');
+			$crmEntityResult = $db->pquery('SELECT * FROM vtiger_crmentity where crmid = ?', array($commentId));
+			$smcreatorId = $db->query_result($crmEntityResult, 0, 'creator_user_id');
+			$smownerId = $db->query_result($crmEntityResult, 0, 'assigned_user_id');
 			$modifiedby = $db->query_result($crmEntityResult, 0, 'modifiedby');
 			$setype = $db->query_result($crmEntityResult, 0, 'setype');
 			$description = $db->query_result($crmEntityResult, 0, 'description');

@@ -337,7 +337,7 @@ class Settings_MailConverter_MailScanner_Handler {
         $checkTicketId = $this->__toInteger($subjectOrId);
 
         if (!$checkTicketId) {
-            $ticketres = $adb->pquery("SELECT ticketid FROM vtiger_troubletickets WHERE title = ? OR ticket_no = ?", [$subjectOrId, $subjectOrId]);
+            $ticketres = $adb->pquery("SELECT ticketid FROM vtiger_troubletickets WHERE ticket_title = ? OR ticket_no = ?", [$subjectOrId, $subjectOrId]);
             if ($adb->num_rows($ticketres)) {
                 $checkTicketId = $adb->query_result($ticketres, 0, 'ticketid');
             }
@@ -500,7 +500,7 @@ class Settings_MailConverter_MailScanner_Handler {
 
 	function getAccountId($contactId) {
 		global $adb;
-		$result = $adb->pquery("SELECT accountid FROM vtiger_contactdetails WHERE contactid=?", array($contactId));
+		$result = $adb->pquery("SELECT account_id FROM vtiger_contactdetails WHERE contactid=?", array($contactId));
 		$accountId = $adb->query_result($result, 0, 'accountid');
 		return $accountId;
 	}

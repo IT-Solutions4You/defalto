@@ -9,7 +9,7 @@
 /**
  * Vtiger Entity Record Model Class
  */
-class Vtiger_Record_Model extends Vtiger_Base_Model {
+class Vtiger_Record_Model extends Core_DatabaseTable_Model {
 
 	protected $module = false;
     public $entity;
@@ -916,5 +916,47 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
         PearDatabase::getInstance()->pquery('UPDATE vtiger_crmentity SET label=? WHERE crmid=?', [$recordLabel, $recordId]);
 
         return $recordLabel;
+    }
+
+    /**
+     * @return self
+     */
+    public function getEntityTable(): self
+    {
+        return $this->getTable('vtiger_crmentity', null);
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function createTables(): void
+    {
+        $this->getEntityTable()
+            ->createTable('crmid')
+            ->renameColumn('smownerid', 'assigned_user_id')
+            ->renameColumn('smcreatorid', 'creator_user_id')
+            ->createColumn('creator_user_id', 'int(19) NOT NULL DEFAULT 0')
+            ->createColumn('assigned_user_id', 'int(19) NOT NULL DEFAULT 0')
+            ->createColumn('modifiedby', 'int(19) NOT NULL DEFAULT 0')
+            ->createColumn('setype', 'varchar(100) DEFAULT NULL')
+            ->createColumn('description', 'mediumtext DEFAULT NULL')
+            ->createColumn('createdtime', 'datetime NOT NULL')
+            ->createColumn('modifiedtime', 'datetime NOT NULL')
+            ->createColumn('viewedtime', 'datetime DEFAULT NULL')
+            ->createColumn('status', 'varchar(50) DEFAULT NULL')
+            ->createColumn('version', 'int(19) NOT NULL DEFAULT 0')
+            ->createColumn('presence', 'int(1) DEFAULT 1')
+            ->createColumn('readonly', 'int(11) NOT NULL DEFAULT 0')
+            ->createColumn('deleted', 'int(1) NOT NULL DEFAULT 0')
+            ->createColumn('smgroupid', 'int(19) DEFAULT NULL')
+            ->createColumn('source', 'varchar(100) DEFAULT NULL')
+            ->createColumn('label', 'varchar(255) DEFAULT NULL')
+            ->createColumn('isshared', 'int(1) DEFAULT NULL')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`crmid`)')
+            ->createKey('KEY IF NOT EXISTS `crmentity_creator_user_id_idx` (`creator_user_id`)')
+            ->createKey('KEY IF NOT EXISTS `crmentity_modifiedby_idx` (`modifiedby`)')
+            ->createKey('KEY IF NOT EXISTS `crmentity_deleted_idx` (`deleted`)')
+            ->createKey('KEY IF NOT EXISTS `crm_ownerid_del_setype_idx` (`assigned_user_id`,`deleted`,`setype`)')
+            ->createKey('KEY IF NOT EXISTS `vtiger_crmentity_labelidx` (`label`)');
     }
 }

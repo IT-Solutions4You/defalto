@@ -42,11 +42,11 @@
                         <a class="module-title fs-3" title="{$SINGLE_MODULE_LABEL}" href='{$CUSTOM_VIEW_URL}'>{$SINGLE_MODULE_LABEL}</a>
                     </div>
                     <div class="current-filter-slash col-auto p-0 fs-3">/</div>
-                    {if $RECORD and $REQUEST_INSTANCE.view eq 'Edit'}
+                    {if isset($RECORD) and $REQUEST_INSTANCE.view eq 'Edit'}
                         <a class="current-filter-name filter-name col cursorPointer fs-5 text-truncate" title="{$RECORD->get('label')}">{vtranslate('LBL_EDITING', $MODULE)} : {$RECORD->get('label')}</a>
                     {elseif $REQUEST_INSTANCE.view eq 'Edit'}
                         <a class="current-filter-name filter-name col cursorPointer fs-5">{vtranslate('LBL_ADDING_NEW', $MODULE)}</a>
-                    {elseif $RECORD and $REQUEST_INSTANCE.view eq 'Detail'}
+                    {elseif isset($RECORD) and $REQUEST_INSTANCE.view eq 'Detail'}
                         <a class="current-filter-name filter-name col cursorPointer fs-5 text-truncate" title="{$RECORD->get('label')}">{$RECORD->get('label')}</a>
                     {elseif $REQUEST_INSTANCE.view eq 'List' and $MODULE_MODEL and $MODULE_MODEL->isEntityModule()}
                         {include file="partials/CustomView.tpl"|vtemplate_path:$MODULE}

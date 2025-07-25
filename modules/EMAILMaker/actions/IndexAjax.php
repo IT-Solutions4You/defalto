@@ -353,11 +353,11 @@ class EMAILMaker_IndexAjax_Action extends Vtiger_Action_Controller
     {
         $adb = PearDatabase::getInstance();
         $documentRes = $adb->pquery("SELECT * FROM vtiger_senotesrel
-                                        INNER JOIN vtiger_crmentity ON vtiger_senotesrel.notesid = vtiger_crmentity.crmid AND vtiger_senotesrel.crmid = ?
-                                        INNER JOIN vtiger_notes ON vtiger_notes.notesid = vtiger_senotesrel.notesid
-                                        INNER JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.crmid = vtiger_notes.notesid
-                                        INNER JOIN vtiger_attachments ON vtiger_attachments.attachmentsid = vtiger_seattachmentsrel.attachmentsid
-                                        WHERE vtiger_crmentity.deleted = 0", array($crmid));
+            INNER JOIN vtiger_crmentity ON vtiger_senotesrel.notesid = vtiger_crmentity.crmid AND vtiger_senotesrel.crmid = ?
+            INNER JOIN vtiger_notes ON vtiger_notes.notesid = vtiger_senotesrel.notesid
+            INNER JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.crmid = vtiger_notes.notesid
+            INNER JOIN vtiger_attachments ON vtiger_attachments.attachmentsid = vtiger_seattachmentsrel.attachmentsid
+            WHERE vtiger_crmentity.deleted = 0", array($crmid));
         $numOfRows = $adb->num_rows($documentRes);
         if ($numOfRows) {
             for ($i = 0; $i < $numOfRows; $i++) {

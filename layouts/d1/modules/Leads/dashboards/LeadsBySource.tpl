@@ -39,7 +39,7 @@
             </div>
             <div class="col-lg-8">
                 {assign var=CURRENT_USER_ID value=$CURRENTUSER->getId()}
-                <select class="select2 widgetFilter reloadOnChange" name="smownerid" data-close-on-select="true">
+                <select class="select2 widgetFilter reloadOnChange" name="assigned_user_id" data-close-on-select="true">
                     <option value="{$CURRENT_USER_ID}">{vtranslate('LBL_MINE')}</option>
                     <option value="">{vtranslate('LBL_ALL', $MODULE_NAME)}</option>
                     {assign var=ALL_ACTIVEUSER_LIST value=$CURRENTUSER->getAccessibleUsers()}

@@ -625,13 +625,10 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
     {
         $Attachments = array();
         $sql = "SELECT vtiger_seattachmentsrel.attachmentsid as documentid FROM vtiger_notes 
-                          INNER JOIN vtiger_crmentity 
-                             ON vtiger_crmentity.crmid = vtiger_notes.notesid
-                          INNER JOIN vtiger_seattachmentsrel 
-                             ON vtiger_seattachmentsrel.crmid = vtiger_notes.notesid   
-                          INNER JOIN vtiger_emakertemplates_documents 
-                             ON vtiger_emakertemplates_documents.documentid = vtiger_notes.notesid
-                          WHERE vtiger_crmentity.deleted = '0' AND vtiger_emakertemplates_documents.templateid = ?";
+            INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_notes.notesid
+            INNER JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.crmid = vtiger_notes.notesid
+            INNER JOIN vtiger_emakertemplates_documents ON vtiger_emakertemplates_documents.documentid = vtiger_notes.notesid
+            WHERE vtiger_crmentity.deleted = '0' AND vtiger_emakertemplates_documents.templateid = ?";
         $result = $this->db->pquery($sql, array($templateid));
         $num_rows = $this->db->num_rows($result);
         if ($num_rows > 0) {
@@ -1293,20 +1290,17 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
     {
         $Documents_Records = array();
         $query = "SELECT vtiger_notes.*, vtiger_crmentity.*, vtiger_attachmentsfolder.foldername FROM vtiger_notes 
-        INNER JOIN vtiger_crmentity 
-         ON vtiger_crmentity.crmid = vtiger_notes.notesid
-        INNER JOIN vtiger_emakertemplates_documents 
-         ON vtiger_emakertemplates_documents.documentid = vtiger_notes.notesid
-        INNER JOIN vtiger_attachmentsfolder 
-         ON vtiger_attachmentsfolder.folderid = vtiger_notes.folderid  
-        WHERE vtiger_crmentity.deleted = '0' AND vtiger_emakertemplates_documents.templateid = ?";
+            INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_notes.notesid
+            INNER JOIN vtiger_emakertemplates_documents ON vtiger_emakertemplates_documents.documentid = vtiger_notes.notesid
+            INNER JOIN vtiger_attachmentsfolder ON vtiger_attachmentsfolder.folderid = vtiger_notes.folderid  
+            WHERE vtiger_crmentity.deleted = '0' AND vtiger_emakertemplates_documents.templateid = ?";
         $list_result = $this->db->pquery($query, array($templateid));
         $num_rows = $this->db->num_rows($list_result);
 
         if ($num_rows > 0) {
             while ($row = $this->db->fetchByAssoc($list_result)) {
-                $assigned_to_name = getUserFullName($row["smownerid"]);
-                $Documents_Records[] = array("id" => $row["notesid"], "title" => $row["title"], "name" => $row["filename"], "assigned_to" => $assigned_to_name, "folder" => $row["foldername"], "filesize" => $row["filesize"]);
+                $assigned_to_name = getUserFullName($row["assigned_user_id"]);
+                $Documents_Records[] = array("id" => $row["notesid"], "title" => $row["notes_title"], "name" => $row["filename"], "assigned_to" => $assigned_to_name, "folder" => $row["foldername"], "filesize" => $row["filesize"]);
             }
         }
         return $Documents_Records;

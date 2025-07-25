@@ -15,6 +15,9 @@ class Potentials_Install_Model extends Core_Install_Model
         ['HelpDesk', 'Appointments', 'Appointments', '', 'get_related_list', '',],
     ];
 
+    /**
+     * @throws AppException
+     */
     public function addCustomLinks(): void
     {
         $this->updateHistory();
@@ -193,7 +196,7 @@ class Potentials_Install_Model extends Core_Install_Model
                 'opportunity_type' => [
                     'name' => 'opportunity_type',
                     'uitype' => 15,
-                    'column' => 'potentialtype',
+                    'column' => 'opportunity_type',
                     'table' => 'vtiger_potential',
                     'label' => 'Type',
                     'readonly' => 1,
@@ -249,7 +252,7 @@ class Potentials_Install_Model extends Core_Install_Model
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',
                     'uitype' => 53,
-                    'column' => 'smownerid',
+                    'column' => 'assigned_user_id',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Assigned To',
                     'readonly' => 1,
@@ -352,6 +355,7 @@ class Potentials_Install_Model extends Core_Install_Model
     {
         $this->getTable('vtiger_potential', 'potentialid')
             ->createTable('potentialid')
+            ->renameColumn('potentialtype', 'opportunity_type')
             ->createColumn('potential_no', 'varchar(100) NOT NULL')
             ->createColumn('related_to', 'int(19) DEFAULT NULL')
             ->createColumn('potentialname', 'varchar(120) NOT NULL')
@@ -364,7 +368,7 @@ class Potentials_Install_Model extends Core_Install_Model
             ->createColumn('probability', 'decimal(7,3) DEFAULT \'0.000\'')
             ->createColumn('campaignid', 'int(19) DEFAULT NULL')
             ->createColumn('sales_stage', 'varchar(200) DEFAULT NULL')
-            ->createColumn('potentialtype', 'varchar(200) DEFAULT NULL')
+            ->createColumn('opportunity_type', 'varchar(200) DEFAULT NULL')
             ->createColumn('leadsource', 'varchar(200) DEFAULT NULL')
             ->createColumn('productid', 'int(50) DEFAULT NULL')
             ->createColumn('productversion', 'varchar(50) DEFAULT NULL')
@@ -389,32 +393,9 @@ class Potentials_Install_Model extends Core_Install_Model
             ->createKey('KEY IF NOT EXISTS `potentail_sales_stage_amount_idx` (`amount`,`sales_stage`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_potential` FOREIGN KEY IF NOT EXISTS (`potentialid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
 
-        $this->getTable('vtiger_opportunity_type', 'opptypeid')
-            ->createTable()
-            ->createColumn('opportunity_type', 'varchar(200) NOT NULL')
-            ->createColumn('presence', 'int(1) NOT NULL DEFAULT \'1\'')
-            ->createColumn('picklist_valueid', 'int(11) NOT NULL DEFAULT \'0\'')
-            ->createColumn('sortorderid', 'int(11) DEFAULT \'0\'')
-            ->createColumn('color', 'varchar(10) DEFAULT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`opptypeid`)');
-
-        $this->getTable('vtiger_sales_stage', 'sales_stage_id')
-            ->createTable()
-            ->createColumn('sales_stage', 'varchar(200) DEFAULT NULL')
-            ->createColumn('presence', 'int(1) NOT NULL DEFAULT 1')
-            ->createColumn('picklist_valueid', 'int(19) NOT NULL DEFAULT 0')
-            ->createColumn('sortorderid', 'int(11) DEFAULT NULL')
-            ->createColumn('color', 'varchar(10) DEFAULT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`sales_stage_id`)');
-
-        $this->getTable('vtiger_leadsource', 'leadsourceid')
-            ->createTable()
-            ->createColumn('leadsource','varchar(200) NOT NULL')
-            ->createColumn('presence','int(1) NOT NULL DEFAULT \'1\'')
-            ->createColumn('picklist_valueid','int(19) NOT NULL DEFAULT \'0\'')
-            ->createColumn('sortorderid','int(11) DEFAULT NULL')
-            ->createColumn('color','varchar(10) DEFAULT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`leadsourceid`)');
+        $this->createPicklistTable('vtiger_opportunity_type', 'opptypeid', 'opportunity_type');
+        $this->createPicklistTable('vtiger_sales_stage', 'sales_stage_id', 'sales_stage');
+        $this->createPicklistTable('vtiger_leadsource', 'leadsourceid', 'leadsource');
 
         $this->getTable('vtiger_convertpotentialmapping', 'cfmid')
             ->createTable()
@@ -449,5 +430,16 @@ class Potentials_Install_Model extends Core_Install_Model
 
             $table->insertData(['potential_field' => $potentialField, 'project_field' => $projectField, 'editable' => $editable]);
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrate(): void
+    {
+        $moduleName = $this->getModuleName();
+        $fields = ['potentialtype' => 'opportunity_type'];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $fields);
     }
 }

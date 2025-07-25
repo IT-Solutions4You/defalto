@@ -947,7 +947,7 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
 		//TODO: need to handle security and performance
 		$db = PearDatabase::getInstance();
 		$params = array($this->getName());
-		$sql = 'SELECT vtiger_modcomments.*,vtiger_crmentity.createdtime AS createdtime,vtiger_crmentity.smownerid AS smownerid 
+		$sql = 'SELECT vtiger_modcomments.*,vtiger_crmentity.createdtime AS createdtime,vtiger_crmentity.assigned_user_id AS assigned_user_id 
 				FROM vtiger_modcomments INNER JOIN vtiger_crmentity ON vtiger_modcomments.modcommentsid = vtiger_crmentity.crmid 
 				AND vtiger_crmentity.deleted = 0 
 				INNER JOIN vtiger_crmentity crmentity2 ON vtiger_modcomments.related_to = crmentity2.crmid 
@@ -1131,7 +1131,7 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         $params = [];
 
 		if(!empty($owner) && $currentUserModel->isAdminUser()) {//If admin user, then allow users data
-			$ownerSql =  ' smownerid = '. $owner;
+			$ownerSql =  ' assigned_user_id = '. $owner;
 			$params[] = $owner;
 		} else if(!empty($owner)){//If not admin user, then check sharing access for that module
 			if($sharingAccessModel->isPrivate()) {
@@ -1141,12 +1141,12 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
 					$subordinateUsers[] = $id;
 				}
 				if(in_array($owner, $subordinateUsers)) {
-					$ownerSql = ' smownerid = '. $owner ;
+					$ownerSql = ' assigned_user_id = '. $owner ;
 				} else {
-					$ownerSql = ' smownerid = '. $currentUserModel->getId();
+					$ownerSql = ' assigned_user_id = '. $currentUserModel->getId();
 				}
 			} else {
-				$ownerSql = ' smownerid = '. $owner ;
+				$ownerSql = ' assigned_user_id = '. $owner ;
 			}
 		} else {//If no owner filter, then check if the module access is Private
 			if($sharingAccessModel->isPrivate() && (!$currentUserModel->isAdminUser())) {
@@ -1157,9 +1157,9 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
 				}
 				if($subordinateUsers) {
                     array_push($subordinateUsers, $currentUserModel->getId());
-					$ownerSql =  ' smownerid IN ('. implode(',' , $subordinateUsers) .')';
+					$ownerSql =  ' assigned_user_id IN ('. implode(',' , $subordinateUsers) .')';
 				} else {
-					$ownerSql =  ' smownerid = '.$currentUserModel->getId();
+					$ownerSql =  ' assigned_user_id = '.$currentUserModel->getId();
 				}
 			}
 		}
@@ -2033,5 +2033,23 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         }
 
         return $url;
+    }
+
+    /**
+     * @param string $moduleName
+     * @param array $fieldNames
+     * @return void
+     */
+    public static function deleteFields(string $moduleName, array $fieldNames): void
+    {
+        $moduleModels = Vtiger_Module_Model::getInstance($moduleName);
+
+        foreach ($fieldNames as $fieldName) {
+            $fieldModel = $moduleModels->getField($fieldName);
+
+            if ($fieldModel) {
+                $fieldModel->delete();
+            }
+        }
     }
 }

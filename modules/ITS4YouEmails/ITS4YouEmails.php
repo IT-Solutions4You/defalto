@@ -52,7 +52,7 @@ class ITS4YouEmails extends CRMEntity
      */
     public $list_fields = array(
         'Subject' => array('its4you_emails' => 'subject'),
-        'Assigned To' => array('vtiger_crmentity' => 'smownerid'),
+        'Assigned To' => array('vtiger_crmentity' => 'assigned_user_id'),
         'Description' => array('vtiger_crmentity' => 'description'),
     );
 

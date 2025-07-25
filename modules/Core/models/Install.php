@@ -91,19 +91,19 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      * @var array
      */
     public static array $blocksConfigDefault = [
-        'LBL_SYSTEM_INFORMATION'      => [
+        'LBL_SYSTEM_INFORMATION' => [
             'name' => 'System',
         ],
-        'LBL_CUSTOM_INFORMATION'      => [
+        'LBL_CUSTOM_INFORMATION' => [
             'name' => 'Base',
         ],
         'LBL_DESCRIPTION_INFORMATION' => [
             'name' => 'Base',
         ],
-        'LBL_ADDRESS_INFORMATION'     => [
+        'LBL_ADDRESS_INFORMATION' => [
             'name' => 'Base',
         ],
-        'LBL_ITEM_DETAILS'            => [
+        'LBL_ITEM_DETAILS' => [
             'name' => 'InventoryItem',
         ],
     ];
@@ -113,63 +113,63 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public static array $fieldsConfigDefault = [
         'LBL_SYSTEM_INFORMATION' => [
-            'source'       => [
-                'name'         => 'source',
-                'uitype'       => 1,
-                'column'       => 'source',
-                'table'        => 'vtiger_crmentity',
-                'label'        => 'Source',
-                'readonly'     => 1,
-                'presence'     => 2,
-                'typeofdata'   => 'V~O',
-                'quickcreate'  => 3,
-                'displaytype'  => 2,
+            'source' => [
+                'name' => 'source',
+                'uitype' => 1,
+                'column' => 'source',
+                'table' => 'vtiger_crmentity',
+                'label' => 'Source',
+                'readonly' => 1,
+                'presence' => 2,
+                'typeofdata' => 'V~O',
+                'quickcreate' => 3,
+                'displaytype' => 2,
                 'masseditable' => 0,
                 'summaryfield' => 0,
             ],
-            'createdtime'  => [
-                'name'         => 'createdtime',
-                'uitype'       => 70,
-                'column'       => 'createdtime',
-                'table'        => 'vtiger_crmentity',
-                'label'        => 'Created Time',
-                'readonly'     => 1,
-                'presence'     => 0,
-                'typeofdata'   => 'DT~O',
-                'quickcreate'  => 3,
-                'displaytype'  => 2,
+            'createdtime' => [
+                'name' => 'createdtime',
+                'uitype' => 70,
+                'column' => 'createdtime',
+                'table' => 'vtiger_crmentity',
+                'label' => 'Created Time',
+                'readonly' => 1,
+                'presence' => 0,
+                'typeofdata' => 'DT~O',
+                'quickcreate' => 3,
+                'displaytype' => 2,
                 'masseditable' => 0,
                 'summaryfield' => 0,
             ],
             'modifiedtime' => [
-                'name'         => 'modifiedtime',
-                'uitype'       => 70,
-                'column'       => 'modifiedtime',
-                'table'        => 'vtiger_crmentity',
-                'label'        => 'Modified Time',
-                'readonly'     => 1,
-                'presence'     => 0,
-                'typeofdata'   => 'DT~O',
-                'quickcreate'  => 3,
-                'displaytype'  => 2,
+                'name' => 'modifiedtime',
+                'uitype' => 70,
+                'column' => 'modifiedtime',
+                'table' => 'vtiger_crmentity',
+                'label' => 'Modified Time',
+                'readonly' => 1,
+                'presence' => 0,
+                'typeofdata' => 'DT~O',
+                'quickcreate' => 3,
+                'displaytype' => 2,
                 'masseditable' => 0,
                 'summaryfield' => 0,
             ],
-            'creator'      => [
-                'column'      => 'smcreatorid',
-                'label'       => 'Created By',
-                'uitype'      => 52,
-                'typeofdata'  => 'V~O',
+            'creator_user_id' => [
+                'column' => 'creator_user_id',
+                'label' => 'Created By',
+                'uitype' => 52,
+                'typeofdata' => 'V~O',
                 'displaytype' => 2,
-                'table'       => 'vtiger_crmentity',
+                'table' => 'vtiger_crmentity',
             ],
-            'modifiedby'   => [
-                'column'      => 'modifiedby',
-                'label'       => 'Last Modified By',
-                'uitype'      => 52,
-                'typeofdata'  => 'V~O',
+            'modifiedby' => [
+                'column' => 'modifiedby',
+                'label' => 'Last Modified By',
+                'uitype' => 52,
+                'typeofdata' => 'V~O',
                 'displaytype' => 2,
-                'table'       => 'vtiger_crmentity',
+                'table' => 'vtiger_crmentity',
             ],
         ],
     ];
@@ -427,9 +427,9 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $moduleInstance->save();
 
         $this->getTable('vtiger_tab', 'tabid')->updateData([
-            'version'      => $moduleInstance->version,
-            'parent'       => $moduleInstance->parent,
-            'tablabel'     => $moduleInstance->label,
+            'version' => $moduleInstance->version,
+            'parent' => $moduleInstance->parent,
+            'tablabel' => $moduleInstance->label,
             'isentitytype' => $moduleInstance->isentitytype,
         ], [
             'tabid' => $moduleInstance->id,
@@ -668,12 +668,13 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $fieldInstance->save($fieldInstance->block);
         $fieldInstance->getFieldTable()->updateData(
             [
-                'block'       => $fieldInstance->getBlockId(),
-                'tablename'   => $fieldInstance->table,
-                'presence'    => $fieldInstance->presence,
+                'block' => $fieldInstance->getBlockId(),
+                'tablename' => $fieldInstance->table,
+                'columnname' => $fieldInstance->column,
+                'presence' => $fieldInstance->presence,
                 'displaytype' => $fieldInstance->displaytype,
-                'sequence'    => $fieldInstance->sequence,
-                'isunique'    => $fieldInstance->isunique,
+                'sequence' => $fieldInstance->sequence,
+                'isunique' => $fieldInstance->isunique,
             ],
             [
                 'fieldid' => $fieldInstance->id,
@@ -1042,11 +1043,11 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             $workflowId = $table->selectData(['id'], ['tasktypename' => $workflowName])['id'];
             $values = [
                 'tasktypename' => $workflowName,
-                'label'        => $workflowLabel,
-                'classname'    => $workflowName,
-                'classpath'    => $classPath,
+                'label' => $workflowLabel,
+                'classname' => $workflowName,
+                'classpath' => $classPath,
                 'templatepath' => $templatePath,
-                'modules'      => $modules,
+                'modules' => $modules,
                 'sourcemodule' => $moduleName,
             ];
 

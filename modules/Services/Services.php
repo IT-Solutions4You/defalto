@@ -296,9 +296,9 @@ class Services extends CRMEntity {
 					  " = $this->table_name.$this->table_index";
 		}
 		$query .= " LEFT JOIN vtiger_groups
-						ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+						ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 					LEFT JOIN vtiger_users
-						ON vtiger_users.id = vtiger_crmentity.smownerid ";
+						ON vtiger_users.id = vtiger_crmentity.assigned_user_id ";
 		global $current_user;
 		$query .= $this->getNonAdminAccessControlQuery($module,$current_user);
 		$query .= "WHERE vtiger_crmentity.deleted = 0 ".$where;
@@ -319,14 +319,14 @@ class Services extends CRMEntity {
 		if($is_admin==false && $profileGlobalPermission[1] == 1 && $profileGlobalPermission[2] == 1
 			&& $defaultOrgSharingPermission[$tabid] == 3) {
 
-				$sec_query .= " AND (vtiger_crmentity.smownerid in($current_user->id) OR vtiger_crmentity.smownerid IN
+				$sec_query .= " AND (vtiger_crmentity.assigned_user_id in($current_user->id) OR vtiger_crmentity.assigned_user_id IN
 					(
 						SELECT vtiger_user2role.userid FROM vtiger_user2role
 						INNER JOIN vtiger_users ON vtiger_users.id=vtiger_user2role.userid
 						INNER JOIN vtiger_role ON vtiger_role.roleid=vtiger_user2role.roleid
 						WHERE vtiger_role.parentrole LIKE '".$current_user_parent_role_seq."::%'
 					)
-					OR vtiger_crmentity.smownerid IN
+					OR vtiger_crmentity.assigned_user_id IN
 					(
 						SELECT shareduserid FROM vtiger_tmp_read_user_sharing_per
 						WHERE userid=".$current_user->id." AND tabid=".$tabid."
@@ -372,8 +372,8 @@ class Services extends CRMEntity {
 					  " = $this->table_name.$this->table_index";
 		}
 
-		$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
-		$query .= " LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid = vtiger_users.id AND vtiger_users.status='Active'";
+		$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id";
+		$query .= " LEFT JOIN vtiger_users ON vtiger_crmentity.assigned_user_id = vtiger_users.id AND vtiger_users.status='Active'";
 		$query .= $this->getNonAdminAccessControlQuery('Services',$current_user);
 		$where_auto = " vtiger_crmentity.deleted=0";
 
@@ -408,8 +408,8 @@ class Services extends CRMEntity {
 			$from_clause .= " INNER JOIN ".$this->customFieldTable[0]." ON ".$this->customFieldTable[0].'.'.$this->customFieldTable[1] .
 					  " = $this->table_name.$this->table_index";
 		}
-		$from_clause .=	" LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-							LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid";
+		$from_clause .=	" LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
+							LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id";
 		$where_clause = "	WHERE vtiger_crmentity.deleted = 0";
 		$where_clause .= $this->getListViewSecurityParameter($module);
 
@@ -510,11 +510,11 @@ class Services extends CRMEntity {
 			INNER JOIN vtiger_crmentity AS crmentityInventoryItem
 				ON crmentityInventoryItem.crmid = df_inventoryitem.inventoryitemid AND crmentityInventoryItem.deleted = 0
 			LEFT OUTER JOIN vtiger_account
-				ON vtiger_account.accountid = vtiger_quotes.accountid
+				ON vtiger_account.accountid = vtiger_quotes.account_id
 			LEFT OUTER JOIN vtiger_potential
-				ON vtiger_potential.potentialid = vtiger_quotes.potentialid
+				ON vtiger_potential.potentialid = vtiger_quotes.potential_id
 			LEFT JOIN vtiger_groups
-				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+				ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 			LEFT JOIN vtiger_quotescf
 				ON vtiger_quotescf.quoteid = vtiger_quotes.quoteid
 			LEFT JOIN vtiger_quotesbillads
@@ -522,7 +522,7 @@ class Services extends CRMEntity {
 			LEFT JOIN vtiger_quotesshipads
 				ON vtiger_quotesshipads.quoteshipaddressid = vtiger_quotes.quoteid
 			LEFT JOIN vtiger_users
-				ON vtiger_users.id = vtiger_crmentity.smownerid
+				ON vtiger_users.id = vtiger_crmentity.assigned_user_id
 			WHERE vtiger_crmentity.deleted = 0
 			AND df_inventoryitem.productid = ".$id;
 
@@ -591,7 +591,7 @@ class Services extends CRMEntity {
 			INNER JOIN vtiger_service
 				ON vtiger_service.serviceid = df_inventoryitem.productid
 			LEFT JOIN vtiger_groups
-				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+				ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 			LEFT JOIN vtiger_purchaseordercf
 				ON vtiger_purchaseordercf.purchaseorderid = vtiger_purchaseorder.purchaseorderid
 			LEFT JOIN vtiger_pobillads
@@ -599,7 +599,7 @@ class Services extends CRMEntity {
 			LEFT JOIN vtiger_poshipads
 				ON vtiger_poshipads.poshipaddressid = vtiger_purchaseorder.purchaseorderid
 			LEFT JOIN vtiger_users
-				ON vtiger_users.id = vtiger_crmentity.smownerid
+				ON vtiger_users.id = vtiger_crmentity.assigned_user_id
 			WHERE vtiger_crmentity.deleted = 0
 			AND vtiger_service.serviceid = ".$id;
 
@@ -668,11 +668,11 @@ class Services extends CRMEntity {
 			INNER JOIN vtiger_service
 				ON vtiger_service.serviceid = df_inventoryitem.productid
 			LEFT OUTER JOIN vtiger_account
-				ON vtiger_account.accountid = vtiger_salesorder.accountid
+				ON vtiger_account.accountid = vtiger_salesorder.account_id
 			LEFT JOIN vtiger_invoice_recurring_info
 				ON vtiger_invoice_recurring_info.salesorderid = vtiger_salesorder.salesorderid
 			LEFT JOIN vtiger_groups
-				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+				ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 			LEFT JOIN vtiger_salesordercf
 				ON vtiger_salesordercf.salesorderid = vtiger_salesorder.salesorderid
 			LEFT JOIN vtiger_sobillads
@@ -680,7 +680,7 @@ class Services extends CRMEntity {
 			LEFT JOIN vtiger_soshipads
 				ON vtiger_soshipads.soshipaddressid = vtiger_salesorder.salesorderid
 			LEFT JOIN vtiger_users
-				ON vtiger_users.id = vtiger_crmentity.smownerid
+				ON vtiger_users.id = vtiger_crmentity.assigned_user_id
 			WHERE vtiger_crmentity.deleted = 0
 			AND vtiger_service.serviceid = ".$id;
 
@@ -743,13 +743,13 @@ class Services extends CRMEntity {
 			INNER JOIN vtiger_crmentity
 				ON vtiger_crmentity.crmid = vtiger_invoice.invoiceid
 			LEFT OUTER JOIN vtiger_account
-				ON vtiger_account.accountid = vtiger_invoice.accountid
+				ON vtiger_account.accountid = vtiger_invoice.account_id
             INNER JOIN df_inventoryitem
                 ON df_inventoryitem.parentid = vtiger_invoice.invoiceid
             INNER JOIN vtiger_crmentity AS crmentityInventoryItem
                 ON crmentityInventoryItem.crmid = df_inventoryitem.inventoryitemid AND crmentityInventoryItem.deleted = 0
 			LEFT JOIN vtiger_groups
-				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+				ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 			LEFT JOIN vtiger_invoicecf
 				ON vtiger_invoicecf.invoiceid = vtiger_invoice.invoiceid
 			LEFT JOIN vtiger_invoicebillads
@@ -757,7 +757,7 @@ class Services extends CRMEntity {
 			LEFT JOIN vtiger_invoiceshipads
 				ON vtiger_invoiceshipads.invoiceshipaddressid = vtiger_invoice.invoiceid
 			LEFT JOIN vtiger_users
-				ON  vtiger_users.id = vtiger_crmentity.smownerid
+				ON  vtiger_users.id = vtiger_crmentity.assigned_user_id
 			WHERE vtiger_crmentity.deleted = 0
 			AND df_inventoryitem.productid = ".$id;
 
@@ -1009,16 +1009,16 @@ class Services extends CRMEntity {
 			$query .= " left join vtiger_servicecf on vtiger_service.serviceid = vtiger_servicecf.serviceid";
 		}
 		if ($queryPlanner->requireTable("vtiger_usersServices")){
-			$query .= " left join vtiger_users as vtiger_usersServices on vtiger_usersServices.id = vtiger_crmentityServices.smownerid";
+			$query .= " left join vtiger_users as vtiger_usersServices on vtiger_usersServices.id = vtiger_crmentityServices.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_groupsServices")){
-			$query .= " left join vtiger_groups as vtiger_groupsServices on vtiger_groupsServices.groupid = vtiger_crmentityServices.smownerid";
+			$query .= " left join vtiger_groups as vtiger_groupsServices on vtiger_groupsServices.groupid = vtiger_crmentityServices.assigned_user_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_lastModifiedByServices")){
 			$query .= " left join vtiger_users as vtiger_lastModifiedByServices on vtiger_lastModifiedByServices.id = vtiger_crmentityServices.modifiedby ";
 		}
 		if ($queryPlanner->requireTable("vtiger_createdbyServices")){
-			$query .= " left join vtiger_users as vtiger_createdbyServices on vtiger_createdbyServices.id = vtiger_crmentityServices.smcreatorid ";
+			$query .= " left join vtiger_users as vtiger_createdbyServices on vtiger_createdbyServices.id = vtiger_crmentityServices.creator_user_id ";
 		}
 		//if secondary modules custom reference field is selected
         $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
@@ -1137,16 +1137,16 @@ class Services extends CRMEntity {
 		$query = "SELECT vtiger_service.serviceid, vtiger_service.servicename,
 			vtiger_service.service_no, vtiger_service.commissionrate,
 			vtiger_service.service_usageunit, vtiger_service.unit_price,
-			vtiger_crmentity.crmid, vtiger_crmentity.smownerid
+			vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id
 			FROM vtiger_service
 			INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_service.serviceid
 			INNER JOIN vtiger_servicecf
 				ON vtiger_service.serviceid = vtiger_servicecf.serviceid
 			LEFT JOIN vtiger_crmentityrel ON vtiger_crmentityrel.relcrmid = vtiger_service.serviceid AND vtiger_crmentityrel.module='Services'
 			LEFT JOIN vtiger_users
-				ON vtiger_users.id=vtiger_crmentity.smownerid
+				ON vtiger_users.id=vtiger_crmentity.assigned_user_id
 			LEFT JOIN vtiger_groups
-				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+				ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 			WHERE vtiger_crmentity.deleted = 0 AND vtiger_crmentityrel.crmid = $id ";
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);

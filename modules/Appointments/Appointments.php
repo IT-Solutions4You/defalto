@@ -38,7 +38,7 @@ class Appointments extends CRMEntity
      */
     public $list_fields = [
         'Subject' => ['its4you_calendar' => 'subject'],
-        'Assigned To' => ['vtiger_crmentity' => 'smownerid'],
+        'Assigned To' => ['vtiger_crmentity' => 'assigned_user_id'],
         'Description' => ['vtiger_crmentity' => 'description'],
     ];
     /**

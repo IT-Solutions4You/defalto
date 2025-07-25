@@ -25,12 +25,13 @@ class Vtiger_Field extends Vtiger_FieldBasic {
 		return $adb->getUniqueID('vtiger_picklist');
 	}
 
-	/**
-	 * Set values for picklist field (for all the roles)
-	 * @param Array List of values to add.
-	 *
-	 * @internal Creates picklist base if it does not exists
-	 */
+    /**
+     * Set values for picklist field (for all the roles)
+     * @param Array List of values to add.
+     *
+     * @throws Exception
+     * @internal Creates picklist base if it does not exists
+     */
 	function setPicklistValues($values) {
 		global $adb,$default_charset;
 
@@ -57,14 +58,7 @@ class Vtiger_Field extends Vtiger_FieldBasic {
             self::log("Creating table $picklist_table ... DONE");
         }
 
-        $picklistResult = $adb->pquery('SELECT picklistid FROM vtiger_picklist WHERE name=?', [$this->name]);
-        $newPicklistId = $adb->query_result($picklistResult, 0, 'picklistid');
-
-        if (empty($newPicklistId)) {
-            $newPicklistId = $this->__getPicklistUniqueId();
-            $adb->pquery('INSERT INTO vtiger_picklist (picklistid,name) VALUES(?,?)', [$newPicklistId, $this->name]);
-        }
-
+        $newPicklistId = self::savePicklist($this->name);
         $specialNameSpacedPicklists  = array(
 			'opportunity_type'=>'opptypeid',
 			'duration_minutes'=>'minutesid',
@@ -100,6 +94,23 @@ class Vtiger_Field extends Vtiger_FieldBasic {
 			$adb->pquery("INSERT INTO vtiger_role2picklist(roleid, picklistvalueid, picklistid, sortid) SELECT roleid, $newPicklistValueId, $newPicklistId, $sortOrderId FROM vtiger_role", array());
 		}
 	}
+
+    /**
+     * @throws Exception
+     */
+    public static function savePicklist($name)
+    {
+        $adb = PearDatabase::getInstance();
+        $picklistResult = $adb->pquery('SELECT picklistid FROM vtiger_picklist WHERE name=?', [$name]);
+        $newPicklistId = $adb->query_result($picklistResult, 0, 'picklistid');
+
+        if (empty($newPicklistId)) {
+            $newPicklistId = (new self())->__getPicklistUniqueId();
+            $adb->pquery('INSERT INTO vtiger_picklist (picklistid,name) VALUES(?,?)', [$newPicklistId, $name]);
+        }
+
+        return $newPicklistId;
+    }
 
     /**
      * @return void

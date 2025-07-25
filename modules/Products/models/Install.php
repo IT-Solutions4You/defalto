@@ -106,7 +106,7 @@ class Products_Install_Model extends Core_Install_Model
                 'serial_no' => [
                     'name' => 'serial_no',
                     'uitype' => 1,
-                    'column' => 'serialno',
+                    'column' => 'serial_no',
                     'table' => 'vtiger_products',
                     'label' => 'Serial No',
                     'readonly' => 1,
@@ -425,7 +425,7 @@ class Products_Install_Model extends Core_Install_Model
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',
                     'uitype' => 53,
-                    'column' => 'smownerid',
+                    'column' => 'assigned_user_id',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Handler',
                     'readonly' => 1,
@@ -512,6 +512,7 @@ class Products_Install_Model extends Core_Install_Model
         $this->disableForeignKeyCheck();
         $this->getTable('vtiger_products', null)
             ->createTable('productid')
+            ->renameColumn('serialno', 'serial_no')
             ->createColumn('product_no', 'varchar(100) NOT NULL')
             ->createColumn('productname', 'varchar(255) DEFAULT NULL')
             ->createColumn('productcode', 'varchar(40) DEFAULT NULL')
@@ -534,7 +535,7 @@ class Products_Install_Model extends Core_Install_Model
             ->createColumn('website', 'varchar(100) DEFAULT NULL')
             ->createColumn('taxclass', 'varchar(200) DEFAULT NULL')
             ->createColumn('vendor_part_no', 'varchar(200) DEFAULT NULL')
-            ->createColumn('serialno', 'varchar(200) DEFAULT NULL')
+            ->createColumn('serial_no', 'varchar(200) DEFAULT NULL')
             ->createColumn('qtyinstock', 'decimal(25,3) DEFAULT NULL')
             ->createColumn('qtyindemand', 'int(11) DEFAULT NULL')
             ->createColumn('vendor_id', 'int(11) DEFAULT NULL')
@@ -570,5 +571,18 @@ class Products_Install_Model extends Core_Install_Model
         $this->createPicklistTable('vtiger_manufacturer', '', 'manufacturer');
         $this->createPicklistTable('vtiger_productcategory', '', 'productcategory');
         $this->createPicklistTable('vtiger_usageunit', '', 'usageunit');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrate(): void
+    {
+        $moduleName = $this->getModuleName();
+        $fields = [
+            'serialno' => 'serial_no',
+        ];
+
+        CustomView_Record_Model::updateColumnNames($moduleName, $fields);
     }
 }

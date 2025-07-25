@@ -200,7 +200,7 @@ class PBXManager_Install_Model extends Core_Install_Model
                 ],
                 'assigned_user_id' => [
                     'uitype' => 53,
-                    'column' => 'smownerid',
+                    'column' => 'assigned_user_id',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Assigned To',
                     'readonly' => 1,
@@ -210,8 +210,9 @@ class PBXManager_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                 ],
-                'CreatedTime' => [
+                'createdtime' => [
                     'uitype' => 70,
+                    'name' => 'createdtime',
                     'column' => 'createdtime',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Created Time',
@@ -222,8 +223,9 @@ class PBXManager_Install_Model extends Core_Install_Model
                     'displaytype' => 2,
                     'masseditable' => 1,
                 ],
-                'ModifiedTime' => [
+                'modifiedtime' => [
                     'uitype' => 70,
+                    'name' => 'modifiedtime',
                     'column' => 'modifiedtime',
                     'table' => 'vtiger_crmentity',
                     'label' => 'Modified Time',

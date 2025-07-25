@@ -55,12 +55,12 @@ class PurchaseOrder extends CRMEntity
 
     public $column_fields = [];
 
-    public $sortby_fields = ['subject', 'tracking_no', 'smownerid', 'lastname'];
+    public $sortby_fields = ['subject', 'tracking_no', 'assigned_user_id', 'lastname'];
 
     // This is used to retrieve related vtiger_fields from form posts.
     public $additional_column_fields = [
         'assigned_user_name',
-        'smownerid',
+        'assigned_user_id',
         'opportunity_id',
         'case_id',
         'contact_id',
@@ -80,10 +80,10 @@ class PurchaseOrder extends CRMEntity
         'Order No'        => ['purchaseorder' => 'purchaseorder_no'],
         // END
         'Subject'         => ['purchaseorder' => 'subject'],
-        'Vendor Name'     => ['purchaseorder' => 'vendorid'],
+        'Vendor Name'     => ['purchaseorder' => 'vendor_id'],
         'Tracking Number' => ['purchaseorder' => 'tracking_no'],
-        'Total'           => ['purchaseorder' => 'total'],
-        'Assigned To'     => ['crmentity' => 'smownerid']
+        'Total'           => ['purchaseorder' => 'grand_total'],
+        'Assigned To'     => ['crmentity' => 'assigned_user_id']
     ];
 
     public $list_fields_name = [
@@ -91,7 +91,7 @@ class PurchaseOrder extends CRMEntity
         'Subject'         => 'subject',
         'Vendor Name'     => 'vendor_id',
         'Tracking Number' => 'tracking_no',
-        'Total'           => 'price_total',
+        'Total'           => 'grand_total',
         'Assigned To'     => 'assigned_user_id'
     ];
     public $list_link_field = 'subject';
@@ -189,19 +189,19 @@ class PurchaseOrder extends CRMEntity
         }
 
         if ($queryPlanner->requireTable('vtiger_usersPurchaseOrder')) {
-            $query .= ' left join vtiger_users as vtiger_usersPurchaseOrder on vtiger_usersPurchaseOrder.id = vtiger_crmentityPurchaseOrder.smownerid';
+            $query .= ' left join vtiger_users as vtiger_usersPurchaseOrder on vtiger_usersPurchaseOrder.id = vtiger_crmentityPurchaseOrder.assigned_user_id';
         }
 
         if ($queryPlanner->requireTable('vtiger_groupsPurchaseOrder')) {
-            $query .= ' left join vtiger_groups as vtiger_groupsPurchaseOrder on vtiger_groupsPurchaseOrder.groupid = vtiger_crmentityPurchaseOrder.smownerid';
+            $query .= ' left join vtiger_groups as vtiger_groupsPurchaseOrder on vtiger_groupsPurchaseOrder.groupid = vtiger_crmentityPurchaseOrder.assigned_user_id';
         }
 
         if ($queryPlanner->requireTable('vtiger_vendorRelPurchaseOrder')) {
-            $query .= ' left join vtiger_vendor as vtiger_vendorRelPurchaseOrder on vtiger_vendorRelPurchaseOrder.vendorid = vtiger_purchaseorder.vendorid';
+            $query .= ' left join vtiger_vendor as vtiger_vendorRelPurchaseOrder on vtiger_vendorRelPurchaseOrder.vendorid = vtiger_purchaseorder.vendor_id';
         }
 
         if ($queryPlanner->requireTable('vtiger_contactdetailsPurchaseOrder')) {
-            $query .= ' left join vtiger_contactdetails as vtiger_contactdetailsPurchaseOrder on vtiger_contactdetailsPurchaseOrder.contactid = vtiger_purchaseorder.contactid';
+            $query .= ' left join vtiger_contactdetails as vtiger_contactdetailsPurchaseOrder on vtiger_contactdetailsPurchaseOrder.contactid = vtiger_purchaseorder.contact_id';
         }
 
         if ($queryPlanner->requireTable('vtiger_lastModifiedByPurchaseOrder')) {
@@ -209,7 +209,7 @@ class PurchaseOrder extends CRMEntity
         }
 
         if ($queryPlanner->requireTable('vtiger_createdbyPurchaseOrder')) {
-            $query .= ' left join vtiger_users as vtiger_createdbyPurchaseOrder on vtiger_createdbyPurchaseOrder.id = vtiger_crmentityPurchaseOrder.smcreatorid ';
+            $query .= ' left join vtiger_users as vtiger_createdbyPurchaseOrder on vtiger_createdbyPurchaseOrder.id = vtiger_crmentityPurchaseOrder.creator_user_id ';
         }
 
         //if secondary modules custom reference field is selected
@@ -227,7 +227,7 @@ class PurchaseOrder extends CRMEntity
     {
         $rel_tables = [
             'Documents' => ['vtiger_senotesrel' => ['crmid', 'notesid'], 'vtiger_purchaseorder' => 'purchaseorderid'],
-            'Contacts'  => ['vtiger_purchaseorder' => ['purchaseorderid', 'contactid']],
+            'Contacts'  => ['vtiger_purchaseorder' => ['purchaseorderid', 'contact_id']],
         ];
 
         return $rel_tables[$secmodule];
@@ -242,11 +242,11 @@ class PurchaseOrder extends CRMEntity
 
         switch ($return_module) {
             case 'Vendors':
-                $sql_req = 'UPDATE vtiger_purchaseorder SET vendorid = ? WHERE purchaseorderid = ?';
+                $sql_req = 'UPDATE vtiger_purchaseorder SET vendor_id = ? WHERE purchaseorderid = ?';
                 $this->db->pquery($sql_req, [$id]);
                 break;
             case 'Contacts':
-                $sql_req = 'UPDATE vtiger_purchaseorder SET contactid=? WHERE purchaseorderid = ?';
+                $sql_req = 'UPDATE vtiger_purchaseorder SET contact_id=? WHERE purchaseorderid = ?';
                 $this->db->pquery($sql_req, [null, $id]);
                 break;
             case 'Documents':
@@ -254,7 +254,7 @@ class PurchaseOrder extends CRMEntity
                 $this->db->pquery($sql, [$id, $return_id]);
                 break;
             case 'Accounts':
-                $sql = 'UPDATE vtiger_purchaseorder SET accountid=? WHERE purchaseorderid=?';
+                $sql = 'UPDATE vtiger_purchaseorder SET account_id=? WHERE purchaseorderid=?';
                 $this->db->pquery($sql, [null, $id]);
                 break;
             default:
@@ -312,11 +312,11 @@ class PurchaseOrder extends CRMEntity
 				LEFT JOIN vtiger_purchaseordercf ON vtiger_purchaseordercf.purchaseorderid = vtiger_purchaseorder.purchaseorderid
 				LEFT JOIN vtiger_pobillads ON vtiger_pobillads.pobilladdressid = vtiger_purchaseorder.purchaseorderid
 				LEFT JOIN vtiger_poshipads ON vtiger_poshipads.poshipaddressid = vtiger_purchaseorder.purchaseorderid
-				LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_purchaseorder.contactid
-				LEFT JOIN vtiger_vendor ON vtiger_vendor.vendorid = vtiger_purchaseorder.vendorid
+				LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_purchaseorder.contact_id
+				LEFT JOIN vtiger_vendor ON vtiger_vendor.vendorid = vtiger_purchaseorder.vendor_id
 				LEFT JOIN vtiger_currency_info ON vtiger_currency_info.id = vtiger_purchaseorder.currency_id
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-				LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid';
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
+				LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id';
 
         $query .= $this->getNonAdminAccessControlQuery('PurchaseOrder', $current_user);
         $where_auto = ' vtiger_crmentity.deleted=0';

@@ -832,11 +832,11 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	public static function deleteUserPermanently($userId, $newOwnerId) {
 		$db = PearDatabase::getInstance();
 
-		$sql = "UPDATE vtiger_crmentity SET smcreatorid=?,smownerid=?,modifiedtime=? WHERE smcreatorid=? AND setype=?";
+		$sql = "UPDATE vtiger_crmentity SET creator_user_id=?,assigned_user_id=?,modifiedtime=? WHERE creator_user_id=? AND setype=?";
 		$db->pquery($sql, array($newOwnerId, $newOwnerId, date('Y-m-d H:i:s'), $userId,'ModComments'));
 
 		// Update creator Id in vtiger_crmentity table
-		$sql = "UPDATE vtiger_crmentity SET smcreatorid = ? WHERE smcreatorid = ? AND setype <> ?";
+		$sql = "UPDATE vtiger_crmentity SET creator_user_id = ? WHERE creator_user_id = ? AND setype <> ?";
 		$db->pquery($sql, array($newOwnerId, $userId,'ModComments'));
 
 		//update history details in vtiger_modtracker_basic 
