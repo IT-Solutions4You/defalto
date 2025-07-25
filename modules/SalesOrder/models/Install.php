@@ -768,8 +768,8 @@ class SalesOrder_Install_Model extends Core_Install_Model {
                     'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
-                'hdnS_H_Percent' => [
-                    'name' => 'hdnS_H_Percent',
+                's_h_percent' => [
+                    'name' => 's_h_percent',
                     'uitype' => 1,
                     'column' => 's_h_percent',
                     'table' => 'vtiger_salesorder',
