@@ -556,9 +556,9 @@ function create_custom_views()
         [
             'vtiger_invoice:invoice_no:invoice_no:Invoice_Invoice_No:V',
             'vtiger_invoice:subject:subject:Invoice_Subject:V',
-            'vtiger_invoice:salesorderid:salesorder_id:Invoice_Sales_Order:I',
+            'vtiger_invoice:salesorder_id:salesorder_id:Invoice_Sales_Order:I',
             'vtiger_invoice:invoicestatus:invoicestatus:Invoice_Status:V',
-            'vtiger_invoice:total:hdnGrandTotal:Invoice_Total:I',
+            'vtiger_invoice:grand_total:grand_total:Invoice_Total:I',
             'vtiger_crmentity:assigned_user_id:assigned_user_id:Invoice_Assigned_To:V',
         ],
 
@@ -589,18 +589,18 @@ function create_custom_views()
         [
             'vtiger_purchaseorder:purchaseorder_no:purchaseorder_no:PurchaseOrder_PurchaseOrder_No:V',
             'vtiger_purchaseorder:subject:subject:PurchaseOrder_Subject:V',
-            'vtiger_purchaseorder:vendorid:vendor_id:PurchaseOrder_Vendor_Name:I',
+            'vtiger_purchaseorder:vendor_id:vendor_id:PurchaseOrder_Vendor_Name:I',
             'vtiger_purchaseorder:tracking_no:tracking_no:PurchaseOrder_Tracking_Number:V',
-            'vtiger_purchaseorder:total:hdnGrandTotal:PurchaseOrder_Total:V',
+            'vtiger_purchaseorder:grand_total:grand_total:PurchaseOrder_Total:V',
             'vtiger_crmentity:assigned_user_id:assigned_user_id:PurchaseOrder_Assigned_To:V',
         ],
 
         [
             'vtiger_salesorder:salesorder_no:salesorder_no:SalesOrder_SalesOrder_No:V',
             'vtiger_salesorder:subject:subject:SalesOrder_Subject:V',
-            'vtiger_salesorder:accountid:account_id:SalesOrder_Account_Name:I',
-            'vtiger_salesorder:quoteid:quote_id:SalesOrder_Quote_Name:I',
-            'vtiger_salesorder:total:hdnGrandTotal:SalesOrder_Total:V',
+            'vtiger_salesorder:account_id:account_id:SalesOrder_Account_Name:I',
+            'vtiger_salesorder:quote_id:quote_id:SalesOrder_Quote_Name:I',
+            'vtiger_salesorder:grand_total:grand_total:SalesOrder_Total:V',
             'vtiger_crmentity:assigned_user_id:assigned_user_id:SalesOrder_Assigned_To:V',
         ],
 
@@ -660,14 +660,14 @@ function create_custom_views()
         [
             'vtiger_purchaseorder:subject:subject:PurchaseOrder_Subject:V',
             'vtiger_purchaseorder:postatus:postatus:PurchaseOrder_Status:V',
-            'vtiger_purchaseorder:vendorid:vendor_id:PurchaseOrder_Vendor_Name:I',
+            'vtiger_purchaseorder:vendor_id:vendor_id:PurchaseOrder_Vendor_Name:I',
             'vtiger_crmentity:assigned_user_id:assigned_user_id:PurchaseOrder_Assigned_To:V',
             'vtiger_purchaseorder:duedate:duedate:PurchaseOrder_Due_Date:V',
         ],
 
         [
             'vtiger_purchaseorder:subject:subject:PurchaseOrder_Subject:V',
-            'vtiger_purchaseorder:vendorid:vendor_id:PurchaseOrder_Vendor_Name:I',
+            'vtiger_purchaseorder:vendor_id:vendor_id:PurchaseOrder_Vendor_Name:I',
             'vtiger_crmentity:assigned_user_id:assigned_user_id:PurchaseOrder_Assigned_To:V',
             'vtiger_purchaseorder:postatus:postatus:PurchaseOrder_Status:V',
             'vtiger_purchaseorder:carrier:carrier:PurchaseOrder_Carrier:V',
@@ -677,8 +677,8 @@ function create_custom_views()
         [
             'vtiger_invoice:invoice_no:invoice_no:Invoice_Invoice_No:V',
             'vtiger_invoice:subject:subject:Invoice_Subject:V',
-            'vtiger_invoice:accountid:account_id:Invoice_Account_Name:I',
-            'vtiger_invoice:salesorderid:salesorder_id:Invoice_Sales_Order:I',
+            'vtiger_invoice:account_id:account_id:Invoice_Account_Name:I',
+            'vtiger_invoice:salesorder_id:salesorder_id:Invoice_Sales_Order:I',
             'vtiger_invoice:invoicestatus:invoicestatus:Invoice_Status:V',
             'vtiger_crmentity:assigned_user_id:assigned_user_id:Invoice_Assigned_To:V',
             'vtiger_crmentity:createdtime:createdtime:Invoice_Created_Time:DT',
@@ -687,8 +687,8 @@ function create_custom_views()
         [
             'vtiger_invoice:invoice_no:invoice_no:Invoice_Invoice_No:V',
             'vtiger_invoice:subject:subject:Invoice_Subject:V',
-            'vtiger_invoice:accountid:account_id:Invoice_Account_Name:I',
-            'vtiger_invoice:salesorderid:salesorder_id:Invoice_Sales_Order:I',
+            'vtiger_invoice:account_id:account_id:Invoice_Account_Name:I',
+            'vtiger_invoice:salesorder_id:salesorder_id:Invoice_Sales_Order:I',
             'vtiger_invoice:invoicestatus:invoicestatus:Invoice_Status:V',
             'vtiger_invoiceshipads:ship_street:ship_street:Invoice_Shipping_Address:V',
             'vtiger_crmentity:assigned_user_id:assigned_user_id:Invoice_Assigned_To:V',
@@ -696,7 +696,7 @@ function create_custom_views()
 
         [
             'vtiger_salesorder:subject:subject:SalesOrder_Subject:V',
-            'vtiger_salesorder:accountid:account_id:SalesOrder_Account_Name:I',
+            'vtiger_salesorder:account_id:account_id:SalesOrder_Account_Name:I',
             'vtiger_salesorder:sostatus:sostatus:SalesOrder_Status:V',
             'vtiger_crmentity:assigned_user_id:assigned_user_id:SalesOrder_Assigned_To:V',
             'vtiger_soshipads:ship_street:ship_street:SalesOrder_Shipping_Address:V',
