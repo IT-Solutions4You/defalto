@@ -687,8 +687,8 @@ function saveInventoryProductDetails(&$focus, $module, $update_prod_stock='false
 	$updatequery .= " adjustment=?,";
 	array_push($updateparams, $adjustmentType.$adjustment);
 
-	$total = vtlib_purify($_REQUEST['total']);
-	$updatequery .= " total=?,";
+	$total = vtlib_purify($_REQUEST['grand_total']);
+	$updatequery .= " grand_total=?,";
 	array_push($updateparams, $total);
 
 	$updatequery .= ' compound_taxes_info = ?,'; 
