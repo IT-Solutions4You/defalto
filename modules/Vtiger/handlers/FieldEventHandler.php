@@ -78,7 +78,11 @@ class FieldEventHandler extends VTEventHandler {
 		$fieldId = $fieldEntity->id;
 		$fieldModuleName = $fieldEntity->getModuleName();
 
-		if (in_array($fieldModuleName, getInventoryModules())) {
+        if (!$db->tableExists('vtiger_inventorycustomfield')) {
+            return;
+        }
+
+        if (in_array($fieldModuleName, getInventoryModules())) {
 
 			$db->pquery('DELETE FROM vtiger_inventorycustomfield WHERE fieldid=?', array($fieldId));
 

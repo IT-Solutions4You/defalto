@@ -1393,12 +1393,12 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
      * @return void
      * @throws Exception
      */
-    public static function updateColumnNames(string $moduleName, array $data): void
+    public static function updateColumnNames(string $moduleName, array $fieldNames): void
     {
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
         $db = PearDatabase::getInstance();
 
-        foreach ($data as $columnName => $fieldName) {
+        foreach ($fieldNames as $columnName => $fieldName) {
             $fieldModel = $moduleModel->getField($fieldName);
 
             if ($fieldModel) {

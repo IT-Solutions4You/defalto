@@ -2034,4 +2034,22 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
 
         return $url;
     }
+
+    /**
+     * @param string $moduleName
+     * @param array $fieldNames
+     * @return void
+     */
+    public static function deleteFields(string $moduleName, array $fieldNames): void
+    {
+        $moduleModels = Vtiger_Module_Model::getInstance($moduleName);
+
+        foreach ($fieldNames as $fieldName) {
+            $fieldModel = $moduleModels->getField($fieldName);
+
+            if ($fieldModel) {
+                $fieldModel->delete();
+            }
+        }
+    }
 }
