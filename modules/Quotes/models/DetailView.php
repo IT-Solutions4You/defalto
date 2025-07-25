@@ -8,12 +8,10 @@
 
 class Quotes_DetailView_Model extends Vtiger_DetailView_Model
 {
+    use InventoryItem_DetailView_Trait;
 
     /**
-     * Function to get the detail view links (links and widgets)
-     * @param <array> $linkParams - parameters which will be used to calicaulate the params
-     * @return <array> - array of link models in the format as below
-     *                   array('linktype'=>list of link models);
+     * @inheritDoc
      */
     public function getDetailViewLinks($linkParams)
     {
@@ -55,5 +53,4 @@ class Quotes_DetailView_Model extends Vtiger_DetailView_Model
 
         return Vtiger_Link_Model::merge(parent::getDetailViewLinks($linkParams), Vtiger_Link_Model::checkAndConvertLinks($links));
     }
-
 }

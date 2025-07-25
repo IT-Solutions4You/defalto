@@ -182,7 +182,7 @@
                             </div>
                         </div>
                     </td>
-                    <td colspan="2" class="textAlignRight" {if !$INVENTORY_ITEMS}style="display: none;"{/if}><strong>{vtranslate('Total', 'InventoryItem')}</strong></td>
+                    <td colspan="2" class="textAlignRight font-bold" {if !$INVENTORY_ITEMS}style="display: none;"{/if}>{vtranslate('Total', 'InventoryItem')}</td>
                     <td class="textAlignRight font-bold subTotalDisplay" {if !$INVENTORY_ITEMS}style="display: none;"{/if}>{$SUBTOTAL_DISPLAY}</td>
                 </tr>
                 <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
@@ -230,15 +230,15 @@
                     <td class="textAlignRight font-bold overallDiscountAmount">{$OVERALL_DISCOUNT_AMOUNT_DISPLAY}</td>
                 </tr>
                 <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
-                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('Total without VAT', 'InventoryItem')}</strong></td>
+                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight font-bold">{vtranslate('Total without VAT', 'InventoryItem')}</td>
                     <td class="textAlignRight font-bold priceWithoutVatDisplay">{$PRICE_WITHOUT_VAT_DISPLAY}</td>
                 </tr>
                 <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
-                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('VAT', 'InventoryItem')}</strong></td>
+                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight font-bold">{vtranslate('VAT', 'InventoryItem')}</td>
                     <td class="textAlignRight font-bold vatDisplay">{$VAT_DISPLAY}</td>
                 </tr>
                 <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
-                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('Total with VAT', 'InventoryItem')}</strong></td>
+                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight font-bold">{vtranslate('Total with VAT', 'InventoryItem')}</td>
                     <td class="textAlignRight font-bold priceTotalDisplay">{$PRICE_TOTAL_DISPLAY}</td>
                 </tr>
                 <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
@@ -285,7 +285,7 @@
                     <td class="textAlignRight font-bold adjustmentDisplay">{$ADJUSTMENT_DISPLAY}</td>
                 </tr>
                 <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
-                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight"><strong>{vtranslate('Grand Total', 'InventoryItem')}</strong></td>
+                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight font-bold">{vtranslate('Grand Total', 'InventoryItem')}</td>
                     <td class="textAlignRight font-bold grandTotalDisplay">{$GRAND_TOTAL_DISPLAY}</td>
                 </tr>
                 </tfoot>

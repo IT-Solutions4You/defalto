@@ -8,7 +8,11 @@
 
 class Invoice_DetailView_Model extends Vtiger_DetailView_Model
 {
+    use InventoryItem_DetailView_Trait;
 
+    /**
+     * @inheritDoc
+     */
     public function getDetailViewLinks($linkParams)
     {
         $currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();

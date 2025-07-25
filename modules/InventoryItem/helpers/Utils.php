@@ -10,6 +10,86 @@
 
 class InventoryItem_Utils_Helper
 {
+
+    /**
+     * Get items for given record.
+     *
+     * @param int $record
+     *
+     * @return array[]
+     * @throws AppException
+     */
+    public static function fetchItems(int $record): array
+    {
+        $inventoryItems = [[],];
+        $db = PearDatabase::getInstance();
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $moduleName = 'InventoryItem';
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        $fieldModelList = $moduleModel->getFields();
+
+        $sql = 'SELECT df_inventoryitem.*, df_inventoryitemcf.*, vtiger_crmentity.description 
+            FROM df_inventoryitem
+            LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid
+            LEFT JOIN df_inventoryitemcf ON df_inventoryitemcf.inventoryitemid = df_inventoryitem.inventoryitemid
+            WHERE vtiger_crmentity.deleted = 0
+            AND df_inventoryitem.parentid = ?
+            ORDER BY df_inventoryitem.sequence, vtiger_crmentity.crmid';
+        $result = $db->pquery($sql, [$record]);
+
+        while ($row = $db->fetchByAssoc($result)) {
+            if (empty($row['productid']) && !empty($row['item_text'])) {
+                $row['entityType'] = 'Text';
+            } else {
+                $row['entityType'] = getSalesEntityType($row['productid']);
+                $row['isDeleted'] = !isRecordExists($row['productid']);
+
+                if (empty($row['item_text'])) {
+                    $row['item_text'] = getEntityName($row['entityType'], $row['productid'])[$row['productid']];
+                }
+
+                if (!$row['isDeleted']) {
+                    $recordModel = Vtiger_Record_Model::getInstanceById($row['productid'], $row['entityType']);
+
+                    if (method_exists($recordModel, 'isBundle') && $recordModel->isBundle() && method_exists($recordModel,
+                            'isBundleViewable') && $recordModel->isBundleViewable()) {
+                        $subProducts = $recordModel->getSubProducts();
+                        $row['subProducts'] = $subProducts;
+                    }
+                }
+
+                $recordModel = Vtiger_Record_Model::getInstanceById($row['inventoryitemid'], $moduleName);
+
+                foreach ($fieldModelList as $fieldName => $fieldModel) {
+                    $fieldValue = $recordModel->get($fieldName);
+                    $fieldValue = $fieldModel->getUITypeModel()->getDisplayValue($fieldValue);
+                    $row[$fieldName . '_display'] = $fieldValue;
+                }
+            }
+
+            foreach (InventoryItem_RoundValues_Helper::$roundValues as $fieldName) {
+                $row[$fieldName] = number_format((float)$row[$fieldName], 2, '.', '');
+                $row[$fieldName . '_display'] = CurrencyField::convertToUserFormat($row[$fieldName], $currentUser, true);
+            }
+
+            $decimals = InventoryItem_Utils_Helper::fetchDecimals();
+
+            foreach ($decimals as $fieldName => $decimalCount) {
+                if (isset($row[$fieldName])) {
+                    $row[$fieldName . '_display'] = number_format($row[$fieldName], $decimalCount, '.', '');
+                }
+            }
+
+            $row['taxes'] = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$row['inventoryitemid'], (int)$row['productid'], $record);
+
+            $inventoryItems[] = $row;
+        }
+
+        unset($inventoryItems[0]);
+
+        return $inventoryItems;
+    }
+
     /**
      * @return array
      */

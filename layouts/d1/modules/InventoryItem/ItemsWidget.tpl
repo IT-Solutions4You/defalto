@@ -1,0 +1,46 @@
+<table class="table table-borderless table-hover">
+    <thead>
+    <tr class="border-bottom">
+        <td class="font-bold">{vtranslate('Product Name', 'InventoryItem')}</td>
+        <td class="font-bold textAlignRight">{vtranslate('Quantity', 'InventoryItem')}</td>
+        <td class="font-bold textAlignRight">{vtranslate('Price Total', 'InventoryItem')}</td>
+    </tr>
+    </thead>
+    <tbody>
+    {foreach from=$ITEMS item=ITEM}
+        <tr class="border-bottom">
+            {if $ITEM.entityType eq 'Text'}
+            <td class="font-bold bg-secondary bg-opacity-10" colspan="3">{$ITEM.item_text}</td>
+            {else}
+            <td class="font-bold">{$ITEM.item_text}</td>
+            <td class="textAlignRight">{$ITEM.quantity_display}</td>
+            <td class="textAlignRight">{$ITEM.price_total_display}</td>
+            {/if}
+        </tr>
+    {/foreach}
+    </tbody>
+    <tfoot>
+    <tr>
+        <td class="font-bold textAlignRight" colspan="2">{vtranslate('Total without VAT', 'InventoryItem')}</td>
+        <td class="font-bold textAlignRight">{$PRICE_WITHOUT_VAT_DISPLAY}</td>
+    </tr>
+    <tr>
+        <td class="font-bold textAlignRight" colspan="2">{vtranslate('VAT', 'InventoryItem')}</td>
+        <td class="font-bold textAlignRight">{$VAT_DISPLAY}</td>
+    </tr>
+    {if $ADJUSTMENT != 0 && $ADJUSTMENT != ''}
+    <tr>
+        <td class="font-bold textAlignRight" colspan="2">{vtranslate('Total with VAT', 'InventoryItem')}</td>
+        <td class="font-bold textAlignRight">{$PRICE_TOTAL_DISPLAY}</td>
+    </tr>
+    <tr>
+        <td class="font-bold textAlignRight" colspan="2">{vtranslate('Adjustment', 'InventoryItem')}</td>
+        <td class="font-bold textAlignRight">{$ADJUSTMENT_DISPLAY}</td>
+    </tr>
+    {/if}
+    <tr>
+        <td class="font-bold textAlignRight" colspan="2">{vtranslate('Grand Total', 'InventoryItem')}</td>
+        <td class="font-bold textAlignRight">{$GRAND_TOTAL_DISPLAY}</td>
+    </tr>
+    </tfoot>
+</table>

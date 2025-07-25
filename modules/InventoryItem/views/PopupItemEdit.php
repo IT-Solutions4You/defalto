@@ -10,6 +10,29 @@
 
 class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
 {
+    protected array $hardCodedFields = [
+        'productid',
+        'description',
+        'quantity',
+        'unit',
+        'price',
+        'subtotal',
+        'discount',
+        'discount_amount',
+        'price_after_discount',
+        'overall_discount',
+        'overall_discount_amount',
+        'price_after_overall_discount',
+        'discounts_amount',
+        'tax',
+        'tax_amount',
+        'price_total',
+        'purchase_cost',
+        'margin',
+        'margin_amount',
+        'sequence',
+    ];
+
     /**
      * @inheritDoc
      */
@@ -124,29 +147,6 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $viewer->view('PopupEdit.tpl', $moduleName);
     }
 
-    protected array $hardCodedFields = [
-        'productid',
-        'description',
-        'quantity',
-        'unit',
-        'price',
-        'subtotal',
-        'discount',
-        'discount_amount',
-        'price_after_discount',
-        'overall_discount',
-        'overall_discount_amount',
-        'price_after_overall_discount',
-        'discounts_amount',
-        'tax',
-        'tax_amount',
-        'price_total',
-        'purchase_cost',
-        'margin',
-        'margin_amount',
-        'sequence',
-    ];
-
     /**
      * @inheritDoc
      */
@@ -217,6 +217,39 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         }
 
         $row['taxes'] = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$row['inventoryitemid'], (int)$row['productid'], (int)$row['parentid']);
+
+        foreach ($row['taxes'] as $taxData) {
+            if ($taxData['selected']) {
+                $percentage = $taxData['percentage'];
+                $regions = json_decode($taxData['regions'], true);
+
+                if ($percentage != $row['tax']) {
+                    $found = false;
+                    foreach ($regions as $regionTax) {
+                        if ($regionTax == $row['tax']) {
+                            $found = true;
+                            break;
+                        }
+                    }
+
+                    if (!$found) {
+                        $row['taxes'][0] = [
+                            'tax_label' => vtranslate('SAVED_TAX_VALUE_FOR', 'InventoryItem') . ' ' . $taxData['tax_label'],
+                            'percentage' => $row['tax'],
+                            'method' => 'Simple',
+                            'compound_on' => '[]',
+                            'regions' => '',
+                            'deleted' => 0,
+                            'active' => 1,
+                            'taxid' => $taxData['taxid'],
+                            'selected' => true,
+                        ];
+                        $row['taxes'][$taxData['taxid']]['selected'] = false;
+                        ksort($row['taxes']);
+                    }
+                }
+            }
+        }
 
         return $row;
     }

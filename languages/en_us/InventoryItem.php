@@ -36,6 +36,7 @@ $languageStrings = [
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Sequence',
     'Price Total' => 'Price with VAT',
+    'SAVED_TAX_VALUE_FOR' => ' Saved Tax Value for:',
 ];
 
 $jsLanguageStrings = [

@@ -8,14 +8,10 @@
 
 class SalesOrder_DetailView_Model extends Vtiger_DetailView_Model
 {
+    use InventoryItem_DetailView_Trait;
 
     /**
-     * Function to get the detail view links (links and widgets)
-     *
-     * @param <array> $linkParams - parameters which will be used to calicaulate the params
-     *
-     * @return <array> - array of link models in the format as below
-     *                   array('linktype'=>list of link models);
+     * @inheritDoc
      */
     public function getDetailViewLinks($linkParams)
     {

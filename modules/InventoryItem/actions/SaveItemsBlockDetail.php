@@ -170,7 +170,6 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
      */
     protected function saveOverallDiscount(Vtiger_Request $request)
     {
-        $db = PearDatabase::getInstance();
         $recordId = (int)$request->get('for_record');
         $discount = (float)$request->get('overall_discount_percent');
 
@@ -182,6 +181,11 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
             $recordModel->set('mode', 'edit');
             $recordModel->save();
         }
+
+        $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+        $recordModel->set('overall_discount', $discount);
+        $recordModel->set('mode', 'edit');
+        $recordModel->save();
 
         InventoryItem_ParentEntity_Model::updateTotals($recordId);
     }

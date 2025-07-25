@@ -29,7 +29,7 @@
     <input type="hidden" class="lineItemId" name="lineItemId{$row_no}" value="{$data.inventoryitemid}" />
     <input type="hidden" class="rowSequence" name="sequence{$row_no}" value="{$row_no}" />
 </td>
-<td colspan="50" title="{vtranslate('Item text', 'InventoryItem')}">
+<td class="bg-secondary bg-opacity-10" colspan="50" title="{vtranslate('Item text', 'InventoryItem')}">
     {assign var="item_text" value="item_text"|cat:$row_no}
     <span class="noEditLineItem display_{$item_text}"><a href="javascript: void;" class="item_edit"><strong>{$data.item_text}</strong></a></span>
     <span class="editLineItem hide">

@@ -537,6 +537,22 @@ class SalesOrder_Install_Model extends Core_Install_Model
                     'masseditable'  => 1,
                     'summaryfield'  => 0,
                 ],
+                'overall_discount' => [
+                    'name'          => 'overall_discount',
+                    'uitype'        => 71,
+                    'column'        => 'overall_discount',
+                    'table'         => 'vtiger_salesorder',
+                    'generatedtype' => 1,
+                    'label'         => 'Overall Discount',
+                    'readonly'      => 1,
+                    'presence'      => 0,
+                    'maximumlength' => 100,
+                    'typeofdata'    => 'N~O',
+                    'quickcreate'   => 1,
+                    'displaytype'   => 1,
+                    'masseditable'  => 1,
+                    'summaryfield'  => 0,
+                ],
                 'overall_discount_amount' => [
                     'name'          => 'overall_discount_amount',
                     'uitype'        => 71,
@@ -836,6 +852,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
             ->createColumn('enable_recurring', 'int(11) DEFAULT \'0\'')
             ->createColumn('compound_taxes_info', 'text DEFAULT NULL')
             ->createColumn('price_after_discount', self::$COLUMN_DECIMAL)
+            ->createColumn('overall_discount', self::$COLUMN_DECIMAL)
             ->createColumn('overall_discount_amount', self::$COLUMN_DECIMAL)
             ->createColumn('price_after_overall_discount', self::$COLUMN_DECIMAL)
             ->createColumn('s_h_percent', self::$COLUMN_DECIMAL)

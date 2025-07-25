@@ -11,8 +11,6 @@
 trait InventoryItem_Detail_Trait
 {
     protected array $specialTreatmentFields = ['discount', 'overall_discount',];
-    protected float $overallDiscount = 0;
-    protected float $overallDiscountAmount = 0;
 
     /**
      * Add product block into Detail View
@@ -53,7 +51,7 @@ trait InventoryItem_Detail_Trait
         $viewer->assign('INVENTORY_ITEM_COLUMNS', $selectedFields);
         $viewer->assign('FINALS_COLSPAN', $selectedFieldsCount);
 
-        $items = $this->fetchItems($recordId);
+        $items = InventoryItem_Utils_Helper::fetchItems($recordId);
 
         if (!in_array('margin', $selectedFields)) {
             foreach ($items as &$item) {
@@ -62,8 +60,6 @@ trait InventoryItem_Detail_Trait
         }
 
         $viewer->assign('INVENTORY_ITEMS', $items);
-        $viewer->assign('OVERALL_DISCOUNT', number_format($this->overallDiscount, 2));
-        $viewer->assign('OVERALL_DISCOUNT_AMOUNT', number_format($this->overallDiscountAmount, 2));
 
         $recordModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
         $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
@@ -79,8 +75,13 @@ trait InventoryItem_Detail_Trait
 
         $currentUser = Users_Record_Model::getCurrentUserModel();
         $entityRecordModel = Vtiger_Record_Model::getInstanceById($recordId);
+        $overallDiscount = $entityRecordModel->get('overall_discount');
         $overallDiscountAmount = $entityRecordModel->get('overall_discount_amount');
         $adjustment = $entityRecordModel->get('adjustment');
+
+        if (!$overallDiscount) {
+            $overallDiscount = 0;
+        }
 
         if (!$overallDiscountAmount) {
             $overallDiscountAmount = 0;
@@ -92,6 +93,8 @@ trait InventoryItem_Detail_Trait
 
         $viewer->assign('RECORD', $entityRecordModel);
         $viewer->assign('SUBTOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_after_discount'), $currentUser, true));
+        $viewer->assign('OVERALL_DISCOUNT', number_format($overallDiscount, 2));
+        $viewer->assign('OVERALL_DISCOUNT_AMOUNT', number_format($overallDiscountAmount, 2));
         $viewer->assign('OVERALL_DISCOUNT_AMOUNT_DISPLAY', CurrencyField::convertToUserFormat($overallDiscountAmount, $currentUser, true, false, true));
         $viewer->assign('PRICE_WITHOUT_VAT_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_after_overall_discount'), $currentUser, true));
         $viewer->assign('VAT_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('tax_amount'), $currentUser, true));
@@ -100,91 +103,6 @@ trait InventoryItem_Detail_Trait
         $viewer->assign('ADJUSTMENT_DISPLAY', CurrencyField::convertToUserFormat($adjustment, $currentUser, true, false, true));
         $viewer->assign('GRAND_TOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('grand_total'), $currentUser, true));
         $viewer->assign('PRICEBOOKS', $this->fetchPriceBooks($request));
-    }
-
-    /**
-     * Get items for given record.
-     *
-     * @param int $record
-     *
-     * @return array[]
-     * @throws AppException
-     */
-    private function fetchItems(int $record): array
-    {
-        $inventoryItems = [[],];
-        $db = PearDatabase::getInstance();
-        $currentUser = Users_Record_Model::getCurrentUserModel();
-        $moduleName = 'InventoryItem';
-        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-        $fieldModelList = $moduleModel->getFields();
-
-        $sql = 'SELECT df_inventoryitem.*, df_inventoryitemcf.*, vtiger_crmentity.description 
-            FROM df_inventoryitem
-            LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid
-            LEFT JOIN df_inventoryitemcf ON df_inventoryitemcf.inventoryitemid = df_inventoryitem.inventoryitemid
-            WHERE vtiger_crmentity.deleted = 0
-            AND df_inventoryitem.parentid = ?
-            ORDER BY df_inventoryitem.sequence, vtiger_crmentity.crmid';
-        $result = $db->pquery($sql, [$record]);
-
-        while ($row = $db->fetchByAssoc($result)) {
-            if (empty($row['productid']) && !empty($row['item_text'])) {
-                $row['entityType'] = 'Text';
-            } else {
-                $row['entityType'] = getSalesEntityType($row['productid']);
-                $row['isDeleted'] = !isRecordExists($row['productid']);
-
-                if (empty($row['item_text'])) {
-                    $row['item_text'] = getEntityName($row['entityType'], $row['productid'])[$row['productid']];
-                }
-
-                if (!$row['isDeleted']) {
-                    $recordModel = Vtiger_Record_Model::getInstanceById($row['productid'], $row['entityType']);
-
-                    if (method_exists($recordModel, 'isBundle') && $recordModel->isBundle() && method_exists($recordModel,
-                            'isBundleViewable') && $recordModel->isBundleViewable()) {
-                        $subProducts = $recordModel->getSubProducts();
-                        $row['subProducts'] = $subProducts;
-                    }
-                }
-
-                $recordModel = Vtiger_Record_Model::getInstanceById($row['inventoryitemid'], $moduleName);
-
-                foreach ($fieldModelList as $fieldName => $fieldModel) {
-                    $fieldValue = $recordModel->get($fieldName);
-                    $fieldValue = $fieldModel->getUITypeModel()->getDisplayValue($fieldValue);
-                    $row[$fieldName . '_display'] = $fieldValue;
-                }
-            }
-
-            if ($row['overall_discount'] > 0) {
-                $this->overallDiscount = $row['overall_discount'];
-            }
-
-            $this->overallDiscountAmount += $row['overall_discount_amount'];
-
-            foreach (InventoryItem_RoundValues_Helper::$roundValues as $fieldName) {
-                $row[$fieldName] = number_format((float)$row[$fieldName], 2, '.', '');
-                $row[$fieldName . '_display'] = CurrencyField::convertToUserFormat($row[$fieldName], $currentUser, true);
-            }
-
-            $decimals = InventoryItem_Utils_Helper::fetchDecimals();
-
-            foreach ($decimals as $fieldName => $decimalCount) {
-                if (isset($row[$fieldName])) {
-                    $row[$fieldName . '_display'] = number_format($row[$fieldName], $decimalCount, '.', '');
-                }
-            }
-
-            $row['taxes'] = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$row['inventoryitemid'], (int)$row['productid'], $record);
-
-            $inventoryItems[] = $row;
-        }
-
-        unset($inventoryItems[0]);
-
-        return $inventoryItems;
     }
 
     /**
