@@ -223,8 +223,8 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'summaryfield' => 0,
                     'picklist_values' => [],
                 ],
-                'hdnS_H_Amount' => [
-                    'name' => 'hdnS_H_Amount',
+                's_h_amount' => [
+                    'name' => 's_h_amount',
                     'uitype' => 72,
                     'column' => 's_h_amount',
                     'table' => 'vtiger_purchaseorder',
@@ -549,8 +549,8 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                 ],
             ],
             'LBL_ITEM_DETAILS' => [
-                'hdnDiscountPercent' => [
-                    'name' => 'hdnDiscountPercent',
+                'discount_percent' => [
+                    'name' => 'discount_percent',
                     'uitype' => 1,
                     'column' => 'discount_percent',
                     'table' => 'vtiger_purchaseorder',
@@ -563,8 +563,8 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'hdnDiscountAmount' => [
-                    'name' => 'hdnDiscountAmount',
+                'discount_amount' => [
+                    'name' => 'discount_amount',
                     'uitype' => 72,
                     'column' => 'discount_amount',
                     'table' => 'vtiger_purchaseorder',
@@ -637,36 +637,8 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
                     'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
-                'discount_amount' => [
-                    'name' => 'discount_amount',
-                    'uitype' => 71,
-                    'column' => 'discount_amount',
-                    'table' => 'vtiger_inventoryproductrel',
-                    'label' => 'Item Discount Amount',
-                    'readonly' => 0,
-                    'presence' => 2,
-                    'typeofdata' => 'N~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 5,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'discount_percent' => [
-                    'name' => 'discount_percent',
-                    'uitype' => 7,
-                    'column' => 'discount_percent',
-                    'table' => 'vtiger_inventoryproductrel',
-                    'label' => 'Item Discount Percent',
-                    'readonly' => 0,
-                    'presence' => 2,
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 5,
-                    'masseditable' => 0,
-                    'summaryfield' => 0,
-                ],
-                'hdnS_H_Percent' => [
-                    'name' => 'hdnS_H_Percent',
+                's_h_percent' => [
+                    'name' => 's_h_percent',
                     'uitype' => 1,
                     'column' => 's_h_percent',
                     'table' => 'vtiger_purchaseorder',
