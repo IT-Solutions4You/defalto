@@ -37,6 +37,7 @@ $languageStrings = [
     'Sequence' => 'Sequence',
     'Price Total' => 'Price with VAT',
     'SAVED_TAX_VALUE_FOR' => ' Saved Tax Value for:',
+    'NO_ITEMS_FOUND' => 'No Items Found',
 ];
 
 $jsLanguageStrings = [

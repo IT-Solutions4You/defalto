@@ -1,4 +1,5 @@
 <table class="table table-borderless table-hover">
+    {if count($ITEMS)}
     <thead>
     <tr class="border-bottom">
         <td class="font-bold">{vtranslate('Product Name', 'InventoryItem')}</td>
@@ -6,6 +7,7 @@
         <td class="font-bold textAlignRight">{vtranslate('Price Total', 'InventoryItem')}</td>
     </tr>
     </thead>
+    {/if}
     <tbody>
     {foreach from=$ITEMS item=ITEM}
         <tr class="border-bottom">
@@ -17,8 +19,13 @@
             <td class="textAlignRight">{$ITEM.price_total_display}</td>
             {/if}
         </tr>
+    {foreachelse}
+        <tr>
+            <td class="font-bold textAlignCenter" colspan="3">{vtranslate('NO_ITEMS_FOUND', 'InventoryItem')}</td>
+        </tr>
     {/foreach}
     </tbody>
+    {if count($ITEMS)}
     <tfoot>
     <tr>
         <td class="font-bold textAlignRight" colspan="2">{vtranslate('Total without VAT', 'InventoryItem')}</td>
@@ -43,4 +50,5 @@
         <td class="font-bold textAlignRight">{$GRAND_TOTAL_DISPLAY}</td>
     </tr>
     </tfoot>
+    {/if}
 </table>
