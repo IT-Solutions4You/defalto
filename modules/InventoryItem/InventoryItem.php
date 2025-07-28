@@ -37,7 +37,7 @@ class InventoryItem extends CRMEntity
      */
     public $list_fields = [
         'Item text'   => ['inventoryitem', 'item_text'],
-        'Assigned To' => ['crmentity', 'smownerid']
+        'Assigned To' => ['crmentity', 'assigned_user_id']
     ];
     public $list_fields_name = [
         'Item text'   => 'item_text',

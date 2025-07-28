@@ -635,6 +635,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         container.on('click', '.saveButton', function () {
             let data = {action: 'SaveFromPopup'};
+
             container.find('input, select, textarea').each(function () {
                 const element = jQuery(this);
                 const name = element.attr('name');
@@ -658,6 +659,12 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             let selectedOption = taxElement.find('option:selected');
             data.taxid = selectedOption.data('taxid');
 
+            if (data.lineItemType !== 'Text' && (isNaN(data.productid) || data.productid == 0 || data.productid == '')) {
+                alert(app.vtranslate('JS_SELECT_RECORD_FOR_INVENTORY_ITEM'));
+                jQuery('#item_text', container).focus();
+
+                return false;
+            }
 
             jQuery.ajax({
                 url: 'index.php',
@@ -813,18 +820,82 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     mapResultsToFields: function (container, responseData) {
+        function normalizeText(html) {
+            let tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            let text = tmp.textContent || tmp.innerText || '';
+
+            return text.replace(/\s+/g, ' ').trim();
+        }
+
         const lineItemNameElement = container.find('input.item_text');
         const selectedRegionId = jQuery('#region_id_original').val();
 
         for (let id in responseData) {
             let recordData = responseData[id];
             jQuery('input.productid', container).val(id);
-            jQuery('textarea.description', container).text(recordData.description);
+
+            const normalizedDescription = normalizeText(recordData.description);
+            const rawTextareaText = jQuery('textarea.description', container).val();
+            const normalizedTextarea = normalizeText(rawTextareaText);
             const editorInstance = CKEDITOR.instances[jQuery('textarea.description', container).attr('id')];
 
             if (editorInstance) {
-                editorInstance.setData(recordData.description);
+                const editorContent = editorInstance.getData();
+                const normalizedEditorContent = normalizeText(editorContent);
+
+                if (normalizedEditorContent !== normalizedDescription && normalizedEditorContent !== '') {
+                    if (confirm(app.vtranslate('JS_REPLACE_DESCRIPTION_FOR_INVENTORY_ITEM')) === true) {
+                        jQuery('textarea.description', container).val(recordData.description);
+                        editorInstance.setData(recordData.description);
+                    }
+                } else {
+                    jQuery('textarea.description', container).val(recordData.description);
+                    editorInstance.setData(recordData.description);
+                }
+            } else {
+                if (normalizedTextarea === normalizedDescription && normalizedTextarea !== '') {
+                    if (confirm(app.vtranslate('JS_REPLACE_DESCRIPTION_FOR_INVENTORY_ITEM')) === true) {
+                        jQuery('textarea.description', container).val(recordData.description);
+                    }
+                } else {
+                    jQuery('textarea.description', container).val(recordData.description);
+                }
             }
+
+
+            /*let sameDescription = false;
+            let normalizedEditorContent = '';
+console.log(editorInstance);
+            if (editorInstance) {
+                const editorContent = editorInstance.getData();
+                normalizedEditorContent = normalizeText(editorContent);
+console.log(normalizedEditorContent);
+                if (normalizedEditorContent === normalizedDescription) {
+                    sameDescription = true;
+                }
+            }
+console.log(sameDescription);
+console.log(normalizedDescription);
+console.log(normalizedTextarea);
+console.log(normalizedEditorContent);
+            if (!sameDescription && normalizedDescription !== '') {
+                console.log('haf');
+                if (confirm(app.vtranslate('JS_REPLACE_DESCRIPTION_FOR_INVENTORY_ITEM')) === true) {
+                    jQuery('textarea.description', container).val(recordData.description);
+
+                    if (editorInstance) {
+                        editorInstance.setData(recordData.description);
+                    }
+                }
+            } else {
+                console.log('bleeee');
+                jQuery('textarea.description', container).val(recordData.description);
+
+                if (editorInstance) {
+                    editorInstance.setData(recordData.description);
+                }
+            }*/
 
             jQuery('input.quantity', container).val(recordData.quantity);
             jQuery('input.unit', container).val(recordData.unit);

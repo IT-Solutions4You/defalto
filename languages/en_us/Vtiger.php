@@ -2079,4 +2079,6 @@ $jsLanguageStrings = array(
     'JS_ASSIGNED_USER_HAS_CHANGE' => 'Assigned user has change',
     'JS_CONFIRM_CURRENCY_CHANGE' => 'After changing the currency, all prices will be recalculated according to the set exchange rate.',
     'JS_CONFIRM_PRICEBOOK_CHANGE' => 'After changing the Price Book, all prices will be recalculated according to the new Price Book.',
+    'JS_SELECT_RECORD_FOR_INVENTORY_ITEM' => 'Select record for Inventory Item',
+    'JS_REPLACE_DESCRIPTION_FOR_INVENTORY_ITEM' => 'Do you want to replace the description?',
 );
