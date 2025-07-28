@@ -2,9 +2,10 @@
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o <info@its4you.sk>
  *
- * For the full copyright and license information, please view the LICENSE
+ * This file is licensed under the GNU AGPL v3 License.
+ * For the full copyright and license information, please view the LICENSE-AGPLv3.txt
  * file that was distributed with this source code.
  */
 
@@ -234,15 +235,15 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
 
                     if (!$found) {
                         $row['taxes'][0] = [
-                            'tax_label' => vtranslate('SAVED_TAX_VALUE_FOR', 'InventoryItem') . ' ' . $taxData['tax_label'],
-                            'percentage' => $row['tax'],
-                            'method' => 'Simple',
+                            'tax_label'   => vtranslate('SAVED_TAX_VALUE_FOR', 'InventoryItem') . ' ' . $taxData['tax_label'],
+                            'percentage'  => $row['tax'],
+                            'method'      => 'Simple',
                             'compound_on' => '[]',
-                            'regions' => '',
-                            'deleted' => 0,
-                            'active' => 1,
-                            'taxid' => $taxData['taxid'],
-                            'selected' => true,
+                            'regions'     => '',
+                            'deleted'     => 0,
+                            'active'      => 1,
+                            'taxid'       => $taxData['taxid'],
+                            'selected'    => true,
                         ];
                         $row['taxes'][$taxData['taxid']]['selected'] = false;
                         ksort($row['taxes']);

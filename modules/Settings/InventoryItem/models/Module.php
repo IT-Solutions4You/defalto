@@ -1,9 +1,12 @@
 <?php
 /**
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
- * All Rights Reserved.
+ * This file is part of the IT-Solutions4You CRM Software.
+ *
+ * (c) IT-Solutions4You s.r.o <info@its4you.sk>
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * For the full copyright and license information, please view the LICENSE-AGPLv3.txt
+ * file that was distributed with this source code.
  */
 
 class Settings_InventoryItem_Module_Model extends Vtiger_Module_Model
@@ -48,7 +51,7 @@ class Settings_InventoryItem_Module_Model extends Vtiger_Module_Model
     public static function getSupportedModules(): array
     {
         $db = PearDatabase::getInstance();
-        $supportedModules = ['Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice', ];
+        $supportedModules = ['Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice',];
         $query = "SELECT vtiger_tab.tabid, vtiger_tab.tablabel, vtiger_tab.name as tabname
 				  FROM vtiger_tab
 				  WHERE vtiger_tab.name IN (" . generateQuestionMarks($supportedModules) . ") 

@@ -2,9 +2,10 @@
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o <info@its4you.sk>
  *
- * For the full copyright and license information, please view the LICENSE
+ * This file is licensed under the GNU AGPL v3 License.
+ * For the full copyright and license information, please view the LICENSE-AGPLv3.txt
  * file that was distributed with this source code.
  */
 
@@ -51,8 +52,10 @@ class InventoryItem_Utils_Helper
                 if (!$row['isDeleted']) {
                     $recordModel = Vtiger_Record_Model::getInstanceById($row['productid'], $row['entityType']);
 
-                    if (method_exists($recordModel, 'isBundle') && $recordModel->isBundle() && method_exists($recordModel,
-                            'isBundleViewable') && $recordModel->isBundleViewable()) {
+                    if (method_exists($recordModel, 'isBundle') && $recordModel->isBundle() && method_exists(
+                            $recordModel,
+                            'isBundleViewable'
+                        ) && $recordModel->isBundleViewable()) {
                         $subProducts = $recordModel->getSubProducts();
                         $row['subProducts'] = $subProducts;
                     }
@@ -150,7 +153,7 @@ class InventoryItem_Utils_Helper
     }
 
     /**
-     * @param int            $itemId
+     * @param int $itemId
      *
      * @return array
      */
@@ -213,7 +216,6 @@ class InventoryItem_Utils_Helper
         $res = $db->query($sql);
 
         while ($row = $db->fetchByAssoc($res)) {
-
             $return[$row['field']] = (int)$row['decimals'];
         }
 

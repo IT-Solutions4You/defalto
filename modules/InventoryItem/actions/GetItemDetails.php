@@ -2,9 +2,10 @@
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o <info@its4you.sk>
  *
- * For the full copyright and license information, please view the LICENSE
+ * This file is licensed under the GNU AGPL v3 License.
+ * For the full copyright and license information, please view the LICENSE-AGPLv3.txt
  * file that was distributed with this source code.
  */
 
@@ -89,7 +90,12 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
                 'quantity'        => number_format(1, $decimals['quantity'], '.', ''),
                 'taxes'           => $taxesList[$id],
                 'listprice'       => number_format($listPricesList[$id], $decimals['price'], '.', ''),
-                'purchaseCost'    => $request->get('sourceModule') === 'PurchaseOrder' ? number_format($purchaseCostsList[$id], $decimals['price'], '.', '') : $purchaseCostsList[$id],
+                'purchaseCost'    => $request->get('sourceModule') === 'PurchaseOrder' ? number_format(
+                    $purchaseCostsList[$id],
+                    $decimals['price'],
+                    '.',
+                    ''
+                ) : $purchaseCostsList[$id],
                 'description'     => $descriptionsList[$id],
                 'quantityInStock' => $quantitiesList[$id],
                 'imageSource'     => $imageSourcesList[$id],

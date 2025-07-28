@@ -2,9 +2,10 @@
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o <info@its4you.sk>
  *
- * For the full copyright and license information, please view the LICENSE
+ * This file is licensed under the GNU AGPL v3 License.
+ * For the full copyright and license information, please view the LICENSE-AGPLv3.txt
  * file that was distributed with this source code.
  */
 
@@ -38,8 +39,12 @@ if (!class_exists('Migration_20250709123459')) {
                 'INSERT INTO df_inventoryitemcolumns VALUES(?,?) ON DUPLICATE KEY UPDATE columnslist = columnslist',
                 [0, 'productid,quantity,unit,price,subtotal,discounts_amount,price_after_overall_discount,tax,tax_amount,price_total']
             );
-            $this->db->pquery('INSERT INTO df_inventoryitem_itemmodules (tabid) VALUES (?), (?) ON DUPLICATE KEY UPDATE tabid = tabid', [getTabid('Products'), getTabid('Services')]);
-            $this->db->pquery('INSERT INTO df_inventoryitem_quantitydecimals (field, decimals) VALUES (?, ?), (?, ?) ON DUPLICATE KEY UPDATE decimals = decimals', ['price', 2, 'quantity', 2]);
+            $this->db->pquery('INSERT INTO df_inventoryitem_itemmodules (tabid) VALUES (?), (?) ON DUPLICATE KEY UPDATE tabid = tabid', [getTabid('Products'), getTabid('Services')]
+            );
+            $this->db->pquery(
+                'INSERT INTO df_inventoryitem_quantitydecimals (field, decimals) VALUES (?, ?), (?, ?) ON DUPLICATE KEY UPDATE decimals = decimals',
+                ['price', 2, 'quantity', 2]
+            );
 
             $inventoryModules = ['Invoice', 'PurchaseOrder', 'Quotes', 'SalesOrder'];
 
@@ -53,11 +58,11 @@ if (!class_exists('Migration_20250709123459')) {
             }
 
             $changeFields = [
-                'pre_tax_total'     => ['price_after_overall_discount', 'Price After Overall Discount', 'Pre Tax Total'],
+                'pre_tax_total' => ['price_after_overall_discount', 'Price After Overall Discount', 'Pre Tax Total'],
                 'hdnDiscountAmount' => ['discount_amount', 'Discount Amount', 'Discount Amount'],
-                'hdnGrandTotal'     => ['price_total', 'Total', 'Total'],
-                'txtAdjustment'     => ['adjustment', 'Adjustment', 'Adjustment'],
-                'hdnSubTotal'       => ['subtotal', 'Sub Total', 'Sub Total'],
+                'hdnGrandTotal' => ['price_total', 'Total', 'Total'],
+                'txtAdjustment' => ['adjustment', 'Adjustment', 'Adjustment'],
+                'hdnSubTotal' => ['subtotal', 'Sub Total', 'Sub Total'],
             ];
 
             foreach ($inventoryModules as $inventoryModuleName) {

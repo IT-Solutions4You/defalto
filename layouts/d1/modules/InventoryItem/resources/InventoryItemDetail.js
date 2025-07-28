@@ -1,9 +1,10 @@
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o <info@its4you.sk>
  *
- * For the full copyright and license information, please view the LICENSE
+ * This file is licensed under the GNU AGPL v3 License.
+ * For the full copyright and license information, please view the LICENSE-AGPLv3.txt
  * file that was distributed with this source code.
  */
 
@@ -862,40 +863,6 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     jQuery('textarea.description', container).val(recordData.description);
                 }
             }
-
-
-            /*let sameDescription = false;
-            let normalizedEditorContent = '';
-console.log(editorInstance);
-            if (editorInstance) {
-                const editorContent = editorInstance.getData();
-                normalizedEditorContent = normalizeText(editorContent);
-console.log(normalizedEditorContent);
-                if (normalizedEditorContent === normalizedDescription) {
-                    sameDescription = true;
-                }
-            }
-console.log(sameDescription);
-console.log(normalizedDescription);
-console.log(normalizedTextarea);
-console.log(normalizedEditorContent);
-            if (!sameDescription && normalizedDescription !== '') {
-                console.log('haf');
-                if (confirm(app.vtranslate('JS_REPLACE_DESCRIPTION_FOR_INVENTORY_ITEM')) === true) {
-                    jQuery('textarea.description', container).val(recordData.description);
-
-                    if (editorInstance) {
-                        editorInstance.setData(recordData.description);
-                    }
-                }
-            } else {
-                console.log('bleeee');
-                jQuery('textarea.description', container).val(recordData.description);
-
-                if (editorInstance) {
-                    editorInstance.setData(recordData.description);
-                }
-            }*/
 
             jQuery('input.quantity', container).val(recordData.quantity);
             jQuery('input.unit', container).val(recordData.unit);

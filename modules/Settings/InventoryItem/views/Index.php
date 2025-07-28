@@ -2,9 +2,10 @@
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o <info@its4you.sk>
  *
- * For the full copyright and license information, please view the LICENSE
+ * This file is licensed under the GNU AGPL v3 License.
+ * For the full copyright and license information, please view the LICENSE-AGPLv3.txt
  * file that was distributed with this source code.
  */
 
@@ -42,12 +43,13 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
     /**
      * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request) {
+    function getHeaderScripts(Vtiger_Request $request)
+    {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
 
         $layout = Vtiger_Viewer::getDefaultLayoutName();
-        $jsFileNames = array(
+        $jsFileNames = [
             'modules.Vtiger.resources.Vtiger',
             'modules.Settings.Vtiger.resources.Vtiger',
             'modules.Settings.Vtiger.resources.Edit',
@@ -55,10 +57,11 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
             'modules.Settings.Vtiger.resources.Index',
             "modules.Settings.$moduleName.resources.Index",
             "~layouts/$layout/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js",
-        );
+        ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
         $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+
         return $headerScriptInstances;
     }
 }

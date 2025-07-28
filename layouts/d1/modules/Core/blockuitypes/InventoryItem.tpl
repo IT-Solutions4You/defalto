@@ -1,9 +1,10 @@
 {**
  * This file is part of the IT-Solutions4You CRM Software.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o <info@its4you.sk>
  *
- * For the full copyright and license information, please view the LICENSE
+ * This file is licensed under the GNU AGPL v3 License.
+ * For the full copyright and license information, please view the LICENSE-AGPLv3.txt
  * file that was distributed with this source code.
  *}
 
@@ -11,12 +12,6 @@
     {assign var=IS_HIDDEN value=$BLOCK->isHidden()}
     {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
     <input type=hidden name="timeFormatOptions" data-value='{if isset($DAY_STARTS)}{$DAY_STARTS}{else}""{/if}' />
-    {*<ul class="dropdown-menu add_menu_template" style="display: none;">
-        <li><a class="dropdown-item" data-modulename=""><i class="fa fa-i-cursor"></i>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}</a></li>
-        {foreach item=ITEM_MODULE_NAME from=$ITEM_MODULES}
-            <li><a class="dropdown-item" data-modulename="{$ITEM_MODULE_NAME}">{Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}</a></li>
-        {/foreach}
-    </ul>*}
     <div class="p-3">
         <div class="d-flex align-items-center row">
             <div class="col-lg-4">
@@ -30,17 +25,6 @@
             </div>
             <div class="col-lg-8 row">
                 <div class="col-lg-1 textAlignRight" id="block_line_items_add">
-                    {*<div class="btn-group" role="group">
-                        <button id="block_line_items_add_button" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-primary text-primary add-button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {vtranslate('Add Item', 'InventoryItem')}
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end add_menu" aria-labelledby="btnGroupDrop1">
-                            <li><a class="dropdown-item" data-modulename=""><i class="fa fa-i-cursor"></i>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}</a></li>
-                            {foreach item=ITEM_MODULE_NAME from=$ITEM_MODULES}
-                                <li><a class="dropdown-item" data-modulename="{$ITEM_MODULE_NAME}">{Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}</a></li>
-                            {/foreach}
-                        </ul>
-                    </div>*}
                 </div>
                 <div class="col-lg-5 textAlignRight" id="block_line_items_pricebook">
                     <div class="btn-group" role="group">
