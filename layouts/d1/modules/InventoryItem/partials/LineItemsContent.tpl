@@ -1,11 +1,10 @@
 {**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o <info@its4you.sk>
+ * (c) IT-Solutions4You s.r.o
  *
  * This file is licensed under the GNU AGPL v3 License.
- * For the full copyright and license information, please view the LICENSE-AGPLv3.txt
- * file that was distributed with this source code.
+ * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
     <td style="width: 3%" nowrap="nowrap">
@@ -36,6 +35,9 @@
     </td>
 
     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
+        {if $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] eq ''}
+            {continue}
+        {/if}
         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
         {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
             <td class="minWidth20per item_text_td" title="{$data.item_text}">

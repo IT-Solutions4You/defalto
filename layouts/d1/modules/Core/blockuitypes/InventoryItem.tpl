@@ -1,11 +1,10 @@
 {**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o <info@its4you.sk>
+ * (c) IT-Solutions4You s.r.o
  *
  * This file is licensed under the GNU AGPL v3 License.
- * For the full copyright and license information, please view the LICENSE-AGPLv3.txt
- * file that was distributed with this source code.
+ * See LICENSE-AGPLv3.txt for more details.
  *}
 
 <div class="mt-3 bg-body rounded block block_{$BLOCK_LABEL_KEY}" data-block="{$BLOCK_LABEL_KEY}" data-blockid="{$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}">
@@ -104,7 +103,7 @@
                 <tr class="border-bottom">
                     <td class="font-bold">{vtranslate('LBL_TOOLS',$MODULE)}</td>
                     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
-                        {if !in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
+                        {if $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] neq '' && !in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
                         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
                         <td class="font-bold{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'percentage'} textAlignRight{/if}" data-fieldname="{$INVENTORY_ITEM_FIELD_NAME}">
                             {vtranslate({$FIELD->get('label')}, 'InventoryItem')}
@@ -128,7 +127,7 @@
                 <tr style="display: none;">
                     <td></td>
                     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
-                        {if in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
+                        {if $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] eq '' || in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
                             {continue}
                         {/if}
                         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
@@ -154,7 +153,7 @@
                     <td rowspan="2" {if !$INVENTORY_ITEMS} colspan="{$FINALS_COLSPAN + 2}" class="textAlignCenter"{else} colspan="{$FINALS_COLSPAN - 2}"{/if}>
                         <div class="px-4">
                             <div class="btn-toolbar inventoryItemAddButtons" style="display:inline;">
-                                <div class="recordLabel verticalAlignMiddle me-2 font-bold" style="display:inline;">Add: </div>
+                                <div class="recordLabel verticalAlignMiddle me-2 font-bold" style="display:inline;">{vtranslate('Add', 'InventoryItem')}: </div>
                                 <button type="button" class="btn btn-primary active mb-2 me-2" id="addText" data-modulename="">
                                     <i class="fa fa-i-cursor"></i>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}
                                 </button>
@@ -172,9 +171,9 @@
                 <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
                     <td colspan="2" class="textAlignRight">
                         <div class="position-relative">
-                            <i class="fa fa-pencil fa-fw text-secondary editOverallDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Overal Discount', 'InventoryItem')}: <span class="overallDiscountPercentage">{$OVERALL_DISCOUNT}</span>%</strong>
+                            <i class="fa fa-pencil fa-fw text-secondary editOverallDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Overall Discount', 'InventoryItem')}: <span class="overallDiscountPercentage">{$OVERALL_DISCOUNT}</span>%</strong>
                         <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="overallDiscountSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
-                            <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Overal Discount %', 'InventoryItem')}</h3>
+                            <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Overall Discount %', 'InventoryItem')}</h3>
                             <div class="popover-body popover-content">
                                 <div class="validCheck">
                                     <table class="table table-borderless popupTable m-0">

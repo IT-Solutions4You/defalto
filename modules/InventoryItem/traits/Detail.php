@@ -1,12 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o <info@its4you.sk>
+ * (c) IT-Solutions4You s.r.o
  *
  * This file is licensed under the GNU AGPL v3 License.
- * For the full copyright and license information, please view the LICENSE-AGPLv3.txt
- * file that was distributed with this source code.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 trait InventoryItem_Detail_Trait
@@ -49,9 +48,6 @@ trait InventoryItem_Detail_Trait
             }
         }
 
-        $viewer->assign('INVENTORY_ITEM_COLUMNS', $selectedFields);
-        $viewer->assign('FINALS_COLSPAN', $selectedFieldsCount);
-
         $items = InventoryItem_Utils_Helper::fetchItems($recordId);
 
         if (!in_array('margin', $selectedFields)) {
@@ -72,6 +68,15 @@ trait InventoryItem_Detail_Trait
             }
         }
 
+        foreach ($selectedFields as $fieldName) {
+            if (!isset($recordStructure[$fieldName])) {
+                unset($selectedFields[$fieldName]);
+                $selectedFieldsCount--;
+            }
+        }
+
+        $viewer->assign('INVENTORY_ITEM_COLUMNS', $selectedFields);
+        $viewer->assign('FINALS_COLSPAN', $selectedFieldsCount);
         $viewer->assign('INVENTORY_ITEM_RECORD_STRUCTURE', $recordStructure);
 
         $currentUser = Users_Record_Model::getCurrentUserModel();

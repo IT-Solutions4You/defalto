@@ -1,11 +1,10 @@
 {**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o <info@its4you.sk>
+ * (c) IT-Solutions4You s.r.o
  *
  * This file is licensed under the GNU AGPL v3 License.
- * For the full copyright and license information, please view the LICENSE-AGPLv3.txt
- * file that was distributed with this source code.
+ * See LICENSE-AGPLv3.txt for more details.
  *}
 
 <div id="ItemsPopupContainer" class="contentsDiv col-sm-12">
@@ -26,5 +25,6 @@
         {assign var=FIELD_NAME value=$FIELD->get('name')}
         <input type="hidden" name="{$FIELD_NAME}" id="{$FIELD_NAME}" value="{$DATA.$FIELD_NAME}" />
         <input type="hidden" name="insert_after_sequence" value="{$INSERT_AFTER_SEQUENCE}" />
+        <input type="hidden" id="lineItemType" name="lineItemType" value="Text" class="lineItemType">
     </form>
 </div>
