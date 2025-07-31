@@ -26,11 +26,9 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
      */
     function process(Vtiger_Request $request)
     {
-        $decimalPlace = getCurrencyDecimalPlaces();
+        $decimalPlaces = getCurrencyDecimalPlaces();
         $currencyId = $request->get('currency_id');
-        $currencies = getAllCurrencies();
         $priceBookId = $request->get('pricebookid');
-        $conversionRateForPurchaseCost = 1;
         $idList = $request->get('idlist');
 
         if (!$idList) {
@@ -38,7 +36,6 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
             $idList = [$recordId];
         }
 
-        $response = new Vtiger_Response();
         $namesList = $purchaseCostsList = $taxesList = $listPricesList = $unit = [];
         $descriptionsList = $quantitiesList = $imageSourcesList = $productIdsList = [];
         $setPriceBookId = [];
@@ -53,15 +50,16 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
             $priceData = InventoryItem_Utils_Helper::decideItemPriceAndPriceBook((int)$id, (int)$currencyId, (int)$priceBookId);
             $listPricesList[$id] = $priceData['price'];
             $setPriceBookId[$id] = $priceData['priceBookId'];
+            $itemCurrencyId = $recordModel->fetchCurrencyId();
 
-            foreach ($currencies as $currencyInfo) {
-                if ($currencyId == $currencyInfo['curid']) {
-                    $conversionRateForPurchaseCost = $currencyInfo['conversionrate'];
-                    break;
-                }
+            if ($itemCurrencyId == $currencyId) {
+                $purchaseCostsList[$id] = round((float)$recordModel->get('purchase_cost'), $decimalPlaces);
+            } else {
+                $currenciesConversionTable = InventoryItem_Utils_Helper::getCurrenciesConversionTable();
+                $toBaseCurrency = 1 / $currenciesConversionTable[$itemCurrencyId];
+                $toNewCurrency = $toBaseCurrency * $currenciesConversionTable[$currencyId];
+                $purchaseCostsList[$id] = round((float)$recordModel->get('purchase_cost') * (float)$toNewCurrency, $decimalPlaces);
             }
-
-            $purchaseCostsList[$id] = round((float)$recordModel->get('purchase_cost') * (float)$conversionRateForPurchaseCost, $decimalPlace);
 
             if ($recordModel->getModuleName() === 'Products') {
                 $productIdsList[] = $id;
@@ -96,8 +94,8 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
                     ''
                 ) : $purchaseCostsList[$id],
                 'description'     => $descriptionsList[$id],
-                'quantityInStock' => $quantitiesList[$id],
-                'imageSource'     => $imageSourcesList[$id],
+                'quantityInStock' => $quantitiesList[$id] ?? '',
+                'imageSource'     => $imageSourcesList[$id] ?? '',
                 'unit'            => $unit[$id],
                 'pricebookid'     => $setPriceBookId[$id],
             ];
@@ -105,6 +103,7 @@ class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
             $info[] = [$id => $resultData];
         }
 
+        $response = new Vtiger_Response();
         $response->setResult($info);
         $response->emit();
     }

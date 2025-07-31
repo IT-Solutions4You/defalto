@@ -140,7 +140,7 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 		$typeofdata = $details['typeofdata'];
 		$dbType = $details['dbType'];
 
-		$quickCreate = in_array($moduleName,  getInventoryModules()) ? 3 : $params['quickcreate'];
+		$quickCreate = in_array($moduleName,  InventoryItem_Utils_Helper::getInventoryItemModules()) ? 3 : $params['quickcreate'];
 
 		$fieldModel = new Settings_LayoutEditor_Field_Model();
 		$fieldModel->set('name', $columnName)
@@ -369,7 +369,7 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 		$blocksEliminatedArray = array('HelpDesk' => array('LBL_TICKET_RESOLUTION', 'LBL_COMMENTS'),
 										'Faq' => array('LBL_COMMENT_INFORMATION'),
 										);
-		if (in_array($moduleName, array_merge(getInventoryModules(), array('HelpDesk', 'Faq')))) {
+		if (in_array($moduleName, array_merge(InventoryItem_Utils_Helper::getInventoryItemModules(), array('HelpDesk', 'Faq')))) {
 			if(!empty($blocksEliminatedArray[$moduleName])) {
 				if(in_array($blockName, $blocksEliminatedArray[$moduleName])) {
 					return false;

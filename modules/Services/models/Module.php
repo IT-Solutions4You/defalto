@@ -23,7 +23,7 @@ class Services_Module_Model extends Products_Module_Model {
 		$supportedModulesList = array('Leads', 'Accounts', 'HelpDesk', 'Potentials');
 		if (($sourceModule == 'PriceBooks' && $field == 'priceBookRelatedList')
 				|| in_array($sourceModule, $supportedModulesList)
-				|| in_array($sourceModule, getInventoryModules())) {
+				|| in_array($sourceModule, InventoryItem_Utils_Helper::getInventoryItemModules())) {
 
 			$condition = " vtiger_service.discontinued = 1 ";
 

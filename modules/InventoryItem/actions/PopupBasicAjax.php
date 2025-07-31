@@ -24,6 +24,7 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
 
         $baseRecordId = $request->get('base_record');
         $baseRecordModel = Vtiger_Record_Model::getInstanceById($baseRecordId);
+        $baseModuleName = $baseRecordModel->getModuleName();
         $currencyInfo = getCurrencySymbolandCRate($baseRecordModel->get('currency_id'));
         $currencySymbol = $currencyInfo['symbol'];
 
@@ -39,7 +40,7 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
         $noFieldName = $possibleNoFieldName = $priceFieldName = $possiblePriceFieldName = '';
 
         foreach ($fields as $fieldName => $fieldModel) {
-            if ($fieldModel->get('uitype') === Vtiger_Field_Model::UITYPE_RECORD_NO) {
+            if ($fieldModel->get('uitype') == Vtiger_Field_Model::UITYPE_RECORD_NO) {
                 $noFieldName = $fieldName;
             }
 
@@ -101,12 +102,32 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
                     }
 
                     if ($priceFieldName) {
-                        $priceData = InventoryItem_Utils_Helper::decideItemPriceAndPriceBook(
-                            (int)$recordModel->getId(),
-                            (int)$baseRecordModel->get('currency_id'),
-                            (int)$baseRecordModel->get('pricebookid')
-                        );
-                        $recordLabel .= ' (' . $priceData['price'] . ' ' . $currencySymbol . ')';
+                        $recordLabel .= ' (';
+                        $decimalPlaces = getCurrencyDecimalPlaces();
+
+                        if ($baseModuleName === 'PurchaseOrder') {
+                            $itemCurrencyId = $recordModel->fetchCurrencyId();
+
+                            if ($itemCurrencyId == $baseRecordModel->get('currency_id')) {
+                                $purchaseCosts = round((float)$recordModel->get('purchase_cost'), $decimalPlaces);
+                            } else {
+                                $currenciesConversionTable = InventoryItem_Utils_Helper::getCurrenciesConversionTable();
+                                $toBaseCurrency = 1 / $currenciesConversionTable[$itemCurrencyId];
+                                $toNewCurrency = $toBaseCurrency * $currenciesConversionTable[$baseRecordModel->get('currency_id')];
+                                $purchaseCosts = round((float)$recordModel->get('purchase_cost') * (float)$toNewCurrency, $decimalPlaces);
+                            }
+
+                            $recordLabel .= $purchaseCosts;
+                        } else {
+                            $priceData = InventoryItem_Utils_Helper::decideItemPriceAndPriceBook(
+                                (int)$recordModel->getId(),
+                                (int)$baseRecordModel->get('currency_id'),
+                                (int)$baseRecordModel->get('pricebookid')
+                            );
+                            $recordLabel .= round((float)$priceData['price'], $decimalPlaces);
+                        }
+
+                        $recordLabel .= ' ' . $currencySymbol . ')';
                     }
 
                     if (method_exists($recordModel, 'isBundle') && $recordModel->isBundle()) {

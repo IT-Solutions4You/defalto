@@ -16,6 +16,7 @@ $languageStrings = array(
 	'LBL_CREATING_NEW'             => 'Létrehozás Új '           ,
 	'LBL_EDITING'                  => 'Szerkesztés'                ,
 	'LBL_SAVE'                     => 'Mentés'                     ,
+    'LBL_SAVE_AND_CONTINUE'        => 'Save & Continue'            ,
 	'LBL_APPLY'                    => 'Apply'                      ,
 	'LBL_CANCEL'                   => 'Visszavon'                   ,
 	'LBL_BACK'                     => 'Vissza'                      ,

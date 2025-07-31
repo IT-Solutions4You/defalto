@@ -62,7 +62,7 @@ class Products_ProductsPopup_View extends Vtiger_Popup_View {
 	public function initializeListViewContents(Vtiger_Request $request, Vtiger_Viewer $viewer) {
 		parent::initializeListViewContents($request, $viewer);
 		$sourceModule = $request->get('src_module');
-		if ($sourceModule && in_array($sourceModule, getInventoryModules())) {
+		if ($sourceModule && in_array($sourceModule, InventoryItem_Utils_Helper::getInventoryItemModules())) {
 			$viewer->assign('GETURL', 'getTaxesURL');
 		}
 	}

@@ -11,7 +11,7 @@
 class Settings_Vtiger_TermsAndConditionsEdit_View extends Settings_Vtiger_Index_View {
     
     public function process(Vtiger_Request $request) {
-		$inventoryModules = getInventoryModules();
+		$inventoryModules = InventoryItem_Utils_Helper::getInventoryItemModules();
         $model = Settings_Vtiger_TermsAndConditions_Model::getInstance($inventoryModules[0]);
         $conditionText = $model->getText();
 

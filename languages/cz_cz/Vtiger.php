@@ -21,6 +21,7 @@ $languageStrings=array (
   'LBL_ADDING_NEW' => 'Přidání nového',
   'LBL_EDITING' => 'Upravit',
   'LBL_SAVE' => 'Uložit',
+  'LBL_SAVE_AND_CONTINUE' => 'Uložit a pokračovat',
   'LBL_CANCEL' => 'Zrušit',
   'LBL_BACK' => 'Zpět',
   'LBL_IMPORT' => 'Import',

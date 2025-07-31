@@ -827,7 +827,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 			$emailSubject = getTranslatedString('LBL_SCHEDULE_IMPORT_SUBJECT', 'Import').' '.$importDataController->module;
 			$viewer = new Vtiger_Viewer();
 			$viewer->assign('FOR_MODULE', $importDataController->module);
-			$viewer->assign('INVENTORY_MODULES', getInventoryModules());
+			$viewer->assign('INVENTORY_MODULES', InventoryItem_Utils_Helper::getInventoryItemModules());
 			$viewer->assign('IMPORT_RESULT', $importStatusCount);
 			$viewer->assign('MODULE', 'Import');
 			$importResult = $viewer->view('Import_Result_Details.tpl','Import',true);

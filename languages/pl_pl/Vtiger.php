@@ -19,6 +19,7 @@ $languageStrings = array(
 	'LBL_CREATING_NEW' => 'Tworzenie nowych',
 	'LBL_EDITING' => 'Edytowanie',
 	'LBL_SAVE' => 'Zapisz',
+    'LBL_SAVE_AND_CONTINUE' => 'Save & Continue',
 	'LBL_APPLY' => 'Apply',
 	'LBL_CANCEL' => 'Anuluj',
 	'LBL_BACK' => 'Cofnij',

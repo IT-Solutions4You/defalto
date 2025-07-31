@@ -20,6 +20,7 @@ $languageStrings = array(
 	'LBL_CREATING_NEW' => 'انشاء جديد',
 	'LBL_EDITING' => 'تعديل',
 	'LBL_SAVE' => 'حفظ',
+    'LBL_SAVE_AND_CONTINUE' => 'Save & Continue',
 	'LBL_APPLY' => 'Apply',
 	'LBL_CANCEL' => 'الغاء',
 	'LBL_BACK' => 'السابق',

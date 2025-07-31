@@ -690,21 +690,6 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
         return $number;
     }
 
-    public function isInventoryModule($module)
-    {
-        $class_name = $module . '_Module_Model';
-
-        if (class_exists($class_name)) {
-            if (is_subclass_of($class_name, 'Inventory_Module_Model')) {
-                self::$is_inventory_module[$module] = true;
-            } else {
-                self::$is_inventory_module[$module] = false;
-            }
-        }
-
-        return self::$is_inventory_module[$module];
-    }
-
     public function getUITypeRelatedModule($uitype, $fk_record)
     {
         $related_module = '';

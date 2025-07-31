@@ -17,8 +17,9 @@ trait InventoryItem_DetailView_Trait
     {
         $inventoryItemWidget = [
             'linktype'  => 'DETAILVIEWWIDGET',
-            'linklabel' => 'Items',
+            'linklabel' => 'InventoryItems',
             'linkurl'   => 'module=InventoryItem&view=ItemsWidget&for_module=' . $this->getModuleName() . '&for_record=' . $this->getRecord()->getId(),
+            'link_template' => 'SummaryInventoryItem.tpl'
         ];
         $counter = 0;
         $widgets = [];

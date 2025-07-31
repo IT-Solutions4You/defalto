@@ -70,7 +70,7 @@ class Vtiger_Import_View extends Vtiger_Index_View {
 		);
 
 		$moduleName = $request->getModule();
-		if (in_array($moduleName, getInventoryModules())) {
+		if (in_array($moduleName, InventoryItem_Utils_Helper::getInventoryItemModules())) {
 			$moduleEditFile = 'modules.'.$moduleName.'.resources.Edit';
 			unset($headerScriptInstances[$moduleEditFile]);
 
@@ -87,7 +87,7 @@ class Vtiger_Import_View extends Vtiger_Index_View {
 	}
 
 	function getUnsupportedDuplicateHandlingModules(){
-		$inventory = getInventoryModules();
+		$inventory = InventoryItem_Utils_Helper::getInventoryItemModules();
 		return array_merge(array('PriceBooks', 'Users'), $inventory);
 	}
 
@@ -196,7 +196,7 @@ class Vtiger_Import_View extends Vtiger_Index_View {
 			$moduleMeta = $moduleModel->getModuleMeta();
 
 			$mandatoryFields = $moduleMeta->getMandatoryFields($moduleName);
-			$inventoryModules = getInventoryModules();
+			$inventoryModules = InventoryItem_Utils_Helper::getInventoryItemModules();
 
 			if (in_array($moduleName, $inventoryModules) && array_key_exists('netprice', $mandatoryFields)) {
                 unset($mandatoryFields['netprice']);
@@ -252,7 +252,7 @@ class Vtiger_Import_View extends Vtiger_Index_View {
 		$VTIGER_BULK_SAVE_MODE = true;
 		$query = "SELECT recordid FROM $dbTableName WHERE status = ? AND recordid IS NOT NULL";
 		//For inventory modules
-		$inventoryModules = getInventoryModules();
+		$inventoryModules = InventoryItem_Utils_Helper::getInventoryItemModules();
 		if(in_array($moduleName, $inventoryModules)){
 			$query .=' GROUP BY subject';
 		}

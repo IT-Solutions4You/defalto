@@ -10,9 +10,45 @@
 
 class InventoryItem_Utils_Helper
 {
+    /**
+     * Determines whether the Inventory Items are used within a given module.
+     *
+     * @param string $moduleName
+     *
+     * @return bool
+     * @throws AppException
+     */
+    public static function usesInventoryItem(string $moduleName): bool
+    {
+        $viewClassName = Vtiger_Loader::getComponentClassName('View', 'Detail', $moduleName);
+        $traits = class_uses($viewClassName);
+
+        return in_array('InventoryItem_Detail_Trait', $traits);
+    }
 
     /**
-     * Get items for given record.
+     * Finds all entity modules that use Inventory Item
+     *
+     * @return array
+     * @throws AppException
+     */
+    public static function getInventoryItemModules(): array
+    {
+        $inventoryModules = [];
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT * FROM vtiger_tab WHERE isentitytype = 1');
+
+        while ($row = $db->fetchByAssoc($result)) {
+            if (InventoryItem_Utils_Helper::usesInventoryItem($row['name'])) {
+                $inventoryModules[] = $row['name'];
+            }
+        }
+
+        return $inventoryModules;
+    }
+
+    /**
+     * Get items for a given record.
      *
      * @param int $record
      *

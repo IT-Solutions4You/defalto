@@ -249,19 +249,6 @@ require_once 'include/Webservices/DescribeObject.php';
 
     function getSelectClauseFields($module,$moduleMeta,$user){
         $moduleFieldNames = $moduleMeta->getModuleFields();
-        $inventoryModules = getInventoryModules();
-        if(in_array($module, $inventoryModules)){
-			
-            $fields = vtws_describe('LineItem', $user);
-            foreach($fields['fields'] as $field){
-                unset($moduleFieldNames[$field['name']]);
-            }
-			foreach ($moduleFieldNames as $field => $fieldObj){
-				if(substr($field, 0, 5) == 'shtax'){
-					unset($moduleFieldNames[$field]);
-				}
-			}
-            
-        }
+
         return array_keys($moduleFieldNames);
     }

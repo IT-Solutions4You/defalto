@@ -104,7 +104,7 @@
                 </div>
                 {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE['price'][1]}
                 {assign var=FIELD_NAME value=$FIELD->get('name')}
-                <div class="col-lg-3">
+                <div class="col-lg-3 pe-2 pe-md-0">
                     <div class="input-group">
                         <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text"
                                class="{$FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight"
@@ -196,7 +196,7 @@
                     </div>
                     <div class="col-lg-2">
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-3 pe-2 pe-md-0">
                         <div class="input-group">
                             <input type="text" id="{$FIELD_NAME}" name="{$FIELD_NAME}" value="{$DATA[$FIELD_NAME]}"
                                    class="{$FIELD_NAME} inputElement form-control textAlignRight allowOnlyNumbers replaceCommaWithDot"/>
@@ -219,7 +219,7 @@
         {if $HARD_FORMATTED_RECORD_STRUCTURE.price_after_discount neq ''}
             {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.price_after_discount.1}
             <div class="d-flex flex-row py-2">
-                <div class="col-lg-10 textAlignRight">
+                <div class="col-lg-10 textAlignRight pe-2 pe-md-0">
                     <div class="fieldlabel text-truncate medium">
                         {$HARD_FORMATTED_RECORD_STRUCTURE.price_after_discount.0}
                     </div>
@@ -237,7 +237,7 @@
                 <div class="d-flex flex-row py-2">
                     {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.overall_discount.1}
                     {assign var=FIELD_NAME value=$FIELD->get('name')}
-                    <div class="col-lg-10 textAlignRight">
+                    <div class="col-lg-10 textAlignRight pe-2 pe-md-0">
                         <div class="fieldlabel text-truncate medium">
                             {$HARD_FORMATTED_RECORD_STRUCTURE.overall_discount.0} (<span class="display_overall_discount">{$DATA[$FIELD_NAME]}</span> %)
                         </div>
@@ -254,7 +254,7 @@
                 {if $HARD_FORMATTED_RECORD_STRUCTURE.price_after_overall_discount neq ''}
                     {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.price_after_overall_discount.1}
                     <div class="d-flex flex-row py-2">
-                        <div class="col-lg-10 textAlignRight">
+                        <div class="col-lg-10 textAlignRight pe-2 pe-md-0">
                             <div class="fieldlabel text-truncate medium">
                                 {$HARD_FORMATTED_RECORD_STRUCTURE.price_after_overall_discount.0}
                             </div>
@@ -283,7 +283,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-3 pe-2 pe-md-0">
                         <div id="tax_div">
                             <select name="{$FIELD_NAME}" id="{$FIELD_NAME}" class="inputElement select2 form-select {$FIELD_NAME}">
                                 <option value="0" data-taxid="0">{vtranslate('No Tax', 'InventoryItem')}</option>
@@ -312,7 +312,7 @@
                 <div class="d-flex flex-row py-2">
                     {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.price_total.1}
                     {assign var=FIELD_NAME value=$FIELD->get('name')}
-                    <div class="col-lg-10 textAlignRight">
+                    <div class="col-lg-10 textAlignRight pe-2 pe-md-0">
                         <div class="fieldlabel text-truncate medium font-bold">
                             {vtranslate('Item Total', 'InventoryItem')}
                         </div>
@@ -331,7 +331,7 @@
                 <div class="d-flex flex-row py-2">
                     {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.margin.1}
                     {assign var=FIELD_NAME value=$FIELD->get('name')}
-                    <div class="col-lg-10 textAlignRight">
+                    <div class="col-lg-10 textAlignRight pe-2 pe-md-0">
                         <div class="fieldlabel text-truncate medium">
                             {vtranslate('LBL_MARGIN', 'InventoryItem')} (<span class="display_{$FIELD_NAME}">{$DATA[$FIELD_NAME]}</span> %)
                         </div>

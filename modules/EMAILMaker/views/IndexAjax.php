@@ -419,7 +419,7 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
 
         $recordStructure = $recordStructureInstance->getStructure();
-        if (in_array($selectedModuleName, getInventoryModules())) {
+        if (in_array($selectedModuleName, InventoryItem_Utils_Helper::getInventoryItemModules())) {
             $itemsBlock = "LBL_ITEM_DETAILS";
             unset($recordStructure[$itemsBlock]);
         }

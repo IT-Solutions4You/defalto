@@ -84,7 +84,7 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
 		$viewer->assign('ANNOUNCEMENT', $this->getAnnouncement());
 		$viewer->assign('SEARCHABLE_MODULES', Vtiger_Module_Model::getSearchableModules());
 
-		$inventoryModules = getInventoryModules();
+		$inventoryModules = InventoryItem_Utils_Helper::getInventoryItemModules();
 		$viewer->assign('INVENTORY_MODULES',  $inventoryModules);
 		if($display) {
 			$this->preProcessDisplay($request);

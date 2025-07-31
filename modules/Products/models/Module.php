@@ -24,7 +24,7 @@ class Products_Module_Model extends Vtiger_Module_Model
 		$supportedModulesList = array($this->getName(), 'Vendors', 'Leads', 'Accounts', 'Contacts', 'Potentials');
 		if (($sourceModule == 'PriceBooks' && $field == 'priceBookRelatedList')
 				|| in_array($sourceModule, $supportedModulesList)
-				|| in_array($sourceModule, getInventoryModules())) {
+				|| in_array($sourceModule, InventoryItem_Utils_Helper::getInventoryItemModules())) {
 
 			$condition = " vtiger_products.discontinued = 1 ";
             		$db = PearDatabase::getInstance();
@@ -86,7 +86,7 @@ class Products_Module_Model extends Vtiger_Module_Model
 	 * @return <Array of Vtiger_Record_Model>
 	 */
 	public function searchRecord($searchValue, $parentId=false, $parentModule=false, $relatedModule=false) {
-		if(!empty($searchValue) && empty($parentId) && empty($parentModule) && (in_array($relatedModule, getInventoryModules()))) {
+		if(!empty($searchValue) && empty($parentId) && empty($parentModule) && (in_array($relatedModule, InventoryItem_Utils_Helper::getInventoryItemModules()))) {
 			$matchingRecords = Products_Record_Model::getSearchResult($searchValue, $this->getName());
 		}else {
 			return parent::searchRecord($searchValue);
@@ -177,7 +177,7 @@ class Products_Module_Model extends Vtiger_Module_Model
 
         while($row = $db->fetchByAssoc($result)) {
             if (Users_Privileges_Model::isPermitted($row['setype'], 'DetailView', $row['crmid'])) {
-                $matchingRecords[$row['id']] = Vtiger_Record_Model::getInstanceById($row['crmid'], $moduleName);
+                $matchingRecords[$row['crmid']] = Vtiger_Record_Model::getInstanceById($row['crmid'], $moduleName);
             }
         }
 

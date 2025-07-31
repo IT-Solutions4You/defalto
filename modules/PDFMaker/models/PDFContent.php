@@ -107,7 +107,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
         self::$bridge2mpdf['record'] = self::$focus->id;
         self::$rowbreak = '<rowbreak />';
-        self::$is_inventory_module[self::$module] = $this->isInventoryModule(self::$module);
+        self::$is_inventory_module[self::$module] = InventoryItem_Utils_Helper::usesInventoryItem(self::$module);
     }
 
     private function getTemplateData()
@@ -628,7 +628,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
     private function fillInventoryData($module, $focus)
     {
         if (!isset(self::$is_inventory_module[$module])) {
-            self::$is_inventory_module[$module] = $this->isInventoryModule($module);
+            self::$is_inventory_module[$module] = InventoryItem_Utils_Helper::usesInventoryItem($module);
         }
 
         if (self::$is_inventory_module[$module] || (isset($focus->column_fields['currency_id']) && isset($focus->column_fields['conversion_rate']) && isset($focus->column_fields['price_total']))) {

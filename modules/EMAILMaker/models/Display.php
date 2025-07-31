@@ -114,7 +114,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 } else {
                     list($full, $referenceField, $referenceModule, $fieldname) = $matches;
                     $referenceFieldId = $data[$referenceField];
-                    if (in_array($entityData->getModuleName(), getInventoryModules())) {
+                    if (in_array($entityData->getModuleName(), InventoryItem_Utils_Helper::getInventoryItemModules())) {
                         if (in_array($referenceModule, array('Products', 'Services'))) {
                             $referenceFieldId = array();
                             foreach ($data['LineItems'] as $key => $value) {

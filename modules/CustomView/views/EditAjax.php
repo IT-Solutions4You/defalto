@@ -55,11 +55,6 @@ Class CustomView_EditAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('DATE_FILTERS', $dateFilters);
 		$viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
 		$recordStructure = $recordStructureInstance->getStructure();
-		// for Inventory module we should now allow item details block
-		if(in_array($moduleName, getInventoryModules())){
-			$itemsBlock = "LBL_ITEM_DETAILS";
-			unset($recordStructure[$itemsBlock]);
-		}
 		$viewer->assign('RECORD_STRUCTURE', $recordStructure);
 		// Added to show event module custom fields
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
@@ -76,13 +71,6 @@ Class CustomView_EditAjax_View extends Vtiger_IndexAjax_View {
 
         $sortRecordStructureInstance = Vtiger_RecordStructure_Model::getInstanceForModule($moduleModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_DETAIL);
         $sortRecordStructure = $sortRecordStructureInstance->getStructure();
-
-        // for Inventory module we should now allow item details block
-        if (in_array($moduleName, getInventoryModules())) {
-            $itemsBlock = 'LBL_ITEM_DETAILS';
-            unset($sortRecordStructure[$itemsBlock]);
-        }
-
         $viewer->assign('SORT_RECORD_STRUCTURE', $sortRecordStructure);
         $orderBy = $customViewModel->fetchOrderBy();
 
