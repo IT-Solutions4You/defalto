@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -27,6 +27,7 @@ class Reporting_XLS_Model extends Vtiger_Base_Model
     /**
      * @param int $row
      * @param int $column
+     *
      * @return string
      */
     public function generateCellId(int $row, int $column): string
@@ -48,7 +49,6 @@ class Reporting_XLS_Model extends Vtiger_Base_Model
     {
         $this->spreadsheet = new Spreadsheet();
         $this->activeWorksheet = $this->spreadsheet->getActiveSheet();
-
     }
 
     public function setCellValues(array $data): void

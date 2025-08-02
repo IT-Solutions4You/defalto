@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 // PAGING
 $this->mirrorMargins = 0;
@@ -57,7 +65,7 @@ $this->biDirectional = false; // automatically determine BIDI text in LTR page
 // AUTOMATIC FONT SELECTION
 // Based on script and/or language
 $this->autoScriptToLang = true;
-$this->baseScript = 1;	// =Latin; to set another base script see constants in classes/ucdn.php
+$this->baseScript = 1;    // =Latin; to set another base script see constants in classes/ucdn.php
 $this->autoVietnamese = true;
 $this->autoArabic = true;
 
@@ -72,7 +80,7 @@ $this->allow_output_buffering = false;
 $this->enableImports = false; // Adding mPDFI functions
 
 $this->collapseBlockMargins = true; // Allows top and bottom margins to collapse between block elements
-$this->progressBar = 0;	// Shows progress-bars whilst generating file 0 off, 1 simple, 2 advanced
+$this->progressBar = 0;    // Shows progress-bars whilst generating file 0 off, 1 simple, 2 advanced
 $this->progbar_heading = 'mPDF file progress';
 
 $this->progbar_altHTML = ''; // Should include <html> and <body> but NOT end tags
@@ -87,7 +95,6 @@ $this->allow_html_optional_endtags = true;
 $this->ignore_invalid_utf8 = false;
 $this->text_input_as_HTML = false; // Converts all entities in Text inputs to UTF-8 before encoding
 $this->useGraphs = false;
-
 
 // When writing a block element with position:fixed and overflow:auto, mPDF scales it down to fit in the space
 // by repeatedly rewriting it and making adjustments. These values give the adjustments used, depending how far out
@@ -105,16 +112,16 @@ $this->incrementFPR4 = 50; // i.e. will alter by 1/[50]th of width and try again
 $this->restrictColorSpace = 0;
 
 // PDFX/1-a Compliant files
-$this->PDFX = false;	// true=Forces compliance with PDFX-1a spec
+$this->PDFX = false;    // true=Forces compliance with PDFX-1a spec
 // Cannot be used with $this->restrictColorSpace (i.e. no RGB)
 $this->PDFXauto = false; // Overrides warnings making changes when possible to force PDFX1-a compliance
 
 // PDFA1-b Compliant files
-$this->PDFA = false;	// true=Forces compliance with PDFA-1b spec
+$this->PDFA = false;    // true=Forces compliance with PDFA-1b spec
 // Can use with $this->restrictColorSpace=3 (for a CMYK file)
 // Any other settings, uses RGB profile
 $this->PDFAauto = false; // Overrides warnings making changes when possible to force PDFA1-b compliance
-$this->ICCProfile = '';	// Colour profile OutputIntent
+$this->ICCProfile = '';    // Colour profile OutputIntent
 // sRGB_IEC61966-2-1 (=default if blank and PDFA),  or other added .icc profile
 // Must be CMYK for PDFX, or appropriate type for PDFA(RGB or CMYK)
 
@@ -143,10 +150,10 @@ $this->anchor2Bookmark = 0; // makes <a name=""> into a bookmark as well as inte
   2 => array('color'=> array(0,128,0), 'style'=>'I'),
   );
  */
-$this->bookmarkStyles = array();
+$this->bookmarkStyles = [];
 
 // Specify whether to automatically generate bookmarks from h1 - h6 tags
-$this->h2bookmarks = array();
+$this->h2bookmarks = [];
 /* Define arrays with e.g. the tag=>Bookmark-level
   Remember bookmark levels start at 0
   (does not work inside tables)
@@ -154,10 +161,9 @@ $this->h2bookmarks = array();
   $this->h2bookmarks = array('H1'=>0, 'H2'=>1, 'H3'=>2);
  */
 
-
 // TABLE OF CONTENTS
 // Specify whether to automatically generate ToC entries from h1 - h6 tags
-$this->h2toc = array();
+$this->h2toc = [];
 /* Define arrays with e.g. the tag=>ToC-level
   Remember ToC levels start at 0
   (does not work inside tables)
@@ -178,7 +184,6 @@ Mammal, dog
 Mammal, elephant
 */
 $this->indexUseSubentries = true;
-
 
 // CSS & STYLES
 $this->CSSselectMedia = 'print'; // screen, print, or any other CSS @media type (except "all")
@@ -216,7 +221,7 @@ $this->tableMinSizePriority = false; // If page-break-inside:avoid but cannot fi
 // exceeding autosize; setting this value to true will force respect for
 // autosize, and disable the page-break-inside:avoid
 
-$this->use_kwt = false;	// "Keep-with-table" Attempts to keep a <h1> to <h6> tagged heading together
+$this->use_kwt = false;    // "Keep-with-table" Attempts to keep a <h1> to <h6> tagged heading together
 // with a table which comes immediately after it.
 $this->iterationCounter = false; // Set to TRUE to use table Head iteration counter
 $this->splitTableBorderWidth = 0; // Use table border (using this width in mm) when table breaks across pages
@@ -225,8 +230,7 @@ $this->splitTableBorderWidth = 0; // Use table border (using this width in mm) w
 // // Allowed characters for text alignment on decimal marks. Additional codes must start with D
 // DM - middot U+00B7
 // DA - arabic decimal mark U+066B
-$this->decimal_align = array('DP' => '.', 'DC' => ',', 'DM' => "\xc2\xb7", 'DA' => "\xd9\xab", 'DD' => '-');
-
+$this->decimal_align = ['DP' => '.', 'DC' => ',', 'DM' => "\xc2\xb7", 'DA' => "\xd9\xab", 'DD' => '-'];
 
 // IMAGES
 $this->interpolateImages = false; // if image-rendering=='auto', this defines value for image-rendering
@@ -236,9 +240,9 @@ $this->img_dpi = 96; // Default dpi to output images if size not defined
 
 // TEXT SPACING & JUSTIFICATION
 
-$this->useKerning = false;	// Specify whether kerning should be used when CSS font-kerning="auto" used for HTML;
+$this->useKerning = false;    // Specify whether kerning should be used when CSS font-kerning="auto" used for HTML;
 // Also whether kerning should be used in any direct writing e.g. $mpdf->Text();
-$this->justifyB4br = false;	// In justified text, <BR> does not cause the preceding text to be justified in browsers
+$this->justifyB4br = false;    // In justified text, <BR> does not cause the preceding text to be justified in browsers
 // Change to true to force justification (as in MS Word)
 
 $this->tabSpaces = 8; // Number of spaces to replace for a TAB in <pre> sections
@@ -285,17 +289,16 @@ $this->keepColumns = false; // Set to go to the second column only when the firs
 $this->max_colH_correction = 1.15; // Maximum ratio to adjust column height when justifying - too large a value can give ugly results
 $this->ColGap = 5;
 
-
 // LISTS
 // mPDF 6
-$this->list_auto_mode = 'browser';		// 'mpdf' or 'browser' - Specify whether to use mPDF custom method of automatic
+$this->list_auto_mode = 'browser';        // 'mpdf' or 'browser' - Specify whether to use mPDF custom method of automatic
 // indentation of lists, or standard browser-compatible
 // custom mPDF method is ignored if list-style-position: inside, or image used for marker (or custom U+)
-$this->list_indent_default = '40px';	// List Indentation when set to 'auto' if using standard browser-compatible method
-$this->list_indent_default_mpdf = '0em';	// List Indentation when set to 'auto' if using mPDF custom method
-$this->list_indent_first_level = 0;		// 1/0 yes/no to indent first level of list, if using mPDF custom method
+$this->list_indent_default = '40px';    // List Indentation when set to 'auto' if using standard browser-compatible method
+$this->list_indent_default_mpdf = '0em';    // List Indentation when set to 'auto' if using mPDF custom method
+$this->list_indent_first_level = 0;        // 1/0 yes/no to indent first level of list, if using mPDF custom method
 
-$this->list_number_suffix = '.';		// Content to follow a numbered list marker e.g. '.' gives 1. or IV.; ')' gives 1) or a)
+$this->list_number_suffix = '.';        // Content to follow a numbered list marker e.g. '.' gives 1. or IV.; ')' gives 1) or a)
 
 // To specify a bullet size and offset proportional to the list item's font size:
 //$this->list_marker_offset = '0.45em';	// Offset (CSS length) of list marker bullets (disc/circle/square)
@@ -324,223 +327,221 @@ $this->watermarkImgAlphaBlend = 'Normal';
 // BORDERS
 $this->autoPadding = false; // Automatically increases padding in block elements when border-radius set - if required
 
-
 //////////////////////////////////////////////
 
 // Default values if no style sheet offered	(cf. http://www.w3.org/TR/CSS21/sample.html)
-$this->defaultCSS = array(
-    'BODY' => array(
-        'FONT-FAMILY' => 'serif',
-        'FONT-SIZE' => '11pt',
-        'TEXT-INDENT' => '0pt',
-        'LINE-HEIGHT' => 'normal',
+$this->defaultCSS = [
+    'BODY'       => [
+        'FONT-FAMILY'     => 'serif',
+        'FONT-SIZE'       => '11pt',
+        'TEXT-INDENT'     => '0pt',
+        'LINE-HEIGHT'     => 'normal',
         'MARGIN-COLLAPSE' => 'collapse', /* Custom property to collapse top/bottom margins at top/bottom of page - ignored in tables/lists */
-        'HYPHENS' => 'manual', /* mPDF 5.6.08 */
-        'FONT-KERNING' => 'auto', /* mPDF 6 */
-    ),
-    'P' => array(
+        'HYPHENS'         => 'manual', /* mPDF 5.6.08 */
+        'FONT-KERNING'    => 'auto', /* mPDF 6 */
+    ],
+    'P'          => [
         'MARGIN' => '1.12em 0',
-    ),
-    'H1' => array(
-        'FONT-SIZE' => '2em',
-        'FONT-WEIGHT' => 'bold',
-        'MARGIN' => '0.67em 0',
+    ],
+    'H1'         => [
+        'FONT-SIZE'        => '2em',
+        'FONT-WEIGHT'      => 'bold',
+        'MARGIN'           => '0.67em 0',
         'PAGE-BREAK-AFTER' => 'avoid',
-    ),
-    'H2' => array(
-        'FONT-SIZE' => '1.5em',
-        'FONT-WEIGHT' => 'bold',
-        'MARGIN' => '0.75em 0',
+    ],
+    'H2'         => [
+        'FONT-SIZE'        => '1.5em',
+        'FONT-WEIGHT'      => 'bold',
+        'MARGIN'           => '0.75em 0',
         'PAGE-BREAK-AFTER' => 'avoid',
-    ),
-    'H3' => array(
-        'FONT-SIZE' => '1.17em',
-        'FONT-WEIGHT' => 'bold',
-        'MARGIN' => '0.83em 0',
+    ],
+    'H3'         => [
+        'FONT-SIZE'        => '1.17em',
+        'FONT-WEIGHT'      => 'bold',
+        'MARGIN'           => '0.83em 0',
         'PAGE-BREAK-AFTER' => 'avoid',
-    ),
-    'H4' => array(
-        'FONT-WEIGHT' => 'bold',
-        'MARGIN' => '1.12em 0',
+    ],
+    'H4'         => [
+        'FONT-WEIGHT'      => 'bold',
+        'MARGIN'           => '1.12em 0',
         'PAGE-BREAK-AFTER' => 'avoid',
-    ),
-    'H5' => array(
-        'FONT-SIZE' => '0.83em',
-        'FONT-WEIGHT' => 'bold',
-        'MARGIN' => '1.5em 0',
+    ],
+    'H5'         => [
+        'FONT-SIZE'        => '0.83em',
+        'FONT-WEIGHT'      => 'bold',
+        'MARGIN'           => '1.5em 0',
         'PAGE-BREAK-AFTER' => 'avoid',
-    ),
-    'H6' => array(
-        'FONT-SIZE' => '0.75em',
-        'FONT-WEIGHT' => 'bold',
-        'MARGIN' => '1.67em 0',
+    ],
+    'H6'         => [
+        'FONT-SIZE'        => '0.75em',
+        'FONT-WEIGHT'      => 'bold',
+        'MARGIN'           => '1.67em 0',
         'PAGE-BREAK-AFTER' => 'avoid',
-    ),
-    'HR' => array(
-        'COLOR' => '#888888',
-        'TEXT-ALIGN' => 'center',
-        'WIDTH' => '100%',
-        'HEIGHT' => '0.2mm',
-        'MARGIN-TOP' => '0.83em',
+    ],
+    'HR'         => [
+        'COLOR'         => '#888888',
+        'TEXT-ALIGN'    => 'center',
+        'WIDTH'         => '100%',
+        'HEIGHT'        => '0.2mm',
+        'MARGIN-TOP'    => '0.83em',
         'MARGIN-BOTTOM' => '0.83em',
-    ),
-    'PRE' => array(
-        'MARGIN' => '0.83em 0',
+    ],
+    'PRE'        => [
+        'MARGIN'      => '0.83em 0',
         'FONT-FAMILY' => 'monospace',
-    ),
-    'S' => array(
+    ],
+    'S'          => [
         'TEXT-DECORATION' => 'line-through',
-    ),
-    'STRIKE' => array(
+    ],
+    'STRIKE'     => [
         'TEXT-DECORATION' => 'line-through',
-    ),
-    'DEL' => array(
+    ],
+    'DEL'        => [
         'TEXT-DECORATION' => 'line-through',
-    ),
-    'SUB' => array(
+    ],
+    'SUB'        => [
         'VERTICAL-ALIGN' => 'sub',
-        'FONT-SIZE' => '55%', /* Recommended 0.83em */
-    ),
-    'SUP' => array(
+        'FONT-SIZE'      => '55%', /* Recommended 0.83em */
+    ],
+    'SUP'        => [
         'VERTICAL-ALIGN' => 'super',
-        'FONT-SIZE' => '55%', /* Recommended 0.83em */
-    ),
-    'U' => array(
+        'FONT-SIZE'      => '55%', /* Recommended 0.83em */
+    ],
+    'U'          => [
         'TEXT-DECORATION' => 'underline',
-    ),
-    'INS' => array(
+    ],
+    'INS'        => [
         'TEXT-DECORATION' => 'underline',
-    ),
-    'B' => array(
+    ],
+    'B'          => [
         'FONT-WEIGHT' => 'bold',
-    ),
-    'STRONG' => array(
+    ],
+    'STRONG'     => [
         'FONT-WEIGHT' => 'bold',
-    ),
-    'I' => array(
+    ],
+    'I'          => [
         'FONT-STYLE' => 'italic',
-    ),
-    'CITE' => array(
+    ],
+    'CITE'       => [
         'FONT-STYLE' => 'italic',
-    ),
-    'Q' => array(
+    ],
+    'Q'          => [
         'FONT-STYLE' => 'italic',
-    ),
-    'EM' => array(
+    ],
+    'EM'         => [
         'FONT-STYLE' => 'italic',
-    ),
-    'VAR' => array(
+    ],
+    'VAR'        => [
         'FONT-STYLE' => 'italic',
-    ),
-    'SAMP' => array(
+    ],
+    'SAMP'       => [
         'FONT-FAMILY' => 'monospace',
-    ),
-    'CODE' => array(
+    ],
+    'CODE'       => [
         'FONT-FAMILY' => 'monospace',
-    ),
-    'KBD' => array(
+    ],
+    'KBD'        => [
         'FONT-FAMILY' => 'monospace',
-    ),
-    'TT' => array(
+    ],
+    'TT'         => [
         'FONT-FAMILY' => 'monospace',
-    ),
-    'SMALL' => array(
+    ],
+    'SMALL'      => [
         'FONT-SIZE' => '83%',
-    ),
-    'BIG' => array(
+    ],
+    'BIG'        => [
         'FONT-SIZE' => '117%',
-    ),
-    'ACRONYM' => array(
-        'FONT-SIZE' => '77%',
+    ],
+    'ACRONYM'    => [
+        'FONT-SIZE'   => '77%',
         'FONT-WEIGHT' => 'bold',
-    ),
-    'ADDRESS' => array(
+    ],
+    'ADDRESS'    => [
         'FONT-STYLE' => 'italic',
-    ),
-    'BLOCKQUOTE' => array(
-        'MARGIN-LEFT' => '40px',
-        'MARGIN-RIGHT' => '40px',
-        'MARGIN-TOP' => '1.12em',
+    ],
+    'BLOCKQUOTE' => [
+        'MARGIN-LEFT'   => '40px',
+        'MARGIN-RIGHT'  => '40px',
+        'MARGIN-TOP'    => '1.12em',
         'MARGIN-BOTTOM' => '1.12em',
-    ),
-    'A' => array(
-        'COLOR' => '#0000FF',
+    ],
+    'A'          => [
+        'COLOR'           => '#0000FF',
         'TEXT-DECORATION' => 'underline',
-    ),
-    'UL' => array(
-        'PADDING' => '0 auto', /* mPDF 6 */
-        'MARGIN-TOP' => '0.83em', /* mPDF 6 */
+    ],
+    'UL'         => [
+        'PADDING'       => '0 auto', /* mPDF 6 */
+        'MARGIN-TOP'    => '0.83em', /* mPDF 6 */
         'MARGIN-BOTTOM' => '0.83em', /* mPDF 6 */
-    ),
-    'OL' => array(
-        'PADDING' => '0 auto', /* mPDF 6 */
-        'MARGIN-TOP' => '0.83em', /* mPDF 6 */
+    ],
+    'OL'         => [
+        'PADDING'       => '0 auto', /* mPDF 6 */
+        'MARGIN-TOP'    => '0.83em', /* mPDF 6 */
         'MARGIN-BOTTOM' => '0.83em', /* mPDF 6 */
-    ),
-    'DL' => array(
+    ],
+    'DL'         => [
         'MARGIN' => '1.67em 0',
-    ),
-    'DT' => array(
-    ),
-    'DD' => array(
+    ],
+    'DT'         => [
+    ],
+    'DD'         => [
         'PADDING-LEFT' => '40px',
-    ),
-    'TABLE' => array(
-        'MARGIN' => '0',
+    ],
+    'TABLE'      => [
+        'MARGIN'          => '0',
         'BORDER-COLLAPSE' => 'separate',
-        'BORDER-SPACING' => '2px',
-        'EMPTY-CELLS' => 'show',
-        'LINE-HEIGHT' => '1.2',
-        'VERTICAL-ALIGN' => 'middle',
-        'HYPHENS' => 'manual', /* mPDF 6 */
-        'FONT-KERNING' => 'auto', /* mPDF 6 */
-    ),
-    'THEAD' => array(
-    ),
-    'TFOOT' => array(
-    ),
-    'TH' => array(
-        'FONT-WEIGHT' => 'bold',
-        'TEXT-ALIGN' => 'center',
-        'PADDING-LEFT' => '0.1em',
-        'PADDING-RIGHT' => '0.1em',
-        'PADDING-TOP' => '0.1em',
+        'BORDER-SPACING'  => '2px',
+        'EMPTY-CELLS'     => 'show',
+        'LINE-HEIGHT'     => '1.2',
+        'VERTICAL-ALIGN'  => 'middle',
+        'HYPHENS'         => 'manual', /* mPDF 6 */
+        'FONT-KERNING'    => 'auto', /* mPDF 6 */
+    ],
+    'THEAD'      => [
+    ],
+    'TFOOT'      => [
+    ],
+    'TH'         => [
+        'FONT-WEIGHT'    => 'bold',
+        'TEXT-ALIGN'     => 'center',
+        'PADDING-LEFT'   => '0.1em',
+        'PADDING-RIGHT'  => '0.1em',
+        'PADDING-TOP'    => '0.1em',
         'PADDING-BOTTOM' => '0.1em',
-    ),
-    'TD' => array(
-        'PADDING-LEFT' => '0.1em',
-        'PADDING-RIGHT' => '0.1em',
-        'PADDING-TOP' => '0.1em',
+    ],
+    'TD'         => [
+        'PADDING-LEFT'   => '0.1em',
+        'PADDING-RIGHT'  => '0.1em',
+        'PADDING-TOP'    => '0.1em',
         'PADDING-BOTTOM' => '0.1em',
-    ),
-    'CAPTION' => array(
+    ],
+    'CAPTION'    => [
         'TEXT-ALIGN' => 'center',
-    ),
-    'IMG' => array(
-        'MARGIN' => '0',
-        'VERTICAL-ALIGN' => 'baseline',
+    ],
+    'IMG'        => [
+        'MARGIN'          => '0',
+        'VERTICAL-ALIGN'  => 'baseline',
         'IMAGE-RENDERING' => 'auto',
-    ),
-    'INPUT' => array(
-        'FONT-FAMILY' => 'sans-serif',
+    ],
+    'INPUT'      => [
+        'FONT-FAMILY'    => 'sans-serif',
         'VERTICAL-ALIGN' => 'middle',
-        'FONT-SIZE' => '0.9em',
-    ),
-    'SELECT' => array(
-        'FONT-FAMILY' => 'sans-serif',
-        'FONT-SIZE' => '0.9em',
+        'FONT-SIZE'      => '0.9em',
+    ],
+    'SELECT'     => [
+        'FONT-FAMILY'    => 'sans-serif',
+        'FONT-SIZE'      => '0.9em',
         'VERTICAL-ALIGN' => 'middle',
-    ),
-    'TEXTAREA' => array(
-        'FONT-FAMILY' => 'monospace',
-        'FONT-SIZE' => '0.9em',
+    ],
+    'TEXTAREA'   => [
+        'FONT-FAMILY'    => 'monospace',
+        'FONT-SIZE'      => '0.9em',
         'VERTICAL-ALIGN' => 'text-bottom',
-    ),
-    'MARK' => array(/* mPDF 5.5.09 */
-        'BACKGROUND-COLOR' => 'yellow',
-    ),
-);
-
+    ],
+    'MARK'       => [/* mPDF 5.5.09 */
+                     'BACKGROUND-COLOR' => 'yellow',
+    ],
+];
 
 //////////////////////////////////////////////////
 // VALUES ONLY LIKELY TO BE CHANGED BY DEVELOPERS
@@ -548,12 +549,12 @@ $this->defaultCSS = array(
 $this->pdf_version = '1.4';
 
 // Hyphenation
-$this->SHYlanguages = array('en', 'de', 'es', 'fi', 'fr', 'it', 'nl', 'pl', 'ru', 'sv'); // existing defined patterns
+$this->SHYlanguages = ['en', 'de', 'es', 'fi', 'fr', 'it', 'nl', 'pl', 'ru', 'sv']; // existing defined patterns
 
 $this->default_lineheight_correction = 1.2; // Value 1 sets lineheight=fontsize height;
 // Value used if line-height not set by CSS (usually is)
 
-$this->fontsizes = array('XX-SMALL' => 0.7, 'X-SMALL' => 0.77, 'SMALL' => 0.86, 'MEDIUM' => 1, 'LARGE' => 1.2, 'X-LARGE' => 1.5, 'XX-LARGE' => 2);
+$this->fontsizes = ['XX-SMALL' => 0.7, 'X-SMALL' => 0.77, 'SMALL' => 0.86, 'MEDIUM' => 1, 'LARGE' => 1.2, 'X-LARGE' => 1.5, 'XX-LARGE' => 2];
 
 // CHARACTER PATTERN MATCHES TO DETECT LANGUAGES
 // pattern used to detect RTL characters -> force RTL
@@ -587,21 +588,41 @@ $this->CJKoverflow = "\.,\x{ff61}\x{ff64}\x{3001}\x{3002}\x{fe50}-\x{fe52}\x{ff0
 // Arabic, Syriac, Mandaic, Mongolian, N'Ko, Phags Pa
 $this->pregCURSchars = "\x{0590}-\x{083E}\x{0900}-\x{0DFF}\x{FB00}-\x{FDFD}\x{FE70}-\x{FEFF}";
 
-
 $this->allowedCSStags = 'DIV|P|H1|H2|H3|H4|H5|H6|FORM|IMG|A|BODY|TABLE|HR|THEAD|TFOOT|TBODY|TH|TR|TD|UL|OL|LI|PRE|BLOCKQUOTE|ADDRESS|DL|DT|DD';
 $this->allowedCSStags .= '|ARTICLE|ASIDE|FIGURE|FIGCAPTION|FOOTER|HEADER|HGROUP|NAV|SECTION|MAIN|MARK|DETAILS|SUMMARY|METER|PROGRESS|TIME';
 $this->allowedCSStags .= '|SPAN|TT|I|B|BIG|SMALL|EM|STRONG|DFN|CODE|SAMP|KBD|VAR|CITE|ABBR|ACRONYM|STRIKE|S|U|DEL|INS|Q|FONT';
 $this->allowedCSStags .= '|SELECT|INPUT|TEXTAREA|CAPTION|FIELDSET|LEGEND';
 $this->allowedCSStags .= '|TEXTCIRCLE|DOTTAB|BDO|BDI';
 
-$this->outerblocktags = array('DIV', 'FORM', 'CENTER', 'DL', 'FIELDSET', 'ARTICLE', 'ASIDE', 'FIGURE', 'FIGCAPTION', 'FOOTER', 'HEADER', 'HGROUP', 'MAIN', 'NAV', 'SECTION', 'DETAILS', 'SUMMARY', 'UL', 'OL', 'LI');
-$this->innerblocktags = array('P', 'BLOCKQUOTE', 'ADDRESS', 'PRE', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'DT', 'DD', 'CAPTION');
+$this->outerblocktags = [
+    'DIV',
+    'FORM',
+    'CENTER',
+    'DL',
+    'FIELDSET',
+    'ARTICLE',
+    'ASIDE',
+    'FIGURE',
+    'FIGCAPTION',
+    'FOOTER',
+    'HEADER',
+    'HGROUP',
+    'MAIN',
+    'NAV',
+    'SECTION',
+    'DETAILS',
+    'SUMMARY',
+    'UL',
+    'OL',
+    'LI'
+];
+$this->innerblocktags = ['P', 'BLOCKQUOTE', 'ADDRESS', 'PRE', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'DT', 'DD', 'CAPTION'];
 
 //PDFMaker customized variables
 $this->PDFMakerRecord = '';
 $this->PDFMakerTemplateid = '';
 $this->PDFMakerSubtotalAble = true;
-$this->PDFMakerSubtotalsArray = array();
+$this->PDFMakerSubtotalsArray = [];
 $this->PDFMakerDispHeader["dh_first"] = true;
 $this->PDFMakerDispHeader["dh_other"] = true;
 $this->PDFMakerDispFooter["df_first"] = true;

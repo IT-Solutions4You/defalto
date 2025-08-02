@@ -1,11 +1,11 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 require_once 'vtlib/Vtiger/Net/Client.php';
@@ -23,7 +23,7 @@ class Installer_Api_Model extends Vtiger_Net_Client
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function connect(): bool
     {
@@ -34,7 +34,7 @@ class Installer_Api_Model extends Vtiger_Net_Client
             return true;
         }
 
-        throw new AppException('Connection failed: ' . $response);
+        throw new Exception('Connection failed: ' . $response);
     }
 
     public function deactivateLicenseInfo($license): array
@@ -46,7 +46,7 @@ class Installer_Api_Model extends Vtiger_Net_Client
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function getExtensionInstall(): array
     {
@@ -63,8 +63,9 @@ class Installer_Api_Model extends Vtiger_Net_Client
 
     /**
      * @param string $type
+     *
      * @return array
-     * @throws AppException
+     * @throws Exception
      */
     public function getLicenses(string $type = ''): array
     {
@@ -88,7 +89,7 @@ class Installer_Api_Model extends Vtiger_Net_Client
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function getSystemInstall(): array
     {

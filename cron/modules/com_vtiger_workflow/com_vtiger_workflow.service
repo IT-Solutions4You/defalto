@@ -1,5 +1,5 @@
 <?php
-/*+***********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -8,7 +8,16 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-ini_set('include_path',ini_get('include_path'). PATH_SEPARATOR . '../..');
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . '../..');
 
 require_once 'include/utils/utils.php';
 require_once('include/utils/CommonUtils.php');
@@ -37,34 +46,39 @@ require_once 'modules/Users/Users.php';
 require_once('modules/com_vtiger_workflow/VTSimpleTemplate.inc');
 require_once 'modules/com_vtiger_workflow/VTEntityCache.inc';
 require_once('modules/com_vtiger_workflow/VTWorkflowUtils.php');
-
 require_once 'modules/com_vtiger_workflow/include.inc';
-
-function vtRunTaskJob($adb){
-	$util = new VTWorkflowUtils();
-	$adminUser = $util->adminUser();
-	$tq = new VTTaskQueue($adb);
-	$readyTasks = $tq->getReadyTasks();
-	$tm = new VTTaskManager($adb);
-	foreach($readyTasks as $taskDetails){
-		list($taskId, $entityId, $taskContents, $relatedInfo) = $taskDetails;
-		$task = $tm->retrieveTask($taskId);
-		//If task is not there then continue
-		if(empty($task)){
-			continue;
-		}
-		$task->setContents($taskContents);
-		$task->setRelatedInfo($relatedInfo);
-		$entity = VTEntityCache::getCachedEntity($entityId);
-		if(!$entity) {
-			$entity = new VTWorkflowEntity($adminUser, $entityId);
-		}
-
-		$task->doTask($entity);
-	}
-}
-$adb = PearDatabase::getInstance();
 require_once 'modules/com_vtiger_workflow/WorkFlowScheduler.php';
+
+function vtRunTaskJob($adb)
+{
+    $util = new VTWorkflowUtils();
+    $adminUser = $util->adminUser();
+    $tq = new VTTaskQueue($adb);
+    $readyTasks = $tq->getReadyTasks();
+    $tm = new VTTaskManager($adb);
+    
+    foreach ($readyTasks as $taskDetails) {
+        [$taskId, $entityId, $taskContents, $relatedInfo] = $taskDetails;
+        $task = $tm->retrieveTask($taskId);
+        
+        if (empty($task)) {
+            //If task is not there then continue
+            continue;
+        }
+        
+        $task->setContents($taskContents);
+        $task->setRelatedInfo($relatedInfo);
+        $entity = VTEntityCache::getCachedEntity($entityId);
+        
+        if (!$entity) {
+            $entity = new VTWorkflowEntity($adminUser, $entityId);
+        }
+
+        $task->doTask($entity);
+    }
+}
+
+$adb = PearDatabase::getInstance();
 $workflowScheduler = new WorkFlowScheduler($adb);
 $workflowScheduler->queueScheduledWorkflowTasks();
 vtRunTaskJob($adb);

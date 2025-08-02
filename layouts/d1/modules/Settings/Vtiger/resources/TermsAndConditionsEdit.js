@@ -1,9 +1,11 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 Vtiger.Class("Settings_Vtiger_TermsAndConditionsEdit_Js", {}, {
     //Contains Terms and Conditions container
@@ -37,13 +39,13 @@ Vtiger.Class("Settings_Vtiger_TermsAndConditionsEdit_Js", {}, {
             'type': selectedModule
         };
         app.request.post({"data": params}).then(
-                function (error, data) {
-                    if (error === null) {
-                        aDeferred.resolve();
-                    } else {
-                        aDeferred.reject();
-                    }
-                });
+            function (error, data) {
+                if (error === null) {
+                    aDeferred.resolve();
+                } else {
+                    aDeferred.reject();
+                }
+            });
         return aDeferred.promise();
     },
     /*
@@ -86,7 +88,7 @@ Vtiger.Class("Settings_Vtiger_TermsAndConditionsEdit_Js", {}, {
             };
             app.request.post({"data": params}).then(function (err, data) {
                 if (err === null) {
-                    if(typeof data === 'object') {
+                    if (typeof data === 'object') {
                         jQuery('.TCContent', container).val(data.result);
                     } else {
                         jQuery('.TCContent', container).val(data);
@@ -107,21 +109,21 @@ Vtiger.Class("Settings_Vtiger_TermsAndConditionsEdit_Js", {}, {
         thisInstance.registerKeyUpEvent();
         thisInstance.registerSelectModuleEvent();
 
-		//Register click event for save button
-		saveButton.click(function(e) {
-			saveButton.addClass('hide');
-			
-			//save the new T&C content
-			thisInstance.saveTermsAndConditions(textAreaElement).then(
-				function(data) {
-					thisInstance.registerKeyUpEvent();
-					var message = app.vtranslate('JS_TERMS_AND_CONDITIONS_SAVED')
-					 app.helper.showSuccessNotification({'message':message});
-				});
-		});
-		
-		var instance = new Settings_Vtiger_Index_Js();
-		instance.registerBasicSettingsEvents();
-	}
+        //Register click event for save button
+        saveButton.click(function (e) {
+            saveButton.addClass('hide');
+
+            //save the new T&C content
+            thisInstance.saveTermsAndConditions(textAreaElement).then(
+                function (data) {
+                    thisInstance.registerKeyUpEvent();
+                    var message = app.vtranslate('JS_TERMS_AND_CONDITIONS_SAVED')
+                    app.helper.showSuccessNotification({'message': message});
+                });
+        });
+
+        var instance = new Settings_Vtiger_Index_Js();
+        instance.registerBasicSettingsEvents();
+    }
 
 });

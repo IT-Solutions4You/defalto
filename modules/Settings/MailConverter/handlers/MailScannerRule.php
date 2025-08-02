@@ -1,18 +1,26 @@
 <?php
-/*********************************************************************************
- ** The contents of this file are subject to the vtiger CRM Public License Version 1.0
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- ********************************************************************************/
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 /**
  * Scanner Rule
  */
-class Settings_MailConverter_MailScannerRule_Handler {
+class Settings_MailConverter_MailScannerRule_Handler
+{
     // id of this instance
     public $ruleid = false;
     // scanner to which this rule is linked
@@ -48,35 +56,44 @@ class Settings_MailConverter_MailScannerRule_Handler {
 
     /** DEBUG functionality **/
     public $debug = false;
-    function log($message) {
-	global $log;
-		if($log && $this->debug) { $log->debug($message); }
-		else if($this->debug) echo "$message\n";
+
+    function log($message)
+    {
+        global $log;
+        if ($log && $this->debug) {
+            $log->debug($message);
+        } elseif ($this->debug) {
+            echo "$message\n";
+        }
     }
 
     /**
      * Constructor
      */
-    function __construct($forruleid) {
+    function __construct($forruleid)
+    {
         $this->initialize($forruleid);
     }
 
     /**
      * String representation of this instance
      */
-    function __toString() {
+    function __toString()
+    {
         $tostring = '';
         $tostring .= "FROM $this->fromaddress, TO $this->toaddress, CC $this->cc, BCC $this->bcc";
         $tostring .= ",SUBJECT $this->subjectop $this->subject, BODY $this->bodyop $this->body, MATCH USING, $this->matchusing";
+
         return $tostring;
     }
 
     /**
      * Initialize this instance
      */
-    function initialize($forruleid) {
+    function initialize($forruleid)
+    {
         global $adb;
-        $result = $adb->pquery("SELECT * FROM vtiger_mailscanner_rules WHERE ruleid=? ORDER BY sequence", Array($forruleid));
+        $result = $adb->pquery("SELECT * FROM vtiger_mailscanner_rules WHERE ruleid=? ORDER BY sequence", [$forruleid]);
 
         if ($adb->num_rows($result)) {
             $this->ruleid = $adb->query_result($result, 0, 'ruleid');
@@ -95,26 +112,29 @@ class Settings_MailConverter_MailScannerRule_Handler {
             $this->isvalid = true;
             $this->initializeActions();
             // At present we support only one action for a rule
-                if(!empty($this->actions)) $this->useaction = $this->actions[0];
+            if (!empty($this->actions)) {
+                $this->useaction = $this->actions[0];
+            }
         }
     }
 
     /**
      * Initialize the actions
      */
-    function initializeActions() {
+    function initializeActions()
+    {
         global $adb;
-            if($this->ruleid) {
-            $this->actions = Array();
-                $actionres = $adb->pquery("SELECT actionid FROM vtiger_mailscanner_ruleactions WHERE ruleid=?",Array($this->ruleid));
+        if ($this->ruleid) {
+            $this->actions = [];
+            $actionres = $adb->pquery("SELECT actionid FROM vtiger_mailscanner_ruleactions WHERE ruleid=?", [$this->ruleid]);
             $actioncount = $adb->num_rows($actionres);
-                if($actioncount) {
-                    for($index = 0; $index < $actioncount; ++$index) {
-                $actionid = $adb->query_result($actionres, $index, 'actionid');
-                $ruleaction = new Settings_MailConverter_MailScannerAction_Handler($actionid);
-                $ruleaction->debug = $this->debug;
-                $this->actions[] = $ruleaction;
-            }
+            if ($actioncount) {
+                for ($index = 0; $index < $actioncount; ++$index) {
+                    $actionid = $adb->query_result($actionres, $index, 'actionid');
+                    $ruleaction = new Settings_MailConverter_MailScannerAction_Handler($actionid);
+                    $ruleaction->debug = $this->debug;
+                    $this->actions[] = $ruleaction;
+                }
             }
         }
     }
@@ -122,28 +142,36 @@ class Settings_MailConverter_MailScannerRule_Handler {
     /**
      * Is body rule defined?
      */
-    function hasBodyRule() {
+    function hasBodyRule()
+    {
         return (!empty($this->bodyop));
     }
 
     /**
      * Check if the rule criteria is matching
      */
-	function isMatching($matchFound1, $matchFound2 = null) {
-        if ($matchFound2 === null)
+    function isMatching($matchFound1, $matchFound2 = null)
+    {
+        if ($matchFound2 === null) {
             return $matchFound1;
+        }
 
-        if ($this->matchusing == 'AND')
+        if ($this->matchusing == 'AND') {
             return ($matchFound1 && $matchFound2);
-        if ($this->matchusing == 'OR')
+        }
+        if ($this->matchusing == 'OR') {
             return ($matchFound1 || $matchFound2);
+        }
+
         return false;
     }
 
     /**
      * Apply all the criteria.
+     *
      * @param $mailRecord
      * @param $includingBody
+     *
      * @returns false if not match is found or else all matching result found
      */
     public function applyAll($mailRecord, $includingBody = true)
@@ -182,13 +210,15 @@ class Settings_MailConverter_MailScannerRule_Handler {
     /**
      * Check if at least one condition is set for this rule.
      */
-    function hasACondition() {
+    function hasACondition()
+    {
         $hasFromAddress = $this->fromaddress ? true : false;
         $hasToAddress = $this->toaddress ? true : false;
         $hasCcAddress = $this->cc ? true : false;
         $hasBccAddress = $this->bcc ? true : false;
         $hasSubjectOp = $this->subjectop ? true : false;
         $hasBodyOp = $this->bodyop ? true : false;
+
         return ($hasFromAddress || $hasToAddress || $hasCcAddress || $hasBccAddress || $hasSubjectOp || $hasBodyOp);
     }
 
@@ -198,7 +228,7 @@ class Settings_MailConverter_MailScannerRule_Handler {
     function apply($subrule, $mailRecord)
     {
         $matchFound = false;
-        
+
         if ($this->isvalid) {
             switch (strtoupper($subrule)) {
                 case 'FROM':
@@ -344,65 +374,110 @@ class Settings_MailConverter_MailScannerRule_Handler {
     /**
      * Create matching result for the subrule.
      */
-    function __CreateMatchResult($subrule, $condition, $searchFor, $matches) {
-		return Array( 'subrule' => $subrule, 'condition' => $condition, 'searchfor' => $searchFor, 'matches' => $matches);
+    function __CreateMatchResult($subrule, $condition, $searchFor, $matches)
+    {
+        return ['subrule' => $subrule, 'condition' => $condition, 'searchfor' => $searchFor, 'matches' => $matches];
     }
 
     /**
      * Create default success matching result
      */
-    function __CreateDefaultMatchResult($subrule) {
-		if($this->matchusing == 'OR') return false;
-		if($this->matchusing == 'AND') return $this->__CreateMatchResult($subrule, 'Contains', '', '');
+    function __CreateDefaultMatchResult($subrule)
+    {
+        if ($this->matchusing == 'OR') {
+            return false;
+        }
+        if ($this->matchusing == 'AND') {
+            return $this->__CreateMatchResult($subrule, 'Contains', '', '');
+        }
     }
 
     /**
      * Detect if the rule match result has Regex condition
+     *
      * @param $matchresult result of apply obtained earlier
+     *
      * @returns matchinfo if Regex match is found, false otherwise
      */
-    function hasRegexMatch($matchresult) {
-		foreach($matchresult as $matchinfo) {
+    function hasRegexMatch($matchresult)
+    {
+        foreach ($matchresult as $matchinfo) {
             $match_condition = $matchinfo['condition'];
             $match_string = $matchinfo['matches'];
-                if(($match_condition == 'Regex' || $match_condition == 'Has Ticket Number') && $match_string) 
-            return $matchinfo;
+            if (($match_condition == 'Regex' || $match_condition == 'Has Ticket Number') && $match_string) {
+                return $matchinfo;
+            }
         }
+
         return false;
     }
 
     /**
      * Swap (reset) sequence of two rules.
      */
-    static function resetSequence($ruleid1, $ruleid2) {
+    static function resetSequence($ruleid1, $ruleid2)
+    {
         global $adb;
-            $ruleresult = $adb->pquery("SELECT ruleid, sequence FROM vtiger_mailscanner_rules WHERE ruleid = ? or ruleid = ?",
-                Array($ruleid1, $ruleid2));
-        $rule_partinfo = Array();
-            if($adb->num_rows($ruleresult) != 2) {
+        $ruleresult = $adb->pquery(
+            "SELECT ruleid, sequence FROM vtiger_mailscanner_rules WHERE ruleid = ? or ruleid = ?",
+            [$ruleid1, $ruleid2]
+        );
+        $rule_partinfo = [];
+        if ($adb->num_rows($ruleresult) != 2) {
             return false;
         } else {
             $rule_partinfo[$adb->query_result($ruleresult, 0, 'ruleid')] = $adb->query_result($ruleresult, 0, 'sequence');
             $rule_partinfo[$adb->query_result($ruleresult, 1, 'ruleid')] = $adb->query_result($ruleresult, 1, 'sequence');
-            $adb->pquery("UPDATE vtiger_mailscanner_rules SET sequence = ? WHERE ruleid = ?", Array($rule_partinfo[$ruleid2], $ruleid1));
-            $adb->pquery("UPDATE vtiger_mailscanner_rules SET sequence = ? WHERE ruleid = ?", Array($rule_partinfo[$ruleid1], $ruleid2));
+            $adb->pquery("UPDATE vtiger_mailscanner_rules SET sequence = ? WHERE ruleid = ?", [$rule_partinfo[$ruleid2], $ruleid1]);
+            $adb->pquery("UPDATE vtiger_mailscanner_rules SET sequence = ? WHERE ruleid = ?", [$rule_partinfo[$ruleid1], $ruleid2]);
         }
     }
 
     /**
      * Update rule information in database.
      */
-    function update() {
+    function update()
+    {
         global $adb;
         if ($this->ruleid) {
-            $adb->pquery("UPDATE vtiger_mailscanner_rules SET scannerid=?,fromaddress=?,toaddress=?,subjectop=?,subject=?,bodyop=?,body=?,matchusing=?,assigned_to=?,cc=?,bcc=?
-                    WHERE ruleid=?", Array($this->scannerid, $this->fromaddress, $this->toaddress, $this->subjectop, $this->subject,
-            $this->bodyop, $this->body, $this->matchusing, $this->assigned_to, $this->cc, $this->bcc, $this->ruleid));
+            $adb->pquery(
+                "UPDATE vtiger_mailscanner_rules SET scannerid=?,fromaddress=?,toaddress=?,subjectop=?,subject=?,bodyop=?,body=?,matchusing=?,assigned_to=?,cc=?,bcc=?
+                    WHERE ruleid=?",
+                [
+                    $this->scannerid,
+                    $this->fromaddress,
+                    $this->toaddress,
+                    $this->subjectop,
+                    $this->subject,
+                    $this->bodyop,
+                    $this->body,
+                    $this->matchusing,
+                    $this->assigned_to,
+                    $this->cc,
+                    $this->bcc,
+                    $this->ruleid
+                ]
+            );
         } else {
             $this->sequence = $this->__nextsequence();
-            $adb->pquery("INSERT INTO vtiger_mailscanner_rules(scannerid,fromaddress,toaddress,subjectop,subject,bodyop,body,matchusing,sequence,assigned_to,cc,bcc)
-                    VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", Array($this->scannerid, $this->fromaddress, $this->toaddress, $this->subjectop, $this->subject,
-            $this->bodyop, $this->body, $this->matchusing, $this->sequence, $this->assigned_to, $this->cc, $this->bcc));
+            $adb->pquery(
+                "INSERT INTO vtiger_mailscanner_rules(scannerid,fromaddress,toaddress,subjectop,subject,bodyop,body,matchusing,sequence,assigned_to,cc,bcc)
+                    VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+                [
+                    $this->scannerid,
+                    $this->fromaddress,
+                    $this->toaddress,
+                    $this->subjectop,
+                    $this->subject,
+                    $this->bodyop,
+                    $this->body,
+                    $this->matchusing,
+                    $this->sequence,
+                    $this->assigned_to,
+                    $this->cc,
+                    $this->bcc
+                ]
+            );
             $this->ruleid = $adb->database->Insert_ID();
         }
     }
@@ -410,46 +485,52 @@ class Settings_MailConverter_MailScannerRule_Handler {
     /**
      * Get next sequence to use
      */
-    function __nextsequence() {
+    function __nextsequence()
+    {
         global $adb;
-        $seqres = $adb->pquery("SELECT max(sequence) AS max_sequence FROM vtiger_mailscanner_rules", Array());
+        $seqres = $adb->pquery("SELECT max(sequence) AS max_sequence FROM vtiger_mailscanner_rules", []);
         $maxsequence = 0;
-            if($adb->num_rows($seqres)) {
+        if ($adb->num_rows($seqres)) {
             $maxsequence = $adb->query_result($seqres, 0, 'max_sequence');
         }
         ++$maxsequence;
+
         return $maxsequence;
     }
 
     /**
      * Delete the rule and associated information.
      */
-    function delete() {
+    function delete()
+    {
         global $adb;
 
         // Delete dependencies
-            if(!empty($this->actions)) {
-                foreach($this->actions as $action) {
-            $action->delete();
+        if (!empty($this->actions)) {
+            foreach ($this->actions as $action) {
+                $action->delete();
             }
         }
-            if($this->ruleid) {
-            $adb->pquery("DELETE FROM vtiger_mailscanner_ruleactions WHERE ruleid = ?", Array($this->ruleid));
-            $adb->pquery("DELETE FROM vtiger_mailscanner_rules WHERE ruleid=?", Array($this->ruleid));
+        if ($this->ruleid) {
+            $adb->pquery("DELETE FROM vtiger_mailscanner_ruleactions WHERE ruleid = ?", [$this->ruleid]);
+            $adb->pquery("DELETE FROM vtiger_mailscanner_rules WHERE ruleid=?", [$this->ruleid]);
         }
     }
 
     /**
      * Update action linked to the rule.
      */
-    function updateAction($actionid, $actiontext) {
+    function updateAction($actionid, $actiontext)
+    {
         $action = $this->useaction;
 
-            if($actionid != '' && $actiontext == '') {
-                if($action) $action->delete();
+        if ($actionid != '' && $actiontext == '') {
+            if ($action) {
+                $action->delete();
+            }
         } else {
-                if($actionid == '') {
-            $action = new Settings_MailConverter_MailScannerAction_Handler($actionid);
+            if ($actionid == '') {
+                $action = new Settings_MailConverter_MailScannerAction_Handler($actionid);
             }
             $action->scannerid = $this->scannerid;
             $action->update($this->ruleid, $actiontext);
@@ -459,11 +540,14 @@ class Settings_MailConverter_MailScannerRule_Handler {
     /**
      * Take action on mail record
      */
-    function takeAction($mailscanner, $mailRecord, $matchresult) {
-		if(empty($this->actions)) return false;
+    function takeAction($mailscanner, $mailRecord, $matchresult)
+    {
+        if (empty($this->actions)) {
+            return false;
+        }
 
         $action = $this->useaction; // Action is limited to One right now
+
         return $action->apply($mailscanner, $mailRecord, $this, $matchresult);
     }
-
 }

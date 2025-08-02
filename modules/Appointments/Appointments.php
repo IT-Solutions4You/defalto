@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Appointments extends CRMEntity
@@ -37,7 +37,7 @@ class Appointments extends CRMEntity
      * @var array
      */
     public $list_fields = [
-        'Subject' => ['its4you_calendar' => 'subject'],
+        'Subject'     => ['its4you_calendar' => 'subject'],
         'Assigned To' => ['vtiger_crmentity' => 'assigned_user_id'],
         'Description' => ['vtiger_crmentity' => 'description'],
     ];
@@ -45,7 +45,7 @@ class Appointments extends CRMEntity
      * @var array
      */
     public $list_fields_name = [
-        'Subject' => 'subject',
+        'Subject'     => 'subject',
         'Assigned To' => 'assigned_user_id',
         'Description' => 'description',
     ];
@@ -79,10 +79,10 @@ class Appointments extends CRMEntity
      * @var array
      */
     public array $tab_name_index = [
-        'vtiger_crmentity' => 'crmid',
-        'its4you_calendar' => 'its4you_calendar_id',
+        'vtiger_crmentity'   => 'crmid',
+        'its4you_calendar'   => 'its4you_calendar_id',
         'its4you_calendarcf' => 'its4you_calendar_id',
-        'its4you_remindme' => 'record_id',
+        'its4you_remindme'   => 'record_id',
     ];
     /**
      * @var string
@@ -95,6 +95,7 @@ class Appointments extends CRMEntity
 
     /**
      * @param string $name
+     *
      * @return void
      */
     protected function createRelationFromMultiReference(string $name)
@@ -108,6 +109,7 @@ class Appointments extends CRMEntity
 
     /**
      * @param int $recordId
+     *
      * @return void
      */
     protected function createRelationFromRecord(int $recordId)
@@ -129,6 +131,7 @@ class Appointments extends CRMEntity
 
     /**
      * @param string $name
+     *
      * @return void
      */
     protected function createRelationFromReference(string $name)
@@ -239,6 +242,7 @@ class Appointments extends CRMEntity
     /**
      * @param $fieldName
      * @param $relatedModule
+     *
      * @return void
      */
     protected function saveMultiReference($fieldName, $relatedModule)
@@ -277,8 +281,9 @@ class Appointments extends CRMEntity
     /**
      * @param string $moduleName
      * @param string $eventType
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function vtlib_handler(string $moduleName, string $eventType)
     {

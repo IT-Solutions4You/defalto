@@ -1,16 +1,18 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class ITS4YouEmails_Utils_Helper
 {
     /**
      * @param int $templateId
+     *
      * @return bool
      */
     public static function isTemplateForListView($templateId)
@@ -18,7 +20,7 @@ class ITS4YouEmails_Utils_Helper
         $adb = PearDatabase::getInstance();
         $result = $adb->pquery(
             'SELECT * FROM vtiger_emakertemplates WHERE templateid=? AND deleted=? AND is_listview=?',
-            array($templateId, 0, 1)
+            [$templateId, 0, 1]
         );
 
         return (bool)$adb->num_rows($result);
@@ -26,6 +28,7 @@ class ITS4YouEmails_Utils_Helper
 
     /**
      * @param int $sendingId
+     *
      * @return array
      */
     public static function sendEmails($sendingId)
@@ -34,16 +37,17 @@ class ITS4YouEmails_Utils_Helper
         $sql = 'SELECT crmid FROM vtiger_crmentity 
             INNER JOIN its4you_emails ON its4you_emails.its4you_emails_id=vtiger_crmentity.crmid 
             WHERE setype=? AND deleted=? AND sending_id=?';
-        $result = $adb->pquery($sql,
+        $result = $adb->pquery(
+            $sql,
             ['ITS4YouEmails', 0, $sendingId]
         );
 
-        $sendingResult = array(
-            'total' => (int)$adb->num_rows($result),
-            'error' => 0,
-            'sent' => 0,
-	        'error_message' => '',
-        );
+        $sendingResult = [
+            'total'         => (int)$adb->num_rows($result),
+            'error'         => 0,
+            'sent'          => 0,
+            'error_message' => '',
+        ];
 
         while ($row = $adb->fetchByAssoc($result)) {
             /** @var ITS4YouEmails_Record_Model $recordModel */
@@ -72,6 +76,7 @@ class ITS4YouEmails_Utils_Helper
 
     /**
      * @param array $templateIds
+     *
      * @return array
      * @throws Exception
      */
@@ -92,7 +97,7 @@ class ITS4YouEmails_Utils_Helper
             $templateId = $row['template_id'];
 
             if ($moduleModel->CheckTemplatePermissions($row['module'], $templateId, false)) {
-                if(!empty($templateInfo) && method_exists($pdfMakerModel, 'getPreparedName')) {
+                if (!empty($templateInfo) && method_exists($pdfMakerModel, 'getPreparedName')) {
                     $templateName = $pdfMakerModel->getPreparedName((array)$templateInfo['records'], [$templateId], $templateInfo['module'], $templateInfo['language']);
                 } else {
                     $templateName = $row['filename'];
@@ -112,23 +117,24 @@ class ITS4YouEmails_Utils_Helper
      */
     public static function getSavedFromField($templateId)
     {
-		if(empty($templateId) && !vtlib_isModuleActive('EMAILMaker')) {
-			return '';
-		}
+        if (empty($templateId) && !vtlib_isModuleActive('EMAILMaker')) {
+            return '';
+        }
 
         $current_user = Users_Record_Model::getCurrentUserModel();
         $adb = PearDatabase::getInstance();
         $result = $adb->pquery(
             'SELECT fieldname FROM vtiger_emakertemplates_default_from WHERE templateid=? AND userid=?',
-            array($templateId, $current_user->getId())
+            [$templateId, $current_user->getId()]
         );
 
         return $adb->query_result($result, 0, 'fieldname');
     }
 
     /**
-     * @param array $fromEmails
+     * @param array  $fromEmails
      * @param string $savedDefaultFrom
+     *
      * @return string
      * @throws Exception
      */
@@ -139,7 +145,7 @@ class ITS4YouEmails_Utils_Helper
 
         if (!empty($fromEmailField)) {
             $adb = PearDatabase::getInstance();
-            $result = $adb->pquery('select * from vtiger_organizationdetails where organizationname!=?', array(''));
+            $result = $adb->pquery('select * from vtiger_organizationdetails where organizationname!=?', ['']);
 
             while ($row = $adb->fetchByAssoc($result)) {
                 $fromKey = 'a::' . $row['organizationname'];
@@ -155,8 +161,9 @@ class ITS4YouEmails_Utils_Helper
     }
 
     /**
-     * @param array $fromEmails
+     * @param array  $fromEmails
      * @param string $savedDefaultFrom
+     *
      * @return string
      */
     public static function getUserFromEmails(&$fromEmails, $savedDefaultFrom = '')
@@ -164,7 +171,7 @@ class ITS4YouEmails_Utils_Helper
         $adb = PearDatabase::getInstance();
         $result = $adb->pquery(
             'SELECT fieldname, fieldlabel FROM vtiger_field WHERE tabid=? AND uitype IN ( ? , ? ) ORDER BY fieldid',
-            array(29, 104, 13)
+            [29, 104, 13]
         );
         $currentUser = Users_Record_Model::getCurrentUserModel();
         $currentUserId = $currentUser->getId();
@@ -202,6 +209,7 @@ class ITS4YouEmails_Utils_Helper
 
     /**
      * @param array $fileDetail
+     *
      * @return array
      */
     public static function getAttachmentDetails(array $fileDetail): array
@@ -218,6 +226,7 @@ class ITS4YouEmails_Utils_Helper
 
     /**
      * @param Vtiger_Record_Model $recordModel
+     *
      * @return array
      */
     public static function getRecordAttachments(Vtiger_Record_Model $recordModel): array
@@ -238,6 +247,7 @@ class ITS4YouEmails_Utils_Helper
 
     /**
      * @param object $recordModel
+     *
      * @return array
      */
     public static function getMailManagerAttachments(object $recordModel): array
@@ -264,13 +274,14 @@ class ITS4YouEmails_Utils_Helper
 
     /**
      * @param array|string $values
+     *
      * @return array
      */
     public static function getEmailIds(array|string $values): array
     {
         $ids = [];
 
-        if(is_string($values)) {
+        if (is_string($values)) {
             $values = json_decode($values);
         }
 
@@ -288,36 +299,40 @@ class ITS4YouEmails_Utils_Helper
     /**
      * @param string $emailAddressId
      * @param string $emailAddress
+     *
      * @return array
      */
     public static function getArrayAllEmails(string $emailAddressId, string $emailAddress): array
     {
         return [
-            'id' => $emailAddressId,
-            'name' => $emailAddress,
+            'id'      => $emailAddressId,
+            'name'    => $emailAddress,
             'emailid' => $emailAddress,
-            'module' => '',
+            'module'  => '',
         ];
     }
 
     /**
      * @param $emailAddressId
      * @param $emailAddress
+     *
      * @return array
      */
-    public static function getArrayAllMailNamesList($emailAddressId, $emailAddress) {
+    public static function getArrayAllMailNamesList($emailAddressId, $emailAddress)
+    {
         return [
-            'id' => $emailAddressId,
+            'id'       => $emailAddressId,
             'recordid' => '',
-            'sid' => '0',
-            'label' => $emailAddress,
-            'value' => $emailAddress,
-            'module' => '',
+            'sid'      => '0',
+            'label'    => $emailAddress,
+            'value'    => $emailAddress,
+            'module'   => '',
         ];
     }
 
     /**
      * @param Vtiger_Record_Model $recordModel
+     *
      * @return string
      */
     public static function getEmailFieldFromRecord(Vtiger_Record_Model $recordModel): string

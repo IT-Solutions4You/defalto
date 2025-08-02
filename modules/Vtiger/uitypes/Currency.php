@@ -1,19 +1,27 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 class Vtiger_Currency_UIType extends Vtiger_Base_UIType
 {
-
     /**
      * Function converts User currency format to database format
-     * @param <Object> $value - Currency value
+     *
+     * @param <Object>  $value - Currency value
      * @param <User Object> $user
      * @param <Boolean> $skipConversion
      */
@@ -24,7 +32,9 @@ class Vtiger_Currency_UIType extends Vtiger_Base_UIType
 
     /**
      * Function to get the DB Insert Value, for the current field type with given User Value
+     *
      * @param <Object> $value
+     *
      * @return Number
      */
     public function getDBInsertValue($value)
@@ -34,9 +44,11 @@ class Vtiger_Currency_UIType extends Vtiger_Base_UIType
 
     /**
      * Function to get the Display Value, for the current field type with given DB Insert Value
-     * @param $value
+     *
+     * @param       $value
      * @param false $record
      * @param false $recordInstance
+     *
      * @return string|null
      */
     public function getDisplayValue($value, $record = false, $recordInstance = false)
@@ -61,9 +73,11 @@ class Vtiger_Currency_UIType extends Vtiger_Base_UIType
 
     /**
      * Function to transform display value for currency field
-     * @param $value
-     * @param null|object $user Current User
-     * @param Boolean $skipConversion Skip Conversion
+     *
+     * @param             $value
+     * @param null|object $user           Current User
+     * @param Boolean     $skipConversion Skip Conversion
+     *
      * @return String user format value
      */
     public static function transformDisplayValue($value, $user = null, $skipConversion = false)
@@ -73,8 +87,9 @@ class Vtiger_Currency_UIType extends Vtiger_Base_UIType
 
     /**
      * @param string|float $value
-     * @param object|null $user
-     * @param bool $skipConversion
+     * @param object|null  $user
+     * @param bool         $skipConversion
+     *
      * @return float|string
      */
     public static function transformEditViewDisplayValue($value, $user = null, $skipConversion = false)

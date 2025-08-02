@@ -1,57 +1,71 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
+/**********************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- ************************************************************************************/
+ *********************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Project_ExportChart_View extends Vtiger_Index_View {
+class Project_ExportChart_View extends Vtiger_Index_View
+{
+    function checkPermission(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        $currentUserPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 
-	function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$currentUserPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+        if (!$currentUserPrivilegesModel->hasModulePermission($moduleModel->getId())) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+    }
 
-		if (!$currentUserPrivilegesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-	}
+    function preProcess(Vtiger_Request $request, $display = true)
+    {
+        return false;
+    }
 
-	function preProcess(Vtiger_Request $request, $display=true) {
-		return false;
-	}
+    function postProcess(Vtiger_Request $request)
+    {
+        return false;
+    }
 
-	function postProcess(Vtiger_Request $request) {
-		return false;
-	}
+    function process(Vtiger_request $request)
+    {
+        $this->GetPrintReport($request);
+    }
 
-	function process(Vtiger_request $request) {
-		$this->GetPrintReport($request);
-	}
-
-	/**
-	 * Function displays the report in printable format
-	 * @param Vtiger_Request $request
-	 */
-	function GetPrintReport(Vtiger_Request $request) {
-		$parentId = $request->get('record');
-		$projectTasks = array();
-		$moduleName = $request->getModule();
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentId, $moduleName);
-		$projectTasks['tasks'] = $parentRecordModel->getProjectTasks();
-		$projectTasks["selectedRow"] = 0;
-		$projectTasks["canWrite"] = true;
-		$projectTasks["canWriteOnParent"] = true;
-		$viewer = $this->getViewer($request);
-		$viewer->assign('PARENT_ID', $parentId);
-		$viewer->assign('MODULE', $moduleName);
-		$viewer->assign('PROJECT_TASKS', $projectTasks);
-		$viewer->assign('TASK_STATUS_COLOR', $parentRecordModel->getStatusColors());
-		$viewer->assign('USER_DATE_FORMAT', $currentUserModel->get('date_format'));
-		$viewer->view('ShowChartPrintView.tpl', $moduleName);
-	}
+    /**
+     * Function displays the report in printable format
+     *
+     * @param Vtiger_Request $request
+     */
+    function GetPrintReport(Vtiger_Request $request)
+    {
+        $parentId = $request->get('record');
+        $projectTasks = [];
+        $moduleName = $request->getModule();
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $parentRecordModel = Vtiger_Record_Model::getInstanceById($parentId, $moduleName);
+        $projectTasks['tasks'] = $parentRecordModel->getProjectTasks();
+        $projectTasks["selectedRow"] = 0;
+        $projectTasks["canWrite"] = true;
+        $projectTasks["canWriteOnParent"] = true;
+        $viewer = $this->getViewer($request);
+        $viewer->assign('PARENT_ID', $parentId);
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('PROJECT_TASKS', $projectTasks);
+        $viewer->assign('TASK_STATUS_COLOR', $parentRecordModel->getStatusColors());
+        $viewer->assign('USER_DATE_FORMAT', $currentUserModel->get('date_format'));
+        $viewer->view('ShowChartPrintView.tpl', $moduleName);
+    }
 }

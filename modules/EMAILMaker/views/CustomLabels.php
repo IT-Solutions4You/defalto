@@ -1,20 +1,20 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_CustomLabels_View extends EMAILMaker_Index_View
 {
-
     public function checkPermission(Vtiger_Request $request)
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         if (!$currentUserModel->isAdminUser()) {
-            throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
         }
     }
 
@@ -25,8 +25,8 @@ class EMAILMaker_CustomLabels_View extends EMAILMaker_Index_View
         $viewer = $this->getViewer($request);
         $currentLanguage = Vtiger_Language_Handler::getLanguage();
 
-        list($oLabels, $languages) = $EMAILMaker->GetCustomLabels();
-        $currLang = array();
+        [$oLabels, $languages] = $EMAILMaker->GetCustomLabels();
+        $currLang = [];
         foreach ($languages as $langId => $langVal) {
             if ($langVal["prefix"] == $currentLanguage) {
                 $currLang["id"] = $langId;
@@ -37,7 +37,7 @@ class EMAILMaker_CustomLabels_View extends EMAILMaker_Index_View
             }
         }
 
-        $viewLabels = array();
+        $viewLabels = [];
         foreach ($oLabels as $lblId => $oLabel) {
             $viewLabels[$lblId]["key"] = $oLabel->GetKey();
             $viewLabels[$lblId]["lang_values"] = $oLabel->GetLangValsArr();
@@ -53,12 +53,13 @@ class EMAILMaker_CustomLabels_View extends EMAILMaker_Index_View
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $layout = Vtiger_Viewer::getLayoutName();
-        $jsFileNames = array(
+        $jsFileNames = [
             "layouts.$layout.modules.EMAILMaker.resources.CustomLabels"
-        );
+        ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
         $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+
         return $headerScriptInstances;
     }
 }

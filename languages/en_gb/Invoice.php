@@ -1,5 +1,5 @@
 <?php
-/*+**********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -7,33 +7,41 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
-$languageStrings = array(
-    'Invoice'                      => 'Invoice'                     , 
-	'SINGLE_Invoice'               => 'Invoice'                     , 
-	'LBL_EXPORT_TO_PDF'            => 'Export To PDF'               , 
-	'LBL_SEND_MAIL_PDF'            => 'Send Email with PDF'         , // TODO: Review
-	'LBL_ADD_RECORD'               => 'Add Invoice'                 , 
-	'LBL_RECORDS_LIST'             => 'Invoice List'                , 
-	'LBL_INVOICE_INFORMATION'      => 'Invoice Information'         , 
-	'Sales Order'                  => 'Sales Order'                 , 
-	'Customer No'                  => 'Customer No.'                , 
-	'Invoice Date'                 => 'Invoice Date'                , 
-	'Purchase Order'               => 'Purchase Order'              , 
-	'Sales Commission'             => 'Sales Commission'            , 
-	'Invoice No'                   => 'Invoice No.'                 , 
-	'LBL_RECEIVED'                 => 'Received'                    , // TODO: Review
-	'LBL_BALANCE'                  => 'Balance'                     , // TODO: Review
-	'Sent'                         => 'Sent'                        , 
-	'Credit Invoice'               => 'Credit Invoice'              , 
-	'Paid'                         => 'Paid'                        , 
-	'AutoCreated'                  => 'Auto Created'                , 
-	'Cancel'                       => 'Cancel'                      , 
-	'LBL_NOT_A_BUNDLE' => 'Not a Bundle',
-	'LBL_SUB_PRODUCTS'	=> 'Sub Products',
-	'LBL_ACTION'	=> 'Action',
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-  'LBL_THIS' => 'This',
-  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'is deleted from the system.please remove or replace this item',
-  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'This line item is deleted from the system,please remove this line items',
+$languageStrings = [
+    'Invoice'                 => 'Invoice',
+    'SINGLE_Invoice'          => 'Invoice',
+    'LBL_EXPORT_TO_PDF'       => 'Export To PDF',
+    'LBL_SEND_MAIL_PDF'       => 'Send Email with PDF',
+    'LBL_ADD_RECORD'          => 'Add Invoice',
+    'LBL_RECORDS_LIST'        => 'Invoice List',
+    'LBL_INVOICE_INFORMATION' => 'Invoice Information',
+    'Sales Order'             => 'Sales Order',
+    'Customer No'             => 'Customer No.',
+    'Invoice Date'            => 'Invoice Date',
+    'Purchase Order'          => 'Purchase Order',
+    'Sales Commission'        => 'Sales Commission',
+    'Invoice No'              => 'Invoice No.',
+    'LBL_RECEIVED'            => 'Received',
+    'LBL_BALANCE'             => 'Balance',
+    'Sent'                    => 'Sent',
+    'Credit Invoice'          => 'Credit Invoice',
+    'Paid'                    => 'Paid',
+    'AutoCreated'             => 'Auto Created',
+    'Cancel'                  => 'Cancel',
+    'LBL_NOT_A_BUNDLE'        => 'Not a Bundle',
+    'LBL_SUB_PRODUCTS'        => 'Sub Products',
+    'LBL_ACTION'              => 'Action',
 
-);
+    'LBL_THIS'                                                                   => 'This',
+    'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM'          => 'is deleted from the system.please remove or replace this item',
+    'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'This line item is deleted from the system,please remove this line items',
+];

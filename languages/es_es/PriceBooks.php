@@ -1,5 +1,5 @@
 <?php
-/*+**********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -15,16 +15,25 @@
  *  Last change  : 2013-05-03
  *  Author       : JPL TSolucio, S. L. Joe Bordes
  ************************************************************************************/
-$languageStrings = array(
-	'PriceBooks'                   => 'Tarifas',
-	'SINGLE_PriceBooks'            => 'Tarifa',
-	'LBL_ADD_RECORD'               => 'Añadir Tarifa',
-	'LBL_RECORDS_LIST'             => 'Lista de Tarifas',
-	'LBL_PRICEBOOK_INFORMATION'    => 'Detalle de Tarifa',
-	'LBL_EDIT_LIST_PRICE'          => 'Editar Tarifa',
-	'Price Book Name'              => 'Nombre Tarifa',
-	'PriceBook No'                 => 'Número Tarifa',
-	
-	'LBL_UNIT_PRICE' => 'Precio unitario',
-	'LBL_ADD_TO' => 'Añadir a',
-);
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+$languageStrings = [
+    'PriceBooks'                => 'Tarifas',
+    'SINGLE_PriceBooks'         => 'Tarifa',
+    'LBL_ADD_RECORD'            => 'Añadir Tarifa',
+    'LBL_RECORDS_LIST'          => 'Lista de Tarifas',
+    'LBL_PRICEBOOK_INFORMATION' => 'Detalle de Tarifa',
+    'LBL_EDIT_LIST_PRICE'       => 'Editar Tarifa',
+    'Price Book Name'           => 'Nombre Tarifa',
+    'PriceBook No'              => 'Número Tarifa',
+
+    'LBL_UNIT_PRICE' => 'Precio unitario',
+    'LBL_ADD_TO'     => 'Añadir a',
+];

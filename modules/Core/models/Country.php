@@ -1,11 +1,11 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Core_Country_Model extends Core_DatabaseData_Model
@@ -292,8 +292,8 @@ class Core_Country_Model extends Core_DatabaseData_Model
         $data = $table->selectData([], ['code' => $code]);
 
         self::$countries[$code] = !empty($data) ? $data : [
-            'code' => $code,
-            'name' => self::$countryCodes[$code],
+            'code'      => $code,
+            'name'      => self::$countryCodes[$code],
             'is_active' => 1,
         ];
 
@@ -344,7 +344,7 @@ class Core_Country_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function createTables(): void
     {
@@ -363,8 +363,8 @@ class Core_Country_Model extends Core_DatabaseData_Model
         $blockId = getSettingsBlockId('LBL_CONFIGURATION');
         $linkInstance = Settings_Vtiger_MenuItem_Model::getInstanceFromArray([
             'blockid' => $blockId,
-            'name' => $name,
-            'linkto' => $link,
+            'name'    => $name,
+            'linkto'  => $link,
         ]);
         $linkInstance->save();
     }
@@ -382,7 +382,8 @@ class Core_Country_Model extends Core_DatabaseData_Model
         $this->save();
     }
 
-    public function deactivateAll() {
+    public function deactivateAll()
+    {
         $codes = $this->getCodes();
         $countries = [];
 

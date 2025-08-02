@@ -1,80 +1,94 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-Class Users_Edit_View extends Users_PreferenceEdit_View {
+class Users_Edit_View extends Users_PreferenceEdit_View
+{
+    public function preProcess(Vtiger_Request $request, $display = true)
+    {
+        parent::preProcess($request, false);
+        $this->preProcessSettings($request);
+    }
 
-	public function preProcess(Vtiger_Request $request, $display=true) {
-		parent::preProcess($request, false);
-		$this->preProcessSettings($request);
-	}
+    public function preProcessSettings(Vtiger_Request $request)
+    {
+        $viewer = $this->getViewer($request);
+        $moduleName = $request->getModule();
+        $qualifiedModuleName = $request->getModule(false);
+        $selectedMenuId = $request->get('block');
+        $fieldId = $request->get('fieldid');
 
-	public function preProcessSettings(Vtiger_Request $request) {
-		$viewer = $this->getViewer($request);
-		$moduleName = $request->getModule();
-		$qualifiedModuleName = $request->getModule(false);
-		$selectedMenuId = $request->get('block');
-		$fieldId = $request->get('fieldid');
+        $settingsModel = Settings_Vtiger_Module_Model::getInstance();
+        $menuModels = $settingsModel->getMenus();
 
-		$settingsModel = Settings_Vtiger_Module_Model::getInstance();
-		$menuModels = $settingsModel->getMenus();
+        if (!empty($selectedMenuId)) {
+            $selectedMenu = Settings_Vtiger_Menu_Model::getInstanceById($selectedMenuId);
+        } elseif (!empty($moduleName) && $moduleName != 'Vtiger') {
+            $fieldItem = Settings_Vtiger_Index_View::getSelectedFieldFromModule($menuModels, $moduleName);
+            if ($fieldItem) {
+                $selectedMenu = Settings_Vtiger_Menu_Model::getInstanceById($fieldItem->get('blockid'));
+                $fieldId = $fieldItem->get('fieldid');
+            } else {
+                reset($menuModels);
+                $firstKey = key($menuModels);
+                $selectedMenu = $menuModels[$firstKey];
+            }
+        } else {
+            reset($menuModels);
+            $firstKey = key($menuModels);
+            $selectedMenu = $menuModels[$firstKey];
+        }
 
-		if(!empty($selectedMenuId)) {
-			$selectedMenu = Settings_Vtiger_Menu_Model::getInstanceById($selectedMenuId);
-		} elseif(!empty($moduleName) && $moduleName != 'Vtiger') {
-			$fieldItem = Settings_Vtiger_Index_View::getSelectedFieldFromModule($menuModels,$moduleName);
-			if($fieldItem){
-				$selectedMenu = Settings_Vtiger_Menu_Model::getInstanceById($fieldItem->get('blockid'));
-				$fieldId = $fieldItem->get('fieldid');
-			} else {
-				reset($menuModels);
-				$firstKey = key($menuModels);
-				$selectedMenu = $menuModels[$firstKey];
-			}
-		} else {
-			reset($menuModels);
-			$firstKey = key($menuModels);
-			$selectedMenu = $menuModels[$firstKey];
-		}
-        
         //Specific change for Vtiger7
-        $settingsMenItems = array();
-        foreach($menuModels as $menuModel) {
+        $settingsMenItems = [];
+        foreach ($menuModels as $menuModel) {
             $menuItems = $menuModel->getMenuItems();
-            foreach($menuItems as $menuItem) {
+            foreach ($menuItems as $menuItem) {
                 $settingsMenItems[$menuItem->get('name')] = $menuItem;
             }
         }
         $viewer->assign('SETTINGS_MENU_ITEMS', $settingsMenItems);
-        $viewer->assign('ACTIVE_BLOCK', array('block' => 'LBL_USER_MANAGEMENT', 
-                                              'menu' => 'LBL_USERS'));
+        $viewer->assign('ACTIVE_BLOCK', [
+            'block' => 'LBL_USER_MANAGEMENT',
+            'menu'  => 'LBL_USERS'
+        ]);
 
-		$viewer->assign('SELECTED_FIELDID',$fieldId);
-		$viewer->assign('SELECTED_MENU', $selectedMenu);
-		$viewer->assign('SETTINGS_MENUS', $menuModels);
-		$viewer->assign('MODULE', $moduleName);
-		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
-		$viewer->assign('IS_PREFERENCE', false);
+        $viewer->assign('SELECTED_FIELDID', $fieldId);
+        $viewer->assign('SELECTED_MENU', $selectedMenu);
+        $viewer->assign('SETTINGS_MENUS', $menuModels);
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+        $viewer->assign('IS_PREFERENCE', false);
 
-		$viewer->view('SettingsMenuStart.tpl', $qualifiedModuleName);
-	}
+        $viewer->view('SettingsMenuStart.tpl', $qualifiedModuleName);
+    }
 
-	public function postProcessSettings(Vtiger_Request $request) {
-		$viewer = $this->getViewer($request);
-		$qualifiedModuleName = $request->getModule(false);
-		$viewer->view('SettingsMenuEnd.tpl', $qualifiedModuleName);
-	}
+    public function postProcessSettings(Vtiger_Request $request)
+    {
+        $viewer = $this->getViewer($request);
+        $qualifiedModuleName = $request->getModule(false);
+        $viewer->view('SettingsMenuEnd.tpl', $qualifiedModuleName);
+    }
 
-	public function postProcess(Vtiger_Request $request) {
-		$this->postProcessSettings($request);
-		parent::postProcess($request);
-	}
+    public function postProcess(Vtiger_Request $request)
+    {
+        $this->postProcessSettings($request);
+        parent::postProcess($request);
+    }
 
     public function getHeaderScripts(Vtiger_Request $request)
     {
@@ -88,7 +102,8 @@ Class Users_Edit_View extends Users_PreferenceEdit_View {
         return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
-    public function process(Vtiger_Request $request) {
-		parent::process($request);
-	}
+    public function process(Vtiger_Request $request)
+    {
+        parent::process($request);
+    }
 }

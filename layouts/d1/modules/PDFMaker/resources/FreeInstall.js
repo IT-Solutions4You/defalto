@@ -1,54 +1,54 @@
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
-if (typeof(PDFMaker_FreeInstall_Js) == 'undefined') {
+if (typeof (PDFMaker_FreeInstall_Js) == 'undefined') {
 
     var PDFMaker_FreeInstall_Js = {
 
-        initialize: function() {
+        initialize: function () {
         },
 
 
-        registerActions : function() {
+        registerActions: function () {
 
             var thisInstance = this;
             var container = jQuery('#LicenseContainer');
-/*
-            jQuery('#activate_license_btn').click(function(e) {
-                thisInstance.editLicense('activate');
-            });
+            /*
+                        jQuery('#activate_license_btn').click(function(e) {
+                            thisInstance.editLicense('activate');
+                        });
 
-            jQuery('#reactivate_license_btn').click(function(e) {
-                thisInstance.editLicense('reactivate');
-            });
+                        jQuery('#reactivate_license_btn').click(function(e) {
+                            thisInstance.editLicense('reactivate');
+                        });
 
-            jQuery('#deactivate_license_btn').click(function(e) {
-                thisInstance.deactivateLicense();
-            });
-*/
+                        jQuery('#deactivate_license_btn').click(function(e) {
+                            thisInstance.deactivateLicense();
+                        });
+            */
         },
 
-        registerEvents: function() {
+        registerEvents: function () {
             this.registerActions();
         },
 
-        registerInstallEvents: function() {
+        registerInstallEvents: function () {
             var thisInstance = this;
 
             this.registerInstallActions();
         },
 
-        registerInstallActions : function() {
+        registerInstallActions: function () {
 
             var thisInstance = this;
 
-            jQuery('#start_button').click(function(e) {
+            jQuery('#start_button').click(function (e) {
                 jQuery('#step1').hide();
                 jQuery('#step2').show();
 
@@ -56,31 +56,31 @@ if (typeof(PDFMaker_FreeInstall_Js) == 'undefined') {
                 jQuery('#steplabel2').addClass("active");
             });
 
-            jQuery('#download_button').click(function(e) {
+            jQuery('#download_button').click(function (e) {
                 thisInstance.downloadMPDF();
             });
 
-            jQuery('#next_button').click(function(e) {
+            jQuery('#next_button').click(function (e) {
                 window.location.href = "index.php?module=PDFMaker&view=List";
             });
 
         },
 
-        downloadMPDF : function() {
+        downloadMPDF: function () {
 
             app.helper.showProgress();
 
             var params = {
-                module : 'PDFMaker',
-                action : 'IndexAjax',
-                mode : 'downloadMPDF'
+                module: 'PDFMaker',
+                action: 'IndexAjax',
+                mode: 'downloadMPDF'
             }
-            app.request.post({'data' : params}).then(function(err,response) {
+            app.request.post({'data': params}).then(function (err, response) {
                 app.helper.hideProgress();
 
                 var result = response['success'];
 
-                if(result == true) {
+                if (result == true) {
 
                     jQuery('#step2').hide();
                     jQuery('#step3').show();
@@ -98,14 +98,14 @@ if (typeof(PDFMaker_FreeInstall_Js) == 'undefined') {
             });
         },
 
-        showMessage : function(customParams){
+        showMessage: function (customParams) {
             var params = {};
             params.animation = "show";
             params.type = 'info';
             params.title = app.vtranslate('JS_MESSAGE');
 
-            if(typeof customParams != 'undefined') {
-                var params = jQuery.extend(params,customParams);
+            if (typeof customParams != 'undefined') {
+                var params = jQuery.extend(params, customParams);
             }
             Vtiger_Helper_Js.showPnotify(params);
         }
@@ -113,6 +113,6 @@ if (typeof(PDFMaker_FreeInstall_Js) == 'undefined') {
 
 }
 
-jQuery(document).ready(function() {
+jQuery(document).ready(function () {
     PDFMaker_FreeInstall_Js.registerInstallEvents();
 });

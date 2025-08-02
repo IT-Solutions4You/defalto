@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 class Installer_Index_View extends Vtiger_Index_View
 {
@@ -7,7 +15,7 @@ class Installer_Index_View extends Vtiger_Index_View
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
         if (!$currentUserModel->isAdminUser()) {
-            throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
     }
 
@@ -35,7 +43,7 @@ class Installer_Index_View extends Vtiger_Index_View
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function installer(Vtiger_Request $request): void
     {
@@ -46,7 +54,7 @@ class Installer_Index_View extends Vtiger_Index_View
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function license(Vtiger_Request $request): void
     {
@@ -61,7 +69,7 @@ class Installer_Index_View extends Vtiger_Index_View
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function uninstall(Vtiger_Request $request): void
     {

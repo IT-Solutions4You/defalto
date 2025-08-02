@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Core_Datetime_Model
@@ -36,8 +36,9 @@ class Core_Datetime_Model
 
     /**
      * Constructor for Core_Datetime_Model class
-     * @param array $timearr - collection of string
-     * @param string $check - check string
+     *
+     * @param array  $timearr - collection of string
+     * @param string $check   - check string
      */
     public function __construct(&$timearr, $check)
     {
@@ -73,11 +74,6 @@ class Core_Datetime_Model
         if ($check) {
             $this->getDateTime();
         }
-    }
-
-    public function Core_Datetime_Model(&$timearr, $check)
-    {
-        self::__construct($timearr, $check);
     }
 
     /**
@@ -199,11 +195,11 @@ class Core_Datetime_Model
      * This is the newer version of the function getThismonthDaysbyIndex().
      * This should be used whereever possible
      *
-     * @param int $index - number between 0 to 42
-     * @param string $day - date
+     * @param int    $index - number between 0 to 42
+     * @param string $day   - date
      * @param string $month - month
-     * @param string $year - year
-     * return Core_Datetime_Model obj  $datetimevalue
+     * @param string $year  - year
+     *                      return Core_Datetime_Model obj  $datetimevalue
      */
 
     public function getThisMonthsDayByIndex($index)
@@ -226,11 +222,11 @@ class Core_Datetime_Model
      * This function will be deprecated.
      * The newer version is getThisMonthsDayByIndex() and should be used wherever possible
      *
-     * @param int $index - number between 0 to 42
-     * @param string $day - date
+     * @param int    $index - number between 0 to 42
+     * @param string $day   - date
      * @param string $month - month
-     * @param string $year - year
-     * return Core_Datetime_Model obj  $datetimevalue
+     * @param string $year  - year
+     *                      return Core_Datetime_Model obj  $datetimevalue
      */
 
     public function getThismonthDaysbyIndex($index, $day = '', $month = '', $year = '')
@@ -255,8 +251,9 @@ class Core_Datetime_Model
 
     /**
      * function to get days in week using index
+     *
      * @param int $index - number between 1 to 7
-     * return Core_Datetime_Model obj  $datetimevalue
+     *                   return Core_Datetime_Model obj  $datetimevalue
      */
     public function getThisweekDaysbyIndex($index)
     {
@@ -274,8 +271,9 @@ class Core_Datetime_Model
 
     /**
      * function to get months in year using index
+     *
      * @param int $index - number between 0 to 11
-     * return Core_Datetime_Model obj  $datetimevalue
+     *                   return Core_Datetime_Model obj  $datetimevalue
      */
 
     public function getThisyearMonthsbyIndex($index)
@@ -294,11 +292,12 @@ class Core_Datetime_Model
 
     /**
      * function to get date and time using index
-     * @param int $index - number between 0 to 23
-     * @param string $day - date
+     *
+     * @param int    $index - number between 0 to 23
+     * @param string $day   - date
      * @param string $month - month
-     * @param string $year - year
-     * return Core_Datetime_Model obj  $datetimevalue
+     * @param string $year  - year
+     *                      return Core_Datetime_Model obj  $datetimevalue
      */
     public function getTodayDatetimebyIndex($index, $day = '', $month = '', $year = '')
     {
@@ -355,8 +354,9 @@ class Core_Datetime_Model
 
     /**
      * function to get date depends on mode value
+     *
      * @param string $mode - 'increment' or 'decrement'
-     * return Core_Datetime_Model obj
+     *                     return Core_Datetime_Model obj
      */
     public function get_changed_day($mode)
     {
@@ -366,9 +366,9 @@ class Core_Datetime_Model
             $day = $this->day - 1;
         }
         $date_data = [
-            'day' => $day,
+            'day'   => $day,
             'month' => $this->month,
-            'year' => $this->year,
+            'year'  => $this->year,
         ];
 
         return new Core_Datetime_Model($date_data, true);
@@ -399,8 +399,9 @@ class Core_Datetime_Model
 
     /**
      * function to get month depends on mode value
+     *
      * @param string $mode - 'increment' or 'decrement'
-     * return Core_Datetime_Model obj
+     *                     return Core_Datetime_Model obj
      */
     public function get_first_day_of_changed_month($mode)
     {
@@ -427,9 +428,9 @@ class Core_Datetime_Model
             }
         }
         $date_data = [
-            'day' => 1,
+            'day'   => 1,
             'month' => $month,
-            'year' => $year,
+            'year'  => $year,
         ];
 
         return new Core_Datetime_Model($date_data, true);
@@ -437,8 +438,9 @@ class Core_Datetime_Model
 
     /**
      * function to get changed week depends on mode value
+     *
      * @param string $mode - 'increment' or 'decrement'
-     * return Core_Datetime_Model obj
+     *                     return Core_Datetime_Model obj
      */
     public function get_first_day_of_changed_week($mode)
     {
@@ -449,9 +451,9 @@ class Core_Datetime_Model
             $day = $first_day->day - 7;
         }
         $date_data = [
-            'day' => $day,
+            'day'   => $day,
             'month' => $first_day->month,
-            'year' => $first_day->year,
+            'year'  => $first_day->year,
         ];
 
         return new Core_Datetime_Model($date_data, true);
@@ -459,8 +461,9 @@ class Core_Datetime_Model
 
     /**
      * function to get year depends on mode value
+     *
      * @param string $mode - 'increment' or 'decrement'
-     * return Core_Datetime_Model obj
+     *                     return Core_Datetime_Model obj
      */
     public function get_first_day_of_changed_year($mode)
     {
@@ -470,9 +473,9 @@ class Core_Datetime_Model
             $year = $this->year - 1;
         }
         $date_data = [
-            'day' => 1,
+            'day'   => 1,
             'month' => 1,
-            'year' => $year,
+            'year'  => $year,
         ];
 
         return new Core_Datetime_Model($date_data, true);
@@ -557,6 +560,7 @@ class Core_Datetime_Model
 
     /**
      * function to set values for Core_Datetime_Model object
+     *
      * @param int $ts - Time stamp
      */
     public function setDateTime($ts)
@@ -570,7 +574,24 @@ class Core_Datetime_Model
         $this->ts_def = $this->ts;
         $date_string = date('i::G::H::j::d::t::N::z::L::W::n::m::Y::Z::T::s', $ts);
 
-        [$this->minute, $this->hour, $this->z_hour, $this->day, $this->z_day, $this->daysinmonth, $this->dayofweek, $this->dayofyear, $is_leap, $this->week, $this->month, $this->z_month, $this->year, $this->offset, $this->tz, $this->second] = explode('::', $date_string);
+        [
+            $this->minute,
+            $this->hour,
+            $this->z_hour,
+            $this->day,
+            $this->z_day,
+            $this->daysinmonth,
+            $this->dayofweek,
+            $this->dayofyear,
+            $is_leap,
+            $this->week,
+            $this->month,
+            $this->z_month,
+            $this->year,
+            $this->offset,
+            $this->tz,
+            $this->second
+        ] = explode('::', $date_string);
 
         $this->dayofweek_inshort = $mod_strings['cal_weekdays_short'][$this->dayofweek - 1];
         $this->dayofweek_inlong = $mod_strings['cal_weekdays_long'][$this->dayofweek - 1];

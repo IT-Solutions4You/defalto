@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 require_once 'libraries/ToAscii/ToAscii.php';
 require_once 'include/utils/VtlibUtils.php';
 
@@ -23,7 +24,7 @@ class EMAILMaker_BirthdayEmail_Model extends Vtiger_Base_Model
     public function getOrganizationName(): string
     {
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT * FROM vtiger_organizationdetails WHERE organizationname !=?', array(''));
+        $result = $adb->pquery('SELECT * FROM vtiger_organizationdetails WHERE organizationname !=?', ['']);
         $row = $adb->fetchByAssoc($result);
 
         return (string)$row['organizationname'];
@@ -54,7 +55,7 @@ class EMAILMaker_BirthdayEmail_Model extends Vtiger_Base_Model
      */
     public function getContacts(): array
     {
-        $contacts = array();
+        $contacts = [];
         $actual_month = date('m');
         $actual_day = date('d');
         $adb = PearDatabase::getInstance();
@@ -78,10 +79,10 @@ class EMAILMaker_BirthdayEmail_Model extends Vtiger_Base_Model
             $fullName = trim($row['firstname'] . " " . $row['lastname']);
 
             if (!empty($email)) {
-                $contacts[$row['contactid']] = array(
+                $contacts[$row['contactid']] = [
                     'fullname' => $fullName,
-                    'email' => $email,
-                );
+                    'email'    => $email,
+                ];
             }
         }
 
@@ -116,7 +117,7 @@ class EMAILMaker_BirthdayEmail_Model extends Vtiger_Base_Model
             $replyAddress = '';
 
             if (!empty($defaultFrom) && $defaultFrom != '0_organization_email') {
-                list($c, $email_field) = explode('_', $defaultFrom, 2);
+                [$c, $email_field] = explode('_', $defaultFrom, 2);
                 $fromName = trim($ownerUser->first_name . ' ' . $ownerUser->last_name);
 
                 if (isset($ownerUser->column_fields[$email_field])) {

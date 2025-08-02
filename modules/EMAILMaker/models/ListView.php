@@ -1,18 +1,17 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
 {
-
-
-    private $querySelectColumns = array('templatename, subject', 'module', 'description');
-    private $listViewColumns = array('templatename', 'subject', 'description', 'module');
+    private $querySelectColumns = ['templatename, subject', 'module', 'description'];
+    private $listViewColumns = ['templatename', 'subject', 'description', 'module'];
 
     public static function getInstance($moduleName, $viewId = '0', $listHeaders = [])
     {
@@ -49,20 +48,21 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
     public function addColumnToSelectCaluse($columName)
     {
         if (!is_array($columName)) {
-            $columNameList = array($columName);
+            $columNameList = [$columName];
         } else {
             $columNameList = $columName;
         }
 
         $this->querySelectColumns = array_merge($this->querySelectColumns, $columNameList);
+
         return $this;
     }
 
     public function getSideBarLinks($linkParams)
     {
-        $linkTypes = array('SIDEBARLINK', 'SIDEBARWIDGET');
+        $linkTypes = ['SIDEBARLINK', 'SIDEBARWIDGET'];
         $moduleLinks = $this->getModule()->getSideBarLinks($linkParams);
-        $listLinkTypes = array('LISTVIEWSIDEBARLINK', 'LISTVIEWSIDEBARWIDGET');
+        $listLinkTypes = ['LISTVIEWSIDEBARLINK', 'LISTVIEWSIDEBARWIDGET'];
         $listLinks = Vtiger_Link_Model::getAllByType($this->getModule()->getId(), $listLinkTypes);
 
         if ($listLinks['LISTVIEWSIDEBARLINK']) {
@@ -75,6 +75,7 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
                 $moduleLinks['SIDEBARWIDGET'][] = $link;
             }
         }
+
         return $moduleLinks;
     }
 
@@ -88,7 +89,7 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         $moduleModel = $this->getModule();
 
-        $linkTypes = array('LISTVIEWBASIC', 'LISTVIEW', 'LISTVIEWSETTING');
+        $linkTypes = ['LISTVIEWBASIC', 'LISTVIEW', 'LISTVIEWSETTING'];
         $links = Vtiger_Link_Model::getAllByType($moduleModel->getId(), $linkTypes, $linkParams);
 
         $basicLinks = $this->getBasicLinks();
@@ -105,23 +106,25 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
                 $links['LISTVIEWSETTING'][] = Vtiger_Link_Model::getInstanceFromValues($settingsLink);
             }
         }
+
         return $links;
     }
 
     public function getBasicLinks()
     {
-        $basicLinks = array();
+        $basicLinks = [];
         $moduleModel = $this->getModule();
         $createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'EditView');
         if ($createPermission) {
             $basicLinks[] = [
-                'linktype' => 'LISTVIEWBASIC',
-                'linklabel' => 'LBL_ADD_RECORD',
-                'linkurl' => $moduleModel->getCreateRecordUrl(),
-                'linkicon' => '',
+                'linktype'    => 'LISTVIEWBASIC',
+                'linklabel'   => 'LBL_ADD_RECORD',
+                'linkurl'     => $moduleModel->getCreateRecordUrl(),
+                'linkicon'    => '',
                 'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
             ];
         }
+
         return $basicLinks;
     }
 
@@ -129,35 +132,36 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
     {
         $moduleModel = $this->getModule();
         $createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'EditView');
-        $advancedLinks = array();
+        $advancedLinks = [];
         $importPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Import');
         if ($importPermission && $createPermission) {
-            $advancedLinks[] = array(
-                'linktype' => 'LISTVIEW',
+            $advancedLinks[] = [
+                'linktype'  => 'LISTVIEW',
                 'linklabel' => 'LBL_IMPORT',
-                'linkurl' => $moduleModel->getImportUrl(),
-                'linkicon' => ''
-            );
+                'linkurl'   => $moduleModel->getImportUrl(),
+                'linkicon'  => ''
+            ];
         }
         $exportPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Export');
         if ($exportPermission) {
-            $advancedLinks[] = array(
-                'linktype' => 'LISTVIEW',
+            $advancedLinks[] = [
+                'linktype'  => 'LISTVIEW',
                 'linklabel' => 'LBL_EXPORT',
-                'linkurl' => 'javascript:Vtiger_List_Js.triggerExportAction("' . $this->getModule()->getExportUrl() . '")',
-                'linkicon' => ''
-            );
+                'linkurl'   => 'javascript:Vtiger_List_Js.triggerExportAction("' . $this->getModule()->getExportUrl() . '")',
+                'linkicon'  => ''
+            ];
         }
         $duplicatePermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'DuplicatesHandling');
         if ($duplicatePermission) {
-            $advancedLinks[] = array(
-                'linktype' => 'LISTVIEWMASSACTION',
+            $advancedLinks[] = [
+                'linktype'  => 'LISTVIEWMASSACTION',
                 'linklabel' => 'LBL_FIND_DUPLICATES',
-                'linkurl' => 'Javascript:Vtiger_List_Js.showDuplicateSearchForm("index.php?module=' . $moduleModel->getName() .
+                'linkurl'   => 'Javascript:Vtiger_List_Js.showDuplicateSearchForm("index.php?module=' . $moduleModel->getName() .
                     '&view=MassActionAjax&mode=showDuplicatesSearchForm")',
-                'linkicon' => ''
-            );
+                'linkicon'  => ''
+            ];
         }
+
         return $advancedLinks;
     }
 
@@ -170,36 +174,37 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
     {
         $currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
         $moduleModel = $this->getModule();
-        $linkTypes = array('LISTVIEWMASSACTION');
+        $linkTypes = ['LISTVIEWMASSACTION'];
         $links = Vtiger_Link_Model::getAllByType($moduleModel->getId(), $linkTypes, $linkParams);
-        $massActionLinks = array();
+        $massActionLinks = [];
         if ($currentUserModel->hasModuleActionPermission($moduleModel->getId(), 'EditView')) {
-            $massActionLinks[] = array(
-                'linktype' => 'LISTVIEWMASSACTION',
+            $massActionLinks[] = [
+                'linktype'  => 'LISTVIEWMASSACTION',
                 'linklabel' => 'LBL_EDIT',
-                'linkurl' => 'javascript:Vtiger_List_Js.triggerMassEdit("index.php?module=' . $moduleModel->get('name') . '&view=MassActionAjax&mode=showMassEditForm");',
-                'linkicon' => ''
-            );
+                'linkurl'   => 'javascript:Vtiger_List_Js.triggerMassEdit("index.php?module=' . $moduleModel->get('name') . '&view=MassActionAjax&mode=showMassEditForm");',
+                'linkicon'  => ''
+            ];
         }
         if ($currentUserModel->hasModuleActionPermission($moduleModel->getId(), 'Delete')) {
-            $massActionLinks[] = array(
-                'linktype' => 'LISTVIEWMASSACTION',
+            $massActionLinks[] = [
+                'linktype'  => 'LISTVIEWMASSACTION',
                 'linklabel' => 'LBL_DELETE',
-                'linkurl' => 'javascript:Vtiger_List_Js.massDeleteRecords("index.php?module=' . $moduleModel->get('name') . '&action=MassDelete");',
-                'linkicon' => ''
-            );
+                'linkurl'   => 'javascript:Vtiger_List_Js.massDeleteRecords("index.php?module=' . $moduleModel->get('name') . '&action=MassDelete");',
+                'linkicon'  => ''
+            ];
         }
         if ($moduleModel->isCommentEnabled()) {
-            $massActionLinks[] = array(
-                'linktype' => 'LISTVIEWMASSACTION',
+            $massActionLinks[] = [
+                'linktype'  => 'LISTVIEWMASSACTION',
                 'linklabel' => 'LBL_ADD_COMMENT',
-                'linkurl' => 'index.php?module=' . $moduleModel->get('name') . '&view=MassActionAjax&mode=showAddCommentForm',
-                'linkicon' => ''
-            );
+                'linkurl'   => 'index.php?module=' . $moduleModel->get('name') . '&view=MassActionAjax&mode=showAddCommentForm',
+                'linkicon'  => ''
+            ];
         }
         foreach ($massActionLinks as $massActionLink) {
             $links['LISTVIEWMASSACTION'][] = Vtiger_Link_Model::getInstanceFromValues($massActionLink);
         }
+
         return $links;
     }
 
@@ -209,8 +214,8 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
      */
     public function getListViewHeaders()
     {
-        $fieldObjects = array();
-        $listViewHeaders = array('Template Name' => 'templatename', 'Subject' => 'subject', 'Description' => 'description', 'Module Name' => 'module');
+        $fieldObjects = [];
+        $listViewHeaders = ['Template Name' => 'templatename', 'Subject' => 'subject', 'Description' => 'description', 'Module Name' => 'module'];
         foreach ($listViewHeaders as $key => $fieldName) {
             $fieldModel = new EMAILMaker_Field_Model();
             $fieldModel->set('name', $fieldName);
@@ -218,6 +223,7 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
             $fieldModel->set('column', $fieldName);
             $fieldObjects[] = $fieldModel;
         }
+
         return $fieldObjects;
     }
 
@@ -268,6 +274,7 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
 
     /**
      * @param array $data
+     *
      * @return array
      */
     public function retrieveTemplateDocuments(array $data): array
@@ -289,12 +296,12 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
         return $data;
     }
 
-
     public function getQuery()
     {
         $listQuery = 'SELECT templateid,' . implode(',', $this->querySelectColumns) . ' FROM vtiger_emakertemplates
 						LEFT JOIN vtiger_tab ON vtiger_tab.name = vtiger_emakertemplates.module
 						AND (vtiger_tab.isentitytype=1 or vtiger_tab.name = "Users") ';
+
         return $listQuery;
     }
 
@@ -310,7 +317,7 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
         $searchValue = $this->get('search_value');
         $operator = $this->get('operator');
         if (!empty($searchKey)) {
-            $queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator));
+            $queryGenerator->addUserSearchConditions(['search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator]);
         }
         $listQuery = $this->getQuery();
         $sourceModule = $this->get('src_module');
@@ -331,7 +338,8 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
             $listQuery = 'SELECT count(*) AS count ' . implode(' FROM ', $split);
         }
 
-        $listResult = $db->pquery($listQuery, array());
+        $listResult = $db->pquery($listQuery, []);
+
         return $db->query_result($listResult, 0, 'count');
     }
 

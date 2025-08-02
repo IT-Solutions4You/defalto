@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class ITS4YouEmails extends CRMEntity
 {
     public string $moduleVersion = '1.0';
@@ -24,48 +25,47 @@ class ITS4YouEmails extends CRMEntity
     /**
      * @var array
      */
-    public $customFieldTable = array(
+    public $customFieldTable = [
         'its4you_emailscf',
         'its4you_emails_id',
-    );
+    ];
 
     /**
      * @var array
      */
-    public $tab_name = array(
+    public $tab_name = [
         'vtiger_crmentity',
         'its4you_emails',
         'its4you_emailscf',
-    );
+    ];
 
     /**
      * @var array
      */
-    public $tab_name_index = array(
+    public $tab_name_index = [
         'vtiger_crmentity' => 'crmid',
-        'its4you_emails' => 'its4you_emails_id',
+        'its4you_emails'   => 'its4you_emails_id',
         'its4you_emailscf' => 'its4you_emails_id',
-    );
+    ];
 
     /**
      * @var array
      */
-    public $list_fields = array(
-        'Subject' => array('its4you_emails' => 'subject'),
-        'Assigned To' => array('vtiger_crmentity' => 'assigned_user_id'),
-        'Description' => array('vtiger_crmentity' => 'description'),
-    );
+    public $list_fields = [
+        'Subject'     => ['its4you_emails' => 'subject'],
+        'Assigned To' => ['vtiger_crmentity' => 'assigned_user_id'],
+        'Description' => ['vtiger_crmentity' => 'description'],
+    ];
 
     /**
      * @var array
      */
-    public $list_fields_name = array(
-        'Subject' => 'subject',
+    public $list_fields_name = [
+        'Subject'     => 'subject',
         'Assigned To' => 'assigned_user_id',
         'Description' => 'description',
-    );
+    ];
     public $isLineItemUpdate = true;
-
 
     public function __construct()
     {
@@ -97,6 +97,7 @@ class ITS4YouEmails extends CRMEntity
     /**
      * @param string $moduleName
      * @param string $eventType
+     *
      * @throws Exception
      */
     public function vtlib_handler($moduleName, $eventType)
@@ -106,7 +107,8 @@ class ITS4YouEmails extends CRMEntity
 
     /**
      * @param string $name
-     * @throws AppException
+     *
+     * @throws Exception
      */
     public function createRelationFromField($name)
     {
@@ -130,6 +132,7 @@ class ITS4YouEmails extends CRMEntity
     /**
      * @param int $recordId
      * @param int $relationId
+     *
      * @return bool
      */
     public function isRelationExists($recordId, $relationId)
@@ -137,7 +140,7 @@ class ITS4YouEmails extends CRMEntity
         $adb = PearDatabase::getInstance();
         $result = $adb->pquery(
             'SELECT crmid FROM vtiger_crmentityrel WHERE crmid = ? AND module = ? AND relcrmid = ? AND relmodule = ?',
-            array($recordId, getSalesEntityType($recordId), $relationId, getSalesEntityType($relationId))
+            [$recordId, getSalesEntityType($recordId), $relationId, getSalesEntityType($relationId)]
         );
 
         return $result && $adb->num_rows($result);

@@ -1,17 +1,17 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Reporting_Block_Model extends Vtiger_Block_Model
 {
     public static array $customUITypeNames = [
-        'LBL_TABS' => 'Tabs',
+        'LBL_TABS'           => 'Tabs',
         'LBL_RENDERED_TABLE' => 'Table',
     ];
 
@@ -29,7 +29,7 @@ class Reporting_Block_Model extends Vtiger_Block_Model
     {
         $label = $this->getLabel();
 
-        return match($label) {
+        return match ($label) {
             'LBL_COLUMNS' => '<i class="bi bi-layout-three-columns"></i>',
             'LBL_CALCULATIONS' => '<i class="bi bi-calculator"></i>',
             'LBL_LABELS' => '<i class="bi bi-bookmark"></i>',

@@ -1,15 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_List_View extends Vtiger_Index_View
 {
-
     protected $listViewLinks = false;
 
     public function __construct()
@@ -21,7 +21,8 @@ class EMAILMaker_List_View extends Vtiger_Index_View
 
     /**
      * @param Vtiger_Request $request
-     * @param bool $display
+     * @param bool           $display
+     *
      * @return void
      */
     public function preProcess(Vtiger_Request $request, $display = true)
@@ -49,7 +50,7 @@ class EMAILMaker_List_View extends Vtiger_Index_View
                 exit;
             }
 
-            $linkParams = array('MODULE' => $moduleName, 'ACTION' => $request->get('view'));
+            $linkParams = ['MODULE' => $moduleName, 'ACTION' => $request->get('view')];
             $viewer->assign('QUICK_LINKS', $moduleModel->getSideBarLinks($linkParams));
         }
 
@@ -146,7 +147,7 @@ class EMAILMaker_List_View extends Vtiger_Index_View
 
         $current_user = Users_Record_Model::getCurrentUserModel();
 
-        $linkParams = array('MODULE' => $moduleName, 'ACTION' => $request->get('view'));
+        $linkParams = ['MODULE' => $moduleName, 'ACTION' => $request->get('view')];
 
         $linkModels = $moduleModel->getListViewLinks($linkParams);
 
@@ -157,9 +158,9 @@ class EMAILMaker_List_View extends Vtiger_Index_View
             $viewer->assign('IS_ADMIN', '1');
         }
 
-        $WTemplateIds = array();
+        $WTemplateIds = [];
         $workflows_query = $moduleModel->geEmailWorkflowsQuery();
-        $workflows_result = $adb->pquery($workflows_query, array());
+        $workflows_result = $adb->pquery($workflows_query, []);
         $workflows_num_rows = $adb->num_rows($workflows_result);
 
         if ($workflows_num_rows > 0) {
@@ -204,7 +205,7 @@ class EMAILMaker_List_View extends Vtiger_Index_View
         $viewer->assign('WFOPTIONS', EMAILMaker_Field_Model::getWorkflowOptions());
 
         $searchTypes = EMAILMaker_Field_Model::getSearchTypes();
-        $searchDetails = array();
+        $searchDetails = [];
 
         if (!$request->isEmpty('search_params')) {
             $searchParams = $request->get('search_params');
@@ -214,7 +215,7 @@ class EMAILMaker_List_View extends Vtiger_Index_View
                     continue;
                 }
                 foreach ($groupInfo as $fieldSearchInfo) {
-                    list($fieldName, $operator, $searchValue) = $fieldSearchInfo;
+                    [$fieldName, $operator, $searchValue] = $fieldSearchInfo;
 
                     $viewer->assign('SEARCH_' . strtoupper($fieldName) . 'VAL', $searchValue);
 
@@ -235,10 +236,10 @@ class EMAILMaker_List_View extends Vtiger_Index_View
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
-        $jsFileNames = array(
+        $jsFileNames = [
             'modules.Vtiger.resources.List',
             "modules.$moduleName.resources.List",
-        );
+        ];
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
         return array_merge($headerScriptInstances, $jsScriptInstances);

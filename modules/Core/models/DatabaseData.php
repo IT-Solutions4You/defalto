@@ -1,11 +1,11 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Core_DatabaseData_Model extends Core_DatabaseTable_Model
@@ -24,8 +24,9 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
     /**
      * @param $search
+     *
      * @return mixed
-     * @throws AppException
+     * @throws Exception
      */
     public function deleteData($search): mixed
     {
@@ -42,6 +43,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     /**
      * @param $table
      * @param $search
+     *
      * @return string
      */
     public function getDeleteQuery($table, $search): string
@@ -63,7 +65,8 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
     /**
      * @param string $table
-     * @param array $data
+     * @param array  $data
+     *
      * @return string
      */
     public function getInsertQuery(string $table, array $data): string
@@ -86,13 +89,14 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
     public function getSaveParams()
     {
-        throw new AppException('Create getSaveParams before use save function');
+        throw new Exception('Create getSaveParams before use save function');
     }
 
     /**
      * @param string $table
-     * @param array $data
-     * @param array $search
+     * @param array  $data
+     * @param array  $search
+     *
      * @return string
      */
     public function getSelectQuery(string $table, array $data = [], array $search = []): string
@@ -107,8 +111,9 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
     /**
      * @param string $table
-     * @param array $data
-     * @param array $search
+     * @param array  $data
+     * @param array  $search
+     *
      * @return string
      */
     public function getUpdateQuery(string $table, array $data, array $search): string
@@ -123,8 +128,9 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
     /**
      * @param $data
+     *
      * @return mixed
-     * @throws AppException
+     * @throws Exception
      */
     public function insertData($data): mixed
     {
@@ -141,7 +147,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
     /**
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function save(): void
     {
@@ -162,8 +168,9 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     /**
      * @param array $data
      * @param array $search
+     *
      * @return array|null
-     * @throws AppException
+     * @throws Exception
      */
     public function selectData(array $data, array $search): array|null
     {
@@ -181,7 +188,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function selectResult(array $data, array $search)
     {
@@ -200,8 +207,9 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     /**
      * @param array $data
      * @param array $search
+     *
      * @return bool
-     * @throws AppException
+     * @throws Exception
      */
     public function updateData(array $data, array $search): bool
     {
@@ -215,12 +223,12 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function retrieveDataByName(): void
     {
         $data = $this->getTable($this->table, $this->tableId)->selectData([], [$this->tableName => $this->get($this->tableName)]);
-        
+
         if ($data) {
             $this->setData(array_merge($this->getData(), $data));
         }
@@ -228,6 +236,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
     /**
      * @param string $value
+     *
      * @return void
      */
     public function setName(string $value): void
@@ -236,7 +245,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function retrieveDataById(): void
     {
@@ -268,7 +277,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function delete(): void
     {
@@ -279,10 +288,9 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
         }
     }
 
-
     /**
      * @return bool
-     * @throws AppException
+     * @throws Exception
      */
     public function isDuplicateName(): bool
     {
@@ -300,7 +308,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function retrieveIdByParams($params = []): void
     {
@@ -310,8 +318,9 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     }
 
     /**
-     * @param string $table
+     * @param string      $table
      * @param string|null $tableId
+     *
      * @return self
      */
     public static function getTableInstance(string $table, string $tableId = null): self

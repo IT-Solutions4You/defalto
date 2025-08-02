@@ -1,16 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class PDFMaker_List_View extends Vtiger_Index_View
 {
-
     protected $listViewLinks = false;
 
     public function __construct()
@@ -38,10 +37,10 @@ class PDFMaker_List_View extends Vtiger_Index_View
             $viewer->assign('MODULE', $moduleName);
 
             if (!$permission) {
-                throw new AppException('LBL_PERMISSION_DENIED');
+                throw new Exception('LBL_PERMISSION_DENIED');
             }
 
-            $linkParams = array('MODULE' => $moduleName, 'ACTION' => $request->get('view'));
+            $linkParams = ['MODULE' => $moduleName, 'ACTION' => $request->get('view')];
             $linkModels = $moduleModel->getSideBarLinks($linkParams);
 
             $viewer->assign('QUICK_LINKS', $linkModels);
@@ -110,9 +109,9 @@ class PDFMaker_List_View extends Vtiger_Index_View
     function getHeaderScripts(Vtiger_Request $request)
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-        $jsFileNames = array(
+        $jsFileNames = [
             'layouts.v7.modules.PDFMaker.resources.FreeInstall',
-        );
+        ];
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
         return array_merge($headerScriptInstances, $jsScriptInstances);

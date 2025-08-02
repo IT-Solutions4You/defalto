@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class PDFMaker_Module_Model extends Vtiger_Module_Model
@@ -40,22 +40,24 @@ class PDFMaker_Module_Model extends Vtiger_Module_Model
 
     /**
      * Function to get the Quick Links for the module
+     *
      * @param array $linkParams
+     *
      * @return array List of Vtiger_Link_Model instances
      */
     public function getSideBarLinks($linkParams)
     {
-        $linkTypes = array('SIDEBARLINK', 'SIDEBARWIDGET');
+        $linkTypes = ['SIDEBARLINK', 'SIDEBARWIDGET'];
         $links = Vtiger_Link_Model::getAllByType($this->getId(), $linkTypes, $linkParams);
 
-        $quickLinks = array(
-            array(
-                'linktype' => 'SIDEBARLINK',
+        $quickLinks = [
+            [
+                'linktype'  => 'SIDEBARLINK',
                 'linklabel' => 'LBL_RECORDS_LIST',
-                'linkurl' => $this->getDefaultUrl(),
-                'linkicon' => '',
-            ),
-        );
+                'linkurl'   => $this->getDefaultUrl(),
+                'linkicon'  => '',
+            ],
+        ];
 
         foreach ($quickLinks as $quickLink) {
             $links['SIDEBARLINK'][] = Vtiger_Link_Model::getInstanceFromValues($quickLink);
@@ -83,7 +85,7 @@ class PDFMaker_Module_Model extends Vtiger_Module_Model
 
     function getUtilityActionsNames()
     {
-        return array();
+        return [];
     }
 
     public function getNameFields()
@@ -95,8 +97,7 @@ class PDFMaker_Module_Model extends Vtiger_Module_Model
             $this->nameFields = explode(',', $nameFieldObject->fieldname);
         } else {
             $fieldNames = 'filename';
-            $this->nameFields = array($fieldNames);
-
+            $this->nameFields = [$fieldNames];
 
             $entiyObj = new stdClass();
             $entiyObj->basetable = 'vtiger_pdfmaker';
@@ -129,11 +130,11 @@ class PDFMaker_Module_Model extends Vtiger_Module_Model
             $templateModule = $row['module'];
             $templateId = $row['templateid'];
             $data[] = [
-                'templateid' => $templateId,
+                'templateid'  => $templateId,
                 'description' => $row['description'],
-                'module' => vtranslate($templateModule, $templateModule),
-                'filename' => sprintf('<a href="index.php?module=PDFMaker&view=DetailFree&templateid=%s">%s</a>', $templateId, $templateModule),
-                'edit_url' => 'index.php?module=PDFMaker&view=EditFree&return_view=List&templateid=' . $templateId,
+                'module'      => vtranslate($templateModule, $templateModule),
+                'filename'    => sprintf('<a href="index.php?module=PDFMaker&view=DetailFree&templateid=%s">%s</a>', $templateId, $templateModule),
+                'edit_url'    => 'index.php?module=PDFMaker&view=EditFree&return_view=List&templateid=' . $templateId,
             ];
         }
 
@@ -148,7 +149,7 @@ class PDFMaker_Module_Model extends Vtiger_Module_Model
         $sql = 'SELECT vtiger_pdfmaker.*, vtiger_pdfmaker_settings.* FROM vtiger_pdfmaker 
                 LEFT JOIN vtiger_pdfmaker_settings USING(templateid) ORDER BY vtiger_pdfmaker.templateid ASC';
 
-        return $adb->pquery($sql, array());
+        return $adb->pquery($sql, []);
     }
 
     public function GetDetailViewData($templateid)
@@ -160,7 +161,7 @@ class PDFMaker_Module_Model extends Vtiger_Module_Model
                         LEFT JOIN vtiger_pdfmaker_settings USING(templateid)
 			WHERE vtiger_pdfmaker.templateid=? AND vtiger_pdfmaker.deleted = ?';
 
-        $result = $adb->pquery($sql, array($templateid, '0'));
+        $result = $adb->pquery($sql, [$templateid, '0']);
         $pdftemplateResult = $adb->fetch_array($result);
         $pdftemplateResult['templateid'] = $templateid;
 
@@ -174,21 +175,21 @@ class PDFMaker_Module_Model extends Vtiger_Module_Model
     			FROM vtiger_pdfmaker
     			LEFT JOIN vtiger_pdfmaker_settings USING(templateid)
     			WHERE vtiger_pdfmaker.templateid=? AND vtiger_pdfmaker.deleted = ?';
-        $result = $adb->pquery($sql, array($templateid, '0'));
+        $result = $adb->pquery($sql, [$templateid, '0']);
 
         return $adb->fetch_array($result);
     }
 
     public function GetAvailableSettings()
     {
-        return array();
+        return [];
     }
 
     public function GetAvailableLanguages()
     {
         if (!isset($_SESSION['template_languages']) || $_SESSION['template_languages'] == '') {
             $adb = PearDatabase::getInstance();
-            $temp_res = $adb->pquery('SELECT label, prefix FROM vtiger_language WHERE active = ?', array('1'));
+            $temp_res = $adb->pquery('SELECT label, prefix FROM vtiger_language WHERE active = ?', ['1']);
 
             while ($temp_row = $adb->fetchByAssoc($temp_res)) {
                 $template_languages[$temp_row['prefix']] = $temp_row['label'];
@@ -202,9 +203,9 @@ class PDFMaker_Module_Model extends Vtiger_Module_Model
         return $template_languages;
     }
 
-    public function getUrlAttributesString(Vtiger_Request $request, $Add_Attr = array())
+    public function getUrlAttributesString(Vtiger_Request $request, $Add_Attr = [])
     {
-        $A = array();
+        $A = [];
 
         foreach ($this->UrlAttributes as $attr_type) {
             if (!isset($Add_Attr[$attr_type])) {
@@ -223,7 +224,6 @@ class PDFMaker_Module_Model extends Vtiger_Module_Model
         if (count($Add_Attr) > 0) {
             foreach ($Add_Attr as $attr_type => $req_name) {
                 if ($request->has($req_name) && !$request->isEmpty($req_name)) {
-
                     $attr_val = $request->get($req_name);
 
                     if (is_array($attr_val)) {

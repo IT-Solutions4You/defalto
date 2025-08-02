@@ -1,15 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_ValidateExpression_Action extends Vtiger_Action_Controller
 {
-
     public function __construct()
     {
         parent::__construct();
@@ -26,6 +26,7 @@ class EMAILMaker_ValidateExpression_Action extends Vtiger_Action_Controller
         $mode = $request->getMode();
         if (!empty($mode)) {
             $this->invokeExposedMethod($mode, $request);
+
             return;
         }
     }
@@ -47,12 +48,13 @@ class EMAILMaker_ValidateExpression_Action extends Vtiger_Action_Controller
                     } catch (Exception $e) {
                         $result->setError($conditionRow);
                         $result->emit();
+
                         return;
                     }
                 }
             }
         }
-        $result->setResult(array('success' => true));
+        $result->setResult(['success' => true]);
         $result->emit();
     }
 }

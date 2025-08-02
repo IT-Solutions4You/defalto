@@ -1,58 +1,82 @@
 <?php
-/*+***********************************************************************************
+/*********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- *************************************************************************************/
+ ********************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Vtiger_AccessControl {
-
-	protected $privileges;
-	protected static $PRIVILEGE_ATTRS = array('is_admin', 'current_user_role', 'current_user_parent_role_seq',
-		'current_user_profiles', 'profileGlobalPermission', 'profileTabsPermission', 'profileActionPermission',
-		'current_user_groups', 'subordinate_roles', 'parent_roles', 'subordinate_roles_users', 'user_info'
-	);
+class Vtiger_AccessControl
+{
+    protected $privileges;
+    protected static $PRIVILEGE_ATTRS = [
+        'is_admin',
+        'current_user_role',
+        'current_user_parent_role_seq',
+        'current_user_profiles',
+        'profileGlobalPermission',
+        'profileTabsPermission',
+        'profileActionPermission',
+        'current_user_groups',
+        'subordinate_roles',
+        'parent_roles',
+        'subordinate_roles_users',
+        'user_info'
+    ];
 
     protected function __construct()
     {
         $this->privileges = [];
     }
 
-    protected function loadUserPrivilegesWithId($id) {
-		if (!isset($this->privileges[$id])) {
-			checkFileAccessForInclusion('user_privileges/user_privileges_'.$id.'.php');
-			require('user_privileges/user_privileges_'.$id.'.php');
-			$vars = get_defined_vars();
-			$privilege = new stdClass;
-			foreach (self::$PRIVILEGE_ATTRS as $attr) {
-				if (isset($attr) && isset($vars[$attr]))
-					$privilege->$attr = $vars[$attr];
-			}
+    protected function loadUserPrivilegesWithId($id)
+    {
+        if (!isset($this->privileges[$id])) {
+            checkFileAccessForInclusion('user_privileges/user_privileges_' . $id . '.php');
+            require('user_privileges/user_privileges_' . $id . '.php');
+            $vars = get_defined_vars();
+            $privilege = new stdClass;
+            foreach (self::$PRIVILEGE_ATTRS as $attr) {
+                if (isset($attr) && isset($vars[$attr])) {
+                    $privilege->$attr = $vars[$attr];
+                }
+            }
 
-			$this->privileges[$id] = $privilege;
-		}
-		return $this->privileges[$id];
-	}
+            $this->privileges[$id] = $privilege;
+        }
 
-	protected static $singleton = null;
-	public static function loadUserPrivileges($id) {
-		if (self::$singleton == null) {
-			self::$singleton = new self();
-		}
-		return self::$singleton->loadUserPrivilegesWithId($id);
-	}
+        return $this->privileges[$id];
+    }
 
-	public static function clearUserPrivileges($id) {
-		if (self::$singleton == null) {
-			self::$singleton = new self();
-		}
+    protected static $singleton = null;
 
-		if (self::$singleton->privileges && self::$singleton->privileges[$id]) {
-			unset(self::$singleton->privileges[$id]);
-		}
-	}
+    public static function loadUserPrivileges($id)
+    {
+        if (self::$singleton == null) {
+            self::$singleton = new self();
+        }
 
+        return self::$singleton->loadUserPrivilegesWithId($id);
+    }
+
+    public static function clearUserPrivileges($id)
+    {
+        if (self::$singleton == null) {
+            self::$singleton = new self();
+        }
+
+        if (self::$singleton->privileges && self::$singleton->privileges[$id]) {
+            unset(self::$singleton->privileges[$id]);
+        }
+    }
 }

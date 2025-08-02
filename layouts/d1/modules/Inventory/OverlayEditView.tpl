@@ -1,9 +1,11 @@
 {**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*}
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
 <div class="fc-overlay-modal overlayEdit">
     <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/modules/Inventory/resources/Edit.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/modules/'|cat:{$MODULE}|cat:'/resources/Edit.js')}"></script>

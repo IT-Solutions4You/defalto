@@ -1,56 +1,69 @@
 <?php
-/*+***********************************************************************************
+/**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- *************************************************************************************/
+ *********************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Portal_Detail_View extends Vtiger_Index_View {
+class Portal_Detail_View extends Vtiger_Index_View
+{
+    public function requiresPermission(Vtiger_Request $request)
+    {
+        $permissions = parent::requiresPermission($request);
+        $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
 
-	public function requiresPermission(Vtiger_Request $request){
-		$permissions = parent::requiresPermission($request);
-		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
-		
-		return $permissions;
-	}
-	
-	function preProcess(Vtiger_Request $request, $display=true) {
-		parent::preProcess($request);
-	}
+        return $permissions;
+    }
 
-	public function process(Vtiger_Request $request) {
-		$recordId = $request->get('record');
-		$module = $request->getModule();
+    function preProcess(Vtiger_Request $request, $display = true)
+    {
+        parent::preProcess($request);
+    }
 
-		$url = Portal_Module_Model::getWebsiteUrl($recordId);
-		$recordList = Portal_Module_Model::getAllRecords();
+    public function process(Vtiger_Request $request)
+    {
+        $recordId = $request->get('record');
+        $module = $request->getModule();
 
-		$viewer = $this->getViewer($request);
+        $url = Portal_Module_Model::getWebsiteUrl($recordId);
+        $recordList = Portal_Module_Model::getAllRecords();
 
-		$viewer->assign('MODULE', $module);
-		$viewer->assign('RECORD_ID', $recordId);
-		$viewer->assign('URL', $url);
-		$viewer->assign('RECORDS_LIST', $recordList);
+        $viewer = $this->getViewer($request);
 
-		$viewer->view('DetailView.tpl', $module);
-	}
+        $viewer->assign('MODULE', $module);
+        $viewer->assign('RECORD_ID', $recordId);
+        $viewer->assign('URL', $url);
+        $viewer->assign('RECORDS_LIST', $recordList);
 
-	function getHeaderScripts(Vtiger_Request $request) {
-		$headerScriptInstances = parent::getHeaderScripts($request);
-		$moduleName = $request->getModule();
+        $viewer->view('DetailView.tpl', $module);
+    }
 
-		$jsFileNames = array(
-			'modules.Vtiger.resources.List',
-			'modules.Vtiger.resources.Detail',
-			"modules.$moduleName.resources.List",
-			"modules.$moduleName.resources.Detail",
-		);
+    function getHeaderScripts(Vtiger_Request $request)
+    {
+        $headerScriptInstances = parent::getHeaderScripts($request);
+        $moduleName = $request->getModule();
 
-		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
-		return $headerScriptInstances;
-	}
+        $jsFileNames = [
+            'modules.Vtiger.resources.List',
+            'modules.Vtiger.resources.Detail',
+            "modules.$moduleName.resources.List",
+            "modules.$moduleName.resources.Detail",
+        ];
+
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+
+        return $headerScriptInstances;
+    }
 }

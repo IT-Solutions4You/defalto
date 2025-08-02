@@ -1,393 +1,400 @@
 <?php
-/*********************************************************************************
-** The contents of this file are subject to the vtiger CRM Public License Version 1.0
+/************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.1
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
-*
- ********************************************************************************/
+ ************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
 require_once('include/database/PearDatabase.php');
 
 function create_custom_views()
 {
     $customviews = [
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'Leads',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'Leads',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'Hot Leads',
-            'setdefault' => '0',
-            'setmetrics' => '1',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'Leads',
+            'viewname'    => 'Hot Leads',
+            'setdefault'  => '0',
+            'setmetrics'  => '1',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'Leads',
             'stdfilterid' => '',
             'advfilterid' => '0',
         ],
 
         [
-            'viewname' => 'This Month Leads',
-            'setdefault' => '0',
-            'setmetrics' => '0',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'Leads',
+            'viewname'    => 'This Month Leads',
+            'setdefault'  => '0',
+            'setmetrics'  => '0',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'Leads',
             'stdfilterid' => '0',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'Accounts',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'Accounts',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'Prospect Accounts',
-            'setdefault' => '0',
-            'setmetrics' => '1',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'Accounts',
+            'viewname'    => 'Prospect Accounts',
+            'setdefault'  => '0',
+            'setmetrics'  => '1',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'Accounts',
             'stdfilterid' => '',
             'advfilterid' => '1',
         ],
 
         [
-            'viewname' => 'New This Week',
-            'setdefault' => '0',
-            'setmetrics' => '0',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'Accounts',
+            'viewname'    => 'New This Week',
+            'setdefault'  => '0',
+            'setmetrics'  => '0',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'Accounts',
             'stdfilterid' => '1',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'Contacts',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'Contacts',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'Contacts Address',
-            'setdefault' => '0',
-            'setmetrics' => '0',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'Contacts',
+            'viewname'    => 'Contacts Address',
+            'setdefault'  => '0',
+            'setmetrics'  => '0',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'Contacts',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'Todays Birthday',
-            'setdefault' => '0',
-            'setmetrics' => '0',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'Contacts',
+            'viewname'    => 'Todays Birthday',
+            'setdefault'  => '0',
+            'setmetrics'  => '0',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'Contacts',
             'stdfilterid' => '2',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'Potentials',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'Potentials',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'Potentials Won',
-            'setdefault' => '0',
-            'setmetrics' => '1',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'Potentials',
+            'viewname'    => 'Potentials Won',
+            'setdefault'  => '0',
+            'setmetrics'  => '1',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'Potentials',
             'stdfilterid' => '',
             'advfilterid' => '2',
         ],
 
         [
-            'viewname' => 'Prospecting',
-            'setdefault' => '0',
-            'setmetrics' => '0',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'Potentials',
+            'viewname'    => 'Prospecting',
+            'setdefault'  => '0',
+            'setmetrics'  => '0',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'Potentials',
             'stdfilterid' => '',
             'advfilterid' => '3',
         ],
 
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'HelpDesk',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'HelpDesk',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'Open Tickets',
-            'setdefault' => '0',
-            'setmetrics' => '1',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'HelpDesk',
+            'viewname'    => 'Open Tickets',
+            'setdefault'  => '0',
+            'setmetrics'  => '1',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'HelpDesk',
             'stdfilterid' => '',
             'advfilterid' => '4',
         ],
 
         [
-            'viewname' => 'High Prioriy Tickets',
-            'setdefault' => '0',
-            'setmetrics' => '0',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'HelpDesk',
+            'viewname'    => 'High Prioriy Tickets',
+            'setdefault'  => '0',
+            'setmetrics'  => '0',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'HelpDesk',
             'stdfilterid' => '',
             'advfilterid' => '5',
         ],
 
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'Quotes',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'Quotes',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'Open Quotes',
-            'setdefault' => '0',
-            'setmetrics' => '1',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'Quotes',
+            'viewname'    => 'Open Quotes',
+            'setdefault'  => '0',
+            'setmetrics'  => '1',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'Quotes',
             'stdfilterid' => '',
             'advfilterid' => '6',
         ],
 
         [
-            'viewname' => 'Rejected Quotes',
-            'setdefault' => '0',
-            'setmetrics' => '0',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'Quotes',
+            'viewname'    => 'Rejected Quotes',
+            'setdefault'  => '0',
+            'setmetrics'  => '0',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'Quotes',
             'stdfilterid' => '',
             'advfilterid' => '7',
         ],
 
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'Invoice',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'Invoice',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'Documents',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'Documents',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'PriceBooks',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'PriceBooks',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'Products',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'Products',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'PurchaseOrder',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'PurchaseOrder',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'SalesOrder',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'SalesOrder',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'Vendors',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'Vendors',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'Faq',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'Faq',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'All',
-            'setdefault' => '1',
-            'setmetrics' => '0',
-            'status' => '0',
-            'userid' => '1',
-            'cvmodule' => 'Campaigns',
+            'viewname'    => 'All',
+            'setdefault'  => '1',
+            'setmetrics'  => '0',
+            'status'      => '0',
+            'userid'      => '1',
+            'cvmodule'    => 'Campaigns',
             'stdfilterid' => '',
             'advfilterid' => '',
         ],
 
         [
-            'viewname' => 'Drafted FAQ',
-            'setdefault' => '0',
-            'setmetrics' => '0',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'Faq',
+            'viewname'    => 'Drafted FAQ',
+            'setdefault'  => '0',
+            'setmetrics'  => '0',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'Faq',
             'stdfilterid' => '',
             'advfilterid' => '8',
         ],
 
         [
-            'viewname' => 'Published FAQ',
-            'setdefault' => '0',
-            'setmetrics' => '0',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'Faq',
+            'viewname'    => 'Published FAQ',
+            'setdefault'  => '0',
+            'setmetrics'  => '0',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'Faq',
             'stdfilterid' => '',
             'advfilterid' => '9',
         ],
 
         [
-            'viewname' => 'Open Purchase Orders',
-            'setdefault' => '0',
-            'setmetrics' => '0',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'PurchaseOrder',
+            'viewname'    => 'Open Purchase Orders',
+            'setdefault'  => '0',
+            'setmetrics'  => '0',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'PurchaseOrder',
             'stdfilterid' => '',
             'advfilterid' => '10',
         ],
 
         [
-            'viewname' => 'Received Purchase Orders',
-            'setdefault' => '0',
-            'setmetrics' => '0',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'PurchaseOrder',
+            'viewname'    => 'Received Purchase Orders',
+            'setdefault'  => '0',
+            'setmetrics'  => '0',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'PurchaseOrder',
             'stdfilterid' => '',
             'advfilterid' => '11',
         ],
 
         [
-            'viewname' => 'Open Invoices',
-            'setdefault' => '0',
-            'setmetrics' => '0',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'Invoice',
+            'viewname'    => 'Open Invoices',
+            'setdefault'  => '0',
+            'setmetrics'  => '0',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'Invoice',
             'stdfilterid' => '',
             'advfilterid' => '12',
         ],
 
         [
-            'viewname' => 'Paid Invoices',
-            'setdefault' => '0',
-            'setmetrics' => '0',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'Invoice',
+            'viewname'    => 'Paid Invoices',
+            'setdefault'  => '0',
+            'setmetrics'  => '0',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'Invoice',
             'stdfilterid' => '',
             'advfilterid' => '13',
         ],
 
         [
-            'viewname' => 'Pending Sales Orders',
-            'setdefault' => '0',
-            'setmetrics' => '0',
-            'status' => '3',
-            'userid' => '1',
-            'cvmodule' => 'SalesOrder',
+            'viewname'    => 'Pending Sales Orders',
+            'setdefault'  => '0',
+            'setmetrics'  => '0',
+            'status'      => '3',
+            'userid'      => '1',
+            'cvmodule'    => 'SalesOrder',
             'stdfilterid' => '',
             'advfilterid' => '14',
         ],
     ];
-
 
     $cvcolumns = [
         [
@@ -502,12 +509,12 @@ function create_custom_views()
         ],
 
         [//'vtiger_crmentity:crmid::HelpDesk_Ticket_ID:I',
-            'vtiger_troubletickets:ticket_no:ticket_no:HelpDesk_Ticket_No:V',
-            'vtiger_troubletickets:ticket_title:ticket_title:HelpDesk_Title:V',
-            'vtiger_troubletickets:parent_id:parent_id:HelpDesk_Related_To:I',
-            'vtiger_troubletickets:ticketstatus:ticketstatus:HelpDesk_Status:V',
-            'vtiger_troubletickets:ticketpriorities:ticketpriorities:HelpDesk_Priority:V',
-            'vtiger_crmentity:assigned_user_id:assigned_user_id:HelpDesk_Assigned_To:V',
+         'vtiger_troubletickets:ticket_no:ticket_no:HelpDesk_Ticket_No:V',
+         'vtiger_troubletickets:ticket_title:ticket_title:HelpDesk_Title:V',
+         'vtiger_troubletickets:parent_id:parent_id:HelpDesk_Related_To:I',
+         'vtiger_troubletickets:ticketstatus:ticketstatus:HelpDesk_Status:V',
+         'vtiger_troubletickets:ticketpriorities:ticketpriorities:HelpDesk_Priority:V',
+         'vtiger_crmentity:assigned_user_id:assigned_user_id:HelpDesk_Assigned_To:V',
         ],
 
         [
@@ -612,14 +619,13 @@ function create_custom_views()
             'vtiger_vendor:category:category:Vendors_Category:V',
         ],
 
-
         [//'vtiger_faq:id::Faq_FAQ_Id:I',
-            'vtiger_faq:faq_no:faq_no:Faq_Faq_No:V',
-            'vtiger_faq:question:question:Faq_Question:V',
-            'vtiger_faq:faqcategories:faqcategories:Faq_Category:V',
-            'vtiger_faq:product_id:product_id:Faq_Product_Name:I',
-            'vtiger_crmentity:createdtime:createdtime:Faq_Created_Time:DT',
-            'vtiger_crmentity:modifiedtime:modifiedtime:Faq_Modified_Time:DT',
+         'vtiger_faq:faq_no:faq_no:Faq_Faq_No:V',
+         'vtiger_faq:question:question:Faq_Question:V',
+         'vtiger_faq:faqcategories:faqcategories:Faq_Category:V',
+         'vtiger_faq:product_id:product_id:Faq_Product_Name:I',
+         'vtiger_crmentity:createdtime:createdtime:Faq_Created_Time:DT',
+         'vtiger_crmentity:modifiedtime:modifiedtime:Faq_Modified_Time:DT',
         ],
         //this sequence has to be maintained
         [
@@ -631,7 +637,6 @@ function create_custom_views()
             'vtiger_campaign:closingdate:closingdate:Campaigns_Expected_Close_Date:D',
             'vtiger_crmentity:assigned_user_id:assigned_user_id:Campaigns_Assigned_To:V',
         ],
-
 
         [
             'subject:subject:subject:Subject:V',
@@ -705,27 +710,26 @@ function create_custom_views()
 
     ];
 
-
     $cvstdfilters = [
         [
             'columnname' => 'vtiger_crmentity:modifiedtime:modifiedtime:Leads_Modified_Time',
             'datefilter' => 'thismonth',
-            'startdate' => '2005-06-01',
-            'enddate' => '2005-06-30',
+            'startdate'  => '2005-06-01',
+            'enddate'    => '2005-06-30',
         ],
 
         [
             'columnname' => 'vtiger_crmentity:createdtime:createdtime:Accounts_Created_Time',
             'datefilter' => 'thisweek',
-            'startdate' => '2005-06-19',
-            'enddate' => '2005-06-25',
+            'startdate'  => '2005-06-19',
+            'enddate'    => '2005-06-25',
         ],
 
         [
             'columnname' => 'vtiger_contactsubdetails:birthday:birthday:Contacts_Birthdate',
             'datefilter' => 'today',
-            'startdate' => '2005-06-25',
-            'enddate' => '2005-06-25',
+            'startdate'  => '2005-06-25',
+            'enddate'    => '2005-06-25',
         ],
     ];
 
@@ -734,61 +738,61 @@ function create_custom_views()
             [
                 'columnname' => 'vtiger_leaddetails:leadstatus:leadstatus:Leads_Lead_Status:V',
                 'comparator' => 'e',
-                'value' => 'Hot',
+                'value'      => 'Hot',
             ],
         ],
         [
             [
                 'columnname' => 'vtiger_account:accounttype:accounttype:Accounts_Type:V',
                 'comparator' => 'e',
-                'value' => 'Prospect',
+                'value'      => 'Prospect',
             ],
         ],
         [
             [
                 'columnname' => 'vtiger_potential:sales_stage:sales_stage:Potentials_Sales_Stage:V',
                 'comparator' => 'e',
-                'value' => 'Closed Won',
+                'value'      => 'Closed Won',
             ],
         ],
         [
             [
                 'columnname' => 'vtiger_potential:sales_stage:sales_stage:Potentials_Sales_Stage:V',
                 'comparator' => 'e',
-                'value' => 'Prospecting',
+                'value'      => 'Prospecting',
             ],
         ],
         [
             [
                 'columnname' => 'vtiger_troubletickets:ticketstatus:ticketstatus:HelpDesk_Status:V',
                 'comparator' => 'n',
-                'value' => 'Closed',
+                'value'      => 'Closed',
             ],
         ],
         [
             [
                 'columnname' => 'vtiger_troubletickets:ticketpriorities:ticketpriorities:HelpDesk_Priority:V',
                 'comparator' => 'e',
-                'value' => 'High',
+                'value'      => 'High',
             ],
         ],
         [
             [
                 'columnname' => 'vtiger_quotes:quotestage:quotestage:Quotes_Quote_Stage:V',
                 'comparator' => 'n',
-                'value' => 'Accepted',
+                'value'      => 'Accepted',
             ],
             [
                 'columnname' => 'vtiger_quotes:quotestage:quotestage:Quotes_Quote_Stage:V',
                 'comparator' => 'n',
-                'value' => 'Rejected',
+                'value'      => 'Rejected',
             ],
         ],
         [
             [
                 'columnname' => 'vtiger_quotes:quotestage:quotestage:Quotes_Quote_Stage:V',
                 'comparator' => 'e',
-                'value' => 'Rejected',
+                'value'      => 'Rejected',
             ],
         ],
 
@@ -796,7 +800,7 @@ function create_custom_views()
             [
                 'columnname' => 'vtiger_faq:faqstatus:faqstatus:Faq_Status:V',
                 'comparator' => 'e',
-                'value' => 'Draft',
+                'value'      => 'Draft',
             ],
         ],
 
@@ -804,7 +808,7 @@ function create_custom_views()
             [
                 'columnname' => 'vtiger_faq:faqstatus:faqstatus:Faq_Status:V',
                 'comparator' => 'e',
-                'value' => 'Published',
+                'value'      => 'Published',
             ],
         ],
 
@@ -812,7 +816,7 @@ function create_custom_views()
             [
                 'columnname' => 'vtiger_purchaseorder:postatus:postatus:PurchaseOrder_Status:V',
                 'comparator' => 'e',
-                'value' => 'Created, Approved, Delivered',
+                'value'      => 'Created, Approved, Delivered',
             ],
         ],
 
@@ -820,7 +824,7 @@ function create_custom_views()
             [
                 'columnname' => 'vtiger_purchaseorder:postatus:postatus:PurchaseOrder_Status:V',
                 'comparator' => 'e',
-                'value' => 'Received Shipment',
+                'value'      => 'Received Shipment',
             ],
         ],
 
@@ -828,7 +832,7 @@ function create_custom_views()
             [
                 'columnname' => 'vtiger_invoice:invoicestatus:invoicestatus:Invoice_Status:V',
                 'comparator' => 'e',
-                'value' => 'Created, Approved, Sent',
+                'value'      => 'Created, Approved, Sent',
             ],
         ],
 
@@ -836,7 +840,7 @@ function create_custom_views()
             [
                 'columnname' => 'vtiger_invoice:invoicestatus:invoicestatus:Invoice_Status:V',
                 'comparator' => 'e',
-                'value' => 'Paid',
+                'value'      => 'Paid',
             ],
         ],
 
@@ -844,7 +848,7 @@ function create_custom_views()
             [
                 'columnname' => 'vtiger_salesorder:sostatus:sostatus:SalesOrder_Status:V',
                 'comparator' => 'e',
-                'value' => 'Created, Approved',
+                'value'      => 'Created, Approved',
             ],
         ],
 
@@ -855,7 +859,14 @@ function create_custom_views()
             continue;
         }
 
-        $queryid = insertCustomView($customview['viewname'], $customview['setdefault'], $customview['setmetrics'], $customview['cvmodule'], $customview['status'], $customview['userid']);
+        $queryid = insertCustomView(
+            $customview['viewname'],
+            $customview['setdefault'],
+            $customview['setmetrics'],
+            $customview['cvmodule'],
+            $customview['status'],
+            $customview['userid']
+        );
         insertCvColumns($queryid, $cvcolumns[$key]);
 
         if (isset($cvstdfilters[$customview['stdfilterid']])) {
@@ -869,26 +880,26 @@ function create_custom_views()
 }
 
 /** to store the details of the customview in vtiger_customview table
-	  * @param $viewname :: Type String
-	  * @param $setdefault :: Type Integer
-	  * @param $setmetrics :: Type Integer
-	  * @param $cvmodule :: Type String
-	  * @returns  $customviewid of the stored custom view :: Type integer
-	 */
-function insertCustomView($viewname,$setdefault,$setmetrics,$cvmodule,$status,$userid)
+ *
+ * @param $viewname   :: Type String
+ * @param $setdefault :: Type Integer
+ * @param $setmetrics :: Type Integer
+ * @param $cvmodule   :: Type String
+ * @returns  $customviewid of the stored custom view :: Type integer
+ */
+function insertCustomView($viewname, $setdefault, $setmetrics, $cvmodule, $status, $userid)
 {
-	global $adb;
+    global $adb;
 
-	$genCVid = $adb->getUniqueID("vtiger_customview");
+    $genCVid = $adb->getUniqueID("vtiger_customview");
 
-	if($genCVid != "")
-	{
+    if ($genCVid != "") {
+        $customviewsql = "insert into vtiger_customview(cvid,viewname,setdefault,setmetrics,entitytype,status,userid) values(?,?,?,?,?,?,?)";
+        $customviewparams = [$genCVid, $viewname, $setdefault, $setmetrics, $cvmodule, $status, $userid];
+        $customviewresult = $adb->pquery($customviewsql, $customviewparams);
+    }
 
-		$customviewsql = "insert into vtiger_customview(cvid,viewname,setdefault,setmetrics,entitytype,status,userid) values(?,?,?,?,?,?,?)";
-		$customviewparams = array($genCVid, $viewname, $setdefault, $setmetrics, $cvmodule, $status, $userid);
-		$customviewresult = $adb->pquery($customviewsql, $customviewparams);
-	}
-	return $genCVid;
+    return $genCVid;
 }
 
 function isCustomViewExists($viewName, $module)
@@ -900,61 +911,59 @@ function isCustomViewExists($viewName, $module)
 }
 
 /** to store the custom view columns of the customview in vtiger_cvcolumnlist table
-	  * @param $cvid :: Type Integer
-	  * @param $columnlist :: Type Array of columnlists
-	 */
-function insertCvColumns($CVid,$columnslist)
+ *
+ * @param $cvid       :: Type Integer
+ * @param $columnlist :: Type Array of columnlists
+ */
+function insertCvColumns($CVid, $columnslist)
 {
-	global $adb;
-	if($CVid != "")
-	{
-		for($i=0;$i<php7_count($columnslist);$i++)
-		{
-			$columnsql = "insert into vtiger_cvcolumnlist (cvid,columnindex,columnname) values(?,?,?)";
-			$columnparams = array($CVid, $i, $columnslist[$i]);
-			$columnresult = $adb->pquery($columnsql, $columnparams);
-		}
-	}
+    global $adb;
+    if ($CVid != "") {
+        for ($i = 0; $i < php7_count($columnslist); $i++) {
+            $columnsql = "insert into vtiger_cvcolumnlist (cvid,columnindex,columnname) values(?,?,?)";
+            $columnparams = [$CVid, $i, $columnslist[$i]];
+            $columnresult = $adb->pquery($columnsql, $columnparams);
+        }
+    }
 }
 
-	/** to store the custom view stdfilter of the customview in vtiger_cvstdfilter table
-	  * @param $cvid :: Type Integer
-	  * @param $filtercolumn($tablename:$columnname:$fieldname:$fieldlabel) :: Type String
-	  * @param $filtercriteria(filter name) :: Type String
-	  * @param $startdate :: Type String
-	  * @param $enddate :: Type String
-	  * returns nothing
-	 */
-function insertCvStdFilter($CVid,$filtercolumn,$filtercriteria,$startdate,$enddate)
+/** to store the custom view stdfilter of the customview in vtiger_cvstdfilter table
+ *
+ * @param $cvid           :: Type Integer
+ * @param $filtercolumn   ($tablename:$columnname:$fieldname:$fieldlabel) :: Type String
+ * @param $filtercriteria (filter name) :: Type String
+ * @param $startdate      :: Type String
+ * @param $enddate        :: Type String
+ *                        returns nothing
+ */
+function insertCvStdFilter($CVid, $filtercolumn, $filtercriteria, $startdate, $enddate)
 {
-	global $adb;
-	if($CVid != "")
-	{
-		$stdfiltersql = "insert into vtiger_cvstdfilter(cvid,columnname,stdfilter,startdate,enddate) values (?,?,?,?,?)";
-		$stdfilterparams = array($CVid, $filtercolumn, $filtercriteria, $startdate, $enddate);
-		$stdfilterresult = $adb->pquery($stdfiltersql, $stdfilterparams);
-	}
+    global $adb;
+    if ($CVid != "") {
+        $stdfiltersql = "insert into vtiger_cvstdfilter(cvid,columnname,stdfilter,startdate,enddate) values (?,?,?,?,?)";
+        $stdfilterparams = [$CVid, $filtercolumn, $filtercriteria, $startdate, $enddate];
+        $stdfilterresult = $adb->pquery($stdfiltersql, $stdfilterparams);
+    }
 }
 
-	/** to store the custom view advfilter of the customview in vtiger_cvadvfilter table
-	  * @param $cvid :: Type Integer
-	  * @param $filters :: Type Array('columnname'=>$tablename:$columnname:$fieldname:$fieldlabel,'comparator'=>$comparator,'value'=>$value)
-	  * returns nothing
-	 */
+/** to store the custom view advfilter of the customview in vtiger_cvadvfilter table
+ *
+ * @param $cvid    :: Type Integer
+ * @param $filters :: Type Array('columnname'=>$tablename:$columnname:$fieldname:$fieldlabel,'comparator'=>$comparator,'value'=>$value)
+ *                 returns nothing
+ */
 
-function insertCvAdvFilter($CVid,$filters)
+function insertCvAdvFilter($CVid, $filters)
 {
-	global $adb;
-	if($CVid != "")
-	{
-		$columnIndexArray = array();
-		foreach($filters as $i=>$filter)
-		{
-			$advfiltersql = "insert into vtiger_cvadvfilter(cvid,columnindex,columnname,comparator,value) values (?,?,?,?,?)";
-			$advfilterparams = array($CVid, $i, $filter['columnname'], $filter['comparator'], $filter['value']);
-			$advfilterresult = $adb->pquery($advfiltersql, $advfilterparams);
-		}
-		$conditionExpression = implode(' and ', $columnIndexArray);
-		$adb->pquery('INSERT INTO vtiger_cvadvfilter_grouping VALUES(?,?,?,?)', array(1, $CVid, '', $conditionExpression));
-	}
+    global $adb;
+    if ($CVid != "") {
+        $columnIndexArray = [];
+        foreach ($filters as $i => $filter) {
+            $advfiltersql = "insert into vtiger_cvadvfilter(cvid,columnindex,columnname,comparator,value) values (?,?,?,?,?)";
+            $advfilterparams = [$CVid, $i, $filter['columnname'], $filter['comparator'], $filter['value']];
+            $advfilterresult = $adb->pquery($advfiltersql, $advfilterparams);
+        }
+        $conditionExpression = implode(' and ', $columnIndexArray);
+        $adb->pquery('INSERT INTO vtiger_cvadvfilter_grouping VALUES(?,?,?,?)', array(1, $CVid, '', $conditionExpression));
+    }
 }

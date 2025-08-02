@@ -1,5 +1,5 @@
 <?php
-/*+**********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -7,11 +7,20 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
-$languageStrings = array(
-	'LBL_CONVERT_LEAD_FIELD_MAPPING' => 'Converti Mappatura Lead'      , // TODO: Review
-	'LBL_ORGANIZATIONS'            => 'Aziende'               , // TODO: Review
-	'LBL_CONTACTS'                 => 'Contatti'                    , // TODO: Review
-	'LBL_OPPURTUNITIES'            => 'Opportunità'               , // TODO: Review
-);
-$jsLanguageStrings = array(
-);
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+$languageStrings = [
+    'LBL_CONVERT_LEAD_FIELD_MAPPING' => 'Converti Mappatura Lead',
+    'LBL_ORGANIZATIONS'              => 'Aziende',
+    'LBL_CONTACTS'                   => 'Contatti',
+    'LBL_OPPURTUNITIES'              => 'Opportunità',
+];
+$jsLanguageStrings = [
+];

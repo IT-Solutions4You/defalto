@@ -1,15 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_ListViewSelect_View extends Vtiger_IndexAjax_View
 {
-
     public function checkPermission(Vtiger_Request $request)
     {
         $moduleName = $request->getModule();
@@ -17,7 +17,7 @@ class EMAILMaker_ListViewSelect_View extends Vtiger_IndexAjax_View
         EMAILMaker_Debugger_Model::GetInstance()->Init();
         $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
         if ($EMAILMaker->CheckPermissions("DETAIL") == false) {
-            throw new AppException('LBL_PERMISSION_DENIED');
+            throw new Exception('LBL_PERMISSION_DENIED');
         }
     }
 
@@ -34,7 +34,7 @@ class EMAILMaker_ListViewSelect_View extends Vtiger_IndexAjax_View
         $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
 
         if (false == $EMAILMaker->CheckPermissions('DETAIL')) {
-            throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
 
         $_REQUEST['idslist'] = implode(";", $recordIds);
@@ -64,7 +64,7 @@ class EMAILMaker_ListViewSelect_View extends Vtiger_IndexAjax_View
             $templates_select = '<select name="use_common_template" id="use_common_template" class="detailedViewTextBox" multiple style="width:90%;" size="5">
 		        ' . $options . '
 		        </select>';
-            $temp_res = $adb->pquery("SELECT label, prefix FROM vtiger_language WHERE active = ?", array('1'));
+            $temp_res = $adb->pquery("SELECT label, prefix FROM vtiger_language WHERE active = ?", ['1']);
             while ($temp_row = $adb->fetchByAssoc($temp_res)) {
                 $template_languages[$temp_row["prefix"]] = $temp_row["label"];
             }
@@ -134,6 +134,7 @@ class EMAILMaker_ListViewSelect_View extends Vtiger_IndexAjax_View
                 $customViewModel->set('search_key', $searchKey);
                 $customViewModel->set('search_value', $searchValue);
             }
+
             return $customViewModel->getRecordIds($excludedIds);
         }
     }

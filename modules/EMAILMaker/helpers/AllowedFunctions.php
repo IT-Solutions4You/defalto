@@ -1,16 +1,16 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_AllowedFunctions_Helper
 {
-
-    public static $Allowed_Functions = array(
+    public static $Allowed_Functions = [
         "number_format",
         "nl2br",
         "substr",
@@ -35,7 +35,7 @@ class EMAILMaker_AllowedFunctions_Helper
         "ceil",
         "floor",
         "rand"
-    );
+    ];
 
     public function getAllowedFunctions()
     {
@@ -63,7 +63,6 @@ class EMAILMaker_AllowedFunctions_Helper
             }
         }
 
-
         $own_allowed_functions_desc = "modules/EMAILMaker/resources/functions/AllowedFunctions.txt";
         if (file_exists($own_allowed_functions_desc)) {
             $own_allowed_functions_content = file_get_contents($own_allowed_functions_desc);
@@ -71,7 +70,6 @@ class EMAILMaker_AllowedFunctions_Helper
             $Own_Allowed_Functions = explode(",", $own_allowed_functions_content);
 
             foreach ($Own_Allowed_Functions as $own_allowed_function) {
-
                 $own_allowed_function = trim($own_allowed_function);
 
                 if (!in_array($own_allowed_function, $All_Allowed_Functions)) {

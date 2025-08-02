@@ -1,9 +1,19 @@
 <?php
-/**
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 include_once 'config.php';
@@ -15,31 +25,36 @@ include_once 'include/Webservices/DescribeObject.php';
 require_once 'modules/Vtiger/helpers/Util.php';
 include_once 'modules/MailManager/MailManager.php';
 
-class MailManager_Relation_View extends MailManager_Abstract_View {
-
+class MailManager_Relation_View extends MailManager_Abstract_View
+{
     protected array $ignoredMailDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
 
     /**
-	 * Used to check the MailBox connection
-	 * @var Boolean
-	 */
-	protected $skipConnection = false;
+     * Used to check the MailBox connection
+     * @var Boolean
+     */
+    protected $skipConnection = false;
 
-	/** To avoid working with mailbox */
-	protected function getMailboxModel() {
-		if ($this->skipConnection) return false;
-		return parent::getMailboxModel();
-	}
+    /** To avoid working with mailbox */
+    protected function getMailboxModel()
+    {
+        if ($this->skipConnection) {
+            return false;
+        }
+
+        return parent::getMailboxModel();
+    }
 
     /**
      * Process the request to perform relationship operations
+     *
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
      * @throws Exception
      * @global Users Instance $currentUserModel
      * @global PearDataBase Instance $adb
-     * @global String $currentModule
+     * @global String        $currentModule
      */
     public function process(Vtiger_Request $request)
     {
@@ -61,10 +76,10 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
-    public function find(Vtiger_Request $request, $response) {
-
+    public function find(Vtiger_Request $request, $response)
+    {
         // Check if the message is already linked.
         $msgUid = $request->get('_msguid');
         $linkedTo = null;
@@ -98,7 +113,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function link(Vtiger_Request $request, $response)
     {
@@ -120,7 +135,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function create_wizard(Vtiger_Request $request, $response)
     {
@@ -181,8 +196,8 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 
         self::setMailSession([
             'recipientId' => $parent,
-            'uniqueId' => $uid,
-            'folderName' => $folderName,
+            'uniqueId'    => $uid,
+            'folderName'  => $folderName,
         ]);
 
         $request = new Vtiger_Request($formData, $formData);
@@ -201,7 +216,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function create(Vtiger_Request $request, $response)
     {
@@ -297,7 +312,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function commentwidget(Vtiger_Request $request, $response)
     {
@@ -330,12 +345,11 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
         return false;
     }
 
-
-
     /**
-     * @param Vtiger_Request $request
+     * @param Vtiger_Request            $request
      * @param MailManager_Message_Model $mail
-     * @param $linkedTo
+     * @param                           $linkedTo
+     *
      * @return void
      */
     public function retrieveRelationship(Vtiger_Request $request, $mail, $linkedTo = null)
@@ -359,34 +373,39 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
     }
 
     /**
-	 * Returns the Parent for Tickets module
-	 * @global Users Instance $currentUserModel
-	 * @param Integer $parent - crmid of Parent
-	 * @param Email Address $from - Email Address of the received mail
-	 * @return Integer - Parent(crmid)
-	 */
-	public function setParentForHelpDesk($parent, $from) {
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		if(empty($parent)) {
-			if(!empty($from)) {
-				$parentInfo = MailManager::lookupMailInVtiger($from[0], $currentUserModel);
-				if(!empty($parentInfo[0]['record'])) {
-					$parentId = vtws_getIdComponents($parentInfo[0]['record']);
-					return $parentId[1];
-				}
-			}
-		} else {
-			return $parent;
-		}
-	}
+     * Returns the Parent for Tickets module
+     *
+     * @param Integer $parent - crmid of Parent
+     * @param Email Address $from - Email Address of the received mail
+     *
+     * @return Integer - Parent(crmid)
+     * @global Users Instance $currentUserModel
+     */
+    public function setParentForHelpDesk($parent, $from)
+    {
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        if (empty($parent)) {
+            if (!empty($from)) {
+                $parentInfo = MailManager::lookupMailInVtiger($from[0], $currentUserModel);
+                if (!empty($parentInfo[0]['record'])) {
+                    $parentId = vtws_getIdComponents($parentInfo[0]['record']);
 
+                    return $parentId[1];
+                }
+            }
+        } else {
+            return $parent;
+        }
+    }
 
-	/**
-	 * Function used to set the record fields with the information from mail.
-	 * @param Array $qcreate_array
-	 * @param MailManager_Message_Model $mail
-	 * @return Array
-	 */
+    /**
+     * Function used to set the record fields with the information from mail.
+     *
+     * @param Array                     $qcreate_array
+     * @param MailManager_Message_Model $mail
+     *
+     * @return Array
+     */
     public function processFormData($mail, $isSentFolder = false)
     {
         $subject = $mail->getSubject();
@@ -416,38 +435,39 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
         }
 
         return [
-            'lastname' => $name[0],
-            'email' => $email[0],
-            'email1' => $email[0],
-            'accountname' => $companyName,
-            'company' => $companyName,
-            'ticket_title' => $subject,
+            'lastname'      => $name[0],
+            'email'         => $email[0],
+            'email1'        => $email[0],
+            'accountname'   => $companyName,
+            'company'       => $companyName,
+            'ticket_title'  => $subject,
             'potentialname' => $subject,
-            'subject' => $subject,
-            'title' => $subject,
+            'subject'       => $subject,
+            'title'         => $subject,
         ];
     }
 
+    /**
+     * Returns the list of accessible modules on which Actions(Relationship) can be taken.
+     * @return string
+     */
+    public function linkToAvailableActions()
+    {
+        $moduleListForLinkTo = ['ITS4YouEmails', 'ModComments', 'HelpDesk', 'Potentials'];
 
+        foreach ($moduleListForLinkTo as $module) {
+            if (MailManager::checkModuleWriteAccessForCurrentUser($module)) {
+                $mailManagerAllowedModules[] = $module;
+            }
+        }
 
-	/**
-	 * Returns the list of accessible modules on which Actions(Relationship) can be taken.
-	 * @return string
-	 */
-	public function linkToAvailableActions() {
-		$moduleListForLinkTo = array('ITS4YouEmails', 'ModComments', 'HelpDesk','Potentials');
+        return $mailManagerAllowedModules;
+    }
 
-		foreach($moduleListForLinkTo as $module) {
-			if(MailManager::checkModuleWriteAccessForCurrentUser($module)) {
-				$mailManagerAllowedModules[] = $module;
-			}
-		}
-		return $mailManagerAllowedModules;
-	}
-
-	public function validateRequest(Vtiger_Request $request) {
-		return $request->validateWriteAccess();
-	}
+    public function validateRequest(Vtiger_Request $request)
+    {
+        return $request->validateWriteAccess();
+    }
 
     public static function setMailSession(array|null $data): void
     {

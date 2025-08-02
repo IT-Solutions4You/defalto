@@ -1,5 +1,5 @@
 <?php
-/*+**********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
@@ -7,26 +7,31 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-$languageStrings = Array(
-    'Recycle Bin' => 'Papperskorgen',
-	'RecycleBin' => 'Papperskorgen',
-	'LBL_SELECT_MODULE' => 'Välj Modul',
-	'LBL_EMPTY_RECYCLEBIN' => 'Tom Papperskorgen',
-	'LBL_RESTORE' => 'Återställ',
+$languageStrings = [
+	'Recycle Bin'              => 'Papperskorgen',
+	'RecycleBin'               => 'Papperskorgen',
+	'LBL_SELECT_MODULE'        => 'Välj Modul',
+	'LBL_EMPTY_RECYCLEBIN'     => 'Tom Papperskorgen',
+	'LBL_RESTORE'              => 'Återställ',
 	'LBL_NO_PERMITTED_MODULES' => 'Inga tillåtna moduler tillgängliga',
-	'LBL_RECORDS_LIST' => 'Papperskorgslista',
-	'LBL_NO_RECORDS_FOUND' => 'Inga poster återfanns att återställa i modul',
-);
+	'LBL_RECORDS_LIST'         => 'Papperskorgslista',
+	'LBL_NO_RECORDS_FOUND'     => 'Inga poster återfanns att återställa i modul',
+];
 
-$jsLanguageStrings = array(
-	'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Är du säker på att du vill tills permanent ta bort alla borttagna poster från databasen?',
-	'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Är du säker på att du vill tills återställa posterna?',
-	'JS_RESTORING_RECORDS' => 'Återställer poster',
-    'JS_LBL_RESTORE_RECORD_CONFIRMATION' => 'Är du säker på att du vill återställa rekordet?',
-    'JS_RESTORING_RECORD' => 'Återställande Record',
-    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Återställ i vtiger och Drive',
-);
-
-
-?>
+$jsLanguageStrings = [
+	'JS_MSG_EMPTY_RB_CONFIRMATION'         => 'Är du säker på att du vill tills permanent ta bort alla borttagna poster från databasen?',
+	'JS_LBL_RESTORE_RECORDS_CONFIRMATION'  => 'Är du säker på att du vill tills återställa posterna?',
+	'JS_RESTORING_RECORDS'                 => 'Återställer poster',
+	'JS_LBL_RESTORE_RECORD_CONFIRMATION'   => 'Är du säker på att du vill återställa rekordet?',
+	'JS_RESTORING_RECORD'                  => 'Återställande Record',
+	'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Återställ i vtiger och Drive',
+];

@@ -1,17 +1,18 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_Edit_View extends Vtiger_Index_View
 {
     public $cu_language = "";
-    private $ModuleFields = array();
-    private $All_Related_Modules = array();
+    private $ModuleFields = [];
+    private $All_Related_Modules = [];
 
     public function __construct()
     {
@@ -37,6 +38,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
 
         if (!empty($mode) && 'EditTheme' !== $mode) {
             $this->invokeExposedMethod($mode, $request);
+
             return;
         }
 
@@ -104,14 +106,14 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
             $sharingType = $emailTemplateResult['sharingtype'];
             $sharingMemberArray = $EMAILMaker->GetSharingMemberArray($templateId);
         } else {
-            $emailTemplateResult = array();
+            $emailTemplateResult = [];
             $emailTemplateResult['permissions'] = $EMAILMaker->returnTemplatePermissionsData();
 
             $templateId = $select_module = $email_category = '';
             $is_listview = $is_default = '0';
             $is_active = $order = '1';
             $owner = intval($current_user->getId());
-            $sharingMemberArray = array();
+            $sharingMemberArray = [];
 
             if (getTabId(EMAILMaker_EMAILMaker_Model::MULTI_COMPANY) && vtlib_isModuleActive(EMAILMaker_EMAILMaker_Model::MULTI_COMPANY)) {
                 $companyRecord = ITS4YouMultiCompany_Record_Model::getCompanyByUserId($owner);
@@ -119,7 +121,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
                 if ($companyRecord) {
                     $sharingType = 'share';
                     $companyId = $companyRecord->getId();
-                    $sharingMemberArray['Companies'] = array('Companies:' . $companyId => $companyId);
+                    $sharingMemberArray['Companies'] = ['Companies:' . $companyId => $companyId];
                 } else {
                     $sharingType = 'private';
                 }
@@ -190,7 +192,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         $viewer->assign('MODULEIDS', $modules[1]);
         $viewer->assign('CUI_BLOCKS', EMAILMaker_Fields_Model::getUserTypeOptions());
 
-        $companyImages =  EMAILMaker_Record_Model::getCompanyImages();
+        $companyImages = EMAILMaker_Record_Model::getCompanyImages();
         $viewer->assign('COMPANYLOGO', $companyImages['logoname_img']);
         $viewer->assign('COMPANY_STAMP_SIGNATURE', $companyImages['stamp_signature_img']);
         $viewer->assign('COMPANY_HEADER_SIGNATURE', $companyImages['header_img']);
@@ -212,7 +214,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
 
         $viewer->assign('GLOBAL_LANG_LABELS', $global_lang_labels);
 
-        $module_lang_labels = array();
+        $module_lang_labels = [];
 
         if (!empty($select_module)) {
             $mod_lang = EMAILMaker_EMAILMaker_Model::getModuleLanguageArray($select_module);
@@ -225,7 +227,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
 
         $viewer->assign('MODULE_LANG_LABELS', $module_lang_labels);
 
-        list($custom_labels, $languages) = $EMAILMaker->GetCustomLabels();
+        [$custom_labels, $languages] = $EMAILMaker->GetCustomLabels();
 
         $currLangId = '';
 
@@ -236,7 +238,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
             }
         }
 
-        $vcustom_labels = array();
+        $vcustom_labels = [];
 
         if (count($custom_labels) > 0) {
             foreach ($custom_labels as $oLbl) {
@@ -298,7 +300,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         $viewer->assign('DECIMALS', EMAILMaker_Record_Model::getDecimalSettings());
         $viewer->assign('IGNORE_PICKLIST_VALUES', EMAILMaker_Record_Model::getIgnorePicklistValues());
 
-        foreach (array('VAT', 'CHARGES') as $blockType) {
+        foreach (['VAT', 'CHARGES'] as $blockType) {
             $viewer->assign($blockType . 'BLOCK_TABLE', EMAILMaker_Fields_Model::getBlockTable($blockType, $app_strings));
         }
 
@@ -381,7 +383,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
     {
         $ready = false;
         $function_name = "";
-        $function_params = $functions = array();
+        $function_params = $functions = [];
 
         $files = glob('modules/EMAILMaker/resources/functions/*.php');
         foreach ($files as $file) {
@@ -403,7 +405,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
                     $ready = false;
                     $functions[$function_name] = $function_params;
                     $function_name = "";
-                    $function_params = array();
+                    $function_params = [];
                 }
             }
         }
@@ -440,7 +442,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
                 exit;
             }
 
-            $linkParams = array('MODULE' => $moduleName, 'ACTION' => $request->get('view'));
+            $linkParams = ['MODULE' => $moduleName, 'ACTION' => $request->get('view')];
             $linkModels = $moduleModel->getSideBarLinks($linkParams);
 
             $viewer->assign('QUICK_LINKS', $linkModels);
@@ -460,9 +462,9 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
 
-        $jsFileNames = array(
+        $jsFileNames = [
             "modules.$moduleName.resources.AdvanceFilter"
-        );
+        ];
 
         if (vtlib_isModuleActive("ITS4YouStyles")) {
             $jsFileNames[] = "modules.ITS4YouStyles.resources.CodeMirror.lib.codemirror";
@@ -473,6 +475,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
         $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+
         return $headerScriptInstances;
     }
 
@@ -481,12 +484,13 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         $headerCssInstances = parent::getHeaderCss($request);
 
         if (vtlib_isModuleActive("ITS4YouStyles")) {
-            $cssFileNames = array(
+            $cssFileNames = [
                 '~/modules/ITS4YouStyles/resources/CodeMirror/lib/codemirror.css',
-            );
+            ];
             $cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
             $headerCssInstances = array_merge($headerCssInstances, $cssInstances);
         }
+
         return $headerCssInstances;
     }
 

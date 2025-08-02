@@ -1,3 +1,11 @@
+{**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
 {foreach from=$ACCESSIBLE_USER_LIST key=ACCESSIBLE_USER_ID item=ACCESSIBLE_USER_NAME}
     {assign var=ACCESSIBLE_USER value=Users_Record_Model::getInstanceById($ACCESSIBLE_USER_ID, 'Users')}
     {assign var=ACCESSIBLE_USER_IMAGE value=$ACCESSIBLE_USER->getImageUrl()}

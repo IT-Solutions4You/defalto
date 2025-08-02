@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Appointments_Migration_Model extends Vtiger_Base_Model
@@ -243,8 +243,8 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         $fields = [
             'taskpriority' => 'calendar_priority',
             'activitytype' => 'calendar_type',
-            'eventstatus' => 'calendar_status',
-            'taskstatus' => 'calendar_status',
+            'eventstatus'  => 'calendar_status',
+            'taskstatus'   => 'calendar_status',
         ];
 
         foreach ($fields as $fromField => $toField) {
@@ -327,7 +327,7 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
     {
         $this->entityParams = [
             'setype' => $this->moduleName,
-            'crmid' => $this->calendarId,
+            'crmid'  => $this->calendarId,
         ];
         $this->entitySql = 'UPDATE vtiger_crmentity SET setype=? WHERE crmid=?';
     }
@@ -347,22 +347,22 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         $mainData = $this->db->fetchByAssoc($mainResult);
         $this->mainParams = [
             'its4you_calendar_id' => $this->calendarId,
-            'subject' => decode_html($mainData['subject']),
-            'location' => decode_html($mainData['location']),
-            'datetime_start' => trim($mainData['date_start'] . ' ' . $mainData['time_start']),
-            'datetime_end' => trim($mainData['due_date'] . ' ' . $mainData['time_end']),
-            'is_all_day' => 'Task' === $mainData['activitytype'] ? '1' : '0',
-            'calendar_status' => $mainData['status'] ?: $mainData['eventstatus'],
-            'calendar_priority' => $mainData['priority'],
-            'calendar_type' => $mainData['activitytype'],
-            'recurring_type' => $mainData['recurringtype'],
-            'parent_id' => $this->parentId,
-            'contact_id' => implode(';', $this->contactRecords),
-            'account_id' => $this->accountId,
-            'invite_users' => implode(';', $this->inviteUsers),
-            'duration_hours' => $mainData['duration_hours'] . '.' . $mainData['duration_minutes'],
+            'subject'             => decode_html($mainData['subject']),
+            'location'            => decode_html($mainData['location']),
+            'datetime_start'      => trim($mainData['date_start'] . ' ' . $mainData['time_start']),
+            'datetime_end'        => trim($mainData['due_date'] . ' ' . $mainData['time_end']),
+            'is_all_day'          => 'Task' === $mainData['activitytype'] ? '1' : '0',
+            'calendar_status'     => $mainData['status'] ?: $mainData['eventstatus'],
+            'calendar_priority'   => $mainData['priority'],
+            'calendar_type'       => $mainData['activitytype'],
+            'recurring_type'      => $mainData['recurringtype'],
+            'parent_id'           => $this->parentId,
+            'contact_id'          => implode(';', $this->contactRecords),
+            'account_id'          => $this->accountId,
+            'invite_users'        => implode(';', $this->inviteUsers),
+            'duration_hours'      => $mainData['duration_hours'] . '.' . $mainData['duration_minutes'],
             'calendar_visibility' => $mainData['visibility'],
-            'send_notification' => $mainData['sendnotification'],
+            'send_notification'   => $mainData['sendnotification'],
         ];
         $this->mainSql = 'INSERT INTO its4you_calendar (' . implode(',', array_keys($this->mainParams)) . ') VALUES (' . generateQuestionMarks($this->mainParams) . ')';
     }

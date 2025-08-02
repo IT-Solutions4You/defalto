@@ -1,20 +1,22 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 /** @var Vtiger_Tag_Js */
-Vtiger.Class("Vtiger_Tag_Js",{},{
-    
-    editTagTemplate : '<div class="popover" role="tooltip"><div class="arrow"></div>\n\
+Vtiger.Class("Vtiger_Tag_Js", {}, {
+
+    editTagTemplate: '<div class="popover" role="tooltip"><div class="arrow"></div>\n\
                                 <form onsubmit="return false;">\n\
                                     <div class="popover-content"></div>\n\
                                 </form>\n\
                                 </div>',
-    editTagContainerCached : false,
-    
-    init : function() {
+    editTagContainerCached: false,
+
+    init: function () {
         this.editTagContainerCached = jQuery('.editTagContainer');
     },
 
@@ -41,65 +43,65 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
 
         return aDeferred.promise();
     },
-    
-    updateTag : function(callerParams) {
+
+    updateTag: function (callerParams) {
         var aDeferred = jQuery.Deferred();
         var params = {
-            'module' : app.getModuleName(),
-            'action' : 'TagCloud',
-            'mode'   : 'update'
+            'module': app.getModuleName(),
+            'action': 'TagCloud',
+            'mode': 'update'
         }
         params = jQuery.extend(params, callerParams);
-        app.request.post({'data' : params}).then(function(error, data){
-            if(error == null) {
+        app.request.post({'data': params}).then(function (error, data) {
+            if (error == null) {
                 aDeferred.resolve(data);
-            }else{
+            } else {
                 aDeferred.reject(error);
             }
         });
         return aDeferred.promise();
     },
-    
-    constructTagElement : function (params) {
+
+    constructTagElement: function (params) {
         let tagElement = jQuery(jQuery('#dummyTagElement').html()).clone(true);
-        tagElement.attr('data-id',params.id).attr('data-type',params.type);
+        tagElement.attr('data-id', params.id).attr('data-type', params.type);
         tagElement.find('.tagLabel').html(params.name);
         return tagElement
     },
-    
-    addTagsToShowAllTagContainer : function(tagsList) {
+
+    addTagsToShowAllTagContainer: function (tagsList) {
         let showAllTagContainer = jQuery('.showAllTagContainer'),
             viewAllTagContainer = jQuery('.viewAllTagsContainer'),
             currentTagHolder = showAllTagContainer.find('.currentTag'),
             viewAllCurrentTagHolder = viewAllTagContainer.find('.currentTag'),
             currentTagMenu = showAllTagContainer.find('.currentTagMenu');
-        
-        for(let index in tagsList) {
+
+        for (let index in tagsList) {
             let tagInfo = tagsList[index],
                 tagId = tagInfo.id;
-            
-            if(currentTagHolder.find('[data-id="'+ tagId +'"]').length > 0) {
+
+            if (currentTagHolder.find('[data-id="' + tagId + '"]').length > 0) {
                 continue;
             }
-            
+
             let newTagEle = this.constructTagElement(tagInfo);
             currentTagHolder.append(newTagEle);
             viewAllCurrentTagHolder.append(newTagEle.clone());
-            currentTagMenu.find('[data-id="'+ tagId +'"]').closest('li.tag-item').remove();
+            currentTagMenu.find('[data-id="' + tagId + '"]').closest('li.tag-item').remove();
         }
     },
-    
-    removeTagsFromShowTagContainer : function(tagsList, container) {
+
+    removeTagsFromShowTagContainer: function (tagsList, container) {
         var showAllTagContainer = (typeof container === 'undefined') ? jQuery('.showAllTagContainer') : container;
         var currentTagHolder = showAllTagContainer.find('.currentTag');
         var currentTagMenu = showAllTagContainer.find('.currentTagMenu');
-        
-        for(var index in tagsList) {
+
+        for (var index in tagsList) {
             var tagInfo = tagsList[index];
             var tagId = tagInfo.id;
-            
-            var tagEle = currentTagHolder.find('[data-id="'+ tagId +'"]');
-            if(tagEle.length <= 0) {
+
+            var tagEle = currentTagHolder.find('[data-id="' + tagId + '"]');
+            if (tagEle.length <= 0) {
                 continue;
             }
             tagEle.find('.editTag,.deleteTag').remove();
@@ -107,7 +109,7 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
             currentTagMenu.find('ul').append(newTagLiEle);
         }
     },
-    viewAllTags : function(container) {
+    viewAllTags: function (container) {
         let self = this,
             recordId = app.getRecordId(),
             params = {
@@ -135,16 +137,16 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
             }
         });
     },
-    showAllTags : function (container, callerParams) {
+    showAllTags: function (container, callerParams) {
         let self = this,
             recordId = app.getRecordId(),
             params = {
-            module: app.getModuleName(),
-            record: recordId ? recordId : null,
-            view: 'Detail',
-            mode: 'showTagsModalWindow',
-            deleteOldTags: 'Detail' === app.getViewName() ? '1' : '0',
-        };
+                module: app.getModuleName(),
+                record: recordId ? recordId : null,
+                view: 'Detail',
+                mode: 'showTagsModalWindow',
+                deleteOldTags: 'Detail' === app.getViewName() ? '1' : '0',
+            };
 
         app.request.post({data: params}).then(function (error, data) {
             self.showAllTagsModal(container, callerParams, $(data));
@@ -230,12 +232,12 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
             }
         });
     },
-    
-    registerShowMassTagListener : function() {
+
+    registerShowMassTagListener: function () {
         let self = this;
 
-        app.event.on('Request.MassTag.show',function(e, container, saveParams){
-            if(typeof container == 'undefined') {
+        app.event.on('Request.MassTag.show', function (e, container, saveParams) {
+            if (typeof container == 'undefined') {
                 container = jQuery('body');
             }
 
@@ -322,18 +324,18 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
             (e.keyCode || e.which) === 13 && jQuery(e.target).closest('.editTagContainer').find('.saveTag').trigger('click');
         });
     },
-    
-    registerViewAllTagsListener : function() {
+
+    registerViewAllTagsListener: function () {
         var self = this;
-        app.event.on('Request.AllTag.show', function(e, container){
-            if(typeof container == 'undefined') {
+        app.event.on('Request.AllTag.show', function (e, container) {
+            if (typeof container == 'undefined') {
                 container = jQuery('body');
             }
             self.viewAllTags(container);
         });
     },
-    
-    registerEvents : function() {
+
+    registerEvents: function () {
         this.registerShowMassTagListener();
         this.registerEditTagEvents();
         this.registerViewAllTagsListener();

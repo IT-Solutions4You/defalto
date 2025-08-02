@@ -1,18 +1,17 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_EditDisplayConditions_View extends Vtiger_Index_View
 {
-
     public function process(Vtiger_Request $request)
     {
-
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();
         $qualifiedModuleName = $request->getModule(false);
@@ -84,7 +83,6 @@ class EMAILMaker_EditDisplayConditions_View extends Vtiger_Index_View
         $viewer->assign('EMAILMAKER_RECORD_MODEL', $recordModel);
 
         $viewer->view('EditDisplayConditions.tpl', $moduleName);
-
     }
 
     public function getHeaderScripts(Vtiger_Request $request)
@@ -92,14 +90,14 @@ class EMAILMaker_EditDisplayConditions_View extends Vtiger_Index_View
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
         $layout = Vtiger_Viewer::getLayoutName();
-        $jsFileNames = array(
+        $jsFileNames = [
             "layouts.$layout.modules.Vtiger.resources.Edit",
             "layouts.$layout.modules.$moduleName.resources.Edit",
             "layouts.$layout.modules.$moduleName.resources.EditDisplayConditions",
             "layouts.$layout.modules.Vtiger.resources.AdvanceFilter",
             "layouts.$layout.modules.$moduleName.resources.AdvanceFilter",
             '~libraries/jquery/jquery.datepick.package-4.1.0/jquery.datepick.js',
-        );
+        ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
         $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);

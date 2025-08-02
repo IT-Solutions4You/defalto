@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 class Core_TaxRegion_Model extends Core_DatabaseData_Model
 {
@@ -25,14 +33,16 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
         $link = Settings_Vtiger_MenuItem_Model::getInstance('LBL_REGIONS', $menu);
 
         if (!$link) {
-            $link = Settings_Vtiger_MenuItem_Model::getInstanceFromArray(['name' => 'LBL_REGIONS', 'blockid' => $menu->getId(), 'linkto' => 'index.php?module=Core&parent=Settings&view=Taxes&mode=regions']);
+            $link = Settings_Vtiger_MenuItem_Model::getInstanceFromArray(
+                ['name' => 'LBL_REGIONS', 'blockid' => $menu->getId(), 'linkto' => 'index.php?module=Core&parent=Settings&view=Taxes&mode=regions']
+            );
             $link->save();
         }
     }
 
     /**
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function createTables(): void
     {
@@ -43,7 +53,7 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
 
     /**
      * @return array
-     * @throws AppException
+     * @throws Exception
      */
     public static function getAllRegions(): array
     {
@@ -66,7 +76,7 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getInstance($name = ''): self
     {
@@ -82,8 +92,9 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
 
     /**
      * @param int $recordId
+     *
      * @return bool|self
-     * @throws AppException
+     * @throws Exception
      */
     public static function getInstanceById(int $recordId): bool|self
     {
@@ -99,7 +110,7 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getInstanceFromRequest(Vtiger_Request $request): bool|self
     {
@@ -117,6 +128,7 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
 
     /**
      * @param int $regionId
+     *
      * @return bool
      */
     public function isSelectedRegion(mixed $regionId): bool

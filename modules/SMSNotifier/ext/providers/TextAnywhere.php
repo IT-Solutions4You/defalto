@@ -1,92 +1,118 @@
 <?php
-/*+**********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- ************************************************************************************/
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 include_once dirname(__FILE__) . '/../ISMSProvider.php';
 include_once 'vtlib/Vtiger/Net/Client.php';
 
-class TextAnywhere implements ISMSProvider {
-
+class TextAnywhere implements ISMSProvider
+{
 	private $_username;
 	private $_password;
-	private $_parameters = array();
+	private $_parameters = [];
 
 	const SERVICE_URI = 'http://www.textapp.net/webservice/httpservice.aspx';
 
-	private static $REQUIRED_PARAMETERS = array('Originator', 'CharacterSet');
+	private static $REQUIRED_PARAMETERS = ['Originator', 'CharacterSet'];
 
-	function __construct() {
-		
+	function __construct()
+	{
 	}
 
-	public function setAuthParameters($username, $password) {
+	public function setAuthParameters($username, $password)
+	{
 		$this->_username = $username;
 		$this->_password = $password;
 	}
 
-	public function setParameter($key, $value) {
+	public function setParameter($key, $value)
+	{
 		$this->_parameters[$key] = $value;
 	}
 
-	public function getParameter($key, $defvalue = false) {
+	public function getParameter($key, $defvalue = false)
+	{
 		if (isset($this->_parameters[$key])) {
 			return $this->_parameters[$key];
 		}
+
 		return $defvalue;
 	}
 
-	public function getRequiredParams() {
+	public function getRequiredParams()
+	{
 		return self::$REQUIRED_PARAMETERS;
 	}
 
-	public function getServiceURL($type = false) {
+	public function getServiceURL($type = false)
+	{
 		if ($type) {
 			switch (strtoupper($type)) {
-				case self::SERVICE_AUTH: return self::SERVICE_URI . '';
-				case self::SERVICE_SEND: return self::SERVICE_URI . '?method=SendSMS&';
-				case self::SERVICE_QUERY: return self::SERVICE_URI . '?method=GetSMSStatus&';
+				case self::SERVICE_AUTH:
+					return self::SERVICE_URI . '';
+				case self::SERVICE_SEND:
+					return self::SERVICE_URI . '?method=SendSMS&';
+				case self::SERVICE_QUERY:
+					return self::SERVICE_URI . '?method=GetSMSStatus&';
 			}
 		}
+
 		return false;
 	}
 
-	public function send($message, $tonumbers) {
+	public function send($message, $tonumbers)
+	{
 		if (!is_array($tonumbers)) {
-			$tonumbers = array($tonumbers);
+			$tonumbers = [$tonumbers];
 		}
 
 		$tonumbers = $this->cleanNumbers($tonumbers);
 		$clientMessageReference = $this->generateClientMessageReference();
 		$response = $this->sendMessage($clientMessageReference, $message, $tonumbers);
+
 		return $this->processSendMessageResult($response, $clientMessageReference, $tonumbers);
 	}
 
-	public function query($messageid) {
+	public function query($messageid)
+	{
 		$messageidSplit = explode('--', $messageid);
 		$clientMessageReference = trim($messageidSplit[0]);
 		$number = trim($messageidSplit[1]);
 
 		$response = $this->queryMessage($clientMessageReference);
+
 		return $this->processQueryMessageResult($response, $number);
 	}
 
-	private function cleanNumbers($numbers) {
+	private function cleanNumbers($numbers)
+	{
 		$pattern = '/[^\+\d]/';
 		$replacement = '';
+
 		return preg_replace($pattern, $replacement, $numbers);
 	}
 
-	private function generateClientMessageReference() {
+	private function generateClientMessageReference()
+	{
 		return uniqid();
 	}
 
-	private function validEmail($email) {
+	private function validEmail($email)
+	{
 		$isValid = true;
 		$atIndex = strrpos($email, "@");
 		if (is_bool($atIndex) && !$atIndex) {
@@ -99,22 +125,22 @@ class TextAnywhere implements ISMSProvider {
 			if ($localLen < 1 || $localLen > 64) {
 				// local part length exceeded
 				$isValid = false;
-			} else if ($domainLen < 1 || $domainLen > 255) {
+			} elseif ($domainLen < 1 || $domainLen > 255) {
 				// domain part length exceeded
 				$isValid = false;
-			} else if ($local[0] == '.' || $local[$localLen - 1] == '.') {
+			} elseif ($local[0] == '.' || $local[$localLen - 1] == '.') {
 				// local part starts or ends with '.'
 				$isValid = false;
-			} else if (preg_match('/\\.\\./', $local)) {
+			} elseif (preg_match('/\\.\\./', $local)) {
 				// local part has two consecutive dots
 				$isValid = false;
-			} else if (!preg_match('/^[A-Za-z0-9\\-\\.]+$/', $domain)) {
+			} elseif (!preg_match('/^[A-Za-z0-9\\-\\.]+$/', $domain)) {
 				// character not valid in domain part
 				$isValid = false;
-			} else if (preg_match('/\\.\\./', $domain)) {
+			} elseif (preg_match('/\\.\\./', $domain)) {
 				// domain part has two consecutive dots
 				$isValid = false;
-			} else if (!preg_match('/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/', str_replace("\\\\", "", $local))) {
+			} elseif (!preg_match('/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/', str_replace("\\\\", "", $local))) {
 				// character not valid in local part unless 
 				// local part is quoted
 				if (!preg_match('/^"(\\\\"|[^"])+"$/', str_replace("\\\\", "", $local))) {
@@ -122,20 +148,23 @@ class TextAnywhere implements ISMSProvider {
 				}
 			}
 		}
+
 		return $isValid;
 	}
 
-	private function getReplyMethodID($originator) {
+	private function getReplyMethodID($originator)
+	{
 		if (substr($originator, 0, 1) === '+' && is_numeric(substr($originator, 1))) {
 			return 4;
-		} else if ($this->validEmail($originator)) {
+		} elseif ($this->validEmail($originator)) {
 			return 2;
 		} else {
 			return 1;
 		}
 	}
 
-	private function sendMessage($clientMessageReference, $message, $tonumbers) {
+	private function sendMessage($clientMessageReference, $message, $tonumbers)
+	{
 		$originator = $this->getParameter('Originator', '');
 		$replyMethodID = $this->getReplyMethodID($originator);
 
@@ -165,11 +194,13 @@ class TextAnywhere implements ISMSProvider {
 		$serviceURL = $serviceURL . 'statusNotificationUrl=';
 
 		$httpClient = new Vtiger_Net_Client($serviceURL);
-		return $httpClient->doPost(array());
+
+		return $httpClient->doPost([]);
 	}
 
-	private function processSendMessageResult($response, $clientMessageReference, $tonumbers) {
-		$results = array();
+	private function processSendMessageResult($response, $clientMessageReference, $tonumbers)
+	{
+		$results = [];
 		$responseLines = explode("\n", $response);
 
 		if (trim($responseLines[0]) === '#1#') {
@@ -180,7 +211,7 @@ class TextAnywhere implements ISMSProvider {
 				$number = trim($numberResultSplit[0]);
 				$code = trim($numberResultSplit[1]);
 
-				$result = array();
+				$result = [];
 
 				if ($code != '1') {
 					$result['error'] = true;
@@ -198,7 +229,7 @@ class TextAnywhere implements ISMSProvider {
 		} else {
 			//Transaction failed
 			foreach ($tonumbers as $number) {
-				$result = array('error' => true, 'statusmessage' => $responseLines[0], 'to' => $number);
+				$result = ['error' => true, 'statusmessage' => $responseLines[0], 'to' => $number];
 				$results[] = $result;
 			}
 		}
@@ -206,7 +237,8 @@ class TextAnywhere implements ISMSProvider {
 		return $results;
 	}
 
-	private function queryMessage($clientMessageReference) {
+	private function queryMessage($clientMessageReference)
+	{
 		$serviceURL = $this->getServiceURL(self::SERVICE_QUERY);
 		$serviceURL = $serviceURL . 'returnCSVString=' . 'true' . '&';
 		$serviceURL = $serviceURL . 'externalLogin=' . urlencode($this->_username) . '&';
@@ -214,11 +246,13 @@ class TextAnywhere implements ISMSProvider {
 		$serviceURL = $serviceURL . 'clientMessageReference=' . urlencode($clientMessageReference);
 
 		$httpClient = new Vtiger_Net_Client($serviceURL);
-		return $httpClient->doPost(array());
+
+		return $httpClient->doPost([]);
 	}
 
-	private function processQueryMessageResult($response, $number) {
-		$result = array();
+	private function processQueryMessageResult($response, $number)
+	{
+		$result = [];
 
 		$responseLines = explode("\n", $response);
 
@@ -228,22 +262,23 @@ class TextAnywhere implements ISMSProvider {
 			foreach ($numberResults as $numberResult) {
 				$numberResultSplit = explode(":", $numberResult);
 				$thisNumber = trim($numberResultSplit[0]);
-				$code = (int) trim($numberResultSplit[1]);
+				$code = (int)trim($numberResultSplit[1]);
 
-				if ($thisNumber != $number)
+				if ($thisNumber != $number) {
 					continue;
+				}
 
 				if ($code >= 400 && $code <= 499) {
 					$result['error'] = false;
 					$result['status'] = self::MSG_STATUS_DELIVERED;
 					$result['needlookup'] = 0;
 					$result['statusmessage'] = $code;
-				} else if ($code >= 500 && $code <= 599) {
+				} elseif ($code >= 500 && $code <= 599) {
 					$result['error'] = false;
 					$result['status'] = self::MSG_STATUS_FAILED;
 					$result['needlookup'] = 0;
 					$result['statusmessage'] = $code;
-				} else if ($code >= 600 && $code <= 699) {
+				} elseif ($code >= 600 && $code <= 699) {
 					$result['error'] = false;
 					$result['status'] = self::MSG_STATUS_DISPATCHED;
 					$result['needlookup'] = 1;
@@ -258,9 +293,7 @@ class TextAnywhere implements ISMSProvider {
 			$result['needlookup'] = 1;
 			$result['statusmessage'] = $responseLines[0];
 		}
+
 		return $result;
 	}
-
 }
-
-?>

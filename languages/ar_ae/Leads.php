@@ -1,5 +1,5 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
@@ -7,67 +7,77 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-$languageStrings = array(
-	// Basic Strings
-	'Leads' => 'زبائن محتملين',
-	'SINGLE_Leads' => 'زبون محتمل',
-	'LBL_RECORDS_LIST' => 'قائمة الزبائن المحتملين',
-	'LBL_ADD_RECORD' => 'اضافة زبون محتمل',
 
-	// Blocks
-	'LBL_LEAD_INFORMATION' => 'تفاصيل الزبون المحتمل',
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-	//Field Labels
-	'Lead No' => 'رقم الزبون المحتمل',
-	'Company' => 'الشركة',
-	'Designation' => 'تسمية',
-	'Website' => 'الموقع الالكتروني',
-	'Industry' => 'قطاع',
-	'Lead Status' => 'حالة الزبون المحتمل',
-	'No Of Employees' => 'عدد الموظفين',
-	'Phone' => 'الهاتف الرئيسي',
-	'Secondary Email' => 'البريد الالكتروني الثانوي',
-	'Email' => 'البريد الالكتروني الرئيسي',
+$languageStrings = [
+    // Basic Strings
+    'Leads'                => 'زبائن محتملين',
+    'SINGLE_Leads'         => 'زبون محتمل',
+    'LBL_RECORDS_LIST'     => 'قائمة الزبائن المحتملين',
+    'LBL_ADD_RECORD'       => 'اضافة زبون محتمل',
 
-	//Added for Existing Picklist Entries
+    // Blocks
+    'LBL_LEAD_INFORMATION' => 'تفاصيل الزبون المحتمل',
 
-	'--None--'=>'--لاشئ--',
-	'Mr.'=>'السيد',
-	'Ms.'=>'الانسة',
-	'Mrs.'=>'السيدة',
-	'Dr.'=>'الدكتور',
-	'Prof.'=>'الاستاذ',
+    //Field Labels
+    'Lead No'              => 'رقم الزبون المحتمل',
+    'Company'              => 'الشركة',
+    'Designation'          => 'تسمية',
+    'Website'              => 'الموقع الالكتروني',
+    'Industry'             => 'قطاع',
+    'Lead Status'          => 'حالة الزبون المحتمل',
+    'No Of Employees'      => 'عدد الموظفين',
+    'Phone'                => 'الهاتف الرئيسي',
+    'Secondary Email'      => 'البريد الالكتروني الثانوي',
+    'Email'                => 'البريد الالكتروني الرئيسي',
 
-	//Lead Status Picklist values
-	'Attempted to Contact'=>'Attempted to Contact',
-	'Cold'=>'خامل',
-	'Contact in Future'=>'الاتصال بالمستقبل',
-	'Contacted'=>'متصل',
-	'Hot'=>'نشيط',
-	'Junk Lead'=>'سلة محذوفات',
-	'Lost Lead'=>'ضائع',
-	'Not Contacted'=>'لم يتم التواصل معه',
-	'Pre Qualified'=>'قابل للتاهيل',
-	'Qualified'=>'مؤهل',
-	'Warm'=>'دافئ',
+    //Added for Existing Picklist Entries
 
-	// Mass Action
-	'LBL_CONVERT_LEAD' => 'تحويل الزبون المحتمل',
+    '--None--'                           => '--لاشئ--',
+    'Mr.'                                => 'السيد',
+    'Ms.'                                => 'الانسة',
+    'Mrs.'                               => 'السيدة',
+    'Dr.'                                => 'الدكتور',
+    'Prof.'                              => 'الاستاذ',
 
-	//Convert Lead
-	'LBL_TRANSFER_RELATED_RECORD' => 'نقل السجل المرتبط الى',
-	'LBL_CONVERT_LEAD_ERROR' => 'عليك تفعيل المنظمات او جهات الاتصال لتحويل الزبون المحتمل',
-	'LBL_LEADS_FIELD_MAPPING_INCOMPLETE' => 'خريطة حقول الزبون المحتمل غير مكتملة(تحقق من اعدادات خريطة الزبون المحتمل)',
-	'LBL_LEADS_FIELD_MAPPING' => 'خريطة حقول الزبون المحتمل',
+    //Lead Status Picklist values
+    'Attempted to Contact'               => 'Attempted to Contact',
+    'Cold'                               => 'خامل',
+    'Contact in Future'                  => 'الاتصال بالمستقبل',
+    'Contacted'                          => 'متصل',
+    'Hot'                                => 'نشيط',
+    'Junk Lead'                          => 'سلة محذوفات',
+    'Lost Lead'                          => 'ضائع',
+    'Not Contacted'                      => 'لم يتم التواصل معه',
+    'Pre Qualified'                      => 'قابل للتاهيل',
+    'Qualified'                          => 'مؤهل',
+    'Warm'                               => 'دافئ',
 
-	//Leads Custom Field Mapping
-	'LBL_CUSTOM_FIELD_MAPPING'=> 'يؤدي تعيين بيانات التحويل',
-	'LBL_LEAD_SOURCE' => 'مصدر الزبون المحتمل',
-    'LBL_IMAGE_INFORMATION' => 'الصورة الشخصية',
-    'Lead Image' => 'الرصاص صورة',
-);
-$jsLanguageStrings = array(
-	'JS_SELECT_CONTACTS' => 'حدد جهات الاتصال للمضي قدما',
-	'JS_SELECT_ORGANIZATION' => 'حدد المنظمة للمضي قدما',
-	'JS_SELECT_ORGANIZATION_OR_CONTACT_TO_CONVERT_LEAD' => 'تحويل المتطلبات المحددة لجهات الاتصال او المنظمات'
-);
+    // Mass Action
+    'LBL_CONVERT_LEAD'                   => 'تحويل الزبون المحتمل',
+
+    //Convert Lead
+    'LBL_TRANSFER_RELATED_RECORD'        => 'نقل السجل المرتبط الى',
+    'LBL_CONVERT_LEAD_ERROR'             => 'عليك تفعيل المنظمات او جهات الاتصال لتحويل الزبون المحتمل',
+    'LBL_LEADS_FIELD_MAPPING_INCOMPLETE' => 'خريطة حقول الزبون المحتمل غير مكتملة(تحقق من اعدادات خريطة الزبون المحتمل)',
+    'LBL_LEADS_FIELD_MAPPING'            => 'خريطة حقول الزبون المحتمل',
+
+    //Leads Custom Field Mapping
+    'LBL_CUSTOM_FIELD_MAPPING'           => 'يؤدي تعيين بيانات التحويل',
+    'LBL_LEAD_SOURCE'                    => 'مصدر الزبون المحتمل',
+    'LBL_IMAGE_INFORMATION'              => 'الصورة الشخصية',
+    'Lead Image'                         => 'الرصاص صورة',
+];
+$jsLanguageStrings = [
+    'JS_SELECT_CONTACTS'                                => 'حدد جهات الاتصال للمضي قدما',
+    'JS_SELECT_ORGANIZATION'                            => 'حدد المنظمة للمضي قدما',
+    'JS_SELECT_ORGANIZATION_OR_CONTACT_TO_CONVERT_LEAD' => 'تحويل المتطلبات المحددة لجهات الاتصال او المنظمات'
+];

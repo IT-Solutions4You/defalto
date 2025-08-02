@@ -1,38 +1,40 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
 {
-
-    private static $is_inventory_module = array();
+    private static $is_inventory_module = [];
 
     public function getOwnerNameCustom($id)
     {
         $db = PearDatabase::getInstance();
         if ($id != "") {
-            $result = $db->pquery("SELECT user_name FROM vtiger_users WHERE id=?", array($id));
+            $result = $db->pquery("SELECT user_name FROM vtiger_users WHERE id=?", [$id]);
             $ownername = $db->query_result($result, 0, "user_name");
         }
         if ($ownername == "") {
-            $result = $db->pquery("SELECT groupname FROM vtiger_groups WHERE groupid=?", array($id));
+            $result = $db->pquery("SELECT groupname FROM vtiger_groups WHERE groupid=?", [$id]);
             $ownername = $db->query_result($result, 0, "groupname");
         } else {
             $ownername = getUserFullName($id);
         }
+
         return $ownername;
     }
 
     public function getSettings()
     {
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery("SELECT * FROM vtiger_emakertemplates_settings", array());
+        $result = $adb->pquery("SELECT * FROM vtiger_emakertemplates_settings", []);
         $Settings = $adb->fetchByAssoc($result, 1);
+
         return $Settings;
     }
 
@@ -41,9 +43,10 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
         $accountno = "";
         if ($account_id != '') {
             $adb = PearDatabase::getInstance();
-            $result = $adb->pquery("SELECT account_no FROM vtiger_account WHERE accountid=?", array($account_id));
+            $result = $adb->pquery("SELECT account_no FROM vtiger_account WHERE accountid=?", [$account_id]);
             $accountno = $adb->query_result($result, 0, "account_no");
         }
+
         return $accountno;
     }
 
@@ -63,12 +66,12 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
             }
             $content = $html->save();
         }
+
         return $content;
     }
 
     public function convertVatBlock($content)
     {
-
         return $this->convertBlock('VAT', $content);
     }
 
@@ -87,6 +90,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
             }
             $content = $html->save();
         }
+
         return $content;
     }
 
@@ -150,6 +154,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
                 }
                 break;
         }
+
         return $type;
     }
 
@@ -161,17 +166,19 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
                 $atts_string .= $attName . '="' . $attVal . '" ';
             }
         }
+
         return $atts_string;
     }
 
     public function GetFieldModuleRel()
     {
         $db = PearDatabase::getInstance();
-        $result = $db->pquery("SELECT fieldid, relmodule FROM vtiger_fieldmodulerel", array());
-        $fieldModRel = array();
+        $result = $db->pquery("SELECT fieldid, relmodule FROM vtiger_fieldmodulerel", []);
+        $fieldModRel = [];
         while ($row = $db->fetchByAssoc($result)) {
             $fieldModRel[$row["fieldid"]][] = $row["relmodule"];
         }
+
         return $fieldModRel;
     }
 
@@ -197,7 +204,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
 
     public function getCustomfunctionParams($val)
     {
-        $Params = array();
+        $Params = [];
         $end = false;
 
         do {
@@ -223,69 +230,71 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
 
     public function getInventoryTableArray()
     {
-        $Inventory_Table_Array = array(
+        $Inventory_Table_Array = [
             "PurchaseOrder" => "vtiger_purchaseorder",
-            "SalesOrder" => "vtiger_salesorder",
-            "Quotes" => "vtiger_quotes",
-            "Invoice" => "vtiger_invoice",
-            "Issuecards" => "vtiger_issuecards",
-            "Receiptcards" => "vtiger_receiptcards",
-            "Creditnote" => "vtiger_creditnote",
+            "SalesOrder"    => "vtiger_salesorder",
+            "Quotes"        => "vtiger_quotes",
+            "Invoice"       => "vtiger_invoice",
+            "Issuecards"    => "vtiger_issuecards",
+            "Receiptcards"  => "vtiger_receiptcards",
+            "Creditnote"    => "vtiger_creditnote",
             "StornoInvoice" => "vtiger_stornoinvoice"
-        );
+        ];
 
         return $Inventory_Table_Array;
     }
 
     public function getInventoryIdArray()
     {
-        $Inventory_Id_Array = array(
+        $Inventory_Id_Array = [
             "PurchaseOrder" => "purchaseorderid",
-            "SalesOrder" => "salesorderid",
-            "Quotes" => "quoteid",
-            "Invoice" => "invoiceid",
-            "Issuecards" => "issuecardid",
-            "Receiptcards" => "receiptcardid",
-            "Creditnote" => "creditnote_id",
+            "SalesOrder"    => "salesorderid",
+            "Quotes"        => "quoteid",
+            "Invoice"       => "invoiceid",
+            "Issuecards"    => "issuecardid",
+            "Receiptcards"  => "receiptcardid",
+            "Creditnote"    => "creditnote_id",
             "StornoInvoice" => "stornoinvoice_id"
-        );
+        ];
 
         return $Inventory_Id_Array;
     }
 
     public function getUserFieldsForPDF()
     {
-        return array(
-            "username" => "username",
-            "firstname" => "first_name",
-            "lastname" => "last_name",
-            "email" => "email1",
-            "title" => "title",
-            "fax" => "phone_fax",
-            "department" => "department",
+        return [
+            "username"    => "username",
+            "firstname"   => "first_name",
+            "lastname"    => "last_name",
+            "email"       => "email1",
+            "title"       => "title",
+            "fax"         => "phone_fax",
+            "department"  => "department",
             "other_email" => "email2",
-            "phone" => "phone_work",
-            "yahooid" => "yahoo_id",
-            "mobile" => "phone_mobile",
-            "home_phone" => "phone_home",
+            "phone"       => "phone_work",
+            "yahooid"     => "yahoo_id",
+            "mobile"      => "phone_mobile",
+            "home_phone"  => "phone_home",
             "other_phone" => "phone_other",
-            "signature" => "signature",
-            "notes" => "description",
-            "address" => "address_street",
-            "country" => "address_country",
-            "city" => "address_city",
-            "zip" => "address_postalcode",
-            "state" => "address_state"
-        );
+            "signature"   => "signature",
+            "notes"       => "description",
+            "address"     => "address_street",
+            "country"     => "address_country",
+            "city"        => "address_city",
+            "zip"         => "address_postalcode",
+            "state"       => "address_state"
+        ];
     }
 
     public function getUserImage($id, $site_url = '')
     {
-
         if (isset($id) and $id != "") {
             $image = '';
             $adb = PearDatabase::getInstance();
-            $image_res = $adb->pquery("select vtiger_attachments.* from vtiger_attachments left join vtiger_salesmanattachmentsrel on vtiger_salesmanattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid where vtiger_salesmanattachmentsrel.smid=?", array($id));
+            $image_res = $adb->pquery(
+                "select vtiger_attachments.* from vtiger_attachments left join vtiger_salesmanattachmentsrel on vtiger_salesmanattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid where vtiger_salesmanattachmentsrel.smid=?",
+                [$id]
+            );
             $row = $adb->query_result_rowdata($image_res);
             $row = self::fixStoredName($row);
             $site_url = self::fixSiteUrl($site_url);
@@ -298,6 +307,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
             if ($image_name != '') {
                 $image = '<img src="' . $imgpath . '" width="250px" border="0">';
             }
+
             return $image;
         } else {
             return "";
@@ -309,7 +319,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
         if (isset($id) and $id != "") {
             $db = PearDatabase::getInstance();
             $query = $this->getContactImageQuery();
-            $result = $db->pquery($query, array($id));
+            $result = $db->pquery($query, [$id]);
             $num_rows = $db->num_rows($result);
             if ($num_rows > 0) {
                 $site_url = self::fixSiteUrl($site_url);
@@ -327,6 +337,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
 
     /**
      * @param array $data
+     *
      * @return array
      */
     public static function fixStoredName($data)
@@ -340,6 +351,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
 
     /**
      * @param string $site_url
+     *
      * @return string
      */
     public static function fixSiteUrl($site_url)
@@ -384,6 +396,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
         } elseif (isset($bacImgs[$productid . "_" . $sequence])) {
             $retImage = "<img src='" . $site_url . $bacImgs[$productid . "_" . $sequence]["src"] . "' width='83' />";
         }
+
         return $retImage;
     }
 
@@ -391,12 +404,11 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
     {
         $db = PearDatabase::getInstance();
         $sql = $this->getInventoryImagesQuery($isProductModule);
-        $mainImgs = $bacImgs = array();
+        $mainImgs = $bacImgs = [];
 
-        $res = $db->pquery($sql, array($id));
-        $products = array();
+        $res = $db->pquery($sql, [$id]);
+        $products = [];
         while ($row = $db->fetchByAssoc($res)) {
-
             if (!isset($row['storedname']) || empty($row['storedname'])) {
                 $row['storedname'] = $row['name'];
             }
@@ -405,9 +417,9 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
             $products[$row["productid"] . "#_#" . $row["sequence_no"]][$row["attachmentsid"]]["name"] = $row['storedname'];
         }
 
-        $saved_res = $db->pquery("SELECT productid, sequence, attachmentid, width, height FROM vtiger_emakertemplates_images WHERE crmid=?", array($id));
-        $saved_products = array();
-        $saved_wh = array();
+        $saved_res = $db->pquery("SELECT productid, sequence, attachmentid, width, height FROM vtiger_emakertemplates_images WHERE crmid=?", [$id]);
+        $saved_products = [];
+        $saved_wh = [];
         while ($saved_row = $db->fetchByAssoc($saved_res)) {
             $saved_products[$saved_row["productid"] . "_" . $saved_row["sequence"]] = $saved_row["attachmentid"];
             $saved_wh[$saved_row["productid"] . "_" . $saved_row["sequence"]]["width"] = ($saved_row["width"] > 0 ? $saved_row["width"] : "");
@@ -433,7 +445,8 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
                 }
             }
         }
-        return array($mainImgs, $bacImgs);
+
+        return [$mainImgs, $bacImgs];
     }
 
     public function getInventoryImagesQuery($isProductModule)
@@ -460,15 +473,27 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
                     ON vtiger_attachments.attachmentsid=vtiger_crmentity.crmid
                     WHERE vtiger_crmentity.deleted=0 AND vtiger_products.productid=? ORDER BY vtiger_attachments.attachmentsid";
         }
+
         return $query;
     }
 
-    public function getFieldValueUtils($efocus, $emodule, $fieldname, $value, $UITypes, $inventory_currency, $ignored_picklist_values, $def_charset, $decimals, $decimal_point, $thousands_separator, $language)
-    {
-
+    public function getFieldValueUtils(
+        $efocus,
+        $emodule,
+        $fieldname,
+        $value,
+        $UITypes,
+        $inventory_currency,
+        $ignored_picklist_values,
+        $def_charset,
+        $decimals,
+        $decimal_point,
+        $thousands_separator,
+        $language
+    ) {
         $db = PearDatabase::getInstance();
 
-        $res2 = $db->pquery("SELECT * FROM vtiger_crmentity WHERE crmid = ?", array($efocus->id));
+        $res2 = $db->pquery("SELECT * FROM vtiger_crmentity WHERE crmid = ?", [$efocus->id]);
         $CData = $db->fetchByAssoc($res2, 0);
 
         if (isset($CData["historized"]) && $CData["historized"] == "1") {
@@ -476,7 +501,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
             if (in_array($fieldname, $UITypes["userorotherfields"]) || in_array($fieldname, $UITypes["userfields"])) {
                 $type = "u";
             }
-            $label_res = $db->pquery("SELECT label FROM its4you_historized WHERE crmid =? AND relid=? AND type=?", array($efocus->id, $value, $type));
+            $label_res = $db->pquery("SELECT label FROM its4you_historized WHERE crmid =? AND relid=? AND type=?", [$efocus->id, $value, $type]);
             if ($label_res != false && $db->num_rows($label_res) != 0) {
                 return $db->query_result($label_res, 0, 'label');
             }
@@ -600,6 +625,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
                 $value = "";
             }
         }
+
         return $value;
     }
 
@@ -607,7 +633,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
     {
         if (file_exists("modules/Settings/EditTermDetails.php")) {
             $adb = PearDatabase::getInstance();
-            $res = $adb->pquery("SELECT tandc FROM vtiger_inventory_tandc WHERE id=?", array($value));
+            $res = $adb->pquery("SELECT tandc FROM vtiger_inventory_tandc WHERE id=?", [$value]);
             $num = $adb->num_rows($res);
             if ($num > 0) {
                 $tandc = $adb->query_result($res, 0, "tandc");
@@ -617,6 +643,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
         } else {
             $tandc = $value;
         }
+
         return $tandc;
     }
 
@@ -625,17 +652,17 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
         $foldername = "";
         if ($folderid != "") {
             $db = PearDatabase::getInstance();
-            $result = $db->pquery("SELECT foldername FROM vtiger_attachmentsfolder WHERE folderid = ?", array($folderid));
+            $result = $db->pquery("SELECT foldername FROM vtiger_attachmentsfolder WHERE folderid = ?", [$folderid]);
             if ($db->num_rows($result) > 0) {
                 return $foldername = $db->query_result($result, 0, "foldername");
             }
         }
+
         return $foldername;
     }
 
     public function getTranslatedStringCustom($str, $emodule, $language)
     {
-
         if ($emodule != "Products/Services") {
             $app_lang = return_application_language($language);
             $mod_lang = return_specified_module_language($language, $emodule);
@@ -644,6 +671,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
             $mod_lang = return_specified_module_language($language, "Products");
         }
         $trans_str = ($mod_lang[$str] != '') ? $mod_lang[$str] : (($app_lang[$str] != '') ? $app_lang[$str] : $str);
+
         return $trans_str;
     }
 
@@ -653,6 +681,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
         if (is_numeric($value)) {
             $number = number_format($value, $decimals, $decimal_point, $thousands_separator);
         }
+
         return $number;
     }
 
@@ -667,9 +696,9 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
         } else {
             $sql = "SELECT vtiger_currency_info.*, id AS currency_id, '' AS conv_rate FROM vtiger_currency_info WHERE  vtiger_currency_info.id=?";
         }
-        $res = $db->pquery($sql, array($id));
+        $res = $db->pquery($sql, [$id]);
 
-        $currency_info = array();
+        $currency_info = [];
         $currency_info["currency_id"] = $db->query_result($res, 0, "currency_id");
         $currency_info["conversion_rate"] = $db->query_result($res, 0, "conv_rate");
         $currency_info["currency_name"] = $db->query_result($res, 0, "currency_name");
@@ -696,30 +725,30 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
             " left join vtiger_service on vtiger_service.serviceid=vtiger_inventoryproductrel.productid " .
             " left join vtiger_crmentity as c2 on c2.crmid = vtiger_service.serviceid " .
             " where id = ? ORDER BY sequence_no";
+
         return $query;
     }
 
     public function getOrgOldCols()
     {
-        $org_cols = array(
+        $org_cols = [
             "organizationname" => "COMPANY_NAME",
-            "address" => "COMPANY_ADDRESS",
-            "city" => "COMPANY_CITY",
-            "state" => "COMPANY_STATE",
-            "code" => "COMPANY_ZIP",
-            "country" => "COMPANY_COUNTRY",
-            "phone" => "COMPANY_PHONE",
-            "fax" => "COMPANY_FAX",
-            "website" => "COMPANY_WEBSITE",
-            "logo" => "COMPANY_LOGO",
-        );
+            "address"          => "COMPANY_ADDRESS",
+            "city"             => "COMPANY_CITY",
+            "state"            => "COMPANY_STATE",
+            "code"             => "COMPANY_ZIP",
+            "country"          => "COMPANY_COUNTRY",
+            "phone"            => "COMPANY_PHONE",
+            "fax"              => "COMPANY_FAX",
+            "website"          => "COMPANY_WEBSITE",
+            "logo"             => "COMPANY_LOGO",
+        ];
 
         return $org_cols;
     }
 
     public function isInventoryModule($module)
     {
-
         $class_name = $module . "_Module_Model";
 
         if (class_exists($class_name)) {
@@ -735,7 +764,6 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
 
     public function getUITypeRelatedModule($uitype, $fk_record)
     {
-
         $related_module = "";
         switch ($uitype) {
             case "51":
@@ -781,18 +809,18 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
     {
         return array(
             "Last Modified By" => "Last Modified",
-            "Conversion Rate" => "LBL_CONVERSION_RATE",
-            "List Price" => "LBL_LIST_PRICE",
-            "Discount" => "LBL_DISCOUNT",
-            "Quantity" => "LBL_QUANTITY",
-            "Comments" => "LBL_COMMENTS",
-            "Currency" => "LBL_CURRENCY",
-            "Due Date" => "LBL_DUE_DATE",
-            "End Time" => "End Time",
-            "Related to" => "LBL_RELATED_TO",
-            "Assigned To" => "Assigned To",
-            "Created Time" => "Created Time",
-            "Modified Time" => "Modified Time"
+            "Conversion Rate"  => "LBL_CONVERSION_RATE",
+            "List Price"       => "LBL_LIST_PRICE",
+            "Discount"         => "LBL_DISCOUNT",
+            "Quantity"         => "LBL_QUANTITY",
+            "Comments"         => "LBL_COMMENTS",
+            "Currency"         => "LBL_CURRENCY",
+            "Due Date"         => "LBL_DUE_DATE",
+            "End Time"         => "End Time",
+            "Related to"       => "LBL_RELATED_TO",
+            "Assigned To"      => "Assigned To",
+            "Created Time"     => "Created Time",
+            "Modified Time"    => "Modified Time"
         );
     }
 }

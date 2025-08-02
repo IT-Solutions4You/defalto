@@ -1,14 +1,14 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
-if (!function_exists('setCFGNumberValue')) {
 
+if (!function_exists('setCFGNumberValue')) {
     function setCFGNumberValue($name, $value = '0')
     {
         global $focus;
@@ -16,6 +16,7 @@ if (!function_exists('setCFGNumberValue')) {
         if (!isset($focus->PDFMakerCFGNumberValue[$name]) || empty($focus->PDFMakerCFGNumberValue[$name])) {
             $focus->PDFMakerCFGNumberValue[$name] = $value;
         }
+
         return "";
     }
 }
@@ -23,6 +24,7 @@ if (!function_exists('sumCFGNumberValue')) {
     function sumCFGNumberValue($name, $value1)
     {
         mathCFGNumberValue($name, "+", $value1);
+
         return "";
     }
 }
@@ -31,6 +33,7 @@ if (!function_exists('deductCFGNumberValue')) {
     function deductCFGNumberValue($name, $value1)
     {
         mathCFGNumberValue($name, "-", $value1);
+
         return "";
     }
 }
@@ -77,21 +80,22 @@ if (!function_exists('mathCFGNumberValue')) {
                 $focus->PDFMakerCFGNumberValue[$name] -= $newvalue;
             }
         }
+
         return "";
     }
-
 }
 /**
  * This function show number value
+ *
  * @param $name - number name
  * */
 if (!function_exists('showCFGNumberValue')) {
-
     function showCFGNumberValue($name)
     {
         global $focus;
         if (isset($focus->PDFMakerCFGNumberValue[$name])) {
             $value = $focus->PDFMakerCFGNumberValue[$name];
+
             return its4you_formatNumberToPDF($value);
         } else {
             return '[CUSTOM FUNCTION ERROR: number value "' . $name . '" is not defined.]';

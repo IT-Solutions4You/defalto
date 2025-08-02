@@ -1,58 +1,72 @@
 <?php
-/*+***********************************************************************************
+/**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- *************************************************************************************/
+ *********************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class PriceBooks_ListView_Model extends Vtiger_ListView_Model {
-	/*
-	 * Function to give advance links of a module
-	 *	@RETURN array of advanced links
-	*/
-	public function getAdvancedLinks() {
-		$moduleModel = $this->getModule();
-		$advancedLinks = array();
+class PriceBooks_ListView_Model extends Vtiger_ListView_Model
+{
+    /*
+     * Function to give advance links of a module
+     *	@RETURN array of advanced links
+    */
+    public function getAdvancedLinks()
+    {
+        $moduleModel = $this->getModule();
+        $advancedLinks = [];
 
-		$createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'CreateView');
-		$importPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Import');
-		if($importPermission && $createPermission) {
-			$advancedLinks[] = array(
-							'linktype' => 'LISTVIEW',
-							'linklabel' => 'LBL_IMPORT',
-							'linkurl' => $moduleModel->getImportUrl(),
-							'linkicon' => ''
-			);
-		}
+        $createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'CreateView');
+        $importPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Import');
+        if ($importPermission && $createPermission) {
+            $advancedLinks[] = [
+                'linktype'  => 'LISTVIEW',
+                'linklabel' => 'LBL_IMPORT',
+                'linkurl'   => $moduleModel->getImportUrl(),
+                'linkicon'  => ''
+            ];
+        }
 
-		$exportPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Export');
-		if($exportPermission) {
-			$advancedLinks[] = array(
-					'linktype' => 'LISTVIEW',
-					'linklabel' => 'LBL_EXPORT',
-					'linkurl' => 'javascript:Vtiger_List_Js.triggerExportAction("'.$this->getModule()->getExportUrl().'")',
-					'linkicon' => ''
-				);
-		}
-		return $advancedLinks;
-	}
+        $exportPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Export');
+        if ($exportPermission) {
+            $advancedLinks[] = [
+                'linktype'  => 'LISTVIEW',
+                'linklabel' => 'LBL_EXPORT',
+                'linkurl'   => 'javascript:Vtiger_List_Js.triggerExportAction("' . $this->getModule()->getExportUrl() . '")',
+                'linkicon'  => ''
+            ];
+        }
 
-	/**
-	 * Function to get the list view entries
-	 * @param Vtiger_Paging_Model $pagingModel
-	 * @return <Array> - Associative array of record id mapped to Vtiger_Record_Model instance.
-	 */
-	public function getListViewEntries($pagingModel) {
-		$db = PearDatabase::getInstance();
+        return $advancedLinks;
+    }
 
-		$moduleName = $this->getModule()->get('name');
-		$moduleFocus = CRMEntity::getInstance($moduleName);
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$queryGenerator = $this->get('query_generator');
-		$listViewContoller = $this->get('listview_controller');
+    /**
+     * Function to get the list view entries
+     *
+     * @param Vtiger_Paging_Model $pagingModel
+     *
+     * @return <Array> - Associative array of record id mapped to Vtiger_Record_Model instance.
+     */
+    public function getListViewEntries($pagingModel)
+    {
+        $db = PearDatabase::getInstance();
+
+        $moduleName = $this->getModule()->get('name');
+        $moduleFocus = CRMEntity::getInstance($moduleName);
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        $queryGenerator = $this->get('query_generator');
+        $listViewContoller = $this->get('listview_controller');
         $viewId = $this->getViewId($pagingModel);
         $searchParams = $this->get('search_params');
 
@@ -61,131 +75,132 @@ class PriceBooks_ListView_Model extends Vtiger_ListView_Model {
         }
 
         $glue = "";
-        if(php7_count($queryGenerator->getWhereFields()) > 0 && (php7_count($searchParams)) > 0) {
+        if (php7_count($queryGenerator->getWhereFields()) > 0 && (php7_count($searchParams)) > 0) {
             $glue = QueryGenerator::$AND;
         }
         $queryGenerator->parseAdvFilterList($searchParams, $glue);
-        
-		$searchKey = $this->get('search_key');
-		$searchValue = $this->get('search_value');
-		$operator = $this->get('operator');
-		if(!empty($searchKey)) {
-			$queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator));
-		}
+
+        $searchKey = $this->get('search_key');
+        $searchValue = $this->get('search_value');
+        $operator = $this->get('operator');
+        if (!empty($searchKey)) {
+            $queryGenerator->addUserSearchConditions(['search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator]);
+        }
 
         $this->retrieveOrderBy($viewId);
 
-		$listQuery = $this->getQuery();
+        $listQuery = $this->getQuery();
 
-		$sourceModule = $this->get('src_module');
-		$sourceField = $this->get('src_field');
-		if(!empty($sourceModule)) {
-			if(method_exists($moduleModel, 'getQueryByModuleField')) {
-				$overrideQuery = $moduleModel->getQueryByModuleField($sourceModule, $this->get('src_field'), $this->get('src_record'), $listQuery, $this->get('currency_id'));
-				if(!empty($overrideQuery)) {
-					$listQuery = $overrideQuery;
-				}
-			}
-		}
+        $sourceModule = $this->get('src_module');
+        $sourceField = $this->get('src_field');
+        if (!empty($sourceModule)) {
+            if (method_exists($moduleModel, 'getQueryByModuleField')) {
+                $overrideQuery = $moduleModel->getQueryByModuleField($sourceModule, $this->get('src_field'), $this->get('src_record'), $listQuery, $this->get('currency_id'));
+                if (!empty($overrideQuery)) {
+                    $listQuery = $overrideQuery;
+                }
+            }
+        }
 
-		$startIndex = $pagingModel->getStartIndex();
-		$pageLimit = $pagingModel->getPageLimit();
+        $startIndex = $pagingModel->getStartIndex();
+        $pageLimit = $pagingModel->getPageLimit();
 
         $listQuery .= $this->getQueryGenerator()->getOrderByClause();
 
         $_SESSION['lvs'][$moduleName][$viewId]['start'] = $pagingModel->get('page');
-		ListViewSession::setSessionQuery($moduleName, $listQuery, $viewId);
-		
-		//For Pricebooks popup in Products and Services Related list
-		if($sourceField !== 'productsRelatedList') {
-			$listQuery .= " LIMIT $startIndex,".($pageLimit+1);
-		}
-		$listResult = $db->pquery($listQuery, array());
+        ListViewSession::setSessionQuery($moduleName, $listQuery, $viewId);
 
-		$listViewRecordModels = array();
-		$listViewEntries =  $listViewContoller->getListViewRecords($moduleFocus,$moduleName, $listResult);
+        //For Pricebooks popup in Products and Services Related list
+        if ($sourceField !== 'productsRelatedList') {
+            $listQuery .= " LIMIT $startIndex," . ($pageLimit + 1);
+        }
+        $listResult = $db->pquery($listQuery, []);
 
-		$pagingModel->calculatePageRange($listViewEntries);
+        $listViewRecordModels = [];
+        $listViewEntries = $listViewContoller->getListViewRecords($moduleFocus, $moduleName, $listResult);
 
-		//To check if next page
-		if($db->num_rows($listResult) > $pageLimit && $sourceField !== 'productsRelatedList'){
-			array_pop($listViewEntries);
-			$pagingModel->set('nextPageExists', true);
-		} else {
-			$pagingModel->set('nextPageExists', false);
-		}
+        $pagingModel->calculatePageRange($listViewEntries);
 
-		$index = 0;
-		foreach($listViewEntries as $recordId => $record) {
-			$rawData = $db->query_result_rowdata($listResult, $index++);
-			$record['id'] = $recordId;
+        //To check if next page
+        if ($db->num_rows($listResult) > $pageLimit && $sourceField !== 'productsRelatedList') {
+            array_pop($listViewEntries);
+            $pagingModel->set('nextPageExists', true);
+        } else {
+            $pagingModel->set('nextPageExists', false);
+        }
 
-			// Pass through the src_record state to dependent model
-			if ($this->has('src_record')) {
-				$rawData['src_record'] = $this->get('src_record');
-			}
+        $index = 0;
+        foreach ($listViewEntries as $recordId => $record) {
+            $rawData = $db->query_result_rowdata($listResult, $index++);
+            $record['id'] = $recordId;
 
-			$listViewRecordModels[$recordId] = $moduleModel->getRecordFromArray($record, $rawData);
-		}
+            // Pass through the src_record state to dependent model
+            if ($this->has('src_record')) {
+                $rawData['src_record'] = $this->get('src_record');
+            }
 
-		return $listViewRecordModels;
-	}
+            $listViewRecordModels[$recordId] = $moduleModel->getRecordFromArray($record, $rawData);
+        }
 
-	/**
-	 * Function to get the list view entries
-	 * @param Vtiger_Paging_Model $pagingModel
-	 * @return <Array> - Associative array of record id mapped to Vtiger_Record_Model instance.
-	 */
-	public function getListViewCount() {
-		$db = PearDatabase::getInstance();
+        return $listViewRecordModels;
+    }
 
-		$queryGenerator = $this->get('query_generator');
+    /**
+     * Function to get the list view entries
+     *
+     * @param Vtiger_Paging_Model $pagingModel
+     *
+     * @return <Array> - Associative array of record id mapped to Vtiger_Record_Model instance.
+     */
+    public function getListViewCount()
+    {
+        $db = PearDatabase::getInstance();
 
-		$moduleName = $this->getModule()->get('name');
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        $queryGenerator = $this->get('query_generator');
+
+        $moduleName = $this->getModule()->get('name');
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 
         $searchParams = $this->get('search_params');
-        if(empty($searchParams)) {
-            $searchParams = array();
+        if (empty($searchParams)) {
+            $searchParams = [];
         }
-        
+
         $glue = "";
-        if(php7_count($queryGenerator->getWhereFields()) > 0 && (php7_count($searchParams)) > 0) {
+        if (php7_count($queryGenerator->getWhereFields()) > 0 && (php7_count($searchParams)) > 0) {
             $glue = QueryGenerator::$AND;
         }
         $queryGenerator->parseAdvFilterList($searchParams, $glue);
-        
+
         $searchKey = $this->get('search_key');
-		$searchValue = $this->get('search_value');
-		$operator = $this->get('operator');
-		if(!empty($searchKey)) {
-			$queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator));
-		}
-        
-        
+        $searchValue = $this->get('search_value');
+        $operator = $this->get('operator');
+        if (!empty($searchKey)) {
+            $queryGenerator->addUserSearchConditions(['search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator]);
+        }
 
-		$listQuery = $this->getQuery();
-		$sourceModule = $this->get('src_module');
-		if(!empty($sourceModule)) {
-			if(method_exists($moduleModel, 'getQueryByModuleField')) {
-				$overrideQuery = $moduleModel->getQueryByModuleField($sourceModule, $this->get('src_field'), $this->get('src_record'), $listQuery, $this->get('currency_id'));
-				if(!empty($overrideQuery)) {
-					$listQuery = $overrideQuery;
-				}
-			}
-		}
-		$position = stripos($listQuery, ' from ');
-		if ($position) {
-			$split = preg_split('/ from /i', $listQuery);
-			$splitCount = php7_count($split);
-			$listQuery = 'SELECT count(*) AS count ';
-			for ($i=1; $i<$splitCount; $i++) {
-				$listQuery = $listQuery. ' FROM ' .$split[$i];
-			}
-		}
+        $listQuery = $this->getQuery();
+        $sourceModule = $this->get('src_module');
+        if (!empty($sourceModule)) {
+            if (method_exists($moduleModel, 'getQueryByModuleField')) {
+                $overrideQuery = $moduleModel->getQueryByModuleField($sourceModule, $this->get('src_field'), $this->get('src_record'), $listQuery, $this->get('currency_id'));
+                if (!empty($overrideQuery)) {
+                    $listQuery = $overrideQuery;
+                }
+            }
+        }
+        $position = stripos($listQuery, ' from ');
+        if ($position) {
+            $split = preg_split('/ from /i', $listQuery);
+            $splitCount = php7_count($split);
+            $listQuery = 'SELECT count(*) AS count ';
+            for ($i = 1; $i < $splitCount; $i++) {
+                $listQuery = $listQuery . ' FROM ' . $split[$i];
+            }
+        }
 
-		$listResult = $db->pquery($listQuery, array());
-		return $db->query_result($listResult, 0, 'count');
-	}
+        $listResult = $db->pquery($listQuery, []);
 
+        return $db->query_result($listResult, 0, 'count');
+    }
 }

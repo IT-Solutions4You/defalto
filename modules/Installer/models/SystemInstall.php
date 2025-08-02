@@ -1,9 +1,17 @@
 <?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 class Installer_SystemInstall_Model extends Vtiger_Base_Model
 {
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getInstance(string $version): self
     {
@@ -23,21 +31,21 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function retrieveInfo(): void
     {
         $versions = self::getApiInfo();
 
-        if(empty($versions[$this->getVersion()])) {
-            throw new AppException(vtranslate('Version not found', 'Installer') . ': ' . $this->getVersion());
+        if (empty($versions[$this->getVersion()])) {
+            throw new Exception(vtranslate('Version not found', 'Installer') . ': ' . $this->getVersion());
         }
 
         $this->setData($versions[$this->getVersion()]);
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getApiInfo()
     {
@@ -54,7 +62,7 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getAll(): array
     {

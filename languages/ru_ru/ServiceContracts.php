@@ -1,5 +1,5 @@
 <?php
-/*+**********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -7,39 +7,47 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
-$languageStrings = array(
-	'ServiceContracts'             => 'Сервисные Контракты', 
-	'SINGLE_ServiceContracts'      => 'Сервисные Контракты', 
-	'LBL_ADD_RECORD'               => 'Добавить контракта службы'        , 
-	'LBL_RECORDS_LIST'             => 'Контракты на обслуживание Список'      , 
-	'LBL_SERVICE_CONTRACT_INFORMATION' => 'Информация Сервисного Контракта', 
-	'Contract No'                  => 'Контракт №'        , 
-	'Start Date'                   => 'Начало'                , 
-	'End Date'                     => 'Дата Завершения', 
-	'Tracking Unit'                => 'Отслеживаемая Единица', 
-	'Total Units'                  => 'Всего Единиц'     , 
-	'Used Units'                   => 'Использовано Единиц', 
-	'Progress'                     => 'Прогрес (в %)'       , 
-	'Planned Duration'             => 'Плановая Продолжительность (в Днях)', 
-	'Actual Duration'              => 'Фактическая Продолжительность (в Днях)', 
-        'Type'                         => 'Тип' ,
-    'Related to'                   => 'В связи с'              ,
-	'Hours'                        => 'Часов',
-	'Days'                         => 'Дней',
-	'Incidents'                    => 'Происшествия',
-	'Normal'                       => 'Нормальный',
-	'Support'                      => 'Поддержка',
-	'Administrative'               => 'Административный',
-	'Undefined'                    => 'Неопределенный',
-	'In Planning'                  => 'В планирования',
-	'On Hold'                      => 'На Удержании',
-	'Complete'                     => 'Полный',
-	'Archived'                     => 'Архивные',
-	'Low'                          => 'Низкий',
-	'High'                         => 'Высокий',
-	'Services'                     => 'Сервисы',
-	'In Progress'                  => 'В Процессе',
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-  'Service Contracts' => 'Сервисные Контракты',
+$languageStrings = [
+    'ServiceContracts'                 => 'Сервисные Контракты',
+    'SINGLE_ServiceContracts'          => 'Сервисные Контракты',
+    'LBL_ADD_RECORD'                   => 'Добавить контракта службы',
+    'LBL_RECORDS_LIST'                 => 'Контракты на обслуживание Список',
+    'LBL_SERVICE_CONTRACT_INFORMATION' => 'Информация Сервисного Контракта',
+    'Contract No'                      => 'Контракт №',
+    'Start Date'                       => 'Начало',
+    'End Date'                         => 'Дата Завершения',
+    'Tracking Unit'                    => 'Отслеживаемая Единица',
+    'Total Units'                      => 'Всего Единиц',
+    'Used Units'                       => 'Использовано Единиц',
+    'Progress'                         => 'Прогрес (в %)',
+    'Planned Duration'                 => 'Плановая Продолжительность (в Днях)',
+    'Actual Duration'                  => 'Фактическая Продолжительность (в Днях)',
+    'Type'                             => 'Тип',
+    'Related to'                       => 'В связи с',
+    'Hours'                            => 'Часов',
+    'Days'                             => 'Дней',
+    'Incidents'                        => 'Происшествия',
+    'Normal'                           => 'Нормальный',
+    'Support'                          => 'Поддержка',
+    'Administrative'                   => 'Административный',
+    'Undefined'                        => 'Неопределенный',
+    'In Planning'                      => 'В планирования',
+    'On Hold'                          => 'На Удержании',
+    'Complete'                         => 'Полный',
+    'Archived'                         => 'Архивные',
+    'Low'                              => 'Низкий',
+    'High'                             => 'Высокий',
+    'Services'                         => 'Сервисы',
+    'In Progress'                      => 'В Процессе',
 
-);
+    'Service Contracts' => 'Сервисные Контракты',
+];

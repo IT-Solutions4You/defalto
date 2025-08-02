@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_CustomLabels_Model extends Vtiger_Base_Model
 {
     public $labelKey;
@@ -44,10 +45,10 @@ class EMAILMaker_CustomLabels_Model extends Vtiger_Base_Model
     {
         if (!empty($this->labelId)) {
             $sql = 'SELECT * FROM vtiger_emakertemplates_label_keys WHERE label_id=?';
-            $params = array($this->labelId);
+            $params = [$this->labelId];
         } else {
             $sql = 'SELECT * FROM vtiger_emakertemplates_label_keys WHERE label_key=?';
-            $params = array($this->labelKey);
+            $params = [$this->labelKey];
         }
 
         $result = $this->db->pquery($sql, $params);
@@ -86,16 +87,18 @@ class EMAILMaker_CustomLabels_Model extends Vtiger_Base_Model
      */
     public function saveLabelKey()
     {
-        $this->db->pquery('INSERT IGNORE INTO vtiger_emakertemplates_label_keys (label_key) VALUES (?)',
-            array($this->getLabelKey())
+        $this->db->pquery(
+            'INSERT IGNORE INTO vtiger_emakertemplates_label_keys (label_key) VALUES (?)',
+            [$this->getLabelKey()]
         );
         $this->retrieveInfo();
     }
 
     public function deleteLabelKeys()
     {
-        $this->db->pquery('DELETE FROM vtiger_emakertemplates_label_keys WHERE label_id=?',
-            array($this->getLabelId())
+        $this->db->pquery(
+            'DELETE FROM vtiger_emakertemplates_label_keys WHERE label_id=?',
+            [$this->getLabelId()]
         );
     }
 
@@ -118,7 +121,7 @@ class EMAILMaker_CustomLabels_Model extends Vtiger_Base_Model
 
     public function deleteLabelValues()
     {
-        $this->db->pquery('DELETE FROM vtiger_emakertemplates_label_vals WHERE label_id=?', array($this->getLabelId()));
+        $this->db->pquery('DELETE FROM vtiger_emakertemplates_label_vals WHERE label_id=?', [$this->getLabelId()]);
     }
 
     public function saveLabelValues(Vtiger_Request $request)
@@ -138,7 +141,7 @@ class EMAILMaker_CustomLabels_Model extends Vtiger_Base_Model
     public function getLanguageValues()
     {
         $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
-        list($objectLabels, $languages) = $EMAILMaker->GetCustomLabels();
+        [$objectLabels, $languages] = $EMAILMaker->GetCustomLabels();
 
         $objectLabel = $objectLabels[$this->getLabelId()];
 
@@ -148,17 +151,20 @@ class EMAILMaker_CustomLabels_Model extends Vtiger_Base_Model
     public function saveLabelValue($languageId, $labelValue)
     {
         $labelId = $this->getLabelId();
-        $result2 = $this->db->pquery('SELECT * FROM vtiger_emakertemplates_label_vals WHERE label_id=? AND lang_id=?',
-            array($labelId, $languageId)
+        $result2 = $this->db->pquery(
+            'SELECT * FROM vtiger_emakertemplates_label_vals WHERE label_id=? AND lang_id=?',
+            [$labelId, $languageId]
         );
-        $params = array($labelValue, $labelId, $languageId);
+        $params = [$labelValue, $labelId, $languageId];
 
         if ($this->db->num_rows($result2)) {
-            $this->db->pquery('UPDATE vtiger_emakertemplates_label_vals SET label_value=? WHERE label_id=? AND lang_id=?',
+            $this->db->pquery(
+                'UPDATE vtiger_emakertemplates_label_vals SET label_value=? WHERE label_id=? AND lang_id=?',
                 $params
             );
         } elseif (!empty($labelValue)) {
-            $this->db->pquery('INSERT INTO vtiger_emakertemplates_label_vals (label_value, label_id,lang_id) VALUES (?,?,?)',
+            $this->db->pquery(
+                'INSERT INTO vtiger_emakertemplates_label_vals (label_value, label_id,lang_id) VALUES (?,?,?)',
                 $params
             );
         }

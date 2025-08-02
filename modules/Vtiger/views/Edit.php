@@ -1,59 +1,75 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-Class Vtiger_Edit_View extends Vtiger_Index_View {
-	protected $record = false;
-	function __construct() {
-		parent::__construct();
-	}
+class Vtiger_Edit_View extends Vtiger_Index_View
+{
+    protected $record = false;
 
-	public function requiresPermission(\Vtiger_Request $request) {
-		$permissions = parent::requiresPermission($request);
-		$record = $request->get('record');
-		$actionName = 'CreateView';
-		if ($record && !$request->get('isDuplicate')) {
-			$actionName = 'EditView';
-		}
-		$permissions[] = array('module_parameter' => 'module', 'action' => $actionName, 'record_parameter' => 'record');
-		return $permissions;
-	}
-	
-	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$record = $request->get('record');
+    function __construct()
+    {
+        parent::__construct();
+    }
 
-		$nonEntityModules = array('Users', 'Portal', 'Rss');
-		if ($record && !in_array($moduleName, $nonEntityModules)) {
-			$recordEntityName = getSalesEntityType($record);
-			if ($recordEntityName !== $moduleName) {
-				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-			}
-		}
-		return parent::checkPermission($request);
-	}
+    public function requiresPermission(\Vtiger_Request $request)
+    {
+        $permissions = parent::requiresPermission($request);
+        $record = $request->get('record');
+        $actionName = 'CreateView';
+        if ($record && !$request->get('isDuplicate')) {
+            $actionName = 'EditView';
+        }
+        $permissions[] = ['module_parameter' => 'module', 'action' => $actionName, 'record_parameter' => 'record'];
 
-	public function setModuleInfo($request, $moduleModel) {
-		$fieldsInfo = array();
-		$basicLinks = array();
-		$settingLinks = array();
+        return $permissions;
+    }
 
-		$moduleFields = $moduleModel->getFields();
-		foreach($moduleFields as $fieldName => $fieldModel){
-			$fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();
-		}
+    public function checkPermission(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $record = $request->get('record');
 
-		$viewer = $this->getViewer($request);
-		$viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
-		$viewer->assign('MODULE_BASIC_ACTIONS', $basicLinks);
-		$viewer->assign('MODULE_SETTING_ACTIONS', $settingLinks);
-	}
+        $nonEntityModules = ['Users', 'Portal', 'Rss'];
+        if ($record && !in_array($moduleName, $nonEntityModules)) {
+            $recordEntityName = getSalesEntityType($record);
+            if ($recordEntityName !== $moduleName) {
+                throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+            }
+        }
+
+        return parent::checkPermission($request);
+    }
+
+    public function setModuleInfo($request, $moduleModel)
+    {
+        $fieldsInfo = [];
+        $basicLinks = [];
+        $settingLinks = [];
+
+        $moduleFields = $moduleModel->getFields();
+        foreach ($moduleFields as $fieldName => $fieldModel) {
+            $fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();
+        }
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
+        $viewer->assign('MODULE_BASIC_ACTIONS', $basicLinks);
+        $viewer->assign('MODULE_SETTING_ACTIONS', $settingLinks);
+    }
 
     function preProcess(Vtiger_Request $request, $display = true)
     {
@@ -166,12 +182,14 @@ Class Vtiger_Edit_View extends Vtiger_Index_View {
         }
     }
 
-    public function getOverlayHeaderScripts(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$jsFileNames = array(
-			"modules.$moduleName.resources.Edit",
-		);
-		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-		return $jsScriptInstances;
-	}
+    public function getOverlayHeaderScripts(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $jsFileNames = [
+            "modules.$moduleName.resources.Edit",
+        ];
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+
+        return $jsScriptInstances;
+    }
 }

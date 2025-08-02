@@ -1,15 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_ExportData_Action extends Vtiger_Mass_Action
 {
-
     private $moduleInstance;
     private $focus;
 
@@ -48,13 +48,12 @@ class EMAILMaker_ExportData_Action extends Vtiger_Mass_Action
                 $sql .= " ORDER BY vtiger_emakertemplates." . $orderBy . " " . $sortOrder;
             }
 
-            $result = $adb->pquery($sql, array());
+            $result = $adb->pquery($sql, []);
         }
-        $entries = array();
+        $entries = [];
         $num_rows = $adb->num_rows($result);
 
         while ($row = $adb->fetchByAssoc($result)) {
-
             $currModule = $row['module'];
             $templateid = $row['templateid'];
 
@@ -67,12 +66,10 @@ class EMAILMaker_ExportData_Action extends Vtiger_Mass_Action
         }
 
         $this->output($entries);
-
     }
 
     public function getExportQuery(Vtiger_Request $request)
     {
-
         $query = "SELECT vtiger_emakertemplates.* FROM vtiger_emakertemplates LEFT JOIN vtiger_emakertemplates_displayed USING(templateid)";
         $idList = $this->getRecordsListFromRequest($request);
 
@@ -81,6 +78,7 @@ class EMAILMaker_ExportData_Action extends Vtiger_Mass_Action
             $idList = implode(',', $idList);
             $query .= 'AND vtiger_emakertemplates.templateid IN (' . $idList . ')';
         }
+
         return $query;
     }
 
@@ -120,8 +118,8 @@ class EMAILMaker_ExportData_Action extends Vtiger_Mass_Action
 
     private function cdataEncode($text, $encode = false)
     {
-        $From = array("<![CDATA[", "]]>");
-        $To = array("<|!|[%|CDATA|[%|", "|%]|]|>");
+        $From = ["<![CDATA[", "]]>"];
+        $To = ["<|!|[%|CDATA|[%|", "|%]|]|>"];
 
         if ($text != "") {
             $pos1 = strpos("<![CDATA[", $text);
@@ -137,6 +135,7 @@ class EMAILMaker_ExportData_Action extends Vtiger_Mass_Action
         } else {
             $content = "";
         }
+
         return $content;
     }
 }

@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
 {
@@ -7,7 +15,7 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
         if (!$currentUserModel->isAdminUser()) {
-            throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
     }
 
@@ -34,6 +42,7 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function systemModal(Vtiger_Request $request): void
@@ -47,6 +56,7 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function extensionModal(Vtiger_Request $request): void
@@ -60,8 +70,9 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function licenseModal(Vtiger_Request $request): void
     {
@@ -80,13 +91,14 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
-    public function licenseSave(Vtiger_Request $request): void {
+    public function licenseSave(Vtiger_Request $request): void
+    {
         $id = (int)$request->get('license_id');
         $name = $request->get('license_name');
 
-        if(!empty($id)) {
+        if (!empty($id)) {
             $license = Installer_License_Model::getInstanceById($id);
         } else {
             $license = Installer_License_Model::getInstance($name);
@@ -113,20 +125,22 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
-    public function licenseDelete(Vtiger_Request $request): void {
+    public function licenseDelete(Vtiger_Request $request): void
+    {
         $id = (int)$request->get('license_id');
         $message = vtranslate('LBL_LICENSE_ALREADY_DELETED', 'Installer');
 
-        if(!empty($id)) {
+        if (!empty($id)) {
             $license = Installer_License_Model::getInstanceById($id);
 
-            if($license) {
+            if ($license) {
                 $deactivate = Installer_Api_Model::getInstance()->deactivateLicenseInfo($license->getName());
 
-                if($deactivate) {
+                if ($deactivate) {
                     $license->delete();
                     $message = vtranslate('LBL_LICENSE_DELETED', 'Installer');
                 }
@@ -137,7 +151,6 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
         $response->setResult(['success' => true, 'message' => $message]);
         $response->emit();
     }
-
 
     /**
      * @throws Exception
@@ -155,6 +168,7 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
 
         (new Migration_Index_View())->applyDBChanges();
     }
+
     /**
      * @throws Exception
      */

@@ -1,5 +1,5 @@
 <?php
-/*+**********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -7,28 +7,37 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
-$languageStrings = array(
-	'ALVT'                         => 'Последние Контрагенты', // KEY 5.x: Top Accounts
-	'PLVT'                         => 'Последние Сделки', // KEY 5.x: Top Potentials
-	'QLTQ'                         => 'Последние Предложения', // KEY 5.x: Top Quotes
-	'CVLVT'                        => 'Ключевые Показатели', // KEY 5.x: Key Metrics
-	'HLT'                          => 'Топ Билеты Поддержка'         , 
-	'GRT'                          => 'Положение Моей Группы', // KEY 5.x: My Group Allocation
-	'OLTSO'                        => 'Последние Заказы на Продажу', // KEY 5.x: Top Sales Orders
-	'ILTI'                         => 'Последние Счета', // KEY 5.x: Top Invoices
-	'HDB'                          => 'Панель Главной Страницы', // KEY 5.x: Home Page Dashboard
-	'OLTPO'                        => 'Последние Заказы на Закупку', // KEY 5.x: Top Purchase Orders
-	'LTFAQ'                        => 'Мои Частые ЧаВо', // KEY 5.x: My Recent FAQs
-	'UA'                           => 'Ближайшие События', // KEY 5.x: LBL_UPCOMING_EVENTS
-	'PA'                           => 'События в процессе', // KEY 5.x: LBL_PENDING_EVENTS
-        'Home'                         => 'Приборная панель',
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-  'LBL_SAVE_ORDER' => 'Сохранить Порядок',
-  'LBL_ADD_NEW_DASHBOARD' => 'Добавить новую приборную панель',
-	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Максимум 30 символов разрешено для имени панели.',
-);
+$languageStrings = [
+    'ALVT'  => 'Последние Контрагенты',
+    'PLVT'  => 'Последние Сделки',
+    'QLTQ'  => 'Последние Предложения',
+    'CVLVT' => 'Ключевые Показатели',
+    'HLT'   => 'Топ Билеты Поддержка',
+    'GRT'   => 'Положение Моей Группы',
+    'OLTSO' => 'Последние Заказы на Продажу',
+    'ILTI'  => 'Последние Счета',
+    'HDB'   => 'Панель Главной Страницы',
+    'OLTPO' => 'Последние Заказы на Закупку',
+    'LTFAQ' => 'Мои Частые ЧаВо',
+    'UA'    => 'Ближайшие События',
+    'PA'    => 'События в процессе',
+    'Home'  => 'Приборная панель',
 
-$jsLanguageStrings = array(
-	'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Имя Dashboard не может не быть пустым',
-	'JS_NO_DATA_AVAILABLE' => 'Данные недоступны',
-);
+    'LBL_SAVE_ORDER'                       => 'Сохранить Порядок',
+    'LBL_ADD_NEW_DASHBOARD'                => 'Добавить новую приборную панель',
+    'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Максимум 30 символов разрешено для имени панели.',
+];
+
+$jsLanguageStrings = [
+    'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Имя Dashboard не может не быть пустым',
+    'JS_NO_DATA_AVAILABLE'            => 'Данные недоступны',
+];

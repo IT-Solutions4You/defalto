@@ -1,17 +1,18 @@
 <?php
-
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Appointments_Events_Action extends Vtiger_Action_Controller
 {
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function DeleteEventType(Vtiger_Request $request)
@@ -29,6 +30,7 @@ class Appointments_Events_Action extends Vtiger_Action_Controller
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      * @throws Exception
      */
@@ -53,20 +55,20 @@ class Appointments_Events_Action extends Vtiger_Action_Controller
 
                 $message = 'LBL_CREATED_EVENT_TYPE';
                 $recordInfo = [
-                    'id' => $eventType->getId(),
-                    'name' => $eventType->getName(),
+                    'id'               => $eventType->getId(),
+                    'name'             => $eventType->getName(),
                     'background_color' => $eventType->getBackgroundColor(),
-                    'text_color' => $eventType->getTextColor(),
-                    'visible' => 1,
+                    'text_color'       => $eventType->getTextColor(),
+                    'visible'          => 1,
                 ];
             }
         } else {
             $eventType->save();
             $recordInfo = [
-                'id' => $eventType->getId(),
-                'name' => $eventType->getName(),
+                'id'               => $eventType->getId(),
+                'name'             => $eventType->getName(),
                 'background_color' => $eventType->getBackgroundColor(),
-                'text_color' => $eventType->getTextColor(),
+                'text_color'       => $eventType->getTextColor(),
             ];
 
             $message = 'LBL_UPDATE_EVENT_TYPE';
@@ -76,7 +78,7 @@ class Appointments_Events_Action extends Vtiger_Action_Controller
         $response->setResult([
             'success' => $success,
             'message' => vtranslate($message, $module),
-            'record' => $recordInfo,
+            'record'  => $recordInfo,
         ]);
         $response->emit();
     }
@@ -99,7 +101,7 @@ class Appointments_Events_Action extends Vtiger_Action_Controller
 
         $response = new Vtiger_Response();
         $response->setResult([
-            'info' => $eventType->getRecord(),
+            'info'    => $eventType->getRecord(),
             'success' => true,
         ]);
         $response->emit();
@@ -107,13 +109,14 @@ class Appointments_Events_Action extends Vtiger_Action_Controller
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function Range(Vtiger_Request $request)
     {
         $response = new Vtiger_Response();
         $response->setResult([
-            'events' => Appointments_Events_Model::getEventsFromRequest($request),
+            'events'  => Appointments_Events_Model::getEventsFromRequest($request),
             'success' => true,
         ]);
         $response->emit();
@@ -121,6 +124,7 @@ class Appointments_Events_Action extends Vtiger_Action_Controller
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      * @throws Exception
      */

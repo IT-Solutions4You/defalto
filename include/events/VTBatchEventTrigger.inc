@@ -1,5 +1,5 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -8,21 +8,32 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class VTBatchEventTrigger extends VTEventTrigger{
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-	function trigger($data){
-		$adb = $this->adb;
+class VTBatchEventTrigger extends VTEventTrigger
+{
+    function trigger($data)
+    {
+        $adb = $this->adb;
+        $eventInfos = self::lookupCache($this->name);
 
-		$eventInfos = self::lookupCache($this->name);
-		if($eventInfos === false) {
-			$eventInfos = self::getActiveEventInfos($this->adb, $this->name);
-		}
-        if(!empty($eventInfos)){
-   		foreach($eventInfos as $eventInfo) {
-			require_once($eventInfo['handler_path']);
-			$handler = new $eventInfo['handler_class']();
-			$handler->handleEvent($this->name, $data);
-		}
+        if ($eventInfos === false) {
+            $eventInfos = self::getActiveEventInfos($this->adb, $this->name);
         }
-	}
+
+        if (!empty($eventInfos)) {
+            foreach ($eventInfos as $eventInfo) {
+                require_once($eventInfo['handler_path']);
+                $handler = new $eventInfo['handler_class']();
+                $handler->handleEvent($this->name, $data);
+            }
+        }
+    }
 }

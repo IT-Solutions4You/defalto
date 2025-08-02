@@ -1,15 +1,15 @@
 <?php
-/*+**********************************************************************************
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- ************************************************************************************/
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
-
+class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model
+{
     /**
      * @var PearDatabase
      */
@@ -28,12 +28,12 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function saveHeaderFields($moduleName, $headerFields): void
     {
         $table = (new Vtiger_Field_Model())->getFieldTable();
-        $table->updateData(['headerfieldsequence' => NULL, 'headerfield' => NULL,], ['tabid' => getTabid($moduleName)]);
+        $table->updateData(['headerfieldsequence' => null, 'headerfield' => null,], ['tabid' => getTabid($moduleName)]);
 
         foreach ($headerFields as $key => $fieldName) {
             $table->updateData(['headerfieldsequence' => $key + 1, 'headerfield' => 1,], ['tabid' => getTabid($moduleName), 'fieldname' => $fieldName]);
@@ -42,6 +42,7 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
 
     /**
      * @param $moduleName
+     *
      * @return array
      */
     public function getHeaderFields($moduleName): array
@@ -59,6 +60,7 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
 
     /**
      * @param $field
+     *
      * @return string[]
      */
     public static function getFieldModules($field)
@@ -74,6 +76,7 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
 
     /**
      * @param $moduleName
+     *
      * @return array
      * @throws Exception
      */
@@ -111,7 +114,10 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
                     $referenceFieldName = $referenceField->get('name');
                     $referenceFieldLabel = $referenceField->get('label');
 
-                    $options[implode(':', [$fieldName, $referenceModuleName])][implode(':', [$fieldName, $referenceModuleName, $referenceFieldName])] = vtranslate($referenceField->block->label, $referenceField->getModuleName()) . '##' . vtranslate($referenceFieldLabel, $referenceModuleName);
+                    $options[implode(':', [$fieldName, $referenceModuleName])][implode(':', [$fieldName, $referenceModuleName, $referenceFieldName])] = vtranslate(
+                            $referenceField->block->label,
+                            $referenceField->getModuleName()
+                        ) . '##' . vtranslate($referenceFieldLabel, $referenceModuleName);
                 }
             }
         }
@@ -121,7 +127,8 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
 
     /**
      * @param string $moduleName
-     * @param array $labels
+     * @param array  $labels
+     *
      * @return array
      * @throws Exception
      */
@@ -159,12 +166,14 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model {
                     $referenceFieldName = $referenceField->get('name');
                     $referenceFieldLabel = $referenceField->get('label');
 
-                    $options[implode(':', [$fieldName, $referenceModuleName, $referenceFieldName])] = vtranslate($fieldLabel, $moduleName) . ' - ' . vtranslate($referenceFieldLabel, $referenceModuleName);
+                    $options[implode(':', [$fieldName, $referenceModuleName, $referenceFieldName])] = vtranslate($fieldLabel, $moduleName) . ' - ' . vtranslate(
+                            $referenceFieldLabel,
+                            $referenceModuleName
+                        );
                 }
             }
         }
 
         return $options;
     }
-
 }

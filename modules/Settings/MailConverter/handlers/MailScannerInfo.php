@@ -1,19 +1,27 @@
 <?php
-/*********************************************************************************
- ** The contents of this file are subject to the vtiger CRM Public License Version 1.0
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- ********************************************************************************/
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 /**
  * Mail Scanner information manager.
  */
-class Settings_MailConverter_MailScannerInfo_Handler {
-	// id of this scanner record
+class Settings_MailConverter_MailScannerInfo_Handler
+{
+    // id of this scanner record
     public int $scannerid = 0;
     // name of this scanner
     public $scannername = false;
@@ -59,7 +67,7 @@ class Settings_MailConverter_MailScannerInfo_Handler {
     public string $client_access_token = '';
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getInstance($scannername, $initialize = true): self
     {
@@ -73,255 +81,297 @@ class Settings_MailConverter_MailScannerInfo_Handler {
     }
 
     /**
-	 * Encrypt/Decrypt input.
-	 * @access private
-	 */
-	function __crypt($password, $encrypt=true) {
-		require_once('include/utils/encryption.php');
-		$cryptobj = new Encryption();
-		if($encrypt) return $cryptobj->encrypt(trim($password));
-		else return $cryptobj->decrypt(trim($password));
-	}
+     * Encrypt/Decrypt input.
+     * @access private
+     */
+    function __crypt($password, $encrypt = true)
+    {
+        require_once('include/utils/encryption.php');
+        $cryptobj = new Encryption();
+        if ($encrypt) {
+            return $cryptobj->encrypt(trim($password));
+        } else {
+            return $cryptobj->decrypt(trim($password));
+        }
+    }
 
     /**
      * Initialize this instance.
-     * @throws AppException
+     * @throws Exception
      */
-	public function initialize($scannername) {
-		global $adb;
-		$result = $adb->pquery('SELECT * FROM vtiger_mailscanner WHERE scannername=?', Array($scannername));
+    public function initialize($scannername)
+    {
+        global $adb;
+        $result = $adb->pquery('SELECT * FROM vtiger_mailscanner WHERE scannername=?', [$scannername]);
         $row = $adb->fetchByAssoc($result);
 
-		if($row) {
-            $this->scannerid  = $row['scannerid'];
-            $this->scannername= $row['scannername'];
-            $this->server     = $row['server'];
-            $this->protocol   = $row['protocol'];
-            $this->username   = $row['username'];
-            $this->password   = $row['password'];
-            $this->password   = $this->__crypt($this->password, false);
-            $this->ssltype    = $row['ssltype'];
-            $this->sslmethod  = $row['sslmethod'];
+        if ($row) {
+            $this->scannerid = $row['scannerid'];
+            $this->scannername = $row['scannername'];
+            $this->server = $row['server'];
+            $this->protocol = $row['protocol'];
+            $this->username = $row['username'];
+            $this->password = $row['password'];
+            $this->password = $this->__crypt($this->password, false);
+            $this->ssltype = $row['ssltype'];
+            $this->sslmethod = $row['sslmethod'];
             $this->connecturl = $row['connecturl'];
-            $this->searchfor  = $row['searchfor'];
-            $this->markas     = $row['markas'];
-            $this->isvalid    = $row['isvalid'];
-            $this->time_zone   = $row['time_zone'];
-            $this->client_id   = decode_html($row['client_id']);
-            $this->client_secret   = decode_html($row['client_secret']);
-            $this->client_token   = decode_html($row['client_token']);
-            $this->client_access_token   = decode_html($row['client_access_token']);
+            $this->searchfor = $row['searchfor'];
+            $this->markas = $row['markas'];
+            $this->isvalid = $row['isvalid'];
+            $this->time_zone = $row['time_zone'];
+            $this->client_id = decode_html($row['client_id']);
+            $this->client_secret = decode_html($row['client_secret']);
+            $this->client_token = decode_html($row['client_token']);
+            $this->client_access_token = decode_html($row['client_access_token']);
 
-			$this->initializeFolderInfo();
-			$this->initializeRules();
+            $this->initializeFolderInfo();
+            $this->initializeRules();
             $this->retrieveClientAccessToken();
-		}
-	}
+        }
+    }
 
-	/**
-	 * Initialize the folder details
-	 */
-	function initializeFolderInfo() {
-		global $adb;
-		if($this->scannerid) {
-			$this->lastscan = Array();
-			$this->rescan   = Array();
-			$lastscanres = $adb->pquery("SELECT * FROM vtiger_mailscanner_folders WHERE scannerid=?",Array($this->scannerid));
-			$lastscancount = $adb->num_rows($lastscanres);
-			if($lastscancount) {
-				for($lsindex = 0; $lsindex < $lastscancount; ++$lsindex) {
-					$folder = $adb->query_result($lastscanres, $lsindex, 'foldername');
-					$scannedon =$adb->query_result($lastscanres, $lsindex, 'lastscan');
-					$nextrescan =$adb->query_result($lastscanres, $lsindex, 'rescan');
-					$this->lastscan[$folder] = $scannedon;
-					$this->rescan[$folder]   = ($nextrescan == 0)? false : true;
-				}
-			}
-		}
-	}
+    /**
+     * Initialize the folder details
+     */
+    function initializeFolderInfo()
+    {
+        global $adb;
+        if ($this->scannerid) {
+            $this->lastscan = [];
+            $this->rescan = [];
+            $lastscanres = $adb->pquery("SELECT * FROM vtiger_mailscanner_folders WHERE scannerid=?", [$this->scannerid]);
+            $lastscancount = $adb->num_rows($lastscanres);
+            if ($lastscancount) {
+                for ($lsindex = 0; $lsindex < $lastscancount; ++$lsindex) {
+                    $folder = $adb->query_result($lastscanres, $lsindex, 'foldername');
+                    $scannedon = $adb->query_result($lastscanres, $lsindex, 'lastscan');
+                    $nextrescan = $adb->query_result($lastscanres, $lsindex, 'rescan');
+                    $this->lastscan[$folder] = $scannedon;
+                    $this->rescan[$folder] = ($nextrescan == 0) ? false : true;
+                }
+            }
+        }
+    }
 
-	/**
-	 * Delete lastscan details with this scanner
-	 */
-	function clearLastscan() {
-		global $adb;
-		$adb->pquery("DELETE FROM vtiger_mailscanner_folders WHERE scannerid=?", Array($this->scannerid));
-		$this->lastscan = false;
-	}
+    /**
+     * Delete lastscan details with this scanner
+     */
+    function clearLastscan()
+    {
+        global $adb;
+        $adb->pquery("DELETE FROM vtiger_mailscanner_folders WHERE scannerid=?", [$this->scannerid]);
+        $this->lastscan = false;
+    }
 
-	/**
-	 * Update rescan flag on all folders
-	 */
-	function updateAllFolderRescan($rescanFlag=false) {
-		global $adb;
-		$useRescanFlag = $rescanFlag? 1 : 0;
-		$adb->pquery("UPDATE vtiger_mailscanner_folders set rescan=? WHERE scannerid=?",
-			Array($rescanFlag, $this->scannerid));
-		if($this->rescan) {
-			foreach($this->rescan as $folderName=>$oldRescanFlag) {
-				$this->rescan[$folderName] = $rescanFlag;
-			}
-		}
-	}
+    /**
+     * Update rescan flag on all folders
+     */
+    function updateAllFolderRescan($rescanFlag = false)
+    {
+        global $adb;
+        $useRescanFlag = $rescanFlag ? 1 : 0;
+        $adb->pquery(
+            "UPDATE vtiger_mailscanner_folders set rescan=? WHERE scannerid=?",
+            [$rescanFlag, $this->scannerid]
+        );
+        if ($this->rescan) {
+            foreach ($this->rescan as $folderName => $oldRescanFlag) {
+                $this->rescan[$folderName] = $rescanFlag;
+            }
+        }
+    }
 
-	function dateBasedOnMailServerTimezone($format='d-M-Y') {
-		$returnDate = NULL;
-		##--Fix for trac : http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/8051-## 
-                if ($this->timezone && trim($this->timezone)) { 
-			$currentTZ = date_default_timezone_get();
-			[$tzhours, $tzminutes] = explode(':', trim($this->time_zone));
-			$returnDate = date($format, strtotime(sprintf("%s hours %s minutes", $tzhours, $tzminutes)));
-			date_default_timezone_set($currentTZ);
-		} else {
-			// Search email one-day before to overcome timezone differences.
-			$returnDate = date($format, strtotime("-1 day"));
-		}
-		return $returnDate;
-	}
+    function dateBasedOnMailServerTimezone($format = 'd-M-Y')
+    {
+        $returnDate = null;
+        ##--Fix for trac : http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/8051-##
+        if ($this->timezone && trim($this->timezone)) {
+            $currentTZ = date_default_timezone_get();
+            [$tzhours, $tzminutes] = explode(':', trim($this->time_zone));
+            $returnDate = date($format, strtotime(sprintf("%s hours %s minutes", $tzhours, $tzminutes)));
+            date_default_timezone_set($currentTZ);
+        } else {
+            // Search email one-day before to overcome timezone differences.
+            $returnDate = date($format, strtotime("-1 day"));
+        }
 
-	/**
-	 * Update lastscan information on folder (or set for rescan next)
-	 */
-	function updateLastscan($folderName, $rescanFolder=false, $enabledForScan=1) {
-		global $adb;
+        return $returnDate;
+    }
 
-		$scannedOn = $this->dateBasedOnMailServerTimezone('d-M-Y');
+    /**
+     * Update lastscan information on folder (or set for rescan next)
+     */
+    function updateLastscan($folderName, $rescanFolder = false, $enabledForScan = 1)
+    {
+        global $adb;
 
-		$needRescan = $rescanFolder? 1 : 0;
+        $scannedOn = $this->dateBasedOnMailServerTimezone('d-M-Y');
 
-		$folderInfo = $adb->pquery("SELECT folderid FROM vtiger_mailscanner_folders WHERE scannerid=? AND foldername=?",
-			Array($this->scannerid, $folderName));
-		if($adb->num_rows($folderInfo)) {
-			$folderid = $adb->query_result($folderInfo, 0, 'folderid');
-			$adb->pquery("UPDATE vtiger_mailscanner_folders SET lastscan=?, rescan=? WHERE folderid=?",
-				Array($scannedOn, $needRescan, $folderid));
-		} else {
-			$adb->pquery("INSERT INTO vtiger_mailscanner_folders(scannerid, foldername, lastscan, rescan, enabled)
-			   VALUES(?,?,?,?,?)", Array($this->scannerid, $folderName, $scannedOn, $needRescan, $enabledForScan));
-		}
-		if(!$this->lastscan) $this->lastscan = Array();
-		$this->lastscan[$folderName] = $scannedOn;
+        $needRescan = $rescanFolder ? 1 : 0;
 
-		if(!$this->rescan) $this->rescan = Array();
-		$this->rescan[$folderName] = $needRescan;
-	}
+        $folderInfo = $adb->pquery(
+            "SELECT folderid FROM vtiger_mailscanner_folders WHERE scannerid=? AND foldername=?",
+            [$this->scannerid, $folderName]
+        );
+        if ($adb->num_rows($folderInfo)) {
+            $folderid = $adb->query_result($folderInfo, 0, 'folderid');
+            $adb->pquery(
+                "UPDATE vtiger_mailscanner_folders SET lastscan=?, rescan=? WHERE folderid=?",
+                [$scannedOn, $needRescan, $folderid]
+            );
+        } else {
+            $adb->pquery(
+                "INSERT INTO vtiger_mailscanner_folders(scannerid, foldername, lastscan, rescan, enabled)
+			   VALUES(?,?,?,?,?)",
+                [$this->scannerid, $folderName, $scannedOn, $needRescan, $enabledForScan]
+            );
+        }
+        if (!$this->lastscan) {
+            $this->lastscan = [];
+        }
+        $this->lastscan[$folderName] = $scannedOn;
 
-	/**
-	 * Get lastscan of the folder.
-	 */
-	function getLastscan($folderName) {
-		if($this->lastscan) return $this->lastscan[$folderName];
-		else return false;
-	}
+        if (!$this->rescan) {
+            $this->rescan = [];
+        }
+        $this->rescan[$folderName] = $needRescan;
+    }
 
-	/**
-	 * Does the folder need message rescan?
-	 */
-	function needRescan($folderName) {
-		if($this->rescan && isset($this->rescan[$folderName])) {
-			return $this->rescan[$folderName];
-		}
-		// TODO Pick details of rescan flag of folder from database?
-		return false;
-	}
+    /**
+     * Get lastscan of the folder.
+     */
+    function getLastscan($folderName)
+    {
+        if ($this->lastscan) {
+            return $this->lastscan[$folderName];
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * Check if rescan is required atleast on a folder?
-	 */
-	function checkRescan() {
-		$rescanRequired = false;
-		if($this->rescan) {
-			foreach($this->rescan as $folderName=>$rescan) {
-				if($rescan) {
-					$rescanRequired = $folderName;
-					break;
-				}
-			}
-		}
-		return $rescanRequired;
-	}
+    /**
+     * Does the folder need message rescan?
+     */
+    function needRescan($folderName)
+    {
+        if ($this->rescan && isset($this->rescan[$folderName])) {
+            return $this->rescan[$folderName];
+        }
 
-	/**
-	 * Get the folder information that has been scanned
-	 */
-	function getFolderInfo() {
-		$folderinfo = false;
-		if($this->scannerid) {
-			global $adb;
-			$fldres = $adb->pquery("SELECT * FROM vtiger_mailscanner_folders WHERE scannerid=?", Array($this->scannerid));
-			$fldcount = $adb->num_rows($fldres);
-			if($fldcount) {
-				$folderinfo = Array();
-				for($index = 0; $index < $fldcount; ++$index) {
-					$foldername = $adb->query_result($fldres, $index, 'foldername');
-					$folderid   = $adb->query_result($fldres, $index, 'folderid');
-					$lastscan   = $adb->query_result($fldres, $index, 'lastscan');
-					$rescan     = $adb->query_result($fldres, $index, 'rescan');
-					$enabled    = $adb->query_result($fldres, $index, 'enabled');
-					$folderinfo[$foldername] = Array ('folderid'=>$folderid, 'lastscan'=>$lastscan, 'rescan'=> $rescan, 'enabled'=>$enabled);
-				}
-			}
-		}
-		return $folderinfo;
-	}
+        // TODO Pick details of rescan flag of folder from database?
+        return false;
+    }
 
-	/**
-	 * Update the folder information with given folder names
-	 */
-	function updateFolderInfo($foldernames, $rescanFolder=false) {
-		if($this->scannerid && !empty($foldernames)) {
-			global $adb;
-			$qmarks = Array();
-			foreach($foldernames as $foldername) {
-				$qmarks[] = '?';
-				$this->updateLastscan($foldername, $rescanFolder);
-			}
-			// Delete the folder that is no longer present
-			$adb->pquery("DELETE FROM vtiger_mailscanner_folders WHERE scannerid=? AND foldername NOT IN
-				(". implode(',', $qmarks) . ")", Array($this->scannerid, $foldernames));
-		}
-	}
+    /**
+     * Check if rescan is required atleast on a folder?
+     */
+    function checkRescan()
+    {
+        $rescanRequired = false;
+        if ($this->rescan) {
+            foreach ($this->rescan as $folderName => $rescan) {
+                if ($rescan) {
+                    $rescanRequired = $folderName;
+                    break;
+                }
+            }
+        }
 
-	/**
-	 * Enable only given folders for scanning
-	 */
-	function enableFoldersForScan($folderinfo) {
-		if($this->scannerid) {
-			global $adb;
-			$adb->pquery("UPDATE vtiger_mailscanner_folders set enabled=0 WHERE scannerid=?", Array($this->scannerid));
-			foreach($folderinfo as $foldername=>$foldervalue) {
-				$folderid = $foldervalue["folderid"];
-				$enabled  = $foldervalue["enabled"];
-				$adb->pquery("UPDATE vtiger_mailscanner_folders set enabled=? WHERE folderid=? AND scannerid=?",
-					Array($enabled,$folderid,$this->scannerid));
-			}
-		}
-	}
+        return $rescanRequired;
+    }
 
-	/**
-	 * Initialize scanner rule information
-	 */
-	function initializeRules() {
-		global $adb;
-		if($this->scannerid) {
-			$this->rules = Array();
-			$rulesres = $adb->pquery("SELECT * FROM vtiger_mailscanner_rules WHERE scannerid=? ORDER BY sequence",Array($this->scannerid));
-			$rulescount = $adb->num_rows($rulesres);
-			if($rulescount) {
-				for($index = 0; $index < $rulescount; ++$index) {
-					$ruleid = $adb->query_result($rulesres, $index, 'ruleid');
-					$scannerrule = new Settings_MailConverter_MailScannerRule_Handler($ruleid);
-					$scannerrule->debug = $this->debug;
-					$this->rules[] = $scannerrule;
-				}
-			}
-		}
-	}
+    /**
+     * Get the folder information that has been scanned
+     */
+    function getFolderInfo()
+    {
+        $folderinfo = false;
+        if ($this->scannerid) {
+            global $adb;
+            $fldres = $adb->pquery("SELECT * FROM vtiger_mailscanner_folders WHERE scannerid=?", [$this->scannerid]);
+            $fldcount = $adb->num_rows($fldres);
+            if ($fldcount) {
+                $folderinfo = [];
+                for ($index = 0; $index < $fldcount; ++$index) {
+                    $foldername = $adb->query_result($fldres, $index, 'foldername');
+                    $folderid = $adb->query_result($fldres, $index, 'folderid');
+                    $lastscan = $adb->query_result($fldres, $index, 'lastscan');
+                    $rescan = $adb->query_result($fldres, $index, 'rescan');
+                    $enabled = $adb->query_result($fldres, $index, 'enabled');
+                    $folderinfo[$foldername] = ['folderid' => $folderid, 'lastscan' => $lastscan, 'rescan' => $rescan, 'enabled' => $enabled];
+                }
+            }
+        }
 
-	/**
-	 * Get scanner information as map
-	 */
-	function getAsMap()
+        return $folderinfo;
+    }
+
+    /**
+     * Update the folder information with given folder names
+     */
+    function updateFolderInfo($foldernames, $rescanFolder = false)
+    {
+        if ($this->scannerid && !empty($foldernames)) {
+            global $adb;
+            $qmarks = [];
+            foreach ($foldernames as $foldername) {
+                $qmarks[] = '?';
+                $this->updateLastscan($foldername, $rescanFolder);
+            }
+            // Delete the folder that is no longer present
+            $adb->pquery(
+                "DELETE FROM vtiger_mailscanner_folders WHERE scannerid=? AND foldername NOT IN
+				(" . implode(',', $qmarks) . ")",
+                [$this->scannerid, $foldernames]
+            );
+        }
+    }
+
+    /**
+     * Enable only given folders for scanning
+     */
+    function enableFoldersForScan($folderinfo)
+    {
+        if ($this->scannerid) {
+            global $adb;
+            $adb->pquery("UPDATE vtiger_mailscanner_folders set enabled=0 WHERE scannerid=?", [$this->scannerid]);
+            foreach ($folderinfo as $foldername => $foldervalue) {
+                $folderid = $foldervalue["folderid"];
+                $enabled = $foldervalue["enabled"];
+                $adb->pquery(
+                    "UPDATE vtiger_mailscanner_folders set enabled=? WHERE folderid=? AND scannerid=?",
+                    [$enabled, $folderid, $this->scannerid]
+                );
+            }
+        }
+    }
+
+    /**
+     * Initialize scanner rule information
+     */
+    function initializeRules()
+    {
+        global $adb;
+        if ($this->scannerid) {
+            $this->rules = [];
+            $rulesres = $adb->pquery("SELECT * FROM vtiger_mailscanner_rules WHERE scannerid=? ORDER BY sequence", [$this->scannerid]);
+            $rulescount = $adb->num_rows($rulesres);
+            if ($rulescount) {
+                for ($index = 0; $index < $rulescount; ++$index) {
+                    $ruleid = $adb->query_result($rulesres, $index, 'ruleid');
+                    $scannerrule = new Settings_MailConverter_MailScannerRule_Handler($ruleid);
+                    $scannerrule->debug = $this->debug;
+                    $this->rules[] = $scannerrule;
+                }
+            }
+        }
+    }
+
+    /**
+     * Get scanner information as map
+     */
+    function getAsMap()
     {
         $infomap = [];
         $keys = [
@@ -354,10 +404,24 @@ class Settings_MailConverter_MailScannerInfo_Handler {
 
     /**
      * Compare this instance with give instance
-	 */
+     */
     function compare($otherInstance)
     {
-        $checkkeys = ['server', 'scannername', 'protocol', 'username', 'password', 'client_id', 'client_token', 'client_secret', 'client_access_token', 'ssltype', 'sslmethod', 'searchfor', 'markas'];
+        $checkkeys = [
+            'server',
+            'scannername',
+            'protocol',
+            'username',
+            'password',
+            'client_id',
+            'client_token',
+            'client_secret',
+            'client_access_token',
+            'ssltype',
+            'sslmethod',
+            'searchfor',
+            'markas'
+        ];
 
         foreach ($checkkeys as $key) {
             if ($this->$key != $otherInstance->$key) {
@@ -369,57 +433,58 @@ class Settings_MailConverter_MailScannerInfo_Handler {
     }
 
     /**
-	 * Create/Update the scanner information in database
-	 */
-	function update($otherInstance) {
-		$mailServerChanged = false;
+     * Create/Update the scanner information in database
+     */
+    function update($otherInstance)
+    {
+        $mailServerChanged = false;
 
-		// Is there is change in server setup?
-		if($this->server != $otherInstance->server || $this->username != $otherInstance->username) {
-			$mailServerChanged = true;
-			$this->clearLastscan();
-			// TODO How to handle lastscan info if server settings switches back in future?
-		}
+        // Is there is change in server setup?
+        if ($this->server != $otherInstance->server || $this->username != $otherInstance->username) {
+            $mailServerChanged = true;
+            $this->clearLastscan();
+            // TODO How to handle lastscan info if server settings switches back in future?
+        }
 
-		$this->server    = $otherInstance->server;
-		$this->scannername= $otherInstance->scannername;
-		$this->protocol  = $otherInstance->protocol;
-		$this->username  = $otherInstance->username;
-		$this->password  = $otherInstance->password;
-		$this->ssltype   = $otherInstance->ssltype;
-		$this->sslmethod = $otherInstance->sslmethod;
-		$this->connecturl= $otherInstance->connecturl;
-		$this->searchfor = $otherInstance->searchfor;
-		$this->markas    = $otherInstance->markas;
-		$this->isvalid   = $otherInstance->isvalid;
-		$this->time_zone  = $otherInstance->time_zone;
+        $this->server = $otherInstance->server;
+        $this->scannername = $otherInstance->scannername;
+        $this->protocol = $otherInstance->protocol;
+        $this->username = $otherInstance->username;
+        $this->password = $otherInstance->password;
+        $this->ssltype = $otherInstance->ssltype;
+        $this->sslmethod = $otherInstance->sslmethod;
+        $this->connecturl = $otherInstance->connecturl;
+        $this->searchfor = $otherInstance->searchfor;
+        $this->markas = $otherInstance->markas;
+        $this->isvalid = $otherInstance->isvalid;
+        $this->time_zone = $otherInstance->time_zone;
         $this->mail_proxy = $otherInstance->mail_proxy;
-		$this->client_id  = $otherInstance->client_id;
-		$this->client_secret  = $otherInstance->client_secret;
-		$this->client_token  = $otherInstance->client_token;
-		$this->client_access_token  = $otherInstance->client_access_token;
+        $this->client_id = $otherInstance->client_id;
+        $this->client_secret = $otherInstance->client_secret;
+        $this->client_token = $otherInstance->client_token;
+        $this->client_access_token = $otherInstance->client_access_token;
 
         return $mailServerChanged;
-	}
+    }
 
     public function save()
     {
         $params = [
-            'scannername' => $this->scannername,
-            'server' => $this->server,
-            'protocol' => $this->protocol,
-            'username' => $this->username,
-            'password' => $this->__crypt($this->password),
-            'ssltype' => $this->ssltype,
-            'sslmethod' => $this->sslmethod,
-            'connecturl' => $this->connecturl,
-            'searchfor' => $this->searchfor,
-            'markas' => $this->markas,
-            'isvalid' => $this->isvalid ? 1 : 0,
-            'time_zone' => $this->time_zone,
-            'client_id' => $this->client_id,
-            'client_secret' => $this->client_secret,
-            'client_token' => $this->client_token,
+            'scannername'         => $this->scannername,
+            'server'              => $this->server,
+            'protocol'            => $this->protocol,
+            'username'            => $this->username,
+            'password'            => $this->__crypt($this->password),
+            'ssltype'             => $this->ssltype,
+            'sslmethod'           => $this->sslmethod,
+            'connecturl'          => $this->connecturl,
+            'searchfor'           => $this->searchfor,
+            'markas'              => $this->markas,
+            'isvalid'             => $this->isvalid ? 1 : 0,
+            'time_zone'           => $this->time_zone,
+            'client_id'           => $this->client_id,
+            'client_secret'       => $this->client_secret,
+            'client_token'        => $this->client_token,
             'client_access_token' => $this->client_access_token,
         ];
 
@@ -430,7 +495,8 @@ class Settings_MailConverter_MailScannerInfo_Handler {
         }
     }
 
-    public function getMailScannerTable() {
+    public function getMailScannerTable()
+    {
         return (new Core_DatabaseData_Model())->getTable('vtiger_mailscanner', 'scannerid');
     }
 
@@ -458,36 +524,40 @@ class Settings_MailConverter_MailScannerInfo_Handler {
     }
 
     /**
-	 * Delete the scanner information from database
-	 */
-	function delete() {
-		global $adb;
+     * Delete the scanner information from database
+     */
+    function delete()
+    {
+        global $adb;
 
-		// Delete dependencies
-		if(!empty($this->rules)) {
-			foreach($this->rules as $rule) {
-				$rule->delete();
-			}
-		}
+        // Delete dependencies
+        if (!empty($this->rules)) {
+            foreach ($this->rules as $rule) {
+                $rule->delete();
+            }
+        }
 
-		if($this->scannerid) {
-			$tables = Array(
-				'vtiger_mailscanner',
-				'vtiger_mailscanner_ids',
-				'vtiger_mailscanner_folders'
-			);
-			foreach($tables as $table) {
-				$adb->pquery("DELETE FROM $table WHERE scannerid=?", Array($this->scannerid));
-			}
-			$adb->pquery("DELETE FROM vtiger_mailscanner_ruleactions
-				WHERE actionid in (SELECT actionid FROM vtiger_mailscanner_actions WHERE scannerid=?)", Array($this->scannerid));
-			$adb->pquery("DELETE FROM vtiger_mailscanner_actions WHERE scannerid=?", Array($this->scannerid));
-		}
-	}
+        if ($this->scannerid) {
+            $tables = [
+                'vtiger_mailscanner',
+                'vtiger_mailscanner_ids',
+                'vtiger_mailscanner_folders'
+            ];
+            foreach ($tables as $table) {
+                $adb->pquery("DELETE FROM $table WHERE scannerid=?", [$this->scannerid]);
+            }
+            $adb->pquery(
+                "DELETE FROM vtiger_mailscanner_ruleactions
+				WHERE actionid in (SELECT actionid FROM vtiger_mailscanner_actions WHERE scannerid=?)",
+                [$this->scannerid]
+            );
+            $adb->pquery("DELETE FROM vtiger_mailscanner_actions WHERE scannerid=?", [$this->scannerid]);
+        }
+    }
 
     /**
      * List all the mail-scanners configured.
-     * @throws AppException
+     * @throws Exception
      */
     public static function getAll(): array
     {
@@ -503,7 +573,7 @@ class Settings_MailConverter_MailScannerInfo_Handler {
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function retrieveClientAccessToken(): void
     {
@@ -516,14 +586,14 @@ class Settings_MailConverter_MailScannerInfo_Handler {
             $authModel->setProviderByServer($this->server);
             $authModel->updateAccessToken($this);
         } catch (Exception $e) {
-
         }
     }
 
     /**
      * @param Core_Auth_Model $authModel
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function updateAccessToken(Core_Auth_Model $authModel): void
     {

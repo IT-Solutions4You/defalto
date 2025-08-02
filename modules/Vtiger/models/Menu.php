@@ -1,72 +1,86 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 /**
  * Vtiger Menu Model Class
  */
-class Vtiger_Menu_Model extends Vtiger_Module_Model {
+class Vtiger_Menu_Model extends Vtiger_Module_Model
+{
+    /**
+     * Static Function to get all the accessible menu models with/without ordering them by sequence
+     *
+     * @param <Boolean> $sequenced - true/false
+     *
+     * @return <Array> - List of Vtiger_Menu_Model instances
+     */
+    public static function getAll($presence = [], $restrictedModulesList = [], $sequenced = false)
+    {
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $userPrivModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+        $restrictedModulesList = ['ProjectMilestone', 'ProjectTask', 'ModComments', 'Integration', 'PBXManager', 'Dashboard', 'Home'];
 
-	/**
-	 * Static Function to get all the accessible menu models with/without ordering them by sequence
-	 * @param <Boolean> $sequenced - true/false
-	 * @return <Array> - List of Vtiger_Menu_Model instances
-	 */
-	public static function getAll($presence = array(), $restrictedModulesList = array(),$sequenced = false) {
-		$currentUser = Users_Record_Model::getCurrentUserModel();
-		$userPrivModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		$restrictedModulesList = array('ProjectMilestone', 'ProjectTask', 'ModComments', 'Integration', 'PBXManager', 'Dashboard', 'Home');
+        $allModules = parent::getAll(['0', '2']);
+        $menuModels = [];
+        $moduleSeqs = [];
+        $moduleNonSeqs = [];
+        foreach ($allModules as $module) {
+            if ($module->get('tabsequence') != -1) {
+                $moduleSeqs[$module->get('tabsequence')] = $module;
+            } else {
+                $moduleNonSeqs[] = $module;
+            }
+        }
+        ksort($moduleSeqs);
+        $modules = array_merge($moduleSeqs, $moduleNonSeqs);
 
-		$allModules = parent::getAll(array('0','2'));
-		$menuModels = array();
-		$moduleSeqs = Array();
-		$moduleNonSeqs = Array();
-		foreach($allModules as $module){
-			if($module->get('tabsequence') != -1){
-				$moduleSeqs[$module->get('tabsequence')] = $module;
-			}else {
-				$moduleNonSeqs[] = $module;
-			}
-		}
-		ksort($moduleSeqs);
-		$modules = array_merge($moduleSeqs, $moduleNonSeqs);
+        foreach ($modules as $module) {
+            if (($userPrivModel->isAdminUser() ||
+                    $userPrivModel->hasGlobalReadPermission() ||
+                    $userPrivModel->hasModulePermission($module->getId())) & !in_array($module->getName(), $restrictedModulesList) && $module->get('parent') != '') {
+                $menuModels[$module->getName()] = $module;
+            }
+        }
 
-		foreach($modules as $module) {
-			if (($userPrivModel->isAdminUser() ||
-					$userPrivModel->hasGlobalReadPermission() ||
-					$userPrivModel->hasModulePermission($module->getId()))& !in_array($module->getName(), $restrictedModulesList) && $module->get('parent') != '') {
-					$menuModels[$module->getName()] = $module;
+        return $menuModels;
+    }
 
-			}
-		}
+    /**
+     * Static Function to get all the accessible module model for Quick Create
+     * @return <Array> - List of Vtiger_Menu_Model instances
+     */
+    public static function getAllForQuickCreate()
+    {
+        $userPrivModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+        $restrictedModulesList = ['ModComments', 'Integration', 'PBXManager', 'Dashboard', 'Home'];
+        $allModules = parent::getAll(['0', '2']);
+        $menuModels = [];
 
-		return $menuModels;
-	}
+        foreach ($allModules as $module) {
+            if (($userPrivModel->isAdminUser() || $userPrivModel->hasGlobalReadPermission() || $userPrivModel->hasModulePermission($module->getId())) && !in_array(
+                    $module->getName(),
+                    $restrictedModulesList
+                ) && $module->get('parent') != '') {
+                $menuModels[$module->getName()] = $module;
+            }
+        }
 
-	/**
-	 * Static Function to get all the accessible module model for Quick Create
-	 * @return <Array> - List of Vtiger_Menu_Model instances
-	 */
-	public static function getAllForQuickCreate() {
-		$userPrivModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		$restrictedModulesList = array('ModComments', 'Integration', 'PBXManager', 'Dashboard', 'Home');
-		$allModules = parent::getAll(array('0', '2'));
-		$menuModels = array();
+        uksort($menuModels, ['Vtiger_MenuStructure_Model', 'sortMenuItemsByProcess']);
 
-		foreach ($allModules as $module) {
-			if (($userPrivModel->isAdminUser() || $userPrivModel->hasGlobalReadPermission() || $userPrivModel->hasModulePermission($module->getId())) && !in_array($module->getName(), $restrictedModulesList) && $module->get('parent') != '') {
-				$menuModels[$module->getName()] = $module;
-			}
-		}
-
-		uksort($menuModels, array('Vtiger_MenuStructure_Model', 'sortMenuItemsByProcess'));
-		return $menuModels;
-	}
-
+        return $menuModels;
+    }
 }

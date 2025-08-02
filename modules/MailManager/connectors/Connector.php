@@ -1,65 +1,78 @@
 <?php
-/**
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 use Webklex\PHPIMAP\ClientManager;
 use Webklex\PHPIMAP\Client;
 
-vimport ('~modules/MailManager/models/Message.php');
+vimport('~modules/MailManager/models/Message.php');
 
-class MailManager_Connector_Connector {
+class MailManager_Connector_Connector
+{
+    /*
+     * Mail Box URL
+    */
+    public $mBoxUrl;
 
-	/*
-	 * Mail Box URL
-	*/
-	public $mBoxUrl;
+    /*
+     * Mail Box connection instance
+    */
+    public $mBox;
+    public $mBoxModel;
 
-	/*
-	 * Mail Box connection instance
-	*/
-	public $mBox;
-	public $mBoxModel;
+    /*
+     * Last imap error
+    */
+    protected $mError;
 
-	/*
-	 * Last imap error
-	*/
-	protected $mError;
+    /*
+     * Mail Box folders
+    */
+    protected $mFolders = false;
 
-	/*
-	 * Mail Box folders
-	*/
-	protected $mFolders = false;
+    /**
+     * Modified Time of the mail
+     */
+    protected $mModified = false;
 
-	/**
-	 * Modified Time of the mail
-	 */
-	protected $mModified = false;
-
-	/*
-	 * Base URL of the Mail Box excluding folder name
-	*/
-	protected $mBoxBaseUrl;
-
+    /*
+     * Base URL of the Mail Box excluding folder name
+    */
+    protected $mBoxBaseUrl;
 
     /**
      * Connects to the Imap server with the given parameters
+     *
      * @param $model MailManager_Mailbox_Model Instance
-     * $param $folder String optional - mail box folder name
+     *               $param $folder String optional - mail box folder name
+     *
      * @returns MailManager_Connector_Connector Object
-     * @throws AppException
+     * @throws Exception
      */
     public static function connectorWithModel(MailManager_Mailbox_Model $model): self
     {
         return new self($model);
     }
 
-
     /**
      * Opens up imap connection to the specified url
+     *
      * @param MailManager_Mailbox_Model $model
+     *
      * @throws Exception
      */
     public function __construct(MailManager_Mailbox_Model $model)
@@ -73,13 +86,13 @@ class MailManager_Connector_Connector {
         }
     }
 
-
     /**
-	 * Closes the connection
-	 */
-	public function __destruct() {
-		$this->close();
-	}
+     * Closes the connection
+     */
+    public function __destruct()
+    {
+        $this->close();
+    }
 
     /**
      * @return void
@@ -108,13 +121,13 @@ class MailManager_Connector_Connector {
 
         $options = [];
         $config = [
-            'host' => $server,
-            'port' => $boxModel->getPort(),
-            'encryption' => $boxModel->ssltype(),
-            'validate_cert' => true,
-            'protocol' => $boxModel->protocol(),
-            'username' => $boxModel->username(),
-            'password' => $password,
+            'host'           => $server,
+            'port'           => $boxModel->getPort(),
+            'encryption'     => $boxModel->ssltype(),
+            'validate_cert'  => true,
+            'protocol'       => $boxModel->protocol(),
+            'username'       => $boxModel->username(),
+            'password'       => $password,
             'authentication' => $authentication,
         ];
 
@@ -126,8 +139,8 @@ class MailManager_Connector_Connector {
     }
 
     /**
-	 * Closes the imap connection
-	 */
+     * Closes the imap connection
+     */
     public function close()
     {
         if (empty($this->mBox)) {
@@ -138,16 +151,17 @@ class MailManager_Connector_Connector {
         $this->mBox = null;
     }
 
-
     /**
-	 * Checks for the connection
-	 */
-	public function isConnected() {
-		return !empty($this->mBox);
-	}
+     * Checks for the connection
+     */
+    public function isConnected()
+    {
+        return !empty($this->mBox);
+    }
 
     /**
      * @param string $value
+     *
      * @return void
      */
     public function setError(string $value): void
@@ -156,28 +170,28 @@ class MailManager_Connector_Connector {
     }
 
     /**
-	 * Returns the last imap error
-	 */
-	public function isError() {
-		return $this->hasError();
-	}
+     * Returns the last imap error
+     */
+    public function isError()
+    {
+        return $this->hasError();
+    }
 
+    /**
+     * Checks if the error exists
+     */
+    public function hasError()
+    {
+        return !empty($this->mError);
+    }
 
-	/**
-	 * Checks if the error exists
-	 */
-	public function hasError() {
-		return !empty($this->mError);
-	}
-
-
-	/**
-	 * Returns the error
-	 */
-	public function lastError() {
-		return $this->mError;
-	}
-
+    /**
+     * Returns the error
+     */
+    public function lastError()
+    {
+        return $this->mError;
+    }
 
     /**
      * Reads mail box folders
@@ -221,11 +235,11 @@ class MailManager_Connector_Connector {
         return $this->mBox;
     }
 
-
     /**
-	 * Used to update the folders optionus
-	 * @param imap_stats flag $options
-	 */
+     * Used to update the folders optionus
+     *
+     * @param imap_stats flag $options
+     */
     public function updateFolders($options = 4)
     {
         $folders = $this->getFolders(); // Initializes the folder Instance
@@ -235,12 +249,12 @@ class MailManager_Connector_Connector {
         }
     }
 
-
     /**
-	 * Updates the mail box's folder
-	 * @param MailManager_Folder_Model $folder - folder instance
-	 * @param int $options imap_status flags like SA_UNSEEN, SA_MESSAGES etc
-	 */
+     * Updates the mail box's folder
+     *
+     * @param MailManager_Folder_Model $folder  - folder instance
+     * @param int                      $options imap_status flags like SA_UNSEEN, SA_MESSAGES etc
+     */
     public function updateFolder(MailManager_Folder_Model $folder, int $options = 0): void
     {
         $mBoxFolder = $folder->getBoxFolder($this->getBox());
@@ -253,23 +267,23 @@ class MailManager_Connector_Connector {
         }
     }
 
-
     /**
-	 * Returns MailManager_Model_Folder Instance
-	 * @param String $name - folder name
-	 */
+     * Returns MailManager_Model_Folder Instance
+     *
+     * @param String $name - folder name
+     */
     public function getFolder(string $name, string $path = null, $mBoxFolder = null): MailManager_Folder_Model
     {
         return new MailManager_Folder_Model($name, $path, $mBoxFolder);
     }
 
-
     /**
      * Sets a list of mails with paging
+     *
      * @param MailManager_Folder_Model $folder - MailManager_Model_Folder Instance
-     * @param Integer $page - Page number
-     * @param Integer $limit - Number of mails
-     * @throws AppException
+     * @param Integer                  $page   - Page number
+     * @param Integer                  $limit  - Number of mails
+     *
      * @throws Exception
      */
     public function retrieveFolderMails(MailManager_Folder_Model $folder, int $page, int $limit): void
@@ -288,10 +302,11 @@ class MailManager_Connector_Connector {
     }
 
     /**
-     * @param object $query
+     * @param object                   $query
      * @param MailManager_Folder_Model $folder
-     * @param int $page
-     * @param int $limit
+     * @param int                      $page
+     * @param int                      $limit
+     *
      * @return array
      * @throws Exception
      */
@@ -311,11 +326,12 @@ class MailManager_Connector_Connector {
         return [$mailIds, $mails];
     }
 
-	/**
-	 * Function which deletes the mails
+    /**
+     * Function which deletes the mails
+     *
      * @params object $folder
-	 * @param String $mUId - List of message number seperated by commas.
-	 */
+     * @param String $mUId - List of message number seperated by commas.
+     */
     public function deleteMail(object $folder, string $mUId): void
     {
         $mUIds = explode(',', trim($mUId, ','));
@@ -329,9 +345,9 @@ class MailManager_Connector_Connector {
         }
     }
 
-
     /**
      * Function which moves mail to another folder
+     *
      * @param string $mUIds
      * @param object $folderFrom
      * @param object $folderTo
@@ -349,14 +365,15 @@ class MailManager_Connector_Connector {
         }
     }
 
-
     /**
      * Creates an instance of Message
+     *
      * @param MailManager_Folder_Model $folder
-     * @param int $mUId
-     * @param bool $fetchBody
+     * @param int                      $mUId
+     * @param bool                     $fetchBody
+     *
      * @return MailManager_Message_Model
-     * @throws AppException
+     * @throws Exception
      */
     public function getMail(MailManager_Folder_Model $folder, int $mUId, bool $fetchBody = true): MailManager_Message_Model
     {
@@ -372,14 +389,16 @@ class MailManager_Connector_Connector {
 
     /**
      * Marks the mail as Unread
+     *
      * @param object $folder
-     * @param int $mUid
-     * @throws AppException
+     * @param int    $mUid
+     *
+     * @throws Exception
      */
     public function markMailUnread(object $folder, int $mUid): void
     {
         if (empty($mUid)) {
-            throw new AppException('Empty mUid for action markMailUnread');
+            throw new Exception('Empty mUid for action markMailUnread');
         }
 
         $message = $this->getMessageByMUid($folder, $mUid);
@@ -390,16 +409,17 @@ class MailManager_Connector_Connector {
         }
     }
 
-
     /**
      * Marks the mail as Read
+     *
      * @param int $mUid - Message Number
-     * @throws AppException
+     *
+     * @throws Exception
      */
     public function markMailRead(object $folder, int $mUid): void
     {
         if (empty($mUid)) {
-            throw new AppException('Empty mUid for action markMailRead');
+            throw new Exception('Empty mUid for action markMailRead');
         }
 
         $message = $this->getMessageByMUid($folder, $mUid);
@@ -411,8 +431,9 @@ class MailManager_Connector_Connector {
     }
 
     /**
-     * @param $folder
+     * @param     $folder
      * @param int $mUid
+     *
      * @return mixed|null
      */
     public function getMessageByMUid($folder, int $mUid)
@@ -422,13 +443,14 @@ class MailManager_Connector_Connector {
         return $box ? $folder->getBoxFolder($box)->query()->getMessageByUid($mUid) : null;
     }
 
-
     /**
      * Searches the Mail Box with the query
-     * @param array $query - imap search format
+     *
+     * @param array                    $query  - imap search format
      * @param MailManager_Folder_Model $folder - folder instance
-     * @param int $page
-     * @param int $limit
+     * @param int                      $page
+     * @param int                      $limit
+     *
      * @throws Exception
      */
     public function retrieveSearchMails(array $query, MailManager_Folder_Model $folder, int $page, int $limit): void
@@ -450,6 +472,7 @@ class MailManager_Connector_Connector {
     /**
      * @param string $query
      * @param string $type
+     *
      * @return array
      */
     public function formatQueryFromRequest(string $query, string $type)
@@ -488,9 +511,9 @@ class MailManager_Connector_Connector {
     }
 
     /**
-	 * Returns list of Folder for the Mail Box
-	 * @return Array folder list
-	 */
+     * Returns list of Folder for the Mail Box
+     * @return Array folder list
+     */
     public function getFolderList()
     {
         $folders = $this->getFolders();
@@ -507,14 +530,17 @@ class MailManager_Connector_Connector {
      * @param $value
      * @param $toCharset
      * @param $fromCharset
+     *
      * @return array|false|string|string[]|null
      */
-    public function convertCharacterEncoding($value, $toCharset, $fromCharset) {
-		if (function_exists('mb_convert_encoding')) {
-			$value = mb_convert_encoding($value, $toCharset, $fromCharset);
-		} else {
-			$value = iconv($toCharset, $fromCharset, $value);
-		}
-		return $value;
-	}
+    public function convertCharacterEncoding($value, $toCharset, $fromCharset)
+    {
+        if (function_exists('mb_convert_encoding')) {
+            $value = mb_convert_encoding($value, $toCharset, $fromCharset);
+        } else {
+            $value = iconv($toCharset, $fromCharset, $value);
+        }
+
+        return $value;
+    }
 }

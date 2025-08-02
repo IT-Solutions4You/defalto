@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class PDFMaker_IndexAjax_Action extends Vtiger_Action_Controller
@@ -16,7 +16,7 @@ class PDFMaker_IndexAjax_Action extends Vtiger_Action_Controller
     {
         parent::__construct();
 
-        $Methods = array('SaveProductBlock', 'deleteProductBlocks', 'downloadMPDF', 'downloadFile', 'installExtension', 'getModuleFields', 'getPreviewContent');
+        $Methods = ['SaveProductBlock', 'deleteProductBlocks', 'downloadMPDF', 'downloadFile', 'installExtension', 'getModuleFields', 'getPreviewContent'];
 
         foreach ($Methods as $method) {
             $this->exposeMethod($method);
@@ -34,6 +34,7 @@ class PDFMaker_IndexAjax_Action extends Vtiger_Action_Controller
 
         if (!empty($mode)) {
             $this->invokeExposedMethod($mode, $request);
+
             return;
         }
     }
@@ -49,10 +50,10 @@ class PDFMaker_IndexAjax_Action extends Vtiger_Action_Controller
 
         if (isset($tplid) && $tplid != '') {
             $sql = 'UPDATE vtiger_pdfmaker_productbloc_tpl SET name=?, body=? WHERE id=?';
-            $adb->pquery($sql, array($template_name, $body, $tplid));
+            $adb->pquery($sql, [$template_name, $body, $tplid]);
         } else {
             $sql = 'INSERT INTO vtiger_pdfmaker_productbloc_tpl(name, body) VALUES(?,?)';
-            $adb->pquery($sql, array($template_name, $body));
+            $adb->pquery($sql, [$template_name, $body]);
         }
 
         header('Location:index.php?module=PDFMaker&view=ProductBlocks');
@@ -64,11 +65,11 @@ class PDFMaker_IndexAjax_Action extends Vtiger_Action_Controller
         $adb = PearDatabase::getInstance();
 
         $sql = 'DELETE FROM vtiger_pdfmaker_productbloc_tpl WHERE id IN (';
-        $params = array();
+        $params = [];
 
         foreach ($_REQUEST as $key => $val) {
             if (substr($key, 0, 4) == 'chx_' && $val == 'on') {
-                list($dump, $id) = explode('_', $key, 2);
+                [$dump, $id] = explode('_', $key, 2);
 
                 if (is_numeric($id)) {
                     $sql .= '?,';
@@ -111,9 +112,9 @@ class PDFMaker_IndexAjax_Action extends Vtiger_Action_Controller
         }
 
         if ($error == "") {
-            $result = array('success' => true, 'message' => '');
+            $result = ['success' => true, 'message' => ''];
         } else {
-            $result = array('success' => false, 'message' => $error);
+            $result = ['success' => false, 'message' => $error];
         }
 
         $response = new Vtiger_Response();
@@ -165,8 +166,8 @@ class PDFMaker_IndexAjax_Action extends Vtiger_Action_Controller
         $module = $request->get('formodule');
         $forfieldname = $request->get('forfieldname');
 
-        $SelectModuleFields = array();
-        $RelatedModules = array();
+        $SelectModuleFields = [];
+        $RelatedModules = [];
 
         if ($module != '') {
             $PDFMakerFieldsModel = new PDFMaker_Fields_Model();
@@ -175,7 +176,7 @@ class PDFMaker_IndexAjax_Action extends Vtiger_Action_Controller
         }
 
         $response = new Vtiger_Response();
-        $response->setResult(array('success' => true, 'fields' => $SelectModuleFields, 'related_modules' => $RelatedModules));
+        $response->setResult(['success' => true, 'fields' => $SelectModuleFields, 'related_modules' => $RelatedModules]);
         $response->emit();
     }
 

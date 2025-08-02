@@ -1,22 +1,21 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_Fields_Model extends Vtiger_Base_Model
 {
-
     public $cu_language = "";
-    public $ModuleFields = array();
-    public $All_Related_Modules = array();
+    public $ModuleFields = [];
+    public $All_Related_Modules = [];
 
     public function getAllModuleFields($ModuleIDS)
     {
-
         foreach ($ModuleIDS as $module => $module_id) {
             $this->setModuleFields($module, $module_id);
         }
@@ -24,14 +23,12 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
 
     public function getRelatedModules($module)
     {
-
         return $this->All_Related_Modules[$module];
     }
 
     public function getSelectModuleFields($module, $forfieldname = "")
     {
-
-        $SelectModuleFields = array();
+        $SelectModuleFields = [];
         $adb = PearDatabase::getInstance();
 
         $Blocks = $this->getModuleFields($module);
@@ -54,16 +51,14 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
         foreach ($Blocks as $block_label => $block_fields) {
             $b++;
 
-            $Options = array();
+            $Options = [];
 
             if ($block_label != "TEMP_MODCOMMENTS_BLOCK") {
-
                 $optgroup_value = vtranslate($block_label, $module);
 
                 if ($optgroup_value == $block_label) {
                     $optgroup_value = vtranslate($block_label, 'EMAILMaker');
                 }
-
             } else {
                 $optgroup_value = vtranslate("LBL_MODCOMMENTS_INFORMATION", 'EMAILMaker');
             }
@@ -140,31 +135,33 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
                 $SelectModuleFields[$optgroup_value][$option_key] = $option_value;
             }
 
-            $OptionsRelMod = array();
-            if (($block_label == "LBL_DETAILS_BLOCK" || $block_label == "LBL_ITEM_DETAILS") && ($module == "Quotes" || $module == "Invoice" || $module == "SalesOrder" || $module == "PurchaseOrder" || $module == "Issuecards" || $module == "Receiptcards" || $module == "Creditnote" || $module == "StornoInvoice" || is_subclass_of($module . '_Module_Model', 'Inventory_Module_Model'))) {
+            $OptionsRelMod = [];
+            if (($block_label == "LBL_DETAILS_BLOCK" || $block_label == "LBL_ITEM_DETAILS") && ($module == "Quotes" || $module == "Invoice" || $module == "SalesOrder" || $module == "PurchaseOrder" || $module == "Issuecards" || $module == "Receiptcards" || $module == "Creditnote" || $module == "StornoInvoice" || is_subclass_of(
+                        $module . '_Module_Model',
+                        'Inventory_Module_Model'
+                    ))) {
                 //$Set_More_Fields = $More_Fields;
 
-                $Set_More_Fields = array(/* "SUBTOTAL"=>vtranslate("LBL_VARIABLE_SUM",'EMAILMaker'), */
-                    "CURRENCYNAME" => vtranslate("LBL_CURRENCY_NAME", 'EMAILMaker'),
-                    "CURRENCYSYMBOL" => vtranslate("LBL_CURRENCY_SYMBOL", 'EMAILMaker'),
-                    "CURRENCYCODE" => vtranslate("LBL_CURRENCY_CODE", 'EMAILMaker'),
-                    "TOTALWITHOUTVAT" => vtranslate("LBL_VARIABLE_SUMWITHOUTVAT", 'EMAILMaker'),
-                    "TOTALDISCOUNT" => vtranslate("LBL_VARIABLE_TOTALDISCOUNT", 'EMAILMaker'),
-                    "TOTALDISCOUNTPERCENT" => vtranslate("LBL_VARIABLE_TOTALDISCOUNT_PERCENT", 'EMAILMaker'),
-                    "TOTALAFTERDISCOUNT" => vtranslate("LBL_VARIABLE_TOTALAFTERDISCOUNT", 'EMAILMaker'),
-                    "VAT" => vtranslate("LBL_VARIABLE_VAT", 'EMAILMaker'),
-                    "VATPERCENT" => vtranslate("LBL_VARIABLE_VAT_PERCENT", 'EMAILMaker'),
-                    "VATBLOCK" => vtranslate("LBL_VARIABLE_VAT_BLOCK", 'EMAILMaker'),
-                    "CHARGESBLOCK" => vtranslate("LBL_VARIABLE_CHARGES_BLOCK", 'EMAILMaker'),
-                    "DEDUCTEDTAXESBLOCK" => vtranslate("LBL_DEDUCTED_TAXES_BLOCK", 'EMAILMaker'),
-                    "DEDUCTEDTAXESTOTAL" => vtranslate("LBL_DEDUCTED_TAXES_TOTAL", 'EMAILMaker'),
-                    "TOTALWITHVAT" => vtranslate("LBL_VARIABLE_SUMWITHVAT", 'EMAILMaker'),
-                    "SHTAXTOTAL" => vtranslate("LBL_SHTAXTOTAL", 'EMAILMaker'),
-                    "SHTAXAMOUNT" => vtranslate("LBL_SHTAXAMOUNT", 'EMAILMaker'),
-                    "ADJUSTMENT" => vtranslate("LBL_ADJUSTMENT", 'EMAILMaker'),
-                    "TOTAL" => vtranslate("LBL_VARIABLE_TOTALSUM", 'EMAILMaker')
-                );
-
+                $Set_More_Fields = [/* "SUBTOTAL"=>vtranslate("LBL_VARIABLE_SUM",'EMAILMaker'), */
+                                    "CURRENCYNAME"         => vtranslate("LBL_CURRENCY_NAME", 'EMAILMaker'),
+                                    "CURRENCYSYMBOL"       => vtranslate("LBL_CURRENCY_SYMBOL", 'EMAILMaker'),
+                                    "CURRENCYCODE"         => vtranslate("LBL_CURRENCY_CODE", 'EMAILMaker'),
+                                    "TOTALWITHOUTVAT"      => vtranslate("LBL_VARIABLE_SUMWITHOUTVAT", 'EMAILMaker'),
+                                    "TOTALDISCOUNT"        => vtranslate("LBL_VARIABLE_TOTALDISCOUNT", 'EMAILMaker'),
+                                    "TOTALDISCOUNTPERCENT" => vtranslate("LBL_VARIABLE_TOTALDISCOUNT_PERCENT", 'EMAILMaker'),
+                                    "TOTALAFTERDISCOUNT"   => vtranslate("LBL_VARIABLE_TOTALAFTERDISCOUNT", 'EMAILMaker'),
+                                    "VAT"                  => vtranslate("LBL_VARIABLE_VAT", 'EMAILMaker'),
+                                    "VATPERCENT"           => vtranslate("LBL_VARIABLE_VAT_PERCENT", 'EMAILMaker'),
+                                    "VATBLOCK"             => vtranslate("LBL_VARIABLE_VAT_BLOCK", 'EMAILMaker'),
+                                    "CHARGESBLOCK"         => vtranslate("LBL_VARIABLE_CHARGES_BLOCK", 'EMAILMaker'),
+                                    "DEDUCTEDTAXESBLOCK"   => vtranslate("LBL_DEDUCTED_TAXES_BLOCK", 'EMAILMaker'),
+                                    "DEDUCTEDTAXESTOTAL"   => vtranslate("LBL_DEDUCTED_TAXES_TOTAL", 'EMAILMaker'),
+                                    "TOTALWITHVAT"         => vtranslate("LBL_VARIABLE_SUMWITHVAT", 'EMAILMaker'),
+                                    "SHTAXTOTAL"           => vtranslate("LBL_SHTAXTOTAL", 'EMAILMaker'),
+                                    "SHTAXAMOUNT"          => vtranslate("LBL_SHTAXAMOUNT", 'EMAILMaker'),
+                                    "ADJUSTMENT"           => vtranslate("LBL_ADJUSTMENT", 'EMAILMaker'),
+                                    "TOTAL"                => vtranslate("LBL_VARIABLE_TOTALSUM", 'EMAILMaker')
+                ];
 
                 if ($module == "Invoice") {
                     $Set_More_Fields[$forfieldname . "_RECEIVED"] = vtranslate("Received", $module);
@@ -189,9 +186,7 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
 
     public function getModuleFields($module)
     {
-
         if (!isset($this->ModuleFields[$module])) {
-
             $module_id = getTabid($module);
             $this->setModuleFields($module, $module_id);
         }
@@ -201,7 +196,6 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
 
     public function setModuleFields($module, $module_id, $skip_related = false)
     {
-
         if (isset($this->ModuleFields[$module])) {
             return false;
         }
@@ -220,7 +214,7 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
         }
 
         $res1 = $adb->pquery($sql1, $params);
-        $block_info_arr = array();
+        $block_info_arr = [];
         while ($row = $adb->fetch_array($res1)) {
             if ($row['blockid'] == '41' && $row['blocklabel'] == '') {
                 $row['blocklabel'] = 'LBL_EVENT_INFORMATION';
@@ -228,60 +222,59 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
             $sql2 = "SELECT fieldid, uitype, columnname, fieldlabel
              FROM vtiger_field WHERE block= ? AND (displaytype != 3 OR uitype = 55) AND displaytype != 4 AND fieldlabel != 'Add Comment' AND presence != ?
              ORDER BY sequence ASC";
-            $res2 = $adb->pquery($sql2, array($row['blockid'], '1'));
+            $res2 = $adb->pquery($sql2, [$row['blockid'], '1']);
             $num_rows2 = $adb->num_rows($res2);
 
             if ($num_rows2 > 0) {
-                $field_id_array = array();
+                $field_id_array = [];
 
                 while ($row2 = $adb->fetch_array($res2)) {
-
                     $field_id_array[] = $row2['fieldid'];
-                    $tmpArr = array($row2["columnname"], vtranslate($row2["fieldlabel"], $module));
+                    $tmpArr = [$row2["columnname"], vtranslate($row2["fieldlabel"], $module)];
                     if (!$skip_related) {
                         switch ($row2['uitype']) {
                             case "51":
-                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, array(vtranslate("Accounts", "Accounts"), "Accounts"));
+                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, [vtranslate("Accounts", "Accounts"), "Accounts"]);
                                 break;
                             case "57":
-                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, array(vtranslate("Contacts", "Contacts"), "Contacts"));
+                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, [vtranslate("Contacts", "Contacts"), "Contacts"]);
                                 break;
                             case "58":
-                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, array(vtranslate("Campaigns", "Campaigns"), "Campaigns"));
+                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, [vtranslate("Campaigns", "Campaigns"), "Campaigns"]);
                                 break;
                             case "59":
-                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, array(vtranslate("Products", "Products"), "Products"));
+                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, [vtranslate("Products", "Products"), "Products"]);
                                 break;
                             case "73":
-                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, array(vtranslate("Accounts", "Accounts"), "Accounts"));
+                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, [vtranslate("Accounts", "Accounts"), "Accounts"]);
                                 break;
                             case "75":
-                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, array(vtranslate("Vendors", "Vendors"), "Vendors"));
+                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, [vtranslate("Vendors", "Vendors"), "Vendors"]);
                                 break;
                             case "81":
-                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, array(vtranslate("Vendors", "Vendors"), "Vendors"));
+                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, [vtranslate("Vendors", "Vendors"), "Vendors"]);
                                 break;
                             case "76":
-                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, array(vtranslate("Potentials", "Potentials"), "Potentials"));
+                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, [vtranslate("Potentials", "Potentials"), "Potentials"]);
                                 break;
                             case "78":
-                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, array(vtranslate("Quotes", "Quotes"), "Quotes"));
+                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, [vtranslate("Quotes", "Quotes"), "Quotes"]);
                                 break;
                             case "80":
-                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, array(vtranslate("SalesOrder", "SalesOrder"), "SalesOrder"));
+                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, [vtranslate("SalesOrder", "SalesOrder"), "SalesOrder"]);
                                 break;
                             case "101":
-                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, array(vtranslate("Users", "Users"), "Users"));
+                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, [vtranslate("Users", "Users"), "Users"]);
                                 $this->setModuleFields("Users", "", true);
                                 break;
                             case "68":
-                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, array(vtranslate("Accounts", "Accounts"), "Accounts"));
-                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, array(vtranslate("Contacts", "Contacts"), "Contacts"));
+                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, [vtranslate("Accounts", "Accounts"), "Accounts"]);
+                                $this->All_Related_Modules[$module][] = array_merge($tmpArr, [vtranslate("Contacts", "Contacts"), "Contacts"]);
                                 break;
                             case "10":
-                                $fmrs = $adb->pquery('SELECT relmodule FROM vtiger_fieldmodulerel WHERE fieldid = ?', array($row2['fieldid']));
+                                $fmrs = $adb->pquery('SELECT relmodule FROM vtiger_fieldmodulerel WHERE fieldid = ?', [$row2['fieldid']]);
                                 while ($rm = $adb->fetch_array($fmrs)) {
-                                    $this->All_Related_Modules[$module][] = array_merge($tmpArr, array(vtranslate($rm['relmodule'], $rm['relmodule']), $rm['relmodule']));
+                                    $this->All_Related_Modules[$module][] = array_merge($tmpArr, [vtranslate($rm['relmodule'], $rm['relmodule']), $rm['relmodule']]);
                                 }
                                 break;
                         }
@@ -301,7 +294,7 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
         }
 
         if ($module == "Quotes" || $module == "Invoice" || $module == "SalesOrder" || $module == "PurchaseOrder" || $module == "Issuecards" || $module == "Receiptcards" || $module == "Creditnote" || $module == "StornoInvoice") {
-            $block_info_arr["LBL_DETAILS_BLOCK"] = array();
+            $block_info_arr["LBL_DETAILS_BLOCK"] = [];
         }
 
         $this->ModuleFields[$module] = $block_info_arr;
@@ -309,7 +302,6 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
 
     public function getModuleLanguageArray($module)
     {
-
         if (file_exists("languages/" . $this->cu_language . "/" . $module . ".php")) {
             $current_mod_strings_lang = $this->cu_language;
         } else {
@@ -317,17 +309,18 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
         }
 
         $current_mod_strings_big = Vtiger_Language_Handler::getModuleStringsFromFile($current_mod_strings_lang, $module);
+
         return $current_mod_strings_big['languageStrings'];
     }
 
     public function getFilenameFields()
     {
-        $filenameFields = array(
+        $filenameFields = [
             "#TEMPLATE_NAME#" => vtranslate("LBL_EMAIL_NAME", 'EMAILMaker'),
-            "#DD-MM-YYYY#" => vtranslate("LBL_CURDATE_DD-MM-YYYY", 'EMAILMaker'),
-            "#MM-DD-YYYY#" => vtranslate("LBL_CURDATE_MM-DD-YYYY", 'EMAILMaker'),
-            "#YYYY-MM-DD#" => vtranslate("LBL_CURDATE_YYYY-MM-DD", 'EMAILMaker')
-        );
+            "#DD-MM-YYYY#"    => vtranslate("LBL_CURDATE_DD-MM-YYYY", 'EMAILMaker'),
+            "#MM-DD-YYYY#"    => vtranslate("LBL_CURDATE_MM-DD-YYYY", 'EMAILMaker'),
+            "#YYYY-MM-DD#"    => vtranslate("LBL_CURDATE_YYYY-MM-DD", 'EMAILMaker')
+        ];
 
         return $filenameFields;
     }
@@ -377,29 +370,29 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
     {
         $company = EMAILMaker_EMAILMaker_Model::MULTI_COMPANY;
 
-        return array(
-            '' => vtranslate('LBL_PLS_SELECT', 'EMAILMaker'),
-            'multicompany-companyname' => vtranslate('LBL_COMPANY_NAME', 'EMAILMaker'),
-            'multicompany-street' => vtranslate('Street', $company),
-            'multicompany-city' => vtranslate('City', $company),
-            'multicompany-code' => vtranslate('Code', $company),
-            'multicompany-state' => vtranslate('State', $company),
-            'multicompany-country' => vtranslate('Country', $company),
-            'multicompany-phone' => vtranslate('phone', $company),
-            'multicompany-fax' => vtranslate('Fax', $company),
-            'multicompany-email' => vtranslate('email', $company),
-            'multicompany-website' => vtranslate('Website', $company),
-            'multicompany-logo' => vtranslate('Logo', $company),
-            'multicompany-stamp' => vtranslate('Stamp', $company),
-            'multicompany-bankname' => vtranslate('BankName', $company),
-            'multicompany-bankaccountno' => vtranslate('BankAccountNo', $company),
-            'multicompany-iban' => vtranslate('IBAN', $company),
-            'multicompany-swift' => vtranslate('SWIFT', $company),
-            'multicompany-registrationno' => vtranslate('RegistrationNo', $company),
-            'multicompany-vatno' => vtranslate('VATNo', $company),
-            'multicompany-taxid' => vtranslate('TaxId', $company),
+        return [
+            ''                                    => vtranslate('LBL_PLS_SELECT', 'EMAILMaker'),
+            'multicompany-companyname'            => vtranslate('LBL_COMPANY_NAME', 'EMAILMaker'),
+            'multicompany-street'                 => vtranslate('Street', $company),
+            'multicompany-city'                   => vtranslate('City', $company),
+            'multicompany-code'                   => vtranslate('Code', $company),
+            'multicompany-state'                  => vtranslate('State', $company),
+            'multicompany-country'                => vtranslate('Country', $company),
+            'multicompany-phone'                  => vtranslate('phone', $company),
+            'multicompany-fax'                    => vtranslate('Fax', $company),
+            'multicompany-email'                  => vtranslate('email', $company),
+            'multicompany-website'                => vtranslate('Website', $company),
+            'multicompany-logo'                   => vtranslate('Logo', $company),
+            'multicompany-stamp'                  => vtranslate('Stamp', $company),
+            'multicompany-bankname'               => vtranslate('BankName', $company),
+            'multicompany-bankaccountno'          => vtranslate('BankAccountNo', $company),
+            'multicompany-iban'                   => vtranslate('IBAN', $company),
+            'multicompany-swift'                  => vtranslate('SWIFT', $company),
+            'multicompany-registrationno'         => vtranslate('RegistrationNo', $company),
+            'multicompany-vatno'                  => vtranslate('VATNo', $company),
+            'multicompany-taxid'                  => vtranslate('TaxId', $company),
             'multicompany-additionalinformations' => vtranslate('AdditionalInformations', $company),
-        );
+        ];
     }
 
     /**
@@ -408,17 +401,17 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
     public static function getUserOptions()
     {
         $adb = PearDatabase::getInstance();
-        $data = array();
-        $res_user_block = $adb->pquery('SELECT blockid, blocklabel FROM vtiger_blocks WHERE tabid = ? ORDER BY sequence ASC', array('29'));
-        $user_block_info_arr = array();
+        $data = [];
+        $res_user_block = $adb->pquery('SELECT blockid, blocklabel FROM vtiger_blocks WHERE tabid = ? ORDER BY sequence ASC', ['29']);
+        $user_block_info_arr = [];
 
         while ($row_user_block = $adb->fetch_array($res_user_block)) {
             $sql_user_field = 'SELECT fieldid, uitype FROM vtiger_field WHERE block = ? AND (displaytype != ? OR uitype = ? ) ORDER BY sequence ASC';
-            $res_user_field = $adb->pquery($sql_user_field, array($row_user_block['blockid'], '3', '55'));
+            $res_user_field = $adb->pquery($sql_user_field, [$row_user_block['blockid'], '3', '55']);
             $num_user_field = $adb->num_rows($res_user_field);
 
             if ($num_user_field > 0) {
-                $user_field_id_array = array();
+                $user_field_id_array = [];
 
                 while ($row_user_field = $adb->fetch_array($res_user_field)) {
                     $user_field_id_array[] = $row_user_field['fieldid'];
@@ -430,7 +423,7 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
 
         $user_mod_strings = EMAILMaker_EMAILMaker_Model::getModuleLanguageArray('Users');
         $b = 0;
-        $User_Types = array('s', 'l', 'm', 'c');
+        $User_Types = ['s', 'l', 'm', 'c'];
 
         foreach ($user_block_info_arr as $block_label => $block_fields) {
             $b++;
@@ -489,10 +482,10 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
      */
     public static function getInventoryTermsAndConditionsOptions()
     {
-        return array(
-            '' => vtranslate('LBL_PLS_SELECT', 'EMAILMaker'),
+        return [
+            ''                     => vtranslate('LBL_PLS_SELECT', 'EMAILMaker'),
             'terms-and-conditions' => vtranslate('LBL_TERMS_AND_CONDITIONS', 'EMAILMaker')
-        );
+        ];
     }
 
     /**
@@ -500,12 +493,12 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
      */
     public static function getUserTypeOptions()
     {
-        return array(
-            'Assigned' => vtranslate('LBL_USER_INFO', 'EMAILMaker'),
-            'Logged' => vtranslate('LBL_LOGGED_USER_INFO', 'EMAILMaker'),
+        return [
+            'Assigned'   => vtranslate('LBL_USER_INFO', 'EMAILMaker'),
+            'Logged'     => vtranslate('LBL_LOGGED_USER_INFO', 'EMAILMaker'),
             'Modifiedby' => vtranslate('LBL_MODIFIEDBY_USER_INFO', 'EMAILMaker'),
-            'Creator' => vtranslate('LBL_CREATOR_USER_INFO', 'EMAILMaker'),
-        );
+            'Creator'    => vtranslate('LBL_CREATOR_USER_INFO', 'EMAILMaker'),
+        ];
     }
 
     /**
@@ -513,14 +506,14 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
      */
     public static function getDateOptions()
     {
-        return array(
+        return [
             '##DD.MM.YYYY##' => vtranslate('LBL_DATE_DD.MM.YYYY', 'EMAILMaker'),
             '##DD-MM-YYYY##' => vtranslate('LBL_DATE_DD-MM-YYYY', 'EMAILMaker'),
             '##MM-DD-YYYY##' => vtranslate('LBL_DATE_MM-DD-YYYY', 'EMAILMaker'),
             '##YYYY-MM-DD##' => vtranslate('LBL_DATE_YYYY-MM-DD', 'EMAILMaker'),
-            '##HH:II:SS##' => vtranslate('LBL_TIME_HH:II:SS', 'EMAILMaker'),
-            '##HH:II##' => vtranslate('LBL_TIME_HH:II', 'EMAILMaker'),
-        );
+            '##HH:II:SS##'   => vtranslate('LBL_TIME_HH:II:SS', 'EMAILMaker'),
+            '##HH:II##'      => vtranslate('LBL_TIME_HH:II', 'EMAILMaker'),
+        ];
     }
 
     /**
@@ -530,20 +523,20 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
         $adb = PearDatabase::getInstance();
-        $options = array(
+        $options = [
             '' => vtranslate('LBL_NONE')
-        );
+        ];
         $from_email_field = Settings_Vtiger_Systems_Model::getFromEmailField();
 
         if (!empty($from_email_field)) {
-            $result2 = $adb->pquery('SELECT * FROM vtiger_organizationdetails WHERE organizationname != ""', array());
+            $result2 = $adb->pquery('SELECT * FROM vtiger_organizationdetails WHERE organizationname != ""', []);
 
             while ($row2 = $adb->fetchByAssoc($result2)) {
                 $options['0_organization_email'] = vtranslate('LBL_COMPANY_EMAIL', 'EMAILMaker') . ' <' . $from_email_field . '>';
             }
         }
 
-        $result3 = $adb->pquery('SELECT fieldname, fieldlabel FROM vtiger_field WHERE tabid = ? AND uitype IN ( ? , ? ) ORDER BY fieldid ASC', array('29', '104', '13'));
+        $result3 = $adb->pquery('SELECT fieldname, fieldlabel FROM vtiger_field WHERE tabid = ? AND uitype IN ( ? , ? ) ORDER BY fieldid ASC', ['29', '104', '13']);
 
         while ($row3 = $adb->fetchByAssoc($result3)) {
             $email = $currentUser->get($row3['fieldname']);
@@ -562,10 +555,10 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
     public static function getProductBlockTemplates()
     {
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT * FROM vtiger_emakertemplates_productbloc_tpl', array());
-        $data = array(
+        $result = $adb->pquery('SELECT * FROM vtiger_emakertemplates_productbloc_tpl', []);
+        $data = [
             '' => vtranslate('LBL_PLS_SELECT', 'EMAILMaker'),
-        );
+        ];
 
         while ($row = $adb->fetchByAssoc($result)) {
             $data[$row['body']] = $row['name'];
@@ -579,17 +572,18 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
      */
     public static function getListViewBlockOptions()
     {
-        return array(
-            '' => vtranslate('LBL_PLS_SELECT', 'EMAILMaker'),
+        return [
+            ''                    => vtranslate('LBL_PLS_SELECT', 'EMAILMaker'),
             'LISTVIEWBLOCK_START' => vtranslate('LBL_ARTICLE_START', 'EMAILMaker'),
-            'LISTVIEWBLOCK_END' => vtranslate('LBL_ARTICLE_END', 'EMAILMaker'),
-            'CRIDX' => vtranslate('LBL_COUNTER', 'EMAILMaker'),
-        );
+            'LISTVIEWBLOCK_END'   => vtranslate('LBL_ARTICLE_END', 'EMAILMaker'),
+            'CRIDX'               => vtranslate('LBL_COUNTER', 'EMAILMaker'),
+        ];
     }
 
     /**
      * @param string $type
-     * @param array $labels
+     * @param array  $labels
+     *
      * @return array
      */
     public static function getBlockTable($type, $labels)
@@ -625,7 +619,7 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
                 </tr>
             </table>';
 
-        return str_replace(array("\r\n", "\r", "\n", "\t"), '', $blockTable);
+        return str_replace(["\r\n", "\r", "\n", "\t"], '', $blockTable);
     }
 
     /**
@@ -633,11 +627,11 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
      */
     public static function getSharingTypeOptions()
     {
-        return array(
-            'public' => vtranslate('PUBLIC_FILTER', 'EMAILMaker'),
+        return [
+            'public'  => vtranslate('PUBLIC_FILTER', 'EMAILMaker'),
             'private' => vtranslate('PRIVATE_FILTER', 'EMAILMaker'),
-            'share' => vtranslate('SHARE_FILTER', 'EMAILMaker'),
-        );
+            'share'   => vtranslate('SHARE_FILTER', 'EMAILMaker'),
+        ];
     }
 
     /**
@@ -645,24 +639,24 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
      */
     public static function getStatusOptions()
     {
-        return array(
+        return [
             '1' => vtranslate('Active', 'EMAILMaker'),
             '0' => vtranslate('Inactive', 'EMAILMaker'),
-        );
+        ];
     }
 
     public static function getGeneralFieldsOptions()
     {
-        return array(
-            'crmdetailviewurl' => vtranslate('CRM Detail View Url', 'EMAILMaker'),
+        return [
+            'crmdetailviewurl'    => vtranslate('CRM Detail View Url', 'EMAILMaker'),
             'portaldetailviewurl' => vtranslate('Portal Detail View Url', 'EMAILMaker'),
-            'siteurl' => vtranslate('Site Url', 'EMAILMaker'),
-            'portalurl' => vtranslate('Portal Url', 'EMAILMaker'),
-            'dbtimezone' => vtranslate('System Timezone', 'EMAILMaker'),
-            'support_name' => vtranslate('Helpdesk Support Name', 'EMAILMaker'),
-            'support_email_id' => vtranslate('Helpdesk Support Email-Id', 'EMAILMaker'),
-            'portalpdfurl' => vtranslate('Portal Pdf Url', 'EMAILMaker'),
-        );
+            'siteurl'             => vtranslate('Site Url', 'EMAILMaker'),
+            'portalurl'           => vtranslate('Portal Url', 'EMAILMaker'),
+            'dbtimezone'          => vtranslate('System Timezone', 'EMAILMaker'),
+            'support_name'        => vtranslate('Helpdesk Support Name', 'EMAILMaker'),
+            'support_email_id'    => vtranslate('Helpdesk Support Email-Id', 'EMAILMaker'),
+            'portalpdfurl'        => vtranslate('Portal Pdf Url', 'EMAILMaker'),
+        ];
     }
 
     public static function getMemberGroups()

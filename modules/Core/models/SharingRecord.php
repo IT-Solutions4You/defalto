@@ -1,11 +1,11 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 require_once 'include/events/include.inc';
@@ -70,19 +70,19 @@ class Core_SharingRecord_Model extends Vtiger_Base_Model
      */
     public function getRecordDetailViewUrl($value, $id)
     {
-        if ('Users' === $value ) {
+        if ('Users' === $value) {
             return '?module=Users&parent=Settings&view=Detail&record=' . $id;
         }
-        if ('Groups' === $value ) {
+        if ('Groups' === $value) {
             return '?module=Groups&parent=Settings&view=Detail&record=' . $id;
         }
-        if ('Roles' === $value ) {
+        if ('Roles' === $value) {
             return '?module=Roles&parent=Settings&view=Edit&record=' . $id;
         }
-        if ('RoleAndSubordinates' === $value ) {
+        if ('RoleAndSubordinates' === $value) {
             return '?module=Roles&parent=Settings&view=Edit&record=' . $id;
         }
-        if ( 'MultiCompany4you' === $value) {
+        if ('MultiCompany4you' === $value) {
             return '?module=ITS4YouMultiCompany&view=Detail&companyid=' . $id;
         }
     }
@@ -102,6 +102,7 @@ class Core_SharingRecord_Model extends Vtiger_Base_Model
 
     /**
      * @param string $module
+     *
      * @return array
      */
     public function getMembersOptions(string $module = ''): array
@@ -281,9 +282,9 @@ class Core_SharingRecord_Model extends Vtiger_Base_Model
         $db->pquery('UPDATE vtiger_crmentity SET isshared=? WHERE crmid=?', [$isShared, $this->get('record')]);
     }
 
-
     /**
      * @param $recordId
+     *
      * @return self
      */
     public static function getInstance($recordId)
@@ -378,6 +379,7 @@ class Core_SharingRecord_Model extends Vtiger_Base_Model
 
     /**
      * @param array $values
+     *
      * @return void
      */
     public function setMemberViewList(array $values): void
@@ -388,6 +390,7 @@ class Core_SharingRecord_Model extends Vtiger_Base_Model
 
     /**
      * @param array $values
+     *
      * @return void
      */
     public function setMemberEditList(array $values): void
@@ -412,6 +415,7 @@ class Core_SharingRecord_Model extends Vtiger_Base_Model
 
     /**
      * @param int $value
+     *
      * @return void
      */
     public function setRecordId(int $value): void

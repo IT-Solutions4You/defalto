@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class PDFMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
@@ -44,7 +44,7 @@ class PDFMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
      */
     public function getFieldsByType($fieldTypes)
     {
-        $fieldTypesArray = array();
+        $fieldTypesArray = [];
 
         if (gettype($fieldTypes) == 'string') {
             array_push($fieldTypesArray, $fieldTypes);
@@ -53,7 +53,7 @@ class PDFMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
         }
 
         $structure = $this->getStructure();
-        $fieldsBasedOnType = array();
+        $fieldsBasedOnType = [];
 
         if (!empty($structure)) {
             foreach ($structure as $block => $fields) {
@@ -85,7 +85,7 @@ class PDFMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
 
         $taskTypeModel = $this->getTaskRecordModel()->getTaskType();
         $taskTypeName = $taskTypeModel->getName();
-        $values = array();
+        $values = [];
 
         $baseModuleModel = $moduleModel = $this->getModule();
         $blockModelList = $moduleModel->getBlocks();
@@ -98,7 +98,7 @@ class PDFMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
             $fieldModelList = $blockModel->getFields();
 
             if (!empty ($fieldModelList)) {
-                $values[$blockLabel] = array();
+                $values[$blockLabel] = [];
 
                 foreach ($fieldModelList as $fieldName => $fieldModel) {
                     if ($fieldModel->isViewable()) {
@@ -128,14 +128,14 @@ class PDFMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
         }
 
         //All the reference fields should also be sent
-        $fields = $moduleModel->getFieldsByType(array('reference', 'owner', 'multireference'));
+        $fields = $moduleModel->getFieldsByType(['reference', 'owner', 'multireference']);
 
         foreach ($fields as $parentFieldName => $field) {
             $type = $field->getFieldDataType();
             $referenceModules = $field->getReferenceList();
 
             if ($type == 'owner') {
-                $referenceModules = array('Users');
+                $referenceModules = ['Users'];
             }
 
             foreach ($referenceModules as $refModule) {
@@ -159,7 +159,10 @@ class PDFMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
                                 }
 
                                 $name = "($parentFieldName : ($refModule) $fieldName)";
-                                $label = vtranslate($field->get('label'), $baseModuleModel->getName()) . ' : (' . vtranslate($refModule, $refModule) . ') ' . vtranslate($fieldModel->get('label'), $refModule);
+                                $label = vtranslate($field->get('label'), $baseModuleModel->getName()) . ' : (' . vtranslate($refModule, $refModule) . ') ' . vtranslate(
+                                        $fieldModel->get('label'),
+                                        $refModule
+                                    );
                                 $fieldModel->set('pdfmaker_columnname', $name)->set('pdfmaker_columnlabel', $label);
 
                                 if (!empty($recordId)) {
@@ -203,7 +206,7 @@ class PDFMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
      */
     public function getAllDateTimeFields()
     {
-        $fieldTypes = array('date', 'datetime');
+        $fieldTypes = ['date', 'datetime'];
 
         return $this->getFieldsByType($fieldTypes);
     }
@@ -213,14 +216,14 @@ class PDFMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
         $moduleModel = $this->getModule();
         $nameFieldsList[$moduleModel->getName()] = $moduleModel->getNameFields();
 
-        $fields = $moduleModel->getFieldsByType(array('reference', 'owner', 'multireference'));
+        $fields = $moduleModel->getFieldsByType(['reference', 'owner', 'multireference']);
 
         foreach ($fields as $parentFieldName => $field) {
             $type = $field->getFieldDataType();
             $referenceModules = $field->getReferenceList();
 
             if ($type == 'owner') {
-                $referenceModules = array('Users');
+                $referenceModules = ['Users'];
             }
 
             foreach ($referenceModules as $refModule) {
@@ -229,7 +232,7 @@ class PDFMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
             }
         }
 
-        $nameFields = array();
+        $nameFields = [];
         $recordStructure = $this->getStructure();
 
         foreach ($nameFieldsList as $moduleName => $fieldNamesList) {

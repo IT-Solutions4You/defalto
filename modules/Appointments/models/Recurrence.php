@@ -1,13 +1,13 @@
 <?php
-
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Appointments_Recurrence_Model extends Vtiger_Base_Model
 {
     /**
@@ -38,6 +38,7 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
 
     /**
      * @param int $recordId
+     *
      * @return void
      */
     public static function deleteRecurring(int $recordId)
@@ -48,6 +49,7 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
 
     /**
      * @param int $recurrenceId - other or first recurrence record
+     *
      * @return void
      */
     public static function deleteRelation(int $recurrenceId)
@@ -72,6 +74,7 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
 
     /**
      * @param int $recordId
+     *
      * @return Appointments_Recurrence_Model
      */
     public static function getInstanceByRecord(int $recordId): self
@@ -87,6 +90,7 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
 
     /**
      * @param $request
+     *
      * @return array
      */
     public static function getRecurrenceInformation($request): array
@@ -131,6 +135,7 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
 
     /**
      * @param $recordId
+     *
      * @return false|RecurringType
      */
     public static function getRecurringObject($recordId)
@@ -150,20 +155,21 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
         [$date_end, $time_end] = explode(' ', $recordModel->get('datetime_end'));
 
         return RecurringType::fromDBRequest([
-            'date_start' => $date_start,
-            'time_start' => $time_start,
-            'due_date' => $date_end,
-            'time_end' => $time_end,
-            'recurringtype' => $recurringModel->get('recurring_type'),
-            'recurringfreq' => $recurringModel->get('recurring_frequency'),
+            'date_start'       => $date_start,
+            'time_start'       => $time_start,
+            'due_date'         => $date_end,
+            'time_end'         => $time_end,
+            'recurringtype'    => $recurringModel->get('recurring_type'),
+            'recurringfreq'    => $recurringModel->get('recurring_frequency'),
             'recurringenddate' => $recurringModel->get('recurring_end_date'),
-            'recurringinfo' => $recurringModel->get('recurring_info'),
+            'recurringinfo'    => $recurringModel->get('recurring_info'),
         ]);
     }
 
     /**
-     * @param int $relatedRecordId
+     * @param int    $relatedRecordId
      * @param string $recurringEditMode
+     *
      * @return array
      * @throws Exception
      */
@@ -201,13 +207,17 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
 
     /**
      * @param int|string $recordId
+     *
      * @return array
      * @throws Exception
      */
     public static function getRecurringRecordsList($recordId): array
     {
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT * FROM its4you_recurring_rel WHERE record_id=? OR record_id = (SELECT record_id FROM its4you_recurring_rel WHERE recurrence_id=?)', [$recordId, $recordId]);
+        $result = $adb->pquery(
+            'SELECT * FROM its4you_recurring_rel WHERE record_id=? OR record_id = (SELECT record_id FROM its4you_recurring_rel WHERE recurrence_id=?)',
+            [$recordId, $recordId]
+        );
         $numberOfRows = $adb->num_rows($result);
         $parentRecurringId = $adb->query_result($result, 0, 'record_id');
         $childRecords = [];
@@ -223,6 +233,7 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
 
     /**
      * @param int|string $recurrenceId
+     *
      * @return bool
      */
     public static function hasRelation($recurrenceId): bool
@@ -247,12 +258,16 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
     /**
      * @param int $recordId
      * @param int $recurrenceId
+     *
      * @return bool
      */
     public static function isRelationExists(int $recordId = 0, int $recurrenceId = 0)
     {
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT recurrence_id FROM its4you_recurring_rel WHERE record_id=? OR record_id=? OR recurrence_id=? OR recurrence_id=?', [$recordId, $recurrenceId, $recordId, $recurrenceId]);
+        $result = $adb->pquery(
+            'SELECT recurrence_id FROM its4you_recurring_rel WHERE record_id=? OR record_id=? OR recurrence_id=? OR recurrence_id=?',
+            [$recordId, $recurrenceId, $recordId, $recurrenceId]
+        );
 
         return 0 !== (int)$adb->num_rows($result);
     }
@@ -290,11 +305,11 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
         $tableIndex = $this->tableIndex;
         $table = $this->table;
         $params = [
-            'recurring_date' => $this->get('recurring_date'),
-            'recurring_end_date' => $this->get('recurring_end_date'),
-            'recurring_type' => $this->get('recurring_type'),
+            'recurring_date'      => $this->get('recurring_date'),
+            'recurring_end_date'  => $this->get('recurring_end_date'),
+            'recurring_type'      => $this->get('recurring_type'),
             'recurring_frequency' => $this->get('recurring_frequency'),
-            'recurring_info' => $this->get('recurring_info'),
+            'recurring_info'      => $this->get('recurring_info'),
         ];
 
         if ($this->isEmpty($tableIndex)) {
@@ -315,8 +330,9 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @param int $recordId
+     * @param int           $recordId
      * @param RecurringType $recurrenceObject
+     *
      * @return void
      */
     public static function saveRecurring(int $recordId, RecurringType $recurrenceObject)
@@ -341,8 +357,9 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @param int $recordId - first recurrence record
+     * @param int $recordId     - first recurrence record
      * @param int $recurrenceId - other or first recurrence record
+     *
      * @return void
      */
     public static function saveRelation(int $recordId, int $recurrenceId)

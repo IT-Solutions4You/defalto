@@ -1,21 +1,22 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_DetailView_Model extends Vtiger_DetailView_Model
 {
-
     public static function getInstance($moduleName, $recordId)
     {
         $modelClassName = Vtiger_Loader::getComponentClassName('Model', 'DetailView', $moduleName);
         $instance = new $modelClassName();
         $moduleModel = EMAILMaker_Module_Model::getInstance($moduleName);
         $recordModel = EMAILMaker_Record_Model::getInstanceById($recordId, $moduleName);
+
         return $instance->setModule($moduleModel)->setRecord($recordModel);
     }
 
@@ -26,22 +27,22 @@ class EMAILMaker_DetailView_Model extends Vtiger_DetailView_Model
         $recordModel = $this->getRecord();
         $links = [];
         $links[] = [
-            'linktype' => 'DETAILVIEWBASIC',
+            'linktype'  => 'DETAILVIEWBASIC',
             'linklabel' => 'LBL_EDIT',
-            'linkurl' => $recordModel->getEditViewUrl(),
-            'linkicon' => '<i class="fa-solid fa-pencil"></i>',
+            'linkurl'   => $recordModel->getEditViewUrl(),
+            'linkicon'  => '<i class="fa-solid fa-pencil"></i>',
         ];
         $links[] = [
-            'linktype' => 'DETAILVIEW',
+            'linktype'  => 'DETAILVIEW',
             'linklabel' => 'LBL_DELETE',
-            'linkurl' => 'javascript:Vtiger_Detail_Js.deleteRecord("' . $recordModel->getDeleteUrl() . '")',
-            'linkicon' => '<i class="fa-solid fa-trash"></i>',
+            'linkurl'   => 'javascript:Vtiger_Detail_Js.deleteRecord("' . $recordModel->getDeleteUrl() . '")',
+            'linkicon'  => '<i class="fa-solid fa-trash"></i>',
         ];
         $links[] = [
-            'linktype' => 'DETAILVIEW',
+            'linktype'  => 'DETAILVIEW',
             'linklabel' => 'LBL_DUPLICATE',
-            'linkurl' => $recordModel->getDuplicateRecordUrl(),
-            'linkicon' => '<i class="fa-solid fa-copy"></i>',
+            'linkurl'   => $recordModel->getDuplicateRecordUrl(),
+            'linkicon'  => '<i class="fa-solid fa-copy"></i>',
         ];
 
         $linkModelListDetails = Vtiger_Link_Model::getAllByType($moduleModel->getId(), $linkTypes, $linkParams);
@@ -51,9 +52,9 @@ class EMAILMaker_DetailView_Model extends Vtiger_DetailView_Model
 
     public function getSideBarLinks($linkParams)
     {
-        $linkTypes = array('SIDEBARLINK', 'SIDEBARWIDGET');
+        $linkTypes = ['SIDEBARLINK', 'SIDEBARWIDGET'];
         $moduleLinks = $this->getModule()->getSideBarLinks($linkTypes);
-        $listLinkTypes = array('DETAILVIEWSIDEBARLINK', 'DETAILVIEWSIDEBARWIDGET');
+        $listLinkTypes = ['DETAILVIEWSIDEBARLINK', 'DETAILVIEWSIDEBARWIDGET'];
         $listLinks = Vtiger_Link_Model::getAllByType($this->getModule()->getId(), $listLinkTypes);
 
         if ($listLinks['DETAILVIEWSIDEBARLINK']) {
@@ -68,6 +69,7 @@ class EMAILMaker_DetailView_Model extends Vtiger_DetailView_Model
                 $moduleLinks['SIDEBARWIDGET'][] = $link;
             }
         }
+
         return $moduleLinks;
     }
 }

@@ -1,22 +1,32 @@
 <?php
-/**
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 vimport('~~/modules/WSAPP/synclib/models/SyncRecordModel.php');
 
-class Google_Contacts_Model extends WSAPP_SyncRecordModel {
-
+class Google_Contacts_Model extends WSAPP_SyncRecordModel
+{
     /**
      * return id of Google Record
      * @return mixed id
      */
     public function getId()
     {
-        return $this->data['entity']['resourceName'] ? : $this->data['entity']['id']['$t'];
+        return $this->data['entity']['resourceName'] ?: $this->data['entity']['id']['$t'];
     }
 
     /**
@@ -25,8 +35,8 @@ class Google_Contacts_Model extends WSAPP_SyncRecordModel {
      */
     public function getModifiedTime()
     {
-        $updateTime = $this->data['entity']['metadata']['sources'][0]['updateTime'] ? : $this->data['entity']['updated']['$t'];
-        $updateTime = $updateTime ? : str_replace(' ', 'T', date('Y-m-d H:i:s'));
+        $updateTime = $this->data['entity']['metadata']['sources'][0]['updateTime'] ?: $this->data['entity']['updated']['$t'];
+        $updateTime = $updateTime ?: str_replace(' ', 'T', date('Y-m-d H:i:s'));
 
         return $this->vtigerFormat($updateTime);
     }
@@ -153,85 +163,96 @@ class Google_Contacts_Model extends WSAPP_SyncRecordModel {
     {
         return $this->data['entity']['organizations'][0]['title'];
     }
-    
-    function getAccountName($userId) {
+
+    function getAccountName($userId)
+    {
         $description = false;
         $orgName = $this->data['entity']['organizations'][0]['name'];
 
-        if(empty($orgName)) {
+        if (empty($orgName)) {
             $contactsModel = Vtiger_Module_Model::getInstance('Contacts');
             $accountFieldInstance = Vtiger_Field_Model::getInstance('account_id', $contactsModel);
-            if($accountFieldInstance->isMandatory()) {
+            if ($accountFieldInstance->isMandatory()) {
                 $orgName = '????';
                 $description = 'This Organization is created to support Google Contacts Synchronization. Since Organization Name is mandatory !';
             }
         }
-        if(!empty($orgName)) {
+        if (!empty($orgName)) {
             $db = PearDatabase::getInstance();
-            $result = $db->pquery("SELECT crmid FROM vtiger_crmentity WHERE label = ? AND deleted = ? AND setype = ?", array($orgName, 0, 'Accounts'));
-            if($db->num_rows($result) < 1) {
-				try {
-					$accountModel = Vtiger_Module_Model::getInstance('Accounts');
-					$recordModel = Vtiger_Record_Model::getCleanInstance('Accounts');
-				
-					$fieldInstances = Vtiger_Field_Model::getAllForModule($accountModel);
-					foreach($fieldInstances as $blockInstance) {
-						foreach($blockInstance as $fieldInstance) {
-							$fieldName = $fieldInstance->getName();
-							$fieldValue = $recordModel->get($fieldName);
-							if(empty($fieldValue)) {
-								$defaultValue = $fieldInstance->getDefaultFieldValue();
-								if($defaultValue) {
-									$recordModel->set($fieldName, decode_html($defaultValue));
-								}
-								if($fieldInstance->isMandatory() && !$defaultValue) {
-									$randomValue = Vtiger_Util_Helper::getDefaultMandatoryValue($fieldInstance->getFieldDataType());
-									if($fieldInstance->getFieldDataType() == 'picklist' || $fieldInstance->getFieldDataType() == 'multipicklist') {
-										$picklistValues = $fieldInstance->getPicklistValues();
-										$randomValue = reset($picklistValues);
-									}
-									$recordModel->set($fieldName, $randomValue);
-								}
-							}
-						}
-					}
-					$recordModel->set('mode', '');
-					$recordModel->set('accountname', $orgName);
-					$recordModel->set('assigned_user_id', $userId);
-					$recordModel->set('source', 'GOOGLE');
-					if($description) {
-						$recordModel->set('description', $description);
-					}
-					$recordModel->save();
-				} catch (Exception $e) {
-					//TODO - Review
-				}
+            $result = $db->pquery("SELECT crmid FROM vtiger_crmentity WHERE label = ? AND deleted = ? AND setype = ?", [$orgName, 0, 'Accounts']);
+            if ($db->num_rows($result) < 1) {
+                try {
+                    $accountModel = Vtiger_Module_Model::getInstance('Accounts');
+                    $recordModel = Vtiger_Record_Model::getCleanInstance('Accounts');
+
+                    $fieldInstances = Vtiger_Field_Model::getAllForModule($accountModel);
+                    foreach ($fieldInstances as $blockInstance) {
+                        foreach ($blockInstance as $fieldInstance) {
+                            $fieldName = $fieldInstance->getName();
+                            $fieldValue = $recordModel->get($fieldName);
+                            if (empty($fieldValue)) {
+                                $defaultValue = $fieldInstance->getDefaultFieldValue();
+                                if ($defaultValue) {
+                                    $recordModel->set($fieldName, decode_html($defaultValue));
+                                }
+                                if ($fieldInstance->isMandatory() && !$defaultValue) {
+                                    $randomValue = Vtiger_Util_Helper::getDefaultMandatoryValue($fieldInstance->getFieldDataType());
+                                    if ($fieldInstance->getFieldDataType() == 'picklist' || $fieldInstance->getFieldDataType() == 'multipicklist') {
+                                        $picklistValues = $fieldInstance->getPicklistValues();
+                                        $randomValue = reset($picklistValues);
+                                    }
+                                    $recordModel->set($fieldName, $randomValue);
+                                }
+                            }
+                        }
+                    }
+                    $recordModel->set('mode', '');
+                    $recordModel->set('accountname', $orgName);
+                    $recordModel->set('assigned_user_id', $userId);
+                    $recordModel->set('source', 'GOOGLE');
+                    if ($description) {
+                        $recordModel->set('description', $description);
+                    }
+                    $recordModel->save();
+                } catch (Exception $e) {
+                    //TODO - Review
+                }
             }
+
             return $orgName;
         }
+
         return false;
     }
-    
-    function getDescription() {
+
+    function getDescription()
+    {
         return $this->data['entity']['content']['$t'];
     }
 
     /**
      * Returns the Google_Contacts_Model of Google Record
+     *
      * @param <array> $recordValues
+     *
      * @return Google_Contacts_Model
      */
-    public static function getInstanceFromValues($recordValues) {
+    public static function getInstanceFromValues($recordValues)
+    {
         $model = new Google_Contacts_Model($recordValues);
+
         return $model;
     }
 
     /**
-     * converts the Google Format date to 
+     * converts the Google Format date to
+     *
      * @param <date> $date Google Date
+     *
      * @return <date> Vtiger date Format
      */
-    public static function vtigerFormat($date) {
+    public static function vtigerFormat($date)
+    {
         [$date, $timestring] = explode('T', $date);
         [$time, $tz] = explode('.', $timestring);
 

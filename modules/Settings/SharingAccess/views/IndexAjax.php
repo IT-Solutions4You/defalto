@@ -1,91 +1,107 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-Class Settings_SharingAccess_IndexAjax_View extends Settings_Vtiger_IndexAjax_View {
-	function __construct() {
-		parent::__construct();
-		$this->exposeMethod('showRules');
-		$this->exposeMethod('editRule');
-	}
+class Settings_SharingAccess_IndexAjax_View extends Settings_Vtiger_IndexAjax_View
+{
+    function __construct()
+    {
+        parent::__construct();
+        $this->exposeMethod('showRules');
+        $this->exposeMethod('editRule');
+    }
 
-	public function process(Vtiger_Request $request) {
-		$mode = $request->get('mode');
-		if(!empty($mode)) {
-			$this->invokeExposedMethod($mode, $request);
-			return;
-		}
-	}
+    public function process(Vtiger_Request $request)
+    {
+        $mode = $request->get('mode');
+        if (!empty($mode)) {
+            $this->invokeExposedMethod($mode, $request);
 
-	public function showRules(Vtiger_Request $request) {
+            return;
+        }
+    }
 
-		$viewer = $this->getViewer ($request);
-		$moduleName = $request->getModule();
-		$qualifiedModuleName = $request->getModule(false);
-		$forModule = $request->get('for_module');
+    public function showRules(Vtiger_Request $request)
+    {
+        $viewer = $this->getViewer($request);
+        $moduleName = $request->getModule();
+        $qualifiedModuleName = $request->getModule(false);
+        $forModule = $request->get('for_module');
 
-		$moduleModel = Settings_SharingAccess_Module_Model::getInstance($forModule);
-		$ruleModelList = Settings_SharingAccess_Rule_Model::getAllByModule($moduleModel);
+        $moduleModel = Settings_SharingAccess_Module_Model::getInstance($forModule);
+        $ruleModelList = Settings_SharingAccess_Rule_Model::getAllByModule($moduleModel);
 
-		$viewer->assign('MODULE_MODEL', $moduleModel);
-		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
-		$viewer->assign('MODULE', $moduleName);
-		$viewer->assign('FOR_MODULE', $forModule);
-		$viewer->assign('RULE_MODEL_LIST', $ruleModelList);
-		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+        $viewer->assign('MODULE_MODEL', $moduleModel);
+        $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('FOR_MODULE', $forModule);
+        $viewer->assign('RULE_MODEL_LIST', $ruleModelList);
+        $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
-		echo $viewer->view('ListRules.tpl', $qualifiedModuleName, true);
-	}
+        echo $viewer->view('ListRules.tpl', $qualifiedModuleName, true);
+    }
 
-	public function editRule(Vtiger_Request $request) {
+    public function editRule(Vtiger_Request $request)
+    {
+        $viewer = $this->getViewer($request);
+        $moduleName = $request->getModule();
+        $qualifiedModuleName = $request->getModule(false);
+        $forModule = $request->get('for_module');
+        $ruleId = $request->get('record');
 
-		$viewer = $this->getViewer ($request);
-		$moduleName = $request->getModule();
-		$qualifiedModuleName = $request->getModule(false);
-		$forModule = $request->get('for_module');
-		$ruleId = $request->get('record');
+        $moduleModel = Settings_SharingAccess_Module_Model::getInstance($forModule);
+        if ($ruleId) {
+            $ruleModel = Settings_SharingAccess_Rule_Model::getInstance($moduleModel, $ruleId);
+        } else {
+            $ruleModel = new Settings_SharingAccess_Rule_Model();
+            $ruleModel->setModuleFromInstance($moduleModel);
+        }
 
-		$moduleModel = Settings_SharingAccess_Module_Model::getInstance($forModule);
-		if($ruleId) {
-			$ruleModel = Settings_SharingAccess_Rule_Model::getInstance($moduleModel, $ruleId);
-		} else {
-			$ruleModel = new Settings_SharingAccess_Rule_Model();
-			$ruleModel->setModuleFromInstance($moduleModel);
-		}
+        $viewer->assign('ALL_RULE_MEMBERS', Settings_SharingAccess_RuleMember_Model::getAll());
+        $viewer->assign('ALL_PERMISSIONS', Settings_SharingAccess_Rule_Model::$allPermissions);
+        $viewer->assign('MODULE_MODEL', $moduleModel);
+        $viewer->assign('RULE_MODEL', $ruleModel);
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+        $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
-		$viewer->assign('ALL_RULE_MEMBERS', Settings_SharingAccess_RuleMember_Model::getAll());
-		$viewer->assign('ALL_PERMISSIONS', Settings_SharingAccess_Rule_Model::$allPermissions);
-		$viewer->assign('MODULE_MODEL', $moduleModel);
-		$viewer->assign('RULE_MODEL', $ruleModel);
-		$viewer->assign('MODULE', $moduleName);
-		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
-		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+        echo $viewer->view('EditRule.tpl', $qualifiedModuleName, true);
+    }
 
-		echo $viewer->view('EditRule.tpl', $qualifiedModuleName, true);
-	}
+    /**
+     * Function to get the list of Script models to be included
+     *
+     * @param Vtiger_Request $request
+     *
+     * @return <Array> - List of Vtiger_JsScript_Model instances
+     */
+    function getHeaderScripts(Vtiger_Request $request)
+    {
+        $headerScriptInstances = parent::getHeaderScripts($request);
+        $moduleName = $request->getModule();
 
-	/**
-	 * Function to get the list of Script models to be included
-	 * @param Vtiger_Request $request
-	 * @return <Array> - List of Vtiger_JsScript_Model instances
-	 */
-	function getHeaderScripts(Vtiger_Request $request) {
-		$headerScriptInstances = parent::getHeaderScripts($request);
-		$moduleName = $request->getModule();
+        $jsFileNames = [
+            'modules.Settings.Vtiger.resources.Index',
+            "modules.Settings.$moduleName.resources.Index"
+        ];
 
-		$jsFileNames = array(
-			'modules.Settings.Vtiger.resources.Index',
-			"modules.Settings.$moduleName.resources.Index"
-		);
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
-		return $headerScriptInstances;
-	}
+        return $headerScriptInstances;
+    }
 }

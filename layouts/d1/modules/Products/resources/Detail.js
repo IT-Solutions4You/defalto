@@ -1,27 +1,29 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
-
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 PriceBooks_Detail_Js("Products_Detail_Js", {
-    triggerEditQuantity: function(url) {
+    triggerEditQuantity: function (url) {
         app.request.get({url: url}).then(
-                function(err, data) {
-                    app.helper.showModal(data, {cb: function() {
-                            var productDetailjs = new Products_Detail_Js();
-                            productDetailjs.registerEventForUpdateQuantity();
-                        }
-                    });
+            function (err, data) {
+                app.helper.showModal(data, {
+                    cb: function () {
+                        var productDetailjs = new Products_Detail_Js();
+                        productDetailjs.registerEventForUpdateQuantity();
+                    }
                 });
+            });
     },
 }, {
     /**
      * function to register event for showing multiple images using bxslider
      */
-    registerEventForImageGraphics: function() {
+    registerEventForImageGraphics: function () {
         if (jQuery('#imageContainer').find("img").length > 0) {
             jQuery('#imageContainer').bxSlider({
                 slideWidth: 400,
@@ -45,11 +47,11 @@ PriceBooks_Detail_Js("Products_Detail_Js", {
      */
 
 
-    registerEventForUpdateQuantity: function() {
+    registerEventForUpdateQuantity: function () {
         var self = this;
         var updateQuantityForm = jQuery('#quantityUpdate');
         updateQuantityForm.vtValidate({
-            submitHandler: function(form) {
+            submitHandler: function (form) {
                 var selectedRecordDetails = {};
                 var quantityEle = updateQuantityForm.find('input[name="quantity"]');
                 var quantity = quantityEle.val();
@@ -58,15 +60,15 @@ PriceBooks_Detail_Js("Products_Detail_Js", {
                 var relatedListInstance = self.getRelatedController();
                 var relation = relatedListInstance.updateRelations(selectedRecordDetails);
                 app.helper.hideModal();
-                relation.done(self.loadRelatedList());         
+                relation.done(self.loadRelatedList());
             }
         });
     },
-    
-    registerEventForChangeTotalCost: function() {
+
+    registerEventForChangeTotalCost: function () {
         var detailContentsHolder = this.getContentHolder();
         var thisInstance = this;
-        detailContentsHolder.on('click', '#updatePrice', function(e) {
+        detailContentsHolder.on('click', '#updatePrice', function (e) {
             var element = jQuery(e.currentTarget);
             if (element.attr('disabled')) {
                 return;
@@ -83,26 +85,26 @@ PriceBooks_Detail_Js("Products_Detail_Js", {
                 'unit_price': unitPrice
             }
             app.request.post({data: params}).then(
-                    function(err, data) {
-                        app.helper.hideProgress();
+                function (err, data) {
+                    app.helper.hideProgress();
 
-                        if (data) {
-                            element.attr('disabled', true);
-                            var message = 'JS_SUCCESSFULLY_CHANGED_BUNDLE_COST';
-                            app.helper.showSuccessNotification({message: app.vtranslate(message)});
-                        }
-                    });
+                    if (data) {
+                        element.attr('disabled', true);
+                        var message = 'JS_SUCCESSFULLY_CHANGED_BUNDLE_COST';
+                        app.helper.showSuccessNotification({message: app.vtranslate(message)});
+                    }
+                });
         });
         thisInstance.registerPopover();
     },
     /**
      * Function to register event for select button click on pricebooks in Products related list
      */
-    registerEventForSelectOptionToShowBundleInInventory: function() {
+    registerEventForSelectOptionToShowBundleInInventory: function () {
         var thisInstance = this;
         var detailContentsHolder = this.getContentHolder();
 
-        detailContentsHolder.on('click', '.showBundlesInInventory', function(e) {
+        detailContentsHolder.on('click', '.showBundlesInInventory', function (e) {
             var currentTarget = jQuery(e.currentTarget);
             var prevSelectedValue = jQuery('.isShowBundles').val();
             var isChecked = currentTarget.find('input[type="checkbox"]').is(':checked');
@@ -123,28 +125,27 @@ PriceBooks_Detail_Js("Products_Detail_Js", {
                 }
 
                 app.request.post({data: params}).then(
-                        function(err, response) {
-                            jQuery('.isShowBundles').val(value);
-                            if (value) {
-                                currentTarget.attr('checked', 'true');
-                            } else {
-                                currentTarget.removeAttr('checked');
-                            }
-                            var message = 'JS_SUB_PRODUCTS_WILL_NOT_BE_SHOWN_IN_INVENTORY';
-                            if (value) {
-                                message = 'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY';
-                            }
-                            app.helper.showSuccessNotification({message:app.vtranslate(message)});
+                    function (err, response) {
+                        jQuery('.isShowBundles').val(value);
+                        if (value) {
+                            currentTarget.attr('checked', 'true');
+                        } else {
+                            currentTarget.removeAttr('checked');
                         }
-
+                        var message = 'JS_SUB_PRODUCTS_WILL_NOT_BE_SHOWN_IN_INVENTORY';
+                        if (value) {
+                            message = 'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY';
+                        }
+                        app.helper.showSuccessNotification({message: app.vtranslate(message)});
+                    }
                 );
             }
         });
     },
-    loadRelatedList: function(){
+    loadRelatedList: function () {
         var relatedController = this.getRelatedController();
         var self = this;
-        relatedController.loadRelatedList().then(function(){
+        relatedController.loadRelatedList().then(function () {
             relatedController.triggerRelationAdditionalActions();
         });
     },
@@ -154,12 +155,12 @@ PriceBooks_Detail_Js("Products_Detail_Js", {
         if (element.length) {
             let popover = new bootstrap.Popover(element, {html: true, container: 'body', placement: 'top', customClass: 'productBundlePopover'});
 
-            element.one('shown.bs.popover',function(){
+            element.one('shown.bs.popover', function () {
                 app.helper.showVerticalScroll(jQuery('.productBundlePopover .popover-content'));
             });
         }
     },
-    registerBasicEvents: function(){
+    registerBasicEvents: function () {
         this._super();
         this.registerEventForImageGraphics();
     },

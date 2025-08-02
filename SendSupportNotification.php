@@ -13,8 +13,8 @@
 
 /**
  * PHPMailer - PHP email transport class
- * @package PHPMailer
- * @author Brent R. Matzelle
+ * @package   PHPMailer
+ * @author    Brent R. Matzelle
  * @copyright 2001 - 2003 Brent R. Matzelle
  */
 
@@ -38,8 +38,8 @@ $app_strings = return_application_language($current_language);
 
 $status = '';
 //To send email notification before a week
-$query="select vtiger_contactdetails.contactid,vtiger_contactdetails.email,vtiger_contactdetails.firstname,vtiger_contactdetails.lastname,contactid  from vtiger_customerdetails inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_customerdetails.customerid inner join vtiger_contactdetails on vtiger_contactdetails.contactid=vtiger_customerdetails.customerid  where vtiger_crmentity.deleted=0 and support_end_date=DATE_ADD(now(), INTERVAL 1 WEEK)";
-$result = $adb->pquery($query, array());
+$query = "select vtiger_contactdetails.contactid,vtiger_contactdetails.email,vtiger_contactdetails.firstname,vtiger_contactdetails.lastname,contactid  from vtiger_customerdetails inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_customerdetails.customerid inner join vtiger_contactdetails on vtiger_contactdetails.contactid=vtiger_customerdetails.customerid  where vtiger_crmentity.deleted=0 and support_end_date=DATE_ADD(now(), INTERVAL 1 WEEK)";
+$result = $adb->pquery($query, []);
 
 while ($result_set = $adb->fetch_array($result)) {
     $content = getcontent_week($result_set['contactid']);
@@ -60,11 +60,11 @@ while ($result_set = $adb->fetch_array($result)) {
 
 //comment / uncomment this line if you want to hide / show the sent mail status
 //showstatus($status);
-$log->debug(" Send Support Notification Before a week - Status: ".$status);
+$log->debug(" Send Support Notification Before a week - Status: " . $status);
 
 //To send email notification before a month
-$query="select vtiger_contactdetails.contactid,vtiger_contactdetails.email,vtiger_contactdetails.firstname,vtiger_contactdetails.lastname,contactid  from vtiger_customerdetails inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_customerdetails.customerid inner join vtiger_contactdetails on vtiger_contactdetails.contactid=vtiger_customerdetails.customerid  where vtiger_crmentity.deleted=0 and support_end_date=DATE_ADD(now(), INTERVAL 1 MONTH)";
-$result = $adb->pquery($query, array());
+$query = "select vtiger_contactdetails.contactid,vtiger_contactdetails.email,vtiger_contactdetails.firstname,vtiger_contactdetails.lastname,contactid  from vtiger_customerdetails inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_customerdetails.customerid inner join vtiger_contactdetails on vtiger_contactdetails.contactid=vtiger_customerdetails.customerid  where vtiger_crmentity.deleted=0 and support_end_date=DATE_ADD(now(), INTERVAL 1 MONTH)";
+$result = $adb->pquery($query, []);
 
 while ($result_set = $adb->fetch_array($result)) {
     $content = getcontent_month($result_set['contactid']);
@@ -85,60 +85,58 @@ while ($result_set = $adb->fetch_array($result)) {
 
 //comment / uncomment this line if you want to hide / show the sent mail status
 //showstatus($status);
-$log->debug(" Send Support Notification Befoe a Month - Status: ".$status);
+$log->debug(" Send Support Notification Befoe a Month - Status: " . $status);
 
 //used to dispaly the sent mail status
 function showstatus($status)
 {
-	
-	if($status == 1)
-		echo "Mails sent successfully";
-	else if($status == "")
-		echo "No contacts matched";
-	else
-		echo "Error while sending mails: ".$status;	
+    if ($status == 1) {
+        echo "Mails sent successfully";
+    } elseif ($status == "") {
+        echo "No contacts matched";
+    } else {
+        echo "Error while sending mails: " . $status;
+    }
 }
-
-
 
 //function used to get the header and body content of the mail to be sent.
 function getcontent_month($id)
 {
-	global $adb;
+    global $adb;
 
-	$moduleName = 'Contacts';
-	$params = array('templatename' => 'Support end notification before a month', 'category' => 'system');
-	$templateId = EMAILMaker_Record_Model::getTemplateId($params);
-	$language = Vtiger_Language_Handler::getLanguage();
-	$contentModel = EMAILMaker_EMAILContent_Model::getInstanceById($templateId, $language, $moduleName, $id, $id, $moduleName);
-	$contentModel->getContent();
+    $moduleName = 'Contacts';
+    $params = ['templatename' => 'Support end notification before a month', 'category' => 'system'];
+    $templateId = EMAILMaker_Record_Model::getTemplateId($params);
+    $language = Vtiger_Language_Handler::getLanguage();
+    $contentModel = EMAILMaker_EMAILContent_Model::getInstanceById($templateId, $language, $moduleName, $id, $id, $moduleName);
+    $contentModel->getContent();
 
-	$body = $contentModel->getBody();
-	$body = getMergedDescription($body, $id, 'Contacts');
-	$body = getMergedDescription($body, $id, 'Users');
+    $body = $contentModel->getBody();
+    $body = getMergedDescription($body, $id, 'Contacts');
+    $body = getMergedDescription($body, $id, 'Users');
 
-	return [
-		'subject' => $body->getSubject(),
-		'body' => $body,
-	];
+    return [
+        'subject' => $body->getSubject(),
+        'body'    => $body,
+    ];
 }
 
 //function used to get the header and body content of the mail to be sent.
 function getcontent_week($id)
 {
-	$moduleName = 'Contacts';
-	$params = array('templatename' => 'Support end notification before a week', 'category' => 'system');
-	$templateId = EMAILMaker_Record_Model::getTemplateId($params);
-	$language = Vtiger_Language_Handler::getLanguage();
-	$contentModel = EMAILMaker_EMAILContent_Model::getInstanceById($templateId, $language, $moduleName, $id, $id, $moduleName);
-	$contentModel->getContent();
+    $moduleName = 'Contacts';
+    $params = ['templatename' => 'Support end notification before a week', 'category' => 'system'];
+    $templateId = EMAILMaker_Record_Model::getTemplateId($params);
+    $language = Vtiger_Language_Handler::getLanguage();
+    $contentModel = EMAILMaker_EMAILContent_Model::getInstanceById($templateId, $language, $moduleName, $id, $id, $moduleName);
+    $contentModel->getContent();
 
-	$body = $contentModel->getBody();
-	$body = getMergedDescription($body, $id, "Contacts");
-	$body = getMergedDescription($body, $id, "Users");
+    $body = $contentModel->getBody();
+    $body = getMergedDescription($body, $id, "Contacts");
+    $body = getMergedDescription($body, $id, "Users");
 
-	return [
-		'subject' => $body->getSubject(),
-		'body' => $body,
-	];
+    return [
+        'subject' => $body->getSubject(),
+        'body'    => $body,
+    ];
 }

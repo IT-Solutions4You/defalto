@@ -1,5 +1,5 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
@@ -7,38 +7,46 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-$languageStrings = array(
-	//DetailView Actions
-    'Quotes' => 'Offert',
-	'SINGLE_Quotes' => 'Offert',
-	'LBL_EXPORT_TO_PDF' => 'Exportera till PDF',
-    'LBL_SEND_MAIL_PDF' => 'Skicka E-post med PDF',
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-	//Basic strings
-	'LBL_ADD_RECORD' => 'Lägg till Offert',
-	'LBL_RECORDS_LIST' => 'Offertlista',
+$languageStrings = [
+    //DetailView Actions
+    'Quotes'                => 'Offert',
+    'SINGLE_Quotes'         => 'Offert',
+    'LBL_EXPORT_TO_PDF'     => 'Exportera till PDF',
+    'LBL_SEND_MAIL_PDF'     => 'Skicka E-post med PDF',
 
-	// Blocks
-	'LBL_QUOTE_INFORMATION' => 'Offertuppgifter',
-	
-	//Field Labels
-	'Quote No'=>'Offertnummer',
-	'Quote Stage'=>'Offertnivå',
-	'Valid Till'=>'Giltig tom',
-	'Inventory Manager'=>'Inventeringsmanager',
-    'Related To' => 'Relaterat till',
-	//Added for existing Picklist Entries
+    //Basic strings
+    'LBL_ADD_RECORD'        => 'Lägg till Offert',
+    'LBL_RECORDS_LIST'      => 'Offertlista',
 
-	'Accepted'=>'Godkänd',
-	'Rejected'=>'Avslagna',
-	
-	//Translation for product not found
-	'LBL_THIS' => 'Den här',
-	'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'tas bort från systemet. Vänligen ta bort eller ersätta detta objekt',
-	'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Denna artikel tas bort från systemet, vänligen ta bort artikel',
+    // Blocks
+    'LBL_QUOTE_INFORMATION' => 'Offertuppgifter',
 
-);
+    //Field Labels
+    'Quote No'              => 'Offertnummer',
+    'Quote Stage'           => 'Offertnivå',
+    'Valid Till'            => 'Giltig tom',
+    'Inventory Manager'     => 'Inventeringsmanager',
+    'Related To'            => 'Relaterat till',
+    //Added for existing Picklist Entries
 
-$jsLanguageStrings = array(
-	'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Var god ta bort artikelraden som raderades',
-);
+    'Accepted'                                                                   => 'Godkänd',
+    'Rejected'                                                                   => 'Avslagna',
+
+    //Translation for product not found
+    'LBL_THIS'                                                                   => 'Den här',
+    'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM'          => 'tas bort från systemet. Vänligen ta bort eller ersätta detta objekt',
+    'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Denna artikel tas bort från systemet, vänligen ta bort artikel',
+];
+
+$jsLanguageStrings = [
+    'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Var god ta bort artikelraden som raderades',
+];

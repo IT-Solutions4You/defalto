@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 include_once 'libraries/ToAscii/ToAscii.php';
@@ -26,21 +26,23 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public $emailNames = [];
 
     /**
-     * @param int $userId
+     * @param int    $userId
      * @param string $type
+     *
      * @return array
      * @throws Exception
      */
     public static function getUserDataByType($userId, $type = 'email1')
     {
         $adb = PearDatabase::getInstance();
-        $userResult = $adb->pquery(sprintf('SELECT first_name, last_name, %s AS email  FROM vtiger_users WHERE id=?', $type), array($userId));
+        $userResult = $adb->pquery(sprintf('SELECT first_name, last_name, %s AS email  FROM vtiger_users WHERE id=?', $type), [$userId]);
 
         return $adb->query_result_rowdata($userResult);
     }
 
     /**
      * @param string $sourceModule
+     *
      * @return string
      */
     public static function getSelectTemplateUrl($sourceRecord, $sourceModule)
@@ -54,6 +56,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
 
     /**
      * @param int $userId
+     *
      * @return string
      * @throws Exception
      */
@@ -188,7 +191,13 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
                 }
 
                 $module = $this->getRelatedModule();
-                $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstance($module, $this->getRelatedTo(), $this->get('email_template_language'), (int)$recipientId, $recipientModule);
+                $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstance(
+                    $module,
+                    $this->getRelatedTo(),
+                    $this->get('email_template_language'),
+                    (int)$recipientId,
+                    $recipientModule
+                );
                 $EMAILContentModel->setSubject($subject);
                 $EMAILContentModel->setBody($body);
 
@@ -255,7 +264,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     {
         $images = (array)$this->get('images');
         $images[$id] = [
-            'cid' => $id,
+            'cid'  => $id,
             'path' => $path,
             'name' => !empty($name) ? $name : basename($path),
         ];
@@ -343,17 +352,18 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     }
 
     /**
-     * @param int $parentId
+     * @param int    $parentId
      * @param string $redirectUrl
      * @param string $linkName
+     *
      * @return string
      */
     public function getTrackUrlForClicks($redirectUrl = false, $linkName = false)
     {
         $params = [
-            'record' => $this->getId(),
+            'record'   => $this->getId(),
             'parentId' => $this->getRelatedTo(),
-            'method' => 'click',
+            'method'   => 'click',
         ];
 
         if ($redirectUrl) {
@@ -365,10 +375,10 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         }
 
         return Vtiger_ShortURL_Helper::generateURL([
-            'handler_path' => 'modules/ITS4YouEmails/handlers/Tracker.php',
-            'handler_class' => 'ITS4YouEmails_Tracker_Handler',
+            'handler_path'     => 'modules/ITS4YouEmails/handlers/Tracker.php',
+            'handler_class'    => 'ITS4YouEmails_Tracker_Handler',
             'handler_function' => 'process',
-            'handler_data' => $params,
+            'handler_data'     => $params,
         ]);
     }
 
@@ -387,6 +397,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
      * @param string $toReplace
      * @param string $search
      * @param string $type
+     *
      * @return string
      */
     public function replaceLinkWithShortUrl($content, $toReplace, $search, $type)
@@ -425,13 +436,13 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     {
         if ($this->isEmailTrackEnabled()) {
             $trackURL = Vtiger_ShortURL_Helper::generateURL([
-                'handler_path' => 'modules/ITS4YouEmails/handlers/Tracker.php',
-                'handler_class' => 'ITS4YouEmails_Tracker_Handler',
+                'handler_path'     => 'modules/ITS4YouEmails/handlers/Tracker.php',
+                'handler_class'    => 'ITS4YouEmails_Tracker_Handler',
                 'handler_function' => 'process',
-                'handler_data' => [
-                    'record' => $this->getId(),
+                'handler_data'     => [
+                    'record'   => $this->getId(),
                     'parentId' => $this->getRelatedTo(),
-                    'method' => 'open',
+                    'method'   => 'open',
                 ]
             ]);
 
@@ -445,7 +456,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     {
         $plainBody = decode_html($body);
         $plainBody = preg_replace('/<\s*style.+?<\s*\/\s*style.*?>/si', '', $plainBody);
-        $plainBody = preg_replace(array("/<p>/i", "/<br>/i", "/<br \/>/i"), array("\n", "\n", "\n"), $plainBody);
+        $plainBody = preg_replace(["/<p>/i", "/<br>/i", "/<br \/>/i"], ["\n", "\n", "\n"], $plainBody);
         $plainBody = strip_tags($plainBody);
         $plainBody = (new ToAscii())->convertToAscii($plainBody, '');
 
@@ -639,13 +650,13 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
      */
     public function getRelatedAttachments()
     {
-        $attachments = array();
+        $attachments = [];
         $adb = PearDatabase::getInstance();
         $result = $adb->pquery(
             'SELECT * FROM vtiger_attachments
 						INNER JOIN vtiger_seattachmentsrel ON vtiger_attachments.attachmentsid = vtiger_seattachmentsrel.attachmentsid
 						WHERE vtiger_seattachmentsrel.crmid=?',
-            array($this->getId())
+            [$this->getId()]
         );
 
         if ($adb->num_rows($result)) {
@@ -656,16 +667,16 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
                 $path = $row['path'];
                 $fileNameWithPath = $path . $attachmentId . '_' . $storedName;
 
-                $attachments[] = array(
-                    'attachment' => $fileName,
-                    'fileid' => $attachmentId,
-                    'storedname' => $storedName,
-                    'path' => $path,
+                $attachments[] = [
+                    'attachment'       => $fileName,
+                    'fileid'           => $attachmentId,
+                    'storedname'       => $storedName,
+                    'path'             => $path,
                     'filenamewithpath' => $fileNameWithPath,
-                    'size' => filesize($fileNameWithPath),
-                    'type' => $row['type'],
-                    'cid' => $row['cid'],
-                );
+                    'size'             => filesize($fileNameWithPath),
+                    'type'             => $row['type'],
+                    'cid'              => $row['cid'],
+                ];
             }
         }
 
@@ -676,39 +687,42 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     {
         $adb = PearDatabase::getInstance();
 
-        $result = $adb->pquery('SELECT * FROM vtiger_senotesrel
+        $result = $adb->pquery(
+            'SELECT * FROM vtiger_senotesrel
             INNER JOIN vtiger_crmentity ON vtiger_senotesrel.notesid = vtiger_crmentity.crmid AND vtiger_senotesrel.crmid = ?
             INNER JOIN vtiger_notes ON vtiger_notes.notesid = vtiger_senotesrel.notesid
             INNER JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.crmid = vtiger_notes.notesid
             INNER JOIN vtiger_attachments ON vtiger_attachments.attachmentsid = vtiger_seattachmentsrel.attachmentsid
             WHERE vtiger_crmentity.deleted=0',
-            array($this->getId())
+            [$this->getId()]
         );
-        $documents = array();
+        $documents = [];
 
         if ($adb->num_rows($result)) {
             while ($row = $adb->fetchByAssoc($result)) {
                 $fileName = decode_html($row['name']);
                 $storedName = !empty($row['storedname']) ? decode_html($row['storedname']) : $fileName;
 
-                $documents[] = array(
-                    'name' => $row['filename'],
-                    'docid' => $row['notesid'],
-                    'path' => $row['path'],
-                    'type' => $row['type'],
-                    'fileid' => $row['attachmentsid'],
-                    'attachment' => $fileName,
-                    'storedname' => $storedName,
-                    'size' => $this->getFormattedFileSize($row['filesize']),
+                $documents[] = [
+                    'name'             => $row['filename'],
+                    'docid'            => $row['notesid'],
+                    'path'             => $row['path'],
+                    'type'             => $row['type'],
+                    'fileid'           => $row['attachmentsid'],
+                    'attachment'       => $fileName,
+                    'storedname'       => $storedName,
+                    'size'             => $this->getFormattedFileSize($row['filesize']),
                     'filenamewithpath' => $row['path'] . $row['attachmentsid'] . '_' . $storedName
-                );
+                ];
             }
         }
+
         return $documents;
     }
 
     /**
      * @param $value
+     *
      * @return string
      */
     public function getFormattedFileSize($value)
@@ -826,11 +840,11 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $siteUrl = vglobal('site_URL');
         $rootDirectory = vglobal('root_directory');
 
-        return trim(str_replace(array($siteUrl, $rootDirectory, trim($siteUrl, '/\\'), trim($rootDirectory, '/\\')), array('', ''), $replaceUrl), '/\\');
+        return trim(str_replace([$siteUrl, $rootDirectory, trim($siteUrl, '/\\'), trim($rootDirectory, '/\\')], ['', ''], $replaceUrl), '/\\');
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function saveEmailToSentFolder(): void
     {
@@ -849,7 +863,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
             try {
                 $mBoxFolder?->appendMessage($messageString, ['Seen']);
             } catch (Exception $e) {
-                throw new AppException('SAVE EMAIL TO SENT FOLDER:' . $e->getMessage());
+                throw new Exception('SAVE EMAIL TO SENT FOLDER:' . $e->getMessage());
             }
         }
     }
@@ -961,22 +975,22 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $recordId = $adb->getUniqueID('vtiger_crmentity');
         $currentUser = Users_Record_Model::getCurrentUserModel();
         $currentDate = $adb->formatDate(date('Y-m-d H:i:s'), true);
-        $params1 = array(
-            'crmid' => $recordId,
-            'creator_user_id' => $currentUser->id,
+        $params1 = [
+            'crmid'            => $recordId,
+            'creator_user_id'  => $currentUser->id,
             'assigned_user_id' => $ownerId,
-            'setype' => 'Documents Attachment',
-            'description' => $description,
-            'createdtime' => $currentDate,
-            'modifiedtime' => $currentDate,
-        );
-        $params2 = array(
+            'setype'           => 'Documents Attachment',
+            'description'      => $description,
+            'createdtime'      => $currentDate,
+            'modifiedtime'     => $currentDate,
+        ];
+        $params2 = [
             'attachmentsid' => $recordId,
-            'name' => $fileName,
-            'description' => $description,
-            'type' => $fileType,
-            'path' => $filePath,
-        );
+            'name'          => $fileName,
+            'description'   => $description,
+            'type'          => $fileType,
+            'path'          => $filePath,
+        ];
 
         if (columnExists('storedname', 'vtiger_attachments')) {
             $params2['storedname'] = $storedName;
@@ -995,6 +1009,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
 
     /**
      * @param int $recordId
+     *
      * @return void
      */
     public function saveAttachmentRelation($recordId)
@@ -1004,7 +1019,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         }
 
         $adb = PearDatabase::getInstance();
-        $adb->pquery('INSERT INTO vtiger_seattachmentsrel (crmid, attachmentsid) VALUES (?,?)', array($this->getId(), $recordId));
+        $adb->pquery('INSERT INTO vtiger_seattachmentsrel (crmid, attachmentsid) VALUES (?,?)', [$this->getId(), $recordId]);
     }
 
     public function setEmailRelation($parentRecord)
@@ -1024,12 +1039,12 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public function saveDocumentRelation($recordId)
     {
         $adb = PearDatabase::getInstance();
-        $adb->pquery('INSERT INTO vtiger_senotesrel (crmid, notesid)VALUES (?,?)', array($this->getId(), $recordId));
+        $adb->pquery('INSERT INTO vtiger_senotesrel (crmid, notesid)VALUES (?,?)', [$this->getId(), $recordId]);
     }
 
     public function getAddressesFromEmailIds($emailIds)
     {
-        $emails = array();
+        $emails = [];
 
         foreach ($emailIds as $emailId) {
             [$record, $address, $module] = explode('|', $emailId);
@@ -1106,6 +1121,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
 
     /**
      * @param string $value
+     *
      * @return void
      */
     public function setRelatedModule(string $value): void
@@ -1244,6 +1260,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
 
     /**
      * @param array $bannedWords
+     *
      * @return void
      */
     public function setBannedWords(array $bannedWords): void

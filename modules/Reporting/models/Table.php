@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Reporting_Table_Model extends Vtiger_Base_Model
@@ -32,6 +32,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     /**
      * @param array $value
+     *
      * @return void
      */
     public function setFieldNames(array $value): void
@@ -41,6 +42,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     /**
      * @param $moduleName
+     *
      * @return self
      */
     public static function getInstance($moduleName): self
@@ -52,8 +54,9 @@ class Reporting_Table_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @param int $recordId
+     * @param int    $recordId
      * @param string $moduleName
+     *
      * @return object
      */
     public function getRecord(int $recordId, string $moduleName): object
@@ -100,6 +103,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     /**
      * @param array $records
+     *
      * @return void
      */
     public function setRecords(array $records): void
@@ -137,7 +141,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function getTableCalculations(): array
     {
@@ -195,6 +199,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     /**
      * @param array $numbers
+     *
      * @return float
      */
     public function avg(array $numbers): float
@@ -210,6 +215,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     /**
      * @param array $numbers
+     *
      * @return float
      */
     public function min(array $numbers): float
@@ -221,6 +227,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     /**
      * @param array $numbers
+     *
      * @return float
      */
     public function max(array $numbers): float
@@ -230,9 +237,9 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         return max($numbers);
     }
 
-
     /**
      * @param array $numbers
+     *
      * @return float
      */
     public function sum(array $numbers): float
@@ -281,6 +288,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     /**
      * @param string $value
+     *
      * @return array
      */
     public function getFieldInfo(string $value): array
@@ -288,15 +296,15 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         [$fieldName, $referenceModule, $referenceField] = explode(':', $value);
 
         return [
-            'module' => $this->moduleName,
-            'field' => $fieldName,
+            'module'           => $this->moduleName,
+            'field'            => $fieldName,
             'reference_module' => $referenceModule,
-            'reference_field' => $referenceField,
+            'reference_field'  => $referenceField,
         ];
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function getFieldValue($field, $record)
     {
@@ -314,6 +322,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     /**
      * @param string $value
+     *
      * @return Vtiger_Field_Model|null
      * @throws Exception
      */
@@ -348,6 +357,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     /**
      * @param string $value
+     *
      * @return bool|Vtiger_Module_Model
      */
     public function getModule(string $value): Vtiger_Module_Model|bool
@@ -382,6 +392,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     /**
      * @param $value
+     *
      * @return void
      */
     public function setTableRecords($value): void
@@ -392,6 +403,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     /**
      * @param array $tableColumns
+     *
      * @return void
      */
     public function setTableColumns(array $tableColumns): void

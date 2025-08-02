@@ -1,12 +1,13 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Core_Kanban_Model extends Vtiger_Base_Model
 {
     /**
@@ -67,6 +68,7 @@ class Core_Kanban_Model extends Vtiger_Base_Model
 
     /**
      * @param $values
+     *
      * @return void
      */
     public function filterFieldValues($values)
@@ -76,6 +78,7 @@ class Core_Kanban_Model extends Vtiger_Base_Model
 
     /**
      * @param $value
+     *
      * @return void
      */
     public function filterRecordsByAssignUsers($value)
@@ -86,18 +89,20 @@ class Core_Kanban_Model extends Vtiger_Base_Model
 
     /**
      * @param $value
+     *
      * @return void
      */
     public function filterRecordsByFieldValue($value)
     {
         $queryGeneratorClone = clone $this->getQueryGenerator();
-        $queryGeneratorClone->addUserSearchConditions(array('search_field' => $this->getFieldName(), 'search_text' => $value, 'operator' => 'e'));
+        $queryGeneratorClone->addUserSearchConditions(['search_field' => $this->getFieldName(), 'search_text' => $value, 'operator' => 'e']);
 
         $this->getListView()->set('query_generator', $queryGeneratorClone);
     }
 
     /**
      * @param $userId
+     *
      * @return mixed|string
      */
     public function getAssignedImage($userId)
@@ -138,7 +143,7 @@ class Core_Kanban_Model extends Vtiger_Base_Model
         $currentUser = Users_Record_Model::getCurrentUserModel();
 
         return [
-            'users' => $currentUser->getAccessibleUsersForModule($this->getModuleName()),
+            'users'  => $currentUser->getAccessibleUsersForModule($this->getModuleName()),
             'groups' => $currentUser->getAccessibleGroupForModule($this->getModuleName()),
         ];
     }
@@ -230,8 +235,9 @@ class Core_Kanban_Model extends Vtiger_Base_Model
 
     /**
      * @param $moduleName
+     *
      * @return self
-     * @throws AppException
+     * @throws Exception
      */
     public static function getInstance($moduleName): self
     {
@@ -320,6 +326,7 @@ class Core_Kanban_Model extends Vtiger_Base_Model
 
     /**
      * @param Vtiger_Record_Model $recordModel
+     *
      * @return array
      */
     public function getRecordInfo(Vtiger_Record_Model $recordModel): array
@@ -334,21 +341,21 @@ class Core_Kanban_Model extends Vtiger_Base_Model
          */
         foreach ($fieldModels as $fieldModel) {
             $headerField = $fieldModel->getName();
-            $headerValues[$headerField] = array(
-                'label' => vtranslate($fieldModel->get('label'), $this->getModuleName()),
-                'value' => $recordModel->get($headerField),
+            $headerValues[$headerField] = [
+                'label'         => vtranslate($fieldModel->get('label'), $this->getModuleName()),
+                'value'         => $recordModel->get($headerField),
                 'display_value' => $recordModel->getDisplayValue($headerField),
-            );
+            ];
         }
 
         return [
-            'id' => $recordId,
-            'name' => $recordModel->getName(),
-            'data' => $recordModel->getData(),
-            'headers' => $headerValues,
-            'edit_url' => $recordModel->getEditViewUrl(),
+            'id'         => $recordId,
+            'name'       => $recordModel->getName(),
+            'data'       => $recordModel->getData(),
+            'headers'    => $headerValues,
+            'edit_url'   => $recordModel->getEditViewUrl(),
             'detail_url' => '#' . $recordId,
-            'image' => $this->getAssignedImage($recordModel->get('assigned_user_id')),
+            'image'      => $this->getAssignedImage($recordModel->get('assigned_user_id')),
         ];
     }
 
@@ -357,7 +364,7 @@ class Core_Kanban_Model extends Vtiger_Base_Model
      */
     public function getRecords(): array
     {
-        $records = array();
+        $records = [];
 
         foreach ($this->getListView()->getListViewEntries($this->getPaging()) as $recordModel) {
             $records[] = Vtiger_Record_Model::getInstanceById($recordModel->getId(), $recordModel->getModuleName());
@@ -412,8 +419,8 @@ class Core_Kanban_Model extends Vtiger_Base_Model
 
         return [
             'amount' => [
-                'label' => vtranslate('Amount', $moduleName),
-                'value' => $sum,
+                'label'         => vtranslate('Amount', $moduleName),
+                'value'         => $sum,
                 'display_value' => $recordModel->getDisplayValue('amount'),
             ],
         ];
@@ -503,7 +510,7 @@ class Core_Kanban_Model extends Vtiger_Base_Model
         if (class_exists($class) && method_exists($class, $function)) {
             $class::$function($this);
         } else {
-            throw new AppException(vtranslate('LBL_REQUIRE_KANBAN_PRO', $this->getModuleName()));
+            throw new Exception(vtranslate('LBL_REQUIRE_KANBAN_PRO', $this->getModuleName()));
         }
     }
 
@@ -533,8 +540,9 @@ class Core_Kanban_Model extends Vtiger_Base_Model
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function retrieveRequestInfo(Vtiger_Request $request)
     {
@@ -571,6 +579,7 @@ class Core_Kanban_Model extends Vtiger_Base_Model
 
     /**
      * @param int $value
+     *
      * @return void
      */
     public function setCustomViewId(int $value)
@@ -580,6 +589,7 @@ class Core_Kanban_Model extends Vtiger_Base_Model
 
     /**
      * @param int $value
+     *
      * @return void
      */
     public function setCustomViewLimit(int $value)
@@ -589,6 +599,7 @@ class Core_Kanban_Model extends Vtiger_Base_Model
 
     /**
      * @param int $value
+     *
      * @return void
      */
     public function setCustomViewPage(int $value)
@@ -598,6 +609,7 @@ class Core_Kanban_Model extends Vtiger_Base_Model
 
     /**
      * @param $name
+     *
      * @return void
      */
     public function setFieldName($name)
@@ -612,6 +624,7 @@ class Core_Kanban_Model extends Vtiger_Base_Model
 
     /**
      * @param $name
+     *
      * @return void
      */
     public function setModuleName($name)

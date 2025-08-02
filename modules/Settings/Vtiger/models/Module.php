@@ -1,109 +1,136 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 /*
  * Settings Module Model Class
  */
-class Settings_Vtiger_Module_Model extends Vtiger_Base_Model implements Core_ModuleModel_Interface {
 
-	var $baseTable = 'vtiger_settings_field';
-	var $baseIndex = 'fieldid';
-	var $listFields = array('name' => 'Name', 'description' => 'Description');
-	var $nameFields = array('name');
-	var $name = 'Vtiger';
+class Settings_Vtiger_Module_Model extends Vtiger_Base_Model implements Core_ModuleModel_Interface
+{
+    var $baseTable = 'vtiger_settings_field';
+    var $baseIndex = 'fieldid';
+    var $listFields = ['name' => 'Name', 'description' => 'Description'];
+    var $nameFields = ['name'];
+    var $name = 'Vtiger';
 
-	public function getName($includeParentIfExists = false) {
-		if($includeParentIfExists) {
-			return  $this->getParentName() .':'. $this->name;
-		}
-		return $this->name;
-	}
+    public function getName($includeParentIfExists = false)
+    {
+        if ($includeParentIfExists) {
+            return $this->getParentName() . ':' . $this->name;
+        }
 
-	public function getParentName() {
-		return 'Settings';
-	}
+        return $this->name;
+    }
 
-	public function getBaseTable() {
-		return $this->baseTable;
-	}
+    public function getParentName()
+    {
+        return 'Settings';
+    }
 
-	public function getBaseIndex() {
-		return $this->baseIndex;
-	}
+    public function getBaseTable()
+    {
+        return $this->baseTable;
+    }
 
-	public function setListFields($fieldNames) {
-		$this->listFields = $fieldNames;
-		return $this;
-	}
+    public function getBaseIndex()
+    {
+        return $this->baseIndex;
+    }
 
-	public function getListFields() {
-		if(!$this->listFieldModels) {
-			$fields = $this->listFields;
-			$fieldObjects = array();
-			foreach($fields as $fieldName => $fieldLabel) {
-				$fieldObjects[$fieldName] = new Vtiger_Base_Model(array('name' => $fieldName, 'label' => $fieldLabel));
-			}
-			$this->listFieldModels = $fieldObjects;
-		}
-		return $this->listFieldModels;
-	}
+    public function setListFields($fieldNames)
+    {
+        $this->listFields = $fieldNames;
 
-	/**
-	 * Function to get name fields of this module
-	 * @return <Array> list field names
-	 */
-	public function getNameFields() {
-		return $this->nameFields;
-	}
+        return $this;
+    }
 
-	/**
-	 * Function to get field using field name
-	 * @param <String> $fieldName
-	 * @return <Field_Model>
-	 */
-	public function getField($fieldName) {
-		return new Vtiger_Base_Model(array('name' => $fieldName, 'label' => $fieldName));
-	}
+    public function getListFields()
+    {
+        if (!$this->listFieldModels) {
+            $fields = $this->listFields;
+            $fieldObjects = [];
+            foreach ($fields as $fieldName => $fieldLabel) {
+                $fieldObjects[$fieldName] = new Vtiger_Base_Model(['name' => $fieldName, 'label' => $fieldLabel]);
+            }
+            $this->listFieldModels = $fieldObjects;
+        }
 
-	public function hasCreatePermissions() {
-		return true;
-	}
+        return $this->listFieldModels;
+    }
 
-	/**
-	 * Function to get all the Settings menus
-	 * @return <Array> - List of Settings_Vtiger_Menu_Model instances
-	 */
-	public function getMenus() {
-		return Settings_Vtiger_Menu_Model::getAll();
-	}
+    /**
+     * Function to get name fields of this module
+     * @return <Array> list field names
+     */
+    public function getNameFields()
+    {
+        return $this->nameFields;
+    }
 
-	/**
-	 * Function to get all the Settings menu items for the given menu
-	 * @return <Array> - List of Settings_Vtiger_MenuItem_Model instances
-	 */
-	public function getMenuItems($menu=false) {
-		$menuModel = false;
-		if($menu) {
-			$menuModel = Settings_Vtiger_Menu_Model::getInstance($menu);
-		}
-		return Settings_Vtiger_MenuItem_Model::getAll($menuModel);
-	}
+    /**
+     * Function to get field using field name
+     *
+     * @param <String> $fieldName
+     *
+     * @return <Field_Model>
+     */
+    public function getField($fieldName)
+    {
+        return new Vtiger_Base_Model(['name' => $fieldName, 'label' => $fieldName]);
+    }
 
-	public function isPagingSupported(){
-		return true;
-	}
+    public function hasCreatePermissions()
+    {
+        return true;
+    }
+
+    /**
+     * Function to get all the Settings menus
+     * @return <Array> - List of Settings_Vtiger_Menu_Model instances
+     */
+    public function getMenus()
+    {
+        return Settings_Vtiger_Menu_Model::getAll();
+    }
+
+    /**
+     * Function to get all the Settings menu items for the given menu
+     * @return <Array> - List of Settings_Vtiger_MenuItem_Model instances
+     */
+    public function getMenuItems($menu = false)
+    {
+        $menuModel = false;
+        if ($menu) {
+            $menuModel = Settings_Vtiger_Menu_Model::getInstance($menu);
+        }
+
+        return Settings_Vtiger_MenuItem_Model::getAll($menuModel);
+    }
+
+    public function isPagingSupported()
+    {
+        return true;
+    }
 
     /**
      * Function to get the instance of Settings module model
      * @return Settings_Vtiger_Module_Model instance
-     * @throws AppException
+     * @throws Exception
      */
     public static function getInstance($value = 'Settings:Vtiger')
     {
@@ -119,39 +146,42 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model implements Core_Mod
     }
 
     /**
-	 * Function to get Index view Url
-	 * @return <String> URL
-	 */
-	public function getIndexViewUrl() {
-		return 'index.php?module='.$this->getName().'&parent='.$this->getParentName().'&view=Index';
-	}
+     * Function to get Index view Url
+     * @return <String> URL
+     */
+    public function getIndexViewUrl()
+    {
+        return 'index.php?module=' . $this->getName() . '&parent=' . $this->getParentName() . '&view=Index';
+    }
 
-	/*
-	 * Function to get supported utility actions for a module
-	 */
-	function getUtilityActionsNames() {
-		return array();
-	}
+    /*
+     * Function to get supported utility actions for a module
+     */
+    function getUtilityActionsNames()
+    {
+        return [];
+    }
 
-	/** 
-	 * Fucntion to get the settings menu item for vtiger7
-	 * @return <array> $settingsMenItems
-	 */
-	static function getSettingsMenuItem() {
-		$settingsModel = Settings_Vtiger_Module_Model::getInstance();
-		$menuModels = $settingsModel->getMenus();
+    /**
+     * Fucntion to get the settings menu item for vtiger7
+     * @return <array> $settingsMenItems
+     */
+    static function getSettingsMenuItem()
+    {
+        $settingsModel = Settings_Vtiger_Module_Model::getInstance();
+        $menuModels = $settingsModel->getMenus();
 
-		//Specific change for Vtiger7
-		$settingsMenItems = array();
-		foreach($menuModels as $menuModel) {
-			$menuItems = $menuModel->getMenuItems();
-			foreach($menuItems as $menuItem) {
-				$settingsMenItems[$menuItem->get('name')] = $menuItem;
-			}
-		}
+        //Specific change for Vtiger7
+        $settingsMenItems = [];
+        foreach ($menuModels as $menuModel) {
+            $menuItems = $menuModel->getMenuItems();
+            foreach ($menuItems as $menuItem) {
+                $settingsMenItems[$menuItem->get('name')] = $menuItem;
+            }
+        }
 
-		return $settingsMenItems;
-	}
+        return $settingsMenItems;
+    }
 
     public static function getActiveBlockName($request)
     {
@@ -201,10 +231,12 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model implements Core_Mod
         return $finalResult;
     }
 
-    public function getSettingsActiveBlock($viewName) {
-		$blocksList = array('OutgoingServerEdit' => array('block' => 'LBL_CONFIGURATION', 'menu' => 'LBL_MAIL_SERVER_SETTINGS'));
-		return $blocksList[$viewName];
-	}
+    public function getSettingsActiveBlock($viewName)
+    {
+        $blocksList = ['OutgoingServerEdit' => ['block' => 'LBL_CONFIGURATION', 'menu' => 'LBL_MAIL_SERVER_SETTINGS']];
+
+        return $blocksList[$viewName];
+    }
 
     public function getModuleIcon($height = '')
     {
@@ -222,28 +254,33 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model implements Core_Mod
         return $moduleIcon;
     }
 
-    static function getSettingsMenuListForNonAdmin() {
-		$currentUser = Users_Record_Model::getCurrentUserModel();
-		$myTagSettingsUrl = $currentUser->getMyTagSettingsListUrl();
+    static function getSettingsMenuListForNonAdmin()
+    {
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $myTagSettingsUrl = $currentUser->getMyTagSettingsListUrl();
 
-		$settingsMenuList = array('LBL_MY_PREFERENCES'	=> array('My Preferences'	=> '',
-																 'Calendar Settings'=> '',
-																 'LBL_MY_TAGS'		=> $myTagSettingsUrl),
-									'LBL_EXTENSIONS'	=> array('LBL_GOOGLE'		=> 'index.php?module=Contacts&parent=Settings&view=Extension&extensionModule=Google&extensionView=Index&mode=settings')
-								);
-		if(!vtlib_isModuleActive('Google')) {
-			unset($settingsMenuList['LBL_EXTENSIONS']['LBL_GOOGLE']);
-		}
+        $settingsMenuList = [
+            'LBL_MY_PREFERENCES' => [
+                'My Preferences'    => '',
+                'Calendar Settings' => '',
+                'LBL_MY_TAGS'       => $myTagSettingsUrl
+            ],
+            'LBL_EXTENSIONS'     => ['LBL_GOOGLE' => 'index.php?module=Contacts&parent=Settings&view=Extension&extensionModule=Google&extensionView=Index&mode=settings']
+        ];
+        if (!vtlib_isModuleActive('Google')) {
+            unset($settingsMenuList['LBL_EXTENSIONS']['LBL_GOOGLE']);
+        }
 
-		return $settingsMenuList;
-	}
+        return $settingsMenuList;
+    }
 
     public function getDefaultUrl()
     {
         return 'index.php?module=' . $this->get('name') . '&view=' . $this->getDefaultViewName() . '&parent=Settings';
     }
 
-    public function getDefaultViewName() {
+    public function getDefaultViewName()
+    {
         return 'List';
     }
 }

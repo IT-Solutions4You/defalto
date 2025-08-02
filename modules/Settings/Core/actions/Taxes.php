@@ -1,17 +1,17 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Settings_Core_Taxes_Action extends Settings_Vtiger_Index_Action
 {
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function delete(Vtiger_Request $request): void
     {
@@ -35,7 +35,7 @@ class Settings_Core_Taxes_Action extends Settings_Vtiger_Index_Action
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function deleteRegion(Vtiger_Request $request): void
     {
@@ -74,8 +74,9 @@ class Settings_Core_Taxes_Action extends Settings_Vtiger_Index_Action
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function save(Vtiger_Request $request): void
     {
@@ -101,10 +102,10 @@ class Settings_Core_Taxes_Action extends Settings_Vtiger_Index_Action
         $response->setResult([
             'success' => $success,
             'message' => vtranslate($message, $request->getModule(false)),
-            'info' => [
-                'id' => $tax->getId(),
-                'label' => $tax->getName(),
-                'value' => $tax->getTax(),
+            'info'    => [
+                'id'     => $tax->getId(),
+                'label'  => $tax->getName(),
+                'value'  => $tax->getTax(),
                 'method' => $tax->getTaxMethod(),
                 'active' => $tax->get('active'),
             ],
@@ -150,8 +151,9 @@ class Settings_Core_Taxes_Action extends Settings_Vtiger_Index_Action
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function saveRegion(Vtiger_Request $request): void
     {
@@ -177,8 +179,8 @@ class Settings_Core_Taxes_Action extends Settings_Vtiger_Index_Action
         $response->setResult([
             'success' => $success,
             'message' => vtranslate($message, $request->getModule(false)),
-            'info' => [
-                'id' => $region->getId(),
+            'info'    => [
+                'id'   => $region->getId(),
                 'name' => $region->getName(),
             ],
         ]);
@@ -186,7 +188,7 @@ class Settings_Core_Taxes_Action extends Settings_Vtiger_Index_Action
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function updateTaxes(Vtiger_Request $request)
     {
@@ -203,4 +205,3 @@ class Settings_Core_Taxes_Action extends Settings_Vtiger_Index_Action
         $response->emit();
     }
 }
-

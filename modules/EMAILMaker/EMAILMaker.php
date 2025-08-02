@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker extends CRMExtension
 {
     public $log;
@@ -19,12 +20,10 @@ class EMAILMaker extends CRMExtension
     private $profilesPermissions;
     public string $moduleName = 'EMAILMaker';
     public string $parentName = 'Tools';
-    public $list_fields_name  = [];
+    public $list_fields_name = [];
     public $list_fields = [];
     public $related_tables = [];
     public string $moduleVersion = '1.0';
-
-
 
     public function __construct()
     {
@@ -32,14 +31,14 @@ class EMAILMaker extends CRMExtension
 
         $this->log = $log;
         $this->db = PearDatabase::getInstance();
-        $this->basicModules = array('20', '21', '22', '23');
-        $this->profilesActions = array(
-            'EDIT' => 'EditView',
-            'DETAIL' => 'DetailView', // View
-            'DELETE' => 'Delete', // Delete
+        $this->basicModules = ['20', '21', '22', '23'];
+        $this->profilesActions = [
+            'EDIT'       => 'EditView',
+            'DETAIL'     => 'DetailView', // View
+            'DELETE'     => 'Delete', // Delete
             'EXPORT_RTF' => 'Export', // Export to RTF
-        );
-        $this->profilesPermissions = array();
+        ];
+        $this->profilesPermissions = [];
         $this->name = 'EMAILMaker';
         $this->id = getTabId($this->name);
     }

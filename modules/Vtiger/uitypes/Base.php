@@ -1,18 +1,28 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Vtiger_Base_UIType extends Vtiger_Base_Model {
+class Vtiger_Base_UIType extends Vtiger_Base_Model
+{
     /**
-     * @param mixed $value
-     * @param bool|int $record
+     * @param mixed       $value
+     * @param bool|int    $record
      * @param object|bool $recordInstance
+     *
      * @return string
      * @throws Exception
      */
@@ -40,33 +50,41 @@ class Vtiger_Base_UIType extends Vtiger_Base_Model {
     }
 
     /**
-	 * Function to get the Template name for the current UI Type Object
-	 * @return <String> - Template Name
-	 */
-	public function getTemplateName() {
-		return 'uitypes/String.tpl';
-	}
+     * Function to get the Template name for the current UI Type Object
+     * @return <String> - Template Name
+     */
+    public function getTemplateName()
+    {
+        return 'uitypes/String.tpl';
+    }
 
-	/**
-	 * Function to get the DB Insert Value, for the current field type with given User Value
-	 * @param <Object> $value
-	 * @return <Object>
-	 */
-	public function getDBInsertValue($value) {
-		return $value;
-	}
+    /**
+     * Function to get the DB Insert Value, for the current field type with given User Value
+     *
+     * @param <Object> $value
+     *
+     * @return <Object>
+     */
+    public function getDBInsertValue($value)
+    {
+        return $value;
+    }
 
-	/**
-	 * Function to get the Value of the field in the format, the user provides it on Save
-	 * @param <Object> $value
-	 * @return <Object>
-	 */
-	public function getUserRequestValue($value) {
-		return $value;
-	}
+    /**
+     * Function to get the Value of the field in the format, the user provides it on Save
+     *
+     * @param <Object> $value
+     *
+     * @return <Object>
+     */
+    public function getUserRequestValue($value)
+    {
+        return $value;
+    }
 
     /**
      * @param mixed $fieldValue
+     *
      * @return mixed
      */
     public function getRequestValue(mixed $fieldValue): mixed
@@ -101,19 +119,23 @@ class Vtiger_Base_UIType extends Vtiger_Base_Model {
     }
 
     /**
-	 * Function to get the Display Value, for the current field type with given DB Insert Value
-	 * @param <Object> $value
-	 * @return <Object>
-	 */
-	public function getDisplayValue($value, $record=false, $recordInstance=false) {
-		return $value;
-	}
+     * Function to get the Display Value, for the current field type with given DB Insert Value
+     *
+     * @param <Object> $value
+     *
+     * @return <Object>
+     */
+    public function getDisplayValue($value, $record = false, $recordInstance = false)
+    {
+        return $value;
+    }
 
     /**
      * Static function to get the UIType object from Vtiger Field Model
+     *
      * @param Vtiger_Field_Model $fieldModel
+     *
      * @return Vtiger_Base_UIType or UIType specific object instance
-     * @throws AppException
      * @throws Exception
      */
     public static function getInstanceFromField($fieldModel): Vtiger_Base_UIType
@@ -143,32 +165,40 @@ class Vtiger_Base_UIType extends Vtiger_Base_Model {
     }
 
     /**
-	 * Function to get the display value in edit view
-	 * @param reference record id
-	 * @return link
-	 */
-	public function getEditViewDisplayValue($value) {
-		return $value;
-	}
+     * Function to get the display value in edit view
+     *
+     * @param reference record id
+     *
+     * @return link
+     */
+    public function getEditViewDisplayValue($value)
+    {
+        return $value;
+    }
 
     /**
-	 * Function to get the Detailview template name for the current UI Type Object
-	 * @return <String> - Template Name
-	 */
-	public function getDetailViewTemplateName() {
-		return 'uitypes/StringDetailView.tpl';
-	}
+     * Function to get the Detailview template name for the current UI Type Object
+     * @return <String> - Template Name
+     */
+    public function getDetailViewTemplateName()
+    {
+        return 'uitypes/StringDetailView.tpl';
+    }
 
-	/**
-	 * Function to get Display value for RelatedList
-	 * @param <String> $value
-	 * @return <String>
-	 */
-	public function getRelatedListDisplayValue($value) {
-		return $this->getDisplayValue($value);
-	}
-    
-    public function getListSearchTemplateName() {
+    /**
+     * Function to get Display value for RelatedList
+     *
+     * @param <String> $value
+     *
+     * @return <String>
+     */
+    public function getRelatedListDisplayValue($value)
+    {
+        return $this->getDisplayValue($value);
+    }
+
+    public function getListSearchTemplateName()
+    {
         return 'uitypes/FieldSearchView.tpl';
     }
 

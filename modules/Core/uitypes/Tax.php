@@ -1,19 +1,20 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Core_Tax_UIType extends Vtiger_Base_UIType
 {
     /**
      * @param mixed $recordId
+     *
      * @return array
-     * @throws AppException
+     * @throws Exception
      */
     public function getTaxes(mixed $recordId): array
     {
@@ -24,8 +25,9 @@ class Core_Tax_UIType extends Vtiger_Base_UIType
 
     /**
      * @param mixed $recordId
+     *
      * @return array
-     * @throws AppException
+     * @throws Exception
      */
     public function getDetailTaxes(mixed $recordId): array
     {
@@ -57,7 +59,7 @@ class Core_Tax_UIType extends Vtiger_Base_UIType
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function getDisplayValue($value, $record = false, $recordInstance = false)
     {
@@ -74,8 +76,9 @@ class Core_Tax_UIType extends Vtiger_Base_UIType
 
     /**
      * @param int|string $value
+     *
      * @return string
-     * @throws AppException
+     * @throws Exception
      */
     public static function transformDisplayValue($value)
     {

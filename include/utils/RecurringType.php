@@ -1,13 +1,21 @@
 <?php
-/* * *******************************************************************************
- * * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+/********************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ ********************************************************************************/
+
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * ****************************************************************************** */
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 require_once('include/utils/utils.php');
 global $app_strings;
@@ -28,6 +36,7 @@ class RecurringType
 
     /**
      * Constructor for class RecurringType
+     *
      * @param array $repeat_arr - array contains recurring info
      */
     public function __construct($repeat_arr)
@@ -39,23 +48,23 @@ class RecurringType
         $recurringenddate = explode("-", $repeat_arr["recurringenddate"]);
 
         $start_date = [
-            'day' => $st_date[2],
+            'day'   => $st_date[2],
             'month' => $st_date[1],
-            'year' => $st_date[0],
-            'hour' => $st_time[0],
-            'min' => $st_time[1],
+            'year'  => $st_date[0],
+            'hour'  => $st_time[0],
+            'min'   => $st_time[1],
         ];
         $end_date = [
-            'day' => $end_date[2],
+            'day'   => $end_date[2],
             'month' => $end_date[1],
-            'year' => $end_date[0],
-            'hour' => $end_time[0],
-            'min' => $end_time[1],
+            'year'  => $end_date[0],
+            'hour'  => $end_time[0],
+            'min'   => $end_time[1],
         ];
         $recurringenddate = [
-            'day' => $recurringenddate[2],
+            'day'   => $recurringenddate[2],
             'month' => $recurringenddate[1],
-            'year' => $recurringenddate[0],
+            'year'  => $recurringenddate[0],
         ];
         $this->startdate = new Core_Datetime_Model($start_date, true);
         $this->enddate = new Core_Datetime_Model($end_date, true);
@@ -146,9 +155,9 @@ class RecurringType
                     $index = 7;
                 }
                 $date_arr = [
-                    'day' => $date + $index,
+                    'day'   => $date + $index,
                     'month' => $month,
-                    'year' => $year,
+                    'year'  => $year,
                 ];
                 $tempdateObj = new Core_Datetime_Model($date_arr, true);
                 $tempdate = $tempdateObj->get_DB_formatted_date();
@@ -171,9 +180,9 @@ class RecurringType
                 } elseif ($this->repeat_monthby == 'day') {
                     if ($this->rptmonth_daytype == 'first') {
                         $date_arr = [
-                            'day' => 1,
+                            'day'   => 1,
                             'month' => $month,
-                            'year' => $year,
+                            'year'  => $year,
                         ];
                         $tempdateObj = new Core_Datetime_Model($date_arr, true);
                         $firstdayofmonthObj = $this->getFistdayofmonth($this->dayofweek_to_rpt[0], $tempdateObj);
@@ -191,9 +200,9 @@ class RecurringType
                         }
                     } elseif ($this->rptmonth_daytype == 'last') {
                         $date_arr = [
-                            'day' => $tempdateObj->getDaysInMonth(),
+                            'day'   => $tempdateObj->getDaysInMonth(),
                             'month' => $tempdateObj->getMonth(),
-                            'year' => $tempdateObj->getYear(),
+                            'year'  => $tempdateObj->getYear(),
                         ];
                         $tempdateObj = new Core_Datetime_Model($date_arr, true);
                         $lastdayofmonthObj = $this->getLastdayofmonth($this->dayofweek_to_rpt[0], $tempdateObj);
@@ -218,9 +227,9 @@ class RecurringType
                     }
                 } else {
                     $date_arr = [
-                        'day' => $date,
+                        'day'   => $date,
                         'month' => $month + 1,
-                        'year' => $year,
+                        'year'  => $year,
                     ];
                     $tempdateObj = new Core_Datetime_Model($date_arr, true);
                 }
@@ -239,9 +248,9 @@ class RecurringType
                     exit;
                 }
                 $date_arr = [
-                    'day' => $date,
+                    'day'   => $date,
                     'month' => $month,
-                    'year' => $index,
+                    'year'  => $index,
                 ];
                 $tempdateObj = new Core_Datetime_Model($date_arr, true);
                 $tempdate = $tempdateObj->get_DB_formatted_date();
@@ -406,9 +415,10 @@ class RecurringType
     }
 
     /** Function to get first day of the month(like first Monday or Friday and etc.)
+     *
      * @param $dayofweek -- day of the week to repeat the event :: Type string
-     * @param $dateObj -- date object  :: Type Core_Datetime_Model Object
-     *  return $dateObj -- the date object on which the event repeats :: Type Core_Datetime_Model Object
+     * @param $dateObj   -- date object  :: Type Core_Datetime_Model Object
+     *                   return $dateObj -- the date object on which the event repeats :: Type Core_Datetime_Model Object
      */
     public function getFistdayofmonth($dayofweek, &$dateObj)
     {
@@ -430,9 +440,10 @@ class RecurringType
     }
 
     /** Function to get last day of the month(like last Monday or Friday and etc.)
+     *
      * @param $dayofweek -- day of the week to repeat the event :: Type string
-     * @param $dateObj -- date object  :: Type Core_Datetime_Model Object
-     *  return $dateObj -- the date object on which the event repeats :: Type Core_Datetime_Model Object
+     * @param $dateObj   -- date object  :: Type Core_Datetime_Model Object
+     *                   return $dateObj -- the date object on which the event repeats :: Type Core_Datetime_Model Object
      */
     public function getLastdayofmonth($dayofweek, &$dateObj)
     {

@@ -1,5 +1,5 @@
 <?php
-/* +**********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.1
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
@@ -7,6 +7,15 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  * ***********************************************************************************/
+
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 require_once "include/Webservices/VtigerActorOperation.php";
 require_once "include/Webservices/LineItem/VtigerInventoryOperation.php";
@@ -23,45 +32,50 @@ require_once 'include/utils/InventoryUtils.php';
 /**
  * Description of VtigerLineItemOperation
  */
-class VtigerLineItemOperation extends VtigerActorOperation {
-	private static $lineItemCache = array();
+class VtigerLineItemOperation extends VtigerActorOperation
+{
+	private static $lineItemCache = [];
 	private $taxType = null;
 	private $Individual = 'Individual';
 	private $Group = 'Group';
 	private $newId = null;
 	private $taxList = null;
 	private $inActiveTaxList = null;
-	private static $parentCache = array();
+	private static $parentCache = [];
 
-	public function __construct($webserviceObject,$user,$adb,$log) {
+	public function __construct($webserviceObject, $user, $adb, $log)
+	{
 		$this->user = $user;
 		$this->log = $log;
 		$this->webserviceObject = $webserviceObject;
 		$this->pearDB = $adb;
 		$this->entityTableName = $this->getActorTables();
-		if($this->entityTableName === null){
+		if ($this->entityTableName === null) {
 			throw new WebServiceException(WebServiceErrorCode::$UNKOWNENTITY, 'Entity is not associated with any tables');
 		}
-		$this->meta = new VtigerLineItemMeta($this->entityTableName,$webserviceObject,$adb,$user);
+		$this->meta = new VtigerLineItemMeta($this->entityTableName, $webserviceObject, $adb, $user);
 		$this->moduleFields = null;
-		$this->taxList = array();
-		$this->inActiveTaxList = array();
+		$this->taxList = [];
+		$this->inActiveTaxList = [];
 	}
 
-	protected function getNextId($elementType, $element) {
-		$sql = 'SELECT MAX('.$this->meta->getIdColumn().') as maxvalue_lineitem_id FROM '.$this->entityTableName;
-		$result = $this->pearDB->pquery($sql,array());
+	protected function getNextId($elementType, $element)
+	{
+		$sql = 'SELECT MAX(' . $this->meta->getIdColumn() . ') as maxvalue_lineitem_id FROM ' . $this->entityTableName;
+		$result = $this->pearDB->pquery($sql, []);
 		$numOfRows = $this->pearDB->num_rows($result);
 
-		for ($i=0; $i<$numOfRows; $i++) {
+		for ($i = 0; $i < $numOfRows; $i++) {
 			$row = $this->pearDB->query_result($result, $i, 'maxvalue_lineitem_id');
 		}
 
 		$id = $row + 1;
+
 		return $id;
 	}
 
-	public function recreate($lineItem,$parent){
+	public function recreate($lineItem, $parent)
+	{
 		$components = vtws_getIdComponents($lineItem['id']);
 		$this->newId = $components[1];
 		$elementType = 'LineItem';
@@ -71,36 +85,39 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 
 	/**
 	 * Function gives all the line items related to inventory records
+	 *
 	 * @param $parentId - record id or array of the inventory record id's
+	 *
 	 * @return <Array> - list of line items
 	 * @throws WebServiceException - Database error
 	 */
-	public function getAllLineItemForParent($parentId){
+	public function getAllLineItemForParent($parentId)
+	{
 		$result = null;
 
 		if (!is_array($parentId)) {
-			$parentId = array($parentId);
+			$parentId = [$parentId];
 		}
 
 		$query = "SELECT vtiger_crmentity.label AS productname,vtiger_crmentity.setype AS entitytype,vtiger_crmentity.deleted AS deleted, {$this->entityTableName}.*
 						FROM {$this->entityTableName}
 						LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_inventoryproductrel.productid
-						WHERE id IN (". generateQuestionMarks($parentId) .")";
+						WHERE id IN (" . generateQuestionMarks($parentId) . ")";
 
-		$transactionSuccessful = vtws_runQueryAsTransaction($query,array($parentId),$result);
-		if(!$transactionSuccessful){
+		$transactionSuccessful = vtws_runQueryAsTransaction($query, [$parentId], $result);
+		if (!$transactionSuccessful) {
 			throw new WebServiceException(WebServiceErrorCode::$DATABASEQUERYERROR, 'Database error while performing required operation');
 		}
-		$lineItemList = array();
-		if($result){
+		$lineItemList = [];
+		if ($result) {
 			$rowCount = $this->pearDB->num_rows($result);
-			for ($i = 0 ; $i < $rowCount ; ++$i) {
-				$rowElement = $element = $this->pearDB->query_result_rowdata($result,$i);
+			for ($i = 0; $i < $rowCount; ++$i) {
+				$rowElement = $element = $this->pearDB->query_result_rowdata($result, $i);
 				$element['parent_id'] = $parentId;
 				$productName = $element['productname'];
 				$entityType = $element['entitytype'];
 				$id = vtws_getId($this->meta->getEntityId(), $element['lineitem_id']);
-				$element = DataTransform::filterAndSanitize($element,$this->meta);
+				$element = DataTransform::filterAndSanitize($element, $this->meta);
 				$element['product_name'] = $productName;
 				$element['entity_type'] = $entityType;
 				$element['id'] = $id;
@@ -108,10 +125,12 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 				$lineItemList[] = $element;
 			}
 		}
+
 		return $lineItemList;
 	}
 
-	public function _create($elementType, $element){
+	public function _create($elementType, $element)
+	{
 		$createdElement = parent::create($elementType, $element);
 		$productId = vtws_getIdComponents($element['productid']);
 		$productId = $productId[1];
@@ -124,46 +143,52 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 		$this->initTax($element, $parent);
 		$this->updateTaxes($createdElement);
 		$createdElement['incrementondel'] = '1';
-		if(strcasecmp($parent['hdnTaxType'], $this->Individual) ===0){
+		if (strcasecmp($parent['hdnTaxType'], $this->Individual) === 0) {
 			$createdElement = $this->appendTaxInfo($createdElement);
 		}
+
 		return $createdElement;
 	}
 
-	private function appendTaxInfo($element) {
+	private function appendTaxInfo($element)
+	{
 		$meta = $this->getMeta();
 		$moduleFields = $meta->getModuleFields();
-		foreach ($moduleFields as $fieldName=>$field) {
-			if(preg_match('/tax\d+/', $fieldName) != 0){
-				if(is_array($this->taxList[$fieldName])){
+		foreach ($moduleFields as $fieldName => $field) {
+			if (preg_match('/tax\d+/', $fieldName) != 0) {
+				if (is_array($this->taxList[$fieldName])) {
 					$element[$fieldName] = $this->taxList[$fieldName]['percentage'];
-				}else{
+				} else {
 					$element[$fieldName] = '0.000';
 				}
 			}
 		}
+
 		return $element;
 	}
 
-	private function resetTaxInfo($element, $parent) {
-		$productTaxInfo = array();
-		if(empty($this->taxType)){
-			list($typeId,$recordId) = vtws_getIdComponents($element['productid']);
+	private function resetTaxInfo($element, $parent)
+	{
+		$productTaxInfo = [];
+		if (empty($this->taxType)) {
+			[$typeId, $recordId] = vtws_getIdComponents($element['productid']);
 			$productTaxInfo = $this->getProductTaxList($recordId);
 		}
-		if(php7_count($productTaxInfo) == 0 && strcasecmp($parent['hdnTaxType'], $this->Individual) !==0) {
+		if (php7_count($productTaxInfo) == 0 && strcasecmp($parent['hdnTaxType'], $this->Individual) !== 0) {
 			$meta = $this->getMeta();
 			$moduleFields = $meta->getModuleFields();
-			foreach ($moduleFields as $fieldName=>$field) {
-				if(preg_match('/tax\d+/', $fieldName) != 0){
+			foreach ($moduleFields as $fieldName => $field) {
+				if (preg_match('/tax\d+/', $fieldName) != 0) {
 					$element[$fieldName] = '0.000';
 				}
 			}
 		}
+
 		return $element;
 	}
 
-	private function updateTaxes($createdElement){
+	private function updateTaxes($createdElement)
+	{
 		if (php7_count($this->taxList) > 0 || (is_array($this->inActiveTaxList) && php7_count($this->inActiveTaxList) > 0)) {
 			$taxList = $this->taxList;
 			if (is_array($this->inActiveTaxList) && php7_count($this->inActiveTaxList) > 0) {
@@ -172,24 +197,25 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 			$id = vtws_getIdComponents($createdElement['id']);
 			$id = $id[1];
 			$sql = 'UPDATE vtiger_inventoryproductrel set ';
-			$sql .= implode('=?,',array_keys($taxList));
+			$sql .= implode('=?,', array_keys($taxList));
 			$sql .= '=? WHERE lineitem_id = ?';
-			$params = array();
+			$params = [];
 			foreach ($taxList as $taxInfo) {
 				$params[] = $taxInfo['percentage'];
 			}
 			$params[] = $id;
 			$result = null;
-			$transactionSuccessful = vtws_runQueryAsTransaction($sql,$params,$result);
-			if(!$transactionSuccessful){
+			$transactionSuccessful = vtws_runQueryAsTransaction($sql, $params, $result);
+			if (!$transactionSuccessful) {
 				throw new WebServiceException(WebServiceErrorCode::$DATABASEQUERYERROR, 'Database error while performing required operation');
 			}
 		}
 	}
 
-	private function initTax($element, $parent) {
-		$this->taxList = array();
-		$this->inActiveTaxList = array();
+	private function initTax($element, $parent)
+	{
+		$this->taxList = [];
+		$this->inActiveTaxList = [];
 		$allTaxes = getAllTaxes();
 		if (!empty($element['parent_id'])) {
 			$this->taxType = $parent['hdnTaxType'];
@@ -202,16 +228,16 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 			$moduleFields = $meta->getModuleFields();
 			$productTaxList = $this->getProductTaxList($productId);
 			if (php7_count($productTaxList) > 0) {
-				$this->providedTaxList = array();
+				$this->providedTaxList = [];
 				foreach ($moduleFields as $fieldName => $field) {
 					if (preg_match('/tax\d+/', $fieldName) != 0) {
 						if (isset($element[$fieldName])) {
 							$found = true;
 							if (is_array($productTaxList[$fieldName])) {
-								$this->providedTaxList[$fieldName] = array(
-									'label' => $field->getFieldLabelKey(),
+								$this->providedTaxList[$fieldName] = [
+									'label'      => $field->getFieldLabelKey(),
 									'percentage' => $element[$fieldName]
-								);
+								];
 							}
 						}
 					}
@@ -231,33 +257,34 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 				if (preg_match('/tax\d+/', $fieldName) != 0) {
 					$found = true;
 					if (isset($element[$fieldName])) {
-						$this->taxList[$fieldName] = array(
-							'label' => $field->getFieldLabelKey(),
+						$this->taxList[$fieldName] = [
+							'label'      => $field->getFieldLabelKey(),
 							'percentage' => $element[$fieldName]
-						);
+						];
 					}
 				}
 			}
-			if(!$found) {
+			if (!$found) {
 				foreach ($allTaxes as $taxInfo) {
 					if ($taxInfo['deleted'] == '0') {
-						$this->taxList[$taxInfo['taxname']] = array(
-							'label' => $field->getFieldLabelKey(),
+						$this->taxList[$taxInfo['taxname']] = [
+							'label'      => $field->getFieldLabelKey(),
 							'percentage' => $taxInfo['percentage']
-						);
+						];
 					}
 				}
 			}
 		}
 		foreach ($allTaxes as $taxInfo) {
 			if ($taxInfo['deleted'] == '1' && !array_key_exists($taxInfo['taxname'], $this->taxList)) {
-				$this->inActiveTaxList[$taxInfo['taxname']] = array('percentage' => NULL);
+				$this->inActiveTaxList[$taxInfo['taxname']] = ['percentage' => null];
 			}
 		}
 		$this->taxList;
 	}
 
-	public function cleanLineItemList($parentId){
+	public function cleanLineItemList($parentId)
+	{
 		$components = vtws_getIdComponents($parentId);
 		$pId = $components[1];
 
@@ -272,12 +299,13 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 		$this->resetInventoryStockById($parentId);
 	}
 
-	public function setLineItems($elementType, $lineItemList, $parent){
+	public function setLineItems($elementType, $lineItemList, $parent)
+	{
 		$currentValue = vglobal('updateInventoryProductRel_deduct_stock');
 		vglobal('updateInventoryProductRel_deduct_stock', false);
 		$sequenceNo = 1;
 		foreach ($lineItemList as $lineItem) {
-		$lineItem['parent_id'] = $parent['id'];
+			$lineItem['parent_id'] = $parent['id'];
 			$lineItem['sequence_no'] = $sequenceNo++;
 			$this->initTax($lineItem, $parent);
 			$id = vtws_getIdComponents($lineItem['parent_id']);
@@ -286,11 +314,12 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 		}
 		$element['parent_id'] = $parent['id'];
 		vglobal('updateInventoryProductRel_deduct_stock', true);
-		$this->updateInventoryStock($element,$parent);
+		$this->updateInventoryStock($element, $parent);
 		vglobal('updateInventoryProductRel_deduct_stock', $currentValue);
 	}
 
-	public function create($elementType, $element) {
+	public function create($elementType, $element)
+	{
 		$parentId = vtws_getIdComponents($element['parent_id']);
 		$parentId = $parentId[1];
 
@@ -300,17 +329,19 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 			$productId = $productId[1];
 			$element['listprice'] = $this->getProductPrice($productId);
 		}
-		$element = $this->calculateNetprice($element); 
+		$element = $this->calculateNetprice($element);
 		$id = vtws_getIdComponents($element['parent_id']);
 		$this->newId = $id[1];
 		$createdLineItem = $this->_create($elementType, $element);
 		$updatedLineItemList = $createdLineItem;
 		$updatedLineItemList['parent_id'] = $element['parent_id'];
 		$this->setCache($parentId, $updatedLineItemList);
+
 		return $createdLineItem;
 	}
-	
-	public function calculateNetprice($element) {
+
+	public function calculateNetprice($element)
+	{
 		global $current_user;
 		$productId = $element['parent_id'];
 		$parent = $this->getParentById($productId);
@@ -340,17 +371,21 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 
 		$net_price = number_format(($total_after_discount + $tax_net), getCurrencyDecimalPlaces($current_user), '.', '');
 		$element['netprice'] = $net_price;
+
 		return $element;
 	}
 
-	public function retrieve($id) {
+	public function retrieve($id)
+	{
 		$element = parent::retrieve($id);
 		$element['id'] = $id;
 		$parent = $this->getParentById($element['parent_id']);
+
 		return $this->resetTaxInfo($element, $parent);
 	}
 
-	public function update($element) {
+	public function update($element)
+	{
 		$parentId = vtws_getIdComponents($element['parent_id']);
 		$parentId = $parentId[1];
 		$parentTypeHandler = vtws_getModuleHandlerFromId($element['parent_id'], $this->user);
@@ -361,10 +396,10 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 		$lineItemList = $this->getAllLineItemForParent($parentId);
 		$parent = $this->getParentById($element['parent_id']);
 		$location = $this->getLocationById($lineItemList, $element['id']);
-		if($location === false){
-			throw new WebserviceException('UNKOWN_CHILD','given line item is not child of parent');
+		if ($location === false) {
+			throw new WebserviceException('UNKOWN_CHILD', 'given line item is not child of parent');
 		}
-		if(empty($element['listprice'])){
+		if (empty($element['listprice'])) {
 			$productId = vtws_getIdComponents($element['productid']);
 			$productId = $productId[1];
 			$element['listprice'] = $this->getProductPrice($productId);
@@ -372,28 +407,30 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 		$lineItemList[$location] = $element;
 		deleteInventoryProductDetails($parentObject);
 		$this->resetInventoryStock($element, $parent);
-		$updatedLineItemList = array();
+		$updatedLineItemList = [];
 		foreach ($lineItemList as $lineItem) {
 			$id = vtws_getIdComponents($lineItem['id']);
 			$this->newId = $id[1];
 			$updatedLineItemList[] = $this->_create($elementType, $lineItem);
-			if($element == $lineItem){
+			if ($element == $lineItem) {
 				$createdElement = $updatedLineItemList[php7_count($updatedLineItemList) - 1];
 			}
 		}
 		$this->setCache($parentId, $updatedLineItemList);
-		$this->updateInventoryStock($element,$parent);
+		$this->updateInventoryStock($element, $parent);
 		$this->updateParent($element, $parent);
+
 		return $createdElement;
 	}
 
-	function getProductPrice($productId){
+	function getProductPrice($productId)
+	{
 		$db = PearDatabase::getInstance();
 		$sql = "select unit_price from vtiger_products where productid=?";
-		$params = array($productId);
+		$params = [$productId];
 		$result = null;
-		$transactionSuccessful = vtws_runQueryAsTransaction($sql,$params,$result);
-		if(!$transactionSuccessful){
+		$transactionSuccessful = vtws_runQueryAsTransaction($sql, $params, $result);
+		if (!$transactionSuccessful) {
 			throw new WebServiceException(WebServiceErrorCode::$DATABASEQUERYERROR, 'Database error while performing required operation');
 		}
 		$price = 0;
@@ -401,21 +438,25 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 		foreach ($it as $row) {
 			$price = $row->unit_price;
 		}
+
 		return $price;
 	}
 
-	private function getLocationById($lineItemList, $id){
-		foreach ($lineItemList as $index=>$lineItem) {
-			if($lineItem['id'] == $id){
+	private function getLocationById($lineItemList, $id)
+	{
+		foreach ($lineItemList as $index => $lineItem) {
+			if ($lineItem['id'] == $id) {
 				return $index;
 			}
 		}
+
 		return false;
 	}
 
-	public function delete($id){
+	public function delete($id)
+	{
 		$element = vtws_retrieve($id, $this->user);
-		if(!empty($element['parent_id'])){
+		if (!empty($element['parent_id'])) {
 			$parent = $this->getParentById($element['parent_id']);
 		}
 		$parentId = vtws_getIdComponents($element['parent_id']);
@@ -424,12 +465,12 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 		$this->cleanLineItemList($element['parent_id']);
 		$this->initTax($element, $parent);
 		$result = parent::delete($id);
-		$updatedList = array();
+		$updatedList = [];
 		$element = null;
 		foreach ($lineItemList as $lineItem) {
-			if($id != $lineItem['id']){
+			if ($id != $lineItem['id']) {
 				$updatedList[] = $lineItem;
-			}else{
+			} else {
 				$element = $lineItem;
 			}
 		}
@@ -437,14 +478,17 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 		$this->resetCacheForParent($parentId);
 		$this->updateParent($element, $parent);
 		$this->updateInventoryStock($element, $parent);
+
 		return $result;
 	}
 
-	private function resetCacheForParent($parentId){
+	private function resetCacheForParent($parentId)
+	{
 		self::$lineItemCache[$parentId] = null;
 	}
 
-	public function updateParent($createdElement,$parent){
+	public function updateParent($createdElement, $parent)
+	{
 		$discount = 0;
 		$parentId = vtws_getIdComponents($parent['id']);
 		$parentId = $parentId[1];
@@ -452,10 +496,10 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 		$parent['hdnSubTotal'] = 0;
 		$taxAmount = 0;
 
-		$compoundOn = $allTaxes = array();
+		$compoundOn = $allTaxes = [];
 		$allItemTaxes = getAllTaxes('available');
 		foreach ($allItemTaxes as $taxInfo) {
-			$taxCompoundOnInfo = array();
+			$taxCompoundOnInfo = [];
 			if ($taxInfo['compoundon']) {
 				$taxCompoundOnInfo = Zend_Json::decode(html_entity_decode($taxInfo['compoundon']));
 			}
@@ -468,18 +512,18 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 			$lineItemTotal = $lineItem['listprice'] * $lineItem['quantity'];
 			$lineItem['discount_amount'] = (float)($lineItem['discount_amount']);
 			$lineItem['discount_percent'] = (float)($lineItem['discount_percent']);
-			if(!empty($lineItem['discount_amount'])){
+			if (!empty($lineItem['discount_amount'])) {
 				$discount = ($lineItem['discount_amount']);
-			}elseif(!empty($lineItem['discount_percent'])) {
-				$discount = ($lineItem['discount_percent'])/100 * $lineItemTotal;
+			} elseif (!empty($lineItem['discount_percent'])) {
+				$discount = ($lineItem['discount_percent']) / 100 * $lineItemTotal;
 			}
 			$this->initTax($lineItem, $parent);
 			$lineItemTotal = $lineItemTotal - $discount;
-			$parent['hdnSubTotal'] = ($parent['hdnSubTotal'] ) + $lineItemTotal;
-			if(strcasecmp($parent['hdnTaxType'], $this->Individual) ===0){
-				$taxAmountsList = array();
+			$parent['hdnSubTotal'] = ($parent['hdnSubTotal']) + $lineItemTotal;
+			if (strcasecmp($parent['hdnTaxType'], $this->Individual) === 0) {
+				$taxAmountsList = [];
 				foreach ($this->taxList as $taxName => $taxInfo) {
-					$taxAmountsList[$allTaxes[$taxName]['taxid']] = array('percentage' => $taxInfo['percentage'], 'amount' => ($lineItemTotal * $taxInfo['percentage']) / 100);
+					$taxAmountsList[$allTaxes[$taxName]['taxid']] = ['percentage' => $taxInfo['percentage'], 'amount' => ($lineItemTotal * $taxInfo['percentage']) / 100];
 				}
 
 				foreach ($taxAmountsList as $taxId => $taxInfo) {
@@ -497,10 +541,10 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 			}
 		}
 
-		if(!empty($parent['hdnDiscountAmount']) && ((double)$parent['hdnDiscountAmount']) > 0){
+		if (!empty($parent['hdnDiscountAmount']) && ((double)$parent['hdnDiscountAmount']) > 0) {
 			$discount = ($parent['hdnDiscountAmount']);
-		} elseif(!empty($parent['hdnDiscountPercent'])){
-			$discount = ($parent['hdnDiscountPercent']/100 * $parent['hdnSubTotal']);
+		} elseif (!empty($parent['hdnDiscountPercent'])) {
+			$discount = ($parent['hdnDiscountPercent'] / 100 * $parent['hdnSubTotal']);
 		} else {
 			$discount = 0;
 		}
@@ -511,7 +555,7 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 
 		$taxTotal = $parent['hdnSubTotal'] - $discount;
 		if (strcasecmp($parent['hdnTaxType'], $this->Individual) !== 0) {
-			$newTaxList = array();
+			$newTaxList = [];
 			foreach ($createdElement as $element) {
 				$this->initTax($element, $parent);
 				$newTaxList[] = $this->taxList;
@@ -519,9 +563,9 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 			if ($newTaxList) {
 				$this->taxList = $newTaxList[0];
 			}
-			$taxAmountsList = array();
+			$taxAmountsList = [];
 			foreach ($this->taxList as $taxName => $taxInfo) {
-				$taxAmountsList[$allTaxes[$taxName]['taxid']] = array('percentage' => $taxInfo['percentage'], 'amount' => ($taxTotal * $taxInfo['percentage']) / 100);
+				$taxAmountsList[$allTaxes[$taxName]['taxid']] = ['percentage' => $taxInfo['percentage'], 'amount' => ($taxTotal * $taxInfo['percentage']) / 100];
 			}
 
 			foreach ($taxAmountsList as $taxId => $taxInfo) {
@@ -538,13 +582,13 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 		}
 
 		//Calculating charge values
-		$result = $this->pearDB->pquery('SELECT * FROM vtiger_inventorychargesrel WHERE recordid = ?', array($parentId));
+		$result = $this->pearDB->pquery('SELECT * FROM vtiger_inventorychargesrel WHERE recordid = ?', [$parentId]);
 		$rowData = $this->pearDB->fetch_array($result);
 		if ($rowData['charges']) {
-			$allShippingTaxes = array();
+			$allShippingTaxes = [];
 			$shippingTaxes = getAllTaxes('all', 'sh', 'edit', $parentId);
 			foreach ($shippingTaxes as $shippingTaxInfo) {
-				$compoundOnInfo = array();
+				$compoundOnInfo = [];
 				if ($shippingTaxInfo['compoundon']) {
 					$compoundOnInfo = Zend_Json::decode(html_entity_decode($shippingTaxInfo['compoundon']));
 				}
@@ -578,120 +622,140 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 		$parentType = $parentTypeMeta->getEntityName();
 
 		$parentInstance = CRMEntity::getInstance($parentType);
-		$sql = 'update '.$parentInstance->table_name.' set subtotal=?, total=?, pre_tax_total=? where '.
-		$parentInstance->tab_name_index[$parentInstance->table_name].'=?';
-		$params = array($parent['hdnSubTotal'],$parent['hdnGrandTotal'],$parent['pre_tax_total'],$parentId);
-		$transactionSuccessful = vtws_runQueryAsTransaction($sql,$params,$result);
+		$sql = 'update ' . $parentInstance->table_name . ' set subtotal=?, total=?, pre_tax_total=? where ' .
+			$parentInstance->tab_name_index[$parentInstance->table_name] . '=?';
+		$params = [$parent['hdnSubTotal'], $parent['hdnGrandTotal'], $parent['pre_tax_total'], $parentId];
+		$transactionSuccessful = vtws_runQueryAsTransaction($sql, $params, $result);
 		$this->setParent($parent['id'], $parent);
-		if(!$transactionSuccessful){
+		if (!$transactionSuccessful) {
 			throw new WebServiceException(WebServiceErrorCode::$DATABASEQUERYERROR, 'Database error while performing required operation');
 		}
 	}
 
-	public function getCollectiveTaxList(){
+	public function getCollectiveTaxList()
+	{
 		$db = PearDatabase::getInstance();
 		$sql = 'select * from vtiger_inventorytaxinfo where deleted=0';
-		$params = array();
+		$params = [];
 		$result = null;
-		$transactionSuccessful = vtws_runQueryAsTransaction($sql,$params,$result);
-		if(!$transactionSuccessful){
+		$transactionSuccessful = vtws_runQueryAsTransaction($sql, $params, $result);
+		if (!$transactionSuccessful) {
 			throw new WebServiceException(WebServiceErrorCode::$DATABASEQUERYERROR, 'Database error while performing required operation');
 		}
 		$it = new SqlResultIterator($db, $result);
-		$this->taxList = array();
+		$this->taxList = [];
 		foreach ($it as $row) {
-			$this->taxList[$row->taxname] = array('label'=>$row->taxlabel,
-				'percentage'=>$row->percentage);
+			$this->taxList[$row->taxname] = [
+				'label'      => $row->taxlabel,
+				'percentage' => $row->percentage
+			];
 		}
+
 		return $this->taxList;
 	}
 
-	private function getProductTaxList($productId){
+	private function getProductTaxList($productId)
+	{
 		$db = PearDatabase::getInstance();
 		$sql = 'select * from vtiger_producttaxrel inner join vtiger_inventorytaxinfo on
 			vtiger_producttaxrel.taxid=vtiger_inventorytaxinfo.taxid and deleted=0
 			where productid=?';
-		$params = array($productId);
+		$params = [$productId];
 		$result = null;
-		$transactionSuccessful = vtws_runQueryAsTransaction($sql,$params,$result);
-		if(!$transactionSuccessful){
+		$transactionSuccessful = vtws_runQueryAsTransaction($sql, $params, $result);
+		if (!$transactionSuccessful) {
 			throw new WebServiceException(WebServiceErrorCode::$DATABASEQUERYERROR, 'Database error while performing required operation');
 		}
 		$it = new SqlResultIterator($db, $result);
-		$this->taxList = array();
+		$this->taxList = [];
 		foreach ($it as $row) {
-			$this->taxList[$row->taxname] = array('label'=>$row->taxlabel,
-				'percentage'=>$row->taxpercentage);
+			$this->taxList[$row->taxname] = [
+				'label'      => $row->taxlabel,
+				'percentage' => $row->taxpercentage
+			];
 		}
+
 		return $this->taxList;
 	}
 
-	private function updateInventoryStock($element, $parent){
+	private function updateInventoryStock($element, $parent)
+	{
 		global $updateInventoryProductRel_update_product_array;
-		if(empty($updateInventoryProductRel_update_product_array)){
-			$updateInventoryProductRel_update_product_array = array();
+		if (empty($updateInventoryProductRel_update_product_array)) {
+			$updateInventoryProductRel_update_product_array = [];
 		}
 		$entityCache = new VTEntityCache($this->user);
 		$entityData = $entityCache->forId($element['parent_id']);
 		updateInventoryProductRel($entityData);
 	}
 
-	private function resetInventoryStock($element,$parent){
-		if(!empty($parent['id'])){
+	private function resetInventoryStock($element, $parent)
+	{
+		if (!empty($parent['id'])) {
 			$this->resetInventoryStockById($parent['id']);
 		}
 	}
 
-	private function resetInventoryStockById($parentId){
-		if(!empty($parentId)){
+	private function resetInventoryStockById($parentId)
+	{
+		if (!empty($parentId)) {
 			$entityCache = new VTEntityCache($this->user);
 			$entityData = $entityCache->forId($parentId);
 			updateInventoryProductRel($entityData);
 		}
 	}
 
-	public function getParentById($parentId){
+	public function getParentById($parentId)
+	{
 		if (empty(self::$parentCache[$parentId])) {
 			self::$parentCache[$parentId] = Vtiger_Functions::jsonEncode(vtws_retrieve($parentId, $this->user));
 		}
+
 		return json_decode(self::$parentCache[$parentId], true);
 	}
 
-	public function setParent($parentId, $parent) {
+	public function setParent($parentId, $parent)
+	{
 		if (is_array($parent) || is_object($parent)) {
 			$parent = Vtiger_Functions::jsonEncode($parent);
 		}
 		self::$parentCache[$parentId] = $parent;
 	}
 
-	function setCache($parentId, $updatedList) {
+	function setCache($parentId, $updatedList)
+	{
 		self::$lineItemCache[$parentId] = $updatedList;
 	}
 
-	public function __create($elementType,$element){
+	public function __create($elementType, $element)
+	{
 		$element['id'] = $element['parent_id'];
 		unset($element['parent_id']);
 		$success = parent::__create($elementType, $element);
+
 		return $success;
 	}
 
-	protected function getElement(){
-		if(!empty($this->element['id'])) {
+	protected function getElement()
+	{
+		if (!empty($this->element['id'])) {
 			$this->element['parent_id'] = $this->element['id'];
 		}
+
 		return $this->element;
 	}
 
-	public function describe($elementType) {
+	public function describe($elementType)
+	{
 		$describe = parent::describe($elementType);
-		foreach ($describe['fields'] as $key => $list){
-			if($list["name"] == 'description'){
+		foreach ($describe['fields'] as $key => $list) {
+			if ($list["name"] == 'description') {
 				unset($describe['fields'][$key]);
 			}
 		}
 		// unset will retain array index in the result, we should remove
 		$describe['fields'] = array_values($describe['fields']);
+
 		return $describe;
 	}
 }
-?>

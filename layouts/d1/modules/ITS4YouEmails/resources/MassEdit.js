@@ -1,10 +1,10 @@
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 /** @var ITS4YouEmails_MassEdit_Js */
 jQuery.Class('ITS4YouEmails_MassEdit_Js', {
@@ -12,65 +12,65 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
     templateClickEventRegistered: false,
     replyEmail(recordId, recordModule) {
         let params = {
-                module: 'ITS4YouEmails',
-                view: 'ComposeEmail',
-                mode: 'Reply',
-                record: app.getRecordId(),
-                parentRecord: recordId,
-                parentModule: recordModule,
-            };
+            module: 'ITS4YouEmails',
+            view: 'ComposeEmail',
+            mode: 'Reply',
+            record: app.getRecordId(),
+            parentRecord: recordId,
+            parentModule: recordModule,
+        };
 
         this.composeEmail(params);
     },
     replyAllEmail(recordId, recordModule) {
         let params = {
-                module: 'ITS4YouEmails',
-                view: 'ComposeEmail',
-                mode: 'ReplyAll',
-                record: app.getRecordId(),
-                parentRecord: recordId,
-                parentModule: recordModule,
-            };
+            module: 'ITS4YouEmails',
+            view: 'ComposeEmail',
+            mode: 'ReplyAll',
+            record: app.getRecordId(),
+            parentRecord: recordId,
+            parentModule: recordModule,
+        };
 
         this.composeEmail(params);
     },
     forwardEmail(recordId, recordModule) {
         let params = {
-                module: 'ITS4YouEmails',
-                view: 'ComposeEmail',
-                mode: 'Forward',
-                record: app.getRecordId(),
-                parentRecord: recordId,
-                parentModule: recordModule,
-            };
+            module: 'ITS4YouEmails',
+            view: 'ComposeEmail',
+            mode: 'Forward',
+            record: app.getRecordId(),
+            parentRecord: recordId,
+            parentModule: recordModule,
+        };
 
         this.composeEmail(params);
     },
     mailManagerEmail() {
         let params = {
-                module: 'ITS4YouEmails',
-                view: 'ComposeEmail',
-                mode: 'MailManager',
-            };
+            module: 'ITS4YouEmails',
+            view: 'ComposeEmail',
+            mode: 'MailManager',
+        };
 
         this.composeEmail(params);
     },
     createEmail() {
         let params = {
-                module: 'ITS4YouEmails',
-                view: 'ComposeEmail',
-                mode: 'CreateEmail',
-                record: app.getRecordId(),
-                sourceModule: app.getModuleName(),
-            };
+            module: 'ITS4YouEmails',
+            view: 'ComposeEmail',
+            mode: 'CreateEmail',
+            record: app.getRecordId(),
+            sourceModule: app.getModuleName(),
+        };
 
         this.composeEmail(params);
     },
     composeEmail(params) {
         const self = new ITS4YouEmails_MassEdit_Js();
 
-        if($('.modal').is(':visible')) {
-            app.helper.hideModal().then(function() {
+        if ($('.modal').is(':visible')) {
+            app.helper.hideModal().then(function () {
                 self.showComposeEmailForm(params)
             });
         } else {
@@ -559,7 +559,7 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
             self.checkHiddenStatusofCcandBcc();
         });
     },
-    actualizeBCCVisibility: function(container) {
+    actualizeBCCVisibility: function (container) {
         let self = this,
             bccLink = container.find('#bccLink'),
             bccContainer = container.find('.bccContainer'),
@@ -704,7 +704,7 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
             }
         });
     },
-    removeAttachmentFileSizeByElement : function(element) {
+    removeAttachmentFileSizeByElement: function (element) {
         this.attachmentsFileSize -= element.get(0).files[0].size;
     },
     registerLoadCKEditor(container) {
@@ -1194,7 +1194,7 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
     getMaxUploadSize: function () {
         return jQuery('#maxUploadSize').val();
     },
-    setAttachmentsFileSizeBySize : function(fileSize){
+    setAttachmentsFileSizeBySize: function (fileSize) {
         this.attachmentsFileSize += parseFloat(fileSize);
     },
     showComposeEmailForm: function (params) {

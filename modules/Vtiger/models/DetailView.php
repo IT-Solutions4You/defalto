@@ -1,11 +1,23 @@
 <?php
-/**
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
-class Vtiger_DetailView_Model extends Vtiger_Base_Model {
+
+class Vtiger_DetailView_Model extends Vtiger_Base_Model
+{
     public const LINK_ADVANCED = 'DETAILVIEWADVANCED';
     public const LINK_BASIC = 'DETAILVIEWBASIC';
     public const LINK_MORE = 'DETAILVIEW';
@@ -14,97 +26,110 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
         'View History',
     ];
 
-	protected $module = false;
-	protected $record = false;
+    protected $module = false;
+    protected $record = false;
 
-	/**
-	 * Function to get Module instance
-	 * @return <Vtiger_Module_Model>
-	 */
-	public function getModule() {
-		return $this->module;
-	}
+    /**
+     * Function to get Module instance
+     * @return <Vtiger_Module_Model>
+     */
+    public function getModule()
+    {
+        return $this->module;
+    }
 
-	/**
-	 * Function to set the module instance
-	 * @param <Vtiger_Module_Model> $moduleInstance - module model
-	 * @return Vtiger_DetailView_Model>
-	 */
-	public function setModule($moduleInstance) {
-		$this->module = $moduleInstance;
-		return $this;
-	}
+    /**
+     * Function to set the module instance
+     *
+     * @param <Vtiger_Module_Model> $moduleInstance - module model
+     *
+     * @return Vtiger_DetailView_Model>
+     */
+    public function setModule($moduleInstance)
+    {
+        $this->module = $moduleInstance;
 
-	/**
-	 * Function to get the Record model
-	 * @return <Vtiger_Record_Model>
-	 */
-	public function getRecord() {
-		return $this->record;
-	}
+        return $this;
+    }
 
-	/**
-	 * Function to set the record instance3
-	 * @param <type> $recordModuleInstance - record model
-	 * @return Vtiger_DetailView_Model
-	 */
-	public function setRecord($recordModuleInstance) {
-		$this->record = $recordModuleInstance;
-		return $this;
-	}
+    /**
+     * Function to get the Record model
+     * @return <Vtiger_Record_Model>
+     */
+    public function getRecord()
+    {
+        return $this->record;
+    }
 
-	/**
-	 * Function to get the detail view links (links and widgets)
-	 * @param <array> $linkParams - parameters which will be used to calicaulate the params
-	 * @return <array> - array of link models in the format as below
-	 *                   array('linktype'=>list of link models);
-	 */
-	public function getDetailViewLinks($linkParams) {
+    /**
+     * Function to set the record instance3
+     *
+     * @param <type> $recordModuleInstance - record model
+     *
+     * @return Vtiger_DetailView_Model
+     */
+    public function setRecord($recordModuleInstance)
+    {
+        $this->record = $recordModuleInstance;
+
+        return $this;
+    }
+
+    /**
+     * Function to get the detail view links (links and widgets)
+     *
+     * @param <array> $linkParams - parameters which will be used to calicaulate the params
+     *
+     * @return <array> - array of link models in the format as below
+     *                   array('linktype'=>list of link models);
+     */
+    public function getDetailViewLinks($linkParams)
+    {
         $linkTypes = [Vtiger_DetailView_Model::LINK_BASIC, Vtiger_DetailView_Model::LINK_MORE];
         $moduleModel = $this->getModule();
-		$recordModel = $this->getRecord();
+        $recordModel = $this->getRecord();
 
-		$moduleName = $moduleModel->getName();
-		$recordId = $recordModel->getId();
-        $links = array();
+        $moduleName = $moduleModel->getName();
+        $recordId = $recordModel->getId();
+        $links = [];
 
         if ($moduleModel->isShowMapSupported()) {
             $links[] = [
-                'linktype' => 'DETAILVIEWBASIC',
+                'linktype'  => 'DETAILVIEWBASIC',
                 'linklabel' => 'LBL_SHOW_MAP',
-                'linkurl' => sprintf('Vtiger_Index_Js.showMap(this, "%s", "%d");', $moduleName, $recordId),
-                'linkicon' => '<i class="fa fa-map-marker"></i>',
+                'linkurl'   => sprintf('Vtiger_Index_Js.showMap(this, "%s", "%d");', $moduleName, $recordId),
+                'linkicon'  => '<i class="fa fa-map-marker"></i>',
             ];
         }
 
         if (Users_Privileges_Model::isPermitted($moduleName, 'EditView', $recordId)) {
             $links[] = [
-                'linktype' => 'DETAILVIEWRECORD',
+                'linktype'  => 'DETAILVIEWRECORD',
                 'linklabel' => 'LBL_EDIT',
-                'linkurl' => $recordModel->getEditViewUrl(),
-                'linkicon' => '<i class="fa fa-pencil"></i>',
+                'linkurl'   => $recordModel->getEditViewUrl(),
+                'linkicon'  => '<i class="fa fa-pencil"></i>',
             ];
         }
 
         if (Users_Privileges_Model::isPermitted($moduleName, 'Delete', $recordId)) {
             $links[] = [
-                'linktype' => 'DETAILVIEWRECORD',
+                'linktype'  => 'DETAILVIEWRECORD',
                 'linklabel' => sprintf("%s %s", getTranslatedString('LBL_DELETE', $moduleName), vtranslate('SINGLE_' . $moduleName, $moduleName)),
-                'linkurl' => 'javascript:Vtiger_Detail_Js.deleteRecord("' . $recordModel->getDeleteUrl() . '")',
-                'linkicon' => '<i class="fa-solid fa-trash"></i>',
+                'linkurl'   => 'javascript:Vtiger_Detail_Js.deleteRecord("' . $recordModel->getDeleteUrl() . '")',
+                'linkicon'  => '<i class="fa-solid fa-trash"></i>',
             ];
         }
 
         if ($moduleModel->isDuplicateOptionAllowed('CreateView', $recordId)) {
             $links[] = [
-                'linktype' => 'DETAILVIEWRECORD',
+                'linktype'  => 'DETAILVIEWRECORD',
                 'linklabel' => 'LBL_DUPLICATE',
-                'linkurl' => $recordModel->getDuplicateRecordUrl(),
-                'linkicon' => '<i class="fa-solid fa-copy"></i>',
+                'linkurl'   => $recordModel->getDuplicateRecordUrl(),
+                'linkicon'  => '<i class="fa-solid fa-copy"></i>',
             ];
         }
 
-		$linkModelListDetails = Vtiger_Link_Model::getAllByType($moduleModel->getId(),$linkTypes,$linkParams);
+        $linkModelListDetails = Vtiger_Link_Model::getAllByType($moduleModel->getId(), $linkTypes, $linkParams);
 
         foreach ($linkModelListDetails as $linkModelListDetail) {
             foreach ($linkModelListDetail as $linkModel) {
@@ -114,111 +139,111 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 
         $links[] = $this->getTagsLinkInfo();
 
-		$relatedLinks = $this->getDetailViewRelatedLinks();
+        $relatedLinks = $this->getDetailViewRelatedLinks();
 
-		foreach($relatedLinks as $relatedLinkEntry) {
+        foreach ($relatedLinks as $relatedLinkEntry) {
             $links[] = $relatedLinkEntry;
-		}
+        }
 
-		$widgets = $this->getWidgets();
+        $widgets = $this->getWidgets();
 
-		foreach($widgets as $widgetLinkModel) {
+        foreach ($widgets as $widgetLinkModel) {
             $links[] = $widgetLinkModel;
-		}
+        }
 
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
-		if($currentUserModel->isAdminUser()) {
-			$settingsLinks = $moduleModel->getSettingLinks();
+        if ($currentUserModel->isAdminUser()) {
+            $settingsLinks = $moduleModel->getSettingLinks();
 
-			foreach($settingsLinks as $settingsLink) {
+            foreach ($settingsLinks as $settingsLink) {
                 $links[] = Vtiger_Link_Model::getInstanceFromValues($settingsLink);
-			}
-		}
+            }
+        }
 
         if ($currentUserModel->isAdminUser() || $currentUserModel->getId() === $recordModel->get('assigned_user_id')) {
             if (Core_Readonly_Model::isButtonPermitted($moduleName, $recordId)) {
                 $links[] = Vtiger_Link_Model::getInstanceFromValues(
                     [
-                        'linktype' => 'DETAILVIEWADVANCED',
+                        'linktype'  => 'DETAILVIEWADVANCED',
                         'linklabel' => 'LBL_MAKE_EDITABLE',
-                        'linkurl' => $recordModel->getEditableUrl(),
-                        'linkicon' => '<i class="fa-solid fa-eye-low-vision"></i>',
+                        'linkurl'   => $recordModel->getEditableUrl(),
+                        'linkicon'  => '<i class="fa-solid fa-eye-low-vision"></i>',
                     ]
                 );
             } else {
                 $links[] = Vtiger_Link_Model::getInstanceFromValues(
                     [
-                        'linktype' => 'DETAILVIEW',
+                        'linktype'  => 'DETAILVIEW',
                         'linklabel' => 'LBL_MAKE_READONLY',
-                        'linkurl' => $recordModel->getReadonlyUrl(),
-                        'linkicon' => '<i class="fa-solid fa-eye-low-vision"></i>',
+                        'linkurl'   => $recordModel->getReadonlyUrl(),
+                        'linkicon'  => '<i class="fa-solid fa-eye-low-vision"></i>',
                     ]
                 );
             }
         }
 
         return Vtiger_Link_Model::checkAndConvertLinks($links, $this->skipDetailLinkByLabel);
-	}
+    }
 
-	/**
-	 * Function to get the detail view related links
-	 * @return <array> - list of links parameters
-	 */
+    /**
+     * Function to get the detail view related links
+     * @return <array> - list of links parameters
+     */
     public function getDetailViewRelatedLinks()
     {
         $recordModel = $this->getRecord();
         $moduleName = $recordModel->getModuleName();
         $parentModuleModel = $this->getModule();
-        $relatedLinks = array();
+        $relatedLinks = [];
 
         if ($parentModuleModel->isSummaryViewSupported()) {
-            $relatedLinks = array(
-                array(
-                    'linktype' => 'DETAILVIEWTAB',
+            $relatedLinks = [
+                [
+                    'linktype'  => 'DETAILVIEWTAB',
                     'linklabel' => vtranslate('LBL_SUMMARY', $moduleName),
-                    'linkKey' => 'LBL_RECORD_SUMMARY',
-                    'linkurl' => $recordModel->getDetailViewUrl() . '&mode=showDetailViewByMode&requestMode=summary',
-                    'linkicon' => '<i class="fa-solid fa-lightbulb"></i>',
-                ),
-            );
-        }
-
-        $relatedLinks[] = array(
-            'linktype' => 'DETAILVIEWTAB',
-            'linklabel' => vtranslate('LBL_DETAILS', $moduleName),
-            'linkKey' => 'LBL_RECORD_DETAILS',
-            'linkurl' => $recordModel->getDetailViewUrl() . '&mode=showDetailViewByMode&requestMode=full',
-            'linkicon' => '<i class="fa-solid fa-circle-info"></i>',
-        );
-
-        if ($parentModuleModel->isTrackingEnabled()) {
-            $relatedLinks[] = array(
-                'linktype' => 'DETAILVIEWTAB',
-                'linklabel' => 'LBL_UPDATES',
-                'linkurl' => $recordModel->getDetailViewUrl() . '&mode=showRecentActivities&page=1',
-                'linkicon' => '<i class="fa-solid fa-arrows-rotate"></i>',
-            );
+                    'linkKey'   => 'LBL_RECORD_SUMMARY',
+                    'linkurl'   => $recordModel->getDetailViewUrl() . '&mode=showDetailViewByMode&requestMode=summary',
+                    'linkicon'  => '<i class="fa-solid fa-lightbulb"></i>',
+                ],
+            ];
         }
 
         $relatedLinks[] = [
-            'linktype' => 'DETAILVIEWTAB',
+            'linktype'  => 'DETAILVIEWTAB',
+            'linklabel' => vtranslate('LBL_DETAILS', $moduleName),
+            'linkKey'   => 'LBL_RECORD_DETAILS',
+            'linkurl'   => $recordModel->getDetailViewUrl() . '&mode=showDetailViewByMode&requestMode=full',
+            'linkicon'  => '<i class="fa-solid fa-circle-info"></i>',
+        ];
+
+        if ($parentModuleModel->isTrackingEnabled()) {
+            $relatedLinks[] = [
+                'linktype'  => 'DETAILVIEWTAB',
+                'linklabel' => 'LBL_UPDATES',
+                'linkurl'   => $recordModel->getDetailViewUrl() . '&mode=showRecentActivities&page=1',
+                'linkicon'  => '<i class="fa-solid fa-arrows-rotate"></i>',
+            ];
+        }
+
+        $relatedLinks[] = [
+            'linktype'  => 'DETAILVIEWTAB',
             'linklabel' => 'LBL_SHARING_RECORD',
-            'linkurl' => $recordModel->getDetailViewUrl() . '&mode=DetailSharingRecord',
-            'linkicon' => '<i class="fa-solid fa-share-nodes"></i>',
+            'linkurl'   => $recordModel->getDetailViewUrl() . '&mode=DetailSharingRecord',
+            'linkicon'  => '<i class="fa-solid fa-share-nodes"></i>',
         ];
 
         $relationModels = $parentModuleModel->getRelations();
 
         foreach ($relationModels as $relation) {
-            $link = array(
-                'linktype' => 'DETAILVIEWRELATED',
-                'linklabel' => $relation->get('label'),
-                'linkurl' => $relation->getListUrl($recordModel),
-                'linkicon' => '',
+            $link = [
+                'linktype'          => 'DETAILVIEWRELATED',
+                'linklabel'         => $relation->get('label'),
+                'linkurl'           => $relation->getListUrl($recordModel),
+                'linkicon'          => '',
                 'relatedModuleName' => $relation->get('relatedModuleName'),
-                'linkid' => $relation->getId(),
-            );
+                'linkid'            => $relation->getId(),
+            ];
             $relatedLinks[] = $link;
         }
 
@@ -239,9 +264,9 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
     public function getTrackingWidgetInfo(): array
     {
         return [
-            'linktype' => 'DETAILVIEWWIDGET',
+            'linktype'  => 'DETAILVIEWWIDGET',
             'linklabel' => 'LBL_UPDATES',
-            'linkurl' => $this->getTrackingWidgetInfo(),
+            'linkurl'   => $this->getTrackingWidgetInfo(),
         ];
     }
 
@@ -258,16 +283,16 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
     public function getCommentWidgetInfo()
     {
         return [
-            'linktype' => 'DETAILVIEWWIDGET',
+            'linktype'  => 'DETAILVIEWWIDGET',
             'linklabel' => 'ModComments',
-            'linkurl' => $this->getCommentWidgetUrl(),
+            'linkurl'   => $this->getCommentWidgetUrl(),
         ];
     }
 
     public function getPlaceholderWidgetInfo(): array
     {
         return [
-            'linktype' => 'DETAILVIEWWIDGET',
+            'linktype'      => 'DETAILVIEWWIDGET',
             'link_template' => 'SummaryPlaceholder.tpl',
         ];
     }
@@ -275,16 +300,16 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
     public function getKeyFieldsWidgetInfo(): array
     {
         return [
-            'linklabel' => 'LBL_KEY_FIELDS',
-            'linktype' => 'DETAILVIEWWIDGET',
+            'linklabel'     => 'LBL_KEY_FIELDS',
+            'linktype'      => 'DETAILVIEWWIDGET',
             'link_template' => 'SummaryKeyFields.tpl'
         ];
     }
 
     /**
-	 * Function to get the detail view widgets
-	 * @return <Array> - List of widgets , where each widget is an Vtiger_Link_Model
-	 */
+     * Function to get the detail view widgets
+     * @return <Array> - List of widgets , where each widget is an Vtiger_Link_Model
+     */
     public function getWidgets()
     {
         $moduleModel = $this->getModule();
@@ -297,11 +322,11 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
         if ($userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Appointments')) {
             $createPermission = $userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'CreateView');
             $widgets[] = [
-                'linktype' => 'DETAILVIEWWIDGET',
+                'linktype'  => 'DETAILVIEWWIDGET',
                 'linklabel' => 'Appointments',
-                'linkName' => $appointmentsInstance->getName(),
-                'linkurl' => $this->getWidgetUrl('getEvents'),
-                'action' => $createPermission ? ['Add'] : [],
+                'linkName'  => $appointmentsInstance->getName(),
+                'linkurl'   => $this->getWidgetUrl('getEvents'),
+                'action'    => $createPermission ? ['Add'] : [],
                 'actionURL' => $appointmentsInstance->getQuickCreateUrl(),
             ];
         } else {
@@ -313,11 +338,11 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
         if ($userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Documents')) {
             $createPermission = $userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'CreateView');
             $widgets[] = [
-                'linktype' => 'DETAILVIEWWIDGET',
+                'linktype'  => 'DETAILVIEWWIDGET',
                 'linklabel' => 'Documents',
-                'linkName' => $documentsInstance->getName(),
-                'linkurl' => $this->getWidgetUrl('showRelatedRecords') . '&relatedModule=Documents',
-                'action' => $createPermission ? ['Add'] : [],
+                'linkName'  => $documentsInstance->getName(),
+                'linkurl'   => $this->getWidgetUrl('showRelatedRecords') . '&relatedModule=Documents',
+                'action'    => $createPermission ? ['Add'] : [],
                 'actionURL' => $documentsInstance->getQuickCreateUrl(),
             ];
         } else {
@@ -343,78 +368,89 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 
     /**
      * Function to get the Quick Links for the Detail view of the module
-	 * @param <Array> $linkParams
-	 * @return <Array> List of Vtiger_Link_Model instances
-	 */
-	public function getSideBarLinks($linkParams) {
-		$currentUser = Users_Record_Model::getCurrentUserModel();
+     *
+     * @param <Array> $linkParams
+     *
+     * @return <Array> List of Vtiger_Link_Model instances
+     */
+    public function getSideBarLinks($linkParams)
+    {
+        $currentUser = Users_Record_Model::getCurrentUserModel();
 
-		$linkTypes = array('SIDEBARLINK', 'SIDEBARWIDGET');
-		$moduleLinks = $this->getModule()->getSideBarLinks($linkTypes);
+        $linkTypes = ['SIDEBARLINK', 'SIDEBARWIDGET'];
+        $moduleLinks = $this->getModule()->getSideBarLinks($linkTypes);
 
-		$listLinkTypes = array('DETAILVIEWSIDEBARLINK', 'DETAILVIEWSIDEBARWIDGET');
-		$listLinks = Vtiger_Link_Model::getAllByType($this->getModule()->getId(), $listLinkTypes);
+        $listLinkTypes = ['DETAILVIEWSIDEBARLINK', 'DETAILVIEWSIDEBARWIDGET'];
+        $listLinks = Vtiger_Link_Model::getAllByType($this->getModule()->getId(), $listLinkTypes);
 
-		if($listLinks['DETAILVIEWSIDEBARLINK']) {
-			foreach($listLinks['DETAILVIEWSIDEBARLINK'] as $link) {
-				$link->linkurl = $link->linkurl.'&record='.$this->getRecord()->getId().'&source_module='.$this->getModule()->getName();
-				$moduleLinks['SIDEBARLINK'][] = $link;
-			}
-		}
+        if ($listLinks['DETAILVIEWSIDEBARLINK']) {
+            foreach ($listLinks['DETAILVIEWSIDEBARLINK'] as $link) {
+                $link->linkurl = $link->linkurl . '&record=' . $this->getRecord()->getId() . '&source_module=' . $this->getModule()->getName();
+                $moduleLinks['SIDEBARLINK'][] = $link;
+            }
+        }
 
-		if($currentUser->getTagCloudStatus()) {
-			$tagWidget = array(
-				'linktype' => 'DETAILVIEWSIDEBARWIDGET',
-				'linklabel' => 'LBL_TAG_CLOUD',
-				'linkurl' => 'module='.$this->getModule()->getName().'&view=ShowTagCloud&mode=showTags',
-				'linkicon' => '',
-			);
-			$linkModel = Vtiger_Link_Model::getInstanceFromValues($tagWidget);
-			if($listLinks['DETAILVIEWSIDEBARWIDGET']) array_push($listLinks['DETAILVIEWSIDEBARWIDGET'], $linkModel);
-			else $listLinks['DETAILVIEWSIDEBARWIDGET'][] = $linkModel;
-		}
+        if ($currentUser->getTagCloudStatus()) {
+            $tagWidget = [
+                'linktype'  => 'DETAILVIEWSIDEBARWIDGET',
+                'linklabel' => 'LBL_TAG_CLOUD',
+                'linkurl'   => 'module=' . $this->getModule()->getName() . '&view=ShowTagCloud&mode=showTags',
+                'linkicon'  => '',
+            ];
+            $linkModel = Vtiger_Link_Model::getInstanceFromValues($tagWidget);
+            if ($listLinks['DETAILVIEWSIDEBARWIDGET']) {
+                array_push($listLinks['DETAILVIEWSIDEBARWIDGET'], $linkModel);
+            } else {
+                $listLinks['DETAILVIEWSIDEBARWIDGET'][] = $linkModel;
+            }
+        }
 
-		if($listLinks['DETAILVIEWSIDEBARWIDGET']) {
-			foreach($listLinks['DETAILVIEWSIDEBARWIDGET'] as $link) {
-				$link->linkurl = $link->linkurl.'&record='.$this->getRecord()->getId().'&source_module='.$this->getModule()->getName();
-				$moduleLinks['SIDEBARWIDGET'][] = $link;
-			}
-		}
+        if ($listLinks['DETAILVIEWSIDEBARWIDGET']) {
+            foreach ($listLinks['DETAILVIEWSIDEBARWIDGET'] as $link) {
+                $link->linkurl = $link->linkurl . '&record=' . $this->getRecord()->getId() . '&source_module=' . $this->getModule()->getName();
+                $moduleLinks['SIDEBARWIDGET'][] = $link;
+            }
+        }
 
-		return $moduleLinks;
-	}
+        return $moduleLinks;
+    }
 
-	/**
-	 * Function to get the module label
-	 * @return <String> - label
-	 */
-	public function getModuleLabel() {
-		return $this->getModule()->get('label');
-	}
+    /**
+     * Function to get the module label
+     * @return <String> - label
+     */
+    public function getModuleLabel()
+    {
+        return $this->getModule()->get('label');
+    }
 
-	/**
-	 *  Function to get the module name
-	 *  @return <String> - name of the module
-	 */
-	public function getModuleName() {
-		return $this->getModule()->get('name');
-	}
+    /**
+     *  Function to get the module name
+     * @return <String> - name of the module
+     */
+    public function getModuleName()
+    {
+        return $this->getModule()->get('name');
+    }
 
-	/**
-	 * Function to get the instance
-	 * @param <String> $moduleName - module name
-	 * @param <String> $recordId - record id
-	 * @return <Vtiger_DetailView_Model>
-	 */
-	public static function getInstance($moduleName,$recordId) {
-		$modelClassName = Vtiger_Loader::getComponentClassName('Model', 'DetailView', $moduleName);
-		$instance = new $modelClassName();
+    /**
+     * Function to get the instance
+     *
+     * @param <String> $moduleName - module name
+     * @param <String> $recordId   - record id
+     *
+     * @return <Vtiger_DetailView_Model>
+     */
+    public static function getInstance($moduleName, $recordId)
+    {
+        $modelClassName = Vtiger_Loader::getComponentClassName('Model', 'DetailView', $moduleName);
+        $instance = new $modelClassName();
 
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
 
-		return $instance->setModule($moduleModel)->setRecord($recordModel);
-	}
+        return $instance->setModule($moduleModel)->setRecord($recordModel);
+    }
 
     /**
      * @return array
@@ -424,10 +460,10 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
         $record = $this->getRecord();
 
         return [
-            'linktype' => Vtiger_DetailView_Model::LINK_BASIC,
-            'linklabel' => 'LBL_ADD_TAG',
-            'linkurl' => sprintf('Vtiger_Index_Js.addTags(this, "%s", "%d");', $record->getModuleName(), $record->getId()),
-            'linkicon' => '<i class="fa fa-tag"></i>',
+            'linktype'    => Vtiger_DetailView_Model::LINK_BASIC,
+            'linklabel'   => 'LBL_ADD_TAG',
+            'linkurl'     => sprintf('Vtiger_Index_Js.addTags(this, "%s", "%d");', $record->getModuleName(), $record->getId()),
+            'linkicon'    => '<i class="fa fa-tag"></i>',
             'style_class' => 'text-secondary addTagsButton',
         ];
     }
