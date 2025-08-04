@@ -737,7 +737,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $prefix = "";
 
         $IReplacements = [];
-        $IReplacements["SUBTOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["hdnSubTotal"]);
+        $IReplacements["SUBTOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["subtotal"]);
         $IReplacements["TOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["hdnGrandTotal"]);
 
         $currencytype = $this->getInventoryCurrencyInfoCustom($module, $focus);
@@ -925,7 +925,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             $chargesAndItsTaxes = $finalDetails['chargesAndItsTaxes'];
 
             $currencyFieldsList = [
-                'NETTOTAL'           => 'hdnSubTotal',
+                'NETTOTAL'           => 'subtotal',
                 'TAXTOTAL'           => 'tax_totalamount',
                 'SHTAXTOTAL'         => 'shtax_totalamount',
                 'TOTALAFTERDISCOUNT' => 'preTaxTotal',

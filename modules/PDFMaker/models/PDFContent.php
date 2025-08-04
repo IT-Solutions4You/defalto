@@ -518,7 +518,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
             $prefix = 'R_' . strtoupper($is_related) . '_';
         }
 
-        self::$rep['$' . $prefix . 'SUBTOTAL$'] = $this->formatNumberToPDF($focus->column_fields['hdnSubTotal']);
+        self::$rep['$' . $prefix . 'SUBTOTAL$'] = $this->formatNumberToPDF($focus->column_fields['subtotal']);
         self::$rep['$' . $prefix . 'TOTAL$'] = $this->formatNumberToPDF($focus->column_fields['hdnGrandTotal']);
 
         $currencytype = $this->getInventoryCurrencyInfoCustom($module, $focus);
@@ -692,7 +692,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
             $taxtype = $finalDetails['taxtype'];
 
             $currencyFieldsList = [
-                'NETTOTAL'           => 'hdnSubTotal',
+                'NETTOTAL'           => 'subtotal',
                 'TAXTOTAL'           => 'tax_totalamount',
                 'SHTAXTOTAL'         => 'shtax_totalamount',
                 'TOTALAFTERDISCOUNT' => 'preTaxTotal',

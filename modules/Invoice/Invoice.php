@@ -409,7 +409,7 @@ class Invoice extends CRMEntity
         // Remaining column values to be updated -> column name to field name mapping
         $invoice_column_field = [
             'adjustment'       => 'adjustment',
-            'subtotal'         => 'hdnSubTotal',
+            'subtotal'         => 'subtotal',
             'total'            => 'hdnGrandTotal',
             'taxtype'          => 'taxtype',
             'discount_percent' => 'hdnDiscountPercent',

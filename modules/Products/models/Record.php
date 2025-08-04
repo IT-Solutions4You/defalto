@@ -220,7 +220,7 @@ class Products_Record_Model extends Vtiger_Record_Model
             }
             $netPrice = $totalAfterDiscount + $taxTotal;
             $productDetails[1]['netPrice1'] = $netPrice;
-            $productDetails[1]['final_details']['hdnSubTotal'] = $netPrice;
+            $productDetails[1]['final_details']['subtotal'] = $netPrice;
             $productDetails[1]['final_details']['grandTotal'] = $netPrice;
         }
 

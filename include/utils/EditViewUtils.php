@@ -410,14 +410,14 @@ function getAssociatedProducts($module, $focus, $seid = '', $refModuleName = fal
     $finalDiscount = 0;
     $product_Detail[1]['final_details']['discount_type_final'] = 'zero';
 
-    $subTotal = ($focus->column_fields['hdnSubTotal'] != '') ? $focus->column_fields['hdnSubTotal'] : 0;
+    $subTotal = ($focus->column_fields['subtotal'] != '') ? $focus->column_fields['subtotal'] : 0;
     $subTotal = number_format($subTotal, $no_of_decimal_places, '.', '');
 
-    $product_Detail[1]['final_details']['hdnSubTotal'] = $subTotal;
+    $product_Detail[1]['final_details']['subtotal'] = $subTotal;
     $discountPercent = ($focus->column_fields['hdnDiscountPercent'] != '') ? $focus->column_fields['hdnDiscountPercent'] : 0;
     $discountAmount = ($focus->column_fields['hdnDiscountAmount'] != '') ? $focus->column_fields['hdnDiscountAmount'] : 0;
     if ($discountPercent != '0') {
-        $discountAmount = ($product_Detail[1]['final_details']['hdnSubTotal'] * $discountPercent / 100);
+        $discountAmount = ($product_Detail[1]['final_details']['subtotal'] * $discountPercent / 100);
     }
 
     //To avoid NaN javascript error, here we assign 0 initially to' %of price' and 'Direct Price reduction'(For Final Discount)

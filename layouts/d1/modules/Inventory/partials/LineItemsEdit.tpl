@@ -245,7 +245,7 @@
 						<strong>{vtranslate('LBL_ITEMS_TOTAL',$MODULE)}</strong>
 					</td>
 					<td class="text-end w-15">
-						<div id="netTotal" class="pull-right netTotal">{if !empty($FINAL.hdnSubTotal)}{$FINAL.hdnSubTotal}{else}0{/if}</div>
+						<div id="netTotal" class="pull-right netTotal">{if !empty($FINAL.subtotal)}{$FINAL.subtotal}{else}0{/if}</div>
 					</td>
 				</tr>
 				{if $DISCOUNT_AMOUNT_EDITABLE || $DISCOUNT_PERCENT_EDITABLE}
@@ -275,7 +275,7 @@
 									{/if}
 									<input type="hidden" id="discount_type_final" name="discount_type_final" value="{$DISCOUNT_TYPE_FINAL}"/>
 									<p class="popover_title hide">
-										{vtranslate('LBL_SET_DISCOUNT_FOR',$MODULE)} : <span class="subTotalVal">{if !empty($FINAL.hdnSubTotal)}{$FINAL.hdnSubTotal}{else}0{/if}</span>
+										{vtranslate('LBL_SET_DISCOUNT_FOR',$MODULE)} : <span class="subTotalVal">{if !empty($FINAL.subtotal)}{$FINAL.subtotal}{else}0{/if}</span>
 									</p>
 									<table class="table table-borderless popupTable m-0">
 										<tbody>
