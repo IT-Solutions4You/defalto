@@ -615,7 +615,7 @@ class VtigerLineItemOperation extends VtigerActorOperation
 				}
 			}
 		}
-		$parent['hdnGrandTotal'] = $total + $taxAmount + $parent['txtAdjustment'];
+		$parent['hdnGrandTotal'] = $total + $taxAmount + $parent['adjustment'];
 
 		$parentTypeHandler = vtws_getModuleHandlerFromId($parent['id'], $this->user);
 		$parentTypeMeta = $parentTypeHandler->getMeta();

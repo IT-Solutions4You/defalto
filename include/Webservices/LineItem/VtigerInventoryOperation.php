@@ -274,9 +274,9 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             $_REQUEST['discount_percentage_final'] = '';
         }
 
-        if ((float)$element['txtAdjustment']) {
-            $_REQUEST['adjustmentType'] = ((float)$element['txtAdjustment'] < 0) ? '-' : '+';
-            $_REQUEST['adjustment'] = abs($element['txtAdjustment']);
+        if ((float)$element['adjustment']) {
+            $_REQUEST['adjustmentType'] = ((float)$element['adjustment'] < 0) ? '-' : '+';
+            $_REQUEST['adjustment'] = abs($element['adjustment']);
         } else {
             $_REQUEST['adjustmentType'] = '';
             $_REQUEST['adjustment'] = '';

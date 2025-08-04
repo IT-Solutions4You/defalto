@@ -565,7 +565,7 @@ function getAssociatedProducts($module, $focus, $seid = '', $refModuleName = fal
     $product_Detail[1]['final_details']['shtax_totalamount'] = $shtaxtotal;
 
     //To set the Adjustment value
-    $adjustment = ($focus->column_fields['txtAdjustment'] != '') ? $focus->column_fields['txtAdjustment'] : 0;
+    $adjustment = ($focus->column_fields['adjustment'] != '') ? $focus->column_fields['adjustment'] : 0;
     $adjustment = number_format($adjustment, $no_of_decimal_places, '.', '');
     $product_Detail[1]['final_details']['adjustment'] = $adjustment;
 

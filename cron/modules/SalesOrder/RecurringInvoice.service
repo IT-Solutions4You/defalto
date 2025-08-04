@@ -133,7 +133,7 @@ function createInvoice($salesorder_id, $recurringDate = false)
 
     // Additional SO fields to copy -> Invoice field name mapped to equivalent SO field name
     $invoice_so_fields = [
-        'txtAdjustment'      => 'txtAdjustment',
+        'adjustment'      => 'adjustment',
         'hdnSubTotal'        => 'hdnSubTotal',
         'hdnGrandTotal'      => 'hdnGrandTotal',
         'taxtype'            => 'taxtype',
