@@ -89,7 +89,7 @@ class Invoice extends CRMEntity
         'Subject'     => 'subject',
         'Sales Order' => 'salesorder_id',
         'Status'      => 'invoicestatus',
-        'Total'       => 'hdnGrandTotal',
+        'Total'       => 'grand_total',
         'Assigned To' => 'assigned_user_id'
     ];
     var $list_link_field = 'subject';
@@ -410,14 +410,14 @@ class Invoice extends CRMEntity
         $invoice_column_field = [
             'adjustment'       => 'adjustment',
             'subtotal'         => 'subtotal',
-            'total'            => 'hdnGrandTotal',
+            'total'            => 'grand_total',
             'taxtype'          => 'taxtype',
             'discount_percent' => 'hdnDiscountPercent',
             'discount_amount'  => 'hdnDiscountAmount',
             's_h_amount'       => 'hdnS_H_Amount',
             'region_id'        => 'region_id',
             's_h_percent'      => 'hdnS_H_Percent',
-            'balance'          => 'hdnGrandTotal'
+            'balance'          => 'grand_total'
         ];
         $updatecols = [];
         foreach ($invoice_column_field as $col => $field) {

@@ -63,7 +63,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             $updatedParent = $handler->getParentById($element['id']);
             //since subtotal and grand total is updated in the update parent api
             $parent['subtotal'] = $updatedParent['subtotal'];
-            $parent['hdnGrandTotal'] = $updatedParent['hdnGrandTotal'];
+            $parent['grand_total'] = $updatedParent['grand_total'];
             $parent['pre_tax_total'] = $updatedParent['pre_tax_total'];
             $components = vtws_getIdComponents($element['id']);
             $parentId = $components[1];
@@ -113,7 +113,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             $updatedParent = $handler->getParentById($element['id']);
             //since subtotal and grand total is updated in the update parent api
             $parent['subtotal'] = $updatedParent['subtotal'];
-            $parent['hdnGrandTotal'] = $updatedParent['hdnGrandTotal'];
+            $parent['grand_total'] = $updatedParent['grand_total'];
             $parent['pre_tax_total'] = $updatedParent['pre_tax_total'];
             $updatedElement = array_merge($updatedElement, $parent);
 
@@ -165,7 +165,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             $updatedParent = $handler->getParentById($element['id']);
             //since subtotal and grand total is updated in the update parent api
             $parent['subtotal'] = $updatedParent['subtotal'];
-            $parent['hdnGrandTotal'] = $updatedParent['hdnGrandTotal'];
+            $parent['grand_total'] = $updatedParent['grand_total'];
             $parent['pre_tax_total'] = $updatedParent['pre_tax_total'];
             $parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
 
@@ -281,8 +281,9 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             $_REQUEST['adjustmentType'] = '';
             $_REQUEST['adjustment'] = '';
         }
-        if (!empty($element['hdnGrandTotal'])) {
-            $_REQUEST['total'] = $element['hdnGrandTotal'];
+        if (!empty($element['grand_total'])) {
+            $_REQUEST['total'] = $element['grand_total'];
+            $_REQUEST['grand_total'] = $element['grand_total'];
         }
 
         if (isset($element['region_id'])) {

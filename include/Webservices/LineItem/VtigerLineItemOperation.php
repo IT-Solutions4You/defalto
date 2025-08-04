@@ -615,7 +615,7 @@ class VtigerLineItemOperation extends VtigerActorOperation
 				}
 			}
 		}
-		$parent['hdnGrandTotal'] = $total + $taxAmount + $parent['adjustment'];
+		$parent['grand_total'] = $total + $taxAmount + $parent['adjustment'];
 
 		$parentTypeHandler = vtws_getModuleHandlerFromId($parent['id'], $this->user);
 		$parentTypeMeta = $parentTypeHandler->getMeta();
@@ -624,7 +624,7 @@ class VtigerLineItemOperation extends VtigerActorOperation
 		$parentInstance = CRMEntity::getInstance($parentType);
 		$sql = 'update ' . $parentInstance->table_name . ' set subtotal=?, total=?, pre_tax_total=? where ' .
 			$parentInstance->tab_name_index[$parentInstance->table_name] . '=?';
-		$params = [$parent['subtotal'], $parent['hdnGrandTotal'], $parent['pre_tax_total'], $parentId];
+		$params = [$parent['subtotal'], $parent['grand_total'], $parent['pre_tax_total'], $parentId];
 		$transactionSuccessful = vtws_runQueryAsTransaction($sql, $params, $result);
 		$this->setParent($parent['id'], $parent);
 		if (!$transactionSuccessful) {

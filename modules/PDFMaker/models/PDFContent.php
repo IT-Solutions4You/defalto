@@ -519,7 +519,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         }
 
         self::$rep['$' . $prefix . 'SUBTOTAL$'] = $this->formatNumberToPDF($focus->column_fields['subtotal']);
-        self::$rep['$' . $prefix . 'TOTAL$'] = $this->formatNumberToPDF($focus->column_fields['hdnGrandTotal']);
+        self::$rep['$' . $prefix . 'TOTAL$'] = $this->formatNumberToPDF($focus->column_fields['grand_total']);
 
         $currencytype = $this->getInventoryCurrencyInfoCustom($module, $focus);
         $currencytype['currency_symbol'] = str_replace('€', '&euro;', $currencytype['currency_symbol']);
@@ -630,7 +630,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
             self::$is_inventory_module[$module] = $this->isInventoryModule($module);
         }
 
-        if (self::$is_inventory_module[$module] || (isset($focus->column_fields['currency_id']) && isset($focus->column_fields['conversion_rate']) && isset($focus->column_fields['hdnGrandTotal']))) {
+        if (self::$is_inventory_module[$module] || (isset($focus->column_fields['currency_id']) && isset($focus->column_fields['conversion_rate']) && isset($focus->column_fields['grand_total']))) {
             self::$inventory_table_array[$module] = $focus->table_name;
             self::$inventory_id_array[$module] = $focus->table_index;
         }
