@@ -1,17 +1,25 @@
 <?php
-
-/* +***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- * *********************************************************************************** */
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class PBXManager_PBXManager_Controller {
-
-    function getConnector() {
+class PBXManager_PBXManager_Controller
+{
+    function getConnector()
+    {
         return new PBXManager_PBXManager_Connector;
     }
 
@@ -20,7 +28,8 @@ class PBXManager_PBXManager_Controller {
      * @params <array> call details
      * return Response object
      */
-    function process($request) {
+    function process($request)
+    {
         $mode = $request->get('callstatus');
 
         switch ($mode) {
@@ -51,7 +60,8 @@ class PBXManager_PBXManager_Controller {
      * @params <array> incoming call details
      * return Response object
      */
-    function processStartupCall($request) {
+    function processStartupCall($request)
+    {
         $connector = $this->getConnector();
 
         $temp = $request->get('channel');
@@ -74,9 +84,9 @@ class PBXManager_PBXManager_Controller {
 
             if ($request->get('callerIdNumber') == $temp[1]) {
                 $to = $request->get('callerIdName');
-            } else if ($request->get('callerIdNumber')) {
+            } elseif ($request->get('callerIdNumber')) {
                 $to = $request->get('callerIdNumber');
-            } else if ($request->get('callerId')) {
+            } elseif ($request->get('callerId')) {
                 $to = $request->get('callerId');
             }
 
@@ -97,7 +107,8 @@ class PBXManager_PBXManager_Controller {
      * @params <array> Dial call details
      * return Response object
      */
-    function processDialCall($request) {
+    function processDialCall($request)
+    {
         $connector = $this->getConnector();
         $connector->handleDialCall($request);
     }
@@ -107,7 +118,8 @@ class PBXManager_PBXManager_Controller {
      * @params <array> Dial call details
      * return Response object
      */
-    function processEndCall($request) {
+    function processEndCall($request)
+    {
         $connector = $this->getConnector();
         $connector->handleEndCall($request);
     }
@@ -117,7 +129,8 @@ class PBXManager_PBXManager_Controller {
      * @params <array> Hangup call details
      * return Response object
      */
-    function processHangupCall($request) {
+    function processHangupCall($request)
+    {
         $connector = $this->getConnector();
         $connector->handleHangupCall($request);
     }
@@ -127,9 +140,9 @@ class PBXManager_PBXManager_Controller {
      * @params <array> recording details
      * return Response object
      */
-    function processRecording($request) {
+    function processRecording($request)
+    {
         $connector = $this->getConnector();
         $connector->handleRecording($request);
     }
-
 }

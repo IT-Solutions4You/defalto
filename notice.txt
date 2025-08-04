@@ -1,0 +1,24 @@
+NOTICE
+
+This software contains portions created by vtiger, which are
+Copyright (C) vtiger. All Rights Reserved.
+
+These portions are licensed under the vtiger CRM Public License Version 1.0.
+See LICENSE-vtiger.txt for details.
+
+---
+
+Additional modifications and portions created by IT-Solutions4You (ITS4YOU)
+are Copyright (c) IT-Solutions4You s.r.o.
+
+These portions are licensed under the GNU AGPL v3 License.
+See LICENSE-AGPLv3.txt for details.
+
+---
+
+Third-Party Extensions:
+
+This project allows installation of third-party extensions or modules,
+which are subject to their own respective licenses.
+
+IT-Solutions4You s.r.o. does not distribute, license, or support such third-party extensions. Their use is entirely at the user's discretion and responsibility.

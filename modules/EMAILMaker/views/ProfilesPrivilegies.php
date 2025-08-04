@@ -1,20 +1,20 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_ProfilesPrivilegies_View extends EMAILMaker_Index_View
 {
-
     public function checkPermission(Vtiger_Request $request)
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         if (!$currentUserModel->isAdminUser()) {
-            throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
         }
     }
 
@@ -31,9 +31,9 @@ class EMAILMaker_ProfilesPrivilegies_View extends EMAILMaker_Index_View
         $actionEXPORT_RTF = getActionid($profilesActions["EXPORT_RTF"]);
         $mode = $request->get('mode');
         $viewer->assign("MODE", $mode);
-        $permissionNames = array();
+        $permissionNames = [];
         foreach ($permissions as $profileid => $subArr) {
-            $permissionNames[$profileid] = array();
+            $permissionNames[$profileid] = [];
             $profileName = Settings_Profiles_Record_Model::getProfileName($profileid);
 
             foreach ($subArr as $actionid => $perm) {
@@ -67,12 +67,13 @@ class EMAILMaker_ProfilesPrivilegies_View extends EMAILMaker_Index_View
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
         $layout = Vtiger_Viewer::getLayoutName();
-        $jsFileNames = array(
+        $jsFileNames = [
             "layouts.$layout.modules.$moduleName.resources.ProfilesPrivilegies",
-        );
+        ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
         $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+
         return $headerScriptInstances;
     }
 }

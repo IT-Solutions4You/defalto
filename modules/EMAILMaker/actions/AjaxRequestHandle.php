@@ -1,15 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_AjaxRequestHandle_Action extends Vtiger_Action_Controller
 {
-
     public function checkPermission(Vtiger_Request $request)
     {
     }
@@ -32,14 +32,14 @@ class EMAILMaker_AjaxRequestHandle_Action extends Vtiger_Action_Controller
                 asort($module_lang_labels);
                 $keys = implode('||', array_keys($module_lang_labels));
                 $response = new Vtiger_Response();
-                $response->setResult(array('success' => true, 'labels' => $module_lang_labels));
+                $response->setResult(['success' => true, 'labels' => $module_lang_labels]);
                 $response->emit();
                 break;
             case "templates_order":
                 $inStr = $request->get("tmpl_order");
                 $inStr = rtrim($inStr, "#");
                 $inArr = explode("#", $inStr);
-                $tmplArr = array();
+                $tmplArr = [];
                 foreach ($inArr as $val) {
                     $valArr = explode("_", $val);
                     $tmplArr[$valArr[0]]["order"] = $valArr[1];
@@ -49,7 +49,7 @@ class EMAILMaker_AjaxRequestHandle_Action extends Vtiger_Action_Controller
                 $sql = "SELECT templateid, userid, is_active, is_default, sequence
                 FROM vtiger_emakertemplates_userstatus
                 WHERE userid = ?";
-                $result = $adb->pquery($sql, array($cu_model->getId()));
+                $result = $adb->pquery($sql, [$cu_model->getId()]);
                 while ($row = $adb->fetchByAssoc($result)) {
                     if (!isset($tmplArr[$row["templateid"]])) {
                         $tmplArr[$row["templateid"]]["order"] = $row["sequence"];
@@ -57,9 +57,9 @@ class EMAILMaker_AjaxRequestHandle_Action extends Vtiger_Action_Controller
                     $tmplArr[$row["templateid"]]["is_active"] = $row["is_active"];
                     $tmplArr[$row["templateid"]]["is_default"] = $row["is_default"];
                 }
-                $adb->pquery("DELETE FROM vtiger_emakertemplates_userstatus WHERE userid=?", array($cu_model->getId()));
+                $adb->pquery("DELETE FROM vtiger_emakertemplates_userstatus WHERE userid=?", [$cu_model->getId()]);
                 $sqlB = "";
-                $params = array();
+                $params = [];
                 foreach ($tmplArr as $templateid => $valArr) {
                     $sqlB .= "(?,?,?,?,?),";
                     $params[] = $templateid;
@@ -78,8 +78,11 @@ class EMAILMaker_AjaxRequestHandle_Action extends Vtiger_Action_Controller
                 echo $result;
                 break;
             case "custom_labels_edit";
-                $adb->pquery("DELETE FROM vtiger_emakertemplates_label_vals WHERE label_id=? AND lang_id=?", array($request->get("label_id"), $request->get("lang_id")));
-                $adb->pquery("INSERT INTO vtiger_emakertemplates_label_vals(label_id, lang_id, label_value) VALUES(?,?,?)", array($request->get("label_id"), $request->get("lang_id"), $request->get("label_value")));
+                $adb->pquery("DELETE FROM vtiger_emakertemplates_label_vals WHERE label_id=? AND lang_id=?", [$request->get("label_id"), $request->get("lang_id")]);
+                $adb->pquery(
+                    "INSERT INTO vtiger_emakertemplates_label_vals(label_id, lang_id, label_value) VALUES(?,?,?)",
+                    [$request->get("label_id"), $request->get("lang_id"), $request->get("label_value")]
+                );
                 break;
             case "fill_module_product_fields":
                 $module = addslashes($request->get("productmod"));

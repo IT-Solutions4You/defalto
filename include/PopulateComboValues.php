@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
-** The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ ** The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
@@ -8,26 +8,37 @@
  * All Rights Reserved.
  ********************************************************************************/
 
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
 include_once('config.php');
 require_once('include/logging.php');
 require_once('include/database/PearDatabase.php');
 require_once('include/ComboStrings.php');
 require_once('include/ComboUtil.php');
+
 /**
  *  Class which handles the population of the combo values
- * 
+ *
  *
  */
 class PopulateComboValues
 {
-	var $app_list_strings;
-
+    var $app_list_strings;
 
     /**
      * To populate the default combo values for the combo vtiger_tables
+     *
      * @param $values -- values:: Type string array
      * @param $tableName -- tablename:: Type string
-     * @throws AppException
+     *
+     * @throws Exception
      */
     public function insertComboValues($values, $tableName, $picklistId)
     {
@@ -68,87 +79,79 @@ class PopulateComboValues
             $i++;
         }
 
-
         $log->debug("Exiting insertComboValues method ...");
     }
 
     /**
      * To populate the combo vtiger_tables at startup time
-	 */
+     */
 
-	function create_tables () 
-	{
-		global $log;
-		$log->debug("Entering create_tables () method ...");
-				
-		global $app_list_strings,$adb;
-		global $combo_strings;
-		$comboRes = $adb->pquery("SELECT distinct fieldname FROM vtiger_field WHERE uitype IN ('15') OR fieldname = 'salutationtype' and vtiger_field.presence in (0,2)", array());
-		$noOfCombos = $adb->num_rows($comboRes);
-		for($i=0; $i<$noOfCombos; $i++)
-		{
-			$comTab = $adb->query_result($comboRes, $i, 'fieldname');
+    function create_tables()
+    {
+        global $log;
+        $log->debug("Entering create_tables () method ...");
+
+        global $app_list_strings, $adb;
+        global $combo_strings;
+        $comboRes = $adb->pquery("SELECT distinct fieldname FROM vtiger_field WHERE uitype IN ('15') OR fieldname = 'salutationtype' and vtiger_field.presence in (0,2)", []);
+        $noOfCombos = $adb->num_rows($comboRes);
+        for ($i = 0; $i < $noOfCombos; $i++) {
+            $comTab = $adb->query_result($comboRes, $i, 'fieldname');
             $picklistId = Vtiger_Field_Model::savePicklist($comTab);
-			$this->insertComboValues($combo_strings[$comTab."_dom"],$comTab,$picklistId);
-		}
-		
-		//we have to decide what are all the picklist and picklist values are non editable
-		//presence = 0 means you cannot edit the picklist value
-		//presence = 1 means you can edit the picklist value
-		$noneditable_tables = ['ticketstatus', 'faqstatus', 'quotestage', 'postatus', 'sostatus', 'invoicestatus'];
-		$noneditable_values = ['Closed Won'  => 'sales_stage', 'Closed Lost' => 'sales_stage'];
+            $this->insertComboValues($combo_strings[$comTab . "_dom"], $comTab, $picklistId);
+        }
 
-		foreach($noneditable_tables as $picklistname)
-		{
-			$adb->pquery("update vtiger_".$picklistname." set PRESENCE=0", array());
-		}
-		foreach($noneditable_values as $picklistname => $value)
-		{
-			$adb->pquery("update vtiger_$value set PRESENCE=0 where $value=?", array($picklistname));
-		}
+        //we have to decide what are all the picklist and picklist values are non editable
+        //presence = 0 means you cannot edit the picklist value
+        //presence = 1 means you can edit the picklist value
+        $noneditable_tables = ['ticketstatus', 'faqstatus', 'quotestage', 'postatus', 'sostatus', 'invoicestatus'];
+        $noneditable_values = ['Closed Won' => 'sales_stage', 'Closed Lost' => 'sales_stage'];
 
-		$log->debug("Exiting create_tables () method ...");
+        foreach ($noneditable_tables as $picklistname) {
+            $adb->pquery("update vtiger_" . $picklistname . " set PRESENCE=0", []);
+        }
+        foreach ($noneditable_values as $picklistname => $value) {
+            $adb->pquery("update vtiger_$value set PRESENCE=0 where $value=?", [$picklistname]);
+        }
 
-	}
+        $log->debug("Exiting create_tables () method ...");
+    }
 
+    function create_nonpicklist_tables()
+    {
+        global $log;
+        $log->debug("Entering create_nonpicklist_tables () method ...");
 
-	function create_nonpicklist_tables ()
-	{
-		global $log;
-		$log->debug("Entering create_nonpicklist_tables () method ...");
-				
-		global $app_list_strings,$adb;
-		global $combo_strings;
-		// uitype -> 16 - Non standard picklist, 115 - User status, 83 - Tax Class
-		$comboRes = $adb->pquery("SELECT distinct fieldname FROM vtiger_field WHERE uitype IN ('16','115','83') AND fieldname NOT IN ('hdnTaxType','email_flag') and vtiger_field.presence in (0,2)", array());
-		$noOfCombos = $adb->num_rows($comboRes);
-		for($i=0; $i<$noOfCombos; $i++)
-		{
-			$comTab = $adb->query_result($comboRes, $i, 'fieldname');
-			$this->insertNonPicklistValues($combo_strings[$comTab."_dom"],$comTab);
-		}
-		$log->debug("Exiting create_tables () method ...");
-	}
-	function insertNonPicklistValues($values, $tableName)
-	{
-		global $log;
-		global $adb;
-		$i=0;
-		foreach ($values as $val => $cal)
-		{
-				$id = $adb->getUniqueID('vtiger_'.$tableName);
-				if($val != '')
-				{
-					$params = array($id, $val, $i ,1);
-				}
-				else
-				{
-					$params = array($id, '--None--', $i ,1);
-				}
-				$adb->pquery("insert into vtiger_$tableName values(?,?,?,?)", $params);
-				$i++;
-		}
-		$log->debug("Exiting insertNonPicklistValues method ...");
-	}
+        global $app_list_strings, $adb;
+        global $combo_strings;
+        // uitype -> 16 - Non standard picklist, 115 - User status, 83 - Tax Class
+        $comboRes = $adb->pquery(
+            "SELECT distinct fieldname FROM vtiger_field WHERE uitype IN ('16','115','83') AND fieldname NOT IN ('hdnTaxType','email_flag') and vtiger_field.presence in (0,2)",
+            []
+        );
+        $noOfCombos = $adb->num_rows($comboRes);
+        for ($i = 0; $i < $noOfCombos; $i++) {
+            $comTab = $adb->query_result($comboRes, $i, 'fieldname');
+            $this->insertNonPicklistValues($combo_strings[$comTab . "_dom"], $comTab);
+        }
+        $log->debug("Exiting create_tables () method ...");
+    }
 
+    function insertNonPicklistValues($values, $tableName)
+    {
+        global $log;
+        global $adb;
+        $i = 0;
+        foreach ($values as $val => $cal) {
+            $id = $adb->getUniqueID('vtiger_' . $tableName);
+            if ($val != '') {
+                $params = [$id, $val, $i, 1];
+            } else {
+                $params = [$id, '--None--', $i, 1];
+            }
+            $adb->pquery("insert into vtiger_$tableName values(?,?,?,?)", $params);
+            $i++;
+        }
+        $log->debug("Exiting insertNonPicklistValues method ...");
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-/*+**********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -15,24 +15,32 @@
  *  Last change  : 2013-05-11
  *  Author       : JPL TSolucio, S. L. Joe Bordes
  ************************************************************************************/
-$languageStrings = array(
-	'LBL_TRANSFORM_OWNERSHIP'      => 'Transferir Asignado',
-	'SINGLE_Groups' => 'Grupo',
-	'LBL_TO_OTHER_GROUP'           => 'A Otro Grupo ',
-	'LBL_ADD_RECORD' => 'Añadir Grupo',
-	'LBL_GROUP_NAME' => 'Nombre Grupo',
-	'LBL_GROUP_MEMBERS' => 'Miembros Grupo',
-	'LBL_ADD_USERS_ROLES' => 'Añadir Usuarios, Roles...',
-	'LBL_ROLEANDSUBORDINATE' => 'Rol y Subordinados',
-	'RoleAndSubordinates' => 'Rol y Subordinados',
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-  'LBL_DUPLICATES_EXIST' => 'Nombre del grupo ya Existe',
+$languageStrings = [
+    'LBL_TRANSFORM_OWNERSHIP' => 'Transferir Asignado',
+    'SINGLE_Groups'           => 'Grupo',
+    'LBL_TO_OTHER_GROUP'      => 'A Otro Grupo ',
+    'LBL_ADD_RECORD'          => 'Añadir Grupo',
+    'LBL_GROUP_NAME'          => 'Nombre Grupo',
+    'LBL_GROUP_MEMBERS'       => 'Miembros Grupo',
+    'LBL_ADD_USERS_ROLES'     => 'Añadir Usuarios, Roles...',
+    'LBL_ROLEANDSUBORDINATE'  => 'Rol y Subordinados',
+    'RoleAndSubordinates'     => 'Rol y Subordinados',
 
-);
+    'LBL_DUPLICATES_EXIST' => 'Nombre del grupo ya Existe',
 
-$jsLanguageStrings = array(
-	'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Selecciona al menos un miembro para el grupo',
-	'JS_RECORD_DELETED_SUCCESSFULLY' => 'Se ha eliminado el grupo correctamente',
-	'JS_COMMA_NOT_ALLOWED_GROUP' => 'Los caracteres especiales como ,"<> no se permite la entrada Nombre de grupo.',
-);
-		
+];
+
+$jsLanguageStrings = [
+    'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Selecciona al menos un miembro para el grupo',
+    'JS_RECORD_DELETED_SUCCESSFULLY'                  => 'Se ha eliminado el grupo correctamente',
+    'JS_COMMA_NOT_ALLOWED_GROUP'                      => 'Los caracteres especiales como ,"<> no se permite la entrada Nombre de grupo.',
+];

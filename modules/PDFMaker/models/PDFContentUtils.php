@@ -1,28 +1,28 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
 {
-    private static $is_inventory_module = array();
+    private static $is_inventory_module = [];
 
     public function getOwnerNameCustom($id)
     {
         $db = PearDatabase::getInstance();
 
         if ($id != '') {
-            $result = $db->pquery('SELECT user_name FROM vtiger_users WHERE id=?', array($id));
+            $result = $db->pquery('SELECT user_name FROM vtiger_users WHERE id=?', [$id]);
             $ownername = $db->query_result($result, 0, 'user_name');
         }
 
         if ($ownername == '') {
-            $result = $db->pquery('SELECT groupname FROM vtiger_groups WHERE groupid=?', array($id));
+            $result = $db->pquery('SELECT groupname FROM vtiger_groups WHERE groupid=?', [$id]);
             $ownername = $db->query_result($result, 0, 'groupname');
         } else {
             $ownername = getUserFullName($id);
@@ -37,7 +37,7 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
 
         if ($account_id != '') {
             $db = PearDatabase::getInstance();
-            $result = $db->pquery('SELECT account_no FROM vtiger_account WHERE accountid=?', array($account_id));
+            $result = $db->pquery('SELECT account_no FROM vtiger_account WHERE accountid=?', [$account_id]);
             $accountno = $db->query_result($result, 0, 'account_no');
         }
 
@@ -148,9 +148,9 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
         $db = PearDatabase::getInstance();
         $result = $db->pquery(
             'SELECT fieldid, relmodule FROM vtiger_fieldmodulerel',
-            array()
+            []
         );
-        $fieldModRel = array();
+        $fieldModRel = [];
 
         while ($row = $db->fetchByAssoc($result)) {
             $fieldModRel[$row['fieldid']][] = $row['relmodule'];
@@ -191,8 +191,8 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
     public function getInventoryBreaklines($id)
     {
         $db = PearDatabase::getInstance();
-        $res = $db->pquery('SELECT productid, sequence, show_header, show_subtotal FROM vtiger_pdfmaker_breakline WHERE crmid=?', array($id));
-        $products = array();
+        $res = $db->pquery('SELECT productid, sequence, show_header, show_subtotal FROM vtiger_pdfmaker_breakline WHERE crmid=?', [$id]);
+        $products = [];
         $show_header = 0;
         $show_subtotal = 0;
 
@@ -213,7 +213,10 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
     {
         if (isset($id) and $id != '') {
             $db = PearDatabase::getInstance();
-            $image_res = $db->pquery('select vtiger_attachments.* from vtiger_attachments left join vtiger_salesmanattachmentsrel on vtiger_salesmanattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid where vtiger_salesmanattachmentsrel.smid=?', array($id));
+            $image_res = $db->pquery(
+                'select vtiger_attachments.* from vtiger_attachments left join vtiger_salesmanattachmentsrel on vtiger_salesmanattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid where vtiger_salesmanattachmentsrel.smid=?',
+                [$id]
+            );
             $row = $db->query_result_rowdata($image_res);
             $row = PDFMaker_Module_Model::fixStoredName($row);
             $image_id = $row['attachmentsid'];
@@ -245,20 +248,20 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
                      encoding,
                      disp_header, disp_footer
               FROM vtiger_pdfmaker_settings WHERE templateid = ?';
-        $result = $db->pquery($sql, array($templateid));
+        $result = $db->pquery($sql, [$templateid]);
 
         return $db->fetchByAssoc($result, 1);
     }
 
     public function getInventoryCurrencyInfoCustomArray($inventory_table, $inventory_id, $id)
     {
-        $currency_info = array(
+        $currency_info = [
             'currency_id' => '',
             'conversion_rate' => '',
             'currency_name' => '',
             'currency_code' => '',
             'currency_symbol' => ''
-        );
+        ];
 
         if ($id != '') {
             $db = PearDatabase::getInstance();
@@ -271,7 +274,7 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
                 $sql = "SELECT vtiger_currency_info.*, id AS currency_id, '' AS conv_rate FROM vtiger_currency_info WHERE  vtiger_currency_info.id=?";
             }
 
-            $res = $db->pquery($sql, array($id));
+            $res = $db->pquery($sql, [$id]);
             $num_rows = $db->num_rows($res);
 
             if ($num_rows > 0) {
@@ -312,7 +315,7 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
         if (isset($id) and $id != '') {
             $db = PearDatabase::getInstance();
             $query = $this->getContactImageQuery();
-            $result = $db->pquery($query, array($id));
+            $result = $db->pquery($query, [$id]);
             $num_rows = $db->num_rows($result);
 
             if ($num_rows > 0) {
@@ -373,10 +376,10 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
     {
         $db = PearDatabase::getInstance();
         $sql = $this->getInventoryImagesQuery($isProductModule);
-        $mainImgs = $bacImgs = array();
+        $mainImgs = $bacImgs = [];
 
-        $res = $db->pquery($sql, array($id));
-        $products = array();
+        $res = $db->pquery($sql, [$id]);
+        $products = [];
 
         while ($row = $db->fetchByAssoc($res)) {
             $row = PDFMaker_Module_Model::fixStoredName($row);
@@ -386,9 +389,9 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
         }
 
         $saved_sql = 'SELECT productid, sequence, attachmentid, width, height FROM vtiger_pdfmaker_images WHERE crmid=?';
-        $saved_res = $db->pquery($saved_sql, array($id));
-        $saved_products = array();
-        $saved_wh = array();
+        $saved_res = $db->pquery($saved_sql, [$id]);
+        $saved_products = [];
+        $saved_wh = [];
 
         while ($saved_row = $db->fetchByAssoc($saved_res)) {
             $saved_products[$saved_row['productid'] . '_' . $saved_row['sequence']] = $saved_row['attachmentid'];
@@ -417,7 +420,7 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
             }
         }
 
-        return array($mainImgs, $bacImgs);
+        return [$mainImgs, $bacImgs];
     }
 
     public function getInventoryImagesQuery($isProductModule)
@@ -449,12 +452,25 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
         return $query;
     }
 
-    public function getFieldValueUtils($efocus, $emodule, $fieldname, $value, $UITypes, $inventory_currency, $ignored_picklist_values, $def_charset, $decimals, $decimal_point, $thousands_separator, $language, $id)
-    {
+    public function getFieldValueUtils(
+        $efocus,
+        $emodule,
+        $fieldname,
+        $value,
+        $UITypes,
+        $inventory_currency,
+        $ignored_picklist_values,
+        $def_charset,
+        $decimals,
+        $decimal_point,
+        $thousands_separator,
+        $language,
+        $id
+    ) {
         $db = PearDatabase::getInstance();
         $res2 = $db->pquery(
             'SELECT * FROM vtiger_crmentity WHERE crmid = ?',
-            array($id)
+            [$id]
         );
         $CData = $db->fetchByAssoc($res2, 0);
 
@@ -474,7 +490,7 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
 
                 $field_res = $db->pquery(
                     'SELECT fieldid FROM  vtiger_field WHERE tabid=(SELECT tabid FROM  vtiger_tab WHERE name = (SELECT setype FROM vtiger_crmentity WHERE crmid = ?) ) AND columnname = ?',
-                    array($efocus->id, $culumnname)
+                    [$efocus->id, $culumnname]
                 );
                 $fieldid = $db->query_result($field_res, 0, 'fieldid');
 
@@ -488,7 +504,7 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
                     if ($referenceModuleName) {
                         $field_res = $db->pquery(
                             'SELECT fieldid FROM vtiger_field WHERE tablename=(SELECT tablename FROM vtiger_entityname WHERE modulename=?) AND fieldname=(SELECT fieldname FROM vtiger_entityname WHERE modulename=?)',
-                            array($referenceModuleName, $referenceModuleName)
+                            [$referenceModuleName, $referenceModuleName]
                         );
                         $fieldid = $db->query_result($field_res, 0, 'fieldid');
                     }
@@ -496,7 +512,7 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
                     if ($efocus->id) {
                         $field_res = $db->pquery(
                             'SELECT fieldid FROM vtiger_field WHERE tabid=(SELECT tabid FROM vtiger_tab WHERE name=(SELECT setype FROM vtiger_crmentity WHERE crmid = ?) ) AND fieldname=?',
-                            array($efocus->id, $fieldname)
+                            [$efocus->id, $fieldname]
                         );
                         $fieldid = $db->query_result($field_res, 0, 'fieldid');
                         $relid = $efocus->id;
@@ -505,7 +521,7 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
             }
 
             if ($fieldid != 0) {
-                $label_res = $db->pquery('SELECT label FROM its4you_historized WHERE crmid =? AND relid=? AND type=? AND field_id = ? ', array($id, $relid, $type, $fieldid));
+                $label_res = $db->pquery('SELECT label FROM its4you_historized WHERE crmid =? AND relid=? AND type=? AND field_id = ? ', [$id, $relid, $type, $fieldid]);
 
                 if ($label_res != false && $db->num_rows($label_res) != 0) {
                     return $db->query_result($label_res, 0, 'label');
@@ -649,7 +665,7 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
         $db = PearDatabase::getInstance();
 
         if (file_exists('modules/Settings/EditTermDetails.php')) {
-            $res = $db->pquery('SELECT tandc FROM vtiger_inventory_tandc WHERE id = ?', array($value));
+            $res = $db->pquery('SELECT tandc FROM vtiger_inventory_tandc WHERE id = ?', [$value]);
             $num = $db->num_rows($res);
 
             if ($num > 0) {
@@ -736,21 +752,21 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
 
     public function getRelBlockLabels()
     {
-        $LD = array(
+        $LD = [
             'Last Modified By' => 'Last Modified',
-            'Conversion Rate' => 'LBL_CONVERSION_RATE',
-            'List Price' => 'LBL_LIST_PRICE',
-            'Discount' => 'LBL_DISCOUNT',
-            'Quantity' => 'LBL_QUANTITY',
-            'Comments' => 'LBL_COMMENTS',
-            'Currency' => 'LBL_CURRENCY',
-            'Due Date' => 'LBL_DUE_DATE',
-            'End Time' => 'End Time',
-            'Related to' => 'LBL_RELATED_TO',
-            'Assigned To' => 'Assigned To',
-            'Created Time' => 'Created Time',
-            'Modified Time' => 'Modified Time'
-        );
+            'Conversion Rate'  => 'LBL_CONVERSION_RATE',
+            'List Price'       => 'LBL_LIST_PRICE',
+            'Discount'         => 'LBL_DISCOUNT',
+            'Quantity'         => 'LBL_QUANTITY',
+            'Comments'         => 'LBL_COMMENTS',
+            'Currency'         => 'LBL_CURRENCY',
+            'Due Date'         => 'LBL_DUE_DATE',
+            'End Time'         => 'End Time',
+            'Related to'       => 'LBL_RELATED_TO',
+            'Assigned To'      => 'Assigned To',
+            'Created Time'     => 'Created Time',
+            'Modified Time'    => 'Modified Time'
+        ];
 
         return $LD;
     }

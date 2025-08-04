@@ -1,18 +1,20 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 /** @var Install_Index_Js */
 Vtiger_Index_Js('Install_Index_Js', {}, {
-	registerEventForStep3: function () {
-		jQuery('#recheck').on('click', function () {
-			window.location.reload();
-		});
+    registerEventForStep3: function () {
+        jQuery('#recheck').on('click', function () {
+            window.location.reload();
+        });
 
-		jQuery('input[name="step4"]').off('click').on('click', function (e) {
-			let elements = jQuery('.no')
+        jQuery('input[name="step4"]').off('click').on('click', function (e) {
+            let elements = jQuery('.no')
 
             if (elements.length > 0) {
                 elements.addClass('text-danger');
@@ -25,61 +27,60 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
             } else {
                 jQuery('form[name="step3"]').submit();
             }
-		});
-	},
+        });
+    },
 
-	registerEventForStep4: function () {
+    registerEventForStep4: function () {
         let self = this;
 
-		jQuery('input[name="create_db"]').on('click', function () {
-			let userName = jQuery('#root_user'),
-				password = jQuery('#root_password'),
-				classU = userName.attr('class');
+        jQuery('input[name="create_db"]').on('click', function () {
+            let userName = jQuery('#root_user'),
+                password = jQuery('#root_password'),
+                classU = userName.attr('class');
 
-			if($(this).is(':checked')) {
-				userName.removeClass('hide');
-				password.removeClass('hide');
-			} else {
-				userName.addClass('hide');
-				password.addClass('hide');
-			}
-		});
+            if ($(this).is(':checked')) {
+                userName.removeClass('hide');
+                password.removeClass('hide');
+            } else {
+                userName.addClass('hide');
+                password.addClass('hide');
+            }
+        });
 
-		if (jQuery('input[name="create_db"]').prop('checked'))
-		{
-			jQuery('#root_user').removeClass("hide");
-			jQuery('#root_password').removeClass("hide");
-		}
+        if (jQuery('input[name="create_db"]').prop('checked')) {
+            jQuery('#root_user').removeClass("hide");
+            jQuery('#root_password').removeClass("hide");
+        }
 
-		function clearPasswordError() {
-			jQuery('#passwordError').html('');
-		}
+        function clearPasswordError() {
+            jQuery('#passwordError').html('');
+        }
 
-		function setPasswordError() {
-			jQuery('#passwordError').html('Please re-enter passwords.  The \"Password\" and \"Re-type password\" values do not match.');
-		}
+        function setPasswordError() {
+            jQuery('#passwordError').html('Please re-enter passwords.  The \"Password\" and \"Re-type password\" values do not match.');
+        }
 
-		//This is not an event, we check if create_db is checked
-		jQuery('input[name="retype_password"]').on('blur', function (e) {
-			var element = jQuery(e.currentTarget);
-			var password = jQuery('input[name="password"]').val();
-			if (password !== element.val()) {
-				setPasswordError();
-			}
-		});
+        //This is not an event, we check if create_db is checked
+        jQuery('input[name="retype_password"]').on('blur', function (e) {
+            var element = jQuery(e.currentTarget);
+            var password = jQuery('input[name="password"]').val();
+            if (password !== element.val()) {
+                setPasswordError();
+            }
+        });
 
-		jQuery('input[name="password"]').on('blur', function (e) {
-                        var retypePassword = jQuery('input[name="retype_password"]');
-			if (retypePassword.val() != '' && retypePassword.val() !== jQuery(e.currentTarget).val()) {
-				jQuery('#passwordError').html('Please re-enter passwords.  The \"Password\" and \"Re-type password\" values do not match.');
-			} else {
-				clearPasswordError();
-			}
-		});
+        jQuery('input[name="password"]').on('blur', function (e) {
+            var retypePassword = jQuery('input[name="retype_password"]');
+            if (retypePassword.val() != '' && retypePassword.val() !== jQuery(e.currentTarget).val()) {
+                jQuery('#passwordError').html('Please re-enter passwords.  The \"Password\" and \"Re-type password\" values do not match.');
+            } else {
+                clearPasswordError();
+            }
+        });
 
-		jQuery('input[name="retype_password"]').on('keypress', function (e) {
-			clearPasswordError();
-		});
+        jQuery('input[name="retype_password"]').on('keypress', function (e) {
+            clearPasswordError();
+        });
 
         jQuery('input[name="step5"]').on('click', function () {
             let error = false;
@@ -142,7 +143,7 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
             if (error) {
                 let content;
 
-                if(invalidDecimalGroupingSeparator) {
+                if (invalidDecimalGroupingSeparator) {
                     content = self.getErrorContent('Warning! Required different values Decimal and Grouping separator.');
                 } else if (invalidEmailAddress) {
                     content = self.getErrorContent('Warning! Invalid email address.');
@@ -157,29 +158,29 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
                 jQuery('form[name="step4"]').submit();
             }
         });
-	},
+    },
     getErrorContent(message) {
         return '<div class="col-sm-12"><div class="alert alert-danger errorMessageContent"><button class="btn btn-close me-2" data-bs-dismiss="alert" type="button"></button>' + message + '</div></div>';
     },
-	registerEventForStep5: function () {
-		jQuery('input[name="step6"]').on('click', function () {
-			var error = jQuery('#errorMessage');
-			if (error.length) {
-				alert('Please resolve the error before proceeding with the installation');
-				return false;
-			} else {
-				jQuery('form[name="step5"]').submit().hide();
-			}
-		});
-	},
+    registerEventForStep5: function () {
+        jQuery('input[name="step6"]').on('click', function () {
+            var error = jQuery('#errorMessage');
+            if (error.length) {
+                alert('Please resolve the error before proceeding with the installation');
+                return false;
+            } else {
+                jQuery('form[name="step5"]').submit().hide();
+            }
+        });
+    },
 
-	registerEventForStep6: function () {
-		jQuery('input[name="step7"]').on('click', function () {
-			jQuery('#progressIndicator').removeClass('hide').addClass('show');
-			jQuery('form[name="step6"]').submit();
-			jQuery('#formContainer').addClass('hide');
-		});
-	},
+    registerEventForStep6: function () {
+        jQuery('input[name="step7"]').on('click', function () {
+            jQuery('#progressIndicator').removeClass('hide').addClass('show');
+            jQuery('form[name="step6"]').submit();
+            jQuery('#formContainer').addClass('hide');
+        });
+    },
     registerEventForStep7: function () {
         let form = jQuery('form[name="step7"]');
 
@@ -188,22 +189,22 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
         }
     },
 
-	registerEvents: function () {
-		jQuery('input[name="back"]').on('click', function () {
-			var createDatabase = jQuery('input[name="create_db"]:checked');
-			if (createDatabase.length > 0) {
-				jQuery('input[name="create_db"]').removeAttr('checked');
-			}
-			window.history.back();
-		});
-		this.registerEventForStep3();
-		this.registerEventForStep4();
-		this.registerEventForStep5();
-		this.registerEventForStep6();
+    registerEvents: function () {
+        jQuery('input[name="back"]').on('click', function () {
+            var createDatabase = jQuery('input[name="create_db"]:checked');
+            if (createDatabase.length > 0) {
+                jQuery('input[name="create_db"]').removeAttr('checked');
+            }
+            window.history.back();
+        });
+        this.registerEventForStep3();
+        this.registerEventForStep4();
+        this.registerEventForStep5();
+        this.registerEventForStep6();
         this.registerEventForStep7();
-	}
+    }
 });
-jQuery(document).ready(function() {
-	let indexInstance = new Install_Index_Js();
-	indexInstance.registerEvents();
+jQuery(document).ready(function () {
+    let indexInstance = new Install_Index_Js();
+    indexInstance.registerEvents();
 });

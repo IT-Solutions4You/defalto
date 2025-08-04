@@ -1,19 +1,30 @@
 <?php
-/**
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Migration_Index_View extends Vtiger_View_Controller {
-
-	function __construct() {
-		parent::__construct();
-		$this->exposeMethod('step1');
-		$this->exposeMethod('step2');
-		$this->exposeMethod('applyDBChanges');
-	}
+class Migration_Index_View extends Vtiger_View_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+        $this->exposeMethod('step1');
+        $this->exposeMethod('step2');
+        $this->exposeMethod('applyDBChanges');
+    }
 
     public function checkPermission(Vtiger_Request $request)
     {
@@ -21,7 +32,7 @@ class Migration_Index_View extends Vtiger_View_Controller {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
         if (!$currentUserModel->isAdminUser()) {
-            throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
         }
 
         return true;
@@ -38,28 +49,30 @@ class Migration_Index_View extends Vtiger_View_Controller {
 
         if (!empty($mode)) {
             $this->invokeExposedMethod($mode, $request);
+
             return;
         }
 
         $this->step1($request);
     }
 
-    protected function step1(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$viewer = $this->getViewer($request);
+    protected function step1(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $viewer = $this->getViewer($request);
 
-		$viewer->assign('MODULENAME', $moduleName);
-		$viewer->view('MigrationStep1.tpl', $moduleName);
-	}
+        $viewer->assign('MODULENAME', $moduleName);
+        $viewer->view('MigrationStep1.tpl', $moduleName);
+    }
 
-	protected function step2(Vtiger_Request $request){
-		$moduleName = $request->getModule();
-		$viewer = $this->getViewer($request);
+    protected function step2(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $viewer = $this->getViewer($request);
 
-		$viewer->assign('MODULE', $moduleName);
-		$viewer->view('MigrationStep2.tpl', $moduleName);
-	}
-
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->view('MigrationStep2.tpl', $moduleName);
+    }
 
     public function preProcess(Vtiger_Request $request, $display = true)
     {
@@ -83,23 +96,25 @@ class Migration_Index_View extends Vtiger_View_Controller {
         $viewer->view('MigrationPostProcess.tpl', $moduleName);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request) {
-		$headerScriptInstances = array();
-		$moduleName = $request->getModule();
+    public function getHeaderScripts(Vtiger_Request $request)
+    {
+        $headerScriptInstances = [];
+        $moduleName = $request->getModule();
 
-		$jsFileNames = array(
-			'modules.Vtiger.resources.Popup',
-			"modules.Vtiger.resources.List",
-			"modules.$moduleName.resources.Index"
-			);
+        $jsFileNames = [
+            'modules.Vtiger.resources.Popup',
+            "modules.Vtiger.resources.List",
+            "modules.$moduleName.resources.Index"
+        ];
 
-		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
-		return $headerScriptInstances;
-	}
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+
+        return $headerScriptInstances;
+    }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function applyDBChanges()
     {
@@ -157,75 +172,86 @@ class Migration_Index_View extends Vtiger_View_Controller {
         $migrationModuleModel->postMigrateActivities();
     }
 
-    public static function ExecuteQuery($query, $params){
-		$adb = PearDatabase::getInstance();
-		$status = $adb->pquery($query, $params);
-		if(!defined('INSTALLATION_MODE')) {
-			$query = $adb->convert2sql($query, $params);
-			if(is_object($status)) {
-				echo '<tr><td width="80%"><span>'.$query.'</span></td><td style="color:green">Success</td></tr>';
-			} else {
-				echo '<tr><td width="80%"><span>'.$query.'</span></td><td style="color:red">Failure</td></tr>';
-			}
-		}
-		return $status;
-	}
+    public static function ExecuteQuery($query, $params)
+    {
+        $adb = PearDatabase::getInstance();
+        $status = $adb->pquery($query, $params);
+        if (!defined('INSTALLATION_MODE')) {
+            $query = $adb->convert2sql($query, $params);
+            if (is_object($status)) {
+                echo '<tr><td width="80%"><span>' . $query . '</span></td><td style="color:green">Success</td></tr>';
+            } else {
+                echo '<tr><td width="80%"><span>' . $query . '</span></td><td style="color:red">Failure</td></tr>';
+            }
+        }
 
-		/**
-	 * Function to transform workflow filter of old look in to new look
-	 * @param <type> $conditions
-	 * @return <type>
-	 */
-	public static function transformAdvanceFilterToWorkFlowFilter($conditions) {
-		$wfCondition = array();
+        return $status;
+    }
 
-		if(!empty($conditions)) {
-			$previousConditionGroupId = 0;
-			foreach($conditions as $condition) {
+    /**
+     * Function to transform workflow filter of old look in to new look
+     *
+     * @param <type> $conditions
+     *
+     * @return <type>
+     */
+    public static function transformAdvanceFilterToWorkFlowFilter($conditions)
+    {
+        $wfCondition = [];
 
-				$fieldName = $condition['fieldname'];
-				$fieldNameContents = explode(' ', $fieldName);
-				if (php7_count($fieldNameContents) > 1) {
-					$fieldName = '('. $fieldName .')';
-				}
+        if (!empty($conditions)) {
+            $previousConditionGroupId = 0;
+            foreach ($conditions as $condition) {
+                $fieldName = $condition['fieldname'];
+                $fieldNameContents = explode(' ', $fieldName);
+                if (php7_count($fieldNameContents) > 1) {
+                    $fieldName = '(' . $fieldName . ')';
+                }
 
                 $groupId = $condition['groupid'] ?? null;
 
-				if (!$groupId) {
-					$groupId = 0;
-				}
+                if (!$groupId) {
+                    $groupId = 0;
+                }
 
-				$groupCondition = 'or';
-				if ($groupId === $previousConditionGroupId || php7_count($conditions) === 1) {
-					$groupCondition = 'and';
-				}
+                $groupCondition = 'or';
+                if ($groupId === $previousConditionGroupId || php7_count($conditions) === 1) {
+                    $groupCondition = 'and';
+                }
 
-				$joinCondition = 'or';
-				if (isset ($condition['joincondition'])) {
-					$joinCondition = $condition['joincondition'];
-				} elseif($groupId === 0) {
-					$joinCondition = 'and';
-				}
+                $joinCondition = 'or';
+                if (isset ($condition['joincondition'])) {
+                    $joinCondition = $condition['joincondition'];
+                } elseif ($groupId === 0) {
+                    $joinCondition = 'and';
+                }
 
-				$value = $condition['value'];
-				switch ($value) {
-					case 'false:boolean'	: $value = 0;	break;
-					case 'true:boolean'		: $value = 1;	break;
-					default					: $value;		break;
-				}
+                $value = $condition['value'];
+                switch ($value) {
+                    case 'false:boolean'    :
+                        $value = 0;
+                        break;
+                    case 'true:boolean'        :
+                        $value = 1;
+                        break;
+                    default                    :
+                        $value;
+                        break;
+                }
 
-				$wfCondition[] = array(
-						'fieldname' => $fieldName,
-						'operation' => $condition['operation'],
-						'value' => $value,
-						'valuetype' => 'rawtext',
-						'joincondition' => $joinCondition,
-						'groupjoin' => $groupCondition,
-						'groupid' => $groupId
-				);
-				$previousConditionGroupId = $groupId;
-			}
-		}
-		return $wfCondition;
-	}
+                $wfCondition[] = [
+                    'fieldname'     => $fieldName,
+                    'operation'     => $condition['operation'],
+                    'value'         => $value,
+                    'valuetype'     => 'rawtext',
+                    'joincondition' => $joinCondition,
+                    'groupjoin'     => $groupCondition,
+                    'groupid'       => $groupId
+                ];
+                $previousConditionGroupId = $groupId;
+            }
+        }
+
+        return $wfCondition;
+    }
 }

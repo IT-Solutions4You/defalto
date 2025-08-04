@@ -1,527 +1,567 @@
 <?php
-/**
+/*********************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ ********************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 /**
  * Functions that need-rewrite / to be eliminated.
  */
+class Vtiger_Deprecated
+{
+    static function getFullNameFromArray($module, $fieldValues)
+    {
+        $entityInfo = getEntityFieldNames($module);
+        $fieldsName = $entityInfo['fieldname'];
+        $displayName = self::getCurrentUserEntityFieldNameDisplay($module, $fieldsName, $fieldValues);
 
-class Vtiger_Deprecated {
+        return $displayName;
+    }
 
-	static function getFullNameFromArray($module, $fieldValues) {
-		$entityInfo = getEntityFieldNames($module);
-		$fieldsName = $entityInfo['fieldname'];
-		$displayName = self::getCurrentUserEntityFieldNameDisplay($module, $fieldsName, $fieldValues);
-		return $displayName;
-	}
-
-	static function getCurrentUserEntityFieldNameDisplay($module, $fieldsName, $fieldValues) {
-		global $current_user;
-		if(!is_array($fieldsName)) {
-			return $fieldValues[$fieldsName];
-		} else {
-			$accessibleFieldNames = array();
-			foreach($fieldsName as $field) {
-                if($module == 'Users' || getColumnVisibilityPermission($current_user->id, $field, $module) == '0' && isset($fieldValues[$field])) {
-					$accessibleFieldNames[] = $fieldValues[$field];
-				}
-			}
-			if(php7_count($accessibleFieldNames) > 0) {
-				return implode(' ', $accessibleFieldNames);
-			}
-		}
-		return '';
-	}
-
-	static function getBlockId($tabid, $label) {
-		global $adb;
-		$query = "select blockid from vtiger_blocks where tabid=? and blocklabel = ?";
-		$result = $adb->pquery($query, array($tabid, $label));
-		$noofrows = $adb->num_rows($result);
-
-		$blockid = '';
-		if ($noofrows == 1) {
-			$blockid = $adb->query_result($result, 0, "blockid");
-		}
-		return $blockid;
-	}
-
-	static function getParentTab() {
-		return '';
-
-		/*global $log, $default_charset;
-		$log->debug("Entering getParentTab() method ...");
-		if (!empty($_REQUEST['parenttab'])) {
-			if (self::checkParentTabExists($_REQUEST['parenttab'])) {
-				return vtlib_purify($_REQUEST['parenttab']);
-			} else {
-				return self::getParentTabFromModule($_REQUEST['module']);
-			}
-		} else {
-			return self::getParentTabFromModule($_REQUEST['module']);
-		}*/
-	}
-
-	static function createModuleMetaFile() {
-		global $adb;
-
-		$sql = "select * from vtiger_tab";
-		$result = $adb->pquery($sql, array());
-		$num_rows = $adb->num_rows($result);
-		$result_array = Array();
-		$seq_array = Array();
-		$ownedby_array = Array();
-
-		for ($i = 0; $i < $num_rows; $i++) {
-			$tabid = $adb->query_result($result, $i, 'tabid');
-			$tabname = $adb->query_result($result, $i, 'name');
-			$presence = $adb->query_result($result, $i, 'presence');
-			$ownedby = $adb->query_result($result, $i, 'ownedby');
-			$result_array[$tabname] = $tabid;
-			$seq_array[$tabid] = $presence;
-			$ownedby_array[$tabid] = $ownedby;
-		}
-
-		//Constructing the actionname=>actionid array
-		$actionid_array = Array();
-		$sql1 = "select * from vtiger_actionmapping";
-		$result1 = $adb->pquery($sql1, array());
-		$num_seq1 = $adb->num_rows($result1);
-		for ($i = 0; $i < $num_seq1; $i++) {
-			$actionname = $adb->query_result($result1, $i, 'actionname');
-			$actionid = $adb->query_result($result1, $i, 'actionid');
-			$actionid_array[$actionname] = $actionid;
-		}
-
-		//Constructing the actionid=>actionname array with securitycheck=0
-		$actionname_array = Array();
-		$sql2 = "select * from vtiger_actionmapping where securitycheck=0";
-		$result2 = $adb->pquery($sql2, array());
-		$num_seq2 = $adb->num_rows($result2);
-		for ($i = 0; $i < $num_seq2; $i++) {
-			$actionname = $adb->query_result($result2, $i, 'actionname');
-			$actionid = $adb->query_result($result2, $i, 'actionid');
-			$actionname_array[$actionid] = $actionname;
-		}
-
-		$filename = 'tabdata.php';
-
-		if (file_exists($filename)) {
-			if (is_writable($filename)) {
-				if (!$handle = fopen($filename, 'w+')) {
-					echo "Cannot open file ($filename)";
-					exit;
-				}
-				require_once('modules/Users/CreateUserPrivilegeFile.php');
-				$newbuf = '';
-				$newbuf .="<?php\n\n";
-				$newbuf .="\n";
-				$newbuf .= "//This file contains the commonly used variables \n";
-				$newbuf .= "\n";
-				$newbuf .= "\$tab_info_array=" . constructArray($result_array) . ";\n";
-				$newbuf .= "\n";
-				$newbuf .= "\$tab_seq_array=" . constructArray($seq_array) . ";\n";
-				$newbuf .= "\n";
-				$newbuf .= "\$tab_ownedby_array=" . constructArray($ownedby_array) . ";\n";
-				$newbuf .= "\n";
-				$newbuf .= "\$action_id_array=" . constructSingleStringKeyAndValueArray($actionid_array) . ";\n";
-				$newbuf .= "\n";
-				$newbuf .= "\$action_name_array=" . constructSingleStringValueArray($actionname_array) . ";\n";
-				$newbuf .= "?>";
-				fputs($handle, $newbuf);
-				fclose($handle);
-			} else {
-				echo "The file $filename is not writable";
-			}
-		} else {
-			echo "The file $filename does not exist";
-		}
-	}
-
-	static function createModuleGroupMetaFile() {
-		global $adb;
-		$sql = "select parenttabid,parenttab_label from vtiger_parenttab where visible=0 order by sequence";
-		$result = $adb->pquery($sql, array());
-		$num_rows = $adb->num_rows($result);
-		$result_array = Array();
-		for ($i = 0; $i < $num_rows; $i++) {
-			$parenttabid = $adb->query_result($result, $i, 'parenttabid');
-			$parenttab_label = $adb->query_result($result, $i, 'parenttab_label');
-			$result_array[$parenttabid] = $parenttab_label;
-		}
-
-		$filename = 'parent_tabdata.php';
-
-		if (file_exists($filename)) {
-			if (is_writable($filename)) {
-				if (!$handle = fopen($filename, 'w+')) {
-					echo "Cannot open file ($filename)";
-					exit;
-				}
-				require_once('modules/Users/CreateUserPrivilegeFile.php');
-				$newbuf = '';
-				$newbuf .="<?php\n\n";
-				$newbuf .="\n";
-				$newbuf .= "//This file contains the commonly used variables \n";
-				$newbuf .= "\n";
-				$newbuf .= "\$parent_tab_info_array=" . constructSingleStringValueArray($result_array) . ";\n";
-				$newbuf .="\n";
-
-				$parChildTabRelArray = Array();
-
-				foreach ($result_array as $parid => $parvalue) {
-					$childArray = Array();
-					//$sql = "select * from vtiger_parenttabrel where parenttabid=? order by sequence";
-					// vtlib customization: Disabling the tab item based on presence
-					$sql = "select * from vtiger_parenttabrel where parenttabid=?
-						and tabid in (select tabid from vtiger_tab where presence in (0,2)) order by sequence";
-					// END
-					$result = $adb->pquery($sql, array($parid));
-					$num_rows = $adb->num_rows($result);
-					$result_array = Array();
-					for ($i = 0; $i < $num_rows; $i++) {
-						$tabid = $adb->query_result($result, $i, 'tabid');
-						$childArray[] = $tabid;
-					}
-					$parChildTabRelArray[$parid] = $childArray;
-				}
-				$newbuf .= "\n";
-				$newbuf .= "\$parent_child_tab_rel_array=" . constructTwoDimensionalValueArray($parChildTabRelArray) . ";\n";
-				$newbuf .="\n";
-				$newbuf .="\n";
-				$newbuf .="\n";
-				$newbuf .= "?>";
-				fputs($handle, $newbuf);
-				fclose($handle);
-			} else {
-				echo "The file $filename is not writable";
-			}
-		} else {
-			echo "The file $filename does not exist";
-		}
-	}
-
-	static function getAnnouncements() {
-		global $adb;
-		$announcement = "";
-		$sql = " select * from vtiger_announcement inner join vtiger_users on vtiger_announcement.creatorid=vtiger_users.id";
-		$sql.=" AND vtiger_users.is_admin='on' AND vtiger_users.status='Active' AND vtiger_users.deleted = 0";
-		$result = $adb->pquery($sql, array());
-		for ($i = 0; $i < $adb->num_rows($result); $i++) {
-			$announce = getUserFullName($adb->query_result($result, $i, 'creatorid')) . ' :  ' . $adb->query_result($result, $i, 'announcement') . '   ';
-			if ($adb->query_result($result, $i, 'announcement') != '')
-				$announcement.=$announce;
-		}
-
-	   return $announcement;
-	}
-
-	static function getModuleTranslationStrings($language, $module) {
-		static $cachedModuleStrings = array();
-
-		if(!empty($cachedModuleStrings[$module])) {
-			return $cachedModuleStrings[$module];
-		}
-		$newStrings = Vtiger_Language_Handler::getModuleStringsFromFile($language, $module);
-		$cachedModuleStrings[$module] = $newStrings['languageStrings'];
-
-		return $cachedModuleStrings[$module];
-	}
-
-	static function getTranslatedCurrencyString($str) {
-		global $app_currency_strings;
-		if (isset($app_currency_strings) && isset($app_currency_strings[$str])) {
-			return $app_currency_strings[$str];
-		}
-		return $str;
-	}
-
-	static function SaveTagCloudView($id = "") {
-		global $adb;
-		$tag_cloud_status = isset($_REQUEST['tagcloudview']) ? $_REQUEST['tagcloudview'] : false;
-		if ($tag_cloud_status == "true") {
-			$tag_cloud_view = 0;
-		} else {
-			$tag_cloud_view = 1;
-		}
-		if ($id == '') {
-			$tag_cloud_view = 1;
-		} else {
-			$query = "update vtiger_homestuff set visible = ? where userid=? and stufftype='Tag Cloud'";
-			$adb->pquery($query, array($tag_cloud_view, $id));
-		}
-	}
-
-	static function clearSmartyCompiledFiles($path = null) {
-		global $root_directory;
-		if ($path == null) {
-			$path = $root_directory . 'test/templates_c/';
-		}
-		if(file_exists($path) && is_dir($path)){
-			$mydir = @opendir($path);
-			while (false !== ($file = readdir($mydir))) {
-				if ($file != "." && $file != ".." && $file != ".svn") {
-					//chmod($path.$file, 0777);
-					if (is_dir($path . $file)) {
-						chdir('.');
-						clear_smarty_cache($path . $file . '/');
-						//rmdir($path.$file) or DIE("couldn't delete $path$file<br />"); // No need to delete the directories.
-					} else {
-						// Delete only files ending with .tpl.php
-						if (strripos($file, '.tpl.php') == (strlen($file) - strlen('.tpl.php'))) {
-							unlink($path . $file) or DIE("couldn't delete $path$file<br />");
-						}
-					}
-				}
-			}
-			@closedir($mydir);
-		}
-		
-	}
-
-	static function getSmartyCompiledTemplateFile($template_file, $path = null) {
-		global $root_directory;
-		if ($path == null) {
-			$path = $root_directory . 'test/templates_c/';
-		}
-		$mydir = @opendir($path);
-		$compiled_file = null;
-		while (false !== ($file = readdir($mydir)) && $compiled_file == null) {
-			if ($file != "." && $file != ".." && $file != ".svn") {
-				//chmod($path.$file, 0777);
-				if (is_dir($path . $file)) {
-					chdir('.');
-					$compiled_file = get_smarty_compiled_file($template_file, $path . $file . '/');
-					//rmdir($path.$file) or DIE("couldn't delete $path$file<br />"); // No need to delete the directories.
-				} else {
-					// Check if the file name matches the required template fiel name
-					if (strripos($file, $template_file . '.php') == (strlen($file) - strlen($template_file . '.php'))) {
-						$compiled_file = $path . $file;
-					}
-				}
-			}
-		}
-		@closedir($mydir);
-		return $compiled_file;
-	}
-
-	static function postApplicationMigrationTasks() {
-		self::clearSmartyCompiledFiles();
-		self::createModuleMetaFile();
-		self::createModuleMetaFile();
-	}
-
-	static function checkFileAccessForInclusion($filepath) {
-		global $root_directory;
-		// Set the base directory to compare with
-		$use_root_directory = $root_directory;
-		if (empty($use_root_directory)) {
-			$use_root_directory = realpath(dirname(__FILE__) . '/../../.');
-		}
-
-		$unsafeDirectories = array('storage', 'cache', 'test');
-
-		$realfilepath = realpath($filepath);
-
-		/** Replace all \\ with \ first */
-		$realfilepath = str_replace('\\\\', '\\', $realfilepath);
-		$rootdirpath = str_replace('\\\\', '\\', $use_root_directory);
-
-		/** Replace all \ with / now */
-		$realfilepath = str_replace('\\', '/', $realfilepath);
-		$rootdirpath = str_replace('\\', '/', $rootdirpath);
-
-		$relativeFilePath = str_replace($rootdirpath, '', $realfilepath);
-		$filePathParts = explode('/', $relativeFilePath);
-
-		if (stripos($realfilepath, $rootdirpath) !== 0 || in_array($filePathParts[0], $unsafeDirectories)) {
-			$a = debug_backtrace();
-                        $backtrace = 'Traced on '.date('Y-m-d H:i:s')."\n";
-                        $backtrace .= "FileAccessForInclusion - \n";
-                        foreach ($a as $b) {
-                            $backtrace .=  $b['file'] . '::' . $b['function'] . '::' . $b['line'] . '<br>'.PHP_EOL;
-                        }
-                        Vtiger_Utils::writeLogFile('fileMissing.log', $backtrace);
-                        die('Sorry! Attempt to access restricted file 3: ' . $relativeFilePath);
+    static function getCurrentUserEntityFieldNameDisplay($module, $fieldsName, $fieldValues)
+    {
+        global $current_user;
+        if (!is_array($fieldsName)) {
+            return $fieldValues[$fieldsName];
+        } else {
+            $accessibleFieldNames = [];
+            foreach ($fieldsName as $field) {
+                if ($module == 'Users' || getColumnVisibilityPermission($current_user->id, $field, $module) == '0' && isset($fieldValues[$field])) {
+                    $accessibleFieldNames[] = $fieldValues[$field];
                 }
-	}
+            }
+            if (php7_count($accessibleFieldNames) > 0) {
+                return implode(' ', $accessibleFieldNames);
+            }
+        }
 
-	/** Function to check the file deletion within the deletable (safe) directories*/
-	static function checkFileAccessForDeletion($filepath) {
-		global $root_directory;
-		// Set the base directory to compare with
-		$use_root_directory = $root_directory;
-		if (empty($use_root_directory)) {
-			$use_root_directory = realpath(dirname(__FILE__) . '/../../.');
-		}
+        return '';
+    }
 
-		$safeDirectories = array('storage', 'cache', 'test');
+    static function getBlockId($tabid, $label)
+    {
+        global $adb;
+        $query = "select blockid from vtiger_blocks where tabid=? and blocklabel = ?";
+        $result = $adb->pquery($query, [$tabid, $label]);
+        $noofrows = $adb->num_rows($result);
 
-		$realfilepath = realpath($filepath);
+        $blockid = '';
+        if ($noofrows == 1) {
+            $blockid = $adb->query_result($result, 0, "blockid");
+        }
 
-		/** Replace all \\ with \ first */
-		$realfilepath = str_replace('\\\\', '\\', $realfilepath);
-		$rootdirpath = str_replace('\\\\', '\\', $use_root_directory);
+        return $blockid;
+    }
 
-		/** Replace all \ with / now */
-		$realfilepath = str_replace('\\', '/', $realfilepath);
-		$rootdirpath = str_replace('\\', '/', $rootdirpath);
+    static function getParentTab()
+    {
+        return '';
+        /*global $log, $default_charset;
+        $log->debug("Entering getParentTab() method ...");
+        if (!empty($_REQUEST['parenttab'])) {
+            if (self::checkParentTabExists($_REQUEST['parenttab'])) {
+                return vtlib_purify($_REQUEST['parenttab']);
+            } else {
+                return self::getParentTabFromModule($_REQUEST['module']);
+            }
+        } else {
+            return self::getParentTabFromModule($_REQUEST['module']);
+        }*/
+    }
 
-		$relativeFilePath = str_replace($rootdirpath, '', $realfilepath);
-		$filePathParts = explode('/', $relativeFilePath);
+    static function createModuleMetaFile()
+    {
+        global $adb;
 
-		if (stripos($realfilepath, $rootdirpath) !== 0 || !in_array($filePathParts[0], $safeDirectories)) {
-                    $a = debug_backtrace();
-                    $backtrace = 'Traced on '.date('Y-m-d H:i:s')."\n";
-                    $backtrace .= "FileAccessForDeletion - \n";
-                    foreach ($a as $b) {
-                        $backtrace .=  $b['file'] . '::' . $b['function'] . '::' . $b['line'] . '<br>'.PHP_EOL;
+        $sql = "select * from vtiger_tab";
+        $result = $adb->pquery($sql, []);
+        $num_rows = $adb->num_rows($result);
+        $result_array = [];
+        $seq_array = [];
+        $ownedby_array = [];
+
+        for ($i = 0; $i < $num_rows; $i++) {
+            $tabid = $adb->query_result($result, $i, 'tabid');
+            $tabname = $adb->query_result($result, $i, 'name');
+            $presence = $adb->query_result($result, $i, 'presence');
+            $ownedby = $adb->query_result($result, $i, 'ownedby');
+            $result_array[$tabname] = $tabid;
+            $seq_array[$tabid] = $presence;
+            $ownedby_array[$tabid] = $ownedby;
+        }
+
+        //Constructing the actionname=>actionid array
+        $actionid_array = [];
+        $sql1 = "select * from vtiger_actionmapping";
+        $result1 = $adb->pquery($sql1, []);
+        $num_seq1 = $adb->num_rows($result1);
+        for ($i = 0; $i < $num_seq1; $i++) {
+            $actionname = $adb->query_result($result1, $i, 'actionname');
+            $actionid = $adb->query_result($result1, $i, 'actionid');
+            $actionid_array[$actionname] = $actionid;
+        }
+
+        //Constructing the actionid=>actionname array with securitycheck=0
+        $actionname_array = [];
+        $sql2 = "select * from vtiger_actionmapping where securitycheck=0";
+        $result2 = $adb->pquery($sql2, []);
+        $num_seq2 = $adb->num_rows($result2);
+        for ($i = 0; $i < $num_seq2; $i++) {
+            $actionname = $adb->query_result($result2, $i, 'actionname');
+            $actionid = $adb->query_result($result2, $i, 'actionid');
+            $actionname_array[$actionid] = $actionname;
+        }
+
+        $filename = 'tabdata.php';
+
+        if (file_exists($filename)) {
+            if (is_writable($filename)) {
+                if (!$handle = fopen($filename, 'w+')) {
+                    echo "Cannot open file ($filename)";
+                    exit;
+                }
+                require_once('modules/Users/CreateUserPrivilegeFile.php');
+                $newbuf = '';
+                $newbuf .= "<?php\n\n";
+                $newbuf .= "\n";
+                $newbuf .= "//This file contains the commonly used variables \n";
+                $newbuf .= "\n";
+                $newbuf .= "\$tab_info_array=" . constructArray($result_array) . ";\n";
+                $newbuf .= "\n";
+                $newbuf .= "\$tab_seq_array=" . constructArray($seq_array) . ";\n";
+                $newbuf .= "\n";
+                $newbuf .= "\$tab_ownedby_array=" . constructArray($ownedby_array) . ";\n";
+                $newbuf .= "\n";
+                $newbuf .= "\$action_id_array=" . constructSingleStringKeyAndValueArray($actionid_array) . ";\n";
+                $newbuf .= "\n";
+                $newbuf .= "\$action_name_array=" . constructSingleStringValueArray($actionname_array) . ";\n";
+                $newbuf .= "?>";
+                fputs($handle, $newbuf);
+                fclose($handle);
+            } else {
+                echo "The file $filename is not writable";
+            }
+        } else {
+            echo "The file $filename does not exist";
+        }
+    }
+
+    static function createModuleGroupMetaFile()
+    {
+        global $adb;
+        $sql = "select parenttabid,parenttab_label from vtiger_parenttab where visible=0 order by sequence";
+        $result = $adb->pquery($sql, []);
+        $num_rows = $adb->num_rows($result);
+        $result_array = [];
+        for ($i = 0; $i < $num_rows; $i++) {
+            $parenttabid = $adb->query_result($result, $i, 'parenttabid');
+            $parenttab_label = $adb->query_result($result, $i, 'parenttab_label');
+            $result_array[$parenttabid] = $parenttab_label;
+        }
+
+        $filename = 'parent_tabdata.php';
+
+        if (file_exists($filename)) {
+            if (is_writable($filename)) {
+                if (!$handle = fopen($filename, 'w+')) {
+                    echo "Cannot open file ($filename)";
+                    exit;
+                }
+                require_once('modules/Users/CreateUserPrivilegeFile.php');
+                $newbuf = '';
+                $newbuf .= "<?php\n\n";
+                $newbuf .= "\n";
+                $newbuf .= "//This file contains the commonly used variables \n";
+                $newbuf .= "\n";
+                $newbuf .= "\$parent_tab_info_array=" . constructSingleStringValueArray($result_array) . ";\n";
+                $newbuf .= "\n";
+
+                $parChildTabRelArray = [];
+
+                foreach ($result_array as $parid => $parvalue) {
+                    $childArray = [];
+                    //$sql = "select * from vtiger_parenttabrel where parenttabid=? order by sequence";
+                    // vtlib customization: Disabling the tab item based on presence
+                    $sql = "select * from vtiger_parenttabrel where parenttabid=?
+						and tabid in (select tabid from vtiger_tab where presence in (0,2)) order by sequence";
+                    // END
+                    $result = $adb->pquery($sql, [$parid]);
+                    $num_rows = $adb->num_rows($result);
+                    $result_array = [];
+                    for ($i = 0; $i < $num_rows; $i++) {
+                        $tabid = $adb->query_result($result, $i, 'tabid');
+                        $childArray[] = $tabid;
                     }
-                    Vtiger_Utils::writeLogFile('fileMissing.log', $backtrace);
-		    die('Sorry! Attempt to access restricted file 4: ' . $relativeFilePath);
-		}
+                    $parChildTabRelArray[$parid] = $childArray;
+                }
+                $newbuf .= "\n";
+                $newbuf .= "\$parent_child_tab_rel_array=" . constructTwoDimensionalValueArray($parChildTabRelArray) . ";\n";
+                $newbuf .= "\n";
+                $newbuf .= "\n";
+                $newbuf .= "\n";
+                $newbuf .= "?>";
+                fputs($handle, $newbuf);
+                fclose($handle);
+            } else {
+                echo "The file $filename is not writable";
+            }
+        } else {
+            echo "The file $filename does not exist";
+        }
+    }
 
-	}
+    static function getAnnouncements()
+    {
+        global $adb;
+        $announcement = "";
+        $sql = " select * from vtiger_announcement inner join vtiger_users on vtiger_announcement.creatorid=vtiger_users.id";
+        $sql .= " AND vtiger_users.is_admin='on' AND vtiger_users.status='Active' AND vtiger_users.deleted = 0";
+        $result = $adb->pquery($sql, []);
+        for ($i = 0; $i < $adb->num_rows($result); $i++) {
+            $announce = getUserFullName($adb->query_result($result, $i, 'creatorid')) . ' :  ' . $adb->query_result($result, $i, 'announcement') . '   ';
+            if ($adb->query_result($result, $i, 'announcement') != '') {
+                $announcement .= $announce;
+            }
+        }
 
-	/** Function to check the file access is made within web root directory. */
-	static function checkFileAccess($filepath) {
-		if (!self::isFileAccessible($filepath)) {
-                    $a = debug_backtrace();
-                    $backtrace = 'Traced on '.date('Y-m-d H:i:s')."\n";
-                    $backtrace .= "FileAccess - \n";
-                    foreach ($a as $b) {
-                        $backtrace .=  $b['file'] . '::' . $b['function'] . '::' . $b['line'] . '<br>'.PHP_EOL;
+        return $announcement;
+    }
+
+    static function getModuleTranslationStrings($language, $module)
+    {
+        static $cachedModuleStrings = [];
+
+        if (!empty($cachedModuleStrings[$module])) {
+            return $cachedModuleStrings[$module];
+        }
+        $newStrings = Vtiger_Language_Handler::getModuleStringsFromFile($language, $module);
+        $cachedModuleStrings[$module] = $newStrings['languageStrings'];
+
+        return $cachedModuleStrings[$module];
+    }
+
+    static function getTranslatedCurrencyString($str)
+    {
+        global $app_currency_strings;
+        if (isset($app_currency_strings) && isset($app_currency_strings[$str])) {
+            return $app_currency_strings[$str];
+        }
+
+        return $str;
+    }
+
+    static function SaveTagCloudView($id = "")
+    {
+        global $adb;
+        $tag_cloud_status = isset($_REQUEST['tagcloudview']) ? $_REQUEST['tagcloudview'] : false;
+        if ($tag_cloud_status == "true") {
+            $tag_cloud_view = 0;
+        } else {
+            $tag_cloud_view = 1;
+        }
+        if ($id == '') {
+            $tag_cloud_view = 1;
+        } else {
+            $query = "update vtiger_homestuff set visible = ? where userid=? and stufftype='Tag Cloud'";
+            $adb->pquery($query, [$tag_cloud_view, $id]);
+        }
+    }
+
+    static function clearSmartyCompiledFiles($path = null)
+    {
+        global $root_directory;
+        if ($path == null) {
+            $path = $root_directory . 'test/templates_c/';
+        }
+        if (file_exists($path) && is_dir($path)) {
+            $mydir = @opendir($path);
+            while (false !== ($file = readdir($mydir))) {
+                if ($file != "." && $file != ".." && $file != ".svn") {
+                    //chmod($path.$file, 0777);
+                    if (is_dir($path . $file)) {
+                        chdir('.');
+                        clear_smarty_cache($path . $file . '/');
+                        //rmdir($path.$file) or DIE("couldn't delete $path$file<br />"); // No need to delete the directories.
+                    } else {
+                        // Delete only files ending with .tpl.php
+                        if (strripos($file, '.tpl.php') == (strlen($file) - strlen('.tpl.php'))) {
+                            unlink($path . $file) or die("couldn't delete $path$file<br />");
+                        }
                     }
-                    Vtiger_Utils::writeLogFile('fileMissing.log', $backtrace);
-                    die('Sorry! Attempt to access restricted file 5: ' . $filepath);
-		}
-	}
+                }
+            }
+            @closedir($mydir);
+        }
+    }
 
-	/**
-	 * function to return whether the file access is made within vtiger root directory
-	 * and it exists.
-	 * @global String $root_directory vtiger root directory as given in config.inc.php file.
-	 * @param String $filepath relative path to the file which need to be verified
-	 * @return Boolean true if file is a valid file within vtiger root directory, false otherwise.
-	 */
-	static function isFileAccessible($filepath) {
-		global $root_directory;
-		// Set the base directory to compare with
-		$use_root_directory = $root_directory;
-		if (empty($use_root_directory)) {
-			$use_root_directory = realpath(dirname(__FILE__) . '/../../.');
-		}
+    static function getSmartyCompiledTemplateFile($template_file, $path = null)
+    {
+        global $root_directory;
+        if ($path == null) {
+            $path = $root_directory . 'test/templates_c/';
+        }
+        $mydir = @opendir($path);
+        $compiled_file = null;
+        while (false !== ($file = readdir($mydir)) && $compiled_file == null) {
+            if ($file != "." && $file != ".." && $file != ".svn") {
+                //chmod($path.$file, 0777);
+                if (is_dir($path . $file)) {
+                    chdir('.');
+                    $compiled_file = get_smarty_compiled_file($template_file, $path . $file . '/');
+                    //rmdir($path.$file) or DIE("couldn't delete $path$file<br />"); // No need to delete the directories.
+                } else {
+                    // Check if the file name matches the required template fiel name
+                    if (strripos($file, $template_file . '.php') == (strlen($file) - strlen($template_file . '.php'))) {
+                        $compiled_file = $path . $file;
+                    }
+                }
+            }
+        }
+        @closedir($mydir);
 
-		$realfilepath = realpath($filepath);
+        return $compiled_file;
+    }
 
-		/** Replace all \\ with \ first */
-		$realfilepath = str_replace('\\\\', '\\', $realfilepath);
-		$rootdirpath = str_replace('\\\\', '\\', $use_root_directory);
+    static function postApplicationMigrationTasks()
+    {
+        self::clearSmartyCompiledFiles();
+        self::createModuleMetaFile();
+        self::createModuleMetaFile();
+    }
 
-		/** Replace all \ with / now */
-		$realfilepath = str_replace('\\', '/', $realfilepath);
-		$rootdirpath = str_replace('\\', '/', $rootdirpath);
+    static function checkFileAccessForInclusion($filepath)
+    {
+        global $root_directory;
+        // Set the base directory to compare with
+        $use_root_directory = $root_directory;
+        if (empty($use_root_directory)) {
+            $use_root_directory = realpath(dirname(__FILE__) . '/../../.');
+        }
 
-		if (stripos($realfilepath, $rootdirpath) !== 0) {
-			return false;
-		}
-		return true;
-	}
+        $unsafeDirectories = ['storage', 'cache', 'test'];
 
-	static function getSettingsBlockId($label) {
-		global $adb;
-		$blockid = '';
-		$query = "select blockid from vtiger_settings_blocks where label = ?";
-		$result = $adb->pquery($query, array($label));
-		$noofrows = $adb->num_rows($result);
-		if ($noofrows == 1) {
-			$blockid = $adb->query_result($result, 0, "blockid");
-		}
-		return $blockid;
-	}
+        $realfilepath = realpath($filepath);
 
-	static function getSqlForNameInDisplayFormat($input, $module, $glue = ' ') {
-		if ($module == 'Users') {
-			if (is_string($input)) {
-				$input = array($input);
-			}
+        /** Replace all \\ with \ first */
+        $realfilepath = str_replace('\\\\', '\\', $realfilepath);
+        $rootdirpath = str_replace('\\\\', '\\', $use_root_directory);
 
-			$tableName = '';
-			foreach ($input as $fieldTableColumn) {
-				if ($fieldTableColumn) {
-					list($tableName, $columnName) = explode('.', $fieldTableColumn);
-					break;
-				}
-			}
-			if ($tableName) {
-				return "$tableName.userlabel";
-			}
-		}
+        /** Replace all \ with / now */
+        $realfilepath = str_replace('\\', '/', $realfilepath);
+        $rootdirpath = str_replace('\\', '/', $rootdirpath);
 
-		$entity_field_info = Vtiger_Functions::getEntityModuleInfoFieldsFormatted($module);
-		$fieldsName = $entity_field_info['fieldname'];
-		if(is_array($fieldsName)) {
-			foreach($fieldsName as $key => $value) {
-				$formattedNameList[] = $input[$value];
-			}
-			$formattedNameListString = implode(",'" . $glue . "',", $formattedNameList);
-		} else {
-			$formattedNameListString = $input[$fieldsName];
-		}
-		$sqlString = "CONCAT(" . $formattedNameListString . ")";
-		return $sqlString;
-	}
+        $relativeFilePath = str_replace($rootdirpath, '', $realfilepath);
+        $filePathParts = explode('/', $relativeFilePath);
 
-	static function getModuleSequenceNumber($module, $recordId) {
-		global $adb;
-		switch ($module) {
-			case "Invoice":
-				$res = $adb->pquery("SELECT invoice_no FROM vtiger_invoice WHERE invoiceid = ?", array($recordId));
-				$moduleSeqNo = $adb->query_result($res, 0, 'invoice_no');
-				break;
-			case "PurchaseOrder":
-				$res = $adb->pquery("SELECT purchaseorder_no FROM vtiger_purchaseorder WHERE purchaseorderid = ?", array($recordId));
-				$moduleSeqNo = $adb->query_result($res, 0, 'purchaseorder_no');
-				break;
-			case "Quotes":
-				$res = $adb->pquery("SELECT quote_no FROM vtiger_quotes WHERE quoteid = ?", array($recordId));
-				$moduleSeqNo = $adb->query_result($res, 0, 'quote_no');
-				break;
-			case "SalesOrder":
-				$res = $adb->pquery("SELECT salesorder_no FROM vtiger_salesorder WHERE salesorderid = ?", array($recordId));
-				$moduleSeqNo = $adb->query_result($res, 0, 'salesorder_no');
-				break;
-		}
-		return $moduleSeqNo;
-	}
+        if (stripos($realfilepath, $rootdirpath) !== 0 || in_array($filePathParts[0], $unsafeDirectories)) {
+            $a = debug_backtrace();
+            $backtrace = 'Traced on ' . date('Y-m-d H:i:s') . "\n";
+            $backtrace .= "FileAccessForInclusion - \n";
+            foreach ($a as $b) {
+                $backtrace .= $b['file'] . '::' . $b['function'] . '::' . $b['line'] . '<br>' . PHP_EOL;
+            }
+            Vtiger_Utils::writeLogFile('fileMissing.log', $backtrace);
+            die('Sorry! Attempt to access restricted file 3: ' . $relativeFilePath);
+        }
+    }
 
-	static function getModuleFieldTypeOfDataInfos($tables, $tabid='') {
-		$result = array();
-		if (!empty($tabid)) {
-			$module = Vtiger_Functions::getModuleName($tabid);
-			$fieldInfos = Vtiger_Functions::getModuleFieldInfos($tabid);
-			foreach ($fieldInfos as $name => $field) {
-				if (($field['displaytype'] == '1' || $field['displaytype'] == '3') &&
-						($field['presence'] == '0' || $field['presence'] == '2')) {
+    /** Function to check the file deletion within the deletable (safe) directories*/
+    static function checkFileAccessForDeletion($filepath)
+    {
+        global $root_directory;
+        // Set the base directory to compare with
+        $use_root_directory = $root_directory;
+        if (empty($use_root_directory)) {
+            $use_root_directory = realpath(dirname(__FILE__) . '/../../.');
+        }
 
-					$label = Vtiger_Functions::getTranslatedString($field['fieldlabel'], $module);
-					$result[$name] = array($label => $field['typeofdata']);
-				}
-			}
-		} else {
-			throw new Exception('Field lookup by table no longer supported');
-		}
+        $safeDirectories = ['storage', 'cache', 'test'];
 
-		return $result;
-	}
-    
-	static function return_app_list_strings_language($language, $module='Vtiger') {
-		require_once 'includes/runtime/LanguageHandler.php';
-		$strings = Vtiger_Language_Handler::getModuleStringsFromFile($language, $module);
-		return $strings['languageStrings'] ?? [];
-	}
+        $realfilepath = realpath($filepath);
+
+        /** Replace all \\ with \ first */
+        $realfilepath = str_replace('\\\\', '\\', $realfilepath);
+        $rootdirpath = str_replace('\\\\', '\\', $use_root_directory);
+
+        /** Replace all \ with / now */
+        $realfilepath = str_replace('\\', '/', $realfilepath);
+        $rootdirpath = str_replace('\\', '/', $rootdirpath);
+
+        $relativeFilePath = str_replace($rootdirpath, '', $realfilepath);
+        $filePathParts = explode('/', $relativeFilePath);
+
+        if (stripos($realfilepath, $rootdirpath) !== 0 || !in_array($filePathParts[0], $safeDirectories)) {
+            $a = debug_backtrace();
+            $backtrace = 'Traced on ' . date('Y-m-d H:i:s') . "\n";
+            $backtrace .= "FileAccessForDeletion - \n";
+            foreach ($a as $b) {
+                $backtrace .= $b['file'] . '::' . $b['function'] . '::' . $b['line'] . '<br>' . PHP_EOL;
+            }
+            Vtiger_Utils::writeLogFile('fileMissing.log', $backtrace);
+            die('Sorry! Attempt to access restricted file 4: ' . $relativeFilePath);
+        }
+    }
+
+    /** Function to check the file access is made within web root directory. */
+    static function checkFileAccess($filepath)
+    {
+        if (!self::isFileAccessible($filepath)) {
+            $a = debug_backtrace();
+            $backtrace = 'Traced on ' . date('Y-m-d H:i:s') . "\n";
+            $backtrace .= "FileAccess - \n";
+            foreach ($a as $b) {
+                $backtrace .= $b['file'] . '::' . $b['function'] . '::' . $b['line'] . '<br>' . PHP_EOL;
+            }
+            Vtiger_Utils::writeLogFile('fileMissing.log', $backtrace);
+            die('Sorry! Attempt to access restricted file 5: ' . $filepath);
+        }
+    }
+
+    /**
+     * function to return whether the file access is made within vtiger root directory
+     * and it exists.
+     *
+     * @param String  $filepath       relative path to the file which need to be verified
+     *
+     * @return Boolean true if file is a valid file within vtiger root directory, false otherwise.
+     * @global String $root_directory vtiger root directory as given in config.inc.php file.
+     */
+    static function isFileAccessible($filepath)
+    {
+        global $root_directory;
+        // Set the base directory to compare with
+        $use_root_directory = $root_directory;
+        if (empty($use_root_directory)) {
+            $use_root_directory = realpath(dirname(__FILE__) . '/../../.');
+        }
+
+        $realfilepath = realpath($filepath);
+
+        /** Replace all \\ with \ first */
+        $realfilepath = str_replace('\\\\', '\\', $realfilepath);
+        $rootdirpath = str_replace('\\\\', '\\', $use_root_directory);
+
+        /** Replace all \ with / now */
+        $realfilepath = str_replace('\\', '/', $realfilepath);
+        $rootdirpath = str_replace('\\', '/', $rootdirpath);
+
+        if (stripos($realfilepath, $rootdirpath) !== 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    static function getSettingsBlockId($label)
+    {
+        global $adb;
+        $blockid = '';
+        $query = "select blockid from vtiger_settings_blocks where label = ?";
+        $result = $adb->pquery($query, [$label]);
+        $noofrows = $adb->num_rows($result);
+        if ($noofrows == 1) {
+            $blockid = $adb->query_result($result, 0, "blockid");
+        }
+
+        return $blockid;
+    }
+
+    static function getSqlForNameInDisplayFormat($input, $module, $glue = ' ')
+    {
+        if ($module == 'Users') {
+            if (is_string($input)) {
+                $input = [$input];
+            }
+
+            $tableName = '';
+            foreach ($input as $fieldTableColumn) {
+                if ($fieldTableColumn) {
+                    [$tableName, $columnName] = explode('.', $fieldTableColumn);
+                    break;
+                }
+            }
+            if ($tableName) {
+                return "$tableName.userlabel";
+            }
+        }
+
+        $entity_field_info = Vtiger_Functions::getEntityModuleInfoFieldsFormatted($module);
+        $fieldsName = $entity_field_info['fieldname'];
+        if (is_array($fieldsName)) {
+            foreach ($fieldsName as $key => $value) {
+                $formattedNameList[] = $input[$value];
+            }
+            $formattedNameListString = implode(",'" . $glue . "',", $formattedNameList);
+        } else {
+            $formattedNameListString = $input[$fieldsName];
+        }
+        $sqlString = "CONCAT(" . $formattedNameListString . ")";
+
+        return $sqlString;
+    }
+
+    static function getModuleSequenceNumber($module, $recordId)
+    {
+        global $adb;
+        switch ($module) {
+            case "Invoice":
+                $res = $adb->pquery("SELECT invoice_no FROM vtiger_invoice WHERE invoiceid = ?", [$recordId]);
+                $moduleSeqNo = $adb->query_result($res, 0, 'invoice_no');
+                break;
+            case "PurchaseOrder":
+                $res = $adb->pquery("SELECT purchaseorder_no FROM vtiger_purchaseorder WHERE purchaseorderid = ?", [$recordId]);
+                $moduleSeqNo = $adb->query_result($res, 0, 'purchaseorder_no');
+                break;
+            case "Quotes":
+                $res = $adb->pquery("SELECT quote_no FROM vtiger_quotes WHERE quoteid = ?", [$recordId]);
+                $moduleSeqNo = $adb->query_result($res, 0, 'quote_no');
+                break;
+            case "SalesOrder":
+                $res = $adb->pquery("SELECT salesorder_no FROM vtiger_salesorder WHERE salesorderid = ?", [$recordId]);
+                $moduleSeqNo = $adb->query_result($res, 0, 'salesorder_no');
+                break;
+        }
+
+        return $moduleSeqNo;
+    }
+
+    static function getModuleFieldTypeOfDataInfos($tables, $tabid = '')
+    {
+        $result = [];
+        if (!empty($tabid)) {
+            $module = Vtiger_Functions::getModuleName($tabid);
+            $fieldInfos = Vtiger_Functions::getModuleFieldInfos($tabid);
+            foreach ($fieldInfos as $name => $field) {
+                if (($field['displaytype'] == '1' || $field['displaytype'] == '3') &&
+                    ($field['presence'] == '0' || $field['presence'] == '2')) {
+                    $label = Vtiger_Functions::getTranslatedString($field['fieldlabel'], $module);
+                    $result[$name] = [$label => $field['typeofdata']];
+                }
+            }
+        } else {
+            throw new Exception('Field lookup by table no longer supported');
+        }
+
+        return $result;
+    }
+
+    static function return_app_list_strings_language($language, $module = 'Vtiger')
+    {
+        require_once 'includes/runtime/LanguageHandler.php';
+        $strings = Vtiger_Language_Handler::getModuleStringsFromFile($language, $module);
+
+        return $strings['languageStrings'] ?? [];
+    }
 }

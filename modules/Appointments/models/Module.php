@@ -1,13 +1,13 @@
 <?php
-
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Appointments_Module_Model extends Vtiger_Module_Model
 {
     public $todayRecordsListModel;
@@ -86,17 +86,17 @@ class Appointments_Module_Model extends Vtiger_Module_Model
 
         if ('Calendar' !== $_REQUEST['view']) {
             $basicLinks[] = [
-                'linktype' => 'BASIC',
+                'linktype'  => 'BASIC',
                 'linklabel' => 'LBL_CALENDAR',
-                'linkurl' => 'index.php?module=Appointments&view=Calendar',
-                'linkicon' => 'fa-calendar',
+                'linkurl'   => 'index.php?module=Appointments&view=Calendar',
+                'linkicon'  => 'fa-calendar',
             ];
         } else {
             $basicLinks[] = [
-                'linktype' => 'BASIC',
+                'linktype'  => 'BASIC',
                 'linklabel' => 'LBL_LIST',
-                'linkurl' => 'index.php?module=Appointments&view=List',
-                'linkicon' => 'fa-bars',
+                'linkurl'   => 'index.php?module=Appointments&view=List',
+                'linkicon'  => 'fa-bars',
             ];
         }
 
@@ -105,16 +105,17 @@ class Appointments_Module_Model extends Vtiger_Module_Model
 
     /**
      * @param string|int $height
-     * @param string $type
+     * @param string     $type
+     *
      * @return string
      */
     public function getModuleIcon($height = '', string $type = ''): string
     {
         $type = strtolower($type);
         $icons = [
-            'meeting' => 'fa-users',
-            'call' => 'fa-phone',
-            'email' => 'fa-envelope',
+            'meeting'  => 'fa-users',
+            'call'     => 'fa-phone',
+            'email'    => 'fa-envelope',
             'reminder' => 'fa-bell',
         ];
 
@@ -134,20 +135,18 @@ class Appointments_Module_Model extends Vtiger_Module_Model
 
         $settingsLinks = [];
         $settingsLinks[] = [
-            'linktype' => 'LISTVIEWSETTING',
+            'linktype'  => 'LISTVIEWSETTING',
             'linklabel' => 'LBL_CALENDAR_SETTINGS',
-            'linkurl' => 'index.php?module=Users&parent=Settings&view=Calendar&record=' . $currentUser->getId(),
+            'linkurl'   => 'index.php?module=Users&parent=Settings&view=Calendar&record=' . $currentUser->getId(),
         ];
         $settingsLinks[] = [
-            'linktype' => 'LISTVIEWSETTING',
+            'linktype'  => 'LISTVIEWSETTING',
             'linklabel' => 'LBL_INTEGRATION',
-            'linkurl' => 'index.php?module=Appointments&parent=Settings&view=Integration',
+            'linkurl'   => 'index.php?module=Appointments&parent=Settings&view=Integration',
         ];
 
         return array_merge($settingsLinks, parent::getSettingLinks());
     }
-
-
 
     /**
      * @return int
@@ -164,7 +163,7 @@ class Appointments_Module_Model extends Vtiger_Module_Model
      */
     public function getTodayRecordsListModel()
     {
-        if(!empty($this->todayRecordsListModel)) {
+        if (!empty($this->todayRecordsListModel)) {
             return $this->todayRecordsListModel;
         }
 
@@ -244,6 +243,7 @@ class Appointments_Module_Model extends Vtiger_Module_Model
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public static function retrieveDefaultValuesForEdit(Vtiger_Request $request)
@@ -257,10 +257,11 @@ class Appointments_Module_Model extends Vtiger_Module_Model
     }
 
     /**
-     * @param string $sourceModule
-     * @param string $field
+     * @param string     $sourceModule
+     * @param string     $field
      * @param int|string $record
-     * @param string $listQuery
+     * @param string     $listQuery
+     *
      * @return string
      */
     public static function getQueryByModuleField(string $sourceModule, string $field, $record, string $listQuery): string
@@ -274,7 +275,8 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         return $listQuery;
     }
 
-    public function getConfigureRelatedListFields() {
+    public function getConfigureRelatedListFields()
+    {
         $fields = parent::getConfigureRelatedListFields();
         $fields['is_all_day'] = 'is_all_day';
 

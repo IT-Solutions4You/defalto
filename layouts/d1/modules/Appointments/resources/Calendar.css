@@ -1,17 +1,19 @@
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 .eventTypeClone {
     display: none !important;
 }
+
 .text-inherit {
     color: inherit !important;
 }
+
 .h-main-max {
     max-height: calc(100vh - var(--header-height) - var(--footer-height));
 }
@@ -40,7 +42,7 @@
 }
 
 .popoverTemplate {
-    width:400px;
+    width: 400px;
     max-width: 80vw;
     z-index: 10000;
 }
@@ -71,6 +73,7 @@
 
 .selected_user_and_groups_visible, .selected_user_and_groups_toggle, .selected_user_and_groups_hidden, .selected_user_and_groups_actions {
 }
+
 .selected_user_and_groups_toggle * {
 }
 
@@ -101,24 +104,30 @@
 .fc-h-event {
     margin: 1px;
 }
+
 .eventTypeRecord .fc-event-main-frame::before {
     display: inline;
     content: "\f133";
     margin: 2px;
     font: normal normal normal 12px FontAwesome;
 }
+
 .eventTypeMeeting .fc-event-main-frame::before {
     content: "\f0c0";
 }
+
 .eventTypeCall .fc-event-main-frame::before {
     content: "\f095";
 }
+
 .eventTypeEmail .fc-event-main-frame::before {
     content: "\f0e0";
 }
+
 .eventTypeReminder .fc-event-main-frame::before {
     content: "\f0f3";
 }
+
 .descriptionThreeLines {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -126,20 +135,24 @@
     line-height: 1.6rem !important;
     max-height: 4.8rem !important;
 }
+
 .fc * {
     border-color: #eee !important;
 }
+
 .fc .fc-timegrid-slot {
     border: 0;
 }
+
 .fc .fc-timegrid-slot[data-time*=":00:00"] {
     border-top: 1px solid #eee;
 }
+
 .fc .fc-daygrid-week-number {
     background: transparent;
     font-weight: bold;
 }
 
 #CalendarFilter .row:hover {
-    background: rgba(var(--bs-secondary-bg-rgb),var(--bs-bg-opacity)) !important;
+    background: rgba(var(--bs-secondary-bg-rgb), var(--bs-bg-opacity)) !important;
 }

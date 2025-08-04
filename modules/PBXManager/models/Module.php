@@ -1,20 +1,29 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class PBXManager_Module_Model extends Vtiger_Module_Model {
-
+class PBXManager_Module_Model extends Vtiger_Module_Model
+{
 	/**
 	 * Function to check whether the module is an entity type module or not
 	 * @return <Boolean> true/false
 	 */
-	public function isQuickCreateSupported() {
+	public function isQuickCreateSupported()
+	{
 		//PBXManager module is not enabled for quick create
 		return false;
 	}
@@ -22,20 +31,24 @@ class PBXManager_Module_Model extends Vtiger_Module_Model {
 	/**
 	 * Overided to make editview=false for this module
 	 */
-	public function isPermitted($actionName) {
-		if($actionName == 'EditView')
+	public function isPermitted($actionName)
+	{
+		if ($actionName == 'EditView') {
 			return false;
-		else
+		} else {
 			return ($this->isActive() && Users_Privileges_Model::isPermitted($this->getName(), $actionName));
+		}
 	}
 
-	public function getModuleBasicLinks() {
+	public function getModuleBasicLinks()
+	{
 		$basicLinks = parent::getModuleBasicLinks();
 		foreach ($basicLinks as $key => $basicLink) {
-			if (in_array($basicLink['linklabel'], array('LBL_ADD_RECORD', 'LBL_IMPORT'))) {
+			if (in_array($basicLink['linklabel'], ['LBL_ADD_RECORD', 'LBL_IMPORT'])) {
 				unset($basicLinks[$key]);
 			}
 		}
+
 		return $basicLinks;
 	}
 
@@ -43,46 +56,50 @@ class PBXManager_Module_Model extends Vtiger_Module_Model {
 	 * Function to get Settings links
 	 * @return <Array>
 	 */
-	public function getSettingLinks(){
-		if(!$this->isEntityModule()) {
-			return array();
+	public function getSettingLinks()
+	{
+		if (!$this->isEntityModule()) {
+			return [];
 		}
 
-		$settingsLinks = array();
+		$settingsLinks = [];
 		$currentUser = Users_Record_Model::getCurrentUserModel();
-		if($currentUser->isAdminUser()) {
+		if ($currentUser->isAdminUser()) {
 			vimport('~~modules/com_vtiger_workflow/VTWorkflowUtils.php');
 
 			$layoutEditorImagePath = Vtiger_Theme::getImagePath('LayoutEditor.gif');
 			$editWorkflowsImagePath = Vtiger_Theme::getImagePath('EditWorkflows.png');
 
-			if(VTWorkflowUtils::checkModuleWorkflow($this->getName())) {
-				$settingsLinks[] = array(
-						'linktype' => 'LISTVIEWSETTING',
-						'linklabel' => 'LBL_EDIT_WORKFLOWS',
-						'linkurl' => 'index.php?parent=Settings&module=Workflows&view=List&sourceModule='.$this->getName(),
-						'linkicon' => $editWorkflowsImagePath
-				);
+			if (VTWorkflowUtils::checkModuleWorkflow($this->getName())) {
+				$settingsLinks[] = [
+					'linktype'  => 'LISTVIEWSETTING',
+					'linklabel' => 'LBL_EDIT_WORKFLOWS',
+					'linkurl'   => 'index.php?parent=Settings&module=Workflows&view=List&sourceModule=' . $this->getName(),
+					'linkicon'  => $editWorkflowsImagePath
+				];
 			}
 
-			$settingsLinks[] = array(
-						'linktype' => 'LISTVIEWSETTINGS',
-						'linklabel'=> 'LBL_SERVER_CONFIGURATION',
-						'linkurl' => 'index.php?parent=Settings&module=PBXManager&view=Index',
-						'linkicon'=> ''
-			);
+			$settingsLinks[] = [
+				'linktype'  => 'LISTVIEWSETTINGS',
+				'linklabel' => 'LBL_SERVER_CONFIGURATION',
+				'linkurl'   => 'index.php?parent=Settings&module=PBXManager&view=Index',
+				'linkicon'  => ''
+			];
 		}
+
 		return $settingsLinks;
 	}
 
 	/**
 	 * Funxtion to identify if the module supports quick search or not
 	 */
-	public function isQuickSearchEnabled() {
+	public function isQuickSearchEnabled()
+	{
 		return false;
 	}
 
-	public function isListViewNameFieldNavigationEnabled() {
+	public function isListViewNameFieldNavigationEnabled()
+	{
 		return false;
 	}
 
@@ -90,20 +107,23 @@ class PBXManager_Module_Model extends Vtiger_Module_Model {
 	 * Function to check whether the module is an entity type module or not
 	 * @return <Boolean> true/false
 	 */
-	function getUtilityActionsNames() {
-		return array('Import', 'Export', 'Merge');
+	function getUtilityActionsNames()
+	{
+		return ['Import', 'Export', 'Merge'];
 	}
 
-	public function isWorkflowSupported() {
+	public function isWorkflowSupported()
+	{
 		return false;
 	}
 
-	function isStarredEnabled(){
+	function isStarredEnabled()
+	{
 		return false;
 	}
 
-	function isTagsEnabled() {
+	function isTagsEnabled()
+	{
 		return false;
 	}
 }
-?>

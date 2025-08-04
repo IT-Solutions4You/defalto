@@ -1,10 +1,10 @@
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 /** @var Reporting_Edit_Js */
 Vtiger_Edit_Js('Reporting_Edit_Js', {
@@ -35,7 +35,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
         let self = this,
             fields = [];
 
-        $.each(self.getContainer().find('[name="fields[]"]'), function(index, element) {
+        $.each(self.getContainer().find('[name="fields[]"]'), function (index, element) {
             fields.push($(element).val())
         })
 
@@ -62,7 +62,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
 
         self.retrieveRenderedTable();
 
-        self.getContainer().on('click', '.renderedTable', function() {
+        self.getContainer().on('click', '.renderedTable', function () {
             self.retrieveRenderTableTimeout();
         });
 
@@ -76,8 +76,8 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             'add.selected.sorts',
         ];
 
-        $.each(events, function(index, value) {
-            app.event.on(value, function() {
+        $.each(events, function (index, value) {
+            app.event.on(value, function () {
                 self.retrieveRenderTableTimeout();
             });
         });
@@ -86,7 +86,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
         let self = this,
             sorts = [];
 
-        $.each(self.getContainer().find('[name="sort_by[]"]'), function(index, element) {
+        $.each(self.getContainer().find('[name="sort_by[]"]'), function (index, element) {
             let value = $(element).val();
 
             if (value) {
@@ -142,7 +142,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
         let self = this,
             values = {};
 
-        self.getContainer().find('.selectedWidth').each(function(index, element) {
+        self.getContainer().find('.selectedWidth').each(function (index, element) {
             let value = $(element).find('.fieldValue').val();
 
             if (value) {
@@ -156,7 +156,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
         let self = this,
             values = {};
 
-        self.getContainer().find('.selectedAlign').each(function(index, element) {
+        self.getContainer().find('.selectedAlign').each(function (index, element) {
             let value = $(element).find('.fieldValue').val();
 
             if (value) {
@@ -180,12 +180,12 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             self.showBlock(hrefParams['tab'] ? hrefParams['tab'] : 'LBL_DETAILS');
         }
 
-        container.on('click', '[data-show-block]', function() {
+        container.on('click', '[data-show-block]', function () {
             self.hideBlocks();
             self.showBlock($(this).attr('data-show-block'));
         });
 
-        container.on('click', '.selectModule', function() {
+        container.on('click', '.selectModule', function () {
             let type = typeElement.val(),
                 module = moduleElement.val(),
                 href = window.location.href;
@@ -210,10 +210,10 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
     hideBlocks() {
         let self = this;
 
-        self.getContainer().find('[data-block]').each(function() {
+        self.getContainer().find('[data-block]').each(function () {
             let label = $(this).attr('data-block');
 
-            if('LBL_TABS' !== label) {
+            if ('LBL_TABS' !== label) {
                 self.hideBlock(label);
             }
         })
@@ -223,15 +223,15 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
 
         self.updateLabels();
 
-        app.event.on('add.selected.fields', function() {
+        app.event.on('add.selected.fields', function () {
             self.updateLabels();
         });
 
-        app.event.on('label.selected.fields', function() {
+        app.event.on('label.selected.fields', function () {
             self.updateLabels();
         });
 
-        app.event.on('delete.selected.fields', function(event, element) {
+        app.event.on('delete.selected.fields', function (event, element) {
             let field = element.find('.fieldLabel').text();
 
             $('.selectedLabels[data-label="' + field + '"]').remove();
@@ -240,7 +240,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
     updateLabels() {
         const self = this;
 
-        $('.selectedFields').each(function(index, element) {
+        $('.selectedFields').each(function (index, element) {
             self.updateLabel($(element));
         });
     },
@@ -314,7 +314,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
     updateCalculations() {
         let self = this;
 
-        $('.selectedFields').each(function(index, element) {
+        $('.selectedFields').each(function (index, element) {
             self.updateCalculation($(element));
         });
     },
@@ -323,11 +323,11 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
 
         self.updateCalculations();
 
-        app.event.on('add.selected.fields', function() {
+        app.event.on('add.selected.fields', function () {
             self.updateCalculations();
         });
 
-        app.event.on('delete.selected.fields', function(event, element) {
+        app.event.on('delete.selected.fields', function (event, element) {
             let field = element.find('[name="fields[]"]').val();
 
             $('.selectedCalculations[data-name="' + field + '"]').remove();
@@ -346,11 +346,11 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
         let html = '<optgroup label=""><option value="">' + app.vtranslate('JS_SELECT_FIELD') + '</option>',
             prevGroup = '';
 
-        $.each(fieldOptions[module], function(key, value) {
+        $.each(fieldOptions[module], function (key, value) {
             let valueInfo = value.split('##'),
                 group = valueInfo[0];
 
-            if(prevGroup !== group) {
+            if (prevGroup !== group) {
                 html += '</optgroup><optgroup label="' + valueInfo[0] + '">';
             }
 
@@ -395,7 +395,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             selectedSortBy = modalContainer.find('.selectedSortBy'),
             selectedFieldLabel = modalContainer.find('.selectedFieldLabel');
 
-        modalContainer.on('click', '#selectFieldsButton', function() {
+        modalContainer.on('click', '#selectFieldsButton', function () {
             let value = selectedFieldName.val(),
                 sortValue = selectedSortBy.val(),
                 widthValue = modalContainer.find('.selectedWidth').val(),
@@ -439,7 +439,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             app.helper.hideModal();
         });
 
-        modalContainer.on('click', '.selectedAlign', function() {
+        modalContainer.on('click', '.selectedAlign', function () {
             modalContainer.find('.selectedAlign').removeClass('active');
             $(this).addClass('active');
         });
@@ -478,12 +478,12 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
                 width = self.getContainer().find('[name="width[' + editFieldId + ']"]').val(),
                 align = self.getContainer().find('[name="align[' + editFieldId + ']"]').val();
 
-            if(3 === editFieldInfo.length) {
+            if (3 === editFieldInfo.length) {
                 selectModules.val(editFieldInfo[0] + ':' + editFieldInfo[1]);
                 selectModules.trigger('change');
             }
 
-            if(sortBy[0]) {
+            if (sortBy[0]) {
                 selectSortBy.val(sortBy[1]);
                 selectSortBy.trigger('change');
             }
@@ -534,7 +534,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             },
         });
 
-        containerElement.on('click', '.openSelectFields', function() {
+        containerElement.on('click', '.openSelectFields', function () {
             self.setEditField(false);
 
             let modalContainer = self.getNewFieldModal();
@@ -546,7 +546,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             });
         });
 
-        containerElement.on('click', '.editFieldSelected', function() {
+        containerElement.on('click', '.editFieldSelected', function () {
             self.setEditField(self.getFieldsElement($(this)));
 
             let modalContainer = self.getNewFieldModal();
@@ -558,7 +558,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             });
         })
 
-        containerElement.on('click', '.deleteSelected', function() {
+        containerElement.on('click', '.deleteSelected', function () {
             let element = $(this),
                 selectedFields = self.getFieldsParent(element);
 
@@ -567,7 +567,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             app.event.trigger('delete.selected.fields', selectedFields);
         });
 
-        containerElement.on('click', '.moveSelected', function() {
+        containerElement.on('click', '.moveSelected', function () {
             let direction = $(this).data('value'),
                 parent = self.getFieldsParent($(this));
 
@@ -637,7 +637,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
     registerClickSortSelected() {
         const self = this;
 
-        self.getFieldsContainer().on('click', '.sortSelected', function() {
+        self.getFieldsContainer().on('click', '.sortSelected', function () {
             let element = $(this),
                 field = element.data('field'),
                 value = element.data('value');
@@ -688,17 +688,17 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             },
         });
 
-        containerSelected.on('click', '.selectedSortDelete', function() {
-           $(this).parents('.selectedSorts').remove();
+        containerSelected.on('click', '.selectedSortDelete', function () {
+            $(this).parents('.selectedSorts').remove();
 
-           app.event.trigger('delete.selected.sorts');
+            app.event.trigger('delete.selected.sorts');
         });
 
-        app.event.on('add.selected.sorts', function() {
+        app.event.on('add.selected.sorts', function () {
             self.retrieveSorts();
         });
 
-        app.event.on('delete.selected.sorts', function() {
+        app.event.on('delete.selected.sorts', function () {
             self.retrieveSorts();
         });
 
@@ -706,7 +706,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             self.getSortElement(data['field']).find('.fieldLabel').val(data['label']);
         });
 
-        app.event.on('delete.selected.fields', function(event, element) {
+        app.event.on('delete.selected.fields', function (event, element) {
             self.getSortElement(self.getFieldsId(element)).remove();
 
             app.event.trigger('delete.selected.sorts');
@@ -753,7 +753,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
         return Reporting_Edit_Js.fieldLabels[field];
     },
     getFieldsParent(element) {
-        if(element.is('.selectedFields')) {
+        if (element.is('.selectedFields')) {
             return element;
         }
 

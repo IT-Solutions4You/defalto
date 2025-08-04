@@ -1,5 +1,5 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -14,22 +14,31 @@
  *  Last change  : 2013-05-10
  *  Author       : JPL TSolucio, S. L. Joe Bordes
  *************************************************************************************/
-$languageStrings = array(
-	'LBL_ADD_RECORD' => 'Nueva Configuración',
-	'SMSNotifier' => 'Configuración Proveedor SMS',
-	'LBL_ADD_CONFIGURATION' => 'Nueva Configuración',
-	'LBL_EDIT_CONFIGURATION' => 'Editar Configuración',
-	'LBL_SELECT_ONE' => 'Selecciona uno',
-	
-	//Fields
-	'providertype' => 'Proveedor',
-	'isactive' => 'Activo',
-	'username' => 'Nombre Usuario',
-	'password' => 'Contraseña',
-);
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-$jsLanguageStrings = array(
-	'LBL_DELETE_CONFIRMATION' => '¿Estás seguro que quieres eliminar esta configuración de proveedor SMS?',
-	'JS_RECORD_DELETED_SUCCESSFULLY' => 'Se ha eliminado la configuración del proveedor SMS',
-	'JS_CONFIGURATION_SAVED' => 'Se ha guardado la configuración del proveedor SMS',
-);	
+$languageStrings = [
+    'LBL_ADD_RECORD'         => 'Nueva Configuración',
+    'SMSNotifier'            => 'Configuración Proveedor SMS',
+    'LBL_ADD_CONFIGURATION'  => 'Nueva Configuración',
+    'LBL_EDIT_CONFIGURATION' => 'Editar Configuración',
+    'LBL_SELECT_ONE'         => 'Selecciona uno',
+
+    //Fields
+    'providertype'           => 'Proveedor',
+    'isactive'               => 'Activo',
+    'username'               => 'Nombre Usuario',
+    'password'               => 'Contraseña',
+];
+
+$jsLanguageStrings = [
+    'LBL_DELETE_CONFIRMATION'        => '¿Estás seguro que quieres eliminar esta configuración de proveedor SMS?',
+    'JS_RECORD_DELETED_SUCCESSFULLY' => 'Se ha eliminado la configuración del proveedor SMS',
+    'JS_CONFIGURATION_SAVED'         => 'Se ha guardado la configuración del proveedor SMS',
+];

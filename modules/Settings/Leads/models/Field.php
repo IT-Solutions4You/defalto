@@ -1,19 +1,27 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Settings_Leads_Field_Model extends Vtiger_Field_Model {
-
-	/**
-	 * Function to get field data type
-	 * @return <String> data type
-	 */
+class Settings_Leads_Field_Model extends Vtiger_Field_Model
+{
+    /**
+     * Function to get field data type
+     * @return <String> data type
+     */
     public function getFieldDataType()
     {
         $fieldDataType = '';
@@ -26,7 +34,7 @@ class Settings_Leads_Field_Model extends Vtiger_Field_Model {
         if (!$fieldDataType) {
             $webserviceField = $this->getWebserviceFieldObject();
             $fieldDataType = $webserviceField->getFieldDataType();
-            
+
             switch ($fieldDataType) {
                 case 'text' :
                     $fieldDataType = 'textArea';
@@ -44,30 +52,36 @@ class Settings_Leads_Field_Model extends Vtiger_Field_Model {
     }
 
     /**
-	 * Function to get clean instance
+     * Function to get clean instance
+     *
      * @param string $fieldName
      * @param string $moduleName
+     *
      * @return <Settings_Leads_Field_Model>
-	 */
+     */
     public static function getCleanInstance(string $fieldName = '', string $moduleName = ''): object
     {
         return new self();
     }
 
-	/**
-	 * Function to get instance
-	 * @param <String/Integer> $value
-	 * @param <String> $module
-	 * @return <Settings_Leads_Field_Model> field model
-	 */
-	public static function getInstance($value, $module = false) {
-		$fieldModel = parent::getInstance($value, $module);
-		$objectProperties = get_object_vars($fieldModel);
+    /**
+     * Function to get instance
+     *
+     * @param <String/Integer> $value
+     * @param <String> $module
+     *
+     * @return <Settings_Leads_Field_Model> field model
+     */
+    public static function getInstance($value, $module = false)
+    {
+        $fieldModel = parent::getInstance($value, $module);
+        $objectProperties = get_object_vars($fieldModel);
 
-		$fieldModel = new self();
-		foreach	($objectProperties as $properName => $propertyValue) {
-			$fieldModel->$properName = $propertyValue;
-		}
-		return $fieldModel;
-	}
+        $fieldModel = new self();
+        foreach ($objectProperties as $properName => $propertyValue) {
+            $fieldModel->$properName = $propertyValue;
+        }
+
+        return $fieldModel;
+    }
 }

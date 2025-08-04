@@ -1,5 +1,5 @@
 <?php
-/*+**********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
@@ -7,28 +7,30 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-$languageStrings = Array(
-    'Rss'=>'Rss',
-    'LBL_RSS_FEED_SOURCES' => 'Rss Feed Källor',
-    'LBL_ADD_FEED_SOURCE' => 'Lägg Feed Källa',
-    'LBL_FEEDS_LIST_FROM' => 'Feeds Lista från',
-    'LBL_SET_AS_DEFAULT' => 'Ange som standard',
-    'LBL_SENDER' => 'sändare',
-    'LBL_FEED_SOURCE' => 'Matningskälla',
-    'LBL_ENTER_FEED_SOURCE' => 'Ange Feed Källa',  
-    'SINGLE_Rss' => 'rSS-flöde',
-);
+$languageStrings = [
+    'Rss'                   => 'Rss',
+    'LBL_RSS_FEED_SOURCES'  => 'Rss Feed Källor',
+    'LBL_ADD_FEED_SOURCE'   => 'Lägg Feed Källa',
+    'LBL_FEEDS_LIST_FROM'   => 'Feeds Lista från',
+    'LBL_SET_AS_DEFAULT'    => 'Ange som standard',
+    'LBL_SENDER'            => 'sändare',
+    'LBL_FEED_SOURCE'       => 'Matningskälla',
+    'LBL_ENTER_FEED_SOURCE' => 'Ange Feed Källa',
+    'SINGLE_Rss'            => 'rSS-flöde',
+];
 
-$jsLanguageStrings = array(
-	'JS_RSS_SUCCESSFULLY_SAVED' => 'RSS har sparats',
-    'JS_INVALID_RSS_URL' => 'Ogiltig Rss webbadress',
-    'JS_RSS_MADE_AS_DEFAULT' => 'Rss som förval',
-    
-
-  'JS_NO_RECORDS' => 'Inga Poster',
-
-);
-
-
-?>
+$jsLanguageStrings = [
+    'JS_RSS_SUCCESSFULLY_SAVED' => 'RSS har sparats',
+    'JS_INVALID_RSS_URL'        => 'Ogiltig Rss webbadress',
+    'JS_RSS_MADE_AS_DEFAULT'    => 'Rss som förval',
+    'JS_NO_RECORDS'             => 'Inga Poster',
+];

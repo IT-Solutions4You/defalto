@@ -1,147 +1,152 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
-Vtiger_Edit_Js("Contacts_Edit_Js",{},{
-	
-	//Will have the mapping of address fields based on the modules
-	addressFieldsMapping : {'Accounts' :
-									{'mailingstreet' : 'bill_street',  
-									'otherstreet' : 'ship_street', 
-									'mailingpobox' : 'bill_pobox',
-									'otherpobox' : 'ship_pobox',
-									'mailingcity' : 'bill_city',
-									'othercity' : 'ship_city',
-									'mailingstate' : 'bill_state',
-									'otherstate' : 'ship_state',
-									'mailingzip' : 'bill_code',
-									'otherzip' : 'ship_code',
-									'mailingcountry_id' : 'bill_country_id',
-									'othercountry_id' : 'ship_country_id'
-									}
-							},
-							
-	//Address field mapping within module
-	addressFieldsMappingInModule : {
-										'otherstreet' : 'mailingstreet',
-										'otherpobox' : 'mailingpobox',
-										'othercity' : 'mailingcity',
-										'otherstate' : 'mailingstate',
-										'otherzip' : 'mailingzip',
-										'othercountry_id' : 'mailingcountry_id'
-								},
-	
-        /* Function which will register event for Reference Fields Selection
-        */
-	registerReferenceSelectionEvent : function(container) {
-            var thisInstance = this;
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+Vtiger_Edit_Js("Contacts_Edit_Js", {}, {
 
-           jQuery('input[name="account_id"]', container).on(Vtiger_Edit_Js.referenceSelectionEvent,function(e,data){
-                thisInstance.referenceSelectionEventHandler(data, container);
-            });
-	},
-		
-	/**
-	 * Reference Fields Selection Event Handler
-	 * On Confirmation It will copy the address details
-	 */
-	referenceSelectionEventHandler :  function(data, container) {
-		var thisInstance = this;
-		var message = app.vtranslate('OVERWRITE_EXISTING_MSG1')+app.vtranslate('SINGLE_'+data['source_module'])+' ('+data['selectedName']+') '+app.vtranslate('OVERWRITE_EXISTING_MSG2');
-		app.helper.showConfirmationBox({'message' : message}).then(function(e){
-			thisInstance.copyAddressDetails(data, container);
-		},
-		function(error,err){});
-	},
-	
-	/**
-	 * Function which will copy the address details - without Confirmation
-	 */
-	copyAddressDetails : function(data, container) {
-		var thisInstance = this;
-		var sourceModule = data['source_module'];
-		thisInstance.getRecordDetails(data).then(
-			function(response){
-				thisInstance.mapAddressDetails(thisInstance.addressFieldsMapping[sourceModule], response['data'], container);
-			},
-			function(error, err){
-
-			});
-	},
-	
-	/**
-	 * Function which will map the address details of the selected record
-	 */
-	mapAddressDetails : function(addressDetails, result, container) {
-		for(var key in addressDetails) {
-            if(container.find('[name="'+key+'"]').length == 0) {
-                var create = container.append("<input type='hidden' name='"+key+"'>");
+    //Will have the mapping of address fields based on the modules
+    addressFieldsMapping: {
+        'Accounts':
+            {
+                'mailingstreet': 'bill_street',
+                'otherstreet': 'ship_street',
+                'mailingpobox': 'bill_pobox',
+                'otherpobox': 'ship_pobox',
+                'mailingcity': 'bill_city',
+                'othercity': 'ship_city',
+                'mailingstate': 'bill_state',
+                'otherstate': 'ship_state',
+                'mailingzip': 'bill_code',
+                'otherzip': 'ship_code',
+                'mailingcountry_id': 'bill_country_id',
+                'othercountry_id': 'ship_country_id'
             }
-			container.find('[name="'+key+'"]').val(result[addressDetails[key]]);
-			container.find('[name="'+key+'"]').trigger('change');
-		}
-	},
-	
-	/**
-	 * Function to swap array
-	 * @param Array that need to be swapped
-	 */ 
-	swapObject : function(objectToSwap){
-		var swappedArray = {};
-		var newKey,newValue;
-		for(var key in objectToSwap){
-			newKey = objectToSwap[key];
-			newValue = key;
-			swappedArray[newKey] = newValue;
-		}
-		return swappedArray;
-	},
-	
-	/**
-	 * Function to copy address between fields
-	 * @param strings which accepts value as either odd or even
-	 */
-	copyAddress: function (swapMode, container) {
-		let thisInstance = this,
-			addressMapping = this.addressFieldsMappingInModule,
-			fromElement,
-			toElement;
+    },
 
-		if (swapMode == "false") {
-			for (let key in addressMapping) {
-				fromElement = container.find('[name="' + key + '"]');
-				toElement = container.find('[name="' + addressMapping[key] + '"]');
-				toElement.val(fromElement.val());
+    //Address field mapping within module
+    addressFieldsMappingInModule: {
+        'otherstreet': 'mailingstreet',
+        'otherpobox': 'mailingpobox',
+        'othercity': 'mailingcity',
+        'otherstate': 'mailingstate',
+        'otherzip': 'mailingzip',
+        'othercountry_id': 'mailingcountry_id'
+    },
 
-				if ((jQuery("#massEditContainer").length) && (toElement.val() != "") && (typeof (toElement.attr('data-validation-engine')) == "undefined")) {
-					toElement.attr('data-validation-engine', toElement.data('invalidValidationEngine'));
-				}
+    /* Function which will register event for Reference Fields Selection
+    */
+    registerReferenceSelectionEvent: function (container) {
+        var thisInstance = this;
 
-				toElement.trigger('change');
-			}
-		} else if (swapMode) {
-			let swappedArray = thisInstance.swapObject(addressMapping);
+        jQuery('input[name="account_id"]', container).on(Vtiger_Edit_Js.referenceSelectionEvent, function (e, data) {
+            thisInstance.referenceSelectionEventHandler(data, container);
+        });
+    },
 
-			for (let key in swappedArray) {
-				fromElement = container.find('[name="' + key + '"]');
-				toElement = container.find('[name="' + swappedArray[key] + '"]');
-				toElement.val(fromElement.val());
+    /**
+     * Reference Fields Selection Event Handler
+     * On Confirmation It will copy the address details
+     */
+    referenceSelectionEventHandler: function (data, container) {
+        var thisInstance = this;
+        var message = app.vtranslate('OVERWRITE_EXISTING_MSG1') + app.vtranslate('SINGLE_' + data['source_module']) + ' (' + data['selectedName'] + ') ' + app.vtranslate('OVERWRITE_EXISTING_MSG2');
+        app.helper.showConfirmationBox({'message': message}).then(function (e) {
+                thisInstance.copyAddressDetails(data, container);
+            },
+            function (error, err) {
+            });
+    },
 
-				if ((jQuery("#massEditContainer").length) && (toElement.val() != "") && (typeof (toElement.attr('data-validation-engine')) == "undefined")) {
-					toElement.attr('data-validation-engine', toElement.data('invalidValidationEngine'));
-				}
+    /**
+     * Function which will copy the address details - without Confirmation
+     */
+    copyAddressDetails: function (data, container) {
+        var thisInstance = this;
+        var sourceModule = data['source_module'];
+        thisInstance.getRecordDetails(data).then(
+            function (response) {
+                thisInstance.mapAddressDetails(thisInstance.addressFieldsMapping[sourceModule], response['data'], container);
+            },
+            function (error, err) {
 
-				toElement.trigger('change');
-			}
-		}
-	},
-	
-	
-	/**
-	 * Function to register event for copying address between two fileds
-	 */
+            });
+    },
+
+    /**
+     * Function which will map the address details of the selected record
+     */
+    mapAddressDetails: function (addressDetails, result, container) {
+        for (var key in addressDetails) {
+            if (container.find('[name="' + key + '"]').length == 0) {
+                var create = container.append("<input type='hidden' name='" + key + "'>");
+            }
+            container.find('[name="' + key + '"]').val(result[addressDetails[key]]);
+            container.find('[name="' + key + '"]').trigger('change');
+        }
+    },
+
+    /**
+     * Function to swap array
+     * @param Array that need to be swapped
+     */
+    swapObject: function (objectToSwap) {
+        var swappedArray = {};
+        var newKey, newValue;
+        for (var key in objectToSwap) {
+            newKey = objectToSwap[key];
+            newValue = key;
+            swappedArray[newKey] = newValue;
+        }
+        return swappedArray;
+    },
+
+    /**
+     * Function to copy address between fields
+     * @param strings which accepts value as either odd or even
+     */
+    copyAddress: function (swapMode, container) {
+        let thisInstance = this,
+            addressMapping = this.addressFieldsMappingInModule,
+            fromElement,
+            toElement;
+
+        if (swapMode == "false") {
+            for (let key in addressMapping) {
+                fromElement = container.find('[name="' + key + '"]');
+                toElement = container.find('[name="' + addressMapping[key] + '"]');
+                toElement.val(fromElement.val());
+
+                if ((jQuery("#massEditContainer").length) && (toElement.val() != "") && (typeof (toElement.attr('data-validation-engine')) == "undefined")) {
+                    toElement.attr('data-validation-engine', toElement.data('invalidValidationEngine'));
+                }
+
+                toElement.trigger('change');
+            }
+        } else if (swapMode) {
+            let swappedArray = thisInstance.swapObject(addressMapping);
+
+            for (let key in swappedArray) {
+                fromElement = container.find('[name="' + key + '"]');
+                toElement = container.find('[name="' + swappedArray[key] + '"]');
+                toElement.val(fromElement.val());
+
+                if ((jQuery("#massEditContainer").length) && (toElement.val() != "") && (typeof (toElement.attr('data-validation-engine')) == "undefined")) {
+                    toElement.attr('data-validation-engine', toElement.data('invalidValidationEngine'));
+                }
+
+                toElement.trigger('change');
+            }
+        }
+    },
+
+
+    /**
+     * Function to register event for copying address between two fileds
+     */
     registerEventForCopyingAddress: function (container) {
         let self = this,
             swapMode;
@@ -176,48 +181,48 @@ Vtiger_Edit_Js("Contacts_Edit_Js",{},{
         });
     },
 
-	/**
-	 * Function to check for Portal User
-	 */
-	checkForPortalUser: function (form) {
-		var element = jQuery('[name="portal"]', form);
-		var response = element.is(':checked');
-		var primaryEmailField = jQuery('[name="email"]');
-		var primaryEmailValue = primaryEmailField.val();
-		if (response) {
-			if (primaryEmailField.length == 0) {
-				app.helper.showErrorNotification({message: app.vtranslate('JS_PRIMARY_EMAIL_FIELD_DOES_NOT_EXISTS')});
-				return false;
-			}
-			if (primaryEmailValue == "") {
-				app.helper.showErrorNotification({message: app.vtranslate('JS_PLEASE_ENTER_PRIMARY_EMAIL_VALUE_TO_ENABLE_PORTAL_USER')});
-				return false;
-			}
-		}
-		return true;
-	},
-	/**
-	 * Function to register recordpresave event
-	 */
-	registerRecordPreSaveEvent: function (form) {
-		var thisInstance = this;
-		if (typeof form == 'undefined') {
-			form = this.getForm();
-		}
+    /**
+     * Function to check for Portal User
+     */
+    checkForPortalUser: function (form) {
+        var element = jQuery('[name="portal"]', form);
+        var response = element.is(':checked');
+        var primaryEmailField = jQuery('[name="email"]');
+        var primaryEmailValue = primaryEmailField.val();
+        if (response) {
+            if (primaryEmailField.length == 0) {
+                app.helper.showErrorNotification({message: app.vtranslate('JS_PRIMARY_EMAIL_FIELD_DOES_NOT_EXISTS')});
+                return false;
+            }
+            if (primaryEmailValue == "") {
+                app.helper.showErrorNotification({message: app.vtranslate('JS_PLEASE_ENTER_PRIMARY_EMAIL_VALUE_TO_ENABLE_PORTAL_USER')});
+                return false;
+            }
+        }
+        return true;
+    },
+    /**
+     * Function to register recordpresave event
+     */
+    registerRecordPreSaveEvent: function (form) {
+        var thisInstance = this;
+        if (typeof form == 'undefined') {
+            form = this.getForm();
+        }
 
-		app.event.on(Vtiger_Edit_Js.recordPresaveEvent, function (e) {
-			var result = thisInstance.checkForPortalUser(form);
-			if (!result) {
-				e.preventDefault();
-			}
-		});
+        app.event.on(Vtiger_Edit_Js.recordPresaveEvent, function (e) {
+            var result = thisInstance.checkForPortalUser(form);
+            if (!result) {
+                e.preventDefault();
+            }
+        });
 
-	},
+    },
 
-	registerBasicEvents: function (container) {
-		this._super(container);
-		this.registerEventForCopyingAddress(container);
-		this.registerRecordPreSaveEvent(container);
-		this.registerReferenceSelectionEvent(container);
-	}
+    registerBasicEvents: function (container) {
+        this._super(container);
+        this.registerEventForCopyingAddress(container);
+        this.registerRecordPreSaveEvent(container);
+        this.registerReferenceSelectionEvent(container);
+    }
 })

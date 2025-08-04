@@ -1,9 +1,19 @@
 <?php
-/**
+/************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ ************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 require_once('include/events/SqlResultIterator.inc');
@@ -29,90 +39,100 @@ require_once('VTWorkflowUtils.php');
  * VTEventHandler
  */
 
-class VTWorkflowEventHandler extends VTEventHandler {
+class VTWorkflowEventHandler extends VTEventHandler
+{
     public array $workflows = [];
 
-	/**
-	 * Push tasks to the task queue if the conditions are true
-	 * @param $entityData A VTEntityData object representing the entity.
-	 */
-	function handleEvent($eventName, $entityData, $entityCache = false, $relatedInfo = false) {
-		$util = new VTWorkflowUtils();
-		$user = $util->adminUser();
-		global $adb;
-		$isNew = $entityData->isNew();
+    /**
+     * Push tasks to the task queue if the conditions are true
+     *
+     * @param $entityData A VTEntityData object representing the entity.
+     */
+    function handleEvent($eventName, $entityData, $entityCache = false, $relatedInfo = false)
+    {
+        $util = new VTWorkflowUtils();
+        $user = $util->adminUser();
+        global $adb;
+        $isNew = $entityData->isNew();
 
-		if (!$entityCache) {
-			$entityCache = new VTEntityCache($user);
-		}
+        if (!$entityCache) {
+            $entityCache = new VTEntityCache($user);
+        }
 
-		$wsModuleName = $util->toWSModuleName($entityData);
-		$wsId = vtws_getWebserviceEntityId($wsModuleName, $entityData->getId());
-		$entityData = $entityCache->forId($wsId);
+        $wsModuleName = $util->toWSModuleName($entityData);
+        $wsId = vtws_getWebserviceEntityId($wsModuleName, $entityData->getId());
+        $entityData = $entityCache->forId($wsId);
 
-		/*
-		 * Customer - Feature #10254 Configuring all Email notifications including Ticket notifications
-		 * workflows are intialised from ModCommentsHandler.php
-		 * While adding a comment on any record which are supporting Comments ModCommentsHandler will trigger
-		 */
-		if (empty($this->workflows)) {
-			$wfs = new VTWorkflowManager($adb);
-			$this->workflows = $wfs->getWorkflowsForModule($entityData->getModuleName());
-		}
+        /*
+         * Customer - Feature #10254 Configuring all Email notifications including Ticket notifications
+         * workflows are intialised from ModCommentsHandler.php
+         * While adding a comment on any record which are supporting Comments ModCommentsHandler will trigger
+         */
+        if (empty($this->workflows)) {
+            $wfs = new VTWorkflowManager($adb);
+            $this->workflows = $wfs->getWorkflowsForModule($entityData->getModuleName());
+        }
 
-		foreach ($this->workflows as $workflow) {
-			if (!is_a($workflow, 'Workflow'))
-				continue;
-			switch ($workflow->executionCondition) {
-				case VTWorkflowManager::$ON_FIRST_SAVE: {
-						if ($isNew) {
-							$doEvaluate = true;
-						} else {
-							$doEvaluate = false;
-						}
-						break;
-					}
-				case VTWorkflowManager::$ONCE: {
-						$entity_id = vtws_getIdComponents($entityData->getId());
-						$entity_id = $entity_id[1];
-						if ($workflow->isCompletedForRecord($entity_id)) {
-							$doEvaluate = false;
-						} else {
-							$doEvaluate = true;
-						}
-						break;
-					}
-				case VTWorkflowManager::$ON_EVERY_SAVE: {
-						$doEvaluate = true;
-						break;
-					}
-				case VTWorkflowManager::$ON_MODIFY: {
-						$doEvaluate = !($isNew);
-						break;
-					}
-                case VTWorkflowManager::$MANUAL: {
-						$doEvaluate = false;
-						break;
-					}
-				case VTWorkflowManager::$ON_SCHEDULE:{
-						$doEvaluate = false;
-						break;
-					}
-				default: {
-						throw new Exception("Should never come here! Execution Condition:" . $workflow->executionCondition);
-					}
-			}
-			if ($doEvaluate && $workflow->evaluate($entityCache, $entityData->getId())) {
-				if (VTWorkflowManager::$ONCE == $workflow->executionCondition) {
-					$entity_id = vtws_getIdComponents($entityData->getId());
-					$entity_id = $entity_id[1];
-					$workflow->markAsCompletedForRecord($entity_id);
-				}
+        foreach ($this->workflows as $workflow) {
+            if (!is_a($workflow, 'Workflow')) {
+                continue;
+            }
+            switch ($workflow->executionCondition) {
+                case VTWorkflowManager::$ON_FIRST_SAVE:
+                {
+                    if ($isNew) {
+                        $doEvaluate = true;
+                    } else {
+                        $doEvaluate = false;
+                    }
+                    break;
+                }
+                case VTWorkflowManager::$ONCE:
+                {
+                    $entity_id = vtws_getIdComponents($entityData->getId());
+                    $entity_id = $entity_id[1];
+                    if ($workflow->isCompletedForRecord($entity_id)) {
+                        $doEvaluate = false;
+                    } else {
+                        $doEvaluate = true;
+                    }
+                    break;
+                }
+                case VTWorkflowManager::$ON_EVERY_SAVE:
+                {
+                    $doEvaluate = true;
+                    break;
+                }
+                case VTWorkflowManager::$ON_MODIFY:
+                {
+                    $doEvaluate = !($isNew);
+                    break;
+                }
+                case VTWorkflowManager::$MANUAL:
+                {
+                    $doEvaluate = false;
+                    break;
+                }
+                case VTWorkflowManager::$ON_SCHEDULE:
+                {
+                    $doEvaluate = false;
+                    break;
+                }
+                default:
+                {
+                    throw new Exception("Should never come here! Execution Condition:" . $workflow->executionCondition);
+                }
+            }
+            if ($doEvaluate && $workflow->evaluate($entityCache, $entityData->getId())) {
+                if (VTWorkflowManager::$ONCE == $workflow->executionCondition) {
+                    $entity_id = vtws_getIdComponents($entityData->getId());
+                    $entity_id = $entity_id[1];
+                    $workflow->markAsCompletedForRecord($entity_id);
+                }
 
-				$workflow->performTasks($entityData,$relatedInfo);
-			}
-		}
-		$util->revertUser();
-	}
-
+                $workflow->performTasks($entityData, $relatedInfo);
+            }
+        }
+        $util->revertUser();
+    }
 }

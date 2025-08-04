@@ -12,7 +12,6 @@
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
  ********************************************************************************/
-
 /*********************************************************************************
  * $Header$
  * Description:  Defines the Account SugarBean Account entity with the necessary
@@ -21,6 +20,14 @@
  * All Rights Reserved.
  * Contributor(s): ______________________________________..
  ********************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 class Invoice extends CRMEntity
 {
@@ -123,14 +130,13 @@ class Invoice extends CRMEntity
     /**    Constructor which will set the column_fields in this object
      */
     public function __construct()
-    {
-        $this->log = Logger::getLogger('Invoice');
+
+    {    $this->log = Logger::getLogger('Invoice');
         $this->log->debug("Entering Invoice() method ...");
         $this->db = PearDatabase::getInstance();
         $this->column_fields = getColumnFields('Invoice');
         $this->log->debug("Exiting Invoice method ...");
     }
-
 
     /** Function to handle the module specific save operations
      */

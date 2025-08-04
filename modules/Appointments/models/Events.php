@@ -1,13 +1,13 @@
 <?php
-
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Appointments_Events_Model extends Vtiger_Base_Model
 {
     public static string $initialView = '';
@@ -27,7 +27,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
      * @var array
      */
     public static array $popoverDisabledFields = [
-        'Default' => [
+        'Default'      => [
             'description',
             'assigned_user_id',
             'account_id',
@@ -100,6 +100,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
     /**
      * @param $value
+     *
      * @return string
      * @throws Exception
      */
@@ -117,6 +118,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
     /**
      * @param string $value
+     *
      * @return string
      * @throws Exception
      */
@@ -135,18 +137,19 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
     /**
      * @param string $value
+     *
      * @return int
      */
     public static function getDayOfWeekId(string $value): int
     {
         $days = [
-            'Sunday' => 0,
-            'Monday' => 1,
-            'Tuesday' => 2,
+            'Sunday'    => 0,
+            'Monday'    => 1,
+            'Tuesday'   => 2,
             'Wednesday' => 3,
-            'Thursday' => 4,
-            'Friday' => 5,
-            'Saturday' => 6,
+            'Thursday'  => 4,
+            'Friday'    => 5,
+            'Saturday'  => 6,
         ];
 
         return $days[$value];
@@ -210,16 +213,17 @@ class Appointments_Events_Model extends Vtiger_Base_Model
     public static function getEventTypeCalendarData(): array
     {
         return [
-            'id' => 0,
-            'module' => 'Appointments',
-            'fields' => ['datetime_start', 'datetime_end'],
-            'color' => '#08f',
+            'id'      => 0,
+            'module'  => 'Appointments',
+            'fields'  => ['datetime_start', 'datetime_end'],
+            'color'   => '#08f',
             'visible' => 1,
         ];
     }
 
     /**
      * @param string $type
+     *
      * @return string
      */
     public static function getEventTypeClass(string $type): string
@@ -301,6 +305,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return array
      * @throws Exception
      */
@@ -344,6 +349,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
     /**
      * @param string $name
      * @param string $value
+     *
      * @return string
      */
     public function getFieldColor(string $name, string $value): string
@@ -396,6 +402,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
     /**
      * @param string $name
+     *
      * @return array
      */
     public function getGroupUserNames(string $name): array
@@ -424,6 +431,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
     /**
      * @param string $value
+     *
      * @return string
      */
     public static function getInitialView(string $value): string
@@ -433,11 +441,11 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         }
 
         $views = [
-            'Today' => 'timeGridDay',
-            'This Week' => 'timeGridWeek',
+            'Today'      => 'timeGridDay',
+            'This Week'  => 'timeGridWeek',
             'This Month' => 'dayGridMonth',
-            'This Year' => 'dayGridMonth',
-            'Agenda' => 'listWeek',
+            'This Year'  => 'dayGridMonth',
+            'Agenda'     => 'listWeek',
         ];
 
         return $views[$value];
@@ -445,6 +453,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
     /**
      * @param int $id
+     *
      * @return self
      */
     public static function getInstance(int $id = 0): self
@@ -568,16 +577,18 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
         $startDate = $this->getDate($recordModel->get($startField));
         $record = [
-            'id' => $this->get('id') . 'x' . $recordModel->getId(),
-            'title' => decode_html($recordModel->getName()),
-            'start' => $startDate,
-            'end' => $startDate,
-            'url' => $recordModel->getDetailViewUrl(),
+            'id'              => $this->get('id') . 'x' . $recordModel->getId(),
+            'title'           => decode_html($recordModel->getName()),
+            'start'           => $startDate,
+            'end'             => $startDate,
+            'url'             => $recordModel->getDetailViewUrl(),
             'backgroundColor' => $this->getBackgroundColor(),
-            'borderColor' => $this->getBackgroundColor(),
-            'color' => $this->getTextColor(),
-            'className' => 'eventTypeRecord eventTypeId' . $this->get('id') . ' eventRecordId' . $recordModel->getId() . ' ' . self::getEventTypeClass((string)$recordModel->get('calendar_type')),
-            'eventDisplay' => 'list-item',
+            'borderColor'     => $this->getBackgroundColor(),
+            'color'           => $this->getTextColor(),
+            'className'       => 'eventTypeRecord eventTypeId' . $this->get('id') . ' eventRecordId' . $recordModel->getId() . ' ' . self::getEventTypeClass(
+                    (string)$recordModel->get('calendar_type')
+                ),
+            'eventDisplay'    => 'list-item',
         ];
 
         if (!empty($endField)) {
@@ -732,6 +743,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
     /**
      * @param string $fieldName
      * @param string $moduleName
+     *
      * @return bool
      */
     public function isPopoverDisabledField(string $fieldName, string $moduleName): bool
@@ -745,6 +757,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
     /**
      * @param $module
+     *
      * @return bool
      */
     public static function isSupportedSaveOverlay($module): bool
@@ -844,10 +857,10 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
         while ($row = $adb->fetchByAssoc($result)) {
             self::$eventTypes[$row['id']] = [
-                'id' => $row['id'],
-                'module' => $row['module'],
-                'fields' => (array)json_decode(decode_html($row['fields'])),
-                'color' => !empty($row['color']) ? $row['color'] : $row['default_color'],
+                'id'      => $row['id'],
+                'module'  => $row['module'],
+                'fields'  => (array)json_decode(decode_html($row['fields'])),
+                'color'   => !empty($row['color']) ? $row['color'] : $row['default_color'],
                 'visible' => 1 === $row['visible'],
             ];
         }
@@ -855,6 +868,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public static function retrieveEventTypesByRequest(Vtiger_Request $request)
@@ -978,6 +992,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
     /**
      * @param $value
+     *
      * @return void
      */
     public function setRecordModel($value)

@@ -1,10 +1,10 @@
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 /** @var VTEmailTask */
 Vtiger.Class('VTEmailTask', {
@@ -17,10 +17,10 @@ Vtiger.Class('VTEmailTask', {
         return this.instance;
     },
 }, {
-    getContainer: function() {
+    getContainer: function () {
         return $('#VtEmailTaskContainer');
     },
-    registerEvents: function() {
+    registerEvents: function () {
         this.registerTemplateChange();
         this.registerVariables();
         this.registerSortableSelect2Element();
@@ -30,7 +30,7 @@ Vtiger.Class('VTEmailTask', {
             selectElement = $('#pdf_template_select'),
             valueElement = $('#pdf_template');
 
-        if(selectElement.length && selectElement.length) {
+        if (selectElement.length && selectElement.length) {
             vtUtils.showSelect2ElementView(selectElement);
 
             selectElement.one('select2-loaded', function () {
@@ -59,13 +59,13 @@ Vtiger.Class('VTEmailTask', {
             }
         });
     },
-    getVariable: function() {
+    getVariable: function () {
         return $('#task_variables').val();
     },
     registerTemplateChange: function () {
         const self = this;
 
-        $('#task_template').on('change', function() {
+        $('#task_template').on('change', function () {
             self.updateTemplateFields();
         });
 
@@ -89,6 +89,6 @@ Vtiger.Class('VTEmailTask', {
     }
 });
 
-$(function() {
+$(function () {
     VTEmailTask.getInstance().registerEvents();
 })

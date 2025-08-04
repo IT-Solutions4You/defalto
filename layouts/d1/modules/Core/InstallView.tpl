@@ -1,3 +1,11 @@
+{**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
 <div class="p-3 rounded bg-body m-3">
     <h1>{vtranslate('Installation wizard', $QUALIFIED_MODULE)}</h1>
     <div class="py-3">

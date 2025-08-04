@@ -1,5 +1,5 @@
 <?php
-/*+**********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.1
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
@@ -7,6 +7,14 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 require_once 'include/Webservices/VtigerModuleOperation.php';
 require_once 'include/Webservices/Utils.php';
@@ -14,531 +22,553 @@ require_once 'include/Webservices/Utils.php';
 /**
  * Description of VtigerInventoryOperation
  */
-class VtigerInventoryOperation extends VtigerModuleOperation {
-	public static $CREATE_OPERATI0N;
+class VtigerInventoryOperation extends VtigerModuleOperation
+{
+    public static $CREATE_OPERATI0N;
 
-	public function create($elementType, $element) {
-		self::$CREATE_OPERATI0N = true;
-		
-		if (!$element['hdnTaxType']) {
-			$element['hdnTaxType'] = Inventory_TaxRecord_Model::getSelectedDefaultTaxMode();
-		}
-		$element = $this->sanitizeInventoryForInsert($element);
-		$element = $this->sanitizeShippingTaxes($element);
-		$lineItems = $element['LineItems'];
-		if (!empty($lineItems)) {
-			$eventManager = new VTEventsManager(vglobal('adb'));
-			$sanitizedData = DataTransform::sanitizeForInsert($element,$this->meta);
-			$this->triggerBeforeSaveEvents($sanitizedData, $eventManager);
+    public function create($elementType, $element)
+    {
+        self::$CREATE_OPERATI0N = true;
 
-			$currentBulkSaveMode = vglobal('VTIGER_BULK_SAVE_MODE');
-			if ($currentBulkSaveMode === NULL) {
-				$currentBulkSaveMode = false;
-			}
-			vglobal('VTIGER_BULK_SAVE_MODE', true);
-			global $currentModule;
-			$currentModule = $elementType;
+        if (!$element['hdnTaxType']) {
+            $element['hdnTaxType'] = Inventory_TaxRecord_Model::getSelectedDefaultTaxMode();
+        }
+        $element = $this->sanitizeInventoryForInsert($element);
+        $element = $this->sanitizeShippingTaxes($element);
+        $lineItems = $element['LineItems'];
+        if (!empty($lineItems)) {
+            $eventManager = new VTEventsManager(vglobal('adb'));
+            $sanitizedData = DataTransform::sanitizeForInsert($element, $this->meta);
+            $this->triggerBeforeSaveEvents($sanitizedData, $eventManager);
 
-			$element = parent::create($elementType, $element);
-			$focus = CRMEntity::getInstance($elementType);
-			$focus->updateMissingSeqNumber($elementType);
+            $currentBulkSaveMode = vglobal('VTIGER_BULK_SAVE_MODE');
+            if ($currentBulkSaveMode === null) {
+                $currentBulkSaveMode = false;
+            }
+            vglobal('VTIGER_BULK_SAVE_MODE', true);
+            global $currentModule;
+            $currentModule = $elementType;
 
-			vglobal('VTIGER_BULK_SAVE_MODE', $currentBulkSaveMode);
+            $element = parent::create($elementType, $element);
+            $focus = CRMEntity::getInstance($elementType);
+            $focus->updateMissingSeqNumber($elementType);
 
-			$handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
-			$handler->setLineItems('LineItem', $lineItems, $element);
-			$parent = $handler->getParentById($element['id']);
-			$handler->updateParent($lineItems, $parent);
-			$updatedParent = $handler->getParentById($element['id']);
-			//since subtotal and grand total is updated in the update parent api
-			$parent['subtotal'] = $updatedParent['subtotal'];
-			$parent['price_total'] = $updatedParent['price_total'];
-			$parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
-			$components = vtws_getIdComponents($element['id']);
-			$parentId = $components[1];
-			$parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
+            vglobal('VTIGER_BULK_SAVE_MODE', $currentBulkSaveMode);
 
-			$currentValue = vglobal('updateInventoryProductRel_deduct_stock');
-			vglobal('updateInventoryProductRel_deduct_stock', false);
+            $handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
+            $handler->setLineItems('LineItem', $lineItems, $element);
+            $parent = $handler->getParentById($element['id']);
+            $handler->updateParent($lineItems, $parent);
+            $updatedParent = $handler->getParentById($element['id']);
+            //since subtotal and grand total is updated in the update parent api
+            $parent['subtotal'] = $updatedParent['subtotal'];
+            $parent['price_total'] = $updatedParent['price_total'];
+            $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
+            $components = vtws_getIdComponents($element['id']);
+            $parentId = $components[1];
+            $parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
 
-			$parent['new'] = true;
-			$this->triggerAfterSaveEvents($parent, $eventManager);
+            $currentValue = vglobal('updateInventoryProductRel_deduct_stock');
+            vglobal('updateInventoryProductRel_deduct_stock', false);
 
-			vglobal('updateInventoryProductRel_deduct_stock', $currentValue);
+            $parent['new'] = true;
+            $this->triggerAfterSaveEvents($parent, $eventManager);
 
-		} else {
-			throw new WebServiceException(WebServiceErrorCode::$MANDFIELDSMISSING, "Mandatory Fields Missing..");
-		}
-		return array_merge($element,$parent);
-	}
+            vglobal('updateInventoryProductRel_deduct_stock', $currentValue);
+        } else {
+            throw new WebServiceException(WebServiceErrorCode::$MANDFIELDSMISSING, "Mandatory Fields Missing..");
+        }
 
-	public function update($element) {
-		$element = $this->sanitizeInventoryForInsert($element);
-		$element = $this->sanitizeShippingTaxes($element);
-		$lineItemList = $element['LineItems'];
-		$handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
-		if (!empty($lineItemList)) {
-			$eventManager = new VTEventsManager(vglobal('adb'));
-			$sanitizedData = DataTransform::sanitizeForInsert($element,$this->meta);
-			$sanitizedData['id'] = $element['id'];
-			$this->triggerBeforeSaveEvents($sanitizedData, $eventManager);
-			unset($sanitizedData['id']);
+        return array_merge($element, $parent);
+    }
 
-			$currentBulkSaveMode = vglobal('VTIGER_BULK_SAVE_MODE');
-			if ($currentBulkSaveMode === NULL) {
-				$currentBulkSaveMode = false;
-			}
-			vglobal('VTIGER_BULK_SAVE_MODE', true);
-			global $currentModule;
-			$currentModule = getTabname($this->tabId);
+    public function update($element)
+    {
+        $element = $this->sanitizeInventoryForInsert($element);
+        $element = $this->sanitizeShippingTaxes($element);
+        $lineItemList = $element['LineItems'];
+        $handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
+        if (!empty($lineItemList)) {
+            $eventManager = new VTEventsManager(vglobal('adb'));
+            $sanitizedData = DataTransform::sanitizeForInsert($element, $this->meta);
+            $sanitizedData['id'] = $element['id'];
+            $this->triggerBeforeSaveEvents($sanitizedData, $eventManager);
+            unset($sanitizedData['id']);
 
-			$updatedElement = parent::update($element);
-			vglobal('VTIGER_BULK_SAVE_MODE', $currentBulkSaveMode);
+            $currentBulkSaveMode = vglobal('VTIGER_BULK_SAVE_MODE');
+            if ($currentBulkSaveMode === null) {
+                $currentBulkSaveMode = false;
+            }
+            vglobal('VTIGER_BULK_SAVE_MODE', true);
+            global $currentModule;
+            $currentModule = getTabname($this->tabId);
 
-			$handler->setLineItems('LineItem', $lineItemList, $updatedElement);
-			$parent = $handler->getParentById($element['id']);
-			$handler->updateParent($lineItemList, $parent);
-			$updatedParent = $handler->getParentById($element['id']);
-			//since subtotal and grand total is updated in the update parent api
-			$parent['subtotal'] = $updatedParent['subtotal'];
-			$parent['price_total'] = $updatedParent['price_total'];
-			$parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
-			$updatedElement = array_merge($updatedElement,$parent);
+            $updatedElement = parent::update($element);
+            vglobal('VTIGER_BULK_SAVE_MODE', $currentBulkSaveMode);
 
-			$currentValue = vglobal('updateInventoryProductRel_deduct_stock');
-			vglobal('updateInventoryProductRel_deduct_stock', false);
-			$original_update_product_array = vglobal('updateInventoryProductRel_update_product_array');
+            $handler->setLineItems('LineItem', $lineItemList, $updatedElement);
+            $parent = $handler->getParentById($element['id']);
+            $handler->updateParent($lineItemList, $parent);
+            $updatedParent = $handler->getParentById($element['id']);
+            //since subtotal and grand total is updated in the update parent api
+            $parent['subtotal'] = $updatedParent['subtotal'];
+            $parent['price_total'] = $updatedParent['price_total'];
+            $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
+            $updatedElement = array_merge($updatedElement, $parent);
 
-			$updateInventoryProductRel_update_product_array = array();
-			$this->triggerAfterSaveEvents($updatedElement, $eventManager);
+            $currentValue = vglobal('updateInventoryProductRel_deduct_stock');
+            vglobal('updateInventoryProductRel_deduct_stock', false);
+            $original_update_product_array = vglobal('updateInventoryProductRel_update_product_array');
 
-			vglobal('updateInventoryProductRel_update_product_array',$original_update_product_array);
-			vglobal('updateInventoryProductRel_deduct_stock', $currentValue);
+            $updateInventoryProductRel_update_product_array = [];
+            $this->triggerAfterSaveEvents($updatedElement, $eventManager);
 
-		} else {
-			$updatedElement = $this->revise($element);
-		}
-		return $updatedElement;
-	}
+            vglobal('updateInventoryProductRel_update_product_array', $original_update_product_array);
+            vglobal('updateInventoryProductRel_deduct_stock', $currentValue);
+        } else {
+            $updatedElement = $this->revise($element);
+        }
 
-	public function revise($element) {
-		$element = $this->sanitizeInventoryForInsert($element);
-		$element = $this->sanitizeShippingTaxes($element);
-		$handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
-		$components = vtws_getIdComponents($element['id']);
-		$parentId = $components[1];
+        return $updatedElement;
+    }
 
-		if (!empty($element['LineItems'])) {
-			$lineItemList = $element['LineItems'];
-			unset($element['LineItems']);
+    public function revise($element)
+    {
+        $element = $this->sanitizeInventoryForInsert($element);
+        $element = $this->sanitizeShippingTaxes($element);
+        $handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
+        $components = vtws_getIdComponents($element['id']);
+        $parentId = $components[1];
 
-			$eventManager = new VTEventsManager(vglobal('adb'));
-			$sanitizedData = DataTransform::sanitizeForInsert($element,$this->meta);
-			$sanitizedData['id'] = $element['id'];
-			$this->triggerBeforeSaveEvents($sanitizedData, $eventManager);
-			unset($sanitizedData['id']);
-			$currentBulkSaveMode = vglobal('VTIGER_BULK_SAVE_MODE');
-			if ($currentBulkSaveMode === NULL) {
-				$currentBulkSaveMode = false;
-			}
-			vglobal('VTIGER_BULK_SAVE_MODE', true);
+        if (!empty($element['LineItems'])) {
+            $lineItemList = $element['LineItems'];
+            unset($element['LineItems']);
 
-			$updatedElement = parent::revise($element);
-			vglobal('VTIGER_BULK_SAVE_MODE', $currentBulkSaveMode);
+            $eventManager = new VTEventsManager(vglobal('adb'));
+            $sanitizedData = DataTransform::sanitizeForInsert($element, $this->meta);
+            $sanitizedData['id'] = $element['id'];
+            $this->triggerBeforeSaveEvents($sanitizedData, $eventManager);
+            unset($sanitizedData['id']);
+            $currentBulkSaveMode = vglobal('VTIGER_BULK_SAVE_MODE');
+            if ($currentBulkSaveMode === null) {
+                $currentBulkSaveMode = false;
+            }
+            vglobal('VTIGER_BULK_SAVE_MODE', true);
 
-			$handler->setLineItems('LineItem', $lineItemList, $updatedElement);
-			$parent = $handler->getParentById($element['id']);
-			$handler->updateParent($lineItemList, $parent);
-			$updatedParent = $handler->getParentById($element['id']);
-			//since subtotal and grand total is updated in the update parent api
-			$parent['subtotal'] = $updatedParent['subtotal'];
-			$parent['price_total'] = $updatedParent['price_total'];
-			$parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
-			$parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
+            $updatedElement = parent::revise($element);
+            vglobal('VTIGER_BULK_SAVE_MODE', $currentBulkSaveMode);
 
-			$updatedElement = array_merge($updatedElement,$parent);
-			$currentValue = vglobal('updateInventoryProductRel_deduct_stock');
-			vglobal('updateInventoryProductRel_deduct_stock', false);
-			$original_update_product_array = vglobal('updateInventoryProductRel_update_product_array');
+            $handler->setLineItems('LineItem', $lineItemList, $updatedElement);
+            $parent = $handler->getParentById($element['id']);
+            $handler->updateParent($lineItemList, $parent);
+            $updatedParent = $handler->getParentById($element['id']);
+            //since subtotal and grand total is updated in the update parent api
+            $parent['subtotal'] = $updatedParent['subtotal'];
+            $parent['price_total'] = $updatedParent['price_total'];
+            $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
+            $parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
 
-			$updateInventoryProductRel_update_product_array = array();
-			$this->triggerAfterSaveEvents($updatedElement, $eventManager);
+            $updatedElement = array_merge($updatedElement, $parent);
+            $currentValue = vglobal('updateInventoryProductRel_deduct_stock');
+            vglobal('updateInventoryProductRel_deduct_stock', false);
+            $original_update_product_array = vglobal('updateInventoryProductRel_update_product_array');
 
-			vglobal('updateInventoryProductRel_update_product_array',$original_update_product_array);
-			vglobal('updateInventoryProductRel_deduct_stock', $currentValue);
-		} else {
-			$prevAction = $_REQUEST['action'];
-			$prevAjaxAction = $_REQUEST['ajxaction'];
-			
-			// This is added as we are passing data in user format, so in the crmentity insertIntoEntity API
-			// should convert to database format, we have added a check based on the action name there. But
-			// while saving Invoice and Purchase Order we are also depending on the same action file names to
-			// not to update stock if its an ajax save. In this case also we do not want line items to change.
-			$_REQUEST['action'] = 'FROM_WS';
-			
-			//To avoid deletion of lineitems we use the ajaxaction DETAILVIEW as if we were updating signle fields from the detail view:
-			$_REQUEST['ajxaction'] = 'DETAILVIEW'; 
-			
-			$parent = parent::revise($element);
-			$_REQUEST['action'] = $prevAction;
-			$_REQUEST['ajxaction'] = $prevAjaxAction;
-			$parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
-		}
-		return array_merge($element,$parent);
-	}
+            $updateInventoryProductRel_update_product_array = [];
+            $this->triggerAfterSaveEvents($updatedElement, $eventManager);
 
-	public function retrieve($id) {
-		$element = parent::retrieve($id);
-		$chargesElement = $this->getChargesElement($element['id']);
-		$element = array_merge($element, $chargesElement);
+            vglobal('updateInventoryProductRel_update_product_array', $original_update_product_array);
+            vglobal('updateInventoryProductRel_deduct_stock', $currentValue);
+        } else {
+            $prevAction = $_REQUEST['action'];
+            $prevAjaxAction = $_REQUEST['ajxaction'];
 
-		$skipLineItemFields = getLineItemFields();
-		foreach ($skipLineItemFields as $key => $field) {
-			if (array_key_exists($field, $element)) {
-				unset($element[$field]);
-			}
-		}
-		$handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
-		$idComponents = vtws_getIdComponents($id);
-		$lineItems = $handler->getAllLineItemForParent($idComponents[1]);
-		$element['LineItems'] = $lineItems;
-		$recordCompoundTaxesElement = $this->getCompoundTaxesElement($element, $lineItems);
-		$element = array_merge($element, $recordCompoundTaxesElement);
-		$element['productid'] = $lineItems[0]['productid'];
-		$element['LineItems_FinalDetails'] = $this->getLineItemFinalDetails($idComponents[1]);
-		return $element;
-	}
+            // This is added as we are passing data in user format, so in the crmentity insertIntoEntity API
+            // should convert to database format, we have added a check based on the action name there. But
+            // while saving Invoice and Purchase Order we are also depending on the same action file names to
+            // not to update stock if its an ajax save. In this case also we do not want line items to change.
+            $_REQUEST['action'] = 'FROM_WS';
 
-		public function getLineItemFinalDetails($record) {
-			$finalDetails = array();
-			$recordModel = Vtiger_Record_Model::getInstanceById($record);
-			if($recordModel) {
-				$finalDetails = $recordModel->getProducts();
-			}
-			return $finalDetails;
-	}
+            //To avoid deletion of lineitems we use the ajaxaction DETAILVIEW as if we were updating signle fields from the detail view:
+            $_REQUEST['ajxaction'] = 'DETAILVIEW';
 
-	public function delete($id) {
-		$components = vtws_getIdComponents($id);
-		$parentId = $components[1];
-		$handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
-		$handler->cleanLineItemList($id);
-		$result = parent::delete($id);
-		return $result;
-	}
+            $parent = parent::revise($element);
+            $_REQUEST['action'] = $prevAction;
+            $_REQUEST['ajxaction'] = $prevAjaxAction;
+            $parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
+        }
 
-	/**
-	 * function to display discounts,taxes and adjustments
-	 * @param type $element
-	 * @return type
-	 */
-	protected function sanitizeInventoryForInsert($element) {
+        return array_merge($element, $parent);
+    }
 
-		if (!empty($element['hdnTaxType'])) {
-			$_REQUEST['taxtype'] = $element['hdnTaxType'];
-		}
-		if (!empty($element['subtotal'])) {
-			$_REQUEST['subtotal'] = $element['subtotal'];
-		}
+    public function retrieve($id)
+    {
+        $element = parent::retrieve($id);
+        $chargesElement = $this->getChargesElement($element['id']);
+        $element = array_merge($element, $chargesElement);
 
-		if ((float) $element['discount_amount'] && $element['discount_amount'] !== '') {
-			$_REQUEST['discount_type_final'] = 'amount';
-			$_REQUEST['discount_amount_final'] = $element['discount_amount'];
-		} elseif ((float) $element['hdnDiscountPercent'] && $element['hdnDiscountPercent'] !== '') {
-			$_REQUEST['discount_type_final'] = 'percentage';
-			$_REQUEST['discount_percentage_final'] = $element['hdnDiscountPercent'];
-		} else {
-			$_REQUEST['discount_type_final'] = '';
-			$_REQUEST['discount_percentage_final'] = '';
-		}
+        $skipLineItemFields = getLineItemFields();
+        foreach ($skipLineItemFields as $key => $field) {
+            if (array_key_exists($field, $element)) {
+                unset($element[$field]);
+            }
+        }
+        $handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
+        $idComponents = vtws_getIdComponents($id);
+        $lineItems = $handler->getAllLineItemForParent($idComponents[1]);
+        $element['LineItems'] = $lineItems;
+        $recordCompoundTaxesElement = $this->getCompoundTaxesElement($element, $lineItems);
+        $element = array_merge($element, $recordCompoundTaxesElement);
+        $element['productid'] = $lineItems[0]['productid'];
+        $element['LineItems_FinalDetails'] = $this->getLineItemFinalDetails($idComponents[1]);
 
-		if ((float) $element['adjustment']) {
-			$_REQUEST['adjustmentType'] = ((float) $element['adjustment'] < 0) ? '-' : '+';
-			$_REQUEST['adjustment'] = abs($element['adjustment']);
-		} else {
-			$_REQUEST['adjustmentType'] = '';
-			$_REQUEST['adjustment'] = '';
-		}
-		if (!empty($element['price_total'])) {
-			$_REQUEST['total'] = $element['price_total'];
-		}
+        return $element;
+    }
 
-		if (isset($element['region_id'])) {
-			$_REQUEST['region_id'] = $element['region_id'];
-		}
-		if (empty($element['conversion_rate']) && !$_REQUEST['conversion_rate']) {
-			$element['conversion_rate'] = 1;
-			$_REQUEST['conversion_rate'] = 1;
-		}
+    public function getLineItemFinalDetails($record)
+    {
+        $finalDetails = [];
+        $recordModel = Vtiger_Record_Model::getInstanceById($record);
+        if ($recordModel) {
+            $finalDetails = $recordModel->getProducts();
+        }
 
-		$lineItems = $element['LineItems'];
-		$totalNoOfProducts = php7_count($lineItems);
-		$_REQUEST['totalProductCount'] = $totalNoOfProducts;
-		$_REQUEST['REQUEST_FROM_WS'] = true;
+        return $finalDetails;
+    }
 
-		$i = 1;
-		if (!is_array($lineItems)) {
-			$lineItems = array();
-		}
-		foreach ($lineItems as $lineItem) {
-			$productIdComponents = vtws_getIdComponents($lineItem['productid']);
-			$productId = $productIdComponents[1];
+    public function delete($id)
+    {
+        $components = vtws_getIdComponents($id);
+        $parentId = $components[1];
+        $handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
+        $handler->cleanLineItemList($id);
+        $result = parent::delete($id);
 
-			$_REQUEST['hdnProductId'.$i] = $productId;
-			$_REQUEST['qty'.$i] = $lineItem['quantity'];
-			$i++;
-		}
-		return $element;
-	}
+        return $result;
+    }
 
-	public function sanitizeShippingTaxes($element){
-		$subTotal = (float)$element['subtotal'];
-		$overallDiscountAmount = $element['discount_amount'];
-		if ($element['hdnDiscountPercent']) {
-			$overallDiscountAmount = ($subTotal * (float)$element['hdnDiscountPercent']) / 100;
-		}
-		$itemsTotalAfterOverAllDiscount = $subTotal - $overallDiscountAmount;
+    /**
+     * function to display discounts,taxes and adjustments
+     *
+     * @param type $element
+     *
+     * @return type
+     */
+    protected function sanitizeInventoryForInsert($element)
+    {
+        if (!empty($element['hdnTaxType'])) {
+            $_REQUEST['taxtype'] = $element['hdnTaxType'];
+        }
+        if (!empty($element['subtotal'])) {
+            $_REQUEST['subtotal'] = $element['subtotal'];
+        }
 
-		$shippingTaxes = array();
-		$allShippingTaxes = getAllTaxes('available', 'sh');
-		foreach ($allShippingTaxes as $shTaxInfo) {
-			$shippingTaxes[$shTaxInfo['taxid']] = $shTaxInfo;
-		}
+        if ((float)$element['discount_amount'] && $element['discount_amount'] !== '') {
+            $_REQUEST['discount_type_final'] = 'amount';
+            $_REQUEST['discount_amount_final'] = $element['discount_amount'];
+        } elseif ((float)$element['hdnDiscountPercent'] && $element['hdnDiscountPercent'] !== '') {
+            $_REQUEST['discount_type_final'] = 'percentage';
+            $_REQUEST['discount_percentage_final'] = $element['hdnDiscountPercent'];
+        } else {
+            $_REQUEST['discount_type_final'] = '';
+            $_REQUEST['discount_percentage_final'] = '';
+        }
 
-		$totalSHAmount = 0;
-		$totalSHTaxesAmount = 0;
-		$allCharges = getAllCharges();
-		foreach ($allCharges as $chargeId => $chargeInfo) {
-			$chargeName = html_entity_decode(strtolower(str_replace(' ', '_', $chargeInfo['name'])));
+        if ((float)$element['adjustment']) {
+            $_REQUEST['adjustmentType'] = ((float)$element['adjustment'] < 0) ? '-' : '+';
+            $_REQUEST['adjustment'] = abs($element['adjustment']);
+        } else {
+            $_REQUEST['adjustmentType'] = '';
+            $_REQUEST['adjustment'] = '';
+        }
+        if (!empty($element['price_total'])) {
+            $_REQUEST['total'] = $element['price_total'];
+        }
 
-			if (array_key_exists($chargeName, $element)) {
-				$chargeValue	= $element[$chargeName];
-				$pos			= strpos($chargeValue, '%');
-				$chargeValue	= str_replace('%', '', $chargeValue);
+        if (isset($element['region_id'])) {
+            $_REQUEST['region_id'] = $element['region_id'];
+        }
+        if (empty($element['conversion_rate']) && !$_REQUEST['conversion_rate']) {
+            $element['conversion_rate'] = 1;
+            $_REQUEST['conversion_rate'] = 1;
+        }
 
-				if ($pos !== FALSE) {
-					$_REQUEST['charges'][$chargeId]['percent'] = $chargeValue;
-					$chargeValue = ((float)$itemsTotalAfterOverAllDiscount * (float)$chargeValue) / 100;
-				}
-				$totalSHAmount = $totalSHAmount + $chargeValue;
-				$totalSHTaxesAmount = $totalSHTaxesAmount + $chargeValue;
-				$_REQUEST['charges'][$chargeId]['value'] = $chargeValue;
-			}
+        $lineItems = $element['LineItems'];
+        $totalNoOfProducts = php7_count($lineItems);
+        $_REQUEST['totalProductCount'] = $totalNoOfProducts;
+        $_REQUEST['REQUEST_FROM_WS'] = true;
 
-			foreach ($chargeInfo['taxes'] as $taxId) {
-				$taxKey = $chargeName."_shtax$taxId";
-				if (array_key_exists($taxKey, $element) && $shippingTaxes[$taxId]) {
-					$_REQUEST['charges'][$chargeId]['taxes'][$taxId] = $element[$taxKey];
-				}
-			}
-		}
+        $i = 1;
+        if (!is_array($lineItems)) {
+            $lineItems = [];
+        }
+        foreach ($lineItems as $lineItem) {
+            $productIdComponents = vtws_getIdComponents($lineItem['productid']);
+            $productId = $productIdComponents[1];
 
-		if ($totalSHAmount) {
-			$_REQUEST['shipping_handling_charge'] = $element['hdnS_H_Amount'] = $totalSHAmount;
-			$_REQUEST['s_h_percent'] = $totalSHTaxesAmount;
-		} else {
-			$_REQUEST['shipping_handling_charge'] = $_REQUEST['charges'][1]['value'] = $element['hdnS_H_Amount'];
-			foreach ($shippingTaxes as $shTaxId => $shTaxInfo) {
-				unset($_REQUEST['charges'][1]['taxes'][$shTaxId]);
-				if(isset($element['hdnS_H_Percent']) && $element['hdnS_H_Percent'] != 0 && $element['hdnS_H_Amount'] != 0) {
-					$_REQUEST['charges'][1]['taxes'][$shTaxId] = $element['hdnS_H_Percent'];
-                    $_REQUEST['s_h_percent'] = ($element['hdnS_H_Percent']/$element['hdnS_H_Amount'])*100;
+            $_REQUEST['hdnProductId' . $i] = $productId;
+            $_REQUEST['qty' . $i] = $lineItem['quantity'];
+            $i++;
+        }
+
+        return $element;
+    }
+
+    public function sanitizeShippingTaxes($element)
+    {
+        $subTotal = (float)$element['subtotal'];
+        $overallDiscountAmount = $element['discount_amount'];
+        if ($element['hdnDiscountPercent']) {
+            $overallDiscountAmount = ($subTotal * (float)$element['hdnDiscountPercent']) / 100;
+        }
+        $itemsTotalAfterOverAllDiscount = $subTotal - $overallDiscountAmount;
+
+        $shippingTaxes = [];
+        $allShippingTaxes = getAllTaxes('available', 'sh');
+        foreach ($allShippingTaxes as $shTaxInfo) {
+            $shippingTaxes[$shTaxInfo['taxid']] = $shTaxInfo;
+        }
+
+        $totalSHAmount = 0;
+        $totalSHTaxesAmount = 0;
+        $allCharges = getAllCharges();
+        foreach ($allCharges as $chargeId => $chargeInfo) {
+            $chargeName = html_entity_decode(strtolower(str_replace(' ', '_', $chargeInfo['name'])));
+
+            if (array_key_exists($chargeName, $element)) {
+                $chargeValue = $element[$chargeName];
+                $pos = strpos($chargeValue, '%');
+                $chargeValue = str_replace('%', '', $chargeValue);
+
+                if ($pos !== false) {
+                    $_REQUEST['charges'][$chargeId]['percent'] = $chargeValue;
+                    $chargeValue = ((float)$itemsTotalAfterOverAllDiscount * (float)$chargeValue) / 100;
+                }
+                $totalSHAmount = $totalSHAmount + $chargeValue;
+                $totalSHTaxesAmount = $totalSHTaxesAmount + $chargeValue;
+                $_REQUEST['charges'][$chargeId]['value'] = $chargeValue;
+            }
+
+            foreach ($chargeInfo['taxes'] as $taxId) {
+                $taxKey = $chargeName . "_shtax$taxId";
+                if (array_key_exists($taxKey, $element) && $shippingTaxes[$taxId]) {
+                    $_REQUEST['charges'][$chargeId]['taxes'][$taxId] = $element[$taxKey];
+                }
+            }
+        }
+
+        if ($totalSHAmount) {
+            $_REQUEST['shipping_handling_charge'] = $element['hdnS_H_Amount'] = $totalSHAmount;
+            $_REQUEST['s_h_percent'] = $totalSHTaxesAmount;
+        } else {
+            $_REQUEST['shipping_handling_charge'] = $_REQUEST['charges'][1]['value'] = $element['hdnS_H_Amount'];
+            foreach ($shippingTaxes as $shTaxId => $shTaxInfo) {
+                unset($_REQUEST['charges'][1]['taxes'][$shTaxId]);
+                if (isset($element['hdnS_H_Percent']) && $element['hdnS_H_Percent'] != 0 && $element['hdnS_H_Amount'] != 0) {
+                    $_REQUEST['charges'][1]['taxes'][$shTaxId] = $element['hdnS_H_Percent'];
+                    $_REQUEST['s_h_percent'] = ($element['hdnS_H_Percent'] / $element['hdnS_H_Amount']) * 100;
                     $_REQUEST['charges'][$firstActiveCharge]['taxes'][$shTaxId] = $_REQUEST['s_h_percent'];
-					$element['hdnS_H_Percent'] = $_REQUEST['s_h_percent'];
-					break;
-				} else {
-					$shTaxValue = 0;
-					if(isset($element[$shTaxInfo['taxname'] . '_sh_percent'])) {
-						$shTaxValue = $element[$shTaxInfo['taxname'] . '_sh_percent'];
-					}
-					$_REQUEST['charges'][1]['taxes'][$shTaxId] = $shTaxValue;
-				}
-			}
-		}
+                    $element['hdnS_H_Percent'] = $_REQUEST['s_h_percent'];
+                    break;
+                } else {
+                    $shTaxValue = 0;
+                    if (isset($element[$shTaxInfo['taxname'] . '_sh_percent'])) {
+                        $shTaxValue = $element[$shTaxInfo['taxname'] . '_sh_percent'];
+                    }
+                    $_REQUEST['charges'][1]['taxes'][$shTaxId] = $shTaxValue;
+                }
+            }
+        }
 
-		return $element;
-	}
-	/* NOTE: Special case to pull the default setting of TermsAndCondition */
+        return $element;
+    }
 
-	public function describe($elementType) {
-		$describe = parent::describe($elementType);
-		$tandc = getTermsAndConditions($elementType);
-		foreach ($describe['fields'] as $key => $list){
-			if($list["name"] == 'terms_conditions'){
-				$describe['fields'][$key]['default'] = $tandc;
-			}
-		}
+    /* NOTE: Special case to pull the default setting of TermsAndCondition */
 
-		$shippingTaxes = array();
-		$allShippingTaxes = getAllTaxes('available', 'sh');
-		foreach ($allShippingTaxes as $shTaxInfo) {
-			$shippingTaxes[$shTaxInfo['taxid']] = $shTaxInfo;
-		}
+    public function describe($elementType)
+    {
+        $describe = parent::describe($elementType);
+        $tandc = getTermsAndConditions($elementType);
+        foreach ($describe['fields'] as $key => $list) {
+            if ($list["name"] == 'terms_conditions') {
+                $describe['fields'][$key]['default'] = $tandc;
+            }
+        }
 
-		$allCharges = getAllCharges();
-		foreach ($allCharges as $chargeId => $chargeInfo) {
-			$chargeField = array();
-			$chargeField['name']		= html_entity_decode(strtolower(str_replace(' ', '_', $chargeInfo['name'])));
-			$chargeField['label']		= $chargeInfo['name'];
-			$chargeField['type']		= array('name' => 'double');
-			$chargeField['mandatory']	= false;
-			$chargeField['nullable']	= true;
-			$chargeField['editable']	= true;
-			$chargeField['default']		= ($chargeInfo['format'] === 'Percent') ? $chargeInfo['value'].'%' : $chargeInfo['value'];
+        $shippingTaxes = [];
+        $allShippingTaxes = getAllTaxes('available', 'sh');
+        foreach ($allShippingTaxes as $shTaxInfo) {
+            $shippingTaxes[$shTaxInfo['taxid']] = $shTaxInfo;
+        }
 
-			$describe['fields'][] = $chargeField;
+        $allCharges = getAllCharges();
+        foreach ($allCharges as $chargeId => $chargeInfo) {
+            $chargeField = [];
+            $chargeField['name'] = html_entity_decode(strtolower(str_replace(' ', '_', $chargeInfo['name'])));
+            $chargeField['label'] = $chargeInfo['name'];
+            $chargeField['type'] = ['name' => 'double'];
+            $chargeField['mandatory'] = false;
+            $chargeField['nullable'] = true;
+            $chargeField['editable'] = true;
+            $chargeField['default'] = ($chargeInfo['format'] === 'Percent') ? $chargeInfo['value'] . '%' : $chargeInfo['value'];
 
-			foreach ($chargeInfo['taxes'] as $shTaxId) {
-				$shTaxField = array();
-				$shTaxField['name']		= $chargeField['name'].'_'.$shippingTaxes[$shTaxId]['taxname'];
-				$shTaxField['label']	= $chargeInfo['name'].' '.$shippingTaxes[$shTaxId]['taxlabel'];
-				$shTaxField['default']	= $shippingTaxes[$shTaxId]['percentage'];
-				$shTaxField['type']		= array('name' => 'double');
-				$shTaxField['nullable']	= true;
-				$shTaxField['editable']	= true;
-				$shTaxField['mandatory']= false;
+            $describe['fields'][] = $chargeField;
 
-				$describe['fields'][]	= $shTaxField;
-			}
+            foreach ($chargeInfo['taxes'] as $shTaxId) {
+                $shTaxField = [];
+                $shTaxField['name'] = $chargeField['name'] . '_' . $shippingTaxes[$shTaxId]['taxname'];
+                $shTaxField['label'] = $chargeInfo['name'] . ' ' . $shippingTaxes[$shTaxId]['taxlabel'];
+                $shTaxField['default'] = $shippingTaxes[$shTaxId]['percentage'];
+                $shTaxField['type'] = ['name' => 'double'];
+                $shTaxField['nullable'] = true;
+                $shTaxField['editable'] = true;
+                $shTaxField['mandatory'] = false;
 
-		}
+                $describe['fields'][] = $shTaxField;
+            }
+        }
 
-		return $describe;
-	}
+        return $describe;
+    }
 
-	/**
-	 * Function to trigger the events which are before save
-	 * @param <type> $element
-	 * @param <type> $eventManager
-	 */
-	public function triggerBeforeSaveEvents($element, $eventManager) {
-		global $VTIGER_BULK_SAVE_MODE;
-		if ($eventManager) {
-			$eventManager->initTriggerCache();
-			$focusObj = $this->constructFocusObject($element);
-			$entityData = VTEntityData::fromCRMEntity($focusObj);
+    /**
+     * Function to trigger the events which are before save
+     *
+     * @param <type> $element
+     * @param <type> $eventManager
+     */
+    public function triggerBeforeSaveEvents($element, $eventManager)
+    {
+        global $VTIGER_BULK_SAVE_MODE;
+        if ($eventManager) {
+            $eventManager->initTriggerCache();
+            $focusObj = $this->constructFocusObject($element);
+            $entityData = VTEntityData::fromCRMEntity($focusObj);
 
-			if (!$VTIGER_BULK_SAVE_MODE) {
-				$eventManager->triggerEvent("vtiger.entity.beforesave.modifiable", $entityData);
-				$eventManager->triggerEvent("vtiger.entity.beforesave", $entityData);
-				$eventManager->triggerEvent("vtiger.entity.beforesave.final", $entityData);
-			}
-		}
-	}
+            if (!$VTIGER_BULK_SAVE_MODE) {
+                $eventManager->triggerEvent("vtiger.entity.beforesave.modifiable", $entityData);
+                $eventManager->triggerEvent("vtiger.entity.beforesave", $entityData);
+                $eventManager->triggerEvent("vtiger.entity.beforesave.final", $entityData);
+            }
+        }
+    }
 
-	/**
-	 * Function to trigger the events which are after save
-	 * @param <type> $element
-	 * @param <type> $eventManager
-	 */
-	public function triggerAfterSaveEvents($element, $eventManager) {
-		global $VTIGER_BULK_SAVE_MODE;
-		if ($eventManager) {
-			$focusObj = $this->constructFocusObject($element);
-			if (isset($element['new']) && $element['new'] == true) {
-				$focusObj->newDelta = true;
-			}
-			$entityData = VTEntityData::fromCRMEntity($focusObj);
-			if (!$VTIGER_BULK_SAVE_MODE) {
+    /**
+     * Function to trigger the events which are after save
+     *
+     * @param <type> $element
+     * @param <type> $eventManager
+     */
+    public function triggerAfterSaveEvents($element, $eventManager)
+    {
+        global $VTIGER_BULK_SAVE_MODE;
+        if ($eventManager) {
+            $focusObj = $this->constructFocusObject($element);
+            if (isset($element['new']) && $element['new'] == true) {
+                $focusObj->newDelta = true;
+            }
+            $entityData = VTEntityData::fromCRMEntity($focusObj);
+            if (!$VTIGER_BULK_SAVE_MODE) {
+                $eventManager->triggerEvent("vtiger.entity.aftersave", $entityData);
+                $eventManager->triggerEvent("vtiger.entity.aftersave.final", $entityData);
+            }
+        }
+    }
 
-				$eventManager->triggerEvent("vtiger.entity.aftersave", $entityData);
-				$eventManager->triggerEvent("vtiger.entity.aftersave.final", $entityData);
-			}
-		}
-	}
+    /**
+     * Function to construct focus object
+     *
+     * @param <type> $element
+     * @param <type> $action
+     *
+     * @return <type>
+     */
+    public function constructFocusObject($element)
+    {
+        $focus = CRMEntity::getInstance($this->getMeta()->getTabName());
+        $fields = $focus->column_fields;
 
-	/**
-	 * Function to construct focus object
-	 * @param <type> $element
-	 * @param <type> $action
-	 * @return <type>
-	 */
-	public function constructFocusObject($element) {
+        foreach ($fields as $fieldName => $fieldValue) {
+            $fieldValue = $element[$fieldName];
+            if (is_array($fieldValue)) {
+                $focus->column_fields[$fieldName] = $fieldValue;
+            } elseif ($fieldValue !== null) {
+                $focus->column_fields[$fieldName] = decode_html($fieldValue);
+            }
+        }
+        $ids = vtws_getIdComponents($element['id']);
+        $focus->id = $ids[1];
 
-		$focus = CRMEntity::getInstance($this->getMeta()->getTabName());
-		$fields = $focus->column_fields;
+        return $focus;
+    }
 
-		foreach($fields as $fieldName => $fieldValue) {
-			$fieldValue = $element[$fieldName];
-			if(is_array($fieldValue)) {
-				$focus->column_fields[$fieldName] = $fieldValue;
-			} else if($fieldValue !== null) {
-				$focus->column_fields[$fieldName] = decode_html($fieldValue);
-			}
-		}
-		$ids = vtws_getIdComponents($element['id']);
-		$focus->id = $ids[1];
+    public function getChargesElement($elementId)
+    {
+        $chargesElement = [];
+        if ($elementId) {
+            $ids = vtws_getIdComponents($elementId);
+            $id = $ids[1];
+            $result = $this->pearDB->pquery('SELECT * FROM vtiger_inventorychargesrel WHERE recordid = ?', [$id]);
+            $rowData = $this->pearDB->fetch_array($result);
 
-		return $focus;
-	}
+            if ($rowData['charges']) {
+                $allCharges = getAllCharges();
+                $shippingTaxes = [];
+                $allShippingTaxes = getAllTaxes('all', 'sh');
+                foreach ($allShippingTaxes as $shTaxInfo) {
+                    $shippingTaxes[$shTaxInfo['taxid']] = $shTaxInfo;
+                }
 
-	public function getChargesElement($elementId) {
-		$chargesElement = array();
-		if ($elementId) {
-			$ids = vtws_getIdComponents($elementId);
-			$id = $ids[1];
-			$result = $this->pearDB->pquery('SELECT * FROM vtiger_inventorychargesrel WHERE recordid = ?', array($id));
-			$rowData = $this->pearDB->fetch_array($result);
+                $charges = Zend_Json::decode(html_entity_decode($rowData['charges']));
+                foreach ($charges as $chargeId => $chargeInfo) {
+                    $chargeName = html_entity_decode(strtolower(str_replace(' ', '_', $allCharges[$chargeId]['name'])));
 
-			if ($rowData['charges']) {
-				$allCharges = getAllCharges();
-				$shippingTaxes = array();
-				$allShippingTaxes = getAllTaxes('all', 'sh');
-				foreach ($allShippingTaxes as $shTaxInfo) {
-					$shippingTaxes[$shTaxInfo['taxid']] = $shTaxInfo;
-				}
+                    $chargeValue = $chargeInfo['value'];
+                    if (array_key_exists('percent', $chargeInfo)) {
+                        $chargeValue = $chargeInfo['percent'] . '%';
+                    }
+                    $chargesElement[$chargeName] = $chargeValue;
 
-				$charges = Zend_Json::decode(html_entity_decode($rowData['charges']));
-				foreach ($charges as $chargeId => $chargeInfo) {
-					$chargeName = html_entity_decode(strtolower(str_replace(' ', '_', $allCharges[$chargeId]['name'])));
+                    if ($chargeInfo['taxes']) {
+                        foreach ($chargeInfo['taxes'] as $taxId => $taxPercent) {
+                            if ($shippingTaxes[$taxId]) {
+                                $chargesElement[$chargeName . '_shtax' . $taxId] = $taxPercent;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-					$chargeValue = $chargeInfo['value'];
-					if (array_key_exists('percent', $chargeInfo)) {
-						$chargeValue = $chargeInfo['percent'].'%';
-					}
-					$chargesElement[$chargeName] = $chargeValue;
+        return $chargesElement;
+    }
 
-					if ($chargeInfo['taxes']) {
-						foreach ($chargeInfo['taxes'] as $taxId => $taxPercent) {
-							if ($shippingTaxes[$taxId]) {
-								$chargesElement[$chargeName.'_shtax'.$taxId] = $taxPercent;
-							}
-						}
-					}
-				}
-			}
-		}
-		return $chargesElement;
-	}
+    public function getCompoundTaxesElement($element, $lineItems)
+    {
+        $idComponents = vtws_getIdComponents($element['id']);
+        $recordId = $idComponents[1];
+        $compoundTaxesElement = [];
+        $recordTaxesCompoundInfo = [];
 
-	public function getCompoundTaxesElement($element, $lineItems) {
-		$idComponents = vtws_getIdComponents($element['id']);
-		$recordId = $idComponents[1];
-		$compoundTaxesElement = array();
-		$recordTaxesCompoundInfo = array();
+        $compoundInfo = getCompoundTaxesInfoForInventoryRecord($recordId, getSalesEntityType($recordId));
+        if (is_array($compoundInfo)) {
+            foreach ($compoundInfo as $taxId => $comInfo) {
+                foreach ($comInfo as $cTaxId) {
+                    $recordTaxesCompoundInfo["tax$taxId"][] = "tax$cTaxId";
+                }
+            }
+        }
 
-		$compoundInfo = getCompoundTaxesInfoForInventoryRecord($recordId, getSalesEntityType($recordId));
-		if (is_array($compoundInfo)) {
-			foreach ($compoundInfo as $taxId => $comInfo) {
-				foreach ($comInfo as $cTaxId) {
-					$recordTaxesCompoundInfo["tax$taxId"][] = "tax$cTaxId";
-				}
-			}
-		}
+        if ($recordTaxesCompoundInfo) {
+            if ($element['hdnTaxType'] === 'group') {
+                $compoundTaxesElement['compoundTaxInfo'] = $recordTaxesCompoundInfo;
+            } else {
+                foreach ($lineItems as $key => $lineItem) {
+                    $lineItems[$key]['compoundTaxInfo'] = $recordTaxesCompoundInfo;
+                }
+            }
+        }
+        $compoundTaxesElement['LineItems'] = $lineItems;
 
-		if ($recordTaxesCompoundInfo) {
-			if ($element['hdnTaxType'] === 'group') {
-				$compoundTaxesElement['compoundTaxInfo'] = $recordTaxesCompoundInfo;
-			} else {
-				foreach ($lineItems as $key => $lineItem) {
-					$lineItems[$key]['compoundTaxInfo'] = $recordTaxesCompoundInfo;
-				}
-			}
-		}
-		$compoundTaxesElement['LineItems'] = $lineItems;
-		return $compoundTaxesElement;
-	}
-
+        return $compoundTaxesElement;
+    }
 }
-
-?>

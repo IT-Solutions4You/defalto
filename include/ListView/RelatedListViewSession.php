@@ -1,13 +1,21 @@
 <?php
-/*********************************************************************************
-** The contents of this file are subject to the vtiger CRM Public License Version 1.0
-* ("License"); You may not use this file except in compliance with the License
-* The Original Code is:  vtiger CRM Open Source
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (C) vtiger.
-* All Rights Reserved.
-*
-********************************************************************************/
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is:  vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ *************************************************************************************/
+
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 require_once('include/logging.php');
 require_once('include/ListView/ListViewSession.php');
@@ -16,108 +24,111 @@ require_once('include/ListView/ListViewSession.php');
  * Portions created by vtigerCRM are Copyright (C) vtigerCRM.
  * All Rights Reserved.
  */
-class RelatedListViewSession {
+class RelatedListViewSession
+{
+    var $module = null;
+    var $start = null;
+    var $sorder = null;
+    var $sortby = null;
+    var $page_view = null;
 
-	var $module = null;
-	var $start = null;
-	var $sorder = null;
-	var $sortby = null;
-	var $page_view = null;
-	
-	function __construct()
+    function __construct()
     {
-        global $log,$currentModule;
-		$log->debug("Entering RelatedListViewSession() method ...");
+        global $log, $currentModule;
+        $log->debug("Entering RelatedListViewSession() method ...");
 
-		$this->module = $currentModule;
-		$this->start =1;
+        $this->module = $currentModule;
+        $this->start = 1;
     }
-	function RelatedListViewSession() {
-		// PHP4-style constructor.
-        // This will NOT be invoked, unless a sub-class that extends `foo` calls it.
-        // In that case, call the new-style constructor to keep compatibility.
-        self::__construct();
-	}
 
-	public static function addRelatedModuleToSession($relationId, $header) {
-		global $currentModule;
-		$_SESSION['relatedlist'][$currentModule][$relationId] = $header;
-		$start = RelatedListViewSession::getRequestStartPage();
-		RelatedListViewSession::saveRelatedModuleStartPage($relationId, $start);
-	}
+    public static function addRelatedModuleToSession($relationId, $header)
+    {
+        global $currentModule;
+        $_SESSION['relatedlist'][$currentModule][$relationId] = $header;
+        $start = RelatedListViewSession::getRequestStartPage();
+        RelatedListViewSession::saveRelatedModuleStartPage($relationId, $start);
+    }
 
-	public static function removeRelatedModuleFromSession($relationId, $header) {
-		global $currentModule;
+    public static function removeRelatedModuleFromSession($relationId, $header)
+    {
+        global $currentModule;
 
-		unset($_SESSION['relatedlist'][$currentModule][$relationId]);
-	}
+        unset($_SESSION['relatedlist'][$currentModule][$relationId]);
+    }
 
-	public static function getRelatedModulesFromSession() {
-		global $currentModule;
+    public static function getRelatedModulesFromSession()
+    {
+        global $currentModule;
 
-		$allRelatedModuleList = isPresentRelatedLists($currentModule);
-		$moduleList = array();
-		if(is_array($_SESSION['relatedlist'][$currentModule])){
-			foreach ($allRelatedModuleList as $relationId=>$label) {
-				if(array_key_exists($relationId, $_SESSION['relatedlist'][$currentModule])){
-					$moduleList[] = $_SESSION['relatedlist'][$currentModule][$relationId];
-				}
-			}
-		}
-		return $moduleList;
-	}
+        $allRelatedModuleList = isPresentRelatedLists($currentModule);
+        $moduleList = [];
+        if (is_array($_SESSION['relatedlist'][$currentModule])) {
+            foreach ($allRelatedModuleList as $relationId => $label) {
+                if (array_key_exists($relationId, $_SESSION['relatedlist'][$currentModule])) {
+                    $moduleList[] = $_SESSION['relatedlist'][$currentModule][$relationId];
+                }
+            }
+        }
 
-	public static function saveRelatedModuleStartPage($relationId, $start) {
-		global $currentModule;
+        return $moduleList;
+    }
 
-		$_SESSION['rlvs'][$currentModule][$relationId]['start'] = $start;
-	}
+    public static function saveRelatedModuleStartPage($relationId, $start)
+    {
+        global $currentModule;
 
-	public static function getCurrentPage($relationId) {
-		global $currentModule;
+        $_SESSION['rlvs'][$currentModule][$relationId]['start'] = $start;
+    }
 
-		if(!empty($_SESSION['rlvs'][$currentModule][$relationId]['start'])){
-			return $_SESSION['rlvs'][$currentModule][$relationId]['start'];
-		}
-		return 1;
-	}
+    public static function getCurrentPage($relationId)
+    {
+        global $currentModule;
 
-	public static function getRequestStartPage(){
-		$start = $_REQUEST['start'];
-		if(!is_numeric($start)){
-			$start = 1;
-		}
-		if($start < 1){
-			$start = 1;
-		}
-		$start = ceil($start);
-		return $start;
-	}
+        if (!empty($_SESSION['rlvs'][$currentModule][$relationId]['start'])) {
+            return $_SESSION['rlvs'][$currentModule][$relationId]['start'];
+        }
 
-	public static function getRequestCurrentPage($relationId, $query) {
-		global $list_max_entries_per_page, $adb;
+        return 1;
+    }
 
-		$start = 1;
-		if(!empty($_REQUEST['start'])){
-			$start = $_REQUEST['start'];
-			if($start == 'last'){
-				$count_result = $adb->query( Vtiger_Functions::mkCountQuery( $query));
-				$noofrows = $adb->query_result($count_result,0,"count");
-				if($noofrows > 0){
-					$start = ceil($noofrows/$list_max_entries_per_page);
-				}
-			}
-			if(!is_numeric($start)){
-				$start = 1;
-			}elseif($start < 1){
-				$start = 1;
-			}
-			$start = ceil($start);
-		}else {
-			$start = RelatedListViewSession::getCurrentPage($relationId);
-		}
-		return $start;
-	}
+    public static function getRequestStartPage()
+    {
+        $start = $_REQUEST['start'];
+        if (!is_numeric($start)) {
+            $start = 1;
+        }
+        if ($start < 1) {
+            $start = 1;
+        }
+        $start = ceil($start);
 
+        return $start;
+    }
+
+    public static function getRequestCurrentPage($relationId, $query)
+    {
+        global $list_max_entries_per_page, $adb;
+
+        $start = 1;
+        if (!empty($_REQUEST['start'])) {
+            $start = $_REQUEST['start'];
+            if ($start == 'last') {
+                $count_result = $adb->query(Vtiger_Functions::mkCountQuery($query));
+                $noofrows = $adb->query_result($count_result, 0, "count");
+                if ($noofrows > 0) {
+                    $start = ceil($noofrows / $list_max_entries_per_page);
+                }
+            }
+            if (!is_numeric($start)) {
+                $start = 1;
+            } elseif ($start < 1) {
+                $start = 1;
+            }
+            $start = ceil($start);
+        } else {
+            $start = RelatedListViewSession::getCurrentPage($relationId);
+        }
+
+        return $start;
+    }
 }
-?>

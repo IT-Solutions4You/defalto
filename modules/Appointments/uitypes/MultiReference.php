@@ -1,13 +1,13 @@
 <?php
-
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Appointments_MultiReference_UIType extends Vtiger_Reference_UIType
 {
     /**
@@ -20,9 +20,10 @@ class Appointments_MultiReference_UIType extends Vtiger_Reference_UIType
     public array $referenceRecords = [];
 
     /**
-     * @param mixed $value
-     * @param int|bool $record
+     * @param mixed       $value
+     * @param int|bool    $record
      * @param object|bool $recordInstance
+     *
      * @return string
      */
     public function getDisplayValue($value, $record = false, $recordInstance = false): string
@@ -88,6 +89,7 @@ class Appointments_MultiReference_UIType extends Vtiger_Reference_UIType
 
     /**
      * @param int $recordId
+     *
      * @return void
      */
     public function retrieveRecords($recordId)
@@ -110,6 +112,7 @@ class Appointments_MultiReference_UIType extends Vtiger_Reference_UIType
     /**
      * @param mixed $value
      * @param mixed $record
+     *
      * @return void
      */
     public function retrieveReference($record)

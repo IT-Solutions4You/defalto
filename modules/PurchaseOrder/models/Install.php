@@ -8,8 +8,8 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class PurchaseOrder_Install_Model extends Core_Install_Model {
-
+class PurchaseOrder_Install_Model extends Core_Install_Model
+{
     /**
      * @return void
      */
@@ -707,7 +707,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model {
 
     /**
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function installTables(): void
     {

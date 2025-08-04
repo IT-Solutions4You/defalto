@@ -1,18 +1,20 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 if (!function_exists('setCFNumberValue')) {
     function setCFNumberValue($name, $value = '0')
     {
         global $PDFContent;
         $value = its4you_formatNumberFromPDF($value);
         $PDFContent->PDFMakerCFNumberValue[$name] = $value;
+
         return "";
     }
 }
@@ -21,6 +23,7 @@ if (!function_exists('sumCFNumberValue')) {
     function sumCFNumberValue($name, $value1)
     {
         mathCFNumberValue($name, "+", $value1);
+
         return "";
     }
 }
@@ -29,6 +32,7 @@ if (!function_exists('deductCFNumberValue')) {
     function deductCFNumberValue($name, $value1)
     {
         mathCFNumberValue($name, "-", $value1);
+
         return "";
     }
 }
@@ -77,11 +81,13 @@ if (!function_exists('mathCFNumberValue')) {
                 $PDFContent->PDFMakerCFNumberValue[$name] -= $newvalue;
             }
         }
+
         return "";
     }
 }
 /**
  * This function show number value
+ *
  * @param $name - number name
  * */
 if (!function_exists('showCFNumberValue')) {

@@ -1,16 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
 {
-
     const RECORD_STRUCTURE_MODE_DEFAULT = '';
     const RECORD_STRUCTURE_MODE_FILTER = 'Filter';
     const RECORD_STRUCTURE_MODE_EDITTASK = 'EditTask';
@@ -24,6 +23,7 @@ class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
         $instance->setEMAILMakerModel($EMAILMakerModel);
 
         $instance->setModule($EMAILMakerModel->getModule());
+
         return $instance;
     }
 
@@ -34,14 +34,14 @@ class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
 
     public function getFieldsByType($fieldTypes)
     {
-        $fieldTypesArray = array();
+        $fieldTypesArray = [];
         if (gettype($fieldTypes) == 'string') {
             array_push($fieldTypesArray, $fieldTypes);
         } else {
             $fieldTypesArray = $fieldTypes;
         }
         $structure = $this->getStructure();
-        $fieldsBasedOnType = array();
+        $fieldsBasedOnType = [];
         if (!empty($structure)) {
             foreach ($structure as $block => $fields) {
                 foreach ($fields as $metaKey => $field) {
@@ -52,6 +52,7 @@ class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
                 }
             }
         }
+
         return $fieldsBasedOnType;
     }
 
@@ -66,14 +67,14 @@ class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
             $recordId = $recordModel->getId();
         }
 
-        $values = array();
+        $values = [];
         $baseModuleModel = $moduleModel = $this->getModule();
         $blockModelList = $moduleModel->getBlocks();
 
         foreach ($blockModelList as $blockLabel => $blockModel) {
             $fieldModelList = $blockModel->getFields();
             if (!empty ($fieldModelList)) {
-                $values[$blockLabel] = array();
+                $values[$blockLabel] = [];
                 foreach ($fieldModelList as $fieldName => $fieldModel) {
                     if ($fieldModel->isViewable()) {
                         if ($fieldModel->getDisplayType() == '6') {
@@ -99,12 +100,12 @@ class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
         }
 
         //All the reference fields should also be sent
-        $fields = $moduleModel->getFieldsByType(array('reference', 'owner', 'multireference'));
+        $fields = $moduleModel->getFieldsByType(['reference', 'owner', 'multireference']);
         foreach ($fields as $parentFieldName => $field) {
             $type = $field->getFieldDataType();
             $referenceModules = $field->getReferenceList();
             if ($type == 'owner') {
-                $referenceModules = array('Users');
+                $referenceModules = ['Users'];
             }
             foreach ($referenceModules as $refModule) {
                 $moduleModel = Vtiger_Module_Model::getInstance($refModule);
@@ -119,7 +120,10 @@ class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
                                     continue;
                                 }
                                 $name = "($parentFieldName : ($refModule) $fieldName)";
-                                $label = vtranslate($field->get('label'), $baseModuleModel->getName()) . ' : (' . vtranslate($refModule, $refModule) . ') ' . vtranslate($fieldModel->get('label'), $refModule);
+                                $label = vtranslate($field->get('label'), $baseModuleModel->getName()) . ' : (' . vtranslate($refModule, $refModule) . ') ' . vtranslate(
+                                        $fieldModel->get('label'),
+                                        $refModule
+                                    );
                                 $fieldModel->set('emailmaker_columnname', $name)->set('emailmaker_columnlabel', $label);
                                 if (!empty($recordId)) {
                                     $fieldValueType = $recordModel->getFieldFilterValueType($name);
@@ -134,7 +138,6 @@ class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
                                 // owner fields should also be non editable
                                 if (!$field->isEditable() || $type == "owner") {
                                     $fieldModel->set('emailmaker_fieldEditable', false);
-
                                 }
                                 $values[$field->get('label')][$name] = clone $fieldModel;
                             }
@@ -144,6 +147,7 @@ class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
             }
         }
         $this->structuredValues = $values;
+
         return $values;
     }
 
@@ -159,7 +163,8 @@ class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
 
     public function getAllDateTimeFields()
     {
-        $fieldTypes = array('date', 'datetime');
+        $fieldTypes = ['date', 'datetime'];
+
         return $this->getFieldsByType($fieldTypes);
     }
 
@@ -168,12 +173,12 @@ class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
         $moduleModel = $this->getModule();
         $nameFieldsList[$moduleModel->getName()] = $moduleModel->getNameFields();
 
-        $fields = $moduleModel->getFieldsByType(array('reference', 'owner', 'multireference'));
+        $fields = $moduleModel->getFieldsByType(['reference', 'owner', 'multireference']);
         foreach ($fields as $parentFieldName => $field) {
             $type = $field->getFieldDataType();
             $referenceModules = $field->getReferenceList();
             if ($type == 'owner') {
-                $referenceModules = array('Users');
+                $referenceModules = ['Users'];
             }
             foreach ($referenceModules as $refModule) {
                 $moduleModel = Vtiger_Module_Model::getInstance($refModule);
@@ -181,7 +186,7 @@ class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
             }
         }
 
-        $nameFields = array();
+        $nameFields = [];
         $recordStructure = $this->getStructure();
         foreach ($nameFieldsList as $moduleName => $fieldNamesList) {
             foreach ($fieldNamesList as $fieldName) {
@@ -194,6 +199,7 @@ class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
                 }
             }
         }
+
         return $nameFields;
     }
 }

@@ -1,104 +1,106 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-Vtiger.Class("Settings_Vtiger_AnnouncementEdit_Js",{},{
-	
-	//Contains Announcement container
-	container : false,
-	
-	//return the container of Announcements
-	getContainer : function() {
-        if(this.container === false){
-			this.container = jQuery('#AnnouncementContainer').find('.contents');
-		}
+Vtiger.Class("Settings_Vtiger_AnnouncementEdit_Js", {}, {
+
+    //Contains Announcement container
+    container: false,
+
+    //return the container of Announcements
+    getContainer: function () {
+        if (this.container === false) {
+            this.container = jQuery('#AnnouncementContainer').find('.contents');
+        }
         return this.container;
     },
-	
-    init : function() {
-       this.addComponents();
-	},
-   
-	addComponents : function (){
-      this.addComponent('Vtiger_Index_Js'); 
-	},
-    
-	/*
-	 * Function to save the Announcement content
-	 */
-	saveAnnouncement : function(textAreaElement) {
-		var aDeferred = jQuery.Deferred();
-		var content = textAreaElement.val();
-		var params = {
-			'module' : app.getModuleName(),
-			'parent' : app.getParentModuleName(),
-			'action' : 'AnnouncementSaveAjax',
-			'announcement' : content
-		};
-		app.request.post({"data":params}).then(
-			function(error,data) {
-                if(error === null){
+
+    init: function () {
+        this.addComponents();
+    },
+
+    addComponents: function () {
+        this.addComponent('Vtiger_Index_Js');
+    },
+
+    /*
+     * Function to save the Announcement content
+     */
+    saveAnnouncement: function (textAreaElement) {
+        var aDeferred = jQuery.Deferred();
+        var content = textAreaElement.val();
+        var params = {
+            'module': app.getModuleName(),
+            'parent': app.getParentModuleName(),
+            'action': 'AnnouncementSaveAjax',
+            'announcement': content
+        };
+        app.request.post({"data": params}).then(
+            function (error, data) {
+                if (error === null) {
                     aDeferred.resolve();
-                }else {
+                } else {
                     aDeferred.reject();
                 }
             });
-		return aDeferred.promise();
-	},
-    
-    registerEventForTextAreaFields : function(parentElement) {
-		if(typeof parentElement == 'undefined') {
-			parentElement = jQuery('body');
-		}
+        return aDeferred.promise();
+    },
+
+    registerEventForTextAreaFields: function (parentElement) {
+        if (typeof parentElement == 'undefined') {
+            parentElement = jQuery('body');
+        }
         parentElement = jQuery(parentElement);
-        
-        if(parentElement.is('textarea')){
-			var element = parentElement;
-		}else{
-			var element = jQuery('textarea', parentElement);
-		}
-		if(element.length === 0){
-			return;
-		}
-		
-	},
-	/*
-	 * Function to register keyUp event for text area to show save button
-	 */
-	registerKeyUpEvent : function() {
+
+        if (parentElement.is('textarea')) {
+            var element = parentElement;
+        } else {
+            var element = jQuery('textarea', parentElement);
+        }
+        if (element.length === 0) {
+            return;
+        }
+
+    },
+    /*
+     * Function to register keyUp event for text area to show save button
+     */
+    registerKeyUpEvent: function () {
         var thisInstance = this;
-		var container = thisInstance.getContainer();
-		container.one('keyup', '.announcementContent', function(e) {
-			jQuery('.saveAnnouncement', container).removeClass('hide');
-		});
-	},
-	
-	registerEvents: function() {
-		var thisInstance = this;
-		var container = thisInstance.getContainer();
+        var container = thisInstance.getContainer();
+        container.one('keyup', '.announcementContent', function (e) {
+            jQuery('.saveAnnouncement', container).removeClass('hide');
+        });
+    },
+
+    registerEvents: function () {
+        var thisInstance = this;
+        var container = thisInstance.getContainer();
         var textAreaElement = jQuery('.announcementContent', container);
         var saveButton = jQuery('.saveAnnouncement', container);
-		
-		//register text area fields to autosize
-		this.registerEventForTextAreaFields(textAreaElement);
-		thisInstance.registerKeyUpEvent();
-		
-		//Register click event for save button
-		saveButton.click(function(e) {
-			saveButton.addClass('hide');
-			
-			//save the new Announcement
-			thisInstance.saveAnnouncement(textAreaElement).then(
-				function(data) {
-                        thisInstance.registerKeyUpEvent();
-                        var Message =  app.vtranslate('JS_ANNOUNCEMENT_SAVED')
-                       
-                    app.helper.showSuccessNotification({'message':Message});
-				});
-		});
-	}
+
+        //register text area fields to autosize
+        this.registerEventForTextAreaFields(textAreaElement);
+        thisInstance.registerKeyUpEvent();
+
+        //Register click event for save button
+        saveButton.click(function (e) {
+            saveButton.addClass('hide');
+
+            //save the new Announcement
+            thisInstance.saveAnnouncement(textAreaElement).then(
+                function (data) {
+                    thisInstance.registerKeyUpEvent();
+                    var Message = app.vtranslate('JS_ANNOUNCEMENT_SAVED')
+
+                    app.helper.showSuccessNotification({'message': Message});
+                });
+        });
+    }
 
 });

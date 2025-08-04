@@ -1,29 +1,40 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.2
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Vtiger_ModCommentsDetailAjax_View extends Vtiger_IndexAjax_View {
+class Vtiger_ModCommentsDetailAjax_View extends Vtiger_IndexAjax_View
+{
+    public function __construct()
+    {
+        $this->exposeMethod('saveRollupSettings');
+        $this->exposeMethod('getNextGroupOfRollupComments');
+    }
 
-    public function __construct() {
-		$this->exposeMethod('saveRollupSettings');
-		$this->exposeMethod('getNextGroupOfRollupComments');
-	}
-
-    public function requiresPermission(Vtiger_Request $request) {
-        $permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+    public function requiresPermission(Vtiger_Request $request)
+    {
+        $permissions[] = ['module_parameter' => 'custom_module', 'action' => 'DetailView'];
         $request->set('custom_module', 'ModComments');
 
-		return $permissions;
+        return $permissions;
     }
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      * @throws Exception
      */
@@ -33,6 +44,7 @@ class Vtiger_ModCommentsDetailAjax_View extends Vtiger_IndexAjax_View {
 
         if (!empty($mode) && $this->isMethodExposed($mode)) {
             $this->invokeExposedMethod($mode, $request);
+
             return;
         }
 
@@ -43,49 +55,54 @@ class Vtiger_ModCommentsDetailAjax_View extends Vtiger_IndexAjax_View {
 
     /**
      * @param $request
+     *
      * @return Vtiger_Viewer
      */
-    public function getRollupComments($request) {
-		$startIndex = $request->get('startIndex', 0);
-		$parentRecordId = $request->get('parentId');
-		$parenModule = $request->get('parent');
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$request->set('rollup_status', 1);
-		$rollupsettings = ModComments_Module_Model::storeRollupSettingsForUser($currentUserModel, $request);
-		$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentRecordId, $parenModule);
-		$commentsRecordModel = $parentRecordModel->getRollupCommentsForModule($startIndex);
-		$modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
+    public function getRollupComments($request)
+    {
+        $startIndex = $request->get('startIndex', 0);
+        $parentRecordId = $request->get('parentId');
+        $parenModule = $request->get('parent');
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $request->set('rollup_status', 1);
+        $rollupsettings = ModComments_Module_Model::storeRollupSettingsForUser($currentUserModel, $request);
+        $parentRecordModel = Vtiger_Record_Model::getInstanceById($parentRecordId, $parenModule);
+        $commentsRecordModel = $parentRecordModel->getRollupCommentsForModule($startIndex);
+        $modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
 
-		$fileNameFieldModel = Vtiger_Field::getInstance("filename", $modCommentsModel);
-		$fileFieldModel = Vtiger_Field_Model::getInstanceFromFieldObject($fileNameFieldModel);
+        $fileNameFieldModel = Vtiger_Field::getInstance("filename", $modCommentsModel);
+        $fileFieldModel = Vtiger_Field_Model::getInstanceFromFieldObject($fileNameFieldModel);
 
-		$viewer = $this->getViewer($request);
-		$viewer->assign('CURRENTUSER', $currentUserModel);
-		$viewer->assign('COMMENTS_MODULE_MODEL', $modCommentsModel);
-		$viewer->assign('PARENT_COMMENTS', $commentsRecordModel);
-		$viewer->assign('MODULE_NAME', $parenModule);
-		$viewer->assign('FIELD_MODEL', $fileFieldModel);
-		$viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
-		$viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
-		$viewer->assign('MODULE_RECORD', $parentRecordId);
-		$viewer->assign('ROLLUP_STATUS', $request->get('rollup_status'));
-		$viewer->assign('ROLLUPID', $rollupsettings['rollupid']);
-		$viewer->assign('STARTINDEX', $startIndex + 10);
+        $viewer = $this->getViewer($request);
+        $viewer->assign('CURRENTUSER', $currentUserModel);
+        $viewer->assign('COMMENTS_MODULE_MODEL', $modCommentsModel);
+        $viewer->assign('PARENT_COMMENTS', $commentsRecordModel);
+        $viewer->assign('MODULE_NAME', $parenModule);
+        $viewer->assign('FIELD_MODEL', $fileFieldModel);
+        $viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
+        $viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
+        $viewer->assign('MODULE_RECORD', $parentRecordId);
+        $viewer->assign('ROLLUP_STATUS', $request->get('rollup_status'));
+        $viewer->assign('ROLLUPID', $rollupsettings['rollupid']);
+        $viewer->assign('STARTINDEX', $startIndex + 10);
 
-		return $viewer;
-	}
+        return $viewer;
+    }
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
-    public function saveRollupSettings(Vtiger_Request $request) {
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		ModComments_Module_Model::storeRollupSettingsForUser($currentUserModel, $request);
-	}
+    public function saveRollupSettings(Vtiger_Request $request)
+    {
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        ModComments_Module_Model::storeRollupSettingsForUser($currentUserModel, $request);
+    }
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function getNextGroupOfRollupComments(Vtiger_Request $request)
@@ -97,5 +114,4 @@ class Vtiger_ModCommentsDetailAjax_View extends Vtiger_IndexAjax_View {
             $viewer->view('comments/List.tpl', $moduleName);
         }
     }
-
 }

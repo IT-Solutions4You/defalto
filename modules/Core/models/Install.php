@@ -1,11 +1,11 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 abstract class Core_Install_Model extends Core_DatabaseData_Model
@@ -216,7 +216,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function deleteModule(): void
     {
@@ -281,7 +281,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @return array
-     * @throws AppException
+     * @throws Exception
      */
     abstract public function getBlocks(): array;
 
@@ -309,7 +309,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     abstract public function getTables(): array;
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function install()
     {
@@ -353,7 +353,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      * @param string $moduleName
      *
      * @return false|Vtiger_Module
-     * @throws AppException
+     * @throws Exception
      */
     public function createModule(string $moduleName): Vtiger_Module|bool
     {
@@ -461,7 +461,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @return void
-     * @throws AppException
+     * @throws Exception
      * @throws Exception
      */
     public function installModule()
@@ -651,7 +651,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      * @param array  $fieldParams
      *
      * @return Vtiger_Field_Model|bool
-     * @throws AppException
+     * @throws Exception
      */
     public function createField(string $fieldName, array $fieldParams): Vtiger_Field_Model|bool
     {
@@ -801,11 +801,11 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @return mixed
-     * @throws AppException
+     * @throws Exception
      */
     public function migrate()
     {
-        throw new AppException('Migration undefined');
+        throw new Exception('Migration undefined');
     }
 
     /**
@@ -1011,7 +1011,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      * @param $register
      *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function updateWorkflows($register = true)
     {
@@ -1110,7 +1110,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function retrieveBlocks(): void
     {
@@ -1134,7 +1134,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function createPicklistTable(string $table, string $tableId, string $columnName): void
     {
@@ -1165,7 +1165,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      * @param string $recurrence
      *
      * @return bool|object
-     * @throws AppException
+     * @throws Exception
      */
     public function updateWorkflowTask(string $name, string $moduleName, array $conditions, string $trigger, string $recurrence): bool|object
     {
@@ -1194,7 +1194,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      * @param object $workflowModel
      *
      * @return object|bool
-     * @throws AppException
+     * @throws Exception
      */
     public function updateWorkflowAction(string $taskType, string $taskName, array $data, object $workflowModel): object|bool
     {

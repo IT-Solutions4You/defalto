@@ -1,15 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_Display_Model extends Vtiger_Base_Model
 {
-
     public function __construct()
     {
         $this->db = PearDatabase::GetInstance();
@@ -51,12 +51,12 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
             }
             $queryGenerator->setFields($Fields);
         }
+
         return $instance->set('module', $moduleModel)->set('query_generator', $queryGenerator)->set('listview_controller', $controller);
     }
 
     public function CheckDisplayConditions($emailtemplateResult, $entityData, $formodule, $entityCache = false)
     {
-
         $current_user = Users_Record_Model::getCurrentUserModel();
 
         $v = true;
@@ -85,6 +85,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 }
             }
         }
+
         return $v;
     }
 
@@ -97,11 +98,10 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
         }
         $finalResult = true;
         if (is_array($expr)) {
-
             $entityData = $entityCache->forId($id);
             $data = $entityData->getData();
-            $groupResults = array();
-            $expressionResults = array();
+            $groupResults = [];
+            $expressionResults = [];
             $i = 0;
             foreach ($expr as $cond) {
                 $conditionGroup = $cond['groupid'];
@@ -112,11 +112,11 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if (count($matches) == 0) {
                     $expressionResults[$conditionGroup][$i]['result'] = $this->checkCondition($entityData, $cond);
                 } else {
-                    list($full, $referenceField, $referenceModule, $fieldname) = $matches;
+                    [$full, $referenceField, $referenceModule, $fieldname] = $matches;
                     $referenceFieldId = $data[$referenceField];
                     if (in_array($entityData->getModuleName(), InventoryItem_Utils_Helper::getInventoryItemModules())) {
-                        if (in_array($referenceModule, array('Products', 'Services'))) {
-                            $referenceFieldId = array();
+                        if (in_array($referenceModule, ['Products', 'Services'])) {
+                            $referenceFieldId = [];
                             foreach ($data['LineItems'] as $key => $value) {
                                 $referenceFieldId[] = $value[$referenceField];
                             }
@@ -150,7 +150,6 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                     } else {
                         $expressionResults[$conditionGroup][$i]['result'] = false;
                     }
-
                 }
                 $expressionResults[$conditionGroup][$i + 1]['logicaloperator'] = (!empty($cond['joincondition'])) ? $cond['joincondition'] : 'and';
                 $groupResults[$conditionGroup]['logicaloperator'] = (!empty($cond['groupjoin'])) ? $cond['groupjoin'] : 'and';
@@ -198,6 +197,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 }
             }
         }
+
         return $finalResult;
     }
 
@@ -212,28 +212,26 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
 
     public function transformConditionsToFilter($conditions)
     {
-        $wfCondition = array();
+        $wfCondition = [];
 
         if (!empty($conditions)) {
             foreach ($conditions as $index => $condition) {
                 $columns = $condition['columns'];
                 if ($index == '1' && empty($columns)) {
-                    $wfCondition[] = array(
-                        'fieldname' => '',
-                        'operation' => '',
-                        'value' => '',
-                        'valuetype' => '',
+                    $wfCondition[] = [
+                        'fieldname'     => '',
+                        'operation'     => '',
+                        'value'         => '',
+                        'valuetype'     => '',
                         'joincondition' => '',
-                        'groupid' => '0'
-                    );
+                        'groupid'       => '0'
+                    ];
                 }
                 if (!empty($columns) && is_array($columns)) {
                     foreach ($columns as $column) {
-
-                        list($columntable, $columnname, $fieldname, $label, $columntype) = explode(":", $column['columnname']);
+                        [$columntable, $columnname, $fieldname, $label, $columntype] = explode(":", $column['columnname']);
 
                         if ($columntype == "D" && $column['valuetype'] == "rawtext" && in_array($column['comparator'], $this->ConvertDate)) {
-
                             if ($column['comparator'] == "between") {
                                 $values = explode(',', $column['value']);
                                 $column['value'] = array_map('getValidDBInsertDateValue', $values);
@@ -242,25 +240,25 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                             }
                         }
 
-                        $wfCondition[] = array(
-                            'fieldname' => $fieldname,
-                            'operation' => $column['comparator'],
-                            'value' => $column['value'],
-                            'valuetype' => $column['valuetype'],
+                        $wfCondition[] = [
+                            'fieldname'     => $fieldname,
+                            'operation'     => $column['comparator'],
+                            'value'         => $column['value'],
+                            'valuetype'     => $column['valuetype'],
                             'joincondition' => $column['column_condition'],
-                            'groupjoin' => $condition['condition'],
-                            'groupid' => $column['groupid']
-                        );
+                            'groupjoin'     => $condition['condition'],
+                            'groupid'       => $column['groupid']
+                        ];
                     }
                 }
             }
         }
+
         return $wfCondition;
     }
 
     public function checkCondition($entityData, $cond, $referredEntityData = null)
     {
-
         $data = $entityData->getData();
         $condition = $cond['operation'];
         if (empty($condition)) {
@@ -269,7 +267,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
 
         if ($cond['fieldname'] == 'date_start' || $cond['fieldname'] == 'due_date') {
             $fieldName = $cond['fieldname'];
-            $dateTimePair = array('date_start' => 'time_start', 'due_date' => 'time_end');
+            $dateTimePair = ['date_start' => 'time_start', 'due_date' => 'time_end'];
             if (array_key_exists($dateTimePair[$fieldName], $data)) {
                 $fieldValue = $data[$fieldName] . " " . $data[$dateTimePair[$fieldName]];
             } else {
@@ -334,7 +332,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
         if ($fieldInstance && ($fieldInstance->getFieldDataType() == 'owner' || $fieldInstance->getFieldDataType() == 'ownergroup')) {
             if ($condition == 'is' || $condition == 'is not') {
                 //To avoid again checking whether it is user or not
-                $idList = array();
+                $idList = [];
                 $idList[] = vtws_getWebserviceEntityId('Users', $value);
                 $idList[] = vtws_getWebserviceEntityId('Groups', $value);
                 $value = $idList;
@@ -375,6 +373,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                     if ($fieldInstance && $fieldInstance->getFieldDataType() == 'datetime') {
                         $value = getValidDBInsertDateValue($value);
                     }
+
                     return $fieldValue == $value;
                 }
             case "is not":
@@ -389,6 +388,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                     if ($fieldInstance && $fieldInstance->getFieldDataType() == 'datetime') {
                         $value = getValidDBInsertDateValue($value);
                     }
+
                     return $fieldValue != $value;
                 }
             case "contains":
@@ -412,10 +412,12 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                                         break;
                                     }
                                 }
+
                                 return $conditionMatched;
                             }
                         }
                     }
+
                     return false;
                 }
                 if (is_array($value)) {
@@ -424,6 +426,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if (empty($fieldValue) && empty($value)) {
                     return true;
                 }
+
                 return strpos($fieldValue, $value) !== false;
             case "does not contain":
                 if ($fieldInstance && $fieldInstance->getFieldDataType() == 'multipicklist') {
@@ -446,10 +449,12 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                                         break;
                                     }
                                 }
+
                                 return $conditionMatched;
                             }
                         }
                     }
+
                     return true;
                 }
                 if (empty($value)) {
@@ -458,6 +463,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if (is_array($value)) {
                     return !in_array($fieldValue, $value);
                 }
+
                 return strpos($fieldValue, $value) === false;
             case "starts with":
                 return $this->startsWith($fieldValue, $value);
@@ -470,11 +476,13 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if (empty($fieldValue)) {
                     return true;
                 }
+
                 return false;
             case "is not empty":
                 if (empty($fieldValue)) {
                     return false;
                 }
+
                 return true;
             case "before":
                 if (empty($fieldValue)) {
@@ -484,6 +492,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($fieldValue < $value) {
                     return true;
                 }
+
                 return false;
             case "after":
                 if (empty($fieldValue)) {
@@ -493,6 +502,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($fieldValue > $value) {
                     return true;
                 }
+
                 return false;
             case "between":
                 if (empty($fieldValue)) {
@@ -503,6 +513,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($fieldValue > $values[0] && $fieldValue < $values[1]) {
                     return true;
                 }
+
                 return false;
             case 'is today':
                 $today = date('Y-m-d');
@@ -516,6 +527,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($fieldValue == $today) {
                     return true;
                 }
+
                 return false;
             case 'less than days ago':
                 if (empty($fieldValue) || empty($value)) {
@@ -526,6 +538,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($olderDate <= $fieldValue && $fieldValue <= $today) {
                     return true;
                 }
+
                 return false;
             case 'more than days ago':
                 if (empty($fieldValue) || empty($value)) {
@@ -535,6 +548,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($fieldValue <= $olderDate) {
                     return true;
                 }
+
                 return false;
             case 'in less than':
                 if (empty($fieldValue) || empty($value)) {
@@ -545,6 +559,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($today <= $fieldValue && $fieldValue <= $futureDate) {
                     return true;
                 }
+
                 return false;
             case 'in more than':
                 if (empty($fieldValue) || empty($value)) {
@@ -554,6 +569,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($fieldValue >= $futureDate) {
                     return true;
                 }
+
                 return false;
             case 'days ago':
                 if (empty($fieldValue) || empty($value)) {
@@ -564,6 +580,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($fieldValue == $olderDate) {
                     return true;
                 }
+
                 return false;
             case 'days later':
                 if (empty($fieldValue) || empty($value)) {
@@ -574,6 +591,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($fieldValue == $futureDate) {
                     return true;
                 }
+
                 return false;
 
             case 'less than hours before':
@@ -585,6 +603,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($olderDateTime <= $rawFieldValue && $rawFieldValue <= $currentTime) {
                     return true;
                 }
+
                 return false;
 
             case 'less than hours later':
@@ -596,6 +615,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($currentTime <= $rawFieldValue && $rawFieldValue <= $futureDateTime) {
                     return true;
                 }
+
                 return false;
 
             case 'more than hours before':
@@ -606,6 +626,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($rawFieldValue <= $olderDateTime) {
                     return true;
                 }
+
                 return false;
             case 'more than hours later':
                 if (empty($rawFieldValue) || empty($value)) {
@@ -616,6 +637,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($rawFieldValue >= $futureDateTime) {
                     return true;
                 }
+
                 return false;
             case 'is tomorrow' :
                 $tomorrow = date('Y-m-d', strtotime('+1 days'));
@@ -623,6 +645,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($fieldValue == $tomorrow) {
                     return true;
                 }
+
                 return false;
             case 'is yesterday' :
                 $yesterday = date('Y-m-d', strtotime('-1 days'));
@@ -630,6 +653,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($fieldValue == $yesterday) {
                     return true;
                 }
+
                 return false;
             case 'less than days later' :
                 if (empty($fieldValue) || empty($value)) {
@@ -640,6 +664,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($currentDate <= $fieldValue && $fieldValue <= $futureDate) {
                     return true;
                 }
+
                 return false;
             case 'more than days later' :
                 if (empty($fieldValue) || empty($value)) {
@@ -649,6 +674,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if ($fieldValue >= $futureDate) {
                     return true;
                 }
+
                 return false;
 
             default:
@@ -681,7 +707,6 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
 
     public function getConditionsForDetail($displayed, $conditions, $moduleName)
     {
-
         $oldformat = false;
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
         $conditions = decode_html($conditions);
@@ -691,11 +716,11 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
             $wfCond = $this->transformConditionsToFilter($wfCond);
             $oldformat = true;
         }
-        $conditionList = array(
-            'All' => [],
-            'Any' => [],
+        $conditionList = [
+            'All'       => [],
+            'Any'       => [],
             'displayed' => $oldformat
-        );
+        ];
 
         if (is_array($wfCond)) {
             for ($k = 0; $k < (count($wfCond)); ++$k) {
@@ -710,7 +735,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                         $fieldLabel = '<b>' . $fieldName . '</b>';
                     }
                 } else {
-                    list($full, $referenceField, $referenceModule, $fieldName) = $matches;
+                    [$full, $referenceField, $referenceModule, $fieldName] = $matches;
                     $referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
                     $fieldModel = Vtiger_Field_Model::getInstance($fieldName, $referenceModuleModel);
                     $referenceFieldModel = Vtiger_Field_Model::getInstance($referenceField, $moduleModel);
@@ -750,7 +775,6 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
 
     public function transformToAdvancedFilterCondition($conditions)
     {
-
         if (!empty($conditions)) {
             $conditions = decode_html($conditions);
             $is_old_contition_format = $this->isOldContitionFormat($conditions);
@@ -758,7 +782,7 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
             if (!$is_old_contition_format) {
                 $conditions = Zend_Json::decode($conditions);
 
-                $transformedConditions = array();
+                $transformedConditions = [];
 
                 foreach ($conditions as $index => $info) {
                     $columnName = $info['fieldname'];
@@ -783,29 +807,30 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                         $value = $folderInstance->getName();
                     }
                     if (!($info['groupid'])) {
-                        $firstGroup[] = array(
-                            'columnname' => $columnName,
-                            'comparator' => $info['operation'],
-                            'value' => $value,
+                        $firstGroup[] = [
+                            'columnname'       => $columnName,
+                            'comparator'       => $info['operation'],
+                            'value'            => $value,
                             'column_condition' => $info['joincondition'],
-                            'valuetype' => $info['valuetype'],
-                            'groupid' => $info['groupid']
-                        );
+                            'valuetype'        => $info['valuetype'],
+                            'groupid'          => $info['groupid']
+                        ];
                     } else {
-                        $secondGroup[] = array(
-                            'columnname' => $columnName,
-                            'comparator' => $info['operation'],
-                            'value' => $value,
+                        $secondGroup[] = [
+                            'columnname'       => $columnName,
+                            'comparator'       => $info['operation'],
+                            'value'            => $value,
                             'column_condition' => $info['joincondition'],
-                            'valuetype' => $info['valuetype'],
-                            'groupid' => $info['groupid']
-                        );
+                            'valuetype'        => $info['valuetype'],
+                            'groupid'          => $info['groupid']
+                        ];
                     }
                 }
             }
         }
-        $transformedConditions[1] = array('columns' => $firstGroup);
-        $transformedConditions[2] = array('columns' => $secondGroup);
+        $transformedConditions[1] = ['columns' => $firstGroup];
+        $transformedConditions[2] = ['columns' => $secondGroup];
+
         return $transformedConditions;
     }
 }

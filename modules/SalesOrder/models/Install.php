@@ -10,7 +10,6 @@
 
 class SalesOrder_Install_Model extends Core_Install_Model
 {
-
     /**
      * @return void
      */
@@ -858,7 +857,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
 
     /**
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function installTables(): void
     {

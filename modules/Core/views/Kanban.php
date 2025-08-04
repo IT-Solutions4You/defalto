@@ -1,15 +1,15 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Core_Kanban_View extends Vtiger_Index_View
 {
-
     public function getHeaderScripts(Vtiger_Request $request)
     {
         $moduleName = $request->getModule();
@@ -25,7 +25,7 @@ class Core_Kanban_View extends Vtiger_Index_View
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function getProcess(Vtiger_Request $request)
     {
@@ -36,7 +36,7 @@ class Core_Kanban_View extends Vtiger_Index_View
         $kanbanModel->retrieveRequestInfo($request);
 
         $fieldValues = $kanbanModel->getFieldValues();
-        $recordsCount = $recordsInfo = $recordsHeader = array();
+        $recordsCount = $recordsInfo = $recordsHeader = [];
 
         foreach ($fieldValues as $fieldValue) {
             $kanbanModel->filterRecordsByFieldValue($fieldValue);
@@ -73,7 +73,7 @@ class Core_Kanban_View extends Vtiger_Index_View
         $kanbanModel = Core_Kanban_Model::getInstance($module);
         $kanbanModel->retrieveRequestInfo($request);
 
-        $recordsInfo = array();
+        $recordsInfo = [];
         $fieldValues = $kanbanModel->getFieldValues();
 
         foreach ($fieldValues as $fieldValue) {
@@ -83,7 +83,7 @@ class Core_Kanban_View extends Vtiger_Index_View
 
         $response = new Vtiger_Response();
         $response->setResult([
-            'success' => true,
+            'success'      => true,
             'records_info' => $recordsInfo,
         ]);
         $response->emit();
@@ -105,6 +105,7 @@ class Core_Kanban_View extends Vtiger_Index_View
 
         if (!empty($mode) && $this->isMethodExposed($mode)) {
             $this->invokeExposedMethod($mode, $request);
+
             return;
         }
 

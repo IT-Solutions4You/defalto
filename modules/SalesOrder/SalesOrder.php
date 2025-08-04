@@ -12,12 +12,21 @@
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
  ********************************************************************************/
-
-/**
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+/*********************************************************************************
+ * $Header$
+ * Description:  Defines the Account SugarBean Account entity with the necessary
+ * methods and variables.
+ * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
  * All Rights Reserved.
+ * Contributor(s): ______________________________________..
+ */
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 class SalesOrder extends CRMEntity
 {
@@ -135,6 +144,7 @@ class SalesOrder extends CRMEntity
      *  creates an instance for PearDatabase class and get values for column_fields array of SalesOrder class.
      */
     public function __construct()
+
     {
         $this->log = Logger::getLogger('SalesOrder');
         $this->db = PearDatabase::getInstance();
@@ -484,6 +494,7 @@ class SalesOrder extends CRMEntity
      * import fails if those fields are not mapped during import.
      */
     public function getMandatoryImportableFields()
+
     {
         return getInventoryImportableMandatoryFeilds($this->moduleName);
     }

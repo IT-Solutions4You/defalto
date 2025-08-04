@@ -1,18 +1,27 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Settings_Vtiger_Systems_Model extends Vtiger_Base_Model{
-
+class Settings_Vtiger_Systems_Model extends Vtiger_Base_Model
+{
     const tableName = 'vtiger_systems';
 
-    public function getId() {
+    public function getId()
+    {
         return $this->get('id');
     }
 
@@ -24,7 +33,7 @@ class Settings_Vtiger_Systems_Model extends Vtiger_Base_Model{
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function save($request)
     {
@@ -41,17 +50,17 @@ class Settings_Vtiger_Systems_Model extends Vtiger_Base_Model{
         }
 
         $params = [
-            'server' => $this->get('server'),
-            'server_port' => $this->get('server_port'),
-            'server_username' => $this->get('server_username'),
-            'server_password' => $server_password,
-            'server_type' => $this->get('server_type'),
-            'smtp_auth' => $this->isSmtpAuthEnabled(),
-            'server_path' => $this->get('server_path'),
+            'server'           => $this->get('server'),
+            'server_port'      => $this->get('server_port'),
+            'server_username'  => $this->get('server_username'),
+            'server_password'  => $server_password,
+            'server_type'      => $this->get('server_type'),
+            'smtp_auth'        => $this->isSmtpAuthEnabled(),
+            'server_path'      => $this->get('server_path'),
             'from_email_field' => $this->get('from_email_field'),
-            'client_id' => $this->get('client_id'),
-            'client_secret' => $this->get('client_secret'),
-            'client_token' => $this->get('client_token'),
+            'client_id'        => $this->get('client_id'),
+            'client_secret'    => $this->get('client_secret'),
+            'client_token'     => $this->get('client_token'),
         ];
         $table = $this->getSystemTable();
 
@@ -108,6 +117,7 @@ class Settings_Vtiger_Systems_Model extends Vtiger_Base_Model{
             $rowData = $db->query_result_rowdata($result, 0);
             $instance->setData($rowData);
         }
+
         return $instance;
     }
 
@@ -130,5 +140,4 @@ class Settings_Vtiger_Systems_Model extends Vtiger_Base_Model{
 
         return $fromEmail;
     }
-
 }

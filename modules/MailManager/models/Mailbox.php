@@ -1,24 +1,32 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is: vtiger CRM Open source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- ************************************************************************************/
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class MailManager_Mailbox_Model {
-
-	protected $mServer;
-	public $mUsername;
-	protected $mPassword;
-	protected $mProtocol = 'IMAP4';
-	protected $mSSLType  = 'ssl';
-	protected $mCertValidate = 'novalidate-cert';
-	protected $mRefreshTimeOut;
-	protected $mId;
-	protected $mServerName;
+class MailManager_Mailbox_Model
+{
+    protected $mServer;
+    public $mUsername;
+    protected $mPassword;
+    protected $mProtocol = 'IMAP4';
+    protected $mSSLType = 'ssl';
+    protected $mCertValidate = 'novalidate-cert';
+    protected $mRefreshTimeOut;
+    protected $mId;
+    protected $mServerName;
     protected $mFolder;
     protected string $mClientId = '';
     protected string $mClientSecret = '';
@@ -26,21 +34,26 @@ class MailManager_Mailbox_Model {
     protected string $mClientToken = '';
     protected string $mProxy = '';
 
-	public function exists() {
-		return !empty($this->mId);
-	}
+    public function exists()
+    {
+        return !empty($this->mId);
+    }
 
-	public function decrypt($value) {
-		require_once('include/utils/encryption.php');
-		$e = new Encryption();
-		return $e->decrypt($value);
-	}
+    public function decrypt($value)
+    {
+        require_once('include/utils/encryption.php');
+        $e = new Encryption();
 
-	public function encrypt($value) {
-		require_once('include/utils/encryption.php');
-		$e = new Encryption();
-		return $e->encrypt($value);
-	}
+        return $e->decrypt($value);
+    }
+
+    public function encrypt($value)
+    {
+        require_once('include/utils/encryption.php');
+        $e = new Encryption();
+
+        return $e->encrypt($value);
+    }
 
     /**
      * @return mixed
@@ -74,9 +87,10 @@ class MailManager_Mailbox_Model {
         return $this->mClientToken;
     }
 
-    public function server() {
-		return $this->mServer;
-	}
+    public function server()
+    {
+        return $this->mServer;
+    }
 
     /**
      * @param string $clientId
@@ -118,82 +132,103 @@ class MailManager_Mailbox_Model {
         $this->mProxy = $proxy;
     }
 
-    public function setServer($server) {
-		$this->mServer = trim($server);
-	}
+    public function setServer($server)
+    {
+        $this->mServer = trim($server);
+    }
 
-	public function serverName() {
-		return $this->mServerName;
-	}
+    public function serverName()
+    {
+        return $this->mServerName;
+    }
 
-	public function username() {
-		return $this->mUsername;
-	}
+    public function username()
+    {
+        return $this->mUsername;
+    }
 
-	public function setUsername($username) {
-		$this->mUsername = trim($username);
-	}
+    public function setUsername($username)
+    {
+        $this->mUsername = trim($username);
+    }
 
-	public function password($decrypt=true) {
-		if ($decrypt) return $this->decrypt($this->mPassword);
-		return $this->mPassword;
-	}
+    public function password($decrypt = true)
+    {
+        if ($decrypt) {
+            return $this->decrypt($this->mPassword);
+        }
 
-	public function setPassword($password) {
-		$this->mPassword = $this->encrypt(trim($password));
-	}
+        return $this->mPassword;
+    }
 
-	public function protocol() {
-		return $this->mProtocol;
-	}
+    public function setPassword($password)
+    {
+        $this->mPassword = $this->encrypt(trim($password));
+    }
 
-	public function setProtocol($protocol) {
-		$this->mProtocol = trim($protocol);
-	}
+    public function protocol()
+    {
+        return $this->mProtocol;
+    }
 
-	public function ssltype() {
-		if (strcasecmp($this->mSSLType, 'ssl') === 0) {
-			return $this->mSSLType;
-		}
-		return $this->mSSLType;
-	}
+    public function setProtocol($protocol)
+    {
+        $this->mProtocol = trim($protocol);
+    }
 
-	public function setSSLType($ssltype) {
-		$this->mSSLType = trim($ssltype);
-	}
+    public function ssltype()
+    {
+        if (strcasecmp($this->mSSLType, 'ssl') === 0) {
+            return $this->mSSLType;
+        }
 
-	public function certvalidate() {
-		return $this->mCertValidate;
-	}
+        return $this->mSSLType;
+    }
 
-	public function setCertValidate($certvalidate) {
-		$this->mCertValidate = trim($certvalidate);
-	}
+    public function setSSLType($ssltype)
+    {
+        $this->mSSLType = trim($ssltype);
+    }
 
-	public function setRefreshTimeOut($value) {
-		$this->mRefreshTimeOut = $value;
-	}
+    public function certvalidate()
+    {
+        return $this->mCertValidate;
+    }
 
-	public function refreshTimeOut() {
-		return $this->mRefreshTimeOut;
-	}
+    public function setCertValidate($certvalidate)
+    {
+        $this->mCertValidate = trim($certvalidate);
+    }
 
-    public function setFolder($value) {
-		$this->mFolder = $value;
-	}
+    public function setRefreshTimeOut($value)
+    {
+        $this->mRefreshTimeOut = $value;
+    }
 
-	public function getFolder() {
-		return decode_html($this->mFolder);
-	}
+    public function refreshTimeOut()
+    {
+        return $this->mRefreshTimeOut;
+    }
 
-	public function delete() {
-		$db = PearDatabase::getInstance();
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$db->pquery("DELETE FROM vtiger_mail_accounts WHERE user_id = ? AND account_id = ?", array($currentUserModel->getId(), $this->mId));
-	}
+    public function setFolder($value)
+    {
+        $this->mFolder = $value;
+    }
+
+    public function getFolder()
+    {
+        return decode_html($this->mFolder);
+    }
+
+    public function delete()
+    {
+        $db = PearDatabase::getInstance();
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $db->pquery("DELETE FROM vtiger_mail_accounts WHERE user_id = ? AND account_id = ?", [$currentUserModel->getId(), $this->mId]);
+    }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function save()
     {
@@ -208,18 +243,18 @@ class MailManager_Mailbox_Model {
 
         $isUpdate = !empty($this->mId);
         $data = [
-            'display_name' => $this->username(),
-            'mail_servername' => $this->server(),
-            'mail_username' => $this->username(),
-            'mail_password' => $this->password(false),
-            'mail_protocol' => $this->protocol(),
-            'ssltype' => $this->ssltype(),
-            'sslmeth' => $this->certvalidate(),
-            'box_refresh' => $this->refreshTimeOut(),
-            'sent_folder' => $this->getFolder(),
-            'client_id' => $this->getClientId(),
-            'client_secret' => $this->getClientSecret(),
-            'client_token' => $this->getClientToken(),
+            'display_name'        => $this->username(),
+            'mail_servername'     => $this->server(),
+            'mail_username'       => $this->username(),
+            'mail_password'       => $this->password(false),
+            'mail_protocol'       => $this->protocol(),
+            'ssltype'             => $this->ssltype(),
+            'sslmeth'             => $this->certvalidate(),
+            'box_refresh'         => $this->refreshTimeOut(),
+            'sent_folder'         => $this->getFolder(),
+            'client_id'           => $this->getClientId(),
+            'client_secret'       => $this->getClientSecret(),
+            'client_token'        => $this->getClientToken(),
             'client_access_token' => $this->getClientAccessToken(),
         ];
         $userId = $currentUserModel->getId();
@@ -244,8 +279,9 @@ class MailManager_Mailbox_Model {
 
     /**
      * @param object|bool $currentUserModel
+     *
      * @return MailManager_Mailbox_Model
-     * @throws AppException
+     * @throws Exception
      */
     public static function getActiveInstance(object|bool $currentUserModel = false): object
     {
@@ -281,18 +317,20 @@ class MailManager_Mailbox_Model {
         return $instance;
     }
 
-    public static function setServerName($mServer) {
-		if($mServer == 'imap.gmail.com') {
-			$mServerName = 'gmail';
-		} else if($mServer == 'imap.mail.yahoo.com') {
-			$mServerName = 'yahoo';
-		} else if($mServer == 'mail.messagingengine.com') {
-			$mServerName = 'fastmail';
-		} else {
-			$mServerName = 'other';
-		}
-		return $mServerName;
-	}
+    public static function setServerName($mServer)
+    {
+        if ($mServer == 'imap.gmail.com') {
+            $mServerName = 'gmail';
+        } elseif ($mServer == 'imap.mail.yahoo.com') {
+            $mServerName = 'yahoo';
+        } elseif ($mServer == 'mail.messagingengine.com') {
+            $mServerName = 'fastmail';
+        } else {
+            $mServerName = 'other';
+        }
+
+        return $mServerName;
+    }
 
     public function getMailAccountTable()
     {
@@ -323,8 +361,7 @@ class MailManager_Mailbox_Model {
             ->createColumn('client_secret', 'varchar(255) DEFAULT NULL')
             ->createColumn('client_token', 'text DEFAULT NULL')
             ->createColumn('client_access_token', 'text DEFAULT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`account_id`)')
-        ;
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`account_id`)');
     }
 
     public function isOAuth(): bool
@@ -333,7 +370,7 @@ class MailManager_Mailbox_Model {
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function retrieveClientAccessToken(): void
     {
@@ -346,12 +383,12 @@ class MailManager_Mailbox_Model {
             $authModel->setProviderByServer($this->getServer());
             $authModel->updateAccessToken($this);
         } catch (Exception $e) {
-
         }
     }
 
     /**
      * @param Core_Auth_Model $authModel
+     *
      * @return void
      */
     public function updateAccessToken(Core_Auth_Model $authModel): void

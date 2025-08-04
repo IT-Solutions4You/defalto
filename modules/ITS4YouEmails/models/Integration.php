@@ -1,18 +1,20 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class ITS4YouEmails_Integration_Model extends Vtiger_Base_Model
 {
     public $moduleName = '';
 
     /**
      * @param string $module
+     *
      * @return bool
      */
     public static function isActive($module)
@@ -24,6 +26,7 @@ class ITS4YouEmails_Integration_Model extends Vtiger_Base_Model
 
     /**
      * @param string $module
+     *
      * @return bool
      */
     public static function isReferenceActive($module)
@@ -45,10 +48,14 @@ class ITS4YouEmails_Integration_Model extends Vtiger_Base_Model
         return $self;
     }
 
-    public static function getSupportedModules() {
+    public static function getSupportedModules()
+    {
         $supportedModule = Vtiger_Module_Model::getEntityModules();
         $unsetModules = [
-            'SMSNotifier', 'PBXManager', 'ModComments', 'ITS4YouEmails',
+            'SMSNotifier',
+            'PBXManager',
+            'ModComments',
+            'ITS4YouEmails',
         ];
 
         foreach ($unsetModules as $unsetModule) {
@@ -106,13 +113,14 @@ class ITS4YouEmails_Integration_Model extends Vtiger_Base_Model
         $module = $this->getModuleModel();
         $module->unsetRelatedList($relatedModule, '', $relatedFunction);
 
-        if($register) {
+        if ($register) {
             $module->setRelatedList($relatedModule, '', $relatedActions, $relatedFunction);
         }
     }
 
     /**
      * @param bool $register
+     *
      * @return void
      */
     public function updateLinks(bool $register = true): void

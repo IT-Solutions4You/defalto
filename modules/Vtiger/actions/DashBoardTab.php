@@ -1,5 +1,5 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
@@ -7,40 +7,51 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Vtiger_DashBoardTab_Action extends Vtiger_Action_Controller {
+class Vtiger_DashBoardTab_Action extends Vtiger_Action_Controller
+{
+    function __construct()
+    {
+        $this->exposeMethod('addTab');
+        $this->exposeMethod('deleteTab');
+        $this->exposeMethod('renameTab');
+        $this->exposeMethod('updateTabSequence');
+    }
 
-	function __construct() {
-		$this->exposeMethod('addTab');
-		$this->exposeMethod('deleteTab');
-		$this->exposeMethod('renameTab');
-		$this->exposeMethod('updateTabSequence');
-	}
+    public function requiresPermission(Vtiger_Request $request)
+    {
+        $permissions = parent::requiresPermission($request);
+        if ($request->get('module') != 'Dashboard') {
+            $request->set('custom_module', 'Dashboard');
+            $permissions[] = ['module_parameter' => 'custom_module', 'action' => 'DetailView'];
+        } else {
+            $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView'];
+        }
 
-	public function requiresPermission(Vtiger_Request $request){
-		$permissions = parent::requiresPermission($request);
-		if($request->get('module') != 'Dashboard'){
-			$request->set('custom_module', 'Dashboard');
-			$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
-		}else{
-			$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
-		}
-		
-		return $permissions;
-	}
-	
-	public function process(Vtiger_Request $request) {
-		$mode = $request->get('mode');
-		if ($mode) {
-			$this->invokeExposedMethod($mode, $request);
-		}
-	}
+        return $permissions;
+    }
 
-	/**
-	 * Function to add Dashboard Tab
+    public function process(Vtiger_Request $request)
+    {
+        $mode = $request->get('mode');
+        if ($mode) {
+            $this->invokeExposedMethod($mode, $request);
+        }
+    }
+
+    /**
+     * Function to add Dashboard Tab
      *
-	 * @param Vtiger_Request $request
-	 */
+     * @param Vtiger_Request $request
+     */
     function addTab(Vtiger_Request $request)
     {
         $moduleName = $request->getModule();
@@ -68,57 +79,62 @@ class Vtiger_DashBoardTab_Action extends Vtiger_Action_Controller {
         $response->emit();
     }
 
-	/**
-	 * Function to delete Dashboard Tab
-	 * @param Vtiger_Request $request
-	 */
-	function deleteTab(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$tabId = $request->get('tabid');
-		$dashBoardModel = Vtiger_DashBoard_Model::getInstance($moduleName);
-		$result = $dashBoardModel->deleteTab($tabId);
-		$response = new Vtiger_Response();
-		$response->setEmitType(Vtiger_Response::$EMIT_JSON);
-		if ($result) {
-			$response->setResult($result);
-		} else {
-			$response->setError(100, 'Failed To Delete Tab');
-		}
-		$response->emit();
-	}
+    /**
+     * Function to delete Dashboard Tab
+     *
+     * @param Vtiger_Request $request
+     */
+    function deleteTab(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $tabId = $request->get('tabid');
+        $dashBoardModel = Vtiger_DashBoard_Model::getInstance($moduleName);
+        $result = $dashBoardModel->deleteTab($tabId);
+        $response = new Vtiger_Response();
+        $response->setEmitType(Vtiger_Response::$EMIT_JSON);
+        if ($result) {
+            $response->setResult($result);
+        } else {
+            $response->setError(100, 'Failed To Delete Tab');
+        }
+        $response->emit();
+    }
 
-	/**
-	 * Funtion to rename Dashboard Tab
-	 * @param Vtiger_Request $request
-	 */
-	function renameTab(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$tabName = $request->get('tabname');
-		$tabId = $request->get('tabid');
-		$dashBoardModel = Vtiger_DashBoard_Model::getInstance($moduleName);
-		$result = $dashBoardModel->renameTab($tabId, $tabName);
-		$response = new Vtiger_Response();
-		$response->setEmitType(Vtiger_Response::$EMIT_JSON);
-		if ($result) {
-			$response->setResult($result);
-		} else {
-			$response->setError(100, 'Failed To rename Tab');
-		}
-		$response->emit();
-	}
+    /**
+     * Funtion to rename Dashboard Tab
+     *
+     * @param Vtiger_Request $request
+     */
+    function renameTab(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $tabName = $request->get('tabname');
+        $tabId = $request->get('tabid');
+        $dashBoardModel = Vtiger_DashBoard_Model::getInstance($moduleName);
+        $result = $dashBoardModel->renameTab($tabId, $tabName);
+        $response = new Vtiger_Response();
+        $response->setEmitType(Vtiger_Response::$EMIT_JSON);
+        if ($result) {
+            $response->setResult($result);
+        } else {
+            $response->setError(100, 'Failed To rename Tab');
+        }
+        $response->emit();
+    }
 
-	function updateTabSequence(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$sequence = $request->get("sequence");
-		$dashBoardModel = Vtiger_DashBoard_Model::getInstance($moduleName);
-		$result = $dashBoardModel->updateTabSequence($sequence);
-		$response = new Vtiger_Response();
-		$response->setEmitType(Vtiger_Response::$EMIT_JSON);
-		if ($result) {
-			$response->setResult($result);
-		} else {
-			$response->setError(100, 'Failed To rearrange Tabs');
-		}
-		$response->emit();
-	}
+    function updateTabSequence(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $sequence = $request->get("sequence");
+        $dashBoardModel = Vtiger_DashBoard_Model::getInstance($moduleName);
+        $result = $dashBoardModel->updateTabSequence($sequence);
+        $response = new Vtiger_Response();
+        $response->setEmitType(Vtiger_Response::$EMIT_JSON);
+        if ($result) {
+            $response->setResult($result);
+        } else {
+            $response->setError(100, 'Failed To rearrange Tabs');
+        }
+        $response->emit();
+    }
 }

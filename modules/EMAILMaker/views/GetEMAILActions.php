@@ -1,15 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
 {
-
     public function checkPermission(Vtiger_Request $request)
     {
     }
@@ -21,7 +21,6 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
 
     public function process(Vtiger_Request $request)
     {
-
         $current_user = $cu_model = Users_Record_Model::getCurrentUserModel();
         $currentLanguage = Vtiger_Language_Handler::getLanguage();
         $adb = PearDatabase::getInstance();
@@ -55,7 +54,7 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
         }
 
         if (!isset($_SESSION["template_languages"]) || $_SESSION["template_languages"] == "") {
-            $temp_res = $adb->pquery("SELECT label, prefix FROM vtiger_language WHERE active = ?", array('1'));
+            $temp_res = $adb->pquery("SELECT label, prefix FROM vtiger_language WHERE active = ?", ['1']);
             while ($temp_row = $adb->fetchByAssoc($temp_res)) {
                 $template_languages[$temp_row["prefix"]] = $temp_row["label"];
             }
@@ -82,7 +81,6 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
         $viewer->assign('DEFAULT_TEMPLATE', $def_templateid);
 
         if (EMAILMaker_Module_Model::isPDFMakerInstalled()) {
-
             $PDFMakerModel = Vtiger_Module_Model::getInstance('PDFMaker');
 
             if ($PDFMakerModel->CheckPermissions("DETAIL") && $request->has('record') && !$request->isEmpty('record')) {
@@ -97,11 +95,9 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
                 $viewer->assign('PDF_TEMPLATES_EXIST', $no_templates_exist);
             }
 
-
             if (!$no_templates_exist) {
                 $viewer->assign("IS_PDFMAKER", 'yes');
             }
-
         }
 
         $tpl_name = 'GetEMAILActions';
@@ -140,6 +136,7 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
                 $customViewModel->set('search_key', $searchKey);
                 $customViewModel->set('search_value', $searchValue);
             }
+
             return $customViewModel->getRecordIds($excludedIds);
         }
     }

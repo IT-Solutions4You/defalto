@@ -1,147 +1,147 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
-Vtiger_Popup_Js("Product_PriceBooks_Popup_Js",{
-
-},{
-	/**
-	 * Function to register event for enabling list price
-	 */
-	checkBoxChangeHandler : function(e){
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+Vtiger_Popup_Js("Product_PriceBooks_Popup_Js", {}, {
+    /**
+     * Function to register event for enabling list price
+     */
+    checkBoxChangeHandler: function (e) {
         this._super(e);
         var elem = jQuery(e.currentTarget);
         var parentRow = elem.closest('tr');
-        if(elem.is(':checked')) {
-            jQuery('input[name=unit_price]',parentRow).removeClass('invisible');
-        }else{
-            jQuery('input[name=unit_price]',parentRow).addClass('invisible');
+        if (elem.is(':checked')) {
+            jQuery('input[name=unit_price]', parentRow).removeClass('invisible');
+        } else {
+            jQuery('input[name=unit_price]', parentRow).addClass('invisible');
         }
-	},
+    },
 
-	/**
-	 * Function to register event for add to pricebook button in the popup
-	 */
+    /**
+     * Function to register event for add to pricebook button in the popup
+     */
 
-	registerSelectButton : function(){
-		var popupPageContentsContainer = jQuery('#popupPage');
-		var thisInstance = this;
-		popupPageContentsContainer.on('click','button.select', function(e){
-			e.preventDefault();
-			var selectedRecords = thisInstance.readSelectedIds();
-			if((selectedRecords.length) == 0){
-				var message = app.vtranslate("JS_PLEASE_SELECT_ONE_RECORD");
-				bootbox.alert(message);
-				return;
-			}
-            popupPageContentsContainer.vtValidate({onsubmit : false});
-            if(popupPageContentsContainer.valid()) {
+    registerSelectButton: function () {
+        var popupPageContentsContainer = jQuery('#popupPage');
+        var thisInstance = this;
+        popupPageContentsContainer.on('click', 'button.select', function (e) {
+            e.preventDefault();
+            var selectedRecords = thisInstance.readSelectedIds();
+            if ((selectedRecords.length) == 0) {
+                var message = app.vtranslate("JS_PLEASE_SELECT_ONE_RECORD");
+                bootbox.alert(message);
+                return;
+            }
+            popupPageContentsContainer.vtValidate({onsubmit: false});
+            if (popupPageContentsContainer.valid()) {
                 var selectedRecordDetails = new Array();
-                for(var data in selectedRecords){
-                    if(typeof selectedRecords[data] == "object"){
+                for (var data in selectedRecords) {
+                    if (typeof selectedRecords[data] == "object") {
                         var id = selectedRecords[data]['id'];
-                        var row = popupPageContentsContainer.find('[data-id='+id+']');
+                        var row = popupPageContentsContainer.find('[data-id=' + id + ']');
                         var rowListPrice = row.find('input[name=unit_price]');
                         var listPrice = rowListPrice.val();
-                        selectedRecordDetails.push({'id' : id,'price' : listPrice});
+                        selectedRecordDetails.push({'id': id, 'price': listPrice});
                     }
                 }
                 thisInstance.done(selectedRecordDetails, thisInstance.getEventName());
             }
-		});
-	},
-	/**
-	 * Function to handle select all in the popup
-	 */
+        });
+    },
+    /**
+     * Function to handle select all in the popup
+     */
 
-	selectAllHandler : function(e){
-		this._super(e);
-		var currentElement = jQuery(e.currentTarget);
-		var isMainCheckBoxChecked = currentElement.is(':checked');
-		var tableElement = currentElement.closest('table');
-		if(isMainCheckBoxChecked) {
-			jQuery('input.entryCheckBox', tableElement).closest('tr').find('input[name="listPrice"]').removeClass('invisible');
-		}else {
-			jQuery('input.entryCheckBox', tableElement).closest('tr').find('input[name="listPrice"]').addClass('invisible');
-		}
-	},
+    selectAllHandler: function (e) {
+        this._super(e);
+        var currentElement = jQuery(e.currentTarget);
+        var isMainCheckBoxChecked = currentElement.is(':checked');
+        var tableElement = currentElement.closest('table');
+        if (isMainCheckBoxChecked) {
+            jQuery('input.entryCheckBox', tableElement).closest('tr').find('input[name="listPrice"]').removeClass('invisible');
+        } else {
+            jQuery('input.entryCheckBox', tableElement).closest('tr').find('input[name="listPrice"]').addClass('invisible');
+        }
+    },
 
-	/**
-	 * Function to register event for actions buttons
-	 */
-	registerEventForActionsButtons : function(){
-		var thisInstance = this;
-		var popupPageContentsContainer = this.getPopupPageContainer();
-		popupPageContentsContainer.on('click','a.cancelLink',function(e){
-			thisInstance.done();
-		})
-	},
+    /**
+     * Function to register event for actions buttons
+     */
+    registerEventForActionsButtons: function () {
+        var thisInstance = this;
+        var popupPageContentsContainer = this.getPopupPageContainer();
+        popupPageContentsContainer.on('click', 'a.cancelLink', function (e) {
+            thisInstance.done();
+        })
+    },
 
-	/**
-	 * Function to get Page Records
-	 */
-	getPageRecords : function(params){
-		var thisInstance = this;
-		var aDeferred = jQuery.Deferred();
-		this._super(params).then(
-			function(data){
-				thisInstance.popupSlimScroll();
-				aDeferred.resolve(data);
-			},
+    /**
+     * Function to get Page Records
+     */
+    getPageRecords: function (params) {
+        var thisInstance = this;
+        var aDeferred = jQuery.Deferred();
+        this._super(params).then(
+            function (data) {
+                thisInstance.popupSlimScroll();
+                aDeferred.resolve(data);
+            },
 
-			function(textStatus, errorThrown){
-				aDeferred.reject(textStatus, errorThrown);
-			}
-		);
-		return aDeferred.promise();
-	},
+            function (textStatus, errorThrown) {
+                aDeferred.reject(textStatus, errorThrown);
+            }
+        );
+        return aDeferred.promise();
+    },
 
-	/**
-	 * Function to handle sort
-	 */
-	sortHandler : function(headerElement){
-		var thisInstance = this;
-		//Listprice column should not be sorted so checking for class noSorting
-		if(headerElement.hasClass('noSorting')){
-			return;
-		}
-		this._super(headerElement).then(
-			function(data){
-				thisInstance.popupSlimScroll();
-			},
+    /**
+     * Function to handle sort
+     */
+    sortHandler: function (headerElement) {
+        var thisInstance = this;
+        //Listprice column should not be sorted so checking for class noSorting
+        if (headerElement.hasClass('noSorting')) {
+            return;
+        }
+        this._super(headerElement).then(
+            function (data) {
+                thisInstance.popupSlimScroll();
+            },
 
-			function(textStatus, errorThrown){
+            function (textStatus, errorThrown) {
 
-			}
-		);
-	},
+            }
+        );
+    },
 
-	/**
-	 * Function to handle slim scroll for popup
-	 */
-	popupSlimScroll : function(){
-		var popupPageContentsContainer = this.getPopupPageContainer();
-		var element = popupPageContentsContainer.find('.popupEntriesDiv');
-		app.helper.showVerticalScroll(element, {setHeight: 400});
-	},
+    /**
+     * Function to handle slim scroll for popup
+     */
+    popupSlimScroll: function () {
+        var popupPageContentsContainer = this.getPopupPageContainer();
+        var element = popupPageContentsContainer.find('.popupEntriesDiv');
+        app.helper.showVerticalScroll(element, {setHeight: 400});
+    },
 
-     /**
+    /**
      * Function which will register event when user clicks on the row
      */
-    registerEventForListViewEntryClick : function() {
+    registerEventForListViewEntryClick: function () {
         //To Make sure we will not close the window once he clicks on the row,
         //which is default behaviour in normal popup
         return true;
     },
-	
-	/**
-	 * Function to register events
-	 */
-	registerEvents : function(){
-		this._super();
-		this.registerEventForActionsButtons();
-		this.popupSlimScroll();
-	}
+
+    /**
+     * Function to register events
+     */
+    registerEvents: function () {
+        this._super();
+        this.registerEventForActionsButtons();
+        this.popupSlimScroll();
+    }
 });

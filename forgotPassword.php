@@ -1,12 +1,20 @@
 <?php
-/* +**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
+/*********************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- * ********************************************************************************** */
+ ********************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 require_once 'includes/main/WebUI.php';
 require_once 'include/utils/utils.php';
@@ -18,39 +26,39 @@ global $adb;
 $adb = PearDatabase::getInstance();
 
 if (isset($_REQUEST['username']) && isset($_REQUEST['emailId'])) {
-	$username = vtlib_purify($_REQUEST['username']);
-	$result = $adb->pquery('select email1 from vtiger_users where user_name= ? ', array($username));
-	if ($adb->num_rows($result) > 0) {
-		$email = $adb->query_result($result, 0, 'email1');
-	}
+    $username = vtlib_purify($_REQUEST['username']);
+    $result = $adb->pquery('select email1 from vtiger_users where user_name= ? ', [$username]);
+    if ($adb->num_rows($result) > 0) {
+        $email = $adb->query_result($result, 0, 'email1');
+    }
 
-	if (vtlib_purify($_REQUEST['emailId']) == $email) {
-		$time = time();
-		$options = array(
-			'handler_path' => 'modules/Users/handlers/ForgotPassword.php',
-			'handler_class' => 'Users_ForgotPassword_Handler',
-			'handler_function' => 'changePassword',
-			'handler_data' => array(
-				'username' => $username,
-				'email' => $email,
-				'time' => $time,
-				'hash' => hash('sha256',$username.$time)
-			)
-		);
-		$trackURL = Vtiger_ShortURL_Helper::generateURL($options);
-		$content = 'Dear Customer,<br><br> 
+    if (vtlib_purify($_REQUEST['emailId']) == $email) {
+        $time = time();
+        $options = [
+            'handler_path'     => 'modules/Users/handlers/ForgotPassword.php',
+            'handler_class'    => 'Users_ForgotPassword_Handler',
+            'handler_function' => 'changePassword',
+            'handler_data'     => [
+                'username' => $username,
+                'email'    => $email,
+                'time'     => $time,
+                'hash'     => hash('sha256', $username . $time)
+            ]
+        ];
+        $trackURL = Vtiger_ShortURL_Helper::generateURL($options);
+        $content = 'Dear Customer,<br><br> 
 						You recently requested a password reset for your VtigerCRM Open source Account.<br> 
-						To create a new password, click on the link <a target="_blank" href='.$trackURL.'>here</a>. 
+						To create a new password, click on the link <a target="_blank" href=' . $trackURL . '>here</a>. 
 						<br><br> 
-						This request was made on '.date("Y-m-d H:i:s").' and will expire in next 1 hour.<br><br> 
+						This request was made on ' . date("Y-m-d H:i:s") . ' and will expire in next 1 hour.<br><br> 
 						Regards,<br> 
 						VtigerCRM Open source Support Team.<br>';
 
-		$subject = 'Vtiger CRM: Password Reset';
+        $subject = 'Vtiger CRM: Password Reset';
 
         global $HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME;
 
-		$mailer = ITS4YouEmails_Mailer_Model::getCleanInstance();
+        $mailer = ITS4YouEmails_Mailer_Model::getCleanInstance();
         $mailer->retrieveSMTPVtiger();
         $mailer->setFrom($HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME);
         $mailer->addAddress($email);
@@ -59,12 +67,12 @@ if (isset($_REQUEST['username']) && isset($_REQUEST['emailId'])) {
         $mailer->isHTML();
         $status = $mailer->send();;
 
-		if ($status === 1 || $status === true) {
-			header('Location:  index.php?modules=Users&view=Login&mailStatus=success');
-		} else {
-			header('Location:  index.php?modules=Users&view=Login&error=statusError');
-		}
-	} else {
-		header('Location:  index.php?modules=Users&view=Login&error=fpError');
-	}
+        if ($status === 1 || $status === true) {
+            header('Location:  index.php?modules=Users&view=Login&mailStatus=success');
+        } else {
+            header('Location:  index.php?modules=Users&view=Login&error=statusError');
+        }
+    } else {
+        header('Location:  index.php?modules=Users&view=Login&error=fpError');
+    }
 }

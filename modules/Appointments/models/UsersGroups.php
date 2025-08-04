@@ -1,13 +1,13 @@
 <?php
-
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Appointments_UsersGroups_Model extends Vtiger_Base_Model
 {
     /**
@@ -45,6 +45,7 @@ class Appointments_UsersGroups_Model extends Vtiger_Base_Model
 
     /**
      * @param string $value
+     *
      * @return string
      */
     public static function getBackground(string $value): string
@@ -90,14 +91,14 @@ class Appointments_UsersGroups_Model extends Vtiger_Base_Model
             $userBackground = self::getBackground($userId);
             $id = 'Users::::' . $userName;
             $images[$id][$userId] = [
-                'id' => $id,
-                'name' => $userName,
-                'icon' => 'fa fa-user',
-                'image' => $imageDetails[0]['url'],
-                'label' => mb_strtoupper(mb_substr($userName, 0, 2)),
+                'id'         => $id,
+                'name'       => $userName,
+                'icon'       => 'fa fa-user',
+                'image'      => $imageDetails[0]['url'],
+                'label'      => mb_strtoupper(mb_substr($userName, 0, 2)),
                 'background' => $userBackground,
-                'border' => $userBackground,
-                'color' => Settings_Picklist_Module_Model::getTextColor($userBackground),
+                'border'     => $userBackground,
+                'color'      => Settings_Picklist_Module_Model::getTextColor($userBackground),
             ];
         }
 
@@ -112,23 +113,23 @@ class Appointments_UsersGroups_Model extends Vtiger_Base_Model
             $groupBackground = self::getBackground($groupId);
             $id = 'Groups::::' . $groupName;
             $images[$id][$groupId] = [
-                'id' => $id,
-                'name' => $groupName,
-                'icon' => 'fa fa-group',
-                'label' => mb_strtoupper(mb_substr($groupName, 0, 2)),
+                'id'         => $id,
+                'name'       => $groupName,
+                'icon'       => 'fa fa-group',
+                'label'      => mb_strtoupper(mb_substr($groupName, 0, 2)),
                 'background' => $groupBackground,
-                'border' => $groupBackground,
-                'color' => Settings_Picklist_Module_Model::getTextColor($groupBackground),
+                'border'     => $groupBackground,
+                'color'      => Settings_Picklist_Module_Model::getTextColor($groupBackground),
             ];
             $id = 'UsersByGroups::::' . $groupName;
             $images[$id][$groupId] = [
-                'id' => $id,
-                'name' => vtranslate('Users by', 'Appointments') . ' ' . $groupName,
-                'icon' => 'fa fa-group',
-                'label' => mb_strtoupper(mb_substr($groupName, 0, 2)),
+                'id'         => $id,
+                'name'       => vtranslate('Users by', 'Appointments') . ' ' . $groupName,
+                'icon'       => 'fa fa-group',
+                'label'      => mb_strtoupper(mb_substr($groupName, 0, 2)),
                 'background' => $groupBackground,
-                'border' => $groupBackground,
-                'color' => Settings_Picklist_Module_Model::getTextColor($groupBackground),
+                'border'     => $groupBackground,
+                'color'      => Settings_Picklist_Module_Model::getTextColor($groupBackground),
             ];
         }
 
@@ -169,8 +170,8 @@ class Appointments_UsersGroups_Model extends Vtiger_Base_Model
             }
 
             $tabs['Groups::::' . $groupId] = [
-                'id' => $groupId,
-                'name' => $groupName,
+                'id'     => $groupId,
+                'name'   => $groupName,
                 'values' => $groupWithUsers,
             ];
         }

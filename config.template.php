@@ -1,7 +1,7 @@
 <?php
 /*********************************************************************************
  * The contents of this file are subject to the SugarCRM Public License Version 1.1.2
- * ("License"); You may not use this file except in compliance with the 
+ * ("License"); You may not use this file except in compliance with the
  * License. You may obtain a copy of the License at http://www.sugarcrm.com/SPL
  * Software distributed under the License is distributed on an  "AS IS"  basis,
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
@@ -11,19 +11,28 @@
  * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.;
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
-********************************************************************************/
+ ********************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 // Adjust error_reporting favourable to deployment.
-version_compare(PHP_VERSION, '5.5.0') <= 0 ? error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED & E_ERROR) : error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED  & E_ERROR & ~E_STRICT); // PRODUCTION
+version_compare(PHP_VERSION, '5.5.0') <= 0 ? error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED & E_ERROR) : error_reporting(
+	E_WARNING & ~E_NOTICE & ~E_DEPRECATED & E_ERROR & ~E_STRICT
+); // PRODUCTION
 //ini_set('display_errors','on'); version_compare(PHP_VERSION, '5.5.0') <= 0 ? error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED) : error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);   // DEBUGGING
 //ini_set('display_errors','on'); error_reporting(E_ALL); // STRICT DEVELOPMENT
-
 
 include('vtigerversion.php');
 
 // more than 8MB memory needed for graphics
 // memory limit default value = 64M
-ini_set('memory_limit','512M');
+ini_set('memory_limit', '512M');
 
 // show or hide calendar, world clock, calculator, chat and CKEditor 
 // Do NOT remove the quotes if you set these to false! 
@@ -57,7 +66,7 @@ $user_config['currency_grouping_separator'] = '_CURRENCY_GROUPING_SEPARATOR_';
 
 // TODO: test if port is empty
 // TODO: set db_hostname dependending on db_type
-$dbconfig['db_hostname'] = $dbconfig['db_server'].$dbconfig['db_port'];
+$dbconfig['db_hostname'] = $dbconfig['db_server'] . $dbconfig['db_port'];
 
 // log_sql default value = false
 $dbconfig['log_sql'] = false;
@@ -85,7 +94,7 @@ $host_name = $dbconfig['db_hostname'];
 $site_URL = '_SITE_URL_';
 
 // url for customer portal (Example: http://vtiger.com/portal)
-$PORTAL_URL = $site_URL.'/customerportal';
+$PORTAL_URL = $site_URL . '/customerportal';
 // root directory path
 $root_directory = '_VT_ROOTDIR_';
 
@@ -114,7 +123,35 @@ $allow_exports = 'all';
 
 // files with one of these extensions will have '.txt' appended to their filename on upload
 // upload_badext default value = php, php3, php4, php5, pl, cgi, py, asp, cfm, js, vbs, html, htm
-$upload_badext = array('php', 'php3', 'php4', 'php5', 'pl', 'cgi', 'py', 'asp', 'cfm', 'js', 'vbs', 'html', 'htm', 'exe', 'bin', 'bat', 'sh', 'dll', 'phps', 'phtml', 'xhtml', 'rb', 'msi', 'jsp', 'shtml', 'sth', 'shtm');
+$upload_badext = [
+	'php',
+	'php3',
+	'php4',
+	'php5',
+	'pl',
+	'cgi',
+	'py',
+	'asp',
+	'cfm',
+	'js',
+	'vbs',
+	'html',
+	'htm',
+	'exe',
+	'bin',
+	'bat',
+	'sh',
+	'dll',
+	'phps',
+	'phtml',
+	'xhtml',
+	'rb',
+	'msi',
+	'jsp',
+	'shtml',
+	'sth',
+	'shtm'
+];
 
 // list_max_entries_per_page default value = 20
 $list_max_entries_per_page = '20';
@@ -171,7 +208,7 @@ $php_max_execution_time = 0;
 $default_timezone = 'UTC';
 
 /** If timezone is configured, try to set it */
-if(isset($default_timezone) && function_exists('date_default_timezone_set')) {
+if (isset($default_timezone) && function_exists('date_default_timezone_set')) {
 	@date_default_timezone_set($default_timezone);
 }
 
@@ -182,4 +219,3 @@ $default_layout = 'd1';
 $maxListFieldsSelectionSize = 15;
 
 include_once 'config.security.php';
-?>

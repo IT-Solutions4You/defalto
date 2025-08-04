@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 $memory_limit = substr(ini_get('memory_limit'), 0, -1);
@@ -17,7 +17,7 @@ if ($memory_limit < 256) {
 class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 {
     public static $pagebreak;
-    public static $bridge2mpdf = array();
+    public static $bridge2mpdf = [];
     private static $is_inventory_module = false;
     private static $module;
     private static $language;
@@ -30,7 +30,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
     private static $thousands_separator;
     private static $decimals;
     private static $rowbreak;
-    private static $ignored_picklist_values = array();
+    private static $ignored_picklist_values = [];
     private static $header;
     private static $footer;
     private static $body;
@@ -38,38 +38,38 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
     private static $section_sep = '&#%ITS%%%@@@%%%ITS%#&';
     private static $rep;
     private static $execution_time_start;
-    private static $inventory_table_array = array(
+    private static $inventory_table_array = [
         'PurchaseOrder' => 'vtiger_purchaseorder',
-        'SalesOrder' => 'vtiger_salesorder',
-        'Quotes' => 'vtiger_quotes',
-        'Invoice' => 'vtiger_invoice',
-        'Issuecards' => 'vtiger_issuecards',
-        'Receiptcards' => 'vtiger_receiptcards',
-        'Creditnote' => 'vtiger_creditnote',
+        'SalesOrder'    => 'vtiger_salesorder',
+        'Quotes'        => 'vtiger_quotes',
+        'Invoice'       => 'vtiger_invoice',
+        'Issuecards'    => 'vtiger_issuecards',
+        'Receiptcards'  => 'vtiger_receiptcards',
+        'Creditnote'    => 'vtiger_creditnote',
         'StornoInvoice' => 'vtiger_stornoinvoice'
-    );
-    private static $inventory_id_array = array(
+    ];
+    private static $inventory_id_array = [
         'PurchaseOrder' => 'purchaseorderid',
-        'SalesOrder' => 'salesorderid',
-        'Quotes' => 'quoteid',
-        'Invoice' => 'invoiceid',
-        'Issuecards' => 'issuecardid',
-        'Receiptcards' => 'receiptcardid',
-        'Creditnote' => 'creditnote_id',
+        'SalesOrder'    => 'salesorderid',
+        'Quotes'        => 'quoteid',
+        'Invoice'       => 'invoiceid',
+        'Issuecards'    => 'issuecardid',
+        'Receiptcards'  => 'receiptcardid',
+        'Creditnote'    => 'creditnote_id',
         'StornoInvoice' => 'stornoinvoice_id'
-    );
-    private static $org_colsOLD = array(
+    ];
+    private static $org_colsOLD = [
         'organizationname' => 'NAME',
-        'address' => 'ADDRESS',
-        'city' => 'CITY',
-        'state' => 'STATE',
-        'code' => 'ZIP',
-        'country' => 'COUNTRY',
-        'phone' => 'PHONE',
-        'fax' => 'FAX',
-        'website' => 'WEBSITE',
-        'logo' => 'LOGO'
-    );
+        'address'          => 'ADDRESS',
+        'city'             => 'CITY',
+        'state'            => 'STATE',
+        'code'             => 'ZIP',
+        'country'          => 'COUNTRY',
+        'phone'            => 'PHONE',
+        'fax'              => 'FAX',
+        'website'          => 'WEBSITE',
+        'logo'             => 'LOGO'
+    ];
 
     protected array $vatBlock = [];
 
@@ -118,7 +118,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
         $result = self::$db->pquery(
             'SELECT vtiger_pdfmaker.*, vtiger_pdfmaker_settings.* FROM vtiger_pdfmaker LEFT JOIN vtiger_pdfmaker_settings ON vtiger_pdfmaker_settings.templateid = vtiger_pdfmaker.templateid WHERE vtiger_pdfmaker.module=? AND vtiger_pdfmaker.module IN (?,?,?,?)',
-            array(self::$module, 'Invoice', 'Quotes', 'SalesOrder', 'PurchaseOrder')
+            [self::$module, 'Invoice', 'Quotes', 'SalesOrder', 'PurchaseOrder']
         );
         $data = self::$db->fetch_array($result);
 
@@ -142,7 +142,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
     private function getIgnoredPicklistValues()
     {
-        $result = self::$db->pquery('SELECT value FROM vtiger_pdfmaker_ignorepicklistvalues', array());
+        $result = self::$db->pquery('SELECT value FROM vtiger_pdfmaker_ignorepicklistvalues', []);
 
         while ($row = self::$db->fetchByAssoc($result)) {
             self::$ignored_picklist_values[] = $row['value'];
@@ -228,7 +228,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
             self::$content = iconv(self::$def_charset, 'UTF-8//TRANSLIT', self::$content);
         }
 
-        $PDF_content = array();
+        $PDF_content = [];
         [$PDF_content['header'], $PDF_content['body'], $PDF_content['footer']] = explode(self::$section_sep, self::$content);
 
         return $PDF_content;
@@ -237,7 +237,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
     public function retrieveAssignedUserId()
     {
         if (self::$focus->column_fields['assigned_user_id'] == '') {
-            $result = self::$db->pquery('SELECT assigned_user_id FROM vtiger_crmentity WHERE crmid = ?', array(self::$focus->id));
+            $result = self::$db->pquery('SELECT assigned_user_id FROM vtiger_crmentity WHERE crmid = ?', [self::$focus->id]);
 
             self::$focus->column_fields['assigned_user_id'] = self::$db->query_result($result, 0, 'assigned_user_id');
         }
@@ -259,7 +259,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
     {
         if (!empty(self::$rep)) {
             self::$content = str_replace(array_keys(self::$rep), self::$rep, self::$content);
-            self::$rep = array();
+            self::$rep = [];
         }
     }
 
@@ -271,7 +271,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         $fieldModRel = $this->GetFieldModuleRel();
 
         $module_tabid = getTabId(self::$module);
-        $Query_Parr = array('3', '64', $module_tabid);
+        $Query_Parr = ['3', '64', $module_tabid];
         $sql = 'SELECT fieldid, fieldname, uitype, columnname FROM vtiger_field WHERE (displaytype != ? OR fieldid = ?) AND tabid = ?';
         $result = self::$db->pquery($sql, $Query_Parr);
         $num_rows = self::$db->num_rows($result);
@@ -298,7 +298,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                             $control_sql = 'vtiger_crmentity WHERE crmid=';
                         }
 
-                        $result_delete = self::$db->pquery('SELECT deleted FROM ' . $control_sql . '? AND deleted=0', array($fk_record));
+                        $result_delete = self::$db->pquery('SELECT deleted FROM ' . $control_sql . '? AND deleted=0', [$fk_record]);
 
                         if (self::$db->num_rows($result_delete) > 0) {
                             $focus2->retrieve_entity_info($fk_record, $related_module);
@@ -407,7 +407,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         $current_user = Users_Record_Model::getCurrentUserModel();
 
         if ($inventory_currency !== false) {
-            $inventory_content = array();
+            $inventory_content = [];
         }
 
         $convEntity = $emodule;
@@ -509,7 +509,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         }
 
         if (!isset(self::$inventory_table_array[$module])) {
-            return array();
+            return [];
         }
 
         $prefix = '';
@@ -540,7 +540,6 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         } else {
             self::$rep['$' . $prefix . 'VATPERCENT$'] = $Products['TOTAL']['TAXTOTALPERCENT'];
         }
-
 
         self::$rep['$' . $prefix . 'TOTALWITHVAT$'] = $Products['TOTAL']['TOTALWITHVAT'];
         self::$rep['$' . $prefix . 'SHTAXAMOUNT$'] = $Products['TOTAL']['SHTAXAMOUNT'];
@@ -584,7 +583,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
             if (strpos(self::$content, '#VATBLOCK_START#') !== false && strpos(self::$content, '#VATBLOCK_END#') !== false) {
                 self::$content = $this->convertVatBlock(self::$content);
-                $VExplodedPdf = array();
+                $VExplodedPdf = [];
                 $VExploded = explode('#VATBLOCK_START#', self::$content);
                 $VExplodedPdf[] = $VExploded[0];
 
@@ -653,9 +652,10 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
     /**
      * @param string $taxKey
      * @param string $taxLabel
-     * @param float $taxValue
-     * @param float $nett
-     * @param float $vat
+     * @param float  $taxValue
+     * @param float  $nett
+     * @param float  $vat
+     *
      * @return void
      */
     public function setVatBlock($taxKey, $taxLabel, $taxValue, $nett, $vat)
@@ -663,7 +663,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         if (empty($this->vatBlock[$taxKey])) {
             $this->vatBlock[$taxKey] = [
                 'netto' => 0,
-                'vat' => 0,
+                'vat'   => 0,
             ];
         }
 
@@ -691,14 +691,14 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
             $finalDetails = $relatedProducts[1]['final_details'];
             $taxtype = $finalDetails['taxtype'];
 
-            $currencyFieldsList = array(
-                'NETTOTAL' => 'subtotal',
-                'TAXTOTAL' => 'tax_totalamount',
-                'SHTAXTOTAL' => 'shtax_totalamount',
+            $currencyFieldsList = [
+                'NETTOTAL'           => 'subtotal',
+                'TAXTOTAL'           => 'tax_totalamount',
+                'SHTAXTOTAL'         => 'shtax_totalamount',
                 'TOTALAFTERDISCOUNT' => 'preTaxTotal',
-                'FINALDISCOUNT' => 'discountTotal_final',
-                'SHTAXAMOUNT' => 'shipping_handling_charge',
-            );
+                'FINALDISCOUNT'      => 'discountTotal_final',
+                'SHTAXAMOUNT'        => 'shipping_handling_charge',
+            ];
 
             foreach ($currencyFieldsList as $variableName => $fieldName) {
                 $Details['TOTAL'][$variableName] = $this->formatNumberToPDF($finalDetails[$fieldName]);
@@ -709,9 +709,9 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
             $Details['TOTAL']['TAXTYPE'] = $taxtype;
 
             foreach ($relatedProducts as $i => $PData) {
-                $Details['P'][$i] = array(
+                $Details['P'][$i] = [
                     'TAXTYPE' => $taxtype,
-                );
+                ];
                 $sequence = $i;
                 $producttitle = $productname = $PData['productName' . $sequence];
                 $entitytype = $PData['entityType' . $sequence];
@@ -742,7 +742,6 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                 unset($focus_s);
 
                 $Details['P'][$i]['PRODUCTS_CRMID'] = $Details['P'][$i]['SERVICES_CRMID'] = $qty_per_unit = $usageunit = '';
-
 
                 if ($entitytype == 'Products') {
                     $Details['P'][$i]['PRODUCTS_CRMID'] = $psid;
@@ -795,7 +794,10 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                 $Details['P'][$i]['PRODUCTDESCRIPTION'] = html_entity_decode($psdescription, ENT_QUOTES, self::$def_charset);
                 $Details['P'][$i]['PRODUCTEDITDESCRIPTION'] = $comment;
 
-                if (strpos($inventory_prodrel_desc, '&lt;br /&gt;') === false && strpos($inventory_prodrel_desc, '&lt;br/&gt;') === false && strpos($inventory_prodrel_desc, '&lt;br&gt;') === false) {
+                if (strpos($inventory_prodrel_desc, '&lt;br /&gt;') === false && strpos($inventory_prodrel_desc, '&lt;br/&gt;') === false && strpos(
+                        $inventory_prodrel_desc,
+                        '&lt;br&gt;'
+                    ) === false) {
                     $inventory_prodrel_desc = str_replace("\\n", '<br>', nl2br($inventory_prodrel_desc));
                 }
 
@@ -856,8 +858,8 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                 if ($taxtype == 'individual') {
                     //$tax_info_message = $mod_strings['LBL_TOTAL_AFTER_DISCOUNT'] . ' = $totalAfterDiscount \\n';
                     $tax_details = getTaxDetailsForProduct($productid, 'all');
-                    $Tax_Values = array();
-                    $VatPercent = array();
+                    $Tax_Values = [];
+                    $VatPercent = [];
 
                     for ($tax_count = 0; $tax_count < php7_count($tax_details); $tax_count++) {
                         $tax_name = $tax_details[$tax_count]['taxname'];
@@ -891,19 +893,19 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
                 $result1 = self::$db->pquery(
                     'SELECT * FROM vtiger_inventoryproductrel WHERE id=? AND sequence_no=?',
-                    array(self::$focus->id, $sequence)
+                    [self::$focus->id, $sequence]
                 );
                 $row1 = self::$db->fetchByAssoc($result1, 0);
 
                 $tabid = getTabid($module);
                 $result2 = self::$db->pquery(
                     'SELECT fieldname, fieldlabel, columnname, uitype, typeofdata FROM vtiger_field WHERE tablename = ? AND tabid = ?',
-                    array('vtiger_inventoryproductrel', $tabid)
+                    ['vtiger_inventoryproductrel', $tabid]
                 );
 
                 while ($row2 = self::$db->fetchByAssoc($result2)) {
                     if (!isset($Details['P'][$i]['PRODUCT_' . strtoupper($row2['fieldname'])])) {
-                        $UITypes = array();
+                        $UITypes = [];
                         $value = $row1[$row2['columnname']];
 
                         if ($value != '') {
@@ -957,14 +959,14 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
     private function retrieve_entity_infoCustom(&$focus, $record, $module)
     {
-        $result = array();
+        $result = [];
 
         foreach ($focus->tab_name_index as $table_name => $index) {
-            $result[$table_name] = self::$db->pquery('SELECT * FROM ' . $table_name . ' WHERE ' . $index . '=?', array($record));
+            $result[$table_name] = self::$db->pquery('SELECT * FROM ' . $table_name . ' WHERE ' . $index . '=?', [$record]);
         }
 
         $tabid = getTabid($module);
-        $result1 = self::$db->pquery('SELECT fieldname, fieldid, fieldlabel, columnname, tablename, uitype, typeofdata, presence FROM vtiger_field WHERE tabid=?', array($tabid));
+        $result1 = self::$db->pquery('SELECT fieldname, fieldid, fieldlabel, columnname, tablename, uitype, typeofdata, presence FROM vtiger_field WHERE tabid=?', [$tabid]);
         $noofrows = self::$db->num_rows($result1);
 
         if ($noofrows) {
@@ -998,18 +1000,32 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
     private function getFieldValue($efocus, $emodule, $fieldname, $value, $UITypes, $inventory_currency = false)
     {
-        return $this->getFieldValueUtils($efocus, $emodule, $fieldname, $value, $UITypes, $inventory_currency, self::$ignored_picklist_values, self::$def_charset, self::$decimals, self::$decimal_point, self::$thousands_separator, self::$language, self::$focus->id);
+        return $this->getFieldValueUtils(
+            $efocus,
+            $emodule,
+            $fieldname,
+            $value,
+            $UITypes,
+            $inventory_currency,
+            self::$ignored_picklist_values,
+            self::$def_charset,
+            self::$decimals,
+            self::$decimal_point,
+            self::$thousands_separator,
+            self::$language,
+            self::$focus->id
+        );
     }
 
     private function convertInventoryModules()
     {
-        $ProductParts = array();
-        $result = self::$db->pquery('select * from vtiger_inventoryproductrel where id=?', array(self::$focus->id));
+        $ProductParts = [];
+        $result = self::$db->pquery('select * from vtiger_inventoryproductrel where id=?', [self::$focus->id]);
         $num_rows = self::$db->num_rows($result);
 
         if ($num_rows > 0) {
             $Products = $this->replaceInventoryDetailsBlock(self::$module, self::$focus);
-            $Blocks = array('', 'PRODUCTS_', 'SERVICES_');
+            $Blocks = ['', 'PRODUCTS_', 'SERVICES_'];
 
             foreach ($Blocks as $block_type) {
                 if (strpos(self::$content, '#PRODUCTBLOC_' . $block_type . 'START#') !== false && strpos(self::$content, '#PRODUCTBLOC_' . $block_type . 'END#') !== false) {
@@ -1040,8 +1056,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                         }
                     }
 
-
-                    $ExplodedPdf = array();
+                    $ExplodedPdf = [];
                     $Exploded = explode('#PRODUCTBLOC_' . $block_type . 'START#', self::$content);
                     $ExplodedPdf[] = $Exploded[0];
 
@@ -1081,7 +1096,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                             }
                         }
                     }
-                    
+
                     self::$content = implode('', $ExplodedPdf);
                 }
             }
@@ -1176,8 +1191,9 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
                         $var_split = preg_split($preg_cond, $var);
 
-
-                        $subtotal_tr .= "<td colspan='" . ($td->getAttribute('colspan') - 1) . "' style='" . $style_subtotal . ";border-right:none'>" . $style_subtotal_tag . '%G_Subtotal%' . $style_subtotal_endtag . '</td>';
+                        $subtotal_tr .= "<td colspan='" . ($td->getAttribute(
+                                    'colspan'
+                                ) - 1) . "' style='" . $style_subtotal . ";border-right:none'>" . $style_subtotal_tag . '%G_Subtotal%' . $style_subtotal_endtag . '</td>';
                         $subtotal_tr .= "<td align='right' nowrap='nowrap' style='" . $style_subtotal . "'>" . $style_subtotal_tag . $var_split[0] . '$' . $var_text . '_SUBTOTAL$' . $var_split[1] . $style_subtotal_endtag . '</td>';
                         $subtotal_tr .= '</tr>';
                     }
@@ -1222,7 +1238,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                         }
 
                         $prev_sibling = $tmpPb->prev_sibling();
-                        $prev_sibling_styles = array();
+                        $prev_sibling_styles = [];
 
                         while ($prev_sibling != null) {
                             $prev_sibling_styles[] = $this->getDOMElementAtts($prev_sibling);
@@ -1230,7 +1246,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                         }
 
                         $next_sibling = $tmpPb->next_sibling();
-                        $next_sibling_styles = array();
+                        $next_sibling_styles = [];
 
                         while ($next_sibling != null) {
                             $next_sibling_styles[] = $this->getDOMElementAtts($next_sibling);
@@ -1267,7 +1283,8 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         }
     }
 
-    public static function getSiteUrl() {
+    public static function getSiteUrl()
+    {
         return rtrim(vglobal('site_URL'), '/') . '/';
     }
 
@@ -1293,7 +1310,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         $current_user = Users_Record_Model::getCurrentUserModel();
 
         if (self::$focus->column_fields['assigned_user_id'] != '') {
-            $user_res = self::$db->pquery('SELECT * FROM vtiger_users WHERE id = ?', array(self::$focus->column_fields['assigned_user_id']));
+            $user_res = self::$db->pquery('SELECT * FROM vtiger_users WHERE id = ?', [self::$focus->column_fields['assigned_user_id']]);
             $user_row = self::$db->fetchByAssoc($user_res);
 
             $this->replaceUserData($user_row['id'], $user_row, 'USER');
@@ -1316,7 +1333,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
         $modifiedby_user_res = self::$db->pquery(
             'SELECT vtiger_users.* FROM vtiger_users INNER JOIN vtiger_crmentity ON vtiger_crmentity.modifiedby = vtiger_users.id  WHERE  vtiger_crmentity.crmid = ?',
-            array(self::$focus->id)
+            [self::$focus->id]
         );
         $modifiedby_user_row = self::$db->fetchByAssoc($modifiedby_user_res);
         $this->replaceUserData($modifiedby_user_row['id'], $modifiedby_user_row, 'M_USER');
@@ -1327,7 +1344,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
         $smcreatorid_user_res = self::$db->pquery(
             'SELECT vtiger_users.* FROM vtiger_users INNER JOIN vtiger_crmentity ON vtiger_crmentity.creator_user_id = vtiger_users.id  WHERE  vtiger_crmentity.crmid = ?',
-            array(self::$focus->id)
+            [self::$focus->id]
         );
         $smcreatorid_user_row = self::$db->fetchByAssoc($smcreatorid_user_res);
         $this->replaceUserData($smcreatorid_user_row['id'], $smcreatorid_user_row, 'C_USER');
@@ -1352,27 +1369,27 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
     private function replaceUserData($id, $data, $type)
     {
-        $Fields = array(
-            'FIRSTNAME' => 'first_name',
-            'LASTNAME' => 'last_name',
-            'EMAIL' => 'email1',
-            'TITLE' => 'title',
-            'FAX' => 'phone_fax',
-            'DEPARTMENT' => 'department',
+        $Fields = [
+            'FIRSTNAME'   => 'first_name',
+            'LASTNAME'    => 'last_name',
+            'EMAIL'       => 'email1',
+            'TITLE'       => 'title',
+            'FAX'         => 'phone_fax',
+            'DEPARTMENT'  => 'department',
             'OTHER_EMAIL' => 'email2',
-            'PHONE' => 'phone_work',
-            'YAHOOID' => 'yahoo_id',
-            'MOBILE' => 'phone_mobile',
-            'HOME_PHONE' => 'phone_home',
+            'PHONE'       => 'phone_work',
+            'YAHOOID'     => 'yahoo_id',
+            'MOBILE'      => 'phone_mobile',
+            'HOME_PHONE'  => 'phone_home',
             'OTHER_PHONE' => 'phone_other',
-            'SIGHNATURE' => 'signature',
-            'NOTES' => 'description',
-            'ADDRESS' => 'address_street',
-            'COUNTRY' => 'address_country',
-            'CITY' => 'address_city',
-            'ZIP' => 'address_postalcode',
-            'STATE' => 'address_state'
-        );
+            'SIGHNATURE'  => 'signature',
+            'NOTES'       => 'description',
+            'ADDRESS'     => 'address_street',
+            'COUNTRY'     => 'address_country',
+            'CITY'        => 'address_city',
+            'ZIP'         => 'address_postalcode',
+            'STATE'       => 'address_state'
+        ];
 
         foreach ($Fields as $n => $v) {
             self::$rep['$' . $type . '_' . $n . '$'] = $this->getUserValue($v, $data);
@@ -1457,7 +1474,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                      disp_header, disp_footer
               FROM vtiger_pdfmaker_settings INNER JOIN vtiger_pdfmaker ON  vtiger_pdfmaker.templateid = vtiger_pdfmaker_settings.templateid WHERE  vtiger_pdfmaker.module = ? AND vtiger_pdfmaker.module IN ('Invoice','Quotes','SalesOrder','PurchaseOrder') ";
 
-        $result = $db->pquery($sql, array($module));
+        $result = $db->pquery($sql, [$module]);
 
         return $db->fetchByAssoc($result, 1);
     }
@@ -1465,7 +1482,8 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
     private function getInventoryTaxTypeCustom($module, $focus)
     {
         if (!empty($focus->id)) {
-            $res = self::$db->pquery('SELECT taxtype FROM ' . self::$inventory_table_array[$module] . ' WHERE ' . self::$inventory_id_array[$module] . '=?', array($focus->id));
+            $res = self::$db->pquery('SELECT taxtype FROM ' . self::$inventory_table_array[$module] . ' WHERE ' . self::$inventory_id_array[$module] . '=?', [$focus->id]);
+
             return self::$db->query_result($res, 0, 'taxtype');
         }
 

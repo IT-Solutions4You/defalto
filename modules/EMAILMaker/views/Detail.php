@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_Detail_View extends Vtiger_Index_View
 {
     public function __construct()
@@ -30,6 +31,7 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
         $mode = $request->getMode();
         if (!empty($mode)) {
             echo $this->invokeExposedMethod($mode, $request);
+
             return;
         }
         echo $this->showModuleDetailView($request);
@@ -85,7 +87,6 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
         $viewer->assign("CATEGORY", $category);
         $viewer->assign("IS_MASSEMAIL", "no");
 
-
         $viewer->view('Detail.tpl', 'EMAILMaker');
     }
 
@@ -117,7 +118,7 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
                 exit;
             }
 
-            $linkParams = array('MODULE' => $moduleName, 'ACTION' => $request->get('view'));
+            $linkParams = ['MODULE' => $moduleName, 'ACTION' => $request->get('view')];
             $linkModels = $moduleModel->getSideBarLinks($linkParams);
             $viewer->assign('QUICK_LINKS', $linkModels);
         }
@@ -151,7 +152,7 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
             $documentsInstance = Vtiger_Module_Model::getInstance('Documents');
             if ($userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'DetailView')) {
                 $viewer->assign("ISDOCUMENTSACTIVE", "yes");
-                $Documents_Header = array("title" => 'Title', "folder" => 'Folder Name', "assigned_to" => 'Assigned To', "name" => 'File Name');
+                $Documents_Header = ["title" => 'Title', "folder" => 'Folder Name', "assigned_to" => 'Assigned To', "name" => 'File Name'];
                 $viewer->assign('DOCUMENTS_HEADERS', $Documents_Header);
                 $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
                 $Documents_Records = $EMAILMaker->getEmailTemplateDocuments($recordId);
@@ -197,11 +198,10 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
             $viewer->assign('RECORD', $recordModel);
             $viewer->assign('MODULE_MODEL', $this->record->getModule());
 
-            $detailViewLinkParams = array('MODULE' => $moduleName, 'RECORD' => $recordId);
+            $detailViewLinkParams = ['MODULE' => $moduleName, 'RECORD' => $recordId];
 
             $detailViewLinks = $this->record->getDetailViewLinks($detailViewLinkParams);
             $viewer->assign('DETAILVIEW_LINKS', $detailViewLinks);
-
         }
 
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
@@ -220,7 +220,6 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
 
     public function showRelatedList(Vtiger_Request $request)
     {
-
         $related_module = $request->get("relatedModule");
         if ($related_module == "ITS4YouStyles") {
             $viewer = $this->getViewer($request);
@@ -240,7 +239,7 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
         }
 
         $viewer->assign('VIEW', $request->get('view'));
-        $Documents_Header = array("title" => 'Title', "folder" => 'Folder Name', "assigned_to" => 'Assigned To', "name" => 'File Name');
+        $Documents_Header = ["title" => 'Title', "folder" => 'Folder Name', "assigned_to" => 'Assigned To', "name" => 'File Name'];
         $viewer->assign('DOCUMENTS_HEADERS', $Documents_Header);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $viewer->assign("TEMPLATEID", $record);
@@ -301,12 +300,12 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
         $layout = Vtiger_Viewer::getLayoutName();
-        $jsFileNames = array(
+        $jsFileNames = [
             "layouts.$layout.modules.Vtiger.resources.List",
             "layouts.$layout.modules.Vtiger.resources.Detail",
             "layouts.$layout.modules.EMAILMaker.resources.Detail",
             "layouts.$layout.modules.Vtiger.resources.RelatedList"
-        );
+        ];
         if (vtlib_isModuleActive("ITS4YouStyles")) {
             $jsFileNames[] = "modules.ITS4YouStyles.resources.CodeMirror.lib.codemirror";
             $jsFileNames[] = "modules.ITS4YouStyles.resources.CodeMirror.mode.javascript.javascript";
@@ -317,6 +316,7 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
         $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+
         return $headerScriptInstances;
     }
 
@@ -324,12 +324,13 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
     {
         $headerCssInstances = parent::getHeaderCss($request);
         if (vtlib_isModuleActive("ITS4YouStyles")) {
-            $cssFileNames = array(
+            $cssFileNames = [
                 '~/modules/ITS4YouStyles/resources/CodeMirror/lib/codemirror.css',
-            );
+            ];
             $cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
             $headerCssInstances = array_merge($headerCssInstances, $cssInstances);
         }
+
         return $headerCssInstances;
     }
 }

@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 use PHPMailer\PHPMailer\Exception;
@@ -152,8 +152,10 @@ class EMAILMaker_Utils_Helper
         $sign = VTCacheUtils::getUserSignature($fromName);
 
         if ($sign == null) {
-            $result = $db->pquery('select signature, userlabel from vtiger_users where user_name=? or user_name=? or email1=? or email2=? or secondaryemail=?',
-                [$fromName, $fromEmail, $fromEmail, $fromEmail, $fromEmail]);
+            $result = $db->pquery(
+                'select signature, userlabel from vtiger_users where user_name=? or user_name=? or email1=? or email2=? or secondaryemail=?',
+                [$fromName, $fromEmail, $fromEmail, $fromEmail, $fromEmail]
+            );
 
             if ($db->num_rows($result)) {
                 $row = $db->fetchByAssoc($result);

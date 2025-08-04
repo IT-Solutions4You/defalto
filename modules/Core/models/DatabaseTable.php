@@ -1,11 +1,11 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Core_DatabaseTable_Model extends Vtiger_Base_Model
@@ -22,8 +22,9 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
     /**
      * @param $column
      * @param $type
+     *
      * @return $this
-     * @throws AppException
+     * @throws Exception
      */
     public function createColumn($column, $type): self
     {
@@ -44,6 +45,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
     /**
      * @param string $fromColumn
      * @param string $toColumn
+     *
      * @return $this
      */
     public function renameColumn(string $fromColumn, string $toColumn): static
@@ -63,7 +65,8 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
     /**
      * @param string $columnName
      * @param string $tableName
-     * @param bool $cache
+     * @param bool   $cache
+     *
      * @return bool
      */
     public function checkColumn(string $columnName, string $tableName, bool $cache = false): bool
@@ -85,6 +88,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
 
     /**
      * @param $columns
+     *
      * @return void
      */
     public function setTableColumns($columns): void
@@ -143,6 +147,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
 
     /**
      * @param $criteria
+     *
      * @return $this
      */
     public function createKey($criteria)
@@ -173,7 +178,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function createTable($firstColumn = '', $firstType = 'int(19)'): self
     {
@@ -195,8 +200,9 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @param string $table
+     * @param string      $table
      * @param string|null $tableId
+     *
      * @return self
      */
     public function getTable(string $table, string|null $tableId): self
@@ -212,7 +218,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
     public function requireTable($message)
     {
         if ($this->isEmpty('table')) {
-            throw new AppException($message);
+            throw new Exception($message);
         }
     }
 

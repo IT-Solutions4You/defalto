@@ -1,21 +1,60 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Core_CKEditor_UIType extends Vtiger_Base_UIType {
+class Core_CKEditor_UIType extends Vtiger_Base_UIType
+{
+    public const NEW_LINE_TAGS = [
+        'address',
+        'br',
+        'article',
+        'aside',
+        'blockquote',
+        'canvas',
+        'dd',
+        'div',
+        'dl',
+        'dt',
+        'fieldset',
+        'figcaption',
+        'figure',
+        'footer',
+        'form',
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'header',
+        'hr',
+        'li',
+        'main',
+        'nav',
+        'noscript',
+        'ol',
+        'p',
+        'pre',
+        'section',
+        'table',
+        'tfoot',
+        'ul',
+        'video',
+    ];
 
-    public const NEW_LINE_TAGS = ['address', 'br','article','aside','blockquote','canvas','dd','div','dl','dt','fieldset','figcaption','figure','footer','form','h1','h2','h3','h4','h5','h6','header','hr','li','main','nav','noscript','ol','p','pre','section','table','tfoot','ul','video',];
     /**
      * Function to get the Display Value, for the current field type with given DB Insert Value
-     * @param $value
+     *
+     * @param       $value
      * @param false $record
      * @param false $recordInstance
+     *
      * @return string
      */
     public function getDisplayValue($value, $record = false, $recordInstance = false)
@@ -25,6 +64,7 @@ class Core_CKEditor_UIType extends Vtiger_Base_UIType {
 
     /**
      * @param string $value
+     *
      * @return string
      */
     public static function transformDisplayValue($value): string
@@ -67,18 +107,18 @@ class Core_CKEditor_UIType extends Vtiger_Base_UIType {
     }
 
     /**
-	 * Function to get the Template name for the current UI Type Object
-	 * @return string - Template Name
-	 */
+     * Function to get the Template name for the current UI Type Object
+     * @return string - Template Name
+     */
     public function getTemplateName()
     {
         return 'uitypes/CKEditor.tpl';
     }
 
     /**
-	 * Function to get the Template name for the current UI Type Object
-	 * @return string - Template Name
-	 */
+     * Function to get the Template name for the current UI Type Object
+     * @return string - Template Name
+     */
     public function getDetailViewTemplateName()
     {
         return 'uitypes/CKEditorDetailView.tpl';

@@ -1,11 +1,11 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Core_Files_Model extends Vtiger_Base_Model
@@ -17,6 +17,7 @@ class Core_Files_Model extends Vtiger_Base_Model
 
     /**
      * @param string $fileName
+     *
      * @return void
      */
     public function deleteLayoutFile(string $fileName): void
@@ -24,13 +25,14 @@ class Core_Files_Model extends Vtiger_Base_Model
         $fileName = ltrim($fileName, '/');
         $file = $this->getLayoutDirectory() . $fileName;
 
-        if(file_exists($file) && is_writable($file)) {
+        if (file_exists($file) && is_writable($file)) {
             unlink($file);
         }
     }
 
     /**
      * @param string $fileName
+     *
      * @return void
      */
     public function deleteModuleFile(string $fileName): void
@@ -38,13 +40,13 @@ class Core_Files_Model extends Vtiger_Base_Model
         $fileName = ltrim($fileName, '/');
         $file = $this->getModuleDirectory() . $fileName;
 
-        if(file_exists($file) && is_writable($file)) {
+        if (file_exists($file) && is_writable($file)) {
             unlink($file);
         }
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getInstance(string $module)
     {

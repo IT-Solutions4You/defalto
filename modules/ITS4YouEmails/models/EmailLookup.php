@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class ITS4YouEmails_EmailLookup_Model extends Vtiger_Base_Model
 {
     public function delete($crmId, $fieldId = false)
@@ -14,10 +15,10 @@ class ITS4YouEmails_EmailLookup_Model extends Vtiger_Base_Model
         $db = PearDatabase::getInstance();
 
         if ($fieldId) {
-            $params = array($crmId, $fieldId);
+            $params = [$crmId, $fieldId];
             $db->pquery('DELETE FROM vtiger_emailslookup WHERE crmid=? AND fieldid=?', $params);
         } else {
-            $params = array($crmId);
+            $params = [$crmId];
             $db->pquery('DELETE FROM vtiger_emailslookup WHERE crmid=?', $params);
         }
     }
@@ -30,11 +31,10 @@ class ITS4YouEmails_EmailLookup_Model extends Vtiger_Base_Model
     public function recieve($fieldId, $values)
     {
         $db = PearDatabase::getInstance();
-        $params = array($values['crmid'], $values['setype'], $values[$fieldId], $fieldId);
+        $params = [$values['crmid'], $values['setype'], $values[$fieldId], $fieldId];
         $db->pquery(
             'INSERT INTO vtiger_emailslookup (crmid, setype, value, fieldid) VALUES(?,?,?,?) ON DUPLICATE KEY UPDATE value=VALUES(value)',
             $params
         );
     }
-
 }

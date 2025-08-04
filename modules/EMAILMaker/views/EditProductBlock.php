@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_EditProductBlock_View extends EMAILMaker_Index_View
 {
     public $cu_language = "";
@@ -24,12 +25,12 @@ class EMAILMaker_EditProductBlock_View extends EMAILMaker_Index_View
 
         $viewer = $this->getViewer($request);
         $emode = "";
-        $template = array();
+        $template = [];
         $tplid = $request->get('tplid');
         $mode = $request->get('mode');
         if (isset($tplid) && $tplid != "") {
             $adb = PearDatabase::getInstance();
-            $result = $adb->pquery("SELECT * FROM vtiger_emakertemplates_productbloc_tpl WHERE id=?", array($tplid));
+            $result = $adb->pquery("SELECT * FROM vtiger_emakertemplates_productbloc_tpl WHERE id=?", [$tplid]);
             $row = $adb->fetchByAssoc($result);
             if ($mode != "duplicate") {
                 $template["id"] = $row["id"];
@@ -51,7 +52,7 @@ class EMAILMaker_EditProductBlock_View extends EMAILMaker_Index_View
         $global_lang_labels = array_flip($global_lang_labels);
         asort($global_lang_labels);
         $viewer->assign("GLOBAL_LANG_LABELS", $global_lang_labels);
-        list($custom_labels, $languages) = $EMAILMaker->GetCustomLabels();
+        [$custom_labels, $languages] = $EMAILMaker->GetCustomLabels();
         $currLangId = "";
         foreach ($languages as $langId => $langVal) {
             if ($langVal["prefix"] == $current_language) {
@@ -59,7 +60,7 @@ class EMAILMaker_EditProductBlock_View extends EMAILMaker_Index_View
                 break;
             }
         }
-        $vcustom_labels = array();
+        $vcustom_labels = [];
         if (count($custom_labels) > 0) {
             foreach ($custom_labels as $oLbl) {
                 $currLangVal = $oLbl->GetLangValue($currLangId);
@@ -87,12 +88,12 @@ class EMAILMaker_EditProductBlock_View extends EMAILMaker_Index_View
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
         $layout = Vtiger_Viewer::getLayoutName();
-        $jsFileNames = array(
+        $jsFileNames = [
             "modules.$moduleName.resources.ckeditor.ckeditor",
             "libraries.jquery.ckeditor.adapters.jquery",
             "libraries.jquery.jquery_windowmsg",
             "layouts.$layout.modules.$moduleName.resources.ProductBlocks"
-        );
+        ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
         $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);

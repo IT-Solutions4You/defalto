@@ -1,3 +1,11 @@
+{**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
 <div id="modal_users_and_groups" class="modal-dialog modal-lg" data-background="static">
     <div class="modal-content">
         {include file='ModalHeader.tpl'|vtemplate_path:$QUALIFIED_MODULE TITLE=vtranslate('LBL_FILTER', $QUALIFIED_MODULE)}

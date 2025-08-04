@@ -1,5 +1,5 @@
 <?php
-/*+**********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -7,52 +7,59 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
-$languageStrings = array(
-	'Accounts'                     => 'Organisations'               , 
-	'SINGLE_Accounts'              => 'Organisation'                , 
-	'LBL_ADD_RECORD'               => 'Add Organisation'            , 
-	'LBL_RECORDS_LIST'             => 'Organisation List'           , 
-	'LBL_ACCOUNT_INFORMATION'      => 'Organisation Information'    , 
-	'LBL_SHOW_ACCOUNT_HIERARCHY'   => 'Show Organisation Hierarchy' , 
-	'industry'                     => 'Industry'                    , 
-	'Account Name'                 => 'Organisation Name'           , 
-	'Account No'                   => 'Organisation No.'            , 
-	'Website'                      => 'Website'                     , 
-	'Ticker Symbol'                => 'Ticker Symbol'               , 
-	'Member Of'                    => 'Member Of'                   , 
-	'Employees'                    => 'Employees'                   , 
-	'Ownership'                    => 'Ownership'                   , 
-	'SIC Code'                     => 'SIC Code'                    , 
-	'Other Email'                  => 'Other Email'                 , 
-	'Analyst'                      => 'Analyst'                     , 
-	'Competitor'                   => 'Competitor'                  , 
-	'Customer'                     => 'Customer'                    , 
-	'Integrator'                   => 'Integrator'                  , 
-	'Investor'                     => 'Investor'                    , 
-	'Press'                        => 'Press'                       , 
-	'Prospect'                     => 'Prospect'                    , 
-	'Reseller'                     => 'Reseller'                    , 
-	'LBL_START_DATE'               => 'Start Date'                  , 
-	'LBL_END_DATE'                 => 'End Date'                    , 
-	'LBL_DUPLICATES_EXIST'         => 'Organisation Name already exists', 
-	'LBL_COPY_SHIPPING_ADDRESS'    => 'Copy Delivery Address'       , // TODO: Review
-	'LBL_COPY_BILLING_ADDRESS'     => 'Copy Invoice Address'        , // TODO: Review
-    'LBL_IMAGE_INFORMATION' => 'Profile Picture',
-    'Organization Image' => 'Organisation Image',
-    'Type'                         => 'Type'                        , 
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-  'Other Phone' => 'Other Phone',
-  'Phone' => 'Phone',
-  'Email' => 'Primary Email',
+$languageStrings = [
+    'Accounts'                   => 'Organisations',
+    'SINGLE_Accounts'            => 'Organisation',
+    'LBL_ADD_RECORD'             => 'Add Organisation',
+    'LBL_RECORDS_LIST'           => 'Organisation List',
+    'LBL_ACCOUNT_INFORMATION'    => 'Organisation Information',
+    'LBL_SHOW_ACCOUNT_HIERARCHY' => 'Show Organisation Hierarchy',
+    'industry'                   => 'Industry',
+    'Account Name'               => 'Organisation Name',
+    'Account No'                 => 'Organisation No.',
+    'Website'                    => 'Website',
+    'Ticker Symbol'              => 'Ticker Symbol',
+    'Member Of'                  => 'Member Of',
+    'Employees'                  => 'Employees',
+    'Ownership'                  => 'Ownership',
+    'SIC Code'                   => 'SIC Code',
+    'Other Email'                => 'Other Email',
+    'Analyst'                    => 'Analyst',
+    'Competitor'                 => 'Competitor',
+    'Customer'                   => 'Customer',
+    'Integrator'                 => 'Integrator',
+    'Investor'                   => 'Investor',
+    'Press'                      => 'Press',
+    'Prospect'                   => 'Prospect',
+    'Reseller'                   => 'Reseller',
+    'LBL_START_DATE'             => 'Start Date',
+    'LBL_END_DATE'               => 'End Date',
+    'LBL_DUPLICATES_EXIST'       => 'Organisation Name already exists',
+    'LBL_COPY_SHIPPING_ADDRESS'  => 'Copy Delivery Address',
+    'LBL_COPY_BILLING_ADDRESS'   => 'Copy Invoice Address',
+    'LBL_IMAGE_INFORMATION'      => 'Profile Picture',
+    'Organization Image'         => 'Organisation Image',
+    'Type'                       => 'Type',
+
+    'Other Phone' => 'Other Phone',
+    'Phone'       => 'Phone',
+    'Email'       => 'Primary Email',
 
     'Company Reg. No.' => 'Company Reg. No.',
-    'VAT ID' => 'VAT ID',
-);
-$jsLanguageStrings = array(
-	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to Delete?', 
-	'LBL_DELETE_CONFIRMATION'      => 'Deleting this Organisation will remove its related Opportunities & Quotes. Are you sure you want to delete this Organisation?', 
-	'LBL_MASS_DELETE_CONFIRMATION' => 'Deleting this Organisation will remove its related Opportunities & Quotes. Are you sure you want to delete this Organisation?', 
-
-  'JS_DUPLICATE_CREATION_CONFIRMATION' => 'Organisation Name already Exists.Do you want to create a duplicate record?',
-
-);
+    'VAT ID'           => 'VAT ID',
+];
+$jsLanguageStrings = [
+    'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to Delete?',
+    'LBL_DELETE_CONFIRMATION'                => 'Deleting this Organisation will remove its related Opportunities & Quotes. Are you sure you want to delete this Organisation?',
+    'LBL_MASS_DELETE_CONFIRMATION'           => 'Deleting this Organisation will remove its related Opportunities & Quotes. Are you sure you want to delete this Organisation?',
+    'JS_DUPLICATE_CREATION_CONFIRMATION' => 'Organisation Name already Exists.Do you want to create a duplicate record?',
+];

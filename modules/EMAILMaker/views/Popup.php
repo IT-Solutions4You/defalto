@@ -1,15 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_Popup_View extends Vtiger_Popup_View
 {
-
     public function checkPermission(Vtiger_Request $request)
     {
         return true;
@@ -20,7 +20,6 @@ class EMAILMaker_Popup_View extends Vtiger_Popup_View
      */
     public function initializeListViewContents(Vtiger_Request $request, Vtiger_Viewer $viewer)
     {
-
         $moduleName = $request->getModule();
         $cvId = $request->get('viewname');
         $pageNumber = $request->get('page');
@@ -37,7 +36,7 @@ class EMAILMaker_Popup_View extends Vtiger_Popup_View
         $listViewModel = EMAILMaker_ListView_Model::getInstance($moduleName, $cvId);
         //add body to select clause so that we can retrive data after click in the popup
         $listViewModel->addColumnToSelectCaluse('body');
-        $linkParams = array('MODULE' => $moduleName, 'ACTION' => $request->get('view'), 'CVID' => $cvId);
+        $linkParams = ['MODULE' => $moduleName, 'ACTION' => $request->get('view'), 'CVID' => $cvId];
         $linkModels = $listViewModel->getListViewMassActions($linkParams);
         $pagingModel = new Vtiger_Paging_Model();
         $pagingModel->set('page', $pageNumber);
@@ -64,7 +63,6 @@ class EMAILMaker_Popup_View extends Vtiger_Popup_View
         if (!$this->listViewHeaders) {
             $this->listViewHeaders = $listViewModel->getListViewHeaders();
         }
-
 
         if ($request->has('src_module') && !$request->isEmpty('src_module')) {
             $listViewModel->set('src_module', $request->get('src_module'));
@@ -129,6 +127,7 @@ class EMAILMaker_Popup_View extends Vtiger_Popup_View
 
     /**
      * Function to get listView count
+     *
      * @param Vtiger_Request $request
      */
     public function getListViewCount(Vtiger_Request $request)
@@ -141,7 +140,7 @@ class EMAILMaker_Popup_View extends Vtiger_Popup_View
         $listViewModel->set('search_key', $searchKey);
         $listViewModel->set('search_value', $searchValue);
         $listViewModel->set('operator', $request->get('operator'));
+
         return $listViewModel->getListViewCount();
     }
-
 }

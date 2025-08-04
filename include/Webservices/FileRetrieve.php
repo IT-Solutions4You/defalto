@@ -1,5 +1,5 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -8,24 +8,33 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-function vtws_file_retrieve($file_id, $user) {
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
+function vtws_file_retrieve($file_id, $user)
+{
     global $log, $adb;
 
     $idComponents = vtws_getIdComponents($file_id);
     $attachmentId = $idComponents[1];
-    
+
     $id = vtws_getAttachmentRecordId($attachmentId);
-    if(!$id || !$attachmentId) {
+    if (!$id || !$attachmentId) {
         throw new WebServiceException(WebServiceErrorCode::$RECORDNOTFOUND, "Record you are trying to access is not found");
     } else {
         $id = vtws_getId($idComponents[0], $id);
     }
-    
+
     $webserviceObject = VtigerWebserviceObject::fromId($adb, $id);
     $handlerPath = $webserviceObject->getHandlerPath();
     $handlerClass = $webserviceObject->getHandlerClass();
-    
+
     require_once $handlerPath;
     $handler = new $handlerClass($webserviceObject, $user, $adb, $log);
 
@@ -48,5 +57,3 @@ function vtws_file_retrieve($file_id, $user) {
 
     return $response;
 }
-
-?>

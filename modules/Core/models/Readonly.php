@@ -1,12 +1,13 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Core_Readonly_Model extends Vtiger_Base_Model
 {
     /**
@@ -16,6 +17,7 @@ class Core_Readonly_Model extends Vtiger_Base_Model
 
     /**
      * @param $module
+     *
      * @return self
      */
     public static function getInstance($module): self
@@ -37,7 +39,8 @@ class Core_Readonly_Model extends Vtiger_Base_Model
 
     /**
      * @param string $module
-     * @param int $record
+     * @param int    $record
+     *
      * @return bool
      * @throws Exception
      */
@@ -51,8 +54,9 @@ class Core_Readonly_Model extends Vtiger_Base_Model
 
     /**
      * @param string $module
-     * @param int $record
+     * @param int    $record
      * @param string $mode
+     *
      * @return bool
      * @throws Exception
      */
@@ -68,6 +72,7 @@ class Core_Readonly_Model extends Vtiger_Base_Model
     /**
      * @param $module
      * @param $record
+     *
      * @return bool
      * @throws Exception
      */
@@ -96,6 +101,7 @@ class Core_Readonly_Model extends Vtiger_Base_Model
 
     /**
      * @param $record
+     *
      * @return void
      */
     public function setRecord($record): void
@@ -125,6 +131,7 @@ class Core_Readonly_Model extends Vtiger_Base_Model
 
     /**
      * @param bool $register
+     *
      * @return void
      */
     public static function updateWorkflow(bool $register = true): void
@@ -139,13 +146,13 @@ class Core_Readonly_Model extends Vtiger_Base_Model
 
         if ($register) {
             $params = [
-                'name' => $name,
-                'label' => $description,
+                'name'         => $name,
+                'label'        => $description,
                 'sourcemodule' => '',
-                'classname' => $name,
-                'classpath' => $incDestination,
+                'classname'    => $name,
+                'classpath'    => $incDestination,
                 'templatepath' => $tplPath,
-                'modules' => ['include' => [], 'exclude' => []],
+                'modules'      => ['include' => [], 'exclude' => []],
             ];
             VTTaskType::registerTaskType($params);
         } else {

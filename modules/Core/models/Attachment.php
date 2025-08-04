@@ -1,22 +1,21 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
-class Core_Attachment_Model extends Core_DatabaseData_Model {
 
+class Core_Attachment_Model extends Core_DatabaseData_Model
+{
     protected string $tableId = 'attachmentsid';
     protected string $table = 'vtiger_attachments';
     protected string $tableName = 'name';
 
-
-
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getInstance($module = 'Core', $record = null)
     {
@@ -31,7 +30,7 @@ class Core_Attachment_Model extends Core_DatabaseData_Model {
         $instance->set('module', $module);
         $instance->retrieveDB();
 
-        if($record) {
+        if ($record) {
             $instance->retriveData();
         }
 
@@ -91,7 +90,7 @@ class Core_Attachment_Model extends Core_DatabaseData_Model {
     public function saveFile($content)
     {
         if ($this->isEmpty('storedname') || $this->isEmpty('path')) {
-            throw new AppException('Missing stored name or path for file save');
+            throw new Exception('Missing stored name or path for file save');
         }
 
         $this->set('content', $content);
@@ -111,7 +110,7 @@ class Core_Attachment_Model extends Core_DatabaseData_Model {
     public function validateSaveFile(): bool
     {
         if ($this->isEmpty('is_saved_file')) {
-            throw new AppException('Attachment file is not saved');
+            throw new Exception('Attachment file is not saved');
         }
 
         return true;
@@ -126,7 +125,7 @@ class Core_Attachment_Model extends Core_DatabaseData_Model {
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function save(): void
     {
@@ -134,25 +133,25 @@ class Core_Attachment_Model extends Core_DatabaseData_Model {
         $time = $this->getDB()->formatDate(date('Y-m-d H:i:s'), true);
         $entityTable = $this->getTable('vtiger_crmentity', 'crmid');
         $entityParams = [
-            'crmid' => $this->getId(),
-            'creator_user_id' => $currentUserModel->getId(),
+            'crmid'            => $this->getId(),
+            'creator_user_id'  => $currentUserModel->getId(),
             'assigned_user_id' => $currentUserModel->getId(),
-            'modifiedby' => $currentUserModel->getId(),
-            'setype' => $this->get('module') . ' Attachment',
-            'description' => $this->getName(),
-            'createdtime' => $time,
-            'modifiedtime' => $time,
-            'presence' => 1,
-            'deleted' => 0,
+            'modifiedby'       => $currentUserModel->getId(),
+            'setype'           => $this->get('module') . ' Attachment',
+            'description'      => $this->getName(),
+            'createdtime'      => $time,
+            'modifiedtime'     => $time,
+            'presence'         => 1,
+            'deleted'          => 0,
         ];
         $attachmentTable = $this->getAttachmentTable();
         $attachmentParams = [
             'attachmentsid' => $this->getId(),
-            'name' => $this->getName(),
-            'storedname' => $this->get('storedname'),
-            'description' => $this->get('description'),
-            'type' => $this->get('type'),
-            'path' => $this->get('path'),
+            'name'          => $this->getName(),
+            'storedname'    => $this->get('storedname'),
+            'description'   => $this->get('description'),
+            'type'          => $this->get('type'),
+            'path'          => $this->get('path'),
         ];
 
         $entityData = $entityTable->selectData(['crmid'], ['crmid' => $this->getId()]);

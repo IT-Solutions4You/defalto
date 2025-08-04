@@ -1,30 +1,32 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 if (typeof (Vtiger_Import_Js) == 'undefined') {
 
     Vtiger_Import_Js = {
-        triggerImportAction: function(url) {
+        triggerImportAction: function (url) {
             var params = Vtiger_Import_Js.getDefaultParams();
             //Only for contacts show landing page.
-            if(params.module !== 'Contacts') {
+            if (params.module !== 'Contacts') {
                 Vtiger_Import_Js.showImportActionStepOne();
                 return false;
             }
             params['mode'] = 'landing';
             app.helper.showProgress();
-            app.request.get({data: params}).then(function(err, data) {
-                app.helper.loadPageContentOverlay(data).then(function() {
+            app.request.get({data: params}).then(function (err, data) {
+                app.helper.loadPageContentOverlay(data).then(function () {
                     app.helper.hideProgress();
                     Vtiger_Import_Js.registerEvents();
                 });
             });
             return false;
         },
-        bactToStep1: function() {
+        bactToStep1: function () {
             jQuery('#step2').removeClass('active');
             jQuery('#step1').addClass('active');
             jQuery('#uploadFileContainer').addClass('show');
@@ -52,7 +54,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             }
             return false;
         },
-        uploadAndParse: function(auto_merge) {
+        uploadAndParse: function (auto_merge) {
             if (Vtiger_Import_Js.validateFilePath() && Vtiger_Import_Js.validateMergeCriteria(auto_merge)) {
                 jQuery("#auto_merge").val(auto_merge);
                 var form = jQuery("form[name='importBasic']");
@@ -63,9 +65,9 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                     processData: false
                 };
                 app.helper.showProgress();
-                app.request.post(postParams).then(function(err, response) {
+                app.request.post(postParams).then(function (err, response) {
                     app.helper.loadPageContentOverlay(response);
-					Vtiger_Import_Js.loadDefaultValueWidgetForMappedFields();
+                    Vtiger_Import_Js.loadDefaultValueWidgetForMappedFields();
                     app.helper.hideProgress();
                 });
             }
@@ -92,34 +94,34 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             return false;
         },
 
-        backToLandingPage: function() {
+        backToLandingPage: function () {
             Vtiger_Import_Js.triggerImportAction();
             return false;
         },
-        sanitizeAndSubmit: function() {
+        sanitizeAndSubmit: function () {
             if (Vtiger_Import_Js.sanitizeFieldMapping() && Vtiger_Import_Js.validateCustomMap()) {
                 var formData = jQuery("form[name='importAdvanced']").serialize();
                 app.helper.showProgress();
-                app.request.post({data: formData}).then(function(err, response) {
+                app.request.post({data: formData}).then(function (err, response) {
                     app.helper.loadPageContentOverlay(response);
                     app.helper.hideProgress();
-                    if(!err){
+                    if (!err) {
                         if (jQuery('#scheduleImportStatus').length > 0) {
-                            app.event.one('post.overlayPageContent.hide', function(container) {
+                            app.event.one('post.overlayPageContent.hide', function (container) {
                                 clearTimeout(Vtiger_Import_Js.timer);
                                 Vtiger_Import_Js.isReloadStatusPageStopped = true;
                             });
                             Vtiger_Import_Js.isReloadStatusPageStopped = false;
                             Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning, 5000);
                         } else {
-                            app.helper.showSuccessNotification({message:'Import Completed.'});
+                            app.helper.showSuccessNotification({message: 'Import Completed.'});
                         }
                     }
                 });
             }
             return false;
         },
-        sanitizeFieldMapping: function() {
+        sanitizeFieldMapping: function () {
             var fieldsList = jQuery('.fieldIdentifier');
 
             var mappedFields = {};
@@ -174,7 +176,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             jQuery('#default_values').val(JSON.stringify(mappedDefaultValues));
             return true;
         },
-        validateCustomMap: function() {
+        validateCustomMap: function () {
             var errorMessage;
             var saveMap = jQuery('#save_map').is(':checked');
             if (saveMap) {
@@ -196,7 +198,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             }
             return true;
         },
-        getParamsFromURL: function(url) {
+        getParamsFromURL: function (url) {
             var urlParams = url.slice(url.indexOf('?') + 1).split('&');
             var params = {};
             for (var i = 0; i < urlParams.length; i++) {
@@ -205,16 +207,16 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             }
             return params;
         },
-        undoImport: function(url) {
+        undoImport: function (url) {
             var params = Vtiger_Import_Js.getParamsFromURL(url);
             Vtiger_Import_Js.showOverLayModal(params);
         },
-        loadSavedMap: function() {
+        loadSavedMap: function () {
             var selectedMapElement = jQuery('#saved_maps option:selected');
             var mapId = selectedMapElement.attr('id');
             var fieldsList = jQuery('.fieldIdentifier');
             var deleteMapContainer = jQuery('#delete_map_container');
-            fieldsList.each(function(i, element) {
+            fieldsList.each(function (i, element) {
                 var fieldElement = jQuery(element);
                 jQuery('[name=mapped_fields]', fieldElement).val('');
             });
@@ -233,10 +235,10 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                 var header = mappingPair[0];
                 header = header.replace(/\/eq\//g, '=');
                 header = header.replace(/\/amp\//g, '&amp;');
-				mapping[header] = mappingPair[1];
-				mapping[i] = mappingPair[1]; /* To make Row based match when there is no header */
+                mapping[header] = mappingPair[1];
+                mapping[i] = mappingPair[1]; /* To make Row based match when there is no header */
             }
-            fieldsList.each(function(i, element) {
+            fieldsList.each(function (i, element) {
                 var fieldElement = jQuery(element);
                 var mappedFields = jQuery('[name=mapped_fields]', fieldElement);
                 var rowId = jQuery('[name=row_counter]', fieldElement).get(0).value;
@@ -244,13 +246,13 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                 var headerName = jQuery(headerNameElement).html();
                 if (headerName in mapping) {
                     mappedFields.select2("val", mapping[headerName]);
-				} else if (rowId-1 in mapping) { /* Row based match when there is no header - but saved map is loaded. */
-                	mappedFields.select2("val", mapping[rowId-1]);
-				}
+                } else if (rowId - 1 in mapping) { /* Row based match when there is no header - but saved map is loaded. */
+                    mappedFields.select2("val", mapping[rowId - 1]);
+                }
                 Vtiger_Import_Js.loadDefaultValueWidget(fieldElement.attr('id'));
             });
         },
-        deleteMap: function(module) {
+        deleteMap: function (module) {
             if (confirm(app.vtranslate('LBL_DELETE_CONFIRMATION'))) {
                 var selectedMapElement = jQuery('#saved_maps option:selected');
                 var mapId = selectedMapElement.attr('id');
@@ -263,26 +265,26 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                 }
 
                 app.request.post({'data': postData}).then(
-                        function(err, data) {
-                            jQuery('#savedMapsContainer').html(data);
-                            vtUtils.showSelect2ElementView(jQuery('#saved_maps'));
-                        });
+                    function (err, data) {
+                        jQuery('#savedMapsContainer').html(data);
+                        vtUtils.showSelect2ElementView(jQuery('#saved_maps'));
+                    });
             }
         },
-        validateMergeCriteria: function(auto_merge) {
-			if (auto_merge == 1) {
-				var selectedOptions = jQuery('#selected_merge_fields option');
-				if (selectedOptions.length == 0) {
-					var errorMessage = app.vtranslate('JS_PLEASE_SELECT_ONE_FIELD_FOR_MERGE');
-					app.helper.showErrorNotification({message: errorMessage});
-					return false;
-				}
-				Vtiger_Import_Js.convertOptionsToJSONArray('#selected_merge_fields', '#merge_fields');
-			}
+        validateMergeCriteria: function (auto_merge) {
+            if (auto_merge == 1) {
+                var selectedOptions = jQuery('#selected_merge_fields option');
+                if (selectedOptions.length == 0) {
+                    var errorMessage = app.vtranslate('JS_PLEASE_SELECT_ONE_FIELD_FOR_MERGE');
+                    app.helper.showErrorNotification({message: errorMessage});
+                    return false;
+                }
+                Vtiger_Import_Js.convertOptionsToJSONArray('#selected_merge_fields', '#merge_fields');
+            }
             return true;
         },
         //TODO move to a common file
-        convertOptionsToJSONArray: function(objName, targetObjName) {
+        convertOptionsToJSONArray: function (objName, targetObjName) {
             var obj = jQuery(objName);
             var arr = [];
             if (typeof (obj) != 'undefined' && obj[0] != '') {
@@ -297,7 +299,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             }
             return arr;
         },
-        validateFilePath: function() {
+        validateFilePath: function () {
             var importFile = jQuery('#import_file');
             var fileFormats = importFile.data('fileFormats');
             var filePath = importFile.val();
@@ -315,22 +317,22 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             }
             return true;
         },
-        showPopup: function(url) {
+        showPopup: function (url) {
             var params = Vtiger_Import_Js.getParamsFromURL(url);
             var popupInstance = Vtiger_Popup_Js.getInstance();
             popupInstance.showPopup(params);
             return false;
         },
-        showLastImportedRecords: function(url) {
+        showLastImportedRecords: function (url) {
             this.showPopup(url);
         },
-        showSkippedRecords: function(url) {
+        showSkippedRecords: function (url) {
             this.showPopup(url);
         },
-        showFailedImportRecords: function(url) {
+        showFailedImportRecords: function (url) {
             this.showPopup(url);
         },
-        loadDefaultValueWidget: function(rowIdentifierId) {
+        loadDefaultValueWidget: function (rowIdentifierId) {
             var affectedRow = jQuery('#' + rowIdentifierId);
             if (typeof affectedRow == 'undefined' || affectedRow == null)
                 return;
@@ -347,9 +349,9 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             var defaultValueWidget = selectedFieldDefValueContainer.detach();
             defaultValueWidget.appendTo(defaultValueContainer);
         },
-        loadDefaultValueWidgetForMappedFields: function() {
+        loadDefaultValueWidgetForMappedFields: function () {
             var fieldsList = jQuery('.fieldIdentifier');
-            fieldsList.each(function(i, element) {
+            fieldsList.each(function (i, element) {
                 var fieldElement = jQuery(element);
                 var mappedFieldName = jQuery('[name=mapped_fields]', fieldElement).val();
                 if (mappedFieldName != '') {
@@ -359,7 +361,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
 
         },
         //TODO: move to a common file
-        copySelectedOptions: function(source, destination) {
+        copySelectedOptions: function (source, destination) {
 
             var srcObj = jQuery(source);
             var destObj = jQuery(destination);
@@ -395,7 +397,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             return false;
         },
         //TODO move to a common file
-        removeSelectedOptions: function(objName) {
+        removeSelectedOptions: function (objName) {
             var obj = jQuery(objName);
             if (obj == null || typeof (obj) == 'undefined')
                 return;
@@ -407,7 +409,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             }
             return false;
         },
-        checkFileType: function(e) {
+        checkFileType: function (e) {
             var filePath = jQuery('#import_file').val();
             if (filePath != '') {
                 var fileExtension = filePath.split('.').pop();
@@ -419,7 +421,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                 jQuery('#importFileDetails').text('');
             }
         },
-        handleFileTypeChange: function() {
+        handleFileTypeChange: function () {
             var fileType = jQuery('#type').val();
             var delimiterContainer = jQuery('#delimiter_container');
             var hasHeaderContainer = jQuery('#has_header_container');
@@ -431,7 +433,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                 hasHeaderContainer.show();
             }
         },
-        uploadFilter: function(elementId, allowedExtensions) {
+        uploadFilter: function (elementId, allowedExtensions) {
             var obj = jQuery('#' + elementId);
             if (obj) {
                 var filePath = obj.val();
@@ -448,7 +450,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             }
             return true;
         },
-        uploadFileSize: function(elementId) {
+        uploadFileSize: function (elementId) {
             var element = jQuery('#' + elementId);
             var importMaxUploadSize = element.closest('td').data('importUploadSize');
             var importMaxUploadSizeInMb = element.closest('td').data('importUploadSizeMb');
@@ -460,37 +462,37 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             }
             return true;
         },
-        showOverLayModal: function(params) {
+        showOverLayModal: function (params) {
             app.helper.showProgress();
-            app.request.get({data: params}).then(function(err, data) {
+            app.request.get({data: params}).then(function (err, data) {
                 app.helper.loadPageContentOverlay(data);
                 app.helper.hideProgress();
             });
         },
 
-		timer : 0,
-		isReloadStatusPageStopped : false,
-        scheduledImportRunning: function() {
-			var form = jQuery("#importStatusForm");
-			var data = new FormData(form[0]);
-			var postParams = {
-				data: data,
-				contentType: false,
-				processData: false
-			};
-			app.request.post(postParams).then(function(err, response) {
-				if(!Vtiger_Import_Js.isReloadStatusPageStopped) {
-					app.helper.loadPageContentOverlay(response);
-					if (jQuery('#scheduleImportStatus').length > 0) {
-						if (!Vtiger_Import_Js.isReloadStatusPageStopped) {
-							Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning, 50000);
-						}
-					}
-				}
-			});
+        timer: 0,
+        isReloadStatusPageStopped: false,
+        scheduledImportRunning: function () {
+            var form = jQuery("#importStatusForm");
+            var data = new FormData(form[0]);
+            var postParams = {
+                data: data,
+                contentType: false,
+                processData: false
+            };
+            app.request.post(postParams).then(function (err, response) {
+                if (!Vtiger_Import_Js.isReloadStatusPageStopped) {
+                    app.helper.loadPageContentOverlay(response);
+                    if (jQuery('#scheduleImportStatus').length > 0) {
+                        if (!Vtiger_Import_Js.isReloadStatusPageStopped) {
+                            Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning, 50000);
+                        }
+                    }
+                }
+            });
         },
 
-        googleImportHandler : function() {
+        googleImportHandler: function () {
             var params = {
                 module: 'Google',
                 view: 'Setting',
@@ -498,95 +500,96 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                 mode: 'googleImport'
             };
             app.helper.showProgress();
-            app.request.get({data: params}).then(function(err, data) {
+            app.request.get({data: params}).then(function (err, data) {
                 app.helper.hideProgress();
-                app.helper.hidePageContentOverlay().then(function(){
-                    app.helper.loadPageContentOverlay(data).then(function(){
+                app.helper.hidePageContentOverlay().then(function () {
+                    app.helper.loadPageContentOverlay(data).then(function () {
                         var container = jQuery('.googleSettings');
                         var googleSettingInstance = new Google_Settings_Js();
                         googleSettingInstance.registerSettingsEventsForContacts(container);
-						
+
                         Vtiger_Import_Js.registerAuthorizeButton(container);
                         Vtiger_Import_Js.registerSyncNowButton(container, googleSettingInstance);
-                    });    
+                    });
                 });
             });
         },
-        
-        registerImportEvents: function() {
+
+        registerImportEvents: function () {
             var importContainer = jQuery('#landingPageDiv');
-            importContainer.on('click', '#csvImport', function(e) {
+            importContainer.on('click', '#csvImport', function (e) {
                 Vtiger_Import_Js.showImportActionStepOne();
             });
 
-            importContainer.on('click', '#vcfImport', function(e) {
+            importContainer.on('click', '#vcfImport', function (e) {
                 Vtiger_Import_Js.showImportActionStepOne('vcf');
             });
 
-			importContainer.on('click', '#icsImport', function(e) {
+            importContainer.on('click', '#icsImport', function (e) {
                 Vtiger_Import_Js.showImportActionStepOne('ics');
             });
-            
-            importContainer.on('click', '#googleImport', function(e) {
+
+            importContainer.on('click', '#googleImport', function (e) {
                 Vtiger_Import_Js.googleImportHandler(e);
             });
         },
-        registerAuthorizeButton: function(container) {
-            container.on('click', '#authorizeButton', function(e) {
+        registerAuthorizeButton: function (container) {
+            container.on('click', '#authorizeButton', function (e) {
                 var element = jQuery(e.currentTarget);
                 var url = element.data('url');
                 var win = window.open(url, '', 'height=600,width=600,channelmode=1');
                 //http://stackoverflow.com/questions/1777864/how-to-run-function-of-parent-window-when-child-window-closes 
-                window.sync = function() {
+                window.sync = function () {
                     Vtiger_Import_Js.googleImportHandler();
                 };
-                window.startSync = function() {};
-                win.onunload = function() {};
+                window.startSync = function () {
+                };
+                win.onunload = function () {
+                };
             });
         },
-        registerSyncNowButton: function(container, googleSettingInstance) {
-            container.find('#saveSettingsAndImport').on('click', function() {
-                googleSettingInstance.validateFieldMappings(container).then(function() {
+        registerSyncNowButton: function (container, googleSettingInstance) {
+            container.find('#saveSettingsAndImport').on('click', function () {
+                googleSettingInstance.validateFieldMappings(container).then(function () {
                     var form = jQuery("form[name='contactsyncsettings']");
                     var fieldMapping = googleSettingInstance.packFieldmappingsForSubmit(container);
                     form.find('#user_field_mapping').val(fieldMapping);
                     var serializedFormData = form.serialize();
                     app.helper.showProgress();
-                    app.request.post({data: serializedFormData}).then(function(err, response) {
+                    app.request.post({data: serializedFormData}).then(function (err, response) {
                         app.helper.hideProgress();
                         app.helper.hideModal();
-                        if(err){
+                        if (err) {
                             app.helper.showErrorNotification();
-                        }
-                        else{
+                        } else {
                             var params = {
-                                module:'Contacts',
-                                view:'Extension',
-                                extensionModule:'Google',
-                                extensionView:'Index',
-                                viewType:'modal'
+                                module: 'Contacts',
+                                view: 'Extension',
+                                extensionModule: 'Google',
+                                extensionView: 'Index',
+                                viewType: 'modal'
                             };
                             app.helper.showProgress();
-                            app.helper.hidePageContentOverlay().then(function(){
-                                app.request.get({data:params}).then(function(err, data){
-                                app.helper.hideProgress();
-                                    app.helper.loadPageContentOverlay(data).then(function(overlayPageContent){
+                            app.helper.hidePageContentOverlay().then(function () {
+                                app.request.get({data: params}).then(function (err, data) {
+                                    app.helper.hideProgress();
+                                    app.helper.loadPageContentOverlay(data).then(function (overlayPageContent) {
                                         var overlayContainer = overlayPageContent.find('.data');
                                         var extensionCommonJs = new Vtiger_ExtensionCommon_Js;
-                                        extensionCommonJs.getListUrlParams = function() {
+                                        extensionCommonJs.getListUrlParams = function () {
                                             var params = {
-                                                'module' : app.getModuleName(),
-                                                'view' : 'Extension',
-                                                'extensionModule' : 'Google',
-                                                'extensionView' : 'Index',
-                                                'mode' : 'showLogs',
-                                                'viewType' : 'modal'
+                                                'module': app.getModuleName(),
+                                                'view': 'Extension',
+                                                'extensionModule': 'Google',
+                                                'extensionView': 'Index',
+                                                'mode': 'showLogs',
+                                                'viewType': 'modal'
                                             }
 
                                             return params;
                                         };
                                         extensionCommonJs.registerPaginationEvents(overlayContainer);
-										extensionCommonJs.registerLogDetailClickEvent(overlayContainer);
+                                        extensionCommonJs.registerLogDetailClickEvent(overlayContainer);
                                     });
                                 });
                             });
@@ -596,15 +599,15 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
 
             });
         },
-        
-        clearSheduledImportData: function() {
+
+        clearSheduledImportData: function () {
             var params = {};
             params['module'] = app.getModuleName();
             params['view'] = 'Import';
-            params['mode'] =  'clearCorruptedData';
+            params['mode'] = 'clearCorruptedData';
             Vtiger_Import_Js.showOverLayModal(params);
         },
-        cancelImport: function(url) {
+        cancelImport: function (url) {
             var urlParams = url.slice(url.indexOf('?') + 1).split('&');
             var params = {};
             for (var i = 0; i < urlParams.length; i++) {
@@ -615,7 +618,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
 
 
         },
-        scheduleImport: function(url) {
+        scheduleImport: function (url) {
             var urlParams = url.slice(url.indexOf('?') + 1).split('&');
             var params = {};
             for (var i = 0; i < urlParams.length; i++) {
@@ -624,30 +627,30 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             }
             Vtiger_Import_Js.showOverLayModal(params);
         },
-        showImportActionStepOne: function(format) {
+        showImportActionStepOne: function (format) {
             var params = Vtiger_Import_Js.getDefaultParams();
             params['mode'] = 'importBasicStep';
             if (format == 'vcf') {
                 params['fileFormat'] = format;
             } else if (format == 'ics') {
-				params['fileFormat'] = format;
-			}
+                params['fileFormat'] = format;
+            }
             app.helper.showProgress();
-            app.request.get({data: params}).then(function(err, data) {
+            app.request.get({data: params}).then(function (err, data) {
                 app.helper.loadPageContentOverlay(data);
                 app.helper.hideProgress();
-				if (jQuery('#scheduleImportStatus').length > 0) {
-					app.event.one('post.overlayPageContent.hide', function(container) {
-						clearTimeout(Vtiger_Import_Js.timer);
-						Vtiger_Import_Js.isReloadStatusPageStopped = true;
-					});
+                if (jQuery('#scheduleImportStatus').length > 0) {
+                    app.event.one('post.overlayPageContent.hide', function (container) {
+                        clearTimeout(Vtiger_Import_Js.timer);
+                        Vtiger_Import_Js.isReloadStatusPageStopped = true;
+                    });
 
-					Vtiger_Import_Js.isReloadStatusPageStopped = false;
-					Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning, 5000);
-				}
+                    Vtiger_Import_Js.isReloadStatusPageStopped = false;
+                    Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning, 5000);
+                }
             });
         },
-        getDefaultParams: function() {
+        getDefaultParams: function () {
             var module = window.app.getModuleName();
             var url = "index.php?module=" + module + "&view=Import";
             var urlParams = url.slice(url.indexOf('?') + 1).split('&');
@@ -659,26 +662,26 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             }
             return params;
         },
-        finishUndoOperation: function(){
+        finishUndoOperation: function () {
             Vtiger_Import_Js.loadListRecords();
         },
-        loadListRecords : function(){
-			var listInstance;
-			if(app.getModuleName() == 'Users') {
-				listInstance = new Settings_Users_List_Js();
-			}else { 
-				listInstance = new Vtiger_List_Js();
-			}
-			
-			var params = {'page': '1'};
-			listInstance.loadListViewRecords(params);
+        loadListRecords: function () {
+            var listInstance;
+            if (app.getModuleName() == 'Users') {
+                listInstance = new Settings_Users_List_Js();
+            } else {
+                listInstance = new Vtiger_List_Js();
+            }
+
+            var params = {'page': '1'};
+            listInstance.loadListViewRecords(params);
         },
-        
-        registerEvents: function() {
+
+        registerEvents: function () {
             Vtiger_Import_Js.registerImportEvents();
         }
     }
-    jQuery(document).ready(function() {
+    jQuery(document).ready(function () {
         Vtiger_Import_Js.loadDefaultValueWidgetForMappedFields();
     });
 }

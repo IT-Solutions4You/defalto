@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class PDFMaker_SaveAjax_Action extends Vtiger_Action_Controller
@@ -14,7 +14,7 @@ class PDFMaker_SaveAjax_Action extends Vtiger_Action_Controller
     {
         parent::__construct();
 
-        $Methods = array('SaveProductBlock', 'deleteProductBlocks', 'SavePDFBreakline', 'SavePDFImages');
+        $Methods = ['SaveProductBlock', 'deleteProductBlocks', 'SavePDFBreakline', 'SavePDFImages'];
 
         foreach ($Methods as $method) {
             $this->exposeMethod($method);
@@ -30,6 +30,7 @@ class PDFMaker_SaveAjax_Action extends Vtiger_Action_Controller
         $mode = $request->get('mode');
         if (!empty($mode)) {
             $this->invokeExposedMethod($mode, $request);
+
             return;
         }
     }
@@ -45,10 +46,10 @@ class PDFMaker_SaveAjax_Action extends Vtiger_Action_Controller
 
         if (isset($tplid) && $tplid != '') {
             $sql = 'UPDATE vtiger_pdfmaker_productbloc_tpl SET name=?, body=? WHERE id=?';
-            $adb->pquery($sql, array($template_name, $body, $tplid));
+            $adb->pquery($sql, [$template_name, $body, $tplid]);
         } else {
             $sql = 'INSERT INTO vtiger_pdfmaker_productbloc_tpl(name, body) VALUES(?,?)';
-            $adb->pquery($sql, array($template_name, $body));
+            $adb->pquery($sql, [$template_name, $body]);
         }
 
         header("Location:index.php?module=PDFMaker&view=ProductBlocks");
@@ -59,11 +60,11 @@ class PDFMaker_SaveAjax_Action extends Vtiger_Action_Controller
         PDFMaker_Debugger_Model::GetInstance()->Init();
         $adb = PearDatabase::getInstance();
         $sql = 'DELETE FROM vtiger_pdfmaker_productbloc_tpl WHERE id IN (';
-        $params = array();
+        $params = [];
 
         foreach ($_REQUEST as $key => $val) {
             if (substr($key, 0, 4) == 'chx_' && $val == 'on') {
-                list($dump, $id) = explode('_', $key, 2);
+                [$dump, $id] = explode('_', $key, 2);
 
                 if (is_numeric($id)) {
                     $sql .= '?,';
@@ -83,9 +84,9 @@ class PDFMaker_SaveAjax_Action extends Vtiger_Action_Controller
     public function SavePDFBreakline(Vtiger_Request $request)
     {
         $crmid = $request->get('return_id');
-        $result = array();
+        $result = [];
         $adb = PearDatabase::getInstance();
-        $adb->pquery('DELETE FROM vtiger_pdfmaker_breakline WHERE crmid = ?', array($crmid));
+        $adb->pquery('DELETE FROM vtiger_pdfmaker_breakline WHERE crmid = ?', [$crmid]);
 
         $sql2 = 'INSERT INTO vtiger_pdfmaker_breakline (crmid, productid, sequence, show_header, show_subtotal) VALUES (?,?,?,?,?)';
         $show_header_val = $show_subtotal_val = "0";
@@ -102,11 +103,10 @@ class PDFMaker_SaveAjax_Action extends Vtiger_Action_Controller
 
         foreach ($RequestAllData as $iad_name => $iad_value) {
             if (substr($iad_name, 0, 14) == 'ItemPageBreak_' && $iad_value == '1') {
-                list($i, $productid, $sequence) = explode('_', $iad_name, 3);
-                $adb->pquery($sql2, array($crmid, $productid, $sequence, $show_header_val, $show_subtotal_val));
+                [$i, $productid, $sequence] = explode('_', $iad_name, 3);
+                $adb->pquery($sql2, [$crmid, $productid, $sequence, $show_header_val, $show_subtotal_val]);
             }
         }
-
 
         $response = new Vtiger_Response();
         $response->setEmitType(Vtiger_Response::$EMIT_JSON);
@@ -116,12 +116,12 @@ class PDFMaker_SaveAjax_Action extends Vtiger_Action_Controller
 
     public function SavePDFImages(Vtiger_Request $request)
     {
-        $result = array();
+        $result = [];
         $crmid = $request->get('return_id');
         $adb = PearDatabase::getInstance();
 
         $sql1 = 'DELETE FROM vtiger_pdfmaker_images WHERE crmid=?';
-        $adb->pquery($sql1, array($crmid));
+        $adb->pquery($sql1, [$crmid]);
 
         $sql2 = 'INSERT INTO vtiger_pdfmaker_images (crmid, productid, sequence, attachmentid, width, height) VALUES (?, ?, ?, ?, ?, ?)';
 
@@ -129,7 +129,7 @@ class PDFMaker_SaveAjax_Action extends Vtiger_Action_Controller
 
         foreach ($R_Data as $key => $value) {
             if (strpos($key, 'img_') !== false) {
-                list($bin, $productid, $sequence) = explode("_", $key);
+                [$bin, $productid, $sequence] = explode("_", $key);
 
                 if ($value != 'no_image') {
                     $width = $R_Data['width_' . $productid . '_' . $sequence];
@@ -146,7 +146,7 @@ class PDFMaker_SaveAjax_Action extends Vtiger_Action_Controller
                     $height = $width = $value = 0;
                 }
 
-                $adb->pquery($sql2, array($crmid, $productid, $sequence, $value, $width, $height));
+                $adb->pquery($sql2, [$crmid, $productid, $sequence, $value, $width, $height]);
             }
         }
 

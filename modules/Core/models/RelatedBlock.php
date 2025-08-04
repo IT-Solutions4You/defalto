@@ -1,11 +1,11 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Core_RelatedBlock_Model extends Core_DatabaseData_Model
@@ -17,7 +17,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
      * @var array
      */
     public static array $relatedModuleJoin = [
-        'Documents' => [
+        'Documents'   => [
             'senotesrel',
             'vtiger_senotesrel',
             'INNER JOIN vtiger_senotesrel',
@@ -29,7 +29,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
             'INNER JOIN vtiger_modcomments',
             'vtiger_modcommentsrel.modcommentsid=vtiger_crmentity.crmid AND vtiger_modcommentsrel.related_to=$SOURCE_RECORD$',
         ],
-        'Products' => [
+        'Products'    => [
             'seproductsrel',
             'vtiger_seproductsrel',
             'INNER JOIN vtiger_seproductsrel',
@@ -63,8 +63,9 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param string $moduleName
+     *
      * @return self
-     * @throws AppException
+     * @throws Exception
      */
     public static function getCleanInstance(string $moduleName): self
     {
@@ -81,8 +82,9 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param string $moduleName
+     *
      * @return Core_RelatedBlock_Model
-     * @throws AppException
+     * @throws Exception
      */
     public static function getInstance(string $moduleName): self
     {
@@ -93,7 +95,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getInstanceById($recordId, $moduleName): self
     {
@@ -147,6 +149,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param $id
+     *
      * @return array|string
      */
     public function getSort($id = null): array|string
@@ -211,7 +214,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
         foreach ($relations as $relation) {
             /**
-             * @var $relation Vtiger_Relation_Model
+             * @var $relation       Vtiger_Relation_Model
              * @var $relationModule Vtiger_Module_Model
              */
             $relationModule = $relation->getRelationModuleModel();
@@ -265,6 +268,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param $value
+     *
      * @return bool
      */
     public function isSelectedRelatedFields($value)
@@ -274,6 +278,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param string $value
+     *
      * @return bool
      */
     public function isSelectedRelatedModule(string $value): bool
@@ -283,6 +288,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function retrieveFromRequest($request): void
@@ -314,7 +320,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
                     }
 
                     $value = implode(';', $sort);
-                } elseif('filters' === $field) {
+                } elseif ('filters' === $field) {
                     if (is_array($value)) {
                         $value = json_encode($value);
                     }
@@ -343,7 +349,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function createTables(): void
     {
@@ -356,8 +362,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
             ->createColumn('related_fields', 'TEXT')
             ->createColumn('filters', 'TEXT')
             ->createColumn('sorting', 'VARCHAR(200)')
-            ->createColumn('content', 'TEXT')
-        ;
+            ->createColumn('content', 'TEXT');
     }
 
     /**
@@ -366,20 +371,21 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     public function getSaveParams(): array
     {
         return [
-            'name' => $this->get('name'),
-            'module' => $this->get('module_name'),
+            'name'           => $this->get('name'),
+            'module'         => $this->get('module_name'),
             'related_module' => $this->get('related_module'),
-            'related_field' => $this->get('related_field'),
+            'related_field'  => $this->get('related_field'),
             'related_fields' => $this->get('related_fields'),
-            'filters' => htmlentities($this->get('filters')),
-            'sorting' => $this->get('sorting'),
-            'content' => $this->get('content'),
+            'filters'        => htmlentities($this->get('filters')),
+            'sorting'        => $this->get('sorting'),
+            'content'        => $this->get('content'),
         ];
     }
 
     /**
      * @param string $value
      * @param string $type
+     *
      * @return bool
      */
     public function isCheckedSort(string $value, string $type): bool
@@ -390,6 +396,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     /**
      * @param string $value
      * @param string $field
+     *
      * @return bool
      */
     public function isSelectedSort(string $value, string $field): bool
@@ -463,7 +470,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getAll(string $moduleName): array
     {
@@ -480,8 +487,9 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param string $moduleName
+     *
      * @return array
-     * @throws AppException
+     * @throws Exception
      */
     public static function getAllOptions(string $moduleName): array
     {
@@ -498,6 +506,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param Vtiger_Record_Model $sourceRecord
+     *
      * @return void
      */
     public function setSourceRecord(Vtiger_Record_Model $sourceRecord): void
@@ -507,6 +516,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param int $value
+     *
      * @return void
      */
     public function setSourceRecordId(int $value): void
@@ -544,9 +554,9 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param Vtiger_Record_Model $recordModel
-     * @param string $content
+     * @param string              $content
+     *
      * @return string
-     * @throws AppException
      * @throws Exception
      */
     public static function replaceAll(Vtiger_Record_Model $recordModel, string $content): string
@@ -671,7 +681,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
                 $relatedRecordContent = str_replace($this->getVariable($fieldName), $relatedRecord->getDisplayValue($fieldName), $relatedRecordContent);
             }
 
-            if(!empty($newContent)) {
+            if (!empty($newContent)) {
                 $newContent .= '#HIDETR#';
             }
 
@@ -730,6 +740,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param $fieldName
+     *
      * @return string
      */
     public function getVariableLabel($fieldName): string
@@ -739,6 +750,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param $fieldName
+     *
      * @return string
      */
     public function getVariableName($fieldName): string
@@ -748,6 +760,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param $fieldName
+     *
      * @return string
      */
     public function getVariable($fieldName): string
@@ -767,7 +780,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
         foreach ($sortFields as $sortField) {
             [$orderBy, $sortOrder] = explode(' ', $sortField);
 
-            if(empty($orderBy) || empty($sortOrder)) {
+            if (empty($orderBy) || empty($sortOrder)) {
                 continue;
             }
 
@@ -819,6 +832,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param string $value
+     *
      * @return bool
      */
     public function isSelectedRelatedField(string $value): bool
@@ -848,6 +862,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param string $table
+     *
      * @return string
      */
     public function getRelatedTableIndex(string $table): string

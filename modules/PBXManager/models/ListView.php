@@ -1,60 +1,69 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 /**
  * PBXManager ListView Model Class
  */
-
-class PBXManager_ListView_Model extends Vtiger_ListView_Model {
-    
+class PBXManager_ListView_Model extends Vtiger_ListView_Model
+{
     /**
-    * Overrided to remove add button 
-    */
-    public function getBasicLinks(){
-		$basicLinks = array();
-		return $basicLinks;
-	}
-    
-     
+     * Overrided to remove add button
+     */
+    public function getBasicLinks()
+    {
+        $basicLinks = [];
+
+        return $basicLinks;
+    }
+
     /**
-    * Overrided to remove Mass Edit Option 
-    */
-    public function getListViewMassActions($linkParams) {
-		$currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		$moduleModel = $this->getModule();
+     * Overrided to remove Mass Edit Option
+     */
+    public function getListViewMassActions($linkParams)
+    {
+        $currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+        $moduleModel = $this->getModule();
 
-		$linkTypes = array('LISTVIEWMASSACTION');
-		$links = Vtiger_Link_Model::getAllByType($moduleModel->getId(), $linkTypes, $linkParams);
+        $linkTypes = ['LISTVIEWMASSACTION'];
+        $links = Vtiger_Link_Model::getAllByType($moduleModel->getId(), $linkTypes, $linkParams);
 
+        if ($currentUserModel->hasModuleActionPermission($moduleModel->getId(), 'Delete')) {
+            $massActionLinks[] = [
+                'linktype'  => 'LISTVIEWMASSACTION',
+                'linklabel' => 'LBL_DELETE',
+                'linkurl'   => 'javascript:Vtiger_List_Js.massDeleteRecords("index.php?module=' . $moduleModel->get('name') . '&action=MassDelete");',
+                'linkicon'  => ''
+            ];
 
-		if($currentUserModel->hasModuleActionPermission($moduleModel->getId(), 'Delete')) {
-			$massActionLinks[] = array(
-				'linktype' => 'LISTVIEWMASSACTION',
-				'linklabel' => 'LBL_DELETE',
-				'linkurl' => 'javascript:Vtiger_List_Js.massDeleteRecords("index.php?module='.$moduleModel->get('name').'&action=MassDelete");',
-				'linkicon' => ''
-			);
-        
-		    foreach($massActionLinks as $massActionLink) {
-			$links['LISTVIEWMASSACTION'][] = Vtiger_Link_Model::getInstanceFromValues($massActionLink);
-		    }
-		}
+            foreach ($massActionLinks as $massActionLink) {
+                $links['LISTVIEWMASSACTION'][] = Vtiger_Link_Model::getInstanceFromValues($massActionLink);
+            }
+        }
 
-		return $links;
-	}
-    
+        return $links;
+    }
+
     /**
-    * Overrided to add HTML content for callstatus irrespective of the filters
-    */
-    
-   public function getListViewEntries($pagingModel) {
+     * Overrided to add HTML content for callstatus irrespective of the filters
+     */
+
+    public function getListViewEntries($pagingModel)
+    {
         $db = PearDatabase::getInstance();
 
         $moduleName = $this->getModule()->get('name');
@@ -76,7 +85,7 @@ class PBXManager_ListView_Model extends Vtiger_ListView_Model {
         $searchValue = $this->get('search_value');
         $operator = $this->get('operator');
         if (!empty($searchKey)) {
-            $queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator));
+            $queryGenerator->addUserSearchConditions(['search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator]);
         }
 
         $this->retrieveOrderBy($viewId);
@@ -95,18 +104,15 @@ class PBXManager_ListView_Model extends Vtiger_ListView_Model {
         $startIndex = $pagingModel->getStartIndex();
         $pageLimit = $pagingModel->getPageLimit();
 
-       $listQuery .= $this->getQueryGenerator()->getOrderByClause();
+        $listQuery .= $this->getQueryGenerator()->getOrderByClause();
 
-       ListViewSession::setSessionQuery($moduleName, $listQuery, $viewId);
+        ListViewSession::setSessionQuery($moduleName, $listQuery, $viewId);
 
         $listQuery .= " LIMIT $startIndex," . ($pageLimit + 1);
 
+        $listResult = $db->pquery($listQuery, []);
 
-
-        $listResult = $db->pquery($listQuery, array());
-
-
-        $listViewRecordModels = array();
+        $listViewRecordModels = [];
         $listViewEntries = $listViewContoller->getListViewRecords($moduleFocus, $moduleName, $listResult);
 
         $pagingModel->calculatePageRange($listViewEntries);
@@ -129,29 +135,28 @@ class PBXManager_ListView_Model extends Vtiger_ListView_Model {
                 $listViewEntries[$recordId]['recordingurl'] = '';
             }
 
-            
             if ($listViewEntries[$recordId]['direction'] == 'outbound') {
                 if ($listViewEntries[$recordId]['callstatus'] == 'ringing' || $listViewEntries[$recordId]['callstatus'] == 'in-progress') {
                     $listViewEntries[$recordId]['callstatus'] = '<span class="label label-info"><i class="icon-arrow-up icon-white">
                         </i>&nbsp;' . $listViewEntries[$recordId]["callstatus"] . '</span>';
-                } else if ($listViewEntries[$recordId]['callstatus'] == 'completed') {
+                } elseif ($listViewEntries[$recordId]['callstatus'] == 'completed') {
                     $listViewEntries[$recordId]['callstatus'] = '<span class="label label-success"><i class="icon-arrow-up icon-white">
                         </i>&nbsp;' . $listViewEntries[$recordId]["callstatus"] . '</span>';
-                } else if ($listViewEntries[$recordId]['callstatus'] == 'no-answer') {
+                } elseif ($listViewEntries[$recordId]['callstatus'] == 'no-answer') {
                     $listViewEntries[$recordId]['callstatus'] = '<span class="label label-important"><i class="icon-arrow-up icon-white">
                         </i>&nbsp;' . $listViewEntries[$recordId]["callstatus"] . '</span>';
                 } else {
                     $listViewEntries[$recordId]['callstatus'] = '<span class="label label-warning"><i class="icon-arrow-up icon-white">
                         </i>&nbsp;' . $listViewEntries[$recordId]["callstatus"] . '</span>';
                 }
-            } else if ($listViewEntries[$recordId]['direction'] == 'inbound') {
+            } elseif ($listViewEntries[$recordId]['direction'] == 'inbound') {
                 if ($listViewEntries[$recordId]['callstatus'] == 'ringing' || $listViewEntries[$recordId]['callstatus'] == 'in-progress') {
                     $listViewEntries[$recordId]['callstatus'] = '<span class="label label-info"><i class="icon-arrow-down icon-white">
                         </i>&nbsp;' . $listViewEntries[$recordId]["callstatus"] . '</span>';
-                } else if ($listViewEntries[$recordId]['callstatus'] == 'completed') {
+                } elseif ($listViewEntries[$recordId]['callstatus'] == 'completed') {
                     $listViewEntries[$recordId]['callstatus'] = '<span class="label label-success"><i class="icon-arrow-down icon-white">
                         </i>&nbsp;' . $listViewEntries[$recordId]["callstatus"] . '</span>';
-                } else if ($listViewEntries[$recordId]['callstatus'] == 'no-answer') {
+                } elseif ($listViewEntries[$recordId]['callstatus'] == 'no-answer') {
                     $listViewEntries[$recordId]['callstatus'] = '<span class="label label-important"><i class="icon-arrow-down icon-white">
                         </i>&nbsp;' . $listViewEntries[$recordId]["callstatus"] . '</span>';
                 } else {
@@ -171,5 +176,4 @@ class PBXManager_ListView_Model extends Vtiger_ListView_Model {
 
         return $listViewRecordModels;
     }
-
 }

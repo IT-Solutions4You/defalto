@@ -1,17 +1,18 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Core_Utils_Helper
 {
     /**
      * @param mixed $value
+     *
      * @return int
      */
     public static function count(mixed $value): int
@@ -25,6 +26,7 @@ class Core_Utils_Helper
 
     /**
      * @param string $module
+     *
      * @return string
      * @throws Exception
      */
@@ -39,6 +41,7 @@ class Core_Utils_Helper
     /**
      * @param string $string
      * @param string $search
+     *
      * @return bool
      */
     public static function searchInString(string $string, string $search): bool
@@ -51,6 +54,7 @@ class Core_Utils_Helper
 
     /**
      * @param string $string
+     *
      * @return string
      */
     public static function simplifyString(string $string): string

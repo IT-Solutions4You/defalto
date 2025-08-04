@@ -1,31 +1,39 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- ************************************************************************************/
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handler  {
-
+class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handler
+{
     protected $moduleName = 'MailManager';
-	protected $lookUps = [];
-	protected $attachmentsAllowed = null;
+    protected $lookUps = [];
+    protected $attachmentsAllowed = null;
 
     public const RELATIONS_MAPPING = [
-        'HelpDesk' => [
+        'HelpDesk'      => [
             'Contacts' => 'contact_id',
             'Accounts' => 'parent_id',
         ],
         'ITS4YouEmails' => [
-            'Vendors' => 'vendor_id',
+            'Vendors'  => 'vendor_id',
             'Contacts' => 'contact_id',
             'Accounts' => 'account_id',
-            'Leads' => 'lead_id',
+            'Leads'    => 'lead_id',
         ],
-        'Potentials' => [
+        'Potentials'    => [
             'Contacts' => 'contact_id',
             'Accounts' => 'related_to',
         ],
@@ -35,58 +43,73 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
      * List of modules used to match the Email address
      * @var Array
      */
-    public const EMAIL_ADDRESS_MODULES = array ('Accounts', 'Contacts', 'Leads', 'HelpDesk', 'Potentials');
+    public const EMAIL_ADDRESS_MODULES = ['Accounts', 'Contacts', 'Leads', 'HelpDesk', 'Potentials'];
 
     public array $displayedRecords = [];
 
-	/**
-	 * Clears the cache data
-	 * @global PearDataBase Instance $db
-	 * @global Users Instance $currentUserModel
-	 * @param Integer $waybacktime
-	 */
-	public static function pruneOlderInDB($waybacktime) {
-		$db = PearDatabase::getInstance();
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+    /**
+     * Clears the cache data
+     *
+     * @param Integer $waybacktime
+     *
+     * @global Users Instance $currentUserModel
+     * @global PearDataBase Instance $db
+     */
+    public static function pruneOlderInDB($waybacktime)
+    {
+        $db = PearDatabase::getInstance();
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
-		//remove the saved attachments
-		self::removeSavedAttachmentFiles($waybacktime);
+        //remove the saved attachments
+        self::removeSavedAttachmentFiles($waybacktime);
 
-		$db->pquery("DELETE FROM vtiger_mailmanager_mailrecord
-		WHERE userid=? AND lastsavedtime < ?", array($currentUserModel->getId(), $waybacktime));
-		$db->pquery("DELETE FROM vtiger_mailmanager_mailattachments
-		WHERE userid=? AND lastsavedtime < ?", array($currentUserModel->getId(), $waybacktime));
-	}
+        $db->pquery(
+            "DELETE FROM vtiger_mailmanager_mailrecord
+		WHERE userid=? AND lastsavedtime < ?",
+            [$currentUserModel->getId(), $waybacktime]
+        );
+        $db->pquery(
+            "DELETE FROM vtiger_mailmanager_mailattachments
+		WHERE userid=? AND lastsavedtime < ?",
+            [$currentUserModel->getId(), $waybacktime]
+        );
+    }
 
-	/**
-	 * Used to remove the saved attachments
-	 * @global Users Instance $currentUserModel
-	 * @global PearDataBase Instance $db
-	 * @param Integer $waybacktime - timestamp
-	 */
-	public static function removeSavedAttachmentFiles($waybacktime) {
-		$db = PearDatabase::getInstance();
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+    /**
+     * Used to remove the saved attachments
+     *
+     * @param Integer $waybacktime - timestamp
+     *
+     * @global PearDataBase Instance $db
+     * @global Users Instance $currentUserModel
+     */
+    public static function removeSavedAttachmentFiles($waybacktime)
+    {
+        $db = PearDatabase::getInstance();
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
-		$mailManagerAttachments = $db->pquery("SELECT attachid, aname, path FROM vtiger_mailmanager_mailattachments
-			WHERE userid=? AND lastsavedtime < ?", array($currentUserModel->getId(), $waybacktime));
+        $mailManagerAttachments = $db->pquery(
+            "SELECT attachid, aname, path FROM vtiger_mailmanager_mailattachments
+			WHERE userid=? AND lastsavedtime < ?",
+            [$currentUserModel->getId(), $waybacktime]
+        );
 
-		for($i=0; $i<$db->num_rows($mailManagerAttachments); $i++) {
-			$atResultRow = $db->raw_query_result_rowdata($mailManagerAttachments, $i);
+        for ($i = 0; $i < $db->num_rows($mailManagerAttachments); $i++) {
+            $atResultRow = $db->raw_query_result_rowdata($mailManagerAttachments, $i);
 
-			$db->pquery("UPDATE vtiger_crmentity set deleted = 1 WHERE crmid = ?", array($atResultRow['attachid']));
+            $db->pquery("UPDATE vtiger_crmentity set deleted = 1 WHERE crmid = ?", [$atResultRow['attachid']]);
 
-			$filepath = $atResultRow['path'] ."/". $atResultRow['attachid'] ."_". $atResultRow['aname'];
-			if(file_exists($filepath)) {
-				unlink($filepath);
-			}
-		}
-	}
+            $filepath = $atResultRow['path'] . "/" . $atResultRow['attachid'] . "_" . $atResultRow['aname'];
+            if (file_exists($filepath)) {
+                unlink($filepath);
+            }
+        }
+    }
 
     /**
      * Reads the Mail information from the Database
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
 
     public function retrieveRecordFromDB(): void
@@ -112,11 +135,12 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
     }
 
     /**
-     * @param bool $withContent
+     * @param bool        $withContent
      * @param string|null $aName
-     * @param int|null $aId
+     * @param int|null    $aId
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function retrieveAttachmentsFromDB(bool $withContent, string|null $aName = null, int|null $aId = null): void
     {
@@ -151,14 +175,14 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
             }
 
             $fileInfo = [
-                'filename' => $row['aname'],
-                'data' => $fileContent,
-                'size' => $fileSize,
-                'path' => $filePath,
-                'type' => mime_content_type($filePath),
-                'attachment_id' => $row['attachid'],
+                'filename'       => $row['aname'],
+                'data'           => $fileContent,
+                'size'           => $fileSize,
+                'path'           => $filePath,
+                'type'           => mime_content_type($filePath),
+                'attachment_id'  => $row['attachid'],
                 'attachment_url' => $this->getAttachmentUrl($row['attachid'], $row['aname']),
-                'cid' => $row['cid'],
+                'cid'            => $row['cid'],
             ];
 
             if (!empty($row['cid'])) {
@@ -190,23 +214,23 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
         }
 
         $this->saveRecord([
-            'userid' => Users_Record_Model::getCurrentUserModel()->getId(),
-            'muid' => $mUid,
-            'mfrom' => Zend_Json::encode($this->_from),
-            'mto' => Zend_Json::encode($this->_to),
-            'mcc' => Zend_Json::encode($this->_cc),
-            'mbcc' => Zend_Json::encode($this->_bcc),
-            'mdate' => $this->_date,
-            'msubject' => $this->_subject,
-            'mbody' => $this->_body,
+            'userid'        => Users_Record_Model::getCurrentUserModel()->getId(),
+            'muid'          => $mUid,
+            'mfrom'         => Zend_Json::encode($this->_from),
+            'mto'           => Zend_Json::encode($this->_to),
+            'mcc'           => Zend_Json::encode($this->_cc),
+            'mbcc'          => Zend_Json::encode($this->_bcc),
+            'mdate'         => $this->_date,
+            'msubject'      => $this->_subject,
+            'mbody'         => $this->_body,
             'lastsavedtime' => strtotime("now"),
-            'mfolder' => $this->getFolderName(),
-            'muniqueid' => $this->getUniqueId(),
+            'mfolder'       => $this->getFolderName(),
+            'muniqueid'     => $this->getUniqueId(),
         ]);
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function saveAttachmentsToDB(): void
     {
@@ -224,11 +248,11 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
 
                 if (is_array($attachInfo) && !empty($attachInfo)) {
                     $this->saveAttachment([
-                        'userid' => $currentUserId,
-                        'muid' => $uid,
-                        'attachid' => $attachInfo['attachmentsid'],
-                        'aname' => $attachInfo['storedname'],
-                        'path' => $attachInfo['path'],
+                        'userid'        => $currentUserId,
+                        'muid'          => $uid,
+                        'attachid'      => $attachInfo['attachmentsid'],
+                        'aname'         => $attachInfo['storedname'],
+                        'path'          => $attachInfo['path'],
                         'lastsavedtime' => strtotime('now'),
                     ]);
                     $this->_attachments[$index]['attachment_id'] = $attachInfo['attachmentsid'];
@@ -247,13 +271,13 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
 
                 if (is_array($attachInfo) && !empty($attachInfo)) {
                     $this->saveAttachment([
-                        'userid' => $currentUserId,
-                        'muid' => $uid,
-                        'attachid' => $attachInfo['attachmentsid'],
-                        'aname' => $attachInfo['storedname'],
-                        'path' => $attachInfo['path'],
+                        'userid'        => $currentUserId,
+                        'muid'          => $uid,
+                        'attachid'      => $attachInfo['attachmentsid'],
+                        'aname'         => $attachInfo['storedname'],
+                        'path'          => $attachInfo['path'],
                         'lastsavedtime' => strtotime('now'),
-                        'cid' => $info['cid'],
+                        'cid'           => $info['cid'],
                     ]);
                     $this->_attachments[$index]['attachment_id'] = $attachInfo['attachmentsid'];
                     $this->_attachments[$index]['attachment_url'] = $this->getAttachmentUrl($attachInfo['attachmentsid'], $attachInfo['storedname']);
@@ -271,10 +295,11 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
         $this->getRecordTable()->insertData($data);
     }
 
-    public function getRecordTable() {
+    public function getRecordTable()
+    {
         return (new Core_DatabaseData_Model())->getTable('vtiger_mailmanager_mailrecord', null);
     }
-    
+
     public function saveAttachment($data)
     {
         $this->getAttachmentTable()->insertData($data);
@@ -285,16 +310,15 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
         return (new Core_DatabaseData_Model())->getTable('vtiger_mailmanager_mailattachments', null);
     }
 
-
-
-
     /**
      * Sets the Mail Headers
-     * @param object $mMessage
-     * @param object|bool $mBox
+     *
+     * @param object                        $mMessage
+     * @param object|bool                   $mBox
      * @param MailManager_Folder_Model|bool $mFolder
+     *
      * @return self
-     * @throws AppException
+     * @throws Exception
      */
     public static function parseOverview(object $mMessage, MailManager_Folder_Model|bool $mFolder = false, object|bool $mBox = false): self
     {
@@ -308,10 +332,11 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
     }
 
     /**
-     * @param object $mMessage
-     * @param object $mBox
+     * @param object                 $mMessage
+     * @param object                 $mBox
+     *
      * @return MailManager_Message_Model
-     * @throws AppException
+     * @throws Exception
      * @var MailManager_Folder_Model $mFolder
      */
     public static function getInstanceByBoxMessage(object $mMessage, MailManager_Folder_Model $mFolder, object $mBox): self
@@ -326,64 +351,74 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
         return $instance;
     }
 
-    public function getAttachmentIcon($fileName) {
-		$ext = pathinfo($fileName, PATHINFO_EXTENSION);
-		$icon = '';
-		switch(strtolower($ext)) {
-			case 'txt' : $icon = 'fa-file-text';
-				break;
-			case 'doc' :
-			case 'docx' : $icon = 'fa-file-word-o';
-				break;
-			case 'zip' :
-			case 'tar' :
-			case '7z' :
-			case 'apk' :
-			case 'bin' :
-			case 'bzip' :
-			case 'bzip2' :
-			case 'gz' :
-			case 'jar' :
-			case 'rar' :
-			case 'xz' : $icon = 'fa-file-archive-o';
-				break;
-			case 'jpeg' :
-			case 'jfif' :
-			case 'rif' :
-			case 'gif' :
-			case 'bmp' :
-			case 'jpg' :
-			case 'png' : $icon = 'fa-file-image-o';
-				break;
-			case 'pdf' : $icon = 'fa-file-pdf-o';
-				break;
-			case 'mp3' :
-			case 'wma' :
-			case 'wav' :
-			case 'ogg' : $icon = 'fa-file-audio-o';
-				break;
-			case 'xls' :
-			case 'xlsx' : $icon = 'fa-file-excel-o';
-				break;
-			case 'webm' :
-			case 'mkv' :
-			case 'flv' :
-			case 'vob' :
-			case 'ogv' :
-			case 'ogg' :
-			case 'avi' :
-			case 'mov' :
-			case 'mp4' :
-			case 'mpg' :
-			case 'mpeg' :
-			case '3gp' : $icon = 'fa-file-video-o';
-				break;
-			default : $icon = 'fa-file-o';
-				break;
-		}
-		
-		return $icon;
-	}
+    public function getAttachmentIcon($fileName)
+    {
+        $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+        $icon = '';
+        switch (strtolower($ext)) {
+            case 'txt' :
+                $icon = 'fa-file-text';
+                break;
+            case 'doc' :
+            case 'docx' :
+                $icon = 'fa-file-word-o';
+                break;
+            case 'zip' :
+            case 'tar' :
+            case '7z' :
+            case 'apk' :
+            case 'bin' :
+            case 'bzip' :
+            case 'bzip2' :
+            case 'gz' :
+            case 'jar' :
+            case 'rar' :
+            case 'xz' :
+                $icon = 'fa-file-archive-o';
+                break;
+            case 'jpeg' :
+            case 'jfif' :
+            case 'rif' :
+            case 'gif' :
+            case 'bmp' :
+            case 'jpg' :
+            case 'png' :
+                $icon = 'fa-file-image-o';
+                break;
+            case 'pdf' :
+                $icon = 'fa-file-pdf-o';
+                break;
+            case 'mp3' :
+            case 'wma' :
+            case 'wav' :
+            case 'ogg' :
+                $icon = 'fa-file-audio-o';
+                break;
+            case 'xls' :
+            case 'xlsx' :
+                $icon = 'fa-file-excel-o';
+                break;
+            case 'webm' :
+            case 'mkv' :
+            case 'flv' :
+            case 'vob' :
+            case 'ogv' :
+            case 'ogg' :
+            case 'avi' :
+            case 'mov' :
+            case 'mp4' :
+            case 'mpg' :
+            case 'mpeg' :
+            case '3gp' :
+                $icon = 'fa-file-video-o';
+                break;
+            default :
+                $icon = 'fa-file-o';
+                break;
+        }
+
+        return $icon;
+    }
 
     public array $mUidRelations = [];
     public array $mUidRelationRecords = [];
@@ -417,7 +452,6 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
             }
         }
     }
-
 
     public function getRelations(): array
     {
@@ -496,10 +530,12 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
 
     /**
      * Returns the List of Matching records with the Email Address
-     * @global Users Instance $currentUserModel
+     *
      * @param String $module
-     * @param Email $email Address $email
+     * @param Email  $email Address $email
+     *
      * @return Array
+     * @global Users Instance $currentUserModel
      */
     public function lookupModuleRecordsWithEmail($module, $email)
     {
@@ -540,11 +576,11 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
                 if (!empty($recordId) && isRecordExists($recordId)) {
                     $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
                     $results[] = [
-                        'wsid' => $qresult['id'],
-                        'id' => $recordId,
-                        'icon' => $recordModel->getModule()->getModuleIcon(),
-                        'url' => $recordModel->getDetailViewUrl(),
-                        'label' => $recordModel->getName(),
+                        'wsid'          => $qresult['id'],
+                        'id'            => $recordId,
+                        'icon'          => $recordModel->getModule()->getModuleIcon(),
+                        'url'           => $recordModel->getDetailViewUrl(),
+                        'label'         => $recordModel->getName(),
                         'account_label' => strip_tags($recordModel->getDisplayValue('account_id')),
                     ];
                 }
@@ -588,6 +624,7 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
 
     /**
      * @param int $record Record id from contact, account, leads, ...
+     *
      * @return array
      */
     public function getRelationsById($record): array
@@ -629,7 +666,7 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
 
     /**
      * @return bool
-     * @throws AppException
+     * @throws Exception
      */
     public function hasAttachments(): bool
     {
@@ -665,9 +702,11 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
 
     /**
      * Funtion used to build Web services query
+     *
      * @param String $module - Name of the module
-     * @param String $text - Search String
-     * @param String $type - Tyoe of fields Phone, Email etc
+     * @param String $text   - Search String
+     * @param String $type   - Tyoe of fields Phone, Email etc
+     *
      * @return String
      */
     public function buildSearchQuery($module, $text, $type)
@@ -702,29 +741,36 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
                 $whereClause .= sprintf(" %s LIKE '%%%s%%' OR", $field['name'], $text);
             }
         }
+
         return sprintf("SELECT %s FROM %s WHERE %s;", implode(',', $searchFields), $module, rtrim($whereClause, 'OR'));
     }
 
     /**
      * Helper function to scan for relations
      */
-    protected $wsDescribeCache = array();
-    public function ws_describe($module) {
+    protected $wsDescribeCache = [];
+
+    public function ws_describe($module)
+    {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         if (!isset($this->wsDescribeCache[$module])) {
-            $this->wsDescribeCache[$module] = vtws_describe( $module, $currentUserModel);
+            $this->wsDescribeCache[$module] = vtws_describe($module, $currentUserModel);
         }
+
         return $this->wsDescribeCache[$module];
     }
 
     /**
      * Function to lookup rel records(which supports emails only) of records
+     *
      * @param <string> $wsId
+     *
      * @return <array> $results
      */
-    public function lookupRelModuleRecords($wsId) {
+    public function lookupRelModuleRecords($wsId)
+    {
         $currentUser = vglobal('current_user');
-        $results = array();
+        $results = [];
         /* Harcoded to fecth only project records. In future we should treat
          * below $relModules array as modules which support emails and related to
          * parent module.
@@ -742,7 +788,7 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
 
         foreach ($relModules as $relModule) {
             $relation = Vtiger_Relation_Model::getInstanceByModuleName($entityName, $relModule);
-            if(!$relation) {
+            if (!$relation) {
                 continue;
             }
             $relDescribe = $this->ws_describe($relModule);
@@ -757,18 +803,21 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
                 $labelFields[$i] = $columnFieldMapping[$columnname];
             }
 
-            $sql = sprintf("SELECT %s FROM %s",  implode(',', $labelFields),$relModule);
+            $sql = sprintf("SELECT %s FROM %s", implode(',', $labelFields), $relModule);
             $relQResults = vtws_query_related($sql, $wsId, $relation->get('label'), $currentUser);
 
-            foreach($relQResults as $qresult) {
-                $labelValues = array();
-                foreach($labelFields as $fieldname) {
-                    if(isset($qresult[$fieldname])) $labelValues[] = $qresult[$fieldname];
+            foreach ($relQResults as $qresult) {
+                $labelValues = [];
+                foreach ($labelFields as $fieldname) {
+                    if (isset($qresult[$fieldname])) {
+                        $labelValues[] = $qresult[$fieldname];
+                    }
                 }
                 $ids = vtws_getIdComponents($qresult['id']);
-                $results[] = array( 'wsid' => $qresult['id'], 'id' => $ids[1], 'label' => implode(' ', $labelValues),'parent' => $wsId);
+                $results[] = ['wsid' => $qresult['id'], 'id' => $ids[1], 'label' => implode(' ', $labelValues), 'parent' => $wsId];
             }
         }
+
         return $results;
     }
 

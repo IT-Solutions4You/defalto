@@ -1,68 +1,30 @@
 # Defalto
 
 Defalto is a PHP based web application that enables businesses to increase sales wins, marketing ROI, and support satisfaction by providing tools for employees and management work more effectively, capture more data, and derive new actionable insights from across the customer lifecycle.
+It was developed on the base of vtiger CRM v. 7.5 and is maintained by IT-Solutions4You s.r.o. It is free to use, download, install.
 
-## Get involved
+## License
 
-Development on Defalto is done at https://github.com/IT-Solutions4You/its4youcrm/
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-**Note**: Any contributions submitted to Defalto project should be made available under Vtiger Public License. 
-If contribution has any patented code, or commercial code, then please communicate with Vtiger team before making the contribution.
+This project is licensed under the **GNU AGPL v3 License**.
 
-https://www.vtiger.com/vtiger-public-license/
+See [LICENSE-AGPLv3.txt](LICENSE-AGPLv3.txt) for details.
 
-To register for an account, please contact community @ vtiger.com, you will need this to file issues and/or fix the code
-Once you have an account, you can [browse the code](https://code.vtiger.com/vtiger/vtigercrm/tree/master),
-[see if your issue is already reported](https://code.vtiger.com/vtiger/vtigercrm/issues) and if you have a new problem
-to report you can [create an issue](https://code.vtiger.com/vtiger/vtigercrm/issues/new?issue)
+---
 
-If you then want to fix the issue (or another issue) you can create your own fork of vtiger to work on using the
-fork button on the vtiger project, this will create a new git repository for you at
-    
-    https://code.vtiger.com/yourname/vtigercrm.git
+### Portions from vtiger CRM
 
-on your computer you will need a git client installed and you need to tell git who you are:
+This project is a fork of vtiger CRM Open Source.
 
-    git config --global user.name "YOUR NAME"
-    git config --global user.email "YOUR EMAIL ADDRESS"
+Portions of this project are derived from vtiger CRM, which is licensed under the **vtiger CRM Public License Version 1.0**.
 
-now clone your fork of vtiger
+See [LICENSE-vtiger.txt](LICENSE-vtiger.txt) for details.
 
-    git clone https://code.vtiger.com/yourname/vtigercrm.git
+---
 
-this will pull down from the server your copy of the vtiger code and all the history.
+### Third-Party Extensions
 
-You will make a new branch for your changes, you can give it a descriptive name, once the branch is created
-you will switch to that branch using the checkout command
-
-    git branch fix_projects_on_calendar
-    git checkout fix_projects_on_calendar
-
-Before you install, you need to run ```composer update```
-
-Now you can make your changes and commit all changed files with
-
-    git commit -a
-
-Do reference the issue number in your commit message, e.g. "fix #2 display projects on the calendar" the number will
-allow the system to link the commit to the issue.
-
-Now you can push your branch to the server, this creates the branch on the server end and populates it
-
-    git push --set-upstream origin fix_projects_on_calendar
-
-look at the branch on code.vtiger.com and create a merge request from your branch
-to the upstream master, this will be reviewed to see if it fixes the 
-issue and if all is good will be merged into the upstream code.
-You can then switch back to your master branch with
-
-    git checkout master
-
-And you can create additional feature branches from there to fix different things.
-
-If there have been other changes to the central vtiger code that you want in your work area then you can add the central
-repository as an upstream remote (only need to do this bit once), then you can fetch changes and merge them
-
-    git remote add upstream https://code.vtiger.com/vtiger/vtigercrm.git
-    git fetch upstream
-    git merge upstream/master
+This project allows installation of third-party extensions or modules,
+which are subject to their own respective licenses.  
+**IT-Solutions4You s.r.o. is not responsible** for the licensing, distribution, or support of such third-party extensions.

@@ -1,21 +1,18 @@
 <?php
-
-/*
- * This file is part of the IT-Solutions4You CRM Software.
- *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 /**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Appointments_Calendar_Action extends Vtiger_Action_Controller
 {
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function Info(Vtiger_Request $request)
@@ -24,8 +21,8 @@ class Appointments_Calendar_Action extends Vtiger_Action_Controller
 
         $response = new Vtiger_Response();
         $response->setResult([
-            'info' => [
-                'call_duration' => $currentUser->get('callduration'),
+            'info'    => [
+                'call_duration'  => $currentUser->get('callduration'),
                 'other_duration' => $currentUser->get('othereventduration'),
             ],
             'message' => 'LBL_SUCCESS',
@@ -36,6 +33,7 @@ class Appointments_Calendar_Action extends Vtiger_Action_Controller
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function UIMeta(Vtiger_Request $request)
@@ -59,6 +57,7 @@ class Appointments_Calendar_Action extends Vtiger_Action_Controller
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function UpdateDates(Vtiger_Request $request)
@@ -82,14 +81,15 @@ class Appointments_Calendar_Action extends Vtiger_Action_Controller
         $response = new Vtiger_Response();
         $response->setResult([
             'record_info' => $recordModel->getData(),
-            'success' => $success,
-            'message' => vtranslate($message, $request->getModule()),
+            'success'     => $success,
+            'message'     => vtranslate($message, $request->getModule()),
         ]);
         $response->emit();
     }
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      * @throws Exception
      */

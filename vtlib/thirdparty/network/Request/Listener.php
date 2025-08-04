@@ -70,10 +70,6 @@ class HTTP_Request_Listener
     function __construct() {
         $this->_id = md5(uniqid('http_request_', 1));
     }
-    function HTTP_Request_Listener()
-    {
-        self::__construct();
-    }
 
 
    /**

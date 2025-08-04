@@ -1,5 +1,5 @@
 <?php
-/*+**********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.1
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -8,198 +8,244 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-class Vtiger_Response {
-	// Constants
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-	/**
-	 * Emit response wrapper as raw string
-	 */
-	static $EMIT_RAW = 0;
+class Vtiger_Response
+{
+    // Constants
 
-	/**
-	 * Emit response wrapper as json string
-	 */
-	static $EMIT_JSON= 1;
+    /**
+     * Emit response wrapper as raw string
+     */
+    static $EMIT_RAW = 0;
 
-	/**
-	 * Emit response wrapper as html string
-	 */
-	static $EMIT_HTML= 2;
+    /**
+     * Emit response wrapper as json string
+     */
+    static $EMIT_JSON = 1;
 
-	/**
-	 * Emit response wrapper as string/jsonstring
-	 */
-	static $EMIT_JSONTEXT= 3;
+    /**
+     * Emit response wrapper as html string
+     */
+    static $EMIT_HTML = 2;
 
-	/**
-	 * Emit response wrapper as padded-json
-	 */
-	static $EMIT_JSONP = 4;
+    /**
+     * Emit response wrapper as string/jsonstring
+     */
+    static $EMIT_JSONTEXT = 3;
 
-	/**
-	 * Error data.
-	 */
-	private $error = NULL;
-	/**
-	 * Result data.
-	 */
-	private $result = NULL;
+    /**
+     * Emit response wrapper as padded-json
+     */
+    static $EMIT_JSONP = 4;
 
-	/* Active emit type */
-	private $emitType= 1; // EMIT_JSON
+    /**
+     * Error data.
+     */
+    private $error = null;
+    /**
+     * Result data.
+     */
+    private $result = null;
 
-	/* JSONP padding */
-	private $emitJSONPFn=false;// for EMIT_JSONP
+    /* Active emit type */
+    private $emitType = 1; // EMIT_JSON
 
-	/* List of response headers */
-	private $headers = array();
+    /* JSONP padding */
+    private $emitJSONPFn = false;// for EMIT_JSONP
 
-	/**
-	 * Set headers to send
-	 */
-	function setHeader($header) {
-		$this->headers[] = $header;
-	}
+    /* List of response headers */
+    private $headers = [];
 
-	/**
-	 * Set error data to send
-	 */
-	function setError($code, $message=null, $title=null) {
-		if ($message == null) $message = $code;
-		$error = array('code' => $code, 'message' => $message, 'title' => $title);
-		$this->error = $error;
-	}
+    /**
+     * Set headers to send
+     */
+    function setHeader($header)
+    {
+        $this->headers[] = $header;
+    }
 
-	/**
-	 * Set emit type.
-	 */
-	function setEmitType($type) {
-		$this->emitType = $type;
-	}
+    /**
+     * Set error data to send
+     */
+    function setError($code, $message = null, $title = null)
+    {
+        if ($message == null) {
+            $message = $code;
+        }
+        $error = ['code' => $code, 'message' => $message, 'title' => $title];
+        $this->error = $error;
+    }
 
-	/**
-	 * Set padding method name for JSONP emit type.
-	 */
-	function setEmitJSONP($fn) {
-		$this->setEmitType(self::$EMIT_JSONP);
-		$this->emitJSONPFn = $fn;
-	}
+    /**
+     * Set emit type.
+     */
+    function setEmitType($type)
+    {
+        $this->emitType = $type;
+    }
 
-	/**
-	 * Is emit type configured to JSON?
-	 */
-	function isJSON() {
-		return $this->emitType == self::$EMIT_JSON;
-	}
+    /**
+     * Set padding method name for JSONP emit type.
+     */
+    function setEmitJSONP($fn)
+    {
+        $this->setEmitType(self::$EMIT_JSONP);
+        $this->emitJSONPFn = $fn;
+    }
 
-	/**
-	 * Get the error data
-	 */
-	function getError() {
-		return $this->error;
-	}
+    /**
+     * Is emit type configured to JSON?
+     */
+    function isJSON()
+    {
+        return $this->emitType == self::$EMIT_JSON;
+    }
 
-	/**
-	 * Check the presence of error data
-	 */
-	function hasError() {
-		return !is_null($this->error);
-	}
+    /**
+     * Get the error data
+     */
+    function getError()
+    {
+        return $this->error;
+    }
 
-	/**
-	 * Set the result data.
-	 */
-	function setResult($result) {
-		$this->result = $result;
-	}
+    /**
+     * Check the presence of error data
+     */
+    function hasError()
+    {
+        return !is_null($this->error);
+    }
 
-	/**
-	 * Update the result data.
-	 */
-	function updateResult($key, $value) {
-		$this->result[$key] = $value;
-	}
+    /**
+     * Set the result data.
+     */
+    function setResult($result)
+    {
+        $this->result = $result;
+    }
 
-	/**
-	 * Get the result data.
-	 */
-	function getResult() {
-		return $this->result;
-	}
+    /**
+     * Update the result data.
+     */
+    function updateResult($key, $value)
+    {
+        $this->result[$key] = $value;
+    }
 
-	/**
-	 * Prepare the response wrapper.
-	 */
-	protected function prepareResponse() {
-		$response = array();
-		if($this->error !== NULL) {
-			$response['success'] = false;
-			$response['error'] = $this->error;
-		} else {
-			$response['success'] = true;
-			$response['result'] = $this->result;
-		}
-		return $response;
-	}
+    /**
+     * Get the result data.
+     */
+    function getResult()
+    {
+        return $this->result;
+    }
 
-	/**
-	 * Send response to client.
-	 */
-	function emit() {
+    /**
+     * Prepare the response wrapper.
+     */
+    protected function prepareResponse()
+    {
+        $response = [];
+        if ($this->error !== null) {
+            $response['success'] = false;
+            $response['error'] = $this->error;
+        } else {
+            $response['success'] = true;
+            $response['result'] = $this->result;
+        }
 
-		$contentTypeSent = false;
-		foreach ($this->headers as $header) {
-			if (!$contentTypeSent && stripos($header, 'content-type') === 0) { $contentTypeSent = true; }
-			header($header);
-		}
+        return $response;
+    }
 
-		/* Set right charset (UTF-8) to avoid IE complaining about c00ce56e error */
-		if ($this->emitType == self::$EMIT_JSON) {
-			if (!$contentTypeSent) header('Content-type: text/json; charset=UTF-8');
-			$this->emitJSON();
-		} else if ($this->emitType == self::$EMIT_JSONTEXT){
-			if (!$contentTypeSent) header('Content-type: text/json; charset=UTF-8');
-			$this->emitText();
-		} else if ($this->emitType == self::$EMIT_HTML){
-			if (!$contentTypeSent) header('Content-type: text/html; charset=UTF-8');
-			$this->emitRaw();
-		} else if ($this->emitType == self::$EMIT_RAW) {
-			if (!$contentTypeSent) header('Content-type: text/plain; charset=UTF-8');
-			$this->emitRaw();
-		} else if ($this->emitType == self::$EMIT_JSONP) {
-			if (!$contentTypeSent) header('Content-type: application/javascript; charset=UTF-8');
-			echo $this->emitJSONPFn . "(";
-			$this->emitJSON();
-			echo ")";
-		}
-	}
+    /**
+     * Send response to client.
+     */
+    function emit()
+    {
+        $contentTypeSent = false;
+        foreach ($this->headers as $header) {
+            if (!$contentTypeSent && stripos($header, 'content-type') === 0) {
+                $contentTypeSent = true;
+            }
+            header($header);
+        }
 
-	/**
-	 * Emit response wrapper as JSONString
-	 */
-	protected function emitJSON() {
-		echo Zend_Json::encode($this->prepareResponse());
-	}
+        /* Set right charset (UTF-8) to avoid IE complaining about c00ce56e error */
+        if ($this->emitType == self::$EMIT_JSON) {
+            if (!$contentTypeSent) {
+                header('Content-type: text/json; charset=UTF-8');
+            }
+            $this->emitJSON();
+        } elseif ($this->emitType == self::$EMIT_JSONTEXT) {
+            if (!$contentTypeSent) {
+                header('Content-type: text/json; charset=UTF-8');
+            }
+            $this->emitText();
+        } elseif ($this->emitType == self::$EMIT_HTML) {
+            if (!$contentTypeSent) {
+                header('Content-type: text/html; charset=UTF-8');
+            }
+            $this->emitRaw();
+        } elseif ($this->emitType == self::$EMIT_RAW) {
+            if (!$contentTypeSent) {
+                header('Content-type: text/plain; charset=UTF-8');
+            }
+            $this->emitRaw();
+        } elseif ($this->emitType == self::$EMIT_JSONP) {
+            if (!$contentTypeSent) {
+                header('Content-type: application/javascript; charset=UTF-8');
+            }
+            echo $this->emitJSONPFn . "(";
+            $this->emitJSON();
+            echo ")";
+        }
+    }
 
-	/**
-	 * Emit response wrapper as String/JSONString
-	 */
-	protected function emitText() {
-		if ($this->result === NULL) {
-			if (is_string($this->error)) echo $this->error;
-			else echo Zend_Json::encode($this->prepareResponse());
-		} else {
-			if (is_string($this->result)) echo $this->result;
-			else echo Zend_Json::encode($this->prepareResponse());
-		}
-	}
+    /**
+     * Emit response wrapper as JSONString
+     */
+    protected function emitJSON()
+    {
+        echo Zend_Json::encode($this->prepareResponse());
+    }
 
-	/**
-	 * Emit response wrapper as String.
-	 */
-	protected function emitRaw() {
-		if($this->result === NULL) echo (is_string($this->error))? $this->error : var_export($this->error, true);
-		echo $this->result;
-	}
+    /**
+     * Emit response wrapper as String/JSONString
+     */
+    protected function emitText()
+    {
+        if ($this->result === null) {
+            if (is_string($this->error)) {
+                echo $this->error;
+            } else {
+                echo Zend_Json::encode($this->prepareResponse());
+            }
+        } else {
+            if (is_string($this->result)) {
+                echo $this->result;
+            } else {
+                echo Zend_Json::encode($this->prepareResponse());
+            }
+        }
+    }
 
+    /**
+     * Emit response wrapper as String.
+     */
+    protected function emitRaw()
+    {
+        if ($this->result === null) {
+            echo (is_string($this->error)) ? $this->error : var_export($this->error, true);
+        }
+        echo $this->result;
+    }
 }

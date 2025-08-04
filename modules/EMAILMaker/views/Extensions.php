@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_Extensions_View extends EMAILMaker_Index_View
 {
     public function process(Vtiger_Request $request)
@@ -15,7 +16,7 @@ class EMAILMaker_Extensions_View extends EMAILMaker_Index_View
 
         $adb = PearDatabase::getInstance();
         $viewer = $this->getViewer($request);
-        $extensions = array();
+        $extensions = [];
 
         $EMAILMakerModel = new EMAILMaker_EMAILMaker_Model();
 
@@ -44,7 +45,6 @@ class EMAILMaker_Extensions_View extends EMAILMaker_Index_View
         $extensions[$extname]['manual'] = 'https://it-solutions4you.com/manuals/vtiger7/email-maker-vtiger-7/#unsubscribe-email';
         $extensions[$extname]['download'] = 'https://www.its4you.sk/en/images/extensions/EmailMaker/src/UnsubscribeEmail.zip';
 
-
         $extname = 'ITS4YouStyles';
         $extensions[$extname]['label'] = 'ITS4YouStyles';
         $extensions[$extname]['desc'] = 'LBL_ITS4YOUSTYLES_DESC';
@@ -72,10 +72,10 @@ class EMAILMaker_Extensions_View extends EMAILMaker_Index_View
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
 
-        $jsFileNames = array(
+        $jsFileNames = [
             'modules.Vtiger.resources.Vtiger',
             "modules.$moduleName.resources.Extensions",
-        );
+        ];
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
         return array_merge($headerScriptInstances, $jsScriptInstances);

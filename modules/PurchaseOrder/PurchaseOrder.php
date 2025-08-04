@@ -12,7 +12,6 @@
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
  ********************************************************************************/
-
 /*********************************************************************************
  * $Header$
  * Description: Defines the Account SugarBean Account entity with the necessary
@@ -21,12 +20,13 @@
  * All Rights Reserved.
  * Contributor(s): ______________________________________..
  ********************************************************************************/
-
 /**
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
- * All Rights Reserved.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class PurchaseOrder extends CRMEntity
@@ -148,7 +148,6 @@ class PurchaseOrder extends CRMEntity
      */
     public function generateReportsSecQuery($module, $secmodule, $queryPlanner)
     {
-
         $matrix = $queryPlanner->newDependencyMatrix();
         $matrix->setDependency('vtiger_crmentityPurchaseOrder', ['vtiger_usersPurchaseOrder', 'vtiger_groupsPurchaseOrder', 'vtiger_lastModifiedByPurchaseOrder']);
 
@@ -338,6 +337,7 @@ class PurchaseOrder extends CRMEntity
      * import fails if those fields are not mapped during import.
      */
     public function getMandatoryImportableFields()
+
     {
         return getInventoryImportableMandatoryFeilds($this->moduleName);
     }

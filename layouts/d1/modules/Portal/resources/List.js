@@ -1,9 +1,11 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 /** @var Portal_List_Js */
 Vtiger_List_Js("Portal_List_Js", {
     getDefaultParams: function () {
@@ -133,7 +135,7 @@ Vtiger_List_Js("Portal_List_Js", {
         });
     },
     registerDeleteBookmark: function () {
-        jQuery('body').on('click','.deleteRecord', function (e) {
+        jQuery('body').on('click', '.deleteRecord', function (e) {
             var currentTarget = jQuery(e.currentTarget);
             var id = currentTarget.closest('ul').data('id');
             var message = app.vtranslate('LBL_DELETE_CONFIRMATION');
@@ -177,7 +179,7 @@ Vtiger_List_Js("Portal_List_Js", {
             Portal_List_Js.loadListViewContent(url);
         });
     },
-    
+
     registerRowClickEvent: function () {
         var container = this.getListViewContainer();
         container.on('click', '.listViewEntries', function (e) {
@@ -248,19 +250,19 @@ Vtiger_List_Js("Portal_List_Js", {
         let params = {};
         params.data = postData;
         app.request.get(params).then(
-                function (err, response) {
-                    aDeferred.resolve(response);
-                }
+            function (err, response) {
+                aDeferred.resolve(response);
+            }
         );
         return aDeferred.promise();
     },
-    enableListViewActions : function(){
+    enableListViewActions: function () {
         let element = jQuery('.listViewActionsContainer');
 
         element.find('button').removeAttr('disabled');
     },
-    
-    disableListViewActions : function(){
+
+    disableListViewActions: function () {
         let element = jQuery('.listViewActionsContainer');
 
         element.find('button').attr('disabled', 'disabled');

@@ -1,17 +1,18 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Core_TemplateContent_Helper extends Vtiger_Base_Model
 {
     /**
      * @param $finalDetails
+     *
      * @return mixed
      */
     public function getTotalWithVat($finalDetails)
@@ -50,15 +51,19 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
         $companyDetailsFields = $CompanyDetails_Model->getFields();
         $convertColumns = [
             'organizationname' => 'name',
-            'companyname' => 'name',
-            'street' => 'address',
-            'code' => 'zip',
+            'companyname'      => 'name',
+            'street'           => 'address',
+            'code'             => 'zip',
         ];
 
         foreach ($companyDetailsFields as $fieldName => $fieldData) {
             $value = $companyDetailsData[$fieldName];
             $coll = $convertColumns[$fieldName] ?? $fieldName;
-            $label = $isMultiCompany ? Vtiger_Language_Handler::getTranslatedString($fieldData->get('label'), 'ITS4YouMultiCompany', $language) : Vtiger_Language_Handler::getTranslatedString($fieldName, 'Settings:Vtiger', $language);
+            $label = $isMultiCompany ? Vtiger_Language_Handler::getTranslatedString(
+                $fieldData->get('label'),
+                'ITS4YouMultiCompany',
+                $language
+            ) : Vtiger_Language_Handler::getTranslatedString($fieldName, 'Settings:Vtiger', $language);
 
             if ('country_id' === $coll) {
                 $value = $value ? Core_Country_UIType::transformDisplayValue($value) : '';
@@ -87,6 +92,7 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
     /**
      * @param int $id
      * @param string $site_url
+     *
      * @return string
      * @throws Exception
      */

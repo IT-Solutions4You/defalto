@@ -1,5 +1,5 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
@@ -7,49 +7,64 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Settings_Potentials_Mapping_Model extends Settings_Leads_Mapping_Model {
-    
+class Settings_Potentials_Mapping_Model extends Settings_Leads_Mapping_Model
+{
     var $name = 'Potentials';
 
-	/**
-	 * Function to get headers for detail view
-	 * @return <Array> headers list
-	 */
-	public function getHeaders() {
-		return array('Potentials' => 'Potentials', 'Type' => 'Type', 'Projects' => 'Projects');
-	}
+    /**
+     * Function to get headers for detail view
+     * @return <Array> headers list
+     */
+    public function getHeaders()
+    {
+        return ['Potentials' => 'Potentials', 'Type' => 'Type', 'Projects' => 'Projects'];
+    }
 
-	/**
-	 * Function to get list of detail view link models
-	 * @return <Array> list of detail view link models <Vtiger_Link_Model>
-	 */
-	public function getDetailViewLinks() {
-		return array(Vtiger_Link_Model::getInstanceFromValues(array(
-				'linktype' => 'DETAILVIEW',
-				'linklabel' => 'LBL_EDIT',
-				'linkurl' => 'javascript:Settings_PotentialMapping_Js.triggerEdit("'. $this->getEditViewUrl() .'")',
-				'linkicon' => ''
-				)));
-	}
+    /**
+     * Function to get list of detail view link models
+     * @return <Array> list of detail view link models <Vtiger_Link_Model>
+     */
+    public function getDetailViewLinks()
+    {
+        return [
+            Vtiger_Link_Model::getInstanceFromValues([
+                'linktype'  => 'DETAILVIEW',
+                'linklabel' => 'LBL_EDIT',
+                'linkurl'   => 'javascript:Settings_PotentialMapping_Js.triggerEdit("' . $this->getEditViewUrl() . '")',
+                'linkicon'  => ''
+            ])
+        ];
+    }
 
-	/**
-	 * Function to get list of mapping link models
-	 * @return <Array> list of mapping link models <Vtiger_Link_Model>
-	 */
-	public function getMappingLinks() {
-		return array(Vtiger_Link_Model::getInstanceFromValues(array(
-				'linktype' => 'DETAILVIEW',
-				'linklabel' => 'LBL_DELETE',
-				'linkurl' => 'javascript:Settings_PotentialMapping_Js.triggerDelete(event,"'. $this->getMappingDeleteUrl() .'")',
-				'linkicon' => ''
-				)));
-	}
+    /**
+     * Function to get list of mapping link models
+     * @return <Array> list of mapping link models <Vtiger_Link_Model>
+     */
+    public function getMappingLinks()
+    {
+        return [
+            Vtiger_Link_Model::getInstanceFromValues([
+                'linktype'  => 'DETAILVIEW',
+                'linklabel' => 'LBL_DELETE',
+                'linkurl'   => 'javascript:Settings_PotentialMapping_Js.triggerDelete(event,"' . $this->getMappingDeleteUrl() . '")',
+                'linkicon'  => ''
+            ])
+        ];
+    }
 
-	/**
-	 * Function to get mapping details
-	 * @return <Array> list of mapping details
-	 */
+    /**
+     * Function to get mapping details
+     * @return <Array> list of mapping details
+     */
     public function getMapping($editable = false)
     {
         if (!$this->mapping) {
@@ -79,9 +94,9 @@ class Settings_Potentials_Mapping_Model extends Settings_Leads_Mapping_Model {
 
             foreach ($mapping as $mappingId => $mappingDetails) {
                 $finalMapping[$mappingId] = [
-                    'editable' => $mappingDetails['editable'],
+                    'editable'   => $mappingDetails['editable'],
                     'Potentials' => $fieldLabelsList[$mappingDetails['potential_field']],
-                    'Project' => $fieldLabelsList[$mappingDetails['project_field']],
+                    'Project'    => $fieldLabelsList[$mappingDetails['project_field']],
                 ];
             }
 
@@ -93,8 +108,10 @@ class Settings_Potentials_Mapping_Model extends Settings_Leads_Mapping_Model {
 
     /**
      * Function to save the mapping info
+     *
      * @param <Array> $mapping info
-     * @throws AppException
+     *
+     * @throws Exception
      */
     public function save($mapping)
     {
@@ -121,7 +138,7 @@ class Settings_Potentials_Mapping_Model extends Settings_Leads_Mapping_Model {
         if ($deleteMappingsList) {
             foreach ($deleteMappingsList as $deleteMapping) {
                 $table->deleteData([
-                    'cfmid' => $deleteMapping['mappingId'],
+                    'cfmid'    => $deleteMapping['mappingId'],
                     'editable' => 1,
                 ]);
             }
@@ -131,9 +148,9 @@ class Settings_Potentials_Mapping_Model extends Settings_Leads_Mapping_Model {
             foreach ($updateMappingsList as $updateMapping) {
                 $table->updateData([
                     'potential_field' => $updateMapping['potential'],
-                    'project_field' => $updateMapping['project'],
+                    'project_field'   => $updateMapping['project'],
                 ], [
-                    'cfmid' => $updateMapping['mappingId'],
+                    'cfmid'    => $updateMapping['mappingId'],
                     'editable' => 1,
                 ]);
             }
@@ -153,8 +170,8 @@ class Settings_Potentials_Mapping_Model extends Settings_Leads_Mapping_Model {
 
     /**
      * Function to get restricted field ids list
-	 * @return <Array> list of field ids
-	 */
+     * @return <Array> list of field ids
+     */
     public static function getRestrictedFieldNamesList()
     {
         $db = PearDatabase::getInstance();
@@ -172,37 +189,45 @@ class Settings_Potentials_Mapping_Model extends Settings_Leads_Mapping_Model {
 
     /**
      * Function to get mapping supported modules list
-	 * @return <Array>
-	 */
-	public static function getSupportedModulesList() {
-		return array('Project');
-	}
+     * @return <Array>
+     */
+    public static function getSupportedModulesList()
+    {
+        return ['Project'];
+    }
 
-	/**
-	 * Function to delate the mapping
-	 * @param <Array> $mappingIdsList
-	 */
-	public static function deleteMapping($mappingIdsList) {
-		$db = PearDatabase::getInstance();
-		$db->pquery('DELETE FROM vtiger_convertpotentialmapping WHERE cfmid IN ('. generateQuestionMarks($mappingIdsList). ')', $mappingIdsList);
-	}
-    
     /**
-	 * Function to get instance
-	 * @param <Boolean> true/false
-	 * @return <Settings_Potentials_Mapping_Model>
-	 */
-	public static function getInstance($editable = false) {
-		$instance = new self();
-		$instance->getMapping($editable);
-		return $instance;
-	}
+     * Function to delate the mapping
+     *
+     * @param <Array> $mappingIdsList
+     */
+    public static function deleteMapping($mappingIdsList)
+    {
+        $db = PearDatabase::getInstance();
+        $db->pquery('DELETE FROM vtiger_convertpotentialmapping WHERE cfmid IN (' . generateQuestionMarks($mappingIdsList) . ')', $mappingIdsList);
+    }
 
-	/**
-	 * Function to get instance
-	 * @return <Settings_Potentials_Mapping_Model>
-	 */
-	public static function getCleanInstance() {
-		return new self();
-	}
+    /**
+     * Function to get instance
+     *
+     * @param <Boolean> true/false
+     *
+     * @return <Settings_Potentials_Mapping_Model>
+     */
+    public static function getInstance($editable = false)
+    {
+        $instance = new self();
+        $instance->getMapping($editable);
+
+        return $instance;
+    }
+
+    /**
+     * Function to get instance
+     * @return <Settings_Potentials_Mapping_Model>
+     */
+    public static function getCleanInstance()
+    {
+        return new self();
+    }
 }

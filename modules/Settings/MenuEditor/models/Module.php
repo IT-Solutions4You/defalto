@@ -1,52 +1,71 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
-
-	public $name = 'MenuEditor';
+class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model
+{
+    public $name = 'MenuEditor';
     public static $ignoredHiddenModules = [
-        'Google', 'Dashboard', 'Users', 'ModTracker', 'WSAPP', 'Import', 'Webforms', 'CustomerPortal', 'ModComments',
+        'Google',
+        'Dashboard',
+        'Users',
+        'ModTracker',
+        'WSAPP',
+        'Import',
+        'Webforms',
+        'CustomerPortal',
+        'ModComments',
     ];
 
     public array $defaultSequenceList = [
-        'HOME' => ['Home', 'Leads', 'Accounts', 'Potentials', 'Appointments', 'Documents'],
+        'HOME'      => ['Home', 'Leads', 'Accounts', 'Potentials', 'Appointments', 'Documents'],
         'MARKETING' => ['Campaigns', 'Leads', 'Contacts', 'Accounts',],
-        'SALES' => ['Potentials', 'Quotes', 'Invoice', 'Products', 'Services', 'SMSNotifier', 'Contacts', 'Accounts',],
-        'SUPPORT' => ['HelpDesk', 'Faq', 'ServiceContracts', 'Assets', 'SMSNotifier', 'Contacts', 'Accounts',],
+        'SALES'     => ['Potentials', 'Quotes', 'Invoice', 'Products', 'Services', 'SMSNotifier', 'Contacts', 'Accounts',],
+        'SUPPORT'   => ['HelpDesk', 'Faq', 'ServiceContracts', 'Assets', 'SMSNotifier', 'Contacts', 'Accounts',],
         'INVENTORY' => ['Products', 'Services', 'PriceBooks', 'Invoice', 'SalesOrder', 'PurchaseOrder', 'Vendors', 'Contacts', 'Accounts',],
-        'PROJECT' => ['Project', 'ProjectTask', 'ProjectMilestone', 'Contacts', 'Accounts',],
-        'TOOLS' => ['Rss', 'Portal', 'RecycleBin', 'Documents', 'MailManager'],
+        'PROJECT'   => ['Project', 'ProjectTask', 'ProjectMilestone', 'Contacts', 'Accounts',],
+        'TOOLS'     => ['Rss', 'Portal', 'RecycleBin', 'Documents', 'MailManager'],
     ];
 
-	/**
-	 * Function to save the menu structure
-	 */
-	public function saveMenuStruncture() {
-		$db = PearDatabase::getInstance();
-		$selectedModulesList = $this->get('selectedModulesList');
+    /**
+     * Function to save the menu structure
+     */
+    public function saveMenuStruncture()
+    {
+        $db = PearDatabase::getInstance();
+        $selectedModulesList = $this->get('selectedModulesList');
 
-		$updateQuery = "UPDATE vtiger_tab SET tabsequence = CASE tabid ";
+        $updateQuery = "UPDATE vtiger_tab SET tabsequence = CASE tabid ";
 
-		foreach ($selectedModulesList as $sequence => $tabId) {
-			$updateQuery .= " WHEN $tabId THEN $sequence ";
-		}
-		$updateQuery .= "ELSE -1 END";
+        foreach ($selectedModulesList as $sequence => $tabId) {
+            $updateQuery .= " WHEN $tabId THEN $sequence ";
+        }
+        $updateQuery .= "ELSE -1 END";
 
-		$db->pquery($updateQuery, array());
-	}
+        $db->pquery($updateQuery, []);
+    }
 
-	/**
-	 * Function to get all the modules which are hidden for an app
-	 * @param <string> $appName
-	 * @return <array> $modules
-	 */
+    /**
+     * Function to get all the modules which are hidden for an app
+     *
+     * @param <string> $appName
+     *
+     * @return <array> $modules
+     */
     public static function getHiddenModulesForApp($appName)
     {
         $activeModules = Vtiger_Module_Model::getAll(['0'], self::$ignoredHiddenModules);
@@ -131,41 +150,45 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
         }
     }
 
-    public static function updateModuleApp($moduleName, $parent, $oldParent = false) {
-		$db = PearDatabase::getInstance();
+    public static function updateModuleApp($moduleName, $parent, $oldParent = false)
+    {
+        $db = PearDatabase::getInstance();
 
-		$parent = strtoupper($parent);
-		$oldToNewAppMapping = Vtiger_MenuStructure_Model::getOldToNewAppMapping();
-		if (!empty($oldToNewAppMapping[$parent])) {
-			$parent = $oldToNewAppMapping[$parent];
-		}
+        $parent = strtoupper($parent);
+        $oldToNewAppMapping = Vtiger_MenuStructure_Model::getOldToNewAppMapping();
+        if (!empty($oldToNewAppMapping[$parent])) {
+            $parent = $oldToNewAppMapping[$parent];
+        }
 
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 
-		$query = "UPDATE vtiger_app2tab SET appname=? WHERE tabid=?";
-		$params = array($parent, $moduleModel->getId());
-		if ($oldParent) {
-			$query .= ' AND appname=?';
-			array_push($params, strtoupper($oldParent));
-		}
-		$db->pquery($query, $params);
-	}
+        $query = "UPDATE vtiger_app2tab SET appname=? WHERE tabid=?";
+        $params = [$parent, $moduleModel->getId()];
+        if ($oldParent) {
+            $query .= ' AND appname=?';
+            array_push($params, strtoupper($oldParent));
+        }
+        $db->pquery($query, $params);
+    }
 
-	/**
-	 * Function to get the max sequence number for an app
-	 * @param <string> $appName
-	 * @return <integer>
-	 */
-	public static function getMaxSequenceForApp($appName) {
-		$db = PearDatabase::getInstance();
-		$result = $db->pquery('SELECT MAX(sequence) AS maxsequence FROM vtiger_app2tab WHERE appname=?', array($appName));
-		$sequence = 0;
-		if ($db->num_rows($result) > 0) {
-			$sequence = $db->query_result($result, 0, 'maxsequence');
-		}
+    /**
+     * Function to get the max sequence number for an app
+     *
+     * @param <string> $appName
+     *
+     * @return <integer>
+     */
+    public static function getMaxSequenceForApp($appName)
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT MAX(sequence) AS maxsequence FROM vtiger_app2tab WHERE appname=?', [$appName]);
+        $sequence = 0;
+        if ($db->num_rows($result) > 0) {
+            $sequence = $db->query_result($result, 0, 'maxsequence');
+        }
 
-		return $sequence;
-	}
+        return $sequence;
+    }
 
     public static function getActiveApp($app = '')
     {
@@ -186,6 +209,7 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
 
     /**
      * @param string $module
+     *
      * @return array
      */
     public static function getApps(string $module): array

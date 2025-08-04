@@ -1,49 +1,63 @@
 <?php
-/* +***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- * *********************************************************************************** */
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Settings_PickListDependency_AddDependency_View extends Settings_Vtiger_IndexAjax_View {
-	function __construct() {
-		parent::__construct();
-		$this->exposeMethod('GetPickListFields');
-	}
+class Settings_PickListDependency_AddDependency_View extends Settings_Vtiger_IndexAjax_View
+{
+    function __construct()
+    {
+        parent::__construct();
+        $this->exposeMethod('GetPickListFields');
+    }
 
-	function process(Vtiger_Request $request) {
-		$mode = $request->getMode();
-		if(!empty($mode) && method_exists($this, $mode)) {
-			$this->invokeExposedMethod($mode, $request);
-			return;
-		}
+    function process(Vtiger_Request $request)
+    {
+        $mode = $request->getMode();
+        if (!empty($mode) && method_exists($this, $mode)) {
+            $this->invokeExposedMethod($mode, $request);
 
-		$qualifiedModule = $request->getModule(true);
-		$viewer = $this->getViewer($request);
-		$moduleModels = Vtiger_Module_Model::getEntityModules();
+            return;
+        }
 
-		$viewer->assign('MODULES', $moduleModels);
-		echo $viewer->view('AddDependency.tpl', $qualifiedModule);
-	}
+        $qualifiedModule = $request->getModule(true);
+        $viewer = $this->getViewer($request);
+        $moduleModels = Vtiger_Module_Model::getEntityModules();
 
-	/**
-	 * Function returns the picklist field for a module
-	 * @param Vtiger_Request $request
-	 */
-	function GetPickListFields(Vtiger_Request $request) {
-		$module = $request->get('sourceModule');
+        $viewer->assign('MODULES', $moduleModels);
+        echo $viewer->view('AddDependency.tpl', $qualifiedModule);
+    }
 
-		$fieldList = Settings_PickListDependency_Module_Model::getAvailablePicklists($module);
+    /**
+     * Function returns the picklist field for a module
+     *
+     * @param Vtiger_Request $request
+     */
+    function GetPickListFields(Vtiger_Request $request)
+    {
+        $module = $request->get('sourceModule');
 
-		$response = new Vtiger_Response();
-		$response->setResult($fieldList);
-		$response->emit();
-	}
+        $fieldList = Settings_PickListDependency_Module_Model::getAvailablePicklists($module);
 
-	function CheckCyclicDependency() {
+        $response = new Vtiger_Response();
+        $response->setResult($fieldList);
+        $response->emit();
+    }
 
-	}
+    function CheckCyclicDependency()
+    {
+    }
 }

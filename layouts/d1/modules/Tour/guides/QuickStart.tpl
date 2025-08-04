@@ -1,11 +1,11 @@
-{*
-* This file is part of the IT-Solutions4You CRM Software.
-*
-* (c) IT-Solutions4You s.r.o [info@its4you.sk]
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*}
+{**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
 {if 1 eq $GUIDE->getStep()}
     <h5 class="mb-3">Welcome to the Quick Start Guide! Let's begin with the first step.</h5>
     <h5 class="mb-3">You will learn how to navigate through the application and understand its layout.</h5>

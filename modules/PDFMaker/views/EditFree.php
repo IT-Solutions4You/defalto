@@ -1,16 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class PDFMaker_EditFree_View extends Vtiger_Index_View
 {
-
     public $cu_language = '';
 
     public function preProcess(Vtiger_Request $request, $display = true)
@@ -25,7 +24,7 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
         $moduleModel = new PDFMaker_PDFMaker_Model('PDFMaker');
         $viewer->assign('MODULE', $moduleName);
 
-        $linkParams = array('MODULE' => $moduleName, 'ACTION' => $request->get('view'));
+        $linkParams = ['MODULE' => $moduleName, 'ACTION' => $request->get('view')];
         $linkModels = $moduleModel->getSideBarLinks($linkParams);
 
         $viewer->assign('QUICK_LINKS', $linkModels);
@@ -91,7 +90,7 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 
         $adb = PearDatabase::getInstance();
         $sql = 'SELECT * FROM vtiger_organizationdetails';
-        $result = $adb->pquery($sql, array());
+        $result = $adb->pquery($sql, []);
 
         $organization_logoname = decode_html($adb->query_result($result, 0, 'logoname'));
         $organization_header = decode_html($adb->query_result($result, 0, 'headername'));
@@ -118,16 +117,16 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
         $viewer->assign('ACCOUNTINFORMATIONS', PDFMaker_Fields_Model::getCompanyOptions());
 
         $sql_user_block = 'SELECT blockid, blocklabel FROM vtiger_blocks WHERE tabid = ? ORDER BY sequence ASC';
-        $res_user_block = $adb->pquery($sql_user_block, array('29'));
-        $user_block_info_arr = array();
+        $res_user_block = $adb->pquery($sql_user_block, ['29']);
+        $user_block_info_arr = [];
 
         while ($row_user_block = $adb->fetch_array($res_user_block)) {
             $sql_user_field = 'SELECT fieldid, uitype FROM vtiger_field WHERE block = ? and (displaytype != ? OR uitype = ?) ORDER BY sequence ASC';
-            $res_user_field = $adb->pquery($sql_user_field, array($row_user_block['blockid'], '3', '55'));
+            $res_user_field = $adb->pquery($sql_user_field, [$row_user_block['blockid'], '3', '55']);
             $num_user_field = $adb->num_rows($res_user_field);
 
             if ($num_user_field > 0) {
-                $user_field_id_array = array();
+                $user_field_id_array = [];
 
                 while ($row_user_field = $adb->fetch_array($res_user_field)) {
                     $user_field_id_array[] = $row_user_field['fieldid'];
@@ -141,7 +140,7 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 
         $b = 0;
 
-        $User_Types = array('a' => '', 'l' => 'R_', 'm' => 'M_', 'c' => 'C_');
+        $User_Types = ['a' => '', 'l' => 'R_', 'm' => 'M_', 'c' => 'C_'];
 
         foreach ($user_block_info_arr as $block_label => $block_fields) {
             $b++;
@@ -198,10 +197,10 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 
         $viewer->assign('USERINFORMATIONS', $User_Info);
 
-        $Invterandcon = array(
-            '' => vtranslate('LBL_PLS_SELECT', 'PDFMaker'),
+        $Invterandcon = [
+            ''                     => vtranslate('LBL_PLS_SELECT', 'PDFMaker'),
             'TERMS_AND_CONDITIONS' => vtranslate('LBL_TERMS_AND_CONDITIONS', 'PDFMaker')
-        );
+        ];
 
         $viewer->assign('INVENTORYTERMSANDCONDITIONS', $Invterandcon);
 
@@ -219,25 +218,25 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 
         $viewer->assign('MODULE_LANG_LABELS', $module_lang_labels);
 
-        $Header_Footer_Strings = array(
-            '' => vtranslate('LBL_PLS_SELECT', 'PDFMaker'),
-            'PAGE' => $app_strings['Page'],
+        $Header_Footer_Strings = [
+            ''      => vtranslate('LBL_PLS_SELECT', 'PDFMaker'),
+            'PAGE'  => $app_strings['Page'],
             'PAGES' => $app_strings['Pages'],
-        );
+        ];
 
         $viewer->assign('HEADER_FOOTER_STRINGS', $Header_Footer_Strings);
 
 //PDF FORMAT SETTINGS
 
-        $Formats = array(
-            'A3' => 'A3',
-            'A4' => 'A4',
-            'A5' => 'A5',
-            'A6' => 'A6',
+        $Formats = [
+            'A3'     => 'A3',
+            'A4'     => 'A4',
+            'A5'     => 'A5',
+            'A6'     => 'A6',
             'Letter' => 'Letter',
-            'Legal' => 'Legal',
+            'Legal'  => 'Legal',
             'Custom' => 'Custom'
-        );
+        ];
 
         $viewer->assign('FORMATS', $Formats);
 
@@ -254,10 +253,10 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 
 //PDF ORIENTATION SETTINGS
 
-        $Orientations = array(
-            'portrait' => vtranslate('portrait', 'PDFMaker'),
+        $Orientations = [
+            'portrait'  => vtranslate('portrait', 'PDFMaker'),
             'landscape' => vtranslate('landscape', 'PDFMaker')
-        );
+        ];
 
         $viewer->assign('ORIENTATIONS', $Orientations);
 
@@ -265,18 +264,18 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 
 //PDF MARGIN SETTINGS
 
-        $Margins = array(
-            'top' => $pdftemplateResult['margin_top'],
+        $Margins = [
+            'top'    => $pdftemplateResult['margin_top'],
             'bottom' => $pdftemplateResult['margin_bottom'],
-            'left' => $pdftemplateResult['margin_left'],
-            'right' => $pdftemplateResult['margin_right']
-        );
+            'left'   => $pdftemplateResult['margin_left'],
+            'right'  => $pdftemplateResult['margin_right']
+        ];
 
-        $Decimals = array(
-            'point' => $pdftemplateResult['decimal_point'],
-            'decimals' => $pdftemplateResult['decimals'],
+        $Decimals = [
+            'point'     => $pdftemplateResult['decimal_point'],
+            'decimals'  => $pdftemplateResult['decimals'],
             'thousands' => ($pdftemplateResult['thousands_separator'] != 'sp' ? $pdftemplateResult['thousands_separator'] : ' ')
-        );
+        ];
         $viewer->assign('MARGINS', $Margins);
         $viewer->assign('DECIMALS', $Decimals);
 
@@ -287,20 +286,20 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
         $viewer->assign('HEADER', $header);
         $viewer->assign('FOOTER', $footer);
 
-        $hfVariables = array(
-            '##PAGE##' => vtranslate('LBL_CURRENT_PAGE', 'PDFMaker'),
-            '##PAGES##' => vtranslate('LBL_ALL_PAGES', 'PDFMaker'),
+        $hfVariables = [
+            '##PAGE##'           => vtranslate('LBL_CURRENT_PAGE', 'PDFMaker'),
+            '##PAGES##'          => vtranslate('LBL_ALL_PAGES', 'PDFMaker'),
             '##PAGE##/##PAGES##' => vtranslate('LBL_PAGE_PAGES', 'PDFMaker')
-        );
+        ];
 
         $viewer->assign('HEAD_FOOT_VARS', $hfVariables);
 
-        $dateVariables = array(
+        $dateVariables = [
             '##DD.MM.YYYY##' => vtranslate('LBL_DATE_DD.MM.YYYY', 'PDFMaker'),
             '##DD-MM-YYYY##' => vtranslate('LBL_DATE_DD-MM-YYYY', 'PDFMaker'),
             '##MM-DD-YYYY##' => vtranslate('LBL_DATE_MM-DD-YYYY', 'PDFMaker'),
             '##YYYY-MM-DD##' => vtranslate('LBL_DATE_YYYY-MM-DD', 'PDFMaker')
-        );
+        ];
 
         $viewer->assign('DATE_VARS', $dateVariables);
 
@@ -312,7 +311,7 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 
 //Ignored picklist values
         $pvsql = 'SELECT value FROM vtiger_pdfmaker_ignorepicklistvalues';
-        $pvresult = $adb->pquery($pvsql, array());
+        $pvresult = $adb->pquery($pvsql, []);
         $pvvalues = '';
         while ($pvrow = $adb->fetchByAssoc($pvresult)) {
             $pvvalues .= $pvrow['value'] . ', ';
@@ -341,29 +340,28 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
                         </tr>
                     </table>';
 
-        $vatblock_table = str_replace(array("\r\n", "\r", "\n", "\t"), '', $vatblock_table);
+        $vatblock_table = str_replace(["\r\n", "\r", "\n", "\t"], '', $vatblock_table);
         //$vatblock_table = ereg_replace(" {2,}", ' ', $vatblock_table); //preg_replace
         $viewer->assign('VATBLOCK_TABLE', $vatblock_table);
 
-
-        $tacModules = array();
+        $tacModules = [];
         $tac4you = is_numeric(getTabId('Tac4you'));
 
         if ($tac4you == true) {
             $sql = 'SELECT tac4you_module FROM vtiger_tac4you_module WHERE presence = ?';
-            $result = $adb->pquery($sql, array('1'));
+            $result = $adb->pquery($sql, ['1']);
 
             while ($row = $adb->fetchByAssoc($result)) {
                 $tacModules[$row['tac4you_module']] = $row['tac4you_module'];
             }
         }
 
-        $desc4youModules = array();
+        $desc4youModules = [];
         $desc4you = is_numeric(getTabId('Descriptions4you'));
 
         if ($desc4you == true) {
             $sql = 'SELECT b.name FROM vtiger_links AS a INNER JOIN vtiger_tab AS b USING (tabid) WHERE linktype = ? AND linkurl = ?';
-            $result = $adb->pquery($sql, array('DETAILVIEWWIDGET', 'block://ModDescriptions4you:modules/Descriptions4you/ModDescriptions4you.php'));
+            $result = $adb->pquery($sql, ['DETAILVIEWWIDGET', 'block://ModDescriptions4you:modules/Descriptions4you/ModDescriptions4you.php']);
 
             while ($row = $adb->fetchByAssoc($result)) {
                 $desc4youModules[$row['name']] = $row['name'];
@@ -373,7 +371,7 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 //Product block fields start
 // Product bloc templates
         $sql = 'SELECT * FROM vtiger_pdfmaker_productbloc_tpl';
-        $result = $adb->pquery($sql, array());
+        $result = $adb->pquery($sql, []);
         $Productbloc_tpl[''] = vtranslate('LBL_PLS_SELECT', 'PDFMaker');
 
         while ($row = $adb->fetchByAssoc($result)) {
@@ -396,7 +394,7 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
         $viewer->assign('SELECT_MODULE_FIELD', $SelectModuleFields);
 
 // header / footer display settings
-        $disp_optionsArr = array('DH_FIRST', 'DH_OTHER');
+        $disp_optionsArr = ['DH_FIRST', 'DH_OTHER'];
         $disp_header_bin = str_pad(base_convert($disp_header, 10, 2), 2, '0', STR_PAD_LEFT);
 
         for ($i = 0; $i < count($disp_optionsArr); $i++) {
@@ -409,7 +407,7 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
             $viewer->assign('DH_ALL', 'checked="checked"');
         }
 
-        $disp_optionsArr = array('DF_FIRST', 'DF_LAST', 'DF_OTHER');
+        $disp_optionsArr = ['DF_FIRST', 'DF_LAST', 'DF_OTHER'];
         $disp_footer_bin = str_pad(base_convert($disp_footer, 10, 2), 3, '0', STR_PAD_LEFT);
 
         for ($i = 0; $i < count($disp_optionsArr); $i++) {
@@ -434,7 +432,9 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 
     /**
      * Function to get array with module languages
+     *
      * @param module name
+     *
      * @return <Array> - Array of Module languages
      */
     function getModuleLanguageArray($module)
@@ -452,19 +452,21 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 
     /**
      * Function to get the list of Script models to be included
+     *
      * @param Vtiger_Request $request
+     *
      * @return <Array> - List of Vtiger_JsScript_Model instances
      */
     function getHeaderScripts(Vtiger_Request $request)
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-        $jsFileNames = array(
+        $jsFileNames = [
             'modules.Vtiger.resources.Edit',
             'modules.PDFMaker.resources.EditFree',
             'modules.PDFMaker.resources.ckeditor.ckeditor',
             'libraries.jquery.ckeditor.adapters.jquery',
             'libraries.jquery.jquery_windowmsg',
-        );
+        ];
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
         return array_merge($headerScriptInstances, $jsScriptInstances);

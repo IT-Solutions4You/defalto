@@ -1,11 +1,11 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Core_TaxRecord_Model extends Core_DatabaseData_Model
@@ -17,7 +17,7 @@ class Core_TaxRecord_Model extends Core_DatabaseData_Model
     protected string $tableName = 'tax_id';
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function createTables(): void
     {
@@ -33,7 +33,7 @@ class Core_TaxRecord_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function deleteTax(int $recordId, int $taxId): void
     {
@@ -57,9 +57,9 @@ class Core_TaxRecord_Model extends Core_DatabaseData_Model
     {
         return [
             'percentage' => $this->get('percentage'),
-            'record_id' => $this->get('record_id'),
-            'tax_id' => $this->get('tax_id'),
-            'region_id' => $this->get('region_id') ?? null,
+            'record_id'  => $this->get('record_id'),
+            'tax_id'     => $this->get('tax_id'),
+            'region_id'  => $this->get('region_id') ?? null,
         ];
     }
 
@@ -69,7 +69,7 @@ class Core_TaxRecord_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function getTaxes(): array
     {
@@ -112,7 +112,7 @@ class Core_TaxRecord_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getActiveTaxes($recordId): array
     {
@@ -132,7 +132,7 @@ class Core_TaxRecord_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getActiveTaxesForRecord($recordId): array
     {
@@ -150,7 +150,6 @@ class Core_TaxRecord_Model extends Core_DatabaseData_Model
 
         return $taxes;
     }
-
 
     public function getTaxesInfo(): array
     {
@@ -170,7 +169,6 @@ class Core_TaxRecord_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
      * @throws Exception
      */
     public function retrieveId(): void
@@ -193,7 +191,7 @@ class Core_TaxRecord_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function saveFromRequest(Vtiger_Request $request): bool
     {

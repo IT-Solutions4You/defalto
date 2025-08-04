@@ -1,14 +1,22 @@
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 /** @var Settings_Appointments_Integration_Js */
 Settings_Vtiger_Index_Js('Settings_Appointments_Integration_Js', {}, {
-    registerEvents: function() {
+    registerEvents: function () {
         this._super();
         this.registerSearch();
         this.registerField();
     },
-    registerField: function() {
+    registerField: function () {
         const self = this;
 
-        $('.fieldModule').on('click', function() {
+        $('.fieldModule').on('click', function () {
             const element = $(this),
                 params = {
                     module: app.getModuleName(),
@@ -30,12 +38,12 @@ Settings_Vtiger_Index_Js('Settings_Appointments_Integration_Js', {}, {
             });
         });
     },
-    registerSearch: function() {
-        $('.searchInput').on('keyup', function() {
+    registerSearch: function () {
+        $('.searchInput').on('keyup', function () {
             let value = $(this).val().toLowerCase(),
                 modules = $('.searchModule');
 
-            if(value) {
+            if (value) {
                 modules.hide();
                 modules.filter('[data-module*="' + value + '"]').show();
                 modules.filter('[data-label*="' + value + '"]').show();

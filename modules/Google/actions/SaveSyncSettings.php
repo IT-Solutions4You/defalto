@@ -1,42 +1,49 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is: vtiger CRM Open Source
+ * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Google_SaveSyncSettings_Action extends Vtiger_BasicAjax_Action {
+class Google_SaveSyncSettings_Action extends Vtiger_BasicAjax_Action
+{
+    public function requiresPermission(\Vtiger_Request $request)
+    {
+        return [];
+    }
 
-    public function requiresPermission(\Vtiger_Request $request) {
-		return array();
-	}
-    
-	public function process(Vtiger_Request $request) {
-		$contactsSettings = $request->get('Contacts');
-		$calendarSettings = $request->get('Calendar');
-		$sourceModule = $request->get('sourceModule');
+    public function process(Vtiger_Request $request)
+    {
+        $contactsSettings = $request->get('Contacts');
+        $calendarSettings = $request->get('Calendar');
+        $sourceModule = $request->get('sourceModule');
 
-		$contactRequest = new Vtiger_Request($contactsSettings);
-		$contactRequest->set('sourcemodule', 'Contacts');
-		Google_Utils_Helper::saveSyncSettings($contactRequest);
+        $contactRequest = new Vtiger_Request($contactsSettings);
+        $contactRequest->set('sourcemodule', 'Contacts');
+        Google_Utils_Helper::saveSyncSettings($contactRequest);
 
-		$calendarRequest = new Vtiger_Request($calendarSettings);
-		$calendarRequest->set('sourcemodule', 'Calendar');
-		Google_Utils_Helper::saveSyncSettings($calendarRequest);
-		$googleModuleModel = Vtiger_Module_Model::getInstance('Google');
+        $calendarRequest = new Vtiger_Request($calendarSettings);
+        $calendarRequest->set('sourcemodule', 'Calendar');
+        Google_Utils_Helper::saveSyncSettings($calendarRequest);
+        $googleModuleModel = Vtiger_Module_Model::getInstance('Google');
 
-		$returnUrl = $googleModuleModel->getBaseExtensionUrl($sourceModule);
+        $returnUrl = $googleModuleModel->getBaseExtensionUrl($sourceModule);
 
-		if($request->has('parent') && $request->get('parent') === 'Settings') {
-			$returnUrl = 'index.php?module=' . $sourceModule . '&parent=Settings&view=Extension&extensionModule=Google&extensionView=Index&mode=settings';
-		}
+        if ($request->has('parent') && $request->get('parent') === 'Settings') {
+            $returnUrl = 'index.php?module=' . $sourceModule . '&parent=Settings&view=Extension&extensionModule=Google&extensionView=Index&mode=settings';
+        }
 
-		header('Location: '.$returnUrl);
-	}
-
+        header('Location: ' . $returnUrl);
+    }
 }
-
-?>

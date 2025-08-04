@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 {
@@ -10,7 +18,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getAll(): array
     {
@@ -25,7 +33,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function getApiData()
     {
@@ -35,7 +43,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getApiInfo()
     {
@@ -47,7 +55,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getApiModules(): array
     {
@@ -89,7 +97,6 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
      * @throws Exception
      */
     public static function getInstance(string|Vtiger_Module_Model $module): self
@@ -114,7 +121,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function getLicenseMessages(): array
     {
@@ -137,22 +144,22 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 
         if (class_exists($extensionName . '_Install_Model')) {
             $links[] = [
-                'linktype' => 'LISTVIEWSETTING',
+                'linktype'  => 'LISTVIEWSETTING',
                 'linklabel' => vtranslate('LBL_REQUIREMENTS', 'Installer'),
-                'linkurl' => 'index.php?module=Installer&view=Requirements&mode=Module&sourceModule=' . $this->getName(),
-                'linkicon' => '',
+                'linkurl'   => 'index.php?module=Installer&view=Requirements&mode=Module&sourceModule=' . $this->getName(),
+                'linkicon'  => '',
             ];
             $links[] = [
-                'linktype' => 'LISTVIEWSETTING',
+                'linktype'  => 'LISTVIEWSETTING',
                 'linklabel' => vtranslate('LBL_LICENSE', 'Installer'),
-                'linkurl' => 'index.php?module=Installer&view=Index&mode=license&sourceModule=' . $this->getName(),
-                'linkicon' => '',
+                'linkurl'   => 'index.php?module=Installer&view=Index&mode=license&sourceModule=' . $this->getName(),
+                'linkicon'  => '',
             ];
             $links[] = [
-                'linktype' => 'LISTVIEWSETTING',
+                'linktype'  => 'LISTVIEWSETTING',
                 'linklabel' => vtranslate('LBL_UNINSTALL', 'Installer'),
-                'linkurl' => 'index.php?module=Installer&view=Index&mode=uninstall&sourceModule=' . $this->getName(),
-                'linkicon' => '',
+                'linkurl'   => 'index.php?module=Installer&view=Index&mode=uninstall&sourceModule=' . $this->getName(),
+                'linkicon'  => '',
             ];
         }
 
@@ -185,7 +192,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function retrieveApiData(): void
     {
@@ -195,6 +202,4 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
             $this->setData(array_merge($this->getData(), $apiData));
         }
     }
-
-
 }
