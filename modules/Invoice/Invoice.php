@@ -80,7 +80,7 @@ class Invoice extends CRMEntity
         'Subject'     => ['invoice' => 'subject'],
         'Sales Order' => ['invoice' => 'salesorder_id'],
         'Status'      => ['invoice' => 'invoicestatus'],
-        'Total'       => ['invoice' => 'total'],
+        'Total'       => ['invoice' => 'grand_total'],
         'Assigned To' => ['crmentity' => 'assigned_user_id']
     ];
 
@@ -410,7 +410,7 @@ class Invoice extends CRMEntity
         $invoice_column_field = [
             'adjustment'       => 'adjustment',
             'subtotal'         => 'subtotal',
-            'total'            => 'grand_total',
+            'grand_total'      => 'grand_total',
             'taxtype'          => 'taxtype',
             'discount_percent' => 'hdnDiscountPercent',
             'discount_amount'  => 'hdnDiscountAmount',

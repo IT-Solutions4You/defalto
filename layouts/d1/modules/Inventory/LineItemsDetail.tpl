@@ -388,7 +388,7 @@
                         </td>
                         <td>
                             <div class="text-end">
-                                {$FINAL_DETAILS["grandTotal"]}
+                                {$FINAL_DETAILS["grand_total"]}
                             </div>
                         </td>
                     </tr>

@@ -572,7 +572,7 @@ function getAssociatedProducts($module, $focus, $seid = '', $refModuleName = fal
     //To set the grand total
     $grandTotal = ($focus->column_fields['grand_total'] != '') ? $focus->column_fields['grand_total'] : 0;
     $grandTotal = number_format($grandTotal, $no_of_decimal_places, '.', '');
-    $product_Detail[1]['final_details']['grandTotal'] = $grandTotal;
+    $product_Detail[1]['final_details']['grand_total'] = $grandTotal;
 
     $log->debug("Exiting getAssociatedProducts method ...");
 

@@ -282,7 +282,6 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             $_REQUEST['adjustment'] = '';
         }
         if (!empty($element['grand_total'])) {
-            $_REQUEST['total'] = $element['grand_total'];
             $_REQUEST['grand_total'] = $element['grand_total'];
         }
 

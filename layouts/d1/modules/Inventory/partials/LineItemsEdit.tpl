@@ -66,7 +66,7 @@
 <input type="hidden" class="numberOfCurrencyDecimal" value="{$USER_MODEL->get('no_of_currency_decimals')}" />
 <input type="hidden" name="totalProductCount" id="totalProductCount" value="{$row_no}" />
 <input type="hidden" name="subtotal" id="subtotal" value="" />
-<input type="hidden" name="total" id="total" value="" />
+<input type="hidden" name="grand_total" id="grand_total" value="" />
 
 <div name='editContent'>
 	{assign var=LINE_ITEM_BLOCK_LABEL value="LBL_ITEM_DETAILS"}

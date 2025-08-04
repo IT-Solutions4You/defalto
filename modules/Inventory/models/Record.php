@@ -825,8 +825,7 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 		$finalDetails['taxtype']		= $taxType;
 		$finalDetails['taxes']			= $taxDetails;
 		$finalDetails['tax_totalamount']= number_format($taxTotal, $noOfDecimalPlaces, '.', '');
-		$finalDetails['adjustment']		= number_format($requestData['adjustment'], $noOfDecimalPlaces, '.', '');
-		$finalDetails['grandTotal']		= number_format($requestData['total'], $noOfDecimalPlaces, '.', '');
+		$finalDetails['grand_total']		= number_format($requestData['grand_total'], $noOfDecimalPlaces, '.', '');
 		$finalDetails['preTaxTotal']	= number_format($requestData['pre_tax_total'], $noOfDecimalPlaces, '.', '');
 		$finalDetails['shipping_handling_charge'] = number_format($requestData['shipping_handling_charge'], $noOfDecimalPlaces, ',', '');
 		$finalDetails['adjustment']		= $requestData['adjustmentType'].number_format($requestData['adjustment'], $noOfDecimalPlaces, '.', '');
