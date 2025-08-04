@@ -44,8 +44,8 @@
 {if isset($LINEITEM_FIELDS['discount_percent'])}
 	{assign var=ITEM_DISCOUNT_PERCENT_EDITABLE value=$LINEITEM_FIELDS['discount_percent']->isEditable()}
 {/if}
-{if isset($LINEITEM_FIELDS['hdnS_H_Percent'])}
-	{assign var=SH_PERCENT_EDITABLE value=$LINEITEM_FIELDS['hdnS_H_Percent']->isEditable()}
+{if isset($LINEITEM_FIELDS['s_h_percent'])}
+	{assign var=SH_PERCENT_EDITABLE value=$LINEITEM_FIELDS['s_h_percent']->isEditable()}
 {/if}
 {if isset($LINEITEM_FIELDS['hdnDiscountAmount'])}
 	{assign var=DISCOUNT_AMOUNT_EDITABLE value=$LINEITEM_FIELDS['hdnDiscountAmount']->isEditable()}
@@ -66,7 +66,7 @@
 <input type="hidden" class="numberOfCurrencyDecimal" value="{$USER_MODEL->get('no_of_currency_decimals')}" />
 <input type="hidden" name="totalProductCount" id="totalProductCount" value="{$row_no}" />
 <input type="hidden" name="subtotal" id="subtotal" value="" />
-<input type="hidden" name="total" id="total" value="" />
+<input type="hidden" name="grand_total" id="grand_total" value="" />
 
 <div name='editContent'>
 	{assign var=LINE_ITEM_BLOCK_LABEL value="LBL_ITEM_DETAILS"}
@@ -245,7 +245,7 @@
 						<strong>{vtranslate('LBL_ITEMS_TOTAL',$MODULE)}</strong>
 					</td>
 					<td class="text-end w-15">
-						<div id="netTotal" class="pull-right netTotal">{if !empty($FINAL.hdnSubTotal)}{$FINAL.hdnSubTotal}{else}0{/if}</div>
+						<div id="netTotal" class="pull-right netTotal">{if !empty($FINAL.subtotal)}{$FINAL.subtotal}{else}0{/if}</div>
 					</td>
 				</tr>
 				{if $DISCOUNT_AMOUNT_EDITABLE || $DISCOUNT_PERCENT_EDITABLE}
@@ -275,7 +275,7 @@
 									{/if}
 									<input type="hidden" id="discount_type_final" name="discount_type_final" value="{$DISCOUNT_TYPE_FINAL}"/>
 									<p class="popover_title hide">
-										{vtranslate('LBL_SET_DISCOUNT_FOR',$MODULE)} : <span class="subTotalVal">{if !empty($FINAL.hdnSubTotal)}{$FINAL.hdnSubTotal}{else}0{/if}</span>
+										{vtranslate('LBL_SET_DISCOUNT_FOR',$MODULE)} : <span class="subTotalVal">{if !empty($FINAL.subtotal)}{$FINAL.subtotal}{else}0{/if}</span>
 									</p>
 									<table class="table table-borderless popupTable m-0">
 										<tbody>

@@ -765,7 +765,7 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
     },
 
     saveTotalValue: function () {
-        jQuery('#total').val(this.getGrandTotal());
+        jQuery('#grand_total').val(this.getGrandTotal());
     },
 
     /**

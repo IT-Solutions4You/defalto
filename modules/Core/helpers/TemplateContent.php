@@ -18,7 +18,7 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
     public function getTotalWithVat($finalDetails)
     {
         if ('individual' === $finalDetails['taxtype']) {
-            return $finalDetails['hdnSubTotal'];
+            return $finalDetails['subtotal'];
         }
 
         return $finalDetails['preTaxTotal'] + $finalDetails['tax_totalamount'];

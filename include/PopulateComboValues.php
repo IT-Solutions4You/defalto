@@ -126,7 +126,7 @@ class PopulateComboValues
         global $combo_strings;
         // uitype -> 16 - Non standard picklist, 115 - User status, 83 - Tax Class
         $comboRes = $adb->pquery(
-            "SELECT distinct fieldname FROM vtiger_field WHERE uitype IN ('16','115','83') AND fieldname NOT IN ('hdnTaxType','email_flag') and vtiger_field.presence in (0,2)",
+            "SELECT distinct fieldname FROM vtiger_field WHERE uitype IN ('16','115','83') AND fieldname NOT IN ('taxtype','email_flag') and vtiger_field.presence in (0,2)",
             []
         );
         $noOfCombos = $adb->num_rows($comboRes);

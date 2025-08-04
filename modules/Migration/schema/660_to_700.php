@@ -1092,7 +1092,7 @@ if (defined('VTIGER_UPGRADE')) {
     //Adding color column for picklists
     $fieldResult = $db->pquery('SELECT fieldname FROM vtiger_field WHERE uitype IN (?,?,?,?) AND tabid NOT IN (?)', ['15', '16', '33', '114', getTabid('Users')]);
     $fieldRows = $db->num_rows($fieldResult);
-    $ignorePickListFields = ['hdnTaxType', 'email_flag'];
+    $ignorePickListFields = ['taxtype', 'email_flag'];
 
     for ($i = 0; $i < $fieldRows; $i++) {
         $fieldName = $db->query_result($fieldResult, $i, 'fieldname');

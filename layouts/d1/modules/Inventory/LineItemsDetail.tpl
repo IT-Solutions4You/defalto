@@ -59,8 +59,8 @@
     {if $LINEITEM_FIELDS['discount_percent']}
         {assign var=ITEM_DISCOUNT_PERCENT_VIEWABLE value=$LINEITEM_FIELDS['discount_percent']->isViewable()}
     {/if}
-    {if $LINEITEM_FIELDS['hdnS_H_Percent']}
-        {assign var=SH_PERCENT_VIEWABLE value=$LINEITEM_FIELDS['hdnS_H_Percent']->isViewable()}
+    {if $LINEITEM_FIELDS['s_h_percent']}
+        {assign var=SH_PERCENT_VIEWABLE value=$LINEITEM_FIELDS['s_h_percent']->isViewable()}
     {/if}
     {if $LINEITEM_FIELDS['hdnDiscountAmount']}
         {assign var=DISCOUNT_AMOUNT_VIEWABLE value=$LINEITEM_FIELDS['hdnDiscountAmount']->isViewable()}
@@ -263,7 +263,7 @@
                                 <strong>{vtranslate('LBL_ITEMS_TOTAL',$MODULE_NAME)}</strong>
                             </th>
                             <th class="text-end w-30">
-                                <strong>{$FINAL_DETAILS["hdnSubTotal"]}</strong>
+                                <strong>{$FINAL_DETAILS["subtotal"]}</strong>
                             </th>
                         </tr>
                     </thead>
@@ -272,7 +272,7 @@
                         <tr class="border-bottom">
                             <td>
                                 <div class="text-end">
-                                    {assign var=FINAL_DISCOUNT_INFO value="{vtranslate('LBL_FINAL_DISCOUNT_AMOUNT',$MODULE_NAME)} = {if $DISCOUNT_PERCENT_VIEWABLE && $FINAL_DETAILS['discount_type_final'] == 'percentage'} {$FINAL_DETAILS['discount_percentage_final']}	% {vtranslate('LBL_OF',$MODULE_NAME)} {$FINAL_DETAILS['hdnSubTotal']} = {/if}{$FINAL_DETAILS['discountTotal_final']}"}
+                                    {assign var=FINAL_DISCOUNT_INFO value="{vtranslate('LBL_FINAL_DISCOUNT_AMOUNT',$MODULE_NAME)} = {if $DISCOUNT_PERCENT_VIEWABLE && $FINAL_DETAILS['discount_type_final'] == 'percentage'} {$FINAL_DETAILS['discount_percentage_final']}	% {vtranslate('LBL_OF',$MODULE_NAME)} {$FINAL_DETAILS['subtotal']} = {/if}{$FINAL_DETAILS['discountTotal_final']}"}
                                     <a class="inventoryLineItemDetails" href="javascript:void(0)" id="finalDiscount" tabindex="0" role="tooltip" data-bs-trigger="focus" data-bs-toggle="popover" data-bs-html="true" data-bs-content="{$FINAL_DISCOUNT_INFO}" data-bs-title="{vtranslate('LBL_OVERALL_DISCOUNT',$MODULE_NAME)}">
                                         <span class="me-2">(-)</span>
                                         <strong>{vtranslate('LBL_OVERALL_DISCOUNT',$MODULE_NAME)}</strong>
@@ -388,7 +388,7 @@
                         </td>
                         <td>
                             <div class="text-end">
-                                {$FINAL_DETAILS["grandTotal"]}
+                                {$FINAL_DETAILS["grand_total"]}
                             </div>
                         </td>
                     </tr>

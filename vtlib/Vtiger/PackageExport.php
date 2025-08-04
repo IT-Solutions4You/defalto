@@ -497,7 +497,7 @@ class Vtiger_PackageExport
                 $this->outputNode($adb->query_result($entityresult, 0, 'entityidcolumn'), 'entityidcolumn');
                 $this->closeNode('entityidentifier');
             }
-            $restrictedPicklist = ['hdnTaxType', 'region_id'];
+            $restrictedPicklist = ['taxtype', 'region_id'];
             // Export picklist values for picklist fields
             if ($uitype == '15' || $uitype == '16' || $uitype == '111' || $uitype == '33' || $uitype == '55') {
                 if ($uitype == '16') {

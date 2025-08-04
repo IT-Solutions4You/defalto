@@ -737,8 +737,8 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $prefix = "";
 
         $IReplacements = [];
-        $IReplacements["SUBTOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["hdnSubTotal"]);
-        $IReplacements["TOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["hdnGrandTotal"]);
+        $IReplacements["SUBTOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["subtotal"]);
+        $IReplacements["TOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["grand_total"]);
 
         $currencytype = $this->getInventoryCurrencyInfoCustom($module, $focus);
         $currencytype["currency_symbol"] = str_replace("€", "&euro;", $currencytype["currency_symbol"]);
@@ -747,7 +747,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $IReplacements["CURRENCYNAME"] = getTranslatedCurrencyString($currencytype["currency_name"]);
         $IReplacements["CURRENCYSYMBOL"] = $currencytype["currency_symbol"];
         $IReplacements["CURRENCYCODE"] = $currencytype["currency_code"];
-        $IReplacements["ADJUSTMENT"] = $this->formatNumberToEMAIL($focus->column_fields["txtAdjustment"]);
+        $IReplacements["ADJUSTMENT"] = $this->formatNumberToEMAIL($focus->column_fields["adjustment"]);
 
         $Products = $this->getInventoryProducts($module, $focus);
 
@@ -863,7 +863,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     private function fillInventoryData($module, $focus)
     {
-        if (isset($focus->column_fields["currency_id"]) && isset($focus->column_fields["conversion_rate"]) && isset($focus->column_fields["hdnGrandTotal"])) {
+        if (isset($focus->column_fields["currency_id"]) && isset($focus->column_fields["conversion_rate"]) && isset($focus->column_fields["grand_total"])) {
             self::$inventory_table_array[$module] = $focus->table_name;
             self::$inventory_id_array[$module] = $focus->table_index;
         }
@@ -925,7 +925,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             $chargesAndItsTaxes = $finalDetails['chargesAndItsTaxes'];
 
             $currencyFieldsList = [
-                'NETTOTAL'           => 'hdnSubTotal',
+                'NETTOTAL'           => 'subtotal',
                 'TAXTOTAL'           => 'tax_totalamount',
                 'SHTAXTOTAL'         => 'shtax_totalamount',
                 'TOTALAFTERDISCOUNT' => 'preTaxTotal',

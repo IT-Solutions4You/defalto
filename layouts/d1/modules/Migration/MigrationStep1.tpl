@@ -28,6 +28,7 @@
                     </div>
                     <div id="showDetails" class="overflow-auto border rounded my-3 hide" style="height: 30vh;"></div>
                     <div id="nextButton" class="button-container text-end hide">
+                        <button type="button" class="btn btn-primary migrateData me-2">{vtranslate('Migrate Data', $MODULE)}</button>
                         <button type="submit" class="btn btn-primary active">{vtranslate('Next', $MODULE)}</button>
                     </div>
                 </div>

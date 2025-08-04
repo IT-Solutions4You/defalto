@@ -80,7 +80,7 @@ class Invoice extends CRMEntity
         'Subject'     => ['invoice' => 'subject'],
         'Sales Order' => ['invoice' => 'salesorder_id'],
         'Status'      => ['invoice' => 'invoicestatus'],
-        'Total'       => ['invoice' => 'total'],
+        'Total'       => ['invoice' => 'grand_total'],
         'Assigned To' => ['crmentity' => 'assigned_user_id']
     ];
 
@@ -89,7 +89,7 @@ class Invoice extends CRMEntity
         'Subject'     => 'subject',
         'Sales Order' => 'salesorder_id',
         'Status'      => 'invoicestatus',
-        'Total'       => 'hdnGrandTotal',
+        'Total'       => 'grand_total',
         'Assigned To' => 'assigned_user_id'
     ];
     var $list_link_field = 'subject';
@@ -408,16 +408,16 @@ class Invoice extends CRMEntity
         $updateparams = [];
         // Remaining column values to be updated -> column name to field name mapping
         $invoice_column_field = [
-            'adjustment'       => 'txtAdjustment',
-            'subtotal'         => 'hdnSubTotal',
-            'total'            => 'hdnGrandTotal',
-            'taxtype'          => 'hdnTaxType',
+            'adjustment'       => 'adjustment',
+            'subtotal'         => 'subtotal',
+            'grand_total'      => 'grand_total',
+            'taxtype'          => 'taxtype',
             'discount_percent' => 'hdnDiscountPercent',
             'discount_amount'  => 'hdnDiscountAmount',
-            's_h_amount'       => 'hdnS_H_Amount',
+            's_h_amount'       => 's_h_amount',
             'region_id'        => 'region_id',
-            's_h_percent'      => 'hdnS_H_Percent',
-            'balance'          => 'hdnGrandTotal'
+            's_h_percent'      => 's_h_percent',
+            'balance'          => 'grand_total'
         ];
         $updatecols = [];
         foreach ($invoice_column_field as $col => $field) {

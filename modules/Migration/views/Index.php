@@ -24,6 +24,7 @@ class Migration_Index_View extends Vtiger_View_Controller
         $this->exposeMethod('step1');
         $this->exposeMethod('step2');
         $this->exposeMethod('applyDBChanges');
+        $this->exposeMethod('migrateData');
     }
 
     public function checkPermission(Vtiger_Request $request)
@@ -240,18 +241,25 @@ class Migration_Index_View extends Vtiger_View_Controller
                 }
 
                 $wfCondition[] = [
-                    'fieldname'     => $fieldName,
-                    'operation'     => $condition['operation'],
-                    'value'         => $value,
-                    'valuetype'     => 'rawtext',
+                    'fieldname' => $fieldName,
+                    'operation' => $condition['operation'],
+                    'value' => $value,
+                    'valuetype' => 'rawtext',
                     'joincondition' => $joinCondition,
-                    'groupjoin'     => $groupCondition,
-                    'groupid'       => $groupId
+                    'groupjoin' => $groupCondition,
+                    'groupid' => $groupId
                 ];
                 $previousConditionGroupId = $groupId;
             }
         }
 
         return $wfCondition;
+    }
+
+    public function migrateData(Vtiger_Request $request): void
+    {
+        vglobal('debug', true);
+
+        Install_Utils_Model::migrateTablesData();
     }
 }

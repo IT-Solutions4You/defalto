@@ -107,7 +107,7 @@ class SalesOrder extends CRMEntity
         'Subject'      => 'subject',
         'Account Name' => 'account_id',
         'Quote Name'   => 'quote_id',
-        'Total'        => 'hdnGrandTotal',
+        'Total'        => 'grand_total',
         'Assigned To'  => 'assigned_user_id'
     ];
     var $list_link_field = 'subject';
