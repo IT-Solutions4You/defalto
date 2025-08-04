@@ -815,7 +815,7 @@ class Invoice_Install_Model extends Core_Install_Model
             ->createColumn('subject', 'varchar(100) DEFAULT NULL')
             ->createColumn('salesorder_id', 'int(19) DEFAULT NULL')
             ->createColumn('customerno', 'varchar(100) DEFAULT NULL')
-            ->createColumn('contact_idcontact_id', 'int(19) DEFAULT NULL')
+            ->createColumn('contact_id', 'int(19) DEFAULT NULL')
             ->createColumn('notes', 'varchar(100) DEFAULT NULL')
             ->createColumn('invoicedate', 'date DEFAULT NULL')
             ->createColumn('duedate', 'date DEFAULT NULL')
