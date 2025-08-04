@@ -739,6 +739,34 @@ class Install_Utils_Model
     }
 
     /**
+     * @return void
+     */
+    public static function migrateTablesData(): void
+    {
+        $dir = explode('/modules/', __DIR__);
+        $files = glob($dir[0] . '/modules/*/models/Install.php');
+
+        foreach ($files as $file) {
+            preg_match('/modules\/(.*)\/models/', $file, $matches);
+            $moduleName = $matches[1];
+            $class = $moduleName . '_Install_Model';
+
+            if ('Core' !== $moduleName && class_exists($class) && method_exists($class, 'migrate')) {
+                Core_Install_Model::logSuccess('Migrating Module [' . $moduleName . '] -- Starts');
+
+                try {
+                    $install = $class::getInstance('module.postupdate', $moduleName);
+                    $install->migrate();   
+                } catch (Exception $e) {
+                    Core_Install_Model::logError($e->getMessage());
+                }
+
+                Core_Install_Model::logSuccess('Migrating Module [' . $moduleName . '] -- Ends');
+            }
+        }
+    }
+
+    /**
      * @param string $moduleName
      *
      * @return void

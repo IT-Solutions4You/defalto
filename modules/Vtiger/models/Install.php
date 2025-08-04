@@ -53,6 +53,10 @@ class Vtiger_Install_Model extends Core_Install_Model
         $this->createPicklistTable('vtiger_taxtype', 'taxtypeid', 'taxtype');
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function migrate()
     {
         $fieldTable = (new Vtiger_Field_Model())->getFieldTable();
@@ -60,5 +64,7 @@ class Vtiger_Install_Model extends Core_Install_Model
         $fieldTable->updateData(['columnname' => 'creator_user_id', 'fieldname' => 'creator_user_id'], ['columnname' => 'smcreatorid']);
         $fieldTable->updateData(['columnname' => 'createdtime', 'fieldname' => 'createdtime'], ['columnname' => 'createdtime']);
         $fieldTable->updateData(['columnname' => 'modifiedtime', 'fieldname' => 'modifiedtime'], ['columnname' => 'modifiedtime']);
+
+        $this->getDB()->pquery('DELETE FROM vtiger_field WHERE fieldid NOT IN (SELECT min(fieldid) FROM vtiger_field GROUP BY tabid,columnname,tablename,fieldname)');
     }
 }
