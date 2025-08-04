@@ -53,7 +53,7 @@ class PurchaseOrderHandler extends VTEventHandler
                     $wsrecord['paid'] = floatval(((float)$wsrecord['paid'] / $oldConversionRate) * (float)$wsrecord['conversion_rate']);
                 }
             }
-            $wsrecord['balance'] = floatval((float)$wsrecord['price_total'] - (float)$wsrecord['paid']);
+            $wsrecord['balance'] = floatval((float)$wsrecord['grand_total'] - (float)$wsrecord['paid']);
             if ($wsrecord['balance'] == 0) {
                 $wsrecord['postatus'] = 'Received Shipment';
             }

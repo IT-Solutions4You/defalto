@@ -435,9 +435,9 @@ class WebserviceField
                     }
                 }
             } else {
-                $hardCodedPickListNames = ['hdntaxtype', 'email_flag'];
+                $hardCodedPickListNames = ['taxtype', 'email_flag'];
                 $hardCodedPickListValues = [
-                    'hdntaxtype' => [
+                    'taxtype' => [
                         ['label' => 'Individual', 'value' => 'individual'],
                         ['label' => 'Group', 'value' => 'group']
                     ],

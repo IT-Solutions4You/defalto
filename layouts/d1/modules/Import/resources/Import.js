@@ -157,7 +157,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             var mandatoryFields = JSON.parse(jQuery('#mandatory_fields').val());
             var moduleName = app.getModuleName();
             if (moduleName == 'PurchaseOrder' || moduleName == 'Invoice' || moduleName == 'Quotes' || moduleName == 'SalesOrder') {
-                mandatoryFields.hdnTaxType = app.vtranslate('Tax Type');
+                mandatoryFields.taxtype = app.vtranslate('Tax Type');
             }
             var missingMandatoryFields = [];
             for (var mandatoryFieldName in mandatoryFields) {

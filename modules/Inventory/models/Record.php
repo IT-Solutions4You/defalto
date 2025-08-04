@@ -676,7 +676,7 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 			$subProducts = explode(',', rtrim($subProducts, ','));
 
 			foreach ($subProducts as $subProductInfo) {
-				 list($subProductId, $subProductQty) = explode(':', $subProductInfo);
+				 [$subProductId, $subProductQty] = explode(':', $subProductInfo);
 				 if ($subProductId) {
 					 $subProductName = Vtiger_Functions::getCRMRecordLabel($subProductId);
 					 $subQtysList[$subProductId] = array('name' => $subProductName, 'qty' => $subProductQty);
@@ -822,16 +822,15 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 			$taxTotal = $taxTotal + $taxInfo['amount'];
 		}
 
-		$finalDetails['taxtype']		= $taxType;
-		$finalDetails['taxes']			= $taxDetails;
-		$finalDetails['tax_totalamount']= number_format($taxTotal, $noOfDecimalPlaces, '.', '');
-		$finalDetails['adjustment']		= number_format($requestData['adjustment'], $noOfDecimalPlaces, '.', '');
-		$finalDetails['grandTotal']		= number_format($requestData['total'], $noOfDecimalPlaces, '.', '');
-		$finalDetails['preTaxTotal']	= number_format($requestData['price_after_overall_discount'], $noOfDecimalPlaces, '.', '');
-		$finalDetails['shipping_handling_charge'] = number_format($requestData['shipping_handling_charge'], $noOfDecimalPlaces, ',', '');
-		$finalDetails['adjustment']		= $requestData['adjustmentType'].number_format($requestData['adjustment'], $noOfDecimalPlaces, '.', '');
+		$finalDetails['taxtype'] = $taxType;
+        $finalDetails['taxes'] = $taxDetails;
+        $finalDetails['tax_totalamount'] = number_format($taxTotal, $noOfDecimalPlaces, '.', '');
+        $finalDetails['adjustment']		= number_format($requestData['adjustment'], $noOfDecimalPlaces, '.', '');
+        $finalDetails['grand_total'] = number_format($requestData['grand_total'], $noOfDecimalPlaces, '.', '');
+        $finalDetails['preTaxTotal'] = number_format($requestData['price_after_overall_discount'], $noOfDecimalPlaces, '.', '');
+        $finalDetails['shipping_handling_charge'] = number_format($requestData['shipping_handling_charge'], $noOfDecimalPlaces, ',', '');
 
-		//charge value setting to related products array
+        //charge value setting to related products array
 		$selectedChargesAndItsTaxes = $requestData['charges'];
 		foreach ($selectedChargesAndItsTaxes as $chargeId => $chargeInfo) {
 			$selectedChargesAndItsTaxes[$chargeId] = Zend_Json::decode(html_entity_decode($chargeInfo));

@@ -738,7 +738,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
         $IReplacements = [];
         $IReplacements["SUBTOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["subtotal"]);
-        $IReplacements["TOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["price_total"]);
+        $IReplacements["TOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["grand_total"]);
 
         $currencytype = $this->getInventoryCurrencyInfoCustom($module, $focus);
         $currencytype["currency_symbol"] = str_replace("€", "&euro;", $currencytype["currency_symbol"]);
@@ -863,7 +863,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     private function fillInventoryData($module, $focus)
     {
-        if (isset($focus->column_fields["currency_id"]) && isset($focus->column_fields["conversion_rate"]) && isset($focus->column_fields["price_total"])) {
+        if (isset($focus->column_fields["currency_id"]) && isset($focus->column_fields["conversion_rate"]) && isset($focus->column_fields["grand_total"])) {
             self::$inventory_table_array[$module] = $focus->table_name;
             self::$inventory_id_array[$module] = $focus->table_index;
         }

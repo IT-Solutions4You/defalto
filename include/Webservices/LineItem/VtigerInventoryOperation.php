@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -30,8 +31,8 @@ class VtigerInventoryOperation extends VtigerModuleOperation
     {
         self::$CREATE_OPERATI0N = true;
 
-        if (!$element['hdnTaxType']) {
-            $element['hdnTaxType'] = Inventory_TaxRecord_Model::getSelectedDefaultTaxMode();
+        if (!$element['taxtype']) {
+            $element['taxtype'] = Inventory_TaxRecord_Model::getSelectedDefaultTaxMode();
         }
         $element = $this->sanitizeInventoryForInsert($element);
         $element = $this->sanitizeShippingTaxes($element);
@@ -62,7 +63,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             $updatedParent = $handler->getParentById($element['id']);
             //since subtotal and grand total is updated in the update parent api
             $parent['subtotal'] = $updatedParent['subtotal'];
-            $parent['price_total'] = $updatedParent['price_total'];
+            $parent['grand_total'] = $updatedParent['grand_total'];
             $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
             $components = vtws_getIdComponents($element['id']);
             $parentId = $components[1];
@@ -112,7 +113,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             $updatedParent = $handler->getParentById($element['id']);
             //since subtotal and grand total is updated in the update parent api
             $parent['subtotal'] = $updatedParent['subtotal'];
-            $parent['price_total'] = $updatedParent['price_total'];
+            $parent['grand_total'] = $updatedParent['grand_total'];
             $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
             $updatedElement = array_merge($updatedElement, $parent);
 
@@ -164,7 +165,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             $updatedParent = $handler->getParentById($element['id']);
             //since subtotal and grand total is updated in the update parent api
             $parent['subtotal'] = $updatedParent['subtotal'];
-            $parent['price_total'] = $updatedParent['price_total'];
+            $parent['grand_total'] = $updatedParent['grand_total'];
             $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
             $parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
 
@@ -255,8 +256,8 @@ class VtigerInventoryOperation extends VtigerModuleOperation
      */
     protected function sanitizeInventoryForInsert($element)
     {
-        if (!empty($element['hdnTaxType'])) {
-            $_REQUEST['taxtype'] = $element['hdnTaxType'];
+        if (!empty($element['taxtype'])) {
+            $_REQUEST['taxtype'] = $element['taxtype'];
         }
         if (!empty($element['subtotal'])) {
             $_REQUEST['subtotal'] = $element['subtotal'];
@@ -280,8 +281,8 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             $_REQUEST['adjustmentType'] = '';
             $_REQUEST['adjustment'] = '';
         }
-        if (!empty($element['price_total'])) {
-            $_REQUEST['total'] = $element['price_total'];
+        if (!empty($element['grand_total'])) {
+            $_REQUEST['grand_total'] = $element['grand_total'];
         }
 
         if (isset($element['region_id'])) {
@@ -357,17 +358,17 @@ class VtigerInventoryOperation extends VtigerModuleOperation
         }
 
         if ($totalSHAmount) {
-            $_REQUEST['shipping_handling_charge'] = $element['hdnS_H_Amount'] = $totalSHAmount;
+            $_REQUEST['shipping_handling_charge'] = $element['s_h_amount'] = $totalSHAmount;
             $_REQUEST['s_h_percent'] = $totalSHTaxesAmount;
         } else {
-            $_REQUEST['shipping_handling_charge'] = $_REQUEST['charges'][1]['value'] = $element['hdnS_H_Amount'];
+            $_REQUEST['shipping_handling_charge'] = $_REQUEST['charges'][1]['value'] = $element['s_h_amount'];
             foreach ($shippingTaxes as $shTaxId => $shTaxInfo) {
                 unset($_REQUEST['charges'][1]['taxes'][$shTaxId]);
-                if (isset($element['hdnS_H_Percent']) && $element['hdnS_H_Percent'] != 0 && $element['hdnS_H_Amount'] != 0) {
-                    $_REQUEST['charges'][1]['taxes'][$shTaxId] = $element['hdnS_H_Percent'];
-                    $_REQUEST['s_h_percent'] = ($element['hdnS_H_Percent'] / $element['hdnS_H_Amount']) * 100;
+                if (isset($element['s_h_percent']) && $element['s_h_percent'] != 0 && $element['s_h_amount'] != 0) {
+                    $_REQUEST['charges'][1]['taxes'][$shTaxId] = $element['s_h_percent'];
+                    $_REQUEST['s_h_percent'] = ($element['s_h_percent'] / $element['s_h_amount']) * 100;
                     $_REQUEST['charges'][$firstActiveCharge]['taxes'][$shTaxId] = $_REQUEST['s_h_percent'];
-                    $element['hdnS_H_Percent'] = $_REQUEST['s_h_percent'];
+                    $element['s_h_percent'] = $_REQUEST['s_h_percent'];
                     break;
                 } else {
                     $shTaxValue = 0;
@@ -559,7 +560,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation
         }
 
         if ($recordTaxesCompoundInfo) {
-            if ($element['hdnTaxType'] === 'group') {
+            if ($element['taxtype'] === 'group') {
                 $compoundTaxesElement['compoundTaxInfo'] = $recordTaxesCompoundInfo;
             } else {
                 foreach ($lineItems as $key => $lineItem) {

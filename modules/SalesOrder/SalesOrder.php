@@ -19,7 +19,7 @@
  * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
  * All Rights Reserved.
  * Contributor(s): ______________________________________..
- */
+ ********************************************************************************/
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -28,6 +28,7 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
+
 class SalesOrder extends CRMEntity
 {
     public string $parentName = 'Inventory';
@@ -104,7 +105,7 @@ class SalesOrder extends CRMEntity
         'Subject'      => 'subject',
         'Account Name' => 'account_id',
         'Quote Name'   => 'quote_id',
-        'Total'        => 'price_total',
+        'Total'        => 'grand_total',
         'Assigned To'  => 'assigned_user_id'
     ];
     public $list_link_field = 'subject';
@@ -494,7 +495,6 @@ class SalesOrder extends CRMEntity
      * import fails if those fields are not mapped during import.
      */
     public function getMandatoryImportableFields()
-
     {
         return getInventoryImportableMandatoryFeilds($this->moduleName);
     }

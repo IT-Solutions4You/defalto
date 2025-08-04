@@ -14,7 +14,7 @@ class Inventory_RelationListView_Model extends Vtiger_RelationListView_Model {
 		$createViewUrl = parent::getCreateViewUrl();
 		$currentUserModel				= Users_Record_Model::getCurrentUserModel();
 		$parentRecordModel				= $this->getParentRecordModel();
-		$currencyValue					= $parentRecordModel->get('price_total');
+		$currencyValue					= $parentRecordModel->get('grand_total');
 		$parentRecordModelCurrencyId	= $parentRecordModel->get('currency_id');
 
 		if($parentRecordModelCurrencyId == $currentUserModel->get('currency_id')) {

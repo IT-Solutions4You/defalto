@@ -176,7 +176,7 @@ class Inventory_TaxRecord_Model extends Vtiger_Base_Model {
 	public static function getSelectedDefaultTaxMode() {
 		$db = PearDatabase::getInstance();
 		
-		$result = $db->pquery('SELECT defaultvalue FROM vtiger_field WHERE fieldname = ? LIMIT 1', array('hdnTaxType'));
+		$result = $db->pquery('SELECT defaultvalue FROM vtiger_field WHERE fieldname = ? LIMIT 1', array('taxtype'));
 		if ($db->num_rows($result)) {
 			return $db->query_result($result, 0, 'defaultvalue');
 		}

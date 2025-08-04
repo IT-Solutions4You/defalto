@@ -25,5 +25,21 @@ Vtiger.Class('Migration_Index_Js', {
 
     registerEvents: function () {
         this.startMigrationEvent();
+        this.registerMigrateData();
+    },
+    registerMigrateData() {
+        $('main').on('click', '.migrateData', function () {
+            let params = {
+                module: 'Migration',
+                view: 'Index',
+                mode: 'migrateData',
+            };
+
+            app.request.post({data: params}).then(function (err, data) {
+                jQuery('#running').addClass('hide').removeClass('show');
+                jQuery('#success').addClass('show').removeClass('hide');
+                jQuery('#showDetails').addClass('show').removeClass('hide').html(data);
+            });
+        });
     }
 });

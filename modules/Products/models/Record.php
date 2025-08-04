@@ -19,6 +19,58 @@
 class Products_Record_Model extends Vtiger_Record_Model
 {
     /**
+     * Function to get Taxes Url
+     * @return <String> Url
+     */
+    function getTaxesURL()
+    {
+        return 'index.php?module=Inventory&action=GetTaxes&record=' . $this->getId();
+    }
+
+    function getPurchaseOrderTaxesURL()
+    {
+        return 'index.php?module=PurchaseOrder&action=GetTaxes&record=' . $this->getId();
+    }
+
+    /**
+     * Function to get available taxes for this record
+     * @return <Array> List of available taxes
+     */
+    function getTaxes()
+    {
+        $db = PearDatabase::getInstance();
+
+        $result = $db->pquery(
+            'SELECT vtiger_producttaxrel.*, vtiger_inventorytaxinfo.taxname, vtiger_inventorytaxinfo.taxlabel, vtiger_inventorytaxinfo.compoundon FROM vtiger_producttaxrel
+								INNER JOIN vtiger_inventorytaxinfo ON vtiger_inventorytaxinfo.taxid = vtiger_producttaxrel.taxid
+								INNER JOIN vtiger_crmentity ON vtiger_producttaxrel.productid = vtiger_crmentity.crmid AND vtiger_crmentity.deleted = 0
+								WHERE vtiger_producttaxrel.productid = ? AND vtiger_inventorytaxinfo.deleted = 0',
+            [$this->getId()]
+        );
+        $taxes = [];
+        while ($rowData = $db->fetch_array($result)) {
+            $rowData['regions'] = Zend_Json::decode(html_entity_decode($rowData['regions']));
+            $rowData['compoundOn'] = Zend_Json::decode(html_entity_decode($rowData['compoundon']));
+            $taxes[$rowData['taxname']] = $rowData;
+        }
+
+        $regionsList = [];
+        foreach ($taxes as $taxName => $taxInfo) {
+            $regionsInfo = ['default' => $taxInfo['taxpercentage']];
+            foreach ($taxInfo['regions'] as $list) {
+                if (is_array($list['list'])) {
+                    foreach (array_fill_keys($list['list'], $list['value']) as $key => $value) {
+                        $regionsInfo[$key] = $value;
+                    }
+                }
+            }
+            $taxes[$taxName]['regionsList'] = Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($regionsInfo));
+        }
+
+        return $taxes;
+    }
+
+    /**
      * Function to get values of more currencies listprice
      * @return <Array> of listprice values
      */
@@ -121,7 +173,7 @@ class Products_Record_Model extends Vtiger_Record_Model
             $netPrice = $totalAfterDiscount + $taxTotal;
             $productDetails[1]['netPrice1'] = $netPrice;
             $productDetails[1]['final_details']['subtotal'] = $netPrice;
-            $productDetails[1]['final_details']['grandTotal'] = $netPrice;
+            $productDetails[1]['final_details']['grand_total'] = $netPrice;
         }
 
         for ($i = 1; $i <= php7_count($productDetails); $i++) {

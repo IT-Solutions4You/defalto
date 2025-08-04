@@ -3012,9 +3012,14 @@ Vtiger.Class("Vtiger_Detail_Js", {
     registerCheckboxFieldChange() {
         let self = this,
             message = app.vtranslate('JS_RECORD_UPDATED'),
-            container = self.getDetailViewContainer();
+            container = self.getDetailViewContainer(),
+            checkboxes = container.find('[data-change-check-field]');
 
-        container.find('[data-change-check-field]').bootstrapSwitch({
+        if (!checkboxes.length) {
+            return;
+        }
+
+        checkboxes.bootstrapSwitch({
             onText: app.vtranslate('LBL_YES'),
             offText: app.vtranslate('LBL_NO'),
             labelWidth: '3rem',

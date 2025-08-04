@@ -97,7 +97,7 @@ class Quotes extends CRMEntity
         'Quote Stage'    => 'quotestage',
         'Potential Name' => 'potential_id',
         'Account Name'   => 'account_id',
-        'Total'          => 'price_total',
+        'Total'          => 'grand_total',
         'Assigned To'    => 'assigned_user_id'
     ];
     var $list_link_field = 'subject';
