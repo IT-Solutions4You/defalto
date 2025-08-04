@@ -530,7 +530,7 @@ function getAssociatedProducts($module, $focus, $seid = '', $refModuleName = fal
     $product_Detail[1]['final_details']['tax_totalamount'] = number_format($taxTotal, $no_of_decimal_places, '.', '');
 
     //To set the Shipping & Handling charge
-    $shCharge = ($focus->column_fields['hdnS_H_Amount'] != '') ? $focus->column_fields['hdnS_H_Amount'] : 0;
+    $shCharge = ($focus->column_fields['s_h_amount'] != '') ? $focus->column_fields['s_h_amount'] : 0;
     $shCharge = number_format($shCharge, $no_of_decimal_places, '.', '');
     $product_Detail[1]['final_details']['shipping_handling_charge'] = $shCharge;
 

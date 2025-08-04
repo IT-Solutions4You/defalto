@@ -548,9 +548,9 @@ class VtigerLineItemOperation extends VtigerActorOperation
 		} else {
 			$discount = 0;
 		}
-		$parent['pre_tax_total'] = $total = $parent['subtotal'] - $discount + $parent['hdnS_H_Amount'];
+		$parent['pre_tax_total'] = $total = $parent['subtotal'] - $discount + $parent['s_h_amount'];
 		if ($parent['taxtype'] === 'individual') {
-			$parent['pre_tax_total'] = $individualPreTaxTotal - $discount + $parent['hdnS_H_Amount'];
+			$parent['pre_tax_total'] = $individualPreTaxTotal - $discount + $parent['s_h_amount'];
 		}
 
 		$taxTotal = $parent['subtotal'] - $discount;

@@ -359,15 +359,15 @@ class VtigerInventoryOperation extends VtigerModuleOperation
         }
 
         if ($totalSHAmount) {
-            $_REQUEST['shipping_handling_charge'] = $element['hdnS_H_Amount'] = $totalSHAmount;
+            $_REQUEST['shipping_handling_charge'] = $element['s_h_amount'] = $totalSHAmount;
             $_REQUEST['s_h_percent'] = $totalSHTaxesAmount;
         } else {
-            $_REQUEST['shipping_handling_charge'] = $_REQUEST['charges'][1]['value'] = $element['hdnS_H_Amount'];
+            $_REQUEST['shipping_handling_charge'] = $_REQUEST['charges'][1]['value'] = $element['s_h_amount'];
             foreach ($shippingTaxes as $shTaxId => $shTaxInfo) {
                 unset($_REQUEST['charges'][1]['taxes'][$shTaxId]);
-                if (isset($element['s_h_percent']) && $element['s_h_percent'] != 0 && $element['hdnS_H_Amount'] != 0) {
+                if (isset($element['s_h_percent']) && $element['s_h_percent'] != 0 && $element['s_h_amount'] != 0) {
                     $_REQUEST['charges'][1]['taxes'][$shTaxId] = $element['s_h_percent'];
-                    $_REQUEST['s_h_percent'] = ($element['s_h_percent'] / $element['hdnS_H_Amount']) * 100;
+                    $_REQUEST['s_h_percent'] = ($element['s_h_percent'] / $element['s_h_amount']) * 100;
                     $_REQUEST['charges'][$firstActiveCharge]['taxes'][$shTaxId] = $_REQUEST['s_h_percent'];
                     $element['s_h_percent'] = $_REQUEST['s_h_percent'];
                     break;
