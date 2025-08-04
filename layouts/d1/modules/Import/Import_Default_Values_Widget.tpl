@@ -12,7 +12,7 @@
 		{assign var="_FIELD_TYPE" value=$_FIELD_INFO->getFieldDataType()}
 		{if $_FIELD_TYPE eq 'picklist' || $_FIELD_TYPE eq 'multipicklist' || ($FOR_MODULE eq 'Users' && $_FIELD_TYPE eq 'userRole')}
 			<select id="{$_FIELD_NAME}_defaultvalue" name="{$_FIELD_NAME}_defaultvalue" class="select2 inputElement form-control">
-            {if $_FIELD_NAME neq 'hdnTaxType'} <option value="">{vtranslate('LBL_SELECT_OPTION','Vtiger')}</option> {/if}
+            {if $_FIELD_NAME neq 'taxtype'} <option value="">{vtranslate('LBL_SELECT_OPTION','Vtiger')}</option> {/if}
 			{foreach item=_PICKLIST_DETAILS from=$_FIELD_INFO->getPicklistDetails()}
 				<option value="{$_PICKLIST_DETAILS.value}">{$_PICKLIST_DETAILS.label|@vtranslate:$FOR_MODULE}</option>
 			{/foreach}

@@ -353,7 +353,7 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action
             if ($endsWithDoubleQuote) {
                 $value = "{$value}\"";
             }
-            if ($fieldname != 'hdnTaxType' && ($uitype == 15 || $uitype == 16 || $uitype == 33)) {
+            if ($fieldname != 'taxtype' && ($uitype == 15 || $uitype == 16 || $uitype == 33)) {
                 if (empty($this->picklistValues[$fieldname])) {
                     $this->picklistValues[$fieldname] = $this->fieldArray[$fieldname]->getPicklistValues();
                 }

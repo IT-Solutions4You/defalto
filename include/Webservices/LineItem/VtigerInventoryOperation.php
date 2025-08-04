@@ -31,8 +31,8 @@ class VtigerInventoryOperation extends VtigerModuleOperation
     {
         self::$CREATE_OPERATI0N = true;
 
-        if (!$element['hdnTaxType']) {
-            $element['hdnTaxType'] = Inventory_TaxRecord_Model::getSelectedDefaultTaxMode();
+        if (!$element['taxtype']) {
+            $element['taxtype'] = Inventory_TaxRecord_Model::getSelectedDefaultTaxMode();
         }
         $element = $this->sanitizeInventoryForInsert($element);
         $element = $this->sanitizeShippingTaxes($element);
@@ -256,8 +256,8 @@ class VtigerInventoryOperation extends VtigerModuleOperation
      */
     protected function sanitizeInventoryForInsert($element)
     {
-        if (!empty($element['hdnTaxType'])) {
-            $_REQUEST['taxtype'] = $element['hdnTaxType'];
+        if (!empty($element['taxtype'])) {
+            $_REQUEST['taxtype'] = $element['taxtype'];
         }
         if (!empty($element['hdnSubTotal'])) {
             $_REQUEST['subtotal'] = $element['hdnSubTotal'];
@@ -560,7 +560,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation
         }
 
         if ($recordTaxesCompoundInfo) {
-            if ($element['hdnTaxType'] === 'group') {
+            if ($element['taxtype'] === 'group') {
                 $compoundTaxesElement['compoundTaxInfo'] = $recordTaxesCompoundInfo;
             } else {
                 foreach ($lineItems as $key => $lineItem) {

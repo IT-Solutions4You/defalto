@@ -434,7 +434,7 @@ class Vtiger_Field_Model extends Vtiger_Field
             $fieldName = $referenceFieldName;
         }
 
-        if ($fieldName == 'hdnTaxType' || ($fieldName == 'region_id' && $this->get('displaytype') == 5)) {
+        if ($fieldName == 'taxtype' || ($fieldName == 'region_id' && $this->get('displaytype') == 5)) {
             return null;
         }
 
@@ -474,7 +474,7 @@ class Vtiger_Field_Model extends Vtiger_Field
             $fieldName = $referenceFieldName;
         }
 
-        if ($fieldName == 'hdnTaxType' || ($fieldName == 'region_id' && $this->get('displaytype') == 5)) {
+        if ($fieldName == 'taxtype' || ($fieldName == 'region_id' && $this->get('displaytype') == 5)) {
             return null;
         }
 
@@ -1734,7 +1734,7 @@ class Vtiger_Field_Model extends Vtiger_Field
                 $fieldName = $referenceFieldName;
             }
 
-            if (!in_array($fieldName, ['hdnTaxType', 'region_id']) && !in_array($this->getModuleName(), ['Users'])) {
+            if (!in_array($fieldName, ['taxtype', 'region_id']) && !in_array($this->getModuleName(), ['Users'])) {
                 $db = PearDatabase::getInstance();
                 $picklistValues = $this->getPicklistValues();
                 $tableName = "vtiger_$fieldName";

@@ -143,7 +143,7 @@ class VtigerLineItemOperation extends VtigerActorOperation
 		$this->initTax($element, $parent);
 		$this->updateTaxes($createdElement);
 		$createdElement['incrementondel'] = '1';
-		if (strcasecmp($parent['hdnTaxType'], $this->Individual) === 0) {
+		if (strcasecmp($parent['taxtype'], $this->Individual) === 0) {
 			$createdElement = $this->appendTaxInfo($createdElement);
 		}
 
@@ -174,7 +174,7 @@ class VtigerLineItemOperation extends VtigerActorOperation
 			[$typeId, $recordId] = vtws_getIdComponents($element['productid']);
 			$productTaxInfo = $this->getProductTaxList($recordId);
 		}
-		if (php7_count($productTaxInfo) == 0 && strcasecmp($parent['hdnTaxType'], $this->Individual) !== 0) {
+		if (php7_count($productTaxInfo) == 0 && strcasecmp($parent['taxtype'], $this->Individual) !== 0) {
 			$meta = $this->getMeta();
 			$moduleFields = $meta->getModuleFields();
 			foreach ($moduleFields as $fieldName => $field) {
@@ -218,11 +218,11 @@ class VtigerLineItemOperation extends VtigerActorOperation
 		$this->inActiveTaxList = [];
 		$allTaxes = getAllTaxes();
 		if (!empty($element['parent_id'])) {
-			$this->taxType = $parent['hdnTaxType'];
+			$this->taxType = $parent['taxtype'];
 		}
 		$productId = vtws_getIdComponents($element['productid']);
 		$productId = $productId[1];
-		if (strcasecmp($parent['hdnTaxType'], $this->Individual) === 0) {
+		if (strcasecmp($parent['taxtype'], $this->Individual) === 0) {
 			$found = false;
 			$meta = $this->getMeta();
 			$moduleFields = $meta->getModuleFields();
@@ -361,7 +361,7 @@ class VtigerLineItemOperation extends VtigerActorOperation
 		}
 
 		$this->initTax($element, $parent);
-		if (strcasecmp($parent['hdnTaxType'], $this->Individual) === 0) {
+		if (strcasecmp($parent['taxtype'], $this->Individual) === 0) {
 			$tax_net = 0;
 			foreach ($this->taxList as $taxname => $taxArray) {
 				$taxValue = $taxArray['percentage'];
@@ -520,7 +520,7 @@ class VtigerLineItemOperation extends VtigerActorOperation
 			$this->initTax($lineItem, $parent);
 			$lineItemTotal = $lineItemTotal - $discount;
 			$parent['hdnSubTotal'] = ($parent['hdnSubTotal']) + $lineItemTotal;
-			if (strcasecmp($parent['hdnTaxType'], $this->Individual) === 0) {
+			if (strcasecmp($parent['taxtype'], $this->Individual) === 0) {
 				$taxAmountsList = [];
 				foreach ($this->taxList as $taxName => $taxInfo) {
 					$taxAmountsList[$allTaxes[$taxName]['taxid']] = ['percentage' => $taxInfo['percentage'], 'amount' => ($lineItemTotal * $taxInfo['percentage']) / 100];
@@ -549,12 +549,12 @@ class VtigerLineItemOperation extends VtigerActorOperation
 			$discount = 0;
 		}
 		$parent['pre_tax_total'] = $total = $parent['hdnSubTotal'] - $discount + $parent['hdnS_H_Amount'];
-		if ($parent['hdnTaxType'] === 'individual') {
+		if ($parent['taxtype'] === 'individual') {
 			$parent['pre_tax_total'] = $individualPreTaxTotal - $discount + $parent['hdnS_H_Amount'];
 		}
 
 		$taxTotal = $parent['hdnSubTotal'] - $discount;
-		if (strcasecmp($parent['hdnTaxType'], $this->Individual) !== 0) {
+		if (strcasecmp($parent['taxtype'], $this->Individual) !== 0) {
 			$newTaxList = [];
 			foreach ($createdElement as $element) {
 				$this->initTax($element, $parent);

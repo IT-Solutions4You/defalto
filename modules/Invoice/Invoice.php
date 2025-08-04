@@ -411,7 +411,7 @@ class Invoice extends CRMEntity
             'adjustment'       => 'txtAdjustment',
             'subtotal'         => 'hdnSubTotal',
             'total'            => 'hdnGrandTotal',
-            'taxtype'          => 'hdnTaxType',
+            'taxtype'          => 'taxtype',
             'discount_percent' => 'hdnDiscountPercent',
             'discount_amount'  => 'hdnDiscountAmount',
             's_h_amount'       => 'hdnS_H_Amount',
