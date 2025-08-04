@@ -1,9 +1,11 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 /** @var Settings_LayoutEditor_Js */
 Vtiger.Class('Settings_LayoutEditor_Js', {
@@ -180,11 +182,11 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
             params = {};
 
         let fieldNames = $('.headerFieldBtn')
-            .map(function() {
+            .map(function () {
                 return $(this).data('fieldvalue');
             })
             .get()
-            .filter(function(name) {
+            .filter(function (name) {
                 return name !== undefined && name !== null && name !== '';
             });
 
@@ -194,11 +196,11 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
         params['action'] = 'SaveHeaderFieldsAjax';
         params['header_fields'] = fieldNames;
 
-        app.request.post({"data":params}).then(
-            function(err,data) {
-                if(err === null) {
+        app.request.post({"data": params}).then(
+            function (err, data) {
+                if (err === null) {
                     window.location.reload();
-                }else {
+                } else {
                     aDeferred.reject(err);
                 }
             }
@@ -2403,11 +2405,11 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
         let html = '<optgroup label=""><option value="">' + app.vtranslate('JS_SELECT_FIELD') + '</option>',
             prevGroup = '';
 
-        $.each(fieldOptions[module], function(key, value) {
+        $.each(fieldOptions[module], function (key, value) {
             let valueInfo = value.split('##'),
                 group = valueInfo[0];
 
-            if(prevGroup !== group) {
+            if (prevGroup !== group) {
                 html += '</optgroup><optgroup label="' + valueInfo[0] + '">';
             }
 
@@ -2467,7 +2469,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
                 editFieldId = editFieldData.val(),
                 editFieldInfo = editFieldId.split(':');
 
-            if(3 === editFieldInfo.length) {
+            if (3 === editFieldInfo.length) {
                 selectModules.val(editFieldInfo[0] + ':' + editFieldInfo[1]);
                 selectModules.trigger('change');
             }
@@ -2484,7 +2486,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
             cloneHtml = containerElement.find('.containerCloneFields').html(),
             selectedFieldName = modalContainer.find('.selectedFieldName');
 
-        modalContainer.on('click', '#selectFieldsButton', function() {
+        modalContainer.on('click', '#selectFieldsButton', function () {
             let value = selectedFieldName.val(),
                 cloneElement = $(cloneHtml),
                 data = {
@@ -2514,7 +2516,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
             app.helper.hideModal();
         });
 
-        modalContainer.on('click', '.selectedAlign', function() {
+        modalContainer.on('click', '.selectedAlign', function () {
             modalContainer.find('.selectedAlign').removeClass('active');
             $(this).addClass('active');
         });
@@ -2552,7 +2554,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
         let self = this,
             containerElement = self.getFieldsContainer();
 
-        containerElement.on('click', '.openSelectFields', function() {
+        containerElement.on('click', '.openSelectFields', function () {
             self.setEditField($(this));
 
             let modalContainer = self.getNewFieldModal();

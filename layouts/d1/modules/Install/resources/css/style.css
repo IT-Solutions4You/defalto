@@ -1,29 +1,35 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
-html{
-    height:100%;
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+html {
+    height: 100%;
 }
-body{
-    font-family: Tahoma, "Trebuchet MS","Lucida Grande",Verdana;
-    background: #F5FAEE;/*#f1f6e8;*/
-    color : #555;
+
+body {
+    font-family: Tahoma, "Trebuchet MS", "Lucida Grande", Verdana;
+    background: #F5FAEE; /*#f1f6e8;*/
+    color: #555;
     height: 98%;
 }
-.page-container{
-    width:70%;
+
+.page-container {
+    width: 70%;
     margin: 10px auto;
     min-height: 600px;
     min-width: 1100px;
     /*height: 100%;*/
 }
-.error{
+
+.error {
     border: 1px solid red !important;
 }
-.main-container{
+
+.main-container {
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 3px;
@@ -31,30 +37,37 @@ body{
     min-height: 375px;
     *padding: 0 15px;
 }
-.logo{
-    padding: 15px 0 ;
+
+.logo {
+    padding: 15px 0;
 }
-.head
-{
+
+.head {
     padding-top: 15px;
 }
-.inner-container{
+
+.inner-container {
     padding: 15px 2%;
     *padding: 15px 0 0;
 }
-.welcome-image{
+
+.welcome-image {
     text-align: right;
 }
-.alignCenter{
+
+.alignCenter {
     text-align: center;
 }
-.welcome-div{
+
+.welcome-div {
     padding: 13% 0;
 }
-.mig-div{
+
+.mig-div {
     padding: 10% 0;
 }
-.vLinks{
+
+.vLinks {
     margin: 6% 0;
     padding: 4% 10%;
     width: 85px;
@@ -64,14 +77,17 @@ body{
     float: right;
     border: 1px solid #ddd;
 }
-.marginTopZero{
+
+.marginTopZero {
     margin-top: 0;
 }
-hr{
+
+hr {
     border: 1px solid #ddd;
     margin: 13px 0;
 }
-.row-fluid .group-container{
+
+.row-fluid .group-container {
     background: #eee;
     border: 1px solid #ddd;
     border-radius: 3px;
@@ -82,15 +98,18 @@ hr{
     *margin: 0px !important;
     *padding: 5px 0;
 }
-.group-heading{
+
+.group-heading {
     color: #2c69a7;
     text-shadow: 0px 0px 1px #BBB;
 }
-.group-desc{
-    padding-bottom:9px;
+
+.group-desc {
+    padding-bottom: 9px;
     min-height: 130px;
 }
-.module_list{
+
+.module_list {
     background: #146bae;
     border-radius: 3px 0;
     right: 0;
@@ -102,33 +121,38 @@ hr{
     text-shadow: 0 0 1px #000;
     z-index: 605;
 }
-.module_list a{
+
+.module_list a {
     cursor: pointer;
     text-decoration: none;
     color: #fff;
 }
-.reveal_modules{
+
+.reveal_modules {
     position: absolute;
-    height:0;
+    height: 0;
     width: 0;
     z-index: 600;
     background: #000;
     opacity: 0;
-    top:100%;
-    left:100%;
+    top: 100%;
+    left: 100%;
     color: #fff;
-    visibility:hidden;
+    visibility: hidden;
     border-radius: 3px;
 }
-.reveal_modules > div{
+
+.reveal_modules > div {
     padding-left: 30px;
 }
-.reveal_modules > div > p{
-    margin: 0  30px 10px 0;
+
+.reveal_modules > div > p {
+    margin: 0 30px 10px 0;
     vertical-align: top;
     display: inline-block;
 }
-.config-table{
+
+.config-table {
     width: 100%;
     border: 1px solid #ddd;
     margin: 5px 0 15px;
@@ -137,56 +161,67 @@ hr{
     padding: 0;
     background: #fff;
 }
-.config-table tr td, .config-table tr th{
+
+.config-table tr td, .config-table tr th {
     padding: 8px;
 }
 
-.config-table tr th:last-child{
+.config-table tr th:last-child {
     border-radius: 0 3px 0 0;
 }
-.config-table tr th:first-child{
+
+.config-table tr th:first-child {
     border-radius: 3px 0 0 0;
     text-align: left;
 }
-.config-table tr td:first-child{
+
+.config-table tr td:first-child {
     text-align: left;
 }
-.config-table th{
+
+.config-table th {
     background: #ddd;
 }
-.config-table tr:hover{
+
+.config-table tr:hover {
     background: #efefef;
 }
 
-.config-table td, .config-table th{
+.config-table td, .config-table th {
     text-align: center;
     width: 33%;
 }
 
-.config-table tr td.no, p.no,span.no{
+.config-table tr td.no, p.no, span.no {
     color: red;
     font-weight: bold;
 }
-.config-table tr td.yes, p.yes, span.yes{
+
+.config-table tr td.yes, p.yes, span.yes {
     color: green;
     font-weight: bold;
 
 }
-.config-table td span img{
+
+.config-table td span img {
     margin-left: 10px;
 }
-.button-container a{
+
+.button-container a {
     text-decoration: none;
 }
-.button-container{
+
+.button-container {
     float: right;
 }
-.button-container .btn{
+
+.button-container .btn {
     margin-left: 15px;
     min-width: 100px;
     font-weight: bold;
 }
-.license{
+
+.license {
     padding: 10px;
     height: 330px;
     overflow-y: scroll;
@@ -194,13 +229,15 @@ hr{
     border: 1px solid #ddd;
     font-size: 12px;
 }
-.input-table tr td{
+
+.input-table tr td {
     padding: 5px 10px;
     height: 30px;
     text-align: left;
 }
+
 .errorMessageContent {
-	background-color: #f2dede !important;
-	color: #b94a48 !important;
-	border-color: #eed3d7;
+    background-color: #f2dede !important;
+    color: #b94a48 !important;
+    border-color: #eed3d7;
 }

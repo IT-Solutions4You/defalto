@@ -19,6 +19,14 @@
  * All Rights Reserved.
  * Contributor(s): ______________________________________..
  ********************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 require_once('modules/Users/Users.php');
 require_once('modules/Users/CreateUserPrivilegeFile.php');
@@ -37,117 +45,117 @@ $focus->load_user($user_password);
 
 $successURL = 'index.php';
 
-if($focus->is_authenticated()) {
-	session_regenerate_id();
+if ($focus->is_authenticated()) {
+    session_regenerate_id();
 
-	require_once('modules/Users/LoginHistory.php');
-	// Recording the login info
-	$usip=$_SERVER['REMOTE_ADDR'];
-	$intime=date("Y/m/d H:i:s");
-	$loghistory=new LoginHistory();
-	$Signin = $loghistory->user_login($focus->column_fields["user_name"],$usip,$intime);
+    require_once('modules/Users/LoginHistory.php');
+    // Recording the login info
+    $usip = $_SERVER['REMOTE_ADDR'];
+    $intime = date("Y/m/d H:i:s");
+    $loghistory = new LoginHistory();
+    $Signin = $loghistory->user_login($focus->column_fields["user_name"], $usip, $intime);
 
-	//Security related entries start
-	require_once('include/utils/UserInfoUtil.php');
+    //Security related entries start
+    require_once('include/utils/UserInfoUtil.php');
 
-	createUserPrivilegesfile($focus->id);
+    createUserPrivilegesfile($focus->id);
 
-	//Security related entries end
-	unset($_SESSION['login_password']);
-	unset($_SESSION['login_error']);
-	unset($_SESSION['login_user_name']);
+    //Security related entries end
+    unset($_SESSION['login_password']);
+    unset($_SESSION['login_error']);
+    unset($_SESSION['login_user_name']);
 
-	$_SESSION['authenticated_user_id'] = $focus->id;
-	$_SESSION['AUTHUSERID'] = $focus->id;
-	$_SESSION['app_unique_key'] = $application_unique_key;
+    $_SESSION['authenticated_user_id'] = $focus->id;
+    $_SESSION['AUTHUSERID'] = $focus->id;
+    $_SESSION['app_unique_key'] = $application_unique_key;
 
-	global $upload_badext;
-	//Enabled session variable for KCFINDER
-	$_SESSION['KCFINDER'] = array();
-	$_SESSION['KCFINDER']['disabled'] = false;
+    global $upload_badext;
+    //Enabled session variable for KCFINDER
+    $_SESSION['KCFINDER'] = [];
+    $_SESSION['KCFINDER']['disabled'] = false;
     $_SESSION['KCFINDER']['uploadURL'] = '../../../test/upload';
     $_SESSION['KCFINDER']['uploadDir'] = __DIR__ . '/../../../test/upload';
-	$deniedExts = implode(" ", $upload_badext);
-	$_SESSION['KCFINDER']['deniedExts'] = $deniedExts;
+    $deniedExts = implode(" ", $upload_badext);
+    $_SESSION['KCFINDER']['deniedExts'] = $deniedExts;
 
-	// store the user's theme in the session
-	if(!empty($focus->column_fields["theme"])) {
-		$authenticated_user_theme = $focus->column_fields["theme"];
-	} else {
-		$authenticated_user_theme = $default_theme;
-	}
+    // store the user's theme in the session
+    if (!empty($focus->column_fields["theme"])) {
+        $authenticated_user_theme = $focus->column_fields["theme"];
+    } else {
+        $authenticated_user_theme = $default_theme;
+    }
 
-	// store the user's language in the session
-	if(!empty($focus->column_fields["language"])) {
-		$authenticated_user_language = $focus->column_fields["language"];
-	} else {
-		$authenticated_user_language = $default_language;
-	}
+    // store the user's language in the session
+    if (!empty($focus->column_fields["language"])) {
+        $authenticated_user_language = $focus->column_fields["language"];
+    } else {
+        $authenticated_user_language = $default_language;
+    }
 
-	// If this is the default user and the default user theme is set to reset, reset it to the default theme value on each login
-	if($reset_theme_on_default_user && $focus->user_name == $default_user_name) {
-		$authenticated_user_theme = $default_theme;
-	}
-	if(isset($reset_language_on_default_user) && $reset_language_on_default_user && $focus->user_name == $default_user_name) {
-		$authenticated_user_language = $default_language;
-	}
+    // If this is the default user and the default user theme is set to reset, reset it to the default theme value on each login
+    if ($reset_theme_on_default_user && $focus->user_name == $default_user_name) {
+        $authenticated_user_theme = $default_theme;
+    }
+    if (isset($reset_language_on_default_user) && $reset_language_on_default_user && $focus->user_name == $default_user_name) {
+        $authenticated_user_language = $default_language;
+    }
 
-	$_SESSION['vtiger_authenticated_user_theme'] = $authenticated_user_theme;
-	$_SESSION['authenticated_user_language'] = $authenticated_user_language;
+    $_SESSION['vtiger_authenticated_user_theme'] = $authenticated_user_theme;
+    $_SESSION['authenticated_user_language'] = $authenticated_user_language;
 
-	$log->debug("authenticated_user_theme is $authenticated_user_theme");
-	$log->debug("authenticated_user_language is $authenticated_user_language");
-	$log->debug("authenticated_user_id is ". $focus->id);
-	$log->debug("app_unique_key is $application_unique_key");
+    $log->debug("authenticated_user_theme is $authenticated_user_theme");
+    $log->debug("authenticated_user_language is $authenticated_user_language");
+    $log->debug("authenticated_user_id is " . $focus->id);
+    $log->debug("app_unique_key is $application_unique_key");
 
-	// Clear all uploaded import files for this user if it exists
-	global $import_dir;
+    // Clear all uploaded import files for this user if it exists
+    global $import_dir;
 
-	$tmp_file_name = $import_dir. "IMPORT_".$focus->id;
+    $tmp_file_name = $import_dir . "IMPORT_" . $focus->id;
 
-	if (file_exists($tmp_file_name)) {
-		unlink($tmp_file_name);
-	}
+    if (file_exists($tmp_file_name)) {
+        unlink($tmp_file_name);
+    }
 
-	$userSetupStatus = Users_CRMSetup::getUserSetupStatus($focus->id);
-	if ($userSetupStatus) {
-		$user = $focus->retrieve_entity_info($focus->id, 'Users');
-		$isFirstUser = Users_CRMSetup::isFirstUser($user);
-		if($isFirstUser) {
-			header('Location: index.php?module=Users&action=UserSetup');
-		} else {
-			$arr = $_SESSION['lastpage'];
-			if(isset($_SESSION['lastpage'])) {
-				header("Location: $successURL".$arr);
-			} else {
-				header("Location: $successURL");
-			}
-		}
-	} else {
-		$arr = $_SESSION['lastpage'];
-		if(isset($_SESSION['lastpage'])) {
-			header("Location: $successURL".$arr);
-		} else {
-			header("Location: $successURL");
-		}
-	}
+    $userSetupStatus = Users_CRMSetup::getUserSetupStatus($focus->id);
+    if ($userSetupStatus) {
+        $user = $focus->retrieve_entity_info($focus->id, 'Users');
+        $isFirstUser = Users_CRMSetup::isFirstUser($user);
+        if ($isFirstUser) {
+            header('Location: index.php?module=Users&action=UserSetup');
+        } else {
+            $arr = $_SESSION['lastpage'];
+            if (isset($_SESSION['lastpage'])) {
+                header("Location: $successURL" . $arr);
+            } else {
+                header("Location: $successURL");
+            }
+        }
+    } else {
+        $arr = $_SESSION['lastpage'];
+        if (isset($_SESSION['lastpage'])) {
+            header("Location: $successURL" . $arr);
+        } else {
+            header("Location: $successURL");
+        }
+    }
 } else {
-	$sql = 'select user_name, id, crypt_type from vtiger_users where user_name=?';
-	$result = $adb->pquery($sql, array($focus->column_fields["user_name"]));
-	$rowList = $result->GetRows();
-	foreach ($rowList as $row) {
-		$cryptType = $row['crypt_type'];
-		/* PHP 5.3 WIN implementation of crypt API not compatible with earlier version */
-		if(strtolower($cryptType) == 'md5' && version_compare(PHP_VERSION, '5.3.0') >= 0 && strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ) {
-			header("Location: modules/Migration/PHP5.3_PasswordHelp.php");
-			die;
-		}
-	}
-	$_SESSION['login_user_name'] = $focus->column_fields["user_name"];
-	$_SESSION['login_password'] = $user_password;
-	$_SESSION['login_error'] = $mod_strings['ERR_INVALID_PASSWORD'];
+    $sql = 'select user_name, id, crypt_type from vtiger_users where user_name=?';
+    $result = $adb->pquery($sql, [$focus->column_fields["user_name"]]);
+    $rowList = $result->GetRows();
+    foreach ($rowList as $row) {
+        $cryptType = $row['crypt_type'];
+        /* PHP 5.3 WIN implementation of crypt API not compatible with earlier version */
+        if (strtolower($cryptType) == 'md5' && version_compare(PHP_VERSION, '5.3.0') >= 0 && strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            header("Location: modules/Migration/PHP5.3_PasswordHelp.php");
+            die;
+        }
+    }
+    $_SESSION['login_user_name'] = $focus->column_fields["user_name"];
+    $_SESSION['login_password'] = $user_password;
+    $_SESSION['login_error'] = $mod_strings['ERR_INVALID_PASSWORD'];
 
-	// go back to the login screen.
-	// create an error message for the user.
-	header("Location: index.php");
+    // go back to the login screen.
+    // create an error message for the user.
+    header("Location: index.php");
 }

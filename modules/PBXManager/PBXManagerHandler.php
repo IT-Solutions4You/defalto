@@ -1,66 +1,80 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class PBXManagerHandler extends VTEventHandler {
-
-    function handleEvent($eventName, $entityData) {
+class PBXManagerHandler extends VTEventHandler
+{
+    function handleEvent($eventName, $entityData)
+    {
         $moduleName = $entityData->getModuleName();
 
-        $acceptedModule = array('Contacts','Accounts','Leads');
-        if(!in_array($moduleName, $acceptedModule))
+        $acceptedModule = ['Contacts', 'Accounts', 'Leads'];
+        if (!in_array($moduleName, $acceptedModule)) {
             return;
-        
+        }
+
         if ($eventName == 'vtiger.entity.aftersave') {
             PBXManagerHandler::handlePhoneLookUpSaveEvent($entityData, $moduleName);
         }
- 
-		if ($eventName == 'vtiger.lead.convertlead' && $moduleName == 'Leads') {
-			PBXManagerHandler::handlePhoneLookupDeleteEvent($entityData);
-		}
 
-		if($eventName == 'vtiger.entity.afterdelete'){
+        if ($eventName == 'vtiger.lead.convertlead' && $moduleName == 'Leads') {
             PBXManagerHandler::handlePhoneLookupDeleteEvent($entityData);
         }
-        
-        if($eventName == 'vtiger.entity.afterrestore'){
+
+        if ($eventName == 'vtiger.entity.afterdelete') {
+            PBXManagerHandler::handlePhoneLookupDeleteEvent($entityData);
+        }
+
+        if ($eventName == 'vtiger.entity.afterrestore') {
             $this->handlePhoneLookUpRestoreEvent($entityData, $moduleName);
         }
     }
 
-    static function handlePhoneLookUpSaveEvent($entityData, $moduleName) {
+    static function handlePhoneLookUpSaveEvent($entityData, $moduleName)
+    {
         $recordid = $entityData->getId();
         $data = $entityData->getData();
-        
+
         $values['crmid'] = $recordid;
         $values['setype'] = $moduleName;
         $recordModel = new PBXManager_Record_Model;
 
         $moduleInstance = Vtiger_Module_Model::getInstance($moduleName);
         $fieldsModel = $moduleInstance->getFieldsByType('phone');
-        
+
         foreach ($fieldsModel as $field => $fieldName) {
-                $fieldName = $fieldName->get('name');      
-                $values[$fieldName] = $data[$fieldName];
-                
-                if($values[$fieldName])
-                    $recordModel->receivePhoneLookUpRecord($fieldName, $values, true);
+            $fieldName = $fieldName->get('name');
+            $values[$fieldName] = $data[$fieldName];
+
+            if ($values[$fieldName]) {
+                $recordModel->receivePhoneLookUpRecord($fieldName, $values, true);
+            }
         }
     }
-    
-    static function handlePhoneLookupDeleteEvent($entityData){
+
+    static function handlePhoneLookupDeleteEvent($entityData)
+    {
         $recordid = $entityData->getId();
         $recordModel = new PBXManager_Record_Model;
         $recordModel->deletePhoneLookUpRecord($recordid);
     }
-    
-    protected function handlePhoneLookUpRestoreEvent($entityData, $moduleName) {
+
+    protected function handlePhoneLookUpRestoreEvent($entityData, $moduleName)
+    {
         $recordid = $entityData->getId();
 
         //To get the record model of the restored record
@@ -72,37 +86,38 @@ class PBXManagerHandler extends VTEventHandler {
 
         $moduleInstance = Vtiger_Module_Model::getInstance($moduleName);
         $fieldsModel = $moduleInstance->getFieldsByType('phone');
-        
+
         foreach ($fieldsModel as $field => $fieldName) {
-            $fieldName = $fieldName->get('name');  
+            $fieldName = $fieldName->get('name');
             $values[$fieldName] = $recordmodel->get($fieldName);
-            
-            if($values[$fieldName])
-                 $recordModel->receivePhoneLookUpRecord($fieldName, $values, true);
+
+            if ($values[$fieldName]) {
+                $recordModel->receivePhoneLookUpRecord($fieldName, $values, true);
+            }
         }
     }
-
 }
 
-class PBXManagerBatchHandler extends VTEventHandler {
-    
-    function handleEvent($eventName, $entityDatas) {
+class PBXManagerBatchHandler extends VTEventHandler
+{
+
+    function handleEvent($eventName, $entityDatas)
+    {
         foreach ($entityDatas as $entityData) {
             $moduleName = $entityData->getModuleName();
 
-            $acceptedModule = array('Contacts','Accounts','Leads');
-            if(!in_array($moduleName, $acceptedModule))
+            $acceptedModule = ['Contacts', 'Accounts', 'Leads'];
+            if (!in_array($moduleName, $acceptedModule)) {
                 return;
+            }
 
             if ($eventName == 'vtiger.batchevent.save') {
                 PBXManagerHandler::handlePhoneLookUpSaveEvent($entityData, $moduleName);
             }
-            
+
             if ($eventName == 'vtiger.batchevent.delete') {
                 PBXManagerHandler::handlePhoneLookupDeleteEvent($entityData);
             }
         }
     }
 }
-
-?>

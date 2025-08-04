@@ -1,50 +1,52 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 //Search Advance Filter useful for adavance search 
 /** @var Vtiger_SearchAdvanceFilter_Js */
-Vtiger_AdvanceFilter_Js('Vtiger_SearchAdvanceFilter_Js',{},{
+Vtiger_AdvanceFilter_Js('Vtiger_SearchAdvanceFilter_Js', {}, {
 
-	/**
-	 * Function to get the advance filter values
-	 * This will call the base to get the values and dont send group condition if there is not condition
-	 * exists in the next condition group
-	 *
-	 * @params cleanGroupConditions <Boolean> - states whether to clean group conditions or not -- default true
-	 *   this will remove group condition if next condition group dont have any conditions
-	 */
-	getValues : function (cleanGroupConditions) {
+    /**
+     * Function to get the advance filter values
+     * This will call the base to get the values and dont send group condition if there is not condition
+     * exists in the next condition group
+     *
+     * @params cleanGroupConditions <Boolean> - states whether to clean group conditions or not -- default true
+     *   this will remove group condition if next condition group dont have any conditions
+     */
+    getValues: function (cleanGroupConditions) {
 
-		if(typeof cleanGroupConditions == 'undefined'){
-			cleanGroupConditions = true;
-		}
+        if (typeof cleanGroupConditions == 'undefined') {
+            cleanGroupConditions = true;
+        }
 
-		var values = this._super();
+        var values = this._super();
 
-		if(!cleanGroupConditions) {
-			return values;
-		}
+        if (!cleanGroupConditions) {
+            return values;
+        }
 
-		for(var key in values){
-			var conditionGroupInfo = values[key];
-			var nextConditionGroupInfo = values[parseInt(key)+1]
-			
-			//there is not next condition group so no need to perform the caliculation
-			if(typeof nextConditionGroupInfo == 'undefined'){
-				continue;
-			}
-			var nextConditionColumns = nextConditionGroupInfo['columns'];
-			
-			// if you dont have conditions in next group we should not send group condition in current condition group
-			if(jQuery.isEmptyObject(nextConditionColumns)){
-				delete conditionGroupInfo['condition']
-			}
-		}
-		return values;
-	}
+        for (var key in values) {
+            var conditionGroupInfo = values[key];
+            var nextConditionGroupInfo = values[parseInt(key) + 1]
+
+            //there is not next condition group so no need to perform the caliculation
+            if (typeof nextConditionGroupInfo == 'undefined') {
+                continue;
+            }
+            var nextConditionColumns = nextConditionGroupInfo['columns'];
+
+            // if you dont have conditions in next group we should not send group condition in current condition group
+            if (jQuery.isEmptyObject(nextConditionColumns)) {
+                delete conditionGroupInfo['condition']
+            }
+        }
+        return values;
+    }
 });
 

@@ -1,88 +1,112 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Settings_PBXManager_Module_Model extends Settings_Vtiger_Module_Model{
-    
+class Settings_PBXManager_Module_Model extends Settings_Vtiger_Module_Model
+{
     /**
-	 * Function to get the module model
-	 * @return string
-	 */
-    public static function getCleanInstance(){
+     * Function to get the module model
+     * @return string
+     */
+    public static function getCleanInstance()
+    {
         return new self;
     }
-    
+
     /**
-	 * Function to get the ListView Component Name
-	 * @return string
-	 */
-    public function getDefaultViewName() {
-		return 'Index';
-	}
-    
-	/**
-	 * Function to get the EditView Component Name
-	 * @return string
-	 */
-	public function getEditViewName(){
-		return 'Edit';
-	}
-    
+     * Function to get the ListView Component Name
+     * @return string
+     */
+    public function getDefaultViewName()
+    {
+        return 'Index';
+    }
+
     /**
-	 * Function to get the Module Name
-	 * @return string
-	 */
-    public static function getModuleName(){
+     * Function to get the EditView Component Name
+     * @return string
+     */
+    public function getEditViewName()
+    {
+        return 'Edit';
+    }
+
+    /**
+     * Function to get the Module Name
+     * @return string
+     */
+    public static function getModuleName()
+    {
         return "PBXManager";
     }
-    
-     public function getParentName() {
+
+    public function getParentName()
+    {
         return parent::getParentName();
     }
-    
-    public function getModule($raw=true) {
-		$moduleName = Settings_PBXManager_Module_Model::getModuleName();
-		if(!$raw) {
-			$parentModule = $this->getParentName();
-			if(!empty($parentModule)) {
-				$moduleName = $parentModule.':'.$moduleName;
-			}
-		}
-		return $moduleName;
-	}
-    
-    public function getMenuItem() {
+
+    public function getModule($raw = true)
+    {
+        $moduleName = Settings_PBXManager_Module_Model::getModuleName();
+        if (!$raw) {
+            $parentModule = $this->getParentName();
+            if (!empty($parentModule)) {
+                $moduleName = $parentModule . ':' . $moduleName;
+            }
+        }
+
+        return $moduleName;
+    }
+
+    public function getMenuItem()
+    {
         $menuItem = Settings_Vtiger_MenuItem_Model::getInstance('LBL_PBXMANAGER');
+
         return $menuItem;
     }
-    
+
     /**
-    * Function to get the url for default view of the module
-    * @return <string> - url
-    */
-    public function getDefaultUrl() {
-            return 'index.php?module='.$this->getModuleName().'&parent=Settings&view='.$this->getDefaultViewName();
+     * Function to get the url for default view of the module
+     * @return <string> - url
+     */
+    public function getDefaultUrl()
+    {
+        return 'index.php?module=' . $this->getModuleName() . '&parent=Settings&view=' . $this->getDefaultViewName();
     }
 
-    public function getDetailViewUrl() {
+    public function getDetailViewUrl()
+    {
         $menuItem = $this->getMenuItem();
-        return 'index.php?module='.$this->getModuleName().'&parent=Settings&view='.$this->getDefaultViewName().'&block='.$menuItem->get('blockid').'&fieldid='.$menuItem->get('fieldid');
+
+        return 'index.php?module=' . $this->getModuleName() . '&parent=Settings&view=' . $this->getDefaultViewName() . '&block=' . $menuItem->get(
+                'blockid'
+            ) . '&fieldid=' . $menuItem->get('fieldid');
     }
 
+    /**
+     * Function to get the url for Edit view of the module
+     * @return <string> - url
+     */
+    public function getEditViewUrl()
+    {
+        $menuItem = $this->getMenuItem();
 
-   /**
-    * Function to get the url for Edit view of the module
-    * @return <string> - url
-    */
-    public function getEditViewUrl() {
-            $menuItem = $this->getMenuItem();
-            return 'index.php?module='.$this->getModuleName().'&parent=Settings&view='.$this->getEditViewName().'&block='.$menuItem->get('blockid').'&fieldid='.$menuItem->get('fieldid');
+        return 'index.php?module=' . $this->getModuleName() . '&parent=Settings&view=' . $this->getEditViewName() . '&block=' . $menuItem->get(
+                'blockid'
+            ) . '&fieldid=' . $menuItem->get('fieldid');
     }
-    
 }

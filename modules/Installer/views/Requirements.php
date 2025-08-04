@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 class Installer_Requirements_View extends Installer_Index_View
 {
@@ -9,6 +17,7 @@ class Installer_Requirements_View extends Installer_Index_View
 
         if (!$request->isEmpty('mode')) {
             $this->invokeExposedMethod($request->getMode(), $request);
+
             return;
         }
 
@@ -24,7 +33,7 @@ class Installer_Requirements_View extends Installer_Index_View
         $sourceModule = $request->get('sourceModule');
         $requirements = false;
 
-        if(!empty($sourceModule)) {
+        if (!empty($sourceModule)) {
             $requirements = Installer_ModuleRequirements_Model::getInstance($sourceModule);
             $requirements->retrieveData();
         }

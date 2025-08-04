@@ -1,12 +1,20 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- ************************************************************************************/
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 include_once 'include/Webservices/Create.php';
 include_once 'vtlib/Vtiger/Mailer.php';
@@ -15,12 +23,13 @@ include_once 'modules/MailManager/MailManager.php';
 include_once 'modules/MailManager/models/Message.php';
 include_once 'include/Webservices/DescribeObject.php';
 
-class MailManager_Mail_View extends MailManager_Abstract_View {
-
+class MailManager_Mail_View extends MailManager_Abstract_View
+{
     /**
      * @throws Exception
      */
-    public function process(Vtiger_Request $request) {
+    public function process(Vtiger_Request $request)
+    {
         $this->exposeMethod('open');
         $this->exposeMethod('mark');
         $this->exposeMethod('delete');
@@ -28,7 +37,7 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
         $this->exposeMethod('attachment_dld');
 
         /** @var MailManager_Connector_Connector $connector */
-		$response = new MailManager_Response();
+        $response = new MailManager_Response();
         $mode = $this->getOperationArg($request);
 
         if (!empty($mode) && $this->isMethodExposed($mode)) {
@@ -36,10 +45,10 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
         }
 
         return $response;
-	}
+    }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function open(Vtiger_Request $request, $response)
     {
@@ -67,26 +76,26 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
         $viewer->assign('MODULE', $moduleName);
         $uiContent = $viewer->view('MailOpen.tpl', 'MailManager', true);
         $metaInfo = [
-            'from' => $mail->getFrom(),
+            'from'    => $mail->getFrom(),
             'subject' => $mail->getSubject(),
-            'msgno' => $mail->getMsgNo(),
-            'msguid' => $mail->getUniqueId(),
-            'folder' => $folderName,
-            'to' => $mail->getTo(),
+            'msgno'   => $mail->getMsgNo(),
+            'msguid'  => $mail->getUniqueId(),
+            'folder'  => $folderName,
+            'to'      => $mail->getTo(),
         ];
 
         $response->isJson(true);
         $response->setResult([
             'folder' => $folderName,
-            'ui' => $uiContent,
-            'meta' => $metaInfo,
+            'ui'     => $uiContent,
+            'meta'   => $metaInfo,
         ]);
 
         return $response;
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function mark(Vtiger_Request $request, $response)
     {
@@ -116,7 +125,6 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
     }
 
     /**
-     * @throws AppException
      * @throws Exception
      */
     public function delete(Vtiger_Request $request, $response)
@@ -161,7 +169,7 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function attachment_dld(Vtiger_Request $request, $response)
     {
@@ -199,7 +207,8 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
         exit;
     }
 
-    public function validateRequest(Vtiger_Request $request) {
-		return $request->validateReadAccess();
-	}
+    public function validateRequest(Vtiger_Request $request)
+    {
+        return $request->validateReadAccess();
+    }
 }

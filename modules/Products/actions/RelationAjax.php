@@ -1,53 +1,65 @@
 <?php
-/*+***********************************************************************************
+/**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- *************************************************************************************/
+ *********************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Products_RelationAjax_Action extends Vtiger_RelationAjax_Action {
-	
-	function __construct() {
+class Products_RelationAjax_Action extends Vtiger_RelationAjax_Action
+{
+	function __construct()
+	{
 		parent::__construct();
 		$this->exposeMethod('addListPrice');
 		$this->exposeMethod('updateShowBundles');
 		$this->exposeMethod('updateQuantity');
 		$this->exposeMethod('changeBundleCost');
 	}
-	
-	public function requiresPermission(Vtiger_Request $request){
+
+	public function requiresPermission(Vtiger_Request $request)
+	{
 		$permissions = parent::requiresPermission($request);
 		$mode = $request->getMode();
-		if(!empty($mode)) {
+		if (!empty($mode)) {
 			switch ($mode) {
 				case 'addListPrice':
-					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'src_record');
-					$permissions[] = array('module_parameter' => 'related_module', 'action' => 'DetailView');
+					$permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'src_record'];
+					$permissions[] = ['module_parameter' => 'related_module', 'action' => 'DetailView'];
 					break;
 				case 'updateShowBundles':
-					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
-					$permissions[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
+					$permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
+					$permissions[] = ['module_parameter' => 'relatedModule', 'action' => 'DetailView'];
 				case 'updateQuantity':
-					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'src_record');
-					$permissions[] = array('module_parameter' => 'related_module', 'action' => 'DetailView');
+					$permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'src_record'];
+					$permissions[] = ['module_parameter' => 'related_module', 'action' => 'DetailView'];
 				case 'changeBundleCost':
-					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
-					$permissions[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
+					$permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
+					$permissions[] = ['module_parameter' => 'relatedModule', 'action' => 'DetailView'];
 				default:
 					break;
 			}
 		}
+
 		return $permissions;
 	}
-	
+
 	/*
 	 * Function to add relation for specified source record id and related record id list
 	 * @param <array> $request
 	 */
-	function addRelation($request) {
+	function addRelation($request)
+	{
 		$sourceModule = $request->getModule();
 		$sourceRecordId = $request->get('src_record');
 
@@ -56,15 +68,15 @@ class Products_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 
 		$qtysList = $request->get('quantities');
 		if (!is_array($qtysList)) {
-			$qtysList = array();
+			$qtysList = [];
 		}
 
 		$sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
 		$relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModule);
 		$relationModel = Vtiger_Relation_Model::getInstance($sourceModuleModel, $relatedModuleModel);
-		foreach($relatedRecordIdList as $relatedRecordId) {
-			$relationModel->addRelation($sourceRecordId, $relatedRecordId, array('quantities' => $qtysList));
-			if($relatedModule == 'PriceBooks'){
+		foreach ($relatedRecordIdList as $relatedRecordId) {
+			$relationModel->addRelation($sourceRecordId, $relatedRecordId, ['quantities' => $qtysList]);
+			if ($relatedModule == 'PriceBooks') {
 				$recordModel = Vtiger_Record_Model::getInstanceById($relatedRecordId);
 				if ($sourceRecordId && ($sourceModule === 'Products' || $sourceModule === 'Services')) {
 					$parentRecordModel = Vtiger_Record_Model::getInstanceById($sourceRecordId, $sourceModule);
@@ -77,27 +89,30 @@ class Products_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 		$response->setResult(true);
 		$response->emit();
 	}
-	
+
 	/**
 	 * Function adds Products/Services-PriceBooks Relation
+	 *
 	 * @param type $request
 	 */
-	function addListPrice($request) {
+	function addListPrice($request)
+	{
 		$sourceModule = $request->getModule();
 		$sourceRecordId = $request->get('src_record');
-		$relatedModule =  $request->get('related_module');
+		$relatedModule = $request->get('related_module');
 		$relInfos = $request->get('relinfo');
 
 		$sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
 		$relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModule);
 		$relationModel = Vtiger_Relation_Model::getInstance($sourceModuleModel, $relatedModuleModel);
-		foreach($relInfos as $relInfo) {
+		foreach ($relInfos as $relInfo) {
 			$price = Vtiger_Currency_UIType::convertToDBFormat($relInfo['price'], null, true);
 			$relationModel->addListPrice($sourceRecordId, $relInfo['id'], $price);
 		}
 	}
 
-	public function updateShowBundles(Vtiger_Request $request) {
+	public function updateShowBundles(Vtiger_Request $request)
+	{
 		$sourceModule = $request->getModule();
 		$recordId = $request->get('record');
 		$relatedModule = $request->get('relatedModule');
@@ -112,22 +127,24 @@ class Products_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 		}
 	}
 
-	public function updateQuantity(Vtiger_Request $request) {
+	public function updateQuantity(Vtiger_Request $request)
+	{
 		$sourceModule = $request->getModule();
 		$sourceRecordId = $request->get('src_record');
-		$relatedModule =  $request->get('related_module');
+		$relatedModule = $request->get('related_module');
 		$relatedRecordsInfo = $request->get('relatedRecords');
 
 		$sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
 		$relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModule);
 		$relationModel = Vtiger_Relation_Model::getInstance($sourceModuleModel, $relatedModuleModel);
 
-		foreach($relatedRecordsInfo as $relatedRecordId => $quantity) {
+		foreach ($relatedRecordsInfo as $relatedRecordId => $quantity) {
 			$relationModel->updateQuantity($sourceRecordId, $relatedRecordId, $quantity);
 		}
 	}
 
-	public function changeBundleCost(Vtiger_Request $request) {
+	public function changeBundleCost(Vtiger_Request $request)
+	{
 		$moduleName = $request->getModule();
 		$recordId = $request->get('record');
 		$relatedModule = $request->get('relatedModule');
@@ -167,38 +184,36 @@ class Products_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 
 			$currentUserModel = Users_Record_Model::getCurrentUserModel();
 			$currencyId = $currentUserModel->get('currency_id');
-			$curNameId = 'curname'.$currencyId;
-			$curCheckName = 'cur_'.$currencyId.'_check';
+			$curNameId = 'curname' . $currencyId;
+			$curCheckName = 'cur_' . $currencyId . '_check';
 
 			//Getting $_REQUEST Values
-			$currentRequest = array();
-			$currentRequest['action']		= $_REQUEST['action'];
-			$currentRequest[$curNameId]		= $_REQUEST[$curNameId];
-			$currentRequest['unit_price']	= $_REQUEST['unit_price'];
-			$currentRequest[$curCheckName]	= $_REQUEST[$curCheckName];
-			$currentRequest['base_currency']= $_REQUEST['base_currency'];
+			$currentRequest = [];
+			$currentRequest['action'] = $_REQUEST['action'];
+			$currentRequest[$curNameId] = $_REQUEST[$curNameId];
+			$currentRequest['unit_price'] = $_REQUEST['unit_price'];
+			$currentRequest[$curCheckName] = $_REQUEST[$curCheckName];
+			$currentRequest['base_currency'] = $_REQUEST['base_currency'];
 
 			//Setting $_REQUEST Values
-			$_REQUEST['action']			= 'CurrencyUpdate';
-			$_REQUEST[$curNameId]		= $unitPrice;
-			$_REQUEST['unit_price']		= $unitPrice;
-			$_REQUEST[$curCheckName]	= 1;
-			$_REQUEST['base_currency']	= $curNameId;
+			$_REQUEST['action'] = 'CurrencyUpdate';
+			$_REQUEST[$curNameId] = $unitPrice;
+			$_REQUEST['unit_price'] = $unitPrice;
+			$_REQUEST[$curCheckName] = 1;
+			$_REQUEST['base_currency'] = $curNameId;
 
 			$recordModel->save();
 
 			//Reverting $_REQUEST Values
-			$_REQUEST['action']			= $currentRequest['action'];
-			$_REQUEST[$curNameId]		= $currentRequest[$curNameId];
-			$_REQUEST['unit_price']		= $currentRequest['unit_price'];
-			$_REQUEST[$curCheckName]	= $currentRequest[ $curCheckName];
-			$_REQUEST['base_currency']	= $currentRequest['base_currency'];
+			$_REQUEST['action'] = $currentRequest['action'];
+			$_REQUEST[$curNameId] = $currentRequest[$curNameId];
+			$_REQUEST['unit_price'] = $currentRequest['unit_price'];
+			$_REQUEST[$curCheckName] = $currentRequest[$curCheckName];
+			$_REQUEST['base_currency'] = $currentRequest['base_currency'];
 		}
 
 		$response = new Vtiger_Response();
 		$response->setResult(true);
 		$response->emit();
 	}
-
 }
-?>

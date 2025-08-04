@@ -1,22 +1,30 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 /**
  * User Field Model Class
  */
-class Users_Field_Model extends Vtiger_Field_Model {
-
-	/**
-	 * Function to check whether the current field is read-only
-	 * @return <Boolean> - true/false
-	 */
+class Users_Field_Model extends Vtiger_Field_Model
+{
+    /**
+     * Function to check whether the current field is read-only
+     * @return <Boolean> - true/false
+     */
     public function isReadOnly()
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
@@ -31,18 +39,18 @@ class Users_Field_Model extends Vtiger_Field_Model {
         return !$currentUserModel->isAdminUser() && in_array($this->getUIType(), $readonlyUiTypes);
     }
 
-
     /**
-	 * Function to check if the field is shown in detail view
-	 * @return <Boolean> - true/false
-	 */
-	public function isViewEnabled() {
-		if($this->getDisplayType() == '4' || in_array($this->get('presence'), array(1,3))) {
-			return false;
-		}
-		return true;
-	}
+     * Function to check if the field is shown in detail view
+     * @return <Boolean> - true/false
+     */
+    public function isViewEnabled()
+    {
+        if ($this->getDisplayType() == '4' || in_array($this->get('presence'), [1, 3])) {
+            return false;
+        }
 
+        return true;
+    }
 
     /**
      * Function to get the Webservice Field data type
@@ -79,13 +87,16 @@ class Users_Field_Model extends Vtiger_Field_Model {
      */
     public function isAjaxEditable()
     {
-        return !(!$this->isEditable() || in_array($this->getUIType(), [self::UITYPE_USER_PROFILE, self::UITYPE_USER_IMAGE, self::UITYPE_USER_USERNAME, self::UITYPE_USER_ROLE, self::UITYPE_USER_REPORTS_TO]) || $this->getName() === 'signature');
+        return !(!$this->isEditable() || in_array(
+                $this->getUIType(),
+                [self::UITYPE_USER_PROFILE, self::UITYPE_USER_IMAGE, self::UITYPE_USER_USERNAME, self::UITYPE_USER_ROLE, self::UITYPE_USER_REPORTS_TO]
+            ) || $this->getName() === 'signature');
     }
 
     /**
-	 * Function to get all the available picklist values for the current field
-	 * @return <Array> List of picklist values if the field is of type picklist or multipicklist, null otherwise.
-	 */
+     * Function to get all the available picklist values for the current field
+     * @return <Array> List of picklist values if the field is of type picklist or multipicklist, null otherwise.
+     */
     public function getPicklistValues()
     {
         $fieldName = $this->getName();
@@ -98,7 +109,9 @@ class Users_Field_Model extends Vtiger_Field_Model {
                 $currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
                 $presence = [0];
                 $restrictedModules = ['Integration', 'Dashboard', 'ModComments'];
-                $query = 'SELECT name, tablabel, tabid FROM vtiger_tab WHERE presence IN (' . generateQuestionMarks($presence) . ') AND isentitytype = ? AND name NOT IN (' . generateQuestionMarks($restrictedModules) . ')';
+                $query = 'SELECT name, tablabel, tabid FROM vtiger_tab WHERE presence IN (' . generateQuestionMarks(
+                        $presence
+                    ) . ') AND isentitytype = ? AND name NOT IN (' . generateQuestionMarks($restrictedModules) . ')';
                 $result = $db->pquery($query, [$presence, '1', $restrictedModules]);
                 $numOfRows = $db->num_rows($result);
                 $moduleData = ['Home' => vtranslate('Home', 'Home')];
@@ -146,87 +159,100 @@ class Users_Field_Model extends Vtiger_Field_Model {
 
     /**
      * Function to get all the available picklist values for the current field
-	 * @return <Array> List of picklist values if the field is of type picklist or multipicklist, null otherwise.
-	 */
-	public function getEditablePicklistValues() {
-		return $this->getPicklistValues();
-	}
+     * @return <Array> List of picklist values if the field is of type picklist or multipicklist, null otherwise.
+     */
+    public function getEditablePicklistValues()
+    {
+        return $this->getPicklistValues();
+    }
 
-	/**
-	 * Function to returns all skins(themes)
-	 * @return <Array>
-	 */
-	public function getAllSkins(){
-		return Vtiger_Theme::getAllSkins();
-	}
+    /**
+     * Function to returns all skins(themes)
+     * @return <Array>
+     */
+    public function getAllSkins()
+    {
+        return Vtiger_Theme::getAllSkins();
+    }
 
-	/**
-	 * Function to retieve display value for a value
-	 * @param <String> $value - value which need to be converted to display value
-	 * @return <String> - converted display value
-	 */
-	public function getDisplayValue($value, $recordId = false,$recordInstance=false) {
+    /**
+     * Function to retieve display value for a value
+     *
+     * @param <String> $value - value which need to be converted to display value
+     *
+     * @return <String> - converted display value
+     */
+    public function getDisplayValue($value, $recordId = false, $recordInstance = false)
+    {
+        if ($this->get('uitype') == 32) {
+            return Vtiger_Language_Handler::getLanguageLabel($value);
+        }
+        $fieldName = $this->getFieldName();
+        if (($fieldName == 'currency_decimal_separator' || $fieldName == 'currency_grouping_separator') && ($value == "&nbsp;")) {
+            return vtranslate('Space', 'Users');
+        }
 
-		 if($this->get('uitype') == 32){
-			return Vtiger_Language_Handler::getLanguageLabel($value);
-		 }
-		 $fieldName = $this->getFieldName();
-		 if(($fieldName == 'currency_decimal_separator' || $fieldName == 'currency_grouping_separator') && ($value == "&nbsp;")) {
-			 return vtranslate('Space', 'Users');
-		 }
-		return parent::getDisplayValue($value, $recordId);
-	}
+        return parent::getDisplayValue($value, $recordId);
+    }
 
-	/**
-	 * Function returns all the User Roles
-	 * @return
-	 */
-	 public function getAllRoles(){
-		$roleModels = Settings_Roles_Record_Model::getAll();
-		$roles = array();
-		foreach ($roleModels as $roleId=>$roleModel) {
-			$roleName = $roleModel->getName();
-			$roles[$roleName] = $roleId;
-		}
-		return $roles;
-	}
+    /**
+     * Function returns all the User Roles
+     * @return
+     */
+    public function getAllRoles()
+    {
+        $roleModels = Settings_Roles_Record_Model::getAll();
+        $roles = [];
+        foreach ($roleModels as $roleId => $roleModel) {
+            $roleName = $roleModel->getName();
+            $roles[$roleName] = $roleId;
+        }
 
-	/**
-	 * Function to check whether this field editable or not
-	 * return <boolen> true/false
-	 */
-	public function isEditable() {
-		$isEditable = $this->get('editable');
-		if (!$isEditable) {
-			$this->set('editable', parent::isEditable());
-		}
-		return $this->get('editable');
-	}
+        return $roles;
+    }
 
-	/**
-	 * Function which will check if empty piclist option should be given
-	 */
-	public function isEmptyPicklistOptionAllowed() {
-		if($this->getFieldName() == 'reminder_interval') {
-			return true;
-		}
-		return false;
-	}
+    /**
+     * Function to check whether this field editable or not
+     * return <boolen> true/false
+     */
+    public function isEditable()
+    {
+        $isEditable = $this->get('editable');
+        if (!$isEditable) {
+            $this->set('editable', parent::isEditable());
+        }
 
-	public function getPicklistDetails() {
-		if ($this->get('uitype') == 98) {
-			$picklistValues = $this->getAllRoles();
-			$picklistValues = array_flip($picklistValues);
-		} else {
-			$picklistValues = $this->getPicklistValues();
-		}
+        return $this->get('editable');
+    }
 
-		$pickListDetails = array();
-		foreach ($picklistValues as $value => $transValue) {
-			$pickListDetails[] = array('label' => $transValue, 'value' => $value);
-		}
-		return $pickListDetails;
-	}
+    /**
+     * Function which will check if empty piclist option should be given
+     */
+    public function isEmptyPicklistOptionAllowed()
+    {
+        if ($this->getFieldName() == 'reminder_interval') {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getPicklistDetails()
+    {
+        if ($this->get('uitype') == 98) {
+            $picklistValues = $this->getAllRoles();
+            $picklistValues = array_flip($picklistValues);
+        } else {
+            $picklistValues = $this->getPicklistValues();
+        }
+
+        $pickListDetails = [];
+        foreach ($picklistValues as $value => $transValue) {
+            $pickListDetails[] = ['label' => $transValue, 'value' => $value];
+        }
+
+        return $pickListDetails;
+    }
 
     /**
      * @return array

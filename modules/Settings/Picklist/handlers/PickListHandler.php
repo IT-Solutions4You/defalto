@@ -1,289 +1,299 @@
 <?php
-/*+**********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- ************************************************************************************/
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class PickListHandler extends VTEventHandler {
+class PickListHandler extends VTEventHandler
+{
+    function handleEvent($eventName, $entityData)
+    {
+        global $log, $adb;
 
-	function handleEvent($eventName, $entityData) {
-		global $log, $adb;
+        if ($eventName == 'vtiger.picklist.afterrename') {
+            $this->operationsAfterPicklistRename($entityData);
+        } elseif ($eventName == 'vtiger.picklist.afterdelete') {
+            $this->operationsAfterPicklistDelete($entityData);
+        }
+    }
 
-		if($eventName == 'vtiger.picklist.afterrename') {
-			$this->operationsAfterPicklistRename($entityData);
-		} elseif($eventName == 'vtiger.picklist.afterdelete') {
-			$this->operationsAfterPicklistDelete($entityData);
-		}
-	}
+    /**
+     * Function to perform operation after picklist rename
+     *
+     * @param type $entityData
+     */
+    function operationsAfterPicklistRename($entityData)
+    {
+        $db = PearDatabase::getInstance();
+        $pickListFieldName = $entityData['fieldname'];
+        $oldValue = $entityData['oldvalue'];
+        $newValue = $entityData['newvalue'];
+        $moduleName = $entityData['module'];
 
-	/**
-	 * Function to perform operation after picklist rename
-	 * @param type $entityData
-	 */
-	function operationsAfterPicklistRename($entityData) {
-		
-		$db = PearDatabase::getInstance();
-		$pickListFieldName = $entityData['fieldname']; 
-		$oldValue = $entityData['oldvalue'];
-		$newValue = $entityData['newvalue'];
-		$moduleName = $entityData['module'];
-		
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$tabId = $moduleModel->getId();
-		//update picklist dependency values 
-		$query = "SELECT id,targetvalues FROM vtiger_picklist_dependency where targetfield=? and tabid=?";
-		$result = $db->pquery($query, array($pickListFieldName, $tabId));
-		$num_rows = $db->num_rows($result);
-		for($i = 0; $i < $num_rows; $i++) {
-			$row = $db->query_result_rowdata($result, $i);
-			$value = decode_html($row['targetvalues']);
-			$explodedValueArray = Zend_Json::decode($value);
-			$arrayKey = array_search($oldValue, $explodedValueArray);
-			if($arrayKey !== false){
-				$explodedValueArray[$arrayKey] = $newValue;
-			}
-			$value = Zend_Json::encode($explodedValueArray);
-			$query = 'UPDATE vtiger_picklist_dependency SET targetvalues=? where id=? AND tabid=?';
-			$db->pquery($query, array($value, $row['id'], $tabId));
-		}
-		$fieldModel = Vtiger_Field_Model::getInstance($pickListFieldName, $moduleModel);
-		$advFiltercolumnName = $fieldModel->getCustomViewColumnName();
-		$reportFilterColumnName = $fieldModel->getReportFilterColumnName();
-		
-		//update advancefilter values
-		$query= 'SELECT cvid,value,columnindex,groupid FROM vtiger_cvadvfilter where columnname=?';
-		$result = $db->pquery($query, array($advFiltercolumnName));
-		$num_rows = $db->num_rows($result);
-		for ($i = 0; $i < $num_rows; $i++) {
-			$row = $db->query_result_rowdata($result, $i);
-			$value = $row['value'];
-			$explodedValueArray = explode(',', $value);
-            if(is_array($explodedValueArray)) {
-                foreach($explodedValueArray as $key => $value)
-                    $explodedValueArray[$key] = decode_html($value);
-                    
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        $tabId = $moduleModel->getId();
+        //update picklist dependency values
+        $query = "SELECT id,targetvalues FROM vtiger_picklist_dependency where targetfield=? and tabid=?";
+        $result = $db->pquery($query, [$pickListFieldName, $tabId]);
+        $num_rows = $db->num_rows($result);
+        for ($i = 0; $i < $num_rows; $i++) {
+            $row = $db->query_result_rowdata($result, $i);
+            $value = decode_html($row['targetvalues']);
+            $explodedValueArray = Zend_Json::decode($value);
+            $arrayKey = array_search($oldValue, $explodedValueArray);
+            if ($arrayKey !== false) {
+                $explodedValueArray[$arrayKey] = $newValue;
             }
-			$arrayKey = array_search($oldValue, $explodedValueArray);
-			if($arrayKey !== false){
-				$explodedValueArray[$arrayKey] = $newValue;
-			}
-			$value = implode(',', $explodedValueArray);
-			$query = 'UPDATE vtiger_cvadvfilter SET value=? where columnname=? and cvid=? and columnindex=? and groupid=?';
-			$db->pquery($query, array($value, $advFiltercolumnName, $row['cvid'], $row['columnindex'], $row['groupid']));
-		}
+            $value = Zend_Json::encode($explodedValueArray);
+            $query = 'UPDATE vtiger_picklist_dependency SET targetvalues=? where id=? AND tabid=?';
+            $db->pquery($query, [$value, $row['id'], $tabId]);
+        }
+        $fieldModel = Vtiger_Field_Model::getInstance($pickListFieldName, $moduleModel);
+        $advFiltercolumnName = $fieldModel->getCustomViewColumnName();
+        $reportFilterColumnName = $fieldModel->getReportFilterColumnName();
 
-		//update Workflows values
-		$query= 'SELECT workflow_id,test FROM com_vtiger_workflows where module_name=? AND test != "" AND test IS NOT NULL AND test !="null" AND test LIKE ?';
-		$result = $db->pquery($query, array($moduleName,"%$oldValue%"));
-		$num_rows = $db->num_rows($result);
-		for($i = 0;$i < $num_rows; $i++) {
-			$row = $db->query_result_rowdata($result, $i);
-			$condition = decode_html($row['test']);
-			$decodedArrayConditions = Zend_Json::decode($condition);
-			if(!empty($decodedArrayConditions)){
-				foreach($decodedArrayConditions as $key=>$condition) {
-					if($condition['fieldname'] == $pickListFieldName){
-						$value = $condition['value'];
-						$explodedValueArray = explode(',', $value);
-						$arrayKey = array_search($oldValue, $explodedValueArray);
-						if ($arrayKey !== false) {
-							$explodedValueArray[$arrayKey] = $newValue;
-						}
-						$value = implode(',', $explodedValueArray);
-						$condition['value'] = $value;
-					}
-					$decodedArrayConditions[$key] = $condition;
-				}
-				$condtion = Zend_Json::encode($decodedArrayConditions);
-				$query= 'UPDATE com_vtiger_workflows SET test=? where workflow_id=?';
-				$db->pquery($query, array($condtion, $row['workflow_id']));
-			}
-		}
-		
-		//update workflow task
-		$query = 'SELECT task,task_id,workflow_id FROM com_vtiger_workflowtasks where task LIKE ?';
-		$result = $db->pquery($query, array("%$oldValue%"));
-		$num_rows = $db->num_rows($result);
-		
-		for ($i = 0; $i < $num_rows; $i++) {
-			$row = $db->raw_query_result_rowdata($result, $i);
-			$task = $row['task'];
-			$taskComponents = explode(':', $task);
-			$classNameWithDoubleQuotes = $taskComponents[2];
-			$className = str_replace('"', '', $classNameWithDoubleQuotes);
-			require_once("modules/com_vtiger_workflow/VTTaskManager.inc");
-			require_once 'modules/com_vtiger_workflow/tasks/'.$className.'.inc';
-			$unserializeTask = unserialize($task);
-			if(property_exists($unserializeTask, "field_value_mapping")) {
-				$fieldMapping = Zend_Json::decode($unserializeTask->field_value_mapping);
-				if (!empty($fieldMapping)) {
-					foreach ($fieldMapping as $key => $condition) {
-						if ($condition['fieldname'] == $pickListFieldName) {
-							$value = $condition['value'];
-							$explodedValueArray = explode(',', $value);
-							$arrayKey = array_search($oldValue, $explodedValueArray);
-							if ($arrayKey !== false) {
-								$explodedValueArray[$arrayKey] = $newValue;
-							}
-							$value = implode(',', $explodedValueArray);
-							$condition['value'] = $value;
-						}
-						$fieldMapping[$key] = $condition;
-					}
-					$updatedTask = Zend_Json::encode($fieldMapping);
-					$unserializeTask->field_value_mapping = $updatedTask;
-					$serializeTask = serialize($unserializeTask);
-					$query = 'UPDATE com_vtiger_workflowtasks SET task=? where workflow_id=? AND task_id=?';
-					$db->pquery($query, array($serializeTask, $row['workflow_id'], $row['task_id']));
-				}
-			} else {
-				if(property_exists($unserializeTask,$pickListFieldName)){
-					$value = $unserializeTask->$pickListFieldName;
-					$explodedValueArray = explode(',', $value);
-					$arrayKey = array_search($oldValue, $explodedValueArray);
-					if ($arrayKey !== false) {
-						$explodedValueArray[$arrayKey] = $newValue;
-					}
-					$value = implode(',', $explodedValueArray);
-					$unserializeTask->$pickListFieldName = $value;
-					$serializeTask = serialize($unserializeTask);
-					$query = 'UPDATE com_vtiger_workflowtasks SET task=? where workflow_id=? AND task_id=?';
-					$db->pquery($query, array($serializeTask, $row['workflow_id'], $row['task_id']));
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Function to perform operation after picklist delete
-	 * @param type $entityData
-	 */
-	function operationsAfterPicklistDelete($entityData) {
-		$db = PearDatabase::getInstance();
-		$pickListFieldName = $entityData['fieldname']; 
-		$valueToDelete = $entityData['valuetodelete'];
-		$replaceValue = $entityData['replacevalue'];
-		$moduleName = $entityData['module'];
-					
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$fieldModel = Vtiger_Field_Model::getInstance($pickListFieldName, $moduleModel);
-		$advFiltercolumnName = $fieldModel->getCustomViewColumnName();
-		$reportFilterColumnName = $fieldModel->getReportFilterColumnName();
-		
-		//update advancefilter values
-		$query= 'SELECT cvid,value,columnindex,groupid FROM vtiger_cvadvfilter where columnname=?';
-		$result = $db->pquery($query, array($advFiltercolumnName));
-		$num_rows = $db->num_rows($result);
-		for ($i = 0; $i < $num_rows; $i++) {
-			$row = $db->query_result_rowdata($result, $i);
-			$value = $row['value'];
-			$explodedValueArray = explode(',', $value);
-			foreach($valueToDelete as $value) {
-				$arrayKey = array_search($value, $explodedValueArray);
-				if($arrayKey !== false){
-					$explodedValueArray[$arrayKey] = $replaceValue;
-				}
-			}
-			$value = implode(',', $explodedValueArray);
-			$query = 'UPDATE vtiger_cvadvfilter SET value=? where columnname=? and cvid=? and columnindex=? and groupid=?';
-			$db->pquery($query, array($value, $advFiltercolumnName, $row['cvid'], $row['columnindex'], $row['groupid']));
-		}
+        //update advancefilter values
+        $query = 'SELECT cvid,value,columnindex,groupid FROM vtiger_cvadvfilter where columnname=?';
+        $result = $db->pquery($query, [$advFiltercolumnName]);
+        $num_rows = $db->num_rows($result);
+        for ($i = 0; $i < $num_rows; $i++) {
+            $row = $db->query_result_rowdata($result, $i);
+            $value = $row['value'];
+            $explodedValueArray = explode(',', $value);
+            if (is_array($explodedValueArray)) {
+                foreach ($explodedValueArray as $key => $value) {
+                    $explodedValueArray[$key] = decode_html($value);
+                }
+            }
+            $arrayKey = array_search($oldValue, $explodedValueArray);
+            if ($arrayKey !== false) {
+                $explodedValueArray[$arrayKey] = $newValue;
+            }
+            $value = implode(',', $explodedValueArray);
+            $query = 'UPDATE vtiger_cvadvfilter SET value=? where columnname=? and cvid=? and columnindex=? and groupid=?';
+            $db->pquery($query, [$value, $advFiltercolumnName, $row['cvid'], $row['columnindex'], $row['groupid']]);
+        }
 
-		foreach ($valueToDelete as $value) {
-			//update Workflows values
-			$query = 'SELECT workflow_id,test FROM com_vtiger_workflows where module_name=? AND test != "" AND test IS NOT NULL AND test !="null" AND test LIKE ?';
-			$result = $db->pquery($query, array($moduleName,"%$value%"));
-			$num_rows = $db->num_rows($result);
-			for ($i = 0; $i < $num_rows; $i++) {
-				$row = $db->query_result_rowdata($result, $i);
-				$condition = decode_html($row['test']);
-				$decodedArrayConditions = Zend_Json::decode($condition);
-				if (!empty($decodedArrayConditions)) {
-					foreach ($decodedArrayConditions as $key => $condition) {
-						if ($condition['fieldname'] == $pickListFieldName) {
-							$value = $condition['value'];
-							$explodedValueArray = explode(',', $value);
-							foreach ($valueToDelete as $value) {
-								$arrayKey = array_search($value, $explodedValueArray);
-								if ($arrayKey !== false) {
-									$explodedValueArray[$arrayKey] = $replaceValue;
-								}
-							}
-							$value = implode(',', $explodedValueArray);
-							$condition['value'] = $value;
-						}
-						$decodedArrayConditions[$key] = $condition;
-					}
-					$condtion = Zend_Json::encode($decodedArrayConditions);
-					$query = 'UPDATE com_vtiger_workflows SET test=? where workflow_id=?';
-					$db->pquery($query, array($condtion, $row['workflow_id']));
-				}
-			}
-		}
-		
-		
-		foreach ($valueToDelete as $value) {
-			//update workflow task
-			$query = 'SELECT task,task_id,workflow_id FROM com_vtiger_workflowtasks where task LIKE ?';
-			$result = $db->pquery($query, array("%$value%"));
-			$num_rows = $db->num_rows($result);
+        //update Workflows values
+        $query = 'SELECT workflow_id,test FROM com_vtiger_workflows where module_name=? AND test != "" AND test IS NOT NULL AND test !="null" AND test LIKE ?';
+        $result = $db->pquery($query, [$moduleName, "%$oldValue%"]);
+        $num_rows = $db->num_rows($result);
+        for ($i = 0; $i < $num_rows; $i++) {
+            $row = $db->query_result_rowdata($result, $i);
+            $condition = decode_html($row['test']);
+            $decodedArrayConditions = Zend_Json::decode($condition);
+            if (!empty($decodedArrayConditions)) {
+                foreach ($decodedArrayConditions as $key => $condition) {
+                    if ($condition['fieldname'] == $pickListFieldName) {
+                        $value = $condition['value'];
+                        $explodedValueArray = explode(',', $value);
+                        $arrayKey = array_search($oldValue, $explodedValueArray);
+                        if ($arrayKey !== false) {
+                            $explodedValueArray[$arrayKey] = $newValue;
+                        }
+                        $value = implode(',', $explodedValueArray);
+                        $condition['value'] = $value;
+                    }
+                    $decodedArrayConditions[$key] = $condition;
+                }
+                $condtion = Zend_Json::encode($decodedArrayConditions);
+                $query = 'UPDATE com_vtiger_workflows SET test=? where workflow_id=?';
+                $db->pquery($query, [$condtion, $row['workflow_id']]);
+            }
+        }
 
-			for ($i = 0; $i < $num_rows; $i++) {
-				$row = $db->raw_query_result_rowdata($result, $i);
-				$task = $row['task'];
-				$taskComponents = explode(':', $task);
-				$classNameWithDoubleQuotes = $taskComponents[2];
-				$className = str_replace('"', '', $classNameWithDoubleQuotes);
-				require_once("modules/com_vtiger_workflow/VTTaskManager.inc");
-				require_once 'modules/com_vtiger_workflow/tasks/' . $className . '.inc';
-				$unserializeTask = unserialize($task);
-				if (property_exists($unserializeTask, "field_value_mapping")) {
-					$fieldMapping = Zend_Json::decode($unserializeTask->field_value_mapping);
-					if (!empty($fieldMapping)) {
-						foreach ($fieldMapping as $key => $condition) {
-							if ($condition['fieldname'] == $pickListFieldName) {
-								$value = $condition['value'];
-								$explodedValueArray = explode(',', $value);
-								foreach ($valueToDelete as $value) {
-									$arrayKey = array_search($value, $explodedValueArray);
-									if ($arrayKey !== false) {
-										$explodedValueArray[$arrayKey] = $replaceValue;
-									}
-								}
-								$value = implode(',', $explodedValueArray);
-								$condition['value'] = $value;
-							}
-							$fieldMapping[$key] = $condition;
-						}
-						$updatedTask = Zend_Json::encode($fieldMapping);
-						$unserializeTask->field_value_mapping = $updatedTask;
-						$serializeTask = serialize($unserializeTask);
-						$query = 'UPDATE com_vtiger_workflowtasks SET task=? where workflow_id=? AND task_id=?';
-						$db->pquery($query, array($serializeTask, $row['workflow_id'], $row['task_id']));
-					}
-				} else {
-					if (property_exists($unserializeTask,$pickListFieldName)) {
-						$value = $unserializeTask->$pickListFieldName;
-						$explodedValueArray = explode(',', $value);
-						foreach ($valueToDelete as $value) {
-							$arrayKey = array_search($value, $explodedValueArray);
-							if ($arrayKey !== false) {
-								$explodedValueArray[$arrayKey] = $replaceValue;
-							}
-						}
-						$value = implode(',', $explodedValueArray);
-						$unserializeTask->$pickListFieldName = $value;
-						$serializeTask = serialize($unserializeTask);
-						$query = 'UPDATE com_vtiger_workflowtasks SET task=? where workflow_id=? AND task_id=?';
-						$db->pquery($query, array($serializeTask, $row['workflow_id'], $row['task_id']));
-					}
-				}
-			}
-		}
+        //update workflow task
+        $query = 'SELECT task,task_id,workflow_id FROM com_vtiger_workflowtasks where task LIKE ?';
+        $result = $db->pquery($query, ["%$oldValue%"]);
+        $num_rows = $db->num_rows($result);
 
-	}
+        for ($i = 0; $i < $num_rows; $i++) {
+            $row = $db->raw_query_result_rowdata($result, $i);
+            $task = $row['task'];
+            $taskComponents = explode(':', $task);
+            $classNameWithDoubleQuotes = $taskComponents[2];
+            $className = str_replace('"', '', $classNameWithDoubleQuotes);
+            require_once("modules/com_vtiger_workflow/VTTaskManager.inc");
+            require_once 'modules/com_vtiger_workflow/tasks/' . $className . '.inc';
+            $unserializeTask = unserialize($task);
+            if (property_exists($unserializeTask, "field_value_mapping")) {
+                $fieldMapping = Zend_Json::decode($unserializeTask->field_value_mapping);
+                if (!empty($fieldMapping)) {
+                    foreach ($fieldMapping as $key => $condition) {
+                        if ($condition['fieldname'] == $pickListFieldName) {
+                            $value = $condition['value'];
+                            $explodedValueArray = explode(',', $value);
+                            $arrayKey = array_search($oldValue, $explodedValueArray);
+                            if ($arrayKey !== false) {
+                                $explodedValueArray[$arrayKey] = $newValue;
+                            }
+                            $value = implode(',', $explodedValueArray);
+                            $condition['value'] = $value;
+                        }
+                        $fieldMapping[$key] = $condition;
+                    }
+                    $updatedTask = Zend_Json::encode($fieldMapping);
+                    $unserializeTask->field_value_mapping = $updatedTask;
+                    $serializeTask = serialize($unserializeTask);
+                    $query = 'UPDATE com_vtiger_workflowtasks SET task=? where workflow_id=? AND task_id=?';
+                    $db->pquery($query, [$serializeTask, $row['workflow_id'], $row['task_id']]);
+                }
+            } else {
+                if (property_exists($unserializeTask, $pickListFieldName)) {
+                    $value = $unserializeTask->$pickListFieldName;
+                    $explodedValueArray = explode(',', $value);
+                    $arrayKey = array_search($oldValue, $explodedValueArray);
+                    if ($arrayKey !== false) {
+                        $explodedValueArray[$arrayKey] = $newValue;
+                    }
+                    $value = implode(',', $explodedValueArray);
+                    $unserializeTask->$pickListFieldName = $value;
+                    $serializeTask = serialize($unserializeTask);
+                    $query = 'UPDATE com_vtiger_workflowtasks SET task=? where workflow_id=? AND task_id=?';
+                    $db->pquery($query, [$serializeTask, $row['workflow_id'], $row['task_id']]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Function to perform operation after picklist delete
+     *
+     * @param type $entityData
+     */
+    function operationsAfterPicklistDelete($entityData)
+    {
+        $db = PearDatabase::getInstance();
+        $pickListFieldName = $entityData['fieldname'];
+        $valueToDelete = $entityData['valuetodelete'];
+        $replaceValue = $entityData['replacevalue'];
+        $moduleName = $entityData['module'];
+
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        $fieldModel = Vtiger_Field_Model::getInstance($pickListFieldName, $moduleModel);
+        $advFiltercolumnName = $fieldModel->getCustomViewColumnName();
+        $reportFilterColumnName = $fieldModel->getReportFilterColumnName();
+
+        //update advancefilter values
+        $query = 'SELECT cvid,value,columnindex,groupid FROM vtiger_cvadvfilter where columnname=?';
+        $result = $db->pquery($query, [$advFiltercolumnName]);
+        $num_rows = $db->num_rows($result);
+        for ($i = 0; $i < $num_rows; $i++) {
+            $row = $db->query_result_rowdata($result, $i);
+            $value = $row['value'];
+            $explodedValueArray = explode(',', $value);
+            foreach ($valueToDelete as $value) {
+                $arrayKey = array_search($value, $explodedValueArray);
+                if ($arrayKey !== false) {
+                    $explodedValueArray[$arrayKey] = $replaceValue;
+                }
+            }
+            $value = implode(',', $explodedValueArray);
+            $query = 'UPDATE vtiger_cvadvfilter SET value=? where columnname=? and cvid=? and columnindex=? and groupid=?';
+            $db->pquery($query, [$value, $advFiltercolumnName, $row['cvid'], $row['columnindex'], $row['groupid']]);
+        }
+
+        foreach ($valueToDelete as $value) {
+            //update Workflows values
+            $query = 'SELECT workflow_id,test FROM com_vtiger_workflows where module_name=? AND test != "" AND test IS NOT NULL AND test !="null" AND test LIKE ?';
+            $result = $db->pquery($query, [$moduleName, "%$value%"]);
+            $num_rows = $db->num_rows($result);
+            for ($i = 0; $i < $num_rows; $i++) {
+                $row = $db->query_result_rowdata($result, $i);
+                $condition = decode_html($row['test']);
+                $decodedArrayConditions = Zend_Json::decode($condition);
+                if (!empty($decodedArrayConditions)) {
+                    foreach ($decodedArrayConditions as $key => $condition) {
+                        if ($condition['fieldname'] == $pickListFieldName) {
+                            $value = $condition['value'];
+                            $explodedValueArray = explode(',', $value);
+                            foreach ($valueToDelete as $value) {
+                                $arrayKey = array_search($value, $explodedValueArray);
+                                if ($arrayKey !== false) {
+                                    $explodedValueArray[$arrayKey] = $replaceValue;
+                                }
+                            }
+                            $value = implode(',', $explodedValueArray);
+                            $condition['value'] = $value;
+                        }
+                        $decodedArrayConditions[$key] = $condition;
+                    }
+                    $condtion = Zend_Json::encode($decodedArrayConditions);
+                    $query = 'UPDATE com_vtiger_workflows SET test=? where workflow_id=?';
+                    $db->pquery($query, [$condtion, $row['workflow_id']]);
+                }
+            }
+        }
+
+        foreach ($valueToDelete as $value) {
+            //update workflow task
+            $query = 'SELECT task,task_id,workflow_id FROM com_vtiger_workflowtasks where task LIKE ?';
+            $result = $db->pquery($query, ["%$value%"]);
+            $num_rows = $db->num_rows($result);
+
+            for ($i = 0; $i < $num_rows; $i++) {
+                $row = $db->raw_query_result_rowdata($result, $i);
+                $task = $row['task'];
+                $taskComponents = explode(':', $task);
+                $classNameWithDoubleQuotes = $taskComponents[2];
+                $className = str_replace('"', '', $classNameWithDoubleQuotes);
+                require_once("modules/com_vtiger_workflow/VTTaskManager.inc");
+                require_once 'modules/com_vtiger_workflow/tasks/' . $className . '.inc';
+                $unserializeTask = unserialize($task);
+                if (property_exists($unserializeTask, "field_value_mapping")) {
+                    $fieldMapping = Zend_Json::decode($unserializeTask->field_value_mapping);
+                    if (!empty($fieldMapping)) {
+                        foreach ($fieldMapping as $key => $condition) {
+                            if ($condition['fieldname'] == $pickListFieldName) {
+                                $value = $condition['value'];
+                                $explodedValueArray = explode(',', $value);
+                                foreach ($valueToDelete as $value) {
+                                    $arrayKey = array_search($value, $explodedValueArray);
+                                    if ($arrayKey !== false) {
+                                        $explodedValueArray[$arrayKey] = $replaceValue;
+                                    }
+                                }
+                                $value = implode(',', $explodedValueArray);
+                                $condition['value'] = $value;
+                            }
+                            $fieldMapping[$key] = $condition;
+                        }
+                        $updatedTask = Zend_Json::encode($fieldMapping);
+                        $unserializeTask->field_value_mapping = $updatedTask;
+                        $serializeTask = serialize($unserializeTask);
+                        $query = 'UPDATE com_vtiger_workflowtasks SET task=? where workflow_id=? AND task_id=?';
+                        $db->pquery($query, [$serializeTask, $row['workflow_id'], $row['task_id']]);
+                    }
+                } else {
+                    if (property_exists($unserializeTask, $pickListFieldName)) {
+                        $value = $unserializeTask->$pickListFieldName;
+                        $explodedValueArray = explode(',', $value);
+                        foreach ($valueToDelete as $value) {
+                            $arrayKey = array_search($value, $explodedValueArray);
+                            if ($arrayKey !== false) {
+                                $explodedValueArray[$arrayKey] = $replaceValue;
+                            }
+                        }
+                        $value = implode(',', $explodedValueArray);
+                        $unserializeTask->$pickListFieldName = $value;
+                        $serializeTask = serialize($unserializeTask);
+                        $query = 'UPDATE com_vtiger_workflowtasks SET task=? where workflow_id=? AND task_id=?';
+                        $db->pquery($query, [$serializeTask, $row['workflow_id'], $row['task_id']]);
+                    }
+                }
+            }
+        }
+    }
 }

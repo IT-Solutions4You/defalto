@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class PDFMaker_SavePDFTemplate_Action extends Vtiger_Action_Controller
@@ -62,9 +62,8 @@ class PDFMaker_SavePDFTemplate_Action extends Vtiger_Action_Controller
             $df_other = '0';
         }
 
-
         $sql = 'update vtiger_pdfmaker set description =?, body =? where templateid =?';
-        $params = array($description, $body, $templateid);
+        $params = [$description, $body, $templateid];
         $adb->pquery($sql, $params);
 
         $margin_top = $request->get('margin_top');
@@ -86,7 +85,6 @@ class PDFMaker_SavePDFTemplate_Action extends Vtiger_Action_Controller
         if ($margin_right < 0) {
             $margin_right = 0;
         }
-
 
         $dec_point = $request->get('dec_point');
         $dec_decimals = $request->get('dec_decimals');
@@ -116,7 +114,7 @@ class PDFMaker_SavePDFTemplate_Action extends Vtiger_Action_Controller
         $disp_footer = base_convert($df_first . $df_last . $df_other, 2, 10);
 
         $sql4 = 'UPDATE vtiger_pdfmaker_settings SET margin_top = ?, margin_bottom = ?, margin_left = ?, margin_right = ?, format = ?, orientation = ?, decimals = ?, decimal_point = ?, thousands_separator = ?, header = ?, footer = ?, encoding = ?, disp_header = ?, disp_footer= ? WHERE templateid = ?';
-        $params4 = array(
+        $params4 = [
             $margin_top,
             $margin_bottom,
             $margin_left,
@@ -132,22 +130,21 @@ class PDFMaker_SavePDFTemplate_Action extends Vtiger_Action_Controller
             $disp_header,
             $disp_footer,
             $templateid
-        );
+        ];
         $adb->pquery($sql4, $params4);
         // ITS4YOU-END
         //ignored picklist values
-        $adb->pquery('DELETE FROM vtiger_pdfmaker_ignorepicklistvalues', array());
+        $adb->pquery('DELETE FROM vtiger_pdfmaker_ignorepicklistvalues', []);
 
         $ignore_picklist_values = $request->get('ignore_picklist_values');
         $pvvalues = explode(',', $ignore_picklist_values);
         foreach ($pvvalues as $value) {
-            $adb->pquery('INSERT INTO vtiger_pdfmaker_ignorepicklistvalues(value) VALUES(?)', array(trim($value)));
+            $adb->pquery('INSERT INTO vtiger_pdfmaker_ignorepicklistvalues(value) VALUES(?)', [trim($value)]);
         }
         // end ignored picklist values
 
         $adb->completeTransaction();
         $adb->println('TRANS save pdfmaker ends');
-
 
         $redirect = $request->get('redirect');
         if ($redirect == 'false') {

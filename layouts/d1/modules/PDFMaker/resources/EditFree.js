@@ -1,78 +1,78 @@
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 /** @var PDFMaker_EditFree_Js */
-Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
+Vtiger_Edit_Js("PDFMaker_EditFree_Js", {
 
-    duplicateCheckCache : {},
-    advanceFilterInstance : false,
-    formElement : false,
+    duplicateCheckCache: {},
+    advanceFilterInstance: false,
+    formElement: false,
 
-    getForm : function(){
-        if(this.formElement == false){
-                this.setForm(jQuery('#EditView'));
+    getForm: function () {
+        if (this.formElement == false) {
+            this.setForm(jQuery('#EditView'));
         }
         return this.formElement;
     },
-    setForm : function(element){
+    setForm: function (element) {
         this.formElement = element;
         return this;
     },
-    registerBasicEvents: function(container){
+    registerBasicEvents: function (container) {
         this._super(container);
         this.registerButtons();
     },
-    registerSubmitEvent: function(){
+    registerSubmitEvent: function () {
         let editViewForm = this.getForm();
 
         editViewForm.vtValidate({
-            submitHandler : function() {
+            submitHandler: function () {
 
                 let e = jQuery.Event(Vtiger_Edit_Js.recordPresaveEvent);
                 app.event.trigger(e);
-                if(e.isDefaultPrevented()) {
+                if (e.isDefaultPrevented()) {
                     return false;
                 }
                 let error = 0;
 
-                if (!PDFMaker_EditFreeJs.ControlNumber('margin_top', true) || !PDFMaker_EditFreeJs.ControlNumber('margin_bottom', true) || !PDFMaker_EditFreeJs.ControlNumber('margin_left', true) || !PDFMaker_EditFreeJs.ControlNumber('margin_right', true)){
+                if (!PDFMaker_EditFreeJs.ControlNumber('margin_top', true) || !PDFMaker_EditFreeJs.ControlNumber('margin_bottom', true) || !PDFMaker_EditFreeJs.ControlNumber('margin_left', true) || !PDFMaker_EditFreeJs.ControlNumber('margin_right', true)) {
                     error++;
                 }
 
-                if (!PDFMaker_EditFreeJs.CheckCustomFormat()){
+                if (!PDFMaker_EditFreeJs.CheckCustomFormat()) {
                     error++;
                 }
 
-                if (error > 0){
+                if (error > 0) {
                     return false;
                 }
 
                 window.onbeforeunload = null;
-                editViewForm.find('.saveButton').attr('disabled',true);
+                editViewForm.find('.saveButton').attr('disabled', true);
                 return true;
             }
         });
     },
-    registerButtons: function() {
+    registerButtons: function () {
         let self = this,
             form = self.getForm();
 
-        form.on('click', '.InsertIntoTemplate', function() {
+        form.on('click', '.InsertIntoTemplate', function () {
             let selectedType = jQuery(this).data('type');
-            self.InsertIntoTemplate(selectedType,false);
+            self.InsertIntoTemplate(selectedType, false);
         });
 
-        form.on('click', '.InsertLIntoTemplate', function() {
+        form.on('click', '.InsertLIntoTemplate', function () {
             let selectedType = jQuery(this).data('type');
-            self.InsertIntoTemplate(selectedType,true);
+            self.InsertIntoTemplate(selectedType, true);
         });
     },
-    getSelectedEditor : function() {
+    getSelectedEditor: function () {
 
         let selectedTab2 = jQuery('#ContentEditorTabs').find('.active').data('type'),
             oEditorName = 'body';
@@ -138,44 +138,44 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
         }
     },
 
-    registerSelectRelatedModuleOption : function() {
+    registerSelectRelatedModuleOption: function () {
         var thisInstance = this;
         var selectElement = jQuery('[name="relatedmodulesorce"]');
-        selectElement.on('change', function() {
+        selectElement.on('change', function () {
             var selectedOption = selectElement.find('option:selected');
             var moduleName = selectedOption.data('module');
             var fieldName = selectedOption.val();
-            
-            thisInstance.getFields(moduleName,"relatedmodulefields",fieldName);
-        });		
+
+            thisInstance.getFields(moduleName, "relatedmodulefields", fieldName);
+        });
     },
-    
-    getFields : function(moduleName,selectname,fieldName) {
+
+    getFields: function (moduleName, selectname, fieldName) {
         var thisInstance = this;
 
         var urlParams = {
             "module": "PDFMaker",
-            "formodule" : moduleName,
-            "forfieldname" : fieldName,
-            "action" : "IndexAjax",
-            "mode" : "getModuleFields"            
+            "formodule": moduleName,
+            "forfieldname": fieldName,
+            "action": "IndexAjax",
+            "mode": "getModuleFields"
         };
 
-        app.request.post({'data' : urlParams}).then(
-            function(err,response) {
-                thisInstance.updateFields(response,selectname);
-            }      
+        app.request.post({'data': urlParams}).then(
+            function (err, response) {
+                thisInstance.updateFields(response, selectname);
+            }
         );
     },
-    
-    updateFields: function(response,selectname){
+
+    updateFields: function (response, selectname) {
         var thisInstance = this;
 
         var result = response['success'];
         var formElement = this.getForm();
 
-        if(result == true) {
-            var ModuleFieldsElement = jQuery('#'+selectname);
+        if (result == true) {
+            var ModuleFieldsElement = jQuery('#' + selectname);
             //ModuleFieldsElement.find('option:not([value=""]').remove();
             ModuleFieldsElement.empty();
 
@@ -183,30 +183,30 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
                 jQuery.each(response['filename_fields'], function (i, fields) {
 
                     var optgroup = jQuery('<optgroup/>');
-                    optgroup.attr('label',i);
+                    optgroup.attr('label', i);
 
                     jQuery.each(fields, function (key, field) {
 
-                        optgroup.append(jQuery('<option>', { 
+                        optgroup.append(jQuery('<option>', {
                             value: key,
-                            text : field 
+                            text: field
                         }));
                     })
 
                     ModuleFieldsElement.append(optgroup);
-                });                   
+                });
             }
 
             jQuery.each(response['fields'], function (i, fields) {
 
                 var optgroup = jQuery('<optgroup/>');
-                optgroup.attr('label',i);
+                optgroup.attr('label', i);
 
                 jQuery.each(fields, function (key, field) {
 
-                    optgroup.append(jQuery('<option>', { 
+                    optgroup.append(jQuery('<option>', {
                         value: key,
-                        text : field 
+                        text: field
                     }));
                 })
 
@@ -217,33 +217,33 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
 
             vtUtils.showSelect2ElementView(ModuleFieldsElement);
 
-            if (selectname == "modulefields") {                        
+            if (selectname == "modulefields") {
 
                 var RelatedModuleSourceElement = jQuery('#relatedmodulesorce');
                 //RelatedModuleSourceElement.find('option:not([value=""]').remove();
                 RelatedModuleSourceElement.empty();
                 jQuery.each(response['related_modules'], function (i, item) {
 
-                    RelatedModuleSourceElement.append(jQuery('<option>', { 
+                    RelatedModuleSourceElement.append(jQuery('<option>', {
                         value: item[0],
-                        text : item[2] + " (" + item[1] + ")",
-                    }).data("module",item[3]));
+                        text: item[2] + " (" + item[1] + ")",
+                    }).data("module", item[3]));
                 });
 
                 RelatedModuleSourceElement.select2("destroy");
 
                 vtUtils.showSelect2ElementView(RelatedModuleSourceElement);
 
-                thisInstance.updateFields(response,"filename_fields");
-            } 
+                thisInstance.updateFields(response, "filename_fields");
+            }
         }
     },
-    registerSelectAccInfoOption : function() {
+    registerSelectAccInfoOption: function () {
         var selectElement = jQuery('[name="acc_info_type"]');
-        selectElement.on('change', function() {
+        selectElement.on('change', function () {
             var selectedOption = selectElement.find('option:selected');
-            jQuery('.au_info_div').css('display','none');
-            switch (selectedOption.val()){
+            jQuery('.au_info_div').css('display', 'none');
+            switch (selectedOption.val()) {
                 case "Assigned":
                     var div_name = 'user_info_div';
                     break;
@@ -260,15 +260,15 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
                     var div_name = 'acc_info_div';
                     break;
             }
-            jQuery('#'+div_name).css('display','inline');
+            jQuery('#' + div_name).css('display', 'inline');
         });
     },
-    registerSelectModuleOption : function() {
+    registerSelectModuleOption: function () {
         var thisInstance = this;
         var selectElement = jQuery('[name="modulename"]');
         var moduleName = selectElement.val();
 
-        thisInstance.getFields(moduleName,"modulefields","");
+        thisInstance.getFields(moduleName, "modulefields", "");
         PDFMaker_EditFreeJs.fill_module_lang_array(moduleName);
         PDFMaker_EditFreeJs.fill_module_product_fields_array(moduleName);
     },
@@ -297,21 +297,21 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
             this.registerLeavePageWithoutSubmit(editViewForm);
         }
     },
-    registerAutoCompleteFields: function() {
+    registerAutoCompleteFields: function () {
 
     },
 });
-if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
+if (typeof (PDFMaker_EditFreeJs) == 'undefined') {
     /*
      * Namespaced javascript class for Import
      */
     PDFMaker_EditFreeJs = {
-        reportsColumnsList : false,
-        advanceFilterInstance : false,
-        availListObj : false,
-        selectedColumnsObj : false,
-    
-        clearRelatedModuleFields: function(){
+        reportsColumnsList: false,
+        advanceFilterInstance: false,
+        availListObj: false,
+        selectedColumnsObj: false,
+
+        clearRelatedModuleFields: function () {
             second = document.getElementById("relatedmodulefields");
             lgth = second.options.length - 1;
             second.options[lgth] = null;
@@ -321,7 +321,7 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
                 return;
             var box2 = second;
             var optgroups = box2.childNodes;
-            for (i = optgroups.length - 1; i >= 0; i--){
+            for (i = optgroups.length - 1; i >= 0; i--) {
                 box2.removeChild(optgroups[i]);
             }
 
@@ -330,7 +330,7 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
             objOption.value = "";
             box2.appendChild(objOption);
         },
-        change_relatedmodulesorce: function(first, second_name){
+        change_relatedmodulesorce: function (first, second_name) {
             second = document.getElementById(second_name);
             optionTest = true;
             lgth = second.options.length - 1;
@@ -343,12 +343,12 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
             var number = box.options[box.selectedIndex].value;
             if (!number)
                 return;
-            
+
             var params = {
-                            module : app.getModuleName(),
-                            view : 'IndexAjax',
-                            source_module : number,
-                            mode : 'getModuleConditions'
+                module: app.getModuleName(),
+                view: 'IndexAjax',
+                source_module: number,
+                mode: 'getModuleConditions'
             }
             var actionParams = {
                 "type": "POST",
@@ -359,12 +359,12 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
 
             var box2 = second;
             var optgroups = box2.childNodes;
-            for (i = optgroups.length - 1; i >= 0; i--){
+            for (i = optgroups.length - 1; i >= 0; i--) {
                 box2.removeChild(optgroups[i]);
             }
 
             var list = all_related_modules[number];
-            for (i = 0; i < list.length; i += 2){
+            for (i = 0; i < list.length; i += 2) {
                 objOption = document.createElement("option");
                 objOption.innerHTML = list[i];
                 objOption.value = list[i + 1];
@@ -373,7 +373,7 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
 
             PDFMaker_EditFreeJs.clearRelatedModuleFields();
         },
-        change_relatedmodule: function(first, second_name){
+        change_relatedmodule: function (first, second_name) {
             second = document.getElementById(second_name);
             optionTest = true;
             lgth = second.options.length - 1;
@@ -388,11 +388,11 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
                 return;
             var box2 = second;
             var optgroups = box2.childNodes;
-            for (i = optgroups.length - 1; i >= 0; i--){
+            for (i = optgroups.length - 1; i >= 0; i--) {
                 box2.removeChild(optgroups[i]);
             }
 
-            if (number == "none"){
+            if (number == "none") {
                 objOption = document.createElement("option");
                 objOption.innerHTML = app.vtranslate("LBL_SELECT_MODULE_FIELD");
                 objOption.value = "";
@@ -402,13 +402,13 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
                 var moduleName = tmpArr[0];
                 number = tmpArr[1];
                 var blocks = module_blocks[moduleName];
-                for (b = 0; b < blocks.length; b += 2){
+                for (b = 0; b < blocks.length; b += 2) {
                     var list = related_module_fields[moduleName + '|' + blocks[b + 1]];
-                    if (list.length > 0){
+                    if (list.length > 0) {
                         optGroup = document.createElement('optgroup');
                         optGroup.label = blocks[b];
                         box2.appendChild(optGroup);
-                        for (i = 0; i < list.length; i += 2){
+                        for (i = 0; i < list.length; i += 2) {
                             objOption = document.createElement("option");
                             objOption.innerHTML = list[i];
                             var objVal = list[i + 1];
@@ -438,9 +438,9 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
                 return true;
             }
         },
-        showHideTab3: function(tabname){
+        showHideTab3: function (tabname) {
             document.getElementById(tabname + '_tab2').className = 'active';
-            if (tabname == 'body'){
+            if (tabname == 'body') {
                 document.getElementById('body_variables').style.display = '';
                 document.getElementById('related_block_tpl_row').style.display = '';
                 document.getElementById('listview_block_tpl_row').style.display = '';
@@ -457,74 +457,74 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
             var module = box.options[box.selectedIndex].value;
 
         },
-        fill_module_lang_array: function(module, selected){
-            
+        fill_module_lang_array: function (module, selected) {
+
             var urlParams = {
-                "module" : "PDFMaker",
-                "handler" : "fill_lang",
-                "action" : "AjaxRequestHandle",
-                "langmod" : module            
+                "module": "PDFMaker",
+                "handler": "fill_lang",
+                "action": "AjaxRequestHandle",
+                "langmod": module
             };
 
-            app.request.post({'data' : urlParams}).then(
-                function(err,response) {
+            app.request.post({'data': urlParams}).then(
+                function (err, response) {
                     var result = response['success'];
 
-                    if(result == true) {
+                    if (result == true) {
                         var moduleLangElement = jQuery('#module_lang');
 
                         moduleLangElement.empty();
 
                         jQuery.each(response['labels'], function (key, langlabel) {
 
-                             moduleLangElement.append(jQuery('<option>', {
-                                        value: key,
-                                        text : langlabel
+                            moduleLangElement.append(jQuery('<option>', {
+                                value: key,
+                                text: langlabel
                             }));
                         });
                     }
-            })
+                })
         },
-        fill_module_product_fields_array: function(module){
+        fill_module_product_fields_array: function (module) {
             var ajax_url = 'index.php?module=PDFMaker&action=AjaxRequestHandle&handler=fill_module_product_fields&productmod=' + module;
-            jQuery.ajax(ajax_url).success(function(response){
+            jQuery.ajax(ajax_url).success(function (response) {
 
                 var product_fields = document.getElementById('psfields');
                 product_fields.length = 0;
                 var map = response.split('|@|');
                 var keys = map[0].split('||');
                 var values = map[1].split('||');
-                for (i = 0; i < values.length; i++){
+                for (i = 0; i < values.length; i++) {
                     var item = document.createElement('option');
                     item.text = values[i];
                     item.value = keys[i];
                     try {
                         product_fields.add(item, null);
-                    } catch (ex){
+                    } catch (ex) {
                         product_fields.add(item);
                     }
                 }
-            }).error(function(){
+            }).error(function () {
             });
         },
-        insertFieldIntoFilename: function(val){
+        insertFieldIntoFilename: function (val) {
             if (val != '')
                 document.getElementById('nameOfFile').value += '$' + val + '$';
         },
-        CustomFormat: function(){
+        CustomFormat: function () {
             var selObj;
             selObj = document.getElementById('pdf_format');
 
-            if (selObj.value == 'Custom'){
+            if (selObj.value == 'Custom') {
                 document.getElementById('custom_format_table').style.display = 'block';
             } else {
                 document.getElementById('custom_format_table').style.display = 'none';
             }
         },
-        hf_checkboxes_changed: function(oChck, oType){
+        hf_checkboxes_changed: function (oChck, oType) {
             var prefix;
             var optionsArr;
-            if (oType == 'header'){
+            if (oType == 'header') {
                 prefix = 'dh_';
                 optionsArr = new Array('allid', 'firstid', 'otherid');
             } else {
@@ -535,15 +535,15 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
             var tmpArr = oChck.id.split("_");
             var sufix = tmpArr[1];
             var i;
-            if (sufix == 'allid'){
-                for (i = 0; i < optionsArr.length; i++){
+            if (sufix == 'allid') {
+                for (i = 0; i < optionsArr.length; i++) {
                     document.getElementById(prefix + optionsArr[i]).checked = oChck.checked;
                 }
             } else {
                 var allChck = document.getElementById(prefix + 'allid');
                 var allChecked = true;
-                for (i = 1; i < optionsArr.length; i++){
-                    if (document.getElementById(prefix + optionsArr[i]).checked == false){
+                for (i = 1; i < optionsArr.length; i++) {
+                    if (document.getElementById(prefix + optionsArr[i]).checked == false) {
                         allChecked = false;
                         break;
                     }
@@ -551,11 +551,11 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
                 allChck.checked = allChecked;
             }
         },
-        templateActiveChanged: function(activeElm){
+        templateActiveChanged: function (activeElm) {
             var is_defaultElm1 = document.getElementById('is_default_dv');
             var is_defaultElm2 = document.getElementById('is_default_lv');
 
-            if (activeElm.value == '1'){
+            if (activeElm.value == '1') {
                 is_defaultElm1.disabled = false;
                 is_defaultElm2.disabled = false;
             } else {
@@ -565,11 +565,11 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
                 is_defaultElm2.disabled = true;
             }
         },
-        CheckCustomFormat: function(){
-            if (document.getElementById('pdf_format').value == 'Custom'){
+        CheckCustomFormat: function () {
+            if (document.getElementById('pdf_format').value == 'Custom') {
                 var pdfWidth = document.getElementById('pdf_format_width').value;
                 var pdfHeight = document.getElementById('pdf_format_height').value;
-                if (pdfWidth > 2000 || pdfHeight > 2000 || pdfWidth < 1 || pdfHeight < 1 || isNaN(pdfWidth) || isNaN(pdfHeight)){
+                if (pdfWidth > 2000 || pdfHeight > 2000 || pdfWidth < 1 || pdfHeight < 1 || isNaN(pdfWidth) || isNaN(pdfHeight)) {
                     alert(app.vtranslate('LBL_CUSTOM_FORMAT_ERROR'));
                     document.getElementById('pdf_format_width').focus();
                     return false;
@@ -578,5 +578,5 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
             return true;
         }
 
-    }    
+    }
 }

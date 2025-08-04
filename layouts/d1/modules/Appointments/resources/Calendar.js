@@ -1,10 +1,10 @@
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 /** @var Appointments_Calendar_Js */
@@ -879,7 +879,7 @@ Vtiger_Index_Js('Appointments_Calendar_Js', {
                 customButtons: {
                     listRecords: {
                         text: app.vtranslate('List'),
-                        click: function() {
+                        click: function () {
                             window.location = 'index.php?module=Appointments&view=List'
                         }
                     },
@@ -947,7 +947,7 @@ Vtiger_Index_Js('Appointments_Calendar_Js', {
                     },
                     timeGridDay: {
                         titleFormat: function (arg) {
-                            return arg.date.day + ' ' +monthNames[arg.date['month']] + ' ' + arg.date['year'];
+                            return arg.date.day + ' ' + monthNames[arg.date['month']] + ' ' + arg.date['year'];
                         },
                         dayMaxEventRows: 4,
                     },
@@ -1139,7 +1139,7 @@ Vtiger_Index_Js('Appointments_Calendar_Js', {
         groupsActions.addClass('hide');
         usersActions.addClass('hide');
 
-        if(buttonElement.is('.select_users')) {
+        if (buttonElement.is('.select_users')) {
             usersActions.removeClass('hide');
         }
 

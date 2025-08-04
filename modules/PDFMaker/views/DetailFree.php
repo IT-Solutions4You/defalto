@@ -1,16 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class PDFMaker_DetailFree_View extends Vtiger_Index_View
 {
-
     function __construct()
     {
         parent::__construct();
@@ -38,7 +37,7 @@ class PDFMaker_DetailFree_View extends Vtiger_Index_View
                 exit;
             }
 
-            $linkParams = array('MODULE' => $moduleName, 'ACTION' => $request->get('view'));
+            $linkParams = ['MODULE' => $moduleName, 'ACTION' => $request->get('view')];
             $linkModels = $moduleModel->getSideBarLinks($linkParams);
 
             $viewer->assign('QUICK_LINKS', $linkModels);
@@ -55,7 +54,7 @@ class PDFMaker_DetailFree_View extends Vtiger_Index_View
 
         $viewer->assign('MODULE_MODEL', $this->record->getModule());
 
-        $detailViewLinkParams = array('MODULE' => $moduleName, 'RECORD' => $recordId);
+        $detailViewLinkParams = ['MODULE' => $moduleName, 'RECORD' => $recordId];
         $detailViewLinks = $this->record->getDetailViewLinks($detailViewLinkParams);
         $viewer->assign('DETAILVIEW_LINKS', $detailViewLinks);
 
@@ -82,7 +81,6 @@ class PDFMaker_DetailFree_View extends Vtiger_Index_View
         $viewer->assign('TEMPLATEID', $pdftemplateResult['templateid']);
         $viewer->assign('MODULENAME', $formodule);
 
-
         $pdf_body = decode_html($pdftemplateResult['body']);
         $pdf_header = decode_html($pdftemplateResult['header']);
         $pdf_footer = decode_html($pdftemplateResult['footer']);
@@ -106,13 +104,12 @@ class PDFMaker_DetailFree_View extends Vtiger_Index_View
     function getHeaderScripts(Vtiger_Request $request)
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-        $jsFileNames = array(
+        $jsFileNames = [
             'modules.Vtiger.resources.Detail',
             'modules.PDFMaker.resources.DetailFree'
-        );
+        ];
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
         return array_merge($headerScriptInstances, $jsScriptInstances);
     }
-
 }

@@ -1,15 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_Import_Action extends Vtiger_Save_Action
 {
-
     public function checkPermission(Vtiger_Request $request)
     {
     }
@@ -17,7 +17,6 @@ class EMAILMaker_Import_Action extends Vtiger_Save_Action
     public function process(Vtiger_Request $request)
     {
         if ($_FILES['import_file']['error'] == 0) {
-
             $tmp_file_name = $_FILES['import_file']['tmp_name'];
 
             $fh = fopen($tmp_file_name, "r");
@@ -45,7 +44,10 @@ class EMAILMaker_Import_Action extends Vtiger_Save_Action
                         $is_theme = "0";
                     }
                     $templateid = $adb->getUniqueID('vtiger_emakertemplates');
-                    $adb->pquery("insert into vtiger_emakertemplates (templatename,subject,module,description,body,deleted,templateid,is_listview,is_theme) values (?,?,?,?,?,?,?,?,?)", array($templatename, $subject, $modulename, $description, $body, 0, $templateid, $is_listview, $is_theme));
+                    $adb->pquery(
+                        "insert into vtiger_emakertemplates (templatename,subject,module,description,body,deleted,templateid,is_listview,is_theme) values (?,?,?,?,?,?,?,?,?)",
+                        [$templatename, $subject, $modulename, $description, $body, 0, $templateid, $is_listview, $is_theme]
+                    );
                     $EMAILMaker->AddLinks($modulename);
                 }
             }
@@ -55,9 +57,10 @@ class EMAILMaker_Import_Action extends Vtiger_Save_Action
 
     private function cdataDecode($text)
     {
-        $From = array("<|!|[%|CDATA|[%|", "|%]|]|>");
-        $To = array("<![CDATA[", "]]>");
+        $From = ["<|!|[%|CDATA|[%|", "|%]|]|>"];
+        $To = ["<![CDATA[", "]]>"];
         $decode_text = str_replace($From, $To, $text);
+
         return $decode_text;
     }
 }

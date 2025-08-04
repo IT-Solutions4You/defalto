@@ -1,15 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_SaveEMAILTemplate_Action extends Vtiger_Action_Controller
 {
-
     public function checkPermission(Vtiger_Request $request)
     {
     }
@@ -38,30 +38,30 @@ class EMAILMaker_SaveEMAILTemplate_Action extends Vtiger_Action_Controller
         $is_listview = '' != $request->get('is_listview') ? '1' : '0';
         $load_related_documents = !$request->isEmpty('load_related_documents') ? '1' : '0';
         $folders_related_documents = implode(',', (array)$request->get('folders_related_documents'));
-        $templateParams = array(
-            'templatename' => $templateName,
-            'module' => $moduleName,
-            'description' => $description,
-            'subject' => $subject,
-            'body' => $body,
-            'owner' => $owner,
-            'sharingtype' => $sharingType,
-            'category' => $email_category,
-            'is_listview' => $is_listview,
-            'is_theme' => $is_theme,
-            'load_related_documents' => $load_related_documents,
+        $templateParams = [
+            'templatename'              => $templateName,
+            'module'                    => $moduleName,
+            'description'               => $description,
+            'subject'                   => $subject,
+            'body'                      => $body,
+            'owner'                     => $owner,
+            'sharingtype'               => $sharingType,
+            'category'                  => $email_category,
+            'is_listview'               => $is_listview,
+            'is_theme'                  => $is_theme,
+            'load_related_documents'    => $load_related_documents,
             'folders_related_documents' => $folders_related_documents,
-        );
+        ];
 
         $dec_point = $request->get('dec_point');
         $dec_decimals = $request->get('dec_decimals');
         $dec_thousands = $request->get('dec_thousands');
 
-        $settingsParams = array(
-            'decimals' => $dec_decimals,
-            'decimal_point' => $dec_point,
+        $settingsParams = [
+            'decimals'            => $dec_decimals,
+            'decimal_point'       => $dec_point,
             'thousands_separator' => ' ' == $dec_thousands ? 'sp' : $dec_thousands
-        );
+        ];
 
         $templateId = EMAILMaker_Record_Model::saveTemplate($templateParams, $templateId);
 

@@ -1,12 +1,20 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- ************************************************************************************/
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 // Switch the working directory to base
 chdir(dirname(__FILE__) . '/../../../..');
@@ -16,38 +24,43 @@ include_once 'vtlib/Vtiger/Module.php';
 include_once 'include/utils/VtlibUtils.php';
 include_once 'include/recaptcha/recaptchalib.php';
 
-class Webform_CheckCaptcha {
-
-	function checkCaptchaNow($request) {
+class Webform_CheckCaptcha
+{
+    function checkCaptchaNow($request)
+    {
         // reCAPTCHA public and private keys to validate
-		$publickey = "6Lchg-wSAAAAAIkV51_LSksz6fFdD2vgy59jwa38";
+        $publickey = "6Lchg-wSAAAAAIkV51_LSksz6fFdD2vgy59jwa38";
         $privatekey = "6Lchg-wSAAAAABUvZ57ogylowuv8SK0Hq4h2Yghs";
 
         // to store the response from reCAPTCHA
         $resp = null;
 
         if ($request["recaptcha_response_field"]) {
-                $resp = recaptcha_check_answer ($privatekey,
-                                                $_SERVER["REMOTE_ADDR"],
-                                                $request["recaptcha_challenge_field"],
-                                                $request["recaptcha_response_field"]);
+            $resp = recaptcha_check_answer(
+                $privatekey,
+                $_SERVER["REMOTE_ADDR"],
+                $request["recaptcha_challenge_field"],
+                $request["recaptcha_response_field"]
+            );
 
-                if ($resp->is_valid) {
-                        $this->sendResponse(true, $request['callId']);
-                } else {
-                        $this->sendResponse(false, $request['callId']);
-                }
+            if ($resp->is_valid) {
+                $this->sendResponse(true, $request['callId']);
+            } else {
+                $this->sendResponse(false, $request['callId']);
+            }
         } else {
-			$this->sendResponse(false, $request['callId']);
-		}
-	}
+            $this->sendResponse(false, $request['callId']);
+        }
+    }
 
-	protected function sendResponse($success, $callId) {
+    protected function sendResponse($success, $callId)
+    {
         $response = new Vtiger_Response();
-        if ($success)
-            $response->setResult(array('success' => true, 'callId' => $callId));
-        else
-            $response->setResult(array('success' => false, 'callId' => $callId));
+        if ($success) {
+            $response->setResult(['success' => true, 'callId' => $callId]);
+        } else {
+            $response->setResult(['success' => false, 'callId' => $callId]);
+        }
 
         // Support JSONP
         if (!empty($_REQUEST['callback'])) {
@@ -58,9 +71,8 @@ class Webform_CheckCaptcha {
         } else {
             $response->emit();
         }
-	}
+    }
 }
 
 $webformCheckCaptcha = new Webform_CheckCaptcha;
 $webformCheckCaptcha->checkCaptchaNow(vtlib_purify($_REQUEST));
-?>

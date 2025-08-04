@@ -1,85 +1,103 @@
 <?php
-/**
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 require_once 'include/Webservices/Query.php';
 
-class MailManager extends CRMExtension {
-
+class MailManager extends CRMExtension
+{
     public string $moduleName = 'MailManager';
     public string $parentName = 'Tools';
     public $id;
     public $allowDeleted;
 
-    static function updateMailAssociation($mailuid, $emailid, $crmid) {
-		global $adb;
-		$adb->pquery("INSERT INTO vtiger_mailmanager_mailrel (mailuid, emailid, crmid) VALUES (?,?,?)", array($mailuid, $emailid, $crmid));
-	}
+    static function updateMailAssociation($mailuid, $emailid, $crmid)
+    {
+        global $adb;
+        $adb->pquery("INSERT INTO vtiger_mailmanager_mailrel (mailuid, emailid, crmid) VALUES (?,?,?)", [$mailuid, $emailid, $crmid]);
+    }
 
-	static function lookupMailInVtiger($searchTerm, $user) {
-		$handler = vtws_getModuleHandlerFromName('ITS4YouEmails', $user);
-		$meta = $handler->getMeta();
-		$moduleFields = $meta->getModuleFields();
-		$parentIdFieldInstance = $moduleFields['parent_id'];
-		$referenceModules = $parentIdFieldInstance->getReferenceList();
+    static function lookupMailInVtiger($searchTerm, $user)
+    {
+        $handler = vtws_getModuleHandlerFromName('ITS4YouEmails', $user);
+        $meta = $handler->getMeta();
+        $moduleFields = $meta->getModuleFields();
+        $parentIdFieldInstance = $moduleFields['parent_id'];
+        $referenceModules = $parentIdFieldInstance->getReferenceList();
 
-		$filteredResult = array();
-		foreach($referenceModules as $referenceModule) {
-			$referenceModuleHandler = vtws_getModuleHandlerFromName($referenceModule, $user);
-			$referenceModuleMeta = $referenceModuleHandler->getMeta();
-			$referenceModuleEmailFields = $referenceModuleMeta->getEmailFields();
-			$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
-			if($referenceModuleModel){
-				$referenceModuleEntityFieldsArray = $referenceModuleModel->getNameFields();
-			}
-			$searchFieldList = array_merge($referenceModuleEmailFields, $referenceModuleEntityFieldsArray);
-			if(!empty($searchFieldList) && !empty($referenceModuleEmailFields)) {
-				$searchFieldListString = implode(',', $referenceModuleEmailFields);
-				$where = null;
-				for($i=0; $i<php7_count($searchFieldList); $i++) {
-					if($i == php7_count($searchFieldList) - 1) {
-						$where .= sprintf($searchFieldList[$i]." like '%s'", $searchTerm);
-					} else {
-						$where .= sprintf($searchFieldList[$i]." like '%s' or ", $searchTerm);
-					}
-				}
-				if(!empty($where)) $where = "WHERE $where";
-				if($referenceModule == 'Users' && !is_admin($user)){
-					//Have to do seperate query since webservices will throw permission denied for users module for non admin users
-					global $adb;
-					$where .= " AND vtiger_users.status='Active'";
-					$query = "select $searchFieldListString,id from vtiger_users $where";
-					$dbResult = $adb->pquery($query,array());
-					$num_rows = $adb->num_rows($dbResult);
-					$result = array();
-					for($i=0;$i<$num_rows;$i++) {
-						$row = $adb->query_result_rowdata($dbResult,$i);
-						$id = $row['id'];
-						$webserviceId = vtws_getWebserviceEntityId($referenceModule, $id);
-						$row['id'] = $webserviceId;
-						$result[] = $row;
-					}
-				}else{
-					$result = vtws_query("select $searchFieldListString from $referenceModule $where;", $user);
-				}
+        $filteredResult = [];
+        foreach ($referenceModules as $referenceModule) {
+            $referenceModuleHandler = vtws_getModuleHandlerFromName($referenceModule, $user);
+            $referenceModuleMeta = $referenceModuleHandler->getMeta();
+            $referenceModuleEmailFields = $referenceModuleMeta->getEmailFields();
+            $referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
+            if ($referenceModuleModel) {
+                $referenceModuleEntityFieldsArray = $referenceModuleModel->getNameFields();
+            }
+            $searchFieldList = array_merge($referenceModuleEmailFields, $referenceModuleEntityFieldsArray);
+            if (!empty($searchFieldList) && !empty($referenceModuleEmailFields)) {
+                $searchFieldListString = implode(',', $referenceModuleEmailFields);
+                $where = null;
+                for ($i = 0; $i < php7_count($searchFieldList); $i++) {
+                    if ($i == php7_count($searchFieldList) - 1) {
+                        $where .= sprintf($searchFieldList[$i] . " like '%s'", $searchTerm);
+                    } else {
+                        $where .= sprintf($searchFieldList[$i] . " like '%s' or ", $searchTerm);
+                    }
+                }
+                if (!empty($where)) {
+                    $where = "WHERE $where";
+                }
+                if ($referenceModule == 'Users' && !is_admin($user)) {
+                    //Have to do seperate query since webservices will throw permission denied for users module for non admin users
+                    global $adb;
+                    $where .= " AND vtiger_users.status='Active'";
+                    $query = "select $searchFieldListString,id from vtiger_users $where";
+                    $dbResult = $adb->pquery($query, []);
+                    $num_rows = $adb->num_rows($dbResult);
+                    $result = [];
+                    for ($i = 0; $i < $num_rows; $i++) {
+                        $row = $adb->query_result_rowdata($dbResult, $i);
+                        $id = $row['id'];
+                        $webserviceId = vtws_getWebserviceEntityId($referenceModule, $id);
+                        $row['id'] = $webserviceId;
+                        $result[] = $row;
+                    }
+                } else {
+                    $result = vtws_query("select $searchFieldListString from $referenceModule $where;", $user);
+                }
 
+                foreach ($result as $record) {
+                    foreach ($searchFieldList as $searchField) {
+                        if (!empty($record[$searchField])) {
+                            $filteredResult[] = [
+                                'id'     => $record[$searchField],
+                                'name'   => $record[$searchField] . " - " . getTranslatedString($referenceModule),
+                                'record' => $record['id'],
+                                'module' => $referenceModule
+                            ];
+                        }
+                    }
+                }
+            }
+        }
 
-				foreach($result as $record) {
-					foreach($searchFieldList as $searchField) {
-						if(!empty($record[$searchField])) {
-							$filteredResult[] = array('id'=> $record[$searchField], 'name'=>$record[$searchField]." - ".getTranslatedString($referenceModule),
-													'record'=>$record['id'], 'module'=>$referenceModule);
-						}
-					}
-				}
-			}
-		}
-		return $filteredResult;
-	}
+        return $filteredResult;
+    }
 
     public static function lookupMailAssociation($mailuid)
     {
@@ -99,36 +117,43 @@ class MailManager extends CRMExtension {
         return false;
     }
 
-	static function checkModuleWriteAccessForCurrentUser($module) {
-		global $current_user;
-		if (isPermitted($module, 'CreateView') == "yes" && vtlib_isModuleActive($module)) {
-			return true;
-		}
-		return false;
-	}
+    static function checkModuleWriteAccessForCurrentUser($module)
+    {
+        global $current_user;
+        if (isPermitted($module, 'CreateView') == "yes" && vtlib_isModuleActive($module)) {
+            return true;
+        }
 
-	/**
-	 * function to check the read access for the current user
-	 * @global Users Instance $current_user
-	 * @param String $module - Name of the module
-	 * @return Boolean
-	 */
-	static function checkModuleReadAccessForCurrentUser($module) {
-		global $current_user;
-		if (isPermitted($module, 'DetailView') == "yes" && vtlib_isModuleActive($module)) {
-			return true;
-		}
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Invoked when special actions are performed on the module.
-	 * @param String $modulename - Module name
-	 * @param String $event_type - Event Type (module.postinstall, module.disabled, module.enabled, module.preuninstall)
-	 */
-	public function vtlib_handler($modulename, $event_type)
-	{
-	}
+    /**
+     * function to check the read access for the current user
+     *
+     * @param String $module - Name of the module
+     *
+     * @return Boolean
+     * @global Users Instance $current_user
+     */
+    static function checkModuleReadAccessForCurrentUser($module)
+    {
+        global $current_user;
+        if (isPermitted($module, 'DetailView') == "yes" && vtlib_isModuleActive($module)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Invoked when special actions are performed on the module.
+     *
+     * @param String $modulename - Module name
+     * @param String $event_type - Event Type (module.postinstall, module.disabled, module.enabled, module.preuninstall)
+     */
+    public function vtlib_handler($modulename, $event_type)
+    {
+    }
 
     /**
      * Required for mail manager create tickets action in full form

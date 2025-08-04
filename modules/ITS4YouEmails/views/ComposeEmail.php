@@ -1,13 +1,13 @@
 <?php
-
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 {
     /** @var bool|EMAILMaker_EMAILContent_Model */
@@ -158,7 +158,10 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
                             if (!empty($emailValue)) {
                                 $to[] = $emailValue;
                                 $toMailInfo[$recordId][] = $emailValue;
-                                $toMailNamesList[$recordId][] = ['label' => decode_html($recordModel->get('label')) . ' : ' . vtranslate('SINGLE_' . $moduleLabel, $moduleLabel), 'value' => $emailValue];
+                                $toMailNamesList[$recordId][] = [
+                                    'label' => decode_html($recordModel->get('label')) . ' : ' . vtranslate('SINGLE_' . $moduleLabel, $moduleLabel),
+                                    'value' => $emailValue
+                                ];
                             }
                         }
                     }
@@ -170,7 +173,10 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
                     if ($selectedFieldInfo) {
                         $to[] = $selectedFieldInfo['field_value'];
                         $toMailInfo[$selectedFieldInfo['record']][] = $selectedFieldInfo['field_value'];
-                        $toMailNamesList[$selectedFieldInfo['record']][] = ['label' => decode_html($selectedFieldInfo['record_label']), 'value' => $selectedFieldInfo['field_value']];
+                        $toMailNamesList[$selectedFieldInfo['record']][] = [
+                            'label' => decode_html($selectedFieldInfo['record_label']),
+                            'value' => $selectedFieldInfo['field_value']
+                        ];
                     } else {
                         $fallBack = true;
                     }
@@ -271,6 +277,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param object $recordModel
+     *
      * @return string
      */
     public function getEmailFieldFromRecord(object $recordModel): string
@@ -291,6 +298,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return mixed|String
      */
     public function getEmailTemplateIds(Vtiger_Request $request)
@@ -300,6 +308,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return mixed|String
      */
     public function getEmailTemplateLanguage(Vtiger_Request $request)
@@ -309,6 +318,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return mixed|string|null
      */
     public function getParentModule(Vtiger_Request $request)
@@ -318,6 +328,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return int|null
      */
     public function getParentRecord(Vtiger_Request $request): null|int
@@ -338,6 +349,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return mixed|String
      */
     public function getRecordId(Vtiger_Request $request)
@@ -359,7 +371,8 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
-     * @param $model
+     * @param                $model
+     *
      * @return array|mixed|String
      */
     public function getRecordsListFromRequest(Vtiger_Request $request, $model = false)
@@ -437,6 +450,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return mixed|String
      */
     public function getSourceModule(Vtiger_Request $request)
@@ -450,6 +464,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return array|mixed|String|String[]
      */
     public function getSourceRecords(Vtiger_Request $request)
@@ -471,9 +486,9 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         return $this->sourceRecordIds;
     }
 
-
     /**
      * @param Vtiger_Request $request
+     *
      * @return bool
      */
     public function isEmailListView(Vtiger_Request $request): bool
@@ -493,6 +508,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return array
      */
     public function requiresPermission(Vtiger_Request $request)
@@ -519,6 +535,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param $fileDetails
+     *
      * @return mixed
      */
     public function retrieveAttachmentDetails($fileDetails)
@@ -535,6 +552,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function retrieveAttachments(Vtiger_Request $request)
@@ -575,6 +593,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function retrieveDocumentsUrl(Vtiger_Request $request)
@@ -585,6 +604,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param $request
+     *
      * @return void
      */
     public function retrieveEMAILTemplates($request)
@@ -599,6 +619,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function retrieveEmailAddresses(Vtiger_Request $request)
@@ -624,7 +645,9 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $selectedSourceId = $request->get('selected_sourceid', null);
         $sourceModules = ['Accounts', 'Contacts', 'Leads'];
 
-        if ((in_array($sourceModule, $sourceModules) && !$isSingleRecord && !$this->isPDFActive && 'all' !== $selectedIds) || ($this->isEmailListView($request) && !$this->isPDFActive)) {
+        if ((in_array($sourceModule, $sourceModules) && !$isSingleRecord && !$this->isPDFActive && 'all' !== $selectedIds) || ($this->isEmailListView(
+                    $request
+                ) && !$this->isPDFActive)) {
             $noGrouping = true;
             $isSingleRecord = true;
             $selectedSourceId = '0';
@@ -706,19 +729,19 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
                             if (!empty($emailAddress) && (!$emailOptOutValue || !$isMoreSources)) {
                                 $emailAddressId = $fieldListRecordId . '|' . $emailAddress . '|' . $fieldListModule;
                                 $allEmails[$fieldListType][$groupId][] = [
-                                    'id' => $fieldListRecordId,
-                                    'name' => $emailName . ' <b>(' . $emailAddress . ')</b>',
+                                    'id'      => $fieldListRecordId,
+                                    'name'    => $emailName . ' <b>(' . $emailAddress . ')</b>',
                                     'emailid' => $emailAddress,
-                                    'module' => $fieldListModule,
+                                    'module'  => $fieldListModule,
                                 ];
                                 $allEmailsLabels[$fieldListType][$groupId][$emailAddressId] = $emailName . ' <b>(' . $emailAddress . ')</b>';
                                 $allMailNamesList[$fieldListType][$groupId][$emailAddressId][] = [
-                                    'id' => $fieldListEmailId,
+                                    'id'       => $fieldListEmailId,
                                     'recordid' => $emailRecordId,
-                                    'sid' => $groupId,
-                                    'label' => $emailName,
-                                    'value' => $emailAddress,
-                                    'module' => $fieldListModule,
+                                    'sid'      => $groupId,
+                                    'label'    => $emailName,
+                                    'value'    => $emailAddress,
+                                    'module'   => $fieldListModule,
                                 ];
                                 $allMailInfo[$fieldListType][$groupId][$emailAddressId][] = $emailAddress;
                             }
@@ -825,6 +848,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function retrieveEmailInfo(Vtiger_Request $request)
@@ -845,8 +869,9 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
-     * @param int $recordId
-     * @param string $recordModule
+     * @param int            $recordId
+     * @param string         $recordModule
+     *
      * @return void
      */
     public function retrieveEmailInfoFromITS4YouEmails(Vtiger_Request $request, $recordId, $recordModule)
@@ -879,10 +904,11 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
-     * @param int $recordId
-     * @param string $recordModule
+     * @param int            $recordId
+     * @param string         $recordModule
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function retrieveEmailInfoFromMailManager(Vtiger_Request $request, int $recordId, string $recordModule): void
     {
@@ -901,23 +927,23 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $request->set('selected_sourceid', $sourceId);
         $request->set('source_names', [$sourceId]);
         $allEmails = [
-            'to' => [$sourceId => []],
-            'cc' => [$sourceId => []],
+            'to'  => [$sourceId => []],
+            'cc'  => [$sourceId => []],
             'bcc' => [$sourceId => []],
         ];
         $allMailInfo = [
-            'to' => [$sourceId => []],
-            'cc' => [$sourceId => []],
+            'to'  => [$sourceId => []],
+            'cc'  => [$sourceId => []],
             'bcc' => [$sourceId => []],
         ];
         $allMailNamesList = [
-            'to' => [$sourceId => []],
-            'cc' => [$sourceId => []],
+            'to'  => [$sourceId => []],
+            'cc'  => [$sourceId => []],
             'bcc' => [$sourceId => []],
         ];
         $allEmailsLabels = [
-            'to' => [$sourceId => []],
-            'cc' => [$sourceId => []],
+            'to'  => [$sourceId => []],
+            'cc'  => [$sourceId => []],
             'bcc' => [$sourceId => []],
         ];
 
@@ -989,6 +1015,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @throws Exception
      */
     public function retrieveEmailsForDetail(Vtiger_Request $request)
@@ -1037,6 +1064,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @throws Exception
      */
     public function retrieveEmailsForFields(Vtiger_Request $request)
@@ -1116,6 +1144,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function retrieveForward(Vtiger_Request $request)
@@ -1150,6 +1179,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function retrieveMailManager(Vtiger_Request $request)
@@ -1157,24 +1187,25 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $request->set('selected_sourceid', '0');
         $request->set('source_names', ['0']);
         $request->set('all_emails', [
-            'to' => ['0' => []],
-            'cc' => ['0' => []],
+            'to'  => ['0' => []],
+            'cc'  => ['0' => []],
             'bcc' => ['0' => []],
         ]);
         $request->set('all_mail_info', [
-            'to' => ['0' => []],
-            'cc' => ['0' => []],
+            'to'  => ['0' => []],
+            'cc'  => ['0' => []],
             'bcc' => ['0' => []],
         ]);
         $request->set('all_mail_names_list', [
-            'to' => ['0' => []],
-            'cc' => ['0' => []],
+            'to'  => ['0' => []],
+            'cc'  => ['0' => []],
             'bcc' => ['0' => []],
         ]);
     }
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function retrieveModeData(Vtiger_Request $request): void
@@ -1207,8 +1238,8 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $this->isPDFActive = true;
         $PDFLanguage = $request->get('pdf_template_language', $request->get('email_template_language'));
         $PDFTemplatesList = ITS4YouEmails_Utils_Helper::validatePDFTemplates($PDFTemplateIds, [
-            'records' => $this->getSourceRecords($request),
-            'module' => $this->getSourceModule($request),
+            'records'  => $this->getSourceRecords($request),
+            'module'   => $this->getSourceModule($request),
             'language' => $PDFLanguage,
         ]);
         $PDFTemplateIds = implode(';', array_keys($PDFTemplatesList));
@@ -1219,6 +1250,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function retrieveRecordDocumentsUrl(Vtiger_Request $request)
@@ -1262,6 +1294,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function retrieveReply(Vtiger_Request $request)
@@ -1271,6 +1304,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function retrieveReplyAll(Vtiger_Request $request)

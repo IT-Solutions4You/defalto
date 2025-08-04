@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 use League\OAuth2\Client\Provider\Google as Google;
@@ -167,13 +167,13 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
         if (!empty($ITS4YouEmails_SMTPOptions)) {
             $this->SMTPOptions = $ITS4YouEmails_SMTPOptions;
         } else {
-            $this->SMTPOptions = array(
-                'ssl' => array(
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
+            $this->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer'       => false,
+                    'verify_peer_name'  => false,
                     'allow_self_signed' => true
-                )
-            );
+                ]
+            ];
         }
     }
 
@@ -181,7 +181,8 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
      * @param string $host
      * @param string $username
      * @param string $password
-     * @param bool $auth
+     * @param bool   $auth
+     *
      * @return void
      */
     public function setSMTP($host, $username, $password, $auth = true, $smtpSecure = '', $port = 25, $provider = '', $clientId = '', $clientSecret = '', $refreshToken = '')
@@ -212,15 +213,15 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
                 $this->AuthType = 'XOAUTH2';
 
                 $provider = new Google([
-                    'clientId' => $clientId,
+                    'clientId'     => $clientId,
                     'clientSecret' => $clientSecret,
                 ]);
                 $oAuth = new OAuth([
-                    'provider' => $provider,
-                    'clientId' => $clientId,
+                    'provider'     => $provider,
+                    'clientId'     => $clientId,
                     'clientSecret' => $clientSecret,
                     'refreshToken' => $refreshToken,
-                    'userName' => $username,
+                    'userName'     => $username,
                 ]);
                 $this->setOAuth($oAuth);
             }
@@ -230,14 +231,14 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
     public function replaceImageSrc($content, $fromUrl, $toUrl)
     {
         return str_replace(
-            array(
+            [
                 'src="' . $fromUrl . '"',
                 "src='" . $fromUrl . "'",
-            ),
-            array(
+            ],
+            [
                 'src="' . $toUrl . '"',
                 'src="' . $toUrl . '"'
-            ),
+            ],
             $content
         );
     }
@@ -306,7 +307,7 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
     {
         $crmId = $this->MessageRecordID;
         $db = PearDatabase::getInstance();
-        $result = $db->pquery('SELECT messageid FROM vtiger_mailscanner_ids WHERE crmid=?', array($crmId));
+        $result = $db->pquery('SELECT messageid FROM vtiger_mailscanner_ids WHERE crmid=?', [$crmId]);
 
         return $db->query_result($result, 'messageid');
     }
@@ -328,24 +329,24 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
         $db = PearDatabase::getInstance();
         $existingResultObject = $db->pquery(
             'SELECT refids FROM vtiger_mailscanner_ids WHERE crmid=? AND refids != ?',
-            array($crmId, 'null')
+            [$crmId, 'null']
         );
 
         if ($db->num_rows($existingResultObject)) {
             $existingResult = json_decode($db->query_result($existingResultObject, 'refids', 0), true);
 
             if (is_array($existingResult)) {
-                $existingResultValue = array_merge($existingResult, array($messageId));
+                $existingResultValue = array_merge($existingResult, [$messageId]);
                 $refIds = json_encode($existingResultValue);
                 $db->pquery(
                     'UPDATE vtiger_mailscanner_ids SET refids=? WHERE crmid=?',
-                    array($refIds, $crmId)
+                    [$refIds, $crmId]
                 );
             }
         } else {
             $db->pquery(
                 'INSERT INTO vtiger_mailscanner_ids (messageid, crmid) VALUES(?,?)',
-                array($messageId, $crmId)
+                [$messageId, $crmId]
             );
         }
     }
@@ -358,24 +359,24 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
     public static function updateMessageIdByCrmId($messageId, $crmId): void
     {
         $db = PearDatabase::getInstance();
-        $existingResult = array();
-        $existingResultObject = $db->pquery("SELECT refids FROM vtiger_mailscanner_ids WHERE crmid=? AND refids != 'null'", array($crmId));
+        $existingResult = [];
+        $existingResultObject = $db->pquery("SELECT refids FROM vtiger_mailscanner_ids WHERE crmid=? AND refids != 'null'", [$crmId]);
 
         if ($db->num_rows($existingResultObject)) {
             $existingResult = json_decode($db->query_result($existingResultObject, 'refids', 0), true);
             // Checking if first parameter is not an array
             if (is_array($existingResult)) {
-                $existingResultValue = array_merge($existingResult, array($messageId));
+                $existingResultValue = array_merge($existingResult, [$messageId]);
                 $refIds = json_encode($existingResultValue);
                 $db->pquery(
                     'UPDATE vtiger_mailscanner_ids SET refids=? WHERE crmid=?',
-                    array($refIds, $crmId)
+                    [$refIds, $crmId]
                 );
             }
         } else {
             $db->pquery(
                 'INSERT INTO vtiger_mailscanner_ids (messageid, crmid) VALUES(?,?)',
-                array($messageId, $crmId)
+                [$messageId, $crmId]
             );
         }
     }
@@ -415,5 +416,4 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
 
         return $fromEmail;
     }
-
 }

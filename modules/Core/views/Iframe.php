@@ -1,17 +1,19 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Core_Iframe_View extends Vtiger_Basic_View
 {
     /**
      * @param Vtiger_Request $request
-     * @param bool $display
+     * @param bool           $display
+     *
      * @return void
      */
     public function preProcess(Vtiger_Request $request, $display = true)
@@ -20,6 +22,7 @@ class Core_Iframe_View extends Vtiger_Basic_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function process(Vtiger_Request $request)
@@ -32,6 +35,7 @@ class Core_Iframe_View extends Vtiger_Basic_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function postProcess(Vtiger_Request $request)
@@ -40,8 +44,9 @@ class Core_Iframe_View extends Vtiger_Basic_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return true
-     * @throws AppException
+     * @throws Exception
      */
     public function checkPermission(Vtiger_Request $request)
     {
@@ -65,7 +70,7 @@ class Core_Iframe_View extends Vtiger_Basic_View
             }
 
             if (!Users_Privileges_Model::isPermitted($moduleParameter, $permission['action'], $recordParameter)) {
-                throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+                throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
             }
         }
 
@@ -74,6 +79,7 @@ class Core_Iframe_View extends Vtiger_Basic_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return array
      */
     public function requiresPermission(Vtiger_Request $request)
@@ -81,7 +87,7 @@ class Core_Iframe_View extends Vtiger_Basic_View
         $request->set('record_module', getSalesEntityType($request->get('record')));
 
         $permissions = [];
-        $permissions[] = array('module_parameter' => 'record_module', 'action' => 'DetailView', 'record_parameter' => 'record');
+        $permissions[] = ['module_parameter' => 'record_module', 'action' => 'DetailView', 'record_parameter' => 'record'];
 
         return $permissions;
     }

@@ -1,9 +1,19 @@
 <?php
-/**
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 /**
@@ -157,7 +167,9 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * Gets the Mail Body
+     *
      * @param bool $safeHtml
+     *
      * @return string
      */
     public function getBody(bool $safeHtml = true): string
@@ -210,7 +222,9 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * Gets the Mail Date
+     *
      * @param Boolean $format
+     *
      * @return string Date
      */
     public function getDate($format = false)
@@ -240,6 +254,7 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * Sets the Mail Date
+     *
      * @param int $date time value
      */
     public function setDate($date)
@@ -297,7 +312,6 @@ class Settings_MailConverter_MailRecord_Handler
 
         $this->setFolderName($name);
 
-
         return $this->mFolderName;
     }
 
@@ -312,6 +326,7 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * Sets the Mail From Email Address
+     *
      * @param array $from Email
      */
     public function setFrom(array $from): void
@@ -354,7 +369,9 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * Gets the Mail Subject
+     *
      * @param Boolean $safehtml
+     *
      * @return String
      */
     public function getSubject($safeHtml = true): string
@@ -370,6 +387,7 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * Sets the Mail Subject
+     *
      * @param string $subject
      */
     public function setSubject(string $subject): void
@@ -388,6 +406,7 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * Sets the Mail To Email Address
+     *
      * @param array $to Email
      */
     public function setTo(array $to): void
@@ -427,6 +446,7 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * @param string|null $value
+     *
      * @return void
      */
     public function setUniqueId(string|null $value): void
@@ -475,7 +495,7 @@ class Settings_MailConverter_MailRecord_Handler
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function retrieveAttachments($withContent = true, $attachmentName = null, int $attachmentId = null): void
     {
@@ -486,9 +506,10 @@ class Settings_MailConverter_MailRecord_Handler
     }
 
     /**
-     * @param bool $withContent
+     * @param bool        $withContent
      * @param string|null $aName
-     * @param int|null $aId
+     * @param int|null    $aId
+     *
      * @return void
      */
     public function retrieveAttachmentsFromDB(bool $withContent, string|null $aName = null, int|null $aId = null)
@@ -544,7 +565,7 @@ class Settings_MailConverter_MailRecord_Handler
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function retrieveRecord(): void
     {
@@ -586,7 +607,8 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * @param array|int $value
-     * @param bool $clear
+     * @param bool      $clear
+     *
      * @return void
      */
     public function setAttachmentRelationIds(array|int $value, bool $clear = false): void
@@ -628,6 +650,7 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * Sets the Mail Message Number
+     *
      * @param Integer $value
      */
     public function setMsgNo(int $value): void
@@ -637,6 +660,7 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * Sets if the Mail is read
+     *
      * @param Boolean $read
      */
     public function setRead($read)
@@ -646,6 +670,7 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * @param int $value
+     *
      * @return void
      */
     public function setUid(int $value): void
@@ -673,8 +698,9 @@ class Settings_MailConverter_MailRecord_Handler
      * @param string $fileName
      * @param string $fileContent
      * @param string $fileType
+     *
      * @return array|null
-     * @throws AppException
+     * @throws Exception
      */
     public function saveAttachmentFile(string $fileName, string $fileContent, string $fileType): null|array
     {
@@ -696,9 +722,10 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * @param string $fileName
-     * @param int $fileSize
-     * @param int $userId
+     * @param int    $fileSize
+     * @param int    $userId
      * @param string $source
+     *
      * @return Documents_Record_Model
      */
     public function saveDocumentFile(string $fileName, int $fileSize, int $userId, string $source = 'MailRecord'): Documents_Record_Model
@@ -731,6 +758,7 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * @param string $string
+     *
      * @return int
      */
     public function getRecordIdByString(string $string): int
@@ -760,6 +788,7 @@ class Settings_MailConverter_MailRecord_Handler
      * @param string $tableName
      * @param string $tableId
      * @param string $tableNumber
+     *
      * @return int
      */
     public function getRecordIdByNo(string $number, string $tableName, string $tableId, string $tableNumber): int
@@ -783,7 +812,8 @@ class Settings_MailConverter_MailRecord_Handler
 
     /**
      * @param int|array $value
-     * @param bool $clear
+     * @param bool      $clear
+     *
      * @return void
      */
     public function setDocumentRelationIds(int|array $value, bool $clear = false): void

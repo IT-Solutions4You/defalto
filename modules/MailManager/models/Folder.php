@@ -1,28 +1,36 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- ************************************************************************************/
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class MailManager_Folder_Model {
-
-	protected $mName;
-	protected $mPath;
-	protected $mCount;
-	protected $mUnreadCount;
-	protected $mBoxFolder = null;
-	protected $mMails;
-	protected $mPageCurrent;
-	protected $mPageStart;
-	protected $mPageEnd;
-	protected $mPageLimit;
-	protected $mMailIds;
-	protected $startCount;
-	protected $endCount;
+class MailManager_Folder_Model
+{
+    protected $mName;
+    protected $mPath;
+    protected $mCount;
+    protected $mUnreadCount;
+    protected $mBoxFolder = null;
+    protected $mMails;
+    protected $mPageCurrent;
+    protected $mPageStart;
+    protected $mPageEnd;
+    protected $mPageLimit;
+    protected $mMailIds;
+    protected $startCount;
+    protected $endCount;
 
     public function __construct($name, $path = null, $mBoxFolder = null)
     {
@@ -51,34 +59,41 @@ class MailManager_Folder_Model {
         $this->mPath = $value;
     }
 
-    public function isSentFolder() {
-		$mailBoxModel = MailManager_Mailbox_Model::getActiveInstance();
-		$folderName = $mailBoxModel->getFolder();
-		if($this->mName == $folderName) {
-			return true;
-		}
-		return false;
-	}
-	
-	public function setName($name) {
-		$this->mName = $name;
-	}
+    public function isSentFolder()
+    {
+        $mailBoxModel = MailManager_Mailbox_Model::getActiveInstance();
+        $folderName = $mailBoxModel->getFolder();
+        if ($this->mName == $folderName) {
+            return true;
+        }
 
-	public function getMails() {
-		return $this->mMails;
-	}
+        return false;
+    }
 
-	public function getMailIds(){
-		return $this->mMailIds;
-	}
+    public function setName($name)
+    {
+        $this->mName = $name;
+    }
 
-	public function setMailIds($ids){
-		$this->mMailIds = $ids;
-	}
+    public function getMails()
+    {
+        return $this->mMails;
+    }
 
-	public function setMails($mails) {
-		$this->mMails = $mails;
-	}
+    public function getMailIds()
+    {
+        return $this->mMailIds;
+    }
+
+    public function setMailIds($ids)
+    {
+        $this->mMailIds = $ids;
+    }
+
+    public function setMails($mails)
+    {
+        $this->mMails = $mails;
+    }
 
     public function setPaging($limit, $total, $page)
     {
@@ -89,13 +104,15 @@ class MailManager_Folder_Model {
         $this->mPageEnd = 1;
     }
 
-    public function pageStart() {
-		return $this->mPageStart;
-	}
+    public function pageStart()
+    {
+        return $this->mPageStart;
+    }
 
-	public function pageEnd() {
-		return $this->mPageEnd;
-	}
+    public function pageEnd()
+    {
+        return $this->mPageEnd;
+    }
 
     public function pageInfo()
     {
@@ -105,9 +122,10 @@ class MailManager_Folder_Model {
         return sprintf("%s - %s of %s", $this->startCount, $this->endCount, $this->mCount);
     }
 
-    public function pageCurrent($offset=0) {
-		return $this->mPageCurrent + $offset;
-	}
+    public function pageCurrent($offset = 0)
+    {
+        return $this->mPageCurrent + $offset;
+    }
 
     public function hasNextPage()
     {
@@ -119,32 +137,39 @@ class MailManager_Folder_Model {
         return $this->startCount !== 1;
     }
 
-    public function count() {
-		return $this->mCount;
-	}
+    public function count()
+    {
+        return $this->mCount;
+    }
 
-	public function setCount($count) {
-		$this->mCount = $count;
-	}
+    public function setCount($count)
+    {
+        $this->mCount = $count;
+    }
 
-	public function unreadCount() {
-		return $this->mUnreadCount;
-	}
+    public function unreadCount()
+    {
+        return $this->mUnreadCount;
+    }
 
-	public function setUnreadCount($unreadCount) {
-		$this->mUnreadCount = $unreadCount;
-	}
+    public function setUnreadCount($unreadCount)
+    {
+        $this->mUnreadCount = $unreadCount;
+    }
 
-	public function getStartCount() {
-		return $this->startCount;
-	}
+    public function getStartCount()
+    {
+        return $this->startCount;
+    }
 
-	public function getEndCount() {
-		return $this->endCount;
-	}
+    public function getEndCount()
+    {
+        return $this->endCount;
+    }
 
     /**
      * @param $mBox
+     *
      * @return \Webklex\PHPIMAP\Folder|null
      */
     public function getBoxFolder($mBox): Webklex\PHPIMAP\Folder|null

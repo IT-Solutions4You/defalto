@@ -1,5 +1,5 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
@@ -7,25 +7,33 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-$languageStrings = array(
-	'CronTasks' => 'Schemaläggare',
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-	//Basic Field Names
-	'Id' => 'Id',
-	'Cron Job' => 'Cron Jobb',
-	'Frequency' => 'Frekvens',
-	'Status' => 'Status',
-	'Sist Start' => 'Senaste genomsökningen startade',
-	'Sist End' => 'Senaste genomsökningen slutade',
-	'Sequence' => 'Sekvens',
+$languageStrings = [
+    'CronTasks'     => 'Schemaläggare',
 
-	//Actions
-	'LBL_COMPLETED' => 'Klar',
-	'LBL_RUNNING' => 'Kör',
-	'LBL_ACTIVE' => 'Aktiv',
-	'LBL_INACTIVE' => 'Inaktiv',
+    //Basic Field Names
+    'Id'            => 'Id',
+    'Cron Job'      => 'Cron Jobb',
+    'Frequency'     => 'Frekvens',
+    'Status'        => 'Status',
+    'Sist Start'    => 'Senaste genomsökningen startade',
+    'Sist End'      => 'Senaste genomsökningen slutade',
+    'Sequence'      => 'Sekvens',
 
-  'Last Start' => 'Sista sökningen igång',
-  'Last End' => 'Senaste genomsökningen avslutats',
+    //Actions
+    'LBL_COMPLETED' => 'Klar',
+    'LBL_RUNNING'   => 'Kör',
+    'LBL_ACTIVE'    => 'Aktiv',
+    'LBL_INACTIVE'  => 'Inaktiv',
 
-);
+    'Last Start' => 'Sista sökningen igång',
+    'Last End'   => 'Senaste genomsökningen avslutats',
+];

@@ -1,9 +1,19 @@
 <?php
-/**
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 require_once('data/CRMEntity.php');
@@ -11,34 +21,35 @@ require_once('modules/HelpDesk/HelpDesk.php');
 require_once('modules/ModComments/ModComments.php');
 require_once('modules/Users/Users.php');
 require_once('modules/Documents/Documents.php');
-require_once ('modules/Leads/Leads.php');
-require_once ('modules/Contacts/Contacts.php');
-require_once ('modules/Accounts/Accounts.php');
+require_once('modules/Leads/Leads.php');
+require_once('modules/Contacts/Contacts.php');
+require_once('modules/Accounts/Accounts.php');
 
 /**
  * Mail Scanner Action
  */
-class Settings_MailConverter_MailScannerAction_Handler {
-	// actionid for this instance
-	public $actionid	= false;
-	// scanner to which this action is associated
-    public $scannerid	= false;
-	// type of mailscanner action
-    public $actiontype	= false;
-	// text representation of action
-    public $actiontext	= false;
-	// target module for action
-    public $module		= false;
-	// lookup information while taking action
-    public $lookup		= false;
+class Settings_MailConverter_MailScannerAction_Handler
+{
+    // actionid for this instance
+    public $actionid = false;
+    // scanner to which this action is associated
+    public $scannerid = false;
+    // type of mailscanner action
+    public $actiontype = false;
+    // text representation of action
+    public $actiontext = false;
+    // target module for action
+    public $module = false;
+    // lookup information while taking action
+    public $lookup = false;
 
-	// Storage folder to use
+    // Storage folder to use
     public $STORAGE_FOLDER = 'storage/mailscanner/';
 
     public $recordSource = 'MAIL SCANNER';
 
-	/** DEBUG functionality */
-    public $debug		= false;
+    /** DEBUG functionality */
+    public $debug = false;
     public $moduleName = 'MailConverter';
 
     public function log($message)
@@ -52,33 +63,35 @@ class Settings_MailConverter_MailScannerAction_Handler {
         }
     }
 
-	/**
-	 * Constructor.
-	 */
-	function __construct($foractionid) {
-		$this->initialize($foractionid);
-	}
+    /**
+     * Constructor.
+     */
+    function __construct($foractionid)
+    {
+        $this->initialize($foractionid);
+    }
 
-	/**
-	 * Initialize this instance.
-	 */
-	function initialize($foractionid) {
-		global $adb;
-		$result = $adb->pquery("SELECT * FROM vtiger_mailscanner_actions WHERE actionid=? ORDER BY sequence", Array($foractionid));
+    /**
+     * Initialize this instance.
+     */
+    function initialize($foractionid)
+    {
+        global $adb;
+        $result = $adb->pquery("SELECT * FROM vtiger_mailscanner_actions WHERE actionid=? ORDER BY sequence", [$foractionid]);
 
-		if($adb->num_rows($result)) {
-			$this->actionid		= $adb->query_result($result, 0, 'actionid');
-			$this->scannerid	= $adb->query_result($result, 0, 'scannerid');
-			$this->actiontype	= $adb->query_result($result, 0, 'actiontype');
-			$this->module		= $adb->query_result($result, 0, 'module');
-			$this->lookup		= $adb->query_result($result, 0, 'lookup');
-			$this->actiontext	= "$this->actiontype,$this->module,$this->lookup";
-		}
-	}
+        if ($adb->num_rows($result)) {
+            $this->actionid = $adb->query_result($result, 0, 'actionid');
+            $this->scannerid = $adb->query_result($result, 0, 'scannerid');
+            $this->actiontype = $adb->query_result($result, 0, 'actiontype');
+            $this->module = $adb->query_result($result, 0, 'module');
+            $this->lookup = $adb->query_result($result, 0, 'lookup');
+            $this->actiontext = "$this->actiontype,$this->module,$this->lookup";
+        }
+    }
 
-	/**
-	 * Create/Update the information of Action into database.
-	 */
+    /**
+     * Create/Update the information of Action into database.
+     */
     public function update($ruleid, $actiontext)
     {
         global $adb;
@@ -116,32 +129,35 @@ class Settings_MailConverter_MailScannerAction_Handler {
 
     /**
      * Delete the actions from tables.
-	 */
-	function delete() {
-		global $adb;
-		if($this->actionid) {
-			$adb->pquery("DELETE FROM vtiger_mailscanner_actions WHERE actionid=?", Array($this->actionid));
-			$adb->pquery("DELETE FROM vtiger_mailscanner_ruleactions WHERE actionid=?", Array($this->actionid));
-		}
-	}
+     */
+    function delete()
+    {
+        global $adb;
+        if ($this->actionid) {
+            $adb->pquery("DELETE FROM vtiger_mailscanner_actions WHERE actionid=?", [$this->actionid]);
+            $adb->pquery("DELETE FROM vtiger_mailscanner_ruleactions WHERE actionid=?", [$this->actionid]);
+        }
+    }
 
-	/**
-	 * Get next sequence of Action to use.
-	 */
-	function __nextsequence() {
-		global $adb;
-		$seqres = $adb->pquery("SELECT max(sequence) AS max_sequence FROM vtiger_mailscanner_actions", Array());
-		$maxsequence = 0;
-		if($adb->num_rows($seqres)) {
-			$maxsequence = $adb->query_result($seqres, 0, 'max_sequence');
-		}
-		++$maxsequence;
-		return $maxsequence;
-	}
+    /**
+     * Get next sequence of Action to use.
+     */
+    function __nextsequence()
+    {
+        global $adb;
+        $seqres = $adb->pquery("SELECT max(sequence) AS max_sequence FROM vtiger_mailscanner_actions", []);
+        $maxsequence = 0;
+        if ($adb->num_rows($seqres)) {
+            $maxsequence = $adb->query_result($seqres, 0, 'max_sequence');
+        }
+        ++$maxsequence;
+
+        return $maxsequence;
+    }
 
     /**
      * Apply the action on the mail record.
-     * @throws AppException
+     * @throws Exception
      */
     public function apply($mailScanner, $mailRecord, $mailScannerRule, $matchResult)
     {
@@ -178,7 +194,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
 
     /**
      * Update ticket action.
-     * @throws AppException
+     * @throws Exception
      */
     public function updateTicket(Settings_MailConverter_MailScanner_Handler $mailScanner, Settings_MailConverter_MailRecord_Handler $mailRecord, $regexMatchInfo, $mailScannerRule)
     {
@@ -235,41 +251,43 @@ class Settings_MailConverter_MailScannerAction_Handler {
     }
 
     /**
-	 * Create ticket action.
-	 */
-	public function createContact($mailScanner, $mailRecord, $mailScannerRule) {
-		if($mailScanner->getLookupContact($mailRecord->_from[0])) {
-			$this->lookup = 'FROM';
-			return $this->linkToRecord($mailScanner, $mailRecord);
-		}
-		$name = $this->getName($mailRecord);
-		$email = $mailRecord->_from[0];
-		$description = $mailRecord->getBodyText();
+     * Create ticket action.
+     */
+    public function createContact($mailScanner, $mailRecord, $mailScannerRule)
+    {
+        if ($mailScanner->getLookupContact($mailRecord->_from[0])) {
+            $this->lookup = 'FROM';
 
-		$contact = Vtiger_Record_Model::getCleanInstance('Contacts');
-		$this->setDefaultValue('Contacts', $contact);
-		$contact->set('firstname', $name[0]);
-		$contact->set('lastname', $name[1]);
-		$contact->set('email', $email);
-		$contact->set('assigned_user_id', $mailScannerRule->assigned_to);
-		$contact->set('description', $description);
-		$contact->set('source', $this->recordSource);
+            return $this->linkToRecord($mailScanner, $mailRecord);
+        }
+        $name = $this->getName($mailRecord);
+        $email = $mailRecord->_from[0];
+        $description = $mailRecord->getBodyText();
 
-		try {
-			$contact->save();
+        $contact = Vtiger_Record_Model::getCleanInstance('Contacts');
+        $this->setDefaultValue('Contacts', $contact);
+        $contact->set('firstname', $name[0]);
+        $contact->set('lastname', $name[1]);
+        $contact->set('email', $email);
+        $contact->set('assigned_user_id', $mailScannerRule->assigned_to);
+        $contact->set('description', $description);
+        $contact->set('source', $this->recordSource);
+
+        try {
+            $contact->save();
             $mailRecord->setDocumentRelationIds($contact->getId());
-			$this->saveAttachments($mailRecord, $contact);
+            $this->saveAttachments($mailRecord, $contact);
 
-			return $contact->getId();
-		} catch (Exception $e) {
-			//TODO - Review
-			return false;
-		}
-	}
+            return $contact->getId();
+        } catch (Exception $e) {
+            //TODO - Review
+            return false;
+        }
+    }
 
     /**
      * Create Lead action.
-     * @throws AppException
+     * @throws Exception
      */
     public function createLead($mailScanner, $mailRecord, $mailScannerRule)
     {
@@ -307,17 +325,19 @@ class Settings_MailConverter_MailScannerAction_Handler {
     }
 
     /**
-	 * Create Account action.
-	 */
-	public function createAccount($mailScanner, $mailRecord, $mailScannerRule) {
-		if($mailScanner->getLookupAccount($mailRecord->_from[0])) {
-			$this->lookup = 'FROM';
-			return $this->linkToRecord($mailScanner, $mailRecord);
-		}
+     * Create Account action.
+     */
+    public function createAccount($mailScanner, $mailRecord, $mailScannerRule)
+    {
+        if ($mailScanner->getLookupAccount($mailRecord->_from[0])) {
+            $this->lookup = 'FROM';
 
-		$name = $this->getName($mailRecord);
-		$email = $mailRecord->_from[0];
-		$description = $mailRecord->getBodyText();
+            return $this->linkToRecord($mailScanner, $mailRecord);
+        }
+
+        $name = $this->getName($mailRecord);
+        $email = $mailRecord->_from[0];
+        $description = $mailRecord->getBodyText();
         $account = Vtiger_Record_Model::getCleanInstance('Accounts');
         $this->setDefaultValue('Accounts', $account);
         $account->set('accountname', $name[0] . ' ' . $name[1]);
@@ -326,21 +346,21 @@ class Settings_MailConverter_MailScannerAction_Handler {
         $account->set('description', $description);
         $account->set('source', $this->recordSource);
 
-		try {
-			$account->save();
+        try {
+            $account->save();
             $mailRecord->setDocumentRelationIds($account->getId());
             $this->saveAttachments($mailRecord, $account);
 
-			return $account->getId();
-		} catch (Exception $e) {
-			//TODO - Review
-			return false;
-		}
-	}
+            return $account->getId();
+        } catch (Exception $e) {
+            //TODO - Review
+            return false;
+        }
+    }
 
-	/**
-	 * Create ticket action.
-	 */
+    /**
+     * Create ticket action.
+     */
     public function createTicket($mailScanner, $mailRecord, $mailScannerRule)
     {
         // Prepare data to create trouble ticket
@@ -403,18 +423,20 @@ class Settings_MailConverter_MailScannerAction_Handler {
     /**
      * Function to link email record to contact/account/lead
      * record if exists with same email id
+     *
      * @param object $mailScanner
      * @param object $mailRecord
-     * @throws AppException
+     *
+     * @throws Exception
      */
-	function linkMail(object $mailScanner, object $mailRecord, $relatedTo): void
+    function linkMail(object $mailScanner, object $mailRecord, $relatedTo): void
     {
-		$fromEmail = $mailRecord->_from[0];
+        $fromEmail = $mailRecord->_from[0];
         $linkFocus = $mailScanner->getContactRecord($fromEmail, $relatedTo);
 
-        if(!$linkFocus) {
+        if (!$linkFocus) {
             $linkFocus = $mailScanner->getAccountRecord($fromEmail, $relatedTo);
-		}
+        }
 
         if ($linkFocus) {
             $this->createNewEmail($mailRecord, $linkFocus, [$relatedTo]);
@@ -423,7 +445,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
 
     /**
      * Add email to CRM record like Contacts/Accounts
-     * @throws AppException
+     * @throws Exception
      */
     public function linkToRecord($mailScanner, $mailRecord)
     {
@@ -473,13 +495,13 @@ class Settings_MailConverter_MailScannerAction_Handler {
 
     public function setDefaultValue($module, $moduleObj): void
     {
-		$moduleInstance = Vtiger_Module_Model::getInstance($module);
-		$fieldInstances = Vtiger_Field_Model::getAllForModule($moduleInstance);
+        $moduleInstance = Vtiger_Module_Model::getInstance($module);
+        $fieldInstances = Vtiger_Field_Model::getAllForModule($moduleInstance);
 
-		foreach($fieldInstances as $blockInstance) {
-			foreach($blockInstance as $fieldInstance) {
-				$fieldName = $fieldInstance->getName();
-				$defaultValue = $fieldInstance->getDefaultFieldValue();
+        foreach ($fieldInstances as $blockInstance) {
+            foreach ($blockInstance as $fieldInstance) {
+                $fieldName = $fieldInstance->getName();
+                $defaultValue = $fieldInstance->getDefaultFieldValue();
 
                 if ($defaultValue) {
                     $moduleObj->set($fieldName, decode_html($defaultValue));
@@ -489,14 +511,16 @@ class Settings_MailConverter_MailScannerAction_Handler {
                     $moduleObj->set($fieldName, Vtiger_Util_Helper::getDefaultMandatoryValue($fieldInstance->getFieldDataType()));
                 }
             }
-		}
-	}
+        }
+    }
 
-	/**
-	 * Function to get Mail Sender's Name
-	 * @param Settings_MailConverter_MailRecord_Handler|Object $mailRecord
-	 * @return Array containing First Name and Last Name
-	 */
+    /**
+     * Function to get Mail Sender's Name
+     *
+     * @param Settings_MailConverter_MailRecord_Handler|Object $mailRecord
+     *
+     * @return Array containing First Name and Last Name
+     */
     public function getName($mailRecord)
     {
         $name = $mailRecord->getFromName();
@@ -522,13 +546,15 @@ class Settings_MailConverter_MailScannerAction_Handler {
 
     /**
      * Create new Email record (and link to given record) including attachments
+     *
      * @param MailManager_Message_Model|Settings_MailConverter_MailRecord_Handler|object $mailRecord
-     * @param CRMEntity $linkFocus
-     * @param array $relationIds
+     * @param CRMEntity                                                                  $linkFocus
+     * @param array                                                                      $relationIds
+     *
      * @return Integer
-     * @throws AppException
-     * @global PearDataBase $db
-     * @global Users $current_user
+     * @throws Exception
+     * @global PearDataBase                                                              $db
+     * @global Users                                                                     $current_user
      */
     public function createNewEmail(object $mailRecord, CRMEntity $linkFocus, array $relationIds = [])
     {
@@ -591,6 +617,7 @@ class Settings_MailConverter_MailScannerAction_Handler {
 
     /**
      * @param object $linkFocus
+     *
      * @return int
      */
     public function getAssignedToId(object $linkFocus): int
@@ -610,11 +637,13 @@ class Settings_MailConverter_MailScannerAction_Handler {
 
     /**
      * Save attachments from the email and add it to the module record.
+     *
      * @param MailManager_Message_Model|Settings_MailConverter_MailRecord_Handler|object $mailRecord
-     * @param Vtiger_Record_Model $recordModel
-     * @throws AppException
-     * @global String $root_directory
-     * @global PearDataBase $db
+     * @param Vtiger_Record_Model                                                        $recordModel
+     *
+     * @throws Exception
+     * @global String                                                                    $root_directory
+     * @global PearDataBase                                                              $db
      */
     public function saveAttachments(object $mailRecord, Vtiger_Record_Model $recordModel): void
     {
@@ -653,7 +682,6 @@ class Settings_MailConverter_MailScannerAction_Handler {
                     $documentRecord->saveDocumentsRelation($relationId, $documentRecord->getId());
                 }
             }
-
         }
 
         foreach ($mailRecord->getInlineAttachments() as $attachmentIndex => $attachmentInfo) {

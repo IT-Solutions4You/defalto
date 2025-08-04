@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class ITS4YouEmails_IndexAjax_Action extends Vtiger_Action_Controller
 {
     public function __construct()
@@ -40,7 +41,7 @@ class ITS4YouEmails_IndexAjax_Action extends Vtiger_Action_Controller
         $signature = decode_html($currentUserModel->get('signature'));
 
         $response = new Vtiger_Response();
-        $response->setResult(array('success' => true, 'signature' => $signature));
+        $response->setResult(['success' => true, 'signature' => $signature]);
         $response->emit();
     }
 }

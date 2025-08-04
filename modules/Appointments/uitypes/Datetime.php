@@ -1,17 +1,18 @@
 <?php
-
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Appointments_Datetime_UIType extends Vtiger_Datetime_UIType
 {
     /**
      * @param $value
+     *
      * @return string
      */
     public function getEditValue($value): string
@@ -20,7 +21,7 @@ class Appointments_Datetime_UIType extends Vtiger_Datetime_UIType
 
         if ('' !== $value) {
             $dateTimeValue = self::getDisplayDateTimeValue($value);
-            list($startDate, $startTime) = explode(' ', $dateTimeValue);
+            [$startDate, $startTime] = explode(' ', $dateTimeValue);
 
             $currentUser = Users_Record_Model::getCurrentUserModel();
 
@@ -36,6 +37,7 @@ class Appointments_Datetime_UIType extends Vtiger_Datetime_UIType
 
     /**
      * @param string $value
+     *
      * @return string
      */
     public function getEditViewDisplayValue($value): string

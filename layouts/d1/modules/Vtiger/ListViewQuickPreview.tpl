@@ -1,9 +1,11 @@
 {**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*}
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
 <div class="quickPreview modal-dialog modal-xl fixed-end ms-auto h-100 m-0 shadow">
     <input type="hidden" name="sourceModuleName" id="sourceModuleName" value="{$MODULE_NAME}"/>
     <input type="hidden" id="nextRecordId" value="{$NEXT_RECORD_ID}">

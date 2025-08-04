@@ -1,18 +1,20 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 var vtUtils = {
 
-        weekDaysArray : {Sunday : 0,Monday : 1, Tuesday : 2, Wednesday : 3,Thursday : 4, Friday : 5, Saturday : 6},
+    weekDaysArray: {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6},
 
 
     registerReplaceCommaWithDot: function (container) {
         container.off('keyup', '.replaceCommaWithDot').on('keyup', '.replaceCommaWithDot', function (e) {
-            if($(this).is('textarea')) {
+            if ($(this).is('textarea')) {
                 $(this).text($(this).text().toString().replace(',', '.'))
             } else {
                 $(this).val($(this).val().toString().replace(',', '.'))
@@ -20,12 +22,12 @@ var vtUtils = {
         });
     },
     updateSelect2ElementViewIds(selectElement) {
-        selectElement.each(function() {
+        selectElement.each(function () {
             let element = $(this),
                 id = element.attr('id'),
                 column = element.attr('name');
 
-            if(!id) {
+            if (!id) {
                 let similarElements = $('[name="' + column + '"]');
                 element.attr('id', column + (similarElements.length + 1));
             }
@@ -46,8 +48,8 @@ var vtUtils = {
         return selectElement
     },
     /**
-	 * Function which will show the select2 element for select boxes . This will use select2 library
-	 */
+     * Function which will show the select2 element for select boxes . This will use select2 library
+     */
     showSelect2ElementView: function (selectElement, params) {
         if (selectElement.length > 1) {
             selectElement.each(function () {
@@ -115,7 +117,7 @@ var vtUtils = {
             };
         }
 
-        if(typeof params.closeOnSelect == 'undefined') {
+        if (typeof params.closeOnSelect == 'undefined') {
             params.closeOnSelect = !selectElement.attr('multiple');
         }
 
@@ -123,7 +125,7 @@ var vtUtils = {
             params.selectOnClose = false;
         }
 
-        if(selectElement.parents('.modal').length) {
+        if (selectElement.parents('.modal').length) {
             params.dropdownParent = selectElement.parents('.modal');
         }
 
@@ -167,10 +169,10 @@ var vtUtils = {
     },
 
     /**
-	 * Function to check the maximum selection size of multiselect and update the results
-	 * @params <object> multiSelectElement
-	 * @params <object> select2 params
-	 */
+     * Function to check the maximum selection size of multiselect and update the results
+     * @params <object> multiSelectElement
+     * @params <object> select2 params
+     */
     registerChangeEventForMultiSelect: function (selectElement, params) {
         if (typeof selectElement == 'undefined') {
             return;
@@ -182,12 +184,12 @@ var vtUtils = {
             }
         });
     },
-    getFirstDayId: function() {
+    getFirstDayId: function () {
         const defaultFirstDay = jQuery('#start_day').val();
 
         return this.weekDaysArray[defaultFirstDay];
     },
-    getMonthNames: function() {
+    getMonthNames: function () {
         return [
             app.vtranslate('JS_JANUARY'),
             app.vtranslate('JS_FEBRUARY'),
@@ -203,7 +205,7 @@ var vtUtils = {
             app.vtranslate('JS_DECEMBER')
         ];
     },
-    getMonthNamesShort: function() {
+    getMonthNamesShort: function () {
         return [
             app.vtranslate('JS_JAN'),
             app.vtranslate('JS_FEB'),
@@ -219,7 +221,7 @@ var vtUtils = {
             app.vtranslate('JS_DEC')
         ];
     },
-    getDayNames: function() {
+    getDayNames: function () {
         return [
             app.vtranslate('JS_SUNDAY'),
             app.vtranslate('JS_MONDAY'),
@@ -230,7 +232,7 @@ var vtUtils = {
             app.vtranslate('JS_SATURDAY')
         ];
     },
-    getDayNamesShort: function() {
+    getDayNamesShort: function () {
         return [
             app.vtranslate('JS_SUN'),
             app.vtranslate('JS_MON'),
@@ -370,10 +372,10 @@ var vtUtils = {
             dayNamesShort: self.getDayNamesShort(),
             width: 'auto',
             currentText: app.vtranslate('JS_TODAY'),
-            beforeShow: function() {
+            beforeShow: function () {
                 updateButtons(element);
             },
-            onChangeMonthYear: function() {
+            onChangeMonthYear: function () {
                 updateButtons(element);
             },
             beforeShowDay: function (date) {
@@ -445,7 +447,7 @@ var vtUtils = {
 
         return userDateFormat
     },
-    getDatepickerDefaultParams: function(element) {
+    getDatepickerDefaultParams: function (element) {
         const self = this,
             language = app.getUserLanguage().substring(0, 2),
             format = self.getDatepickerFormat(element);
@@ -486,10 +488,10 @@ var vtUtils = {
             monthNamesShort: self.getMonthNamesShort(),
             dayNames: self.getDayNames(),
             dayNamesShort: self.getDayNamesShort(),
-            beforeShow: function() {
+            beforeShow: function () {
                 updateButtons(element);
             },
-            onChangeMonthYear: function() {
+            onChangeMonthYear: function () {
                 updateButtons(element);
             },
         };
@@ -541,76 +543,76 @@ var vtUtils = {
     },
 
     /**
-	 * Function which will register time fields
-	 * @params : container - jquery object which contains time fields with class timepicker-default or itself can be time field
-	 *			 registerForAddon - boolean value to register the event for Addon or not
-	 *			 params  - params for the  plugin
-	 * @return : container to support chaining
-	 */
-	registerEventForTimeFields : function(container, registerForAddon, params) {
-		if(typeof container === 'undefined') {
-			container = jQuery('body');
-		}
-		if(typeof registerForAddon === 'undefined'){
-			registerForAddon = true;
-		}
+     * Function which will register time fields
+     * @params : container - jquery object which contains time fields with class timepicker-default or itself can be time field
+     *             registerForAddon - boolean value to register the event for Addon or not
+     *             params  - params for the  plugin
+     * @return : container to support chaining
+     */
+    registerEventForTimeFields: function (container, registerForAddon, params) {
+        if (typeof container === 'undefined') {
+            container = jQuery('body');
+        }
+        if (typeof registerForAddon === 'undefined') {
+            registerForAddon = true;
+        }
 
-		container = jQuery(container);
+        container = jQuery(container);
 
-		if (container.hasClass('timepicker-default')) {
+        if (container.hasClass('timepicker-default')) {
             var element = container;
         } else {
             var element = container.find('.timepicker-default');
         }
 
-		if(registerForAddon === true){
-			var parentTimeElem = element.closest('.time');
-			jQuery('.input-group-addon',parentTimeElem).on('click',function(e){
-				var elem = jQuery(e.currentTarget);
-				elem.closest('.time').find('.timepicker-default').focus();
-			});
-		}
+        if (registerForAddon === true) {
+            var parentTimeElem = element.closest('.time');
+            jQuery('.input-group-addon', parentTimeElem).on('click', function (e) {
+                var elem = jQuery(e.currentTarget);
+                elem.closest('.time').find('.timepicker-default').focus();
+            });
+        }
 
-		if(typeof params === 'undefined') {
-			params = {};
-		}
+        if (typeof params === 'undefined') {
+            params = {};
+        }
 
-		var timeFormat = element.data('format');
-		if(timeFormat == '24') {
-			timeFormat = 'H:i';
-		} else {
-			timeFormat = 'h:i A';
-		}
-		var defaultsTimePickerParams = {
-			'timeFormat' : timeFormat,
-			'className'  : 'timePicker'
-		};
-		var params = jQuery.extend(defaultsTimePickerParams, params);
+        var timeFormat = element.data('format');
+        if (timeFormat == '24') {
+            timeFormat = 'H:i';
+        } else {
+            timeFormat = 'h:i A';
+        }
+        var defaultsTimePickerParams = {
+            'timeFormat': timeFormat,
+            'className': 'timePicker'
+        };
+        var params = jQuery.extend(defaultsTimePickerParams, params);
 
-        if(element.length) {
+        if (element.length) {
             element.timepicker(params);
         }
 
-		return container;
-	},
+        return container;
+    },
 
     /**
      * Function to change view of edited elements related to selected Plugin
      * @param {type} elementsContainer
      * @returns {undefined}
      */
-    applyFieldElementsView : function(container){
+    applyFieldElementsView: function (container) {
         this.showSelect2ElementView(container.find('select.select2'));
         this.registerEventForDateFields(container.find('.dateField').not('.ignore-ui-registration'));
         this.registerEventForTimeFields(container.find('.timepicker-default'));
     },
 
-    showQtip : function(element,message,customParams) {
-        if(typeof customParams === 'undefined') {
+    showQtip: function (element, message, customParams) {
+        if (typeof customParams === 'undefined') {
             customParams = {};
         }
 
-        let qtipParams =  {
+        let qtipParams = {
             content: {
                 text: message
             },
@@ -621,67 +623,67 @@ var vtUtils = {
                 event: 'Vtiger.Qtip.HideMesssage'
             }
         };
-        jQuery.extend(qtipParams,customParams);
+        jQuery.extend(qtipParams, customParams);
 
         element.qtip(qtipParams);
         element.trigger('Vtiger.Qtip.ShowMesssage');
     },
 
-    hideQtip : function(element) {
+    hideQtip: function (element) {
         element.trigger('Vtiger.Qtip.HideMesssage');
     },
 
-	linkifyStr : function(str) {
-		var options = {'TLDs':267};
-		return anchorme.js(str,options);
-	},
+    linkifyStr: function (str) {
+        var options = {'TLDs': 267};
+        return anchorme.js(str, options);
+    },
 
-	htmlSubstring : function(content, maxlength) {
-		var m, r = /<([^>\s]*)[^>]*>/g,
-			stack = [],
-			lasti = 0,
-			result = '';
+    htmlSubstring: function (content, maxlength) {
+        var m, r = /<([^>\s]*)[^>]*>/g,
+            stack = [],
+            lasti = 0,
+            result = '';
 
-		//for each tag, while we don't have enough characters
-		while ((m = r.exec(content)) && maxlength) {
-			//get the text substring between the last tag and this one
-			var temp = content.substring(lasti, m.index).substr(0, maxlength);
-			//append to the result and count the number of characters added
-			result += temp;
-			maxlength -= temp.length;
-			lasti = r.lastIndex;
+        //for each tag, while we don't have enough characters
+        while ((m = r.exec(content)) && maxlength) {
+            //get the text substring between the last tag and this one
+            var temp = content.substring(lasti, m.index).substr(0, maxlength);
+            //append to the result and count the number of characters added
+            result += temp;
+            maxlength -= temp.length;
+            lasti = r.lastIndex;
 
-			if (content) {
-				result += m[0];
-				if (m[1].indexOf('/') === 0) {
-					//if this is a closing tag, then pop the stack (does not account for bad html)
-					stack.pop();
-				} else if (m[1].lastIndexOf('/') !== m[1].length - 1) {
-					//if this is not a self closing tag then push it in the stack
-					stack.push(m[1]);
-				}
-			}
-		}
+            if (content) {
+                result += m[0];
+                if (m[1].indexOf('/') === 0) {
+                    //if this is a closing tag, then pop the stack (does not account for bad html)
+                    stack.pop();
+                } else if (m[1].lastIndexOf('/') !== m[1].length - 1) {
+                    //if this is not a self closing tag then push it in the stack
+                    stack.push(m[1]);
+                }
+            }
+        }
 
-		//add the remainder of the string, if needed (there are no more tags in here)
-		result += content.substr(lasti, maxlength);
+        //add the remainder of the string, if needed (there are no more tags in here)
+        result += content.substr(lasti, maxlength);
 
-		//fix the unclosed tags
-		while (stack.length) {
-			var unclosedtag = stack.pop();
-			if(jQuery.inArray(unclosedtag,['br']) == -1){
-				result += '</' + unclosedtag + '>';
-			}
-		}
-		return result;
-	},
+        //fix the unclosed tags
+        while (stack.length) {
+            var unclosedtag = stack.pop();
+            if (jQuery.inArray(unclosedtag, ['br']) == -1) {
+                result += '</' + unclosedtag + '>';
+            }
+        }
+        return result;
+    },
 
-    showValidationMessage : function(element,message,params) {
+    showValidationMessage: function (element, message, params) {
         if (element.hasClass('select2')) {
             element = app.helper.getSelect2FromSelect(element);
         }
 
-        if(typeof params === 'undefined') {
+        if (typeof params === 'undefined') {
             params = {};
         }
 
@@ -695,13 +697,13 @@ var vtUtils = {
             }
         };
 
-        jQuery.extend(validationTooltipParams,params);
-        this.showQtip(element,message,validationTooltipParams);
+        jQuery.extend(validationTooltipParams, params);
+        this.showQtip(element, message, validationTooltipParams);
         element.addClass('input-error');
     },
 
-    hideValidationMessage : function(element) {
-        if(element.hasClass('select2')) {
+    hideValidationMessage: function (element) {
+        if (element.hasClass('select2')) {
             element = app.helper.getSelect2FromSelect(element);
         }
         //should hide even message displyed by vtValidate
@@ -710,39 +712,39 @@ var vtUtils = {
         element.removeClass('input-error');
     },
 
-    getMomentDateFormat : function() {
+    getMomentDateFormat: function () {
         var dateFormat = app.getDateFormat();
         return dateFormat.toUpperCase();
     },
 
-    getMomentTimeFormat : function() {
+    getMomentTimeFormat: function () {
         var hourFormat = app.getHourFormat();
         var timeFormat = 'HH:mm';
-        if(hourFormat === 12) {
+        if (hourFormat === 12) {
             timeFormat = 'hh:mm A';
         }
         return timeFormat;
     },
 
-    getMomentCompatibleDateTimeFormat : function() {
+    getMomentCompatibleDateTimeFormat: function () {
         return this.getMomentDateFormat() + ' ' + this.getMomentTimeFormat();
     },
 
-    convertFileSizeInToDisplayFormat : function(fileSizeInBytes) {
-		 var i = -1;
-		var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
-		do {
-			fileSizeInBytes = fileSizeInBytes / 1024;
-			i++;
-		} while (fileSizeInBytes > 1024);
+    convertFileSizeInToDisplayFormat: function (fileSizeInBytes) {
+        var i = -1;
+        var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
+        do {
+            fileSizeInBytes = fileSizeInBytes / 1024;
+            i++;
+        } while (fileSizeInBytes > 1024);
 
-		return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
+        return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
 
-	},
+    },
 
     enableTooltips: function (querySelector) {
         jQuery(function () {
-            if(!querySelector) {
+            if (!querySelector) {
                 querySelector = '[data-bs-toggle="tooltip"]';
             }
 
@@ -750,8 +752,8 @@ var vtUtils = {
             const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
         });
     },
-    
-    stripTags : function(string,allowed) {
+
+    stripTags: function (string, allowed) {
         //https://stackoverflow.com/questions/5601903/jquery-almost-equivalent-of-phps-strip-tags#answer-46483672
         allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
         var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi;
@@ -759,37 +761,37 @@ var vtUtils = {
             return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
         });
     },
-	
+
     addMask: function (container) {
-            if (container.length && jQuery('#vt-mask').length == 0) {
-                    var mask = '<div id="vt-mask" class="vt-page-mask" ></div>'
-                    container.before(mask);
-            }
+        if (container.length && jQuery('#vt-mask').length == 0) {
+            var mask = '<div id="vt-mask" class="vt-page-mask" ></div>'
+            container.before(mask);
+        }
     },
 
     removeMask: function () {
-            if (jQuery('#vt-mask').length) {
-                    jQuery('#vt-mask').remove();
-            }
+        if (jQuery('#vt-mask').length) {
+            jQuery('#vt-mask').remove();
+        }
     },
-        
-    isPasswordStrong : function(password) {
-            /*
-            * ^					The password string will start this way
-            * (?=.*[a-z])			The string must contain at least 1 lowercase alphabetical character
-            * (?=.*[A-Z])			The string must contain at least 1 uppercase alphabetical character
-            * (?=.*[0-9])			The string must contain at least 1 numeric character
-            * (?=.*[!@#\$%\^&\*])	The string must contain at least one special character, but we are escaping reserved RegEx characters to avoid conflict
-            * (?=.{8,})			The string must be eight characters or longer
-            */
-           var password_regex = jQuery('[name="pwd_regex"]').val();
-           if((typeof password_regex != 'undefined') && (password_regex != '')){
-                var strongPasswordRegex = new RegExp(password_regex);
-                var isStrong = strongPasswordRegex.test(password)? true : false; 
-                return isStrong;
-           }
-	   // If password regex is not set - consider it as strong.
-           return true;
+
+    isPasswordStrong: function (password) {
+        /*
+        * ^					The password string will start this way
+        * (?=.*[a-z])			The string must contain at least 1 lowercase alphabetical character
+        * (?=.*[A-Z])			The string must contain at least 1 uppercase alphabetical character
+        * (?=.*[0-9])			The string must contain at least 1 numeric character
+        * (?=.*[!@#\$%\^&\*])	The string must contain at least one special character, but we are escaping reserved RegEx characters to avoid conflict
+        * (?=.{8,})			The string must be eight characters or longer
+        */
+        var password_regex = jQuery('[name="pwd_regex"]').val();
+        if ((typeof password_regex != 'undefined') && (password_regex != '')) {
+            var strongPasswordRegex = new RegExp(password_regex);
+            var isStrong = strongPasswordRegex.test(password) ? true : false;
+            return isStrong;
+        }
+        // If password regex is not set - consider it as strong.
+        return true;
     },
     makeSelect2ElementSortable: function (selectElement, valueElement, getValueFunction, setValueFunction) {
 
@@ -818,8 +820,8 @@ var vtUtils = {
             element.parents('select').append(element.detach());
         };
 
-        updateOptionTitles = function(selectElement) {
-            selectElement.find('option').each(function() {
+        updateOptionTitles = function (selectElement) {
+            selectElement.find('option').each(function () {
                 $(this).attr('title', $(this).html());
             });
         }

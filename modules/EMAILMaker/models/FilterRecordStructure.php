@@ -1,15 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_FilterRecordStructure_Model extends EMAILMaker_RecordStructure_Model
 {
-
     /**
      * Function to get the values in stuctured format
      * @return <array> - values in structure array('block'=>array(fieldinfo));
@@ -23,7 +23,7 @@ class EMAILMaker_FilterRecordStructure_Model extends EMAILMaker_RecordStructure_
         $recordModel = $this->getEMAILMakerModel();
         $recordId = $recordModel->getId();
 
-        $values = array();
+        $values = [];
 
         $baseModuleModel = $moduleModel = $this->getModule();
         $blockModelList = $moduleModel->getBlocks();
@@ -31,7 +31,7 @@ class EMAILMaker_FilterRecordStructure_Model extends EMAILMaker_RecordStructure_
         foreach ($blockModelList as $blockLabel => $blockModel) {
             $fieldModelList = $blockModel->getFields();
             if (!empty ($fieldModelList)) {
-                $values[$blockLabel] = array();
+                $values[$blockLabel] = [];
                 foreach ($fieldModelList as $fieldName => $fieldModel) {
                     if ($fieldModel->isViewableInFilterView()) {
                         if (!empty($recordId)) {
@@ -53,7 +53,7 @@ class EMAILMaker_FilterRecordStructure_Model extends EMAILMaker_RecordStructure_
 
         if ($moduleModel->isCommentEnabled()) {
             $commentFieldModel = EMAILMaker_Field_Model::getCommentFieldForFilterConditions($moduleModel);
-            $commentFieldModelsList = array($commentFieldModel->getName() => $commentFieldModel);
+            $commentFieldModelsList = [$commentFieldModel->getName() => $commentFieldModel];
 
             $labelName = vtranslate($moduleModel->getSingularLabelKey(), $moduleModel->getName()) . ' ' . vtranslate('LBL_COMMENTS', $moduleModel->getName());
             foreach ($commentFieldModelsList as $commentFieldName => $commentFieldModel) {
@@ -66,7 +66,7 @@ class EMAILMaker_FilterRecordStructure_Model extends EMAILMaker_RecordStructure_
         }
 
         //All the reference fields should also be sent
-        $fields = $moduleModel->getFieldsByType(array('reference', 'multireference'));
+        $fields = $moduleModel->getFieldsByType(['reference', 'multireference']);
         foreach ($fields as $parentFieldName => $field) {
             $referenceModules = $field->getReferenceList();
             foreach ($referenceModules as $refModule) {
@@ -85,12 +85,15 @@ class EMAILMaker_FilterRecordStructure_Model extends EMAILMaker_RecordStructure_
                         } else {
                             $newblockLabel = vtranslate($field->get('label'), $baseModuleModel->getName()) . '-' . vtranslate($blockLabel, $refModule);
                         }
-                        $values[$newblockLabel] = array();
+                        $values[$newblockLabel] = [];
                         $fieldModel = $fieldName = null;
                         foreach ($fieldModelList as $fieldName => $fieldModel) {
                             if ($fieldModel->isViewableInFilterView()) {
                                 $name = "($parentFieldName : ($refModule) $fieldName)";
-                                $label = vtranslate($field->get('label'), $baseModuleModel->getName()) . ' : (' . vtranslate($refModule, $refModule) . ') ' . vtranslate($fieldModel->get('label'), $refModule);
+                                $label = vtranslate($field->get('label'), $baseModuleModel->getName()) . ' : (' . vtranslate($refModule, $refModule) . ') ' . vtranslate(
+                                        $fieldModel->get('label'),
+                                        $refModule
+                                    );
                                 $fieldModel->set('emailmaker_columnname', $name)->set('emailmaker_columnlabel', $label);
                                 if (!empty($recordId)) {
                                     $fieldValueType = $recordModel->getFieldFilterValueType($name);
@@ -107,10 +110,11 @@ class EMAILMaker_FilterRecordStructure_Model extends EMAILMaker_RecordStructure_
                     }
                 }
 
-                $commentFieldModelsList = array();
+                $commentFieldModelsList = [];
             }
         }
         $this->structuredValues = $values;
+
         return $values;
     }
 }

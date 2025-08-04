@@ -1,19 +1,27 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Settings_Vtiger_OutgoingServer_Model extends Settings_Vtiger_Systems_Model {
-    
+class Settings_Vtiger_OutgoingServer_Model extends Settings_Vtiger_Systems_Model
+{
     private $defaultLoaded = false;
 
-
-    public function getSubject() {
+    public function getSubject()
+    {
         return 'Test mail about the mail server configuration.';
     }
 
@@ -26,40 +34,49 @@ class Settings_Vtiger_OutgoingServer_Model extends Settings_Vtiger_Systems_Model
                 <br><br>Thanks  and  Regards,<br> Team vTiger <br><br>';
     }
 
-    public function loadDefaultValues() {
+    public function loadDefaultValues()
+    {
         $defaultOutgoingServerDetails = VtigerConfig::getOD('DEFAULT_OUTGOING_SERVER_DETAILS');
         if (empty($defaultOutgoingServerDetails)) {
             $db = PearDatabase::getInstance();
-            $db->pquery('DELETE FROM vtiger_systems WHERE server_type = ?', array('email'));
+            $db->pquery('DELETE FROM vtiger_systems WHERE server_type = ?', ['email']);
+
             return;
         }
-        foreach ($defaultOutgoingServerDetails as $key=>$value){
-            $this->set($key,$value);
+        foreach ($defaultOutgoingServerDetails as $key => $value) {
+            $this->set($key, $value);
         }
 
         $this->defaultLoaded = true;
     }
-	
-	/**
-	 * Function to get CompanyDetails Menu item
-	 * @return menu item Model
-	 */
-	public function getMenuItem() {
-		$menuItem = Settings_Vtiger_MenuItem_Model::getInstance('LBL_MAIL_SERVER_SETTINGS');
-		return $menuItem;
-	}
-    
-	public function getEditViewUrl() {
-		$menuItem = $this->getMenuItem();
-		return '?module=Vtiger&parent=Settings&view=OutgoingServerEdit&block='.$menuItem->get('blockid').'&fieldid='.$menuItem->get('fieldid');
-	}
-	
-	public function getDetailViewUrl() {
-		$menuItem = $this->getMenuItem();
-		return '?module=Vtiger&parent=Settings&view=OutgoingServerDetail&block='.$menuItem->get('blockid').'&fieldid='.$menuItem->get('fieldid');
-	}
-	
-    public function isDefaultSettingLoaded() {
+
+    /**
+     * Function to get CompanyDetails Menu item
+     * @return menu item Model
+     */
+    public function getMenuItem()
+    {
+        $menuItem = Settings_Vtiger_MenuItem_Model::getInstance('LBL_MAIL_SERVER_SETTINGS');
+
+        return $menuItem;
+    }
+
+    public function getEditViewUrl()
+    {
+        $menuItem = $this->getMenuItem();
+
+        return '?module=Vtiger&parent=Settings&view=OutgoingServerEdit&block=' . $menuItem->get('blockid') . '&fieldid=' . $menuItem->get('fieldid');
+    }
+
+    public function getDetailViewUrl()
+    {
+        $menuItem = $this->getMenuItem();
+
+        return '?module=Vtiger&parent=Settings&view=OutgoingServerDetail&block=' . $menuItem->get('blockid') . '&fieldid=' . $menuItem->get('fieldid');
+    }
+
+    public function isDefaultSettingLoaded()
+    {
         return $this->defaultLoaded;
     }
 
@@ -70,7 +87,9 @@ class Settings_Vtiger_OutgoingServer_Model extends Settings_Vtiger_Systems_Model
 
         $currentUser = Users_Record_Model::getCurrentUserModel();
         $toEmail = getUserEmail($currentUser->getId());
-        $password = Vtiger_Functions::isProtectedText($request->get('server_password')) ? Vtiger_Functions::fromProtectedText($request->get('server_password')) : $request->get('server_password');
+        $password = Vtiger_Functions::isProtectedText($request->get('server_password')) ? Vtiger_Functions::fromProtectedText($request->get('server_password')) : $request->get(
+            'server_password'
+        );
         // This is added so that send_mail API will treat it as user initiated action
 
         $mailer = ITS4YouEmails_Mailer_Model::getCleanInstance();

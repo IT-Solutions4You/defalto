@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 class Installer_Download_Model
 {
     public const ZIP_CREATE = 'Zip file create';
@@ -180,7 +187,7 @@ class Installer_Download_Model
 
         Core_Install_Model::logSuccess(self::ZIP_CREATE);
 
-        mkdir(dirname($filename), 0755,true);
+        mkdir(dirname($filename), 0755, true);
         file_put_contents($filename, '');
 
         if (is_file($filename)) {
@@ -207,7 +214,7 @@ class Installer_Download_Model
 
     /**
      * @param string $value
-     * @param int $number
+     * @param int    $number
      *
      * @return void
      */
@@ -224,7 +231,7 @@ class Installer_Download_Model
     {
         global $root_directory;
 
-        if(chmod($root_directory, 0755)) {
+        if (chmod($root_directory, 0755)) {
             Core_Install_Model::logSuccess(self::START);
             $this->setProgress('retrieve', 1);
         } else {

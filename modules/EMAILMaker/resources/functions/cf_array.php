@@ -1,15 +1,17 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 /**
  * This function returns
- * @param $name - array name
+ *
+ * @param $name  - array name
  * @param $value -
  * */
 if (!function_exists('addToCFArray')) {
@@ -17,11 +19,13 @@ if (!function_exists('addToCFArray')) {
     {
         global $PDFContent;
         $PDFContent->PDFMakerCFArray[$name][] = $value;
+
         return "";
     }
 }
 /**
  * Join array elements with a string
+ *
  * @param $name - array name
  * @param $glue -
  * */
@@ -29,12 +33,14 @@ if (!function_exists('implodeCFArray')) {
     function implodeCFArray($name, $glue)
     {
         global $PDFContent;
+
         return implode($glue, $PDFContent->PDFMakerCFArray[$name]);
     }
 }
 /**
  * This function returns
- * @param $name - array name
+ *
+ * @param $name  - array name
  * @param $value -
  * */
 if (!function_exists('addToCFArrayALL')) {
@@ -42,11 +48,13 @@ if (!function_exists('addToCFArrayALL')) {
     {
         global $focus;
         $focus->PDFMakerCFArrayALL[$name][] = $value;
+
         return "";
     }
 }
 /**
  * Join array elements with a string
+ *
  * @param $name - array name
  * @param $glue -
  * */
@@ -54,11 +62,13 @@ if (!function_exists('implodeCFArrayALL')) {
     function implodeCFArrayALL($name, $glue)
     {
         global $focus;
+
         return implode($glue, $focus->PDFMakerCFArrayALL[$name]);
     }
 }
 /**
  * This function returns the sum of values in an array.
+ *
  * @param $name - array name
  * */
 if (!function_exists('sumCFArray')) {
@@ -69,11 +79,13 @@ if (!function_exists('sumCFArray')) {
             $PDFContent->PDFMakerCFArray[$name][$key] = its4you_formatNumberFromPDF($number);
         }
         $value = array_sum($PDFContent->PDFMakerCFArray[$name]);
+
         return its4you_formatNumberToPDF($value);
     }
 }
 /**
  * This function returns the sum of values in an array.
+ *
  * @param $name - array name
  * */
 if (!function_exists('sumCFArrayAll')) {
@@ -84,6 +96,7 @@ if (!function_exists('sumCFArrayAll')) {
             $focus->PDFMakerCFArrayALL[$name][$key] = its4you_formatNumberFromPDF($number);
         }
         $value = array_sum($focus->PDFMakerCFArrayALL[$name]);
+
         return its4you_formatNumberToPDF($value);
     }
 }

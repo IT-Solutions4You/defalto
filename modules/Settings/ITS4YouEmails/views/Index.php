@@ -1,20 +1,20 @@
 <?php
-/*******************************************************************************
- * The content of this file is subject to the ITS4YouEmails license.
- * ("License"); You may not use this file except in compliance with the License
- * The Initial Developer of the Original Code is IT-Solutions4You s.r.o.
- * Portions created by IT-Solutions4You s.r.o. are Copyright(C) IT-Solutions4You s.r.o.
- * All Rights Reserved.
- ***************************************************************************** */
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 class Settings_ITS4YouEmails_Index_View extends Settings_Vtiger_Index_View
 {
-
     public function preProcess(Vtiger_Request $request, $display = true)
     {
         $moduleName = $request->getModule();
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-        $settingLinks = array();
+        $settingLinks = [];
 
         foreach ($moduleModel->getSettingLinks() as $settingsLink) {
             $settingsLink['linklabel'] = sprintf(vtranslate($settingsLink['linklabel'], $moduleName), vtranslate($moduleName, $moduleName));
@@ -43,7 +43,6 @@ class Settings_ITS4YouEmails_Index_View extends Settings_Vtiger_Index_View
         $viewer->view('Index.tpl', $qualifiedModule);
     }
 
-
     public function getHeaderScripts(Vtiger_Request $request)
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
@@ -55,15 +54,16 @@ class Settings_ITS4YouEmails_Index_View extends Settings_Vtiger_Index_View
         unset($headerScriptInstances["modules.$moduleName.resources.Edit"]);
         unset($headerScriptInstances["modules.Settings.$moduleName.resources.Edit"]);
 
-        $jsFileNames = array(
+        $jsFileNames = [
             "modules.Settings.$moduleName.resources.Index",
-        );
+        ];
 
         return array_merge($headerScriptInstances, $this->checkAndConvertJsScripts($jsFileNames));
     }
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return array
      */
     public function getHeaderCss(Vtiger_Request $request)
@@ -71,11 +71,11 @@ class Settings_ITS4YouEmails_Index_View extends Settings_Vtiger_Index_View
         $moduleName = $request->getModule();
         $headerCssInstances = parent::getHeaderCss($request);
         $layout = Vtiger_Viewer::getDefaultLayoutName();
-        $cssFileNames = array(
+        $cssFileNames = [
             '~/layouts/' . $layout . '/skins/marketing/style.css',
             '~/layouts/' . $layout . '/modules/Settings/' . $moduleName . '/resources/Index.css',
-        );
+        ];
 
         return array_merge($headerCssInstances, $this->checkAndConvertCssStyles($cssFileNames));
     }
-} 
+}

@@ -1,21 +1,21 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
 {
-
     /**
      * @var PearDatabase
      */
     public $db;
-    public $documentsIds = array();
-    public $existingAttachments = array();
+    public $documentsIds = [];
+    public $existingAttachments = [];
     public $moduleName;
     /**
      * @var Users_Record_Model
@@ -24,7 +24,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
     public $description = '';
     public $subject = '';
     public $smtp = null;
-    public $mailAddresses = array();
+    public $mailAddresses = [];
     private $from_name;
     private $from_email;
     private $from_user;
@@ -47,6 +47,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         $mode = $request->getMode();
         if (!empty($mode)) {
             echo $this->invokeExposedMethod($mode, $request);
+
             return;
         }
     }
@@ -68,6 +69,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @throws Exception
      */
     public function massSave(Vtiger_Request $request)
@@ -75,7 +77,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         $this->db = PearDatabase::getInstance();
         $this->moduleName = $request->getModule();
         $this->currentUser = Users_Record_Model::getCurrentUserModel();
-        $sendEmails = array();
+        $sendEmails = [];
 
         $this->retrieveFromEmail($request);
         $this->retrieveDocuments($request);
@@ -83,16 +85,16 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         $this->retrieveSubject($request);
         $this->retrieveMailAddresses($request);
 
-        $sendEmails[] = array(
-            'subject' => $this->subject,
-            'description' => $this->description,
-            'attachment_ids' => $this->getAttachmentDocuments(),
-            'pdf_template_ids' => $request->get('pdf_template_ids'),
-            'pdf_template_language' => $request->get('pdf_template_language'),
-            'email_template_ids' => $request->get('email_template_ids'),
+        $sendEmails[] = [
+            'subject'                 => $this->subject,
+            'description'             => $this->description,
+            'attachment_ids'          => $this->getAttachmentDocuments(),
+            'pdf_template_ids'        => $request->get('pdf_template_ids'),
+            'pdf_template_language'   => $request->get('pdf_template_language'),
+            'email_template_ids'      => $request->get('email_template_ids'),
             'email_template_language' => $request->get('email_template_language'),
-            'is_merge_templates' => $request->get('is_merge_templates'),
-        );
+            'is_merge_templates'      => $request->get('is_merge_templates'),
+        ];
 
         $emailSentId = $this->saveEmails($sendEmails, $this->mailAddresses);
 
@@ -207,6 +209,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
 
     /**
      * @param array $fileDetails
+     *
      * @return false|int
      * @throws Exception
      */
@@ -244,7 +247,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function retrieveDocumentsFromSavedAttachments()
     {
@@ -258,10 +261,10 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                 $oldFileName = $existingAttachInfo['storedname'] ?? $fileName;
 
                 if (!empty ($fileId)) {
-		            $oldFileName = $existingAttachInfo['fileid'] . '_' . $oldFileName;
+                    $oldFileName = $existingAttachInfo['fileid'] . '_' . $oldFileName;
                 }
 
-	            $oldFilePath = rtrim($filePath, '/') . '/' . $oldFileName;
+                $oldFilePath = rtrim($filePath, '/') . '/' . $oldFileName;
 
                 $attachmentId = $this->db->getUniqueID('vtiger_crmentity');
                 $binFile = sanitizeUploadFileName($fileName, $upload_badext);
@@ -312,20 +315,20 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
     public function retrieveMailAddresses(Vtiger_Request $request)
     {
         $recordIds = $this->getRecordsListFromRequest($request);
-        $this->mailAddresses = array();
-        $mailTypes = array('to', 'cc', 'bcc');
+        $this->mailAddresses = [];
+        $mailTypes = ['to', 'cc', 'bcc'];
 
         if (!is_array($recordIds)) {
-            $getEmails = array($recordIds);
+            $getEmails = [$recordIds];
         } else {
             $getEmails = $recordIds;
         }
 
         if ($request->has('selected_sourceid')) {
-		    if (empty($getEmails) || '0' === $request->get('selected_sourceid')) {
-			    $getEmails = [
-				    $request->get('selected_sourceid')
-			    ];
+            if (empty($getEmails) || '0' === $request->get('selected_sourceid')) {
+                $getEmails = [
+                    $request->get('selected_sourceid')
+                ];
             }
         }
 
@@ -401,11 +404,12 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                 if (!is_array($selectedIds)) {
                     $selectedIds = trim($selectedIds, '"');
                 }
+
                 return $selectedIds;
             }
         }
 
-        return array();
+        return [];
     }
 
     public function getAttachmentDocuments()
@@ -447,15 +451,15 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                 $recordModelEmails->set('pdf_template_language', $sendEmail['pdf_template_language']);
                 $recordModelEmails->set('is_merge_templates', $sendEmail['is_merge_templates']);
 
-                if($this->smtp) {
+                if ($this->smtp) {
                     $recordModelEmails->set('smtp', $this->smtp);
                 } else {
                     $recordModelEmails->set('reply_email_ids', $this->from_user . '|' . $this->from_email . '|Users');
                     $recordModelEmails->set('reply_email', $this->from_email);
                 }
 
-                $mailCopies = array();
-                $mailAddressIds = array();
+                $mailCopies = [];
+                $mailAddressIds = [];
 
                 foreach ((array)$mailAddresses['to'] as $mailAddressId => $mailAddress) {
                     foreach ($emailTypes as $emailType) {
@@ -487,7 +491,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                     }
 
                     foreach ($mailAddress as $toEmailId => $toEmailAddress) {
-                        $insertedEmails = array();
+                        $insertedEmails = [];
 
                         [$toRecord, $toEmail, $toModule] = explode('|', $toEmailId);
 
@@ -507,14 +511,14 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                         $attachmentIds = array_unique(array_filter(explode(',', $sendEmail['attachment_ids'])));
 
                         foreach ($attachmentIds as $attachmentId) {
-                            if('Documents' === getSalesEntityType($attachmentId)) {
+                            if ('Documents' === getSalesEntityType($attachmentId)) {
                                 $cloneRecordModelEmails->saveDocumentRelation($attachmentId);
                             } else {
                                 $cloneRecordModelEmails->saveAttachmentRelation($attachmentId);
                             }
                         }
 
-                        if(!empty($mailAddressId)) {
+                        if (!empty($mailAddressId)) {
                             $cloneRecordModelEmails->setEmailRelation($mailAddressId);
                         }
 
@@ -589,7 +593,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
     public function getHeaderScripts(Vtiger_Request $request)
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-        $jsFileNames = array(
+        $jsFileNames = [
             "modules.EMAILMaker.resources.ckeditor.ckeditor",
             "libraries.jquery.ckeditor.adapters.jquery",
             'modules.Vtiger.resources.validator.BaseValidator',
@@ -600,10 +604,11 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
             'modules.Vtiger.resources.Vtiger',
             'libraries.jquery.jquery_windowmsg',
             'libraries.jquery.multiplefileupload.jquery_MultiFile'
-        );
+        ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
         $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+
         return $headerScriptInstances;
     }
 }

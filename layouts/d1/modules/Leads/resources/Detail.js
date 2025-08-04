@@ -1,9 +1,11 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 Vtiger_Detail_Js("Leads_Detail_Js", {
     //cache will store the convert lead data(Model)
@@ -22,16 +24,16 @@ Vtiger_Detail_Js("Leads_Detail_Js", {
         if (jQuery.isEmptyObject(Leads_Detail_Js.cache)) {
             app.helper.showProgress();
             app.request.get({"url": convertLeadUrl}).then(
-                    function (err, data) {
-                        app.helper.hideProgress();
-                        if (data) {
-                            Leads_Detail_Js.cache = data;
-                            instance.displayConvertLeadModel(data, buttonElement);
-                        }
-                    },
-                    function (error, err) {
-
+                function (err, data) {
+                    app.helper.hideProgress();
+                    if (data) {
+                        Leads_Detail_Js.cache = data;
+                        instance.displayConvertLeadModel(data, buttonElement);
                     }
+                },
+                function (error, err) {
+
+                }
             );
         } else {
             instance.displayConvertLeadModel(Leads_Detail_Js.cache, buttonElement);
@@ -49,7 +51,7 @@ Vtiger_Detail_Js("Leads_Detail_Js", {
     init: function () {
         this._super();
         Leads_Detail_Js.detailCurrentInstance = this;
-   },
+    },
     /*
      * function to enable all the input and textarea elements
      */
@@ -225,17 +227,17 @@ Vtiger_Detail_Js("Leads_Detail_Js", {
 
                 if (contactElement != '0' && organizationElement != '0') {
                     if (jQuery.inArray('Accounts', moduleArray) == -1 && jQuery.inArray('Contacts', moduleArray) == -1) {
-                        app.helper.showErrorNotification({message:app.vtranslate('JS_SELECT_ORGANIZATION_OR_CONTACT_TO_CONVERT_LEAD')});
+                        app.helper.showErrorNotification({message: app.vtranslate('JS_SELECT_ORGANIZATION_OR_CONTACT_TO_CONVERT_LEAD')});
                         return false;
                     }
                 } else if (organizationElement != '0') {
                     if (jQuery.inArray('Accounts', moduleArray) == -1) {
-                       app.helper.showErrorNotification({message:app.vtranslate('JS_SELECT_ORGANIZATION')});
+                        app.helper.showErrorNotification({message: app.vtranslate('JS_SELECT_ORGANIZATION')});
                         return false;
                     }
                 } else if (contactElement != '0') {
                     if (jQuery.inArray('Contacts', moduleArray) == -1) {
-                        app.helper.showErrorNotification({message:app.vtranslate('JS_SELECT_CONTACTS')});
+                        app.helper.showErrorNotification({message: app.vtranslate('JS_SELECT_CONTACTS')});
                         return false;
                     }
                 }

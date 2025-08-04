@@ -1,5 +1,5 @@
 <?php
-/*+**********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -7,6 +7,14 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 require_once 'modules/com_vtiger_workflow/VTEntityCache.inc';
 require_once 'modules/com_vtiger_workflow/VTWorkflowUtils.php';
@@ -35,6 +43,7 @@ class VTEmailTask extends VTTask
 
     /**
      * @param VTWorkflowEntity $entity
+     *
      * @return void
      * @throws Exception
      */
@@ -266,6 +275,7 @@ class VTEmailTask extends VTTask
 
             if (!$fromEmail) {
                 $utils->revertUser();
+
                 return false;
             }
 
@@ -297,6 +307,7 @@ class VTEmailTask extends VTTask
 
             if (strlen(trim($toEmail, " \t\n,")) == 0 && strlen(trim($ccEmail, " \t\n,")) == 0 && strlen(trim($bccEmail, " \t\n,")) == 0) {
                 $utils->revertUser();
+
                 return false;
             }
             $taskContents['toEmail'] = $toEmail;
@@ -314,7 +325,7 @@ class VTEmailTask extends VTTask
             $entityRecordId = vtws_getIdComponents($entityId)[1];
             $entityModuleName = getSalesEntityType($entityRecordId);
 
-            if(!empty($templateId) && is_numeric($templateId)) {
+            if (!empty($templateId) && is_numeric($templateId)) {
                 $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstanceById(
                     $templateId,
                     $language,
@@ -353,6 +364,7 @@ class VTEmailTask extends VTTask
         if (is_array($this->contents)) {
             $this->contents = Zend_Json::encode($this->contents);
         }
+
         return $this->contents;
     }
 
@@ -456,9 +468,9 @@ class VTEmailTask extends VTTask
 
         foreach ($parentRoleUsers as $parentRoleUserId => $parentRoleUserName) {
             $parentUserEmails[$userId][] = [
-                'id' => $parentRoleUserId,
+                'id'     => $parentRoleUserId,
                 'module' => 'Users',
-                'email' => getUserEmail($parentRoleUserId),
+                'email'  => getUserEmail($parentRoleUserId),
             ];
         }
 
@@ -580,6 +592,7 @@ class VTEmailTask extends VTTask
 
         return in_array($value, $selectedValues);
     }
+
     public function isSelectedCCEmailField($value)
     {
         $selectedValues = $this->getRecipientsCC();
@@ -646,6 +659,7 @@ class VTEmailTask extends VTTask
                             $parts[] = ["id" => $referenceId, "module" => $to_email_module, "email" => $data[$fieldname]];
                         }
                     }
+
                     return $parts;
                 }
 
@@ -667,6 +681,7 @@ class VTEmailTask extends VTTask
                             $parts[] = ["id" => $userId, "module" => "Users", "email" => $data[$fieldname]];
                         }
                     }
+
                     return $parts;
                 } elseif ($entity->getModuleName() === $referenceModule) {
                     $data = $entity->getData();
@@ -679,6 +694,7 @@ class VTEmailTask extends VTTask
                 }
             }
         }
+
         return false;
     }
 
@@ -708,8 +724,8 @@ class VTEmailTask extends VTTask
         return !empty($data[$fieldname]);
     }
 
-
-    public function retrievePDFTemplate($emailRecord) {
+    public function retrievePDFTemplate($emailRecord)
+    {
         $pdfTemplates = $this->getPDFTemplate();
 
         if (EMAILMaker_Module_Model::isPDFMakerInstalled() && !empty($pdfTemplates)) {
@@ -767,6 +783,7 @@ class VTEmailTask extends VTTask
 
     /**
      * @param string $moduleName
+     *
      * @return array
      */
     public function getPDFTemplates(string $moduleName): array

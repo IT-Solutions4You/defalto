@@ -1,16 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Reporting_Fields_Model extends Vtiger_Base_Model
 {
-
     public static array $moduleLabels = [];
     public static array $moduleVariables = [];
 
@@ -21,6 +20,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
 
     /**
      * @param string $fieldName
+     *
      * @return bool
      */
     public static function isCustomField(string $fieldName): bool
@@ -31,7 +31,8 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
     /**
      * @param object $record
      * @param string $fieldName
-     * @param mixed $fieldValue
+     * @param mixed  $fieldValue
+     *
      * @return mixed
      */
     public static function getCustomFieldValue(object $record, string $fieldName, mixed $fieldValue): mixed
@@ -41,7 +42,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
 
     public static function getFieldLabels(string $moduleName): array
     {
-        if(!empty(self::$moduleLabels[$moduleName])) {
+        if (!empty(self::$moduleLabels[$moduleName])) {
             return self::$moduleLabels[$moduleName];
         }
 
@@ -72,7 +73,10 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
                     $referenceFieldName = $referenceField->get('name');
                     $referenceFieldLabel = $referenceField->get('label');
 
-                    $options[implode(':', [$fieldName, $referenceModuleName, $referenceFieldName])] = vtranslate($fieldLabel, $moduleName) . ' - ' . vtranslate($referenceFieldLabel, $referenceModuleName);
+                    $options[implode(':', [$fieldName, $referenceModuleName, $referenceFieldName])] = vtranslate($fieldLabel, $moduleName) . ' - ' . vtranslate(
+                            $referenceFieldLabel,
+                            $referenceModuleName
+                        );
                 }
             }
         }
@@ -87,7 +91,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
         $fieldNames = self::$customFields;
         $fields = [];
 
-        foreach($fieldNames as $fieldName => $fieldLabel) {
+        foreach ($fieldNames as $fieldName => $fieldLabel) {
             $field = new Vtiger_Field_Model();
             $field->set('name', $fieldName);
             $field->set('label', $fieldLabel);
@@ -131,7 +135,10 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
                     $referenceFieldName = $referenceField->get('name');
                     $referenceFieldLabel = $referenceField->get('label');
 
-                    $options[implode(':', [$fieldName, $referenceModuleName])][implode(':', [$fieldName, $referenceModuleName, $referenceFieldName])] = vtranslate($referenceField->block->label, $referenceField->getModuleName()) . '##' . vtranslate($referenceFieldLabel, $referenceModuleName);
+                    $options[implode(':', [$fieldName, $referenceModuleName])][implode(':', [$fieldName, $referenceModuleName, $referenceFieldName])] = vtranslate(
+                            $referenceField->block->label,
+                            $referenceField->getModuleName()
+                        ) . '##' . vtranslate($referenceFieldLabel, $referenceModuleName);
                 }
             }
         }

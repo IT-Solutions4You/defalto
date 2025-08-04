@@ -1,32 +1,34 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class PDFMaker_Record_Model extends Vtiger_Record_Model
 {
-
     /**
      * Function to get the instance of Custom View module, given custom view id
+     *
      * @param <Integer> $cvId
+     *
      * @return CustomView_Record_Model instance, if exists. Null otherwise
      */
     public static function getInstanceById($templateId, $module = null)
     {
         $db = PearDatabase::getInstance();
         $sql = 'SELECT vtiger_pdfmaker.* FROM vtiger_pdfmaker WHERE vtiger_pdfmaker.templateid = ?';
-        $params = array($templateId);
+        $params = [$templateId];
         $result = $db->pquery($sql, $params);
 
         if ($db->num_rows($result) > 0) {
             $row = $db->query_result_rowdata($result, 0);
             $recordModel = new self();
             $row['label'] = $row['filename'];
+
             return $recordModel->setData($row)->setId($templateId)->setModule($row['module']);
         }
 
@@ -35,7 +37,9 @@ class PDFMaker_Record_Model extends Vtiger_Record_Model
 
     /**
      * Function to set the id of the record
+     *
      * @param <type> $value - id value
+     *
      * @return <Object> - current instance
      */
     public function setId($value)
@@ -45,6 +49,7 @@ class PDFMaker_Record_Model extends Vtiger_Record_Model
 
     /**
      * Function to delete the email template
+     *
      * @param type $recordIds
      */
     public function delete()
@@ -54,6 +59,7 @@ class PDFMaker_Record_Model extends Vtiger_Record_Model
 
     /**
      * Function to delete all the email templates
+     *
      * @param type $recordIds
      */
     public function deleteAllRecords()
@@ -63,7 +69,9 @@ class PDFMaker_Record_Model extends Vtiger_Record_Model
 
     /**
      * Function to get the Email Template Record
+     *
      * @param type $record
+     *
      * @return <EmailTemplate_Record_Model>
      */
 
@@ -128,7 +136,6 @@ class PDFMaker_Record_Model extends Vtiger_Record_Model
         if (!empty($conditions) && is_array($conditions)) {
             foreach ($conditions as $filter) {
                 if ($fieldname == $filter['fieldname']) {
-
                     return $filter['valuetype'];
                 }
             }
@@ -136,5 +143,4 @@ class PDFMaker_Record_Model extends Vtiger_Record_Model
 
         return false;
     }
-
 }

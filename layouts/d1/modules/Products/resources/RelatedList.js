@@ -1,16 +1,17 @@
 /**
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (c) vtiger.
-* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
-* All Rights Reserved.
-*/
-
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 PriceBooks_RelatedList_Js("Products_RelatedList_Js", {}, {
     /**
      * Function to get params for show event invocation
      */
-    getPopupParams: function() {
+    getPopupParams: function () {
         var relatedModuleName = this.relatedModulename;
         if (jQuery.inArray(relatedModuleName, ["Products", "Services", "PriceBooks"]) == -1) {
             return this._super();
@@ -22,8 +23,7 @@ PriceBooks_RelatedList_Js("Products_RelatedList_Js", {}, {
         if ((relatedModuleName === 'Products' && this.parentModuleName === "Services") || relatedModuleName === 'Services') {
             view = 'Popup';
             multiSelect = true;
-        }
-        else if (relatedModuleName === 'Products') {
+        } else if (relatedModuleName === 'Products') {
             view = 'ProductsPopup';
             srcField = 'productsList';
         }
@@ -39,7 +39,7 @@ PriceBooks_RelatedList_Js("Products_RelatedList_Js", {}, {
         }
         return parameters;
     },
-    addRelations: function(idList) {
+    addRelations: function (idList) {
         var thisInstance = this;
         var aDeferred = jQuery.Deferred();
         var sourceRecordId = this.parentRecordId;
@@ -59,7 +59,7 @@ PriceBooks_RelatedList_Js("Products_RelatedList_Js", {}, {
             params['relinfo'] = JSON.stringify(idList);
         } else {
             var relatedRecords = new Array();
-            jQuery.each(idList, function(id, quantity) {
+            jQuery.each(idList, function (id, quantity) {
                 relatedRecords.push(id);
             });
             params['related_record_list'] = JSON.stringify(relatedRecords);
@@ -68,7 +68,7 @@ PriceBooks_RelatedList_Js("Products_RelatedList_Js", {}, {
             }
         }
         app.helper.showProgress();
-        app.request.post({data: params}).then(function(err, responseData) {
+        app.request.post({data: params}).then(function (err, responseData) {
             var relatedIdList = Object.keys(idList);
             thisInstance.updateRelatedRecordsCount(relationId, relatedIdList, true);
             app.helper.hideProgress();
@@ -77,7 +77,7 @@ PriceBooks_RelatedList_Js("Products_RelatedList_Js", {}, {
 
         return aDeferred.promise();
     },
-    updateRelations: function(idList) {
+    updateRelations: function (idList) {
         var aDeferred = jQuery.Deferred();
         var sourceRecordId = this.parentRecordId;
         var sourceModuleName = this.parentModuleName;
@@ -92,7 +92,7 @@ PriceBooks_RelatedList_Js("Products_RelatedList_Js", {}, {
         params['relatedRecords'] = JSON.stringify(idList);
         params['record'] = sourceRecordId;
         params['relatedModule'] = relatedModuleName;
-        app.request.post({data: params}).then(function(responseData) {
+        app.request.post({data: params}).then(function (responseData) {
             aDeferred.resolve(responseData);
         });
 
@@ -101,101 +101,101 @@ PriceBooks_RelatedList_Js("Products_RelatedList_Js", {}, {
     /**
      * Function to trigger related record actions
      */
-	triggerRelationAdditionalActions: function() {
-		var thisInstance = this;
-		var sourceModuleName = thisInstance.parentModuleName;
-		var relatedModuleName = thisInstance.relatedModulename;
+    triggerRelationAdditionalActions: function () {
+        var thisInstance = this;
+        var sourceModuleName = thisInstance.parentModuleName;
+        var relatedModuleName = thisInstance.relatedModulename;
 
-		var tabLabel = thisInstance.getSelectedTabElement().data('label-key');
-		if (sourceModuleName == relatedModuleName && tabLabel == 'Product Bundles') {
-			var params = {
-				'module'		: sourceModuleName,
-				'relatedModule'	: relatedModuleName,
-				'record'		: thisInstance.parentRecordId,
-				'tabLabel'		: tabLabel,
-				'view'			: 'Detail',
-				'mode'			: 'showBundleTotalCostView'
-			}
-			app.request.post({data: params}).then(function(err, data) {
-					jQuery('.bundleCostContainer').html(data);
-					app.event.trigger('popover.click.event');
-			});
-		}
-	},
+        var tabLabel = thisInstance.getSelectedTabElement().data('label-key');
+        if (sourceModuleName == relatedModuleName && tabLabel == 'Product Bundles') {
+            var params = {
+                'module': sourceModuleName,
+                'relatedModule': relatedModuleName,
+                'record': thisInstance.parentRecordId,
+                'tabLabel': tabLabel,
+                'view': 'Detail',
+                'mode': 'showBundleTotalCostView'
+            }
+            app.request.post({data: params}).then(function (err, data) {
+                jQuery('.bundleCostContainer').html(data);
+                app.event.trigger('popover.click.event');
+            });
+        }
+    },
 
-	/**
-	 * Function to handle Sort
-	 */
-	sortHandler : function(headerElement) {
-		var thisInstance = this;
-		var sourceModuleName = thisInstance.parentModuleName;
-		var relatedModuleName = thisInstance.relatedModulename;
-		if (sourceModuleName == relatedModuleName) {
-			var bundleCostInfo = jQuery('.bundleCostInfo', thisInstance.relatedContentContainer);
-			return this._super(headerElement).then(function() {
-				jQuery('.bundleCostContainer').html(bundleCostInfo);
-});
-		}
-		return this._super(headerElement);
-	},
+    /**
+     * Function to handle Sort
+     */
+    sortHandler: function (headerElement) {
+        var thisInstance = this;
+        var sourceModuleName = thisInstance.parentModuleName;
+        var relatedModuleName = thisInstance.relatedModulename;
+        if (sourceModuleName == relatedModuleName) {
+            var bundleCostInfo = jQuery('.bundleCostInfo', thisInstance.relatedContentContainer);
+            return this._super(headerElement).then(function () {
+                jQuery('.bundleCostContainer').html(bundleCostInfo);
+            });
+        }
+        return this._super(headerElement);
+    },
 
-	/**
-	 * Function to handle next page navigation
-	 */
-	nextPageHandler : function() {
-		var thisInstance = this;
-		var sourceModuleName = thisInstance.parentModuleName;
-		var relatedModuleName = thisInstance.relatedModulename;
+    /**
+     * Function to handle next page navigation
+     */
+    nextPageHandler: function () {
+        var thisInstance = this;
+        var sourceModuleName = thisInstance.parentModuleName;
+        var relatedModuleName = thisInstance.relatedModulename;
 
-		if (sourceModuleName == relatedModuleName) {
-			var bundleCostInfo = jQuery('.bundleCostInfo', thisInstance.relatedContentContainer);
-			return this._super().then(function() {
-				jQuery('.bundleCostContainer').html(bundleCostInfo);
-			});
-		}
-		return this._super();
-	},
+        if (sourceModuleName == relatedModuleName) {
+            var bundleCostInfo = jQuery('.bundleCostInfo', thisInstance.relatedContentContainer);
+            return this._super().then(function () {
+                jQuery('.bundleCostContainer').html(bundleCostInfo);
+            });
+        }
+        return this._super();
+    },
 
-	/**
-	 * Function to handle next page navigation
-	 */
-	previousPageHandler : function() {
-		var thisInstance = this;
-		var sourceModuleName = thisInstance.parentModuleName;
-		var relatedModuleName = thisInstance.relatedModulename;
-		if (sourceModuleName == relatedModuleName) {
-			var bundleCostInfo = jQuery('.bundleCostInfo', thisInstance.relatedContentContainer);
-			return this._super().then(function() {
-				jQuery('.bundleCostContainer').html(bundleCostInfo);
-			});
-		}
-		return this._super();
-	},
+    /**
+     * Function to handle next page navigation
+     */
+    previousPageHandler: function () {
+        var thisInstance = this;
+        var sourceModuleName = thisInstance.parentModuleName;
+        var relatedModuleName = thisInstance.relatedModulename;
+        if (sourceModuleName == relatedModuleName) {
+            var bundleCostInfo = jQuery('.bundleCostInfo', thisInstance.relatedContentContainer);
+            return this._super().then(function () {
+                jQuery('.bundleCostContainer').html(bundleCostInfo);
+            });
+        }
+        return this._super();
+    },
 
-	/**
-	 * Function to handle page jump in related list
-	 */
-	pageJumpHandler : function(e){
-		var thisInstance = this;
-		var sourceModuleName = thisInstance.parentModuleName;
-		var relatedModuleName = thisInstance.relatedModulename;
-		if (sourceModuleName == relatedModuleName) {
-			var bundleCostInfo = jQuery('.bundleCostInfo', thisInstance.relatedContentContainer);
-			return this._super(e).then(function() {
-				jQuery('.bundleCostContainer').html(bundleCostInfo);
-			});
-		}
-		return this._super(e);
-	},
+    /**
+     * Function to handle page jump in related list
+     */
+    pageJumpHandler: function (e) {
+        var thisInstance = this;
+        var sourceModuleName = thisInstance.parentModuleName;
+        var relatedModuleName = thisInstance.relatedModulename;
+        if (sourceModuleName == relatedModuleName) {
+            var bundleCostInfo = jQuery('.bundleCostInfo', thisInstance.relatedContentContainer);
+            return this._super(e).then(function () {
+                jQuery('.bundleCostContainer').html(bundleCostInfo);
+            });
+        }
+        return this._super(e);
+    },
 
-	/**
-	 * Function to add related record for this record
-	 */
-	addRelatedRecord : function(element, callback) {
-		var thisInstance = this;
-		return thisInstance._super(element, callback).then(function() {
-			thisInstance.triggerRelationAdditionalActions();
-		});
-	},
+    /**
+     * Function to add related record for this record
+     */
+    addRelatedRecord: function (element, callback) {
+        var thisInstance = this;
+        return thisInstance._super(element, callback).then(function () {
+            thisInstance.triggerRelationAdditionalActions();
+        });
+    },
 
 })

@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 /**
  * based on http://php.su/articles/?cat=vars&page=006
  * */
@@ -74,9 +75,7 @@ $kopeek_ru[1] = "копейка ";
 $kopeek_ru[2] = "копейки ";
 $kopeek_ru[3] = "копеек ";
 
-
 if (!function_exists('semantic_ru')) {
-
     function semantic_ru($i, &$words, &$fem, $f)
     {
         global $_1_2_ru, $_1_19_ru, $des_ru, $hang_ru;
@@ -118,14 +117,12 @@ if (!function_exists('semantic_ru')) {
             }
         }
     }
-
 }
 
 if (!function_exists('num2str_ru')) {
-
     function num2str_ru($L)
     {
-        $L = str_replace(array(' ', ','), array('', '.'), $L);
+        $L = str_replace([' ', ','], ['', '.'], $L);
         global $namerub_ru, $nametho_ru, $namemil_ru, $namemrd_ru, $kopeek_ru;
 
         $s = " ";
@@ -176,5 +173,4 @@ if (!function_exists('num2str_ru')) {
 
         return $s;
     }
-
 }

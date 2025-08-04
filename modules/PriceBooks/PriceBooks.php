@@ -1,9 +1,19 @@
 <?php
-/**
+/**********************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *********************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class PriceBooks extends CRMEntity
@@ -26,12 +36,12 @@ class PriceBooks extends CRMEntity
     // This is the list of fields that are in the lists.
     public $list_fields = [
         'Price Book Name' => ['pricebook' => 'bookname'],
-        'Active' => ['pricebook' => 'active'],
+        'Active'          => ['pricebook' => 'active'],
     ];
 
     public $list_fields_name = [
         'Price Book Name' => 'bookname',
-        'Active' => 'active',
+        'Active'          => 'active',
     ];
     public $list_link_field = 'bookname';
 
@@ -60,11 +70,6 @@ class PriceBooks extends CRMEntity
         $this->db = PearDatabase::getInstance();
         $this->column_fields = getColumnFields('PriceBooks');
         $this->log->debug("Exiting PriceBook method ...");
-    }
-
-    public function PriceBooks()
-    {
-        self::__construct();
     }
 
     public function save_module($module)
@@ -105,7 +110,9 @@ class PriceBooks extends CRMEntity
     }
 
     /**    function used to get the products which are related to the pricebook
+     *
      * @param int $id - pricebook id
+     *
      * @return array - return an array which will be returned from the function getPriceBookRelatedProducts
      **/
     function get_pricebook_products($id, $cur_tab_id, $rel_tab_id, $actions = false)
@@ -122,10 +129,11 @@ class PriceBooks extends CRMEntity
 
         $parenttab = getParentTab();
 
-        if ($singlepane_view == 'true')
+        if ($singlepane_view == 'true') {
             $returnset = '&return_module=' . $this_module . '&return_action=DetailView&return_id=' . $id;
-        else
+        } else {
             $returnset = '&return_module=' . $this_module . '&return_action=CallRelatedList&return_id=' . $id;
+        }
 
         $button = '';
 
@@ -133,7 +141,11 @@ class PriceBooks extends CRMEntity
             $actions = sanitizeRelatedListsActions($actions);
 
             if (in_array('SELECT', $actions) && isPermitted($related_module, 4, '') == 'yes') {
-                $button .= "<input title='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString($related_module) . "' class='crmbutton small edit' type='submit' name='button' onclick=\"this.form.action.value='AddProductsToPriceBook';this.form.module.value='$related_module';this.form.return_module.value='$currentModule';this.form.return_action.value='PriceBookDetailView'\" value='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString($related_module) . "'>&nbsp;";
+                $button .= "<input title='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString(
+                        $related_module
+                    ) . "' class='crmbutton small edit' type='submit' name='button' onclick=\"this.form.action.value='AddProductsToPriceBook';this.form.module.value='$related_module';this.form.return_module.value='$currentModule';this.form.return_action.value='PriceBookDetailView'\" value='" . getTranslatedString(
+                        'LBL_SELECT'
+                    ) . " " . getTranslatedString($related_module) . "'>&nbsp;";
             }
         }
 
@@ -152,7 +164,9 @@ class PriceBooks extends CRMEntity
         $this->retrieve_entity_info($id, $this_module);
         $return_value = getPriceBookRelatedProducts($query, $this, $returnset);
 
-        if ($return_value == null) $return_value = [];
+        if ($return_value == null) {
+            $return_value = [];
+        }
         $return_value['CUSTOM_BUTTON'] = $button;
 
         $log->debug("Exiting get_pricebook_products method ...");
@@ -161,7 +175,9 @@ class PriceBooks extends CRMEntity
     }
 
     /**    function used to get the services which are related to the pricebook
+     *
      * @param int $id - pricebook id
+     *
      * @return array - return an array which will be returned from the function getPriceBookRelatedServices
      **/
     function get_pricebook_services($id, $cur_tab_id, $rel_tab_id, $actions = false)
@@ -178,10 +194,11 @@ class PriceBooks extends CRMEntity
 
         $parenttab = getParentTab();
 
-        if ($singlepane_view == 'true')
+        if ($singlepane_view == 'true') {
             $returnset = '&return_module=' . $this_module . '&return_action=DetailView&return_id=' . $id;
-        else
+        } else {
             $returnset = '&return_module=' . $this_module . '&return_action=CallRelatedList&return_id=' . $id;
+        }
 
         $button = '';
 
@@ -189,7 +206,11 @@ class PriceBooks extends CRMEntity
             $actions = sanitizeRelatedListsActions($actions);
 
             if (in_array('SELECT', $actions) && isPermitted($related_module, 4, '') == 'yes') {
-                $button .= "<input title='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString($related_module) . "' class='crmbutton small edit' type='submit' name='button' onclick=\"this.form.action.value='AddServicesToPriceBook';this.form.module.value='$related_module';this.form.return_module.value='$currentModule';this.form.return_action.value='PriceBookDetailView'\" value='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString($related_module) . "'>&nbsp;";
+                $button .= "<input title='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString(
+                        $related_module
+                    ) . "' class='crmbutton small edit' type='submit' name='button' onclick=\"this.form.action.value='AddServicesToPriceBook';this.form.module.value='$related_module';this.form.return_module.value='$currentModule';this.form.return_action.value='PriceBookDetailView'\" value='" . getTranslatedString(
+                        'LBL_SELECT'
+                    ) . " " . getTranslatedString($related_module) . "'>&nbsp;";
             }
         }
 
@@ -208,7 +229,9 @@ class PriceBooks extends CRMEntity
         $this->retrieve_entity_info($id, $this_module);
         $return_value = $other->getPriceBookRelatedServices($query, $this, $returnset);
 
-        if ($return_value == null) $return_value = [];
+        if ($return_value == null) {
+            $return_value = [];
+        }
         $return_value['CUSTOM_BUTTON'] = $button;
 
         $log->debug("Exiting get_pricebook_services method ...");
@@ -217,7 +240,9 @@ class PriceBooks extends CRMEntity
     }
 
     /**    function used to get whether the pricebook has related with a product or not
+     *
      * @param int $id - product id
+     *
      * @return true or false - if there are no pricebooks available or associated pricebooks for the product is equal to total number of pricebooks then return false, else return true
      */
     function get_pricebook_noproduct($id)
@@ -435,8 +460,9 @@ class PriceBooks extends CRMEntity
     {
         if (php7_count($productList) > 0) {
             foreach ($productList as $product) {
-                if (!$product['relatedto'])
+                if (!$product['relatedto']) {
                     continue;
+                }
                 $productName = $product['relatedto'];
                 $productName = explode('::::', $productName);
                 $productId = getEntityId($productName[0], $productName[1]);

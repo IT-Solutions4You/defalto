@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -25,7 +25,6 @@ class ITS4YouEmails_Module_Model extends Vtiger_Module_Model
         global $ITS4YouEmails_Mailer, $Emails_Mailer;
 
         if (self::isPHPMailerInstalled()) {
-
             $mailer = new PHPMailer();
             $mailer->isSMTP();
 
@@ -51,11 +50,11 @@ class ITS4YouEmails_Module_Model extends Vtiger_Module_Model
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
         if ($currentUserModel->isAdminUser()) {
-            $settingsLinks[] = array(
+            $settingsLinks[] = [
                 'linktype' => 'LISTVIEWSETTING',
                 'linklabel' => 'LBL_INTEGRATION',
                 'linkurl' => 'index.php?module=ITS4YouEmails&parent=Settings&view=Index',
-            );
+            ];
         }
 
         return $settingsLinks;
@@ -113,7 +112,9 @@ class ITS4YouEmails_Module_Model extends Vtiger_Module_Model
 
             $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 
-            if (($userPrivilegesModel->isAdminUser() || $userPrivilegesModel->hasGlobalReadPermission() || $userPrivilegesModel->hasModulePermission($moduleModel->getId())) && !$moduleModel->restrictToListInComposeEmailPopup()) {
+            if (($userPrivilegesModel->isAdminUser() || $userPrivilegesModel->hasGlobalReadPermission() || $userPrivilegesModel->hasModulePermission(
+                        $moduleModel->getId()
+                    )) && !$moduleModel->restrictToListInComposeEmailPopup()) {
                 $emailRelatedModules[] = $moduleName;
             }
         }

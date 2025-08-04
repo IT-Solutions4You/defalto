@@ -1,5 +1,5 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
@@ -7,62 +7,71 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-$languageStrings = array(
-	// Basic Strings
-	'Accounts' => 'Organisationer',
-	'SINGLE_Accounts' => 'Organisation',
-	'LBL_ADD_RECORD' => 'Lägg till Organisation',
-	'LBL_RECORDS_LIST' => 'Organisation Lista',
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-	// Blocks
-	'LBL_ACCOUNT_INFORMATION' => 'Organisation uppgifter',
+$languageStrings = [
+    // Basic Strings
+    'Accounts'                   => 'Organisationer',
+    'SINGLE_Accounts'            => 'Organisation',
+    'LBL_ADD_RECORD'             => 'Lägg till Organisation',
+    'LBL_RECORDS_LIST'           => 'Organisation Lista',
 
-	// Mass Action
-	'LBL_SHOW_ACCOUNT_HIERARCHY' => 'Organisationhierarki',
+    // Blocks
+    'LBL_ACCOUNT_INFORMATION'    => 'Organisation uppgifter',
 
-	//Field Labels
-	'industry' => 'Industri',
-	'Account Name' => 'Organisationsnamn',
-	'Account No' => 'Organisationsnummer',
-	'Website' => 'Hemsida',
-	'Ticker Symbol' => 'Ärendesymbol',
-	'Member Of' => 'Medlem av',
-	'Employees' => 'Anställda',
-	'Ownership' => 'Äganderätt',
-	'SIC Code' => 'SIC Kod',
-	'Other Email' => 'Sekundär E-post',
-	'Other Phone' => 'Sekundär Telefon',
-	'Phone' => 'Primär Telefon',
-	'Email' => 'Primär E-post',
-        'Type' => 'Typ',
-	
-	//Added for existing picklist entries
+    // Mass Action
+    'LBL_SHOW_ACCOUNT_HIERARCHY' => 'Organisationhierarki',
 
-	'Analyst'=>'Analyst',
-	'Competitor'=>'Konkurrent',
-	'Customer'=>'Kund',
-	'Integrator'=>'Integratör',
-	'Investor'=>'Investerare',
-	'Press'=>'Press',
-	'Prospect'=>'Prospekt',
-	'Reseller'=>'Återförsäljare',
-	'LBL_START_DATE' => 'Startdatum',
-	'LBL_END_DATE' => 'Slutdatum',
-	
-	//Duplication error message
-	'LBL_DUPLICATES_EXIST' => 'Organisationsnamnet existerar redan',
-	'LBL_COPY_SHIPPING_ADDRESS' => 'Kopiera Fraktadress',
-	'LBL_COPY_BILLING_ADDRESS' => 'Kopiera Faktureringsadress',
-    'LBL_IMAGE_INFORMATION' => 'Profilbild',
-    'Organization Image' => 'Organisationen bild',
+    //Field Labels
+    'industry'                   => 'Industri',
+    'Account Name'               => 'Organisationsnamn',
+    'Account No'                 => 'Organisationsnummer',
+    'Website'                    => 'Hemsida',
+    'Ticker Symbol'              => 'Ärendesymbol',
+    'Member Of'                  => 'Medlem av',
+    'Employees'                  => 'Anställda',
+    'Ownership'                  => 'Äganderätt',
+    'SIC Code'                   => 'SIC Kod',
+    'Other Email'                => 'Sekundär E-post',
+    'Other Phone'                => 'Sekundär Telefon',
+    'Phone'                      => 'Primär Telefon',
+    'Email'                      => 'Primär E-post',
+    'Type'                       => 'Typ',
+
+    //Added for existing picklist entries
+
+    'Analyst'                   => 'Analyst',
+    'Competitor'                => 'Konkurrent',
+    'Customer'                  => 'Kund',
+    'Integrator'                => 'Integratör',
+    'Investor'                  => 'Investerare',
+    'Press'                     => 'Press',
+    'Prospect'                  => 'Prospekt',
+    'Reseller'                  => 'Återförsäljare',
+    'LBL_START_DATE'            => 'Startdatum',
+    'LBL_END_DATE'              => 'Slutdatum',
+
+    //Duplication error message
+    'LBL_DUPLICATES_EXIST'      => 'Organisationsnamnet existerar redan',
+    'LBL_COPY_SHIPPING_ADDRESS' => 'Kopiera Fraktadress',
+    'LBL_COPY_BILLING_ADDRESS'  => 'Kopiera Faktureringsadress',
+    'LBL_IMAGE_INFORMATION'     => 'Profilbild',
+    'Organization Image'        => 'Organisationen bild',
 
     'Company Reg. No.' => 'Company Reg. No.',
-    'VAT ID' => 'VAT ID',
-);
+    'VAT ID'           => 'VAT ID',
+];
 
-$jsLanguageStrings = array(
-	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Är du säker på att du vill radera?',
-	'LBL_DELETE_CONFIRMATION' => 'Radera den här Organisation kommer att ta bort dess relaterade Affärsmöjligheter & Offerter. Är du säker på att du vill radera den här Organisationen?',
-	'LBL_MASS_DELETE_CONFIRMATION' => 'Radera den här Organisationen(erna) kommer att ta bort dess relaterade Affärsmöjligheter & Offerter. Är du säker på att du vill radera de valda posterna?',
-	'JS_DUPLICATE_CREATION_CONFIRMATION' => 'Organisationsnamnet finns redan. Vill du skapa en dubblett av poseten?'
-);
+$jsLanguageStrings = [
+    'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Är du säker på att du vill radera?',
+    'LBL_DELETE_CONFIRMATION'                => 'Radera den här Organisation kommer att ta bort dess relaterade Affärsmöjligheter & Offerter. Är du säker på att du vill radera den här Organisationen?',
+    'LBL_MASS_DELETE_CONFIRMATION'           => 'Radera den här Organisationen(erna) kommer att ta bort dess relaterade Affärsmöjligheter & Offerter. Är du säker på att du vill radera de valda posterna?',
+    'JS_DUPLICATE_CREATION_CONFIRMATION'     => 'Organisationsnamnet finns redan. Vill du skapa en dubblett av poseten?'
+];

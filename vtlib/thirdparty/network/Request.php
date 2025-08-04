@@ -361,10 +361,6 @@ class HTTP_Request
             $this->addHeader('Accept-Encoding', 'gzip');
         }
     }
-    function HTTP_Request($url = '', $params = array())
-    {
-        self::__construct($url, $params);
-    }
 
     /**
     * Generates a Host header for HTTP/1.1 requests
@@ -402,7 +398,7 @@ class HTTP_Request
     */
     function reset($url, $params = array())
     {
-        $this->HTTP_Request($url, $params);
+        self::__construct($url, $params);
     }
 
     /**
@@ -1201,10 +1197,6 @@ class HTTP_Response
     function __construct(&$sock, &$listeners) {
         $this->_sock      = $sock;
         $this->_listeners = $listeners;
-    }
-    function HTTP_Response(&$sock, &$listeners)
-    {
-        self::__construct($sock, $listeners);
     }
 
 

@@ -1,5 +1,5 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -7,64 +7,71 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-$languageStrings = array(
-	// Basic Strings
-	'Contacts' => 'Kontakty',
-	'SINGLE_Contacts' => 'Kontakt',
-	'LBL_ADD_RECORD' => 'Dodaj kontakt',
-	'LBL_RECORDS_LIST' => 'Lista kontaktów',
-	'LBL_RECORD_SUMMARY' => 'Podsumowanie kontaktu',
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-	// Blocks
-	'LBL_CONTACT_INFORMATION' => 'Podstawowe informacje',
-	'LBL_CUSTOMER_PORTAL_INFORMATION' => 'Dostęp do portalu Klienta',
-	'LBL_IMAGE_INFORMATION' => 'Informacje dotyczące zdjęcia',
-	
-	'LBL_COPY_OTHER_ADDRESS'       => 'Kopiowanie Inne Adres',
-	'LBL_COPY_MAILING_ADDRESS'     => 'Kopiuj adres korespondencyjny', 
+$languageStrings = [
+    // Basic Strings
+    'Contacts'                        => 'Kontakty',
+    'SINGLE_Contacts'                 => 'Kontakt',
+    'LBL_ADD_RECORD'                  => 'Dodaj kontakt',
+    'LBL_RECORDS_LIST'                => 'Lista kontaktów',
+    'LBL_RECORD_SUMMARY'              => 'Podsumowanie kontaktu',
 
-	//Field Labels
-	'Office Phone' => 'Telefon biurowy',
-	'Home Phone' => 'Telefon domowy',
-	'Title' => 'Stanowisko',
-	'Department' => 'Dział',
-	'Birthdate' => 'Data urodzin',
-	'Reports To' => 'Raporty do',
-	'Assistant' => 'Asystent(ka)',
-	'Assistant Phone' => 'Telefon asystenta(ki)',
-	'Do Not Call' => 'Nie dzwonić',
-	'Reference' => 'Referencje',
-	'Portal User' => 'Aktywacja portalu Klienta',
-	'Mailing Street' => 'Dane adresowe - ulica',
-	'Mailing City' => 'Dane adresowe - miasto',
-	'Mailing State' => 'Dane adresowe - województwo',
-	'Mailing Zip' => 'Dane adresowe - kod pocztowy',
-	'Mailing Country' => 'Dane adresowe - kraj',
-	'Mailing Po Box' => 'Dane adresowe - skrytka pocztowa',
-	'Other Street' => 'Adres dodatkowy - ulica',
-	'Other City' => 'Adres dodatkowy - miasto',
-	'Other State' => 'Adres dodatkowy - województwo',
-	'Other Zip' => 'Adres dodatkowy - kod pocztowy',
-	'Other Country' => 'Adres dodatkowy - kraj',
-	'Other Po Box' => 'Adres dodatkowy - skrytka pocztowa',
-	'Contact Image' => 'Zdjęcie kontaktu',
-    'Support Start Date' => 'Wsparcie Początek',
-    'Support End Date' => 'Data zakończenia wsparcia',
-	
-	//Added for Picklist Values
-	'Mr.'=>'Pan',
-	'Ms.'=>'Panna',
-	'Mrs.'=>'Pani',
-	'Dr.'=>'Dr',
-	'Prof.'=>'Prof.',
+    // Blocks
+    'LBL_CONTACT_INFORMATION'         => 'Podstawowe informacje',
+    'LBL_CUSTOMER_PORTAL_INFORMATION' => 'Dostęp do portalu Klienta',
+    'LBL_IMAGE_INFORMATION'           => 'Informacje dotyczące zdjęcia',
 
-	'User List'=>'Lista użytkowników',
-	'LBL_TRANSACTIONS' => 'Transacties',
-	
+    'LBL_COPY_OTHER_ADDRESS'   => 'Kopiowanie Inne Adres',
+    'LBL_COPY_MAILING_ADDRESS' => 'Kopiuj adres korespondencyjny',
 
-  'Other Phone' => 'Średnia Telefon',
-  'Email' => 'Podstawowy Adres E-Mail',
-  'Secondary Email' => 'Wtórne E-Mail',
-  'Contact Id' => 'Kontakt ID',
+    //Field Labels
+    'Office Phone'             => 'Telefon biurowy',
+    'Home Phone'               => 'Telefon domowy',
+    'Title'                    => 'Stanowisko',
+    'Department'               => 'Dział',
+    'Birthdate'                => 'Data urodzin',
+    'Reports To'               => 'Raporty do',
+    'Assistant'                => 'Asystent(ka)',
+    'Assistant Phone'          => 'Telefon asystenta(ki)',
+    'Do Not Call'              => 'Nie dzwonić',
+    'Reference'                => 'Referencje',
+    'Portal User'              => 'Aktywacja portalu Klienta',
+    'Mailing Street'           => 'Dane adresowe - ulica',
+    'Mailing City'             => 'Dane adresowe - miasto',
+    'Mailing State'            => 'Dane adresowe - województwo',
+    'Mailing Zip'              => 'Dane adresowe - kod pocztowy',
+    'Mailing Country'          => 'Dane adresowe - kraj',
+    'Mailing Po Box'           => 'Dane adresowe - skrytka pocztowa',
+    'Other Street'             => 'Adres dodatkowy - ulica',
+    'Other City'               => 'Adres dodatkowy - miasto',
+    'Other State'              => 'Adres dodatkowy - województwo',
+    'Other Zip'                => 'Adres dodatkowy - kod pocztowy',
+    'Other Country'            => 'Adres dodatkowy - kraj',
+    'Other Po Box'             => 'Adres dodatkowy - skrytka pocztowa',
+    'Contact Image'            => 'Zdjęcie kontaktu',
+    'Support Start Date'       => 'Wsparcie Początek',
+    'Support End Date'         => 'Data zakończenia wsparcia',
 
-);
+    //Added for Picklist Values
+    'Mr.'                      => 'Pan',
+    'Ms.'                      => 'Panna',
+    'Mrs.'                     => 'Pani',
+    'Dr.'                      => 'Dr',
+    'Prof.'                    => 'Prof.',
+
+    'User List'        => 'Lista użytkowników',
+    'LBL_TRANSACTIONS' => 'Transacties',
+
+    'Other Phone'     => 'Średnia Telefon',
+    'Email'           => 'Podstawowy Adres E-Mail',
+    'Secondary Email' => 'Wtórne E-Mail',
+    'Contact Id'      => 'Kontakt ID',
+];

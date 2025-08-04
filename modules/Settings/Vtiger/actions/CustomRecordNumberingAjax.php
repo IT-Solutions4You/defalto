@@ -1,96 +1,115 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Settings_Vtiger_CustomRecordNumberingAjax_Action extends Settings_Vtiger_Index_Action {
+class Settings_Vtiger_CustomRecordNumberingAjax_Action extends Settings_Vtiger_Index_Action
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this->exposeMethod('getModuleCustomNumberingData');
+        $this->exposeMethod('saveModuleCustomNumberingData');
+        $this->exposeMethod('updateRecordsWithSequenceNumber');
+    }
 
-	public function __construct() {
-		parent::__construct();
-		$this->exposeMethod('getModuleCustomNumberingData');
-		$this->exposeMethod('saveModuleCustomNumberingData');
-		$this->exposeMethod('updateRecordsWithSequenceNumber');
-	}
+    public function checkPermission(Vtiger_Request $request)
+    {
+        parent::checkPermission($request);
+        $qualifiedModuleName = $request->getModule(false);
+        $sourceModule = $request->get('sourceModule');
 
-	public function checkPermission(Vtiger_Request $request) {
-		parent::checkPermission($request);
-		$qualifiedModuleName = $request->getModule(false);
-		$sourceModule = $request->get('sourceModule');
+        if (!$sourceModule) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', $qualifiedModuleName));
+        }
+    }
 
-		if(!$sourceModule) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $qualifiedModuleName));
-		}
-	}
+    public function process(Vtiger_Request $request)
+    {
+        $mode = $request->getMode();
+        if (!empty($mode)) {
+            echo $this->invokeExposedMethod($mode, $request);
 
-	public function process(Vtiger_Request $request) {
-		$mode = $request->getMode();
-		if(!empty($mode)) {
-			echo $this->invokeExposedMethod($mode, $request);
-			return;
-		}
-	}
+            return;
+        }
+    }
 
-	/**
-	 * Function to get Module custom numbering data
-	 * @param Vtiger_Request $request
-	 */
-	public function getModuleCustomNumberingData(Vtiger_Request $request) {
-		$sourceModule = $request->get('sourceModule');
+    /**
+     * Function to get Module custom numbering data
+     *
+     * @param Vtiger_Request $request
+     */
+    public function getModuleCustomNumberingData(Vtiger_Request $request)
+    {
+        $sourceModule = $request->get('sourceModule');
 
-		$moduleModel = Settings_Vtiger_CustomRecordNumberingModule_Model::getInstance($sourceModule);
-		$moduleData = $moduleModel->getModuleCustomNumberingData();
-		
-		$response = new Vtiger_Response();
-		$response->setEmitType(Vtiger_Response::$EMIT_JSON);
-		$response->setResult($moduleData);
-		$response->emit();
-	}
+        $moduleModel = Settings_Vtiger_CustomRecordNumberingModule_Model::getInstance($sourceModule);
+        $moduleData = $moduleModel->getModuleCustomNumberingData();
 
-	/**
-	 * Function save module custom numbering data
-	 * @param Vtiger_Request $request
-	 */
-	public function saveModuleCustomNumberingData(Vtiger_Request $request) {
-		$qualifiedModuleName = $request->getModule(false);
-		$sourceModule = $request->get('sourceModule');
+        $response = new Vtiger_Response();
+        $response->setEmitType(Vtiger_Response::$EMIT_JSON);
+        $response->setResult($moduleData);
+        $response->emit();
+    }
 
-		$moduleModel = Settings_Vtiger_CustomRecordNumberingModule_Model::getInstance($sourceModule);
-		$moduleModel->set('prefix', $request->get('prefix'));
-		$moduleModel->set('sequenceNumber', $request->get('sequenceNumber'));
+    /**
+     * Function save module custom numbering data
+     *
+     * @param Vtiger_Request $request
+     */
+    public function saveModuleCustomNumberingData(Vtiger_Request $request)
+    {
+        $qualifiedModuleName = $request->getModule(false);
+        $sourceModule = $request->get('sourceModule');
 
-		$result = $moduleModel->setModuleSequence();
+        $moduleModel = Settings_Vtiger_CustomRecordNumberingModule_Model::getInstance($sourceModule);
+        $moduleModel->set('prefix', $request->get('prefix'));
+        $moduleModel->set('sequenceNumber', $request->get('sequenceNumber'));
 
-		$response = new Vtiger_Response();
-		if ($result['success']) {
-			$response->setResult(vtranslate('LBL_SUCCESSFULLY_UPDATED', $qualifiedModuleName));
-		} else {
-			$message = vtranslate('LBL_PREFIX_IN_USE', $qualifiedModuleName);
-			$response->setError($message);
-		}
-		$response->emit();
-	}
+        $result = $moduleModel->setModuleSequence();
 
-	/**
-	 * Function to update record with sequence number
-	 * @param Vtiger_Request $request
-	 */
-	public function updateRecordsWithSequenceNumber(Vtiger_Request $request) {
-		$sourceModule = $request->get('sourceModule');
+        $response = new Vtiger_Response();
+        if ($result['success']) {
+            $response->setResult(vtranslate('LBL_SUCCESSFULLY_UPDATED', $qualifiedModuleName));
+        } else {
+            $message = vtranslate('LBL_PREFIX_IN_USE', $qualifiedModuleName);
+            $response->setError($message);
+        }
+        $response->emit();
+    }
 
-		$moduleModel = Settings_Vtiger_CustomRecordNumberingModule_Model::getInstance($sourceModule);
-		$result = $moduleModel->updateRecordsWithSequence();
+    /**
+     * Function to update record with sequence number
+     *
+     * @param Vtiger_Request $request
+     */
+    public function updateRecordsWithSequenceNumber(Vtiger_Request $request)
+    {
+        $sourceModule = $request->get('sourceModule');
 
-		$response = new Vtiger_Response();
-		$response->setResult($result);
-		$response->emit();
-	}
-    
-    public function validateRequest(Vtiger_Request $request) {
+        $moduleModel = Settings_Vtiger_CustomRecordNumberingModule_Model::getInstance($sourceModule);
+        $result = $moduleModel->updateRecordsWithSequence();
+
+        $response = new Vtiger_Response();
+        $response->setResult($result);
+        $response->emit();
+    }
+
+    public function validateRequest(Vtiger_Request $request)
+    {
         $request->validateWriteAccess();
     }
 }

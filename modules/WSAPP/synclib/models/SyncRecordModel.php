@@ -1,79 +1,102 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
 require_once 'modules/WSAPP/synclib/models/BaseModel.php';
 
-class WSAPP_SyncRecordModel extends WSAPP_BaseModel{
+class WSAPP_SyncRecordModel extends WSAPP_BaseModel
+{
+    const WSAPP_CREATE_MODE = 'create';
+    const WSAPP_UPDATE_MODE = 'update';
+    const WSAPP_DELETE_MODE = 'delete';
+    const WSAPP_SAVE_MODE = 'save';
+    //SPecifies the module with which the model belong to
+    protected $type;
 
-	const WSAPP_CREATE_MODE = 'create';
-	const WSAPP_UPDATE_MODE = 'update';
-	const WSAPP_DELETE_MODE = 'delete';
-	const WSAPP_SAVE_MODE = 'save';
-	//SPecifies the module with which the model belong to
-	protected $type;
+    protected $mode;
 
-	protected $mode;
+    public function getId()
+    {
+        return $this->get('id');
+    }
 
-	public function getId(){
-		return $this->get('id');
-	}
-	
-	public function setId($id){
-		return $this->set('id',$id);
-	}
-	
-	public function setModifiedTime($modifiedTime){
-		return $this->set('modifiedtime',$modifiedTime);
-	}
+    public function setId($id)
+    {
+        return $this->set('id', $id);
+    }
 
-	public function getModifiedTime(){
-		return $this->get('modifiedtime');
-	}
+    public function setModifiedTime($modifiedTime)
+    {
+        return $this->set('modifiedtime', $modifiedTime);
+    }
 
-	public function setType($type){
-		$this->type = $type;
-		return $this;
-	}
+    public function getModifiedTime()
+    {
+        return $this->get('modifiedtime');
+    }
 
-	public function getType(){
-		return $this->type;
-	}
+    public function setType($type)
+    {
+        $this->type = $type;
 
-	public function setMode($mode){
-		$this->mode = $mode;
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getMode(){
-		return $this->mode;
-	}
+    public function getType()
+    {
+        return $this->type;
+    }
 
-	public function isDeleteMode(){
-		return ($this->mode == self::WSAPP_DELETE_MODE) ? true :false;
-	}
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
 
-	public function isCreateMode(){
-		return ($this->mode == self::WSAPP_CREATE_MODE) ? true : false;
-	}
+        return $this;
+    }
 
-	public function getSyncIdentificationKey(){
-		return $this->get('_syncidentificationkey');
-	}
+    public function getMode()
+    {
+        return $this->mode;
+    }
 
-	public function setSyncIdentificationKey($key){
-		return $this->set('_syncidentificationkey',$key);
-	}
+    public function isDeleteMode()
+    {
+        return ($this->mode == self::WSAPP_DELETE_MODE) ? true : false;
+    }
 
-	public static function getInstanceFromValues($recordValues){
-		$model = new WSAPP_SyncRecordModel($recordValues);
-		return $model;
-	}
+    public function isCreateMode()
+    {
+        return ($this->mode == self::WSAPP_CREATE_MODE) ? true : false;
+    }
 
+    public function getSyncIdentificationKey()
+    {
+        return $this->get('_syncidentificationkey');
+    }
+
+    public function setSyncIdentificationKey($key)
+    {
+        return $this->set('_syncidentificationkey', $key);
+    }
+
+    public static function getInstanceFromValues($recordValues)
+    {
+        $model = new WSAPP_SyncRecordModel($recordValues);
+
+        return $model;
+    }
 }
-?>

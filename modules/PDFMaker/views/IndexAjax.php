@@ -1,21 +1,20 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class PDFMaker_IndexAjax_View extends Vtiger_Index_View
 {
-
     function __construct()
     {
         parent::__construct();
 
-        $Methods = array('showSettingsList', 'PDFBreakline', 'getPreview', 'ProductImages', 'PDFTemplatesSelect', 'EditAndExport');
+        $Methods = ['showSettingsList', 'PDFBreakline', 'getPreview', 'ProductImages', 'PDFTemplatesSelect', 'EditAndExport'];
 
         foreach ($Methods as $method) {
             $this->exposeMethod($method);
@@ -38,6 +37,7 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
 
         if (!empty($mode)) {
             $this->invokeExposedMethod($mode, $request);
+
             return;
         }
 
@@ -53,7 +53,7 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
 
         $viewer->assign('MODULE', $moduleName);
 
-        $linkParams = array('MODULE' => $moduleName, 'ACTION' => $request->get('view'), 'MODE' => $request->get('mode'));
+        $linkParams = ['MODULE' => $moduleName, 'ACTION' => $request->get('view'), 'MODE' => $request->get('mode')];
         $linkModels = $PDFMaker->getSideBarLinks($linkParams);
 
         $viewer->assign('QUICK_LINKS', $linkModels);
@@ -85,11 +85,11 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
               LEFT JOIN vtiger_service 
                 ON vtiger_service.serviceid=vtiger_inventoryproductrel.productid
               WHERE id=? order by sequence_no";
-        $result = $adb->pquery($sql, array($id));
+        $result = $adb->pquery($sql, [$id]);
 
         $saved_sql = 'SELECT productid, sequence, show_header, show_subtotal FROM vtiger_pdfmaker_breakline WHERE crmid=?';
-        $saved_res = $adb->pquery($saved_sql, array($id));
-        $saved_products = array();
+        $saved_res = $adb->pquery($saved_sql, [$id]);
+        $saved_products = [];
 
         while ($saved_row = $adb->fetchByAssoc($saved_res)) {
             $saved_products[$saved_row['productid'] . '_' . $saved_row['sequence']] = $saved_row['sequence'];
@@ -106,7 +106,7 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
             }
         }
 
-        $Products = array();
+        $Products = [];
         $num_rows = $adb->num_rows($result);
 
         $viewer->assign('SAVE_PRODUCTS', $saved_products);
@@ -126,7 +126,7 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
                 }
 
                 $product_name = $row['productname'];
-                $Products[] = array('uid' => $productid . '_' . $seq, 'checked' => $ischecked, 'name' => $product_name);
+                $Products[] = ['uid' => $productid . '_' . $seq, 'checked' => $ischecked, 'name' => $product_name];
             }
         }
 
@@ -194,7 +194,7 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
 
     public function ProductImages(Vtiger_Request $request)
     {
-        $pdf_strings = array();
+        $pdf_strings = [];
         $moduleName = $request->getModule();
         $viewer = $this->getViewer($request);
         $viewer->assign('MODULE_NAME', $moduleName);
@@ -229,8 +229,8 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
               WHERE vtiger_products.productid=? ORDER BY vtiger_attachments.attachmentsid";
         }
 
-        $res = $adb->pquery($sql, array($id));
-        $products = array();
+        $res = $adb->pquery($sql, [$id]);
+        $products = [];
 
         while ($row = $adb->fetchByAssoc($res)) {
             $row = PDFMaker_Module_Model::fixStoredName($row);
@@ -240,8 +240,8 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
         }
 
         $saved_sql = 'SELECT productid, sequence, attachmentid, width, height FROM vtiger_pdfmaker_images WHERE crmid=?';
-        $saved_res = $adb->pquery($saved_sql, array($id));
-        $saved_products = $saved_wh = $bac_products = array();
+        $saved_res = $adb->pquery($saved_sql, [$id]);
+        $saved_products = $saved_wh = $bac_products = [];
 
         while ($saved_row = $adb->fetchByAssoc($saved_res)) {
             $saved_products[$saved_row['productid'] . '_' . $saved_row['sequence']] = $saved_row['attachmentid'];
@@ -252,7 +252,7 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
         $imgHTML = '';
 
         foreach ($products as $productnameid => $data) {
-            list($productid, $productname, $seq) = explode('#_#', $productnameid, 3);
+            [$productid, $productname, $seq] = explode('#_#', $productnameid, 3);
 
             $prodImg = '';
             $i = 0;
@@ -291,9 +291,9 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
 
             if ($i > 0) {
                 $imgHTML .= '<div class="input-group w-50 px-3 py-2">
-                    <span class="input-group-text">'. vtranslate('Width', 'PDFMaker') . '</span>
+                    <span class="input-group-text">' . vtranslate('Width', 'PDFMaker') . '</span>
                     <input type="text" class="form-control" maxlength="3" name="width_' . $productid . '_' . $seq . '" value="' . $width . '">
-                    <span class="input-group-text">'. vtranslate('Height', 'PDFMaker') . '</span>
+                    <span class="input-group-text">' . vtranslate('Height', 'PDFMaker') . '</span>
 		            <input type="text" class="form-control" maxlength="3" name="height_' . $productid . '_' . $seq . '" value="' . $height . '">
 		            </div>';
             }

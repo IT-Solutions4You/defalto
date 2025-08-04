@@ -1,168 +1,199 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Vtiger_MiniList_Model extends Vtiger_Widget_Model {
+class Vtiger_MiniList_Model extends Vtiger_Widget_Model
+{
+    protected $widgetModel;
+    protected $extraData;
 
-	protected $widgetModel;
-	protected $extraData;
+    protected $listviewController;
+    protected $queryGenerator;
+    protected $listviewHeaders;
+    protected $listviewRecords;
+    protected $targetModuleModel;
 
-	protected $listviewController;
-	protected $queryGenerator;
-	protected $listviewHeaders;
-	protected $listviewRecords;
-	protected $targetModuleModel;
+    public function setWidgetModel($widgetModel)
+    {
+        $this->widgetModel = $widgetModel;
+        $this->extraData = $this->widgetModel->get('data');
 
-	public function setWidgetModel($widgetModel) {
-		$this->widgetModel = $widgetModel;
-		$this->extraData = $this->widgetModel->get('data');
+        // Decode data if not done already.
+        if (is_string($this->extraData)) {
+            $this->extraData = Zend_Json::decode(decode_html($this->extraData));
+        }
+        if ($this->extraData == null) {
+            throw new Exception("Invalid data");
+        }
+    }
 
-		// Decode data if not done already.
-		if (is_string($this->extraData)) {
-			$this->extraData = Zend_Json::decode(decode_html($this->extraData));
-		}
-		if ($this->extraData == NULL) {
-			throw new Exception("Invalid data");
-		}
-	}
+    public function getTargetModule()
+    {
+        return $this->extraData['module'];
+    }
 
-	public function getTargetModule() {
-		return $this->extraData['module'];
-	}
+    public function getTargetFields()
+    {
+        $fields = $this->extraData['fields'];
+        if (!in_array("id", $fields)) {
+            $fields[] = "id";
+        }
 
-	public function getTargetFields() {
-		$fields = $this->extraData['fields'];
-		if (!in_array("id", $fields)) $fields[] = "id";
-		return $fields;
-	}
+        return $fields;
+    }
 
-	public function getTargetModuleModel() {
-		if (!$this->targetModuleModel) {
-			$this->targetModuleModel = Vtiger_Module_Model::getInstance($this->getTargetModule());
-		}
-		return $this->targetModuleModel;
-	}
+    public function getTargetModuleModel()
+    {
+        if (!$this->targetModuleModel) {
+            $this->targetModuleModel = Vtiger_Module_Model::getInstance($this->getTargetModule());
+        }
 
-	protected function initListViewController() {
-		if (!$this->listviewController) {
-			$currentUserModel = Users_Record_Model::getCurrentUserModel();
-			$db = PearDatabase::getInstance();
+        return $this->targetModuleModel;
+    }
 
-			$filterid = $this->widgetModel->get('filterid');
-			$this->queryGenerator = new EnhancedQueryGenerator($this->getTargetModule(), $currentUserModel);
-			$this->queryGenerator->initForCustomViewById($filterid);
-			$this->queryGenerator->setFields( $this->getTargetFields() );
+    protected function initListViewController()
+    {
+        if (!$this->listviewController) {
+            $currentUserModel = Users_Record_Model::getCurrentUserModel();
+            $db = PearDatabase::getInstance();
 
-			if (!$this->listviewController) {
-				$this->listviewController = new ListViewController($db, $currentUserModel, $this->queryGenerator);
-			}
+            $filterid = $this->widgetModel->get('filterid');
+            $this->queryGenerator = new EnhancedQueryGenerator($this->getTargetModule(), $currentUserModel);
+            $this->queryGenerator->initForCustomViewById($filterid);
+            $this->queryGenerator->setFields($this->getTargetFields());
 
-			$this->listviewHeaders = $this->listviewRecords = NULL;
-		}
-	}
+            if (!$this->listviewController) {
+                $this->listviewController = new ListViewController($db, $currentUserModel, $this->queryGenerator);
+            }
 
-	public function getTitle($prefix='') {
-		$this->initListViewController();
+            $this->listviewHeaders = $this->listviewRecords = null;
+        }
+    }
 
-		$db = PearDatabase::getInstance();
+    public function getTitle($prefix = '')
+    {
+        $this->initListViewController();
 
-		$suffix = '';
-		$customviewrs = $db->pquery('SELECT viewname FROM vtiger_customview WHERE cvid=?', array($this->widgetModel->get('filterid')));
-		if ($db->num_rows($customviewrs)) {
-			$customview = $db->fetch_array($customviewrs);
-			$suffix = ' - ' . $customview['viewname'];
-		}
-		return $prefix . vtranslate($this->getTargetModuleModel()->label, $this->getTargetModule()). $suffix;
-	}
+        $db = PearDatabase::getInstance();
 
-	public function getHeaders() {
-		$this->initListViewController();
+        $suffix = '';
+        $customviewrs = $db->pquery('SELECT viewname FROM vtiger_customview WHERE cvid=?', [$this->widgetModel->get('filterid')]);
+        if ($db->num_rows($customviewrs)) {
+            $customview = $db->fetch_array($customviewrs);
+            $suffix = ' - ' . $customview['viewname'];
+        }
 
-		if (!$this->listviewHeaders) {
-			$headerFieldModels = array();
-			foreach ($this->listviewController->getListViewHeaderFields() as $fieldName => $webserviceField) {
-				$fieldObj = Vtiger_Field::getInstance($webserviceField->getFieldId());
-				$headerFieldModels[$fieldName] = Vtiger_Field_Model::getInstanceFromFieldObject($fieldObj);
-			}
-			$this->listviewHeaders = $headerFieldModels;
-		}
-		return $this->listviewHeaders;
-	}
+        return $prefix . vtranslate($this->getTargetModuleModel()->label, $this->getTargetModule()) . $suffix;
+    }
 
-	public function getHeaderCount() {
-		if($this->listviewHeaders) return php7_count($this->listviewHeaders);
-		return php7_count($this->getHeaders());
-	}
+    public function getHeaders()
+    {
+        $this->initListViewController();
 
-	public function getRecordLimit() {
-		$pageLimit = vglobal('list_max_entries_per_page');
-        if(empty($pageLimit)) {
+        if (!$this->listviewHeaders) {
+            $headerFieldModels = [];
+            foreach ($this->listviewController->getListViewHeaderFields() as $fieldName => $webserviceField) {
+                $fieldObj = Vtiger_Field::getInstance($webserviceField->getFieldId());
+                $headerFieldModels[$fieldName] = Vtiger_Field_Model::getInstanceFromFieldObject($fieldObj);
+            }
+            $this->listviewHeaders = $headerFieldModels;
+        }
+
+        return $this->listviewHeaders;
+    }
+
+    public function getHeaderCount()
+    {
+        if ($this->listviewHeaders) {
+            return php7_count($this->listviewHeaders);
+        }
+
+        return php7_count($this->getHeaders());
+    }
+
+    public function getRecordLimit()
+    {
+        $pageLimit = vglobal('list_max_entries_per_page');
+        if (empty($pageLimit)) {
             $pageLimit = 10;
         }
+
         return intval($pageLimit);
-	}
-    
-    function getStartIndex() {
+    }
+
+    function getStartIndex()
+    {
         $nextPage = $this->get('nextPage');
         $startIndex = (($nextPage - 1) * $this->getRecordLimit());
+
         return intval($startIndex);
     }
 
-	public function getRecords() {
+    public function getRecords()
+    {
+        $this->initListViewController();
 
-		$this->initListViewController();
+        if (!$this->listviewRecords) {
+            $db = PearDatabase::getInstance();
 
-		if (!$this->listviewRecords) {
-			$db = PearDatabase::getInstance();
+            $paramArray = [];
+            $query = $this->queryGenerator->getQuery();
+            $query .= ' ORDER BY vtiger_crmentity.modifiedtime DESC';
+            $query .= ' LIMIT ? , ?';
+            array_push($paramArray, $this->getStartIndex());
+            array_push($paramArray, $this->getRecordLimit());
+            $query = str_replace(" FROM ", ",vtiger_crmentity.crmid as id FROM ", $query);
 
-			$paramArray = array();
-			$query = $this->queryGenerator->getQuery();
-			$query .= ' ORDER BY vtiger_crmentity.modifiedtime DESC';
-			$query .= ' LIMIT ? , ?';
-			array_push($paramArray, $this->getStartIndex());
-			array_push($paramArray, $this->getRecordLimit());
-			$query = str_replace(" FROM ", ",vtiger_crmentity.crmid as id FROM ", $query);
+            $result = $db->pquery($query, $paramArray);
 
-			$result = $db->pquery($query, $paramArray);
+            $targetModuleName = $this->getTargetModule();
+            $targetModuleFocus = CRMEntity::getInstance($targetModuleName);
 
-			$targetModuleName = $this->getTargetModule();
-			$targetModuleFocus= CRMEntity::getInstance($targetModuleName);
+            $entries = $this->listviewController->getListViewRecords($targetModuleFocus, $targetModuleName, $result);
 
-			$entries = $this->listviewController->getListViewRecords($targetModuleFocus,$targetModuleName,$result);
+            $this->listviewRecords = [];
+            $index = 0;
+            foreach ($entries as $id => $record) {
+                $rawData = $db->query_result_rowdata($result, $index++);
+                $record['id'] = $id;
+                $this->listviewRecords[$id] = $this->getTargetModuleModel()->getRecordFromArray($record, $rawData);
+            }
+        }
 
-			$this->listviewRecords = array();
-			$index = 0;
-			foreach ($entries as $id => $record) {
-				$rawData = $db->query_result_rowdata($result, $index++);
-				$record['id'] = $id;
-				$this->listviewRecords[$id] = $this->getTargetModuleModel()->getRecordFromArray($record, $rawData);
-			}
-		}
+        return $this->listviewRecords;
+    }
 
-		return $this->listviewRecords;
-	}
-    
-    function moreRecordExists() {
+    function moreRecordExists()
+    {
         $this->initListViewController();
         $db = PearDatabase::getInstance();
         $query = $this->queryGenerator->getQuery();
-		$paramArray = array();
-        
+        $paramArray = [];
+
         $startIndex = $this->getStartIndex() + $this->getRecordLimit();
         $query .= ' LIMIT ?, ?';
-		array_push($paramArray, $startIndex);
-		array_push($paramArray, $this->getRecordLimit());
+        array_push($paramArray, $startIndex);
+        array_push($paramArray, $this->getRecordLimit());
 
         $result = $db->pquery($query, $paramArray);
-        if($db->num_rows($result) > 0) {
+        if ($db->num_rows($result) > 0) {
             return true;
         }
+
         return false;
     }
 }

@@ -1,9 +1,19 @@
 <?php
-/**
+/************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.1
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ ************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 // Note is used to store customer information.
@@ -30,36 +40,49 @@ class Documents extends CRMEntity
 
     // This is the list of vtiger_fields that are in the lists.
     public $list_fields = [
-        'Title' => ['notes' => 'notes_title'],
-        'File Name' => ['notes' => 'filename'],
+        'Title'         => ['notes' => 'notes_title'],
+        'File Name'     => ['notes' => 'filename'],
         'Modified Time' => ['crmentity' => 'modifiedtime'],
-        'Assigned To' => ['crmentity' => 'assigned_user_id'],
-        'Folder Name' => ['attachmentsfolder' => 'folderid'],
+        'Assigned To'   => ['crmentity' => 'assigned_user_id'],
+        'Folder Name'   => ['attachmentsfolder' => 'folderid'],
     ];
     public $list_fields_name = [
-        'Title' => 'notes_title',
-        'File Name' => 'filename',
+        'Title'         => 'notes_title',
+        'File Name'     => 'filename',
         'Modified Time' => 'modifiedtime',
-        'Assigned To' => 'assigned_user_id',
-        'Folder Name' => 'folderid',
+        'Assigned To'   => 'assigned_user_id',
+        'Folder Name'   => 'folderid',
     ];
 
     public $search_fields = [
-        'Title' => ['notes' => 'notes_title'],
-        'File Name' => ['notes' => 'filename'],
+        'Title'       => ['notes' => 'notes_title'],
+        'File Name'   => ['notes' => 'filename'],
         'Assigned To' => ['crmentity' => 'assigned_user_id'],
         'Folder Name' => ['attachmentsfolder' => 'foldername'],
     ];
 
     public $search_fields_name = [
-        'Title' => 'notes_title',
-        'File Name' => 'filename',
+        'Title'       => 'notes_title',
+        'File Name'   => 'filename',
         'Assigned To' => 'assigned_user_id',
         'Folder Name' => 'folderid',
     ];
     public $list_link_field = 'notes_title';
     public $old_filename = '';
-    public $mandatory_fields = ['notes_title', 'createdtime', 'modifiedtime', 'filename', 'filesize', 'filetype', 'filedownloadcount', 'assigned_user_id', 'document_source', 'notecontent', 'filelocationtype', 'folderid'];
+    public $mandatory_fields = [
+        'notes_title',
+        'createdtime',
+        'modifiedtime',
+        'filename',
+        'filesize',
+        'filetype',
+        'filedownloadcount',
+        'assigned_user_id',
+        'document_source',
+        'notecontent',
+        'filelocationtype',
+        'folderid'
+    ];
     //Added these variables which are used as default order by and sortorder in ListView
     public $default_order_by = 'notes_title';
     public $default_sort_order = 'ASC';
@@ -73,17 +96,13 @@ class Documents extends CRMEntity
         $this->log->debug("Exiting Documents method ...");
     }
 
-    public function Documents(): void
-    {
-        self::__construct();
-    }
-
     function save_module($module)
     {
         global $log, $adb, $upload_badext;
         $insertion_mode = $this->mode;
-        if (isset($this->parentid) && $this->parentid != '')
+        if (isset($this->parentid) && $this->parentid != '') {
             $relid = $this->parentid;
+        }
         //inserting into vtiger_senotesrel
         if (isset($relid) && $relid != '') {
             $this->insertintonotesrel($relid, $this->id);
@@ -156,10 +175,10 @@ class Documents extends CRMEntity
         $this->column_fields['filedownloadcount'] = $filedownloadcount;
     }
 
-
     /**
      *      This function is used to add the vtiger_attachments. This will call the function uploadAndSaveFile which will upload the attachment into the server and save that attachment information in the database.
-     * @param int $id - entity id to which the vtiger_files to be uploaded
+     *
+     * @param int    $id     - entity id to which the vtiger_files to be uploaded
      * @param string $module - the current module name
      */
     function insertIntoAttachment($id, $module)
@@ -191,10 +210,11 @@ class Documents extends CRMEntity
     {
         global $log;
         $log->debug("Entering getSortOrder() method ...");
-        if (isset($_REQUEST['sorder']))
+        if (isset($_REQUEST['sorder'])) {
             $sorder = $this->db->sql_escape_string($_REQUEST['sorder']);
-        else
+        } else {
             $sorder = (($_SESSION['NOTES_SORT_ORDER'] != '') ? ($_SESSION['NOTES_SORT_ORDER']) : ($this->default_sort_order));
+        }
         $log->debug("Exiting getSortOrder() method ...");
 
         return $sorder;
@@ -213,10 +233,11 @@ class Documents extends CRMEntity
             $use_default_order_by = $this->default_order_by;
         }
 
-        if (isset($_REQUEST['order_by']))
+        if (isset($_REQUEST['order_by'])) {
             $order_by = $this->db->sql_escape_string($_REQUEST['order_by']);
-        else
+        } else {
             $order_by = (($_SESSION['NOTES_ORDER_BY'] != '') ? ($_SESSION['NOTES_ORDER_BY']) : ($use_default_order_by));
+        }
         $log->debug("Exiting getOrderBy method ...");
 
         return $order_by;
@@ -263,6 +284,7 @@ class Documents extends CRMEntity
     }
 
     /** Function to export the notes in CSV Format
+     *
      * @param reference variable - where condition is passed when the query is executed
      * Returns Export Documents Query.
      */
@@ -403,7 +425,9 @@ class Documents extends CRMEntity
     function unlinkRelationship($id, $return_module, $return_id)
     {
         global $log;
-        if (empty($return_module) || empty($return_id)) return;
+        if (empty($return_module) || empty($return_id)) {
+            return;
+        }
 
         if ($return_module == 'Accounts') {
             $sql = 'DELETE FROM vtiger_senotesrel WHERE notesid = ? AND (crmid = ? OR crmid IN (SELECT contactid FROM vtiger_contactdetails WHERE account_id=?))';
@@ -415,7 +439,6 @@ class Documents extends CRMEntity
             parent::unlinkRelationship($id, $return_module, $return_id);
         }
     }
-
 
 // Function to get fieldname for uitype 27 assuming that documents have only one file type field
 
@@ -464,7 +487,9 @@ class Documents extends CRMEntity
     {
         global $adb;
         $result = $adb->pquery("SELECT folderid FROM vtiger_attachmentsfolder WHERE folderid = ?", [$folderid]);
-        if (!empty($result) && $adb->num_rows($result) > 0) return true;
+        if (!empty($result) && $adb->num_rows($result) > 0) {
+            return true;
+        }
 
         return false;
     }
@@ -533,9 +558,9 @@ class Documents extends CRMEntity
 
         $userNameSql = getSqlForNameInDisplayFormat(['first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'], 'Users');
 
-        if(!empty($other->tab_name_index)) {
+        if (!empty($other->tab_name_index)) {
             foreach ($other->tab_name_index as $tableName => $tableId) {
-                if(in_array($tableName, ['vtiger_crmentity', $other->table_name])) {
+                if (in_array($tableName, ['vtiger_crmentity', $other->table_name])) {
                     continue;
                 }
 
@@ -574,5 +599,3 @@ class Documents extends CRMEntity
         return $return_value;
     }
 }
-
-?>

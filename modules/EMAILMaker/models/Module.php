@@ -1,21 +1,23 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
 {
     public static $mobileIcon = 'email-edit';
-    private $profilesActions = array(
-        "EDIT" => "EditView",
+    private $profilesActions = [
+        "EDIT"   => "EditView",
         "DETAIL" => "DetailView",
         "DELETE" => "Delete",
-    );
-    private $profilesPermissions = array();
+    ];
+    private $profilesPermissions = [];
+
     public function getAlphabetSearchField()
     {
         return 'templatename';
@@ -31,15 +33,16 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         } else {
             $sql = "UPDATE vtiger_emakertemplates SET templatename=?, subject=?, description=?, body=?, deleted=? WHERE templateid = ?";
         }
-        $params = array(
+        $params = [
             decode_html($recordModel->get('templatename')),
             decode_html($recordModel->get('subject')),
             decode_html($recordModel->get('description')),
             $recordModel->get('body'),
             0,
             $templateid
-        );
+        ];
         $db->pquery($sql, $params);
+
         return $recordModel->setId($templateid);
     }
 
@@ -47,13 +50,13 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
     {
         $recordId = $recordModel->getId();
         $db = PearDatabase::getInstance();
-        $db->pquery('DELETE FROM vtiger_emakertemplates WHERE templateid = ? ', array($recordId));
+        $db->pquery('DELETE FROM vtiger_emakertemplates WHERE templateid = ? ', [$recordId]);
     }
 
     public function deleteAllRecords()
     {
         $db = PearDatabase::getInstance();
-        $db->pquery('DELETE FROM vtiger_emakertemplates', array());
+        $db->pquery('DELETE FROM vtiger_emakertemplates', []);
     }
 
     public function getAllModuleEmailTemplateFields()
@@ -71,11 +74,20 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
             }
 
             foreach ($fieldList as $key => $field) {
-                $option = array(vtranslate($field['module'], $field['module']) . ':' . vtranslate($field['fieldlabel'], $field['module']), "$" . strtolower($field['module']) . "-" . $field['columnname'] . "$");
+                $option = [
+                    vtranslate($field['module'], $field['module']) . ':' . vtranslate($field['fieldlabel'], $field['module']),
+                    "$" . strtolower($field['module']) . "-" . $field['columnname'] . "$"
+                ];
                 $allFields[] = $option;
                 if (!empty($field['referencelist'])) {
                     foreach ($field['referencelist'] as $key => $relField) {
-                        $relOption = array(vtranslate($field['fieldlabel'], $field['module']) . ':' . '(' . vtranslate($relField['module'], $relField['module']) . ')' . vtranslate($relField['fieldlabel'], $relField['module']), "$" . strtolower($field['module']) . "-" . $field['columnname'] . ":" . $relField['columnname'] . "$");
+                        $relOption = [
+                            vtranslate($field['fieldlabel'], $field['module']) . ':' . '(' . vtranslate($relField['module'], $relField['module']) . ')' . vtranslate(
+                                $relField['fieldlabel'],
+                                $relField['module']
+                            ),
+                            "$" . strtolower($field['module']) . "-" . $field['columnname'] . ":" . $relField['columnname'] . "$"
+                        ];
                         $allRelFields[] = $relOption;
                     }
                 }
@@ -90,9 +102,9 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
             $allFields = [];
         }
 
-        $option = array('Current Date', '$custom-currentdate$');
+        $option = ['Current Date', '$custom-currentdate$'];
         $allFields[] = $option;
-        $option = array('Current Time', '$custom-currenttime$');
+        $option = ['Current Time', '$custom-currenttime$'];
         $allFields[] = $option;
         $allOptions['generalFields'] = $allFields;
 
@@ -106,12 +118,13 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         $query = 'SELECT DISTINCT(name) AS modulename FROM vtiger_tab 
                               LEFT JOIN vtiger_field ON vtiger_field.tabid = vtiger_tab.tabid
                               WHERE vtiger_field.uitype = ?';
-        $result = $db->pquery($query, array(13));
+        $result = $db->pquery($query, [13]);
         $num_rows = $db->num_rows($result);
-        $moduleList = array();
+        $moduleList = [];
         for ($i = 0; $i < $num_rows; $i++) {
             $moduleList[] = $db->query_result($result, $i, 'modulename');
         }
+
         return $moduleList;
     }
 
@@ -123,19 +136,30 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
             return null;
         }
         $relModuleFields = $relMeta->getModuleFields();
-        $relModuleFieldList = array();
+        $relModuleFieldList = [];
         foreach ($relModuleFields as $relind => $relModuleField) {
             if ($relModule == 'Users') {
                 if ($relModuleField->getFieldDataType() == 'string' || $relModuleField->getFieldDataType() == 'email' || $relModuleField->getFieldDataType() == 'phone') {
-                    $skipFields = array(98, 115, 116, 31, 32);
+                    $skipFields = [98, 115, 116, 31, 32];
                     if (!in_array($relModuleField->getUIType(), $skipFields) && $relModuleField->getFieldName() != 'asterisk_extension') {
-                        $relModuleFieldList[] = array('module' => $relModule, 'fieldname' => $relModuleField->getFieldName(), 'columnname' => $relModuleField->getColumnName(), 'fieldlabel' => $relModuleField->getFieldLabelKey());
+                        $relModuleFieldList[] = [
+                            'module'     => $relModule,
+                            'fieldname'  => $relModuleField->getFieldName(),
+                            'columnname' => $relModuleField->getColumnName(),
+                            'fieldlabel' => $relModuleField->getFieldLabelKey()
+                        ];
                     }
                 }
             } else {
-                $relModuleFieldList[] = array('module' => $relModule, 'fieldname' => $relModuleField->getFieldName(), 'columnname' => $relModuleField->getColumnName(), 'fieldlabel' => $relModuleField->getFieldLabelKey());
+                $relModuleFieldList[] = [
+                    'module'     => $relModule,
+                    'fieldname'  => $relModuleField->getFieldName(),
+                    'columnname' => $relModuleField->getColumnName(),
+                    'fieldlabel' => $relModuleField->getFieldLabelKey()
+                ];
             }
         }
+
         return $relModuleFieldList;
     }
 
@@ -144,9 +168,9 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         $handler = vtws_getModuleHandlerFromName($module, $currentUserModel);
         $meta = $handler->getMeta();
         $moduleFields = $meta->getModuleFields();
-        $returnData = array();
+        $returnData = [];
         foreach ($moduleFields as $key => $field) {
-            $referencelist = array();
+            $referencelist = [];
             $relatedField = $field->getReferenceList();
             if ($field->getFieldName() == 'assigned_user_id') {
                 $relModule = 'Users';
@@ -157,8 +181,15 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
                     $referencelist = $this->getRelatedModuleFieldList($relModule, $currentUserModel);
                 }
             }
-            $returnData[] = array('module' => $module, 'fieldname' => $field->getFieldName(), 'columnname' => $field->getColumnName(), 'fieldlabel' => $field->getFieldLabelKey(), 'referencelist' => $referencelist);
+            $returnData[] = [
+                'module'        => $module,
+                'fieldname'     => $field->getFieldName(),
+                'columnname'    => $field->getColumnName(),
+                'fieldlabel'    => $field->getFieldLabelKey(),
+                'referencelist' => $referencelist
+            ];
         }
+
         return $returnData;
     }
 
@@ -166,37 +197,37 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
-        $linkTypes = array('LISTVIEWMASSACTION', 'LISTVIEWSETTING');
+        $linkTypes = ['LISTVIEWMASSACTION', 'LISTVIEWSETTING'];
         $links = Vtiger_Link_Model::getAllByType($this->getId(), $linkTypes, $linkParams);
 
         if ($this->CheckPermissions("DELETE")) {
-            $massActionLink = array(
-                'linktype' => 'LISTVIEWMASSACTION',
+            $massActionLink = [
+                'linktype'  => 'LISTVIEWMASSACTION',
                 'linklabel' => 'LBL_DELETE',
-                'linkurl' => 'javascript:Vtiger_List_Js.massDeleteRecords("index.php?module=PDFMaker&action=MassDelete")',
-                'linkicon' => ''
-            );
+                'linkurl'   => 'javascript:Vtiger_List_Js.massDeleteRecords("index.php?module=PDFMaker&action=MassDelete")',
+                'linkicon'  => ''
+            ];
 
             $links['LISTVIEWMASSACTION'][] = Vtiger_Link_Model::getInstanceFromValues($massActionLink);
         }
 
-        $quickLinks = array();
+        $quickLinks = [];
         if ($this->CheckPermissions("EDIT")) {
-            $quickLinks [] = array(
-                'linktype' => 'LISTVIEW',
+            $quickLinks [] = [
+                'linktype'  => 'LISTVIEW',
                 'linklabel' => 'LBL_IMPORT',
-                'linkurl' => 'javascript:Vtiger_Import_Js.triggerImportAction("index.php?module=EMAILMaker&view=Import")',
-                'linkicon' => ''
-            );
+                'linkurl'   => 'javascript:Vtiger_Import_Js.triggerImportAction("index.php?module=EMAILMaker&view=Import")',
+                'linkicon'  => ''
+            ];
         }
 
         if ($this->CheckPermissions("EDIT")) {
-            $quickLinks [] = array(
-                'linktype' => 'LISTVIEW',
+            $quickLinks [] = [
+                'linktype'  => 'LISTVIEW',
                 'linklabel' => 'LBL_EXPORT',
-                'linkurl' => 'javascript:Vtiger_List_Js.triggerExportAction("index.php?module=EMAILMaker&view=Export")',
-                'linkicon' => ''
-            );
+                'linkurl'   => 'javascript:Vtiger_List_Js.triggerExportAction("index.php?module=EMAILMaker&view=Export")',
+                'linkicon'  => ''
+            ];
         }
 
         foreach ($quickLinks as $quickLink) {
@@ -204,7 +235,6 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         }
 
         if ($currentUserModel->isAdminUser()) {
-
             $settingsLinks = $this->getSettingLinks();
             foreach ($settingsLinks as $settingsLink) {
                 $links['LISTVIEWSETTING'][] = Vtiger_Link_Model::getInstanceFromValues($settingsLink);
@@ -213,21 +243,23 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
             $SettingsLinks = $this->GetAvailableSettings();
 
             foreach ($SettingsLinks as $stype => $sdata) {
-                $s_parr = array(
-                    'linktype' => 'LISTVIEWSETTING',
+                $s_parr = [
+                    'linktype'  => 'LISTVIEWSETTING',
                     'linklabel' => $sdata["label"],
-                    'linkurl' => $sdata["location"],
-                    'linkicon' => ''
-                );
+                    'linkurl'   => $sdata["location"],
+                    'linkicon'  => ''
+                ];
 
                 $links['LISTVIEWSETTING'][] = Vtiger_Link_Model::getInstanceFromValues($s_parr);
             }
         }
+
         return $links;
     }
 
     /**
      * @param string $actionKey
+     *
      * @return bool
      */
     public function CheckPermissions($actionKey)
@@ -244,6 +276,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
                 $result = true;
             }
         }
+
         return $result;
     }
 
@@ -252,8 +285,8 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         if (count($this->profilesPermissions) == 0) {
             $adb = PearDatabase::getInstance();
             $profiles = Settings_Profiles_Record_Model::getAll();
-            $res = $adb->pquery("SELECT * FROM vtiger_emakertemplates_profilespermissions", array());
-            $permissions = array();
+            $res = $adb->pquery("SELECT * FROM vtiger_emakertemplates_profilespermissions", []);
+            $permissions = [];
             while ($row = $adb->fetchByAssoc($res)) {
                 if (isset($profiles[$row["profileid"]])) {
                     $permissions[$row["profileid"]][$row["operation"]] = $row["permissions"];
@@ -271,6 +304,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
             ksort($permissions);
             $this->profilesPermissions = $permissions;
         }
+
         return $this->profilesPermissions;
     }
 
@@ -301,39 +335,39 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
      */
     public function getSettingLinks()
     {
-        $settingsLinks = array();
+        $settingsLinks = [];
 
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         if ($currentUserModel->isAdminUser()) {
-
-            $settingsLinks[] = array(
-                'linktype' => 'LISTVIEWSETTING',
+            $settingsLinks[] = [
+                'linktype'  => 'LISTVIEWSETTING',
                 'linklabel' => vtranslate('LBL_EXTENSIONS', $this->getName()),
-                'linkurl' => 'index.php?module=' . $this->getName() . '&view=Extensions',
-                'linkicon' => ''
-            );
+                'linkurl'   => 'index.php?module=' . $this->getName() . '&view=Extensions',
+                'linkicon'  => ''
+            ];
 
-            $settingsLinks[] = array(
-                'linktype' => 'LISTVIEWSETTING',
+            $settingsLinks[] = [
+                'linktype'  => 'LISTVIEWSETTING',
                 'linklabel' => vtranslate('LBL_PROFILES', $this->getName()),
-                'linkurl' => 'index.php?module=' . $this->getName() . '&view=ProfilesPrivilegies',
-                'linkicon' => ''
-            );
+                'linkurl'   => 'index.php?module=' . $this->getName() . '&view=ProfilesPrivilegies',
+                'linkicon'  => ''
+            ];
 
-            $settingsLinks[] = array(
-                'linktype' => 'LISTVIEWSETTING',
+            $settingsLinks[] = [
+                'linktype'  => 'LISTVIEWSETTING',
                 'linklabel' => vtranslate('LBL_CUSTOM_LABELS', $this->getName()),
-                'linkurl' => 'index.php?module=' . $this->getName() . '&view=CustomLabels',
-                'linkicon' => ''
-            );
+                'linkurl'   => 'index.php?module=' . $this->getName() . '&view=CustomLabels',
+                'linkicon'  => ''
+            ];
 
-            $settingsLinks[] = array(
-                'linktype' => 'LISTVIEWSETTING',
+            $settingsLinks[] = [
+                'linktype'  => 'LISTVIEWSETTING',
                 'linklabel' => vtranslate('LBL_PRODUCTBLOCKTPL', $this->getName()),
-                'linkurl' => 'index.php?module=' . $this->getName() . '&view=ProductBlocks',
-                'linkicon' => ''
-            );
+                'linkurl'   => 'index.php?module=' . $this->getName() . '&view=ProductBlocks',
+                'linkicon'  => ''
+            ];
         }
+
         return $settingsLinks;
     }
 
@@ -343,7 +377,6 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
     public function isQuickSearchEnabled()
     {
         return false;
-
     }
 
     public function getPopupUrl()
@@ -356,7 +389,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
      */
     public function getUtilityActionsNames()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -365,22 +398,21 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
      */
     public function getModuleBasicLinks()
     {
-
         $moduleName = $this->getName();
         if ($this->CheckPermissions("EDIT")) {
-            $basicLinks[] = array(
-                'linktype' => 'BASIC',
-                'linklabel' => 'LBL_ADD_TEMPLATE',
-                'linkurl' => $this->getSelectThemeUrl(),
-                'linkicon' => 'fa-plus',
+            $basicLinks[] = [
+                'linktype'    => 'BASIC',
+                'linklabel'   => 'LBL_ADD_TEMPLATE',
+                'linkurl'     => $this->getSelectThemeUrl(),
+                'linkicon'    => 'fa-plus',
                 'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
-            );
-            $basicLinks[] = array(
-                'linktype' => 'BASIC',
+            ];
+            $basicLinks[] = [
+                'linktype'  => 'BASIC',
                 'linklabel' => 'LBL_ADD_THEME',
-                'linkurl' => $this->getCreateThemeRecordUrl(),
-                'linkicon' => 'fa-plus'
-            );
+                'linkurl'   => $this->getCreateThemeRecordUrl(),
+                'linkicon'  => 'fa-plus'
+            ];
         }
 
         return $basicLinks;
@@ -389,6 +421,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
     public function getSelectThemeUrl()
     {
         $url = $this->getCreateRecordUrl();
+
         return $url . '&mode=selectTheme';
     }
 
@@ -400,20 +433,19 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
     public function getCreateThemeRecordUrl()
     {
         $url = $this->getCreateRecordUrl();
+
         return $url . '&theme=new&mode=EditTheme';
     }
 
     public function getNameFields()
     {
-
         $nameFieldObject = Vtiger_Cache::get('EntityField', $this->getName());
         $moduleName = $this->getName();
         if ($nameFieldObject && $nameFieldObject->fieldname) {
             $this->nameFields = explode(',', $nameFieldObject->fieldname);
         } else {
             $fieldNames = 'filename';
-            $this->nameFields = array($fieldNames);
-
+            $this->nameFields = [$fieldNames];
 
             $entiyObj = new stdClass();
             $entiyObj->basetable = "vtiger_emakertemplates";
@@ -435,25 +467,25 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         return false;
     }
 
-
     public function getRecordIds($skipRecords)
     {
         $adb = PearDatabase::getInstance();
         $result = $adb->pquery('SELECT templateid FROM vtiger_emakertemplates WHERE templateid NOT IN (' . generateQuestionMarks($skipRecords) . ')', $skipRecords);
         $num_rows = $adb->num_rows($result);
-        $recordIds = array();
+        $recordIds = [];
         if ($num_rows > 0) {
             while ($row = $adb->fetchByAssoc($result)) {
                 $recordIds[] = $row['templateid'];
             }
         }
+
         return $recordIds;
     }
 
     public function getEmailRelatedModules()
     {
         $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-        $relatedModules = vtws_listtypes(array('email'), Users_Record_Model::getCurrentUserModel());
+        $relatedModules = vtws_listtypes(['email'], Users_Record_Model::getCurrentUserModel());
         $relatedModules = $relatedModules['types'];
 
         foreach ($relatedModules as $key => $moduleName) {
@@ -477,7 +509,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
     public function searchEmails($searchValue, $moduleName = false)
     {
         global $current_user;
-        $emailsResult = array();
+        $emailsResult = [];
         $db = PearDatabase::getInstance();
 
         $EmailsModuleModel = Vtiger_Module_Model::getInstance('ITS4YouEmails');
@@ -496,7 +528,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         }
 
         if ($moduleName) {
-            $activeModules = array("'" . $moduleName . "'");
+            $activeModules = ["'" . $moduleName . "'"];
         }
 
         $query = "SELECT vtiger_emailslookup.crmid, vtiger_emailslookup.setype, vtiger_emailslookup.value, 
@@ -511,7 +543,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
             $query .= " AND vtiger_emailslookup.crmid NOT IN (" . implode(',', $emailOptOutIds) . ")";
         }
 
-        $result = $db->pquery($query, array('%' . $searchValue . '%', '%' . $searchValue . '%'));
+        $result = $db->pquery($query, ['%' . $searchValue . '%', '%' . $searchValue . '%']);
         $isAdmin = is_admin($current_user);
         while ($row = $db->fetchByAssoc($result)) {
             if (!$isAdmin) {
@@ -520,20 +552,20 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
                     continue;
                 }
             }
-            $emailsResult[vtranslate($row['setype'], $row['setype'])][$row['crmid']][] = array(
-                'value' => $row['value'],
-                'label' => decode_html($row['label']) . ' (' . $row['value'] . ')',
-                'name' => decode_html($row['label']),
+            $emailsResult[vtranslate($row['setype'], $row['setype'])][$row['crmid']][] = [
+                'value'  => $row['value'],
+                'label'  => decode_html($row['label']) . ' (' . $row['value'] . ')',
+                'name'   => decode_html($row['label']),
                 'module' => $row['setype']
-            );
+            ];
         }
 
         // For Users we should only search in users table
-        $additionalModule = array('Users');
+        $additionalModule = ['Users'];
         if (!$moduleName || in_array($moduleName, $additionalModule)) {
             foreach ($additionalModule as $moduleName) {
                 $moduleInstance = CRMEntity::getInstance($moduleName);
-                $searchFields = array();
+                $searchFields = [];
                 $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
                 $emailFieldModels = $moduleModel->getFieldsByType('email');
 
@@ -554,7 +586,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
 
                 if ($emailFields) {
                     $userQuery = 'SELECT ' . $moduleInstance->table_index . ', ' . implode(',', $searchFields) . ' FROM vtiger_users WHERE deleted=0';
-                    $result = $db->pquery($userQuery, array());
+                    $result = $db->pquery($userQuery, []);
                     $numOfRows = $db->num_rows($result);
                     for ($i = 0; $i < $numOfRows; $i++) {
                         $row = $db->query_result_rowdata($result, $i);
@@ -564,13 +596,12 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
                                 $recordLabel = getEntityFieldNameDisplay($moduleName, $nameFields, $row);
                                 if (strpos($emailFieldValue, $searchValue) !== false || strpos($recordLabel, $searchValue) !== false) {
                                     $emailsResult[vtranslate($moduleName, $moduleName)][$row[$moduleInstance->table_index]][]
-                                        = array(
-                                        'value' => $emailFieldValue,
-                                        'name' => $recordLabel,
-                                        'label' => $recordLabel . ' <b>(' . $emailFieldValue . ')</b>',
+                                        = [
+                                        'value'  => $emailFieldValue,
+                                        'name'   => $recordLabel,
+                                        'label'  => $recordLabel . ' <b>(' . $emailFieldValue . ')</b>',
                                         'module' => $moduleName
-                                    );
-
+                                    ];
                                 }
                             }
                         }
@@ -578,25 +609,25 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
                 }
             }
         }
+
         return $emailsResult;
     }
 
     public function GetListviewResult($orderby = 'templateid', $dir = 'ASC', $request = null, $all_data = true)
     {
         $adb = PearDatabase::getInstance();
-        $R_Atr = array('0');
+        $R_Atr = ['0'];
 
         $sql = "SELECT vtiger_emakertemplates_displayed.*, vtiger_emakertemplates.* FROM vtiger_emakertemplates 
                 LEFT JOIN vtiger_emakertemplates_displayed USING(templateid)";
 
-        $Search = array();
-        $Search_Types = array("module", "description", "sharingtype", "owner");
+        $Search = [];
+        $Search_Types = ["module", "description", "sharingtype", "owner"];
 
         $sql .= " WHERE vtiger_emakertemplates.deleted = ? ";
 
         if ($request) {
             if ($request->has('search_params') && !$request->isEmpty('search_params')) {
-
                 $listSearchParams = $request->get('search_params');
 
                 foreach ($listSearchParams as $groupInfo) {
@@ -620,8 +651,6 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
                         if ($st == "status") {
                             $search_status = $search_val;
                         }
-
-
                     }
                 }
             }
@@ -642,6 +671,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         }
 
         $result = $adb->pquery($sql, $R_Atr);
+
         return $result;
     }
 
@@ -670,7 +700,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
             }
 
             if ($detail_result === false || $edit_result === false || $delete_result === false) {
-                $profileGlobalPermission = array();
+                $profileGlobalPermission = [];
                 require('user_privileges/user_privileges_' . $current_user->id . '.php');
                 require('user_privileges/sharing_privileges_' . $current_user->id . '.php');
 
@@ -684,23 +714,25 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         } else {
             $detail_result = $edit_result = $delete_result = $result;
         }
-        return array("detail" => $detail_result, "edit" => $edit_result, "delete" => $delete_result);
+
+        return ["detail" => $detail_result, "edit" => $edit_result, "delete" => $delete_result];
     }
 
     private function getSubRoleUserIds($roleid)
     {
-        $subRoleUserIds = array();
+        $subRoleUserIds = [];
         $subordinateUsers = getRoleAndSubordinateUsers($roleid);
         if (!empty($subordinateUsers) && count($subordinateUsers) > 0) {
             $currRoleUserIds = getRoleUserIds($roleid);
             $subRoleUserIds = array_diff($subordinateUsers, $currRoleUserIds);
         }
+
         return $subRoleUserIds;
     }
 
     public function getDatabaseTables()
     {
-        return array(
+        return [
             'vtiger_emakertemplates',
             'vtiger_emakertemplates_attch',
             'vtiger_emakertemplates_contents',
@@ -738,7 +770,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
             'vtiger_emakertemplates_sharing_drip',
             'vtiger_emakertemplates_userstatus',
             'vtiger_emakertemplates_version',
-        );
+        ];
     }
 
     public static function isPDFMakerInstalled()

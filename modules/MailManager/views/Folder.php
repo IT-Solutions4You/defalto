@@ -1,19 +1,31 @@
 <?php
-/**
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
-class MailManager_Folder_View extends MailManager_Abstract_View {
-
+class MailManager_Folder_View extends MailManager_Abstract_View
+{
     /**
      * Process the request for Folder opertions
+     *
      * @param Vtiger_Request $request
+     *
      * @return MailManager_Response
      * @throws Exception
-     * @global <type> $maxEntriesPerPage
+     * @global <type>        $maxEntriesPerPage
      */
     public function process(Vtiger_Request $request)
     {
@@ -58,7 +70,6 @@ class MailManager_Folder_View extends MailManager_Abstract_View {
     }
 
     /**
-     * @throws AppException
      * @throws Exception
      */
     public function open(Vtiger_Request $request, $response)
@@ -71,7 +82,7 @@ class MailManager_Folder_View extends MailManager_Abstract_View {
         $type = $request->get('type');
         /**
          * @var MailManager_Connector_Connector $connector
-         * @var MailManager_Folder_Model $folder
+         * @var MailManager_Folder_Model        $folder
          */
         $connector = $this->getConnector();
         $folder = $connector->getFolder($folderName);
@@ -97,7 +108,8 @@ class MailManager_Folder_View extends MailManager_Abstract_View {
         return $response;
     }
 
-    public function validateRequest(Vtiger_Request $request) {
+    public function validateRequest(Vtiger_Request $request)
+    {
         return $request->validateWriteAccess();
     }
 }

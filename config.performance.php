@@ -1,42 +1,51 @@
 <?php
-/*+**********************************************************************************
+/*********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- ************************************************************************************/
+ ********************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
 /* Performance paramters can be configured to fine tune vtiger CRM runtime */
 $PERFORMANCE_CONFIG = [
     // Enable Vtiger Log Level for debugging only if requried
-    'LOGLEVEl_DEBUG'               => false,
+    'LOGLEVEl_DEBUG'                    => false,
 
     // Should the caller information be captured in SQL Logging?
     // It adds little overhead for performance but will be useful to debug
-    'SQL_LOG_INCLUDE_CALLER'       => false,
+    'SQL_LOG_INCLUDE_CALLER'            => false,
 
     // If database default charset is UTF-8, set this to true
     // This avoids executing the SET NAMES SQL for each query!
-    'DB_DEFAULT_CHARSET_UTF8'      => true,
+    'DB_DEFAULT_CHARSET_UTF8'           => true,
 
     // Turn-off default sorting in ListView, could eat up time as data grows
-    'LISTVIEW_DEFAULT_SORTING'     => false,
+    'LISTVIEW_DEFAULT_SORTING'          => false,
 
     // Compute list view record count while loading listview everytime.
     // Recommended value false
-    'LISTVIEW_COMPUTE_PAGE_COUNT'  => false,
+    'LISTVIEW_COMPUTE_PAGE_COUNT'       => false,
 
     // Compute mail manager mail count while loading folders everytime.
     // Recommended value false
     'MAIL_MANAGER_COMPUTE_FOLDER_COUNT' => false,
 
     // Control DetailView Record Navigation
-    'DETAILVIEW_RECORD_NAVIGATION' => true,
+    'DETAILVIEW_RECORD_NAVIGATION'      => true,
 
     // To control the Email Notifications being sent to the Owner
-    'NOTIFY_OWNER_EMAILS'          => true,        //By default, it is set to true, if it is set to false, then notifications will not be sent
+    'NOTIFY_OWNER_EMAILS'               => true,        //By default, it is set to true, if it is set to false, then notifications will not be sent
     // reduce number of ajax requests on home page, reduce this value if home page widget don't
     // show value.
-    'HOME_PAGE_WIDGET_GROUP_SIZE'  => 12,
+    'HOME_PAGE_WIDGET_GROUP_SIZE'       => 12,
 ];

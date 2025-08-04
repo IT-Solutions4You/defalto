@@ -1,11 +1,11 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 use League\OAuth2\Client\Provider\Google;
@@ -13,7 +13,6 @@ use League\OAuth2\Client\Grant\RefreshToken;
 
 class Core_Auth_Model extends Vtiger_Base_Model
 {
-
     protected $viewer;
 
     public function getAccessExpire()
@@ -40,6 +39,7 @@ class Core_Auth_Model extends Vtiger_Base_Model
      * @param string $clientId
      * @param string $clientSecret
      * @param string $clientToken
+     *
      * @return self
      */
     public static function getInstance(string $clientId = '', string $clientSecret = '', string $clientToken = ''): self
@@ -83,10 +83,10 @@ class Core_Auth_Model extends Vtiger_Base_Model
     public function getProviderParams(): array
     {
         return [
-            'clientId' => $this->getClientId(),
+            'clientId'     => $this->getClientId(),
             'clientSecret' => $this->getClientSecret(),
-            'redirectUri' => $this->getRedirectUri(),
-            'accessType' => 'offline',
+            'redirectUri'  => $this->getRedirectUri(),
+            'accessType'   => 'offline',
         ];
     }
 
@@ -196,7 +196,6 @@ class Core_Auth_Model extends Vtiger_Base_Model
     public function setClientSecret($value)
     {
         $this->setSession('client_secret', $value);
-
     }
 
     public function setProviderName($value)
@@ -222,7 +221,8 @@ class Core_Auth_Model extends Vtiger_Base_Model
 
     /**
      * @param object $recordModel
-     * @throws AppException
+     *
+     * @throws Exception
      */
     public function updateAccessToken(object $recordModel): void
     {
@@ -238,7 +238,7 @@ class Core_Auth_Model extends Vtiger_Base_Model
                 'client_access_token' => $this->getAccessToken(),
             ];
             $search = [
-                'client_id' => $this->getClientId(),
+                'client_id'     => $this->getClientId(),
                 'client_secret' => $this->getClientSecret(),
             ];
 
@@ -309,16 +309,17 @@ class Core_Auth_Model extends Vtiger_Base_Model
             unset($_SESSION['provider']);
         } elseif (empty($this->getToken()) || empty($this->getAccessToken())) {
             $this->retrieveToken();
-            $this->setAuthorizationMessage( 'Retrieved Token by Authorization');
+            $this->setAuthorizationMessage('Retrieved Token by Authorization');
             unset($_SESSION['oauth2state']);
         } else {
-            $this->setAuthorizationMessage( 'Retrieved Token from Session');
+            $this->setAuthorizationMessage('Retrieved Token from Session');
             unset($_SESSION['oauth2state']);
         }
     }
 
     /**
      * @param string $value
+     *
      * @return void
      */
     public function setAuthorizationMessage(string $value): void

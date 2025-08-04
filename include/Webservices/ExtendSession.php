@@ -9,7 +9,12 @@
  *************************************************************************************/
 
 /**
- * Portions created by IT-Solutions4You s.r.o. are Copyright (C) IT-Solutions4You s.r.o.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 /**
@@ -19,6 +24,7 @@
 function vtws_extendSession()
 {
     global $adb, $API_VERSION, $application_unique_key;
+    
     if ($_SESSION['authenticatedUserId'] || (isset($_SESSION["authenticated_user_id"]) && $_SESSION["app_unique_key"] == $application_unique_key)) {
         $userId = ($_SESSION["authenticated_user_id"]) ? : $_SESSION['authenticatedUserId'];
         unset($_SESSION['__CRM_Session_Expire_TS']);

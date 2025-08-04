@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_Field_Model extends Vtiger_Field_Model
 {
     /**
@@ -15,23 +16,23 @@ class EMAILMaker_Field_Model extends Vtiger_Field_Model
      */
     public static function getAdvancedFilterOptions()
     {
-        return array(
-            'is' => 'is',
-            'contains' => 'contains',
-            'does not contain' => 'does not contain',
-            'starts with' => 'starts with',
-            'ends with' => 'ends with',
-            'is empty' => 'is empty',
-            'is not empty' => 'is not empty',
-            'less than' => 'less than',
-            'greater than' => 'greater than',
-            'does not equal' => 'does not equal',
-            'less than or equal to' => 'less than or equal to',
+        return [
+            'is'                       => 'is',
+            'contains'                 => 'contains',
+            'does not contain'         => 'does not contain',
+            'starts with'              => 'starts with',
+            'ends with'                => 'ends with',
+            'is empty'                 => 'is empty',
+            'is not empty'             => 'is not empty',
+            'less than'                => 'less than',
+            'greater than'             => 'greater than',
+            'does not equal'           => 'does not equal',
+            'less than or equal to'    => 'less than or equal to',
             'greater than or equal to' => 'greater than or equal to',
-            'before' => 'before',
-            'after' => 'after',
-            'between' => 'between',
-        );
+            'before'                   => 'before',
+            'after'                    => 'after',
+            'between'                  => 'between',
+        ];
     }
 
     /**
@@ -40,20 +41,20 @@ class EMAILMaker_Field_Model extends Vtiger_Field_Model
      */
     public static function getAdvancedFilterOpsByFieldType()
     {
-        return array(
-            'string' => array('is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'),
-            'country' => array('is', 'is not', 'is empty', 'is not empty'),
-            'salutation' => array('is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'),
-            'text' => array('is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'),
-            'url' => array('is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'),
-            'email' => array('is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'),
-            'phone' => array('is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'),
-            'integer' => array('equal to', 'less than', 'greater than', 'does not equal', 'less than or equal to', 'greater than or equal to'),
-            'double' => array('equal to', 'less than', 'greater than', 'does not equal', 'less than or equal to', 'greater than or equal to'),
-            'currency' => array('equal to', 'less than', 'greater than', 'does not equal', 'less than or equal to', 'greater than or equal to', 'is not empty'),
-            'picklist' => array('is', 'is not', 'is empty', 'is not empty'),
-            'multipicklist' => array('is', 'is not', 'contains', 'does not contain'),
-            'datetime' => array(
+        return [
+            'string'          => ['is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'],
+            'country'         => ['is', 'is not', 'is empty', 'is not empty'],
+            'salutation'      => ['is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'],
+            'text'            => ['is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'],
+            'url'             => ['is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'],
+            'email'           => ['is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'],
+            'phone'           => ['is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'],
+            'integer'         => ['equal to', 'less than', 'greater than', 'does not equal', 'less than or equal to', 'greater than or equal to'],
+            'double'          => ['equal to', 'less than', 'greater than', 'does not equal', 'less than or equal to', 'greater than or equal to'],
+            'currency'        => ['equal to', 'less than', 'greater than', 'does not equal', 'less than or equal to', 'greater than or equal to', 'is not empty'],
+            'picklist'        => ['is', 'is not', 'is empty', 'is not empty'],
+            'multipicklist'   => ['is', 'is not', 'contains', 'does not contain'],
+            'datetime'        => [
                 'is',
                 'is not',
                 'before',
@@ -73,9 +74,9 @@ class EMAILMaker_Field_Model extends Vtiger_Field_Model
                 'days later',
                 'is empty',
                 'is not empty'
-            ),
-            'time' => array('is', 'is not', 'is not empty'),
-            'date' => array(
+            ],
+            'time'            => ['is', 'is not', 'is not empty'],
+            'date'            => [
                 'is',
                 'is not',
                 'between',
@@ -96,21 +97,23 @@ class EMAILMaker_Field_Model extends Vtiger_Field_Model
                 'days later',
                 'is empty',
                 'is not empty'
-            ),
-            'boolean' => array('is', 'is not'),
-            'reference' => array('is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'),
-            'owner' => array('is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'),
-            'recurrence' => array('is', 'is not'),
-            'comment' => array('is'),
-            'image' => array('is', 'is not', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'),
-            'percentage' => array('equal to', 'less than', 'greater than', 'does not equal', 'less than or equal to', 'greater than or equal to', 'is not empty'),
-            'documentsFolder' => array('is', 'contains', 'does not contain', 'starts with', 'ends with'),
-        );
+            ],
+            'boolean'         => ['is', 'is not'],
+            'reference'       => ['is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'],
+            'owner'           => ['is', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'],
+            'recurrence'      => ['is', 'is not'],
+            'comment'         => ['is'],
+            'image'           => ['is', 'is not', 'contains', 'does not contain', 'starts with', 'ends with', 'is empty', 'is not empty'],
+            'percentage'      => ['equal to', 'less than', 'greater than', 'does not equal', 'less than or equal to', 'greater than or equal to', 'is not empty'],
+            'documentsFolder' => ['is', 'contains', 'does not contain', 'starts with', 'ends with'],
+        ];
     }
 
     /**
      * Function to get comment field which will useful in creating conditions
+     *
      * @param <Vtiger_Module_Model> $moduleModel
+     *
      * @return <Vtiger_Field_Model>
      */
     public static function getCommentFieldForFilterConditions($moduleModel)
@@ -127,9 +130,9 @@ class EMAILMaker_Field_Model extends Vtiger_Field_Model
     public static function getAllForModule($moduleModel)
     {
         if (empty(self::$allFields)) {
-            $fieldsList = array();
-            $firstBlockFields = array('templatename' => 'LBL_TEMPLATE_NAME', 'description' => 'LBL_DESCRIPTION');
-            $secondBlockFields = array('subject' => 'LBL_SUBJECT');
+            $fieldsList = [];
+            $firstBlockFields = ['templatename' => 'LBL_TEMPLATE_NAME', 'description' => 'LBL_DESCRIPTION'];
+            $secondBlockFields = ['subject' => 'LBL_SUBJECT'];
             $blocks = $moduleModel->getBlocks();
 
             foreach ($firstBlockFields as $fieldName => $fieldLabel) {
@@ -137,7 +140,6 @@ class EMAILMaker_Field_Model extends Vtiger_Field_Model
                 $blockModel = $blocks['SINGLE_EmailTemplates'];
                 $fieldModel->set('name', $fieldName)->set('label', $fieldLabel)->set('block', $blockModel);
                 $fieldsList[$blockModel->get('id')][] = $fieldModel;
-
             }
 
             foreach ($secondBlockFields as $fieldName => $fieldLabel) {
@@ -148,6 +150,7 @@ class EMAILMaker_Field_Model extends Vtiger_Field_Model
             }
             self::$allFields = $fieldsList;
         }
+
         return self::$allFields;
     }
 
@@ -170,12 +173,12 @@ class EMAILMaker_Field_Model extends Vtiger_Field_Model
      */
     public static function getSharingTypes()
     {
-        return array(
-            '' => '',
-            'public' => vtranslate('PUBLIC_FILTER', 'EMAILMaker'),
+        return [
+            ''        => '',
+            'public'  => vtranslate('PUBLIC_FILTER', 'EMAILMaker'),
             'private' => vtranslate('PRIVATE_FILTER', 'EMAILMaker'),
-            'share' => vtranslate('SHARE_FILTER', 'EMAILMaker'),
-        );
+            'share'   => vtranslate('SHARE_FILTER', 'EMAILMaker'),
+        ];
     }
 
     /**
@@ -183,10 +186,10 @@ class EMAILMaker_Field_Model extends Vtiger_Field_Model
      */
     public static function getStatusOptions()
     {
-        return array(
+        return [
             'status_1' => vtranslate('Active', 'EMAILMaker'),
             'status_0' => vtranslate('Inactive', 'EMAILMaker'),
-        );
+        ];
     }
 
     /**
@@ -194,10 +197,10 @@ class EMAILMaker_Field_Model extends Vtiger_Field_Model
      */
     public static function getWorkflowOptions()
     {
-        return array(
+        return [
             'wf_1' => vtranslate('LBL_YES', 'EMAILMaker'),
             'wf_0' => vtranslate('LBL_NO', 'EMAILMaker'),
-        );
+        ];
     }
 
     /**

@@ -1,5 +1,5 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is: vtiger CRM Open Source
@@ -7,68 +7,75 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-$languageStrings = array(
-	// Basic Strings
-	'Contacts' => 'Kontakter',
-	'SINGLE_Contacts' => 'Kontakt',
-	'LBL_ADD_RECORD' => 'Lägg till Kontakt',
-	'LBL_RECORDS_LIST' => 'Kontaktlista',
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-	// Blocks
-	'LBL_CONTACT_INFORMATION' => 'Grundläggande Information',
-	'LBL_CUSTOMER_PORTAL_INFORMATION' => 'Kundportalsuppgifter',
-	'LBL_IMAGE_INFORMATION' => 'Profilbild',
-	'LBL_COPY_OTHER_ADDRESS' => 'Kopiera till en annan Adress',
-	'LBL_COPY_MAILING_ADDRESS' => 'Kopiera E-postadresser',
+$languageStrings = [
+    // Basic Strings
+    'Contacts'                        => 'Kontakter',
+    'SINGLE_Contacts'                 => 'Kontakt',
+    'LBL_ADD_RECORD'                  => 'Lägg till Kontakt',
+    'LBL_RECORDS_LIST'                => 'Kontaktlista',
 
-	//Field Labels
-	'Office Phone' => 'Arbetstelefon',
-	'Home Phone' => 'Hemtelefon',
-	'Title' => 'Titel',
-	'Department' => 'Avdelning',
-	'Birthdate' => 'Födelsedatum',
-	'Reports To' => 'Rapportera Till',
-	'Assistant' => 'Assistent',
-	'Assistant Phone' => 'Assistent Telefon',
-	'Do Not Call' => 'Ring Inte',
-	'Reference' => 'Referens',
-	'Portal User' => 'Portalanvändare',
-	'Mailing Street' => 'Utskick Gatuadress',
-	'Mailing City' => 'Utskick Stad',
-	'Mailing State' => 'Utskick Län',
-	'Mailing Zip' => 'Utskick Postnummer',
-	'Mailing Country' => 'Utskick Land',
-	'Mailing Po Box' => 'Utskick Postbox',
-	'Other Street' => 'Annan Gatuadress',
-	'Other City' => 'Annan Stad',
-	'Other State' => 'Annat Län',
-	'Other Zip' => 'Annat Postnummer',
-	'Other Country' => 'Annat Land',
-	'Other Po Box' => 'Annan Postbox',
-	'Contact Image' => 'Kontaktbild',
-	'Other Phone' => 'Sekundär telefon',
-	'Email' => 'Primär E-post',
-	'Secondary Email' => 'Sekundär E-post',
-    'Support Start Date' => 'Support Startdatum',
-    'Support End Date'  => 'Stöd Slutdatum',
-	
-	//Added for Picklist Values
-	'Mr.'=>'Herr',
-	'Ms.'=>'Fru',
-	'Mrs.'=>'Fröken',
-	'Dr.'=>'Dr.',
-	'Prof.'=>'Prof.',
+    // Blocks
+    'LBL_CONTACT_INFORMATION'         => 'Grundläggande Information',
+    'LBL_CUSTOMER_PORTAL_INFORMATION' => 'Kundportalsuppgifter',
+    'LBL_IMAGE_INFORMATION'           => 'Profilbild',
+    'LBL_COPY_OTHER_ADDRESS'          => 'Kopiera till en annan Adress',
+    'LBL_COPY_MAILING_ADDRESS'        => 'Kopiera E-postadresser',
 
-	'User List'=>'Användarelista',
-	'LBL_TRANSACTIONS' => 'Transaktioner',
+    //Field Labels
+    'Office Phone'                    => 'Arbetstelefon',
+    'Home Phone'                      => 'Hemtelefon',
+    'Title'                           => 'Titel',
+    'Department'                      => 'Avdelning',
+    'Birthdate'                       => 'Födelsedatum',
+    'Reports To'                      => 'Rapportera Till',
+    'Assistant'                       => 'Assistent',
+    'Assistant Phone'                 => 'Assistent Telefon',
+    'Do Not Call'                     => 'Ring Inte',
+    'Reference'                       => 'Referens',
+    'Portal User'                     => 'Portalanvändare',
+    'Mailing Street'                  => 'Utskick Gatuadress',
+    'Mailing City'                    => 'Utskick Stad',
+    'Mailing State'                   => 'Utskick Län',
+    'Mailing Zip'                     => 'Utskick Postnummer',
+    'Mailing Country'                 => 'Utskick Land',
+    'Mailing Po Box'                  => 'Utskick Postbox',
+    'Other Street'                    => 'Annan Gatuadress',
+    'Other City'                      => 'Annan Stad',
+    'Other State'                     => 'Annat Län',
+    'Other Zip'                       => 'Annat Postnummer',
+    'Other Country'                   => 'Annat Land',
+    'Other Po Box'                    => 'Annan Postbox',
+    'Contact Image'                   => 'Kontaktbild',
+    'Other Phone'                     => 'Sekundär telefon',
+    'Email'                           => 'Primär E-post',
+    'Secondary Email'                 => 'Sekundär E-post',
+    'Support Start Date'              => 'Support Startdatum',
+    'Support End Date'                => 'Stöd Slutdatum',
 
-  'Contact Id' => 'Kontakt-Id',
+    //Added for Picklist Values
+    'Mr.'                             => 'Herr',
+    'Ms.'                             => 'Fru',
+    'Mrs.'                            => 'Fröken',
+    'Dr.'                             => 'Dr.',
+    'Prof.'                           => 'Prof.',
 
-);
+    'User List'        => 'Användarelista',
+    'LBL_TRANSACTIONS' => 'Transaktioner',
+    'Contact Id'       => 'Kontakt-Id',
+];
 
-$jsLanguageStrings = array(
-        'LBL_SYNC_BUTTON' => 'Synkronisera nu',
-        'LBL_SYNCRONIZING' => 'Synkronisering....',
-        'LBL_NOT_SYNCRONIZED' => 'Du har inte synkroniserat ännu',
-        'LBL_FIELD_MAPPING' => 'Fältmapping'
- );
+$jsLanguageStrings = [
+    'LBL_SYNC_BUTTON'     => 'Synkronisera nu',
+    'LBL_SYNCRONIZING'    => 'Synkronisering....',
+    'LBL_NOT_SYNCRONIZED' => 'Du har inte synkroniserat ännu',
+    'LBL_FIELD_MAPPING'   => 'Fältmapping'
+];

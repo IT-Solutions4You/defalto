@@ -1,15 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_Record_Model extends Vtiger_Record_Model
 {
-
     public static function getInstanceById($templateId, $module = null)
     {
         $db = PearDatabase::getInstance();
@@ -17,7 +17,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
             'SELECT vtiger_emakertemplates_displayed.*, vtiger_emakertemplates.*  FROM vtiger_emakertemplates 
                                     LEFT JOIN vtiger_emakertemplates_displayed ON vtiger_emakertemplates_displayed.templateid = vtiger_emakertemplates.templateid 
                                     WHERE vtiger_emakertemplates.templateid = ?',
-            array($templateId)
+            [$templateId]
         );
         if ($db->num_rows($result) > 0) {
             $row = $db->query_result_rowdata($result, 0);
@@ -26,6 +26,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
 
             return $recordModel->setData($row)->setId($templateId)->setModule($row['module'] != "" ? $row['module'] : 'EMAILMaker');
         }
+
         return null;
     }
 
@@ -36,6 +37,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
 
     /**
      * @param int $templateId
+     *
      * @return string
      * @throws Exception
      */
@@ -45,7 +47,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
         $adb = PearDatabase::getInstance();
         $result_lfn = $adb->pquery(
             'SELECT fieldname FROM vtiger_emakertemplates_default_from WHERE templateid = ? AND userid = ?',
-            array($templateId, $currentUser->id)
+            [$templateId, $currentUser->id]
         );
 
         return $adb->query_result($result_lfn, 0, 'fieldname');
@@ -58,10 +60,10 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
     {
         $adb = PearDatabase::getInstance();
         $ignore_picklist_values = '';
-        $result = $adb->pquery('SELECT value FROM vtiger_emakertemplates_ignorepicklistvalues', array());
+        $result = $adb->pquery('SELECT value FROM vtiger_emakertemplates_ignorepicklistvalues', []);
 
         if ($adb->num_rows($result)) {
-            $values = array();
+            $values = [];
 
             while ($row = $adb->fetchByAssoc($result)) {
                 $values[] = $row['value'];
@@ -80,25 +82,25 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
     {
         $current_user = Users_Record_Model::getCurrentUserModel();
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT * FROM vtiger_emakertemplates_settings', array());
+        $result = $adb->pquery('SELECT * FROM vtiger_emakertemplates_settings', []);
 
         if ($adb->num_rows($result)) {
             $settingsResult = $adb->fetchByAssoc($result, 0);
 
-            return array(
-                'point' => $settingsResult['decimal_point'],
-                'decimals' => $settingsResult['decimals'],
+            return [
+                'point'     => $settingsResult['decimal_point'],
+                'decimals'  => $settingsResult['decimals'],
                 'thousands' => ($settingsResult['thousands_separator'] != 'sp' ? $settingsResult['thousands_separator'] : ' ')
-            );
+            ];
         }
 
         $thousands_separator = $current_user->currency_grouping_separator;
 
-        return array(
-            'point' => $current_user->currency_decimal_separator,
-            'decimals' => $current_user->no_of_currency_decimals,
+        return [
+            'point'     => $current_user->currency_decimal_separator,
+            'decimals'  => $current_user->no_of_currency_decimals,
             'thousands' => ($thousands_separator != 'sp' ? $thousands_separator : ' ')
-        );
+        ];
     }
 
     /**
@@ -110,14 +112,14 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
         global $site_URL;
 
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT * FROM vtiger_organizationdetails', array());
+        $result = $adb->pquery('SELECT * FROM vtiger_organizationdetails', []);
         $row = $adb->query_result_rowdata($result);
         $path = $site_URL . '/test/logo/';
-        $images = array(
-            'logoname' => decode_html($row['logoname']),
-            'headername' => decode_html($row['headername']),
+        $images = [
+            'logoname'        => decode_html($row['logoname']),
+            'headername'      => decode_html($row['headername']),
             'stamp_signature' => $row['stamp_signature'],
-        );
+        ];
 
         if (isset($images['logoname'])) {
             $images['logoname_img'] = "<img src=\"" . $path . $images['logoname'] . "\">";
@@ -157,9 +159,10 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
     }
 
     /**
-     * @param $params
-     * @param $table
+     * @param       $params
+     * @param       $table
      * @param false $index
+     *
      * @return string
      */
     public static function getUpdateFromParams($params, $table, $index = false)
@@ -176,6 +179,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
     /**
      * @param $params
      * @param $table
+     *
      * @return string
      */
     public static function getInsertFromParams($params, $table)
@@ -186,7 +190,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
     public static function saveTemplateSettings($settingsParams)
     {
         $adb = PearDatabase::getInstance();
-        $settingsResult = $adb->pquery('SELECT * FROM vtiger_emakertemplates_settings', array());
+        $settingsResult = $adb->pquery('SELECT * FROM vtiger_emakertemplates_settings', []);
         $settingsTable = 'vtiger_emakertemplates_settings';
 
         if ($adb->num_rows($settingsResult)) {
@@ -206,7 +210,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
         foreach ($values as $value) {
             $adb->pquery(
                 'INSERT INTO vtiger_emakertemplates_ignorepicklistvalues(value) VALUES(?)',
-                array(trim($value))
+                [trim($value)]
             );
         }
     }
@@ -227,36 +231,40 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
             switch ($is_default_dec) {
                 //in case of only is_default_dv is checked
                 case 1:
-                    $adb->pquery($userStatusQuery, array('0', '1', $currentUserId, $moduleName));
-                    $adb->pquery($userStatusQuery, array('2', '3', $currentUserId, $moduleName));
+                    $adb->pquery($userStatusQuery, ['0', '1', $currentUserId, $moduleName]);
+                    $adb->pquery($userStatusQuery, ['2', '3', $currentUserId, $moduleName]);
                     break;
                 //in case of only is_default_lv is checked
                 case 2:
-                    $adb->pquery($userStatusQuery, array('0', '2', $currentUserId, $moduleName));
-                    $adb->pquery($userStatusQuery, array('1', '3', $currentUserId, $moduleName));
+                    $adb->pquery($userStatusQuery, ['0', '2', $currentUserId, $moduleName]);
+                    $adb->pquery($userStatusQuery, ['1', '3', $currentUserId, $moduleName]);
                     break;
                 //in case of both is_default_* are checked
                 case 3:
                     $userStatusQuery = 'UPDATE vtiger_emakertemplates_userstatus INNER JOIN vtiger_emakertemplates USING(templateid) SET is_default=? WHERE is_default > ? AND userid=? AND module=?';
-                    $adb->pquery($userStatusQuery, array('0', '0', $currentUserId, $moduleName));
+                    $adb->pquery($userStatusQuery, ['0', '0', $currentUserId, $moduleName]);
             }
         }
 
-        $adb->pquery('DELETE FROM vtiger_emakertemplates_userstatus WHERE templateid=? AND userid=?', array($templateId, $currentUserId));
-        $adb->pquery('INSERT INTO vtiger_emakertemplates_userstatus(templateid, userid, is_active, is_default, sequence) VALUES(?,?,?,?,?)', array($templateId, $currentUserId, $isActive, $is_default_dec, $order));
+        $adb->pquery('DELETE FROM vtiger_emakertemplates_userstatus WHERE templateid=? AND userid=?', [$templateId, $currentUserId]);
+        $adb->pquery(
+            'INSERT INTO vtiger_emakertemplates_userstatus(templateid, userid, is_active, is_default, sequence) VALUES(?,?,?,?,?)',
+            [$templateId, $currentUserId, $isActive, $is_default_dec, $order]
+        );
     }
 
-    public static function saveSharing($templateId, $sharingType, $members) {
+    public static function saveSharing($templateId, $sharingType, $members)
+    {
         //SHARING
         $adb = PearDatabase::getInstance();
-        $adb->pquery('DELETE FROM vtiger_emakertemplates_sharing WHERE templateid=?', array($templateId));
+        $adb->pquery('DELETE FROM vtiger_emakertemplates_sharing WHERE templateid=?', [$templateId]);
 
         $member_array = $members;
 
         if ($sharingType == 'share' && php7_count($member_array) > 0) {
             $groupMemberArray = self::constructSharingMemberArray($member_array);
             $sharingQuery = '';
-            $sharingParams = array();
+            $sharingParams = [];
 
             foreach ($groupMemberArray as $setype => $shareIdArr) {
                 foreach ($shareIdArr as $shareId) {
@@ -281,16 +289,16 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
         $currentUserId = $currentUser->getId();
 
         $adb = PearDatabase::getInstance();
-        $adb->pquery('DELETE FROM vtiger_emakertemplates_default_from WHERE templateid=? AND userid=?', array($templateId, $currentUserId));
+        $adb->pquery('DELETE FROM vtiger_emakertemplates_default_from WHERE templateid=? AND userid=?', [$templateId, $currentUserId]);
 
         if (!empty($defaultFromEmail)) {
             $adb->pquery(
                 'INSERT INTO vtiger_emakertemplates_default_from (templateid,userid,fieldname) VALUES (?,?,?)',
-                array(
+                [
                     $templateId,
                     $currentUserId,
                     $defaultFromEmail
-                )
+                ]
             );
         }
     }
@@ -298,14 +306,14 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
     public static function saveDisplayed($templateId, $displayedValue, $displayedConditions)
     {
         $adb = PearDatabase::getInstance();
-        $adb->pquery('DELETE FROM vtiger_emakertemplates_displayed WHERE templateid=?', array($templateId));
+        $adb->pquery('DELETE FROM vtiger_emakertemplates_displayed WHERE templateid=?', [$templateId]);
         $adb->pquery(
             'INSERT INTO vtiger_emakertemplates_displayed (templateid,displayed,conditions) VALUES (?,?,?)',
-            array(
+            [
                 $templateId,
                 $displayedValue,
                 Zend_Json::encode($displayedConditions)
-            )
+            ]
         );
     }
 
@@ -384,6 +392,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
     public function getDetailViewUrl()
     {
         $module = $this->getModule();
+
         return 'index.php?module=EMAILMaker&view=' . $module->getDetailViewName() . '&record=' . $this->getId();
     }
 
@@ -415,6 +424,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
                 }
             }
         }
+
         return false;
     }
 
@@ -422,58 +432,59 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
     {
         $adb = PearDatabase::getInstance();
         $templateid = $this->getId();
-        $adb->pquery("DELETE FROM vtiger_emakertemplates_displayed WHERE templateid=?", array($templateid));
+        $adb->pquery("DELETE FROM vtiger_emakertemplates_displayed WHERE templateid=?", [$templateid]);
 
         $conditions = $this->transformAdvanceFilterToEMAILMakerFilter($conditions);
 
         $display_conditions = Zend_Json::encode($conditions);
 
+        $adb->pquery("INSERT INTO vtiger_emakertemplates_displayed (templateid,displayed,conditions) VALUES (?,?,?)", [$templateid, $displayed_value, $display_conditions]);
 
-        $adb->pquery("INSERT INTO vtiger_emakertemplates_displayed (templateid,displayed,conditions) VALUES (?,?,?)", array($templateid, $displayed_value, $display_conditions));
         return true;
     }
 
     public function transformAdvanceFilterToEMAILMakerFilter($conditions)
     {
-        $wfCondition = array();
+        $wfCondition = [];
 
         if (!empty($conditions)) {
             foreach ($conditions as $index => $condition) {
                 $columns = $condition['columns'];
                 if ($index == '1' && empty($columns)) {
-                    $wfCondition[] = array(
-                        'fieldname' => '',
-                        'operation' => '',
-                        'value' => '',
-                        'valuetype' => '',
+                    $wfCondition[] = [
+                        'fieldname'     => '',
+                        'operation'     => '',
+                        'value'         => '',
+                        'valuetype'     => '',
                         'joincondition' => '',
-                        'groupid' => '0'
-                    );
+                        'groupid'       => '0'
+                    ];
                 }
                 if (!empty($columns) && is_array($columns)) {
                     foreach ($columns as $column) {
-                        $wfCondition[] = array(
-                            'fieldname' => $column['columnname'],
-                            'operation' => $column['comparator'],
-                            'value' => $column['value'],
-                            'valuetype' => $column['valuetype'],
+                        $wfCondition[] = [
+                            'fieldname'     => $column['columnname'],
+                            'operation'     => $column['comparator'],
+                            'value'         => $column['value'],
+                            'valuetype'     => $column['valuetype'],
                             'joincondition' => $column['column_condition'],
-                            'groupjoin' => $condition['condition'],
-                            'groupid' => $column['groupid']
-                        );
+                            'groupjoin'     => $condition['condition'],
+                            'groupid'       => $column['groupid']
+                        ];
                     }
                 }
             }
         }
+
         return $wfCondition;
     }
 
     public function getConditonDisplayValue()
     {
-        $conditionList = array(
+        $conditionList = [
             'All' => [],
             'Any' => [],
-        );
+        ];
         $displayed = $this->get('displayed');
         $conditions = $this->get('conditions');
         $moduleName = $this->get('module');
@@ -481,6 +492,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
             $EMAILMaker_Display_Model = new EMAILMaker_Display_Model();
             $conditionList = $EMAILMaker_Display_Model->getConditionsForDetail($displayed, $conditions, $moduleName);
         }
+
         return $conditionList;
     }
 

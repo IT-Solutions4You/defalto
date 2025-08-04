@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 class Core_Tax_Model extends Core_DatabaseData_Model
 {
@@ -51,7 +59,9 @@ class Core_Tax_Model extends Core_DatabaseData_Model
         $link = Settings_Vtiger_MenuItem_Model::getInstance('LBL_TAXES', $menu);
 
         if (!$link) {
-            $link = Settings_Vtiger_MenuItem_Model::getInstanceFromArray(['name' => 'LBL_TAXES', 'blockid' => $menu->getId(), 'linkto' => 'index.php?module=Core&parent=Settings&view=Taxes&mode=taxes']);
+            $link = Settings_Vtiger_MenuItem_Model::getInstanceFromArray(
+                ['name' => 'LBL_TAXES', 'blockid' => $menu->getId(), 'linkto' => 'index.php?module=Core&parent=Settings&view=Taxes&mode=taxes']
+            );
             $link->save();
         }
     }
@@ -65,7 +75,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function createTables(): void
     {
@@ -82,7 +92,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
 
     /**
      * @return array
-     * @throws AppException
+     * @throws Exception
      */
     public static function getAllTaxes(): array
     {
@@ -106,6 +116,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
 
     /**
      * @param string $taxName
+     *
      * @return self
      */
     public static function getInstance(string $taxName = ''): self
@@ -124,8 +135,9 @@ class Core_Tax_Model extends Core_DatabaseData_Model
 
     /**
      * @param int $recordId
+     *
      * @return self|false
-     * @throws AppException
+     * @throws Exception
      */
     public static function getInstanceById(int $recordId): bool|self
     {
@@ -141,7 +153,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public static function getInstanceFromRequest(Vtiger_Request $request): self|bool
     {
@@ -190,13 +202,13 @@ class Core_Tax_Model extends Core_DatabaseData_Model
     public function getSaveParams(): array
     {
         return [
-            'tax_label' => $this->get('tax_label'),
-            'percentage' => $this->get('percentage'),
-            'method' => $this->get('method'),
+            'tax_label'   => $this->get('tax_label'),
+            'percentage'  => $this->get('percentage'),
+            'method'      => $this->get('method'),
             'compound_on' => $this->get('compound_on'),
-            'regions' => $this->get('regions'),
-            'deleted' => $this->get('deleted'),
-            'active' => $this->get('active'),
+            'regions'     => $this->get('regions'),
+            'deleted'     => $this->get('deleted'),
+            'active'      => $this->get('active'),
         ];
     }
 
@@ -232,7 +244,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
 
     /**
      * @return array
-     * @throws AppException
+     * @throws Exception
      */
     public static function getSimpleTaxes(): array
     {
@@ -263,9 +275,9 @@ class Core_Tax_Model extends Core_DatabaseData_Model
         return 1 === (int)$this->get('deleted');
     }
 
-
     /**
      * @param $value
+     *
      * @return void
      */
     public function setLabel($value): void
@@ -275,7 +287,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
 
     /**
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function delete(): void
     {
@@ -286,6 +298,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
 
     /**
      * @param $taxId
+     *
      * @return bool
      */
     public function isSelectedCompoundOn($taxId)
@@ -294,7 +307,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function migrateData()
     {
@@ -376,6 +389,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
     /**
      * @param array $data
      * @param array $regions
+     *
      * @return array
      */
     public function migrateRegions(array $data, array $regions): array
@@ -397,7 +411,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
             foreach ($newRegionIds as $newRegionId) {
                 $newValues[] = [
                     'region_id' => $newRegionId,
-                    'value' => $value['value'],
+                    'value'     => $value['value'],
                 ];
             }
         }
@@ -408,6 +422,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
     /**
      * @param array $data
      * @param array $taxes
+     *
      * @return array
      */
     public function migrateCompoundOn(array $data, array $taxes): array
@@ -423,7 +438,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function getRegions(): array
     {
@@ -447,8 +462,9 @@ class Core_Tax_Model extends Core_DatabaseData_Model
 
     /**
      * @param int $id
+     *
      * @return bool|object
-     * @throws AppException
+     * @throws Exception
      */
     public function getRegion(int $id): bool|object
     {
@@ -470,6 +486,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
 
     /**
      * @param bool $value
+     *
      * @return void
      */
     public function setActiveForRecord(bool $value): void
@@ -478,7 +495,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function updateRecordTaxes(): void
     {
@@ -507,11 +524,14 @@ class Core_Tax_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function deleteUnusedRegions(): void
     {
         $regionIds = array_keys($this->getRegions());
-        $this->db->pquery('DELETE FROM df_taxes_records WHERE tax_id=? AND region_id IS NOT NULL AND region_id NOT IN (' . generateQuestionMarks($regionIds) . ')', [$this->getId(), $regionIds]);
+        $this->db->pquery(
+            'DELETE FROM df_taxes_records WHERE tax_id=? AND region_id IS NOT NULL AND region_id NOT IN (' . generateQuestionMarks($regionIds) . ')',
+            [$this->getId(), $regionIds]
+        );
     }
 }

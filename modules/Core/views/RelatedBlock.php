@@ -1,14 +1,15 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Core_RelatedBlock_View extends Vtiger_Index_View {
+class Core_RelatedBlock_View extends Vtiger_Index_View
+{
     public function isContentView(Vtiger_Request $request): bool
     {
         return in_array($request->get('mode'), ['content', 'iframe', 'options']);
@@ -16,6 +17,7 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      * @throws Exception
      */
@@ -37,7 +39,8 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
 
     /**
      * @param Vtiger_Request $request
-     * @param bool $display
+     * @param bool           $display
+     *
      * @return void
      */
     public function preProcess(Vtiger_Request $request, $display = true)
@@ -51,6 +54,7 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function postProcess(Vtiger_Request $request)
@@ -63,14 +67,14 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function edit(Vtiger_Request $request): void
     {
         $moduleName = $request->getModule();
         $recordId = $request->get('record');
 
-        if(!empty($recordId)) {
+        if (!empty($recordId)) {
             $relatedBlock = Core_RelatedBlock_Model::getInstanceById($recordId, $moduleName);
         } else {
             $relatedBlock = Core_RelatedBlock_Model::getInstance($moduleName);
@@ -85,7 +89,7 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
         $viewer->assign('RECORD_ID', $relatedBlock->getId());
         $viewer->assign('DATE_FILTERS', Vtiger_Field_Model::getDateFilterTypes());
 
-        if($relatedModule) {
+        if ($relatedModule) {
             $viewer->assign('RECORD_STRUCTURE', $relatedBlock->getRelatedRecordStructure());
             $viewer->assign('RELATED_MODULE_SORT_OPTIONS', $relatedBlock->getRelatedModuleSortOptions());
             $viewer->assign('SELECT_MODULE', $relatedBlock->getRelatedModuleSortOptions());
@@ -96,8 +100,9 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function options(Vtiger_Request $request): void
     {
@@ -110,8 +115,9 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function delete(Vtiger_Request $request): void
     {
@@ -130,8 +136,9 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function content(Vtiger_Request $request): void
     {
@@ -140,11 +147,11 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
         echo $relatedBlock->getTemplateContent();
     }
 
-
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function preview(Vtiger_Request $request): void
     {
@@ -159,8 +166,9 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function iframe(Vtiger_Request $request): void
     {
@@ -168,11 +176,11 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
         $recordId = $request->getRecord();
         $sourceRecordId = (int)$request->get('sourceRecord');
 
-        if(empty($sourceRecordId)) {
-            throw new AppException(vtranslate('Empty related block source record', $moduleName) . ': [&sourceRecord=]');
+        if (empty($sourceRecordId)) {
+            throw new Exception(vtranslate('Empty related block source record', $moduleName) . ': [&sourceRecord=]');
         }
 
-        if(empty($recordId)) {
+        if (empty($recordId)) {
             $records = Core_RelatedBlock_Model::getAll($moduleName);
         } else {
             $records = [
@@ -197,7 +205,7 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function list(Vtiger_Request $request): void
     {
@@ -211,6 +219,7 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return array
      */
     public function getHeaderScripts(Vtiger_Request $request)
@@ -218,13 +227,13 @@ class Core_RelatedBlock_View extends Vtiger_Index_View {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
         $viewName = $request->get('view');
-        $jsFileNames = array(
+        $jsFileNames = [
             'modules.Vtiger.resources.Vtiger',
             "modules.$moduleName.resources.$moduleName",
             "modules.Core.resources.$viewName",
             "modules.Vtiger.resources.$viewName",
             "modules.$moduleName.resources.$viewName",
-        );
+        ];
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
         return array_merge($headerScriptInstances, $jsScriptInstances);

@@ -1,16 +1,17 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 {
     private static $is_inventory_module = false;
-    private static $Email_Images = array();
+    private static $Email_Images = [];
     private static $templateid;
     private static $recipientid;
     private static $recipientmodule;
@@ -29,7 +30,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     private static $thousands_separator;
     private static $decimals;
     private static $rowbreak;
-    private static $ignored_picklist_values = array();
+    private static $ignored_picklist_values = [];
     private static $subject;
     private static $body;
     private static $preview;
@@ -38,10 +39,10 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     private static $type;
     private static $section_sep = "&#%ITS%%%@@@%%%ITS%#&";
     private static $rep = [];
-    private static $inventory_table_array = array();
-    private static $inventory_id_array = array();
-    private static $org_colsOLD = array();
-    private static $relBlockModules = array();
+    private static $inventory_table_array = [];
+    private static $inventory_id_array = [];
+    private static $org_colsOLD = [];
+    private static $relBlockModules = [];
     private static $load_related_documents = false;
     private static $folders_related_documents = [];
 
@@ -68,7 +69,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         self::$inventory_table_array = $this->getInventoryTableArray();
         self::$inventory_id_array = $this->getInventoryIdArray();
 
-        if(empty(self::$is_inventory_module)) {
+        if (empty(self::$is_inventory_module)) {
             self::$is_inventory_module = [];
         }
 
@@ -78,23 +79,30 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     private function getIgnoredPicklistValues()
     {
-        $result = self::$db->pquery("SELECT value FROM vtiger_emakertemplates_ignorepicklistvalues", array());
+        $result = self::$db->pquery("SELECT value FROM vtiger_emakertemplates_ignorepicklistvalues", []);
         while ($row = self::$db->fetchByAssoc($result)) {
             self::$ignored_picklist_values[] = $row["value"];
         }
     }
 
     /**
-     * @param int $templateId
-     * @param string $language
+     * @param int         $templateId
+     * @param string      $language
      * @param string|null $moduleName
-     * @param int|null $recordId
-     * @param int|null $recipientRecordId
+     * @param int|null    $recordId
+     * @param int|null    $recipientRecordId
      * @param string|null $recipientModuleName
+     *
      * @return EMAILMaker_EMAILContent_Model
      */
-    public static function getInstanceById(int $templateId, string $language, string $moduleName = null, int $recordId = null, int $recipientRecordId = null, string $recipientModuleName = null): self
-    {
+    public static function getInstanceById(
+        int $templateId,
+        string $language,
+        string $moduleName = null,
+        int $recordId = null,
+        int $recipientRecordId = null,
+        string $recipientModuleName = null
+    ): self {
         $self = self::getInstance($moduleName, $recordId, $language, $recipientRecordId, $recipientModuleName);
 
         if (!empty($recordId)) {
@@ -129,7 +137,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     private function getDecimalData()
     {
-        $result2 = self::$db->pquery("SELECT * FROM vtiger_emakertemplates_settings", array());
+        $result2 = self::$db->pquery("SELECT * FROM vtiger_emakertemplates_settings", []);
         $data = self::$db->fetch_array($result2);
 
         self::$decimal_point = html_entity_decode($data["decimal_point"], ENT_QUOTES);
@@ -138,11 +146,12 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     }
 
     /**
-     * @param string $moduleName
-     * @param int $recordId
-     * @param string $language
-     * @param int|null $recipientRecordId
+     * @param string      $moduleName
+     * @param int         $recordId
+     * @param string      $language
+     * @param int|null    $recipientRecordId
      * @param string|null $recipientModuleName
+     *
      * @return self
      * @throws Exception
      */
@@ -200,6 +209,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     /**
      * @param string $fieldName
+     *
      * @return string
      */
     public function getGeneralFieldsValue($fieldName)
@@ -220,11 +230,11 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             case 'crmdetailviewurl':
                 return $recordModel ? $siteUrl . $recordModel->getDetailViewUrl() : '';
             case 'portaldetailviewurl':
-                $recordIdNames = array(
+                $recordIdNames = [
                     'HelpDesk' => 'ticketid',
-                    'Faq' => 'faqid',
+                    'Faq'      => 'faqid',
                     'Products' => 'productid',
-                );
+                ];
                 $recordIdName = isset($recordIdNames[$moduleName]) ? $recordIdNames[$moduleName] : 'id';
 
                 return $recordId ? $portalUrl . 'index.php?module=' . $moduleName . '&action=index&' . $recordIdName . '=' . $recordId . '&status=true' : '';
@@ -245,7 +255,8 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         }
     }
 
-    public function replaceCurrentDate() {
+    public function replaceCurrentDate()
+    {
         self::$rep['##DD-MM-YYYY##'] = date('d-m-Y');
         self::$rep['##DD.MM.YYYY##'] = date('d.m.Y');
         self::$rep['##MM-DD-YYYY##'] = date('m-d-Y');
@@ -315,7 +326,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             $this->convertInventoryModules();
 
             if ($this->focus->column_fields["assigned_user_id"] == "" && $this->focus->id != "") {
-                $result = self::$db->pquery("SELECT assigned_user_id FROM vtiger_crmentity WHERE crmid=?", array(self::$focus->id));
+                $result = self::$db->pquery("SELECT assigned_user_id FROM vtiger_crmentity WHERE crmid=?", [self::$focus->id]);
                 $this->focus->column_fields["assigned_user_id"] = self::$db->query_result($result, 0, "assigned_user_id");
             }
 
@@ -331,9 +342,9 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         }
 
         $this->replaceCustomFunctions();
-        $EMAIL_content = array();
+        $EMAIL_content = [];
         if ($convert_recipient) {
-            $Clear_Modules = array("Accounts", "Contacts", "Vendors", "Leads", "Users");
+            $Clear_Modules = ["Accounts", "Contacts", "Vendors", "Leads", "Users"];
             foreach ($Clear_Modules as $clear_module) {
                 if ($clear_module != $recipient_module) {
                     $tabid1 = getTabId($clear_module);
@@ -418,18 +429,18 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     {
         if (!empty(self::$rep)) {
             self::$content = str_replace(array_keys(self::$rep), self::$rep, self::$content);
-            self::$rep = array();
+            self::$rep = [];
         }
     }
 
     private function retrieve_entity_infoCustom(&$focus, $record, $module)
     {
-        $result = array();
+        $result = [];
         foreach ($focus->tab_name_index as $table_name => $index) {
-            $result[$table_name] = self::$db->pquery("SELECT * FROM " . $table_name . " WHERE " . $index . "=?", array($record));
+            $result[$table_name] = self::$db->pquery("SELECT * FROM " . $table_name . " WHERE " . $index . "=?", [$record]);
         }
         $tabid = getTabid($module);
-        $result1 = self::$db->pquery("SELECT fieldname, fieldid, fieldlabel, columnname, tablename, uitype, typeofdata, presence FROM vtiger_field WHERE tabid=?", array($tabid));
+        $result1 = self::$db->pquery("SELECT fieldname, fieldid, fieldlabel, columnname, tablename, uitype, typeofdata, presence FROM vtiger_field WHERE tabid=?", [$tabid]);
         $noofrows = self::$db->num_rows($result1);
 
         if ($noofrows) {
@@ -450,12 +461,13 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     }
 
     /**
-     * @param string $module
-     * @param CRMEntity $focus
+     * @param string      $module
+     * @param CRMEntity   $focus
      * @param bool|string $isRelated
      * @param bool|string $inventoryCurrency
-     * @param bool $isRecipient
-     * @param string $related
+     * @param bool        $isRecipient
+     * @param string      $related
+     *
      * @return array|bool
      * @throws Exception
      */
@@ -466,7 +478,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $recordModel = $record ? Vtiger_Record_Model::getInstanceById($record, $module) : false;
 
         if ($inventoryCurrency) {
-            $inventory_content = array();
+            $inventory_content = [];
         }
 
         if (false === $isRelated) {
@@ -503,7 +515,6 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         }
 
         if ($inventoryCurrency) {
-
             return $inventory_content;
         } else {
             $this->replaceContent();
@@ -513,9 +524,10 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     }
 
     /**
-     * @param array $values
-     * @param string $module
+     * @param array    $values
+     * @param string   $module
      * @param null|int $record
+     *
      * @return array
      */
     public function updateStructureValues(&$values, $module, $record = null)
@@ -532,8 +544,9 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     }
 
     /**
-     * @param string $module
+     * @param string   $module
      * @param null|int $record
+     *
      * @return array
      */
     public function getRecordStructureValues($module, $record = null)
@@ -542,8 +555,9 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     }
 
     /**
-     * @param $module
+     * @param          $module
      * @param null|int $record
+     *
      * @return Vtiger_RecordStructure_Model
      */
     public function getRecordStructure($module, $record = null)
@@ -597,6 +611,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         if (is_numeric($value)) {
             $number = number_format($value, self::$decimals, self::$decimal_point, self::$thousands_separator);
         }
+
         return $number;
     }
 
@@ -605,7 +620,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $field_inf = "_fieldinfo_cache";
         $fieldModRel = $this->GetFieldModuleRel();
         $module_tabid = getTabId(self::$module);
-        $Query_Parr = array('3', '64', $module_tabid);
+        $Query_Parr = ['3', '64', $module_tabid];
         $sql = 'SELECT fieldid, fieldname, uitype, columnname FROM vtiger_field WHERE (displaytype != ? OR fieldid = ?) AND tabid = ?';
         $result = self::$db->pquery($sql, $Query_Parr);
         $num_rows = self::$db->num_rows($result);
@@ -622,7 +637,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                     unset($temp[$tabid]);
                     $focus2 = CRMEntity::getInstance($related_module);
                     if ($fk_record != "" && $fk_record != "0") {
-                        $result_delete = self::$db->pquery("SELECT deleted FROM vtiger_crmentity WHERE crmid=? AND deleted=?", array($fk_record, "0"));
+                        $result_delete = self::$db->pquery("SELECT deleted FROM vtiger_crmentity WHERE crmid=? AND deleted=?", [$fk_record, "0"]);
                         if (self::$db->num_rows($result_delete) > 0) {
                             $focus2->retrieve_entity_info($fk_record, $related_module);
                             $focus2->id = $fk_record;
@@ -717,11 +732,11 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             $this->fillInventoryData($module, $focus);
         }
         if (!isset(self::$inventory_table_array[$module])) {
-            return array();
+            return [];
         }
         $prefix = "";
 
-        $IReplacements = array();
+        $IReplacements = [];
         $IReplacements["SUBTOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["hdnSubTotal"]);
         $IReplacements["TOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["hdnGrandTotal"]);
 
@@ -842,6 +857,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                 }
             }
         }
+
         return $Products;
     }
 
@@ -861,15 +877,17 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         if (!empty($focus->id)) {
             $record_id = $focus->id;
         }
+
         return $this->getInventoryCurrencyInfoCustomArray($inventory_table, $inventory_id, $record_id);
     }
 
     /**
      * @param string $taxKey
      * @param string $taxLabel
-     * @param float $taxValue
-     * @param float $nett
-     * @param float $vat
+     * @param float  $taxValue
+     * @param float  $nett
+     * @param float  $vat
+     *
      * @return void
      */
     public function setVatBlock($taxKey, $taxLabel, $taxValue, $nett, $vat)
@@ -877,7 +895,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         if (empty($this->vatBlock[$taxKey])) {
             $this->vatBlock[$taxKey] = [
                 'netto' => 0,
-                'vat' => 0,
+                'vat'   => 0,
             ];
         }
 
@@ -906,15 +924,15 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
             $chargesAndItsTaxes = $finalDetails['chargesAndItsTaxes'];
 
-            $currencyFieldsList = array(
-                'NETTOTAL' => 'hdnSubTotal',
-                'TAXTOTAL' => 'tax_totalamount',
-                'SHTAXTOTAL' => 'shtax_totalamount',
+            $currencyFieldsList = [
+                'NETTOTAL'           => 'hdnSubTotal',
+                'TAXTOTAL'           => 'tax_totalamount',
+                'SHTAXTOTAL'         => 'shtax_totalamount',
                 'TOTALAFTERDISCOUNT' => 'preTaxTotal',
-                'FINALDISCOUNT' => 'discountTotal_final',
-                'SHTAXAMOUNT' => 'shipping_handling_charge',
+                'FINALDISCOUNT'      => 'discountTotal_final',
+                'SHTAXAMOUNT'        => 'shipping_handling_charge',
                 'DEDUCTEDTAXESTOTAL' => 'deductTaxesTotalAmount',
-            );
+            ];
 
             foreach ($currencyFieldsList as $variableName => $fieldName) {
                 $Details["TOTAL"][$variableName] = $this->formatNumberToEMAIL($finalDetails[$fieldName]);
@@ -924,7 +942,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             $Details['TOTAL']['TOTALWITHVAT'] = $this->formatNumberToEMAIL($totalWithVat);
 
             foreach ($relatedProducts as $i => $PData) {
-                $Details["P"][$i] = array();
+                $Details["P"][$i] = [];
 
                 $sequence = $i;
                 $producttitle = $productname = $PData["productName" . $sequence];
@@ -941,7 +959,6 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                 $Details["P"][$i] = array_merge($Array_P, $Details["P"][$i]);
 
                 unset($focus_p);
-
 
                 $focus_s = CRMEntity::getInstance("Services");
                 if ($entitytype == "Services" && $psid != "") {
@@ -996,7 +1013,10 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                 }
                 $Details["P"][$i]["PRODUCTDESCRIPTION"] = html_entity_decode($psdescription, ENT_QUOTES, self::$def_charset);
                 $Details["P"][$i]["PRODUCTEDITDESCRIPTION"] = $comment;
-                if (strpos($inventory_prodrel_desc, '&lt;br /&gt;') === false && strpos($inventory_prodrel_desc, '&lt;br/&gt;') === false && strpos($inventory_prodrel_desc, '&lt;br&gt;') === false) {
+                if (strpos($inventory_prodrel_desc, '&lt;br /&gt;') === false && strpos($inventory_prodrel_desc, '&lt;br/&gt;') === false && strpos(
+                        $inventory_prodrel_desc,
+                        '&lt;br&gt;'
+                    ) === false) {
                     $inventory_prodrel_desc = str_replace("\\n", "<br>", nl2br($inventory_prodrel_desc));
                 }
                 $Details["P"][$i]["CRMNOWPRODUCTDESCRIPTION"] = html_entity_decode($inventory_prodrel_desc, ENT_QUOTES, self::$def_charset);
@@ -1079,14 +1099,17 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                 $Details["P"][$i]["PRODUCTVATPERCENT"] = $this->formatNumberToEMAIL($taxAverageValue);
                 $Details["P"][$i]["PRODUCTVATSUM"] = $this->formatNumberToEMAIL($taxTotal);
 
-                $result1 = self::$db->pquery("SELECT * FROM vtiger_inventoryproductrel WHERE id=? AND sequence_no=?", array(self::$focus->id, $sequence));
+                $result1 = self::$db->pquery("SELECT * FROM vtiger_inventoryproductrel WHERE id=? AND sequence_no=?", [self::$focus->id, $sequence]);
                 $row1 = self::$db->fetchByAssoc($result1, 0);
 
                 $tabid = getTabid($module);
-                $result2 = self::$db->pquery("SELECT fieldname, fieldlabel, columnname, uitype, typeofdata FROM vtiger_field WHERE tablename = ? AND tabid = ?", array("vtiger_inventoryproductrel", $tabid));
+                $result2 = self::$db->pquery(
+                    "SELECT fieldname, fieldlabel, columnname, uitype, typeofdata FROM vtiger_field WHERE tablename = ? AND tabid = ?",
+                    ["vtiger_inventoryproductrel", $tabid]
+                );
                 while ($row2 = self::$db->fetchByAssoc($result2)) {
                     if (!isset($Details["P"][$i]["PRODUCT_" . strtoupper($row2["fieldname"])])) {
-                        $UITypes = array();
+                        $UITypes = [];
                         $value = $row1[$row2["columnname"]];
                         if ($value != "") {
                             $uitype_name = $this->getUITypeName($row2['uitype'], $row2["typeofdata"]);
@@ -1126,14 +1149,14 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $Details["TOTAL"]["FINALDISCOUNTPERCENT"] = $this->formatNumberToEMAIL($finalDiscountPercent);
         $Details["TOTAL"]["VATBLOCK"] = $this->getVatBlock();
 
-        $Charges_Block = array();
+        $Charges_Block = [];
 
         if (!empty($chargesAndItsTaxes)) {
             $allCharges = getAllCharges();
 
             foreach ($chargesAndItsTaxes as $chargeId => $chargeData) {
                 $name = $allCharges[$chargeId]['name'];
-                $Charges_Block[] = array('label' => $name, 'value' => $chargeData['value']);
+                $Charges_Block[] = ['label' => $name, 'value' => $chargeData['value']];
             }
         }
 
@@ -1144,7 +1167,20 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     private function getFieldValue($efocus, $emodule, $fieldname, $value, $UITypes, $inventory_currency = false)
     {
-        return $this->getFieldValueUtils($efocus, $emodule, $fieldname, $value, $UITypes, $inventory_currency, self::$ignored_picklist_values, self::$def_charset, self::$decimals, self::$decimal_point, self::$thousands_separator, self::$language);
+        return $this->getFieldValueUtils(
+            $efocus,
+            $emodule,
+            $fieldname,
+            $value,
+            $UITypes,
+            $inventory_currency,
+            self::$ignored_picklist_values,
+            self::$def_charset,
+            self::$decimals,
+            self::$decimal_point,
+            self::$thousands_separator,
+            self::$language
+        );
     }
 
     /**
@@ -1158,9 +1194,9 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
         Core_RelatedBlock_Model::$numberUserConfig = Core_RelatedBlock_Model::$currencyUserConfig = [
             'currency_grouping_separator' => self::$thousands_separator,
-            'currency_decimal_separator' => self::$decimal_point,
-            'truncate_trailing_zeros' => false,
-            'no_of_currency_decimals' => self::$decimals,
+            'currency_decimal_separator'  => self::$decimal_point,
+            'truncate_trailing_zeros'     => false,
+            'no_of_currency_decimals'     => self::$decimals,
         ];
 
         self::$content = Core_RelatedBlock_Model::replaceAll(self::$recordModel, self::$content);
@@ -1168,16 +1204,16 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     private function convertInventoryModules()
     {
-        $result = self::$db->pquery("select * from vtiger_inventoryproductrel where id=?", array(self::$focus->id));
+        $result = self::$db->pquery("select * from vtiger_inventoryproductrel where id=?", [self::$focus->id]);
         $num_rows = self::$db->num_rows($result);
         if ($num_rows > 0) {
             $Products = $this->replaceInventoryDetailsBlock(self::$module, self::$focus);
-            $var_array = array();
-            $Blocks = array("", "PRODUCTS_", "SERVICES_");
+            $var_array = [];
+            $Blocks = ["", "PRODUCTS_", "SERVICES_"];
             foreach ($Blocks as $block_type) {
                 if (strpos(self::$content, "#PRODUCTBLOC_" . $block_type . "START#") !== false && strpos(self::$content, "#PRODUCTBLOC_" . $block_type . "END#") !== false) {
                     $tableTag = $this->convertProductBlock($block_type);
-                    $ExplodedEMAIL = array();
+                    $ExplodedEMAIL = [];
                     $Exploded = explode("#PRODUCTBLOC_" . $block_type . "START#", self::$content);
                     $ExplodedEMAIL[] = $Exploded[0];
                     for ($iterator = 1; $iterator < count($Exploded); $iterator++) {
@@ -1268,8 +1304,13 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                             $style_subtotal = "";
                         }
                         $subtotal_tr = "<tr>";
-                        $subtotal_tr .= "<td colspan='" . ($td->getAttribute("colspan") - 1) . "' style='" . $style_subtotal . ";border-right:none'>" . $style_subtotal_tag . "%G_Subtotal%" . $style_subtotal_endtag . "</td>";
-                        $subtotal_tr .= "<td align='right' nowrap='nowrap' style='" . $style_subtotal . "'>" . $style_subtotal_tag . "" . rtrim($var, "$") . "_SUBTOTAL$" . $style_subtotal_endtag . "</td>";
+                        $subtotal_tr .= "<td colspan='" . ($td->getAttribute(
+                                    "colspan"
+                                ) - 1) . "' style='" . $style_subtotal . ";border-right:none'>" . $style_subtotal_tag . "%G_Subtotal%" . $style_subtotal_endtag . "</td>";
+                        $subtotal_tr .= "<td align='right' nowrap='nowrap' style='" . $style_subtotal . "'>" . $style_subtotal_tag . "" . rtrim(
+                                $var,
+                                "$"
+                            ) . "_SUBTOTAL$" . $style_subtotal_endtag . "</td>";
                         $subtotal_tr .= "</tr>";
                     }
                     $tag .= ">";
@@ -1284,6 +1325,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             }
             self::$content = $html->save();
         }
+
         return $tableDOM;
     }
 
@@ -1305,13 +1347,13 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                             continue;
                         }
                         $prev_sibling = $tmpPb->prev_sibling();
-                        $prev_sibling_styles = array();
+                        $prev_sibling_styles = [];
                         while ($prev_sibling != null) {
                             $prev_sibling_styles[] = $this->getDOMElementAtts($prev_sibling);
                             $prev_sibling = $prev_sibling->prev_sibling();
                         }
                         $next_sibling = $tmpPb->next_sibling();
-                        $next_sibling_styles = array();
+                        $next_sibling_styles = [];
                         while ($next_sibling != null) {
                             $next_sibling_styles[] = $this->getDOMElementAtts($next_sibling);
                             $next_sibling = $next_sibling->next_sibling();
@@ -1372,10 +1414,10 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
         if ($convert_source) {
             //assigned user fields
-            $user_row = array();
+            $user_row = [];
             $assigned_user_id = "";
             if (self::$focus->column_fields["assigned_user_id"] != "") {
-                $user_res = self::$db->pquery("SELECT * FROM vtiger_users WHERE id = ?", array(self::$focus->column_fields["assigned_user_id"]));
+                $user_res = self::$db->pquery("SELECT * FROM vtiger_users WHERE id = ?", [self::$focus->column_fields["assigned_user_id"]]);
                 $num_user_rows = self::$db->num_rows($user_res);
                 if ($num_user_rows > 0) {
                     $user_row = self::$db->fetchByAssoc($user_res);
@@ -1416,10 +1458,10 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $muserid = $this->get("muserid");
         if ($muserid) {
             $modifiedby_user_res_sql = "WHERE vtiger_users.id = ?";
-            $modifiedby_user_res_data = array($muserid);
+            $modifiedby_user_res_data = [$muserid];
         } else {
             $modifiedby_user_res_sql = "INNER JOIN vtiger_crmentity ON vtiger_crmentity.modifiedby = vtiger_users.id WHERE vtiger_crmentity.crmid = ?";
-            $modifiedby_user_res_data = array(self::$focus->id);
+            $modifiedby_user_res_data = [self::$focus->id];
         }
         $modifiedby_user_res = self::$db->pquery("SELECT vtiger_users.* FROM vtiger_users " . $modifiedby_user_res_sql, $modifiedby_user_res_data);
         $modifiedby_user_row = self::$db->fetchByAssoc($modifiedby_user_res);
@@ -1431,7 +1473,10 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $this->replaceFieldsToContent("Users", $modifiedby_user_focus, true, false, false, 'm-');
         self::$rep["$" . "m-users_crmid$"] = $modifiedby_user_focus->id;
 
-        $smcreatorid_user_res = self::$db->pquery("SELECT vtiger_users.* FROM vtiger_users INNER JOIN vtiger_crmentity ON vtiger_crmentity.creator_user_id = vtiger_users.id  WHERE  vtiger_crmentity.crmid = ?", array(self::$focus->id));
+        $smcreatorid_user_res = self::$db->pquery(
+            "SELECT vtiger_users.* FROM vtiger_users INNER JOIN vtiger_crmentity ON vtiger_crmentity.creator_user_id = vtiger_users.id  WHERE  vtiger_crmentity.crmid = ?",
+            [self::$focus->id]
+        );
         $smcreatorid_user_row = self::$db->fetchByAssoc($smcreatorid_user_res);
         $this->replaceUserData($smcreatorid_user_row["id"], $smcreatorid_user_row, "c");
         $smcreatorid_user_focus = CRMEntity::getInstance("Users");
@@ -1474,7 +1519,6 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                 break;
             }
         }
-
 
         self::$rep["%G_Qty%"] = $app_lang["Quantity"];
         self::$rep["%G_Subtotal%"] = $app_lang["Sub Total"];
@@ -1524,7 +1568,10 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                     foreach ($LD as $lkey => $llabel) {
                         self::$rep[$r_rbm_upper . "_" . $lkey . "%"] = $app_lang[$llabel];
                     }
-                    $rl_res = self::$db->pquery("SELECT vtiger_field.fieldlabel FROM vtiger_field INNER JOIN vtiger_tab ON vtiger_tab.tabid = vtiger_field.tabid WHERE vtiger_tab.name = ?", array($relBlockModule));
+                    $rl_res = self::$db->pquery(
+                        "SELECT vtiger_field.fieldlabel FROM vtiger_field INNER JOIN vtiger_tab ON vtiger_tab.tabid = vtiger_field.tabid WHERE vtiger_tab.name = ?",
+                        [$relBlockModule]
+                    );
                     while ($rl_row = self::$db->fetchByAssoc($rl_res)) {
                         $key = $rl_row["fieldlabel"];
 
@@ -1607,7 +1654,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                     $img->src = "cid:image" . $i;
                     $Parts = explode(".", $newPath);
                     $img_type = $Parts[count($Parts) - 1];
-                    self::$Email_Images["image" . $i] = array("name" => "image" . $i . "." . $img_type, "path" => $newPath);
+                    self::$Email_Images["image" . $i] = ["name" => "image" . $i . "." . $img_type, "path" => $newPath];
                     $i++;
                 }
             }
@@ -1628,7 +1675,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                         $img->background = "cid:image" . $i;
                         $Parts = explode(".", $newPath);
                         $img_type = $Parts[count($Parts) - 1];
-                        self::$Email_Images["image" . $i] = array("name" => "image" . $i . "." . $img_type, "path" => $newPath);
+                        self::$Email_Images["image" . $i] = ["name" => "image" . $i . "." . $img_type, "path" => $newPath];
                         $i++;
                     }
                 }
@@ -1729,9 +1776,11 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     private function getInventoryTaxTypeCustom($module, $focus)
     {
         if (!empty($focus->id)) {
-            $res = self::$db->pquery("SELECT taxtype FROM " . self::$inventory_table_array[$module] . " WHERE " . self::$inventory_id_array[$module] . "=?", array($focus->id));
+            $res = self::$db->pquery("SELECT taxtype FROM " . self::$inventory_table_array[$module] . " WHERE " . self::$inventory_id_array[$module] . "=?", [$focus->id]);
+
             return self::$db->query_result($res, 0, 'taxtype');
         }
+
         return "";
     }
 

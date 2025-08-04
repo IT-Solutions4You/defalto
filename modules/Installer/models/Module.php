@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 class Installer_Module_Model extends Vtiger_Module_Model
 {
@@ -21,16 +29,16 @@ class Installer_Module_Model extends Vtiger_Module_Model
     {
         return [
             [
-                'linktype' => Vtiger_Link_Model::LINK_LISTVIEWSETTING,
+                'linktype'  => Vtiger_Link_Model::LINK_LISTVIEWSETTING,
                 'linklabel' => 'LBL_INSTALLER',
-                'linkurl' => 'index.php?module=Installer&view=Index',
-                'linkicon' => 'fa-solid fa-download',
+                'linkurl'   => 'index.php?module=Installer&view=Index',
+                'linkicon'  => 'fa-solid fa-download',
             ],
             [
-                'linktype' => Vtiger_Link_Model::LINK_LISTVIEWSETTING,
+                'linktype'  => Vtiger_Link_Model::LINK_LISTVIEWSETTING,
                 'linklabel' => 'LBL_REQUIREMENTS',
-                'linkurl' => 'index.php?module=Installer&view=Requirements',
-                'linkicon' => 'fas fa-cogs',
+                'linkurl'   => 'index.php?module=Installer&view=Requirements',
+                'linkicon'  => 'fas fa-cogs',
             ],
         ];
     }
@@ -39,16 +47,16 @@ class Installer_Module_Model extends Vtiger_Module_Model
     {
         $links = [];
         $links[] = [
-            'linktype' => Vtiger_Link_Model::LINK_LISTVIEWBASIC,
+            'linktype'  => Vtiger_Link_Model::LINK_LISTVIEWBASIC,
             'linklabel' => 'LBL_INSTALLER',
-            'linkurl' => 'index.php?module=Installer&view=Index',
-            'linkicon' => 'fa-solid fa-download',
+            'linkurl'   => 'index.php?module=Installer&view=Index',
+            'linkicon'  => 'fa-solid fa-download',
         ];
         $links[] = [
-            'linktype' => Vtiger_Link_Model::LINK_LISTVIEWBASIC,
+            'linktype'  => Vtiger_Link_Model::LINK_LISTVIEWBASIC,
             'linklabel' => 'LBL_REQUIREMENTS',
-            'linkurl' => 'index.php?module=Installer&view=Requirements',
-            'linkicon' => 'fas fa-cogs',
+            'linkurl'   => 'index.php?module=Installer&view=Requirements',
+            'linkicon'  => 'fas fa-cogs',
         ];
 
         return Vtiger_Link_Model::checkAndConvertLinks($links);

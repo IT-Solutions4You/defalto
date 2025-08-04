@@ -1,19 +1,20 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Core_Readonly_Action extends Vtiger_Action_Controller
 {
-
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function makeEditable(Vtiger_Request $request): void
     {
@@ -34,12 +35,13 @@ class Core_Readonly_Action extends Vtiger_Action_Controller
                 header('location:' . $_SERVER['HTTP_REFERER']);
             }
         } else {
-            throw new AppException('Empty record for Editable');
+            throw new Exception('Empty record for Editable');
         }
     }
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      */
     public function install(Vtiger_Request $request): void
@@ -65,8 +67,9 @@ class Core_Readonly_Action extends Vtiger_Action_Controller
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function makeReadonly(Vtiger_Request $request): void
     {
@@ -87,12 +90,13 @@ class Core_Readonly_Action extends Vtiger_Action_Controller
                 header('location:' . $_SERVER['HTTP_REFERER']);
             }
         } else {
-            throw new AppException('Empty record for Readonly');
+            throw new Exception('Empty record for Readonly');
         }
     }
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      * @throws Exception
      */
@@ -101,6 +105,7 @@ class Core_Readonly_Action extends Vtiger_Action_Controller
         $mode = $request->getMode();
         if (!empty($mode)) {
             $this->invokeExposedMethod($mode, $request);
+
             return;
         }
 

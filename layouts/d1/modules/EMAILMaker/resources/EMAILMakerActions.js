@@ -1,10 +1,10 @@
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 /** @var EMAILMaker_Actions_Js */
 jQuery.Class('EMAILMaker_Actions_Js', {
@@ -73,7 +73,7 @@ jQuery.Class('EMAILMaker_Actions_Js', {
             self.updatePDFTemplateIds(form);
         }
     },
-    getSelectElement: function(modalContainer, id) {
+    getSelectElement: function (modalContainer, id) {
         return $('#' + id, modalContainer);
     },
     registerPDFTemplateInput: function (modalContainer) {
@@ -344,7 +344,7 @@ jQuery.Class('EMAILMaker_Actions_Js', {
             });
         }
     },
-    getEmailActionContainer: function() {
+    getEmailActionContainer: function () {
         return $('#sendEmailContainer, #composeEmailContainer');
     },
     registerDraggable: function () {
@@ -354,7 +354,7 @@ jQuery.Class('EMAILMaker_Actions_Js', {
             element.draggable({handle: '.modal-header'});
         }
     },
-    registerAjaxCompleteEvents: function() {
+    registerAjaxCompleteEvents: function () {
         const self = this;
 
         $(document).ajaxComplete(function (event, request, settings) {

@@ -8,6 +8,6 @@
  * file that was distributed with this source code.
  */
 
-class Reporting_Labels_UIType extends Core_Data_UIType {
-
+class Reporting_Labels_UIType extends Core_Data_UIType
+{
 }

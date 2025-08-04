@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_Index_View extends Vtiger_Index_View
 {
     public function preProcess(Vtiger_Request $request, $display = true)
@@ -15,7 +16,7 @@ class EMAILMaker_Index_View extends Vtiger_Index_View
 
         $EMAILMakerModel = new EMAILMaker_EMAILMaker_Model();
         $moduleName = $request->getModule();
-        $linkParams = array('MODULE' => $moduleName, 'ACTION' => $request->get('view'));
+        $linkParams = ['MODULE' => $moduleName, 'ACTION' => $request->get('view')];
         $linkModels = $EMAILMakerModel->getSideBarLinks($linkParams);
 
         $viewer = $this->getViewer($request);
@@ -24,9 +25,8 @@ class EMAILMaker_Index_View extends Vtiger_Index_View
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $viewer->assign('CURRENT_VIEW', $request->get('view'));
 
-
-        $settingsLinks = array();
-        $basicLinks = array();
+        $settingsLinks = [];
+        $basicLinks = [];
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 
         foreach ($moduleModel->getSettingLinks() as $settingsLink) {

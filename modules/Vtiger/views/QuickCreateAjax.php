@@ -1,61 +1,72 @@
 <?php
-/*+***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-class Vtiger_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
+class Vtiger_QuickCreateAjax_View extends Vtiger_IndexAjax_View
+{
+    public function requiresPermission(\Vtiger_Request $request)
+    {
+        $permissions = parent::requiresPermission($request);
 
-	public function requiresPermission(\Vtiger_Request $request) {
-		$permissions = parent::requiresPermission($request);
-		
-		$permissions[] = array('module_parameter' => 'module', 'action' => 'CreateView');
-		return $permissions;
-	}
+        $permissions[] = ['module_parameter' => 'module', 'action' => 'CreateView'];
 
-	public function process(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
+        return $permissions;
+    }
 
-		$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
-		$moduleModel = $recordModel->getModule();
-		
-		$fieldList = $moduleModel->getFields();
-		$requestFieldList = array_intersect_key($request->getAll(), $fieldList);
+    public function process(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
 
-		foreach($requestFieldList as $fieldName => $fieldValue){
-			$fieldModel = $fieldList[$fieldName];
-			if($fieldModel->isEditable()) {
-				$recordModel->set($fieldName, $fieldModel->getDBInsertValue($fieldValue));
-			}
-		}
+        $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
+        $moduleModel = $recordModel->getModule();
 
-		$fieldsInfo = array();
-		foreach($fieldList as $name => $model){
-			$fieldsInfo[$name] = $model->getFieldInfo();
-		}
+        $fieldList = $moduleModel->getFields();
+        $requestFieldList = array_intersect_key($request->getAll(), $fieldList);
 
-		$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_QUICKCREATE);
-		$picklistDependencyDatasource = Vtiger_DependencyPicklist::getPicklistDependencyDatasource($moduleName);
+        foreach ($requestFieldList as $fieldName => $fieldValue) {
+            $fieldModel = $fieldList[$fieldName];
+            if ($fieldModel->isEditable()) {
+                $recordModel->set($fieldName, $fieldModel->getDBInsertValue($fieldValue));
+            }
+        }
 
-		$viewer = $this->getViewer($request);
-		$viewer->assign('PICKIST_DEPENDENCY_DATASOURCE', Vtiger_Functions::jsonEncode($picklistDependencyDatasource));
-		$viewer->assign('CURRENTDATE', date('Y-n-j'));
-		$viewer->assign('MODULE', $moduleName);
-		$viewer->assign('SINGLE_MODULE', 'SINGLE_'.$moduleName);
-		$viewer->assign('MODULE_MODEL', $moduleModel);
-		$viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
-		$viewer->assign('RECORD_STRUCTURE', $recordStructureInstance->getStructure());
-		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
-		$viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
+        $fieldsInfo = [];
+        foreach ($fieldList as $name => $model) {
+            $fieldsInfo[$name] = $model->getFieldInfo();
+        }
 
-		$viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
+        $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_QUICKCREATE);
+        $picklistDependencyDatasource = Vtiger_DependencyPicklist::getPicklistDependencyDatasource($moduleName);
 
-		$viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
-		$viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
+        $viewer = $this->getViewer($request);
+        $viewer->assign('PICKIST_DEPENDENCY_DATASOURCE', Vtiger_Functions::jsonEncode($picklistDependencyDatasource));
+        $viewer->assign('CURRENTDATE', date('Y-n-j'));
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('SINGLE_MODULE', 'SINGLE_' . $moduleName);
+        $viewer->assign('MODULE_MODEL', $moduleModel);
+        $viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
+        $viewer->assign('RECORD_STRUCTURE', $recordStructureInstance->getStructure());
+        $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+        $viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
+
+        $viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
+
+        $viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
+        $viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
 
         $isRelationOperation = !$request->isEmpty('relationOperation');
         $viewer->assign('RELATION_OPERATOR', $isRelationOperation);
@@ -65,20 +76,19 @@ class Vtiger_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
             $viewer->assign('PARENT_ID', $request->get('sourceRecord'));
         }
 
-		$viewer->view('QuickCreate.tpl',$moduleName);
-	}
-	
-	
-	public function getHeaderScripts(Vtiger_Request $request) {
-		
-		$moduleName = $request->getModule();
-		
-		$jsFileNames = array(
-			"modules.$moduleName.resources.Edit"
-		);
+        $viewer->view('QuickCreate.tpl', $moduleName);
+    }
 
-		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-		return $jsScriptInstances;
-	}
-    
+    public function getHeaderScripts(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+
+        $jsFileNames = [
+            "modules.$moduleName.resources.Edit"
+        ];
+
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+
+        return $jsScriptInstances;
+    }
 }

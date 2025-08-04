@@ -1,15 +1,15 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class EMAILMaker_MassDelete_Action extends Vtiger_MassDelete_Action
 {
-
     public function checkPermission(Vtiger_Request $request)
     {
     }
@@ -26,7 +26,7 @@ class EMAILMaker_MassDelete_Action extends Vtiger_MassDelete_Action
             $checkSql = "select templateid, module from vtiger_emakertemplates where templateid IN (" . generateQuestionMarks($recordIds) . ")";
             $checkRes = $adb->pquery($checkSql, $recordIds);
 
-            $checkArr = array();
+            $checkArr = [];
             while ($checkRow = $adb->fetchByAssoc($checkRes)) {
                 $checkArr[$checkRow["templateid"]] = $checkRow["module"];
             }
@@ -38,12 +38,12 @@ class EMAILMaker_MassDelete_Action extends Vtiger_MassDelete_Action
                     if ($Template_Permissions_Data["delete"] === false) {
                         $this->DieDuePermission();
                     }
-                    $adb->pquery("UPDATE vtiger_emakertemplates SET deleted = ? WHERE templateid=?", array('1', $templateid));
+                    $adb->pquery("UPDATE vtiger_emakertemplates SET deleted = ? WHERE templateid=?", ['1', $templateid]);
                 }
             }
         }
         $response = new Vtiger_Response();
-        $response->setResult(array('viewname' => '1', 'module' => $moduleName));
+        $response->setResult(['viewname' => '1', 'module' => $moduleName]);
         $response->emit();
     }
 }

@@ -1,12 +1,22 @@
 <?php
 /*********************************************************************************
-** The contents of this file are subject to the vtiger CRM Public License Version 1.0
-* ("License"); You may not use this file except in compliance with the License
-* The Original Code is:  vtiger CRM Open Source
-* The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (C) vtiger.
-* All Rights Reserved.
-********************************************************************************/
+ ** The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is:  vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ ********************************************************************************/
+
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
 ini_set("include_path", "../");
 
 require('send_mail.php');
@@ -15,10 +25,10 @@ require_once('include/utils/utils.php');
 
 // Email Setup
 global $adb;
-$emailresult = $adb->pquery("SELECT email1 from vtiger_users", array());
+$emailresult = $adb->pquery("SELECT email1 from vtiger_users", []);
 $emailid = $adb->fetch_array($emailresult);
 $emailaddress = $emailid[0];
-$mailserveresult = $adb->pquery("SELECT server,server_username,server_password,smtp_auth FROM vtiger_systems where server_type = ?", array('email'));
+$mailserveresult = $adb->pquery("SELECT server,server_username,server_password,smtp_auth FROM vtiger_systems where server_type = ?", ['email']);
 $mailrow = $adb->fetch_array($mailserveresult);
 $mailserver = $mailrow[0];
 $mailuname = $mailrow[1];
@@ -28,79 +38,134 @@ $smtp_auth = $mailrow[3];
 
 //Big Deal Alert
 $sql = "select active from vtiger_notificationscheduler where schedulednotificationid=2";
-$result = $adb->pquery($sql, array());
+$result = $adb->pquery($sql, []);
 
 $activevalue = $adb->fetch_array($result);
-if($activevalue[0] == 1)
-{
-	$result = $adb->pquery("SELECT sales_stage,amount,potentialid,potentialname FROM vtiger_potential inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_potential.potentialid where vtiger_crmentity.deleted=0 and sales_stage='Closed Won' and amount > 10000",array());
-	while ($myrow = $adb->fetch_array($result))
-	{
-		$pot_id = $myrow['potentialid'];
-		$pot_name = $myrow['potentialname'];
-		$body_content = getTranslatedString('Dear_Team').getTranslatedString('Dear_Team_Time_to_Party')."<br><br>".getTranslatedString('Potential_Id')." ".$pot_id;
-		$body_content .= getTranslatedString('Potential_Name')." ".$pot_name."<br><br>";
-		sendmail($emailaddress,$emailaddress,getTranslatedString('Big_Deal_Closed_Successfully'),$body_content,$mailserver,$mailuname,$mailpwd,"",$smtp_auth);
-	}
+
+if ($activevalue[0] == 1) {
+    $result = $adb->pquery(
+        "SELECT sales_stage,amount,potentialid,potentialname FROM vtiger_potential inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_potential.potentialid where vtiger_crmentity.deleted=0 and sales_stage='Closed Won' and amount > 10000",
+        []
+    );
+
+    while ($myrow = $adb->fetch_array($result)) {
+        $pot_id = $myrow['potentialid'];
+        $pot_name = $myrow['potentialname'];
+        $body_content = getTranslatedString('Dear_Team') . getTranslatedString('Dear_Team_Time_to_Party') . "<br><br>" . getTranslatedString('Potential_Id') . " " . $pot_id;
+        $body_content .= getTranslatedString('Potential_Name') . " " . $pot_name . "<br><br>";
+        sendmail($emailaddress, $emailaddress, getTranslatedString('Big_Deal_Closed_Successfully'), $body_content, $mailserver, $mailuname, $mailpwd, "", $smtp_auth);
+    }
 }
+
 //Pending tickets
 $sql = "select active from vtiger_notificationscheduler where schedulednotificationid=3";
-$result = $adb->pquery($sql, array());
+$result = $adb->pquery($sql, []);
 
 $activevalue = $adb->fetch_array($result);
-if($activevalue[0] == 1)
-{
-	$result = $adb->pquery("SELECT ticketid FROM vtiger_troubletickets INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_troubletickets.ticketid WHERE vtiger_crmentity.deleted='0' AND vtiger_troubletickets.ticketstatus <> 'Completed' AND vtiger_troubletickets.ticketstatus <> 'Closed'", array());
 
-	while ($myrow = $adb->fetch_array($result))
-	{
-		$ticketid = $myrow['ticketid'];
-		sendmail($emailaddress,$emailaddress,getTranslatedString('Pending_Ticket_notification'),getTranslatedString('Kind_Attention').$ticketid .getTranslatedString('Thank_You_HelpDesk'),$mailserver,$mailuname,$mailpwd,"",$smtp_auth);
-	}
+if ($activevalue[0] == 1) {
+    $result = $adb->pquery(
+        "SELECT ticketid FROM vtiger_troubletickets INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_troubletickets.ticketid WHERE vtiger_crmentity.deleted='0' AND vtiger_troubletickets.ticketstatus <> 'Completed' AND vtiger_troubletickets.ticketstatus <> 'Closed'",
+        []
+    );
+
+    while ($myrow = $adb->fetch_array($result)) {
+        $ticketid = $myrow['ticketid'];
+        sendmail(
+            $emailaddress,
+            $emailaddress,
+            getTranslatedString('Pending_Ticket_notification'),
+            getTranslatedString('Kind_Attention') . $ticketid . getTranslatedString('Thank_You_HelpDesk'),
+            $mailserver,
+            $mailuname,
+            $mailpwd,
+            "",
+            $smtp_auth
+        );
+    }
 }
 
 //Too many tickets related to a particular vtiger_account/company causing concern
 $sql = "select active from vtiger_notificationscheduler where schedulednotificationid=4";
-$result = $adb->pquery($sql, array());
+$result = $adb->pquery($sql, []);
 
 $activevalue = $adb->fetch_array($result);
-if($activevalue[0] == 1)
-{
-	$result = $adb->pquery("SELECT count(*) as count FROM vtiger_troubletickets INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_troubletickets.ticketid WHERE vtiger_crmentity.deleted='0' AND vtiger_troubletickets.ticketstatus <> 'Completed' AND vtiger_troubletickets.ticketstatus <> 'Closed'", array());
-$count = $adb->query_result($result,0,'count');
+
+if ($activevalue[0] == 1) {
+    $result = $adb->pquery(
+        "SELECT count(*) as count FROM vtiger_troubletickets INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_troubletickets.ticketid WHERE vtiger_crmentity.deleted='0' AND vtiger_troubletickets.ticketstatus <> 'Completed' AND vtiger_troubletickets.ticketstatus <> 'Closed'",
+        []
+    );
+    $count = $adb->query_result($result, 0, 'count');
+
 //changes made to get too many tickets notification only when tickets count is greater than or equal to 5
-	if($count >= 5)
-	{
-		sendmail($emailaddress,$emailaddress,getTranslatedString('Too_many_pending_tickets'),getTranslatedString('Dear_Admin_too_ many_tickets_pending'),$mailserver,$mailuname,$mailpwd,"",$smtp_auth);
-	}
+    if ($count >= 5) {
+        sendmail(
+            $emailaddress,
+            $emailaddress,
+            getTranslatedString('Too_many_pending_tickets'),
+            getTranslatedString('Dear_Admin_too_ many_tickets_pending'),
+            $mailserver,
+            $mailuname,
+            $mailpwd,
+            "",
+            $smtp_auth
+        );
+    }
 }
 
 //Support Starting
 $sql = "select active from vtiger_notificationscheduler where schedulednotificationid=5";
-$result = $adb->pquery($sql, array());
+$result = $adb->pquery($sql, []);
 
 $activevalue = $adb->fetch_array($result);
-if($activevalue[0] == 1)
-{
-	$result = $adb->pquery("SELECT vtiger_products.productname FROM vtiger_products inner join vtiger_crmentity on vtiger_products.productid = vtiger_crmentity.crmid where vtiger_crmentity.deleted=0 and start_date like ?", array(date('Y-m-d'). "%"));
-	while ($myrow = $adb->fetch_array($result))
-	{
-		$productname=$myrow[0];
-		sendmail($emailaddress,$emailaddress,getTranslatedString('Support_starting'),getTranslatedString('Hello_Support').$productname ."\n ".getTranslatedString('Congratulations'),$mailserver,$mailuname,$mailpwd,"",$smtp_auth);
-	}
+
+if ($activevalue[0] == 1) {
+    $result = $adb->pquery(
+        "SELECT vtiger_products.productname FROM vtiger_products inner join vtiger_crmentity on vtiger_products.productid = vtiger_crmentity.crmid where vtiger_crmentity.deleted=0 and start_date like ?",
+        [date('Y-m-d') . "%"]
+    );
+
+    while ($myrow = $adb->fetch_array($result)) {
+        $productname = $myrow[0];
+        sendmail(
+            $emailaddress,
+            $emailaddress,
+            getTranslatedString('Support_starting'),
+            getTranslatedString('Hello_Support') . $productname . "\n " . getTranslatedString('Congratulations'),
+            $mailserver,
+            $mailuname,
+            $mailpwd,
+            "",
+            $smtp_auth
+        );
+    }
 }
 
 //Support ending
 $sql = "select active from vtiger_notificationscheduler where schedulednotificationid=6";
-$result = $adb->pquery($sql, array());
+$result = $adb->pquery($sql, []);
 
 $activevalue = $adb->fetch_array($result);
-if($activevalue[0] == 1)
-{
-	$result = $adb->pquery("SELECT vtiger_products.productname from vtiger_products inner join vtiger_crmentity on vtiger_products.productid = vtiger_crmentity.crmid where vtiger_crmentity.deleted=0 and expiry_date like ?", array(date('Y-m-d') ."%"));
-	while ($myrow = $adb->fetch_array($result))
-	{
-		$productname=$myrow[0];
-		sendmail($emailaddress,$emailaddress,getTranslatedString('Support_Ending_Subject'),getTranslatedString('Support_Ending_Content').$productname.getTranslatedString('kindly_renew'),$mailserver,$mailuname,$mailpwd,"",$smtp_auth);
-	}
+
+if ($activevalue[0] == 1) {
+    $result = $adb->pquery(
+        "SELECT vtiger_products.productname from vtiger_products inner join vtiger_crmentity on vtiger_products.productid = vtiger_crmentity.crmid where vtiger_crmentity.deleted=0 and expiry_date like ?",
+        [date('Y-m-d') . "%"]
+    );
+
+    while ($myrow = $adb->fetch_array($result)) {
+        $productname = $myrow[0];
+        sendmail(
+            $emailaddress,
+            $emailaddress,
+            getTranslatedString('Support_Ending_Subject'),
+            getTranslatedString('Support_Ending_Content') . $productname . getTranslatedString('kindly_renew'),
+            $mailserver,
+            $mailuname,
+            $mailpwd,
+            "",
+            $smtp_auth
+        );
+    }
 }

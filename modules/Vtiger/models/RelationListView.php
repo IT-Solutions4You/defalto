@@ -1,270 +1,295 @@
 <?php
-/**
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
+class Vtiger_RelationListView_Model extends Vtiger_Base_Model
+{
+    protected $relationModel = false;
+    protected $parentRecordModel = false;
+    protected $relatedModuleModel = false;
 
-	protected $relationModel = false;
-	protected $parentRecordModel = false;
-	protected $relatedModuleModel = false;
+    public function setRelationModel($relation)
+    {
+        $this->relationModel = $relation;
 
-	public function setRelationModel($relation){
-		$this->relationModel = $relation;
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getRelationModel() {
-		return $this->relationModel;
-	}
+    public function getRelationModel()
+    {
+        return $this->relationModel;
+    }
 
-	public function setParentRecordModel($parentRecord){
-		$this->parentRecordModel = $parentRecord;
-		return $this;
-	}
+    public function setParentRecordModel($parentRecord)
+    {
+        $this->parentRecordModel = $parentRecord;
 
-	public function getParentRecordModel(){
-		return $this->parentRecordModel;
-	}
+        return $this;
+    }
 
-	public function setRelatedModuleModel($relatedModuleModel){
-		$this->relatedModuleModel = $relatedModuleModel;
-		return $this;
-	}
+    public function getParentRecordModel()
+    {
+        return $this->parentRecordModel;
+    }
 
-	public function getRelatedModuleModel(){
-		return $this->relatedModuleModel;
-	}
+    public function setRelatedModuleModel($relatedModuleModel)
+    {
+        $this->relatedModuleModel = $relatedModuleModel;
 
-	public function getCreateViewUrl(){
-		$relationModel = $this->getRelationModel();
-		$relatedModel = $relationModel->getRelationModuleModel();
-		$parentRecordModule = $this->getParentRecordModel();
-		$parentModule = $parentRecordModule->getModule();
+        return $this;
+    }
 
-		$createViewUrl = $relatedModel->getCreateRecordUrl().'&returnmode=showRelatedList&returntab_label='. (isset($this->tab_label)? $this->tab_label:"").
-							'&returnrecord='.$parentRecordModule->getId().'&returnmodule='.$parentModule->getName().
-							'&returnview=Detail&returnrelatedModuleName='.$this->getRelatedModuleModel()->getName().
-							'&returnrelationId='.$relationModel->getId();
+    public function getRelatedModuleModel()
+    {
+        return $this->relatedModuleModel;
+    }
 
-		if(in_array($relatedModel->getName(), getInventoryModules())){
-			$createViewUrl.='&relationOperation=true';
-		}
-		//To keep the reference fieldname and record value in the url if it is direct relation
-		if($relationModel->isDirectRelation()) {
-			$relationField = $relationModel->getRelationField();
-			$createViewUrl .='&'.$relationField->getName().'='.$parentRecordModule->getId();
-		}
+    public function getCreateViewUrl()
+    {
+        $relationModel = $this->getRelationModel();
+        $relatedModel = $relationModel->getRelationModuleModel();
+        $parentRecordModule = $this->getParentRecordModel();
+        $parentModule = $parentRecordModule->getModule();
 
-		//if parent module has auto fill data it should be automatically filled
-		$autoFillData = $parentModule->getAutoFillModuleAndField($parentModule->getName());
-		$relatedAutoFillData = $relatedModel->getAutoFillModuleAndField($parentModule->getName());
+        $createViewUrl = $relatedModel->getCreateRecordUrl() . '&returnmode=showRelatedList&returntab_label=' . (isset($this->tab_label) ? $this->tab_label : "") .
+            '&returnrecord=' . $parentRecordModule->getId() . '&returnmodule=' . $parentModule->getName() .
+            '&returnview=Detail&returnrelatedModuleName=' . $this->getRelatedModuleModel()->getName() .
+            '&returnrelationId=' . $relationModel->getId();
 
-		if($autoFillData) {
-			//There can be more than one auto-filled field.
-			foreach ($autoFillData as $autoFilledField){
-				$parentAutoFillField  = $autoFilledField['fieldname'];
-				$parentAutoFillModule = $autoFilledField['module'];
-				if($parentRecordModule->get($parentAutoFillField)) {
-					if($relatedAutoFillData){
-						foreach ($relatedAutoFillData as $relatedAutoFilledField){
-							$relatedAutoFillFieldName = $relatedAutoFilledField['fieldname'];
-							$relatedAutoFillModuleName = $relatedAutoFilledField['module'];
-							if($parentAutoFillModule === $relatedAutoFillModuleName) {
-								$createViewUrl .= '&'.$relatedAutoFillFieldName.'='.$parentRecordModule->get($parentAutoFillField);
-							}
-						}
-					}
-				}
-			}
-		}
+        if (in_array($relatedModel->getName(), getInventoryModules())) {
+            $createViewUrl .= '&relationOperation=true';
+        }
+        //To keep the reference fieldname and record value in the url if it is direct relation
+        if ($relationModel->isDirectRelation()) {
+            $relationField = $relationModel->getRelationField();
+            $createViewUrl .= '&' . $relationField->getName() . '=' . $parentRecordModule->getId();
+        }
 
-		return $createViewUrl;
-	}
+        //if parent module has auto fill data it should be automatically filled
+        $autoFillData = $parentModule->getAutoFillModuleAndField($parentModule->getName());
+        $relatedAutoFillData = $relatedModel->getAutoFillModuleAndField($parentModule->getName());
 
-	public function getLinks(){
-		$relationModel = $this->getRelationModel();
-		$actions = $relationModel->getActions();
+        if ($autoFillData) {
+            //There can be more than one auto-filled field.
+            foreach ($autoFillData as $autoFilledField) {
+                $parentAutoFillField = $autoFilledField['fieldname'];
+                $parentAutoFillModule = $autoFilledField['module'];
+                if ($parentRecordModule->get($parentAutoFillField)) {
+                    if ($relatedAutoFillData) {
+                        foreach ($relatedAutoFillData as $relatedAutoFilledField) {
+                            $relatedAutoFillFieldName = $relatedAutoFilledField['fieldname'];
+                            $relatedAutoFillModuleName = $relatedAutoFilledField['module'];
+                            if ($parentAutoFillModule === $relatedAutoFillModuleName) {
+                                $createViewUrl .= '&' . $relatedAutoFillFieldName . '=' . $parentRecordModule->get($parentAutoFillField);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-		$selectLinks = $this->getSelectRelationLinks();
-		foreach($selectLinks as $selectLinkModel) {
-			$selectLinkModel->set('_selectRelation',true)->set('_module',$relationModel->getRelationModuleModel());
-		}
-		$addLinks = $this->getAddRelationLinks();
+        return $createViewUrl;
+    }
 
-		$links = array_merge($selectLinks, $addLinks);
-		$relatedLink = array();
-		$relatedLink['LISTVIEWBASIC'] = $links;
-		return $relatedLink;
-	}
+    public function getLinks()
+    {
+        $relationModel = $this->getRelationModel();
+        $actions = $relationModel->getActions();
 
-	public function getSelectRelationLinks() {
-		$relationModel = $this->getRelationModel();
-		$selectLinkModel = array();
+        $selectLinks = $this->getSelectRelationLinks();
+        foreach ($selectLinks as $selectLinkModel) {
+            $selectLinkModel->set('_selectRelation', true)->set('_module', $relationModel->getRelationModuleModel());
+        }
+        $addLinks = $this->getAddRelationLinks();
 
-		if(!$relationModel->isSelectActionSupported()) {
-			return $selectLinkModel;
-		}
+        $links = array_merge($selectLinks, $addLinks);
+        $relatedLink = [];
+        $relatedLink['LISTVIEWBASIC'] = $links;
 
-		$relatedModel = $relationModel->getRelationModuleModel();
+        return $relatedLink;
+    }
 
-		$selectLinkList = array(
-			array(
-				'linktype' => 'LISTVIEWBASIC',
-				'linklabel' => vtranslate('LBL_SELECT')." ".vtranslate('SINGLE_'.$relatedModel->getName(), $relatedModel->getName()),
-				'linkurl' => '',
-				'linkicon' => '',
-				'linkmodule' => $relatedModel->getName(),
-			)
-		);
+    public function getSelectRelationLinks()
+    {
+        $relationModel = $this->getRelationModel();
+        $selectLinkModel = [];
 
+        if (!$relationModel->isSelectActionSupported()) {
+            return $selectLinkModel;
+        }
 
-		foreach($selectLinkList as $selectLink) {
-			$selectLinkModel[] = Vtiger_Link_Model::getInstanceFromValues($selectLink);
-		}
-		return $selectLinkModel;
-	}
+        $relatedModel = $relationModel->getRelationModuleModel();
 
-	public function getAddRelationLinks() {
-		$relationModel = $this->getRelationModel();
-		$addLinkModel = array();
-		$addLinkList = array();
-		if(!$relationModel->isAddActionSupported()) {
-			return $addLinkModel;
-		}
-		$relatedModel = $relationModel->getRelationModuleModel();
+        $selectLinkList = [
+            [
+                'linktype'   => 'LISTVIEWBASIC',
+                'linklabel'  => vtranslate('LBL_SELECT') . " " . vtranslate('SINGLE_' . $relatedModel->getName(), $relatedModel->getName()),
+                'linkurl'    => '',
+                'linkicon'   => '',
+                'linkmodule' => $relatedModel->getName(),
+            ]
+        ];
 
-		if ($relatedModel->get('label') == 'Documents') {
-			$parentRecordModule = $this->getParentRecordModel();
-			$parentModule = $parentRecordModule->getModule();
-			$relationParameters = '&sourceModule='.$parentModule->get('name').'&sourceRecord='.$parentRecordModule->getId().'&relationOperation=true';
+        foreach ($selectLinkList as $selectLink) {
+            $selectLinkModel[] = Vtiger_Link_Model::getInstanceFromValues($selectLink);
+        }
 
-			if($relationModel->isDirectRelation()) {
-				$relationField = $relationModel->getRelationField();
-				$relationParameters .='&'.$relationField->getName().'='.$parentRecordModule->getId();
-			}
-			$vtigerDocumentTypes = array(
-				array(
-					'type' => 'I',
-					'label' => 'LBL_INTERNAL_DOCUMENT_TYPE',
-					'url' => 'index.php?module=Documents&view=EditAjax&type=I'.$relationParameters
-				),
-				array(
-					'type' => 'E',
-					'label' => 'LBL_EXTERNAL_DOCUMENT_TYPE',
-					'url' => 'index.php?module=Documents&view=EditAjax&type=E'.$relationParameters
-				),
-				array(
-					'type' => 'W',
-					'label' => 'LBL_WEBDOCUMENT_TYPE',
-					'url' => 'index.php?module=Documents&view=EditAjax&type=W'.$relationParameters
-				)
-			);
-			$addLinkList[] = array(
-				'linktype' => 'LISTVIEWBASIC',
-				'linklabel' => 'Vtiger',
-				'linkurl' => $this->getCreateViewUrl(),
-				'linkicon' => 'Vtiger.png',
-				'linkdropdowns' => $vtigerDocumentTypes,
-				'linkclass' => 'addDocumentToVtiger',
-			);
-		}else{
-			if (Users_Privileges_Model::isPermitted($relatedModel->getName(), 'CreateView')) {
-				$addLinkList = array(
-					array(
-						'linktype' => 'LISTVIEWBASIC',
-						// NOTE: $relatedModel->get('label') assuming it to be a module name - we need singular label for Add action.
-						'linklabel' => vtranslate('LBL_ADD_RECORD', $relatedModel->getName()),
-						'linkurl' => $this->getCreateViewUrl(),
-						'linkicon' => '',
+        return $selectLinkModel;
+    }
+
+    public function getAddRelationLinks()
+    {
+        $relationModel = $this->getRelationModel();
+        $addLinkModel = [];
+        $addLinkList = [];
+        if (!$relationModel->isAddActionSupported()) {
+            return $addLinkModel;
+        }
+        $relatedModel = $relationModel->getRelationModuleModel();
+
+        if ($relatedModel->get('label') == 'Documents') {
+            $parentRecordModule = $this->getParentRecordModel();
+            $parentModule = $parentRecordModule->getModule();
+            $relationParameters = '&sourceModule=' . $parentModule->get('name') . '&sourceRecord=' . $parentRecordModule->getId() . '&relationOperation=true';
+
+            if ($relationModel->isDirectRelation()) {
+                $relationField = $relationModel->getRelationField();
+                $relationParameters .= '&' . $relationField->getName() . '=' . $parentRecordModule->getId();
+            }
+            $vtigerDocumentTypes = [
+                [
+                    'type'  => 'I',
+                    'label' => 'LBL_INTERNAL_DOCUMENT_TYPE',
+                    'url'   => 'index.php?module=Documents&view=EditAjax&type=I' . $relationParameters
+                ],
+                [
+                    'type'  => 'E',
+                    'label' => 'LBL_EXTERNAL_DOCUMENT_TYPE',
+                    'url'   => 'index.php?module=Documents&view=EditAjax&type=E' . $relationParameters
+                ],
+                [
+                    'type'  => 'W',
+                    'label' => 'LBL_WEBDOCUMENT_TYPE',
+                    'url'   => 'index.php?module=Documents&view=EditAjax&type=W' . $relationParameters
+                ]
+            ];
+            $addLinkList[] = [
+                'linktype'      => 'LISTVIEWBASIC',
+                'linklabel'     => 'Vtiger',
+                'linkurl'       => $this->getCreateViewUrl(),
+                'linkicon'      => 'Vtiger.png',
+                'linkdropdowns' => $vtigerDocumentTypes,
+                'linkclass'     => 'addDocumentToVtiger',
+            ];
+        } else {
+            if (Users_Privileges_Model::isPermitted($relatedModel->getName(), 'CreateView')) {
+                $addLinkList = [
+                    [
+                        'linktype'    => 'LISTVIEWBASIC',
+                        // NOTE: $relatedModel->get('label') assuming it to be a module name - we need singular label for Add action.
+                        'linklabel'   => vtranslate('LBL_ADD_RECORD', $relatedModel->getName()),
+                        'linkurl'     => $this->getCreateViewUrl(),
+                        'linkicon'    => '',
                         'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
-					)
-				);
-			}
-		}
+                    ]
+                ];
+            }
+        }
 
-		foreach($addLinkList as $addLink) {
-			$addLinkModel[] = Vtiger_Link_Model::getInstanceFromValues($addLink);
-		}
-		return $addLinkModel;
-	}
+        foreach ($addLinkList as $addLink) {
+            $addLinkModel[] = Vtiger_Link_Model::getInstanceFromValues($addLink);
+        }
 
-	public function getEntries($pagingModel) {
-		$db = PearDatabase::getInstance();
-		$parentModule = $this->getParentRecordModel()->getModule();
+        return $addLinkModel;
+    }
+
+    public function getEntries($pagingModel)
+    {
+        $db = PearDatabase::getInstance();
+        $parentModule = $this->getParentRecordModel()->getModule();
         $parentModuleName = $parentModule->get('name');
-		$relationModule = $this->getRelationModel()->getRelationModuleModel();
-		$relationModuleName = $relationModule->get('name');
-		$relatedColumnFields = $relationModule->getConfigureRelatedListFields();
-		if(php7_count($relatedColumnFields) <= 0){
-			$relatedColumnFields = $relationModule->getRelatedListFields();
-		}
+        $relationModule = $this->getRelationModel()->getRelationModuleModel();
+        $relationModuleName = $relationModule->get('name');
+        $relatedColumnFields = $relationModule->getConfigureRelatedListFields();
+        if (php7_count($relatedColumnFields) <= 0) {
+            $relatedColumnFields = $relationModule->getRelatedListFields();
+        }
 
-		if($relationModuleName == 'PriceBooks') {
-			//Adding fields in the related list
-			$relatedColumnFields['unit_price'] = 'unit_price';
-			$relatedColumnFields['listprice'] = 'listprice';
-			$relatedColumnFields['currency_id'] = 'currency_id';
-		}
+        if ($relationModuleName == 'PriceBooks') {
+            //Adding fields in the related list
+            $relatedColumnFields['unit_price'] = 'unit_price';
+            $relatedColumnFields['listprice'] = 'listprice';
+            $relatedColumnFields['currency_id'] = 'currency_id';
+        }
 
-		$query = $this->getRelationQuery();
+        $query = $this->getRelationQuery();
 
-		if ($this->get('whereCondition') && is_array($this->get('whereCondition'))) {
-			$currentUser = Users_Record_Model::getCurrentUserModel();
+        if ($this->get('whereCondition') && is_array($this->get('whereCondition'))) {
+            $currentUser = Users_Record_Model::getCurrentUserModel();
             $queryGenerator = new EnhancedQueryGenerator($relationModuleName, $currentUser);
-			$queryGenerator->setFields(array_values($relatedColumnFields));
-			$whereCondition = $this->get('whereCondition');
-			foreach ($whereCondition as $fieldName => $fieldValue) {
-				if (is_array($fieldValue)) {
-					$comparator = $fieldValue[1];
-					$searchValue = $fieldValue[2];
+            $queryGenerator->setFields(array_values($relatedColumnFields));
+            $whereCondition = $this->get('whereCondition');
+            foreach ($whereCondition as $fieldName => $fieldValue) {
+                if (is_array($fieldValue)) {
+                    $comparator = $fieldValue[1];
+                    $searchValue = $fieldValue[2];
                     $type = $fieldValue[3] ?? '';
 
-					if ($type == 'time') {
-						$searchValue = Vtiger_Time_UIType::getTimeValueWithSeconds($searchValue);
-					}
-					$queryGenerator->addCondition($fieldName, $searchValue, $comparator, "AND");
-				}
-			}
-			$whereQuerySplit = explode('WHERE', $queryGenerator->getWhereClause());
-            $query.=" AND " . $whereQuerySplit[1];
-		}
+                    if ($type == 'time') {
+                        $searchValue = Vtiger_Time_UIType::getTimeValueWithSeconds($searchValue);
+                    }
+                    $queryGenerator->addCondition($fieldName, $searchValue, $comparator, "AND");
+                }
+            }
+            $whereQuerySplit = explode('WHERE', $queryGenerator->getWhereClause());
+            $query .= " AND " . $whereQuerySplit[1];
+        }
 
-		$startIndex = $pagingModel->getStartIndex();
-		$pageLimit = $pagingModel->getPageLimit();
+        $startIndex = $pagingModel->getStartIndex();
+        $pageLimit = $pagingModel->getPageLimit();
 
-		$orderBy = $this->getForSql('orderby');
-		$sortOrder = $this->getForSql('sortorder');
+        $orderBy = $this->getForSql('orderby');
+        $sortOrder = $this->getForSql('sortorder');
 
-		if($orderBy) {
+        if ($orderBy) {
+            $orderByFieldModuleModel = $relationModule->getFieldByColumn($orderBy);
+            if ($orderByFieldModuleModel && $orderByFieldModuleModel->isReferenceField()) {
+                //If reference field then we need to perform a join with crmentity with the related to field
+                $queryComponents = $split = preg_split('/ where /i', $query);
+                $selectAndFromClause = $queryComponents[0];
+                $whereCondition = $queryComponents[1];
+                $qualifiedOrderBy = 'vtiger_crmentity' . $orderByFieldModuleModel->get('column');
+                $selectAndFromClause .= ' LEFT JOIN vtiger_crmentity AS ' . $qualifiedOrderBy . ' ON ' .
+                    $orderByFieldModuleModel->get('table') . '.' . $orderByFieldModuleModel->get('column') . ' = ' .
+                    $qualifiedOrderBy . '.crmid ';
+                $query = $selectAndFromClause . ' WHERE ' . $whereCondition;
+                $query .= ' ORDER BY ' . $qualifiedOrderBy . '.label ' . $sortOrder;
+            } elseif ($orderByFieldModuleModel && $orderByFieldModuleModel->isOwnerField()) {
+                $query .= ' ORDER BY COALESCE(vtiger_users.userlabel,vtiger_groups.groupname) ' . $sortOrder;
+            } else {
+                // Qualify the column name with table to remove ambiguity
+                $qualifiedOrderBy = $orderBy;
+                $orderByField = $relationModule->getFieldByColumn($orderBy);
+                if ($orderByField) {
+                    $qualifiedOrderBy = $relationModule->getOrderBySql($qualifiedOrderBy);
+                }
 
-			$orderByFieldModuleModel = $relationModule->getFieldByColumn($orderBy);
-			if($orderByFieldModuleModel && $orderByFieldModuleModel->isReferenceField()) {
-				//If reference field then we need to perform a join with crmentity with the related to field
-				$queryComponents = $split = preg_split('/ where /i', $query);
-				$selectAndFromClause = $queryComponents[0];
-				$whereCondition = $queryComponents[1];
-				$qualifiedOrderBy = 'vtiger_crmentity'.$orderByFieldModuleModel->get('column');
-				$selectAndFromClause .= ' LEFT JOIN vtiger_crmentity AS '.$qualifiedOrderBy.' ON '.
-										$orderByFieldModuleModel->get('table').'.'.$orderByFieldModuleModel->get('column').' = '.
-										$qualifiedOrderBy.'.crmid ';
-				$query = $selectAndFromClause.' WHERE '.$whereCondition;
-				$query .= ' ORDER BY '.$qualifiedOrderBy.'.label '.$sortOrder;
-			} elseif($orderByFieldModuleModel && $orderByFieldModuleModel->isOwnerField()) {
-				 $query .= ' ORDER BY COALESCE(vtiger_users.userlabel,vtiger_groups.groupname) '.$sortOrder;
-			} else{
-				// Qualify the column name with table to remove ambiguity
-				$qualifiedOrderBy = $orderBy;
-				$orderByField = $relationModule->getFieldByColumn($orderBy);
-				if ($orderByField) {
-					$qualifiedOrderBy = $relationModule->getOrderBySql($qualifiedOrderBy);
-				}
-
-				$query = "$query ORDER BY $qualifiedOrderBy $sortOrder";
-			}
+                $query = "$query ORDER BY $qualifiedOrderBy $sortOrder";
+            }
         } elseif (empty($orderBy) && empty($sortOrder) && $relationModuleName !== "Users") {
             if (PerformancePrefs::getBoolean('LISTVIEW_DEFAULT_SORTING', true)) {
                 $moduleFocus = CRMEntity::getInstance($relationModuleName);
@@ -285,226 +310,233 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
             }
         }
 
-		$limitQuery = $query .' LIMIT '.$startIndex.','.$pageLimit;
-		$result = $db->pquery($limitQuery, array());
-		$relatedRecordList = array();
-		$currentUser = Users_Record_Model::getCurrentUserModel();
-		$groupsIds = Vtiger_Util_Helper::getGroupsIdsForUsers($currentUser->getId());
-		$recordsToUnset = array();
-		for($i=0; $i< $db->num_rows($result); $i++ ) {
-			$row = $db->fetch_row($result,$i);
-			$newRow = array();
-			foreach($row as $col=>$val){
-				if(array_key_exists($col,$relatedColumnFields)){
-					$newRow[$relatedColumnFields[$col]] = $val;
-				}
-			}
+        $limitQuery = $query . ' LIMIT ' . $startIndex . ',' . $pageLimit;
+        $result = $db->pquery($limitQuery, []);
+        $relatedRecordList = [];
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $groupsIds = Vtiger_Util_Helper::getGroupsIdsForUsers($currentUser->getId());
+        $recordsToUnset = [];
+        for ($i = 0; $i < $db->num_rows($result); $i++) {
+            $row = $db->fetch_row($result, $i);
+            $newRow = [];
+            foreach ($row as $col => $val) {
+                if (array_key_exists($col, $relatedColumnFields)) {
+                    $newRow[$relatedColumnFields[$col]] = $val;
+                }
+            }
 
-			$record = Vtiger_Record_Model::getCleanInstance($relationModule->get('name'));
-			$record->setData($newRow)->setModuleFromInstance($relationModule)->setRawData($row);
-			$record->setId($row['crmid']);
-			$relatedRecordList[$row['crmid']] = $record;
-		}
-		$pagingModel->calculatePageRange($relatedRecordList);
+            $record = Vtiger_Record_Model::getCleanInstance($relationModule->get('name'));
+            $record->setData($newRow)->setModuleFromInstance($relationModule)->setRawData($row);
+            $record->setId($row['crmid']);
+            $relatedRecordList[$row['crmid']] = $record;
+        }
+        $pagingModel->calculatePageRange($relatedRecordList);
 
-		$nextLimitQuery = $query. ' LIMIT '.($startIndex+$pageLimit).' , 1';
-		$nextPageLimitResult = $db->pquery($nextLimitQuery, array());
-		if($db->num_rows($nextPageLimitResult) > 0){
-			$pagingModel->set('nextPageExists', true);
-		}else{
-			$pagingModel->set('nextPageExists', false);
-		}
-		//setting related list view count before unsetting permission denied records - to make sure paging should not fail
-		$pagingModel->set('_relatedlistcount', php7_count($relatedRecordList));
-		foreach($recordsToUnset as $record) {
-			unset($relatedRecordList[$record]);
-		}
+        $nextLimitQuery = $query . ' LIMIT ' . ($startIndex + $pageLimit) . ' , 1';
+        $nextPageLimitResult = $db->pquery($nextLimitQuery, []);
+        if ($db->num_rows($nextPageLimitResult) > 0) {
+            $pagingModel->set('nextPageExists', true);
+        } else {
+            $pagingModel->set('nextPageExists', false);
+        }
+        //setting related list view count before unsetting permission denied records - to make sure paging should not fail
+        $pagingModel->set('_relatedlistcount', php7_count($relatedRecordList));
+        foreach ($recordsToUnset as $record) {
+            unset($relatedRecordList[$record]);
+        }
 
-		return $relatedRecordList;
-	}
+        return $relatedRecordList;
+    }
 
-	public function getHeaders() {
-		$relationModel = $this->getRelationModel();
-		$relatedModuleModel = $relationModel->getRelationModuleModel();
-		$headerFields = array();
+    public function getHeaders()
+    {
+        $relationModel = $this->getRelationModel();
+        $relatedModuleModel = $relationModel->getRelationModuleModel();
+        $headerFields = [];
         $nameFields = $relatedModuleModel->getNameFields();
 
-        foreach($nameFields as $fieldName){
-            if(!isset($headerFields[$fieldName]) || !$headerFields[$fieldName]) {
+        foreach ($nameFields as $fieldName) {
+            if (!isset($headerFields[$fieldName]) || !$headerFields[$fieldName]) {
                 $headerFields[$fieldName] = $relatedModuleModel->getFieldByColumn($fieldName);
             }
         }
 
         $summaryFieldsList = $relatedModuleModel->getHeaderAndSummaryViewFieldsList();
 
-		if(php7_count($summaryFieldsList) > 0) {
-			foreach($summaryFieldsList as $fieldName => $fieldModel) {
-				$headerFields[$fieldName] = $fieldModel;
-			}
-		} else {
-			$headerFieldNames = $relatedModuleModel->getRelatedListFields();
+        if (php7_count($summaryFieldsList) > 0) {
+            foreach ($summaryFieldsList as $fieldName => $fieldModel) {
+                $headerFields[$fieldName] = $fieldModel;
+            }
+        } else {
+            $headerFieldNames = $relatedModuleModel->getRelatedListFields();
 
-			foreach($headerFieldNames as $fieldName) {
-				$headerFields[$fieldName] = $relatedModuleModel->getField($fieldName);
-			}
-		}
+            foreach ($headerFieldNames as $fieldName) {
+                $headerFields[$fieldName] = $relatedModuleModel->getField($fieldName);
+            }
+        }
 
-		return $headerFields;
-	}
+        return $headerFields;
+    }
 
-	/**
-	 * Function to get Relation query
-	 * @return string
-	 */
-	public function getRelationQuery() {
+    /**
+     * Function to get Relation query
+     * @return string
+     */
+    public function getRelationQuery()
+    {
         /** @var Vtiger_Relation_Model $relationModel */
-		$relationModel = $this->getRelationModel();
+        $relationModel = $this->getRelationModel();
 
-		if(!empty($relationModel) && $relationModel->get('name') != NULL){
-			$recordModel = $this->getParentRecordModel();
+        if (!empty($relationModel) && $relationModel->get('name') != null) {
+            $recordModel = $this->getParentRecordModel();
 
             return $relationModel->getQuery($recordModel);
-		}
-		$relatedModuleModel = $this->getRelatedModuleModel();
-		$relatedModuleName = $relatedModuleModel->getName();
+        }
+        $relatedModuleModel = $this->getRelatedModuleModel();
+        $relatedModuleName = $relatedModuleModel->getName();
 
-		$relatedModuleBaseTable = $relatedModuleModel->basetable;
-		$relatedModuleEntityIdField = $relatedModuleModel->basetableid;
+        $relatedModuleBaseTable = $relatedModuleModel->basetable;
+        $relatedModuleEntityIdField = $relatedModuleModel->basetableid;
 
-		$parentModuleModel = $relationModel->getParentModuleModel();
-		$parentModuleBaseTable = $parentModuleModel->basetable;
-		$parentModuleEntityIdField = $parentModuleModel->basetableid;
-		$parentRecordId = $this->getParentRecordModel()->getId();
-		$parentModuleDirectRelatedField = $parentModuleModel->get('directRelatedFieldName');
+        $parentModuleModel = $relationModel->getParentModuleModel();
+        $parentModuleBaseTable = $parentModuleModel->basetable;
+        $parentModuleEntityIdField = $parentModuleModel->basetableid;
+        $parentRecordId = $this->getParentRecordModel()->getId();
+        $parentModuleDirectRelatedField = $parentModuleModel->get('directRelatedFieldName');
 
-		$relatedModuleFields = array_keys($this->getHeaders());
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$queryGenerator = new QueryGenerator($relatedModuleName, $currentUserModel);
-		$queryGenerator->setFields($relatedModuleFields);
+        $relatedModuleFields = array_keys($this->getHeaders());
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $queryGenerator = new QueryGenerator($relatedModuleName, $currentUserModel);
+        $queryGenerator->setFields($relatedModuleFields);
 
-		$query = $queryGenerator->getQuery();
+        $query = $queryGenerator->getQuery();
 
-		$queryComponents = preg_split('/ FROM /i', $query);
-		$query = $queryComponents[0].' ,vtiger_crmentity.crmid FROM '.$queryComponents[1];
+        $queryComponents = preg_split('/ FROM /i', $query);
+        $query = $queryComponents[0] . ' ,vtiger_crmentity.crmid FROM ' . $queryComponents[1];
 
-		$whereSplitQueryComponents = preg_split('/ WHERE /i', $query);
-		$joinQuery = ' INNER JOIN '.$parentModuleBaseTable.' ON '.$parentModuleBaseTable.'.'.$parentModuleDirectRelatedField." = ".$relatedModuleBaseTable.'.'.$relatedModuleEntityIdField;
+        $whereSplitQueryComponents = preg_split('/ WHERE /i', $query);
+        $joinQuery = ' INNER JOIN ' . $parentModuleBaseTable . ' ON ' . $parentModuleBaseTable . '.' . $parentModuleDirectRelatedField . " = " . $relatedModuleBaseTable . '.' . $relatedModuleEntityIdField;
 
-		$query = "$whereSplitQueryComponents[0] $joinQuery WHERE $parentModuleBaseTable.$parentModuleEntityIdField = $parentRecordId AND $whereSplitQueryComponents[1]";
+        $query = "$whereSplitQueryComponents[0] $joinQuery WHERE $parentModuleBaseTable.$parentModuleEntityIdField = $parentRecordId AND $whereSplitQueryComponents[1]";
 
-		return $query;
-	}
+        return $query;
+    }
 
     public static function getInstance($parentRecordModel, $relationModuleName, $label = false): self
     {
-		$parentModuleName = $parentRecordModel->getModule()->get('name');
-		$className = Vtiger_Loader::getComponentClassName('Model', 'RelationListView', $parentModuleName);
-		$instance = new $className();
+        $parentModuleName = $parentRecordModel->getModule()->get('name');
+        $className = Vtiger_Loader::getComponentClassName('Model', 'RelationListView', $parentModuleName);
+        $instance = new $className();
 
-		$parentModuleModel = $parentRecordModel->getModule();
-		$relatedModuleModel = Vtiger_Module_Model::getInstance($relationModuleName);
-		$instance->setRelatedModuleModel($relatedModuleModel);
+        $parentModuleModel = $parentRecordModel->getModule();
+        $relatedModuleModel = Vtiger_Module_Model::getInstance($relationModuleName);
+        $instance->setRelatedModuleModel($relatedModuleModel);
 
-		$relationModel = Vtiger_Relation_Model::getInstance($parentModuleModel, $relatedModuleModel, $label);
-		$instance->setParentRecordModel($parentRecordModel);
+        $relationModel = Vtiger_Relation_Model::getInstance($parentModuleModel, $relatedModuleModel, $label);
+        $instance->setParentRecordModel($parentRecordModel);
 
-		if(!$relationModel){
-			$relatedModuleName = $relatedModuleModel->getName();
-			$parentModuleModel = $instance->getParentRecordModel()->getModule();
-			$referenceFieldOfParentModule = $parentModuleModel->getFieldsByType('reference');
-			foreach ($referenceFieldOfParentModule as $fieldName=>$fieldModel) {
-				$relatedModuleNames = $fieldModel->getReferenceList();
+        if (!$relationModel) {
+            $relatedModuleName = $relatedModuleModel->getName();
+            $parentModuleModel = $instance->getParentRecordModel()->getModule();
+            $referenceFieldOfParentModule = $parentModuleModel->getFieldsByType('reference');
+            foreach ($referenceFieldOfParentModule as $fieldName => $fieldModel) {
+                $relatedModuleNames = $fieldModel->getReferenceList();
 
-				if(in_array($relatedModuleName, $relatedModuleNames)){
-					$relationModelClassName = Vtiger_Loader::getComponentClassName('Model', 'Relation', $parentModuleModel->getName());
-					$relationModel = new $relationModelClassName();
-					$relationModel->setParentModuleModel($parentModuleModel)->setRelationModuleModel($relatedModuleModel);
-					$parentModuleModel->set('directRelatedFieldName',$fieldModel->get('column'));
-				}
-			}
-		}
+                if (in_array($relatedModuleName, $relatedModuleNames)) {
+                    $relationModelClassName = Vtiger_Loader::getComponentClassName('Model', 'Relation', $parentModuleModel->getName());
+                    $relationModel = new $relationModelClassName();
+                    $relationModel->setParentModuleModel($parentModuleModel)->setRelationModuleModel($relatedModuleModel);
+                    $parentModuleModel->set('directRelatedFieldName', $fieldModel->get('column'));
+                }
+            }
+        }
 
-		if(!$relationModel){
-			$relationModel = false;
-		}
+        if (!$relationModel) {
+            $relationModel = false;
+        }
 
-		$instance->setRelationModel($relationModel);
+        $instance->setRelationModel($relationModel);
 
-		return $instance;
-	}
+        return $instance;
+    }
 
-	/**
-	 * Function to get Total number of record in this relation
-	 * @return <Integer>
-	 */
-	public function getRelatedEntriesCount() {
-		$db = PearDatabase::getInstance();
-		$currentUser = Users_Record_Model::getCurrentUserModel();
-		$realtedModuleModel = $this->getRelatedModuleModel();
-		$relatedModuleName = $realtedModuleModel->getName();
-		$relationQuery = $this->getRelationQuery();
-		$relationQuery = preg_replace("/[ \t\n\r]+/", " ", $relationQuery);
-		$position = stripos($relationQuery,' from ');
-		if ($position) {
-			$split = preg_split('/ FROM /i', $relationQuery);
-			$splitCount = php7_count($split);
+    /**
+     * Function to get Total number of record in this relation
+     * @return <Integer>
+     */
+    public function getRelatedEntriesCount()
+    {
+        $db = PearDatabase::getInstance();
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $realtedModuleModel = $this->getRelatedModuleModel();
+        $relatedModuleName = $realtedModuleModel->getName();
+        $relationQuery = $this->getRelationQuery();
+        $relationQuery = preg_replace("/[ \t\n\r]+/", " ", $relationQuery);
+        $position = stripos($relationQuery, ' from ');
+        if ($position) {
+            $split = preg_split('/ FROM /i', $relationQuery);
+            $splitCount = php7_count($split);
             $relationQuery = 'SELECT COUNT(DISTINCT vtiger_crmentity.crmid) AS count';
-			for ($i=1; $i<$splitCount; $i++) {
-				$relationQuery = $relationQuery. ' FROM ' .$split[$i];
-			}
-		}
-		if(strpos($relationQuery,' GROUP BY ') !== false){
-			$parts = explode(' GROUP BY ',$relationQuery);
-			$relationQuery = $parts[0];
-		}
-		$result = $db->pquery($relationQuery, array());
-		if ($result) {
+            for ($i = 1; $i < $splitCount; $i++) {
+                $relationQuery = $relationQuery . ' FROM ' . $split[$i];
+            }
+        }
+        if (strpos($relationQuery, ' GROUP BY ') !== false) {
+            $parts = explode(' GROUP BY ', $relationQuery);
+            $relationQuery = $parts[0];
+        }
+        $result = $db->pquery($relationQuery, []);
+        if ($result) {
             return $db->query_result($result, 0, 'count');
-		} else {
-			return 0;
-		}
-	}
+        } else {
+            return 0;
+        }
+    }
 
-	/**
-	 * Function to update relation query
-	 * @param <String> $relationQuery
-	 * @return <String> $updatedQuery
-	 */
-	public function updateQueryWithWhereCondition($relationQuery) {
-		$condition = '';
+    /**
+     * Function to update relation query
+     *
+     * @param <String> $relationQuery
+     *
+     * @return <String> $updatedQuery
+     */
+    public function updateQueryWithWhereCondition($relationQuery)
+    {
+        $condition = '';
 
-		$whereCondition = $this->get("whereCondition");
-		$count = php7_count($whereCondition);
-		if ($count > 1) {
-			$appendAndCondition = true;
-		}
+        $whereCondition = $this->get("whereCondition");
+        $count = php7_count($whereCondition);
+        if ($count > 1) {
+            $appendAndCondition = true;
+        }
 
-		$i = 1;
-		foreach ($whereCondition as $fieldName => $fieldValue) {
-			if(is_array($fieldValue)){
-				$fieldColumn = $fieldValue[0];
-				$comparator = $fieldValue[1];
-				$value = $fieldValue[2];
-				if($comparator == "c"){
-					$condition .= "$fieldColumn like '%$value%' ";
-				}else{
-					$condition .= "$fieldColumn = '$value' ";
-				}
-			}else {
-				$condition .= " $fieldName = '$fieldValue' ";
-			}
-			if ($appendAndCondition && ($i++ != $count)) {
-				$condition .= " AND ";
-			}
-		}
+        $i = 1;
+        foreach ($whereCondition as $fieldName => $fieldValue) {
+            if (is_array($fieldValue)) {
+                $fieldColumn = $fieldValue[0];
+                $comparator = $fieldValue[1];
+                $value = $fieldValue[2];
+                if ($comparator == "c") {
+                    $condition .= "$fieldColumn like '%$value%' ";
+                } else {
+                    $condition .= "$fieldColumn = '$value' ";
+                }
+            } else {
+                $condition .= " $fieldName = '$fieldValue' ";
+            }
+            if ($appendAndCondition && ($i++ != $count)) {
+                $condition .= " AND ";
+            }
+        }
 
-		$pos = stripos($relationQuery, 'where');
-		if ($pos) {
-			$split = preg_split('/where/i', $relationQuery);
-			$updatedQuery = $split[0].' WHERE '.$split[1].' AND '.$condition;
-		} else {
-			$updatedQuery = $relationQuery.' WHERE '.$condition;
-		}
-		return $updatedQuery;
-	}
+        $pos = stripos($relationQuery, 'where');
+        if ($pos) {
+            $split = preg_split('/where/i', $relationQuery);
+            $updatedQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
+        } else {
+            $updatedQuery = $relationQuery . ' WHERE ' . $condition;
+        }
+
+        return $updatedQuery;
+    }
 }

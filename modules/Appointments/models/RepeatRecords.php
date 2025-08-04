@@ -1,13 +1,13 @@
 <?php
-
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Appointments_RepeatRecords_Model
 {
     /**
@@ -28,8 +28,9 @@ class Appointments_RepeatRecords_Model
     public static bool $recurringTypeChanged = false;
 
     /**
-     * @param object $recurrenceObjectRequest
+     * @param object      $recurrenceObjectRequest
      * @param object|bool $recurrenceObjectDatabase
+     *
      * @return bool
      */
     public static function checkRecurringDataChanged(object $recurrenceObjectRequest, $recurrenceObjectDatabase): bool
@@ -52,9 +53,10 @@ class Appointments_RepeatRecords_Model
 
     /**
      * @param Vtiger_Record_Model $parentRecordModel
-     * @param object $recurrenceObject
-     * @param array $recurringDates
-     * @param int|bool $parentId
+     * @param object              $recurrenceObject
+     * @param array               $recurringDates
+     * @param int|bool            $parentId
+     *
      * @return void
      */
     public static function createRecurringEvents(object $parentRecordModel, object $recurrenceObject, array $recurringDates, $parentId = false)
@@ -67,10 +69,10 @@ class Appointments_RepeatRecords_Model
         $skip_focus_fields = ['record_id', 'createdtime', 'modifiedtime', 'mode', 'id', 'deleted'];
 
         $parentDatabaseStartDateTime = $parentRecordModel->get(self::$dateStartField);
-        list($parentDatabaseStartDate, $parentDatabaseStartTime) = explode(' ', $parentDatabaseStartDateTime);
+        [$parentDatabaseStartDate, $parentDatabaseStartTime] = explode(' ', $parentDatabaseStartDateTime);
 
         $parentDatabaseEndDateTime = $parentRecordModel->get(self::$dateEndField);
-        list($parentDatabaseEndDate, $parentDatabaseEndTime) = explode(' ', $parentDatabaseEndDateTime);
+        [$parentDatabaseEndDate, $parentDatabaseEndTime] = explode(' ', $parentDatabaseEndDateTime);
 
         $interval = strtotime($parentDatabaseEndDateTime) - strtotime($parentDatabaseStartDateTime);
 
@@ -101,6 +103,7 @@ class Appointments_RepeatRecords_Model
 
     /**
      * @param int $recordId
+     *
      * @return void
      */
     public static function delete(int $recordId)
@@ -122,6 +125,7 @@ class Appointments_RepeatRecords_Model
     /**
      * @param $date
      * @param $time
+     *
      * @return string
      */
     public static function getUserDateTime($date, $time)
@@ -133,7 +137,7 @@ class Appointments_RepeatRecords_Model
 
     /**
      * @var $parentRecordModel Vtiger_Record_Model
-     * Repeat Activity instance till given limit.
+     *                         Repeat Activity instance till given limit.
      */
     public static function repeat(object $parentRecordModel, object $recurrenceObject)
     {
@@ -143,10 +147,10 @@ class Appointments_RepeatRecords_Model
         $recurrenceMode = $parentRecordModel->get('recurringEditMode');
 
         $parentDatabaseStartDateTime = $parentRecordModel->get(self::$dateStartField);
-        list($parentDatabaseStartDate, $parentDatabaseStartTime) = explode(' ', $parentDatabaseStartDateTime);
+        [$parentDatabaseStartDate, $parentDatabaseStartTime] = explode(' ', $parentDatabaseStartDateTime);
 
         $parentDatabaseEndDateTime = $parentRecordModel->get(self::$dateEndField);
-        list($parentDatabaseEndDate, $parentDatabaseEndTime) = explode(' ', $parentDatabaseEndDateTime);
+        [$parentDatabaseEndDate, $parentDatabaseEndTime] = explode(' ', $parentDatabaseEndDateTime);
 
         $interval = strtotime($parentDatabaseEndDateTime) - strtotime($parentDatabaseStartDateTime);
         $vtEntityDelta = new VTEntityDelta();
@@ -231,7 +235,7 @@ class Appointments_RepeatRecords_Model
                     }
 
                     $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
-                    list($recordDatabaseStartDate, $recordDatabaseStartTime) = explode(' ', $recordModel->get(self::$dateStartField));
+                    [$recordDatabaseStartDate, $recordDatabaseStartTime] = explode(' ', $recordModel->get(self::$dateStartField));
 
                     if ('future' === $recurrenceMode && $recordDatabaseStartDate >= $parentDatabaseStartDate) {
                         $databaseEndDate = date('Y-m-d', strtotime($databaseStartDate) + $interval);
@@ -300,8 +304,9 @@ class Appointments_RepeatRecords_Model
     }
 
     /**
-     * @param object $parentRecordModel
+     * @param object      $parentRecordModel
      * @param object|bool $recurrenceObjectDatabase
+     *
      * @return void
      */
     public static function repeatFromRequest(object $parentRecordModel, $recurrenceObjectDatabase = false)
@@ -333,6 +338,7 @@ class Appointments_RepeatRecords_Model
     /**
      * @param string $value
      * @param string $newValue
+     *
      * @return string
      */
     public static function updateDateField(string $value, string $newValue): string
@@ -345,6 +351,7 @@ class Appointments_RepeatRecords_Model
 
     /**
      * @param array|TrackableObject $data
+     *
      * @return bool
      */
     public static function validate($data): bool

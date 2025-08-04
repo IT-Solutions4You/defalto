@@ -1,5 +1,5 @@
 <?php
-/*+**********************************************************************************
+/************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -7,40 +7,47 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
-$languageStrings = array(
-	'ServiceContracts'             => 'Contratos de servicio'       , 
-	'SINGLE_ServiceContracts'      => 'Contrato de servicio'        , 
-	'LBL_ADD_RECORD'               => 'Agregar Contrato de servicio', 
-	'LBL_RECORDS_LIST'             => 'Lista de Contratos de servicio', 
-	'LBL_SERVICE_CONTRACT_INFORMATION' => 'Información del Contrato de servicio', 
-	'Contract No'                  => 'Número de Contrato'         , 
-	'Start Date'                   => 'Fecha de inicio'                , 
-	'End Date'                     => 'Fecha de finalización'                   , 
-	'Tracking Unit'                => 'Unidad base'       , 
-	'Total Units'                  => 'Unidades totales'              , 
-	'Used Units'                   => 'Unidades consumidas'         , 
-	'Progress'                     => 'Progreso (en %)'             , 
-	'Planned Duration'             => 'Duración estimada (días)'  , 
-	'Actual Duration'              => 'Duración real (días)'      , 
-        'Type'                         => 'Tipo'                        , 
-    'Related to'                   => 'En relación con'             ,
-	'Hours'                        => 'Horas',
-	'Days'                         => 'Días',
-	'Incidents'                    => 'Incidentes',
-	'Normal'                       => 'Normal',
-	'Support'                      => 'Soporte técnico',
-	'Administrative'               => 'Administrativo',
-	'Undefined'                    => 'Indefinido',
-	'In Planning'                  => 'En planificación',
-	'On Hold'                      => 'En espera',
-	'Complete'                     => 'Completo',
-	'Archived'                     => 'Archivado',
-	'Low'                          => 'Bajo',
-	'High'                         => 'Alto',
-	'Services'                     => 'Servicios',
-	'In Progress'                  => 'En progreso',
-    'Due date' => 'Fecha de expiración',
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-  'Service Contracts' => 'Contratos de servicio',
-
-);
+$languageStrings = [
+    'ServiceContracts'                 => 'Contratos de servicio',
+    'SINGLE_ServiceContracts'          => 'Contrato de servicio',
+    'LBL_ADD_RECORD'                   => 'Agregar Contrato de servicio',
+    'LBL_RECORDS_LIST'                 => 'Lista de Contratos de servicio',
+    'LBL_SERVICE_CONTRACT_INFORMATION' => 'Información del Contrato de servicio',
+    'Contract No'                      => 'Número de Contrato',
+    'Start Date'                       => 'Fecha de inicio',
+    'End Date'                         => 'Fecha de finalización',
+    'Tracking Unit'                    => 'Unidad base',
+    'Total Units'                      => 'Unidades totales',
+    'Used Units'                       => 'Unidades consumidas',
+    'Progress'                         => 'Progreso (en %)',
+    'Planned Duration'                 => 'Duración estimada (días)',
+    'Actual Duration'                  => 'Duración real (días)',
+    'Type'                             => 'Tipo',
+    'Related to'                       => 'En relación con',
+    'Hours'                            => 'Horas',
+    'Days'                             => 'Días',
+    'Incidents'                        => 'Incidentes',
+    'Normal'                           => 'Normal',
+    'Support'                          => 'Soporte técnico',
+    'Administrative'                   => 'Administrativo',
+    'Undefined'                        => 'Indefinido',
+    'In Planning'                      => 'En planificación',
+    'On Hold'                          => 'En espera',
+    'Complete'                         => 'Completo',
+    'Archived'                         => 'Archivado',
+    'Low'                              => 'Bajo',
+    'High'                             => 'Alto',
+    'Services'                         => 'Servicios',
+    'In Progress'                      => 'En progreso',
+    'Due date'                         => 'Fecha de expiración',
+    'Service Contracts'                => 'Contratos de servicio',
+];

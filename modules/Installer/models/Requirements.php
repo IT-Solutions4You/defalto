@@ -1,235 +1,235 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Installer_Requirements_Model extends Vtiger_Base_Model
 {
     protected string $buttonType = 'success';
     protected array $dbRequirements = [
-        'DieOnError' => [
-            'type' => 'DieOnError',
-            'minimum' => 'no',
+        'DieOnError'      => [
+            'type'        => 'DieOnError',
+            'minimum'     => 'no',
             'recommended' => 'no',
         ],
         'MysqlStrictMode' => [
-            'type' => 'MysqlStrictMode',
-            'minimum' => 'no',
+            'type'        => 'MysqlStrictMode',
+            'minimum'     => 'no',
             'recommended' => 'no',
         ],
-        'SqlMode' => [
-            'type' => 'SqlMode',
-            'minimum' => 'yes',
-            'recommended' => 'no',
+        'SqlMode'         => [
+            'type'                    => 'SqlMode',
+            'minimum'                 => 'yes',
+            'recommended'             => 'no',
             'recommended_description' => 'LBL_EMPTY_OR_NO_ENGINE_SUBSTITUTION',
         ],
-        'SqlCharset' => [
-            'type' => 'SqlCharset',
-            'minimum' => 'utf8_general_ci',
-            'recommended' => 'utf8_general_ci',
+        'SqlCharset'      => [
+            'type'                    => 'SqlCharset',
+            'minimum'                 => 'utf8_general_ci',
+            'recommended'             => 'utf8_general_ci',
             'recommended_description' => 'LBL_CHARSET_DATABASE_TABLE_COLUMN',
         ],
     ];
     protected array $filePermissions = [
-        'cache' => [
-            'type' => 'Folder',
+        'cache'                                   => [
+            'type'        => 'Folder',
             'recommended' => 'yes',
         ],
-        'cron/modules' => [
-            'type' => 'Folder',
+        'cron/modules'                            => [
+            'type'        => 'Folder',
             'recommended' => 'yes',
         ],
-        'cron/language' => [
-            'type' => 'Folder',
+        'cron/language'                           => [
+            'type'        => 'Folder',
             'recommended' => 'yes',
         ],
-        'languages' => [
-            'type' => 'Folder',
-            'minimum' => 'yes',
+        'languages'                               => [
+            'type'        => 'Folder',
+            'minimum'     => 'yes',
             'recommended' => 'yes',
         ],
-        'layouts' => [
-            'type' => 'Folder',
-            'minimum' => 'yes',
+        'layouts'                                 => [
+            'type'        => 'Folder',
+            'minimum'     => 'yes',
             'recommended' => 'yes',
         ],
-        'logs' => [
-            'type' => 'Folder',
+        'logs'                                    => [
+            'type'        => 'Folder',
             'recommended' => 'yes',
         ],
-        'modules' => [
-            'type' => 'Folder',
-            'minimum' => 'yes',
+        'modules'                                 => [
+            'type'        => 'Folder',
+            'minimum'     => 'yes',
             'recommended' => 'yes',
         ],
-        'storage' => [
-            'type' => 'Folder',
+        'storage'                                 => [
+            'type'        => 'Folder',
             'recommended' => 'yes',
         ],
-        'test' => [
-            'type' => 'Folder',
+        'test'                                    => [
+            'type'        => 'Folder',
             'recommended' => 'yes',
         ],
-        'test/logo' => [
-            'type' => 'Folder',
+        'test/logo'                               => [
+            'type'        => 'Folder',
             'recommended' => 'yes',
         ],
-        'test/templates_c' => [
-            'type' => 'Folder',
+        'test/templates_c'                        => [
+            'type'        => 'Folder',
             'recommended' => 'yes',
         ],
-        'test/upload' => [
-            'type' => 'Folder',
+        'test/upload'                             => [
+            'type'        => 'Folder',
             'recommended' => 'yes',
         ],
-        'test/user' => [
-            'type' => 'Folder',
+        'test/user'                               => [
+            'type'        => 'Folder',
             'recommended' => 'yes',
         ],
-        'test/vtlib' => [
-            'type' => 'Folder',
+        'test/vtlib'                              => [
+            'type'        => 'Folder',
             'recommended' => 'yes',
         ],
-        'user_privileges' => [
-            'type' => 'Folder',
+        'user_privileges'                         => [
+            'type'        => 'Folder',
             'recommended' => 'yes',
         ],
-        'config.inc.php' => [
-            'type' => 'File',
+        'config.inc.php'                          => [
+            'type'        => 'File',
             'recommended' => 'yes',
         ],
-        'parent_tabdata.php' => [
-            'type' => 'File',
+        'parent_tabdata.php'                      => [
+            'type'        => 'File',
             'recommended' => 'yes',
         ],
-        'tabdata.php' => [
-            'type' => 'File',
+        'tabdata.php'                             => [
+            'type'        => 'File',
             'recommended' => 'yes',
         ],
         'user_privileges/default_module_view.php' => [
-            'type' => 'File',
+            'type'        => 'File',
             'recommended' => 'yes',
         ],
-        'user_privileges/enable_backup.php' => [
-            'type' => 'File',
+        'user_privileges/enable_backup.php'       => [
+            'type'        => 'File',
             'recommended' => 'yes',
         ],
     ];
     protected array $phpRequirements = [
-        'error_reporting' => [
-            'type' => 'ErrorReporting',
-            'minimum' => '0, 1, E_ERROR',
+        'error_reporting'     => [
+            'type'        => 'ErrorReporting',
+            'minimum'     => '0, 1, E_ERROR',
             'recommended' => '0, 1, E_ERROR',
         ],
-        'crm_version' => [
-            'type' => 'CRMVersion',
-            'minimum' => '',
+        'crm_version'         => [
+            'type'        => 'CRMVersion',
+            'minimum'     => '',
             'recommended' => '',
         ],
-        'php_version' => [
-            'type' => 'PHPVersion',
-            'minimum' => '',
+        'php_version'         => [
+            'type'        => 'PHPVersion',
+            'minimum'     => '',
             'recommended' => '',
         ],
-        'max_execution_time' => [
-            'type' => 'Number',
-            'minimum' => '60',
+        'max_execution_time'  => [
+            'type'        => 'Number',
+            'minimum'     => '60',
             'recommended' => '600',
         ],
-        'max_input_time' => [
-            'type' => 'Number',
-            'minimum' => '60',
+        'max_input_time'      => [
+            'type'        => 'Number',
+            'minimum'     => '60',
             'recommended' => '120',
         ],
-        'max_input_vars' => [
-            'type' => 'Number',
-            'minimum' => '10000',
+        'max_input_vars'      => [
+            'type'        => 'Number',
+            'minimum'     => '10000',
             'recommended' => '10000',
         ],
-        'memory_limit' => [
-            'type' => 'Memory',
-            'minimum' => '64M',
+        'memory_limit'        => [
+            'type'        => 'Memory',
+            'minimum'     => '64M',
             'recommended' => '256M',
         ],
-        'post_max_size' => [
-            'type' => 'Memory',
-            'minimum' => '12M',
+        'post_max_size'       => [
+            'type'        => 'Memory',
+            'minimum'     => '12M',
             'recommended' => '50M',
         ],
         'upload_max_filesize' => [
-            'type' => 'Memory',
-            'minimum' => '2M',
+            'type'        => 'Memory',
+            'minimum'     => '2M',
             'recommended' => '5M',
         ],
-        'SimpleXML' => [
-            'type' => 'Extension',
-            'minimum' => 'yes',
+        'SimpleXML'           => [
+            'type'        => 'Extension',
+            'minimum'     => 'yes',
             'recommended' => 'yes',
         ],
-        'gd' => [
-            'type' => 'Extension',
+        'gd'                  => [
+            'type'        => 'Extension',
             'recommended' => 'yes',
-            'minimum' => 'yes',
+            'minimum'     => 'yes',
         ],
-        'curl' => [
-            'type' => 'Extension',
+        'curl'                => [
+            'type'        => 'Extension',
             'recommended' => 'yes',
-            'minimum' => 'yes',
+            'minimum'     => 'yes',
         ],
-        'imap' => [
-            'type' => 'Extension',
-            'minimum' => 'yes',
-            'recommended' => 'yes',
-        ],
-        'mysql' => [
-            'type' => 'Mysql',
-            'minimum' => 'yes',
+        'imap'                => [
+            'type'        => 'Extension',
+            'minimum'     => 'yes',
             'recommended' => 'yes',
         ],
-        'mbstring' => [
-            'type' => 'Extension',
-            'info' => 'LBL_REQUIRED_PDFMAKER',
-            'minimum' => 'yes',
+        'mysql'               => [
+            'type'        => 'Mysql',
+            'minimum'     => 'yes',
             'recommended' => 'yes',
         ],
-        'bcmath' => [
-            'type' => 'Extension',
-            'minimum' => 'yes',
+        'mbstring'            => [
+            'type'        => 'Extension',
+            'info'        => 'LBL_REQUIRED_PDFMAKER',
+            'minimum'     => 'yes',
             'recommended' => 'yes',
         ],
-        'layout' => [
-            'type' => 'Layout',
-            'minimum' => 'd1',
+        'bcmath'              => [
+            'type'        => 'Extension',
+            'minimum'     => 'yes',
+            'recommended' => 'yes',
+        ],
+        'layout'              => [
+            'type'        => 'Layout',
+            'minimum'     => 'd1',
             'recommended' => 'd1',
         ],
-        'charset' => [
-            'type' => 'Charset',
-            'minimum' => 'utf-8',
+        'charset'             => [
+            'type'        => 'Charset',
+            'minimum'     => 'utf-8',
             'recommended' => 'utf-8',
         ],
     ];
     protected $sqlCharset = false;
     protected $sqlMode;
     protected array $userRequirements = [
-        'invalid_id' => [
-            'minimum' => '0',
+        'invalid_id'   => [
+            'minimum'     => '0',
             'recommended' => '0',
         ],
         'invalid_role' => [
-            'minimum' => '0',
+            'minimum'     => '0',
             'recommended' => '0',
         ],
         'sharing_file' => [
-            'minimum' => '0',
+            'minimum'     => '0',
             'recommended' => '0',
         ],
-        'user_file' => [
-            'minimum' => '0',
+        'user_file'    => [
+            'minimum'     => '0',
             'recommended' => '0',
         ],
     ];
@@ -304,42 +304,43 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param mixed $vtVersion
+     *
      * @return array
      */
     public function getPHPVersionMap(mixed $vtVersion = false): array
     {
         $versions = [
             '8.2' => [
-                'error' => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0, 7.1, 7.2, 7.3, 7.4, 8, 8.0,],
-                'warning' => [],
+                'error'       => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0, 7.1, 7.2, 7.3, 7.4, 8, 8.0,],
+                'warning'     => [],
                 'recommended' => [8.1, 8.2],
             ],
             '8.1' => [
-                'error' => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0, 7.1, 7.2, 7.3, 7.4, 8, 8.0,],
-                'warning' => [],
+                'error'       => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0, 7.1, 7.2, 7.3, 7.4, 8, 8.0,],
+                'warning'     => [],
                 'recommended' => [8.1, 8.2],
             ],
-            8 => [
-                'error' => [5.6, 5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 7, 7.0, 7.1],
-                'warning' => [7.2, 7.3],
+            8     => [
+                'error'       => [5.6, 5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 7, 7.0, 7.1],
+                'warning'     => [7.2, 7.3],
                 'recommended' => [7.4, 8, 8.0, 8.1, 8.2],
             ],
             '7.5' => [
-                'error' => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0,],
-                'warning' => [7.1],
+                'error'       => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0,],
+                'warning'     => [7.1],
                 'recommended' => [7.2, 7.3, 7.4, 8, 8.0, 8.1],
             ],
             '7.4' => [
-                'error' => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0,],
-                'warning' => [7.1],
+                'error'       => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0,],
+                'warning'     => [7.1],
                 'recommended' => [7.2, 7.3, 7.4],
             ],
-            7 => [
-                'error' => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0,],
-                'warning' => [7.1],
+            7     => [
+                'error'       => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0,],
+                'warning'     => [7.1],
                 'recommended' => [7.2, 7.3],
             ],
-            6 => [
+            6     => [
                 'recommended' => [5.6],
             ],
         ];
@@ -353,8 +354,8 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
         }
 
         return [
-            'error' => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0, 7.1, 7.2, 7.3, 7.4, 8, 8.0],
-            'warning' => [8.1, 8.2],
+            'error'       => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0, 7.1, 7.2, 7.3, 7.4, 8, 8.0],
+            'warning'     => [8.1, 8.2],
             'recommended' => [8.3, 8.4],
         ];
     }
@@ -410,6 +411,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      */
     public function getValue(array &$data): string
@@ -440,6 +442,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      */
     public function getValueDieOnError(array $data): string
@@ -454,6 +457,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      */
     public function getValueExtension(array $data): string
@@ -465,6 +469,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      */
     public function getValueFile(array $data): string
@@ -474,6 +479,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      */
     public function getValueFolder(array $data): string
@@ -488,6 +494,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      */
     public function getValueMysql(array $data): string
@@ -499,6 +506,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      * @throws Exception
      */
@@ -522,6 +530,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @throws Exception
      */
     public function getValueSqlCharset(array $data): string
@@ -531,6 +540,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      * @throws Exception
      */
@@ -547,10 +557,10 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
         $adb = PearDatabase::getInstance();
         $result = $adb->pquery('SELECT id,roleid FROM vtiger_users LEFT JOIN vtiger_user2role ON vtiger_user2role.userid=vtiger_users.id WHERE status=?', ['Active']);
         $data = [
-            'invalid_id' => 0,
+            'invalid_id'   => 0,
             'invalid_role' => 0,
             'sharing_file' => 0,
-            'user_file' => 0,
+            'user_file'    => 0,
         ];
 
         while ($row = $adb->fetchByAssoc($result)) {
@@ -580,6 +590,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      */
     public function isError(array &$data): string
@@ -622,6 +633,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      * @throws Exception
      */
@@ -634,6 +646,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return bool
      */
     public function isFileError(array $data): string
@@ -647,6 +660,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      */
     public function isFileWarning(array $data): string
@@ -662,6 +676,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
      * @param string $val1
      * @param string $val2
      * @param string $type
+     *
      * @return string
      */
     public function isLessThan($val1, $val2, $type): string
@@ -684,6 +699,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      */
     public function isPHPError(array $data): string
@@ -697,6 +713,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      */
     public function isPHPWarning(array $data): string
@@ -715,6 +732,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      */
     public function isWarning(array &$data): string
@@ -767,6 +785,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @return string
      * @throws Exception
      */
@@ -860,7 +879,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param string $key
-     * @param array $data
+     * @param array  $data
      */
     public function setDBSettings(string $key, array $data): void
     {
@@ -869,7 +888,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param string $key
-     * @param array $data
+     * @param array  $data
      */
     public function setFilePermission(string $key, array $data): void
     {
@@ -878,7 +897,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param string $key
-     * @param array $data
+     * @param array  $data
      */
     public function setPHPSettings(string $key, array $data): void
     {
@@ -887,7 +906,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param string $key
-     * @param array $data
+     * @param array  $data
      */
     public function setUserSettings(string $key, array $data): void
     {
@@ -896,6 +915,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
 
     /**
      * @param string $str
+     *
      * @return int
      */
     public function toBytes(string $str): int

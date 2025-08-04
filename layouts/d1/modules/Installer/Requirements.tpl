@@ -1,10 +1,11 @@
-{* ********************************************************************************
- * The content of this file is subject to the ITS4YouInstaller license.
- * ("License"); You may not use this file except in compliance with the License
- * The Initial Developer of the Original Code is IT-Solutions4You s.r.o.
- * Portions created by IT-Solutions4You s.r.o. are Copyright(C) IT-Solutions4You s.r.o.
- * All Rights Reserved.
- * ****************************************************************************** *}
+{**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
 {strip}
     <div class="contents" id="requirementsContents">
         {include file="SourceModules.tpl"|vtemplate_path:$MODULE}

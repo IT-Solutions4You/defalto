@@ -1,12 +1,20 @@
 <?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 class Settings_Core_Taxes_View extends Settings_Vtiger_Index_View
 {
-
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function editRegion(Vtiger_Request $request): void
     {
@@ -22,8 +30,9 @@ class Settings_Core_Taxes_View extends Settings_Vtiger_Index_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function editTax(Vtiger_Request $request): void
     {
@@ -41,6 +50,7 @@ class Settings_Core_Taxes_View extends Settings_Vtiger_Index_View
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return array
      */
     public function getHeaderScripts(Vtiger_Request $request)
@@ -71,7 +81,7 @@ class Settings_Core_Taxes_View extends Settings_Vtiger_Index_View
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function regions(Vtiger_Request $request): void
     {
@@ -87,6 +97,7 @@ class Settings_Core_Taxes_View extends Settings_Vtiger_Index_View
     /**
      * @param $request
      * @param $moduleModel
+     *
      * @return void
      */
     public function setModuleInfo($request, $moduleModel)
@@ -96,18 +107,18 @@ class Settings_Core_Taxes_View extends Settings_Vtiger_Index_View
 
         if ($isRegion) {
             $basicLinks[] = Vtiger_Link_Model::getInstanceFromValues([
-                'linktype' => 'BASIC',
-                'linklabel' => 'LBL_ADD_REGION',
-                'linkurl' => 'javascript:Settings_Vtiger_Taxes_Js.editRegion()',
-                'linkicon' => 'fa-plus',
+                'linktype'    => 'BASIC',
+                'linklabel'   => 'LBL_ADD_REGION',
+                'linkurl'     => 'javascript:Settings_Vtiger_Taxes_Js.editRegion()',
+                'linkicon'    => 'fa-plus',
                 'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
             ]);
         } else {
             $basicLinks[] = Vtiger_Link_Model::getInstanceFromValues([
-                'linktype' => 'BASIC',
-                'linklabel' => 'LBL_ADD_TAX',
-                'linkurl' => 'javascript:Settings_Vtiger_Taxes_Js.editTax()',
-                'linkicon' => 'fa-plus',
+                'linktype'    => 'BASIC',
+                'linklabel'   => 'LBL_ADD_TAX',
+                'linkurl'     => 'javascript:Settings_Vtiger_Taxes_Js.editTax()',
+                'linkicon'    => 'fa-plus',
                 'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
             ]);
         }

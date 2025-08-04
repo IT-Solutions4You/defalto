@@ -1,11 +1,11 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
@@ -35,10 +35,10 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
             [$name, $handler, $frequency, $module, $sequence, $description] = $cron;
 
             $data = [
-                'name' => $name,
-                'module' => $module,
+                'name'      => $name,
+                'module'    => $module,
                 'frequency' => $frequency,
-                'handler' => $handler,
+                'handler'   => $handler,
             ];
 
             $this->validateCron($data);
@@ -58,9 +58,9 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
 
             $data = [
                 'module' => $moduleName,
-                'type' => $type,
-                'label' => $label,
-                'url' => str_replace('$LAYOUT$', Vtiger_Viewer::getDefaultLayoutName(), $url),
+                'type'   => $type,
+                'label'  => $label,
+                'url'    => str_replace('$LAYOUT$', Vtiger_Viewer::getDefaultLayoutName(), $url),
             ];
 
             $this->validateCustomLink($data);
@@ -107,8 +107,8 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
                 foreach ((array)$modules as $moduleName) {
                     $data = [
                         'event_name' => $eventName,
-                        'module' => $moduleName,
-                        'file_name' => $fileName,
+                        'module'     => $moduleName,
+                        'file_name'  => $fileName,
                         'class_name' => $className,
                     ];
 
@@ -127,31 +127,31 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
         switch ($type) {
             case 'links':
                 return [
-                    'LBL_MODULE' => 'module',
-                    'LBL_LABEL' => 'label',
-                    'LBL_TYPE' => 'type',
+                    'LBL_MODULE'   => 'module',
+                    'LBL_LABEL'    => 'label',
+                    'LBL_TYPE'     => 'type',
                     'LBL_LINK_URL' => 'url',
                 ];
             case 'cron':
                 return [
-                    'LBL_MODULE' => 'module',
-                    'LBL_NAME' => 'name',
-                    'LBL_FREQUENCY' => 'frequency',
+                    'LBL_MODULE'       => 'module',
+                    'LBL_NAME'         => 'name',
+                    'LBL_FREQUENCY'    => 'frequency',
                     'LBL_HANDLER_FILE' => 'handler',
                 ];
             case 'handler':
                 return [
-                    'LBL_MODULE' => 'module',
+                    'LBL_MODULE'     => 'module',
                     'LBL_EVENT_NAME' => 'event_name',
-                    'LBL_CLASS' => 'class_name',
+                    'LBL_CLASS'      => 'class_name',
                     'LBL_EVENT_FILE' => 'file_name',
                 ];
             case 'related_list':
                 return [
-                    'LBL_MODULE' => 'module',
+                    'LBL_MODULE'         => 'module',
                     'LBL_RELATED_MODULE' => 'related_module',
-                    'LBL_RELATED_LABEL' => 'related_label',
-                    'LBL_FUNCTION' => 'function',
+                    'LBL_RELATED_LABEL'  => 'related_label',
+                    'LBL_FUNCTION'       => 'function',
                 ];
         }
 
@@ -175,6 +175,7 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
 
     /**
      * @param $moduleName
+     *
      * @return self
      */
     public static function getInstance($moduleName): self
@@ -222,11 +223,11 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
             [$moduleName, $relationModule, $relationLabel, $actions, $function] = $value;
 
             $data = [
-                'module' => $moduleName,
+                'module'         => $moduleName,
                 'related_module' => $relationModule,
-                'related_label' => !empty($relationLabel) ? $relationLabel : $relationModule,
-                'actions' => $actions,
-                'function' => !empty($function) ? $function : 'get_related_list',
+                'related_label'  => !empty($relationLabel) ? $relationLabel : $relationModule,
+                'actions'        => $actions,
+                'function'       => !empty($function) ? $function : 'get_related_list',
             ];
             $this->validateRelatedList($data);
 
@@ -260,23 +261,23 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
     {
         $defaultValidation = [
             [
-                'type' => 'links',
-                'label' => 'LBL_CUSTOM_LINKS',
+                'type'     => 'links',
+                'label'    => 'LBL_CUSTOM_LINKS',
                 'function' => 'getCustomLinks',
             ],
             [
-                'type' => 'cron',
-                'label' => 'LBL_CRON',
+                'type'     => 'cron',
+                'label'    => 'LBL_CRON',
                 'function' => 'getCron',
             ],
             [
-                'type' => 'handler',
-                'label' => 'LBL_EVENT_HANDLER',
+                'type'     => 'handler',
+                'label'    => 'LBL_EVENT_HANDLER',
                 'function' => 'getEventHandler',
             ],
             [
-                'type' => 'related_list',
-                'label' => 'LBL_RELATED_LIST',
+                'type'     => 'related_list',
+                'label'    => 'LBL_RELATED_LIST',
                 'function' => 'getRelatedList',
             ],
         ];
@@ -411,6 +412,7 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
 
     /**
      * @param array $data
+     *
      * @throws Exception
      */
     public function validateRelatedList(array &$data): void

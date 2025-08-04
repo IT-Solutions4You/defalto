@@ -1,11 +1,11 @@
 /**
-* This file is part of the IT-Solutions4You CRM Software.
-*
-* (c) IT-Solutions4You s.r.o [info@its4you.sk]
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*/
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 /** @var Vtiger_RelatedBlock_Js */
 Vtiger_Index_Js('Vtiger_RelatedBlock_Js', {}, {
     advancedFilter: false,
@@ -69,7 +69,7 @@ Vtiger_Index_Js('Vtiger_RelatedBlock_Js', {}, {
     registerSubmit() {
         const self = this;
 
-        self.getForm().on('submit', function(e) {
+        self.getForm().on('submit', function (e) {
             let filters = JSON.stringify(self.advancedFilter.getValues());
 
             self.getFormElement('filters').text(filters)

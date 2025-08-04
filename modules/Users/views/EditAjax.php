@@ -1,59 +1,71 @@
 <?php
-
-/* +***********************************************************************************
+/*************************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- * *********************************************************************************** */
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
-Class Users_EditAjax_View extends Vtiger_IndexAjax_View {
+class Users_EditAjax_View extends Vtiger_IndexAjax_View
+{
+    function __construct()
+    {
+        parent::__construct();
+        $this->exposeMethod('changePassword');
+        $this->exposeMethod('changeUsername');
+    }
 
-	function __construct() {
-		parent::__construct();
-		$this->exposeMethod('changePassword');
-		$this->exposeMethod('changeUsername');
-	}
+    public function checkPermission(Vtiger_Request $request)
+    {
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $userId = $request->get('recordId');
+        if ($currentUserModel->getId() != $userId && !$currentUserModel->isAdminUser()) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
+    }
 
-	public function checkPermission(Vtiger_Request $request){
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$userId = $request->get('recordId');
-		if($currentUserModel->getId() != $userId && !$currentUserModel->isAdminUser()) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
-		}
-	}
-	
-	public function process(Vtiger_Request $request) {
-		$mode = $request->get('mode');
-		if (!empty($mode)) {
-			$this->invokeExposedMethod($mode, $request);
-			return;
-		}
-	}
+    public function process(Vtiger_Request $request)
+    {
+        $mode = $request->get('mode');
+        if (!empty($mode)) {
+            $this->invokeExposedMethod($mode, $request);
 
-	public function changePassword(Vtiger_Request $request) {
-		$viewer = $this->getViewer($request);
-		$moduleName = $request->get('module');
-		$userId = $request->get('recordId');
+            return;
+        }
+    }
 
-		$viewer->assign('MODULE', $moduleName);
-		$viewer->assign('USERID', $userId);
-		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
-		$viewer->view('ChangePassword.tpl', $moduleName);
-	}
+    public function changePassword(Vtiger_Request $request)
+    {
+        $viewer = $this->getViewer($request);
+        $moduleName = $request->get('module');
+        $userId = $request->get('recordId');
 
-	public function changeUsername(Vtiger_Request $request) {
-		$viewer = $this->getViewer($request);
-		$moduleName = $request->getModule();
-		$userId = $request->get('record');
-		$userModel = Users_Record_Model::getInstanceFromPreferenceFile($userId);
-		
-		$viewer->assign('MODULE',$moduleName);
-		$viewer->assign('USER_MODEL',$userModel);
-		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
-		$viewer->view('ChangeUsername.tpl', $moduleName);
-	}
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('USERID', $userId);
+        $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+        $viewer->view('ChangePassword.tpl', $moduleName);
+    }
 
+    public function changeUsername(Vtiger_Request $request)
+    {
+        $viewer = $this->getViewer($request);
+        $moduleName = $request->getModule();
+        $userId = $request->get('record');
+        $userModel = Users_Record_Model::getInstanceFromPreferenceFile($userId);
+
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('USER_MODEL', $userModel);
+        $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+        $viewer->view('ChangeUsername.tpl', $moduleName);
+    }
 }

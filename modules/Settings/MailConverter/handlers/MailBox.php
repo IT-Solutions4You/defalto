@@ -1,13 +1,20 @@
 <?php
-/*********************************************************************************
- ** The contents of this file are subject to the vtiger CRM Public License Version 1.0
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- ********************************************************************************/
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 
 use Webklex\PHPIMAP\ClientManager;
 use Webklex\PHPIMAP\Client;
@@ -15,8 +22,9 @@ use Webklex\PHPIMAP\Client;
 /**
  * Class to work with server mailbox.
  */
-class Settings_MailConverter_MailBox_Handler {
-	// Mailbox credential information
+class Settings_MailConverter_MailBox_Handler
+{
+    // Mailbox credential information
     public $_scannerinfo = false;
     // IMAP connection instance
     public $_imap = false;
@@ -32,24 +40,34 @@ class Settings_MailConverter_MailBox_Handler {
 
     /** DEBUG functionality. */
     public $debug = false;
-	function log($message, $force=false) {
-		global $log;
-		if($log && ($force || $this->debug)) { $log->debug($message); }
-		else if( ($force || $this->debug) ) echo "$message\n";
-	}
 
-	/**
-	 * Constructor
-	 */
-	function __construct($scannerinfo) {
-		$this->_scannerinfo = $scannerinfo;
-		$this->_mailboxsettings = $scannerinfo->getAsMap();
+    function log($message, $force = false)
+    {
+        global $log;
+        if ($log && ($force || $this->debug)) {
+            $log->debug($message);
+        } elseif (($force || $this->debug)) {
+            echo "$message\n";
+        }
+    }
 
-		if($this->_mailboxsettings['ssltype'] == '')  $this->_mailboxsettings['ssltype'] = 'notls';
-		if($this->_mailboxsettings['sslmethod']== '') $this->_mailboxsettings['sslmethod'] = 'novalidate-cert';
+    /**
+     * Constructor
+     */
+    function __construct($scannerinfo)
+    {
+        $this->_scannerinfo = $scannerinfo;
+        $this->_mailboxsettings = $scannerinfo->getAsMap();
 
-		$server = $this->_mailboxsettings['server'];
-		$serverPort = explode(':', $server);
+        if ($this->_mailboxsettings['ssltype'] == '') {
+            $this->_mailboxsettings['ssltype'] = 'notls';
+        }
+        if ($this->_mailboxsettings['sslmethod'] == '') {
+            $this->_mailboxsettings['sslmethod'] = 'novalidate-cert';
+        }
+
+        $server = $this->_mailboxsettings['server'];
+        $serverPort = explode(':', $server);
 
         if (empty($serverPort[1])) {
             if ($this->_mailboxsettings['protocol'] == 'pop3') {
@@ -65,9 +83,11 @@ class Settings_MailConverter_MailBox_Handler {
         }
 
         $this->_mailboxsettings['port'] = $port;
-		
-		if($this->_scannerinfo->markas == "UNCHANGED") $this->_mailboxsettings['readonly'] = "/readonly";
-	}
+
+        if ($this->_scannerinfo->markas == "UNCHANGED") {
+            $this->_mailboxsettings['readonly'] = "/readonly";
+        }
+    }
 
     /**
      * Connect to mail box folder.
@@ -92,13 +112,13 @@ class Settings_MailConverter_MailBox_Handler {
 
         $options = [];
         $config = [
-            'host' => $server,
-            'port' => $settings['port'],
-            'encryption' => $settings['ssltype'],
-            'validate_cert' => true,
-            'protocol' => $settings['protocol'],
-            'username' => $settings['username'],
-            'password' => $password,
+            'host'           => $server,
+            'port'           => $settings['port'],
+            'encryption'     => $settings['ssltype'],
+            'validate_cert'  => true,
+            'protocol'       => $settings['protocol'],
+            'username'       => $settings['username'],
+            'password'       => $password,
             'authentication' => $authentication,
         ];
 
@@ -110,7 +130,7 @@ class Settings_MailConverter_MailBox_Handler {
         try {
             $this->_imap->connect();
         } catch (Exception $e) {
-            throw new AppException('MailScanner Connection Error: ' . $e->getMessage());
+            throw new Exception('MailScanner Connection Error: ' . $e->getMessage());
         }
 
         return true;
@@ -121,12 +141,13 @@ class Settings_MailConverter_MailBox_Handler {
         return $this->_imap;
     }
 
-
     /**
-	 * Open the mailbox folder.
-	 * @param string $folder Folder name to open
-	 * @return object if connected, false otherwise
-	 */
+     * Open the mailbox folder.
+     *
+     * @param string $folder Folder name to open
+     *
+     * @return object if connected, false otherwise
+     */
     public function getFolder(string $folder): object
     {
         return $this->_imap->getFolder($folder);
@@ -134,7 +155,9 @@ class Settings_MailConverter_MailBox_Handler {
 
     /**
      * Get the mails based on searchquery.
+     *
      * @param object $mBoxFolder
+     *
      * @return bool|object return query of emails records or false
      */
     public function getSearchMails(object $mBoxFolder): bool|object
@@ -169,8 +192,8 @@ class Settings_MailConverter_MailBox_Handler {
     }
 
     /**
-	 * Get folder names (as list) for the given mailbox connection
-	 */
+     * Get folder names (as list) for the given mailbox connection
+     */
     public function getFolders()
     {
         $folders = [];
@@ -190,11 +213,13 @@ class Settings_MailConverter_MailBox_Handler {
 
     /**
      * Fetch the email based on the messageid.
+     *
      * @param object $mBoxMessage
      * @param object $mBoxFolder
      * @param object $mBox
+     *
      * @return Settings_MailConverter_MailRecord_Handler
-     * @throws AppException
+     * @throws Exception
      */
     public function getMessage(object $mBoxMessage, object $mBoxFolder, object $mBox)
     {
@@ -211,8 +236,8 @@ class Settings_MailConverter_MailBox_Handler {
     }
 
     /**
-	 * Mark the message in the mailbox.
-	 */
+     * Mark the message in the mailbox.
+     */
     public function markMessage($mailRecord)
     {
         $mBoxMessage = $mailRecord->getBoxMessage();
@@ -234,8 +259,8 @@ class Settings_MailConverter_MailBox_Handler {
     }
 
     /**
-	 * Close the open IMAP connection.
-	 */
+     * Close the open IMAP connection.
+     */
     public function close(): void
     {
         if ($this->_imap) {

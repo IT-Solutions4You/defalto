@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the IT-Solutions4You CRM Software.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
@@ -26,7 +26,7 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
         $this->log = $log;
         $this->db = PearDatabase::getInstance();
 
-        $this->basicModules = array('20', '21', '22', '23');
+        $this->basicModules = ['20', '21', '22', '23'];
         $this->name = 'PDFMaker';
         $this->id = getTabId($this->name);
 
@@ -46,10 +46,10 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
             $templateModule = $row['module'];
             $templateId = $row['templateid'];
             $templates[] = [
-                'templateid' => $templateId,
+                'templateid'  => $templateId,
                 'description' => $row['description'],
-                'module' => vtranslate($templateModule, $templateModule),
-                'edit_url' => 'index.php?module=PDFMaker&view=EditFree&return_view=List&templateid="' . $templateId,
+                'module'      => vtranslate($templateModule, $templateModule),
+                'edit_url'    => 'index.php?module=PDFMaker&view=EditFree&return_view=List&templateid="' . $templateId,
             ];
         }
 
@@ -59,7 +59,7 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
     //DetailView data
     public function GetDetailViewData($templateid)
     {
-        $R_Atr = array($templateid, 'SalesOrder', 'Invoice', 'Quotes', 'PurchaseOrder');
+        $R_Atr = [$templateid, 'SalesOrder', 'Invoice', 'Quotes', 'PurchaseOrder'];
         $sql = 'SELECT vtiger_pdfmaker.*, vtiger_pdfmaker_settings.* FROM vtiger_pdfmaker LEFT JOIN vtiger_pdfmaker_settings USING(templateid) WHERE vtiger_pdfmaker.templateid=? AND vtiger_pdfmaker.module IN (?, ?, ?, ?)';
 
         $result = $this->db->pquery($sql, $R_Atr);
@@ -78,7 +78,7 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
     			LEFT JOIN vtiger_pdfmaker_settings USING(templateid)
     			WHERE vtiger_pdfmaker.templateid=?';
 
-        $result = $this->db->pquery($sql, array($templateid));
+        $result = $this->db->pquery($sql, [$templateid]);
         $pdftemplateResult = $this->db->fetch_array($result);
 
         return $pdftemplateResult;
@@ -119,7 +119,7 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
 
         if (strpos($format, ';') > 0) {
             $tmpArr = explode(';', $format);
-            $format = array($tmpArr[0], $tmpArr[1]);
+            $format = [$tmpArr[0], $tmpArr[1]];
             $formatPB = $format[0] . 'mm ' . $format[1] . 'mm';
         } elseif ($Settings['orientation'] == 'landscape') {
             $format .= '-L';
@@ -127,17 +127,17 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
         }
 
         $config = [
-            'mode' => '',
-            'format' => $format,
+            'mode'              => '',
+            'format'            => $format,
             'default_font_size' => 0,
-            'default_font' => '',
-            'margin_left' => $Settings['margin_left'],
-            'margin_right' => $Settings['margin_right'],
-            'margin_top' => 0,
-            'margin_bottom' => 0,
-            'margin_header' => $Settings['margin_top'],
-            'margin_footer' => $Settings['margin_bottom'],
-            'orientation' => $orientation,
+            'default_font'      => '',
+            'margin_left'       => $Settings['margin_left'],
+            'margin_right'      => $Settings['margin_right'],
+            'margin_top'        => 0,
+            'margin_bottom'     => 0,
+            'margin_header'     => $Settings['margin_top'],
+            'margin_footer'     => $Settings['margin_bottom'],
+            'orientation'       => $orientation,
         ];
         $mpdf = new PDFMaker_MPDF_Model($config);
 
@@ -149,7 +149,7 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
 
         $name = $this->GenerateName($record, $module);
 
-        $name = str_replace(array(' ', '/', ','), array('-', '-', '-'), $name);
+        $name = str_replace([' ', '/', ','], ['-', '-', '-'], $name);
 
         return $name;
     }
@@ -162,7 +162,7 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
     private function mpdf_prepare_header_footer_settings(&$mpdf, &$Settings)
     {
         $disp_header = $Settings['disp_header'];
-        $disp_optionsArr = array('dh_first', 'dh_other');
+        $disp_optionsArr = ['dh_first', 'dh_other'];
         $disp_header_bin = str_pad(base_convert($disp_header, 10, 2), 2, '0', STR_PAD_LEFT);
 
         for ($i = 0; $i < count($disp_optionsArr); $i++) {
@@ -174,7 +174,7 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
         }
 
         $disp_footer = $Settings['disp_footer'];
-        $disp_optionsArr = array('df_first', 'df_last', 'df_other');
+        $disp_optionsArr = ['df_first', 'df_last', 'df_other'];
         $disp_footer_bin = str_pad(base_convert($disp_footer, 10, 2), 3, '0', STR_PAD_LEFT);
 
         for ($i = 0; $i < count($disp_optionsArr); $i++) {
@@ -188,12 +188,12 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
 
     public function GenerateName($record, $module)
     {
-        $templates = array();
+        $templates = [];
         $focus = CRMEntity::getInstance($module);
         $focus->retrieve_entity_info($record, $module);
 
         $module_tabid = getTabId($module);
-        $result = $this->db->pquery('SELECT fieldname FROM vtiger_field WHERE uitype=? AND tabid=?', array('4', $module_tabid));
+        $result = $this->db->pquery('SELECT fieldname FROM vtiger_field WHERE uitype=? AND tabid=?', ['4', $module_tabid]);
         $fieldname = $this->db->query_result($result, 0, 'fieldname');
 
         if (isset($focus->column_fields[$fieldname]) && $focus->column_fields[$fieldname] != '') {
@@ -209,9 +209,102 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
 
     function generate_cool_uri($name)
     {
-        $Search = array('$', '€', '&', '%', ')', '(', '.', ' - ', '/', ' ', ',', 'ľ', 'š', 'č', 'ť', 'ž', 'ý', 'á', 'í', 'é', 'ó', 'ö', 'ů', 'ú', 'ü', 'ä', 'ň', 'ď', 'ô', 'ŕ', 'Ľ', 'Š', 'Č', 'Ť', 'Ž', 'Ý', 'Á', 'Í', 'É', 'Ó', 'Ú', 'Ď', '"', '°', 'ß');
-        $Replace = array('', '', '', '', '', '', '-', '-', '-', '-', '-', 'l', 's', 'c', 't', 'z', 'y', 'a', 'i', 'e', 'o', 'o', 'u', 'u', 'u', 'a', 'n', 'd', 'o', 'r', 'l', 's', 'c', 't', 'z', 'y', 'a', 'i', 'e', 'o', 'u', 'd', '', '', 'ss');
+        $Search = [
+            '$',
+            '€',
+            '&',
+            '%',
+            ')',
+            '(',
+            '.',
+            ' - ',
+            '/',
+            ' ',
+            ',',
+            'ľ',
+            'š',
+            'č',
+            'ť',
+            'ž',
+            'ý',
+            'á',
+            'í',
+            'é',
+            'ó',
+            'ö',
+            'ů',
+            'ú',
+            'ü',
+            'ä',
+            'ň',
+            'ď',
+            'ô',
+            'ŕ',
+            'Ľ',
+            'Š',
+            'Č',
+            'Ť',
+            'Ž',
+            'Ý',
+            'Á',
+            'Í',
+            'É',
+            'Ó',
+            'Ú',
+            'Ď',
+            '"',
+            '°',
+            'ß'
+        ];
+        $Replace = [
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-',
+            'l',
+            's',
+            'c',
+            't',
+            'z',
+            'y',
+            'a',
+            'i',
+            'e',
+            'o',
+            'o',
+            'u',
+            'u',
+            'u',
+            'a',
+            'n',
+            'd',
+            'o',
+            'r',
+            'l',
+            's',
+            'c',
+            't',
+            'z',
+            'y',
+            'a',
+            'i',
+            'e',
+            'o',
+            'u',
+            'd',
+            '',
+            '',
+            'ss'
+        ];
         $return = str_replace($Search, $Replace, $name);
+
         // echo $return;
         return $return;
     }
@@ -219,7 +312,7 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
     public function DeleteAllRefLinks()
     {
         require_once('vtlib/Vtiger/Link.php');
-        $link_res = $this->db->pquery('SELECT tabid FROM vtiger_tab WHERE isentitytype=?', array('1'));
+        $link_res = $this->db->pquery('SELECT tabid FROM vtiger_tab WHERE isentitytype=?', ['1']);
 
         while ($link_row = $this->db->fetchByAssoc($link_res)) {
             Vtiger_Link::deleteLink($link_row['tabid'], 'DETAILVIEWWIDGET', 'PDFMaker');
@@ -243,38 +336,38 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
     public function GetProductBlockFields($select_module = '')
     {
         $current_user = Users_Record_Model::getCurrentUserModel();
-        $result = array();
+        $result = [];
         //Product block
-        $Article_Strings = array(
-            '' => vtranslate('LBL_PLS_SELECT', 'PDFMaker'),
-            vtranslate('LBL_PRODUCTS_AND_SERVICES', 'PDFMaker') => array(
+        $Article_Strings = [
+            ''                                                  => vtranslate('LBL_PLS_SELECT', 'PDFMaker'),
+            vtranslate('LBL_PRODUCTS_AND_SERVICES', 'PDFMaker') => [
                 'PRODUCTBLOC_START' => vtranslate('LBL_ARTICLE_START', 'PDFMaker'),
-                'PRODUCTBLOC_END' => vtranslate('LBL_ARTICLE_END', 'PDFMaker')
-            ),
-            vtranslate('LBL_PRODUCTS_ONLY', 'PDFMaker') => array(
+                'PRODUCTBLOC_END'   => vtranslate('LBL_ARTICLE_END', 'PDFMaker')
+            ],
+            vtranslate('LBL_PRODUCTS_ONLY', 'PDFMaker')         => [
                 'PRODUCTBLOC_PRODUCTS_START' => vtranslate('LBL_ARTICLE_START', 'PDFMaker'),
-                'PRODUCTBLOC_PRODUCTS_END' => vtranslate('LBL_ARTICLE_END', 'PDFMaker')
-            ),
-            vtranslate('LBL_SERVICES_ONLY', 'PDFMaker') => array(
+                'PRODUCTBLOC_PRODUCTS_END'   => vtranslate('LBL_ARTICLE_END', 'PDFMaker')
+            ],
+            vtranslate('LBL_SERVICES_ONLY', 'PDFMaker')         => [
                 'PRODUCTBLOC_SERVICES_START' => vtranslate('LBL_ARTICLE_START', 'PDFMaker'),
-                'PRODUCTBLOC_SERVICES_END' => vtranslate('LBL_ARTICLE_END', 'PDFMaker')
-            ),
-        );
+                'PRODUCTBLOC_SERVICES_END'   => vtranslate('LBL_ARTICLE_END', 'PDFMaker')
+            ],
+        ];
         $result['ARTICLE_STRINGS'] = $Article_Strings;
 
         //Common fields for product and services
-        $Product_Fields = array(
-            'PS_CRMID' => vtranslate('LBL_RECORD_ID', 'PDFMaker'),
-            'PS_NO' => vtranslate('LBL_PS_NO', 'PDFMaker'),
-            'PRODUCTPOSITION' => vtranslate('LBL_PRODUCT_POSITION', 'PDFMaker'),
-            'CURRENCYNAME' => vtranslate('LBL_CURRENCY_NAME', 'PDFMaker'),
-            'CURRENCYCODE' => vtranslate('LBL_CURRENCY_CODE', 'PDFMaker'),
-            'CURRENCYSYMBOL' => vtranslate('LBL_CURRENCY_SYMBOL', 'PDFMaker'),
-            'PRODUCTNAME' => vtranslate('LBL_VARIABLE_PRODUCTNAME', 'PDFMaker'),
-            'PRODUCTTITLE' => vtranslate('LBL_VARIABLE_PRODUCTTITLE', 'PDFMaker'),
+        $Product_Fields = [
+            'PS_CRMID'               => vtranslate('LBL_RECORD_ID', 'PDFMaker'),
+            'PS_NO'                  => vtranslate('LBL_PS_NO', 'PDFMaker'),
+            'PRODUCTPOSITION'        => vtranslate('LBL_PRODUCT_POSITION', 'PDFMaker'),
+            'CURRENCYNAME'           => vtranslate('LBL_CURRENCY_NAME', 'PDFMaker'),
+            'CURRENCYCODE'           => vtranslate('LBL_CURRENCY_CODE', 'PDFMaker'),
+            'CURRENCYSYMBOL'         => vtranslate('LBL_CURRENCY_SYMBOL', 'PDFMaker'),
+            'PRODUCTNAME'            => vtranslate('LBL_VARIABLE_PRODUCTNAME', 'PDFMaker'),
+            'PRODUCTTITLE'           => vtranslate('LBL_VARIABLE_PRODUCTTITLE', 'PDFMaker'),
             'PRODUCTEDITDESCRIPTION' => vtranslate('LBL_VARIABLE_PRODUCTEDITDESCRIPTION', 'PDFMaker'),
-            'PRODUCTDESCRIPTION' => vtranslate('LBL_VARIABLE_PRODUCTDESCRIPTION', 'PDFMaker')
-        );
+            'PRODUCTDESCRIPTION'     => vtranslate('LBL_VARIABLE_PRODUCTDESCRIPTION', 'PDFMaker')
+        ];
 
         $result3 = $this->db->query("SELECT tabid FROM vtiger_tab WHERE name='Pdfsettings'");
         if ($this->db->num_rows($result3) > 0) {
@@ -294,7 +387,7 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
 
         if ($select_module != '') {
             $sql1 = 'SELECT * FROM vtiger_inventorytaxinfo';
-            $result1 = $this->db->pquery($sql1, array());
+            $result1 = $this->db->pquery($sql1, []);
 
             while ($row1 = $this->db->fetchByAssoc($result1)) {
                 $Taxes[$row1['taxname']] = $row1['taxlabel'];
@@ -303,7 +396,7 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
             $select_moduleid = getTabid($select_module);
 
             $sql2 = "SELECT fieldname, fieldlabel, uitype FROM vtiger_field WHERE tablename = ? AND tabid = ? AND fieldname NOT IN ('productid','quantity','listprice','comment','discount_amount','discount_percent')";
-            $result2 = $this->db->pquery($sql2, array('vtiger_inventoryproductrel', $select_moduleid));
+            $result2 = $this->db->pquery($sql2, ['vtiger_inventoryproductrel', $select_moduleid]);
 
             while ($row2 = $this->db->fetchByAssoc($result2)) {
                 if ($row2['uitype'] == '83') {
@@ -321,8 +414,8 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
         $result['SELECT_PRODUCT_FIELD'] = $Product_Fields;
 
         //Available fields for products
-        $prod_fields = array();
-        $serv_fields = array();
+        $prod_fields = [];
+        $serv_fields = [];
 
         $in = getTabId('Products');
         $in .= ', ' . getTabId('Services');
@@ -336,7 +429,7 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
                 WHERE t.tabid IN (' . $in . ')
                     AND (f.displaytype != 3 OR f.uitype = 55)
                 ORDER BY t.name ASC, b.sequence ASC, f.sequence ASC, f.fieldid ASC';
-        $res = $this->db->pquery($sql, array());
+        $res = $this->db->pquery($sql, []);
 
         while ($row = $this->db->fetchByAssoc($res)) {
             $module = $row['name'];
@@ -374,7 +467,9 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
 
     /**
      * Function to get the Quick Links for the module
+     *
      * @param <Array> $linkParams
+     *
      * @return <Array> List of Vtiger_Link_Model instances
      */
     public function getSideBarLinks($linkParams)
@@ -382,16 +477,15 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
         $type = 'SIDEBARLINK';
-        $quickLinks = array();
-
+        $quickLinks = [];
 
         if ($linkParams['ACTION'] == 'ProfilesPrivilegies') {
-            $quickSLinks = array(
-                'linktype' => 'SIDEBARLINK',
+            $quickSLinks = [
+                'linktype'  => 'SIDEBARLINK',
                 'linklabel' => 'LBL_RECORDS_LIST',
-                'linkurl' => 'index.php?module=PDFMaker&view=List',
-                'linkicon' => ''
-            );
+                'linkurl'   => 'index.php?module=PDFMaker&view=List',
+                'linkicon'  => ''
+            ];
 
             $links['SIDEBARLINK'][] = Vtiger_Link_Model::getInstanceFromValues($quickSLinks);
         } elseif ($linkParams['ACTION'] == 'IndexAjax' && $linkParams['MODE'] == 'showSettingsList') {
@@ -399,24 +493,24 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
                 $SettingsLinks = $this->GetAvailableSettings();
 
                 foreach ($SettingsLinks as $stype => $sdata) {
-                    $quickLinks[] = array(
-                        'linktype' => 'SIDEBARLINK',
+                    $quickLinks[] = [
+                        'linktype'  => 'SIDEBARLINK',
                         'linklabel' => $sdata['label'],
-                        'linkurl' => $sdata['location'],
-                        'linkicon' => ''
-                    );
+                        'linkurl'   => $sdata['location'],
+                        'linkicon'  => ''
+                    ];
                 }
             }
         } else {
-            $linkTypes = array('SIDEBARLINK', 'SIDEBARWIDGET');
+            $linkTypes = ['SIDEBARLINK', 'SIDEBARWIDGET'];
             $links = Vtiger_Link_Model::getAllByType($this->getId(), $linkTypes, $linkParams);
 
-            $quickLinks[] = array(
-                'linktype' => 'SIDEBARLINK',
+            $quickLinks[] = [
+                'linktype'  => 'SIDEBARLINK',
                 'linklabel' => 'LBL_RECORDS_LIST',
-                'linkurl' => $this->getListViewUrl(),
-                'linkicon' => '',
-            );
+                'linkurl'   => $this->getListViewUrl(),
+                'linkicon'  => '',
+            ];
         }
 
         if (count($quickLinks) > 0) {
@@ -426,12 +520,12 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
         }
 
         if ($currentUserModel->isAdminUser() && $linkParams['ACTION'] != 'Edit' && $linkParams['ACTION'] != 'Detail') {
-            $quickS2Links = array(
-                'linktype' => 'SIDEBARWIDGET',
+            $quickS2Links = [
+                'linktype'  => 'SIDEBARWIDGET',
                 'linklabel' => 'LBL_SETTINGS',
-                'linkurl' => 'module=PDFMaker&view=IndexAjax&mode=showSettingsList&pview=' . $linkParams['ACTION'],
-                'linkicon' => ''
-            );
+                'linkurl'   => 'module=PDFMaker&view=IndexAjax&mode=showSettingsList&pview=' . $linkParams['ACTION'],
+                'linkicon'  => ''
+            ];
             $links['SIDEBARWIDGET'][] = Vtiger_Link_Model::getInstanceFromValues($quickS2Links);
         }
 
@@ -440,24 +534,24 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
 
     public function GetAvailableSettings()
     {
-        $menu_array = array();
+        $menu_array = [];
 
         return $menu_array;
     }
 
     public function getDetailViewLinks($templateid = '')
     {
-        $linkTypes = array('DETAILVIEWTAB');
+        $linkTypes = ['DETAILVIEWTAB'];
         $detail_url = 'index.php?module=PDFMaker&view=DetailFree&templateid=' . $templateid . '&record=t' . $templateid;
 
-        $detailViewLinks = array(
-            array(
-                'linktype' => 'DETAILVIEWTAB',
+        $detailViewLinks = [
+            [
+                'linktype'  => 'DETAILVIEWTAB',
                 'linklabel' => vtranslate('LBL_PROPERTIES', 'PDFMaker'),
-                'linkurl' => $detail_url,
-                'linkicon' => ''
-            )
-        );
+                'linkurl'   => $detail_url,
+                'linkicon'  => ''
+            ]
+        ];
 
         foreach ($detailViewLinks as $detailViewLink) {
             $linkModelList['DETAILVIEWTAB'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);

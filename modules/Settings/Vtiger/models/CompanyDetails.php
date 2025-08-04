@@ -1,20 +1,30 @@
 <?php
-/**
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model {
+class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model
+{
+    public static array $logoSupportedFormats = ['jpeg', 'jpg', 'png', 'gif', 'pjpeg', 'x-png'];
 
-	public static array $logoSupportedFormats = array('jpeg', 'jpg', 'png', 'gif', 'pjpeg', 'x-png');
-
-	public $baseTable = 'vtiger_organizationdetails';
-	public $baseIndex = 'organization_id';
-	public $listFields = array('organizationname');
-	public $nameFields = array('organizationname');
-	public $logoPath = 'test/logo/';
+    public $baseTable = 'vtiger_organizationdetails';
+    public $baseIndex = 'organization_id';
+    public $listFields = ['organizationname'];
+    public $nameFields = ['organizationname'];
+    public $logoPath = 'test/logo/';
     public $blocks = [
         'LBL_COMPANY_LOGO',
         'LBL_COMPANY_INFORMATION',
@@ -22,98 +32,103 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
         'LBL_DESCRIPTION_INFORMATION',
     ];
     public $fields = [
-        'logoname' => 'text',
-        'logo' => 'file',
+        'logoname'         => 'text',
+        'logo'             => 'file',
         //basic fields
         'organizationname' => 'text',
-        'address' => 'textarea',
-        'city' => 'text',
-        'state' => 'text',
-        'code' => 'text',
-        'country_id' => 'country',
-        'phone' => 'text',
-        'email' => 'email',
-        'website' => 'text',
-        'vatid' => 'text',
-        'company_reg_no' => 'text',
+        'address'          => 'textarea',
+        'city'             => 'text',
+        'state'            => 'text',
+        'code'             => 'text',
+        'country_id'       => 'country',
+        'phone'            => 'text',
+        'email'            => 'email',
+        'website'          => 'text',
+        'vatid'            => 'text',
+        'company_reg_no'   => 'text',
         //bank fields
-        'bank_name' => 'text',
-        'bank_account_no' => 'text',
-        'iban' => 'text',
-        'swift' => 'text',
+        'bank_name'        => 'text',
+        'bank_account_no'  => 'text',
+        'iban'             => 'text',
+        'swift'            => 'text',
         //description fields
-        'description' => 'textarea',
+        'description'      => 'textarea',
     ];
 
     public $companyLogoFields = [
         'logoname' => 'text',
-        'logo' => 'file',
+        'logo'     => 'file',
     ];
 
     public $companyBasicFields = [
         'organizationname' => 'text',
-        'address' => 'textarea',
-        'city' => 'text',
-        'state' => 'text',
-        'code' => 'text',
-        'country_id' => 'country',
-        'phone' => 'text',
-        'email' => 'email',
-        'website' => 'text',
-        'vatid' => 'text',
-        'company_reg_no' => 'text',
+        'address'          => 'textarea',
+        'city'             => 'text',
+        'state'            => 'text',
+        'code'             => 'text',
+        'country_id'       => 'country',
+        'phone'            => 'text',
+        'email'            => 'email',
+        'website'          => 'text',
+        'vatid'            => 'text',
+        'company_reg_no'   => 'text',
     ];
 
     public $companyBankFields = [
-        'bank_name' => 'text',
+        'bank_name'       => 'text',
         'bank_account_no' => 'text',
-        'iban' => 'text',
-        'swift' => 'text',
+        'iban'            => 'text',
+        'swift'           => 'text',
     ];
 
     public $companyDescriptionFields = [
         'description' => 'textarea',
     ];
 
-    public $companySocialLinks = array(
-		'website' => 'text',
-	);
+    public $companySocialLinks = [
+        'website' => 'text',
+    ];
 
-	/**
-	 * Function to get Edit view Url
-	 * @return <String> Url
-	 */
-	public function getEditViewUrl() {
-		return 'index.php?module=Vtiger&parent=Settings&view=CompanyDetailsEdit';
-	}
+    /**
+     * Function to get Edit view Url
+     * @return <String> Url
+     */
+    public function getEditViewUrl()
+    {
+        return 'index.php?module=Vtiger&parent=Settings&view=CompanyDetailsEdit';
+    }
 
-	/**
-	 * Function to get CompanyDetails Menu item
-	 * @return Settings_Vtiger_MenuItem_Model menu item Model
-	 */
+    /**
+     * Function to get CompanyDetails Menu item
+     * @return Settings_Vtiger_MenuItem_Model menu item Model
+     */
     public function getMenuItem()
     {
         return Settings_Vtiger_MenuItem_Model::getInstance('LBL_COMPANY_DETAILS');
     }
 
     /**
-	 * Function to get Index view Url
-	 * @return <String> URL
-	 */
-	public function getIndexViewUrl() {
-		$menuItem = $this->getMenuItem();
-		return 'index.php?module=Vtiger&parent=Settings&view=CompanyDetails&block='.$menuItem->get('blockid').'&fieldid='.$menuItem->get('fieldid');
-	}
+     * Function to get Index view Url
+     * @return <String> URL
+     */
+    public function getIndexViewUrl()
+    {
+        $menuItem = $this->getMenuItem();
 
-	/**
-	 * Function to get fields
-	 * @return <Array>
-	 */
-	public function getFields($blockInstance = false) {
-		return $this->fields;
-	}
+        return 'index.php?module=Vtiger&parent=Settings&view=CompanyDetails&block=' . $menuItem->get('blockid') . '&fieldid=' . $menuItem->get('fieldid');
+    }
 
-    public function getBlocks() {
+    /**
+     * Function to get fields
+     * @return <Array>
+     */
+    public function getFields($blockInstance = false)
+    {
+        return $this->fields;
+    }
+
+    public function getBlocks()
+    {
         return $this->blocks;
     }
 
@@ -139,36 +154,39 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
     }
 
     /**
-	 * Function to get Logo path to display
-	 * @return <String> path
-	 */
-	public function getLogoPath() {
-		$logoPath = $this->logoPath;
-		$handler = @opendir($logoPath);
-		$logoName = decode_html($this->get('logoname'));
+     * Function to get Logo path to display
+     * @return <String> path
+     */
+    public function getLogoPath()
+    {
+        $logoPath = $this->logoPath;
+        $handler = @opendir($logoPath);
+        $logoName = decode_html($this->get('logoname'));
         $logoPath = Vtiger_Functions::getLogoPublicURL($logoName);
 
-		if ($logoName && $handler) {
-			while ($file = readdir($handler)) {
-				if($logoName === $file && in_array(str_replace('.', '', strtolower(substr($file, -4))), self::$logoSupportedFormats) && $file != "." && $file!= "..") {
-					closedir($handler);
-					return $logoPath;
-				}
-			}
-		}
-		return '';
-	}
+        if ($logoName && $handler) {
+            while ($file = readdir($handler)) {
+                if ($logoName === $file && in_array(str_replace('.', '', strtolower(substr($file, -4))), self::$logoSupportedFormats) && $file != "." && $file != "..") {
+                    closedir($handler);
 
-	/**
-	 * Function to save the logoinfo
-	 */
-	public function saveLogo($logoName) {
-		$uploadDir = vglobal('root_directory'). '/' .$this->logoPath;
-		$logoName = $uploadDir.$logoName;
-		move_uploaded_file($_FILES["logo"]["tmp_name"], $logoName);
-		copy($logoName, $uploadDir.'application.ico');
-	}
+                    return $logoPath;
+                }
+            }
+        }
 
+        return '';
+    }
+
+    /**
+     * Function to save the logoinfo
+     */
+    public function saveLogo($logoName)
+    {
+        $uploadDir = vglobal('root_directory') . '/' . $this->logoPath;
+        $logoName = $uploadDir . $logoName;
+        move_uploaded_file($_FILES["logo"]["tmp_name"], $logoName);
+        copy($logoName, $uploadDir . 'application.ico');
+    }
 
     public function getParams(): array
     {
@@ -187,7 +205,7 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 
     /**
      * Function to save the Company details
-     * @throws AppException
+     * @throws Exception
      */
     public function save(): void
     {
@@ -227,7 +245,7 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 
     /**
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function createTables(): void
     {

@@ -1,17 +1,18 @@
 <?php
-/*
- * This file is part of the IT-Solutions4You CRM Software.
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ * (c) IT-Solutions4You s.r.o
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Tour_Guide_Action extends Vtiger_BasicAjax_Action
 {
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      * @throws Exception
      */
@@ -26,6 +27,7 @@ class Tour_Guide_Action extends Vtiger_BasicAjax_Action
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      * @throws Exception
      */
@@ -40,6 +42,7 @@ class Tour_Guide_Action extends Vtiger_BasicAjax_Action
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      * @throws Exception
      */
@@ -54,6 +57,7 @@ class Tour_Guide_Action extends Vtiger_BasicAjax_Action
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      * @throws Exception
      */
@@ -68,6 +72,7 @@ class Tour_Guide_Action extends Vtiger_BasicAjax_Action
 
     /**
      * @param Vtiger_Request $request
+     *
      * @return void
      * @throws Exception
      */

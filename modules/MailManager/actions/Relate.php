@@ -1,26 +1,38 @@
 <?php
-/**
+/*************************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *************************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 require_once 'modules/MailManager/MailManager.php';
 
-class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction_Handler {
-
+class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction_Handler
+{
     public $recordSource = 'MAIL MANAGER';
     public $moduleName = 'MailManager';
 
-	public function __construct($foractionid = 0) {
-	}
+    public function __construct($foractionid = 0)
+    {
+    }
 
     /**
      * @param string $baseModule
-     * @param array $attachmentInfo
+     * @param array  $attachmentInfo
+     *
      * @return Core_Attachment_Model
-     * @throws AppException
+     * @throws Exception
      */
     public function saveAttachment(string $baseModule, array $attachmentInfo): Core_Attachment_Model
     {
@@ -39,11 +51,12 @@ class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction
     /**
      *
      * @param MailManager_Message_Model $mailRecord
-     * @param int $linkTo
-     * @param int $recipientId
+     * @param int                       $linkTo
+     * @param int                       $recipientId
+     *
      * @return Array
-     * @throws AppException
-     * @global Users $current_user
+     * @throws Exception
+     * @global Users                    $current_user
      */
     public static function associate(MailManager_Message_Model $mailRecord, int $linkTo, int $recipientId = 0): array
     {
@@ -68,23 +81,25 @@ class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction
     }
 
     /**
-	 * Returns the information about the Parent
-	 * @param String $module
-	 * @param Integer $record
-	 * @param String $label
-	 * @return Array
-	 */
+     * Returns the information about the Parent
+     *
+     * @param String  $module
+     * @param Integer $record
+     * @param String  $label
+     *
+     * @return Array
+     */
     public static function buildDetailViewLink($module, $record, $label)
     {
         if (!empty($record) && isRecordExists($record)) {
             $recordModel = Vtiger_Record_Model::getInstanceById($record, $module);
 
             return [
-                'icon' => $recordModel->getModule()->getModuleIcon(),
+                'icon'   => $recordModel->getModule()->getModuleIcon(),
                 'record' => $record,
                 'module' => $module,
-                'label' => $recordModel->getName(),
-                'url' => $recordModel->getDetailViewUrl(),
+                'label'  => $recordModel->getName(),
+                'url'    => $recordModel->getDetailViewUrl(),
             ];
         }
 
@@ -92,41 +107,49 @@ class MailManager_Relate_Action extends Settings_MailConverter_MailScannerAction
         $detailViewLink = sprintf("<a target='_blank' href='%s'>%s</a>", $detailViewUrl, textlength_check($label));
 
         return [
-            'record' => $record,
-            'module' => $module,
-            'label' => $label,
+            'record'         => $record,
+            'module'         => $module,
+            'label'          => $label,
             'detailviewlink' => $detailViewLink,
-            'url' => $detailViewUrl,
+            'url'            => $detailViewUrl,
         ];
     }
 
     /**
-	 * Returns the related entity for a Mail
-	 * @global PearDataBase $db
-	 * @param integer $mailuid - Mail Number
-	 * @return Array
-	 */
-	public static function associatedLink($mailuid) {
-		$info = MailManager::lookupMailAssociation($mailuid);
-		if ($info) {
-			return self::getSalesEntityInfo($info['crmid']);
-		}
-		return false;
-	}
+     * Returns the related entity for a Mail
+     *
+     * @param integer       $mailuid - Mail Number
+     *
+     * @return Array
+     * @global PearDataBase $db
+     */
+    public static function associatedLink($mailuid)
+    {
+        $info = MailManager::lookupMailAssociation($mailuid);
+        if ($info) {
+            return self::getSalesEntityInfo($info['crmid']);
+        }
 
-	/**
-	 * Returns the information about the Parent
-	 * @global PearDataBase $db
-	 * @param Integer $crmid
-	 * @return Array
-	 */
-	public static function getSalesEntityInfo($crmid) {
-		$db = PearDatabase::getInstance();
-		$result = $db->pquery("SELECT setype FROM vtiger_crmentity WHERE crmid=? AND deleted=0", array($crmid));
-		if ($db->num_rows($result)) {
-			$modulename = $db->query_result($result, 0, 'setype');
-			$recordlabels = getEntityName($modulename, array($crmid));
-			return self::buildDetailViewLink($modulename, $crmid, $recordlabels[$crmid]);
-		}
-	}
+        return false;
+    }
+
+    /**
+     * Returns the information about the Parent
+     *
+     * @param Integer       $crmid
+     *
+     * @return Array
+     * @global PearDataBase $db
+     */
+    public static function getSalesEntityInfo($crmid)
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery("SELECT setype FROM vtiger_crmentity WHERE crmid=? AND deleted=0", [$crmid]);
+        if ($db->num_rows($result)) {
+            $modulename = $db->query_result($result, 0, 'setype');
+            $recordlabels = getEntityName($modulename, [$crmid]);
+
+            return self::buildDetailViewLink($modulename, $crmid, $recordlabels[$crmid]);
+        }
+    }
 }
