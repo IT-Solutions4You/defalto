@@ -59,8 +59,8 @@
     {if $LINEITEM_FIELDS['discount_percent']}
         {assign var=ITEM_DISCOUNT_PERCENT_VIEWABLE value=$LINEITEM_FIELDS['discount_percent']->isViewable()}
     {/if}
-    {if $LINEITEM_FIELDS['hdnS_H_Percent']}
-        {assign var=SH_PERCENT_VIEWABLE value=$LINEITEM_FIELDS['hdnS_H_Percent']->isViewable()}
+    {if $LINEITEM_FIELDS['s_h_percent']}
+        {assign var=SH_PERCENT_VIEWABLE value=$LINEITEM_FIELDS['s_h_percent']->isViewable()}
     {/if}
     {if $LINEITEM_FIELDS['hdnDiscountAmount']}
         {assign var=DISCOUNT_AMOUNT_VIEWABLE value=$LINEITEM_FIELDS['hdnDiscountAmount']->isViewable()}

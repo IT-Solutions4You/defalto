@@ -44,8 +44,8 @@
 {if isset($LINEITEM_FIELDS['discount_percent'])}
 	{assign var=ITEM_DISCOUNT_PERCENT_EDITABLE value=$LINEITEM_FIELDS['discount_percent']->isEditable()}
 {/if}
-{if isset($LINEITEM_FIELDS['hdnS_H_Percent'])}
-	{assign var=SH_PERCENT_EDITABLE value=$LINEITEM_FIELDS['hdnS_H_Percent']->isEditable()}
+{if isset($LINEITEM_FIELDS['s_h_percent'])}
+	{assign var=SH_PERCENT_EDITABLE value=$LINEITEM_FIELDS['s_h_percent']->isEditable()}
 {/if}
 {if isset($LINEITEM_FIELDS['hdnDiscountAmount'])}
 	{assign var=DISCOUNT_AMOUNT_EDITABLE value=$LINEITEM_FIELDS['hdnDiscountAmount']->isEditable()}
