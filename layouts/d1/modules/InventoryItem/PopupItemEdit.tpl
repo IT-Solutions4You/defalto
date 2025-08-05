@@ -24,14 +24,13 @@
                 <div class="col-lg-12">
                     <div class="input-group">
                         <input type="text" id="item_text" name="item_text" value="{$DATA.item_text}"
-                               class="item_text form-control autoComplete" placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)} {vtranslate({$ITEM_TYPE},$ITEM_TYPE)}"
+                               class="item_text form-control autoComplete" placeholder="{vtranslate('LBL_TYPE_SEARCH', $MODULE)} {vtranslate($ITEM_TYPE, $ITEM_TYPE)}"
                                data-rule-required=true />
                         <input type="hidden" id="productid" name="productid" value="{$DATA.productid}" class="productid" />
                         <span class="input-group-text lineItemPopup cursorPointer" data-popup="{$ITEM_TYPE}Popup" title="{vtranslate($ITEM_TYPE,$MODULE)}"
                               data-module-name="{$ITEM_TYPE}" style="display: none;">{Vtiger_Module_Model::getModuleIconPath($ITEM_TYPE)}</span>
                         <input type="hidden" id="lineItemType" name="lineItemType" value="{$ITEM_TYPE}" class="lineItemType" />
                         <span class="input-group-addon input-group-text cursorPointer clearLineItem" title="{vtranslate('LBL_CLEAR',$MODULE)}"><i class="fa fa-xmark"></i></span>
-                        {*<span class="input-group-addon input-group-text cursorPointer createLineItem" title="{vtranslate('LBL_ADD',$MODULE)}"><i class="fa fa-plus"></i></span>*}
                     </div>
                 </div>
             </div>
@@ -68,10 +67,8 @@
                         {assign var="FIELD_MODEL" value=$FIELD}
                         {assign var="dummy" value=$FIELD_MODEL->set('fieldvalue', $DATA[$FIELD_NAME])}
                         {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
-                        {*<input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>*}
                     {/if}
                 </div>
-                {*<div class="col-lg-1"></div>*}
                 {if $smarty.foreach.formatted_structure_loop.iteration % 2 == 0 or $smarty.foreach.formatted_structure_loop.last}
                     </div>
                 {/if}

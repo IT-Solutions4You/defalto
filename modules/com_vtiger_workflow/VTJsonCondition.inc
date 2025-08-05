@@ -48,7 +48,7 @@ class VTJsonCondition
                 } else {
                     [$full, $referenceField, $referenceModule, $fieldname] = $matches;
                     $referenceFieldId = $data[$referenceField];
-                    if (in_array($entityData->getModuleName(), getInventoryModules())) {
+                    if (in_array($entityData->getModuleName(), InventoryItem_Utils_Helper::getInventoryItemModules())) {
                         if (in_array($referenceModule, ['Products', 'Services'])) {
                             $referenceFieldId = [];
                             foreach ($data['LineItems'] as $key => $value) {

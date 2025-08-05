@@ -792,8 +792,15 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     return false;
                 }
 
-                const dataUrl = "index.php?module=InventoryItem&action=GetItemDetails&record=" + selectedItemData.id + "&currency_id=" + self.getCurrencyId() + "&sourceModule=" + app.getModuleName() + "&pricebookid=" + jQuery('#pricebookid_original').val();
-                app.request.get({'url': dataUrl}).then(
+                let params = {
+                    module: 'InventoryItem',
+                    action: 'GetItemDetails',
+                    record: selectedItemData.id,
+                    currency_id: self.getCurrencyId(),
+                    sourceModule: app.getModuleName(),
+                    pricebookid: jQuery('#pricebookid_original').val(),
+                }
+                app.request.post({data: params}).then(
                     function (error, data) {
                         if (error == null) {
                             self.mapResultsToFields(container, data[0]);

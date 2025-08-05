@@ -20,7 +20,7 @@
                 <span class="btn btn-outline-secondary blockToggle {if $IS_HIDDEN}hide{/if}" data-mode="show" data-id={$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}>
                     <i class="fa fa-minus"></i>
                 </span>
-                <span class="ms-3 fs-4 fw-bold text-truncate">{vtranslate({$BLOCK_LABEL_KEY},{$MODULE_NAME})}</span>
+                <span class="ms-3 fs-4 fw-bold text-truncate">{vtranslate($BLOCK_LABEL_KEY, $MODULE_NAME)}</span>
             </div>
             <div class="col-lg-8 row">
                 <div class="col-lg-1 textAlignRight" id="block_line_items_add">
@@ -106,7 +106,7 @@
                         {if $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] neq '' && !in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
                         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
                         <td class="font-bold{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'percentage'} textAlignRight{/if}" data-fieldname="{$INVENTORY_ITEM_FIELD_NAME}">
-                            {vtranslate({$FIELD->get('label')}, 'InventoryItem')}
+                            {vtranslate($FIELD->get('label'), 'InventoryItem')}
                         </td>
                         {/if}
                     {/foreach}
@@ -159,7 +159,7 @@
                                 </button>
                                 {foreach from=$ITEM_MODULES item=ITEM_MODULE_NAME}
                                     <button type="button" class="btn btn-primary active mb-2 me-2" id="add{$ITEM_MODULE_NAME}" data-modulename="{$ITEM_MODULE_NAME}">
-                                        {Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}
+                                        {Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, $ITEM_MODULE_NAME)}
                                     </button>
                                 {/foreach}
                             </div>

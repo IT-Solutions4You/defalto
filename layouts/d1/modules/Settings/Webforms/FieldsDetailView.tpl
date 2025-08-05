@@ -11,7 +11,7 @@
 		<div class="bottomscroll-div">
 			<div class="fieldBlockContainer mt-3 bg-body rounded">
 				<div class="fieldBlockHeader p-3 border-bottom">
-					<span class="ms-3 fs-4 fw-bold">{vtranslate($SOURCE_MODULE, {$SOURCE_MODULE})} {vtranslate('LBL_FIELD_INFORMATION', $QUALIFIED_MODULE)}</span>
+					<span class="ms-3 fs-4 fw-bold">{vtranslate($SOURCE_MODULE, $SOURCE_MODULE)} {vtranslate('LBL_FIELD_INFORMATION', $QUALIFIED_MODULE)}</span>
 				</div>
 				<div class="p-3">
 					<table class="table table-borderless">
@@ -35,7 +35,7 @@
 										{else}
 											{assign var=FIELD_VALUE value="LBL_NO"}
 										{/if}
-										{vtranslate({$FIELD_VALUE}, {$SOURCE_MODULE})}
+										{vtranslate($FIELD_VALUE, $SOURCE_MODULE)}
 									</td>
 									<td>
 										{if $FIELD_HIDDEN_STATUS eq 1}
@@ -43,10 +43,10 @@
 										{else}
 											{assign var=FIELD_VALUE value="LBL_NO"}
 										{/if}
-										{vtranslate({$FIELD_VALUE}, {$SOURCE_MODULE})}
+										{vtranslate($FIELD_VALUE, $SOURCE_MODULE)}
 									</td>
 									<td>
-										{vtranslate($FIELD_MODEL->get('label'), {$SOURCE_MODULE})}
+										{vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE)}
 										{if $FIELD_MODEL->isMandatory()}
 											<span class="redColor">*</span>
 										{/if}

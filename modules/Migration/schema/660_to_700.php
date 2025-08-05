@@ -198,7 +198,7 @@ if (defined('VTIGER_UPGRADE')) {
     $tAndC = $model->getText();
     $db->pquery('DELETE FROM vtiger_inventory_tandc', []);
 
-    $inventoryModules = getInventoryModules();
+    $inventoryModules = InventoryItem_Utils_Helper::getInventoryItemModules();
     foreach ($inventoryModules as $moduleName) {
         $model = Settings_Vtiger_TermsAndConditions_Model::getInstance($moduleName);
         $model->setText($tAndC);
@@ -269,7 +269,7 @@ if (defined('VTIGER_UPGRADE')) {
     $modCommentsTabId = $modCommentsInstance->getId();
 
     $modCommentFieldInstance = Vtiger_Field_Model::getInstance('related_to', $modCommentsInstance);
-    $modCommentFieldInstance->setRelatedModules(getInventoryModules());
+    $modCommentFieldInstance->setRelatedModules(InventoryItem_Utils_Helper::getInventoryItemModules());
 
     $refModulesList = $modCommentFieldInstance->getReferenceList();
     foreach ($refModulesList as $refModuleName) {

@@ -19,7 +19,7 @@
             <div class="container-fluid border-bottom p-3">
                 <div class="row align-items-center">
                     <div class="col-lg">
-                        <h4 class="m-0">{vtranslate({$BLOCK_LABEL_KEY},{$MODULE_NAME})}</h4>
+                        <h4 class="m-0">{vtranslate($BLOCK_LABEL_KEY, $MODULE_NAME)}</h4>
                     </div>
                     <div class="col-lg-auto">
                         <div class="detailViewButtoncontainer">
@@ -57,7 +57,7 @@
                                         {/foreach}
                                     {elseif $FIELD_MODEL->get('uitype') eq "69" || $FIELD_MODEL->get('uitype') eq "105"}
                                         <div class="py-2 col-sm-4 fieldLabel {$WIDTHTYPE}">
-                                            <span class="text-muted">{vtranslate({$FIELD_MODEL->get('label')},{$MODULE_NAME})}</span>
+                                            <span class="text-muted">{vtranslate($FIELD_MODEL->get('label'), $MODULE_NAME)}</span>
                                         </div>
                                         <div class="py-2 col-sm fieldValue {$WIDTHTYPE}">
                                             <div id="imageContainer">
@@ -72,9 +72,9 @@
                                         <div class="py-2 col-sm-4 fieldLabel text-truncate {$WIDTHTYPE}" id="{$MODULE_NAME}_detailView_fieldLabel_{$FIELD_MODEL->getName()}" {if $FIELD_MODEL->getName() eq 'description' or $FIELD_MODEL->get('uitype') eq '69'} style='width:8%'{/if}>
                                             <span class="muted">
                                                 {if $MODULE_NAME eq 'Documents' && $FIELD_MODEL->get('label') eq "File Name" && $RECORD->get('filelocationtype') eq 'E'}
-                                                    {vtranslate("LBL_FILE_URL",{$MODULE_NAME})}
+                                                    {vtranslate("LBL_FILE_URL", $MODULE_NAME)}
                                                 {else}
-                                                    {vtranslate({$FIELD_MODEL->get('label')},{$MODULE_NAME})}
+                                                    {vtranslate($FIELD_MODEL->get('label'), $MODULE_NAME)}
                                                 {/if}
                                                 {if ($FIELD_MODEL->get('uitype') eq '72') && ($FIELD_MODEL->getName() eq 'unit_price')}
                                                     ({$BASE_CURRENCY_SYMBOL})

@@ -24,7 +24,7 @@
             {if !$data.isDeleted}
             <li><a class="dropdown-item addAfter" data-modulename=""><i class="fa fa-i-cursor fa-fw text-secondary"></i><span class="ms-2">{vtranslate('Add', $MODULE)} {vtranslate('TEXT', $MODULE)}</span></a></li>
             {foreach item=ITEM_MODULE_NAME from=$ITEM_MODULES}
-                <li><a class="dropdown-item addAfter" data-modulename="{$ITEM_MODULE_NAME}"><span class="text-secondary">{Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}</span>&nbsp;<span class="ms-2">{vtranslate('Add', $MODULE)} {vtranslate($ITEM_MODULE_NAME, {$ITEM_MODULE_NAME})}</span></a></li>
+                <li><a class="dropdown-item addAfter" data-modulename="{$ITEM_MODULE_NAME}"><span class="text-secondary">{Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}</span>&nbsp;<span class="ms-2">{vtranslate('Add', $MODULE)} {vtranslate($ITEM_MODULE_NAME, $ITEM_MODULE_NAME)}</span></a></li>
             {/foreach}
             {/if}
         </ul>
@@ -38,6 +38,7 @@
         {if $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] eq ''}
             {continue}
         {/if}
+        {assign var=FIELD_NAME_CAT_ROW_NO value=$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}
         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
         {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
             <td class="minWidth20per item_text_td" title="{$data.item_text}">
@@ -62,31 +63,31 @@
                 {/if}
             </td>
         {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
-            <td style="display: none;"><input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" class="{$INVENTORY_ITEM_FIELD_NAME}" type="hidden" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"></td>
+            <td style="display: none;"><input id="{$FIELD_NAME_CAT_ROW_NO}" name="{$FIELD_NAME_CAT_ROW_NO}" class="{$INVENTORY_ITEM_FIELD_NAME}" type="hidden" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"></td>
         {elseif $INVENTORY_ITEM_FIELD_NAME eq 'discount_amount'}
             <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}" style="min-width: 80px;" nowrap="nowrap">
-                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
-                <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" readonly="readonly" />
+                <span class="noEditLineItem display_{$FIELD_NAME_CAT_ROW_NO} ">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
+                <input id="{$FIELD_NAME_CAT_ROW_NO}" name="{$FIELD_NAME_CAT_ROW_NO}" type="hidden" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" readonly="readonly" />
             </td>
         {elseif $INVENTORY_ITEM_FIELD_NAME eq 'price'}
             <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}" nowrap="nowrap" style="min-width: 80px;" nowrap="nowrap">
-                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
-                <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" />
+                <span class="noEditLineItem display_{$FIELD_NAME_CAT_ROW_NO} ">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
+                <input id="{$FIELD_NAME_CAT_ROW_NO}" name="{$FIELD_NAME_CAT_ROW_NO}" type="hidden" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" />
                 <input id="pricebookid{$row_no}" name="pricebookid{$row_no}" class="pricebookid" type="hidden" value="{$data.pricebookid}" />
             </td>
         {elseif $INVENTORY_ITEM_FIELD_NAME eq 'tax' || $INVENTORY_ITEM_FIELD_NAME eq 'margin'}
             <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}" nowrap="nowrap">
-                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}&nbsp;%</span>
+                <span class="noEditLineItem display_{$FIELD_NAME_CAT_ROW_NO} ">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}&nbsp;%</span>
             </td>
         {elseif $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'percentage'}
             <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}" nowrap="nowrap">
-                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no} ">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
-                <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" />
+                <span class="noEditLineItem display_{$FIELD_NAME_CAT_ROW_NO} ">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
+                <input id="{$FIELD_NAME_CAT_ROW_NO}" name="{$FIELD_NAME_CAT_ROW_NO}" type="hidden" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" />
             </td>
         {else}
             <td title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}">
-                <span class="noEditLineItem display_{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
-                <input id="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" name="{$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}" type="hidden" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
+                <span class="noEditLineItem display_{$FIELD_NAME_CAT_ROW_NO}">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
+                <input id="{$FIELD_NAME_CAT_ROW_NO}" name="{$FIELD_NAME_CAT_ROW_NO}" type="hidden" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>
             </td>
         {/if}
     {/foreach}

@@ -21,7 +21,7 @@
                         <div class="fieldValue col-lg-6">
                             <select class="select2-container select2 inputElement col-sm-6 selectModule">
                                 {foreach item=MODULE_NAME from=$INVENTORY_MODULES}
-                                    <option value={$MODULE_NAME}>{vtranslate({$MODULE_NAME}, {$MODULE_NAME})}</option>
+                                    <option value={$MODULE_NAME}>{vtranslate($MODULE_NAME, $MODULE_NAME)}</option>
                                 {/foreach}
                             </select>
                         </div>

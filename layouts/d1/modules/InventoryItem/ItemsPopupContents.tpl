@@ -28,7 +28,6 @@
         <div class="popupEntriesDiv relatedContents">
             <input type="hidden" value="{$ORDER_BY}" id="orderBy">
             <input type="hidden" value="{$SORT_ORDER}" id="sortOrder">
-            {*<input type="hidden" value="Products_ProductRelatedProductBundles_Js" id="popUpClassName"/>*}
             <input type="hidden" value="InventoryItem_Popup_Js" id="popUpClassName"/>
             <div class="popupEntriesTableContainer">
                 <table class="listview-table table table-borderless listViewEntriesTable">

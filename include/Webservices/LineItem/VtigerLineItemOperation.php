@@ -49,9 +49,11 @@ class VtigerLineItemOperation extends VtigerActorOperation
         $this->webserviceObject = $webserviceObject;
         $this->pearDB = $adb;
         $this->entityTableName = $this->getActorTables();
+
         if ($this->entityTableName === null) {
             throw new WebServiceException(WebServiceErrorCode::$UNKOWNENTITY, 'Entity is not associated with any tables');
         }
+
         $this->meta = new VtigerLineItemMeta($this->entityTableName, $webserviceObject, $adb, $user);
         $this->moduleFields = null;
         $this->taxList = [];

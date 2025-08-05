@@ -9,7 +9,7 @@
 {strip}
 <div class="modal-dialog modelContainer">
 	<div class="modal-content" style="width:675px;">
-	{assign var=HEADER_TITLE value={vtranslate('LBL_PRODUCT_BREAKLINE', {$MODULE_NAME})}}
+	{assign var=HEADER_TITLE value={vtranslate('LBL_PRODUCT_BREAKLINE', $MODULE_NAME)}}
 	{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
 	<div class="modal-body">
 		<div class="container-fluid">

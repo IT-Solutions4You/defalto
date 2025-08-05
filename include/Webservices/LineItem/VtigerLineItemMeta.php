@@ -54,7 +54,7 @@ class VtigerLineItemMeta extends VtigerCRMActorMeta
             $webserviceField->setFieldDataType($fieldDataType);
             if (strcasecmp($fieldDataType, 'reference') === 0) {
                 if ($webserviceField->getFieldName() == 'parent_id') {
-                    $webserviceField->setReferenceList(getInventoryModules());
+                    $webserviceField->setReferenceList(InventoryItem_Utils_Helper::getInventoryItemModules());
                 } else {
                     $webserviceField->setReferenceList(['Products', 'Services']);
                 }
