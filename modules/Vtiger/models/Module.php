@@ -622,44 +622,25 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
     public function getNameFields()
     {
         $nameFieldObject = Vtiger_Cache::get('EntityField', $this->getName());
-        $moduleName = $this->getName();
+
         if ($nameFieldObject && $nameFieldObject->fieldname) {
             $this->nameFields = explode(',', $nameFieldObject->fieldname);
         } else {
+            $fieldNames = [];
             $adb = PearDatabase::getInstance();
-
-            $query = "SELECT fieldname, tablename, entityidfield FROM vtiger_entityname WHERE tabid = ?";
-            $result = $adb->pquery($query, [$this->getId()]);
+            $result = $adb->pquery('SELECT fieldname, tablename, entityidfield FROM vtiger_entityname WHERE tabid = ?', [$this->getId()]);
             $this->nameFields = [];
-            if ($result) {
-                $rowCount = $adb->num_rows($result);
-                if ($rowCount > 0) {
-                    $fieldNames = $adb->query_result($result, 0, 'fieldname');
-                    $this->nameFields = explode(',', $fieldNames);
-                }
+
+            if ($result && $adb->num_rows($result)) {
+                $fieldNames = $adb->query_result($result, 0, 'fieldname');
+                $this->nameFields = explode(',', $fieldNames);
             }
 
-            //added to handle entity names for these two modules
-            //@Note: need to move these to database
-            switch ($moduleName) {
-                case 'HelpDesk':
-                    $this->nameFields = ['ticket_title'];
-                    $fieldNames = 'ticket_title';
-                    break;
-                case 'Documents':
-                    $this->nameFields = ['notes_title'];
-                    $fieldNames = 'notes_title';
-                    break;
-                case 'Users':
-                    $this->nameFields = ['first_name', 'last_name'];
-                    $fieldNames = 'first_name,last_name';
-                    break;
-            }
-            $entiyObj = new stdClass();
-            $entiyObj->basetable = $adb->query_result($result, 0, 'tablename');
-            $entiyObj->basetableid = $adb->query_result($result, 0, 'entityidfield');
-            $entiyObj->fieldname = $fieldNames;
-            Vtiger_Cache::set('EntityField', $this->getName(), $entiyObj);
+            $entityObj = new stdClass();
+            $entityObj->basetable = $adb->query_result($result, 0, 'tablename');
+            $entityObj->basetableid = $adb->query_result($result, 0, 'entityidfield');
+            $entityObj->fieldname = $fieldNames;
+            Vtiger_Cache::set('EntityField', $this->getName(), $entityObj);
         }
 
         return $this->nameFields;
