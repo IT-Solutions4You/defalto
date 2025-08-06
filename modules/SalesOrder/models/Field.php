@@ -21,4 +21,16 @@ class SalesOrder_Field_Model extends Vtiger_Field_Model
 
         return parent::isAjaxEditable();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDefaultFieldValue()
+    {
+        if ($this->getName() === 'terms_conditions') {
+            return (string)Vtiger_Functions::getInventoryTermsAndCondition($this->getModuleName());
+        }
+
+        return $this->defaultvalue;
+    }
 }
