@@ -9,7 +9,7 @@
 
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
-        {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE="vtranslate($MODULE,$MODULE)"}
+        {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=vtranslate($MODULE,$MODULE)}
         <div class="modal-body">
             {if $ITEM_TYPE eq ''}
                 {include file="PopupTextEdit.tpl"|vtemplate_path:$MODULE}
