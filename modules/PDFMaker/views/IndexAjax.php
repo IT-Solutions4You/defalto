@@ -78,12 +78,12 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
         $adb = PearDatabase::getInstance();
         $id = $request->get('return_id');
         $sql = "SELECT CASE WHEN vtiger_products.productid != '' THEN vtiger_products.productname ELSE vtiger_service.servicename END AS productname, 
-                vtiger_inventoryproductrel.sequence_no, vtiger_inventoryproductrel.productid
+                vtiger_inventoryproductrel.sequence_no, df_inventoryitem.productid
               FROM vtiger_inventoryproductrel
               LEFT JOIN vtiger_products 
-                ON vtiger_products.productid=vtiger_inventoryproductrel.productid 
+                ON vtiger_products.productid=df_inventoryitem.productid 
               LEFT JOIN vtiger_service 
-                ON vtiger_service.serviceid=vtiger_inventoryproductrel.productid
+                ON vtiger_service.serviceid=df_inventoryitem.productid
               WHERE id=? order by sequence_no";
         $result = $adb->pquery($sql, [$id]);
 
@@ -208,16 +208,16 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
 
         if ($setype != 'Products') {
             $sql = "SELECT CASE WHEN vtiger_products.productid != '' THEN vtiger_products.productname ELSE vtiger_service.servicename END AS productname,
-            vtiger_inventoryproductrel.productid, vtiger_inventoryproductrel.sequence_no, vtiger_attachments.attachmentsid, name, path, vtiger_attachments.storedname
+            df_inventoryitem.productid, vtiger_inventoryproductrel.sequence_no, vtiger_attachments.attachmentsid, name, path, vtiger_attachments.storedname
           FROM vtiger_inventoryproductrel
           LEFT JOIN vtiger_seattachmentsrel
-            ON vtiger_seattachmentsrel.crmid=vtiger_inventoryproductrel.productid
+            ON vtiger_seattachmentsrel.crmid=df_inventoryitem.productid
           LEFT JOIN vtiger_attachments
             ON vtiger_attachments.attachmentsid=vtiger_seattachmentsrel.attachmentsid
           LEFT JOIN vtiger_products
-            ON vtiger_products.productid=vtiger_inventoryproductrel.productid
+            ON vtiger_products.productid=df_inventoryitem.productid
           LEFT JOIN vtiger_service
-            ON vtiger_service.serviceid=vtiger_inventoryproductrel.productid
+            ON vtiger_service.serviceid=df_inventoryitem.productid
           WHERE vtiger_inventoryproductrel.id=? ORDER BY vtiger_inventoryproductrel.sequence_no";
         } else {
             $sql = "SELECT vtiger_products.productname, vtiger_products.productid, '1' AS sequence_no, vtiger_attachments.attachmentsid, name, path, vtiger_attachments.storedname

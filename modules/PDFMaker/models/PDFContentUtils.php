@@ -292,7 +292,7 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
     public function getInventoryProductsQuery()
     {
         $query = "select case when vtiger_products.productid != '' then vtiger_products.productname else vtiger_service.servicename end as productname," .
-            " vtiger_inventoryproductrel.productid as psid," .
+            " df_inventoryitem.productid as psid," .
             " case when vtiger_products.productid != '' then vtiger_products.product_no else vtiger_service.service_no end as psno," .
             " case when vtiger_products.productid != '' then 'Products' else 'Services' end as entitytype," .
             " case when vtiger_products.productid != '' then vtiger_products.unit_price else vtiger_service.unit_price end as unit_price," .
@@ -301,9 +301,9 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
             " case when vtiger_products.productid != '' then vtiger_products.qtyinstock else 'NA' end as qtyinstock," .
             " case when vtiger_products.productid != '' then c1.description else c2.description end as psdescription, vtiger_inventoryproductrel.* " .
             " from vtiger_inventoryproductrel" .
-            " left join vtiger_products on vtiger_products.productid=vtiger_inventoryproductrel.productid " .
+            " left join vtiger_products on vtiger_products.productid=df_inventoryitem.productid " .
             " left join vtiger_crmentity as c1 on c1.crmid = vtiger_products.productid " .
-            " left join vtiger_service on vtiger_service.serviceid=vtiger_inventoryproductrel.productid " .
+            " left join vtiger_service on vtiger_service.serviceid=df_inventoryitem.productid " .
             " left join vtiger_crmentity as c2 on c2.crmid = vtiger_service.serviceid " .
             " where id = ? ORDER BY sequence_no";
 
@@ -426,10 +426,10 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
     public function getInventoryImagesQuery($isProductModule)
     {
         if ($isProductModule === false) {
-            $query = 'SELECT vtiger_inventoryproductrel.productid, vtiger_inventoryproductrel.sequence_no, vtiger_attachments.*
+            $query = 'SELECT df_inventoryitem.productid, vtiger_inventoryproductrel.sequence_no, vtiger_attachments.*
                         FROM vtiger_inventoryproductrel
                         LEFT JOIN vtiger_seattachmentsrel
-                        ON vtiger_seattachmentsrel.crmid=vtiger_inventoryproductrel.productid
+                        ON vtiger_seattachmentsrel.crmid=df_inventoryitem.productid
                         LEFT JOIN vtiger_attachments
                         ON vtiger_attachments.attachmentsid=vtiger_seattachmentsrel.attachmentsid
                         INNER JOIN vtiger_crmentity
