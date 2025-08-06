@@ -1076,14 +1076,4 @@ class Vtiger_Record_Model extends Core_DatabaseTable_Model
             ->createKey('KEY IF NOT EXISTS `crm_ownerid_del_setype_idx` (`assigned_user_id`,`deleted`,`setype`)')
             ->createKey('KEY IF NOT EXISTS `vtiger_crmentity_labelidx` (`label`)');
     }
-
-    /**
-     * @return string
-     */
-    public function getInventoryTermsAndConditions(): string
-    {
-        $moduleName = $this->getModuleName();
-
-        return (string)Vtiger_Functions::getInventoryTermsAndCondition($moduleName);
-    }
 }
