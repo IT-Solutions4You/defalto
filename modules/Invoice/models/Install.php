@@ -435,20 +435,6 @@ class Invoice_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
-                'currency_id' => [
-                    'name' => 'currency_id',
-                    'uitype' => 117,
-                    'column' => 'currency_id',
-                    'table' => 'vtiger_invoice',
-                    'label' => 'Currency',
-                    'readonly' => 1,
-                    'presence' => 0,
-                    'typeofdata' => 'I~O',
-                    'quickcreate' => 1,
-                    'displaytype' => 1,
-                    'masseditable' => 1,
-                    'summaryfield' => 0,
-                ],
                 'conversion_rate' => [
                     'name' => 'conversion_rate',
                     'uitype' => 1,
@@ -798,7 +784,7 @@ class Invoice_Install_Model extends Core_Install_Model
             ->createColumn('subject', 'varchar(100) DEFAULT NULL')
             ->createColumn('salesorder_id', 'int(19) DEFAULT NULL')
             ->createColumn('customerno', 'varchar(100) DEFAULT NULL')
-            ->createColumn('contact_idcontact_id', 'int(19) DEFAULT NULL')
+            ->createColumn('contact_id', 'int(19) DEFAULT NULL')
             ->createColumn('notes', 'varchar(100) DEFAULT NULL')
             ->createColumn('invoicedate', 'date DEFAULT NULL')
             ->createColumn('duedate', 'date DEFAULT NULL')
