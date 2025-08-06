@@ -21,6 +21,7 @@ $languageStrings = [
     'LBL_ADDING_NEW' => 'Pridávanie nových',
     'LBL_EDITING' => 'Editácia',
     'LBL_SAVE' => 'Uložiť',
+    'LBL_SAVE_AND_CONTINUE' => 'Uložiť a pokračovať',
     'LBL_CANCEL' => 'Zrušiť',
     'LBL_BACK' => 'Späť',
     'LBL_IMPORT' => 'Import',
@@ -1385,6 +1386,7 @@ $languageStrings = [
     'Creator' => 'Tvorca',
 	'Shipping Street' => 'Ulica doručenia',
 	'Billing Street' => 'Fakturačná ulica',
+    "LBL_ADD_AFTER" => "Pridať po",
 ];
 $jsLanguageStrings = [
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastaveniach systému nakonfigurujte server odchádzajúcej pošty',

@@ -343,6 +343,23 @@ class Accounts_Install_Model extends Core_Install_Model
                     'filter'          => 1,
                     'filter_sequence' => 9,
                 ],
+                'pricebookid' => [
+                    'name' => 'pricebookid',
+                    'uitype' => 10,
+                    'column' => 'pricebookid',
+                    'table' => 'vtiger_account',
+                    'label' => 'Price Book',
+                    'readonly' => 0,
+                    'presence' => 0,
+                    'typeofdata' => 'I~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 0,
+                    'related_modules' => [
+                        'PriceBooks',
+                    ],
+                ],
             ],
             'LBL_CUSTOM_INFORMATION'      => [],
             'LBL_ADDRESS_INFORMATION'     => [
@@ -623,6 +640,7 @@ class Accounts_Install_Model extends Core_Install_Model
             ->createColumn('vat_id', 'varchar(100) DEFAULT NULL')
             ->createColumn('currency_id', 'int(19) DEFAULT NULL')
             ->createColumn('conversion_rate', 'decimal(10,3) DEFAULT NULL')
+            ->createColumn('pricebookid', 'int(19) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`accountid`)')
             ->createKey('KEY IF NOT EXISTS `account_account_type_idx` (`accounttype`)')
             ->createKey('KEY IF NOT EXISTS `email_idx` (`email1`,`email2`)')

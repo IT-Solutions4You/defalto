@@ -107,7 +107,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
         self::$bridge2mpdf['record'] = self::$focus->id;
         self::$rowbreak = '<rowbreak />';
-        self::$is_inventory_module[self::$module] = $this->isInventoryModule(self::$module);
+        self::$is_inventory_module[self::$module] = InventoryItem_Utils_Helper::usesInventoryItem(self::$module);
     }
 
     private function getTemplateData()
@@ -627,7 +627,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
     private function fillInventoryData($module, $focus)
     {
         if (!isset(self::$is_inventory_module[$module])) {
-            self::$is_inventory_module[$module] = $this->isInventoryModule($module);
+            self::$is_inventory_module[$module] = InventoryItem_Utils_Helper::usesInventoryItem($module);
         }
 
         if (self::$is_inventory_module[$module] || (isset($focus->column_fields['currency_id']) && isset($focus->column_fields['conversion_rate']) && isset($focus->column_fields['grand_total']))) {
@@ -685,7 +685,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
             [$images, $bacImgs] = $this->getInventoryImages($focus->id);
 
-            $recordModel = Inventory_Record_Model::getInstanceById($focus->id);
+            $recordModel = Vtiger_Record_Model::getInstanceById($focus->id);
             $relatedProducts = $recordModel->getProducts();
             //##Final details convertion started
             $finalDetails = $relatedProducts[1]['final_details'];
@@ -945,7 +945,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         $Details['TOTAL']['TAXTOTALPERCENT'] = $this->formatNumberToPDF($total_vat_percent);
 
         $hdnDiscountPercent = (float)$focus->column_fields['hdnDiscountPercent'];
-        $hdnDiscountAmount = (float)$focus->column_fields['hdnDiscountAmount'];
+        $hdnDiscountAmount = (float)$focus->column_fields['discount_amount'];
 
         if (!empty($hdnDiscountPercent)) {
             $finalDiscountPercent = $hdnDiscountPercent;

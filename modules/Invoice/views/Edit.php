@@ -16,10 +16,25 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Invoice_Edit_View extends Inventory_Edit_View
+class Invoice_Edit_View extends Vtiger_Edit_View
 {
-    public function process(Vtiger_Request $request)
+    use InventoryItem_Edit_Trait;
+
+    /**
+     * @inheritDoc
+     */
+    function getHeaderScripts(Vtiger_Request $request)
     {
-        parent::process($request);
+        $headerScriptInstances = parent::getHeaderScripts($request);
+        $jsFileNames = [
+        ];
+
+        if (method_exists($this, 'adaptHeaderScripts')) {
+            $jsFileNames = array_merge($jsFileNames, $this->adaptHeaderScripts());
+        }
+
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

@@ -656,13 +656,13 @@ jQuery.Class("Vtiger_Popup_Js", {
     },
 
     totalNumOfRecords: function (currentEle) {
-        var thisInstance = this;
-        var popupContainer = thisInstance.getPopupPageContainer();
-        var totalRecordsElement = popupContainer.find('#totalCount');
-        var totalNumberOfRecords = totalRecordsElement.val();
+        const thisInstance = this;
+        const popupContainer = thisInstance.getPopupPageContainer();
+        const totalRecordsElement = popupContainer.find('#totalCount');
+        let totalNumberOfRecords = totalRecordsElement.val();
         currentEle.addClass('hide');
 
-        if (totalNumberOfRecords === '') {
+        if (totalNumberOfRecords === '' || totalNumberOfRecords == 0) {
             thisInstance.getPageCount().then(function (data) {
                 totalNumberOfRecords = data.numberOfRecords;
                 totalRecordsElement.val(totalNumberOfRecords);

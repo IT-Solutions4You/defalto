@@ -52,29 +52,25 @@ class Settings_Workflows_EditAjax_View extends Settings_Workflows_Edit_View
 
         $recordId = $request->get('record');
 
-        if ($recordId) {
-            $workFlowModel = Settings_Workflows_Record_Model::getInstance($recordId);
-            $selectedModule = $workFlowModel->getModule();
-            $selectedModuleName = $selectedModule->getName();
-        } else {
-            $selectedModuleName = $request->get('module_name');
-            $selectedModule = Vtiger_Module_Model::getInstance($selectedModuleName);
-            $workFlowModel = Settings_Workflows_Record_Model::getCleanInstance($selectedModuleName);
-        }
+       if ($recordId) {
+           $workFlowModel = Settings_Workflows_Record_Model::getInstance($recordId);
+           $selectedModule = $workFlowModel->getModule();
+           $selectedModuleName = $selectedModule->getName();
+       } else {
+           $selectedModuleName = $request->get('module_name');
+           $selectedModule = Vtiger_Module_Model::getInstance($selectedModuleName);
+           $workFlowModel = Settings_Workflows_Record_Model::getCleanInstance($selectedModuleName);
+       }
 
-        //Added to support advance filters
-        $recordStructureInstance = Settings_Workflows_RecordStructure_Model::getInstanceForWorkFlowModule(
-            $workFlowModel,
-            Settings_Workflows_RecordStructure_Model::RECORD_STRUCTURE_MODE_FILTER
-        );
+       //Added to support advance filters
+       $recordStructureInstance = Settings_Workflows_RecordStructure_Model::getInstanceForWorkFlowModule(
+           $workFlowModel,
+           Settings_Workflows_RecordStructure_Model::RECORD_STRUCTURE_MODE_FILTER
+       );
 
-        $viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
-        $recordStructure = $recordStructureInstance->getStructure();
-        if (in_array($selectedModuleName, getInventoryModules())) {
-            $itemsBlock = "LBL_ITEM_DETAILS";
-            unset($recordStructure[$itemsBlock]);
-        }
-        $viewer->assign('RECORD_STRUCTURE', $recordStructure);
+       $viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
+       $recordStructure = $recordStructureInstance->getStructure();
+       $viewer->assign('RECORD_STRUCTURE', $recordStructure);
 
         $viewer->assign('WORKFLOW_MODEL', $workFlowModel);
 

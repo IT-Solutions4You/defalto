@@ -26,7 +26,9 @@ $languageStrings = [
     'LBL_CREATING_NEW'                        => 'Creando nuevo',
     'LBL_EDITING'                             => 'Editando',
     'LBL_SAVE'                                => 'Guardar',
-    'LBL_CANCEL'                              => 'Cancelar',
+    'LBL_SAVE_AND_CONTINUE'        => 'Save & Continue'             ,
+	'LBL_APPLY'                    => 'Apply'                       ,
+	'LBL_CANCEL'                              => 'Cancelar',
     'LBL_BACK'                                => 'Volver',
     'LBL_IMPORT'                              => 'Importar',
     'LBL_EXPORT'                              => 'Exportar',
@@ -238,6 +240,7 @@ $languageStrings = [
     'LBL_TAX'                                 => 'Impuesto',
     'LBL_ADD_PRODUCT'                         => 'Agregar producto',
     'LBL_ADD_SERVICE'                         => 'Agregar servicio',
+    'TEXT'                         => 'texto'                       ,
     'LBL_ITEMS_TOTAL'                         => 'Total  de productos/servicios',
     'LBL_SHIPPING_AND_HANDLING_CHARGES'       => 'Gastos de manejo y envío',
     'LBL_PRE_TAX_TOTAL'                       => 'Total antes de impuestos',
@@ -1089,6 +1092,7 @@ fuera de Vtiger.',
     'LBL_DUPLICATE_RECORD_LISTS'             => 'Duplicar%s (s):',
 
     'LBL_LISTVIEW_JUMP_TO' => 'Saltar a',
+    'LBL_ADD_AFTER' => 'Agregar después de',
 ];
 $jsLanguageStrings = [
     'JS_EMAIL_SERVER_CONFIGURATION'                             => 'Por favor configure el servidor de salida desde la página de configuración ',

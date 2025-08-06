@@ -243,7 +243,11 @@ jQuery.validator.addMethod("currency", function (value, element, params) {
             return false;
         }
 
-        return strippedValue >= 0;
+        if (jQuery(element).hasClass('negativeNumber')) {
+			return true;
+		}
+
+		return strippedValue >= 0;
 
     }, jQuery.validator.format(app.vtranslate('JS_PLEASE_ENTER_VALID_VALUE'))
 );

@@ -684,7 +684,7 @@ class Products extends CRMEntity
         return $return_value;
     }
 
-    /**    function used to get the list of quotes which are related to the product
+    /** Function used to get the list of quotes which are related to the product
      *
      * @param int $id - product id
      *
@@ -739,17 +739,19 @@ class Products extends CRMEntity
 			vtiger_quotes.*,
 			vtiger_potential.potentialname,
 			vtiger_account.accountname,
-			vtiger_inventoryproductrel.productid,
+			df_inventoryitem.productid,
 			case when (vtiger_users.user_name not like '') then $userNameSql
 				else vtiger_groups.groupname end as user_name
 			FROM vtiger_quotes
 			INNER JOIN vtiger_crmentity
 				ON vtiger_crmentity.crmid = vtiger_quotes.quoteid
-			INNER JOIN vtiger_inventoryproductrel
-				ON vtiger_inventoryproductrel.id = vtiger_quotes.quoteid
-			LEFT OUTER JOIN vtiger_account
+			INNER JOIN df_inventoryitem
+				ON df_inventoryitem.parentid = vtiger_quotes.quoteid
+			INNER JOIN vtiger_crmentity AS crmentityInventoryItem
+				ON crmentityInventoryItem.crmid = df_inventoryitem.inventoryitemid AND crmentityInventoryItem.deleted = 0
+			LEFT JOIN vtiger_account
 				ON vtiger_account.accountid = vtiger_quotes.account_id
-			LEFT OUTER JOIN vtiger_potential
+			LEFT JOIN vtiger_potential
 				ON vtiger_potential.potentialid = vtiger_quotes.potential_id
 			LEFT JOIN vtiger_groups
 				ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
@@ -762,7 +764,7 @@ class Products extends CRMEntity
 			LEFT JOIN vtiger_users
 				ON vtiger_users.id = vtiger_crmentity.assigned_user_id
 			WHERE vtiger_crmentity.deleted = 0
-			AND vtiger_inventoryproductrel.productid = " . $id;
+			AND df_inventoryitem.productid = " . $id;
 
         $return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -830,16 +832,16 @@ class Products extends CRMEntity
         $query = "SELECT vtiger_crmentity.*,
 			vtiger_purchaseorder.*,
 			vtiger_products.productname,
-			vtiger_inventoryproductrel.productid,
+			df_inventoryitem.productid,
 			case when (vtiger_users.user_name not like '') then $userNameSql
 				else vtiger_groups.groupname end as user_name
 			FROM vtiger_purchaseorder
 			INNER JOIN vtiger_crmentity
 				ON vtiger_crmentity.crmid = vtiger_purchaseorder.purchaseorderid
-			INNER JOIN vtiger_inventoryproductrel
-				ON vtiger_inventoryproductrel.id = vtiger_purchaseorder.purchaseorderid
-			INNER JOIN vtiger_products
-				ON vtiger_products.productid = vtiger_inventoryproductrel.productid
+            INNER JOIN df_inventoryitem
+                ON df_inventoryitem.parentid = vtiger_purchaseorder.purchaseorderid
+            INNER JOIN vtiger_crmentity AS crmentityInventoryItem
+                ON crmentityInventoryItem.crmid = df_inventoryitem.inventoryitemid AND crmentityInventoryItem.deleted = 0
 			LEFT JOIN vtiger_groups
 				ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 			LEFT JOIN vtiger_purchaseordercf
@@ -851,7 +853,7 @@ class Products extends CRMEntity
 			LEFT JOIN vtiger_users
 				ON vtiger_users.id = vtiger_crmentity.assigned_user_id
 			WHERE vtiger_crmentity.deleted = 0
-			AND vtiger_products.productid = " . $id;
+			AND df_inventoryitem.productid = " . $id;
 
         $return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -925,10 +927,12 @@ class Products extends CRMEntity
 			FROM vtiger_salesorder
 			INNER JOIN vtiger_crmentity
 				ON vtiger_crmentity.crmid = vtiger_salesorder.salesorderid
-			INNER JOIN vtiger_inventoryproductrel
-				ON vtiger_inventoryproductrel.id = vtiger_salesorder.salesorderid
+            INNER JOIN df_inventoryitem
+                ON df_inventoryitem.parentid = vtiger_salesorder.salesorderid
+            INNER JOIN vtiger_crmentity AS crmentityInventoryItem
+                ON crmentityInventoryItem.crmid = df_inventoryitem.inventoryitemid AND crmentityInventoryItem.deleted = 0
 			INNER JOIN vtiger_products
-				ON vtiger_products.productid = vtiger_inventoryproductrel.productid
+				ON vtiger_products.productid = df_inventoryitem.productid
 			LEFT OUTER JOIN vtiger_account
 				ON vtiger_account.accountid = vtiger_salesorder.account_id
 			LEFT JOIN vtiger_groups
@@ -944,7 +948,7 @@ class Products extends CRMEntity
 			LEFT JOIN vtiger_users
 				ON vtiger_users.id = vtiger_crmentity.assigned_user_id
 			WHERE vtiger_crmentity.deleted = 0
-			AND vtiger_products.productid = " . $id;
+			AND df_inventoryitem.productid = " . $id;
 
         $return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -1011,7 +1015,7 @@ class Products extends CRMEntity
         ], 'Users');
         $query = "SELECT vtiger_crmentity.*,
 			vtiger_invoice.*,
-			vtiger_inventoryproductrel.quantity,
+			df_inventoryitem.quantity,
 			vtiger_account.accountname,
 			case when (vtiger_users.user_name not like '') then $userNameSql
 				else vtiger_groups.groupname end as user_name
@@ -1020,8 +1024,10 @@ class Products extends CRMEntity
 				ON vtiger_crmentity.crmid = vtiger_invoice.invoiceid
 			LEFT OUTER JOIN vtiger_account
 				ON vtiger_account.accountid = vtiger_invoice.account_id
-			INNER JOIN vtiger_inventoryproductrel
-				ON vtiger_inventoryproductrel.id = vtiger_invoice.invoiceid
+            INNER JOIN df_inventoryitem
+                ON df_inventoryitem.parentid = vtiger_invoice.invoiceid
+            INNER JOIN vtiger_crmentity AS crmentityInventoryItem
+                ON crmentityInventoryItem.crmid = df_inventoryitem.inventoryitemid AND crmentityInventoryItem.deleted = 0
 			LEFT JOIN vtiger_groups
 				ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 			LEFT JOIN vtiger_invoicecf
@@ -1033,7 +1039,7 @@ class Products extends CRMEntity
 			LEFT JOIN vtiger_users
 				ON  vtiger_users.id=vtiger_crmentity.assigned_user_id
 			WHERE vtiger_crmentity.deleted = 0
-			AND vtiger_inventoryproductrel.productid = " . $id;
+			AND df_inventoryitem.productid = " . $id;
 
         $return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -1332,10 +1338,10 @@ class Products extends CRMEntity
             "HelpDesk"      => "vtiger_troubletickets",
             "Products"      => "vtiger_seproductsrel",
             "Attachments"   => "vtiger_seattachmentsrel",
-            "Quotes"        => "vtiger_inventoryproductrel",
-            "PurchaseOrder" => "vtiger_inventoryproductrel",
-            "SalesOrder"    => "vtiger_inventoryproductrel",
-            "Invoice"       => "vtiger_inventoryproductrel",
+            "Quotes"        => "df_inventoryitem",
+            "PurchaseOrder" => "df_inventoryitem",
+            "SalesOrder"    => "df_inventoryitem",
+            "Invoice"       => "df_inventoryitem",
             "PriceBooks"    => "vtiger_pricebookproductrel",
             "Leads"         => "vtiger_seproductsrel",
             "Accounts"      => "vtiger_seproductsrel",
@@ -1349,7 +1355,7 @@ class Products extends CRMEntity
             "vtiger_troubletickets"      => "ticketid",
             "vtiger_seproductsrel"       => "crmid",
             "vtiger_seattachmentsrel"    => "attachmentsid",
-            "vtiger_inventoryproductrel" => "id",
+            "df_inventoryitem" => "inventoryitemid",
             "vtiger_pricebookproductrel" => "pricebookid",
             "vtiger_seproductsrel"       => "crmid",
             "vtiger_senotesrel"          => "notesid",
@@ -1360,7 +1366,7 @@ class Products extends CRMEntity
             "vtiger_troubletickets"      => "product_id",
             "vtiger_seproductsrel"       => "crmid",
             "vtiger_seattachmentsrel"    => "crmid",
-            "vtiger_inventoryproductrel" => "productid",
+            "df_inventoryitem" => "productid",
             "vtiger_pricebookproductrel" => "productid",
             "vtiger_seproductsrel"       => "productid",
             "vtiger_senotesrel"          => "crmid",
@@ -1460,10 +1466,10 @@ class Products extends CRMEntity
     {
         $rel_tables = [
             "HelpDesk"      => ["vtiger_troubletickets" => ["product_id", "ticketid"], "vtiger_products" => "productid"],
-            "Quotes"        => ["vtiger_inventoryproductrel" => ["productid", "id"], "vtiger_products" => "productid"],
-            "PurchaseOrder" => ["vtiger_inventoryproductrel" => ["productid", "id"], "vtiger_products" => "productid"],
-            "SalesOrder"    => ["vtiger_inventoryproductrel" => ["productid", "id"], "vtiger_products" => "productid"],
-            "Invoice"       => ["vtiger_inventoryproductrel" => ["productid", "id"], "vtiger_products" => "productid"],
+            "Quotes"        => ["df_inventoryitem" => ["productid", "inventoryitemid"], "vtiger_products" => "productid"],
+            "PurchaseOrder" => ["df_inventoryitem" => ["productid", "inventoryitemid"], "vtiger_products" => "productid"],
+            "SalesOrder"    => ["df_inventoryitem" => ["productid", "inventoryitemid"], "vtiger_products" => "productid"],
+            "Invoice"       => ["df_inventoryitem" => ["productid", "inventoryitemid"], "vtiger_products" => "productid"],
             "Leads"         => ["vtiger_seproductsrel" => ["productid", "crmid"], "vtiger_products" => "productid"],
             "Accounts"      => ["vtiger_seproductsrel" => ["productid", "crmid"], "vtiger_products" => "productid"],
             "Contacts"      => ["vtiger_seproductsrel" => ["productid", "crmid"], "vtiger_products" => "productid"],

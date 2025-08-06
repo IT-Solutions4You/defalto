@@ -23,7 +23,7 @@
                                 <div class="col-1 tab-icon">
                                     {$RELATED_LINK->get('linkicon')}
                                 </div>
-                                <div class="col tab-label text-truncate">{vtranslate($RELATEDLINK_LABEL,{$MODULE_NAME})}</div>
+                                <div class="col tab-label text-truncate">{vtranslate($RELATEDLINK_LABEL, $MODULE_NAME)}</div>
                                 <div class="col-2">
                                     <div class="numberCircle badge text-bg-primary hide">0</div>
                                 </div>

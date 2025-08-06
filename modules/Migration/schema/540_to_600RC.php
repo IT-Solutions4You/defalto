@@ -640,9 +640,6 @@ $sqltimelogTable = "CREATE TABLE vtiger_sqltimelog ( id integer, type VARCHAR(10
 Migration_Index_View::ExecuteQuery($sqltimelogTable, []);
 
 $moduleName = 'PurchaseOrder';
-$emm = new VTEntityMethodManager($adb);
-$emm->addEntityMethod($moduleName, "UpdateInventory", "include/InventoryHandler.php", "handleInventoryProductRel");
-
 $vtWorkFlow = new VTWorkflowManager($adb);
 $poWorkFlow = $vtWorkFlow->newWorkFlow($moduleName);
 $poWorkFlow->description = "Update Inventory Products On Every Save";

@@ -15,8 +15,14 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-class Invoice_DetailView_Model extends Inventory_DetailView_Model
+
+class Invoice_DetailView_Model extends Vtiger_DetailView_Model
 {
+    use InventoryItem_DetailView_Trait;
+
+    /**
+     * @inheritDoc
+     */
     public function getDetailViewLinks($linkParams)
     {
         $currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();

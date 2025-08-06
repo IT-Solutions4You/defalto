@@ -117,130 +117,6 @@ class Products_Record_Model extends Vtiger_Record_Model
     }
 
     /**
-     * Function to get Url to Create a new Quote from this record
-     * @return <String> Url to Create new Quote
-     */
-    function getCreateQuoteUrl()
-    {
-        $quotesModuleModel = Vtiger_Module_Model::getInstance('Quotes');
-
-        return "index.php?module=" . $quotesModuleModel->getName() . "&view=" . $quotesModuleModel->getEditViewName() . "&product_id=" . $this->getId() .
-            "&sourceModule=" . $this->getModuleName() . "&sourceRecord=" . $this->getId() . "&relationOperation=true";
-    }
-
-    /**
-     * Function to get Url to Create a new Invoice from this record
-     * @return <String> Url to Create new Invoice
-     */
-    function getCreateInvoiceUrl()
-    {
-        $invoiceModuleModel = Vtiger_Module_Model::getInstance('Invoice');
-
-        return "index.php?module=" . $invoiceModuleModel->getName() . "&view=" . $invoiceModuleModel->getEditViewName() . "&product_id=" . $this->getId() .
-            "&sourceModule=" . $this->getModuleName() . "&sourceRecord=" . $this->getId() . "&relationOperation=true";
-    }
-
-    /**
-     * Function to get Url to Create a new PurchaseOrder from this record
-     * @return <String> Url to Create new PurchaseOrder
-     */
-    function getCreatePurchaseOrderUrl()
-    {
-        $purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
-
-        return "index.php?module=" . $purchaseOrderModuleModel->getName() . "&view=" . $purchaseOrderModuleModel->getEditViewName() . "&product_id=" . $this->getId() .
-            "&sourceModule=" . $this->getModuleName() . "&sourceRecord=" . $this->getId() . "&relationOperation=true&vendor_id=" . $this->get('vendor_id');
-    }
-
-    /**
-     * Function to get Url to Create a new SalesOrder from this record
-     * @return <String> Url to Create new SalesOrder
-     */
-    function getCreateSalesOrderUrl()
-    {
-        $salesOrderModuleModel = Vtiger_Module_Model::getInstance('SalesOrder');
-
-        return "index.php?module=" . $salesOrderModuleModel->getName() . "&view=" . $salesOrderModuleModel->getEditViewName() . "&product_id=" . $this->getId() .
-            "&sourceModule=" . $this->getModuleName() . "&sourceRecord=" . $this->getId() . "&relationOperation=true";
-    }
-
-    /**
-     * Function get details of taxes for this record
-     * Function calls from Edit/Create view of Inventory Records
-     *
-     * @param <Object> $focus
-     *
-     * @return <Array> List of individual taxes
-     */
-    function getDetailsForInventoryModule($focus)
-    {
-        $productId = $this->getId();
-        $currentUser = Users_Record_Model::getCurrentUserModel();
-        $productDetails = getAssociatedProducts($this->getModuleName(), $focus, $productId, $focus->getModuleName());
-
-        //updating list price details
-        $currentUserModel = Users_Record_Model::getCurrentUserModel();
-        $convertedPriceDetails = $this->getModule()->getPricesForProducts($currentUserModel->get('currency_id'), [$productId]);
-        $productDetails[1]['listPrice1'] = number_format((int)$convertedPriceDetails[$productId], $currentUserModel->get('no_of_currency_decimals'), '.', '');
-
-        //updating total after discount details
-        $totalAfterDiscount = (float)$productDetails[1]['listPrice1'] - (float)$productDetails[1]['discountTotal1'];
-        $productDetails[1]['totalAfterDiscount1'] = number_format($totalAfterDiscount, $currentUserModel->get('no_of_currency_decimals'), '.', '');
-
-        //updating cost price details
-        $currencyInfo = Vtiger_Util_Helper::getUserCurrencyInfo();
-        $purchaseCost = (float)$currencyInfo['conversion_rate'] * (float)$productDetails[1]['purchaseCost1'];
-        $productDetails[1]['purchaseCost1'] = number_format((float)$purchaseCost, $currentUser->get('no_of_currency_decimals'), '.', '');
-
-        //updating margin details
-        $margin = (float)$productDetails[1]['totalAfterDiscount1'] - (float)$productDetails[1]['purchaseCost1'];
-        $productDetails[1]['margin1'] = number_format($margin, $currentUser->get('no_of_currency_decimals'), '.', '');
-
-        //Image detail
-        if ($this->getModuleName() === 'Products') {
-            $imageDetails = $this->getImageDetails();
-            if ($imageDetails) {
-                $productDetails[1]['productImage1'] = $imageDetails[0]['path'] . '_' . $imageDetails[0]['orgname'];
-            }
-        }
-
-        $productTaxes = $productDetails[1]['taxes'];
-        if (!empty ($productDetails)) {
-            $taxCount = php7_count($productTaxes);
-            $taxTotal = 0;
-
-            for ($i = 0; $i < $taxCount; $i++) {
-                $taxValue = $productTaxes[$i]['percentage'];
-
-                $taxAmount = $totalAfterDiscount * $taxValue / 100;
-                $taxTotal = $taxTotal + $taxAmount;
-
-                $productDetails[1]['taxes'][$i]['amount'] = $taxAmount;
-                $productDetails[1]['taxTotal1'] = $taxTotal;
-            }
-            $netPrice = $totalAfterDiscount + $taxTotal;
-            $productDetails[1]['netPrice1'] = $netPrice;
-            $productDetails[1]['final_details']['subtotal'] = $netPrice;
-            $productDetails[1]['final_details']['grand_total'] = $netPrice;
-        }
-
-        for ($i = 1; $i <= php7_count($productDetails); $i++) {
-            $productId = $productDetails[$i]['hdnProductId' . $i];
-            $productPrices = $this->getModule()->getPricesForProducts($currentUser->get('currency_id'), [$productId], $this->getModuleName());
-            $productDetails[$i]['listPrice' . $i] = number_format($productPrices[$productId], $currentUser->get('no_of_currency_decimals'), '.', '');
-        }
-
-        if ($focus && method_exists($focus, 'getModuleName')) {
-            $moduleName = $focus->getModuleName();
-            if ($moduleName == 'PurchaseOrder') {
-                $productDetails[1]['listPrice1'] = number_format((float)$purchaseCost, $currentUserModel->get('no_of_currency_decimals'), '.', '');
-            }
-        }
-
-        return $productDetails;
-    }
-
-    /**
      * Function to get Tax Class Details for this record(Product)
      * @return <Array> List of Taxes
      */
@@ -680,9 +556,9 @@ class Products_Record_Model extends Vtiger_Record_Model
             }
         }
 
-        return array(
+        return [
             'subProductsTotalCost' => CurrencyField::convertToUserFormat((float)$subProductsTotalCost, '', true, true),
             'subProductsCosts'     => $subProductsCostInfo
-        );
+        ];
     }
 }

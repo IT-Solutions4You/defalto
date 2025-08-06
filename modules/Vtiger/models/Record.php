@@ -659,19 +659,6 @@ class Vtiger_Record_Model extends Core_DatabaseTable_Model
 
         $meta = $queryGenerator->getMeta($module->getName());
         $moduleFieldNames = $meta->getModuleFields();
-        $inventoryModules = getInventoryModules();
-
-        if (in_array($module, $inventoryModules)) {
-            $fields = vtws_describe('LineItem', $user);
-            foreach ($fields['fields'] as $field) {
-                unset($moduleFieldNames[$field['name']]);
-            }
-            foreach ($moduleFieldNames as $field => $fieldObj) {
-                if (substr($field, 0, 5) == 'shtax') {
-                    unset($moduleFieldNames[$field]);
-                }
-            }
-        }
 
         $fieldArray = array_keys($moduleFieldNames);
         $fieldArray[] = 'id';

@@ -70,7 +70,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model
             '&returnview=Detail&returnrelatedModuleName=' . $this->getRelatedModuleModel()->getName() .
             '&returnrelationId=' . $relationModel->getId();
 
-        if (in_array($relatedModel->getName(), getInventoryModules())) {
+        if (in_array($relatedModel->getName(), InventoryItem_Utils_Helper::getInventoryItemModules())) {
             $createViewUrl .= '&relationOperation=true';
         }
         //To keep the reference fieldname and record value in the url if it is direct relation

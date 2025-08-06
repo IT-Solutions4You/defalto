@@ -7,13 +7,14 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-Inventory_Edit_Js("Invoice_Edit_Js", {}, {
+/** @var Invoice_Edit_Js */
+Vtiger_Edit_Js("Invoice_Edit_Js", {}, {
 
-    accountRefrenceField: false,
+    accountReferenceField: false,
 
     initializeVariables: function () {
         this._super();
-        var form = this.getForm();
+        const form = this.getForm();
         this.accountReferenceField = form.find('[name="account_id"]');
     },
 
@@ -22,7 +23,7 @@ Inventory_Edit_Js("Invoice_Edit_Js", {}, {
      */
     registerReferenceSelectionEvent: function (container) {
         this._super(container);
-        var self = this;
+        const self = this;
 
         this.accountReferenceField.on(Vtiger_Edit_Js.referenceSelectionEvent, function (e, data) {
             self.referenceSelectionEventHandler(data, container);
@@ -33,21 +34,24 @@ Inventory_Edit_Js("Invoice_Edit_Js", {}, {
      * Function to get popup params
      */
     getPopUpParams: function (container) {
-        var params = this._super(container);
-        var sourceFieldElement = jQuery('input[class="sourceField"]', container);
+        const params = this._super(container);
+        let sourceFieldElement = jQuery('input[class="sourceField"]', container);
+
         if (!sourceFieldElement.length) {
             sourceFieldElement = jQuery('input.sourceField', container);
         }
 
-        if (sourceFieldElement.attr('name') == 'contact_id') {
-            var form = this.getForm();
-            var parentIdElement = form.find('[name="account_id"]');
+        if (sourceFieldElement.attr('name') === 'contact_id') {
+            const form = this.getForm();
+            const parentIdElement = form.find('[name="account_id"]');
+
             if (parentIdElement.length > 0 && parentIdElement.val().length > 0 && parentIdElement.val() != 0) {
-                var closestContainer = parentIdElement.closest('td');
+                const closestContainer = parentIdElement.closest('td');
                 params['related_parent_id'] = parentIdElement.val();
                 params['related_parent_module'] = closestContainer.find('[name="popupReferenceModule"]').val();
             }
         }
+
         return params;
     },
 
@@ -55,41 +59,43 @@ Inventory_Edit_Js("Invoice_Edit_Js", {}, {
      * Function to search module names
      */
     searchModuleNames: function (params) {
-        var aDeferred = jQuery.Deferred();
+        const aDeferred = jQuery.Deferred();
 
         if (typeof params.module == 'undefined') {
             params.module = app.getModuleName();
         }
+
         if (typeof params.action == 'undefined') {
             params.action = 'BasicAjax';
         }
 
         if (typeof params.base_record == 'undefined') {
-            var record = jQuery('[name="record"]');
-            var recordId = app.getRecordId();
+            const record = jQuery('[name="record"]');
+            const recordId = app.getRecordId();
+
             if (record.length) {
                 params.base_record = record.val();
             } else if (recordId) {
                 params.base_record = recordId;
-            } else if (app.view() == 'List') {
-                var editRecordId = jQuery('#listview-table').find('tr.listViewEntries.edited').data('id');
+            } else if (app.view() === 'List') {
+                const editRecordId = jQuery('#listview-table').find('tr.listViewEntries.edited').data('id');
+
                 if (editRecordId) {
                     params.base_record = editRecordId;
                 }
             }
         }
 
-        if (params.search_module == 'Contacts') {
-            var form = this.getForm();
+        if (params.search_module === 'Contacts') {
             if (this.accountReferenceField.length > 0 && this.accountReferenceField.val().length > 0) {
-                var closestContainer = this.accountReferenceField.closest('td');
+                const closestContainer = this.accountReferenceField.closest('td');
                 params.parent_id = this.accountReferenceField.val();
                 params.parent_module = closestContainer.find('[name="popupReferenceModule"]').val();
             }
         }
 
         // Added for overlay edit as the module is different
-        if (params.search_module == 'Products' || params.search_module == 'Services') {
+        if (params.search_module === 'Products' || params.search_module === 'Services') {
             params.module = 'Invoice';
         }
 
@@ -102,15 +108,12 @@ Inventory_Edit_Js("Invoice_Edit_Js", {}, {
             function (error) {
                 aDeferred.reject();
             }
-        )
+        );
+
         return aDeferred.promise();
     },
 
     registerBasicEvents: function (container) {
         this._super(container);
-        this.registerForTogglingBillingandShippingAddress();
-        this.registerEventForCopyAddress();
     },
 });
-    
-

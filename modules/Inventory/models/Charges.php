@@ -1,9 +1,19 @@
 <?php
-/**
+/**********************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (c) vtiger.
- * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+ * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
+ *********************************************************************************/
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * Modifications and additions by IT-Solutions4You (ITS4YOU) are Copyright (c) IT-Solutions4You s.r.o.
+ *
+ * These contributions are licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
  */
 
 class Inventory_Charges_Model extends Vtiger_Base_Model {
@@ -179,29 +189,6 @@ class Inventory_Charges_Model extends Vtiger_Base_Model {
 	}
 
 	/**
-	 * Function to get charge models list
-	 * @param <Array> $idsList
-	 * @param <String> $type
-	 * @return <Array> list of Inventory_Charges_Models
-	 */
-	public static function getChargeModelsList($idsList = array(), $type = 'all') {
-		$chargeModelsList = array();
-		if ($idsList) {
-			$db = PearDatabase::getInstance();
-			$sql = 'SELECT * FROM '.self::CHARGES_TABLE_NAME.' WHERE chargeid IN ('.  generateQuestionMarks($idsList).')';
-			if ($type != 'all') {
-				$sql .= ' AND deleted = 0';
-			}
-
-			$result = $db->pquery($sql, $idsList);
-			while($rowData = $db->fetch_array($result)) {
-				$chargeModelsList[$rowData['chargeid']] = new self($rowData);
-			}
-		}
-		return $chargeModelsList;
-	}
-
-	/**
 	 * Function to get charges taxes list
 	 * @return <Array> list of Inventory_TaxRecord_Models
 	 */
@@ -235,5 +222,4 @@ class Inventory_Charges_Model extends Vtiger_Base_Model {
 		$result = $db->pquery($query, $params);
 		return ($db->num_rows($result) > 0) ? true : false;
 	}
-
 }

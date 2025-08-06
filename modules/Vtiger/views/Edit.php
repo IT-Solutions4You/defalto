@@ -127,6 +127,12 @@ class Vtiger_Edit_View extends Vtiger_Index_View
             $viewer->assign('MODE', '');
         }
 
+        if ($request->has('sourceModule') && $request->has('sourceRecord')) {
+            $sourceRecordModel = Vtiger_Record_Model::getInstanceById($request->get('sourceRecord'), $request->get('sourceModule'));
+            $mapping = Core_Base_Mapping::getInstance($recordModel, $sourceRecordModel);
+            $mapping->mapFields();
+        }
+
         if (!$this->record) {
             $this->record = $recordModel;
             $viewer->assign('RECORD', $recordModel);
@@ -162,10 +168,9 @@ class Vtiger_Edit_View extends Vtiger_Index_View
         //if it is relation edit
         $viewer->assign('IS_RELATION_OPERATION', $isRelationOperation);
 
-        if ($isRelationOperation) {
-            $viewer->assign('SOURCE_MODULE', $request->get('sourceModule'));
-            $viewer->assign('SOURCE_RECORD', $request->get('sourceRecord'));
-        }
+        $viewer->assign('SOURCE_MODULE', $request->get('sourceModule'));
+        $viewer->assign('SOURCE_RECORD', $request->get('sourceRecord'));
+
         // added to set the return values
         if ($request->get('returnview')) {
             $request->setViewerReturnValues($viewer);

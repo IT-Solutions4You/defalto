@@ -103,6 +103,9 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         'LBL_ADDRESS_INFORMATION' => [
             'name' => 'Base',
         ],
+        'LBL_ITEM_DETAILS' => [
+            'name' => 'InventoryItem',
+        ],
     ];
 
     /**
@@ -285,6 +288,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     /**
      * @param string $eventType
      * @param string $moduleName
+     *
      * @return self
      */
     public static function getInstance(string $eventType, string $moduleName): self
@@ -347,6 +351,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param string $moduleName
+     *
      * @return false|Vtiger_Module
      * @throws Exception
      */
@@ -633,6 +638,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param string $key
+     *
      * @return bool
      */
     public function isFieldKeySkippedForUpdate(string $key): bool
@@ -642,7 +648,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param string $fieldName
-     * @param array $fieldParams
+     * @param array  $fieldParams
+     *
      * @return Vtiger_Field_Model|bool
      * @throws Exception
      */
@@ -766,6 +773,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param mixed $message
+     *
      * @return void
      */
     public static function logError($message): void
@@ -779,6 +787,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param mixed $message
+     *
      * @return void
      */
     public static function logSuccess($message): void
@@ -801,6 +810,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param $register
+     *
      * @return void
      */
     public function updateComments($register = true)
@@ -814,6 +824,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param bool $register
+     *
      * @return void
      */
     public function updateCron($register = true)
@@ -831,6 +842,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param $register
+     *
      * @return void
      */
     public function updateCustomLinks($register = true)
@@ -852,6 +864,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param $register
+     *
      * @return void
      */
     public function updateEventHandler($register = true)
@@ -879,6 +892,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param $register
+     *
      * @return void
      */
     public function updateHistory($register = true)
@@ -904,7 +918,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
     }
 
-
     /**
      * @return void
      */
@@ -921,6 +934,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param $register
+     *
      * @return void
      */
     public function updateRelatedList($register = true)
@@ -948,6 +962,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param bool $register
+     *
      * @return void
      * @throws Exception
      */
@@ -994,6 +1009,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param $register
+     *
      * @return void
      * @throws Exception
      */
@@ -1045,6 +1061,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param bool $register
+     *
      * @return void
      */
     public function updateAppointments(bool $register = true): void
@@ -1063,6 +1080,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
     /**
      * @param bool $register
+     *
      * @return void
      */
     public function updateEmails(bool $register = true): void
@@ -1142,9 +1160,10 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     /**
      * @param string $name
      * @param string $moduleName
-     * @param array $conditions
+     * @param array  $conditions
      * @param string $trigger
      * @param string $recurrence
+     *
      * @return bool|object
      * @throws Exception
      */
@@ -1171,8 +1190,9 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     /**
      * @param string $taskType
      * @param string $taskName
-     * @param array $data
+     * @param array  $data
      * @param object $workflowModel
+     *
      * @return object|bool
      * @throws Exception
      */

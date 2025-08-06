@@ -16,15 +16,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class SalesOrder_DetailView_Model extends Inventory_DetailView_Model
+class SalesOrder_DetailView_Model extends Vtiger_DetailView_Model
 {
+    use InventoryItem_DetailView_Trait;
+
     /**
-     * Function to get the detail view links (links and widgets)
-     *
-     * @param <array> $linkParams - parameters which will be used to calicaulate the params
-     *
-     * @return <array> - array of link models in the format as below
-     *                   array('linktype'=>list of link models);
+     * @inheritDoc
      */
     public function getDetailViewLinks($linkParams)
     {
@@ -49,7 +46,7 @@ class SalesOrder_DetailView_Model extends Inventory_DetailView_Model
                 'linktype'  => 'DETAILVIEW',
                 'linklabel' => vtranslate('LBL_CREATE') . ' ' . vtranslate($purchaseOrderModuleModel->getSingularLabelKey(), 'PurchaseOrder'),
                 'linkurl'   => $recordModel->getCreatePurchaseOrderUrl(),
-                'linkicon'  => ''
+                'linkicon'  => '',
             ];
         }
 

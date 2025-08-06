@@ -33,14 +33,10 @@ class Settings_LayoutEditor_Block_Model extends Vtiger_Block_Model
      */
     public function isAddCustomFieldEnabled()
     {
-        $actionNotSupportedModules = array_merge(getInventoryModules(), ['Faq', 'HelpDesk']);
+        $actionNotSupportedModules = array_merge(InventoryItem_Utils_Helper::getInventoryItemModules(), ['Faq', 'HelpDesk']);
         $blocksEliminatedArray = [
-            'HelpDesk'      => ['LBL_TICKET_RESOLUTION', 'LBL_COMMENTS'],
-            'Faq'           => ['LBL_COMMENT_INFORMATION'],
-            'Invoice'       => ['LBL_ITEM_DETAILS'],
-            'Quotes'        => ['LBL_ITEM_DETAILS'],
-            'SalesOrder'    => ['LBL_ITEM_DETAILS'],
-            'PurchaseOrder' => ['LBL_ITEM_DETAILS'],
+            'HelpDesk' => ['LBL_TICKET_RESOLUTION', 'LBL_COMMENTS'],
+            'Faq'      => ['LBL_COMMENT_INFORMATION'],
         ];
         if (in_array($this->module->name, $actionNotSupportedModules)) {
             if (!empty($blocksEliminatedArray[$this->module->name])) {

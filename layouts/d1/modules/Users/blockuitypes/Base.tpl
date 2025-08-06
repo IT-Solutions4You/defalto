@@ -11,7 +11,7 @@
     {assign var=IS_HIDDEN value=$BLOCK->isHidden()}
     {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
     <div class="p-3 border-bottom">
-        <h4>{vtranslate({$BLOCK_LABEL_KEY},{$MODULE_NAME})}</h4>
+        <h4>{vtranslate($BLOCK_LABEL_KEY, $MODULE_NAME)}</h4>
     </div>
     <div class="blockData p-3">
         <div class="container-fluid detailview-table no-border">
@@ -29,7 +29,7 @@
                         <div class="col-lg-12 py-2">
                             <div class="row">
                                 <div class="fieldLabel text-truncate col-lg-2">
-                                    <span class="muted">{vtranslate({$FIELD_MODEL->get('label')},{$MODULE_NAME})}</span>
+                                    <span class="muted">{vtranslate($FIELD_MODEL->get('label'), $MODULE_NAME)}</span>
                                 </div>
                                 <div class="fieldValue col-lg-10">
                                     <div id="imageContainer">
@@ -48,9 +48,9 @@
                                 <div class="fieldLabel text-truncate {if $IS_FULL_WIDTH}col-lg-2{else}col-lg-4{/if}" id="{$MODULE_NAME}_detailView_fieldLabel_{$FIELD_MODEL->getName()}">
                                     <span class="muted">
                                         {if $MODULE_NAME eq 'Documents' && $FIELD_MODEL->get('label') eq "File Name" && $RECORD->get('filelocationtype') eq 'E'}
-                                            {vtranslate("LBL_FILE_URL",{$MODULE_NAME})}
+                                            {vtranslate("LBL_FILE_URL", $MODULE_NAME)}
                                         {else}
-                                            {vtranslate({$FIELD_MODEL->get('label')},{$MODULE_NAME})}
+                                            {vtranslate($FIELD_MODEL->get('label'), $MODULE_NAME)}
                                         {/if}
                                         {if ($FIELD_MODEL->get('uitype') eq '72') && ($FIELD_MODEL->getName() eq 'unit_price')}
                                             ({$BASE_CURRENCY_SYMBOL})

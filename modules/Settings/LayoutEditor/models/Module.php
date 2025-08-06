@@ -168,7 +168,7 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model
         $typeofdata = $details['typeofdata'];
         $dbType = $details['dbType'];
 
-        $quickCreate = in_array($moduleName, getInventoryModules()) ? 3 : $params['quickcreate'];
+        $quickCreate = in_array($moduleName, InventoryItem_Utils_Helper::getInventoryItemModules()) ? 3 : $params['quickcreate'];
 
         $fieldModel = new Settings_LayoutEditor_Field_Model();
         $fieldModel->set('name', $columnName)
@@ -390,15 +390,12 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model
         return true;
     }
 
-    /**
-     * Function to check blocks are sortable for the module
-     * @return <Boolean> true/false
-     */
-    public function isBlockSortableAllowed($blockName)
-    {
-        $moduleName = $this->getName();
-
-        return !(($blockName === 'LBL_INVITE_USER_BLOCK') || (in_array($moduleName, getInventoryModules()) && $blockName === 'LBL_ITEM_DETAILS'));
+	/**
+	 * Function to check blocks are sortable for the module
+	 * @return <Boolean> true/false
+	 */
+	public function isBlockSortableAllowed($blockName) {
+        return $blockName !== 'LBL_INVITE_USER_BLOCK';
     }
 
     /**
@@ -409,14 +406,10 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model
     {
         $moduleName = $this->getName();
         $blocksEliminatedArray = [
-            'HelpDesk'      => ['LBL_TICKET_RESOLUTION', 'LBL_COMMENTS'],
-            'Faq'           => ['LBL_COMMENT_INFORMATION'],
-            'Invoice'       => ['LBL_ITEM_DETAILS'],
-            'Quotes'        => ['LBL_ITEM_DETAILS'],
-            'SalesOrder'    => ['LBL_ITEM_DETAILS'],
-            'PurchaseOrder' => ['LBL_ITEM_DETAILS'],
+            'HelpDesk' => ['LBL_TICKET_RESOLUTION', 'LBL_COMMENTS'],
+            'Faq'      => ['LBL_COMMENT_INFORMATION'],
         ];
-        if (in_array($moduleName, array_merge(getInventoryModules(), ['HelpDesk', 'Faq']))) {
+        if (in_array($moduleName, array_merge(InventoryItem_Utils_Helper::getInventoryItemModules(), ['HelpDesk', 'Faq']))) {
             if (!empty($blocksEliminatedArray[$moduleName])) {
                 if (in_array($blockName, $blocksEliminatedArray[$moduleName])) {
                     return false;

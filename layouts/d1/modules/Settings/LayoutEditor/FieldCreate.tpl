@@ -33,9 +33,6 @@
 								<select class="blockList" name="blockid">
 									{foreach key=BLOCK_ID item=BLOCK_MODEL from=$ALL_BLOCK_LABELS}
 										{if $BLOCK_MODEL->isAddCustomFieldEnabled()}
-											{if $BLOCK_MODEL->get('label') == 'LBL_ITEM_DETAILS' && in_array($SELECTED_MODULE_NAME, getInventoryModules())}
-												{continue}
-											{/if}
 											<option value="{$BLOCK_ID}" data-label="{$BLOCK_MODEL->get('label')}">{vtranslate($BLOCK_MODEL->get('label'), $SELECTED_MODULE_NAME)}</option>
 										{/if}
 									{/foreach}

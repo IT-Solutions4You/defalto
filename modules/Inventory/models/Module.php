@@ -33,28 +33,6 @@ class Inventory_Module_Model extends Vtiger_Module_Model {
 		return true;
 	}
 
-	static function getAllCurrencies() {
-		return getAllCurrencies();
-	}
-
-	static function getAllProductTaxes() {
-		$taxes = array();
-		$availbleTaxes = getAllTaxes('available');
-		foreach ($availbleTaxes as $taxInfo) {
-			if ($taxInfo['method'] === 'Deducted') {
-				continue;
-			}
-			$taxInfo['compoundon'] = Zend_Json::decode(html_entity_decode($taxInfo['compoundon']));
-			$taxInfo['regions'] = Zend_Json::decode(html_entity_decode($taxInfo['regions']));
-			$taxes[$taxInfo['taxid']] = $taxInfo;
-		}
-		return $taxes;
-	}
-
-	static function getAllShippingTaxes() {
-		return Inventory_Charges_Model::getChargeTaxesList();
-	}
-
 	/**
 	 * Function returns export query
 	 * @param <String> $where

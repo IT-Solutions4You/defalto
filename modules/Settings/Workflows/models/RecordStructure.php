@@ -53,9 +53,7 @@ class Settings_Workflows_RecordStructure_Model extends Vtiger_RecordStructure_Mo
 
         $baseModuleModel = $moduleModel = $this->getModule();
         $blockModelList = $moduleModel->getBlocks();
-        if ($taskTypeName == 'VTUpdateFieldsTask') {
-            unset($blockModelList['LBL_ITEM_DETAILS']);
-        }
+
         foreach ($blockModelList as $blockLabel => $blockModel) {
             $fieldModelList = $blockModel->getFields();
             if (!empty ($fieldModelList)) {
@@ -96,9 +94,7 @@ class Settings_Workflows_RecordStructure_Model extends Vtiger_RecordStructure_Mo
             foreach ($referenceModules as $refModule) {
                 $moduleModel = Vtiger_Module_Model::getInstance($refModule);
                 $blockModelList = $moduleModel->getBlocks();
-                if ($taskTypeName == 'VTUpdateFieldsTask') {
-                    unset($blockModelList['LBL_ITEM_DETAILS']);
-                }
+
                 foreach ($blockModelList as $blockLabel => $blockModel) {
                     $fieldModelList = $blockModel->getFields();
                     if (!empty ($fieldModelList)) {

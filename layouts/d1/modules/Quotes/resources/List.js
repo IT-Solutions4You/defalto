@@ -7,4 +7,5 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-Inventory_List_Js("Quotes_List_Js", {}, {});
+/** @var Quotes_List_Js */
+Vtiger_List_Js("Quotes_List_Js", {}, {});

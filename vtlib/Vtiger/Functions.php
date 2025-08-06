@@ -142,7 +142,7 @@ class Vtiger_Functions
 
     protected static $currencyInfoCache = [];
 
-    protected static function getCurrencyInfo($currencyid)
+    public static function getCurrencyInfo($currencyid)
     {
         global $adb;
         if (!isset(self::$currencyInfoCache[$currencyid])) {

@@ -3609,8 +3609,9 @@ li.select2-search-choice div {
 
 .ui-autocomplete {
     border-radius: 1px !important;
-    max-height: 150px;
-    overflow: auto;
+    max-height: 360px;
+    overflow-y: auto;
+    overflow-x: hidden;
     height: auto;
     min-height: 30px;
 }
@@ -4558,4 +4559,12 @@ input[type=number] {
 .tagListContainer .select2-selection__choice {
     --bs-bg-opacity: 0.1;
     background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+.lineItemTableContainer {
+    overflow-x: auto;
 }

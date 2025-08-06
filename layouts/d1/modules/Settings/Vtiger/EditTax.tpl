@@ -141,7 +141,7 @@
                                         <label>{vtranslate('LBL_DEFAULT_VALUE', $QUALIFIED_MODULE)}&nbsp;<span class="redColor">*</span></label>
                                     </td>
                                     <td class="{$WIDTHTYPE}" style="text-align: center;">
-                                        <input class="inputElement smallInputBox input-medium form-control" type="text" name="defaultPercentage" value="{$TAX_RECORD_MODEL->getTax()}" data-rule-required="true" data-rule-inventory_percentage="true" />
+                                        <input class="inputElement input-medium form-control" type="text" name="defaultPercentage" value="{$TAX_RECORD_MODEL->getTax()}" data-rule-required="true" data-rule-inventory_percentage="true" />
                                     </td>
                                 </tr>
                                 {assign var=i value=0}

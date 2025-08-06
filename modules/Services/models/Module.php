@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -15,9 +16,10 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
 class Services_Module_Model extends Products_Module_Model
 {
+    protected array $numberSearchFields = ['service_no'];
+
     /**
      * Function to get list view query for popup window
      *
@@ -33,7 +35,7 @@ class Services_Module_Model extends Products_Module_Model
         $supportedModulesList = ['Leads', 'Accounts', 'HelpDesk', 'Potentials'];
         if (($sourceModule == 'PriceBooks' && $field == 'priceBookRelatedList')
             || in_array($sourceModule, $supportedModulesList)
-            || in_array($sourceModule, getInventoryModules())) {
+            || in_array($sourceModule, InventoryItem_Utils_Helper::getInventoryItemModules())) {
             $condition = " vtiger_service.discontinued = 1 ";
 
             $db = PearDatabase::getInstance();
@@ -89,6 +91,6 @@ class Services_Module_Model extends Products_Module_Model
      */
     function getUtilityActionsNames()
     {
-        return array('Import', 'Export', 'DuplicatesHandling');
+        return ['Import', 'Export', 'DuplicatesHandling'];
     }
 }
