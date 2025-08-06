@@ -16,6 +16,45 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class PurchaseOrder_Detail_View extends Inventory_Detail_View
+class PurchaseOrder_Detail_View extends Vtiger_Detail_View
 {
+    use InventoryItem_Detail_Trait;
+
+    /**
+     * Function returns Inventory details
+     *
+     * @param Vtiger_Request $request
+     *
+     * @return bool|html
+     * @throws AppException
+     */
+    function showModuleDetailView(Vtiger_Request $request)
+    {
+        $viewer = $this->getViewer($request);
+        $this->adaptDetail($request, $viewer);
+
+        return parent::showModuleDetailView($request);
+    }
+
+    /**
+     * Get the header scripts for the view.
+     *
+     * @param Vtiger_Request $request The request object
+     *
+     * @return array Merged header script instances
+     */
+    public function getHeaderScripts(Vtiger_Request $request)
+    {
+        $headerScriptInstances = parent::getHeaderScripts($request);
+        $jsFileNames = [
+        ];
+
+        if (method_exists($this, 'adaptHeaderScripts')) {
+            $jsFileNames = array_merge($jsFileNames, $this->adaptHeaderScripts());
+        }
+
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+
+        return array_merge($headerScriptInstances, $jsScriptInstances);
+    }
 }

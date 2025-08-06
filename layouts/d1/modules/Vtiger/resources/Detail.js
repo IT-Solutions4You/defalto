@@ -14,21 +14,23 @@ Vtiger.Class("Vtiger_Detail_Js", {
     changeCheckEvent: 'change.check.field',
     PreAjaxSaveEvent: 'PreAjaxSaveEvent',
     PostAjaxSaveEvent: 'PostAjaxSaveEvent',
-    getInstance: function () {
-        if (Vtiger_Detail_Js.detailInstance == false) {
-            var module = app.getModuleName();
-            var view = app.view;
-            var moduleClassName = module + "_" + view + "_Js";
-            var fallbackClassName = Vtiger_Detail_Js;
-            if (typeof window[moduleClassName] != 'undefined') {
-                var instance = new window[moduleClassName]();
-            } else {
-                var instance = new fallbackClassName();
-            }
-            Vtiger_Detail_Js.detailInstance = instance;
-        }
-        return Vtiger_Detail_Js.detailInstance;
-    },
+    relatedListLoad: 'post.relatedListLoad.click',
+
+	getInstance: function(){
+		if( Vtiger_Detail_Js.detailInstance == false ){
+			var module = app.getModuleName();
+			var view = app.view;
+			var moduleClassName = module+"_"+view+"_Js";
+			var fallbackClassName = Vtiger_Detail_Js;
+			if(typeof window[moduleClassName] != 'undefined'){
+				var instance = new window[moduleClassName]();
+			}else{
+				var instance = new fallbackClassName();
+			}
+			Vtiger_Detail_Js.detailInstance = instance;
+		}
+		return Vtiger_Detail_Js.detailInstance;
+	},
 
     getInstanceByModuleName: function (moduleName) {
         if (typeof moduleName == "undefined") {
@@ -2968,17 +2970,18 @@ Vtiger.Class("Vtiger_Detail_Js", {
             });
         }
 
-        vtUtils.registerReplaceCommaWithDot($(document));
-    },
-    registerChangeDetailAssignedUser() {
-        app.event.on(Vtiger_Detail_Js.changeAssignedUserEvent, function (event, userData) {
-            $('.related-tabs').find('.tab-item.active').trigger('click');
-        });
-    },
-    registerAssignedUserSearch() {
-        let self = this,
-            container = self.getDetailViewContainer(),
-            timeout;
+		vtUtils.registerReplaceCommaWithDot($(document));
+		vtUtils.registerAllowOnlyNumbers($(document));
+	},
+	registerChangeDetailAssignedUser() {
+		app.event.on(Vtiger_Detail_Js.changeAssignedUserEvent, function (event, userData) {
+			$('.related-tabs').find('.tab-item.active').trigger('click');
+		});
+	},
+	registerAssignedUserSearch() {
+		let self = this,
+			container = self.getDetailViewContainer(),
+			timeout;
 
         container.on('keyup', '.assignedUsersSearch', function () {
             let searchElement = $(this);

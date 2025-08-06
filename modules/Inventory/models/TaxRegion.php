@@ -180,5 +180,4 @@ class Inventory_TaxRegion_Model extends Vtiger_Base_Model {
 		}
 		return true;
 	}
-
 }

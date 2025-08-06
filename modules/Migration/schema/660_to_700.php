@@ -158,53 +158,6 @@ if (defined('VTIGER_UPGRADE')) {
     $db->pquery($updateQuery, $fieldNamesList);
     $db->pquery('UPDATE vtiger_field SET fieldlabel=? WHERE displaytype=? AND fieldname=?', ['Item Discount Amount', 5, 'discount_amount']);
 
-    $inventoryModules = getInventoryModules();
-    foreach ($inventoryModules as $moduleName) {
-        $tabId = getTabid($moduleName);
-        $blockId = getBlockId($tabId, 'LBL_ITEM_DETAILS');
-        $db->pquery('UPDATE vtiger_field SET displaytype=?, block=? WHERE tabid=? AND fieldname IN (?, ?)', [5, $blockId, $tabId, 'hdnDiscountAmount', 'hdnDiscountPercent']);
-    }
-
-    $itemFieldsName = ['image', 'purchase_cost', 'margin'];
-    $itemFieldsLabel = ['Image', 'Purchase Cost', 'Margin'];
-    $itemFieldsTypeOfData = ['V~O', 'N~O', 'N~O'];
-    $itemFieldsDisplayType = ['56', '71', '71'];
-    $itemFieldsDataType = ['VARCHAR(2)', 'decimal(27,8)', 'decimal(27,8)'];
-
-    $fieldIdsList = [];
-    foreach ($inventoryModules as $moduleName) {
-        $moduleInstance = Vtiger_Module::getInstance($moduleName);
-        $blockInstance = Vtiger_Block::getInstance('LBL_ITEM_DETAILS', $moduleInstance);
-
-        for ($i = 0; $i < php7_count($itemFieldsName); $i++) {
-            $fieldName = $itemFieldsName[$i];
-
-            if ($moduleName === 'PurchaseOrder' && $fieldName !== 'image') {
-                continue;
-            }
-
-            $fieldInstance = Vtiger_Field::getInstance($fieldName, $moduleInstance);
-            if (!$fieldInstance) {
-                $fieldInstance = new Vtiger_Field();
-
-                $fieldInstance->name = $fieldName;
-                $fieldInstance->column = $fieldName;
-                $fieldInstance->label = $itemFieldsLabel[$i];
-                $fieldInstance->columntype = $itemFieldsDataType[$i];
-                $fieldInstance->typeofdata = $itemFieldsTypeOfData[$i];
-                $fieldInstance->uitype = $itemFieldsDisplayType[$i];
-                $fieldInstance->table = 'vtiger_inventoryproductrel';
-                $fieldInstance->presence = '1';
-                $fieldInstance->readonly = '0';
-                $fieldInstance->displaytype = '5';
-                $fieldInstance->masseditable = '0';
-
-                $blockInstance->addField($fieldInstance);
-                $fieldIdsList[] = $fieldInstance->id;
-            }
-        }
-    }
-
     $columns = $db->getColumnNames('vtiger_products');
     if (!in_array('is_subproducts_viewable', $columns)) {
         $db->pquery('ALTER TABLE vtiger_products ADD COLUMN is_subproducts_viewable INT(1) DEFAULT 1', []);
@@ -245,7 +198,7 @@ if (defined('VTIGER_UPGRADE')) {
     $tAndC = $model->getText();
     $db->pquery('DELETE FROM vtiger_inventory_tandc', []);
 
-    $inventoryModules = getInventoryModules();
+    $inventoryModules = InventoryItem_Utils_Helper::getInventoryItemModules();
     foreach ($inventoryModules as $moduleName) {
         $model = Settings_Vtiger_TermsAndConditions_Model::getInstance($moduleName);
         $model->setText($tAndC);
@@ -316,7 +269,7 @@ if (defined('VTIGER_UPGRADE')) {
     $modCommentsTabId = $modCommentsInstance->getId();
 
     $modCommentFieldInstance = Vtiger_Field_Model::getInstance('related_to', $modCommentsInstance);
-    $modCommentFieldInstance->setRelatedModules(getInventoryModules());
+    $modCommentFieldInstance->setRelatedModules(InventoryItem_Utils_Helper::getInventoryItemModules());
 
     $refModulesList = $modCommentFieldInstance->getReferenceList();
     foreach ($refModulesList as $refModuleName) {

@@ -5026,7 +5026,6 @@
 			<default value="NULL" />
 		</field>
 		<field name="payment_duration" type="C" size="200"></field>
-		<field name="invoice_status" type="C" size="200"></field>
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 

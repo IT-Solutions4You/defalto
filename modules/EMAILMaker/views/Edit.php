@@ -341,7 +341,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
 
             $recordStructure = $recordStructureInstance->getStructure();
 
-            if (in_array($selectedModuleName, getInventoryModules())) {
+            if (in_array($selectedModuleName, InventoryItem_Utils_Helper::getInventoryItemModules())) {
                 $itemsBlock = 'LBL_ITEM_DETAILS';
                 unset($recordStructure[$itemsBlock]);
             }

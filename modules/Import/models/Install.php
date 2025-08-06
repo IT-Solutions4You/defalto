@@ -13,7 +13,7 @@ class Import_Install_Model extends Core_Install_Model
     protected string $moduleName = 'Import';
 
     public array $registerCron = [
-        ['Scheduled Import', 'cron/modules/Import/ScheduledImport.service', 900, 'Import', 0, 'Recommended frequency for MailScanner is 15 mins'],
+        ['Scheduled Import', 'cron/modules/Import/ScheduledImport.php', 900, 'Import', 0, 'Recommended frequency for MailScanner is 15 mins'],
     ];
 
     public function addCustomLinks(): void

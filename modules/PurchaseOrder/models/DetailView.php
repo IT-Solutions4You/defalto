@@ -16,6 +16,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class PurchaseOrder_DetailView_Model extends Inventory_DetailView_Model
+class PurchaseOrder_DetailView_Model extends Vtiger_DetailView_Model
 {
+    use InventoryItem_DetailView_Trait;
 }

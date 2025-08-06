@@ -2,9 +2,9 @@
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
  * (c) IT-Solutions4You s.r.o
- *
- * This file is licensed under the GNU AGPL v3 License.
+ * * This file is licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-Inventory_Detail_Js("SalesOrder_Detail_Js", {}, {});
+/** @var SalesOrder_Detail_Js */
+Vtiger_Detail_Js("SalesOrder_Detail_Js", {}, {});

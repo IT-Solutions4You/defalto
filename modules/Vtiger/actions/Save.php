@@ -133,7 +133,7 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller
         }
         $recordModel->save();
 
-        if ($request->get('relationOperation')) {
+        if ($request->get('relationOperation') && $request->get('sourceModule')) {
             $parentModuleName = $request->get('sourceModule');
             $parentModuleModel = Vtiger_Module_Model::getInstance($parentModuleName);
             $parentRecordId = $request->get('sourceRecord');

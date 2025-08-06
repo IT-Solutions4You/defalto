@@ -39,6 +39,9 @@
 										<input type="hidden" name="sourceModule" value="{$SOURCE_MODULE}" />
 										<input type="hidden" name="sourceRecord" value="{$SOURCE_RECORD}" />
 										<input type="hidden" name="relationOperation" value="{$IS_RELATION_OPERATION}" />
+									{elseif $SOURCE_MODULE neq ''}
+										<input type="hidden" name="sourceModule" value="{$SOURCE_MODULE}"/>
+										<input type="hidden" name="sourceRecord" value="{$SOURCE_RECORD}"/>
 									{/if}
 									{include file="partials/EditViewReturn.tpl"|vtemplate_path:$MODULE}
 									{include file="partials/EditViewContents.tpl"|@vtemplate_path:$MODULE}
@@ -51,7 +54,13 @@
 											<a class='btn btn-outline-primary cancelLink px-4' href="javascript:history.{if $DUPLICATE_RECORDS}go(-2){else}back(){/if}" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
 										</div>
 										<div class="col-6 text-start">
-											<button type='submit' class='btn btn-primary active px-5 saveButton'>{vtranslate('LBL_SAVE', $MODULE)}</button>
+											<button type='submit' class='btn btn-primary active px-5 saveButton'>
+												{if $RECORD_ID eq '' && InventoryItem_Utils_Helper::usesInventoryItem($MODULE)}
+													{vtranslate('LBL_SAVE_AND_CONTINUE', $MODULE)}
+												{else}
+													{vtranslate('LBL_SAVE', $MODULE)}
+												{/if}
+											</button>
 										</div>
 									</div>
 								</div>

@@ -7,4 +7,5 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-Inventory_Popup_Js('SalesOrder_Popup_Js', {}, {});
+/** @var SalesOrder_Popup_Js */
+Vtiger_Popup_Js('SalesOrder_Popup_Js', {}, {});

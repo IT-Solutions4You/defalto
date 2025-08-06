@@ -73,7 +73,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             self::$is_inventory_module = [];
         }
 
-        self::$is_inventory_module[self::$module] = $this->isInventoryModule(self::$module);
+        self::$is_inventory_module[self::$module] = InventoryItem_Utils_Helper::usesInventoryItem(self::$module);
         self::$org_colsOLD = $this->getOrgOldCols();
     }
 
@@ -916,7 +916,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             $totalVatSum = $totalwithoutwat = $totalAfterDiscount_subtotal = $total_subtotal = $totalsum_subtotal = 0;
             [$images, $bacImgs] = $this->getInventoryImages($focus->id);
 
-            $recordModel = Inventory_Record_Model::getInstanceById($focus->id);
+            $recordModel = Vtiger_Record_Model::getInstanceById($focus->id);
             $relatedProducts = $recordModel->getProducts();
             //##Final details convertion started
             $finalDetails = $relatedProducts[1]['final_details'];
@@ -1140,7 +1140,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $Details["TOTAL"]["TAXTOTALPERCENT"] = $this->formatNumberToEMAIL($totalVatPercent);
 
         $hdnDiscountPercent = (float)$focus->column_fields['hdnDiscountPercent'];
-        $hdnDiscountAmount = (float)$focus->column_fields['hdnDiscountAmount'];
+        $hdnDiscountAmount = (float)$focus->column_fields['discount_amount'];
 
         if (!empty($hdnDiscountPercent)) {
             $finalDiscountPercent = $hdnDiscountPercent;

@@ -381,21 +381,14 @@ class Vtiger_Field_Model extends Vtiger_Field
         return false;
     }
 
-    /**
-     * Function to check whether the current field is read-only
-     * @return <Boolean> - true/false
-     */
-    public function isReadOnly()
-    {
-        if ($this->block) {
-            if ($this->block->label == "LBL_ITEM_DETAILS") {
-                return false;
-            }
-        }
-        $webserviceField = $this->getWebserviceFieldObject();
-
-        return $webserviceField->isReadOnly();
-    }
+	/**
+	 * Function to check whether the current field is read-only
+	 * @return <Boolean> - true/false
+	 */
+	public function isReadOnly() {
+		$webserviceField = $this->getWebserviceFieldObject();
+		return $webserviceField->isReadOnly();
+	}
 
     /**
      * Function to get the UI Type model for the uitype of the current field
@@ -1868,5 +1861,16 @@ class Vtiger_Field_Model extends Vtiger_Field
     public function insertDefaultData(): void
     {
         $this->insertFieldType(self::UITYPE_PERCENTAGE, 'percentage');
+    }
+
+    /**
+     * Check whether the field can contain negative numbers
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function isNegativeNumber(): bool
+    {
+        return str_starts_with($this->get('typeofdata'), 'NN');
     }
 }

@@ -6,7 +6,7 @@
  * This file is licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
+/** @var Products_ProductRelatedProductBundles_Js */
 Vtiger_Popup_Js("Products_ProductRelatedProductBundles_Js", {}, {
     popupSelectedRecords: {},
     /**

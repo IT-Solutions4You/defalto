@@ -79,31 +79,15 @@ class Migration_Module_Model extends Vtiger_Module_Model
     {
         $db = PearDatabase::getInstance();
         $db->pquery('UPDATE vtiger_version SET current_version=?,old_version=?', [$this->getLatestSourceVersion(), $this->getDBVersion()]);
+		return true;
+	}
 
-        return true;
-    }
-
-    /**
-     * Function to rename the migration file and folder
-     * Writing tab data in flat file
-     */
-    public function postMigrateActivities()
-    {
-        //Writing tab data in flat file
-        perform_post_migration_activities();
-
-        //rename the migration file and folder
-        $renamefile = uniqid(rand(), true);
-        $dir = 'migrate/';
-
-        if (is_dir($dir)) {
-            if (!rename($dir, $renamefile . $dir)) {
-                if (copy($dir, $renamefile . $dir)) {
-                    unlink($dir);
-                }
-            }
-        } else {
-            Core_Install_Model::logError('Migration dir not exists: ' . $dir);
-        }
+	/**
+	 * Function to rename the migration file and folder
+	 * Writing tab data in flat file
+	 */
+	public function postMigrateActivities(){
+		//Writing tab data in flat file
+		perform_post_migration_activities();
     }
 }

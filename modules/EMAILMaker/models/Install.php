@@ -15,7 +15,7 @@ class EMAILMaker_Install_Model extends Core_Install_Model
      * [name, handler, frequency, module, sequence, description]
      */
     public array $registerCron = array(
-        array('EMAILMaker - Birthday email', 'modules/EMAILMaker/cron/BirthdayEmail.service', 86400, 'EMAILMaker', 0, ''),
+        array('EMAILMaker - Birthday email', 'modules/EMAILMaker/cron/BirthdayEmail.php', 86400, 'EMAILMaker', 0, ''),
     );
     /**
      * [module, type, label, url, icon, sequence, handlerInfo]

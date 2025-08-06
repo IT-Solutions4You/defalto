@@ -64,7 +64,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             //since subtotal and grand total is updated in the update parent api
             $parent['subtotal'] = $updatedParent['subtotal'];
             $parent['grand_total'] = $updatedParent['grand_total'];
-            $parent['pre_tax_total'] = $updatedParent['pre_tax_total'];
+            $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
             $components = vtws_getIdComponents($element['id']);
             $parentId = $components[1];
             $parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
@@ -114,7 +114,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             //since subtotal and grand total is updated in the update parent api
             $parent['subtotal'] = $updatedParent['subtotal'];
             $parent['grand_total'] = $updatedParent['grand_total'];
-            $parent['pre_tax_total'] = $updatedParent['pre_tax_total'];
+            $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
             $updatedElement = array_merge($updatedElement, $parent);
 
             $currentValue = vglobal('updateInventoryProductRel_deduct_stock');
@@ -166,7 +166,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             //since subtotal and grand total is updated in the update parent api
             $parent['subtotal'] = $updatedParent['subtotal'];
             $parent['grand_total'] = $updatedParent['grand_total'];
-            $parent['pre_tax_total'] = $updatedParent['pre_tax_total'];
+            $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
             $parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
 
             $updatedElement = array_merge($updatedElement, $parent);
@@ -228,7 +228,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation
     public function getLineItemFinalDetails($record)
     {
         $finalDetails = [];
-        $recordModel = Inventory_Record_Model::getInstanceById($record);
+        $recordModel = Vtiger_Record_Model::getInstanceById($record);
         if ($recordModel) {
             $finalDetails = $recordModel->getProducts();
         }
@@ -263,9 +263,9 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             $_REQUEST['subtotal'] = $element['subtotal'];
         }
 
-        if ((float)$element['hdnDiscountAmount'] && $element['hdnDiscountAmount'] !== '') {
+        if ((float)$element['discount_amount'] && $element['discount_amount'] !== '') {
             $_REQUEST['discount_type_final'] = 'amount';
-            $_REQUEST['discount_amount_final'] = $element['hdnDiscountAmount'];
+            $_REQUEST['discount_amount_final'] = $element['discount_amount'];
         } elseif ((float)$element['hdnDiscountPercent'] && $element['hdnDiscountPercent'] !== '') {
             $_REQUEST['discount_type_final'] = 'percentage';
             $_REQUEST['discount_percentage_final'] = $element['hdnDiscountPercent'];
@@ -317,7 +317,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation
     public function sanitizeShippingTaxes($element)
     {
         $subTotal = (float)$element['subtotal'];
-        $overallDiscountAmount = $element['hdnDiscountAmount'];
+        $overallDiscountAmount = $element['discount_amount'];
         if ($element['hdnDiscountPercent']) {
             $overallDiscountAmount = ($subTotal * (float)$element['hdnDiscountPercent']) / 100;
         }

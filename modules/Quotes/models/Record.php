@@ -19,41 +19,53 @@
 /**
  * Quotes Record Model Class
  */
-class Quotes_Record_Model extends Inventory_Record_Model
+class Quotes_Record_Model extends Vtiger_Record_Model
 {
+
     public function getCreateInvoiceUrl()
     {
         $invoiceModuleModel = Vtiger_Module_Model::getInstance('Invoice');
 
-        return "index.php?module=" . $invoiceModuleModel->getName() . "&view=" . $invoiceModuleModel->getEditViewName() . "&quote_id=" . $this->getId();
+        return 'index.php?module=' . $invoiceModuleModel->getName() . '&view=' . $invoiceModuleModel->getEditViewName() . '&sourceModule=Quotes&sourceRecord=' . $this->getId(
+            ) . '&quote_id=' . $this->getId();
     }
 
     public function getCreateSalesOrderUrl()
     {
         $salesOrderModuleModel = Vtiger_Module_Model::getInstance('SalesOrder');
 
-        return "index.php?module=" . $salesOrderModuleModel->getName() . "&view=" . $salesOrderModuleModel->getEditViewName() . "&quote_id=" . $this->getId();
+        return 'index.php?module=' . $salesOrderModuleModel->getName() . '&view=' . $salesOrderModuleModel->getEditViewName() . '&sourceModule=Quotes&sourceRecord=' . $this->getId(
+            ) . '&quote_id=' . $this->getId();
     }
 
     public function getCreatePurchaseOrderUrl()
     {
         $purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
 
-        return "index.php?module=" . $purchaseOrderModuleModel->getName() . "&view=" . $purchaseOrderModuleModel->getEditViewName() . "&quote_id=" . $this->getId();
+        return 'index.php?module=' . $purchaseOrderModuleModel->getName() . '&view=' . $purchaseOrderModuleModel->getEditViewName(
+            ) . '&sourceModule=Quotes&sourceRecord=' . $this->getId() . '&quote_id=' . $this->getId();
     }
 
     /**
-     * Function to get this record and details as PDF
+     * @inheritdoc
      */
-    public function getPDF()
+    public function save()
     {
-        $recordId = $this->getId();
-        $moduleName = $this->getModuleName();
+        if ($this->has('conversion_rate')) {
+            $conversion_rate = $this->get('conversion_rate');
 
-        $controller = new Vtiger_QuotePDFController($moduleName);
-        $controller->loadRecord($recordId);
+            if (empty($conversion_rate)) {
+                $this->set('conversion_rate', 1);
+            }
+        }
 
-        $fileName = $moduleName . '_' . getModuleSequenceNumber($moduleName, $recordId);
-        $controller->Output($fileName . '.pdf', 'D');
+        $entity = $this->getEntity();
+
+        if (empty($entity->column_fields['conversion_rate'])) {
+            $entity->column_fields['conversion_rate'] = 1;
+            $this->setEntity($entity);
+        }
+
+        parent::save();
     }
 }

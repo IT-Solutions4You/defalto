@@ -38,14 +38,14 @@ class Vtiger_Popup_View extends Vtiger_Footer_View
      *
      * @return <String>
      */
-    function getModule(Vtiger_request $request)
+    public function getModule(Vtiger_request $request)
     {
         $moduleName = $request->getModule();
 
         return $moduleName;
     }
 
-    function process(Vtiger_Request $request)
+    public function process (Vtiger_Request $request)
     {
         $viewer = $this->getViewer($request);
         $moduleName = $this->getModule($request);
@@ -59,7 +59,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View
         $viewer->view('Popup.tpl', $moduleName);
     }
 
-    function postProcess(Vtiger_Request $request)
+    public function postProcess(Vtiger_Request $request)
     {
         $viewer = $this->getViewer($request);
         $moduleName = $this->getModule($request);
@@ -73,7 +73,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View
      *
      * @return <Array> - List of Vtiger_JsScript_Model instances
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request)
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -338,7 +338,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View
      *
      * @param Vtiger_Request $request
      */
-    function getListViewCount(Vtiger_Request $request)
+    public function getListViewCount(Vtiger_Request $request)
     {
         $moduleName = $this->getModule($request);
         $sourceModule = $request->get('src_module');
@@ -395,7 +395,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View
      * Function to get the page count for list
      * @return total number of pages
      */
-    function getPageCount(Vtiger_Request $request)
+    public function getPageCount(Vtiger_Request $request)
     {
         $listViewCount = $this->getListViewCount($request);
         $pagingModel = new Vtiger_Paging_Model();

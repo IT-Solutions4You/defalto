@@ -18,26 +18,27 @@
 
 class PriceBooks_ProductListPrice_Action extends Vtiger_Action_Controller
 {
-	public function requiresPermission(Vtiger_Request $request)
-	{
-		$permissions = parent::requiresPermission($request);
-		$permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
+    public function requiresPermission(Vtiger_Request $request)
+    {
+        $permissions = parent::requiresPermission($request);
+        $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
 
-		return $permissions;
-	}
+        return $permissions;
+    }
 
-	function process(Vtiger_Request $request)
-	{
-		$recordId = $request->get('record');
-		$moduleModel = $request->getModule();
-		$priceBookModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleModel);
-		$listPrice = $priceBookModel->getProductsListPrice($request->get('itemId'));
-		if (empty($listPrice)) {
-			$listPrice = 0;
-		} /* Selected product not in pricebook */
+    function process(Vtiger_Request $request)
+    {
+        $recordId = $request->get('record');
+        $moduleModel = $request->getModule();
+        $priceBookModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleModel);
+        $listPrice = $priceBookModel->getProductsListPrice($request->get('itemId'));
 
-		$response = new Vtiger_Response();
-		$response->setResult([$listPrice]);
-		$response->emit();
-	}
+        if (empty($listPrice)) {
+            $listPrice = 0;
+        }
+
+        $response = new Vtiger_Response();
+        $response->setResult(['price' => $listPrice, 'pricebookid' => $recordId]);
+        $response->emit();
+    }
 }

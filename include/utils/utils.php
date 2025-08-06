@@ -28,7 +28,6 @@
 require_once('include/database/PearDatabase.php');
 require_once('include/ComboUtil.php'); //new
 require_once('include/utils/ListViewUtils.php');
-require_once('include/utils/EditViewUtils.php');
 require_once('include/utils/CommonUtils.php');
 require_once('include/utils/InventoryUtils.php');
 require_once('include/events/SqlResultIterator.inc');
@@ -664,40 +663,6 @@ function addToProductStock($productId, $qty)
     $log->debug("Exiting addToProductStock method ...");
 }
 
-/**    This Function adds the specified product quantity to the Product Quantity in Demand in the Warehouse
- *
- * @param int $productId - ProductId
- * @param int $qty       - Quantity to be added
- */
-function addToProductDemand($productId, $qty)
-{
-    global $log;
-    $log->debug("Entering addToProductDemand(" . $productId . "," . $qty . ") method ...");
-    global $adb;
-    $qtyInStck = getProductQtyInDemand($productId);
-    $updQty = $qtyInStck + $qty;
-    $sql = "UPDATE vtiger_products set qtyindemand=? where productid=?";
-    $adb->pquery($sql, [$updQty, $productId]);
-    $log->debug("Exiting addToProductDemand method ...");
-}
-
-/**    This Function subtract the specified product quantity to the Product Quantity in Demand in the Warehouse
- *
- * @param int $productId - ProductId
- * @param int $qty       - Quantity to be subtract
- */
-function deductFromProductDemand($productId, $qty)
-{
-    global $log;
-    $log->debug("Entering deductFromProductDemand(" . $productId . "," . $qty . ") method ...");
-    global $adb;
-    $qtyInStck = getProductQtyInDemand($productId);
-    $updQty = $qtyInStck - $qty;
-    $sql = "UPDATE vtiger_products set qtyindemand=? where productid=?";
-    $adb->pquery($sql, [$updQty, $productId]);
-    $log->debug("Exiting deductFromProductDemand method ...");
-}
-
 /** This Function returns the current product quantity in stock.
  * The following is the input parameter for the function:
  *  $product_id --> ProductId, Type:Integer
@@ -713,25 +678,6 @@ function getProductQtyInStock($product_id)
     $log->debug("Exiting getProductQtyInStock method ...");
 
     return $qtyinstck;
-}
-
-/**    This Function returns the current product quantity in demand.
- *
- * @param int $product_id - ProductId
- *
- * @return int $qtyInDemand - Quantity in Demand of a product
- */
-function getProductQtyInDemand($product_id)
-{
-    global $log;
-    $log->debug("Entering getProductQtyInDemand(" . $product_id . ") method ...");
-    global $adb;
-    $query1 = "select qtyindemand from vtiger_products where productid=?";
-    $result = $adb->pquery($query1, [$product_id]);
-    $qtyInDemand = $adb->query_result($result, 0, "qtyindemand");
-    $log->debug("Exiting getProductQtyInDemand method ...");
-
-    return $qtyInDemand;
 }
 
 /**     Function to get the vtiger_table name from 'field' vtiger_table for the input vtiger_field based on the module
@@ -882,18 +828,6 @@ function formatForSqlLike($str, $flag = 0, $is_field = false)
     }
 
     return $adb->sql_escape_string($str);
-}
-
-function get_config_status()
-{
-    global $default_charset;
-    if (strtolower($default_charset) == 'utf-8') {
-        $config_status = 1;
-    } else {
-        $config_status = 0;
-    }
-
-    return $config_status;
 }
 
 /** Function to get on clause criteria for duplicate check queries */
@@ -1505,13 +1439,6 @@ function getCurrencyDecimalPlaces($user = null)
     return (int)$currency_decimal_places;
 }
 
-function getInventoryModules()
-{
-    $inventoryModules = ['Invoice', 'Quotes', 'PurchaseOrder', 'SalesOrder'];
-
-    return $inventoryModules;
-}
-
 function isLeadConverted($leadId)
 {
     $adb = PearDatabase::getInstance();
@@ -1840,7 +1767,7 @@ function show()
     if (!empty($input_args)) {
         foreach ($input_args as $input) {
             if (is_array($input)) {
-                echo '<table border="1">';
+                echo '<table border="1" class="table-bordered">';
                 echo '<tr><th>Key</th><th>Value</th></tr>';
                 foreach ($input as $key => $value) {
                     echo "<tr><td>$key</td><td>";

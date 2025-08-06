@@ -1,7 +1,7 @@
 To setup a new cron service
 ===========================
 
-1. Create <ServiceName>.service file, which has the following content at the beginning
+1. Create <ServiceName>.php file, which has the following content at the beginning
 
 <?php
 

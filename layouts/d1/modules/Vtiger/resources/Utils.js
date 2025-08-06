@@ -15,12 +15,30 @@ var vtUtils = {
     registerReplaceCommaWithDot: function (container) {
         container.off('keyup', '.replaceCommaWithDot').on('keyup', '.replaceCommaWithDot', function (e) {
             if ($(this).is('textarea')) {
-                $(this).text($(this).text().toString().replace(',', '.'))
+                $(this).text($(this).text().toString().replace(',', '.'));
             } else {
-                $(this).val($(this).val().toString().replace(',', '.'))
+                $(this).val($(this).val().toString().replace(',', '.'));
             }
         });
     },
+
+    /**
+     * Function which will remove all non-numeric characters from input.
+     *
+     * @param container
+     */
+    registerAllowOnlyNumbers: function (container) {
+        container.off('keyup', '.allowOnlyNumbers').on('keyup', '.allowOnlyNumbers', function (e) {
+            let validInput = $(this).val().replace(/[^0-9.\-]/g, '');
+
+            validInput = validInput
+                .replace(/(?!^)-/g, '') // Remove all dashes except the first one
+                .replace(/(\..*?)\./g, '$1'); // Allow only one dot
+
+            $(this).val(validInput);
+        });
+    },
+
     updateSelect2ElementViewIds(selectElement) {
         selectElement.each(function () {
             let element = $(this),

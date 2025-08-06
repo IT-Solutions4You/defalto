@@ -122,7 +122,7 @@ class Import_Main_View extends Vtiger_View_Controller
         $viewer->assign('MODULE', 'Import');
         $viewer->assign('IMPORT_ID', $importId);
         $viewer->assign('IMPORT_RESULT', $importStatusCount);
-        $inventoryModules = getInventoryModules();
+        $inventoryModules = InventoryItem_Utils_Helper::getInventoryItemModules();
         array_push($inventoryModules, 'Users');
         $viewer->assign('INVENTORY_MODULES', $inventoryModules);
         $viewer->assign('CONTINUE_IMPORT', $continueImport);
@@ -143,7 +143,7 @@ class Import_Main_View extends Vtiger_View_Controller
         $viewer->assign('MODULE', 'Import');
         $viewer->assign('OWNER_ID', $ownerId);
         $viewer->assign('IMPORT_RESULT', $importStatusCount);
-        $inventoryModules = getInventoryModules();
+        $inventoryModules = InventoryItem_Utils_Helper::getInventoryItemModules();
         array_push($inventoryModules, 'Users');
         $viewer->assign('INVENTORY_MODULES', $inventoryModules);
         $viewer->assign('MERGE_ENABLED', $importInfo['merge_type']);

@@ -926,8 +926,8 @@ class Install_InitSchema_Model
         // Populate Links
         self::populateLinks();
 
-        // Set Help Information for Fields
-        self::setFieldHelpInfo();
+		// Set Help Information for Fields
+		self::setFieldHelpInfo();
 
         // Register Cron Jobs
         self::registerCronTasks();
@@ -1000,19 +1000,10 @@ class Install_InitSchema_Model
         vimport("~~modules/com_vtiger_workflow/VTEntityMethodManager.inc");
         $emm = new VTEntityMethodManager($adb);
 
-        // Registering method for Updating Inventory Stock
-        $emm->addEntityMethod(
-            "SalesOrder",
-            "UpdateInventory",
-            "include/InventoryHandler.php",
-            "handleInventoryProductRel"
-        );//Adding EntityMethod for Updating Products data after creating SalesOrder
-        $emm->addEntityMethod(
-            "Invoice",
-            "UpdateInventory",
-            "include/InventoryHandler.php",
-            "handleInventoryProductRel"
-        );//Adding EntityMethod for Updating Products data after creating Invoice
+        // Removing method for Updating Inventory Stock
+        $emm->removeEntityMethod("SalesOrder", "UpdateInventory",); //Removing EntityMethod for Updating Products data after creating SalesOrder
+        $emm->removeEntityMethod("Invoice", "UpdateInventory",); //Removing EntityMethod for Updating Products data after creating Invoice
+        $emm->removeEntityMethod("PurchaseOrder", "UpdateInventory",); //Removing EntityMethod for Updating Products data after creating PurchaseOrder
 
         // Register Entity Method for Customer Portal Login details email notification task
         $emm->addEntityMethod("Contacts", "SendPortalLoginDetails", "modules/Contacts/ContactsHandler.php", "Contacts_sendCustomerPortalLoginDetails");

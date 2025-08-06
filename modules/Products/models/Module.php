@@ -18,10 +18,11 @@
 
 class Products_Module_Model extends Vtiger_Module_Model
 {
-    /**
-     * Function to get list view query for popup window
-     *
-     * @param <String>  $sourceModule Parent module
+    protected array $numberSearchFields = ['product_no', 'productcode'];
+
+	/**
+	 * Function to get list view query for popup window
+	 ** @param <String>  $sourceModule Parent module
      * @param <String>  $field        parent fieldname
      * @param <Integer> $record       parent id
      * @param <String>  $listQuery
@@ -33,7 +34,7 @@ class Products_Module_Model extends Vtiger_Module_Model
         $supportedModulesList = [$this->getName(), 'Vendors', 'Leads', 'Accounts', 'Contacts', 'Potentials'];
         if (($sourceModule == 'PriceBooks' && $field == 'priceBookRelatedList')
             || in_array($sourceModule, $supportedModulesList)
-            || in_array($sourceModule, getInventoryModules())) {
+            || in_array($sourceModule, InventoryItem_Utils_Helper::getInventoryItemModules())) {
             $condition = " vtiger_products.discontinued = 1 ";
             $db = PearDatabase::getInstance();
             $params = [$record];
@@ -107,7 +108,7 @@ class Products_Module_Model extends Vtiger_Module_Model
      */
     public function searchRecord($searchValue, $parentId = false, $parentModule = false, $relatedModule = false)
     {
-        if (!empty($searchValue) && empty($parentId) && empty($parentModule) && (in_array($relatedModule, getInventoryModules()))) {
+        if (!empty($searchValue) && empty($parentId) && empty($parentModule) && (in_array($relatedModule, InventoryItem_Utils_Helper::getInventoryItemModules()))) {
             $matchingRecords = Products_Record_Model::getSearchResult($searchValue, $this->getName());
         } else {
             return parent::searchRecord($searchValue);
@@ -165,45 +166,50 @@ class Products_Module_Model extends Vtiger_Module_Model
     }
 
     /**
-     * Function to search records based on sequence number
+     * Function to search records based on number fields
      *
      * @param <String> $searchValue
      * @param <String> $relatedModule
      *
-     * @return <Array> $matchedRecordModels
+     * @return array|void $matchedRecordModels
      */
-    public function searchRecordsOnSequenceNumber($searchValue, $relatedModule)
+    public function searchRecordsOnNumber($searchValue, $relatedModule)
     {
-        if (in_array($relatedModule, getInventoryModules())) {
-            $db = PearDatabase::getInstance();
-            $moduleName = $this->getName();
-            $tableName = $this->basetable;
-            $baseFieldName = $this->basetableid;
+        $db = PearDatabase::getInstance();
+        $moduleName = $this->getName();
+        $tableName = $this->basetable;
+        $baseFieldName = $this->basetableid;
+        $params = [];
 
-            $fieldName = 'product_no';
-            if ($moduleName === 'Services') {
-                $fieldName = 'service_no';
+        if (empty($this->numberSearchFields)) {
+            $searchQueryPart = ' AND vtiger_crmentity.label LIKE ? ';
+            $params[] = '%' . $searchValue . '%';
+        } else {
+            $searchQueryParts = [];
+
+            foreach ($this->numberSearchFields as $fieldName) {
+                $searchQueryParts[] = $fieldName . ' LIKE ?';
+                $params[] = '%' . $searchValue . '%';
             }
 
-            $query = "SELECT label, crmid, $fieldName FROM vtiger_crmentity
-						INNER JOIN $tableName ON $tableName.$baseFieldName = vtiger_crmentity.crmid
-						WHERE $fieldName LIKE ? AND vtiger_crmentity.deleted = 0 AND discontinued = 1";
-            $result = $db->pquery($query, ["%$searchValue%"]);
-            $noOfRows = $db->num_rows($result);
-
-            $matchingRecords = [];
-            for ($i = 0; $i < $noOfRows; ++$i) {
-                $row = $db->query_result_rowdata($result, $i);
-                if (Users_Privileges_Model::isPermitted($row['setype'], 'DetailView', $row['crmid'])) {
-                    $row['id'] = $row['crmid'];
-                    $modelClassName = Vtiger_Loader::getComponentClassName('Model', 'Record', $moduleName);
-                    $recordInstance = new $modelClassName();
-                    $matchingRecords[$row['id']] = $recordInstance->setData($row)->setModuleFromInstance($this);
-                }
-            }
-
-            return $matchingRecords;
+            $searchQueryPart = ' AND (' . implode(' OR ', $searchQueryParts) . ')';
         }
+
+        $query = "SELECT label, crmid, setype 
+                    FROM vtiger_crmentity
+                        INNER JOIN $tableName ON $tableName.$baseFieldName = vtiger_crmentity.crmid
+                    WHERE vtiger_crmentity.deleted = 0 
+                        AND discontinued = 1" . $searchQueryPart;
+        $result = $db->pquery($query, $params);
+        $matchingRecords = [];
+
+        while($row = $db->fetchByAssoc($result)) {
+            if (Users_Privileges_Model::isPermitted($row['setype'], 'DetailView', $row['crmid'])) {
+                $matchingRecords[$row['crmid']] = Vtiger_Record_Model::getInstanceById($row['crmid'], $moduleName);
+            }
+        }
+
+        return $matchingRecords;
     }
 
     /*
@@ -257,31 +263,7 @@ class Products_Module_Model extends Vtiger_Module_Model
     public function getAdditionalImportFields()
     {
         if (!$this->importableFields) {
-            $taxModels = Inventory_TaxRecord_Model::getProductTaxes();
-            foreach ($taxModels as $taxId => $taxModel) {
-                if ($taxModel->isDeleted()) {
-                    unset($taxModels[$taxId]);
-                }
-            }
-
             $taxHeaders = [];
-            $allRegions = Inventory_TaxRegion_Model::getAllTaxRegions();
-            foreach ($taxModels as $taxId => $taxModel) {
-                $tax = $taxModel->get('taxname');
-                $taxName = $taxModel->getName();
-                $taxHeaders[$tax] = decode_html($taxName);
-
-                $regions = $taxModel->getRegionTaxes();
-                foreach ($regions as $regionsTaxInfo) {
-                    foreach (array_fill_keys($regionsTaxInfo['list'], $regionsTaxInfo['value']) as $regionId => $taxPercentage) {
-                        if ($allRegions[$regionId]) {
-                            $taxRegionName = $taxName . '-' . $allRegions[$regionId]->getName();
-                            $taxHeaders[$tax . "_$regionId"] = decode_html($taxRegionName);
-                        }
-                    }
-                }
-            }
-
             $this->importableFields = [];
             foreach ($taxHeaders as $fieldName => $fieldLabel) {
                 $fieldModel = new Vtiger_Field_Model();

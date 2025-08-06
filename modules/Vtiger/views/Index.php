@@ -16,6 +16,8 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
+require_once 'modules/PickList/DependentPickListUtils.php';
+
 class Vtiger_Index_View extends Vtiger_Basic_View
 {
     function __construct()

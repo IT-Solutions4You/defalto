@@ -33,33 +33,37 @@ class InvoiceHandler extends VTEventHandler
         //Get Current User Information
         global $current_user, $currentModule;
 
-        /**
-         * Adjust the balance amount against total & received amount
+        // Trigger from another module (due to indirect save) needs to be ignored - to avoid inconsistency.
+        if ($currentModule != 'Invoice') {
+            return;
+        }
+
+        /*
+         * Adjust the balance amount against total and received amount
          * NOTE: beforesave the total amount will not be populated in event data.
          */
         if ($eventName == 'vtiger.entity.aftersave') {
-            // Trigger from other module (due to indirect save) need to be ignored - to avoid inconsistency.
-            if ($currentModule != 'Invoice') {
-                return;
-            }
             $entityDelta = new VTEntityDelta();
             $oldCurrency = $entityDelta->getOldValue($entityData->getModuleName(), $entityData->getId(), 'currency_id');
             $newCurrency = $entityDelta->getCurrentValue($entityData->getModuleName(), $entityData->getId(), 'currency_id');
             $oldConversionRate = $entityDelta->getOldValue($entityData->getModuleName(), $entityData->getId(), 'conversion_rate');
             $db = PearDatabase::getInstance();
-            $wsid = vtws_getWebserviceEntityId('Invoice', $entityData->getId());
-            $wsrecord = vtws_retrieve($wsid, $current_user);
+            $wsId = vtws_getWebserviceEntityId('Invoice', $entityData->getId());
+            $wsRecord = vtws_retrieve($wsId, $current_user);
             if ($oldCurrency != $newCurrency && $oldCurrency != '') {
                 if ($oldConversionRate != '') {
-                    $wsrecord['received'] = floatval(((float)$wsrecord['received'] / $oldConversionRate) * (float)$wsrecord['conversion_rate']);
+                    $wsRecord['received'] = ((float)$wsRecord['received'] / $oldConversionRate) * (float)$wsRecord['conversion_rate'];
                 }
             }
-            $wsrecord['balance'] = floatval((float)$wsrecord['grand_total'] - (float)$wsrecord['received']);
-            if ($wsrecord['balance'] == 0) {
-                $wsrecord['invoicestatus'] = 'Paid';
+
+            $wsRecord['balance'] = (float)$wsRecord['grand_total'] - (float)$wsRecord['received'];
+
+            if ($wsRecord['balance'] == 0) {
+                $wsRecord['invoicestatus'] = 'Paid';
             }
-            $query = "UPDATE vtiger_invoice SET balance=?,received=? WHERE invoiceid=?";
-            $db->pquery($query, [$wsrecord['balance'], $wsrecord['received'], $entityData->getId()]);
+
+            $query = "UPDATE vtiger_invoice SET balance=?, received=? WHERE invoiceid=?";
+            $db->pquery($query, [$wsRecord['balance'], $wsRecord['received'], $entityData->getId()]);
         }
     }
 }

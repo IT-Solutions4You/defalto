@@ -40,7 +40,7 @@
 								{assign var=TYPE value=""}
 								<tr>
 
-									{if $FIELD_MODEL->get('hidden') neq 1}<td><label>{vtranslate(decode_html($FIELD_MODEL->get('label')), {$SOURCE_MODULE})}{if $FIELD_MODEL->get('required') eq 1}*{/if}</label></td>{/if}
+									{if $FIELD_MODEL->get('hidden') neq 1}<td><label>{vtranslate(decode_html($FIELD_MODEL->get('label')), $SOURCE_MODULE)}{if $FIELD_MODEL->get('required') eq 1}*{/if}</label></td>{/if}
 									<td>
 										{if ($DATA_TYPE eq 'picklist' || $DATA_TYPE eq 'multipicklist')}
 											{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}

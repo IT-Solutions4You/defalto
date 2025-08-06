@@ -134,15 +134,17 @@ class CurrencyField
     /**
      * Returns the Formatted Currency value for the User
      *
-     * @param Users   $user
-     * @param Boolean $skipConversion
+     * @param         $value
+     * @param         $user
+     * @param bool    $skipConversion
+     * @param bool    $skipFormatting
+     * @param bool    $formatZero - if true, zero will be formatted to user format; otherwise it returns the incoming value
      *
      * @return String - Formatted Currency
-     * @global Users  $current_user
      */
-    public static function convertToUserFormat($value, $user = null, $skipConversion = false, $skipFormatting = false)
+    public static function convertToUserFormat($value, $user = null, $skipConversion = false, $skipFormatting = false, $formatZero = false)
     {
-        if (!$value) {
+        if (!$value && !$formatZero) {
             return $value;
         }
 
@@ -451,7 +453,6 @@ class CurrencyField
      * @param Boolean $skipConversion
      *
      * @return Number
-     * @global Users  $current_user
      */
     public function getDBInsertedValue($user = null, $skipConversion = false)
     {

@@ -116,10 +116,6 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View
 
         $viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
         $recordStructure = $recordStructureInstance->getStructure();
-        if (in_array($selectedModuleName, getInventoryModules())) {
-            $itemsBlock = "LBL_ITEM_DETAILS";
-            unset($recordStructure[$itemsBlock]);
-        }
         $viewer->assign('RECORD_STRUCTURE', $recordStructure);
 
         $viewer->assign('WORKFLOW_MODEL', $workFlowModel);
