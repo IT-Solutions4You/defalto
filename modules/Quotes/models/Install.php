@@ -375,35 +375,6 @@ class Quotes_Install_Model extends Core_Install_Model
                             'masseditable' => 1,
                             'summaryfield' => 0,
                         ],
-                    'txtAdjustment' => [
-                            'name' => 'txtAdjustment',
-                            'uitype' => 72,
-                            'column' => 'adjustment',
-                            'table' => 'vtiger_quotes',
-                            'label' => 'Adjustment',
-                            'readonly' => 1,
-                            'presence' => 2,
-                            'typeofdata' => 'NN~O',
-                            'quickcreate' => 3,
-                            'displaytype' => 3,
-                            'masseditable' => 1,
-                            'summaryfield' => 0,
-                        ],
-                    'hdnGrandTotal' => [
-                            'name' => 'hdnGrandTotal',
-                            'uitype' => 72,
-                            'column' => 'total',
-                            'table' => 'vtiger_quotes',
-                            'label' => 'Total',
-                            'readonly' => 1,
-                            'presence' => 2,
-                            'typeofdata' => 'N~O',
-                            'quickcreate' => 3,
-                            'displaytype' => 3,
-                            'masseditable' => 1,
-                            'summaryfield' => 0,
-                            'headerfield' => 1,
-                        ],
                     'taxtype' => [
                             'name' => 'taxtype',
                             'uitype' => 16,
@@ -703,6 +674,7 @@ class Quotes_Install_Model extends Core_Install_Model
      */
     public function installTables(): void
     {
+        $this->disableForeignKeyCheck();
         $this->getTable('vtiger_quotes', null)
             ->createTable('quoteid', 'int(19) NOT NULL DEFAULT \'0\'')
             ->renameColumn('potentialid','potential_id')
@@ -746,7 +718,7 @@ class Quotes_Install_Model extends Core_Install_Model
             ->createKey('KEY IF NOT EXISTS `quote_quotestage_idx` (`quotestage`)')
             ->createKey('KEY IF NOT EXISTS `quotes_potential_id_idx` (`potential_id`)')
             ->createKey('KEY IF NOT EXISTS `quotes_contact_id_idx` (`contact_id`)')
-            ->createKey('CONSTRAINT `fk_3_vtiger_quotes` FOREIGN KEY IF NOT EXISTS (`potential_id`) REFERENCES `vtiger_potential` (`potential_id`) ON DELETE CASCADE')
+            ->createKey('CONSTRAINT `fk_3_vtiger_quotes` FOREIGN KEY IF NOT EXISTS (`potential_id`) REFERENCES `vtiger_potential` (`potentialid`) ON DELETE CASCADE')
             ->createKey('CONSTRAINT `fk_crmid_vtiger_quotes` FOREIGN KEY IF NOT EXISTS (`quoteid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
 
         $this->getTable('vtiger_quotesbillads', null)
