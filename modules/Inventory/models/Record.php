@@ -275,9 +275,9 @@ class Inventory_Record_Model extends Vtiger_Record_Model
 					vtiger_inventoryproductrel.listprice, vtiger_products.is_subproducts_viewable, 
 					vtiger_inventoryproductrel.description AS product_description, vtiger_inventoryproductrel.*,
 					vtiger_crmentity.deleted FROM vtiger_inventoryproductrel
-					LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_inventoryproductrel.productid
-					LEFT JOIN vtiger_products ON vtiger_products.productid=vtiger_inventoryproductrel.productid
-					LEFT JOIN vtiger_service ON vtiger_service.serviceid=vtiger_inventoryproductrel.productid
+					LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid=df_inventoryitem.productid
+					LEFT JOIN vtiger_products ON vtiger_products.productid=df_inventoryitem.productid
+					LEFT JOIN vtiger_service ON vtiger_service.serviceid=df_inventoryitem.productid
 					WHERE id=? ORDER BY sequence_no";
             $params = [$focus->id];
         } elseif (in_array($module, $lineItemSupportedModules)) {
