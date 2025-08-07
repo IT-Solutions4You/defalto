@@ -81,6 +81,19 @@ if (!class_exists('Migration_20250709123459')) {
                     $this->db->pquery($updateWorkflowsSql, ['"' . $oldFieldName . '"', '"' . $newFieldName . '"', $inventoryModuleName]);
                 }
             }
+
+            require_once 'modules/com_vtiger_workflow/VTWorkflowManager.inc';
+            $workflowManager = new VTWorkflowManager($this->db);
+
+            foreach ($inventoryModules as $inventoryModuleName) {
+                $workflows = $workflowManager->getInventoryWorkflowsSupportingProductQtyUpdate($inventoryModuleName);
+
+                foreach ($workflows as $workflow) {
+                    $workflowManager->delete($workflow->id);
+                    $this->db->pquery('DELETE FROM com_vtiger_workflowtasks WHERE workflow_id = ?', [$workflow->id]);
+                    $this->db->pquery('DELETE FROM com_vtiger_workflows WHERE workflow_id = ?', [$workflow->id]);
+                }
+            }
         }
     }
 } else {
