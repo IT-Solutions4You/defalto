@@ -47,16 +47,16 @@
                 <div class="container-fluid">
                     <div class="actions row">
                         <div class="col-lg-6 text-end">
-                            <button class="btn btn-primary active" id="advanceSearchButton" {if $SOURCE_MODULE eq 'Home'} disabled="" {/if} type="submit">{vtranslate('LBL_SEARCH', $MODULE)}</button>
+                            <button class="btn btn-primary active" id="advanceSearchButton" type="submit">{vtranslate('LBL_SEARCH', $MODULE)}</button>
                         </div>
                         {if $SAVE_FILTER_PERMITTED}
                             <div class="col-auto">
                                 <div class="input-group">
-                                    <button class="btn btn-primary active" {if $SOURCE_MODULE eq 'Home'}disabled="disabled"{/if} id="advanceIntiateSave">{vtranslate('LBL_SAVE_AS_FILTER', $MODULE)}</button>
+                                    <button class="btn btn-primary active" id="advanceIntiateSave">{vtranslate('LBL_SAVE_AS_FILTER', $MODULE)}</button>
                                 </div>
                                 <div class="input-group">
                                     <input class="hide form-control" type="text" value="" name="viewname"/>
-                                    <button class="btn btn-primary active hide" {if $SOURCE_MODULE eq 'Home'}disabled="disabled"{/if} id="advanceSave">{vtranslate('LBL_SAVE', $MODULE)}</button>
+                                    <button class="btn btn-primary active hide" id="advanceSave">{vtranslate('LBL_SAVE', $MODULE)}</button>
                                 </div>
                             </div>
                         {/if}
