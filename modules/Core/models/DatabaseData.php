@@ -327,4 +327,26 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     {
         return (new self())->getTable($table, $tableId);
     }
+
+
+    /**
+     * @throws Exception
+     */
+    public function deleteDuplicates($columns): static
+    {
+        $this->requireTable('Table is empty for duplicate delete');
+        $this->requireTableId('Table id is empty for duplicate delete');
+
+        if (empty($columns)) {
+            return $this;
+        }
+
+        $table = $this->get('table');
+        $tableId = $this->get('table_id');
+
+        $sql = sprintf('DELETE FROM %s WHERE %s NOT IN (SELECT min(%s) FROM %s GROUP BY %s)', $table, $tableId, $tableId, $table, $columns);
+        $this->getDB()->pquery($sql);
+
+        return $this;
+    }
 }

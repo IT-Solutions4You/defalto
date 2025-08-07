@@ -215,9 +215,26 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
         return $clone;
     }
 
-    public function requireTable($message)
+    /**
+     * @param string $message
+     * @return void
+     * @throws Exception
+     */
+    public function requireTable(string $message): void
     {
         if ($this->isEmpty('table')) {
+            throw new Exception($message);
+        }
+    }
+
+    /**
+     * @param string $message
+     * @return void
+     * @throws Exception
+     */
+    public function requireTableId(string $message): void
+    {
+        if ($this->isEmpty('table_id')) {
             throw new Exception($message);
         }
     }
