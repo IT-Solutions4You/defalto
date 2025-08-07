@@ -15,6 +15,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
      */
     public function addCustomLinks(): void
     {
+        $this->updateToStandardModule();
     }
 
     /**
@@ -831,8 +832,6 @@ class SalesOrder_Install_Model extends Core_Install_Model
             'subtotal' => 'subtotal',
             'taxtype' => 'taxtype',
             's_h_amount' => 's_h_amount',
-
-            'invoice_status' => 'invoice_status',
             's_h_percent' => 's_h_percent',
         ];
 
@@ -840,8 +839,6 @@ class SalesOrder_Install_Model extends Core_Install_Model
 
         $deleteFields = [
             'vtiger_purchaseorder',
-            'invoicestatus',
-
             'hdnS_H_Percent',
             'hdnS_H_Amount',
             'hdnTaxType',
@@ -861,6 +858,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
      */
     public function installTables(): void
     {
+        $this->disableForeignKeyCheck();
         $this->getTable('vtiger_salesorder', null)
             ->createTable('salesorderid', 'int(19) NOT NULL DEFAULT \'0\'')
             ->renameColumn('potentialid','potential_id')

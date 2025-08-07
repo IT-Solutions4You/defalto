@@ -1277,38 +1277,11 @@ if (defined('VTIGER_UPGRADE')) {
     $db->pquery('UPDATE vtiger_producttaxrel SET regions=?', ['[]']);
 
     $modulesList = ['Quotes' => 'vtiger_quotes', 'PurchaseOrder' => 'vtiger_purchaseorder', 'SalesOrder' => 'vtiger_salesorder', 'Invoice' => 'vtiger_invoice'];
-    $fieldName = 'region_id';
 
     foreach ($modulesList as $moduleName => $tableName) {
-        //Updating existing inventory tax tables
-        $columns = $db->getColumnNames($tableName);
-        if (!in_array('compound_taxes_info', $columns)) {
-            $db->pquery("ALTER TABLE $tableName ADD COLUMN compound_taxes_info TEXT", []);
-        }
         $db->pquery('UPDATE ' . $tableName . ' SET compound_taxes_info=?', ['[]']);
-
-        //creating new field in entity tables
-        $moduleInstance = Vtiger_Module::getInstance($moduleName);
-        $blockInstance = Vtiger_Block::getInstance('LBL_ITEM_DETAILS', $moduleInstance);
-
-        $fieldInstance = Vtiger_Field::getInstance($fieldName, $moduleInstance);
-        if (!$fieldInstance) {
-            $fieldInstance = new Vtiger_Field();
-
-            $fieldInstance->name = $fieldName;
-            $fieldInstance->column = $fieldName;
-            $fieldInstance->table = $tableName;
-            $fieldInstance->label = 'Tax Region';
-            $fieldInstance->columntype = 'int(19)';
-            $fieldInstance->typeofdata = 'N~O';
-            $fieldInstance->uitype = '16';
-            $fieldInstance->readonly = '0';
-            $fieldInstance->displaytype = '5';
-            $fieldInstance->masseditable = '0';
-
-            $blockInstance->addField($fieldInstance);
-        }
     }
+
     //End: Tax Enhancements - Compound Taxes, Regional Taxes, Deducted Taxes, Other Charges
     $menuEditorModel = Settings_Vtiger_Module_Model::getInstance('Settings:MenuEditor');
     $menuEditorModel->createTables();
