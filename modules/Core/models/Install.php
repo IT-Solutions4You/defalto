@@ -180,6 +180,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     public static array $installedModules = [];
 
     public static array $fieldKeySkippedForUpdate = ['presence', 'typeofdata', 'quickcreate', 'masseditable', 'summaryfield', 'sequence', 'block'];
+    public static array $blockKeySkippedForUpdate = ['sequence'];
     public bool $requireInstallTables = true;
 
     /**
@@ -647,6 +648,16 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function isBlockKeySkippedForUpdate(string $key): bool
+    {
+        return defined('VTIGER_UPGRADE') && in_array($key, self::$blockKeySkippedForUpdate);
+    }
+
+    /**
      * @param string $fieldName
      * @param array  $fieldParams
      *
@@ -726,10 +737,20 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         $blockInstance->label = $blockName;
         $blockInstance->blockuitype = Core_BlockUiType_Model::addBlockUiType($blockParams['name']);
+
+        if (!$this->isBlockKeySkippedForUpdate('sequence')) {
+            $blocks = array_flip(array_keys($this->getFieldsConfig()));
+
+            if (isset($blocks[$blockName])) {
+                $blockInstance->sequence = $blocks[$blockName] + 1;
+            }
+        }
+
         $blockInstance->save($moduleInstance);
         $blockInstance->getBlockTable()->updateData(
             [
                 'blockuitype' => $blockInstance->blockuitype,
+                'sequence' => $blockInstance->sequence,
             ],
             [
                 'blockid' => $blockInstance->id,
