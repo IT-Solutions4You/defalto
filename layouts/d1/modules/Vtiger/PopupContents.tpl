@@ -105,7 +105,7 @@
                             {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_INFO['symbol'])}
                         {elseif $LISTVIEW_HEADERNAME eq 'listprice'}
                             {CurrencyField::convertToUserFormat($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), null, true, true)}
-                        {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}
+                        {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist' && $LISTVIEW_HEADER->isPicklistColorSupported()}
                             <span class="py-1 px-2 rounded picklist-color picklist-{$LISTVIEW_HEADER->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}">{$LISTVIEW_ENTRY_VALUE}</span>
                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'multipicklist'}
                             {assign var=MULTI_RAW_PICKLIST_VALUES value=explode('|##|',$LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}

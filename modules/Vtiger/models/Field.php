@@ -1873,4 +1873,12 @@ class Vtiger_Field_Model extends Vtiger_Field
     {
         return str_starts_with($this->get('typeofdata'), 'NN');
     }
+
+    /**
+     * @return bool
+     */
+    public function isPicklistColorSupported(): bool
+    {
+        return $this->getModuleName() !== 'Users';
+    }
 }

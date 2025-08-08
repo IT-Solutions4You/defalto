@@ -8,7 +8,7 @@
  *}
 {* TODO: Review the order of parameters - good to eliminate $RECORD->getId, $RECORD should be used *}
 {strip}
-{if $FIELD_MODEL->getFieldDataType() eq 'picklist' and $MODULE neq 'Users'}
+{if $FIELD_MODEL->getFieldDataType() eq 'picklist' and $FIELD_MODEL->isPicklistColorSupported()}
     {assign var=PICKLIST_COLOR value=Settings_Picklist_Module_Model::getPicklistColorByValue($FIELD_MODEL->getName(), $FIELD_MODEL->get('fieldvalue'))}
     <span class="picklist-color py-1 px-2 rounded" {if !empty($PICKLIST_COLOR)} style="background-color: {$PICKLIST_COLOR}; line-height:15px; color: {Settings_Picklist_Module_Model::getTextColor($PICKLIST_COLOR)};" {/if}>
         {$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'), $RECORD->getId(), $RECORD)}
