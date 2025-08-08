@@ -294,16 +294,6 @@ Vtiger_Edit_Js("Products_Edit_Js", {
 
             return this;
         },
-        setReadOnly(element) {
-            element.prop('readonly', true);
-            element.attr('readonly', 'readonly');
-            element.addClass('bg-body-secondary');
-        },
-        unsetReadOnly(element) {
-            element.removeProp('readonly');
-            element.removeAttr('readonly');
-            element.removeClass('bg-body-secondary');
-        },
         setDisabled(element) {
             element.prop('disabled', true);
             element.attr('disabled', 'disabled');
