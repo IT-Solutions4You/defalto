@@ -139,6 +139,7 @@ Vtiger_Edit_Js("Products_Edit_Js", {
                             self.registerEventForEnableBaseCurrency();
                             self.registerEventForResetCurrency();
                             self.triggerForBaseCurrencyCalc();
+                            self.updateCurrencyElements(form);
                             vtUtils.registerReplaceCommaWithDot(form);
                         };
 
@@ -217,101 +218,125 @@ Vtiger_Edit_Js("Products_Edit_Js", {
         },
 
         calculateConversionRate: function () {
-            var container = jQuery('.multiCurrencyEditUI:visible');
-            var baseCurrencyRow = container.find('.baseCurrency').filter(':checked').closest('tr');
-            var baseCurrencyConvestationRate = baseCurrencyRow.find('.conversionRate');
+            let container = jQuery('.multiCurrencyEditUI:visible'),
+                baseCurrencyRow = container.find('.baseCurrency').filter(':checked').closest('tr'),
+                baseCurrencyConvestationRate = baseCurrencyRow.find('.conversionRate');
             //if basecurrency has conversation rate as 1 then you dont have calculate conversation rate
             if (baseCurrencyConvestationRate.val() == "1") {
                 return;
             }
-            var baseCurrencyRatePrevValue = baseCurrencyConvestationRate.val();
+
+            let baseCurrencyRatePrevValue = baseCurrencyConvestationRate.val();
 
             container.find('.conversionRate').each(function (key, domElement) {
-                var element = jQuery(domElement);
+                let element = jQuery(domElement);
+
                 if (!element.is(baseCurrencyConvestationRate)) {
-                    var prevValue = element.val();
-                    element.val((prevValue / baseCurrencyRatePrevValue));
+                    let prevValue = element.val();
+                    element.val((prevValue / baseCurrencyRatePrevValue).toFixed(5));
                 }
             });
+
             baseCurrencyConvestationRate.val("1");
+        },
+        updateEnableCurrency: function (element) {
+            let self = this,
+                parentRow = element.closest('tr');
+
+            if (element.is(':checked')) {
+                element.prop('checked', true);
+
+                let conversionRate = jQuery('.conversionRate', parentRow).val(),
+                    unitPriceFieldData = self.getUnitPrice().data(),
+                    unitPrice = self.getDataBaseFormatUnitPrice(),
+                    price = parseFloat(unitPrice) * parseFloat(conversionRate);
+
+                price = price.toFixed(unitPriceFieldData['numberOfDecimalPlaces']);
+
+                jQuery('input.convertedPrice', parentRow).val(price);
+
+                self.unsetDisabled(jQuery('input[type="text"]', parentRow));
+                self.unsetDisabled(jQuery('button', parentRow));
+            } else {
+                let baseCurrency = jQuery('.baseCurrency', parentRow);
+
+                if (baseCurrency.is(':checked')) {
+                    let currencyName = jQuery('.currencyName', parentRow).text(),
+                        errorMessage = app.vtranslate('JS_BASE_CURRENCY_CHANGED_TO_DISABLE_CURRENCY') + '"' + currencyName + '"';
+
+                    app.helper.showErrorNotification({message: errorMessage});
+                    element.prop('checked', true);
+
+                    return;
+                }
+
+                self.setDisabled(jQuery('input[type="text"]', parentRow));
+                self.setDisabled(jQuery('button', parentRow));
+            }
+        },
+        updateCurrencyElements(container) {
+            const self = this;
+
+            container.find('.enableCurrency').each(function() {
+                self.updateEnableCurrency($(this));
+            });
         },
         /**
          * Function to register event for enabling currency on checkbox checked
          */
         registerEventForEnableCurrency: function () {
             let container = this.getMoreCurrenciesContainer(),
-                thisInstance = this;
+                self = this;
 
-            jQuery(container).on('change', '.enableCurrency', function (e) {
-                let elem = thisInstance.getCurrentElem(e),
-                    parentRow = elem.closest('tr');
-
-                if (elem.is(':checked')) {
-                    elem.prop('checked', true);
-                    let conversionRate = jQuery('.conversionRate', parentRow).val(),
-                        unitPriceFieldData = thisInstance.getUnitPrice().data(),
-                        unitPrice = thisInstance.getDataBaseFormatUnitPrice(),
-                        price = parseFloat(unitPrice) * parseFloat(conversionRate);
-
-                    price = price.toFixed(unitPriceFieldData['numberOfDecimalPlaces']);
-
-                    jQuery('input', parentRow).prop('disabled', true).removeAttr('disabled');
-                    jQuery('button.currencyReset', parentRow).prop('disabled', true).removeAttr('disabled');
-                    jQuery('input.convertedPrice', parentRow).val(price)
-                } else {
-                    let baseCurrency = jQuery('.baseCurrency', parentRow);
-
-                    if (baseCurrency.is(':checked')) {
-                        let currencyName = jQuery('.currencyName', parentRow).text(),
-                            errorMessage = app.vtranslate('JS_BASE_CURRENCY_CHANGED_TO_DISABLE_CURRENCY') + '"' + currencyName + '"';
-
-                        app.helper.showErrorNotification({message: errorMessage});
-                        elem.prop('checked', true);
-
-                        return;
-                    }
-
-                    jQuery('input', parentRow).prop('disabled', true);
-                    jQuery('input.enableCurrency', parentRow).removeAttr('disabled');
-                    jQuery('button.currencyReset', parentRow).attr('disabled', 'disabled');
-                }
+            jQuery(container).on('change', '.enableCurrency', function () {
+                self.updateEnableCurrency($(this));
             });
 
             return this;
+        },
+        setReadOnly(element) {
+            element.prop('readonly', true);
+            element.attr('readonly', 'readonly');
+            element.addClass('bg-body-secondary');
+        },
+        unsetReadOnly(element) {
+            element.removeProp('readonly');
+            element.removeAttr('readonly');
+            element.removeClass('bg-body-secondary');
+        },
+        setDisabled(element) {
+            element.prop('disabled', true);
+            element.attr('disabled', 'disabled');
+            element.addClass('bg-body-secondary');
+        },
+        unsetDisabled(element) {
+            element.removeProp('disabled');
+            element.removeAttr('disabled');
+            element.removeClass('bg-body-secondary');
         },
         /**
          * Function to register event for enabling base currency on radio button clicked
          */
         registerEventForEnableBaseCurrency: function () {
-            var container = this.getMoreCurrenciesContainer();
-            var thisInstance = this;
-            jQuery(container).on('change', '.baseCurrency', function (e) {
-                var elem = thisInstance.getCurrentElem(e);
-                var parentElem = elem.closest('tr');
+            let container = this.getMoreCurrenciesContainer(),
+                self = this;
+
+            $(container).on('change', '.baseCurrency', function (e) {
+                let elem = self.getCurrentElem(e),
+                    parentElem = elem.closest('tr');
+
                 if (elem.is(':checked')) {
-                    var convertedPrice = jQuery('.convertedPrice', parentElem).val();
-                    thisInstance.baseCurrencyName = parentElem.data('currencyId');
-                    thisInstance.baseCurrency = convertedPrice;
-
-                    var elementsList = jQuery('.enableCurrency', container);
-                    jQuery.each(elementsList, function (index, element) {
-                        var ele = jQuery(element);
-                        var parentRow = ele.closest('tr');
-
-                        if (ele.is(':checked')) {
-                            jQuery('button.currencyReset', parentRow).removeAttr('disabled');
-                        }
-                    });
-                    jQuery('button.currencyReset', parentElem).attr('disabled', 'disabled');
-                    thisInstance.calculateConversionRate();
+                    self.baseCurrencyName = parentElem.data('currencyId');
+                    self.baseCurrency = $('.convertedPrice', parentElem).val();
+                    self.calculateConversionRate();
+                    self.activateCurrency(parentElem);
                 }
             });
 
-            var baseCurrencyEle = container.find('.baseCurrency').filter(':checked');
-            var parentElem = baseCurrencyEle.closest('tr');
-            jQuery('button.currencyReset', parentElem).attr('disabled', 'disabled');
-
             return this;
+        },
+        activateCurrency(element) {
+            $('.enableCurrency', element).attr('checked', 'checked').trigger('change');
         },
         /**
          * Function to register event for reseting the currencies
@@ -339,23 +364,26 @@ Vtiger_Edit_Js("Products_Edit_Js", {
          * present on click of more currencies
          */
         triggerForBaseCurrencyCalc: function () {
-            var multiCurrencyEditUI = this.getMoreCurrenciesContainer();
-            var baseCurrency = multiCurrencyEditUI.find('.enableCurrency');
+            let multiCurrencyEditUI = this.getMoreCurrenciesContainer(),
+                baseCurrency = multiCurrencyEditUI.find('.enableCurrency');
+
             jQuery.each(baseCurrency, function (key, val) {
                 if (jQuery(val).is(':checked')) {
-                    var baseCurrencyRow = jQuery(val).closest('tr');
-                    var unitPrice = jQuery('.unitPrice');
-                    var isPriceChanged = unitPrice.data('isPriceChanged');
+                    let baseCurrencyRow = jQuery(val).closest('tr'),
+                        unitPrice = jQuery('.unitPrice'),
+                        isPriceChanged = unitPrice.data('isPriceChanged');
+
                     if (isPriceChanged) {
-                        var changedUnitPrice = unitPrice.val();
+                        let changedUnitPrice = unitPrice.val();
                         baseCurrencyRow.find('.convertedPrice').val(changedUnitPrice);
                         baseCurrencyRow.find('.currencyReset').trigger('click');
                     }
+
                     if (parseFloat(baseCurrencyRow.find('.convertedPrice').val()) == 0) {
                         baseCurrencyRow.find('.currencyReset').trigger('click');
                     }
                 } else {
-                    var baseCurrencyRow = jQuery(val).closest('tr');
+                    let baseCurrencyRow = jQuery(val).closest('tr');
                     baseCurrencyRow.find('.convertedPrice').val('');
                 }
             });
