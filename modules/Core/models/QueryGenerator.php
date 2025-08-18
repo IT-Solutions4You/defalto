@@ -10,6 +10,9 @@
 
 class Core_QueryGenerator_Model extends EnhancedQueryGenerator
 {
+    public const NOT_EMPTY = 'ny';
+    public const EMPTY = 'y';
+
     public int $limit = 0;
 
     public static function getInstance($module, $user = false): self

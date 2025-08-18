@@ -13,6 +13,9 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     public static array $currencyUserConfig = [];
     public static array $numberUserConfig = [];
 
+    protected string $variablePrefix = 'RB';
+    protected string $recordPrefix = 'RB';
+
     /**
      * @var array
      */
@@ -60,6 +63,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     protected object|bool $related_field = false;
     protected Vtiger_Record_Model $sourceRecord;
     protected object|null $queryGenerator = null;
+    protected array $decodeFields = ['filters', 'related_field', 'related_fields', 'sorting', 'content', 'name'];
 
     /**
      * @param string $moduleName
@@ -112,9 +116,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
      */
     public function decodeData()
     {
-        $fields = ['filters', 'related_field', 'related_fields', 'sorting', 'content', 'name'];
-
-        foreach ($fields as $field) {
+        foreach ($this->decodeFields as $field) {
             $this->set($field, decode_html($this->get($field)));
         }
     }
@@ -238,7 +240,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     /**
      * @return array|bool|mixed
      */
-    public function getRelatedRecordStructure()
+    public function getRelatedRecordStructure(): mixed
     {
         return Vtiger_RecordStructure_Model::getInstanceForModule($this->getRelatedModule())->getStructure();
     }
@@ -271,7 +273,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
      *
      * @return bool
      */
-    public function isSelectedRelatedFields($value)
+    public function isSelectedRelatedFields($value): bool
     {
         return in_array($value, $this->getRelatedFields());
     }
@@ -674,21 +676,36 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
         while ($row = $adb->fetchByAssoc($result)) {
             $relatedRecord->setData($row);
-
             $relatedRecordContent = $content;
 
-            foreach ($relatedModuleFields as $fieldName) {
-                $relatedRecordContent = str_replace($this->getVariable($fieldName), $relatedRecord->getDisplayValue($fieldName), $relatedRecordContent);
+            foreach ($this->getVariableValues($relatedRecord) as $variableKey => $variableValue) {
+                $relatedRecordContent = str_replace($variableKey, $variableValue, $relatedRecordContent);
             }
 
-            if (!empty($newContent)) {
+            if (empty($newContent)) {
                 $newContent .= '#HIDETR#';
             }
 
-            $newContent .= $relatedRecordContent;
+            $newContent .= $relatedRecordContent . '#HIDETR#';
         }
 
         return $newContent;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getVariableValues(Vtiger_Record_Model $recordModel): array
+    {
+        $relatedModuleName = $this->getRelatedModuleName();
+        $relatedFields = $this->getRelatedFields();
+        $values = [];
+
+        foreach ($relatedFields as $fieldName) {
+            $values[$this->getVariable($fieldName, $relatedModuleName)] = $recordModel->getRelatedBlockDisplayValue($fieldName);
+        }
+
+        return $values;
     }
 
     /**
@@ -711,15 +728,21 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @return EnhancedQueryGenerator
+     * @return object
      */
-    public function getQueryGenerator(): EnhancedQueryGenerator
+    public function getQueryGenerator(): object
+    {
+        if (!empty($this->queryGenerator)) {
+            return $this->queryGenerator;
+        }
+
+        return $this->getNewQueryGenerator();
+    }
+
+    public function getNewQueryGenerator(): Core_QueryGenerator_Model
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
-
-        if (empty($this->queryGenerator)) {
-            $this->queryGenerator = new EnhancedQueryGenerator($this->getRelatedModuleName(), $currentUser);
-        }
+        $this->queryGenerator = new Core_QueryGenerator_Model($this->getRelatedModuleName(), $currentUser);
 
         return $this->queryGenerator;
     }
@@ -743,9 +766,23 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
      *
      * @return string
      */
-    public function getVariableLabel($fieldName): string
+    public function getVariableLabel($fieldName, $moduleName = null): string
     {
-        return '%' . $this->getVariableName($fieldName) . '%';
+        $moduleName = $moduleName ?: $this->getRelatedModuleName();
+
+        return '%' . $this->getVariableName($fieldName, $moduleName) . '%';
+    }
+
+    /**
+     * @param $fieldName
+     * @param null $moduleName
+     * @return string
+     */
+    public function getVariableName($fieldName, $moduleName = null): string
+    {
+        $moduleName = $moduleName ?: $this->getRelatedModuleName();
+
+        return strtoupper(sprintf('%s_%s_%s', $this->variablePrefix, $moduleName, $fieldName));
     }
 
     /**
@@ -753,19 +790,11 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
      *
      * @return string
      */
-    public function getVariableName($fieldName): string
+    public function getVariable($fieldName, $moduleName = null): string
     {
-        return strtoupper(sprintf('RB_%s_%s', $this->getRelatedModuleName(), $fieldName));
-    }
+        $moduleName = $moduleName ?: $this->getRelatedModuleName();
 
-    /**
-     * @param $fieldName
-     *
-     * @return string
-     */
-    public function getVariable($fieldName): string
-    {
-        return '$' . $this->getVariableName($fieldName) . '$';
+        return '$' . $this->getVariableName($fieldName, $moduleName) . '$';
     }
 
     /**
