@@ -16,6 +16,8 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     protected string $variablePrefix = 'RB';
     protected string $recordPrefix = 'RB';
 
+    protected string $templateModule = 'Core';
+
     /**
      * @var array
      */
@@ -561,7 +563,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
      * @return string
      * @throws Exception
      */
-    public static function replaceAll(Vtiger_Record_Model $recordModel, string $content): string
+    public static function replaceAll(Vtiger_Record_Model $recordModel, string $content, string $templateModule = 'EMAILMaker'): string
     {
         $moduleName = $recordModel->getModuleName();
         $regex = '/#RELATED_BLOCK_([0-9]+)_START#/m';
@@ -576,7 +578,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
             $relatedBlock = Core_RelatedBlock_Model::getInstanceById($relatedBlockId, $moduleName);
             $relatedBlock->setSourceRecord($recordModel);
             $relatedBlock->setSourceRecordId($recordModel->getId());
-            $oldContent = $relatedBlock->replaceLabels($oldContent);
+            $relatedBlock->setTemplateModule($templateModule);
 
             [$beforeRelatedBlock, $relatedBlockContent] = explode('#RELATED_BLOCK_' . $relatedBlockId . '_START#', $oldContent, 2);
             [$relatedBlockContent, $afterRelatedBlock] = explode('#RELATED_BLOCK_' . $relatedBlockId . '_END#', $relatedBlockContent, 2);
@@ -586,6 +588,7 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
             $newContent .= $relatedBlock->replaceRecords($relatedBlockContent);
             $newContent .= '#HIDETR#';
             $oldContent = $afterRelatedBlock;
+            $oldContent = $relatedBlock->replaceLabels($oldContent);
         }
 
         $newContent .= $afterRelatedBlock;
@@ -664,29 +667,31 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
         }
 
         $relatedModuleName = $relatedModule->getName();
-        $relatedModuleFields = $this->getRelatedFields();
         $query = $this->getQuery();
 
         $this->retrieveDB();
         $adb = $this->getDB();
         $result = $this->getDB()->pquery($query);
 
-        $newContent = '';
+        $newContent = '#HIDETR#';
         $relatedRecord = Vtiger_Record_Model::getCleanInstance($relatedModuleName);
+        $recordLineBreak = Core_RecordLineBreak_Helper::getInstance()
+            ->setRelatedBlock($this);
 
         while ($row = $adb->fetchByAssoc($result)) {
             $relatedRecord->setData($row);
+            $breakLine = $recordLineBreak
+                ->plusSequence()
+                ->setRecord($relatedRecord)
+                ->retrieveData()
+                ->getContent();
             $relatedRecordContent = $content;
 
             foreach ($this->getVariableValues($relatedRecord) as $variableKey => $variableValue) {
                 $relatedRecordContent = str_replace($variableKey, $variableValue, $relatedRecordContent);
             }
 
-            if (empty($newContent)) {
-                $newContent .= '#HIDETR#';
-            }
-
-            $newContent .= $relatedRecordContent . '#HIDETR#';
+            $newContent .= $relatedRecordContent . $breakLine;
         }
 
         return $newContent;
@@ -899,5 +904,20 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
         $focus = CRMEntity::getInstance($this->getRelatedModuleName());
 
         return $focus->tab_name_index[$table];
+    }
+
+    public function setTemplateModule(string $moduleName): void
+    {
+        $this->templateModule = $moduleName;
+    }
+
+    public function getTemplateModule(): string
+    {
+        return $this->templateModule;
+    }
+
+    public function getHeaderFields()
+    {
+        return $this->get('header_fields');
     }
 }
