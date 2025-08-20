@@ -19,6 +19,7 @@
 Vtiger_RelatedBlock_Js('Vtiger_InventoryItemsBlock_Js', {}, {
     advancedFilter: false,
     registerEvents() {
+        this.registerCKEditor();
         this.registerSortableRelatedFields();
         this.registerSubmit();
         this.registerColumnsChange();
@@ -51,51 +52,37 @@ Vtiger_RelatedBlock_Js('Vtiger_InventoryItemsBlock_Js', {}, {
             return true;
         });
     },
-    registerColumnsChange() {
-        let self = this,
-            relatedModule = self.getFormElement('related_module').val();
-
-        self.getForm().on('change', '#relateFieldsSelect', function () {
-            let relatedFields = self.getFormElement('related_fields').val();
-
-            if (relatedFields) {
-                relatedFields = relatedFields.split(';');
-            }
-
-            let table = self.createTable(relatedModule, relatedFields)
-
-            CKEDITOR.instances['content'].setData(table)
-        });
-    },
     createTable(module, fields) {
         let upperCaseModule = module.toUpperCase(),
-            table = '<table style="border: 1px solid #000; border-collapse: collapse;">'
+            table = '<div><style>.ibTable {} .ibTr {} .ibTh {} .ibTd {}</style><table class="ibTable">'
 
         //table header
-        table += '<tr>'
+        table += '<tr class="ibTr">'
 
         $.each(fields, function (index, element) {
             if(element) {
-                table += '<td><b>%IB_' + upperCaseModule + '_' + element.toUpperCase() + '%</b></td>';
+                table += '<th class="ibTh">%IB_' + upperCaseModule + '_' + element.toUpperCase() + '%</th>';
             }
         });
 
         table += '</tr>'
         //table header end
         //table data
-        table += '<tr><td colspan="' + fields.length + '">#INVENTORY_BLOCK_START#</td></tr>'
+        table += '<tr class="ibTr"><td class="ibTd" colspan="' + fields.length + '">#INVENTORY_BLOCK_START#</td></tr>'
         table += '<tr>'
 
         $.each(fields, function (index, element) {
             if(element) {
-                table += '<td>$IB_' + upperCaseModule + '_' + element.toUpperCase() + '$</td>';
+                table += '<td class="ibTd">$IB_' + upperCaseModule + '_' + element.toUpperCase() + '$</td>';
             }
         });
 
         table += '</tr>'
-        table += '<tr><td colspan="' + fields.length + '">#INVENTORY_BLOCK_END#</td></tr>'
+        table += '<tr class="ibTr"><td class="ibTd" colspan="' + fields.length + '">#INVENTORY_BLOCK_END#</td></tr>'
         //table data end
-        table += '</table>';
+        table += '</table></div>';
+
+        console.log(table) ;
 
         return table;
     },

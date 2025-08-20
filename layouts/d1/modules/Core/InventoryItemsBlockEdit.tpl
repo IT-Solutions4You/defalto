@@ -43,7 +43,7 @@
                 <div class="row py-3 border-bottom">
                     <div class="col-lg-3 text-secondary fieldLabel">{vtranslate('LBL_BLOCK_STYLE', $QUALIFIED_MODULE)}</div>
                     <div class="col-lg fieldValue">
-                        <textarea name="content" class="form-control ckeditor">{$RELATED_BLOCK_MODEL->getContent()}</textarea>
+                        <textarea name="content" class="form-control" id="content">{$RELATED_BLOCK_MODEL->getContent()}</textarea>
                     </div>
                 </div>
             </div>
