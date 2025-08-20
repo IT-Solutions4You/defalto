@@ -124,7 +124,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
                 ],
                 'overall_discount' => [
                     'name'          => 'overall_discount',
-                    'uitype'        => 71,
+                    'uitype'        => 7,
                     'column'        => 'overall_discount',
                     'table'         => 'vtiger_salesorder',
                     'generatedtype' => 1,
