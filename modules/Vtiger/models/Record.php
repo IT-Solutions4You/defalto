@@ -311,6 +311,28 @@ class Vtiger_Record_Model extends Core_DatabaseTable_Model
     }
 
     /**
+     * @param string    $fieldName
+     * @param false|int $recordId
+     *
+     * @return mixed
+     * @throws Exception
+     */
+    public function getRelatedBlockDisplayValue(string $fieldName, false|int $recordId = false): mixed
+    {
+        if (empty($recordId)) {
+            $recordId = $this->getId();
+        }
+
+        $fieldModel = $this->getModule()->getField($fieldName);
+
+        if ($fieldModel) {
+            return $fieldModel->getRelatedBlockDisplayValue($this->get($fieldName), (int)$recordId, $this);
+        }
+
+        return false;
+    }
+
+    /**
      * Function to retieve display value for a field
      *
      * @param string $fieldName - field name for which values need to get
@@ -1075,5 +1097,33 @@ class Vtiger_Record_Model extends Core_DatabaseTable_Model
             ->createKey('KEY IF NOT EXISTS `crmentity_deleted_idx` (`deleted`)')
             ->createKey('KEY IF NOT EXISTS `crm_ownerid_del_setype_idx` (`assigned_user_id`,`deleted`,`setype`)')
             ->createKey('KEY IF NOT EXISTS `vtiger_crmentity_labelidx` (`label`)');
+    }
+
+    public function getDescription(): string
+    {
+        return (string)$this->getDisplayValue($this->getDescriptionField());
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getNumber(): string
+    {
+        return (string)$this->getDisplayValue($this->getNumberField());
+    }
+
+    public function getDescriptionField(): string
+    {
+        return 'description';
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getNumberField()
+    {
+        $data = (new Vtiger_Field_Model())->getFieldTable()->selectData(['fieldname as no'], ['uitype' => 4, 'tabid' => $this->getModule()->getId()]);
+
+        return $data['no'];
     }
 }

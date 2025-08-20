@@ -248,6 +248,20 @@ class Vtiger_Field_Model extends Vtiger_Field
     }
 
     /**
+     * @throws Exception
+     */
+    public function getRelatedBlockDisplayValue(mixed $value, false|int $record = false, false|object $recordInstance = false)
+    {
+        if (!isset($this->uitype_instance) || !$this->uitype_instance) {
+            $this->uitype_instance = Vtiger_Base_UIType::getInstanceFromField($this);
+        }
+
+        $uiTypeInstance = $this->uitype_instance;
+
+        return $uiTypeInstance->getRelatedBlockDisplayValue($value, $record, $recordInstance);
+    }
+
+    /**
      * Function to retrieve display type of a field
      * @return <String> - display type of the field
      */
