@@ -130,12 +130,21 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
     /**
      * @param Vtiger_Record_Model $recordModel
      * @param string $content
-     *
+     * @param string $templateModule
      * @return string
      * @throws Exception
      */
     public static function replaceAll(Vtiger_Record_Model $recordModel, string $content, string $templateModule = 'EMAILMaker'): string
     {
+        $blocks = [];
+
+        foreach (['INVENTORY_BLOCK', 'INVENTORY_BLOCK_PRODUCTS', 'INVENTORY_BLOCK_SERVICES',] as $blockType) {
+            $blocks[] = '#' . $blockType . '_START#';
+            $blocks[] = '#' . $blockType . '_END#';
+        }
+
+        $content = Core_InventoryItemsBlock_Model::replaceBlockTags($content, $blocks);
+
         $moduleName = $recordModel->getModuleName();
         $relatedBlock = Core_InventoryItemsBlock_Model::getInstance($moduleName);
         $relatedBlock->setSourceRecord($recordModel);
@@ -166,7 +175,6 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
     public function getVariableValues(Vtiger_Record_Model $recordModel): array
     {
         $values = parent::getVariableValues($recordModel);
-
         $recordId = (int)$recordModel->get('productid');
         $fields = [
             'Products' => [
@@ -182,8 +190,6 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
         if (!empty($recordId) && isRecordExists($recordId)) {
             $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
             $fields[$recordModel->getModuleName()]['record'] = $recordModel;
-        } else {
-            $recordModel = $fields['Products']['record'];
         }
 
         foreach ($fields as $moduleName => $fieldInfo) {
@@ -197,6 +203,7 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
         $values['$PS_NAME$'] = $recordModel->getName() . '<br>' . $recordModel->getDescription();
         $values['$PS_TITLE$'] = $recordModel->getName();
         $values['$PS_DESCRIPTION$'] = $recordModel->getDescription();
+        $values['$PS_CODE$'] = $recordModel->get('serial_no') ?: $recordModel->get('servicecode');
 
         return $values;
     }
@@ -329,6 +336,7 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
                 'PS_NAME' => 'LBL_VARIABLE_PRODUCTNAME',
                 'PS_TITLE' => 'LBL_VARIABLE_PRODUCTTITLE',
                 'PS_DESCRIPTION' => 'LBL_VARIABLE_PRODUCTDESCRIPTION',
+                'PS_CODE' => 'LBL_VARIABLE_PRODUCTCODE',
             ],
         ];
         $options = array_merge_recursive($this->getVariableOptionsForModule('InventoryItem'), $customOptions);

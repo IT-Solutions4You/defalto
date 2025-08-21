@@ -11,14 +11,24 @@
 class Core_RecordLineBreak_Helper extends Core_DatabaseData_Model
 {
     private array $recordModels = [];
-    private object $relateBlock;
+    private Core_RelatedBlock_Model $relateBlock;
     private array $breakLines = [];
     private array $calculations = [
         'subtotal' => 0,
     ];
-
+    private int $columnsCount = 0;
     private string $templateModule = 'PDFMaker';
     private int $sequence = 0;
+
+    public function getColumnsCount(): int
+    {
+        return $this->columnsCount;
+    }
+
+    public function setColumnsCount(int $columnsCount): void
+    {
+        $this->columnsCount = $columnsCount;
+    }
 
     public function setTemplateModule(string $templateModule): void
     {
@@ -32,7 +42,7 @@ class Core_RecordLineBreak_Helper extends Core_DatabaseData_Model
         return $this;
     }
 
-    public function getRelatedBlock(): object
+    public function getRelatedBlock(): Core_RelatedBlock_Model
     {
         return $this->relateBlock;
     }
@@ -86,7 +96,7 @@ class Core_RecordLineBreak_Helper extends Core_DatabaseData_Model
 
     public function getContent()
     {
-        $content = '#HIDETR#';
+        $content = '';
         $breakLines = $this->getBreakLines();
         $sequence = $this->getSequence();
 
@@ -96,22 +106,16 @@ class Core_RecordLineBreak_Helper extends Core_DatabaseData_Model
             if (!empty($info['show_subtotal'])) {
                 $content .= sprintf(
                     '<tr class="lbTr"><th class="lbTh" colspan="%s">%s:</th><td class="lbTd" colspan="1">%s $CURRENCYSYMBOL$</td></tr>',
-                    count($this->getRelatedBlock()->getHeaderFields()) - 1,
+                    $this->getColumnsCount() - 1,
                     '%G_Subtotal%',
                     $this->calculations['subtotal'],
                 );
             }
 
-            $content .= '</table>#PAGEBREAK#<table class="ibTable">';
+            $content .= '<tr><td>#PAGEBREAK#</td></tr>';
 
             if (!empty($info['show_header'])) {
-                $content .= '<tr class="ibTr">';
-
-                foreach ($this->getRelatedBlock()->getHeaderFields() as $field) {
-                    $content .= '<th class="ibTh">%IB_' . $field . '%</th>';
-                }
-
-                $content .= '</tr>';
+                $content .= '<tr><td>#COPYHEADER#</td></tr>';
             }
         }
 
@@ -142,6 +146,18 @@ class Core_RecordLineBreak_Helper extends Core_DatabaseData_Model
     public function getBreakLineTable(): Core_DatabaseTable_Model
     {
         return $this->getTable('vtiger_pdfmaker_breakline', 'crmid');
+    }
+
+    public function retrieveColumnCountByContent($content): self
+    {
+        $html = Core_SimpleHtmlDom_Helper::getInstance($content);
+        $tr = $html->getHtmlNode()->find('tr td');
+
+        if ($tr) {
+            $this->setColumnsCount(count($tr));
+        }
+
+        return $this;
     }
 }
 

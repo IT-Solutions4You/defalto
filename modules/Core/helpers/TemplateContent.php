@@ -15,6 +15,7 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
     public static $decimal_point;
     public static $decimals;
     public static $recordModel;
+    public static $pagebreak;
     /**
      * @var array|mixed
      */
@@ -248,5 +249,54 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
             self::$content = str_replace(array_keys(self::$rep), self::$rep, self::$content);
             self::$rep = [];
         }
+    }
+
+    public function convertCopyHeader(): void
+    {
+        $html = Core_SimpleHtmlDom_Helper::getInstance(self::$content);
+
+        foreach($html->getHtmlNode()->find('td') as $tdNode) {
+            if ('#copyheader#' !== strtolower(trim($tdNode->plaintext))) {
+                continue;
+            }
+
+            $table = $html->parents($tdNode, 'table');
+            $tr = $html->parents($tdNode, 'tr');
+            $headerTr = $table->find('tr', 0);
+
+            $tr->outertext = $headerTr->outertext;
+        }
+
+        $html = $html->getHtml();
+
+        self::$content = $html;
+    }
+
+    public function convertPageBreak(): void
+    {
+        $html = Core_SimpleHtmlDom_Helper::getInstance(self::$content);
+
+        foreach ($html->getHtmlNode()->find('td') as $tdNode) {
+            if ('#pagebreak#' !== strtolower(trim($tdNode->plaintext))) {
+                continue;
+            }
+
+
+            $table = clone $html->parents($tdNode, 'table');
+            $table->nodes = null;
+            $table->innertext = '#EXPLODE#';
+            $tableContent = $table->save();
+            $tableInfo = explode('#EXPLODE#', $tableContent);
+
+            $tr = $html->parents($tdNode, 'tr');
+            $tr->nodes = null;
+            $tr->outertext = $tableInfo[1] . '#PAGEBREAK#' . $tableInfo[0];
+        }
+
+        self::$content = $html->getHtml();
+
+        self::$rep['#pagebreak#'] = self::$pagebreak;
+        self::$rep['#PAGEBREAK#'] = self::$pagebreak;
+        $this->replaceContent();
     }
 }

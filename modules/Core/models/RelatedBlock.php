@@ -569,12 +569,22 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
         $regex = '/#RELATED_BLOCK_([0-9]+)_START#/m';
 
         preg_match_all($regex, $content, $matches);
+        $relatedBlockIds = $matches[1];
+
+        $blocks = [];
+
+        foreach ($relatedBlockIds as $relatedBlockId) {
+            $blocks[] = '#RELATED_BLOCK_' . $relatedBlockId . '_START#';
+            $blocks[] = '#RELATED_BLOCK_' . $relatedBlockId . '_END#';
+        }
+
+        $content = Core_RelatedBlock_Model::replaceBlockTags($content, $blocks);
 
         $newContent = '';
         $afterRelatedBlock = '';
         $oldContent = $content;
 
-        foreach ($matches[1] as $relatedBlockId) {
+        foreach ($relatedBlockIds as $relatedBlockId) {
             $relatedBlock = Core_RelatedBlock_Model::getInstanceById($relatedBlockId, $moduleName);
             $relatedBlock->setSourceRecord($recordModel);
             $relatedBlock->setSourceRecordId($recordModel->getId());
@@ -584,11 +594,9 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
             [$relatedBlockContent, $afterRelatedBlock] = explode('#RELATED_BLOCK_' . $relatedBlockId . '_END#', $relatedBlockContent, 2);
 
             $newContent .= $beforeRelatedBlock;
-            $newContent .= '#HIDETR#';
             $newContent .= $relatedBlock->replaceRecords($relatedBlockContent);
-            $newContent .= '#HIDETR#';
+            $newContent = $relatedBlock->replaceLabels($newContent);
             $oldContent = $afterRelatedBlock;
-            $oldContent = $relatedBlock->replaceLabels($oldContent);
         }
 
         $newContent .= $afterRelatedBlock;
@@ -673,10 +681,12 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
         $adb = $this->getDB();
         $result = $this->getDB()->pquery($query);
 
-        $newContent = '#HIDETR#';
         $relatedRecord = Vtiger_Record_Model::getCleanInstance($relatedModuleName);
         $recordLineBreak = Core_RecordLineBreak_Helper::getInstance()
-            ->setRelatedBlock($this);
+            ->setRelatedBlock($this)
+            ->retrieveColumnCountByContent($content);
+
+        $newContent = '';
 
         while ($row = $adb->fetchByAssoc($result)) {
             $relatedRecord->setData($row);
@@ -919,5 +929,21 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
     public function getHeaderFields()
     {
         return $this->get('header_fields');
+    }
+
+    public static function replaceBlockTags($content, $blocks)
+    {
+        $html = Core_SimpleHtmlDom_Helper::getInstance($content);
+
+        foreach ($html->getHtmlNode()->find('td') as $td) {
+            if (!in_array($td->plaintext, $blocks)) {
+                continue;
+            }
+
+            $tr = $td->parent();
+            $tr->outertext = $td->plaintext;
+        }
+
+        return $html->getHtml();
     }
 }
