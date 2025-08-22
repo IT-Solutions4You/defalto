@@ -13,7 +13,7 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
     /**
      * @inheritDoc
      */
-    public function save()
+    public function save(): void
     {
         $productId = $this->get('productid');
 

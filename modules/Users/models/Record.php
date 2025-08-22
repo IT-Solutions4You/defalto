@@ -234,7 +234,7 @@ class Users_Record_Model extends Vtiger_Record_Model
     /**
      * Function to save the current Record Model
      */
-    public function save()
+    public function save(): void
     {
         $newUser = false;
         $userId = $this->getId();
@@ -784,7 +784,7 @@ class Users_Record_Model extends Vtiger_Record_Model
     /**
      * Function to get user groups
      *
-     * @param type $userId
+     * @param int $userId
      *
      * @return <array> - groupId's
      */
@@ -915,7 +915,7 @@ class Users_Record_Model extends Vtiger_Record_Model
     /**
      * Function to delete the current Record Model
      */
-    public function delete()
+    public function delete(): void
     {
         $this->getModule()->deleteRecord($this);
     }

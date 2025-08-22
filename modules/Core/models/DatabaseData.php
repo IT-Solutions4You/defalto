@@ -256,9 +256,11 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
         }
     }
 
-    public function setId(int $id): void
+    public function setId(int $id): self
     {
         $this->set($this->tableId, $id);
+
+        return $this;
     }
 
     public function retrieveFromRequest($request): void
