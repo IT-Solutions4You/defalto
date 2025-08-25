@@ -30,9 +30,15 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
         return null;
     }
 
-    public function setId($value)
+    /**
+     * @param int $id
+     * @return $this
+     */
+    public function setId($id): self
     {
-        return $this->set('templateid', $value);
+        $this->set('templateid', $id);
+
+        return $this;
     }
 
     /**
@@ -337,7 +343,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
         return $groupMemberArray;
     }
 
-    public function delete()
+    public function delete(): void
     {
         $this->getModule()->deleteRecord($this);
     }
@@ -366,7 +372,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
         return 'index.php?module=EMAILMaker&action=Delete&record=' . $this->getId();
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->get('templateid');
     }
@@ -396,7 +402,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
         return 'index.php?module=EMAILMaker&view=' . $module->getDetailViewName() . '&record=' . $this->getId();
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->get('templatename');
     }
