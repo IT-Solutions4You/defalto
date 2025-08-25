@@ -39,53 +39,6 @@ class PDFMaker_IndexAjax_Action extends Vtiger_Action_Controller
         }
     }
 
-    public function SaveProductBlock(Vtiger_Request $request)
-    {
-        PDFMaker_Debugger_Model::GetInstance()->Init();
-
-        $adb = PearDatabase::getInstance();
-        $tplid = $request->get('tplid');
-        $template_name = $request->get('template_name');
-        $body = $request->get('body');
-
-        if (isset($tplid) && $tplid != '') {
-            $sql = 'UPDATE vtiger_pdfmaker_productbloc_tpl SET name=?, body=? WHERE id=?';
-            $adb->pquery($sql, [$template_name, $body, $tplid]);
-        } else {
-            $sql = 'INSERT INTO vtiger_pdfmaker_productbloc_tpl(name, body) VALUES(?,?)';
-            $adb->pquery($sql, [$template_name, $body]);
-        }
-
-        header('Location:index.php?module=PDFMaker&view=ProductBlocks');
-    }
-
-    public function deleteProductBlocks(Vtiger_Request $request)
-    {
-        PDFMaker_Debugger_Model::GetInstance()->Init();
-        $adb = PearDatabase::getInstance();
-
-        $sql = 'DELETE FROM vtiger_pdfmaker_productbloc_tpl WHERE id IN (';
-        $params = [];
-
-        foreach ($_REQUEST as $key => $val) {
-            if (substr($key, 0, 4) == 'chx_' && $val == 'on') {
-                [$dump, $id] = explode('_', $key, 2);
-
-                if (is_numeric($id)) {
-                    $sql .= '?,';
-                    array_push($params, $id);
-                }
-            }
-        }
-
-        if (count($params) > 0) {
-            $sql = rtrim($sql, ',') . ')';
-            $adb->pquery($sql, $params);
-        }
-
-        header('Location:index.php?module=PDFMaker&view=ProductBlocks');
-    }
-
     public function downloadMPDF(Vtiger_Request $request)
     {
         $error = $errTbl = '';

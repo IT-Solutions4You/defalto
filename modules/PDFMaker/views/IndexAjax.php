@@ -77,14 +77,11 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
 
         $adb = PearDatabase::getInstance();
         $id = $request->get('return_id');
-        $sql = "SELECT CASE WHEN vtiger_products.productid != '' THEN vtiger_products.productname ELSE vtiger_service.servicename END AS productname, 
-                vtiger_inventoryproductrel.sequence_no, df_inventoryitem.productid
-              FROM vtiger_inventoryproductrel
-              LEFT JOIN vtiger_products 
-                ON vtiger_products.productid=df_inventoryitem.productid 
-              LEFT JOIN vtiger_service 
-                ON vtiger_service.serviceid=df_inventoryitem.productid
-              WHERE id=? order by sequence_no";
+        $sql = "SELECT df_inventoryitem.item_text as productname, df_inventoryitem.sequence, df_inventoryitem.productid
+              FROM df_inventoryitem
+              LEFT JOIN vtiger_products ON vtiger_products.productid=df_inventoryitem.productid 
+              LEFT JOIN vtiger_service ON vtiger_service.serviceid=df_inventoryitem.productid
+              WHERE parentid=? order by sequence";
         $result = $adb->pquery($sql, [$id]);
 
         $saved_sql = 'SELECT productid, sequence, show_header, show_subtotal FROM vtiger_pdfmaker_breakline WHERE crmid=?';
@@ -115,7 +112,7 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
 
         if ($num_rows > 0) {
             while ($row = $adb->fetchByAssoc($result)) {
-                $seq = $row['sequence_no'];
+                $seq = $row['sequence'];
                 $productid = $row['productid'];
 
                 if (isset($saved_products[$productid . '_' . $seq])) {

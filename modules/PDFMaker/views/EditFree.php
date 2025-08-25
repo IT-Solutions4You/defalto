@@ -41,6 +41,9 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
         return 'EditViewPreProcess.tpl';
     }
 
+    /**
+     * @throws Exception
+     */
     public function process(Vtiger_Request $request)
     {
         PDFMaker_Debugger_Model::GetInstance()->Init();
@@ -344,49 +347,14 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
         //$vatblock_table = ereg_replace(" {2,}", ' ', $vatblock_table); //preg_replace
         $viewer->assign('VATBLOCK_TABLE', $vatblock_table);
 
-        $tacModules = [];
-        $tac4you = is_numeric(getTabId('Tac4you'));
-
-        if ($tac4you == true) {
-            $sql = 'SELECT tac4you_module FROM vtiger_tac4you_module WHERE presence = ?';
-            $result = $adb->pquery($sql, ['1']);
-
-            while ($row = $adb->fetchByAssoc($result)) {
-                $tacModules[$row['tac4you_module']] = $row['tac4you_module'];
-            }
-        }
-
-        $desc4youModules = [];
-        $desc4you = is_numeric(getTabId('Descriptions4you'));
-
-        if ($desc4you == true) {
-            $sql = 'SELECT b.name FROM vtiger_links AS a INNER JOIN vtiger_tab AS b USING (tabid) WHERE linktype = ? AND linkurl = ?';
-            $result = $adb->pquery($sql, ['DETAILVIEWWIDGET', 'block://ModDescriptions4you:modules/Descriptions4you/ModDescriptions4you.php']);
-
-            while ($row = $adb->fetchByAssoc($result)) {
-                $desc4youModules[$row['name']] = $row['name'];
-            }
-        }
-
-//Product block fields start
-// Product bloc templates
-        $sql = 'SELECT * FROM vtiger_pdfmaker_productbloc_tpl';
-        $result = $adb->pquery($sql, []);
-        $Productbloc_tpl[''] = vtranslate('LBL_PLS_SELECT', 'PDFMaker');
-
-        while ($row = $adb->fetchByAssoc($result)) {
-            $Productbloc_tpl[$row['body']] = $row['name'];
-        }
-
-        $viewer->assign('PRODUCT_BLOC_TPL', $Productbloc_tpl);
-        $ProductBlockFields = $PDFMaker->GetProductBlockFields($select_module);
+        $PDFMakerFieldsModel = new PDFMaker_Fields_Model();
+        $ProductBlockFields = $PDFMakerFieldsModel->getInventoryItemsBlockFields($select_module);
 
         foreach ($ProductBlockFields as $viewer_key => $pbFields) {
             $viewer->assign($viewer_key, $pbFields);
         }
 
 //Product block fields end
-        $PDFMakerFieldsModel = new PDFMaker_Fields_Model();
         $SelectModuleFields = $PDFMakerFieldsModel->getSelectModuleFields($select_module);
         $RelatedModules = $PDFMakerFieldsModel->getRelatedModules($select_module);
 

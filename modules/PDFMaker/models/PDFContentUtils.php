@@ -188,27 +188,6 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
         return $content;
     }
 
-    public function getInventoryBreaklines($id)
-    {
-        $db = PearDatabase::getInstance();
-        $res = $db->pquery('SELECT productid, sequence, show_header, show_subtotal FROM vtiger_pdfmaker_breakline WHERE crmid=?', [$id]);
-        $products = [];
-        $show_header = 0;
-        $show_subtotal = 0;
-
-        while ($row = $db->fetchByAssoc($res)) {
-            $products[$row['productid'] . '_' . $row['sequence']] = $row['sequence'];
-            $show_header = $row['show_header'];
-            $show_subtotal = $row['show_subtotal'];
-        }
-
-        $output['products'] = $products;
-        $output['show_header'] = $show_header;
-        $output['show_subtotal'] = $show_subtotal;
-
-        return $output;
-    }
-
     public function getUserImage($id)
     {
         if (isset($id) and $id != '') {
@@ -287,27 +266,6 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
         }
 
         return $currency_info;
-    }
-
-    public function getInventoryProductsQuery()
-    {
-        $query = "select case when vtiger_products.productid != '' then vtiger_products.productname else vtiger_service.servicename end as productname," .
-            " df_inventoryitem.productid as psid," .
-            " case when vtiger_products.productid != '' then vtiger_products.product_no else vtiger_service.service_no end as psno," .
-            " case when vtiger_products.productid != '' then 'Products' else 'Services' end as entitytype," .
-            " case when vtiger_products.productid != '' then vtiger_products.unit_price else vtiger_service.unit_price end as unit_price," .
-            " case when vtiger_products.productid != '' then vtiger_products.usageunit else vtiger_service.service_usageunit end as usageunit," .
-            " case when vtiger_products.productid != '' then vtiger_products.qty_per_unit else vtiger_service.qty_per_unit end as qty_per_unit," .
-            " case when vtiger_products.productid != '' then vtiger_products.qtyinstock else 'NA' end as qtyinstock," .
-            " case when vtiger_products.productid != '' then c1.description else c2.description end as psdescription, vtiger_inventoryproductrel.* " .
-            " from vtiger_inventoryproductrel" .
-            " left join vtiger_products on vtiger_products.productid=df_inventoryitem.productid " .
-            " left join vtiger_crmentity as c1 on c1.crmid = vtiger_products.productid " .
-            " left join vtiger_service on vtiger_service.serviceid=df_inventoryitem.productid " .
-            " left join vtiger_crmentity as c2 on c2.crmid = vtiger_service.serviceid " .
-            " where id = ? ORDER BY sequence_no";
-
-        return $query;
     }
 
     public function getContactImage($id, $site_url)
@@ -426,27 +384,21 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
     public function getInventoryImagesQuery($isProductModule)
     {
         if ($isProductModule === false) {
-            $query = 'SELECT df_inventoryitem.productid, vtiger_inventoryproductrel.sequence_no, vtiger_attachments.*
-                        FROM vtiger_inventoryproductrel
-                        LEFT JOIN vtiger_seattachmentsrel
-                        ON vtiger_seattachmentsrel.crmid=df_inventoryitem.productid
-                        LEFT JOIN vtiger_attachments
-                        ON vtiger_attachments.attachmentsid=vtiger_seattachmentsrel.attachmentsid
-                        INNER JOIN vtiger_crmentity
-                        ON vtiger_attachments.attachmentsid=vtiger_crmentity.crmid
-                        WHERE vtiger_crmentity.deleted=0 AND vtiger_inventoryproductrel.id=?
-                        ORDER BY vtiger_inventoryproductrel.sequence_no';
+            $query = 'SELECT df_inventoryitem.productid, df_inventoryitem.sequence, vtiger_attachments.*
+                FROM df_inventoryitem
+                LEFT JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.crmid=df_inventoryitem.productid
+                LEFT JOIN vtiger_attachments ON vtiger_attachments.attachmentsid=vtiger_seattachmentsrel.attachmentsid
+                INNER JOIN vtiger_crmentity ON vtiger_attachments.attachmentsid=vtiger_crmentity.crmid
+                WHERE vtiger_crmentity.deleted=0 AND df_inventoryitem.inventoryitemid=?
+                ORDER BY df_inventoryitem.sequence';
         } else {
-            $query = "SELECT vtiger_products.productid, '1' AS sequence_no,
-                    vtiger_attachments.*
-                    FROM vtiger_products
-                    LEFT JOIN vtiger_seattachmentsrel
-                    ON vtiger_seattachmentsrel.crmid=vtiger_products.productid
-                    LEFT JOIN vtiger_attachments
-                    ON vtiger_attachments.attachmentsid=vtiger_seattachmentsrel.attachmentsid
-                    INNER JOIN vtiger_crmentity
-                    ON vtiger_attachments.attachmentsid=vtiger_crmentity.crmid
-                    WHERE vtiger_crmentity.deleted=0 AND vtiger_products.productid=? ORDER BY vtiger_attachments.attachmentsid";
+            $query = "SELECT vtiger_products.productid, '1' AS sequence_no, vtiger_attachments.*
+                FROM vtiger_products
+                LEFT JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.crmid=vtiger_products.productid
+                LEFT JOIN vtiger_attachments ON vtiger_attachments.attachmentsid=vtiger_seattachmentsrel.attachmentsid
+                INNER JOIN vtiger_crmentity ON vtiger_attachments.attachmentsid=vtiger_crmentity.crmid
+                WHERE vtiger_crmentity.deleted=0 AND vtiger_products.productid=? 
+                ORDER BY vtiger_attachments.attachmentsid";
         }
 
         return $query;

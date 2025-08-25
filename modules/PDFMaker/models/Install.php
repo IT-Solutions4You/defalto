@@ -24,6 +24,7 @@ class PDFMaker_Install_Model extends Core_Install_Model
     public function addCustomLinks(): void
     {
         $this->updateCustomLinks();
+        $this->insertPDFTemplates();
 
         Settings_MenuEditor_Module_Model::addModuleToApp($this->moduleName, $this->parentName);
     }
@@ -86,40 +87,20 @@ class PDFMaker_Install_Model extends Core_Install_Model
 
     public function insertPDFTemplates()
     {
-        $table = 'vtiger_pdfmaker';
-        $tableSettings = 'vtiger_pdfmaker_settings';
-        // Product block 01
-        $productBlock = [
-            'name' => 'Product block for group tax',
-            'body' => file_get_contents('modules/PDFMaker/resources/templates/ProductBlockGroupTax.html'),
-        ];
-
-        if (!$this->isProductBlockExists($productBlock['name'])) {
-            $this->getTable('vtiger_pdfmaker_productbloc_tpl', null)->insertData($productBlock);
-        }
-
-        // Product block 02
-        $productBlock = [
-            'name' => 'Product block for individual tax',
-            'body' => file_get_contents('modules/PDFMaker/resources/templates/ProductBlockIndividualTax.html'),
-        ];
-
-        if (!$this->isProductBlockExists($productBlock['name'])) {
-            $this->getTable('vtiger_pdfmaker_productbloc_tpl', null)->insertData($productBlock);
-        }
-
+        /** @var PDFMaker_Record_Model $recordModel */
+        $recordModel = Vtiger_Record_Model::getCleanInstance('PDFMaker');
         // Template 01
-        $dataId = $this->db->getUniqueID($table);
-        $data = array(
-            'templateid' => $dataId,
+        $templateId = $recordModel->getTemplateIdByName('Invoice');
+        $data = [
+            'templateid' => $templateId,
             'filename' => 'Invoice',
             'module' => 'Invoice',
             'body' => file_get_contents('modules/PDFMaker/resources/templates/Invoice.html'),
             'description' => 'Template for Invoice',
             'deleted' => '0',
-        );
-        $dataSettings = array(
-            'templateid' => $dataId,
+        ];
+        $dataSettings = [
+            'templateid' => $templateId,
             'margin_top' => 2.0,
             'margin_bottom' => 2.0,
             'margin_left' => 2.0,
@@ -139,25 +120,21 @@ class PDFMaker_Install_Model extends Core_Install_Model
             'sharingtype' => 'public',
             'disp_header' => 3,
             'disp_footer' => 7,
-        );
-
-        if (!$this->isTemplateExists($data['filename'])) {
-            $this->getTable($table, null)->insertData($data);
-            $this->getTable($tableSettings, null)->insertData($dataSettings);
-        }
+        ];
+        $recordModel->updateTemplate($data, $dataSettings);
 
         // Template 02
-        $dataId = $this->db->getUniqueID($table);
-        $data = array(
-            'templateid' => $dataId,
+        $templateId = $recordModel->getTemplateIdByName('SalesOrder');
+        $data = [
+            'templateid' => $templateId,
             'filename' => 'SalesOrder',
             'module' => 'SalesOrder',
             'body' => file_get_contents('modules/PDFMaker/resources/templates/SalesOrder.html'),
             'description' => 'Template for SalesOrder',
             'deleted' => '0',
-        );
-        $dataSettings = array(
-            'templateid' => $dataId,
+        ];
+        $dataSettings = [
+            'templateid' => $templateId,
             'margin_top' => 2.0,
             'margin_bottom' => 2.0,
             'margin_left' => 2.0,
@@ -177,25 +154,21 @@ class PDFMaker_Install_Model extends Core_Install_Model
             'sharingtype' => 'public',
             'disp_header' => 3,
             'disp_footer' => 7,
-        );
-
-        if (!$this->isTemplateExists($data['filename'])) {
-            $this->getTable($table, null)->insertData($data);
-            $this->getTable($tableSettings, null)->insertData($dataSettings);
-        }
+        ];
+        $recordModel->updateTemplate($data, $dataSettings);
 
         // Template 03
-        $dataId = $this->db->getUniqueID($table);
-        $data = array(
-            'templateid' => $dataId,
+        $templateId = $recordModel->getTemplateIdByName('PurchaseOrder');
+        $data = [
+            'templateid' => $templateId,
             'filename' => 'PurchaseOrder',
             'module' => 'PurchaseOrder',
             'body' => file_get_contents('modules/PDFMaker/resources/templates/PurchaseOrder.html'),
             'description' => 'Template for PurchaseOrder',
             'deleted' => '0',
-        );
-        $dataSettings = array(
-            'templateid' => $dataId,
+        ];
+        $dataSettings = [
+            'templateid' => $templateId,
             'margin_top' => 2.0,
             'margin_bottom' => 2.0,
             'margin_left' => 2.0,
@@ -215,25 +188,21 @@ class PDFMaker_Install_Model extends Core_Install_Model
             'sharingtype' => 'public',
             'disp_header' => 3,
             'disp_footer' => 7,
-        );
+        ];
+        $recordModel->updateTemplate($data, $dataSettings);
 
-        if (!$this->isTemplateExists($data['filename'])) {
-            $this->getTable($table, null)->insertData($data);
-            $this->getTable($tableSettings, null)->insertData($dataSettings);
-        }
-        
         // Template 04
-        $dataId = $this->db->getUniqueID($table);
-        $data = array(
-            'templateid' => $dataId,
+        $templateId = $recordModel->getTemplateIdByName('Quotes');
+        $data = [
+            'templateid' => $templateId,
             'filename' => 'Quotes',
             'module' => 'Quotes',
             'body' => file_get_contents('modules/PDFMaker/resources/templates/Quotes.html'),
             'description' => 'Templates for Quotes',
             'deleted' => '0',
-        );
-        $dataSettings = array(
-            'templateid' => $dataId,
+        ];
+        $dataSettings = [
+            'templateid' => $templateId,
             'margin_top' => 2.0,
             'margin_bottom' => 2.0,
             'margin_left' => 2.0,
@@ -253,12 +222,8 @@ class PDFMaker_Install_Model extends Core_Install_Model
             'sharingtype' => 'public',
             'disp_header' => 3,
             'disp_footer' => 7,
-        );
-
-        if (!$this->isTemplateExists($data['filename'])) {
-            $this->getTable($table, null)->insertData($data);
-            $this->getTable($tableSettings, null)->insertData($dataSettings);
-        }
+        ];
+        $recordModel->updateTemplate($data, $dataSettings);
     }
 
     public function install(): void
@@ -375,21 +340,12 @@ class PDFMaker_Install_Model extends Core_Install_Model
             ->createColumn('disp_header', 'tinyint(1) NOT NULL DEFAULT \'3\'')
             ->createColumn('disp_footer', 'tinyint(1) NOT NULL DEFAULT \'7\'')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`templateid`)');
+    }
+
+    public function migrate(): void
+    {
+        define('MIGRATE_DATA', true);
 
         $this->insertPDFTemplates();
-    }
-
-    public function isProductBlockExists($name)
-    {
-        $result = $this->db->pquery('SELECT name FROM vtiger_pdfmaker_productbloc_tpl WHERE name=?', [$name]);
-
-        return (bool)$this->db->num_rows($result);
-    }
-
-    public function isTemplateExists($name)
-    {
-        $result = $this->db->pquery('SELECT filename FROM vtiger_pdfmaker WHERE filename=?', [$name]);
-
-        return (bool)$this->db->num_rows($result);
     }
 }
