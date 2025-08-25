@@ -34,6 +34,7 @@ class InventoryItem_TaxesForItem_Model
      * @param int $parentId
      *
      * @return array
+     * @throws Exception
      */
     public static function fetchTaxes(int $inventoryItemId, int $productId, int $parentId): array
     {
@@ -44,6 +45,7 @@ class InventoryItem_TaxesForItem_Model
 
     /**
      * @return array
+     * @throws Exception
      */
     protected function fetchTaxesForItem(): array
     {

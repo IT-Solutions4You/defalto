@@ -149,7 +149,7 @@ class InventoryItem_Utils_Helper
      * @param int $productId
      *
      * @return array
-     * @throws AppException
+     * @throws Exception
      */
     public static function getTaxesForProduct(int $productId): array
     {
