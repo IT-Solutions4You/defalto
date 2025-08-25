@@ -213,6 +213,22 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
         self::$content = Core_InventoryItemsBlock_Model::replaceAll(self::$recordModel, self::$content, $this->getTemplateModule());
     }
 
+    protected function convertVatBlocks()
+    {
+        if (!str_contains(self::$content, '#VATBLOCK_')) {
+            return;
+        }
+
+        Core_VatBlock_Model::$numberUserConfig = Core_VatBlock_Model::$currencyUserConfig = [
+            'currency_grouping_separator' => self::$thousands_separator,
+            'currency_decimal_separator'  => self::$decimal_point,
+            'truncate_trailing_zeros'     => false,
+            'no_of_currency_decimals'     => self::$decimals,
+        ];
+
+        self::$content = Core_VatBlock_Model::replaceAll(self::$recordModel, self::$content, $this->getTemplateModule());
+    }
+
     public function retrieveRecordModel($recordId): void
     {
         if (!self::$recordModel && !empty($recordId) && isRecordExists($recordId)) {

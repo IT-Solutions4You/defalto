@@ -58,19 +58,20 @@ class InventoryItem_TaxesForItem_Model
 
     /**
      * @return int
+     * @throws Exception
      */
     private function fetchSelectedTaxForItem(): int
     {
-        $taxId = 0;
-        $db = PearDatabase::getInstance();
-        $result = $db->pquery('SELECT taxid FROM df_inventoryitemtaxrel WHERE inventoryitemid = ?', [$this->inventoryItemId]);
+        $taxeRecord = Core_TaxRecord_Model::getInstance($this->inventoryItemId);
 
-        if ($db->num_rows($result)) {
-            $row = $db->fetchByAssoc($result);
-            $taxId = (int)$row['taxid'];
+        /** @var Core_Tax_Model $tax */
+        foreach ($taxeRecord->getTaxes() as $tax) {
+            if ($tax->isActiveForRecord()) {
+                return $tax->getId();
+            }
         }
 
-        return $taxId;
+        return 0;
     }
 
     /**

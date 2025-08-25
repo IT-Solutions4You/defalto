@@ -37,6 +37,10 @@ class Core_TemplateFields_Helper extends Vtiger_Base_Model
             $fields['CURRENCYSYMBOL'] = vtranslate('LBL_CURRENCY_SYMBOL', $this->labelModule);
             $fields['CURRENCYCODE'] = vtranslate('LBL_CURRENCY_CODE', $this->labelModule);
         }
+
+        if('tax_amount' === $fieldName) {
+            $fields['VATBLOCK'] = vtranslate('LBL_VARIABLE_VAT_BLOCK', $this->labelModule);
+        }
     }
 
     public function setModuleFields($module, $module_id, $skip_related = false)

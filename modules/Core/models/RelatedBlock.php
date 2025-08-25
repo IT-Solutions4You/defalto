@@ -558,8 +558,8 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 
     /**
      * @param Vtiger_Record_Model $recordModel
-     * @param string              $content
-     *
+     * @param string $content
+     * @param string $templateModule
      * @return string
      * @throws Exception
      */
