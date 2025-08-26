@@ -554,7 +554,6 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             let form = jQuery('#InventoryItemPopupForm');
             let callbackParams = {
                 'cb': function (container) {
-                    console.log(container);
                     self.registerItemPopupEditEvents(container);
                     jQuery('input.item_text', container).focus();
                     const overallDiscount = jQuery('#overall_discount_percent').val();
@@ -600,7 +599,6 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             let form = jQuery('#InventoryItemPopupForm');
             let callbackParams = {
                 'cb': function (container) {
-                    console.log(container);
                     self.registerItemPopupEditEvents(container);
                     jQuery('input.item_text', container).focus();
                     const overallDiscount = jQuery('#overall_discount_percent').val();
