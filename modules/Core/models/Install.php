@@ -598,23 +598,33 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             }
 
             self::logSuccess('Filter end creating');
-
-            self::logSuccess('Link start creating');
-
-            if (!empty($moduleInstance->name) && !empty($moduleInstance->parent)) {
-                Settings_MenuEditor_Module_Model::addModuleToApp($moduleInstance->name, $moduleInstance->parent);
-
-                self::logSuccess('Link created');
-            } else {
-                self::logError('Link not created');
-            }
         }
 
+        $this->updateMenuLink();
         $this->install();
         $this->postInstall();
 
         self::logSuccess('Module result: ' . $moduleName);
         self::logSuccess($moduleInstance);
+    }
+
+    /**
+     * @return void
+     */
+    public function updateMenuLink(): void
+    {
+        self::logSuccess('Link start creating');
+
+        $moduleName = $this->getModuleName();
+        $moduleInstance = $this->getModuleInstance($moduleName);
+
+        if (!empty($moduleInstance->name) && !empty($moduleInstance->parent)) {
+            Settings_MenuEditor_Module_Model::addModuleToApp($moduleInstance->name, $moduleInstance->parent);
+
+            self::logSuccess('Link created');
+        } else {
+            self::logError('Link not created');
+        }
     }
 
     public function postInstall(): void

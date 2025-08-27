@@ -19,7 +19,7 @@
 class Assets extends CRMEntity
 {
     public string $moduleName = 'Assets';
-    public string $parentName = 'Inventory';
+    public string $parentName = 'INVENTORY';
 
     var $db, $log; // Used in class functions of CRMEntity
 

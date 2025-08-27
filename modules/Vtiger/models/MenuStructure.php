@@ -32,43 +32,6 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model
     /**
      * @var array
      */
-    public static array $additionsToAppMap = [
-        'Home'             => ['HOME'],
-        'Contacts'         => ['MARKETING', 'SALES', 'INVENTORY', 'SUPPORT', 'PROJECT'],
-        'Accounts'         => ['HOME', 'MARKETING', 'SALES', 'INVENTORY', 'SUPPORT', 'PROJECT'],
-        'Campaigns'        => ['MARKETING'],
-        'Leads'            => ['HOME', 'MARKETING'],
-        'Potentials'       => ['HOME', 'SALES'],
-        'Quotes'           => ['SALES'],
-        'Invoice'          => ['INVENTORY'],
-        'HelpDesk'         => ['SUPPORT'],
-        'Faq'              => ['SUPPORT'],
-        'Assets'           => ['SUPPORT'],
-        'Products'         => ['SALES', 'INVENTORY'],
-        'Services'         => ['SALES', 'INVENTORY'],
-        'PriceBooks'       => ['INVENTORY'],
-        'Vendors'          => ['INVENTORY'],
-        'PurchaseOrder'    => ['INVENTORY'],
-        'SalesOrder'       => ['INVENTORY'],
-        'Project'          => ['PROJECT'],
-        'ProjectTask'      => ['PROJECT'],
-        'ProjectMilestone' => ['PROJECT'],
-        'ServiceContracts' => ['SUPPORT'],
-        'Rss'              => ['TOOLS'],
-        'Portal'           => ['TOOLS'],
-        'RecycleBin'       => ['TOOLS'],
-        'PDFMaker'         => ['TOOLS'],
-        'EMAILMaker'       => ['TOOLS'],
-        'Reporting'        => ['TOOLS'],
-        'ITS4YouEmails'    => ['TOOLS'],
-        'Installer'        => ['TOOLS'],
-        'Appointments'     => ['HOME', 'TOOLS'],
-        'Documents'        => ['HOME', 'TOOLS'],
-    ];
-
-    /**
-     * @var array
-     */
     public static array $ignoredModules = [
         'ModComments',
     ];
@@ -151,10 +114,6 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model
             }
 
             $parent = ucfirst(strtolower($menuModel->get('parent') ? $menuModel->get('parent') : ''));
-
-            if ($parent == 'Sales' || $parent == 'Marketing') {
-                $parent = 'MARKETING_AND_SALES';
-            }
             $menuListArray[self::MORE_MENU_INDEX][strtoupper($parent)][$menuModel->get('name')] = $menuModel;
             $menuGroupedListByParent[strtoupper($parent)][$menuModel->get('name')] = $menuModel;
         }
@@ -234,9 +193,21 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model
         return self::$ignoredModules;
     }
 
-    public static function getAdditionsToAppMap()
+    /**
+     * @return array
+     */
+    public static function getAdditionsToAppMap(): array
     {
-        return self::$additionsToAppMap;
+        $sequences = (new Settings_MenuEditor_Module_Model())->getDefaultSequence();
+        $additions = [];
+
+        foreach ($sequences as $sequenceParent => $sequenceModules) {
+            foreach ($sequenceModules as $sequenceModule) {
+                $additions[$sequenceModule][] = $sequenceParent;
+            }
+        }
+
+        return $additions;
     }
 
     public function regroupMenuByParent($menuGroupedByParent): array

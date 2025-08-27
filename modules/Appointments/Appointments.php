@@ -64,7 +64,7 @@ class Appointments extends CRMEntity
     /**
      * @var string
      */
-    public string $parentName = 'Tools';
+    public string $parentName = 'HOME';
 
     /**
      * @var array

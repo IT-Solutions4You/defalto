@@ -24,7 +24,7 @@ include_once 'include/Zend/Json.php';
 class SMSNotifier extends SMSNotifierBase
 {
     public string $moduleName = 'SMSNotifier';
-    public string $parentName = 'Sales';
+    public string $parentName = '';
 
     /**
      * Check if there is active server configured.
