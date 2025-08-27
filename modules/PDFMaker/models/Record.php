@@ -192,7 +192,8 @@ class PDFMaker_Record_Model extends Vtiger_Record_Model
     public function updateTemplate(array $data, array $dataSettings): void
     {
         if (empty($data['templateid'])) {
-            $dataSettings['templateid'] = $data['templateid'] = $this->db->getUniqueID('vtiger_pdfmaker');
+            $this->retrieveDB();
+            $dataSettings['templateid'] = $data['templateid'] = $this->getDB()->getUniqueID('vtiger_pdfmaker');
 
             $this->getPDFMakerTable()->insertData($data);
             $this->getPDFMakerSettingsTable()->insertData($dataSettings);
