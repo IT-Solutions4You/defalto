@@ -118,8 +118,6 @@ class Core_TemplateFields_Helper extends Vtiger_Base_Model
                         }
                     }
                 }
-                // ITS4YOU MaJu
-                //$block_info_arr[$row['blocklabel']] = $field_id_array;
                 if (!empty($block_info_arr[$row['blocklabel']])) {
                     foreach ($field_id_array as $field_id_array_value) {
                         $block_info_arr[$row['blocklabel']][] = $field_id_array_value;
@@ -127,7 +125,6 @@ class Core_TemplateFields_Helper extends Vtiger_Base_Model
                 } else {
                     $block_info_arr[$row['blocklabel']] = $field_id_array;
                 }
-                // ITS4YOU-END
             }
         }
 
