@@ -90,10 +90,6 @@ class PDFMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
         $baseModuleModel = $moduleModel = $this->getModule();
         $blockModelList = $moduleModel->getBlocks();
 
-        if ($taskTypeName == 'VTUpdateFieldsTask') {
-            unset($blockModelList['LBL_ITEM_DETAILS']);
-        }
-
         foreach ($blockModelList as $blockLabel => $blockModel) {
             $fieldModelList = $blockModel->getFields();
 
@@ -141,10 +137,6 @@ class PDFMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
             foreach ($referenceModules as $refModule) {
                 $moduleModel = Vtiger_Module_Model::getInstance($refModule);
                 $blockModelList = $moduleModel->getBlocks();
-
-                if ($taskTypeName == 'VTUpdateFieldsTask') {
-                    unset($blockModelList['LBL_ITEM_DETAILS']);
-                }
 
                 foreach ($blockModelList as $blockLabel => $blockModel) {
                     $fieldModelList = $blockModel->getFields();

@@ -19,7 +19,7 @@
 // Note is used to store customer information.
 class Documents extends CRMEntity
 {
-    public string $parentName = 'Tools';
+    public string $parentName = 'HOME';
     public $log;
     public $db;
     public $table_name = "vtiger_notes";

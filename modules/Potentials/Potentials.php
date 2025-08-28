@@ -32,7 +32,7 @@ class Potentials extends CRMEntity
 {
     public $log;
     public $db;
-    public string $parentName = 'Sales';
+    public string $parentName = 'HOME';
     public $module_name = "Potentials";
     public $table_name = "vtiger_potential";
     public $table_index = 'potentialid';

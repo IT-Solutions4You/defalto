@@ -26,7 +26,7 @@ class Reporting extends CRMEntity
      */
     public $db, $log;
     public string $moduleName = 'Reporting';
-    public string $parentName = 'Tools';
+    public string $parentName = 'ANALYTICS';
     /**
      * Mandatory for Saving, Include tables related to this module.
      */

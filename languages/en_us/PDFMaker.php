@@ -538,6 +538,7 @@ $languageStrings = [
     "LBL_STYLES"                               => "Styles",
     "LBL_INSTALL_STEP_1"                       => "Welcome",
     'SINGLE_PDFMaker'                          => 'PDFMaker',
+    'LBL_VARIABLE_PRODUCTCODE'                 => 'Product / Service code',
 ];
 
 $jsLanguageStrings = [

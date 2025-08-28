@@ -20,5 +20,5 @@ class RecycleBin extends CRMExtension
 {
     public string $moduleLabel = 'Recycle Bin';
     public string $moduleName = 'RecycleBin';
-    public string $parentName = 'Tools';
+    public string $parentName = 'TOOLS';
 }

@@ -19,7 +19,7 @@
 class ProjectMilestone extends CRMEntity
 {
     public string $moduleName = 'ProjectMilestone';
-    public string $parentName = 'Project';
+    public string $parentName = 'PROJECT';
 
     var $db, $log; // Used in class functions of CRMEntity
 

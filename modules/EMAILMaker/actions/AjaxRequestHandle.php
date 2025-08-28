@@ -86,11 +86,10 @@ class EMAILMaker_AjaxRequestHandle_Action extends Vtiger_Action_Controller
                 break;
             case "fill_module_product_fields":
                 $module = addslashes($request->get("productmod"));
-                $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
-                $Product_Block_Fields = $EMAILMaker->GetProductBlockFields($module);
-                $keys = implode('||', array_keys($Product_Block_Fields["SELECT_PRODUCT_FIELD"]));
-                $values = implode('||', $Product_Block_Fields["SELECT_PRODUCT_FIELD"]);
-                echo $keys . '|@|' . $values;
+                $allFields = (new EMAILMaker_Fields_Model())->getInventoryItemsBlockFields($module);
+                $response = new Vtiger_Response();
+                $response->setResult(['success' => true, 'fields' => $allFields['SELECT_PRODUCT_FIELD']]);
+                $response->emit();
                 break;
         }
     }

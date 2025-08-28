@@ -23,7 +23,7 @@
 
 class Campaigns extends CRMEntity
 {
-    public string $parentName = 'SALES';
+    public string $parentName = 'MARKETING';
     public $log;
     public $db;
     public $table_name = "vtiger_campaign";

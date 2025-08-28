@@ -41,7 +41,7 @@ class SalesOrder_Record_Model extends Vtiger_Record_Model
     /**
      * @inheritDoc
      */
-    public function save()
+    public function save(): void
     {
         if ($this->has('conversion_rate')) {
             $conversion_rate = $this->get('conversion_rate');

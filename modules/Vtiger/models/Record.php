@@ -19,7 +19,7 @@
 /**
  * Vtiger Entity Record Model Class
  */
-class Vtiger_Record_Model extends Core_DatabaseTable_Model
+class Vtiger_Record_Model extends Core_DatabaseData_Model
 {
     protected $module = false;
     public $entity;
@@ -28,9 +28,9 @@ class Vtiger_Record_Model extends Core_DatabaseTable_Model
      * Function to get the id of the record
      * @return <Number> - Record Id
      */
-    public function getId()
+    public function getId(): int
     {
-        return $this->get('id');
+        return (int)$this->get('id');
     }
 
     /**
@@ -38,11 +38,13 @@ class Vtiger_Record_Model extends Core_DatabaseTable_Model
      *
      * @param <type> $value - id value
      *
-     * @return <Object> - current instance
+     * @return self - current instance
      */
-    public function setId($value)
+    public function setId($id): self
     {
-        return $this->set('id', $value);
+        $this->set('id', $id);
+
+        return $this;
     }
 
     /**
@@ -64,7 +66,7 @@ class Vtiger_Record_Model extends Core_DatabaseTable_Model
      * Fuction to get the Name of the record
      * @return <String> - Entity Name of the record
      */
-    public function getName()
+    public function getName(): string
     {
         $displayName = $this->get('label');
         $module = $this->getModule();
@@ -311,6 +313,28 @@ class Vtiger_Record_Model extends Core_DatabaseTable_Model
     }
 
     /**
+     * @param string    $fieldName
+     * @param false|int $recordId
+     *
+     * @return mixed
+     * @throws Exception
+     */
+    public function getRelatedBlockDisplayValue(string $fieldName, false|int $recordId = false): mixed
+    {
+        if (empty($recordId)) {
+            $recordId = $this->getId();
+        }
+
+        $fieldModel = $this->getModule()->getField($fieldName);
+
+        if ($fieldModel) {
+            return $fieldModel->getRelatedBlockDisplayValue($this->get($fieldName), (int)$recordId, $this);
+        }
+
+        return false;
+    }
+
+    /**
      * Function to retieve display value for a field
      *
      * @param string $fieldName - field name for which values need to get
@@ -363,7 +387,7 @@ class Vtiger_Record_Model extends Core_DatabaseTable_Model
     /**
      * Function to save the current Record Model
      */
-    public function save()
+    public function save(): void
     {
         $this->getModule()->saveRecord($this);
     }
@@ -371,7 +395,7 @@ class Vtiger_Record_Model extends Core_DatabaseTable_Model
     /**
      * Function to delete the current Record Model
      */
-    public function delete()
+    public function delete(): void
     {
         $this->getModule()->deleteRecord($this);
     }
@@ -1075,5 +1099,33 @@ class Vtiger_Record_Model extends Core_DatabaseTable_Model
             ->createKey('KEY IF NOT EXISTS `crmentity_deleted_idx` (`deleted`)')
             ->createKey('KEY IF NOT EXISTS `crm_ownerid_del_setype_idx` (`assigned_user_id`,`deleted`,`setype`)')
             ->createKey('KEY IF NOT EXISTS `vtiger_crmentity_labelidx` (`label`)');
+    }
+
+    public function getDescription(): string
+    {
+        return (string)$this->getDisplayValue($this->getDescriptionField());
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getNumber(): string
+    {
+        return (string)$this->getDisplayValue($this->getNumberField());
+    }
+
+    public function getDescriptionField(): string
+    {
+        return 'description';
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getNumberField()
+    {
+        $data = (new Vtiger_Field_Model())->getFieldTable()->selectData(['fieldname as no'], ['uitype' => 4, 'tabid' => $this->getModule()->getId()]);
+
+        return $data['no'];
     }
 }

@@ -11,8 +11,6 @@
 class EMAILMaker_Edit_View extends Vtiger_Index_View
 {
     public $cu_language = "";
-    private $ModuleFields = [];
-    private $All_Related_Modules = [];
 
     public function __construct()
     {
@@ -305,11 +303,10 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         }
 
         $viewer->assign('LISTVIEW_BLOCK_TPL', EMAILMaker_Fields_Model::getListViewBlockOptions());
-        $viewer->assign('PRODUCT_BLOC_TPL', EMAILMaker_Fields_Model::getProductBlockTemplates());
 
-        $ProductBlockFields = $EMAILMaker->GetProductBlockFields();
+        $EMAILMakerFieldsModel = new EMAILMaker_Fields_Model();
 
-        foreach ($ProductBlockFields as $viewer_key => $pbFields) {
+        foreach ($EMAILMakerFieldsModel->getInventoryItemsBlockFields() as $viewer_key => $pbFields) {
             $viewer->assign($viewer_key, $pbFields);
         }
 
@@ -317,7 +314,6 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         $viewer->assign('SUBJECT_FIELDS', $EMAILMaker->getSubjectFields());
 
         if (!empty($select_module)) {
-            $EMAILMakerFieldsModel = new EMAILMaker_Fields_Model();
             $SelectModuleFields = $EMAILMakerFieldsModel->getSelectModuleFields($select_module);
 
             $viewer->assign('RELATED_MODULES', $EMAILMakerFieldsModel->getRelatedModules($select_module));
@@ -340,11 +336,6 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
             $viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
 
             $recordStructure = $recordStructureInstance->getStructure();
-
-            if (in_array($selectedModuleName, InventoryItem_Utils_Helper::getInventoryItemModules())) {
-                $itemsBlock = 'LBL_ITEM_DETAILS';
-                unset($recordStructure[$itemsBlock]);
-            }
 
             $viewer->assign('RECORD_STRUCTURE', $recordStructure);
 

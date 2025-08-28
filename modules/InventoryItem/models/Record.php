@@ -13,7 +13,7 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
     /**
      * @inheritDoc
      */
-    public function save()
+    public function save(): void
     {
         $productId = $this->get('productid');
 
@@ -111,63 +111,58 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
      * @param int $taxId
      *
      * @return void
+     * @throws Exception
      */
-    public function saveTaxId(int $taxId)
+    public function saveTaxId(int $taxId): void
     {
         if (!$this->getId()) {
             return;
         }
 
-        $db = PearDatabase::getInstance();
+        $taxPercentage = $this->get('tax');
         $taxRel = $this->retrieveTaxRel();
-        $oldTaxId = $taxRel['taxid'];
+        $oldTaxId = $taxRel['taxId'];
         $oldTaxPercentage = $taxRel['percentage'];
 
-        if ($oldTaxId === $taxId && $oldTaxPercentage == $this->get('tax')) {
+        if ($oldTaxId === $taxId && $oldTaxPercentage == $taxPercentage) {
             return;
         }
 
-        $sql = 'INSERT INTO df_inventoryitemtaxrel (inventoryitemid, taxid, percentage, amount) VALUES (?, ?, ?, ?) 
-                            ON DUPLICATE KEY UPDATE taxid = ?, percentage = ?, amount = ?';
-        $params = [
-            $this->getId(),
-            $taxId,
-            $this->get('tax'),
-            $this->get('tax_amount'),
-            $taxId,
-            $this->get('tax'),
-            $this->get('tax_amount'),
-        ];
-        $db->pquery($sql, $params);
+        $taxRecord = Core_TaxRecord_Model::getInstance($this->getId());
+        $taxRecord->set('record_id', $this->getId());
+        $taxRecord->set('tax_id', $oldTaxId);
+        $taxRecord->retrieveId();
+
+        if (empty($taxPercentage)) {
+            $taxRecord->delete();
+        } else {
+            $taxRecord->set('tax_id', $taxId);
+            $taxRecord->set('percentage', $taxPercentage);
+            $taxRecord->set('amount', $this->get('tax_amount'));
+            $taxRecord->save();
+        }
     }
 
     /**
      * @return array
+     * @throws Exception
      */
     public function retrieveTaxRel(): array
     {
-        $db = PearDatabase::getInstance();
-        $taxId = 0;
-        $percentage = 0.0;
-
-        if (!$this->getId()) {
-            return [
-                'taxId'      => $taxId,
-                'percentage' => $percentage,
-            ];
-        }
-
-        $result = $db->pquery('SELECT taxid, percentage FROM df_inventoryitemtaxrel WHERE inventoryitemid = ?', [$this->getId()]);
-
-        if ($db->num_rows($result)) {
-            $row = $db->fetchByAssoc($result);
-            $taxId = (int)$row['taxid'];
-            $percentage = (float)$row['percentage'];
+        $taxRecord = Core_TaxRecord_Model::getInstance($this->getId());
+        /** @var Core_Tax_Model $tax */
+        foreach ($taxRecord->getTaxes() as $tax) {
+            if ($tax->isActiveForRecord()) {
+                return [
+                    'taxId' => $tax->getId(),
+                    'percentage' => $tax->getPercentage(),
+                ];
+            }
         }
 
         return [
-            'taxId'      => $taxId,
-            'percentage' => $percentage,
+            'taxId' => 0,
+            'percentage' => 0.0,
         ];
     }
 }

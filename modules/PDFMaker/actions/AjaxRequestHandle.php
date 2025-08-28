@@ -14,6 +14,9 @@ class PDFMaker_AjaxRequestHandle_Action extends Vtiger_Action_Controller
     {
     }
 
+    /**
+     * @throws Exception
+     */
     public function process(Vtiger_Request $request)
     {
         $adb = PearDatabase::getInstance();
@@ -36,13 +39,11 @@ class PDFMaker_AjaxRequestHandle_Action extends Vtiger_Action_Controller
                 $response->emit();
                 break;
 
-            case 'fill_module_product_fields':
-                $module = addslashes($request->get('productmod'));
-                $PDFMaker = new PDFMaker_PDFMaker_Model();
-                $Product_Block_Fields = $PDFMaker->GetProductBlockFields($module);
-                $keys = implode('||', array_keys($Product_Block_Fields['SELECT_PRODUCT_FIELD']));
-                $values = implode('||', $Product_Block_Fields['SELECT_PRODUCT_FIELD']);
-
+            case "fill_module_product_fields":
+                $module = addslashes($request->get("productmod"));
+                $Product_Block_Fields = (new EMAILMaker_Fields_Model())->getInventoryItemsBlockFields($module);
+                $keys = implode('||', array_keys($Product_Block_Fields["SELECT_PRODUCT_FIELD"]));
+                $values = implode('||', $Product_Block_Fields["SELECT_PRODUCT_FIELD"]);
                 echo $keys . '|@|' . $values;
                 break;
         }

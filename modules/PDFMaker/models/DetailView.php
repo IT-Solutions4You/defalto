@@ -26,24 +26,16 @@ class PDFMaker_DetailView_Model extends Vtiger_DetailView_Model
         $linkTypes = ['DETAILVIEWBASIC', 'DETAILVIEW'];
         $moduleModel = $this->getModule();
         $recordModel = $this->getRecord();
-        $detailViewLink = [
-            'linktype'  => 'DETAILVIEWBASIC',
+
+        $detailViewLink = Vtiger_Link_Model::getInstanceFromValues([
+            'linktype'  => Vtiger_DetailView_Model::LINK_ADVANCED,
             'linklabel' => 'LBL_EDIT',
             'linkurl'   => $recordModel->getEditViewUrl(),
             'linkicon'  => '<i class="fa fa-pencil"></i>'
-        ];
-        $linkModelList = [];
-        $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);
-        $linkModelListDetails = Vtiger_Link_Model::getAllByType($moduleModel->getId(), $linkTypes, $linkParams);
-        $detailViewBasiclinks = $linkModelListDetails['DETAILVIEWBASIC'];
+        ]);
 
-        unset($linkModelListDetails['DETAILVIEWBASIC']);
-
-        if (!empty($detailViewBasiclinks)) {
-            foreach ($detailViewBasiclinks as $linkModel) {
-                $linkModelList['DETAILVIEW'][] = $linkModel;
-            }
-        }
+        $linkModelList = Vtiger_Link_Model::getAllByType($moduleModel->getId(), $linkTypes, $linkParams);
+        $linkModelList[$detailViewLink->get('linktype')][] = $detailViewLink;
 
         return $linkModelList;
     }

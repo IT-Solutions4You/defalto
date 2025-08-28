@@ -10,7 +10,7 @@
 
 class Core_TaxRecord_Model extends Core_DatabaseData_Model
 {
-    protected array $columns = ['record_id', 'tax_id', 'percentage', 'region_id'];
+    protected array $columns = ['record_id', 'tax_id', 'percentage', 'region_id', 'amount'];
     protected int $recordId = 0;
     protected string $table = 'df_taxes_records';
     protected string $tableId = 'tax_record_id';
@@ -27,6 +27,7 @@ class Core_TaxRecord_Model extends Core_DatabaseData_Model
             ->createColumn('tax_id', 'int(19)')
             ->createColumn('percentage', 'decimal(7,3)')
             ->createColumn('region_id', 'int(19)')
+            ->createColumn('amount', self::$COLUMN_DECIMAL)
             ->createKey('CONSTRAINT `fk_taxes_records_record_id` FOREIGN KEY IF NOT EXISTS (record_id) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE')
             ->createKey('CONSTRAINT `fk_taxes_records_tax_id` FOREIGN KEY IF NOT EXISTS (tax_id) REFERENCES df_taxes(tax_id) ON DELETE CASCADE')
             ->createKey('CONSTRAINT `fk_taxes_records_region_id` FOREIGN KEY IF NOT EXISTS (region_id) REFERENCES df_taxes_regions(region_id) ON DELETE CASCADE');
@@ -57,6 +58,7 @@ class Core_TaxRecord_Model extends Core_DatabaseData_Model
     {
         return [
             'percentage' => $this->get('percentage'),
+            'amount' => $this->get('amount'),
             'record_id'  => $this->get('record_id'),
             'tax_id'     => $this->get('tax_id'),
             'region_id'  => $this->get('region_id') ?? null,
@@ -235,5 +237,15 @@ class Core_TaxRecord_Model extends Core_DatabaseData_Model
     public function setRecordId(int $value): void
     {
         $this->recordId = $value;
+    }
+
+    public function getTaxId(): int
+    {
+        return (int)$this->get('tax_id');
+    }
+
+    public function getPercentage(): float
+    {
+        return (float)$this->get('percentage');
     }
 }

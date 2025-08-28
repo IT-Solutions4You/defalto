@@ -151,15 +151,14 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js", {
     },
 
     getFields: function (moduleName, selectname, fieldName) {
-        var thisInstance = this;
-
-        var urlParams = {
-            "module": "PDFMaker",
-            "formodule": moduleName,
-            "forfieldname": fieldName,
-            "action": "IndexAjax",
-            "mode": "getModuleFields"
-        };
+        let thisInstance = this,
+            urlParams = {
+                module: 'PDFMaker',
+                formodule: moduleName,
+                forfieldname: fieldName,
+                action: 'IndexAjax',
+                mode: 'getModuleFields',
+            };
 
         app.request.post({'data': urlParams}).then(
             function (err, response) {
@@ -167,7 +166,6 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js", {
             }
         );
     },
-
     updateFields: function (response, selectname) {
         var thisInstance = this;
 
@@ -270,7 +268,6 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js", {
 
         thisInstance.getFields(moduleName, "modulefields", "");
         PDFMaker_EditFreeJs.fill_module_lang_array(moduleName);
-        PDFMaker_EditFreeJs.fill_module_product_fields_array(moduleName);
     },
     registerCKEditor: function () {
         const ckeditorInstance = new Vtiger_CkEditor_Js();
@@ -484,28 +481,6 @@ if (typeof (PDFMaker_EditFreeJs) == 'undefined') {
                         });
                     }
                 })
-        },
-        fill_module_product_fields_array: function (module) {
-            var ajax_url = 'index.php?module=PDFMaker&action=AjaxRequestHandle&handler=fill_module_product_fields&productmod=' + module;
-            jQuery.ajax(ajax_url).success(function (response) {
-
-                var product_fields = document.getElementById('psfields');
-                product_fields.length = 0;
-                var map = response.split('|@|');
-                var keys = map[0].split('||');
-                var values = map[1].split('||');
-                for (i = 0; i < values.length; i++) {
-                    var item = document.createElement('option');
-                    item.text = values[i];
-                    item.value = keys[i];
-                    try {
-                        product_fields.add(item, null);
-                    } catch (ex) {
-                        product_fields.add(item);
-                    }
-                }
-            }).error(function () {
-            });
         },
         insertFieldIntoFilename: function (val) {
             if (val != '')

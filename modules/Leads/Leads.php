@@ -23,7 +23,7 @@
 
 class Leads extends CRMEntity
 {
-    public string $parentName = 'Marketing';
+    public string $parentName = 'HOME';
     var $log;
     var $db;
 

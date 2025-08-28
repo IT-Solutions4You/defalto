@@ -554,6 +554,7 @@ $languageStrings = [
     'LBL_LICENSE_USED_BY_OTHER_USERS'          => 'License used by other users',
     'LBL_LOAD_RELATED_DOCUMENTS'               => 'Related documents load',
     'LBL_RELATED_DOCUMENTS_BY_FOLDER'          => 'Related documents by folders',
+    'LBL_VARIABLE_PRODUCTCODE'                 => 'Product / Service code',
 ];
 
 $jsLanguageStrings = [

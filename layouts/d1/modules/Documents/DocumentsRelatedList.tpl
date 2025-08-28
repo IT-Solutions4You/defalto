@@ -199,7 +199,7 @@
                                                     {if $RELATED_HEADERNAME eq 'listprice'}
                                                         {assign var="LISTPRICE" value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME), null, true)}
                                                     {/if}
-                                                {elseif $HEADER_FIELD->getFieldDataType() eq 'picklist'}
+                                                {elseif $HEADER_FIELD->getFieldDataType() eq 'picklist' and $FIELD_MODEL->isPicklistColorSupported()}
                                                     <span class="py-1 px-2 rounded picklist-color picklist-{$HEADER_FIELD->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($RELATED_LIST_VALUE)}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</span>
                                                 {else}
                                                     {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}
@@ -249,7 +249,7 @@
     <script type="text/javascript">
         jQuery(function () {
             if (typeof Documents_Index_Js !== 'function') {
-                jQuery("body").append('<script type="text/javascript" src="layouts/v7/modules/Documents/resources/Documents.js"><\/script>');
+                jQuery("body").append('<script type="text/javascript" src="layouts/d1/modules/Documents/resources/Documents.js"><\/script>');
             }
         });
     </script>

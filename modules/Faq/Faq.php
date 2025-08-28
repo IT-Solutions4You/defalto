@@ -32,7 +32,7 @@
 // Faq is used to store vtiger_faq information.
 class Faq extends CRMEntity
 {
-    public string $parentName = 'Support';
+    public string $parentName = 'SUPPORT';
     public $log;
     public $db;
     public $table_name = "vtiger_faq";

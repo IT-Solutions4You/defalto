@@ -18,7 +18,7 @@
 
 class PriceBooks extends CRMEntity
 {
-    public string $parentName = 'INVENTORY';
+    public string $parentName = 'SALES';
     public $log;
     public $db;
     public $table_name = "vtiger_pricebook";

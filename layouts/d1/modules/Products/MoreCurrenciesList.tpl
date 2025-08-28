@@ -28,34 +28,22 @@
 							</thead>
 							{foreach item=price key=count from=$PRICE_DETAILS}
 								<tr data-currency-id={$price.curname}>
-									{if $price.check_value eq 1 || $price.is_basecurrency eq 1}
-										{assign var=check_value value="checked"}
-										{assign var=disable_value value=""}
-									{else}
-										{assign var=check_value value=""}
-										{assign var=disable_value value="disabled=true"}
-									{/if}
-
-									{if $price.is_basecurrency eq 1}
-										{assign var=base_cur_check value="checked"}
-									{else}
-										{assign var=base_cur_check value=""}
-									{/if}
-									<td>
+									<td class="verticalAlignMiddle">
 										<div class="row">
 											<div class="col-lg-10 currencyInfo text-start">
 												<span class="currencyName" >{$price.currencylabel|@getTranslatedCurrencyString} (<span class="currencySymbol">{$price.currencysymbol}</span>)</span>
 											</div>
 											<div class="col-lg-2 text-end">
 												<span>
-													<input type="checkbox" name="cur_{$price.curid}_check" id="cur_{$price.curid}_check" class="form-check-input enableCurrency" {$check_value}>
+                                                    <input type="hidden" name="cur_{$price.curid}_check" value="off"/>
+													<input type="checkbox" name="cur_{$price.curid}_check" value="on" id="cur_{$price.curid}_check" class="form-check-input enableCurrency" {if $price.check_value eq 1 || $price.is_basecurrency eq 1}checked="checked"{/if}>
 												</span>
 											</div>
 										</div>
 									</td>
 									<td>
 										<div>
-											<input {$disable_value} type="text" size="10" class="col-lg-9 form-control convertedPrice replaceCommaWithDot" data-rule-currency ="true" name="{$price.curname}" id="{$price.curname}" value="{$price.curvalue}" data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}' />
+											<input type="text" size="10" class="col-lg-9 form-control convertedPrice replaceCommaWithDot" data-rule-currency ="true" name="{$price.curname}" id="{$price.curname}" value="{$price.curvalue}" data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}' />
 										</div>
 									</td>
 									<td>
@@ -65,15 +53,15 @@
 									</td>
 									<td>
 										<div class = "textAlignCenter">
-											<button {$disable_value} type="button" class="btn btn-outline-secondary currencyReset" id="cur_reset{$price.curid}" value="{vtranslate('LBL_RESET',$MODULE)}">
+											<button type="button" class="btn btn-outline-secondary currencyReset" id="cur_reset{$price.curid}" value="{vtranslate('LBL_RESET',$MODULE)}">
 												<i class="fa fa-refresh"></i>
 												<span class="ms-2">{vtranslate('LBL_RESET',$MODULE)}</span>
 											</button>
 										</div>
 									</td>
-									<td>
+									<td class="verticalAlignMiddle">
 										<div class="textAlignCenter">
-											<input {$disable_value} type="radio" class="baseCurrency" id="base_currency{$price.curid}" name="base_currency_input" value="{$price.curname}" {$base_cur_check} />
+											<input type="radio" class="baseCurrency form-check-input" id="base_currency{$price.curid}" name="base_currency_input" value="{$price.curname}" {if $price.is_basecurrency eq 1}checked="checked"{/if} />
 										</div>
 									</td>
 								</tr>

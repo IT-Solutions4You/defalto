@@ -19,7 +19,7 @@
 class ServiceContracts extends CRMEntity
 {
     public string $moduleName = 'ServiceContracts';
-    public string $parentName = 'Support';
+    public string $parentName = 'SUPPORT';
     var $db, $log; // Used in class functions of CRMEntity
 
     var $table_name = 'vtiger_servicecontracts';

@@ -400,12 +400,12 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
         });
 
         jQuery('#advanceSearchButton').on('click', function (e) {
-            let searchModule = self.getSearchModule();
             //If no module is selected
-            if (searchModule.length <= 0) {
-                app.getChosenElementFromSelect(jQuery('#searchModuleList')).validationEngine('showPrompt', app.vtranslate('JS_SELECT_MODULE'), 'error', 'topRight', true)
+            if (!self.getSearchModule().length) {
+                app.helper.showErrorNotification({message: app.vtranslate('JS_SELECT_MODULE')});
                 return;
             }
+
             self.performValidation().then(function () {
                 self.performSearch();
             }, function () {
@@ -414,6 +414,12 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
         });
 
         jQuery('#advanceIntiateSave').on('click', function (e) {
+            //If no module is selected
+            if (!self.getSearchModule().length) {
+                app.helper.showErrorNotification({message: app.vtranslate('JS_SELECT_MODULE')});
+                return;
+            }
+
             let currentElement = jQuery(e.currentTarget);
             currentElement.addClass('hide');
             let actionsContainer = currentElement.closest('.actions');
@@ -438,10 +444,9 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
                 return;
             }
 
-            let searchModule = self.getSearchModule();
             //If no module is selected
-            if (searchModule.length <= 0) {
-                app.getChosenElementFromSelect(jQuery('#searchModuleList')).validationEngine('showPrompt', app.vtranslate('JS_SELECT_MODULE'), 'error', 'topRight', true)
+            if (!self.getSearchModule().length) {
+                app.helper.showErrorNotification({message: app.vtranslate('JS_SELECT_MODULE')});
                 return;
             }
 
