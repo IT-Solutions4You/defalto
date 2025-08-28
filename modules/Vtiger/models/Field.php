@@ -598,6 +598,7 @@ class Vtiger_Field_Model extends Vtiger_Field
     {
         $moduleModel = $this->getModule();
         $quickCreate = $this->get('quickcreate');
+
         if ($moduleModel && ($quickCreate == self::QUICKCREATE_MANDATORY || $quickCreate == self::QUICKCREATE_ENABLED
                 || $this->isMandatory()) && $this->get('uitype') != self::UITYPE_IMAGE) {
             //isQuickCreateSupported will not be there for settings
