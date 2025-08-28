@@ -10,6 +10,8 @@
 
 class InventoryItem_Utils_Helper
 {
+    private static array $inventoryModules = [];
+
     /**
      * Determines whether the Inventory Items are used within a given module.
      *
@@ -34,17 +36,20 @@ class InventoryItem_Utils_Helper
      */
     public static function getInventoryItemModules(): array
     {
-        $inventoryModules = [];
+        if (!empty(self::$inventoryModules)) {
+            return self::$inventoryModules;
+        }
+
         $db = PearDatabase::getInstance();
         $result = $db->pquery('SELECT * FROM vtiger_tab WHERE isentitytype = 1');
 
         while ($row = $db->fetchByAssoc($result)) {
             if (InventoryItem_Utils_Helper::usesInventoryItem($row['name'])) {
-                $inventoryModules[] = $row['name'];
+                self::$inventoryModules[] = $row['name'];
             }
         }
 
-        return $inventoryModules;
+        return self::$inventoryModules;
     }
 
     /**
