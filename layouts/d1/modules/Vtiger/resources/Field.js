@@ -197,13 +197,9 @@ Vtiger_Field_Js('Vtiger_Url_Field_Js', {}, {
     getUi: function () {
         let html = '<input class="inputElement form-control" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-' + this.getType() + '=true />',
             htmlValue = this.getValue(),
-            htmlElement = $(htmlValue);
+            linkValue = $('<div>' + htmlValue + '</div>').find('a').attr('href');
 
-        if (htmlElement && htmlElement.is('a')) {
-            htmlValue = htmlElement.attr('href');
-        }
-
-        html = jQuery(html).val(htmlValue);
+        html = jQuery(html).val(linkValue ?? htmlValue);
 
         return this.addValidationToElement(html);
     }
