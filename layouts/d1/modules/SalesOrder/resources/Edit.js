@@ -50,7 +50,7 @@ Vtiger_Edit_Js("SalesOrder_Edit_Js", {}, {
         const thisInstance = this;
         const form = this.getForm();
         const enableRecurrenceField = form.find('[name="enable_recurring"]');
-        const fieldNamesForValidation = ['recurring_frequency', 'start_period', 'payment_duration'];
+        const fieldNamesForValidation = ['recurring_frequency', 'start_period', 'end_period', 'payment_duration'];
         const selectors = [];
 
         for (let index in fieldNamesForValidation) {
@@ -61,13 +61,7 @@ Vtiger_Edit_Js("SalesOrder_Edit_Js", {}, {
         const validationToggleFields = form.find(selectorString);
         enableRecurrenceField.on('change', function (e) {
             const element = jQuery(e.currentTarget);
-            let addValidation;
-
-            if (element.is(':checked')) {
-                addValidation = true;
-            } else {
-                addValidation = false;
-            }
+            let addValidation = !!element.is(':checked');
 
             //If validation needs to be added for new elements, then we need to detach and attach validation to the form
             if (addValidation) {
@@ -174,6 +168,17 @@ Vtiger_Edit_Js("SalesOrder_Edit_Js", {}, {
     registerBasicEvents: function (container) {
         this._super(container);
         this.registerEventForEnablingRecurrence();
+        this.registerQuickCreateEvents(container);
     },
 
+    registerQuickCreateEvents(container) {
+        if (!container.is('#QuickCreate')) {
+            return;
+        }
+
+        let inventoryItemEdit = InventoryItem_InventoryItemEdit_Js.getInstance();
+
+        inventoryItemEdit.setForm(container)
+        inventoryItemEdit.init();
+    },
 });
