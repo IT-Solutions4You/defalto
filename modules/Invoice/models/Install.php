@@ -10,12 +10,30 @@
 
 class Invoice_Install_Model extends Core_Install_Model
 {
+    public array $registerRelatedLists = [
+        ['Accounts', 'Invoice', 'Invoice', 'add', 'get_invoices', '',],
+        ['Contacts', 'Invoice', 'Invoice', 'add', 'get_invoices', '',],
+        ['Services', 'Invoice', 'Invoice', 'ADD', 'get_invoices', '',],
+        ['Invoice', 'Assets', 'Assets', 'ADD', 'get_dependents_list', '',],
+        ['Potentials', 'Invoice', 'Invoice', 'ADD', 'get_dependents_list', '',],
+        ['Invoice', 'Appointments', 'Appointments', '', 'get_related_list', '',],
+        ['Invoice', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
+        ['Invoice', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
+        ['Documents', 'Invoice', 'Invoice', '', 'get_related_list', '',],
+        ['Products', 'Invoice', 'Invoice', 'ADD', 'get_invoices', '',],
+        ['Documents', 'Invoice', 'Invoice', '1', 'get_related_list', '',],
+        ['SalesOrder', 'Invoice', 'Invoice', '', 'get_invoices', '',],
+    ];
+
     public function addCustomLinks(): void
     {
+        $this->updateToStandardModule();
+        $this->updateRelatedList();
     }
 
     public function deleteCustomLinks(): void
     {
+        $this->updateRelatedList(false);
     }
 
     public function getBlocks(): array
@@ -536,7 +554,7 @@ class Invoice_Install_Model extends Core_Install_Model
                     'quicksequence' => 9,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
+                    'summaryfield' => 1,
                 ],
             ],
             'LBL_DESCRIPTION_INFORMATION' => [
@@ -552,7 +570,7 @@ class Invoice_Install_Model extends Core_Install_Model
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
+                    'summaryfield' => 1,
                 ],
             ],
             'LBL_SYSTEM_INFORMATION' => [
@@ -568,7 +586,7 @@ class Invoice_Install_Model extends Core_Install_Model
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 0,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
                     'headerfield' => 1,
                     'headerfieldsequence' => 1,
                     'filter' => 1,
