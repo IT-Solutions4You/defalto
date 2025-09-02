@@ -93,17 +93,13 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model
     public function getWidgets()
     {
         $widgetLinks = [];
-        $widgets = [];
-        $widgets[] = $this->getKeyMetricsWidgetInfo();
-        $widgets[] = $this->getTasksWidgetInfo();
-        $widgets[] = $this->getKeyFieldsWidgetInfo();
-        $widgets[] = $this->getMilestonesWidgetInfo();
-        $widgets[] = $this->getPlaceholderWidgetInfo();
-        $widgets[] = $this->getAppointmentsWidgetInfo();
-        $widgets[] = $this->getDocumentsWidgetInfo();
-        $widgets[] = $this->getCommentWidgetInfo();
-        $widgets[] = $this->getPlaceholderWidgetInfo();
-        $widgets[] = $this->getTicketsWidgetInfo();
+        $widgets = [
+            $this->getKeyMetricsWidgetInfo(),   $this->getTasksWidgetInfo(),
+            $this->getKeyFieldsWidgetInfo(),    $this->getMilestonesWidgetInfo(),
+            $this->getPlaceholderWidgetInfo(),  $this->getAppointmentsWidgetInfo(),
+            $this->getDocumentsWidgetInfo(),    $this->getCommentWidgetInfo(),
+            $this->getPlaceholderWidgetInfo(),  $this->getTicketsWidgetInfo()
+        ];
 
         foreach ($widgets as $widgetDetails) {
             $widgetLinks[] = Vtiger_Link_Model::getInstanceFromValues($widgetDetails);
