@@ -58,27 +58,69 @@ class Vtiger_Reference_UIType extends Vtiger_Base_UIType
     public function getDisplayValue($value, $record = false, $recordInstance = false)
     {
         $referenceModule = $this->getReferenceModule($value);
-        if ($referenceModule && !empty($value)) {
-            $referenceModuleName = $referenceModule->get('name');
-            if ($referenceModuleName == 'Users') {
-                $db = PearDatabase::getInstance();
-                $nameResult = $db->pquery('SELECT userlabel FROM vtiger_users WHERE id = ?', [$value]);
-                if ($db->num_rows($nameResult)) {
-                    return $db->query_result($nameResult, 0, 'userlabel');
-                }
-            } else {
-                $fieldModel = $this->get('field');
-                $entityNames = getEntityName($referenceModuleName, [$value]);
-                $moduleIcon = $referenceModule->getModuleIcon();
-                $linkValue = "<a class='text-primary' href='index.php?module=$referenceModuleName&view=" . $referenceModule->getDetailViewName() . "&record=$value'
-							title='" . vtranslate($referenceModuleName, $referenceModuleName) . ":" . $entityNames[$value] . "' "
-                    . "data-original-title='" . vtranslate($referenceModuleName, $referenceModuleName) . "'>$moduleIcon<span class='ms-2'>$entityNames[$value]</span></a>";
 
-                return $linkValue;
-            }
+        if ($referenceModule && !empty($value)) {
+            return self::transformToDisplayValue($value, $referenceModule->get('name'));
         }
 
         return '';
+    }
+
+    /**
+     * @param int|string $fieldValue
+     * @param string $referenceModuleName
+     * @return string
+     * @throws Exception
+     */
+    public static function transformToDisplayValue(int|string $fieldValue, string $referenceModuleName): string
+    {
+        $records = explode(';', $fieldValue);
+
+        if(empty($records)) {
+            return '';
+        }
+
+        if (1 < php7_count($records)) {
+            $displayValues = [];
+            foreach ($records as $recordId) {
+                $displayValues[] = self::transformToDisplayValue($recordId, $referenceModuleName);
+            }
+
+            return implode(' ', $displayValues);
+        }
+
+        if ('Users' === $referenceModuleName) {
+            $db = PearDatabase::getInstance();
+            $nameResult = $db->pquery('SELECT userlabel FROM vtiger_users WHERE id = ?', [$fieldValue]);
+
+            return $db->query_result($nameResult, 0, 'userlabel');
+        }
+
+        $referenceModule = Vtiger_Module_Model::getInstance($referenceModuleName);
+
+        if(!$referenceModule || !$referenceModule->isEntityModule()) {
+            return '';
+        }
+
+        $entityNames = getEntityName($referenceModuleName, [$fieldValue]);
+        $recordId = (int)$fieldValue;
+        $recordName = $entityNames[$fieldValue] ?: '';
+        $moduleIcon = $referenceModule->getModuleIcon();
+        $detailViewName = $referenceModule->getDetailViewName();
+        $moduleName = $referenceModuleName;
+        $moduleLabel = vtranslate($referenceModuleName, $referenceModuleName);
+
+        return sprintf(
+            '<a class="js-reference-display-value text-primary" href="index.php?module=%s&view=%s&record=%s" title="%s:%s" data-original-title="%s">%s<span class="ms-2">%s</span></a>',
+            $moduleName,
+            $detailViewName,
+            $recordId,
+            $moduleLabel,
+            $recordName,
+            $moduleLabel,
+            $moduleIcon,
+            $recordName,
+        );
     }
 
     /**
