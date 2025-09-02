@@ -282,11 +282,18 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
 
     public function getCommentWidgetInfo()
     {
-        return [
-            'linktype'  => 'DETAILVIEWWIDGET',
-            'linklabel' => 'ModComments',
-            'linkurl'   => $this->getCommentWidgetUrl(),
-        ];
+        $moduleModel = $this->getModule();
+        $modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
+
+        if ($moduleModel->isCommentEnabled() && $modCommentsModel->isPermitted('DetailView')) {
+            return [
+                'linktype' => 'DETAILVIEWWIDGET',
+                'linklabel' => 'ModComments',
+                'linkurl' => $this->getCommentWidgetUrl(),
+            ];
+        }
+
+        return $this->getPlaceholderWidgetInfo();
     }
 
     public function getPlaceholderWidgetInfo(): array
@@ -306,6 +313,46 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
         ];
     }
 
+    public function getAppointmentsWidgetInfo(): array
+    {
+        $moduleModel = $this->getModule();
+        $appointmentsInstance = Vtiger_Module_Model::getInstance('Appointments');
+        $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+
+        if ($userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Appointments')) {
+            return [
+                'linktype' => 'DETAILVIEWWIDGET',
+                'linklabel' => 'Appointments',
+                'linkName' => $appointmentsInstance->getName(),
+                'linkurl' => $this->getWidgetUrl('getEvents'),
+                'action' => $userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'CreateView') ? ['Add'] : [],
+                'actionURL' => $appointmentsInstance->getQuickCreateUrl(),
+            ];
+        }
+
+        return $this->getPlaceholderWidgetInfo();
+    }
+
+    public function getDocumentsWidgetInfo(): array
+    {
+        $moduleModel = $this->getModule();
+        $documentsInstance = Vtiger_Module_Model::getInstance('Documents');
+        $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+
+        if ($userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Documents')) {
+            return [
+                'linktype'  => 'DETAILVIEWWIDGET',
+                'linklabel' => 'Documents',
+                'linkName'  => $documentsInstance->getName(),
+                'linkurl'   => $this->getWidgetUrl('showRelatedRecords') . '&relatedModule=Documents',
+                'action'    => $userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'CreateView') ? ['Add'] : [],
+                'actionURL' => $documentsInstance->getQuickCreateUrl(),
+            ];
+        }
+
+        return $this->getPlaceholderWidgetInfo();
+    }
+
     /**
      * Function to get the detail view widgets
      * @return <Array> - List of widgets , where each widget is an Vtiger_Link_Model
@@ -316,46 +363,9 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
         $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
         $widgets = [];
         $widgets[] = $this->getKeyFieldsWidgetInfo();
-
-        $appointmentsInstance = Vtiger_Module_Model::getInstance('Appointments');
-
-        if ($userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Appointments')) {
-            $createPermission = $userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'CreateView');
-            $widgets[] = [
-                'linktype'  => 'DETAILVIEWWIDGET',
-                'linklabel' => 'Appointments',
-                'linkName'  => $appointmentsInstance->getName(),
-                'linkurl'   => $this->getWidgetUrl('getEvents'),
-                'action'    => $createPermission ? ['Add'] : [],
-                'actionURL' => $appointmentsInstance->getQuickCreateUrl(),
-            ];
-        } else {
-            $widgets[] = $this->getPlaceholderWidgetInfo();
-        }
-
-        $documentsInstance = Vtiger_Module_Model::getInstance('Documents');
-
-        if ($userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Documents')) {
-            $createPermission = $userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'CreateView');
-            $widgets[] = [
-                'linktype'  => 'DETAILVIEWWIDGET',
-                'linklabel' => 'Documents',
-                'linkName'  => $documentsInstance->getName(),
-                'linkurl'   => $this->getWidgetUrl('showRelatedRecords') . '&relatedModule=Documents',
-                'action'    => $createPermission ? ['Add'] : [],
-                'actionURL' => $documentsInstance->getQuickCreateUrl(),
-            ];
-        } else {
-            $widgets[] = $this->getPlaceholderWidgetInfo();
-        }
-
-        $modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
-
-        if ($moduleModel->isCommentEnabled() && $modCommentsModel->isPermitted('DetailView')) {
-            $widgets[] = $this->getCommentWidgetInfo();
-        } else {
-            $widgets[] = $this->getPlaceholderWidgetInfo();
-        }
+        $widgets[] = $this->getAppointmentsWidgetInfo();
+        $widgets[] = $this->getDocumentsWidgetInfo();
+        $widgets[] = $this->getCommentWidgetInfo();
 
         $widgetLinks = [];
 
