@@ -1253,14 +1253,16 @@ Vtiger.Class('Vtiger_Index_Js', {
     },
 
     _showInventoryQuickPreviewForId: function (recordId, moduleName, templateId, isReference, mode) {
-        var thisInstance = this;
-        var params = {};
+        let self = this,
+            params = {};
+
         if (typeof moduleName === 'undefined') {
             moduleName = app.module();
         }
         params['module'] = moduleName;
         params['record'] = recordId;
         params['view'] = 'RecordQuickPreview';
+
         if (isReference == true) {
             params['navigation'] = 'false';
         } else {
@@ -1276,50 +1278,54 @@ Vtiger.Class('Vtiger_Index_Js', {
         }
 
         app.helper.showProgress();
-        app.request.get({data: params}).then(function (err, response) {
+        app.request.post({data: params}).then(function (err, response) {
             app.helper.hideProgress();
+
             if (templateId && mode != 'navigation') {
                 jQuery('#pdfViewer').html(response);
                 return;
             }
-            var params = {
+
+            app.helper.loadHelpPageOverlay(response, {
                 cb: function () {
-                    thisInstance.registerChangeTemplateEvent(jQuery('#helpPageOverlay'), recordId);
-                    thisInstance.registerNavigationEvents(jQuery('#helpPageOverlay'));
+                    self.registerChangeTemplateEvent(jQuery('#helpPageOverlay'), recordId);
+                    self.registerNavigationEvents(jQuery('#helpPageOverlay'));
                 },
-                backdrop: false,
-            };
-            app.helper.loadHelpPageOverlay(response, params);
-            var params = {
+            });
+
+            app.helper.showVerticalScroll(jQuery('.quickPreview .modal-body'), {
                 setHeight: "100%",
                 alwaysShowScrollbar: 2,
                 autoExpandScrollbar: true,
                 setTop: 0,
                 scrollInertia: 70,
                 mouseWheel: {preventDefault: true}
-            };
-            app.helper.showVerticalScroll(jQuery('.quickPreview .modal-body'), params);
+            });
         });
     },
 
     _showQuickPreviewForId: function (recordId, moduleName, appName, isReference) {
-        var self = this;
-        var params = {};
+        let self = this,
+            params = {};
+
         if (typeof moduleName === 'undefined') {
             moduleName = app.module();
         }
+
         params['module'] = moduleName;
         params['record'] = recordId;
         params['view'] = 'RecordQuickPreview';
+
         if (isReference === true) {
             params['navigation'] = 'false';
         } else {
             params['navigation'] = 'true';
         }
+
         params['app'] = appName;
 
         app.helper.showProgress();
-        app.request.get({data: params}).then(function (err, response) {
+        app.request.post({data: params}).then(function (err, response) {
             app.helper.hideProgress();
             let callBack = function (container) {
                 self.registerMoreRecentUpdatesClickEvent(container, recordId);
@@ -1329,7 +1335,6 @@ Vtiger.Class('Vtiger_Index_Js', {
 
             app.helper.loadHelpPageOverlay(response, {
                 'cb': callBack,
-                backdrop: false,
             });
         });
     },
@@ -1340,7 +1345,8 @@ Vtiger.Class('Vtiger_Index_Js', {
     },
 
     showQuickPreviewForId: function (recordId, moduleName, appName, templateId, isReference, mode) {
-        var self = this;
+        let self = this;
+
         if (self.isInventoryModule(moduleName)) {
             self._showInventoryQuickPreviewForId(recordId, moduleName, templateId, isReference, mode);
         } else {

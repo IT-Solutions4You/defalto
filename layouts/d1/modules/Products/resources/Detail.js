@@ -6,7 +6,7 @@
  * This file is licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
+/** @var Products_Detail_Js */
 PriceBooks_Detail_Js("Products_Detail_Js", {
     triggerEditQuantity: function (url) {
         app.request.get({url: url}).then(
