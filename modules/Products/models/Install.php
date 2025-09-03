@@ -67,6 +67,69 @@ class Products_Install_Model extends Core_Install_Model
         ['Documents', 'Products', 'Products', '1', 'get_related_list',],
     ];
 
+    /**
+     * @var array
+     */
+    public array $blocksHeaderFields = [
+        'serial_no',
+        'discontinued',
+        'productcategory',
+        'qtyinstock',
+        'unit_price',
+    ];
+
+    /**
+     * @var array
+     */
+    public array $blocksSummaryFields = [
+        'productname',
+        'serial_no',
+        'manufacturer',
+        'productcategory',
+        'website',
+        'vendor_id',
+        'vendor_part_no',
+        'unit_price',
+        'purchase_cost',
+        'commissionrate',
+        'qtyinstock',
+        'usageunit',
+        'reorderlevel',
+        'qtyindemand',
+    ];
+
+    /**
+     * @var array
+     */
+    public array $blocksListFields = [
+        'serial_no',
+        'productname',
+        'discontinued',
+        'productcategory',
+        'unit_price',
+        'usageunit',
+        'qtyinstock',
+        'qtyindemand',
+        'assigned_user_id',
+    ];
+
+    /**
+     * @var array
+     */
+    public array $blocksQuickCreateFields = [
+        'productname',
+        'serial_no',
+        'discontinued',
+        'productcategory',
+        'unit_price',
+        'purchase_cost',
+        'qtyinstock',
+        'assigned_user_id',
+        'vendor_id',
+        'vendor_part_no',
+        'description',
+    ];
+
     public function addCustomLinks(): void
     {
         $this->updateToStandardModule();
@@ -93,14 +156,11 @@ class Products_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 0,
                     'typeofdata' => 'V~M',
-                    'quickcreate' => 0,
-                    'quicksequence' => 1,
+                    'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
                     'entity_identifier' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 2,
                 ],
                 'serial_no' => [
                     'name' => 'serial_no',
@@ -111,15 +171,11 @@ class Products_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 2,
-                    'quicksequence' => 2,
+                    'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
-                    'headerfield' => 1,
-                    'headerfieldsequence' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 1,
+                    'summaryfield' => 0,
+                    'headerfield' => 0,
                 ],
                 'discontinued' => [
                     'name' => 'discontinued',
@@ -130,16 +186,12 @@ class Products_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 2,
-                    'quicksequence' => 3,
+                    'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'defaultvalue' => 1,
-                    'headerfield' => 1,
-                    'headerfieldsequence' => 2,
-                    'filter' => 1,
-                    'filter_sequence' => 3,
+                    'headerfield' => 0,
                 ],
                 'manufacturer' => [
                     'name' => 'manufacturer',
@@ -153,7 +205,7 @@ class Products_Install_Model extends Core_Install_Model
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
                     'picklist_values' => self::$MANUFACTURER_PICKLIST,
                 ],
                 'productcategory' => [
@@ -165,16 +217,12 @@ class Products_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 2,
-                    'quicksequence' => 4,
+                    'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
                     'picklist_values' => self::$CATEGORY_PICKLIST,
-                    'headerfield' => 1,
-                    'headerfieldsequence' => 3,
-                    'filter' => 1,
-                    'filter_sequence' => 4,
+                    'headerfield' => 0,
                 ],
                 'website' => [
                     'name' => 'website',
@@ -188,7 +236,7 @@ class Products_Install_Model extends Core_Install_Model
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
                 ],
                 'vendor_id' => [
                     'name' => 'vendor_id',
@@ -199,11 +247,10 @@ class Products_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'I~O',
-                    'quickcreate' => 2,
-                    'quicksequence' => 8,
+                    'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
                 ],
                 'vendor_part_no' => [
                     'name' => 'vendor_part_no',
@@ -214,11 +261,10 @@ class Products_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 2,
-                    'quicksequence' => 9,
+                    'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
                 ],
                 'sales_start_date' => [
                     'name' => 'sales_start_date',
@@ -287,15 +333,11 @@ class Products_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'N~O',
-                    'quickcreate' => 2,
-                    'quicksequence' => 5,
+                    'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 0,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 5,
-                    'headerfield' => 1,
-                    'headerfieldsequence' => 5,
+                    'summaryfield' => 0,
+                    'headerfield' => 0,
                 ],
                 'purchase_cost' => [
                     'name' => 'purchase_cost',
@@ -309,7 +351,7 @@ class Products_Install_Model extends Core_Install_Model
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
                 ],
                 'taxclass' => [
                     'name' => 'taxclass',
@@ -337,7 +379,7 @@ class Products_Install_Model extends Core_Install_Model
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
                 ],
             ],
             'LBL_STOCK_INFORMATION' => [
@@ -351,14 +393,10 @@ class Products_Install_Model extends Core_Install_Model
                     'presence' => 2,
                     'typeofdata' => 'NN~O',
                     'quickcreate' => 0,
-                    'quicksequence' => 6,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 7,
-                    'headerfield' => 1,
-                    'headerfieldsequence' => 4,
+                    'summaryfield' => 0,
+                    'headerfield' => 0,
                 ],
                 'usageunit' => [
                     'name' => 'usageunit',
@@ -372,9 +410,7 @@ class Products_Install_Model extends Core_Install_Model
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 6,
+                    'summaryfield' => 0,
                     'picklist_values' => self::$USAGE_UNIT_PICKLIST,
                 ],
                 'qtyindemand' => [
@@ -389,9 +425,7 @@ class Products_Install_Model extends Core_Install_Model
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 8,
+                    'summaryfield' => 0,
                 ],
                 'qty_per_unit' => [
                     'name' => 'qty_per_unit',
@@ -419,7 +453,7 @@ class Products_Install_Model extends Core_Install_Model
                     'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
                 ],
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',
@@ -431,12 +465,9 @@ class Products_Install_Model extends Core_Install_Model
                     'presence' => 0,
                     'typeofdata' => 'V~M',
                     'quickcreate' => 0,
-                    'quicksequence' => 7,
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
-                    'filter' => 1,
-                    'filter_sequence' => 9,
                 ],
             ],
             'LBL_CUSTOM_INFORMATION' => [
@@ -467,8 +498,7 @@ class Products_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 2,
-                    'quicksequence' => 10,
+                    'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
