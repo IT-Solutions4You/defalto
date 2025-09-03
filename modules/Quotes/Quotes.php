@@ -226,7 +226,6 @@ class Quotes extends CRMEntity
             'vtiger_quotesshipads',
             'vtiger_invoice_recurring_info',
             'vtiger_quotesQuotes',
-            'vtiger_usersRel1'
         ]);
 
         $query = $this->getRelationQuery($module, $secmodule, "vtiger_quotes", "quoteid", $queryPlanner);
@@ -250,9 +249,6 @@ class Quotes extends CRMEntity
         }
         if ($queryPlanner->requireTable("vtiger_usersQuotes")) {
             $query .= " left join vtiger_users as vtiger_usersQuotes on vtiger_usersQuotes.id = vtiger_crmentityQuotes.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_usersRel1")) {
-            $query .= " left join vtiger_users as vtiger_usersRel1 on vtiger_usersRel1.id = vtiger_quotes.inventorymanager";
         }
         if ($queryPlanner->requireTable("vtiger_potentialRelQuotes")) {
             $query .= " left join vtiger_potential as vtiger_potentialRelQuotes on vtiger_potentialRelQuotes.potentialid = vtiger_quotes.potential_id";
@@ -380,7 +376,6 @@ class Quotes extends CRMEntity
 				LEFT JOIN vtiger_potential ON vtiger_potential.potentialid = vtiger_quotes.potential_id
 				LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_quotes.account_id
 				LEFT JOIN vtiger_currency_info ON vtiger_currency_info.id = vtiger_quotes.currency_id
-				LEFT JOIN vtiger_users AS vtiger_inventoryManager ON vtiger_inventoryManager.id = vtiger_quotes.inventorymanager
 				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
 				LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id";
 

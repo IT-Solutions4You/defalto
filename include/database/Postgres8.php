@@ -251,7 +251,6 @@ function expandRecord($table, $log)
             "subtotal",
             "carrier",
             "shipping",
-            "inventorymanager",
             "type",
             "adjustment",
             "grand_total",
