@@ -181,7 +181,13 @@ class Reporting_Install_Model extends Core_Install_Model
         ];
     }
 
+    /**
+     * @throws Exception
+     */
     public function installTables(): void
     {
+        $this->createPicklistTable('vtiger_primary_module', 'primary_moduleid', 'primary_module');
+        $this->createPicklistTable('vtiger_folder', 'folderid', 'folder');
+        $this->createPicklistTable('vtiger_sharing', 'sharingid', 'sharing');
     }
 }

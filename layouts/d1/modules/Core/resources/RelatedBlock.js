@@ -36,12 +36,17 @@ Vtiger_Index_Js('Vtiger_RelatedBlock_Js', {}, {
         return 'index.php?' + $.param(params);
     },
     registerEvents() {
+        this.registerCKEditor();
         this.registerChangeRelatedModule()
         this.registerSortableRelatedFields();
         this.registerFilterConditions();
         this.registerSubmit();
         this.registerColumnsChange();
         vtUtils.registerReplaceCommaWithDot(this.getForm());
+    },
+    registerCKEditor() {
+        let ckeditor = new Vtiger_CkEditor_Js()
+        ckeditor.loadCkEditor($('#content'), {height: '40vh'});
     },
     registerChangeRelatedModule() {
         const self = this;

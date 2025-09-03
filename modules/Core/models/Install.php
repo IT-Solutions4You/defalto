@@ -177,9 +177,214 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     /**
      * @var array
      */
+    public static array $fieldsItemDetails = [
+        'region_id' => [
+            'name' => 'region_id',
+            'uitype' => 29,
+            'column' => 'region_id',
+            'label' => 'Tax Region',
+            'readonly' => 0,
+            'presence' => 0,
+            'typeofdata' => 'N~O',
+            'quickcreate' => 3,
+            'displaytype' => 1,
+            'masseditable' => 0,
+            'summaryfield' => 0,
+            'picklist_values' => [],
+        ],
+        'currency_id' => [
+            'name' => 'currency_id',
+            'uitype' => 117,
+            'column' => 'currency_id',
+            'label' => 'Currency',
+            'readonly' => 1,
+            'presence' => 0,
+            'typeofdata' => 'I~O',
+            'quickcreate' => 3,
+            'displaytype' => 1,
+            'masseditable' => 1,
+            'summaryfield' => 0,
+        ],
+        'pricebookid' => [
+            'name' => 'pricebookid',
+            'uitype' => 10,
+            'column' => 'pricebookid',
+            'label' => 'Price Book',
+            'readonly' => 0,
+            'presence' => 0,
+            'typeofdata' => 'I~O',
+            'quickcreate' => 3,
+            'displaytype' => 1,
+            'masseditable' => 0,
+            'summaryfield' => 0,
+            'related_modules' => [
+                'PriceBooks',
+            ],
+        ],
+        'subtotal' => [
+            'name' => 'subtotal',
+            'uitype' => 72,
+            'column' => 'subtotal',
+            'label' => 'Sub Total',
+            'readonly' => 1,
+            'presence' => 0,
+            'typeofdata' => 'N~O',
+            'quickcreate' => 3,
+            'displaytype' => 3,
+            'masseditable' => 1,
+            'summaryfield' => 0,
+        ],
+        'discount_amount' => [
+            'name' => 'discount_amount',
+            'uitype' => 72,
+            'column' => 'discount_amount',
+            'label' => 'Discount Amount',
+            'readonly' => 1,
+            'presence' => 0,
+            'typeofdata' => 'N~O',
+            'quickcreate' => 3,
+            'displaytype' => 1,
+            'masseditable' => 1,
+            'summaryfield' => 0,
+        ],
+        'price_after_discount' => [
+            'name' => 'price_after_discount',
+            'uitype' => 71,
+            'column' => 'price_after_discount',
+            'generatedtype' => 1,
+            'label' => 'Price After Discount',
+            'readonly' => 1,
+            'presence' => 0,
+            'maximumlength' => 100,
+            'typeofdata' => 'N~O',
+            'quickcreate' => 3,
+            'displaytype' => 1,
+            'masseditable' => 1,
+            'summaryfield' => 0,
+        ],
+        'overall_discount' => [
+            'name' => 'overall_discount',
+            'uitype' => 7,
+            'column' => 'overall_discount',
+            'generatedtype' => 1,
+            'label' => 'Overall Discount',
+            'readonly' => 1,
+            'presence' => 0,
+            'maximumlength' => 100,
+            'typeofdata' => 'N~O',
+            'quickcreate' => 3,
+            'displaytype' => 1,
+            'masseditable' => 1,
+            'summaryfield' => 0,
+        ],
+        'overall_discount_amount' => [
+            'name' => 'overall_discount_amount',
+            'uitype' => 71,
+            'column' => 'overall_discount_amount',
+            'generatedtype' => 1,
+            'label' => 'Overall Discount Amount',
+            'readonly' => 1,
+            'presence' => 0,
+            'maximumlength' => 100,
+            'typeofdata' => 'N~O',
+            'quickcreate' => 3,
+            'displaytype' => 1,
+            'masseditable' => 1,
+            'summaryfield' => 0,
+        ],
+        'price_after_overall_discount' => [
+            'name' => 'price_after_overall_discount',
+            'uitype' => 71,
+            'column' => 'price_after_overall_discount',
+            'generatedtype' => 1,
+            'label' => 'Price After Overall Discount',
+            'readonly' => 1,
+            'presence' => 0,
+            'maximumlength' => 100,
+            'typeofdata' => 'N~O',
+            'quickcreate' => 3,
+            'displaytype' => 3,
+            'masseditable' => 1,
+            'summaryfield' => 0,
+        ],
+        'tax_amount' => [
+            'name' => 'tax_amount',
+            'uitype' => 71,
+            'column' => 'tax_amount',
+            'generatedtype' => 1,
+            'label' => 'Tax Amount',
+            'readonly' => 1,
+            'presence' => 0,
+            'maximumlength' => 100,
+            'typeofdata' => 'N~O',
+            'quickcreate' => 3,
+            'displaytype' => 1,
+            'masseditable' => 1,
+            'summaryfield' => 0,
+        ],
+        'price_total' => [
+            'name' => 'price_total',
+            'uitype' => 72,
+            'column' => 'price_total',
+            'label' => 'Total',
+            'readonly' => 1,
+            'presence' => 0,
+            'typeofdata' => 'N~O',
+            'quickcreate' => 3,
+            'displaytype' => 3,
+            'masseditable' => 1,
+            'summaryfield' => 1,
+        ],
+        'adjustment' => [
+            'name' => 'adjustment',
+            'uitype' => 72,
+            'column' => 'adjustment',
+            'label' => 'Adjustment',
+            'readonly' => 1,
+            'presence' => 0,
+            'typeofdata' => 'NN~O',
+            'quickcreate' => 3,
+            'displaytype' => 1,
+            'masseditable' => 1,
+            'summaryfield' => 0,
+        ],
+        'grand_total' => [
+            'name' => 'grand_total',
+            'uitype' => 72,
+            'column' => 'grand_total',
+            'label' => 'Grand Total',
+            'readonly' => 1,
+            'presence' => 2,
+            'typeofdata' => 'N~O',
+            'quickcreate' => 3,
+            'displaytype' => 3,
+            'masseditable' => 1,
+            'summaryfield' => 1,
+        ],
+        'margin_amount' => [
+            'name' => 'margin_amount',
+            'uitype' => 71,
+            'column' => 'margin_amount',
+            'generatedtype' => 1,
+            'label' => 'Margin Amount',
+            'readonly' => 1,
+            'presence' => 0,
+            'maximumlength' => 100,
+            'typeofdata' => 'N~O',
+            'quickcreate' => 3,
+            'displaytype' => 1,
+            'masseditable' => 1,
+            'summaryfield' => 0,
+        ],
+    ];
+
+    /**
+     * @var array
+     */
     public static array $installedModules = [];
 
     public static array $fieldKeySkippedForUpdate = ['presence', 'typeofdata', 'quickcreate', 'masseditable', 'summaryfield', 'sequence', 'block'];
+    public static array $blockKeySkippedForUpdate = ['sequence'];
     public bool $requireInstallTables = true;
 
     /**
@@ -597,23 +802,33 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             }
 
             self::logSuccess('Filter end creating');
-
-            self::logSuccess('Link start creating');
-
-            if (!empty($moduleInstance->name) && !empty($moduleInstance->parent)) {
-                Settings_MenuEditor_Module_Model::addModuleToApp($moduleInstance->name, $moduleInstance->parent);
-
-                self::logSuccess('Link created');
-            } else {
-                self::logError('Link not created');
-            }
         }
 
+        $this->updateMenuLink();
         $this->install();
         $this->postInstall();
 
         self::logSuccess('Module result: ' . $moduleName);
         self::logSuccess($moduleInstance);
+    }
+
+    /**
+     * @return void
+     */
+    public function updateMenuLink(): void
+    {
+        self::logSuccess('Link start creating');
+
+        $moduleName = $this->getModuleName();
+        $moduleInstance = $this->getModuleInstance($moduleName);
+
+        if (!empty($moduleInstance->name) && !empty($moduleInstance->parent)) {
+            Settings_MenuEditor_Module_Model::addModuleToApp($moduleInstance->name, $moduleInstance->parent);
+
+            self::logSuccess('Link created');
+        } else {
+            self::logError('Link not created');
+        }
     }
 
     public function postInstall(): void
@@ -644,6 +859,16 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     public function isFieldKeySkippedForUpdate(string $key): bool
     {
         return defined('VTIGER_UPGRADE') && in_array($key, self::$fieldKeySkippedForUpdate);
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function isBlockKeySkippedForUpdate(string $key): bool
+    {
+        return defined('VTIGER_UPGRADE') && in_array($key, self::$blockKeySkippedForUpdate);
     }
 
     /**
@@ -726,10 +951,20 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         $blockInstance->label = $blockName;
         $blockInstance->blockuitype = Core_BlockUiType_Model::addBlockUiType($blockParams['name']);
+
+        if (!$this->isBlockKeySkippedForUpdate('sequence')) {
+            $blocks = array_flip(array_keys($this->getFieldsConfig()));
+
+            if (isset($blocks[$blockName])) {
+                $blockInstance->sequence = $blocks[$blockName] + 1;
+            }
+        }
+
         $blockInstance->save($moduleInstance);
         $blockInstance->getBlockTable()->updateData(
             [
                 'blockuitype' => $blockInstance->blockuitype,
+                'sequence' => $blockInstance->sequence,
             ],
             [
                 'blockid' => $blockInstance->id,
@@ -1146,7 +1381,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             $tableId = 'vtiger_' . $columnName;
         }
 
-        $this->getTable($table, $tableId)
+        self::getTableInstance($table, $tableId)
             ->createTable()
             ->createColumn($columnName, 'VARCHAR(200) NOT NULL')
             ->createColumn('presence', 'INT (1) NOT NULL DEFAULT 1')
@@ -1154,6 +1389,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             ->createColumn('sortorderid', 'INT DEFAULT \'0\'')
             ->createColumn('color', 'VARCHAR(10)')
             ->createKey('PRIMARY KEY IF NOT EXISTS (' . $tableId . ')')
+            ->deleteDuplicates($columnName)
             ->createKey('UNIQUE KEY IF NOT EXISTS ' . $columnName . '_' . $columnName . '_idx (' . $columnName . ')');
     }
 

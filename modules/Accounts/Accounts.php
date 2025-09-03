@@ -31,7 +31,7 @@
 
 class Accounts extends CRMEntity
 {
-    public string $parentName = 'Marketing';
+    public string $parentName = 'HOME';
     public $log;
     public $db;
     public $table_name = "vtiger_account";

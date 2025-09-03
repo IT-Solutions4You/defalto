@@ -61,6 +61,11 @@ class Vtiger_Install_Model extends Core_Install_Model
         (new Core_BlockUiType_Model())->createTables();
         (new Settings_Workflows_Record_Model())->createTables();
         (new Settings_Workflows_TaskRecord_Model())->createTables();
+        (new Core_InventoryItemsBlock_Model())->createTables();
+        (new Core_RelatedBlock_Model())->createTables();
+        (new Core_Tax_Model())->createTables();
+        (new Core_TaxRegion_Model())->createTables();
+        (new Core_TaxRecord_Model())->createTables();
 
         $this->createPicklistTable('vtiger_taxtype', 'taxtypeid', 'taxtype');
     }

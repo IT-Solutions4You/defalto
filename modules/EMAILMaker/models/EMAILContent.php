@@ -17,7 +17,6 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     private static $recipientmodule;
     private static $module;
     private static $recordId;
-    private static $recordModel;
     private static $language;
 
     /** @var CRMEntity */
@@ -26,19 +25,14 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     private static $mod_strings;
     private static $def_charset;
     private static $site_url;
-    private static $decimal_point;
-    private static $thousands_separator;
-    private static $decimals;
     private static $rowbreak;
     private static $ignored_picklist_values = [];
     private static $subject;
     private static $body;
     private static $preview;
-    private static $content;
     private static $templatename;
     private static $type;
     private static $section_sep = "&#%ITS%%%@@@%%%ITS%#&";
-    private static $rep = [];
     private static $inventory_table_array = [];
     private static $inventory_id_array = [];
     private static $org_colsOLD = [];
@@ -53,7 +47,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     public function __construct()
     {
         if (!defined('LOGO_PATH')) {
-            define("LOGO_PATH", '/test/logo/');
+            define("LOGO_PATH", 'test/logo/');
         }
 
         self::$db = PearDatabase::getInstance();
@@ -192,7 +186,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         }
     }
 
-    public function retrieveRecordModel()
+    public function retrieveRecordModel($recordId = null): void
     {
         if (!self::$recordModel && !empty(self::$recordId)) {
             self::$recordModel = Vtiger_Record_Model::getInstanceById(self::$recordId, self::$module);
@@ -322,8 +316,9 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         if ($convert_source) {
             $this->convertRelatedModule();
             $this->convertRelatedBlocks();
+            $this->convertInventoryBlocks();
+            $this->convertVatBlocks();
             $this->replaceFieldsToContent(self::$module, self::$focus);
-            $this->convertInventoryModules();
 
             if ($this->focus->column_fields["assigned_user_id"] == "" && $this->focus->id != "") {
                 $result = self::$db->pquery("SELECT assigned_user_id FROM vtiger_crmentity WHERE crmid=?", [self::$focus->id]);
@@ -375,18 +370,6 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $this->setPreview($EMAIL_content);
     }
 
-    /**
-     * @param string $type
-     */
-    protected function convertHideTR(string $type = ''): void
-    {
-        $regex = '/<tr\b[^<]*>[^<]*(?:<(?!tr\b)[^<]*)*#' . $type . 'HIDETR#[^<]*(?:<(?!\/tr>)[^<]*)*<\/tr>/';
-
-        self::$content = preg_replace($regex, '', self::$content);
-    }
-
-    //private function replaceFieldsToContent($emodule, $efocus, $is_related = false, $inventory_currency = false, $is_recipient = false, $is_l_user = false)
-
     public function setSubject($subject)
     {
         self::$subject = $subject;
@@ -425,13 +408,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         }
     }
 
-    private function replaceContent()
-    {
-        if (!empty(self::$rep)) {
-            self::$content = str_replace(array_keys(self::$rep), self::$rep, self::$content);
-            self::$rep = [];
-        }
-    }
+
 
     private function retrieve_entity_infoCustom(&$focus, $record, $module)
     {
@@ -501,15 +478,20 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
                 $label = self::getTranslate($fieldLabel, $module);
 
-                self::$rep['%' . $related . strtolower($convEntity . '-' . $fieldName) . '%'] = $label;
-                self::$rep['%' . strtolower($convEntity . '-' . $fieldName) . '%'] = $label;
-                self::$rep['%M_' . $fieldLabel . '%'] = $label;
+                if (!$isRelated) {
+                    self::$rep[$this->getVariableLabel($related . $fieldName, 1)] = $label;
+                    self::$rep[$this->getVariable($related . $fieldName, 1)] = $fieldDisplayValue;
+                }
+
+                self::$rep[$this->getVariableLabel($related . $convEntity . '-' . $fieldName, 1)] = $label;
+                self::$rep[$this->getVariableLabel($convEntity . '-' . $fieldName, 1)] = $label;
+                self::$rep[$this->getVariableLabel('M_' . $fieldLabel)] = $label;
 
                 if ($inventoryCurrency) {
                     $inventory_content[strtoupper($module . '-' . $fieldName)] = $fieldDisplayValue;
                     $inventory_content[strtoupper($module . '_' . $fieldName)] = $fieldDisplayValue;
                 } else {
-                    self::$rep['$' . $related . strtolower($convEntity . '-' . $fieldName) . '$'] = $fieldDisplayValue;
+                    self::$rep[$this->getVariable($related . $convEntity . '-' . $fieldName, 1)] = $fieldDisplayValue;
                 }
             }
         }
@@ -522,6 +504,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
         return true;
     }
+
 
     /**
      * @param array    $values
@@ -679,7 +662,6 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                     $this->replaceContent();
                     $this->replaceFieldsToContent($related_module, $focus2, true);
                     $this->replaceFieldsToContent($related_module, $focus2, $columnname);
-                    $this->replaceInventoryDetailsBlock($related_module, $focus2, $columnname);
                     unset($focus2);
                 }
                 if ($row["uitype"] == "68") {
@@ -717,155 +699,11 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
                             $this->replaceFieldsToContent($relMod, $tmpFocus, true);
                             $this->replaceFieldsToContent($relMod, $tmpFocus, $columnname);
-                            $this->replaceInventoryDetailsBlock($relMod, $tmpFocus, $columnname);
                             unset($tmpFocus);
                         }
                     }
                 }
             }
-        }
-    }
-
-    private function replaceInventoryDetailsBlock($module, $focus, $is_related = false)
-    {
-        if (!isset(self::$inventory_table_array[$module])) {
-            $this->fillInventoryData($module, $focus);
-        }
-        if (!isset(self::$inventory_table_array[$module])) {
-            return [];
-        }
-        $prefix = "";
-
-        $IReplacements = [];
-        $IReplacements["SUBTOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["subtotal"]);
-        $IReplacements["TOTAL"] = $this->formatNumberToEMAIL($focus->column_fields["grand_total"]);
-
-        $currencytype = $this->getInventoryCurrencyInfoCustom($module, $focus);
-        $currencytype["currency_symbol"] = str_replace("€", "&euro;", $currencytype["currency_symbol"]);
-        $currencytype["currency_symbol"] = str_replace("£", "&pound;", $currencytype["currency_symbol"]);
-
-        $IReplacements["CURRENCYNAME"] = getTranslatedCurrencyString($currencytype["currency_name"]);
-        $IReplacements["CURRENCYSYMBOL"] = $currencytype["currency_symbol"];
-        $IReplacements["CURRENCYCODE"] = $currencytype["currency_code"];
-        $IReplacements["ADJUSTMENT"] = $this->formatNumberToEMAIL($focus->column_fields["adjustment"]);
-
-        $Products = $this->getInventoryProducts($module, $focus);
-
-        $IReplacements["TOTALWITHOUTVAT"] = $Products["TOTAL"]["TOTALWITHOUTVAT"];
-        $IReplacements["VAT"] = $Products["TOTAL"]["TAXTOTAL"];
-        $IReplacements["VATPERCENT"] = $Products["TOTAL"]["TAXTOTALPERCENT"];
-        $IReplacements["TOTALWITHVAT"] = $Products["TOTAL"]["TOTALWITHVAT"];
-        $IReplacements["SHTAXAMOUNT"] = $Products["TOTAL"]["SHTAXAMOUNT"];
-        $IReplacements["SHTAXTOTAL"] = $Products["TOTAL"]["SHTAXTOTAL"];
-        $IReplacements["DEDUCTEDTAXESTOTAL"] = $Products["TOTAL"]["DEDUCTEDTAXESTOTAL"];
-        $IReplacements["TOTALDISCOUNT"] = $Products["TOTAL"]["FINALDISCOUNT"];
-        $IReplacements["TOTALDISCOUNTPERCENT"] = $Products["TOTAL"]["FINALDISCOUNTPERCENT"];
-        $IReplacements["TOTALAFTERDISCOUNT"] = $Products["TOTAL"]["TOTALAFTERDISCOUNT"];
-
-        foreach ($IReplacements as $r_key => $r_value) {
-            if ($is_related !== false) {
-                $prefix = "r-" . strtoupper($is_related) . "";
-                self::$rep["$" . strtolower($prefix . "-" . $r_key) . "$"] = $r_value;
-                self::$rep["$" . strtolower($prefix . "_" . $r_key) . "$"] = $r_value;
-                self::$rep["$" . strtolower($prefix . "-" . $module . "-" . $r_key) . "$"] = $r_value;
-                self::$rep["$" . strtolower($prefix . "-" . $module . "_" . $r_key) . "$"] = $r_value;
-            } else {
-                self::$rep["$" . $r_key . "$"] = $r_value;
-                self::$rep["$" . "s-" . strtolower($r_key) . "$"] = $r_value;
-            }
-        }
-
-        $this->replaceContent();
-
-        if ($is_related === false) {
-            //in order to handle old format of VATBLOCK
-
-            $blockTypes = ['VATBLOCK', 'DEDUCTEDTAXESBLOCK', 'CHARGESBLOCK'];
-            foreach ($blockTypes as $blockType) {
-                $vattable = '';
-
-                foreach ((array)$Products["TOTAL"][$blockType] as $keyW => $valueW) {
-                    if ((empty($valueW['netto']) && $blockType != 'CHARGESBLOCK') || (empty($valueW['value']) && $blockType == 'CHARGESBLOCK')) {
-                        unset($Products["TOTAL"][$blockType][$keyW]);
-                    }
-                }
-
-                if (count((array)$Products["TOTAL"][$blockType])) {
-                    $vattable .= "<table border='1' style='border-collapse:collapse;' cellpadding='3'>";
-                    $vattable .= '<tr>';
-
-                    if ($blockType == 'CHARGESBLOCK') {
-                        $vattable .= '<td></td><td nowrap align="right">' . self::getTranslate('LBL_CHARGESBLOCK_SUM') . '</td>';
-                    } else {
-                        $vattable .= '<td nowrap align="center">' . self::getTranslate('Name') . '</td>
-                                          <td nowrap align="center">' . self::getTranslate('LBL_VATBLOCK_VAT_PERCENT') . '</td>
-                                          <td nowrap align="center">' . self::getTranslate('LBL_VATBLOCK_SUM') . ' (' . $currencytype['currency_symbol'] . ')</td>
-                                          <td nowrap align="center">' . self::getTranslate('LBL_VATBLOCK_VAT_VALUE') . ' (' . $currencytype['currency_symbol'] . ')</td>';
-                    }
-                    $vattable .= '</tr>';
-                    foreach ($Products["TOTAL"][$blockType] as $keyW => $valueW) {
-                        $vattable .= '<tr>';
-                        if ($blockType == 'CHARGESBLOCK') {
-                            $vattable .= '<td nowrap align="right" width="75%">' . $valueW['label'] . '</td>
-                                          <td nowrap align="right" width="25%">' . $this->formatNumberToEMAIL($valueW['value']) . '</td>';
-                        } else {
-                            $vattable .= '<td nowrap align="left" width="20%">' . $valueW['label'] . '</td>
-                                          <td nowrap align="right" width="25%">' . $this->formatNumberToEMAIL($valueW['value']) . ' %</td>
-                                          <td nowrap align="right" width="30%">' . $this->formatNumberToEMAIL($valueW['netto']) . '</td>
-                                          <td nowrap align="right" width="25%">' . $this->formatNumberToEMAIL($valueW['vat']) . '</td>';
-                        }
-                        $vattable .= '</tr>';
-                    }
-                    $vattable .= '</table>';
-                }
-                self::$rep['$' . $blockType . '$'] = $vattable;
-                self::$rep['$s-' . strtolower($blockType) . '$'] = $vattable;
-            }
-            $this->replaceContent();
-
-            foreach (['VAT', 'CHARGES'] as $blockType) {
-                if (strpos(self::$content, '#' . $blockType . 'BLOCK_START#') !== false && strpos(self::$content, '#' . $blockType . 'BLOCK_END#') !== false) {
-                    self::$content = $this->convertBlock($blockType, self::$content);
-                    $VExplodedEMAIL = [];
-                    $VExploded = explode('#' . $blockType . 'BLOCK_START#', self::$content);
-                    $VExplodedEMAIL[] = $VExploded[0];
-                    for ($iterator = 1; $iterator < count($VExploded); $iterator++) {
-                        $VSubExploded = explode('#' . $blockType . 'BLOCK_END#', $VExploded[$iterator]);
-                        foreach ($VSubExploded as $Vpart) {
-                            $VExplodedEMAIL[] = $Vpart;
-                        }
-
-                        $Vhighestpartid = $iterator * 2 - 1;
-                        $VProductParts[$Vhighestpartid] = $VExplodedEMAIL[$Vhighestpartid];
-                        $VExplodedEMAIL[$Vhighestpartid] = '';
-                    }
-
-                    if (count($Products['TOTAL'][$blockType . 'BLOCK']) > 0) {
-                        foreach ($Products['TOTAL'][$blockType . 'BLOCK'] as $keyW => $valueW) {
-                            foreach ($VProductParts as $productpartid => $productparttext) {
-                                foreach ($valueW as $vColl => $vVal) {
-                                    if (is_numeric($vVal)) {
-                                        $vVal = $this->formatNumberToEMAIL($vVal);
-                                    }
-                                    $productparttext = str_replace('$' . $blockType . 'BLOCK_' . strtoupper($vColl) . '$', $vVal, $productparttext);
-                                }
-                                $VExplodedEMAIL[$productpartid] .= $productparttext;
-                            }
-                        }
-                    }
-                    self::$content = implode('', $VExplodedEMAIL);
-                }
-            }
-        }
-
-        return $Products;
-    }
-
-    private function fillInventoryData($module, $focus)
-    {
-        if (isset($focus->column_fields["currency_id"]) && isset($focus->column_fields["conversion_rate"]) && isset($focus->column_fields["grand_total"])) {
-            self::$inventory_table_array[$module] = $focus->table_name;
-            self::$inventory_id_array[$module] = $focus->table_index;
         }
     }
 
@@ -879,290 +717,6 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         }
 
         return $this->getInventoryCurrencyInfoCustomArray($inventory_table, $inventory_id, $record_id);
-    }
-
-    /**
-     * @param string $taxKey
-     * @param string $taxLabel
-     * @param float  $taxValue
-     * @param float  $nett
-     * @param float  $vat
-     *
-     * @return void
-     */
-    public function setVatBlock($taxKey, $taxLabel, $taxValue, $nett, $vat)
-    {
-        if (empty($this->vatBlock[$taxKey])) {
-            $this->vatBlock[$taxKey] = [
-                'netto' => 0,
-                'vat'   => 0,
-            ];
-        }
-
-        $this->vatBlock[$taxKey]['label'] = $taxLabel;
-        $this->vatBlock[$taxKey]['value'] = $taxValue;
-        $this->vatBlock[$taxKey]['netto'] += $nett;
-        $this->vatBlock[$taxKey]['vat'] += $vat;
-    }
-
-    public function getVatBlock()
-    {
-        return $this->vatBlock;
-    }
-
-    private function getInventoryProducts($module, $focus)
-    {
-        if (!empty($focus->id)) {
-            $totalVatSum = $totalwithoutwat = $totalAfterDiscount_subtotal = $total_subtotal = $totalsum_subtotal = 0;
-            [$images, $bacImgs] = $this->getInventoryImages($focus->id);
-
-            $recordModel = Vtiger_Record_Model::getInstanceById($focus->id);
-            $relatedProducts = $recordModel->getProducts();
-            //##Final details convertion started
-            $finalDetails = $relatedProducts[1]['final_details'];
-            $taxtype = $finalDetails['taxtype'];
-
-            $chargesAndItsTaxes = $finalDetails['chargesAndItsTaxes'];
-
-            $currencyFieldsList = [
-                'NETTOTAL'           => 'subtotal',
-                'TAXTOTAL'           => 'tax_totalamount',
-                'SHTAXTOTAL'         => 'shtax_totalamount',
-                'TOTALAFTERDISCOUNT' => 'preTaxTotal',
-                'FINALDISCOUNT'      => 'discountTotal_final',
-                'SHTAXAMOUNT'        => 'shipping_handling_charge',
-                'DEDUCTEDTAXESTOTAL' => 'deductTaxesTotalAmount',
-            ];
-
-            foreach ($currencyFieldsList as $variableName => $fieldName) {
-                $Details["TOTAL"][$variableName] = $this->formatNumberToEMAIL($finalDetails[$fieldName]);
-            }
-
-            $totalWithVat = $this->getTotalWithVat($finalDetails);
-            $Details['TOTAL']['TOTALWITHVAT'] = $this->formatNumberToEMAIL($totalWithVat);
-
-            foreach ($relatedProducts as $i => $PData) {
-                $Details["P"][$i] = [];
-
-                $sequence = $i;
-                $producttitle = $productname = $PData["productName" . $sequence];
-                $entitytype = $PData["entityType" . $sequence];
-                $productid = $psid = $PData["hdnProductId" . $sequence];
-
-                $focus_p = CRMEntity::getInstance("Products");
-                if ($entitytype == "Products" && $psid != "") {
-                    $focus_p->id = $psid;
-                    $this->retrieve_entity_infoCustom($focus_p, $psid, "Products");
-                }
-                $currencytype = $this->getInventoryCurrencyInfoCustom($module, $focus);
-                $Array_P = $this->replaceFieldsToContent("Products", $focus_p, false, $currencytype);
-                $Details["P"][$i] = array_merge($Array_P, $Details["P"][$i]);
-
-                unset($focus_p);
-
-                $focus_s = CRMEntity::getInstance("Services");
-                if ($entitytype == "Services" && $psid != "") {
-                    $focus_s->id = $psid;
-                    $this->retrieve_entity_infoCustom($focus_s, $psid, "Services");
-                }
-                $Array_S = $this->replaceFieldsToContent("Services", $focus_s, false, $currencytype);
-                $Details["P"][$i] = array_merge($Array_S, $Details["P"][$i]);
-                unset($focus_s);
-
-                $Details["P"][$i]["PRODUCTS_CRMID"] = $Details["P"][$i]["SERVICES_CRMID"] = $qty_per_unit = $usageunit = "";
-
-                if ($entitytype == "Products") {
-                    $Details["P"][$i]["PRODUCTS_CRMID"] = $psid;
-                    $qty_per_unit = $Details["P"][$i]["PRODUCTS_QTY_PER_UNIT"];
-                    $usageunit = $Details["P"][$i]["PRODUCTS_USAGEUNIT"];
-                } elseif ($entitytype == "Services") {
-                    $Details["P"][$i]["SERVICES_CRMID"] = $psid;
-                    $qty_per_unit = $Details["P"][$i]["SERVICES_QTY_PER_UNIT"];
-                    $usageunit = $Details["P"][$i]["SERVICES_SERVICE_USAGEUNIT"];
-                }
-                $psdescription = $Details["P"][$i][strtoupper($entitytype) . "_DESCRIPTION"];
-                $Details["P"][$i]["PS_CRMID"] = $psid;
-                $Details["P"][$i]["PS_NO"] = $PData["hdnProductcode" . $sequence];
-
-                if (Core_Utils_Helper::count($PData['subprod_qty_list' . $sequence]) > 0) {
-                    foreach ($PData['subprod_qty_list' . $sequence] as $sid => $SData) {
-                        $sname = $SData["name"];
-                        if ($SData["qty"] > 0) {
-                            $sname .= " (" . $SData["qty"] . ")";
-                        }
-                        $productname .= "<br/><span style='color:#C0C0C0;font-style:italic;'>" . $sname . "</span>";
-                    }
-                }
-
-                $comment = $PData["comment" . $sequence];
-
-                if ($comment != "") {
-                    if (strpos($comment, '&lt;br /&gt;') === false && strpos($comment, '&lt;br/&gt;') === false && strpos($comment, '&lt;br&gt;') === false) {
-                        $comment = str_replace("\\n", "<br>", nl2br($comment));
-                    }
-                    $comment = html_entity_decode($comment, ENT_QUOTES, self::$def_charset);
-                    $productname .= "<br /><small>" . $comment . "</small>";
-                }
-
-                $Details["P"][$i]["PRODUCTNAME"] = $productname;
-                $Details["P"][$i]["PRODUCTTITLE"] = $producttitle;
-
-                $inventory_prodrel_desc = $psdescription;
-                if (strpos($psdescription, '&lt;br /&gt;') === false && strpos($psdescription, '&lt;br/&gt;') === false && strpos($psdescription, '&lt;br&gt;') === false) {
-                    $psdescription = str_replace("\\n", "<br>", nl2br($psdescription));
-                }
-                $Details["P"][$i]["PRODUCTDESCRIPTION"] = html_entity_decode($psdescription, ENT_QUOTES, self::$def_charset);
-                $Details["P"][$i]["PRODUCTEDITDESCRIPTION"] = $comment;
-                if (strpos($inventory_prodrel_desc, '&lt;br /&gt;') === false && strpos($inventory_prodrel_desc, '&lt;br/&gt;') === false && strpos(
-                        $inventory_prodrel_desc,
-                        '&lt;br&gt;'
-                    ) === false) {
-                    $inventory_prodrel_desc = str_replace("\\n", "<br>", nl2br($inventory_prodrel_desc));
-                }
-                $Details["P"][$i]["CRMNOWPRODUCTDESCRIPTION"] = html_entity_decode($inventory_prodrel_desc, ENT_QUOTES, self::$def_charset);
-                $Details["P"][$i]["PRODUCTLISTPRICE"] = $this->formatNumberToEMAIL($PData["listPrice" . $sequence]);
-                $Details["P"][$i]["PRODUCTTOTAL"] = $this->formatNumberToEMAIL($PData["productTotal" . $sequence]);
-                $Details["P"][$i]["PRODUCTQUANTITY"] = $this->formatNumberToEMAIL($PData["qty" . $sequence]);
-                $Details["P"][$i]["PRODUCTQINSTOCK"] = $this->formatNumberToEMAIL($PData["qtyInStock" . $sequence]);
-                $Details["P"][$i]["PRODUCTPRICE"] = $this->formatNumberToEMAIL($PData["unitPrice" . $sequence]);
-                $Details["P"][$i]["PRODUCTPOSITION"] = $sequence;
-                $Details["P"][$i]["PRODUCTQTYPERUNIT"] = $this->formatNumberToEMAIL($qty_per_unit);
-                $value = $usageunit;
-                if (!in_array(trim($value), self::$ignored_picklist_values)) {
-                    $value = $this->getTranslatedStringCustom($value, "Products/Services", self::$language);
-                } else {
-                    $value = "";
-                }
-                $Details["P"][$i]["PRODUCTUSAGEUNIT"] = $value;
-                $Details["P"][$i]["PRODUCTDISCOUNT"] = $PData["discountTotal" . $sequence];
-                $Details["P"][$i]["PRODUCTDISCOUNTPERCENT"] = $PData["discount_percent" . $sequence];
-                $totalAfterDiscount = $PData["totalAfterDiscount" . $sequence];
-                $Details["P"][$i]["PRODUCTSTOTALAFTERDISCOUNTSUM"] = $totalAfterDiscount;
-                $Details["P"][$i]["PRODUCTSTOTALAFTERDISCOUNT"] = $this->formatNumberToEMAIL($PData["totalAfterDiscount" . $sequence]);
-                $Details["P"][$i]["PRODUCTTOTALSUM"] = $this->formatNumberToEMAIL($PData["netPrice" . $sequence]);
-
-                $totalAfterDiscount_subtotal += $totalAfterDiscount;
-                $total_subtotal += $PData["productTotal" . $sequence];
-                $totalsum_subtotal += $PData["netPrice" . $sequence];
-
-                $Details["P"][$i]["PRODUCTSTOTALAFTERDISCOUNT_SUBTOTAL"] = $this->formatNumberToEMAIL($totalAfterDiscount_subtotal);
-                $Details["P"][$i]["PRODUCTTOTAL_SUBTOTAL"] = $this->formatNumberToEMAIL($total_subtotal);
-                $Details["P"][$i]["PRODUCTTOTALSUM_SUBTOTAL"] = $this->formatNumberToEMAIL($totalsum_subtotal);
-
-                $mpdfSubtotalAble[$i]["$" . "TOTALAFTERDISCOUNT_SUBTOTAL$"] = $Details["P"][$i]["PRODUCTSTOTALAFTERDISCOUNT_SUBTOTAL"];
-                $mpdfSubtotalAble[$i]["$" . "TOTAL_SUBTOTAL$"] = $Details["P"][$i]["PRODUCTTOTAL_SUBTOTAL"];
-                $mpdfSubtotalAble[$i]["$" . "TOTALSUM_SUBTOTAL$"] = $Details["P"][$i]["PRODUCTTOTALSUM_SUBTOTAL"];
-
-                $Details["P"][$i]["PRODUCTSEQUENCE"] = $sequence;
-                $Details["P"][$i]["PRODUCTS_IMAGENAME"] = "";
-                if (isset($images[$productid . "_" . $sequence])) {
-                    $width = $height = "";
-                    if ($images[$productid . "_" . $sequence]["width"] > 0) {
-                        $width = " width='" . $images[$productid . "_" . $sequence]["width"] . "' ";
-                    }
-                    if ($images[$productid . "_" . $sequence]["height"] > 0) {
-                        $height = " height='" . $images[$productid . "_" . $sequence]["height"] . "' ";
-                    }
-                    $Details["P"][$i]["PRODUCTS_IMAGENAME"] = "<img src='" . self::$site_url . "/" . $images[$productid . "_" . $sequence]["src"] . "' " . $width . $height . "/>";
-                } elseif (isset($bacImgs[$productid . "_" . $sequence])) {
-                    $Details["P"][$i]["PRODUCTS_IMAGENAME"] = "<img src='" . self::$site_url . "/" . $bacImgs[$productid . "_" . $sequence]["src"] . "' width='83' />";
-                }
-
-                $taxAverageValue = 0;
-                $taxTotal = 0;
-
-                if ('individual' === $taxtype) {
-                    $taxDetails = getTaxDetailsForProduct($productid, "all");
-                    $Tax_Values = [];
-                    for ($taxCount = 0; $taxCount < count($taxDetails); $taxCount++) {
-                        $taxName = $taxDetails[$taxCount]['taxname'];
-                        $taxLabel = $taxDetails[$taxCount]['taxlabel'];
-                        $taxValue = getInventoryProductTaxValue($focus->id, $productid, $taxName);
-                        $individualTaxAmount = $totalAfterDiscount * $taxValue / 100;
-                        $taxTotal += $individualTaxAmount;
-
-                        if (!empty($taxName)) {
-                            $taxVatSum = round($individualTaxAmount, self::$decimals);
-                            $taxNameWithValue = $taxName . '-' . $taxValue;
-                            $this->setVatBlock($taxNameWithValue, $taxLabel, $taxValue, $totalAfterDiscount, $taxVatSum);
-
-                            $totalVatSum += $taxVatSum;
-                            $Tax_Values[] = $taxValue;
-                        }
-                    }
-
-                    if (count($Tax_Values) > 0) {
-                        $taxAverageValue = array_sum($Tax_Values);
-                    }
-                }
-
-                $Details["P"][$i]["PRODUCTVATPERCENT"] = $this->formatNumberToEMAIL($taxAverageValue);
-                $Details["P"][$i]["PRODUCTVATSUM"] = $this->formatNumberToEMAIL($taxTotal);
-
-                $result1 = self::$db->pquery("SELECT * FROM vtiger_inventoryproductrel WHERE id=? AND sequence_no=?", [self::$focus->id, $sequence]);
-                $row1 = self::$db->fetchByAssoc($result1, 0);
-
-                $tabid = getTabid($module);
-                $result2 = self::$db->pquery(
-                    "SELECT fieldname, fieldlabel, columnname, uitype, typeofdata FROM vtiger_field WHERE tablename = ? AND tabid = ?",
-                    ["vtiger_inventoryproductrel", $tabid]
-                );
-                while ($row2 = self::$db->fetchByAssoc($result2)) {
-                    if (!isset($Details["P"][$i]["PRODUCT_" . strtoupper($row2["fieldname"])])) {
-                        $UITypes = [];
-                        $value = $row1[$row2["columnname"]];
-                        if ($value != "") {
-                            $uitype_name = $this->getUITypeName($row2['uitype'], $row2["typeofdata"]);
-                            if ($uitype_name != "") {
-                                $UITypes[$uitype_name][] = $row2["fieldname"];
-                            }
-
-                            $value = $this->getFieldValue($focus, $module, $row2["fieldname"], $value, $UITypes);
-                        }
-                        $Details["P"][$i]["PRODUCT_" . strtoupper($row2["fieldname"])] = $value;
-                    }
-                }
-            }
-        }
-
-        $Details["TOTAL"]["TOTALWITHOUTVAT"] = $this->formatNumberToEMAIL($totalAfterDiscount_subtotal);
-        if ($taxtype == "individual") {
-            $Details["TOTAL"]["TAXTOTAL"] = $this->formatNumberToEMAIL($totalVatSum);
-        }
-        $finalDiscountPercent = "";
-        $totalVatPercent = 0;
-
-        foreach ((array)$finalDetails['taxes'] as $TAX) {
-            $this->setVatBlock($TAX['taxname'], $TAX['taxlabel'], $TAX['percentage'], $finalDetails['totalAfterDiscount'], $TAX['amount']);
-            $totalVatPercent += $TAX['percentage'];
-        }
-
-        $Details["TOTAL"]["TAXTOTALPERCENT"] = $this->formatNumberToEMAIL($totalVatPercent);
-
-        $hdnDiscountPercent = (float)$focus->column_fields['hdnDiscountPercent'];
-        $hdnDiscountAmount = (float)$focus->column_fields['discount_amount'];
-
-        if (!empty($hdnDiscountPercent)) {
-            $finalDiscountPercent = $hdnDiscountPercent;
-        }
-
-        $Details["TOTAL"]["FINALDISCOUNTPERCENT"] = $this->formatNumberToEMAIL($finalDiscountPercent);
-        $Details["TOTAL"]["VATBLOCK"] = $this->getVatBlock();
-
-        $Charges_Block = [];
-
-        if (!empty($chargesAndItsTaxes)) {
-            $allCharges = getAllCharges();
-
-            foreach ($chargesAndItsTaxes as $chargeId => $chargeData) {
-                $name = $allCharges[$chargeId]['name'];
-                $Charges_Block[] = ['label' => $name, 'value' => $chargeData['value']];
-            }
-        }
-
-        $Details["TOTAL"]["CHARGESBLOCK"] = $Charges_Block;
-
-        return $Details;
     }
 
     private function getFieldValue($efocus, $emodule, $fieldname, $value, $UITypes, $inventory_currency = false)
@@ -1181,152 +735,6 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             self::$thousands_separator,
             self::$language
         );
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function convertRelatedBlocks(): void
-    {
-        if (!str_contains(self::$content, '#RELATED_BLOCK_')) {
-            return;
-        }
-
-        Core_RelatedBlock_Model::$numberUserConfig = Core_RelatedBlock_Model::$currencyUserConfig = [
-            'currency_grouping_separator' => self::$thousands_separator,
-            'currency_decimal_separator'  => self::$decimal_point,
-            'truncate_trailing_zeros'     => false,
-            'no_of_currency_decimals'     => self::$decimals,
-        ];
-
-        self::$content = Core_RelatedBlock_Model::replaceAll(self::$recordModel, self::$content);
-    }
-
-    private function convertInventoryModules()
-    {
-        $result = self::$db->pquery("select * from vtiger_inventoryproductrel where id=?", [self::$focus->id]);
-        $num_rows = self::$db->num_rows($result);
-        if ($num_rows > 0) {
-            $Products = $this->replaceInventoryDetailsBlock(self::$module, self::$focus);
-            $var_array = [];
-            $Blocks = ["", "PRODUCTS_", "SERVICES_"];
-            foreach ($Blocks as $block_type) {
-                if (strpos(self::$content, "#PRODUCTBLOC_" . $block_type . "START#") !== false && strpos(self::$content, "#PRODUCTBLOC_" . $block_type . "END#") !== false) {
-                    $tableTag = $this->convertProductBlock($block_type);
-                    $ExplodedEMAIL = [];
-                    $Exploded = explode("#PRODUCTBLOC_" . $block_type . "START#", self::$content);
-                    $ExplodedEMAIL[] = $Exploded[0];
-                    for ($iterator = 1; $iterator < count($Exploded); $iterator++) {
-                        $SubExploded = explode("#PRODUCTBLOC_" . $block_type . "END#", $Exploded[$iterator]);
-                        foreach ($SubExploded as $part) {
-                            $ExplodedEMAIL[] = $part;
-                        }
-                        $highestpartid = $iterator * 2 - 1;
-                        $ProductParts[$highestpartid] = $ExplodedEMAIL[$highestpartid];
-                        $ExplodedEMAIL[$highestpartid] = '';
-                    }
-                    if ($Products["P"]) {
-                        foreach ($Products["P"] as $Product_Details) {
-                            if (($block_type == "PRODUCTS_" && !empty($Product_Details["SERVICES_RECORD_ID"])) || ($block_type == "SERVICES_" && !empty($Product_Details["PRODUCTS_RECORD_ID"]))) {
-                                continue;
-                            }
-                            foreach ($ProductParts as $productpartid => $productparttext) {
-                                foreach ($Product_Details as $coll => $value) {
-                                    $productparttext = str_replace("$" . strtoupper($coll) . "$", $value, $productparttext);
-                                }
-                                $ExplodedEMAIL[$productpartid] .= $productparttext;
-                            }
-                        }
-                    }
-                    self::$content = implode('', $ExplodedEMAIL);
-                }
-            }
-        }
-    }
-
-    private function convertProductBlock($block_type = '')
-    {
-        EMAILMaker_EMAILMaker_Model::getSimpleHtmlDomFile();
-        $html = str_get_html(self::$content);
-        $tableDOM = false;
-        if (is_array($html->find("td"))) {
-            foreach ($html->find("td") as $td) {
-                if (trim($td->plaintext) == "#PRODUCTBLOC_" . $block_type . "START#") {
-                    $td->parent->outertext = "#PRODUCTBLOC_" . $block_type . "START#";
-                    $oParent = $td->parent;
-                    while ($oParent->tag != "table") {
-                        $oParent = $oParent->parent;
-                    }
-                    [$tag] = explode(">", $oParent->outertext, 2);
-                    $header = $oParent->first_child();
-                    if ($header->tag != "tr") {
-                        $header = $header->children(0);
-                    }
-                    $header_style = '';
-                    if (is_object($td->parent->prev_sibling()->children[0])) {
-                        $header_style = $td->parent->prev_sibling()->children[0]->getAttribute("style");
-                    }
-                    $footer_tag = "<tr>";
-                    if (isset($header_style)) {
-                        $StyleHeader = explode(";", $header_style);
-                        if (isset($StyleHeader)) {
-                            foreach ($StyleHeader as $style_header_tag) {
-                                if (strpos($style_header_tag, "border-top") == true) {
-                                    $footer_tag .= "<td colspan='" . $td->getAttribute("colspan") . "' style='" . $style_header_tag . "'>&nbsp;</td>";
-                                }
-                            }
-                        }
-                    } else {
-                        $footer_tag .= "<td colspan='" . $td->getAttribute("colspan") . "' style='border-top:1px solid #000000;'>&nbsp;</td>";
-                    }
-                    $footer_tag .= "</tr>";
-                    $var = $td->parent->next_sibling()->last_child()->plaintext;
-                    $subtotal_tr = "";
-                    if (strpos($var, "TOTAL") !== false) {
-                        if (is_object($td)) {
-                            $style_subtotal = $td->getAttribute("style");
-                        }
-                        $style_subtotal_tag = $style_subtotal_endtag = "";
-                        if (isset($td->innertext)) {
-                            [$style_subtotal_tag, $style_subtotal_endtag] = explode("#PRODUCTBLOC_" . $block_type . "START#", $td->innertext);
-                        }
-                        if (isset($style_subtotal)) {
-                            $StyleSubtotal = explode(";", $style_subtotal);
-                            if (isset($StyleSubtotal)) {
-                                foreach ($StyleSubtotal as $style_tag) {
-                                    if (strpos($style_tag, "border-top") == true) {
-                                        $tag .= " style='" . $style_tag . "'";
-                                        break;
-                                    }
-                                }
-                            }
-                        } else {
-                            $style_subtotal = "";
-                        }
-                        $subtotal_tr = "<tr>";
-                        $subtotal_tr .= "<td colspan='" . ($td->getAttribute(
-                                    "colspan"
-                                ) - 1) . "' style='" . $style_subtotal . ";border-right:none'>" . $style_subtotal_tag . "%G_Subtotal%" . $style_subtotal_endtag . "</td>";
-                        $subtotal_tr .= "<td align='right' nowrap='nowrap' style='" . $style_subtotal . "'>" . $style_subtotal_tag . "" . rtrim(
-                                $var,
-                                "$"
-                            ) . "_SUBTOTAL$" . $style_subtotal_endtag . "</td>";
-                        $subtotal_tr .= "</tr>";
-                    }
-                    $tag .= ">";
-                    $tableDOM["tag"] = $tag;
-                    $tableDOM["header"] = $header->outertext;
-                    $tableDOM["footer"] = $footer_tag;
-                    $tableDOM["subtotal"] = $subtotal_tr;
-                }
-                if (trim($td->plaintext) == "#PRODUCTBLOC_" . $block_type . "END#") {
-                    $td->parent->outertext = "#PRODUCTBLOC_" . $block_type . "END#";
-                }
-            }
-            self::$content = $html->save();
-        }
-
-        return $tableDOM;
     }
 
     private function handleRowbreak()
@@ -1771,22 +1179,6 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     public function getEmailImages($convert_recipient = true)
     {
         return self::$Email_Images;
-    }
-
-    private function getInventoryTaxTypeCustom($module, $focus)
-    {
-        if (!empty($focus->id)) {
-            $res = self::$db->pquery("SELECT taxtype FROM " . self::$inventory_table_array[$module] . " WHERE " . self::$inventory_id_array[$module] . "=?", [$focus->id]);
-
-            return self::$db->query_result($res, 0, 'taxtype');
-        }
-
-        return "";
-    }
-
-    private function itsmd($val)
-    {
-        return md5($val);
     }
 
     public static function getTranslate($label, $module = 'EMAILMaker')

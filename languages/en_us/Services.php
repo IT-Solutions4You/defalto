@@ -37,8 +37,8 @@ $languageStrings = [
 
     //Field Labels
     'Service Name'          => 'Service Name',
-    'Service Active'        => 'Active',
-    'Service Category'      => 'Category',
+    'Service Active'        => 'Service Active',
+    'Service Category'      => 'Service Category',
     'Service No'            => 'Service Number',
     'Owner'                 => 'Owner',
     'No of Units'           => 'Number of Units',

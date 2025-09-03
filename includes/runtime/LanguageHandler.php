@@ -81,7 +81,7 @@ class Vtiger_Language_Handler
             return null;
         }
         $moduleStrings = self::getModuleStringsFromFile($language, $module);
-        if (!empty($moduleStrings['languageStrings'][$key])) {
+        if (isset($moduleStrings['languageStrings'][$key])) {
             return $moduleStrings['languageStrings'][$key];
         }
         // Lookup for the translation in base module, in case of sub modules, before ending up with common strings
@@ -91,13 +91,13 @@ class Vtiger_Language_Handler
                 $baseModule = 'Settings.Vtiger';
             }
             $moduleStrings = self::getModuleStringsFromFile($language, $baseModule);
-            if (!empty($moduleStrings['languageStrings'][$key])) {
+            if (isset($moduleStrings['languageStrings'][$key])) {
                 return $moduleStrings['languageStrings'][$key];
             }
         }
 
         $commonStrings = self::getModuleStringsFromFile($language);
-        if (!empty($commonStrings['languageStrings'][$key])) {
+        if (isset($commonStrings['languageStrings'][$key])) {
             return $commonStrings['languageStrings'][$key];
         }
 
@@ -118,7 +118,7 @@ class Vtiger_Language_Handler
 
         $module = str_replace(':', '.', $module);
         $moduleStrings = self::getModuleStringsFromFile($language, $module);
-        if (!empty($moduleStrings['jsLanguageStrings'][$key])) {
+        if (isset($moduleStrings['jsLanguageStrings'][$key])) {
             return $moduleStrings['jsLanguageStrings'][$key];
         }
         // Lookup for the translation in base module, in case of sub modules, before ending up with common strings
@@ -128,13 +128,13 @@ class Vtiger_Language_Handler
                 $baseModule = 'Settings.Vtiger';
             }
             $moduleStrings = self::getModuleStringsFromFile($language, $baseModule);
-            if (!empty($moduleStrings['jsLanguageStrings'][$key])) {
+            if (isset($moduleStrings['jsLanguageStrings'][$key])) {
                 return $moduleStrings['jsLanguageStrings'][$key];
             }
         }
 
         $commonStrings = self::getModuleStringsFromFile($language);
-        if (!empty($commonStrings['jsLanguageStrings'][$key])) {
+        if (isset($commonStrings['jsLanguageStrings'][$key])) {
             return $commonStrings['jsLanguageStrings'][$key];
         }
 

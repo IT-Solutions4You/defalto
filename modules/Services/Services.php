@@ -19,7 +19,7 @@
 class Services extends CRMEntity
 {
     public string $moduleName = 'Services';
-    public string $parentName = 'Sales';
+    public string $parentName = 'INVENTORY';
     var $db, $log; // Used in class functions of CRMEntity
 
     var $table_name = 'vtiger_service';

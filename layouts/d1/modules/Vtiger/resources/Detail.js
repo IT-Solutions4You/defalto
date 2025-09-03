@@ -1207,6 +1207,9 @@ Vtiger.Class("Vtiger_Detail_Js", {
         return wrapperElement;
     },
 
+    isPicklistColorSupported: function (valueElement) {
+        return $(valueElement).is('.picklist-color') || $(valueElement).find('.picklist-color').length;
+    },
     /**
      * Ajax Edit Save Event
      * @param {type} currentTdElement
@@ -1305,7 +1308,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
                             jQuery('.vt-notification').remove();
                             let postSaveRecordDetails = response;
 
-                            if ('picklist' === fieldBasicData.data('type') && 'Users' !== app.getModuleName()) {
+                            if ('picklist' === fieldBasicData.data('type') && thisInstance.isPicklistColorSupported(detailViewValue)) {
                                 let style = '',
                                     color = 'undefined' !== typeof postSaveRecordDetails[fieldName].colormap ? postSaveRecordDetails[fieldName].colormap[postSaveRecordDetails[fieldName].value] : false,
                                     picklistHtml;

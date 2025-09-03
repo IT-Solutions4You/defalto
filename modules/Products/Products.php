@@ -18,7 +18,7 @@
 
 class Products extends CRMEntity
 {
-    public string $parentName = 'Inventory';
+    public string $parentName = 'INVENTORY';
     public $db, $log; // Used in class functions of CRMEntity
 
     public $table_name = 'vtiger_products';

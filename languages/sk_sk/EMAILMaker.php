@@ -570,6 +570,7 @@ $languageStrings = [
     'LBL_ASSIGNED_USER_SMTP'                   => 'SMTP server priradeného používateľa',
     'LBL_CHECK_OPTOUT'                         => 'Skontrolovať odhlásenie z e-mailov',
     'LBL_IMPORT_EINVOICE_XML'                  => 'Importovať XML elektronickej faktúry',
+    'LBL_VARIABLE_PRODUCTCODE'                 => 'Kód produktu / služby',
 ];
 $jsLanguageStrings = [
     'LBL_MISSING_FIELDS'                        => 'Chýbajú povinné polia:',

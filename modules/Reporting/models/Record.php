@@ -11,7 +11,7 @@
 class Reporting_Record_Model extends Vtiger_Record_Model
 {
     public bool|Core_QueryGenerator_Model $query = false;
-    public bool|Reporting_Table_Model $table = false;
+    public bool|Reporting_Table_Model $tableModel = false;
 
     /**
      * @throws Exception
@@ -25,7 +25,7 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         $this->retrieveQueryGenerator();
         $this->retrieveTable();
 
-        return $this->table->getTable();
+        return $this->getTableModel()->getTable();
     }
 
     public function getTableStyle(): array
@@ -56,12 +56,17 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         $this->retrieveQueryGenerator();
         $this->retrieveTable();
 
-        return $this->table->getTableCalculations();
+        return $this->getTableModel()->getTableCalculations();
+    }
+
+    public function getTableModel(): Reporting_Table_Model|bool
+    {
+        return $this->tableModel;
     }
 
     public function retrieveTable(): void
     {
-        if ($this->table) {
+        if ($this->tableModel) {
             return;
         }
 
@@ -71,7 +76,7 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         $table->setTableLabels($this->getLabels());
         $table->setTableCalculations($this->getCalculations());
 
-        $this->table = $table;
+        $this->tableModel = $table;
     }
 
     public function retrieveQueryGenerator(): void

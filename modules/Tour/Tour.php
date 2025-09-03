@@ -25,5 +25,5 @@ class Tour extends CRMExtension
     /**
      * @var string
      */
-    public string $parentName = 'Tools';
+    public string $parentName = 'TOOLS';
 }

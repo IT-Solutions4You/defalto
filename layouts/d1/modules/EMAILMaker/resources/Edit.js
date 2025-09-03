@@ -91,7 +91,7 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
                         insert_value = jQuery('#div_company_stamp_signature').html();
                     else if (selectField == 'ORGANIZATION_HEADER_SIGNATURE')
                         insert_value = jQuery('#div_company_header_signature').html();
-                    else if (selectField == 'vatblock')
+                    else if (selectField.toLowerCase() === 'vatblock')
                         insert_value = jQuery('#div_vat_block_table').html();
                     else if (selectField == 'chargesblock')
                         insert_value = jQuery('#div_charges_block_table').html();
@@ -170,7 +170,6 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
 
             EMAILMaker_EditJs.fill_module_lang_array(moduleName);
             EMAILMaker_EditJs.fill_related_blocks_array(moduleName);
-            EMAILMaker_EditJs.fill_module_product_fields_array(moduleName);
         });
     },
     registerSelectRelatedModuleOption: function () {
@@ -562,29 +561,6 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
                     relatedBlockElement.trigger('change')
                 }
             })
-        },
-        fill_module_product_fields_array: function (module) {
-            let ajax_url = 'index.php?module=EMAILMaker&action=AjaxRequestHandle&handler=fill_module_product_fields&productmod=' + module;
-            jQuery.ajax(ajax_url).success(function (response) {
-
-                let product_fields = document.getElementById('psfields');
-                product_fields.length = 0;
-                let map = response.split('|@|');
-                let keys = map[0].split('||');
-                let values = map[1].split('||');
-                for (i = 0; i < values.length; i++) {
-                    let item = document.createElement('option');
-                    item.text = values[i];
-                    item.value = keys[i];
-                    try {
-                        product_fields.add(item, null);
-                    } catch (ex) {
-                        product_fields.add(item);
-                    }
-                }
-            }).error(function () {
-                alert('fill_module_product_fields_array error');
-            });
         },
         refresh_related_blocks_array: function (selected) {
             let module = this.getTemplateModule();

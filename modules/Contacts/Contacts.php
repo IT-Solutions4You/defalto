@@ -31,7 +31,7 @@
 // Contact is used to store customer information.
 class Contacts extends CRMEntity
 {
-    public string $parentName = 'Marketing';
+    public string $parentName = 'HOME';
     public $log;
     public $db;
 

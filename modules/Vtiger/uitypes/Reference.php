@@ -116,4 +116,17 @@ class Vtiger_Reference_UIType extends Vtiger_Base_UIType
 
         return parent::getListSearchTemplateName();
     }
+
+    /**
+     * @param mixed       $value
+     * @param bool|int    $record
+     * @param object|bool $recordInstance
+     *
+     * @return string
+     * @throws Exception
+     */
+    public function getRelatedBlockDisplayValue(mixed $value, bool|int $record, object|bool $recordInstance): string
+    {
+        return strip_tags($this->getDisplayValue($value, $record, $recordInstance));
+    }
 }

@@ -868,7 +868,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         }
     }
 
-    public function save()
+    public function save(): void
     {
         $this->retrieveRelatedToInfo();
 
@@ -1002,9 +1002,9 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $this->saveAttachmentRelation($recordId);
     }
 
-    public function getInsertQuery($table, $params)
+    public function getInsertQuery($table, $data): string
     {
-        return sprintf('INSERT INTO %s (%s) VALUES (%s)', $table, implode(',', array_keys($params)), generateQuestionMarks($params));
+        return sprintf('INSERT INTO %s (%s) VALUES (%s)', $table, implode(',', array_keys($data)), generateQuestionMarks($data));
     }
 
     /**

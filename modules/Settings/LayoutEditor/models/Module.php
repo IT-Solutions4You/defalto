@@ -409,7 +409,12 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model
             'HelpDesk' => ['LBL_TICKET_RESOLUTION', 'LBL_COMMENTS'],
             'Faq'      => ['LBL_COMMENT_INFORMATION'],
         ];
-        if (in_array($moduleName, array_merge(InventoryItem_Utils_Helper::getInventoryItemModules(), ['HelpDesk', 'Faq']))) {
+
+        foreach (InventoryItem_Utils_Helper::getInventoryItemModules() as $inventoryModule) {
+            $blocksEliminatedArray[$inventoryModule] = ['LBL_ITEM_DETAILS'];
+        }
+
+        if (in_array($moduleName, array_keys($blocksEliminatedArray))) {
             if (!empty($blocksEliminatedArray[$moduleName])) {
                 if (in_array($blockName, $blocksEliminatedArray[$moduleName])) {
                     return false;

@@ -96,4 +96,17 @@ class Vtiger_Currency_UIType extends Vtiger_Base_UIType
     {
         return CurrencyField::convertToUserFormatForEdit($value, $user, $skipConversion);
     }
+
+    public function getRelatedBlockDisplayValue(mixed $value, bool|int $record, object|bool $recordInstance): string
+    {
+        global $currency_user;
+        $value = (new self())->getDisplayValue($value, $record, $recordInstance);
+
+        if ($recordInstance) {
+            $info = Vtiger_Functions::getCurrencySymbolandRate($recordInstance->getCurrencyId());
+            $value = CurrencyField::appendCurrencySymbol($value, $info['symbol']);
+        }
+
+        return $value;
+    }
 }

@@ -38,6 +38,19 @@ class Vtiger_Base_UIType extends Vtiger_Base_Model
     }
 
     /**
+     * @param mixed       $value
+     * @param bool|int    $record
+     * @param object|bool $recordInstance
+     *
+     * @return string
+     * @throws Exception
+     */
+    public function getRelatedBlockDisplayValue(mixed $value, bool|int $record, object|bool $recordInstance): string
+    {
+        return $this->getDisplayValue($value, $record, $recordInstance);
+    }
+
+    /**
      * @return bool
      * @throws Exception
      */

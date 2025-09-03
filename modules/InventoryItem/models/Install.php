@@ -59,9 +59,7 @@ class InventoryItem_Install_Model extends Core_Install_Model
                     'displaytype'     => 1,
                     'masseditable'    => 0,
                     'summaryfield'    => 0,
-                    'related_modules' => [
-                        'Accounts',
-                    ],
+                    'related_modules' => InventoryItem_Utils_Helper::getInventoryItemModules(),
                     'columntype'      => 'INT(11)',
                     'filter'          => 1,
                     'filter_sequence' => 2,
@@ -497,14 +495,6 @@ class InventoryItem_Install_Model extends Core_Install_Model
         $this->getTable('df_inventoryitemcf', null)
             ->createTable('inventoryitemid')
             ->createKey('CONSTRAINT `fk_1_df_inventoryitemcf` FOREIGN KEY IF NOT EXISTS (`inventoryitemid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
-
-        $this->getTable('df_inventoryitemtaxrel', null)
-            ->createTable('inventoryitemid')
-            ->createColumn('taxid', 'varchar(150) DEFAULT NULL')
-            ->createColumn('percentage', 'varchar(2) DEFAULT NULL')
-            ->createColumn('amount', 'varchar(150) DEFAULT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`inventoryitemid`)')
-            ->createKey('CONSTRAINT `fk_1_df_inventoryitemtaxrel` FOREIGN KEY IF NOT EXISTS (`inventoryitemid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
 
         $this->getTable('df_inventoryitemcolumns', null)
             ->createTable('tabid')

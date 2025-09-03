@@ -24,20 +24,23 @@ class ModComments_Record_Model extends Vtiger_Record_Model
     /**
      * Functions gets the comment id
      */
-    public function getId()
+    public function getId(): int
     {
         //TODO : check why is modcommentsid is not set
         $id = $this->get('modcommentsid');
+
         if (empty($id)) {
-            return $this->get('id');
+            return (int)$this->get('id');
         }
 
-        return $this->get('modcommentsid');
+        return (int)$this->get('modcommentsid');
     }
 
-    public function setId($id)
+    public function setId($id): self
     {
-        return $this->set('modcommentsid', $id);
+        $this->set('modcommentsid', $id);
+
+        return $this;
     }
 
     /**

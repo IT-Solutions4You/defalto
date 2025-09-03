@@ -42,9 +42,11 @@ class PDFMaker_Record_Model extends Vtiger_Record_Model
      *
      * @return <Object> - current instance
      */
-    public function setId($value)
+    public function setId($id): self
     {
-        return $this->set('templateid', $value);
+        $this->set('templateid', $id);
+
+        return $this;
     }
 
     /**
@@ -52,7 +54,7 @@ class PDFMaker_Record_Model extends Vtiger_Record_Model
      *
      * @param type $recordIds
      */
-    public function delete()
+    public function delete(): void
     {
         $this->getModule()->deleteRecord($this);
     }
@@ -95,7 +97,7 @@ class PDFMaker_Record_Model extends Vtiger_Record_Model
      * Function to get the id of the record
      * @return <Number> - Record Id
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->get('templateid');
     }
@@ -111,7 +113,7 @@ class PDFMaker_Record_Model extends Vtiger_Record_Model
         return 'index.php?module=PDFMaker&view=DetailFree&templateid=' . $this->getId();
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->get('filename');
     }
@@ -143,4 +145,64 @@ class PDFMaker_Record_Model extends Vtiger_Record_Model
 
         return false;
     }
+
+    /**
+     * @return self
+     */
+    public function getPDFMakerSettingsTable(): self
+    {
+        return $this->getTable('vtiger_pdfmaker_settings', 'templateid');
+    }
+
+    /**
+     * @return self
+     */
+    public function getPDFMakerTable(): self
+    {
+        return $this->getTable('vtiger_pdfmaker', 'templateid');
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function isTemplateExists($name): bool
+    {
+        return !empty($this->getTemplateIdByName($name));
+    }
+
+    /**
+     * @param string $name
+     * @return int
+     * @throws Exception
+     */
+    public function getTemplateIdByName(string $name): int
+    {
+        $data = $this->getPDFMakerTable()->selectData(['templateid'], ['filename' => $name]);
+
+        return (int)$data['templateid'];
+    }
+
+    /**
+     * @param array $data
+     * @param array $dataSettings
+     * @return void
+     * @throws Exception
+     */
+    public function updateTemplate(array $data, array $dataSettings): void
+    {
+        if (empty($data['templateid'])) {
+            $this->retrieveDB();
+            $dataSettings['templateid'] = $data['templateid'] = $this->getDB()->getUniqueID('vtiger_pdfmaker');
+
+            $this->getPDFMakerTable()->insertData($data);
+            $this->getPDFMakerSettingsTable()->insertData($dataSettings);
+        } elseif (defined('MIGRATE_DATA')) {
+            $search = ['templateid' => $data['templateid']];
+
+            $this->getPDFMakerTable()->updateData($data, $search);
+            $this->getPDFMakerSettingsTable()->updateData($dataSettings, $search);
+        }
+    }
+
 }

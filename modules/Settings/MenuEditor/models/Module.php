@@ -32,13 +32,14 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model
     ];
 
     public array $defaultSequenceList = [
-        'HOME'      => ['Home', 'Leads', 'Accounts', 'Potentials', 'Appointments', 'Documents'],
-        'MARKETING' => ['Campaigns', 'Leads', 'Contacts', 'Accounts',],
-        'SALES'     => ['Potentials', 'Quotes', 'Invoice', 'Products', 'Services', 'SMSNotifier', 'Contacts', 'Accounts',],
-        'SUPPORT'   => ['HelpDesk', 'Faq', 'ServiceContracts', 'Assets', 'SMSNotifier', 'Contacts', 'Accounts',],
-        'INVENTORY' => ['Products', 'Services', 'PriceBooks', 'Invoice', 'SalesOrder', 'PurchaseOrder', 'Vendors', 'Contacts', 'Accounts',],
-        'PROJECT'   => ['Project', 'ProjectTask', 'ProjectMilestone', 'Contacts', 'Accounts',],
-        'TOOLS'     => ['Rss', 'Portal', 'RecycleBin', 'Documents', 'MailManager'],
+        'HOME'      => ['Home', 'Leads', 'Accounts', 'Contacts', 'Potentials', 'Appointments', 'Documents'],
+        'MARKETING' => ['Campaigns',],
+        'SALES'     => ['Leads', 'Accounts', 'Contacts', 'Potentials', 'Quotes', 'SalesOrder', 'Invoice', 'PriceBooks',],
+        'INVENTORY' => ['Products', 'Services', 'Assets', 'Vendors', 'PurchaseOrder',],
+        'SUPPORT'   => ['HelpDesk', 'Faq', 'ServiceContracts',],
+        'PROJECT'   => ['Project', 'ProjectTask', 'ProjectMilestone'],
+        'ANALYTICS'   => ['Reporting'],
+        'TOOLS'     => ['Appointments', 'RecycleBin', 'PDFMaker', 'EMAILMaker', 'ITS4YouEmails', 'MailManager', 'Documents', 'PBXManager', 'Rss', 'Portal', 'Installer', 'Tour'],
     ];
 
     /**
@@ -264,9 +265,11 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model
                 Settings_MenuEditor_Module_Model::addModuleToApp($moduleName, $app);
             }
         }
+    }
 
-        Settings_MenuEditor_Module_Model::addModuleToApp('SMSNotifier', 'SALES');
-        Settings_MenuEditor_Module_Model::addModuleToApp('SMSNotifier', 'SUPPORT');
+    public function getDefaultSequence(): array
+    {
+        return $this->defaultSequenceList;
     }
 
     public function setDefaultSequence()

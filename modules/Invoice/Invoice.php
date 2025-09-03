@@ -31,7 +31,7 @@
 
 class Invoice extends CRMEntity
 {
-    public string $parentName = 'Inventory';
+    public string $parentName = 'SALES';
     public $log;
     public $db;
 

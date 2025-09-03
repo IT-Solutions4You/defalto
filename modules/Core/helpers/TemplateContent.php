@@ -10,6 +10,17 @@
 
 class Core_TemplateContent_Helper extends Vtiger_Base_Model
 {
+    public static string $content = '';
+    public static $thousands_separator;
+    public static $decimal_point;
+    public static $decimals;
+    public static $recordModel;
+    public static $pagebreak;
+    /**
+     * @var array|mixed
+     */
+    public static array $rep;
+
     /**
      * @param $finalDetails
      *
@@ -133,5 +144,175 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
 	            INNER JOIN vtiger_crmentity
 	            ON vtiger_attachments.attachmentsid=vtiger_crmentity.crmid
 	            WHERE deleted=0 AND vtiger_attachments.attachmentsid=?';
+    }
+
+    /**
+     * @param string $name
+     * @param bool|null $lowerCase
+     * @return string
+     */
+    public function getVariable(string $name, bool $lowerCase = false): string
+    {
+        $name = $lowerCase ? strtolower($name) : strtoupper($name);
+
+        return '$' . $name . '$';
+    }
+
+    /**
+     * @param string $name
+     * @param bool $lowerCase
+     * @return string
+     */
+    public function getVariableLabel(string $name, bool $lowerCase = false): string
+    {
+        $name = $lowerCase ? strtolower($name) : strtoupper($name);
+
+        return '%' . $name . '%';
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function convertRelatedBlocks(): void
+    {
+        if (!str_contains(self::$content, '#RELATED_BLOCK_')) {
+            return;
+        }
+
+        Core_RelatedBlock_Model::$numberUserConfig = Core_RelatedBlock_Model::$currencyUserConfig = [
+            'currency_grouping_separator' => self::$thousands_separator,
+            'currency_decimal_separator'  => self::$decimal_point,
+            'truncate_trailing_zeros'     => false,
+            'no_of_currency_decimals'     => self::$decimals,
+        ];
+
+        self::$content = Core_RelatedBlock_Model::replaceAll(self::$recordModel, self::$content, $this->getTemplateModule());
+    }
+
+    public function getTemplateModule()
+    {
+        return explode('_', get_class($this))[0];
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function convertInventoryBlocks(): void
+    {
+        if (!str_contains(self::$content, '#INVENTORY_BLOCK_')) {
+            return;
+        }
+
+        Core_InventoryItemsBlock_Model::$numberUserConfig = Core_InventoryItemsBlock_Model::$currencyUserConfig = [
+            'currency_grouping_separator' => self::$thousands_separator,
+            'currency_decimal_separator'  => self::$decimal_point,
+            'truncate_trailing_zeros'     => false,
+            'no_of_currency_decimals'     => self::$decimals,
+        ];
+
+        self::$content = Core_InventoryItemsBlock_Model::replaceAll(self::$recordModel, self::$content, $this->getTemplateModule());
+    }
+
+    protected function convertVatBlocks()
+    {
+        if (!str_contains(self::$content, '#VATBLOCK_')) {
+            return;
+        }
+
+        Core_VatBlock_Model::$numberUserConfig = Core_VatBlock_Model::$currencyUserConfig = [
+            'currency_grouping_separator' => self::$thousands_separator,
+            'currency_decimal_separator'  => self::$decimal_point,
+            'truncate_trailing_zeros'     => false,
+            'no_of_currency_decimals'     => self::$decimals,
+        ];
+
+        self::$content = Core_VatBlock_Model::replaceAll(self::$recordModel, self::$content, $this->getTemplateModule());
+    }
+
+    public function retrieveRecordModel($recordId): void
+    {
+        if (!self::$recordModel && !empty($recordId) && isRecordExists($recordId)) {
+            self::$recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+        }
+    }
+
+    /**
+     * @param string $type
+     */
+    protected function convertHideTR(string $type = ''): void
+    {
+        $regex = '/<tr\b[^<]*>[^<]*(?:<(?!tr\b)[^<]*)*#' . $type . 'HIDETR#[^<]*(?:<(?!\/tr>)[^<]*)*<\/tr>/';
+
+        self::$content = preg_replace($regex, '', self::$content);
+        self::$content = str_replace('#HIDETR#', '', self::$content);
+    }
+
+    public function convertCurrencyInfo(): void
+    {
+        $currencyId = self::$recordModel->get('currency_id');
+        $currencyInfo = (array)Vtiger_Functions::getCurrencyInfo($currencyId);
+
+        self::$rep['$CURRENCYNAME$'] = $currencyInfo['currency_name'] ?? '';
+        self::$rep['$CURRENCYSYMBOL$'] = $currencyInfo['currency_symbol'] ?? '';
+        self::$rep['$CURRENCYCODE$'] = $currencyInfo['currency_code'] ?? '';
+
+        $this->replaceContent();
+    }
+
+    public function replaceContent(): void
+    {
+        if (!empty(self::$rep)) {
+            self::$content = str_replace(array_keys(self::$rep), self::$rep, self::$content);
+            self::$rep = [];
+        }
+    }
+
+    public function convertCopyHeader(): void
+    {
+        $html = Core_SimpleHtmlDom_Helper::getInstance(self::$content);
+
+        foreach($html->getHtmlNode()->find('td') as $tdNode) {
+            if ('#copyheader#' !== strtolower(trim($tdNode->plaintext))) {
+                continue;
+            }
+
+            $table = $html->parents($tdNode, 'table');
+            $tr = $html->parents($tdNode, 'tr');
+            $headerTr = $table->find('tr', 0);
+
+            $tr->outertext = $headerTr->outertext;
+        }
+
+        $html = $html->getHtml();
+
+        self::$content = $html;
+    }
+
+    public function convertPageBreak(): void
+    {
+        $html = Core_SimpleHtmlDom_Helper::getInstance(self::$content);
+
+        foreach ($html->getHtmlNode()->find('td') as $tdNode) {
+            if ('#pagebreak#' !== strtolower(trim($tdNode->plaintext))) {
+                continue;
+            }
+
+
+            $table = clone $html->parents($tdNode, 'table');
+            $table->nodes = null;
+            $table->innertext = '#EXPLODE#';
+            $tableContent = $table->save();
+            $tableInfo = explode('#EXPLODE#', $tableContent);
+
+            $tr = $html->parents($tdNode, 'tr');
+            $tr->nodes = null;
+            $tr->outertext = $tableInfo[1] . '#PAGEBREAK#' . $tableInfo[0];
+        }
+
+        self::$content = $html->getHtml();
+
+        self::$rep['#pagebreak#'] = self::$pagebreak;
+        self::$rep['#PAGEBREAK#'] = self::$pagebreak;
+        $this->replaceContent();
     }
 }

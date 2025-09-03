@@ -690,11 +690,11 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
         $db = PearDatabase::getInstance();
 
         if ($inventory_table != "") {
-            $sql = "SELECT currency_id, " . $inventory_table . ".conversion_rate AS conv_rate, vtiger_currency_info.* FROM " . $inventory_table . "
+            $sql = "SELECT currency_id, " . $inventory_table . ".conversion_rate, vtiger_currency_info.* FROM " . $inventory_table . "
                            INNER JOIN vtiger_currency_info ON " . $inventory_table . ".currency_id = vtiger_currency_info.id
                            WHERE " . $inventory_id . "=?";
         } else {
-            $sql = "SELECT vtiger_currency_info.*, id AS currency_id, '' AS conv_rate FROM vtiger_currency_info WHERE  vtiger_currency_info.id=?";
+            $sql = "SELECT vtiger_currency_info.*, id AS currency_id, '' AS conversion_rate FROM vtiger_currency_info WHERE  vtiger_currency_info.id=?";
         }
         $res = $db->pquery($sql, [$id]);
 
@@ -706,27 +706,6 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
         $currency_info["currency_symbol"] = $db->query_result($res, 0, "currency_symbol");
 
         return $currency_info;
-    }
-
-    public function getInventoryProductsQuery()
-    {
-        $query = "select case when vtiger_products.productid != '' then vtiger_products.productname else vtiger_service.servicename end as productname," .
-            " case when vtiger_products.productid != '' then vtiger_products.productid else vtiger_service.serviceid end as psid," .
-            " case when vtiger_products.productid != '' then vtiger_products.product_no else vtiger_service.service_no end as psno," .
-            " case when vtiger_products.productid != '' then 'Products' else 'Services' end as entitytype," .
-            " case when vtiger_products.productid != '' then vtiger_products.unit_price else vtiger_service.unit_price end as unit_price," .
-            " case when vtiger_products.productid != '' then vtiger_products.usageunit else vtiger_service.service_usageunit end as usageunit," .
-            " case when vtiger_products.productid != '' then vtiger_products.qty_per_unit else vtiger_service.qty_per_unit end as qty_per_unit," .
-            " case when vtiger_products.productid != '' then vtiger_products.qtyinstock else 'NA' end as qtyinstock," .
-            " case when vtiger_products.productid != '' then c1.description else c2.description end as psdescription, vtiger_inventoryproductrel.* " .
-            " from vtiger_inventoryproductrel" .
-            " left join vtiger_products on vtiger_products.productid=df_inventoryitem.productid " .
-            " left join vtiger_crmentity as c1 on c1.crmid = vtiger_products.productid " .
-            " left join vtiger_service on vtiger_service.serviceid=df_inventoryitem.productid " .
-            " left join vtiger_crmentity as c2 on c2.crmid = vtiger_service.serviceid " .
-            " where id = ? ORDER BY sequence_no";
-
-        return $query;
     }
 
     public function getOrgOldCols()

@@ -19,7 +19,7 @@ class EMAILMaker extends CRMExtension
     private $profilesActions;
     private $profilesPermissions;
     public string $moduleName = 'EMAILMaker';
-    public string $parentName = 'Tools';
+    public string $parentName = 'TOOLS';
     public $list_fields_name = [];
     public $list_fields = [];
     public $related_tables = [];
