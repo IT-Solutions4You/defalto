@@ -1698,6 +1698,7 @@ $jsLanguageStrings = [
     'JS_INVALID_URL' => 'Neplatná adresa URL',
     'JS_MAX_ALLOWED_CHARACTERS' => 'Maximálne povolené znaky sú',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE' => 'Ste si istí, že chcete zmazať tento záznam?',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW' => 'Ste si istí, že chcete zmazať tento riadok?',
     'JS_TAB_LABEL_EXCEEDS_CHARS' => 'Dĺžka názvu karty by mala byť menšia ako %s',
     'JS_STARRED' => 'Nesledovať',
     'JS_NOT_STARRED' => 'Nasledovať',

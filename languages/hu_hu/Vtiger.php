@@ -1455,6 +1455,7 @@ $jsLanguageStrings = [
     'JS_SNOOZED'                                          => 'Snoozed',
     'JS_INVALID_URL'                                      => 'Érvénytelen URL',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE'                  => 'Biztos, hogy törölni?',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW'         => 'Are you sure you want to delete this row?',
     'JS_TAB_LABEL_EXCEEDS_CHARS'                          => 'Lap címke hossza legyen kevesebb, mint %s karakterek',
     'JS_STARRED'                                          => 'Csillagozott',
     'JS_NOT_STARRED'                                      => 'Nem Csillagozott',

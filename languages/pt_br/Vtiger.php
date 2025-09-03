@@ -1780,6 +1780,7 @@ $jsLanguageStrings = [
     'JS_INVALID_URL'                     => 'URL Inválida',
     'JS_MAX_ALLOWED_CHARACTERS'          => 'O número máximo de caracteres permitido é',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE' => 'Você tem certeza que deseja apagar?',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW' => 'Are you sure you want to delete this row?',
     'JS_TAB_LABEL_EXCEEDS_CHARS'         => 'O comprimento do rótulo da Aba deve ser inferior a %s caracteres',
     'JS_STARRED'                         => 'Deixar de Seguir',
     'JS_NOT_STARRED'                     => 'Seguir',

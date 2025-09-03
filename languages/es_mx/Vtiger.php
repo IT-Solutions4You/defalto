@@ -1439,6 +1439,7 @@ $jsLanguageStrings = [
     'JS_SNOOZED'                                          => 'Pospuesto',
     'JS_INVALID_URL'                                      => 'Dirección URL no válida',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE'                  => '¿Está seguro de que desea eliminar?',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW'         => 'Are you sure you want to delete this row?',
     'JS_TAB_LABEL_EXCEEDS_CHARS'                          => 'El tamaño de la etiqueta de la pestaña debe ser de menos de %s caracteres',
     'JS_STARRED'                                          => 'Siguiendo',
     'JS_NOT_STARRED'                                      => 'No siguiendo',

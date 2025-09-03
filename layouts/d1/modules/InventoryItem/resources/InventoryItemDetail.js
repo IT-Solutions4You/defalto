@@ -237,7 +237,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     deleteProductLine: function (rowNumber) {
-        if (confirm(app.vtranslate('JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE')) === true) {
+        if (confirm(app.vtranslate('JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW')) === true) {
             const self = this;
             app.request.post({
                 'data': {

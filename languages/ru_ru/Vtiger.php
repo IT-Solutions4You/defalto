@@ -1449,6 +1449,7 @@ $jsLanguageStrings = [
     'JS_SNOOZED'                                          => 'Дремали',
     'JS_INVALID_URL'                                      => 'Недопустимый URL-адрес',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE'                  => 'Вы уверены, что хотите удалить?',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW'         => 'Are you sure you want to delete this row?',
     'JS_TAB_LABEL_EXCEEDS_CHARS'                          => 'Ярлык вкладки длина должна быть меньше чем %s символов',
     'JS_STARRED'                                          => 'Снялся',
     'JS_NOT_STARRED'                                      => 'Не Снялся',
