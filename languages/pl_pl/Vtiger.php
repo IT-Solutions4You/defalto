@@ -1597,6 +1597,7 @@ $jsLanguageStrings = [
     'JS_SNOOZED'                                                => 'Żywot',
     'JS_INVALID_URL'                                            => 'Nieprawidłowy adres URL',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE'                        => 'Jesteś pewien, że chcesz usunąć?',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW'               => 'Are you sure you want to delete this row?',
     'JS_TAB_LABEL_EXCEEDS_CHARS'                                => 'Skrót zakładki długość powinna być mniejsza niż %s znaków',
     'JS_STARRED'                                                => 'Zagrał',
     'JS_NOT_STARRED'                                            => 'Nie Zagrał',

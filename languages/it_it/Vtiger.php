@@ -1451,6 +1451,7 @@ $jsLanguageStrings = [
     'JS_SNOOZED'                                          => 'Rimandato',
     'JS_INVALID_URL'                                      => 'URL non valido',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE'                  => 'Sei sicuro di voler eliminare?',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW'         => 'Are you sure you want to delete this row?',
     'JS_TAB_LABEL_EXCEEDS_CHARS'                          => 'Scheda di etichetta lunghezza deve essere inferiore a %s caratteri',
     'JS_STARRED'                                          => 'Protagonista',
     'JS_NOT_STARRED'                                      => 'Non Protagonista',

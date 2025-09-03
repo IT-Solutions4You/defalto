@@ -1454,6 +1454,7 @@ $jsLanguageStrings = [
     'JS_SNOOZED'                                          => 'Deaktiviert',
     'JS_INVALID_URL'                                      => 'Ungültige URL',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE'                  => 'Sind Sie sicher, dass Sie löschen möchten?',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW'         => 'Are you sure you want to delete this row?',
     'JS_TAB_LABEL_EXCEEDS_CHARS'                          => 'Registerkarte label Länge sollte weniger als %s Zeichen',
     'JS_STARRED'                                          => 'Stern',
     'JS_NOT_STARRED'                                      => 'Nicht Die Hauptrolle',

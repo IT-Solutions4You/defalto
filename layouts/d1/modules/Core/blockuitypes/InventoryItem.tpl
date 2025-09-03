@@ -99,6 +99,7 @@
     <div class="blockData p-3 border-top border-light-subtle {if $IS_HIDDEN}hide{/if}">
         <div class="lineItemTableContainer">
             <table class="table table-borderless table-hover" id="lineItemTab">
+                {if $INVENTORY_ITEMS_COUNT > 0}
                 <thead>
                 <tr class="border-bottom">
                     <td class="font-bold">{vtranslate('LBL_TOOLS',$MODULE)}</td>
@@ -112,6 +113,7 @@
                     {/foreach}
                 </tr>
                 </thead>
+                {/if}
                 <tbody>
                 {foreach key=row_no item=data from=$INVENTORY_ITEMS}
                     <tr id="row{$row_no}" data-row-num="{$row_no}" class="border-bottom lineItemRow">

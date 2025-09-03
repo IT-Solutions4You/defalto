@@ -1453,6 +1453,7 @@ $jsLanguageStrings = [
     'JS_SNOOZED'                                          => 'Snoozed',
     'JS_INVALID_URL'                                      => 'Geçersiz URL',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE'                  => 'Silmek istediğinizden emin misiniz?',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW'         => 'Are you sure you want to delete this row?',
     'JS_TAB_LABEL_EXCEEDS_CHARS'                          => 'Sekme etiket uzunluğu %s karakterden az olmalıdır ',
     'JS_STARRED'                                          => 'Rol aldı',
     'JS_NOT_STARRED'                                      => 'Değil Rol Aldı',
