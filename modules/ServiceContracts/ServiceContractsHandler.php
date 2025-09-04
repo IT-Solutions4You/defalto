@@ -52,39 +52,28 @@ class ServiceContractsHandler extends VTEventHandler
             $moduleName = $entityData->getModuleName();
 
             // Update Used Units for the Service Contract, everytime the status of a ticket related to the Service Contract changes
-            if ($moduleName == 'HelpDesk' && isset($_REQUEST['return_module']) && $_REQUEST['return_module'] != 'ServiceContracts') {
+            if ($moduleName == 'HelpDesk') {
                 $ticketId = $entityData->getId();
                 $data = $entityData->getData();
+
                 if ($data['ticketstatus'] != $entityData->oldStatus) {
                     if (strtolower($data['ticketstatus']) == 'closed' || strtolower($entityData->oldStatus) == 'closed') {
-                        if (strtolower($entityData->oldStatus) == 'closed') {
-                            $op = '-';
-                        } else {
-                            $op = '+';
-                        }
-
+                        $minus = 'closed' === strtolower($entityData->oldStatus);
                         $contract_tktresult = $adb->pquery("SELECT crmid as id FROM vtiger_crmentityrel WHERE module = 'ServiceContracts' AND relmodule = 'HelpDesk' AND relcrmid = ? UNION 
                             SELECT relcrmid as id FROM vtiger_crmentityrel WHERE relmodule = 'ServiceContracts' AND module = 'HelpDesk' AND crmid = ?",
                             [$ticketId, $ticketId]
                         );
 
-                        while($row = $adb->fetchByAssoc($contract_tktresult)) {
+                        while ($row = $adb->fetchByAssoc($contract_tktresult)) {
                             $contract_id = $row['id'];
                             $scFocus = CRMEntity::getInstance('ServiceContracts');
                             $scFocus->id = $contract_id;
                             $scFocus->retrieve_entity_info($contract_id, 'ServiceContracts');
 
-                            $prevUsedUnits = $scFocus->column_fields['used_units'];
-                            if (empty($prevUsedUnits)) {
-                                $prevUsedUnits = 0;
-                            }
-
+                            $prevUsedUnits = (float)$scFocus->column_fields['used_units'];
                             $usedUnits = $scFocus->computeUsedUnits($data);
-                            if ($op == '-') {
-                                $totalUnits = $prevUsedUnits - $usedUnits;
-                            } else {
-                                $totalUnits = $prevUsedUnits + $usedUnits;
-                            }
+                            $totalUnits = $minus ? $prevUsedUnits - $usedUnits : $prevUsedUnits + $usedUnits;
+
                             $scFocus->updateUsedUnits($totalUnits);
                             $scFocus->calculateProgress();
                         }
