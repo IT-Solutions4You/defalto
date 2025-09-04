@@ -24,11 +24,11 @@ $languageStrings = [
     'LBL_RECORDS_LIST'       => 'Ticket List',
 
     // Blocks
-    'LBL_TICKET_INFORMATION' => 'Ticket Information',
+    'LBL_TICKET_INFORMATION' => 'Ticket Details',
     'LBL_TICKET_RESOLUTION'  => 'Ticket Resolution',
 
     //Field Labels
-    'Ticket No'              => 'Ticket Number',
+    'Ticket No'              => 'Ticket No',
     'Severity'               => 'Severity',
     'Update History'         => 'Update History',
     'Hours'                  => 'Hours',
