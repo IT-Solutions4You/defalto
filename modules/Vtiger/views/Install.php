@@ -28,6 +28,12 @@ class Vtiger_Install_View extends Vtiger_Basic_View
         if (!$currentUser || !$currentUser->isAdminUser()) {
             throw new Exception('Required admin user');
         }
+
+        $class = $request->getModule() . '_Install_Model';
+
+        if (!class_exists($class)) {
+            throw new Exception('Installation not supported. Class not found: ' . $class);
+        }
     }
 
     public function preProcess(Vtiger_Request $request, $display = true)
