@@ -30,7 +30,7 @@ $languageStrings = [
     'Question'                => 'Fråga',
     'Answer'                  => 'Svar',
     'Comments'                => 'Kommentarer',
-    'Faq No'                  => 'Faq nummer',
+    'Faq No'                  => 'Faq No',
 
     //Added for existing Picklist Entries
     'General'                 => 'Generell',
