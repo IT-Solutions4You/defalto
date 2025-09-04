@@ -87,6 +87,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
         'projecttaskname',
         'projecttaskpriority',
         'projectid',
+        'projectid:Project:account_id',
         'milestoneid',
         'startdate',
         'enddate',
