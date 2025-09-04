@@ -536,7 +536,7 @@ class HelpDesk_Install_Model extends Core_Install_Model
             ->createColumn('ticket_title','varchar(255) NOT NULL')
             ->createColumn('solution','text DEFAULT NULL')
             ->createColumn('version_id',self::$COLUMN_INT)
-            ->createColumn('hours',self::$COLUMN_DECIMAL)
+            ->createColumn('hours', 'decimal(10,2) DEFAULT NULL')
             ->createColumn('contact_id',self::$COLUMN_INT)
             ->createColumn('tags','varchar(1) DEFAULT NULL')
             ->createColumn('currency_id',self::$COLUMN_INT)
