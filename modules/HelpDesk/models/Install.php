@@ -12,11 +12,12 @@ class HelpDesk_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
         ['HelpDesk', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['HelpDesk', 'ServiceContracts', 'Service Contracts', 'ADD,SELECT', 'get_related_list', '',],
+        ['HelpDesk', 'ServiceContracts', 'Service Contracts', ['ADD','SELECT'], 'get_related_list', '',],
         ['HelpDesk', 'Services', 'Services', 'SELECT', 'get_related_list', '',],
         ['HelpDesk', 'Project', 'Projects', 'SELECT', 'get_related_list', '',],
         ['HelpDesk', 'Appointments', 'Appointments', '', 'get_related_list', '',],
-        ['HelpDesk', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
+        ['HelpDesk', 'ITS4YouEmails', 'ITS4YouEmails', ['SELECT'], 'get_related_list', '',],
+        ['ServiceContracts', 'HelpDesk', 'HelpDesk', ['ADD', 'SELECT'], 'get_related_list'],
     ];
 
     public array $registerEventHandler = [
