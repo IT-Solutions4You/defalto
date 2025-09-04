@@ -1542,6 +1542,7 @@ class Vtiger_Field_Model extends Vtiger_Field
             'masseditable'        => $this->get('masseditable'),
             'defaultvalue'        => $this->get('defaultvalue'),
             'summaryfield'        => $this->get('summaryfield'),
+            'summaryfieldsequence'=> $this->get('summaryfieldsequence'),
             'headerfield'         => $this->get('headerfield'),
             'headerfieldsequence' => $this->get('headerfieldsequence'),
         ];
