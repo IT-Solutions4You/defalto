@@ -189,7 +189,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 0,
-            'summaryfield' => 0,
             'picklist_values' => [],
         ],
         'currency_id' => [
@@ -203,7 +202,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'pricebookid' => [
             'name' => 'pricebookid',
@@ -216,7 +214,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 0,
-            'summaryfield' => 0,
             'related_modules' => [
                 'PriceBooks',
             ],
@@ -232,7 +229,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 3,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'discount_amount' => [
             'name' => 'discount_amount',
@@ -245,7 +241,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'price_after_discount' => [
             'name' => 'price_after_discount',
@@ -260,7 +255,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'overall_discount' => [
             'name' => 'overall_discount',
@@ -275,7 +269,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'overall_discount_amount' => [
             'name' => 'overall_discount_amount',
@@ -290,7 +283,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'price_after_overall_discount' => [
             'name' => 'price_after_overall_discount',
@@ -305,7 +297,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 3,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'tax_amount' => [
             'name' => 'tax_amount',
@@ -320,7 +311,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'price_total' => [
             'name' => 'price_total',
@@ -333,7 +323,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 3,
             'masseditable' => 1,
-            'summaryfield' => 1,
         ],
         'adjustment' => [
             'name' => 'adjustment',
@@ -357,9 +346,9 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'presence' => 2,
             'typeofdata' => 'N~O',
             'quickcreate' => 3,
-            'displaytype' => 3,
+            'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 1,
+            'summaryfield' => 0,
         ],
         'margin_amount' => [
             'name' => 'margin_amount',
@@ -377,6 +366,29 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'summaryfield' => 0,
         ],
     ];
+
+    public static array $fieldsDescription = [
+        'description' => [
+            'label' => 'Description',
+            'name' => 'description',
+            'table' => 'vtiger_crmentity',
+            'column' => 'description',
+            'uitype' => 19,
+            'readonly' => 1,
+            'presence' => 2,
+            'typeofdata' => 'V~O',
+            'quickcreate' => 1,
+            'displaytype' => 1,
+            'masseditable' => 1,
+            'summaryfield' => 0,
+        ],
+    ];
+
+
+    public array $blocksHeaderFields = [];
+    public array $blocksSummaryFields = [];
+    public array $blocksListFields = [];
+    public array $blocksQuickCreateFields = [];
 
     /**
      * @var array
@@ -1354,6 +1366,56 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         if (!empty($blocks)) {
             self::$fieldsConfig[$moduleName] = array_merge_recursive($blocks, self::$fieldsConfigDefault);
+        }
+
+        $this->retrieveFieldsConfig();
+    }
+
+    public function retrieveFieldsConfig(): void
+    {
+        $moduleName = $this->getModuleName();
+        $configFields = [
+            [
+                'headerfield',
+                'headerfieldsequence',
+                array_flip($this->blocksHeaderFields),
+                1,
+            ],
+            [
+                'summaryfield',
+                'summaryfieldsequence',
+                array_flip($this->blocksSummaryFields),
+                1,
+            ],
+            [
+                'filter',
+                'filter_sequence',
+                array_flip($this->blocksListFields),
+                1,
+            ],
+            [
+                'quickcreate',
+                'quicksequence',
+                array_flip($this->blocksQuickCreateFields),
+                2,
+            ],
+        ];
+
+        foreach (self::$fieldsConfig[$moduleName] as $blockName => $fields) {
+            foreach ($fields as $fieldName => $fieldInfo) {
+                foreach ($configFields as $configField) {
+                    [$fieldKey, $fieldSequenceKey, $fieldList, $fieldDefault] = $configField;
+
+                    if (!empty($fieldList)) {
+                        if (isset($fieldList[$fieldName])) {
+                            $fieldInfo[$fieldKey] = $fieldDefault;
+                            $fieldInfo[$fieldSequenceKey] = $fieldList[$fieldName] + 1;
+                        }
+                    }
+                }
+
+                self::$fieldsConfig[$moduleName][$blockName][$fieldName] = $fieldInfo;
+            }
         }
     }
 
