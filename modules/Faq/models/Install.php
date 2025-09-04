@@ -19,7 +19,7 @@ class Faq_Install_Model extends Core_Install_Model
     ];
 
     public array $blocksHeaderFields = [
-        'faq_answer',
+        'faq_no',
         'faqstatus',
         'product_id',
         'faqcategories',
@@ -41,7 +41,6 @@ class Faq_Install_Model extends Core_Install_Model
         'faqstatus',
         'faqcategories',
         'product_id',
-        'faq_answer',
         'assigned_user_id',
     ];
 
@@ -50,8 +49,8 @@ class Faq_Install_Model extends Core_Install_Model
         'faqcategories',
         'faqstatus',
         'product_id',
-        'faq_answer',
         'assigned_user_id',
+        'faq_answer',
     ];
 
     public function addCustomLinks(): void
@@ -75,7 +74,7 @@ class Faq_Install_Model extends Core_Install_Model
             'LBL_FAQ_INFORMATION' => [
                 'question' => [
                     'name' => 'question',
-                    'uitype' => 20,
+                    'uitype' => 19,
                     'column' => 'question',
                     'table' => 'vtiger_faq',
                     'label' => 'Question',
@@ -87,6 +86,7 @@ class Faq_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'entity_identifier' => 1,
+                    'headerfield' => 0,
                 ],
                 'faqcategories' => [
                     'name' => 'faqcategories',
@@ -101,6 +101,7 @@ class Faq_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 0,
                     'picklist_values' => [
                         'General',
                     ],
@@ -118,6 +119,7 @@ class Faq_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 0,
                     'picklist_values' => [
                         'Draft',
                         'Reviewed',
@@ -138,23 +140,10 @@ class Faq_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'headerfield' => 0,
                     'related_modules' => [
                         'Products', 'Services'
                     ]
-                ],
-                'faq_answer' => [
-                    'name' => 'faq_answer',
-                    'uitype' => 20,
-                    'column' => 'faq_answer',
-                    'table' => 'vtiger_faq',
-                    'label' => 'Answer',
-                    'readonly' => 1,
-                    'presence' => 2,
-                    'typeofdata' => 'V~M',
-                    'quickcreate' => 1,
-                    'displaytype' => 1,
-                    'masseditable' => 1,
-                    'summaryfield' => 0,
                 ],
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',
@@ -169,6 +158,21 @@ class Faq_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                ],
+                'faq_answer' => [
+                    'name' => 'faq_answer',
+                    'uitype' => 19,
+                    'column' => 'faq_answer',
+                    'table' => 'vtiger_faq',
+                    'label' => 'Answer',
+                    'readonly' => 1,
+                    'presence' => 2,
+                    'typeofdata' => 'V~M',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 1,
+                    'summaryfield' => 0,
+                    'headerfield' => 0,
                 ],
             ],
             'LBL_DESCRIPTION_INFORMATION' => self::$fieldsDescription,
