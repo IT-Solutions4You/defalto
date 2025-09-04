@@ -22,8 +22,8 @@ class ServiceContracts_Install_Model extends Core_Install_Model
     public array $registerRelatedLists = [
         ['Accounts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list', 'account_id'],
         ['Contacts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list', 'contact_id'],
-        ['HelpDesk', 'ServiceContracts', 'Service Contracts', ['ADD', 'SELECT'], 'get_dependents_list', 'related_to'],
-        ['ServiceContracts', 'HelpDesk', 'HelpDesk', [], 'get_related_list'],
+        ['HelpDesk', 'ServiceContracts', 'Service Contracts', ['ADD', 'SELECT'], 'get_related_list'],
+        ['ServiceContracts', 'HelpDesk', 'HelpDesk', ['ADD', 'SELECT'], 'get_related_list'],
         ['ServiceContracts', 'Documents', 'Documents', ['ADD', 'SELECT'], 'get_attachments'],
     ];
 
@@ -49,7 +49,6 @@ class ServiceContracts_Install_Model extends Core_Install_Model
         'contract_status',
         'account_id',
         'contact_id',
-        'related_to',
         'tracking_unit',
         'total_units',
         'used_units',
@@ -80,7 +79,6 @@ class ServiceContracts_Install_Model extends Core_Install_Model
         'contract_status',
         'account_id',
         'contact_id',
-        'related_to',
         'tracking_unit',
         'total_units',
         'start_date',
@@ -179,16 +177,6 @@ class ServiceContracts_Install_Model extends Core_Install_Model
                         'Contacts',
                     ],
                 ],
-                'related_to' => [
-                    'uitype' => 10,
-                    'column' => 'related_to',
-                    'table' => 'vtiger_servicecontracts',
-                    'label' => 'Related to',
-                    'quickcreate' => 1,
-                    'related_modules' => [
-                        'HelpDesk',
-                    ],
-                ],
                 'tracking_unit' => [
                     'uitype' => 15,
                     'column' => 'tracking_unit',
@@ -220,6 +208,14 @@ class ServiceContracts_Install_Model extends Core_Install_Model
                 'start_date' => [
                     'uitype' => 5,
                     'column' => 'start_date',
+                    'table' => 'vtiger_servicecontracts',
+                    'label' => 'Start Date',
+                    'typeofdata' => 'D~O',
+                    'quickcreate' => 1,
+                ],
+                'end_date' => [
+                    'uitype' => 5,
+                    'column' => 'end_date',
                     'table' => 'vtiger_servicecontracts',
                     'label' => 'Start Date',
                     'typeofdata' => 'D~O',
@@ -335,7 +331,6 @@ class ServiceContracts_Install_Model extends Core_Install_Model
             ->renameColumn('priority', 'contract_priority')
             ->createColumn('start_date','date default NULL')
             ->createColumn('end_date','date default NULL')
-            ->createColumn('related_to',self::$COLUMN_INT)
             ->createColumn('account_id',self::$COLUMN_INT)
             ->createColumn('contact_id',self::$COLUMN_INT)
             ->createColumn('tracking_unit','varchar(100) default NULL')
@@ -375,7 +370,6 @@ class ServiceContracts_Install_Model extends Core_Install_Model
 
         $this->retrieveDB();
         $fieldMap = [
-            'HelpDesk' => 'related_to',
             'Accounts' => 'account_id',
             'Contacts' => 'contact_id',
         ];
