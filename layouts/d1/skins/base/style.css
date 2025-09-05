@@ -4568,3 +4568,15 @@ input[type=number] {
 .lineItemTableContainer {
     overflow-x: auto;
 }
+.bootstrap-switch {
+    border-color: #eee !important;
+}
+.bootstrap-switch .bootstrap-switch-handle-on,
+.bootstrap-switch .bootstrap-switch-handle-off,
+.bootstrap-switch .bootstrap-switch-label {
+    line-height: 15px !important;
+    font-size: inherit;
+}
+.bootstrap-switch .bootstrap-switch-primary {
+    background-color: rgba(var(--bs-primary-rgb),var(--bs-bg-opacity)) !important ;
+}

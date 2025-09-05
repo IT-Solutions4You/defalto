@@ -18,6 +18,7 @@
     "ext-simplexml": "*",
     "ext-xml": "*",
     "ext-zip": "*",
+    "bootstrap-switch/bootstrap-switch": "*",
     "adodb/adodb-php": "5.*",
     "apalfrey/select2-bootstrap-5-theme": "*",
     "ckeditor/ckeditor": "4.22.*",
@@ -110,6 +111,21 @@
         "name": "simplehtmldom/simplehtmldom",
         "source": {
           "url": "https://github.com/simplehtmldom/simplehtmldom.git",
+          "type": "git",
+          "reference": "master"
+        },
+        "autoload": {
+          "classmap": ["/"]
+        },
+        "version": "1"
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "bootstrap-switch/bootstrap-switch",
+        "source": {
+          "url": "https://github.com/Bttstrp/bootstrap-switch.git",
           "type": "git",
           "reference": "master"
         },
