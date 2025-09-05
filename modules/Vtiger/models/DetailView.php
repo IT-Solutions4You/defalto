@@ -31,7 +31,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
 
     /**
      * Function to get Module instance
-     * @return <Vtiger_Module_Model>
+     * @return Vtiger_Module_Model
      */
     public function getModule()
     {
@@ -54,7 +54,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
 
     /**
      * Function to get the Record model
-     * @return <Vtiger_Record_Model>
+     * @return Vtiger_Record_Model
      */
     public function getRecord()
     {
@@ -102,7 +102,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
             ];
         }
 
-        if (Users_Privileges_Model::isPermitted($moduleName, 'EditView', $recordId)) {
+        if ($recordModel->isEditable()) {
             $links[] = [
                 'linktype'  => 'DETAILVIEWRECORD',
                 'linklabel' => 'LBL_EDIT',
@@ -111,7 +111,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
             ];
         }
 
-        if (Users_Privileges_Model::isPermitted($moduleName, 'Delete', $recordId)) {
+        if ($recordModel->isDeletable()) {
             $links[] = [
                 'linktype'  => 'DETAILVIEWRECORD',
                 'linklabel' => sprintf("%s %s", getTranslatedString('LBL_DELETE', $moduleName), vtranslate('SINGLE_' . $moduleName, $moduleName)),
@@ -126,6 +126,15 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
                 'linklabel' => 'LBL_DUPLICATE',
                 'linkurl'   => $recordModel->getDuplicateRecordUrl(),
                 'linkicon'  => '<i class="fa-solid fa-copy"></i>',
+            ];
+        }
+
+        if ($moduleModel->isCreateOptionAllowed()) {
+            $links[] = [
+                'linktype'  => 'DETAILVIEWRECORD',
+                'linklabel' => 'LBL_ADD_RECORD',
+                'linkurl'   => $moduleModel->getCreateRecordUrl(),
+                'linkicon'  => '<i class="fa-solid fa-plus"></i>',
             ];
         }
 
