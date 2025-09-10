@@ -198,8 +198,17 @@ Vtiger.Class("Vtiger_Detail_Js", {
     previewFile: function (e, recordId, attachmentId) {
         Vtiger_Index_Js.previewFile(e, recordId, attachmentId);
     },
-    openDetail() {
-        $('[data-link-key="LBL_RECORD_DETAILS"]').trigger('click');
+    openDetail(element) {
+        let link = $(element),
+            linkUrl = link.data('detailUrl') ?? 'index.php?module=' + app.getModuleName() + '&view=Detail&record=' + app.getRecordId(),
+            container = link.parents('.detailViewContainer'),
+            tab = container.find('[data-link-key="LBL_RECORD_DETAILS"]');
+
+        if (tab.length) {
+            tab.trigger('click');
+        } else if (linkUrl) {
+            window.location.href = linkUrl;
+        }
     },
 }, {
     detailViewSummaryTabLabel: 'LBL_RECORD_SUMMARY',

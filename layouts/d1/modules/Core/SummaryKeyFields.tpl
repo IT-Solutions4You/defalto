@@ -10,7 +10,7 @@
     <div class="summaryViewHeader p-3 border-1 border-bottom">
         <h4 class="display-inline-block">{vtranslate('LBL_KEY_FIELDS', $MODULE_NAME)}</h4>
         <div class="float-end">
-            <button type="button" class="btn btn-sm text-secondary fw-bold" onclick="Vtiger_Detail_Js.openDetail();">
+            <button type="button" class="btn btn-sm text-secondary fw-bold" onclick="Vtiger_Detail_Js.openDetail(this);" data-detail-url="{$RECORD->getFullDetailViewUrl()}">
                 <i class="fa-solid fa-circle-info"></i>
                 <span class="ms-2">{vtranslate('LBL_DETAILS', $QUALIFIED_MODULE)}</span>
             </button>
