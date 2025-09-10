@@ -1068,7 +1068,7 @@ ul.unstyled {
 }
 
 .table-container {
-    overflow: scroll;
+    overflow: auto;
 }
 
 .listViewEntries .relatedListEntryValues .fieldValue .value,
@@ -4574,8 +4574,8 @@ input[type=number] {
 .bootstrap-switch .bootstrap-switch-handle-on,
 .bootstrap-switch .bootstrap-switch-handle-off,
 .bootstrap-switch .bootstrap-switch-label {
-    line-height: 15px !important;
-    font-size: inherit;
+    line-height: 10px !important;
+    font-size: inherit !important;
 }
 .bootstrap-switch .bootstrap-switch-primary {
     background-color: rgba(var(--bs-primary-rgb),var(--bs-bg-opacity)) !important ;

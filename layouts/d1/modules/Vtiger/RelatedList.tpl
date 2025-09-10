@@ -125,10 +125,10 @@
 										data-field-type="{$HEADER_FIELD->getFieldDataType()}" nowrap>
 										<span class="value text-truncate">
 											{if $RELATED_MODULE_NAME eq 'Documents' && $RELATED_HEADERNAME eq 'document_source'}
-												<center>{$RELATED_RECORD->get($RELATED_HEADERNAME)}</center>
-												{else}
-													{if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
-													<a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
+												<div class="text-center">{$RELATED_RECORD->get($RELATED_HEADERNAME)}</div>
+                                            {else}
+                                                {if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
+													<a class="fw-bold" href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
 												{elseif $RELATED_HEADERNAME eq 'access_count'}
 													{$RELATED_RECORD->getAccessCountValue($PARENT_RECORD->getId())}
 												{elseif $HEADER_FIELD->getFieldDataType() eq 'currency'}

@@ -184,7 +184,7 @@
                                         {else}
                                             <span class="value text-truncate">
                                                 {if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
-                                                    <a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
+                                                    <a class="fw-bold" href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
                                                 {elseif $RELATED_HEADERNAME eq 'access_count'}
                                                     {$RELATED_RECORD->getAccessCountValue($PARENT_RECORD->getId())}
                                                 {elseif $RELATED_HEADERNAME eq 'time_start' or $RELATED_HEADERNAME eq 'time_end'}
