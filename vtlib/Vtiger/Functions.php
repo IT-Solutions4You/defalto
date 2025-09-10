@@ -2000,7 +2000,7 @@ class Vtiger_Functions
      */
     public static function hexToRGB($color): string
     {
-        $color = trim($color, '#');
+        $color = trim((string)$color, '#');
         $data = array_map('hexdec', str_split($color, 2));
 
         return implode(',', $data);

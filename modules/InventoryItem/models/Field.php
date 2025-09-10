@@ -10,6 +10,7 @@
 
 class InventoryItem_Field_Model extends Vtiger_Field_Model
 {
+    public $uitype_instance;
     const totalFields = [
         'subtotal',
         'discount_amount',
