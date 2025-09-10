@@ -39,7 +39,7 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model
                 'linkName' => $projectTaskInstance->getName(),
                 'linkurl' => 'module=' . $this->getModuleName() . '&view=Detail&record=' . $this->getRecord()->getId() . '&relatedModule=ProjectTask&mode=showRelatedRecords&page=1&limit=5',
                 'action' => $userPrivilegesModel->hasModuleActionPermission($projectTaskId, 'CreateView') ? ['Add'] : [],
-                'actionURL' => $projectTaskInstance->getQuickCreateUrl(),
+                'actionURL' => $projectTaskInstance->getQuickCreateUrl() . '&projectid=' . $this->getRecord()->getId(),
             ];
         }
 
@@ -59,7 +59,7 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model
                 'linkName' => $projectMileStoneInstance->getName(),
                 'linkurl' => 'module=' . $this->getModuleName() . '&view=Detail&record=' . $this->getRecord()->getId() . '&relatedModule=ProjectMilestone&mode=showRelatedRecords&page=1&limit=5',
                 'action' => $userPrivilegesModel->hasModuleActionPermission($projectMileStoneId, 'CreateView') ? ['Add'] : [],
-                'actionURL' => $projectMileStoneInstance->getQuickCreateUrl(),
+                'actionURL' => $projectMileStoneInstance->getQuickCreateUrl() . '&projectid=' . $this->getRecord()->getId(),
             ];
         }
 

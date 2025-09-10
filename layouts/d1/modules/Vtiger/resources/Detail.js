@@ -1688,7 +1688,12 @@ Vtiger.Class("Vtiger_Detail_Js", {
                 module = moduleElement.val(),
                 quickCreateNode = jQuery('#quickCreateModules').find('[data-name="' + referenceModuleName + '"]'),
                 fieldName = referenceFieldName ?? self.referenceFieldNames[module],
+                customUrl = currentElement.data('url'),
                 customParams = {};
+
+            if(customUrl) {
+                customParams = app.convertUrlToDataParams(customUrl);
+            }
 
             customParams[fieldName] = recordId;
 
