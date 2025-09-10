@@ -70,27 +70,30 @@ Vtiger_Detail_Js("Accounts_Detail_Js", {
      * Function to register event for adding related record for module
      */
     registerEventForAddingRelatedRecord: function () {
-        var thisInstance = this;
-        var detailViewContainer = thisInstance.getDetailViewContainer();
+        let thisInstance = this,
+            detailViewContainer = thisInstance.getContainer();
+
         detailViewContainer.on('click', '[name="addButton"]', function (e) {
-            var element = jQuery(e.currentTarget);
-            var relatedModuleName = element.attr('module');
-            var quickCreateNode = jQuery('#quickCreateModules').find('[data-name="' + relatedModuleName + '"]');
+            let element = jQuery(e.currentTarget),
+                relatedModuleName = element.attr('module'),
+                quickCreateNode = jQuery('#quickCreateModules').find('[data-name="' + relatedModuleName + '"]');
+
             if (quickCreateNode.length <= 0) {
                 window.location.href = element.data('url');
                 return;
             }
 
-            var relatedController = thisInstance.getRelatedController(relatedModuleName);
-            var postPopupViewController = function () {
-                var instance = new Contacts_Edit_Js();
-                var data = new Object;
-                var container = jQuery("[name='QuickCreate']");
+            let relatedController = thisInstance.getRelatedController(relatedModuleName);
+            let postPopupViewController = function () {
+                let instance = new Contacts_Edit_Js(),
+                    data = new Object,
+                    container = jQuery("[name='QuickCreate']");
                 data.source_module = app.getModuleName();
                 data.record = thisInstance.getRecordId();
                 data.selectedName = container.find("[name='account_id_display']").val();
                 instance.referenceSelectionEventHandler(data, container);
             }
+
             if (relatedModuleName == 'Contacts') {
                 relatedController.addRelatedRecord(element, postPopupViewController);
             } else {
