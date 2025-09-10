@@ -200,7 +200,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
     },
     openDetail(element) {
         let link = $(element),
-            linkUrl = link.data('detailUrl') ?? 'index.php?module=' + app.getModuleName() + '&view=Detail&record=' + app.getRecordId(),
+            linkUrl = link.data('detailUrl') ?? 'index.php?module=' + app.getModuleName() + '&record=' + app.getRecordId() + '&view=Detail&mode=showDetailViewByMode&requestMode=full',
             container = link.parents('.detailViewContainer'),
             tab = container.find('[data-link-key="LBL_RECORD_DETAILS"]');
 
