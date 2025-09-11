@@ -115,10 +115,8 @@ class Products extends CRMEntity
         if ($_REQUEST['action'] == 'SaveAjax' && isset($_REQUEST['base_currency']) && isset($_REQUEST['unit_price'])) {
             $this->insertPriceInformation('vtiger_productcurrencyrel', 'Products');
         }
-        // Update unit price value in vtiger_productcurrencyrel
+
         $this->updateUnitPrice();
-        //Inserting into attachments, handle image save in crmentity uitype 69
-        //$this->insertIntoAttachment($this->id,'Products');
     }
 
     /**    function to save the product tax information in vtiger_producttaxrel table
@@ -179,80 +177,70 @@ class Products extends CRMEntity
     /**    function to save the product price information in vtiger_productcurrencyrel table
      *
      * @param string $tablename - vtiger_tablename to save the product currency relationship (productcurrencyrel)
-     * @param string $module    - current module name
+     * @param string $module - current module name
      *                          $return void
+     * @throws Exception
      */
     function insertPriceInformation($tablename, $module)
     {
-        global $adb, $log, $current_user;
-        $log->debug("Entering into insertPriceInformation($tablename, $module) method ...");
-        //removed the update of currency_id based on the logged in user's preference : fix 6490
+        /** @var Products_Record_Model $productModel */
+        $productModel = Products_Record_Model::getCleanInstance('Products');
+        $table = $productModel->getProductCurrencyRelTable();
 
-        $currency_details = getAllCurrencies('all');
+        $recordId = (int)$this->id;
+        $baseCurrency = $_REQUEST['base_currency'] ?: '';
+        $baseCurrencyId = $this->column_fields['currency_id'] = (int)str_replace('curname', '', $baseCurrency);
 
         //Delete the existing currency relationship if any
         if ($this->mode == 'edit' && $_REQUEST['action'] !== 'CurrencyUpdate') {
-            for ($i = 0; $i < php7_count($currency_details); $i++) {
-                $curid = $currency_details[$i]['curid'];
-                $sql = "delete from vtiger_productcurrencyrel where productid=? and currencyid=?";
-                $adb->pquery($sql, [$this->id, $curid]);
-            }
+            $table->deleteData(['productid' => $recordId]);
         }
 
-        $product_base_conv_rate = getBaseConversionRateForProduct($this->id, $this->mode);
-        $currencySet = 0;
-        //Save the Product - Currency relationship if corresponding currency check box is enabled
-        for ($i = 0; $i < php7_count($currency_details); $i++) {
-            $curid = $currency_details[$i]['curid'];
-            $curname = $currency_details[$i]['currencylabel'];
-            $cur_checkname = 'cur_' . $curid . '_check';
-            $cur_valuename = 'curname' . $curid;
+        $currencyDetails = getAllCurrencies('all');
+        $productConversionRate = getBaseConversionRateForProduct($this->id, $this->mode);
 
-            $requestPrice = (float)Vtiger_Currency_UIType::convertToDBFormat($_REQUEST['unit_price'], null, true);
-            $actualPrice = (float)Vtiger_Currency_UIType::convertToDBFormat($_REQUEST[$cur_valuename], null, true);
+        //Save the Product - Currency relationship if corresponding currency check box is enabled
+        foreach ($currencyDetails as $currencyDetail) {
+            $currencyId = (int)$currencyDetail['curid'];
+            $currencyStatusKey = 'cur_' . $currencyId . '_check';
+            $currencyValueKey = 'curname' . $currencyId;
+            $currencyStatus = $_REQUEST[$currencyStatusKey];
+            $currencyValue = (float)$_REQUEST[$currencyValueKey];
+            $requestPrice = (float)$_REQUEST['unit_price'];
             $isQuickCreate = false;
-            if ($_REQUEST['action'] == 'SaveAjax' && isset($_REQUEST['base_currency']) && $_REQUEST['base_currency'] == $cur_valuename) {
-                $actualPrice = $requestPrice;
+
+            if ($_REQUEST['action'] == 'SaveAjax' && $baseCurrencyId === $currencyId) {
+                $currencyValue = $requestPrice;
                 $isQuickCreate = true;
             }
-            if ($_REQUEST[$cur_checkname] == 'on' || $_REQUEST[$cur_checkname] == 1 || $isQuickCreate) {
-                $conversion_rate = $currency_details[$i]['conversionrate'];
-                $actual_conversion_rate = $product_base_conv_rate * $conversion_rate;
-                $converted_price = $actual_conversion_rate * $requestPrice;
 
-                $log->debug("Going to save the Product - $curname currency relationship");
+            $search = ['productid' => $recordId, 'currencyid' => $currencyId];
 
-                if ($_REQUEST['action'] === 'CurrencyUpdate') {
-                    $adb->pquery('DELETE FROM vtiger_productcurrencyrel WHERE productid=? AND currencyid=?', [$this->id, $curid]);
+            if ('on' === $currencyStatus || $isQuickCreate) {
+                $convertedPrice = $productConversionRate * $currencyDetail['conversionrate'] * $requestPrice;
+                $data = $table->selectData(['productid'], $search);
+                $update = ['converted_price' => $convertedPrice, 'actual_price' => $currencyValue,];
+
+                if (!empty($data['productid'])) {
+                    $table->updateData($update, $search);
+                } else {
+                    $table->insertData(array_merge($update, $search));
                 }
-
-                $query = "insert into vtiger_productcurrencyrel values(?,?,?,?)";
-                $adb->pquery($query, [$this->id, $curid, $converted_price, $actualPrice]);
-
-                // Update the Product information with Base Currency choosen by the User.
-                if ($_REQUEST['base_currency'] == $cur_valuename) {
-                    $currencySet = 1;
-                    $adb->pquery("update vtiger_products set currency_id=?, unit_price=? where productid=?", [$curid, $actualPrice, $this->id]);
-                }
-            }
-            if (!$currencySet) {
-                $curid = fetchCurrency($current_user->id);
-                $adb->pquery("update vtiger_products set currency_id=? where productid=?", [$curid, $this->id]);
+            } elseif ('off' === $currencyStatus) {
+                $table->deleteData($search);
             }
         }
-
-        $log->debug("Exiting from insertPriceInformation($tablename, $module) method ...");
     }
 
     function updateUnitPrice()
     {
-        $prod_res = $this->db->pquery("select unit_price, currency_id from vtiger_products where productid=?", [$this->id]);
-        $prod_unit_price = $this->db->query_result($prod_res, 0, 'unit_price');
-        $prod_base_currency = $this->db->query_result($prod_res, 0, 'currency_id');
+        $result = $this->db->pquery('SELECT unit_price, currency_id FROM vtiger_products WHERE productid=?', [$this->id]);
+        $data = $this->db->fetchByAssoc($result);
 
-        $query = "update vtiger_productcurrencyrel set actual_price=? where productid=? and currencyid=?";
-        $params = [$prod_unit_price, $this->id, $prod_base_currency];
-        $this->db->pquery($query, $params);
+        $this->db->pquery(
+            'UPDATE vtiger_productcurrencyrel SET actual_price=? WHERE productid=? AND currencyid=?',
+            [$data['unit_price'], $this->id, $data['currency_id']],
+        );
     }
 
     function insertIntoAttachment($id, $module)
