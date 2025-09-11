@@ -168,17 +168,7 @@ class CRMEntity extends CRMExtension
         $columnFields->restartTracking();
         //Calling the Module specific save code
         $this->save_module($module);
-
-        if ($insertion_mode !== 'edit') {
-            if (in_array('currency_id', $this->db->getColumnNames($this->table_name))) {
-                $currencyField = new CurrencyField(0);
-                $currencyField->initialize();
-                $this->db->pquery(
-                    'UPDATE ' . $this->table_name . ' SET currency_id = ?, conversion_rate = ? WHERE ' . $this->table_index . ' = ?',
-                    [$currencyField->currencyId, $currencyField->conversionRate, $this->id]
-                );
-            }
-        }
+        $this->save_currencies();
 
         $this->db->completeTransaction();
 
@@ -198,6 +188,25 @@ class CRMEntity extends CRMExtension
             }
         }
         // END
+    }
+
+    public function save_currencies(): void
+    {
+        if (!in_array('currency_id', $this->db->getColumnNames($this->table_name))) {
+            return;
+        }
+
+        if ('edit' === $this->mode && empty($this->column_fields['currency_id'])) {
+            return;
+        }
+
+        $currencyField = new CurrencyField(0);
+        $currencyField->initialize();
+        $currencyField->retrieveFromData($this->column_fields);
+        $this->db->pquery(
+            'UPDATE ' . $this->table_name . ' SET currency_id = ?, conversion_rate = ? WHERE ' . $this->table_index . ' = ?',
+            [$currencyField->currencyId, $currencyField->conversionRate, $this->id],
+        );
     }
 
     /**

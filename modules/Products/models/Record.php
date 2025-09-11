@@ -561,4 +561,9 @@ class Products_Record_Model extends Vtiger_Record_Model
             'subProductsCosts'     => $subProductsCostInfo
         ];
     }
+
+    public function getProductCurrencyRelTable(): self
+    {
+        return $this->getTable('vtiger_productcurrencyrel', null);
+    }
 }
