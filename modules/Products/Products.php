@@ -18,6 +18,8 @@
 
 class Products extends CRMEntity
 {
+    use Core_UnitPrice_Trait;
+
     public string $parentName = 'INVENTORY';
     public $db, $log; // Used in class functions of CRMEntity
 
@@ -172,64 +174,6 @@ class Products extends CRMEntity
         }
 
         $log->debug("Exiting from insertTaxInformation($tablename, $module) method ...");
-    }
-
-    /**    function to save the product price information in vtiger_productcurrencyrel table
-     *
-     * @param string $tablename - vtiger_tablename to save the product currency relationship (productcurrencyrel)
-     * @param string $module - current module name
-     *                          $return void
-     * @throws Exception
-     */
-    function insertPriceInformation($tablename, $module)
-    {
-        /** @var Products_Record_Model $productModel */
-        $productModel = Products_Record_Model::getCleanInstance('Products');
-        $table = $productModel->getProductCurrencyRelTable();
-
-        $recordId = (int)$this->id;
-        $baseCurrency = $_REQUEST['base_currency'] ?: '';
-        $baseCurrencyId = $this->column_fields['currency_id'] = (int)str_replace('curname', '', $baseCurrency);
-
-        //Delete the existing currency relationship if any
-        if ($this->mode == 'edit' && $_REQUEST['action'] !== 'CurrencyUpdate') {
-            $table->deleteData(['productid' => $recordId]);
-        }
-
-        $currencyDetails = getAllCurrencies('all');
-        $productConversionRate = getBaseConversionRateForProduct($this->id, $this->mode);
-
-        //Save the Product - Currency relationship if corresponding currency check box is enabled
-        foreach ($currencyDetails as $currencyDetail) {
-            $currencyId = (int)$currencyDetail['curid'];
-            $currencyStatusKey = 'cur_' . $currencyId . '_check';
-            $currencyValueKey = 'curname' . $currencyId;
-            $currencyStatus = $_REQUEST[$currencyStatusKey];
-            $currencyValue = (float)$_REQUEST[$currencyValueKey];
-            $requestPrice = (float)$_REQUEST['unit_price'];
-            $isQuickCreate = false;
-
-            if ($_REQUEST['action'] == 'SaveAjax' && $baseCurrencyId === $currencyId) {
-                $currencyValue = $requestPrice;
-                $isQuickCreate = true;
-            }
-
-            $search = ['productid' => $recordId, 'currencyid' => $currencyId];
-
-            if ('on' === $currencyStatus || $isQuickCreate) {
-                $convertedPrice = $productConversionRate * $currencyDetail['conversionrate'] * $requestPrice;
-                $data = $table->selectData(['productid'], $search);
-                $update = ['converted_price' => $convertedPrice, 'actual_price' => $currencyValue,];
-
-                if (!empty($data['productid'])) {
-                    $table->updateData($update, $search);
-                } else {
-                    $table->insertData(array_merge($update, $search));
-                }
-            } elseif ('off' === $currencyStatus) {
-                $table->deleteData($search);
-            }
-        }
     }
 
     function updateUnitPrice()
