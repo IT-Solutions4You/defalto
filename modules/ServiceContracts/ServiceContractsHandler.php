@@ -52,48 +52,30 @@ class ServiceContractsHandler extends VTEventHandler
             $moduleName = $entityData->getModuleName();
 
             // Update Used Units for the Service Contract, everytime the status of a ticket related to the Service Contract changes
-            if ($moduleName == 'HelpDesk' && isset($_REQUEST['return_module']) && $_REQUEST['return_module'] != 'ServiceContracts') {
+            if ($moduleName == 'HelpDesk') {
                 $ticketId = $entityData->getId();
                 $data = $entityData->getData();
+
                 if ($data['ticketstatus'] != $entityData->oldStatus) {
                     if (strtolower($data['ticketstatus']) == 'closed' || strtolower($entityData->oldStatus) == 'closed') {
-                        if (strtolower($entityData->oldStatus) == 'closed') {
-                            $op = '-';
-                        } else {
-                            $op = '+';
-                        }
-                        $contract_tktresult = $adb->pquery(
-                            "SELECT crmid FROM vtiger_crmentityrel
-																WHERE module = 'ServiceContracts'
-																AND relmodule = 'HelpDesk' AND relcrmid = ?
-															UNION
-																SELECT relcrmid FROM vtiger_crmentityrel
-																WHERE relmodule = 'ServiceContracts'
-																AND module = 'HelpDesk' AND crmid = ?",
+                        $minus = 'closed' === strtolower($entityData->oldStatus);
+                        $contract_tktresult = $adb->pquery("SELECT crmid as id FROM vtiger_crmentityrel WHERE module = 'ServiceContracts' AND relmodule = 'HelpDesk' AND relcrmid = ? UNION 
+                            SELECT relcrmid as id FROM vtiger_crmentityrel WHERE relmodule = 'ServiceContracts' AND module = 'HelpDesk' AND crmid = ?",
                             [$ticketId, $ticketId]
                         );
-                        $noOfContracts = $adb->num_rows($contract_tktresult);
-                        if ($noOfContracts > 0) {
-                            for ($i = 0; $i < $noOfContracts; $i++) {
-                                $contract_id = $adb->query_result($contract_tktresult, $i, 'crmid');
-                                $scFocus = CRMEntity::getInstance('ServiceContracts');
-                                $scFocus->id = $contract_id;
-                                $scFocus->retrieve_entity_info($contract_id, 'ServiceContracts');
 
-                                $prevUsedUnits = $scFocus->column_fields['used_units'];
-                                if (empty($prevUsedUnits)) {
-                                    $prevUsedUnits = 0;
-                                }
+                        while ($row = $adb->fetchByAssoc($contract_tktresult)) {
+                            $contract_id = $row['id'];
+                            $scFocus = CRMEntity::getInstance('ServiceContracts');
+                            $scFocus->id = $contract_id;
+                            $scFocus->retrieve_entity_info($contract_id, 'ServiceContracts');
 
-                                $usedUnits = $scFocus->computeUsedUnits($data);
-                                if ($op == '-') {
-                                    $totalUnits = $prevUsedUnits - $usedUnits;
-                                } else {
-                                    $totalUnits = $prevUsedUnits + $usedUnits;
-                                }
-                                $scFocus->updateUsedUnits($totalUnits);
-                                $scFocus->calculateProgress();
-                            }
+                            $prevUsedUnits = (float)$scFocus->column_fields['used_units'];
+                            $usedUnits = $scFocus->computeUsedUnits($data);
+                            $totalUnits = $minus ? $prevUsedUnits - $usedUnits : $prevUsedUnits + $usedUnits;
+
+                            $scFocus->updateUsedUnits($totalUnits);
+                            $scFocus->calculateProgress();
                         }
                     }
                 }

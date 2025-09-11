@@ -112,8 +112,18 @@ Vtiger_Edit_Js("Invoice_Edit_Js", {}, {
 
         return aDeferred.promise();
     },
+    registerQuickCreateEvents(container) {
+        if (!container.is('#QuickCreate')) {
+            return;
+        }
 
+        let inventoryItemEdit = InventoryItem_InventoryItemEdit_Js.getInstance();
+
+        inventoryItemEdit.setForm(container)
+        inventoryItemEdit.init();
+    },
     registerBasicEvents: function (container) {
         this._super(container);
+        this.registerQuickCreateEvents(container);
     },
 });

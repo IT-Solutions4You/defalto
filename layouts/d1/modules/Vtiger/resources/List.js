@@ -1063,52 +1063,32 @@ Vtiger.Class("Vtiger_List_Js", {
      * Function to register the list view row click event
      */
     registerRowClickEvent: function () {
-        var thisInstance = this;
-        var listViewContentDiv = this.getListViewContainer();
-
-        // added to stop the link functunality for few milli seconds
-        listViewContentDiv.on('click', '.listViewEntries a', function (e) {
-            var currentAElement = jQuery(e.currentTarget);
-            var href = currentAElement.attr('href');
-            var target = jQuery(e.target);
-            if (!target.hasClass('js-reference-display-value')) {
-                // Redirect only after 500 milliseconds
-                if (!currentAElement.data('timer') && typeof href != 'undefined') {
-                    currentAElement.data('timer', setTimeout(function () {
-                        window.location = href;
-                    }, 500));
-                }
-                e.preventDefault();
-            }
-            e.stopPropagation();
-        });
+        let thisInstance = this,
+            listViewContentDiv = this.getListViewContainer();
 
         // Single click event - detail view
         listViewContentDiv.on('click', '.listViewEntries', function (e) {
-            var target = jQuery(e.target);
-            if (!target.hasClass('js-reference-display-value')) {
-                setTimeout(function () {
-                    var editedLength = jQuery('.listViewEntries.edited').length;
-                    if (editedLength === 0) {
-                        var selection = window.getSelection().toString();
-                        if (selection.length == 0) {
-                            var target = jQuery(e.target, jQuery(e.currentTarget));
-                            if (target.closest('td').is('td:first-child'))
-                                return;
-                            if (target.closest('tr').hasClass('edited'))
-                                return;
-                            if (jQuery(e.target).is('input[type="checkbox"]'))
-                                return;
-                            var elem = jQuery(e.currentTarget);
-                            var recordUrl = elem.data('recordurl');
-                            if (typeof recordUrl == 'undefined') {
-                                return;
-                            }
+            setTimeout(function () {
+                let editedLength = jQuery('.listViewEntries.edited').length;
+
+                if (0 === editedLength)  {
+                    let selection = window.getSelection().toString();
+
+                    if (selection.length == 0) {
+                        let current = jQuery(e.currentTarget),
+                            target = jQuery(e.target);
+
+                        if (target.closest('td').is('td:first-child') || target.closest('tr').hasClass('edited') || target.is('input') || target.is('a') || target.closest('a').length)
+                            return;
+
+                        let recordUrl = current.data('recordurl');
+
+                        if (typeof recordUrl !== 'undefined') {
                             window.location.href = recordUrl;
                         }
                     }
-                }, 300);
-            }
+                }
+            }, 300);
         });
     },
     /*

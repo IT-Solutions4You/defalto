@@ -27,7 +27,7 @@ $languageStrings = [
     'LBL_SERVICE_CONTRACT_INFORMATION' => 'Service Contract Details',
 
     //Field Labels
-    'Contract No'                      => 'Contract Number',
+    'Contract No'                      => 'Contract No',
     'Start Date'                       => 'Start Date',
     'End Date'                         => 'End Date',
     'Tracking Unit'                    => 'Tracking Unit',

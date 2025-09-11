@@ -154,6 +154,12 @@ window.app = (function () {
 	function Event() {
 		this.el = jQuery({});
 
+        if ('undefined' === typeof this.el.registeredEvents) {
+            this.el.registeredEvents = [
+                'registeredEvents',
+            ];
+        }
+
 		this.trigger = function (/* eventName, arg1, arg2... */) {
 			var args = Array.prototype.slice.call(arguments, 1);
 			this.el.trigger(arguments[0], args);
@@ -167,6 +173,12 @@ window.app = (function () {
 		this.off = function (/* eventName, fn */) {
 			this.el.off.apply(this.el, arguments);
 		}
+        this.required = function (eventName) {
+            let result = $.inArray(eventName, this.el.registeredEvents)
+            this.el.registeredEvents.push(eventName)
+
+            return -1 === result;
+        }
 	}
 
 	return {

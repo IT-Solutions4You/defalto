@@ -183,7 +183,7 @@ Vtiger_Detail_Js("EMAILMaker_Detail_Js", {
 
     registerEventForSelectingRelatedStyle: function () {
         var thisInstance = this;
-        var detailViewContainer = thisInstance.getDetailViewContainer();
+        var detailViewContainer = thisInstance.getContainer();
         detailViewContainer.on('click', 'button.selectTemplateRelation', function (e) {
             var modulename = jQuery(e.currentTarget).attr('data-modulename');
             var relatedController = thisInstance.getRelatedController(modulename);

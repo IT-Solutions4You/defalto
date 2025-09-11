@@ -51,6 +51,7 @@ class Vtiger_FieldBasic
     public $related_modules;
     public $quickcreatesequence;
     public $headerfieldsequence;
+    public $summaryfieldsequence;
 
     /**
      * Constructor
@@ -89,6 +90,7 @@ class Vtiger_FieldBasic
         $this->quicksequence = $valuemap['quickcreatesequence'];
         $this->sequence = $valuemap['sequence'];
         $this->summaryfield = $valuemap['summaryfield'];
+        $this->summaryfieldsequence = $valuemap['summaryfieldsequence'];
         $this->isunique = $valuemap['isunique'];
         $this->block = $blockInstance ? $blockInstance : Vtiger_Block::getInstance($valuemap['block'], $moduleInstance);
         $this->headerfield = $valuemap['headerfield'];
@@ -252,6 +254,7 @@ class Vtiger_FieldBasic
             'info_type'           => $this->info_type,
             'helpinfo'            => $this->helpinfo,
             'summaryfield'        => intval($this->summaryfield),
+            'summaryfieldsequence'=> intval($this->summaryfieldsequence),
             'headerfield'         => $this->headerfield,
             'headerfieldsequence' => $this->headerfieldsequence,
             'masseditable'        => $this->masseditable,
@@ -301,6 +304,7 @@ class Vtiger_FieldBasic
             ->createColumn('masseditable', 'int(10) NOT NULL DEFAULT 1')
             ->createColumn('helpinfo', 'text DEFAULT NULL')
             ->createColumn('summaryfield', 'int(10) NOT NULL DEFAULT 0')
+            ->createColumn('summaryfieldsequence', 'int(19) DEFAULT 0')
             ->createColumn('headerfield', 'int(1) DEFAULT 0')
             ->createColumn('headerfieldsequence', 'int(19) DEFAULT 0')
             ->createColumn('isunique', 'tinyint(1) DEFAULT 0')

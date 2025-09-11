@@ -26,64 +26,80 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model
         ];
     }
 
+    public function getTasksWidgetInfo(): array
+    {
+        $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+        $projectTaskInstance = Vtiger_Module_Model::getInstance('ProjectTask');
+        $projectTaskId = $projectTaskInstance->getId();
+
+        if ($userPrivilegesModel->hasModuleActionPermission($projectTaskId, 'DetailView') && $userPrivilegesModel->hasModulePermission($projectTaskId)) {
+            return [
+                'linktype' => 'DETAILVIEWWIDGET',
+                'linklabel' => 'LBL_TASKS',
+                'linkName' => $projectTaskInstance->getName(),
+                'linkurl' => 'module=' . $this->getModuleName() . '&view=Detail&record=' . $this->getRecord()->getId() . '&relatedModule=ProjectTask&mode=showRelatedRecords&page=1&limit=5',
+                'action' => $userPrivilegesModel->hasModuleActionPermission($projectTaskId, 'CreateView') ? ['Add'] : [],
+                'actionURL' => $projectTaskInstance->getQuickCreateUrl() . '&projectid=' . $this->getRecord()->getId(),
+            ];
+        }
+
+        return $this->getPlaceholderWidgetInfo();
+    }
+
+    public function getMilestonesWidgetInfo(): array
+    {
+        $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+        $projectMileStoneInstance = Vtiger_Module_Model::getInstance('ProjectMilestone');
+        $projectMileStoneId = $projectMileStoneInstance->getId();
+
+        if ($userPrivilegesModel->hasModuleActionPermission($projectMileStoneId, 'DetailView') && $userPrivilegesModel->hasModulePermission($projectMileStoneId)) {
+            return [
+                'linktype' => 'DETAILVIEWWIDGET',
+                'linklabel' => 'LBL_MILESTONES',
+                'linkName' => $projectMileStoneInstance->getName(),
+                'linkurl' => 'module=' . $this->getModuleName() . '&view=Detail&record=' . $this->getRecord()->getId() . '&relatedModule=ProjectMilestone&mode=showRelatedRecords&page=1&limit=5',
+                'action' => $userPrivilegesModel->hasModuleActionPermission($projectMileStoneId, 'CreateView') ? ['Add'] : [],
+                'actionURL' => $projectMileStoneInstance->getQuickCreateUrl() . '&projectid=' . $this->getRecord()->getId(),
+            ];
+        }
+
+        return $this->getPlaceholderWidgetInfo();
+    }
+
+    public function getTicketsWidgetInfo(): array
+    {
+        $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+        $helpDeskInstance = Vtiger_Module_Model::getInstance('HelpDesk');
+        $helpDeskId = $helpDeskInstance->getId();
+
+        if ($userPrivilegesModel->hasModuleActionPermission($helpDeskId, 'DetailView') && $userPrivilegesModel->hasModulePermission($helpDeskId)) {
+            return [
+                'linktype' => 'DETAILVIEWWIDGET',
+                'linklabel' => 'HelpDesk',
+                'linkName' => $helpDeskInstance->getName(),
+                'linkurl' => 'module=' . $this->getModuleName() . '&view=Detail&record=' . $this->getRecord()->getId() . '&relatedModule=HelpDesk&mode=showRelatedRecords&page=1&limit=5',
+                'action' => $userPrivilegesModel->hasModuleActionPermission($helpDeskId, 'CreateView') ? ['Add'] : [],
+                'actionURL' => $helpDeskInstance->getQuickCreateUrl(),
+            ];
+        }
+
+        return $this->getPlaceholderWidgetInfo();
+    }
+
     /**
      * Function to get the detail view widgets
      * @return <Array> - List of widgets , where each widget is an Vtiger_Link_Model
      */
     public function getWidgets()
     {
-        $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
         $widgetLinks = [];
-        $widgets = [];
-        $widgetLinks[] = Vtiger_Link_Model::getInstanceFromValues($this->getKeyMetricsWidgetInfo());
-        $widgetLinks[] = Vtiger_Link_Model::getInstanceFromValues($this->getPlaceholderWidgetInfo());
-        $widgetLinks = array_merge($widgetLinks, parent::getWidgets());
-
-        $helpDeskInstance = Vtiger_Module_Model::getInstance('HelpDesk');
-        if ($userPrivilegesModel->hasModuleActionPermission($helpDeskInstance->getId(), 'DetailView')) {
-            $createPermission = $userPrivilegesModel->hasModuleActionPermission($helpDeskInstance->getId(), 'CreateView');
-            $widgets[] = [
-                'linktype'  => 'DETAILVIEWWIDGET',
-                'linklabel' => 'HelpDesk',
-                'linkName'  => $helpDeskInstance->getName(),
-                'linkurl'   => 'module=' . $this->getModuleName() . '&view=Detail&record=' . $this->getRecord()->getId() .
-                    '&relatedModule=HelpDesk&mode=showRelatedRecords&page=1&limit=5',
-                'action'    => ($createPermission == true) ? ['Add'] : [],
-                'actionURL' => $helpDeskInstance->getQuickCreateUrl()
-            ];
-        }
-
-        $projectMileStoneInstance = Vtiger_Module_Model::getInstance('ProjectMilestone');
-        if ($userPrivilegesModel->hasModuleActionPermission($projectMileStoneInstance->getId(), 'DetailView') && $userPrivilegesModel->hasModulePermission(
-                $projectMileStoneInstance->getId()
-            )) {
-            $createPermission = $userPrivilegesModel->hasModuleActionPermission($projectMileStoneInstance->getId(), 'CreateView');
-            $widgets[] = [
-                'linktype'  => 'DETAILVIEWWIDGET',
-                'linklabel' => 'LBL_MILESTONES',
-                'linkName'  => $projectMileStoneInstance->getName(),
-                'linkurl'   => 'module=' . $this->getModuleName() . '&view=Detail&record=' . $this->getRecord()->getId() .
-                    '&relatedModule=ProjectMilestone&mode=showRelatedRecords&page=1&limit=5',
-                'action'    => ($createPermission == true) ? ['Add'] : [],
-                'actionURL' => $projectMileStoneInstance->getQuickCreateUrl()
-            ];
-        }
-
-        $projectTaskInstance = Vtiger_Module_Model::getInstance('ProjectTask');
-        if ($userPrivilegesModel->hasModuleActionPermission($projectTaskInstance->getId(), 'DetailView') && $userPrivilegesModel->hasModulePermission(
-                $projectTaskInstance->getId()
-            )) {
-            $createPermission = $userPrivilegesModel->hasModuleActionPermission($projectTaskInstance->getId(), 'CreateView');
-            $widgets[] = [
-                'linktype'  => 'DETAILVIEWWIDGET',
-                'linklabel' => 'LBL_TASKS',
-                'linkName'  => $projectTaskInstance->getName(),
-                'linkurl'   => 'module=' . $this->getModuleName() . '&view=Detail&record=' . $this->getRecord()->getId() .
-                    '&relatedModule=ProjectTask&mode=showRelatedRecords&page=1&limit=5',
-                'action'    => ($createPermission == true) ? ['Add'] : [],
-                'actionURL' => $projectTaskInstance->getQuickCreateUrl()
-            ];
-        }
+        $widgets = [
+            $this->getKeyMetricsWidgetInfo(),   $this->getTasksWidgetInfo(),
+            $this->getKeyFieldsWidgetInfo(),    $this->getMilestonesWidgetInfo(),
+            $this->getPlaceholderWidgetInfo(),  $this->getAppointmentsWidgetInfo(),
+            $this->getDocumentsWidgetInfo(),    $this->getCommentWidgetInfo(),
+            $this->getPlaceholderWidgetInfo(),  $this->getTicketsWidgetInfo()
+        ];
 
         foreach ($widgets as $widgetDetails) {
             $widgetLinks[] = Vtiger_Link_Model::getInstanceFromValues($widgetDetails);

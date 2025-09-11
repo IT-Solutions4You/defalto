@@ -44,26 +44,36 @@ class Vtiger_SummaryRecordStructure_Model extends Vtiger_DetailRecordStructure_M
         }
 
         $recordModel = $this->getRecord();
-        $blockSeqSortSummaryFields = [];
+        $summaryFields = [];
+
         if ($summaryFieldsList) {
+            $fields = [];
+            $fieldsMaxSequence = count($summaryFieldsList);
+
             foreach ($summaryFieldsList as $fieldName => $fieldModel) {
                 if ($fieldModel->isViewableInDetailView()) {
                     $fieldModel->set('fieldvalue', $recordModel->get($fieldName));
-                    $blockSequence = $fieldModel->block->sequence;
+
                     if (!$currentUsersModel->isAdminUser() && ($fieldModel->getFieldDataType() == 'picklist' || $fieldModel->getFieldDataType() == 'multipicklist')) {
                         $this->setupAccessiblePicklistValueList($fieldName);
                     }
-                    $blockSeqSortSummaryFields[$blockSequence]['SUMMARY_FIELDS'][$fieldName] = $fieldModel;
+
+                    $fieldsMaxSequence++;
+                    $sequence = (int)$fieldModel->get('summaryfieldsequence') ?: $fieldsMaxSequence;
+                    $fields[$sequence] = $fieldModel;
                 }
             }
-        }
-        $summaryFieldModelsList = [];
-        ksort($blockSeqSortSummaryFields);
-        foreach ($blockSeqSortSummaryFields as $blockSequence => $summaryFields) {
-            $summaryFieldModelsList = array_merge_recursive($summaryFieldModelsList, $summaryFields);
+
+            ksort($fields);
+
+            foreach ($fields as $fieldModel) {
+                $summaryFields[$fieldModel->getName()] = $fieldModel;
+            }
         }
 
-        return $summaryFieldModelsList;
+        return [
+            'SUMMARY_FIELDS' => $summaryFields,
+        ];
     }
 
     public function setupAccessiblePicklistValueList($name)

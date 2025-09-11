@@ -8,7 +8,16 @@
  */
 
 /** @var InventoryItem_InventoryItemEdit_Js */
-Vtiger.Class('InventoryItem_InventoryItemEdit_Js', {}, {
+Vtiger.Class('InventoryItem_InventoryItemEdit_Js', {
+    instance: false,
+    getInstance() {
+        if (!this.instance) {
+            this.instance = new InventoryItem_InventoryItemEdit_Js();
+        }
+
+        return this.instance;
+    }
+}, {
     formElement: false,
 
     mandatoryFieldMapping: {
@@ -86,6 +95,10 @@ Vtiger.Class('InventoryItem_InventoryItemEdit_Js', {}, {
             this.formElement = jQuery('#EditView');
         }
         return this.formElement;
+    },
+    setForm: function (form) {
+        this.formElement = form;
+        return this;
     },
 
     /**

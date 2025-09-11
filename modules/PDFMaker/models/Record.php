@@ -99,7 +99,7 @@ class PDFMaker_Record_Model extends Vtiger_Record_Model
      */
     public function getId(): int
     {
-        return $this->get('templateid');
+        return (int)$this->get('templateid');
     }
 
     /**

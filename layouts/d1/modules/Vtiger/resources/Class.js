@@ -31,8 +31,19 @@ jQuery.Class('Vtiger.Class', {}, {
     getParentInstance: function () {
         return this._parent;
     },
+    setContainer(container) {
+        this.container = container;
+    },
+    getContainer() {
+        return this.container;
+    },
+    initContainer() {
+        if (this.container) {
+            return;
+        }
 
-
+        this.setContainer($('main'));
+    },
     intializeComponents: function () {
         if (typeof this._componentInstances == "undefined") {
             this._componentInstances = {};

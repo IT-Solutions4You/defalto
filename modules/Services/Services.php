@@ -18,6 +18,8 @@
 
 class Services extends CRMEntity
 {
+    use Core_UnitPrice_Trait;
+
     public string $moduleName = 'Services';
     public string $parentName = 'INVENTORY';
     var $db, $log; // Used in class functions of CRMEntity
@@ -204,64 +206,7 @@ class Services extends CRMEntity
      * @param string $module    - current module name
      *                          $return void
      */
-    function insertPriceInformation($tablename, $module)
-    {
-        global $adb, $log, $current_user;
-        $log->debug("Entering into insertPriceInformation($tablename, $module) method ...");
-        //removed the update of currency_id based on the logged in user's preference : fix 6490
 
-        $currency_details = getAllCurrencies('all');
-
-        //Delete the existing currency relationship if any
-        if ($this->mode == 'edit' && $_REQUEST['action'] != 'MassEditSave' && $_REQUEST['action'] != 'ProcessDuplicates') {
-            for ($i = 0; $i < php7_count($currency_details); $i++) {
-                $curid = $currency_details[$i]['curid'];
-                $sql = "delete from vtiger_productcurrencyrel where productid=? and currencyid=?";
-                $adb->pquery($sql, [$this->id, $curid]);
-            }
-        }
-
-        $service_base_conv_rate = getBaseConversionRateForProduct($this->id, $this->mode, $module);
-
-        $currencySet = 0;
-        //Save the Product - Currency relationship if corresponding currency check box is enabled
-        for ($i = 0; $i < php7_count($currency_details); $i++) {
-            $curid = $currency_details[$i]['curid'];
-            $curname = $currency_details[$i]['currencylabel'];
-            $cur_checkname = 'cur_' . $curid . '_check';
-            $cur_valuename = 'curname' . $curid;
-            $base_currency_check = 'base_currency' . $curid;
-            $requestPrice = Vtiger_Currency_UIType::convertToDBFormat($_REQUEST['unit_price'], null, true);
-            $actualPrice = Vtiger_Currency_UIType::convertToDBFormat($_REQUEST[$cur_valuename], null, true);
-            $isQuickCreate = false;
-            if ($_REQUEST['action'] == 'SaveAjax' && isset($_REQUEST['base_currency']) && $_REQUEST['base_currency'] == $cur_valuename) {
-                $actualPrice = $requestPrice;
-                $isQuickCreate = true;
-            }
-            if ($_REQUEST[$cur_checkname] == 'on' || $_REQUEST[$cur_checkname] == 1 || $isQuickCreate) {
-                $conversion_rate = $currency_details[$i]['conversionrate'];
-                $actual_conversion_rate = $service_base_conv_rate * $conversion_rate;
-                $converted_price = $actual_conversion_rate * (float)$requestPrice;
-
-                $log->debug("Going to save the Product - $curname currency relationship");
-
-                $query = "insert into vtiger_productcurrencyrel values(?,?,?,?)";
-                $adb->pquery($query, [$this->id, $curid, $converted_price, $actualPrice]);
-
-                // Update the Product information with Base Currency choosen by the User.
-                if ($_REQUEST['base_currency'] == $cur_valuename) {
-                    $currencySet = 1;
-                    $adb->pquery("update vtiger_service set currency_id=?, unit_price=? where serviceid=?", [$curid, $actualPrice, $this->id]);
-                }
-            }
-            if (!$currencySet) {
-                $curid = fetchCurrency($current_user->id);
-                $adb->pquery("update vtiger_service set currency_id=? where serviceid=?", [$curid, $this->id]);
-            }
-        }
-
-        $log->debug("Exiting from insertPriceInformation($tablename, $module) method ...");
-    }
 
     function updateUnitPrice()
     {

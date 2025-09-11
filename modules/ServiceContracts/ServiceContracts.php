@@ -273,10 +273,10 @@ class ServiceContracts extends CRMEntity
             $query .= " left join vtiger_users as vtiger_usersServiceContracts on vtiger_usersServiceContracts.id = vtiger_crmentityServiceContracts.assigned_user_id";
         }
         if ($queryPlanner->requireTable("vtiger_contactdetailsRelServiceContracts")) {
-            $query .= " left join vtiger_contactdetails as vtiger_contactdetailsRelServiceContracts on vtiger_contactdetailsRelServiceContracts.contactid = vtiger_servicecontracts.sc_related_to";
+            $query .= " left join vtiger_contactdetails as vtiger_contactdetailsRelServiceContracts on vtiger_contactdetailsRelServiceContracts.contactid = vtiger_servicecontracts.contact_id";
         }
         if ($queryPlanner->requireTable("vtiger_accountRelServiceContracts")) {
-            $query .= " left join vtiger_account as vtiger_accountRelServiceContracts on vtiger_accountRelServiceContracts.accountid = vtiger_servicecontracts.sc_related_to";
+            $query .= " left join vtiger_account as vtiger_accountRelServiceContracts on vtiger_accountRelServiceContracts.accountid = vtiger_servicecontracts.account_id";
         }
         if ($queryPlanner->requireTable("vtiger_lastModifiedByServiceContracts")) {
             $query .= " left join vtiger_users as vtiger_lastModifiedByServiceContracts on vtiger_lastModifiedByServiceContracts.id = vtiger_crmentityServiceContracts.modifiedby ";
@@ -434,29 +434,21 @@ class ServiceContracts extends CRMEntity
         if (!is_array($entityIds)) {
             $entityIds = [$entityIds];
         }
-        $selectTicketsQuery = "SELECT ticketid FROM vtiger_troubletickets
-								WHERE (parent_id IS NULL OR parent_id = 0 OR contact_id IS NULL OR contact_id =0)
-									AND ticketid IN (" . generateQuestionMarks($entityIds) . ")";
+
+        $selectTicketsQuery = sprintf('SELECT ticketid FROM vtiger_troubletickets WHERE (parent_id IS NULL OR parent_id = 0 OR contact_id IS NULL OR contact_id =0) AND ticketid IN (%s)', generateQuestionMarks($entityIds));
         $selectTicketsResult = $this->db->pquery($selectTicketsQuery, [$entityIds]);
-        $noOfTickets = $this->db->num_rows($selectTicketsResult);
-        for ($i = 0; $i < $noOfTickets; ++$i) {
-            $ticketId = $this->db->query_result($selectTicketsResult, $i, 'ticketid');
-            $serviceContractsRelateToTypeResult = $this->db->pquery(
-                'SELECT setype FROM vtiger_crmentity WHERE crmid =
-				(SELECT sc_related_to FROM vtiger_servicecontracts WHERE servicecontractsid = ?)',
-                [$focusId]
-            );
-            $serviceContractsRelateToType = $this->db->query_result($serviceContractsRelateToTypeResult, 0, 'setype');
-            if ($serviceContractsRelateToType == 'Accounts') {
-                $updateQuery = "UPDATE vtiger_troubletickets, vtiger_servicecontracts SET parent_id=vtiger_servicecontracts.sc_related_to" .
-                    " WHERE vtiger_servicecontracts.sc_related_to IS NOT NULL AND vtiger_servicecontracts.sc_related_to != 0" .
-                    " AND vtiger_servicecontracts.servicecontractsid = ? AND vtiger_troubletickets.ticketid = ?";
-                $this->db->pquery($updateQuery, [$focusId, $ticketId]);
-            } elseif ($serviceContractsRelateToType == 'Contacts') {
-                $updateQuery = "UPDATE vtiger_troubletickets, vtiger_servicecontracts SET contact_id=vtiger_servicecontracts.sc_related_to" .
-                    " WHERE vtiger_servicecontracts.sc_related_to IS NOT NULL AND vtiger_servicecontracts.sc_related_to != 0" .
-                    " AND vtiger_servicecontracts.servicecontractsid = ? AND vtiger_troubletickets.ticketid = ?";
-                $this->db->pquery($updateQuery, [$focusId, $ticketId]);
+
+        while ($row = $this->db->fetchByAssoc($selectTicketsResult)) {
+            $ticketId = $row['ticketid'];
+            $serviceContractsResult = $this->db->pquery('SELECT account_id, contact_id FROM vtiger_servicecontracts WHERE servicecontractsid = ?', [$focusId]);
+            $serviceContractsInfo = $this->db->query_result_rowdata($serviceContractsResult);
+
+            if (!empty($serviceContractsInfo['account_id'])) {
+                $this->db->pquery('UPDATE vtiger_troubletickets SET parent_id=? WHERE vtiger_troubletickets.ticketid = ?', [$serviceContractsInfo['account_id'], $ticketId]);
+            }
+
+            if (!empty($serviceContractsInfo['contact_id'])) {
+                $this->db->pquery('UPDATE vtiger_troubletickets SET contact_id=? WHERE vtiger_troubletickets.ticketid = ?', [$serviceContractsInfo['contact_id'], $ticketId]);
             }
         }
     }

@@ -20,7 +20,7 @@
 			<div class="recordHeaderTitle">
                 <div class="row align-items-top">
                     <div class="col">
-                        <span class="fs-3 recordLabel pushDown" title="{$RECORD->getName()}">{$RECORD->getName()}</span>
+                        <span class="fs-2 fw-bold recordLabel pushDown" title="{$RECORD->getName()}">{$RECORD->getName()}</span>
                         {if !$IS_OVERLAY}
                             {include file='DetailViewTagList.tpl'|vtemplate_path:$QUALIFIED_MODULE}
                         {/if}

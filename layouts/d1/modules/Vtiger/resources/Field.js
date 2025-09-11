@@ -222,9 +222,20 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js', {}, {
         }
 
         html += '">';
-        html += '<input name="popupReferenceModule" type="hidden" value="' + referenceModules[0] + '"/>';
         html += '<div class="input-group flex-nowrap">'
-        html += '<input class="autoComplete form-control inputElement sourceField" type="search" data-fieldtype="reference" name="' + this.getName() + '"';
+
+        if(referenceModules.length > 1) {
+            html += '<select class="form-select select2 referenceModulesList" name="referenceModulesList" data-minimum-results-for-search="5">';
+
+            $.each(referenceModules, function(index, moduleName) {
+                html += '<option value="' + moduleName + '">' + moduleName + '</option>';
+            });
+
+            html += '</select>';
+        }
+
+        html += '<input name="popupReferenceModule" type="hidden" value="' + referenceModules[0] + '"/>';
+        html += '<input class="autoComplete form-control inputElement sourceField w-50" type="search" data-fieldtype="reference" name="' + this.getName() + '"';
 
         if (value) {
             html += ' value="' + value + '" readonly="readonly"';
@@ -238,7 +249,7 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js', {}, {
             html += '<a href="#" class="input-group-text clearReferenceSelection hide"> X </a>';
         }
         //popup search element
-        html += '<span class="input-group-addon input-group-text relatedPopup cursorPointer" title="' + referenceModules[0] + '">';
+        html += '<span class="input-group-addon input-group-text relatedPopup cursorPointer" title="' + referenceModules.join(', ') + '">';
         html += '<i class="fa fa-search"></i>';
         html += '</span>';
 

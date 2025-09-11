@@ -22,7 +22,7 @@
             </div>
             <div class="col w-50 module-breadcrumb module-breadcrumb-{$REQUEST_INSTANCE.view}">
                 <div class="row align-items-center flex-nowrap">
-                    <div class="col-auto">
+                    <div class="col-auto ps-4">
                         {if 'Settings' eq $REQUEST_INSTANCE.parent}
                             {assign var=SETTINGS_MODULE_MODEL value=Settings_Vtiger_Module_Model::getInstance(join(['Settings:',$MODULE]))}
                             {assign var=DEFAULT_FILTER_URL value=$SETTINGS_MODULE_MODEL->getDefaultUrl()}
@@ -41,21 +41,21 @@
                             {assign var=SINGLE_MODULE_LABEL value=vtranslate('SINGLE_Settings', 'Vtiger')}
                             {assign var=CUSTOM_VIEW_URL value='index.php'}
                         {/if}
-                        <a class="module-title fs-3" title="{$SINGLE_MODULE_LABEL}" href='{$CUSTOM_VIEW_URL}'>{$SINGLE_MODULE_LABEL}</a>
+                        <a class="module-title fs-4 fw-bold" title="{$SINGLE_MODULE_LABEL}" href='{$CUSTOM_VIEW_URL}'>{$SINGLE_MODULE_LABEL}</a>
                     </div>
-                    <div class="col-auto p-0 fs-3 cursorDefault current-filter-slash">/</div>
+                    <a class="col-auto p-0 fs-4 text-secondary" href="{$CUSTOM_VIEW_URL}">/</a>
                     {if isset($RECORD) and $REQUEST_INSTANCE.view eq 'Edit'}
-                        <a class="col-auto fs-5" href="{$RECORD->getEditViewUrl()}">{vtranslate('LBL_EDIT', $MODULE)}</a>
-                        <a class="col-auto p-0 fs-3 current-filter-slash">/</a>
-                        <a class="col fs-5 text-truncate current-filter-name" href="{$RECORD->getDetailViewUrl()}">{$RECORD->get('label')}</a>
-                    {elseif $REQUEST_INSTANCE.view eq 'Edit'}
-                        <a class="col-auto fs-5">{vtranslate('LBL_ADDING_NEW', $MODULE)}</a>
+                        <a class="col-auto fs-4 text-secondary" href="{$RECORD->getEditViewUrl()}">{vtranslate('LBL_EDIT', $MODULE)}</a>
+                        <a class="col-auto p-0 fs-4 text-secondary" href="{$RECORD->getEditViewUrl()}">/</a>
+                        <a class="col fs-4 text-truncate text-secondary" href="{$RECORD->getDetailViewUrl()}">{$RECORD->get('label')}</a>
                     {elseif isset($RECORD) and $REQUEST_INSTANCE.view eq 'Detail'}
-                        <a class="col fs-5 text-truncate current-filter-name" title="{$RECORD->get('label')}">{$RECORD->get('label')}</a>
+                        <a class="col fs-4 text-truncate text-secondary" href="{$RECORD->getDetailViewUrl()}" title="{$RECORD->get('label')}">{$RECORD->get('label')}</a>
+                    {elseif $REQUEST_INSTANCE.view eq 'Edit'}
+                        <a class="col-auto fs-4 text-secondary">{vtranslate('LBL_ADDING_NEW', $MODULE)}</a>
                     {elseif $REQUEST_INSTANCE.view eq 'List' and $MODULE_MODEL and $MODULE_MODEL->isEntityModule()}
                         {include file="partials/CustomView.tpl"|vtemplate_path:$MODULE}
                     {else}
-                        <a class="col fs-5">{vtranslate($REQUEST_INSTANCE.view, $MODULE)}</a>
+                        <a class="col fs-4 text-secondary">{vtranslate($REQUEST_INSTANCE.view, $MODULE)}</a>
                     {/if}
                 </div>
             </div>

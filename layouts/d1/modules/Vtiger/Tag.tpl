@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-    <div class="tag btn me-1 mb-1 {if 'Detail' eq $VIEW}text-secondary bg-secondary bg-opacity-10{elseif $ACTIVE eq true}btn-primary active{else}text-primary bg-primary bg-opacity-10{/if}"
+    <div class="tag btn m-1 {if 'Detail' eq $VIEW}text-secondary bg-secondary bg-opacity-10{elseif $ACTIVE eq true}btn-primary active{else}text-primary bg-primary bg-opacity-10{/if}"
          title="{$TAG_MODEL->getName()}" data-cv-id="{$ALL_CUSTOM_VIEW_ID}" data-type="{$TAG_MODEL->getType()}" data-id="{$TAG_MODEL->getId()}">
         <i class="activeToggleIcon fa fa-tag"></i>
         <span class="tagLabel mx-2 display-inline-block text-truncate" title="{$TAG_MODEL->getName()}">{$TAG_MODEL->getName()}</span>

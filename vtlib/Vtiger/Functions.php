@@ -1120,7 +1120,6 @@ class Vtiger_Functions
             "vtiger_vendor:email"                    => "V",
             //Quotes Related Fields
             "vtiger_quotes:potential_id"             => "V",
-            "vtiger_quotes:inventorymanager"         => "V",
             "vtiger_quotes:account_id"               => "V",
             //Purchase Order Related Fields
             "vtiger_purchaseorder:vendorid"          => "V",
@@ -2001,7 +2000,7 @@ class Vtiger_Functions
      */
     public static function hexToRGB($color): string
     {
-        $color = trim($color, '#');
+        $color = trim((string)$color, '#');
         $data = array_map('hexdec', str_split($color, 2));
 
         return implode(',', $data);
