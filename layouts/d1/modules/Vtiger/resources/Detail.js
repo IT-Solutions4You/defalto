@@ -611,6 +611,8 @@ Vtiger.Class("Vtiger_Detail_Js", {
         let self = this,
             url = tabElement.data('url');
 
+        vtUtils.updateWindowUrl('index.php?' + url);
+
         self.loadContents(url, urlAttributes).then(function (data) {
             self.deSelectAllrelatedTabs();
             self.markRelatedTabAsSelected(tabElement);

@@ -913,4 +913,8 @@ var vtUtils = {
             }
         });
     },
+
+    updateWindowUrl(url) {
+        history.replaceState(null, '', url);
+    },
 }
