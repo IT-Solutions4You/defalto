@@ -185,7 +185,7 @@
 										<td class="{$WIDTHTYPE} relatedListEntryValues" data-field-type="{$HEADER_FIELD->getFieldDataType()}" nowrap>
 											<span class="value text-truncate">
 												{if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
-													<a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
+													<a class="fw-bold" href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
 												{elseif $HEADER_FIELD->getFieldDataType() eq 'currency'}
 													{assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($RELATED_RECORD->getCurrencyId())}
 													{CurrencyField::appendCurrencySymbol($RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME), $CURRENCY_INFO['symbol'])}

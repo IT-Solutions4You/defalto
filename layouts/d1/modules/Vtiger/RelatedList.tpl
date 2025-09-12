@@ -91,25 +91,30 @@
 							<tr class="listViewEntries border-bottom" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
 								<td class="related-list-actions text-secondary">
 									<span class="actionImages btn-group">
+                                        {if $RELATED_RECORD->isViewable()}
+                                            <a class="btn btn-sm text-secondary js-reference-display-value" href="{$RELATED_RECORD->getDetailViewUrl()}" title="{vtranslate('LBL_VIEW', $MODULE)}">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                        {/if}
 										{if $IS_EDITABLE && $RELATED_RECORD->isEditable()}
 											{if $RELATED_MODULE_NAME eq 'PriceBooks'}
 												{assign var=LISTPRICE value=Vtiger_Currency_UIType::transformEditViewDisplayValue($RELATED_RECORD->get('listprice'), null, true)}
-												<a data-url="index.php?module=PriceBooks&view=ListPriceUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentPrice={$LISTPRICE}" class="editListPrice cursorPointer btn text-secondary" data-related-recordid='{$RELATED_RECORD->getId()}' data-list-price={$LISTPRICE}>
+												<a data-url="index.php?module=PriceBooks&view=ListPriceUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentPrice={$LISTPRICE}" class="editListPrice cursorPointer btn btn-sm text-secondary" data-related-recordid='{$RELATED_RECORD->getId()}' data-list-price={$LISTPRICE}>
 													<i class="fa fa-pencil" title="{vtranslate('LBL_EDIT', $MODULE)}"></i>
 												</a>
 											{elseif $MODULE eq 'Products' && $RELATED_MODULE_NAME eq 'Products' && $TAB_LABEL === 'Product Bundles' && $RELATED_LIST_LINKS && $PARENT_RECORD->isBundle()}
 												{assign var=quantity value=$RELATED_RECORD->get($RELATION_FIELD->getName())}
-												<a class="quantityEdit btn text-secondary" data-url="index.php?module=Products&view=SubProductQuantityUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentQty={$quantity}" onclick ="Products_Detail_Js.triggerEditQuantity('index.php?module=Products&view=SubProductQuantityUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentQty={$quantity}');if(event.stopPropagation){ldelim}event.stopPropagation();{rdelim}else{ldelim}event.cancelBubble=true;{rdelim}">
+												<a class="quantityEdit btn btn-sm text-secondary" data-url="index.php?module=Products&view=SubProductQuantityUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentQty={$quantity}" onclick ="Products_Detail_Js.triggerEditQuantity('index.php?module=Products&view=SubProductQuantityUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentQty={$quantity}');if(event.stopPropagation){ldelim}event.stopPropagation();{rdelim}else{ldelim}event.cancelBubble=true;{rdelim}">
 													<i class="fa fa-pencil" title="{vtranslate('LBL_EDIT', $MODULE)}"></i>
 												</a>
 											{else}
-												<a name="relationEdit" class="btn text-secondary" data-url="{$RELATED_RECORD->getEditViewUrl()}">
+												<a name="relationEdit" class="btn btn-sm text-secondary" data-url="{$RELATED_RECORD->getEditViewUrl()}">
 													<i class="fa fa-pencil" title="{vtranslate('LBL_EDIT', $MODULE)}"></i>
 												</a>
 											{/if}
 										{/if}
 										{if $IS_DELETABLE}
-											<a class="btn text-secondary relationDelete"><i title="{vtranslate('LBL_UNLINK', $MODULE)}" class="vicon-linkopen"></i></a>
+											<a class="btn btn-sm text-secondary relationDelete"><i title="{vtranslate('LBL_UNLINK', $MODULE)}" class="vicon-linkopen"></i></a>
 										{/if}
 									</span>
 								</td>
@@ -120,10 +125,10 @@
 										data-field-type="{$HEADER_FIELD->getFieldDataType()}" nowrap>
 										<span class="value text-truncate">
 											{if $RELATED_MODULE_NAME eq 'Documents' && $RELATED_HEADERNAME eq 'document_source'}
-												<center>{$RELATED_RECORD->get($RELATED_HEADERNAME)}</center>
-												{else}
-													{if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
-													<a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
+												<div class="text-center">{$RELATED_RECORD->get($RELATED_HEADERNAME)}</div>
+                                            {else}
+                                                {if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
+													<a class="fw-bold" href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
 												{elseif $RELATED_HEADERNAME eq 'access_count'}
 													{$RELATED_RECORD->getAccessCountValue($PARENT_RECORD->getId())}
 												{elseif $HEADER_FIELD->getFieldDataType() eq 'currency'}

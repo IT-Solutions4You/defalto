@@ -31,7 +31,7 @@ $languageStrings = [
     'LBL_QUOTE_INFORMATION' => 'Quote Details',
 
     //Field Labels
-    'Quote No'              => 'Quote Number',
+    'Quote No'              => 'Quote No',
     'Quote Stage'           => 'Quote Stage',
     'Valid Till'            => 'Valid Until',
     'Inventory Manager'     => 'Inventory Manager',

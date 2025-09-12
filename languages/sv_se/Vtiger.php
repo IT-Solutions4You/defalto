@@ -1613,6 +1613,7 @@ $jsLanguageStrings = [
     'JS_SNOOZED'                                          => 'Slumrade',
     'JS_INVALID_URL'                                      => 'Ogiltig URL',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE'                  => 'Är du säker på att du vill radera?',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW'         => 'Are you sure you want to delete this row?',
     'JS_TAB_LABEL_EXCEEDS_CHARS'                          => 'Fliken etikett längd bör vara mindre än %s tecken',
     'JS_STARRED'                                          => 'Spelade',
     'JS_NOT_STARRED'                                      => 'Inte Medverkat',

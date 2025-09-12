@@ -33,6 +33,9 @@ $logsqltm = Logger::getLogger('SQLTIME');
 // See function convertPS2Sql in PearDatabase below
 class PreparedQMark2SqlValue
 {
+    public $vals;
+    public $ctr;
+
     // Constructor
     function __construct($vals)
     {

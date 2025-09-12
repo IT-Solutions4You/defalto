@@ -1453,6 +1453,7 @@ $jsLanguageStrings = [
     'JS_SNOOZED'                                          => 'Snoozed',
     'JS_INVALID_URL'                                      => 'Ongeldige URL',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE'                  => 'Weet u zeker dat u wilt verwijderen?',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW'         => 'Are you sure you want to delete this row?',
     'JS_TAB_LABEL_EXCEEDS_CHARS'                          => 'Tabblad label lengte moet minder zijn dan %s tekens',
     'JS_STARRED'                                          => 'Ster',
     'JS_NOT_STARRED'                                      => 'Niet Met Ster',

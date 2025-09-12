@@ -1440,6 +1440,7 @@ $jsLanguageStrings = [
     'JS_SNOOZED'                                          => 'Snoozed',
     'JS_INVALID_URL'                                      => 'URL invalide',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE'                  => 'Êtes-vous sûr de vouloir supprimer?',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW'         => 'Are you sure you want to delete this row?',
     'JS_TAB_LABEL_EXCEEDS_CHARS'                          => 'Étiquette longueur doit être inférieure à %s caractères',
     'JS_STARRED'                                          => 'Étoilé',
     'JS_NOT_STARRED'                                      => 'Pas Joué',

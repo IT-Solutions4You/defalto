@@ -314,7 +314,6 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
 
         $jsFileNames = [
             '~libraries/garand-sticky/jquery.sticky.js',
-            '~/libraries/jquery/bootstrapswitch/js/bootstrap-switch.min.js',
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
@@ -357,17 +356,5 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
             }
             $viewer->assign('MODULE_BASIC_ACTIONS', $basicLinks);
         }
-    }
-
-    public function getHeaderCss(Vtiger_Request $request)
-    {
-        $headerCssInstances = parent::getHeaderCss($request);
-        $cssFileNames = [
-            '~/libraries/jquery/bootstrapswitch/css/bootstrap2/bootstrap-switch.min.css',
-        ];
-        $cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
-        $headerCssInstances = array_merge($headerCssInstances, $cssInstances);
-
-        return $headerCssInstances;
     }
 }

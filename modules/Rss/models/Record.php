@@ -30,9 +30,9 @@ class Rss_Record_Model extends Vtiger_Record_Model
      * Function to get the id of the Record
      * @return <Number> - Report Id
      */
-    public function getId()
+    public function getId(): int
     {
-        return $this->get('rssid');
+        return (int)$this->get('rssid');
     }
 
     /**
@@ -42,7 +42,7 @@ class Rss_Record_Model extends Vtiger_Record_Model
      *
      * @return <Object> - current instance
      */
-    public function setId($value)
+    public function setId($value): Vtiger_Record_Model
     {
         return $this->set('rssid', $value);
     }
@@ -51,7 +51,7 @@ class Rss_Record_Model extends Vtiger_Record_Model
      * Fuction to get the Name of the Record
      * @return <String>
      */
-    function getName()
+    function getName(): string
     {
         return $this->get('rsstitle');
     }
@@ -89,7 +89,7 @@ class Rss_Record_Model extends Vtiger_Record_Model
     /**
      * Function to save the record
      */
-    public function save()
+    public function save(): void
     {
         $url = $this->get('url');
 
@@ -101,23 +101,14 @@ class Rss_Record_Model extends Vtiger_Record_Model
             $title = $url;
         }
 
-        $params = [$id, $url, $title];
-        $sql = "INSERT INTO vtiger_rss (rssid,rssurl,rsstitle) values (?,?,?)";
-        $result = $db->pquery($sql, $params);
-
-        if ($result) {
-            $this->setId($id);
-
-            return $id;
-        } else {
-            return false;
-        }
+        $db->pquery('INSERT INTO vtiger_rss (rssid,rssurl,rsstitle) values (?,?,?)', [$id, $url, $title]);
+        $this->setId($id);
     }
 
     /**
      * Function to delete a record
      */
-    public function delete()
+    public function delete(): void
     {
         $db = PearDatabase::getInstance();
         $recordId = $this->getId();

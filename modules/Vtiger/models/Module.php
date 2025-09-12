@@ -1918,6 +1918,11 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         return Users_Privileges_Model::isPermitted($this->getName(), $action, $recordId);
     }
 
+    public function isCreateOptionAllowed()
+    {
+        return Users_Privileges_Model::isPermitted($this->getName(), 'CreateView');
+    }
+
     /**
      * function to check if the module is related to supplied module name
      *

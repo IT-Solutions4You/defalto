@@ -35,7 +35,7 @@ class Appointments_Install_Model extends Core_Install_Model
         $this->updateCron();
         $this->updateParentIdModules();
         $this->updateWorkflows();
-        $this->updateFilters();
+        $this->updateCustomViewFilters();
         $this->updateIcons();
         $this->updatePicklists();
         $this->updateHistory();
@@ -516,7 +516,7 @@ class Appointments_Install_Model extends Core_Install_Model
     /**
      * @return void
      */
-    protected function updateFilters()
+    protected function updateCustomViewFilters()
     {
         $filter = Vtiger_Filter::getInstance('Today');
 

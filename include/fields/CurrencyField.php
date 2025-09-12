@@ -126,6 +126,21 @@ class CurrencyField
         $this->numberOfDecimal = getCurrencyDecimalPlaces($user);
     }
 
+    public function retrieveFromData(object $data): void
+    {
+        if (!empty($data['currency_id'])) {
+            $currencyRateAndSymbol = getCurrencySymbolandCRate($data['currency_id']);
+
+            $this->currencyId = $data['currency_id'];
+            $this->currencySymbol = $currencyRateAndSymbol['symbol'];
+            $this->conversionRate = $currencyRateAndSymbol['rate'];
+        }
+
+        if (!empty($data['conversion_rate'])) {
+            $this->conversionRate = $data['conversion_rate'];
+        }
+    }
+
     public function getCurrencySymbol()
     {
         return $this->currencySymbol;
@@ -483,7 +498,7 @@ class CurrencyField
      */
     public static function convertToDBFormat($value, $user = null, $skipConversion = false)
     {
-        if (!strlen($value)) {
+        if (!strlen((string)$value)) {
             return $value;
         }
 

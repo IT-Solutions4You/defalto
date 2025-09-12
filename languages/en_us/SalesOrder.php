@@ -31,7 +31,7 @@ $languageStrings = [
     'LBL_SO_INFORMATION' => 'Sales Order Details',
 
     //Field labels
-    'SalesOrder No'      => 'Sales Order Number',
+    'SalesOrder No'      => 'Sales Order No.',
     'Quote Name'         => 'Quote Name',
     'Customer No'        => 'Customer No',
     'Requisition No'     => 'Requisition No',

@@ -16,28 +16,20 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-$languageStrings = [
-    'Faq'                     => 'FAQ',
-    'SINGLE_Faq'              => 'FAQ',
-    'LBL_RECORDS_LIST'        => 'FAQ Lista',
-    'LBL_ADD_RECORD'          => 'Lägg till FAQ',
+class Products_RecordQuickPreview_View extends Vtiger_RecordQuickPreview_View
+{
+    public function getQuickPreviewHeaderScripts(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $jsFileNames = [
+            "modules.Vtiger.resources.Detail",
+            "modules.Vtiger.resources.RelatedList",
+            'modules.PriceBooks.resources.Detail',
+            'modules.PriceBooks.resources.RelatedList',
+            "modules.$moduleName.resources.Detail",
+            "modules.$moduleName.resources.RelatedList",
+        ];
 
-    //Blocks
-    'LBL_FAQ_INFORMATION'     => 'FAQ Information',
-    'LBL_COMMENT_INFORMATION' => 'Kommentarer',
-
-    //Fields
-    'Question'                => 'Fråga',
-    'Answer'                  => 'Svar',
-    'Comments'                => 'Kommentarer',
-    'Faq No'                  => 'Faq No',
-
-    //Added for existing Picklist Entries
-    'General'                 => 'Generell',
-    'Draft'                   => 'Utkast',
-    'Published'               => 'Publicerad',
-    'Obsolete'                => 'Föråldrad',
-
-    //EditView
-    'LBL_SOLUTION'            => 'Lösning',
-];
+        return $this->checkAndConvertJsScripts($jsFileNames);
+    }
+}

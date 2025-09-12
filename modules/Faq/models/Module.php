@@ -19,16 +19,6 @@
 class Faq_Module_Model extends Vtiger_Module_Model
 {
     /**
-     * Function to check whether the module is an entity type module or not
-     * @return <Boolean> true/false
-     */
-    public function isQuickCreateSupported()
-    {
-        //Faq module is not enabled for quick create
-        return false;
-    }
-
-    /**
      * Function is used to give links in the All menu bar
      */
     public function getQuickMenuModels()

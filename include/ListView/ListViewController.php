@@ -441,18 +441,10 @@ class ListViewController
                 } elseif ($field->getFieldDataType() == 'reference') {
                     $referenceFieldInfoList = $this->queryGenerator->getReferenceFieldInfoList();
                     $moduleList = $referenceFieldInfoList[$fieldName];
-                    if (php7_count($moduleList) == 1) {
-                        $parentModule = $moduleList[0];
-                    } else {
-                        $parentModule = $this->typeList[$value];
-                    }
-                    if (!empty($value) && !empty($this->nameList[$fieldName]) && !empty($parentModule)) {
-                        $parentMeta = $this->queryGenerator->getMeta($parentModule);
-                        $value = textlength_check($this->nameList[$fieldName][$value]);
-                        if ($parentMeta->isModuleEntity() && $parentModule != "Users") {
-                            $value = "<a class='js-reference-display-value' href='?module=$parentModule&view=Detail&" .
-                                "record=$rawValue' title='" . getTranslatedString($parentModule, $parentModule) . "'>$value</a>";
-                        }
+                    $parentModule = 1 === php7_count($moduleList) ? $moduleList[0] : $this->typeList[$value];
+
+                    if (!empty($rawValue) && !empty($parentModule)) {
+                        $value = Vtiger_Reference_UIType::transformToDisplayValue($rawValue, $parentModule);
                     } else {
                         $value = '--';
                     }
@@ -480,8 +472,7 @@ class ListViewController
                 } elseif (in_array($uitype, [7, 9, 90])) {
                     $value = "<span align='right'>" . textlength_check($value) . "</span>";
                 } elseif ($field && isset($field->isNameField) && $field->isNameField) {
-                    $value = "<a href='?module=$field->moduleName&view=Detail&" .
-                        "record=$recordId' title='" . vtranslate($field->moduleName, $field->moduleName) . "'>$value</a>";
+                    $value = "<a href='?module=$field->moduleName&view=Detail&record=$recordId' title='" . vtranslate($field->moduleName, $field->moduleName) . "'>$value</a>";
                 } elseif ($field->getUIType() == 61) {
                     $attachmentId = (int)$value;
                     $displayValue = '--';

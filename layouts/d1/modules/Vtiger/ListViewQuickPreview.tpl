@@ -82,6 +82,8 @@
                     <script type="text/javascript">
                         let detailInstance = Vtiger_Detail_Js.getInstanceByModuleName("{$MODULE_NAME}");
 
+                        detailInstance.setContainer($('.quickPreview'));
+                        detailInstance.setForm($('.quickPreview form'));
                         detailInstance.setQuickPreviewDetailMode(true);
                         detailInstance.registerEvents();
                     </script>

@@ -326,8 +326,8 @@ Vtiger.Class('Vtiger_Index_Js', {
 
     init: function () {
         this.addComponents();
+        this.initContainer();
     },
-
     addComponents: function () {
         this.addComponent('Vtiger_BasicSearch_Js');
     },
@@ -1253,14 +1253,16 @@ Vtiger.Class('Vtiger_Index_Js', {
     },
 
     _showInventoryQuickPreviewForId: function (recordId, moduleName, templateId, isReference, mode) {
-        var thisInstance = this;
-        var params = {};
+        let self = this,
+            params = {};
+
         if (typeof moduleName === 'undefined') {
             moduleName = app.module();
         }
         params['module'] = moduleName;
         params['record'] = recordId;
         params['view'] = 'RecordQuickPreview';
+
         if (isReference == true) {
             params['navigation'] = 'false';
         } else {
@@ -1276,50 +1278,54 @@ Vtiger.Class('Vtiger_Index_Js', {
         }
 
         app.helper.showProgress();
-        app.request.get({data: params}).then(function (err, response) {
+        app.request.post({data: params}).then(function (err, response) {
             app.helper.hideProgress();
+
             if (templateId && mode != 'navigation') {
                 jQuery('#pdfViewer').html(response);
                 return;
             }
-            var params = {
+
+            app.helper.loadHelpPageOverlay(response, {
                 cb: function () {
-                    thisInstance.registerChangeTemplateEvent(jQuery('#helpPageOverlay'), recordId);
-                    thisInstance.registerNavigationEvents(jQuery('#helpPageOverlay'));
+                    self.registerChangeTemplateEvent(jQuery('#helpPageOverlay'), recordId);
+                    self.registerNavigationEvents(jQuery('#helpPageOverlay'));
                 },
-                backdrop: false,
-            };
-            app.helper.loadHelpPageOverlay(response, params);
-            var params = {
+            });
+
+            app.helper.showVerticalScroll(jQuery('.quickPreview .modal-body'), {
                 setHeight: "100%",
                 alwaysShowScrollbar: 2,
                 autoExpandScrollbar: true,
                 setTop: 0,
                 scrollInertia: 70,
                 mouseWheel: {preventDefault: true}
-            };
-            app.helper.showVerticalScroll(jQuery('.quickPreview .modal-body'), params);
+            });
         });
     },
 
     _showQuickPreviewForId: function (recordId, moduleName, appName, isReference) {
-        var self = this;
-        var params = {};
+        let self = this,
+            params = {};
+
         if (typeof moduleName === 'undefined') {
             moduleName = app.module();
         }
+
         params['module'] = moduleName;
         params['record'] = recordId;
         params['view'] = 'RecordQuickPreview';
+
         if (isReference === true) {
             params['navigation'] = 'false';
         } else {
             params['navigation'] = 'true';
         }
+
         params['app'] = appName;
 
         app.helper.showProgress();
-        app.request.get({data: params}).then(function (err, response) {
+        app.request.post({data: params}).then(function (err, response) {
             app.helper.hideProgress();
             let callBack = function (container) {
                 self.registerMoreRecentUpdatesClickEvent(container, recordId);
@@ -1329,7 +1335,6 @@ Vtiger.Class('Vtiger_Index_Js', {
 
             app.helper.loadHelpPageOverlay(response, {
                 'cb': callBack,
-                backdrop: false,
             });
         });
     },
@@ -1340,7 +1345,8 @@ Vtiger.Class('Vtiger_Index_Js', {
     },
 
     showQuickPreviewForId: function (recordId, moduleName, appName, templateId, isReference, mode) {
-        var self = this;
+        let self = this;
+
         if (self.isInventoryModule(moduleName)) {
             self._showInventoryQuickPreviewForId(recordId, moduleName, templateId, isReference, mode);
         } else {
@@ -1349,51 +1355,34 @@ Vtiger.Class('Vtiger_Index_Js', {
     },
 
     registerReferencePreviewEvent: function () {
-        var self = this;
-        var view = app.view();
-        jQuery('body').on('click', '.js-reference-display-value', function (e) {
+        let self = this,
+            view = app.view(),
+            timeout = null;
+
+        if (!app.event.required('reference-field-click-event')) {
+            return;
+        }
+
+        $(document).on('click', '.js-reference-display-value', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            var currentTarget = jQuery(this);
+            let currentTarget = jQuery(this);
+
             if (currentTarget.closest('#popupPageContainer').length) {
                 return; //no action in reference selection popup
             }
-            var href = currentTarget.attr('href');
-            if (view === 'List') {
-                if (currentTarget.data('timer')) {
-                    //if list view single click has set a time, clear it
-                    clearTimeout(currentTarget.data('timer'));
-                    currentTarget.data('timer', null);
-                }
-                //perform show preview only after 500ms in list view to support double click edit action
-                if (!currentTarget.data('preview-timer') && typeof href != 'undefined') {
-                    currentTarget.data('preview-timer', setTimeout(function () {
-                        var data = app.convertUrlToDataParams(href);
-                        self.showQuickPreviewForId(data.record, data.module, app.getAppName(), '', true);
-                        currentTarget.data('preview-timer', null);
-                    }, 500));
-                }
-            } else {
-                var data = app.convertUrlToDataParams(href);
-                self.showQuickPreviewForId(data.record, data.module, app.getAppName(), '', true);
-            }
-        });
 
-        if (view === 'List') {
-            /*
-            * when reference display value is double clicked in list view,
-            * should initiate inline edit instead of showing preview
-            */
-            jQuery('body').on('dblclick', '.js-reference-display-value', function (e) {
-                e.preventDefault();
-                var currentTarget = jQuery(this);
-                if (currentTarget.data('preview-timer')) {
-                    clearTimeout(currentTarget.data('preview-timer'));
-                    currentTarget.data('preview-timer', null);
-                }
-                ;
-            });
-        }
+            let href = currentTarget.attr('href');
+
+            if(timeout) {
+                clearTimeout(timeout);
+            }
+
+            timeout = setTimeout(function () {
+                let data = app.convertUrlToDataParams(href);
+                self.showQuickPreviewForId(data.record, data.module, app.getAppName(), '', true);
+            }, 500)
+        });
     },
 
     registerPostReferenceEvent: function (container) {

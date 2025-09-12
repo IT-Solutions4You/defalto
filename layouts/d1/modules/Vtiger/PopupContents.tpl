@@ -45,8 +45,9 @@
                                 <th class="{$WIDTHTYPE}">
                                     <input type="checkbox" class="selectAllInCurrentPage form-check-input" />
                                 </th>
+                            {else}
+                                <th class="{$WIDTHTYPE}"></th>
                             {/if}
-                            <th class="{$WIDTHTYPE}">&nbsp;</th>
                             {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                 <th class="{$WIDTHTYPE}">
                                     <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues text-secondary text-nowrap {if $LISTVIEW_HEADER->get('name') eq 'listprice'}noSorting{/if}" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
@@ -88,8 +89,9 @@
                         <td class="{$WIDTHTYPE}">
                             <input class="entryCheckBox form-check-input" type="checkbox" />
                         </td>
+                    {else}
+                        <td class="{$WIDTHTYPE}"></td>
                     {/if}
-                        <td></td>
                     {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                     {assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
                     {assign var=LISTVIEW_ENTRY_VALUE value=$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}

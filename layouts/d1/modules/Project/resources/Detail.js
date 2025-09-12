@@ -113,10 +113,10 @@ Vtiger_Detail_Js('Project_Detail_Js', {
      * Function to register event for create related record
      * in summary view widgets
      */
-    registerSummaryViewContainerEvents: function (summaryViewContainer) {
-        this._super(summaryViewContainer);
+    registerSummaryViewContainerEvents: function () {
+        this._super();
         this.registerStatusChangeEventForWidget();
-        this.registerEventsForTasksWidget(summaryViewContainer);
+        this.registerEventsForTasksWidget();
     },
 
     /**
@@ -125,7 +125,7 @@ Vtiger_Detail_Js('Project_Detail_Js', {
     registerStatusChangeEventForWidget: function () {
         const self = this;
 
-        self.getDetailViewContainer().on('change', '[name="ticketstatus"],[name="projecttaskstatus"],[name="projecttaskprogress"]', function (e) {
+        self.getContainer().on('change', '[name="ticketstatus"],[name="projecttaskstatus"],[name="projecttaskprogress"]', function (e) {
             let picklistName = this.name,
                 statusCondition = {},
                 params = {},
@@ -265,8 +265,9 @@ Vtiger_Detail_Js('Project_Detail_Js', {
     /**
      * Function to register events for project tasks widget
      */
-    registerEventsForTasksWidget: function (summaryViewContainer) {
+    registerEventsForTasksWidget: function () {
         const self = this,
+            summaryViewContainer = self.getContainer(),
             tasksWidget = summaryViewContainer.find('[data-name="LBL_TASKS"]');
 
         tasksWidget.on('click', '.editTaskDetails', function (e) {

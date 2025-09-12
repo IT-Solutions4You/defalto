@@ -1642,6 +1642,7 @@ $jsLanguageStrings = [
     'JS_SNOOZED'                                          => 'Snoozed',
     'JS_INVALID_URL'                                      => 'URL غير صالح',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE'                  => 'هل أنت متأكد من أنك تريد حذف ؟ ',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW'         => 'Are you sure you want to delete this row?',
     'JS_TAB_LABEL_EXCEEDS_CHARS'                          => 'علامة التبويب التسمية طول ينبغي أن يكون أقل من %s الشخصيات',
     'JS_STARRED'                                          => 'تألق',
     'JS_NOT_STARRED'                                      => 'لا يقوم ببطولته',

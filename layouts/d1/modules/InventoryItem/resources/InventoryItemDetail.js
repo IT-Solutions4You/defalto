@@ -237,19 +237,21 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     deleteProductLine: function (rowNumber) {
-        if (confirm(app.vtranslate('JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE')) === true) {
-            const self = this;
-            app.request.post({
-                'data': {
-                    module: 'InventoryItem',
-                    action: 'DeleteProductLine',
-                    for_record: app.getRecordId(),
-                    lineItemId: jQuery('input[name="lineItemId' + rowNumber + '"]').val()
-                }
-            }).then(function () {
-                self.reloadInventoryItemsBlock();
-            });
-        }
+        const self = this;
+        app.helper.showConfirmationBox({'message': app.vtranslate('JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW')}).then(
+            function () {
+                app.request.post({
+                    'data': {
+                        module: 'InventoryItem',
+                        action: 'DeleteProductLine',
+                        for_record: app.getRecordId(),
+                        lineItemId: jQuery('input[name="lineItemId' + rowNumber + '"]').val()
+                    }
+                }).then(function () {
+                    self.reloadInventoryItemsBlock();
+                });
+            }
+        );
     },
 
     recalculateTotals: function () {

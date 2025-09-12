@@ -1449,6 +1449,7 @@ $jsLanguageStrings = [
     'JS_SNOOZED'                                          => 'Дремали',
     'JS_INVALID_URL'                                      => 'Invalid URL',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE'                  => 'Sunteți sigur că doriți să ștergeți?',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW'         => 'Are you sure you want to delete this row?',
     'JS_TAB_LABEL_EXCEEDS_CHARS'                          => 'Eticheta file lungimea trebuie să fie mai mică decât %s caractere',
     'JS_STARRED'                                          => 'A jucat',
     'JS_NOT_STARRED'                                      => 'Nu A Jucat',

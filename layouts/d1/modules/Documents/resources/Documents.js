@@ -79,12 +79,18 @@ Vtiger.Class('Documents_Index_Js', {
     },
 
     isDocumentsSummaryWidgetAvailable: function () {
-        return jQuery('.widgetContainer_documents, .summaryWidgetContainer [data-name="Documents"]').length;
+        let self = this;
+
+        return jQuery('.widgetContainer_documents, .summaryWidgetContainer [data-name="Documents"]', self.getContainer()).length;
     },
 
     reloadSummaryWidget: function () {
-        let detailInstance = Vtiger_Detail_Js.getInstance();
-        detailInstance.loadWidget(jQuery('.widgetContainer_documents, .summaryWidgetContainer [data-name="Documents"]'));
+        let detailInstance = Vtiger_Detail_Js.getInstance(),
+            self = this;
+
+        jQuery('.widgetContainer_documents, .summaryWidgetContainer [data-name="Documents"]', self.getContainer()).each(function () {
+            detailInstance.loadWidget(jQuery(this));
+        });
     },
 
     reloadList: function () {

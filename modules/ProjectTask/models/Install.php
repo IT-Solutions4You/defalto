@@ -49,6 +49,73 @@ class ProjectTask_Install_Model extends Core_Install_Model
         ],
     ];
 
+    /**
+     * @var array
+     */
+    public array $blocksHeaderFields = [
+        'projectid',
+        'milestoneid',
+        'projecttaskstatus',
+        'startdate',
+        'planed_hours',
+    ];
+
+    /**
+     * @var array
+     */
+    public array $blocksSummaryFields = [
+        'projecttask_no',
+        'projecttaskname',
+        'projecttasknumber',
+        'projectid',
+        'milestoneid',
+        'startdate',
+        'enddate',
+        'projecttaskstatus',
+        'projecttaskpriority',
+        'projecttasktype',
+        'projecttaskprogress',
+        'planed_hours',
+        'projecttaskhours',
+        'description',
+    ];
+
+    /**
+     * @var array
+     */
+    public array $blocksListFields = [
+        'projecttaskname',
+        'projecttaskpriority',
+        'projectid',
+        'projectid:Project:account_id',
+        'milestoneid',
+        'startdate',
+        'enddate',
+        'projecttaskprogress',
+        'planed_hours',
+        'projecttaskhours',
+        'assigned_user_id',
+    ];
+
+    /**
+     * @var array
+     */
+    public array $blocksQuickCreateFields = [
+        'projecttaskname',
+        'projecttasknumber',
+        'projectid',
+        'milestoneid',
+        'startdate',
+        'enddate',
+        'projecttaskstatus',
+        'projecttaskpriority',
+        'projecttasktype',
+        'projecttaskprogress',
+        'planed_hours',
+        'assigned_user_id',
+        'description',
+    ];
+
     protected string $moduleNumbering = 'PT';
 
     /**
@@ -89,10 +156,9 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'table' => 'vtiger_projecttask',
                     'label' => 'Task Name',
                     'typeofdata' => 'V~M',
-                    'quickcreate' => 0,
+                    'quickcreate' => 1,
                     'entity_identifier' => 1,
-                    'filter' => 1,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
                 ],
                 'projecttasknumber' => [
                     'uitype' => 7,
@@ -101,17 +167,66 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'label' => 'Task Number',
                     'typeofdata' => 'I~O',
                 ],
-                'projecttasktype' => [
-                    'uitype' => 15,
-                    'column' => 'projecttasktype',
+                'projectid' => [
+                    'uitype' => 10,
+                    'column' => 'projectid',
                     'table' => 'vtiger_projecttask',
-                    'label' => 'Type',
-                    'picklist_values' => [
-                        'administrative',
-                        'operative',
-                        'other',
+                    'label' => 'Project',
+                    'presence' => 0,
+                    'typeofdata' => 'I~M',
+                    'quickcreate' => 1,
+                    'related_modules' => [
+                        'Project',
                     ],
-                    'summaryfield' => 1,
+                    'headerfield' => 0,
+                ],
+                'milestoneid' => [
+                    'uitype' => 10,
+                    'column' => 'milestoneid',
+                    'table' => 'vtiger_projecttask',
+                    'label' => 'Milestone',
+                    'presence' => 0,
+                    'typeofdata' => 'I~O',
+                    'quickcreate' => 1,
+                    'related_modules' => [
+                        'ProjectMilestone',
+                    ],
+                    'headerfield' => 0,
+                ],
+                'startdate' => [
+                    'uitype' => 5,
+                    'column' => 'startdate',
+                    'table' => 'vtiger_projecttask',
+                    'label' => 'Start Date',
+                    'typeofdata' => 'D~O',
+                    'quickcreate' => 1,
+                    'summaryfield' => 0,
+                ],
+                'enddate' => [
+                    'uitype' => 5,
+                    'column' => 'enddate',
+                    'table' => 'vtiger_projecttask',
+                    'label' => 'End Date',
+                    'typeofdata' => 'D~O~OTH~GE~startdate~Start Date',
+                    'summaryfield' => 0,
+                ],
+                'projecttaskstatus' => [
+                    'uitype' => 15,
+                    'column' => 'projecttaskstatus',
+                    'table' => 'vtiger_projecttask',
+                    'generatedtype' => 2,
+                    'label' => 'Status',
+                    'presence' => 0,
+                    'quickcreate' => 1,
+                    'masseditable' => 0,
+                    'picklist_values' => [
+                        'Open',
+                        'In Progress',
+                        'Completed',
+                        'Deferred',
+                        'Canceled',
+                    ],
+                    'headerfield' => 0,
                 ],
                 'projecttaskpriority' => [
                     'uitype' => 15,
@@ -123,53 +238,18 @@ class ProjectTask_Install_Model extends Core_Install_Model
                         'normal',
                         'high',
                     ],
-                    'filter' => 1,
                 ],
-                'projectid' => [
-                    'uitype' => 10,
-                    'column' => 'projectid',
-                    'table' => 'vtiger_projecttask',
-                    'label' => 'Project',
-                    'presence' => 0,
-                    'typeofdata' => 'I~M',
-                    'quickcreate' => 0,
-                    'related_modules' => [
-                        'Project',
-                    ],
-                    'filter' => 1,
-                    'headerfield' => 1,
-                ],
-                'milestoneid' => [
-                    'uitype' => 10,
-                    'column' => 'milestoneid',
-                    'table' => 'vtiger_projecttask',
-                    'label' => 'Milestone',
-                    'presence' => 0,
-                    'typeofdata' => 'I~O',
-                    'quickcreate' => 0,
-                    'related_modules' => [
-                        'ProjectMilestone',
-                    ],
-                    'filter' => 1,
-                    'headerfield' => 1,
-                ],
-                'projecttaskstatus' => [
+                'projecttasktype' => [
                     'uitype' => 15,
-                    'column' => 'projecttaskstatus',
+                    'column' => 'projecttasktype',
                     'table' => 'vtiger_projecttask',
-                    'generatedtype' => 2,
-                    'label' => 'Status',
-                    'presence' => 0,
-                    'quickcreate' => 3,
-                    'masseditable' => 0,
+                    'label' => 'Type',
                     'picklist_values' => [
-                        'Open',
-                        'In Progress',
-                        'Completed',
-                        'Deferred',
-                        'Canceled',
+                        'administrative',
+                        'operative',
+                        'other',
                     ],
-                    'headerfield' => 1,
+                    'summaryfield' => 0,
                 ],
                 'projecttaskprogress' => [
                     'uitype' => 15,
@@ -178,8 +258,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'label' => 'Progress',
                     'picklist_values' => self::$progressValues,
                     'picklist_overwrite' => 1,
-                    'filter' => 1,
-                    'summaryfield' => 1,
+                    'summaryfield' => 0,
                 ],
                 'planed_hours' => [
                     'uitype' => 7,
@@ -193,27 +272,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'column' => 'projecttaskhours',
                     'table' => 'vtiger_projecttask',
                     'label' => 'Worked Hours',
-                    'filter' => 1,
                     'typeofdata' => 'N~O',
-                ],
-                'startdate' => [
-                    'uitype' => 5,
-                    'column' => 'startdate',
-                    'table' => 'vtiger_projecttask',
-                    'label' => 'Start Date',
-                    'typeofdata' => 'D~O',
-                    'quickcreate' => 0,
-                    'filter' => 1,
-                    'summaryfield' => 1,
-                ],
-                'enddate' => [
-                    'uitype' => 5,
-                    'column' => 'enddate',
-                    'table' => 'vtiger_projecttask',
-                    'label' => 'End Date',
-                    'typeofdata' => 'D~O~OTH~GE~startdate~Start Date',
-                    'filter' => 1,
-                    'summaryfield' => 1,
                 ],
                 'assigned_user_id' => [
                     'uitype' => 53,
@@ -221,9 +280,8 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'table' => 'vtiger_crmentity',
                     'label' => 'Assigned To',
                     'typeofdata' => 'V~M',
-                    'quickcreate' => 0,
-                    'filter' => 1,
-                    'summaryfield' => 1,
+                    'quickcreate' => 1,
+                    'summaryfield' => 0,
                 ],
             ],
             'LBL_DESCRIPTION_INFORMATION' => [

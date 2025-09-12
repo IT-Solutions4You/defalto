@@ -430,13 +430,15 @@ Vtiger.Class("Vtiger_DashBoard_Js", {
     },
 
     loadWidget: function (widgetContainer) {
-        var thisInstance = this;
-        var urlParams = widgetContainer.data('url');
-        var mode = widgetContainer.data('mode');
+        let thisInstance = this,
+            urlParams = widgetContainer.data('url'),
+            mode = widgetContainer.data('mode'),
+            activeTabId = this.getActiveTabId();
 
-        var activeTabId = this.getActiveTabId();
         urlParams += "&tab=" + activeTabId;
+
         app.helper.showProgress();
+
         if (mode == 'open') {
             app.request.post({"url": urlParams}).then(function (err, data) {
                 widgetContainer.prepend(data);
@@ -445,7 +447,6 @@ Vtiger.Class("Vtiger_DashBoard_Js", {
                 let widgetChartContainer = widgetContainer.find(".widgetChartContainer");
 
                 if (widgetChartContainer.length > 0) {
-                    ;
                     widgetChartContainer.css("height", widgetContainer.height() - 110);
                 }
 

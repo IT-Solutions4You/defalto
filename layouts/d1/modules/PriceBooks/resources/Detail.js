@@ -6,7 +6,7 @@
  * This file is licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
+/** @var PriceBooks_Detail_Js */
 Vtiger_Detail_Js("PriceBooks_Detail_Js", {}, {
 
     listPriceUpdateContainer: false,

@@ -36,6 +36,7 @@ abstract class Vtiger_Footer_View extends Vtiger_Header_View
     {
         $headerCssInstances = parent::getHeaderCss($request);
         $cssFileNames = [
+            '~vendor/bootstrap-switch/bootstrap-switch/dist/css/bootstrap4/bootstrap-switch.min.css',
             '~layouts/' . Vtiger_Viewer::getDefaultLayoutName() . '/lib/jquery/timepicker/jquery.timepicker.css',
             '~/libraries/jquery/lazyYT/lazyYT.min.css'
         ];
@@ -43,5 +44,14 @@ abstract class Vtiger_Footer_View extends Vtiger_Header_View
         $headerCssInstances = array_merge($headerCssInstances, $cssInstances);
 
         return $headerCssInstances;
+    }
+
+    public function getHeaderScripts(Vtiger_Request $request)
+    {
+        $jsFileNames= [
+            '~vendor/bootstrap-switch/bootstrap-switch/dist/js/bootstrap-switch.min.js',
+        ];
+
+        return array_merge(parent::getHeaderScripts($request), $this->checkAndConvertJsScripts($jsFileNames));
     }
 }

@@ -66,6 +66,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      * @var array
      */
     public static array $filters = [];
+    public static array $filterFields = [];
 
     /**
      * @var array
@@ -189,7 +190,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 0,
-            'summaryfield' => 0,
             'picklist_values' => [],
         ],
         'currency_id' => [
@@ -203,7 +203,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'pricebookid' => [
             'name' => 'pricebookid',
@@ -216,7 +215,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 0,
-            'summaryfield' => 0,
             'related_modules' => [
                 'PriceBooks',
             ],
@@ -232,7 +230,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 3,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'discount_amount' => [
             'name' => 'discount_amount',
@@ -245,7 +242,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'price_after_discount' => [
             'name' => 'price_after_discount',
@@ -260,7 +256,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'overall_discount' => [
             'name' => 'overall_discount',
@@ -275,7 +270,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'overall_discount_amount' => [
             'name' => 'overall_discount_amount',
@@ -290,7 +284,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'price_after_overall_discount' => [
             'name' => 'price_after_overall_discount',
@@ -305,7 +298,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 3,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'tax_amount' => [
             'name' => 'tax_amount',
@@ -320,7 +312,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 0,
         ],
         'price_total' => [
             'name' => 'price_total',
@@ -333,7 +324,6 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 3,
             'masseditable' => 1,
-            'summaryfield' => 1,
         ],
         'adjustment' => [
             'name' => 'adjustment',
@@ -357,9 +347,9 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'presence' => 2,
             'typeofdata' => 'N~O',
             'quickcreate' => 3,
-            'displaytype' => 3,
+            'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 1,
+            'summaryfield' => 0,
         ],
         'margin_amount' => [
             'name' => 'margin_amount',
@@ -377,6 +367,29 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'summaryfield' => 0,
         ],
     ];
+
+    public static array $fieldsDescription = [
+        'description' => [
+            'label' => 'Description',
+            'name' => 'description',
+            'table' => 'vtiger_crmentity',
+            'column' => 'description',
+            'uitype' => 19,
+            'readonly' => 1,
+            'presence' => 2,
+            'typeofdata' => 'V~O',
+            'quickcreate' => 1,
+            'displaytype' => 1,
+            'masseditable' => 1,
+            'summaryfield' => 0,
+        ],
+    ];
+
+
+    public array $blocksHeaderFields = [];
+    public array $blocksSummaryFields = [];
+    public array $blocksListFields = [];
+    public array $blocksQuickCreateFields = [];
 
     /**
      * @var array
@@ -699,12 +712,11 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         self::logSuccess('Webservice Setup');
 
         $this->retrieveBlocks();
+        $this->retrieveFilters();
 
         if (!empty($this->getFieldsConfig())) {
             $moduleInstance->initTables($moduleInstance->basetable, $moduleInstance->basetableid);
             $entityIdentifiers = [];
-            $filterFields = [];
-            $filterDynamicSequence = 0;
 
             foreach ($this->getFieldsConfig() as $block => $fields) {
                 self::logSuccess('Block create: ' . $block);
@@ -773,9 +785,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                     if (isset($fieldParams['filter'])) {
                         self::logSuccess('Filter field config: ' . $fieldName);
 
-                        $filterDynamicSequence++;
-                        $filterSequence = !empty($fieldParams['filter_sequence']) ? $fieldParams['filter_sequence'] : $filterDynamicSequence;
-                        $filterFields[$filterSequence] = $fieldInstance;
+                        $filterSequence =  $fieldParams['filter_sequence'] ?: 0;
+                        $this->setFilterField('All', $fieldInstance, $filterSequence);
                     }
 
                     if (isset($fieldParams['entity_identifier'])) {
@@ -786,30 +797,96 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                     }
                 }
             }
-
-            self::logSuccess('Filter start creating');
-
-            if (!empty($filterFields)) {
-                $filterInstance = $this->createFilter('All', $moduleInstance);
-
-                ksort($filterFields);
-
-                foreach ($filterFields as $filterSequence => $filterField) {
-                    self::logSuccess('Filter add field: ' . $filterField->get('table') . ':' . $filterField->getName());
-
-                    $filterInstance->addField($filterField, $filterSequence);
-                }
-            }
-
-            self::logSuccess('Filter end creating');
         }
 
+        $this->updateFilters();
         $this->updateMenuLink();
         $this->install();
         $this->postInstall();
 
         self::logSuccess('Module result: ' . $moduleName);
         self::logSuccess($moduleInstance);
+    }
+
+    public function setFilterField($filterName, $field, $sequence): void
+    {
+        $moduleName = $this->getModuleName();
+
+        if (empty($sequence)) {
+            $sequence = count((array)self::$filterFields[$moduleName][$filterName]) + 1;
+        }
+
+        self::$filterFields[$moduleName][$filterName][$sequence] = $field;
+    }
+
+    public function getFilters()
+    {
+        return self::$filterFields[$this->getModuleName()];
+    }
+
+    public function updateFilters(): void
+    {
+        self::logSuccess('Filter start creating');
+
+        $filters = $this->getFilters();
+        $moduleName = $this->getModuleName();
+        $moduleInstance = $this->getModuleInstance($moduleName);
+
+        foreach ($filters as $filterName => $filterFields) {
+            $filterInstance = $this->createFilter($filterName, $moduleInstance);
+            $filterInstance->deleteFields();
+
+            ksort($filterFields);
+
+            foreach ($filterFields as $filterSequence => $filterField) {
+                self::logSuccess('Filter add field: ' . $filterField->get('table') . ':' . $filterField->getName());
+
+                $filterInstance->addField($filterField, $filterSequence);
+            }
+        }
+
+        self::logSuccess('Filter end creating');
+    }
+
+    public function getFilterField($fieldName, $referenceModule = '', $referenceField = ''): Vtiger_Field_Model|false
+    {
+        $moduleName = $this->getModuleName();
+        $module = $this->getModuleInstance($moduleName);
+
+        if (!empty($referenceField)) {
+            $module = Vtiger_Module_Model::getInstance($referenceModule);
+
+            if ($module) {
+                $field = Vtiger_Field_Model::getInstance($referenceField, $module);
+
+                if ($field) {
+                    $field->set('name', sprintf('(%s ; (%s) %s)', $fieldName, $referenceModule, $referenceField));
+
+                    return $field;
+                }
+            }
+
+            return false;
+        }
+
+        return Vtiger_Field_Model::getInstance($fieldName, $module);
+    }
+
+    public function retrieveFilters(): void
+    {
+        foreach ($this->blocksListFields as $key => $field) {
+            [$fieldName, $referenceModule, $referenceField] = array_pad(explode(':', $field), 3, null);
+
+            if (empty($referenceField)) {
+                continue;
+            }
+
+            $field = $this->getFilterField($fieldName, $referenceModule, $referenceField);
+
+            if ($field) {
+                $this->setFilterField('All', $field, $key + 1);
+            }
+        }
     }
 
     /**
@@ -1354,6 +1431,56 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         if (!empty($blocks)) {
             self::$fieldsConfig[$moduleName] = array_merge_recursive($blocks, self::$fieldsConfigDefault);
+        }
+
+        $this->retrieveFieldsConfig();
+    }
+
+    public function retrieveFieldsConfig(): void
+    {
+        $moduleName = $this->getModuleName();
+        $configFields = [
+            [
+                'headerfield',
+                'headerfieldsequence',
+                array_flip($this->blocksHeaderFields),
+                1,
+            ],
+            [
+                'summaryfield',
+                'summaryfieldsequence',
+                array_flip($this->blocksSummaryFields),
+                1,
+            ],
+            [
+                'filter',
+                'filter_sequence',
+                array_flip($this->blocksListFields),
+                1,
+            ],
+            [
+                'quickcreate',
+                'quicksequence',
+                array_flip($this->blocksQuickCreateFields),
+                2,
+            ],
+        ];
+
+        foreach (self::$fieldsConfig[$moduleName] as $blockName => $fields) {
+            foreach ($fields as $fieldName => $fieldInfo) {
+                foreach ($configFields as $configField) {
+                    [$fieldKey, $fieldSequenceKey, $fieldList, $fieldDefault] = $configField;
+
+                    if (!empty($fieldList)) {
+                        if (isset($fieldList[$fieldName])) {
+                            $fieldInfo[$fieldKey] = $fieldDefault;
+                            $fieldInfo[$fieldSequenceKey] = $fieldList[$fieldName] + 1;
+                        }
+                    }
+                }
+
+                self::$fieldsConfig[$moduleName][$blockName][$fieldName] = $fieldInfo;
+            }
         }
     }
 

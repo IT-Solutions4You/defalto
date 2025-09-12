@@ -1886,6 +1886,7 @@ $jsLanguageStrings = [
     'JS_INVALID_URL'                     => 'Invalid URL',
     'JS_MAX_ALLOWED_CHARACTERS'          => 'Maximum allowed characters is',
     'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE' => 'Are you sure you want to delete?',
+    'JS_ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_ROW' => 'Are you sure you want to delete this row?',
     'JS_TAB_LABEL_EXCEEDS_CHARS'         => 'Tab label length should be less than %s characters',
     'JS_STARRED'                         => 'Unfollow',
     'JS_NOT_STARRED'                     => 'Follow',

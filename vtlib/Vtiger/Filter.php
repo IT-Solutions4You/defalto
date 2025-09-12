@@ -125,7 +125,7 @@ class Vtiger_Filter
     {
         global $adb;
         $adb->pquery("DELETE FROM vtiger_cvadvfilter WHERE cvid=?", [$this->id]);
-        $adb->pquery("DELETE FROM vtiger_cvcolumnlist WHERE cvid=?", [$this->id]);
+        $this->deleteFields();
         $adb->pquery("DELETE FROM vtiger_customview WHERE cvid=?", [$this->id]);
     }
 
@@ -372,5 +372,10 @@ class Vtiger_Filter
                 $adb->pquery("DELETE FROM vtiger_customview WHERE cvid   IN (" . generateQuestionMarks($cvids) . ")", array($cvids));
             }
         }
+    }
+
+    public function deleteFields(): void
+    {
+        PearDatabase::getInstance()->pquery("DELETE FROM vtiger_cvcolumnlist WHERE cvid=?", [$this->id]);
     }
 }

@@ -526,6 +526,14 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * @return bool
+     */
+    public function isViewable()
+    {
+        return Users_Privileges_Model::isPermitted($this->getModuleName(), 'DetailView', $this->getId());
+    }
+
+    /**
      * Funtion to get Duplicate Record Url
      * @return <String>
      */

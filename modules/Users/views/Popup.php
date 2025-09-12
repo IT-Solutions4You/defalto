@@ -28,7 +28,8 @@ class Users_Popup_View extends Vtiger_Popup_View
         $moduleName = $request->getModule();
         $sourceModuleName = $request->get('src_module');
         $sourceFieldName = $request->get('src_field');
-        if ($moduleName == 'Users' && $sourceModuleName == 'Quotes' && $sourceFieldName == 'assigned_user_id1'|| $sourceFieldName === 'inventorymanager' ) {
+
+        if ($moduleName == 'Users' && ($sourceFieldName == 'assigned_user_id1'|| $sourceFieldName === 'inventorymanager')) {
             return true;
         }
 
