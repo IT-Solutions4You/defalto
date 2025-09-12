@@ -282,22 +282,6 @@ class Products_Module_Model extends Vtiger_Module_Model
     }
 
     /**
-     * Function to get popup view fields
-     */
-    public function getPopupViewFieldsList()
-    {
-        $summaryFieldsList = parent::getPopupViewFieldsList();
-        foreach ($summaryFieldsList as $key => $fieldname) {
-            if ($fieldname == 'qty_per_unit') {
-                $out = array_splice($summaryFieldsList, $key, 1);
-                array_splice($summaryFieldsList, 1, 0, $out);
-            }
-        }
-
-        return $summaryFieldsList;
-    }
-
-    /**
      * @throws Exception
      */
     public function getField($fieldName)
