@@ -1469,7 +1469,6 @@ if (defined('VTIGER_UPGRADE')) {
     }
 
     $inventoryFields = [
-        'LBL_TAX_SETTINGS'            => 'index.php?module=Vtiger&parent=Settings&view=TaxIndex',
         'INVENTORYTERMSANDCONDITIONS' => 'index.php?parent=Settings&module=Vtiger&view=TermsAndConditionsEdit'
     ];
 

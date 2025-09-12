@@ -400,4 +400,24 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
             'name' => $this->get('name'),
         ]);
     }
+
+    /**
+     * @param string $label
+     * @param string $linkUrl
+     * @param object $menu
+     * @return Settings_Vtiger_MenuItem_Model|bool
+     */
+    public static function createItem(string $label, string $linkUrl, object $menu): Settings_Vtiger_MenuItem_Model|bool
+    {
+        $link = Settings_Vtiger_MenuItem_Model::getInstance($label, $menu);
+
+        if (!$link) {
+            $link = Settings_Vtiger_MenuItem_Model::getInstanceFromArray(
+                ['name' => $label, 'blockid' => $menu->getId(), 'linkto' => $linkUrl],
+            );
+            $link->save();
+        }
+
+        return $link;
+    }
 }

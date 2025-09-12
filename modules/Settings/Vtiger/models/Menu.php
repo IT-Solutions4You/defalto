@@ -193,4 +193,19 @@ class Settings_Vtiger_Menu_Model extends Vtiger_Base_Model
     {
         return Settings_Vtiger_MenuItem_Model::getAll($this);
     }
+
+    /**
+     * @throws Exception
+     */
+    public static function createMenu(string $label): Settings_Vtiger_Menu_Model|bool
+    {
+        $menu = Settings_Vtiger_Menu_Model::getInstance($label);
+
+        if (!$menu) {
+            $menu = Settings_Vtiger_Menu_Model::getInstanceFromArray(['label' => $label]);
+            $menu->save();
+        }
+
+        return $menu;
+    }
 }
