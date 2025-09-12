@@ -1078,7 +1078,8 @@ Vtiger.Class("Vtiger_List_Js", {
                         let current = jQuery(e.currentTarget),
                             target = jQuery(e.target);
 
-                        if (target.closest('td').is('td:first-child') || target.closest('tr').hasClass('edited') || target.is('input') || target.is('a') || target.closest('a').length)
+                        if (target.is('.js-redirect-disabled') || target.closest('td').is('td:first-child') || target.closest('tr').hasClass('edited') || target.is('input') ||
+                            target.is('.js-reference-display-value') || target.closest('.js-reference-display-value').length)
                             return;
 
                         let recordUrl = current.data('recordurl');

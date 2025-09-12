@@ -2524,7 +2524,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
                     targetElement = jQuery(e.target, currentTarget),
                     recordUrl = currentTarget.data('recordurl');
 
-                if (targetElement.is('a') || targetElement.closest('a').length || targetElement.is('input') || targetElement.closest('input').length) return;
+                if (targetElement.is('.js-redirect-disabled') || targetElement.is('.js-reference-display-value') || targetElement.closest('.js-reference-display-value').length || targetElement.is('input') || targetElement.closest('input').length) return;
 
                 if ('undefined' !== typeof recordUrl) {
                     window.location.href = recordUrl;
