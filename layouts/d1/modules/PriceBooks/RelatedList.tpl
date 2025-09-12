@@ -70,7 +70,7 @@
 							</thead>
 							{foreach item=RELATED_RECORD from=$RELATED_RECORDS}
 								{assign var=BASE_CURRENCY_DETAILS value=$RELATED_RECORD->getBaseCurrencyDetails()}
-								<tr class="listViewEntries border-1 border-top" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
+								<tr class="listViewEntries border-top" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
 									<td style="width:100px">
 										<span class="actionImages btn-group">
 											{assign var=LISTPRICE value=Vtiger_Currency_UIType::transformEditViewDisplayValue($RELATED_RECORD->get('listprice'), null, true)}
