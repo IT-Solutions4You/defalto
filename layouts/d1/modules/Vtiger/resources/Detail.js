@@ -2526,13 +2526,21 @@ Vtiger.Class("Vtiger_Detail_Js", {
                     targetElement = jQuery(e.target, currentTarget),
                     recordUrl = currentTarget.data('recordurl');
 
-                if (targetElement.is('.js-redirect-disabled') || targetElement.is('.js-reference-display-value') || targetElement.closest('.js-reference-display-value').length || targetElement.is('input') || targetElement.closest('input').length) return;
+                if (targetElement.closest('td:first-child').length ||
+                    self.isTargetSelector(targetElement, '.js-redirect-disabled') ||
+                    self.isTargetSelector(targetElement, '.js-reference-display-value') ||
+                    self.isTargetSelector(targetElement, 'input')) {
+                    return;
+                }
 
                 if ('undefined' !== typeof recordUrl) {
                     window.location.href = recordUrl;
                 }
             }
         });
+    },
+    isTargetSelector(element, selector) {
+        return element.is(selector) || element.closest(selector).length
     },
     showOverlayDetailView(recordUrl) {
         let params = app.convertUrlToDataParams(recordUrl),
