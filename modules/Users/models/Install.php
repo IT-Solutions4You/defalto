@@ -699,7 +699,7 @@ class Users_Install_Model extends Core_Install_Model
                     'presence' => 0,
                     'typeofdata' => 'V~O',
                     'quickcreate' => 1,
-                    'displaytype' => 3,
+                    'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'defaultvalue' => self::getDefaultModule(),
