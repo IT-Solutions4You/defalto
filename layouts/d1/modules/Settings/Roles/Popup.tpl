@@ -9,7 +9,7 @@
 {* modules/Settings/Roles/views/Popup.php *}
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 {strip}
-<div class="modal-dialog modal-lg">
+<div class="modal-dialog modal-xl">
     <div class="modal-content">
         {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE={vtranslate('LBL_ASSIGN_ROLE',"Settings:Roles")}}
         <div class="modal-body">

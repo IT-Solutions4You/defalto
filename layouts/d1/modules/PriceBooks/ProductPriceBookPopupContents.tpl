@@ -64,7 +64,7 @@
                         {if $MODULE_MODEL && $MODULE_MODEL->isQuickSearchEnabled()}
                             <tr class="searchRow">
                                 <td class="searchBtn">
-                                    <button class="btn" data-trigger="PopupListSearch" title="{vtranslate('LBL_SEARCH', $MODULE )}">
+                                    <button class="btn text-secondary" data-trigger="PopupListSearch" title="{vtranslate('LBL_SEARCH', $MODULE )}">
                                         <i class="fa fa-search"></i>
                                     </button>
                                 </td>
@@ -103,7 +103,7 @@
                                     <a>{$LISTVIEW_ENTRY->get('unit_price')}</a>
                                 </td>
                                 <td class="listViewEntryValue {$WIDTHTYPE}">
-                                    <input type="text" value="{$LISTVIEW_ENTRY->get('unit_price')}" name="unit_price" class="inputElement invisible zeroPaddingAndMargin" data-rule-required="true" data-rule-currency="true"
+                                    <input type="text" value="{$LISTVIEW_ENTRY->get('unit_price')}" name="unit_price" class="inputElement form-control zeroPaddingAndMargin invisible" data-rule-required="true" data-rule-currency="true"
                                                data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}'/>
                                 </td>
                             </tr>

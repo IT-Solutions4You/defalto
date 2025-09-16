@@ -9,7 +9,7 @@
 {strip}
 <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Products/resources/ProductRelatedProductBundles.js')}"></script>
 <div class = "productsBundlePopup">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$MODULE}
                 <form id="popupPage" action="javascript:void(0)">
