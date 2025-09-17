@@ -10,12 +10,14 @@
 Vtiger.Class('Vtiger_MergeRecords_Js', {}, {
 
     showMergeUI: function (params) {
-        var self = this;
-        var records = params.records;
+        let self = this,
+            records = params.records;
+
         if (typeof records == "object") {
             records = records.join(',');
         }
-        var defaultPrams = {
+
+        let defaultPrams = {
             'module': app.module(),
             'view': 'MergeRecord',
             'records': records
@@ -51,31 +53,42 @@ Vtiger.Class('Vtiger_MergeRecords_Js', {}, {
     },
 
     registerUIEvents: function (container) {
-        var self = this;
+        let self = this,
+            offset = container.find('.modal-body .datacontent').offset(),
+            viewPortHeight = $(window).height() - 60;
 
-        // Adding Scroll 
-        var offset = container.find('.modal-body .datacontent').offset();
-        var viewPortHeight = $(window).height() - 60;
         if (offset) {
             viewPortHeight = (viewPortHeight - offset['top']);
         }
-        var params = {
+
+        let params = {
             setHeight: viewPortHeight + 'px'
         };
         app.helper.showVerticalScroll(container.find('.modal-body .datacontent'), params);
 
         container.find('[name="primaryRecord"]').on('change', function (event) {
-            var id = jQuery(event.currentTarget).val();
+            let id = jQuery(event.currentTarget).val();
             container.find('[data-id=' + id + ']').prop('checked', true);
         });
 
         container.find('form').on('submit', function (e) {
             e.preventDefault();
-            var form = jQuery(e.currentTarget);
-            self.save(form);
+            let form = jQuery(e.currentTarget);
+
+            app.helper.showConfirmationBox({message: self.getSaveMessage(container)}).then(function (result) {
+                self.save(form);
+            })
         })
     },
+    getSaveMessage(container) {
+        let message = '';
 
+        container.find('[name="primaryRecord"]').not(':checked').each(function () {
+            message += ' #' + $(this).val();
+        });
+
+        return app.vtranslate('JS_RECORDS_WILL_BE_DELETED') + ':<b class="text-primary">' + message + '</b>';
+    },
     registerListener: function () {
         var self = this;
         app.event.on('Request.MergeRecords.show', function (event, params) {

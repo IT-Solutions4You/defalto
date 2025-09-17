@@ -3416,7 +3416,7 @@ div.tooltip-inner {
     display: inline-block;
 }
 
-.verticalAlignMiddle {
+.verticalAlignMiddle, .text-middle {
     vertical-align: middle;
 }
 
