@@ -26,7 +26,7 @@ require_once 'include/Webservices/EntityMeta.php';
 require_once 'include/Webservices/VtigerWebserviceObject.php';
 require_once('modules/com_vtiger_workflow/VTWorkflowUtils.php');
 
-class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
+class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
 {
     public static $buttonsAllowedModules = [
         'Accounts',
@@ -110,6 +110,19 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
     {
         return $this->profilesActions;
     }
+
+    /**
+     * @param int $templateId
+     * @return bool
+     */
+    public function isTemplateDeleted($templateId)
+    {
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery('SELECT * FROM vtiger_emakertemplates WHERE templateid = ? AND deleted = ?', [$templateId, 1]);
+
+        return (bool)$adb->num_rows($result);
+    }
+
 
     public function GetSearchSelectboxData()
     {
@@ -672,7 +685,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return $emailtemplateResult;
     }
 
-    public function GetAvailableTemplates($currModule, $forListView = false)
+    public function GetAvailableTemplates($currModule, $forListView = false, $recordId = false)
     {
         $return_array = [];
         $status_arr = $this->GetStatusArr();
@@ -743,15 +756,15 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return $this->db->pquery($sql, $params);
     }
 
-    public function CheckTemplatePermissions($selected_module, $templateid = '', $die = true)
+    public function CheckTemplatePermissions($selectedModule, $templateId = '', $die = true)
     {
         $current_user = Users_Record_Model::getCurrentUserModel();
         $result = true;
 
         if (!is_admin($current_user)) {
-            if (!empty($selected_module) && 'yes' !== isPermitted($selected_module, '')) {
+            if (!empty($selectedModule) && 'yes' !== isPermitted($selectedModule, '')) {
                 $result = false;
-            } elseif (!empty($templateid) && false === $this->CheckSharing($templateid)) {
+            } elseif (!empty($templateId) && false === $this->CheckSharing($templateId)) {
                 $result = false;
             }
 
@@ -1731,8 +1744,6 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         $data = array_flip($templateIds);
 
         if (EMAILMaker_Module_Model::isPDFMakerInstalled()) {
-            $PDFMakerModel = Vtiger_Module_Model::getInstance('PDFMaker');
-
             $sql = 'SELECT templateid, filename, module
                             FROM vtiger_pdfmaker
                             WHERE templateid IN (' . generateQuestionMarks($templateIds) . ')';
@@ -1741,7 +1752,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
             while ($row = $this->db->fetchByAssoc($result)) {
                 $templateId = $row['templateid'];
 
-                if ($PDFMakerModel->CheckTemplatePermissions($row['module'], $templateId, false)) {
+                if ($this->CheckTemplatePermissions($row['module'], $templateId, false)) {
                     $data[$templateId] = $row['filename'];
                 } else {
                     unset($data[$templateId]);
@@ -1850,5 +1861,10 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         $result = $adb->pquery('SELECT count(*) as count FROM vtiger_emakertemplates WHERE (module = ? OR module = "" OR module IS NULL) AND deleted=? ', [$module, '0']);
 
         return 0 < $adb->query_result($result, 0, 'count');
+    }
+
+    public static function getInstance($value = 'EMAILMaker'): self
+    {
+        return new self();
     }
 }

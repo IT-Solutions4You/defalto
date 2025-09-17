@@ -97,11 +97,11 @@ class EMAILMaker_List_View extends Vtiger_Index_View
         $moduleName = $request->getModule();
 
         EMAILMaker_Debugger_Model::GetInstance()->Init();
-
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $moduleModel = Vtiger_Module_Model::getInstance('EMAILMaker');
 
-        if (!$moduleModel->CheckPermissions('DETAIL')) {
-            $moduleModel->DieDuePermission();
+        if (!$EMAILMaker->CheckPermissions('DETAIL')) {
+            $EMAILMaker->DieDuePermission();
         }
 
         $orderby = 'templateid';
@@ -124,14 +124,14 @@ class EMAILMaker_List_View extends Vtiger_Index_View
 
         $viewer->assign('VERSION_TYPE', 'profesional');
 
-        if ($moduleModel->CheckPermissions('EDIT')) {
+        if ($EMAILMaker->CheckPermissions('EDIT')) {
             $viewer->assign('EXPORT', 'yes');
         }
-        if ($moduleModel->CheckPermissions('EDIT')) {
+        if ($EMAILMaker->CheckPermissions('EDIT')) {
             $viewer->assign('EDIT', 'permitted');
             $viewer->assign('IMPORT', 'yes');
         }
-        if ($moduleModel->CheckPermissions('DELETE')) {
+        if ($EMAILMaker->CheckPermissions('DELETE')) {
             $viewer->assign('DELETE', 'permitted');
         }
 
@@ -142,7 +142,7 @@ class EMAILMaker_List_View extends Vtiger_Index_View
         $viewer->assign('IMAGE_PATH', $image_path);
         $viewer->assign('ORDERBY', $orderby);
         $viewer->assign('DIR', $dir);
-        $viewer->assign('SEARCHSELECTBOXDATA', $moduleModel->getSearchSelectboxData());
+        $viewer->assign('SEARCHSELECTBOXDATA', $EMAILMaker->getSearchSelectboxData());
         $viewer->assign('CATEGORY', getParentTab());
 
         $current_user = Users_Record_Model::getCurrentUserModel();

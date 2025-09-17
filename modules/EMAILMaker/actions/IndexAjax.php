@@ -230,7 +230,7 @@ class EMAILMaker_IndexAjax_Action extends Vtiger_Action_Controller
     {
         EMAILMaker_Debugger_Model::GetInstance()->Init();
 
-        $EMAILMakerModel = Vtiger_Module_Model::getInstance('EMAILMaker');
+        $EMAILMakerModel = EMAILMaker_EMAILMaker_Model::getInstance();
 
         if ($EMAILMakerModel->CheckPermissions("DELETE") == false) {
             throw new Exception(vtranslate("LBL_PERMISSION", "EMAILMaker"));
@@ -644,9 +644,9 @@ class EMAILMaker_IndexAjax_Action extends Vtiger_Action_Controller
 
     public function SaveProfilesPrivilegies(Vtiger_Request $request)
     {
-        $EMAILMakerModel = Vtiger_Module_Model::getInstance('EMAILMaker');
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $adb = PearDatabase::getInstance();
-        $permissions = $EMAILMakerModel->GetProfilesPermissions();
+        $permissions = $EMAILMaker->GetProfilesPermissions();
         foreach ($permissions as $profileid => $subArr) {
             foreach ($subArr as $actionid => $perm) {
                 $adb->pquery("DELETE FROM vtiger_emakertemplates_profilespermissions WHERE profileid = ? AND operation = ?", [$profileid, $actionid]);

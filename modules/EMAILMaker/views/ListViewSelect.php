@@ -15,7 +15,8 @@ class EMAILMaker_ListViewSelect_View extends Vtiger_IndexAjax_View
         $moduleName = $request->getModule();
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
         EMAILMaker_Debugger_Model::GetInstance()->Init();
-        $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
+
         if ($EMAILMaker->CheckPermissions("DETAIL") == false) {
             throw new Exception('LBL_PERMISSION_DENIED');
         }
@@ -31,10 +32,10 @@ class EMAILMaker_ListViewSelect_View extends Vtiger_IndexAjax_View
         global $current_language;
         $adb = PearDatabase::getInstance();
         EMAILMaker_Debugger_Model::GetInstance()->Init();
-        $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
 
-        if (false == $EMAILMaker->CheckPermissions('DETAIL')) {
-            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        if (!$EMAILMaker->CheckPermissions('DETAIL')) {
+            $EMAILMaker->DieDuePermission();
         }
 
         $_REQUEST['idslist'] = implode(";", $recordIds);

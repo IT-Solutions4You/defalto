@@ -17,10 +17,9 @@ class EMAILMaker_MassDelete_Action extends Vtiger_MassDelete_Action
     public function process(Vtiger_Request $request)
     {
         $moduleName = $request->getModule();
-        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $recordIds = $this->getRecordsListFromRequest($request);
-        if ($moduleModel->CheckPermissions("DELETE")) {
+        if ($EMAILMaker->CheckPermissions("DELETE")) {
             $adb = PearDatabase::getInstance();
 
             $checkSql = "select templateid, module from vtiger_emakertemplates where templateid IN (" . generateQuestionMarks($recordIds) . ")";
@@ -33,7 +32,7 @@ class EMAILMaker_MassDelete_Action extends Vtiger_MassDelete_Action
 
             if (count($checkArr) > 0) {
                 foreach ($checkArr as $templateid => $tmodule) {
-                    $Template_Permissions_Data = $moduleModel->returnTemplatePermissionsData($tmodule, $templateid);
+                    $Template_Permissions_Data = $EMAILMaker->returnTemplatePermissionsData($tmodule, $templateid);
 
                     if ($Template_Permissions_Data["delete"] === false) {
                         $this->DieDuePermission();

@@ -236,7 +236,7 @@ class EMAILMaker_ListView_Model extends Vtiger_ListView_Model
 
         $forListView = false;
 
-        $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $Templates = $EMAILMaker->GetAvailableTemplatesArray($sourceModule, $forListView, $sourceRecord, true, true);
 
         foreach ($Templates as $row) {

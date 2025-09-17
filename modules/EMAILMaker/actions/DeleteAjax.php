@@ -21,7 +21,7 @@ class EMAILMaker_DeleteAjax_Action extends Vtiger_Save_Action
 
         EMAILMaker_Debugger_Model::GetInstance()->Init();
 
-        $EMAILMakerModel = Vtiger_Module_Model::getInstance('EMAILMaker');
+        $EMAILMakerModel = EMAILMaker_EMAILMaker_Model::getInstance();
 
         if ($EMAILMakerModel->CheckPermissions("DELETE") == false) {
             throw new Exception(vtranslate("LBL_PERMISSION", "EMAILMaker"));

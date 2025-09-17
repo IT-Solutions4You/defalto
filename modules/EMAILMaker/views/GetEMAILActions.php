@@ -28,8 +28,7 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
         $source_module = $request->get('source_module');
 
         $viewer = $this->getViewer($request);
-        $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
-
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $SourceModuleModel = Vtiger_Module_Model::getInstance($source_module);
 
         if ($EMAILMaker->CheckPermissions("DETAIL") == false || !$SourceModuleModel->isEntityModule()) {
@@ -81,7 +80,7 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
         $viewer->assign('DEFAULT_TEMPLATE', $def_templateid);
 
         if (EMAILMaker_Module_Model::isPDFMakerInstalled()) {
-            $PDFMakerModel = Vtiger_Module_Model::getInstance('PDFMaker');
+            $PDFMakerModel = PDFMaker_PDFMaker_Model::getInstance();
 
             if ($PDFMakerModel->CheckPermissions("DETAIL") && $request->has('record') && !$request->isEmpty('record')) {
                 $pdftemplates = $PDFMakerModel->GetAvailableTemplates($relmodule, false, $record);

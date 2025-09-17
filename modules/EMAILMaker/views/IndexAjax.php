@@ -179,7 +179,7 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
         $adb = PearDatabase::getInstance();
         $current_user = Users_Record_Model::getCurrentUserModel();
         $currentLanguage = Vtiger_Language_Handler::getLanguage();
-        $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $recordIds = (array)$this->getRecordsListFromRequest($request);
         $viewer = $this->getViewer($request);
         if (count($recordIds) == 1) {
@@ -199,7 +199,6 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
             }
         }
 
-        $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
         $emailTypes = $EMAILMaker->getRecordsEmails($sourceModule, $recordIds, $basic);
         $emailFieldsList = [];
         $i = 0;

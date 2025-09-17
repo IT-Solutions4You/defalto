@@ -14,7 +14,8 @@ class EMAILMaker_TemplateTools_View extends Vtiger_Index_View
     {
         EMAILMaker_Debugger_Model::GetInstance()->Init();
         $viewer = $this->getViewer($request);
-        $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
+
         if ($EMAILMaker->CheckPermissions("EDIT")) {
             $viewer->assign("EXPORT", "yes");
             $viewer->assign("IMPORT", "yes");

@@ -788,19 +788,18 @@ class VTEmailTask extends VTTask
      */
     public function getPDFTemplates(string $moduleName): array
     {
-        $moduleModel = PDFMaker_Module_Model::getInstance('PDFMaker');
-
         if (!EMAILMaker_Module_Model::isPDFMakerInstalled()) {
             return [];
         }
 
-        $templates = $moduleModel->GetAvailableTemplates($moduleName);
+        $PDFMaker = PDFMaker_PDFMaker_Model::getInstance();
+        $templates = $PDFMaker->GetAvailableTemplates($moduleName);
         $defaultTemplate = [];
         $fieldValue = [];
 
-        if ($moduleModel->CheckPermissions('DETAIL')) {
+        if ($PDFMaker->CheckPermissions('DETAIL')) {
             foreach ($templates as $templateId => $templateInfo) {
-                if (!$moduleModel->isTemplateDeleted($templateId)) {
+                if (!$PDFMaker->isTemplateDeleted($templateId)) {
                     if (in_array($templateInfo['is_default'], ['1', '3'])) {
                         $defaultTemplate[$templateId] = $templateInfo['templatename'];
                     } else {
