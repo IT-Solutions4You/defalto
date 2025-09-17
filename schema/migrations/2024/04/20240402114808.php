@@ -25,7 +25,7 @@ if (!class_exists('Migration_20240402114808')) {
 
             $this->db->pquery('DELETE FROM vtiger_profile2tab WHERE tabid IN (SELECT tabid FROM vtiger_tab WHERE name = ?)', [$moduleName]);
             $this->db->pquery('DELETE FROM vtiger_tab WHERE name = ?', [$moduleName]);
-            $this->db->pquery('DELETE FROM vtiger_settings_field WHERE name=?', array('LBL_EXTENSION_STORE'));
+            Settings_Vtiger_MenuItem_Model::deleteItem('LBL_EXTENSION_STORE');
             $this->db->pquery('DROP TABLE IF EXISTS vtiger_extnstore_users');
 
             // Regenerate tabdata.php and parent_tabdata.php

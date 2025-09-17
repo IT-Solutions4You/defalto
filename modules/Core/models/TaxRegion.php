@@ -23,7 +23,7 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
      */
     public function createLinks(): void
     {
-        $menu = Settings_Vtiger_Menu_Model::createMenu('LBL_INVENTORY');
+        $menu = Settings_Vtiger_Menu_Model::createMenu('LBL_TAX_MANAGEMENT');
 
         Settings_Vtiger_MenuItem_Model::createItem('LBL_REGIONS', 'index.php?module=Core&parent=Settings&view=Taxes&mode=regions', $menu);
     }

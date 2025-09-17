@@ -25,6 +25,62 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
     protected static $itemsTable = 'vtiger_settings_field';
     protected static $itemId = 'fieldid';
 
+    public static array $defaultMenuItemLinks = [
+        'LBL_USER_MANAGEMENT' => [
+            1 => ['LBL_USERS', 'index.php?module=Users&parent=Settings&view=List', 'LBL_USER_DESCRIPTION', 1],
+            ['LBL_ROLES', 'index.php?module=Roles&parent=Settings&view=Index', 'LBL_ROLE_DESCRIPTION'],
+            ['LBL_PROFILES', 'index.php?module=Profiles&parent=Settings&view=List', 'LBL_PROFILE_DESCRIPTION'],
+            ['LBL_SHARING_ACCESS', 'index.php?module=SharingAccess&parent=Settings&view=Index', 'LBL_SHARING_ACCESS_DESCRIPTION'],
+            ['USERGROUPLIST', 'index.php?module=Groups&parent=Settings&view=List', 'LBL_GROUP_DESCRIPTION'],
+            ['LBL_LOGIN_HISTORY_DETAILS', 'index.php?module=LoginHistory&parent=Settings&view=List', 'LBL_LOGIN_HISTORY_DESCRIPTION'],
+            ['LBL_FIELDS_ACCESS', 'index.php?module=FieldAccess&parent=Settings&view=Index', 'LBL_SHARING_FIELDS_DESCRIPTION'],
+        ],
+        'LBL_MODULE_MANAGER' => [
+            1 => ['VTLIB_LBL_MODULE_MANAGER', 'index.php?module=ModuleManager&parent=Settings&view=List', '', 1],
+            ['LBL_EDIT_FIELDS', 'index.php?module=LayoutEditor&parent=Settings&view=Index', 'LBL_LAYOUT_EDITOR_DESCRIPTION'],
+            ['LBL_CUSTOMIZE_MODENT_NUMBER', 'index.php?module=Vtiger&parent=Settings&view=CustomRecordNumbering', 'LBL_CUSTOMIZE_MODENT_NUMBER_DESCRIPTION'],
+        ],
+        'LBL_AUTOMATION' => [
+            1 => ['Webforms'           ,'index.php?module=Webforms&parent=Settings&view=List', 'LBL_WEBFORMS_DESCRIPTION'],
+            ['Scheduler'          ,'index.php?module=CronTasks&parent=Settings&view=List', 'Allows you to Configure Cron Task'],
+            ['LBL_LIST_WORKFLOWS' ,'index.php?module=Workflows&parent=Settings&view=List', 'LBL_LIST_WORKFLOWS_DESCRIPTION', 1],
+        ],
+        'LBL_CONFIGURATION' => [
+            1 => ['LBL_COMPANY_DETAILS'      ,'index.php?parent=Settings&module=Vtiger&view=CompanyDetails', 'LBL_COMPANY_DESCRIPTION'],
+            ['LBL_CURRENCY_SETTINGS'    ,'index.php?parent=Settings&module=Currency&view=List','LBL_CURRENCY_DESCRIPTION'],
+            ['LBL_MAIL_SERVER_SETTINGS' ,'index.php?parent=Settings&module=Vtiger&view=OutgoingServerDetail', 'LBL_MAIL_SERVER_DESCRIPTION'],
+            ['LBL_CONFIG_EDITOR'     ,'index.php?module=Vtiger&parent=Settings&view=ConfigEditorDetail', 'LBL_CONFIG_EDITOR_DESCRIPTION'],
+            ['LBL_PICKLIST_EDITOR'      ,'index.php?parent=Settings&module=Picklist&view=Index', 'LBL_PICKLIST_DESCRIPTION', 1],
+            ['LBL_PICKLIST_DEPENDENCY'  ,'index.php?parent=Settings&module=PickListDependency&view=List', 'LBL_PICKLIST_DEPENDENCY_DESCRIPTION'],
+            ['LBL_MENU_EDITOR'          ,'index.php?module=MenuEditor&parent=Settings&view=Index',],
+            ['LBL_CUSTOMER_PORTAL'      ,'index.php?module=CustomerPortal&parent=Settings&view=Index',],
+        ],
+        'LBL_MARKETING_SALES' => [
+            1 => ['LBL_LEAD_MAPPING'        ,'index.php?parent=Settings&module=Leads&view=MappingDetail', ''],
+            ['LBL_OPPORTUNITY_MAPPING' ,'index.php?parent=Settings&module=Potentials&view=MappingDetail', ''],
+        ],
+        'LBL_INVENTORY' => [
+            1 => ['INVENTORYTERMSANDCONDITIONS' ,'index.php?parent=Settings&module=Vtiger&view=TermsAndConditionsEdit', 'LBL_INV_TANDC_DESCRIPTION']
+        ],
+        'LBL_COMMUNICATION_TEMPLATES' => [
+            1 => ['NOTIFICATIONSCHEDULERS', 'index.php?module=Settings&view=listnotificationschedulers&parenttab=Settings', 'LBL_NOTIF_SCHED_DESCRIPTION'],
+        ],
+        'LBL_MY_PREFERENCES' => [
+            1 => ['My Preferences'    ,'index.php?module=Users&view=PreferenceDetail&parent=Settings&record=1', ''],
+            ['Calendar Settings' ,'index.php?module=Users&parent=Settings&view=Calendar&record=1', ''],
+            ['LBL_MY_TAGS'       ,'index.php?module=Tags&parent=Settings&view=List&record=1', ''],
+        ],
+        'LBL_EXTENSIONS' => [
+            1 => ['LBL_GOOGLE', 'index.php?module=Contacts&parent=Settings&view=Extension&extensionModule=Google&extensionView=Index&mode=settings', '']
+        ],
+        'LBL_OTHER_SETTINGS' => [
+            1 => ['LBL_MAIL_SCANNER', 'index.php?parent=Settings&module=MailConverter&view=List', 'LBL_MAIL_SCANNER_DESCRIPTION'],
+        ],
+        'LBL_INTEGRATION' => [
+            1 => ['LBL_PBXMANAGER', 'index.php?module=PBXManager&parent=Settings&view=Index', 'PBXManager module Configuration'],
+        ],
+    ];
+
     /**
      * Function to get the Id of the menu item
      * @return <Number> - Menu Item Id
@@ -407,17 +463,95 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
      * @param object $menu
      * @return Settings_Vtiger_MenuItem_Model|bool
      */
-    public static function createItem(string $label, string $linkUrl, object $menu): Settings_Vtiger_MenuItem_Model|bool
+    public static function createItem(string $label, string $linkUrl, object $menu, string $description = '', int $sequence = 0, int $pinned = 0): Settings_Vtiger_MenuItem_Model|bool
     {
         $link = Settings_Vtiger_MenuItem_Model::getInstance($label, $menu);
 
         if (!$link) {
-            $link = Settings_Vtiger_MenuItem_Model::getInstanceFromArray(
-                ['name' => $label, 'blockid' => $menu->getId(), 'linkto' => $linkUrl],
-            );
-            $link->save();
+            $link = Settings_Vtiger_MenuItem_Model::getInstanceFromArray(['name' => $label]);
         }
 
+        $link->set('blockid', $menu->getId());
+        $link->set('linkto', $linkUrl);
+
+        if($description) $link->set('description', $description);
+        if($sequence) $link->set('sequence', $sequence);
+        if($pinned) $link->set('pinned', $pinned);
+
+        $link->save();
+
         return $link;
+    }
+
+    public static function deleteItem(string $label): void
+    {
+        $instance = self::getInstance($label);
+
+        if ($instance) {
+            $instance->delete();
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function createLinks(): void
+    {
+        self::deleteItem('Configuration Editor');
+
+        foreach (self::$defaultMenuItemLinks as $blockName => $fields) {
+            foreach ($fields as $sequence => $field) {
+                [$label, $link, $description, $pinned] = array_pad($field, 4, null);
+
+                $menu = Settings_Vtiger_Menu_Model::createMenu($blockName);
+
+                self::createItem($label, $link, $menu, (string)$description, (int)$sequence, (int)$pinned);
+            }
+        }
+    }
+
+    public function getSettingsMenuItemTable(): Core_DatabaseData_Model
+    {
+        return (new Core_DatabaseData_Model())->getTable(self::$itemsTable, self::$itemId);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function createTables(): void
+    {
+        $this->getSettingsMenuItemTable()
+            ->createTable(self::$itemId)
+            ->createColumn('blockid','int(19) DEFAULT NULL')
+            ->createColumn('name','varchar(250) DEFAULT NULL')
+            ->createColumn('iconpath','varchar(300) DEFAULT NULL')
+            ->createColumn('description','text DEFAULT NULL')
+            ->createColumn('linkto','text DEFAULT NULL')
+            ->createColumn('sequence','int(19) DEFAULT NULL')
+            ->createColumn('active','int(19) DEFAULT \'0\'')
+            ->createColumn('pinned','int(1) DEFAULT \'0\'')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`fieldid`)')
+            ->createKey('CONSTRAINT `fk_1_vtiger_settings_field` FOREIGN KEY IF NOT EXISTS (`blockid`) REFERENCES `vtiger_settings_blocks` (`blockid`) ON DELETE CASCADE')
+        ;
+    }
+
+    /**
+     * @param string $name
+     * @return void
+     */
+    public static function activate(string $name): void
+    {
+        $adb = PearDatabase::getInstance();
+        $adb->pquery('UPDATE vtiger_settings_field SET active=0 WHERE name=?', [$name]);
+    }
+
+    /**
+     * @param string $name
+     * @return void
+     */
+    public static function deactivate(string $name): void
+    {
+        $adb = PearDatabase::getInstance();
+        $adb->pquery('UPDATE vtiger_settings_field SET active=1 WHERE name=?', [$name]);
     }
 }

@@ -1106,34 +1106,6 @@ if (!defined('INSTALLATION_MODE')) {
         Vtiger_Link::addLink(0, $headerScriptLinkType, $incomingLinkLabel, 'modules/PBXManager/resources/PBXManagerJS.js', '', '', $handlerInfo);
         echo '<br>Added PBXManager links<br>';
 
-        //Add settings links
-
-        $adb = PearDatabase::getInstance();
-        $integrationBlock = $adb->pquery('SELECT * FROM vtiger_settings_blocks WHERE label=?', ['LBL_INTEGRATION']);
-        $integrationBlockCount = $adb->num_rows($integrationBlock);
-
-        // To add Block
-        if ($integrationBlockCount > 0) {
-            $blockid = $adb->query_result($integrationBlock, 0, 'blockid');
-        } else {
-            $blockid = $adb->getUniqueID('vtiger_settings_blocks');
-            $sequenceResult = $adb->pquery("SELECT max(sequence) as sequence FROM vtiger_settings_blocks", []);
-            if ($adb->num_rows($sequenceResult)) {
-                $sequence = $adb->query_result($sequenceResult, 0, 'sequence');
-            }
-            $adb->pquery("INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?,?,?)", [$blockid, 'LBL_INTEGRATION', ++$sequence]);
-        }
-
-        // To add a Field
-        $fieldid = $adb->getUniqueID('vtiger_settings_field');
-        $adb->pquery(
-            "INSERT INTO vtiger_settings_field(fieldid, blockid, name, iconpath, description, linkto, sequence, active) 
-                        VALUES(?,?,?,?,?,?,?,?)",
-            [$fieldid, $blockid, 'LBL_PBXMANAGER', '', 'PBXManager module Configuration', 'index.php?module=PBXManager&parent=Settings&view=Index', 2, 0]
-        );
-
-        echo '<br>Added PBXManager settings links<br>';
-
         //Add module related dependencies
 
         $pbxmanager = Vtiger_Module::getInstance('PBXManager');
@@ -1242,7 +1214,3 @@ if ($adb->num_rows($idResult) > 0) {
 } else {
     echo '<br>Account Owner was not existed in this database';
 }
-
-//Configuration Editor fix
-$sql = "UPDATE vtiger_settings_field SET name = ? WHERE name = ?";
-Migration_Index_View::ExecuteQuery($sql, ['LBL_CONFIG_EDITOR', 'Configuration Editor']);

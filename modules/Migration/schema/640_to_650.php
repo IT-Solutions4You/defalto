@@ -45,31 +45,6 @@ if (defined('VTIGER_UPGRADE')) {
     $mailer = new Vtiger_Mailer();
     $mailer->__initializeQueue();
 
-//set settings links, fixes translation issue on migrations from 5.x
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=Users&parent=Settings&view=List' where name='LBL_USERS'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=Roles&parent=Settings&view=Index' where name='LBL_ROLES'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=Profiles&parent=Settings&view=List' where name='LBL_PROFILES'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=Groups&parent=Settings&view=List' where name='USERGROUPLIST'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=SharingAccess&parent=Settings&view=Index' where name='LBL_SHARING_ACCESS'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=FieldAccess&parent=Settings&view=Index' where name='LBL_FIELDS_ACCESS'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=LoginHistory&parent=Settings&view=List' where name='LBL_LOGIN_HISTORY_DETAILS'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=ModuleManager&parent=Settings&view=List' where name='VTLIB_LBL_MODULE_MANAGER'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?parent=Settings&module=Picklist&view=Index' where name='LBL_PICKLIST_EDITOR'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?parent=Settings&module=PickListDependency&view=List' where name='LBL_PICKLIST_DEPENDENCY_SETUP'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=MenuEditor&parent=Settings&view=Index' where name='LBL_MENU_EDITOR'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=Settings&view=listnotificationschedulers&parenttab=Settings' where name='NOTIFICATIONSCHEDULERS'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?parent=Settings&module=Vtiger&view=CompanyDetails' where name='LBL_COMPANY_DETAILS'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?parent=Settings&module=Vtiger&view=OutgoingServerDetail' where name='LBL_MAIL_SERVER_SETTINGS'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?parent=Settings&module=Currency&view=List' where name='LBL_CURRENCY_SETTINGS'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=Settings&submodule=Server&view=ProxyConfig' where name='LBL_SYSTEM_INFO'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?parent=Settings&module=Vtiger&view=AnnouncementEdit' where name='LBL_ANNOUNCEMENT'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=Settings&action=DefModuleView&parenttab=Settings' where name='LBL_DEFAULT_MODULE_VIEW'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?parent=Settings&module=Vtiger&view=TermsAndConditionsEdit' where name='INVENTORYTERMSANDCONDITIONS'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=Vtiger&parent=Settings&view=CustomRecordNumbering' where name='LBL_CUSTOMIZE_MODENT_NUMBER'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?parent=Settings&module=MailConverter&view=List' where name='LBL_MAIL_SCANNER'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=Workflows&parent=Settings&view=List' where name='LBL_LIST_WORKFLOWS'", []);
-    $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=Vtiger&parent=Settings&view=ConfigEditorDetail' where name='LBL_CONFIG_EDITOR'", []);
-
 // Extend description data-type (eg. allow large emails to be stored)
     $adb->pquery("ALTER TABLE vtiger_crmentity MODIFY COLUMN description MEDIUMTEXT", []);
 }

@@ -49,22 +49,14 @@ class Core_Tax_Model extends Core_DatabaseData_Model
      */
     public function createLinks(): void
     {
-        $menu = Settings_Vtiger_Menu_Model::createMenu('LBL_INVENTORY');
+        $menu = Settings_Vtiger_Menu_Model::createMenu('LBL_TAX_MANAGEMENT');
 
         Settings_Vtiger_MenuItem_Model::createItem('LBL_TAXES', 'index.php?module=Core&parent=Settings&view=Taxes&mode=taxes', $menu);
     }
 
     public function clearLinks(): void
     {
-        $menu = Settings_Vtiger_Menu_Model::getInstance('LBL_INVENTORY');
-
-        if ($menu) {
-            $link = Settings_Vtiger_MenuItem_Model::getInstance('LBL_TAX_SETTINGS', $menu);
-
-            if ($link) {
-                $link->delete();
-            }
-        }
+        Settings_Vtiger_MenuItem_Model::deleteItem('LBL_TAX_SETTINGS');
     }
 
     /**

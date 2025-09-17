@@ -10,6 +10,23 @@
 
 class Vtiger_Install_Model extends Core_Install_Model
 {
+    public static array $createTablesClasses = [
+        'Vtiger_Module_Model',
+        'Vtiger_Field_Model',
+        'Vtiger_Block_Model',
+        'Vtiger_Record_Model',
+        'Core_BlockUiType_Model',
+        'Settings_Workflows_Record_Model',
+        'Settings_Workflows_TaskRecord_Model',
+        'Core_InventoryItemsBlock_Model',
+        'Core_RelatedBlock_Model',
+        'Core_Tax_Model',
+        'Core_TaxRegion_Model',
+        'Core_TaxRecord_Model',
+        'Settings_Vtiger_MenuItem_Model',
+        'Settings_Vtiger_Menu_Model',
+    ];
+
     /**
      * @var array
      * [name, handler, frequency, module, sequence, description]
@@ -54,18 +71,11 @@ class Vtiger_Install_Model extends Core_Install_Model
      */
     public function installTables(): void
     {
-        (new Vtiger_Module_Model())->createTables();
-        (new Vtiger_Field_Model())->createTables();
-        (new Vtiger_Block_Model())->createTables();
-        (new Vtiger_Record_Model())->createTables();
-        (new Core_BlockUiType_Model())->createTables();
-        (new Settings_Workflows_Record_Model())->createTables();
-        (new Settings_Workflows_TaskRecord_Model())->createTables();
-        (new Core_InventoryItemsBlock_Model())->createTables();
-        (new Core_RelatedBlock_Model())->createTables();
-        (new Core_Tax_Model())->createTables();
-        (new Core_TaxRegion_Model())->createTables();
-        (new Core_TaxRecord_Model())->createTables();
+        foreach (self::$createTablesClasses as $className) {
+            if (class_exists($className) && method_exists($className, 'createTables')) {
+                (new $className())->createTables();
+            }
+        }
 
         $this->createPicklistTable('vtiger_taxtype', 'taxtypeid', 'taxtype');
     }

@@ -101,7 +101,6 @@ class PBXManager extends CRMEntity
         if ($event_type == 'module.postinstall') {
             $this->addLinksForPBXManager();
             $this->registerLookupEvents();
-            $this->addSettingsLinks();
             $this->addActionMapping();
             $this->setModuleRelatedDependencies();
             $this->addUserExtensionField();
@@ -114,7 +113,6 @@ class PBXManager extends CRMEntity
         } elseif ($event_type == 'module.enabled') {
             $this->addLinksForPBXManager();
             $this->registerLookupEvents();
-            $this->addSettingsLinks();
             $this->addActionMapping();
             $this->setModuleRelatedDependencies();
         } elseif ($event_type == 'module.preuninstall') {
@@ -255,45 +253,12 @@ class PBXManager extends CRMEntity
     }
 
     /**
-     * To add Integration->PBXManager block in Settings page
-     */
-    function addSettingsLinks()
-    {
-        global $log;
-        $adb = PearDatabase::getInstance();
-        $integrationBlock = $adb->pquery('SELECT * FROM vtiger_settings_blocks WHERE label=?', ['LBL_INTEGRATION']);
-        $integrationBlockCount = $adb->num_rows($integrationBlock);
-
-        // To add Block
-        if ($integrationBlockCount > 0) {
-            $blockid = $adb->query_result($integrationBlock, 0, 'blockid');
-        } else {
-            $blockid = $adb->getUniqueID('vtiger_settings_blocks');
-            $sequenceResult = $adb->pquery("SELECT max(sequence) as sequence FROM vtiger_settings_blocks", []);
-            if ($adb->num_rows($sequenceResult)) {
-                $sequence = $adb->query_result($sequenceResult, 0, 'sequence');
-            }
-            $adb->pquery("INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?,?,?)", [$blockid, 'LBL_INTEGRATION', ++$sequence]);
-        }
-
-        // To add a Field
-        $fieldid = $adb->getUniqueID('vtiger_settings_field');
-        $adb->pquery(
-            "INSERT INTO vtiger_settings_field(fieldid, blockid, name, iconpath, description, linkto, sequence, active)
-            VALUES(?,?,?,?,?,?,?,?)",
-            [$fieldid, $blockid, 'LBL_PBXMANAGER', '', 'PBXManager module Configuration', 'index.php?module=PBXManager&parent=Settings&view=Index', 2, 0]
-        );
-        $log->fatal('Settings Block and Field added');
-    }
-
-    /**
      * To delete Integration->PBXManager block in Settings page
      */
     function removeSettingsLinks()
     {
         global $log;
-        $adb = PearDatabase::getInstance();
-        $adb->pquery('DELETE FROM vtiger_settings_field WHERE name=?', ['LBL_PBXMANAGER']);
+        Settings_Vtiger_MenuItem_Model::deleteItem('LBL_PBXMANAGER');
         $log->fatal('Settings Field Removed');
     }
 
