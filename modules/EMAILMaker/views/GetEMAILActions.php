@@ -31,7 +31,7 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
         $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $SourceModuleModel = Vtiger_Module_Model::getInstance($source_module);
 
-        if ($EMAILMaker->CheckPermissions("DETAIL") == false || !$SourceModuleModel->isEntityModule()) {
+        if ($EMAILMaker->checkPermissions("DETAIL") == false || !$SourceModuleModel->isEntityModule()) {
             die("");
         }
 
@@ -46,7 +46,7 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
 
         require('user_privileges/user_privileges_' . $current_user->id . '.php');
 
-        if ($EMAILMaker->CheckPermissions("DETAIL")) {
+        if ($EMAILMaker->checkPermissions("DETAIL")) {
             $viewer->assign("ENABLE_EMAILMAKER", 'true');
         } else {
             $viewer->assign("ENABLE_EMAILMAKER", "false");
@@ -64,7 +64,7 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
         $viewer->assign('CURRENT_LANGUAGE', $currentLanguage);
         $viewer->assign('IS_ADMIN', is_admin($current_user));
 
-        $templates = $EMAILMaker->GetAvailableTemplatesArray($relmodule, false, $record, false, true);
+        $templates = $EMAILMaker->getAvailableTemplatesArray($relmodule, false, $record, false, true);
 
         if (count($templates) > 0) {
             $no_templates_exist = 0;
@@ -82,8 +82,8 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
         if (EMAILMaker_Module_Model::isPDFMakerInstalled()) {
             $PDFMakerModel = PDFMaker_PDFMaker_Model::getInstance();
 
-            if ($PDFMakerModel->CheckPermissions("DETAIL") && $request->has('record') && !$request->isEmpty('record')) {
-                $pdftemplates = $PDFMakerModel->GetAvailableTemplates($relmodule, false, $record);
+            if ($PDFMakerModel->checkPermissions("DETAIL") && $request->has('record') && !$request->isEmpty('record')) {
+                $pdftemplates = $PDFMakerModel->getAvailableTemplates($relmodule, false, $record);
                 if (count($pdftemplates) > 0) {
                     $no_templates_exist = 0;
                 } else {

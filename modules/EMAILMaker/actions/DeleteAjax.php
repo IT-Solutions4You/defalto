@@ -23,7 +23,7 @@ class EMAILMaker_DeleteAjax_Action extends Vtiger_Save_Action
 
         $EMAILMakerModel = EMAILMaker_EMAILMaker_Model::getInstance();
 
-        if ($EMAILMakerModel->CheckPermissions("DELETE") == false) {
+        if ($EMAILMakerModel->checkPermissions("DELETE") == false) {
             throw new Exception(vtranslate("LBL_PERMISSION", "EMAILMaker"));
         }
         $adb = PearDatabase::getInstance();
@@ -33,7 +33,7 @@ class EMAILMaker_DeleteAjax_Action extends Vtiger_Save_Action
             $checkRes = $adb->pquery("select module from vtiger_emakertemplates where templateid=?", [$templateid]);
             $checkRow = $adb->fetchByAssoc($checkRes);
 
-            $EMAILMakerModel->CheckTemplatePermissions($checkRow["module"], $templateid);
+            $EMAILMakerModel->checkTemplatePermissions($checkRow["module"], $templateid);
             $adb->pquery("UPDATE vtiger_emakertemplates SET deleted = ? where templateid=?", ['1', $templateid]);
         } else {
             $idlist = $request->get('idlist');
@@ -44,7 +44,7 @@ class EMAILMaker_DeleteAjax_Action extends Vtiger_Save_Action
                 $checkArr[$checkRow["templateid"]] = $checkRow["module"];
             }
             for ($i = 0; $i < count($id_array) - 1; $i++) {
-                $EMAILMakerModel->CheckTemplatePermissions($checkArr[$id_array[$i]], $id_array[$i]);
+                $EMAILMakerModel->checkTemplatePermissions($checkArr[$id_array[$i]], $id_array[$i]);
                 $sql = "UPDATE vtiger_emakertemplates SET deleted = ? where templateid=?";
                 $adb->pquery($sql, ['1', $id_array[$i]]);
             }

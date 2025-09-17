@@ -100,7 +100,7 @@ class EMAILMaker_List_View extends Vtiger_Index_View
         $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $moduleModel = Vtiger_Module_Model::getInstance('EMAILMaker');
 
-        if (!$EMAILMaker->CheckPermissions('DETAIL')) {
+        if (!$EMAILMaker->checkPermissions('DETAIL')) {
             $EMAILMaker->DieDuePermission();
         }
 
@@ -124,14 +124,14 @@ class EMAILMaker_List_View extends Vtiger_Index_View
 
         $viewer->assign('VERSION_TYPE', 'profesional');
 
-        if ($EMAILMaker->CheckPermissions('EDIT')) {
+        if ($EMAILMaker->checkPermissions('EDIT')) {
             $viewer->assign('EXPORT', 'yes');
         }
-        if ($EMAILMaker->CheckPermissions('EDIT')) {
+        if ($EMAILMaker->checkPermissions('EDIT')) {
             $viewer->assign('EDIT', 'permitted');
             $viewer->assign('IMPORT', 'yes');
         }
-        if ($EMAILMaker->CheckPermissions('DELETE')) {
+        if ($EMAILMaker->checkPermissions('DELETE')) {
             $viewer->assign('DELETE', 'permitted');
         }
 

@@ -43,7 +43,7 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
 
         $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
 
-        if ($EMAILMaker->CheckPermissions("DETAIL") == false) {
+        if ($EMAILMaker->checkPermissions("DETAIL") == false) {
             $EMAILMaker->DieDuePermission();
         }
 

@@ -319,10 +319,10 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
                 }
             }
 
-            $templates = $EMAILMaker->GetAvailableTemplatesArray($sourceModule, $forListView, $pid, false, true);
+            $templates = $EMAILMaker->getAvailableTemplatesArray($sourceModule, $forListView, $pid, false, true);
 
             if ($cid != "") {
-                $campaign_templates = $EMAILMaker->GetAvailableTemplatesArray("Campaigns", true);
+                $campaign_templates = $EMAILMaker->getAvailableTemplatesArray("Campaigns", true);
 
                 if (count((array)$campaign_templates[0]) > 0) {
                     if (count((array)$templates[0]) > 0) {
@@ -379,7 +379,7 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
             }
             if (class_exists('PDFMaker_PDFMaker_Model')) {
                 $PDFMakerModel = Vtiger_Module_Model::getInstance('PDFMaker');
-                $pdf_templates = $PDFMakerModel->GetAvailableTemplates($sourceModule);
+                $pdf_templates = $PDFMakerModel->getAvailableTemplates($sourceModule);
                 $viewer->assign('PDF_TEMPLATES', $pdf_templates);
                 if (count($pdf_templates) > 0) {
                     $viewer->assign('IS_PDFMAKER', 'yes');

@@ -200,7 +200,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         $linkTypes = ['LISTVIEWMASSACTION', 'LISTVIEWSETTING'];
         $links = Vtiger_Link_Model::getAllByType($this->getId(), $linkTypes, $linkParams);
 
-        if ($EMAILMaker->CheckPermissions("DELETE")) {
+        if ($EMAILMaker->checkPermissions("DELETE")) {
             $massActionLink = [
                 'linktype'  => 'LISTVIEWMASSACTION',
                 'linklabel' => 'LBL_DELETE',
@@ -212,7 +212,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         }
 
         $quickLinks = [];
-        if ($EMAILMaker->CheckPermissions("EDIT")) {
+        if ($EMAILMaker->checkPermissions("EDIT")) {
             $quickLinks [] = [
                 'linktype'  => 'LISTVIEW',
                 'linklabel' => 'LBL_IMPORT',
@@ -221,7 +221,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
             ];
         }
 
-        if ($EMAILMaker->CheckPermissions("EDIT")) {
+        if ($EMAILMaker->checkPermissions("EDIT")) {
             $quickLinks [] = [
                 'linktype'  => 'LISTVIEW',
                 'linklabel' => 'LBL_EXPORT',
@@ -330,7 +330,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         $moduleName = $this->getName();
         $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
 
-        if ($EMAILMaker->CheckPermissions("EDIT")) {
+        if ($EMAILMaker->checkPermissions("EDIT")) {
             $basicLinks[] = [
                 'linktype'    => 'BASIC',
                 'linklabel'   => 'LBL_ADD_TEMPLATE',
@@ -663,7 +663,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
 
     public static function isPDFMakerInstalled()
     {
-        return vtlib_isModuleActive('PDFMaker') && method_exists('PDFMaker_PDFMaker_Model', 'CheckPermissions') && method_exists('PDFMaker_PDFMaker_Model', 'GetAvailableTemplates');
+        return vtlib_isModuleActive('PDFMaker') && method_exists('PDFMaker_PDFMaker_Model', 'checkPermissions') && method_exists('PDFMaker_PDFMaker_Model', 'getAvailableTemplates');
     }
 
     public function getPicklistFields()

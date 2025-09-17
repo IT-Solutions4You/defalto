@@ -793,11 +793,11 @@ class VTEmailTask extends VTTask
         }
 
         $PDFMaker = PDFMaker_PDFMaker_Model::getInstance();
-        $templates = $PDFMaker->GetAvailableTemplates($moduleName);
+        $templates = $PDFMaker->getAvailableTemplates($moduleName);
         $defaultTemplate = [];
         $fieldValue = [];
 
-        if ($PDFMaker->CheckPermissions('DETAIL')) {
+        if ($PDFMaker->checkPermissions('DETAIL')) {
             foreach ($templates as $templateId => $templateInfo) {
                 if (!$PDFMaker->isTemplateDeleted($templateId)) {
                     if (in_array($templateInfo['is_default'], ['1', '3'])) {

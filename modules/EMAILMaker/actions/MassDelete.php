@@ -19,7 +19,7 @@ class EMAILMaker_MassDelete_Action extends Vtiger_MassDelete_Action
         $moduleName = $request->getModule();
         $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $recordIds = $this->getRecordsListFromRequest($request);
-        if ($EMAILMaker->CheckPermissions("DELETE")) {
+        if ($EMAILMaker->checkPermissions("DELETE")) {
             $adb = PearDatabase::getInstance();
 
             $checkSql = "select templateid, module from vtiger_emakertemplates where templateid IN (" . generateQuestionMarks($recordIds) . ")";

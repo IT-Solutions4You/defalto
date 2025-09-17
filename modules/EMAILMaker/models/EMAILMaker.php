@@ -165,13 +165,13 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
             }
             $detail_result = $result;
 
-            if (!$this->CheckPermissions("EDIT")) {
+            if (!$this->checkPermissions("EDIT")) {
                 $edit_result = false;
             } else {
                 $edit_result = $result;
             }
 
-            if (!$this->CheckPermissions("DELETE")) {
+            if (!$this->checkPermissions("DELETE")) {
                 $delete_result = false;
             } else {
                 $delete_result = $result;
@@ -317,7 +317,7 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         return $memberArray;
     }
 
-    public function CheckPermissions($actionKey)
+    public function checkPermissions($actionKey)
     {
         $current_user = Users_Record_Model::getCurrentUserModel();
         $profileid = getUserProfile($current_user->id);
@@ -685,15 +685,15 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         return $emailtemplateResult;
     }
 
-    public function GetAvailableTemplates($currModule, $forListView = false, $recordId = false)
+    public function getAvailableTemplates($currModule, $forListView = false, $recordId = false)
     {
         $return_array = [];
         $status_arr = $this->GetStatusArr();
-        $result = $this->GetAvailableTemplatesResult($currModule, $forListView);
+        $result = $this->getAvailableTemplatesResult($currModule, $forListView);
 
         while ($row = $this->db->fetchByAssoc($result)) {
             $templateid = $row["templateid"];
-            if ($this->CheckTemplatePermissions($currModule, $templateid, false) == false) {
+            if ($this->checkTemplatePermissions($currModule, $templateid, false) == false) {
                 continue;
             }
             if (isset($status_arr[$templateid]["is_active"]) && $status_arr[$templateid]["is_active"] == "0") {
@@ -733,7 +733,7 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         return $data;
     }
 
-    private function GetAvailableTemplatesResult($currModule, $forListView = false, $all = false)
+    private function getAvailableTemplatesResult($currModule, $forListView = false, $all = false)
     {
         $is_listview = "";
 
@@ -756,7 +756,7 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         return $this->db->pquery($sql, $params);
     }
 
-    public function CheckTemplatePermissions($selectedModule, $templateId = '', $die = true)
+    public function checkTemplatePermissions($selectedModule, $templateId = '', $die = true)
     {
         $current_user = Users_Record_Model::getCurrentUserModel();
         $result = true;
@@ -795,13 +795,13 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         return !empty($status[$templateId]['is_active']);
     }
 
-    public function GetAvailableTemplatesArray($currModule, $forListView = false, $recordId = false, $rawData = false, $all = false)
+    public function getAvailableTemplatesArray($currModule, $forListView = false, $recordId = false, $rawData = false, $all = false)
     {
         include_once 'include/Webservices/Retrieve.php';
 
         $return_array = [];
         $status = $this->GetStatusArr();
-        $result = $this->GetAvailableTemplatesResult($currModule, $forListView, $all);
+        $result = $this->getAvailableTemplatesResult($currModule, $forListView, $all);
         $num_rows = $this->db->num_rows($result);
 
         $current_user = Users_Record_Model::getCurrentUserModel();
@@ -821,7 +821,7 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
             while ($row = $this->db->fetchByAssoc($result)) {
                 $templateId = $row['templateid'];
 
-                if (!$this->CheckTemplatePermissions($currModule, $templateId, false)) {
+                if (!$this->checkTemplatePermissions($currModule, $templateId, false)) {
                     continue;
                 }
 
@@ -1152,7 +1152,7 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
             $Email_Theme_Array['themename'] = $this->db->query_result($result, $i, 'templatename');
             $Email_Theme_Array['description'] = $this->db->query_result($result, $i, 'description');
 
-            if ($this->CheckPermissions("EDIT")) {
+            if ($this->checkPermissions("EDIT")) {
                 $Email_Theme_Array['edit'] = "<a class=\"btn text-secondary\" href=\"index.php?module=EMAILMaker&view=Edit&themeid=" . $templateid . "&mode=EditTheme&return_module=EMAILMaker&return_view=List\"><i class=\"fa fa-pencil\" title=\"" . vtranslate(
                         "LBL_EDIT"
                     ) . "\" ></i></a>&nbsp;";
@@ -1160,7 +1160,7 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
                         "LBL_DUPLICATE"
                     ) . "\" class=\"fa fa-clone alignMiddle\"></i></a>&nbsp;";
             }
-            if ($this->CheckPermissions("DELETE")) {
+            if ($this->checkPermissions("DELETE")) {
                 $Email_Theme_Array['edit'] .= "<a class=\"btn text-secondary\" href=\"index.php?module=EMAILMaker&action=IndexAjax&mode=DeleteTheme&themeid=" . $templateid . "&return_module=EMAILMaker&return_view=List\"><i title=\"" . vtranslate(
                         "LBL_DELETE"
                     ) . "\" class=\"fa fa-trash alignMiddle\"></i></a>";
@@ -1752,7 +1752,7 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
             while ($row = $this->db->fetchByAssoc($result)) {
                 $templateId = $row['templateid'];
 
-                if ($this->CheckTemplatePermissions($row['module'], $templateId, false)) {
+                if ($this->checkTemplatePermissions($row['module'], $templateId, false)) {
                     $data[$templateId] = $row['filename'];
                 } else {
                     unset($data[$templateId]);
