@@ -94,7 +94,7 @@ class ITS4YouEmails_Utils_Helper
         while ($row = $adb->fetchByAssoc($result)) {
             $templateId = $row['template_id'];
 
-            if ($PDFMaker->CheckTemplatePermissions($row['module'], $templateId, false)) {
+            if ($PDFMaker->checkTemplatePermissions($row['module'], $templateId, false)) {
                 if (!empty($templateInfo) && method_exists($PDFMaker, 'getPreparedName')) {
                     $templateName = $PDFMaker->getPreparedName((array)$templateInfo['records'], [$templateId], $templateInfo['module'], $templateInfo['language']);
                 } else {
