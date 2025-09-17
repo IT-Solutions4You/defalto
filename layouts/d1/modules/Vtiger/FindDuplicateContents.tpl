@@ -34,10 +34,8 @@
 				<thead class="border-bottom">
 					<tr class="listViewContentHeader">
 						{if $IS_DELETABLE}
-							<th class="text-center">
-                                <label class="w-100 text-center cursorPointer">
-                                    <input type="checkbox" class="listViewEntriesMainCheckBox form-check-input" />
-                                </label>
+							<th class="text-center text-middle">
+                                <input type="checkbox" class="listViewEntriesMainCheckBox form-check-input" />
 							</th>
 						{/if}
 						{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
@@ -57,10 +55,8 @@
 					{foreach item=RECORD from=$LISTVIEW_ENTRY name=listview}
 						<tr class="listViewEntries border-top" data-id='{$RECORD.recordid}' id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}">
 							{if $IS_DELETABLE}
-								<td class="text-middle">
-                                    <label class="w-100 text-center cursorPointer">
-                                        <input type="checkbox" value="{$RECORD.recordid}" class="listViewEntriesCheckBox form-check-input"/>
-                                    </label>
+								<td class="text-center text-middle">
+                                    <input type="checkbox" value="{$RECORD.recordid}" class="listViewEntriesCheckBox form-check-input"/>
 								</td>
 							{/if}
 							{assign var=sameRowValues value=true}
@@ -77,12 +73,10 @@
 							{/foreach}
 							{if $IS_EDITABLE && $IS_DELETABLE}
 								<td class="text-middle border-end">
-                                    <label class="w-100 text-center cursorPointer">
-                                        <input class="form-check-input" type="checkbox" data-id='{$RECORD.recordid}' name="mergeRecord" data-group="{$GROUP_NAME}"/>
-                                    </label>
+                                    <input class="form-check-input" type="checkbox" data-id='{$RECORD.recordid}' name="mergeRecord" data-group="{$GROUP_NAME}"/>
 								</td>
 								{if isset($recordCount) && $recordCount eq 0}
-									<td class="text-center border-end" rowspan="{$groupCount}">
+									<td class="text-center border-end text-middle" rowspan="{$groupCount}">
                                         <input type="button" value="{vtranslate('Merge', $MODULE)}" name="merge" class="btn btn-success" data-group="{$GROUP_NAME}">
 									</td>
 								{/if}
