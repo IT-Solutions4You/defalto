@@ -1347,6 +1347,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             ];
 
             if (empty($workflowId)) {
+                $values['id'] = $this->db->getUniqueID("com_vtiger_workflow_tasktypes");
                 $table->insertData($values);
             } else {
                 $table->updateData($values, ['id' => $workflowId]);
