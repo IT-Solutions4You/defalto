@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+
 /*************************************************************************************
  * Description:  Defines the Slovak language pack for the base application.
  * All Rights Reserved.

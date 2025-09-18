@@ -9,9 +9,8 @@
  */
 
 $languageStrings = [
-    'InventoryItem'        => 'Položky',
+    'InventoryItem' => 'Položky',
     'SINGLE_InventoryItem' => 'Položka',
-
     'LBL_INVENTORYITEM_INFORMATION' => 'Informácie o položke',
     'LBL_CUSTOM_INFORMATION' => 'Dodatočné informácie',
     'LBL_DESCRIPTION_INFORMATION' => 'Popis',
@@ -51,7 +50,6 @@ $languageStrings = [
     'Discount per Unit' => 'Zľava na položku',
     'No Tax' => 'Žiadna daň',
 ];
-
 $jsLanguageStrings = [
     'JS_PRODUCT_LINE_SAVE_ERROR' => 'Chyba pri ukladaní položky',
 ];

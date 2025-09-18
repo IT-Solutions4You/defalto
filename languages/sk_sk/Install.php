@@ -76,6 +76,23 @@ $languageStrings = [
     'LBL_SKIP' => 'Preskočiť',
     'LBL_VTIGER6_SETUP_WIZARD_DESCRIPTION' => 'Tento sprievodca vás prevedie inštaláciou',
     'LBL_WELCOME_TO_VTIGER6_SETUP_WIZARD' => 'Vitajte v sprievodcovi inštaláciou',
+    'en_us' => 'Angličtina (US)',
+    'ar_ae' => 'Arabčina',
+    'en_gb' => 'Angličtina (GB)',
+    'pt_br' => 'Portugalčina (Brazília)',
+    'es_es' => 'Španielčina (ES)',
+    'es_mx' => 'Španielčina (Mexiko)',
+    'fr_fr' => 'Francúzsky jazykový balík',
+    'hu_hu' => 'Maďarčina',
+    'it_it' => 'Taliančina',
+    'nl_nl' => 'Holandčina',
+    'pl_pl' => 'Poľština',
+    'ro_ro' => 'Rumunčina',
+    'ru_ru' => 'Ruština',
+    'sv_se' => 'Švédčina',
+    'tr_tr' => 'Turecký jazykový balík',
+    'sk_sk' => 'Slovenčina',
+    'cz_cz' => 'Čeština',
 ];
 $jsLanguageStrings = [
 ];
