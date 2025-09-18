@@ -59,33 +59,6 @@ class Settings_Workflows_EditTask_View extends Settings_Vtiger_Index_View
         $taskObject = $taskModel->getTaskObject();
         $taskType = get_class($taskObject);
 
-        if ($taskType === 'VTCreateEntityTask') {
-            if ($taskObject->entity_type && getTabid($taskObject->entity_type)) {
-                $relationModuleModel = Vtiger_Module_Model::getInstance($taskObject->entity_type);
-                $ownerFieldModels = $relationModuleModel->getFieldsByType('owner');
-
-                $fieldMapping = Zend_Json::decode($taskObject->field_value_mapping);
-                foreach ($fieldMapping as $key => $mappingInfo) {
-                    if (array_key_exists($mappingInfo['fieldname'], $ownerFieldModels)) {
-                        if (!empty($mappingInfo['value'])) {
-                            $userRecordModel = Users_Record_Model::getInstanceByName($mappingInfo['value']);
-                        }
-
-                        if ($userRecordModel) {
-                            $ownerName = $userRecordModel->getId();
-                        } elseif (!empty ($mappingInfo['value'])) {
-                            $groupRecordModel = Settings_Groups_Record_Model::getInstance($mappingInfo['value']);
-                            $ownerName = $groupRecordModel->getId();
-                        }
-
-                        if (!empty($mappingInfo['value'])) {
-                            $fieldMapping[$key]['value'] = $ownerName;
-                        }
-                    }
-                }
-                $taskObject->field_value_mapping = json_encode($fieldMapping, JSON_HEX_APOS);
-            }
-        }
         if ($taskType === 'VTUpdateFieldsTask') {
             if ($moduleModel->getName() == "Documents") {
                 $restrictFields = ['folderid', 'filename', 'filelocationtype'];

@@ -179,7 +179,7 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
         $adb = PearDatabase::getInstance();
         $current_user = Users_Record_Model::getCurrentUserModel();
         $currentLanguage = Vtiger_Language_Handler::getLanguage();
-        $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $recordIds = (array)$this->getRecordsListFromRequest($request);
         $viewer = $this->getViewer($request);
         if (count($recordIds) == 1) {
@@ -199,7 +199,6 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
             }
         }
 
-        $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
         $emailTypes = $EMAILMaker->getRecordsEmails($sourceModule, $recordIds, $basic);
         $emailFieldsList = [];
         $i = 0;
@@ -320,10 +319,10 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
                 }
             }
 
-            $templates = $EMAILMaker->GetAvailableTemplatesArray($sourceModule, $forListView, $pid, false, true);
+            $templates = $EMAILMaker->getAvailableTemplatesArray($sourceModule, $forListView, $pid, false, true);
 
             if ($cid != "") {
-                $campaign_templates = $EMAILMaker->GetAvailableTemplatesArray("Campaigns", true);
+                $campaign_templates = $EMAILMaker->getAvailableTemplatesArray("Campaigns", true);
 
                 if (count((array)$campaign_templates[0]) > 0) {
                     if (count((array)$templates[0]) > 0) {
@@ -380,7 +379,7 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
             }
             if (class_exists('PDFMaker_PDFMaker_Model')) {
                 $PDFMakerModel = Vtiger_Module_Model::getInstance('PDFMaker');
-                $pdf_templates = $PDFMakerModel->GetAvailableTemplates($sourceModule);
+                $pdf_templates = $PDFMakerModel->getAvailableTemplates($sourceModule);
                 $viewer->assign('PDF_TEMPLATES', $pdf_templates);
                 if (count($pdf_templates) > 0) {
                     $viewer->assign('IS_PDFMAKER', 'yes');

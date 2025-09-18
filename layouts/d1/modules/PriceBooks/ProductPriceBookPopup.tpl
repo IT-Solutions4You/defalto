@@ -11,7 +11,7 @@
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 {strip}
 	<script type="text/javascript" src="{vresource_url('layouts/d1/modules/Products/resources/ProductsPopup.js')}"></script>
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$MODULE}
             <div class="modal-body">

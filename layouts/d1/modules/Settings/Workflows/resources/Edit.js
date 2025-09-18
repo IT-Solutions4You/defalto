@@ -922,6 +922,10 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
             fieldInfo.workflow_valuetype = 'rawtext';
         }
 
+        if (fieldInfo.type == 'date') {
+            fieldInfo.value = fieldUiHolder.find('input').val();
+        }
+
         if (fieldInfo.type == 'reference' || fieldInfo.type == 'multireference') {
             fieldInfo.referenceLabel = fieldUiHolder.find('[name="referenceValueLabel"]').val();
             fieldInfo.type = 'string';

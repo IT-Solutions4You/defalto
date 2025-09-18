@@ -427,4 +427,13 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
 
         return $linkModelList;
     }
+
+    /**
+     * @param $value
+     * @return self
+     */
+    public static function getInstance($value = 'PDFMaker')
+    {
+        return new self();
+    }
 }

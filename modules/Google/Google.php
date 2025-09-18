@@ -43,11 +43,11 @@ class Google extends CRMExtension
         } elseif ($eventType == 'module.disabled') {
             $this->removeMapWidget($forModules);
             $this->removeWidgetforSync($syncModules);
-            $adb->pquery('UPDATE vtiger_settings_field SET active=1 WHERE name=?', [$this->LBL_GOOGLE]);
+            Settings_Vtiger_MenuItem_Model::deactivate($this->LBL_GOOGLE);
         } elseif ($eventType == 'module.enabled') {
             $this->addMapWidget($forModules);
             $this->addWidgetforSync($syncModules);
-            $adb->pquery('UPDATE vtiger_settings_field SET active=0 WHERE name=?', [$this->LBL_GOOGLE]);
+            Settings_Vtiger_MenuItem_Model::activate($this->LBL_GOOGLE);
         } elseif ($eventType == 'module.preuninstall') {
             $this->removeMapWidget($forModules);
             $this->removeWidgetforSync($syncModules);

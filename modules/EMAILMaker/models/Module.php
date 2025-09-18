@@ -196,11 +196,11 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
     public function getListViewLinks($linkParams)
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
-
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $linkTypes = ['LISTVIEWMASSACTION', 'LISTVIEWSETTING'];
         $links = Vtiger_Link_Model::getAllByType($this->getId(), $linkTypes, $linkParams);
 
-        if ($this->CheckPermissions("DELETE")) {
+        if ($EMAILMaker->checkPermissions("DELETE")) {
             $massActionLink = [
                 'linktype'  => 'LISTVIEWMASSACTION',
                 'linklabel' => 'LBL_DELETE',
@@ -212,7 +212,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         }
 
         $quickLinks = [];
-        if ($this->CheckPermissions("EDIT")) {
+        if ($EMAILMaker->checkPermissions("EDIT")) {
             $quickLinks [] = [
                 'linktype'  => 'LISTVIEW',
                 'linklabel' => 'LBL_IMPORT',
@@ -221,7 +221,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
             ];
         }
 
-        if ($this->CheckPermissions("EDIT")) {
+        if ($EMAILMaker->checkPermissions("EDIT")) {
             $quickLinks [] = [
                 'linktype'  => 'LISTVIEW',
                 'linklabel' => 'LBL_EXPORT',
@@ -256,78 +256,6 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
 
         return $links;
     }
-
-    /**
-     * @param string $actionKey
-     *
-     * @return bool
-     */
-    public function CheckPermissions($actionKey)
-    {
-        $current_user = Users_Record_Model::getCurrentUserModel();
-        $profileid = getUserProfile($current_user->id);
-        $result = false;
-
-        if (isset($this->profilesActions[$actionKey])) {
-            $actionid = getActionid($this->profilesActions[$actionKey]);
-            $permissions = $this->GetProfilesPermissions();
-
-            if (isset($permissions[$profileid[0]][$actionid]) && $permissions[$profileid[0]][$actionid] == "0") {
-                $result = true;
-            }
-        }
-
-        return $result;
-    }
-
-    public function GetProfilesPermissions()
-    {
-        if (count($this->profilesPermissions) == 0) {
-            $adb = PearDatabase::getInstance();
-            $profiles = Settings_Profiles_Record_Model::getAll();
-            $res = $adb->pquery("SELECT * FROM vtiger_emakertemplates_profilespermissions", []);
-            $permissions = [];
-            while ($row = $adb->fetchByAssoc($res)) {
-                if (isset($profiles[$row["profileid"]])) {
-                    $permissions[$row["profileid"]][$row["operation"]] = $row["permissions"];
-                }
-            }
-
-            foreach ($profiles as $profileid => $profilename) {
-                foreach ($this->profilesActions as $actionName) {
-                    $actionId = getActionid($actionName);
-                    if (!isset($permissions[$profileid][$actionId])) {
-                        $permissions[$profileid][$actionId] = "0";
-                    }
-                }
-            }
-            ksort($permissions);
-            $this->profilesPermissions = $permissions;
-        }
-
-        return $this->profilesPermissions;
-    }
-
-    /*
-    public function getSideBarLinks($linkParams) {
-
-        $linkTypes = array('SIDEBARLINK', 'SIDEBARWIDGET');
-        $links = Vtiger_Link_Model::getAllByType($this->getId(), $linkTypes, $linkParams);
-
-        $quickLinks = array(
-            array(
-                'linktype' => 'SIDEBARLINK',
-                'linklabel' => 'LBL_RECORDS_LIST',
-                'linkurl' => $this->getDefaultUrl(),
-                'linkicon' => '',
-            ),
-        );
-        foreach($quickLinks as $quickLink) {
-            $links['SIDEBARLINK'][] = Vtiger_Link_Model::getInstanceFromValues($quickLink);
-        }
-        return $links;
-    }
-    */
 
     /**
      * Function to get Settings links
@@ -395,11 +323,14 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
     /**
      * Function to get Module Header Links (for Vtiger7)
      * @return array
+     * @throws Exception
      */
     public function getModuleBasicLinks()
     {
         $moduleName = $this->getName();
-        if ($this->CheckPermissions("EDIT")) {
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
+
+        if ($EMAILMaker->checkPermissions("EDIT")) {
             $basicLinks[] = [
                 'linktype'    => 'BASIC',
                 'linklabel'   => 'LBL_ADD_TEMPLATE',
@@ -675,49 +606,6 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         return $result;
     }
 
-    public function returnTemplatePermissionsData($selected_module = "", $templateid = "")
-    {
-        $current_user = Users_Record_Model::getCurrentUserModel();
-        $result = true;
-        if (!is_admin($current_user)) {
-            if ($selected_module != "" && isPermitted($selected_module, '') != "yes") {
-                $result = false;
-            } elseif ($templateid != "" && $this->CheckSharing($templateid) === false) {
-                $result = false;
-            }
-            $detail_result = $result;
-
-            if (!$this->CheckPermissions("EDIT")) {
-                $edit_result = false;
-            } else {
-                $edit_result = $result;
-            }
-
-            if (!$this->CheckPermissions("DELETE")) {
-                $delete_result = false;
-            } else {
-                $delete_result = $result;
-            }
-
-            if ($detail_result === false || $edit_result === false || $delete_result === false) {
-                $profileGlobalPermission = [];
-                require('user_privileges/user_privileges_' . $current_user->id . '.php');
-                require('user_privileges/sharing_privileges_' . $current_user->id . '.php');
-
-                if ($profileGlobalPermission[1] == 0) {
-                    $detail_result = true;
-                }
-                if ($profileGlobalPermission[2] == 0) {
-                    $edit_result = $delete_result = true;
-                }
-            }
-        } else {
-            $detail_result = $edit_result = $delete_result = $result;
-        }
-
-        return ["detail" => $detail_result, "edit" => $edit_result, "delete" => $delete_result];
-    }
-
     private function getSubRoleUserIds($roleid)
     {
         $subRoleUserIds = [];
@@ -775,7 +663,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
 
     public static function isPDFMakerInstalled()
     {
-        return vtlib_isModuleActive('PDFMaker') && method_exists('PDFMaker_Module_Model', 'CheckPermissions') && method_exists('PDFMaker_Module_Model', 'GetAvailableTemplates');
+        return vtlib_isModuleActive('PDFMaker') && method_exists('PDFMaker_PDFMaker_Model', 'checkPermissions') && method_exists('PDFMaker_PDFMaker_Model', 'getAvailableTemplates');
     }
 
     public function getPicklistFields()

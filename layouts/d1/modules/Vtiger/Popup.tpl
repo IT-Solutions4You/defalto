@@ -8,7 +8,7 @@
  *}
 {* modules/Vtiger/views/Popup.php *}
 {strip}
-<div class="modal-dialog modal-lg">
+<div class="modal-dialog modal-xl">
     <div class="modal-content">
         {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE={vtranslate($MODULE,$MODULE)}}
         <div class="modal-body">

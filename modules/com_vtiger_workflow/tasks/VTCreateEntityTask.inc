@@ -18,6 +18,7 @@
 
 require_once('modules/com_vtiger_workflow/VTEntityCache.inc');
 require_once('modules/com_vtiger_workflow/VTWorkflowUtils.php');
+require_once('data/CRMEntity.php');
 
 class VTCreateEntityTask extends VTTask
 {
@@ -54,8 +55,6 @@ class VTCreateEntityTask extends VTTask
         }
 
         if (!empty($entityType) && !empty($fieldValueMapping) && php7_count($fieldValueMapping) > 0) {
-            require_once('data/CRMEntity.php');
-
             $newEntity = CRMEntity::getInstance($entityType);
             $newEntity->mode = '';
             $newEntityData = VTEntityData::fromCRMEntity($newEntity);
@@ -162,6 +161,10 @@ class VTCreateEntityTask extends VTTask
                     }
                 }
 
+                if ('assigned_user_id' === $fieldName && !empty($focus->column_fields[$fieldValue])) {
+                    $fieldValue = $focus->column_fields[$fieldValue];
+                }
+
                 if (in_array($fieldName, $ownerFields) && !is_numeric($fieldValue)) {
                     $userId = getUserId_Ol($fieldValue);
                     $groupId = getGrpId($fieldValue);
@@ -254,5 +257,48 @@ class VTCreateEntityTask extends VTTask
         }
 
         return $referenceRecordFocus;
+    }
+
+    /**
+     * @param object $fieldModel
+     * @return array
+     */
+    public function getFieldInfo(object $fieldModel): array
+    {
+        $fieldInfo = $fieldModel->getFieldInfo();
+
+        if ('assigned_user_id' === $fieldModel->getName()) {
+            /** @var Vtiger_Module_Model $moduleModel */
+            $moduleModel = $fieldModel->getModule();
+            $picklistValues = [];
+
+            foreach ($moduleModel->getFieldsByType('owner') as $ownerField) {
+                $picklistValues = [
+                    $ownerField->getName() => vtranslate($ownerField->getLabel(), $moduleModel->getName()),
+                ];
+            }
+
+            ksort($picklistValues);
+
+            $fieldInfo['picklistvalues'] = array_merge_recursive([vtranslate('LBL_PARENT_OWNER_FIELDS') => $picklistValues], $fieldInfo['picklistvalues']);
+        }
+
+        return $fieldInfo;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFieldValueMapping()
+    {
+        return $this->field_value_mapping;
+    }
+
+    /**
+     * @return self
+     */
+    public static function getInstance(): self
+    {
+        return new self();
     }
 }

@@ -10,20 +10,27 @@
 
 require_once 'vtlib/Vtiger/Cron.php';
 
-if (!class_exists('Migration_20240717110300')) {
-    class Migration_20240717110300 extends AbstractMigrations
+if (!class_exists('Migration_20250917141800')) {
+    class Migration_20250917141800 extends AbstractMigrations
     {
         /**
-         * @param string $strFileName
+         * @param string $fileName
          * @throws Exception
          */
-        public function migrate(string $strFileName): void
+        public function migrate(string $fileName): void
         {
+            $tax = Core_Tax_Model::getInstance();
+            $tax->clearLinks();
+            $tax->createLinks();
+
             $region = Core_TaxRegion_Model::getInstance();
             $region->createLinks();
-            $tax = Core_Tax_Model::getInstance();
-            $tax->createLinks();
-            $tax->migrateData();
+
+            $menu = new Settings_Vtiger_Menu_Model();
+            $menu->createLinks();
+
+            $menuItem = new Settings_Vtiger_MenuItem_Model();
+            $menuItem->createLinks();
         }
     }
 } else {

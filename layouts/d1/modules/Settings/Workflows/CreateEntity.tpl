@@ -8,7 +8,11 @@
  *}
 {* modules/Settings/Workflows/views/CreateEntity.php *}
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
-<input type="hidden" id="fieldValueMapping" name="field_value_mapping" value='{$TASK_OBJECT->field_value_mapping}' />
+{if !$TASK_OBJECT}
+    {assign var=TASK_OBJECT value=VTCreateEntityTask::getInstance()}
+{/if}
+{assign var=FIELD_VALUE_MAPPING value=$TASK_OBJECT->getFieldValueMapping()}
+<input type="hidden" id="fieldValueMapping" name="field_value_mapping" value='{$TASK_OBJECT->getFieldValueMapping()}' />
 <input type="hidden" value="{if $TASK_ID}{$TASK_OBJECT->reference_field}{else}{$REFERENCE_FIELD_NAME}{/if}" name='reference_field' id='reference_field' />
 <div class="conditionsContainer" id="save_fieldvaluemapping">
 	{if $RELATED_MODULE_MODEL_NAME neq '' && getTabid($RELATED_MODULE_MODEL_NAME)}
@@ -31,22 +35,22 @@
 			{assign var=SELECTED_FIELD_MODEL_FIELD_TYPE value=$SELECTED_FIELD_MODEL->getFieldDataType()}
 			<div class="row py-2 conditionRow">
 				<div class="col-lg-2">
-					<select name="fieldname" class="select2" style="min-width: 250px" {if $SELECTED_FIELD_MODEL->isMandatory() || ($DISABLE_ROW eq 'true') } disabled="" {/if} >
-						<option value="none"></option>
-						{foreach from=$RELATED_MODULE_MODEL->getFields() item=FIELD_MODEL}
-							{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
-							<option value="{$FIELD_MODEL->get('name')}" {if $FIELD_MAP['fieldname'] eq $FIELD_MODEL->get('name')} {if $FIELD_MODEL->isMandatory()}{assign var=MANDATORY_FIELD value=true} {else} {assign var=MANDATORY_FIELD value=false} {/if}{assign var=FIELD_TYPE value=$FIELD_MODEL->getFieldDataType()} selected=""{/if} data-fieldtype="{$FIELD_MODEL->getFieldType()}" data-field-name="{$FIELD_MODEL->get('name')}" data-fieldinfo='{ZEND_JSON::encode($FIELD_INFO)}' >
-								{vtranslate($FIELD_MODEL->get('label'), $FIELD_MODEL->getModuleName())}{if $SELECTED_FIELD_MODEL->isMandatory() and $FIELD_MODEL->getName() neq 'assigned_user_id'}<span class="redColor">*</span>{/if}
-							</option>	
-						{/foreach}
-					</select>
+                    <select name="fieldname" class="form-select select2" {if $SELECTED_FIELD_MODEL->isMandatory() || ($DISABLE_ROW eq 'true') } disabled="" {/if} >
+                        <option value="none"></option>
+                        {foreach from=$RELATED_MODULE_MODEL->getFields() item=FIELD_MODEL}
+                            {assign var=FIELD_INFO value=$TASK_OBJECT->getFieldInfo($FIELD_MODEL)}
+                            <option value="{$FIELD_MODEL->get('name')}" {if $FIELD_MAP['fieldname'] eq $FIELD_MODEL->get('name')} {if $FIELD_MODEL->isMandatory()}{assign var=MANDATORY_FIELD value=true} {else} {assign var=MANDATORY_FIELD value=false} {/if}{assign var=FIELD_TYPE value=$FIELD_MODEL->getFieldDataType()} selected=""{/if} data-fieldtype="{$FIELD_MODEL->getFieldType()}" data-field-name="{$FIELD_MODEL->get('name')}" data-fieldinfo='{ZEND_JSON::encode($FIELD_INFO)}'>
+                                {vtranslate($FIELD_MODEL->get('label'), $FIELD_MODEL->getModuleName())}{if $SELECTED_FIELD_MODEL->isMandatory() and $FIELD_MODEL->getName() neq 'assigned_user_id'} *{/if}
+                            </option>
+                        {/foreach}
+                    </select>
 					<input name="modulename" type="hidden"
 							{if $FIELD_MAP['modulename'] eq $SOURCE_MODULE} value="{$SOURCE_MODULE}" {/if}
 							{if $FIELD_MAP['modulename'] eq $RELATED_MODULE_MODEL_NAME} value="{$RELATED_MODULE_MODEL_NAME}" {/if}
 					/>
 				</div>
 				<div class="fieldUiHolder col-lg-6">
-					<input type="text" class="getPopupUi inputElement form-control" {if ($DISABLE_ROW eq 'true')} disabled=""{/if} readonly="" name="fieldValue" value="{$FIELD_MAP['value']}" />
+					<input type="text" class="getPopupUi inputElement form-control" {if ($DISABLE_ROW eq 'true')} disabled=""{/if} readonly="" name="fieldValue" value="{$SELECTED_FIELD_MODEL->getEditViewDisplayValue($FIELD_MAP['value'])}" />
 					<input type="hidden" name="valuetype" value="{$FIELD_MAP['valuetype']}" />
 				</div>
 				{if $MANDATORY_FIELD neq true}
@@ -75,7 +79,7 @@
 						<select name="fieldname" class="select2" disabled="" data-width="100%">
 							<option value="none"></option>
 							{foreach from=$RELATED_MODULE_MODEL->getFields() item=FIELD_MODEL}
-								{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
+								{assign var=FIELD_INFO value=$TASK_OBJECT->getFieldInfo($FIELD_MODEL)}
 								<option value="{$FIELD_MODEL->get('name')}" data-fieldtype="{$FIELD_MODEL->getFieldType()}" {if $FIELD_MODEL->get('name') eq $MANDATORY_FIELD_MODEL->get('name')} {assign var=FIELD_TYPE value=$FIELD_MODEL->getFieldDataType()} selected=""{/if} data-field-name="{$FIELD_MODEL->get('name')}" data-fieldinfo='{ZEND_JSON::encode($FIELD_INFO)}' >
 									{vtranslate($FIELD_MODEL->get('label'), $FIELD_MODEL->getModuleName())}<span class="redColor">*</span>
 								</option>	
@@ -103,7 +107,7 @@
 			<select name="fieldname" data-width="100%">
 				<option value="none">{vtranslate('LBL_NONE',$QUALIFIED_MODULE)}</option>
 				{foreach from=$RELATED_MODULE_MODEL->getFields() item=FIELD_MODEL}
-					{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
+					{assign var=FIELD_INFO value=$TASK_OBJECT->getFieldInfo($FIELD_MODEL)}
 					{if !$FIELD_MODEL->isMandatory()}
 					<option value="{$FIELD_MODEL->get('name')}" data-fieldtype="{$FIELD_MODEL->getFieldType()}" data-field-name="{$FIELD_MODEL->get('name')}" data-fieldinfo='{ZEND_JSON::encode($FIELD_INFO)}' >
 						{vtranslate($FIELD_MODEL->get('label'), $FIELD_MODEL->getModuleName())}

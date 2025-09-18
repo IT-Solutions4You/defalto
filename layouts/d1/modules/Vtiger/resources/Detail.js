@@ -611,6 +611,8 @@ Vtiger.Class("Vtiger_Detail_Js", {
         let self = this,
             url = tabElement.data('url');
 
+        vtUtils.updateWindowUrl('index.php?' + url);
+
         self.loadContents(url, urlAttributes).then(function (data) {
             self.deSelectAllrelatedTabs();
             self.markRelatedTabAsSelected(tabElement);
@@ -2524,13 +2526,21 @@ Vtiger.Class("Vtiger_Detail_Js", {
                     targetElement = jQuery(e.target, currentTarget),
                     recordUrl = currentTarget.data('recordurl');
 
-                if (targetElement.is('a') || targetElement.closest('a').length || targetElement.is('input') || targetElement.closest('input').length) return;
+                if (targetElement.closest('td:first-child').length ||
+                    self.isTargetSelector(targetElement, '.js-redirect-disabled') ||
+                    self.isTargetSelector(targetElement, '.js-reference-display-value') ||
+                    self.isTargetSelector(targetElement, 'input')) {
+                    return;
+                }
 
                 if ('undefined' !== typeof recordUrl) {
                     window.location.href = recordUrl;
                 }
             }
         });
+    },
+    isTargetSelector(element, selector) {
+        return element.is(selector) || element.closest(selector).length
     },
     showOverlayDetailView(recordUrl) {
         let params = app.convertUrlToDataParams(recordUrl),

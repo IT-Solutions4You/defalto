@@ -52,6 +52,7 @@ $languageStrings = [
 
     //Translation for module
     'Calendar'                                => 'Task',
+    'SINGLE_Picklist' => 'Picklist',
 ];
 $jsLanguageStrings = [
     //PickList

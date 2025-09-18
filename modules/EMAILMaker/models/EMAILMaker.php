@@ -26,7 +26,7 @@ require_once 'include/Webservices/EntityMeta.php';
 require_once 'include/Webservices/VtigerWebserviceObject.php';
 require_once('modules/com_vtiger_workflow/VTWorkflowUtils.php');
 
-class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
+class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
 {
     public static $buttonsAllowedModules = [
         'Accounts',
@@ -111,6 +111,19 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return $this->profilesActions;
     }
 
+    /**
+     * @param int $templateId
+     * @return bool
+     */
+    public function isTemplateDeleted($templateId)
+    {
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery('SELECT * FROM vtiger_emakertemplates WHERE templateid = ? AND deleted = ?', [$templateId, 1]);
+
+        return (bool)$adb->num_rows($result);
+    }
+
+
     public function GetSearchSelectboxData()
     {
         $Search_Selectbox_Data = [];
@@ -152,13 +165,13 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
             }
             $detail_result = $result;
 
-            if (!$this->CheckPermissions("EDIT")) {
+            if (!$this->checkPermissions("EDIT")) {
                 $edit_result = false;
             } else {
                 $edit_result = $result;
             }
 
-            if (!$this->CheckPermissions("DELETE")) {
+            if (!$this->checkPermissions("DELETE")) {
                 $delete_result = false;
             } else {
                 $delete_result = $result;
@@ -304,7 +317,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return $memberArray;
     }
 
-    public function CheckPermissions($actionKey)
+    public function checkPermissions($actionKey)
     {
         $current_user = Users_Record_Model::getCurrentUserModel();
         $profileid = getUserProfile($current_user->id);
@@ -672,15 +685,15 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return $emailtemplateResult;
     }
 
-    public function GetAvailableTemplates($currModule, $forListView = false)
+    public function getAvailableTemplates($currModule, $forListView = false, $recordId = false)
     {
         $return_array = [];
         $status_arr = $this->GetStatusArr();
-        $result = $this->GetAvailableTemplatesResult($currModule, $forListView);
+        $result = $this->getAvailableTemplatesResult($currModule, $forListView);
 
         while ($row = $this->db->fetchByAssoc($result)) {
             $templateid = $row["templateid"];
-            if ($this->CheckTemplatePermissions($currModule, $templateid, false) == false) {
+            if ($this->checkTemplatePermissions($currModule, $templateid, false) == false) {
                 continue;
             }
             if (isset($status_arr[$templateid]["is_active"]) && $status_arr[$templateid]["is_active"] == "0") {
@@ -720,7 +733,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return $data;
     }
 
-    private function GetAvailableTemplatesResult($currModule, $forListView = false, $all = false)
+    private function getAvailableTemplatesResult($currModule, $forListView = false, $all = false)
     {
         $is_listview = "";
 
@@ -743,15 +756,15 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return $this->db->pquery($sql, $params);
     }
 
-    public function CheckTemplatePermissions($selected_module, $templateid = '', $die = true)
+    public function checkTemplatePermissions($selectedModule, $templateId = '', $die = true)
     {
         $current_user = Users_Record_Model::getCurrentUserModel();
         $result = true;
 
         if (!is_admin($current_user)) {
-            if (!empty($selected_module) && 'yes' !== isPermitted($selected_module, '')) {
+            if (!empty($selectedModule) && 'yes' !== isPermitted($selectedModule, '')) {
                 $result = false;
-            } elseif (!empty($templateid) && false === $this->CheckSharing($templateid)) {
+            } elseif (!empty($templateId) && false === $this->CheckSharing($templateId)) {
                 $result = false;
             }
 
@@ -782,13 +795,13 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return !empty($status[$templateId]['is_active']);
     }
 
-    public function GetAvailableTemplatesArray($currModule, $forListView = false, $recordId = false, $rawData = false, $all = false)
+    public function getAvailableTemplatesArray($currModule, $forListView = false, $recordId = false, $rawData = false, $all = false)
     {
         include_once 'include/Webservices/Retrieve.php';
 
         $return_array = [];
         $status = $this->GetStatusArr();
-        $result = $this->GetAvailableTemplatesResult($currModule, $forListView, $all);
+        $result = $this->getAvailableTemplatesResult($currModule, $forListView, $all);
         $num_rows = $this->db->num_rows($result);
 
         $current_user = Users_Record_Model::getCurrentUserModel();
@@ -808,7 +821,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
             while ($row = $this->db->fetchByAssoc($result)) {
                 $templateId = $row['templateid'];
 
-                if (!$this->CheckTemplatePermissions($currModule, $templateId, false)) {
+                if (!$this->checkTemplatePermissions($currModule, $templateId, false)) {
                     continue;
                 }
 
@@ -1139,7 +1152,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
             $Email_Theme_Array['themename'] = $this->db->query_result($result, $i, 'templatename');
             $Email_Theme_Array['description'] = $this->db->query_result($result, $i, 'description');
 
-            if ($this->CheckPermissions("EDIT")) {
+            if ($this->checkPermissions("EDIT")) {
                 $Email_Theme_Array['edit'] = "<a class=\"btn text-secondary\" href=\"index.php?module=EMAILMaker&view=Edit&themeid=" . $templateid . "&mode=EditTheme&return_module=EMAILMaker&return_view=List\"><i class=\"fa fa-pencil\" title=\"" . vtranslate(
                         "LBL_EDIT"
                     ) . "\" ></i></a>&nbsp;";
@@ -1147,7 +1160,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
                         "LBL_DUPLICATE"
                     ) . "\" class=\"fa fa-clone alignMiddle\"></i></a>&nbsp;";
             }
-            if ($this->CheckPermissions("DELETE")) {
+            if ($this->checkPermissions("DELETE")) {
                 $Email_Theme_Array['edit'] .= "<a class=\"btn text-secondary\" href=\"index.php?module=EMAILMaker&action=IndexAjax&mode=DeleteTheme&themeid=" . $templateid . "&return_module=EMAILMaker&return_view=List\"><i title=\"" . vtranslate(
                         "LBL_DELETE"
                     ) . "\" class=\"fa fa-trash alignMiddle\"></i></a>";
@@ -1731,8 +1744,6 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         $data = array_flip($templateIds);
 
         if (EMAILMaker_Module_Model::isPDFMakerInstalled()) {
-            $PDFMakerModel = Vtiger_Module_Model::getInstance('PDFMaker');
-
             $sql = 'SELECT templateid, filename, module
                             FROM vtiger_pdfmaker
                             WHERE templateid IN (' . generateQuestionMarks($templateIds) . ')';
@@ -1741,7 +1752,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
             while ($row = $this->db->fetchByAssoc($result)) {
                 $templateId = $row['templateid'];
 
-                if ($PDFMakerModel->CheckTemplatePermissions($row['module'], $templateId, false)) {
+                if ($this->checkTemplatePermissions($row['module'], $templateId, false)) {
                     $data[$templateId] = $row['filename'];
                 } else {
                     unset($data[$templateId]);
@@ -1850,5 +1861,10 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         $result = $adb->pquery('SELECT count(*) as count FROM vtiger_emakertemplates WHERE (module = ? OR module = "" OR module IS NULL) AND deleted=? ', [$module, '0']);
 
         return 0 < $adb->query_result($result, 0, 'count');
+    }
+
+    public static function getInstance($value = 'EMAILMaker'): self
+    {
+        return new self();
     }
 }

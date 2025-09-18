@@ -33,38 +33,6 @@ class Webforms extends CRMExtension
 		Core_Install_Model::getInstance($eventType, $moduleName)->install();
 	}
 
-	function updateSettings()
-	{
-		global $adb;
-
-		$fieldid = $adb->getUniqueID('vtiger_settings_field');
-		$blockid = getSettingsBlockId('LBL_OTHER_SETTINGS');
-		$seq_res = $adb->pquery("SELECT max(sequence) AS max_seq FROM vtiger_settings_field WHERE blockid = ?", [$blockid]);
-		if ($adb->num_rows($seq_res) > 0) {
-			$cur_seq = $adb->query_result($seq_res, 0, 'max_seq');
-			if ($cur_seq != null) {
-				$seq = $cur_seq + 1;
-			}
-		}
-
-		$result = $adb->pquery('SELECT 1 FROM vtiger_settings_field WHERE name=?', [$this->LBL_WEBFORMS]);
-		if (!$adb->num_rows($result)) {
-			$adb->pquery(
-				'INSERT INTO vtiger_settings_field(fieldid, blockid, name, iconpath, description, linkto, sequence)
-				VALUES (?,?,?,?,?,?,?)',
-				[
-					$fieldid,
-					$blockid,
-					$this->LBL_WEBFORMS,
-					'modules/Webforms/img/Webform.png',
-					'Allows you to manage Webforms',
-					'index.php?module=Webforms&action=index&parenttab=Settings',
-					$seq
-				]
-			);
-		}
-	}
-
 	static function checkAdminAccess($user)
 	{
 		if (is_admin($user)) {

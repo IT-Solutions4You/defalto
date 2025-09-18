@@ -241,9 +241,6 @@ Migration_Index_View::ExecuteQuery("UPDATE vtiger_potential SET sales_stage=? WH
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_picklist_dependency SET sourcevalue=? WHERE sourcevalue=?", ['Proposal or Price Quote', 'Proposal/Price Quote']);
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_picklist_dependency SET sourcevalue=? WHERE sourcevalue=?", ['Negotiation or Review', 'Negotiation/Review']);
 
-//Internationalized the description for webforms
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_settings_field SET description=? WHERE description=?", ['LBL_WEBFORMS_DESCRIPTION', 'Allows you to manage Webforms']);
-
 Migration_Index_View::ExecuteQuery('CREATE TABLE IF NOT EXISTS vtiger_crmsetup(userid INT(11) NOT NULL, setup_status INT(2))', []);
 if (!defined('INSTALLATION_MODE')) {
     Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_crmsetup(userid, setup_status) SELECT id, 1 FROM vtiger_users', []);
@@ -628,28 +625,7 @@ $contactModule = Vtiger_Module::getInstance('Contacts');
 $contactModule->setRelatedList($assetsModuleInstance, '', false, 'get_dependents_list');
 // End 2013.04.23
 
-//Adding column to store the state of short cut settings fields
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_settings_field ADD COLUMN pinned int(1) DEFAULT 0', []);
-
-$defaultPinnedFields = ['LBL_USERS', 'LBL_LIST_WORKFLOWS', 'VTLIB_LBL_MODULE_MANAGER', 'LBL_PICKLIST_EDITOR'];
-$defaultPinnedSettingFieldQuery = 'UPDATE vtiger_settings_field SET pinned=1 WHERE name IN (' . generateQuestionMarks($defaultPinnedFields) . ')';
-Migration_Index_View::ExecuteQuery($defaultPinnedSettingFieldQuery, $defaultPinnedFields);
-
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_profile ADD COLUMN directly_related_to_role int(1) DEFAULT 0', []);
-
-$blockId = getSettingsBlockId('LBL_STUDIO');
-$result = $adb->pquery('SELECT max(sequence) as maxSequence FROM vtiger_settings_field WHERE blockid=?', [$blockId]);
-$sequence = 0;
-if ($adb->num_rows($result) > 0) {
-    $sequence = $adb->query_result($result, 0, 'maxSequence');
-}
-
-$fieldId = $adb->getUniqueID('vtiger_settings_field');
-$query = "INSERT INTO vtiger_settings_field (fieldid, blockid, name, iconpath, description, " .
-    "linkto, sequence) VALUES (?,?,?,?,?,?,?)";
-$layoutEditoLink = 'index.php?module=LayoutEditor&parent=Settings&view=Index';
-$params = [$fieldId, $blockId, 'LBL_EDIT_FIELDS', '', 'LBL_LAYOUT_EDITOR_DESCRIPTION', $layoutEditoLink, $sequence];
-Migration_Index_View::ExecuteQuery($query, $params);
 
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_role SET rolename = ? WHERE rolename = ? AND depth = ?', ['Organization', 'Organisation', 0]);
 
@@ -1561,10 +1537,6 @@ Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_inventoryproductrel MODIF
 
 $module = Vtiger_Module::getInstance('Accounts');
 $module->addLink('DETAILVIEWSIDEBARWIDGET', 'Google Map', 'module=Google&view=Map&mode=showMap&viewtype=detail', '', '', '');
-
-// Changes as on 2013.11.29
-
-Migration_Index_View::ExecuteQuery('DELETE FROM vtiger_settings_field WHERE name=?', ['LBL_BACKUP_SERVER_SETTINGS']);
 
 // Changes ends as on 2013.11.29
 Migration_Index_View::ExecuteQuery(

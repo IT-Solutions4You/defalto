@@ -105,8 +105,6 @@ class Settings_PBXManager_Module_Model extends Settings_Vtiger_Module_Model
     {
         $menuItem = $this->getMenuItem();
 
-        return 'index.php?module=' . $this->getModuleName() . '&parent=Settings&view=' . $this->getEditViewName() . '&block=' . $menuItem->get(
-                'blockid'
-            ) . '&fieldid=' . $menuItem->get('fieldid');
+        return 'index.php?module=' . $this->getModuleName() . '&parent=Settings&view=' . $this->getEditViewName() . '&block=' . $menuItem->get('blockid') . '&fieldid=' . $menuItem->get('fieldid');
     }
 }

@@ -21,7 +21,7 @@ class EMAILMaker_ProfilesPrivilegies_View extends EMAILMaker_Index_View
     public function process(Vtiger_Request $request)
     {
         EMAILMaker_Debugger_Model::GetInstance()->Init();
-        $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $viewer = $this->getViewer($request);
         $permissions = $EMAILMaker->GetProfilesPermissions();
         $profilesActions = $EMAILMaker->GetProfilesActions();

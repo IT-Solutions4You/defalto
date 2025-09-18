@@ -15,8 +15,9 @@ class EMAILMaker_ListViewSelect_View extends Vtiger_IndexAjax_View
         $moduleName = $request->getModule();
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
         EMAILMaker_Debugger_Model::GetInstance()->Init();
-        $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
-        if ($EMAILMaker->CheckPermissions("DETAIL") == false) {
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
+
+        if ($EMAILMaker->checkPermissions("DETAIL") == false) {
             throw new Exception('LBL_PERMISSION_DENIED');
         }
     }
@@ -31,16 +32,16 @@ class EMAILMaker_ListViewSelect_View extends Vtiger_IndexAjax_View
         global $current_language;
         $adb = PearDatabase::getInstance();
         EMAILMaker_Debugger_Model::GetInstance()->Init();
-        $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
 
-        if (false == $EMAILMaker->CheckPermissions('DETAIL')) {
-            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        if (!$EMAILMaker->checkPermissions('DETAIL')) {
+            $EMAILMaker->DieDuePermission();
         }
 
         $_REQUEST['idslist'] = implode(";", $recordIds);
         $request->set('idlist', $_REQUEST['idslist']);
         $current_language = Vtiger_Language_Handler::getLanguage();
-        $templates = $EMAILMaker->GetAvailableTemplatesArray($request->get('return_module'), true);
+        $templates = $EMAILMaker->getAvailableTemplatesArray($request->get('return_module'), true);
         if (count($templates) > 0) {
             $no_templates_exist = 0;
         } else {

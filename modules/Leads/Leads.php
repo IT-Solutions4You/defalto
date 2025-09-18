@@ -663,11 +663,10 @@ class Leads extends CRMEntity
     function vtlib_handler($moduleName, $eventType)
     {
         if ($moduleName == 'Leads') {
-            $db = PearDatabase::getInstance();
             if ($eventType == 'module.disabled') {
-                $db->pquery('UPDATE vtiger_settings_field SET active=1 WHERE name=?', [$this->LBL_LEAD_MAPPING]);
+                Settings_Vtiger_MenuItem_Model::deactivate($this->LBL_LEAD_MAPPING);
             } elseif ($eventType == 'module.enabled') {
-                $db->pquery('UPDATE vtiger_settings_field SET active=0 WHERE name=?', [$this->LBL_LEAD_MAPPING]);
+                Settings_Vtiger_MenuItem_Model::activate($this->LBL_LEAD_MAPPING);
             }
         }
     }

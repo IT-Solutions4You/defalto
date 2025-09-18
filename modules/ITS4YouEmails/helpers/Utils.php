@@ -83,9 +83,7 @@ class ITS4YouEmails_Utils_Helper
     public static function validatePDFTemplates($templateIds, $templateInfo = [])
     {
         $templates = array_flip($templateIds);
-        /** @var PDFMaker_Module_Model $moduleModel */
-        $moduleModel = Vtiger_Module_Model::getInstance('PDFMaker');
-        $pdfMakerModel = new PDFMaker_PDFMaker_Model();
+        $PDFMaker = PDFMaker_PDFMaker_Model::getInstance();
 
         $adb = PearDatabase::getInstance();
         $result = $adb->pquery(
@@ -96,9 +94,9 @@ class ITS4YouEmails_Utils_Helper
         while ($row = $adb->fetchByAssoc($result)) {
             $templateId = $row['template_id'];
 
-            if ($moduleModel->CheckTemplatePermissions($row['module'], $templateId, false)) {
-                if (!empty($templateInfo) && method_exists($pdfMakerModel, 'getPreparedName')) {
-                    $templateName = $pdfMakerModel->getPreparedName((array)$templateInfo['records'], [$templateId], $templateInfo['module'], $templateInfo['language']);
+            if ($PDFMaker->checkTemplatePermissions($row['module'], $templateId, false)) {
+                if (!empty($templateInfo) && method_exists($PDFMaker, 'getPreparedName')) {
+                    $templateName = $PDFMaker->getPreparedName((array)$templateInfo['records'], [$templateId], $templateInfo['module'], $templateInfo['language']);
                 } else {
                     $templateName = $row['filename'];
                 }

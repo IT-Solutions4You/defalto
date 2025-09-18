@@ -73,24 +73,27 @@ Vtiger_List_Js("Vtiger_FindDuplicates_Js", {
      * Function registers event for merge button
      */
     registerMergeRecordEvent: function (cb) {
-        var thisInstance = this;
-        var container = this.getListViewContainer();
+        let thisInstance = this,
+            container = this.getListViewContainer();
+
         container.on('click', 'input[name="merge"]', function (e) {
-            var element = jQuery(e.currentTarget);
-            var groupName = element.data('group');
-            var mergeRecordsCheckBoxes = jQuery('input[name="mergeRecord"]:checked');
-            var mergeSelectedIds = thisInstance.readMergeSelectedIds();
-            var mergeSelectedIdsLength = Object.keys(mergeSelectedIds).length;
+            let element = jQuery(e.currentTarget),
+                groupName = element.data('group'),
+                mergeRecordsCheckBoxes = jQuery('input[name="mergeRecord"]:checked'),
+                mergeSelectedIds = thisInstance.readMergeSelectedIds(),
+                mergeSelectedIdsLength = Object.keys(mergeSelectedIds).length;
+
             if (mergeRecordsCheckBoxes.length < 2 && mergeSelectedIdsLength < 2) {
                 app.helper.showErrorNotification({message: app.vtranslate('JS_SELECT_ATLEAST_TWO_RECORD_FOR_MERGING')});
                 return false;
             } else {
-                var count = 0;
-                var records = [];
-                var stop = false;
+                let count = 0,
+                    records = [],
+                    stop = false;
 
                 mergeRecordsCheckBoxes.each(function (key, obj) {
-                    var ele = jQuery(obj);
+                    let ele = jQuery(obj);
+
                     if (ele.data('group') != groupName) {
                         app.helper.showErrorNotification({message: app.vtranslate('JS_SELECT_RECORDS_TO_MERGE_FROM_SAME_GROUP')});
                         stop = true;
@@ -104,8 +107,8 @@ Vtiger_List_Js("Vtiger_FindDuplicates_Js", {
                         stop = true;
                         return false;
                     } else {
-                        for (var x in mergeSelectedIds) {
-                            var id = x.replace('id', '');
+                        for (let x in mergeSelectedIds) {
+                            let id = x.replace('id', '');
                             records.push(id);
                             count++;
                         }

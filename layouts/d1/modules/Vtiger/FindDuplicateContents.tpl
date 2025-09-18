@@ -30,22 +30,22 @@
 			{assign var=IS_EDITABLE value=$CURRENT_USER_PRIVILAGES_MODEL->hasModuleActionPermission($MODULE_MODEL->getId(), 'EditView')}
 			{assign var=IS_DELETABLE value=$CURRENT_USER_PRIVILAGES_MODEL->hasModuleActionPermission($MODULE_MODEL->getId(), 'Delete')}
 
-			<table id="listview-table" class="listview-table table table-bordered" style="border-top:1px solid #ddd;">
-				<thead>
+			<table id="listview-table" class="listview-table table">
+				<thead class="border-bottom">
 					<tr class="listViewContentHeader">
 						{if $IS_DELETABLE}
-							<th>
-								<center><input type="checkbox" class="listViewEntriesMainCheckBox" /></center>
+							<th class="text-center text-middle">
+                                <input type="checkbox" class="listViewEntriesMainCheckBox form-check-input" />
 							</th>
 						{/if}
 						{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
-							<th>
-								<center>{vtranslate($LISTVIEW_HEADER->get('label'), $MODULE)}</center>
+							<th class="text-secondary">
+                                {vtranslate($LISTVIEW_HEADER->get('label'), $MODULE)}
 							</th>
 						{/foreach}
 						{if $IS_EDITABLE && $IS_DELETABLE}
-							<th> <center>{vtranslate('LBL_MERGE_SELECT', $MODULE)}</center></th>
-							<th> <center>{vtranslate('LBL_ACTION', $MODULE)}</center></th>
+							<th class="text-center text-secondary">{vtranslate('LBL_MERGE_SELECT', $MODULE)}</th>
+							<th class="text-center text-secondary">{vtranslate('LBL_ACTION', $MODULE)}</th>
 						{/if}
 					</tr>
 				</thead>
@@ -53,31 +53,31 @@
 					{assign var=groupCount value=$LISTVIEW_ENTRY|@php7_count}
 					{assign var=recordCount value=0}
 					{foreach item=RECORD from=$LISTVIEW_ENTRY name=listview}
-						<tr class="listViewEntries" data-id='{$RECORD.recordid}' id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}">
+						<tr class="listViewEntries border-top" data-id='{$RECORD.recordid}' id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}">
 							{if $IS_DELETABLE}
-								<td>
-									<center><input type="checkbox" value="{$RECORD.recordid}" class="listViewEntriesCheckBox"/></center>
+								<td class="text-center text-middle">
+                                    <input type="checkbox" value="{$RECORD.recordid}" class="listViewEntriesCheckBox form-check-input"/>
 								</td>
 							{/if}
 							{assign var=sameRowValues value=true}
 							{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
-							{if $LISTVIEW_HEADER->get('name') eq 'recordid'}
-								<td nowrap>
-									<center><a href="{$MODULE_MODEL->getDetailViewUrl($RECORD.recordid)}">{$RECORD[$LISTVIEW_HEADER->get('name')]}</a></center>
-								</td>
-							{else}
-								<td name="{$LISTVIEW_HEADER->get('name')}" nowrap style='border-bottom:1px solid #DDD;' data-value="{strip_tags($LISTVIEW_HEADER->getDisplayValue($RECORD[$LISTVIEW_HEADER->get('column')], $RECORD.recordid))}">
-									<center>{strip_tags($LISTVIEW_HEADER->getDisplayValue($RECORD[$LISTVIEW_HEADER->get('column')], $RECORD.recordid))}</center>
-								</td>
-							{/if}
+                                {if $LISTVIEW_HEADER->get('name') eq 'recordid'}
+                                    <td>
+                                        <a href="{$MODULE_MODEL->getDetailViewUrl($RECORD.recordid)}">{$RECORD[$LISTVIEW_HEADER->get('name')]}</a>
+                                    </td>
+                                {else}
+                                    <td name="{$LISTVIEW_HEADER->get('name')}" class="border-bottom" data-value="{strip_tags($LISTVIEW_HEADER->getDisplayValue($RECORD[$LISTVIEW_HEADER->get('column')], $RECORD.recordid))}">
+                                        {strip_tags($LISTVIEW_HEADER->getDisplayValue($RECORD[$LISTVIEW_HEADER->get('column')], $RECORD.recordid))}
+                                    </td>
+                                {/if}
 							{/foreach}
 							{if $IS_EDITABLE && $IS_DELETABLE}
-								<td>
-									<center><input type="checkbox" data-id='{$RECORD.recordid}' name="mergeRecord" data-group="{$GROUP_NAME}"/></center>
+								<td class="text-middle border-end text-center">
+                                    <input class="form-check-input" type="checkbox" data-id='{$RECORD.recordid}' name="mergeRecord" data-group="{$GROUP_NAME}"/>
 								</td>
 								{if isset($recordCount) && $recordCount eq 0}
-									<td rowspan="{$groupCount}" style="vertical-align: middle;">
-										<center><input type="button" value="{vtranslate('Merge', $MODULE)}" name="merge" class="btn btn-success" data-group="{$GROUP_NAME}"></center>
+									<td class="text-center border-end text-middle" rowspan="{$groupCount}">
+                                        <input type="button" value="{vtranslate('Merge', $MODULE)}" name="merge" class="btn btn-success" data-group="{$GROUP_NAME}">
 									</td>
 								{/if}
 							{/if}

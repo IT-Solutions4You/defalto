@@ -8,7 +8,7 @@
  *}
 {strip}
 <div class = "productsBundlePopup">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$RELATED_MODULE}
                 <form id="popupPage" action="javascript:void(0)">

@@ -41,8 +41,9 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
     {
         EMAILMaker_Debugger_Model::GetInstance()->Init();
 
-        $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
-        if ($EMAILMaker->CheckPermissions("DETAIL") == false) {
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
+
+        if ($EMAILMaker->checkPermissions("DETAIL") == false) {
             $EMAILMaker->DieDuePermission();
         }
 

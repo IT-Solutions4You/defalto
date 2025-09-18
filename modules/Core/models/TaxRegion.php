@@ -23,21 +23,9 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
      */
     public function createLinks(): void
     {
-        $menu = Settings_Vtiger_Menu_Model::getInstance('LBL_TAX_MANAGEMENT');
+        $menu = Settings_Vtiger_Menu_Model::createMenu('LBL_TAX_MANAGEMENT');
 
-        if (!$menu) {
-            $menu = Settings_Vtiger_Menu_Model::getInstanceFromArray(['label' => 'LBL_TAX_MANAGEMENT']);
-            $menu->save();
-        }
-
-        $link = Settings_Vtiger_MenuItem_Model::getInstance('LBL_REGIONS', $menu);
-
-        if (!$link) {
-            $link = Settings_Vtiger_MenuItem_Model::getInstanceFromArray(
-                ['name' => 'LBL_REGIONS', 'blockid' => $menu->getId(), 'linkto' => 'index.php?module=Core&parent=Settings&view=Taxes&mode=regions']
-            );
-            $link->save();
-        }
+        Settings_Vtiger_MenuItem_Model::createItem('LBL_REGIONS', 'index.php?module=Core&parent=Settings&view=Taxes&mode=regions', $menu);
     }
 
     /**

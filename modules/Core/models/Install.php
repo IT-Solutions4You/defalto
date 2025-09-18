@@ -1283,29 +1283,12 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         foreach ($this->registerSettingsLinks as $settingsLink) {
             [$name, $link, $block] = $settingsLink;
 
-            $this->db->pquery('DELETE FROM vtiger_settings_field WHERE name=?', [$name]);
-
             if ($register) {
-                $fieldId = $this->db->getUniqueID('vtiger_settings_field');
-                $blockId = getSettingsBlockId($block);
+                $menu = Settings_Vtiger_Menu_Model::createMenu($block);
 
-                if (!$blockId) {
-                    $blockId = $this->db->getUniqueID('vtiger_settings_blocks');
-                    $sequenceResult = $this->db->pquery('SELECT max(sequence) AS max_seq FROM vtiger_settings_blocks');
-                    $sequence = intval($this->db->query_result($sequenceResult, 0, 'max_seq')) + 1;
-                    $this->db->pquery('INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?, ?, ?)', [$blockId, $block, $sequence]);
-                }
-
-                $sequenceResult = $this->db->pquery(
-                    'SELECT max(sequence) AS max_seq FROM vtiger_settings_field WHERE blockid=?',
-                    [$blockId]
-                );
-                $sequence = intval($this->db->query_result($sequenceResult, 0, 'max_seq')) + 1;
-
-                $this->db->pquery(
-                    'INSERT INTO vtiger_settings_field(fieldid, blockid, name, linkto, sequence) VALUES (?,?,?,?,?)',
-                    [$fieldId, $blockId, $name, $link, $sequence]
-                );
+                Settings_Vtiger_MenuItem_Model::createItem($name, $link, $menu);
+            } else {
+                Settings_Vtiger_MenuItem_Model::deleteItem($name);
             }
         }
     }
@@ -1364,6 +1347,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             ];
 
             if (empty($workflowId)) {
+                $values['id'] = $this->db->getUniqueID("com_vtiger_workflow_tasktypes");
                 $table->insertData($values);
             } else {
                 $table->updateData($values, ['id' => $workflowId]);

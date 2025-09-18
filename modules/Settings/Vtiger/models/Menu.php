@@ -25,6 +25,20 @@ class Settings_Vtiger_Menu_Model extends Vtiger_Base_Model
     protected static $menusTable = 'vtiger_settings_blocks';
     protected static $menuId = 'blockid';
 
+    public static array $defaultMenuLinks = [
+        1 => 'LBL_USER_MANAGEMENT',
+        'LBL_MODULE_MANAGER',
+        'LBL_AUTOMATION',
+        'LBL_CONFIGURATION',
+        'LBL_MARKETING_SALES',
+        'LBL_INVENTORY',
+        'LBL_TAX_MANAGEMENT',
+        'LBL_MY_PREFERENCES',
+        'LBL_INTEGRATION',
+        'LBL_EXTENSIONS',
+        'LBL_OTHER_SETTINGS',
+    ];
+
     /**
      * Function to get the Id of the Menu Model
      * @return <Number> - Menu Id
@@ -192,5 +206,52 @@ class Settings_Vtiger_Menu_Model extends Vtiger_Base_Model
     public function getMenuItems()
     {
         return Settings_Vtiger_MenuItem_Model::getAll($this);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function createMenu(string $label, int $sequence = null): Settings_Vtiger_Menu_Model|bool
+    {
+        $menu = Settings_Vtiger_Menu_Model::getInstance($label);
+
+        if (!$menu) {
+            $menu = Settings_Vtiger_Menu_Model::getInstanceFromArray(['label' => $label]);
+        }
+
+        if($sequence) {
+            $menu->set('sequence', $sequence);
+        }
+
+        $menu->save();
+
+        return $menu;
+    }
+
+    public function getSettingsMenuTable(): Core_DatabaseData_Model
+    {
+        return (new Core_DatabaseData_Model())->getTable(self::$menusTable, self::$menuId);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function createLinks(): void
+    {
+        foreach(self::$defaultMenuLinks as $sequence => $label) {
+            self::createMenu($label, $sequence);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function createTables(): void
+    {
+        $this->getSettingsMenuTable()
+            ->createTable(self::$menuId)
+            ->createColumn('label', 'varchar(250) DEFAULT NULL')
+            ->createColumn('sequence', 'int(19) DEFAULT NULL')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (blockid)');
     }
 }

@@ -30,6 +30,21 @@ class Settings_Core_Taxes_View extends Settings_Vtiger_Index_View
 
     /**
      * @param Vtiger_Request $request
+     * @return string
+     */
+    public function getPageTitle(Vtiger_Request $request)
+    {
+        $mode = $request->getMode();
+
+        if ('regions' === $mode) {
+            return vtranslate('LBL_REGIONS');
+        }
+
+        return vtranslate('LBL_TAXES');
+    }
+
+    /**
+     * @param Vtiger_Request $request
      *
      * @return void
      * @throws Exception

@@ -489,8 +489,9 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
     {
         EMAILMaker_Debugger_Model::GetInstance()->Init();
 
-        $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
-        if ($EMAILMaker->CheckPermissions("EDIT") == false) {
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
+
+        if ($EMAILMaker->checkPermissions("EDIT") == false) {
             $EMAILMaker->DieDuePermission();
         }
 

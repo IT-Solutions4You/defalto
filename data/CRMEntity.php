@@ -3230,6 +3230,7 @@ class CRMEntity extends CRMExtension
         // Select Custom Field Table Columns if present
         if (isset($this->customFieldTable)) {
             $selectClause .= ", " . $this->customFieldTable[0] . ".* ";
+            $requiredTables[] = $this->customFieldTable[0];
         }
 
         $fromClause = " FROM $this->table_name";

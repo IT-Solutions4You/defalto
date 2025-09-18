@@ -1489,7 +1489,6 @@ input[type=checkbox]:checked {
 }
 
 .overlayPageContent.fade {
-    top: 70vh;
     opacity: 0;
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
@@ -1499,9 +1498,8 @@ input[type=checkbox]:checked {
 }
 
 .overlayPageContent.fade.show {
-    top: var(--header-height);
+    margin: calc(var(--menu-width) / 2);
     width: calc(100vw - var(--menu-width));
-    margin-left: var(--menu-width);
     opacity: 1;
 }
 
@@ -3416,7 +3414,7 @@ div.tooltip-inner {
     display: inline-block;
 }
 
-.verticalAlignMiddle {
+.verticalAlignMiddle, .text-middle {
     vertical-align: middle;
 }
 

@@ -230,9 +230,9 @@ class EMAILMaker_IndexAjax_Action extends Vtiger_Action_Controller
     {
         EMAILMaker_Debugger_Model::GetInstance()->Init();
 
-        $EMAILMakerModel = Vtiger_Module_Model::getInstance('EMAILMaker');
+        $EMAILMakerModel = EMAILMaker_EMAILMaker_Model::getInstance();
 
-        if ($EMAILMakerModel->CheckPermissions("DELETE") == false) {
+        if ($EMAILMakerModel->checkPermissions("DELETE") == false) {
             throw new Exception(vtranslate("LBL_PERMISSION", "EMAILMaker"));
         }
         $adb = PearDatabase::getInstance();
@@ -242,7 +242,7 @@ class EMAILMaker_IndexAjax_Action extends Vtiger_Action_Controller
             $checkRes = $adb->pquery("select module from vtiger_emakertemplates where templateid=?", [$templateid]);
             $checkRow = $adb->fetchByAssoc($checkRes);
 
-            $EMAILMakerModel->CheckTemplatePermissions($checkRow["module"], $templateid);
+            $EMAILMakerModel->checkTemplatePermissions($checkRow["module"], $templateid);
             $adb->pquery("delete from vtiger_emakertemplates where templateid=?", [$templateid]);
         } else {
             $idlist = $request->get('idlist');
@@ -253,7 +253,7 @@ class EMAILMaker_IndexAjax_Action extends Vtiger_Action_Controller
                 $checkArr[$checkRow["templateid"]] = $checkRow["module"];
             }
             for ($i = 0; $i < count($id_array) - 1; $i++) {
-                $EMAILMakerModel->CheckTemplatePermissions($checkArr[$id_array[$i]], $id_array[$i]);
+                $EMAILMakerModel->checkTemplatePermissions($checkArr[$id_array[$i]], $id_array[$i]);
                 $sql = "delete from vtiger_emakertemplates where templateid=?";
                 $adb->pquery($sql, [$id_array[$i]]);
             }
@@ -644,9 +644,9 @@ class EMAILMaker_IndexAjax_Action extends Vtiger_Action_Controller
 
     public function SaveProfilesPrivilegies(Vtiger_Request $request)
     {
-        $EMAILMakerModel = Vtiger_Module_Model::getInstance('EMAILMaker');
+        $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $adb = PearDatabase::getInstance();
-        $permissions = $EMAILMakerModel->GetProfilesPermissions();
+        $permissions = $EMAILMaker->GetProfilesPermissions();
         foreach ($permissions as $profileid => $subArr) {
             foreach ($subArr as $actionid => $perm) {
                 $adb->pquery("DELETE FROM vtiger_emakertemplates_profilespermissions WHERE profileid = ? AND operation = ?", [$profileid, $actionid]);
