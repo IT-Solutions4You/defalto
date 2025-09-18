@@ -156,28 +156,6 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View
             }
 
             $taskObject->field_value_mapping = Zend_Json::encode($fieldMapping);
-            $taskType = get_class($taskObject);
-
-            if ($taskType === 'VTCreateEntityTask') {
-                $relationModuleModel = Vtiger_Module_Model::getInstance($taskObject->entity_type);
-                $ownerFieldModels = $relationModuleModel->getFieldsByType('owner');
-
-                $fieldMapping = Zend_Json::decode($taskObject->field_value_mapping);
-                foreach ($fieldMapping as $key => $mappingInfo) {
-                    if (array_key_exists($mappingInfo['fieldname'], $ownerFieldModels)) {
-                        $userRecordModel = Users_Record_Model::getInstanceById($mappingInfo['value'], 'Users');
-                        $ownerName = $userRecordModel->get('user_name');
-
-                        if (!$ownerName && !empty($mappingInfo['value'])) {
-                            $groupRecordModel = Settings_Groups_Record_Model::getInstance($mappingInfo['value']);
-                            $ownerName = $groupRecordModel->getName();
-                        }
-                        $fieldMapping[$key]['value'] = $ownerName;
-                    }
-                }
-                $taskObject->field_value_mapping = Zend_Json::encode($fieldMapping);
-            }
-
             $taskRecordModel->save();
             $response = new Vtiger_Response();
             $response->setResult(['for_workflow' => $workflowId]);
