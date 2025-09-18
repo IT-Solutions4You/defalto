@@ -18,5 +18,5 @@
 
 $patch_version = '1728907768'; // -ve timestamp before release, +ve timestamp after release.
 $modified_database = '';
-$vtiger_current_version = '0.0.169';
+$vtiger_current_version = '0.0.2509'; // Version.Patch.Year+Month
 $_SESSION['vtiger_version'] = $vtiger_current_version;
