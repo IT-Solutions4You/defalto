@@ -72,7 +72,7 @@
                                 {/if}
 							{/foreach}
 							{if $IS_EDITABLE && $IS_DELETABLE}
-								<td class="text-middle border-end">
+								<td class="text-middle border-end text-center">
                                     <input class="form-check-input" type="checkbox" data-id='{$RECORD.recordid}' name="mergeRecord" data-group="{$GROUP_NAME}"/>
 								</td>
 								{if isset($recordCount) && $recordCount eq 0}

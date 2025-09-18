@@ -29,7 +29,7 @@
                                 <th>
                                     <div class="checkbox">
                                         <label>
-                                            <input {if $smarty.foreach.recordList.index eq 0}checked{/if} type=radio value="{$RECORD->getId()}" name="primaryRecord"/>
+                                            <input {if $smarty.foreach.recordList.index eq 0}checked{/if} type=radio value="{$RECORD->getId()}" name="primaryRecord" class="form-check-input"/>
                                             <span class="mx-2">{vtranslate('LBL_RECORD')}</span>
                                             <a href="{$RECORD->getDetailViewUrl()}" target="_blank" class="text-primary">#{$RECORD->getId()}</a>
                                         </label>
@@ -47,7 +47,7 @@
                                             <td>
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input {if $smarty.foreach.recordList.index eq 0}checked="checked"{/if} type=radio name="{$FIELD->getName()}" data-id="{$RECORD->getId()}" value="{$RECORD->get($FIELD->getName())}"/>
+                                                        <input {if $smarty.foreach.recordList.index eq 0}checked="checked"{/if} type=radio name="{$FIELD->getName()}" data-id="{$RECORD->getId()}" value="{$RECORD->get($FIELD->getName())}" class="form-check-input"/>
                                                         <span class="ms-2">{$RECORD->getDisplayValue($FIELD->getName())}</span>
                                                     </label>
                                                 </div>
