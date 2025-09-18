@@ -2373,7 +2373,7 @@ Vtiger.Class("Vtiger_List_Js", {
         const self = this;
 
         self.getListViewActionContainer().find('button').attr('disabled', "disabled");
-        self.getListViewActionContainer().find('.dropdown-toggle').removeAttr("disabled");
+        self.getListViewActionContainer().find('[data-bs-toggle="dropdown"]').removeAttr("disabled");
         self.getListViewActionContainer().find('li').addClass('hide');
 
         let selectFreeRecords = this.getListViewActionContainer().find('li.selectFreeRecords');
