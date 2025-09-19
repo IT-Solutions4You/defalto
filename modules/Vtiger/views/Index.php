@@ -118,6 +118,8 @@ class Vtiger_Index_View extends Vtiger_Basic_View
     {
         $moduleName = $request->getModule();
         $viewer = $this->getViewer($request);
+        $viewer->assign('MODULE_MODEL', Vtiger_Module_Model::getInstance($moduleName));
+
         $viewer->view('Index.tpl', $moduleName);
     }
 

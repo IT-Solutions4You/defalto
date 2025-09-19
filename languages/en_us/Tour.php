@@ -31,6 +31,8 @@ $languageStrings = [
     'LBL_NEXT_STEP'                => 'Next Step',
     'LBL_FINISH_GUIDE'             => 'Finish Guide',
     'LBL_DELETE_DATA_AFTER_FINISH' => 'You can delete demo data after finishing the guide',
+    'Index' => 'Ready to use',
+    'Guide' => 'Guide',
 ];
 
 $jsLanguageStrings = [

@@ -31,6 +31,8 @@ $languageStrings = [
     'LBL_NEXT_STEP' => 'Ďalší krok',
     'LBL_FINISH_GUIDE' => 'Dokončiť návod',
     'LBL_DELETE_DATA_AFTER_FINISH' => 'Demo dáta môžete odstrániť po dokončení návodu',
+    'Index' => 'Pripravené na použitie',
+    'Guide' => 'Návod',
 ];
 $jsLanguageStrings = [
 ];
