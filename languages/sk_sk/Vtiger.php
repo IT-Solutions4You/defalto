@@ -1432,6 +1432,11 @@ $languageStrings = [
     'Password' => 'Heslo',
     'From Email' => 'Z emailu',
     'Requires Authentication' => 'Vyžaduje overenie',
+    'Comma (,)' => 'Čiarka (,)',
+    'Dot (.)' => 'Bodka (.)',
+    'Apostrophe (\')' => 'Apostrof (\')',
+    'Dollar ($)' => 'Dolár ($)',
+    'Space ( )' => 'Medzera ( )',
 ];
 $jsLanguageStrings = [
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastaveniach systému nakonfigurujte server odchádzajúcej pošty',
