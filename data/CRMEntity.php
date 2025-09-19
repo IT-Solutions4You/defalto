@@ -3237,15 +3237,7 @@ class CRMEntity extends CRMExtension
             $tableColumnsString = implode(',', $tableColumns);
         }
         $selectClause = "SELECT " . $this->table_name . "." . $this->table_index . " AS recordid," . $tableColumnsString;
-
-        // Select Custom Field Table Columns if present
-        if (isset($this->customFieldTable)) {
-            $selectClause .= ", " . $this->customFieldTable[0] . ".* ";
-            $requiredTables[] = $this->customFieldTable[0];
-        }
-
         $fromClause = " FROM $this->table_name";
-
         $fromClause .= " INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = $this->table_name.$this->table_index";
 
         if ($this->tab_name) {
@@ -3269,13 +3261,13 @@ class CRMEntity extends CRMExtension
         }
 
         if (isset($selectedColumns) && trim($selectedColumns) != '') {
-            $sub_query = "SELECT $selectedColumns FROM $this->table_name AS t " .
-                " INNER JOIN vtiger_crmentity AS crm ON crm.crmid = t." . $this->table_index;
-            // Consider custom table join as well.
-            if (isset($this->customFieldTable)) {
-                $sub_query .= " LEFT JOIN " . $this->customFieldTable[0] . " tcf ON tcf." . $this->customFieldTable[1] . " = t.$this->table_index";
-            }
-            $sub_query .= " WHERE crm.deleted=0 GROUP BY $selectedColumns HAVING COUNT(*)>1";
+            $sub_query = sprintf(
+                'SELECT %s FROM %s AS t INNER JOIN vtiger_crmentity AS crm ON crm.crmid = t.%s WHERE crm.deleted=0 GROUP BY %s HAVING COUNT(*)>1',
+                $selectedColumns,
+                $this->table_name,
+                $this->table_index,
+                $selectedColumns,
+            );
         } else {
             $sub_query = "SELECT $tableColumnsString $fromClause $whereClause GROUP BY $tableColumnsString HAVING COUNT(*)>1";
         }
