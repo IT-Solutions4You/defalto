@@ -1427,6 +1427,11 @@ $languageStrings = [
     'Logo Directory' => 'Adresár loga',
     'Logs Directory' => 'Adresár logov',
     'Composer packages Directory' => 'Adresár balíkov Composer',
+    'Server' => 'Server',
+    'Username' => 'Používateľské meno',
+    'Password' => 'Heslo',
+    'From Email' => 'Z emailu',
+    'Requires Authentication' => 'Vyžaduje overenie',
 ];
 $jsLanguageStrings = [
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastaveniach systému nakonfigurujte server odchádzajúcej pošty',
