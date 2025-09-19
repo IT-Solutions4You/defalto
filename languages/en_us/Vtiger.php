@@ -1531,6 +1531,11 @@ $languageStrings = [
     'Password' => 'Password',
     'From Email' => 'From Email',
     'Requires Authentication' => 'Requires Authentication',
+    'Comma (,)' => 'Comma (,)',
+    'Dot (.)' => 'Dot (.)',
+    'Apostrophe (\')' => 'Apostrophe (\')',
+    'Dollar ($)' => 'Dollar ($)',
+    'Space ( )' => 'Space ( )',
 ];
 
 $jsLanguageStrings = [
