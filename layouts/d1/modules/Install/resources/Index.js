@@ -19,7 +19,7 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
             if (elements.length > 0) {
                 elements.addClass('text-danger');
 
-                let msg = 'Some of the PHP Settings do not meet the recommended values. This might affect some of the features of vtiger CRM. Are you sure, you want to proceed?';
+                let msg = app.vtranslate('JS_REQUIRED_PARAMETER_CONFIRMATION');
 
                 app.helper.showConfirmationBox({message: msg}).then(function () {
                     jQuery('form[name="step3"]').submit();
