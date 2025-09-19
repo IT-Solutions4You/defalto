@@ -95,4 +95,10 @@ $languageStrings = [
     'cz_cz' => 'Čeština',
 ];
 $jsLanguageStrings = [
+    'JS_WARNING_DECIMALS' => 'Upozornenie! Je potrebné zadať odlišné hodnoty pre desatinný a skupinový oddeľovač.',
+    'JS_WARNING_EMAIL' => 'Upozornenie! Neplatná emailová adresa.',
+    'JS_WARNING_VALUES' => 'Upozornenie! Povinné polia nemajú vyplnené hodnoty.',
+    'JS_WARNING_RETYPE_PASSWORD' => 'Prosím, zadajte heslá znova. Hodnoty "Heslo" a "Zopakovať heslo" sa nezhodujú.',
+    'JS_WARNING_PASSWORD' => 'Pre bezpečnosť vašich údajov odporúčame použiť silné heslo. Heslo by malo mať aspoň 8 znakov. Obsahovať aspoň jedno číslo. Obsahovať aspoň jedno malé písmeno. Obsahovať aspoň jedno veľké písmeno. Obsahovať aspoň jeden špeciálny znak.',
+    'JS_RESOLVE_ERROR' => 'Prosím, vyriešte chybu pred pokračovaním v inštalácii',
 ];
