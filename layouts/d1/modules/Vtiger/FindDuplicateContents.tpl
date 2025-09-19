@@ -39,10 +39,19 @@
 							</th>
 						{/if}
 						{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
-							<th class="text-secondary">
-                                {vtranslate($LISTVIEW_HEADER->get('label'), $MODULE)}
-							</th>
-						{/foreach}
+                            {if $LISTVIEW_HEADER->get('name') eq 'recordid'}
+                                <th class="text-secondary">
+                                    {vtranslate('LBL_RECORD_NAME', $MODULE)}
+                                </th>
+                                <th class="text-secondary">
+                                    {vtranslate($LISTVIEW_HEADER->get('label'), $MODULE)}
+                                </th>
+                            {else}
+                                <th class="text-secondary">
+                                    {vtranslate($LISTVIEW_HEADER->get('label'), $MODULE)}
+                                </th>
+                            {/if}
+                        {/foreach}
 						{if $IS_EDITABLE && $IS_DELETABLE}
 							<th class="text-center text-secondary">{vtranslate('LBL_MERGE_SELECT', $MODULE)}</th>
 							<th class="text-center text-secondary">{vtranslate('LBL_ACTION', $MODULE)}</th>
@@ -59,9 +68,11 @@
                                     <input type="checkbox" value="{$RECORD.recordid}" class="listViewEntriesCheckBox form-check-input"/>
 								</td>
 							{/if}
-							{assign var=sameRowValues value=true}
 							{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                 {if $LISTVIEW_HEADER->get('name') eq 'recordid'}
+                                    <td>
+                                        <a href="{$MODULE_MODEL->getDetailViewUrl($RECORD.recordid)}">{Vtiger_Util_Helper::getRecordName($RECORD.recordid)}</a>
+                                    </td>
                                     <td>
                                         <a href="{$MODULE_MODEL->getDetailViewUrl($RECORD.recordid)}">{$RECORD[$LISTVIEW_HEADER->get('name')]}</a>
                                     </td>

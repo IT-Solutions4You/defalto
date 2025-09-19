@@ -83,7 +83,7 @@ class Vtiger_FindDuplicate_Model extends Vtiger_Base_Model
         $groupRecordCount = 0;
         $entries = [];
         for ($i = 0; $i < $rows; $i++) {
-            $entries[] = $db->query_result_rowdata($result, $i);
+            $entries[] = $db->fetchByAssoc($result, $i);
         }
 
         $paging->calculatePageRange($entries);
@@ -100,10 +100,11 @@ class Vtiger_FindDuplicate_Model extends Vtiger_Base_Model
         for ($i = 0; $i < $rows; $i++) {
             $row = $entries[$i];
             if ($i != 0) {
-                $slicedArray = array_slice($row, 2);
+                $slicedArray = array_slice($row, 1);
                 array_walk($temp, 'lower_array');
                 array_walk($slicedArray, 'lower_array');
                 $arrDiff = array_diff($temp, $slicedArray);
+
                 if (php7_count($arrDiff) > 0) {
                     $groupCount++;
                     $temp = $slicedArray;
