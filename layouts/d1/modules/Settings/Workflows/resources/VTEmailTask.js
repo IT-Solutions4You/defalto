@@ -32,10 +32,7 @@ Vtiger.Class('VTEmailTask', {
 
         if (selectElement.length && selectElement.length) {
             vtUtils.showSelect2ElementView(selectElement);
-
-            selectElement.one('select2-loaded', function () {
-                vtUtils.makeSelect2ElementSortable(selectElement, valueElement);
-            });
+            vtUtils.makeSelect2ElementSortable(selectElement, valueElement);
         }
     },
     registerVariables: function () {
