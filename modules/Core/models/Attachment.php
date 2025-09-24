@@ -97,6 +97,20 @@ class Core_Attachment_Model extends Core_DatabaseData_Model
         $this->set('is_saved_file', file_put_contents($this->getSaveFile(), $content));
     }
 
+    /**
+     * @param $file
+     * @return void
+     * @throws Exception
+     */
+    public function copyFile($file): void
+    {
+        if ($this->isEmpty('storedname') || $this->isEmpty('path')) {
+            throw new Exception('Missing stored name or path for file save');
+        }
+
+        $this->set('is_saved_file', copy($file, $this->getSaveFile()));
+    }
+
     public function getSaveFile()
     {
         return sprintf('%s/%s_%s', $this->get('path'), $this->getId(), $this->get('storedname'));
