@@ -189,6 +189,9 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
         self::$content = Core_RelatedBlock_Model::replaceAll(self::$recordModel, self::$content, $this->getTemplateModule());
     }
 
+    /**
+     * @return string
+     */
     public function getTemplateModule()
     {
         return explode('_', get_class($this))[0];
@@ -213,6 +216,10 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
         self::$content = Core_InventoryItemsBlock_Model::replaceAll(self::$recordModel, self::$content, $this->getTemplateModule());
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     protected function convertVatBlocks()
     {
         if (!str_contains(self::$content, '#VATBLOCK_')) {
@@ -229,6 +236,10 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
         self::$content = Core_VatBlock_Model::replaceAll(self::$recordModel, self::$content, $this->getTemplateModule());
     }
 
+    /**
+     * @param $recordId
+     * @return void
+     */
     public function retrieveRecordModel($recordId): void
     {
         if (!self::$recordModel && !empty($recordId) && isRecordExists($recordId)) {
@@ -247,6 +258,9 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
         self::$content = str_replace('#HIDETR#', '', self::$content);
     }
 
+    /**
+     * @return void
+     */
     public function convertCurrencyInfo(): void
     {
         $currencyId = self::$recordModel->get('currency_id');
@@ -259,6 +273,9 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
         $this->replaceContent();
     }
 
+    /**
+     * @return void
+     */
     public function replaceContent(): void
     {
         if (!empty(self::$rep)) {
@@ -267,6 +284,9 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     */
     public function convertCopyHeader(): void
     {
         $html = Core_SimpleHtmlDom_Helper::getInstance(self::$content);
@@ -277,6 +297,11 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
             }
 
             $table = $html->parents($tdNode, 'table');
+
+            if(!$table) {
+                continue;
+            }
+
             $tr = $html->parents($tdNode, 'tr');
             $headerTr = $table->find('tr', 0);
 
@@ -285,9 +310,14 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
 
         $html = $html->getHtml();
 
+        self::$rep['#copyheader#'] = '';
+        self::$rep['#COPYHEADER#'] = '';
         self::$content = $html;
     }
 
+    /**
+     * @return void
+     */
     public function convertPageBreak(): void
     {
         $html = Core_SimpleHtmlDom_Helper::getInstance(self::$content);
@@ -297,8 +327,13 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
                 continue;
             }
 
+            $pageBreakTable = $html->parents($tdNode, 'table');
 
-            $table = clone $html->parents($tdNode, 'table');
+            if(!$pageBreakTable) {
+                return;
+            }
+
+            $table = clone $pageBreakTable;
             $table->nodes = null;
             $table->innertext = '#EXPLODE#';
             $tableContent = $table->save();
@@ -314,5 +349,94 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
         self::$rep['#pagebreak#'] = self::$pagebreak;
         self::$rep['#PAGEBREAK#'] = self::$pagebreak;
         $this->replaceContent();
+    }
+
+    /**
+     * @return void
+     */
+    public function replaceImages()
+    {
+        if (!str_contains(self::$content, '$RECORD_IMAGE_')) {
+            return;
+        }
+
+        preg_match_all('/\$RECORD_IMAGE_([0-9]*)\$/', self::$content, $matches);
+        $recordIds = $matches[1];
+
+        foreach ($recordIds as $key => $recordId) {
+            $key = $matches[0][$key];
+            self::$rep[$key] = '';
+
+            if ('InventoryItem' === getSalesEntityType($recordId)) {
+                self::$rep[$key] = $this->getInventoryItemImage($recordId);
+            } else {
+                self::$rep[$key] = $this->getRecordImage($recordId);
+            }
+        }
+
+        $this->replaceContent();
+    }
+
+    /**
+     * @param int $recordId
+     * @return string
+     */
+    public function getInventoryItemImage(int $recordId): string
+    {
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery(
+            'SELECT df_inventoryitem.productid FROM df_inventoryitem WHERE df_inventoryitem.inventoryitemid=?',
+            [$recordId],
+        );
+        $row = $adb->fetchByAssoc($result);
+
+        return $this->getRecordImage($row['productid']);
+    }
+
+    /**
+     * @param int $recordId
+     * @return string
+     */
+    public function getRecordImage(int $recordId): string
+    {
+        $data = $this->getRecordImageData($recordId);
+
+        if (empty($data['attachmentsid'])) {
+            return '';
+        }
+
+        return $this->getRecordImageFromData($data);
+    }
+
+    /**
+     * @param int $recordId
+     * @return array
+     */
+    public function getRecordImageData(int $recordId): array
+    {
+        $query = 'SELECT vtiger_attachments.* FROM vtiger_attachments
+            INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_attachments.attachmentsid
+            INNER JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid
+            WHERE vtiger_crmentity.deleted=0 AND vtiger_seattachmentsrel.crmid=?';
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery($query, [$recordId]);
+        $data = (array)$adb->fetchByAssoc($result);
+        $data['record_id'] = $recordId;
+
+        return $data;
+    }
+
+    /**
+     * @param array $data
+     * @return string
+     */
+    public function getRecordImageFromData(array $data): string
+    {
+        return sprintf(
+            '<img class="itemImage itemImage%d" src="%s" style="%s">',
+            $data['record_id'],
+            rtrim($data['path'], '/') . '/' . $data['attachmentsid'] . '_' . $data['storedname'],
+            $data['style'],
+        );
     }
 }
