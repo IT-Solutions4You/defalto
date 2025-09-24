@@ -919,6 +919,6 @@ var vtUtils = {
     },
 
     updateWindowUrl(url) {
-        history.replaceState(null, '', url);
+        window.history.replaceState(null, '', url);
     },
 }
