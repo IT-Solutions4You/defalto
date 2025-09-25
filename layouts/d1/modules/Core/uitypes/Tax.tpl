@@ -23,14 +23,14 @@
             </div>
             <div id="taxes_{$TAX_ID}" class="col {if !$TAX_MODEL->isActiveForRecord()}hide{/if}">
                 <label class="input-group py-1">
-                    <input type="text" class="form-control replaceCommaWithDot" name="{$FIELD_NAME}[{$TAX_ID}][percentage]" value="{$TAX_MODEL->getPercentage()}">
+                    <input type="text" class="form-control replaceCommaWithDot" name="{$FIELD_NAME}[{$TAX_ID}][percentage]" value="{if $TAX_MODEL->isActiveForRecord()}{$TAX_MODEL->getPercentage()}{else}{$TAX_MODEL->getDefaultPercentage()}{/if}">
                     <span class="input-group-text">%</span>
                 </label>
                 {foreach from=$TAX_MODEL->getRegions() item=REGION_MODEL}
                     {assign var=REGION_ID value=$REGION_MODEL->getId()}
                     <label class="input-group py-1" title="{$REGION_MODEL->getName()}">
                         <span class="input-group-text w-50">{$REGION_MODEL->getName()}</span>
-                        <input type="text" class="form-control replaceCommaWithDot" name="{$FIELD_NAME}[{$TAX_ID}][regions][{$REGION_ID}]" value="{$REGION_MODEL->getPercentage()}">
+                        <input type="text" class="form-control replaceCommaWithDot" name="{$FIELD_NAME}[{$TAX_ID}][regions][{$REGION_ID}]" value="{if $TAX_MODEL->isActiveForRecord()}{$REGION_MODEL->getPercentage()}{else}{$REGION_MODEL->getDefaultPercentage()}{/if}">
                         <span class="input-group-text">%</span>
                     </label>
                 {/foreach}
