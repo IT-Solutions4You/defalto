@@ -30,7 +30,8 @@ trait Core_Tax_Trait
         $this->set('percentage', $value);
     }
 
-    public function getPercentage(): float {
+    public function getPercentage(): float
+    {
         return (float)$this->get('percentage');
     }
 }
