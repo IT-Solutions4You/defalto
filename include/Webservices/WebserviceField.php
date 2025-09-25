@@ -57,6 +57,11 @@ class WebserviceField
 
     private $readOnly = 0;
     private $isunique = 0;
+    public $referenceFieldLabel;
+    public $referenceFieldName;
+    public $parentReferenceField;
+    public $moduleName;
+    public $isNameField;
 
     private function __construct($adb, $row)
     {

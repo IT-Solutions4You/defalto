@@ -62,6 +62,7 @@ class Vtiger_ModuleBasic
     var $allowDuplicates = false;
     var $isSyncable = 0;
     var $syncActionForDuplicate = 1;
+    public $app2tab_sequence;
 
     const EVENT_MODULE_ENABLED = 'module.enabled';
     const EVENT_MODULE_DISABLED = 'module.disabled';

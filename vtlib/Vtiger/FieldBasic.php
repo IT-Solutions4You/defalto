@@ -52,6 +52,9 @@ class Vtiger_FieldBasic
     public $quickcreatesequence;
     public $headerfieldsequence;
     public $summaryfieldsequence;
+    public $uitype_instance;
+    public $fieldvalue;
+    public $fieldInfo;
 
     /**
      * Constructor
