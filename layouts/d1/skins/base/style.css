@@ -45,6 +45,7 @@
     --menu-icon-size: 4.25rem;
     --footer-height: 2rem;
     --header-height: 5rem;
+    --sub-header-height: 3.5rem;
     --main-height: calc(100vh - var(--footer-height) - var(--header-height));
     --menu-height: var(--main-height);
     --menu-icon-color: rgba(94, 129, 244, 1);
@@ -188,6 +189,10 @@
 
 .h-header {
     height: var(--header-height);
+}
+
+.h-sub-header {
+    height: var(--sub-header-height);
 }
 
 .h-main {
@@ -410,14 +415,6 @@ body {
 }
 
 .global-nav .app-navigator-container {
-    height: var(--header-height);
-}
-
-.global-nav .search-links-container {
-    height: var(--header-height);
-}
-
-.global-nav .global-actions {
     height: var(--header-height);
 }
 
@@ -4012,10 +4009,6 @@ input:focus:-ms-input-placeholder {
     z-index: 1095 !important;
 }
 
-body .fc {
-    overflow: auto;
-}
-
 .margin0 {
     margin: 0;
 }
@@ -4577,4 +4570,25 @@ input[type=number] {
 }
 .bootstrap-switch .bootstrap-switch-primary {
     background-color: rgba(var(--bs-primary-rgb),var(--bs-bg-opacity)) !important ;
+}
+
+.dt_scroll {
+    padding-right: 1rem;
+}
+
+@media (max-width: 991.98px) {
+    :root {
+        --html-font-size: 0.75rem;
+    }
+
+    .navbar-expand .navbar-nav .dropdown-menu {
+        position: fixed;
+        height: calc(100vh - var(--header-height));
+        width: 100vw;
+        top: var(--header-height);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: 0 !important;
+    }
 }
