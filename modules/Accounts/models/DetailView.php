@@ -95,7 +95,7 @@ class Accounts_DetailView_Model extends Vtiger_DetailView_Model
                         'linktype' => Vtiger_DetailView_Model::LINK_MORE,
                         'linklabel' => vtranslate('LBL_ADD_' . strtoupper($createLinkModule), $createLinkModule),
                         'linkurl' => sprintf('%s&%s=%s&relationOperation=true&sourceModule=%s&sourceRecord=%s', $moduleModel->getCreateRecordUrl(), $field, $linkParams['RECORD'], $linkParams['MODULE'], $linkParams['RECORD']),
-                        'linkicon' => '<i class="bi bi-plus-lg"></i>',
+                        'linkicon' => $moduleModel->getModuleIcon(),
                     ];
                 }
             }
