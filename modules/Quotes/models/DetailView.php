@@ -33,9 +33,9 @@ class Quotes_DetailView_Model extends Vtiger_DetailView_Model
         if ($currentUserModel->hasModuleActionPermission($invoiceModuleModel->getId(), 'CreateView')) {
             $links[] = [
                 'linktype'  => 'DETAILVIEW',
-                'linklabel' => vtranslate('LBL_GENERATE') . ' ' . vtranslate($invoiceModuleModel->getSingularLabelKey(), 'Invoice'),
+                'linklabel' => vtranslate('LBL_GENERATE_INVOICE', $recordModel->getModuleName()),
                 'linkurl'   => $recordModel->getCreateInvoiceUrl(),
-                'linkicon'  => '',
+                'linkicon'  => $invoiceModuleModel->getModuleIcon(),
             ];
         }
 
@@ -44,9 +44,9 @@ class Quotes_DetailView_Model extends Vtiger_DetailView_Model
         if ($currentUserModel->hasModuleActionPermission($salesOrderModuleModel->getId(), 'CreateView')) {
             $links[] = [
                 'linktype'  => 'DETAILVIEW',
-                'linklabel' => vtranslate('LBL_GENERATE') . ' ' . vtranslate($salesOrderModuleModel->getSingularLabelKey(), 'SalesOrder'),
+                'linklabel' => vtranslate('LBL_GENERATE_SALESORDER', $recordModel->getModuleName()),
                 'linkurl'   => $recordModel->getCreateSalesOrderUrl(),
-                'linkicon'  => '',
+                'linkicon'  => $salesOrderModuleModel->getModuleIcon(),
             ];
         }
 
@@ -55,9 +55,9 @@ class Quotes_DetailView_Model extends Vtiger_DetailView_Model
         if ($currentUserModel->hasModuleActionPermission($purchaseOrderModuleModel->getId(), 'CreateView')) {
             $links[] = [
                 'linktype'  => 'DETAILVIEW',
-                'linklabel' => vtranslate('LBL_GENERATE') . ' ' . vtranslate($purchaseOrderModuleModel->getSingularLabelKey(), 'PurchaseOrder'),
+                'linklabel' => vtranslate('LBL_GENERATE_PURCHASEORDER', $recordModel->getModuleName()),
                 'linkurl'   => $recordModel->getCreatePurchaseOrderUrl(),
-                'linkicon'  => '',
+                'linkicon'  => $purchaseOrderModuleModel->getModuleIcon(),
             ];
         }
 
