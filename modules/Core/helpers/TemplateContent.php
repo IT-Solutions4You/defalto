@@ -368,9 +368,9 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
             self::$rep[$key] = '';
 
             if ('InventoryItem' === getSalesEntityType($recordId)) {
-                self::$rep[$key] = $this->getInventoryItemImage($recordId);
+                self::$rep[$key] = $this->getInventoryItemImage((int)$recordId);
             } else {
-                self::$rep[$key] = $this->getRecordImage($recordId);
+                self::$rep[$key] = $this->getRecordImage((int)$recordId);
             }
         }
 
@@ -390,7 +390,7 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
         );
         $row = $adb->fetchByAssoc($result);
 
-        return $this->getRecordImage($row['productid']);
+        return $this->getRecordImage((int)$row['productid']);
     }
 
     /**

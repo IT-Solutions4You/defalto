@@ -198,6 +198,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         $this->handleRowbreak();
         $this->replaceUserCompanyFields();
         $this->replaceLabels();
+        $this->replaceImages();
         $this->convertHideTR();
 
         self::$rep['%EXECUTIONTIME%'] = 'Total execution time in seconds: ' . (microtime(true) - self::$execution_time_start);
