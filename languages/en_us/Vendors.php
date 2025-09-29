@@ -46,6 +46,7 @@ $languageStrings = [
     '306-Internet Sales'         => '306-Internet Sales',
     '307-Service-Hardware Labor' => '307-Service-Hardware Labor',
     '308-Sales-Books'            => '308-Sales-Books',
+    'LBL_CREATE_PURCHASEORDER'            => 'Create Purchase Order',
 ];
 
 $jsLanguageStrings = [
