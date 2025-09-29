@@ -49,6 +49,15 @@ $languageStrings = [
     'Type' => 'Typ',
     'Other Email' => 'Sekundárny email',
     'Other Phone' => 'Sekundárny telefón',
+    'LBL_ADD_CONTACTS' => 'Pridať kontakt',
+    'LBL_ADD_POTENTIALS' => 'Pridať príležitosti',
+    'LBL_ADD_QUOTES' => 'Pridať ponuku',
+    'LBL_ADD_SALESORDER' => 'Pridať objednávku',
+    'LBL_ADD_PROJECT' => 'Pridať projekt',
+    'LBL_ADD_ASSETS' => 'Pridať majetok',
+    'LBL_ADD_SERVICECONTRACTS' => 'Pridať servisnú zmluvu',
+    'LBL_ADD_HELPDESK' => 'Pridať tiket',
+    'LBL_ADD_INVOICE' => 'Pridať faktúru',
 ];
 $jsLanguageStrings = [
     'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Ste si istí, že chcete odstrániť záznam?',
