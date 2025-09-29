@@ -54,6 +54,9 @@ $languageStrings = [
     'Proposal or Price Quote' => 'Cenová ponuka',
     'Negotiation or Review' => 'Prepracovanie',
     'Creator' => 'Tvorca',
+    'LBL_CREATE_INVOICE' => 'Vytvoriť faktúru',
+    'LBL_CREATE_QUOTES' => 'Vytvoriť cenovú ponuku',
+    'LBL_CREATE_SALESORDER' => 'Vytvoriť predajnú objednávku',
 ];
 $jsLanguageStrings = [
     'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Konverzia si vyžaduje výber Projektu',
