@@ -18,6 +18,9 @@
 
 class Accounts_DetailView_Model extends Vtiger_DetailView_Model
 {
+    /**
+     * @var array
+     */
     public array $createLinkModules = [
         'Contacts',
         'Potentials',
@@ -30,6 +33,9 @@ class Accounts_DetailView_Model extends Vtiger_DetailView_Model
         'Project',
     ];
 
+    /**
+     * @var array
+     */
     public array $createLinkFieldsMap = [
         'Potentials' => 'related_to',
         'Assets' => 'account',
@@ -82,9 +88,9 @@ class Accounts_DetailView_Model extends Vtiger_DetailView_Model
             foreach ($this->createLinkModules as $createLinkModule) {
                 /** @var Vtiger_Module_Model $moduleModel */
                 $moduleModel = Vtiger_Module_Model::getInstance($createLinkModule);
-                $field = $this->createLinkFieldsMap[$createLinkModule] ?: 'account_id';
 
                 if ($moduleModel->isPermitted('EditView')) {
+                    $field = $this->createLinkFieldsMap[$createLinkModule] ?: 'account_id';
                     $links[] = [
                         'linktype' => Vtiger_DetailView_Model::LINK_MORE,
                         'linklabel' => vtranslate('LBL_ADD_' . strtoupper($createLinkModule), $createLinkModule),
