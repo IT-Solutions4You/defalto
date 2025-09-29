@@ -318,6 +318,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             $this->convertRelatedBlocks();
             $this->convertInventoryBlocks();
             $this->convertVatBlocks();
+            $this->replaceImages();
             $this->replaceFieldsToContent(self::$module, self::$focus);
 
             if ($this->focus->column_fields["assigned_user_id"] == "" && $this->focus->id != "") {
