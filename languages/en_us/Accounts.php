@@ -66,6 +66,15 @@ $languageStrings = [
 
     'Company Reg. No.' => 'Company Reg. No.',
     'VAT ID'           => 'VAT ID',
+    'LBL_ADD_CONTACTS' => 'Add Contact',
+    'LBL_ADD_POTENTIALS' => 'Add Opportunities',
+    'LBL_ADD_QUOTES' => 'Add Quote',
+    'LBL_ADD_SALESORDER' => 'Add Sales Order',
+    'LBL_ADD_PROJECT' => 'Add Project',
+    'LBL_ADD_ASSETS' => 'Add Asset',
+    'LBL_ADD_SERVICECONTRACTS' => 'Add Service Contract',
+    'LBL_ADD_HELPDESK' => 'Add Ticket',
+    'LBL_ADD_INVOICE' => 'Add Invoice',
 ];
 
 $jsLanguageStrings = [

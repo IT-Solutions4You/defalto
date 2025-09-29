@@ -18,9 +18,6 @@
 
 class Accounts_DetailView_Model extends Vtiger_DetailView_Model
 {
-    /**
-     * @var array
-     */
     public array $createLinkModules = [
         'Contacts',
         'Potentials',
@@ -33,9 +30,6 @@ class Accounts_DetailView_Model extends Vtiger_DetailView_Model
         'Project',
     ];
 
-    /**
-     * @var array
-     */
     public array $createLinkFieldsMap = [
         'Potentials' => 'related_to',
         'Assets' => 'account',
