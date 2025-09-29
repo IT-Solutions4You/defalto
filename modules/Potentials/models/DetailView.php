@@ -39,27 +39,27 @@ class Potentials_DetailView_Model extends Vtiger_DetailView_Model
         if ($currentUserModel->hasModuleActionPermission($invoiceModuleModel->getId(), 'CreateView')) {
             $links[] = [
                 'linktype'  => Vtiger_DetailView_Model::LINK_MORE,
-                'linklabel' => vtranslate('LBL_CREATE') . ' ' . vtranslate($invoiceModuleModel->getSingularLabelKey(), 'Invoice'),
+                'linklabel' => vtranslate('LBL_CREATE_INVOICE', $recordModel->getModuleName()),
                 'linkurl'   => $recordModel->getCreateInvoiceUrl(),
-                'linkicon'  => '',
+                'linkicon'  => $invoiceModuleModel->getModuleIcon(),
             ];
         }
 
         if ($currentUserModel->hasModuleActionPermission($quoteModuleModel->getId(), 'CreateView')) {
             $links[] = [
                 'linktype'  => Vtiger_DetailView_Model::LINK_MORE,
-                'linklabel' => vtranslate('LBL_CREATE') . ' ' . vtranslate($quoteModuleModel->getSingularLabelKey(), 'Quotes'),
+                'linklabel' => vtranslate('LBL_CREATE_QUOTES', $recordModel->getModuleName()),
                 'linkurl'   => $recordModel->getCreateQuoteUrl(),
-                'linkicon'  => '',
+                'linkicon'  => $quoteModuleModel->getModuleIcon(),
             ];
         }
 
         if ($currentUserModel->hasModuleActionPermission($salesOrderModuleModel->getId(), 'CreateView')) {
             $links[] = [
                 'linktype'  => Vtiger_DetailView_Model::LINK_MORE,
-                'linklabel' => vtranslate('LBL_CREATE') . ' ' . vtranslate($salesOrderModuleModel->getSingularLabelKey(), 'SalesOrder'),
+                'linklabel' => vtranslate('LBL_CREATE_SALESORDER', $recordModel->getModuleName()),
                 'linkurl'   => $recordModel->getCreateSalesOrderUrl(),
-                'linkicon'  => '',
+                'linkicon'  => $salesOrderModuleModel->getModuleIcon(),
             ];
         }
 
