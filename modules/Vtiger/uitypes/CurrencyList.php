@@ -50,4 +50,11 @@ class Vtiger_CurrencyList_UIType extends Vtiger_Base_UIType
 	{
 		return 'uitypes/CurrencyListFieldSearchView.tpl';
 	}
+
+    public static function transformDisplayValue($value, $record = false, $recordInstance = false)
+    {
+        $uiType = new self();
+
+        return $uiType->getDisplayValue($value, $record, $recordInstance);
+    }
 }
