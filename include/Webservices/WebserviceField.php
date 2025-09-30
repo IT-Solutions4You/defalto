@@ -213,7 +213,7 @@ class WebserviceField
 
     public function getUIType()
     {
-        return $this->uitype;
+        return (int)$this->uitype;
     }
 
     public function isReadOnly()

@@ -1861,22 +1861,18 @@ class Vtiger_Field_Model extends Vtiger_Field
     /**
      * @throws Exception
      */
-    public function insertFieldType($uiType, $fieldType): void
+    public function saveFieldType($uiType, $fieldType): void
     {
         $table = $this->getFieldTypeTable();
-        $data = $table->selectData(['uitype as id'], ['uitype' => $uiType]);
+        $data = ['fieldtype' => $fieldType];
+        $search = ['uitype' => $uiType];
+        $info = $table->selectData(['fieldtypeid as id'], $search);;
 
-        if (empty($data['id'])) {
-            $table->insertData(['uitype' => $uiType, 'fieldtype' => $fieldType]);
+        if (!empty($info['id'])) {
+            $table->updateData($data, $search);
+        } else {
+            $table->insertData(array_merge($data, $search));
         }
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function insertDefaultData(): void
-    {
-        $this->insertFieldType(self::UITYPE_PERCENTAGE, 'percentage');
     }
 
     /**
