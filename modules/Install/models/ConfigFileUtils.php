@@ -72,8 +72,8 @@ class Install_ConfigFileUtils_Model
         if (isset($configFileParameters['vt_charset'])) {
             $this->vtCharset = $configFileParameters['vt_charset'];
         }
-        if (isset($configFileParameters['default_language'])) {
-            $this->vtDefaultLanguage = $configFileParameters['default_language'];
+        if (isset($configFileParameters['config_language'])) {
+            $this->vtDefaultLanguage = $configFileParameters['config_language'];
         }
         if (isset($configFileParameters['currency_decimal_separator'])) {
             $this->currencyDecimalSeparator = $configFileParameters['currency_decimal_separator'];
