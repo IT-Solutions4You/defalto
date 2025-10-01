@@ -47,7 +47,7 @@
                             {if $MODULE_NAME eq 'Documents' && $DETAIL_VIEW_BASIC_LINK->getLabel() eq 'LBL_VIEW_FILE'}
                                 data-filelocationtype="{$DETAIL_VIEW_BASIC_LINK->get('filelocationtype')}" data-filename="{$DETAIL_VIEW_BASIC_LINK->get('filename')}"
                             {/if}>
-                            {$DETAIL_VIEW_BASIC_LINK->get('linkicon')}
+                            {$DETAIL_VIEW_BASIC_LINK->getIconHTML()}
                             <span class="ms-2">{vtranslate($DETAIL_VIEW_BASIC_LINK->getLabel(), $MODULE_NAME)}</span>
                         </button>
                     {/if}
