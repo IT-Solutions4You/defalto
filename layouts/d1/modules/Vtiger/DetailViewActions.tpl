@@ -67,7 +67,7 @@
                                 {if $MODULE_NAME eq 'Documents' && $DETAIL_VIEW_BASIC_LINK->getLabel() eq 'LBL_VIEW_FILE'}
                             data-filelocationtype="{$DETAIL_VIEW_BASIC_LINK->get('filelocationtype')}" data-filename="{$DETAIL_VIEW_BASIC_LINK->get('filename')}"
                                 {/if}>
-                            {$DETAIL_VIEW_BASIC_LINK->get('linkicon')}
+                            {$DETAIL_VIEW_BASIC_LINK->getIconHTML()}
                             <span class="ms-2">{vtranslate($DETAIL_VIEW_BASIC_LINK->getLabel(), $MODULE_NAME)}</span>
                         </button>
                     {/if}
@@ -83,7 +83,7 @@
                             {if $DETAIL_VIEW_LINK->getLabel() eq ""}
                                 <li class="dropdown-item divider"></li>
                             {else}
-                                {assign var=DETAIL_VIEW_LINK_ICON value=$DETAIL_VIEW_LINK->get('linkicon')}
+                                {assign var=DETAIL_VIEW_LINK_ICON value=$DETAIL_VIEW_BASIC_LINK->getIconHTML()}
                                 <li class="dropdown-item" id="{$MODULE_NAME}_detailView_moreAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($DETAIL_VIEW_LINK->getLabel())}">
                                     {if $DETAIL_VIEW_LINK->getUrl()|strstr:"javascript"}
                                         <a href='{$DETAIL_VIEW_LINK->getUrl()}'>
