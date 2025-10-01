@@ -76,6 +76,9 @@ $languageStrings = [
 
     //Potentials Custom Field Mapping
     'LBL_CUSTOM_FIELD_MAPPING'                => 'Opportunity to Project mapping',
+    'LBL_CREATE_INVOICE' => 'Create Invoice',
+    'LBL_CREATE_QUOTES' => 'Create Quote',
+    'LBL_CREATE_SALESORDER' => 'Create Sales Order',
 ];
 
 $jsLanguageStrings = [

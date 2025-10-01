@@ -8,11 +8,11 @@
  *}
 {strip}
 	<div class="modal-dialog modal-lg">
-		<div id="accountHierarchyContainer" class="modelContainer modal-content" style='min-width:750px'>
+		<div id="accountHierarchyContainer" class="modelContainer modal-content">
 			{assign var=HEADER_TITLE value={vtranslate('LBL_SHOW_ACCOUNT_HIERARCHY', $MODULE)}}
 			{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
-			<div class="modal-body">
-				<div id ="hierarchyScroll" style="margin-right: 8px;">
+			<div class="modal-body overflow-auto">
+				<div id="hierarchyScroll" style="min-width: 750px;">
 					<table class="table table-bordered">
 						<thead>
 							<tr class="blockHeader">

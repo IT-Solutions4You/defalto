@@ -59,6 +59,7 @@ class CustomView extends CRMEntity
     protected $_userid = false;
     protected $meta;
     protected $moduleMetaInfo;
+    public $smownerid;
 
     /** This function sets the currentuser id to the class variable smownerid,
      * modulename to the class variable customviewmodule

@@ -100,3 +100,12 @@ $languageStrings = [
     'sk_sk' => 'Slovak',
     'cz_cz' => 'Czech',
 ];
+
+$jsLanguageStrings = [
+    'JS_WARNING_DECIMALS' => 'Warning! Required different values Decimal and Grouping separator.',
+    'JS_WARNING_EMAIL' => 'Warning! Invalid email address.',
+    'JS_WARNING_VALUES' => 'Warning! Required fields missing values.',
+    'JS_WARNING_RETYPE_PASSWORD' => 'Please re-enter passwords.  The "Password" and "Re-type password" values do not match.',
+    'JS_WARNING_PASSWORD' => 'To keep your data safe, we suggest that you use a strong password: Password should be at least 8 characters long. Include at least one number. Include at least one lowercase alphabet. Include at least one uppercase alphabet. 0Include at least one special character in the password.',
+    'JS_RESOLVE_ERROR' => 'Please resolve the error before proceeding with the installation',
+];

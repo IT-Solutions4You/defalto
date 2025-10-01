@@ -41,6 +41,13 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      * [Module, Workflow Name, Workflow Label, Modules JSON]
      */
     public array $registerWorkflows = [];
+
+    /**
+     * @var array 
+     * [ui type => field type]
+     */
+    public array $registerFieldTypes = [];
+    
     /**
      * @var PearDatabase
      */
@@ -1565,5 +1572,19 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $taskModel->save();
 
         return $taskModel;
+    }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function updateFieldTypes(): void
+    {
+        $fieldModel = new Vtiger_Field_Model();
+
+        foreach ($this->registerFieldTypes as $fieldTypeName) {
+            [$uiTypeId, $uiType] = $fieldTypeName;
+            $fieldModel->saveFieldType($uiTypeId, $uiType);
+        }
     }
 }

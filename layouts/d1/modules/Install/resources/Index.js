@@ -19,7 +19,7 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
             if (elements.length > 0) {
                 elements.addClass('text-danger');
 
-                let msg = 'Some of the PHP Settings do not meet the recommended values. This might affect some of the features of vtiger CRM. Are you sure, you want to proceed?';
+                let msg = app.vtranslate('JS_REQUIRED_PARAMETER_CONFIRMATION');
 
                 app.helper.showConfirmationBox({message: msg}).then(function () {
                     jQuery('form[name="step3"]').submit();
@@ -57,7 +57,7 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
         }
 
         function setPasswordError() {
-            jQuery('#passwordError').html('Please re-enter passwords.  The \"Password\" and \"Re-type password\" values do not match.');
+            jQuery('#passwordError').html(app.vtranslate('JS_WARNING_RETYPE_PASSWORD'));
         }
 
         //This is not an event, we check if create_db is checked
@@ -72,7 +72,7 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
         jQuery('input[name="password"]').on('blur', function (e) {
             var retypePassword = jQuery('input[name="retype_password"]');
             if (retypePassword.val() != '' && retypePassword.val() !== jQuery(e.currentTarget).val()) {
-                jQuery('#passwordError').html('Please re-enter passwords.  The \"Password\" and \"Re-type password\" values do not match.');
+                jQuery('#passwordError').html(app.vtranslate('JS_WARNING_RETYPE_PASSWORD'));
             } else {
                 clearPasswordError();
             }
@@ -83,11 +83,13 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
         });
 
         jQuery('input[name="step5"]').on('click', function () {
-            let error = false;
-            let validateFieldNames = ['db_hostname', 'db_username', 'db_name', 'password', 'retype_password', 'lastname', 'admin_email'];
+            let error = false,
+                validateFieldNames = ['db_hostname', 'db_username', 'db_name', 'password', 'retype_password', 'lastname', 'admin_email'];
+
             for (let fieldName in validateFieldNames) {
                 let field = jQuery('input[name="' + validateFieldNames[fieldName] + '"]');
-                if (field.val() == '') {
+
+                if (!field.val()) {
                     field.addClass('error').focus();
                     error = true;
                     break;
@@ -97,46 +99,43 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
             }
 
             let createDatabase = jQuery('input[name="create_db"]:checked');
+
             if (createDatabase.length > 0) {
                 let dbRootUser = jQuery('input[name="db_root_username"]');
-                if (dbRootUser.val() == '') {
+
+                if (!dbRootUser.val()) {
                     dbRootUser.addClass('error').focus();
                     error = true;
                 } else {
                     dbRootUser.removeClass('error');
                 }
             }
-            let password = jQuery('#passwordError');
-            if (password.html() != '') {
+
+            let password = jQuery('#passwordError'),
+                passwordField = jQuery('input[name="password"]'),
+                passwordNotStrong = !passwordField.val() || !vtUtils.isPasswordStrong(passwordField.val()),
+                emailField = jQuery('input[name="admin_email"]'),
+                invalidEmailAddress = !emailField.val() || !vtUtils.isEmailValidated(emailField.val()),
+                decimalSeparator = jQuery('[name="currency_decimal_separator"]').val(),
+                groupingSeparator = jQuery('[name="currency_grouping_separator"]').val(),
+                invalidDecimalGroupingSeparator = !decimalSeparator || !groupingSeparator || decimalSeparator === groupingSeparator;
+
+            if (password.html()) {
                 error = true;
             }
 
-            let passwordField = jQuery('input[name="password"]');
-            let passwordNotStrong = false;
-
-            if (!passwordField.val() && !vtUtils.isPasswordStrong(passwordField.val())) {
+            if (passwordNotStrong) {
                 error = true;
-                passwordNotStrong = true;
             }
 
-            let emailField = jQuery('input[name="admin_email"]');
-            let regex = /^[_/a-zA-Z0-9*]+([!"#$%&'()*+,./:;<=>?\^_`{|}~-]?[a-zA-Z0-9/_/-])*@[a-zA-Z0-9]+([\_\-\.]?[a-zA-Z0-9]+)*\.([\-\_]?[a-zA-Z0-9])+(\.?[a-zA-Z0-9]+)?$/;
-            let invalidEmailAddress = false;
-
-            if (!emailField.val() || !regex.test(emailField.val())) {
-                invalidEmailAddress = true;
+            if (invalidEmailAddress) {
                 emailField.addClass('error').focus();
                 error = true;
             } else {
                 emailField.removeClass('error');
             }
 
-            let decimalSeparator = jQuery('[name="currency_decimal_separator"]').val(),
-                groupingSeparator = jQuery('[name="currency_grouping_separator"]').val(),
-                invalidDecimalGroupingSeparator = false;
-
-            if (!decimalSeparator || !groupingSeparator || decimalSeparator === groupingSeparator) {
-                invalidDecimalGroupingSeparator = true;
+            if (invalidDecimalGroupingSeparator) {
                 error = true;
             }
 
@@ -144,13 +143,13 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
                 let content;
 
                 if (invalidDecimalGroupingSeparator) {
-                    content = self.getErrorContent('Warning! Required different values Decimal and Grouping separator.');
+                    content = self.getErrorContent(app.vtranslate('JS_WARNING_DECIMALS'));
                 } else if (invalidEmailAddress) {
-                    content = self.getErrorContent('Warning! Invalid email address.');
+                    content = self.getErrorContent(app.vtranslate('JS_WARNING_EMAIL'));
                 } else if (passwordNotStrong) {
-                    content = self.getErrorContent('To keep your data safe, we suggest that you use a strong password<br><ul><li>Password should be at least 8 characters long</li><li>Include at least one number</li><li>Include at least one lowercase alphabet</li><li>Include at least one uppercase alphabet</li><li>Include at least one special character in the password</li></ul>');
+                    content = self.getErrorContent(app.vtranslate('JS_WARNING_PASSWORD'));
                 } else {
-                    content = self.getErrorContent('Warning! Required fields missing values.');
+                    content = self.getErrorContent(app.vtranslate('JS_WARNING_VALUES'));
                 }
 
                 jQuery('#errorMessage').html(content).removeClass('hide')
@@ -166,7 +165,7 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
         jQuery('input[name="step6"]').on('click', function () {
             var error = jQuery('#errorMessage');
             if (error.length) {
-                alert('Please resolve the error before proceeding with the installation');
+                app.helper.showErrorNotification({message: app.vtranslate('JS_RESOLVE_ERROR')});
                 return false;
             } else {
                 jQuery('form[name="step5"]').submit().hide();

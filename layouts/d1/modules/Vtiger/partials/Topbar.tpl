@@ -59,7 +59,7 @@
                     {/if}
                 </div>
             </div>
-            <div class="navbar-header col-auto ms-auto d-lg-none p-2">
+            <div class="navbar-header col-auto ms-auto d-lg-none p-2 p-lg-0">
                 <div class="d-flex align-items-center h-100">
                     <button type="button" class="btn btn-outline-secondary me-2" data-bs-toggle="collapse" data-bs-target="#search-links-container" aria-controls="search-links-container" aria-expanded="false">
                         <i class="fa fa-search"></i>
@@ -69,8 +69,8 @@
                     </button>
                 </div>
             </div>
-            <div id="search-links-container" class="search-links-container collapse ms-auto col-lg-auto d-lg-block px-2 px-lg-0 bg-body-secondary">
-                <div class="d-flex align-items-center h-100">
+            <div id="search-links-container" class="search-links-container collapse navbar navbar-expand col-lg-auto d-lg-block bg-body-secondary px-3 p-lg-0 h-sub-header">
+                <div class="d-flex align-items-center h-100 w-100">
                     <div class="search-link input-group input-group border border-secondary rounded">
                         <label for="search-keyword-input" class="d-inline-block input-group-text bg-body-secondary text-secondary border-0">
                             <i class="fa fa-search"></i>
@@ -82,10 +82,9 @@
                     </div>
                 </div>
             </div>
-            <div id="navbar" class="global-actions collapse navbar navbar-expand col-lg-auto d-lg-block px-2 py-0 bg-body-secondary">
-                <div class="h-100 d-flex align-items-center ms-auto">
-                    <ul class="nav navbar-nav ms-auto align-items-center">
-                    <li class="me-2">
+            <div id="navbar" class="global-actions collapse navbar navbar-expand col-lg-auto d-lg-block bg-body-secondary px-3 ps-lg-0 pe-lg-4 h-sub-header">
+                <ul class="nav navbar-nav ms-auto h-100 align-items-center">
+                    <li class="ms-2">
                         <div class="dropdown">
                             <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="true">
                                 <a href="#" id="menubar_quickCreate" class="btn border-1 border-secondary text-secondary qc-button btn-outline-secondary" title="{vtranslate('LBL_QUICK_CREATE',$MODULE)}" aria-hidden="true">
@@ -181,7 +180,7 @@
                     {if $CALENDAR_MODULE_MODEL and $USER_PRIVILEGES_MODEL->hasModulePermission($CALENDAR_MODULE_MODEL->getId())}
                         {assign var=CALENDAR_TODAY_COUNT value=$CALENDAR_MODULE_MODEL->getTodayRecordsCount()}
                         {assign var=CALENDAR_TODAY_RECORD value=$CALENDAR_MODULE_MODEL->getFirstTodayRecord()}
-                        <li class="me-2">
+                        <li class="ms-2">
                             <div class="input-group align-items-center">
                                 <a href="{$CALENDAR_MODULE_MODEL->getDefaultUrl()}" class="btn btn-outline-secondary text-secondary border-secondary position-relative" title="{vtranslate('Appointments','Appointments')}" aria-hidden="true">
                                     <i class="fa fa-calendar"></i>
@@ -213,7 +212,7 @@
                             </li>
                         {/if}
                     {/if}
-                    <li class="mx-2 me-lg-3">
+                    <li class="ms-2">
                         <div class="dropdown">
                             <a href="#" class="userName" data-bs-toggle="dropdown">
                                 <div class="profile-img-container d-flex align-items-center justify-content-center">
@@ -278,7 +277,6 @@
                         </div>
                     </li>
                 </ul>
-                </div>
             </div>
         </div>
     </div>

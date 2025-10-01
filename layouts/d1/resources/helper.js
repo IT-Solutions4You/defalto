@@ -254,56 +254,78 @@ jQuery.Class("Vtiger_Helper_Js",{
         var params = jQuery.extend(this.defaultScrollParams(), params);
         container.slimScroll(params);
     },
-    
-    showHorizontalScroll : function(element, options) {
-		if(typeof options == 'undefined') {
-			options = {};
-		}
-		var params = {
-			horizontalScroll: true,
-			theme: "dark-thick",
-			advanced: {
-				autoExpandHorizontalScroll:true
-			}
-		}
-		if(typeof options != 'undefined'){
-			var params = jQuery.extend(params,options);
-		}
-		return element.mCustomScrollbar(params);
-	},
-    showVerticalScroll : function(element, options) {
-		if(typeof options == 'undefined') {
-			options = {};
-		}
-		var params = {
-			theme: "dark-thick",
-			advanced: {
-				autoExpandHorizontalScroll:true,
-                setTop: 0
-			}
-		};
-		if(typeof options != 'undefined'){
-			var params = jQuery.extend(params,options);
-		}
-		return element.mCustomScrollbar(params);
-	},
-        
-    showBothAxisScroll : function(element, options){
-        if(typeof options == 'undefined') {
+
+    showHorizontalScroll: function (element, options) {
+        if (typeof options == 'undefined') {
             options = {};
         }
-        
-        var params = {
-            scrollbarPosition : 'inside',
-            alwaysShowScrollbar : 2,
+
+        let params = {
+            horizontalScroll: true,
             theme: "dark-thick",
-            axis:"xy",
-            live : true
-        };
-        if(typeof options != 'undefined'){
-            var params = jQuery.extend(params,options);
+            advanced: {
+                autoExpandHorizontalScroll: true
+            }
         }
-        return element.mCustomScrollbar(params);
+
+        if (typeof options != 'undefined') {
+            params = jQuery.extend(params, options);
+        }
+
+        element.addClass('dt_scroll dt_horizontal_scroll overflow-x-auto');
+        element.css({
+            'height': params['setHeight'],
+        });
+
+        return element;
+    },
+    showVerticalScroll: function (element, options) {
+        if (typeof options == 'undefined') {
+            options = {};
+        }
+
+        let params = {
+            theme: "dark-thick",
+            advanced: {
+                autoExpandHorizontalScroll: true,
+                setTop: 0
+            }
+        };
+
+        if (typeof options != 'undefined') {
+            params = jQuery.extend(params, options);
+        }
+
+        element.addClass('dt_scroll dt_vertical_scroll overflow-x-auto');
+        element.css({
+            'height': params['setHeight'],
+        });
+
+        return element;
+    },
+    showBothAxisScroll: function (element, options) {
+        if (typeof options == 'undefined') {
+            options = {};
+        }
+
+        let params = {
+            scrollbarPosition: 'inside',
+            alwaysShowScrollbar: 2,
+            theme: "dark-thick",
+            axis: "xy",
+            live: true
+        };
+
+        if (typeof options != 'undefined') {
+            params = jQuery.extend(params, options);
+        }
+
+        element.addClass('dt_scroll dt_both_axis_scroll overflow-auto');
+        element.css({
+            'height': params['setHeight'],
+        });
+
+        return element;
     },
     defaultModalParams : function() {
         return  {

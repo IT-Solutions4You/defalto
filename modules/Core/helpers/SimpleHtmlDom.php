@@ -34,6 +34,10 @@ class Core_SimpleHtmlDom_Helper {
     }
 
     public function parents($node, $tag) {
+        if(!$node) {
+            return null;
+        }
+
         $parent = $node->parent();
 
         if($tag === $parent->tag) {

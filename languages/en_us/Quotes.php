@@ -45,6 +45,9 @@ $languageStrings = [
     'LBL_THIS'                                                                   => 'This',
     'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM'          => 'is deleted from the system.please remove or replace this item',
     'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'This line item is deleted from the system,please remove this line items',
+    'LBL_GENERATE_INVOICE' => 'Generate Invoice',
+    'LBL_GENERATE_SALESORDER' => 'Generate Sales Order',
+    'LBL_GENERATE_PURCHASEORDER' => 'Generate Purchase Order',
 ];
 
 $jsLanguageStrings = [

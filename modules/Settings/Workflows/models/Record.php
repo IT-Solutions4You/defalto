@@ -215,7 +215,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
         $this->getWorkflowTable()
             ->createTable()
             ->createColumn('module_name', 'varchar(100) DEFAULT NULL')
-            ->createColumn('summary', 'varchar(400) NOT NULL')
+            ->createColumn('summary', 'text NOT NULL')
             ->createColumn('test', 'text NOT NULL')
             ->createColumn('execution_condition', 'int(11) NOT NULL')
             ->createColumn('defaultworkflow', 'int(1) DEFAULT NULL')
@@ -228,7 +228,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
             ->createColumn('schtime', 'varchar(50) DEFAULT NULL')
             ->createColumn('nexttrigger_time', 'datetime DEFAULT NULL')
             ->createColumn('status', 'tinyint(1) DEFAULT 1')
-            ->createColumn('workflowname', 'varchar(100) DEFAULT NULL')
+            ->createColumn('workflowname', 'varchar(255) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (workflow_id)')
             ->createKey('UNIQUE KEY IF NOT EXISTS com_vtiger_workflows_idx (workflow_id)');
     }

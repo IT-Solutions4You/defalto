@@ -27,7 +27,7 @@
             </button>
             <button type="button" id="PreviousPageButton" class="btn btn-outline-secondary me-1" {if !$PAGING_MODEL->isPrevPageExists()} disabled {/if}>
                 <i class="fa-solid fa-angle-left"></i>
-                <span class="ms-2">{vtranslate('LBL_PREV_LIST', $QUALIFIED_MODULE)}</span>
+                <span class="d-none d-lg-inline ms-2">{vtranslate('LBL_PREV_LIST', $QUALIFIED_MODULE)}</span>
             </button>
             {if $SHOWPAGEJUMP}
                 <button type="button" id="PageJump" data-bs-toggle="dropdown" class="btn btn-outline-secondary me-1">
@@ -53,7 +53,7 @@
                 </ul>
             {/if}
             <button type="button" id="NextPageButton" class="btn btn-outline-secondary" {if !$PAGING_MODEL->isNextPageExists()}disabled{/if}>
-                <span class="me-2">{vtranslate('LBL_NEXT_LIST', $QUALIFIED_MODULE)}</span>
+                <span class="d-none d-lg-inline me-2">{vtranslate('LBL_NEXT_LIST', $QUALIFIED_MODULE)}</span>
                 <i class="fa-solid fa-angle-right"></i>
             </button>
         </div>

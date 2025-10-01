@@ -9,7 +9,7 @@
 {strip}
 	<div class="relatedHeader p-3">
 		<div class="row">
-			<div class="col-lg-6 col-md-6 col-sm-6">
+			<div class="col-auto">
 				{foreach item=RELATED_LINK from=$RELATED_LIST_LINKS['LISTVIEWBASIC']}
 					<div class="btn-group">
 						{assign var=DROPDOWNS value=$RELATED_LINK->get('linkdropdowns')}
@@ -39,7 +39,7 @@
 					</div>
 				{/foreach}
 			</div>
-			<div class="col-lg-6 text-end">
+			<div class="col-auto ms-auto text-end">
 				{assign var=CLASS_VIEW_ACTION value='relatedViewActions'}
 				{assign var=CLASS_VIEW_PAGING_INPUT value='relatedViewPagingInput'}
 				{assign var=CLASS_VIEW_PAGING_INPUT_SUBMIT value='relatedViewPagingInputSubmit'}

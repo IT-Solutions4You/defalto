@@ -45,6 +45,14 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
     }
 
     /**
+     * @return string
+     */
+    public function getLabel(): string
+    {
+        return vtranslate($this->label, $this->name);
+    }
+
+    /**
      * Function to check whether the module is an entity type module or not
      * @return <Boolean> true/false
      */
@@ -2176,6 +2184,11 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         $moduleName = $this->getName();
         $lowerModuleName = strtolower($moduleName);
         $title = vtranslate($moduleName, $moduleName);
+
+        if (!empty($this->getFontIcon())) {
+            return "<i style='font-size: $height' class='" . $this->getFontIcon() . "' title='$title'></i>";
+        }
+
         $moduleIcon = "<i style='font-size: $height' class='vicon-$lowerModuleName' title='$title'></i>";
 
         if ($this->source == 'custom') {
@@ -2186,10 +2199,6 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
 
         if (file_exists($imageFilePath)) {
             $moduleIcon = "<img style='height: $height;' src='$imageFilePath' title='$title'/>";
-        }
-
-        if (!empty($this->getFontIcon())) {
-            $moduleIcon = "<i style='font-size: $height' class='" . $this->getFontIcon() . "' title='$title'></i>";
         }
 
         return $moduleIcon;

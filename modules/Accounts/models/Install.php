@@ -20,8 +20,9 @@ class Accounts_Install_Model extends Core_Install_Model
             'Accounts',
             'DETAILVIEW',
             'LBL_SHOW_ACCOUNT_HIERARCHY',
-            'javascript:Accounts_Detail_Js.triggerAccountHierarchy("index.php?module=Accounts&view=AccountHierarchy&record=$RECORD$");'
-        ]
+            'javascript:Accounts_Detail_Js.triggerAccountHierarchy("index.php?module=Accounts&view=AccountHierarchy&record=$RECORD$");',
+            '<i class="fa-solid fa-sitemap"></i>',
+        ],
     ];
 
     public static array $TYPES = [

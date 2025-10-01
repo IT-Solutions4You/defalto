@@ -353,24 +353,23 @@ class Vtiger_Field extends Vtiger_FieldBasic
      *
      * @param Vtiger_Module Instance of module to use
      */
-    static function getAllForModule($moduleInstance)
+    public static function getAllForModule($moduleInstance)
     {
-        global $adb;
+        $adb = PearDatabase::getInstance();
         $instances = [];
 
-        $query = 'SELECT vtiger_field.* 
-                    FROM vtiger_field 
-                    INNER JOIN vtiger_blocks ON block = blockid 
-                    WHERE vtiger_field.tabid=? 
-                    ORDER BY vtiger_blocks.sequence, vtiger_field.sequence';
-        $queryParams = [
-            $moduleInstance->id
-        ];
+        if (empty($moduleInstance->id)) {
+            return $instances;
+        }
 
-        $result = $adb->pquery($query, $queryParams);
-        for ($index = 0; $index < $adb->num_rows($result); ++$index) {
+        $result = $adb->pquery(
+            'SELECT vtiger_field.* FROM vtiger_field INNER JOIN vtiger_blocks ON block = blockid WHERE vtiger_field.tabid=? ORDER BY vtiger_blocks.sequence, vtiger_field.sequence',
+            [$moduleInstance->id],
+        );
+
+        while ($row = $adb->fetchByAssoc($result)) {
             $instance = new self();
-            $instance->initialize($adb->fetch_array($result), $moduleInstance);
+            $instance->initialize($row, $moduleInstance);
             $instances[] = $instance;
         }
 
