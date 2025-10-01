@@ -187,7 +187,7 @@ $default_charset = '_VT_CHARSET_';
 
 // default language
 // default_language default value = en_us
-$default_language = 'en_us';
+$default_language = '_VT_DEFAULT_LANGUAGE_';
 
 //Option to hide empty home blocks if no entries.
 $display_empty_home_blocks = false;
