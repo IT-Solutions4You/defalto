@@ -369,5 +369,40 @@ Vtiger_Index_Js("Vtiger_Edit_Js", {
         this.registerValidation();
         app.event.trigger('post.editView.load', editViewContainer);
         this.registerPageLeaveEvents();
-    }
+    },
+    /**
+     * Function to get popup params
+     */
+    getPopUpParams: function (container) {
+        let self = this,
+            params = self._super(container),
+            referenceModule = jQuery('input[name=popupReferenceModule]', container).val(),
+            form = container.parents('form');
+
+        if ('Contacts' === referenceModule) {
+            let parentIdElement = self.getAccountField(form);
+
+            if (parentIdElement.length > 0 && parentIdElement.val() > 0) {
+                const closestContainer = parentIdElement.closest('.fieldValue');
+                params['related_parent_id'] = parentIdElement.val();
+                params['related_parent_module'] = closestContainer.find('[name="popupReferenceModule"]').val();
+            }
+        }
+
+        return params;
+    },
+    getAccountField(form) {
+        let moduleName = form.find('[name=module]').val();
+
+        switch (moduleName) {
+            case 'Potentials':
+                return form.find('[name=related_to]');
+            case 'Assets':
+                return form.find('[name=account]');
+            case 'HelpDesk':
+                return form.find('[name=parent_id]');
+        }
+
+        return form.find('[name=account_id]');
+    },
 });

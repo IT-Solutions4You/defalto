@@ -40,7 +40,7 @@ Vtiger_Edit_Js("Quotes_Edit_Js", {}, {
             const form = this.getForm();
             let parentIdElement = form.find('[name="account_id"]');
 
-            if (parentIdElement.length > 0 && parentIdElement.val().length > 0 && parentIdElement.val() != 0) {
+            if (parentIdElement.length > 0 && parentIdElement.val() > 0) {
                 const closestContainer = parentIdElement.closest('td');
                 params['related_parent_id'] = parentIdElement.val();
                 params['related_parent_module'] = closestContainer.find('[name="popupReferenceModule"]').val();
@@ -49,7 +49,7 @@ Vtiger_Edit_Js("Quotes_Edit_Js", {}, {
                 const relatedParentModule = parentIdElement.closest('td').find('input[name="popupReferenceModule"]').val();
 
                 if (parentIdElement.length > 0 && parentIdElement.val().length > 0 && relatedParentModule !== 'Leads') {
-                    closestContainer = parentIdElement.closest('td');
+                    let closestContainer = parentIdElement.closest('td');
                     params['related_parent_id'] = parentIdElement.val();
                     params['related_parent_module'] = closestContainer.find('[name="popupReferenceModule"]').val();
                 }
