@@ -18,6 +18,7 @@
 
 class PriceBooks_Module_Model extends Vtiger_Module_Model
 {
+     protected string $fontIcon = 'fa-solid fa-book';
     /**
      * @var array
      */
