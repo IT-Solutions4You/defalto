@@ -114,7 +114,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
         if ($recordModel->isDeletable()) {
             $links[] = [
                 'linktype'  => 'DETAILVIEWRECORD',
-                'linklabel' => sprintf("%s %s", getTranslatedString('LBL_DELETE', $moduleName), vtranslate('SINGLE_' . $moduleName, $moduleName)),
+                'linklabel' => vtranslate('LBL_DELETE', $moduleName),
                 'linkurl'   => 'javascript:Vtiger_Detail_Js.deleteRecord("' . $recordModel->getDeleteUrl() . '")',
                 'linkicon'  => '<i class="fa-solid fa-trash"></i>',
             ];
