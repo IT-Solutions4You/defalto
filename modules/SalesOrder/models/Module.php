@@ -10,5 +10,5 @@
 
 class SalesOrder_Module_Model extends Vtiger_Module_Model
 {
-    protected string $fontIcon = 'fa-solid fa-file-invoice';
+    protected string $fontIcon = 'fa-solid fa-clipboard-check';
 }

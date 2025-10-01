@@ -10,5 +10,5 @@
 
 class PurchaseOrder_Module_Model extends Vtiger_Module_Model
 {
-    protected string $fontIcon = 'fa-solid fa-file-lines';
+    protected string $fontIcon = 'fa-solid fa-cart-shopping';
 }
