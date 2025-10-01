@@ -18,6 +18,30 @@
 
 class Accounts_DetailView_Model extends Vtiger_DetailView_Model
 {
+    /**
+     * @var array
+     */
+    public array $createLinkModules = [
+        'Contacts',
+        'Potentials',
+        'Quotes',
+        'SalesOrder',
+        'Invoice',
+        'Assets',
+        'ServiceContracts',
+        'HelpDesk',
+        'Project',
+    ];
+
+    /**
+     * @var array
+     */
+    public array $createLinkFieldsMap = [
+        'Potentials' => 'related_to',
+        'Assets' => 'account',
+        'HelpDesk' => 'parent_id',
+    ];
+
     public array $skipDetailLinkByLabel = [
         'View History',
         'Send SMS',
@@ -44,9 +68,8 @@ class Accounts_DetailView_Model extends Vtiger_DetailView_Model
             $links[] = [
                 'linktype'  => 'DETAILVIEWBASIC',
                 'linklabel' => 'LBL_SEND_SMS',
-                'linkurl'   => 'javascript:Vtiger_Detail_Js.triggerSendSms("index.php?module=' . $this->getModule()->getName(
-                    ) . '&view=MassActionAjax&mode=showSendSMSForm","SMSNotifier");',
-                'linkicon'  => '',
+                'linkurl'   => 'javascript:Vtiger_Detail_Js.triggerSendSms("index.php?module=' . $this->getModule()->getName() . '&view=MassActionAjax&mode=showSendSMSForm","SMSNotifier");',
+                'linkicon'  => 'fa-solid fa-comment-sms',
             ];
         }
 
@@ -56,10 +79,26 @@ class Accounts_DetailView_Model extends Vtiger_DetailView_Model
             $links[] = [
                 'linktype'  => 'LISTVIEWMASSACTION',
                 'linklabel' => 'LBL_TRANSFER_OWNERSHIP',
-                'linkurl'   => 'javascript:Vtiger_Detail_Js.triggerTransferOwnership("index.php?module=' . $moduleModel->getName(
-                    ) . '&view=MassActionAjax&mode=transferOwnership")',
-                'linkicon'  => '',
+                'linkurl'   => 'javascript:Vtiger_Detail_Js.triggerTransferOwnership("index.php?module=' . $moduleModel->getName() . '&view=MassActionAjax&mode=transferOwnership")',
+                'linkicon'  => 'fa-solid fa-person-walking-arrow-right',
             ];
+        }
+
+        if ('Accounts' === $linkParams['MODULE']) {
+            foreach ($this->createLinkModules as $createLinkModule) {
+                /** @var Vtiger_Module_Model $moduleModel */
+                $moduleModel = Vtiger_Module_Model::getInstance($createLinkModule);
+
+                if ($moduleModel->isPermitted('EditView')) {
+                    $field = $this->createLinkFieldsMap[$createLinkModule] ?: 'account_id';
+                    $links[] = [
+                        'linktype' => Vtiger_DetailView_Model::LINK_MORE,
+                        'linklabel' => vtranslate('LBL_ADD_' . strtoupper($createLinkModule), $createLinkModule),
+                        'linkurl' => sprintf('%s&%s=%s&relationOperation=true&sourceModule=%s&sourceRecord=%s', $moduleModel->getCreateRecordUrl(), $field, $linkParams['RECORD'], $linkParams['MODULE'], $linkParams['RECORD']),
+                        'linkicon' => $moduleModel->getModuleIcon(),
+                    ];
+                }
+            }
         }
 
         $links[] = $this->getTagsLinkInfo();
