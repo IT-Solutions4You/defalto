@@ -31,31 +31,6 @@ Vtiger_Edit_Js("Invoice_Edit_Js", {}, {
     },
 
     /**
-     * Function to get popup params
-     */
-    getPopUpParams: function (container) {
-        const params = this._super(container);
-        let sourceFieldElement = jQuery('input[class="sourceField"]', container);
-
-        if (!sourceFieldElement.length) {
-            sourceFieldElement = jQuery('input.sourceField', container);
-        }
-
-        if (sourceFieldElement.attr('name') === 'contact_id') {
-            const form = this.getForm();
-            const parentIdElement = form.find('[name="account_id"]');
-
-            if (parentIdElement.length > 0 && parentIdElement.val().length > 0 && parentIdElement.val() != 0) {
-                const closestContainer = parentIdElement.closest('td');
-                params['related_parent_id'] = parentIdElement.val();
-                params['related_parent_module'] = closestContainer.find('[name="popupReferenceModule"]').val();
-            }
-        }
-
-        return params;
-    },
-
-    /**
      * Function to search module names
      */
     searchModuleNames: function (params) {
