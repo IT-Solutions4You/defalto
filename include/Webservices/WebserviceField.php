@@ -57,6 +57,11 @@ class WebserviceField
 
     private $readOnly = 0;
     private $isunique = 0;
+    public $referenceFieldLabel;
+    public $referenceFieldName;
+    public $parentReferenceField;
+    public $moduleName;
+    public $isNameField;
 
     private function __construct($adb, $row)
     {
@@ -208,7 +213,7 @@ class WebserviceField
 
     public function getUIType()
     {
-        return $this->uitype;
+        return (int)$this->uitype;
     }
 
     public function isReadOnly()

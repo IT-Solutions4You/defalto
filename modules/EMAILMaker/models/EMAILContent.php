@@ -267,6 +267,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         self::$content = self::$subject . self::$section_sep;
         self::$content .= self::$body;
 
+        $this->retrieveAssignedUserId();
         $this->replaceGeneralFields();
         $this->replaceCurrentDate();
 
@@ -318,12 +319,8 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             $this->convertRelatedBlocks();
             $this->convertInventoryBlocks();
             $this->convertVatBlocks();
+            $this->replaceImages();
             $this->replaceFieldsToContent(self::$module, self::$focus);
-
-            if ($this->focus->column_fields["assigned_user_id"] == "" && $this->focus->id != "") {
-                $result = self::$db->pquery("SELECT assigned_user_id FROM vtiger_crmentity WHERE crmid=?", [self::$focus->id]);
-                $this->focus->column_fields["assigned_user_id"] = self::$db->query_result($result, 0, "assigned_user_id");
-            }
 
             self::$content = $this->convertListViewBlock(self::$content);
         }
@@ -368,6 +365,16 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $this->setSubject($EMAIL_content["subject"]);
         $this->setBody($EMAIL_content["body"]);
         $this->setPreview($EMAIL_content);
+    }
+
+    public function retrieveAssignedUserId(): void
+    {
+        if (!empty($this->focus->column_fields["assigned_user_id"]) || empty($this->focus->id)) {
+            return;
+        }
+
+        $result = self::$db->pquery('SELECT assigned_user_id FROM vtiger_crmentity WHERE crmid=?', [self::$focus->id]);
+        $this->focus->column_fields["assigned_user_id"] = self::$db->query_result($result, 0, "assigned_user_id");
     }
 
     public function setSubject($subject)

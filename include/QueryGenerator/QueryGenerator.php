@@ -62,6 +62,8 @@ class QueryGenerator
     public static $OR = 'OR';
     protected $customViewFields;
     protected $referenceModuleField;
+    public $moduleFields;
+    public $tableIndexList;
 
     /**
      * Import Feature

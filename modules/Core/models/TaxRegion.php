@@ -10,12 +10,14 @@
 
 class Core_TaxRegion_Model extends Core_DatabaseData_Model
 {
+    use Core_Tax_Trait;
+
     protected string $table = 'df_taxes_regions';
     protected string $tableId = 'region_id';
     protected string $tableName = 'name';
     protected array $columns = ['name'];
     protected static array $all_regions = [];
-    public float $percentage;
+    public float $percentage = 0;
 
     /**
      * @return void
@@ -89,6 +91,7 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
         $instance = self::getInstance();
         $instance->setId($recordId);
         $instance->retrieveDataById();
+        $instance->retrieveDefaultData();
 
         if ($instance->isEmpty($instance->tableName)) {
             return false;
@@ -109,11 +112,6 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
         return self::getInstance($request->get('name', ''));
     }
 
-    public function getPercentage(): float
-    {
-        return $this->percentage;
-    }
-
     /**
      * @param int $regionId
      *
@@ -130,10 +128,5 @@ class Core_TaxRegion_Model extends Core_DatabaseData_Model
     public function getSaveParams(): array
     {
         return ['name' => $this->getName()];
-    }
-
-    public function setPercentage(float $percentage): void
-    {
-        $this->percentage = $percentage;
     }
 }

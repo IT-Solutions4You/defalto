@@ -72,11 +72,13 @@
                             <table class="table config-table">
                                 <tr>
                                     <th>{vtranslate('LBL_READ_WRITE_ACCESS', 'Install')}</th>
-                                    <th class="w-50"></th>
+                                    <th class="w-25"></th>
+                                    <th class="w-25"></th>
                                 </tr>
                                 {foreach item=FILE_PATH key=FILE_NAME from=$FAILED_FILE_PERMISSIONS}
                                     <tr>
-                                        <td nowrap>{$FILE_NAME} ({str_replace("./","",$FILE_PATH)})</td>
+                                        <td nowrap>{vtranslate($FILE_NAME, 'Install')} ({str_replace("./","",$FILE_PATH)})</td>
+                                        <td class="no">{vtranslate('LBL_YES', 'Install')}</td>
                                         <td class="no">{vtranslate('LBL_NO', 'Install')}</td>
                                     </tr>
                                 {/foreach}

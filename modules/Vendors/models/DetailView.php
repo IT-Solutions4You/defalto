@@ -36,9 +36,9 @@ class Vendors_DetailView_Model extends Vtiger_DetailView_Model
         if ($currentUserModel->hasModuleActionPermission($purchaseOrderModuleModel->getId(), 'CreateView')) {
             $links[] = [
                 'linktype'  => 'DETAILVIEW',
-                'linklabel' => vtranslate('LBL_CREATE') . ' ' . vtranslate($purchaseOrderModuleModel->getSingularLabelKey(), 'PurchaseOrder'),
+                'linklabel' => vtranslate('LBL_CREATE_PURCHASEORDER', $recordModel->getModuleName()),
                 'linkurl'   => $recordModel->getCreatePurchaseOrderUrl(),
-                'linkicon'  => '',
+                'linkicon'  => $purchaseOrderModuleModel->getModuleIcon(),
             ];
         }
 

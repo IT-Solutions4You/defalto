@@ -246,18 +246,23 @@ class Vtiger_Block
      *
      * @param Vtiger_Module Instance of the module
      */
-    static function getAllForModule($moduleInstance)
+    public static function getAllForModule($moduleInstance)
     {
         global $adb;
         $instances = [];
 
-        $query = "SELECT * FROM vtiger_blocks WHERE tabid=? ORDER BY sequence";
-        $queryParams = [$moduleInstance->id];
+        if (empty($moduleInstance->id)) {
+            return $instances;
+        }
 
-        $result = $adb->pquery($query, $queryParams);
-        for ($index = 0; $index < $adb->num_rows($result); ++$index) {
+        $result = $adb->pquery(
+            'SELECT * FROM vtiger_blocks WHERE tabid=? ORDER BY sequence',
+            [$moduleInstance->id],
+        );
+
+        while ($row = $adb->fetchByAssoc($result)) {
             $instance = new self();
-            $instance->initialize($adb->fetch_array($result), $moduleInstance);
+            $instance->initialize($row, $moduleInstance);
             $instances[] = $instance;
         }
 

@@ -16,6 +16,8 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
+require_once 'modules/PickList/PickListUtils.php';
+
 class Settings_Picklist_Module_Model extends Vtiger_Module_Model
 {
     public function getPickListTableName($fieldName)

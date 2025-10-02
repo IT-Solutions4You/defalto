@@ -606,12 +606,20 @@ Vtiger.Class("Vtiger_Detail_Js", {
             self.loadSelectedTabContents(tabElement, urlAttributes);
         });
     },
+    getTabUrl(tabElement) {
+        let url = tabElement.data('url');
 
+        if (-1 === url.indexOf('index.php?')) {
+            url = 'index.php?' + url;
+        }
+
+        return url;
+    },
     loadSelectedTabContents: function (tabElement, urlAttributes) {
         let self = this,
-            url = tabElement.data('url');
+            url = self.getTabUrl(tabElement);
 
-        vtUtils.updateWindowUrl('index.php?' + url);
+        vtUtils.updateWindowUrl(url);
 
         self.loadContents(url, urlAttributes).then(function (data) {
             self.deSelectAllrelatedTabs();

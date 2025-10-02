@@ -13,9 +13,9 @@ class Contacts_Install_Model extends Core_Install_Model
     public array $registerCustomLinks = [
         ['Accounts','Contacts','Contacts','add','get_contacts','',],
         ['Contacts','HelpDesk','HelpDesk','add','get_tickets','',],
-        ['Contacts','Quotes','Quotes','add','get_quotes','',],
+        ['Contacts','Quotes','Quotes','add','get_quotes','contact_id',],
         ['Contacts','PurchaseOrder','Purchase Order','add','get_purchase_orders','',],
-        ['Contacts','SalesOrder','Sales Order','add','get_salesorder','',],
+        ['Contacts','SalesOrder','Sales Order','add','get_salesorder','contact_id',],
         ['Contacts','Invoice','Invoice','add','get_invoices','',],
         ['Vendors','Contacts','Contacts','select','get_contacts','',],
         ['Contacts','Appointments','Appointments','','get_related_list','',],

@@ -15,12 +15,12 @@
         <div class="detailViewContainer modal-body container-fluid overflow-auto bg-body-secondary">
             <div class="rounded bg-body p-3 mb-3">
                 <div class="row">
-                    <div class="col">
+                    <div class="col-auto col-lg">
                         <button class="btn btn-outline-secondary me-2" onclick="window.location.href = '{$RECORD->getFullDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}'">
                             {vtranslate('LBL_VIEW_DETAILS', $MODULE_NAME)}
                         </button>
                     </div>
-                    <div class="col-lg-auto">
+                    <div class="col-auto ms-auto">
                         <div class="btn-toolbar flex-nowrap">
                             <div class="btn-group me-2">
                                 <button class="btn btn-outline-secondary" id="quickPreviewPreviousRecordButton" data-record="{$PREVIOUS_RECORD_ID}" data-app="{$SELECTED_MENU_CATEGORY}" {if empty($PREVIOUS_RECORD_ID)} disabled="disabled" {*{else} onclick="Vtiger_List_Js.triggerPreviewForRecord({$PREVIOUS_RECORD_ID})"*}{/if} >

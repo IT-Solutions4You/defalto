@@ -10,6 +10,8 @@
 
 class Core_Tax_Model extends Core_DatabaseData_Model
 {
+    use Core_Tax_Trait;
+
     /**
      * @var array|string[]
      */
@@ -137,6 +139,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
         $instance = new self();
         $instance->setId($recordId);
         $instance->retrieveDataById();
+        $instance->retrieveDefaultData();
 
         if ($instance->isEmpty('tax_label')) {
             return false;
@@ -165,14 +168,6 @@ class Core_Tax_Model extends Core_DatabaseData_Model
     public function getLabel()
     {
         return $this->get('tax_label');
-    }
-
-    /**
-     * @return float
-     */
-    public function getPercentage(): float
-    {
-        return (float)$this->get('percentage');
     }
 
     /**
@@ -445,6 +440,7 @@ class Core_Tax_Model extends Core_DatabaseData_Model
 
             if ($region) {
                 $region->setPercentage($regionInfo['value']);
+                $region->setDefaultPercentage($regionInfo['value']);
 
                 $this->regions[$id] = $region;
             }
@@ -462,11 +458,6 @@ class Core_Tax_Model extends Core_DatabaseData_Model
     public function getRegion(int $id): bool|object
     {
         return Core_TaxRegion_Model::getInstanceById($id);
-    }
-
-    public function setPercentage($value)
-    {
-        $this->set('percentage', $value);
     }
 
     /**

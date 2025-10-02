@@ -154,8 +154,22 @@ class Vtiger_Base_UIType extends Vtiger_Base_Model
     public static function getInstanceFromField($fieldModel): Vtiger_Base_UIType
     {
         $fieldDataType = $fieldModel->getFieldDataType();
-        $uiTypeClassSuffix = ucfirst($fieldDataType);
         $moduleName = $fieldModel->getModuleName();
+        $instance = self::getInstance($fieldDataType, $moduleName);
+        $instance->set('field', $fieldModel);
+
+        return $instance;
+    }
+
+    /**
+     * @param string $fieldDataType
+     * @param string $moduleName
+     * @return Vtiger_Base_UIType
+     * @throws Exception
+     */
+    public static function getInstance(string $fieldDataType, string $moduleName = 'Vtiger'): Vtiger_Base_UIType
+    {
+        $uiTypeClassSuffix = ucfirst($fieldDataType);
         $moduleSpecificFilePath = Vtiger_Loader::getComponentClassName('UIType', $uiTypeClassSuffix, $moduleName);
 
         if (class_exists($moduleSpecificFilePath)) {
@@ -163,8 +177,6 @@ class Vtiger_Base_UIType extends Vtiger_Base_Model
         } else {
             $instance = new Vtiger_Base_UIType();
         }
-
-        $instance->set('field', $fieldModel);
 
         return $instance;
     }

@@ -9,7 +9,13 @@
 {strip}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-2 py-3 bg-body rounded-end rounded-bottom-0 overflow-auto h-main h-main-max">
+            <div class="col-lg-12 bg-body d-lg-none p-0 rounded-0 h-sub-header d-flex align-items-center px-3">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#calendarSettings">
+                    <i class="fa-solid fa-bars"></i>
+                    <b class="ms-2">{vtranslate('LBL_CALENDARS', $QUALIFIED_MODULE)}</b>
+                </button>
+            </div>
+            <div class="col-lg-2 py-3 bg-body rounded-end rounded-bottom-0 overflow-auto h-lg-main h-main-max collapse d-lg-block" id="calendarSettings">
                 <form method="post" id="CalendarFilter">
                     <div class="container-fluid calendarsContainer">
                         <div class="row align-items-center py-2 rounded">
@@ -163,8 +169,8 @@
                     </div>
                 </form>
             </div>
-            <div class="col-lg overflow-auto px-4 pb-4">
-                <div id="CalendarContainer" class="d-flex flex-column w-100 h-100">
+            <div class="col-lg overflow-auto p-0 px-lg-4 pb-lg-4 h-main">
+                <div id="CalendarContainer" class="d-flex flex-column h-100">
                     <style>
                         {Appointments_Events_Model::getEventTypeStyles()}
                         {Appointments_Events_Model::getUserStyles()}
@@ -178,7 +184,7 @@
                     <input type="hidden" id="hour_format" value="{$CURRENT_USER->get('hour_format')}">
                     <input type="hidden" id="date_format" value="{$CURRENT_USER->get('date_format')}">
                     <input type="hidden" id="slot_duration" value="{$CURRENT_USER->get('slot_duration')}">
-                    <div id="calendar" class="mt-auto overflow-auto h-100 p-3 bg-body rounded"></div>
+                    <div id="calendar" class="overflow-auto h-100 p-3 bg-body rounded"></div>
                 </div>
             </div>
         </div>

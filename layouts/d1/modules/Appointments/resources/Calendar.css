@@ -156,3 +156,14 @@
 #CalendarFilter .row:hover {
     background: rgba(var(--bs-secondary-bg-rgb), var(--bs-bg-opacity)) !important;
 }
+
+@media (max-width: 991.98px) {
+    .fc {
+        min-width: 1000px;
+        max-height: calc(100vh - var(--header-height) - var(--sub-header-height) - var(--footer-height));
+    }
+
+    .h-main {
+        min-height: calc(100vh - var(--header-height) - var(--sub-header-height) - var(--footer-height));
+    }
+}

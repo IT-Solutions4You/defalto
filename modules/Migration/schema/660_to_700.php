@@ -72,7 +72,6 @@ if (defined('VTIGER_UPGRADE')) {
         ['include/Webservices/VtigerProductOperation.php', 'VtigerProductOperation']
     );
     $db->pquery('UPDATE vtiger_def_org_share SET editstatus=? WHERE tabid=?', [0, getTabid('Contacts')]);
-    $db->pquery('UPDATE vtiger_links SET linktype=? WHERE linklabel=?', ['DETAILVIEW', 'LBL_SHOW_ACCOUNT_HIERARCHY']);
     $db->pquery('UPDATE vtiger_field SET typeofdata=? WHERE fieldname IN (?, ?)', ['DT~O', 'createdtime', 'modifiedtime']);
     $db->pquery('UPDATE vtiger_field SET presence=0 WHERE columnname=? AND fieldname=?', ['emailoptout', 'emailoptout']);
     $db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', ['1', 'discontinued']);
