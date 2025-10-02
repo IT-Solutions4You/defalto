@@ -470,4 +470,16 @@ class Vtiger_Link_Model extends Vtiger_Link
 
         return $mergedLinks;
     }
+
+    /**
+     * @return string
+     */
+    public function getIconHTML(): string
+    {
+        if (empty($this->linkicon) || str_starts_with($this->linkicon, '<')) {
+            return (string)$this->linkicon;
+        }
+
+        return sprintf('<i class="%s"></i>', $this->linkicon);
+    }
 }

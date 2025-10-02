@@ -14,7 +14,7 @@ Vtiger_RelatedBlock_Js('Vtiger_InventoryItemsBlock_Js', {}, {
         this.registerSortableRelatedFields();
         this.registerSubmit();
         this.registerColumnsChange();
-        vtUtils.registerReplaceCommaWithDot(this.getForm());
+        vtUtils.registerNumberFormating(this.getForm());
     },
     getEditUrl() {
         const self = this,

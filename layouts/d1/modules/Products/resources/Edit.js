@@ -140,7 +140,7 @@ Vtiger_Edit_Js("Products_Edit_Js", {
                             self.registerEventForResetCurrency();
                             self.triggerForBaseCurrencyCalc();
                             self.updateCurrencyElements(form);
-                            vtUtils.registerReplaceCommaWithDot(form);
+                            vtUtils.registerNumberFormating(form);
                         };
 
                         let moreCurrenciesContainer = jQuery('#moreCurrenciesContainer').find('.multiCurrencyEditUI'),

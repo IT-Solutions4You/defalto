@@ -1376,7 +1376,7 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
         this.registerEventForScheduledWorkflow();
         this.registerEventForChangeInScheduledType();
         this.registerEventForChangeWorkflowState();
-        vtUtils.registerReplaceCommaWithDot($(document));
+        vtUtils.registerNumberFormating($(document));
     }
 });
 

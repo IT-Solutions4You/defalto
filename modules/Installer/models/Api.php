@@ -53,7 +53,7 @@ class Installer_Api_Model extends Vtiger_Net_Client
         $this->setURL($this->apiUrl . 'extension/v1/');
         $response = $this->doPost(['licenses' => $this->getLicenses(Installer_License_Model::EXTENSION_PACKAGES), 'url' => $this->getSiteUrl(),]);
 
-        return json_decode($response, true);
+        return json_decode($response, true) ?: [];
     }
 
     public static function getInstance(): self
@@ -96,6 +96,6 @@ class Installer_Api_Model extends Vtiger_Net_Client
         $this->setURL($this->apiUrl . 'system/v1/');
         $response = $this->doPost(['url' => $this->getSiteUrl(), 'licenses' => $this->getLicenses(Installer_License_Model::MEMBERSHIP_PACK),]);
 
-        return json_decode($response, true);
+        return json_decode($response, true) ?: [];
     }
 }

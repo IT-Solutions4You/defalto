@@ -69,7 +69,7 @@ class Accounts_DetailView_Model extends Vtiger_DetailView_Model
                 'linktype'  => 'DETAILVIEWBASIC',
                 'linklabel' => 'LBL_SEND_SMS',
                 'linkurl'   => 'javascript:Vtiger_Detail_Js.triggerSendSms("index.php?module=' . $this->getModule()->getName() . '&view=MassActionAjax&mode=showSendSMSForm","SMSNotifier");',
-                'linkicon'  => '',
+                'linkicon'  => 'fa-solid fa-comment-sms',
             ];
         }
 
@@ -80,7 +80,7 @@ class Accounts_DetailView_Model extends Vtiger_DetailView_Model
                 'linktype'  => 'LISTVIEWMASSACTION',
                 'linklabel' => 'LBL_TRANSFER_OWNERSHIP',
                 'linkurl'   => 'javascript:Vtiger_Detail_Js.triggerTransferOwnership("index.php?module=' . $moduleModel->getName() . '&view=MassActionAjax&mode=transferOwnership")',
-                'linkicon'  => '',
+                'linkicon'  => 'fa-solid fa-person-walking-arrow-right',
             ];
         }
 

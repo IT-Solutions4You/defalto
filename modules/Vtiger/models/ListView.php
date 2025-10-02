@@ -142,6 +142,49 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model
             ];
         }
 
+        $duplicatePermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'DuplicatesHandling');
+        $editPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'EditView');
+
+        if ($duplicatePermission && $editPermission) {
+            $massActionLinks[] = [
+                'linktype' => 'LISTVIEW',
+                'linklabel' => 'LBL_MERGE_SELECTED_RECORDS',
+                'linkurl' => 'Javascript:Vtiger_List_Js.triggerMergeRecord()',
+                'linkicon' => 'fa-solid fa-code-merge',
+            ];
+        }
+
+        if($moduleModel->isStarredEnabled()) {
+            $massActionLinks[] = [
+                'linktype' => 'LISTVIEW',
+                'linklabel' => 'LBL_FOLLOW',
+                'linkurl' => 'Javascript:Vtiger_List_Js.triggerAddStar()',
+                'linkicon' => 'bi bi-bookmark-fill',
+            ];
+            $massActionLinks[] = [
+                'linktype' => 'LISTVIEW',
+                'linklabel' => 'LBL_UNFOLLOW',
+                'linkurl' => 'Javascript:Vtiger_List_Js.triggerRemoveStar()',
+                'linkicon' => 'bi bi-bookmark',
+            ];
+        }
+
+        $massActionLinks[] = [
+            'linktype' => 'LISTVIEW',
+            'linklabel' => 'LBL_ADD_TAG',
+            'linkurl' => 'Javascript:Vtiger_List_Js.triggerAddTag()',
+            'linkicon' => 'bi bi-tag-fill',
+        ];
+
+        if ($linkParams['TAG']) {
+            $massActionLinks[] = [
+                'linktype' => 'LISTVIEW',
+                'linklabel' => 'LBL_REMOVE_TAG',
+                'linkurl' => sprintf('Javascript:Vtiger_List_Js.triggerRemoveTag(%s)', $linkParams['TAG']),
+                'linkicon' => 'bi bi-tag',
+            ];
+        }
+
         foreach ($massActionLinks as $massActionLink) {
             $links['LISTVIEWMASSACTION'][] = Vtiger_Link_Model::getInstanceFromValues($massActionLink);
         }
@@ -572,37 +615,28 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model
     public function getAdvancedLinks()
     {
         $moduleModel = $this->getModule();
-        $createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'CreateView');
         $advancedLinks = [];
-        $importPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Import');
-        if ($importPermission && $createPermission) {
-            $advancedLinks[] = [
-                'linktype'  => 'LISTVIEW',
-                'linklabel' => 'LBL_IMPORT',
-                'linkurl'   => $moduleModel->getImportUrl(),
-                'linkicon'  => ''
-            ];
-        }
 
         $duplicatePermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'DuplicatesHandling');
         $editPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'EditView');
+
         if ($duplicatePermission && $editPermission) {
             $advancedLinks[] = [
-                'linktype'  => 'LISTVIEWMASSACTION',
+                'linktype'  => 'LISTVIEW',
                 'linklabel' => 'LBL_FIND_DUPLICATES',
-                'linkurl'   => 'Javascript:Vtiger_List_Js.showDuplicateSearchForm("index.php?module=' . $moduleModel->getName() .
-                    '&view=MassActionAjax&mode=showDuplicatesSearchForm")',
-                'linkicon'  => ''
+                'linkurl'   => 'Javascript:Vtiger_List_Js.showDuplicateSearchForm("index.php?module=' . $moduleModel->getName() . '&view=MassActionAjax&mode=showDuplicatesSearchForm")',
+                'linkicon'  => 'fa-solid fa-clone'
             ];
         }
 
         $exportPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Export');
+
         if ($exportPermission) {
             $advancedLinks[] = [
                 'linktype'  => 'LISTVIEW',
                 'linklabel' => 'LBL_EXPORT',
                 'linkurl'   => 'javascript:Vtiger_List_Js.triggerExportAction("' . $this->getModule()->getExportUrl() . '")',
-                'linkicon'  => ''
+                'linkicon'  => 'fa-solid fa-file-export'
             ];
         }
 
