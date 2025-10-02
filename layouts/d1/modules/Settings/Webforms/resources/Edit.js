@@ -847,6 +847,6 @@ Settings_Vtiger_Edit_Js('Settings_Webforms_Edit_Js', {}, {
         this.registerRecordPreSaveEvent(form);
 
         //this.registerSubmitEvent();
-        vtUtils.registerReplaceCommaWithDot(form);
+        vtUtils.registerNumberFormating(form);
     }
 })

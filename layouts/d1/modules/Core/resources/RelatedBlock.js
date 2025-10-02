@@ -42,7 +42,7 @@ Vtiger_Index_Js('Vtiger_RelatedBlock_Js', {}, {
         this.registerFilterConditions();
         this.registerSubmit();
         this.registerColumnsChange();
-        vtUtils.registerReplaceCommaWithDot(this.getForm());
+        vtUtils.registerNumberFormating(this.getForm());
     },
     registerCKEditor() {
         let ckeditor = new Vtiger_CkEditor_Js()

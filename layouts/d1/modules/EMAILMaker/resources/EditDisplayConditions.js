@@ -182,7 +182,7 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
                 thisInstance.registerPopUpSaveEvent(data, fieldUiHolder);
                 thisInstance.registerRemoveModalEvent(data);
                 data.find('.fieldValue').filter(':visible').trigger('focus');
-                vtUtils.registerReplaceCommaWithDot(data);
+                vtUtils.registerNumberFormating(data);
             }
             conditionsContainer.find('.clonedPopUp').html(clonedPopupUi);
             jQuery('.clonedPopupUi').on('shown', function () {
@@ -560,7 +560,7 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
         vtUtils.applyFieldElementsView(jQuery('#display_condition'));
         this.advanceFilterInstance = EMAILMaker_AdvanceFilter_Js.getInstance(jQuery('.filterContainer', container));
         this.getPopUp();
-        vtUtils.registerReplaceCommaWithDot(container)
+        vtUtils.registerNumberFormating(container)
     }
 });
 

@@ -2670,7 +2670,7 @@ Vtiger.Class("Vtiger_List_Js", {
         self.registerSearch();
         self.registerOpenLink();
 
-        vtUtils.registerReplaceCommaWithDot($(document));
+        vtUtils.registerNumberFormating($(document));
     },
     registerOpenLink() {
         $(document).on('click', '[data-open-url]', function (e) {

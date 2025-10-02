@@ -584,7 +584,7 @@ Vtiger_Field_Js('Vtiger_Currency_Field_Js', {}, {
         let html = '<div class="CurrencyField w-100">' +
                 '<div class="input-group flex-nowrap">' +
                 '<span class="input-group-addon input-group-text" id="basic-addon1">' + this.getCurrencySymbol() + '</span>' +
-                '<input class="inputElement form-control currencyField replaceCommaWithDot" type="text" name="' + this.getName() + '" data-rule-currency="true" value="' + this.getValue() + '" />' +
+                '<input class="inputElement form-control currencyField replaceCommaWithDot allowOnlyNumbers" type="text" name="' + this.getName() + '" data-rule-currency="true" value="' + this.getValue() + '" />' +
                 '</div>' +
                 '</div>',
             element = jQuery(html);
@@ -694,7 +694,7 @@ Vtiger_Field_Js('Vtiger_Percentage_Field_Js', {}, {
      */
     getUi: function () {
         let html = '<div class="PercentageField w-100"><div class="input-group percentage-input-group flex-nowrap">' +
-                '<input type="text" class="form-control inputElement percentage-input-element replaceCommaWithDot" name="' + this.getName() + '" value="' + this.getValue() + '" step="any" data-rule-' + this.getType() + '=true/>' +
+                '<input type="text" class="form-control inputElement percentage-input-element replaceCommaWithDot allowOnlyNumbers" name="' + this.getName() + '" value="' + this.getValue() + '" step="any" data-rule-' + this.getType() + '=true/>' +
                 '<span class="input-group-addon input-group-text">%</span>' +
                 '</div></div>',
             element = jQuery(html);
@@ -785,7 +785,7 @@ Vtiger_Field_Js('Vtiger_Integer_Field_Js', {}, {
         return value;
     },
     getUi: function () {
-        let html = '<input class="IntegerField form-control inputElement replaceCommaWithDot" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-' + this.getType() + '=true />';
+        let html = '<input class="IntegerField form-control inputElement replaceCommaWithDot allowOnlyNumbers" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-' + this.getType() + '=true />';
         html = jQuery(html).val(app.htmlDecode(this.getValue()));
 
         return this.addValidationToElement(html);
@@ -804,7 +804,7 @@ Vtiger_Field_Js('Vtiger_Double_Field_Js', {}, {
         return value;
     },
     getUi: function () {
-        let html = '<input class="DoubleField form-control inputElement replaceCommaWithDot" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-' + this.getType() + '=true />';
+        let html = '<input class="DoubleField form-control inputElement replaceCommaWithDot allowOnlyNumbers" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-' + this.getType() + '=true />';
         html = jQuery(html).val(app.htmlDecode(this.getValue()));
 
         return this.addValidationToElement(html);
