@@ -28,7 +28,7 @@ class Potentials_Install_Model extends Core_Install_Model
      * @return array
      */
     public array $registerCustomLinks = [
-        ['Potentials', 'LISTVIEWBASIC', 'Kanban View', 'index.php?module=Potentials&view=Kanban', 'fa-solid fa-chart-simple fa-rotate-180',]
+        ['Potentials', 'LISTVIEWBASIC', 'Kanban View', 'index.php?module=Potentials&view=Kanban', 'fa-solid fa-chart-simple fa-rotate-180',],
     ];
 
     /**
