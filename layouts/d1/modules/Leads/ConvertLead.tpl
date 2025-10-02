@@ -22,7 +22,7 @@
                     <input type="hidden" name="record" value="{$RECORD->getId()}"/>
                     <input type="hidden" name="modules" value=''/>
                     <input type="hidden" name="imageAttachmentId" value="{$IMAGE_ATTACHMENT_ID}">
-                    <input type="hidden" name="transferModule" value="Contacts"/>
+                    <input type="hidden" name="transferModule" value="Potentials"/>
                     {assign var=LEAD_COMPANY_NAME value=$RECORD->get('company')}
                     <div class="modal-body accordion container-fluid" id="leadAccordion">
                         {foreach item=MODULE_FIELD_MODEL key=MODULE_NAME from=$CONVERT_LEAD_FIELDS}
