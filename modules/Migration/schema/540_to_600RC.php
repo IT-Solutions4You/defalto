@@ -253,16 +253,6 @@ Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_productcurrencyrel MODIFY
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_pricebookproductrel MODIFY COLUMN listprice decimal(27,8)", []);
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_inventoryproductrel MODIFY COLUMN listprice decimal(27,8)", []);
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_inventoryproductrel MODIFY COLUMN discount_amount decimal(27,8)", []);
-
-$currencyField = new CurrencyField(null);
-$result = Migration_Index_View::ExecuteQuery("SELECT tablename,columnname FROM vtiger_field WHERE uitype IN (?,?)", ['71', '72']);
-$count = $adb->num_rows($result);
-for ($i = 0; $i < $count; $i++) {
-    $tableName = $adb->query_result($result, $i, 'tablename');
-    $columnName = $adb->query_result($result, $i, 'columnname');
-    Migration_Index_View::ExecuteQuery('ALTER TABLE ' . $tableName . ' CHANGE ' . $columnName . ' ' . $columnName . " decimal(25,8)", null);
-}
-
 Migration_Index_View::ExecuteQuery('DELETE FROM vtiger_no_of_currency_decimals WHERE no_of_currency_decimalsid=?', [1]);
 
 //deleting default workflows
