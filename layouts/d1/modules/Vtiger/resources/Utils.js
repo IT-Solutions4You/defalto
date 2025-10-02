@@ -11,7 +11,10 @@ var vtUtils = {
 
     weekDaysArray: {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6},
 
-
+    registerNumberFormating: function (container) {
+        this.registerReplaceCommaWithDot(container);
+        this.registerAllowOnlyNumbers(container);
+    },
     registerReplaceCommaWithDot: function (container) {
         container.off('keyup', '.replaceCommaWithDot').on('keyup', '.replaceCommaWithDot', function (e) {
             if ($(this).is('textarea')) {
@@ -34,6 +37,8 @@ var vtUtils = {
             validInput = validInput
                 .replace(/(?!^)-/g, '') // Remove all dashes except the first one
                 .replace(/(\..*?)\./g, '$1'); // Allow only one dot
+
+            console.log(validInput);
 
             $(this).val(validInput);
         });

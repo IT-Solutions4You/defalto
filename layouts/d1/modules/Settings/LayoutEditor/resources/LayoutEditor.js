@@ -840,7 +840,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
 
                     data.find('.blockList').find('option[value="' + blockId + '"]').attr('selected', 'selected');
                     thisInstance.showFieldEditModel(data, blockId);
-                    vtUtils.registerReplaceCommaWithDot(data)
+                    vtUtils.registerNumberFormating(data)
                 }
             };
             isPopupShowing = true;
@@ -1945,7 +1945,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
                             data.on('change', '#fieldPresence', function (e) {
                                 jQuery('.fieldProperty').toggleClass('hide');
                             });
-                            vtUtils.registerReplaceCommaWithDot(data);
+                            vtUtils.registerNumberFormating(data);
                         }
                     };
 
