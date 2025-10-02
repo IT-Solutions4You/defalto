@@ -86,8 +86,8 @@ class Appointments_Install_Model extends Core_Install_Model
         'account_id',
         'contact_id',
         'parent_id',
-        'description',
         'assigned_user_id',
+        'description',
     ];
 
     /**
