@@ -38,8 +38,6 @@ var vtUtils = {
                 .replace(/(?!^)-/g, '') // Remove all dashes except the first one
                 .replace(/(\..*?)\./g, '$1'); // Allow only one dot
 
-            console.log(validInput);
-
             $(this).val(validInput);
         });
     },
