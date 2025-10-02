@@ -13,6 +13,8 @@ class Installer_ZipArchive_Model extends ZipArchive
     public static array $skipFiles = ['config.inc.php', 'composer.lock', 'index.php', 'update.php', 'install.php', 'parent_tabdata.php', 'tabdata.php'];
     public static array $skipFolders = ['user_privileges', 'manifest', 'update', 'icons', 'installer'];
 
+    public static array $errors = [];
+
     /**
      * @param string $destination
      * @param string $zipSubDir
@@ -21,8 +23,6 @@ class Installer_ZipArchive_Model extends ZipArchive
      */
     public function extractSubDirTo(string $destination, string $zipSubDir): array
     {
-        $errors = [];
-
         // Prepare dirs
         $destination = str_replace(["/", "\\"], DIRECTORY_SEPARATOR, $destination);
         $zipSubDir = str_replace(["/", "\\"], "/", $zipSubDir);
@@ -49,7 +49,7 @@ class Installer_ZipArchive_Model extends ZipArchive
                         // New dir
                         if (!is_dir($destination . $relativePath)) {
                             if (!mkdir($destination . $relativePath, 0755, true)) {
-                                $errors[$i] = $filename;
+                                self::$errors[$i] = $filename;
                             }
                         }
                     } else {
@@ -79,13 +79,13 @@ class Installer_ZipArchive_Model extends ZipArchive
                         if ($skip) {
                             Core_Install_Model::logError('Skip: ' . $relativePath);
                         } elseif (file_put_contents($destination . $relativePath, $this->getFromIndex($i)) === false) {
-                            $errors[$i] = $filename;
+                            self::$errors[$i] = $filename;
                         }
                     }
                 }
             }
         }
 
-        return $errors;
+        return self::$errors;
     }
 }
