@@ -32,11 +32,11 @@ class CustomView_Record_Model extends Vtiger_Base_Model
 
     /**
      * Function to get the Id
-     * @return <Number> Custom View Id
+     * @return int Custom View Id
      */
     public function getId()
     {
-        return $this->get('cvid');
+        return (int)$this->get('cvid');
     }
 
     /**
@@ -100,6 +100,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model
     /**
      * Function to check if the view is marked as default
      * @return <Boolean> true/false
+     * @throws Exception
      */
     public function isDefault()
     {
@@ -107,22 +108,20 @@ class CustomView_Record_Model extends Vtiger_Base_Model
         $userPrivilegeModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
         $userId = $userPrivilegeModel->getId();
         $moduleId = $this->getModule()->getId();
-        $cvId = Vtiger_Cache::get("UserDefaultCustomView", $userId . "-" . $moduleId);
-        if (!$cvId && !is_null($cvId)) {
-            $cvId = null;
+        $cvKey = $userId . '-' . $moduleId;
+        $cvId = Vtiger_Cache::get('UserDefaultCustomView', $cvKey);
+
+        if (is_null($cvId)) {
             $result = $db->pquery('SELECT default_cvid FROM vtiger_user_module_preferences WHERE userid = ? AND tabid = ?', [$userId, $moduleId]);
-            if ($db->num_rows($result)) {
-                $cvId = $db->query_result($result, 0, 'default_cvid');
-            }
-            Vtiger_Cache::set("UserDefaultCustomView", $userId . "-" . $moduleId, $cvId);
-            if ($cvId === $this->getId()) {
-                return true;
-            } else {
-                return false;
-            }
+            $cvId = (int)$db->query_result($result, 0, 'default_cvid');
+            Vtiger_Cache::set('UserDefaultCustomView', $cvKey, $cvId);
         }
 
-        return ($this->get('setdefault') == 1);
+        if (!is_null($cvId)) {
+            return $cvId === $this->getId();
+        }
+
+        return !$this->isEmpty('setdefault');
     }
 
     /**
