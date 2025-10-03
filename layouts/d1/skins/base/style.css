@@ -4583,7 +4583,13 @@ input[type=number] {
 .listViewEntryValue[data-field-type="integer"] .fieldValue,
 .listViewEntryValue[data-field-type="double"] .fieldValue,
 .listViewEntryValue[data-field-type="currency"] .fieldValue,
-.listViewEntryValue[data-field-type="percentage"] .fieldValue {
+.listViewEntryValue[data-field-type="percentage"] .fieldValue,
+
+.relatedListEntryValues[data-field-type="integer"],
+.relatedListEntryValues[data-field-type="double"],
+.relatedListEntryValues[data-field-type="currency"],
+.relatedListEntryValues[data-field-type="percentage"]
+{
     text-align: right;
 }
 
