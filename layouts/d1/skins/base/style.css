@@ -418,6 +418,14 @@ body {
     height: var(--header-height);
 }
 
+.global-nav .search-links-container {
+    height: var(--header-height);
+}
+
+.global-nav .global-actions {
+    height: var(--header-height);
+}
+
 .search-link {
     text-decoration: none;
     vertical-align: top;
