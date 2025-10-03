@@ -4576,6 +4576,10 @@ input[type=number] {
     padding-right: 1rem;
 }
 
+.select2-hide-selected .select2-results__option[aria-selected=true] {
+    display: none;
+}
+
 @media (max-width: 991.98px) {
     :root {
         --html-font-size: 0.75rem;

@@ -820,7 +820,7 @@ var vtUtils = {
     },
     makeSelect2ElementSortable: function (selectElement, valueElement, getValueFunction, setValueFunction) {
 
-        vtUtils.showSelect2ElementView(selectElement)
+        vtUtils.showSelect2ElementView(selectElement);
 
         let selectParent = selectElement.parent(),
             select2Element = selectElement.next('.select2'),
@@ -830,7 +830,7 @@ var vtUtils = {
         orderSortedValues = function () {
             selectParent.find("ul.select2-selection__rendered").children("li[title]").each(function (i, obj) {
                 let element = selectElement.children('option').filter(function () {
-                    return $(this).html() == obj.title
+                    return $(this).text() == obj.title
                 });
 
                 moveElementToEndOfParent(element)
@@ -842,12 +842,12 @@ var vtUtils = {
                 return;
             }
 
-            element.parents('select').append(element.detach());
+            element.parents('select').append(element.detach())
         };
 
         updateOptionTitles = function (selectElement) {
             selectElement.find('option').each(function () {
-                $(this).attr('title', $(this).html());
+                $(this).attr('title', $(this).text());
             });
         }
 
