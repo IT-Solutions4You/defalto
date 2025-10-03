@@ -82,6 +82,16 @@ Vtiger_Index_Js('Install_Index_Js', {}, {
             clearPasswordError();
         });
 
+        jQuery('input[name="admin_name"]').on('keyup', function (e) {
+            let element = $(this),
+                oldValue = element.val(),
+                newValue = element.val().replace(/[^0-9a-z]/gi, '');
+
+            if (newValue !== oldValue) {
+                element.val(newValue);
+            }
+        });
+
         jQuery('input[name="step5"]').on('click', function () {
             let error = false,
                 validateFieldNames = ['db_hostname', 'db_username', 'db_name', 'password', 'retype_password', 'lastname', 'admin_email'];

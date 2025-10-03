@@ -851,7 +851,7 @@ class Install_InitSchema_Model
         $user = CRMEntity::getInstance('Users');
         $user->column_fields['first_name'] = $_SESSION['config_file_info']['firstname'];
         $user->column_fields['last_name'] = $_SESSION['config_file_info']['lastname'];
-        $user->column_fields['user_name'] = 'admin';
+        $user->column_fields['user_name'] = $_SESSION['config_file_info']['admin_name'] ?: 'admin';
         $user->column_fields['is_admin'] = 'on';
         $user->column_fields['user_password'] = $_SESSION['config_file_info']['password'];
         $user->column_fields['time_zone'] = $_SESSION['config_file_info']['timezone'];
