@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
  * (c) IT-Solutions4You s.r.o
@@ -8,7 +8,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-$languageStrings = [
-];
-$jsLanguageStrings = [
-];
+class SalesOrder_Module_Model extends Vtiger_Module_Model
+{
+    protected string $fontIcon = 'fa-solid fa-clipboard-check';
+}

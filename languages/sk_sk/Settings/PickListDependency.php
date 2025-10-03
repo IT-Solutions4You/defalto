@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+
 /*************************************************************************************
  * Description:  Defines the Slovak language pack for the base application.
  * All Rights Reserved.
@@ -22,32 +23,32 @@
  */
 
 $languageStrings = [
-    "LBL_ADD_RECORD"                    => "Vytvoriť nové prepojenie medzi výberovými poliami",
-    "LBL_SELECT_MODULE"                 => "Modul",
-    "LBL_SOURCE_FIELD"                  => "Zdrojové pole",
-    "LBL_TARGET_FIELD"                  => "Závislé pole",
-    "LBL_SELECT_FIELD"                  => "Vyberte pole",
-    "LBL_CONFIGURE_DEPENDENCY_INFO"     => "Pre zmenu mapovania kliknite na konkrétne hodnoty Cieľového poľa",
-    "LBL_CONFIGURE_DEPENDENCY_HELP_1"   => "Iba mapované hodnoty Zdrojového poľa sú zobrazované",
-    "LBL_CONFIGURE_DEPENDENCY_HELP_2"   => "Ak potrebujete odobrať alebo pridať hodnotu Zdrojového výberového menu kliknite na Vybrať položky zdrojového menu",
-    "LBL_CONFIGURE_DEPENDENCY_HELP_3"   => "Vybrané hodnoty Cieľového poľa, sú označené ako",
-    "LBL_SELECT_SOURCE_VALUES"          => "Vybrať položky zdrojového menu",
+    "LBL_ADD_RECORD" => "Vytvoriť nové prepojenie medzi výberovými poliami",
+    "LBL_SELECT_MODULE" => "Modul",
+    "LBL_SOURCE_FIELD" => "Zdrojové pole",
+    "LBL_TARGET_FIELD" => "Závislé pole",
+    "LBL_SELECT_FIELD" => "Vyberte pole",
+    "LBL_CONFIGURE_DEPENDENCY_INFO" => "Pre zmenu mapovania kliknite na konkrétne hodnoty Cieľového poľa",
+    "LBL_CONFIGURE_DEPENDENCY_HELP_1" => "Iba mapované hodnoty Zdrojového poľa sú zobrazované",
+    "LBL_CONFIGURE_DEPENDENCY_HELP_2" => "Ak potrebujete odobrať alebo pridať hodnotu Zdrojového výberového menu kliknite na Vybrať položky zdrojového menu",
+    "LBL_CONFIGURE_DEPENDENCY_HELP_3" => "Vybrané hodnoty Cieľového poľa, sú označené ako",
+    "LBL_SELECT_SOURCE_VALUES" => "Vybrať položky zdrojového menu",
     "LBL_SELECT_SOURCE_PICKLIST_VALUES" => "Vybrať položky zdrojového menu",
-    "LBL_ERR_CYCLIC_DEPENDENCY"         => "Toto nastavenie nie je povolené",
-    "Module"                            => "Modul",
-    "Source Field"                      => "Zdrojové pole",
-    "Target Field"                      => "Závislé pole",
-    "PickListDependency"                => "Prepojenie výberových polí",
-    "LBL_SELECT_ALL_VALUES"             => "Označiť všetko",
-    "LBL_CYCLIC_DEPENDENCY_ERROR"       => "To by mohlo skončiť v cyklickej redundancii, pretože pole %s je už nakonfigurované pre pole %s",
-    "LBL_UNSELECT_ALL_VALUES"           => "Odznačiť všetko",
+    "LBL_ERR_CYCLIC_DEPENDENCY" => "Toto nastavenie nie je povolené",
+    "Module" => "Modul",
+    "Source Field" => "Zdrojové pole",
+    "Target Field" => "Závislé pole",
+    "PickListDependency" => "Prepojenie výberových polí",
+    "LBL_SELECT_ALL_VALUES" => "Označiť všetko",
+    "LBL_CYCLIC_DEPENDENCY_ERROR" => "To by mohlo skončiť v cyklickej redundancii, pretože pole %s je už nakonfigurované pre pole %s",
+    "LBL_UNSELECT_ALL_VALUES" => "Odznačiť všetko",
 ];
 
 $jsLanguageStrings = [
-    "JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_DELETE"         => "Ste si istí, že chcete odstrániť toto prepojenie?",
-    "JS_DEPENDENCY_DELETED_SUEESSFULLY"              => "Prepojenie bolo úspešne odstránené",
-    "JS_PICKLIST_DEPENDENCY_SAVED"                   => "Prepojenie bolo úspešne uložené",
-    "JS_DEPENDENCY_ATLEAST_ONE_VALUE"                => "Musíte vybrať aspoň jednu hodnotu pre",
+    "JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_DELETE" => "Ste si istí, že chcete odstrániť toto prepojenie?",
+    "JS_DEPENDENCY_DELETED_SUEESSFULLY" => "Prepojenie bolo úspešne odstránené",
+    "JS_PICKLIST_DEPENDENCY_SAVED" => "Prepojenie bolo úspešne uložené",
+    "JS_DEPENDENCY_ATLEAST_ONE_VALUE" => "Musíte vybrať aspoň jednu hodnotu pre",
     "JS_SOURCE_AND_TARGET_FIELDS_SHOULD_NOT_BE_SAME" => "Zdrojová a Cieľová hodnota nesmie byť rovnaká",
-    "JS_SELECT_SOME_VALUE"                           => "Vyberte nejakú hodnotu",
+    "JS_SELECT_SOME_VALUE" => "Vyberte nejakú hodnotu",
 ];

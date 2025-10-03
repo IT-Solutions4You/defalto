@@ -30,5 +30,5 @@
                     <div class="detailview-content row">
                         <input id="recordId" type="hidden" value="{$RECORD->getId()}" />
                         {include file="ModuleRelatedTabs.tpl"|vtemplate_path:$MODULE}
-                        <div class="details col-lg-9 col-xl-10 order-1 px-0">
+                        <div class="details col-lg-9 col-xl-10 order-2 order-lg-1 px-0">
 {/strip}

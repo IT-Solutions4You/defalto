@@ -33,6 +33,9 @@ $languageStrings = [
     'Terms &amp; Conditions' => 'Podmienky a ustanovenia',
     'S&amp;H Amount' => 'Čiastka za dopravu a manipuláciu',
     'S&amp;H Percent' => 'Percento za dopravu a manipuláciu',
+    'LBL_GENERATE_INVOICE' => 'Vygenerovať faktúru',
+    'LBL_GENERATE_SALESORDER' => 'Vygenerovať predajnú objednávku',
+    'LBL_GENERATE_PURCHASEORDER' => 'Vygenerovať nákupnú objednávku',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Cenová ponuka obsahuje odstránené produkty alebo služby, prosím upravte ponuku',

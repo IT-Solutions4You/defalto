@@ -149,27 +149,64 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         self::$content = self::$header . self::$section_sep;
         self::$content .= self::$body . self::$section_sep;
         self::$content .= self::$footer;
+        self::$content = html_entity_decode(self::$content, ENT_QUOTES, self::$def_charset);
 
-        self::$rep['$siteurl$'] = self::$site_url;
-        self::$rep['[BARCODE|'] = '<barcode>';
-        self::$rep['|BARCODE]'] = '</barcode>';
-        self::$rep['&nbsp;'] = ' ';
-        self::$rep['##PAGE##'] = '{PAGENO}';
-        self::$rep['##PAGES##'] = '{nb}';
-        self::$rep['##DD-MM-YYYY##'] = date('d-m-Y');
-        self::$rep['##DD.MM.YYYY##'] = date('d.m.Y');
-        self::$rep['##MM-DD-YYYY##'] = date('m-d-Y');
-        self::$rep['##YYYY-MM-DD##'] = date('Y-m-d');
-        self::$rep["src='"] = "src='" . vglobal('img_root_directory');
-        self::$rep['$' . strtoupper(self::$module) . '_CRMID$'] = self::$recordModel->getId();
-        self::$rep['$' . strtoupper(self::$module) . '_CREATEDTIME_DATETIME$'] = self::$recordModel->getDisplayValue('createdtime');
-        self::$rep['$' . strtoupper(self::$module) . '_MODIFIEDTIME_DATETIME$'] = self::$recordModel->getDisplayValue('modifiedtime');
-
+        $this->retrieveAssignedUserId();
+        $this->retrieveDefaultInfo();
         $this->convertEntityImages();
         $this->replaceContent();
 
-        self::$content = html_entity_decode(self::$content, ENT_QUOTES, self::$def_charset);
+        $this->convertDivPageBreak();
+        $this->convertRelatedModule();
+        $this->replaceFieldsToContent(self::$module, self::$focus);
+        $this->convertInventoryBlocks();
+        $this->convertVatBlocks();
+        $this->convertCurrencyInfo();
+        $this->convertCopyHeader();
+        $this->convertPageBreak();
+        $this->handleRowbreak();
+        $this->replaceUserCompanyFields();
+        $this->replaceLabels();
+        $this->replaceImages();
+        $this->convertHideTR();
 
+        self::$content = $this->fixImg(self::$content);
+
+        $this->replaceExecutionTime();
+        $this->convertEncoding();
+
+        $PDF_content = [];
+        [$PDF_content['header'], $PDF_content['body'], $PDF_content['footer']] = explode(self::$section_sep, self::$content);
+
+        return $PDF_content;
+    }
+
+    public function replaceExecutionTime(): void
+    {
+        self::$rep['%EXECUTIONTIME%'] = 'Total execution time in seconds: ' . (microtime(true) - self::$execution_time_start);
+        $this->replaceContent();
+    }
+
+    public function convertEncoding(): void
+    {
+        if (strtoupper(self::$def_charset) != 'UTF-8') {
+            self::$content = iconv(self::$def_charset, 'UTF-8//TRANSLIT', self::$content);
+        }
+    }
+
+    public function retrieveAssignedUserId(): void
+    {
+        if (!empty(self::$focus->column_fields['assigned_user_id'])) {
+            return;
+        }
+
+        $result = self::$db->pquery('SELECT assigned_user_id FROM vtiger_crmentity WHERE crmid = ?', [self::$focus->id]);
+
+        self::$focus->column_fields['assigned_user_id'] = self::$db->query_result($result, 0, 'assigned_user_id');
+    }
+
+    public function convertDivPageBreak(): void
+    {
         PDFMaker_PDFContent_Model::includeSimpleHtmlDom();
         $html = str_get_html(self::$content);
 
@@ -186,42 +223,24 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                 self::$content = $html->save();
             }
         }
-
-        $this->convertRelatedModule();
-        $this->replaceFieldsToContent(self::$module, self::$focus);
-        $this->convertInventoryBlocks();
-        $this->convertVatBlocks();
-        $this->retrieveAssignedUserId();
-        $this->convertCurrencyInfo();
-        $this->convertCopyHeader();
-        $this->convertPageBreak();
-        $this->handleRowbreak();
-        $this->replaceUserCompanyFields();
-        $this->replaceLabels();
-        $this->convertHideTR();
-
-        self::$rep['%EXECUTIONTIME%'] = 'Total execution time in seconds: ' . (microtime(true) - self::$execution_time_start);
-        $this->replaceContent();
-
-        self::$content = $this->fixImg(self::$content);
-
-        if (strtoupper(self::$def_charset) != 'UTF-8') {
-            self::$content = iconv(self::$def_charset, 'UTF-8//TRANSLIT', self::$content);
-        }
-
-        $PDF_content = [];
-        [$PDF_content['header'], $PDF_content['body'], $PDF_content['footer']] = explode(self::$section_sep, self::$content);
-
-        return $PDF_content;
     }
 
-    public function retrieveAssignedUserId()
+    public function retrieveDefaultInfo(): void
     {
-        if (self::$focus->column_fields['assigned_user_id'] == '') {
-            $result = self::$db->pquery('SELECT assigned_user_id FROM vtiger_crmentity WHERE crmid = ?', [self::$focus->id]);
-
-            self::$focus->column_fields['assigned_user_id'] = self::$db->query_result($result, 0, 'assigned_user_id');
-        }
+        self::$rep['$siteurl$'] = self::$site_url;
+        self::$rep['[BARCODE|'] = '<barcode>';
+        self::$rep['|BARCODE]'] = '</barcode>';
+        self::$rep['&nbsp;'] = ' ';
+        self::$rep['##PAGE##'] = '{PAGENO}';
+        self::$rep['##PAGES##'] = '{nb}';
+        self::$rep['##DD-MM-YYYY##'] = date('d-m-Y');
+        self::$rep['##DD.MM.YYYY##'] = date('d.m.Y');
+        self::$rep['##MM-DD-YYYY##'] = date('m-d-Y');
+        self::$rep['##YYYY-MM-DD##'] = date('Y-m-d');
+        self::$rep["src='"] = "src='" . vglobal('img_root_directory');
+        self::$rep['$' . strtoupper(self::$module) . '_CRMID$'] = self::$recordModel->getId();
+        self::$rep['$' . strtoupper(self::$module) . '_CREATEDTIME_DATETIME$'] = self::$recordModel->getDisplayValue('createdtime');
+        self::$rep['$' . strtoupper(self::$module) . '_MODIFIEDTIME_DATETIME$'] = self::$recordModel->getDisplayValue('modifiedtime');
     }
 
     private function convertEntityImages()

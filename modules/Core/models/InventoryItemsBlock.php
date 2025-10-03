@@ -16,11 +16,17 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
      * @var string
      */
     protected string $table = 'df_inventoryitems_block';
+
     /**
      * @var string
      */
     protected string $tableId = 'id';
     protected string $variablePrefix = 'IB';
+
+    /**
+     * @var array
+     */
+    protected array $requiredFields = ['id', 'item_text', 'parentid', 'productid'];
 
     public function getArticleOptions(): array
     {
@@ -169,6 +175,7 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
     {
         $values = parent::getVariableValues($recordModel);
         $recordId = (int)$recordModel->get('productid');
+        $inventoryItemId = (int)$recordModel->get('id');
         $fields = [
             'Products' => [
                 'fields' => (array)$this->get('product_fields'),
@@ -187,7 +194,13 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
 
         foreach ($fields as $moduleName => $fieldInfo) {
             foreach ($fieldInfo['fields'] as $fieldName) {
-                $values[$this->getVariable($fieldName, $moduleName)] = $fieldInfo['record']->getRelatedBlockDisplayValue($fieldName);
+                $value = $fieldInfo['record']->getRelatedBlockDisplayValue($fieldName);
+
+                if ('imagename' === $fieldName && empty($value)) {
+                    $value = sprintf('$RECORD_IMAGE_%d$', $inventoryItemId);
+                }
+
+                $values[$this->getVariable($fieldName, $moduleName)] = $value;
             }
         }
 
@@ -471,9 +484,17 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
         $fields = $this->getFieldsFromContent($content);
 
         $this->set('header_fields', $fields);
-        $this->set('related_fields', implode(';', array_merge(['item_text', 'parentid', 'productid'], $this->filterFieldsByModule($fields, $this->getRelatedModuleName()))));
+        $this->set('related_fields', implode(';', array_merge($this->getRequiredFields(), $this->filterFieldsByModule($fields, $this->getRelatedModuleName()))));
         $this->set('product_fields', $this->filterFieldsByModule($fields, 'Products'));
         $this->set('service_fields', $this->filterFieldsByModule($fields, 'Services'));
+    }
+
+    /**
+     * @return array
+     */
+    public function getRequiredFields(): array
+    {
+        return $this->requiredFields;
     }
 
     public function translateOptions($options)

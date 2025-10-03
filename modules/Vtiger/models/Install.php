@@ -27,6 +27,12 @@ class Vtiger_Install_Model extends Core_Install_Model
         'Settings_Vtiger_Menu_Model',
     ];
 
+    public array $registerFieldTypes = [
+        [Vtiger_Field_Model::UITYPE_CURRENCY_CODE, Vtiger_Field_Model::CURRENCY_LIST],
+        [Vtiger_Field_Model::UITYPE_REGION, 'region'],
+        [Vtiger_Field_Model::UITYPE_TAX, 'tax'],
+    ];
+
     /**
      * @var array
      * [name, handler, frequency, module, sequence, description]
@@ -62,8 +68,8 @@ class Vtiger_Install_Model extends Core_Install_Model
             $this->installTables();
         }
 
-        (new Vtiger_Field_Model())->insertDefaultData();
         $this->updateCron();
+        $this->updateFieldTypes();
     }
 
     /**

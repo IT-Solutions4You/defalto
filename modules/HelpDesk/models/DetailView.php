@@ -31,14 +31,14 @@ class HelpDesk_DetailView_Model extends Vtiger_DetailView_Model
         $currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
         $recordModel = $this->getRecord();
         $links = [];
-        $quotesModuleModel = Vtiger_Module_Model::getInstance('Faq');
+        $faqModuleModel = Vtiger_Module_Model::getInstance('Faq');
 
-        if ($currentUserModel->hasModuleActionPermission($quotesModuleModel->getId(), 'CreateView')) {
+        if ($currentUserModel->hasModuleActionPermission($faqModuleModel->getId(), 'CreateView')) {
             $links[] = [
                 'linktype'  => 'DETAILVIEW',
                 'linklabel' => 'LBL_CONVERT_FAQ',
                 'linkurl'   => $recordModel->getConvertFAQUrl(),
-                'linkicon'  => '',
+                'linkicon'  => $faqModuleModel->getModuleIcon(),
             ];
         }
 

@@ -124,6 +124,17 @@ class Core_VatBlock_Model extends Core_InventoryItemsBlock_Model
             ];
         }
 
+        if (empty($vatBlocks)) {
+            $vatBlocks['0_0'] = [
+                'id' => 0,
+                'label' => vtranslate('No Records'),
+                'value' => '-',
+                'percent' => '-',
+                'netto' => '-',
+                'vat' => '-',
+            ];
+        }
+
         $newContent = '';
 
         foreach ($vatBlocks as $vatBlock) {

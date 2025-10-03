@@ -38,6 +38,8 @@ class Vtiger_Link
     public $handler_class;
     public $handler;
     public $style_class = Vtiger_Link_Model::DEFAULT_STYLE_CLASS;
+    public $parent_link;
+    public $target;
 
     // Ignore module while selection
     const IGNORE_MODULE = -1;

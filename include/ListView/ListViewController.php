@@ -156,7 +156,7 @@ class ListViewController
     function getListViewRecords($focus, $module, $result)
     {
         global $listview_max_textlength, $theme, $default_charset;
-
+        $is_admin = false;
         require('user_privileges/user_privileges_' . $this->user->id . '.php');
         $fields = $this->queryGenerator->getFields();
         $meta = $this->queryGenerator->getMeta($this->queryGenerator->getModule());
@@ -166,6 +166,7 @@ class ListViewController
         $listViewFields = array_intersect($fields, $accessibleFieldList);
 
         $referenceFieldList = $this->queryGenerator->getReferenceFieldList();
+
         if ($referenceFieldList) {
             foreach ($referenceFieldList as $fieldName) {
                 if (in_array($fieldName, $listViewFields)) {
@@ -181,6 +182,7 @@ class ListViewController
 
         foreach ($ownerFieldList as $fieldName) {
             if (in_array($fieldName, $listViewFields)) {
+                /** @var WebserviceField $field */
                 $field = $moduleFields[$fieldName];
                 $idList = [];
 
@@ -383,16 +385,6 @@ class ListViewController
                             $value = Vtiger_Time_UIType::getTimeValueInAMorPM($value);
                         }
                     }
-                } elseif ($fieldDataType == 'currency') {
-                    $value = Vtiger_Currency_UIType::transformDisplayValue($value, null, true);
-                } elseif ($fieldDataType == 'percentage') {
-                    $value = Vtiger_Percentage_UIType::transformDisplayValue($value);
-                } elseif ($fieldDataType == 'integer') {
-                    $value = Core_Number_UIType::transformDisplayValue($value);
-                } elseif ($fieldDataType == 'double') {
-                    $value = Vtiger_Double_UIType::transformDisplayValue($value);
-                } elseif ($fieldDataType == 'url') {
-                    $value = Vtiger_Url_UIType::transformDisplayValue($value);
                 } elseif ($fieldDataType == 'email') {
                     global $current_user;
                     $emailModuleInstance = Vtiger_Module_Model::getInstance('ITS4YouEmails');
@@ -469,7 +461,7 @@ class ListViewController
                         $json = new Zend_Json();
                         $value = vt_suppressHTMLTags(implode(',', $json->decode($temp_val)));
                     }
-                } elseif (in_array($uitype, [7, 9, 90])) {
+                } elseif (90 === $uitype) {
                     $value = "<span align='right'>" . textlength_check($value) . "</span>";
                 } elseif ($field && isset($field->isNameField) && $field->isNameField) {
                     $value = "<a href='?module=$field->moduleName&view=Detail&record=$recordId' title='" . vtranslate($field->moduleName, $field->moduleName) . "'>$value</a>";
@@ -485,19 +477,28 @@ class ListViewController
                             '</a>';
                     }
                     $value = $displayValue;
-                } elseif ($field->getUIType() == Vtiger_Field_Model::UITYPE_COUNTRY) {
-                    $value = !empty($rawValue) ? Core_Country_UIType::transformDisplayValue($rawValue) : '';
-                } elseif ($field->getUIType() == Vtiger_Field_Model::UITYPE_REGION) {
-                    $value = !empty($rawValue) ? Core_Region_UIType::transformDisplayValue($rawValue) : '';
                 } elseif ($field->getUIType() == Vtiger_Field_Model::UITYPE_USER_PROFILE) {
-                    $value = '<a href="index.php?module=Profiles&parent=Settings&view=Detail&record=' . $value . '">' . textlength_check(
-                            Settings_Profiles_Record_Model::getProfileName((int)$value)
-                        ) . '</a>';
-                } elseif ($field->getUIType() == Vtiger_Field_Model::UITYPE_TAX) {
-                    $value = Core_Tax_UIType::transformDisplayValue($baseRecordId);
+                    $profileName = Settings_Profiles_Record_Model::getProfileName((int)$value);
+                    $value = sprintf('<a href="index.php?module=Profiles&parent=Settings&view=Detail&record=%s">%s</a>', $value, textlength_check($profileName));
                 } else {
+                    if ($field->getUIType() == Vtiger_Field_Model::UITYPE_TAX) {
+                        $rawValue = $baseRecordId;
+                    }
+
+                    if (!empty($rawValue)) {
+                        $uiTypeModel = Vtiger_Base_UIType::getInstance($fieldDataType, $module);
+
+                        if(method_exists($uiTypeModel, 'transformDisplayValue')) {
+                            $value = $uiTypeModel::transformDisplayValue($rawValue);
+                        }
+                    } else {
+                        $value = '';
+                    }
+
                     $value = textlength_check($value);
                 }
+
+
 
                 $row[$rawFieldName] = $value;
             }

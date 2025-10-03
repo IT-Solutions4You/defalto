@@ -6,6 +6,25 @@
  * This file is licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  *}
-{* modules/Vtiger/views/Index.php *}
-{* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
-<DIV>TEMPLATE: layout/modules/Vtiger/Index.tpl</DIV>
+<div class="h-main">
+    {if $MODULE_MODEL}
+        <div class="container rounded bg-body">
+            <div class="row">
+                <div class="col-12 border-bottom py-3">
+                    <h3 class="text-center m-0">
+                        {$MODULE_MODEL->getLabel()}
+                    </h3>
+                </div>
+                <div class="col-12 py-3">
+                    <p><b>{vtranslate('Parent')}</b>: {$MODULE_MODEL->get('parent')}</p>
+                    <p><b>{vtranslate('Version')}</b>: {$MODULE_MODEL->get('version')}</p>
+                </div>
+                <div class="col-12 border-top py-3 text-center">
+                    <a class="btn btn-primary" href="{$MODULE_MODEL->getDefaultUrl()}">{vtranslate('Redirect', $QUALIFIED_MODULE)}</a>
+                </div>
+            </div>
+        </div>
+    {else}
+        TEMPLATE: layouts/d1/modules/Vtiger/Index.tpl
+    {/if}
+</div>

@@ -90,7 +90,7 @@
                                 </div>
                             </div>
                             <div class="row py-2">
-                                <div class="col-lg-6">{vtranslate('Decimal Separator ','Install')}<span class="no text-danger ms-2">*</span></div>
+                                <div class="col-lg-6">{vtranslate('Decimal Separator','Install')}<span class="no text-danger ms-2">*</span></div>
                                 <div class="col-lg-6">
                                     <select name="currency_decimal_separator" class="select2" >
                                         {html_options options=$DECIMAL_SEPARATORS selected=$DECIMAL_SEPARATOR}

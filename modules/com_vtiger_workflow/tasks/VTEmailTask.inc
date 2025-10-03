@@ -766,10 +766,10 @@ class VTEmailTask extends VTTask
             $templateIds = explode(';', $this->pdf_template);
         }
 
-        $PDFMakerModel = $this->getPDFMakerModel();
+        $PDFMaker = PDFMaker_PDFMaker_Model::getInstance();
 
         foreach ($templateIds as $templateId) {
-            if ($PDFMakerModel->isTemplateDeleted($templateId)) {
+            if ($PDFMaker->isTemplateDeleted($templateId)) {
                 return $returnArray ? [] : '';
             }
         }

@@ -1530,7 +1530,7 @@ function getCompanyDetails()
 /** call back function to change the array values in to lower case */
 function lower_array(&$string)
 {
-    $string = strtolower(trim($string));
+    $string = strtolower(trim(decode_html($string)));
 }
 
 if (!function_exists('set_magic_quotes_runtime')) {

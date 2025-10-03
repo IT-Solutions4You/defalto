@@ -14,30 +14,19 @@ Vtiger_Edit_Js("SalesOrder_Edit_Js", {}, {
      * Function to get popup params
      */
     getPopUpParams: function (container) {
-        const params = this._super(container);
-        let sourceFieldElement = jQuery('input[class="sourceField"]', container);
+        let params = this._super(container),
+            referenceModule = jQuery('input[name=popupReferenceModule]', container).val();
 
-        if (!sourceFieldElement.length) {
-            sourceFieldElement = jQuery('input.sourceField', container);
-        }
-
-        if (sourceFieldElement.attr('name') === 'contact_id' || sourceFieldElement.attr('name') === 'potential_id') {
-            const form = this.getForm();
-            let parentIdElement = form.find('[name="account_id"]');
-
-            if (parentIdElement.length > 0 && parentIdElement.val().length > 0 && parentIdElement.val() != 0) {
-                const closestContainer = parentIdElement.closest('td');
-                params['related_parent_id'] = parentIdElement.val();
-                params['related_parent_module'] = closestContainer.find('[name="popupReferenceModule"]').val();
-            } else if (sourceFieldElement.attr('name') === 'potential_id') {
+        if ('Potentials' === referenceModule) {
+            const form = this.getForm(),
                 parentIdElement = form.find('[name="contact_id"]');
-                if (parentIdElement.length > 0 && parentIdElement.val().length > 0) {
-                    closestContainer = parentIdElement.closest('td');
-                    params['related_parent_id'] = parentIdElement.val();
-                    params['related_parent_module'] = closestContainer.find('[name="popupReferenceModule"]').val();
-                }
+
+            if (parentIdElement.val()) {
+                params['related_parent_id'] = parentIdElement.val();
+                params['related_parent_module'] = parentIdElement.closest('.fieldValue').find('[name="popupReferenceModule"]').val();
             }
         }
+
         return params;
     },
 

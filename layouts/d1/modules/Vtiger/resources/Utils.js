@@ -802,14 +802,18 @@ var vtUtils = {
         * (?=.*[!@#\$%\^&\*])	The string must contain at least one special character, but we are escaping reserved RegEx characters to avoid conflict
         * (?=.{8,})			The string must be eight characters or longer
         */
-        var password_regex = jQuery('[name="pwd_regex"]').val();
-        if ((typeof password_regex != 'undefined') && (password_regex != '')) {
-            var strongPasswordRegex = new RegExp(password_regex);
-            var isStrong = strongPasswordRegex.test(password) ? true : false;
-            return isStrong;
+        let password_regex = jQuery('[name="pwd_regex"]').val();
+
+        if ('undefined' !== typeof password_regex && password_regex) {
+            return new RegExp(password_regex).test(password);
+        } else {
+            return true;
         }
-        // If password regex is not set - consider it as strong.
-        return true;
+    },
+    isEmailValidated: function (email) {
+        let regex = /^[_a-zA-Z0-9*áàâäãåāăąćčďéèêëēęěíìîïīįıĺľłńñňóòôöõőøōœŕřśšţťúùûüůűūýÿžźż]+([!"#$%&'()*+,.\:;<=>?\^_`{|}~-]?[a-zA-Z0-9\_\-])*@[a-zA-Z0-9]+([\_\-\.]?[a-zA-Z0-9]+)*\.([\-\_]?[a-zA-Z0-9])+(\.?[a-zA-Z0-9]+)?$/
+
+        return new RegExp(regex).test(email)
     },
     makeSelect2ElementSortable: function (selectElement, valueElement, getValueFunction, setValueFunction) {
 
@@ -915,6 +919,6 @@ var vtUtils = {
     },
 
     updateWindowUrl(url) {
-        history.replaceState(null, '', url);
+        window.history.replaceState(null, '', url);
     },
 }

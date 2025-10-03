@@ -28,6 +28,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model
     const CV_STATUS_PUBLIC = 3;
 
     private $members = false;
+    public $module;
 
     /**
      * Function to get the Id

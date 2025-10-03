@@ -430,7 +430,7 @@ class Install_Utils_Model
 
         foreach ($values as $value) {
             $label = $labels[$value] ?? $value;
-            $options[$value] = $label;
+            $options[$value] = vtranslate($label);
         }
 
         return $options;
@@ -447,7 +447,7 @@ class Install_Utils_Model
 
         foreach ($values as $value) {
             $label = $labels[$value] ?? $value;
-            $options[$value] = $label;
+            $options[$value] = vtranslate($label);
         }
 
         return $options;
