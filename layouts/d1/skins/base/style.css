@@ -4580,10 +4580,10 @@ input[type=number] {
     display: none;
 }
 
-.listViewEntryValue[data-field-type="integer"] .fieldValue,
-.listViewEntryValue[data-field-type="double"] .fieldValue,
-.listViewEntryValue[data-field-type="currency"] .fieldValue,
-.listViewEntryValue[data-field-type="percentage"] .fieldValue,
+.listViewEntryValue[data-field-type="integer"],
+.listViewEntryValue[data-field-type="double"],
+.listViewEntryValue[data-field-type="currency"],
+.listViewEntryValue[data-field-type="percentage"],
 
 .relatedListEntryValues[data-field-type="integer"],
 .relatedListEntryValues[data-field-type="double"],
