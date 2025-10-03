@@ -31,6 +31,7 @@ class Vtiger_Install_Model extends Core_Install_Model
         [Vtiger_Field_Model::UITYPE_CURRENCY_CODE, Vtiger_Field_Model::CURRENCY_LIST],
         [Vtiger_Field_Model::UITYPE_REGION, 'region'],
         [Vtiger_Field_Model::UITYPE_TAX, 'tax'],
+        [Vtiger_Field_Model::UITYPE_COUNTRY, 'country'],
     ];
 
     /**
