@@ -12,12 +12,12 @@
             <input type=hidden name="module" value="Install"/>
             <input type=hidden name="view" value="Index"/>
             <input type=hidden name="mode" value="Step5"/>
+            <input type='hidden' name='pwd_regex' value= {ZEND_json::encode($PWD_REGEX)}/>
             {include file='StepHeader.tpl'|@vtemplate_path:'Install' TITLE='LBL_SYSTEM_CONFIGURATION'}
             <div class="container-fluid p-3">
                 <div class="row hide" id="errorMessage"></div>
                 <div class="row">
-                    <div class="col-sm">
-                        <input type='hidden' name='pwd_regex' value= {ZEND_json::encode($PWD_REGEX)}/>
+                    <div class="col-sm {if !$SHOW_DATABASE_INFORMATION}hide{/if}">
                         <div class="container-fluid config-table">
                             <div class="fw-bold">
                             <div class="row py-2">
@@ -114,7 +114,9 @@
                             <div>
                             <div class="row py-2">
                                 <div class="col-lg-6">{vtranslate('LBL_USERNAME', 'Install')}</div>
-                                <div class="col-lg-6">admin<input type="hidden" name="{$ADMIN_NAME}" value="admin"/></div>
+                                <div class="col-lg-6">
+                                    <input class="form-control" data-rule-username="true" type="text" name="admin_name" value="{$ADMIN_NAME}"/>
+                                </div>
                             </div>
                             <div class="row py-2">
                                 <div class="col-lg-6">{vtranslate('LBL_PASSWORD', 'Install')}<span class="no text-danger ms-2">*</span></div>
@@ -165,7 +167,9 @@
                 </div>
             </div>
             <div class="button-container text-end p-3">
-                <input type="button" class="btn btn-outline-primary me-2" value="{vtranslate('LBL_BACK','Install')}" name="back"/>
+                {if $SHOW_BACK_BUTTON}
+                    <input type="button" class="btn btn-outline-primary me-2" value="{vtranslate('LBL_BACK','Install')}" name="back"/>
+                {/if}
                 <input type="button" class="btn btn-large btn-primary" value="{vtranslate('LBL_NEXT','Install')}" name="step5"/>
             </div>
         </form>

@@ -863,4 +863,39 @@ class Install_Utils_Model
         $migrationObj->setArguments(['Index.php', 'migrate', '-y']);
         $migrationObj->run();
     }
+
+    /**
+     * @param int $number
+     * @return bool
+     */
+    public static function isStepSkipped(int $number): bool
+    {
+        $config = $_SESSION['config_file_info'];
+        $key = 'skip_step_' . $number;
+
+        if (!array_key_exists($key, $config)) {
+            return false;
+        }
+
+        return (bool)$config[$key];
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isDatabaseInformationHidden(): bool
+    {
+        $config = $_SESSION['config_file_info'];
+        $key = 'hide_database_information';
+
+        if (!array_key_exists($key, $config)) {
+            return false;
+        }
+
+        if ($config[$key]) {
+            return !empty($config['db_hostname']) && !empty($config['db_username']) && !empty($config['db_password']) && !empty($config['db_name']);
+        }
+
+        return false;
+    }
 }
