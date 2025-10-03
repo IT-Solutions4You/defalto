@@ -4580,6 +4580,13 @@ input[type=number] {
     display: none;
 }
 
+.listViewEntryValue[data-field-type="integer"] .fieldValue,
+.listViewEntryValue[data-field-type="double"] .fieldValue,
+.listViewEntryValue[data-field-type="currency"] .fieldValue,
+.listViewEntryValue[data-field-type="percentage"] .fieldValue {
+    text-align: right;
+}
+
 @media (max-width: 991.98px) {
     :root {
         --html-font-size: 0.75rem;
