@@ -24,14 +24,20 @@
                                         <input type="hidden" name="action" value="Login"/>
                                         <div class="mb-3 loginPageLogo">
                                         </div>
-                                        <div class="border-1 border-bottom py-3">
-                                            <label class="form-label py-2 text-secondary" for="username">Username</label>
-                                            <input id="username" class="form-control px-0 border-0" type="text" name="username" placeholder="Start typing...">
-                                        </div>
-                                        <div class="border-1 border-bottom py-3">
-                                            <label class="form-label py-2 text-secondary" for="password">Password</label>
-                                            <input id="password" class="form-control px-0 border-0" type="password" name="password" placeholder="Start typing...">
-                                        </div>
+                                        <label class="border-1 border-bottom py-3 d-block text-secondary" for="username">
+                                            <div class="form-label py-2">Username</div>
+                                            <div class="d-flex">
+                                                <div class="input-group-text border-0 bg-transparent text-secondary"><i class="bi bi-person-fill"></i></div>
+                                                <input id="username" class="form-control border-0" type="text" name="username" placeholder="Start typing...">
+                                            </div>
+                                        </label>
+                                        <label class="border-1 border-bottom py-3 d-block text-secondary" for="password">
+                                            <div class="form-label py-2">Password</div>
+                                            <div class="d-flex">
+                                                <div class="input-group-text border-0 bg-transparent text-secondary"><i class="bi bi-lock-fill"></i></div>
+                                                <input id="password" class="form-control border-0" type="password" name="password" placeholder="Start typing...">
+                                            </div>
+                                        </label>
                                         <div class="text-end py-3">
                                             <a class="forgotPasswordLink text-primary">Recover password</a>
                                         </div>
