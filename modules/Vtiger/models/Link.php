@@ -476,7 +476,11 @@ class Vtiger_Link_Model extends Vtiger_Link
      */
     public function getIconHTML(): string
     {
-        if (empty($this->linkicon) || str_starts_with($this->linkicon, '<')) {
+        if(empty($this->linkicon)) {
+            return '';
+        }
+
+        if (str_starts_with($this->linkicon, '<')) {
             return (string)$this->linkicon;
         }
 
