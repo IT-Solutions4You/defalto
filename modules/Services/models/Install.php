@@ -290,7 +290,7 @@ class Services_Install_Model extends Core_Install_Model
         $this->getTable('vtiger_service', null)
             ->createTable('serviceid')
             ->createColumn('service_no','varchar(100) NOT NULL')
-            ->createColumn('servicename','varchar(50) NOT NULL')
+            ->createColumn('servicename','varchar(255) NOT NULL')
             ->createColumn('servicecode','varchar(50) NOT NULL')
             ->createColumn('servicecategory','varchar(200) default NULL')
             ->createColumn('qty_per_unit','decimal(11,2) default \'0.00\'')

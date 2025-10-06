@@ -13,30 +13,32 @@ class Appointments_ConvertLead_Helper
     /**
      * Converts appointments for a given lead to accounts and/or contacts.
      *
-     * @param int $leadId    The ID of the lead to convert appointments from.
+     * @param int $leadId The ID of the lead to convert appointments from.
      * @param int $accountId The ID of the account to assign the appointments to. Set to 0 for no assignment.
      * @param int $contactId The ID of the contact to assign the appointments to. Set to 0 for no assignment.
-     *
+     * @param int $potentialId
      * @return void
+     * @throws Exception
      */
-    public static function convertAppointments(int $leadId, int $accountId, int $contactId): void
+    public static function convertAppointments(int $leadId, int $accountId, int $contactId, int $potentialId = 0): void
     {
         $db = PearDatabase::getInstance();
 
-        $appointmentRes = $db->pquery('SELECT its4you_calendar_id, contact_id FROM its4you_calendar WHERE parent_id = ?', [$leadId]);
+        $appointmentRes = $db->pquery('SELECT its4you_calendar_id as id, contact_id FROM its4you_calendar WHERE parent_id = ?', [$leadId]);
+        $table = Core_DatabaseData_Model::getTableInstance('its4you_calendar', 'its4you_calendar_id');
 
         while ($appointmentRow = $db->fetchByAssoc($appointmentRes)) {
-            if ($accountId) {
-                $db->pquery('INSERT INTO vtiger_crmentityrel VALUES (?, ?, ?, ?)', [$accountId, 'Accounts', $appointmentRow['its4you_calendar_id'], 'Appointments']);
-                $db->pquery('UPDATE its4you_calendar SET account_id = ? WHERE its4you_calendar_id = ?', [$accountId, $appointmentRow['its4you_calendar_id']]);
+            $calendarId = $appointmentRow['id'];
+
+            foreach (array_filter([$accountId, $contactId, $potentialId]) as $id) {
+                $db->pquery('INSERT INTO vtiger_crmentityrel VALUES (?, ?, ?, ?)', [$id, getSalesEntityType($id), $calendarId, 'Appointments']);
             }
 
-            if ($contactId) {
-                $db->pquery('INSERT INTO vtiger_crmentityrel VALUES (?, ?, ?, ?)', [$contactId, 'Contacts', $appointmentRow['its4you_calendar_id'], 'Appointments']);
-                $contacts = array_unique(explode(';', $appointmentRow['contact_id']));
-                $contacts[] = $contactId;
-                $db->pquery('UPDATE its4you_calendar SET account_id = ? WHERE its4you_calendar_id = ?', [implode(';', $contacts), $appointmentRow['its4you_calendar_id']]);
+            if (!empty($contactId)) {
+                $db->pquery('INSERT INTO vtiger_crmentityrel VALUES (?, ?, ?, ?)', [$calendarId, 'Appointments', $contactId, 'Contacts']);
             }
+
+            $table->updateData(['account_id' => $accountId, 'contact_id' => $contactId, 'parent_id' => $potentialId], ['its4you_calendar_id' => $calendarId]);
         }
     }
 }

@@ -36,9 +36,8 @@ class Leads_ListView_Model extends Vtiger_ListView_Model
             $massActionLink = [
                 'linktype'  => 'LISTVIEWMASSACTION',
                 'linklabel' => 'LBL_SEND_SMS',
-                'linkurl'   => 'javascript:Vtiger_List_Js.triggerSendSms("index.php?module=' . $this->getModule()->getName(
-                    ) . '&view=MassActionAjax&mode=showSendSMSForm","SMSNotifier");',
-                'linkicon'  => ''
+                'linkurl'   => 'javascript:Vtiger_List_Js.triggerSendSms("index.php?module=' . $this->getModule()->getName() . '&view=MassActionAjax&mode=showSendSMSForm","SMSNotifier");',
+                'linkicon'  => 'fa-solid fa-comment-sms'
             ];
             $massActionLinks['LISTVIEWMASSACTION'][] = Vtiger_Link_Model::getInstanceFromValues($massActionLink);
         }

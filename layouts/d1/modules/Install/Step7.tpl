@@ -8,7 +8,7 @@
  *}
 <div class="h-main py-4">
     <form class="container rounded bg-body form-horizontal" name="step7" method="post" action="index.php?module=Users&action=Login">
-        <input type=hidden name="username" value="admin">
+        <input type=hidden name="username" value="{$USERNAME}">
         <input type=hidden name="password" value="{$PASSWORD}">
         <div class="row">
             <div class="col-12 p-3">

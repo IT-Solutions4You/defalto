@@ -231,11 +231,12 @@ class Installer_Download_Model
     {
         global $root_directory;
 
-        if (chmod($root_directory, 0755)) {
+        if (self::chmod($root_directory)) {
             Core_Install_Model::logSuccess(self::START);
             $this->setProgress('retrieve', 1);
         } else {
             Core_Install_Model::logError(self::ERROR_CHMOD);
+            Core_Install_Model::logError('Permissions not changed:' . implode(',', self::$chmodErrors));
         }
     }
 
@@ -355,5 +356,38 @@ class Installer_Download_Model
         }
 
         $this->finish();
+    }
+
+    public static array $chmodErrors = [];
+
+    /**
+     * @param string $path
+     * @return true
+     */
+    public static function chmod(string $path): bool
+    {
+        $folderPerm = 0777;
+        $filePerm = 0777;
+        $dp = opendir($path);
+
+        if(!chmod($path, $folderPerm)) {
+            self::$chmodErrors[] = $path;
+        }
+
+        while ($file = readdir($dp)) {
+            if ($file != '.' and $file != '..') {
+                $file = $path . '/' . $file;
+
+                if (is_dir($file)) {
+                    self::chmod($file);
+                } elseif (!chmod($file, $filePerm)) {
+                    self::$chmodErrors[] = $file;
+                }
+            }
+        }
+
+        closedir($dp);
+
+        return empty(self::$chmodErrors);
     }
 }

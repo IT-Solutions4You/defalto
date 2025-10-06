@@ -418,6 +418,14 @@ body {
     height: var(--header-height);
 }
 
+.global-nav .search-links-container {
+    height: var(--header-height);
+}
+
+.global-nav .global-actions {
+    height: var(--header-height);
+}
+
 .search-link {
     text-decoration: none;
     vertical-align: top;
@@ -4574,6 +4582,23 @@ input[type=number] {
 
 .dt_scroll {
     padding-right: 1rem;
+}
+
+.select2-hide-selected .select2-results__option[aria-selected=true] {
+    display: none;
+}
+
+.listViewEntryValue[data-field-type="integer"],
+.listViewEntryValue[data-field-type="double"],
+.listViewEntryValue[data-field-type="currency"],
+.listViewEntryValue[data-field-type="percentage"],
+
+.relatedListEntryValues[data-field-type="integer"],
+.relatedListEntryValues[data-field-type="double"],
+.relatedListEntryValues[data-field-type="currency"],
+.relatedListEntryValues[data-field-type="percentage"]
+{
+    text-align: right;
 }
 
 @media (max-width: 991.98px) {

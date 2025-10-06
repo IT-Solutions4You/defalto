@@ -334,7 +334,7 @@ Vtiger_Index_Js("Vtiger_Edit_Js", {
         this.referenceModulePopupRegisterEvent(form);
         this.registerPostReferenceEvent(this.getEditViewContainer());
         this.registerCKEditor(form);
-        vtUtils.registerReplaceCommaWithDot(form);
+        vtUtils.registerNumberFormating(form);
     },
     registerCKEditor: function (form) {
         let ckeditorInstance = new Vtiger_CkEditor_Js();

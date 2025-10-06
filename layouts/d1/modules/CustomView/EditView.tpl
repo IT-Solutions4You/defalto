@@ -60,7 +60,7 @@
 								{assign var=MANDATORY_FIELDS value=array()}
 								{assign var=NUMBER_OF_COLUMNS_SELECTED value=0}
 								{assign var=MAX_ALLOWED_COLUMNS value=15}
-								<select name="selectColumns" data-rule-required="true" data-msg-required="{vtranslate('LBL_PLEASE_SELECT_ATLEAST_ONE_OPTION',$SOURCE_MODULE)}" data-placeholder="{vtranslate('LBL_ADD_MORE_COLUMNS',$MODULE)}" multiple class="select2 columnsSelect col-lg-10" id="viewColumnsSelect" >
+                                <select name="selectColumns" data-rule-required="true" data-msg-required="{vtranslate('LBL_PLEASE_SELECT_ATLEAST_ONE_OPTION',$SOURCE_MODULE)}" data-placeholder="{vtranslate('LBL_ADD_MORE_COLUMNS',$MODULE)}" multiple class="select2 columnsSelect col-lg-10" id="viewColumnsSelect" data-dropdown-css-class="select2-hide-selected" data-maximum-selection-length="15">
 									{foreach key=BLOCK_LABEL item=BLOCK_FIELDS from=$RECORD_STRUCTURE}
 										<optgroup label='{vtranslate($BLOCK_LABEL, $SOURCE_MODULE)}'>
 											{foreach key=FIELD_NAME item=FIELD_MODEL from=$BLOCK_FIELDS}
@@ -81,8 +81,7 @@
 														{assign var=NUMBER_OF_COLUMNS_SELECTED value=$NUMBER_OF_COLUMNS_SELECTED + 1}
 														{assign var=SELECTED_ID value=array_push($SELECTED_FIELDS, $CV_COLUMN_NAME)}
 													{/if}
-													>{Vtiger_Util_Helper::toSafeHTML(vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE))}
-													{if $FIELD_MODEL->isMandatory() eq true} <span>*</span> {/if}
+													>{Vtiger_Util_Helper::toSafeHTML(vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE))} {if $FIELD_MODEL->isMandatory() eq true}*{/if}
 												</option>
 											{/foreach}
 										</optgroup>

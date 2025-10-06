@@ -16,6 +16,8 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
+
+
 class Install_Index_view extends Vtiger_View_Controller
 {
     protected $debug = false;
@@ -104,6 +106,12 @@ class Install_Index_view extends Vtiger_View_Controller
 
     public function Step3(Vtiger_Request $request)
     {
+        if (Install_Utils_Model::isStepSkipped(3)) {
+            $this->Step4($request);
+
+            return;
+        }
+
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();
         $viewer->assign('FAILED_FILE_PERMISSIONS', Install_Utils_Model::getFailedPermissionsFiles());
@@ -115,16 +123,15 @@ class Install_Index_view extends Vtiger_View_Controller
 
     public function Step4(Vtiger_Request $request)
     {
-        $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();
+        $defaultParameters = Install_Utils_Model::getDefaultPreInstallParameters();
+
+        $viewer = $this->getViewer($request);
         $viewer->assign('CURRENCIES', Install_Utils_Model::getCurrencyList());
         $viewer->assign('DECIMAL_SEPARATORS', Install_Utils_Model::getDecimalList());
         $viewer->assign('GROUPING_SEPARATORS', Install_Utils_Model::getGroupingList());
         $viewer->assign('DATE_FORMATS', Install_Utils_Model::getDateFormats());
         $viewer->assign('TIMEZONES', Install_Utils_Model::getTimeZones());
-
-        $defaultParameters = Install_Utils_Model::getDefaultPreInstallParameters();
-
         $viewer->assign('DEFAULT_PARAMETERS', $defaultParameters);
         $viewer->assign('DB_HOSTNAME', $defaultParameters['db_hostname']);
         $viewer->assign('DB_USERNAME', $defaultParameters['db_username']);
@@ -139,10 +146,9 @@ class Install_Index_view extends Vtiger_View_Controller
         $viewer->assign('TIMEZONE', $defaultParameters['timezone']);
         $viewer->assign('DECIMAL_SEPARATOR', $defaultParameters['currency_decimal_separator']);
         $viewer->assign('GROUPING_SEPARATOR', $defaultParameters['currency_grouping_separator']);
-
-        $runtime_configs = Vtiger_Runtime_Configs::getInstance();
-        $password_regex = $runtime_configs->getValidationRegex('password_regex');
-        $viewer->assign('PWD_REGEX', $password_regex);
+        $viewer->assign('PWD_REGEX', Vtiger_Runtime_Configs::getInstance()->getValidationRegex('password_regex'));
+        $viewer->assign('SHOW_BACK_BUTTON', !Install_Utils_Model::isStepSkipped(3));
+        $viewer->assign('SHOW_DATABASE_INFORMATION', !Install_Utils_Model::isDatabaseInformationHidden());
 
         $viewer->view('Step4.tpl', $moduleName);
     }
@@ -236,6 +242,7 @@ class Install_Index_view extends Vtiger_View_Controller
 
             $viewer = $this->getViewer($request);
             $viewer->assign('PASSWORD', $_SESSION['config_file_info']['password']);
+            $viewer->assign('USERNAME', $_SESSION['config_file_info']['admin_name']);
             $viewer->assign('APPUNIQUEKEY', $this->retrieveConfiguredAppUniqueKey());
             $viewer->assign('CURRENT_VERSION', $_SESSION['vtiger_version']);
             $viewer->view('Step7.tpl', $moduleName);

@@ -305,7 +305,7 @@ class Vtiger_List_View extends Vtiger_Index_View
 
         $currentUser = Users_Record_Model::getCurrentUserModel();
 
-        $linkParams = ['MODULE' => $moduleName, 'ACTION' => $request->get('view'), 'CVID' => $cvId];
+        $linkParams = ['MODULE' => $moduleName, 'ACTION' => $request->get('view'), 'CVID' => $cvId, 'TAG' => $tag];
         $linkModels = $listViewModel->getListViewMassActions($linkParams);
 
         // preProcess is already loading this, we can reuse

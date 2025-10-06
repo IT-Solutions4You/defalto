@@ -24,6 +24,14 @@ class Potentials_Install_Model extends Core_Install_Model
     ];
 
     /**
+     * [module, type, label, url, icon, sequence, handlerInfo]
+     * @return array
+     */
+    public array $registerCustomLinks = [
+        ['Potentials', 'LISTVIEWBASIC', 'Kanban View', 'index.php?module=Potentials&view=Kanban', 'fa-solid fa-chart-simple fa-rotate-180',],
+    ];
+
+    /**
      * @throws Exception
      */
     public function addCustomLinks(): void
@@ -32,6 +40,7 @@ class Potentials_Install_Model extends Core_Install_Model
         $this->updateComments();
         $this->updateRelatedList();
         $this->updateMapping();
+        $this->updateCustomLinks();
     }
 
     public function deleteCustomLinks(): void
@@ -39,6 +48,7 @@ class Potentials_Install_Model extends Core_Install_Model
         $this->updateHistory(false);
         $this->updateComments(false);
         $this->updateRelatedList(false);
+        $this->updateCustomLinks(false);
     }
 
     public function getBlocks(): array

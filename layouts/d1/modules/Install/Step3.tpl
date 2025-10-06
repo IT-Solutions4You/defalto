@@ -88,7 +88,6 @@
                 </div>
             </div>
             <div class="button-container text-end p-3">
-                <input type="button" class="btn btn-primary me-2" value="{vtranslate('LBL_BACK', 'Install')}" name="back"/>
                 <input type="button" class="btn btn-primary active" value="{vtranslate('LBL_NEXT', 'Install')}" name="step4"/>
             </div>
         </form>

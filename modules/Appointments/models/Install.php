@@ -18,12 +18,93 @@ class Appointments_Install_Model extends Core_Install_Model
         ['AppointmentsReminder', 'modules/Appointments/cron/Reminder.php', 900, 'Appointments', 0, ''],
     ];
 
+    /**
+     * @var array
+     */
     public array $registerWorkflows = [
         ['Appointments', 'VTCalendarTask', 'Create Calendar Record'],
     ];
+    /**
+     * @var PearDatabase
+     */
     protected PearDatabase $db;
+    /**
+     * @var string
+     */
     protected string $eventType = '';
+    /**
+     * @var string
+     */
     protected string $moduleName = 'Appointments';
+    /**
+     * @var array
+     */
+    public array $blocksHeaderFields = [
+        1 => 'datetime_start',
+        'datetime_end',
+        'calendar_type',
+        'calendar_status',
+        'location'
+    ];
+
+    /**
+     * @var array
+     */
+    public array $blocksSummaryFields = [
+        1 => 'subject',
+        'datetime_start',
+        'datetime_end',
+        'calendar_status',
+        'location',
+        'calendar_type',
+        'calendar_priority',
+        'calendar_visibility',
+        'send_notification',
+        'reminder_time',
+        'recurring_type',
+        'account_id',
+        'contact_id',
+        'parent_id',
+        'description',
+        'invite_users',
+    ];
+
+    /**
+     * @var array
+     */
+    public array $blocksQuickCreateFields = [
+        1 => 'subject',
+        'is_all_day',
+        'datetime_start',
+        'datetime_end',
+        'calendar_status',
+        'location',
+        'calendar_type',
+        'calendar_priority',
+        'calendar_visibility',
+        'send_notification',
+        'account_id',
+        'contact_id',
+        'parent_id',
+        'assigned_user_id',
+        'description',
+    ];
+
+    /**
+     * @var array
+     */
+    public array $blocksListFields = [
+        1 => 'subject',
+        'datetime_start',
+        'datetime_end',
+        'calendar_status',
+        'calendar_type',
+        'calendar_priority',
+        'location',
+        'account_id',
+        'parent_id',
+        'assigned_user_id',
+    ];
 
     /**
      * @throws Exception
@@ -65,8 +146,6 @@ class Appointments_Install_Model extends Core_Install_Model
                     'columntype' => 'VARCHAR(255)',
                     'uitype' => 2,
                     'typeofdata' => 'V~M',
-                    'summaryfield' => 1,
-                    'filter' => 1,
                     'entity_identifier' => 1,
                     'masseditable' => 1,
                 ],
@@ -76,7 +155,6 @@ class Appointments_Install_Model extends Core_Install_Model
                     'uitype' => 56,
                     'typeofdata' => 'C~O',
                     'columntype' => 'VARCHAR(3)',
-                    'quickcreate' => 0,
                 ],
                 'datetime_start' => [
                     'column' => 'datetime_start',
@@ -84,8 +162,6 @@ class Appointments_Install_Model extends Core_Install_Model
                     'uitype' => 6,
                     'typeofdata' => 'DT~M',
                     'columntype' => 'datetime',
-                    'filter' => 1,
-                    'headerfield' => 1,
                 ],
                 'datetime_end' => [
                     'column' => 'datetime_end',
@@ -93,8 +169,6 @@ class Appointments_Install_Model extends Core_Install_Model
                     'uitype' => 6,
                     'typeofdata' => 'DT~M',
                     'columntype' => 'datetime',
-                    'filter' => 1,
-                    'headerfield' => 1,
                 ],
                 'calendar_status' => [
                     'column' => 'calendar_status',
@@ -107,9 +181,7 @@ class Appointments_Install_Model extends Core_Install_Model
                         'Cancelled',
                     ],
                     'columntype' => 'VARCHAR(200)',
-                    'filter' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
                 ],
                 'location' => [
                     'column' => 'location',
@@ -117,22 +189,6 @@ class Appointments_Install_Model extends Core_Install_Model
                     'uitype' => 1,
                     'typeofdata' => 'V~O',
                     'columntype' => 'VARCHAR(150)',
-                    'masseditable' => 1,
-                    'summaryfield' => 1,
-                    'quickcreate' => 0,
-                ],
-                'calendar_priority' => [
-                    'column' => 'calendar_priority',
-                    'label' => 'Priority',
-                    'uitype' => 15,
-                    'typeofdata' => 'V~O',
-                    'picklist_values' => [
-                        'High',
-                        'Medium',
-                        'Low',
-                    ],
-                    'columntype' => 'VARCHAR(200)',
-                    'filter' => 1,
                     'masseditable' => 1,
                 ],
                 'calendar_type' => [
@@ -148,7 +204,19 @@ class Appointments_Install_Model extends Core_Install_Model
                     ],
                     'columntype' => 'VARCHAR(200)',
                     'masseditable' => 1,
-                    'summaryfield' => 1,
+                ],
+                'calendar_priority' => [
+                    'column' => 'calendar_priority',
+                    'label' => 'Priority',
+                    'uitype' => 15,
+                    'typeofdata' => 'V~O',
+                    'picklist_values' => [
+                        'High',
+                        'Medium',
+                        'Low',
+                    ],
+                    'columntype' => 'VARCHAR(200)',
+                    'masseditable' => 1,
                 ],
                 'calendar_visibility' => [
                     'column' => 'calendar_visibility',
@@ -173,9 +241,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'label' => 'Assigned To',
                     'uitype' => 53,
                     'typeofdata' => 'V~M',
-                    'summaryfield' => 1,
                     'table' => 'vtiger_crmentity',
-                    'filter' => 1,
                     'masseditable' => 1,
                 ],
             ],
@@ -205,13 +271,14 @@ class Appointments_Install_Model extends Core_Install_Model
                 ],
             ],
             'LBL_REFERENCE_INFORMATION' => [
-                'parent_id' => [
-                    'column' => 'parent_id',
-                    'label' => 'Related To',
+                'account_id' => [
+                    'column' => 'account_id',
+                    'label' => 'Account Name',
                     'uitype' => 10,
                     'typeofdata' => 'I~O',
-                    'related_modules' => [],
-                    'quickcreate' => 0,
+                    'related_modules' => [
+                        'Accounts',
+                    ],
                     'columntype' => 'INT(11)',
                 ],
                 'contact_id' => [
@@ -219,21 +286,17 @@ class Appointments_Install_Model extends Core_Install_Model
                     'label' => 'Contact Name',
                     'uitype' => 57,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 0,
                     'related_modules' => [
                         'Contacts',
                     ],
                     'columntype' => 'VARCHAR(255)',
                 ],
-                'account_id' => [
-                    'column' => 'account_id',
-                    'label' => 'Account Name',
+                'parent_id' => [
+                    'column' => 'parent_id',
+                    'label' => 'Related To',
                     'uitype' => 10,
                     'typeofdata' => 'I~O',
-                    'quickcreate' => 0,
-                    'related_modules' => [
-                        'Accounts',
-                    ],
+                    'related_modules' => [],
                     'columntype' => 'INT(11)',
                 ],
             ],
@@ -246,7 +309,6 @@ class Appointments_Install_Model extends Core_Install_Model
                     'columntype' => 'text',
                     'uitype' => 19,
                     'typeofdata' => 'V~O',
-                    'summaryfield' => 0,
                     'table' => 'vtiger_crmentity',
                 ],
             ],
@@ -256,7 +318,6 @@ class Appointments_Install_Model extends Core_Install_Model
                     'columntype' => 'VARCHAR(255)',
                     'uitype' => 1,
                     'typeofdata' => 'V~O',
-                    'summaryfield' => 0,
                 ],
             ],
             'LBL_SYSTEM_INFORMATION' => [
@@ -279,6 +340,9 @@ class Appointments_Install_Model extends Core_Install_Model
     }
 
 
+    /**
+     * @return string[]
+     */
     public function getTables(): array
     {
         return [

@@ -81,9 +81,13 @@
                     <div class="p-3">
                         <h3>{vtranslate('LBL_INSTALLATION_IN_PROGRESS','Install')}...</h3>
                     </div>
-                    <div class="p-3">
-                        <img src="{'install_loading.gif'|vimage_path}"/>
-                        <h6>{vtranslate('LBL_PLEASE_WAIT','Install')}.... </h6>
+                    <div class="p-3 row align-items-center justify-content-center">
+                        <div class="col-auto">
+                            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"></div>
+                        </div>
+                        <div class="col-auto fs-4">
+                            {vtranslate('LBL_PLEASE_WAIT','Install')}...
+                        </div>
                     </div>
                 </div>
             </div>
