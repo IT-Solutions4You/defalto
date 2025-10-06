@@ -9,10 +9,10 @@
 {strip}
     <div class="container-fluid loginPageContainer">
         <div class="row loginPageBackground">
-            <div class="col-lg-7 bg-body">
+            <div class="col-lg bg-body">
                 <div class="container-fluid">
                     <div class="row d-flex align-items-center justify-content-center">
-                        <div class="col-lg-4">
+                        <div class="col-sm-6">
                             <div class="loginDiv">
                                 <div>
                                     <span class="{if !$ERROR}hide{/if} failureMessage" id="validationMessage">{$MESSAGE}</span>
@@ -22,9 +22,7 @@
                                     <form method="POST" action="index.php" class="d-block">
                                         <input type="hidden" name="module" value="Users"/>
                                         <input type="hidden" name="action" value="Login"/>
-                                        <div class="mb-5">
-                                            <div class="fs-2">Welcome to our CRM.</div>
-                                            <div class="text-secondary">Enter your details to proceed further</div>
+                                        <div class="mb-3 loginPageLogo">
                                         </div>
                                         <div class="border-1 border-bottom py-3">
                                             <label class="form-label py-2 text-secondary" for="username">Username</label>
@@ -78,7 +76,11 @@
                 min-height: calc(100vh - var(--footer-height)) !important;
             }
             .loginPageBackground {
-                background: url(layouts/d1/resources/Images/login-background.jpg) center center / cover;
+                background: url(layouts/d1/resources/Images/login-background.png) center center / cover;
+            }
+            .loginPageLogo {
+                height: 4rem;
+                background: url(layouts/d1/resources/Images/login-logo.png) center center / auto 4rem no-repeat;
             }
 
             #page {
