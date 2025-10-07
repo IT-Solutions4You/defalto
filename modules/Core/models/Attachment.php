@@ -109,6 +109,13 @@ class Core_Attachment_Model extends Core_DatabaseData_Model
         }
 
         $this->set('is_saved_file', copy($file, $this->getSaveFile()));
+
+        $originalSize = filesize($file);
+        $copiedSize = filesize($this->getSaveFile());
+
+        if ($originalSize !== $copiedSize) {
+            throw new Exception("Súbor bol poškodený pri kopírovaní. Veľkosť nesedí.");
+        }
     }
 
     public function getSaveFile()
@@ -151,7 +158,7 @@ class Core_Attachment_Model extends Core_DatabaseData_Model
             'creator_user_id'  => $currentUserModel->getId(),
             'assigned_user_id' => $currentUserModel->getId(),
             'modifiedby'       => $currentUserModel->getId(),
-            'setype'           => $this->get('module') . ' Attachment',
+            'setype'           => $this->getModuleName() . ' ' . $this->getAttachmentType(),
             'description'      => $this->getName(),
             'createdtime'      => $time,
             'modifiedtime'     => $time,
@@ -177,5 +184,30 @@ class Core_Attachment_Model extends Core_DatabaseData_Model
             $entityTable->updateData($entityParams, ['crmid' => $this->getId()]);
             $attachmentTable->updateData($attachmentParams, ['attachmentsid' => $this->getId()]);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getAttachmentType()
+    {
+        return $this->isEmpty('attachment_type') ? 'Attachment' : $this->get('attachment_type');
+    }
+
+    /**
+     * @param string $value
+     * @return void
+     */
+    public function setAttachmentType(string $value): void
+    {
+        $this->set('attachment_type', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getModuleName(): string
+    {
+        return (string)$this->get('module');
     }
 }
