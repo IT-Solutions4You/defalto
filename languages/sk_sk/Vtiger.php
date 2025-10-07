@@ -1437,6 +1437,7 @@ $languageStrings = [
     'Apostrophe (\')' => 'Apostrof (\')',
     'Dollar ($)' => 'Dolár ($)',
     'Space ( )' => 'Medzera ( )',
+    'LBL_UNIQUE' => 'Unikátne',
 ];
 $jsLanguageStrings = [
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastaveniach systému nakonfigurujte server odchádzajúcej pošty',

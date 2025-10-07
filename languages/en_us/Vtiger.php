@@ -1536,6 +1536,7 @@ $languageStrings = [
     'Apostrophe (\')' => 'Apostrophe (\')',
     'Dollar ($)' => 'Dollar ($)',
     'Space ( )' => 'Space ( )',
+    'LBL_UNIQUE' => 'Unique',
 ];
 
 $jsLanguageStrings = [
