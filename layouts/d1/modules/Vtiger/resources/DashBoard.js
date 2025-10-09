@@ -610,13 +610,13 @@ Vtiger.Class("Vtiger_DashBoard_Js", {
             widgetContainer.toggleClass('dashboardFilterExpanded');
             filterContainer.slideToggle(500);
 
-            var callbackFunction = function () {
-                widgetContainer.toggleClass('dashboardFilterExpanded');
-                filterContainer.slideToggle(500);
-            }
             //adding clickoutside event on the dashboardWidgetHeader
-            var helper = new Vtiger_Helper_Js();
-            helper.addClickOutSideEvent(dashboardWidgetFooter, callbackFunction);
+            app.helper.addClickOutSideEvent(dashboardWidgetFooter, function () {
+                if (widgetContainer.is('.dashboardFilterExpanded')) {
+                    widgetContainer.toggleClass('dashboardFilterExpanded');
+                    filterContainer.slideToggle(500);
+                }
+            });
 
             return false;
         })
