@@ -91,7 +91,7 @@ class Vtiger_Field extends Vtiger_FieldBasic
         // END
 
         // Add value to picklist now
-        $sortOrderId = 0;
+        $sortOrderId = $this->getPicklistSortOrderMax($picklist_table);
 
         foreach ($values as $value) {
             $newPicklistValueId = getUniquePicklistID();
@@ -117,6 +117,19 @@ class Vtiger_Field extends Vtiger_FieldBasic
                 []
             );
         }
+    }
+
+    /**
+     * @param string $table
+     * @return int
+     * @throws Exception
+     */
+    public function getPicklistSortOrderMax(string $table): int
+    {
+        $table = Core_DatabaseData_Model::getTableInstance($table);
+        $sortOrderData = $table->selectData(['MAX(sortorderid) as max'], []);
+
+        return (int)$sortOrderData['max'];
     }
 
     /**
