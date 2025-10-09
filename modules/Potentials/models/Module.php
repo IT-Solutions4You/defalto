@@ -135,7 +135,7 @@ class Potentials_Module_Model extends Vtiger_Module_Model
 						INNER JOIN vtiger_sales_stage ON vtiger_potential.sales_stage =  vtiger_sales_stage.sales_stage 
                         WHERE vtiger_potential.sales_stage IN (' . generateQuestionMarks(
                 $picklistvaluesmap
-            ) . ') GROUP BY assigned_user_id, sales_stage ORDER BY vtiger_sales_stage.sortorderid',
+            ) . ') GROUP BY assigned_user_id, sales_stage ORDER BY assigned_user_id, vtiger_sales_stage.sortorderid',
             $params
         );
 
@@ -174,12 +174,12 @@ class Potentials_Module_Model extends Vtiger_Module_Model
 
         $result = $db->pquery(
             'SELECT sum(amount) AS amount, vtiger_users.userlabel as last_name, vtiger_potential.sales_stage FROM vtiger_potential
-						INNER JOIN vtiger_crmentity ON vtiger_potential.potentialid = vtiger_crmentity.crmid
-						INNER JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.assigned_user_id AND vtiger_users.status="ACTIVE"
-						AND vtiger_crmentity.deleted = 0 ' . Users_Privileges_Model::getNonAdminAccessControlQuery($this->getName()) .
-            'INNER JOIN vtiger_sales_stage ON vtiger_potential.sales_stage =  vtiger_sales_stage.sales_stage 
-						WHERE vtiger_potential.sales_stage IN (' . generateQuestionMarks($picklistvaluesmap) . ') 
-						GROUP BY assigned_user_id, sales_stage ORDER BY vtiger_sales_stage.sortorderid',
+                INNER JOIN vtiger_crmentity ON vtiger_potential.potentialid = vtiger_crmentity.crmid
+                INNER JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.assigned_user_id AND vtiger_users.status="ACTIVE"
+                AND vtiger_crmentity.deleted = 0 ' . Users_Privileges_Model::getNonAdminAccessControlQuery($this->getName()) . '
+                INNER JOIN vtiger_sales_stage ON vtiger_potential.sales_stage=vtiger_sales_stage.sales_stage 
+                WHERE vtiger_potential.sales_stage IN (' . generateQuestionMarks($picklistvaluesmap) . ') 
+                GROUP BY assigned_user_id, sales_stage ORDER BY assigned_user_id, vtiger_sales_stage.sortorderid',
             $params
         );
         for ($i = 0; $i < $db->num_rows($result); $i++) {
@@ -274,7 +274,7 @@ class Potentials_Module_Model extends Vtiger_Module_Model
             $result = $db->pquery(
                 'SELECT SUM(amount) AS amount FROM vtiger_potential
 								   INNER JOIN vtiger_crmentity ON vtiger_potential.potentialid = vtiger_crmentity.crmid
-								   AND deleted = 0 ' . Users_Privileges_Model::getNonAdminAccessControlQuery($this->getName()) . ' WHERE sales_stage = ?',
+								   AND deleted = 0 ' . Users_Privileges_Model::getNonAdminAccessControlQuery($this->getName()) . ' WHERE sales_stage = ? ORDER BY amount',
                 [$picklistValue]
             );
             $num_rows = $db->num_rows($result);
