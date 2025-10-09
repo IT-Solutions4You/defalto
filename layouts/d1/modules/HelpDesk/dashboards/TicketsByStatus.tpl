@@ -20,9 +20,7 @@
     <div class="filterContainer border-top border-bottom bg-body container-fluid">
         <div class="row py-2">
             <div class="col-lg-4">
-                <span>
-                    <strong>{vtranslate('Created Time', $MODULE_NAME)}&nbsp;{vtranslate('LBL_BETWEEN', $MODULE_NAME)}</strong>
-                </span>
+                <span class="fw-bold">{vtranslate('Created Time', $MODULE_NAME)}&nbsp;{vtranslate('LBL_BETWEEN', $MODULE_NAME)}</span>
             </div>
             <div class="col-lg-8">
                 <div class="input-daterange input-group dateRange widgetFilter" id="datepicker" name="createdtime">
@@ -34,17 +32,16 @@
         </div>
         <div class="row py-2">
             <div class="col-lg-4">
-                <span>
-                    <strong>{vtranslate('Assigned To', $MODULE_NAME)}</strong>
-                </span>
+                <span class="fw-bold">{vtranslate('Assigned To', $MODULE_NAME)}</span>
             </div>
-            <div class="col-lg-8">
+            <div class="col-lg-8 userList">
                 {assign var=CURRENT_USER_ID value=$CURRENTUSER->getId()}
+                {assign var=ALL_ACTIVEUSER_LIST value=$CURRENTUSER->getAccessibleUsers()}
+                {assign var=ALL_ACTIVEGROUP_LIST value=$CURRENTUSER->getAccessibleGroups()}
                 <select class="select2 col-sm-12 widgetFilter reloadOnChange" name="owner" data-close-on-select="true">
                     <option value="{$CURRENT_USER_ID}">{vtranslate('LBL_MINE')}</option>
-                    <option value="">{vtranslate('LBL_ALL', $MODULE_NAME)}</option>
-                    {assign var=ALL_ACTIVEUSER_LIST value=$CURRENTUSER->getAccessibleUsers()}
-                    {if php7_count($ALL_ACTIVEUSER_LIST) gt 1}
+                    <option value="" selected="selected">{vtranslate('LBL_ALL', $MODULE_NAME)}</option>
+                    {if !empty($ALL_ACTIVEUSER_LIST)}
                         <optgroup label="{vtranslate('LBL_USERS')}">
                             {foreach key=OWNER_ID item=OWNER_NAME from=$ALL_ACTIVEUSER_LIST}
                                 {if $OWNER_ID neq $CURRENT_USER_ID}
@@ -53,7 +50,6 @@
                             {/foreach}
                         </optgroup>
                     {/if}
-                    {assign var=ALL_ACTIVEGROUP_LIST value=$CURRENTUSER->getAccessibleGroups()}
                     {if !empty($ALL_ACTIVEGROUP_LIST)}
                         <optgroup label="{vtranslate('LBL_GROUPS')}">
                             {foreach key=OWNER_ID item=OWNER_NAME from=$ALL_ACTIVEGROUP_LIST}

@@ -22,48 +22,9 @@
 {literal}
 	<script type="text/javascript">
 		Vtiger_MultiBarchat_Widget_Js('Vtiger_PipelinedAmountPerSalesPerson_Widget_Js',{},{
-			getCharRelatedData : function() {
-				var container = this.getContainer();
-				var data = container.find('.widgetData').val();
-				data = JSON.parse(data);
-				var users = new Array();
-				var stages = new Array();
-				var count = new Array();
-				for(var i=0; i<data.length ;i++) {
-					if($.inArray(data[i].last_name, users) == -1) {
-						users.push(data[i].last_name);
-					}
-					if($.inArray(data[i].sales_stage, stages) == -1) {
-						stages.push(data[i].sales_stage);
-					}
-				}
-				var allLinks = new Array();
-				for(j in stages) {
-					var salesStageCount = new Array();
-                    var links = new Array();
-					for(i in users) {
-						var salesCount = 0;
-						for(var k in data) {
-							var userData = data[k];
-							if(userData.sales_stage == stages[j] && userData.last_name == users[i]) {
-								salesCount = parseFloat(userData.amount);
-                                link = userData.links
-								break;
-							}
-						}
-                        links.push(link);
-						salesStageCount.push(salesCount);
-					}
-                    allLinks.push(links);
-					count.push(salesStageCount);
-				}
-				return {
-					'data' : count,
-					'ticks' : users,
-					'labels' : stages,
-                    'links' : allLinks
-				}
-			}
+            labelField: 'last_name',
+            datasetLabelField: 'sales_stage',
+            datasetNumberField: 'amount',
 		});
 	</script>
 {/literal}

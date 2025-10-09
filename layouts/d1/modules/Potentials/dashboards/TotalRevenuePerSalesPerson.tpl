@@ -7,7 +7,10 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 <script type="text/javascript">
-	Vtiger_Pie_Widget_Js('Vtiger_TotalRevenuePerSalesPerson_Widget_Js',{},{});
+	Vtiger_Pie_Widget_Js('Vtiger_TotalRevenuePerSalesPerson_Widget_Js',{},{
+        labelField: 'last_name',
+        datasetNumberField: 'amount',
+    });
 </script>
 <div class="dashboardWidgetHeader text-secondary p-2">
 	{include file="dashboards/WidgetHeader.tpl"|@vtemplate_path:$MODULE_NAME SETTING_EXIST=true}
