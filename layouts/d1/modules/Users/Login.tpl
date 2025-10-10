@@ -9,10 +9,10 @@
 {strip}
     <div class="container-fluid loginPageContainer">
         <div class="row loginPageBackground">
-            <div class="col-lg-7 bg-body">
+            <div class="col-lg bg-body">
                 <div class="container-fluid">
                     <div class="row d-flex align-items-center justify-content-center">
-                        <div class="col-lg-4">
+                        <div class="col-sm-6">
                             <div class="loginDiv">
                                 <div>
                                     <span class="{if !$ERROR}hide{/if} failureMessage" id="validationMessage">{$MESSAGE}</span>
@@ -22,18 +22,20 @@
                                     <form method="POST" action="index.php" class="d-block">
                                         <input type="hidden" name="module" value="Users"/>
                                         <input type="hidden" name="action" value="Login"/>
-                                        <div class="mb-5">
-                                            <div class="fs-2">Welcome to our CRM.</div>
-                                            <div class="text-secondary">Enter your details to proceed further</div>
+                                        <div class="mb-3 loginPageLogo">
                                         </div>
-                                        <div class="border-1 border-bottom py-3">
-                                            <label class="form-label py-2 text-secondary" for="username">Username</label>
-                                            <input id="username" class="form-control px-0 border-0" type="text" name="username" placeholder="Start typing...">
-                                        </div>
-                                        <div class="border-1 border-bottom py-3">
-                                            <label class="form-label py-2 text-secondary" for="password">Password</label>
-                                            <input id="password" class="form-control px-0 border-0" type="password" name="password" placeholder="Start typing...">
-                                        </div>
+                                        <label class="border-1 border-bottom py-3 d-block text-secondary" for="username">
+                                            <div class="d-flex">
+                                                <div class="input-group-text border-0 bg-transparent text-secondary"><i class="bi bi-person-fill"></i></div>
+                                                <input id="username" class="form-control border-0" type="text" name="username" placeholder="Username">
+                                            </div>
+                                        </label>
+                                        <label class="border-1 border-bottom py-3 d-block text-secondary" for="password">
+                                            <div class="d-flex">
+                                                <div class="input-group-text border-0 bg-transparent text-secondary"><i class="bi bi-lock-fill"></i></div>
+                                                <input id="password" class="form-control border-0" type="password" name="password" placeholder="Password">
+                                            </div>
+                                        </label>
                                         <div class="text-end py-3">
                                             <a class="forgotPasswordLink text-primary">Recover password</a>
                                         </div>
@@ -78,7 +80,11 @@
                 min-height: calc(100vh - var(--footer-height)) !important;
             }
             .loginPageBackground {
-                background: url(layouts/d1/resources/Images/login-background.jpg) center center / cover;
+                background: url(layouts/d1/resources/Images/login-background.png) center center / cover;
+            }
+            .loginPageLogo {
+                height: 4rem;
+                background: url(layouts/d1/resources/Images/login-logo.png) center center / auto 4rem no-repeat;
             }
 
             #page {

@@ -224,6 +224,7 @@ class Leads_Module_Model extends Vtiger_Module_Model
         }
 
         $params = [];
+        $dateFilterSql = '';
         if (!empty($dateFilter)) {
             $dateFilterSql = ' AND createdtime BETWEEN ? AND ? ';
             //appended time frame and converted to db time zone in showwidget.php
@@ -237,25 +238,24 @@ class Leads_Module_Model extends Vtiger_Module_Model
 
         $result = $db->pquery(
             'SELECT COUNT(*) as count, CASE WHEN vtiger_leaddetails.leadsource IS NULL OR vtiger_leaddetails.leadsource = "" THEN "" 
-						ELSE vtiger_leaddetails.leadsource END AS leadsourcevalue FROM vtiger_leaddetails 
-						INNER JOIN vtiger_crmentity ON vtiger_leaddetails.leadid = vtiger_crmentity.crmid
-						AND deleted=0 AND converted = 0 ' . Users_Privileges_Model::getNonAdminAccessControlQuery($this->getName()) . $ownerSql . ' ' . $dateFilterSql .
-            'INNER JOIN vtiger_leadsource ON vtiger_leaddetails.leadsource = vtiger_leadsource.leadsource 
-                        WHERE vtiger_leaddetails.leadsource IN (' . generateQuestionMarks($picklistvaluesmap) . ') 
-						GROUP BY leadsourcevalue ORDER BY vtiger_leadsource.sortorderid',
+                    ELSE vtiger_leaddetails.leadsource END AS leadsourcevalue FROM vtiger_leaddetails 
+                    INNER JOIN vtiger_crmentity ON vtiger_leaddetails.leadid = vtiger_crmentity.crmid 
+                    AND deleted=0 AND converted = 0 ' . Users_Privileges_Model::getNonAdminAccessControlQuery($this->getName()) . $ownerSql . ' ' . $dateFilterSql . '
+                    INNER JOIN vtiger_leadsource ON vtiger_leaddetails.leadsource = vtiger_leadsource.leadsource 
+                    WHERE vtiger_leaddetails.leadsource IN (' . generateQuestionMarks($picklistvaluesmap) . ') 
+                    GROUP BY leadsourcevalue ORDER BY vtiger_leadsource.sortorderid',
             $params
         );
 
         $response = [];
-        for ($i = 0; $i < $db->num_rows($result); $i++) {
-            $row = $db->query_result_rowdata($result, $i);
-            $response[$i][0] = $row['count'];
-            $leadSourceVal = $row['leadsourcevalue'];
-            if ($leadSourceVal == '') {
-                $leadSourceVal = 'LBL_BLANK';
-            }
-            $response[$i][1] = vtranslate($leadSourceVal, $this->getName());
-            $response[$i][2] = $leadSourceVal;
+
+        while($row = $db->fetchByAssoc($result)) {
+            $leadSourceVal = $row['leadsourcevalue'] ?? 'LBL_BLANK';
+            $response[] = [
+                0 => $row['count'],
+                1 => vtranslate($leadSourceVal, $this->getName()),
+                2 => $leadSourceVal,
+            ];
         }
 
         return $response;

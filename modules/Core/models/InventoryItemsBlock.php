@@ -36,6 +36,10 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
                 'INVENTORY_BLOCK_START' => vtranslate('LBL_ARTICLE_START', $this->variableLabelModule),
                 'INVENTORY_BLOCK_END' => vtranslate('LBL_ARTICLE_END', $this->variableLabelModule),
             ],
+            vtranslate('LBL_UNIQUE', $this->variableLabelModule) => [
+                'INVENTORY_BLOCK_UNIQUE_START' => vtranslate('LBL_ARTICLE_START', $this->variableLabelModule),
+                'INVENTORY_BLOCK_UNIQUE_END' => vtranslate('LBL_ARTICLE_END', $this->variableLabelModule),
+            ],
             vtranslate('LBL_PRODUCTS_ONLY', $this->variableLabelModule) => [
                 'INVENTORY_BLOCK_PRODUCTS_START' => vtranslate('LBL_ARTICLE_START', $this->variableLabelModule),
                 'INVENTORY_BLOCK_PRODUCTS_END' => vtranslate('LBL_ARTICLE_END', $this->variableLabelModule),
@@ -146,10 +150,16 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
 
         $content = $relatedBlock->replaceInventoryBlock($content);
 
+        $relatedBlock->getNewQueryGenerator()
+            ->setGroupByClauseRequired(true)
+            ->setGroupByColumns(['productid'])
+            ->addCondition('productid', '', 'ny');
+        $content = $relatedBlock->replaceInventoryBlock($content, 'INVENTORY_BLOCK_UNIQUE');
+
         foreach (['Products' => 'productname', 'Services' => 'servicename'] as $moduleName => $fieldName) {
             $blockName = 'INVENTORY_BLOCK_' . strtoupper($moduleName);
-            $queryGenerator = $relatedBlock->getNewQueryGenerator();
-            $queryGenerator->addCondition(sprintf('(productid ; (%s) %s)', $moduleName, $fieldName), '', $queryGenerator::NOT_EMPTY);
+            $relatedBlock->getNewQueryGenerator()
+                ->addCondition(sprintf('(productid ; (%s) %s)', $moduleName, $fieldName), '', 'ny');
             $content = $relatedBlock->replaceInventoryBlock($content, $blockName);
         }
 

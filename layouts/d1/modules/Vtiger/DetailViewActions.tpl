@@ -81,21 +81,15 @@
                     <ul class="dropdown-menu dropdown-menu-end">
                         {foreach item=DETAIL_VIEW_LINK from=$DETAILVIEW_LINKS['DETAILVIEW']}
                             {if $DETAIL_VIEW_LINK->getLabel() eq ""}
-                                <li class="dropdown-item divider"></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
                             {else}
-                                {assign var=DETAIL_VIEW_LINK_ICON value=$DETAIL_VIEW_BASIC_LINK->getIconHTML()}
-                                <li class="dropdown-item" id="{$MODULE_NAME}_detailView_moreAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($DETAIL_VIEW_LINK->getLabel())}">
-                                    {if $DETAIL_VIEW_LINK->getUrl()|strstr:"javascript"}
-                                        <a href='{$DETAIL_VIEW_LINK->getUrl()}'>
-                                            {if $DETAIL_VIEW_LINK_ICON}<span class="me-2 text-secondary">{$DETAIL_VIEW_LINK_ICON}</span>{/if}
-                                            <span>{vtranslate($DETAIL_VIEW_LINK->getLabel(), $MODULE_NAME)}</span>
-                                        </a>
-                                    {else}
-                                        <a href='{$DETAIL_VIEW_LINK->getUrl()}&app={$SELECTED_MENU_CATEGORY}'>
-                                            {if $DETAIL_VIEW_LINK_ICON}<span class="me-2 text-secondary">{$DETAIL_VIEW_LINK_ICON}</span>{/if}
-                                            <span>{vtranslate($DETAIL_VIEW_LINK->getLabel(), $MODULE_NAME)}</span>
-                                        </a>
-                                    {/if}
+                                <li id="{$MODULE_NAME}_detailView_moreAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($DETAIL_VIEW_LINK->getLabel())}">
+                                    <a class="dropdown-item text-secondary" href='{$DETAIL_VIEW_LINK->getUrl()}{if !$DETAIL_VIEW_LINK->getUrl()|strstr:"javascript"}&app={$SELECTED_MENU_CATEGORY}{/if}'>
+                                        {$DETAIL_VIEW_LINK->getIconHTML()}
+                                        <span class="ms-2">{vtranslate($DETAIL_VIEW_LINK->getLabel(), $MODULE_NAME)}</span>
+                                    </a>
                                 </li>
                             {/if}
                         {/foreach}

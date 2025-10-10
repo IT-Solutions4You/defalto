@@ -163,27 +163,30 @@ Vtiger.Class('Vtiger_Widget_Js', {
     },
 
     refreshWidget: function () {
-        var parent = this.getContainer();
-        var element = parent.find('a[name="drefresh"]');
-        var url = element.data('url');
+        let parent = this.getContainer(),
+            element = parent.find('a[name="drefresh"]'),
+            url = element.data('url'),
+            contentContainer = parent.find('.dashboardWidgetContent'),
+            widgetFilters = parent.find('.widgetFilter'),
+            params = {
+                url: url
+            };
 
-        var contentContainer = parent.find('.dashboardWidgetContent');
-        var params = {};
-        params.url = url;
-        var widgetFilters = parent.find('.widgetFilter');
         if (widgetFilters.length > 0) {
             params.url = url;
             params.data = {};
             widgetFilters.each(function (index, domElement) {
-                var widgetFilter = jQuery(domElement);
+                let widgetFilter = jQuery(domElement);
+
                 //Filter unselected checkbox, radio button elements
                 if ((widgetFilter.is(":radio") || widgetFilter.is(":checkbox")) && !widgetFilter.is(":checked")) {
                     return true;
                 }
                 if (widgetFilter.is('.dateRange')) {
-                    var name = widgetFilter.attr('name');
-                    var start = widgetFilter.find('input[name="start"]').val();
-                    var end = widgetFilter.find('input[name="end"]').val();
+                    let name = widgetFilter.attr('name'),
+                        start = widgetFilter.find('input[name="start"]').val(),
+                        end = widgetFilter.find('input[name="end"]').val();
+
                     if (start.length <= 0 || end.length <= 0) {
                         return true;
                     }
@@ -192,13 +195,15 @@ Vtiger.Class('Vtiger_Widget_Js', {
                     params.data[name].start = start;
                     params.data[name].end = end;
                 } else {
-                    var filterName = widgetFilter.attr('name');
-                    var filterValue = widgetFilter.val();
-                    params.data[filterName] = filterValue;
+                    let filterName = widgetFilter.attr('name');
+
+                    params.data[filterName] = widgetFilter.val();
                 }
             });
         }
-        var filterData = this.getFilterData();
+
+        let filterData = this.getFilterData();
+
         if (!jQuery.isEmptyObject(filterData)) {
             if (typeof params == 'string') {
                 url = params;
@@ -215,30 +220,13 @@ Vtiger.Class('Vtiger_Widget_Js', {
         }
 
         app.helper.showProgress();
-        app.request.post(params).then(
-            function (err, data) {
-                app.helper.hideProgress();
+        app.request.post(params).then(function (err, data) {
+            app.helper.hideProgress();
 
-                if (contentContainer.closest('.mCustomScrollbar').length) {
-                    contentContainer.mCustomScrollbar('destroy');
-                    contentContainer.html(data);
-                    var adjustedHeight = parent.height() - 100;
-                    app.helper.showVerticalScroll(contentContainer, {'setHeight': adjustedHeight});
-                } else {
-                    contentContainer.html(data);
-                }
-
-                /**
-                 * we are setting default height in DashBoardWidgetContents.tpl
-                 * need to overwrite based on resized widget height
-                 */
-                var widgetChartContainer = contentContainer.find(".widgetChartContainer");
-                if (widgetChartContainer.length > 0) {
-                    widgetChartContainer.css("height", parent.height() - 60);
-                }
-                contentContainer.trigger(Vtiger_Widget_Js.widgetPostRefereshEvent);
-            }
-        );
+            contentContainer.html(data);
+            contentContainer.find('.widgetChartContainer').css('height', parent.height() - 60);
+            contentContainer.trigger(Vtiger_Widget_Js.widgetPostRefereshEvent);
+        },);
     },
 
     registerFilter: function () {
@@ -314,7 +302,23 @@ Vtiger.Class('Vtiger_Widget_Js', {
     openUrl: function (url) {
         var win = window.open(url, '_blank');
         win.focus();
-    }
+    },
+    onClickEvent(event, elements) {
+        if (!elements.length) {
+            return;
+        }
+
+        const data = this['config']['_config']['data'];
+        const dataIndex = elements[0]['index'];
+        const datasetIndex = elements[0]['datasetIndex'];
+
+        if (data['datasets'][datasetIndex]['links'][dataIndex]) {
+            window.location.href = data['datasets'][datasetIndex]['links'][dataIndex];
+        }
+    },
+    getWidgetData: function () {
+        return JSON.parse(this.getContainer().find('.widgetData').val());
+    },
 });
 
 
@@ -452,200 +456,250 @@ Vtiger_Widget_Js('Vtiger_History_Widget_Js', {}, {
 
 
 Vtiger_Widget_Js('Vtiger_Funnel_Widget_Js', {}, {
+    generateData: function () {
+        let self = this,
+            data = self.getWidgetData(),
+            labels = [],
+            datasets = [
+                {data: [], links: []}
+            ];
 
-    postInitializeCalls: function () {
-        var thisInstance = this;
-        this.getPlotContainer(false).off('vtchartClick').on('vtchartClick', function (e, data) {
-            if (data.url)
-                thisInstance.openUrl(data.url);
+        $.each(data, function (index, value) {
+            labels[index] = value[2];
+            datasets[0]['data'][index] = value[1];
+            datasets[0]['links'][index] = value[3];
         });
-    },
 
-    generateLinks: function () {
-        var data = this.getContainer().find('.widgetData').val();
-        var parsedData = JSON.parse(data);
-        var linksData = [];
-        for (var index in parsedData) {
-            var newData = {};
-            var itemDetails = parsedData[index];
-            newData.name = itemDetails[0];
-            newData.links = itemDetails[3];
-            linksData.push(newData);
+        return {
+            labels: labels,
+            datasets: datasets,
         }
-        return linksData;
     },
-
     loadChart: function () {
-        var container = this.getContainer();
-        var data = container.find('.widgetData').val();
-        var chartOptions = {
-            renderer: 'funnel',
-            links: this.generateLinks()
-        };
-        this.getPlotContainer(false).vtchart(data, chartOptions);
-    }
+        let self = this,
+            plot = self.getPlotContainer(false),
+            data = self.generateData();
 
+        app.helper.showChart(plot, {
+            type: 'funnel',
+            data: data,
+            options: {
+                indexAxis: 'y',
+                onClick: self.onClickEvent,
+            },
+        });
+    }
 });
 
 
 Vtiger_Widget_Js('Vtiger_Pie_Widget_Js', {}, {
-
+    labelField: 'name',
+    datasetNumberField: 'count',
     /**
      * Function which will give chart related Data
      */
-    generateData: function () {
-        var container = this.getContainer();
-        var jData = container.find('.widgetData').val();
-        var data = JSON.parse(jData);
-        var chartData = [];
-        for (var index in data) {
-            var row = data[index];
-            var rowData = [row.last_name, parseFloat(row.amount), row.id];
-            chartData.push(rowData);
-        }
-        return {'chartData': chartData};
-    },
+    generateData() {
+        let self = this,
+            data = self.getWidgetData(),
+            chartData = [],
+            chartLinks = [],
+            chartLabels = [];
 
-    generateLinks: function () {
-        var jData = this.getContainer().find('.widgetData').val();
-        var statData = JSON.parse(jData);
-        var links = [];
-        for (var i = 0; i < statData.length; i++) {
-            links.push(statData[i]['links']);
-        }
-        return links;
-    },
-
-    postInitializeCalls: function () {
-        var thisInstance = this;
-        this.getPlotContainer(false).off('vtchartClick').on('vtchartClick', function (e, data) {
-            if (data.url)
-                thisInstance.openUrl(data.url);
+        $.each(data, function (index, row) {
+            chartLabels.push(row[self.labelField]);
+            chartData.push(row[self.datasetNumberField]);
+            chartLinks.push(row['links']);
         });
-    },
 
-    loadChart: function () {
-        var chartData = this.generateData();
-        var chartOptions = {
-            renderer: 'pie',
-            links: this.generateLinks()
+        return {
+            labels: chartLabels,
+            datasets: [{
+                data: chartData,
+                links: chartLinks,
+            }],
         };
-        this.getPlotContainer(false).vtchart(chartData, chartOptions);
+    },
+    loadChart: function () {
+        let self = this,
+            plot = self.getPlotContainer(false),
+            data = self.generateData();
+
+        app.helper.showChart(plot, {
+            type: 'pie',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    },
+                },
+                onClick: self.onClickEvent,
+            },
+        });
     }
 });
 
 
 Vtiger_Widget_Js('Vtiger_Barchat_Widget_Js', {}, {
+    generateData() {
+        let self = this,
+            data = self.getWidgetData();
 
-    generateChartData: function () {
-        var container = this.getContainer();
-        var jData = container.find('.widgetData').val();
-        var data = JSON.parse(jData);
-        var chartData = [];
-        var xLabels = new Array();
-        var yMaxValue = 0;
-        for (var index in data) {
-            var row = data[index];
-            row[0] = parseFloat(row[0]);
-            xLabels.push(app.getDecodedValue(row[1]));
-            chartData.push(row[0]);
-            if (parseInt(row[0]) > yMaxValue) {
-                yMaxValue = parseInt(row[0]);
-            }
+        let labels = [],
+            datasets = [{
+                links: [],
+                label: '',
+                showLine: false,
+                data: [],
+            }];
+
+        $.each(data, function (index, value) {
+            labels[index] = app.getDecodedValue(value[1]);
+            datasets[0]['links'][index] = value['links'];
+            datasets[0]['label'] = ''
+            datasets[0]['data'][index] = parseInt(value[0]);
+        })
+
+        return {
+            labels: labels,
+            datasets: datasets,
         }
-        // yMaxValue Should be 25% more than Maximum Value
-        yMaxValue = yMaxValue + 2 + (yMaxValue / 100) * 25;
-        return {'chartData': [chartData], 'yMaxValue': yMaxValue, 'labels': xLabels};
     },
+    getMaxValue(values) {
+        let max = 100;
 
-    generateLinks: function () {
-        var container = this.getContainer();
-        var jData = container.find('.widgetData').val();
-        var statData = JSON.parse(jData);
-        var links = [];
-        for (var i = 0; i < statData.length; i++) {
-            links.push(statData[i]['links']);
+        if (values) {
+            max = Math.max.apply(null, values);
+            max = parseInt(max + 2 + (max / 100 * 25));
         }
-        return links;
-    },
 
-    postInitializeCalls: function () {
-        var thisInstance = this;
-        this.getPlotContainer(false).off('vtchartClick').on('vtchartClick', function (e, data) {
-            if (data.url)
-                thisInstance.openUrl(data.url);
-        });
+        return max;
     },
-
     loadChart: function () {
-        var data = this.generateChartData();
-        var chartOptions = {
-            renderer: 'bar',
-            links: this.generateLinks()
-        };
-        this.getPlotContainer(false).vtchart(data, chartOptions);
+        let plot = this.getPlotContainer(false),
+            data = this.generateData(),
+            max = this.getMaxValue(data['datasets'][0]['data']);
+
+        plot.addClass('w-100');
+
+        app.helper.showChart(this.getPlotContainer(false), {
+            type: 'bar',
+            data: data,
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                onClick: this.onClickEvent,
+                responsive: true,
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        max: max,
+                        stacked: true
+                    }
+                },
+            }
+        });
     }
 
 });
-
+/** @var Vtiger_MultiBarchat_Widget_Js */
 Vtiger_Widget_Js('Vtiger_MultiBarchat_Widget_Js', {
-
+    labelField: 'name',
+    datasetLabelField: 'stage',
+    datasetNumberField: 'number',
     /**
      * Function which will give char related Data like data , x labels and legend labels as map
      */
-    getCharRelatedData: function () {
-        var container = this.getContainer();
-        var data = container.find('.widgetData').val();
-        var users = new Array();
-        var stages = new Array();
-        var count = new Array();
-        for (var i = 0; i < data.length; i++) {
-            if ($.inArray(data[i].last_name, users) == -1) {
-                users.push(data[i].last_name);
-            }
-            if ($.inArray(data[i].sales_stage, stages) == -1) {
-                stages.push(data[i].sales_stage);
-            }
-        }
+    generateData: function() {
+        let self = this,
+            widgetData = self.getWidgetData(),
+            labels = [],
+            datasetLabels = [],
+            datasets = [];
 
-        for (j in stages) {
-            var salesStageCount = new Array();
-            for (i in users) {
-                var salesCount = 0;
-                for (var k in data) {
-                    var userData = data[k];
-                    if (userData.sales_stage == stages[j] && userData.last_name == users[i]) {
-                        salesCount = parseInt(userData.count);
-                        break;
+        $.each(widgetData, function (index, value) {
+            if (-1 === $.inArray(value[self.labelField], labels)) {
+                labels.push(value[self.labelField]);
+            }
+
+            if (-1 === $.inArray(value[self.datasetLabelField], datasetLabels)) {
+                datasetLabels.push(value[self.datasetLabelField]);
+            }
+        });
+
+        $.each(datasetLabels, function (datasetIndex, datasetLabel) {
+            let data = [],
+                links = [];
+
+            $.each(labels, function (labelIndex, label) {
+                links[labelIndex] = self.getDatasetLinks(widgetData, label, datasetLabel);
+                data[labelIndex] = self.getDatasetNumber(widgetData, label, datasetLabel);
+            });
+
+            datasets[datasetIndex] = {
+                label: datasetLabel,
+                data: data,
+                links: links,
+            };
+        })
+
+        return {
+            labels: labels,
+            datasets: datasets,
+        }
+    },
+    getDatasetNumber: function (widgetData, label, datasetLabel) {
+        const self = this,
+            info = self.getDatasetInfo(widgetData, label, datasetLabel),
+            number = info[self.datasetNumberField];
+
+        return number ?? 0;
+    },
+    getDatasetLinks: function (widgetData, label, datasetLabel) {
+        return this.getDatasetInfo(widgetData, label, datasetLabel)['links'];
+    },
+    getDatasetInfo(widgetData, label, datasetLabel) {
+        let self = this,
+            info = {};
+
+        $.each(widgetData, function (index, value) {
+            if (value[self.labelField] === label && value[self.datasetLabelField] === datasetLabel) {
+                info = value;
+            }
+        });
+
+        return info;
+    },
+    loadChart: function () {
+        let self = this,
+            plot = this.getPlotContainer(false),
+            chartData = self.generateData();
+
+        plot.addClass('w-100');
+
+        app.helper.showChart(plot, {
+            type: 'bar',
+            data: chartData,
+            options: {
+                onClick: self.onClickEvent,
+                responsive: true,
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true
                     }
                 }
-                salesStageCount.push(salesCount);
             }
-            count.push(salesStageCount);
-        }
-        return {
-            'data': count,
-            'ticks': users,
-            'labels': stages
-        }
-    },
-
-    postInitializeCalls: function () {
-        var thisInstance = this;
-        this.getPlotContainer(false).off('vtchartClick').on('vtchartClick', function (e, data) {
-            if (data.url)
-                thisInstance.openUrl(data.url);
         });
-    },
-
-    loadChart: function () {
-        var chartRelatedData = this.getCharRelatedData();
-        var chartOptions = {
-            renderer: 'multibar',
-            links: chartRelatedData.links
-        };
-        this.getPlotContainer(false).data('widget-data', JSON.stringify(this.getCharRelatedData()));
-        this.getPlotContainer(false).vtchart(chartRelatedData, chartOptions);
     }
 
 });

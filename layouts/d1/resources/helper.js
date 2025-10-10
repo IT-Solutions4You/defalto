@@ -1130,6 +1130,20 @@ jQuery.Class("Vtiger_Helper_Js",{
 
     purifyContent: function(content) {
         return DOMPurify.sanitize(content);
+    },
+
+    showChart(container, data) {
+        if(!container.is('canvas')) {
+            let container = container.find('canvas');
+        }
+
+        if (container.is('.chartCreated')) {
+            return;
+        }
+
+        container.addClass('chartCreated');
+
+        return new Chart(container, data);
     }
 });
 

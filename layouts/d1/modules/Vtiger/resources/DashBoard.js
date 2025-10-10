@@ -462,7 +462,6 @@ Vtiger.Class("Vtiger_DashBoard_Js", {
                 }
                 app.helper.hideProgress();
             });
-        } else {
         }
     },
 
@@ -563,16 +562,16 @@ Vtiger.Class("Vtiger_DashBoard_Js", {
 									</div>\n\
 									<div class="modal-body" style="overflow:auto;">\n\
 										<ul style="list-style: none;" class="p-0 m-3"><li id="fullscreenpreview" class="dashboardWidget fullscreenview" data-name="' + widgetName + '">\n\
-											<div class="dashboardWidgetContent overflow-auto h-100" style="min-height:500px;width:100%;min-width:600px; margin: 0 auto" data-displaymode="fullscreen">';
+											<div class="dashboardWidgetContent overflow-auto h-100 w-100" style="min-height:500px;min-width:600px; margin: 0 auto" data-displaymode="fullscreen">';
             if (chartType != '') {
                 fullscreenview += ' <input type="hidden" value="' + chartType + '" name="charttype">\n\
 												<input type="hidden" value="' + clickThrough + '" name="clickthrough">\n\
-												<div id="chartDiv" name="chartcontent" style="width:100%;height:100%" data-mode="preview"></div> \n\
+												<div id="chartDiv" name="chartcontent h-100 w-100" data-mode="preview"></div> \n\
 												<input class="widgetData" type="hidden" value="" name="data">';
             } else {
-                fullscreenview += ' <div class="dashboardWidgetContent overflow-auto h-100" style="width:100%;height:100%" data-displaymode="fullscreen">\n\
-													<div id="chartDiv" class="widgetChartContainer" style="width:100%;height:100%"></div>\n\
-														<input class="widgetData" type="hidden" value="" name="data">';
+                fullscreenview += ' <div class="dashboardWidgetContent overflow-auto h-100 w-100" data-displaymode="fullscreen">\n\
+                    <canvas id="chartDiv" class="widgetChartContainer h-100 w-100"></canvas>\n\
+                    <input class="widgetData" type="hidden" value="" name="data">';
             }
             fullscreenview += '</div></ul></li></div></div></div>';
 
@@ -610,13 +609,13 @@ Vtiger.Class("Vtiger_DashBoard_Js", {
             widgetContainer.toggleClass('dashboardFilterExpanded');
             filterContainer.slideToggle(500);
 
-            var callbackFunction = function () {
-                widgetContainer.toggleClass('dashboardFilterExpanded');
-                filterContainer.slideToggle(500);
-            }
             //adding clickoutside event on the dashboardWidgetHeader
-            var helper = new Vtiger_Helper_Js();
-            helper.addClickOutSideEvent(dashboardWidgetFooter, callbackFunction);
+            app.helper.addClickOutSideEvent(dashboardWidgetFooter, function () {
+                if (widgetContainer.is('.dashboardFilterExpanded')) {
+                    widgetContainer.toggleClass('dashboardFilterExpanded');
+                    filterContainer.slideToggle(500);
+                }
+            });
 
             return false;
         })
