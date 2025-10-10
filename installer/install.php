@@ -356,9 +356,6 @@ class Download
         $self->redirect = $redirect;
         $self->retrieveProgress();
 
-        $self->start();
-        return $self;
-
         if ($self->isRedirect()) {
             $self->redirect();
         } elseif ($self->is('start')) {
