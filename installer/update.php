@@ -444,10 +444,13 @@ $download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migrati
         }
 
         .progress {
+            margin: 1em 0;
+        }
+
+        .progressBorder {
+            width: 100%;
             overflow: hidden;
             border-radius: 0.5rem;
-            margin: 1em 0;
-            width: 100%;
             border: 1px solid #103962;
         }
 
@@ -462,11 +465,23 @@ $download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migrati
 
         @keyframes progressBarAnimation {
             0% {
-                width: 0;
-            }
-            100% {
                 width: !inherit;
             }
+            100% {
+                width: 100%;
+            }
+        }
+
+        .progressText {
+            color: #103962;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 0.2em;
+        }
+
+        .progressText span:last-child {
+            margin-left: auto;
         }
 
         .log {
@@ -545,8 +560,12 @@ echo $download->progress ?>">
     </div>
     <div class="progressContainer">
         <div class="progress">
-            <div class="progressBar" style="width: <?php
-            echo $download->progressNum ?>%;"></div>
+            <div class="progressText">
+                <div><?php echo ucfirst($download->progress); ?></div><div><?php echo $download->progressNum; ?>%</div>
+            </div>
+            <div class="progressBorder">
+                <div class="progressBar" style="width: <?php echo $download->progressNum ?>%;"></div>
+            </div>
         </div>
         <div class="log"><?php
             echo $download->getMessages() ?></div>
