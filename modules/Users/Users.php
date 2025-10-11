@@ -724,36 +724,6 @@ class Users extends CRMEntity
         return $verified;
     }
 
-    /** Function to return the column name array
-     *
-     */
-
-    function getColumnNames_User()
-    {
-        $mergeflds = [
-            "FIRSTNAME",
-            "LASTNAME",
-            "USERNAME",
-            "SECONDARYEMAIL",
-            "TITLE",
-            "OFFICEPHONE",
-            "DEPARTMENT",
-            "MOBILE",
-            "OTHERPHONE",
-            "FAX",
-            "EMAIL",
-            "HOMEPHONE",
-            "OTHEREMAIL",
-            "PRIMARYADDRESS",
-            "CITY",
-            "STATE",
-            "POSTALCODE",
-            "COUNTRY"
-        ];
-
-        return $mergeflds;
-    }
-
     function fill_in_additional_list_fields()
     {
         $this->fill_in_additional_detail_fields();
