@@ -1726,40 +1726,6 @@
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 
-	<table name="vtiger_wordtemplates">
-		<field name="templateid" type="I" size="19">
-			<key />
-		</field>
-		<field name="filename" type="C" size="100">
-			<notnull />
-		</field>
-		<field name="module" type="C" size="30">
-			<notnull />
-		</field>
-		<field name="date_entered" type="T">
-			<notnull />
-			<deftimestamp />
-		</field>
-		<field name="parent_type" type="C" size="50">
-			<notnull />
-		</field>
-		<field name="data" type="B">
-			<notnull />
-		</field>
-		<field name="description" type="X" />
-		<field name="filesize" type="C" size="50">
-			<notnull />
-		</field>
-		<field name="filetype" type="C" size="20">
-			<notnull />
-		</field>
-		<field name="deleted" type="I" size="1">
-			<notnull />
-			<default value="0" />
-		</field>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
 	<table name="vtiger_accountrating">
 		<field name="accountratingid" type="I" size="19">
 			<key />
