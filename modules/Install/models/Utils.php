@@ -201,7 +201,6 @@ class Install_Utils_Model
         return $directiveValues;
     }
 
-
     /**
      * Variable has the recommended php settings for smooth running of vtigerCRM
      * @var array
