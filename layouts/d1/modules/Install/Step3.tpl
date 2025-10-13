@@ -63,7 +63,7 @@
                                     <tr>
                                         <td>{$DIRECTIVE}</td>
                                         <td>{$PHP_INI_RECOMMENDED_SETTINGS[$DIRECTIVE]}</td>
-                                        <td class="no">{$VALUE}</td>
+                                        <td class="no {if $PHP_INI_RECOMMENDED_SETTINGS[$DIRECTIVE] neq $VALUE}text-danger{/if}">{$VALUE}</td>
                                     </tr>
                                 {/foreach}
                             </table>
@@ -78,8 +78,8 @@
                                 {foreach item=FILE_PATH key=FILE_NAME from=$FAILED_FILE_PERMISSIONS}
                                     <tr>
                                         <td nowrap>{vtranslate($FILE_NAME, 'Install')} ({str_replace("./","",$FILE_PATH)})</td>
-                                        <td class="no">{vtranslate('LBL_YES', 'Install')}</td>
-                                        <td class="no">{vtranslate('LBL_NO', 'Install')}</td>
+                                        <td class="no text-danger">{vtranslate('LBL_YES', 'Install')}</td>
+                                        <td class="no text-danger">{vtranslate('LBL_NO', 'Install')}</td>
                                     </tr>
                                 {/foreach}
                             </table>
