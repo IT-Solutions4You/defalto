@@ -174,21 +174,19 @@ class Install_Utils_Model
             $directiveValues['max_input_vars'] = ini_get('max_input_vars');
         }
 
-        if (ini_get('memory_limit') < self::$recommendedDirectives['memory_limit']) {
+        if ((int)ini_get('memory_limit') < (int)self::$recommendedDirectives['memory_limit']) {
             $directiveValues['memory_limit'] = ini_get('memory_limit');
         }
 
-        if (ini_get('post_max_size') < self::$recommendedDirectives['post_max_size']) {
+        if ((int)ini_get('post_max_size') < (int)self::$recommendedDirectives['post_max_size']) {
             $directiveValues['post_max_size'] = ini_get('post_max_size');
         }
 
-        if (ini_get('upload_max_filesize') < self::$recommendedDirectives['upload_max_filesize']) {
+        if ((int)ini_get('upload_max_filesize') < (int)self::$recommendedDirectives['upload_max_filesize']) {
             $directiveValues['upload_max_filesize'] = ini_get('upload_max_filesize');
         }
 
-        $errorReportingValue = E_WARNING & ~E_NOTICE & ~E_DEPRECATED;
-
-        if (ini_get('error_reporting') != $errorReportingValue) {
+        if ((int)ini_get('error_reporting') !== (int)self::$recommendedDirectives['error_reporting']) {
             $directiveValues['error_reporting'] = 'NOT RECOMMENDED';
         }
 
@@ -216,10 +214,10 @@ class Install_Utils_Model
         'max_execution_time'  => 600,
         'max_input_time'      => 120,
         'max_input_vars'      => 10000,
-        'memory_limit'        => 256,
-        'post_max_size'       => 50,
-        'upload_max_filesize' => 5,
-        'error_reporting'     => 'E_WARNING & ~E_NOTICE',
+        'memory_limit'        => '256M',
+        'post_max_size'       => '50M',
+        'upload_max_filesize' => '5M',
+        'error_reporting'     => 0,
         'log_errors'          => 'Off',
         'short_open_tag'      => 'Off'
     ];
@@ -230,8 +228,6 @@ class Install_Utils_Model
      */
     public static function getRecommendedDirectives()
     {
-        self::$recommendedDirectives['error_reporting'] = 'E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT';
-
         return self::$recommendedDirectives;
     }
 

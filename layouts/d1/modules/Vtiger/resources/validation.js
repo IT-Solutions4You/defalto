@@ -327,30 +327,28 @@ jQuery.validator.addMethod("time", function (value, element, params) {
 
 jQuery.validator.addMethod("email", function (value, element, params) {
         value = value.trim();
-        var emailFilter = /^[_/a-zA-Z0-9*]+([!"#$%&'()*+,./:;<=>?\^_`'{|}~-]?[a-zA-Z0-9/_/-])*@[a-zA-Z0-9]+([\_\.]?[a-zA-Z0-9\-]+)*\.([\-\_]?[a-zA-Z0-9])+(\.?[a-zA-Z0-9]+)?$/;
 
         if (!value) return true;
 
-        if (!emailFilter.test(value)) {
-            return false;
-        }
-        return true;
+        return vtUtils.isEmailValidated(value);
+
     }, jQuery.validator.format(app.vtranslate('JS_PLEASE_ENTER_VALID_EMAIL_ADDRESS'))
 );
 
 jQuery.validator.addMethod("multiEmails", function (value, element, params) {
-        var emailFilter = /^[_/a-zA-Z0-9*]+([!"#$%&'()*+,./:;<=>?\^_`'{|}~-]?[a-zA-Z0-9/_/-])*@[a-zA-Z0-9]+([\_\.]?[a-zA-Z0-9\-]+)*\.([\-\_]?[a-zA-Z0-9])+(\.?[a-zA-Z0-9]+)?$/;
-
         if (!value) return true;
-        var fieldValuesList = value.split(',');
-        for (var i in fieldValuesList) {
-            var splittedFieldValue = fieldValuesList[i];
+
+        let fieldValuesList = value.split(',');
+
+        for (let i in fieldValuesList) {
+            let splittedFieldValue = fieldValuesList[i];
             splittedFieldValue = splittedFieldValue.trim();
-            var response = emailFilter.test(splittedFieldValue);
-            if (response != true) {
+
+            if (!vtUtils.isEmailValidated(splittedFieldValue)) {
                 return false;
             }
         }
+
         return true;
     }, jQuery.validator.format(app.vtranslate('JS_PLEASE_ENTER_VALID_EMAIL_ADDRESS'))
 );
