@@ -59,11 +59,13 @@ class CRMExtension
     public string $moduleVersion = '0.1';
     public $list_fields_names = [];
     public $list_fields = [];
+    public int $ownedBy = 1;
 }
 
 class CRMEntity extends CRMExtension
 {
     public int $isEntity = 1;
+    public int $ownedBy = 0;
 
     /**
      * Detect if we are in bulk save mode, where some features can be turned-off
