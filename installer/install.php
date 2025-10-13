@@ -460,24 +460,12 @@ $download = Download::zip($zipFileUrl, $zipFileFolder);
             text-align: left;
             background: #103962;
             background-size: 100% 100%;
-        }
-
-        .miniProgress {
-            width: 15vw;
-        }
-
-        .miniProgressBar {
-            width: 0;
-            margin: 1em 0 4em 0;
-            height: 1em;
-            border-radius: 0.4rem;
-            background: #103962;
-            animation: progressBarAnimation 2s linear infinite;
+            animation: progressBarAnimation 5s linear infinite;
         }
 
         @keyframes progressBarAnimation {
             0% {
-                width: 0;
+                width: !inherit;
             }
             100% {
                 width: 100%;
@@ -549,7 +537,7 @@ $download = Download::zip($zipFileUrl, $zipFileFolder);
                 if ('' !== progress) {
                     setTimeout(function () {
                         loadProgress();
-                    }, 2000);
+                    }, 1000);
                 } else {
                     removeClass('.button', 'hide')
                 }
@@ -579,12 +567,8 @@ echo $download->progress ?>">
                 <div class="progressBar" style="width: <?php echo $download->progressNum ?>%;"></div>
             </div>
         </div>
-        <div class="log">
-            <?php echo $download->getMessages() ?>
-            <div class="miniProgress">
-                <div class="miniProgressBar"></div>
-            </div>
-        </div>
+        <div class="log"><?php
+            echo $download->getMessages() ?></div>
         <div class="action">
             <a href="<?php
             echo $download->getRedirectUrl() ?>" class="button hide">Continue Installation
