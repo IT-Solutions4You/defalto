@@ -597,6 +597,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $cfTable = $moduleFocus->customFieldTable[0] ?? '';
         $groupRelTable = $moduleFocus->groupFieldTable[0] ?? '';
         $version = $moduleFocus->moduleVersion;
+        $ownedBy = $moduleFocus->ownedBy;
 
         if (!empty($entity) && empty($baseTableId)) {
             self::logError('Empty base table ID');
@@ -649,6 +650,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $moduleInstance->basetableid = $baseTableId;
         $moduleInstance->customtable = $cfTable;
         $moduleInstance->grouptable = $groupRelTable;
+        $moduleInstance->ownedby = $ownedBy;
         $moduleInstance->save();
 
         $this->getTable('vtiger_tab', 'tabid')->updateData([
@@ -656,6 +658,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'parent' => $moduleInstance->parent,
             'tablabel' => $moduleInstance->label,
             'isentitytype' => $moduleInstance->isentitytype,
+            'ownedby' => $moduleInstance->ownedby,
         ], [
             'tabid' => $moduleInstance->id,
         ]);
