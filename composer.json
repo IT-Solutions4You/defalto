@@ -151,7 +151,9 @@
   "config": {
     "bin-dir": "bin",
     "discard-changes": true,
-    "optimize-autoloader": true
+    "preferred-install": {"*": "dist"},
+    "optimize-autoloader": true,
+    "sort-packages": true
   },
   "authors": [
     {
