@@ -25,12 +25,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 $isDebug = isset($_GET['debug']);
 
 putenv('COMPOSER_HOME=' . __DIR__ . '/vendor/bin/composer');
+putenv('COMPOSER_CACHE_DIR=' . __DIR__ . '/vendor/bin/composer-cache');
 
 $output = new Output(
     $isDebug ? OutputInterface::VERBOSITY_DEBUG : OutputInterface::VERBOSITY_NORMAL
 );
 
-$input = new ArrayInput(['command' => 'update', '--no-dev' => true]);
+$input = new ArrayInput(['command' => 'install', '--no-dev' => true, '--prefer-dist' => true, '--no-progress' => true, '--optimize-autoloader' => true]);
 $application = new Application();
 $application->setAutoExit(false);
 $application->run($input, $output);
@@ -51,3 +52,5 @@ function deleteDirectory($path)
 }
 
 deleteDirectory(EXTRACT_DIRECTORY);
+deleteDirectory(__DIR__ . '/vendor/bin/composer');
+deleteDirectory(__DIR__ . '/vendor/bin/composer-cache');
