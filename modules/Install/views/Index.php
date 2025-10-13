@@ -16,8 +16,6 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-
-
 class Install_Index_view extends Vtiger_View_Controller
 {
     protected $debug = false;
@@ -49,25 +47,33 @@ class Install_Index_view extends Vtiger_View_Controller
     public function preProcess(Vtiger_Request $request, $display = true)
     {
         $this->applyInstallFriendlyEnv();
+        $this->retrieveDefaultLanguage($request);
 
         date_default_timezone_set('Europe/London'); // to overcome the pre configuration settings
 
-        parent::preProcess($request, false);
-
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();
-
-        if (!$request->isEmpty('lang')) {
-            $_SESSION['config_file_info']['default_language'] = $request->get('lang');
-        } elseif (empty($_SESSION['config_file_info']['default_language'])) {
-            $_SESSION['config_file_info']['default_language'] = 'en_us';
-        }
 
         vglobal('default_language', $_SESSION['config_file_info']['default_language']);
 
         define('INSTALLATION_MODE', true);
         define('INSTALLATION_MODE_DEBUG', $this->debug);
+
+        parent::preProcess($request, false);
         $viewer->view('InstallPreProcess.tpl', $moduleName);
+    }
+
+    public function retrieveDefaultLanguage(Vtiger_Request $request)
+    {
+        if (!$request->isEmpty('lang')) {
+            $_SESSION['config_file_info']['default_language'] = $request->get('lang');
+        }
+
+        if (empty($_SESSION['config_file_info']['default_language'])) {
+            $_SESSION['config_file_info']['default_language'] = 'en_us';
+        }
+
+        vglobal('default_language', $_SESSION['config_file_info']['default_language']);
     }
 
     public function process(Vtiger_Request $request)
