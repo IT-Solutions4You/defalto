@@ -267,9 +267,9 @@ class PBXManager_Install_Model extends Core_Install_Model
             ->createColumn('user', 'varchar(100) DEFAULT NULL')
             ->createColumn('customernumber', 'varchar(100) DEFAULT NULL')
             ->createColumn('customertype', 'varchar(100) DEFAULT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`pbxmanagerid`)')
-            ->createKey('KEY IF NOT EXISTS `index_sourceuuid` (`sourceuuid`)')
-            ->createKey('KEY IF NOT EXISTS `index_pbxmanager_id` (`pbxmanagerid`)');
+            ->createKey('PRIMARY KEY IF NOT EXISTS (pbxmanagerid)')
+            ->createKey('KEY IF NOT EXISTS index_sourceuuid(sourceuuid)')
+            ->createKey('KEY IF NOT EXISTS index_pbxmanager_id(pbxmanagerid)');
 
         $this->getTable('vtiger_pbxmanagercf', null)
             ->createTable('pbxmanagerid')
