@@ -16,6 +16,9 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class Vtiger_ExportData_Action extends Vtiger_Mass_Action
 {
     var $moduleCall = false;
@@ -251,18 +254,14 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action
     }
 
     /**
-     * Function returns the export type - This can be extended to support different file exports
-     *
      * @param Vtiger_Request $request
-     *
-     * @return <String>
+     * @return void
      */
-    function getExportContentType(Vtiger_Request $request)
+    public function getExportFileName(Vtiger_Request $request): string
     {
-        $type = $request->get('export_type');
-        if (empty($type)) {
-            return 'text/csv';
-        }
+        $moduleName = $request->get('source_module');
+
+        return str_replace([' ', ','], ['_', '_'], decode_html(vtranslate($moduleName, $moduleName)));
     }
 
     /**
@@ -274,16 +273,46 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action
      */
     function output($request, $headers, $entries)
     {
-        $moduleName = $request->get('source_module');
-        $fileName = str_replace(' ', '_', decode_html(vtranslate($moduleName, $moduleName)));
-        // for content disposition header comma should not be there in filename
-        $fileName = str_replace(',', '_', $fileName);
-        $exportType = $this->getExportContentType($request);
+        $exportType = strtoupper($request->get('export_type'));
+        $function = 'output' . $exportType;
+
+        if (method_exists($this, $function)) {
+            $this->$function($request, $headers, $entries);
+
+            return;
+        }
+
+        $this->outputCSV($request, $headers, $entries);
+    }
+
+    public function outputXLSX(Vtiger_Request $request, $headers, $entries)
+    {
+        $fileName = $this->getExportFileName($request);
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->fromArray($headers, null, 'A1');
+        $rowIndex = 2;
+
+        foreach ($entries as $entry) {
+            $sheet->fromArray($entry, null, 'A' . $rowIndex++);
+        }
+
+        header("Content-Type:application/x-msexcel;charset=UTF-8");
+        header("Content-Disposition: attachment;filename=$fileName.xlsx");
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+    }
+
+    public function outputCSV(Vtiger_Request $request, $headers, $entries): void
+    {
+        $fileName = $this->getExportFileName($request);
 
         header("Content-Disposition:attachment;filename=$fileName.csv");
-        header("Content-Type:$exportType;charset=UTF-8");
+        header("Content-Type:text/csv;charset=UTF-8");
         header("Expires: Mon, 31 Dec 2000 00:00:00 GMT");
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+        header("Last-Modified: " . gmdate('D, d M Y H:i:s') . " GMT");
         header("Cache-Control: post-check=0, pre-check=0", false);
 
         ob_clean();

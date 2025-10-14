@@ -154,13 +154,13 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
     {
         $lowerCriteria = strtolower($criteria);
 
-        if (str_contains($lowerCriteria, 'key') && !str_contains($lowerCriteria, 'key if not exists')) {
+        if (str_contains($lowerCriteria, 'key ') && !str_contains($lowerCriteria, 'key if not exists')) {
             Core_Install_Model::logError('Added to key "IF NOT EXISTS" to: ' . $criteria);
 
             $criteria = str_replace('KEY', 'KEY IF NOT EXISTS', $criteria);
         }
 
-        if (str_contains($lowerCriteria, 'index') && !str_contains($lowerCriteria, 'index if not exists')) {
+        if (str_contains($lowerCriteria, 'index ') && !str_contains($lowerCriteria, 'index if not exists')) {
             Core_Install_Model::logError('Added to index "IF NOT EXISTS" to: ' . $criteria);
 
             $criteria = str_replace('INDEX', 'INDEX IF NOT EXISTS', $criteria);

@@ -166,8 +166,8 @@ class Settings_Workflows_TaskRecord_Model extends Settings_Vtiger_Record_Model
             ->createColumn('workflow_id', 'int(11) DEFAULT NULL')
             ->createColumn('summary', 'varchar(400) NOT NULL')
             ->createColumn('task', 'text NOT NULL')
-            ->createKey('PRIMARY KEY (task_id)')
-            ->createKey('UNIQUE KEY com_vtiger_workflowtasks_idx (task_id)');
+            ->createKey('PRIMARY KEY IF NOT EXISTS (task_id)')
+            ->createKey('UNIQUE KEY IF NOT EXISTS com_vtiger_workflowtasks_idx (task_id)');
     }
 
     public static function getCleanInstance($workflowModel, $taskName)
