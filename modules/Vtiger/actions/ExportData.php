@@ -260,9 +260,8 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action
     public function getExportFileName(Vtiger_Request $request): string
     {
         $moduleName = $request->get('source_module');
-        $fileName = str_replace(' ', '_', decode_html(vtranslate($moduleName, $moduleName)));
 
-        return str_replace(',', '_', $fileName);
+        return str_replace([' ', ','], ['_', '_'], decode_html(vtranslate($moduleName, $moduleName)));
     }
 
     /**
