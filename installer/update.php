@@ -460,12 +460,24 @@ $download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migrati
             text-align: left;
             background: #103962;
             background-size: 100% 100%;
-            animation: progressBarAnimation 5s linear infinite;
+        }
+
+        .miniProgress {
+            width: 15vw;
+        }
+
+        .miniProgressBar {
+            width: 0;
+            margin: 1em 0 4em 0;
+            height: 1em;
+            border-radius: 0.4rem;
+            background: #103962;
+            animation: progressBarAnimation 2s linear infinite;
         }
 
         @keyframes progressBarAnimation {
             0% {
-                width: !inherit;
+                width: 0;
             }
             100% {
                 width: 100%;
@@ -537,7 +549,7 @@ $download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migrati
                 if ('' !== progress) {
                     setTimeout(function () {
                         loadProgress();
-                    }, 1000);
+                    }, 2000);
                 } else {
                     removeClass('.button', 'hide')
                 }
@@ -548,7 +560,7 @@ $download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migrati
 
         setTimeout(function () {
             loadProgress();
-        }, 1000);
+        }, 2000);
     </script>
 </head>
 <body>
@@ -567,8 +579,12 @@ echo $download->progress ?>">
                 <div class="progressBar" style="width: <?php echo $download->progressNum ?>%;"></div>
             </div>
         </div>
-        <div class="log"><?php
-            echo $download->getMessages() ?></div>
+        <div class="log">
+            <?php echo $download->getMessages() ?>
+            <div class="miniProgress">
+                <div class="miniProgressBar"></div>
+            </div>
+        </div>
         <div class="action">
             <a href="<?php echo $download->getRedirectUrl() ?>" class="button hide">Continue Database Migration</a>
         </div>
