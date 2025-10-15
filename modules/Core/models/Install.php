@@ -564,7 +564,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     public function isInstalledModule(): bool
     {
         if (isset(self::$installedModules[$this->moduleName])) {
-            self::logError($this->moduleName . ': was already installed in this process');
+            self::logInfo($this->moduleName . ': was already installed in this process');
 
             return true;
         }
@@ -610,20 +610,20 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
 
         if (empty($label)) {
-            self::logError('Dynamic created label');
+            self::logInfo('Dynamic created label');
 
             $label = str_replace('ITS', '', $name);
             $label = str_replace('4You', '', $label);
         }
 
         if (!empty($baseTable) && empty($cfTable)) {
-            self::logError('Dynamic custom field table');
+            self::logInfo('Dynamic custom field table');
 
             $cfTable = $baseTable . 'cf';
         }
 
         if (!empty($baseTable) && empty($groupRelTable)) {
-            self::logError('Dynamic group relation table');
+            self::logInfo('Dynamic group relation table');
 
             $groupRelTable = $baseTable . 'grouprel';
         }
@@ -914,7 +914,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
             self::logSuccess('Link created');
         } else {
-            self::logError('Link not created');
+            self::logInfo('Link not created');
         }
     }
 
@@ -1105,6 +1105,15 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
 
         echo '<pre style="color: indianred;">' . print_r($message, true) . '</pre>';
+    }
+
+    public static function logInfo($message): void
+    {
+        if (true !== vglobal('debug')) {
+            return;
+        }
+
+        echo '<pre style="color: dodgerblue;">' . print_r($message, true) . '</pre>';
     }
 
     /**
