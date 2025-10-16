@@ -227,7 +227,10 @@ class Installer_Download_Model
             $this->setProgress('retrieve', 1);
         } else {
             Core_Install_Model::logError(self::ERROR_CHMOD);
-            Core_Install_Model::logError('Permissions not changed:' . implode(',', self::$chmodErrors));
+
+            foreach (self::$chmodErrors as $error) {
+                Core_Install_Model::logError('Permissions not changed:' . str_replace($root_directory, '', $error));
+            }
         }
     }
 
@@ -303,7 +306,7 @@ class Installer_Download_Model
         if (is_writable($filename)) {
             Core_Install_Model::logSuccess(self::ZIP_WRITABLE);
 
-            if (unlink($filename) && copy($this->getUrl(), $filename)) {
+            if (unlink($filename) && copy($this->getUrl(), $filename) && filesize($filename)) {
                 Core_Install_Model::logSuccess(self::ZIP_COPIED);
                 $this->setProgress('extract', 3);
             } else {
@@ -367,7 +370,7 @@ class Installer_Download_Model
 
         while ($file = readdir($dp)) {
             if ($file != '.' and $file != '..') {
-                $file = $path . '/' . $file;
+                $file = rtrim($path, '/') . '/' . $file;
 
                 if (is_dir($file)) {
                     self::chmod($file);

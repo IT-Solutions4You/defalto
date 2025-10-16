@@ -183,6 +183,8 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
         $download->downloadAndExport();
 
         (new Migration_Index_View())->applyDBChanges();
+
+        Core_Install_Model::logSuccess('System install finished');
     }
 
     /**
@@ -194,6 +196,8 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
 
         $version = $request->get('version');
 
+        Core_Install_Model::logSuccess($version);
+
         $install = Installer_ExtensionInstall_Model::getInstance($version);
         $download = Installer_Download_Model::getInstance($install->get('download-url'), $install->get('download-folder'));
         $download->downloadAndExport();
@@ -201,8 +205,17 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
         $installClass = $version . '_Install_Model';
 
         if (class_exists($installClass)) {
-            Core_Install_Model::getInstance('module.postupdate', $version)->installModule();
+            $installModel = Core_Install_Model::getInstance('module.postupdate', $version);
         }
+
+        if (isset($installModel)) {
+            Core_Install_Model::logSuccess('Install model');
+            $installModel->installModule();
+        } else {
+            Core_Install_Model::logError('Missing install model' . $version);
+        }
+
+        Core_Install_Model::logSuccess('Module install finished');
     }
 
     public function extensionUninstall(Vtiger_Request $request): void
