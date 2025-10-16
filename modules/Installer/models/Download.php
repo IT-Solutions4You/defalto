@@ -101,14 +101,6 @@ class Installer_Download_Model
     /**
      * @return string
      */
-    public function getMessages(): string
-    {
-        return implode('<br>', $_SESSION['messages']);
-    }
-
-    /**
-     * @return string
-     */
     public function getPHPFileName(): string
     {
         return $this->getFileName() . '.php';
@@ -207,7 +199,6 @@ class Installer_Download_Model
         $this->progress = !empty($_SESSION['progress']) ? $_SESSION['progress'] : 'start';
 
         if ($this->is('start')) {
-            $_SESSION['messages'] = [];
             $_SESSION['progress'] = '';
         }
     }
@@ -312,7 +303,7 @@ class Installer_Download_Model
         if (is_writable($filename)) {
             Core_Install_Model::logSuccess(self::ZIP_WRITABLE);
 
-            if (copy($this->getUrl(), $filename)) {
+            if (unlink($filename) && copy($this->getUrl(), $filename)) {
                 Core_Install_Model::logSuccess(self::ZIP_COPIED);
                 $this->setProgress('extract', 3);
             } else {

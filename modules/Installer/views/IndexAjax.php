@@ -157,14 +157,30 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
      */
     public function systemProgress(Vtiger_Request $request): void
     {
-        $version = (string)$request->get('version');
+        vglobal('debug', true);
 
+        $licenses = Installer_License_Model::getAll(Installer_License_Model::EXTENSION_PACKAGES);
+
+        if (!empty($licenses)) {
+            foreach ($licenses as $license) {
+                $extensions = $license->getInfo('extensions');
+
+                if (!empty($extensions)) {
+                    foreach ($extensions as $extension) {
+                        Installer_ZipArchive_Model::$skipFiles[] = $extension . '.php';
+                        Installer_ZipArchive_Model::$skipFolders[] = 'modules/' . $extension;
+                        Installer_ZipArchive_Model::$skipFolders[] = 'modules/Settings/' . $extension;
+                        Installer_ZipArchive_Model::$skipFolders[] = 'layouts/d1/modules/' . $extension;
+                        Installer_ZipArchive_Model::$skipFolders[] = 'layouts/d1/modules/Settings/' . $extension;
+                    }
+                }
+            }
+        }
+
+        $version = (string)$request->get('version');
         $install = Installer_SystemInstall_Model::getInstance($version);
         $download = Installer_Download_Model::getInstance($install->get('download-url'), $install->get('download-folder'));
         $download->downloadAndExport();
-
-        vglobal('debug', true);
-        Core_Install_Model::logSuccess($download->getMessages());
 
         (new Migration_Index_View())->applyDBChanges();
     }
@@ -174,14 +190,13 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
      */
     public function extensionProgress(Vtiger_Request $request): void
     {
+        vglobal('debug', true);
+
         $version = $request->get('version');
 
         $install = Installer_ExtensionInstall_Model::getInstance($version);
         $download = Installer_Download_Model::getInstance($install->get('download-url'), $install->get('download-folder'));
         $download->downloadAndExport();
-
-        vglobal('debug', true);
-        Core_Install_Model::logSuccess($download->getMessages());
 
         $installClass = $version . '_Install_Model';
 

@@ -77,9 +77,12 @@ class Installer_ZipArchive_Model extends ZipArchive
                         }
 
                         if ($skip) {
-                            Core_Install_Model::logError('Skip: ' . $relativePath);
+                            Core_Install_Model::logInfo('Skip: ' . $relativePath);
                         } elseif (file_put_contents($destination . $relativePath, $this->getFromIndex($i)) === false) {
                             self::$errors[$i] = $filename;
+                            Core_Install_Model::logError('Not Extracted: ' . $relativePath);
+                        } else {
+                            Core_Install_Model::logSuccess('Extracted: ' . $relativePath);
                         }
                     }
                 }
