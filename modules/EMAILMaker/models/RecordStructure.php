@@ -21,8 +21,7 @@ class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
         $className = Vtiger_Loader::getComponentClassName('Model', $mode . 'RecordStructure', 'EMAILMaker');
         $instance = new $className();
         $instance->setEMAILMakerModel($EMAILMakerModel);
-
-        $instance->setModule($EMAILMakerModel->getModule());
+        $instance->setModule($EMAILMakerModel->getParentModule());
 
         return $instance;
     }

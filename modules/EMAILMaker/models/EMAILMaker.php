@@ -103,7 +103,9 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
 
     public static function getSimpleHtmlDomFile()
     {
-        require_once 'vendor/simplehtmldom/simplehtmldom/simple_html_dom.php';;
+        if (!class_exists('simple_html_dom_node')) {
+            require_once 'vendor/simplehtmldom/simplehtmldom/simple_html_dom.php';
+        }
     }
 
     public function GetProfilesActions()
