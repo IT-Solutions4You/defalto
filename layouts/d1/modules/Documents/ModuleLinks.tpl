@@ -24,7 +24,7 @@
                         <li id="VtigerAction">
                             <a class="dropdown-item" href="javascript:Documents_Index_Js.uploadTo('Vtiger')">
                                 <i class="fa fa-home"></i>
-                                <span class="ms-2">{vtranslate('LBL_TO_SERVICE', $MODULE_NAME, {vtranslate('CRM', $MODULE_NAME)})}</span>
+                                <span class="ms-2">{vtranslate('LBL_TO_SERVICE', $MODULE_NAME, {vtranslate('LBL_CRM', $MODULE_NAME)})}</span>
                             </a>
                         </li>
                         <li>

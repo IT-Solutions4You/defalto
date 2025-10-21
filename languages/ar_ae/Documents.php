@@ -88,7 +88,7 @@ $languageStrings = [
 
     'LBL_UPLOAD_TO'                 => 'تحميل',
     'LBL_NEW_DOCUMENT'              => 'وثيقة جديدة',
-    'LBL_VTIGER'                    => 'Vtiger',
+    'LBL_CRM'                    => 'Vtiger',
     'LBL_CREATE_YOUR_OWN'           => 'إنشاء الخاصة بك',
     'LBL_SHARE_DOCUMENT'            => 'مشاركة مستند',
     'LBL_UPLOAD_TO_VTIGER'          => 'تحميل الوثيقة إلى Vtiger',
