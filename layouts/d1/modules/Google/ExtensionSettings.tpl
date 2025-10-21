@@ -71,8 +71,8 @@
                         <td>
                             <select name="Contacts[sync_direction]" class="inputElement select2 row" style="min-width: 250px;">
                                 <option value="11" {if $CONTACTS_SYNC_DIRECTION eq 11} selected {/if}> {vtranslate('LBL_SYNC_BOTH_WAYS', $MODULE)} </option>
-                                <option value="10" {if $CONTACTS_SYNC_DIRECTION eq 10} selected {/if}> {vtranslate('LBL_SYNC_FROM_GOOGLE_TO_VTIGER', $MODULE)} </option>
-                                <option value="01" {if $CONTACTS_SYNC_DIRECTION eq 01} selected {/if}> {vtranslate('LBL_SYNC_FROM_VTIGER_TO_GOOGLE', $MODULE)} </option>
+                                <option value="10" {if $CONTACTS_SYNC_DIRECTION eq 10} selected {/if}> {vtranslate('LBL_SYNC_FROM_GOOGLE_TO_CRM', $MODULE)} </option>
+                                <option value="01" {if $CONTACTS_SYNC_DIRECTION eq 01} selected {/if}> {vtranslate('LBL_SYNC_FROM_CRM_TO_GOOGLE', $MODULE)} </option>
                             </select>
                         </td>
                     </tr>
@@ -99,8 +99,8 @@
                         <td>
                             <select name="Calendar[sync_direction]" class="inputElement select2 row" style="min-width: 250px;">
                                 <option value="11" {if $CALENDAR_SYNC_DIRECTION eq 11} selected {/if}> {vtranslate('LBL_SYNC_BOTH_WAYS', $MODULE)} </option>
-                                <option value="10" {if $CALENDAR_SYNC_DIRECTION eq 10} selected {/if}> {vtranslate('LBL_SYNC_FROM_GOOGLE_TO_VTIGER', $MODULE)} </option>
-                                <option value="01" {if $CALENDAR_SYNC_DIRECTION eq 01} selected {/if}> {vtranslate('LBL_SYNC_FROM_VTIGER_TO_GOOGLE', $MODULE)} </option>
+                                <option value="10" {if $CALENDAR_SYNC_DIRECTION eq 10} selected {/if}> {vtranslate('LBL_SYNC_FROM_GOOGLE_TO_CRM', $MODULE)} </option>
+                                <option value="01" {if $CALENDAR_SYNC_DIRECTION eq 01} selected {/if}> {vtranslate('LBL_SYNC_FROM_CRM_TO_GOOGLE', $MODULE)} </option>
                             </select>
                         </td>
                     </tr>
