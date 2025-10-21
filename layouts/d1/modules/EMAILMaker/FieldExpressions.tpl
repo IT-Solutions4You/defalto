@@ -63,7 +63,6 @@
                 <div id="rawtext_help" class="alert alert-info helpmessagebox hide">
                     <p><h5>{vtranslate('LBL_RAW_TEXT',$WORKFLOW_MODULE)}</h5></p>
                     <p>2000</p>
-                    <p>{vtranslate('LBL_VTIGER',$WORKFLOW_MODULE)}</p>
                 </div>
                 <div id="fieldname_help" class="helpmessagebox alert alert-info hide">
                     <p><h5>{vtranslate('LBL_EXAMPLE_FIELD_NAME',$WORKFLOW_MODULE)}</h5></p>
