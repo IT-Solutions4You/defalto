@@ -71,7 +71,7 @@ $languageStrings = [
 
     'LBL_UPLOAD_TO'                 => 'Загрузить',
     'LBL_NEW_DOCUMENT'              => 'Новый Документ',
-    'LBL_VTIGER'                    => 'Вольная русская',
+    'LBL_CRM'                    => 'Вольная русская',
     'LBL_CREATE_YOUR_OWN'           => 'Создайте свой собственный',
     'LBL_SHARE_DOCUMENT'            => 'Совместное использование документа',
     'LBL_UPLOAD_TO_VTIGER'          => 'Загрузить документ вольная русская',

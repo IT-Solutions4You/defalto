@@ -71,7 +71,7 @@ $languageStrings = [
 
     'LBL_UPLOAD_TO'                 => 'Yüklemek İçin',
     'LBL_NEW_DOCUMENT'              => 'Yeni Belge',
-    'LBL_VTIGER'                    => 'Vtiger',
+    'LBL_CRM'                    => 'Vtiger',
     'LBL_CREATE_YOUR_OWN'           => 'Kendi oluşturmak ',
     'LBL_SHARE_DOCUMENT'            => 'Belge paylaşma',
     'LBL_UPLOAD_TO_VTIGER'          => 'Karşıya Belge için Vtiger',

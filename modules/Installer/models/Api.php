@@ -85,6 +85,10 @@ class Installer_Api_Model extends Vtiger_Net_Client
     {
         global $site_URL;
 
+        if (empty($site_URL)) {
+            $site_URL = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'];
+        }
+
         return rtrim($site_URL, '/');
     }
 

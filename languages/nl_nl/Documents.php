@@ -71,7 +71,7 @@ $languageStrings = [
 
     'LBL_UPLOAD_TO'                 => 'Uploaden Naar',
     'LBL_NEW_DOCUMENT'              => 'Nieuw Document',
-    'LBL_VTIGER'                    => 'Vtiger',
+    'LBL_CRM'                    => 'Vtiger',
     'LBL_CREATE_YOUR_OWN'           => 'Maak uw eigen',
     'LBL_SHARE_DOCUMENT'            => 'Een Document delen',
     'LBL_UPLOAD_TO_VTIGER'          => 'Document uploaden naar Vtiger',

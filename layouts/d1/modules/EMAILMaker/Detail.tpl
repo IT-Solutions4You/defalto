@@ -82,51 +82,7 @@
                             </div>
                         {/if}
                         {if $ISSTYLESACTIVE eq "yes"}
-                            <div class="summaryView rounded bg-body my-3">
-                                <div class="summaryViewHeader p-3 border-bottom d-flex">
-                                    <h4>{vtranslate('LBL_CSS_STYLE_TAB',$MODULE)}</h4>
-                                    <div class="ms-auto">
-                                        <button type="button" class="btn btn-outline-secondary addButton addStyleContentBtn" data-modulename="ITS4YouStyles">{vtranslate('LBL_ADD')}&nbsp;{vtranslate('SINGLE_ITS4YouStyles','ITS4YouStyles')}</button>&nbsp;&nbsp;
-                                        <button type="button" class="btn btn-outline-secondary addButton selectTemplateRelation" data-modulename="ITS4YouStyles">&nbsp;{vtranslate('LBL_SELECT')}&nbsp;{vtranslate('SINGLE_ITS4YouStyles','ITS4YouStyles')}</button>
-                                    </div>
-                                </div>
-                                <div class="summaryWidgetContainer noContent">
-                                    {if $STYLES_LIST}
-                                        <div id="table-content" class="table-container">
-                                            <table id="listview-table" class="table listview-table">
-                                                <thead>
-                                                <tr class="listViewContentHeader">
-                                                    <th></th>
-                                                    <th>{vtranslate('Name','ITS4YouStyles')}</th>
-                                                    <th>{vtranslate('Priority','ITS4YouStyles')}</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody class="overflow-y">
-                                                {foreach item=style_data  from=$STYLES_LIST}
-                                                    <tr class="" data-id="{$style_data.id}" data-module="ITS4YouStyles">
-                                                        <td style="width:55px">
-                                                            {if $style_data.iseditable eq "yes"}
-                                                                <span class="actionImages">&nbsp;&nbsp;&nbsp;
-                                                        <a name="styleEdit" data-url="index.php?module=ITS4YouStyles&view=Edit&record={$style_data.id}">
-                                                            <i title="Edit" class="fa fa-pencil"></i></a> &nbsp;&nbsp;
-                                                        <a class="relationDelete">
-                                                            <i title="{vtranslate('LBL_UNLINK', $MODULE)}" class="vicon-linkopen"></i></a>
-                                                    </span>
-                                                            {/if}
-                                                        </td>
-                                                        <td class="listViewEntryValue textOverflowEllipsis " width="%" nowrap><a name="styleEdit" data-url="index.php?module=ITS4YouStyles&view=Detail&record={$style_data.id}">{$style_data.name}</a></td>
-                                                        <td class="listViewEntryValue textOverflowEllipsis " width="%" nowrap>{$style_data.priority}</td>
-                                                    </tr>
-                                                {/foreach}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    {else}
-                                        <p class="textAlignCenter">{vtranslate('LBL_NO_RELATED',$MODULE)} {vtranslate('LBL_STYLES',$MODULE)}</p>
-                                    {/if}
-                                </div>
-                            </div>
-                            <br>
+                            {include file='widgets/Styles.tpl'|vtemplate_path:'ITS4YouStyles'}
                         {/if}
                         {if $ISDOCUMENTSACTIVE eq "yes"}
                             <div class="summaryView rounded bg-body my-3">

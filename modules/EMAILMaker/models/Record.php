@@ -24,7 +24,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
             $recordModel = new self();
             $row['label'] = $row['templatename'];
 
-            return $recordModel->setData($row)->setId($templateId)->setModule($row['module'] != "" ? $row['module'] : 'EMAILMaker');
+            return $recordModel->setData($row)->setId($templateId)->setModule('EMAILMaker');
         }
 
         return null;
@@ -374,7 +374,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
 
     public function getId(): int
     {
-        return $this->get('templateid');
+        return (int)$this->get('templateid');
     }
 
     /**
@@ -532,5 +532,13 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
         }
 
         return $return;
+    }
+
+    /**
+     * @return Vtiger_Module_Model|bool
+     */
+    public function getParentModule(): Vtiger_Module_Model|bool
+    {
+        return Vtiger_Module_Model::getInstance($this->get('module'));
     }
 }

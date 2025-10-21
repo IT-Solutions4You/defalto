@@ -87,7 +87,7 @@ $languageStrings = [
 
     'LBL_UPLOAD_TO'                             => 'Subir A',
     'LBL_NEW_DOCUMENT'                          => 'Nuevo Documento',
-    'LBL_VTIGER'                                => 'Vtiger',
+    'LBL_CRM'                                => 'Vtiger',
     'LBL_GOOGLEDRIVE'                           => 'GoogleDrive',
     'LBL_DROPBOX'                               => 'Dropbox',
     'LBL_CREATE_YOUR_OWN'                       => 'Crear su propio',

@@ -47,4 +47,8 @@ class EMAILMaker extends CRMExtension
     {
         EMAILMaker_Install_Model::getInstance($eventType, $moduleName)->install();
     }
+
+    public function retrieve_entity_info($record, $module, $allowDeleted = false) {
+
+    }
 }

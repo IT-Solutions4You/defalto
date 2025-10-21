@@ -47,8 +47,6 @@ class Install_InitSchema_Model
         self::initialize();
 
         self::upgrade();
-
-        Install_Utils_Model::saveSMTPServer(self::$request);
     }
 
     /**
@@ -104,6 +102,7 @@ class Install_InitSchema_Model
 
     /**
      * Function upgrades the schema with changes post 540 version
+     * @throws Exception
      */
     public static function upgrade()
     {
@@ -138,6 +137,8 @@ class Install_InitSchema_Model
         }
 
         Install_Utils_Model::installMigrations();
+        Install_Utils_Model::saveSMTPServer(self::$request);
+        Install_Utils_Model::saveInstallerLicenses();
     }
 
     /**

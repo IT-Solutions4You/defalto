@@ -10,7 +10,7 @@
 
 class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 {
-    public Vtiger_Module_Model|null $module = null;
+    public Vtiger_Module_Model|bool|null $module = null;
 
     public static function clearCache(): void
     {

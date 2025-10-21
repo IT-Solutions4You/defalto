@@ -71,7 +71,7 @@ $languageStrings = [
 
     'LBL_UPLOAD_TO'                 => 'Descărca',
     'LBL_NEW_DOCUMENT'              => 'Un Nou Document',
-    'LBL_VTIGER'                    => 'Voluntare rusă',
+    'LBL_CRM'                    => 'Voluntare rusă',
     'LBL_CREATE_YOUR_OWN'           => 'Creați-vă propriul',
     'LBL_SHARE_DOCUMENT'            => 'Partajarea unui document',
     'LBL_UPLOAD_TO_VTIGER'          => 'Descarcă documentul voluntare rusă',
