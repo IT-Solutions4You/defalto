@@ -851,6 +851,32 @@ class Install_Utils_Model
         return true;
     }
 
+    /**
+     * @throws Exception
+     */
+    public static function saveInstallerLicenses(): void
+    {
+        if (empty($_SESSION['config_file_info']['licenses']) || !is_array($_SESSION['config_file_info']['licenses'])) {
+            Core_Install_Model::logInfo('No licenses found');
+
+            return;
+        }
+
+        $licenseKeys = array_filter($_SESSION['config_file_info']['licenses']);
+
+        foreach ($licenseKeys as $licenseKey) {
+            $licenseInfo = Installer_Api_Model::getInstance()->activateLicenseInfo($licenseKey);
+
+            Core_Install_Model::logInfo('License activated');
+
+            $license = Installer_License_Model::getInstance($licenseKey);
+            $license->setInfo($licenseInfo);
+            $license->save();
+        }
+
+        Core_Install_Model::logInfo('License activation completed');
+    }
+
     public static function installMigrations(): void
     {
         require_once('include/Migrations/Migrations.php');
