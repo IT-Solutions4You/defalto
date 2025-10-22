@@ -36,7 +36,7 @@ class Vtiger_Language_Handler
      *
      * @return <String> - translated string
      */
-    public static function getTranslatedString($key, $module = '', $currentLanguage = '')
+    public static function getTranslatedString($key, $module = 'Core', $currentLanguage = '')
     {
         if (empty($currentLanguage)) {
             $currentLanguage = self::$userLanguage ? self::$userLanguage : self::getLanguage();
@@ -72,7 +72,7 @@ class Vtiger_Language_Handler
      *
      * @return <String> translated string or null if translation not found
      */
-    public static function getLanguageTranslatedString($language, $key, $module = '')
+    public static function getLanguageTranslatedString($language, $key, $module = 'Core')
     {
         $moduleStrings = [];
 
@@ -88,7 +88,7 @@ class Vtiger_Language_Handler
         if (strpos($module, '.') > 0) {
             $baseModule = substr($module, 0, strpos($module, '.'));
             if ($baseModule == 'Settings') {
-                $baseModule = 'Settings.Vtiger';
+                $baseModule = 'Settings.Core';
             }
             $moduleStrings = self::getModuleStringsFromFile($language, $baseModule);
             if (isset($moduleStrings['languageStrings'][$key])) {
@@ -112,7 +112,7 @@ class Vtiger_Language_Handler
      *
      * @return <String> - translated string
      */
-    public static function getJSTranslatedString($language, $key, $module = '')
+    public static function getJSTranslatedString($language, $key, $module = 'Core')
     {
         $moduleStrings = [];
 
@@ -125,7 +125,7 @@ class Vtiger_Language_Handler
         if (strpos($module, '.') > 0) {
             $baseModule = substr($module, 0, strpos($module, '.'));
             if ($baseModule == 'Settings') {
-                $baseModule = 'Settings.Vtiger';
+                $baseModule = 'Settings.Core';
             }
             $moduleStrings = self::getModuleStringsFromFile($language, $baseModule);
             if (isset($moduleStrings['jsLanguageStrings'][$key])) {
@@ -149,7 +149,7 @@ class Vtiger_Language_Handler
      * @return <array> - array if module has language strings else returns empty array
      * @global <array> $languageStrings - language specific string which is used in translations
      */
-    public static function getModuleStringsFromFile($language, $module = 'Vtiger')
+    public static function getModuleStringsFromFile($language, $module = 'Core')
     {
         $module = str_replace(':', '.', $module);
 
@@ -263,7 +263,7 @@ class Vtiger_Language_Handler
             if (strpos($module, '.') > 0) {
                 $baseModule = substr($module, 0, strpos($module, '.'));
                 if ($baseModule == 'Settings') {
-                    $baseModule = 'Settings.Vtiger';
+                    $baseModule = 'Settings.Core';
                 }
                 $moduleStrings = self::getModuleStringsFromFile($currentLanguage, $baseModule);
                 if (!empty($moduleStrings[$type])) {
