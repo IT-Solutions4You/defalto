@@ -72,7 +72,7 @@
                             <th {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')} nowrap="nowrap" {/if}>
                                 <a href="#" class="text-nowrap {if $NO_SORTING}noSorting{else}listViewContentHeaderValues{/if}" {if !$NO_SORTING}data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}"{/if}>
                                     {if !$NO_SORTING}
-                                        {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
+                                        {if isset($FASORT_IMAGE) && $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
                                             <i class="fa {$FASORT_IMAGE}"></i>
                                         {else}
                                             <i class="fa fa-sort customsort"></i>

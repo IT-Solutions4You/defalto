@@ -300,7 +300,7 @@ class VTQL_Parser#line 102 "e:\workspace\nonadmin\pkg\vtiger\extensions\Webservi
 
         $this->query = $this->query . ' ' . $deletedQuery;
 
-        if ($sqlDump['orderby']) {
+        if (isset($sqlDump['orderby']) && $sqlDump['orderby']) {
             $i = 0;
             $this->query = $this->query . ' ORDER BY ';
             foreach ($sqlDump['orderby'] as $ind => $field) {
@@ -315,7 +315,7 @@ class VTQL_Parser#line 102 "e:\workspace\nonadmin\pkg\vtiger\extensions\Webservi
                 $this->query .= ' ' . $sqlDump['sortOrder'];
             }
         }
-        if ($sqlDump['limit']) {
+        if (isset($sqlDump['limit']) && $sqlDump['limit']) {
             $i = 0;
             $offset = false;
             if (php7_count($sqlDump['limit']) > 1) {
@@ -1678,7 +1678,7 @@ class VTQL_Parser#line 102 "e:\workspace\nonadmin\pkg\vtiger\extensions\Webservi
 #line 82 "e:\workspace\nonadmin\pkg\vtiger\extensions\Webservices\VTQL_parser.y"
     function yy_r17()
     {
-        $length = ($this->out['where_condition']['column_values']) ? php7_count($this->out['where_condition']['column_values']) : 0;
+        $length = (isset($this->out['where_condition']['column_values'])) ? php7_count($this->out['where_condition']['column_values']) : 0;
         $pos = $length - 1;
         if ($pos < 0) {
             $pos = 0;
@@ -1780,7 +1780,7 @@ class VTQL_Parser#line 102 "e:\workspace\nonadmin\pkg\vtiger\extensions\Webservi
     function yy_r41()
     {
         global $adb;
-        if (!$this->out['meta']) {
+        if (!isset($this->out['meta']) || !$this->out['meta']) {
             $module = $this->out['moduleName'];
             $handler = vtws_getModuleHandlerFromName($module, $this->user);
             $objectMeta = $handler->getMeta();
@@ -1818,7 +1818,7 @@ class VTQL_Parser#line 102 "e:\workspace\nonadmin\pkg\vtiger\extensions\Webservi
                     if (!isset($tabNameIndex[$table]) && $table == "vtiger_crmentity") {
                         $this->out['defaultJoinConditions'] = $this->out['defaultJoinConditions'] . " LEFT JOIN $table ON $firstTable.$firstIndex=$table.crmid";
                     } else {
-                        $this->out['defaultJoinConditions'] = $this->out['defaultJoinConditions'] . " LEFT JOIN $table ON $firstTable.$firstIndex=$table.{$tabNameIndex[$table]}";
+                        $this->out['defaultJoinConditions'] = ($this->out['defaultJoinConditions'] ?? '') . " LEFT JOIN $table ON $firstTable.$firstIndex=$table.{$tabNameIndex[$table]}";
                         if ($this->user && Vtiger_Functions::isUserSpecificFieldTable($table, $module)) {
                             $this->out['defaultJoinConditions'] .= ' AND ' . $table . '.userid = ' . $this->user->id;
                         }

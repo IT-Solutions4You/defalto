@@ -34,8 +34,7 @@ class VTWorkflowTemplateManager
      */
     public function newTemplate($title, $workflow)
     {
-        $adb = $this->adb;
-        $wms = new VTWorkflowManager($adb);
+        $wms = new VTWorkflowManager();
         $str = $wms->serializeWorkflow($workflow);
         $template = new VTWorkflowTemplate();
         $template->title = $title;
@@ -79,7 +78,7 @@ class VTWorkflowTemplateManager
     public function createWorkflow($template)
     {
         $adb = $this->adb;
-        $wfm = new VTWorkflowManager($adb);
+        $wfm = new VTWorkflowManager();
 
         return $wfm->deserializeWorkflow($template->template);
     }
@@ -226,7 +225,7 @@ class VTWorkflowTemplateManager
             $template = new VTWorkflowTemplate();
             $template->id = $row->template_id;
             $template->title = $row->title;
-            $tempalte->moduleName = $row->module_name;
+            $template->moduleName = $row->module_name;
             $template->template = $row->template;
             $templates[] = $template;
         }
@@ -237,5 +236,8 @@ class VTWorkflowTemplateManager
 
 class VTWorkflowTemplate
 {
-
+    public $id;
+    public $title;
+    public $moduleName;
+    public $template;
 }

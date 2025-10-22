@@ -24,6 +24,9 @@ require_once 'modules/com_vtiger_workflow/expression_engine/VTExpressionsManager
 
 class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
 {
+    public $module;
+    public $workflow_object;
+
     public function getId()
     {
         return $this->get('workflow_id');
@@ -110,7 +113,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
     public function save()
     {
         $db = PearDatabase::getInstance();
-        $wm = new VTWorkflowManager($db);
+        $wm = new VTWorkflowManager();
 
         $wf = $this->getWorkflowObject();
         $wf->description = $this->get('summary');
@@ -136,7 +139,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
     public function delete()
     {
         $db = PearDatabase::getInstance();
-        $wm = new VTWorkflowManager($db);
+        $wm = new VTWorkflowManager();
         $wm->delete($this->getId());
     }
 
@@ -186,7 +189,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
     {
         [$workflowId] = func_get_args();
         $db = PearDatabase::getInstance();
-        $wm = new VTWorkflowManager($db);
+        $wm = new VTWorkflowManager();
         $wf = $wm->retrieve($workflowId);
 
         return self::getInstanceFromWorkflowObject($wf);
@@ -236,7 +239,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
     public static function getCleanInstance($moduleName)
     {
         $db = PearDatabase::getInstance();
-        $wm = new VTWorkflowManager($db);
+        $wm = new VTWorkflowManager();
         $wf = $wm->newWorkflow($moduleName);
         $wf->filtersavedinnew = 6;
         $wf->status = 1;
@@ -319,6 +322,8 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
         $transformedConditions = [];
 
         if (!empty($conditions)) {
+            $firstGroup = $secondGroup = [];
+
             foreach ($conditions as $index => $info) {
                 $columnName = $info['fieldname'];
                 $value = $info['value'];
@@ -391,7 +396,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
         if (!empty($conditions) && is_array($conditions)) {
             foreach ($conditions as $filter) {
                 if ($fieldname == $filter['fieldname']) {
-                    return $filter['valuetype'];
+                    return $filter['valuetype'] ?? '';
                 }
             }
         }
@@ -495,7 +500,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
     public function updateNextTriggerTime()
     {
         $db = PearDatabase::getInstance();
-        $wm = new VTWorkflowManager($db);
+        $wm = new VTWorkflowManager();
         $wf = $this->getWorkflowObject();
         $wm->updateNexTriggerTime($wf);
     }
@@ -601,6 +606,11 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
                 }
                 $value = $wfCond[$k]['value'];
                 $operation = $wfCond[$k]['operation'];
+
+                if (!isset($wfCond[$k]['groupjoin'])) {
+                    $wfCond[$k]['groupjoin'] = 'and';
+                }
+
                 if ($wfCond[$k]['groupjoin'] == 'and') {
                     $conditionGroup = 'All';
                 } else {
@@ -622,7 +632,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
                         $value = getUserFullName($value);
                     } else {
                         $groupNameList = getGroupName($value);
-                        $value = $groupNameList[0];
+                        $value = $groupNameList[0] ?? '';
                     }
                 }
                 if ($value) {
@@ -651,6 +661,14 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
             }
         }
 
+        if (!isset($conditionList['All'])) {
+            $conditionList['All'] = [];
+        }
+
+        if (!isset($conditionList['Any'])) {
+            $conditionList['Any'] = [];
+        }
+
         return $conditionList;
     }
 
@@ -660,7 +678,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
         $tasks = Settings_Workflows_TaskRecord_Model::getAllForWorkflow($this, true);
         foreach ($tasks as $task) {
             $taskName = $task->getTaskType()->get('tasktypename');
-            $actions[$taskName] = $actions[$taskName] + 1;
+            $actions[$taskName] = ($actions[$taskName] ?? 0) + 1;
         }
 
         return $actions;

@@ -978,7 +978,7 @@ function createRecords($obj)
             $moduleName = $entityData->getModuleName();
 
             if (in_array($moduleName, $inventoryModules)) {
-                $workflowManger = new VTWorkflowManager($adb);
+                $workflowManger = new VTWorkflowManager();
                 $workflowHandler = new VTWorkflowEventHandler();
                 $workflowHandler->workflows = $workflowManger->getInventoryWorkflowsSupportingProductQtyUpdate($moduleName);
                 $workflowHandler->handleEvent($eventName, $entityData);

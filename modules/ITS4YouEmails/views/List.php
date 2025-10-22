@@ -79,7 +79,7 @@ class ITS4YouEmails_List_View extends Vtiger_List_View
             $sortOrder = '';
         }
         if (empty($listHeaders)) {
-            $listHeaders = $orderParams['list_headers'];
+            $listHeaders = $orderParams['list_headers'] ?? '';
         }
 
         if (!empty($tag) && empty($tagParams)) {

@@ -64,7 +64,7 @@
                             <div class="commentInfoContentBlock mt-1 px-4 py-2 bg-body-secondary rounded-end-5 rounded-bottom-5 d-inline-block">
                                 {assign var=COMMENT_CONTENT value=nl2br($COMMENT->get('commentcontent'))}
                                 {if $COMMENT_CONTENT}
-                                    {if $MAX_LENGTH}
+                                    {if isset($MAX_LENGTH) && $MAX_LENGTH}
                                         {assign var=DISPLAYNAME value=decode_html($COMMENT_CONTENT)}
                                         <span class="commentInfoContent" data-maxlength="{$MAX_LENGTH}" data-fullComment="{$COMMENT_CONTENT|escape:"html"}" data-shortComment="{$DISPLAYNAME|mb_substr:0:$MAX_LENGTH|escape:"html"}..." data-more='{vtranslate('LBL_SHOW_MORE',$MODULE)}' data-less='{vtranslate('LBL_SHOW',$MODULE)} {vtranslate('LBL_LESS',$MODULE)}'>
                                         {if $DISPLAYNAME|count_characters:true gt $MAX_LENGTH}
@@ -153,7 +153,7 @@
             {if isset($CURRENT_COMMENT) && !isset($SHOW_REPLIES) && $CURRENT_COMMENT->getId() eq $COMMENT->getId()}
                 {assign var=SHOW_REPLIES value=true}
             {/if}
-            <div class="childComments ms-5 collapse {if $SHOW_REPLIES}show{/if}" id="childComments{$COMMENT->getId()}">
+            <div class="childComments ms-5 collapse {if isset($SHOW_REPLIES) && $SHOW_REPLIES}show{/if}" id="childComments{$COMMENT->getId()}">
                 {foreach $COMMENT_CHILDS as $COMMENT}
                     {include file='comments/Comment.tpl'|@vtemplate_path COMMENT=$COMMENT COMMENT_MODULE_MODEL=$COMMENTS_MODULE_MODEL}
                 {/foreach}

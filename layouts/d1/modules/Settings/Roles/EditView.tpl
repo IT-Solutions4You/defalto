@@ -28,7 +28,7 @@
                     {assign var=RECORD_ID value=$RECORD_MODEL->getId()}
                     <input type="hidden" name="record" value="{$RECORD_ID}"/>
                     <input type="hidden" name="mode" value="{$MODE}">
-                    <input type="hidden" name="profile_directly_related_to_role_id" value="{$PROFILE_ID}"/>
+                    <input type="hidden" name="profile_directly_related_to_role_id" value="{if isset($PROFILE_ID)}{$PROFILE_ID}{/if}"/>
                     {assign var=HAS_PARENT value="{if $RECORD_MODEL->getParent()}true{/if}"}
                     {if $HAS_PARENT}
                         <input type="hidden" name="parent_roleid" value="{$RECORD_MODEL->getParent()->getId()}">

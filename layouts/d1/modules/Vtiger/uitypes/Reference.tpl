@@ -25,7 +25,7 @@
             {if !empty($REFERENCED_MODULE_STRUCT)}
                 {assign var="REFERENCED_MODULE_NAME" value=$REFERENCED_MODULE_STRUCT->get('name')}
             {/if}
-            {if in_array($REFERENCED_MODULE_NAME, $REFERENCE_LIST)}
+            {if isset($REFERENCED_MODULE_NAME) && in_array($REFERENCED_MODULE_NAME, $REFERENCE_LIST)}
                 <input name="popupReferenceModule" type="hidden" value="{$REFERENCED_MODULE_NAME}"/>
             {else}
                 <input name="popupReferenceModule" type="hidden" value="{$REFERENCE_LIST[0]}"/>
@@ -41,7 +41,7 @@
                 {/if}
                 <select class="select2 referenceModulesList {if $FIELD_MODEL->isMandatory() eq true}reference-mandatory{/if}">
                     {foreach key=index item=value from=$REFERENCE_LIST}
-                        <option value="{$value}" {if $value eq $REFERENCED_MODULE_NAME} selected {/if} >{vtranslate($value, $value)}</option>
+                        <option value="{$value}" {if isset($REFERENCED_MODULE_NAME) && $value eq $REFERENCED_MODULE_NAME} selected {/if} >{vtranslate($value, $value)}</option>
                     {/foreach}
                 </select>
             {/if}

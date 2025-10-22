@@ -210,6 +210,7 @@ class Users extends CRMEntity
     public $currency_code;
     public $currency_symbol;
     public $conv_rate;
+    public $leftpanelhide;
 
     /** constructor function for the main user class
      * instantiates the Logger class and PearDatabase Class

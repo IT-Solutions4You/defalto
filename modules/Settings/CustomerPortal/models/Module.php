@@ -62,26 +62,28 @@ class Settings_CustomerPortal_Module_Model extends Settings_Vtiger_Module_Model
     {
         if (empty($this->portalModules)) {
             $db = PearDatabase::getInstance();
+            $portalModules = [];
 
-            $query = "SELECT vtiger_customerportal_tabs.*, vtiger_tab.name FROM vtiger_customerportal_tabs
-					INNER JOIN vtiger_tab ON vtiger_customerportal_tabs.tabid = vtiger_tab.tabid AND vtiger_tab.presence = 0 ORDER BY vtiger_customerportal_tabs.sequence";
+            $query = 'SELECT vtiger_customerportal_tabs.*, vtiger_tab.name FROM vtiger_customerportal_tabs
+					INNER JOIN vtiger_tab ON vtiger_customerportal_tabs.tabid = vtiger_tab.tabid AND vtiger_tab.presence = 0 ORDER BY vtiger_customerportal_tabs.sequence';
+            $result = $db->pquery($query);
 
-            $result = $db->pquery($query, []);
-            $rows = $db->num_rows($result);
-            for ($i = 0; $i < $rows; $i++) {
-                $rowData = $db->query_result_rowdata($result, $i);
-                $tabId = $rowData['tabid'];
+            while ($row = $db->fetchByAssoc($result)) {
+                $tabId = $row['tabid'];
 
-                if ($rowData['sequence'] > $this->max_sequence) {
-                    $this->max_sequence = $rowData['sequence'];
+                if ($row['sequence'] > $this->max_sequence) {
+                    $this->max_sequence = $row['sequence'];
                 }
 
                 $moduleModel = Vtiger_Module_Model::getInstance($tabId);
-                foreach ($rowData as $key => $value) {
+
+                foreach ($row as $key => $value) {
                     $moduleModel->set($key, $value);
                 }
+
                 $portalModules[$tabId] = $moduleModel;
             }
+
             $this->portalModules = $portalModules;
         }
 

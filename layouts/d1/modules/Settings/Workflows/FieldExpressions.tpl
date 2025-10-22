@@ -32,7 +32,7 @@
                             {/foreach}
                         </select>
                     </span>
-                    {if $RELATED_MODULE_MODEL neq ''}
+                    {if isset($RELATED_MODULE_MODEL) && $RELATED_MODULE_MODEL neq ''}
                         <span name="{$RELATED_MODULE_MODEL->get('name')}" class="useFieldElement">
                             {assign var=MODULE_FIELDS value=$RELATED_MODULE_MODEL->getFields()}
                             <select class="useField" data-placeholder="{vtranslate('LBL_USE_FIELD',$QUALIFIED_MODULE)}" style="min-width: 160px;">

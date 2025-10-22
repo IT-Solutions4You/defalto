@@ -10,6 +10,8 @@
 
 class EMAILMaker_Detail_View extends Vtiger_Index_View
 {
+    protected $record;
+
     public function __construct()
     {
         parent::__construct();

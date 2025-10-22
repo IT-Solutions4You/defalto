@@ -18,6 +18,9 @@
 
 class Settings_Webforms_Block_Model extends Vtiger_Block_Model
 {
+    public $name;
+    public $blocklabel;
+
     /**
      * Function to get fields for this block
      * @return <Array> list of Field models list <Settings_Webforms_Field_Model>

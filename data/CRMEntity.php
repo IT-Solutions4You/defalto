@@ -66,6 +66,7 @@ class CRMEntity extends CRMExtension
 {
     public int $isEntity = 1;
     public int $ownedBy = 0;
+    public $id;
 
     /**
      * Detect if we are in bulk save mode, where some features can be turned-off
@@ -830,7 +831,7 @@ class CRMEntity extends CRMExtension
                 $update = [];
                 $update_params = [];
                 foreach ($changedFields as $field) {
-                    $fieldColumn = $updateFieldNameColumnNameMap[$field];
+                    $fieldColumn = $updateFieldNameColumnNameMap[$field] ?? '';
                     if (@array_key_exists($fieldColumn, $updateFieldValues)) {
                         array_push($update, $fieldColumn . '=?');
                         array_push($update_params, $updateFieldValues[$fieldColumn]);
@@ -1699,7 +1700,7 @@ class CRMEntity extends CRMExtension
             $prefix = $adb->query_result($check, 0, 'prefix');
             $curid = $adb->query_result($check, 0, 'cur_id');
             $prev_inv_no = $prefix . $curid;
-            $strip = strlen($curid) - strlen($curid + 1);
+            $strip = strlen((string)$curid) - strlen((string)($curid + 1));
             if ($strip < 0) {
                 $strip = 0;
             }
@@ -3365,6 +3366,7 @@ class TrackableObject implements ArrayAccess, IteratorAggregate
     private $storage;
     private $trackingEnabled = true;
     private $tracking;
+    protected $changed;
 
     function __construct($value = [])
     {

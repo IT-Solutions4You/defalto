@@ -7,6 +7,24 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
+    {if !isset($FIELD_VALUE['name'])}
+        {$FIELD_VALUE['name'] = ''}
+    {/if}
+    {if !isset($FIELD_VALUE['label'])}
+        {$FIELD_VALUE['label'] = ''}
+    {/if}
+    {if !isset($FIELD_VALUE['sum'])}
+        {$FIELD_VALUE['sum'] = ''}
+    {/if}
+    {if !isset($FIELD_VALUE['avg'])}
+        {$FIELD_VALUE['avg'] = ''}
+    {/if}
+    {if !isset($FIELD_VALUE['min'])}
+        {$FIELD_VALUE['min'] = ''}
+    {/if}
+    {if !isset($FIELD_VALUE['max'])}
+        {$FIELD_VALUE['max'] = ''}
+    {/if}
     {assign var=VALUE_NAME value=$FIELD_VALUE['name']}
     <div class="selectedCalculations" data-name="{$FIELD_VALUE['name']}" data-label="{$FIELD_VALUE['label']}">
         <div class="row align-items-center py-2">

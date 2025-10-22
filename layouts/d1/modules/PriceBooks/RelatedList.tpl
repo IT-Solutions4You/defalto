@@ -36,7 +36,7 @@
 								{foreach item=HEADER_FIELD from=$RELATED_HEADERS}
 									<th nowrap {if $HEADER_FIELD@last} {/if}>
 										<a href="javascript:void(0);" class="listViewContentHeaderValues text-secondary text-nowrap" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('name')}">
-											{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}
+											{if isset($FASORT_IMAGE) && $COLUMN_NAME eq $HEADER_FIELD->get('column')}
 												<i class="fa {$FASORT_IMAGE}"></i>
 											{else}
 												<i class="fa fa-sort customsort"></i>

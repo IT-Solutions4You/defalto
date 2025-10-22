@@ -66,7 +66,7 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View
             }
         }
         $db = PearDatabase::getInstance();
-        $workflowManager = new VTWorkflowManager($db);
+        $workflowManager = new VTWorkflowManager();
         $viewer->assign('MAX_ALLOWED_SCHEDULED_WORKFLOWS', $workflowManager->getMaxAllowedScheduledWorkflows());
         $viewer->assign('SCHEDULED_WORKFLOW_COUNT', $workflowManager->getScheduledWorkflowsCount());
         $viewer->assign('WORKFLOW_MODEL', $workflowModel);
@@ -142,7 +142,7 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View
         if ($workFlowModel->isFilterSavedInNew()) {
             $viewer->assign('ADVANCE_CRITERIA', $workFlowModel->transformToAdvancedFilterCondition());
         } else {
-            $viewer->assign('ADVANCE_CRITERIA', "");
+            $viewer->assign('ADVANCE_CRITERIA', [1=>[], 2=>[]]);
         }
 
         $viewer->assign('IS_FILTER_SAVED_NEW', $workFlowModel->isFilterSavedInNew());
@@ -250,7 +250,7 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View
         }
 
         $db = PearDatabase::getInstance();
-        $workflowManager = new VTWorkflowManager($db);
+        $workflowManager = new VTWorkflowManager();
         $viewer->assign('MAX_ALLOWED_SCHEDULED_WORKFLOWS', $workflowManager->getMaxAllowedScheduledWorkflows());
         $viewer->assign('SCHEDULED_WORKFLOW_COUNT', $workflowManager->getScheduledWorkflowsCount());
 

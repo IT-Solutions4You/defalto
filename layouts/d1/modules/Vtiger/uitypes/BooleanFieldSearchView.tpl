@@ -8,6 +8,9 @@
  *}
 {strip}
     {assign var="FIELD_INFO" value=Zend_Json::encode($FIELD_MODEL->getFieldInfo())}
+    {if !isset($SEARCH_INFO['searchValue'])}
+        {$SEARCH_INFO['searchValue'] = '0'}
+    {/if}
     {assign var=SEARCH_VALUES value=$SEARCH_INFO['searchValue']}
     <div class="">
     <select class="select2 listSearchContributor" name="{$FIELD_MODEL->get('name')}" style="width:90px;" data-fieldinfo='{$FIELD_INFO|escape}'>

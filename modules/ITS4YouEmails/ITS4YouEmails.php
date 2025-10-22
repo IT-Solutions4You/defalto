@@ -21,6 +21,7 @@ class ITS4YouEmails extends CRMEntity
     public $table_name = 'its4you_emails';
     public $table_index = 'its4you_emails_id';
     public $entity_table = 'vtiger_crmentity';
+    public $def_basicsearch_col = 'subject';
 
     /**
      * @var array

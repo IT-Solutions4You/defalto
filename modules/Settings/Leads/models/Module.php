@@ -18,6 +18,8 @@
 
 class Settings_Leads_Module_Model extends Vtiger_Module_Model
 {
+    protected $supportedFieldIdsList;
+
     /**
      * Function to get fields of this model
      * @return <Array> list of field models <Settings_Leads_Field_Model>

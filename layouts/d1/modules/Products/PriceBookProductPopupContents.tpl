@@ -50,7 +50,7 @@
                                     {else}
                                         <th class="{$WIDTHTYPE}">
                                             <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues cursorPointer text-secondary text-nowrap" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('column')}">
-                                                {if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}
+                                                {if isset($FASORT_IMAGE) && $ORDER_BY eq $LISTVIEW_HEADER->get('column')}
                                                     <i class="fa {$FASORT_IMAGE}"></i>
                                                 {else}
                                                     <i class="fa fa-sort customsort"></i>

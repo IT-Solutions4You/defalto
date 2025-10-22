@@ -54,6 +54,7 @@
                 {/foreach}
             </div>
             <div class="ms-auto buttonsTypeDetailViewAdvanced">
+                {if isset($DETAILVIEW_LINKS['DETAILVIEWADVANCED'])}
                 {foreach item=DETAIL_VIEW_BASIC_LINK from=$DETAILVIEW_LINKS['DETAILVIEWADVANCED']}
                     {if $DETAIL_VIEW_BASIC_LINK->isTemplate()}
                         {include file=$DETAIL_VIEW_BASIC_LINK->getTemplate()}
@@ -72,6 +73,7 @@
                         </button>
                     {/if}
                 {/foreach}
+                {/if}
             </div>
             <div class="btn-group ms-2 buttonsTypeDetailView">
                 {if !empty($DETAILVIEW_LINKS['DETAILVIEW']) && ($DETAILVIEW_LINKS['DETAILVIEW']|@count gt 0)}

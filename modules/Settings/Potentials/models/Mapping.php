@@ -95,8 +95,8 @@ class Settings_Potentials_Mapping_Model extends Settings_Leads_Mapping_Model
             foreach ($mapping as $mappingId => $mappingDetails) {
                 $finalMapping[$mappingId] = [
                     'editable'   => $mappingDetails['editable'],
-                    'Potentials' => $fieldLabelsList[$mappingDetails['potential_field']],
-                    'Project'    => $fieldLabelsList[$mappingDetails['project_field']],
+                    'Potentials' => $fieldLabelsList[$mappingDetails['potential_field']] ?? [],
+                    'Project'    => $fieldLabelsList[$mappingDetails['project_field']] ?? [],
                 ];
             }
 

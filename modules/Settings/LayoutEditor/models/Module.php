@@ -42,7 +42,7 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model
                 $blockId[] = $block->get('id');
             }
             if (php7_count($blockId) > 0) {
-                $fieldList = Settings_LayoutEditor_Field_Model::getInstanceFromBlockIdList($blockId, $moduleModel);
+                $fieldList = Settings_LayoutEditor_Field_Model::getInstanceFromBlockIdList($blockId);
             }
 
             $this->fields = $fieldList;

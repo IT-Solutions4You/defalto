@@ -22,7 +22,7 @@ class Reporting_Block_Model extends Vtiger_Block_Model
 
     public function getUITypeName(): string
     {
-        return self::$customUITypeNames[$this->getLabel()] ?: parent::getUITypeName();
+        return self::$customUITypeNames[$this->getLabel()] ?? parent::getUITypeName();
     }
 
     public function getIcon(): string

@@ -18,6 +18,10 @@
 
 class RecycleBin_List_View extends Vtiger_Index_View
 {
+    public $pagingModel;
+    public $listViewHeaders;
+    public $listViewEntries;
+
     function checkPermission(Vtiger_Request $request)
     {
         $moduleName = $request->getModule();
@@ -101,7 +105,7 @@ class RecycleBin_List_View extends Vtiger_Index_View
             $sortOrder = '';
         }
         if (empty($listHeaders)) {
-            $listHeaders = $orderParams['list_headers'];
+            $listHeaders = $orderParams['list_headers'] ?? [];
         }
         if (empty($orderBy) && empty($searchValue) && empty($pageNumber) && empty($searchParams)) {
             if ($orderParams) {

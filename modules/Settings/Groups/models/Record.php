@@ -23,6 +23,8 @@ require_once 'include/events/include.inc';
  */
 class Settings_Groups_Record_Model extends Settings_Vtiger_Record_Model
 {
+    public $members;
+
     /**
      * Function to get the Id
      * @return <Number> Group Id

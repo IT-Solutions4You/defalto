@@ -26,6 +26,11 @@ class Settings_Workflows_TaskRecord_Model extends Settings_Vtiger_Record_Model
 {
     const TASK_STATUS_ACTIVE = 1;
 
+    public $task_manager;
+    public $task_object;
+    public $workflow;
+    public $task_type;
+
     public function getId()
     {
         return $this->get('task_id');
@@ -112,7 +117,7 @@ class Settings_Workflows_TaskRecord_Model extends Settings_Vtiger_Record_Model
     {
         $db = PearDatabase::getInstance();
 
-        $tm = new VTTaskManager($db);
+        $tm = new VTTaskManager();
         $tasks = $tm->getTasksForWorkflow($workflowModel->getId());
         $taskModels = [];
         foreach ($tasks as $task) {
@@ -126,9 +131,9 @@ class Settings_Workflows_TaskRecord_Model extends Settings_Vtiger_Record_Model
 
     public static function getInstance()
     {
-        [$taskId, $workflowModel] = func_get_args();
+        [$taskId, $workflowModel] = array_pad(func_get_args(), 2, null);
         $db = PearDatabase::getInstance();
-        $tm = new VTTaskManager($db);
+        $tm = new VTTaskManager();
         $task = $tm->retrieveTask($taskId);
         if ($workflowModel == null) {
             $workflowModel = Settings_Workflows_Record_Model::getInstance($task->workflowId);
@@ -173,7 +178,7 @@ class Settings_Workflows_TaskRecord_Model extends Settings_Vtiger_Record_Model
     public static function getCleanInstance($workflowModel, $taskName)
     {
         $db = PearDatabase::getInstance();
-        $tm = new VTTaskManager($db);
+        $tm = new VTTaskManager();
         $task = $tm->createTask($taskName, $workflowModel->getId());
 
         return self::getInstanceFromTaskObject($task, $workflowModel, $tm);

@@ -7,13 +7,16 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-{if !$REMINDER_VALUES}
+{if !isset($REMINDER_VALUES) || !$REMINDER_VALUES}
 	{assign var=REMINDER_VALUES value=$FIELD_MODEL->getEditViewDisplayValue($FIELD_MODEL->get('fieldvalue'))}
 {/if}
 {if $REMINDER_VALUES eq ''}
     {assign var=DAYS value=0}
 	{assign var=HOURS value=0}
 	{assign var=MINUTES value=0}
+	{assign var=DAY value=''}
+	{assign var=HOUR value=''}
+	{assign var=MINUTE value=''}
 {else}
     {assign var=DAY value=$REMINDER_VALUES[0]}
 	{assign var=HOUR value=$REMINDER_VALUES[1]}

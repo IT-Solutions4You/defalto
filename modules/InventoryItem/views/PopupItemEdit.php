@@ -103,7 +103,11 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
                 $entityFieldNames = getEntityFieldNames($seType);
                 $entityFieldName = $entityFieldNames['fieldname'];
                 $entityField = Vtiger_Field_Model::getInstance($entityFieldName, Vtiger_Module_Model::getInstance($seType));
-                $label = getTranslatedString($entityField->label, $seType);
+                $label = $entityFieldName;
+
+                if ($entityField) {
+                    $label = getTranslatedString($entityField->label, $seType);
+                }
             }
 
             $hardFormattedRecordStructure[$fieldName] = [$label, $recordStructure[$fieldName]];
@@ -113,7 +117,7 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $structure = [];
 
         foreach ($selectedFields as $fieldName) {
-            if (!$recordStructure[$fieldName]) {
+            if (!isset($recordStructure[$fieldName]) || !$recordStructure[$fieldName]) {
                 unset($selectedFields[$fieldName]);
                 continue;
             }
@@ -228,7 +232,7 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $row['taxes'] = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$row['inventoryitemid'], (int)$row['productid'], (int)$row['parentid']);
 
         foreach ($row['taxes'] as $taxData) {
-            if ($taxData['selected']) {
+            if (isset($taxData['selected']) && $taxData['selected']) {
                 $percentage = $taxData['percentage'];
                 $regions = json_decode($taxData['regions'], true);
 

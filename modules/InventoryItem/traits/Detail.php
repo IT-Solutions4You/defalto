@@ -179,7 +179,7 @@ trait InventoryItem_Detail_Trait
             $records[$data['id']] = $data['bookname'];
         }
 
-        if (!isset($records[$selectedPriceBookId])) {
+        if ($selectedPriceBookId && !isset($records[$selectedPriceBookId])) {
             $records[$selectedPriceBookId] = getEntityName('PriceBooks', $selectedPriceBookId)[$selectedPriceBookId];
         }
 

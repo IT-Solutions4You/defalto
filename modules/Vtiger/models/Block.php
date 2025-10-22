@@ -292,7 +292,7 @@ class Vtiger_Block_Model extends Vtiger_Block
 
     public function getEditViewId(): string
     {
-        $label = str_replace(['LBL_', ' '], ['', ''], $this->get('label'));
+        $label = str_replace(['LBL_', ' '], ['', ''], (string)$this->get('label'));
         $module = $this->getModuleInstance()->getName();
 
         return $module . '_editView_blockName_' . $label;

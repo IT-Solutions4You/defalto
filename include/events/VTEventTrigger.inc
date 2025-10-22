@@ -29,6 +29,9 @@ class VTEventTrigger
 
     private static $mandatoryEventClass = ['VTEntityDelta', 'ModTrackerHandler', 'PBXManagerBatchHandler'];
 
+    public $name;
+    public $adb;
+
     const CACHE_LOOKUP_TYPE_ALL = 'ALL';
 
     static function initCache($name = false, $force = false)

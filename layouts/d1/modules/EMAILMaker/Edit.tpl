@@ -90,7 +90,7 @@
                                 <div class="tab-pane active mb-3" id="body_div2">
                                     <textarea name="body" id="body" style="width: 100%; height:700px" class=small tabindex="5">{$EMAIL_TEMPLATE_RESULT.body}</textarea>
                                 </div>
-                                {if $ITS4YOUSTYLE_FILES neq ""}
+                                {if isset($ITS4YOUSTYLE_FILES) && $ITS4YOUSTYLE_FILES neq ""}
                                     <div class="tab-pane" id="cssstyle_div2">
                                         {foreach item=STYLE_DATA from=$STYLES_CONTENT}
                                             <div class="hide">
@@ -145,7 +145,7 @@
                             </div>
                             <script type="text/javascript">
                                 {literal} jQuery(document).ready(function () {{/literal}
-                                    {if $ITS4YOUSTYLE_FILES neq ""}
+                                    {if isset($ITS4YOUSTYLE_FILES) && $ITS4YOUSTYLE_FILES neq ""}
                                     //CKEDITOR.config.contentsCss = [{$ITS4YOUSTYLE_FILES}];
                                     {literal}
                                     jQuery('.CodeMirrorContent').each(function (index, Element) {

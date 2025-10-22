@@ -9,7 +9,7 @@
 {strip}
 	<div class="record-header">
 		<div class="recordBasicInfo">
-			{if !$IS_OVERLAY}
+			{if !isset($IS_OVERLAY) || !$IS_OVERLAY}
 				<div class="float-end">
 					{include file='DetailViewHeaderPagination.tpl'|vtemplate_path:$QUALIFIED_MODULE}
 				</div>
@@ -21,7 +21,7 @@
                 <div class="row align-items-top">
                     <div class="col">
                         <span class="fs-2 fw-bold recordLabel pushDown" title="{$RECORD->getName()}">{$RECORD->getName()}</span>
-                        {if !$IS_OVERLAY}
+                        {if !isset($IS_OVERLAY) || !$IS_OVERLAY}
                             {include file='DetailViewTagList.tpl'|vtemplate_path:$QUALIFIED_MODULE}
                         {/if}
                     </div>

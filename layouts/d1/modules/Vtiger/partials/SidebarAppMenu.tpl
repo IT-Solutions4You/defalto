@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 <div class="col-auto d-flex align-items-center justify-content-center">
-                    <a href="index.php" class="fs-3 text-primary">{$COMPANY_NAME}</a>
+                    <a href="index.php" class="fs-3 text-primary">{if isset($COMPANY_NAME)}{$COMPANY_NAME}{/if}</a>
                 </div>
                 <div class="col-lg text-end text-secondary d-flex flex-wrap align-items-center justify-content-end">
                     {if $USER_MODEL->isAdminUser()}

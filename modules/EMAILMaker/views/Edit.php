@@ -48,7 +48,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
      */
     public function showModuleEditView(Vtiger_Request $request)
     {
-        global $image_path, $current_language, $site_URL;
+        global $image_path, $current_language, $site_URL, $theme;
 
         $adb = PearDatabase::getInstance();
         $qualifiedModuleName = $request->getModule(false);
@@ -80,7 +80,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
             $owner = $emailTemplateResult['owner'];
             $sharingType = $emailTemplateResult['sharingtype'];
             $loadRelatedDocuments = (int)$emailTemplateResult['load_related_documents'];
-            $foldersRelatedDocuments = explode(',', $emailTemplateResult['folders_related_documents']);
+            $foldersRelatedDocuments = explode(',', (string)$emailTemplateResult['folders_related_documents']);
             $sharingMemberArray = $EMAILMaker->GetSharingMemberArray($templateId, true);
 
             if (vtlib_isModuleActive('ITS4YouStyles')) {
@@ -193,7 +193,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         $companyImages = EMAILMaker_Record_Model::getCompanyImages();
         $viewer->assign('COMPANYLOGO', $companyImages['logoname_img']);
         $viewer->assign('COMPANY_STAMP_SIGNATURE', $companyImages['stamp_signature_img']);
-        $viewer->assign('COMPANY_HEADER_SIGNATURE', $companyImages['header_img']);
+        $viewer->assign('COMPANY_HEADER_SIGNATURE', $companyImages['header_img'] ?? '');
 
         $viewer->assign('ACCOUNTINFORMATIONS', EMAILMaker_Fields_Model::getCompanyOptions());
 

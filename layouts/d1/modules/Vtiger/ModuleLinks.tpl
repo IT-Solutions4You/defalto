@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 <div id="appnavcontent" class="d-flex p-3" aria-expanded="false">
-    {if php7_count($MODULE_BASIC_ACTIONS)}
+    {if isset($MODULE_BASIC_ACTIONS) && php7_count($MODULE_BASIC_ACTIONS)}
         {foreach item=BASIC_ACTION from=$MODULE_BASIC_ACTIONS}
             {if $BASIC_ACTION->getLabel() == 'LBL_IMPORT'}
                 <button id="{$MODULE}_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}" type="button" class="btn addButton module-buttons me-2 {$BASIC_ACTION->getStyleClass()}"
@@ -31,7 +31,7 @@
                 </button>
             {/if}
         {/foreach}
-    {elseif php7_count($LISTVIEW_LINKS['LISTVIEWBASIC'])}
+    {elseif isset($LISTVIEW_LINKS['LISTVIEWBASIC']) && php7_count($LISTVIEW_LINKS['LISTVIEWBASIC'])}
         {if empty($QUALIFIED_MODULE)}
             {assign var=QUALIFIED_MODULE value='Settings:'|cat:$MODULE}
         {/if}
@@ -60,7 +60,7 @@
             </button>
         {/foreach}
     {/if}
-    {if php7_count($MODULE_SETTING_ACTIONS)}
+    {if isset($MODULE_SETTING_ACTIONS) && php7_count($MODULE_SETTING_ACTIONS)}
         <div class="dropdown settingsIcon ms-auto">
             <button type="button" class="btn btn-outline-secondary module-buttons dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="{vtranslate('LBL_SETTINGS', $MODULE)}">
                 <span class="fa fa-wrench" aria-hidden="true"></span>
@@ -74,7 +74,7 @@
                 {/foreach}
             </ul>
         </div>
-    {elseif php7_count($LISTVIEW_LINKS['LISTVIEWSETTING'])}
+    {elseif isset($LISTVIEW_LINKS['LISTVIEWSETTING']) && php7_count($LISTVIEW_LINKS['LISTVIEWSETTING'])}
         {if empty($QUALIFIED_MODULE)}
             {assign var=QUALIFIED_MODULE value=$MODULE_NAME}
         {/if}

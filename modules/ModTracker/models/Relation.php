@@ -18,6 +18,8 @@
 
 class ModTracker_Relation_Model extends Vtiger_Record_Model
 {
+    protected $parent;
+
     function setParent($parent)
     {
         $this->parent = $parent;

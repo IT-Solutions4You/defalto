@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-	{if $FIELDS_INFO neq null}
+	{if isset($FIELDS_INFO) && $FIELDS_INFO neq null}
 		<script type="text/javascript">
 			var uimeta = (function () {
 				var fieldInfo = {$FIELDS_INFO};

@@ -54,9 +54,9 @@
                                     {/foreach}
                                 {/if}
                             </td>
-                            <td>{vtranslate({$MAPPING['Potentials']['label']}, 'Potentials')}</td>
-                            <td>{vtranslate($MAPPING['Potentials']['fieldDataType'], $QUALIFIED_MODULE)}</td>
-                            <td>{vtranslate({$MAPPING['Project']['label']}, 'Project')}</td>
+                            <td>{if isset($MAPPING['Potentials']['label'])}{vtranslate($MAPPING['Potentials']['label'], 'Potentials')}{/if}</td>
+                            <td>{if isset($MAPPING['Potentials']['fieldDataType'])}{vtranslate($MAPPING['Potentials']['fieldDataType'], $QUALIFIED_MODULE)}{/if}</td>
+                            <td>{if isset($MAPPING['Project']['label'])}{vtranslate($MAPPING['Project']['label'], 'Project')}{/if}</td>
                         </tr>
                     {/foreach}
                     </tbody>

@@ -18,7 +18,7 @@
             <input type="hidden" name="return_action" value="PDFMaker">
             <input type="hidden" name="return_view" value="Detail">
             <input type="hidden" name="templateid" value="{$TEMPLATEID}">
-            <input type="hidden" name="parenttab" value="{$PARENTTAB}">
+            <input type="hidden" name="parenttab" value="{if isset($PARENTTAB)}{$PARENTTAB}{/if}">
             <input type="hidden" name="subjectChanged" value="">
             <input type="hidden" name="record" id="recordId" value="{$TEMPLATEID}" >
             <div class="row">

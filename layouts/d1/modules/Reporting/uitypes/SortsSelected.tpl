@@ -21,7 +21,7 @@
                             <i class="fa-solid fa-arrow-down"></i>
                         </span>
                     </span>
-                    <input class="fieldLabel form-control pe-grab" type="text" value="{$LABEL_OPTIONS[$VALUE_FIELD]}">
+                    <input class="fieldLabel form-control pe-grab" type="text" value="{if isset($LABEL_OPTIONS[$VALUE_FIELD])}{$LABEL_OPTIONS[$VALUE_FIELD]}{/if}">
                     <input class="fieldValue" type="hidden" name="sort_by[]" value="{$FIELD_VALUE}">
                     <span class="input-group-text dropdown-toggle" data-bs-toggle="dropdown">
                     </span>

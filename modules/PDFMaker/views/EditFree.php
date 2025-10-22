@@ -46,6 +46,7 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
      */
     public function process(Vtiger_Request $request)
     {
+        global $theme, $image_path;
         PDFMaker_Debugger_Model::GetInstance()->Init();
 
         $PDFMaker = new PDFMaker_PDFMaker_Model();
@@ -223,8 +224,8 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 
         $Header_Footer_Strings = [
             ''      => vtranslate('LBL_PLS_SELECT', 'PDFMaker'),
-            'PAGE'  => $app_strings['Page'],
-            'PAGES' => $app_strings['Pages'],
+            'PAGE'  => vtranslate('Page', 'PDFMaker'),
+            'PAGES' => vtranslate('Pages', 'PDFMaker'),
         ];
 
         $viewer->assign('HEADER_FOOTER_STRINGS', $Header_Footer_Strings);
@@ -324,7 +325,7 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 //formatable VATBLOCK content
         $vatblock_table = '<table border="1" cellpadding="3" cellspacing="0" style="border-collapse:collapse;">
                 		<tr>
-                            <td>' . $app_strings['Name'] . '</td>
+                            <td>' . vtranslate('Name', 'PDFMaker') . '</td>
                             <td>' . vtranslate('LBL_VATBLOCK_VAT_PERCENT', 'PDFMaker') . '</td>
                             <td>' . vtranslate('LBL_VATBLOCK_SUM', 'PDFMaker') . '</td>
                             <td>' . vtranslate('LBL_VATBLOCK_VAT_VALUE', 'PDFMaker') . '</td>
@@ -415,7 +416,7 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 
         $current_mod_strings_big = Vtiger_Language_Handler::getModuleStringsFromFile($current_mod_strings_lang, $module);
 
-        return $current_mod_strings_big['languageStrings'];
+        return $current_mod_strings_big['languageStrings'] ?? [];
     }
 
     /**

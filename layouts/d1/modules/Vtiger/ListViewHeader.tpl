@@ -12,6 +12,7 @@
         <span class="col-lg-4 col-md-4 col-sm-4">
             <div id="appnav" class="navbar-right">
                 <ul class="nav navbar-nav">
+                    {if isset($LISTVIEW_LINKS['LISTVIEWBASIC'])}
                     {foreach item=LISTVIEW_BASICACTION from=$LISTVIEW_LINKS['LISTVIEWBASIC']}
                         <li>
                             <button id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($LISTVIEW_BASICACTION->getLabel())}" type="button" class="btn addButton btn-default module-buttons" {if stripos($LISTVIEW_BASICACTION->getUrl(), 'javascript:')===0}  onclick='{$LISTVIEW_BASICACTION->getUrl()|substr:strlen("javascript:")};'{else} onclick='window.location.href="{$LISTVIEW_BASICACTION->getUrl()}"'{/if}>
@@ -20,8 +21,9 @@
                             </button>
                         </li>
                     {/foreach}
+                    {/if}
                     <li>
-                    {if $LISTVIEW_LINKS['LISTVIEWSETTING']|@count gt 0}
+                    {if isset($LISTVIEW_LINKS['LISTVIEWSETTING']) && $LISTVIEW_LINKS['LISTVIEWSETTING']|@count gt 0}
                         <div class="settingsIcon">
                             <button type="button" class="btn btn-default module-buttons dropdown-toggle" data-bs-toggle="dropdown">
                                 <span class="fa fa-wrench" aria-hidden="true" title="{vtranslate('LBL_SETTINGS', $MODULE)}"></span>

@@ -30,15 +30,14 @@ class VTWorkflowManager
     static $ON_SCHEDULE = 6;
     static $MANUAL = 7;
 
-    function __construct($adb)
+    function __construct()
     {
-        $this->adb = $adb;
         $this->setMaxAllowedScheduledWorkflows();
     }
 
     function save($workflow)
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
         if (isset($workflow->id)) {
             $wf = $workflow;
             if ($wf->filtersavedinnew == null) {
@@ -128,7 +127,7 @@ class VTWorkflowManager
 
     function getWorkflows()
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
 
         $result = $adb->getColumnNames("com_vtiger_workflows");
         if (in_array("defaultworkflow", $result)) {
@@ -157,7 +156,7 @@ class VTWorkflowManager
      */
     function getScheduledWorkflows($referenceTime = '')
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
         $query = 'SELECT * FROM com_vtiger_workflows INNER JOIN vtiger_tab ON vtiger_tab.name = com_vtiger_workflows.module_name WHERE vtiger_tab.presence IN (0,2) AND execution_condition = ? AND status=?';
         $params = [VTWorkflowManager::$ON_SCHEDULE, 1];
         if ($referenceTime != '') {
@@ -175,7 +174,7 @@ class VTWorkflowManager
      */
     function getScheduledWorkflowsCount()
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
         $query = 'SELECT count(*) AS count FROM com_vtiger_workflows WHERE execution_condition = ?';
         $params = [VTWorkflowManager::$ON_SCHEDULE];
         $result = $adb->pquery($query, $params);
@@ -207,7 +206,7 @@ class VTWorkflowManager
 
     function getWorkflowsForModule($moduleName)
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
         $cache = Vtiger_Cache::getInstance();
 
         if (!empty($cache->getWorkflowForModule($moduleName))) {
@@ -238,7 +237,7 @@ class VTWorkflowManager
 
     protected function getWorkflowsForResult($result)
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
 
         $it = new SqlResultIterator($adb, $result);
         $workflows = [];
@@ -281,7 +280,7 @@ class VTWorkflowManager
      */
     function retrieve($id)
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
         $result = $adb->pquery("select * from com_vtiger_workflows where workflow_id=?", [$id]);
 
         if ($adb->num_rows($result)) {
@@ -297,7 +296,7 @@ class VTWorkflowManager
 
     function delete($id)
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
         $adb->pquery(
             "DELETE FROM com_vtiger_workflowtasks WHERE workflow_id IN
 						(SELECT workflow_id FROM com_vtiger_workflows WHERE workflow_id=? AND (defaultworkflow IS NULL OR defaultworkflow != 1))",
@@ -334,7 +333,7 @@ class VTWorkflowManager
         $exp['schdayofweek'] = $workflow->schdayofweek;
         $exp['schannualdates'] = $workflow->schannualdates;
         $exp['tasks'] = [];
-        $tm = new VTTaskManager($this->adb);
+        $tm = new VTTaskManager();
         $tasks = $tm->getTasksForWorkflow($workflow->id);
         foreach ($tasks as $task) {
             unset($task->id);
@@ -363,7 +362,7 @@ class VTWorkflowManager
         $workflow->schdayofweek = $data['schdayofweek'];
         $workflow->schannualdates = $data['schannualdates'];
         $this->save($workflow);
-        $tm = new VTTaskManager($this->adb);
+        $tm = new VTTaskManager();
         $tasks = $data['tasks'];
         foreach ($tasks as $taskStr) {
             $task = $tm->unserializeTask($taskStr);
@@ -392,7 +391,7 @@ class VTWorkflowManager
      */
     public function getWorkflowsForModuleSupportingComments($moduleName)
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
         $cache = Vtiger_Cache::getInstance();
 
         if ($cache->getWorkflowForModuleSupportingComments($moduleName)) {
@@ -435,7 +434,7 @@ class VTWorkflowManager
 
     public function getInventoryWorkflowsSupportingProductQtyUpdate($moduleName)
     {
-        $db = $this->adb;
+        $db = PearDatabase::getInstance();
         $cache = Vtiger_Cache::getInstance();
         if (!$cache->hasInventoryWorkflowsSupportingProductQtyUpdate($moduleName)) {
             $result = $db->getColumnNames('com_vtiger_workflows');
@@ -466,6 +465,22 @@ class Workflow
     static $SCHEDULED_MONTHLY_BY_DATE = 5;
     static $SCHEDULED_MONTHLY_BY_WEEKDAY = 6;
     static $SCHEDULED_ANNUALLY = 7;
+    public $conditionStrategy;
+    public $id;
+    public $moduleName;
+    public $description;
+    public $test;
+    public $executionCondition;
+    public $schtypeid;
+    public $schtime;
+    public $schdayofmonth;
+    public $schdayofweek;
+    public $schannualdates;
+    public $defaultworkflow;
+    public $filtersavedinnew;
+    public $nexttrigger_time;
+    public $status;
+    public $workflowname;
 
     function __construct()
     {
@@ -555,8 +570,8 @@ class Workflow
         require_once('modules/com_vtiger_workflow/VTTaskManager.inc');
         require_once('modules/com_vtiger_workflow/VTTaskQueue.inc');
 
-        $tm = new VTTaskManager($adb);
-        $taskQueue = new VTTaskQueue($adb);
+        $tm = new VTTaskManager();
+        $taskQueue = new VTTaskQueue();
         $tasks = $tm->getTasksForWorkflow($this->id);
 
         foreach ($tasks as $task) {

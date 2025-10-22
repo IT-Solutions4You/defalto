@@ -14,8 +14,8 @@
         <input type="hidden" name="source_module" value="{$SOURCE_MODULE}" />
         <input type="hidden" name="source_record" value="{$SOURCE_RECORD}" />
         <input type="hidden" name="item_type" value="{$ITEM_TYPE}" />
-        <input type="hidden" name="sequence" value="{$DATA.sequence}" />
-        <input type="hidden" name="insert_after_sequence" value="{$INSERT_AFTER_SEQUENCE}" />
+        <input type="hidden" name="sequence" value="{if isset($DATA.sequence)}{$DATA.sequence}{/if}" />
+        <input type="hidden" name="insert_after_sequence" value="{if isset($INSERT_AFTER_SEQUENCE)}{$INSERT_AFTER_SEQUENCE}{/if}" />
 
         {if $HARD_FORMATTED_RECORD_STRUCTURE.productid neq ''}
             {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE['productid'][1]}
@@ -23,10 +23,10 @@
             <div class="d-flex flex-row py-2">
                 <div class="col-lg-12">
                     <div class="input-group">
-                        <input type="text" id="item_text" name="item_text" value="{$DATA.item_text}"
+                        <input type="text" id="item_text" name="item_text" value="{if isset($DATA.item_text)}{$DATA.item_text}{/if}"
                                class="item_text form-control autoComplete" placeholder="{vtranslate('LBL_TYPE_SEARCH', $MODULE)} {vtranslate($ITEM_TYPE, $ITEM_TYPE)}"
                                data-rule-required=true />
-                        <input type="hidden" id="productid" name="productid" value="{$DATA.productid}" class="productid" />
+                        <input type="hidden" id="productid" name="productid" value="{if isset($DATA.productid)}{$DATA.productid}{/if}" class="productid" />
                         <span class="input-group-text lineItemPopup cursorPointer" data-popup="{$ITEM_TYPE}Popup" title="{vtranslate($ITEM_TYPE,$MODULE)}"
                               data-module-name="{$ITEM_TYPE}" style="display: none;">{Vtiger_Module_Model::getModuleIconPath($ITEM_TYPE)}</span>
                         <input type="hidden" id="lineItemType" name="lineItemType" value="{$ITEM_TYPE}" class="lineItemType" />
@@ -41,7 +41,7 @@
             {assign var=FIELD_NAME value=$FIELD->get('name')}
             <div class="d-flex flex-row py-2">
                 <div class="col-lg-12 py-2">
-                    <textarea id="description" name="description" class="description form-control">{$DATA.description}</textarea>
+                    <textarea id="description" name="description" class="description form-control">{if isset($DATA.description)}{$DATA.description}{/if}</textarea>
                 </div>
             </div>
         {/if}
@@ -62,9 +62,12 @@
                 <div class="col-lg-3">
                     {if $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'percentage'}
                         <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text"
-                               class="{$FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$DATA[$FIELD_NAME]}"/>
+                               class="{$FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{if isset($DATA[$FIELD_NAME])}{$DATA[$FIELD_NAME]}{/if}"/>
                     {else}
                         {assign var="FIELD_MODEL" value=$FIELD}
+                        {if !isset($DATA[$FIELD_NAME])}
+                            {$DATA[$FIELD_NAME] = ''}
+                        {/if}
                         {assign var="dummy" value=$FIELD_MODEL->set('fieldvalue', $DATA[$FIELD_NAME])}
                         {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                     {/if}
@@ -88,7 +91,7 @@
                 {assign var=FIELD_NAME value=$FIELD->get('name')}
                 <div class="col-lg-3">
                     <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text"
-                           class="{$FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$DATA[$FIELD_NAME]}"/>
+                           class="{$FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}"/>
                 </div>
             {/if}
             {if $HARD_FORMATTED_RECORD_STRUCTURE.price neq ''}
@@ -105,12 +108,12 @@
                     <div class="input-group">
                         <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text"
                                class="{$FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight"
-                               value="{$DATA[$FIELD_NAME]}"/>
+                               value="{if isset($DATA[$FIELD_NAME])}{$DATA[$FIELD_NAME]}{/if}"/>
                         <span class="input-group-addon input-group-text cursorPointer choosePriceBook" title="{vtranslate('LBL_EDIT',$MODULE)}">
                                                 {Vtiger_Module_Model::getModuleIconPath('PriceBooks')}
                                             </span>
                     </div>
-                    <input id="pricebookid" name="pricebookid" class="pricebookid" type="hidden" value="{$DATA.pricebookid}"/>
+                    <input id="pricebookid" name="pricebookid" class="pricebookid" type="hidden" value="{if isset($DATA.pricebookid)}{$DATA.pricebookid}{/if}"/>
                 </div>
             {/if}
             {if $HARD_FORMATTED_RECORD_STRUCTURE.subtotal neq ''}
@@ -118,10 +121,10 @@
                 {assign var=FIELD_NAME value=$FIELD->get('name')}
                 <div class="col-lg-2">
                     <div class="py-2 h-100">
-                        <div class="display_subtotal textAlignRight">{$DATA[$FIELD_NAME]}</div>
+                        <div class="display_subtotal textAlignRight">{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}</div>
                     </div>
                 </div>
-                <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="hidden" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>
+                <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="hidden" class="{$FIELD_NAME} inputElement form-control" value="{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}"/>
             {/if}
         </div>
 
@@ -137,7 +140,7 @@
                 {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE['unit'][1]}
                 {assign var=FIELD_NAME value=$FIELD->get('name')}
                 <div class="col-lg-3">
-                    <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{$DATA[$FIELD_NAME]}"/>
+                    <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text" class="{$FIELD_NAME} inputElement form-control" value="{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}"/>
                 </div>
             {else}
                 <div class="col-lg-5">
@@ -155,11 +158,11 @@
                 </div>
                 <div class="col-lg-3">
                     <div class="input-group">
-                        <input type="text" id="{$FIELD_NAME}" name="{$FIELD_NAME}" value="{$DATA[$FIELD_NAME]}"
+                        <input type="text" id="{$FIELD_NAME}" name="{$FIELD_NAME}" value="{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}"
                                class="{$FIELD_NAME} inputElement form-control textAlignRight allowOnlyNumbers replaceCommaWithDot"/>
                         <span class="input-group-addon input-group-text">{$CURRENCY_SYMBOL}</span>
                     </div>
-                    <div class="display_{$FIELD_NAME} textAlignRight hide">{$DATA[$FIELD_NAME]}</div>
+                    <div class="display_{$FIELD_NAME} textAlignRight hide">{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}</div>
                 </div>
             {else}
                 <div class="col-lg-5">
@@ -184,18 +187,18 @@
                         <select name="discount_type" id="discount_type" class="inputElement select2 form-select discount_type">
                             <option value="">{vtranslate('--None--', 'InventoryItem')}</option>
                             <option value="Percentage"
-                                    {if $DATA.discount_type eq 'Percent'}selected{/if}>{vtranslate('Percentage', 'InventoryItem')}</option>
+                                    {if isset($DATA.discount_type) && $DATA.discount_type eq 'Percent'}selected{/if}>{vtranslate('Percentage', 'InventoryItem')}</option>
                             <option value="Direct"
-                                    {if $DATA.discount_type eq 'Amount'}selected{/if}>{vtranslate('Direct', 'InventoryItem')}</option>
+                                    {if isset($DATA.discount_type) && $DATA.discount_type eq 'Amount'}selected{/if}>{vtranslate('Direct', 'InventoryItem')}</option>
                             <option value="Discount per Unit"
-                                    {if $DATA.discount_type eq 'Discount per Unit'}selected{/if}>{vtranslate('Discount per Unit', 'InventoryItem')}</option>
+                                    {if isset($DATA.discount_type) && $DATA.discount_type eq 'Discount per Unit'}selected{/if}>{vtranslate('Discount per Unit', 'InventoryItem')}</option>
                         </select>
                     </div>
                     <div class="col-lg-2">
                     </div>
                     <div class="col-lg-3 pe-2 pe-md-0">
                         <div class="input-group">
-                            <input type="text" id="{$FIELD_NAME}" name="{$FIELD_NAME}" value="{$DATA[$FIELD_NAME]}"
+                            <input type="text" id="{$FIELD_NAME}" name="{$FIELD_NAME}" value="{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}"
                                    class="{$FIELD_NAME} inputElement form-control textAlignRight allowOnlyNumbers replaceCommaWithDot"/>
                             <span class="input-group-addon input-group-text discountSymbol">{$CURRENCY_SYMBOL}</span>
                         </div>
@@ -204,11 +207,11 @@
                     {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.discount_amount.1}
                     <div class="col-lg-2">
                         <div class="py-2 h-100">
-                            <div class="display_{$FIELD->get('name')} textAlignRight">{$DATA[$FIELD->get('name')]}</div>
+                            <div class="display_{$FIELD->get('name')} textAlignRight">{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD->get('name')]}{/if}</div>
                         </div>
                     </div>
                     <input id="{$FIELD->get('name')}" name="{$FIELD->get('name')}" type="hidden" class="{$FIELD->get('name')} inputElement form-control"
-                           value="{$DATA[$FIELD->get('name')]}"/>
+                           value="{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD->get('name')]}{/if}"/>
                 </div>
             </div>
         {/if}
@@ -222,10 +225,10 @@
                     </div>
                 </div>
                 <div class="col-lg-2">
-                    <div class="display_{$FIELD->get('name')} textAlignRight">{$DATA[$FIELD->get('name')]}</div>
+                    <div class="display_{$FIELD->get('name')} textAlignRight">{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD->get('name')]}{/if}</div>
                 </div>
                 <input id="{$FIELD->get('name')}" name="{$FIELD->get('name')}" type="hidden" class="{$FIELD->get('name')} inputElement form-control"
-                       value="{$DATA[$FIELD->get('name')]}"/>
+                       value="{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD->get('name')]}{/if}"/>
             </div>
         {/if}
 
@@ -236,17 +239,17 @@
                     {assign var=FIELD_NAME value=$FIELD->get('name')}
                     <div class="col-lg-10 textAlignRight pe-2 pe-md-0">
                         <div class="fieldlabel text-truncate medium">
-                            {$HARD_FORMATTED_RECORD_STRUCTURE.overall_discount.0} (<span class="display_overall_discount">{$DATA[$FIELD_NAME]}</span> %)
+                            {$HARD_FORMATTED_RECORD_STRUCTURE.overall_discount.0} (<span class="display_overall_discount">{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}</span> %)
                         </div>
-                        <input type="hidden" id="{$FIELD_NAME}" name="{$FIELD_NAME}" value="{$DATA[$FIELD_NAME]}"
+                        <input type="hidden" id="{$FIELD_NAME}" name="{$FIELD_NAME}" value="{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}"
                                class="{$FIELD_NAME} inputElement form-control textAlignRight allowOnlyNumbers replaceCommaWithDot" readonly="readonly"/>
                     </div>
                     {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.overall_discount_amount.1}
                     <div class="col-lg-2">
-                        <div class="display_{$FIELD->get('name')} textAlignRight">{$DATA[$FIELD->get('name')]}</div>
+                        <div class="display_{$FIELD->get('name')} textAlignRight">{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD->get('name')]}{/if}</div>
                     </div>
                     <input id="{$FIELD->get('name')}" name="{$FIELD->get('name')}" type="hidden" class="{$FIELD->get('name')} inputElement form-control"
-                           value="{$DATA[$FIELD->get('name')]}"/>
+                           value="{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD->get('name')]}{/if}"/>
                 </div>
                 {if $HARD_FORMATTED_RECORD_STRUCTURE.price_after_overall_discount neq ''}
                     {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.price_after_overall_discount.1}
@@ -257,10 +260,10 @@
                             </div>
                         </div>
                         <div class="col-lg-2">
-                            <div class="display_{$FIELD->get('name')} textAlignRight">{$DATA[$FIELD->get('name')]}</div>
+                            <div class="display_{$FIELD->get('name')} textAlignRight">{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD->get('name')]}{/if}</div>
                         </div>
                         <input id="{$FIELD->get('name')}" name="{$FIELD->get('name')}" type="hidden" class="{$FIELD->get('name')} inputElement form-control"
-                               value="{$DATA[$FIELD->get('name')]}"/>
+                               value="{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD->get('name')]}{/if}"/>
                     </div>
                 {/if}
             </div>
@@ -284,22 +287,24 @@
                         <div id="tax_div">
                             <select name="{$FIELD_NAME}" id="{$FIELD_NAME}" class="inputElement select2 form-select {$FIELD_NAME}">
                                 <option value="0" data-taxid="0">{vtranslate('No Tax', 'InventoryItem')}</option>
+                                {if isset($DATA['taxes'])}
                                 {foreach item=taxDetails from=$DATA['taxes']}
                                     <option value="{$taxDetails.percentage}" data-taxid="{$taxDetails.taxid}"
-                                            {if $DATA.tax eq $taxDetails.selected}selected{/if}>{$taxDetails.tax_label} ({$taxDetails.percentage}%)
+                                            {if isset($taxDetails.selected) && $DATA.tax eq $taxDetails.selected}selected{/if}>{$taxDetails.tax_label} ({$taxDetails.percentage}%)
                                     </option>
                                 {/foreach}
+                                {/if}
                             </select>
                         </div>
                     </div>
                     {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.tax_amount.1}
                     <div class="col-lg-2">
                         <div class="py-2 h-100">
-                            <div class="display_{$FIELD->get('name')} textAlignRight">{$DATA[$FIELD->get('name')]}</div>
+                            <div class="display_{$FIELD->get('name')} textAlignRight">{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD->get('name')]}{/if}</div>
                         </div>
                     </div>
                     <input id="{$FIELD->get('name')}" name="{$FIELD->get('name')}" type="hidden" class="{$FIELD->get('name')} inputElement form-control"
-                           value="{$DATA[$FIELD->get('name')]}"/>
+                           value="{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD->get('name')]}{/if}"/>
                 </div>
             </div>
         {/if}
@@ -315,9 +320,9 @@
                         </div>
                     </div>
                     <div class="col-lg-2">
-                        <div class="display_{$FIELD_NAME} textAlignRight font-bold">{$DATA[$FIELD_NAME]}</div>
+                        <div class="display_{$FIELD_NAME} textAlignRight font-bold">{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}</div>
                         <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="hidden" class="{$FIELD_NAME} inputElement form-control"
-                               value="{$DATA[$FIELD_NAME]}"/>
+                               value="{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}"/>
                     </div>
                 </div>
             </div>
@@ -330,18 +335,18 @@
                     {assign var=FIELD_NAME value=$FIELD->get('name')}
                     <div class="col-lg-10 textAlignRight pe-2 pe-md-0">
                         <div class="fieldlabel text-truncate medium">
-                            {vtranslate('LBL_MARGIN', 'InventoryItem')} (<span class="display_{$FIELD_NAME}">{$DATA[$FIELD_NAME]}</span> %)
+                            {vtranslate('LBL_MARGIN', 'InventoryItem')} (<span class="display_{$FIELD_NAME}">{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}</span> %)
                         </div>
                         <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="hidden" class="{$FIELD_NAME} inputElement form-control"
-                               value="{$DATA[$FIELD_NAME]}"/>
+                               value="{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}"/>
                     </div>
                     {if $HARD_FORMATTED_RECORD_STRUCTURE.margin_amount neq ''}
                         {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.margin_amount.1}
                         {assign var=FIELD_NAME value=$FIELD->get('name')}
                         <div class="col-lg-2">
-                            <div class="display_{$FIELD_NAME} textAlignRight">{$DATA[$FIELD_NAME]}</div>
+                            <div class="display_{$FIELD_NAME} textAlignRight">{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}</div>
                             <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="hidden" class="{$FIELD_NAME} inputElement form-control"
-                                   value="{$DATA[$FIELD_NAME]}"/>
+                                   value="{if isset($DATA[$FIELD->get('name')])}{$DATA[$FIELD_NAME]}{/if}"/>
                         </div>
                     {/if}
                 </div>

@@ -21,9 +21,11 @@
                         </div>
                         <div class="col-lg">
                             <select class="selectModules form-control" disabled="">
+                                {if isset($MODULE_OPTIONS)}
                                 {foreach from=$MODULE_OPTIONS item=OPTION_LABEL key=OPTION_VALUE}
                                     <option value="{$OPTION_VALUE}" >{$OPTION_LABEL}</option>
                                 {/foreach}
+                                {/if}
                             </select>
                         </div>
                     </div>

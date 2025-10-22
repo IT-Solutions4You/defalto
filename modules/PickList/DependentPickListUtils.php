@@ -207,7 +207,7 @@ class Vtiger_DependencyPicklist
             $targetValues = decode_html($adb->query_result($result, $i, 'targetvalues'));
             $unserializedTargetValues = Zend_Json::decode(html_entity_decode($targetValues));
             $criteria = decode_html($adb->query_result($result, $i, 'criteria'));
-            $unserializedCriteria = Zend_Json::decode(html_entity_decode($criteria));
+            $unserializedCriteria = Zend_Json::decode(html_entity_decode((string)$criteria));
 
             if (!empty($unserializedCriteria) && $unserializedCriteria['fieldname'] != null) {
                 $conditionValue = [

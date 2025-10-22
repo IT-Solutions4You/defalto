@@ -45,7 +45,7 @@ if (defined('VTIGER_UPGRADE')) {
     require_once 'modules/com_vtiger_workflow/VTWorkflowManager.inc';
     $result = $db->pquery('SELECT DISTINCT workflow_id FROM com_vtiger_workflows WHERE summary=?', ['Ticket Creation From Portal : Send Email to Record Owner and Contact']);
     if ($db->num_rows($result)) {
-        $wfs = new VTWorkflowManager($db);
+        $wfs = new VTWorkflowManager();
         $workflowModel = $wfs->retrieve($db->query_result($result, 0, 'workflow_id'));
 
         $selectedFields = [];

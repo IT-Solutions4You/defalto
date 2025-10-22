@@ -67,6 +67,7 @@ class Potentials_Module_Model extends Vtiger_Module_Model
             $owner = '';
         }
 
+        $ownerSql = $dateFilterSql = '';
         $params = [];
         if (!empty($owner)) {
             $ownerSql = ' AND assigned_user_id = ? ';

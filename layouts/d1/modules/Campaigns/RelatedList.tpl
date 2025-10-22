@@ -121,7 +121,7 @@
 									{foreach item=HEADER_FIELD from=$RELATED_HEADERS}
 										<th class="nowrap">
 											<a href="javascript:void(0);" class="listViewContentHeaderValues text-secondary text-nowrap" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('column')}">
-												{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}
+												{if isset($FASORT_IMAGE) && $COLUMN_NAME eq $HEADER_FIELD->get('column')}
 													<i class="fa {$FASORT_IMAGE}"></i>
 												{else}
 													<i class="fa fa-sort customsort"></i>

@@ -18,6 +18,8 @@
 
 class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model
 {
+    protected $module;
+
     /**
      * Function to get Id of this record instance
      * @return <Integer> Id

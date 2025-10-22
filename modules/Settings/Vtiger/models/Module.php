@@ -27,6 +27,7 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model implements Core_Mod
     var $listFields = ['name' => 'Name', 'description' => 'Description'];
     var $nameFields = ['name'];
     var $name = 'Vtiger';
+    public $listFieldModels;
 
     public function getName($includeParentIfExists = false)
     {
@@ -134,7 +135,7 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model implements Core_Mod
      */
     public static function getInstance($value = 'Settings:Vtiger')
     {
-        [$name] = func_get_args();
+        [$name] = array_pad(func_get_args(), 1, '');
 
         if (empty($name)) {
             $name = 'Settings:Vtiger';
@@ -235,7 +236,7 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model implements Core_Mod
     {
         $blocksList = ['OutgoingServerEdit' => ['block' => 'LBL_CONFIGURATION', 'menu' => 'LBL_MAIL_SERVER_SETTINGS']];
 
-        return $blocksList[$viewName];
+        return $blocksList[$viewName] ?? [];
     }
 
     public function getModuleIcon($height = '')

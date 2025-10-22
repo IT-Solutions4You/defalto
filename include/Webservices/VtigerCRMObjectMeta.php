@@ -29,6 +29,7 @@ class VtigerCRMObjectMeta extends EntityMeta
     private $hasWriteAccess;//Edit Access
     private $hasDeleteAccess;
     private $assignUsers;
+    protected $allowDuplicates;
 
     function __construct($webserviceObject, $user)
     {

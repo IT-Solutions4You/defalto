@@ -220,7 +220,7 @@ class EnhancedQueryGenerator extends QueryGenerator
                     }
                 }
                 $this->endGroup();
-                $groupConditionGlue = $groupcolumns['condition'];
+                $groupConditionGlue = $groupcolumns['condition'] ?? '';
                 if ($groupConditionGlue) {
                     $this->addConditionGlue($groupConditionGlue);
                 }
@@ -610,7 +610,7 @@ class EnhancedQueryGenerator extends QueryGenerator
 
         foreach ($tableJoinCondition as $fieldName => $conditionInfo) {
             foreach ($conditionInfo as $tableName => $condition) {
-                if ($tableList[$tableName]) {
+                if (isset($tableList[$tableName]) && $tableList[$tableName]) {
                     $tableNameAlias = $tableName . '2';
                     $condition = str_replace($tableName, $tableNameAlias, $condition);
                 } else {
@@ -794,7 +794,8 @@ class EnhancedQueryGenerator extends QueryGenerator
                     } elseif ($operator == 'between' || $operator == 'notequal' || $operator == 'a' || $operator == 'b') {
                         $fieldSql .= "$fieldGlue " . $tableName . '.' . $field->getColumnName() . ' ' . $valueSql;
                     } else {
-                        $values = explode(' ', $value);
+                        $values = array_pad(explode(' ', $value), 2, null);
+
                         if ($values[1] == '00:00:00') {
                             $fieldSql .= "$fieldGlue CAST(" . $$tableName . '.' . $field->getColumnName() . " AS DATE) $valueSql";
                         } else {

@@ -22,11 +22,6 @@
  */
 class VTTaskQueue
 {
-    public function __construct($adb)
-    {
-        $this->adb = $adb;
-    }
-
     /**
      * Queue a task for execution.
      *
@@ -37,7 +32,7 @@ class VTTaskQueue
      */
     public function queueTask($taskId, $entityId, $when = 0, $taskContents = false, $relatedInfo = [])
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
         //Mention all related info for the given $entityId
         $relatedInfo = json_encode($relatedInfo);
         if ($entityId) {
@@ -60,7 +55,7 @@ class VTTaskQueue
      */
     public function getReadyTasks()
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
         $time = time();
         $result = $adb->pquery('SELECT task_id, entity_id, task_contents,relatedinfo FROM com_vtiger_workflowtask_queue WHERE do_after<?', [$time]);
         $it = new SqlResultIterator($adb, $result);

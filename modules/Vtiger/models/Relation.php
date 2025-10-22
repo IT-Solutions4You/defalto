@@ -129,9 +129,7 @@ class Vtiger_Relation_Model extends Vtiger_Base_Model
     {
         $actionString = $this->get('actions');
 
-        $label = $this->get('label');
-
-        return explode(',', $actionString);
+        return explode(',', (string)$actionString);
     }
 
     public function getQuery($parentRecord, $actions = false)

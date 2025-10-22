@@ -36,6 +36,9 @@ class Settings_SharingAccess_Module_Model extends Vtiger_Module_Model
     const SHARING_ACCESS_PUBLIC = 2;
     const SHARING_ACCESS_PRIVATE = 3;
 
+    public $editstatus;
+    public $permission;
+
     public function getPermissionValue()
     {
         return $this->get('permission');

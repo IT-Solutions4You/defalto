@@ -176,7 +176,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model
             'linkicon' => 'bi bi-tag-fill',
         ];
 
-        if ($linkParams['TAG']) {
+        if (isset($linkParams['TAG']) && $linkParams['TAG']) {
             $massActionLinks[] = [
                 'linktype' => 'LISTVIEW',
                 'linklabel' => 'LBL_REMOVE_TAG',
@@ -296,7 +296,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model
 
             if ($cvModel) {
                 $cvOrderBy = $cvModel->fetchOrderBy();
-                $cvOrderByField = $moduleModel->getFieldByColumn($cvOrderBy['orderby']);
+                $cvOrderByField = $moduleModel->getFieldByColumn($cvOrderBy['orderby'] ?? '');
             }
 
             if ($cvOrderBy && $cvOrderByField && $cvOrderByField->isActiveField()) {

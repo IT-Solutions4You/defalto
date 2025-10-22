@@ -21,6 +21,7 @@ require_once('modules/com_vtiger_workflow/VTEntityMethodManager.inc');
 class VTEntityMethodTask extends VTTask
 {
     public $executeImmediately = true;
+    public $methodName;
 
     public function getFieldNames()
     {

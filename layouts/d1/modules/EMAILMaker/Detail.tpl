@@ -18,7 +18,7 @@
                 <input type="hidden" name="return_view" value="Detail">
                 <input type="hidden" name="record" value="{$TEMPLATEID}">
                 <input type="hidden" name="templateid" value="{$TEMPLATEID}">
-                <input type="hidden" name="parenttab" value="{$PARENTTAB}">
+                <input type="hidden" name="parenttab" value="{if isset($PARENTTAB)}{$PARENTTAB}{/if}">
                 <input type="hidden" name="isDuplicate" value="false">
                 <input type="hidden" name="subjectChanged" value="">
                 <input id="recordId" value="{$TEMPLATEID}" type="hidden">
@@ -81,7 +81,7 @@
                                 </div>
                             </div>
                         {/if}
-                        {if $ISSTYLESACTIVE eq "yes"}
+                        {if isset($ISSTYLESACTIVE) && $ISSTYLESACTIVE eq "yes"}
                             {include file='widgets/Styles.tpl'|vtemplate_path:'ITS4YouStyles'}
                         {/if}
                         {if $ISDOCUMENTSACTIVE eq "yes"}
@@ -96,7 +96,7 @@
                                     </div>
                                 </div>
                                 <div class="summaryWidgetContainer noContent p-3">
-                                    {if $DOCUMENTS_RECORDS neq ""}
+                                    {if isset($DOCUMENTS_RECORDS) && $DOCUMENTS_RECORDS neq ""}
                                         <div id="table-content" class="table-container">
                                             <table id="listview-table" class="table listview-table">
                                                 <thead>
