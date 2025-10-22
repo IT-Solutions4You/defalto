@@ -16,12 +16,17 @@
 					<div class="row">
 						<div class="col">
 							<p>{vtranslate('LBL_RELEASE_NOTES', $MODULE)}</p>
-							<p>{vtranslate('LBL_CRM_DOCUMENTATION', $MODULE)}</p>
+							<p>{vtranslate('LBL_DISCUSS_WITH_US_AT_BLOGS', $MODULE)}</p>
+							<p>{vtranslate('LBL_TALK_TO_US_AT_FORUMS', $MODULE)}</p>
+                            <p>{vtranslate('LBL_CRM_DOCUMENTATION', $MODULE)}</p>
 							<p>
-								<span class="me-2">Connect with us</span>
-								<a href="https://www.facebook.com/defalto.crm" target="_blank">
+								<span>Connect with us</span>
+								<a class="ms-2" href="index.php?module=Core&view=Redirect&mode=Facebook" target="_blank">
 									<i class="bi bi-facebook"></i>
 								</a>
+                                <a class="ms-2" href="index.php?module=Core&view=Redirect&mode=Youtube">
+                                    <i class="bi bi-youtube"></i>
+                                </a>
 							</p>
 						</div>
 					</div>
