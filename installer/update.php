@@ -79,7 +79,10 @@ class Download_ZipArchive extends ZipArchive
                         if ($skip) {
                             Download::log('Skip: ' . $relativePath);
                         } elseif (file_put_contents($destination . $relativePath, $this->getFromIndex($i)) === false) {
+                            Download::log('Error: ' . $relativePath);
                             $errors[$i] = $filename;
+                        } else {
+                            Download::log('Extract: ' . $relativePath);
                         }
                     }
                 }
@@ -415,6 +418,7 @@ $download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migrati
     <title></title>
     <meta charset="utf-8">
     <style>
+
         body {
             padding: 0;
             margin: 0;
@@ -509,6 +513,7 @@ $download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migrati
         }
 
         .action {
+            display: none;
             text-align: center;
             margin: 1em 0;
         }
@@ -527,45 +532,188 @@ $download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migrati
         .hide {
             display: none;
         }
-    </style>
-    <script>
-        function removeClass(selector, className) {
-            const element = document.querySelector(selector);
-            element.classList.remove(className);
+
+        [data-progress=""] .miniProgressBar {
+            display: none;
         }
 
-        function loadProgress() {
-            const request = new XMLHttpRequest();
+        [data-progress=""] .action {
+            display: block;
+        }
+    </style>
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <style>
 
-            request.onload = function () {
-                let parser = new DOMParser(),
-                    parserDocument = parser.parseFromString(this.responseText, 'text/html'),
-                    parserContainer = parserDocument.querySelector('.replaceContainer'),
-                    progress = parserContainer.attributes['data-progress']['value'],
-                    replaceContainer = document.querySelector('.replaceContainer');
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            * {
+                font-family: sans-serif;
+            }
 
-                replaceContainer.replaceWith(parserContainer);
+            .logo {
+                margin: 1em 0;
+            }
 
-                if ('' !== progress) {
-                    setTimeout(function () {
-                        loadProgress();
-                    }, 2000);
-                } else {
-                    removeClass('.button', 'hide')
+            .progressContainer {
+                background: #fff;
+                padding: 1em 2em;
+                margin: 3em auto;
+                width: 50vw;
+                text-align: center;
+                border-radius: 0.5rem;
+            }
+
+            .progressHeader {
+                padding: 1em;
+                text-align: center;
+                color: #fff;
+                background: #103962;
+            }
+
+            .progress {
+                margin: 1em 0;
+            }
+
+            .progressBorder {
+                width: 100%;
+                overflow: hidden;
+                border-radius: 0.5rem;
+                border: 1px solid #103962;
+            }
+
+            .progressBar {
+                height: 2em;
+                border-radius: 0.4rem;
+                text-align: left;
+                background: #103962;
+                background-size: 100% 100%;
+            }
+
+            .miniProgress {
+                width: 15vw;
+            }
+
+            .miniProgressBar {
+                width: 0;
+                margin: 1em 0 1em 0;
+                height: 1em;
+                border-radius: 0.4rem;
+                background: #103962;
+                animation: progressBarAnimation 2s linear infinite;
+            }
+
+            @keyframes progressBarAnimation {
+                0% {
+                    width: 0;
+                }
+                100% {
+                    width: 100%;
                 }
             }
-            request.open('GET', '<?php echo $download->getPHPFileName(); ?>', true);
-            request.send();
-        }
 
-        setTimeout(function () {
-            loadProgress();
-        }, 2000);
-    </script>
+            .progressText {
+                color: #103962;
+                display: flex;
+                justify-content: space-between;
+                font-weight: bold;
+                margin-bottom: 0.2em;
+            }
+
+            .progressText span:last-child {
+                margin-left: auto;
+            }
+
+            .log {
+                border-radius: 0.5rem;
+                background: #fff;
+                text-align: left;
+                margin: 1em 0;
+                padding: 0.5em;
+                border: 1px solid #103962;
+                max-height: 50vh;
+                overflow: auto;
+                color: #103962;
+            }
+
+            .action {
+                display: none;
+                text-align: center;
+                margin: 1em 0;
+            }
+
+            .button {
+                text-decoration: none;
+                cursor: pointer;
+                display: inline-block;
+                padding: 0.8em 1em;
+                background: #103962;
+                color: #fff;
+                border: 0;
+                border-radius: 0.5rem;
+            }
+
+            .hide {
+                display: none;
+            }
+
+            [data-progress=""] .miniProgressBar {
+                display: none;
+            }
+
+            [data-progress=""] .action {
+                display: block;
+            }
+        </style>
+        <script>
+            function removeClass(selector, className) {
+                const element = document.querySelector(selector);
+                element.classList.remove(className);
+            }
+
+            function loadProgress() {
+                const request = new XMLHttpRequest();
+
+                request.onload = function () {
+                    let parser = new DOMParser(),
+                        parserDocument = parser.parseFromString(this.responseText, 'text/html'),
+                        parserContainer = parserDocument.querySelector('.replaceContainer'),
+                        progress = parserContainer.attributes['data-progress']['value'],
+                        replaceContainer = document.querySelector('.replaceContainer');
+
+                    replaceContainer.replaceWith(parserContainer);
+
+                    if ('' !== progress) {
+                        setTimeout(function () {
+                            loadProgress();
+                        }, 2000);
+                    }
+
+                    scrollDown();
+                }
+                request.open('GET', '<?php echo $download->getPHPFileName(); ?>', true);
+                request.send();
+            }
+
+            function scrollDown() {
+                const log = document.querySelector('.log');
+
+                if (log) {
+                    log.scrollTop = log.scrollHeight;
+                }
+            }
+
+            setTimeout(function () {
+                loadProgress();
+            }, 2000);
+        </script>
+    </head>
 </head>
 <body>
-<div class="replaceContainer" data-progress="<?php
-echo $download->progress ?>">
+<div class="replaceContainer" data-progress="<?php echo $download->progress ?>">
     <div class="progressHeader">
         <img class="logo" src="https://defalto.com/wp-content/uploads/2022/05/DefaltoCRMLogo170x40.png" alt="Logo">
         <h1>Defalto installation progress</h1>
