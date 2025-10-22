@@ -44,7 +44,6 @@ $languageStrings = [
     'LBL_EMAILS_SENT' => 'E-mail bol odoslaný.',
     'LBL_FROM_EMAIL' => 'Z e-mailu',
     'LBL_SMTP' => 'SMTP',
-    'LBL_VTIGER_EMAILS' => 'Vtiger Emaily',
     'LBL_INSTALL_PHPMAILER' => 'Stiahnite si zip súbor PHPMailer z: <pre>https://www.its4you.sk/images/extensions/ITS4YouEmails/src/PHPMailer.zip</pre> Rozbaľte zip súbor do priečinka: <pre>modules/ITS4YouLibrary/</pre>',
     'LBL_EMAILS_SENT_RESULT' => 'Výsledok odoslaných emailov',
     'From Email' => 'Z e-mailu',
