@@ -75,7 +75,7 @@ class Core_Base_Mapping extends Vtiger_Base_Model
             $row = $db->fetchByAssoc($res);
 
             if (!in_array($row['fieldname'], static::$excludedFields)) {
-                $this->recordModel->set($row['fieldName'], $this->sourceRecordModel->getId());
+                $this->recordModel->set($row['fieldname'], $this->sourceRecordModel->getId());
             }
         }
 

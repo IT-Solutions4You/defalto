@@ -50,7 +50,7 @@ class PreparedQMark2SqlValue
          * /('[^']*')|(\"[^\"]*\")|([?])/
          *
          */
-        if ($matches[3] == '?') {
+        if (isset($matches[3]) && $matches[3] == '?') {
             $this->ctr++;
 
             return $this->vals[$this->ctr - 1];
@@ -637,6 +637,8 @@ class PearDatabase
     function getRowCount(&$result)
     {
         global $log;
+        $rows = 0;
+
         if (isset($result) && !empty($result)) {
             $rows = $result->RecordCount();
         }
@@ -1286,7 +1288,7 @@ class PearDatabase
     function sql_escape_string($str)
     {
         if ($this->isMySql()) {
-            $result_data = ($this->dbType == 'mysqli') ? mysqli_real_escape_string($this->database->_connectionID, $str) : mysql_real_escape_string($str);
+            $result_data = ($this->dbType == 'mysqli') ? mysqli_real_escape_string($this->database->_connectionID, (string)$str) : $str;
         } elseif ($this->isPostgres()) {
             $result_data = pg_escape_string($str);
         }

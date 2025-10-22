@@ -67,10 +67,11 @@ class ListViewController
 
     public function setupAccessiblePicklistValueList($name)
     {
+        require_once 'modules/PickList/PickListUtils.php';
         $isRoleBased = vtws_isRoleBasedPicklist($name);
         $this->picklistRoleMap[$name] = $isRoleBased;
         if ($this->picklistRoleMap[$name]) {
-            $this->picklistValueMap[$name] = getAllPickListValues($name, $this->user->roleid, $this->db);
+            $this->picklistValueMap[$name] = getAllPickListValues($name, $this->user->roleid);
         }
     }
 
@@ -433,7 +434,7 @@ class ListViewController
                 } elseif ($field->getFieldDataType() == 'reference') {
                     $referenceFieldInfoList = $this->queryGenerator->getReferenceFieldInfoList();
                     $moduleList = $referenceFieldInfoList[$fieldName];
-                    $parentModule = 1 === php7_count($moduleList) ? $moduleList[0] : $this->typeList[$value];
+                    $parentModule = 1 === php7_count($moduleList) ? $moduleList[0] : ($this->typeList[$value] ?? null);
 
                     if (!empty($rawValue) && !empty($parentModule)) {
                         $value = Vtiger_Reference_UIType::transformToDisplayValue($rawValue, $parentModule);

@@ -18,6 +18,8 @@
 
 class Vtiger_Save_Action extends Vtiger_Action_Controller
 {
+    public $savedRecordId;
+
     public function requiresPermission(\Vtiger_Request $request)
     {
         $permissions = parent::requiresPermission($request);

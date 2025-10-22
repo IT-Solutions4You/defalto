@@ -912,7 +912,11 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
                        WHERE userid=? AND vtiger_emakertemplates.module=? AND is_active=? AND is_default IN (?,?)';
         $result = $this->db->pquery($sql, [$current_user->id, $module, 1, $defaultType, 3]);
 
-        return $this->db->fetchByAssoc($result)['templateid'];
+        if ($this->db->num_rows($result)) {
+            return $this->db->fetchByAssoc($result)['templateid'];
+        }
+
+        return '';
     }
 
     /**
@@ -929,17 +933,17 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
                        WHERE userid IN (SELECT id FROM vtiger_users WHERE is_admin=? AND status=? AND is_owner=?) AND vtiger_emakertemplates.module=? AND is_active=? AND is_default IN (?,?)';
         $result = $this->db->pquery($sql, ['on', 'Active', 1, $module, 1, $defaultType, 3]);
 
-        return $this->db->fetchByAssoc($result)['templateid'];
+        if ($this->db->num_rows($result)) {
+            return $this->db->fetchByAssoc($result)['templateid'];
+        }
+
+        return '';
     }
 
     public function GetAllModules()
     {
         $moduleNames = ['' => vtranslate('LBL_PLS_SELECT', 'EMAILMaker')];
         $disallowed_modules = '10, 28';
-
-        if (in_array($_SESSION['VTIGER_DB_VERSION'], ['5.1.0', '5.2.0'])) {
-            $disallowed_modules .= ', 9, 16';
-        }
 
         $sql = "SELECT tabid, name, tablabel
 			FROM vtiger_tab
@@ -1840,7 +1844,7 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
 
         $moduleStrings = Vtiger_Language_Handler::getModuleStringsFromFile($currentLanguage, $module);
 
-        return $moduleStrings['languageStrings'];
+        return $moduleStrings['languageStrings'] ?? [];
     }
 
     /**

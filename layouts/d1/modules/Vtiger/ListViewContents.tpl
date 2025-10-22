@@ -93,7 +93,7 @@
                         <th {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')} nowrap="nowrap" {/if}>
                             <a href="#" class="text-secondary text-nowrap {if $NO_SORTING}noSorting{else}listViewContentHeaderValues{/if}" {if !$NO_SORTING}data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}"{/if} data-field-id='{$LISTVIEW_HEADER->getId()}'>
                                 {if !$NO_SORTING}
-                                    {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
+                                    {if isset($FASORT_IMAGE) && $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
                                         <i class="fa {$FASORT_IMAGE}"></i>
                                     {else}
                                         <i class="fa fa-sort customsort"></i>
@@ -212,7 +212,7 @@
                             <div class="emptyRecordsContent text-center h-50">
                                 {vtranslate('LBL_RECORDS_NOT_FOUND', $MODULE)}.
                                 {if $IS_CREATE_PERMITTED}
-                                    {vtranslate('LBL_CREATE_OR_IMPORT_RECORDS', $MODULE)}
+                                    &nbsp;{vtranslate('LBL_CREATE_OR_IMPORT_RECORDS', $MODULE)}
                                 {/if}
                             </div>
                         </td>

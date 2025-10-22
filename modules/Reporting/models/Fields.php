@@ -117,7 +117,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
          * @var Vtiger_Field_Model $referenceField
          */
         foreach ($fields as $field) {
-            $options['default'][$field->get('name')] = vtranslate($field->block->label, $field->getModuleName()) . '##' . vtranslate($field->get('label'), $field->getModuleName());
+            $options['default'][$field->get('name')] = vtranslate(($field->block->label ?? ''), $field->getModuleName()) . '##' . vtranslate($field->get('label'), $field->getModuleName());
         }
 
         $fields = $module->getFieldsByType(['reference', 'owner']);
@@ -136,7 +136,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
                     $referenceFieldLabel = $referenceField->get('label');
 
                     $options[implode(':', [$fieldName, $referenceModuleName])][implode(':', [$fieldName, $referenceModuleName, $referenceFieldName])] = vtranslate(
-                            $referenceField->block->label,
+                            ($referenceField->block->label ?? ''),
                             $referenceField->getModuleName()
                         ) . '##' . vtranslate($referenceFieldLabel, $referenceModuleName);
                 }

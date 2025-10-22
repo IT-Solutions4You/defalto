@@ -20,6 +20,8 @@ require_once("include/events/SqlResultIterator.inc");
 
 class VTExpressionsManager
 {
+    public $adb;
+    
     function __construct($adb)
     {
         $this->adb = $adb;

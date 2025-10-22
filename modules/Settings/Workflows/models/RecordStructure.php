@@ -23,6 +23,7 @@ class Settings_Workflows_RecordStructure_Model extends Vtiger_RecordStructure_Mo
     const RECORD_STRUCTURE_MODE_EDITTASK = 'EditTask';
 
     public array $emailFields;
+    protected $workFlowModel;
 
     function setWorkFlowModel($workFlowModel)
     {
@@ -158,7 +159,7 @@ class Settings_Workflows_RecordStructure_Model extends Vtiger_RecordStructure_Mo
         ];
 
         foreach ($emailFields as $metaKey => $emailField) {
-            [$relationFieldName, $rest] = explode(' ', $metaKey);
+            [$relationFieldName] = explode(' ', $metaKey);
             $value = '<$' . $metaKey . '>';
 
             if ($nameFields) {
@@ -186,19 +187,23 @@ class Settings_Workflows_RecordStructure_Model extends Vtiger_RecordStructure_Mo
         $emailOptions = [];
 
         foreach ($emailFields as $metaKey => $emailField) {
-            $emailOptions['$' . $metaKey] .= $emailField->get('workflow_columnlabel');
+            $emailOptions['$' . $metaKey] = $emailField->get('workflow_columnlabel');
         }
 
         $usersModuleModel = Vtiger_Module_Model::getInstance('Users');
         $moduleModel = $this->getModule();
 
         if ($moduleModel->getField('assigned_user_id')) {
-            $emailOptions['$(general : (__VtigerMeta__) reports_to_id)'] .= sprintf(
-                '%s : (%s) %s',
-                vtranslate($moduleModel->getField('assigned_user_id')->get('label'), 'Users'),
-                vtranslate('Users', 'Users'),
-                vtranslate($usersModuleModel->getField('reports_to_id')->get('label'), 'Users')
-            );
+            $specialKey = '$(general : (__VtigerMeta__) reports_to_id)';
+
+            if(!isset($emailOptions[$specialKey])){
+                $emailOptions[$specialKey] = '';
+            }
+
+            $assignedLabel = vtranslate($moduleModel->getField('assigned_user_id')->get('label'), 'Users');
+            $usersLabel = vtranslate('Users', 'Users');
+            $reportsToLabel = vtranslate($usersModuleModel->getField('reports_to_id')->get('label'), 'Users');
+            $emailOptions[$specialKey] .= sprintf('%s : (%s) %s', $assignedLabel, $usersLabel, $reportsToLabel);
         }
 
         return $emailOptions;

@@ -7,6 +7,9 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
+    {if !isset($margin_input_width)}
+        {assign var=margin_input_width value=''}
+    {/if}
     <div class="tab-pane" id="editTabSettings">
         <div id="settings_div">
             <div class="form-group row py-2">
@@ -101,7 +104,7 @@
                                 <label for="is_default_dv">{vtranslate('LBL_FOR_DV',$MODULE)}</label>
                             </div>
                             <div class="col">
-                                <input type="checkbox" class="form-check-input" id="is_default_dv" name="is_default_dv" {$IS_DEFAULT_DV_CHECKED}/>
+                                <input type="checkbox" class="form-check-input" id="is_default_dv" name="is_default_dv" {if isset($IS_DEFAULT_DV_CHECKED)}{$IS_DEFAULT_DV_CHECKED}{/if}/>
                             </div>
                         </div>
                         <div class="row">
@@ -109,7 +112,7 @@
                                 <label for="is_default_lv">{vtranslate('LBL_FOR_LV',$MODULE)}</label>
                             </div>
                             <div class="col">
-                                <input type="checkbox" class="form-check-input" id="is_default_lv" name="is_default_lv" {$IS_DEFAULT_LV_CHECKED}/>
+                                <input type="checkbox" class="form-check-input" id="is_default_lv" name="is_default_lv" {if isset($IS_DEFAULT_LV_CHECKED)}{$IS_DEFAULT_LV_CHECKED}{/if}/>
                             </div>
                         </div>
                         {* hidden variable for template order settings *}

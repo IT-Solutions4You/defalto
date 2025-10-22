@@ -55,21 +55,21 @@
                                                 <select class="potentialFields select2" style="width:180px" name="mapping[{$smarty.foreach.mappingLoop.iteration}][potential]" {if $MAPPING_ARRAY['editable'] eq 0} disabled {/if}>
                                                     {foreach key=FIELD_TYPE item=FIELDS_INFO from=$POTENTIALS_MODULE_MODEL->getFields()}
                                                         {foreach key=FIELD_ID item=FIELD_OBJECT from=$FIELDS_INFO}
-                                                            <option data-type="{$FIELD_TYPE}" {if $FIELD_OBJECT->get('name') eq $MAPPING_ARRAY['Potentials']['name']} selected {/if} label="{vtranslate($FIELD_OBJECT->get('label'), $POTENTIALS_MODULE_MODEL->getName())}" value="{$FIELD_OBJECT->get('name')}">
+                                                            <option data-type="{$FIELD_TYPE}" {if isset($MAPPING_ARRAY['Potentials']['name']) && $FIELD_OBJECT->get('name') eq $MAPPING_ARRAY['Potentials']['name']} selected {/if} label="{vtranslate($FIELD_OBJECT->get('label'), $POTENTIALS_MODULE_MODEL->getName())}" value="{$FIELD_OBJECT->get('name')}">
                                                                     {vtranslate($FIELD_OBJECT->get('label'), $POTENTIALS_MODULE_MODEL->getName())}
                                                             </option>
                                                         {/foreach}
                                                     {/foreach}
                                                 </select>
                                             </td>
-                                            <td width="15%" class="selectedFieldDataType">{vtranslate($MAPPING_ARRAY['Potentials']['fieldDataType'], $QUALIFIED_MODULE)}</td>
+                                            <td width="15%" class="selectedFieldDataType">{if isset($MAPPING_ARRAY['Potentials']['fieldDataType'])}{vtranslate($MAPPING_ARRAY['Potentials']['fieldDataType'], $QUALIFIED_MODULE)}{/if}</td>
                                             <td width="13%">
                                                 <select class="projectFields select2" style="width:180px" name="mapping[{$smarty.foreach.mappingLoop.iteration}][project]" {if $MAPPING_ARRAY['editable'] eq 0} disabled {/if}>
                                                     <option data-type="{vtranslate('LBL_NONE', $QUALIFIED_MODULE)}" value="0" label="{vtranslate('LBL_NONE', $QUALIFIED_MODULE)}">{vtranslate('LBL_NONE', $QUALIFIED_MODULE)}</option>
                                                     {foreach key=FIELD_TYPE item=FIELDS_INFO from=$PROJECT_MODULE_MODEL->getFields()}
                                                         {foreach key=FIELD_ID item=FIELD_OBJECT from=$FIELDS_INFO}
-                                                            {if $MAPPING_ARRAY['Potentials']['fieldDataType'] eq $FIELD_TYPE}
-                                                                <option data-type="{$FIELD_TYPE}" {if $FIELD_OBJECT->get('name') eq $MAPPING_ARRAY['Project']['name']} selected {/if} label="{vtranslate($FIELD_OBJECT->get('label'), $PROJECT_MODULE_MODEL->getName())}" value="{$FIELD_OBJECT->get('name')}">
+                                                            {if isset($MAPPING_ARRAY['Potentials']['fieldDataType']) && $MAPPING_ARRAY['Potentials']['fieldDataType'] eq $FIELD_TYPE}
+                                                                <option data-type="{$FIELD_TYPE}" {if isset($MAPPING_ARRAY['Project']['name']) && $FIELD_OBJECT->get('name') eq $MAPPING_ARRAY['Project']['name']} selected {/if} label="{vtranslate($FIELD_OBJECT->get('label'), $PROJECT_MODULE_MODEL->getName())}" value="{$FIELD_OBJECT->get('name')}">
                                                                         {vtranslate($FIELD_OBJECT->get('label'), $PROJECT_MODULE_MODEL->getName())}
                                                                 </option>
                                                             {/if}

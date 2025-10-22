@@ -11,6 +11,6 @@
     {assign var=FIELD_DATA_TYPE value=$FIELD_MODEL->getFieldDataType()}
     {assign var=FIELD_CLASS value=$FIELD_MODEL->getListSearchInputClass()}
     <div class="">
-        <input type="text" name="{$FIELD_MODEL->get('name')}" class="listSearchContributor inputElement form-control {$FIELD_CLASS}" value="{$SEARCH_INFO['searchValue']}" data-field-type="{$FIELD_DATA_TYPE}" data-fieldinfo='{$FIELD_INFO|escape}'/>
+        <input type="text" name="{$FIELD_MODEL->get('name')}" class="listSearchContributor inputElement form-control {$FIELD_CLASS}" value="{if isset($SEARCH_INFO['searchValue'])}{$SEARCH_INFO['searchValue']}{/if}" data-field-type="{$FIELD_DATA_TYPE}" data-fieldinfo='{$FIELD_INFO|escape}'/>
     </div>
 {/strip}

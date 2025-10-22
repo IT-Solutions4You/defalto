@@ -16,6 +16,7 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
+#[\AllowDynamicProperties]
 class Users_Record_Model extends Vtiger_Record_Model
 {
     public static int $searchUsersLimit = 20;
@@ -924,7 +925,9 @@ class Users_Record_Model extends Vtiger_Record_Model
     {
         $db = PearDatabase::getInstance();
         $query = 'SELECT is_owner FROM vtiger_users WHERE id = ?';
-        $isOwner = $db->query_result($db->pquery($query, [$this->getId()]), 0, 'is_owner');
+        $result = $db->pquery($query, [$this->getId()]);
+        $isOwner = $db->query_result($result, 0, 'is_owner');
+
         if ($isOwner == 1) {
             return true;
         }

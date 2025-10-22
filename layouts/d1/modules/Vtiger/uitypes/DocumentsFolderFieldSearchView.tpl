@@ -9,6 +9,9 @@
 {strip}
     {assign var="FIELD_INFO" value=Zend_Json::encode($FIELD_MODEL->getFieldInfo())}
     {assign var=PICKLIST_VALUES value=$FIELD_MODEL->getDocumentFolders()}
+    {if !isset($SEARCH_INFO['searchValue'])}
+        {$SEARCH_INFO['searchValue'] = ''}
+    {/if}
     {assign var=SEARCH_VALUES value=explode(',',$SEARCH_INFO['searchValue'])}
     <div class="select2_search_div">
         <input type="text" class="listSearchContributor inputElement select2_input_element"/>

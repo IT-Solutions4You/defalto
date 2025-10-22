@@ -14,7 +14,7 @@
 		<select class="select2 listSearchContributor" name="{$FIELD_MODEL->get('name')}" data-fieldinfo='{$FIELD_INFO|escape}' style="display:none">
 			<option value="">{vtranslate('LBL_SELECT_OPTION','Vtiger')}</option>
 			{foreach item=CURRENCY_NAME key=CURRENCY_ID from=$CURRENCY_LIST}
-				<option value="{$CURRENCY_NAME}" {if ($CURRENCY_NAME eq $SEARCH_INFO['searchValue']) && ($CURRENCY_NAME neq "") } selected{/if}>{vtranslate($CURRENCY_NAME, $MODULE)}</option>
+				<option value="{$CURRENCY_NAME}" {if isset($SEARCH_INFO['searchValue']) && ($CURRENCY_NAME eq $SEARCH_INFO['searchValue']) && ($CURRENCY_NAME neq "") } selected{/if}>{vtranslate($CURRENCY_NAME, $MODULE)}</option>
 			{/foreach}
 		</select>
 	</div>

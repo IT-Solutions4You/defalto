@@ -443,11 +443,11 @@
                                             <div id="custom_format_table" {if $SELECT_FORMAT neq 'Custom'}style="display:none"{/if}>
                                                 <div class="input-group py-2">
                                                     <div class="input-group-text col-4">{vtranslate('LBL_WIDTH',$MODULE)}</div>
-                                                    <input type="text" name="pdf_format_width" id="pdf_format_width" class="inputElement form-control" value="{$CUSTOM_FORMAT.width}">
+                                                    <input type="text" name="pdf_format_width" id="pdf_format_width" class="inputElement form-control" value="{if isset($CUSTOM_FORMAT)}{$CUSTOM_FORMAT.width}{/if}">
                                                 </div>
                                                 <div class="input-group pt-2">
                                                     <div class="input-group-text col-4">{vtranslate('LBL_HEIGHT',$MODULE)}</div>
-                                                    <input type="text" name="pdf_format_height" id="pdf_format_height" class="inputElement form-control" value="{$CUSTOM_FORMAT.height}">
+                                                    <input type="text" name="pdf_format_height" id="pdf_format_height" class="inputElement form-control" value="{if isset($CUSTOM_FORMAT)}{$CUSTOM_FORMAT.height}{/if}">
                                                 </div>
                                             </div>
                                         </div>
@@ -585,13 +585,13 @@
     </form>
 </div>
 <div id="company_stamp_signature_content" class="hide">
-    {$COMPANY_STAMP_SIGNATURE}
+    {if isset($COMPANY_STAMP_SIGNATURE)}{$COMPANY_STAMP_SIGNATURE}{/if}
 </div>
 <div id="companylogo_content" class="hide">
     {$COMPANYLOGO}
 </div>
 <div id="company_header_signature_content" class="hide">
-    {$COMPANY_HEADER_SIGNATURE}
+    {if isset($COMPANY_HEADER_SIGNATURE)}{$COMPANY_HEADER_SIGNATURE}{/if}
 </div>
 <div id="vatblock_table_content" class="hide">
     {$VATBLOCK_TABLE}

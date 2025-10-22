@@ -93,6 +93,9 @@ class Settings_SharingAccess_Rule_Model extends Vtiger_Base_Model
         ],
     ];
 
+    public $module;
+    public $rule_details;
+
     /**
      * Function to get the Id of the Sharing Access Rule
      * @return <Number> Id

@@ -18,6 +18,9 @@
 
 class VTSimpleTemplate
 {
+    protected $cache;
+    protected $parent;
+    protected $template;
 
     function __construct($templateString)
     {

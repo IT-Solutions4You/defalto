@@ -27,7 +27,7 @@
 							{if $CREATE eq 'new'}
 								{append var=BREADCRUMB_LABELS index=step3 value=ADD_RULES}
 							{/if}
-							{include file="BreadCrumbs.tpl"|vtemplate_path:$QUALIFIED_MODULE BREADCRUMB_LABELS=$BREADCRUMB_LABELS MODULE=$QUALIFIED_MODULE}
+							{include file="BreadCrumbs.tpl"|vtemplate_path:$QUALIFIED_MODULE BREADCRUMB_LABELS=$BREADCRUMB_LABELS MODULE=$QUALIFIED_MODULE BREADCRUMB_ID='mailconverter_breadcrumbs'}
 						</div>
 					</div>
 				</div>

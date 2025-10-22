@@ -34,11 +34,6 @@
                         <input type="hidden" name="record" value="{$RECORD_ID}"/>
                         <input type="hidden" name="defaultCallDuration" value="{$USER_MODEL->get('callduration')}"/>
                         <input type="hidden" name="defaultOtherEventDuration" value="{$USER_MODEL->get('othereventduration')}"/>
-                        {if $IS_RELATION_OPERATION }
-                            <input type="hidden" name="sourceModule" value="{$SOURCE_MODULE}"/>
-                            <input type="hidden" name="sourceRecord" value="{$SOURCE_RECORD}"/>
-                            <input type="hidden" name="relationOperation" value="{$IS_RELATION_OPERATION}"/>
-                        {/if}
                         {include file="partials/EditViewReturn.tpl"|vtemplate_path:$MODULE}
                         {include file="partials/EditViewContents.tpl"|@vtemplate_path:$MODULE}
                         <div class="targetFieldsTableContainer">

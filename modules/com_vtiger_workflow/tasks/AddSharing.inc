@@ -15,6 +15,8 @@ class AddSharing extends VTTask
     public $memberViewList = [];
     public $memberEditList = [];
     public $entity;
+    public $trigger;
+    public $field_value_mapping;
 
     public function getFieldNames()
     {

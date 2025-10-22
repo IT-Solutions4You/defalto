@@ -24,6 +24,7 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
 {
     protected static $itemsTable = 'vtiger_settings_field';
     protected static $itemId = 'fieldid';
+    protected $menu;
 
     public static array $defaultMenuItemLinks = [
         'LBL_USER_MANAGEMENT' => [

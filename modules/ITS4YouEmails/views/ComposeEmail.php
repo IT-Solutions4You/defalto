@@ -953,7 +953,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
         if ('Reply' === $mode || 'ReplyAll' === $mode) {
             $emailAddressRecord = !empty($sourceId) ? $sourceId : 'email';
-            $emailAddress = $recordModel->getFrom()[0];
+            $emailAddress = $recordModel->getFrom()[0] ?? '';
             $emailAddressId = sprintf('%s|%s|', $emailAddressRecord, $emailAddress);
             $allEmails['to'][$sourceId] = ITS4YouEmails_Utils_Helper::getArrayAllEmails($emailAddressId, $emailAddress);
             $allEmailsLabels['to'][$sourceId][$emailAddressId] = $emailAddress;

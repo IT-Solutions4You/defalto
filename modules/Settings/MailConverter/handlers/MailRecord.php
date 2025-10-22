@@ -28,12 +28,12 @@ class Settings_MailConverter_MailRecord_Handler
     /**
      * @var array
      */
-    public array $_bcc;
+    public array $_bcc = [];
     public string $_body = '';
     /**
      * @var array
      */
-    public array $_cc;
+    public array $_cc = [];
     /**
      * @var int
      */
@@ -41,7 +41,7 @@ class Settings_MailConverter_MailRecord_Handler
     /**
      * @var array
      */
-    public array $_from;
+    public array $_from = [];
     /**
      * @var string
      */
@@ -234,7 +234,7 @@ class Settings_MailConverter_MailRecord_Handler
         if ($date) {
             if ($format) {
                 $dateTimeFormat = Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat(date('Y-m-d H:i:s', $date));
-                [$date, $time, $AMorPM] = explode(' ', $dateTimeFormat);
+                [$date, $time, $AMorPM] = array_pad(explode(' ', $dateTimeFormat), 3, '');
 
                 $pos = strpos($dateTimeFormat, date(DateTimeField::getPHPDateFormat()));
                 $time = substr($time, 0, 5);

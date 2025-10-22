@@ -22,6 +22,8 @@
 
 class Settings_Vtiger_ListView_Model extends Vtiger_Base_Model
 {
+    protected $module;
+
     /**
      * Function to get the Module Model
      * @return Vtiger_Module_Model instance

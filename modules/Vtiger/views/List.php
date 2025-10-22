@@ -16,6 +16,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
+#[\AllowDynamicProperties]
 class Vtiger_List_View extends Vtiger_Index_View
 {
     protected $listViewEntries = false;

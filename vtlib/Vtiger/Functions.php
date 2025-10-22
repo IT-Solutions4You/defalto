@@ -512,7 +512,7 @@ class Vtiger_Functions
     static function getGroupName($id)
     {
         global $adb;
-        if (!self::$groupIdNameCache[$id]) {
+        if (!isset(self::$groupIdNameCache[$id]) || !self::$groupIdNameCache[$id]) {
             $result = $adb->pquery('SELECT groupid, groupname FROM vtiger_groups');
             while ($row = $adb->fetch_array($result)) {
                 self::$groupIdNameCache[$row['groupid']] = $row['groupname'];

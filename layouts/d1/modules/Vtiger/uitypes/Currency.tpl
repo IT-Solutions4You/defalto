@@ -13,7 +13,7 @@
         {assign var="FIELD_NAME" value=$FIELD_MODEL->getFieldName()}
     {/if}
     <div class="Vtiger_Currency_UIType">
-        {if $RECORD}
+        {if isset($RECORD) && $RECORD}
             {assign var=CURRENCY_ID value=$RECORD->getCurrencyId()}
         {else}
             {assign var=CURRENCY_ID value=Users_Record_Model::getCurrentUserModel()->get('currency_id')}

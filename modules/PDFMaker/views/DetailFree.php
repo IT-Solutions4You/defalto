@@ -10,6 +10,8 @@
 
 class PDFMaker_DetailFree_View extends Vtiger_Index_View
 {
+    protected $record;
+
     function __construct()
     {
         parent::__construct();

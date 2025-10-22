@@ -64,7 +64,7 @@ class ModCommentsHandler extends VTEventHandler
                 if (!$isPrivateComment) {
                     $entityData = VTEntityData::fromCRMEntity($focus);
 
-                    $wfs = new VTWorkflowManager($db);
+                    $wfs = new VTWorkflowManager();
                     $relatedToEventHandler = new VTWorkflowEventHandler();
                     $relatedToEventHandler->workflows = $wfs->getWorkflowsForModuleSupportingComments($entityData->getModuleName());
 

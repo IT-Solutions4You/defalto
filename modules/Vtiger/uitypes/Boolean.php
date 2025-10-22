@@ -36,7 +36,7 @@ class Vtiger_Boolean_UIType extends Vtiger_Base_UIType
      */
     public function getDisplayValue($value, $record = false, $recordInstance = false)
     {
-        if ($value == 1 || $value == '1' || strtolower($value) == 'on') {
+        if ($value == 1 || $value == '1' || strtolower((string)$value) == 'on') {
             return Vtiger_Language_Handler::getTranslatedString('LBL_YES', $this->get('field')->getModuleName());
         }
 

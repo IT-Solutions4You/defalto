@@ -14,15 +14,15 @@
                 {if $THEME_MODE neq "true"}
                     <div class="form-group row py-2">
                         <label class="control-label fieldLabel col-sm-3 text-muted">
-                            <input type="checkbox" name="is_listview" id="isListViewTmpl" class="form-check-input" {if $IS_LISTVIEW_CHECKED eq "yes"}checked="checked"{/if} onclick="EMAILMaker_EditJs.isLvTmplClicked();" title="{vtranslate('LBL_LISTVIEW_TEMPLATE',$MODULE)}"/>
+                            <input type="checkbox" name="is_listview" id="isListViewTmpl" class="form-check-input" {if isset($IS_LISTVIEW_CHECKED) && $IS_LISTVIEW_CHECKED eq "yes"}checked="checked"{/if} onclick="EMAILMaker_EditJs.isLvTmplClicked();" title="{vtranslate('LBL_LISTVIEW_TEMPLATE',$MODULE)}"/>
                             <span class="ms-2">{vtranslate('LBL_LISTVIEWBLOCK',$MODULE)}:</span>
                         </label>
                         <div class="controls col-sm-9">
                             <div class="input-group">
-                                <select name="listviewblocktpl" id="listviewblocktpl" class="select2 form-control" {if $IS_LISTVIEW_CHECKED neq "yes"}disabled{/if} data-width="50%">
+                                <select name="listviewblocktpl" id="listviewblocktpl" class="select2 form-control" {if !isset($IS_LISTVIEW_CHECKED) || $IS_LISTVIEW_CHECKED neq "yes"}disabled{/if} data-width="50%">
                                     {html_options  options=$LISTVIEW_BLOCK_TPL}
                                 </select>
-                                <button type="button" id="listviewblocktpl_butt" class="btn btn-success InsertIntoTemplate" data-type="listviewblocktpl" title="{vtranslate('LBL_INSERT_VARIABLE_TO_TEXT',$MODULE)}" {if $IS_LISTVIEW_CHECKED neq "yes"}disabled{/if}>
+                                <button type="button" id="listviewblocktpl_butt" class="btn btn-success InsertIntoTemplate" data-type="listviewblocktpl" title="{vtranslate('LBL_INSERT_VARIABLE_TO_TEXT',$MODULE)}" {if !isset($IS_LISTVIEW_CHECKED) || $IS_LISTVIEW_CHECKED neq "yes"}disabled{/if}>
                                     <i class="fa fa-usd"></i>
                                 </button>
                             </div>

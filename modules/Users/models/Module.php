@@ -391,7 +391,7 @@ class Users_Module_Model extends Vtiger_Module_Model
             'PreferenceEdit' => ['block' => 'LBL_MY_PREFERENCES', 'menu' => 'My Preferences']
         ];
 
-        return $blocksList[$viewName];
+        return $blocksList[$viewName] ?? [];
     }
 
     /**

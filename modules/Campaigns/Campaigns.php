@@ -91,6 +91,8 @@ class Campaigns extends CRMEntity
     // For Alphabetical search
     public $def_basicsearch_col = 'campaignname';
 
+    public $campaignrelstatus;
+
     function __construct()
     {
         $this->log = Logger::getLogger('campaign');

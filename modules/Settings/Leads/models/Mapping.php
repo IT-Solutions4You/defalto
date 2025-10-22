@@ -19,6 +19,7 @@
 class Settings_Leads_Mapping_Model extends Settings_Vtiger_Module_Model
 {
     var $name = 'Leads';
+    protected $mapping;
 
     /**
      * Function to get detail view url of this model
@@ -120,10 +121,10 @@ class Settings_Leads_Mapping_Model extends Settings_Vtiger_Module_Model
             foreach ($mapping as $mappingId => $mappingDetails) {
                 $finalMapping[$mappingId] = [
                     'editable'   => $mappingDetails['editable'],
-                    'Leads'      => $fieldLabelsList[$mappingDetails['leadfid']],
-                    'Accounts'   => $fieldLabelsList[$mappingDetails['accountfid']],
-                    'Contacts'   => $fieldLabelsList[$mappingDetails['contactfid']],
-                    'Potentials' => $fieldLabelsList[$mappingDetails['potentialfid']]
+                    'Leads'      => $fieldLabelsList[$mappingDetails['leadfid']] ?? [],
+                    'Accounts'   => $fieldLabelsList[$mappingDetails['accountfid']] ?? [],
+                    'Contacts'   => $fieldLabelsList[$mappingDetails['contactfid']] ?? [],
+                    'Potentials' => $fieldLabelsList[$mappingDetails['potentialfid']] ?? [],
                 ];
             }
 

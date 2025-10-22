@@ -29,6 +29,17 @@ class Vtiger_Link_Model extends Vtiger_Link
     public const LINK_LISTVIEWSETTING = 'LISTVIEWSETTING';
     // Class variable to store the child links
     protected $childlinks = [];
+    public $link_template;
+    public $linkName;
+    public $action;
+    public $actionURL;
+    public $linkKey;
+    public $relatedModuleName;
+    public $linkmodule;
+    public $_selectRelation;
+    public $_module;
+    public $linkclass;
+    public $linkdropdowns;
 
     /**
      * Function to get the value of a given property
@@ -461,14 +472,23 @@ class Vtiger_Link_Model extends Vtiger_Link
      */
     public static function merge(array $links, array $appendLinks): array
     {
-        $keys = array_merge(array_keys($links), array_keys($appendLinks));
-        $mergedLinks = [];
+        $allKeys = array_keys($links + $appendLinks);
 
-        foreach ($keys as $key) {
-            $mergedLinks[$key] = array_merge((array)$links[$key], (array)$appendLinks[$key]);
+        $merged = [];
+        foreach ($allKeys as $key) {
+            $left = $links[$key] ?? null;
+            $right = $appendLinks[$key] ?? null;
+
+            if (is_array($left) && is_array($right)) {
+                $merged[$key] = array_merge($left, $right);
+            } elseif ($right !== null) {
+                $merged[$key] = $right;
+            } else {
+                $merged[$key] = $left;
+            }
         }
 
-        return $mergedLinks;
+        return $merged;
     }
 
     /**

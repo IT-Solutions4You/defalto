@@ -365,7 +365,7 @@ class EMAILMaker_Fields_Model extends Core_TemplateFields_Helper
     {
         $blockTable = '<table border="1" cellpadding="3" cellspacing="0" style="border-collapse:collapse;">
                                         <tr>
-                                            <td>' . $labels['Name'] . '</td>';
+                                            <td>' . ($labels['Name'] ?? '') . '</td>';
         if ('CHARGES' === $type) {
             $tableColspan = '2';
             $blockTable .= '<td>' . vtranslate('LBL_' . $type . 'BLOCK_SUM', 'EMAILMaker') . '</td>';

@@ -156,11 +156,11 @@ $result = $adb->pquery(
 $numOfRows = $adb->num_rows($result);
 
 for ($i = 0; $i < $numOfRows; $i++) {
-    $wfs = new VTWorkflowManager($adb);
+    $wfs = new VTWorkflowManager();
     $workflowModel = $wfs->retrieve($adb->query_result($result, $i, 'workflow_id'));
     $workflowModel->filtersavedinnew = 6;
 
-    $tm = new VTTaskManager($adb);
+    $tm = new VTTaskManager();
     $tasks = $tm->getTasksForWorkflow($workflowModel->id);
     foreach ($tasks as $task) {
         $properties = get_object_vars($task);
@@ -894,7 +894,7 @@ while ($rowData = $adb->fetch_array($result)) {
 $dateFormat = '($_DATE_FORMAT_)';
 $timeZone = '($(general : (__VtigerMeta__) usertimezone))';
 foreach ($taskIdsList as $taskId => $taskModuleName) {
-    $tm = new VTTaskManager($adb);
+    $tm = new VTTaskManager();
     $task = $tm->retrieveTask($taskId);
 
     $emailTask = new VTEmailTask();

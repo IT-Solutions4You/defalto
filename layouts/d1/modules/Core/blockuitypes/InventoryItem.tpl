@@ -33,7 +33,7 @@
                         <input type="hidden" name="pricebookid_original" id="pricebookid_original" value="{$FIELD_MODEL->get('fieldvalue')}">
                         <div class="btn-group" role="group">
                             <button id="btnGroupDrop1" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary pricebook-button" data-bs-toggle="dropdown" aria-expanded="false">
-                                {if $PRICEBOOKS[$CURRENT_VALUE] neq ''}{$PRICEBOOKS[$CURRENT_VALUE]}{else}{vtranslate('LBL_NONE', 'InventoryItem')}{/if}
+                                {if isset($PRICEBOOKS[$CURRENT_VALUE]) && $PRICEBOOKS[$CURRENT_VALUE] neq ''}{$PRICEBOOKS[$CURRENT_VALUE]}{else}{vtranslate('LBL_NONE', 'InventoryItem')}{/if}
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end pricebook" aria-labelledby="btnGroupDrop1">
                                 <li><a class="dropdown-item" data-pricebookid="0">{vtranslate('LBL_NONE', 'InventoryItem')}</a></li>
@@ -104,7 +104,7 @@
                 <tr class="border-bottom">
                     <td class="font-bold">{vtranslate('LBL_TOOLS',$MODULE)}</td>
                     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
-                        {if $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] neq '' && !in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
+                        {if isset($INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]) && $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] neq '' && !in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
                         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
                         <td class="font-bold{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'percentage'} textAlignRight{/if}" data-fieldname="{$INVENTORY_ITEM_FIELD_NAME}">
                             {vtranslate($FIELD->get('label'), 'InventoryItem')}
@@ -129,7 +129,7 @@
                 <tr style="display: none;">
                     <td></td>
                     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
-                        {if $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] eq '' || in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
+                        {if !isset($INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]) || $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] eq '' || in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
                             {continue}
                         {/if}
                         {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}

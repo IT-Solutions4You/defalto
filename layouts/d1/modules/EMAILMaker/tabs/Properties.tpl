@@ -233,7 +233,7 @@
                     </div>
                 </div>
 
-                {if $MULTICOMPANYINFORMATIONS neq ''}
+                {if isset($MULTICOMPANYINFORMATIONS) && $MULTICOMPANYINFORMATIONS neq ''}
                     <div class="form-group row py-2">
                         <label class="control-label fieldLabel col-sm-3 text-muted">{$LBL_MULTICOMPANY}:</label>
                         <div class="controls col-sm-9">

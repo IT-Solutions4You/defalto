@@ -21,11 +21,6 @@
  */
 class VTTaskManager
 {
-    function __construct($adb)
-    {
-        $this->adb = $adb;
-    }
-
     /**
      * Save the task into the database.
      *
@@ -39,7 +34,7 @@ class VTTaskManager
      */
     public function saveTask($task)
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
 
         if (isset($task->id) && is_numeric($task->id)) {
             $taskId = $task->id;
@@ -65,7 +60,7 @@ class VTTaskManager
 
     public function deleteTask($taskId)
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
         $adb->pquery("delete from com_vtiger_workflowtasks where task_id=?", [$taskId]);
     }
 
@@ -94,7 +89,7 @@ class VTTaskManager
      */
     public function retrieveTask($taskId)
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
         $result = $adb->pquery("select task from com_vtiger_workflowtasks where task_id=?", [$taskId]);
         $data = $adb->raw_query_result_rowdata($result, 0);
         $task = $data["task"];
@@ -108,7 +103,7 @@ class VTTaskManager
      */
     public function getTasksForWorkflow($workflowId)
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
         $result = $adb->pquery("select task from com_vtiger_workflowtasks where workflow_id=?", [$workflowId]);
 
         return $this->getTasksForResult($result);
@@ -129,7 +124,7 @@ class VTTaskManager
      */
     function getTasks()
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
         $result = $adb->query("select task from com_vtiger_workflowtasks");
 
         return $this->getTasksForResult($result);
@@ -137,7 +132,7 @@ class VTTaskManager
 
     private function getTasksForResult($result)
     {
-        $adb = $this->adb;
+        $adb = PearDatabase::getInstance();
         $it = new SqlResultIterator($adb, $result);
         $tasks = [];
         foreach ($it as $row) {
@@ -189,6 +184,12 @@ class VTTaskManager
 
 abstract class VTTask
 {
+    public $executeImmediately;
+    public $workflowId;
+    public $summary;
+    public $active;
+    public $id;
+
     public abstract function doTask($data);
 
     public abstract function getFieldNames();

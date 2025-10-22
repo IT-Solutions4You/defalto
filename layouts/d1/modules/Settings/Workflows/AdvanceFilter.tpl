@@ -31,9 +31,11 @@
             </div>
             <div class="contents">
                 <div class="conditionList">
+                    {if isset($ALL_CONDITION_CRITERIA['columns'])}
                     {foreach item=CONDITION_INFO from=$ALL_CONDITION_CRITERIA['columns']}
                         {include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE CONDITION_INFO=$CONDITION_INFO MODULE=$MODULE}
                     {/foreach}
+                    {/if}
                     {if php7_count($ALL_CONDITION_CRITERIA) eq 0}
                         {include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE MODULE=$MODULE CONDITION_INFO=array()}
                     {/if}

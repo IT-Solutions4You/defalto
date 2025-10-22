@@ -18,6 +18,8 @@
 
 class Settings_Vtiger_CustomRecordNumberingModule_Model extends Vtiger_Module_Model
 {
+    protected $focus;
+
     /**
      * Function to get focus of this object
      * @return <type>

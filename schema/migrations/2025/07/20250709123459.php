@@ -83,7 +83,7 @@ if (!class_exists('Migration_20250709123459')) {
             }
 
             require_once 'modules/com_vtiger_workflow/VTWorkflowManager.inc';
-            $workflowManager = new VTWorkflowManager($this->db);
+            $workflowManager = new VTWorkflowManager();
 
             foreach ($inventoryModules as $inventoryModuleName) {
                 $workflows = $workflowManager->getInventoryWorkflowsSupportingProductQtyUpdate($inventoryModuleName);

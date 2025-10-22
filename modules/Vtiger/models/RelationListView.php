@@ -21,6 +21,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model
     protected $relationModel = false;
     protected $parentRecordModel = false;
     protected $relatedModuleModel = false;
+    public $tab_label;
 
     public function setRelationModel($relation)
     {

@@ -18,6 +18,9 @@
 
 class ModTracker_Field_Model extends Vtiger_Record_Model
 {
+    public $parent;
+    public $fieldInstance;
+
     /**
      * Function to set parent to this model
      *

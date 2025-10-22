@@ -40,6 +40,7 @@ class VTEmailTask extends VTTask
     public $template;
     public $template_field;
     public $template_language;
+    public $methodName;
 
     /**
      * @param VTWorkflowEntity $entity
@@ -281,6 +282,7 @@ class VTEmailTask extends VTTask
 
             $taskContents['fromEmail'] = $fromEmail;
             $taskContents['fromName'] = $fromName;
+            $replyToEmail = '';
 
             if (!empty($this->replyTo)) {
                 $et = new VTEmailRecipientsTemplate($this->replyTo);
@@ -404,7 +406,7 @@ class VTEmailTask extends VTTask
 
     public function getFromEmailFields(array $values): array
     {
-        $selectedValues = explode(',', $this->fromEmail);
+        $selectedValues = explode(',', (string)$this->fromEmail);
 
         return $this->getEmailFields($values, $selectedValues);
     }
@@ -499,22 +501,22 @@ class VTEmailTask extends VTTask
 
     public function getRecipients()
     {
-        return is_array($this->recepient) ? $this->recepient : explode(',', $this->recepient);
+        return is_array($this->recepient) ? $this->recepient : explode(',', (string)$this->recepient);
     }
 
     public function getRecipientsBCC()
     {
-        return is_array($this->emailbcc) ? $this->emailbcc : explode(',', $this->emailbcc);
+        return is_array($this->emailbcc) ? $this->emailbcc : explode(',', (string)$this->emailbcc);
     }
 
     public function getRecipientsCC()
     {
-        return is_array($this->emailcc) ? $this->emailcc : explode(',', $this->emailcc);
+        return is_array($this->emailcc) ? $this->emailcc : explode(',', (string)$this->emailcc);
     }
 
     public function getReplyToEmailFields($values)
     {
-        $selectedValues = explode(',', $this->replyTo);
+        $selectedValues = explode(',', (string)$this->replyTo);
 
         return $this->getEmailFields($values, $selectedValues);
     }
@@ -574,14 +576,14 @@ class VTEmailTask extends VTTask
 
     public function isSelectedFromEmailField($value)
     {
-        $selectedValue = trim($this->fromEmail, ' ,');
+        $selectedValue = trim((string)$this->fromEmail, ' ,');
 
         return $value === $selectedValue;
     }
 
     public function isSelectedReplyToEmailField($value)
     {
-        $selectedValue = trim($this->replyTo, ' ,');
+        $selectedValue = trim((string)$this->replyTo, ' ,');
 
         return $value === $selectedValue;
     }

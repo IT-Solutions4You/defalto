@@ -18,7 +18,8 @@
 
 class Vtiger_DashBoard_Model extends Vtiger_Base_Model
 {
-    var $dashboardTabLimit = 10;
+    public $dashboardTabLimit = 10;
+    public $module;
 
     /**
      * Function to get Module instance
@@ -137,7 +138,7 @@ class Vtiger_DashBoard_Model extends Vtiger_Base_Model
         for ($i = 0, $len = $db->num_rows($result); $i < $len; $i++) {
             $row = $db->query_result_rowdata($result, $i);
             $data = json_decode(decode_html($row['data']), true);
-            $sourceModule = $data['module'];
+            $sourceModule = $data['module'] ?? null;
             if (!empty($sourceModule) && !vtlib_isModuleActive($sourceModule)) {
                 continue;
             }

@@ -21,6 +21,11 @@ require_once 'includes/runtime/Cache.php';
 
 class VTWorkflowEntity
 {
+    public $moduleName;
+    public $id;
+    public $user;
+    public $data;
+    
     function __construct($user, $id)
     {
         try {

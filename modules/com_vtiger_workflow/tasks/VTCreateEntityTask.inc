@@ -215,7 +215,7 @@ class VTCreateEntityTask extends VTTask
                 }
                 relateEntities($focus, $moduleName, $recordId, $entityType, $newEntity->id);
             } catch (DuplicateException $e) {
-                $workFlowManager = new VTWorkflowManager($adb);
+                $workFlowManager = new VTWorkflowManager();
                 $workFlow = $workFlowManager->retrieve($this->workflowId);
 
                 $mailBody = vtranslate(

@@ -52,7 +52,8 @@ class Settings_Webforms_Edit_View extends Settings_Vtiger_Index_View
             $recordModel = Settings_Webforms_Record_Model::getCleanInstance($qualifiedModuleName);
             $sourceModule = $request->get('sourceModule');
             if (!$sourceModule) {
-                $sourceModule = reset(array_keys($supportedModules));
+                $arrayKeys = array_keys($supportedModules);
+                $sourceModule = reset($arrayKeys);
             }
             $recordModel->set('targetmodule', $sourceModule);
         }

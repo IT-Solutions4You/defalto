@@ -9,7 +9,7 @@
 {strip}
     {if php7_count($DATA) gt 0 }
         <input class="widgetData" type=hidden value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($DATA))}' />
-        <input class="yAxisFieldType" type="hidden" value="{$YAXIS_FIELD_TYPE}" />
+        <input class="yAxisFieldType" type="hidden" value="{if isset($YAXIS_FIELD_TYPE)}{$YAXIS_FIELD_TYPE}{/if}" />
         <div class="chartContainer h-100 px-2">
             <canvas class="widgetChartContainer h-100 w-100 mx-auto" name="chartcontent"></canvas>
         </div>

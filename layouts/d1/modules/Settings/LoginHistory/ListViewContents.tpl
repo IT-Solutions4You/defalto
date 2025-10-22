@@ -62,7 +62,7 @@
                                     {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                         {assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
                                         {assign var=LAST_COLUMN value=$LISTVIEW_HEADER@last}
-                                    <td class="listViewEntryValue {$WIDTHTYPE}" width="{$WIDTH}%" nowrap style='cursor:text;'>
+                                    <td class="listViewEntryValue {$WIDTHTYPE}" {if isset($WIDTH)}width="{$WIDTH}%"{/if} nowrap style='cursor:text;'>
                                         {$LISTVIEW_ENTRY->getDisplayValue($LISTVIEW_HEADERNAME)}
                                         {if $LAST_COLUMN && $LISTVIEW_ENTRY->getRecordLinks()}
                                             </td>

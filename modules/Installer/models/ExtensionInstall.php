@@ -165,7 +165,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 
         $links = Vtiger_Link_Model::checkAndConvertLinks($links);
 
-        return $links['LISTVIEWSETTING'] ?: [];
+        return $links['LISTVIEWSETTING'] ?? [];
     }
 
     /**

@@ -25,6 +25,8 @@ class ModTracker_Record_Model extends Vtiger_Record_Model
     const LINK = 4;
     const UNLINK = 5;
 
+    public $parent;
+
     /**
      * Function to get the history of updates on a record
      *

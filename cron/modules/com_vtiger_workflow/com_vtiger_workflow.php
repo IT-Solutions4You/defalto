@@ -53,9 +53,9 @@ function vtRunTaskJob($adb)
 {
     $util = new VTWorkflowUtils();
     $adminUser = $util->adminUser();
-    $tq = new VTTaskQueue($adb);
+    $tq = new VTTaskQueue();
     $readyTasks = $tq->getReadyTasks();
-    $tm = new VTTaskManager($adb);
+    $tm = new VTTaskManager();
     
     foreach ($readyTasks as $taskDetails) {
         [$taskId, $entityId, $taskContents, $relatedInfo] = $taskDetails;

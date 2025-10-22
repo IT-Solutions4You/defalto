@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 
-<input type="hidden" name="email_function" id="email_function" value="{$EMAIL_FUNCTION}"/>
+<input type="hidden" name="email_function" id="email_function" value="{if isset($EMAIL_FUNCTION)}{$EMAIL_FUNCTION}{/if}"/>
 <li>
     <a href="javascript:;" class="dropdown-item PDFMakerDownloadPDF PDFMakerTemplateAction">{vtranslate('LBL_DOWNLOAD','PDFMaker')}</a>
 </li>
@@ -26,6 +26,9 @@
 {assign var=PDFMAKER_MODEL value=Vtiger_Module_Model::getInstance('PDFMaker')}
 {assign var=TEMPLATE_LANGUAGES value=$PDFMAKER_MODEL->GetAvailableLanguages()}
 {if php7_count($TEMPLATE_LANGUAGES)}
+    {if !isset($CURRENT_LANGUAGE)}
+        {assign var=CURRENT_LANGUAGE value=''}
+    {/if}
     <li class="dropdown-header">
         <i class="fa-solid fa-wrench"></i>
         <span class="ms-2">{vtranslate('LBL_PDF_LANGUAGE', 'PDFMaker')}</span>
