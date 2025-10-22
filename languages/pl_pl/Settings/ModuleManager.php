@@ -18,7 +18,7 @@
 
 $languageStrings = [
     'LBL_IMPORT_MODULE_FROM_FILE'  => 'Importuj moduł z pliku',
-    'LBL_VTIGER_EXTENSION_STORE'   => 'Oficjalny sklep z modułami od Vtiger',
+    'LBL_CRM_EXTENSION_STORE'   => 'Oficjalny sklep z modułami od CRM',
     'LBL_PUBLISHER'                => 'Opublikowane',
     'LBL_LICENSE'                  => 'Licencja',
     'LBL_PUBLISHED_ON'             => 'Opublikowany przez',
@@ -39,11 +39,11 @@ $languageStrings = [
     //Install From file labels
     'LBL_VERIFY_IMPORT_DETAILS'    => 'Weryfikacja szczegółów importu',
     'LBL_MODULE_NAME'              => 'Nazwa modułu',
-    'LBL_REQ_VTIGER_VERSION'       => 'Wersja systemu',
+    'LBL_REQ_CRM_VERSION'       => 'Wersja systemu',
     'LBL_LICENSE_ACCEPT_AGREEMENT' => 'Akceptuje warunki licencji.',
     'LBL_EXISTS'                   => 'Istnieje',
     'LBL_PROCEED_WITH_IMPORT'      => 'Czy chcesz kontynuować import?',
-    'LBL_VERSION_NOT_SUPPORTED'    => 'Wersja modułu nie jest kompatybilna z wersją systemu Vtiger.',
+    'LBL_VERSION_NOT_SUPPORTED'    => 'Wersja modułu nie jest kompatybilna z wersją systemu.',
     'LBL_FINISH'                   => 'Zakończ',
     'LBL_IMPORT_ZIP'               => 'Dodaj moduł z pliku',
     'LBL_IMPORT_MODULE'            => 'Dodaj moduł ze strony Vtiger',
@@ -57,7 +57,7 @@ $languageStrings = [
     'LBL__UPDATING_MODULE'         => 'Aktualizacja modułu',
 
     //Extension Store translations
-    'LBL_VTIGER_EXTENSION_STORE'   => 'Rozszerzenie Vtiger sklep',
+    'LBL_CRM_EXTENSION_STORE'   => 'Rozszerzenie CRM sklep',
     'LBL_SEARCH_FOR_EXTENSION'     => 'Szukaj Extension',
     'LBL_DOWNLOADS'                => 'Pliki do pobrania',
     'LBL_NO_EXTENSIONS_FOUND'      => 'Nie znaleziono Rozszerzenia',

@@ -25,7 +25,7 @@
 
 $languageStrings = [
     'LBL_IMPORT_MODULE'            => 'Importar Módulo',
-    'LBL_VTIGER_EXTENSION_STORE'   => 'Tienda de Vtiger Apps',
+    'LBL_CRM_EXTENSION_STORE'   => 'Tienda de CRM Apps',
     'LBL_PUBLISHER'                => 'Editor',
     'LBL_LICENSE'                  => 'Licencia',
     'LBL_PUBLISHED_ON'             => 'Publicado el',
@@ -36,7 +36,7 @@ $languageStrings = [
     'LBL_ACCEPT_AND_INSTALL'       => 'Aceptar e Instalar',
     'LBL_ALREADY_EXISTS'           => 'Ya Existe',
     'LBL_OK'                       => 'Vale',
-    'LBL_EXTENSION_NOT_COMPATABLE' => 'Extensión no es Compatible con Vtiger CRM',
+    'LBL_EXTENSION_NOT_COMPATABLE' => 'Extensión no es Compatible con CRM',
     'LBL_INVALID_FILE'             => 'Fichero Inválido',
     'LBL_NO_LICENSE_PROVIDED'      => 'No tiene Licencia',
     'LBL_INSTALLATION'             => 'Instalación',
@@ -46,11 +46,11 @@ $languageStrings = [
     //Install From file labels
     'LBL_VERIFY_IMPORT_DETAILS'    => 'Verificar Detalles Importación',
     'LBL_MODULE_NAME'              => 'Nombre Módulo',
-    'LBL_REQ_VTIGER_VERSION'       => 'Versión Vtiger',
+    'LBL_REQ_CRM_VERSION'       => 'Versión CRM',
     'LBL_LICENSE_ACCEPT_AGREEMENT' => 'Acepto el acuerdo de licencia.',
     'LBL_EXISTS'                   => 'Existe',
     'LBL_PROCEED_WITH_IMPORT'      => '¿Quieres seguir con la importación?',
-    'LBL_VERSION_NOT_SUPPORTED'    => 'La versión del módulo no es compatible con la versión de vtiger crm',
+    'LBL_VERSION_NOT_SUPPORTED'    => 'La versión del módulo no es compatible con la versión de crm',
     'LBL_FINISH'                   => 'Finalizar',
     'LBL_IMPORT_ZIP'               => 'Instalar desde fichero',
     'LBL_IMPORT_MODULE'            => 'Instalar desde Vtiger',
@@ -64,7 +64,7 @@ $languageStrings = [
     'LBL__UPDATING_MODULE'         => 'Actualizando Módulo',
 
     //Extension Store translations
-    'LBL_VTIGER_EXTENSION_STORE'   => 'Vtiger tienda Extensión',
+    'LBL_CRM_EXTENSION_STORE'   => 'CRM tienda Extensión',
     'LBL_SEARCH_FOR_EXTENSION'     => 'Búsqueda de Extensión',
     'LBL_DOWNLOADS'                => 'Descargas',
     'LBL_NO_EXTENSIONS_FOUND'      => 'No hay extensiones encontrados',

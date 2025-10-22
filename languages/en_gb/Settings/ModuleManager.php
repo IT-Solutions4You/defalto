@@ -18,7 +18,7 @@
 
 $languageStrings = [
     'LBL_IMPORT_MODULE'              => 'Import Module',
-    'LBL_VTIGER_EXTENSION_STORE'     => 'vtiger CRM Extension Store',
+    'LBL_CRM_EXTENSION_STORE'     => 'CRM Extension Store',
     'LBL_PUBLISHER'                  => 'Publisher',
     'LBL_LICENSE'                    => 'License',
     'LBL_PUBLISHED_ON'               => 'Published on',
@@ -29,7 +29,7 @@ $languageStrings = [
     'LBL_ACCEPT_AND_INSTALL'         => 'Accept and Install',
     'LBL_ALREADY_EXISTS'             => 'Already Exists',
     'LBL_OK'                         => 'OK',
-    'LBL_EXTENSION_NOT_COMPATABLE'   => 'Extension is not vtiger CRM compatible',
+    'LBL_EXTENSION_NOT_COMPATABLE'   => 'Extension is not compatible',
     'LBL_INVALID_FILE'               => 'Invalid File',
     'LBL_NO_LICENSE_PROVIDED'        => 'No License Provided',
     'LBL_INSTALLATION'               => 'Installation',
@@ -38,7 +38,7 @@ $languageStrings = [
     'LBL_INSTALLATION_LOG'           => 'Installation Log',
 
     //Extension Store translations
-    'LBL_VTIGER_EXTENSION_STORE'     => 'Vtiger Extension Store',
+    'LBL_CRM_EXTENSION_STORE'     => 'CRM Extension Store',
     'LBL_SEARCH_FOR_EXTENSION'       => 'Search for Extension',
     'LBL_DOWNLOADS'                  => 'Downloads',
     'LBL_NO_EXTENSIONS_FOUND'        => 'No Extensions Found',
@@ -76,11 +76,11 @@ $languageStrings = [
     //Install From file labels
     'LBL_VERIFY_IMPORT_DETAILS'      => 'Verify Import Details',
     'LBL_MODULE_NAME'                => 'Module Name',
-    'LBL_REQ_VTIGER_VERSION'         => 'Vtiger Version',
+    'LBL_REQ_CRM_VERSION'         => 'CRM Version',
     'LBL_LICENSE_ACCEPT_AGREEMENT'   => 'I accept the license agreement.',
     'LBL_EXISTS'                     => 'Exists',
     'LBL_PROCEED_WITH_IMPORT'        => 'Do you want to proceed with the import?',
-    'LBL_VERSION_NOT_SUPPORTED'      => 'Module version is not compatible with vtiger version',
+    'LBL_VERSION_NOT_SUPPORTED'      => 'Module version is not compatible with CRM version',
     'LBL_FINISH'                     => 'Finish',
     'LBL_IMPORT_ZIP'                 => 'Install from file',
     'LBL_IMPORT_MODULE'              => 'Install from Vtiger',

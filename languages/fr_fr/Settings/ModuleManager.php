@@ -18,7 +18,7 @@
 
 $languageStrings = [
     'LBL_IMPORT_MODULE'            => 'Import Module',
-    'LBL_VTIGER_EXTENSION_STORE'   => 'Vtiger Extension Store',
+    'LBL_CRM_EXTENSION_STORE'   => 'Vtiger Extension CRM',
     'LBL_PUBLISHER'                => 'Publisher',
     'LBL_LICENSE'                  => 'License',
     'LBL_PUBLISHED_ON'             => 'Published on',
@@ -29,7 +29,7 @@ $languageStrings = [
     'LBL_ACCEPT_AND_INSTALL'       => 'Accept and Install',
     'LBL_ALREADY_EXISTS'           => 'Already Exists',
     'LBL_OK'                       => 'OK',
-    'LBL_EXTENSION_NOT_COMPATABLE' => 'Extension is not Vtiger Compatable',
+    'LBL_EXTENSION_NOT_COMPATABLE' => 'Extension is not compatible',
     'LBL_INVALID_FILE'             => 'Invalid File',
     'LBL_NO_LICENSE_PROVIDED'      => 'No License Provided',
     'LBL_INSTALLATION'             => 'Installation',
@@ -38,7 +38,7 @@ $languageStrings = [
     'LBL_INSTALLATION_LOG'         => 'Installation Log',
 
     //Extension Store translations
-    'LBL_VTIGER_EXTENSION_STORE'   => 'Vtiger Extension magasin',
+    'LBL_CRM_EXTENSION_STORE'   => 'CRM Extension magasin',
     'LBL_SEARCH_FOR_EXTENSION'     => 'Recherche pour Extension',
     'LBL_DOWNLOADS'                => 'Téléchargements',
     'LBL_NO_EXTENSIONS_FOUND'      => 'Pas Extensions trouvés',

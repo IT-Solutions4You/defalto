@@ -11,7 +11,7 @@
 $languageStrings = [
     'ModuleManager'                            => 'Správce modulů',
     'LBL_IMPORT_MODULE'                        => 'Instalovat z Vtiger App Store',
-    'LBL_VTIGER_EXTENSION_STORE'               => 'Vtiger App Store',
+    'LBL_CRM_EXTENSION_STORE'               => 'CRM App Store',
     'LBL_PUBLISHER'                            => 'Výrobce',
     'LBL_LICENSE'                              => 'Licence',
     'LBL_PUBLISHED_ON'                         => 'Vydáno',
@@ -31,7 +31,7 @@ $languageStrings = [
     'LBL_INSTALLATION_LOG'                     => 'Log instalace',
     'LBL_VERIFY_IMPORT_DETAILS'                => 'Ověřit detaily importu',
     'LBL_MODULE_NAME'                          => 'Název modulu',
-    'LBL_REQ_VTIGER_VERSION'                   => 'Verze vtiger CRM',
+    'LBL_REQ_CRM_VERSION'                   => 'Verze CRM',
     'LBL_LICENSE_ACCEPT_AGREEMENT'             => 'Přijímám licenční ujednání.',
     'LBL_EXISTS'                               => 'Existuje',
     'LBL_PROCEED_WITH_IMPORT'                  => 'Chcete pokračovat v nahrávání modulu?',

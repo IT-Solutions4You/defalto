@@ -21,7 +21,7 @@
 
 $languageStrings = [
     'LBL_IMPORT_MODULE'                  => 'Importar módulo',
-    'LBL_VTIGER_EXTENSION_STORE'         => 'Tienda de extensiones Vtiger',
+    'LBL_CRM_EXTENSION_STORE'         => 'Tienda de extensiones CRM',
     'LBL_PUBLISHER'                      => 'Editor',
     'LBL_LICENSE'                        => 'Licencia',
     'LBL_PUBLISHED_ON'                   => 'Publicado en',
@@ -56,7 +56,7 @@ $languageStrings = [
     'LBL_VERIFY_IMPORT_DETAILS'          => 'Verifica los detalles de la importación',
 
     //Extension Store translations
-    'LBL_VTIGER_EXTENSION_STORE'         => 'Tienda de extensiones Vtiger',
+    'LBL_CRM_EXTENSION_STORE'         => 'Tienda de extensiones CRM',
     'LBL_SEARCH_FOR_EXTENSION'           => 'Buscar extensión',
     'LBL_DOWNLOADS'                      => 'Descargas',
     'LBL_NO_EXTENSIONS_FOUND'            => 'No se encontraron extensiones',
