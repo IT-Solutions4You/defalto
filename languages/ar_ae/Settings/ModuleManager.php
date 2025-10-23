@@ -19,7 +19,7 @@
 
 $languageStrings = [
     'LBL_IMPORT_MODULE'            => 'Import Module',
-    'LBL_VTIGER_EXTENSION_STORE'   => 'Vtiger Extension Store',
+    'LBL_CRM_EXTENSION_STORE'   => 'CRM Extension Store',
     'LBL_PUBLISHER'                => 'Publisher',
     'LBL_LICENSE'                  => 'License',
     'LBL_PUBLISHED_ON'             => 'Published on',
@@ -30,7 +30,7 @@ $languageStrings = [
     'LBL_ACCEPT_AND_INSTALL'       => 'Accept and Install',
     'LBL_ALREADY_EXISTS'           => 'Already Exists',
     'LBL_OK'                       => 'OK',
-    'LBL_EXTENSION_NOT_COMPATABLE' => 'Extension is not Vtiger Compatable',
+    'LBL_EXTENSION_NOT_COMPATABLE' => 'Extension is not Compatible',
     'LBL_INVALID_FILE'             => 'Invalid File',
     'LBL_NO_LICENSE_PROVIDED'      => 'No License Provided',
     'LBL_INSTALLATION'             => 'Installation',
@@ -39,7 +39,7 @@ $languageStrings = [
     'LBL_INSTALLATION_LOG'         => 'Installation Log',
 
     //Extension Store translations
-    'LBL_VTIGER_EXTENSION_STORE'   => 'vtiger إدارة الإرشاد المتجر',
+    'LBL_CRM_EXTENSION_STORE'   => 'CRM إدارة الإرشاد المتجر',
     'LBL_SEARCH_FOR_EXTENSION'     => 'البحث عن التمديد',
     'LBL_DOWNLOADS'                => 'التنزيلات',
     'LBL_NO_EXTENSIONS_FOUND'      => 'لم يتم العثور ملحقات  ',

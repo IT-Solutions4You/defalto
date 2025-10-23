@@ -683,5 +683,6 @@ class Accounts_Install_Model extends Core_Install_Model
         ];
 
         CustomView_Record_Model::updateColumnNames($moduleName, $fields);
+        Core_Install_Model::logSuccess('Update column names');
     }
 }

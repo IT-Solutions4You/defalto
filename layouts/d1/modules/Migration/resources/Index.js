@@ -8,7 +8,7 @@
  */
 
 Vtiger.Class('Migration_Index_Js', {
-    startMigrationEvent: function () {
+    startDatabaseMigration: function () {
         let params = {
             module: 'Migration',
             view: 'Index',
@@ -16,30 +16,35 @@ Vtiger.Class('Migration_Index_Js', {
         };
 
         app.request.post({data: params}).then(function (err, data) {
-            jQuery('#running').addClass('hide').removeClass('show');
-            jQuery('#success').addClass('show').removeClass('hide');
             jQuery('#nextButton').addClass('show').removeClass('hide');
             jQuery('#showDetails').addClass('show').removeClass('hide').html(data);
         });
     },
-
-    registerEvents: function () {
-        this.startMigrationEvent();
-        this.registerMigrateData();
+    isRecordsMigration: function () {
+        return $('.recordsChanges').length
     },
-    registerMigrateData() {
-        $('main').on('click', '.migrateData', function () {
-            let params = {
-                module: 'Migration',
-                view: 'Index',
-                mode: 'migrateData',
-            };
+    isDatabaseMigration: function () {
+        return $('.databaseChanges').length;
+    },
+    registerEvents: function () {
+        if (this.isDatabaseMigration()) {
+            this.startDatabaseMigration();
+        }
 
-            app.request.post({data: params}).then(function (err, data) {
-                jQuery('#running').addClass('hide').removeClass('show');
-                jQuery('#success').addClass('show').removeClass('hide');
-                jQuery('#showDetails').addClass('show').removeClass('hide').html(data);
-            });
+        if (this.isRecordsMigration()) {
+            this.startRecordsMigration()
+        }
+    },
+    startRecordsMigration() {
+        let params = {
+            module: 'Migration',
+            view: 'Index',
+            mode: 'migrateData',
+        };
+
+        app.request.post({data: params}).then(function (err, data) {
+            jQuery('#nextButton').addClass('show').removeClass('hide');
+            jQuery('#showDetails').addClass('show').removeClass('hide').html(data);
         });
-    }
+    },
 });

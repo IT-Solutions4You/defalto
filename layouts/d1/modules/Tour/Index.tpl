@@ -28,7 +28,7 @@
                             <p class="m-0">{vtranslate('LBL_VISIT_CRM_DESC', $QUALIFIED_MODULE)}</p>
                         </div>
                     </a>
-                    <a class="row align-items-center py-3" href="https://defalto.com/docs/user-guide/" target="_blank">
+                    <a class="row align-items-center py-3" href="index.php?module=Core&view=Redirect&mode=Documentation" target="_blank">
                         <div class="col-lg-2 fs-1 text-center text-primary">
                             <i class="fa-solid fa-book"></i>
                         </div>
@@ -37,7 +37,7 @@
                             <p class="m-0">{vtranslate('LBL_DOCS_DESC', $QUALIFIED_MODULE)}</p>
                         </div>
                     </a>
-                    <a class="row align-items-center py-3" href="https://github.com/IT-Solutions4You/defalto/issues" target="_blank">
+                    <a class="row align-items-center py-3" href="index.php?module=Core&view=Redirect&mode=Releases" target="_blank">
                         <div class="col-lg-2 fs-1 text-center text-primary">
                             <i class="fa-solid fa-comment"></i>
                         </div>

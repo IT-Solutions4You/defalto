@@ -52,7 +52,6 @@ $languageStrings = [
     'LBL_EDIT_ALL_DESC'             => 'Pode editar informações de todos os Módulos',
     'LBL_DUPLICATES_EXIST'          => 'Existe Perfil Duplicado',
 
-    /*Vtiger7 Strings*/
     'LBL_EDIT_PROFILE'              => 'Editar Perfil',
     'LBL_GLOBAL_PERMISSION_WARNING' => 'Aviso : Usuários associados com este Perfil pode acessar todos os registros no CRM',
 ];

@@ -23,6 +23,7 @@ class Migration_Index_View extends Vtiger_View_Controller
         parent::__construct();
         $this->exposeMethod('step1');
         $this->exposeMethod('step2');
+        $this->exposeMethod('step3');
         $this->exposeMethod('applyDBChanges');
         $this->exposeMethod('migrateData');
     }
@@ -73,6 +74,15 @@ class Migration_Index_View extends Vtiger_View_Controller
 
         $viewer->assign('MODULE', $moduleName);
         $viewer->view('MigrationStep2.tpl', $moduleName);
+    }
+
+    protected function step3(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $viewer = $this->getViewer($request);
+
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->view('MigrationStep3.tpl', $moduleName);
     }
 
     public function preProcess(Vtiger_Request $request, $display = true)

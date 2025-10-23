@@ -75,17 +75,17 @@ $languageStrings = [
     'created'                          => 'created',
     'replied'                          => 'replied',
     'reply'                            => 'There is a reply to',
-    'customer_portal'                  => 'in the "Customer Portal" at VTiger.',
+    'customer_portal'                  => 'in the "Customer Portal" at CRM System.',
     'link'                             => 'You can use the following link to view the replies made:',
     'Thanks'                           => 'Thanks',
-    'Support_team'                     => 'Vtiger Support Team',
+    'Support_team'                     => 'Support Team',
     'The comments are'                 => 'The comments are',
     'Ticket Title'                     => 'Ticket Title',
     'Re'                               => 'Re :',
 
     //This label for customerportal.
     'LBL_STATUS_CLOSED'                => 'Closed',
-    //Do not convert this label. This is used to check the status. If the status 'Closed' is changed in vtigerCRM server side then you have to change in customerportal language file also.
+    //Do not convert this label. This is used to check the status. If the status 'Closed' is changed in system server side then you have to change in customerportal language file also.
     'LBL_STATUS_UPDATE'                => 'Ticket status is updated as',
     'LBL_COULDNOT_CLOSED'              => 'Ticket could not be',
     'LBL_CUSTOMER_COMMENTS'            => 'Customer has provided the following additional information to your reply:',

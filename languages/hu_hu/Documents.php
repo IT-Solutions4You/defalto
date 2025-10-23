@@ -71,7 +71,7 @@ $languageStrings = [
 
     'LBL_UPLOAD_TO'                 => 'Feltöltés',
     'LBL_NEW_DOCUMENT'              => 'Új Dokumentum',
-    'LBL_CRM'                    => 'Vtiger',
+    'LBL_CRM'                    => 'Defalto',
     'LBL_CREATE_YOUR_OWN'           => 'Hozzon létre saját',
     'LBL_SHARE_DOCUMENT'            => 'Megosztás Dokumentum',
     'LBL_UPLOAD_TO_VTIGER'          => 'Dokumentum feltöltése a Vtiger',

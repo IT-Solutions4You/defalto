@@ -40,7 +40,7 @@
 							</h4>
 							<div>
 								<p>
-									<small>{vtranslate('LBL_REQ_VTIGER_VERSION', $QUALIFIED_MODULE)} : {$MODULEIMPORT_DEP_VTVERSION}</small>
+									<small>{vtranslate('LBL_REQ_CRM_VERSION', $QUALIFIED_MODULE)} : {$MODULEIMPORT_DEP_VTVERSION}</small>
 								</p>
 							</div>
 							<div>

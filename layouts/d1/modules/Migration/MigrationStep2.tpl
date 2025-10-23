@@ -8,28 +8,28 @@
  *}
 
 {strip}
-	<div class="main-container container h-main px-4 py-3">
-		<div class="inner-container">
-			<form action="index.php" method="post" class="bg-body rounded">
-				{include file='StepHeader.tpl'|@vtemplate_path:$MODULE TITLE='LBL_MIGRATION_COMPLETED_SUCCESSFULLY'}
-				<div class="container-fluid py-3">
-					<div class="row">
-						<div class="col">
-							<p>{vtranslate('LBL_RELEASE_NOTES', $MODULE)}</p>
-							<p>{vtranslate('LBL_CRM_DOCUMENTATION', $MODULE)}</p>
-							<p>
-								<span class="me-2">Connect with us</span>
-								<a href="https://www.facebook.com/defalto.crm" target="_blank">
-									<i class="bi bi-facebook"></i>
-								</a>
-							</p>
-						</div>
-					</div>
-				</div>
-				<div class="button-container p-3 text-end">
-					<button type="button" onclick="window.location.href='index.php'" class="btn btn-primary active">{vtranslate('Finish', $MODULE)}</button>
-				</div>
-			</form>
-		</div>
-	</div>
+    <div class="main-container container h-main px-4 py-3">
+        <div class="inner-container">
+            <form action='index.php' method="POST" class="bg-body rounded">
+                {include file='StepHeader.tpl'|@vtemplate_path:$MODULE}
+                <div class="p-3">
+                    <div id="success">
+                        <h4>{vtranslate('LBL_RECORDS_CHANGE_LOG',$MODULE)}</h4>
+                    </div>
+                    <div id="showDetails" class="recordsChanges overflow-auto border rounded my-3 h-50vh">
+                        <div id="running" class="text-center py-5">
+                            <h4>{vtranslate('LBL_WAIT',$MODULE)}</h4>
+                            <div class="spinner-border text-primary my-3" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5>{vtranslate('LBL_INPROGRESS',$MODULE)}</h5>
+                        </div>
+                    </div>
+                    <div id="nextButton" class="button-container text-end hide">
+                        <a href="index.php?module={$MODULE}&view=Index&mode=step3" class="btn btn-primary active">{vtranslate('Next', $MODULE)}</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 {/strip}

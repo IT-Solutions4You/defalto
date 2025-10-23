@@ -11,7 +11,7 @@
 $languageStrings = [
     'ModuleManager' => 'Správca modulov',
     'LBL_IMPORT_MODULE' => 'Inštalácia z App Store',
-    'LBL_VTIGER_EXTENSION_STORE' => 'App Store',
+    'LBL_CRM_EXTENSION_STORE' => 'App Store',
     'LBL_PUBLISHER' => 'Výrobca',
     'LBL_LICENSE' => 'Licencia',
     'LBL_PUBLISHED_ON' => 'Publikované dňa',
@@ -31,7 +31,7 @@ $languageStrings = [
     'LBL_INSTALLATION_LOG' => 'Inštalačný log',
     'LBL_VERIFY_IMPORT_DETAILS' => 'Overte importované dáta',
     'LBL_MODULE_NAME' => 'Názov modulu',
-    'LBL_REQ_VTIGER_VERSION' => 'Verzia CRM',
+    'LBL_REQ_CRM_VERSION' => 'Verzia CRM',
     'LBL_LICENSE_ACCEPT_AGREEMENT' => 'Súhlasím s licenčnými podmienkami',
     'LBL_EXISTS' => 'Existuje',
     'LBL_PROCEED_WITH_IMPORT' => 'Chcete pokračovať v importe?',

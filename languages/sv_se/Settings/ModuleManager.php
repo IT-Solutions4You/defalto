@@ -18,7 +18,7 @@
 
 $languageStrings = [
     'LBL_IMPORT_MODULE'            => 'Importera Modul',
-    'LBL_VTIGER_EXTENSION_STORE'   => 'Vtiger Extension Store',
+    'LBL_CRM_EXTENSION_STORE'   => 'CRM Extension Store',
     'LBL_PUBLISHER'                => 'Utgivare',
     'LBL_LICENSE'                  => 'Licens',
     'LBL_PUBLISHED_ON'             => 'Publicerad den',
@@ -29,7 +29,7 @@ $languageStrings = [
     'LBL_ACCEPT_AND_INSTALL'       => 'Acceptera och Installera',
     'LBL_ALREADY_EXISTS'           => 'Finns redan',
     'LBL_OK'                       => 'OK',
-    'LBL_EXTENSION_NOT_COMPATABLE' => 'Tillägget är vtiger inte kompatibel',
+    'LBL_EXTENSION_NOT_COMPATABLE' => 'Tillägget är inte kompatibel',
     'LBL_INVALID_FILE'             => 'Ogiltig fil',
     'LBL_NO_LICENSE_PROVIDED'      => 'Ingen licens Tillhandahållen',
     'LBL_INSTALLATION'             => 'Installation',
@@ -38,7 +38,7 @@ $languageStrings = [
     'LBL_INSTALLATION_LOG'         => 'Installations Logg',
 
     //Extension Store translations
-    'LBL_VTIGER_EXTENSION_STORE'   => 'Vtiger Extension Store',
+    'LBL_CRM_EXTENSION_STORE'   => 'CRM Extension Store',
     'LBL_SEARCH_FOR_EXTENSION'     => 'Sök efter Extension',
     'LBL_DOWNLOADS'                => 'Överför',
     'LBL_NO_EXTENSIONS_FOUND'      => 'Inga Extensions funna',

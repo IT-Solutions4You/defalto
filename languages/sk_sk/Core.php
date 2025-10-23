@@ -1438,6 +1438,8 @@ $languageStrings = [
     'Dollar ($)' => 'Dolár ($)',
     'Space ( )' => 'Medzera ( )',
     'LBL_UNIQUE' => 'Unikátne',
+    'Next' => 'Ďalej',
+    'Finish' => 'Dokončiť',
 ];
 $jsLanguageStrings = [
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastaveniach systému nakonfigurujte server odchádzajúcej pošty',

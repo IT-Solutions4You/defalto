@@ -17,13 +17,13 @@
  */
 
 $languageStrings = [
-    'LBL_VTIGER_MIGRATION'                 => 'Bienvenue à la migration Vtiger',
+    'LBL_CRM_MIGRATION'                 => 'Bienvenue à la migration Vtiger',
     'LBL_MIGRATION_COMPLETED'              => 'Migration Terminé',
     'LBL_MIGRATION_WIZARD'                 => 'Assistant Migration',
     'LBL_PRIDE_BEING_ASSOCIATED'           => 'Nous sommes fiers dêtre associés avec vous.',
-    'LBL_TALK_TO_US_AT_FORUMS'             => 'Vous avez des questions? Trouver de laide sur Vtiger <a href="https://github.com/IT-Solutions4You/defalto/releases" target="_blank"> Discussions </a><br>',
-    'LBL_DISCUSS_WITH_US_AT_BLOGS'         => 'Pour en savoir plus sur Vtiger nous suivre notre <a href="https://github.com/IT-Solutions4You/defalto/issues" target="_blank">Blog</a>',
-    'LBL_CRM_DOCUMENTATION'                => 'Aide Defalto - <a href="https://defalto.com/docs/user-guide/" target="_blank">Documentaion</a> , <a href="https://www.youtube.com/@itsolutions4you" target="_blank">Vidéos</a> <BR>',
+    'LBL_TALK_TO_US_AT_FORUMS'             => 'Vous avez des questions? Trouver de laide sur Vtiger <a href="index.php?module=Core&view=Redirect&mode=Forum" target="_blank"> Discussions </a><br>',
+    'LBL_DISCUSS_WITH_US_AT_BLOGS'         => 'Pour en savoir plus sur Vtiger nous suivre notre <a href="index.php?module=Core&view=Redirect&mode=Blog" target="_blank">Blog</a>',
+    'LBL_CRM_DOCUMENTATION'                => 'Aide Defalto - <a href="index.php?module=Core&view=Redirect&mode=Documentation" target="_blank">Documentaion</a> , <a href="index.php?module=Core&view=Redirect&mode=Videos" target="_blank">Vidéos</a> <BR>',
     'LBL_THANKS'                           => 'Merci pour laide<b>vtiger CRM</b>',
     'LBL_WE_AIM_TO_BE_BEST'                => 'Nous visons à être - tout simplement le meilleur',
     'LBL_SPACE_FOR_YOU'                    => 'Allons plus, il ya un espace pour vous aussi!',

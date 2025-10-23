@@ -13,12 +13,12 @@ $languageStrings = [
     'SINGLE_ITS4YouEmails'            => 'Emails',
     'LBL_MODULE_NAME'                 => 'Emails',
     'LBL_UNINSTALL'                   => 'Uninstall',
-    'LBL_UNINSTALL_DESC'              => 'Remove Module completely from your vTiger.',
+    'LBL_UNINSTALL_DESC'              => 'Remove Module completely from your system.',
     'LBL_MODULE'                      => 'Module',
     'LBL_LICENSE_SETTINGS_INFO'       => 'Manage your Module License Key',
     'LBL_LICENSE'                     => 'License settings',
     'LBL_LICENSE_DESC'                => 'Manage all settings related to your license',
-    'LBL_URL'                         => 'Your vtiger url',
+    'LBL_URL'                         => 'Your system url',
     'LBL_LICENSE_ACTIVE'              => 'Extension is active',
     'LBL_LICENSE_INACTIVE'            => 'Extension is not active',
     'LBL_INSTALLER_NOT_ACTIVE'        => 'Install or Activate ITS4YouInstaller module to manage your licenses.',
@@ -44,7 +44,6 @@ $languageStrings = [
     'LBL_EMAILS_SENT'                 => 'Email has been sent.',
     'LBL_FROM_EMAIL'                  => 'From Email',
     'LBL_SMTP'                        => 'SMTP',
-    'LBL_VTIGER_EMAILS'               => 'Vtiger Emails',
     'LBL_INSTALL_PHPMAILER'           => 'Download PHPMailer zip file from: <pre>https://www.its4you.sk/images/extensions/ITS4YouEmails/src/PHPMailer.zip</pre> Extract zip file to folder: <pre>modules/ITS4YouLibrary/</pre>',
     'LBL_EMAILS_SENT_RESULT'          => 'Emails result',
     'From Email'                      => 'From Email',
@@ -101,5 +100,5 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
-    'JS_UNINSTALL_CONFIRM' => 'Are you sure to completely remove module from your vTiger?',
+    'JS_UNINSTALL_CONFIRM' => 'Are you sure to completely remove module from your system?',
 ];
