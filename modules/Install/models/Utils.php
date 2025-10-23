@@ -749,16 +749,17 @@ class Install_Utils_Model
             $class = $moduleName . '_Install_Model';
 
             if ('Core' !== $moduleName && class_exists($class) && method_exists($class, 'migrate')) {
-                Core_Install_Model::logSuccess('Migrating Module [' . $moduleName . '] -- Starts');
+                Core_Install_Model::logSuccess('Module: ' . $moduleName);
+                Core_Install_Model::logSuccess('Migrating Module Starts');
 
                 try {
                     $install = $class::getInstance('module.postupdate', $moduleName);
                     $install->migrate();   
                 } catch (Exception $e) {
-                    Core_Install_Model::logError($e->getMessage());
+                    Core_Install_Model::logInfo($e->getMessage());
                 }
 
-                Core_Install_Model::logSuccess('Migrating Module [' . $moduleName . '] -- Ends');
+                Core_Install_Model::logSuccess('Migrating Module Ends');
             }
         }
     }
