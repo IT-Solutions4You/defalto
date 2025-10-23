@@ -34,4 +34,5 @@ $languageStrings = [
     'LBL_DATABASE_CHANGE_LOG'              => 'Migration : Database Changes Log',
     'LBL_INSTALLATION_WIZARD'              => 'Migration wizard',
     'LBL_WELCOME'                          => 'Welcome',
+    'LBL_RECORDS_CHANGE_LOG'               => 'Migration : Records Changes Log',
 ];
