@@ -90,7 +90,7 @@ class Accounts_DetailView_Model extends Vtiger_DetailView_Model
                 $moduleModel = Vtiger_Module_Model::getInstance($createLinkModule);
 
                 if ($moduleModel->isPermitted('EditView')) {
-                    $field = $this->createLinkFieldsMap[$createLinkModule] ?: 'account_id';
+                    $field = $this->createLinkFieldsMap[$createLinkModule] ?? 'account_id';
                     $links[] = [
                         'linktype' => Vtiger_DetailView_Model::LINK_MORE,
                         'linklabel' => vtranslate('LBL_ADD_' . strtoupper($createLinkModule), $createLinkModule),

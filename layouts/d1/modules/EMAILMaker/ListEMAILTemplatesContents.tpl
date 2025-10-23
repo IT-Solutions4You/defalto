@@ -51,7 +51,7 @@
 
         <div id="table-content" class="table-container overflow-auto pt-3">
             <form name="list" id="listedit" action="" onsubmit="return false;">
-                <table id="listview-table" class="table table-borderless listview-table {if $LISTVIEW_ENTRIES_COUNT eq '0'}listview-table-norecords{/if}">
+                <table id="listview-table" class="table table-borderless listview-table {if isset($LISTVIEW_ENTRIES_COUNT) && $LISTVIEW_ENTRIES_COUNT eq '0'}listview-table-norecords{/if}">
                     <thead>
                     <tr class="listViewContentHeader bg-body-secondary text-secondary">
                         <th class="text-secondary ps-3">
@@ -110,31 +110,37 @@
                             </div>
                         </th>
                         <th>
-                            <input type="text" class="listSearchContributor inputElement form-control" data-field-type="string" name="templatename" data-fieldinfo='{ldelim}"column":"templatename","type":"string","name":"templatename","label":"{vtranslate("LBL_EMAIL_NAME",$MODULE)}"{rdelim}' value="{$SEARCH_TEMPLATENAMEVAL}">
+                            <input type="text" class="listSearchContributor inputElement form-control" data-field-type="string" name="templatename" data-fieldinfo='{ldelim}"column":"templatename","type":"string","name":"templatename","label":"{vtranslate("LBL_EMAIL_NAME",$MODULE)}"{rdelim}' value="{if isset($SEARCH_TEMPLATENAMEVAL)}{$SEARCH_TEMPLATENAMEVAL}{/if}">
                         </th>
                         <th>
                             <div class="select2_search_div">
                                 <input type="text" class="listSearchContributor inputElement select2_input_element"/>
                                 <select class="select2 listSearchContributor" name="formodule" data-fieldinfo='{ldelim}"column":"formodule","type":"picklist","name":"formodule","label":"{vtranslate("LBL_MODULENAMES",$MODULE)}"{rdelim}' style="display: none">
                                     <option value=""></option>
+                                    {if !isset($SEARCH_FORMODULEVAL)}
+                                        {assign var=SEARCH_FORMODULEVAL value=""}
+                                    {/if}
                                     {html_options  options=$SEARCHSELECTBOXDATA.modules selected=$SEARCH_FORMODULEVAL}
                                 </select>
                             </div>
                         </th>
                         <th>
                             <div>
-                                <input type="text" class="listSearchContributor inputElement form-control" name="category" data-fieldinfo='' value="{$SEARCH_CATEGORYVAL}">
+                                <input type="text" class="listSearchContributor inputElement form-control" name="category" data-fieldinfo='' value="{if isset($SEARCH_CATEGORYVAL)}{$SEARCH_CATEGORYVAL}{/if}">
                             </div>
                         </th>
                         <th>
                             <div>
-                                <input type="text" class="listSearchContributor inputElement form-control" name="description" data-fieldinfo='' value="{$SEARCH_DESCRIPTIONVAL}">
+                                <input type="text" class="listSearchContributor inputElement form-control" name="description" data-fieldinfo='' value="{if isset($SEARCH_DESCRIPTIONVAL)}{$SEARCH_DESCRIPTIONVAL}{/if}">
                             </div>
                         </th>
                         <th>
                             <div class="select2_search_div">
                                 <input type="text" class="listSearchContributor inputElement select2_input_element"/>
                                 <select class="select2 listSearchContributor" name="sharingtype" data-fieldinfo='{ldelim}"column":"sharingtype","type":"picklist","name":"sharingtype","label":"{vtranslate("LBL_SHARING_TAB",$MODULE)}"{rdelim}' style="display: none">
+                                    {if !isset($SEARCH_SHARINGTYPEVAL)}
+                                        {assign var=SEARCH_SHARINGTYPEVAL value=""}
+                                    {/if}
                                     {html_options  options=$SHARINGTYPES selected=$SEARCH_SHARINGTYPEVAL}
                                 </select>
                             </div>
@@ -144,6 +150,9 @@
                                 <input type="text" class="listSearchContributor inputElement select2_input_element"/>
                                 <select class="select2 listSearchContributor" name="owner" data-fieldinfo='{ldelim}"column":"owner","type":"owner","name":"owner","label":"{vtranslate("LBL_TEMPLATE_OWNER",$MODULE)}"{rdelim}' style="display: none">
                                     <option value=""></option>
+                                    {if !isset($SEARCH_OWNERVAL)}
+                                        {assign var=SEARCH_OWNERVAL value=""}
+                                    {/if}
                                     {html_options  options=$SEARCHSELECTBOXDATA.owners selected=$SEARCH_OWNERVAL}
                                 </select>
                             </div>
@@ -153,6 +162,9 @@
                                 <input type="text" class="listSearchContributor inputElement select2_input_element"/>
                                 <select class="select2 listSearchContributor" name="status" data-fieldinfo='{ldelim}"column":"status","type":"picklist","name":"status","label":"{vtranslate("Status",$MODULE)}"{rdelim}' style="display: none">
                                     <option value=""></option>
+                                    {if !isset($SEARCH_STATUSVAL)}
+                                        {assign var=SEARCH_STATUSVAL value=""}
+                                    {/if}
                                     {html_options  options=$STATUSOPTIONS selected=$SEARCH_STATUSVAL}
                                 </select>
                             </div>

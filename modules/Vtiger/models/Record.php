@@ -23,6 +23,7 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
 {
     protected $module = false;
     public $entity;
+    protected $rawData;
 
     /**
      * Function to get the id of the record

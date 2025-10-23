@@ -71,6 +71,9 @@
                                 <input type="hidden" class="activityModule" value="{$ACTIVITIES_MODULE_NAME}"/>
                                 <input type="hidden" class="activityType" value="{$ACTIVITY_RECORD->get('calendar_type')}"/>
                                 <span class="edit">
+                                    {if !isset($USER_MODEL)}
+                                        {assign var=USER_MODEL value=null}
+                                    {/if}
                                     {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$ACTIVITIES_MODULE_NAME) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$ACTIVITIES_MODULE_NAME OCCUPY_COMPLETE_WIDTH='true'}
                                     {if $EDITVIEW_PERMITTED == 'yes'}
                                         <input type="hidden" class="fieldname" value='{$FIELD_MODEL->get('name')}' data-prev-value='{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}'/>

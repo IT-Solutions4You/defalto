@@ -163,7 +163,7 @@ class Vtiger_Util_Helper
     {
         global $default_charset;
 
-        return htmlentities($input, ENT_QUOTES, $default_charset);
+        return htmlentities((string)$input, ENT_QUOTES, $default_charset);
     }
 
     /**
@@ -353,7 +353,7 @@ class Vtiger_Util_Helper
             $dateTimeInUserFormat = Vtiger_Datetime_UIType::getDisplayDateTimeValue($dateTime);
         }
 
-        [$dateInUserFormat, $timeInUserFormat, $meridiem] = explode(' ', $dateTimeInUserFormat);
+        [$dateInUserFormat, $timeInUserFormat, $meridiem] = array_pad(explode(' ', $dateTimeInUserFormat), 3, null);
 
         if ($meridiem && $currentUser->get('hour_format') === '12') {
             $displayTime = $timeInUserFormat . ' ' . $meridiem;

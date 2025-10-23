@@ -10,6 +10,9 @@
 {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
 {assign var=SPECIAL_VALIDATOR value=$FIELD_MODEL->getValidator()}
 {assign var=PICKLIST_VALUES value=$FIELD_INFO['editablepicklistvalues']}
+{if !isset($FIELD_INFO['picklistColors'])}
+	{$FIELD_INFO['picklistColors'] = ''}
+{/if}
 {assign var=PICKLIST_COLORS value=$FIELD_INFO['picklistColors']}
 <select data-fieldname="{$FIELD_MODEL->getFieldName()}"
 		data-fieldtype="picklist"

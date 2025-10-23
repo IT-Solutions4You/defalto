@@ -44,7 +44,7 @@
                         {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                             <th>
                                 <a href="#" class="listViewContentHeaderValues text-secondary text-nowrap" data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
-                                    {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
+                                    {if isset($FASORT_IMAGE) && $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
                                         <i class="fa {$FASORT_IMAGE}"></i>
                                     {else}
                                         <i class="fa fa-sort customsort"></i>
@@ -73,6 +73,9 @@
                             {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                 <th>
                                     {assign var=FIELD_UI_TYPE_MODEL value=$LISTVIEW_HEADER->getUITypeModel()}
+                                    {if !isset($SEARCH_DETAILS[$LISTVIEW_HEADER->getName()])}
+                                        {$SEARCH_DETAILS[$LISTVIEW_HEADER->getName()] = ['comparator' => '']}
+                                    {/if}
                                     {include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$SOURCE_MODULE) FIELD_MODEL= $LISTVIEW_HEADER SEARCH_INFO=$SEARCH_DETAILS[$LISTVIEW_HEADER->getName()] USER_MODEL=$CURRENT_USER_MODEL}
                                     <input type="hidden" class="operatorValue" value="{$SEARCH_DETAILS[$LISTVIEW_HEADER->getName()]['comparator']}">
                                 </th>

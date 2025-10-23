@@ -24,6 +24,9 @@ class Settings_Webforms_Module_Model extends Settings_Vtiger_Module_Model
     var $listFields = ['name' => 'WebForm Name', 'targetmodule' => 'Module', 'publicid' => 'Public Id', 'returnurl' => 'Return Url', 'enabled' => 'Status'];
     var $name = 'Webforms';
     var $allowedAllFilesSize = 52428800; //50MB
+    public $blocks;
+    public $fields;
+    public $id;
 
     public static function getSupportedModulesList()
     {

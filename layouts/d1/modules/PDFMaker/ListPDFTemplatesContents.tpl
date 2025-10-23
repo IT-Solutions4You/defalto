@@ -16,15 +16,15 @@
     <div id="table-content" class="table-container">
 
         <form name='list' id='listedit' action='' onsubmit="return false;">
-            <table id="listview-table" class="table {if $LISTVIEW_ENTRIES_COUNT eq '0'}listview-table-norecords {/if} listview-table">
+            <table id="listview-table" class="table {if !isset($LISTVIEW_ENTRIES_COUNT) || $LISTVIEW_ENTRIES_COUNT eq '0'}listview-table-norecords {/if} listview-table">
                 <thead>
                     <tr class="listViewContentHeader">
                         <th class="bg-body-secondary"></th>
                         <th class="bg-body-secondary" nowrap="nowrap">
-                            <a href="#" data-columnname="module" data-nextsortorderval="{$module_dir}" class="listViewContentHeaderValues text-nowrap text-secondary">{vtranslate("LBL_MODULENAMES",$MODULE)}</a>
+                            <a href="#" data-columnname="module" data-nextsortorderval="{if isset($module_dir)}{$module_dir}{/if}" class="listViewContentHeaderValues text-nowrap text-secondary">{vtranslate("LBL_MODULENAMES",$MODULE)}</a>
                         </th>
                         <th class="bg-body-secondary" nowrap="nowrap">
-                            <a href="#" data-columnname="description" data-nextsortorderval="{$description_dir}" class="listViewContentHeaderValues text-nowrap text-secondary">{vtranslate("LBL_DESCRIPTION",$MODULE)}</a>
+                            <a href="#" data-columnname="description" data-nextsortorderval="{if isset($description_dir)}{$description_dir}{/if}" class="listViewContentHeaderValues text-nowrap text-secondary">{vtranslate("LBL_DESCRIPTION",$MODULE)}</a>
                         </th>
                     </tr>
                 </thead>

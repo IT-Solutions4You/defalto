@@ -23,6 +23,8 @@ class Settings_CronTasks_Record_Model extends Settings_Vtiger_Record_Model
     static $STATUS_RUNNING = 2;
     static $STATUS_COMPLETED = 3;
 
+    public $module;
+
     /**
      * Function to get Id of this record instance
      * @return <Integer> id

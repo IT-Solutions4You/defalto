@@ -94,7 +94,7 @@
                                     <span class="Groups btn me-2">{vtranslate('LBL_GROUPS', $MODULE)}</span>
                                     <span class="Roles btn me-2">{vtranslate('LBL_ROLES', $MODULE)}</span>
                                     <span class="RoleAndSubordinates btn me-2">{vtranslate('LBL_ROLEANDSUBORDINATE', $MODULE)}</span>
-                                    {if 1 eq $MULTICOMPANY4YOU}
+                                    {if isset($MULTICOMPANY4YOU) && 1 eq $MULTICOMPANY4YOU}
                                         <span class="MultiCompany4you btn me-2">{vtranslate('MultiCompany4you', $QUALIFIED_MODULE)}</span>
                                     {/if}
                                 </div>

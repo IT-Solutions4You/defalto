@@ -126,13 +126,14 @@ class ServiceContracts extends CRMEntity
 
     function save_module($module)
     {
-        $return_action = $_REQUEST['return_action'];
-        $for_module = $_REQUEST['return_module'];
-        $for_crmid = $_REQUEST['return_id'];
-        if ($return_action && $for_module && $for_crmid) {
-            if ($for_module == 'HelpDesk') {
-                $on_focus = CRMEntity::getInstance($for_module);
-                $on_focus->save_related_module($for_module, $for_crmid, $module, $this->id);
+        $returnAction = $_REQUEST['return_action'] ?? '';
+        $forModule = $_REQUEST['return_module'] ?? '';
+        $forCrmId = $_REQUEST['return_id'] ?? '';
+
+        if ($returnAction && $forModule && $forCrmId) {
+            if ($forModule == 'HelpDesk') {
+                $on_focus = CRMEntity::getInstance($forModule);
+                $on_focus->save_related_module($forModule, $forCrmId, $module, $this->id);
             }
         }
     }

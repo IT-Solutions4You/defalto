@@ -21,7 +21,6 @@ require_once('vendor/simplehtmldom/simplehtmldom/simple_html_dom.php');
 
 // for rss caching 
 define('MAGPIE_CACHE_DIR', '/tmp/magpie_cache');
-define('MAGPIE_CACHE_ON', 1);
 define('MAGPIE_CACHE_AGE', 1800);
 
 class Rss_Record_Model extends Vtiger_Record_Model

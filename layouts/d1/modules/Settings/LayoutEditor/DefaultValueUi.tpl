@@ -16,10 +16,10 @@
 			</label>
 			<div class="controls col-lg-6">
 				<div class="defaultValueUi">
-					{if !$NAME_ATTR}
+					{if !isset($NAME_ATTR) || !$NAME_ATTR}
 						{assign var=NAME_ATTR value="fieldDefaultValue"}
 					{/if}
-					{if $DEFAULT_VALUE eq false && !$IS_SET}
+					{if $DEFAULT_VALUE eq false && (!isset($IS_SET) || !$IS_SET)}
 						{assign var=DEFAULT_VALUE value=$FIELD_MODEL->get('defaultvalue')}
 					{/if}
 

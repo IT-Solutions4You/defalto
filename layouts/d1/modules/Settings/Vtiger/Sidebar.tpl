@@ -22,11 +22,11 @@
 					{if $NUM_OF_MENU_ITEMS gt 0}
 						<div class="accordion-item border-0 settingsSearch">
 							<div id="{$BLOCK_NAME}_accordion" class="settingsSearchHeader accordion-header">
-								<button class="settingsSearchButton accordion-button bg-transparent fw-bold p-3 {if $ACTIVE_BLOCK['block'] neq $BLOCK_NAME}collapsed{/if}" type="button" data-bs-toggle="collapse" data-bs-target="#{$BLOCK_NAME}_colapse">
+								<button class="settingsSearchButton accordion-button bg-transparent fw-bold p-3 {if !isset($ACTIVE_BLOCK['block']) || $ACTIVE_BLOCK['block'] neq $BLOCK_NAME}collapsed{/if}" type="button" data-bs-toggle="collapse" data-bs-target="#{$BLOCK_NAME}_colapse">
 									{vtranslate($BLOCK_NAME,$QUALIFIED_MODULE)}
 								</button>
 							</div>
-							<div id="{$BLOCK_NAME}_colapse" class="settingsSearchTab border-0 accordion-collapse collapse {if $ACTIVE_BLOCK['block'] eq $BLOCK_NAME}show{/if}">
+							<div id="{$BLOCK_NAME}_colapse" class="settingsSearchTab border-0 accordion-collapse collapse {if isset($ACTIVE_BLOCK['block']) && $ACTIVE_BLOCK['block'] eq $BLOCK_NAME}show{/if}">
 								<ul class="nav nav-pills flex-column">
 									{foreach item=MENUITEM from=$BLOCK_MENU_ITEMS}
 										{assign var=MENU value= $MENUITEM->get('name')}
@@ -47,7 +47,7 @@
 										{/if}
 										<li class="tab-item nav-link p-3 fs-6 settingsSearchTabItem">
 											<div class="d-flex justify-content-between">
-												<a href="{$MENU_URL}" data-name="{$MENU}" class="settingsSearchLabel {if $ACTIVE_BLOCK['menu'] eq $MENU}settingsSearchActiveLabel fw-bold{/if}">
+												<a href="{$MENU_URL}" data-name="{$MENU}" class="settingsSearchLabel {if isset($ACTIVE_BLOCK['menu']) && $ACTIVE_BLOCK['menu'] eq $MENU}settingsSearchActiveLabel fw-bold{/if}">
 													{vtranslate($MENU_LABEL,$QUALIFIED_MODULE)}
 												</a>
 												<a id="{$MENUITEM->getId()}_menuItem" data-id="{$MENUITEM->getId()}" class="pinUnpinShortCut"

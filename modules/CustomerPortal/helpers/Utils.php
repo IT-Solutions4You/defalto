@@ -70,20 +70,21 @@ class CustomerPortal_Utils
 
         if (empty($activeModules)) {
             global $adb;
-            $sql = "SELECT vtiger_tab.name FROM vtiger_customerportal_tabs INNER JOIN vtiger_tab 
-						ON vtiger_customerportal_tabs.tabid= vtiger_tab.tabid AND vtiger_tab.presence= ? WHERE vtiger_customerportal_tabs.visible = ? ";
+            $sql = 'SELECT vtiger_tab.name FROM vtiger_customerportal_tabs INNER JOIN vtiger_tab 
+						ON vtiger_customerportal_tabs.tabid= vtiger_tab.tabid AND vtiger_tab.presence= ? WHERE vtiger_customerportal_tabs.visible = ? ';
             $sqlResult = $adb->pquery($sql, [0, 1]);
 
-            for ($i = 0; $i < $adb->num_rows($sqlResult); $i++) {
-                $activeModules[] = $adb->query_result($sqlResult, $i, 'name');
-            }
-            //Checking if module is active at Module Manager
-            foreach ($activeModules as $index => $moduleName) {
+            while ($row = $adb->fetchByAssoc($sqlResult)) {
+                $moduleName = $row['name'];
                 $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+
                 if (!$moduleModel || !$moduleModel->isActive() || Vtiger_Runtime::isRestricted('modules', $moduleName)) {
-                    unset($activeModules[$index]);
+                    continue;
                 }
+
+                $activeModules[] = $moduleName;
             }
+
             Vtiger_Cache::set('CustomerPortal', 'activeModules', $activeModules);
         }
 

@@ -21,6 +21,7 @@ include_once 'vtlib/Vtiger/Field.php';
 /**
  * Vtiger Field Model Class
  */
+#[\AllowDynamicProperties]
 class Vtiger_Field_Model extends Vtiger_Field
 {
     var $webserviceField = false;
@@ -201,7 +202,7 @@ class Vtiger_Field_Model extends Vtiger_Field
     public function getModule()
     {
         if (!isset($this->module) || !$this->module) {
-            $moduleObj = $this->block->module;
+            $moduleObj = is_object($this->block) ? $this->block->module : null;
             if (empty($moduleObj)) {
                 return false;
             }
@@ -1575,12 +1576,12 @@ class Vtiger_Field_Model extends Vtiger_Field
 
     public function isCustomField()
     {
-        return ($this->get('generatedtype') == 2) ? true : false;
+        return $this->get('generatedtype') == 2;
     }
 
     public function hasDefaultValue()
     {
-        return trim($this->defaultvalue) == '' ? false : true;
+        return !(trim((string)$this->defaultvalue) == '');
     }
 
     public function isActiveField()
@@ -1597,7 +1598,7 @@ class Vtiger_Field_Model extends Vtiger_Field
 
     public function isMassEditable()
     {
-        return $this->masseditable == 1 ? true : false;
+        return $this->masseditable == 1;
     }
 
     /**

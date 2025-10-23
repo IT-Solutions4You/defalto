@@ -71,8 +71,8 @@ class WorkFlowScheduler
         $scheduleDates = [];
         $adb = $this->db;
 
-        $vtWorflowManager = new VTWorkflowManager($adb);
-        $taskQueue = new VTTaskQueue($adb);
+        $vtWorflowManager = new VTWorkflowManager();
+        $taskQueue = new VTTaskQueue();
         $entityCache = new VTEntityCache($this->user);
 
         // set the time zone to the admin's time zone, this is needed so that the scheduled workflow will be triggered
@@ -87,7 +87,7 @@ class WorkFlowScheduler
         $noOfScheduledWorkflows = php7_count($scheduledWorkflows);
         for ($i = 0; $i < $noOfScheduledWorkflows; ++$i) {
             $workflow = $scheduledWorkflows[$i];
-            $tm = new VTTaskManager($adb);
+            $tm = new VTTaskManager();
             $tasks = $tm->getTasksForWorkflow($workflow->id);
             if ($tasks) {
                 // atleast one task for the workflow should be active

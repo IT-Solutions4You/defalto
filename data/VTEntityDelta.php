@@ -133,7 +133,7 @@ class VTEntityDelta extends VTEventHandler
         }
 
         $result = false;
-        $fieldDelta = self::$entityDelta[$moduleName][$recordId][$fieldName];
+        $fieldDelta = self::$entityDelta[$moduleName][$recordId][$fieldName] ?? null;
 
         if (is_array($fieldDelta)) {
             $fieldDelta = array_map('decode_html', $fieldDelta);

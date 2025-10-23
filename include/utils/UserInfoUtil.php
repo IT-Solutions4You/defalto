@@ -380,7 +380,7 @@ function isPermitted($module, $actionname, $record_id = '')
             return returnPermission($permission, $sharingPermission);
         }
         //Checking for Action Permission
-        if (strlen($profileActionPermission[$tabid][$actionid]) < 1 && $profileActionPermission[$tabid][$actionid] == '') {
+        if (empty($profileActionPermission[$tabid][$actionid])) {
             $permission = "yes";
             $log->debug("Exiting isPermitted method ...");
 

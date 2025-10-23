@@ -37,9 +37,11 @@ class Google_Index_View extends Vtiger_ExtensionViews_View
             $controller = new Google_Contacts_Controller($user);
             $connector = $controller->getTargetConnector();
             $profileInfo = json_decode($connector->getUserProfileInfo(), true);
+
+            return $profileInfo['email'];
         }
 
-        return $profileInfo['email'];
+        return '';
     }
 
     /**
@@ -63,6 +65,8 @@ class Google_Index_View extends Vtiger_ExtensionViews_View
         $viewer = $this->getViewer($request);
         $moduleName = $request->get('extensionModule');
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        $contactGroups = [];
+        $calendars = [];
 
         $oauth2 = new Google_Oauth2_Connector('Contacts');
         $isSyncReady = false;

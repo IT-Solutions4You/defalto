@@ -47,10 +47,10 @@
             {if $EXTENSION_MODULE}
                 _EXTENSIONMETA = { 'module': "{$EXTENSION_MODULE}", view: "{$EXTENSION_VIEW}"};
             {/if}
-            {if $CURRENT_USER_MODEL}
+            {if isset($CURRENT_USER_MODEL) && $CURRENT_USER_MODEL}
                 _USERMETA = {
                     'id': "{$CURRENT_USER_MODEL->get('id')}",
-                    'currency': "{decode_html($USER_CURRENCY_SYMBOL)}",
+                    'currency': "{if isset($USER_CURRENCY_SYMBOL)}{decode_html($USER_CURRENCY_SYMBOL)}{/if}",
                     'currencySymbolPlacement': "{$CURRENT_USER_MODEL->get('currency_symbol_placement')}",
                     'currencyGroupingPattern': "{$CURRENT_USER_MODEL->get('currency_grouping_pattern')}",
                     'truncateTrailingZeros': "{$CURRENT_USER_MODEL->get('truncate_trailing_zeros')}",
@@ -64,7 +64,7 @@
           data-user-groupingseparator="{$CURRENT_USER_MODEL->get('currency_grouping_separator')}" data-user-numberofdecimals="{$CURRENT_USER_MODEL->get('no_of_currency_decimals')}" data-user-hourformat="{$CURRENT_USER_MODEL->get('hour_format')}"
           data-user-calendar-reminder-interval="{$CURRENT_USER_MODEL->getCurrentUserActivityReminderInSeconds()}" class="bg-body-secondary d-flex flex-column">
 		<input type="hidden" id="start_day" value="{$CURRENT_USER_MODEL->get('dayoftheweek')}" />
-		<input type="hidden" id="inventoryModules" value={ZEND_JSON::encode($INVENTORY_MODULES)}>
+		<input type="hidden" id="inventoryModules" value="{if isset($INVENTORY_MODULES)}{ZEND_JSON::encode($INVENTORY_MODULES)}{/if}">
 		<main id="page">
             <div id="pjaxContainer" class="hide noprint"></div>
             <div id="messageBar" class="hide"></div>

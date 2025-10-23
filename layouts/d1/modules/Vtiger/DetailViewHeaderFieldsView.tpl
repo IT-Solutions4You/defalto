@@ -12,13 +12,16 @@
     <input type="hidden" name="module" value="{$RECORD->getModuleName()}">
     <div class="row pt-3">
         {foreach item=FIELD_CONFIG from=$MODULE_MODEL->getHeaderFieldsConfig()}
+            {if !isset($FIELD_CONFIG['field'])}
+                {$FIELD_CONFIG['field'] = ''}
+            {/if}
             {assign var=FIELD_MODEL value=$FIELD_CONFIG['field']}
             {if $FIELD_MODEL}
                 {assign var=FIELD_NAME value=$FIELD_MODEL->getName()}
                 {assign var=FIELD_MODEL value=$FIELD_MODEL->set('fieldvalue', $RECORD->get($FIELD_NAME))}
                 {assign var=FIELD_VALUE value=$FIELD_MODEL->get('fieldvalue')}
                 {assign var=DISPLAY_VALUE value=$FIELD_MODEL->getDisplayValue($FIELD_VALUE)}
-                {assign var=IS_EDITABLE value=$FIELD_MODEL->isAjaxEditable() && $LIST_PREVIEW neq true && $IS_AJAX_ENABLED eq true && $REQUEST_INSTANCE->get('displayMode') neq 'overlay'}
+                {assign var=IS_EDITABLE value=$FIELD_MODEL->isAjaxEditable() && (!isset($LIST_PREVIEW) || $LIST_PREVIEW neq true) && $IS_AJAX_ENABLED eq true && $REQUEST_INSTANCE->get('displayMode') neq 'overlay'}
             {else}
                 {continue}
             {/if}

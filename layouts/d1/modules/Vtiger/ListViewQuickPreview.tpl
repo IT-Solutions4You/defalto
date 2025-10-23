@@ -8,8 +8,8 @@
  *}
 <div class="quickPreview modal-dialog modal-xl fixed-end ms-auto h-100 m-0 shadow">
     <input type="hidden" name="sourceModuleName" id="sourceModuleName" value="{$MODULE_NAME}"/>
-    <input type="hidden" id="nextRecordId" value="{$NEXT_RECORD_ID}">
-    <input type="hidden" id="previousRecordId" value="{$PREVIOUS_RECORD_ID}">
+    <input type="hidden" id="nextRecordId" value="{if isset($NEXT_RECORD_ID)}{$NEXT_RECORD_ID}{/if}">
+    <input type="hidden" id="previousRecordId" value="{if isset($PREVIOUS_RECORD_ID)}{$PREVIOUS_RECORD_ID}{/if}">
 
     <div class="quick-preview-modal modal-content border-0 h-100">
         <div class="detailViewContainer modal-body container-fluid overflow-auto bg-body-secondary">
@@ -23,10 +23,10 @@
                     <div class="col-auto ms-auto">
                         <div class="btn-toolbar flex-nowrap">
                             <div class="btn-group me-2">
-                                <button class="btn btn-outline-secondary" id="quickPreviewPreviousRecordButton" data-record="{$PREVIOUS_RECORD_ID}" data-app="{$SELECTED_MENU_CATEGORY}" {if empty($PREVIOUS_RECORD_ID)} disabled="disabled" {*{else} onclick="Vtiger_List_Js.triggerPreviewForRecord({$PREVIOUS_RECORD_ID})"*}{/if} >
+                                <button class="btn btn-outline-secondary" id="quickPreviewPreviousRecordButton" data-record="{if isset($PREVIOUS_RECORD_ID)}{$PREVIOUS_RECORD_ID}{/if}" data-app="{$SELECTED_MENU_CATEGORY}" {if empty($PREVIOUS_RECORD_ID)} disabled="disabled" {*{else} onclick="Vtiger_List_Js.triggerPreviewForRecord({$PREVIOUS_RECORD_ID})"*}{/if} >
                                     <i class="fa fa-chevron-left"></i>
                                 </button>
-                                <button class="btn btn-outline-secondary" id="quickPreviewNextRecordButton" data-record="{$NEXT_RECORD_ID}" data-app="{$SELECTED_MENU_CATEGORY}" {if empty($NEXT_RECORD_ID)} disabled="disabled" {*{else} onclick="Vtiger_List_Js.triggerPreviewForRecord({$NEXT_RECORD_ID})"*}{/if}>
+                                <button class="btn btn-outline-secondary" id="quickPreviewNextRecordButton" data-record="{if isset($NEXT_RECORD_ID)}{$NEXT_RECORD_ID}{/if}" data-app="{$SELECTED_MENU_CATEGORY}" {if empty($NEXT_RECORD_ID)} disabled="disabled" {*{else} onclick="Vtiger_List_Js.triggerPreviewForRecord({$NEXT_RECORD_ID})"*}{/if}>
                                     <i class="fa fa-chevron-right"></i>
                                 </button>
                             </div>

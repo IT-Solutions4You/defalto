@@ -22,7 +22,7 @@
     <div class="modal-dialog">
     </div>
 </div>
-{if $FIELDS_INFO neq null}
+{if isset($FIELDS_INFO) && $FIELDS_INFO neq null}
     <script type="text/javascript">
         var uimeta = (function() {
             var fieldInfo  = {$FIELDS_INFO};
@@ -67,7 +67,7 @@
             </div>
         </div>
         <div class="col-lg px-0 h-main overflow-auto">
-            {if php7_count($MODULE_BASIC_ACTIONS) or php7_count($LISTVIEW_LINKS['LISTVIEWBASIC']) or php7_count($MODULE_SETTING_ACTIONS) or php7_count($LISTVIEW_LINKS['LISTVIEWSETTING'])}
+            {if (isset($MODULE_BASIC_ACTIONS) && php7_count($MODULE_BASIC_ACTIONS)) or (isset($LISTVIEW_LINKS['LISTVIEWBASIC']) && php7_count($LISTVIEW_LINKS['LISTVIEWBASIC'])) or (isset($MODULE_SETTING_ACTIONS) && php7_count($MODULE_SETTING_ACTIONS)) or (isset($LISTVIEW_LINKS['LISTVIEWSETTING']) && php7_count($LISTVIEW_LINKS['LISTVIEWSETTING']))}
                 <div class="px-4 pb-3">
                     <div class="bg-body rounded">
                         {include file='ModuleLinks.tpl'|vtemplate_path:$QUALIFIED_MODULE}

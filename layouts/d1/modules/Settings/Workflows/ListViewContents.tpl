@@ -27,7 +27,7 @@
                             <option value="" data-count='{$MODULES_COUNT['All']}'>{vtranslate('LBL_ALL', $QUALIFIED_MODULE)}&nbsp;{vtranslate('LBL_WORKFLOWS')}
                             </option>
                             {foreach item=MODULE_MODEL key=TAB_ID from=$SUPPORTED_MODULE_MODELS}
-                                <option {if $SOURCE_MODULE eq $MODULE_MODEL->getName()} selected="" {/if} value="{$MODULE_MODEL->getName()}" data-count='{if $MODULES_COUNT[$TAB_ID]}{$MODULES_COUNT[$TAB_ID]}{else}0{/if}'>
+                                <option {if $SOURCE_MODULE eq $MODULE_MODEL->getName()} selected="" {/if} value="{$MODULE_MODEL->getName()}" data-count='{if isset($MODULES_COUNT[$TAB_ID]) && $MODULES_COUNT[$TAB_ID]}{$MODULES_COUNT[$TAB_ID]}{else}0{/if}'>
                                     {vtranslate($MODULE_MODEL->getName(),$MODULE_MODEL->getName())}&nbsp;{vtranslate('LBL_WORKFLOWS')}
                                 </option>
                             {/foreach}
@@ -89,7 +89,7 @@
                                     {assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
                                     {assign var=LAST_COLUMN value=$LISTVIEW_HEADER@last}
                                     {if $LISTVIEW_HEADERNAME neq 'summary' && $LISTVIEW_HEADERNAME neq 'module_name'}
-                                        <td class="listViewEntryValue {$WIDTHTYPE}" width="{$WIDTH}%" nowrap>
+                                        <td class="listViewEntryValue {$WIDTHTYPE}" nowrap>
                                             {if $LISTVIEW_HEADERNAME eq 'test'}
                                                 {assign var=WORKFLOW_CONDITION value=$LISTVIEW_ENTRY->getConditonDisplayValue()}
                                                 {assign var=ALL_CONDITIONS value=$WORKFLOW_CONDITION['All']}
@@ -126,14 +126,14 @@
                                             {/if}
                                         </td>
                                     {elseif $LISTVIEW_HEADERNAME eq 'module_name' && empty($SOURCE_MODULE)}
-                                        <td class="listViewEntryValue text-secondary {$WIDTHTYPE}" width="{$WIDTH}%" nowrap>
+                                        <td class="listViewEntryValue text-secondary {$WIDTHTYPE}" nowrap>
                                             {assign var="MODULE_ICON_NAME" value="{strtolower($LISTVIEW_ENTRY->get('raw_module_name'))}"}
                                             {Vtiger_Module_Model::getModuleIconPath($LISTVIEW_ENTRY->get('raw_module_name'))}
                                         </td>
                                     {else}
                                     {/if}
                                 {/foreach}
-                                <td class="listViewEntryValue {$WIDTHTYPE}" width="{$WIDTH}%" nowrap>
+                                <td class="listViewEntryValue {$WIDTHTYPE}" nowrap>
                                     {assign var=ACTIONS value=$LISTVIEW_ENTRY->getActionsDisplayValue()}
                                     {if is_array($ACTIONS) && !empty($ACTIONS)}
                                         {foreach item=ACTION_COUNT key=ACTION_NAME from=$ACTIONS}

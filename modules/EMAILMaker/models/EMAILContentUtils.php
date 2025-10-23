@@ -97,7 +97,13 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
     public function getUserValue($name, $data)
     {
         if (is_object($data)) {
-            return $data->column_fields[$name];
+            if (is_subclass_of($data, 'CRMEntity')) {
+                return $data->column_fields[$name];
+            } elseif (is_subclass_of($data, 'TrackableObject')) {
+                return $data->offsetGet($name);
+            } else {
+                return '';
+            }
         } elseif (isset($data[$name])) {
             return $data[$name];
         } else {

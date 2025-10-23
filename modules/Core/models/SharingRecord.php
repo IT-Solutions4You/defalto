@@ -13,6 +13,7 @@ require_once 'include/events/include.inc';
 class Core_SharingRecord_Model extends Vtiger_Base_Model
 {
     private $isShared;
+    protected $members;
 
     /**
      * Function to get the Id
@@ -242,7 +243,7 @@ class Core_SharingRecord_Model extends Vtiger_Base_Model
 
         if (is_array($member)) {
             foreach ($member as $id) {
-                $idComponents = explode(':', $id);
+                $idComponents = array_pad(explode(':', $id), 2, null);
                 $this->isShared = 1;
                 $memberType = $idComponents[0];
                 $memberId = $idComponents[1];

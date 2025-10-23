@@ -48,14 +48,16 @@
                     <tr class="border-bottom">
                         <td>
                             <select name="Contacts[google_group]" class="inputElement select2 row" style="min-width: 250px;">
-                                <option value="all">{vtranslate('LBL_ALL',$MODULENAME)}</option>
+                                <option value="all">{vtranslate('LBL_ALL',$MODULE)}</option>
                                 {assign var=IS_GROUP_DELETED value=1}
+                                {if isset($GOOGLE_CONTACTS_GROUPS['entry'])}
                                 {foreach item=ENTRY from=$GOOGLE_CONTACTS_GROUPS['entry']}
                                     <option value="{$ENTRY['id']}" {if $ENTRY['id'] eq $SELECTED_CONTACTS_GROUP} {assign var=IS_GROUP_DELETED value=0} selected {/if}>{$ENTRY['title']}</option>
                                 {/foreach}
+                                {/if}
                                 {if $IS_GROUP_DELETED && $SELECTED_CONTACTS_GROUP != 'all'}
                                     {if $SELECTED_CONTACTS_GROUP != ''}
-                                        <option value="none" selected>{vtranslate('LBL_NONE',$MODULENAME)}</option>{/if}
+                                        <option value="none" selected>{vtranslate('LBL_NONE',$MODULE)}</option>{/if}
                                 {/if}
                             </select>
                         </td>
@@ -80,7 +82,7 @@
                         <td>
                             <select name="Calendar[google_group]" class="inputElement select2 row" style="min-width: 250px;">
                                 {if php7_count($GOOGLE_CALENDARS) eq 0}
-                                    <option value="primary">{vtranslate('LBL_PRIMARY',$MODULENAME)}</option>
+                                    <option value="primary">{vtranslate('LBL_PRIMARY',$MODULE)}</option>
                                 {/if}
                                 {foreach item=CALENDAR_ITEM from=$GOOGLE_CALENDARS}
                                     <option value="{if $CALENDAR_ITEM['primary'] eq 1}primary{else}{$CALENDAR_ITEM['id']}{/if}" {if $SELECTED_GOOGLE_CALENDAR eq $CALENDAR_ITEM['id']}selected{/if} {if $SELECTED_GOOGLE_CALENDAR eq 'primary' && $CALENDAR_ITEM['primary'] eq 1} selected {/if}>{$CALENDAR_ITEM['summary']}</option>
@@ -163,11 +165,11 @@
                         <div class="row">
                             <div class="col text-end">
                                 {if $PARENT neq 'Settings'}
-                                    <a type="reset" data-url="{$MODULE_MODEL->getBaseExtensionUrl($SOURCEMODULE)}" class="btn btn-primary cancelLink navigationLink">{vtranslate('LBL_CANCEL', $MODULENAME)}</a>
+                                    <a type="reset" data-url="{$MODULE_MODEL->getBaseExtensionUrl($SOURCEMODULE)}" class="btn btn-primary cancelLink navigationLink">{vtranslate('LBL_CANCEL', $MODULE)}</a>
                                 {/if}
                             </div>
                             <div class="col">
-                                <button id="saveSettings" type="submit" class="btn btn-primary active saveButton">{vtranslate('LBL_SAVE_SETTINGS', $MODULENAME)}</button>
+                                <button id="saveSettings" type="submit" class="btn btn-primary active saveButton">{vtranslate('LBL_SAVE_SETTINGS', $MODULE)}</button>
                             </div>
                         </div>
                     </div>

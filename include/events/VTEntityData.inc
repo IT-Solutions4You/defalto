@@ -26,6 +26,7 @@ class VTEntityData
     public string $moduleName;
     public int $entityId;
     public CRMEntity $focus;
+    public $oldTrackingUnit;
 
     /**
      * Get an entity data object.

@@ -37,7 +37,7 @@ class Reporting_Sorts_UIType extends Core_Data_UIType
 
     public function getFieldInfo($value): array
     {
-        [$field, $order] = explode(' ', $value);
+        [$field, $order] = array_pad(explode(' ', $value), 2, null);
 
         return ['field' => $field, 'order' => $order];
     }

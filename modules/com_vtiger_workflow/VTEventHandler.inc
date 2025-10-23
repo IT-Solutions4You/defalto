@@ -69,7 +69,7 @@ class VTWorkflowEventHandler extends VTEventHandler
          * While adding a comment on any record which are supporting Comments ModCommentsHandler will trigger
          */
         if (empty($this->workflows)) {
-            $wfs = new VTWorkflowManager($adb);
+            $wfs = new VTWorkflowManager();
             $this->workflows = $wfs->getWorkflowsForModule($entityData->getModuleName());
         }
 

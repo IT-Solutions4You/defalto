@@ -18,6 +18,9 @@
 
 class Portal_List_View extends Vtiger_Index_View
 {
+    public $pagingModel;
+    public $noOfEntries;
+
     public function requiresPermission(Vtiger_Request $request)
     {
         $permissions = parent::requiresPermission($request);

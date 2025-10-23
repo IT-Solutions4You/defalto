@@ -20,6 +20,8 @@ class Settings_Vtiger_List_View extends Settings_Vtiger_Index_View
 {
     protected $listViewEntries = false;
     protected $listViewHeaders = false;
+    public $listViewLinks;
+    public $pagingModel;
 
     function __construct()
     {

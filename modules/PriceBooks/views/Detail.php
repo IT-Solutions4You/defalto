@@ -91,14 +91,16 @@ class PriceBooks_Detail_View extends Vtiger_Detail_View
         $parentRecordCurrencyId = $parentRecordModel->get('currency_id');
         if ($parentRecordCurrencyId) {
             $relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModuleName);
+            $productIdsList = [];
 
-            foreach ($models as $recordId => $recorModel) {
+            foreach ($models as $recordId => $recordModel) {
                 $productIdsList[$recordId] = $recordId;
             }
+
             $unitPricesList = $relatedModuleModel->getPricesForProducts($parentRecordCurrencyId, $productIdsList);
 
-            foreach ($models as $recordId => $recorModel) {
-                $recorModel->set('unit_price', $unitPricesList[$recordId]);
+            foreach ($models as $recordId => $recordModel) {
+                $recordModel->set('unit_price', $unitPricesList[$recordId]);
             }
 
             $parentRecordCurrencyDetails = getCurrencySymbolandCRate($parentRecordCurrencyId);

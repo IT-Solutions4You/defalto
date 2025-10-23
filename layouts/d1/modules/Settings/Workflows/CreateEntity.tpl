@@ -13,7 +13,7 @@
 {/if}
 {assign var=FIELD_VALUE_MAPPING value=$TASK_OBJECT->getFieldValueMapping()}
 <input type="hidden" id="fieldValueMapping" name="field_value_mapping" value='{$TASK_OBJECT->getFieldValueMapping()}' />
-<input type="hidden" value="{if $TASK_ID}{$TASK_OBJECT->reference_field}{else}{$REFERENCE_FIELD_NAME}{/if}" name='reference_field' id='reference_field' />
+<input type="hidden" value="{if $TASK_ID}{$TASK_OBJECT->reference_field}{else if isset($REFERENCE_FIELD_NAME)}{$REFERENCE_FIELD_NAME}{/if}" name='reference_field' id='reference_field' />
 <div class="conditionsContainer" id="save_fieldvaluemapping">
 	{if $RELATED_MODULE_MODEL_NAME neq '' && getTabid($RELATED_MODULE_MODEL_NAME)}
 		<div class="row py-2">
@@ -65,7 +65,7 @@
 
 		{include file="FieldExpressions.tpl"|@vtemplate_path:$QUALIFIED_MODULE RELATED_MODULE_MODEL=$RELATED_MODULE_MODEL MODULE_MODEL=$MODULE_MODEL FIELD_EXPRESSIONS=$FIELD_EXPRESSIONS}
 	{else}
-		{if $RELATED_MODULE_MODEL}
+		{if isset($RELATED_MODULE_MODEL) && $RELATED_MODULE_MODEL}
 			<div>
 				<button type="button" class="btn btn-outline-secondary" id="addFieldBtn">{vtranslate('LBL_ADD_FIELD',$QUALIFIED_MODULE)}</button>
 			</div>
@@ -101,7 +101,7 @@
 		{/if}
 	{/if}
 </div>
-{if $RELATED_MODULE_MODEL}
+{if isset($RELATED_MODULE_MODEL) && $RELATED_MODULE_MODEL}
 	<div class="row py-2 basicAddFieldContainer hide">
 		<div class="col-lg-2">
 			<select name="fieldname" data-width="100%">

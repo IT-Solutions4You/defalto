@@ -260,8 +260,8 @@ Migration_Index_View::ExecuteQuery("delete from com_vtiger_workflowtasks where t
 Migration_Index_View::ExecuteQuery("delete from com_vtiger_workflowtasks where task_id=?", [12]);
 
 // Creating Default workflows
-$workflowManager = new VTWorkflowManager($adb);
-$taskManager = new VTTaskManager($adb);
+$workflowManager = new VTWorkflowManager();
+$taskManager = new VTTaskManager();
 
 global $current_user;
 $adb = PearDatabase::getInstance();
@@ -544,14 +544,14 @@ $sqltimelogTable = "CREATE TABLE vtiger_sqltimelog ( id integer, type VARCHAR(10
 Migration_Index_View::ExecuteQuery($sqltimelogTable, []);
 
 $moduleName = 'PurchaseOrder';
-$vtWorkFlow = new VTWorkflowManager($adb);
+$vtWorkFlow = new VTWorkflowManager();
 $poWorkFlow = $vtWorkFlow->newWorkFlow($moduleName);
 $poWorkFlow->description = "Update Inventory Products On Every Save";
 $poWorkFlow->defaultworkflow = 1;
 $poWorkFlow->executionCondition = 3;
 $vtWorkFlow->save($poWorkFlow);
 
-$tm = new VTTaskManager($adb);
+$tm = new VTTaskManager();
 $task = $tm->createTask('VTEntityMethodTask', $poWorkFlow->id);
 $task->active = true;
 $task->summary = "Update Inventory Products";
@@ -976,8 +976,8 @@ if ($adb->num_rows($checkResult) <= 0) {
 
 //Start: Customer - Feature #10254 Configuring all Email notifications including Ticket notifications
 $moduleName = 'HelpDesk';
-$workflowManager = new VTWorkflowManager($adb);
-$taskManager = new VTTaskManager($adb);
+$workflowManager = new VTWorkflowManager();
+$taskManager = new VTTaskManager();
 
 // Comment Added From Portal
 $workflowConditions = [
@@ -1203,11 +1203,11 @@ $result = $adb->pquery(
 $numOfRows = $adb->num_rows($result);
 
 for ($i = 0; $i < $numOfRows; $i++) {
-    $wfs = new VTWorkflowManager($adb);
+    $wfs = new VTWorkflowManager();
     $workflowModel = $wfs->retrieve($adb->query_result($result, $i, 'workflow_id'));
     $workflowModel->filtersavedinnew = 6;
 
-    $tm = new VTTaskManager($adb);
+    $tm = new VTTaskManager();
     $tasks = $tm->getTasksForWorkflow($workflowModel->id);
     foreach ($tasks as $task) {
         $properties = get_object_vars($task);

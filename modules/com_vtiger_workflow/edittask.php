@@ -42,7 +42,7 @@ function vtTaskEdit($adb, $request, $current_language, $app_strings)
     }
 
     $smarty = new Vtiger_Viewer();
-    $tm = new VTTaskManager($adb);
+    $tm = new VTTaskManager();
     $smarty->assign('edit', isset($request["task_id"]));
     if (isset($request["task_id"])) {
         $task = $tm->retrieveTask($request["task_id"]);
@@ -61,7 +61,7 @@ function vtTaskEdit($adb, $request, $current_language, $app_strings)
         return;
     }
 
-    $wm = new VTWorkflowManager($adb);
+    $wm = new VTWorkflowManager();
     $workflow = $wm->retrieve($workflowId);
     if ($workflow == null) {
         $errorUrl = $module->errorPageUrl($mod['LBL_ERROR_NO_WORKFLOW']);

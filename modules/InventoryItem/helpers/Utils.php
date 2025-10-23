@@ -18,7 +18,7 @@ class InventoryItem_Utils_Helper
      * @param string $moduleName
      *
      * @return bool
-     * @throws AppException
+     * @throws Exception
      */
     public static function usesInventoryItem(string $moduleName): bool
     {

@@ -87,6 +87,8 @@ class Products extends CRMEntity
     // Josh added for importing and exporting -added in patch2
     public $unit_price;
 
+    public $isWorkFlowFieldUpdate;
+
     /**    Constructor which will set the column_fields in this object
      */
     public function __construct()
@@ -101,7 +103,7 @@ class Products extends CRMEntity
     function save_module($module)
     {
         //Inserting into product_taxrel table
-        if ($_REQUEST['ajxaction'] != 'DETAILVIEW' && $_REQUEST['action'] != 'ProcessDuplicates' && !$this->isWorkFlowFieldUpdate) {
+        if ((!isset($_REQUEST['ajxaction']) || $_REQUEST['ajxaction'] != 'DETAILVIEW') && $_REQUEST['action'] != 'ProcessDuplicates' && !$this->isWorkFlowFieldUpdate) {
             if ($_REQUEST['ajxaction'] != 'CurrencyUpdate') {
                 $request = new Vtiger_Request($_REQUEST, $_REQUEST);
                 $request->set('taxes_data', $request->get('taxclass'));
@@ -1157,7 +1159,7 @@ class Products extends CRMEntity
         $button = '';
 
         if (isPermitted("Products", 1, "") == 'yes') {
-            $button .= '<input title="' . $app_strings['LBL_NEW_PRODUCT'] . '" accessyKey="F" class="button" onclick="this.form.action.value=\'EditView\';this.form.module.value=\'Products\';this.form.return_module.value=\'Products\';this.form.return_action.value=\'DetailView\'" type="submit" name="button" value="' . $app_strings['LBL_NEW_PRODUCT'] . '">&nbsp;';
+            $button .= '<input title="' . $app_strings['LBL_NEW'] . ' ' . vtranslate('SINGLE_Products', 'Products') . '" accessyKey="F" class="button" onclick="this.form.action.value=\'EditView\';this.form.module.value=\'Products\';this.form.return_module.value=\'Products\';this.form.return_action.value=\'DetailView\'" type="submit" name="button" value="' . $app_strings['LBL_NEW'] . ' ' . vtranslate('SINGLE_Products', 'Products') . '">&nbsp;';
         }
         if ($singlepane_view == 'true') {
             $returnset = '&return_module=Products&return_action=DetailView&is_parent=1&return_id=' . $id;

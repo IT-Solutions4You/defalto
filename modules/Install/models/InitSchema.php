@@ -1086,21 +1086,21 @@ class Install_InitSchema_Model
         }
 
         // Creating Workflow for Updating Inventory Stock for Invoice
-        $vtWorkFlow = new VTWorkflowManager($adb);
+        $vtWorkFlow = new VTWorkflowManager();
         $invWorkFlow = $vtWorkFlow->newWorkFlow("Invoice");
         $invWorkFlow->test = '[{"fieldname":"subject","operation":"does not contain","value":"`!`"}]';
         $invWorkFlow->description = "UpdateInventoryProducts On Every Save";
         $invWorkFlow->defaultworkflow = 1;
         $vtWorkFlow->save($invWorkFlow);
 
-        $tm = new VTTaskManager($adb);
+        $tm = new VTTaskManager();
         $task = $tm->createTask('VTEntityMethodTask', $invWorkFlow->id);
         $task->active = true;
         $task->methodName = "UpdateInventory";
         $tm->saveTask($task);
 
         // Creating Workflow for Accounts when Notifyowner is true
-        $vtaWorkFlow = new VTWorkflowManager($adb);
+        $vtaWorkFlow = new VTWorkflowManager();
         $accWorkFlow = $vtaWorkFlow->newWorkFlow("Accounts");
         $accWorkFlow->test = '[{"fieldname":"notify_owner","operation":"is","value":"true:boolean"}]';
         $accWorkFlow->description = "Send Email to user when Notifyowner is True";
@@ -1109,7 +1109,7 @@ class Install_InitSchema_Model
         $vtaWorkFlow->save($accWorkFlow);
         $id1 = $accWorkFlow->id;
 
-        $tm = new VTTaskManager($adb);
+        $tm = new VTTaskManager();
         $task = $tm->createTask('VTEmailTask', $accWorkFlow->id);
         $task->active = true;
         $task->methodName = "NotifyOwner";
@@ -1125,7 +1125,7 @@ class Install_InitSchema_Model
 
         // Creating Workflow for Contacts when Notifyowner is true
 
-        $vtcWorkFlow = new VTWorkflowManager($adb);
+        $vtcWorkFlow = new VTWorkflowManager();
         $conWorkFlow = $vtcWorkFlow->newWorkFlow("Contacts");
         $conWorkFlow->summary = "A contact has been created ";
         $conWorkFlow->executionCondition = 2;
@@ -1134,7 +1134,7 @@ class Install_InitSchema_Model
         $conWorkFlow->defaultworkflow = 1;
         $vtcWorkFlow->save($conWorkFlow);
         $id1 = $conWorkFlow->id;
-        $tm = new VTTaskManager($adb);
+        $tm = new VTTaskManager();
         $task = $tm->createTask('VTEmailTask', $conWorkFlow->id);
         $task->active = true;
         $task->methodName = "NotifyOwner";
@@ -1151,7 +1151,7 @@ class Install_InitSchema_Model
 
         // Creating Workflow for Contacts when PortalUser is true
 
-        $vtcWorkFlow = new VTWorkflowManager($adb);
+        $vtcWorkFlow = new VTWorkflowManager();
         $conpuWorkFlow = $vtcWorkFlow->newWorkFlow("Contacts");
         $conpuWorkFlow->test = '[{"fieldname":"portal","operation":"is","value":"true:boolean"}]';
         $conpuWorkFlow->description = "Send Email to user when Portal User is True";
@@ -1160,7 +1160,7 @@ class Install_InitSchema_Model
         $vtcWorkFlow->save($conpuWorkFlow);
         $id1 = $conpuWorkFlow->id;
 
-        $taskManager = new VTTaskManager($adb);
+        $taskManager = new VTTaskManager();
         $task = $taskManager->createTask('VTEntityMethodTask', $id1);
         $task->active = true;
         $task->summary = 'Email Customer Portal Login Details';
@@ -1168,7 +1168,7 @@ class Install_InitSchema_Model
         $taskManager->saveTask($task);
         // Creating Workflow for Potentials
 
-        $vtcWorkFlow = new VTWorkflowManager($adb);
+        $vtcWorkFlow = new VTWorkflowManager();
         $potentialWorkFlow = $vtcWorkFlow->newWorkFlow("Potentials");
         $potentialWorkFlow->description = "Send Email to users on Potential creation";
         $potentialWorkFlow->executionCondition = 1;
@@ -1176,7 +1176,7 @@ class Install_InitSchema_Model
         $vtcWorkFlow->save($potentialWorkFlow);
         $id1 = $potentialWorkFlow->id;
 
-        $tm = new VTTaskManager($adb);
+        $tm = new VTTaskManager();
         $task = $tm->createTask('VTEmailTask', $potentialWorkFlow->id);
 
         $task->active = true;
@@ -1192,8 +1192,8 @@ class Install_InitSchema_Model
         $task->summary = "An Potential has been created ";
         $tm->saveTask($task);
 
-        $workflowManager = new VTWorkflowManager($adb);
-        $taskManager = new VTTaskManager($adb);
+        $workflowManager = new VTWorkflowManager();
+        $taskManager = new VTTaskManager();
 
         // Contact workflow on creation/modification
         $contactWorkFlow = $workflowManager->newWorkFlow("Contacts");
@@ -1203,7 +1203,7 @@ class Install_InitSchema_Model
         $contactWorkFlow->defaultworkflow = 1;
         $workflowManager->save($contactWorkFlow);
 
-        $tm = new VTTaskManager($adb);
+        $tm = new VTTaskManager();
         $task = $tm->createTask('VTEmailTask', $contactWorkFlow->id);
 
         $task->active = true;

@@ -36,8 +36,8 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         $style = [];
 
         foreach ($this->getFields() as $field) {
-            $style['th'][$row] = 'width:' . $width[$field] . '; text-align:' . $align[$field] . ';';
-            $style['td'][$row] = 'text-align:' . $align[$field] . ';';
+            $style['th'][$row] = 'width:' . ($width[$field] ?? '') . '; text-align:' . ($align[$field] ?? '') . ';';
+            $style['td'][$row] = 'text-align:' . ($align[$field] ?? '') . ';';
             $row++;
         }
 

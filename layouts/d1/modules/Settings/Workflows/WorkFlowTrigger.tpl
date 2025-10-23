@@ -132,7 +132,8 @@
                                 <div class="controls">
                                     <div class="input-group">
                                         {assign var=specificDate value=Zend_Json::decode($WORKFLOW_MODEL_OBJ->schannualdates)}
-                                        {if $specificDate[0] neq ''}
+                                        {assign var=specificDate1 value=''}
+                                        {if isset($specificDate[0]) && $specificDate[0] neq ''}
                                             {assign var=specificDate1 value=DateTimeField::convertToUserFormat($specificDate[0])}
                                         {/if}
                                         <input type="text" class="dateField form-control" name="schdate" value="{$specificDate1}" data-date-format="{$CURRENT_USER->date_format}" data-rule-required="true"/>

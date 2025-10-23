@@ -123,8 +123,8 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
         $path = $site_URL . '/test/logo/';
         $images = [
             'logoname'        => decode_html($row['logoname']),
-            'headername'      => decode_html($row['headername']),
-            'stamp_signature' => $row['stamp_signature'],
+            'headername'      => decode_html($row['headername'] ?? ''),
+            'stamp_signature' => $row['stamp_signature'] ?? '',
         ];
 
         if (isset($images['logoname'])) {

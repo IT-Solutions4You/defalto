@@ -8,7 +8,7 @@
  *}
 <div class="row">
     <div class="col-lg">
-        <h4><b>{vtranslate($REQUIREMENTS_TITLE, $QUALIFIED_MODULE)}</b></h4>
+        <h4><b>{if isset($REQUIREMENTS_TITLE)}{vtranslate($REQUIREMENTS_TITLE, $QUALIFIED_MODULE)}{/if}</b></h4>
     </div>
     <div class="col-lg-4">
         <select id="source_module" class="select2" style="width: 300px;">

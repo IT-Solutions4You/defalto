@@ -35,7 +35,7 @@
     </td>
 
     {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
-        {if $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] eq ''}
+        {if !isset($INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]) || $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] eq ''}
             {continue}
         {/if}
         {assign var=FIELD_NAME_CAT_ROW_NO value=$INVENTORY_ITEM_FIELD_NAME|cat:$row_no}
@@ -55,7 +55,7 @@
                 <input type="hidden" id="item_text{$row_no}" name="item_text{$row_no}" value="{$data.item_text}" class="item_text" />
                 <input type="hidden" id="productid{$row_no}" name="productid{$row_no}" value="{$data.productid}" class="productid" />
                 <input type="hidden" id="lineItemType{$row_no}" name="lineItemType{$row_no}" value="{$data.entityType}" class="lineItemType" />
-                {if $data.subProducts neq ''}
+                {if isset($data.subProducts) && $data.subProducts neq ''}
                     {foreach from=$data.subProducts item=subProduct}
                         <br />
                         <i>{$subProduct->get('productname')}</i>

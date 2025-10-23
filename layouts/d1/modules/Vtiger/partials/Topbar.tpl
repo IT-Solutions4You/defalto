@@ -28,6 +28,9 @@
                             {assign var=DEFAULT_FILTER_URL value=$SETTINGS_MODULE_MODEL->getDefaultUrl()}
                             {assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}
                             {assign var=SINGLE_MODULE_LABEL value=vtranslate($SINGLE_MODULE_NAME, $QUALIFIED_MODULE)}
+                            {if !isset($CUSTOM_VIEW_URL)}
+                                {assign var=CUSTOM_VIEW_URL value='index.php'}
+                            {/if}
                         {elseif $MODULE}
                             {assign var=MODULE_MODEL value=Vtiger_Module_Model::getInstance($MODULE)}
                             {assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}
@@ -52,7 +55,7 @@
                         <a class="col fs-4 text-truncate text-secondary" href="{$RECORD->getDetailViewUrl()}" title="{$RECORD->get('label')}">{$RECORD->get('label')}</a>
                     {elseif $REQUEST_INSTANCE.view eq 'Edit'}
                         <a class="col-auto fs-4 text-secondary">{vtranslate('LBL_ADDING_NEW', $MODULE)}</a>
-                    {elseif $REQUEST_INSTANCE.view eq 'List' and $MODULE_MODEL and $MODULE_MODEL->isEntityModule()}
+                    {elseif $REQUEST_INSTANCE.view eq 'List' and isset($MODULE_MODEL) and $MODULE_MODEL->isEntityModule()}
                         {include file="partials/CustomView.tpl"|vtemplate_path:$MODULE}
                     {else}
                         <a class="col fs-4 text-secondary">{vtranslate($REQUEST_INSTANCE.view, $MODULE)}</a>

@@ -14,19 +14,19 @@
         </div>
         <div class="contents tabbable pt-3">
             <ul class="nav nav-tabs massEditTabs border-bottom">
-                <li class="tab-item fieldsTab {if $smarty.request.mode neq 'decimals'}active{/if} ms-3">
-                    <a class="nav-link {if $smarty.request.mode neq 'decimals'}active{/if}" data-bs-toggle="tab" href="#fields">
+                <li class="tab-item fieldsTab {if !isset($smarty.request.mode) || $smarty.request.mode neq 'decimals'}active{/if} ms-3">
+                    <a class="nav-link {if !isset($smarty.request.mode) || $smarty.request.mode neq 'decimals'}active{/if}" data-bs-toggle="tab" href="#fields">
                         <strong>{vtranslate('Fields', $QUALIFIED_MODULE)}</strong>
                     </a>
                 </li>
-                <li class="tab-item decimalsTab {if $smarty.request.mode eq 'decimals'}active{/if} ms-3">
-                    <a class="nav-link {if $smarty.request.mode eq 'decimals'}active{/if}" data-bs-toggle="tab" href="#decimals">
+                <li class="tab-item decimalsTab {if isset($smarty.request.mode) && $smarty.request.mode eq 'decimals'}active{/if} ms-3">
+                    <a class="nav-link {if isset($smarty.request.mode) && $smarty.request.mode eq 'decimals'}active{/if}" data-bs-toggle="tab" href="#decimals">
                         <strong>{vtranslate('Decimals', $QUALIFIED_MODULE)}</strong>
                     </a>
                 </li>
             </ul>
             <div class="tab-content layoutContent pb-3 overflowVisible">
-                <div class="tab-pane {if $smarty.request.mode neq 'decimals'}active{/if}" id="fields">
+                <div class="tab-pane {if !isset($smarty.request.mode) || $smarty.request.mode neq 'decimals'}active{/if}" id="fields">
                     <form name="inventoryItemFields" id="inventoryItemFields" method="POST">
                         <input type="hidden" name="module" value="InventoryItem">
                         <input type="hidden" name="parent" value="Settings">
@@ -70,7 +70,7 @@
                     </div>
                     </form>
                 </div>
-                <div class="tab-pane {if $smarty.request.mode eq 'decimals'}active{/if}" id="decimals">
+                <div class="tab-pane {if isset($smarty.request.mode) && $smarty.request.mode eq 'decimals'}active{/if}" id="decimals">
                     <form name="decimalsForm" id="decimalsForm" method="POST">
                         <input type="hidden" name="module" value="InventoryItem">
                         <input type="hidden" name="parent" value="Settings">

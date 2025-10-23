@@ -293,7 +293,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
      */
     public function getFieldInfo(string $value): array
     {
-        [$fieldName, $referenceModule, $referenceField] = explode(':', $value);
+        [$fieldName, $referenceModule, $referenceField] = array_pad(explode(':', $value), 3, null);
 
         return [
             'module'           => $this->moduleName,

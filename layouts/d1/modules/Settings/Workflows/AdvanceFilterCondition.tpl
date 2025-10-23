@@ -23,11 +23,13 @@
                                 {assign var=columnNameApi value=getCustomViewColumnName}
                             {/if}
                             <option value="{$FIELD_MODEL->$columnNameApi()}" data-fieldtype="{$FIELD_MODEL->getFieldType()}" data-field-name="{$FIELD_NAME}"
-                                    {if decode_html($FIELD_MODEL->$columnNameApi()) eq $CONDITION_INFO['columnname']}
+                                    {if isset($CONDITION_INFO['columnname']) && decode_html($FIELD_MODEL->$columnNameApi()) eq $CONDITION_INFO['columnname']}
                                         {assign var=FIELD_TYPE value=$FIELD_MODEL->getFieldDataType()}
                                         {assign var=SELECTED_FIELD_MODEL value=$FIELD_MODEL}
                                         {$FIELD_INFO['value'] = decode_html($CONDITION_INFO['value'])}
                                         selected="selected"
+                                    {else}
+                                        {assign var=FIELD_TYPE value=''}
                                     {/if}
                                     {if ($MODULE_MODEL->get('name') eq 'Documents') and ($FIELD_NAME eq 'filelocationtype' or $FIELD_NAME eq 'folderid' or $FIELD_NAME eq 'filename')}
                                         {if $FIELD_NAME eq 'filelocationtype'}
@@ -72,7 +74,7 @@
             </select>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-4  fieldUiHolder">
-            <input name="{if $SELECTED_FIELD_MODEL}{$SELECTED_FIELD_MODEL->get('name')}{/if}" data-value="value" class="inputElement col-lg-12" type="text" value="{$CONDITION_INFO['value']|escape}"/>
+            <input name="{if isset($SELECTED_FIELD_MODEL) && $SELECTED_FIELD_MODEL}{$SELECTED_FIELD_MODEL->get('name')}{/if}" data-value="value" class="inputElement col-lg-12" type="text" value="{$CONDITION_INFO['value']|escape}"/>
         </div>
         <div class="hide">
             <!-- TODO : see if you need to respect CONDITION_INFO condition or / and  -->

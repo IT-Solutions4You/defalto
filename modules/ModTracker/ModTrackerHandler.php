@@ -21,6 +21,8 @@ require_once 'data/VTEntityDelta.php';
 
 class ModTrackerHandler extends VTEventHandler
 {
+    public $id;
+
     function handleEvent($eventName, $data)
     {
         global $adb;

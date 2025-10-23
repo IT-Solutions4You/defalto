@@ -10,10 +10,10 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<form class="form-horizontal" id="saveBookmark" method="POST" action="index.php">
-				<input type="hidden" name="record" value="{$RECORD}" />
+				<input type="hidden" name="record" value="{if isset($RECORD)}{$RECORD}{/if}" />
 				<input type="hidden" name="module" value="{$MODULE}" />
 				<input type="hidden" name="action" value="SaveAjax" />
-				{if $RECORD}
+				{if isset($RECORD) && $RECORD}
 					{assign var="TITLE" value= {vtranslate('LBL_EDIT_BOOKMARK', $MODULE)}}
 				{else}
 					{assign var="TITLE" value={vtranslate('LBL_ADD_NEW_BOOKMARK', $MODULE)}}
@@ -26,7 +26,7 @@
 							<label class="pull-right">{vtranslate('LBL_BOOKMARK_NAME', $MODULE)}&nbsp;<span class="redColor">*</span></label>
 						</div>
 						<div class="col-lg-5">
-							<input type="text" name="bookmarkName" id="bookmarkName" class="inputElement form-control" {if $RECORD} value="{$BOOKMARK_NAME}" {/if} placeholder="{vtranslate('LBL_ENTER_BOOKMARK_NAME', $MODULE)}" data-rule-required="true"/>
+							<input type="text" name="bookmarkName" id="bookmarkName" class="inputElement form-control" {if isset($RECORD) && $RECORD} value="{$BOOKMARK_NAME}" {/if} placeholder="{vtranslate('LBL_ENTER_BOOKMARK_NAME', $MODULE)}" data-rule-required="true"/>
 						</div>
 						<div class="col-lg-2"></div>
 					</div>
@@ -37,7 +37,7 @@
 							<label class="pull-right">{vtranslate('LBL_BOOKMARK_URL', $MODULE)}&nbsp;<span class="redColor">*</span></label>
 						</div>
 						<div class="col-lg-5">
-							<input type="text" class="inputElement form-control" name="bookmarkUrl" id="bookmarkUrl" {if $RECORD} value="{$BOOKMARK_URL}" {/if} placeholder="{vtranslate('LBL_ENTER_URL', $MODULE)}" data-rule-required="true" data-rule-url="true"/>
+							<input type="text" class="inputElement form-control" name="bookmarkUrl" id="bookmarkUrl" {if isset($RECORD) && $RECORD} value="{$BOOKMARK_URL}" {/if} placeholder="{vtranslate('LBL_ENTER_URL', $MODULE)}" data-rule-required="true" data-rule-url="true"/>
 						</div>
 						<div class="col-lg-2"></div>
 					</div>

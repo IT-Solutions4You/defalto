@@ -21,6 +21,15 @@
                 {* $a is added as its print the index of the array, need to find a way around it *}
             {/if}
         {/foreach}
+        {if !isset($editAction)}
+            {assign var=editAction value=false}
+        {/if}
+        {if !isset($deleteAction)}
+            {assign var=deleteAction value=false}
+        {/if}
+        {if !isset($commentAction)}
+            {assign var=commentAction value=false}
+        {/if}
         {include file='ListViewTags.tpl'|vtemplate_path:$MODULE}
         <div class="row">
             <div class="col-sm pb-3">

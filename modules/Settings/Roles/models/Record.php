@@ -21,6 +21,10 @@
  */
 class Settings_Roles_Record_Model extends Settings_Vtiger_Record_Model
 {
+    protected $parent;
+    protected $children;
+    protected $profiles;
+
     /**
      * Function to get the Id
      * @return <Number> Role Id

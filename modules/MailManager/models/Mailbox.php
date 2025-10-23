@@ -307,10 +307,10 @@ class MailManager_Mailbox_Model
             $instance->mRefreshTimeOut = trim($row['box_refresh']);
             $instance->mFolder = trim($row['sent_folder']);
             $instance->mServerName = self::setServerName($instance->mServer);
-            $instance->mClientId = decode_html(trim($row['client_id']));
-            $instance->mClientSecret = decode_html(trim($row['client_secret']));
-            $instance->mClientToken = decode_html(trim($row['client_token']));
-            $instance->mClientAccessToken = decode_html(trim($row['client_access_token']));
+            $instance->mClientId = decode_html(trim((string)$row['client_id']));
+            $instance->mClientSecret = decode_html(trim((string)$row['client_secret']));
+            $instance->mClientToken = decode_html(trim((string)$row['client_token']));
+            $instance->mClientAccessToken = decode_html(trim((string)$row['client_access_token']));
             $instance->retrieveClientAccessToken();
         }
 

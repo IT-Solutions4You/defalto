@@ -21,6 +21,7 @@ vimport('~~/vtlib/Vtiger/Module.php');
 /**
  * Vtiger Module Model Class
  */
+#[AllowDynamicProperties]
 class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Interface
 {
     protected string $fontIcon = '';
@@ -29,6 +30,10 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
     protected $moduleMeta = false;
     protected $fields = false;
     protected $relations = null;
+    public $summaryFields;
+    public $headerFields;
+    public $relationListViewFields;
+    public $directRelatedFieldName;
 
     /**
      * Function to get the Module/Tab id
@@ -1563,23 +1568,27 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
     public function searchRecord($searchValue, $parentId = false, $parentModule = false, $relatedModule = false)
     {
         $searchFields = ['crmid', 'label', 'setype'];
+        $matchingRecords = [];
+
         if (!empty($searchValue) && empty($parentId) && empty($parentModule)) {
             $matchingRecords = Vtiger_Record_Model::getSearchResult($searchValue, $this->getName());
         } elseif ($parentId && $parentModule) {
             $db = PearDatabase::getInstance();
             $result = $db->pquery($this->getSearchRecordsQuery($searchValue, $searchFields, $parentId, $parentModule), []);
             $noOfRows = $db->num_rows($result);
-
             $moduleModels = [];
-            $matchingRecords = [];
+
             for ($i = 0; $i < $noOfRows; ++$i) {
                 $row = $db->query_result_rowdata($result, $i);
+
                 if (Users_Privileges_Model::isPermitted($row['setype'], 'DetailView', $row['crmid'])) {
                     $row['id'] = $row['crmid'];
                     $moduleName = $row['setype'];
+
                     if (!array_key_exists($moduleName, $moduleModels)) {
                         $moduleModels[$moduleName] = Vtiger_Module_Model::getInstance($moduleName);
                     }
+
                     $moduleModel = $moduleModels[$moduleName];
                     $modelClassName = Vtiger_Loader::getComponentClassName('Model', 'Record', $moduleName);
                     $recordInstance = new $modelClassName();
@@ -1608,7 +1617,7 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         $focus->id = $recordId;
 
         $result = $focus->$functionName($recordId, $this->getId(), $relatedModule->getId(), $relationId);
-        $query = $result['query'] . ' ' . $this->getSpecificRelationQuery($relatedModuleName);
+        $query = ($result['query'] ?? '') . ' ' . $this->getSpecificRelationQuery($relatedModuleName);
         $nonAdminQuery = $this->getNonAdminAccessControlQueryForRelation($relatedModuleName);
 
         //modify query if any module has summary fields, those fields we are displayed in related list of that module
@@ -1626,7 +1635,7 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
             $selectColumnSql = $queryGenerator->getSelectClauseColumnSQL();
             $newQuery = preg_split('/FROM/i', $query);
             $selectColumnSql = 'SELECT DISTINCT vtiger_crmentity.crmid,' . $selectColumnSql;
-            $query = $selectColumnSql . ' FROM ' . $newQuery[1];
+            $query = $selectColumnSql . ' FROM ' . ($newQuery[1] ?? '');
         }
 
         if ($nonAdminQuery) {

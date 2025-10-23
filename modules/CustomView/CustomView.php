@@ -984,6 +984,7 @@ class CustomView extends CRMEntity
 
         $advft_criteria = Vtiger_Cache::get('advftCriteria', $cvid);
         if (!$advft_criteria) {
+            $advft_criteria = [];
             // Not a good approach to get all the fields if not required(May leads to Performance issue)
             $sql = 'SELECT groupid,group_condition FROM vtiger_cvadvfilter_grouping WHERE cvid = ? ORDER BY groupid';
             $groupsresult = $adb->pquery($sql, [$cvid]);

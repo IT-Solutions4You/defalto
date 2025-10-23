@@ -19,14 +19,14 @@
 	<input type="hidden" id="numberOfEntries" value= "{$LISTVIEW_ENTRIES_COUNT}" />
 	<input type="hidden" id="alphabetSearchKey" value= "{$MODULE_MODEL->getAlphabetSearchField()}" />
 	<input type="hidden" id="Operator" value="{$OPERATOR}" />
-	<input type="hidden" id="alphabetValue" value="{$ALPHABET_VALUE}" />
+	<input type="hidden" id="alphabetValue" value="{if isset($ALPHABET_VALUE)}{$ALPHABET_VALUE}{/if}" />
 	<input type="hidden" id="totalCount" value="{$LISTVIEW_COUNT}" />
 	<input type="hidden" name="orderBy" value="{$ORDER_BY}" id="orderBy">
 	<input type="hidden" name="sortOrder" value="{$SORT_ORDER}" id="sortOrder">
 	<input type='hidden' value="{$PAGE_NUMBER}" id='pageNumber'>
 	<input type='hidden' value="{$PAGING_MODEL->getPageLimit()}" id='pageLimit'>
 	<input type="hidden" value="{$LISTVIEW_ENTRIES_COUNT}" id="noOfEntries">
-	<input type="hidden" value="{$NO_SEARCH_PARAMS_CACHE}" id="noFilterCache" >
+	<input type="hidden" value="{if isset($NO_SEARCH_PARAMS_CACHE)}{$NO_SEARCH_PARAMS_CACHE}{/if}" id="noFilterCache" >
 
 	<div id="table-content" class="table-container">
 		<form name="list" id="listedit" action="" onsubmit="return false;">
@@ -45,7 +45,7 @@
 								{/if}
 								<th {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')} nowrap="nowrap" {/if} >
 									<a href="#" class="listViewContentHeaderValues text-secondary text-nowrap" data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
-										{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
+										{if isset($FASORT_IMAGE) && $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
 											<i class="fa {$FASORT_IMAGE}"></i>
 										{else}
 											<i class="fa fa-sort customsort"></i>

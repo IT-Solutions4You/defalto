@@ -85,6 +85,7 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action
         } catch (Exception $e) {
             $response->setError($e->getMessage());
         }
+
         $response->emit();
     }
 

@@ -1237,7 +1237,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model
         $groupedCustomViews['Mine'] = [];
         $groupedCustomViews['Shared'] = [];
 
-        foreach ($customViews as $index => $customView) {
+        foreach ($customViews as $customView) {
             if ('All' === $customView->get('viewname')) {
                 $groupedCustomViews['Default'][] = $customView;
             } elseif ($customView->isMine() && ($customView->get('viewname') != 'All' || !$listMode)) {
@@ -1252,10 +1252,6 @@ class CustomView_Record_Model extends Vtiger_Base_Model
                 $groupedCustomViews['Others'][] = $customView;
                 $groupedCustomViews['Shared'][] = $customView;
             }
-        }
-
-        if (empty($groupedCustomViews['Shared'])) {
-            unset($groupedCustomViews['Shared']);
         }
 
         return $groupedCustomViews;
