@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,35 +18,38 @@
  */
 
 $languageStrings = [
-    'SalesOrder'         => 'Kundenaufträge',
-    'SINGLE_SalesOrder'  => 'Kundenaufträge',
-    'LBL_EXPORT_TO_PDF'  => 'Export als PDF',
-    'LBL_SEND_MAIL_PDF'  => 'Send Email with PDF',
-    'LBL_ADD_RECORD'     => 'Add Kundenaufträge',
-    'LBL_RECORDS_LIST'   => 'Verkäufe',
-    'LBL_SO_INFORMATION' => 'Verkauf',
-    'SalesOrder No'      => 'Verkaufsbestellung Nr.',
-    'Quote Name'         => 'Angebot',
-    'Customer No'        => 'Kundenzeichen',
-    'Requisition No'     => 'Bestellnummer',
-    'Tracking Number'    => 'Bedarfsnummer',
-    'Sales Commission'   => 'Provision',
-    'Purchase Order'     => 'Bestellnummer',
-    'Vendor Terms'       => 'Lieferbedingungen',
-    'Pending'            => 'hängig',
-    'Enable Recurring'   => 'Wiederholung zulassen',
-    'Frequency'          => 'Frequenz',
-    'Start Period'       => 'Start',
-    'End Period'         => 'Ende',
-    'Payment Duration'   => 'Zahlungsbedingung',
-    'Invoice Status'     => 'Rechnungsstatus',
-    'Sub Total'          => 'Zwischensumme',
-    'AutoCreated'        => 'automatisch',
-    'Sent'               => 'gesendet',
-    'Credit Invoice'     => 'Rechnung erstellen',
-    'Paid'               => 'bezahlt',
+    'AutoCreated' => 'automatisch',
+    'Credit Invoice' => 'Rechnung erstellen',
+    'Customer No' => 'Kundenzeichen',
+    'Enable Recurring' => 'Wiederholung zulassen',
+    'End Period' => 'Ende',
+    'Frequency' => 'Frequenz',
+    'Invoice Status' => 'Rechnungsstatus',
+    'LBL_ADD_RECORD' => 'Auftragsbestätigung hinzufügen',
+    'LBL_EXPORT_TO_PDF' => 'als PDF exportieren',
+    'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'wird aus dem System gelöscht. bitte entfernen oder ersetzen Sie diesen Punkt',
+    'LBL_RECORDS_LIST' => 'Liste der Auftragsbestätigungen',
+    'LBL_SEND_MAIL_PDF' => 'E-Mail mit PDF versenden',
+    'LBL_SO_INFORMATION' => 'Auftragsbestätigungen Details',
+    'LBL_THIS' => 'Diese',
+    'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Diese Position wird aus dem System gelöscht, bitte entfernen Sie diese Positionen',
+    'Paid' => 'bezahlt',
+    'Payment Duration' => 'Zahlungsbedingung',
+    'Pending' => 'unerledigt',
+    'Purchase Order' => 'Einkaufsbestellung',
+    'Quote Name' => 'Angebot',
+    'Requisition No' => 'Bestellnummer',
+    'SINGLE_SalesOrder' => 'Auftragsbestätigung',
+    'Sales Commission' => 'Provision',
+    'SalesOrder' => 'Auftragsbestätigungen',
+    'SalesOrder No' => 'Auftragsbestätigungsnr.',
+    'Sent' => 'gesendet',
+    'Start Period' => 'Start',
+    'Sub Total' => 'Zwischensumme',
+    'Tracking Number' => 'Bedarfsnummer',
+    'Vendor Terms' => 'Lieferbedingungen',
+];
 
-    'LBL_THIS'                                                                   => 'Diese',
-    'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM'          => 'wird aus dem system gelöscht.bitte entfernen oder ersetzen Sie diesen Artikel',
-    'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Diese Position wird aus dem system gelöscht,bitte entfernen Sie diese Zeile Elemente',
+$jsLanguageStrings = [
+    'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Bitte entfernen Sie die gelöschte Position',
 ];

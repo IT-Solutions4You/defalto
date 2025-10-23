@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,37 +18,40 @@
  */
 
 $languageStrings = [
-    'ServiceContracts'                 => 'Serviceverträge',
-    'SINGLE_ServiceContracts'          => 'Servicevertrag',
-    'Service Contracts'                => 'Serviceverträge',
-    'LBL_ADD_RECORD'                   => 'Add Service Contract',
-    'LBL_RECORDS_LIST'                 => 'Service Contracts List',
+    'Actual Duration' => 'ggw. Dauer (in Tagen)',
+    'Administrative' => 'administrativ',
+    'Archived' => 'archiviert',
+    'Complete' => 'komplett',
+    'Contract No' => 'Vertragsnummer',
+    'Days' => 'Tage',
+    'End Date' => 'Endedatum',
+    'High' => 'hoch',
+    'Hours' => 'Stunden',
+    'In Planning' => 'in Planung',
+    'In Progress' => 'in Bearbeitung',
+    'Incidents' => 'Zwischenfälle',
+    'LBL_ADD_RECORD' => 'Servicevertrag hinzufügen',
+    'LBL_RECORDS_LIST' => 'Liste der Serviceverträge',
     'LBL_SERVICE_CONTRACT_INFORMATION' => 'Servicevertragsinformation',
-    'Contract No'                      => 'Vertragsnummer',
-    'Start Date'                       => 'Startdatum',
-    'End Date'                         => 'Endedatum',
-    'Tracking Unit'                    => 'Einheit',
-    'Total Units'                      => 'Gesamtzahl',
-    'Used Units'                       => 'Verbrauch',
-    'Progress'                         => 'Fortschritt (in %)',
-    'Planned Duration'                 => 'geplante Dauer (in Tagen)',
-    'Actual Duration'                  => 'ggw. Dauer (in Tagen)',
-    'Type'                             => 'Typ',
-    'Related To'                       => 'Bezogen auf',
-    'Hours'                            => 'Stunden',
-    'Days'                             => 'Tage',
-    'Incidents'                        => 'Zwischenfälle',
-    'Normal'                           => 'Normal',
-    'Support'                          => 'Unterstützung',
-    'Administrative'                   => 'Administrativ',
-    'Undefined'                        => 'Nicht definiert',
-    'In Planning'                      => 'In Planung',
-    'On Hold'                          => 'In Wartestellung',
-    'Complete'                         => 'Komplett',
-    'Archived'                         => 'Archiviert',
-    'Low'                              => 'Niedrig',
-    'High'                             => 'Hoch',
-    'Services'                         => 'Dienstleistungen',
-    'In Progress'                      => 'In Bearbeitung',
-    'Related to'                       => 'Bezogen Auf',
+    'Low' => 'niedrig',
+    'Normal' => 'Normal',
+    'On Hold' => 'in Wartestellung',
+    'Planned Duration' => 'geplante Dauer (in Tagen)',
+    'Progress' => 'Fortschritt (in %)',
+    'Related To' => 'Bezogen auf',
+    'Related to' => 'bezogen auf',
+    'SINGLE_ServiceContracts' => 'Servicevertrag',
+    'Service Contracts' => 'Serviceverträge',
+    'ServiceContracts' => 'Serviceverträge',
+    'Services' => 'Dienstleistungen',
+    'Start Date' => 'Startdatum',
+    'Support' => 'Unterstützung',
+    'Total Units' => 'Gesamtzahl',
+    'Tracking Unit' => 'Einheit',
+    'Type' => 'Typ',
+    'Undefined' => 'nicht definiert',
+    'Used Units' => 'Verbrauch',
+];
+
+$jsLanguageStrings = [
 ];

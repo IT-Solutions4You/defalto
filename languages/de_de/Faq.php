@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,19 +18,22 @@
  */
 
 $languageStrings = [
-    'Faq'                     => 'Wissensbasis',
-    'SINGLE_Faq'              => 'Wissensbasis',
-    'LBL_RECORDS_LIST'        => 'FAQs List',
-    'LBL_ADD_RECORD'          => 'Add FAQ',
-    'LBL_FAQ_INFORMATION'     => 'Wissensbasis Information',
+    'Answer' => 'Antwort',
+    'Comments' => 'Kommentare',
+    'Draft' => 'Entwurf',
+    'Faq' => 'FAQ',
+    'Faq No' => 'FAQ Nr.',
+    'General' => 'Allgemein',
+    'LBL_ADD_RECORD' => 'FAQ hinzufügen',
     'LBL_COMMENT_INFORMATION' => 'Kommentar',
-    'Question'                => 'Frage',
-    'Answer'                  => 'Antwort',
-    'Comments'                => 'Kommentare',
-    'Faq No'                  => 'Wissensbasis Nr.',
-    'General'                 => 'Allgemein',
-    'Draft'                   => 'Entwurf',
-    'Published'               => 'veröffentlicht',
-    'Obsolete'                => 'veraltet',
-    'LBL_SOLUTION'            => 'Lösung',
+    'LBL_FAQ_INFORMATION' => 'FAQ Information',
+    'LBL_RECORDS_LIST' => 'Liste der FAQs',
+    'LBL_SOLUTION' => 'Lösung',
+    'Obsolete' => 'veraltet',
+    'Published' => 'veröffentlicht',
+    'Question' => 'Frage',
+    'SINGLE_Faq' => 'FAQ',
+];
+
+$jsLanguageStrings = [
 ];

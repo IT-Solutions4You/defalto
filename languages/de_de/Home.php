@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,27 +18,26 @@
  */
 
 $languageStrings = [
-    'ALVT'  => 'Top Organisationen',
-    'PLVT'  => 'Top Potentiale',
-    'QLTQ'  => 'Top Angebote',
+    'ALVT' => 'Top Organisationen',
     'CVLVT' => 'benutzerdefinierte Listen',
-    'HLT'   => 'Top Support Tickets',
-    'GRT'   => 'meine Gruppenzugehörigkeit',
-    'OLTSO' => 'Top Verkaufsbestellungen',
-    'ILTI'  => 'Top Rechnungen',
-    'HDB'   => 'Home Cockpit',
+    'GRT' => 'meine Gruppenzugehörigkeit',
+    'HDB' => 'Home Dashboard',
+    'HLT' => 'Top Support Tickets',
+    'Home' => 'Dashboard',
+    'ILTI' => 'Top Rechnungen',
+    'LBL_ADD_NEW_DASHBOARD' => 'neues Dashboard hinzufügen',
+    'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Maximal 30 Zeichen sind für Dashboard Namen erlaubt.',
+    'LBL_SAVE_ORDER' => 'Reinfolge speichern',
+    'LTFAQ' => 'meine FAQs',
     'OLTPO' => 'Top Einkaufsbestellungen',
-    'LTFAQ' => 'meine Wissensbasis',
-    'UA'    => 'aktuelle Aktivitäten',
-    'PA'    => 'unerledigte Aktivitäten',
-    'Home'  => 'Armaturenbrett',
-
-    'LBL_SAVE_ORDER'                       => 'Sparen Bestellen',
-    'LBL_ADD_NEW_DASHBOARD'                => 'Fügen Sie neue dashboard',
-    'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Maximal 30 Zeichen sind für Armaturenbrett Namen erlaubt.',
+    'OLTSO' => 'Top Verkaufsbestellungen',
+    'PA' => 'unerledigte Aktivitäten',
+    'PLVT' => 'Top Potentiale',
+    'QLTQ' => 'Top Angebote',
+    'UA' => 'aktuelle Aktivitäten',
 ];
 
 $jsLanguageStrings = [
+    'JS_NO_DATA_AVAILABLE' => 'keine Daten verfügbar',
     'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Dashboard-Name kann nicht nicht leer sein',
-    'JS_NO_DATA_AVAILABLE'            => 'Keine Daten verfügbar',
 ];

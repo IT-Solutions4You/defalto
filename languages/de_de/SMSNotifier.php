@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,17 +18,20 @@
  */
 
 $languageStrings = [
-    'SMSNotifier'                                => 'SMSNotifier',
-    'LBL_SEND_SMS_TO_SELECTED_NUMBERS'           => 'Send SMS to the selected numbers',
-    'LBL_STEP_1'                                 => 'Step 1',
-    'LBL_STEP_2'                                 => 'Step 2',
-    'LBL_SELECT_THE_PHONE_NUMBER_FIELDS_TO_SEND' => 'Select the phone number fields to send',
-    'LBL_TYPE_THE_MESSAGE'                       => 'Type the message',
-    'LBL_WRITE_YOUR_MESSAGE_HERE'                => 'write your message here',
-    'LBL_ADD_MORE_FIELDS'                        => 'Add more fields',
-    'LBL_SERVER_CONFIG'                          => 'Server Konfiguration',
-    'LBL_CHECK_STATUS'                           => 'prüfe Status',
-    'message'                                    => 'Nachricht',
-    'LBL_SMSNOTIFIER_INFORMATION'                => 'SMS Information',
-    'SINGLE_SMSNotifier'                         => 'SMS Notifier',
+    'LBL_ADD_MORE_FIELDS' => 'Weitere Felder hinzufügen',
+    'LBL_CHECK_STATUS' => 'Status prüfen',
+    'LBL_SELECT_THE_PHONE_NUMBER_FIELDS_TO_SEND' => 'Telefonnummernfelder zum Senden auswählen',
+    'LBL_SEND_SMS_TO_SELECTED_NUMBERS' => 'SMS an die ausgewählten Nummern senden',
+    'LBL_SERVER_CONFIG' => 'Serverkonfiguration',
+    'LBL_SMSNOTIFIER_INFORMATION' => 'SMS-Informationen',
+    'LBL_STEP_1' => 'Schritt 1',
+    'LBL_STEP_2' => 'Schritt 2',
+    'LBL_TYPE_THE_MESSAGE' => 'Nachricht eingeben',
+    'LBL_WRITE_YOUR_MESSAGE_HERE' => 'Schreiben Sie Ihre Nachricht hier',
+    'SINGLE_SMSNotifier' => 'SMS-Benachrichtigung',
+    'SMSNotifier' => 'SMS-Benachrichtigung',
+    'message' => 'Nachricht',
+];
+
+$jsLanguageStrings = [
 ];

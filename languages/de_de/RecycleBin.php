@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,20 +18,22 @@
  */
 
 $languageStrings = [
-    'Recycle Bin'              => 'Recycle Bin',
-    'RecycleBin'               => 'Recycle Bin',
-    'LBL_SELECT_MODULE'        => 'Select Module',
-    'LBL_EMPTY_RECYCLEBIN'     => 'Empty Recycle Bin',
-    'LBL_RESTORE'              => 'Restore',
-    'LBL_NO_PERMITTED_MODULES' => 'No permitted modules available',
-    'LBL_RECORDS_LIST'         => 'Recycle Bin List',
-    'LBL_NO_RECORDS_FOUND'     => 'No records found to Restore in module',
+    'LBL_EMPTY_RECYCLEBIN' => 'Papierkorb leeren',
+    'LBL_NO_PERMITTED_MODULES' => 'Keine zulässigen Module verfügbar',
+    'LBL_NO_RECORDS_FOUND' => 'Keine Datensätze gefunden',
+    'LBL_RECORDS_LIST' => 'Datensatzliste',
+    'LBL_RESTORE' => 'wiederherstellen',
+    'LBL_SELECT_MODULE' => 'Modul auswählen',
+    'Recycle Bin' => 'Papierkorb',
+    'RecycleBin' => 'Papierkorb',
+    'SINGLE_RecycleBin' => 'Papierkorb',
 ];
+
 $jsLanguageStrings = [
-    'JS_MSG_EMPTY_RB_CONFIRMATION'         => 'Are you sure you want to permanently remove all the deleted records from your database?',
-    'JS_LBL_RESTORE_RECORDS_CONFIRMATION'  => 'Are you sure you want to restore the records?',
-    'JS_LBL_RESTORE_RECORD_CONFIRMATION'   => 'Sind Sie sicher, dass Sie den Datensatz wiederherstellen?',
-    'JS_RESTORING_RECORD'                  => 'Wiederherstellen Rekord',
-    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Wiederherstellung in Vtiger und Antriebs',
-    'JS_RESTORING_RECORDS' => 'Wiederherstellen von Datensätzen',
+    'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Sind Sie sicher, dass Sie die Aufzeichnungen wiederherstellen möchten?',
+    'JS_LBL_RESTORE_RECORD_CONFIRMATION' => 'Sind Sie sicher, dass Sie den Datensatz wiederherstellen wollen?',
+    'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Sind Sie sicher, dass Sie alle gelöschten Datensätze dauerhaft aus Ihrer Datenbank entfernen möchten?',
+    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Wiederherstellen in Vtiger und Laufwerk',
+    'JS_RESTORING_RECORD' => 'Datensatz wiederherstellen',
+    'JS_RESTORING_RECORDS' => 'Datensätze wiederherstellen',
 ];

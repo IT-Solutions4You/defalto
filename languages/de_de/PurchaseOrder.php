@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,49 +18,46 @@
  */
 
 $languageStrings = [
-    'PurchaseOrder'             => 'Kauforder',
-    'SINGLE_PurchaseOrder'      => 'Einkaufsbestellung',
-    'LBL_EXPORT_TO_PDF'         => 'Als PDF exportieren',
-    'LBL_SEND_MAIL_PDF'         => 'Als PDF per E-Mail senden',
-    'LBL_ADD_RECORD'            => 'Neue Bestellung',
-    'LBL_RECORDS_LIST'          => 'Einkäufe',
-    'LBL_COPY_SHIPPING_ADDRESS' => 'Kopiere Versandadresse',
-    'LBL_COPY_BILLING_ADDRESS'  => 'Kopiere Rechnungsadresse',
-    'LBL_PO_INFORMATION'        => 'Einkauf',
-    'PurchaseOrder No'          => 'Bestellnummer',
-    'Requisition No'            => 'Anforderungsnummer',
-    'Tracking Number'           => 'Bedarfsnummer',
-    'Sales Commission'          => 'Provision',
-    'LBL_PAID'                  => 'Paid',
-    'LBL_BALANCE'               => 'Balance',
-    'Received Shipment'         => 'Lieferung empfangen',
-    'LBL_LIST_PRICE'            => 'Listenpreis',
-    'List Price'                => 'Listenpreis',
-    'LBL_COPY_COMPANY_ADDRESS'  => 'Kopieren Firma Adresse',
-    'LBL_COPY_ACCOUNT_ADDRESS'  => 'Kopieren Organisation Adresse',
+    'LBL_ACCOUNT_ADDRESS' => 'Organisation Adresse',
+    'LBL_ADD_RECORD' => 'Einkaufsbestellung hinzufügen',
+    'LBL_BALANCE' => 'Bilanz',
+    'LBL_BILLING_ADDRESS' => 'Rechnungsadresse',
+    'LBL_COMPANY_ADDRESS' => 'Unternehmen Adresse',
+    'LBL_CONTACT_ADDRESS' => 'Kontakt Adresse',
+    'LBL_COPY_ACCOUNT_ADDRESS' => 'Organisation Adresse kopieren',
+    'LBL_COPY_BILLING_ADDRESS' => 'Kopiere Rechnungsadresse',
+    'LBL_COPY_COMPANY_ADDRESS' => 'Unternehmen Adresse kopieren',
+    'LBL_COPY_SHIPPING_ADDRESS' => 'Kopiere Lieferadresse',
+    'LBL_EXPORT_TO_PDF' => 'Als PDF exportieren',
+    'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'wird aus dem System gelöscht. bitte entfernen oder ersetzen Sie diesen Punkt',
+    'LBL_LIST_PRICE' => 'Listenpreis',
+    'LBL_PAID' => 'bezahlt',
+    'LBL_PO_INFORMATION' => 'Einkaufsbestellungsdetails',
+    'LBL_RECORDS_LIST' => 'Liste der Einkaufsbestellungen',
     'LBL_SELECT_ADDRESS_OPTION' => 'Wählen Sie Adresse kopieren',
-    'LBL_BILLING_ADDRESS'       => 'Rechnungsadresse',
-    'LBL_COMPANY_ADDRESS'       => 'Unternehmen Adresse',
-    'LBL_ACCOUNT_ADDRESS'       => 'Organisation Adresse',
-    'LBL_VENDOR_ADDRESS'        => 'Händler Adresse',
-    'LBL_CONTACT_ADDRESS'       => 'Kontakt Adresse',
-
-    'LBL_THIS'                                                                   => 'Diese',
-    'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM'          => 'wird aus dem system gelöscht.bitte entfernen oder ersetzen Sie diesen Artikel',
-    'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Diese Position wird aus dem system gelöscht,bitte entfernen Sie diese Zeile Elemente',
-
+    'LBL_SEND_MAIL_PDF' => 'Als PDF per E-Mail senden',
+    'LBL_THIS' => 'Diese',
+    'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Diese Position wird aus dem System gelöscht, bitte entfernen Sie diese Positionen',
+    'LBL_VENDOR_ADDRESS' => 'Lieferant Adresse',
+    'List Price' => 'Listenpreis',
+    'PurchaseOrder' => 'Einkaufsbestellungen',
+    'PurchaseOrder No' => 'Einkaufsbestellungennr.',
+    'Received Shipment' => 'Lieferung empfangen',
+    'Requisition No' => 'Anforderungsnummer',
+    'SINGLE_PurchaseOrder' => 'Einkaufsbestellung',
+    'Sales Commission' => 'Provision',
+    'Tracking Number' => 'Bedarfsnummer',
 ];
 
 $jsLanguageStrings = [
-    'JS_ORGANIZATION_NOT_FOUND'         => 'Organisation leer',
-    'JS_ORGANIZATION_NOT_FOUND_MESSAGE' => 'Bitte wählen Sie eine Organisation, bevor Sie Adresse kopieren',
-    'JS_ACCOUNT_NOT_FOUND'              => 'Organisation leer',
-    'JS_ACCOUNT_NOT_FOUND_MESSAGE'      => 'Bitte wählen Sie eine Organisation, bevor Sie Adresse kopieren',
-    'JS_VENDOR_NOT_FOUND'               => 'Anbieter Leere',
-    'JS_VENDOR_NOT_FOUND_MESSAGE'       => 'Bitte wählen Sie einen Anbieter, bevor Sie Adresse kopieren',
-    'JS_CONTACT_NOT_FOUND'              => 'Kontakt Leere',
-    'JS_CONTACT_NOT_FOUND_MESSAGE'      => 'Bitte wählen Sie einen Kontakt, bevor Sie Adresse kopieren',
-
-    'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Bitte entfernen Sie werbebuchung, die gelöscht wird',
-    'LBL_COPY_COMPANY_ADDRESS'                   => 'Kopieren Firma Adresse',
+    'JS_ACCOUNT_NOT_FOUND' => 'Organisation leer!',
+    'JS_ACCOUNT_NOT_FOUND_MESSAGE' => 'Bitte wählen Sie eine Organisation, bevor Sie die Adresse kopieren',
+    'JS_CONTACT_NOT_FOUND' => 'Kontakt leer!',
+    'JS_CONTACT_NOT_FOUND_MESSAGE' => 'Bitte wählen Sie einen Kontakt, bevor Sie die Adresse kopieren',
+    'JS_ORGANIZATION_NOT_FOUND' => 'Organisation leer!',
+    'JS_ORGANIZATION_NOT_FOUND_MESSAGE' => 'Bitte wählen Sie eine Organisation, bevor Sie die Adresse kopieren',
+    'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Bitte entfernen Sie die gelöschte Position',
+    'JS_VENDOR_NOT_FOUND' => 'Lieferant leer!',
+    'JS_VENDOR_NOT_FOUND_MESSAGE' => 'Bitte wählen Sie einen Lieferanten, bevor Sie die Adresse kopieren',
+    'LBL_COPY_COMPANY_ADDRESS' => 'Kopieren Firma Adresse',
 ];

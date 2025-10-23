@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ********************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,8 +18,12 @@
  */
 
 $languageStrings = [
-    'LBL_INVALID_OLD_PASSWORD'    => 'Druckvorlage hinzufügen',
-    'LBL_NEW_PASSWORD_MISMATCH'   => "Neues Passwort und bestätigen Passwort stimmen nicht überein",
-    'LBL_DATABASE_QUERY_ERROR'    => 'Datenbankfehler während der Durchführung angeforderte Operation',
     'LBL_CHANGE_PASSWORD_FAILURE' => 'Fehler beim Passwort ändern',
+    'LBL_DATABASE_QUERY_ERROR' => 'Datenbankfehler während der Durchführung angeforderte Operation',
+    'LBL_INVALID_OLD_PASSWORD' => 'Druckvorlage hinzufügen',
+    'LBL_NEW_PASSWORD_MISMATCH' => 'Neues Passwort und bestätigen Passwort stimmen nicht überein',
+    'LBL_PASSWORD_NOT_STRONG' => 'Um Ihre Daten zu schützen, empfehlen wir die Verwendung eines sicheren Passworts &lt;br&gt; &lt;ul&gt; &lt;li&gt;Das Passwort sollte mindestens 8 Zeichen lang sein&lt;/li&gt; &lt;li&gt;Mindestens eine Zahl enthalten&lt;/li&gt; &lt;li&gt;Mindestens einen Kleinbuchstaben enthalten&lt;/li&gt; &lt;li&gt;Mindestens einen Großbuchstaben enthalten&lt;/li&gt; &lt;li&gt;Mindestens ein Sonderzeichen enthalten&lt;/li&gt; &lt;/ul&gt;',
+];
+
+$jsLanguageStrings = [
 ];
