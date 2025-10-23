@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,16 +18,19 @@
  */
 
 $languageStrings = [
-    'CronTasks'     => 'Scheduler',
-    'Id'            => 'Id',
-    'Cron Job'      => 'Cron Job',
-    'Frequency'     => 'Frequency',
-    'Status'        => 'Status',
-    'Last Start'    => 'Last scan started',
-    'Last End'      => 'Last scan ended',
-    'Sequence'      => 'Sequence',
-    'LBL_COMPLETED' => 'Completed',
-    'LBL_RUNNING'   => 'Running',
-    'LBL_ACTIVE'    => 'Active',
-    'LBL_INACTIVE'  => 'In Active',
+    'Cron Job' => 'Cron Job',
+    'CronTasks' => 'Cronjob Zeitplaner',
+    'Frequency' => 'Frequenz',
+    'Id' => 'Id',
+    'LBL_ACTIVE' => 'aktiv',
+    'LBL_COMPLETED' => 'Fertig',
+    'LBL_INACTIVE' => 'inaktiv',
+    'LBL_RUNNING' => 'läuft',
+    'Last End' => 'letzte Ausführung',
+    'Last Start' => 'nächste Ausführung',
+    'Sequence' => 'Sequenz',
+    'Status' => 'Status',
+];
+
+$jsLanguageStrings = [
 ];

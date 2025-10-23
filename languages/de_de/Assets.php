@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,22 +18,25 @@
  */
 
 $languageStrings = [
-    'Assets'                   => 'Bestände',
-    'SINGLE_Assets'            => 'Bestand',
-    'LBL_ADD_RECORD'           => 'Neuer Bestand',
-    'LBL_RECORDS_LIST'         => 'Bestandsübersicht',
-    'LBL_ASSET_INFORMATION'    => 'Bestandinformation',
-    'Asset No'                 => 'Bestandnummer',
-    'Serial Number'            => 'Seriennummer',
-    'Date Sold'                => 'Verkaufsdatum',
-    'Date in Service'          => 'Servicedatum',
-    'Tag Number'               => 'Tag-Nummer',
-    'Invoice Name'             => 'Rechnung',
-    'Shipping Method'          => 'Versandmethode',
+    'Asset Name' => 'Aktivposten Name',
+    'Asset No' => 'Aktivpostennr',
+    'Assets' => 'Aktivposten',
+    'Customer Name' => 'Organisation',
+    'Date Sold' => 'Verkaufsdatum',
+    'Date in Service' => 'Servicedatum',
+    'In Service' => 'aktiv',
+    'Invoice Name' => 'Rechnung',
+    'LBL_ADD_RECORD' => 'Aktivposten hinzufügen',
+    'LBL_ASSET_INFORMATION' => 'Aktivposten Informationen',
+    'LBL_RECORDS_LIST' => 'Liste der Aktivposten',
+    'Notes' => 'Beschreibung',
+    'Out-of-service' => 'inaktiv',
+    'SINGLE_Assets' => 'Aktivposten',
+    'Serial Number' => 'Seriennummer',
+    'Shipping Method' => 'Versandmethode',
     'Shipping Tracking Number' => 'Sendungsverfolgungsnummer',
-    'Asset Name'               => 'Bestandname',
-    'Customer Name'            => 'Organisation',
-    'Notes'                    => 'Beschreibung',
-    'In Service'               => 'Bestand aktiv',
-    'Out-of-service'           => 'Bestand inaktiv',
+    'Tag Number' => 'Tag-Nummer',
+];
+
+$jsLanguageStrings = [
 ];

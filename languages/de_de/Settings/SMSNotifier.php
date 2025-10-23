@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,18 +18,18 @@
  */
 
 $languageStrings = [
-    'LBL_ADD_RECORD'         => 'New Configuration',
-    'SMSNotifier'            => 'SMS Provider Configuration',
-    'LBL_ADD_CONFIGURATION'  => 'New Configuration',
+    'LBL_ADD_RECORD' => 'New Configuration',
+    'SMSNotifier' => 'SMS Provider Configuration',
+    'LBL_ADD_CONFIGURATION' => 'New Configuration',
     'LBL_EDIT_CONFIGURATION' => 'Edit Configuration',
-    'LBL_SELECT_ONE'         => 'Select One',
-    'providertype'           => 'Provider',
-    'isactive'               => 'Active',
-    'username'               => 'User Name',
-    'password'               => 'Password',
+    'LBL_SELECT_ONE' => 'Select One',
+    'providertype' => 'Provider',
+    'isactive' => 'Active',
+    'username' => 'User Name',
+    'password' => 'Password',
 ];
 $jsLanguageStrings = [
-    'LBL_DELETE_CONFIRMATION'        => 'Are you sure, you want to delete this SMSNotifier Configuration',
+    'LBL_DELETE_CONFIRMATION' => 'Are you sure, you want to delete this SMSNotifier Configuration',
     'JS_RECORD_DELETED_SUCCESSFULLY' => 'SMS Provider Deleted Successfully',
-    'JS_CONFIGURATION_SAVED'         => 'SMS Provider Configurations saved',
+    'JS_CONFIGURATION_SAVED' => 'SMS Provider Configurations saved',
 ];

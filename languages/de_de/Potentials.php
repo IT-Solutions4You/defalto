@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,56 +18,53 @@
  */
 
 $languageStrings = [
-    'Potentials'                              => 'Verkaufspotentiale',
-    'SINGLE_Potentials'                       => 'Potential',
-    'LBL_ADD_RECORD'                          => 'Add Opportunity',
-    'LBL_RECORDS_LIST'                        => 'Opportunities List',
-    'LBL_OPPORTUNITY_INFORMATION'             => 'Information:',
-    'Potential No'                            => 'Potential Nr.',
-    'Amount'                                  => 'Betrag',
-    'Next Step'                               => 'nächster Schritt',
-    'Sales Stage'                             => 'Verkaufsstufe',
-    'Probability'                             => 'Wahrscheinlichkeit (%)',
-    'Campaign Source'                         => 'Kampagne',
-    'Forecast Amount'                         => 'Die gewichteten Revenue',
-    'Funnel'                                  => 'Sales Funnel',
-    'Potentials by Stage'                     => 'Opportunities by Stage',
-    'Total Revenue'                           => 'Revenue by Salesperson',
-    'Top Potentials'                          => 'Top Opportunities',
-    'Forecast'                                => 'Sales Forecast',
-    'Prospecting'                             => 'Neukundenwerbung',
-    'Qualification'                           => 'Qualifikation',
-    'Needs Analysis'                          => 'Bedarfsanalyse',
-    'Value Proposition'                       => 'Bewertung',
-    'Id. Decision Makers'                     => 'Entscheider identifizieren',
-    'Perception Analysis'                     => 'Sichtweisenanalyse',
-    'Proposal/Price Quote'                    => 'Vorschlag/Angebot',
-    'Negotiation/Review'                      => 'Verhandlung',
-    'Closed Won'                              => 'gewonnen',
-    'Closed Lost'                             => 'verloren',
-    '--None--'                                => '--ohne--',
-    'Existing Business'                       => 'existierendes Geschäft',
-    'New Business'                            => 'neues Geschäft',
-    'LBL_EXPECTED_CLOSE_DATE_ON'              => 'Expected to close on',
-    'LBL_RELATED_CONTACTS'                    => 'Related Contacts',
-    'LBL_RELATED_PRODUCTS'                    => 'Related Products',
-    'Related To'                              => 'Name der Organisation',
-    'Type'                                    => 'Typ',
-
-    //Convert Potentials
-    'LBL_CONVERT_POTENTIAL'                   => 'Konvertieren Chancen',
-    'LBL_POTENTIALS_FIELD_MAPPING'            => 'Chancen Field Mapping',
-    'LBL_CONVERT_POTENTIALS_ERROR'            => 'Sie haben zu Projekt zu ermöglichen, die Gelegenheit zu konvertieren',
-    'LBL_POTENTIALS_FIELD_MAPPING_INCOMPLETE' => 'Chancen Field Mapping ist unvollständig (Einstellungen> Module Manager> Chancen> Chancen Field Mapping)',
-    'LBL_CREATE_PROJECT'                      => 'Projekt erstellen',
-
-    //Potentials Custom Field Mapping
-    'LBL_CUSTOM_FIELD_MAPPING'                => 'Gelegenheit, Mapping-Projekt',
-
-    'Contact Name' => 'Kontakt Name',
-
+    '--None--' => '--ohne--',
+    'Amount' => 'Betrag',
+    'Campaign Source' => 'Kampagnen Quelle',
+    'Closed Lost' => 'verloren',
+    'Closed Won' => 'gewonnen',
+    'Contact Name' => 'Ansprechpartner',
+    'Existing Business' => 'existierendes Geschäft',
+    'Forecast' => 'Prognose',
+    'Forecast Amount' => 'gewichtete Einnahmen',
+    'Funnel' => 'Verkaufs Funnel',
+    'Id. Decision Makers' => 'Entscheider identifizieren',
+    'LBL_ADD_RECORD' => 'Potential hinzufügen',
+    'LBL_CONVERT_POTENTIAL' => 'Potential konvertieren',
+    'LBL_CONVERT_POTENTIALS_ERROR' => 'Sie haben zu Projekt zu ermöglichen, das Potential zu konvertieren',
+    'LBL_CREATE_INVOICE' => 'Create Invoice',
+    'LBL_CREATE_PROJECT' => 'Projekt erstellen',
+    'LBL_CREATE_QUOTES' => 'Create Quote',
+    'LBL_CREATE_SALESORDER' => 'Create Sales Order',
+    'LBL_CUSTOM_FIELD_MAPPING' => 'Benutzerdefinierte Feldzuordnung',
+    'LBL_EXPECTED_CLOSE_DATE_ON' => 'Voraussichtlicher Abschluss',
+    'LBL_OPPORTUNITY_INFORMATION' => 'Information',
+    'LBL_POTENTIALS_FIELD_MAPPING' => 'Potential Feldzuweisung',
+    'LBL_POTENTIALS_FIELD_MAPPING_INCOMPLETE' => 'Zuordnung der Potential-Felder ist unvollständig (Einstellungen &gt; Modul Manager &gt; Potentiale &gt; Zuordnung der Potential-Felder)',
+    'LBL_RECORDS_LIST' => 'Liste der Potentiale',
+    'LBL_RELATED_CONTACTS' => 'Bezogene Kontakte',
+    'LBL_RELATED_PRODUCTS' => 'bezogene Produkte',
+    'Needs Analysis' => 'Bedarfsanalyse',
+    'Negotiation/Review' => 'Verhandlung',
+    'New Business' => 'neues Geschäft',
+    'Next Step' => 'nächster Schritt',
+    'Perception Analysis' => 'Sichtweisenanalyse',
+    'Potential No' => 'Potential Nr.',
+    'Potentials' => 'Potentiale',
+    'Potentials by Stage' => 'Potentiale nach Stufe',
+    'Probability' => 'Wahrscheinlichkeit (%)',
+    'Proposal/Price Quote' => 'Vorschlag/Angebot',
+    'Prospecting' => 'Neukundenwerbung',
+    'Qualification' => 'Qualifikation',
+    'Related To' => 'vbezogene Organisationen',
+    'SINGLE_Potentials' => 'Potential',
+    'Sales Stage' => 'Verkaufsstufe',
+    'Top Potentials' => 'Top Potentiale',
+    'Total Revenue' => 'Gesamteinnahmen',
+    'Type' => 'Typ',
+    'Value Proposition' => 'Bewertung',
 ];
 
 $jsLanguageStrings = [
-    'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Conversion Auswahl von Projekt erfordert',
+    'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Konvertierung erfordert Auswahl des Projekts',
 ];

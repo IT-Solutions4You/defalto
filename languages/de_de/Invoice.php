@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,31 +18,34 @@
  */
 
 $languageStrings = [
-    'Invoice'                 => 'Rechnungen',
-    'SINGLE_Invoice'          => 'Rechnung',
-    'LBL_EXPORT_TO_PDF'       => 'Als PDF exportieren',
-    'LBL_SEND_MAIL_PDF'       => 'Als PDF per E-Mail senden',
-    'LBL_ADD_RECORD'          => 'Neue Rechnung',
-    'LBL_RECORDS_LIST'        => 'Rechnungsübersicht',
+    'AutoCreated' => 'automatisch erzeugt',
+    'Cancel' => 'abbrechen',
+    'Credit Invoice' => 'Gutschrift',
+    'Customer No' => 'Kundenzeichen',
+    'Invoice' => 'Rechnungen',
+    'Invoice Date' => 'Rechnungsdatum',
+    'Invoice No' => 'Rechnungsnr',
+    'LBL_ACTION' => 'Aktion',
+    'LBL_ADD_RECORD' => 'Rechnung hinzufügen',
+    'LBL_BALANCE' => 'Endsumme',
+    'LBL_EXPORT_TO_PDF' => 'Als PDF exportieren',
     'LBL_INVOICE_INFORMATION' => 'Rechnungsinformation',
-    'Sales Order'             => 'Bestellung',
-    'Customer No'             => 'Kundenzeichen',
-    'Invoice Date'            => 'Rechnungsdatum',
-    'Purchase Order'          => 'Auftrag:',
-    'Sales Commission'        => 'Provision',
-    'Invoice No'              => 'Rechnungsnummer',
-    'LBL_RECEIVED'            => 'Bereits bezahlt',
-    'LBL_BALANCE'             => 'Endsumme',
-    'Sent'                    => 'gesendet',
-    'Credit Invoice'          => 'Gutschrift',
-    'Paid'                    => 'bezahlt',
-    'AutoCreated'             => 'automatisch erzeugt',
-    'Cancel'                  => 'Abbrechen',
-    'LBL_NOT_A_BUNDLE'        => 'Nicht ein Bundle',
-    'LBL_SUB_PRODUCTS'        => 'Unter Produkte',
-    'LBL_ACTION'              => 'Aktion',
+    'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'wird aus dem System gelöscht. Bitte entfernen oder ersetzen Sie dieses Element',
+    'LBL_NOT_A_BUNDLE' => 'ist kein Produktbündel',
+    'LBL_RECEIVED' => 'bereits bezahlt',
+    'LBL_RECORDS_LIST' => 'Liste der Rechnungen',
+    'LBL_SEND_MAIL_PDF' => 'Als PDF per E-Mail senden',
+    'LBL_SUB_PRODUCTS' => 'Unterprodukte',
+    'LBL_THIS' => 'Diese',
+    'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Dieser Einzelposten wird aus dem System gelöscht, bitte entfernen Sie diesen Einzelposten',
+    'Paid' => 'bezahlt',
+    'Purchase Order' => 'Einkaufsbestellung',
+    'SINGLE_Invoice' => 'Rechnung',
+    'Sales Commission' => 'Provision',
+    'Sales Order' => 'Auftragsbestätigung',
+    'Sent' => 'gesendet',
+];
 
-    'LBL_THIS'                                                                   => 'Diese',
-    'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM'          => 'wird aus dem system gelöscht.bitte entfernen oder ersetzen Sie diesen Artikel',
-    'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Diese Position wird aus dem system gelöscht,bitte entfernen Sie diese Zeile Elemente',
+$jsLanguageStrings = [
+    'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Bitte entfernen Sie die gelöschte Position',
 ];

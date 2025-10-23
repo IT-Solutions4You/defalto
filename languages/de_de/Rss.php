@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,20 +18,20 @@
  */
 
 $languageStrings = [
-    'Rss'                   => 'Rss',
-    'LBL_RSS_FEED_SOURCES'  => 'Rss Feed-Quellen',
-    'LBL_ADD_FEED_SOURCE'   => 'Futtermittel Quelle hinzufügen',
-    'LBL_FEEDS_LIST_FROM'   => 'Liste der Feeds aus',
-    'LBL_SET_AS_DEFAULT'    => 'Standard machen',
-    'LBL_SENDER'            => 'Absender',
-    'LBL_FEED_SOURCE'       => 'Feed-Quelle',
-    'LBL_ENTER_FEED_SOURCE' => 'Geben Futterquelle',
-    'SINGLE_Rss'            => 'Rss Futtermittel',
+    'LBL_ADD_FEED_SOURCE' => 'Quelle hinzufügen',
+    'LBL_ENTER_FEED_SOURCE' => 'Rss Quelle eintragen',
+    'LBL_FEEDS_LIST_FROM' => 'Liste der Feeds aus',
+    'LBL_FEED_SOURCE' => 'Feed-Quelle',
+    'LBL_RSS_FEED_SOURCES' => 'Rss Feed-Quellen',
+    'LBL_SENDER' => 'Absender',
+    'LBL_SET_AS_DEFAULT' => 'Als Standard setzen',
+    'Rss' => 'RSS',
+    'SINGLE_Rss' => 'Rss Feed',
 ];
 
 $jsLanguageStrings = [
-    'JS_RSS_SUCCESSFULLY_SAVED' => 'Rss erfolgreich gespeichert',
-    'JS_INVALID_RSS_URL'        => 'Ungültige Rss url',
-    'JS_RSS_MADE_AS_DEFAULT'    => 'Rss Gemacht als Standard',
+    'JS_INVALID_RSS_URL' => 'Ungültige Rss URL',
     'JS_NO_RECORDS' => 'Keine Datensätze',
+    'JS_RSS_MADE_AS_DEFAULT' => 'RSS als Standard gesetzt',
+    'JS_RSS_SUCCESSFULLY_SAVED' => 'Rss erfolgreich gespeichert',
 ];

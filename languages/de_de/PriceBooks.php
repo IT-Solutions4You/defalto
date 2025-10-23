@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,15 +18,17 @@
  */
 
 $languageStrings = [
-    'PriceBooks'                => 'Preislisten',
-    'SINGLE_PriceBooks'         => 'Preisliste',
-    'LBL_ADD_RECORD'            => 'Add Price Book',
-    'LBL_RECORDS_LIST'          => 'Price Books List',
-    'LBL_PRICEBOOK_INFORMATION' => 'Preislisteninformation:',
-    'LBL_EDIT_LIST_PRICE'       => 'Edit List Price',
-    'Price Book Name'           => 'Preislistenname',
-    'PriceBook No'              => 'Preislisten Nummer',
-
+    'LBL_ADD_RECORD' => 'Preisliste hinzufügen',
+    'LBL_ADD_TO' => 'hinzufügen zu',
+    'LBL_EDIT_LIST_PRICE' => 'Preisliste bearbeiten',
+    'LBL_PRICEBOOK_INFORMATION' => 'Preislisteninformation',
+    'LBL_RECORDS_LIST' => 'Liste der Preislisten',
     'LBL_UNIT_PRICE' => 'Einheitspreis',
-    'LBL_ADD_TO'     => 'Hinzufügen zu',
+    'Price Book Name' => 'Preislistenname',
+    'PriceBook No' => 'Preislisten-Nr.',
+    'PriceBooks' => 'Preislisten',
+    'SINGLE_PriceBooks' => 'Preisliste',
+];
+
+$jsLanguageStrings = [
 ];

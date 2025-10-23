@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,38 +18,41 @@
  */
 
 $languageStrings = [
-    'SINGLE_ProjectTask'           => "Projektaufgabe",
-    'LBL_ADD_RECORD'               => "In Projektaufgabe",
-    'LBL_RECORDS_LIST'             => "Projekt Task-Liste",
-    'LBL_PROJECT_TASK_INFORMATION' => "Projektaufgabe Einzelheiten",
-    'LBL_PROJECTS_LIST'            => "Projekte Liste",
-    'LBL_TASKS_LIST'               => "Aufgabenliste",
-    'LBL_MILESTONES_LIST'          => "Meilensteine ​​Liste",
-    'Project Task Name'            => "Projekt Task-Name",
-    'Project Task No'              => "Projektaufgabe Nein",
-    'Project Task Number'          => "Projektaufgabe Anzahl",
-    'Status'                       => "Status",
-    'Priority'                     => "Priority",
-    'Progress'                     => "Fortschritt",
-    'Type'                         => "Typ",
-    'Worked Hours'                 => "Arbeitsstunden",
-    'Start Date'                   => "Startdatum",
-    'End Date'                     => "End Date",
-    'Related to'                   => "Bezug zu",
-    'administrative'               => 'Administrativ',
-    'operative'                    => 'Operativ',
-    'other'                        => 'Andere',
-    'low'                          => 'Niedrig',
-    'normal'                       => 'Normal',
-    'high'                         => 'Hoch',
-    'Created Time'                 => "Erstellt Zeit",
-    'Modified Time'                => "Geändert Zeit",
-    'description'                  => "Beschreibung",
-    'Assigned To'                  => "Zuständig",
-    'Open'                         => "Öffnen",
-    'In Progress'                  => "in uitvoering",
-    'Completed'                    => "Fertiggestellt",
-    'Deferred'                     => "Latente",
-    'LBL_NO_DATE_VALUE_MSG'        => 'oder Projektaufgaben nicht starten und / oder Enddatum',
-    'Canceled' => 'Abgebrochen',
+    'Assigned To' => 'zuständig',
+    'Canceled' => 'abgebrochen',
+    'Completed' => 'abgeschlossen',
+    'Created Time' => 'erstellt',
+    'Deferred' => 'aufgeschoben',
+    'End Date' => 'Enddatum',
+    'In Progress' => 'in Bearbeitung',
+    'LBL_ADD_RECORD' => 'Projektaufgabe hinzufügen',
+    'LBL_MILESTONES_LIST' => 'Liste der Meilensteine',
+    'LBL_NO_DATE_VALUE_MSG' => 'oder Projektaufgaben haben kein Start- und/oder Enddatum',
+    'LBL_PROJECTS_LIST' => 'Projekteliste',
+    'LBL_PROJECT_TASK_INFORMATION' => 'Details zur Projektaufgabe',
+    'LBL_RECORDS_LIST' => 'Liste der Projektaufgaben',
+    'LBL_TASKS_LIST' => 'Aufgabenliste',
+    'Modified Time' => 'geändert',
+    'Open' => 'offen',
+    'Priority' => 'Priorität',
+    'Progress' => 'Fortschritt',
+    'Project Task Name' => 'Projektaufgabenname',
+    'Project Task No' => 'Projektaufgabennr.',
+    'Project Task Number' => 'Projekt-Aufgaben-Nummer',
+    'Related to' => 'bezogen auf',
+    'SINGLE_ProjectTask' => 'Projektaufgabe',
+    'Start Date' => 'Startdatum',
+    'Status' => 'Status',
+    'Type' => 'Typ',
+    'Worked Hours' => 'Arbeitsstunden',
+    'administrative' => 'administrativ',
+    'description' => 'Beschreibung',
+    'high' => 'hoch',
+    'low' => 'niedrig',
+    'normal' => 'normal',
+    'operative' => 'operativ',
+    'other' => 'andere',
+];
+
+$jsLanguageStrings = [
 ];

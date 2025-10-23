@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,26 +18,29 @@
  */
 
 $languageStrings = [
-    'Services'                => 'Dienstleistungen',
-    'SINGLE_Services'         => 'Dienstleistung',
-    'LBL_ADD_RECORD'          => 'Neue Dienstleistung',
-    'LBL_RECORDS_LIST'        => 'Services List',
+    'Commission Rate' => 'Provision (%)',
+    'LBL_ADD_RECORD' => 'Dienstleistung hinzufügen',
+    'LBL_ADD_TO_PRICEBOOKS' => 'zu Preisliste hinzufügen',
+    'LBL_MORE_CURRENCIES' => 'weitere Währungen',
+    'LBL_PRICE' => 'Preis',
+    'LBL_PRICES' => 'Dienstleistungspreis',
+    'LBL_RECORDS_LIST' => 'Liste der Dienstleistungen',
+    'LBL_RESET' => 'zurücksetzen',
+    'LBL_RESET_PRICE' => 'Preis zurücksetzen',
     'LBL_SERVICE_INFORMATION' => 'Dienstleistung',
-    'LBL_MORE_CURRENCIES'     => 'weitere Währungen',
-    'LBL_PRICES'              => 'Service Prices',
-    'LBL_PRICE'               => 'Preis',
-    'LBL_RESET_PRICE'         => 'Preis zurücksetzen',
-    'LBL_RESET'               => 'zurücksetzen',
-    'LBL_ADD_TO_PRICEBOOKS'   => 'Add to PriceBooks',
-    'Service Name'            => 'Name der Dienstleistung',
-    'Service Active'          => 'aktiv',
-    'Service Category'        => 'Kategorie',
-    'Service No'              => 'Dienstleistungsnummer',
-    'Owner'                   => 'Besitzer',
-    'No of Units'             => 'Anzahl der Einheiten',
-    'Commission Rate'         => 'Provision (%)',
-    'Price'                   => 'Preis',
-    'Usage Unit'              => 'Einheit',
-    'Tax Class'               => 'Steuerklasse',
-    'Website'                 => 'Webseite',
+    'No of Units' => 'Anzahl der Einheiten',
+    'Owner' => 'Besitzer',
+    'Price' => 'Preis',
+    'SINGLE_Services' => 'Dienstleistung',
+    'Service Active' => 'aktiv',
+    'Service Category' => 'Kategorie',
+    'Service Name' => 'Name der Dienstleistung',
+    'Service No' => 'Dienstleistungsnummer',
+    'Services' => 'Dienstleistungen',
+    'Tax Class' => 'Steuerklasse',
+    'Usage Unit' => 'Einheit',
+    'Website' => 'Webseite',
+];
+
+$jsLanguageStrings = [
 ];
