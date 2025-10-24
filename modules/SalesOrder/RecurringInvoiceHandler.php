@@ -34,7 +34,7 @@ class RecurringInvoiceHandler extends VTEventHandler
     private function handleRecurringInvoiceGeneration()
     {
         if ($this->isRecurringInvoiceEnabled()) {
-            if (empty($this->getNextInvoiceDate()) || $this->isStartDateAfterNextInvoiceDate()) {
+            if (empty($this->getNextInvoiceDate()) || $this->hasStartPeriodChanged()) {
                 $this->setNextInvoiceDateEqualsToStartDate();
             }
         } else {
@@ -48,6 +48,16 @@ class RecurringInvoiceHandler extends VTEventHandler
         $nextInvoiceDate = new DateTime($this->getNextInvoiceDate());
 
         return $startPeriod > $nextInvoiceDate;
+    }
+
+    /**
+     * @return bool
+     */
+    private function hasStartPeriodChanged(): bool
+    {
+        $entityDelta = new VTEntityDelta();
+
+        return $entityDelta->hasChanged($this->entityData->getModuleName(), $this->entityData->getId(), 'start_period');
     }
 
     private function isSalesOrderModule()
