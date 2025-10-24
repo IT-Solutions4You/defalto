@@ -109,6 +109,18 @@ class Appointments_MultiReference_UIType extends Vtiger_Reference_UIType
         $this->referenceRecords = array_unique(array_filter($this->referenceRecords));
     }
 
+    public function retrieveRecordsByField(): void
+    {
+        if (!is_string($this->getFieldModel()->getValue())) {
+            return;
+        }
+
+        $values = explode(';', $this->getFieldModel()->getValue());
+        $values = array_filter($values);
+
+        $this->referenceRecords = array_unique(array_merge($this->referenceRecords, $values));
+    }
+
     /**
      * @param mixed $value
      * @param mixed $record
@@ -127,5 +139,7 @@ class Appointments_MultiReference_UIType extends Vtiger_Reference_UIType
                 $this->retrieveRecords($record);
             }
         }
+
+        $this->retrieveRecordsByField();
     }
 }

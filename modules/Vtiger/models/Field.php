@@ -1894,4 +1894,12 @@ class Vtiger_Field_Model extends Vtiger_Field
     {
         return $this->getModuleName() !== 'Users';
     }
+
+    /**
+     * @throws Exception
+     */
+    public function getValue()
+    {
+        return $this->get('fieldvalue');
+    }
 }
