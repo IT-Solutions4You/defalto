@@ -69,7 +69,7 @@ class PerformancePrefs
     /**
      * Get performance parameter configured value or default one
      */
-    static function get($key, $defvalue = false)
+    public static function get($key, $defvalue = false)
     {
         global $PERFORMANCE_CONFIG;
         if (isset($PERFORMANCE_CONFIG)) {
@@ -79,6 +79,18 @@ class PerformancePrefs
         }
 
         return $defvalue;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public static function set(string $key, mixed $value): void
+    {
+        global $PERFORMANCE_CONFIG;
+
+        $PERFORMANCE_CONFIG[$key] = $value;
     }
 
     /** Get boolean value */

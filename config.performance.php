@@ -48,4 +48,7 @@ $PERFORMANCE_CONFIG = [
     // reduce number of ajax requests on home page, reduce this value if home page widget don't
     // show value.
     'HOME_PAGE_WIDGET_GROUP_SIZE'       => 12,
+
+    // max scheduled workflows
+    'MAX_SCHEDULED_WORKFLOWS' => 10,
 ];

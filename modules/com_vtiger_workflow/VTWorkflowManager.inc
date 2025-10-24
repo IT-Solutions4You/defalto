@@ -185,13 +185,12 @@ class VTWorkflowManager
     /**
      * Function to set max allowed scheduled workflow count as per global defaults
      */
-    function setMaxAllowedScheduledWorkflows()
+    public function setMaxAllowedScheduledWorkflows()
     {
         global $max_scheduled_workflows;
+
         if (!empty($max_scheduled_workflows)) {
-            vglobal('max_scheduled_workflows', $max_scheduled_workflows);
-        } else {
-            vglobal('max_scheduled_workflows', 10);
+            PerformancePrefs::set('MAX_SCHEDULED_WORKFLOWS', $max_scheduled_workflows);
         }
     }
 
@@ -199,9 +198,9 @@ class VTWorkflowManager
      * Function returns the maximum allowed scheduled workflows
      * @return int
      */
-    function getMaxAllowedScheduledWorkflows()
+    public function getMaxAllowedScheduledWorkflows()
     {
-        return vglobal('max_scheduled_workflows');
+        return PerformancePrefs::get('MAX_SCHEDULED_WORKFLOWS');
     }
 
     function getWorkflowsForModule($moduleName)
