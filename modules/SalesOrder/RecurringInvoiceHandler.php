@@ -76,7 +76,7 @@ class RecurringInvoiceHandler extends VTEventHandler
     {
         $data = $this->entityData->getData();
 
-        return $data['last_recurring_date'];
+        return $data['next_recurring_date'];
     }
 
     private function isRecurringInvoiceEnabled()
@@ -89,7 +89,7 @@ class RecurringInvoiceHandler extends VTEventHandler
     private function setNextInvoiceDateEqualsToStartDate()
     {
         $db = PearDatabase::getInstance();
-        $query = "UPDATE vtiger_invoice_recurring_info SET last_recurring_date = start_period WHERE salesorderid = ?";
+        $query = "UPDATE vtiger_invoice_recurring_info SET next_recurring_date = start_period WHERE salesorderid = ?";
         $db->pquery($query, [$this->entityData->getId()]);
     }
 
