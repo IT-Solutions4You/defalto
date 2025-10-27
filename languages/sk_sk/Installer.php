@@ -254,6 +254,7 @@ $languageStrings = [
     'LBL_UNINSTALL_MODULE_FILES' => 'Všetky súbory modulu budú odstránené',
     'LBL_UNINSTALL_CONFIRM' => 'Naozaj chcete úplne odstrániť rozšírenie z vášho CRM?',
     'LBL_LICENSE_DELETED' => 'Licencia bola úspešne odstránená.',
+    'LBL_ADD_LICENSE' => 'Pridať licenčný kľúč',
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Naozaj chcete nainštalovať rozšírenie?',
