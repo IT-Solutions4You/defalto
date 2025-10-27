@@ -46,6 +46,7 @@ class Core_Redirect_View extends Vtiger_Basic_View {
     public function getUrl(string $mode): string
     {
         return match ($mode) {
+            'Web' => 'https://defalto.com/',
             'Forum' => 'https://defalto.com/forum/',
             'Blog' => 'https://defalto.com/blog/',
             'Documentation' => 'https://defalto.com/docs/user-guide/',
