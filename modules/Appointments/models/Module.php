@@ -253,6 +253,16 @@ class Appointments_Module_Model extends Vtiger_Module_Model
 
             $request->set('calendar_status', $currentUser->get('defaulteventstatus'));
             $request->set('calendar_type', $currentUser->get('defaultactivitytype'));
+
+            if (!$request->isEmpty('sourceModule')) {
+                $referenceField = match ($request->get('sourceModule')) {
+                    'Contacts' => 'contact_id',
+                    'Accounts' => 'account_id',
+                    default => 'parent_id',
+                };
+
+                $request->set($referenceField, (int)$request->get('sourceRecord'));
+            }
         }
     }
 

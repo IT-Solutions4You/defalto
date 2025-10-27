@@ -335,7 +335,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
                 'linkName' => $appointmentsInstance->getName(),
                 'linkurl' => $this->getWidgetUrl('getEvents'),
                 'action' => $userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'CreateView') ? ['Add'] : [],
-                'actionURL' => $appointmentsInstance->getQuickCreateUrl(),
+                'actionURL' => $appointmentsInstance->getQuickCreateUrl() . '&sourceModule=' . $this->getModuleName() . '&sourceRecord=' . $this->getRecord()->getId() . '&relationOperation=true',
             ];
         }
 

@@ -103,13 +103,22 @@ class Settings_Appointments_Integration_Model extends Vtiger_Base_Model
         return in_array($this->moduleName, self::$disabledModules);
     }
 
+    public function getFieldName(): string
+    {
+        return match ($this->moduleName) {
+            'Accounts' => 'account_id',
+            'Contacts' => 'contact_id',
+            default => 'parent_id',
+        };
+    }
+
     /**
      * @return void
      */
     public function retrieveField()
     {
         $this->fieldModule = Vtiger_Module_Model::getInstance('Appointments');
-        $this->fieldModel = Vtiger_Field_Model::getInstance('parent_id', $this->fieldModule);
+        $this->fieldModel = Vtiger_Field_Model::getInstance($this->getFieldName(), $this->fieldModule);
         $this->referenceModules = $this->fieldModel->getReferenceList();
     }
 
@@ -154,7 +163,7 @@ class Settings_Appointments_Integration_Model extends Vtiger_Base_Model
      */
     public function setRelation()
     {
-        $this->moduleModel->setRelatedList($this->fieldModule, '', '', 'get_related_list', $this->fieldModel->getId());
+        $this->moduleModel->setRelatedList($this->fieldModule, 'Appointments', '', 'get_related_list', $this->fieldModel->getId());
     }
 
     /**
