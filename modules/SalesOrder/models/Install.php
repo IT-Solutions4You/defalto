@@ -565,10 +565,10 @@ class SalesOrder_Install_Model extends Core_Install_Model
                         'Net 90 days',
                     ],
                 ],
-                'last_recurring_date' => [
-                    'name' => 'last_recurring_date',
+                'next_recurring_date' => [
+                    'name' => 'next_recurring_date',
                     'uitype' => 5,
-                    'column' => 'last_recurring_date',
+                    'column' => 'next_recurring_date',
                     'table' => 'vtiger_invoice_recurring_info',
                     'label' => 'Next Invoice Date',
                     'typeofdata' => 'D~O',
@@ -661,6 +661,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
             ->renameColumn('contactid','contact_id')
             ->renameColumn('total','grand_total')
             ->renameColumn('accountid','account_id')
+            ->renameColumn('last_recurring_date','next_recurring_date')
             ->createColumn('subject', 'varchar(100) DEFAULT NULL')
             ->createColumn('potentialid', 'int(19) DEFAULT NULL')
             ->createColumn('salesorder_no', 'varchar(100) DEFAULT NULL')

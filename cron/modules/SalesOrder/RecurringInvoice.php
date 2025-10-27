@@ -27,7 +27,7 @@ $log->debug('invoked RecurringInvoice');
 $currentDate = date('Y-m-d');
 $currentDateStrTime = strtotime($currentDate);
 
-$sql = 'SELECT vtiger_salesorder.salesorderid, recurring_frequency, start_period, end_period, last_recurring_date,
+$sql = 'SELECT vtiger_salesorder.salesorderid, recurring_frequency, start_period, end_period, next_recurring_date,
 		 payment_duration FROM vtiger_salesorder
 		 INNER JOIN vtiger_crmentity ON vtiger_salesorder.salesorderid = vtiger_crmentity.crmid AND vtiger_crmentity.deleted = 0
 		 INNER JOIN vtiger_invoice_recurring_info ON vtiger_salesorder.salesorderid = vtiger_invoice_recurring_info.salesorderid
@@ -35,7 +35,7 @@ $sql = 'SELECT vtiger_salesorder.salesorderid, recurring_frequency, start_period
 		    sostatus != "Cancelled"
 		    AND DATE_FORMAT(start_period, "%Y-%m-%d") <= ?
 		    AND (DATE_FORMAT(end_period, "%Y-%m-%d") >= ? OR end_period = "0000-00-00" OR end_period = "" OR end_period IS NULL)
-		    AND DATE_FORMAT(last_recurring_date, "%Y-%m-%d") <= ?
+		    AND DATE_FORMAT(next_recurring_date, "%Y-%m-%d") <= ?
 		 ORDER BY salesorderid
 		 LIMIT 50
 		 ';
@@ -45,7 +45,7 @@ while ($row = $adb->fetchByAssoc($result)) {
     $salesOrderId = (int)$row['salesorderid'];
     $startPeriod = $row['start_period'];
     $endPeriod = $row['end_period'];
-    $recurringDate = $row['last_recurring_date'];
+    $recurringDate = $row['nextrecurring_date'];
     $recurringFrequency = $row['recurring_frequency'];
 
     if ($recurringDate == null || $recurringDate == '' || $recurringDate == '0000-00-00') {
@@ -78,14 +78,14 @@ while ($row = $adb->fetchByAssoc($result)) {
                 createInvoice($salesOrderId, $recurringDateFromList);
             }
 
-            $adb->pquery('UPDATE vtiger_invoice_recurring_info SET last_recurring_date = ? WHERE salesorderid = ?', [$validNextRecurringDate, $salesOrderId]);
+            $adb->pquery('UPDATE vtiger_invoice_recurring_info SET next_recurring_date = ? WHERE salesorderid = ?', [$validNextRecurringDate, $salesOrderId]);
         }
     } elseif ($recurringDateStrTime == $currentDateStrTime && $recurringDateStrTime <= $endDateStrTime) {
         createInvoice($salesOrderId, $recurringDate);
 
         $nextRecurringDatesInfo = getRecurringDate($recurringDate, $recurringFrequency);
         $nextRecurringDate = $nextRecurringDatesInfo['validDate'];
-        $adb->pquery('UPDATE vtiger_invoice_recurring_info SET last_recurring_date = ? WHERE salesorderid = ?', [$nextRecurringDate, $salesOrderId]);
+        $adb->pquery('UPDATE vtiger_invoice_recurring_info SET next_recurring_date = ? WHERE salesorderid = ?', [$nextRecurringDate, $salesOrderId]);
     }
 
     // Add some free time for the case when automatic workflow generates a .pdf file and sends it to the customer to prevent the mail server from limit errors
