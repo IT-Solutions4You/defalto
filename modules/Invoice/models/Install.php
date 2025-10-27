@@ -717,17 +717,6 @@ class Invoice_Install_Model extends Core_Install_Model
             ->createKey('PRIMARY KEY IF NOT EXISTS (invoiceshipaddressid)')
             ->createKey('CONSTRAINT fk_1_vtiger_invoiceshipads FOREIGN KEY IF NOT EXISTS (invoiceshipaddressid) REFERENCES vtiger_invoice (invoiceid) ON DELETE CASCADE');
         
-        $this->getTable('vtiger_invoice_recurring_info', null)
-            ->createTable('salesorderid','int(11) NOT NULL')
-            ->createColumn('recurring_frequency','varchar(200) DEFAULT NULL')
-            ->createColumn('start_period','date DEFAULT NULL')
-            ->createColumn('end_period','date DEFAULT NULL')
-            ->createColumn('last_recurring_date','date DEFAULT NULL')
-            ->createColumn('payment_duration','varchar(200) DEFAULT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`salesorderid`)')
-            ->createKey('CONSTRAINT `fk_salesorderid_vtiger_invoice_recurring_info` FOREIGN KEY IF NOT EXISTS (`salesorderid`) REFERENCES `vtiger_salesorder` (`salesorderid`) ON DELETE CASCADE')
-            ;
-
         $this->createPicklistTable('vtiger_invoicestatus', 'invoicestatusid', 'invoicestatus');
     }
 }

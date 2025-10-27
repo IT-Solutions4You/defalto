@@ -4988,7 +4988,7 @@
 		<field name="recurring_frequency" type="C" size="200"></field>
 		<field name="start_period" type="D"></field>
 		<field name="end_period" type="D"></field>
-		<field name="last_recurring_date" type="D">
+		<field name="next_recurring_date" type="D">
 			<default value="NULL" />
 		</field>
 		<field name="payment_duration" type="C" size="200"></field>
