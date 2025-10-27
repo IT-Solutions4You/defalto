@@ -622,7 +622,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
             'total' => 'grand_total',
             'accountid' => 'account_id',
             'adjustment' => 'adjustment',
-
+            'last_recurring_date' => 'next_recurring_date',
             'subtotal' => 'subtotal',
             'taxtype' => 'taxtype',
             's_h_amount' => 's_h_amount',
@@ -641,6 +641,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
             'txtAdjustment',
             'hdnDiscountPercent',
             'hdnDiscountAmount',
+            'last_recurring_date',
         ];
 
         Vtiger_Module_Model::deleteFields($moduleName, $deleteFields);
@@ -726,6 +727,16 @@ class SalesOrder_Install_Model extends Core_Install_Model
             ->createColumn('ship_pobox', 'varchar(30) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`soshipaddressid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_soshipads` FOREIGN KEY IF NOT EXISTS (`soshipaddressid`) REFERENCES `vtiger_salesorder` (`salesorderid`) ON DELETE CASCADE');
+
+        $this->getTable('vtiger_invoice_recurring_info', null)
+            ->createTable('salesorderid','int(11) NOT NULL')
+            ->createColumn('recurring_frequency','varchar(200) DEFAULT NULL')
+            ->createColumn('start_period','date DEFAULT NULL')
+            ->createColumn('end_period','date DEFAULT NULL')
+            ->createColumn('next_recurring_date','date DEFAULT NULL')
+            ->createColumn('payment_duration','varchar(200) DEFAULT NULL')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`salesorderid`)')
+            ->createKey('CONSTRAINT `fk_salesorderid_vtiger_invoice_recurring_info` FOREIGN KEY IF NOT EXISTS (`salesorderid`) REFERENCES `vtiger_salesorder` (`salesorderid`) ON DELETE CASCADE');
 
         $this->createPicklistTable('vtiger_sostatus', 'sostatusid', 'sostatus');
         $this->createPicklistTable('vtiger_recurring_frequency', 'recurring_frequency_id', 'recurring_frequency');
