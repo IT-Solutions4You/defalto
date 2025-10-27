@@ -10,6 +10,12 @@
 
 class Core_Redirect_View extends Vtiger_Basic_View {
 
+    public function loginRequired(): bool
+    {
+        return false;
+    }
+
+
     public function checkPermission(Vtiger_Request $request)
     {
     }
