@@ -27,7 +27,7 @@
                             </div>
                             <div class="col-12">
                                 <div class="alert alert-primary">
-                                    {vtranslate('LBL_CONTINUE_WITH_GUIDE', $QUALIFIED_MODULE)}
+                                    {vtranslate('LBL_CONTINUE_WITH_GUIDE', $QUALIFIED_MODULE)}: <a class="fw-bold" href="{$GUIDE->getNextStepUrl()}">{vtranslate('LBL_START_GUIDE', $QUALIFIED_MODULE)}</a>
                                 </div>
                             </div>
                             <div class="col text-end">
