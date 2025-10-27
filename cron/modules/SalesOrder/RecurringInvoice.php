@@ -45,7 +45,7 @@ while ($row = $adb->fetchByAssoc($result)) {
     $salesOrderId = (int)$row['salesorderid'];
     $startPeriod = $row['start_period'];
     $endPeriod = $row['end_period'];
-    $recurringDate = $row['nextrecurring_date'];
+    $recurringDate = $row['next_recurring_date'];
     $recurringFrequency = $row['recurring_frequency'];
 
     if ($recurringDate == null || $recurringDate == '' || $recurringDate == '0000-00-00') {
