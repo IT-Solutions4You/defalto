@@ -16,7 +16,7 @@
                 <div class="col-lg-auto">
                     <button type="button" class="btn btn-primary" data-edit-license="">
                         <i class="fa-solid fa-plus"></i>
-                        <span class="ms-2">{vtranslate('LBL_ADD', $QUALIFIED_MODULE)}</span>
+                        <span class="ms-2">{vtranslate('LBL_ADD_LICENSE', $QUALIFIED_MODULE)}</span>
                     </button>
                     <a class="btn btn-outline-primary ms-2" href="index.php?module=Installer&view=IndexAjax&mode=updateInformation">
                         {vtranslate('LBL_UPDATE_LICENSES', $QUALIFIED_MODULE)}
