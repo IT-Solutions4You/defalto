@@ -406,7 +406,7 @@ $zipFileUrl = 'https://github.com/IT-Solutions4You/defalto/archive/refs/heads/de
 $zipFileFolder = 'defalto-develop';
 
 Download_ZipArchive::$skipFolders = ['user_privileges', 'layouts/d1/modules/PDFMaker', 'modules/PDFMaker', 'manifest', 'update', 'icons', 'installer'];
-Download_ZipArchive::$skipFiles = ['config.inc.php', 'composer.lock', 'index.php', 'update.php', 'install.php', 'parent_tabdata.php', 'tabdata.php', 'PDFMaker.php'];
+Download_ZipArchive::$skipFiles = ['config.inc.php', 'composer.lock', 'index.php', 'update.php', 'install.php', 'parent_tabdata.php', 'tabdata.php', 'PDFMaker.php', 'vtigercron.sh'];
 
 $download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migration&view=Index&mode=step1');
 
