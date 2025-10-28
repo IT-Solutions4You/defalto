@@ -105,8 +105,8 @@ class Download
     public const FILE_EXTRACTED = 'File extracted';
     public const FILE_RENAME = 'Folder rename';
     public const FILE_OPENED = 'File opened';
-    public const FINISH = 'Finish installation';
-    public const START = 'Start installation';
+    public const FINISH = 'Finish export files';
+    public const START = 'Start export files';
     public const SUCCESS = 'File extract successfully';
     public const SUCCESS_COMPOSER = 'Composer updated successfully';
     public const ERROR = 'File not opened';
