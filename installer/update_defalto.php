@@ -609,7 +609,7 @@ $download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migrati
 <div class="replaceContainer" data-progress="<?php $download->showProgress(); ?>">
     <div class="progressHeader">
         <img class="logo" src="https://defalto.com/wp-content/uploads/2022/05/DefaltoCRMLogo170x40.png" alt="Logo">
-        <h1>Defalto installation progress</h1>
+        <h1>Defalto update progress</h1>
     </div>
     <div class="progressContainer">
         <div class="progress">
