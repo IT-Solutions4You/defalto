@@ -78,7 +78,7 @@
                         <input type="hidden" name="region_id_original" id="region_id_original" value="{$FIELD_MODEL->get('fieldvalue')}">
                         <div class="btn-group" role="group">
                             <button id="btnGroupDrop1" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary region-button" data-bs-toggle="dropdown" aria-expanded="false">
-                                {if $PICKLIST_VALUES[$CURRENT_VALUE] neq ''}{$PICKLIST_VALUES[$CURRENT_VALUE]}{else}{vtranslate('Default', 'InventoryItem')}{/if}
+                                {if isset($PICKLIST_VALUES[$CURRENT_VALUE]) && $PICKLIST_VALUES[$CURRENT_VALUE] neq ''}{$PICKLIST_VALUES[$CURRENT_VALUE]}{else}{vtranslate('Default', 'InventoryItem')}{/if}
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end region" aria-labelledby="btnGroupDrop1">
                                 <li><a class="dropdown-item" data-regionid="0">{vtranslate('Default', 'InventoryItem')}</a></li>
