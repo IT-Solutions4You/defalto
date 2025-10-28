@@ -10,6 +10,10 @@
 
 class Appointments_Events_Model extends Vtiger_Base_Model
 {
+    public static array $repeatableFields = [
+        'birthday',
+    ];
+
     public static string $initialView = '';
     /**
      * @var array
@@ -576,6 +580,11 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         }
 
         $startDate = $this->getDate($recordModel->get($startField));
+
+        if (in_array($startField, self::$repeatableFields)) {
+            $startDate = preg_replace('/(\d{4})/', date('Y'), $startDate);
+        }
+
         $record = [
             'id'              => $this->get('id') . 'x' . $recordModel->getId(),
             'title'           => decode_html($recordModel->getName()),
@@ -859,9 +868,9 @@ class Appointments_Events_Model extends Vtiger_Base_Model
             self::$eventTypes[$row['id']] = [
                 'id'      => $row['id'],
                 'module'  => $row['module'],
-                'fields'  => (array)json_decode(decode_html($row['fields'])),
+                'fields'  => (array)array_unique(json_decode(decode_html($row['fields']))),
                 'color'   => !empty($row['color']) ? $row['color'] : $row['default_color'],
-                'visible' => 1 === $row['visible'],
+                'visible' => 1 === (int)$row['visible'],
             ];
         }
     }
