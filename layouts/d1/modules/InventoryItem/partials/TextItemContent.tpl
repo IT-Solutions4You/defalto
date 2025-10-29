@@ -40,7 +40,7 @@
 </td>
 
 {foreach key=FIELD_NAME item=INVENTORY_ITEM_RECORD from=$INVENTORY_ITEM_RECORD_STRUCTURE}
-    {if !in_array($FIELD_NAME, $EXCLUDED_FIELDS)}
+    {if !in_array($FIELD_NAME, $EXCLUDED_FIELDS) && isset($data.$INVENTORY_ITEM_FIELD_NAME)}
         <td style="display: none;"><input id="{$FIELD_NAME|cat:$row_no}" name="{$FIELD_NAME|cat:$row_no}" type="hidden" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" class="{$FIELD_NAME}"></td>
     {/if}
 {/foreach}

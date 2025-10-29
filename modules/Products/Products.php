@@ -104,7 +104,7 @@ class Products extends CRMEntity
     {
         //Inserting into product_taxrel table
         if ((!isset($_REQUEST['ajxaction']) || $_REQUEST['ajxaction'] != 'DETAILVIEW') && $_REQUEST['action'] != 'ProcessDuplicates' && !$this->isWorkFlowFieldUpdate) {
-            if ($_REQUEST['ajxaction'] != 'CurrencyUpdate') {
+            if (!isset($_REQUEST['ajxaction']) || $_REQUEST['ajxaction'] != 'CurrencyUpdate') {
                 $request = new Vtiger_Request($_REQUEST, $_REQUEST);
                 $request->set('taxes_data', $request->get('taxclass'));
 

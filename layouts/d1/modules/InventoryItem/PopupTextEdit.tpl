@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 
-<div id="ItemsPopupContainer" class="contentsDiv col-sm-12">
+<div id="overlayPageContent" class="contentsDiv col-sm-12">
     <form id="InventoryItemPopupForm">
         <input type="hidden" name="module" value="{$MODULE}"/>
         <input type="hidden" name="record" value="{$RECORD}"/>

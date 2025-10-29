@@ -70,23 +70,17 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
             app.request.post({data: requestParams}).then(function (err, data) {
                 app.helper.hideProgress();
-                let form = jQuery('#InventoryItemPopupForm');
-                let callbackParams = {
-                    'cb': function (container) {
-                        self.registerItemPopupEditEvents(container);
-                        jQuery('input.item_text', container).focus();
-                        const overallDiscount = jQuery('#overall_discount_percent').val();
-                        jQuery('input.overall_discount', container).val(overallDiscount);
-                        jQuery('span.display_overall_discount', container).text(overallDiscount);
-                        app.event.trigger('post.InventoryItemPopup.show', form);
-                        app.helper.registerLeavePageWithoutSubmit(form);
-                        app.helper.registerModalDismissWithoutSubmit(form);
-                    },
-                    backdrop: 'static',
-                    keyboard: false
-                };
-
-                app.helper.showModal(data, callbackParams);
+                app.helper.loadPageContentOverlay(data, {show: true, backdrop: 'static', keyboard: false}).then(function (container) {
+                    let form = jQuery('#InventoryItemPopupForm');
+                    self.registerItemPopupEditEvents(container);
+                    jQuery('input.item_text', container).focus();
+                    const overallDiscount = jQuery('#overall_discount_percent').val();
+                    jQuery('input.overall_discount', container).val(overallDiscount);
+                    jQuery('span.display_overall_discount', container).text(overallDiscount);
+                    app.event.trigger('post.InventoryItemPopup.show', form);
+                    app.helper.registerLeavePageWithoutSubmit(form);
+                    app.helper.registerModalDismissWithoutSubmit(form);
+                });
             });
         };
 
@@ -553,24 +547,18 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         app.request.post({data: requestParams}).then(function (err, data) {
             app.helper.hideProgress();
-            let form = jQuery('#InventoryItemPopupForm');
-            let callbackParams = {
-                'cb': function (container) {
-                    self.registerItemPopupEditEvents(container);
-                    jQuery('input.item_text', container).focus();
-                    const overallDiscount = jQuery('#overall_discount_percent').val();
-                    jQuery('input.overall_discount', container).val(overallDiscount);
-                    jQuery('span.display_overall_discount', container).text(overallDiscount);
-                    app.event.trigger('post.InventoryItemPopup.show', form);
-                    app.helper.registerLeavePageWithoutSubmit(form);
-                    app.helper.registerModalDismissWithoutSubmit(form);
-                    self.recalculateItem(container);
-                },
-                backdrop: 'static',
-                keyboard: false
-            };
-
-            app.helper.showModal(data, callbackParams);
+            app.helper.loadPageContentOverlay(data, {show: true, backdrop: 'static', keyboard: false}).then(function (container) {
+                let form = jQuery('#InventoryItemPopupForm');
+                self.registerItemPopupEditEvents(container);
+                jQuery('input.item_text', container).focus();
+                const overallDiscount = jQuery('#overall_discount_percent').val();
+                jQuery('input.overall_discount', container).val(overallDiscount);
+                jQuery('span.display_overall_discount', container).text(overallDiscount);
+                app.event.trigger('post.InventoryItemPopup.show', form);
+                app.helper.registerLeavePageWithoutSubmit(form);
+                app.helper.registerModalDismissWithoutSubmit(form);
+                self.recalculateItem(container);
+            });
         });
     },
 
@@ -598,24 +586,18 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
         app.request.post({data: requestParams}).then(function (err, data) {
             app.helper.hideProgress();
-            let form = jQuery('#InventoryItemPopupForm');
-            let callbackParams = {
-                'cb': function (container) {
-                    self.registerItemPopupEditEvents(container);
-                    jQuery('input.item_text', container).focus();
-                    const overallDiscount = jQuery('#overall_discount_percent').val();
-                    jQuery('input.overall_discount', container).val(overallDiscount);
-                    jQuery('span.display_overall_discount', container).text(overallDiscount);
-                    app.event.trigger('post.InventoryItemPopup.show', form);
-                    app.helper.registerLeavePageWithoutSubmit(form);
-                    app.helper.registerModalDismissWithoutSubmit(form);
-                    self.recalculateItem(container);
-                },
-                backdrop: 'static',
-                keyboard: false
-            };
-
-            app.helper.showModal(data, callbackParams);
+            app.helper.loadPageContentOverlay(data, {show: true, backdrop: 'static', keyboard: false}).then(function (container) {
+                let form = jQuery('#InventoryItemPopupForm');
+                self.registerItemPopupEditEvents(container);
+                jQuery('input.item_text', container).focus();
+                const overallDiscount = jQuery('#overall_discount_percent').val();
+                jQuery('input.overall_discount', container).val(overallDiscount);
+                jQuery('span.display_overall_discount', container).text(overallDiscount);
+                app.event.trigger('post.InventoryItemPopup.show', form);
+                app.helper.registerLeavePageWithoutSubmit(form);
+                app.helper.registerModalDismissWithoutSubmit(form);
+                self.recalculateItem(container);
+            });
         });
     },
 
@@ -672,6 +654,8 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 data: data,
                 success: function (response) {
                     container.trigger('lineSaved', [response]);
+                    const form = jQuery('#InventoryItemPopupForm', container);
+                    form.data('submit', "true").attr('data-submit', 'true');
                     container.find('.btn-close').trigger('click');
                     self.reloadInventoryItemsBlock();
                 },
@@ -759,6 +743,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 const params = {
                     'module': 'InventoryItem',
                     'action': 'PopupBasicAjax',
+                    'base_record': app.getRecordId(),
                 };
                 params.search_module = container.find('.lineItemPopup').data('moduleName');
                 params.search_value = request.term;
@@ -799,7 +784,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     currency_id: self.getCurrencyId(),
                     sourceModule: app.getModuleName(),
                     pricebookid: jQuery('#pricebookid_original').val(),
-                }
+                };
                 app.request.post({data: params}).then(
                     function (error, data) {
                         if (error == null) {
@@ -812,8 +797,11 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 );
             }
         }).data("ui-autocomplete")._renderItem = function (ul, item) {
-            if (!item.id) {
-                return;
+            if (item && item.type === 'no results') {
+                return jQuery("<li>")
+                    .addClass("ui-state-disabled")
+                    .append("<div>" + (item.label || '') + "</div>")
+                    .appendTo(ul);
             }
 
             return jQuery("<li>").append("<div>" + item.label + "</div>").appendTo(ul);
@@ -1047,18 +1035,29 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     createLineItemDetails: function (container) {
         const thisInstance = this;
         const postQuickCreateSave = function (data) {
-            const module = jQuery('input[name="item_type"]', container).val();
-            let params = {};
-            params.name = data._recordLabel;
-            params.id = data._recordId;
-            params.module = module;
             container.find('input[name="item_text"]').val(data._recordLabel);
             container.find('input[name="productid"]').val(data._recordId);
 
-            thisInstance.autoFillElement = container.find('input[name="productid"]');
-            thisInstance.postRefrenceSearch(params, container);
+            let params = {
+                module: 'InventoryItem',
+                action: 'GetItemDetails',
+                record: data._recordId,
+                currency_id: thisInstance.getCurrencyId(),
+                sourceModule: app.getModuleName(),
+                pricebookid: jQuery('#pricebookid_original').val(),
+            };
+            app.request.post({data: params}).then(
+                function (error, data) {
+                    if (error == null) {
+                        thisInstance.mapResultsToFields(container, data[0]);
+                    }
 
-            container.find('input[name="productid"]').trigger(Vtiger_Edit_Js.postReferenceQuickCreateSave, {'data': data});
+                    jQuery('.saveButton').attr('disabled', false);
+                },
+                function (error, err) {
+                    jQuery('.saveButton').attr('disabled', false);
+                }
+            );
         };
 
         const referenceModuleName = jQuery('input[name="item_type"]', container).val();

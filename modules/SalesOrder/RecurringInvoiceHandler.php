@@ -56,8 +56,9 @@ class RecurringInvoiceHandler extends VTEventHandler
     private function hasStartPeriodChanged(): bool
     {
         $entityDelta = new VTEntityDelta();
+        $oldEntityData = $entityDelta->getOldEntity($this->entityData->getModuleName(), $this->entityData->getId())->getData();
 
-        return $entityDelta->hasChanged($this->entityData->getModuleName(), $this->entityData->getId(), 'start_period');
+        return $this->getStartDate() != $oldEntityData['start_period'];
     }
 
     private function isSalesOrderModule()

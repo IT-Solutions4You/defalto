@@ -84,7 +84,7 @@
                 <span class="noEditLineItem display_{$FIELD_NAME_CAT_ROW_NO} ">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
                 <input id="{$FIELD_NAME_CAT_ROW_NO}" name="{$FIELD_NAME_CAT_ROW_NO}" type="hidden" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" />
             </td>
-        {else}
+        {elseif isset($data.$INVENTORY_ITEM_FIELD_NAME)}
             <td title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}">
                 <span class="noEditLineItem display_{$FIELD_NAME_CAT_ROW_NO}">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
                 <input id="{$FIELD_NAME_CAT_ROW_NO}" name="{$FIELD_NAME_CAT_ROW_NO}" type="hidden" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"/>

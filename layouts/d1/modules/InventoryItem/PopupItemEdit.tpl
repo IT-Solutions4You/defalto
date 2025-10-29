@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 
-<div id="ItemsPopupContainer" class="contentsDiv col-sm-12">
+<div id="overlayPageContent" class="contentsDiv col-sm-12">
     <form id="InventoryItemPopupForm">
         <input type="hidden" name="module" value="{$MODULE}" />
         <input type="hidden" name="record" value="{$RECORD}" />
@@ -31,6 +31,7 @@
                               data-module-name="{$ITEM_TYPE}" style="display: none;">{Vtiger_Module_Model::getModuleIconPath($ITEM_TYPE)}</span>
                         <input type="hidden" id="lineItemType" name="lineItemType" value="{$ITEM_TYPE}" class="lineItemType" />
                         <span class="input-group-addon input-group-text cursorPointer clearLineItem" title="{vtranslate('LBL_CLEAR',$MODULE)}"><i class="fa fa-xmark"></i></span>
+                        <span class="input-group-addon input-group-text cursorPointer createLineItem" title="{vtranslate('LBL_ADD',$MODULE)}"><i class="fa fa-plus"></i></span>
                     </div>
                 </div>
             </div>
