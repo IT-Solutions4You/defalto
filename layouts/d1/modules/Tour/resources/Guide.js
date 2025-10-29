@@ -37,4 +37,6 @@ Vtiger.Class('Tour_HeaderScript_Js', {
     }
 });
 
-Tour_HeaderScript_Js.getInstance().registerEvents();
+$(function() {
+    Tour_HeaderScript_Js.getInstance().registerEvents();
+})

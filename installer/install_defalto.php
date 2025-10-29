@@ -10,8 +10,8 @@
 
 class Download_ZipArchive extends ZipArchive
 {
-    public static $skipFolders = [];
     public static $skipFiles = [];
+    public static $skipFolders = [];
 
     /**
      * @param string $destination
@@ -105,8 +105,8 @@ class Download
     public const FILE_EXTRACTED = 'File extracted';
     public const FILE_RENAME = 'Folder rename';
     public const FILE_OPENED = 'File opened';
-    public const FINISH = 'Finish installation';
-    public const START = 'Start installation';
+    public const FINISH = 'Finish export files';
+    public const START = 'Start export files';
     public const SUCCESS = 'File extract successfully';
     public const SUCCESS_COMPOSER = 'Composer updated successfully';
     public const ERROR = 'File not opened';
@@ -138,6 +138,29 @@ class Download
      * @var string
      */
     public string $url = '';
+
+    /**
+     * @throws Exception
+     */
+    public function download()
+    {
+        $filename = $this->getZipFile();
+
+        if (is_writable($filename)) {
+            self::log(self::ZIP_WRITABLE);
+
+            if (copy($this->getUrl(), $filename)) {
+                self::log(self::ZIP_COPIED);
+                $this->setProgress('extract', 3);
+            } else {
+                self::log(self::ZIP_NOT_COPIED);
+                $this->setProgress('error', 3);
+            }
+        } else {
+            self::log(self::ZIP_NOT_WRITABLE);
+            $this->setProgress('error', 3);
+        }
+    }
 
     /**
      * @throws Exception
@@ -304,7 +327,7 @@ class Download
 
     /**
      * @param string $value
-     * @param int    $number
+     * @param int $number
      *
      * @return void
      */
@@ -312,6 +335,26 @@ class Download
     {
         $this->progress = $_SESSION['progress'] = $value;
         $this->progressNum = min(100, $number * 17);
+    }
+
+    public function showMessages(): void
+    {
+        echo $this->getMessages();
+    }
+
+    public function showPercentage(): void
+    {
+        echo $this->progressNum;
+    }
+
+    public function showProgress($upperCase = 0): void
+    {
+        echo 1 === $upperCase ? ucfirst($this->progress) : $this->progress;
+    }
+
+    public function showRedirectUrl(): void
+    {
+        echo $this->getRedirectUrl();
     }
 
     /**
@@ -326,7 +369,7 @@ class Download
     /**
      * @return void
      */
-    public function update()
+    public function update(): void
     {
         if (true === is_file('updateComposer.php')) {
             include_once 'updateComposer.php';
@@ -377,38 +420,15 @@ class Download
 
         return $self;
     }
-
-    /**
-     * @throws Exception
-     */
-    public function download()
-    {
-        $filename = $this->getZipFile();
-
-        if (is_writable($filename)) {
-            self::log(self::ZIP_WRITABLE);
-
-            if (copy($this->getUrl(), $filename)) {
-                self::log(self::ZIP_COPIED);
-                $this->setProgress('extract', 3);
-            } else {
-                self::log(self::ZIP_NOT_COPIED);
-                $this->setProgress('error', 3);
-            }
-        } else {
-            self::log(self::ZIP_NOT_WRITABLE);
-            $this->setProgress('error', 3);
-        }
-    }
 }
 
 $zipFileUrl = 'https://github.com/IT-Solutions4You/defalto/archive/refs/heads/develop.zip';
 $zipFileFolder = 'defalto-develop';
 
-Download_ZipArchive::$skipFolders = ['user_privileges', 'layouts/d1/modules/PDFMaker', 'modules/PDFMaker', 'manifest', 'update', 'icons', 'installer'];
-Download_ZipArchive::$skipFiles = ['config.inc.php', 'composer.lock', 'index.php', 'update.php', 'install.php', 'parent_tabdata.php', 'tabdata.php', 'PDFMaker.php', 'vtigercron.sh'];
+//Download_ZipArchive::$skipFolders = ['user_privileges', 'layouts/d1/modules/PDFMaker', 'modules/PDFMaker', 'manifest', 'update', 'icons', 'installer'];
+//Download_ZipArchive::$skipFiles = ['config.inc.php', 'composer.lock', 'index.php', 'install.php', 'parent_tabdata.php', 'tabdata.php', 'PDFMaker.php'];
 
-$download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migration&view=Index&mode=step1');
+$download = Download::zip($zipFileUrl, $zipFileFolder);
 
 ?>
 
@@ -423,6 +443,7 @@ $download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migrati
             padding: 0;
             margin: 0;
         }
+
         * {
             font-family: sans-serif;
         }
@@ -472,7 +493,7 @@ $download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migrati
 
         .miniProgressBar {
             width: 0;
-            margin: 1em 0 4em 0;
+            margin: 1em 0 1em 0;
             height: 1em;
             border-radius: 0.4rem;
             background: #103962;
@@ -541,179 +562,51 @@ $download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migrati
             display: block;
         }
     </style>
-    <head>
-        <title></title>
-        <meta charset="utf-8">
-        <style>
+    <script>
+        function removeClass(selector, className) {
+            const element = document.querySelector(selector);
+            element.classList.remove(className);
+        }
 
-            body {
-                padding: 0;
-                margin: 0;
-            }
-            * {
-                font-family: sans-serif;
-            }
+        function loadProgress() {
+            const request = new XMLHttpRequest();
 
-            .logo {
-                margin: 1em 0;
-            }
+            request.onload = function () {
+                let parser = new DOMParser(),
+                    parserDocument = parser.parseFromString(this.responseText, 'text/html'),
+                    parserContainer = parserDocument.querySelector('.replaceContainer'),
+                    progress = parserContainer.attributes['data-progress']['value'],
+                    replaceContainer = document.querySelector('.replaceContainer');
 
-            .progressContainer {
-                background: #fff;
-                padding: 1em 2em;
-                margin: 3em auto;
-                width: 50vw;
-                text-align: center;
-                border-radius: 0.5rem;
-            }
+                replaceContainer.replaceWith(parserContainer);
 
-            .progressHeader {
-                padding: 1em;
-                text-align: center;
-                color: #fff;
-                background: #103962;
-            }
-
-            .progress {
-                margin: 1em 0;
-            }
-
-            .progressBorder {
-                width: 100%;
-                overflow: hidden;
-                border-radius: 0.5rem;
-                border: 1px solid #103962;
-            }
-
-            .progressBar {
-                height: 2em;
-                border-radius: 0.4rem;
-                text-align: left;
-                background: #103962;
-                background-size: 100% 100%;
-            }
-
-            .miniProgress {
-                width: 15vw;
-            }
-
-            .miniProgressBar {
-                width: 0;
-                margin: 1em 0 1em 0;
-                height: 1em;
-                border-radius: 0.4rem;
-                background: #103962;
-                animation: progressBarAnimation 2s linear infinite;
-            }
-
-            @keyframes progressBarAnimation {
-                0% {
-                    width: 0;
+                if ('' !== progress) {
+                    setTimeout(function () {
+                        loadProgress();
+                    }, 2000);
                 }
-                100% {
-                    width: 100%;
-                }
+
+                scrollDown();
             }
+            request.open('GET', '<?php echo $download->getPHPFileName(); ?>', true);
+            request.send();
+        }
 
-            .progressText {
-                color: #103962;
-                display: flex;
-                justify-content: space-between;
-                font-weight: bold;
-                margin-bottom: 0.2em;
+        function scrollDown() {
+            const log = document.querySelector('.log');
+
+            if (log) {
+                log.scrollTop = log.scrollHeight;
             }
+        }
 
-            .progressText span:last-child {
-                margin-left: auto;
-            }
-
-            .log {
-                border-radius: 0.5rem;
-                background: #fff;
-                text-align: left;
-                margin: 1em 0;
-                padding: 0.5em;
-                border: 1px solid #103962;
-                max-height: 50vh;
-                overflow: auto;
-                color: #103962;
-            }
-
-            .action {
-                display: none;
-                text-align: center;
-                margin: 1em 0;
-            }
-
-            .button {
-                text-decoration: none;
-                cursor: pointer;
-                display: inline-block;
-                padding: 0.8em 1em;
-                background: #103962;
-                color: #fff;
-                border: 0;
-                border-radius: 0.5rem;
-            }
-
-            .hide {
-                display: none;
-            }
-
-            [data-progress=""] .miniProgressBar {
-                display: none;
-            }
-
-            [data-progress=""] .action {
-                display: block;
-            }
-        </style>
-        <script>
-            function removeClass(selector, className) {
-                const element = document.querySelector(selector);
-                element.classList.remove(className);
-            }
-
-            function loadProgress() {
-                const request = new XMLHttpRequest();
-
-                request.onload = function () {
-                    let parser = new DOMParser(),
-                        parserDocument = parser.parseFromString(this.responseText, 'text/html'),
-                        parserContainer = parserDocument.querySelector('.replaceContainer'),
-                        progress = parserContainer.attributes['data-progress']['value'],
-                        replaceContainer = document.querySelector('.replaceContainer');
-
-                    replaceContainer.replaceWith(parserContainer);
-
-                    if ('' !== progress) {
-                        setTimeout(function () {
-                            loadProgress();
-                        }, 2000);
-                    }
-
-                    scrollDown();
-                }
-                request.open('GET', '<?php echo $download->getPHPFileName(); ?>', true);
-                request.send();
-            }
-
-            function scrollDown() {
-                const log = document.querySelector('.log');
-
-                if (log) {
-                    log.scrollTop = log.scrollHeight;
-                }
-            }
-
-            setTimeout(function () {
-                loadProgress();
-            }, 2000);
-        </script>
-    </head>
+        setTimeout(function () {
+            loadProgress();
+        }, 2000);
+    </script>
 </head>
 <body>
-<div class="replaceContainer" data-progress="<?php echo $download->progress ?>">
+<div class="replaceContainer" data-progress="<?php $download->showProgress(); ?>">
     <div class="progressHeader">
         <img class="logo" src="https://defalto.com/wp-content/uploads/2022/05/DefaltoCRMLogo170x40.png" alt="Logo">
         <h1>Defalto installation progress</h1>
@@ -721,20 +614,26 @@ $download = Download::zip($zipFileUrl, $zipFileFolder, 'index.php?module=Migrati
     <div class="progressContainer">
         <div class="progress">
             <div class="progressText">
-                <div><?php echo ucfirst($download->progress); ?></div><div><?php echo $download->progressNum; ?>%</div>
+                <div>
+                    <?php $download->showProgress(1); ?>
+                </div>
+                <div>
+                    <?php $download->showPercentage(); ?>%
+                </div>
             </div>
             <div class="progressBorder">
-                <div class="progressBar" style="width: <?php echo $download->progressNum ?>%;"></div>
+                <div class="progressBar" style="width: <?php $download->showPercentage() ?>%;"></div>
             </div>
         </div>
         <div class="log">
-            <?php echo $download->getMessages() ?>
+            <?php $download->showMessages() ?>
             <div class="miniProgress">
                 <div class="miniProgressBar"></div>
             </div>
         </div>
         <div class="action">
-            <a href="<?php echo $download->getRedirectUrl() ?>" class="button hide">Continue Database Migration</a>
+            <a href="<?php $download->showRedirectUrl() ?>" class="button">Continue Installation
+            </a>
         </div>
     </div>
 </div>
