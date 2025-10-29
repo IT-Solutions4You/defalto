@@ -422,8 +422,8 @@ class Download
     }
 }
 
-$zipFileUrl = 'https://github.com/IT-Solutions4You/defalto/archive/refs/heads/develop.zip';
-$zipFileFolder = 'defalto-develop';
+$zipFileUrl = 'https://github.com/IT-Solutions4You/defalto/archive/refs/heads/master.zip';
+$zipFileFolder = 'defalto-master';
 
 //Download_ZipArchive::$skipFolders = ['user_privileges', 'layouts/d1/modules/PDFMaker', 'modules/PDFMaker', 'manifest', 'update', 'icons', 'installer'];
 //Download_ZipArchive::$skipFiles = ['config.inc.php', 'composer.lock', 'index.php', 'install.php', 'parent_tabdata.php', 'tabdata.php', 'PDFMaker.php'];
