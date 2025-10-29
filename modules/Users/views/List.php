@@ -18,7 +18,7 @@
 
 class Users_List_View extends Settings_Vtiger_List_View
 {
-    protected $listViewLinks;
+    public $listViewLinks;
 
     function getHeaderScripts(Vtiger_Request $request)
     {
