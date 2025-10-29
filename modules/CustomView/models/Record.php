@@ -1149,6 +1149,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model
             $sql .= ' WHERE entitytype=?';
             $params[] = $moduleName;
         }
+
         if (!$userPrivilegeModel->isAdminUser()) {
             $userGroups = new GetUserGroups();
             $userGroups->getAllUserGroups($currentUser->getId());
@@ -1157,29 +1158,54 @@ class CustomView_Record_Model extends Vtiger_Base_Model
             $parentRoles = getParentRole($userRole);
             $parentRolelist = [];
             foreach ($parentRoles as $par_rol_id) {
-                array_push($parentRolelist, $par_rol_id);
+                $parentRolelist[] = $par_rol_id;
             }
-            array_push($parentRolelist, $userRole);
+            $parentRolelist[] = $userRole;
 
             $userParentRoleSeq = $userPrivilegeModel->get('parent_role_seq');
-            $sql .= " AND ( vtiger_customview.userid = ? OR vtiger_customview.status = 0 OR vtiger_customview.status = 3
-							OR vtiger_customview.userid IN (
-								SELECT vtiger_user2role.userid FROM vtiger_user2role
-									INNER JOIN vtiger_users ON vtiger_users.id = vtiger_user2role.userid
-									INNER JOIN vtiger_role ON vtiger_role.roleid = vtiger_user2role.roleid
-								WHERE vtiger_role.parentrole LIKE '" . $userParentRoleSeq . "::%') 
-							OR vtiger_customview.cvid IN (SELECT vtiger_cv2users.cvid FROM vtiger_cv2users WHERE vtiger_cv2users.userid=?)";
+            $sql .= " AND ( vtiger_customview.userid = ? 
+                OR vtiger_customview.status = 0 
+                OR vtiger_customview.status = 3
+                OR vtiger_customview.userid IN (
+                    SELECT vtiger_user2role.userid 
+                    FROM vtiger_user2role
+                    INNER JOIN vtiger_users ON vtiger_users.id = vtiger_user2role.userid
+                    INNER JOIN vtiger_role ON vtiger_role.roleid = vtiger_user2role.roleid
+                    WHERE vtiger_role.parentrole LIKE ?
+                ) 
+                OR vtiger_customview.cvid IN (
+                    SELECT vtiger_cv2users.cvid 
+                    FROM vtiger_cv2users 
+                    WHERE vtiger_cv2users.userid=?
+                )
+                OR vtiger_customview.cvid IN (
+                    SELECT vtiger_cv2role.cvid 
+                    FROM vtiger_cv2role 
+                    WHERE vtiger_cv2role.roleid =?
+                )
+                ";
             $params[] = $currentUser->getId();
+            $params[] = $userParentRoleSeq . '::%';
             $params[] = $currentUser->getId();
+            $params[] = $userRole;
+
             if (!empty($groups)) {
-                $sql .= "OR vtiger_customview.cvid IN (SELECT vtiger_cv2group.cvid FROM vtiger_cv2group WHERE vtiger_cv2group.groupid IN (" . generateQuestionMarks($groups) . "))";
+                $sql .= "OR vtiger_customview.cvid IN (
+                    SELECT vtiger_cv2group.cvid 
+                    FROM vtiger_cv2group 
+                    WHERE vtiger_cv2group.groupid IN (" . generateQuestionMarks($groups) . ")
+                )
+                ";
                 $params = array_merge($params, $groups);
             }
 
-            $sql .= "OR vtiger_customview.cvid IN (SELECT vtiger_cv2role.cvid FROM vtiger_cv2role WHERE vtiger_cv2role.roleid =?)";
-            $params[] = $userRole;
             if (!empty($parentRolelist)) {
-                $sql .= "OR vtiger_customview.cvid IN (SELECT vtiger_cv2rs.cvid FROM vtiger_cv2rs WHERE vtiger_cv2rs.rsid IN (" . generateQuestionMarks($parentRolelist) . "))";
+                $sql .= "OR vtiger_customview.cvid IN (
+                    SELECT vtiger_cv2rs.cvid 
+                    FROM vtiger_cv2rs 
+                    WHERE vtiger_cv2rs.rsid IN (" . generateQuestionMarks($parentRolelist) . ")
+                )
+                ";
                 $params = array_merge($params, $parentRolelist);
             }
 
@@ -1187,10 +1213,9 @@ class CustomView_Record_Model extends Vtiger_Base_Model
         }
 
         $result = $db->pquery($sql, $params);
-        $noOfCVs = $db->num_rows($result);
         $customViews = [];
-        for ($i = 0; $i < $noOfCVs; ++$i) {
-            $row = $db->query_result_rowdata($result, $i);
+
+        while ($row = $db->fetchByAssoc($result)) {
             $customView = new self();
             $customViews[] = $customView->setData($row)->setModule($row['entitytype']);
         }
