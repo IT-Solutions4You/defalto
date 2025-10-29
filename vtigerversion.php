@@ -16,7 +16,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-$patch_version = '1728907768'; // -ve timestamp before release, +ve timestamp after release.
+$patch_version = '2510290944';
 $modified_database = '';
-$vtiger_current_version = '0.0.2509'; // Version.Patch.Year+Month
+$vtiger_current_version = '1.0.0';
 $_SESSION['vtiger_version'] = $vtiger_current_version;
