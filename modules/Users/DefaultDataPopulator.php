@@ -670,8 +670,8 @@ class DefaultDataPopulator extends CRMEntity
         $this->db->query("alter table vtiger_inventoryshippingrel add column shtax$shserviceid decimal(7,3) default NULL");
 
         //version file is included here because without including this file version cannot be get
-        include('vtigerversion.php');
-        $this->db->query("insert into vtiger_version values(" . $this->db->getUniqueID('vtiger_version') . ",'" . $vtiger_current_version . "','" . $vtiger_current_version . "')");
+        include 'version.php';
+        $this->db->query("insert into vtiger_version values(" . $this->db->getUniqueID('vtiger_version') . ",'" . $defalto_current_version . "','" . $defalto_current_version . "')");
 
         //Register default language English
         require_once('vtlib/Vtiger/Language.php');

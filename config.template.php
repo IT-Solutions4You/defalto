@@ -26,8 +26,6 @@ error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED & E_ERROR); // PRODUCTION
 //ini_set('display_errors','on'); version_compare(PHP_VERSION, '5.5.0') <= 0 ? error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED) : error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);   // DEBUGGING
 //ini_set('display_errors','on'); error_reporting(E_ALL); // STRICT DEVELOPMENT
 
-include('vtigerversion.php');
-
 // more than 8MB memory needed for graphics
 // memory limit default value = 64M
 ini_set('memory_limit', '512M');

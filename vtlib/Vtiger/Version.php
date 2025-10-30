@@ -28,9 +28,9 @@ class Vtiger_Version
      */
     static function current()
     {
-        global $vtiger_current_version;
+        global $defalto_current_version;
 
-        return $vtiger_current_version;
+        return $defalto_current_version;
     }
 
     /**

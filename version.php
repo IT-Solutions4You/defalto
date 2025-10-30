@@ -18,5 +18,5 @@
 
 $patch_version = '2510290944';
 $modified_database = '';
-$vtiger_current_version = '1.0.0';
-$_SESSION['vtiger_version'] = $vtiger_current_version;
+$defalto_display_version = $defalto_current_version = '1.0.0';
+$_SESSION['defalto_version'] = $defalto_current_version;

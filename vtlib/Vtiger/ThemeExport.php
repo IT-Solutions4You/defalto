@@ -153,9 +153,9 @@ class Vtiger_ThemeExport extends Vtiger_Package
      */
     function export_Dependencies($theme = false)
     {
-        global $vtiger_current_version, $adb;
+        global $defalto_current_version, $adb;
 
-        $vtigerMinVersion = $vtiger_current_version;
+        $vtigerMinVersion = $defalto_current_version;
         $vtigerMaxVersion = false;
 
         $this->openNode('dependencies');

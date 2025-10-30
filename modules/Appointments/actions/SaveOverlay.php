@@ -43,7 +43,7 @@ class Appointments_SaveOverlay_Action extends Appointments_Save_Action
                 $requestData['duplicateRecords'] = $e->getDuplicateRecordIds();
                 $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 
-                global $vtiger_current_version;
+                global $defalto_current_version;
                 $viewer = new Vtiger_Viewer();
 
                 $viewer->assign('REQUEST_DATA', $requestData);
