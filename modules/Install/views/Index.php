@@ -250,7 +250,7 @@ class Install_Index_view extends Vtiger_View_Controller
             $viewer->assign('PASSWORD', $_SESSION['config_file_info']['password']);
             $viewer->assign('USERNAME', $_SESSION['config_file_info']['admin_name']);
             $viewer->assign('APPUNIQUEKEY', $this->retrieveConfiguredAppUniqueKey());
-            $viewer->assign('CURRENT_VERSION', $_SESSION['vtiger_version']);
+            $viewer->assign('CURRENT_VERSION', $_SESSION['defalto_version']);
             $viewer->view('Step7.tpl', $moduleName);
         } else {
             $response = new Vtiger_Response();

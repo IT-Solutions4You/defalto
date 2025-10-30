@@ -260,11 +260,11 @@ class Vtiger_PackageExport
      */
     function export_Dependencies($moduleInstance)
     {
-        global $vtiger_current_version, $adb;
+        global $defalto_current_version, $adb;
         $moduleid = $moduleInstance->id;
 
         $sqlresult = $adb->pquery("SELECT * FROM vtiger_tab_info WHERE tabid = ?", [$moduleid]);
-        $vtigerMinVersion = $vtiger_current_version;
+        $vtigerMinVersion = $defalto_current_version;
         $vtigerMaxVersion = false;
         $noOfPreferences = $adb->num_rows($sqlresult);
         for ($i = 0; $i < $noOfPreferences; ++$i) {

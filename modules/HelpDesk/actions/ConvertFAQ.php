@@ -53,7 +53,7 @@ class HelpDesk_ConvertFAQ_Action extends Vtiger_Action_Controller
                     $requestData['module'] = 'HelpDesk';
                     $requestData['duplicateRecords'] = $e->getDuplicateRecordIds();
 
-                    global $vtiger_current_version;
+                    global $defalto_current_version;
                     $viewer = new Vtiger_Viewer();
                     $viewer->assign('REQUEST_DATA', $requestData);
                     $viewer->assign('REQUEST_URL', $faqRecordModel->getEditViewUrl() . "&parentId=$recordId&parentModule=$moduleName");

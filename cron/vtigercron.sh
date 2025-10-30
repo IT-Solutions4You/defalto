@@ -13,4 +13,4 @@ export USE_PHP=php
 
 cd $VTIGERCRM_ROOTDIR
 # TO RUN ALL CORN JOBS
-$USE_PHP -f vtigercron.php 
+$USE_PHP -f cron.php

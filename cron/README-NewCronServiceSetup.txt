@@ -53,7 +53,7 @@ export USE_PHP=php
 
 cd $VTIGERCRM_ROOTDIR
 
-$USE_PHP -f vtigercron.php service="<ServiceName>" <param>="<value>"
+$USE_PHP -f cron.php service="<ServiceName>" <param>="<value>"
 
 =====================================================================================================================================
 
@@ -66,5 +66,5 @@ set PHP_EXE="C:\Program Files\vtigercrm5\php\php.exe"
 
 cd /D %VTIGERCRM_ROOTDIR%
 
-%PHP_EXE% -f vtigercron.php service="<ServiceName>" <param>="<value>"
+%PHP_EXE% -f cron.php service="<ServiceName>" <param>="<value>"
 =====================================================================================================================================
