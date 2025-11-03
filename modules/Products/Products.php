@@ -20,8 +20,8 @@ class Products extends CRMEntity
 {
     use Core_UnitPrice_Trait;
 
+    public string $moduleName = 'Products';
     public string $parentName = 'INVENTORY';
-    public $db, $log; // Used in class functions of CRMEntity
 
     public $table_name = 'vtiger_products';
     public $table_index = 'productid';
@@ -89,18 +89,10 @@ class Products extends CRMEntity
 
     public $isWorkFlowFieldUpdate;
 
-    /**    Constructor which will set the column_fields in this object
+    /**
+     * @inheritDoc
      */
-    public function __construct()
-    {
-        $this->log = Logger::getLogger('product');
-        $this->log->debug("Entering Products() method ...");
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('Products');
-        $this->log->debug("Exiting Product method ...");
-    }
-
-    function save_module($module)
+    public function save_module(string $module)
     {
         //Inserting into product_taxrel table
         if ((!isset($_REQUEST['ajxaction']) || $_REQUEST['ajxaction'] != 'DETAILVIEW') && $_REQUEST['action'] != 'ProcessDuplicates' && !$this->isWorkFlowFieldUpdate) {

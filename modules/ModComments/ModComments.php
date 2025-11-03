@@ -252,7 +252,10 @@ class ModComments extends ModCommentsCore
         }
     }
 
-    public function save_module($module): void
+    /**
+     * @inheritDoc
+     */
+    public function save_module(string $module)
     {
         $this->retrieveSource();
         $this->saveMailAttachmentIds();

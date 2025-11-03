@@ -31,9 +31,8 @@
 
 class PurchaseOrder extends CRMEntity
 {
+    public string $moduleName = 'PurchaseOrder';
     public string $parentName = 'INVENTORY';
-    public $log;
-    public $db;
 
     public $table_name = 'vtiger_purchaseorder';
     public $table_index = 'purchaseorderid';
@@ -119,23 +118,11 @@ class PurchaseOrder extends CRMEntity
     // For Alphabetical search
     public $def_basicsearch_col = 'subject';
 
-    // For workflows update field tasks is deleted all the lineitems.
-    public $isLineItemUpdate = true;
 
-    //var $groupTable = Array('vtiger_pogrouprelation','purchaseorderid');
-
-    /** Constructor Function for Order class
-     *  This function creates an instance of LoggerManager class using getLogger method
-     *  creates an instance for PearDatabase class and get values for column_fields array of Order class.
+    /**
+     * @inheritDoc
      */
-    public function __construct()
-    {
-        $this->log = Logger::getLogger('PurchaseOrder');
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('PurchaseOrder');
-    }
-
-    public function save_module($module)
+    public function save_module(string $module)
     {
         InventoryItem_CopyOnCreate_Model::run($this);
     }
