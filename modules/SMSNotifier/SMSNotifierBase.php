@@ -20,13 +20,8 @@ require_once('modules/Vtiger/CRMEntity.php');
 
 class SMSNotifierBase extends CRMEntity
 {
-	var $db, $log; // Used in class functions of CRMEntity
-
 	var $table_name = 'vtiger_smsnotifier';
 	var $table_index = 'smsnotifierid';
-
-	/** Indicator if this is a custom module or standard module */
-	var $IsCustomModule = true;
 
 	/**
 	 * Mandatory table for supporting custom fields.
@@ -76,9 +71,6 @@ class SMSNotifierBase extends CRMEntity
 		'Message' => 'message'
 	];
 
-	// For Popup window record selection
-	var $popup_fields = ['message'];
-
 	// Allow sorting on the following (field column names)
 	var $sortby_fields = ['message'];
 
@@ -104,14 +96,6 @@ class SMSNotifierBase extends CRMEntity
 	// Refers to vtiger_field.fieldname values.
 	var $mandatory_fields = ['createdtime', 'modifiedtime', 'message', 'assigned_user_id'];
 
-	function __construct()
-	{
-		global $log, $currentModule;
-		$this->column_fields = getColumnFields($currentModule);
-		$this->db = new PearDatabase();
-		$this->log = $log;
-	}
-
 	function getSortOrder()
 	{
 		global $currentModule;
@@ -136,10 +120,6 @@ class SMSNotifierBase extends CRMEntity
 		}
 
 		return $orderby;
-	}
-
-	function save_module($module)
-	{
 	}
 
 	/**

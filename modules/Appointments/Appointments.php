@@ -22,17 +22,9 @@ class Appointments extends CRMEntity
         'its4you_calendar_id',
     ];
     /**
-     * @var PearDatabase
-     */
-    public $db;
-    /**
      * @var string
      */
     public string $entity_table = 'vtiger_crmentity';
-    /**
-     * @var
-     */
-    public $id;
     /**
      * @var array
      */
@@ -49,10 +41,6 @@ class Appointments extends CRMEntity
         'Assigned To' => 'assigned_user_id',
         'Description' => 'description',
     ];
-    /**
-     * @var Logger
-     */
-    public $log;
     /**
      * @var string
      */
@@ -260,10 +248,9 @@ class Appointments extends CRMEntity
     }
 
     /**
-     * @return void
-     * @throws Exception
+     * @inheritDoc
      */
-    public function save_module()
+    public function save_module(string $module)
     {
         $this->retrieveAttendees();
 
@@ -288,16 +275,5 @@ class Appointments extends CRMEntity
     public function vtlib_handler(string $moduleName, string $eventType)
     {
         Appointments_Install_Model::getInstance($eventType, $moduleName)->install();
-    }
-
-    /**
-     *
-     */
-    public function __construct()
-    {
-        global $log;
-        $this->column_fields = getColumnFields(get_class($this));
-        $this->db = PearDatabase::getInstance();
-        $this->log = $log;
     }
 }

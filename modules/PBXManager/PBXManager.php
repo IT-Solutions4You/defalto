@@ -32,7 +32,6 @@ class PBXManager extends CRMEntity
     protected $headerScriptLinkType = 'HEADERSCRIPT';
     protected $dependentModules = ['Contacts', 'Leads', 'Accounts'];
 
-    var $db;
     var $table_name = 'vtiger_pbxmanager';
     var $table_index = 'pbxmanagerid';
     var $customFieldTable = ['vtiger_pbxmanagercf', 'pbxmanagerid'];
@@ -71,8 +70,6 @@ class PBXManager extends CRMEntity
         /* Format: Field Label => fieldname */
         'Customer' => 'customer',
     ];
-    // For Popup window record selection
-    var $popup_fields = ['customernumber'];
     // For Alphabetical search
     var $def_basicsearch_col = 'customer';
     // Column value to use on detail view record text display
@@ -87,7 +84,7 @@ class PBXManager extends CRMEntity
     function __construct()
     {
         $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('PBXManager');
+        $this->column_fields = getColumnFields($this->moduleName);
     }
 
     /**
@@ -127,12 +124,6 @@ class PBXManager extends CRMEntity
             $this->registerLookupEvents();
             // TODO Handle actions before this module is updated.
         }
-    }
-
-    /** Function to handle module specific operations when saving a entity
-     */
-    function save_module($module)
-    {
     }
 
     /**
