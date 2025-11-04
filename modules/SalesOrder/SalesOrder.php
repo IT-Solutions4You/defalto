@@ -31,9 +31,8 @@
 
 class SalesOrder extends CRMEntity
 {
+    public string $moduleName = 'SalesOrder';
     public string $parentName = 'SALES';
-    public $log;
-    public $db;
 
     public $table_name = "vtiger_salesorder";
     public $table_index = 'salesorderid';
@@ -137,22 +136,10 @@ class SalesOrder extends CRMEntity
     // For Alphabetical search
     public $def_basicsearch_col = 'subject';
 
-    // For workflows update field tasks is deleted all the lineitems.
-    public $isLineItemUpdate = true;
-
-    /** Constructor Function for SalesOrder class
-     *  This function creates an instance of LoggerManager class using getLogger method
-     *  creates an instance for PearDatabase class and get values for column_fields array of SalesOrder class.
+    /**
+     * @inheritDoc
      */
-    public function __construct()
-
-    {
-        $this->log = Logger::getLogger('SalesOrder');
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('SalesOrder');
-    }
-
-    public function save_module($module)
+    public function save_module(string $module)
     {
         InventoryItem_CopyOnCreate_Model::run($this);
     }

@@ -30,10 +30,8 @@
 
 class Potentials extends CRMEntity
 {
-    public $log;
-    public $db;
+    public string $moduleName = 'Potentials';
     public string $parentName = 'HOME';
-    public $module_name = "Potentials";
     public $table_name = "vtiger_potential";
     public $table_index = 'potentialid';
 
@@ -101,18 +99,6 @@ class Potentials extends CRMEntity
     ];
 
     public $LBL_POTENTIAL_MAPPING = 'LBL_OPPORTUNITY_MAPPING';
-
-    //var $groupTable = Array('vtiger_potentialgrouprelation','potentialid');
-    function __construct()
-    {
-        $this->log = Logger::getLogger('potential');
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('Potentials');
-    }
-
-    function save_module($module)
-    {
-    }
 
     /** Function to create list query
      *
@@ -654,7 +640,7 @@ class Potentials extends CRMEntity
         }
 
         if ($return_module == 'Accounts') {
-            $this->trash($this->module_name, $id);
+            $this->trash($this->moduleName, $id);
         } elseif ($return_module == 'Campaigns') {
             $sql = 'UPDATE vtiger_potential SET campaignid = ? WHERE potentialid = ?';
             $this->db->pquery($sql, [null, $id]);
@@ -673,7 +659,7 @@ class Potentials extends CRMEntity
             // Potential directly linked with Contact (not through Account - vtiger_contpotentialrel)
             $directRelCheck = $this->db->pquery('SELECT related_to FROM vtiger_potential WHERE potentialid=? AND contact_id=?', [$id, $return_id]);
             if ($this->db->num_rows($directRelCheck)) {
-                $this->trash($this->module_name, $id);
+                $this->trash($this->moduleName, $id);
             }
         } elseif ($return_module == 'Documents') {
             $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';

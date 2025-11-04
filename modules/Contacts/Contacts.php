@@ -31,9 +31,8 @@
 // Contact is used to store customer information.
 class Contacts extends CRMEntity
 {
+    public string $moduleName = 'Contacts';
     public string $parentName = 'HOME';
-    public $log;
-    public $db;
 
     public $table_name = "vtiger_contactdetails";
     public $table_index = 'contactid';
@@ -164,15 +163,6 @@ class Contacts extends CRMEntity
         'Project'          => ['table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'contact_id'],
         'Vendors'          => ['table_name' => 'vtiger_vendorcontactrel', 'table_index' => 'vendorid', 'rel_index' => 'contactid'],
     ];
-
-    function __construct()
-    {
-        $this->log = Logger::getLogger('contact');
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('Contacts');
-    }
-
-    // Mike Crowe Mod --------------------------------------------------------Default ordering for us
 
     /** Function to get the number of Contacts assigned to a particular User.
      *
@@ -1191,14 +1181,6 @@ class Contacts extends CRMEntity
         $log->debug("Exiting get_contactsforol method ...");
 
         return $query;
-    }
-
-    /** Function to handle module specific operations when saving a entity
-     */
-    function save_module($module)
-    {
-        // now handling in the crmentity for uitype 69
-        //$this->insertIntoAttachment($this->id,$module);
     }
 
     /**

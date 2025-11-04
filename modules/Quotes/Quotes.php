@@ -31,9 +31,8 @@
 
 class Quotes extends CRMEntity
 {
+    public string $moduleName = 'Quotes';
     public string $parentName = 'SALES';
-    var $log;
-    var $db;
 
     var $table_name = "vtiger_quotes";
     var $table_index = 'quoteid';
@@ -129,19 +128,10 @@ class Quotes extends CRMEntity
     // For Alphabetical search
     var $def_basicsearch_col = 'subject';
 
-    // For workflows update field tasks is deleted all the lineitems.
-    var $isLineItemUpdate = true;
-
-    /**    Constructor which will set the column_fields in this object
+    /**
+     * @inheritDoc
      */
-    function __construct()
-    {
-        $this->log = Logger::getLogger('quote');
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('Quotes');
-    }
-
-    function save_module()
+    public function save_module(string $module)
     {
         InventoryItem_CopyOnCreate_Model::run($this);
     }

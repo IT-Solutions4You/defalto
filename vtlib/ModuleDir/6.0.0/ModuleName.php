@@ -18,7 +18,7 @@
 
 include_once 'modules/Vtiger/CRMEntity.php';
 
-class ModuleName extends Vtiger_CRMEntity
+class ModuleName extends CRMEntity
 {
     var $table_name = 'vtiger_<modulename>';
     var $table_index = '<modulename>id';
@@ -72,9 +72,6 @@ class ModuleName extends Vtiger_CRMEntity
         '<entityfieldlabel>' => '<entityfieldname>',
         'Assigned To'        => 'assigned_user_id',
     ];
-
-    // For Popup window record selection
-    var $popup_fields = ['<entityfieldname>'];
 
     // For Alphabetical search
     var $def_basicsearch_col = '<entityfieldname>';

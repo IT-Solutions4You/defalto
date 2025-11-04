@@ -22,8 +22,6 @@ require_once 'vtlib/Vtiger/Module.php';
 
 class ModCommentsCore extends CRMEntity
 {
-    var $db, $log; // Used in class functions of CRMEntity
-
     var $table_name = 'vtiger_modcomments';
     var $table_index = 'modcommentsid';
 
@@ -75,9 +73,6 @@ class ModCommentsCore extends CRMEntity
         'Comment' => 'commentcontent'
     ];
 
-    // For Popup window record selection
-    var $popup_fields = ['commentcontent'];
-
     // Allow sorting on the following (field column names)
     var $sortby_fields = ['commentcontent'];
 
@@ -102,14 +97,6 @@ class ModCommentsCore extends CRMEntity
     // Used when enabling/disabling the mandatory fields for the module.
     // Refers to vtiger_field.fieldname values.
     var $mandatory_fields = ['createdtime', 'modifiedtime', 'commentcontent'];
-
-    function __construct()
-    {
-        global $log, $currentModule;
-        $this->column_fields = getColumnFields('ModComments');
-        $this->db = PearDatabase::getInstance();
-        $this->log = $log;
-    }
 
     function getSortOrder()
     {
@@ -142,10 +129,6 @@ class ModCommentsCore extends CRMEntity
         }
 
         return $orderby;
-    }
-
-    function save_module($module)
-    {
     }
 
     /**

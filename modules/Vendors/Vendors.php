@@ -18,9 +18,8 @@
 
 class Vendors extends CRMEntity
 {
+    public string $moduleName = 'Vendors';
     public string $parentName = 'INVENTORY';
-    var $log;
-    var $db;
     var $table_name = "vtiger_vendor";
     var $table_index = 'vendorid';
     var $tab_name = ['vtiger_crmentity', 'vtiger_vendor', 'vtiger_vendorcf'];
@@ -71,21 +70,6 @@ class Vendors extends CRMEntity
 
     // For Alphabetical search
     var $def_basicsearch_col = 'vendorname';
-
-    /**    Constructor which will set the column_fields in this object
-     */
-    function __construct()
-    {
-        $this->log = Logger::getLogger('vendor');
-        $this->log->debug("Entering Vendors() method ...");
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('Vendors');
-        $this->log->debug("Exiting Vendor method ...");
-    }
-
-    function save_module($module)
-    {
-    }
 
     /**    function used to get the list of products which are related to the vendor
      *

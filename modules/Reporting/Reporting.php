@@ -24,7 +24,6 @@ class Reporting extends CRMEntity
     /**
      * Used in class functions of CRMEntity
      */
-    public $db, $log;
     public string $moduleName = 'Reporting';
     public string $parentName = 'ANALYTICS';
     /**
@@ -55,7 +54,10 @@ class Reporting extends CRMEntity
         $this->log = $log;
     }
 
-    public function save_module()
+    /**
+     * @inheritDoc
+     */
+    public function save_module(string $module)
     {
         $this->saveSharing();
     }
