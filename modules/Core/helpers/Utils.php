@@ -85,9 +85,9 @@ class Core_Utils_Helper
     public static function getLogo(): string
     {
         if (Installer_License_Model::isMembershipActive()) {
-            return Settings_Vtiger_CompanyDetails_Model::getInstance()->getLogoPath();
+            $logo = Settings_Vtiger_CompanyDetails_Model::getInstance()->getLogoPath();
         }
 
-        return 'layouts/d1/resources/Images/login-logo.png';
+        return !empty($logo) ? $logo : 'layouts/d1/resources/Images/login-logo.png';
     }
 }
