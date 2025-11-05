@@ -242,6 +242,7 @@ class Vtiger_Language_Handler
      */
     public static function export($module, $type = 'languageStrings')
     {
+        $module = str_replace('Vtiger', 'Core', $module);
         $userSelectedLanguage = self::getLanguage();
         $defaultLanguage = vglobal('default_language');
         $languages = [$userSelectedLanguage];
