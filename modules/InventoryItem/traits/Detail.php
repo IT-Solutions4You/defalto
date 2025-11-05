@@ -19,7 +19,7 @@ trait InventoryItem_Detail_Trait
      * @param Vtiger_Viewer  $viewer
      *
      * @return void
-     * @throws AppException
+     * @throws Exception
      */
     public function adaptDetail(Vtiger_Request $request, Vtiger_Viewer $viewer)
     {

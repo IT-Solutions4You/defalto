@@ -26,7 +26,7 @@
      * @param Vtiger_Request $request
      *
      * @return bool|html
-     * @throws AppException
+     * @throws Exception
      */
     function showModuleDetailView(Vtiger_Request $request)
     {
