@@ -84,7 +84,7 @@
             }
             .loginPageLogo {
                 height: 4rem;
-                background: url(layouts/d1/resources/Images/login-logo.png) center center / auto 4rem no-repeat;
+                background: url({Core_Utils_Helper::getLogo()}) center center / auto 4rem no-repeat;
             }
 
             #page {

@@ -11,6 +11,7 @@
     <div class="h-footer d-flex justify-content-center align-items-center">
         <div>
             <a href="https://defalto.com">Powered by Defalto {$VTIGER_VERSION} © 2022 - {date('Y')}</a>
+            {Core_Utils_Helper::getBranding()}
         </div>
     </div>
 </footer>
