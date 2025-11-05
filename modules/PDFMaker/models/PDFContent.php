@@ -175,8 +175,18 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         $this->replaceExecutionTime();
         $this->convertEncoding();
 
+        return $this->getContentBySections();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getContentBySections(): array
+    {
         $PDF_content = [];
         [$PDF_content['header'], $PDF_content['body'], $PDF_content['footer']] = explode(self::$section_sep, self::$content);
+
+        $PDF_content['footer'] .= $this->getBranding();
 
         return $PDF_content;
     }

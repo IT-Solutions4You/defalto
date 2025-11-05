@@ -63,4 +63,31 @@ class Core_Utils_Helper
 
         return str_replace([' ', ',', '.'], ['', '', ''], $string);
     }
+
+    /**
+     * @throws Exception
+     */
+    public static function getBranding(): string
+    {
+        if (Installer_License_Model::isMembershipActive()) {
+            return '';
+        }
+
+        return '<span class="ms-2">Developed by IT-Solutions4You</span>
+            <a target="_blank" href="https://www.facebook.com/defalto.crm" class="bi bi-facebook ms-2 text-primary"></a>
+            <a target="_blank" href="https://www.linkedin.com/company/defalto" class="bi bi-linkedin ms-2 text-primary-emphasis"></a>
+            <a target="_blank" href="https://www.youtube.com/@DefaltoCRM" class="bi bi-youtube ms-2 text-danger"></a>';
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function getLogo(): string
+    {
+        if (Installer_License_Model::isMembershipActive()) {
+            return Settings_Vtiger_CompanyDetails_Model::getInstance()->getLogoPath();
+        }
+
+        return 'layouts/d1/resources/Images/login-logo.png';
+    }
 }

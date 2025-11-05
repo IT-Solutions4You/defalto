@@ -154,4 +154,20 @@ class Installer_License_Model extends Core_DatabaseData_Model
     {
         $this->set('info', base64_encode(json_encode($info, true)));
     }
+
+    /**
+     * @throws Exception
+     */
+    public static function isMembershipActive(): bool
+    {
+        $memberShips = Installer_License_Model::getAll(Installer_License_Model::MEMBERSHIP_PACK);
+
+        foreach ($memberShips as $membership) {
+            if ($membership->isValidLicense()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
