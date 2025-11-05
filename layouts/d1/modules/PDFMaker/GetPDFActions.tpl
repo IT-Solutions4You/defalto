@@ -9,6 +9,9 @@
 
 <input type="hidden" name="email_function" id="email_function" value="{if isset($EMAIL_FUNCTION)}{$EMAIL_FUNCTION}{/if}"/>
 <li>
+    <a href="javascript:EMAILMaker_Actions_Js.getDetailViewPopup(this,'{$MODULE}');" class="dropdown-item">{vtranslate('LBL_SEND_EMAIL','PDFMaker')}</a>
+</li>
+<li>
     <a href="javascript:;" class="dropdown-item PDFMakerDownloadPDF PDFMakerTemplateAction">{vtranslate('LBL_DOWNLOAD','PDFMaker')}</a>
 </li>
 <li>
