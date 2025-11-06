@@ -76,17 +76,29 @@ class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('RETURN_RECORD', $request->get('returnrecord'));
         $viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('QuickEdit.tpl', $moduleName);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
         $jsFileNames = [
             "modules.$moduleName.resources.Edit"
         ];
-        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
-        return $jsScriptInstances;
+        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
+
+        foreach ($modifiers as $modifier) {
+            if (method_exists($modifier, 'modifyGetHeaderScripts')) {
+                $jsFileNames = array_merge($jsFileNames, $modifier->modifyGetHeaderScripts($request));
+            }
+        }
+
+        return $this->checkAndConvertJsScripts($jsFileNames);
     }
 }

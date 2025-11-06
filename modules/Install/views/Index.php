@@ -268,7 +268,10 @@ class Install_Index_view extends Vtiger_View_Controller
         return $application_unique_key ?? '';
     }
 
-    public function getHeaderCss(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
         $parentCSSScripts = parent::getHeaderCss($request);
@@ -281,7 +284,10 @@ class Install_Index_view extends Vtiger_View_Controller
         return $headerCSSScriptInstances;
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
         $parentScripts = parent::getHeaderScripts($request);
@@ -291,9 +297,8 @@ class Install_Index_view extends Vtiger_View_Controller
             "modules.$moduleName.resources.Index"
         ];
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($parentScripts, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($parentScripts, $jsScriptInstances);
     }
 
     public function validateRequest(Vtiger_Request $request)

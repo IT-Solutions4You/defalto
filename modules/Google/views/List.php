@@ -250,19 +250,25 @@ class Google_List_View extends Vtiger_PopupAjax_View
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    public function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
 
-        return $this->checkAndConvertJsScripts([
+        $jsFileNames = [
             "modules.$moduleName.resources.List",
-        ]);
+        ];
+
+        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
+
+        foreach ($modifiers as $modifier) {
+            if (method_exists($modifier, 'modifyGetHeaderScripts')) {
+                $jsFileNames = array_merge($jsFileNames, $modifier->modifyGetHeaderScripts($request));
+            }
+        }
+
+        return $this->checkAndConvertJsScripts($jsFileNames);
     }
 
     public function validateRequest(Vtiger_Request $request)

@@ -110,6 +110,9 @@ class Settings_Workflows_EditAjax_View extends Settings_Workflows_Edit_View
         $moduleModel = $workFlowModel->getModule();
         $viewer->assign('TASK_TYPES', Settings_Workflows_TaskType_Model::getAllForModule($moduleModel));
         $viewer->assign('TASK_LIST', $workFlowModel->getTasks());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'getWorkflowConditions', $request->getModule(), $viewer, $request);
+
         $viewer->view('WorkFlowConditions.tpl', $qualifiedModuleName);
     }
 }

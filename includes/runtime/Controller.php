@@ -324,6 +324,8 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller
 
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'preProcess', $request->getModule(), $viewer, $request);
+
         if ($display) {
             $this->preProcessDisplay($request);
         }
@@ -358,17 +360,20 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller
 
         $viewer = $this->getViewer($request);
         $viewer->assign('ACTIVITY_REMINDER', $currentUser->getCurrentUserActivityReminderInSeconds());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'postProcess', $request->getModule(), $viewer, $request);
+
         $this->postProcessDisplay($request);
     }
 
     /**
-     * Retrieves headers scripts that need to loaded in the page
+     * Retrieves header JS scripts that need to load in the page
      *
      * @param Vtiger_Request $request - request model
      *
-     * @return <array> - array of Vtiger_JsScript_Model
+     * @return array of Vtiger_JsScript_Model
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = [];
         $languageHandlerShortName = Vtiger_Language_Handler::getShortLanguageName();
@@ -382,10 +387,18 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller
             '~libraries/jquery/posabsolute-jQuery-Validation-Engine/js/jquery.validationEngine.js',
             $fileName,
         ];
-        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($jsScriptInstances, $headerScriptInstances);
 
-        return $headerScriptInstances;
+        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
+
+        foreach ($modifiers as $modifier) {
+            if (method_exists($modifier, 'modifyGetHeaderScripts')) {
+                $jsFileNames = array_merge($jsFileNames, $modifier->modifyGetHeaderScripts($request));
+            }
+        }
+
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+
+        return array_merge($jsScriptInstances, $headerScriptInstances);
     }
 
     function checkAndConvertJsScripts($jsFileNames)
@@ -473,15 +486,25 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller
     }
 
     /**
-     * Retrieves css styles that need to loaded in the page
+     * Retrieves CSS styles that need to load in the page
      *
      * @param Vtiger_Request $request - request model
      *
-     * @return <array> - array of Vtiger_CssScript_Model
+     * @return array of Vtiger_CssScript_Model
      */
-    function getHeaderCss(Vtiger_Request $request)
+    public function getHeaderCss(Vtiger_Request $request): array
     {
-        return [];
+        $cssFileNames  = [];
+
+        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
+
+        foreach ($modifiers as $modifier) {
+            if (method_exists($modifier, 'modifyGetHeaderCss')) {
+                $cssFileNames = array_merge($cssFileNames, $modifier->modifyGetHeaderCss($request));
+            }
+        }
+
+        return $this->checkAndConvertCssStyles($cssFileNames);
     }
 
     /**
@@ -497,5 +520,12 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller
         }
 
         return Vtiger_Language_Handler::export($moduleName, 'jsLanguageStrings');
+    }
+
+    public function process(Vtiger_Request $request)
+    {
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
     }
 }

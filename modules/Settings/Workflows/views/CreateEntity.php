@@ -64,6 +64,9 @@ class Settings_Workflows_CreateEntity_View extends Settings_Vtiger_Index_View
         $viewer->assign('SOURCE_MODULE', $workflowModuleModel->getName());
         $viewer->assign('RELATED_MODULE_MODEL_NAME', '');
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('CreateEntity.tpl', $qualifiedModuleName);
     }
 }

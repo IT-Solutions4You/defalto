@@ -120,17 +120,15 @@ class Vtiger_Index_View extends Vtiger_Basic_View
         $viewer = $this->getViewer($request);
         $viewer->assign('MODULE_MODEL', Vtiger_Module_Model::getInstance($moduleName));
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('Index.tpl', $moduleName);
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -142,9 +140,8 @@ class Vtiger_Index_View extends Vtiger_Basic_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     public function validateRequest(Vtiger_Request $request)

@@ -26,11 +26,6 @@ class Portal_Detail_View extends Vtiger_Index_View
         return $permissions;
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
-    {
-        parent::preProcess($request);
-    }
-
     public function process(Vtiger_Request $request)
     {
         $recordId = $request->get('record');
@@ -46,10 +41,15 @@ class Portal_Detail_View extends Vtiger_Index_View
         $viewer->assign('URL', $url);
         $viewer->assign('RECORDS_LIST', $recordList);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('DetailView.tpl', $module);
     }
 
-    function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -62,8 +62,7 @@ class Portal_Detail_View extends Vtiger_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

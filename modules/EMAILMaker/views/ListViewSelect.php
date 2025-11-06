@@ -107,6 +107,9 @@ class EMAILMaker_ListViewSelect_View extends Vtiger_IndexAjax_View
 
         $viewer->assign('idslist', $_REQUEST['idslist']);
         $viewer->assign('relmodule', $request->get('return_module'));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view("ListViewSelect.tpl", 'EMAILMaker');
     }
 

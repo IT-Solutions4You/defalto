@@ -41,6 +41,9 @@ class Portal_EditAjax_View extends Vtiger_IndexAjax_View
             $viewer->assign('BOOKMARK_URL', $data['bookmarkUrl']);
         }
         $viewer->assign('MODULE', $moduleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('EditView.tpl', $moduleName);
     }
 }

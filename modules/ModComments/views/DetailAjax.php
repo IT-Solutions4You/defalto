@@ -34,6 +34,8 @@ class ModComments_DetailAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('ROLLUP_STATUS', false);
         $viewer->assign('CHILDS_ROOT_PARENT_MODEL', null);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('comments/Comment.tpl', $moduleName);
     }
 }

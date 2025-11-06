@@ -44,6 +44,8 @@ class Settings_Groups_DeleteAjax_View extends Settings_Vtiger_Index_View
         $viewer->assign('ALL_USERS', Users_Record_Model::getAll());
         $viewer->assign('ALL_GROUPS', Settings_Groups_Record_Model::getAll());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('DeleteTransferForm.tpl', $qualifiedModuleName, true);
     }
 }

@@ -38,6 +38,9 @@ class PBXManager_List_View extends Vtiger_List_View
         $viewer->assign('IS_CREATE_PERMITTED', false);
         $viewer->assign('IS_MODULE_EDITABLE', false);
         $viewer->assign('IS_MODULE_DELETABLE', false);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ListViewContents.tpl', $moduleName);
     }
 

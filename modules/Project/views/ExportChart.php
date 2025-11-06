@@ -66,6 +66,9 @@ class Project_ExportChart_View extends Vtiger_Index_View
         $viewer->assign('PROJECT_TASKS', $projectTasks);
         $viewer->assign('TASK_STATUS_COLOR', $parentRecordModel->getStatusColors());
         $viewer->assign('USER_DATE_FORMAT', $currentUserModel->get('date_format'));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'GetPrintReport', $request->getModule(), $viewer, $request);
+
         $viewer->view('ShowChartPrintView.tpl', $moduleName);
     }
 }

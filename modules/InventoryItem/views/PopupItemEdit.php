@@ -157,6 +157,9 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $viewer->assign('CURRENCY_SYMBOL', $currencyInfo['currency_symbol']);
         $viewer->assign('DATA', $itemData);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('PopupEdit.tpl', $moduleName);
     }
 
@@ -174,13 +177,16 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
     {
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'postProcess', $request->getModule(), $viewer, $request);
+
         $viewer->view('PopupItemEditFooter.tpl', $moduleName);
     }
 
     /**
      * @inheritDoc
      */
-    public function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $jsFileNames = ['modules.Vtiger.resources.CkEditor'];

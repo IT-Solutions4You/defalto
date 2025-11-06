@@ -79,6 +79,9 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View
         $moduleName = $request->getModule();
         $viewer = $this->getViewer($request);
         $this->initMassEditViewContents($request);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showMassEditForm', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('MassEditForm.tpl', $moduleName, true);
     }
 
@@ -190,6 +193,8 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
         $viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showAddCommentForm', $request->getModule(), $viewer, $request);
+
         $viewer->view('AddCommentForm.tpl', $moduleName);
     }
 
@@ -256,6 +261,8 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View
         if ($relatedLoad) {
             $viewer->assign('RELATED_LOAD', true);
         }
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showComposeEmailForm', $request->getModule(), $viewer, $request);
 
         if ($step == 'step1') {
             echo $viewer->view('SelectEmailFields.tpl', $request->getModule(), true);
@@ -431,6 +438,8 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View
             $viewer->assign('SEARCH_PARAMS', $searchParams);
         }
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showSendSMSForm', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('SendSMSForm.tpl', $moduleName, true);
     }
 
@@ -520,6 +529,8 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('VIEWNAME', $cvId);
         $viewer->assign('MODULE', $module);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showMailMergeTemplates', $request->getModule(), $viewer, $request);
+
         return $viewer->view('showMergeTemplates.tpl', $module);
     }
 
@@ -537,6 +548,9 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View
         $viewer = $this->getViewer($request);
         $viewer->assign('MODULE', $module);
         $viewer->assign('FIELDS', $fields);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showDuplicatesSearchForm', $request->getModule(), $viewer, $request);
+
         $viewer->view('showDuplicateSearch.tpl', $module);
     }
 
@@ -560,6 +574,9 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('RELATED_MODULES', $relatedModules);
         $viewer->assign('SKIP_MODULES', $skipModules);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'transferOwnership', $request->getModule(), $viewer, $request);
+
         $viewer->view('TransferRecordOwnership.tpl', $module);
     }
 }

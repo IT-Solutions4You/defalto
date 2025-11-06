@@ -18,14 +18,10 @@
 
 class Documents_Edit_View extends Vtiger_Edit_View
 {
-	/**
-	 * Function to get the list of Script models to be included
-	 *
-	 * @param Vtiger_Request $request
-	 *
-	 * @return <Array> - List of Vtiger_JsScript_Model instances
-	 */
-	function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
 	{
 		$headerScriptInstances = parent::getHeaderScripts($request);
 
@@ -37,8 +33,7 @@ class Documents_Edit_View extends Vtiger_Edit_View
 			'modules.Vtiger.resources.CkEditor',
 		];
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-		return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
 	}
 }

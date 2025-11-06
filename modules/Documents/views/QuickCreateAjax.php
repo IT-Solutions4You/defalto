@@ -100,6 +100,9 @@ class Documents_QuickCreateAjax_View extends Vtiger_IndexAjax_View
 
         $viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
         $viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('QuickCreate.tpl', $moduleName, true);
     }
 
@@ -124,7 +127,10 @@ class Documents_QuickCreateAjax_View extends Vtiger_IndexAjax_View
         return $fields;
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
         $jsFileNames = [
@@ -132,8 +138,14 @@ class Documents_QuickCreateAjax_View extends Vtiger_IndexAjax_View
             "modules.Vtiger.resources.CkEditor"
         ];
 
-        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
 
-        return $jsScriptInstances;
+        foreach ($modifiers as $modifier) {
+            if (method_exists($modifier, 'modifyGetHeaderScripts')) {
+                $jsFileNames = array_merge($jsFileNames, $modifier->modifyGetHeaderScripts($request));
+            }
+        }
+
+        return $this->checkAndConvertJsScripts($jsFileNames);
     }
 }

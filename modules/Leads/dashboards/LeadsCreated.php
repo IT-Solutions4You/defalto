@@ -19,13 +19,9 @@
 class Leads_LeadsCreated_Dashboard extends Vtiger_IndexAjax_View
 {
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $jsFileNames = [
 //			'~/libraries/jquery/jqplot/plugins/jqplot.cursor.min.js',
@@ -35,9 +31,15 @@ class Leads_LeadsCreated_Dashboard extends Vtiger_IndexAjax_View
 //			'~/libraries/jquery/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js'
         ];
 
-        $headerScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
 
-        return $headerScriptInstances;
+        foreach ($modifiers as $modifier) {
+            if (method_exists($modifier, 'modifyGetHeaderScripts')) {
+                $jsFileNames = array_merge($jsFileNames, $modifier->modifyGetHeaderScripts($request));
+            }
+        }
+
+        return $this->checkAndConvertJsScripts($jsFileNames);
     }
 
     public function process(Vtiger_Request $request)
@@ -65,6 +67,8 @@ class Leads_LeadsCreated_Dashboard extends Vtiger_IndexAjax_View
 
         $accessibleUsers = $currentUser->getAccessibleUsersForModule('Leads');
         $viewer->assign('ACCESSIBLE_USERS', $accessibleUsers);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $content = $request->get('content');
         if (!empty($content)) {

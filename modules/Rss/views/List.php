@@ -18,11 +18,6 @@
 
 class Rss_List_View extends Vtiger_Index_View
 {
-    function preProcess(Vtiger_Request $request, $display = true)
-    {
-        parent::preProcess($request);
-    }
-
     function preProcessTplName(Vtiger_Request $request)
     {
         return 'ListViewPreProcess.tpl';
@@ -38,6 +33,8 @@ class Rss_List_View extends Vtiger_Index_View
 
         $viewer->assign('MODULE_MODEL', $moduleModel);
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('ListViewContents.tpl', $moduleName);
     }
@@ -76,13 +73,9 @@ class Rss_List_View extends Vtiger_Index_View
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -98,9 +91,8 @@ class Rss_List_View extends Vtiger_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     /**

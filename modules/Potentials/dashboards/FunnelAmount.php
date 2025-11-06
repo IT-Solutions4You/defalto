@@ -19,20 +19,23 @@
 class Potentials_FunnelAmount_Dashboard extends Vtiger_IndexAjax_View
 {
     /**
-     * Retrieves css styles that need to loaded in the page
-     *
-     * @param Vtiger_Request $request - request model
-     *
-     * @return <array> - array of Vtiger_CssScript_Model
+     * @inheritDoc
      */
-    function getHeaderCss(Vtiger_Request $request)
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $cssFileNames = [
             //Place your widget specific css files here
         ];
-        $headerCssScriptInstances = $this->checkAndConvertCssStyles($cssFileNames);
 
-        return $headerCssScriptInstances;
+        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
+
+        foreach ($modifiers as $modifier) {
+            if (method_exists($modifier, 'modifyGetHeaderCss')) {
+                $cssFileNames = array_merge($cssFileNames, $modifier->modifyGetHeaderCss($request));
+            }
+        }
+
+        return $this->checkAndConvertCssStyles($cssFileNames);
     }
 
     function getSearchParams($stage)
@@ -68,6 +71,8 @@ class Potentials_FunnelAmount_Dashboard extends Vtiger_IndexAjax_View
 
         $viewer->assign('STYLES', $this->getHeaderCss($request));
         $viewer->assign('CURRENTUSER', $currentUser);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $content = $request->get('content');
         if (!empty($content)) {

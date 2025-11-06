@@ -28,6 +28,9 @@ class Settings_Tags_EditAjax_View extends Settings_Vtiger_IndexAjax_View
         $viewer = $this->getViewer($request);
         $qualifiedName = $request->getModule(false);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('EditAjax.tpl', $qualifiedName);
     }
 }

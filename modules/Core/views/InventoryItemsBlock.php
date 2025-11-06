@@ -33,8 +33,10 @@ class Core_InventoryItemsBlock_View extends Core_RelatedBlock_View
         $viewer->view('InventoryItemsBlockEdit.tpl', $request->getModule());
     }
 
-
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
 

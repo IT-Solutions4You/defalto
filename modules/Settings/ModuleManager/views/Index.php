@@ -18,11 +18,6 @@
 
 class Settings_ModuleManager_Index_View extends Settings_Vtiger_Index_View
 {
-    public function preProcess(Vtiger_Request $request, $display = true)
-    {
-        parent::preProcess($request, $display);
-    }
-
     public function process(Vtiger_Request $request)
     {
         $viewer = $this->getViewer($request);
@@ -34,6 +29,8 @@ class Settings_ModuleManager_Index_View extends Settings_Vtiger_Index_View
         $viewer->assign('ALL_MODULES', $allModules);
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         echo $viewer->view('IndexContents.tpl', $qualifiedModuleName, true);
     }

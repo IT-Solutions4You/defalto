@@ -64,10 +64,15 @@ class EMAILMaker_Extensions_View extends EMAILMaker_Index_View
             $viewer->assign("ERROR", "true");
         }
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('Extensions.tpl', 'EMAILMaker');
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();

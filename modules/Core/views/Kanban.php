@@ -10,7 +10,10 @@
 
 class Core_Kanban_View extends Vtiger_Index_View
 {
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
         $view = $request->get('view');
@@ -19,6 +22,15 @@ class Core_Kanban_View extends Vtiger_Index_View
             "layouts.$layout.modules.Vtiger.resources.$view",
             "layouts.$layout.modules.$moduleName.resources.$view",
         ];
+
+        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
+
+        foreach ($modifiers as $modifier) {
+            if (method_exists($modifier, 'modifyGetHeaderScripts')) {
+                $jsFileNames = array_merge($jsFileNames, $modifier->modifyGetHeaderScripts($request));
+            }
+        }
+
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
         return array_merge(parent::getHeaderScripts($request), $jsScriptInstances);
@@ -62,6 +74,8 @@ class Core_Kanban_View extends Vtiger_Index_View
         $viewer->assign('NEW_RECORD_LINK', $kanbanModel->getNewRecordLink());
         $viewer->assign('LIST_VIEW_LINK', $kanbanModel->getListLink());
         $viewer->assign('KANBAN_ID', $kanbanModel->getKanbanId());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'getProcess', $request->getModule(), $viewer, $request);
 
         $viewer->view('KanbanView.tpl', $qualifiedModule);
     }

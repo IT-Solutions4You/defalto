@@ -40,6 +40,9 @@ class Users_TransferOwnership_View extends Vtiger_Index_View
         $viewer = $this->getViewer($request);
         $viewer->assign('USERS_MODEL', $usersList);
         $viewer->assign('MODULE', $moduleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('TransferOwnership.tpl', $moduleName);
     }
 

@@ -40,10 +40,16 @@ class Settings_ITS4YouEmails_Index_View extends Settings_Vtiger_Index_View
         $viewer->assign('MODULE', $module);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
         $viewer->assign('SUPPORTED_MODULES', ITS4YouEmails_Integration_Model::getSupportedModules());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('Index.tpl', $qualifiedModule);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -62,11 +68,9 @@ class Settings_ITS4YouEmails_Index_View extends Settings_Vtiger_Index_View
     }
 
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return array
+     * @inheritDoc
      */
-    public function getHeaderCss(Vtiger_Request $request)
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
         $headerCssInstances = parent::getHeaderCss($request);

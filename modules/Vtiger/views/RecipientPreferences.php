@@ -26,6 +26,9 @@ class Vtiger_RecipientPreferences_View extends Vtiger_MassActionAjax_View
         $viewer->assign('EMAIL_FIELDS_LIST', $emailFieldsInfo);
         $viewer->assign('MODULE', $request->getModule());
         $viewer->assign('SOURCE_MODULE', $sourceModule);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('RecipientPreferences.tpl', $request->getModule(), true);
     }
 

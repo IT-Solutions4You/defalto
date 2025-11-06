@@ -135,17 +135,16 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
         $viewer->assign('ACTIVE_MODULES', $activeModules);
         $viewer->assign('SETTINGS_SHORTCUTS', $pinnedSettingsShortcuts);
         $viewer->assign('MODULE', $qualifiedModuleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('Index.tpl', $qualifiedModuleName);
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -162,9 +161,8 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     public static function getSelectedFieldFromModule($menuModels, $moduleName)

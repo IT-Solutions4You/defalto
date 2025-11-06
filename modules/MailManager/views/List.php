@@ -29,10 +29,12 @@ class MailManager_List_View extends MailManager_Abstract_View
         'search'   => ['class' => 'MailManager_Search_View'],
     ];
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-        $moduleName = $request->getModule();
 
         $jsFileNames = [
             "libraries.jquery.ckeditor.ckeditor",
@@ -42,9 +44,8 @@ class MailManager_List_View extends MailManager_Abstract_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     public function process(Vtiger_Request $request)
@@ -77,6 +78,9 @@ class MailManager_List_View extends MailManager_Abstract_View
         $moduleName = $request->getModule();
         $viewer = $this->getViewer($request);
         $viewer->assign('MODULE', $moduleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'processRoot', $request->getModule(), $viewer, $request);
+
         $viewer->view('index.tpl', $moduleName);
     }
 }

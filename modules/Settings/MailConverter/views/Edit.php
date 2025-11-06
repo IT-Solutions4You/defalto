@@ -70,6 +70,9 @@ class Settings_MailConverter_Edit_View extends Settings_Vtiger_Index_View
     {
         $qualifiedModuleName = $request->getModule(false);
         $viewer = $this->getViewer($request);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'step1', $request->getModule(), $viewer, $request);
+
         $viewer->view('Step1.tpl', $qualifiedModuleName);
     }
 
@@ -90,6 +93,9 @@ class Settings_MailConverter_Edit_View extends Settings_Vtiger_Index_View
         } else {
             $viewer->assign('CONNECTION_ERROR', true);
         }
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'step2', $request->getModule(), $viewer, $request);
+
         $viewer->view('Step2.tpl', $qualifiedModuleName);
     }
 
@@ -116,10 +122,15 @@ class Settings_MailConverter_Edit_View extends Settings_Vtiger_Index_View
         $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('ASSIGNED_USER', $currentUserId);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'step3', $request->getModule(), $viewer, $request);
+
         $viewer->view('Step3.tpl', $qualifiedModuleName);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
 
@@ -128,8 +139,7 @@ class Settings_MailConverter_Edit_View extends Settings_Vtiger_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

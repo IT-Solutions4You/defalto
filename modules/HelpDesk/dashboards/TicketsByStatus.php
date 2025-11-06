@@ -63,6 +63,8 @@ class HelpDesk_TicketsByStatus_Dashboard extends Vtiger_IndexAjax_View
         $accessibleUsers = $currentUser->getAccessibleUsersForModule($moduleName);
         $viewer->assign('ACCESSIBLE_USERS', $accessibleUsers);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $content = $request->get('content');
         if (!empty($content)) {
             $viewer->view('dashboards/DashBoardWidgetContents.tpl', $moduleName);

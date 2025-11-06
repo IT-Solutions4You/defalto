@@ -39,6 +39,8 @@ class Vtiger_AddNotePad_View extends Vtiger_Index_View
 
         $viewer->assign('MODULE', $moduleName);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('dashboards/AddNotePad.tpl', $moduleName);
     }
 }

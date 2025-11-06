@@ -57,6 +57,9 @@ class Users_UserSetup_View extends Vtiger_Index_View
             $viewer->assign('TIME_ZONES', $userModuleModel->getTimeZonesList());
             $viewer->assign('LANGUAGES', $userModuleModel->getLanguagesList());
             $viewer->assign('USER_ID', $request->get('record'));
+
+            Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
             $viewer->view('UserSetup.tpl', $moduleName);
         } else {
             if (isset($_SESSION['return_params'])) {

@@ -65,10 +65,15 @@ class Users_QuickCreateAjax_View extends Vtiger_QuickCreateAjax_View
 
         $viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('QuickCreate.tpl', $moduleName, true);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
 
@@ -76,8 +81,14 @@ class Users_QuickCreateAjax_View extends Vtiger_QuickCreateAjax_View
             "modules.$moduleName.resources.Edit"
         ];
 
-        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
 
-        return $jsScriptInstances;
+        foreach ($modifiers as $modifier) {
+            if (method_exists($modifier, 'modifyGetHeaderScripts')) {
+                $jsFileNames = array_merge($jsFileNames, $modifier->modifyGetHeaderScripts($request));
+            }
+        }
+
+        return $this->checkAndConvertJsScripts($jsFileNames);
     }
 }

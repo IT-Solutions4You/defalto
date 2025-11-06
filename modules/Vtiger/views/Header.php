@@ -172,13 +172,9 @@ abstract class Vtiger_Header_View extends Vtiger_View_Controller
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $headerScripts = Vtiger_Link_Model::getAllByType(Vtiger_Link::IGNORE_MODULE, ['HEADERSCRIPT']);
@@ -201,13 +197,9 @@ abstract class Vtiger_Header_View extends Vtiger_View_Controller
     }
 
     /**
-     * Function to get the list of Css models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_CssScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderCss(Vtiger_Request $request)
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $headerCssInstances = parent::getHeaderCss($request);
         $headerCss = Vtiger_Link_Model::getAllByType(Vtiger_Link::IGNORE_MODULE, ['HEADERCSS']);

@@ -50,6 +50,8 @@ class Users_TransferOwner_View extends Vtiger_Index_View
         $viewer->assign('USER_LIST', $usersList);
         $viewer->assign('CURRENT_USER_MODEL', $userRecordModel);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('TransferOwner.tpl', $moduleName);
     }
 }

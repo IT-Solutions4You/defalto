@@ -83,7 +83,10 @@ class Installer_Index_View extends Vtiger_Index_View
         $this->installer($request);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
         $jsFileNames = [

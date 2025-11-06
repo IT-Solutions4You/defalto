@@ -53,7 +53,10 @@ class Vtiger_ExtensionViews_View extends Vtiger_Index_View
         $this->showLogs($request);
     }
 
-    function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->get('extensionModule');
         $jsFileNames = [
@@ -61,9 +64,15 @@ class Vtiger_ExtensionViews_View extends Vtiger_Index_View
             'modules.' . $moduleName . '.resources.Settings'
         ];
 
-        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
 
-        return $jsScriptInstances;
+        foreach ($modifiers as $modifier) {
+            if (method_exists($modifier, 'modifyGetHeaderScripts')) {
+                $jsFileNames = array_merge($jsFileNames, $modifier->modifyGetHeaderScripts($request));
+            }
+        }
+
+        return $this->checkAndConvertJsScripts($jsFileNames);
     }
 
     /**

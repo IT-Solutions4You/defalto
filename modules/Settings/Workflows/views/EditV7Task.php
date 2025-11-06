@@ -226,6 +226,8 @@ class Settings_Workflows_EditV7Task_View extends Settings_Vtiger_Index_View
             $viewer->assign('memberEditList', $memberEditList);
         }
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('EditTask.tpl', $qualifiedModuleName);
     }
 }

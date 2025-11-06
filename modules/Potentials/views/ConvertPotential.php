@@ -49,6 +49,8 @@ class Potentials_ConvertPotential_View extends Vtiger_Index_View
         $assignedToFieldModel->set('fieldvalue', $recordModel->get('assigned_user_id'));
         $viewer->assign('ASSIGN_TO', $assignedToFieldModel);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ConvertPotential.tpl', $moduleName);
     }
 }

@@ -23,10 +23,16 @@ class Settings_Vtiger_Country_View extends Settings_Vtiger_Index_View
         $viewer->assign('COUNTRIES', $countryModel->getCountries());
         $viewer->assign('TITLE', 'LBL_COUNTRIES');
         $viewer->assign('DESCRIPTION', 'LBL_COUNTRIES_INTEGRATION');
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('Country.tpl', $qualifiedModule);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();

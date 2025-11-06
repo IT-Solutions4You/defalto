@@ -47,6 +47,9 @@ class Documents_AddFolder_View extends Vtiger_IndexAjax_View
             $viewer->assign('FOLDER_DESC', $folderModel->getDescription());
         }
         $viewer->assign('MODULE', $moduleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('AddFolder.tpl', $moduleName);
     }
 }

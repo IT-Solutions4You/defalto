@@ -67,6 +67,8 @@ class Products_MoreCurrenciesList_View extends Vtiger_IndexAjax_View
         $viewer->assign('PRICE_DETAILS', $priceDetails);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('MoreCurrenciesList.tpl', 'Products');
     }
 }

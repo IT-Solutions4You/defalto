@@ -109,6 +109,8 @@ class Vtiger_BasicAjax_View extends Vtiger_Basic_View
 
         $viewer->assign('SAVE_FILTER_PERMITTED', $saveFilterPermitted);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showAdvancedSearch', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('AdvanceSearch.tpl', $moduleName, true);
     }
 
@@ -217,6 +219,8 @@ class Vtiger_BasicAjax_View extends Vtiger_Basic_View
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('MATCHING_RECORDS', $matchingRecordsList);
         $viewer->assign('IS_ADVANCE_SEARCH', $isAdvanceSearch);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showSearchResults', $request->getModule(), $viewer, $request);
 
         echo $viewer->view('UnifiedSearchResults.tpl', '', true);
     }
