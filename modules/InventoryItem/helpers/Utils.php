@@ -32,7 +32,7 @@ class InventoryItem_Utils_Helper
      * Finds all entity modules that use Inventory Item
      *
      * @return array
-     * @throws AppException
+     * @throws Exception
      */
     public static function getInventoryItemModules(): array
     {
@@ -58,7 +58,7 @@ class InventoryItem_Utils_Helper
      * @param int $record
      *
      * @return array[]
-     * @throws AppException
+     * @throws Exception
      */
     public static function fetchItems(int $record): array
     {

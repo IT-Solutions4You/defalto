@@ -27,7 +27,7 @@ class SalesOrder_Detail_View extends Vtiger_Detail_View
      * @param Vtiger_Request $request
      *
      * @return bool|html
-     * @throws AppException
+     * @throws Exception
      */
     function showModuleDetailView(Vtiger_Request $request)
     {

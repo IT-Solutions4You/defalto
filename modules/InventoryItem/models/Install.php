@@ -474,7 +474,7 @@ class InventoryItem_Install_Model extends Core_Install_Model
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function installTables(): void
     {
