@@ -484,6 +484,13 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
         return $templatesInfo;
     }
 
+    public function getAvailableTemplate($module, $forListView = false, $recordId = false)
+    {
+        $templates = $this->getAvailableTemplates($module);
+
+        return array_pop($templates);
+    }
+
     /**
      * @param Vtiger_Request $request
      * @param string|array $templates
