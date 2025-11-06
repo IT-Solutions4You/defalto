@@ -333,6 +333,7 @@ jQuery.Class("Vtiger_Helper_Js",{
             show:true,
             keyboard: false,
             focus: false,
+            modalName: 'defaultModal',
         };
     },
 
