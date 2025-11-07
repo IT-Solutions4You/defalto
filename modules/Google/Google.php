@@ -21,6 +21,7 @@ require_once('include/events/include.inc');
 
 class Google extends CRMExtension
 {
+    public string $moduleName = 'Google';
     const module = 'Google';
     var $LBL_GOOGLE = 'LBL_GOOGLE';
 
