@@ -103,10 +103,16 @@ class PDFMaker_List_View extends Vtiger_Index_View
         $viewer->assign('MAIN_PRODUCT_WHITELABEL', '');
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('SEARCH_DETAILS', $searchParams);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ListPDFTemplatesContents.tpl', $moduleName);
     }
 
-    function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $jsFileNames = [

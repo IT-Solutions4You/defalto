@@ -132,6 +132,8 @@ class Users_PreferenceEdit_View extends Vtiger_Edit_View
             }
             $viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
 
+            Core_Modifiers_Model::modifyForClass(get_class($this), 'preProcess', $request->getModule(), $viewer, $request);
+
             if ($display) {
                 $this->preProcessDisplay($request);
             }
@@ -170,7 +172,10 @@ class Users_PreferenceEdit_View extends Vtiger_Edit_View
         parent::process($request);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -186,8 +191,7 @@ class Users_PreferenceEdit_View extends Vtiger_Edit_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

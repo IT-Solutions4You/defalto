@@ -131,6 +131,8 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
         $sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
         $this->setModuleInfo($request, $sourceModuleModel, $cleanFieldModel);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showFieldLayout', $request->getModule(), $viewer, $request);
+
         if ($request->isAjax() && !$request->get('showFullContents')) {
             $viewer->view('FieldsList.tpl', $qualifiedModule);
         } else {
@@ -171,6 +173,8 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
         $headerFieldsModel = new Settings_LayoutEditor_HeaderFields_Model();
         $viewer->assign('HEADER_FIELDS_MODEL', $headerFieldsModel);
         $viewer->assign('SELECTED_FIELDS', $headerFieldsModel->getHeaderFields($sourceModuleName));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showHeaderFieldsLayout', $request->getModule(), $viewer, $request);
 
         if ($request->isAjax() && !$request->get('showFullContents')) {
             $viewer->view('HeaderFields.tpl', $qualifiedModule);
@@ -223,6 +227,8 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
         $viewer->assign('MODULE_MODEL', $moduleModel);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showRelatedListLayout', $request->getModule(), $viewer, $request);
+
         if ($request->isAjax() && !$request->get('showFullContents')) {
             $viewer->view('RelatedList.tpl', $qualifiedModule);
         } else {
@@ -263,6 +269,8 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
         $sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
         $this->setModuleInfo($request, $sourceModuleModel, $cleanFieldModel);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showFieldEdit', $request->getModule(), $viewer, $request);
+
         $viewer->view('FieldCreate.tpl', $qualifiedModule);
     }
 
@@ -294,6 +302,8 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
         $viewer->assign('ACTIONS', Vtiger_Module_Model::getSyncActionsInDuplicatesCheck());
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showDuplicationHandling', $request->getModule(), $viewer, $request);
+
         if ($request->isAjax() && !$request->get('showFullContents')) {
             $viewer->view('DuplicateHandling.tpl', $qualifiedModule);
         } else {
@@ -302,13 +312,9 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
 
@@ -317,9 +323,8 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     /**

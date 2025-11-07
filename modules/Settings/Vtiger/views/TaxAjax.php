@@ -57,6 +57,8 @@ class Settings_Vtiger_TaxAjax_View extends Settings_Vtiger_Index_View
         $viewer->assign('TAX_REGIONS', Inventory_TaxRegion_Model::getAllTaxRegions());
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'editTax', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('EditTax.tpl', $qualifiedModuleName, true);
     }
 
@@ -71,6 +73,8 @@ class Settings_Vtiger_TaxAjax_View extends Settings_Vtiger_Index_View
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
         $viewer->assign('TAX_REGION_MODEL', $taxRegionRecordModel);
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'editTaxRegion', $request->getModule(), $viewer, $request);
 
         echo $viewer->view('EditRegion.tpl', $qualifiedModuleName, true);
     }
@@ -89,6 +93,8 @@ class Settings_Vtiger_TaxAjax_View extends Settings_Vtiger_Index_View
         $viewer->assign('CHARGE_TAXES', Inventory_TaxRecord_Model::getChargeTaxes());
         $viewer->assign('SELECTED_TAXES', array_keys($inventoryChargeModel->getSelectedTaxes()));
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'editCharge', $request->getModule(), $viewer, $request);
 
         echo $viewer->view('EditCharge.tpl', $qualifiedModuleName, true);
     }

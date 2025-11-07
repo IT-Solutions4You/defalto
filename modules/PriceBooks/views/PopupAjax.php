@@ -49,6 +49,8 @@ class PriceBooks_PopupAjax_View extends PriceBooks_Popup_View
 
         $this->initializeListViewContents($request, $viewer);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('PopupContents.tpl', $moduleName, true);
     }
 }

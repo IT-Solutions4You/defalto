@@ -112,6 +112,9 @@ class Vtiger_ListViewQuickPreview_View extends Vtiger_Index_View
         }
         $viewer->assign('PAGING_MODEL', $pagingModel);
         $viewer->assign('RECENT_ACTIVITIES', $recentActivities);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ListViewQuickPreview.tpl', $moduleName);
     }
 

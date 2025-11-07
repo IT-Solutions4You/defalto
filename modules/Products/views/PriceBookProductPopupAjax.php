@@ -33,6 +33,8 @@ class Products_PriceBookProductPopupAjax_View extends Products_PriceBookProductP
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $viewer->assign('SELECTED_RECORDS', $request->get("selectedRecords"));
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('PriceBookProductPopupContents.tpl', 'Products', true);
     }
 }

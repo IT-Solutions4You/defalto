@@ -93,6 +93,8 @@ class Vtiger_RecordQuickPreview_View extends Vtiger_Detail_View
         $viewer->assign('DETAILVIEW_LINKS', $detailViewLinks);
         $viewer->assign('SCRIPTS', $this->getQuickPreviewHeaderScripts($request));
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ListViewQuickPreview.tpl', $moduleName);
     }
 

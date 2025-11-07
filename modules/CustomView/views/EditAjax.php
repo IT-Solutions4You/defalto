@@ -116,6 +116,8 @@ class CustomView_EditAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('SELECTED_MEMBERS_GROUP', $customViewSharedMembers);
         $viewer->assign('MEMBER_GROUPS', Settings_Groups_Member_Model::getAll());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('EditView.tpl', $module, true);
     }
 }

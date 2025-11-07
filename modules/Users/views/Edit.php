@@ -90,10 +90,12 @@ class Users_Edit_View extends Users_PreferenceEdit_View
         parent::postProcess($request);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-        $moduleName = $request->getModule();
         $jsFileNames = [
             'modules.Settings.Vtiger.resources.Index',
         ];

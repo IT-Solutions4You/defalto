@@ -43,6 +43,9 @@ class Products_SubProductQuantityUpdate_View extends Vtiger_View_Controller
         $viewer->assign('REL_ID', $relId);
         $viewer->assign('CURRENT_QTY', $currentQty);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('QuantityUpdate.tpl', $moduleName);
     }
 

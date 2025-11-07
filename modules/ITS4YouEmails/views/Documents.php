@@ -87,6 +87,9 @@ class ITS4YouEmails_Documents_View extends Vtiger_Basic_View
         $viewer->assign('MODULE', $module);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
         $viewer->assign('RECORDS', ITS4YouEmails_Attachment_Model::getParentRecords($recordId));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'recordDocuments', $request->getModule(), $viewer, $request);
+
         $viewer->view('RecordDocuments.tpl', $module);
     }
 }

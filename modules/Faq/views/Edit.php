@@ -85,6 +85,9 @@ class Faq_Edit_View extends Vtiger_Edit_View
         }
         $viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
         $viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         if ($request->get('displayMode') == 'overlay') {
             $viewer->assign('SCRIPTS', $this->getOverlayHeaderScripts($request));
             $viewer->view('OverlayEditView.tpl', $moduleName);

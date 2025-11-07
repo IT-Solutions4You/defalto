@@ -18,7 +18,10 @@
 
 class Services_QuickCreateAjax_View extends Products_QuickCreateAjax_View
 {
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
 
@@ -32,8 +35,7 @@ class Services_QuickCreateAjax_View extends Products_QuickCreateAjax_View
 
         $jsFileNames[] = $moduleEditFile;
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

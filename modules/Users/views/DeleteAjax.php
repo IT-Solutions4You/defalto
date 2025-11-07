@@ -45,6 +45,8 @@ class Users_DeleteAjax_View extends Vtiger_Index_View
         $viewer->assign('USER_LIST', $usersList);
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('DeleteUser.tpl', $moduleName);
     }
 }

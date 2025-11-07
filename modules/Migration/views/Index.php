@@ -104,10 +104,16 @@ class Migration_Index_View extends Vtiger_View_Controller
         $viewer = $this->getViewer($request);
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('VIEW', 'Index');
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'postProcess', $request->getModule(), $viewer, $request);
+
         $viewer->view('MigrationPostProcess.tpl', $moduleName);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = [];
         $moduleName = $request->getModule();
@@ -118,10 +124,11 @@ class Migration_Index_View extends Vtiger_View_Controller
             "modules.$moduleName.resources.Index"
         ];
 
-        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
 
-        return $headerScriptInstances;
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     /**

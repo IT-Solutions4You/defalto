@@ -79,6 +79,8 @@ class Vtiger_MiniListWizard_View extends Vtiger_Index_View
                 break;
         }
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('dashboards/MiniListWizard.tpl', $moduleName);
     }
 }

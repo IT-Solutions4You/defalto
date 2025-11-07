@@ -104,6 +104,8 @@ class ModComments_FilePreview_View extends Vtiger_IndexAjax_View
         $viewer->assign('FILE_CONTENTS', $contents);
         $viewer->assign('SITE_URL', vglobal('site_URL'));
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('FilePreview.tpl', $moduleName);
     }
 }

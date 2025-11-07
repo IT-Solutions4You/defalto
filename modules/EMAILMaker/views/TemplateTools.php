@@ -29,6 +29,9 @@ class EMAILMaker_TemplateTools_View extends Vtiger_Index_View
             $viewer->assign("DEFAULT_BUTTON", $EMAILtemplateResult["defaultButton"]);
             $viewer->assign("TEMPLATEID", $request->get('from_templateid'));
         }
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('TemplateTools.tpl', 'EMAILMaker');
     }
 }

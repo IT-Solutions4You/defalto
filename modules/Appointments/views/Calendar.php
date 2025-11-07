@@ -44,6 +44,8 @@ class Appointments_Calendar_View extends Vtiger_Index_View
         $viewer->assign('USERS_GROUPS_GROUP_SELECTED', $usersGroups->getGroupSelected());
         $viewer->assign('USERS_GROUPS_TABS', $usersGroups->getTabs());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'Calendar', $request->getModule(), $viewer, $request);
+
         $viewer->view('Calendar.tpl', $module);
     }
 
@@ -78,6 +80,9 @@ class Appointments_Calendar_View extends Vtiger_Index_View
         $viewer->assign('EVENT_TYPE_MODULE', $selectedModule);
         $viewer->assign('EVENT_TYPE_FIELDS', $selectedFields);
         $viewer->assign('EVENT_TYPE_RECORD', $eventTypeRecord);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'EditEventType', $request->getModule(), $viewer, $request);
+
         $viewer->view('EditEventType.tpl', $module);
     }
 
@@ -114,6 +119,9 @@ class Appointments_Calendar_View extends Vtiger_Index_View
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
         $viewer->assign('EVENT_TYPE', $eventType);
         $viewer->assign('EVENT_TYPE_DETAIL_LINK', $eventType->getDetailLink());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'PopoverContainer', $request->getModule(), $viewer, $request);
+
         $viewer->view('PopoverContainer.tpl', $qualifiedModule);
     }
 
@@ -138,13 +146,13 @@ class Appointments_Calendar_View extends Vtiger_Index_View
         $viewer->assign('USERS_GROUPS_VALUES', $usersGroups->getAll());
         $viewer->assign('USERS_GROUPS_SELECTED', $request->get('selected'));
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'UsersGroupsModal', $request->getModule(), $viewer, $request);
+
         $viewer->view('UsersGroupsModal.tpl', $module);
     }
 
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return array
+     * @inheritDoc
      */
     public function getHeaderCss(Vtiger_Request $request): array
     {
@@ -162,11 +170,9 @@ class Appointments_Calendar_View extends Vtiger_Index_View
     }
 
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return array
+     * @inheritDoc
      */
-    public function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();

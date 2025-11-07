@@ -52,6 +52,8 @@ class Settings_SharingAccess_IndexAjax_View extends Settings_Vtiger_IndexAjax_Vi
         $viewer->assign('RULE_MODEL_LIST', $ruleModelList);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showRules', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('ListRules.tpl', $qualifiedModuleName, true);
     }
 
@@ -79,17 +81,15 @@ class Settings_SharingAccess_IndexAjax_View extends Settings_Vtiger_IndexAjax_Vi
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'editRule', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('EditRule.tpl', $qualifiedModuleName, true);
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -100,8 +100,7 @@ class Settings_SharingAccess_IndexAjax_View extends Settings_Vtiger_IndexAjax_Vi
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

@@ -50,6 +50,8 @@ class Vtiger_EmailsRelatedModulePopupAjax_View extends Vtiger_EmailsRelatedModul
         $viewer->assign('MODULE_NAME', $moduleName);
         $this->initializeListViewContents($request, $viewer);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('PopupContents.tpl', $moduleName, true);
     }
 }

@@ -65,6 +65,9 @@ class Vtiger_MergeRecord_View extends Vtiger_Popup_View
         $viewer->assign('RECORDMODELS', $recordModels);
         $viewer->assign('FIELDS', $fieldModels);
         $viewer->assign('MODULE', $module);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('MergeRecords.tpl', $module);
     }
 }

@@ -59,6 +59,9 @@ class Settings_Picklist_IndexAjax_View extends Settings_Vtiger_IndexAjax_View
         $viewer->assign('SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES', $selectedFieldNonEditablePickListValues);
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showEditView', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('EditView.tpl', $qualifiedName, true);
     }
 
@@ -88,6 +91,9 @@ class Settings_Picklist_IndexAjax_View extends Settings_Vtiger_IndexAjax_View
         $viewer->assign('SELECTED_PICKLISTFIELD_EDITABLE_VALUES', $selectedFieldEditablePickListValues);
         $viewer->assign('SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES', $selectedFieldNonEditablePickListValues);
         $viewer->assign('FIELD_VALUES', array_map('Vtiger_Util_Helper::toSafeHTML', $valueToDelete));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showDeleteView', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('DeleteView.tpl', $qualifiedName, true);
     }
 
@@ -104,6 +110,9 @@ class Settings_Picklist_IndexAjax_View extends Settings_Vtiger_IndexAjax_View
         $viewer->assign('PICKLIST_FIELDS', $pickListFields);
         $viewer->assign('SELECTED_MODULE_NAME', $sourceModule);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'getPickListDetailsForModule', $request->getModule(), $viewer, $request);
+
         $viewer->view('ModulePickListDetail.tpl', $qualifiedName);
     }
 
@@ -124,6 +133,9 @@ class Settings_Picklist_IndexAjax_View extends Settings_Vtiger_IndexAjax_View
         $viewer->assign('QUALIFIED_MODULE', $qualifiedName);
         $viewer->assign('ROLES_LIST', Settings_Roles_Record_Model::getAll());
         $viewer->assign('SELECTED_PICKLISTFIELD_ALL_VALUES', $selectedFieldAllPickListValues);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'getPickListValueForField', $request->getModule(), $viewer, $request);
+
         $viewer->view('PickListValueDetail.tpl', $qualifiedName);
     }
 
@@ -149,6 +161,9 @@ class Settings_Picklist_IndexAjax_View extends Settings_Vtiger_IndexAjax_View
         $viewer->assign('QUALIFIED_MODULE', $qualifiedName);
         $viewer->assign('ROLE_PICKLIST_VALUES', $pickListValuesForRole);
         $viewer->assign('ALL_PICKLIST_VALUES', $allPickListValues);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'getPickListValueByRole', $request->getModule(), $viewer, $request);
+
         $viewer->view('PickListValueByRole.tpl', $qualifiedName);
     }
 
@@ -175,6 +190,9 @@ class Settings_Picklist_IndexAjax_View extends Settings_Vtiger_IndexAjax_View
         $viewer->assign('QUALIFIED_MODULE', $qualifiedName);
         $viewer->assign('ROLES_LIST', Settings_Roles_Record_Model::getAll());
         $viewer->assign('SELECTED_PICKLISTFIELD_ALL_VALUES', $selectedFieldAllPickListValues);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showAssignValueToRoleView', $request->getModule(), $viewer, $request);
+
         $viewer->view('AssignValueToRole.tpl', $qualifiedName);
     }
 }

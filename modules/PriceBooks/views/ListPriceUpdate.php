@@ -44,7 +44,10 @@ class PriceBooks_ListPriceUpdate_View extends Vtiger_View_Controller
 		$viewer->assign('REL_ID', $relId);
 		$viewer->assign('CURRENT_PRICE', $currentPrice);
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
-		$viewer->view('ListPriceUpdate.tpl', $moduleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
+        $viewer->view('ListPriceUpdate.tpl', $moduleName);
 	}
 
 	function postProcess(Vtiger_Request $request)

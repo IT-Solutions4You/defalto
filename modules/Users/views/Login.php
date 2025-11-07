@@ -50,6 +50,8 @@ class Users_Login_View extends Vtiger_View_Controller
         $viewer->assign('CURRENT_USER_MODEL', $current_user);
         $viewer->assign('LANGUAGE', '');
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'preProcess', $request->getModule(), $viewer, $request);
+
         if ($display) {
             $this->preProcessDisplay($request);
         }
@@ -93,6 +95,9 @@ class Users_Login_View extends Vtiger_View_Controller
     {
         $moduleName = $request->getModule();
         $viewer = $this->getViewer($request);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'postProcess', $request->getModule(), $viewer, $request);
+
         $viewer->view('Footer.tpl', $moduleName);
     }
 
@@ -103,7 +108,10 @@ class Users_Login_View extends Vtiger_View_Controller
         return $companyDetails->get('organizationname');
     }
 
-    function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
 
@@ -113,8 +121,7 @@ class Users_Login_View extends Vtiger_View_Controller
             'modules.Vtiger.resources.Popup',
         ];
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($jsScriptInstances, $headerScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($jsScriptInstances, $headerScriptInstances);
     }
 }

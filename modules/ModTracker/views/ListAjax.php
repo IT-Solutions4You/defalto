@@ -43,6 +43,8 @@ class ModTracker_ListAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('PAGING_MODEL', $pagingModel);
 
-        echo $viewer->view('RecentActivities.tpl', $moduleName, 'true');
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
+        echo $viewer->view('RecentActivities.tpl', $moduleName, true);
     }
 }

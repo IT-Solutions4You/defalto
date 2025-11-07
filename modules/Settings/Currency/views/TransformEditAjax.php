@@ -29,6 +29,9 @@ class Settings_Currency_TransformEditAjax_View extends Settings_Vtiger_IndexAjax
         $viewer->assign('QUALIFIED_MODULE', $qualifiedName);
         $viewer->assign('CURRENCY_LIST', $currencyList);
         $viewer->assign('RECORD_MODEL', Settings_Currency_Record_Model::getInstance($record));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('TransformEdit.tpl', $qualifiedName, true);
     }
 }

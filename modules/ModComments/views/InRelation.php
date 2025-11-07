@@ -62,6 +62,8 @@ class ModComments_InRelation_View extends Vtiger_RelatedList_View
         $viewer->assign('STARTINDEX', $startIndex);
         $viewer->assign('PARENT_RECORD', $parentRecordId);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ShowAllComments.tpl', $moduleName);
     }
 }

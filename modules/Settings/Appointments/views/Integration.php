@@ -20,13 +20,13 @@ class Settings_Appointments_Integration_View extends Settings_Vtiger_Index_View
         $viewer->assign('MODULE', $module);
         $viewer->assign('SUPPORTED_MODULES', Settings_Appointments_Integration_Model::getModules());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('Integration.tpl', $qualifiedModule);
     }
 
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return array
+     * @inheritDoc
      */
     public function getHeaderCss(Vtiger_Request $request): array
     {
@@ -42,9 +42,7 @@ class Settings_Appointments_Integration_View extends Settings_Vtiger_Index_View
     }
 
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return array
+     * @inheritDoc
      */
     public function getHeaderScripts(Vtiger_Request $request): array
     {

@@ -43,6 +43,8 @@ class Settings_MailConverter_BodyAjax_View extends Settings_Vtiger_IndexAjax_Vie
             $viewer->assign('MAPPING', $mappingData);
         }
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('MapFields.tpl', $qualifiedModuleName);
     }
 }

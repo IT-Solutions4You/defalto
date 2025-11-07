@@ -35,6 +35,8 @@ class Vtiger_KeyMetrics_Dashboard extends Vtiger_IndexAjax_View
         $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('KEYMETRICS', $keyMetrics);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $content = $request->get('content');
         if (!empty($content)) {
             $viewer->view('dashboards/KeyMetricsContents.tpl', $moduleName);

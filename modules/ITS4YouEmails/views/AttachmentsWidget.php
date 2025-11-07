@@ -23,6 +23,8 @@ class ITS4YouEmails_AttachmentsWidget_View extends Vtiger_Detail_View
             $viewer->assign('ATTACHMENTS', $recordModel->getAttachments());
         }
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('AttachmentsWidget.tpl', $moduleName);
     }
 }

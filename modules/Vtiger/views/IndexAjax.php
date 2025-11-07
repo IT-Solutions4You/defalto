@@ -58,6 +58,8 @@ class Vtiger_IndexAjax_View extends Vtiger_Index_View
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('RECORDS', $recentRecords);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showActiveRecords', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('RecordNamesList.tpl', $moduleName, true);
     }
 

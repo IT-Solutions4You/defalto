@@ -31,6 +31,8 @@ class Settings_Roles_DeleteAjax_View extends Settings_Roles_IndexAjax_View
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
         $viewer->assign('RECORD_MODEL', $recordModel);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('DeleteTransferForm.tpl', $qualifiedModuleName, true);
     }
 }
