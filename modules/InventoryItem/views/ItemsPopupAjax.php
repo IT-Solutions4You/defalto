@@ -60,6 +60,9 @@ class InventoryItem_ItemsPopupAjax_View extends InventoryItem_ItemsPopup_View
         $this->initializeListViewContents($request, $viewer);
         $moduleName = 'InventoryItem';
         $viewer->assign('MODULE_NAME', $moduleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('ItemsPopupContents.tpl', $moduleName, true);
     }
 }

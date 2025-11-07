@@ -47,6 +47,9 @@ class Accounts_AccountHierarchy_View extends Vtiger_View_Controller
 
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('ACCOUNT_HIERARCHY', $hierarchy);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('AccountHierarchy.tpl', $moduleName);
     }
 

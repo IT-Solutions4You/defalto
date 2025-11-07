@@ -40,10 +40,15 @@ class Products_ProductsPopup_View extends Vtiger_Popup_View
         $viewer->assign('VIEW', $request->get('view'));
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ProductsPopup.tpl', $moduleName);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -65,9 +70,8 @@ class Products_ProductsPopup_View extends Vtiger_Popup_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     public function initializeListViewContents(Vtiger_Request $request, Vtiger_Viewer $viewer)

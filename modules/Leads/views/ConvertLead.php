@@ -63,6 +63,8 @@ class Leads_ConvertLead_View extends Vtiger_Index_View
         $accountField = Vtiger_Field_Model::getInstance('account_id', $contactsModuleModel);
         $viewer->assign('CONTACT_ACCOUNT_FIELD_MODEL', $accountField);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ConvertLead.tpl', $moduleName);
     }
 }

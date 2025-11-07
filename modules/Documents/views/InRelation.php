@@ -140,6 +140,8 @@ class Documents_InRelation_View extends Vtiger_RelatedList_View
         $viewer->assign('SEARCH_DETAILS', $searchParams);
         $viewer->assign('TAB_LABEL', $request->get('tab_label'));
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         return $viewer->view('DocumentsRelatedList.tpl', 'Documents', 'true');
     }
 }

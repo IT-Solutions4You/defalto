@@ -55,6 +55,8 @@ class Documents_MoveDocuments_View extends Vtiger_Index_View
             $viewer->assign('SEARCH_KEY', $searchKey);
         }
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('MoveDocuments.tpl', $moduleName);
     }
 }

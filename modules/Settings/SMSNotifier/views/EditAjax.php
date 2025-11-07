@@ -30,6 +30,9 @@ class Settings_SMSNotifier_EditAjax_View extends Settings_Vtiger_IndexAjax_View
         $viewer->assign('RECORD_MODEL', new Vtiger_Base_Model());
         $viewer->assign('PROVIDER_MODEL', Settings_SMSNotifier_ProviderField_Model::getFieldInstanceByProvider($providerModel));
         $viewer->assign('QUALIFIED_MODULE_NAME', $qualifiedModuleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view($templateName, $qualifiedModuleName);
     }
 }

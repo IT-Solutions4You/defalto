@@ -166,6 +166,8 @@ class Users_Calendar_View extends Vtiger_Detail_View
             $activeBLock = Settings_Vtiger_Module_Model::getActiveBlockName($request);
             $viewer->assign('ACTIVE_BLOCK', $activeBLock);
 
+            Core_Modifiers_Model::modifyForClass(get_class($this), 'preProcess', $request->getModule(), $viewer, $request);
+
             if ($display) {
                 $this->preProcessDisplay($request);
             }
@@ -219,6 +221,9 @@ class Users_Calendar_View extends Vtiger_Detail_View
     {
         $viewer = $this->getViewer($request);
         $this->initializeView($viewer, $request);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'calendarSettingsEdit', $request->getModule(), $viewer, $request);
+
         $viewer->view('CalendarSettingsEditView.tpl', $request->getModule());
     }
 
@@ -226,10 +231,16 @@ class Users_Calendar_View extends Vtiger_Detail_View
     {
         $viewer = $this->getViewer($request);
         $this->initializeView($viewer, $request);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'calendarSettingsDetail', $request->getModule(), $viewer, $request);
+
         $viewer->view('CalendarSettingsDetailView.tpl', $request->getModule());
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -247,9 +258,8 @@ class Users_Calendar_View extends Vtiger_Detail_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     /*

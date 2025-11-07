@@ -35,6 +35,9 @@ class InventoryItem_ItemsWidget_View extends Vtiger_Index_View
         $viewer->assign('ADJUSTMENT', number_format($adjustment, 2));
         $viewer->assign('ADJUSTMENT_DISPLAY', CurrencyField::convertToUserFormat($adjustment, $current_user, true, false, true));
         $viewer->assign('GRAND_TOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('grand_total'), $current_user, true));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ItemsWidget.tpl', 'InventoryItem');
     }
 }

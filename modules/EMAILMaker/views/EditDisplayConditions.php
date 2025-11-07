@@ -77,10 +77,15 @@ class EMAILMaker_EditDisplayConditions_View extends Vtiger_Index_View
         $viewer->assign('IS_FILTER_SAVED_NEW', $isFilterSavedInNew);
         $viewer->assign('EMAILMAKER_RECORD_MODEL', $recordModel);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('EditDisplayConditions.tpl', $moduleName);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -95,8 +100,7 @@ class EMAILMaker_EditDisplayConditions_View extends Vtiger_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

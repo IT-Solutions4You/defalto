@@ -32,6 +32,8 @@ class PriceBooks_ProductPriceBookPopupAjax_View extends PriceBooks_ProductPriceB
         $viewer->assign('COMPANY_LOGO', $companyLogo);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('ProductPriceBookPopupContents.tpl', 'PriceBooks', true);
     }
 }

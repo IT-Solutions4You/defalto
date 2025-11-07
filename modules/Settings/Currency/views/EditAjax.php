@@ -45,6 +45,8 @@ class Settings_Currency_EditAjax_View extends Settings_Vtiger_IndexAjax_View
         $viewer->assign('OTHER_EXISTING_CURRENCIES', $otherExistingCurrencies);
         $viewer->assign('BASE_CURRENCY_MODEL', $baseCurrencyModel);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('EditAjax.tpl', $qualifiedName);
     }
 }

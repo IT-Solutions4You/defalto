@@ -24,6 +24,9 @@ class Settings_Profiles_Edit_View extends Settings_Vtiger_Index_View
         $qualifiedModuleName = $request->getModule(false);
 
         $viewer = $this->getViewer($request);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('EditView.tpl', $qualifiedModuleName);
     }
 
@@ -60,13 +63,9 @@ class Settings_Profiles_Edit_View extends Settings_Vtiger_Index_View
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -77,9 +76,8 @@ class Settings_Profiles_Edit_View extends Settings_Vtiger_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     /**

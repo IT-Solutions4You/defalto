@@ -8,15 +8,13 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-trait InventoryItem_Edit_Trait
+interface Core_Modifier_Interface
 {
     /**
-     * @return Array
+     * @param Vtiger_Viewer  $viewer
+     * @param Vtiger_Request $request
+     *
+     * @return void
      */
-    public function adaptHeaderScripts(): array
-    {
-        return [
-            'modules.InventoryItem.resources.InventoryItemEdit',
-        ];
-    }
+    public function modifyProcess(Vtiger_Viewer $viewer, Vtiger_Request $request): void;
 }

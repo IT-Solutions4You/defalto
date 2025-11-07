@@ -28,17 +28,16 @@ class Settings_Roles_Index_View extends Settings_Vtiger_Index_View
         $viewer->assign('ROOT_ROLE', $rootRole);
         $viewer->assign('ROLES', $allRoles);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('Index.tpl', $qualifiedModuleName);
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -52,19 +51,14 @@ class Settings_Roles_Index_View extends Settings_Vtiger_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     /**
-     * Function to get the list of Css models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_CssScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderCss(Vtiger_Request $request)
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $headerCssInstances = parent::getHeaderCss($request);
         $moduleName = $request->getModule();

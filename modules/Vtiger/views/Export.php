@@ -64,10 +64,16 @@ class Vtiger_Export_View extends Vtiger_Index_View
         }
         $viewer->assign('SUPPORTED_FILE_TYPES', ['csv', 'ics']);
         $viewer->assign('SEARCH_PARAMS', $request->get('search_params'));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('Export.tpl', $source_module);
     }
 
-    function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
 
@@ -83,8 +89,7 @@ class Vtiger_Export_View extends Vtiger_Index_View
         }
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

@@ -50,6 +50,9 @@ class Vtiger_ModCommentsDetailAjax_View extends Vtiger_IndexAjax_View
 
         $moduleName = $request->getModule();
         $viewer = $this->getRollupComments($request);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ShowAllComments.tpl', $moduleName);
     }
 

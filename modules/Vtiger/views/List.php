@@ -26,6 +26,7 @@ class Vtiger_List_View extends Vtiger_Index_View
     protected $noOfEntries = false;
     protected $pagingModel = false;
     protected $listViewModel = false;
+    public $viewName;
 
     function __construct()
     {
@@ -129,6 +130,9 @@ class Vtiger_List_View extends Vtiger_Index_View
         $viewer->assign('MODULE_MODEL', $moduleModel);
         $viewer->assign('RECORD_ACTIONS', $this->getRecordActionsFromModule($moduleModel));
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ListViewContents.tpl', $moduleName);
     }
 
@@ -142,13 +146,9 @@ class Vtiger_List_View extends Vtiger_Index_View
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -172,9 +172,8 @@ class Vtiger_List_View extends Vtiger_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     /*
@@ -584,7 +583,10 @@ class Vtiger_List_View extends Vtiger_Index_View
         return Vtiger_Util_Helper::transferListSearchParamsToFilterCondition($listSearchParams, $moduleModel);
     }
 
-    public function getHeaderCss(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $headerCssInstances = parent::getHeaderCss($request);
         $cssFileNames = [

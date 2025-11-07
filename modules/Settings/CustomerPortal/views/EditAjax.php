@@ -58,8 +58,13 @@ class Settings_CustomerPortal_EditAjax_View extends Settings_Vtiger_IndexAjax_Vi
             $viewer->assign('QUALIFIED_MODULE', $qualifiedName);
             $viewer->assign('MODULE', $sourceModule);
             $viewer->assign('RECORD_PERMISSIONS', $recordPermissions);
+
+            Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
             $viewer->view('PortalFields.tpl', $qualifiedName);
         } elseif ($sourceModule == 'Dashboard') {
+            Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
             $viewer->view('CustomerPortalDashboard.tpl', $qualifiedName);
         }
     }

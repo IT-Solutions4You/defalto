@@ -59,10 +59,16 @@ class EMAILMaker_ProfilesPrivilegies_View extends EMAILMaker_Index_View
             }
         }
         $viewer->assign("PERMISSIONS", $permissionNames);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ProfilesPrivilegies.tpl', 'EMAILMaker');
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -72,8 +78,7 @@ class EMAILMaker_ProfilesPrivilegies_View extends EMAILMaker_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

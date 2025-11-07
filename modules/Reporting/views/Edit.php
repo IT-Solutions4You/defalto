@@ -62,6 +62,9 @@ class Reporting_Edit_View extends Vtiger_Edit_View
         $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('TABLE_DATA', $recordModel->getTableData());
         $viewer->assign('TABLE_STYLE', $recordModel->getTableStyle());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ReportTable.tpl', $moduleName);
     }
 }

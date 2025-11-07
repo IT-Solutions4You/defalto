@@ -85,6 +85,9 @@ class Vtiger_ListAjax_View extends Vtiger_List_View
             $fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();
         }
         $viewer->assign('ADV_SEARCH_FIELDS_INFO', json_encode($fieldsInfo));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showSearchResults', $request->getModule(), $viewer, $request);
+
         if ($request->get('_onlyContents', false)) {
             $viewer->view('UnifiedSearchResultsContents.tpl', $moduleName);
         } else {
@@ -121,6 +124,9 @@ class Vtiger_ListAjax_View extends Vtiger_List_View
         $viewer->assign('RECORD_STRUCTURE', $recordStructure);
         $viewer->assign('SELECTED_FIELDS', $selectedFields);
         $viewer->assign('MODULE', $moduleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'ShowListColumnsEdit', $request->getModule(), $viewer, $request);
+
         $viewer->view('ListColumnsEdit.tpl', $moduleName);
     }
 
@@ -182,6 +188,8 @@ class Vtiger_ListAjax_View extends Vtiger_List_View
         $viewer->assign('MATCHING_RECORDS', $matchingRecordsList);
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'searchAll', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('SearchResults.tpl', '', true);
     }
 
@@ -225,6 +233,9 @@ class Vtiger_ListAjax_View extends Vtiger_List_View
         $viewer->assign('MODULE_MODEL', $moduleModel);
         $viewer->assign('RECORDS_COUNT', $recordsCount);
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showSearchResultsWithValue', $request->getModule(), $viewer, $request);
+
         $viewer->view('ModuleSearchResults.tpl', $moduleName);
     }
 

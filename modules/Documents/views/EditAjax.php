@@ -102,17 +102,24 @@ class Documents_EditAjax_View extends Vtiger_QuickCreateAjax_View
 
         $viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
         $viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('AjaxEdit.tpl', $moduleName, true);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
         $jsFileNames = [
             "modules.$moduleName.resources.Edit"
         ];
-        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
-        return $jsScriptInstances;
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
+
+        return $this->checkAndConvertJsScripts($jsFileNames);
     }
 }

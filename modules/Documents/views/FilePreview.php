@@ -108,6 +108,8 @@ class Documents_FilePreview_View extends Vtiger_IndexAjax_View
         global $site_URL;
         $viewer->assign('SITE_URL', $site_URL);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('FilePreview.tpl', $moduleName, true);
     }
 }

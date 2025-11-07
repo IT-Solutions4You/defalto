@@ -34,17 +34,16 @@ class Settings_Potentials_MappingDetail_View extends Settings_Vtiger_Index_View
         $viewer->assign('MODULE_MODEL', Settings_Potentials_Mapping_Model::getInstance());
         $viewer->assign('ERROR_MESSAGE', $request->get('errorMessage'));
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('MappingDetail.tpl', $qualifiedModuleName);
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -56,12 +55,14 @@ class Settings_Potentials_MappingDetail_View extends Settings_Vtiger_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
-    public function getHeaderCss(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $headerCssInstances = parent::getHeaderCss($request);
         $cssFileNames = [

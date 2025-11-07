@@ -18,9 +18,11 @@
 
 class Services_Detail_View extends Products_Detail_View
 {
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
-        parent::getHeaderScripts($request);
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
         $modulePopUpFile = 'modules.' . $moduleName . '.resources.Edit';
@@ -40,9 +42,8 @@ class Services_Detail_View extends Products_Detail_View
         $jsFileNames[] = $moduleRelatedListFile;
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     public function getOverlayHeaderScripts(Vtiger_Request $request)

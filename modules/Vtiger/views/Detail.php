@@ -236,7 +236,10 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         parent::postProcess($request);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -259,9 +262,8 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     function showDetailViewByMode(Vtiger_Request $request)
@@ -307,6 +309,8 @@ class Vtiger_Detail_View extends Vtiger_Index_View
 
         $picklistDependencyDatasource = Vtiger_DependencyPicklist::getPicklistDependencyDatasource($moduleName);
         $viewer->assign('PICKIST_DEPENDENCY_DATASOURCE', Vtiger_Functions::jsonEncode($picklistDependencyDatasource));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showModuleDetailView', $moduleName, $viewer, $request);
 
         if ($request->get('displayMode') == 'overlay') {
             $viewer->assign('MODULE_MODEL', $moduleModel);
@@ -375,6 +379,8 @@ class Vtiger_Detail_View extends Vtiger_Index_View
 
         $picklistDependencyDatasource = Vtiger_DependencyPicklist::getPicklistDependencyDatasource($moduleName);
         $viewer->assign('PICKIST_DEPENDENCY_DATASOURCE', Vtiger_Functions::jsonEncode($picklistDependencyDatasource));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showModuleSummaryView', $request->getModule(), $viewer, $request);
 
         return $viewer->view('ModuleSummaryView.tpl', $moduleName, true);
     }

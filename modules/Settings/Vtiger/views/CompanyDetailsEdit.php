@@ -28,6 +28,8 @@ class Settings_Vtiger_CompanyDetailsEdit_View extends Settings_Vtiger_Index_View
         $viewer->assign('QUALIFIED_MODULE_NAME', $qualifiedModuleName);
         $viewer->assign('ERROR_MESSAGE', $request->get('error'));
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('CompanyDetailsEdit.tpl', $qualifiedModuleName);//For Open Source
     }
 

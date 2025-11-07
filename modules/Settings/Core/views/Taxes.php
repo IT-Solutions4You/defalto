@@ -64,14 +64,11 @@ class Settings_Core_Taxes_View extends Settings_Vtiger_Index_View
     }
 
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return array
+     * @inheritDoc
      */
-    public function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-        $moduleName = $request->getModule();
         $layout = Vtiger_Viewer::getLayoutName();
         $jsFileNames = [
             'layouts.' . $layout . '.modules.Settings.Core.resources.Taxes',
@@ -106,6 +103,9 @@ class Settings_Core_Taxes_View extends Settings_Vtiger_Index_View
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
         $viewer->assign('MODULE', $request->getModule());
         $viewer->assign('REGION_RECORDS', Core_TaxRegion_Model::getAllRegions());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('TaxesRegions.tpl', $qualifiedModule);
     }
 
@@ -151,6 +151,9 @@ class Settings_Core_Taxes_View extends Settings_Vtiger_Index_View
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
         $viewer->assign('MODULE', $request->getModule());
         $viewer->assign('TAX_RECORDS', Core_Tax_Model::getAllTaxes());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('Taxes.tpl', $qualifiedModule);
     }
 

@@ -363,6 +363,8 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         $viewer->assign('RELATED_DOCUMENTS_FOLDERS', $foldersRelatedDocuments);
         $viewer->assign('LOAD_RELATED_DOCUMENTS', $loadRelatedDocuments);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showModuleEditView', $request->getModule(), $viewer, $request);
+
         $viewer->view('Edit.tpl', 'EMAILMaker');
     }
 
@@ -448,7 +450,10 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         }
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -465,12 +470,14 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         }
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
-    public function getHeaderCss(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $headerCssInstances = parent::getHeaderCss($request);
 

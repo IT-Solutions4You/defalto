@@ -39,6 +39,8 @@ class Tour_Guide_View extends Tour_Index_View
         $viewer->assign('GUIDE_NAME', $guideName);
         $viewer->assign('GUIDE', $guide);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'guide', $request->getModule(), $viewer, $request);
+
         $viewer->view('Guide.tpl', $moduleName);
     }
 
@@ -60,6 +62,8 @@ class Tour_Guide_View extends Tour_Index_View
         $viewer = $this->getViewer($request);
         $viewer->assign('GUIDE_NAME', $guide->getName());
         $viewer->assign('GUIDE', $guide);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'modal', $request->getModule(), $viewer, $request);
 
         $viewer->view('Modal.tpl', $moduleName);
     }

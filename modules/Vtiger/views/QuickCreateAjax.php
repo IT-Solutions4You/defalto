@@ -76,16 +76,23 @@ class Vtiger_QuickCreateAjax_View extends Vtiger_IndexAjax_View
             $viewer->assign('PARENT_ID', $request->get('sourceRecord'));
         }
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('QuickCreate.tpl', $moduleName);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
 
         $jsFileNames = [
             "modules.$moduleName.resources.Edit"
         ];
+
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
 
         return $this->checkAndConvertJsScripts($jsFileNames);
     }

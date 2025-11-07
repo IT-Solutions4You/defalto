@@ -8,27 +8,34 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-trait InventoryItem_Detail_Trait
+class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
 {
     protected array $specialTreatmentFields = ['discount', 'overall_discount',];
 
     /**
-     * Add product block into Detail View
+     * @inheritDoc
+     */
+    public function modifyProcess(Vtiger_Viewer $viewer, Vtiger_Request $request): void
+    {
+    }
+
+    /**
+     * Allows display of InventoryItem Block in other modules
      *
-     * @param Vtiger_Request $request
      * @param Vtiger_Viewer  $viewer
+     * @param Vtiger_Request $request
      *
      * @return void
      * @throws Exception
      */
-    public function adaptDetail(Vtiger_Request $request, Vtiger_Viewer $viewer)
+    public function modifyShowModuleDetailView(Vtiger_Viewer $viewer, Vtiger_Request $request)
     {
         $recordId = (int)$request->get('record');
         $viewer->assign('ITEM_MODULES', InventoryItem_ItemModules_Model::getItemModules());
         $viewer->assign('EXCLUDED_FIELDS', InventoryItem_Field_Model::excludedFields);
         $viewer->assign('TOTAL_FIELDS', InventoryItem_Field_Model::totalFields);
         $viewer->assign('SPECIAL_TREATMENT_FIELDS', $this->specialTreatmentFields);
-        $viewer->assign('EMPTY_ROW', $this->getEmptyRow());
+        $viewer->assign('EMPTY_ROW', InventoryItem_Detail_Helper::getEmptyRow());
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $selectedFields = InventoryItem_Module_Model::getSelectedFields(gettabid($request->getModule()));
         $selectedFieldsCount = count($selectedFields);
@@ -109,94 +116,25 @@ trait InventoryItem_Detail_Trait
         $viewer->assign('ADJUSTMENT', number_format($adjustment, 2));
         $viewer->assign('ADJUSTMENT_DISPLAY', CurrencyField::convertToUserFormat($adjustment, $currentUser, true, false, true));
         $viewer->assign('GRAND_TOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('grand_total'), $currentUser, true));
-        $viewer->assign('PRICEBOOKS', $this->fetchPriceBooks($request));
+        $viewer->assign('PRICEBOOKS', InventoryItem_Detail_Helper::fetchPriceBooks($request));
     }
 
     /**
-     * Get (default) empty row as line item
+     * Modifies an array of .js files that should be loaded so that the InventoryItem block could provide its functionality
      *
-     * @return array
-     */
-    private function getEmptyRow(): array
-    {
-        $db = PearDatabase::getInstance();
-        $columns = $db->getColumnNames('df_inventoryitem');
-        $columns['entityType'] = '';
-
-        return $columns;
-    }
-
-    /**
-     * Get all PriceBooks.
-     * Restricted to Price Books with the same currency as the entity has.
-     * If the actual Price Book has different currency, it is added at the end.
-     *
+     * @param array          $jsFileNames
      * @param Vtiger_Request $request
      *
-     * @return array [id => name]
+     * @return void
      */
-    private function fetchPriceBooks(Vtiger_Request $request): array
+    public function modifyGetHeaderScripts(array &$jsFileNames, Vtiger_Request $request): void
     {
-        $records = [];
-        $db = PearDatabase::getInstance();
-        $module = $request->get('module');
-        $user = Users_Record_Model::getCurrentUserModel();
-
-        $recordModel = Vtiger_Record_Model::getInstanceById($request->get('record'), $module);
-        $currencyId = $recordModel->get('currency_id');
-        $selectedPriceBookId = $recordModel->get('pricebookid');
-
-        $pagingModel = new Vtiger_Paging_Model();
-        $pagingModel->set('page', 1);
-        $pagingModel->set('limit', 1000);
-
-        $forModule = 'PriceBooks';
-        $queryGenerator = new EnhancedQueryGenerator($forModule, $user);
-        $queryGenerator->setFields(['id', 'bookname']);
-
-        $moduleSpecificControllerPath = 'modules/' . $forModule . '/controllers/ListViewController.php';
-
-        if (file_exists($moduleSpecificControllerPath)) {
-            include_once $moduleSpecificControllerPath;
-            $moduleSpecificControllerClassName = $forModule . 'ListViewController';
-            $controller = new $moduleSpecificControllerClassName($db, $user, $queryGenerator);
-        } else {
-            $controller = new ListViewController($db, $user, $queryGenerator);
-        }
-
-        $listViewModel = Vtiger_ListView_Model::getCleanInstance($forModule)->set('query_generator', $queryGenerator)->set('listview_controller', $controller);
-
-        if ($currencyId) {
-            $queryGenerator = $listViewModel->get('query_generator');
-            $queryGenerator->addUserSearchConditions(['search_field' => 'currency_id', 'search_text' => $currencyId, 'operator' => 'e']);
-        }
-
-        $records = [];
-        $listViewRecords = $listViewModel->getListViewEntries($pagingModel);
-
-        foreach ($listViewRecords as $listViewRecord) {
-            $data = $listViewRecord->getData();
-            $records[$data['id']] = $data['bookname'];
-        }
-
-        if ($selectedPriceBookId && !isset($records[$selectedPriceBookId])) {
-            $records[$selectedPriceBookId] = getEntityName('PriceBooks', $selectedPriceBookId)[$selectedPriceBookId];
-        }
-
-        return $records;
-    }
-
-    /**
-     * Used to inject custom js files into getHeaderScripts method
-     *
-     * @return Array
-     */
-    public function adaptHeaderScripts(): array
-    {
-        return [
+        $myJsFileNames = [
+            'modules.Vtiger.resources.Detail',
             'modules.InventoryItem.resources.InventoryItemDetail',
             'modules.Vtiger.resources.Popup',
             'modules.InventoryItem.resources.ItemsPopup',
         ];
+        $jsFileNames = array_merge($jsFileNames, $myJsFileNames);
     }
 }

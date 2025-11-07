@@ -51,6 +51,8 @@ class HelpDesk_OpenTickets_Dashboard extends Vtiger_IndexAjax_View
         //Include special script and css needed for this widget
         $viewer->assign('CURRENTUSER', $currentUser);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $content = $request->get('content');
         if (!empty($content)) {
             $viewer->view('dashboards/DashBoardWidgetContents.tpl', $moduleName);

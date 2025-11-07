@@ -53,6 +53,9 @@ class Users_EditAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('USERID', $userId);
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'changePassword', $request->getModule(), $viewer, $request);
+
         $viewer->view('ChangePassword.tpl', $moduleName);
     }
 
@@ -66,6 +69,9 @@ class Users_EditAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('USER_MODEL', $userModel);
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'changeUsername', $request->getModule(), $viewer, $request);
+
         $viewer->view('ChangeUsername.tpl', $moduleName);
     }
 }

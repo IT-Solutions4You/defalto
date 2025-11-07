@@ -83,7 +83,10 @@ class Products_Detail_View extends Vtiger_Detail_View
         return $jsScriptInstances;
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -103,9 +106,8 @@ class Products_Detail_View extends Vtiger_Detail_View
         $jsFileNames[] = $moduleRelatedListFile;
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     public function showBundleTotalCostView(Vtiger_Request $request)

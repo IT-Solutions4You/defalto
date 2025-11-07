@@ -42,6 +42,8 @@ class Settings_Roles_EditAjax_View extends Settings_Roles_IndexAjax_View
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('EditView.tpl', $qualifiedModuleName);
     }
 }

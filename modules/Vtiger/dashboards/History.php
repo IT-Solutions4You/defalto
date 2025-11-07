@@ -63,6 +63,8 @@ class Vtiger_History_Dashboard extends Vtiger_IndexAjax_View
         $userCurrencyInfo = getCurrencySymbolandCRate($currentUser->get('currency_id'));
         $viewer->assign('USER_CURRENCY_SYMBOL', $userCurrencyInfo['symbol']);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $content = $request->get('content');
         if (!empty($content)) {
             $viewer->view('dashboards/HistoryContents.tpl', $moduleName);

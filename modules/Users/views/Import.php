@@ -76,6 +76,9 @@ class Users_Import_View extends Vtiger_Import_View
             $viewer->assign('MODULE', 'Import');
             $viewer->assign('TOTAL_RECORDS', $noOfRecords);
             $viewer->assign('DELETED_RECORDS_COUNT', $noOfRecordsDeleted);
+
+            Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
             $viewer->view('ImportUndoResult.tpl', 'Import');
         }
     }

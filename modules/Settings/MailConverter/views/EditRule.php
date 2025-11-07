@@ -60,6 +60,8 @@ class Settings_MailConverter_EditRule_View extends Settings_Vtiger_IndexAjax_Vie
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $viewer->assign('ASSIGNED_USER', $assignedTo[0]);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('RuleEditView.tpl', $qualifiedModuleName);
     }
 }
