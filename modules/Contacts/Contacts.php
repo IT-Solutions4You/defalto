@@ -59,8 +59,6 @@ class Contacts extends CRMEntity
      */
     public $customFieldTable = ['vtiger_contactscf', 'contactid'];
 
-    public $column_fields = [];
-
     public $sortby_fields = ['lastname', 'firstname', 'title', 'email', 'phone', 'assigned_user_id', 'accountname'];
 
     public $list_link_field = 'lastname';
@@ -1465,10 +1463,10 @@ class Contacts extends CRMEntity
             $this->db->pquery('INSERT INTO vtiger_relatedlists_rb VALUES (?,?,?,?,?,?)', $params);
         }
         //removing the relationship of contacts with PurchaseOrder
-        $this->db->pquery('UPDATE vtiger_purchaseorder SET contactid=0 WHERE contactid=?', [$id]);
+        $this->db->pquery('UPDATE vtiger_purchaseorder SET contact_id=0 WHERE contact_id=?', [$id]);
 
         //Backup Contact-SalesOrder Relation
-        $so_q = 'SELECT salesorderid FROM vtiger_salesorder WHERE contactid=?';
+        $so_q = 'SELECT salesorderid FROM vtiger_salesorder WHERE contact_id=?';
         $so_res = $this->db->pquery($so_q, [$id]);
         if ($this->db->num_rows($so_res) > 0) {
             $so_ids_list = [];

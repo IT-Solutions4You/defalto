@@ -69,7 +69,7 @@ class Core_Utils_Helper
      */
     public static function getBranding(): string
     {
-        if (Installer_License_Model::isMembershipActive()) {
+        if ('Install' !== $_REQUEST['module'] && Installer_License_Model::isMembershipActive()) {
             return '';
         }
 

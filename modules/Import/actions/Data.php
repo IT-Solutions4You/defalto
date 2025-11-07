@@ -427,7 +427,7 @@ class Import_Data_Action extends Core_Controller_Action
                     $recordModel = Vtiger_Record_Model::getCleanInstance($this->module);
                     $focus = $recordModel->getEntity();
                     $focus->id = $recordId;
-                    $focus->column_fields = $fieldData;
+                    $focus->setColumnFields($fieldData);
                     $this->entityData[] = VTEntityData::fromCRMEntity($focus);
                 }
 
@@ -437,7 +437,7 @@ class Import_Data_Action extends Core_Controller_Action
                     $recordModel = Vtiger_Record_Model::getCleanInstance($this->module);
                     $focus = $recordModel->getEntity();
                     $focus->id = $recordId;
-                    $focus->column_fields = $entityInfo;
+                    $focus->setColumnFields($entityInfo);
                     $this->entitydata[] = VTEntityData::fromCRMEntity($focus);
                 }
             }
@@ -803,7 +803,7 @@ class Import_Data_Action extends Core_Controller_Action
         $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
         $focus = $recordModel->getEntity();
         $focus->id = $recordId;
-        $focus->column_fields = $fieldData;
+        $focus->setColumnFields($fieldData);
         $this->entitydata[] = VTEntityData::fromCRMEntity($focus);
         $focus->updateMissingSeqNumber($moduleName);
 

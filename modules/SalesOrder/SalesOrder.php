@@ -66,8 +66,6 @@ class SalesOrder extends CRMEntity
 
     public $update_product_array = [];
 
-    public $column_fields = [];
-
     public $sortby_fields = ['subject', 'assigned_user_id', 'accountname', 'lastname'];
 
     // This is used to retrieve related vtiger_fields from form posts.

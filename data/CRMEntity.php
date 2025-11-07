@@ -40,7 +40,8 @@ require_once 'include/RelatedListView.php';
 
 class CRMExtension
 {
-    public $column_fields = [];
+    public $id;
+    public TrackableObject $column_fields;
     public $related_tables = [];
     public $db;
     public int $isEntity = 0;
@@ -67,6 +68,18 @@ class CRMExtension
     {
         $this->log = Logger::getLogger(strtolower($this->moduleName));
         $this->db = PearDatabase::getInstance();
+        $this->column_fields = new TrackableObject();
+    }
+
+    /**
+     * @param array $data
+     * @return void
+     */
+    public function setColumnFields(array $data): void
+    {
+        foreach ($data as $key => $value) {
+            $this->column_fields[$key] = $value;
+        }
     }
 
     /**
@@ -85,7 +98,6 @@ class CRMEntity extends CRMExtension
 {
     public int $isEntity = 1;
     public int $ownedBy = 0;
-    public $id;
 
     /**
      * Initializes the class instance by setting up the logger, database connection,

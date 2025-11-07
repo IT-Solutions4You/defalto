@@ -31,7 +31,6 @@ class Documents extends CRMEntity
      * Mandatory table for supporting custom fields.
      */
     public $customFieldTable = ['vtiger_notescf', 'notesid'];
-    public $column_fields = [];
     public $sortby_fields = ['notes_title', 'modifiedtime', 'filename', 'createdtime', 'lastname', 'filedownloadcount', 'assigned_user_id'];
 
     // This is used to retrieve related vtiger_fields from form posts.

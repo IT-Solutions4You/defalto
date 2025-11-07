@@ -239,8 +239,7 @@ class Install_Utils_Model
     {
         $preInstallConfig = [];
         // Name => array( System Value, Recommended value, supported or not(true/false) );
-        $preInstallConfig['LBL_PHP_VERSION'] = [phpversion(), '8.1', (version_compare(phpversion(), '8.1.0', '>='))];
-        //$preInstallConfig['LBL_IMAP_SUPPORT']	= array(function_exists('imap_open'), true, (function_exists('imap_open') == true));
+        $preInstallConfig['LBL_PHP_VERSION'] = [phpversion(), '8.2', (version_compare(phpversion(), '8.2.0', '>='))];
         $preInstallConfig['LBL_ZLIB_SUPPORT'] = [function_exists('gzinflate'), true, (function_exists('gzinflate') == true)];
         $preInstallConfig['LBL_MYSQLI_CONNECT_SUPPORT'] = [extension_loaded('mysqli'), true, extension_loaded('mysqli')];
         $preInstallConfig['LBL_OPEN_SSL'] = [extension_loaded('openssl'), true, extension_loaded('openssl')];

@@ -725,7 +725,7 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
                 $record->setData($newRow);
                 //Updating entity details
                 $entity = $record->getEntity();
-                $entity->column_fields = $record->getData();
+                $entity->setColumnFields($record->getData());
                 $entity->id = $record->getId();
                 $record->setEntity($entity);
                 $records[$record->getId()] = $record;

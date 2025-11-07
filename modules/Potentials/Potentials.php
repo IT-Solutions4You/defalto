@@ -42,8 +42,6 @@ class Potentials extends CRMEntity
      */
     public $customFieldTable = ['vtiger_potentialscf', 'potentialid'];
 
-    public $column_fields = [];
-
     public $sortby_fields = ['potentialname', 'amount', 'closingdate', 'assigned_user_id', 'accountname'];
 
     // This is the list of vtiger_fields that are in the lists.

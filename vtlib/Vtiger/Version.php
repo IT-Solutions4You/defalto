@@ -15,7 +15,7 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-include_once('vtigerversion.php');
+include_once 'version.php';
 
 /**
  * Provides utility APIs to work with Vtiger Version detection

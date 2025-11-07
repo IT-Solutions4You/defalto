@@ -10,7 +10,7 @@
     {foreach item=EMAIL_FIELD_LIST key=EMAIL_FIELD_NAME from=$EMAIL_FIELDS_LIST name= email_fields_foreach}
         <optgroup label="{$EMAIL_FIELD_NAME}">
             {foreach item=EMAIL_FIELD_DATA  from=$EMAIL_FIELD_LIST name=emailFieldIterator}
-                {if $IS_INPUT_SELECTED_ALLOWED && '0' eq $EMAIL_FIELD_DATA.emailoptout && 'yes' eq $SINGLE_RECORD && '1' neq $IS_INPUT_SELECTED_DEFINED}
+                {if $IS_INPUT_SELECTED_ALLOWED && 'yes' eq $SINGLE_RECORD && '1' neq $IS_INPUT_SELECTED_DEFINED}
                     {assign var=IS_INPUT_SELECTED value='selected'}
                     {assign var=IS_INPUT_SELECTED_DEFINED value='1'}
                 {else}
