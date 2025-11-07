@@ -10,7 +10,10 @@
 
 class EMAILMaker_Popup_View extends Vtiger_Popup_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         return true;
     }

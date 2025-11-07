@@ -36,7 +36,7 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
     /**
      * @inheritDoc
      */
-    public function requiresPermission(Vtiger_Request $request)
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
 
@@ -166,14 +166,14 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
     /**
      * @inheritDoc
      */
-    function preProcess(Vtiger_Request $request, $display = true)
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
     }
 
     /**
      * @inheritDoc
      */
-    public function postProcess(Vtiger_Request $request)
+    public function postProcess(Vtiger_Request $request): void
     {
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();

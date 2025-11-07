@@ -18,14 +18,18 @@
 
 class Settings_SharingAccess_SaveAjax_Action extends Vtiger_SaveAjax_Action
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
+
         if ($currentUser->isAdminUser()) {
             return true;
-        } else {
-            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
         }
+
+        throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
     }
 
     public function process(Vtiger_Request $request)

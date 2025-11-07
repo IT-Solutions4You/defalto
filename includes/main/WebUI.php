@@ -205,7 +205,7 @@ class Vtiger_WebUI extends Vtiger_EntryPoint
                 // Ensure handler validates the request
                 $handler->validateRequest($request);
 
-                if ($handler->loginRequired()) {
+                if ($handler->isLoginRequired()) {
                     $this->checkLogin($request);
                 }
 

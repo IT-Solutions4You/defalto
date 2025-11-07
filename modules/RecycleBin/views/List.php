@@ -22,18 +22,26 @@ class RecycleBin_List_View extends Vtiger_Index_View
     public $listViewHeaders;
     public $listViewEntries;
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-
         $currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+
         if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
+
+        return true;
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $viewer = $this->getViewer($request);
@@ -53,7 +61,10 @@ class RecycleBin_List_View extends Vtiger_Index_View
         }
     }
 
-    function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'ListViewPreProcess.tpl';
     }
@@ -74,7 +85,10 @@ class RecycleBin_List_View extends Vtiger_Index_View
         $viewer->view('ListViewContents.tpl', $moduleName);
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();

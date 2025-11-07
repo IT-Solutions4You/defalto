@@ -8,7 +8,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class PDFMaker_IndexAjax_Action extends Vtiger_Action_Controller
+class PDFMaker_IndexAjax_Action extends Core_Controller_Action
 {
     public $cu_language = '';
 
@@ -23,9 +23,12 @@ class PDFMaker_IndexAjax_Action extends Vtiger_Action_Controller
         }
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
-        return;
+        return true;
     }
 
     function process(Vtiger_Request $request)

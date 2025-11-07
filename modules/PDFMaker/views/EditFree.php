@@ -12,7 +12,10 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 {
     public $cu_language = '';
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $viewer = $this->getViewer($request);
@@ -36,7 +39,10 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
         }
     }
 
-    function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'EditViewPreProcess.tpl';
     }

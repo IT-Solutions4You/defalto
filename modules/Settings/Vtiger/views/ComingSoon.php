@@ -18,7 +18,10 @@
 
 class Settings_Vtiger_ComingSoon_View extends Settings_Vtiger_Index_View
 {
-    protected function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'ComingSoon.tpl';
     }

@@ -413,7 +413,10 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         return $customFunctions;
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         Vtiger_Basic_View::preProcess($request, false);
 

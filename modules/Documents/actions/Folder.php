@@ -16,7 +16,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Documents_Folder_Action extends Vtiger_Action_Controller
+class Documents_Folder_Action extends Core_Controller_Action
 {
     function __construct()
     {
@@ -25,17 +25,15 @@ class Documents_Folder_Action extends Vtiger_Action_Controller
         $this->exposeMethod('delete');
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView'];
 
         return $permissions;
-    }
-
-    public function checkPermission(Vtiger_Request $request)
-    {
-        return parent::checkPermission($request);
     }
 
     public function process(Vtiger_Request $request)
@@ -100,8 +98,11 @@ class Documents_Folder_Action extends Vtiger_Action_Controller
         $response->emit();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

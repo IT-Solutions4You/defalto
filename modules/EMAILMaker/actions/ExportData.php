@@ -13,8 +13,12 @@ class EMAILMaker_ExportData_Action extends Vtiger_Mass_Action
     private $moduleInstance;
     private $focus;
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
+        return true;
     }
 
     public function process(Vtiger_Request $request)

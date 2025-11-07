@@ -21,7 +21,7 @@ class Assets_Detail_View extends Vtiger_Detail_View
     /**
      * @inheritDoc
      */
-    function preProcess(Vtiger_Request $request, $display = true)
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         $viewer = $this->getViewer($request);
         $viewer->assign('NO_SUMMARY', true);

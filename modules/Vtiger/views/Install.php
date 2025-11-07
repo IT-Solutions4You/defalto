@@ -17,11 +17,9 @@ class Vtiger_Install_View extends Vtiger_Basic_View
     }
 
     /**
-     * @param Vtiger_Request $request
-     * @return void
-     * @throws Exception
+     * @inheritDoc
      */
-    public function checkPermission(Vtiger_Request $request): void
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
 
@@ -34,13 +32,21 @@ class Vtiger_Install_View extends Vtiger_Basic_View
         if (!class_exists($class)) {
             throw new Exception('Installation not supported. Class not found: ' . $class);
         }
+
+        return true;
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
     }
 

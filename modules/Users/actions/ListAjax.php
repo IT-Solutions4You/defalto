@@ -23,27 +23,40 @@ class Users_ListAjax_Action extends Vtiger_BasicAjax_Action
         parent::__construct();
     }
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
+
         if (!$currentUser->isAdminUser()) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
         }
-    }
 
-    function preProcess(Vtiger_Request $request)
-    {
         return true;
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    function preProcess(Vtiger_Request $request): void
     {
-        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
+    {
     }
 
     function process(Vtiger_Request $request)

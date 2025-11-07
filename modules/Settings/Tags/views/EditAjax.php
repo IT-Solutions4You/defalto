@@ -18,7 +18,10 @@
 
 class Settings_Tags_EditAjax_View extends Settings_Vtiger_IndexAjax_View
 {
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         return true;
     }

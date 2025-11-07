@@ -23,7 +23,10 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action
 {
     var $moduleCall = false;
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'Export'];

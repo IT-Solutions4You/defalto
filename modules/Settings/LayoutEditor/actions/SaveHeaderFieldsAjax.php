@@ -41,13 +41,10 @@ class Settings_LayoutEditor_SaveHeaderFieldsAjax_Action extends Settings_Vtiger_
     }
 
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return void
-     * @throws Exception
+     * @inheritDoc
      */
-    public function validateRequest(Vtiger_Request $request): void
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

@@ -22,7 +22,6 @@ $VTIGER_BULK_SAVE_MODE = true;
 
 require_once 'vendorCheck.php';
 require_once 'vendor/autoload.php';
-require_once 'includes/runtime/Controller.php';
 require_once 'includes/runtime/BaseModel.php';
 require_once 'includes/runtime/Globals.php';
 Import_Data_Action::runScheduledImport();

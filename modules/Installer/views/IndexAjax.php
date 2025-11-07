@@ -10,13 +10,18 @@
 
 class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
         if (!$currentUserModel->isAdminUser()) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
+
+        return true;
     }
 
     /**

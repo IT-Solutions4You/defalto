@@ -25,7 +25,10 @@ class Vtiger_Index_View extends Vtiger_Basic_View
         parent::__construct();
     }
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
@@ -33,7 +36,10 @@ class Vtiger_Index_View extends Vtiger_Basic_View
         return $permissions;
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
 
@@ -94,18 +100,18 @@ class Vtiger_Index_View extends Vtiger_Basic_View
         $viewer->assign('MODULE_SETTING_ACTIONS', $settingLinks);
     }
 
-    protected function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'IndexViewPreProcess.tpl';
     }
 
-    //Note : To get the right hook for immediate parent in PHP,
-    // specially in case of deep hierarchy
-    /*function preProcessParentTplName(Vtiger_Request $request) {
-        return parent::preProcessTplName($request);
-    }*/
-
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $moduleName = $request->getModule();
         $viewer = $this->getViewer($request);
@@ -144,8 +150,11 @@ class Vtiger_Index_View extends Vtiger_Basic_View
         return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateReadAccess();
+        return $request->validateReadAccess();
     }
 }

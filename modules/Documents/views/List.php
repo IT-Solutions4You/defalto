@@ -23,7 +23,10 @@ class Documents_List_View extends Vtiger_List_View
         parent::__construct();
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
 
@@ -32,12 +35,10 @@ class Documents_List_View extends Vtiger_List_View
         return $permissions;
     }
 
-    public function checkPermission(Vtiger_Request $request)
-    {
-        return parent::checkPermission($request);
-    }
-
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();
@@ -320,7 +321,10 @@ class Documents_List_View extends Vtiger_List_View
         $viewer->assign('CUSTOM_VIEWS', CustomView_Record_Model::getAllByGroup($moduleName));
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
         return true;
     }

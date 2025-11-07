@@ -18,9 +18,12 @@
 
 vimport('~~/include/Webservices/ConvertLead.php');
 
-class Leads_SaveConvertLead_View extends Vtiger_View_Controller
+class Leads_SaveConvertLead_View extends Core_Controller_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
@@ -119,8 +122,11 @@ class Leads_SaveConvertLead_View extends Vtiger_View_Controller
         $viewer->view('ConvertLeadError.tpl', $moduleName);
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

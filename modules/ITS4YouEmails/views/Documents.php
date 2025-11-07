@@ -11,53 +11,16 @@
 class ITS4YouEmails_Documents_View extends Vtiger_Basic_View
 {
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return true
-     * @throws Exception
+     * @inheritDoc
      */
-    public function checkPermission(Vtiger_Request $request)
-    {
-        $permissions = $this->requiresPermission($request);
-        foreach ($permissions as $permission) {
-            if (array_key_exists('module_parameter', $permission)) {
-                if ($request->has($permission['module_parameter']) && !empty($request->get($permission['module_parameter']))) {
-                    $moduleParameter = $request->get($permission['module_parameter']);
-                } elseif ($request->has('record') && !empty($request->get('record'))) {
-                    $moduleParameter = getSalesEntityType($request->get('record'));
-                }
-            } else {
-                $moduleParameter = 'module';
-            }
-            if (array_key_exists('record_parameter', $permission)) {
-                $recordParameter = $request->get($permission['record_parameter']);
-            } else {
-                $recordParameter = '';
-            }
-            if (!Users_Privileges_Model::isPermitted($moduleParameter, $permission['action'], $recordParameter)) {
-                throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param Vtiger_Request $request
-     *
-     * @return void
-     */
-    public function postProcess(Vtiger_Request $request)
+    public function postProcess(Vtiger_Request $request): void
     {
     }
 
     /**
-     * @param Vtiger_Request $request
-     * @param bool           $display
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function preProcess(Vtiger_Request $request, $display = true)
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
     }
 

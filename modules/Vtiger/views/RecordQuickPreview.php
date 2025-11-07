@@ -135,8 +135,11 @@ class Vtiger_RecordQuickPreview_View extends Vtiger_Detail_View
         $viewer->assign('NAVIGATION', true);
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateReadAccess();
+        return $request->validateReadAccess();
     }
 }

@@ -17,7 +17,10 @@ class PDFMaker_DetailFree_View extends Vtiger_Index_View
         parent::__construct();
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $viewer = $this->getViewer($request);
@@ -100,7 +103,10 @@ class PDFMaker_DetailFree_View extends Vtiger_Index_View
         $viewer->view('DetailFree.tpl', 'PDFMaker');
     }
 
-    function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'DetailViewPreProcess.tpl';
     }

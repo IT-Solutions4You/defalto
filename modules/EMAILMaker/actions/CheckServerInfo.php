@@ -8,9 +8,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class EMAILMaker_CheckServerInfo_Action extends Vtiger_Action_Controller
+class EMAILMaker_CheckServerInfo_Action extends Core_Controller_Action
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
@@ -19,6 +22,8 @@ class EMAILMaker_CheckServerInfo_Action extends Vtiger_Action_Controller
         if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
             throw new Exception(vtranslate($moduleName) . ' ' . vtranslate('LBL_NOT_ACCESSIBLE'));
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)

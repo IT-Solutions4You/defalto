@@ -30,7 +30,10 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View
         }
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request);
         $viewer = $this->getViewer($request);

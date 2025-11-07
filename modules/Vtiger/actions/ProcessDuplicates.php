@@ -16,9 +16,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Vtiger_ProcessDuplicates_Action extends Vtiger_Action_Controller
+class Vtiger_ProcessDuplicates_Action extends Core_Controller_Action
 {
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView'];
@@ -27,7 +30,10 @@ class Vtiger_ProcessDuplicates_Action extends Vtiger_Action_Controller
         return $permissions;
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $module = $request->getModule();
@@ -88,8 +94,11 @@ class Vtiger_ProcessDuplicates_Action extends Vtiger_Action_Controller
         $response->emit();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

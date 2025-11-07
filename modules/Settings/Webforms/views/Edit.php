@@ -18,7 +18,10 @@
 
 class Settings_Webforms_Edit_View extends Settings_Vtiger_Index_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
 

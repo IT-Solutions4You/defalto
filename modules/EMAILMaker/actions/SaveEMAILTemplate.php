@@ -8,10 +8,14 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class EMAILMaker_SaveEMAILTemplate_Action extends Vtiger_Action_Controller
+class EMAILMaker_SaveEMAILTemplate_Action extends Core_Controller_Action
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
+        return true;
     }
 
     public function process(Vtiger_Request $request)

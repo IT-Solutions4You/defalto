@@ -18,19 +18,28 @@
 
 vimport('~~/vtlib/Vtiger/Net/Client.php');
 
-class Users_Login_View extends Vtiger_View_Controller
+class Users_Login_View extends Core_Controller_View
 {
-    function loginRequired()
+    /**
+     * @inheritDoc
+     */
+    public function isLoginRequired(): bool
     {
         return false;
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         return true;
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         global $current_user;
 
@@ -91,7 +100,10 @@ class Users_Login_View extends Vtiger_View_Controller
         $viewer->view('Login.tpl', 'Users');
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $moduleName = $request->getModule();
         $viewer = $this->getViewer($request);
@@ -101,7 +113,10 @@ class Users_Login_View extends Vtiger_View_Controller
         $viewer->view('Footer.tpl', $moduleName);
     }
 
-    function getPageTitle(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getPageTitle(Vtiger_Request $request): string
     {
         $companyDetails = Vtiger_CompanyDetails_Model::getInstanceById();
 

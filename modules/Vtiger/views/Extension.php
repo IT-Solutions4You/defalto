@@ -18,14 +18,20 @@
 
 class Vtiger_Extension_View extends Vtiger_List_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
 
         return $permissions;
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $moduleName = $request->get('extensionModule');
@@ -76,7 +82,10 @@ class Vtiger_Extension_View extends Vtiger_List_View
         return $links['EXTENSIONLINK'];
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $viewer = $this->getViewer($request);
@@ -118,7 +127,10 @@ class Vtiger_Extension_View extends Vtiger_List_View
         return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
         return true;
     }

@@ -8,7 +8,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class ITS4YouEmails_IndexAjax_Action extends Vtiger_Action_Controller
+class ITS4YouEmails_IndexAjax_Action extends Core_Controller_Action
 {
     public function __construct()
     {
@@ -21,7 +21,10 @@ class ITS4YouEmails_IndexAjax_Action extends Vtiger_Action_Controller
         }
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         return true;
     }

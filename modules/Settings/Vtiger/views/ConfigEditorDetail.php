@@ -33,7 +33,10 @@ class Settings_Vtiger_ConfigEditorDetail_View extends Settings_Vtiger_Index_View
         $viewer->view('ConfigEditorDetail.tpl', $qualifiedName);
     }
 
-    function getPageTitle(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getPageTitle(Vtiger_Request $request): string
     {
         $qualifiedModuleName = $request->getModule(false);
 

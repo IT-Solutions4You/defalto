@@ -190,9 +190,12 @@ class Settings_Picklist_SaveAjax_Action extends Settings_Vtiger_Basic_Action
         $response->emit();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 
     public function edit(Vtiger_Request $request)

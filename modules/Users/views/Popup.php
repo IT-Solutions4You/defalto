@@ -18,15 +18,20 @@
 
 class Users_Popup_View extends Vtiger_Popup_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
-        $sourceModuleName = $request->get('src_module');
         $sourceFieldName = $request->get('src_field');
 
         if ($moduleName == 'Users' && ($sourceFieldName == 'assigned_user_id1'|| $sourceFieldName === 'inventorymanager')) {

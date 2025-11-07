@@ -18,7 +18,10 @@
 
 class Settings_PickListDependency_List_View extends Settings_Vtiger_List_View
 {
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         $moduleModelList = Settings_PickListDependency_Module_Model::getPicklistSupportedModules();
         $forModule = $request->get('formodule');

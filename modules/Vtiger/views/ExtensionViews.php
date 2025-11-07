@@ -27,12 +27,10 @@ class Vtiger_ExtensionViews_View extends Vtiger_Index_View
         $this->exposeMethod('showLogDetail');
     }
 
-    function checkPermission(Vtiger_Request $request)
-    {
-        parent::checkPermission($request);
-    }
-
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'custom_module', 'action' => 'DetailView'];

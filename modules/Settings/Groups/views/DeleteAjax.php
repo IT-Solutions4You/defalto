@@ -18,14 +18,18 @@
 
 class Settings_Groups_DeleteAjax_View extends Settings_Vtiger_Index_View
 {
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        return;
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return;
     }
 
     public function process(Vtiger_Request $request)

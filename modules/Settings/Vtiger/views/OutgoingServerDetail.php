@@ -34,7 +34,10 @@ class Settings_Vtiger_OutgoingServerDetail_View extends Settings_Vtiger_Index_Vi
         $viewer->view('OutgoingServerDetail.tpl', $qualifiedName);
     }
 
-    function getPageTitle(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getPageTitle(Vtiger_Request $request): string
     {
         $qualifiedModuleName = $request->getModule(false);
 

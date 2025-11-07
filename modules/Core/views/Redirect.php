@@ -10,21 +10,34 @@
 
 class Core_Redirect_View extends Vtiger_Basic_View {
 
-    public function loginRequired(): bool
+    /**
+     * @inheritDoc
+     */
+    public function isLoginRequired(): bool
     {
         return false;
     }
 
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
-    {
-    }
-
-    public function postProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
     }
 

@@ -29,17 +29,15 @@ class InventoryItem_ItemsPopupAjax_View extends InventoryItem_ItemsPopup_View
     /**
      * @inheritDoc
      */
-    public function preProcess(Vtiger_Request $request, $display = true)
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        return true;
     }
 
     /**
      * @inheritDoc
      */
-    public function postProcess(Vtiger_Request $request)
+    public function postProcess(Vtiger_Request $request): void
     {
-        return true;
     }
 
     /**

@@ -13,7 +13,7 @@ class InventoryItem_ItemsPopup_View extends Vtiger_Popup_View
     /**
      * @inheritDoc
      */
-    public function requiresPermission(Vtiger_Request $request)
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'custom_module', 'action' => 'DetailView'];

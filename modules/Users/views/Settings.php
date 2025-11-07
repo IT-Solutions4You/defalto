@@ -18,12 +18,18 @@
 
 class Users_Settings_View extends Vtiger_Basic_View
 {
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         return true;
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $this->preProcessSettings($request, $display);
@@ -47,7 +53,10 @@ class Users_Settings_View extends Vtiger_Basic_View
         }
     }
 
-    public function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'UsersSettingsMenuStart.tpl';
     }
@@ -66,7 +75,10 @@ class Users_Settings_View extends Vtiger_Basic_View
         $viewer->view('UsersSettingsMenuEnd.tpl', $moduleName);
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $this->postProcessSettings($request);
         parent::postProcess($request);

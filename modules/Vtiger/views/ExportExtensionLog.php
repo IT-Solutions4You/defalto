@@ -18,9 +18,12 @@
 
 require_once 'modules/WSAPP/WSAPPLogs.php';
 
-class Vtiger_ExportExtensionLog_View extends Vtiger_View_Controller
+class Vtiger_ExportExtensionLog_View extends Core_Controller_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'custom_module', 'action' => 'DetailView'];
@@ -29,19 +32,18 @@ class Vtiger_ExportExtensionLog_View extends Vtiger_View_Controller
         return $permissions;
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        parent::checkPermission($request);
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return false;
-    }
-
-    function postProcess(Vtiger_Request $request)
-    {
-        return false;
     }
 
     /**

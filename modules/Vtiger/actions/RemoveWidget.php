@@ -18,7 +18,10 @@
 
 class Vtiger_RemoveWidget_Action extends Vtiger_IndexAjax_View
 {
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         if ($request->get('module') != 'Dashboard') {
             $request->set('custom_module', 'Dashboard');
@@ -52,8 +55,11 @@ class Vtiger_RemoveWidget_Action extends Vtiger_IndexAjax_View
         $response->emit();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

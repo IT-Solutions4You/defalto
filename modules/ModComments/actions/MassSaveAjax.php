@@ -18,15 +18,20 @@
 
 class ModComments_MassSaveAjax_Action extends Vtiger_Mass_Action
 {
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-
         $currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+
         if (!$currentUserPriviligesModel->hasModuleActionPermission($moduleModel->getId(), 'Save')) {
             throw new Exception(vtranslate($moduleName, $moduleName) . ' ' . vtranslate('LBL_NOT_ACCESSIBLE'));
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)

@@ -16,10 +16,13 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Accounts_AccountHierarchy_View extends Vtiger_View_Controller
+class Accounts_AccountHierarchy_View extends Core_Controller_View
 {
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
@@ -27,12 +30,10 @@ class Accounts_AccountHierarchy_View extends Vtiger_View_Controller
         return $permissions;
     }
 
-    public function checkPermission(Vtiger_Request $request)
-    {
-        return parent::checkPermission($request);
-    }
-
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
     }
 
@@ -53,7 +54,10 @@ class Accounts_AccountHierarchy_View extends Vtiger_View_Controller
         $viewer->view('AccountHierarchy.tpl', $moduleName);
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
     }
 }

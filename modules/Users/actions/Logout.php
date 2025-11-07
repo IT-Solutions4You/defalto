@@ -16,9 +16,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Users_Logout_Action extends Vtiger_Action_Controller
+class Users_Logout_Action extends Core_Controller_Action
 {
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         return true;
     }

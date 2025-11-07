@@ -16,18 +16,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-abstract class Vtiger_Header_View extends Vtiger_View_Controller
+abstract class Vtiger_Header_View extends Core_Controller_View
 {
     function __construct()
     {
         parent::__construct();
     }
-
-    //Note : To get the right hook for immediate parent in PHP,
-    // specially in case of deep hierarchy
-    /*function preProcessParentTplName(Vtiger_Request $request) {
-        return parent::preProcessTplName($request);
-    }*/
 
     /**
      * Function to determine file existence in relocated module folder (under vtiger6)

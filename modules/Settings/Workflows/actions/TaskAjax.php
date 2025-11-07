@@ -26,9 +26,12 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View
         $this->exposeMethod('Save');
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 
     public function process(Vtiger_Request $request)

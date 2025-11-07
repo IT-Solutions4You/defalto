@@ -18,7 +18,10 @@
 
 class Google_MapAjax_Action extends Vtiger_BasicAjax_Action
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
@@ -47,8 +50,11 @@ class Google_MapAjax_Action extends Vtiger_BasicAjax_Action
         return $result;
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateReadAccess();
+        return $request->validateReadAccess();
     }
 }

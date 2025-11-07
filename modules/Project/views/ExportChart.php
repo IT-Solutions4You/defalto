@@ -18,7 +18,10 @@
 
 class Project_ExportChart_View extends Vtiger_Index_View
 {
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
@@ -27,16 +30,22 @@ class Project_ExportChart_View extends Vtiger_Index_View
         if (!$currentUserPrivilegesModel->hasModulePermission($moduleModel->getId())) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
+
+        return true;
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        return false;
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return false;
     }
 
     function process(Vtiger_request $request)

@@ -24,7 +24,10 @@ class Vtiger_ModCommentsDetailAjax_View extends Vtiger_IndexAjax_View
         $this->exposeMethod('getNextGroupOfRollupComments');
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions[] = ['module_parameter' => 'custom_module', 'action' => 'DetailView'];
         $request->set('custom_module', 'ModComments');

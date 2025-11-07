@@ -22,7 +22,10 @@ class Vtiger_Popup_View extends Vtiger_Footer_View
     protected $listViewHeaders = false;
     protected $listViewLinks = false;
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
 
@@ -61,7 +64,10 @@ class Vtiger_Popup_View extends Vtiger_Footer_View
         $viewer->view('Popup.tpl', $moduleName);
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $viewer = $this->getViewer($request);
         $moduleName = $this->getModule($request);

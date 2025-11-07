@@ -507,11 +507,9 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
     }
 
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return array
+     * @inheritDoc
      */
-    public function requiresPermission(Vtiger_Request $request)
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
 

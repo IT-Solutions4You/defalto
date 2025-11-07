@@ -23,7 +23,10 @@ class Users_IndexAjax_Action extends Vtiger_BasicAjax_Action
         parent::__construct();
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }

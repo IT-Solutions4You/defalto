@@ -20,20 +20,29 @@ vimport('~~/include/Webservices/Custom/DeleteUser.php');
 
 class Users_DeleteAjax_Action extends Vtiger_Delete_Action
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
         $ownerId = $request->get('userid');
+
         if (!$currentUser->isAdminUser()) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
         } elseif ($currentUser->isAdminUser() && ($currentUser->getId() == $ownerId)) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)

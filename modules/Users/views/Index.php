@@ -18,15 +18,24 @@
 
 class Users_Index_View extends Vtiger_Basic_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
+
         if (!$currentUserModel->isAdminUser()) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
         }
+
+        return true;
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request);
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
@@ -36,13 +45,18 @@ class Users_Index_View extends Vtiger_Basic_View
         }
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
+
         if ($currentUserModel->isAdminUser()) {
             $settingsIndexView = new Settings_Vtiger_Index_View();
             $settingsIndexView->postProcessSettings($request);
         }
+
         parent::postProcess($request);
     }
 

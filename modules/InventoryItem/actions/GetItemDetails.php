@@ -8,12 +8,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class InventoryItem_GetItemDetails_Action extends Vtiger_Action_Controller
+class InventoryItem_GetItemDetails_Action extends Core_Controller_Action
 {
     /**
      * @inheritDoc
      */
-    public function requiresPermission(\Vtiger_Request $request)
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'sourceModule', 'action' => 'DetailView'];

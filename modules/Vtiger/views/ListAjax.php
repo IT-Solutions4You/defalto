@@ -18,7 +18,10 @@
 
 class Vtiger_ListAjax_View extends Vtiger_List_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $moduleName = $request->get('module');
@@ -41,14 +44,18 @@ class Vtiger_ListAjax_View extends Vtiger_List_View
         $this->exposeMethod('searchAll');
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        return true;
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return true;
     }
 
     function process(Vtiger_Request $request)

@@ -16,14 +16,20 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class ModComments_DownloadFile_Action extends Vtiger_Action_Controller
+class ModComments_DownloadFile_Action extends Core_Controller_Action
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
+
         if (!Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $request->get('record'))) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)
