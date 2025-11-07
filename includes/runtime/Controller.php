@@ -509,4 +509,11 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller
 
         return Vtiger_Language_Handler::export($moduleName, 'jsLanguageStrings');
     }
+
+    public function process(Vtiger_Request $request)
+    {
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
+    }
 }

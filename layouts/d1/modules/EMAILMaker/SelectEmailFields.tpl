@@ -154,7 +154,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="row py-2">
+                                    <div class="row py-2 {if php7_count($PDF_TEMPLATES) < 2}hide{/if}">
                                         <div class="col-lg-3 text-end text-secondary">
                                             <span>{vtranslate('LBL_MERGE_PDF_TEMPLATES','EMAILMaker')}:</span>
                                         </div>
