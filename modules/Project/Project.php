@@ -23,7 +23,6 @@ class Project extends CRMEntity
 
     var $table_name = 'vtiger_project';
     var $table_index = 'projectid';
-    var $column_fields = [];
 
     /**
      * Mandatory table for supporting custom fields.

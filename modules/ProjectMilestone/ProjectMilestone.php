@@ -23,7 +23,6 @@ class ProjectMilestone extends CRMEntity
 
     var $table_name = 'vtiger_projectmilestone';
     var $table_index = 'projectmilestoneid';
-    var $column_fields = [];
 
     /**
      * Mandatory table for supporting custom fields.

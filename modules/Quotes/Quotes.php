@@ -56,8 +56,6 @@ class Quotes extends CRMEntity
 
     var $new_schema = true;
 
-    var $column_fields = [];
-
     var $sortby_fields = ['subject', 'crmid', 'assigned_user_id', 'accountname', 'lastname'];
 
     // This is used to retrieve related vtiger_fields from form posts.

@@ -25,7 +25,6 @@ class Services extends CRMEntity
 
     var $table_name = 'vtiger_service';
     var $table_index = 'serviceid';
-    var $column_fields = [];
 
     /**
      * Mandatory table for supporting custom fields.

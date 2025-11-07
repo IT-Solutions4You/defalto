@@ -34,7 +34,6 @@ class HelpDesk extends CRMEntity
      */
     public $customFieldTable = ['vtiger_ticketcf', 'ticketid'];
 
-    public $column_fields = [];
     //Pavani: Assign value to entity_table
     public $entity_table = 'vtiger_crmentity';
 

@@ -342,6 +342,7 @@ function getColumnFields($module)
 
     // Lookup in cache for information
     $cachedModuleFields = VTCacheUtils::lookupFieldInfo_Module($module);
+    $column_fld = new TrackableObject();
 
     if (!$cachedModuleFields) {
         global $adb;
@@ -349,7 +350,7 @@ function getColumnFields($module)
 
         // To overcome invalid module names.
         if (empty($tabid)) {
-            return [];
+            return $column_fld;
         }
 
         // Let us pick up all the fields first so that we can cache information
@@ -380,7 +381,6 @@ function getColumnFields($module)
         $cachedModuleFields = VTCacheUtils::lookupFieldInfo_Module($module);
     }
 
-    $column_fld = new TrackableObject();
     if ($cachedModuleFields) {
         foreach ($cachedModuleFields as $fieldinfo) {
             $column_fld[$fieldinfo['fieldname']] = '';
