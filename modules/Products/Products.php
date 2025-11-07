@@ -25,7 +25,6 @@ class Products extends CRMEntity
 
     public $table_name = 'vtiger_products';
     public $table_index = 'productid';
-    public $column_fields = [];
 
     /**
      * Mandatory table for supporting custom fields.

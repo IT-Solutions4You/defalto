@@ -18,7 +18,6 @@
 
 class Vtiger_CRMEntity extends CRMEntity
 {
-    var $column_fields = [];
 
     // Placeholder for sort fields - All the fields will be initialized for Sorting through initSortFields
     var $sortby_fields = [];

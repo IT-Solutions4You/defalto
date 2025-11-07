@@ -23,6 +23,8 @@
 
 class Leads extends CRMEntity
 {
+    public string $moduleVersion = '0.1';
+    public string $moduleName = 'Leads';
     public string $parentName = 'HOME';
 
     var $table_name = "vtiger_leaddetails";
@@ -45,7 +47,6 @@ class Leads extends CRMEntity
     var $customFieldTable = ['vtiger_leadscf', 'leadid'];
 
     //construct this from database;
-    var $column_fields = [];
     var $sortby_fields = ['lastname', 'firstname', 'email', 'phone', 'company', 'assigned_user_id', 'website'];
 
     // This is used to retrieve related vtiger_fields from form posts.

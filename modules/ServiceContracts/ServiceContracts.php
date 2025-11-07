@@ -23,7 +23,6 @@ class ServiceContracts extends CRMEntity
 
     var $table_name = 'vtiger_servicecontracts';
     var $table_index = 'servicecontractsid';
-    var $column_fields = [];
 
     /**
      * Mandatory table for supporting custom fields.

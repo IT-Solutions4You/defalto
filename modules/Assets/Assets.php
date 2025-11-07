@@ -23,7 +23,6 @@ class Assets extends CRMEntity
 
     var $table_name = 'vtiger_assets';
     var $table_index = 'assetsid';
-    var $column_fields = [];
 
     /**
      * Mandatory table for supporting custom fields.

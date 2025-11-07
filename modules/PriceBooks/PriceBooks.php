@@ -28,7 +28,6 @@ class PriceBooks extends CRMEntity
      * Mandatory table for supporting custom fields.
      */
     public $customFieldTable = ['vtiger_pricebookcf', 'pricebookid'];
-    public $column_fields = [];
 
     public $sortby_fields = ['bookname'];
 
@@ -398,7 +397,7 @@ class PriceBooks extends CRMEntity
                 $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
                 $focus = $recordModel->getEntity();
                 $focus->id = $recordId;
-                $focus->column_fields = $fieldData;
+                $focus->setColumnFields($fieldData);
                 $this->entityData[] = VTEntityData::fromCRMEntity($focus);
             }
 
@@ -408,7 +407,7 @@ class PriceBooks extends CRMEntity
                 $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
                 $focus = $recordModel->getEntity();
                 $focus->id = $recordId;
-                $focus->column_fields = $entityInfo;
+                $focus->setColumnFields($entityInfo);
                 $this->entitydata[] = VTEntityData::fromCRMEntity($focus);
             }
 

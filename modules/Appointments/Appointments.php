@@ -11,10 +11,6 @@
 class Appointments extends CRMEntity
 {
     /**
-     * @var array|TrackableObject
-     */
-    public $column_fields;
-    /**
      * @var array
      */
     public array $customFieldTable = [

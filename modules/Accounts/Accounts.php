@@ -49,8 +49,6 @@ class Accounts extends CRMEntity
     public $customFieldTable = ['vtiger_accountscf', 'accountid'];
     public $entity_table = "vtiger_crmentity";
 
-    public $column_fields = [];
-
     public $sortby_fields = ['accountname', 'bill_city', 'website', 'phone', 'assigned_user_id'];
 
     //public $groupTable = Array('vtiger_accountgrouprelation','accountid');

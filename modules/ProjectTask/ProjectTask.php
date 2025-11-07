@@ -23,7 +23,6 @@ class ProjectTask extends CRMEntity
 
     var $table_name = 'vtiger_projecttask';
     var $table_index = 'projecttaskid';
-    var $column_fields = [];
 
     /**
      * Mandatory table for supporting custom fields.

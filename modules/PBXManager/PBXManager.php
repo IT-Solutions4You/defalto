@@ -77,15 +77,8 @@ class PBXManager extends CRMEntity
     // Used when enabling/disabling the mandatory fields for the module.
     // Refers to vtiger_field.fieldname values.
 //    var $mandatory_fields = Array('assigned_user_id');
-    var $column_fields = [];
     var $default_order_by = 'customernumber';
     var $default_sort_order = 'ASC';
-
-    function __construct()
-    {
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields($this->moduleName);
-    }
 
     /**
      * Invoked when special actions are performed on the module.

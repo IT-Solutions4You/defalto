@@ -11,10 +11,6 @@
 class Reporting extends CRMEntity
 {
     /**
-     * Indicator whether this is a custom module or standard module
-     */
-    public $column_fields = [];
-    /**
      * Mandatory table for supporting custom fields.
      */
     public $customFieldTable = [
@@ -45,14 +41,6 @@ class Reporting extends CRMEntity
     public $table_index = 'reportingid';
     public $table_name = 'df_reporting';
     public $def_basicsearch_col = 'report_name';
-
-    public function __construct()
-    {
-        global $log;
-
-        $this->db = PearDatabase::getInstance();
-        $this->log = $log;
-    }
 
     /**
      * @inheritDoc

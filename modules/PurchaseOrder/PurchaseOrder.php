@@ -52,8 +52,6 @@ class PurchaseOrder extends CRMEntity
 
     public $billadr_table = 'vtiger_pobillads';
 
-    public $column_fields = [];
-
     public $sortby_fields = ['subject', 'tracking_no', 'assigned_user_id', 'lastname'];
 
     // This is used to retrieve related vtiger_fields from form posts.

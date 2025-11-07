@@ -46,8 +46,6 @@ class Invoice extends CRMEntity
     ];
     public $customFieldTable = ['vtiger_invoicecf', 'invoiceid'];
 
-    public $column_fields = [];
-
     public $update_product_array = [];
 
     public $sortby_fields = ['subject', 'invoice_no', 'invoicestatus', 'assigned_user_id', 'accountname', 'lastname'];

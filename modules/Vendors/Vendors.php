@@ -28,7 +28,6 @@ class Vendors extends CRMEntity
      * Mandatory table for supporting custom fields.
      */
     var $customFieldTable = ['vtiger_vendorcf', 'vendorid'];
-    var $column_fields = [];
 
     //Pavani: Assign value to entity_table
     var $entity_table = "vtiger_crmentity";

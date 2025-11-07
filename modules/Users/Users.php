@@ -482,7 +482,7 @@ class Users extends CRMEntity
         $result = $this->db->requirePsSingleResult($query, [$usr_name], false);
 
         $row = $this->db->fetchByAssoc($result);
-        $this->column_fields = $row;
+        $this->setColumnFields($row);
         $this->id = $row['id'];
 
         $this->loadPreferencesFromDB($row['user_preferences']);
