@@ -388,13 +388,7 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller
             $fileName,
         ];
 
-        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
-
-        foreach ($modifiers as $modifier) {
-            if (method_exists($modifier, 'modifyGetHeaderScripts')) {
-                $jsFileNames = array_merge($jsFileNames, $modifier->modifyGetHeaderScripts($request));
-            }
-        }
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
@@ -496,13 +490,7 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller
     {
         $cssFileNames  = [];
 
-        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
-
-        foreach ($modifiers as $modifier) {
-            if (method_exists($modifier, 'modifyGetHeaderCss')) {
-                $cssFileNames = array_merge($cssFileNames, $modifier->modifyGetHeaderCss($request));
-            }
-        }
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderCss', $request->getModule(), $cssFileNames, $request);
 
         return $this->checkAndConvertCssStyles($cssFileNames);
     }

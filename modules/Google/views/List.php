@@ -260,13 +260,7 @@ class Google_List_View extends Vtiger_PopupAjax_View
             "modules.$moduleName.resources.List",
         ];
 
-        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
-
-        foreach ($modifiers as $modifier) {
-            if (method_exists($modifier, 'modifyGetHeaderScripts')) {
-                $jsFileNames = array_merge($jsFileNames, $modifier->modifyGetHeaderScripts($request));
-            }
-        }
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
 
         return $this->checkAndConvertJsScripts($jsFileNames);
     }

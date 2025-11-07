@@ -120,19 +120,21 @@ class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
     }
 
     /**
-     * Returns array of .js files that should be loaded so that the InventoryItem block could provide its functionality
+     * Modifies an array of .js files that should be loaded so that the InventoryItem block could provide its functionality
      *
+     * @param array          $jsFileNames
      * @param Vtiger_Request $request
      *
-     * @return array
+     * @return void
      */
-    public function modifyGetHeaderScripts(Vtiger_Request $request): array
+    public function modifyGetHeaderScripts(array &$jsFileNames, Vtiger_Request $request): void
     {
-        return [
+        $myJsFileNames = [
             'modules.Vtiger.resources.Detail',
             'modules.InventoryItem.resources.InventoryItemDetail',
             'modules.Vtiger.resources.Popup',
             'modules.InventoryItem.resources.ItemsPopup',
         ];
+        $jsFileNames = array_merge($jsFileNames, $myJsFileNames);
     }
 }

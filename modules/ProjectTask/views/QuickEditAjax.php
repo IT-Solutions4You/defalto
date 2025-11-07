@@ -91,13 +91,7 @@ class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View
             "modules.$moduleName.resources.Edit"
         ];
 
-        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
-
-        foreach ($modifiers as $modifier) {
-            if (method_exists($modifier, 'modifyGetHeaderScripts')) {
-                $jsFileNames = array_merge($jsFileNames, $modifier->modifyGetHeaderScripts($request));
-            }
-        }
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
 
         return $this->checkAndConvertJsScripts($jsFileNames);
     }

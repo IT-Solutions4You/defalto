@@ -124,13 +124,7 @@ class Migration_Index_View extends Vtiger_View_Controller
             "modules.$moduleName.resources.Index"
         ];
 
-        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
-
-        foreach ($modifiers as $modifier) {
-            if (method_exists($modifier, 'modifyGetHeaderScripts')) {
-                $jsFileNames = array_merge($jsFileNames, $modifier->modifyGetHeaderScripts($request));
-            }
-        }
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 

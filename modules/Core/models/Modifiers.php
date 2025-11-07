@@ -70,4 +70,29 @@ class Core_Modifiers_Model
             }
         }
     }
+
+    /**
+     * Returns a modified array after applying all relevant modifiers to a specific method.
+     *
+     * @param string $className  The name of the class to modify.
+     * @param string $methodName The method name to be modified.
+     * @param string $forModule  Optional parameter specifying the module context.
+     * @param mixed  $modifiable
+     *
+     * @return void
+     */
+    public static function modifyVariableForClass(string $className, string $methodName, string $forModule = '', mixed &$modifiable = []): void
+    {
+        $fullArgs = func_get_args();
+        array_splice($fullArgs, 0, 4);
+
+        $modifiers = self::getForClass($className, $forModule);
+        $realMethodName = 'modify' . ucfirst($methodName);
+
+        foreach ($modifiers as $modifier) {
+            if (method_exists($modifier, $realMethodName)) {
+                $modifier->$realMethodName($modifiable, ...$fullArgs);
+            }
+        }
+    }
 }

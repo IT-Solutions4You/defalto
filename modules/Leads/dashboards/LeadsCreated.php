@@ -31,13 +31,7 @@ class Leads_LeadsCreated_Dashboard extends Vtiger_IndexAjax_View
 //			'~/libraries/jquery/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js'
         ];
 
-        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
-
-        foreach ($modifiers as $modifier) {
-            if (method_exists($modifier, 'modifyGetHeaderScripts')) {
-                $jsFileNames = array_merge($jsFileNames, $modifier->modifyGetHeaderScripts($request));
-            }
-        }
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
 
         return $this->checkAndConvertJsScripts($jsFileNames);
     }

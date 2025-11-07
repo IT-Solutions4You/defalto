@@ -27,13 +27,7 @@ class Potentials_FunnelAmount_Dashboard extends Vtiger_IndexAjax_View
             //Place your widget specific css files here
         ];
 
-        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
-
-        foreach ($modifiers as $modifier) {
-            if (method_exists($modifier, 'modifyGetHeaderCss')) {
-                $cssFileNames = array_merge($cssFileNames, $modifier->modifyGetHeaderCss($request));
-            }
-        }
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderCss', $request->getModule(), $cssFileNames, $request);
 
         return $this->checkAndConvertCssStyles($cssFileNames);
     }

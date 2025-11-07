@@ -27,13 +27,8 @@ class Potentials_GroupedBySalesStage_Dashboard extends Vtiger_IndexAjax_View
             //Place your widget specific css files here
         ];
 
-        $modifiers = Core_Modifiers_Model::getForClass(get_class($this), $request->getModule());
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderCss', $request->getModule(), $cssFileNames, $request);
 
-        foreach ($modifiers as $modifier) {
-            if (method_exists($modifier, 'modifyGetHeaderCss')) {
-                $cssFileNames = array_merge($cssFileNames, $modifier->modifyGetHeaderCss($request));
-            }
-        }
 
         return $this->checkAndConvertCssStyles($cssFileNames);
     }
