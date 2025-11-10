@@ -464,6 +464,7 @@ class Leads_Install_Model extends Core_Install_Model {
                     'displaytype' => 1,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
                 'campaignrelstatus' => [
                     'name' => 'campaignrelstatus',

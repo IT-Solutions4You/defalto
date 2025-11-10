@@ -476,6 +476,7 @@ class Quotes_Install_Model extends Core_Install_Model
                     'masseditable' => 0,
                     'quickcreate' => 3,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
             ],
         ];

@@ -302,6 +302,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'presence' => 0,
                     'quickcreate' => 3,
                     'masseditable' => 0,
+                    'ajaxeditable' => 0,
                 ],
             ]
         ];

@@ -325,6 +325,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'label' => 'Calendar No',
                     'uitype' => 4,
                     'typeofdata' => 'V~O',
+                    'ajaxeditable' => 0,
                 ],
                 'duration_hours' => [
                     'column' => 'duration_hours',

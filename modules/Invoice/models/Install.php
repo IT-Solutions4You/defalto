@@ -591,6 +591,7 @@ class Invoice_Install_Model extends Core_Install_Model
                     'headerfieldsequence' => 1,
                     'filter' => 1,
                     'filter_sequence' => 1,
+                    'ajaxeditable' => 0,
                 ],
             ]
         ];

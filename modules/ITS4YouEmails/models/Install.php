@@ -338,6 +338,7 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
                     'column' => 'its4you_email_no',
                     'label' => 'Email No',
                     'masseditable' => '0',
+                    'ajaxeditable' => 0,
                 ],
                 'sending_id' => [
                     'uitype' => 1,
