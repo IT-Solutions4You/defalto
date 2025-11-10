@@ -643,24 +643,11 @@ class Vtiger_Field_Model extends Vtiger_Field
      */
     public function isAjaxEditable()
     {
-        $ajaxRestrictedFields = [
-            self::UITYPE_RECORD_NO,
-            self::UITYPE_ATTACHMENT,
-            self::UITYPE_DOWNLOAD_TYPE,
-            self::UITYPE_FILENAME,
-            self::UITYPE_CKEDITOR,
-            self::UITYPE_MAILMANAGER_REFERENCE,
-            self::UITYPE_TAX,
-        ];
-        if (!$this->isEditable() || in_array($this->get('uitype'), $ajaxRestrictedFields)) {
-            return false;
-        }
-
         if ($this->block && 'LBL_SYSTEM_INFORMATION' === $this->block->label) {
-            return Users_Record_Model::getCurrentUserModel()->isAdminUser();
+            $this->ajaxeditable = Users_Record_Model::getCurrentUserModel()->isAdminUser() ? 1 : 0;
         }
 
-        return true;
+        return 1 === intval($this->ajaxeditable);
     }
 
     /**
@@ -1541,6 +1528,7 @@ class Vtiger_Field_Model extends Vtiger_Field
             'quickcreate'         => $this->get('quickcreate'),
             'quickcreatesequence' => $this->get('quicksequence'),
             'masseditable'        => $this->get('masseditable'),
+            'ajaxeditable'        => $this->get('ajaxeditable'),
             'defaultvalue'        => $this->get('defaultvalue'),
             'summaryfield'        => $this->get('summaryfield'),
             'summaryfieldsequence'=> $this->get('summaryfieldsequence'),
