@@ -237,6 +237,7 @@ class Services_Install_Model extends Core_Install_Model
                     'column' => 'taxclass',
                     'table' => 'vtiger_service',
                     'label' => 'Taxes',
+                    'ajaxeditable' => 0,
                 ],
                 'commissionrate' => [
                     'uitype' => 9,
