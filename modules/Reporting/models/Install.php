@@ -41,6 +41,7 @@ class Reporting_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'filter_sequence' => 2,
                     'typeofdata' => 'V~M',
+                    'ajaxeditable' => 0,
                 ],
                 'primary_module' => [
                     'column' => 'primary_module',
@@ -52,6 +53,7 @@ class Reporting_Install_Model extends Core_Install_Model
                     'filter_sequence' => 3,
                     'typeofdata' => 'V~M',
                     'headerfield' => 1,
+                    'ajaxeditable' => 0,
                 ],
             ],
             'LBL_DETAILS' => [
@@ -100,18 +102,21 @@ class Reporting_Install_Model extends Core_Install_Model
                     'column' => 'fields',
                     'label' => 'Fields',
                     'table' => 'df_reporting',
+                    'ajaxeditable' => 0,
                 ],
                 'sort_by' => [
                     'columntype' => 'TEXT',
                     'column' => 'sort_by',
                     'label' => 'Sort By',
                     'table' => 'df_reporting',
+                    'ajaxeditable' => 0,
                 ],
                 'labels' => [
                     'columntype' => 'TEXT',
                     'column' => 'labels',
                     'label' => 'Labels',
                     'table' => 'df_reporting',
+                    'ajaxeditable' => 0,
                 ],
                 'width' => [
                     'columntype' => 'TEXT',
@@ -132,6 +137,7 @@ class Reporting_Install_Model extends Core_Install_Model
                     'column' => 'calculation',
                     'label' => 'Calculation',
                     'table' => 'df_reporting',
+                    'ajaxeditable' => 0,
                 ],
             ],
             'LBL_FILTERS' => [
@@ -140,6 +146,7 @@ class Reporting_Install_Model extends Core_Install_Model
                     'column' => 'filter',
                     'label' => 'Filter',
                     'table' => 'df_reporting',
+                    'ajaxeditable' => 0,
                 ],
             ],
             'LBL_SHARING' => [
