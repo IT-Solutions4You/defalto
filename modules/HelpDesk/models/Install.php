@@ -383,6 +383,7 @@ class HelpDesk_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
             ],
             'LBL_TICKET_RESOLUTION' => [
@@ -431,6 +432,7 @@ class HelpDesk_Install_Model extends Core_Install_Model
                     'displaytype' => 2,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
                 'first_comment' => [
                     'name' => 'first_comment',
@@ -445,6 +447,7 @@ class HelpDesk_Install_Model extends Core_Install_Model
                     'displaytype' => 2,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
                 'last_comment_hours' => [
                     'name' => 'last_comment_hours',
@@ -459,6 +462,7 @@ class HelpDesk_Install_Model extends Core_Install_Model
                     'displaytype' => 2,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
                 'last_comment' => [
                     'name' => 'last_comment',
@@ -473,6 +477,7 @@ class HelpDesk_Install_Model extends Core_Install_Model
                     'displaytype' => 2,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
                 'ticket_no' => [
                     'name' => 'ticket_no',
