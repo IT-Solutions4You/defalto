@@ -162,6 +162,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'uitype' => 6,
                     'typeofdata' => 'DT~M',
                     'columntype' => 'datetime',
+                    'ajaxeditable' => 0,
                 ],
                 'datetime_end' => [
                     'column' => 'datetime_end',
@@ -169,6 +170,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'uitype' => 6,
                     'typeofdata' => 'DT~M',
                     'columntype' => 'datetime',
+                    'ajaxeditable' => 0,
                 ],
                 'calendar_status' => [
                     'column' => 'calendar_status',
@@ -253,6 +255,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'uitype' => 30,
                     'typeofdata' => 'I~O',
                     'columntype' => 'VARCHAR(150)',
+                    'ajaxeditable' => 0,
                 ],
             ],
             'LBL_RECURENCE_INFORMATION' => [
@@ -262,6 +265,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'uitype' => 16,
                     'typeofdata' => 'O~O',
                     'columntype' => 'VARCHAR(200)',
+                    'ajaxeditable' => 0,
                     'picklist_values' => [
                         'Daily',
                         'Weekly',
@@ -290,6 +294,7 @@ class Appointments_Install_Model extends Core_Install_Model
                         'Contacts',
                     ],
                     'columntype' => 'VARCHAR(255)',
+                    'ajaxeditable' => 0,
                 ],
                 'parent_id' => [
                     'column' => 'parent_id',
@@ -318,6 +323,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'columntype' => 'VARCHAR(255)',
                     'uitype' => 1,
                     'typeofdata' => 'V~O',
+                    'ajaxeditable' => 0,
                 ],
             ],
             'LBL_SYSTEM_INFORMATION' => [
@@ -325,6 +331,7 @@ class Appointments_Install_Model extends Core_Install_Model
                     'label' => 'Calendar No',
                     'uitype' => 4,
                     'typeofdata' => 'V~O',
+                    'ajaxeditable' => 0,
                 ],
                 'duration_hours' => [
                     'column' => 'duration_hours',

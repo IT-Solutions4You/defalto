@@ -23,7 +23,7 @@
 
 class Leads extends CRMEntity
 {
-    public string $moduleVersion = '0.1';
+    public string $moduleVersion = '1.1';
     public string $moduleName = 'Leads';
     public string $parentName = 'HOME';
 

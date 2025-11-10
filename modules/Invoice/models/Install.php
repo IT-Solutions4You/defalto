@@ -104,6 +104,7 @@ class Invoice_Install_Model extends Core_Install_Model
                     'headerfieldsequence' => 2,
                     'filter' => 1,
                     'filter_sequence' => 3,
+                    'ajaxeditable' => 0,
                 ],
                 'contact_id' => [
                     'name' => 'contact_id',
@@ -591,6 +592,7 @@ class Invoice_Install_Model extends Core_Install_Model
                     'headerfieldsequence' => 1,
                     'filter' => 1,
                     'filter_sequence' => 1,
+                    'ajaxeditable' => 0,
                 ],
             ]
         ];

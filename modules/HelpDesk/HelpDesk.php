@@ -23,6 +23,7 @@
 
 class HelpDesk extends CRMEntity
 {
+    public string $moduleVersion = '1.2';
     public string $moduleName = 'HelpDesk';
     public string $parentName = 'SUPPORT';
     public $table_name = 'vtiger_troubletickets';

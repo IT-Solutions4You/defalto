@@ -20,6 +20,7 @@ class Products extends CRMEntity
 {
     use Core_UnitPrice_Trait;
 
+    public string $moduleVersion = '1.1';
     public string $moduleName = 'Products';
     public string $parentName = 'INVENTORY';
 

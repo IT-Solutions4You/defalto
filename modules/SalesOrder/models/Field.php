@@ -11,18 +11,6 @@
 class SalesOrder_Field_Model extends Vtiger_Field_Model
 {
     /**
-     * @inheritDoc
-     */
-    public function isAjaxEditable()
-    {
-        if ($this->getName() === 'account_id') {
-            return false;
-        }
-
-        return parent::isAjaxEditable();
-    }
-
-    /**
      * @return mixed
      */
     public function getDefaultFieldValue()
