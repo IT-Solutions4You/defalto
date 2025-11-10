@@ -13,7 +13,7 @@ class Tour extends CRMExtension
     /**
      * @var string
      */
-    public string $moduleVersion = '0.1';
+    public string $moduleVersion = '1.1';
     /**
      * @var string
      */
