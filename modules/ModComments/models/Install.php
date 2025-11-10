@@ -109,6 +109,7 @@ class ModComments_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
                 'related_email_id' => [
                     'name' => 'related_email_id',
