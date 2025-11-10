@@ -54,7 +54,7 @@ class CRMExtension
     public $recordSource = 'CRM';
 
     public $name;
-    public string $moduleVersion = '0.1';
+    public string $moduleVersion = '1.0';
     public $list_fields_names = [];
     public $list_fields = [];
     public int $ownedBy = 1;
