@@ -151,6 +151,7 @@ class Users_Install_Model extends Core_Install_Model
                     'headerfield' => 0,
                     'filter' => 1,
                     'filter_sequence' => 8,
+                    'ajaxeditable' => 0,
                 ],
                 'is_admin' => [
                     'name' => 'is_admin',
@@ -255,6 +256,7 @@ class Users_Install_Model extends Core_Install_Model
                     'headerfield' => 1,
                     'filter' => 1,
                     'filter_sequence' => 4,
+                    'ajaxeditable' => 0,
                 ],
                 'email1' => [
                     'name' => 'email1',
@@ -287,6 +289,7 @@ class Users_Install_Model extends Core_Install_Model
                     'summaryfield' => 1,
                     'filter' => 1,
                     'filter_sequence' => 5,
+                    'ajaxeditable' => 0,
                 ],
                 'status' => [
                     'name' => 'status',
@@ -548,6 +551,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
                 'phone_other' => [
                     'name' => 'phone_other',
@@ -592,6 +596,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
                 'internal_mailer' => [
                     'name' => 'internal_mailer',
@@ -622,6 +627,7 @@ class Users_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'defaultvalue' => 'softed',
+                    'ajaxeditable' => 0,
                 ],
                 'phone_crm_extension' => [
                     'name' => 'phone_crm_extension',
@@ -794,6 +800,7 @@ class Users_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
             ],
             'LBL_USER_ADV_OPTIONS' => [

@@ -81,19 +81,6 @@ class Users_Field_Model extends Vtiger_Field_Model
     }
 
     /**
-     * Function to check whether field is ajax editable'
-     * @return bool
-     * @throws Exception
-     */
-    public function isAjaxEditable()
-    {
-        return !(!$this->isEditable() || in_array(
-                $this->getUIType(),
-                [self::UITYPE_USER_PROFILE, self::UITYPE_USER_IMAGE, self::UITYPE_USER_USERNAME, self::UITYPE_USER_ROLE, self::UITYPE_USER_REPORTS_TO]
-            ) || $this->getName() === 'signature');
-    }
-
-    /**
      * Function to get all the available picklist values for the current field
      * @return <Array> List of picklist values if the field is of type picklist or multipicklist, null otherwise.
      */
