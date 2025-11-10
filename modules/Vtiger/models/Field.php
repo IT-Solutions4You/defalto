@@ -644,10 +644,10 @@ class Vtiger_Field_Model extends Vtiger_Field
     public function isAjaxEditable()
     {
         if ($this->block && 'LBL_SYSTEM_INFORMATION' === $this->block->label) {
-            $this->ajaxeditable = Users_Record_Model::getCurrentUserModel()->isAdminUser() ? 1 : 0;
+            $this->ajaxeditable = (int)Users_Record_Model::getCurrentUserModel()->isAdminUser();
         }
 
-        return 1 === intval($this->ajaxeditable);
+        return 1 === (int)$this->ajaxeditable;
     }
 
     /**
