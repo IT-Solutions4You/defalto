@@ -9,7 +9,7 @@
  */
 
 $languageStrings = [
-    'LBL_CONVERT_LEAD_FIELD_MAPPING' => 'Mapovanie konverzie Prvého kontaktu',
+    'LBL_CONVERT_LEAD_FIELD_MAPPING' => 'Mapovanie konverzie Leada',
     'LBL_ORGANIZATIONS' => 'Organizácie',
     'LBL_CONTACTS' => 'Kontakty',
     'LBL_OPPURTUNITIES' => 'Príležitosti',
