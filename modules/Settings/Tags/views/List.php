@@ -18,7 +18,10 @@
 
 class Settings_Tags_List_View extends Settings_Vtiger_List_View
 {
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $layout = Vtiger_Viewer::getDefaultLayoutName();
         if ($layout == 'vlayout') {

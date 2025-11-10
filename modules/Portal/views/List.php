@@ -21,7 +21,10 @@ class Portal_List_View extends Vtiger_Index_View
     public $pagingModel;
     public $noOfEntries;
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView'];
@@ -29,7 +32,10 @@ class Portal_List_View extends Vtiger_Index_View
         return $permissions;
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request);
 

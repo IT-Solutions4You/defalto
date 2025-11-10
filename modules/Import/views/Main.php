@@ -18,7 +18,7 @@
 
 require_once 'vtlib/Vtiger/Cron.php';
 
-class Import_Main_View extends Vtiger_View_Controller
+class Import_Main_View extends Core_Controller_View
 {
     var $request;
     var $user;

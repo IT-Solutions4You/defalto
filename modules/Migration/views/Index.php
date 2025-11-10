@@ -16,7 +16,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Migration_Index_View extends Vtiger_View_Controller
+class Migration_Index_View extends Core_Controller_View
 {
     function __construct()
     {
@@ -28,7 +28,10 @@ class Migration_Index_View extends Vtiger_View_Controller
         $this->exposeMethod('migrateData');
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
@@ -85,7 +88,10 @@ class Migration_Index_View extends Vtiger_View_Controller
         $viewer->view('MigrationStep3.tpl', $moduleName);
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
 
@@ -97,7 +103,10 @@ class Migration_Index_View extends Vtiger_View_Controller
         $viewer->view('MigrationPreProcess.tpl', $moduleName);
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $moduleName = $request->getModule();
 

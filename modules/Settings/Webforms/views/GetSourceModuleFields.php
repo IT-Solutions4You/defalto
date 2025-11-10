@@ -18,7 +18,10 @@
 
 class Settings_Webforms_GetSourceModuleFields_View extends Settings_Vtiger_IndexAjax_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
 

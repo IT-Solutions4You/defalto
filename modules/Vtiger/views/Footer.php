@@ -23,16 +23,6 @@ abstract class Vtiger_Footer_View extends Vtiger_Header_View
         parent::__construct();
     }
 
-    //Note: To get the right hook for immediate parent in PHP,
-    // specially in case of deep hierarchy
-    /*function preProcessParentTplName(Vtiger_Request $request) {
-        return parent::preProcessTplName($request);
-    }*/
-
-    /*function postProcess(Vtiger_Request $request) {
-        parent::postProcess($request);
-    }*/
-
     /**
      * @inheritDoc
      */

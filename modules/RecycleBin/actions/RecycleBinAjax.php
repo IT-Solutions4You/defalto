@@ -26,7 +26,10 @@ class RecycleBin_RecycleBinAjax_Action extends Vtiger_Mass_Action
         $this->exposeMethod('deleteRecords');
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         if ($request->get('mode') == 'emptyRecycleBin') {
             //Only admin user can empty the recycle bin, so this check is mandatory
@@ -44,16 +47,15 @@ class RecycleBin_RecycleBinAjax_Action extends Vtiger_Mass_Action
         if (!$currentUserPriviligesModel->hasModuleActionPermission($moduleModel->getId(), 'Delete')) {
             throw new Exception(getTranslatedString('LBL_PERMISSION_DENIED'));
         }
-    }
 
-    function preProcess(Vtiger_Request $request)
-    {
         return true;
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return true;
     }
 
     public function process(Vtiger_Request $request)

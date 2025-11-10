@@ -38,12 +38,9 @@ class Core_RelatedBlock_View extends Vtiger_Index_View
     }
 
     /**
-     * @param Vtiger_Request $request
-     * @param bool           $display
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function preProcess(Vtiger_Request $request, $display = true)
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         if ($this->isContentView($request)) {
             return;
@@ -53,11 +50,9 @@ class Core_RelatedBlock_View extends Vtiger_Index_View
     }
 
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function postProcess(Vtiger_Request $request)
+    public function postProcess(Vtiger_Request $request): void
     {
         if ($this->isContentView($request)) {
             return;

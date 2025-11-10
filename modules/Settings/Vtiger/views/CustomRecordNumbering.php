@@ -41,7 +41,10 @@ class Settings_Vtiger_CustomRecordNumbering_View extends Settings_Vtiger_Index_V
         $viewer->view('CustomRecordNumbering.tpl', $qualifiedModuleName);
     }
 
-    function getPageTitle(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getPageTitle(Vtiger_Request $request): string
     {
         $qualifiedModuleName = $request->getModule(false);
 

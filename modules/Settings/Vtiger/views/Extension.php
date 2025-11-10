@@ -18,7 +18,10 @@
 
 class Settings_Vtiger_Extension_View extends Settings_Vtiger_Index_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->get('extensionModule');
 
@@ -68,7 +71,10 @@ class Settings_Vtiger_Extension_View extends Settings_Vtiger_Index_View
         return $links['EXTENSIONLINK'];
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $viewer = $this->getViewer($request);

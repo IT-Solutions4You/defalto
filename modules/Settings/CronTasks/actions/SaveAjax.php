@@ -18,11 +18,15 @@
 
 class Settings_CronTasks_SaveAjax_Action extends Settings_Vtiger_Index_Action
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
 
         $recordId = $request->get('record');
+
         if (!$recordId) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
@@ -52,8 +56,11 @@ class Settings_CronTasks_SaveAjax_Action extends Settings_Vtiger_Index_Action
         $response->emit();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

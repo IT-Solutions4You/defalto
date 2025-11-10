@@ -16,14 +16,20 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Users_Login_Action extends Vtiger_Action_Controller
+class Users_Login_Action extends Core_Controller_Action
 {
-    function loginRequired()
+    /**
+     * @inheritDoc
+     */
+    public function isLoginRequired(): bool
     {
         return false;
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         return true;
     }

@@ -18,7 +18,10 @@
 
 class Settings_Roles_Popup_View extends Vtiger_Footer_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $currentUser = Users_Record_Model::getCurrentUserModel();

@@ -29,7 +29,7 @@ require_once 'vtlib/Vtiger/Mailer.php';
 require_once 'include/events/include.inc';
 vimport('includes.runtime.EntryPoint');
 
-class Import_Data_Action extends Vtiger_Action_Controller
+class Import_Data_Action extends Core_Controller_Action
 {
     var $id;
     var $user;

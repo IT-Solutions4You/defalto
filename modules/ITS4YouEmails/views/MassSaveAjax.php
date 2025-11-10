@@ -35,8 +35,12 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         $this->exposeMethod('massSave');
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
+        return true;
     }
 
     /**

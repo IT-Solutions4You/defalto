@@ -16,19 +16,17 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Documents_DownloadFile_Action extends Vtiger_Action_Controller
+class Documents_DownloadFile_Action extends Core_Controller_Action
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
 
         return $permissions;
-    }
-
-    public function checkPermission(Vtiger_Request $request)
-    {
-        return parent::checkPermission($request);
     }
 
     public function process(Vtiger_Request $request)

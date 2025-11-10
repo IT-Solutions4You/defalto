@@ -28,7 +28,10 @@ class Settings_Vtiger_List_View extends Settings_Vtiger_Index_View
         parent::__construct();
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, true);
 
@@ -155,7 +158,10 @@ class Settings_Vtiger_List_View extends Settings_Vtiger_Index_View
         }
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $viewer = $this->getViewer($request);
         $viewer->view('ListViewFooter.tpl', $request->getModule(false));

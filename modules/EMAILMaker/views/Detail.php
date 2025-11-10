@@ -97,12 +97,18 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
         $viewer->view('Detail.tpl', 'EMAILMaker');
     }
 
-    public function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'DetailViewPreProcess.tpl';
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         Vtiger_Basic_View::preProcess($request, false);
 
@@ -283,7 +289,10 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
         $viewer->view("DetailViewListWF.tpl", 'EMAILMaker');
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
         $selectedTabLabel = $request->get('tab_label');

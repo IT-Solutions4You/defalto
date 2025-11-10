@@ -16,9 +16,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Vtiger_Delete_Action extends Vtiger_Action_Controller
+class Vtiger_Delete_Action extends Core_Controller_Action
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
@@ -27,7 +30,10 @@ class Vtiger_Delete_Action extends Vtiger_Action_Controller
         return $permissions;
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
         $record = $request->get('record');
@@ -41,6 +47,8 @@ class Vtiger_Delete_Action extends Vtiger_Action_Controller
                 throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
             }
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)
@@ -69,8 +77,11 @@ class Vtiger_Delete_Action extends Vtiger_Action_Controller
         }
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

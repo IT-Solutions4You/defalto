@@ -24,14 +24,18 @@ class Settings_Vtiger_IndexAjax_View extends Settings_Vtiger_Index_View
         $this->exposeMethod('getSettingsShortCutBlock');
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        return;
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return;
     }
 
     public function process(Vtiger_Request $request)

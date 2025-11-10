@@ -18,7 +18,10 @@
 
 class MailManager_MassActionAjax_View extends Vtiger_MassActionAjax_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }

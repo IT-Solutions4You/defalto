@@ -24,7 +24,10 @@ class Campaigns_DetailAjax_Action extends Vtiger_BasicAjax_Action
         $this->exposeMethod('getRecordsCount');
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $mode = $request->getMode();
@@ -39,11 +42,6 @@ class Campaigns_DetailAjax_Action extends Vtiger_BasicAjax_Action
         }
 
         return $permissions;
-    }
-
-    public function checkPermission(Vtiger_Request $request)
-    {
-        return parent::checkPermission($request);
     }
 
     public function process(Vtiger_Request $request)

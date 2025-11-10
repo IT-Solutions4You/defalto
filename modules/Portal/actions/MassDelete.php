@@ -18,7 +18,10 @@
 
 class Portal_MassDelete_Action extends Vtiger_MassDelete_Action
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView'];
 

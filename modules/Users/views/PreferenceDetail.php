@@ -18,31 +18,33 @@
 
 class Users_PreferenceDetail_View extends Vtiger_Detail_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         $record = $request->get('record');
 
         if ($currentUserModel->isAdminUser() == true || $currentUserModel->get('id') == $record) {
             return true;
-        } else {
-            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
+
+        throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
     }
 
     /**
-     * Function to returns the preProcess Template Name
-     *
-     * @param <type> $request
-     *
-     * @return <String>
+     * @inheritDoc
      */
-    public function preProcessTplName(Vtiger_Request $request)
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'PreferenceDetailViewPreProcess.tpl';
     }
@@ -57,7 +59,10 @@ class Users_PreferenceDetail_View extends Vtiger_Detail_View
         return $this->showModuleDetailView($request);
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         if ($this->checkPermission($request)) {
             $qualifiedModuleName = $request->getModule(false);
@@ -169,7 +174,10 @@ class Users_PreferenceDetail_View extends Vtiger_Detail_View
         }
     }
 
-    protected function preProcessDisplay(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessDisplay(Vtiger_Request $request): void
     {
         $viewer = $this->getViewer($request);
         $viewer->view($this->preProcessTplName($request), $request->getModule());

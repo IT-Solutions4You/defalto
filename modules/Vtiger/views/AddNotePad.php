@@ -18,7 +18,10 @@
 
 class Vtiger_AddNotePad_View extends Vtiger_Index_View
 {
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         if ($request->get('module') != 'Dashboard') {

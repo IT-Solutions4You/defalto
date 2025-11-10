@@ -24,7 +24,10 @@ class Google_Index_View extends Vtiger_ExtensionViews_View
         $this->exposeMethod('settings');
     }
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }

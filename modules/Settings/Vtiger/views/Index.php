@@ -23,7 +23,10 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
         parent::__construct();
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
@@ -34,10 +37,13 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
         return true;
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
-        $this->preProcessSettings($request, $display);
+        $this->preProcessSettings($request, true);
     }
 
     public function preProcessSettings(Vtiger_Request $request, $display = true)
@@ -103,7 +109,10 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
         }
     }
 
-    protected function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'SettingsMenuStart.tpl';
     }
@@ -115,7 +124,10 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
         $viewer->view('SettingsMenuEnd.tpl', $qualifiedModuleName);
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $this->postProcessSettings($request);
         parent::postProcess($request);
@@ -211,7 +223,10 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
         }
     }
 
-    public function getPageTitle(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getPageTitle(Vtiger_Request $request): string
     {
         $pageTitle = parent::getPageTitle($request);
 

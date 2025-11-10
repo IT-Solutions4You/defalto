@@ -109,7 +109,10 @@ class MailManager_Settings_View extends MailManager_MainUI_View
         return $response;
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
         return $request->validateWriteAccess();
     }

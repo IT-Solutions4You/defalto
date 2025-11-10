@@ -20,7 +20,10 @@ vimport('~~/include/Webservices/Custom/DeleteUser.php');
 
 class Users_Import_View extends Vtiger_Import_View
 {
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
 

@@ -59,9 +59,6 @@
                                     </div>
                                 </a>
                             </li>
-                            {if isset($REQUEST_INSTANCE.relationId) && $RELATED_LINK->getId() eq $REQUEST_INSTANCE.relationId}
-                                {assign var=MORE_TAB_ACTIVE value='true'}
-                            {/if}
                         {/foreach}
                     {/if}
                 </ul>

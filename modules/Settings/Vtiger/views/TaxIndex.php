@@ -83,7 +83,10 @@ class Settings_Vtiger_TaxIndex_View extends Settings_Vtiger_Index_View
         $viewer->view('TaxRegions.tpl', $qualifiedModuleName);
     }
 
-    function getPageTitle(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getPageTitle(Vtiger_Request $request): string
     {
         $qualifiedModuleName = $request->getModule(false);
 

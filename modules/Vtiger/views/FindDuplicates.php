@@ -18,14 +18,20 @@
 
 class Vtiger_FindDuplicates_View extends Vtiger_List_View
 {
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         $viewer = $this->getViewer($request);
         $this->initializeListViewContents($request, $viewer);
         parent::preProcess($request, $display);
     }
 
-    public function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'FindDuplicatePreProcess.tpl';
     }

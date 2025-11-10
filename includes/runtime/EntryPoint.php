@@ -21,7 +21,6 @@ vimport('includes.http.Request');
 vimport('includes.http.Response');
 vimport('includes.http.Session');
 vimport('includes.runtime.Globals');
-vimport('includes.runtime.Controller');
 vimport('includes.runtime.Viewer');
 vimport('includes.runtime.Theme');
 vimport('includes.runtime.BaseModel');

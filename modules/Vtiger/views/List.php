@@ -33,7 +33,10 @@ class Vtiger_List_View extends Vtiger_Index_View
         parent::__construct();
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
 
@@ -42,7 +45,10 @@ class Vtiger_List_View extends Vtiger_Index_View
         return $permissions;
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
 
@@ -98,20 +104,12 @@ class Vtiger_List_View extends Vtiger_Index_View
         }
     }
 
-    function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'ListViewPreProcess.tpl';
-    }
-
-    //Note : To get the right hook for immediate parent in PHP,
-    // specially in case of deep hierarchy
-    /*function preProcessParentTplName(Vtiger_Request $request) {
-        return parent::preProcessTplName($request);
-    }*/
-
-    protected function preProcessDisplay(Vtiger_Request $request)
-    {
-        parent::preProcessDisplay($request);
     }
 
     function process(Vtiger_Request $request)
@@ -136,7 +134,10 @@ class Vtiger_List_View extends Vtiger_Index_View
         $viewer->view('ListViewContents.tpl', $moduleName);
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();

@@ -39,7 +39,10 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         $this->exposeMethod('showAllTagsModalWindow');
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $mode = $request->getMode();
@@ -68,7 +71,10 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         return $permissions;
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $moduleName = $request->getModule();
@@ -85,7 +91,10 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         return true;
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
 
@@ -187,7 +196,10 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         }
     }
 
-    function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'DetailViewPreProcess.tpl';
     }
@@ -211,7 +223,10 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         }
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $recordId = $request->get('record');
         $moduleName = $request->getModule();

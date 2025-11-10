@@ -29,10 +29,9 @@ class Settings_Core_Taxes_View extends Settings_Vtiger_Index_View
     }
 
     /**
-     * @param Vtiger_Request $request
-     * @return string
+     * @inheritDoc
      */
-    public function getPageTitle(Vtiger_Request $request)
+    public function getPageTitle(Vtiger_Request $request): string
     {
         $mode = $request->getMode();
 

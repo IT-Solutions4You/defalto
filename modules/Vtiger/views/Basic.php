@@ -32,7 +32,10 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View
         parent::__construct();
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
 
@@ -102,22 +105,12 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View
         }
     }
 
-    protected function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'BasicHeader.tpl';
-    }
-
-    //Note: To get the right hook for immediate parent in PHP,
-    // specially in case of deep hierarchy
-    /*function preProcessParentTplName(Vtiger_Request $request) {
-        return parent::preProcessTplName($request);
-    }*/
-
-    function postProcess(Vtiger_Request $request)
-    {
-        $viewer = $this->getViewer($request);
-        //$viewer->assign('GUIDERSJSON', Vtiger_Guider_Model::toJsonList($this->getGuiderModels($request)));
-        parent::postProcess($request);
     }
 
     /**
@@ -172,7 +165,10 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View
         return [];
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
         //Removed validation check for specific views
         $allowedViews = [
@@ -194,5 +190,7 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View
         if (!(in_array($view, $allowedViews) || ($view == "Import" && !$mode) || ($view == "Edit" && $request->get("module") == "Workflows" && !$mode))) {
             $request->validateReadAccess();
         }
+
+        return true;
     }
 }

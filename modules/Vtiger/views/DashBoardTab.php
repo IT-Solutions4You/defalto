@@ -26,7 +26,10 @@ class Vtiger_DashboardTab_View extends Vtiger_Index_View
         $this->exposeMethod('showDashBoardTabList');
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         if ($request->get('module') != 'Dashboard') {

@@ -16,9 +16,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Settings_Workflows_SaveWorkflow_Action extends Vtiger_Action_Controller
+class Settings_Workflows_SaveWorkflow_Action extends Core_Controller_Action
 {
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
@@ -169,8 +172,11 @@ class Settings_Workflows_SaveWorkflow_Action extends Vtiger_Action_Controller
         }
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

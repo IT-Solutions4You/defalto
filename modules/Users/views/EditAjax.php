@@ -25,13 +25,19 @@ class Users_EditAjax_View extends Vtiger_IndexAjax_View
         $this->exposeMethod('changeUsername');
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         $userId = $request->get('recordId');
+
         if ($currentUserModel->getId() != $userId && !$currentUserModel->isAdminUser()) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)

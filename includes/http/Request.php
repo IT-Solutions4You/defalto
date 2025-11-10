@@ -251,7 +251,13 @@ class Vtiger_Request implements ArrayAccess
         return true;
     }
 
-    function validateWriteAccess($skipRequestTypeCheck = false)
+    /**
+     * @param $skipRequestTypeCheck
+     *
+     * @return bool
+     * @throws Exception
+     */
+    function validateWriteAccess($skipRequestTypeCheck = false): bool
     {
         if (!$skipRequestTypeCheck) {
             if ($_SERVER['REQUEST_METHOD'] != 'POST') {

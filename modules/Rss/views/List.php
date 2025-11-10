@@ -18,7 +18,10 @@
 
 class Rss_List_View extends Vtiger_Index_View
 {
-    function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'ListViewPreProcess.tpl';
     }
@@ -39,7 +42,10 @@ class Rss_List_View extends Vtiger_Index_View
         $viewer->view('ListViewContents.tpl', $moduleName);
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();

@@ -18,7 +18,10 @@
 
 class Settings_MailConverter_List_View extends Settings_Vtiger_Index_View
 {
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $qualifiedModuleName = $request->getModule(false);
@@ -28,11 +31,6 @@ class Settings_MailConverter_List_View extends Settings_Vtiger_Index_View
         if ($display) {
             $this->preProcessDisplay($request);
         }
-    }
-
-    protected function preProcessTplName(Vtiger_Request $request)
-    {
-        return parent::preProcessTplName($request);
     }
 
     public function process(Vtiger_Request $request)

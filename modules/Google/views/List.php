@@ -26,7 +26,10 @@ class Google_List_View extends Vtiger_PopupAjax_View
         $this->exposeMethod('Calendar');
     }
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
@@ -265,8 +268,12 @@ class Google_List_View extends Vtiger_PopupAjax_View
         return $this->checkAndConvertJsScripts($jsFileNames);
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
         //don't do validation because there is a redirection from google
+        return true;
     }
 }

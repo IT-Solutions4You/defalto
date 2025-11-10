@@ -18,7 +18,10 @@
 
 class Products_MoreCurrenciesList_View extends Vtiger_IndexAjax_View
 {
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $record = $request->get('record');

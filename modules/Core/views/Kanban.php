@@ -97,11 +97,17 @@ class Core_Kanban_View extends Vtiger_Index_View
         $response->emit();
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function postProcessTplName(Vtiger_Request $request): string
     {
         return 'KanbanViewPostProcess.tpl';
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'KanbanViewPreProcess.tpl';

@@ -18,7 +18,10 @@
 
 class Settings_MailConverter_DeleteMailBox_Action extends Settings_Vtiger_Index_Action
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $recordId = $request->get('record');
@@ -26,6 +29,8 @@ class Settings_MailConverter_DeleteMailBox_Action extends Settings_Vtiger_Index_
         if (!$recordId) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', $request->getModule(false)));
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)
@@ -43,8 +48,11 @@ class Settings_MailConverter_DeleteMailBox_Action extends Settings_Vtiger_Index_
         $response->emit();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

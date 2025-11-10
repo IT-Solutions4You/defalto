@@ -16,7 +16,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class PurchaseOrder_CompanyDetails_Action extends Vtiger_Action_Controller
+class PurchaseOrder_CompanyDetails_Action extends Core_Controller_Action
 {
     function __construct()
     {
@@ -25,7 +25,10 @@ class PurchaseOrder_CompanyDetails_Action extends Vtiger_Action_Controller
         $this->exposeMethod('getAddressDetails');
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $mode = $request->getMode();

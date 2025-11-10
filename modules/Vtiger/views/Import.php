@@ -34,7 +34,10 @@ class Vtiger_Import_View extends Vtiger_Index_View
         $this->exposeMethod('updateSavedMapping');
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
 

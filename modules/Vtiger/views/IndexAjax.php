@@ -24,14 +24,18 @@ class Vtiger_IndexAjax_View extends Vtiger_Index_View
         $this->exposeMethod('showActiveRecords');
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        return true;
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return true;
     }
 
     function process(Vtiger_Request $request)

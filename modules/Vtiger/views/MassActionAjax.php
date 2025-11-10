@@ -29,7 +29,10 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View
         $this->exposeMethod('transferOwnership');
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $mode = $request->getMode();

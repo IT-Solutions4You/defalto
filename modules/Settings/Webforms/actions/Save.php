@@ -18,7 +18,10 @@
 
 class Settings_Webforms_Save_Action extends Settings_Vtiger_Index_Action
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
 
@@ -92,8 +95,11 @@ class Settings_Webforms_Save_Action extends Settings_Vtiger_Index_Action
         header("Location: $returnUrl");
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

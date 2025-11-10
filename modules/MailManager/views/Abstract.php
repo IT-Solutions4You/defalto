@@ -21,35 +21,42 @@ vimport('modules/MailManager/MailManager.php');
 
 abstract class MailManager_Abstract_View extends Vtiger_Index_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        if (in_array($this->getOperationArg($request), ['open', 'attachment_dld'])) {
-            return true;
-        } else {
+        if (!in_array($this->getOperationArg($request), ['open', 'attachment_dld'])) {
             parent::preProcess($request, $display);
         }
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        if (in_array($this->getOperationArg($request), ['open', 'attachment_dld'])) {
-            return true;
-        } else {
+        if (!in_array($this->getOperationArg($request), ['open', 'attachment_dld'])) {
             parent::postProcess($request);
         }
     }
 
     /**
      * Function which gets the template handler
-     * @return MailManager_Viewer
-     * @global String $currentModule
+     *
+     * @param Vtiger_Request $request
+     *
+     * @return Vtiger_Viewer
      */
-    public function getViewer(Vtiger_Request $request)
+    public function getViewer(Vtiger_Request $request): Vtiger_Viewer
     {
         $viewer = parent::getViewer($request);
         $viewer->assign('MAILBOX', $this->getMailboxModel());

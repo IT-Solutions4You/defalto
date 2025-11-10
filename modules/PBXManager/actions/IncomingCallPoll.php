@@ -19,7 +19,7 @@
 include_once 'include/Webservices/Create.php';
 include_once 'include/utils/utils.php';
 
-class PBXManager_IncomingCallPoll_Action extends Vtiger_Action_Controller
+class PBXManager_IncomingCallPoll_Action extends Core_Controller_Action
 {
     function __construct()
     {
@@ -40,7 +40,10 @@ class PBXManager_IncomingCallPoll_Action extends Vtiger_Action_Controller
         }
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
@@ -50,6 +53,8 @@ class PBXManager_IncomingCallPoll_Action extends Vtiger_Action_Controller
         if (!$permission) {
             throw new Exception('LBL_PERMISSION_DENIED');
         }
+
+        return true;
     }
 
     public function checkModuleViewPermission(Vtiger_Request $request)

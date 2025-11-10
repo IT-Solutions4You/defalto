@@ -23,33 +23,19 @@ require_once 'include/utils/utils.php';
 vimport('includes.http.Request');
 vimport('includes.runtime.Globals');
 vimport('includes.runtime.BaseModel');
-vimport('includes.runtime.Controller');
 vimport('includes.runtime.LanguageHandler');
 
-class ITS4YouEmails_TrackAccess_Action extends Vtiger_Action_Controller
+class ITS4YouEmails_TrackAccess_Action extends Core_Controller_Action
 {
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return array
+     * @inheritDoc
      */
-    public function requiresPermission(Vtiger_Request $request)
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView'];
 
         return $permissions;
-    }
-
-    /**
-     * @param Vtiger_Request $request
-     *
-     * @return bool
-     * @throws Exception
-     */
-    public function checkPermission(Vtiger_Request $request)
-    {
-        return parent::checkPermission($request);
     }
 
     /**

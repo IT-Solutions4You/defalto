@@ -20,7 +20,10 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View
 {
     protected static $selectable_dashboards;
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         if ($request->get('module') != 'Dashboard') {
@@ -33,7 +36,10 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View
         return $permissions;
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $viewer = $this->getViewer($request);
@@ -67,7 +73,10 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View
         }
     }
 
-    public function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'dashboards/DashBoardPreProcess.tpl';
     }

@@ -18,7 +18,10 @@
 
 class Vtiger_EmailsRelatedModulePopup_View extends Vtiger_Popup_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView'];
@@ -27,7 +30,10 @@ class Vtiger_EmailsRelatedModulePopup_View extends Vtiger_Popup_View
         return $permissions;
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
         if ($moduleName == 'Users') {

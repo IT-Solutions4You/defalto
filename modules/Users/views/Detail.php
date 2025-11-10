@@ -18,7 +18,10 @@
 
 class Users_Detail_View extends Users_PreferenceDetail_View
 {
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $this->preProcessSettings($request);
@@ -92,7 +95,10 @@ class Users_Detail_View extends Users_PreferenceDetail_View
         $viewer->view('SettingsMenuEnd.tpl', $qualifiedModuleName);
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $this->postProcessSettings($request);
         parent::postProcess($request);
@@ -139,7 +145,10 @@ class Users_Detail_View extends Users_PreferenceDetail_View
         return $recordModel->isEditable();
     }
 
-    public function getPageTitle(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getPageTitle(Vtiger_Request $request): string
     {
         return vtranslate($request->getModule(), $request->getModule());
     }

@@ -16,9 +16,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Settings_Profiles_Save_Action extends Vtiger_Action_Controller
+class Settings_Profiles_Save_Action extends Core_Controller_Action
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $currentUser = Users_Record_Model::getCurrentUserModel();
@@ -51,8 +54,11 @@ class Settings_Profiles_Save_Action extends Vtiger_Action_Controller
         header("Location: $redirectUrl");
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }
