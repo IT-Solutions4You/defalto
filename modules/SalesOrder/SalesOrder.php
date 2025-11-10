@@ -31,6 +31,7 @@
 
 class SalesOrder extends CRMEntity
 {
+    public string $moduleVersion = '1.1';
     public string $moduleName = 'SalesOrder';
     public string $parentName = 'SALES';
 
