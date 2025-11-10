@@ -112,6 +112,7 @@ class Documents_Install_Model extends Core_Install_Model
                     'defaultvalue' => 1,
                     'filter' => 1,
                     'filter_sequence' => 5,
+                    'ajaxeditable' => 0,
                 ],
                 'modifiedby' => [
                     'name' => 'modifiedby',
@@ -158,6 +159,7 @@ class Documents_Install_Model extends Core_Install_Model
                     'summaryfield' => 1,
                     'filter' => 1,
                     'filter_sequence' => 2,
+                    'ajaxeditable' => 0,
                 ],
                 'filetype' => [
                     'name' => 'filetype',
@@ -172,6 +174,7 @@ class Documents_Install_Model extends Core_Install_Model
                     'displaytype' => 2,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
                 'filesize' => [
                     'name' => 'filesize',
@@ -186,6 +189,7 @@ class Documents_Install_Model extends Core_Install_Model
                     'displaytype' => 2,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
                 'filelocationtype' => [
                     'name' => 'filelocationtype',
@@ -203,6 +207,7 @@ class Documents_Install_Model extends Core_Install_Model
                     'defaultvalue' => 'I',
                     'filter' => 1,
                     'filter_sequence' => 6,
+                    'ajaxeditable' => 0,
                 ],
                 'fileversion' => [
                     'name' => 'fileversion',
@@ -248,6 +253,7 @@ class Documents_Install_Model extends Core_Install_Model
                     'displaytype' => 2,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
             ],
             'LBL_DESCRIPTION' => [
@@ -264,6 +270,7 @@ class Documents_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
             ],
             'Custom Informations' => [],
