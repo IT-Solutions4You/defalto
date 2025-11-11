@@ -97,7 +97,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
         self::$bridge2mpdf['record'] = self::$focus->id;
         self::$rowbreak = '<rowbreak />';
-        self::$is_inventory_module[self::$module] = InventoryItem_Utils_Helper::usesInventoryItem(self::$module);
+        self::$is_inventory_module[self::$module] = InventoryItem_Utils_Helper::isInventoryModule(self::$module);
     }
 
     private function getTemplateData()

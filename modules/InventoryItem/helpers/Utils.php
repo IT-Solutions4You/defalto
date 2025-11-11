@@ -13,6 +13,24 @@ class InventoryItem_Utils_Helper
     private static array $inventoryModules = [];
 
     /**
+     * @param string $moduleName
+     *
+     * @return void
+     */
+    public static function registerInventoryModule(string $moduleName): void
+    {
+        $db = PearDatabase::getInstance();
+
+        $upsertSql = 'INSERT IGNORE INTO df_inventoryitem_modules (tabid)
+                        SELECT tabid
+                        FROM vtiger_tab
+                        WHERE name = ?';
+
+        $db->pquery($upsertSql, [$moduleName]);
+
+    }
+
+    /**
      * Determines whether the Inventory Items are used within a given module.
      *
      * @param string $moduleName
@@ -20,12 +38,13 @@ class InventoryItem_Utils_Helper
      * @return bool
      * @throws Exception
      */
-    public static function usesInventoryItem(string $moduleName): bool
+    public static function isInventoryModule(string $moduleName): bool
     {
-        $viewClassName = Vtiger_Loader::getComponentClassName('View', 'Detail', $moduleName);
-        $traits = class_uses($viewClassName);
+        if (empty(self::$inventoryModules)) {
+            self::getInventoryItemModules();
+        }
 
-        return in_array('InventoryItem_Detail_Trait', $traits);
+        return in_array($moduleName, self::$inventoryModules);
     }
 
     /**
@@ -41,12 +60,10 @@ class InventoryItem_Utils_Helper
         }
 
         $db = PearDatabase::getInstance();
-        $result = $db->pquery('SELECT * FROM vtiger_tab WHERE isentitytype = 1');
+        $result = $db->pquery('SELECT * FROM vtiger_tab WHERE tabid IN (SELECT tabid FROM df_inventoryitem_modules)');
 
         while ($row = $db->fetchByAssoc($result)) {
-            if (InventoryItem_Utils_Helper::usesInventoryItem($row['name'])) {
-                self::$inventoryModules[] = $row['name'];
-            }
+            self::$inventoryModules[$row['tabid']] = $row['name'];
         }
 
         return self::$inventoryModules;

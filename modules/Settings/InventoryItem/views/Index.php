@@ -10,6 +10,9 @@
 
 class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
 {
+    /**
+     * @inheritDoc
+     */
     public function process(Vtiger_Request $request)
     {
         $moduleName = $request->getModule();
@@ -20,7 +23,7 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
             $selectedModule = 0;
         }
 
-        $supportedModules = Settings_InventoryItem_Module_Model::getSupportedModules();
+        $supportedModules = InventoryItem_Utils_Helper::getInventoryItemModules();
         $selectedFields = InventoryItem_Module_Model::getSelectedFields($selectedModule);
         $moduleModel = Vtiger_Module_Model::getInstance('InventoryItem');
         $fieldModelList = $moduleModel->getFields();

@@ -55,7 +55,7 @@
 										</div>
 										<div class="col-6 text-start">
 											<button type='submit' class='btn btn-primary active px-5 saveButton'>
-												{if $RECORD_ID eq '' && InventoryItem_Utils_Helper::usesInventoryItem($MODULE)}
+												{if $RECORD_ID eq '' && InventoryItem_Utils_Helper::isInventoryModule($MODULE)}
 													{vtranslate('LBL_SAVE_AND_CONTINUE', $MODULE)}
 												{else}
 													{vtranslate('LBL_SAVE', $MODULE)}
