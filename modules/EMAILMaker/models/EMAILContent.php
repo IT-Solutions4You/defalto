@@ -67,7 +67,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
             self::$is_inventory_module = [];
         }
 
-        self::$is_inventory_module[self::$module] = InventoryItem_Utils_Helper::usesInventoryItem(self::$module);
+        self::$is_inventory_module[self::$module] = InventoryItem_Utils_Helper::isInventoryModule(self::$module);
         self::$org_colsOLD = $this->getOrgOldCols();
     }
 

@@ -38,7 +38,7 @@ class InventoryItem_Utils_Helper
      * @return bool
      * @throws Exception
      */
-    public static function usesInventoryItem(string $moduleName): bool
+    public static function isInventoryModule(string $moduleName): bool
     {
         if (empty(self::$inventoryModules)) {
             self::getInventoryItemModules();
