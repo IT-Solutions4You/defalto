@@ -10,6 +10,7 @@
 
 class InventoryItem_Install_Model extends Core_Install_Model
 {
+    protected array $defaultSupportedModules = ['Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice'];
 
     public function addCustomLinks(): void
     {
@@ -470,7 +471,7 @@ class InventoryItem_Install_Model extends Core_Install_Model
 
     public function getTables(): array
     {
-        return [];
+        return ['df_inventoryitemcolumns', 'df_inventoryitem_itemmodules', 'df_inventoryitem_quantitydecimals', 'df_inventoryitem_modules'];
     }
 
     /**
@@ -527,5 +528,30 @@ class InventoryItem_Install_Model extends Core_Install_Model
             ->createTable('field', 'varchar(255) NOT NULL')
             ->createColumn('decimals', 'int(19) NOT NULL DEFAULT 0')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`field`)');
+
+        $this->getTable('df_inventoryitem_modules', null)
+            ->createTable('tabid')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`tabid`)')
+            ->createKey('CONSTRAINT `fk_1_df_inventoryitem_modules` FOREIGN KEY IF NOT EXISTS (`tabid`) REFERENCES `vtiger_tab` (`tabid`) ON DELETE CASCADE');
+    }
+
+    public function postInstall(): void
+    {
+        parent::postInstall();
+        $this->setupSupportedModules();
+    }
+
+    protected function setupSupportedModules()
+    {
+        $db = PearDatabase::getInstance();
+        $res = $db->query('SELECT * FROM df_inventoryitem_modules');
+
+        if ($db->num_rows($res)) {
+            return;
+        }
+
+        foreach ($this->defaultSupportedModules as $moduleName) {
+            InventoryItem_Utils_Helper::registerInventoryModule($moduleName);
+        }
     }
 }
