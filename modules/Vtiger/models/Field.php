@@ -713,7 +713,7 @@ class Vtiger_Field_Model extends Vtiger_Field
         $tableName = $this->get('table');
         $columnName = $this->get('column');
         $fieldName = $this->get('name');
-        $fieldLabel = $this->get('label');
+        $fieldLabel = decode_html($this->get('label'));
         $typeOfData = $this->get('typeofdata');
 
         $fieldTypeOfData = explode('~', $typeOfData);
