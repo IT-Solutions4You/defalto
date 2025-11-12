@@ -10,7 +10,7 @@
 
 class Appointments extends CRMEntity
 {
-    public string $moduleVersion = '1.2';
+    public string $moduleVersion = '1.3';
     /**
      * @var array
      */
