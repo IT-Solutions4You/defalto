@@ -37,7 +37,7 @@ class Google_Setting_View extends Vtiger_PopupAjax_View
             case "Contacts" :
                 $this->emitContactsSyncSettingUI($request);
                 break;
-            case "Calendar" :
+            case "Appointments" :
                 $this->emitCalendarSyncSettingUI($request);
                 break;
         }
