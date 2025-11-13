@@ -29,8 +29,9 @@ class Import_Main_View extends Core_Controller_View
         return;
     }
 
-    public function __construct($request, $user)
+    public function __construct()
     {
+        [$request, $user] = func_get_args();
         $this->request = $request;
         $this->user = $user;
     }
