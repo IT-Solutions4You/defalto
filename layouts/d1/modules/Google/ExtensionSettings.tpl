@@ -65,7 +65,7 @@
                             <span>{vtranslate('Contacts', 'Contacts')}</span>
                         </td>
                         <td>
-                            <a id="syncSetting" class="extensionLink" data-sync-module="Contacts">{vtranslate('LBL_CONFIGURE', $MODULE)}</a>
+                            <a id="syncSetting" class="btn btn-outline-secondary extensionLink" data-sync-module="Contacts">{vtranslate('LBL_CONFIGURE', $MODULE)}</a>
                         </td>
                         <td>
                             <input class="form-check-input" name="Contacts[enabled]" type="checkbox" {if $CONTACTS_ENABLED} checked {/if}>
@@ -93,7 +93,7 @@
                             <span>{vtranslate('Calendar', 'Vtiger')}</span>
                         </td>
                         <td>
-                            <a id="syncSetting" class="extensionLink" data-sync-module="Calendar">{vtranslate('LBL_VIEW', $MODULE)}</a>
+                            <a id="syncSetting" class="btn btn-outline-secondary extensionLink" data-sync-module="Calendar">{vtranslate('LBL_VIEW', $MODULE)}</a>
                         </td>
                         <td>
                             <input class="form-check-input" name="Calendar[enabled]" type="checkbox" {if $CALENDAR_ENABLED} checked {/if}>
@@ -142,7 +142,7 @@
                     <div class="row my-3">
                         <div class="col-sm-3 col-xs-3">
                             <a id="authorizeButton" class="btn btn-primary btn-lg btn-block btn-social btn-google-plus" data-url='index.php?module={$MODULE}&view=List&operation=changeUser&sourcemodule={$SOURCEMODULE}'>
-                                <i class="fa fa-google-plus"></i>
+                                <i class="fa-brands fa-google"></i>
                                 <span class="ms-2">{vtranslate('LBL_CHANGE_USER', $MODULE)}</span>
                             </a>
                         </div>
