@@ -1171,13 +1171,6 @@ if (defined('VTIGER_UPGRADE')) {
     // For Google Synchronization
     Vtiger_Link::addLink(getTabid('Contacts'), 'EXTENSIONLINK', 'Google', 'index.php?module=Contacts&view=Extension&extensionModule=Google&extensionView=Index');
 
-    //Add enabled column in vtiger_google_sync_settings
-    $colums = $db->getColumnNames('vtiger_google_sync_settings');
-    if (!in_array('enabled', $colums)) {
-        $query = 'ALTER TABLE vtiger_google_sync_settings ADD COLUMN enabled TINYINT(3) DEFAULT 1';
-        $db->pquery($query, []);
-    }
-
     //Start: Tax Enhancements - Compound Taxes, Regional Taxes, Deducted Taxes, Other Charges
     //Creating regions table
     if (!Vtiger_Utils::checkTable('vtiger_taxregions')) {

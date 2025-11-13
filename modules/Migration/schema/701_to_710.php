@@ -179,46 +179,8 @@ if (defined('VTIGER_UPGRADE')) {
     echo '<br>Succecssfully added source column vtiger tab table<br>';
     //END::Differentiate custom modules from Vtiger modules
 
-    //START::Google calendar sync settings
-    if (!Vtiger_Utils::CheckTable('vtiger_google_event_calendar_mapping')) {
-        $db->pquery(
-            'CREATE TABLE vtiger_google_event_calendar_mapping (event_id VARCHAR(255) DEFAULT NULL, calendar_id VARCHAR(255) DEFAULT NULL, user_id INT(11) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8',
-            []
-        );
-        echo '<br>Succecssfully vtiger_google_event_calendar_mapping table created<br>';
-    }
-    //END::Google calendar sync settings
-
     //START::Centralize user field table for easy query with context of user across module
     $generalUserFieldTable = 'vtiger_crmentity_user_field';
-    if (!Vtiger_Utils::CheckTable($generalUserFieldTable)) {
-        Vtiger_Utils::CreateTable(
-            $generalUserFieldTable,
-            '(`recordid` INT(19) NOT NULL, 
-				`userid` INT(19) NOT NULL,
-				`starred` VARCHAR(100) DEFAULT NULL)',
-            true
-        );
-    }
-
-    if (Vtiger_Utils::CheckTable($generalUserFieldTable)) {
-        $indexRes = $db->pquery("SHOW INDEX FROM $generalUserFieldTable WHERE NON_UNIQUE=? AND KEY_NAME=?", ['1', 'record_user_idx']);
-        if ($db->num_rows($indexRes) < 2) {
-            $db->pquery('ALTER TABLE vtiger_crmentity_user_field ADD CONSTRAINT record_user_idx UNIQUE KEY(recordid, userid)', []);
-        }
-
-        $checkUserFieldConstraintExists = $db->pquery(
-            'SELECT DISTINCT 1 FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE table_name=? AND CONSTRAINT_SCHEMA=?',
-            [$generalUserFieldTable, $db->dbName]
-        );
-        if ($db->num_rows($checkUserFieldConstraintExists) < 1) {
-            $db->pquery(
-                'ALTER TABLE vtiger_crmentity_user_field ADD CONSTRAINT `fk_vtiger_crmentity_user_field_recordid` FOREIGN KEY (`recordid`) REFERENCES `vtiger_crmentity`(`crmid`) ON DELETE CASCADE',
-                []
-            );
-        }
-    }
-
     $migratedTables = [];
     $userTableResult = $db->pquery(
         'SELECT vtiger_tab.tabid, vtiger_tab.name, tablename, fieldid FROM vtiger_field INNER JOIN vtiger_tab ON vtiger_tab.tabid=vtiger_field.tabid WHERE fieldname=?',
