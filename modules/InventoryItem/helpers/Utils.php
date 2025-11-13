@@ -27,7 +27,23 @@ class InventoryItem_Utils_Helper
                         WHERE name = ?';
 
         $db->pquery($upsertSql, [$moduleName]);
+    }
 
+    /**
+     * @param string $moduleName
+     *
+     * @return void
+     */
+    public static function deregisterInventoryModule(string $moduleName): void
+    {
+        $db = PearDatabase::getInstance();
+
+        $deleteSql = 'DELETE FROM df_inventoryitem_modules
+                  WHERE tabid = (
+                      SELECT tabid FROM vtiger_tab WHERE name = ?
+                  )';
+
+        $db->pquery($deleteSql, [$moduleName]);
     }
 
     /**

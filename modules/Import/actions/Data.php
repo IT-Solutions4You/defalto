@@ -53,8 +53,9 @@ class Import_Data_Action extends Core_Controller_Action
     static $IMPORT_RECORD_MERGED = 4;
     static $IMPORT_RECORD_FAILED = 5;
 
-    public function __construct($importInfo, $user)
+    public function __construct()
     {
+        [$importInfo, $user] = func_get_args();
         $this->id = $importInfo['id'];
         $this->module = $importInfo['module'];
         $this->fieldMapping = $importInfo['field_mapping'];
