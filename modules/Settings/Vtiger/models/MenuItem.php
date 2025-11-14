@@ -72,7 +72,6 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
             ['LBL_MY_TAGS'       ,'index.php?module=Tags&parent=Settings&view=List&record=1', ''],
         ],
         'LBL_EXTENSIONS' => [
-            1 => ['LBL_GOOGLE', 'index.php?module=Contacts&parent=Settings&view=Extension&extensionModule=Google&extensionView=Index&mode=settings', '']
         ],
         'LBL_OTHER_SETTINGS' => [
             1 => ['LBL_MAIL_SCANNER', 'index.php?parent=Settings&module=MailConverter&view=List', 'LBL_MAIL_SCANNER_DESCRIPTION'],

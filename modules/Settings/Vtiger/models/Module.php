@@ -260,19 +260,14 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model implements Core_Mod
         $currentUser = Users_Record_Model::getCurrentUserModel();
         $myTagSettingsUrl = $currentUser->getMyTagSettingsListUrl();
 
-        $settingsMenuList = [
+        return [
             'LBL_MY_PREFERENCES' => [
                 'My Preferences'    => '',
                 'Calendar Settings' => '',
                 'LBL_MY_TAGS'       => $myTagSettingsUrl
             ],
-            'LBL_EXTENSIONS'     => ['LBL_GOOGLE' => 'index.php?module=Contacts&parent=Settings&view=Extension&extensionModule=Google&extensionView=Index&mode=settings']
+            'LBL_EXTENSIONS'     => []
         ];
-        if (!vtlib_isModuleActive('Google')) {
-            unset($settingsMenuList['LBL_EXTENSIONS']['LBL_GOOGLE']);
-        }
-
-        return $settingsMenuList;
     }
 
     public function getDefaultUrl()

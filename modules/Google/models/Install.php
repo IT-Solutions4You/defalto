@@ -10,13 +10,25 @@
 
 class Google_Install_Model extends Core_Install_Model
 {
+    public array $registerSettingsLinks = [
+        ['LBL_GOOGLE', 'index.php?module=Contacts&parent=Settings&view=Extension&extensionModule=Google&extensionView=Index&mode=settings', 'LBL_EXTENSIONS']
+    ];
 
+
+    /**
+     * @throws Exception
+     */
     public function addCustomLinks(): void
     {
+        $this->updateSettingsLinks(false);
     }
 
+    /**
+     * @throws Exception
+     */
     public function deleteCustomLinks(): void
     {
+        $this->updateSettingsLinks(false);
     }
 
     public function getBlocks(): array
