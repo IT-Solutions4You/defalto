@@ -10,8 +10,17 @@
 
 class Installer_Install_Model extends Core_Install_Model
 {
+    public array $registerSettingsLinks = [
+        ['Installer', 'index.php?module=Installer&view=Index', 'LBL_EXTENSIONS',],
+        ['Requirements', 'index.php?module=Installer&view=Requirements', 'LBL_EXTENSIONS',],
+    ];
+
+    /**
+     * @throws Exception
+     */
     public function addCustomLinks(): void
     {
+        $this->updateSettingsLinks();
     }
 
     public function deleteCustomLinks(): void
