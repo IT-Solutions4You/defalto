@@ -43,7 +43,7 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
     public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
-        $this->preProcessSettings($request, true);
+        $this->preProcessSettings($request, $display);
     }
 
     public function preProcessSettings(Vtiger_Request $request, $display = true)

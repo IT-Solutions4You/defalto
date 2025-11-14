@@ -331,7 +331,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
         if ($userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Appointments')) {
             return [
                 'linktype' => 'DETAILVIEWWIDGET',
-                'linklabel' => 'Appointments',
+                'linklabel' => vtranslate('Appointments', 'Appointments'),
                 'linkName' => $appointmentsInstance->getName(),
                 'linkurl' => $this->getWidgetUrl('getEvents'),
                 'action' => $userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'CreateView') ? ['Add'] : [],

@@ -161,7 +161,7 @@ Vtiger.Class("Google_Settings_Js", {
             var selectionType = currentSelectionElement.data('type');
             var vtigerFields = currentSelectionElement.data('vtigerfields');
 
-            var vtigerFieldSelectElement = '<select class="vtiger_field_name col-sm-12" data-category="' + selectionType + '">';
+            var vtigerFieldSelectElement = '<select class="vtiger_field_name form-select" data-category="' + selectionType + '">';
             if (!Object.keys(vtigerFields).length) {
                 alert(app.vtranslate('JS_SUITABLE_VTIGER_FIELD_NOT_AVAILABLE_FOR_MAPPING'));
                 return;
@@ -189,7 +189,7 @@ Vtiger.Class("Google_Settings_Js", {
             var googleTypeSelectElement = '';
             if (selectionType != 'custom') {
                 googleTypeSelectElement = '<input type="hidden" class="google_field_name" value="' + googleFields[selectionType]['name'] + '" />\n\
-                                               <select class="google-type col-sm-5" data-category="' + selectionType + '">';
+                                               <select class="google-type form-select" data-category="' + selectionType + '">';
 
                 var allCategorizedSelects = jQuery('select.google-type[data-category="' + selectionType + '"]');
                 var selectedValues = [];
@@ -210,16 +210,15 @@ Vtiger.Class("Google_Settings_Js", {
             } else {
                 googleTypeSelectElement = '<input type="hidden" class="google_field_name" value="' + googleFields[selectionType]['name'] + '" />';
                 googleTypeSelectElement += '<input type="hidden" class="google-type" value="' + selectionType + '" />';
-                googleTypeSelectElement += '<input type="text" class="google-custom-label inputElement" style="width:40%" data-rule-required="true" />';
+                googleTypeSelectElement += '<input type="text" class="google-custom-label inputElement form-control" data-rule-required="true" />';
             }
             var tabRow = '<tr>\n\
                             <td>' + vtigerFieldSelectElement + '</td>\n\
-                            <td>' + googleTypeSelectElement + '<a class="deleteCustomMapping marginTop7px pull-right"><i title="Delete" class="fa fa-trash"></i></a></td>\n\
+                            <td><div class="input-group">' + googleTypeSelectElement + '<a class="deleteCustomMapping btn btn-outline-secondary"><i title="Delete" class="fa fa-trash"></i></a></div></td>\n\
                           </tr>';
             var tbodyElement = container.find('div#googlesyncfieldmapping').find('table > tbody');
             tbodyElement.append(tabRow);
             var lastRow = container.find('div#googlesyncfieldmapping').find('table > tbody > tr').filter(':last');
-            vtUtils.showSelect2ElementView(lastRow.find('select'));
             thisInstance.registerDeleteCustomFieldMappingEvent(lastRow);
             thisInstance.registerVtigerFieldSelectOnChangeEvent(container, lastRow.find('select.vtiger_field_name'));
             thisInstance.registerGoogleTypeChangeEvent(container, lastRow.find('select.google-type'));
@@ -255,22 +254,6 @@ Vtiger.Class("Google_Settings_Js", {
             element.select2("val", prevSelectedValues);
         }
     },
-
-    removeOptionFromSelectList: function (selectElement, optionValue, category) {
-        var sourceSelectElement = jQuery(selectElement);
-        var categorisedSelectElements = jQuery('select.vtiger_field_name[data-category="' + category + '"]');
-        jQuery.each(categorisedSelectElements, function (index, categorisedSelectElement) {
-            var currentSelectElement = jQuery(categorisedSelectElement);
-            if (!currentSelectElement.is(sourceSelectElement)) {
-                var optionElement = currentSelectElement.find('option[value="' + optionValue + '"]');
-                if (optionElement.length) {
-                    optionElement.remove();
-                    currentSelectElement.select2();
-                }
-            }
-        });
-    },
-
     registerVtigerFieldSelectOnChangeEvent: function (container, selectElement) {
         var thisInstance = this;
         if (typeof selectElement === 'undefined') {

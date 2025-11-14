@@ -20,7 +20,7 @@ class Google_Sync_View extends Google_List_View
 {
     function process(Vtiger_Request $request)
     {
-        $modules = ['Contacts', 'Calendar'];
+        $modules = ['Contacts', 'Appointments'];
         $syncRecordList = [];
         foreach ($modules as $sourceModule) {
             $request->set('sourcemodule', $sourceModule);

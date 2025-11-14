@@ -26,15 +26,24 @@ include_once('vtlib/Vtiger/Version.php');
 class Vtiger_Filter
 {
     /** ID of this filter instance */
-    var $id;
-    var $name;
-    var $isdefault;
+    public $id;
+    public $name;
+    public $isdefault;
 
-    var $status = false; // 5.1.0 onwards
-    var $inmetrics = false;
-    var $entitytype = false;
+    public $status = false; // 5.1.0 onwards
+    public $inmetrics = false;
+    public $entitytype = false;
 
-    var $module;
+    public $module;
+    /**
+     * @var bool Used in Install Model
+     */
+    public bool $creating = false;
+
+    public function isCreating(): bool
+    {
+        return $this->creating;
+    }
 
     /**
      * Constructor

@@ -18,23 +18,19 @@
             <input id="user_field_mapping" type="hidden" name="fieldmapping" value="fieldmappings" />
             <input id="google_fields" type="hidden" value='{Zend_Json::encode($GOOGLE_FIELDS)}' />
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-12 col-xs-12">
-                        <div class="pull-right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-                        <div class="btn-group pull-right">
-                            <button id="googlesync_addcustommapping" class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                                <span class="caret"></span>&nbsp;{vtranslate('LBL_ADD_CUSTOM_FIELD_MAPPING',$MODULENAME)}
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-left" role="menu">
-                                <li class="addCustomFieldMapping" data-type="email" data-vtigerfields='{Zend_Json::encode($VTIGER_EMAIL_FIELDS)}'><a>{vtranslate('LBL_EMAIL',$MODULENAME)}</a></li>
-                                <li class="addCustomFieldMapping" data-type="phone" data-vtigerfields='{Zend_Json::encode($VTIGER_PHONE_FIELDS)}'><a>{vtranslate('LBL_PHONE',$MODULENAME)}</a></li>
-                                <li class="addCustomFieldMapping" data-type="url" data-vtigerfields='{Zend_Json::encode($VTIGER_URL_FIELDS)}'><a>{vtranslate('LBL_URL',$MODULENAME)}</a></li>
-                                <li class="divider"></li>
-                                <li class="addCustomFieldMapping" data-type="custom" data-vtigerfields='{Zend_Json::encode($VTIGER_OTHER_FIELDS)}'><a>{vtranslate('LBL_CUSTOM',$MODULENAME)}</a></li>
-                            </ul>
-                        </div>
-                    </div>
+                <div class="text-end">
+                    <button id="googlesync_addcustommapping" class="btn btn-primary" type="button" data-bs-toggle="dropdown">
+                        <span class="caret"></span>&nbsp;{vtranslate('LBL_ADD_CUSTOM_FIELD_MAPPING',$MODULENAME)}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-left" role="menu">
+                        <li class="addCustomFieldMapping" data-type="email" data-vtigerfields='{Zend_Json::encode($VTIGER_EMAIL_FIELDS)}'><a class="dropdown-item">{vtranslate('LBL_EMAIL',$MODULENAME)}</a></li>
+                        <li class="addCustomFieldMapping" data-type="phone" data-vtigerfields='{Zend_Json::encode($VTIGER_PHONE_FIELDS)}'><a class="dropdown-item">{vtranslate('LBL_PHONE',$MODULENAME)}</a></li>
+                        <li class="addCustomFieldMapping" data-type="url" data-vtigerfields='{Zend_Json::encode($VTIGER_URL_FIELDS)}'><a class="dropdown-item">{vtranslate('LBL_URL',$MODULENAME)}</a></li>
+                        <li class="dropdown-divider"></li>
+                        <li class="addCustomFieldMapping" data-type="custom" data-vtigerfields='{Zend_Json::encode($VTIGER_OTHER_FIELDS)}'><a class="dropdown-item">{vtranslate('LBL_CUSTOM',$MODULENAME)}</a></li>
+                    </ul>
                 </div>
+
                 <div id="googlesyncfieldmapping" style="margin:15px;">
                     <table  class="table table-bordered">
                         <thead>
@@ -119,12 +115,12 @@
                                 <td>
                                     <input type="hidden" class="google_field_name" value="{$GOOGLE_FIELDS['email']['name']}" />
                                     {assign var="GOOGLE_TYPES" value=$GOOGLE_FIELDS[$FLDNAME]['types']}
-                                    <select class="select2 google-type col-sm-5" data-category="email">
+                                    <select class="google-type form-select" data-category="email">
                                         {foreach item=TYPE from=$GOOGLE_TYPES}
                                             <option value="{$TYPE}" {if $FIELD_MAPPING[{$FLDNAME}]['google_field_type'] eq $TYPE}selected{/if}>{vtranslate('Email',$MODULENAME)} ({vtranslate($TYPE,$MODULENAME)})</option>
                                         {/foreach}
                                     </select>&nbsp;&nbsp;
-                                    <input type="text" class="google-custom-label inputElement" style="visibility:{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] neq 'custom'}hidden{else}visible{/if};width:40%;" 
+                                    <input type="text" class="google-custom-label inputElement form-control" style="visibility:{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] neq 'custom'}hidden{else}visible{/if};"
                                            value="{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] eq 'custom'}{$FIELD_MAPPING[$FLDNAME]['google_custom_label']}{/if}" 
                                            data-rule-required="true" />
                                 </td>
@@ -138,12 +134,12 @@
                                 <td>
                                     <input type="hidden" class="google_field_name" value="{$GOOGLE_FIELDS['email']['name']}" />
                                     {assign var=GOOGLE_TYPES value=$GOOGLE_FIELDS['email']['types']}
-                                    <select class="select2 google-type col-sm-5" data-category="email">
+                                    <select class="google-type form-select" data-category="email">
                                         {foreach item=TYPE from=$GOOGLE_TYPES}
                                             <option value="{$TYPE}" {if $FIELD_MAPPING['secondaryemail']['google_field_type'] eq $TYPE}selected{/if}>{vtranslate('Email',$MODULENAME)} ({vtranslate($TYPE,$MODULENAME)})</option>
                                         {/foreach}
                                     </select>&nbsp;&nbsp;
-                                    <input type="text" class="google-custom-label inputElement" style="visibility:{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] neq 'custom'}hidden{else}visible{/if};width:40%;" 
+                                    <input type="text" class="google-custom-label inputElement form-control" style="visibility:{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] neq 'custom'}hidden{else}visible{/if};"
                                            value="{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] eq 'custom'}{$FIELD_MAPPING[$FLDNAME]['google_custom_label']}{/if}" 
                                            data-rule-required="true"/>
                                 </td>
@@ -157,12 +153,12 @@
                                 <td>
                                     <input type="hidden" class="google_field_name" value="{$GOOGLE_FIELDS['phone']['name']}" />
                                     {assign var=GOOGLE_TYPES value=$GOOGLE_FIELDS['phone']['types']}
-                                    <select class="select2 stretched google-type col-sm-5" data-category="phone">
+                                    <select class="stretched google-type form-select" data-category="phone">
                                         {foreach item=TYPE from=$GOOGLE_TYPES}
                                             <option value="{$TYPE}" {if $FIELD_MAPPING[$FLDNAME]['google_field_type'] eq $TYPE}selected{/if}>{vtranslate('Phone',$MODULENAME)} ({vtranslate($TYPE,$MODULENAME)})</option>
                                         {/foreach}
                                     </select>&nbsp;&nbsp;
-                                    <input type="text" class="google-custom-label inputElement" style="visibility:{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] neq 'custom'}hidden{else}visible{/if};width:40%;" 
+                                    <input type="text" class="google-custom-label inputElement form-control" style="visibility:{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] neq 'custom'}hidden{else}visible{/if};"
                                            value="{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] eq 'custom'}{$FIELD_MAPPING[$FLDNAME]['google_custom_label']}{/if}" 
                                            data-rule-required="true"/>
                                 </td>
@@ -176,12 +172,12 @@
                                 <td>
                                     <input type="hidden" class="google_field_name" value="{$GOOGLE_FIELDS['phone']['name']}" />
                                     {assign var=GOOGLE_TYPES value=$GOOGLE_FIELDS['phone']['types']}
-                                    <select class="select2 stretched google-type col-sm-5" data-category="phone">
+                                    <select class="stretched google-type form-select" data-category="phone">
                                         {foreach item=TYPE from=$GOOGLE_TYPES}
                                             <option value="{$TYPE}" {if $FIELD_MAPPING[$FLDNAME]['google_field_type'] eq $TYPE}selected{/if}>{vtranslate('Phone',$MODULENAME)} ({vtranslate($TYPE,$MODULENAME)})</option>
                                         {/foreach}
                                     </select>&nbsp;&nbsp;
-                                    <input type="text" class="google-custom-label inputElement" style="visibility:{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] neq 'custom'}hidden{else}visible{/if};width:40%;" 
+                                    <input type="text" class="google-custom-label inputElement form-control" style="visibility:{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] neq 'custom'}hidden{else}visible{/if};"
                                            value="{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] eq 'custom'}{$FIELD_MAPPING[$FLDNAME]['google_custom_label']}{/if}"
                                            data-rule-required="true"/>
                                 </td>
@@ -195,12 +191,12 @@
                                 <td>
                                     <input type="hidden" class="google_field_name" value="{$GOOGLE_FIELDS['phone']['name']}" />
                                     {assign var=GOOGLE_TYPES value=$GOOGLE_FIELDS['phone']['types']}
-                                    <select class="select2 stretched google-type col-sm-5" data-category="phone">
+                                    <select class="stretched google-type form-select" data-category="phone">
                                         {foreach item=TYPE from=$GOOGLE_TYPES}
                                             <option value="{$TYPE}" {if $FIELD_MAPPING[$FLDNAME]['google_field_type'] eq $TYPE}selected{/if}>{vtranslate('Phone',$MODULENAME)} ({vtranslate($TYPE,$MODULENAME)})</option>
                                         {/foreach}
                                     </select>&nbsp;&nbsp;
-                                    <input type="text" class="google-custom-label inputElement" style="visibility:{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] neq 'custom'}hidden{else}visible{/if};width:40%;" 
+                                    <input type="text" class="google-custom-label inputElement form-control" style="visibility:{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] neq 'custom'}hidden{else}visible{/if};"
                                            value="{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] eq 'custom'}{$FIELD_MAPPING[$FLDNAME]['google_custom_label']}{/if}" 
                                            data-rule-required="true"/>
                                 </td>
@@ -214,12 +210,12 @@
                                 <td>
                                     <input type="hidden" class="google_field_name" value="{$GOOGLE_FIELDS['address']['name']}" />
                                     {assign var=GOOGLE_TYPES value=$GOOGLE_FIELDS['address']['types']}
-                                    <select class="select2 stretched google-type col-sm-5" data-category="address">
+                                    <select class="stretched google-type form-select" data-category="address">
                                         {foreach item=TYPE from=$GOOGLE_TYPES}
                                             <option value="{$TYPE}" {if $FIELD_MAPPING[$FLDNAME]['google_field_type'] eq $TYPE}selected{/if}>{vtranslate('Address',$MODULENAME)} ({vtranslate($TYPE,$MODULENAME)})</option>
                                         {/foreach}
                                     </select>&nbsp;&nbsp;
-                                    <input type="text" class="google-custom-label inputElement" style="visibility:{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] neq 'custom'}hidden{else}visible{/if};width:40%;" 
+                                    <input type="text" class="google-custom-label inputElement form-control" style="visibility:{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] neq 'custom'}hidden{else}visible{/if};"
                                            value="{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] eq 'custom'}{$FIELD_MAPPING[$FLDNAME]['google_custom_label']}{/if}" 
                                            data-rule-required="true"/>
                                 </td>
@@ -233,12 +229,12 @@
                                 <td>
                                     <input type="hidden" class="google_field_name" value="{$GOOGLE_FIELDS['address']['name']}" />
                                     {assign var=GOOGLE_TYPES value=$GOOGLE_FIELDS['address']['types']}
-                                    <select class="select2 stretched google-type col-sm-5" data-category="address">
+                                    <select class="stretched google-type form-select" data-category="address">
                                         {foreach item=TYPE from=$GOOGLE_TYPES}
                                             <option value="{$TYPE}" {if $FIELD_MAPPING[$FLDNAME]['google_field_type'] eq $TYPE}selected{/if}>{vtranslate('Address',$MODULENAME)} ({vtranslate($TYPE,$MODULENAME)})</option>
                                         {/foreach}
                                     </select>&nbsp;&nbsp;
-                                    <input type="text" class="google-custom-label inputElement" style="visibility:{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] neq 'custom'}hidden{else}visible{/if};width:40%;" 
+                                    <input type="text" class="google-custom-label inputElement form-control" style="visibility:{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] neq 'custom'}hidden{else}visible{/if};"
                                            value="{if $FIELD_MAPPING[$FLDNAME]['google_field_type'] eq 'custom'}{$FIELD_MAPPING[$FLDNAME]['google_custom_label']}{/if}" 
                                            data-rule-required="true"/>
                                 </td>
@@ -258,25 +254,25 @@
                                 <tr>
                                     <td>
                                         {if $CUSTOM_FIELD_MAP['google_field_name'] eq 'gd:email'}
-                                            <select class="select2 stretched vtiger_field_name col-sm-12" data-category="email">
+                                            <select class="stretched vtiger_field_name form-select" data-category="email">
                                                 {foreach key=EMAIL_FIELD_NAME item=EMAIL_FIELD_LABEL from=$VTIGER_EMAIL_FIELDS}
                                                     <option value="{$EMAIL_FIELD_NAME}" {if $VTIGER_FIELD_NAME eq $EMAIL_FIELD_NAME}selected{/if}>{vtranslate($EMAIL_FIELD_LABEL,$SOURCE_MODULE)}</option>
                                                 {/foreach}
                                             </select>
-                                        {else if $CUSTOM_FIELD_MAP['google_field_name'] eq 'gd:phoneNumber'}
-                                            <select class="select2 stretched vtiger_field_name col-sm-12" data-category="phone">
+                                        {elseif $CUSTOM_FIELD_MAP['google_field_name'] eq 'gd:phoneNumber'}
+                                            <select class="stretched vtiger_field_name form-select" data-category="phone">
                                                 {foreach key=PHONE_FIELD_NAME item=PHONE_FIELD_LABEL from=$VTIGER_PHONE_FIELDS}
                                                     <option value="{$PHONE_FIELD_NAME}" {if $VTIGER_FIELD_NAME eq $PHONE_FIELD_NAME}selected{/if}>{vtranslate($PHONE_FIELD_LABEL,$SOURCE_MODULE)}</option>
                                                 {/foreach}
                                             </select>
-                                        {else if $CUSTOM_FIELD_MAP['google_field_name'] eq 'gContact:userDefinedField'}
-                                            <select class="select2 stretched vtiger_field_name col-sm-12" data-category="custom">
+                                        {elseif $CUSTOM_FIELD_MAP['google_field_name'] eq 'gContact:userDefinedField'}
+                                            <select class="stretched vtiger_field_name form-select" data-category="custom">
                                                 {foreach key=OTHER_FIELD_NAME item=OTHER_FIELD_LABEL from=$VTIGER_OTHER_FIELDS}
                                                     <option value="{$OTHER_FIELD_NAME}" {if $VTIGER_FIELD_NAME eq $OTHER_FIELD_NAME}selected{/if}>{vtranslate($OTHER_FIELD_LABEL,$SOURCE_MODULE)}</option>
                                                 {/foreach}
                                             </select>
-                                        {else if $CUSTOM_FIELD_MAP['google_field_name'] eq 'gContact:website'}
-                                            <select class="select2 stretched vtiger_field_name col-sm-12" data-category="url">
+                                        {elseif $CUSTOM_FIELD_MAP['google_field_name'] eq 'gContact:website'}
+                                            <select class="stretched vtiger_field_name form-select" data-category="url">
                                                 {foreach key=URL_FIELD_NAME item=URL_FIELD_LABEL from=$VTIGER_URL_FIELDS}
                                                     <option value="{$URL_FIELD_NAME}" {if $VTIGER_FIELD_NAME eq $URL_FIELD_NAME}selected{/if}>{vtranslate($URL_FIELD_LABEL,$SOURCE_MODULE)}</option>
                                                 {/foreach}
@@ -284,39 +280,41 @@
                                         {/if}
                                     </td>
                                     <td>
+                                        <div class="input-group">
                                         <input type="hidden" class="google_field_name" value="{$CUSTOM_FIELD_MAP['google_field_name']}" />
                                         {if $CUSTOM_FIELD_MAP['google_field_name'] eq 'gd:email'}
                                             {assign var=GOOGLE_TYPES value=$GOOGLE_FIELDS['email']['types']}
-                                            <select class="select2 google-type col-sm-5" data-category="email">
+                                            <select class="google-type col-sm-5 form-select" data-category="email">
                                                 {foreach item=TYPE from=$GOOGLE_TYPES}
                                                     <option value="{$TYPE}" {if $CUSTOM_FIELD_MAP['google_field_type'] eq $TYPE}selected{/if}>{vtranslate('Email',$MODULENAME)} ({vtranslate($TYPE,$MODULENAME)})</option>
                                                 {/foreach}
                                             </select>&nbsp;&nbsp;
-                                            <input type="text" class="google-custom-label inputElement" style="visibility:{if $CUSTOM_FIELD_MAP['google_field_type'] neq 'custom'}hidden{else}visible{/if};width:40%;" 
+                                            <input type="text" class="google-custom-label inputElement form-control" style="visibility:{if $CUSTOM_FIELD_MAP['google_field_type'] neq 'custom'}hidden{else}visible{/if};"
                                                    value="{if $CUSTOM_FIELD_MAP['google_field_type'] eq 'custom'}{$CUSTOM_FIELD_MAP['google_custom_label']}{/if}" data-rule-required="true"/>
-                                        {else if $CUSTOM_FIELD_MAP['google_field_name'] eq 'gd:phoneNumber'}
+                                        {elseif $CUSTOM_FIELD_MAP['google_field_name'] eq 'gd:phoneNumber'}
                                             {assign var=GOOGLE_TYPES value=$GOOGLE_FIELDS['phone']['types']}
-                                            <select class="select2 google-type col-sm-5" data-category="phone">
+                                            <select class="google-type form-select" data-category="phone">
                                                 {foreach item=TYPE from=$GOOGLE_TYPES}
                                                     <option value="{$TYPE}" {if $CUSTOM_FIELD_MAP['google_field_type'] eq $TYPE}selected{/if}>{vtranslate('Phone',$MODULENAME)} ({vtranslate($TYPE,$MODULENAME)})</option>
                                                 {/foreach}
                                             </select>&nbsp;&nbsp;
-                                            <input type="text" class="google-custom-label inputElement" style="visibility:{if $CUSTOM_FIELD_MAP['google_field_type'] neq 'custom'}hidden{else}visible{/if};width:40%;" 
+                                            <input type="text" class="google-custom-label inputElement form-control" style="visibility:{if $CUSTOM_FIELD_MAP['google_field_type'] neq 'custom'}hidden{else}visible{/if};"
                                                    value="{if $CUSTOM_FIELD_MAP['google_field_type'] eq 'custom'}{$CUSTOM_FIELD_MAP['google_custom_label']}{/if}" data-rule-required="true"/>
-                                        {else if $CUSTOM_FIELD_MAP['google_field_name'] eq 'gContact:userDefinedField'}
+                                        {elseif $CUSTOM_FIELD_MAP['google_field_name'] eq 'gContact:userDefinedField'}
                                             <input type="hidden" class="google-type" value="{$CUSTOM_FIELD_MAP['google_field_type']}">
-                                            <input type="text" class="google-custom-label inputElement" value="{$CUSTOM_FIELD_MAP['google_custom_label']}" style="width:40%;" data-rule-required="true"/>
-                                        {else if $CUSTOM_FIELD_MAP['google_field_name'] eq 'gContact:website'}
+                                            <input type="text" class="google-custom-label inputElement form-control" value="{$CUSTOM_FIELD_MAP['google_custom_label']}" data-rule-required="true"/>
+                                        {elseif $CUSTOM_FIELD_MAP['google_field_name'] eq 'gContact:website'}
                                             {assign var=GOOGLE_TYPES value=$GOOGLE_FIELDS['url']['types']}
-                                            <select class="select2 google-type col-sm-5" data-category="url">
+                                            <select class="google-type form-select" data-category="url">
                                                 {foreach item=TYPE from=$GOOGLE_TYPES}
                                                     <option value="{$TYPE}" {if $CUSTOM_FIELD_MAP['google_field_type'] eq $TYPE}selected{/if}>{vtranslate('URL',$MODULENAME)} ({vtranslate($TYPE,$MODULENAME)})</option>
                                                 {/foreach}
                                             </select>&nbsp;&nbsp;
-                                            <input type="text" class="google-custom-label inputElement" style="visibility:{if $CUSTOM_FIELD_MAP['google_field_type'] neq 'custom'}hidden{else}visible{/if};width:40%;" 
+                                            <input type="text" class="google-custom-label inputElement form-control" style="visibility:{if $CUSTOM_FIELD_MAP['google_field_type'] neq 'custom'}hidden{else}visible{/if}"
                                                    value="{if $CUSTOM_FIELD_MAP['google_field_type'] eq 'custom'}{$CUSTOM_FIELD_MAP['google_custom_label']}{/if}" data-rule-required="true"/>
                                         {/if}
-                                        <a class="deleteCustomMapping marginTop7px pull-right"><i title="Delete" class="fa fa-trash"></i></a>
+                                        <a class="deleteCustomMapping btn btn-outline-secondary"><i title="Delete" class="text-secondary fa fa-trash"></i></a>
+                                        </div>
                                     </td>
                                 </tr>
                             {/foreach}
@@ -330,16 +328,14 @@
                 </div>
             </div>
         </form>
-        <div class="modal-footer ">
-            <center>
-                {if $BUTTON_NAME neq null}
-                    {assign var=BUTTON_LABEL value=$BUTTON_NAME}
-                {else}
-                    {assign var=BUTTON_LABEL value={vtranslate('LBL_SAVE', $MODULE)}}
-                {/if}
-                <button id="save_syncsetting" class="btn btn-success" name="saveButton"><strong>{vtranslate('LBL_SAVE', $MODULENAME)}</strong></button>
-                <a href="#" class="cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
-            </center>
+        <div class="modal-footer">
+            {if $BUTTON_NAME neq null}
+                {assign var=BUTTON_LABEL value=$BUTTON_NAME}
+            {else}
+                {assign var=BUTTON_LABEL value=vtranslate('LBL_SAVE', $MODULE)}
+            {/if}
+            <button id="save_syncsetting" class="btn btn-primary active me-2" name="saveButton">{vtranslate('LBL_SAVE', $MODULENAME)}</button>
+            <a href="#" class="btn btn-primary cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
 	</div>
     </div>
 </div>

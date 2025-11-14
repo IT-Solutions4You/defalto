@@ -11,19 +11,10 @@
 class CustomerPortal_Install_Model extends Core_Install_Model
 {
     /**
-     * @var array
-     * [Name, Link, BlockLabel]
-     */
-    public array $registerSettingsLinks = [
-        ['LBL_CUSTOMER_PORTAL', 'index.php?module=CustomerPortal&view=Index&parent=Settings', 'LBL_OTHER_SETTINGS']
-    ];
-
-    /**
      * @return void
      */
     public function addCustomLinks(): void
     {
-        $this->updateSettingsLinks();
         $this->updateToStandardModule();
         $this->addModuleToCustomerPortal();
         $this->updateCustomerPortalModules();

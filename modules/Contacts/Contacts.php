@@ -52,7 +52,8 @@ class Contacts extends CRMEntity
         'vtiger_contactsubdetails' => 'contactsubscriptionid',
         'vtiger_contactscf'        => 'contactid',
         'vtiger_customerdetails'   => 'customerid',
-        'vtiger_portalinfo'        => 'id'
+        'vtiger_portalinfo'        => 'id',
+        'vtiger_campaignrelstatus'        => 'campaignrelstatusid',
     ];
     /**
      * Mandatory table for supporting custom fields.

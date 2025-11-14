@@ -858,6 +858,11 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         foreach ($filters as $filterName => $filterFields) {
             $filterInstance = $this->createFilter($filterName, $moduleInstance);
+
+            if (!$filterInstance->isCreating() && self::isUpgradeProcess()) {
+                continue;
+            }
+
             $filterInstance->deleteFields();
 
             ksort($filterFields);
@@ -959,7 +964,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public function isFieldKeySkippedForUpdate(string $key): bool
     {
-        return defined('VTIGER_UPGRADE') && in_array($key, self::$fieldKeySkippedForUpdate);
+        return self::isUpgradeProcess() && in_array($key, self::$fieldKeySkippedForUpdate);
     }
 
     /**
@@ -969,7 +974,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public function isBlockKeySkippedForUpdate(string $key): bool
     {
-        return defined('VTIGER_UPGRADE') && in_array($key, self::$blockKeySkippedForUpdate);
+        return self::isUpgradeProcess() && in_array($key, self::$blockKeySkippedForUpdate);
     }
 
     /**
@@ -1091,6 +1096,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         if (!$filterInstance) {
             $filterInstance = new Vtiger_Filter();
+            $filterInstance->creating = true;
         }
 
         $filterInstance->name = $filterName;
@@ -1612,5 +1618,10 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             [$uiTypeId, $uiType] = $fieldTypeName;
             $fieldModel->saveFieldType($uiTypeId, $uiType);
         }
+    }
+
+    public static function isUpgradeProcess(): bool
+    {
+        return defined('VTIGER_UPGRADE') && VTIGER_UPGRADE;
     }
 }
