@@ -12,14 +12,38 @@ class InventoryItem_Install_Model extends Core_Install_Model
 {
     protected array $defaultSupportedModules = ['Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice'];
 
+    protected array $modifiers = [
+        'Quotes' => [
+            'DetailView'          => ['InventoryItem_DetailView_Modifier'],
+            'EditView'            => ['InventoryItem_EditView_Modifier'],
+            'QuickCreateAjaxView' => ['InventoryItem_QuickCreateAjaxView_Modifier'],
+        ],
+        'PurchaseOrder' => [
+            'DetailView'          => ['InventoryItem_DetailView_Modifier'],
+            'EditView'            => ['InventoryItem_EditView_Modifier'],
+        ],
+        'SalesOrder' => [
+            'DetailView'          => ['InventoryItem_DetailView_Modifier'],
+            'EditView'            => ['InventoryItem_EditView_Modifier'],
+            'QuickCreateAjaxView' => ['InventoryItem_QuickCreateAjaxView_Modifier'],
+        ],
+        'Invoice' => [
+            'DetailView'          => ['InventoryItem_DetailView_Modifier'],
+            'EditView'            => ['InventoryItem_EditView_Modifier'],
+            'QuickCreateAjaxView' => ['InventoryItem_QuickCreateAjaxView_Modifier'],
+        ],
+    ];
+
     public function addCustomLinks(): void
     {
         $this->updateHistory();
         $this->updateComments();
+        $this->registerModifiers();
     }
 
     public function deleteCustomLinks(): void
     {
+        $this->deregisterModifiers();
     }
 
     public function getBlocks(): array
@@ -552,6 +576,32 @@ class InventoryItem_Install_Model extends Core_Install_Model
 
         foreach ($this->defaultSupportedModules as $moduleName) {
             InventoryItem_Utils_Helper::registerInventoryModule($moduleName);
+        }
+    }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    protected function registerModifiers(): void
+    {
+        foreach ($this->modifiers as $moduleName => $modifiersData) {
+            foreach ($modifiersData as $modifiable => $classNames) {
+                foreach ($classNames as $className) {
+                    Core_Modifiers_Model::registerModifier($moduleName, 'InventoryItem', $modifiable, $className);
+                }
+            }
+        }
+    }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    protected function deregisterModifiers(): void
+    {
+        foreach ($this->modifiers as $moduleName => $modifiersData) {
+            Core_Modifiers_Model::deregisterModifier($moduleName, 'InventoryItem');
         }
     }
 }
