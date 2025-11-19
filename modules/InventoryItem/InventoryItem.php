@@ -79,9 +79,11 @@ class InventoryItem extends CRMEntity
      * @param string $eventType  Event Type
      *
      * @return void
+     * @throws Exception
      */
     public function vtlib_handler(string $moduleName, string $eventType)
     {
+        Core_Install_Model::getInstance($eventType, $moduleName)->install();
     }
 
     /**

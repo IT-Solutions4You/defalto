@@ -35,7 +35,9 @@ class Core_Modifiers_Model extends Core_DatabaseData_Model
 
         $db = PearDatabase::getInstance();
         $return = static::$modifiers;
-        $res = $db->pquery('SELECT modifiable, class_name FROM df_modifiers WHERE tab_id = ?', [$moduleId]);
+
+        $table = (new self())->getModifiersTable();
+        $res = $table->selectResult(['modifiable', 'class_name'], ['tab_id' => $moduleId]);
 
         while ($row = $db->fetchByAssoc($res)) {
             $return[$row['modifiable']][] = $row['class_name'];
@@ -158,8 +160,6 @@ class Core_Modifiers_Model extends Core_DatabaseData_Model
      */
     public static function registerModifier(string $forModule, string $fromModule, string $modifiable, string $className): void
     {
-        $db = PearDatabase::getInstance();
-
         $forModuleId = getTabId($forModule);
         $fromModuleId = getTabId($fromModule);
 
@@ -171,13 +171,12 @@ class Core_Modifiers_Model extends Core_DatabaseData_Model
             throw new Exception('Unknown module: ' . $fromModule);
         }
 
-        $controlRes = $db->pquery(
-            'SELECT * FROM df_modifiers WHERE tab_id = ? AND from_tab_id = ? AND modifiable = ? AND class_name = ?',
-            [$forModuleId, $fromModuleId, $modifiable, $className]
-        );
+        $table = (new self())->getModifiersTable();
+        $data = ['tab_id' => $forModuleId, 'from_tab_id' => $fromModuleId, 'modifiable' => $modifiable, 'class_name' => $className];
+        $table->retrieveIdByParams($data);
 
-        if (!$db->num_rows($controlRes)) {
-            $db->pquery('INSERT INTO df_modifiers (tab_id, from_tab_id, modifiable, class_name) VALUES (?, ?, ?, ?)', [$forModuleId, $fromModuleId, $modifiable, $className]);
+        if (!$table->getId()) {
+            $table->insertData($data);
         }
     }
 
@@ -191,43 +190,37 @@ class Core_Modifiers_Model extends Core_DatabaseData_Model
      * @param string $className  The class name of the modifier to be deregistered.
      *
      * @return void
+     * @throws Exception
      */
     public static function deregisterModifier(string $forModule = '', string $fromModule = '', string $modifiable = '', string $className = ''): void
     {
-        $db = PearDatabase::getInstance();
         $forModuleId = getTabId($forModule);
         $fromModuleId = getTabId($fromModule);
-
-        $sql = 'DELETE FROM df_modifiers WHERE ';
-        $params = [];
+        $data = [];
 
         if (empty($forModuleId)) {
             if (empty($fromModuleId)) {
                 return;
             }
 
-            $sql .= 'from_tab_id = ?';
-            $params[] = $fromModuleId;
+            $data['from_tab_id'] = $fromModuleId;
         } else {
-            $sql .= 'tab_id = ?';
-            $params[] = $forModuleId;
+            $data['tab_id'] = $forModuleId;
 
             if ($fromModuleId) {
-                $sql .= ' AND from_tab_id = ?';
-                $params[] = $fromModuleId;
+                $data['from_tab_id'] = $fromModuleId;
             }
         }
 
         if ($modifiable) {
-            $sql .= ' AND modifiable = ?';
-            $params[] = $modifiable;
+            $data['modifiable'] = $modifiable;
         }
 
         if ($className) {
-            $sql .= ' AND class_name = ?';
-            $params[] = $className;
+            $data['class_name'] = $className;
         }
 
-        $db->pquery($sql, $params);
+        $table = (new self())->getModifiersTable();
+        $table->deleteData($data);
     }
 }
