@@ -8,16 +8,42 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Core_Modifiers_Model
+class Core_Modifiers_Model extends Core_DatabaseData_Model
 {
     protected static array $modifiers = [];
 
+    protected string $table = 'df_modifiers';
+    protected string $tableId = 'modifier_id';
+    protected string $tableName = 'modifier';
+
     /**
+     * @param string $forModule
+     *
      * @return array
      */
-    public static function getAll(): array
+    public static function getAll(string $forModule = ''): array
     {
-        return static::$modifiers;
+        if ($forModule == '') {
+            return static::$modifiers;
+        }
+
+        $moduleId = getTabId($forModule);
+
+        if (!$moduleId) {
+            return static::$modifiers;
+        }
+
+        $db = PearDatabase::getInstance();
+        $return = static::$modifiers;
+
+        $table = (new self())->getModifiersTable();
+        $res = $table->selectResult(['modifiable', 'class_name'], ['tab_id' => $moduleId]);
+
+        while ($row = $db->fetchByAssoc($res)) {
+            $return[$row['modifiable']][] = $row['class_name'];
+        }
+
+        return $return;
     }
 
     /**
@@ -29,7 +55,7 @@ class Core_Modifiers_Model
     public static function getForClass(string $className, string $forModule = ''): array
     {
         $return = [];
-        $modifiers = self::getAll();
+        $modifiers = self::getAll($forModule);
         $classNameParts = array_pad(explode('_', $className), 3, '');
         [$handlerName, $handlerType] = array_slice($classNameParts, -2);
         $modifierClassName = $forModule . '_Modifiers_Model';
@@ -94,5 +120,107 @@ class Core_Modifiers_Model
                 $modifier->$realMethodName($modifiable, ...$fullArgs);
             }
         }
+    }
+
+    /**
+     * @return self
+     */
+    public function getModifiersTable(): self
+    {
+        return $this->getTable($this->table, $this->tableId);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function createTables(): void
+    {
+        $this->getModifiersTable()
+            ->createTable()
+            ->createColumn('tab_id', 'int(19)')
+            ->createColumn('from_tab_id', 'int(19)')
+            ->createColumn('modifiable', 'varchar(255)')
+            ->createColumn('class_name', 'varchar(255)')
+            ->createKey('PRIMARY KEY IF NOT EXISTS `tab_id` (`tab_id`)')
+            ->createKey('CONSTRAINT `fk_1_df_modifiers` FOREIGN KEY IF NOT EXISTS (`tab_id`) REFERENCES `vtiger_tab` (`tabid`) ON DELETE CASCADE')
+            ->createKey('CONSTRAINT `fk_1_df_modifiers` FOREIGN KEY IF NOT EXISTS (`from_tab_id`) REFERENCES `vtiger_tab` (`tabid`) ON DELETE CASCADE');
+    }
+
+    /**
+     * Registers a modifier for a specific module.
+     *
+     * @param string $forModule  The module to which the modifier applies.
+     * @param string $fromModule The module providing the modifier.
+     * @param string $modifiable The modifiable target view/action for which the modifier applies.
+     * @param string $className  The class name of the modifier.
+     *
+     * @return void
+     *
+     * @throws Exception If either the target or source module is unknown.
+     */
+    public static function registerModifier(string $forModule, string $fromModule, string $modifiable, string $className): void
+    {
+        $forModuleId = getTabId($forModule);
+        $fromModuleId = getTabId($fromModule);
+
+        if (!$forModuleId) {
+            throw new Exception('Unknown module: ' . $forModule);
+        }
+
+        if (!$fromModuleId) {
+            throw new Exception('Unknown module: ' . $fromModule);
+        }
+
+        $table = (new self())->getModifiersTable();
+        $data = ['tab_id' => $forModuleId, 'from_tab_id' => $fromModuleId, 'modifiable' => $modifiable, 'class_name' => $className];
+        $table->retrieveIdByParams($data);
+
+        if (!$table->getId()) {
+            $table->insertData($data);
+        }
+    }
+
+    /**
+     * Deregisters a modifier based on the provided parameters.
+     * At least one of [$forModule, $fromModule] has to be defined.
+     *
+     * @param string $forModule  The module for which the modifier is registered.
+     * @param string $fromModule The module providing the modifier.
+     * @param string $modifiable The modifiable target view/action for which the modifier applies.
+     * @param string $className  The class name of the modifier to be deregistered.
+     *
+     * @return void
+     * @throws Exception
+     */
+    public static function deregisterModifier(string $forModule = '', string $fromModule = '', string $modifiable = '', string $className = ''): void
+    {
+        $forModuleId = getTabId($forModule);
+        $fromModuleId = getTabId($fromModule);
+        $data = [];
+
+        if (empty($forModuleId)) {
+            if (empty($fromModuleId)) {
+                return;
+            }
+
+            $data['from_tab_id'] = $fromModuleId;
+        } else {
+            $data['tab_id'] = $forModuleId;
+
+            if ($fromModuleId) {
+                $data['from_tab_id'] = $fromModuleId;
+            }
+        }
+
+        if ($modifiable) {
+            $data['modifiable'] = $modifiable;
+        }
+
+        if ($className) {
+            $data['class_name'] = $className;
+        }
+
+        $table = (new self())->getModifiersTable();
+        $table->deleteData($data);
     }
 }
