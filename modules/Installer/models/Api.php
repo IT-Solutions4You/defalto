@@ -73,7 +73,7 @@ class Installer_Api_Model extends Vtiger_Net_Client
         $keys = [];
 
         foreach ($licenses as $license) {
-            if ($license->isValidLicense() && $type === $license->getInfo('item_name')) {
+            if ($license->isValidLicense() && $type === $license->getInfo('item_type')) {
                 $keys[] = $license->getName();
             }
         }

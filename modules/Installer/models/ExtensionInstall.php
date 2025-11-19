@@ -10,6 +10,7 @@
 
 class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 {
+    public static array $ignoredModules = ['Dashboard'];
     public Vtiger_Module_Model|bool|null $module = null;
 
     public static function clearCache(): void
@@ -26,6 +27,10 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         $extensions = [];
 
         foreach ($modules as $module) {
+            if(in_array($module->getName(), self::$ignoredModules)) {
+                continue;
+            }
+
             $extensions[$module->getName()] = self::getInstance($module);
         }
 
