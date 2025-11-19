@@ -164,7 +164,7 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
     {
         vglobal('debug', true);
 
-        $licenses = Installer_License_Model::getAll(Installer_License_Model::EXTENSION_PACKAGES);
+        $licenses = Installer_License_Model::getAll(Installer_License_Model::EXTENSION_PACKAGE);
 
         if (!empty($licenses)) {
             foreach ($licenses as $license) {

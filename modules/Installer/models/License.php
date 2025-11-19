@@ -10,8 +10,8 @@
 
 class Installer_License_Model extends Core_DatabaseData_Model
 {
-    public const MEMBERSHIP_PACK = 'Membership Pack';
-    public const EXTENSION_PACKAGES = 'Extension Packages for Defalto CRM';
+    public const MEMBERSHIP_PACKAGE = 'Membership Package';
+    public const EXTENSION_PACKAGE = 'Extension Package';
     protected array $columns = [
         'name',
         'info',
@@ -127,7 +127,7 @@ class Installer_License_Model extends Core_DatabaseData_Model
      */
     public static function isActiveExtension(string $extension): bool
     {
-        $licenses = self::getAll(self::EXTENSION_PACKAGES, $extension);
+        $licenses = self::getAll(self::EXTENSION_PACKAGE, $extension);
 
         foreach ($licenses as $license) {
             if ($license->isValidLicense()) {
@@ -160,7 +160,7 @@ class Installer_License_Model extends Core_DatabaseData_Model
      */
     public static function isMembershipActive(): bool
     {
-        $memberShips = Installer_License_Model::getAll(Installer_License_Model::MEMBERSHIP_PACK);
+        $memberShips = Installer_License_Model::getAll(Installer_License_Model::MEMBERSHIP_PACKAGE);
 
         foreach ($memberShips as $membership) {
             if ($membership->isValidLicense()) {
