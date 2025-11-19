@@ -25,6 +25,7 @@ class Vtiger_Install_Model extends Core_Install_Model
         'Core_TaxRecord_Model',
         'Settings_Vtiger_MenuItem_Model',
         'Settings_Vtiger_Menu_Model',
+        'Core_Modifiers_Model',
     ];
 
     public array $registerFieldTypes = [
