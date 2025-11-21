@@ -2141,4 +2141,5 @@ $jsLanguageStrings = [
     'JS_REPLACE_DESCRIPTION_FOR_INVENTORY_ITEM' => 'Do you want to replace the description?',
     'JS_RECORDS_WILL_BE_DELETED' => 'This action will permanently delete records',
     'JS_REQUIRED_PARAMETER_CONFIRMATION' => 'Some of the PHP Settings do not meet the recommended values. This might affect some of the features of vtiger CRM. Are you sure, you want to proceed?',
+    'JS_DIACRITICS_NOT_ALLOWED' => 'Diacritics are not permitted. Only hyphens, underscores, and spaces are allowed.',
 ];

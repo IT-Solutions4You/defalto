@@ -50,8 +50,14 @@ class Installer_Api_Model extends Vtiger_Net_Client
      */
     public function getExtensionInstall(): array
     {
+        $licenses = $this->getLicenses(Installer_License_Model::EXTENSION_PACKAGE);
+
+        if (empty($licenses)) {
+            return [];
+        }
+
         $this->setURL($this->apiUrl . 'extension/v1/');
-        $response = $this->doPost(['licenses' => $this->getLicenses(Installer_License_Model::EXTENSION_PACKAGES), 'url' => $this->getSiteUrl(),]);
+        $response = $this->doPost(['licenses' => $licenses, 'url' => $this->getSiteUrl(),]);
 
         return json_decode($response, true) ?: [];
     }
@@ -73,7 +79,7 @@ class Installer_Api_Model extends Vtiger_Net_Client
         $keys = [];
 
         foreach ($licenses as $license) {
-            if ($license->isValidLicense() && $type === $license->getInfo('item_name')) {
+            if ($license->isValidLicense() && $type === $license->getInfo('item_type')) {
                 $keys[] = $license->getName();
             }
         }
@@ -97,8 +103,14 @@ class Installer_Api_Model extends Vtiger_Net_Client
      */
     public function getSystemInstall(): array
     {
+        $licenses = $this->getLicenses(Installer_License_Model::MEMBERSHIP_PACKAGE);
+
+        if (empty($licenses)) {
+            return [];
+        }
+
         $this->setURL($this->apiUrl . 'system/v1/');
-        $response = $this->doPost(['url' => $this->getSiteUrl(), 'licenses' => $this->getLicenses(Installer_License_Model::MEMBERSHIP_PACK),]);
+        $response = $this->doPost(['url' => $this->getSiteUrl(), 'licenses' => $licenses,]);
 
         return json_decode($response, true) ?: [];
     }

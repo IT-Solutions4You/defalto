@@ -63,7 +63,7 @@
 							<span class="text-danger">*</span>
 						</label>
 						<div class="controls col-lg-6">
-							<input type="text" class="inputElement form-control" maxlength="50" {if $IS_FIELD_EDIT_MODE}disabled="disabled"{/if} name="fieldLabel" value="{vtranslate($FIELD_MODEL->get('label'), $SELECTED_MODULE_NAME)}" data-rule-required="true" />
+							<input type="text" class="inputElement form-control" maxlength="50" {if $IS_FIELD_EDIT_MODE}disabled="disabled"{/if} name="fieldLabel" value="{vtranslate($FIELD_MODEL->get('label'), $SELECTED_MODULE_NAME)}" data-rule-required="true" data-rule-DisableDiacritics="true" />
 						</div>
 					</div>
 					{if !$IS_FIELD_EDIT_MODE}

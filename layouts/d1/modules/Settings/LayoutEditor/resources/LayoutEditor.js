@@ -532,7 +532,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
         // to show validation message for select2 we need to add id attribute
         data.find('.relationModule').attr('id', 'relationModule');
         //register all select2 Elements
-        vtUtils.showSelect2ElementView(data.find('select'));
+        vtUtils.showSelect2ElementView(data.find('.fieldTypesList'));
         data.find('.fieldProperty').removeClass('hide');
         thisInstance.registerHeaderSummaryDependency(data, fieldContainer);
         data.find('input[name="mandatory"]').on('change', function (e) {
@@ -649,8 +649,25 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
             isEditMode = true;
         }
 
-        var select2params = {tags: [], tokenSeparators: [","]}
-        vtUtils.showSelect2ElementView(form.find('[name="pickListValues"]'), select2params);
+        let select2params = {
+            tags: [],
+            tokenSeparators: [','],
+            createTag(params) {
+                let term = $.trim(params.term),
+                    regex = /[^0-9a-zA-Z\-_ ]+/;
+
+                if (term === '' || regex.test(term)) {
+                    return null;
+                }
+
+                return {
+                    id: term,
+                    text: term,
+                    newTag: true // add additional parameters
+                }
+            }
+        }
+        vtUtils.showSelect2ElementView(form.find('#picklistUi'), select2params);
 
         this.registerFieldTypeHide(form);
         this.registerFieldTypeChangeEvent(form);
@@ -1014,11 +1031,17 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
 
                 data.name = nameAttr;
                 data.value = defaultValueUi.val();
-                if (currentTarget.val() == "MultiSelectCombo") {
+
+                if ('MultiSelectCombo' === currentTarget.val()) {
+                    if ('string' === typeof data.value) {
+                        data.value = data.value.trim();
+                    }
+
                     if (data.value != null && data.value.length > 0) {
                         data.value = data.value.join('|##|');
                     }
                 }
+
                 var type = selectedOption.val();
                 switch (type) {
                     case 'Decimal'    :
@@ -1311,83 +1334,91 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
         form.find('.summary').attr('data-original-title', sTitle);
         form.find('.header').attr('data-original-title', hTitle);
     },
+    elementAddFieldModal: '',
+    getAddFieldModal() {
+        if (!this.elementAddFieldModal) {
+            this.elementAddFieldModal = jQuery('#layoutEditorContainer').find('.addBlockModal').detach()
+        }
+
+        return this.elementAddFieldModal;
+    },
     /**
      * Function to register click event for add custom block button
      */
     registerAddCustomBlockEvent: function () {
-        var thisInstance = this;
-        var contents = jQuery('#layoutEditorContainer').find('.contents');
+        let self = this,
+            contents = jQuery('#layoutEditorContainer').find('.contents');
+
         contents.find('.addCustomBlock').click(function (e) {
-            var addBlockContainer = contents.find('.addBlockModal').clone(true, true);
+            let addBlockContainer = self.getAddFieldModal(),
+                callBackFunction = function (data) {
+                    data.find('.addBlockModal').removeClass('hide');
+                    //register all select2 Elements
 
-            var callBackFunction = function (data) {
-                data.find('.addBlockModal').removeClass('hide');
-                //register all select2 Elements
+                    vtUtils.showSelect2ElementView(data.find('select'));
 
-                vtUtils.showSelect2ElementView(data.find('select').addClass('select2'));
+                    let form = data.find('.addCustomBlockForm');
+                    self.setBlocksListArray(form);
+                    let fieldLabel = form.find('[name="label"]'),
+                        params = {
+                            submitHandler: function (form) {
+                                form = jQuery(form);
 
-                var form = data.find('.addCustomBlockForm');
-                thisInstance.setBlocksListArray(form);
-                var fieldLabel = form.find('[name="label"]');
+                                let blockLabelValue = jQuery.trim(fieldLabel.val()),
+                                    specialChars = /[&\<\>\:\'\"\,\_\-]/;
 
-                var params = {
-                    submitHandler: function (form) {
-                        var form = jQuery(form);
-
-                        var blockLabelValue = jQuery.trim(fieldLabel.val());
-                        var specialChars = /[&\<\>\:\'\"\,\_\-]/;
-                        if (specialChars.test(blockLabelValue)) {
-                            var errorInfo = app.vtranslate('JS_SPECIAL_CHARACTERS') + " & < > ' \" : , _ - " + app.vtranslate('JS_NOT_ALLOWED');
-                            vtUtils.showValidationMessage(fieldLabel, errorInfo, {
-                                position: {
-                                    my: 'bottom left',
-                                    at: 'top left',
-                                    container: form
+                                if (specialChars.test(blockLabelValue)) {
+                                    let errorInfo = app.vtranslate('JS_SPECIAL_CHARACTERS') + " & < > ' \" : , _ - " + app.vtranslate('JS_NOT_ALLOWED');
+                                    vtUtils.showValidationMessage(fieldLabel, errorInfo, {
+                                        position: {
+                                            my: 'bottom left',
+                                            at: 'top left',
+                                            container: form
+                                        }
+                                    });
+                                    return false;
                                 }
-                            });
-                            return false;
-                        }
-                        var formData = form.serializeFormData();
-                        if (jQuery.inArray(blockLabelValue, thisInstance.blockNamesList) == -1) {
-                            thisInstance.saveBlockDetails(form).then(
-                                function (data) {
-                                    var params = {};
-                                    if (data) {
-                                        var result = data;
-                                        thisInstance.displayNewCustomBlock(result);
-                                        thisInstance.updateNewSequenceForBlocks(result['sequenceList']);
-                                        thisInstance.appendNewBlockToBlocksList(result, form);
-                                        thisInstance.makeFieldsListSortable();
+                                let formData = form.serializeFormData();
+                                if (jQuery.inArray(blockLabelValue, self.blockNamesList) == -1) {
+                                    self.saveBlockDetails(form).then(
+                                        function (data) {
+                                            var params = {};
+                                            if (data) {
+                                                var result = data;
+                                                self.displayNewCustomBlock(result);
+                                                self.updateNewSequenceForBlocks(result['sequenceList']);
+                                                self.appendNewBlockToBlocksList(result, form);
+                                                self.makeFieldsListSortable();
 
-                                        params['message'] = app.vtranslate('JS_CUSTOM_BLOCK_ADDED');
-                                        app.helper.showSuccessNotification(params);
-                                    } else {
-                                        params['message'] = data['message'];
-                                        app.helper.showErrorNotification(params);
-                                    }
+                                                params['message'] = app.vtranslate('JS_CUSTOM_BLOCK_ADDED');
+                                                app.helper.showSuccessNotification(params);
+                                            } else {
+                                                params['message'] = data['message'];
+                                                app.helper.showErrorNotification(params);
+                                            }
+                                        }
+                                    );
+                                    app.helper.hideModal();
+                                } else {
+                                    let result = app.vtranslate('JS_BLOCK_NAME_EXISTS');
+                                    vtUtils.showValidationMessage(fieldLabel, result, {
+                                        position: {
+                                            my: 'bottom left',
+                                            at: 'top left',
+                                            container: form
+                                        }
+                                    });
+                                    e.preventDefault();
+                                    return;
                                 }
-                            );
-                            app.helper.hideModal();
-                        } else {
-                            var result = app.vtranslate('JS_BLOCK_NAME_EXISTS');
-                            vtUtils.showValidationMessage(fieldLabel, result, {
-                                position: {
-                                    my: 'bottom left',
-                                    at: 'top left',
-                                    container: form
-                                }
-                            });
-                            e.preventDefault();
-                            return;
-                        }
 
-                    }
+                            }
+                        };
+
+                    form.vtValidate(params);
                 };
 
-                form.vtValidate(params);
-            };
-
-            var modalParams = {
+            let modalParams = {
                 cb: callBackFunction
             };
 
