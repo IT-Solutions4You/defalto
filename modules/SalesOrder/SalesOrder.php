@@ -140,7 +140,15 @@ class SalesOrder extends CRMEntity
      */
     public function save_module(string $module)
     {
-        InventoryItem_CopyOnCreate_Model::run($this);
+        $request = new Vtiger_Request($_REQUEST, $_REQUEST);
+        $sourceModule = $request->get('sourceModule');
+        $sourceRecord = (int)$request->get('sourceRecord');
+
+        if ((empty($sourceModule) || empty($sourceRecord)) && !empty($this->column_fields['quote_id'])) {
+            InventoryItem_CopyOnCreate_Model::run($this, $this->column_fields['quote_id']);
+        } else {
+            InventoryItem_CopyOnCreate_Model::run($this);
+        }
     }
 
     /** Function to get the invoices associated with the Sales Order

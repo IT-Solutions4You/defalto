@@ -127,11 +127,17 @@ class Invoice extends CRMEntity
      */
     public function save_module(string $module)
     {
+        $request = new Vtiger_Request($_REQUEST, $_REQUEST);
+        $sourceModule = $request->get('sourceModule');
+        $sourceRecord = (int)$request->get('sourceRecord');
+
         if (!empty($this->_salesorderid)) {
             InventoryItem_CopyOnCreate_Model::run($this, $this->_salesorderid);
+        } elseif ((empty($sourceModule) || empty($sourceRecord)) && !empty($this->column_fields['salesorder_id'])) {
+            InventoryItem_CopyOnCreate_Model::run($this, $this->column_fields['salesorder_id']);
+        } else {
+            InventoryItem_CopyOnCreate_Model::run($this);
         }
-
-        InventoryItem_CopyOnCreate_Model::run($this);
     }
 
     /**
