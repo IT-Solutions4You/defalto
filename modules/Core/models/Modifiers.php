@@ -20,6 +20,7 @@ class Core_Modifiers_Model extends Core_DatabaseData_Model
      * @param string $forModule
      *
      * @return array
+     * @throws Exception
      */
     public static function getAll(string $forModule = ''): array
     {
@@ -33,13 +34,11 @@ class Core_Modifiers_Model extends Core_DatabaseData_Model
             return static::$modifiers;
         }
 
-        $db = PearDatabase::getInstance();
         $return = static::$modifiers;
-
         $table = (new self())->getModifiersTable();
-        $res = $table->selectResult(['modifiable', 'class_name'], ['tab_id' => $moduleId]);
+        $result = $table->selectResult(['modifiable', 'class_name'], ['tab_id' => $moduleId]);
 
-        while ($row = $db->fetchByAssoc($res)) {
+        while ($row = $table->getDB()->fetchByAssoc($result)) {
             $return[$row['modifiable']][] = $row['class_name'];
         }
 
@@ -51,18 +50,14 @@ class Core_Modifiers_Model extends Core_DatabaseData_Model
      * @param string $forModule
      *
      * @return array
+     * @throws Exception
      */
     public static function getForClass(string $className, string $forModule = ''): array
     {
         $return = [];
-        $modifiers = self::getAll($forModule);
+        $modifiers = self::getInstance($forModule)::getAll($forModule);
         $classNameParts = array_pad(explode('_', $className), 3, '');
         [$handlerName, $handlerType] = array_slice($classNameParts, -2);
-        $modifierClassName = $forModule . '_Modifiers_Model';
-
-        if ($forModule !== '' && method_exists($modifierClassName, 'getAll')) {
-            $modifiers = $modifierClassName::getAll();
-        }
 
         if ($handlerName && $handlerType && isset($modifiers[$handlerName . $handlerType])) {
             foreach ($modifiers[$handlerName . $handlerType] as $modifier) {
@@ -74,20 +69,33 @@ class Core_Modifiers_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * @param string $forModule
+     * @return self
+     * @throws Exception
+     */
+    public static function getInstance(string $forModule = 'Core'): self
+    {
+        $className = Vtiger_Loader::getComponentClassName('Model', 'Modifiers', $forModule);
+
+        return new $className();
+    }
+
+    /**
      * Modifies a class by applying all relevant modifiers to a specific method.
      *
-     * @param string $className  The name of the class to modify.
+     * @param string $className The name of the class to modify.
      * @param string $methodName The method name to be modified.
-     * @param string $forModule  Optional parameter specifying the module context.
+     * @param string $forModule Optional parameter specifying the module context.
      *
      * @return void
+     * @throws Exception
      */
     public static function modifyForClass(string $className, string $methodName, string $forModule = ''): void
     {
         $fullArgs = func_get_args();
         array_splice($fullArgs, 0, 3);
 
-        $modifiers = self::getForClass($className, $forModule);
+        $modifiers = self::getInstance($forModule)::getForClass($className, $forModule);
         $realMethodName = 'modify' . ucfirst($methodName);
 
         foreach ($modifiers as $modifier) {
@@ -100,19 +108,20 @@ class Core_Modifiers_Model extends Core_DatabaseData_Model
     /**
      * Returns a modified array after applying all relevant modifiers to a specific method.
      *
-     * @param string $className  The name of the class to modify.
+     * @param string $className The name of the class to modify.
      * @param string $methodName The method name to be modified.
-     * @param string $forModule  Optional parameter specifying the module context.
-     * @param mixed  $modifiable
+     * @param string $forModule Optional parameter specifying the module context.
+     * @param mixed $modifiable
      *
      * @return void
+     * @throws Exception
      */
     public static function modifyVariableForClass(string $className, string $methodName, string $forModule = '', mixed &$modifiable = []): void
     {
         $fullArgs = func_get_args();
         array_splice($fullArgs, 0, 4);
 
-        $modifiers = self::getForClass($className, $forModule);
+        $modifiers = self::getInstance($forModule)::getForClass($className, $forModule);
         $realMethodName = 'modify' . ucfirst($methodName);
 
         foreach ($modifiers as $modifier) {
