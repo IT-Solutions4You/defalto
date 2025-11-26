@@ -34,13 +34,11 @@ class Core_Modifiers_Model extends Core_DatabaseData_Model
             return static::$modifiers;
         }
 
-        $db = PearDatabase::getInstance();
         $return = static::$modifiers;
-
         $table = (new self())->getModifiersTable();
-        $res = $table->selectResult(['modifiable', 'class_name'], ['tab_id' => $moduleId]);
+        $result = $table->selectResult(['modifiable', 'class_name'], ['tab_id' => $moduleId]);
 
-        while ($row = $db->fetchByAssoc($res)) {
+        while ($row = $table->getDB()->fetchByAssoc($result)) {
             $return[$row['modifiable']][] = $row['class_name'];
         }
 
@@ -57,7 +55,7 @@ class Core_Modifiers_Model extends Core_DatabaseData_Model
     public static function getForClass(string $className, string $forModule = ''): array
     {
         $return = [];
-        $modifiers = self::getClass($forModule)::getAll($forModule);
+        $modifiers = self::getInstance($forModule)::getAll($forModule);
         $classNameParts = array_pad(explode('_', $className), 3, '');
         [$handlerName, $handlerType] = array_slice($classNameParts, -2);
 
@@ -75,7 +73,7 @@ class Core_Modifiers_Model extends Core_DatabaseData_Model
      * @return self
      * @throws Exception
      */
-    public static function getClass(string $forModule = 'Core'): self
+    public static function getInstance(string $forModule = 'Core'): self
     {
         $className = Vtiger_Loader::getComponentClassName('Model', 'Modifiers', $forModule);
 
@@ -97,7 +95,7 @@ class Core_Modifiers_Model extends Core_DatabaseData_Model
         $fullArgs = func_get_args();
         array_splice($fullArgs, 0, 3);
 
-        $modifiers = self::getClass($forModule)::getForClass($className, $forModule);
+        $modifiers = self::getInstance($forModule)::getForClass($className, $forModule);
         $realMethodName = 'modify' . ucfirst($methodName);
 
         foreach ($modifiers as $modifier) {
@@ -123,7 +121,7 @@ class Core_Modifiers_Model extends Core_DatabaseData_Model
         $fullArgs = func_get_args();
         array_splice($fullArgs, 0, 4);
 
-        $modifiers = self::getClass($forModule)::getForClass($className, $forModule);
+        $modifiers = self::getInstance($forModule)::getForClass($className, $forModule);
         $realMethodName = 'modify' . ucfirst($methodName);
 
         foreach ($modifiers as $modifier) {
