@@ -10,6 +10,13 @@
 
 class InventoryItem_Install_Model extends Core_Install_Model
 {
+    public array $blocksHeaderFields = [
+        1 => 'item_text',
+        'productid',
+        'price',
+        'quantity',
+        'unit',
+    ];
     protected array $defaultSupportedModules = ['Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice'];
 
     protected array $modifiers = [
