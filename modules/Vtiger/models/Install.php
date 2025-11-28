@@ -109,8 +109,6 @@ class Vtiger_Install_Model extends Core_Install_Model
 
         $this->getDB()->pquery('DELETE FROM vtiger_field WHERE fieldid NOT IN (SELECT min(fieldid) FROM vtiger_field GROUP BY tabid,columnname,tablename,fieldname)');
 
-        global $root_directory;
-
         self::logSuccess('Files delete start');
 
         foreach (self::$deleteFiles as $deleteFile) {
