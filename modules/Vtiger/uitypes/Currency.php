@@ -105,6 +105,7 @@ class Vtiger_Currency_UIType extends Vtiger_Base_UIType
         if ($recordInstance) {
             $info = Vtiger_Functions::getCurrencySymbolandRate($recordInstance->getCurrencyId());
             $value = CurrencyField::appendCurrencySymbol($value, $info['symbol']);
+            $value = str_replace(' ', '&nbsp;', $value);
         }
 
         return $value;
