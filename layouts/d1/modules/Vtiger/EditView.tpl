@@ -42,7 +42,9 @@
 									{elseif $SOURCE_MODULE neq ''}
 										<input type="hidden" name="sourceModule" value="{$SOURCE_MODULE}"/>
 										<input type="hidden" name="sourceRecord" value="{$SOURCE_RECORD}"/>
-									{/if}
+									{elseif $smarty.request.isDuplicate eq 'true'}
+                                        <input type="hidden" name="duplicateFrom" value="{$smarty.request.record}" />
+                                    {/if}
 									{include file="partials/EditViewReturn.tpl"|vtemplate_path:$MODULE}
 									{include file="partials/EditViewContents.tpl"|@vtemplate_path:$MODULE}
 								</div>
