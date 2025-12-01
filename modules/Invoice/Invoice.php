@@ -135,6 +135,8 @@ class Invoice extends CRMEntity
             InventoryItem_CopyOnCreate_Model::run($this, $this->_salesorderid);
         } elseif ((empty($sourceModule) || empty($sourceRecord)) && !empty($this->column_fields['salesorder_id'])) {
             InventoryItem_CopyOnCreate_Model::run($this, $this->column_fields['salesorder_id']);
+        } elseif (is_numeric($request->get('duplicateFrom'))) {
+            InventoryItem_CopyOnCreate_Model::run($this, $request->get('duplicateFrom'));
         } else {
             InventoryItem_CopyOnCreate_Model::run($this);
         }

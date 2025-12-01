@@ -132,7 +132,13 @@ class Quotes extends CRMEntity
      */
     public function save_module(string $module)
     {
-        InventoryItem_CopyOnCreate_Model::run($this);
+        $request = new Vtiger_Request($_REQUEST, $_REQUEST);
+
+        if (is_numeric($request->get('duplicateFrom'))) {
+            InventoryItem_CopyOnCreate_Model::run($this, $request->get('duplicateFrom'));
+        } else {
+            InventoryItem_CopyOnCreate_Model::run($this);
+        }
     }
 
     /**    function used to get the list of sales orders which are related to the Quotes

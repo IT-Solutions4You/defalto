@@ -146,6 +146,8 @@ class SalesOrder extends CRMEntity
 
         if ((empty($sourceModule) || empty($sourceRecord)) && !empty($this->column_fields['quote_id'])) {
             InventoryItem_CopyOnCreate_Model::run($this, $this->column_fields['quote_id']);
+        } elseif (is_numeric($request->get('duplicateFrom'))) {
+            InventoryItem_CopyOnCreate_Model::run($this, $request->get('duplicateFrom'));
         } else {
             InventoryItem_CopyOnCreate_Model::run($this);
         }
