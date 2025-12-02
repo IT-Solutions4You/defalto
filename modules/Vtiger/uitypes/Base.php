@@ -231,4 +231,104 @@ class Vtiger_Base_UIType extends Vtiger_Base_Model
     {
         return false;
     }
+
+    /**
+     * @return bool
+     */
+    public function isItemDetailField(): bool
+    {
+        return in_array($this->getFieldModel()->block->label, ['LBL_INVENTORYITEM_INFORMATION', 'LBL_ITEM_DETAILS']);
+    }
+
+    public function getNumberUser(): object
+    {
+        $this->retrieveNumberUser();
+
+        return vglobal('number_user');
+    }
+
+    /**
+     * @return object
+     */
+    public function getInventoryNumberUser(): object
+    {
+        $this->retrieveInventoryNumberUser();
+
+        return vglobal('inventory_number_user');
+    }
+
+    public function retrieveNumberUser(): void
+    {
+        if (vglobal('number_user')) {
+            return;
+        }
+
+        $user = clone Users_Record_Model::getCurrentUserModel();
+        $user->set('currency_decimal_separator', '.');
+        $user->set('currency_grouping_separator', '');
+
+        vglobal('number_user', $user);
+    }
+
+    /**
+     * @return void
+     */
+    public function retrieveInventoryNumberUser(): void
+    {
+        if (vglobal('inventory_number_user')) {
+            return;
+        }
+
+        $decimalPlaces = InventoryItem_Utils_Helper::fetchDecimals();
+        $user = clone Users_Record_Model::getCurrentUserModel();
+        $user->set('no_of_currency_decimals', $decimalPlaces['quantity']);
+        $user->set('truncate_trailing_zeros', false);
+
+        vglobal('inventory_number_user', $user);
+    }
+
+
+    public function getCurrencyUser(): object
+    {
+        $this->retrieveCurrencyUser();
+
+        return vglobal('currency_user');
+    }
+
+    /**
+     * @return object
+     */
+    public function getInventoryCurrencyUser(): object
+    {
+        $this->retrieveInventoryCurrencyUser();
+
+        return vglobal('inventory_currency_user');
+    }
+
+    public function retrieveCurrencyUser(): void
+    {
+        if (vglobal('currency_user')) {
+            return;
+        }
+
+        $user = clone Users_Record_Model::getCurrentUserModel();
+        vglobal('currency_user', $user);
+    }
+
+    /**
+     * @return void
+     */
+    public function retrieveInventoryCurrencyUser(): void
+    {
+        if (vglobal('inventory_currency_user')) {
+            return;
+        }
+
+        $decimalPlaces = InventoryItem_Utils_Helper::fetchDecimals();
+
+        $user = clone Users_Record_Model::getCurrentUserModel();
+        $user->set('no_of_currency_decimals', $decimalPlaces['price']);
+
+        vglobal('inventory_currency_user', $user);
+    }
 }

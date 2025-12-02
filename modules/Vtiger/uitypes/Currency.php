@@ -57,9 +57,9 @@ class Vtiger_Currency_UIType extends Vtiger_Base_UIType
             return '0';
         }
 
-        global $currency_user;
+        $user = $this->isItemDetailField() ? $this->getInventoryCurrencyUser() : $this->getCurrencyUser();
 
-        return CurrencyField::convertToUserFormat($value, $currency_user, true);
+        return CurrencyField::convertToUserFormat($value, $user, true);
     }
 
     /**
@@ -99,8 +99,7 @@ class Vtiger_Currency_UIType extends Vtiger_Base_UIType
 
     public function getRelatedBlockDisplayValue(mixed $value, bool|int $record, object|bool $recordInstance): string
     {
-        global $currency_user;
-        $value = (new self())->getDisplayValue($value, $record, $recordInstance);
+        $value = $this->getDisplayValue($value, $record, $recordInstance);
 
         if ($recordInstance) {
             $info = Vtiger_Functions::getCurrencySymbolandRate($recordInstance->getCurrencyId());
