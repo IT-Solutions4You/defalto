@@ -54,7 +54,6 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
             ['LBL_PICKLIST_EDITOR'      ,'index.php?parent=Settings&module=Picklist&view=Index', 'LBL_PICKLIST_DESCRIPTION', 1],
             ['LBL_PICKLIST_DEPENDENCY'  ,'index.php?parent=Settings&module=PickListDependency&view=List', 'LBL_PICKLIST_DEPENDENCY_DESCRIPTION'],
             ['LBL_MENU_EDITOR'          ,'index.php?module=MenuEditor&parent=Settings&view=Index',],
-            ['LBL_CUSTOMER_PORTAL'      ,'index.php?module=CustomerPortal&parent=Settings&view=Index',],
         ],
         'LBL_MARKETING_SALES' => [
             1 => ['LBL_LEAD_MAPPING'        ,'index.php?parent=Settings&module=Leads&view=MappingDetail', ''],
