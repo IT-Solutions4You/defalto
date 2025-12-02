@@ -90,4 +90,13 @@ class Core_Utils_Helper
 
         return !empty($logo) ? $logo : 'layouts/d1/resources/Images/login-logo.png';
     }
+
+    /**
+     * @param string $moduleName
+     * @return bool
+     */
+    public static function isModuleActive(string $moduleName): bool
+    {
+        return getTabid($moduleName) && vtlib_isModuleActive($moduleName);
+    }
 }
