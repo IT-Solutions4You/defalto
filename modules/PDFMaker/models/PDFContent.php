@@ -17,7 +17,8 @@ if ($memory_limit < 256) {
 class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 {
     public static $bridge2mpdf = [];
-    private static $is_inventory_module = false;
+    public $PDFMaker;
+    private static $is_inventory_module = [];
     private static $module;
     private static $language;
     private static $focus;

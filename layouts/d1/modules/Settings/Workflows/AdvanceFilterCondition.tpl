@@ -16,39 +16,38 @@
                         {foreach key=FIELD_NAME item=FIELD_MODEL from=$BLOCK_FIELDS}
                             {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
                             {assign var=MODULE_MODEL value=$FIELD_MODEL->getModule()}
-                            {assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
+                            {assign var=SPECIAL_VALIDATOR value=$FIELD_MODEL->getValidator()}
                             {if !empty($COLUMNNAME_API)}
                                 {assign var=columnNameApi value=$COLUMNNAME_API}
                             {else}
                                 {assign var=columnNameApi value=getCustomViewColumnName}
                             {/if}
                             <option value="{$FIELD_MODEL->$columnNameApi()}" data-fieldtype="{$FIELD_MODEL->getFieldType()}" data-field-name="{$FIELD_NAME}"
-                                    {if isset($CONDITION_INFO['columnname']) && decode_html($FIELD_MODEL->$columnNameApi()) eq $CONDITION_INFO['columnname']}
-                                        {assign var=FIELD_TYPE value=$FIELD_MODEL->getFieldDataType()}
-                                        {assign var=SELECTED_FIELD_MODEL value=$FIELD_MODEL}
-                                        {$FIELD_INFO['value'] = decode_html($CONDITION_INFO['value'])}
-                                        selected="selected"
-                                    {else}
-                                        {assign var=FIELD_TYPE value=''}
+                                {assign var=FIELD_TYPE value='string'}
+                                {if isset($CONDITION_INFO['columnname']) && decode_html($FIELD_MODEL->$columnNameApi()) eq $CONDITION_INFO['columnname']}
+                                    {assign var=FIELD_TYPE value=$FIELD_MODEL->getFieldDataType()}
+                                    {assign var=SELECTED_FIELD_MODEL value=$FIELD_MODEL}
+                                    {$FIELD_INFO['value'] = decode_html($CONDITION_INFO['value'])}
+                                    selected="selected"
+                                {/if}
+                                {if ($MODULE_MODEL->get('name') eq 'Documents') and ($FIELD_NAME eq 'filelocationtype' or $FIELD_NAME eq 'folderid' or $FIELD_NAME eq 'filename')}
+                                    {if $FIELD_NAME eq 'filelocationtype'}
+                                        {assign var=PICKLIST_VALUES value = $FIELD_MODEL->getFileLocationType()}
+                                        {assign var=FIELD_TYPE value='picklist'}
+                                        {$FIELD_INFO['type'] = $FIELD_TYPE}
+                                        {$FIELD_INFO['picklistvalues'] = $PICKLIST_VALUES}
+                                    {elseif $FIELD_NAME eq 'folderid'}
+                                        {assign var=PICKLIST_VALUES value = $FIELD_MODEL->getDocumentFolders()}
+                                        {assign var=FIELD_TYPE value='picklist'}
+                                        {$FIELD_INFO['type'] = $FIELD_TYPE}
+                                        {$FIELD_INFO['picklistvalues'] = $PICKLIST_VALUES}
+                                    {elseif $FIELD_NAME eq 'filename'}
+                                        {assign var=FIELD_TYPE value='string'}
+                                        {$FIELD_INFO['type'] = $FIELD_TYPE}
                                     {/if}
-                                    {if ($MODULE_MODEL->get('name') eq 'Documents') and ($FIELD_NAME eq 'filelocationtype' or $FIELD_NAME eq 'folderid' or $FIELD_NAME eq 'filename')}
-                                        {if $FIELD_NAME eq 'filelocationtype'}
-                                            {assign var=PICKLIST_VALUES value = $FIELD_MODEL->getFileLocationType()}
-                                            {$FIELD_INFO['type'] = 'picklist'}
-                                            {assign var=FIELD_TYPE value='picklist'}
-                                            {$FIELD_INFO['picklistvalues'] = $PICKLIST_VALUES}
-                                        {else if $FIELD_NAME eq 'folderid'}
-                                            {assign var=PICKLIST_VALUES value = $FIELD_MODEL->getDocumentFolders()}
-                                            {$FIELD_INFO['type'] = 'picklist'}
-                                            {assign var=FIELD_TYPE value='picklist'}
-                                            {$FIELD_INFO['picklistvalues'] = $PICKLIST_VALUES}
-                                        {else if $FIELD_NAME eq 'filename'}
-                                            {$FIELD_INFO['type'] = 'string'}
-                                            {assign var=FIELD_TYPE value='string'}
-                                        {/if}
-                                    {/if}
-                                    data-fieldinfo='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($FIELD_INFO))}'
-                                    {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}>
+                                {/if}
+                                data-fieldinfo='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($FIELD_INFO))}'
+                                {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}>
                                 {if $SELECTED_MODULE_NAME neq $MODULE_MODEL->get('name')}
                                     ({vtranslate($MODULE_MODEL->get('name'), $MODULE_MODEL->get('name'))})  {vtranslate($FIELD_MODEL->get('label'), $MODULE_MODEL->get('name'))}
                                 {else}
@@ -61,15 +60,13 @@
             </select>
         </div>
         <div class="conditionComparator col-lg-3 col-md-3 col-sm-3">
-            <select class="{if empty($NOCHOSEN)}select2{/if} col-lg-12" name="comparator" data-placeholder="{vtranslate('LBL_NONE',$QUALIFIED_MODULE)}">
+            {assign var=ADVANCE_FILTER_OPTIONS value=$ADVANCED_FILTER_OPTIONS_BY_TYPE[$FIELD_TYPE]}
+            <select class="comparatorSelect col-lg-12 {if empty($NOCHOSEN)}select2{/if}" name="comparator" data-placeholder="{vtranslate('LBL_NONE',$QUALIFIED_MODULE)}">
                 <option value="none">{vtranslate('LBL_NONE',$MODULE)}</option>
-                {assign var=ADVANCE_FILTER_OPTIONS value=$ADVANCED_FILTER_OPTIONS_BY_TYPE[$FIELD_TYPE]}
                 {foreach item=ADVANCE_FILTER_OPTION from=$ADVANCE_FILTER_OPTIONS}
-                    <option value="{$ADVANCE_FILTER_OPTION}"
-                            {if $ADVANCE_FILTER_OPTION === $CONDITION_INFO['comparator']}
-                                selected
-                            {/if}
-                    >{vtranslate($ADVANCED_FILTER_OPTIONS[$ADVANCE_FILTER_OPTION])}</option>
+                    <option value="{$ADVANCE_FILTER_OPTION}" {if $ADVANCE_FILTER_OPTION === $CONDITION_INFO['comparator']}selected="selected"{/if}>
+                        {vtranslate($ADVANCED_FILTER_OPTIONS[$ADVANCE_FILTER_OPTION])}
+                    </option>
                 {/foreach}
             </select>
         </div>

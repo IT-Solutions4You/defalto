@@ -606,4 +606,16 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
             ]
         );
     }
+
+    /**
+     * @param int $templateId
+     * @return bool
+     */
+    public function isTemplateDeleted($templateId)
+    {
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery('SELECT * FROM vtiger_pdfmaker WHERE templateid = ? AND deleted = ?', [$templateId, 1]);
+
+        return (bool)$adb->num_rows($result);
+    }
 }

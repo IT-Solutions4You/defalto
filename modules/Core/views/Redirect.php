@@ -62,7 +62,7 @@ class Core_Redirect_View extends Vtiger_Basic_View {
             'Web' => 'https://defalto.com/',
             'Forum' => 'https://defalto.com/forum/',
             'Blog' => 'https://defalto.com/blog/',
-            'Documentation' => 'https://defalto.com/docs/user-guide/',
+            'Documentation' => 'https://defalto.com/docs/',
             'Videos' => 'https://www.youtube.com/@itsolutions4you',
             'Releases' => 'https://github.com/IT-Solutions4You/defalto/releases',
             'Facebook' => 'https://www.facebook.com/defalto.crm',
