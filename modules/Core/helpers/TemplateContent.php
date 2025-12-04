@@ -329,8 +329,8 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
 
             $pageBreakTable = $html->parents($tdNode, 'table');
 
-            if(!$pageBreakTable) {
-                return;
+            if (!$pageBreakTable) {
+                continue;
             }
 
             $table = clone $pageBreakTable;
