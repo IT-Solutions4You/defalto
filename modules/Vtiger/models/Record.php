@@ -977,10 +977,15 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
      */
     public function fetchCurrencyId(): int
     {
-        $db = PearDatabase::getInstance();
         $id = $this->getId();
         $seType = getSalesEntityType($id);
         $focus = CRMEntity::getInstance($seType);
+
+        if (!columnExists('currency_id', $focus->table_name)) {
+            return 1;
+        }
+
+        $db = PearDatabase::getInstance();
         $result = $db->pquery('SELECT currency_id FROM ' . $focus->table_name . ' WHERE ' . $focus->table_index . ' = ?', [$id]);
 
         if (!$db->num_rows($result)) {

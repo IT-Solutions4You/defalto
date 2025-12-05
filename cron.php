@@ -16,6 +16,8 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
+if(!session_id()) session_start();
+
 /**
  * Start the cron services configured.
  */
