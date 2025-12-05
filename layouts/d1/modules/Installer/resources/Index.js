@@ -15,9 +15,27 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
         this.registerDownloadExtension();
         this.registerEditLicense();
         this.registerDeleteLicense();
+        this.registerUpdateInformation();
     },
     getMainContainer() {
         return $('main');
+    },
+    registerUpdateInformation() {
+       let self = this;
+
+       self.getMainContainer().on('click', '[data-update-information]', function (e) {
+           let params = {
+               module: 'Installer',
+               action: 'IndexAjax',
+               mode: 'updateInformation',
+           };
+
+           app.request.post({data: params}).then(function (error, data) {
+               if(!error) {
+                   app.helper.showSuccessNotification({message: data['message']});
+               }
+           });
+       })
     },
     registerDeleteLicense() {
         let self = this;
@@ -27,7 +45,7 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                 license = element.attr('data-delete-license'),
                 params = {
                     module: 'Installer',
-                    view: 'IndexAjax',
+                    action: 'IndexAjax',
                     mode: 'licenseDelete',
                     license_id: license,
                 };

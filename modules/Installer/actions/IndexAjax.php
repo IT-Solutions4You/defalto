@@ -30,6 +30,7 @@ class Installer_IndexAjax_Action extends Vtiger_BasicAjax_Action
     public function process(Vtiger_Request $request)
     {
         $this->exposeMethod('licenseSave');
+        $this->exposeMethod('licenseDelete');
         $mode = $request->getMode();
 
         if (!empty($mode)) {
@@ -37,25 +38,25 @@ class Installer_IndexAjax_Action extends Vtiger_BasicAjax_Action
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function licenseSave(Vtiger_Request $request): void
     {
         $id = (int)$request->get('license_id');
         $name = $request->get('license_name');
-
-        $licenseInfo = Installer_Api_Model::getInstance()->activateLicenseInfo($name);
-
         $message = vtranslate('LBL_LICENSE_NOT_ACTIVATED', 'Installer');
         $status = 'not_activated';
 
-        if (!empty($licenseInfo['expires'])) {
-            if (!empty($id)) {
-                $license = Installer_License_Model::getInstanceById($id);
-            } else {
-                $license = Installer_License_Model::getInstance($name);
-            }
+        if (!empty($id)) {
+            $license = Installer_License_Model::getInstanceById($id);
+        } else {
+            $license = Installer_License_Model::getInstance($name);
+        }
 
-            $license->set('name', $name);
-            $license->setInfo($licenseInfo);
+        $license->activate();
+
+        if ($license->hasExpireDate()) {
             $license->save();
 
             $message = vtranslate('LBL_LICENSE_ACTIVATED', 'Installer');
@@ -67,6 +68,35 @@ class Installer_IndexAjax_Action extends Vtiger_BasicAjax_Action
 
         $response = new Vtiger_Response();
         $response->setResult(['success' => true, 'status' => $status, 'message' => $message]);
+        $response->emit();
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function licenseDelete(Vtiger_Request $request): void
+    {
+        $id = (int)$request->get('license_id');
+        $message = vtranslate('LBL_LICENSE_ALREADY_DELETED', 'Installer');
+
+        if (!empty($id)) {
+            $license = Installer_License_Model::getInstanceById($id);
+
+            if ($license) {
+                $deactivate = Installer_Api_Model::getInstance()->deactivateLicenseInfo($license->getName());
+
+                if ($deactivate) {
+                    $license->delete();
+                    $message = vtranslate('LBL_LICENSE_DELETED', 'Installer');
+                }
+            }
+        }
+
+        $response = new Vtiger_Response();
+        $response->setResult(['success' => true, 'message' => $message]);
         $response->emit();
     }
 }

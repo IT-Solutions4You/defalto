@@ -15,12 +15,17 @@ class Installer_Install_Model extends Core_Install_Model
         ['Requirements', 'index.php?module=Installer&view=Requirements', 'LBL_EXTENSIONS',],
     ];
 
+    public array $registerCron = [
+        ['InstallerLicenses', 'modules/Installer/cron/UpdateLicenses.php', 86400, 'Installer',],
+    ];
+
     /**
      * @throws Exception
      */
     public function addCustomLinks(): void
     {
         $this->updateSettingsLinks();
+        $this->updateCron();
     }
 
     public function deleteCustomLinks(): void
