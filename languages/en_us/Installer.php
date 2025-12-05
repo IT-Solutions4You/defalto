@@ -259,7 +259,7 @@ $languageStrings = [
     'LBL_LICENSE_DELETED'                  => 'License deleted successfully.',
     'LBL_ADD_LICENSE' => 'Add License Key',
     'LBL_LICENSE_ACTIVATED' => 'License activated successfully.',
-    'LBL_LICENSE_NOT_ACTIVATED' => 'License not activated successfully.',
+    'LBL_LICENSE_NOT_ACTIVATED' => 'License not activated.',
 ];
 
 $jsLanguageStrings = [
