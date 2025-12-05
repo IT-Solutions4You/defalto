@@ -924,6 +924,7 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
 
         if (fieldInfo.type == 'date') {
             fieldInfo.value = fieldUiHolder.find('input').val();
+            fieldInfo['display-value'] = fieldUiHolder.find('input').data('display-value');
         }
 
         if (fieldInfo.type == 'reference' || fieldInfo.type == 'multireference') {
