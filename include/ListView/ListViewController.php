@@ -483,10 +483,10 @@ class ListViewController
                     }
 
                     if (!empty($rawValue)) {
-                        $uiTypeModel = Vtiger_Base_UIType::getInstance($fieldDataType, $module);
+                        $fieldModel = Vtiger_Field_Model::getInstance($field->getFieldId());
 
-                        if(method_exists($uiTypeModel, 'transformDisplayValue')) {
-                            $value = $uiTypeModel::transformDisplayValue($rawValue, $baseRecordId);
+                        if ($fieldModel) {
+                            $value = $fieldModel->getDisplayValue($rawValue, $baseRecordId);
                         }
                     } else {
                         $value = '';

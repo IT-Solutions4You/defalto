@@ -146,10 +146,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
     public function getContent()
     {
         self::$execution_time_start = microtime(true);
-        self::$content = self::$body;
-        self::$content = self::$header . self::$section_sep;
-        self::$content .= self::$body . self::$section_sep;
-        self::$content .= self::$footer;
+        self::$content = self::$header . self::$section_sep . self::$body . self::$section_sep . self::$footer;
         self::$content = html_entity_decode(self::$content, ENT_QUOTES, self::$def_charset);
 
         $this->retrieveAssignedUserId();

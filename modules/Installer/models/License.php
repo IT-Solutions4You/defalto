@@ -178,4 +178,31 @@ class Installer_License_Model extends Core_DatabaseData_Model
 
         return false;
     }
+
+    public function hasExpireDate(): bool
+    {
+        return !empty($this->getExpireDate());
+    }
+
+    public function activate(): static
+    {
+        $info = Installer_Api_Model::getInstance()->activateLicenseInfo($this->getName());
+        $this->setInfo($info);
+
+        return $this;
+    }
+
+    public static function updateAll(): void
+    {
+        $licenses = Installer_License_Model::getAll();
+        /** @var Installer_License_Model $license */
+
+        foreach ($licenses as $license) {
+            $license->activate();
+
+            if ($license->hasExpireDate()) {
+                $license->save();
+            }
+        }
+    }
 }

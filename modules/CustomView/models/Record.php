@@ -1176,12 +1176,12 @@ class CustomView_Record_Model extends Vtiger_Base_Model
                 OR vtiger_customview.cvid IN (
                     SELECT vtiger_cv2users.cvid 
                     FROM vtiger_cv2users 
-                    WHERE vtiger_cv2users.userid=?
+                    WHERE vtiger_cv2users.userid = ?
                 )
                 OR vtiger_customview.cvid IN (
                     SELECT vtiger_cv2role.cvid 
                     FROM vtiger_cv2role 
-                    WHERE vtiger_cv2role.roleid =?
+                    WHERE vtiger_cv2role.roleid = ?
                 )
                 ";
             $params[] = $currentUser->getId();
@@ -1559,5 +1559,40 @@ class CustomView_Record_Model extends Vtiger_Base_Model
                 $db->pquery('UPDATE vtiger_cvstdfilter SET columnname=? WHERE columnname LIKE ?', [$cvColumnName, '%' . $fieldTable . ':' . $columnName . ':%']);
             }
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function createTables()
+    {
+        Core_DatabaseData_Model::getTableInstance('vtiger_cv2users', '')
+            ->createTable('cvid', 'INT(25) NOT NULL')
+            ->createColumn('userid', 'INT(25) NOT NULL')
+            ->createKey('KEY IF NOT EXISTS `vtiger_cv2users_ibfk_1` (`cvid`)')
+            ->createKey('CONSTRAINT `vtiger_customview_ibfk_1` FOREIGN KEY IF NOT EXISTS (`cvid`) REFERENCES `vtiger_customview` (`cvid`) ON DELETE CASCADE')
+            ->createKey('CONSTRAINT `vtiger_users_ibfk_1` FOREIGN KEY IF NOT EXISTS (`userid`) REFERENCES `vtiger_users` (`id`) ON DELETE CASCADE)');
+
+        Core_DatabaseData_Model::getTableInstance('vtiger_cv2group', '')
+            ->createTable('cvid', 'int(25) NOT NULL')
+            ->createColumn('groupid', 'int(25) NOT NULL')
+            ->createKey('KEY IF NOT EXISTS `vtiger_cv2group_ibfk_1` (`cvid`)')
+            ->createKey('CONSTRAINT `vtiger_customview_ibfk_2` FOREIGN KEY IF NOT EXISTS (`cvid`) REFERENCES `vtiger_customview` (`cvid`) ON DELETE CASCADE')
+            ->createKey('CONSTRAINT `vtiger_groups_ibfk_1` FOREIGN KEY IF NOT EXISTS (`groupid`) REFERENCES `vtiger_groups` (`groupid`) ON DELETE CASCADE)')
+        ;
+
+        Core_DatabaseData_Model::getTableInstance('vtiger_cv2role', '')
+            ->createTable('cvid', 'int(25) NOT NULL')
+            ->createColumn('roleid', 'varchar(255) NOT NULL')
+            ->createKey('KEY IF NOT EXISTS `vtiger_cv2role_ibfk_1` (`cvid`)')
+            ->createKey('CONSTRAINT `vtiger_customview_ibfk_3` FOREIGN KEY IF NOT EXISTS (`cvid`) REFERENCES `vtiger_customview` (`cvid`) ON DELETE CASCADE')
+            ->createKey('CONSTRAINT `vtiger_role_ibfk_1` FOREIGN KEY IF NOT EXISTS (`roleid`) REFERENCES `vtiger_role` (`roleid`) ON DELETE CASCADE)');
+
+        Core_DatabaseData_Model::getTableInstance('vtiger_cv2rs', '')
+            ->createTable('cvid', 'int(25) NOT NULL')
+            ->createColumn('rsid', 'varchar(255) NOT NULL')
+            ->createKey('KEY IF NOT EXISTS `vtiger_cv2rs_ibfk_1` (`cvid`)')
+            ->createKey('CONSTRAINT `vtiger_customview_ibfk_4` FOREIGN KEY IF NOT EXISTS (`cvid`) REFERENCES `vtiger_customview` (`cvid`) ON DELETE CASCADE')
+            ->createKey('CONSTRAINT `vtiger_rolesd_ibfk_1` FOREIGN KEY IF NOT EXISTS (`rsid`) REFERENCES `vtiger_role` (`roleid`) ON DELETE CASCADE)');
     }
 }

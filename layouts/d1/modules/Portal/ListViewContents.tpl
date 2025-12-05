@@ -5,7 +5,7 @@
  *
  * This file is licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
- *}s
+ *}
 <input type="hidden" id="pageNumber" value="{$CURRENT_PAGE}">
 <input type="hidden" id="totalCount" value="{$PAGING_INFO['recordCount']}"/>
 <input type="hidden" id="recordsCount" value="{$PAGING_INFO['recordCount']}"/>

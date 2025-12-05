@@ -152,6 +152,7 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View
                             return;
                         }
                     } elseif ($mappingInfo['valuetype'] == 'rawtext' && Vtiger_Functions::isDateValue($mappingInfo['value'])) {
+                        $mappingInfo['display-value'] = $mappingInfo['value'];
                         $mappingInfo['value'] = DateTimeField::convertToDBFormat($mappingInfo['value']);
                         $fieldMapping[$key] = $mappingInfo;
                     }

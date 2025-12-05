@@ -831,54 +831,6 @@ if (defined('VTIGER_UPGRADE')) {
         );
     }
 
-    if (!Vtiger_Utils::CheckTable('vtiger_cv2users')) {
-        Vtiger_Utils::CreateTable(
-            'vtiger_cv2users',
-            '(`cvid` int(25) NOT NULL,
-				`userid` int(25) NOT NULL,
-				KEY `vtiger_cv2users_ibfk_1` (`cvid`),
-				CONSTRAINT `vtiger_customview_ibfk_1` FOREIGN KEY (`cvid`) REFERENCES `vtiger_customview` (`cvid`) ON DELETE CASCADE,
-				CONSTRAINT `vtiger_users_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `vtiger_users` (`id`) ON DELETE CASCADE)',
-            true
-        );
-    }
-
-    if (!Vtiger_Utils::CheckTable('vtiger_cv2group')) {
-        Vtiger_Utils::CreateTable(
-            'vtiger_cv2group',
-            '(`cvid` int(25) NOT NULL,
-				`groupid` int(25) NOT NULL,
-				KEY `vtiger_cv2group_ibfk_1` (`cvid`),
-				CONSTRAINT `vtiger_customview_ibfk_2` FOREIGN KEY (`cvid`) REFERENCES `vtiger_customview` (`cvid`) ON DELETE CASCADE,
-				CONSTRAINT `vtiger_groups_ibfk_1` FOREIGN KEY (`groupid`) REFERENCES `vtiger_groups` (`groupid`) ON DELETE CASCADE)',
-            true
-        );
-    }
-
-    if (!Vtiger_Utils::CheckTable('vtiger_cv2role')) {
-        Vtiger_Utils::CreateTable(
-            'vtiger_cv2role',
-            '(`cvid` int(25) NOT NULL,
-				`roleid` varchar(255) NOT NULL,
-				KEY `vtiger_cv2role_ibfk_1` (`cvid`),
-				CONSTRAINT `vtiger_customview_ibfk_3` FOREIGN KEY (`cvid`) REFERENCES `vtiger_customview` (`cvid`) ON DELETE CASCADE,
-				CONSTRAINT `vtiger_role_ibfk_1` FOREIGN KEY (`roleid`) REFERENCES `vtiger_role` (`roleid`) ON DELETE CASCADE)',
-            true
-        );
-    }
-
-    if (!Vtiger_Utils::CheckTable('vtiger_cv2rs')) {
-        Vtiger_Utils::CreateTable(
-            'vtiger_cv2rs',
-            '(`cvid` int(25) NOT NULL,
-				`rsid` varchar(255) NOT NULL,
-				KEY `vtiger_cv2role_ibfk_1` (`cvid`),
-				CONSTRAINT `vtiger_customview_ibfk_4` FOREIGN KEY (`cvid`) REFERENCES `vtiger_customview` (`cvid`) ON DELETE CASCADE,
-				CONSTRAINT `vtiger_rolesd_ibfk_1` FOREIGN KEY (`rsid`) REFERENCES `vtiger_role` (`roleid`) ON DELETE CASCADE)',
-            true
-        );
-    }
-
     //Rollup Comments Settings table
     if (!Vtiger_Utils::CheckTable('vtiger_rollupcomments_settings')) {
         Vtiger_Utils::CreateTable(

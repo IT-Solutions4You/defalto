@@ -15,9 +15,27 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
         this.registerDownloadExtension();
         this.registerEditLicense();
         this.registerDeleteLicense();
+        this.registerUpdateInformation();
     },
     getMainContainer() {
         return $('main');
+    },
+    registerUpdateInformation() {
+       let self = this;
+
+       self.getMainContainer().on('click', '[data-update-information]', function (e) {
+           let params = {
+               module: 'Installer',
+               action: 'IndexAjax',
+               mode: 'updateInformation',
+           };
+
+           app.request.post({data: params}).then(function (error, data) {
+               if(!error) {
+                   app.helper.showSuccessNotification({message: data['message']});
+               }
+           });
+       })
     },
     registerDeleteLicense() {
         let self = this;
@@ -27,7 +45,7 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                 license = element.attr('data-delete-license'),
                 params = {
                     module: 'Installer',
-                    view: 'IndexAjax',
+                    action: 'IndexAjax',
                     mode: 'licenseDelete',
                     license_id: license,
                 };
@@ -55,8 +73,36 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                 };
 
             app.request.post({data: params}).then(function (error, data) {
-                app.helper.showModal(data);
+                app.helper.showModal(data, {
+                    cb: function() {
+                        self.registerEditLicenseSubmit();
+                    }
+                });
             });
+        });
+    },
+    registerEditLicenseSubmit() {
+        $('#editLicenseForm').on('submit', function (e) {
+            e.preventDefault();
+
+            app.helper.showProgress();
+            app.request.post({data: $(this).serializeFormData()}).then(function (error, data) {
+                app.helper.hideProgress();
+
+                if(!error) {
+                    if('activated' === data['status']) {
+                        app.helper.hideModal();
+                        app.helper.showSuccessNotification({message: data['message']});
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        app.helper.showErrorNotification({message: data['message']});
+                    }
+                }
+                console.log(data);
+            })
         });
     },
     registerDownloadSystem() {
