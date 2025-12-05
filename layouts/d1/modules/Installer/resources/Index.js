@@ -55,8 +55,36 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                 };
 
             app.request.post({data: params}).then(function (error, data) {
-                app.helper.showModal(data);
+                app.helper.showModal(data, {
+                    cb: function() {
+                        self.registerEditLicenseSubmit();
+                    }
+                });
             });
+        });
+    },
+    registerEditLicenseSubmit() {
+        $('#editLicenseForm').on('submit', function (e) {
+            e.preventDefault();
+
+            app.helper.showProgress();
+            app.request.post({data: $(this).serializeFormData()}).then(function (error, data) {
+                app.helper.hideProgress();
+
+                if(!error) {
+                    if('activated' === data['status']) {
+                        app.helper.hideModal();
+                        app.helper.showSuccessNotification({message: data['message']});
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        app.helper.showErrorNotification({message: data['message']});
+                    }
+                }
+                console.log(data);
+            })
         });
     },
     registerDownloadSystem() {

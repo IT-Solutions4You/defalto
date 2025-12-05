@@ -98,28 +98,6 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
     /**
      * @throws Exception
      */
-    public function licenseSave(Vtiger_Request $request): void
-    {
-        $id = (int)$request->get('license_id');
-        $name = $request->get('license_name');
-
-        if (!empty($id)) {
-            $license = Installer_License_Model::getInstanceById($id);
-        } else {
-            $license = Installer_License_Model::getInstance($name);
-        }
-
-        $license->set('name', $name);
-        $licenseInfo = Installer_Api_Model::getInstance()->activateLicenseInfo($license->getName());
-        $license->setInfo($licenseInfo);
-        $license->save();
-
-        Installer_ExtensionInstall_Model::clearCache();
-        Installer_SystemInstall_Model::clearCache();
-
-        header('location:' . $license->getLicenseUrl());
-    }
-
     public function updateInformation(Vtiger_Request $request): void
     {
         Installer_ExtensionInstall_Model::clearCache();
