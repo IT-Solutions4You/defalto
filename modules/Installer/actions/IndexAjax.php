@@ -56,7 +56,9 @@ class Installer_IndexAjax_Action extends Vtiger_BasicAjax_Action
 
         $license->activate();
 
-        if ($license->hasExpireDate()) {
+        if ($license->hasDeleteLicenseError()) {
+            $message = vtranslate($license->getInfo('error'), 'Installer');
+        } elseif ($license->hasExpireDate()) {
             $license->save();
 
             $message = vtranslate('LBL_LICENSE_ACTIVATED', 'Installer');
@@ -86,12 +88,10 @@ class Installer_IndexAjax_Action extends Vtiger_BasicAjax_Action
             $license = Installer_License_Model::getInstanceById($id);
 
             if ($license) {
-                $deactivate = Installer_Api_Model::getInstance()->deactivateLicenseInfo($license->getName());
+                $license->deactivate();
+                $license->delete();
 
-                if ($deactivate) {
-                    $license->delete();
-                    $message = vtranslate('LBL_LICENSE_DELETED', 'Installer');
-                }
+                $message = vtranslate('LBL_LICENSE_DELETED', 'Installer');
             }
         }
 

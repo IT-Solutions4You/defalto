@@ -10,6 +10,9 @@
 
 class Installer_License_Model extends Core_DatabaseData_Model
 {
+    public static array $deleteLicenseByError = [
+        'no_activations_left',
+    ];
     public const MEMBERSHIP_PACKAGE = 'Membership Package';
     public const EXTENSION_PACKAGE = 'Extension Package';
     protected array $columns = [
@@ -192,6 +195,24 @@ class Installer_License_Model extends Core_DatabaseData_Model
         return $this;
     }
 
+    public function deactivate(): static
+    {
+        $info = Installer_Api_Model::getInstance()->deactivateLicenseInfo($this->getName());
+        $this->setInfo($info);
+
+        return $this;
+    }
+
+    public function hasDeleteLicenseError(): bool
+    {
+        $error = $this->getInfo('error');
+
+        return in_array($error, self::$deleteLicenseByError);
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function updateAll(): void
     {
         $licenses = Installer_License_Model::getAll();
@@ -202,6 +223,10 @@ class Installer_License_Model extends Core_DatabaseData_Model
 
             if ($license->hasExpireDate()) {
                 $license->save();
+            }
+
+            if ($license->hasDeleteLicenseError()) {
+                $license->delete();
             }
         }
     }
