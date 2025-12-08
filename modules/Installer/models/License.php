@@ -74,8 +74,8 @@ class Installer_License_Model extends Core_DatabaseData_Model
     {
         $info = json_decode(base64_decode((string)$this->get('info')), true);
 
-        if (!empty($info[$key])) {
-            return $info[$key];
+        if ($key) {
+            return !empty($info[$key]) ? $info[$key] : null;
         }
 
         return $info;
