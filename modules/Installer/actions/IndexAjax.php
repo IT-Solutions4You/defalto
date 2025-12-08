@@ -48,12 +48,7 @@ class Installer_IndexAjax_Action extends Vtiger_BasicAjax_Action
         $message = vtranslate('LBL_LICENSE_NOT_ACTIVATED', 'Installer');
         $status = 'not_activated';
 
-        if (!empty($id)) {
-            $license = Installer_License_Model::getInstanceById($id);
-        } else {
-            $license = Installer_License_Model::getInstance($name);
-        }
-
+        $license = Installer_License_Model::getInstance($name);
         $license->activate();
 
         if ($license->hasDeleteLicenseError()) {

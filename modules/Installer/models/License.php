@@ -27,6 +27,7 @@ class Installer_License_Model extends Core_DatabaseData_Model
      * @var string
      */
     protected string $tableId = 'id';
+    protected string $tableName = 'name';
 
     /**
      * @throws Exception
@@ -84,10 +85,14 @@ class Installer_License_Model extends Core_DatabaseData_Model
         return $info;
     }
 
+    /**
+     * @throws Exception
+     */
     public static function getInstance($name): self
     {
         $instance = new self();
         $instance->set('name', $name);
+        $instance->retrieveDataByName();
 
         return $instance;
     }
