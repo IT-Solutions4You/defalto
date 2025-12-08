@@ -73,7 +73,7 @@
             </div>
             {foreach from=Installer_SystemInstall_Model::getAll() item=SYSTEM_MODEL}
                 <div class="row border border-top-0 py-2 align-items-center">
-                    <div class="col-lg-6">{$SYSTEM_MODEL->getLabel()}</div>
+                    <div class="col-lg-6 {if $SYSTEM_MODEL->isNewestVersion()}text-success{else}text-danger{/if}">{$SYSTEM_MODEL->getLabel()} {$SYSTEM_MODEL->getDescription()}</div>
                     <div class="col-lg-2">{$SYSTEM_MODEL->getVersion()}</div>
                     <div class="col-lg-4">
                         <button type="button" class="btn btn-primary" data-download-system="{$SYSTEM_MODEL->getVersion()}">

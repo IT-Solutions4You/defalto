@@ -261,6 +261,7 @@ $languageStrings = [
     'LBL_LICENSE_ACTIVATED' => 'License activated successfully.',
     'LBL_LICENSE_NOT_ACTIVATED' => 'License not activated.',
     'no_activations_left' => 'No activations left',
+    'LBL_UP_TO_DATE' => 'System version is up to date',
 ];
 
 $jsLanguageStrings = [

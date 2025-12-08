@@ -256,6 +256,7 @@ $languageStrings = [
     'LBL_LICENSE_DELETED' => 'Licencia bola úspešne odstránená.',
     'LBL_ADD_LICENSE' => 'Pridať licenčný kľúč',
     'no_activations_left' => 'Nezostali žiadne aktivácie',
+    'LBL_UP_TO_DATE' => 'Verzia systému je aktuálna',
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Naozaj chcete nainštalovať rozšírenie?',
