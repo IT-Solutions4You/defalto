@@ -78,7 +78,7 @@
                     <div class="col-lg-4">
                         <button type="button" class="btn btn-primary" data-download-system="{$SYSTEM_MODEL->getVersion()}">
                             <i class="fa-solid fa-download"></i>
-                            <span class="ms-2">{vtranslate('LBL_DOWNLOAD', $QUALIFIED_MODULE)}</span>
+                            <span class="ms-2">{vtranslate('LBL_UPDATE', $QUALIFIED_MODULE)}</span>
                         </button>
                     </div>
                 </div>
@@ -110,7 +110,7 @@
                         {if $EXTENSION_MODEL->hasDownloadUrl()}
                             <button type="button" class="btn btn-primary" data-download-extension="{$EXTENSION_MODEL->getName()}">
                                 <i class="fa-solid fa-download"></i>
-                                <span class="ms-2">{vtranslate('LBL_DOWNLOAD', $QUALIFIED_MODULE)}</span>
+                                <span class="ms-2">{vtranslate('LBL_UPDATE', $QUALIFIED_MODULE)}</span>
                             </button>
                         {/if}
                         {assign var=EXTENSION_LINKS value=$EXTENSION_MODEL->getLinks()}
