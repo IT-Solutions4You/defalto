@@ -68,6 +68,7 @@ class Core_Redirect_View extends Vtiger_Basic_View {
             'Facebook' => 'https://www.facebook.com/defalto.crm',
             'Youtube' => 'https://www.youtube.com/@itsolutions4you',
             'Migration' => 'https://defalto.com/administrator-guide/installation-guide/system-backup-database-and-files/',
+            'SourceForge' => 'https://sourceforge.net/projects/defalto-crm/',
             default => '',
         };
     }
