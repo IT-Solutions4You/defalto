@@ -106,7 +106,7 @@ class Installer_Api_Model extends Vtiger_Net_Client
         $licenses = $this->getLicenses(Installer_License_Model::MEMBERSHIP_PACKAGE);
 
         if (empty($licenses)) {
-            return [];
+            $licenses = [];
         }
 
         $this->setURL($this->apiUrl . 'system/v1/');

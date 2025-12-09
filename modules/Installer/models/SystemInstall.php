@@ -88,13 +88,18 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
         return (bool)version_compare(Vtiger_Version::current(), $this->get('version'), '>=');
     }
 
+    public function hasDownloadUrl(): bool
+    {
+        return $this->get('download-url');
+    }
+
     /**
      * @return string
      */
     public function getDescription(): string
     {
         if ($this->isNewestVersion()) {
-            return '( ' . vtranslate('LBL_UP_TO_DATE', 'Installer') . ' )';
+            return vtranslate('LBL_UP_TO_DATE', 'Installer');
         }
 
         return '';

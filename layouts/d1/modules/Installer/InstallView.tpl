@@ -72,14 +72,23 @@
                 <div class="col-lg-4 fw-bold">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</div>
             </div>
             {foreach from=Installer_SystemInstall_Model::getAll() item=SYSTEM_MODEL}
-                <div class="row border border-top-0 py-2 align-items-center">
-                    <div class="col-lg-6 {if $SYSTEM_MODEL->isNewestVersion()}text-success{else}text-danger{/if}">{$SYSTEM_MODEL->getLabel()} {$SYSTEM_MODEL->getDescription()}</div>
+                <div class="row border border-top-0 py-2 align-items-center {if $SYSTEM_MODEL->isNewestVersion()}text-success{else}text-danger{/if}">
+                    <div class="col-lg-6">{$SYSTEM_MODEL->getLabel()}</div>
                     <div class="col-lg-2">{$SYSTEM_MODEL->getVersion()}</div>
                     <div class="col-lg-4">
-                        <button type="button" class="btn btn-primary" data-download-system="{$SYSTEM_MODEL->getVersion()}">
-                            <i class="fa-solid fa-download"></i>
-                            <span class="ms-2">{vtranslate('LBL_UPDATE', $QUALIFIED_MODULE)}</span>
-                        </button>
+                        {if $SYSTEM_MODEL->isNewestVersion()}
+                            {$SYSTEM_MODEL->getDescription()}
+                        {elseif $SYSTEM_MODEL->hasDownloadUrl()}
+                            <button type="button" class="btn btn-primary" data-download-system="{$SYSTEM_MODEL->getVersion()}">
+                                <i class="fa-solid fa-download"></i>
+                                <span class="ms-2">{vtranslate('LBL_UPDATE', $QUALIFIED_MODULE)}</span>
+                            </button>
+                        {else}
+                            <a class="btn btn-primary" target="_blank" href="index.php?module=Installer&view=Redirect&mode=SourceForge">
+                                <i class="fa-solid fa-link"></i>
+                                <span class="ms-2">{vtranslate('LBL_DOWNLOAD', $QUALIFIED_MODULE)}</span>
+                            </a>
+                        {/if}
                     </div>
                 </div>
             {/foreach}
