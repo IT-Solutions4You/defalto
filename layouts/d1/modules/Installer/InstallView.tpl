@@ -73,9 +73,43 @@
             </div>
             {foreach from=Installer_SystemInstall_Model::getAll() item=SYSTEM_MODEL}
                 <div class="row border border-top-0 py-2 align-items-center">
-                    <div class="col-lg">Defalto v{$SYSTEM_MODEL->getCurrentVersion()}</div>
+                    <div class="col-lg">
+                        <div class="fs-4">Defalto v{$SYSTEM_MODEL->getCurrentVersion()}</div>
+                        <div class="systemUpdateContainer">
+                            <div class="systemUpdatedState row align-items-center">
+                                <div class="col-auto fs-1">
+                                    <i class="fa-solid fa-rotate"></i>
+                                </div>
+                                <div class="col-6">
+                                    <div>{vtranslate('LBL_CHECK_UPDATED', $MODULE)}</div>
+                                    <div class="text-secondary small">{vtranslate('LBL_LAST_CHECK', $MODULE)}: {$SYSTEM_MODEL->getCacheDate()}</div>
+                                </div>
+                                <div class="col">
+                                    <a class="btn btn-primary btn-sm active" data-update-information="system" href="index.php?module=Installer&view=IndexAjax&mode=updateInformation">
+                                        <span>{vtranslate('LBL_CHECK_UPDATE', $MODULE)}</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="systemUpdatedState hide row align-items-center">
+                                <div class="col-auto fs-1">
+                                    <i class="fa-solid fa-rotate fa-spin"></i>
+                                </div>
+                                <div class="col-6">
+                                    <div>{vtranslate('LBL_CHECK_UPDATING', $MODULE)}</div>
+                                    <div class="text-secondary small">{vtranslate('LBL_CHECK_LOADING', $MODULE)}...</div>
+                                </div>
+                                <div class="col">
+                                    <a class="btn btn-primary btn-sm active disabled" href="index.php?module=Installer&view=IndexAjax&mode=updateInformation">
+                                        <span>{vtranslate('LBL_CHECK_UPDATE', $MODULE)}</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
                     <div class="col-lg-4 cursorPointer" data-bs-toggle="tooltip" data-bs-placement="left" title="{$SYSTEM_MODEL->getLabel()}">v{$SYSTEM_MODEL->getVersion()}</div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-4 d-flex justify-content-between">
                         {if $SYSTEM_MODEL->isNewestVersion()}
                             <div class="btn btn-success text-dark-success">
                                 <i class="fa-solid fa-check"></i>

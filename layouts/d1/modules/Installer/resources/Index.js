@@ -26,15 +26,14 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
        self.getMainContainer().on('click', '[data-update-information]', function (e) {
            let params = {
                module: 'Installer',
-               action: 'IndexAjax',
+               view: 'IndexAjax',
                mode: 'updateInformation',
+               type: $(this).data('updateInformation'),
            };
 
-           app.request.post({data: params}).then(function (error, data) {
-               if(!error) {
-                   app.helper.showSuccessNotification({message: data['message']});
-               }
-           });
+           if ('system' === params['type']) {
+               $(this).parents('.systemUpdateContainer').find('.systemUpdatedState').toggleClass('hide');
+           }
        })
     },
     registerDeleteLicense() {

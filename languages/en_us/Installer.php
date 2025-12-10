@@ -268,6 +268,11 @@ $languageStrings = [
     'LBL_BACKUP_SOURCE' => 'I have taken the backup of source folder',
     'LBL_HOW_TO' => 'How to?',
     'LBL_CHECK_REQUIREMENTS' => 'I have checked system requirements',
+    'LBL_CHECK_UPDATE' => 'Search for updates',
+    'LBL_LAST_CHECK' => 'Last check',
+    'LBL_CHECK_UPDATED' => 'Updated',
+    'LBL_CHECK_UPDATING' => 'Updating',
+    'LBL_CHECK_LOADING' => 'Loading',
 ];
 
 $jsLanguageStrings = [
