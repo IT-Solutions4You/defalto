@@ -9,22 +9,6 @@
  */
 class Installer_Download_Model
 {
-    public const ZIP_CREATE = 'Zip file create';
-    public const ZIP_CREATED = 'Zip file is created';
-    public const ZIP_NOT_CREATED = 'Zip file is not created. Required to change write permissions to the root folder, files, sub folder and sub files';
-    public const ZIP_WRITABLE = 'Zip file is writable';
-    public const ZIP_COPIED = 'Zip file is copied';
-    public const ZIP_NOT_COPIED = 'Zip file is not copied';
-    public const ZIP_NOT_WRITABLE = 'Zip file is not writable';
-    public const FILE_EXTRACTED = 'File extracted';
-    public const FILE_RENAME = 'Folder rename';
-    public const FILE_OPENED = 'File opened';
-    public const FINISH = 'Finish installation';
-    public const START = 'Start installation';
-    public const SUCCESS = 'File extract successfully';
-    public const SUCCESS_COMPOSER = 'Composer updated successfully';
-    public const ERROR = 'File not opened';
-    public const ERROR_CHMOD = 'Set permissions to the root folder, files, sub folder and sub files';
     /**
      * @var string
      */
@@ -59,24 +43,24 @@ class Installer_Download_Model
      */
     public function extract(): void
     {
-        global $root_directory;
-
+        $this->success('Zip file extract process started');
+        $rootDirectory = Core_Utils_Helper::getRootDirectory();
         $zip = new Installer_ZipArchive_Model();
         $result = $zip->open($this->getZipFile());
 
         if (true === $result) {
-            Core_Install_Model::logSuccess(self::FILE_OPENED);
-            $zip->extractSubDirTo($root_directory, $this->folder);
+            $this->success('Zip file opened successfully');
+            $zip->extractSubDirTo($rootDirectory, $this->folder);
 
-            Core_Install_Model::logSuccess(self::FILE_EXTRACTED);
+            $this->success('Zip file extracted successfully');
             $zip->close();
 
             unlink($this->getZipFile());
 
-            Core_Install_Model::logSuccess(self::SUCCESS);
+            $this->success('Zip file removed successfully');
             $this->setProgress('update', 4);
         } else {
-            Core_Install_Model::logError(self::ERROR);
+            $this->error('Zip file not opened');
             $this->setProgress('error', 4);
         }
     }
@@ -86,7 +70,7 @@ class Installer_Download_Model
      */
     public function finish(): void
     {
-        Core_Install_Model::logSuccess(self::FINISH);
+        $this->success('Finish extraction');
         $this->setProgress('', 6);
     }
 
@@ -175,18 +159,35 @@ class Installer_Download_Model
      */
     public function retrieve(): void
     {
+        $this->success('Start retrieve zip file process');
+
+        if ($this->checkWritableFolders()) {
+            $this->success('Permissions are set correctly');
+        } else {
+            $this->error('Set permissions to the root folder, files, sub folder and sub files');
+
+            foreach (self::$writeableErrors as $error) {
+                $this->error('Permissions not changed:' . $error);
+            }
+
+            $this->setProgress('error', 2);
+
+            return;
+        }
+
         $filename = $this->getZipFile();
 
-        Core_Install_Model::logSuccess(self::ZIP_CREATE);
-
         mkdir(dirname($filename), 0755, true);
+        $this->success('Cache folder created successfully');
+
         file_put_contents($filename, '');
+        $this->success('Zip file created successfully');
 
         if (is_file($filename)) {
-            Core_Install_Model::logSuccess(self::ZIP_CREATED);
+            $this->success('Zip file is created');
             $this->setProgress('download', 2);
         } else {
-            Core_Install_Model::logError(self::ZIP_NOT_CREATED);
+            $this->error('Zip file is not created. Required to change write permissions to the root folder, files, sub folder and sub files');
             $this->setProgress('error', 2);
         }
     }
@@ -220,25 +221,14 @@ class Installer_Download_Model
      */
     public function start(): void
     {
-        global $root_directory;
-
-        if ($this->checkWritableFolders()) {
-            Core_Install_Model::logSuccess(self::START);
-            $this->setProgress('retrieve', 1);
-        } else {
-            Core_Install_Model::logError(self::ERROR_CHMOD);
-
-            foreach (self::$writeableErrors as $error) {
-                Core_Install_Model::logError('Permissions not changed:' . str_replace($root_directory, '', $error));
-            }
-        }
+        $this->success('Start download process');
+        $this->setProgress('retrieve', 1);
     }
 
     public static array $writeableErrors = [];
 
     public function checkWritableFolders(): bool
     {
-        global $root_directory;
         $folders = [
             'modules',
             'layouts',
@@ -246,12 +236,12 @@ class Installer_Download_Model
         ];
 
         foreach ($folders as $folder) {
-            $folderDir = $root_directory . DIRECTORY_SEPARATOR . $folder;
+            $folderDir = Core_Utils_Helper::getRootDirectory() . $folder;
 
             if (!is_writable($folderDir)) {
-                self::$writeableErrors[] = $folderDir;
+                self::$writeableErrors[] = $folder;
             } else {
-                Core_Install_Model::logSuccess('Folder is writeable: ' . $folderDir);
+                $this->success('Folder is writeable: ' . $folder);
             }
         }
 
@@ -263,15 +253,27 @@ class Installer_Download_Model
      */
     public function update(): void
     {
+        $this->success('Composer updated process started');
+
         if (true === is_file('updateComposer.php')) {
             include_once 'updateComposer.php';
 
-            Core_Install_Model::logSuccess(self::SUCCESS_COMPOSER);
+            $this->success('Composer updated successfully');
             $this->setProgress('finish', 5);
         } else {
-            Core_Install_Model::logError(self::ERROR);
+            $this->error('Update composer error file not found');
             $this->setProgress('error', 5);
         }
+    }
+
+    public function success($message): void
+    {
+        Core_Install_Model::logSuccess($message);
+    }
+
+    public function error($message): void
+    {
+        Core_Install_Model::logError($message);
     }
 
     /**
@@ -323,22 +325,23 @@ class Installer_Download_Model
     /**
      * @throws Exception
      */
-    public function download()
+    public function download(): void
     {
+        $this->success('Download zip file process started');
         $filename = $this->getZipFile();
 
         if (is_writable($filename)) {
-            Core_Install_Model::logSuccess(self::ZIP_WRITABLE);
+            $this->success('Download zip file is writable');
 
             if (unlink($filename) && copy($this->getUrl(), $filename) && filesize($filename)) {
-                Core_Install_Model::logSuccess(self::ZIP_COPIED);
+                $this->success('Download zip file copied successfully');
                 $this->setProgress('extract', 3);
             } else {
-                Core_Install_Model::logError(self::ZIP_NOT_COPIED);
+                $this->error('Download zip file not copied.');
                 $this->setProgress('error', 3);
             }
         } else {
-            Core_Install_Model::logError(self::ZIP_NOT_WRITABLE);
+            $this->error('Download zip file not writable.');
             $this->setProgress('error', 3);
         }
     }
