@@ -110,28 +110,37 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
 
         self.getMainContainer().on('click', '[data-download-system]', function (e) {
             let version = $(this).attr('data-download-system');
+            let params = {
+                module: 'Installer',
+                view: 'IndexAjax',
+                mode: 'systemModal',
+                version: version
+            };
 
-            app.helper.showConfirmationBox({message: app.vtranslate('JS_CONFIRM_DOWNLOAD')}).then(function () {
-                let params = {
-                    module: 'Installer',
-                    view: 'IndexAjax',
-                    mode: 'systemModal',
-                    version: version
-                };
-
-                app.request.post({data: params}).then(function (error, data) {
-                    app.helper.showModal(data, {
-                        cb: function (container) {
-                            let downloadLogElement = container.find('[data-download-log]'),
-                                params = app.convertUrlToDataParams(downloadLogElement.attr('data-download-log'));
-
-                            app.request.post({data: params}).then(function (error, data) {
-                                downloadLogElement.html(data);
-                            });
-                        }
-                    });
+            app.request.post({data: params}).then(function (error, data) {
+                app.helper.showModal(data, {
+                    cb: function (container) {
+                        self.registerDownloadLog(container);
+                    }
                 });
-            })
+            });
+        })
+    },
+    registerDownloadLog(container) {
+        container.on('click', '.downloadSystem', function (e) {
+            if (!container.find('#backupDatabaseCheckbox:checked').length || !container.find('#backupSourceCheckbox:checked').length) {
+                app.helper.showErrorNotification({message: app.vtranslate('JS_PLEASE_CONFIRM_BACKUP_DATABASE_AND_SOURCE_CODE')});
+                return;
+            }
+
+            $('.downloadInfoContainer, .downloadLogContainer').toggleClass('hide');
+
+            let downloadLogElement = container.find('[data-download-log]'),
+                params = app.convertUrlToDataParams(downloadLogElement.attr('data-download-log'));
+
+            app.request.post({data: params}).then(function (error, data) {
+                downloadLogElement.html(data);
+            });
         })
     },
     registerDownloadExtension() {
