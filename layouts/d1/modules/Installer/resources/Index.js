@@ -128,7 +128,7 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
     },
     registerDownloadLog(container) {
         container.on('click', '.downloadSystem', function (e) {
-            if (!container.find('#backupDatabaseCheckbox:checked').length || !container.find('#backupSourceCheckbox:checked').length) {
+            if (3 !== $('.updateValidation:checked', container).length) {
                 app.helper.showErrorNotification({message: app.vtranslate('JS_PLEASE_CONFIRM_BACKUP_DATABASE_AND_SOURCE_CODE')});
                 return;
             }

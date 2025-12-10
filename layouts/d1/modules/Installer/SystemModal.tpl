@@ -17,14 +17,19 @@
                 <h5>{vtranslate('LBL_SYSTEM_DOWNLOAD_INFO', $MODULE)}</h5>
                 <p>{vtranslate('LBL_SYSTEM_DOWNLOAD_INFO_DESC', $MODULE)}</p>
                 <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" value="" id="backupDatabaseCheckbox">
+                    <input class="form-check-input updateValidation" type="checkbox" value="" id="backupDatabaseCheckbox">
                     <label class="form-check-label" for="backupDatabaseCheckbox">{vtranslate('LBL_BACKUP_DATABASE', $MODULE)}</label>
                     <a class="text-primary" target="_blank" href="index.php?module=Installer&view=Redirect&mode=Migration">({vtranslate('LBL_HOW_TO', $MODULE)})</a>
                 </div>
                 <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" value="" id="backupSourceCheckbox">
+                    <input class="form-check-input updateValidation" type="checkbox" value="" id="backupSourceCheckbox">
                     <label class="form-check-label" for="backupSourceCheckbox">{vtranslate('LBL_BACKUP_SOURCE', $MODULE)}</label>
                     <a class="text-primary" target="_blank" href="index.php?module=Installer&view=Redirect&mode=Migration">({vtranslate('LBL_HOW_TO', $MODULE)})</a>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input updateValidation" type="checkbox" value="" id="requirementsCheckbox">
+                    <label class="form-check-label" for="requirementsCheckbox">{vtranslate('LBL_CHECK_REQUIREMENTS', $MODULE)}</label>
+                    <a class="text-primary" target="_blank" href="index.php?module=Installer&view=Redirect&mode=Requirements">({vtranslate('LBL_HOW_TO', $MODULE)})</a>
                 </div>
             </div>
             <div class="downloadLogContainer hide">
