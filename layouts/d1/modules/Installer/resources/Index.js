@@ -133,7 +133,7 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                 return;
             }
 
-            $('.downloadInfoContainer, .downloadLogContainer').toggleClass('hide');
+            $('.downloadInfoContainer, .downloadLogContainer, .downloadSystem').toggleClass('hide');
 
             let downloadLogElement = container.find('[data-download-log]'),
                 params = app.convertUrlToDataParams(downloadLogElement.attr('data-download-log'));

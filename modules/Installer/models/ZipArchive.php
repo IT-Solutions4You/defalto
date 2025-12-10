@@ -76,17 +76,23 @@ class Installer_ZipArchive_Model extends ZipArchive
                             }
                         }
 
-                        if (filesize($destination . $relativePath) !== strlen($this->getFromIndex($i))) {
-                            Core_Install_Model::logInfo('New file: ' . $relativePath);
-                        }
+                        $newFileSize = strlen($this->getFromIndex($i));
 
                         if ($skip) {
                             Core_Install_Model::logInfo('Skip file: ' . $relativePath);
-                        } elseif (file_put_contents($destination . $relativePath, $this->getFromIndex($i)) === false) {
-                            self::$errors[$i] = $filename;
-                            Core_Install_Model::logError('Not Extracted file: ' . $relativePath);
                         } else {
-                            Core_Install_Model::logSuccess('Extracted file: ' . $relativePath);
+                            if (filesize($destination . $relativePath) !== $newFileSize) {
+                                Core_Install_Model::logInfo('New file: ' . $relativePath);
+                            }
+
+                            file_put_contents($destination . $relativePath, $this->getFromIndex($i));
+
+                            if (filesize($destination . $relativePath) === $newFileSize) {
+                                Core_Install_Model::logSuccess('Extract file success: ' . $relativePath);
+                            } else {
+                                self::$errors[$i] = $filename;
+                                Core_Install_Model::logError('Extract file error: ' . $relativePath);
+                            }
                         }
                     }
                 }
