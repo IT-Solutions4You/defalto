@@ -10,7 +10,7 @@
 
 class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 {
-    public static array $ignoredModules = ['Dashboard'];
+    public static array $ignoredModules = ['Dashboard', 'Home', 'Rss', 'Portal', 'Import', 'SMSNotifier', 'WSAPP', 'PBXManager', 'RecycleBin', 'Webforms', 'Google', 'ModTracker', 'ModComments', 'MailManager', 'Users', 'CustomerPortal'];
     public Vtiger_Module_Model|bool|null $module = null;
 
     public static function clearCache(): void
@@ -31,10 +31,20 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
                 continue;
             }
 
-            $extensions[$module->getName()] = self::getInstance($module);
+            $extensions[$module->getLabel()] = self::getInstance($module);
         }
 
+        ksort($extensions);
+
         return $extensions;
+    }
+
+    public function getLabel(): string
+    {
+        $version = $this->getVersion();
+        $module = $this->getName();
+
+        return vtranslate($module, $module) . ($version ? ' v' . $version : '');
     }
 
     /**

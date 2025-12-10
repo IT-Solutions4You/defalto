@@ -114,4 +114,9 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
     {
         return 'index.php?module=Installer&view=IndexAjax&mode=systemProgress&version=' . $this->getVersion();
     }
+
+    public function getCurrentVersion(): string
+    {
+        return Vtiger_Version::current();
+    }
 }

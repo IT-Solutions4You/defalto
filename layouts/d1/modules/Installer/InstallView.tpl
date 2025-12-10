@@ -25,7 +25,7 @@
             </div>
             <div class="row border py-2">
                 <div class="col-lg-4"></div>
-                <div class="col-lg-2 fw-bold">{vtranslate('LBL_NAME', $QUALIFIED_MODULE)}</div>
+                <div class="col-lg-2 fw-bold">{vtranslate('LBL_TYPE', $QUALIFIED_MODULE)}</div>
                 <div class="col-lg-2 fw-bold">{vtranslate('Due Date', $QUALIFIED_MODULE)}</div>
                 <div class="col-lg-4 fw-bold">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</div>
             </div>
@@ -67,26 +67,29 @@
                 <div class="col-lg-auto"></div>
             </div>
             <div class="row border py-2">
-                <div class="col-lg-6"></div>
-                <div class="col-lg-2 fw-bold">{vtranslate('LBL_UPDATE_VERSION', $QUALIFIED_MODULE)}</div>
+                <div class="col-lg"></div>
+                <div class="col-lg-4 fw-bold">{vtranslate('LBL_UPDATE_VERSION', $QUALIFIED_MODULE)}</div>
                 <div class="col-lg-4 fw-bold">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</div>
             </div>
             {foreach from=Installer_SystemInstall_Model::getAll() item=SYSTEM_MODEL}
-                <div class="row border border-top-0 py-2 align-items-center {if $SYSTEM_MODEL->isNewestVersion()}text-success{else}text-danger{/if}">
-                    <div class="col-lg-6">{$SYSTEM_MODEL->getLabel()}</div>
-                    <div class="col-lg-2">{$SYSTEM_MODEL->getVersion()}</div>
+                <div class="row border border-top-0 py-2 align-items-center">
+                    <div class="col-lg">Defalto v{$SYSTEM_MODEL->getCurrentVersion()}</div>
+                    <div class="col-lg-4 cursorPointer" data-bs-toggle="tooltip" data-bs-placement="left" title="{$SYSTEM_MODEL->getLabel()}">v{$SYSTEM_MODEL->getVersion()}</div>
                     <div class="col-lg-4">
                         {if $SYSTEM_MODEL->isNewestVersion()}
-                            {$SYSTEM_MODEL->getDescription()}
+                            <div class="btn btn-success text-dark-success">
+                                <i class="fa-solid fa-check"></i>
+                                <span class="ms-2 fw-bold">{$SYSTEM_MODEL->getDescription()}</span>
+                            </div>
                         {elseif $SYSTEM_MODEL->hasDownloadUrl()}
                             <button type="button" class="btn btn-primary" data-download-system="{$SYSTEM_MODEL->getVersion()}">
-                                <i class="fa-solid fa-download"></i>
-                                <span class="ms-2">{vtranslate('LBL_UPDATE', $QUALIFIED_MODULE)}</span>
+                                <i class="fa-solid fa-rotate"></i>
+                                <span class="ms-2 fw-bold">{vtranslate('LBL_UPDATE', $QUALIFIED_MODULE)}</span>
                             </button>
                         {else}
                             <a class="btn btn-primary" target="_blank" href="index.php?module=Installer&view=Redirect&mode=SourceForge">
-                                <i class="fa-solid fa-link"></i>
-                                <span class="ms-2">{vtranslate('LBL_DOWNLOAD', $QUALIFIED_MODULE)}</span>
+                                <i class="fa-solid fa-download"></i>
+                                <span class="ms-2 fw-bold">{vtranslate('LBL_DOWNLOAD', $QUALIFIED_MODULE)}</span>
                             </a>
                         {/if}
                     </div>
@@ -101,20 +104,18 @@
                 <div class="col-lg-auto"></div>
             </div>
             <div class="row border py-2">
-                <div class="col-lg-4"></div>
-                <div class="col-lg-2 fw-bold">{vtranslate('LBL_VERSION', $QUALIFIED_MODULE)}</div>
-                <div class="col-lg-2 fw-bold">{vtranslate('LBL_UPDATE_VERSION', $QUALIFIED_MODULE)}</div>
+                <div class="col-lg"></div>
+                <div class="col-lg-4 fw-bold">{vtranslate('LBL_UPDATE_VERSION', $QUALIFIED_MODULE)}</div>
                 <div class="col-lg-4 fw-bold">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</div>
             </div>
             {foreach from=Installer_ExtensionInstall_Model::getAll() item=EXTENSION_MODEL}
                 {assign var=EXTENSION_NAME value=$EXTENSION_MODEL->getName()}
                 {assign var=EXTENSION_LABEL value=vtranslate($EXTENSION_NAME, $EXTENSION_NAME)}
                 <div class="row border border-top-0 py-2 align-items-center">
-                    <div class="col-lg-4">
-                        <a href="{$EXTENSION_MODEL->getDefaultUrl()}">{$EXTENSION_LABEL}</a>
+                    <div class="col-lg">
+                        <a href="{$EXTENSION_MODEL->getDefaultUrl()}">{$EXTENSION_MODEL->getLabel()}</a>
                     </div>
-                    <div class="col-lg-2">{$EXTENSION_MODEL->getVersion()}</div>
-                    <div class="col-lg-2">{$EXTENSION_MODEL->getUpdateVersion()}</div>
+                    <div class="col-lg-4">{$EXTENSION_MODEL->getUpdateVersion()}</div>
                     <div class="col-lg-4 d-flex">
                         {if $EXTENSION_MODEL->hasDownloadUrl()}
                             <button type="button" class="btn btn-primary" data-download-extension="{$EXTENSION_MODEL->getName()}">
