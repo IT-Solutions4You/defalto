@@ -99,4 +99,11 @@ class Core_Utils_Helper
     {
         return getTabid($moduleName) && vtlib_isModuleActive($moduleName);
     }
+
+    public static function getRootDirectory(): string
+    {
+        global $root_directory;
+
+        return rtrim($root_directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+    }
 }
