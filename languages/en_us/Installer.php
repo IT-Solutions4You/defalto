@@ -295,5 +295,5 @@ $jsLanguageStrings = [
     'JS_REQUIREMENTS_MESSAGE' => 'Incorrectly set system requirements can result in problems and complications when using our extensions and system itself. It is important to note that incorrect settings may lead to additional support charges.',
     'JS_LICENSE_DELETE_CONFIRMATION' => 'Are you sure to completely delete License from your CRM ?',
     'JS_CONFIRM_DOWNLOAD' => 'Do you really want to download and update this package?',
-    'JS_PLEASE_CONFIRM_BACKUP_DATABASE_AND_SOURCE_CODE' => 'Confirm backup of database and source code',
+    'JS_PLEASE_CONFIRM_BACKUP_DATABASE_AND_SOURCE_CODE' => 'Confirm backup of database, source code and checked for system requirements',
 ];

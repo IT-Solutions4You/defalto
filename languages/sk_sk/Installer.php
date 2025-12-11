@@ -281,4 +281,5 @@ $jsLanguageStrings = [
     'JS_REQUIREMENTS_MESSAGE' => 'Nesprávne nastavené systémové požiadavky môžu mať za následok problémy a komplikácie pri používaní našich rozšírení a samotného Vtigeru. Je dôležité poznamenať, že nesprávne nastavenia môžu viesť k dodatočným poplatkom za podporu.',
     'JS_LICENSE_DELETE_CONFIRMATION' => 'Naozaj chcete úplne odstrániť licenciu z vášho CRM?',
     'JS_CONFIRM_DOWNLOAD' => 'Naozaj chcete stiahnuť a aktualizovať tento balíček?',
+    'JS_PLEASE_CONFIRM_BACKUP_DATABASE_AND_SOURCE_CODE' => 'Potvrďte zálohu databázy, zdrojového kódu a skontrolujte systémové požiadavky',
 ];
