@@ -82,7 +82,7 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
      */
     public static function isCacheDateValid(): bool
     {
-        return time() - $_SESSION['Installer_SystemInstallDate'] > 300;
+        return time() - $_SESSION['Installer_SystemInstallDate'] > 60;
     }
 
     /**

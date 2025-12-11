@@ -45,7 +45,8 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="downloadSystem btn btn-primary active">{vtranslate('LBL_UPDATE_CRM', $MODULE)}</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{vtranslate('LBL_CLOSE', $MODULE)}</button>
+            <a href="/index.php?module=Installer" class="finish btn btn-primary active hide">{vtranslate('LBL_FINISH', $MODULE)}</a>
+            <a href="/index.php?module=Installer" class="close btn btn-primary">{vtranslate('LBL_CLOSE', $MODULE)}</a>
         </div>
     </div>
 </div>

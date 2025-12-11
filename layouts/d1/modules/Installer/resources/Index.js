@@ -33,6 +33,7 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
 
            if ('system' === params['type']) {
                $(this).parents('.systemUpdateContainer').find('.systemUpdatedState').toggleClass('hide');
+               $(this).addClass('disabled');
            }
        })
     },
@@ -100,7 +101,6 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                         app.helper.showErrorNotification({message: data['message']});
                     }
                 }
-                console.log(data);
             })
         });
     },
@@ -138,7 +138,11 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                 params = app.convertUrlToDataParams(downloadLogElement.attr('data-download-log'));
 
             app.request.post({data: params}).then(function (error, data) {
-                downloadLogElement.html(data);
+                if(!error) {
+                    downloadLogElement.html(data);
+                    container.find('a.finish').removeClass('hide');
+                    container.find('a.close').addClass('hide');
+                }
             });
         })
     },
