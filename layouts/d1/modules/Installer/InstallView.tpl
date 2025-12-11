@@ -68,7 +68,6 @@
             </div>
             <div class="row border py-2">
                 <div class="col-lg"></div>
-                <div class="col-lg-4 fw-bold">{vtranslate('LBL_UPDATE_VERSION', $QUALIFIED_MODULE)}</div>
                 <div class="col-lg-4 fw-bold">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</div>
             </div>
             {foreach from=Installer_SystemInstall_Model::getAll() item=SYSTEM_MODEL}
@@ -77,11 +76,21 @@
                         <div class="fs-4">Defalto v{$SYSTEM_MODEL->getCurrentVersion()}</div>
                         <div>
                             <div class="systemUpdatedState row align-items-center">
-                                <div class="col-auto fs-1 text-primary">
-                                    <i class="fa-solid fa-rotate"></i>
+                                <div class="col-auto fs-1">
+                                    {if $SYSTEM_MODEL->isNewestVersion()}
+                                        <i class="fa-solid fa-check text-success"></i>
+                                    {else}
+                                        <i class="fa-solid fa-rotate text-primary"></i>
+                                    {/if}
                                 </div>
                                 <div class="col-6">
-                                    <div>{vtranslate('LBL_CHECK_UPDATED', $MODULE)}</div>
+                                    <div>
+                                        {if $SYSTEM_MODEL->isNewestVersion()}
+                                            <span class="text-success">{vtranslate('LBL_UP_TO_DATE', 'Installer')}</span>
+                                        {else}
+                                            {vtranslate('LBL_CHECK_UPDATE_AVAILABLE', $MODULE)} {$SYSTEM_MODEL->getLabel()}
+                                        {/if}
+                                    </div>
                                     <div class="text-secondary small">{vtranslate('LBL_LAST_CHECK', $MODULE)}: {$SYSTEM_MODEL->getCacheDate()}</div>
                                 </div>
                             </div>
@@ -96,15 +105,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 cursorPointer" data-bs-toggle="tooltip" data-bs-placement="left" title="{$SYSTEM_MODEL->getLabel()}">v{$SYSTEM_MODEL->getVersion()}</div>
                     <div class="col-lg-4 d-flex">
                         {if $SYSTEM_MODEL->isNewestVersion()}
-                            <div class="btn btn-success text-dark-success">
-                                <i class="fa-solid fa-check"></i>
-                                <span class="ms-2 fw-bold">{$SYSTEM_MODEL->getDescription()}</span>
-                            </div>
                             {if $SYSTEM_MODEL->isCacheDateValid()}
-                                <a class="btn btn-primary ms-2" data-update-information="system" href="index.php?module=Installer&view=IndexAjax&mode=updateInformation">
+                                <a class="btn btn-primary" data-update-information="system" href="index.php?module=Installer&view=IndexAjax&mode=updateInformation">
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                     <span class="ms-2">{vtranslate('LBL_CHECK_UPDATE', $MODULE)}</span>
                                 </a>
