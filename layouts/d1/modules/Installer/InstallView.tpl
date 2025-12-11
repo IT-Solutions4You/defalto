@@ -85,7 +85,7 @@
                                     <div class="text-secondary small">{vtranslate('LBL_LAST_CHECK', $MODULE)}: {$SYSTEM_MODEL->getCacheDate()}</div>
                                 </div>
                                 <div class="col">
-                                    {if $SYSTEM_MODEL->isCacheDateValid()}
+                                    {if $SYSTEM_MODEL->isNewestVersion() and $SYSTEM_MODEL->isCacheDateValid()}
                                         <a class="btn btn-primary btn-sm active" data-update-information="system" href="index.php?module=Installer&view=IndexAjax&mode=updateInformation">
                                             <span>{vtranslate('LBL_CHECK_UPDATE', $MODULE)}</span>
                                         </a>
