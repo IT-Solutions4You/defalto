@@ -57,18 +57,32 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
         return $_SESSION['Installer_SystemInstall'];
     }
 
+    /**
+     * @return void
+     */
     public static function clearCache(): void
     {
         unset($_SESSION['Installer_SystemInstall']);
         unset($_SESSION['Installer_SystemInstallDate']);
     }
 
+    /**
+     * @return string
+     */
     public static function getCacheDate(): string
     {
         $time = $_SESSION['Installer_SystemInstallDate'];
-        $userDate = Vtiger_Util_Helper::formatDateIntoStrings(date('Y-m-d', $time)) . ' ' . date('H:i', $time);
+        $userDate = Vtiger_Util_Helper::formatDateIntoStrings(date('Y-m-d', $time), date('H:i:s', $time));
 
         return $time ? $userDate : '';
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isCacheDateValid(): bool
+    {
+        return time() - $_SESSION['Installer_SystemInstallDate'] > 300;
     }
 
     /**
