@@ -10,7 +10,7 @@
 
 class Installer_ZipArchive_Model extends ZipArchive
 {
-    public static array $skipFiles = ['config.inc.php', 'composer.lock', 'index.php', 'update.php', 'install.php', 'parent_tabdata.php', 'tabdata.php'];
+    public static array $skipFiles = ['config.inc.php', 'composer.lock', 'index.php', 'update.php', 'install.php', 'parent_tabdata.php', 'tabdata.php', 'vtigercron.sh'];
     public static array $skipFolders = ['user_privileges', 'manifest', 'update', 'icons', 'installer'];
 
     public static array $errors = [];

@@ -140,6 +140,8 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
             app.request.post({data: params}).then(function (error, data) {
                 if(!error) {
                     downloadLogElement.html(data);
+
+                    container.find('.modal-body').animate({scrollTop: downloadLogElement.height()});
                     container.find('a.finish').removeClass('hide');
                     container.find('a.close').addClass('hide');
                 }

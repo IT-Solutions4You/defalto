@@ -258,8 +258,12 @@ $languageStrings = [
     'no_activations_left' => 'Nezostali žiadne aktivácie',
     'LBL_UP_TO_DATE' => 'Verzia systému je aktuálna',
     'LBL_CHECK_REQUIREMENTS' => 'Skontroloval som systémové požiadavky',
-    'LBL_CHECK_UPDATE' => 'Vyhľadať aktualizácie',
+    'LBL_CHECK_UPDATE' => 'Vyhľadajte aktualizácie',
     'LBL_LAST_CHECK' => 'Posledná kontrola',
+    'LBL_CHECK_UPDATED' => 'Aktualizovane',
+    'LBL_CHECK_UPDATE_AVAILABLE' => 'K dispozícii je aktualizácia',
+    'LBL_CHECK_UPDATING' => 'Vyhľadávanie',
+    'LBL_CHECK_LOADING' => 'Hľadajú sa aktualizácie',
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Naozaj chcete nainštalovať rozšírenie?',

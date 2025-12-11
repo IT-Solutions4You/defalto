@@ -272,7 +272,7 @@ $languageStrings = [
     'LBL_LAST_CHECK' => 'Last check',
     'LBL_CHECK_UPDATED' => 'Updated',
     'LBL_CHECK_UPDATE_AVAILABLE' => 'Update available',
-    'LBL_CHECK_UPDATING' => 'Updating',
+    'LBL_CHECK_UPDATING' => 'Searching',
     'LBL_CHECK_LOADING' => 'Searching for updates',
 ];
 
