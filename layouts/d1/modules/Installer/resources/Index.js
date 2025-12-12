@@ -26,15 +26,15 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
        self.getMainContainer().on('click', '[data-update-information]', function (e) {
            let params = {
                module: 'Installer',
-               action: 'IndexAjax',
+               view: 'IndexAjax',
                mode: 'updateInformation',
+               type: $(this).data('updateInformation'),
            };
 
-           app.request.post({data: params}).then(function (error, data) {
-               if(!error) {
-                   app.helper.showSuccessNotification({message: data['message']});
-               }
-           });
+           if ('system' === params['type']) {
+               $(this).parents('.systemUpdateContainer').find('.systemUpdatedState').toggleClass('hide');
+               $(this).addClass('disabled');
+           }
        })
     },
     registerDeleteLicense() {
@@ -101,7 +101,6 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                         app.helper.showErrorNotification({message: data['message']});
                     }
                 }
-                console.log(data);
             })
         });
     },
@@ -110,28 +109,43 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
 
         self.getMainContainer().on('click', '[data-download-system]', function (e) {
             let version = $(this).attr('data-download-system');
+            let params = {
+                module: 'Installer',
+                view: 'IndexAjax',
+                mode: 'systemModal',
+                version: version
+            };
 
-            app.helper.showConfirmationBox({message: app.vtranslate('JS_CONFIRM_DOWNLOAD')}).then(function () {
-                let params = {
-                    module: 'Installer',
-                    view: 'IndexAjax',
-                    mode: 'systemModal',
-                    version: version
-                };
-
-                app.request.post({data: params}).then(function (error, data) {
-                    app.helper.showModal(data, {
-                        cb: function (container) {
-                            let downloadLogElement = container.find('[data-download-log]'),
-                                params = app.convertUrlToDataParams(downloadLogElement.attr('data-download-log'));
-
-                            app.request.post({data: params}).then(function (error, data) {
-                                downloadLogElement.html(data);
-                            });
-                        }
-                    });
+            app.request.post({data: params}).then(function (error, data) {
+                app.helper.showModal(data, {
+                    cb: function (container) {
+                        self.registerDownloadLog(container);
+                    }
                 });
-            })
+            });
+        })
+    },
+    registerDownloadLog(container) {
+        container.on('click', '.downloadSystem', function (e) {
+            if (3 !== $('.updateValidation:checked', container).length) {
+                app.helper.showErrorNotification({message: app.vtranslate('JS_PLEASE_CONFIRM_BACKUP_DATABASE_AND_SOURCE_CODE')});
+                return;
+            }
+
+            $('.downloadInfoContainer, .downloadLogContainer, .downloadSystem').toggleClass('hide');
+
+            let downloadLogElement = container.find('[data-download-log]'),
+                params = app.convertUrlToDataParams(downloadLogElement.attr('data-download-log'));
+
+            app.request.post({data: params}).then(function (error, data) {
+                if(!error) {
+                    downloadLogElement.html(data);
+
+                    container.find('.modal-body').animate({scrollTop: downloadLogElement.height()});
+                    container.find('a.finish').removeClass('hide');
+                    container.find('a.close').addClass('hide');
+                }
+            });
         })
     },
     registerDownloadExtension() {

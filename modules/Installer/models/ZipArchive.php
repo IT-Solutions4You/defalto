@@ -10,7 +10,7 @@
 
 class Installer_ZipArchive_Model extends ZipArchive
 {
-    public static array $skipFiles = ['config.inc.php', 'composer.lock', 'index.php', 'update.php', 'install.php', 'parent_tabdata.php', 'tabdata.php'];
+    public static array $skipFiles = ['config.inc.php', 'composer.lock', 'index.php', 'update.php', 'install.php', 'parent_tabdata.php', 'tabdata.php', 'vtigercron.sh'];
     public static array $skipFolders = ['user_privileges', 'manifest', 'update', 'icons', 'installer'];
 
     public static array $errors = [];
@@ -76,13 +76,23 @@ class Installer_ZipArchive_Model extends ZipArchive
                             }
                         }
 
+                        $newFileSize = strlen($this->getFromIndex($i));
+
                         if ($skip) {
-                            Core_Install_Model::logInfo('Skip: ' . $relativePath);
-                        } elseif (file_put_contents($destination . $relativePath, $this->getFromIndex($i)) === false) {
-                            self::$errors[$i] = $filename;
-                            Core_Install_Model::logError('Not Extracted: ' . $relativePath);
+                            Core_Install_Model::logInfo('Skip file: ' . $relativePath);
                         } else {
-                            Core_Install_Model::logSuccess('Extracted: ' . $relativePath);
+                            if (filesize($destination . $relativePath) !== $newFileSize) {
+                                Core_Install_Model::logInfo('New file: ' . $relativePath);
+                            }
+
+                            file_put_contents($destination . $relativePath, $this->getFromIndex($i));
+
+                            if (filesize($destination . $relativePath) === $newFileSize) {
+                                Core_Install_Model::logSuccess('Extract file success: ' . $relativePath);
+                            } else {
+                                self::$errors[$i] = $filename;
+                                Core_Install_Model::logError('Extract file error: ' . $relativePath);
+                            }
                         }
                     }
                 }

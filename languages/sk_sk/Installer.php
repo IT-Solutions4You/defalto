@@ -255,6 +255,15 @@ $languageStrings = [
     'LBL_UNINSTALL_CONFIRM' => 'Naozaj chcete úplne odstrániť rozšírenie z vášho CRM?',
     'LBL_LICENSE_DELETED' => 'Licencia bola úspešne odstránená.',
     'LBL_ADD_LICENSE' => 'Pridať licenčný kľúč',
+    'no_activations_left' => 'Nezostali žiadne aktivácie',
+    'LBL_UP_TO_DATE' => 'Verzia systému je aktuálna',
+    'LBL_CHECK_REQUIREMENTS' => 'Skontroloval som systémové požiadavky',
+    'LBL_CHECK_UPDATE' => 'Vyhľadajte aktualizácie',
+    'LBL_LAST_CHECK' => 'Posledná kontrola',
+    'LBL_CHECK_UPDATED' => 'Aktualizovane',
+    'LBL_CHECK_UPDATE_AVAILABLE' => 'K dispozícii je aktualizácia',
+    'LBL_CHECK_UPDATING' => 'Vyhľadávanie',
+    'LBL_CHECK_LOADING' => 'Hľadajú sa aktualizácie',
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Naozaj chcete nainštalovať rozšírenie?',
@@ -275,5 +284,6 @@ $jsLanguageStrings = [
     'JS_REQUIREMENTS_YES' => 'Zobraziť systémové požiadavky',
     'JS_REQUIREMENTS_MESSAGE' => 'Nesprávne nastavené systémové požiadavky môžu mať za následok problémy a komplikácie pri používaní našich rozšírení a samotného Vtigeru. Je dôležité poznamenať, že nesprávne nastavenia môžu viesť k dodatočným poplatkom za podporu.',
     'JS_LICENSE_DELETE_CONFIRMATION' => 'Naozaj chcete úplne odstrániť licenciu z vášho CRM?',
-    'JS_CONFIRM_DOWNLOAD' => 'Naozaj chcete stiahnuť tento balíček?',
+    'JS_CONFIRM_DOWNLOAD' => 'Naozaj chcete stiahnuť a aktualizovať tento balíček?',
+    'JS_PLEASE_CONFIRM_BACKUP_DATABASE_AND_SOURCE_CODE' => 'Potvrďte zálohu databázy, zdrojového kódu a skontrolujte systémové požiadavky',
 ];
