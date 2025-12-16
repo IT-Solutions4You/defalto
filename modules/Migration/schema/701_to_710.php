@@ -215,38 +215,6 @@ if (defined('VTIGER_UPGRADE')) {
     echo '<br>Succesfully centralize user field table for easy query with context of user across module<br>';
     //END::Centralize user field table for easy query with context of user across module
 
-    //START::Adding new parent TOOLS in menu
-    $appsList = ['Tools' => ['Rss', 'Portal', 'RecycleBin']];
-    foreach ($appsList as $appName => $appModules) {
-        $menuInstance = Vtiger_Menu::getInstance($appName);
-        foreach ($appModules as $moduleName) {
-            $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-            if ($moduleModel) {
-                Settings_MenuEditor_Module_Model::addModuleToApp($moduleName, $appName);
-                $menuInstance->addModule($moduleModel);
-            }
-        }
-    }
-
-    $tabResult1 = $db->pquery('SELECT tabid, name, parent FROM vtiger_tab WHERE presence IN (?, ?) AND source=?', [0, 2, 'custom']);
-    while ($row = $db->fetch_row($tabResult1)) {
-        $parentFromDb = $row['parent'];
-        if ($parentFromDb) {
-            $moduleName = $row['name'];
-            $parentTabs = explode(',', $parentFromDb);
-            foreach ($parentTabs as $parentTab) {
-                Settings_MenuEditor_Module_Model::addModuleToApp($moduleName, $parentTab);
-            }
-
-            $menuTab = $parentTabs[0];
-            $menuInstance = Vtiger_Menu::getInstance($menuTab);
-            if ($menuInstance) {
-                $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-                $menuInstance->addModule($moduleModel);
-            }
-        }
-    }
-
     //START::Supporting to store dashboard size
     $dashboardWidgetColumns = $db->getColumnNames('vtiger_module_dashboard_widgets');
     if (!in_array('size', $dashboardWidgetColumns)) {
