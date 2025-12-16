@@ -19,6 +19,9 @@ class Vtiger_Install_Model extends Core_Install_Model
         'modules/SalesOrder/views/Detail.php',
         'modules/PurchaseOrder/views/Detail.php',
         'modules/Quotes/views/Detail.php',
+        'modules/Invoice/views/QuickCreateAjax.php',
+        'modules/SalesOrder/views/QuickCreateAjax.php',
+        'modules/Quotes/views/QuickCreateAjax.php',
     ];
 
     public static array $createTablesClasses = [
