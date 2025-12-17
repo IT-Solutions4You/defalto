@@ -274,6 +274,7 @@ $languageStrings = [
     'LBL_CHECK_UPDATE_AVAILABLE' => 'Update available',
     'LBL_CHECK_UPDATING' => 'Searching',
     'LBL_CHECK_LOADING' => 'Searching for updates',
+    'LBL_MEMBERSHIP_BRANDING' => 'Want one-click updates?<br>See what <a-redirect-membership>Defalto Membership</a> includes and <a-redirect-order>get started now</a>.'
 ];
 
 $jsLanguageStrings = [

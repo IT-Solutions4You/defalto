@@ -143,4 +143,16 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
     {
         return Vtiger_Version::current();
     }
+
+    /**
+     *
+     */
+    public function getBranding()
+    {
+        $translate = vtranslate('LBL_MEMBERSHIP_BRANDING', 'Installer');
+        $translate = str_replace('-redirect-membership', ' class="fw-bold text-primary" target="_blank" href="index.php?module=Installer&view=Redirect&mode=Membership"', $translate);
+        $translate = str_replace('-redirect-order', ' class="fw-bold text-primary" target="_blank" href="index.php?module=Installer&view=Redirect&mode=MembershipOrder"', $translate);
+
+        return $translate;
+    }
 }

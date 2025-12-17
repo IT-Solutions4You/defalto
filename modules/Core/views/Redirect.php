@@ -70,6 +70,8 @@ class Core_Redirect_View extends Vtiger_Basic_View {
             'Migration' => 'https://defalto.com/administrator-guide/installation-guide/system-backup-database-and-files/',
             'SourceForge' => 'https://sourceforge.net/projects/defalto-crm/',
             'Requirements' => 'https://defalto.com/administrator-guide/installation-guide/system-requirements/',
+            'Membership' => 'https://defalto.com/services/membership?utm_source=app&utm_medium=updates_inline&utm_campaign=membership_upsell&utm_content=info',
+            'MembershipOrder' => 'https://defalto.store/downloads/membership?utm_source=app&utm_medium=updates_inline&utm_campaign=membership_upsell&utm_content=order',
             default => '',
         };
     }
