@@ -105,7 +105,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 d-flex">
+                    <div class="col-lg-4">
                         {if $SYSTEM_MODEL->isNewestVersion()}
                             {if $SYSTEM_MODEL->isCacheDateValid()}
                                 <a class="btn btn-primary" data-update-information="system" href="index.php?module=Installer&view=IndexAjax&mode=updateInformation">
@@ -123,6 +123,9 @@
                                 <i class="fa-solid fa-download"></i>
                                 <span class="ms-2 fw-bold">{vtranslate('LBL_DOWNLOAD', $QUALIFIED_MODULE)}</span>
                             </a>
+                        {/if}
+                        {if !Installer_License_Model::isMembershipActive()}
+                            <div class="pt-2">{$SYSTEM_MODEL->getBranding()}</div>
                         {/if}
                     </div>
                 </div>
