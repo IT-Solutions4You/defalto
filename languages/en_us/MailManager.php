@@ -302,6 +302,3 @@ $jsLanguageStrings = [
     'JSLBL_MAILS_MARKED_UNREAD' => 'Mail(s) marked as unread.',
     'JSLBL_MAILS_MARKED_READ' => 'Mail(s) marked as read.',
 ];
-
-//Special Handling: Mix of language strings are used.
-$languageStrings = array_merge($languageStrings, $jsLanguageStrings);
