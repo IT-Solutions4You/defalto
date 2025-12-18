@@ -257,7 +257,8 @@ $languageStrings = [
     'update' => 'Aktualisieren',
     'user_file' => 'Datei für Benutzerberechtigungen fehlt',
     'warning' => 'Warnung',
-    'LBL_MEMBERSHIP_BRANDING' => 'Updates mit nur einem Klick?<br>Entdecken Sie, was die <a-redirect-membership>Defalto-Mitgliedschaft</a> beinhaltet, und <a-redirect-order>starten Sie jetzt</a>.'
+    'LBL_MEMBERSHIP_BRANDING' => 'Updates mit nur einem Klick?<br>Entdecken Sie, was die <a-redirect-membership>Defalto-Mitgliedschaft</a> beinhaltet, und <a-redirect-order>starten Sie jetzt</a>.',
+    'LBL_MODULES' => 'Module',
 ];
 
 $jsLanguageStrings = [
