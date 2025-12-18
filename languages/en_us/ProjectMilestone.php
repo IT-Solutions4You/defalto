@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -18,24 +19,24 @@
 
 $languageStrings = [
     // Basic Strings
-    'SINGLE_ProjectMilestone'           => 'Project Milestone',
-    'LBL_ADD_RECORD'                    => 'Add Project Milestone',
-    'LBL_RECORDS_LIST'                  => 'Project Milestones List',
-    'LBL_PROJECTS_LIST'                 => 'Projects List',
-    'LBL_TASKS_LIST'                    => 'Tasks List',
-    'LBL_MILESTONES_LIST'               => 'Milestones List',
+    'SINGLE_ProjectMilestone' => 'Project Milestone',
+    'LBL_ADD_RECORD' => 'Add Project Milestone',
+    'LBL_RECORDS_LIST' => 'Project Milestones List',
+    'LBL_PROJECTS_LIST' => 'Projects List',
+    'LBL_TASKS_LIST' => 'Tasks List',
+    'LBL_MILESTONES_LIST' => 'Milestones List',
 
     // Blocks
     'LBL_PROJECT_MILESTONE_INFORMATION' => 'Project Milestone Details',
 
     //Field Labels
-    'Project Milestone Name'            => 'Project Milestone Name',
-    'Milestone Date'                    => 'Milestone Date',
-    'Project Milestone No'              => 'Project Milestone Number',
-    'Type'                              => 'Type',
-    'Related to'                        => 'Related To',
+    'Project Milestone Name' => 'Project Milestone Name',
+    'Milestone Date' => 'Milestone Date',
+    'Project Milestone No' => 'Project Milestone Number',
+    'Type' => 'Type',
+    'Related to' => 'Related To',
     //picklist values
-    'administrative'                    => 'Administrative',
-    'operative'                         => 'Operative',
-    'other'                             => 'Other',
+    'administrative' => 'Administrative',
+    'operative' => 'Operative',
+    'other' => 'Other',
 ];

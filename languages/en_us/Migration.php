@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,22 +18,22 @@
  */
 
 $languageStrings = [
-    'LBL_CRM_MIGRATION'                 => 'Welcome to Defalto Migration',
-    'LBL_MIGRATION_COMPLETED'              => 'Migration Completed',
-    'LBL_MIGRATION_WIZARD'                 => 'Migration Wizard',
-    'LBL_PRIDE_BEING_ASSOCIATED'           => 'We take pride in being associated with you.',
-    'LBL_TALK_TO_US_AT_FORUMS'             => 'Have any questions? Find help on Defalto <a href="index.php?module=Core&view=Redirect&mode=Forum" target="_blank">Discussions</a><br>',
-    'LBL_DISCUSS_WITH_US_AT_BLOGS'         => 'To know more about Defalto follow us our <a href="index.php?module=Core&view=Redirect&mode=Blog" target="_blank">Blog</a>',
-    'LBL_CRM_DOCUMENTATION'                => 'Defalto Help - <a href="index.php?module=Core&view=Redirect&mode=Documentation" target="_blank">Documentation</a>, <a href="index.php?module=Core&view=Redirect&mode=Videos" target="_blank">Videos</a> <BR>',
-    'LBL_THANKS'                           => 'Thanks for using <b>Defalto CRM</b>',
-    'LBL_WE_AIM_TO_BE_BEST'                => 'We aim to be - simply the best',
-    'LBL_SPACE_FOR_YOU'                    => 'Come on over, there is space for you too!',
+    'LBL_CRM_MIGRATION' => 'Welcome to Defalto Migration',
+    'LBL_MIGRATION_COMPLETED' => 'Migration Completed',
+    'LBL_MIGRATION_WIZARD' => 'Migration Wizard',
+    'LBL_PRIDE_BEING_ASSOCIATED' => 'We take pride in being associated with you.',
+    'LBL_TALK_TO_US_AT_FORUMS' => 'Have any questions? Find help on Defalto <a href="index.php?module=Core&view=Redirect&mode=Forum" target="_blank">Discussions</a><br>',
+    'LBL_DISCUSS_WITH_US_AT_BLOGS' => 'To know more about Defalto follow us our <a href="index.php?module=Core&view=Redirect&mode=Blog" target="_blank">Blog</a>',
+    'LBL_CRM_DOCUMENTATION' => 'Defalto Help - <a href="index.php?module=Core&view=Redirect&mode=Documentation" target="_blank">Documentation</a>, <a href="index.php?module=Core&view=Redirect&mode=Videos" target="_blank">Videos</a> <BR>',
+    'LBL_THANKS' => 'Thanks for using <b>Defalto CRM</b>',
+    'LBL_WE_AIM_TO_BE_BEST' => 'We aim to be - simply the best',
+    'LBL_SPACE_FOR_YOU' => 'Come on over, there is space for you too!',
     'LBL_MIGRATION_COMPLETED_SUCCESSFULLY' => 'Migration completed successfully.',
-    'LBL_RELEASE_NOTES'                    => 'To know what is new in this version, please read <a href="index.php?module=Core&view=Redirect&mode=Releases" target="_blank">Release Notes</a> <br>',
-    'LBL_WAIT'                             => 'Please wait ...',
-    'LBL_INPROGRESS'                       => 'Migration Inprogress',
-    'LBL_DATABASE_CHANGE_LOG'              => 'Migration : Database Changes Log',
-    'LBL_INSTALLATION_WIZARD'              => 'Migration wizard',
-    'LBL_WELCOME'                          => 'Welcome',
-    'LBL_RECORDS_CHANGE_LOG'               => 'Migration : Records Changes Log',
+    'LBL_RELEASE_NOTES' => 'To know what is new in this version, please read <a href="index.php?module=Core&view=Redirect&mode=Releases" target="_blank">Release Notes</a> <br>',
+    'LBL_WAIT' => 'Please wait ...',
+    'LBL_INPROGRESS' => 'Migration Inprogress',
+    'LBL_DATABASE_CHANGE_LOG' => 'Migration : Database Changes Log',
+    'LBL_INSTALLATION_WIZARD' => 'Migration wizard',
+    'LBL_WELCOME' => 'Welcome',
+    'LBL_RECORDS_CHANGE_LOG' => 'Migration : Records Changes Log',
 ];

@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -18,28 +19,28 @@
 
 $languageStrings = [
     // Basic Strings
-    'Assets'                   => 'Assets',
-    'SINGLE_Assets'            => 'Asset',
-    'LBL_ADD_RECORD'           => 'Add Asset',
-    'LBL_RECORDS_LIST'         => 'Assets List',
+    'Assets' => 'Assets',
+    'SINGLE_Assets' => 'Asset',
+    'LBL_ADD_RECORD' => 'Add Asset',
+    'LBL_RECORDS_LIST' => 'Assets List',
 
     // Blocks
-    'LBL_ASSET_INFORMATION'    => 'Asset Details',
+    'LBL_ASSET_INFORMATION' => 'Asset Details',
 
     //Field Labels
-    'Asset No'                 => 'Asset No',
-    'Serial Number'            => 'Serial Number',
-    'Date Sold'                => 'Date Sold',
-    'Date in Service'          => 'Date in Service',
-    'Tag Number'               => 'Tag Number',
-    'Invoice Name'             => 'Invoice Name',
-    'Shipping Method'          => 'Shipping Method',
+    'Asset No' => 'Asset No',
+    'Serial Number' => 'Serial Number',
+    'Date Sold' => 'Date Sold',
+    'Date in Service' => 'Date in Service',
+    'Tag Number' => 'Tag Number',
+    'Invoice Name' => 'Invoice Name',
+    'Shipping Method' => 'Shipping Method',
     'Shipping Tracking Number' => 'Shipping Tracking Number',
-    'Asset Name'               => 'Asset Name',
-    'Customer Name'            => 'Customer Name',
-    'Notes'                    => 'Notes',
+    'Asset Name' => 'Asset Name',
+    'Customer Name' => 'Customer Name',
+    'Notes' => 'Notes',
 
     /*picklist values*/
-    'In Service'               => 'In Service',
-    'Out-of-service'           => 'Out-of-service',
+    'In Service' => 'In Service',
+    'Out-of-service' => 'Out-of-service',
 ];
