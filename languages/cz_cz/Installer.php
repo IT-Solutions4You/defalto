@@ -264,7 +264,8 @@ $languageStrings = [
     'LBL_CHECK_UPDATE_AVAILABLE' => 'K dispozícii je aktualizácia',
     'LBL_CHECK_UPDATING' => 'Vyhľadávanie',
     'LBL_CHECK_LOADING' => 'Hľadajú sa aktualizácie',
-    'LBL_MEMBERSHIP_BRANDING' => 'Chcete aktualizovat jedním kliknutím?<br>Podívejte se, co zahrnuje <a-redirect-membership>Defalto Membership</a>, a <a-redirect-order>začněte hned teď</a>.'
+    'LBL_MEMBERSHIP_BRANDING' => 'Chcete aktualizovat jedním kliknutím?<br>Podívejte se, co zahrnuje <a-redirect-membership>Defalto Membership</a>, a <a-redirect-order>začněte hned teď</a>.',
+    'LBL_MODULES' => 'Moduly',
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Naozaj chcete nainštalovať rozšírenie?',
