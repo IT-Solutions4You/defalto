@@ -19,39 +19,26 @@
 
 $languageStrings = [
     'PurchaseOrder' => 'Purchase Orders',
-    //DetailView Actions
     'SINGLE_PurchaseOrder' => 'Purchase Order',
     'LBL_EXPORT_TO_PDF' => 'Export to PDF',
     'LBL_SEND_MAIL_PDF' => 'Send Email with PDF',
-
-    //Basic strings
     'LBL_ADD_RECORD' => 'Add Purchase Order',
     'LBL_RECORDS_LIST' => 'Purchase Order List',
     'LBL_COPY_SHIPPING_ADDRESS' => 'Copy Shipping Address',
     'LBL_COPY_BILLING_ADDRESS' => 'Copy Billing Address',
-
-    // Blocks
     'LBL_PO_INFORMATION' => 'Purchase Order Details',
-
-    //Field Labels
     'PurchaseOrder No' => 'Purchase Order Number',
     'Requisition No' => 'Requisition Number',
     'Tracking Number' => 'Tracking Number',
     'Sales Commission' => 'Sales Commission',
     'LBL_PAID' => 'Paid',
     'LBL_BALANCE' => 'Balance',
-
-    //Added for existing Picklist Entries
-
     'Received Shipment' => 'Received Shipment',
-
-    //Translation for product not found
     'LBL_THIS' => 'This',
     'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'is deleted from the system.please remove or replace this item',
     'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'This line item is deleted from the system,please remove this line items',
     'LBL_LIST_PRICE' => 'List Price',
     'List Price' => 'List Price',
-
     'LBL_COPY_COMPANY_ADDRESS' => 'Copy Company Address',
     'LBL_COPY_ACCOUNT_ADDRESS' => 'Copy Organization Address',
     'LBL_SELECT_ADDRESS_OPTION' => 'Select Address to copy',
@@ -59,10 +46,18 @@ $languageStrings = [
     'LBL_COMPANY_ADDRESS' => 'Company Address',
     'LBL_ACCOUNT_ADDRESS' => 'Organization Address',
     'LBL_VENDOR_ADDRESS' => 'Vendor Address',
-    'LBL_CONTACT_ADDRESS' => 'Contact Address'
-
+    'LBL_CONTACT_ADDRESS' => 'Contact Address',
+    'Price Book' => 'Price Book',
+    'Price After Discount' => 'Price After Discount',
+    'Overall Discount' => 'Overall Discount',
+    'Overall Discount Amount' => 'Overall Discount Amount',
+    'Price After Overall Discount' => 'Price After Overall Discount',
+    'Tax Amount' => 'Tax Amount',
+    'Grand Total' => 'Grand Total',
+    'Margin Amount' => 'Margin Amount',
+    'Paid' => 'Paid',
+    'Terms &amp; Conditions' => 'Terms &amp; Conditions',
 ];
-
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Please remove line item that is deleted',
     'JS_ORGANIZATION_NOT_FOUND' => 'Organization empty!',

@@ -225,7 +225,7 @@ $languageStrings = [
     'LBL_STEP_1' => 'Select the .XML File',
     'LBL_SELECT_XML_TEXT' => 'To start import, browse to locate the .XML file and click on the Next button to Continue. ',
     'LBL_FILE_LOCATION' => 'File Location :',
-    'LBL_PLEASE_DONT_CLOSE_WINDOW' => "Please, don't close that Pop-Up Window",
+    'LBL_PLEASE_DONT_CLOSE_WINDOW' => 'Please, don\'t close that Pop-Up Window',
     'LBL_POPUP_WILL_BE_CLOSED_AUT' => '(Pop-Up will be closed automatically)',
     'LBL_EMAILS_DISTRIBUTION' => 'Emails distribution',
     'LBL_EMAILS_SENT_FROM' => 'Emails sent from',
@@ -235,7 +235,7 @@ $languageStrings = [
     'LBL_ATTACHMENTS' => 'Attachments',
     'LBL_OTHER' => 'Other',
     'LBL_DOCUMENT_IS_ALREADY_ADDED' => 'This document has been already added.',
-    'LBL_SET_EMAIL_ADRESS' => "Please set email address, who'd you like added",
+    'LBL_SET_EMAIL_ADRESS' => 'Please set email address, who\'d you like added',
     'LBL_INVALID_EMAIL_ADRESS' => 'Invalid Email Address',
     'LBL_HAVE_NOT_ADRESS_TO' => 'have no TO email adress',
     'LBL_ERRORS' => 'Errors',
@@ -556,7 +556,6 @@ $languageStrings = [
     'LBL_RELATED_DOCUMENTS_BY_FOLDER' => 'Related documents by folders',
     'LBL_VARIABLE_PRODUCTCODE' => 'Product / Service code',
 ];
-
 $jsLanguageStrings = [
     'LBL_MISSING_FIELDS' => 'Missing mndatory fields:',
     'LBL_SELECT_MODULE_FIELD' => 'Select ...',

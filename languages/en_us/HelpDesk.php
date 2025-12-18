@@ -18,17 +18,12 @@
  */
 
 $languageStrings = [
-    // Basic Strings
     'HelpDesk' => 'Tickets',
     'SINGLE_HelpDesk' => 'Ticket',
     'LBL_ADD_RECORD' => 'Add Ticket',
     'LBL_RECORDS_LIST' => 'Ticket List',
-
-    // Blocks
     'LBL_TICKET_INFORMATION' => 'Ticket Details',
     'LBL_TICKET_RESOLUTION' => 'Ticket Resolution',
-
-    //Field Labels
     'Ticket No' => 'Ticket No',
     'Severity' => 'Severity',
     'Update History' => 'Update History',
@@ -39,31 +34,23 @@ $languageStrings = [
     'From Portal' => 'From Portal',
     'Related To' => 'Organization Name',
     'Contact Name' => 'Contact Name',
-    //Added for existing picklist entries
-
     'Big Problem' => 'Big Problem',
     'Small Problem' => 'Small Problem',
     'Other Problem' => 'Other Problem',
-
     'Normal' => 'Normal',
     'High' => 'High',
     'Urgent' => 'Urgent',
-
     'Minor' => 'Minor',
     'Major' => 'Major',
     'Feature' => 'Feature',
     'Critical' => 'Critical',
-
     'Open' => 'Open',
     'Wait For Response' => 'Wait For Response',
     'Closed' => 'Closed',
     'LBL_STATUS' => 'Status',
     'LBL_SEVERITY' => 'Severity',
-    //DetailView Actions
     'LBL_CONVERT_FAQ' => 'Convert to FAQ',
     'LBL_RELATED_TO' => 'Related To',
-
-    //added to support i18n in ticket mails
     'Ticket ID' => 'Ticket ID',
     'Hi' => 'Hi',
     'Dear' => 'Dear',
@@ -83,10 +70,7 @@ $languageStrings = [
     'The comments are' => 'The comments are',
     'Ticket Title' => 'Ticket Title',
     'Re' => 'Re :',
-
-    //This label for customerportal.
     'LBL_STATUS_CLOSED' => 'Closed',
-    //Do not convert this label. This is used to check the status. If the status 'Closed' is changed in system server side then you have to change in customerportal language file also.
     'LBL_STATUS_UPDATE' => 'Ticket status is updated as',
     'LBL_COULDNOT_CLOSED' => 'Ticket could not be',
     'LBL_CUSTOMER_COMMENTS' => 'Customer has provided the following additional information to your reply:',
@@ -107,14 +91,17 @@ $languageStrings = [
     'LBL_MAIL_SENT' => 'Mail has been sent to your mail id with the customer portal login details',
     'LBL_ALTBODY' => 'This is the body in plain text for non-HTML mail clients',
     'HelpDesk ID' => 'Ticket ID',
-    //Portal shortcuts
-    'LBL_ADD_DOCUMENT' => "Add Document",
-    'LBL_OPEN_TICKETS' => "Open Tickets",
-    'LBL_CREATE_TICKET' => "Create Ticket",
+    'LBL_ADD_DOCUMENT' => 'Add Document',
+    'LBL_OPEN_TICKETS' => 'Open Tickets',
+    'LBL_CREATE_TICKET' => 'Create Ticket',
+    'Related to' => 'Related to',
+    'First Comment Hours' => 'First Comment Hours',
+    'First Comment Time' => 'First Comment Time',
+    'Last Comment Hours' => 'Last Comment Hours',
+    'Last Comment Time' => 'Last Comment Time',
 ];
-
 $jsLanguageStrings = [
     'LBL_ADD_DOCUMENT' => 'Add Document',
     'LBL_OPEN_TICKETS' => 'Open Tickets',
-    'LBL_CREATE_TICKET' => 'Create Ticket'
+    'LBL_CREATE_TICKET' => 'Create Ticket',
 ];

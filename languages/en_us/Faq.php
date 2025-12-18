@@ -22,23 +22,18 @@ $languageStrings = [
     'SINGLE_Faq' => 'FAQ',
     'LBL_RECORDS_LIST' => 'FAQs List',
     'LBL_ADD_RECORD' => 'Add FAQ',
-
-    //Blocks
     'LBL_FAQ_INFORMATION' => 'FAQ Information',
     'LBL_COMMENT_INFORMATION' => 'Comments',
-
-    //Fields
     'Question' => 'Question',
     'Answer' => 'Answer',
     'Comments' => 'Comments',
     'Faq No' => 'Faq No',
-
-    //Added for existing Picklist Entries
     'General' => 'General',
     'Draft' => 'Draft',
     'Published' => 'Published',
     'Obsolete' => 'Obsolete',
-
-    //EditView
     'LBL_SOLUTION' => 'Solution',
+    'Related to' => 'Related to',
+];
+$jsLanguageStrings = [
 ];

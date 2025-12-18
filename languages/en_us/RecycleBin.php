@@ -28,7 +28,6 @@ $languageStrings = [
     'LBL_RECORDS_LIST' => 'Recycle Bin List',
     'LBL_NO_RECORDS_FOUND' => 'No records found to Restore in module',
 ];
-
 $jsLanguageStrings = [
     'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Are you sure you want to permanently remove all the deleted records from your database?',
     'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Are you sure you want to restore the records?',

@@ -11,8 +11,6 @@
 $languageStrings = [
     'SINGLE_Appointments' => 'Calendar',
     'Appointments' => 'Calendar',
-    'SINGLE_Appointments' => 'Calendar',
-    'Appointments' => 'Calendar',
     'LBL_HOLD_FOLLOWUP_ON' => 'Hold Followup on',
     'LBL_CREATE_FOLLOWUP_EVENT' => 'Create Follow Up Event',
     'LBL_RECURRENCE_INFORMATION' => 'Recurrence Details',
@@ -202,8 +200,14 @@ $languageStrings = [
     'LBL_TEAM_CALENDAR' => 'Teams',
     'LBL_ADD_CALENDAR' => 'Add Calendar',
     'LBL_FILTER' => 'Filter',
+    'Is All Day' => 'Is All Day',
+    'Start Datetime' => 'Start Datetime',
+    'End Datetime' => 'End Datetime',
+    'Reminder' => 'Reminder',
+    'Invite Users' => 'Invite Users',
+    'Calendar No' => 'Calendar No',
+    'Duration' => 'Duration',
 ];
-
 $jsLanguageStrings = [
     'JS_ONE_DAY_EVENT' => 'One day Event',
     'LBL_ADD_EVENT_TASK' => 'Add Event/Task',

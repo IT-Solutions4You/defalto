@@ -34,7 +34,5 @@ $languageStrings = [
     'Index' => 'Ready to use',
     'Guide' => 'Guide',
 ];
-
 $jsLanguageStrings = [
-
 ];

@@ -91,5 +91,5 @@ $languageStrings = [
 $jsLanguageStrings = [
     'LBL_SYNC_BUTTON' => 'Synchronize Now',
     'LBL_SYNCRONIZING' => 'Synchronizing....',
-    'LBL_NOT_SYNCRONIZE' => 'You have not synchronized yet'
+    'LBL_NOT_SYNCRONIZE' => 'You have not synchronized yet',
 ];

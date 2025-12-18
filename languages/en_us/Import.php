@@ -80,7 +80,6 @@ $languageStrings = [
     'LBL_DETAILS' => 'Details',
     'skipped' => 'Skipped Records',
     'failed' => 'Failed Records',
-
     'LBL_IMPORT_LINEITEMS_CURRENCY' => 'Currency(For Line Items Fields)',
     'LBL_USE_SAVED_MAPS' => 'Use Saved Maps',
     'LBL_IMPORT_MAP_FIELDS' => 'Map the coloumns to CRM fields',
@@ -93,7 +92,7 @@ $languageStrings = [
     'LBL_CSV_FILE' => 'CSV File',
     'LBL_VCF_FILE' => 'VCF File',
     'LBL_GOOGLE' => 'Google',
-    'LBL_IMPORT_COMPLETED' => 'Import Completed',
+    'LBL_IMPORT_COMPLETED' => 'System has just completed your import process. <br/><br/>',
     'LBL_IMPORT_SUMMARY' => 'Import summary',
     'LBL_DELETION_COMPLETED' => 'Deletion Completed',
     'LBL_TOTAL_RECORDS_SCANNED' => 'Total records scanned',
@@ -103,16 +102,14 @@ $languageStrings = [
     'LBL_SELECT_VCF_FILE' => 'Select VCF file',
     'LBL_DONE_BUTTON' => 'Done',
     'LBL_DELETION_SUMMARY' => 'Delete summary',
-
     'LBL_SKIP_THIS_STEP' => 'Skip this step',
     'LBL_ICS_FILE' => 'ICS File',
     'LBL_UPLOAD_ICS' => 'Upload ICS File',
     'LBL_IMPORT_FROM_ICS_FILE' => 'Import from ICS file',
     'LBL_SELECT_ICS_FILE' => 'Select ICS file',
-
-    //Scheduled Import translations
     'LBL_ENABLE_CRON' => '<b>Please do enable Scheduled Import cron job from settings scheduler</b>',
     'LBL_SCHEDULE_IMPORT_SUBJECT' => 'System - Scheduled Import Report for',
-    'LBL_IMPORT_COMPLETED' => 'System has just completed your import process. <br/><br/>',
-    'LBL_CHECK_IMPORT_STATUS' => '<br/><br/> We recommend you to login to the CRM and check few records to confirm that the import has been successful.'
+    'LBL_CHECK_IMPORT_STATUS' => '<br/><br/> We recommend you to login to the CRM and check few records to confirm that the import has been successful.',
+];
+$jsLanguageStrings = [
 ];

@@ -28,7 +28,6 @@ $languageStrings = [
     'LBL_ENTER_FEED_SOURCE' => 'Enter Feed Source',
     'SINGLE_Rss' => 'Rss Feed',
 ];
-
 $jsLanguageStrings = [
     'JS_RSS_SUCCESSFULLY_SAVED' => 'Rss Successfully saved',
     'JS_INVALID_RSS_URL' => 'Invalid Rss Url',

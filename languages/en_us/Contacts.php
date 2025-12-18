@@ -18,20 +18,15 @@
  */
 
 $languageStrings = [
-    // Basic Strings
     'Contacts' => 'Contacts',
     'SINGLE_Contacts' => 'Contact',
     'LBL_ADD_RECORD' => 'Add Contact',
     'LBL_RECORDS_LIST' => 'Contacts List',
-
-    // Blocks
     'LBL_CONTACT_INFORMATION' => 'Contact Details',
     'LBL_CUSTOMER_PORTAL_INFORMATION' => 'Customer Portal Details',
     'LBL_IMAGE_INFORMATION' => 'Profile Picture',
     'LBL_COPY_OTHER_ADDRESS' => 'Copy Other Address',
     'LBL_COPY_MAILING_ADDRESS' => 'Copy Mailing Address',
-
-    //Field Labels
     'Office Phone' => 'Office Phone',
     'Home Phone' => 'Home Phone',
     'Title' => 'Title',
@@ -62,16 +57,18 @@ $languageStrings = [
     'Contact Id' => 'Contact Id',
     'Support Start Date' => 'Support Start Date',
     'Support End Date' => 'Support End Date',
-
-    //Added for Picklist Values
     'Mr.' => 'Mr.',
     'Ms.' => 'Ms.',
     'Mrs.' => 'Mrs.',
     'Dr.' => 'Dr.',
     'Prof.' => 'Prof.',
-
     'User List' => 'User List',
+    'Private Phone' => 'Private Phone',
+    'Portal User Name' => 'Portal User Name',
+    'Portal Last Login' => 'Portal Last Login',
+    'Contacted - Successful' => 'Contacted - Successful',
+    'Contacted - Unsuccessful' => 'Contacted - Unsuccessful',
+    'Contacted - Never Contact Again' => 'Contacted - Never Contact Again',
 ];
-
 $jsLanguageStrings = [
 ];

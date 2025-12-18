@@ -18,17 +18,12 @@
  */
 
 $languageStrings = [
-    // Basic Strings
     'Campaigns' => 'Campaigns',
     'SINGLE_Campaigns' => 'Campaign',
     'LBL_ADD_RECORD' => 'Add Campaign',
     'LBL_RECORDS_LIST' => 'Campaigns List',
-
-    // Blocks
     'LBL_CAMPAIGN_INFORMATION' => 'Campaign Details',
     'LBL_EXPECTATIONS_AND_ACTUALS' => 'Expectations & Actuals',
-
-    //Field Labels
     'Campaign Name' => 'Campaign Name',
     'Campaign No' => 'Campaign No',
     'Campaign Type' => 'Campaign Type',
@@ -48,9 +43,6 @@ $languageStrings = [
     'Actual Response Count' => 'Actual Response Count',
     'Actual Sales Count' => 'Actual Sales Count',
     'Actual ROI' => 'Actual ROI',
-
-    //Added for existing Picklist Entries
-
     'Webinar' => 'Webinar',
     'Referral Program' => 'Referral Program',
     'Advertisement' => 'Advertisement',
@@ -58,24 +50,21 @@ $languageStrings = [
     'Direct Mail' => 'Direct Mail',
     'Telemarketing' => 'Telemarketing',
     'Others' => 'Others',
-
     'Planning' => 'Planning',
     'Inactive' => 'Inactive',
     'Complete' => 'Complete',
     'Cancelled' => 'Cancelled',
-
     'Excellent' => 'Excellent',
     'Good' => 'Good',
     'Average' => 'Average',
     'Poor' => 'Poor',
-
-    // status fields
     '--None--' => '--None--',
     'Contacted - Successful' => 'Contacted - Successful',
     'Contacted - Unsuccessful' => 'Contacted - Unsuccessful',
     'Contacted - Never Contact Again' => 'Contacted - Never Contact Again',
+    'Completed' => 'Completed',
+    'Partners' => 'Partners',
 ];
-
 $jsLanguageStrings = [
     'JS_APPENDED_TO_EXISTING_LIST' => '%s from the selected list will be appended with the existing list.',
 ];

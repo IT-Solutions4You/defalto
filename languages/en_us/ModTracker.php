@@ -20,3 +20,5 @@
 $languageStrings = [
     'SINGLE_ModTracker' => 'ModTracker Record',
 ];
+$jsLanguageStrings = [
+];

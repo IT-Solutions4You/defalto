@@ -18,7 +18,6 @@
  */
 
 $languageStrings = [
-    // Basic Strings
     'SMSNotifier' => 'SMS Notifier',
     'LBL_SEND_SMS_TO_SELECTED_NUMBERS' => 'Send SMS to the selected numbers',
     'LBL_STEP_1' => 'Step 1',
@@ -28,12 +27,11 @@ $languageStrings = [
     'LBL_WRITE_YOUR_MESSAGE_HERE' => 'write your message here',
     'LBL_ADD_MORE_FIELDS' => 'Add more fields',
     'LBL_SERVER_CONFIG' => 'Server Configuration',
-
-    //DetailView Actions
     'LBL_CHECK_STATUS' => 'Check Status',
     'message' => 'Message',
-
-    //Blocks
     'LBL_SMSNOTIFIER_INFORMATION' => 'SMS Information',
     'SINGLE_SMSNotifier' => 'SMS Notifier',
+    'StatusInformation' => 'StatusInformation',
+];
+$jsLanguageStrings = [
 ];

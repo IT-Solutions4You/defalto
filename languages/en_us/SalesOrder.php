@@ -19,19 +19,12 @@
 
 $languageStrings = [
     'SalesOrder' => 'Sales Orders',
-    //DetailView Actions
     'SINGLE_SalesOrder' => 'Sales Order',
     'LBL_EXPORT_TO_PDF' => 'Export to PDF',
     'LBL_SEND_MAIL_PDF' => 'Send Email with PDF',
-
-    //Basic strings
     'LBL_ADD_RECORD' => 'Add Sales Order',
     'LBL_RECORDS_LIST' => 'Sales Order List',
-
-    // Blocks
     'LBL_SO_INFORMATION' => 'Sales Order Details',
-
-    //Field labels
     'SalesOrder No' => 'Sales Order No.',
     'Quote Name' => 'Quote Name',
     'Customer No' => 'Customer No',
@@ -47,21 +40,41 @@ $languageStrings = [
     'End Period' => 'End Period',
     'Payment Duration' => 'Payment Duration',
     'Invoice Status' => 'Invoice Status',
-
-    //Added for existing Picklist Entries
-
     'Sub Total' => 'Sub Total',
     'AutoCreated' => 'Auto Created',
     'Sent' => 'Sent',
     'Credit Invoice' => 'Credit Invoice',
     'Paid' => 'Paid',
-
-    //Translation for product not found
     'LBL_THIS' => 'This',
     'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'is deleted from the system.please remove or replace this item',
     'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'This line item is deleted from the system,please remove this line items',
+    'Recurring Invoice Information' => 'Recurring Invoice Information',
+    'Price Book' => 'Price Book',
+    'Price After Discount' => 'Price After Discount',
+    'Overall Discount' => 'Overall Discount',
+    'Overall Discount Amount' => 'Overall Discount Amount',
+    'Price After Overall Discount' => 'Price After Overall Discount',
+    'Tax Amount' => 'Tax Amount',
+    'Grand Total' => 'Grand Total',
+    'Margin Amount' => 'Margin Amount',
+    'Order Date' => 'Order Date',
+    'Inventory Manager' => 'Inventory Manager',
+    'Terms &amp; Conditions' => 'Terms &amp; Conditions',
+    'Daily' => 'Daily',
+    'Weekly' => 'Weekly',
+    'Monthly' => 'Monthly',
+    'Quarterly' => 'Quarterly',
+    'Yearly' => 'Yearly',
+    'Net 7 days' => 'Net 7 days',
+    'Net 10 days' => 'Net 10 days',
+    'Net 14 days' => 'Net 14 days',
+    'Net 15 days' => 'Net 15 days',
+    'Net 30 days' => 'Net 30 days',
+    'Net 45 days' => 'Net 45 days',
+    'Net 60 days' => 'Net 60 days',
+    'Net 90 days' => 'Net 90 days',
+    'Next Invoice Date' => 'Next Invoice Date',
 ];
-
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Please remove line item that is deleted',
 ];

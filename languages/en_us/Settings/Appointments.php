@@ -16,6 +16,5 @@ $languageStrings = [
     'LBL_FIELD_UPDATE' => 'Reference field and relation updated',
     'LBL_SEARCH_MODULE' => 'Search module...',
 ];
-
 $jsLanguageStrings = [
 ];

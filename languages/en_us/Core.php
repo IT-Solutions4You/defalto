@@ -18,13 +18,10 @@
  */
 
 $languageStrings = [
-    // Footer
     'APPTITLE' => 'Vtiger CRM',
     'POWEREDBY' => 'Powered by Defalto CRM',
     'LBL_READ_LICENSE' => 'Read License',
     'LBL_PRIVACY_POLICY' => 'Privacy Policy',
-
-    // Common Actions
     'LBL_NEW' => 'New',
     'LBL_LINKED' => 'Linked',
     'LBL_SELECT_ALL' => 'Select all',
@@ -47,7 +44,7 @@ $languageStrings = [
     'LBL_EDIT' => 'Edit',
     'LBL_DELETE' => 'Delete',
     'LBL_COMMENT' => 'Comment',
-    'LBL_STARRED' => 'Unfollow',
+    'LBL_STARRED' => 'Click to unfollow',
     'LBL_NOT_STARRED' => 'Click to follow',
     'LBL_QUICK_VIEW' => 'Quick View',
     'LBL_NOTIFICATION_CENTER' => 'Notification Center',
@@ -63,8 +60,6 @@ $languageStrings = [
     'LBL_RECORD_DELETE' => 'The record you are trying to view has been deleted.',
     'LBL_RECORD_NOT_FOUND' => 'Record you are trying to access is not found',
     'LBL_EDIT_REASON' => 'Edit reason',
-    //'LBL_EDIT_CURRENT_FILTER' => 'Edit Current Filter',
-    //'LBL_DELETE_CURRENT_FILTER' => 'Delete Current Filter',
     'LBL_SELECT' => 'Select',
     'LBL_CLEAR' => 'Clear',
     'LBL_YES' => 'Yes',
@@ -76,10 +71,8 @@ $languageStrings = [
     'LBL_QUICK_CREATE' => 'Quick Create',
     'LBL_QUICK_EDIT' => 'Quick Edit',
     'LBL_SEND_EMAIL' => 'Send Email',
-    //SEND EMAIL translations
     'LBL_ALL_EMAILS' => 'All email accounts',
     'LBL_MUTIPLE_EMAIL_SELECT_ONE' => 'Please select one of the options below',
-    //SEND EMAIL translations
     'LBL_GO_TO_FULL_FORM' => 'Go to full form',
     'LBL_SEND_SMS' => 'Send SMS',
     'LBL_FOUND' => 'found',
@@ -98,7 +91,6 @@ $languageStrings = [
     'LBL_HOME' => 'Home',
     'LBL_NO_ATTACHMENTS' => 'No Attachments',
     'LBL_COMPOSE_EMAIL_WARNING' => ' Warning : Your email might land in spam. Add Vtiger as an authorized sender for your domain. Learn more',
-    // Common Link Labels
     'LBL_REARRANGE_DASHBOARD_TABS' => 'Rearrange Tabs',
     'LBL_DONE' => 'Done',
     'LBL_DELETE_DASHBOARD_TAB' => 'Delete Tab',
@@ -138,8 +130,6 @@ $languageStrings = [
     'LBL_EDIT_TAG' => 'Edit Tag',
     'LBL_NO_TAG_EXISTS' => 'No Tag Exists',
     'LBL_RELATED_USERS' => 'Related Users',
-
-    // Common Fields
     'LBL_USER' => 'User',
     'LBL_GROUP' => 'Group',
     'Last Modified By' => 'Last Modified By',
@@ -147,14 +137,10 @@ $languageStrings = [
     'Modified Time' => 'Modified Time',
     'Description' => 'Description',
     'Assigned To' => 'Assigned To',
-
-    //Loading Labels
     'LBL_LOADING' => 'Loading',
     'LBL_LOADING_WIDGET' => 'Loading Widget',
     'LBL_LOADING_LISTVIEW_CONTENTS' => 'Loading, Please wait.',
-
-    // Detail View
-    'LBL_HISTORY' => 'History',
+    'LBL_HISTORY' => 'Touchpoints',
     'LBL_UPDATES' => 'Updates',
     'LBL_SHOW_FULL_DETAILS' => 'Show Full Details',
     'LBL_SUMMARY_DETAILS' => 'Summary Details',
@@ -166,8 +152,6 @@ $languageStrings = [
     'LBL_KEY_FIELD' => 'Key Field',
     'LBL_DETAILS' => 'Details',
     'LBL_NAME_EMAIL' => 'Name and Email',
-
-    // Popup window
     'LBL_SEARCH_FOR' => 'Search For',
     'LBL_IN' => 'in',
     'LBL_TYPE_SEARCH' => 'Type to search',
@@ -175,16 +159,10 @@ $languageStrings = [
     'LBL_ADVANCE_SEARCH' => 'Advanced',
     'LBL_LOADING_PLEASE_WAIT' => 'Loading, Please wait.',
     'LBL_PLEASE_SELECT_MODULE' => 'Please select any module to search',
-
-    //DropDown Category
     'LBL_USERS' => 'Users',
     'LBL_GROUPS' => 'Groups',
-
-    //EditView Form Links
     'LBL_FULL_FORM' => 'Full Form',
     'LBL_SIMPLE_FORM' => 'Simple Form',
-
-    //Recent Comments
     'LBL_IS_REMOVED' => 'is Removed',
     'LBL_ADD_YOUR_COMMENT_HERE' => 'Add your comment here...',
     'LBL_REASON_FOR_CHANGING_COMMENT' => 'Reason for changing comment',
@@ -195,8 +173,6 @@ $languageStrings = [
     'LBL_REPLY_ALL' => 'Reply all',
     'LBL_INTERNAL_COMMENT_TOOTLTIP' => 'Customers cannot see this comment',
     'LBL_EXTERNAL_COMMENT_TOOTLTIP' => 'Customers might see this comment via notifications or customer portal',
-
-    //Translation for all modules
     'Accounts' => 'Organizations',
     'Assets' => 'Assets',
     'Calendar' => 'Calendar',
@@ -224,23 +200,16 @@ $languageStrings = [
     'Portal' => 'Our Sites',
     'Email Templates' => 'Email Templates',
     'Recycle Bin' => 'Recycle Bin',
-
-    //Basic String Translation
     'LBL_ADD_RECORD' => 'Add Record',
     'LBL_RECENTLY_MODIFIED' => 'Recently Modified',
     'LBL_RECORDS_LIST' => 'Records List',
-    'LBL_RECORD_SUMMARY' => 'Module Summary',
     'LBL_RECORD_SUMMARY' => 'Module Details',
     'LBL_ACCESS_DENIED_FOR' => 'Access Denied for',
     'LBL_GO_BACK' => 'Go back',
     'LBL_NO_DATA_AVAILABLE' => 'No data available',
-
-    // Global Search
     'LBL_GLOBAL_SEARCH' => 'Type keyword and press enter',
     'LBL_ALL_RECORDS' => 'All Records',
     'LBL_NO_RECORDS_FOUND' => 'No records found',
-
-    //Filters & Advance Filter
     'LBL_AND' => 'and',
     'LBL_OR' => 'or',
     'LBL_APPROVE' => 'Approve',
@@ -261,7 +230,7 @@ $languageStrings = [
     'LBL_SEARCH' => 'Search',
     'LBL_SEARCH_IN' => 'Search In',
     'LBL_ADD_CONDITION' => 'Add Condition',
-    'LBL_ADD_GROUP' => 'Add Condition Group',
+    'LBL_ADD_GROUP' => 'Add Group',
     'LBL_FILTER_CONDITIONS' => 'List Conditions',
     'LBL_ALL_CONDITIONS' => 'All Conditions',
     'LBL_ALL_CONDITIONS_DESC' => 'All conditions must be met',
@@ -274,23 +243,16 @@ $languageStrings = [
     'Others' => 'Others',
     'Pending' => 'Pending',
     'Public' => 'Public',
-
-    //Advance Search
     'LBL_SAVE_FILTER' => 'Save List',
     'LBL_SAVE_MODIFY_FILTER' => 'Save/Modify Search',
     'LBL_SEARCH_RESULTS' => 'Search Results',
     'LBL_SAVE_AS_FILTER' => 'Save As List',
-
-    //Exception String Translation
     'LBL_NOT_ACCESSIBLE' => 'Access denied',
-
-    //Line Items
     'LBL_ITEM_DETAILS' => 'Item Details',
     'LBL_CURRENCY' => 'Currency',
     'LBL_TAX_MODE' => 'Tax Mode',
     'LBL_INDIVIDUAL' => 'Individual',
-    'LBL_GROUP' => 'Group',
-    'LBL_TOOLS' => 'Tools',
+    'LBL_TOOLS' => 'TOOLS',
     'LBL_ITEM_NAME' => 'Item Name',
     'LBL_QTY_IN_STOCK' => 'Stock',
     'LBL_QTY' => 'Quantity',
@@ -339,14 +301,10 @@ $languageStrings = [
     'LBL_DEFAULT' => 'Default',
     'LBL_ITEM' => 'Item',
     'LBL_ADD_DASHBOARD' => 'Add dashboard',
-
-    //DetailView Actions
     'LBL_CREATE' => 'Create',
     'LBL_GENERATE' => 'Generate',
     'LBL_DUPLICATE' => 'Duplicate',
     'Add Note' => 'Add Document',
-
-    //Dashboard String
     'LBL_ADD_WIDGET' => 'Add Widget',
     'LBL_COMMENTS' => 'Comments',
     'LBL_REFRESH' => 'Refresh',
@@ -366,7 +324,7 @@ $languageStrings = [
     'LBL_CREATED' => 'created',
     'LBL_DELETED' => 'deleted',
     'LBL_RESTORED' => 'restored',
-    'LBL_COMMENTED' => 'commented',
+    'LBL_COMMENTED' => 'Commented',
     'LBL_REMOVED' => 'removed',
     'LBL_REMOVE' => 'Remove',
     'LBL_AT' => 'at',
@@ -396,7 +354,6 @@ $languageStrings = [
     'LBL_HANDLER_NOT_FOUND' => 'Handler not found',
     'LBL_FILTER' => 'List',
     'LBL_DUE' => 'due in',
-    'LBL_DAYS' => 'days',
     'LBL_COMPLETED' => 'completed',
     'LBL_AGO' => 'ago',
     'LBL_CHANGED' => 'changed',
@@ -411,15 +368,13 @@ $languageStrings = [
     'LBL_NOTEPAD_CONTENT' => 'Notepad Content',
     'LBL_LAST_SAVED_ON' => 'Last saved on',
     'Mini List' => 'Mini List',
-    'Notebook' => 'Notepad',
+    'Notebook' => 'Notebook',
     'LBL_RESULT_FOR_THE_TAG' => 'Results for the tag',
     'LBL_ALL_USERS' => 'All Users',
     'LBL_BOTH' => 'Both',
     'LBL_SHOW' => 'Show',
     'LBL_MY' => 'My',
     'LBL_SELECT_DATE_RANGE' => 'Select Date Range',
-
-    // Basic Strings- custom view
     'LBL_VIEW_NAME' => 'List Name',
     'LBL_CREATE_VIEW' => 'Creating new view',
     'LBL_BASIC_DETAILS' => 'Basic details',
@@ -427,16 +382,10 @@ $languageStrings = [
     'LBL_MAX_NUMBER_FILTER_COLUMNS' => 'Max 15',
     'LBL_FILTER_ON_DATE' => 'List on date',
     'LBL_CHOOSE_FILTER_CONDITIONS' => 'Choose List conditions',
-    'LBL_ADD_CONDITION' => 'Add Condition',
     'LBL_SET_AS_DEFAULT' => 'Set as Default',
     'LBL_LIST_IN_METRICS' => 'List in Metrics',
     'LBL_SET_AS_PUBLIC' => ' Set as Public',
-    'LBL_AND' => 'and',
-    'LBL_OR' => 'or',
     'LBL_ADD_MORE_COLUMNS' => 'Click to select fields',
-    'LBL_ADD_GROUP' => 'Add Group',
-
-    //DateFilter Conditions
     'LBL_CUSTOM' => 'Custom',
     'LBL_PREVIOUS_FY' => 'Previous FY',
     'LBL_CURRENT_FY' => 'Current FY',
@@ -465,25 +414,9 @@ $languageStrings = [
     'LBL_NEXT_60_DAYS' => 'Next 60 Days',
     'LBL_NEXT_90_DAYS' => 'Next 90 Days',
     'LBL_NEXT_120_DAYS' => 'Next 120 Days',
-
-    //advanced Filter Options
     'LBL_NONE' => 'None',
-    'LBL_EQUALS' => 'equals',
-    'LBL_NOT_EQUAL_TO' => 'not equal to',
-    'LBL_STARTS_WITH' => 'starts with',
-    'LBL_ENDS_WITH' => 'ends with',
-    'LBL_CONTAINS' => 'contains',
-    'LBL_DOES_NOT_CONTAIN' => 'does not contain',
-    'LBL_LESS_THAN' => 'less than',
-    'LBL_GREATER_THAN' => 'greater than',
-    'LBL_LESS_THAN_OR_EQUAL' => 'less or equal',
-    'LBL_GREATER_OR_EQUAL' => 'greater or equal',
-    'LBL_BEFORE' => 'before',
-    'LBL_AFTER' => 'after',
-    'LBL_BETWEEN' => 'between',
     'LBL_IS_EMPTY' => 'is empty',
     'LBL_IS_NOT_EMPTY' => 'is not empty',
-    'LBL_APPROVE' => 'Approve',
     'LBL_HAS_CHANGED' => 'has changed',
     'LBL_HAS_CHANGED_TO' => 'has changed to',
     'LBL_HAS_CHANGED_FROM' => 'has changed from',
@@ -496,19 +429,11 @@ $languageStrings = [
     'LBL_IS_YESTERDAY' => 'is yesterday',
     'LBL_LESS_THAN_DAYS_LATER' => 'less than days later',
     'LBL_MORE_THAN_DAYS_LATER' => 'more than days later',
-
-    //Detail view summary widgets
     'LBL_OWNER' => 'Owner',
     'LBL_CREATED_ON' => 'Created On',
     'LBL_MODIFIED_ON' => 'Modified On',
     'LBL_MODIFIED' => 'Modified',
-    'LBL_COMMENTED' => 'Commented',
-
-    //calender set-reminder
     'LBL_BEFORE_EVENT' => ' Before Event',
-
-    //Dashboard widgets
-    'History' => 'History',
     'Funnel' => 'Funnel',
     'Potentials by Stage' => 'Opportunities by Stage',
     'Pipelined Amount' => 'Sales Pipeline',
@@ -523,11 +448,7 @@ $languageStrings = [
     'Open Tickets' => 'Open Tickets',
     'Funnel Amount' => 'Total Amount by Sales stage',
     'Key Metrics' => 'Key Metrics',
-    'Mini List' => 'Mini List',
     'Tag Cloud' => 'Tag Cloud',
-    'Notebook' => 'Notebook',
-
-    //Exports strings
     'LBL_EXPORT_ALL_DATA' => 'Export all data',
     'LBL_EXPORT_DATA_IN_CURRENT_PAGE' => 'Export data in current page',
     'LBL_EXPORT_SELECTED_RECORDS' => 'Export Selected Records',
@@ -542,15 +463,12 @@ $languageStrings = [
     'LBL_EXPORT_RECORD_CURRENCY' => 'Currency specified in Record',
     'LBL_EXPORT_FORMAT' => 'Export format',
     'LBL_EXPORT_DATA' => 'Export Data',
-
     'LBL_CUSTOMIZE' => 'Customize',
     'LBL_ADD_MANAGE_MODULES' => 'Modules',
     'LBL_CUSTOMIZE_MAIN_MENU' => 'Left Menus',
     'LBL_LABELS' => 'Labels',
     'LBL_WORKFLOWS' => 'Workflows',
     'LBL_PICKLIST' => 'Picklists',
-
-    // Added Common Keys for all modules
     'Account Name' => 'Organization Name',
     'Add Comment' => 'Add Comment',
     'Adjustment' => 'Adjustment',
@@ -564,8 +482,6 @@ $languageStrings = [
     'Billing Po Box' => 'Billing PO Box',
     'Billing State' => 'Billing State',
     'Biotechnology' => 'Biotechnology',
-
-    //for SO PO and Quotes
     'FedEx' => 'FedEx',
     'UPS' => 'UPS',
     'USPS' => 'USPS',
@@ -575,7 +491,6 @@ $languageStrings = [
     'Category' => 'Category',
     'Chemicals' => 'Chemicals',
     'City' => 'City',
-
     'Cold Call' => 'Cold Call',
     'Existing Customer' => 'Existing Customer',
     'Self Generated' => 'Self Generated',
@@ -588,18 +503,12 @@ $languageStrings = [
     'Web Site' => 'Web Site',
     'Word of mouth' => 'Word of mouth',
     'Other' => 'Other',
-
-    //for leads and accounts
     '--None--' => '--None--',
     'Acquired' => 'Acquired',
     'Active' => 'Active',
     'Market Failed' => 'Market Failed',
     'Project Cancelled' => 'Project Cancelled',
     'Shutdown' => 'Shutdown',
-    'Apparel' => 'Apparel',
-    'Banking' => 'Banking',
-    'Biotechnology' => 'Biotechnology',
-    'Chemicals' => 'Chemicals',
     'Communications' => 'Communications',
     'Construction' => 'Construction',
     'Consulting' => 'Consulting',
@@ -626,33 +535,26 @@ $languageStrings = [
     'Telecommunications' => 'Telecommunications',
     'Transportation' => 'Transportation',
     'Utilities' => 'Utilities',
-
     'Contact Name' => 'Contact Name',
     'Conversion Rate' => 'Conversion Rate',
-
     'Shipping Address' => 'Shipping Address',
     'Shipping City' => 'Shipping City',
     'Shipping State' => 'Shipping State',
-    'Shipping Code' => 'Shipping Code',
+    'Shipping Code' => 'Shipping Postal Code',
     'Shipping Country' => 'Shipping Country',
     'Shipping Po Box' => 'Shipping PO Box',
     'Country' => 'Country',
-    'Description' => 'Description',
-
     'Created' => 'Created',
     'Approved' => 'Approved',
     'Delivered' => 'Delivered',
     'Cancelled' => 'Cancelled',
-
     'Currency' => 'Currency',
     'LBL_BASE_CURRENCY' => 'Default Currency',
-
     'Discount Percent' => 'Discount Percent',
     'Discount Amount' => 'Discount Amount',
     'Item Discount Amount' => 'Item Discount Amount',
     'Net Price' => 'Net Price',
     'Item Discount Percent' => 'Item Discount Percent',
-
     'Due Date' => 'Due Date',
     'Due Date & Time' => 'Due Date & Time',
     'Email' => 'Primary Email',
@@ -662,21 +564,12 @@ $languageStrings = [
     'Is Converted From Lead' => 'Is Converted From Lead',
     'Expected Close Date' => 'Expected Close Date',
     'Fax' => 'Fax',
-
     'Last Name' => 'Last Name',
     'First Name' => 'First Name',
-
     'High' => 'High',
     'Low' => 'Low',
     'In Progress' => 'In Progress',
-
     'Subject' => 'Subject',
-    'Shipping Address' => 'Shipping Address',
-    'Shipping Po Box' => 'Shipping PO Box',
-    'Shipping City' => 'Shipping City',
-    'Shipping State' => 'Shipping State',
-    'Shipping Code' => 'Shipping Postal Code',
-    'Shipping Country' => 'Shipping Country',
     'Terms & Conditions' => 'Terms & Conditions',
     'Item Name' => 'Item Name',
     'Quantity' => 'Quantity',
@@ -692,42 +585,33 @@ $languageStrings = [
     'Total' => 'Total',
     'Sub Total' => 'Sub Total',
     'Tax Type' => 'Tax Type',
-    'S&H Amount' => 'S&H Amount',
+    'S&H Amount' => 'Charges',
     'Status' => 'Status',
     'Vendor Name' => 'Vendor Name',
-
     'LBL_ADDRESS_INFORMATION' => 'Address Details',
     'LBL_DESCRIPTION_INFORMATION' => 'Description Details',
     'LBL_TERMS_INFORMATION' => 'Terms & Conditions',
     'LBL_PRICING_INFORMATION' => 'Pricing Information',
     'LBL_RELATED_PRODUCTS' => 'Product Details',
     'LBL_REMINDER_INFORMATION' => 'Reminder Details',
-
     'LBL_FOLDER_SAVED' => 'Folder saved',
     'LBL_FOLDER_EXISTS' => 'Folder already exists',
     'LBL_FOLDER_DELETED' => 'Folder deleted',
     'LBL_EDIT_FOLDER' => 'Edit Folder',
-
     'Lead Source' => 'Lead Source',
     'Mobile' => 'Mobile Phone',
-
     'Notify Owner' => 'Notify Owner',
     'Other Phone' => 'Other Phone',
     'Phone' => 'Phone',
-
     'State' => 'State',
     'Po Box' => 'PO Box',
     'Postal Code' => 'Postal Code',
-
     'Potential Name' => 'Opportunity Name',
     'Priority' => 'Priority',
-
     'Product Name' => 'Product Name',
     'Rating' => 'Rating',
-
     'Related To' => 'Related To',
     'Type' => 'Type',
-
     'Reviewed' => 'Reviewed',
     'Salutation' => 'Salutation',
     'Street' => 'Street',
@@ -735,20 +619,12 @@ $languageStrings = [
     'Support Expiry Date' => 'Support Expiry Date',
     'Sales Start Date' => 'Sales Start Date',
     'Sales End Date' => 'Sales End Date',
-
-    //Dashboard list of widgets translation
     'Open Ticktes' => 'Open Tickets',
     'LBL_SELECT_STATUS' => 'Select Status',
     'LBL_BLANK' => '-Blank-',
-
-    //PageTitle translations
     'LBL_VTIGER_CRM_HONEST_OPEN_SOURCE' => 'vtiger CRM On Demand',
-
-    //Translations used in inventory modules for sopy address
     'SINGLE_Accounts' => 'Organization',
     'SINGLE_Contacts' => 'Contact',
-
-    //Weekdays in 3 letters translations
     'LBL_Sun' => 'Sun',
     'LBL_Mon' => 'Mon',
     'LBL_Tue' => 'Tue',
@@ -756,8 +632,6 @@ $languageStrings = [
     'LBL_Thu' => 'Thu',
     'LBL_Fri' => 'Fri',
     'LBL_Sat' => 'Sat',
-
-    //Months in 3 letters translations
     'LBL_Jan' => 'Jan',
     'LBL_Feb' => 'Feb',
     'LBL_Mar' => 'Mar',
@@ -770,33 +644,21 @@ $languageStrings = [
     'LBL_Oct' => 'Oct',
     'LBL_Nov' => 'Nov',
     'LBL_Dec' => 'Dec',
-
     'LBL_CALENDAR_SETTINGS' => 'Calendar Settings',
     'Reminder Interval' => 'Popup Reminder Interval',
-
-    //Translations used in inventory modules for address
-    'SINGLE_Accounts' => 'Organization',
-    'SINGLE_Contacts' => 'Contact',
     'HelpDesk' => 'Tickets',
     'LBL_TAG_CLOUD' => 'Tag Cloud',
-
     'LBL_NO_RECORDS' => 'No Records',
     'LBL_NO_RELATED' => 'No Related',
     'LBL_GLOBAL_SEARCH_MAX_MESSAGE' => 'Only the first 100 results of all modules are shown below. For module specific results, please select respective module and search',
     'LBL_GLOBAL_SEARCH_MAX_MESSAGE_FOR_MODULE' => 'Only the first 100 results are shown below. Please do Advanced Search if you are not satisfied with the result',
-
-    // used in reports detail view
     'LBL_ACTION' => 'Action',
     'LBL_NOTE' => 'Note',
     'LBL_SELECT_OPTION' => 'Select an Option',
-
-    //Module Manager
     'LBL_TOOLTIP' => 'Tooltip Management',
     'LBL_MODULE_SEQUENCE_NUMBERING' => '%s Numbering',
     'LBL_CUSTOM_FIELD_MAPPING' => 'Custom Field Mapping',
     'LBL_WEBFORMS' => 'WebForms',
-
-    //Compose Email Strings
     'SINGLE_Emails' => 'Email',
     'Emails' => 'Emails',
     'LBL_SELECT_EMAIL_IDS' => 'Select Email Addresses',
@@ -816,7 +678,6 @@ $languageStrings = [
     'LBL_EXCEEDED' => 'Exceeded',
     'LBL_OPERATION_NOT_PERMITTED' => 'Operation not permitted',
     'LBL_MERGE' => 'Merge',
-    'LBL_FIND_DUPLICATES' => 'Find Duplicates',
     'LBL_MERGING_CRITERIA_SELECTION' => 'Merging Criteria Selection',
     'LBL_AVAILABLE_FIELDS' => 'Available Fields',
     'LBL_MERGE_RECORDS_DESCRIPTION' => 'The primary record will be retained after the merge. You can select the column to retain the values.
@@ -826,11 +687,7 @@ $languageStrings = [
     'LBL_RECORD' => 'Record',
     'LBL_NO_DUPLICATED_FOUND' => 'No duplicates found',
     'LBL_MERGE_SELECT' => 'Merge Select',
-
-    //sbproducts translation
     'LBL_BACK_TO_PRODUCTS' => 'Back to products',
-
-    //Translations used for Export to Pdf
     'Valid Date' => 'Valid Date',
     'Phone: ' => 'Phone: ',
     'Issued Date' => 'Issued Date',
@@ -842,14 +699,11 @@ $languageStrings = [
     'Customer Name' => 'Customer Name',
     'Price' => 'Price',
     'Tax:' => 'Tax:',
-    'Contact Name' => 'Contact Name',
     'Grand Total:' => 'Grand Total:',
     'Fax: ' => 'Fax: ',
     'Website: ' => 'Website: ',
     'Tax' => 'Tax',
     'LBL_ALPHABETS' => 'A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z',
-
-    //Realted tab strings
     'Service Contracts' => 'Service Contracts',
     'Projects' => 'Projects',
     'Sales Order' => 'Sales Orders',
@@ -858,30 +712,22 @@ $languageStrings = [
     'List and Campaigns' => 'List and Campaigns',
     'Project Tasks' => 'Project Tasks',
     'Project Milestones' => 'Project Milestones',
-
     'Labels Editor' => 'Labels Editor',
     'LBL_IGNORE_EMPTY_VALUES' => 'Ignore empty values',
-
-    //Related tabs of Products
     'Product Bundles' => 'Product Bundles',
     'Parent Product' => 'Parent Product',
     'LBL_PRODUCT_BUNDLE' => 'Product Bundle',
     'LBL_EDIT_QUANTITY' => 'Edit Quantity',
     'LBL_ADD_TO_PRODUCTS' => 'Add Products',
-
     'LBL_MANAGE_USERS' => 'Manage Users',
     'LBL_TRANSFER_OWNERSHIP' => 'Transfer Ownership',
     'LBL_SELECT_RELATED_MODULES' => 'Select Related Modules',
     'LBL_ASSIGNED_TO' => 'Assigned To',
-    //Comments Field Labels for Workflow
     'Comment' => 'Comment',
     'Last Comment' => 'Last Comment',
     'Last 5 Comments' => 'Last 5 Comments',
     'All Comments' => 'All Comments',
-
     'LBL_LEFT_PANEL_SHOW_HIDE' => 'Left Panel Show/Hide',
-
-    //Products Popup View
     'NOT_A_BUNDLE' => 'Not a bundle',
     'LBL_SUB_PRODUCTS' => 'Sub Products',
     'LBL_MARK_AS_HELD' => 'Mark As Held',
@@ -892,22 +738,16 @@ $languageStrings = [
     'LBL_SPECIAL_OPTIONS' => 'Special Options',
     'LBL_PARENT_OWNER' => 'Parent Record Owner',
     'LBL_PASSWORD_LINK_EXPIRED_OR_INVALID_PASSWORD' => 'Password link has expired or you have entered invalid password',
-
-    // Recurring Invoice
     'Half-Yearly' => 'Half-Yearly',
     'LBL_FULLSCREEN' => 'Full Screen',
-    'LBL_SETUP_WEBFORMS' => 'Setup Webforms',
     'LBL_MODULE_DISABLED' => ' Module is disabled',
     'Organization Name' => 'Organization Name',
     'LBL_SOCIAL_TWITTER_WIDGET' => 'Twitter Activity',
     'LBL_WEEK' => 'Week',
-    //Convert Lead and Potential
     'CANNOT_CONVERT' => 'Cannot Convert',
     'LBL_CONVERT_ERROR_TITLE' => 'Modules Disabled',
     'LBL_FOLLOWING_ARE_POSSIBLE_REASONS' => 'Possible reasons include:',
     'LBL_MANDATORY_FIELDS_ARE_EMPTY' => 'Mandatory fields are empty',
-
-    // SMSNotifier Phone Format Warning
     'LBL_PHONE_FORMAT_WARNING' => 'Please ensure that phone number is in international E.164 format',
     'LBL_PHONEFORMAT_WARNING_CONTENT' => 'The E.164 number formatting can have a maximum of fifteen digits and are usually written as follows: [+][country code][subscriber number including area code]
 										 For example, to convert a US phone number (415 599 2671) to E.164 format, one would need to add the \'+\' prefix and the country code (which is 1) in front of the number (+1 415 599 2671). In the UK and many other countries internationally, local dialing requires the addition of a 0 in front of the subscriber number. However, to use E.164 formatting, this 0 must be removed. A number such as 020 7183 8750 in the UK would be formatted as +44 20 7183 8750.',
@@ -918,16 +758,11 @@ $languageStrings = [
     'QUEUED' => 'Queued',
     'FAILED' => 'Failed',
     'SAVED' => 'Draft',
-    'MailManager' => 'Mail Manager',
     'MAILSCANNER' => 'Mail Converter',
     'LBL_SENDER_NAME' => 'Sender Name',
     'SMSNotifier' => 'SMS Notifier',
-
     'Mobile Call' => 'Mobile Call',
     'LBL_NO_MORE_RESULTS' => 'No more results!',
-    'Related To' => 'Related To',
-
-    // Date Conditions
     'LBL_LESS_THAN_DAYS_AGO' => 'Less than days ago',
     'LBL_MORE_THAN_DAYS_AGO' => 'More than days ago',
     'LBL_IN_LESS_THAN' => 'In less than',
@@ -940,20 +775,14 @@ $languageStrings = [
     'LBL_MORE_THAN_HOURS_LATER' => 'More than Hours Later',
     'LBL_INTERNAL_COMMENT' => 'Internal Comment',
     'LBL_NOTE_EXISTING_ATTACHMENTS_WILL_BE_REPLACED' => 'Note : Existing attachments(images/files) will be replaced',
-
-    //common standard fields
     'Created By' => 'Created By',
     'LBL_SEND_PDF_FOR_SIGNING' => 'Send PDF for signing',
     'LBL_CLICK_TO_EDIT' => 'Click to edit',
     'LBL_SIGNATURE_BLOCK' => 'Signature',
     'LBL_INCLUDE_SIGNATURE_INFO' => 'Signature set in My Preferences will be appended to the bottom of the email',
     'LBL_INCLUDE_SIGNATURE' => 'Include Signature',
-
-    // module builder created module first block label
     'LBL_BASIC_INFORMATION' => 'Basic Information',
     'LBL_CLICK_HERE' => 'click here',
-
-    //Recipient preferences labels
     'LBL_SELCT_EMAIL_RECIPIENTS' => 'Select Email Recipients',
     'LBL_REMEMBER_MY_PREF' => 'Remember my preference',
     'LBL_RECIPIENT_PREFS' => 'Recipient Preferences',
@@ -963,13 +792,12 @@ $languageStrings = [
     'LBL_PLEASE_ADD_EMAIL_FIELDS' => 'Please add email fields and try again',
     'LBL_RECIPIENT_SAVE_MESSAGE' => 'Save successful.These preferences will be treated as recipient email addresses when you send email from this module.',
     'LBL_PREF_RESET_MESSAGE' => 'Your recipient email preferences has been reset!',
-
     'LBL_COMPANY_DETAILS' => 'Company Details',
     'COMPANY_LOGO_HELP_TEXT' => 'Please upload your lovely company logo. <br>Besides showing your company logo on your CRM,<br>
 									your company name and address details are used in <br>Email Campaigns (required to meet span regulations)<br>
 									and in Quotes.',
-    'COMPANY_LOGO_HELP_TEXT_2' => "You can edit company details later from <br>
-									'CRM Settings > Templates > Company Details' page",
+    'COMPANY_LOGO_HELP_TEXT_2' => 'You can edit company details later from <br>
+									\'CRM Settings > Templates > Company Details\' page',
     'LBL_CHOOSE_PREFERENCES' => 'Choose your Preferences',
     'PREFERENCES_HELP_TEXT' => 'Base Currency - Choose your primary currency. If you use multiple<br> 
 								currencies, all the values are converted to base currency and stored,<br>
@@ -1014,8 +842,6 @@ $languageStrings = [
     'LBL_SOCIAL_LINKED' => 'Your Vtiger is now linked to',
     'LBL_ENTER_KEYWORDS_HELP' => 'Vtiger will scan twitter and find messages with these words',
     'LBL_ENTER_KEYWORDS' => 'Enter Keywords',
-
-    // Social Module Strings
     'LBL_TWEETS' => 'Tweets',
     'LBL_FAVOURITES' => 'Favourites',
     'LBL_FOLLOWING' => 'Following',
@@ -1045,12 +871,7 @@ $languageStrings = [
     'LBL_VIEW_CASE' => 'View Case',
     'LBL_VIEW_OPPORTUNITY' => 'View Opportunity',
     'LBL_CLICK_TO_SELECT_PROFILE' => 'Click to select profile',
-    'LBL_INVALID_IMAGE' => 'Invalid Image',
-    'LBL_NEXT' => 'Next',
-    'LBL_FINISH' => 'Finish',
-    // Module field to store Source of Record
     'Source' => 'Source',
-
     'LBL_DEFAULT_REPLY_TO' => 'Default Reply To for Emails',
     'outgoing_server_from_email' => 'Outgoing Server From Email',
     'hepldesk_support_email' => 'Helpdesk Support Email-Id',
@@ -1059,28 +880,20 @@ $languageStrings = [
     'search_in_all_fields' => 'Search in All fields',
     'search_in_name_field' => 'Search in Name field',
     'LBL_LOOKUP_SEARCH_MODE_INFO' => 'Ex: In Contact creation form, when you enter text in the organization name box this setting will control what fields in Organization are to be searched',
-
     'VAT' => 'VAT',
     'Sales' => 'Sales',
     'Service' => 'Service',
     'Pre Tax Total' => 'Pre Tax Total',
     'Received' => 'Received',
     'Balance' => 'Balance',
-    'S&H Amount' => 'Charges',
     'S&H Percent' => 'Taxes On Charges',
     'Tax Region' => 'Tax Region',
-
-    //Singular Modulenames
     'SINGLE_Potentials' => 'Opportunity',
     'SINGLE_HelpDesk' => 'Ticket',
-    'SINGLE_Accounts' => 'Organization',
-    'SINGLE_Contacts' => 'Contact',
     'SINGLE_Project' => 'Project',
-    'LBL_ROLLUP_COMMENTS_INFO' => "If Roll up is set to 'On' comments on related records will be shown. 
-								 For example, if you are viewing comments on an Organization record, comments added to related Contacts, Opportunities, Tickets, ..etc would also be displayed.",
-    'LBL_ROLLUP_COMMENTS' => "Rollup Comments",
-
-    //others
+    'LBL_ROLLUP_COMMENTS_INFO' => 'If Roll up is set to \'On\' comments on related records will be shown. 
+								 For example, if you are viewing comments on an Organization record, comments added to related Contacts, Opportunities, Tickets, ..etc would also be displayed.',
+    'LBL_ROLLUP_COMMENTS' => 'Rollup Comments',
     'Engagement Score' => 'Engagement Score',
     'group' => 'Group',
     'individual' => 'Individual',
@@ -1091,11 +904,8 @@ $languageStrings = [
     'Mailing Address' => 'Mailing Address',
     'Other Address' => 'Other Address',
     'LBL_PREVIOUS' => 'Previous',
-    'LBL_NEXT' => 'Next',
     'Workflows' => 'Workflows',
     'Primary Twitter' => 'Twitter Username',
-
-    /* Vtiger7 Language Strings */
     'LBL_CLICK_HERE_TO_SELECT_ALL_RECORDS' => 'Select all records in this page',
     'LBL_CLICK_HERE_TO_MANAGE_LIST_COLUMNS' => 'Click here to manage List columns',
     'LBL_SHOW_MORE' => 'Show more',
@@ -1103,8 +913,8 @@ $languageStrings = [
     'LBL_ADD_STAR' => 'Add Star',
     'LBL_REMOVE_STAR' => 'Remove Star',
     'LBL_UPDATE_LIST' => 'Update List',
-    'LBL_SHARE_THIS_LIST' => 'Share this list',
-    'LBL_ADD_USERS_ROLES' => 'Add users and roles',
+    'LBL_SHARE_THIS_LIST' => 'Share the list',
+    'LBL_ADD_USERS_ROLES' => 'Add Users, Roles...',
     'LBL_LISTS' => 'Lists',
     'LBL_SEARCH_FOR_LIST' => 'Search for List',
     'LBL_MY_LIST' => 'My List',
@@ -1121,15 +931,9 @@ $languageStrings = [
     'LBL_UNLINK' => 'Unlink',
     'LBL_SWITCH_TO_OLD' => 'Switch to old version',
     'LBL_SLA_INFORMATION' => 'SLA Information',
-
-    //configure columns
-    'LBL_UPDATE_LIST' => 'Update List',
     'LBL_CONFIG_COLUMNS' => 'Configure Columns',
     'LBL_SELECTED_FIELDS' => 'Selected Fields',
-    'LBL_AVAILABLE_FIELDS' => 'Available Fields',
     'LBL_SEARCH_FIELDS' => 'Search Fields',
-
-    // Extensions
     'LBL_EXTENSIONS' => 'Extensions',
     'LBL_SYNC_LOG' => 'Sync Log',
     'LBL_SYNC_SETTINGS' => 'Sync Settings',
@@ -1159,18 +963,15 @@ $languageStrings = [
     'LBL_CONFIGURE' => 'Configure',
     'LBL_VIEW' => 'View',
     'LBL_CHANGE_USER' => 'Change User',
-
-    'LBL_CREATE_LIST' => 'Create a New List',
+    'LBL_CREATE_LIST' => 'Create list',
     'sent' => 'Sent',
     'accepted' => 'Accepted',
-    'SINGLE_Users' => 'User',
     'LBL_RECENT_COMMENTS' => 'Recent Comments',
-    'LBL_ENGAGEMENT_HISTORY' => 'Engagement History',
+    'LBL_ENGAGEMENT_HISTORY' => 'Touchpoint History',
     'LBL_NO_ENGAGEMENTS_FOUND' => 'No related Touchpoints',
     'LBL_MARKETING' => 'MARKETING',
     'LBL_SALES' => 'SALES',
     'LBL_PROJECT' => 'PROJECTS',
-    'LBL_TOOLS' => 'TOOLS',
     'LBL_TAGS' => 'Tags',
     'LBL_SHARE_TAGS' => 'Public Tags',
     'LBL_SHARE_TAG' => 'Shared Tag(s)',
@@ -1180,81 +981,57 @@ $languageStrings = [
     'Private/Shared' => 'Private/Shared',
     'LBL_TAG_FOR' => 'Tags For %s',
     'LBL_CURRENT_TAGS' => 'Current Tags',
-    'LBL_CREATE_NEW_TAG' => 'Create New Tag',
+    'LBL_CREATE_NEW_TAG' => 'Create new tag',
     'LBL_ADD_TAG' => 'Add Tag',
     'LBL_REMOVE_TAG' => 'Remove Tag',
     'LBL_TAG_SEPARATOR_DESC' => 'Use comma to separate multiple tags',
     'LBL_ENTER_TAG_NAME' => 'Enter tag name',
-
     'LBL_SELECT_COLOR' => 'Select Color',
-    'LBL_NO_TAG_EXISTS' => 'No Tag Exists',
     'LBL_ADD_NEW_TAG' => 'Add Tag',
     'LBL_SELECT_EXISTING_TAG' => 'Type here to select an existing tag',
-    'LBL_CREATE_NEW_TAG' => 'Create new tag',
     'LBL_ADD_OR_SELECT_TAG' => 'Add/Select Tag',
     'LBL_SELECT_FROM_AVAIL_TAG' => 'Select from available tags',
     'LBL_MARKET_PLACE' => 'Market Place',
-
-    'LBL_SHARE_THIS_LIST' => 'Share the list',
-    'LBL_ADD_USERS_ROLES' => 'Add Users, Roles...',
     'EmailTemplates' => 'Email Templates',
     'LBL_BILLING' => 'Billing',
     'LBL_ENABLED' => 'Enabled',
-
-    //Title added for buttons
     'LBL_CREATE_FILTER' => 'Create Filter',
     'LBL_IS' => 'is',
     'LBL_CREATION' => 'creation',
     'LBL_UPLOAD' => 'Upload',
     'LBL_ATTACH_FILES' => 'Attach Files',
-    'LBL_KEY_FIELDS' => "Key Fields",
+    'LBL_KEY_FIELDS' => 'Key Fields',
     'LBL_ADD_TODO' => 'Add Task',
-
-    "LBL_VIEW_DETAILS" => "View Details",
-
-    //Engagements History
-    "LBL_HAPPENED_ON" => "Happened On",
-    "LBL_HAPPENED" => 'Happened',
-    "LBL_TYPE" => "Type",
-    "LBL_STATUS" => "Status",
-    "LBL_CUSTOMER" => "Related To",
-    "LBL_SUMMARY" => "Summary",
-    "LBL_ENGAGEMENTS" => "Touchpoints",
-
+    'LBL_VIEW_DETAILS' => 'View Details',
+    'LBL_HAPPENED_ON' => 'Happened On',
+    'LBL_HAPPENED' => 'Happened',
+    'LBL_TYPE' => 'Type',
+    'LBL_STATUS' => 'Status',
+    'LBL_CUSTOMER' => 'Related To',
+    'LBL_ENGAGEMENTS' => 'Touchpoints',
     'LBL_PLEASE_SELECT_ATLEAST_ONE_OPTION' => 'Please select at least one option',
-    'LBL_STARRED' => 'Click to unfollow',
     'LBL_UNSTARRED' => 'Follow',
     'LBL_EDIT_EMAIL_PREFERENCE_TOOLTIP' => 'Edit these preferences from Settings dropdown in modules detail or list view',
     'LBL_SYSTEM' => 'System',
-    'LBL_SHOW_MAP' => 'Show Map',
     'LBL_GOOGLE_MAP' => 'Google Map',
-    'LBL_CREATION' => 'creation',
-    'LBL_ADD_TODO' => 'Add Task',
-
     'LBL_KEY_METRICS' => 'Key Metrics',
-
-    //Print template strings
     'LBL_TEMPLATE_NAME' => 'Template Name',
     'LBL_MODULE' => 'Module',
     'LBL_IS_DEFAULT' => 'Default Template',
     'LBL_SELECT_RECORD_FIELD' => 'Select Record Field',
     'LBL_PREVIEW' => 'Preview',
     'LBL_UNLINKED' => 'Unlinked',
-
     'LBL_FOLLOW' => 'Follow',
     'LBL_UNFOLLOW' => 'Unfollow',
     'Any' => 'Any',
     'LBL_NA' => '-NA-',
     'LBL_DISABLED' => 'Disabled',
-
-    //help
     'LBL_HELP_ANSWERS' => 'Answers',
     'LBL_HELP_ARTICLES' => 'Articles',
     'LBL_HELP_TOUR' => 'Tour',
     'LBL_NO_HELP_ARTICLE_FOUND' => 'Sorry, no Article found',
     'LBL_HELP_SEARCH' => 'Search Help',
     'LBL_HELP_BROWSE_ALL' => 'Browse all',
-
     'LBL_EXPORT_FILE_NAME' => 'Export Filename',
     'LBL_EXTENSION_NOT_ALLOWED_FOR_NONADMIN' => '%s Sync is allowed only for admin users',
     'SINGLE_Invoice' => 'Invoice',
@@ -1262,25 +1039,16 @@ $languageStrings = [
     'SINGLE_PurchaseOrder' => 'Purchase Order',
     'SINGLE_Quotes' => 'Quote',
     'LBL_POST_YOUR_COMMENT_HERE' => 'Post your comment here',
-    // Phone Calls
     'LBL_CLICK_TO_CALL' => 'Click-to-Call',
     'LBL_SHOW_TOTAL_NUMBER_OF_RECORDS' => 'Click for this list size',
-
     'LBL_GENERAL_FIELDS' => 'General Fields',
     'LBL_ROLL_UP' => 'Roll up',
-
     'LBL_TOUCH_POINTS' => 'Touchpoints',
-    'LBL_HISTORY' => 'Touchpoints',
-    'LBL_ENGAGEMENT_HISTORY' => 'Touchpoint History',
-    'LBL_SETTINGS' => 'Settings',
-
-    //List View and thumbnail view button labels
     'LBL_LIST_VIEW' => 'List View',
     'LBL_THUMBNAIL_VIEW' => 'Thumbnail View',
     'LBL_CHART_VIEW' => 'Chart View',
     'LBL_EMAIL_SUPPORT' => 'Email Support',
     'LBL_NO_ENTITIES_FOUND' => 'No %s found',
-
     'LBL_TRANSFER_ALL_CASES_TO' => 'Transfer All Cases To',
     'LBL_SLA_TO_BE_DELETED' => 'SLA To Be Deleted',
     'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'To use <b>%s</b>, we recommend you to Switch to new look.',
@@ -1291,13 +1059,9 @@ $languageStrings = [
     'OFFICE_REVOKE_ACCESS_MESSAGE' => 'Clicking on this will remove existing Office365 authentication for Contacts, Calendar and Emails. It will not delete any records which are already synchronized.',
     'LBL_START_GUIDED_TOUR' => 'Start Guided Tour',
     'LBL_MENU' => 'Menu',
-    'LBL_EMAIL_DOMAIN_HELPTEXT' => 'Email Domain field will be used to match Cases and Contacts created from Emails. '
-        . 'For example, if a new support email comes from john@company.com, it would be linked to Organization that has '
-        . 'company.com in the Email domain field. Multiple domains should be separated by commas',
-
+    'LBL_EMAIL_DOMAIN_HELPTEXT' => 'Email Domain field will be used to match Cases and Contacts created from Emails. For example, if a new support email comes from john@company.com, it would be linked to Organization that has company.com in the Email domain field. Multiple domains should be separated by commas',
     'LBL_SHARED_LIST_NON_ADMIN_MESSAGE' => 'This is a Shared list. Please contact your CRM Administrator to configure columns for All list',
     'LBL_SHARED_LIST_OWNER_MESSAGE' => 'This is a shared list. Please contact %s to change the columns of this list',
-
     'Mr.' => 'Mr.',
     'Ms.' => 'Ms.',
     'Mrs.' => 'Mrs.',
@@ -1310,7 +1074,6 @@ $languageStrings = [
     'LBL_TAX_CONFIGURE' => 'Configure tax region',
     'LBL_SEND_MSG_TO_SUPPORT' => 'Send email to support',
     'LBL_CHAT_WITH_SUPPORT' => 'Live chat with CRM expert',
-
     'LBL_ROLES' => 'Roles',
     'LBL_ROLEANDSUBORDINATE' => 'Role and Subordinates',
     'LBL_YOUR_LEARNING_SCORE' => 'Your CRM learning score',
@@ -1320,7 +1083,6 @@ $languageStrings = [
     'LBL_MAIL_SENT_SUCCESSFULLY' => 'Mail Sent Successfully',
     'LBL_MAIL_SAVED_SUCCESSFULLY' => 'Mail Saved Successfully',
     'LBL_FAILED_TO_SEND' => 'Failed to Send',
-
     'LBL_ESSENTIALS' => 'Essentials',
     'LBL_ALL_SETTINGS' => 'All Settings',
     'On' => 'On',
@@ -1337,7 +1099,6 @@ $languageStrings = [
     'week days ago' => 'week days ago',
     'more than week days ago' => 'more than week days ago',
     'less than week days ago' => 'less than week days ago',
-
     'LBL_DUPLICATES' => 'Duplicates',
     'LBL_DUPLICATES_DETECTED' => 'Duplicate(s) detected!',
     'LBL_DUPLICATES_FOUND_MESSAGE' => 'This %s cannot be saved since duplicate %s exists in Vtiger with matching values for %s.',
@@ -1365,11 +1126,8 @@ $languageStrings = [
     'LBL_TEMPLATE_INFO_PART2' => 'If recipients in TO field are not of the same module as the template, tracking will not be enabled for those recipients, and merge fields will not be merged.',
     'LBL_HIDDEN_BECAUSE_OF_DEPENDENCY' => 'Field is hidden because of dependency rule',
     'MAILCHIMP_REVOKE_ACCESS_MESSAGE' => 'Clicking on this will remove existing MailChimp authentication. It will not delete any records which are already synchronized.',
-    // Added for Event Forms
     'LBL_VIEW_ANSWERS' => 'View answers',
     'LBL_ANSWERS' => 'Answers',
-
-    //Default sort order translations
     'LBL_DEFAULT_SORT_ORDER' => 'Default sort column and sort order',
     'LBL_SELECT_COLUMN' => 'Select Column',
     'LBL_SELECT_SORT_ORDER' => 'Select Sort Order',
@@ -1377,12 +1135,9 @@ $languageStrings = [
     'LBL_DESCENDING' => 'Descending',
     'LBL_DEFAULT_SORT_MESSAGE' => 'List is always sorted on this column by default for every new user session.',
     'LBL_QUEUED' => 'Queued',
-    // End
-    //Added for Inbox
     'LBL_EMAILS' => 'Emails',
     'LBL_CONVERSATIONS' => 'Conversations',
     'LBL_FROM_DISABLED_MESSAGE' => 'The mail server selected in Outgoing server settings page does not allow From address to be changed.',
-    // End
     'LBL_MODULE_MANDATORY' => 'Module is mandatory',
     'Online' => 'Online',
     'Busy' => 'Busy',
@@ -1390,26 +1145,22 @@ $languageStrings = [
     'JS_SHARED_WITH' => 'Shared with',
     'LBL_REPLY_TO' => 'Reply to',
     'LBL_MODULE_ASSIGNMENT_RULES' => '%s Assignment Rules',
-
     'LBL_RECENT_UPDATES' => 'Recent Updates',
     'LBL_VIEW_UPDATES_IN_DETAIL' => 'Read More ...',
     'LBL_DEFAULT_DASHBOARD_TOOLTIP' => 'Make this dashboard as default by reordering it as the first tab!',
     'LBL_RELATED_MODULES_PERMISSION_DENIED' => 'Related modules permission is denied',
     'LBL_RECORD_PERMISSION_DENIED' => 'Record permissions denied',
     'LBL_MASS_SELECT' => 'Mass Select',
-
     'LBL_SHARING_RECORD' => 'Sharing',
     'LBL_SHARING_EDIT_MEMBERS' => 'Edit sharing members',
     'LBL_SHARING_VIEW_MEMBERS' => 'View sharing members',
     'LBL_STOP_SHARING_EDIT' => 'Stop sharing (edit) with',
     'LBL_STOP_SHARING_VIEW' => 'Stop sharing (view) with',
     'LBL_EDIT_SHARING_RECORD' => 'Edit sharing record',
-
     'Groups' => 'Groups',
     'Roles' => 'Roles',
     'RoleAndSubordinates' => 'Role And Subordinates',
     'MultiCompany4you' => 'Multi Company',
-
     'LBL_FILTER_SORTING' => 'Filter sorting',
     'LBL_PREV_LIST' => 'Prev',
     'LBL_NEXT_LIST' => 'Next',
@@ -1464,7 +1215,7 @@ $languageStrings = [
     'LBL_ADD_TAX' => 'Add tax',
     'LBL_SYSTEM_INFORMATION' => 'System Information',
     'LBL_SHOW_RELATED_COMMENTS' => 'Show related comments',
-    'LBL_SHOW_RELATED_COMMENTS_INFO' => "If 'Show related comments' is set to 'On' comments on related records will be shown. For example, if you are viewing comments on an Organization record, comments added to related Contacts, Opportunities, Tickets, ..etc would also be displayed.",
+    'LBL_SHOW_RELATED_COMMENTS_INFO' => 'If \'Show related comments\' is set to \'On\' comments on related records will be shown. For example, if you are viewing comments on an Organization record, comments added to related Contacts, Opportunities, Tickets, ..etc would also be displayed.',
     'LBL_RELATED_BLOCK_EDIT' => 'Related block edit',
     'LBL_RELATED_MODULE' => 'Related module',
     'LBL_SELECT_COLUMNS' => 'Select columns',
@@ -1483,7 +1234,6 @@ $languageStrings = [
     'LBL_AVG' => 'Avg',
     'LBL_MIN' => 'Min',
     'LBL_MAX' => 'Max',
-    'LBL_CREATE_LIST' => 'Create list',
     'starred' => 'starred',
     'tags' => 'tags',
     'LBL_ADD_AFTER' => 'Add After',
@@ -1539,16 +1289,13 @@ $languageStrings = [
     'Space ( )' => 'Space ( )',
     'LBL_UNIQUE' => 'Unique',
 ];
-
 $jsLanguageStrings = [
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page',
     'JS_SMS_SERVER_CONFIGURATION' => 'Please configure your SMS notifier from the SMS notifier settings page',
     'JS_PLEASE_SELECT_ONE_RECORD' => 'Please select at least one record',
-    //dropdown categary
     'JS_USERS' => 'Users',
     'JS_GROUPS' => 'Groups',
     'JS_ALL' => 'All',
-    //Validation Error Message
     'JS_PLEASE_ENTER_VALID_VALUE' => 'Please enter a valid value',
     'JS_PLEASE_ENTER_VALID_TAG_NAME' => 'Please enter valid tag name',
     'JS_TAG_SAVED_SUCCESSFULLY' => 'Tag Saved Successfully',
@@ -1564,20 +1311,16 @@ $jsLanguageStrings = [
     'JS_INVALID_PAGE_NUMBER' => 'Invalid Page Number',
     'JS_SUBJECT_VALUE_CANT_BE_EMPTY' => 'Subject value cannot be empty',
     'JS_PERCENTAGE_SHOULD_BE_LESS_THAN_100' => 'Percentage should be less than 100',
-
     'INVALID_NUMBER_OF' => 'Invalid number of',
     'INVALID_NUMBER' => 'Invalid number',
     'JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_DELETE' => 'Are you sure that you want to delete?',
-
     'OVERWRITE_EXISTING_MSG1' => 'Overwrite the existing address with the selected ',
     'OVERWRITE_EXISTING_MSG2' => 'address details?',
     'SINGLE_Accounts' => 'Organization',
     'SINGLE_Contacts' => 'Contact',
     'SINGLE_Project' => 'Project',
     'SINGLE_ProjectMilestone' => 'Project Milestone',
-
     'LBL_DELETE_CONFIRMATION' => 'Are you sure you want to delete?',
-    // This is added as duplicate as we need to show different message for different modules. Ex:Accounts has different message
     'LBL_UNLINK_CONFIRMATION' => 'Are you sure you want to unlink?',
     'LBL_DELETE_USER_CONFIRMATION' => 'When a User is deleted, user will be marked as "Inactive" and no new records can be assigned to the User, and the user will not be able to login. Are you sure you want to delete?',
     'LBL_DELETE_CONFIRMATION_NOTE' => 'Note : Deleted records will be kept in recycle bin and cleared after %s days',
@@ -1585,22 +1328,18 @@ $jsLanguageStrings = [
     'JS_LBL_SAVE' => 'Save',
     'JS_LBL_CANCEL' => 'Cancel',
     'JS_DUPLICTAE_CREATION_CONFIRMATION' => 'Organization Name already Exists.Do you want to create a duplicate record?',
-
     'SHOULD_BE_LESS_THAN_TODAY' => 'Must occur before today',
     'JS_PLEASE_SELECT_ATLEAST_ONE_OPTION' => 'Please select at least one option',
-    'JS_SELECT_MODULE' => 'Please Select Module',
-    'JS_PLEASE_SELECT_ATLEAST_ONE_MANDATORY_FIELD' => 'Please select at least one Mandatory Field',
     'JS_SELECT_MODULE' => 'Please select a module',
+    'JS_PLEASE_SELECT_ATLEAST_ONE_MANDATORY_FIELD' => 'Please select at least one Mandatory Field',
     'JS_PLEASE_ENTER_INTEGER_VALUE' => 'Please enter integer value',
     'JS_PLEASE_ENTER_DECIMAL_VALUE' => 'Please enter decimal value',
     'JS_PLEASE_ENTER_POSITIVE_DECIMAL_VALUE' => 'Please enter positive decimal value',
-
     'JS_START_TIME_SHOULD_BE_GREATER_THAN_CURRENT_TIME' => 'Start Time should be greater than Current Time',
     'JS_SHOULD_BE_LESS_THAN_CURRENT_DATE' => 'should be less than Current Date',
     'JS_SHOULD_BE_GREATER_THAN_CURRENT_DATE' => 'should be greater than Current Date',
     'JS_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO' => 'should be greater than or equal to',
     'JS_SHOULD_BE_LESS_THAN_OR_EQUAL_TO' => 'should be less than or equal to',
-    'JS_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO' => 'should be greater than or equal to',
     'JS_CURRENT_DATE' => 'Current Date',
     'JS_PERCENTAGE_VALUE_SHOULD_BE_LESS_THAN_100' => 'Percentage value should be less than 100',
     'JS_ACCEPT_ONLY_NUMBER' => 'Accepts only numbers',
@@ -1608,11 +1347,7 @@ $jsLanguageStrings = [
     'JS_MAX_FILE_UPLOAD_EXCEEDS' => 'max file Upload exceeds',
     'JS_THIS_DOCUMENT_HAS_ALREADY_BEEN_SELECTED' => 'This Document has already been attached',
     'JS_LIST_EXIST' => 'List already exists',
-
-    //Roles
     'JS_FAILED_TO_SAVE' => 'Failed to save changes on server',
-
-    //Import Translations
     'JS_IMPORT_FILE_CAN_NOT_BE_EMPTY' => 'Import File cannot be Empty',
     'JS_PLEASE_SELECT_ONE_FIELD_FOR_MERGE' => 'Select at least one matching field',
     'JS_MAP_NAME_CAN_NOT_BE_EMPTY' => 'Map Name cannot be empty',
@@ -1627,26 +1362,18 @@ $jsLanguageStrings = [
     'JS_PLEASE_ENTER_SOME_VALUE' => 'Please enter some value to search',
     'JS_VCF_FILE_IMPORT_WARNING' => 'You have selected a VCF file. Only Contacts can be imported from VCF file. To import this file, please initiate import from Contact module',
     'JS_ICS_FILE_IMPORT_WARNING' => 'You have selected a ICS file. Only Calendar can be imported from ICS file. To import this file, please initiate import from Calendar module',
-    //Select2 elements validation message
     'JS_YOU_CAN_SELECT_ONLY' => 'You can select only',
     'JS_ITEMS' => 'items',
-
     'JS_LBL_PERMISSION' => 'Permissions',
     'JS_CHECK_FILE_INTEGRITY' => 'Check File Integrity',
     'JS_DUPLICATE_RECORD' => 'Duplicate Record',
-
-    //advance filter checkbox type condition values
     'JS_IS_ENABLED' => 'is enabled',
     'JS_IS_DISABLED' => 'is disabled',
-
     'JS_PLEASE_ENTER_SOME_TEXT_FOR_COMMENT' => 'Please enter some text for comment',
     'JS_LBL_COMMENT_VALUE_CANT_BE_EMPTY' => 'Comment value cannot be empty',
     'JS_REQUIRED_FIELD' => 'This field is required',
     'JS_CAN_NOT_REMOVE_DEFAULT_WIDGET' => 'Cannot remove Default Widget',
-    'JS_SHOULD_BE_LESS_THAN_CURRENT_DATE' => 'should be less than Current Date',
     'JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED' => 'No create permissions or not enabled for quick create',
-
-    //Image Action
     'LBL_IMAGE_DELETED_SUCCESSFULLY' => 'Image Deleted Successfully',
     'LBL_IMAGE_NOT_DELETED' => 'Image Not Deleted',
     'LBL_YES' => 'Yes',
@@ -1657,47 +1384,29 @@ $jsLanguageStrings = [
     'JS_INFORMATION' => 'Information',
     'JS_DO_NOT_HAVE_AN_EMAIL_ID' => 'does not have an email address',
     'NONE_OF_THE_FIELD_VALUES_ARE_CHANGED_IN_MASS_EDIT' => 'None of the field values are changed in Mass Edit',
-
-    //Notification messages for inventory module
     'JS_PLEASE_SELECT_AN_ACCOUNT_TO_COPY_ADDRESS' => 'Please select an Organization to copy address',
     'JS_PLEASE_SELECT_AN_CONTACT_TO_COPY_ADDRESS' => 'Please select a Contact to copy address',
     'JS_SELECTED_ACCOUNT_DOES_NOT_HAVE_AN_ADDRESS' => 'Selected Organization does not contain address to copy',
     'JS_SELECTED_CONTACT_DOES_NOT_HAVE_AN_ADDRESS' => 'Selected Contact does not contain address to copy',
     'JS_PLEASE_ENTER_PRIMARY_EMAIL_VALUE_TO_ENABLE_PORTAL_USER' => 'Please enter Primary email address to enable portal user',
     'JS_PRIMARY_EMAIL_FIELD_DOES_NOT_EXISTS' => 'Primary email field does not exist to enable portal user',
-
-    //Tag Cloud validation messages
     'JS_PLEASE_ENTER_A_TAG' => 'Please enter a tag',
     'JS_TAG_NAME_ALREADY_EXIST' => 'Tag name already exist',
     'JS_MAX_TAG_LENGTH_EXCEEDS' => 'Tag length exceeds max size',
-
     'JS_NO_VIEW_PERMISSION_AFTER_SAVE' => 'You will not have permissions to view this record after save. Would you like to continue?',
     'JS_NO_RECORDS_RELATED_TO_THIS_FILTER' => 'No Records Related to this List',
-
-    // Calendar Reminder popup
     'JS_START_DATE_TIME' => 'Start Date & Time',
     'JS_END_DATE_TIME' => 'End Date & Time',
     'JS_POSTPONE' => 'Postpone',
     'JS_MESSAGE' => 'Message',
-
-    'JS_NO_VIEW_PERMISSION_AFTER_SAVE' => 'You will not have permissions to view this record after save. Would you like to continue?',
-
-    //Settings page translations
     'JS_SUCCESSFULLY_PINNED' => 'Shortcut added successfully',
     'JS_SUCCESSFULLY_UNPINNED' => 'Shortcut removed successfully',
     'JS_SHORTCUT_ALREADY_ADDED' => 'This shortcut is already added',
-    'JS_MESSAGE' => 'Message',
     'JS_MASS_EDIT_LIMIT' => 'Mass Edit operation can be done on 500 or less records at a time',
-
-    //Module Manager
     'JS_MODULE_ENABLED' => 'Module Enabled',
     'JS_MODULE_DISABLED' => 'Module Disabled',
-
-    //Crom tasks
     'JS_VALUE_SHOULD_NOT_BE_LESS_THAN' => 'Frequency of any cron job configured should not be less than',
-    'JS_MINUTES' => 'mins',
-
-    //PickList
+    'JS_MINUTES' => 'minutes',
     'JS_ITEM_RENAMED_SUCCESSFULLY' => 'Item Renamed Successfully',
     'JS_ITEM_ADDED_SUCCESSFULLY' => 'Item added Successfully',
     'JS_NO_ITEM_SELECTED' => 'No item Selected',
@@ -1707,43 +1416,27 @@ $jsLanguageStrings = [
     'JS_SELECT_RECORDS_TO_MERGE_FROM_SAME_GROUP' => 'You have to select the records in the same groups for merging',
     'JS_SELECT_ATLEAST_TWO_RECORD_FOR_MERGING' => 'Select atleast two records for merging',
     'JS_ALLOWED_TO_SELECT_MAX_OF_THREE_RECORDS' => 'You are allowed to select a maximum of three records',
-    //Notification message for dashboard widget delete
     'JS_ARE_YOU_SURE_TO_DELETE_WIDGET' => 'Are you sure you want to delete widget - %s?',
     'JS_ARE_YOU_SURE_TO_DELETE_DASHBOARDTAB' => 'Are you sure you want to delete this dashboard tab - %s?',
     'JS_TABS_LIMIT_EXCEEDED' => 'Sorry! Can\'t add more than 10 tabs',
-    'JS_DUPLICATE_ENTRIES_FOUND_FOR_THE_VALUE' => 'Duplicate entries found for the value',
-    'JS_SELECT_RECORDS_TO_MERGE_FROM_SAME_GROUP' => 'You have to select the records in the same groups for merging',
-    'JS_SELECT_ATLEAST_TWO_RECORD_FOR_MERGING' => 'Select atleast two records for merging',
-    'JS_ALLOWED_TO_SELECT_MAX_OF_THREE_RECORDS' => 'You are allowed to select a maximum of three records',
     'JS_TOTAL_RECORDS' => 'Total records',
     'JS_PAGE_NOT_EXIST' => 'Page not exist',
     'JS_YOU_ARE_IN_PAGE_NUMBER' => 'You are in page number',
-
-    //More currencies message
     'JS_PLEASE_ENABLE_BASE_CURRENCY_FOR_PRODUCT' => 'Please enable base currency for product',
     'JS_PLEASE_SELECT_BASE_CURRENCY_FOR_PRODUCT' => 'Please select base currency for product',
     'JS_BASE_CURRENCY_CHANGED_TO_DISABLE_CURRENCY' => 'Base Currency has to be changed to disable ',
-
-    //Delete Records message
     'JS_RECORDS_ARE_GETTING_DELETED' => 'Records are getting deleted',
     'JS_RECORD_GETTING_DELETED' => 'Record getting deleted',
     'JS_NO_RESULTS_FOUND' => 'No Results Found',
-
     'JS_RECORDS TRANSFERRED SUCCESSFULLY' => 'Records ownership has been tranferred successfully',
-
-    //TextSearch Language String
     'LBL_SEARCHING' => 'Searching in ',
     'JS_RECORDS_TRANSFERRED_SUCCESSFULLY' => 'Records ownership transferred successfully.',
     'JS_USER_DELETED_SUCCESSFULLY' => 'User deleted successfully.',
-
     'JS_MAX_RECORDS_LIMIT' => 'Maximum Records for Print is :',
-    'JS_USER_EXISTS' => 'User Already Exists',
+    'JS_USER_EXISTS' => 'User already exists',
     'JS_REENTER_PASSWORDS' => 'Renter Passwords',
     'LBL_SIGN_IN_AS_USER' => 'Logging in as another user will terminate the current session. Are you sure want to continue?',
-    'JS_REENTER_PASSWORDS' => 'Renter Passwords',
     'SINGLE_Vendors' => 'Vendor',
-
-    //Feedback on removing old version
     'JS_PLEASE_GIVE_YOUR_FEEDBACK' => 'Please Fill your Feedback',
     'JS_PBX_CALL_FROM' => 'Call From',
     'JS_PBX_INCOMING_CALL' => 'Incoming Call',
@@ -1761,12 +1454,9 @@ $jsLanguageStrings = [
     'JS_NO_CREATE_PERMISSION' => 'Call need to be answered before creating record',
     'HelpDesk' => 'Tickets',
     'Potentials' => 'Opportunities',
-    'JS_CALL_NOT_ANSWERED_UPDATE_PERMISSION' => "Call need to be answered before linking record",
-    'JS_CALL_NOT_ANSWERED' => "Call need to be answered before performing the action",
-    // ends
+    'JS_CALL_NOT_ANSWERED_UPDATE_PERMISSION' => 'Call need to be answered before linking record',
+    'JS_CALL_NOT_ANSWERED' => 'Call need to be answered before performing the action',
     'JS_NO_EDIT_PERMISSION' => 'You don\'t have the permission to edit this event',
-
-    //Google Synchronization
     'SYNC_REMOVED_SUCCESSFULLY' => 'Google synchronization removed successfully.',
     'REMOVE_SYNCHRONIZATION_MESSAGE' => 'Clicking on this will remove existing Gmail authentication. It will not delete any records which are already synchronized.',
     'REMOVE_SYNCHRONIZATION' => 'Remove Synchronization',
@@ -1775,10 +1465,8 @@ $jsLanguageStrings = [
     'LBL_SYNCRONIZING' => 'Synchronizing....',
     'LBL_NOT_SYNCRONIZED' => 'You have not synchronized yet',
     'LBL_FIELD_MAPPING' => 'Field Mapping',
-
     'LBL_RESTORE_CONFIRMATION' => 'Are you sure you want to restore this user?',
     'LBL_DELETE_USER_PERMANENT_CONFIRMATION' => 'Once deleted this user cannot be restored back. Are you sure you want to delete this user permanently?',
-
     'LBL_LANGUAGE_LABEL_VALIDATION' => 'Label value cannot be empty. You must enter some value.',
     'JS_CHANGES_WILL_BE_LOST' => 'Your changes will be lost!',
     'JS_RECORD_DELETED' => 'Record deleted',
@@ -1796,10 +1484,7 @@ $jsLanguageStrings = [
     'LBL_WARNING' => 'Warning',
     'DELETE_USER_PERMANENT_WARNING' => 'Deleting a user permanently will transfer all records including comments and history to new user.',
     'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Decimal separator and Grouping separator cant be same',
-    'JS_FUTURE_EVENT_CANNOT_BE_HELD' => 'Cannot Be Held For Future',
     'JS_CLOSE' => 'Close',
-
-    // For Line Iteam Currency Symbol select while Import
     'JS_CURRENCY_TOOLTIP_CONTENT_TITLE' => 'Line Items Currency',
     'JS_CURRENCY_TOOLTIP_CONTENT_MESSAGE' => 'For importing Currency values in Line items, Vtiger will use this setting to identify the currency. Any currency values outside the line items tables, are assumed to be in User\'s preferred currency (selected in \'My Preferences\')',
     'LBL_CANT_SELECT_CONTACT_FROM_LEADS' => 'Cannot select related Contacts for Leads',
@@ -1807,17 +1492,12 @@ $jsLanguageStrings = [
     'JS_FILE_NAME' => 'File Name',
     'JS_EXTERNAL_FILE_URL' => 'File Url',
     'JS_PLEASE_SELECT_A_FILE' => 'Please select a file',
-    // SMSNotifier Phone Format Warning
     'JS_PHONEFORMAT_ERROR' => 'Please check the phone number is in internatonal E.164 format with \'+\' prefix and the country code Ex +1 415 599 2671',
-
-    // Leads and Potentials Field Mapping
     'JS_NONE' => 'None',
     'JS_IS_ALREADY_BEEN_MAPPED' => 'is already been mapped',
     'JS_CANT_MAP' => 'Cant map',
     'JS_WITH' => 'with',
     'JS_MAPPING_DELETED_SUCCESSFULLY' => 'Mapping Deleted Successfully',
-
-    //JS Field Type Translation
     'JS_phone' => 'Phone',
     'JS_picklist' => 'Pick List',
     'JS_email' => 'Email',
@@ -1838,12 +1518,8 @@ $jsLanguageStrings = [
     'JS_double' => 'Decimal',
     'JS_reference' => 'reference',
     'JS_image' => 'Image',
-
-    // AutoFill Overwriting message
     'JS_OVERWRITE_AUTOFILL_MSG1' => 'Would you like to overwrite existing',
     'JS_OVERWRITE_AUTOFILL_MSG2' => 'with selected',
-
-    //Demo Data Module Translatios
     'JS_ADD_DEMO_DATA_CONFIRMATION' => 'Are you sure you want to add demo records to all modules?',
     'JS_ADD_DEMO_DATA_INFO' => 'Demo records can be deleted by clicking the "Clear Demo Data" button.',
     'JS_CLEAR_DEMO_DATA_CONFIRMATION' => 'Are you sure you want to clear demo data in all modules?',
@@ -1861,11 +1537,9 @@ $jsLanguageStrings = [
     'SINGLE_Leads' => 'Lead',
     'JS_SELECTED_LEAD_DOES_NOT_HAVE_AN_ADDRESS' => 'Selected Lead does not contain address to copy',
     'JS_INVALID_EMAILS' => 'Invalid Emails',
-    'JS_DIRECTORY_IS_EMPTY' => 'Directory is empty',
     'JS_NO_LINE_ITEM' => 'Line items cannot be empty.',
     'JS_INTERNAL_COMMENT' => 'Internal Comment',
     'JS_INTERNAL_COMMENT_INFO' => 'The comment will only be seen by CRM users, if the internal comment checkbox is enabled. To notify customers (through configurable workflows or customer portal) leave this checkbox disabled',
-
     'JS_NO_TAXES_EXISTS' => 'No taxes exist',
     'JS_CONFIRM_TAXES_AND_CHARGES_REPLACE' => 'Do you want to update tax & charge values corresponding to selected region?',
     'JS_PRINTTEMPLATEMODULE_DISABLED' => 'PrintTemplates module is disabled. Cannot perform the operation',
@@ -1888,18 +1562,12 @@ $jsLanguageStrings = [
     'blog' => 'Blog',
     'home-page' => 'Homepage',
     'address' => 'Address',
-
-    // Cron
     'JS_NONE_OF_THE_VALUES_ARE_CHANGED' => 'None of the values are changed',
     'JS_REMOVE_SYNC_CONFIRMATION' => 'Remove synchronization will only remove existing authentication, it will not delete synchronized records. If you synchronize with same Google account again, duplicate records will be created. Are you sure you want to remove synchronization?',
-
-    //Recipient preferences labels
     'JS_LBL_GETTING_RECIPIENT_PREFS' => 'Getting recipient preferences..',
     'JS_LBL_SAVING_PREFERENCES' => 'Saving preferences..',
-    // Social Module Strings
     'JS_PLEASE_WAIT' => 'Please Wait...',
     'JS_SOCIAL_FIELD_ERROR' => 'field is required',
-    // Twitter Specific
     'JS_ADD_FAVOURITE_SUCCESS_MSG' => 'Added Tweet to favourite list successfully',
     'JS_UNDO_FAVOURITE_SUCCESS_MSG' => 'Removed Tweet from favourite list successfully',
     'JS_UNDO_RETWEET_SUCCESS_MSG' => 'UndoRetweet successfully',
@@ -1915,11 +1583,9 @@ $jsLanguageStrings = [
     'JS_TICKET_ADDED_SUCESS_MSG' => 'Ticket added successfully',
     'JS_CASE_ADDED_SUCESS_MSG' => 'Case added successfully',
     'JS_SELECT_OPTION' => 'Select an Option',
-
     'JS_LOADING_PLEASE_WAIT' => 'Loading... Please wait..',
     'JS_SAVING_PLEASE_WAIT' => 'Saving.. Please wait..',
     'JS_DUPLICATE_EMAILS_PLEASE_CHECK' => 'Duplicate email addresses. Please check',
-    'JS_USER_EXISTS' => 'User already exists',
     'JS_ALERT' => 'Alert',
     'JS_SUCCESS' => 'Success',
     'JS_REMOVE_MASS_TAG_WARNING' => 'Are you sure you want to remove %s tag for selected records',
@@ -1937,17 +1603,12 @@ $jsLanguageStrings = [
     'JS_TAB_LABEL_EXCEEDS_CHARS' => 'Tab label length should be less than %s characters',
     'JS_STARRED' => 'Unfollow',
     'JS_NOT_STARRED' => 'Follow',
-    //Tags
     'JS_NO_TAG_EXISTS' => 'No Tag Exists',
-    //help wizard
     'JS_HELP_AND_SUPPORT' => 'Help & Support',
     'JS_WHAT_DO_YOU_NEED_HELP_WITH' => 'What do you need help with?',
     'JS_SUBMIT' => 'Submit',
-
-    /** Vtiger7 translations **/
     'JS_ADD_MAX_15_ITEMS' => 'You can only add 15 items',
     'SINGLE_SLA' => 'SLA',
-
     'JS_DEFAULT_ENABLED' => 'Default enabled',
     'JS_DEFAULT_DISABLED' => 'Default disabled',
     'JS_EDIT_FIELDS' => '%s Fields & Layout',
@@ -1955,18 +1616,14 @@ $jsLanguageStrings = [
     'JS_MORE_GOOGLE' => 'There are more records to be synchronized in Google',
     'JS_MORE_OFFICE365' => 'There are more records to be synchronized in Office365',
     'JS_TOKEN_EXPIRED' => 'Office365 Authentication has expired. Click on Sign in with Office365 button to re-authorize.',
-    'JS_EDIT_FIELDS' => '%s Fields & Layout',
-    'JS_WISH_TO_PROCEED' => "Are you sure you want to proceed?",
+    'JS_WISH_TO_PROCEED' => 'Are you sure you want to proceed?',
     'JS_SWITCH_TO_OLD_LOOK_CONFIRMATION_MESSAGE' => 'Some features, including notifications, picklist colors, follow record, are not available in old version. You may switch back to new version by choosing new version from top right menu.',
     'JS_PROCEED_OLD_VERSION' => 'Proceed to old version',
     'JS_STAY_WITH_NEW_VERSION' => 'Stay with new version',
-
-    //TimeAgo plugin Strings
     'JS_AGO' => 'ago',
     'JS_FROM_NOW' => 'from now',
     'JS_LESSTHAN_A_MINUTE' => 'less than a minute',
     'JS_A_MINUTE' => 'a minute',
-    'JS_MINUTES' => 'minutes',
     'JS_AN_HOUR' => 'an hour',
     'JS_HOURS' => 'hours',
     'JS_A_DAY' => 'a day',
@@ -1978,23 +1635,17 @@ $jsLanguageStrings = [
     'JS_TODAY' => 'today',
     'JS_TOMORROW' => 'tomorrow',
     'JS_YESTERDAY' => 'yesterday',
-
     'JS_CREATE_TASK' => 'Create Task',
-
-    //Notifications
     'JS_MENTION_ATLEAST_ONE_USER' => 'Mention atleast one user',
     'JS_LOADING' => 'Loading...',
     'JS_CASE_ACCEPTED_SUCCESSFULLY' => 'Case accepted successfully',
-
     'JS_UPLOAD_SUCCESSFUL' => 'File Uploaded Successfuly',
     'JS_UPLOAD_FAILED' => 'File Upload Failed',
     'JS_FAILED_TO_UPLOAD_FILE' => 'Failed to upload file',
     'JS_DOCUMENT_CREATED' => 'Document created',
     'JS_DOCUMENT_CREATION_FAILED' => 'Document creation failed',
-
     'JS_TEMPLATE_TEXT_EXCEEDS_LIMIT' => 'The size of the template exceeds the maximum allowed size of 100 KB. Please remove some text in the template and retry',
     'JS_PLEASE_SELECT_IMAGE' => 'Please select an image',
-
     'JS_LBL_MY_PREFERENCES' => 'My Preferences',
     'JS_LBL_MY_PREFERENCES_TEXT' => 'Configure your personal preferences including Timezone, Currency, Date Format. You can also upload profile picture from My Preferences.',
     'JS_LBL_HELP' => 'Help',
@@ -2019,17 +1670,11 @@ $jsLanguageStrings = [
     'JS_TASK_PRIORITY_CHANGED' => 'Task priority changed',
     'JS_NO_PERMISSION_TO_MARK_AS_HELD' => 'You do not have permission to mark this event as held',
     'JS_TAG_ADDED' => 'Tag added',
-    'JS_TAB_DELETED' => 'deleted',
-    'JS_TAB_RENAMED' => 'Renamed',
-    'JS_TAB_REORDERED' => 'Reordered',
-    //Convert Lead
     'JS_CONVERT_LEAD_ERROR' => 'You have to enable either Organizations or Contacts module to convert the Lead.',
-
     'JS_CHECK_START_AND_END_DATE' => 'End Date & Time should be greater than or equal to Start Date & Time',
     'JS_CHECK_START_AND_END_DATE_SHOULD_BE_GREATER' => 'End Date & Time should be greater than Start Date & Time',
     'JS_HOLD_FOLLOW_UP_SHOULD_BE_LESS_THAN_CURRENT_DATE' => 'Hold Followup on should be greater than or equal to Start Date & Time',
     'JS_DUPLICATES_DETECTED' => 'Duplicate(s) detected!',
-
     'JS_IS' => 'is',
     'JS_IS_NOT' => 'is not',
     'JS_EQUALS' => 'equals',
@@ -2047,15 +1692,14 @@ $jsLanguageStrings = [
     'JS_SHOW_ALL' => 'Show all',
     'JS_SHOW_LESS' => 'Show less',
     'JS_SHOW_MORE' => 'Show more',
-
     'JS_KANBAN_ANCHORS_LIMIT_MESSAGE' => 'You can select upto 10 stages only',
     'JS_KANBAN_NO_MORE_RECORDS' => 'No more records found',
     'JS_DELETED' => 'deleted',
     'JS_CLEAR_TEMPLATE_CONTENT_RECIPIENTS' => 'Changing the module will clear the template selected and recipients from TO field. Do you want to proceed?',
     'JS_WORKFLOW_ACTIONS_LIMIT_EXCEEDED' => 'Exceeded maximum limit of actions in this edition.',
     'JS_RECORD_CREATION_LIMIT_EXCEEDED' => 'Create Record - Exceeded maximum limit of this edition.',
-    'JS_KANBAN_NO_ANCHORS_CONFIGURED' => "You do not have any sales stages defined for your Sales pipeline.",
-    'JS_KANBAN_NO_ANCHORS_CONFIGURED_NON_ADMIN' => "You do not have any sales stages defined for your Sales pipeline. Please contact your Administrator to define sale stages as per your sales process.",
+    'JS_KANBAN_NO_ANCHORS_CONFIGURED' => 'You do not have any sales stages defined for your Sales pipeline.',
+    'JS_KANBAN_NO_ANCHORS_CONFIGURED_NON_ADMIN' => 'You do not have any sales stages defined for your Sales pipeline. Please contact your Administrator to define sale stages as per your sales process.',
     'JS_UPDATE_MAPPING_CONFIRMATION' => 'There are some matching columns in CSV file which are not saved in this mapping. Do you want to update this mapping with new columns?',
     'JS_MAPPING_UPDATED' => 'New mapping updated.',
     'JS_MAILCHIMP_REMOVE_SYNC_CONFIRMATION' => 'Revoke access will remove existing MailChimp authentication, it will not delete synchronized records. Are you sure you want to revoke access?',
@@ -2072,8 +1716,6 @@ $jsLanguageStrings = [
     'JS_SHARED_PRIVATELY_TITLE' => 'Private Conversation can only be viewed by members of the mailboxes it is linked to.',
     'JS_LINKED_RECORDS_SUCCESS' => 'Linked records are successfully updated',
     'JS_MAIL_DRAFTED_SUCCESSFULLY' => 'Mail drafted successfully',
-
-    //Custom view default sort translations.
     'JS_PLEASE_REMOVE_ONE_FIELD_FROM_CHOOSE_COLUMNS_LIST_TO_ADD_DEFAULT_SORT_FIELD' => 'Only 16 columns are allowed in a list view including sort columns.',
     'JS_DEFAULT_SORT_NOTIFY' => 'List is now sorted on default sort column ',
     'JS_ENABLED' => 'Enabled',
@@ -2084,7 +1726,6 @@ $jsLanguageStrings = [
     'JS_SET_DEFAULT_TAB' => 'is set as your default dashboard',
     'JS_PASSWORD_MISMATCH_ERROR' => 'Please re-enter passwords. The "new password" and "confirm password" values do not match.',
     'LBL_LIST_DELETE_CONFIRMATION' => 'Are you sure you want to delete?',
-    'JS_WIDGET_RESIZING_WAIT_MSG' => 'Widget contents will load after resizing.',
     'JS_COPIED_SUCCESSFULLY' => 'Copied successfully',
     'JS_ATLEAST_SELECT_ONE_FIELD' => 'At least one field should be selected',
     'JS_RELATED_ACCOUNT_IS_NOT_AVAILABLE' => 'Related Organization record is not available',

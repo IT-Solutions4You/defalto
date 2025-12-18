@@ -18,7 +18,6 @@
  */
 
 $languageStrings = [
-    // Basic Strings
     'Settings' => 'Settings',
     'LBL_MAILROOM' => 'Mailroom',
     'LBL_SEARCH_SETTINGS_PLACEHOLDER' => 'Search Settings',
@@ -29,11 +28,9 @@ $languageStrings = [
     'LBL_SETTINGS_SHORTCUTS' => 'Settings Shortcuts',
     'LBL_UNPIN' => 'Unpin',
     'LBL_PIN' => 'pin',
-
-    // Blocks
     'LBL_STUDIO' => 'Studio',
     'LBL_COMMUNICATION_TEMPLATES' => 'Templates',
-    'LBL_USER_MANAGEMENT' => 'User & Access Control',
+    'LBL_USER_MANAGEMENT' => 'User Management',
     'LBL_ACCESS_MANAGEMENT' => 'Access Management',
     'LBL_MODULE_MANAGER' => 'Module Management',
     'LBL_NOTIFICATIONS' => 'Notifications',
@@ -44,80 +41,55 @@ $languageStrings = [
     'LBL_PBXMANAGER' => 'PBXManager',
     'LBL_INTEGRATION' => 'Integration',
     'LBL_EXCHANGE_CONNECTOR' => 'Exchange Connector',
-
-    // Fields
     'LBL_DESCRIPTION' => 'Description',
-
-    // Other Strings
     'LBL_USER_DESCRIPTION' => 'Manage users who can access Vtiger CRM',
     'LBL_ROLES' => 'Roles',
     'LBL_ROLE_DESCRIPTION' => 'Set up hierarchy of roles and assign to the users',
-
     'LBL_PROFILES' => 'Profiles',
     'LBL_PROFILE_DESCRIPTION' => 'Manage user-specific modules access to different Roles',
-
     'USERGROUPLIST' => 'Groups',
     'LBL_GROUP_DESCRIPTION' => 'Manage different types of teams based on roles, users, and profiles',
-
     'LBL_SHARING_ACCESS' => 'Sharing Rules',
     'LBL_SHARING_ACCESS_DESCRIPTION' => 'Manage module sharing rules & custom sharing rules',
-
     'LBL_WORKFLOW_LIST' => 'Workflow List',
     'LBL_AVAILABLE_WORKLIST_LIST' => 'Available Workflows',
     'LBL_FIELDFORMULAS' => 'Field Formulas',
     'LBL_FIELDFORMULAS_DESCRIPTION' => 'Add custom equations to custom fields',
-
     'VTLIB_LBL_MODULE_MANAGER' => 'Modules',
     'VTLIB_LBL_MODULE_MANAGER_DESCRIPTION' => 'Manage module behavior inside vtiger CRM',
     'LBL_PICKLIST_EDITOR' => 'Picklist Field Values',
     'LBL_PICKLIST_DESCRIPTION' => 'Customize Picklist values in each module',
     'LBL_PICKLIST_DEPENDENCY_SETUP' => 'Picklist Dependencies',
     'LBL_PICKLIST_DEPENDENCY_DESCRIPTION' => 'Setup Dependency between Picklist values in each module',
-
-    'LBL_FIELDFORMULAS' => 'Field Formulas',
-    'LBL_FIELDFORMULAS_DESCRIPTION' => 'Add custom equations to custom fields',
-
     'LBL_MENU_EDITOR' => 'Main Menu',
     'LBL_MENU_DESC' => 'Customize Menu Sequence',
     'LBL_MENU_EDITOR_MESSAGE' => 'The actual number of menu items displayed will depend on the screen size and might be less than selected items.',
-
     'LBL_COMPANY_DETAILS' => 'Company Details',
     'LBL_COMPANY_DESCRIPTION' => 'Specify business address of company',
-
     'LBL_MAIL_MERGE' => 'Mail Merge',
     'LBL_MAIL_MERGE_DESCRIPTION' => 'Manage templates for Mail Merging',
-
     'LBL_TAX_SETTINGS' => 'Tax Calculations',
     'LBL_TAX_DESCRIPTION' => 'Manage taxes and the corresponding tax rates',
-
     'LBL_MAIL_SERVER_SETTINGS' => 'Outgoing Server',
     'LBL_MAIL_SERVER_DESCRIPTION' => 'Configure Outgoing Mail Server details',
-
     'INVENTORYTERMSANDCONDITIONS' => 'Inventory: Terms and Conditions',
     'LBL_INV_TANDC_DESCRIPTION' => 'Specify terms and conditions for Quotes, Invoices, and Sales Orders',
-
     'LBL_ANNOUNCEMENT_DESCRIPTION' => 'Manage company wide announcements',
-
     'LBL_CURRENCY_SETTINGS' => 'Currencies',
     'LBL_CURRENCY_DESCRIPTION' => 'Manage international currencies and exchange rates',
-
     'LBL_CUSTOMIZE_MODENT_NUMBER' => 'Module Numbering',
     'LBL_CUSTOMIZE_MODENT_NUMBER_DESCRIPTION' => 'Module Entity Number customization',
-
     'LBL_MAIL_SCANNER' => 'Mail Converter',
     'LBL_MAIL_SCANNER_DESCRIPTION' => 'Configure email inbox for scanning and record attachment',
-
     'LBL_LIST_WORKFLOWS' => 'Workflows',
     'LBL_LIST_WORKFLOWS_DESCRIPTION' => 'Create and edit workflows',
     'LBL_SELECT_DATE' => 'Select dates',
-
     'Configuration Editor' => 'Configuration Editor',
     'LBL_CONFIG_EDITOR_DESCRIPTION' => 'Update configuration file of the application',
     'Update configuration file of the application' => 'Update configuration file of the application',
-    'LBL_PERSONAL_EMAIL_TRACKING_INFO' => "To track opens of direct emails sent to contacts, please enable this checkbox. Please note that email sent from Email Campaigns module are always tracked, and not affected by this setting",
+    'LBL_PERSONAL_EMAIL_TRACKING_INFO' => 'To track opens of direct emails sent to contacts, please enable this checkbox. Please note that email sent from Email Campaigns module are always tracked, and not affected by this setting',
     'LBL_CUSTOMER_PORTAL' => 'Customer Portal',
     'PORTAL_EXTENSION_DESCRIPTION' => 'Allows you to Configure Customer Portal Plugin',
-
     'LBL_LAYOUT_EDITOR_DESCRIPTION' => 'Designing and modifying the layout in each of the modules',
     'LBL_WEBFORMS_DESCRIPTION' => 'Create and manage webforms which can be used to capture Leads, Contacts, Tickets etc',
     'LBL_TO_ADD_NEW_USER_PLEASE_CLICK_ON' => 'To add a new User, please click on ',
@@ -126,23 +98,17 @@ $languageStrings = [
     'LBL_ADD_USER' => 'Add User',
     'LBL_LABELS_EDITOR' => 'Labels Editor',
     'LBL_LABELS_EDITOR_DESCRIPTION' => 'Lets you customize module names, field labels and other strings according to your business requirements',
-
     'Scheduler' => 'Scheduler',
     'Allows you to Configure Cron Task' => 'Allows you to configure Cron Task',
-
     'Webforms' => 'Webforms',
     'Allows you to manage Webforms' => 'Manage Webforms',
     'LBL_CREATING_NEW' => 'Creating new',
     'LBL_EDITING' => 'Editing',
     'LBL_EDIT_RECORD' => 'Edit',
     'LBL_DELETE_RECORD' => 'Delete',
-
-    //Menu Editor
     'LBL_ADD_MOVE_MENU_ITEMS' => 'Add/Move Menu Items',
     'LBL_ADD_MENU_ITEM' => 'Add Menu Item',
     'LBL_MAX' => 'Max',
-
-    //Tax Calculations
     'LBL_TAX_CALCULATIONS' => 'Tax Calculations',
     'LBL_TAX_DESC' => 'Manage different types of tax rates for taxes, such as Sales Tax, VAT etc.,',
     'LBL_PRODUCT_SERVICE_TAXES' => 'Product & Service Taxes',
@@ -204,16 +170,11 @@ $languageStrings = [
     'LBL_SELECT_TAX_DESC' => 'Only taxes on charges shown',
     'LBL_CHARGE_STORE_DISC' => 'Charge value always store in base currency',
     'LBL_DEDUCTED_TAX_DISC' => 'Deducted taxes are computed on Items total, and are deducted from the Total',
-
-    //Terms & conditions
-    'LBL_TERMS_AND_CONDITIONS' => 'Terms & Conditions',
+    'LBL_TERMS_AND_CONDITIONS' => 'Terms and Conditions',
     'LBL_SPECIFY_TERMS_AND_CONDITIONS' => 'Specify Terms & Conditions here',
-    //Announcements
     'LBL_ANNOUNCEMENTS' => 'Announcements',
     'LBL_ENTER_ANNOUNCEMENT_HERE' => 'Enter announcement here',
     'LBL_ANNOUNCEMENT_DESC' => 'Change the text that appears in the announcement display on top of each page',
-
-    //Outgoing Server
     'LBL_RESET_TO_DEFAULT' => 'Reset to Default',
     'LBL_SERVER_NAME' => 'Server Name',
     'LBL_USER_NAME' => 'User Name',
@@ -232,21 +193,17 @@ $languageStrings = [
     'LBL_DEFAULT' => 'By default, SMTP account settings for the outgoing server are configured to od1.vtiger.com mail server. To avoid outgoing emails getting filtered out by spam filters on your recipient ISP mail server, we recommend you implement one of the following.',
     'LBL_OPTIONS1' => 'Send emails from your mail server<br>
 					- Enter the SMTP account details (Server Name, User Name, Password) for the same account as entered in the FROM email address.',
-    'LBL_OPTIONS2' => "Add vtiger.com server as an authorized sender of emails for your domain <b>(your_company.com)</b> when you are using your <b>From Email (eg : support@your_company.com)</b>.<br>
-						-To ensure that your emails are not rejected by recipient's Server as SPAM, 
-						the below mentioned TXT record should be added to your domain's DNS record",
+    'LBL_OPTIONS2' => 'Add vtiger.com server as an authorized sender of emails for your domain <b>(your_company.com)</b> when you are using your <b>From Email (eg : support@your_company.com)</b>.<br>
+						-To ensure that your emails are not rejected by recipient\'s Server as SPAM, 
+						the below mentioned TXT record should be added to your domain\'s DNS record',
     'LBL_MAIL_SERVER_SMTP' => 'Mail Server Settings (SMTP)',
     'LBL_OUTGOING_SERVER_FROM_FIELD' => 'NOTE: If "From Email" field is set to blank then the User Email address will be picked up.',
     'LBL_TESTMAILSTATUS' => 'Test Mail Status : ',
     'LBL_MAILSENDERROR' => 'Mail could not be sent to the admin user. Please check the admin emailid/Server settings',
-
-    //Configuration Editor
     'LBL_CONFIG_EDITOR' => 'Configuration Editor',
     'LBL_CONFIG_DESCRIPTION' => 'Edit the Configuration details of vtiger CRM',
     'LBL_CONFIG_FILE' => 'config.inc.php',
     'LBL_MB' => 'MB',
-
-    //Config Editor Fields
     'LBL_MINI_CALENDAR_DISPLAY' => 'Mini Calendar Display',
     'LBL_WORLD_CLOCK_DISPLAY' => 'World Clock Display',
     'LBL_CALCULATOR_DISPLAY' => 'Calculator Display',
@@ -264,8 +221,6 @@ $languageStrings = [
     'LBL_INVALID_MODULE' => 'Invalid Module',
     'LBL_INVALID_NUMBER' => 'Invalid Number',
     'LBL_FIELDS_INFO_IS_EMPTY' => 'Fields information is empty',
-
-    //CustomRecordNumbering
     'LBL_SUCCESSFULLY_UPDATED' => 'Successfully Updated',
     'LBL_CUSTOMIZE_RECORD_NUMBERING' => 'Module Numbering',
     'LBL_MODULE_ENTITY_NUMBER_CUSTOMIZATION' => 'Module Entity Number customization',
@@ -273,8 +228,6 @@ $languageStrings = [
     'LBL_USE_PREFIX' => 'Use Prefix',
     'LBL_PREFIX_IN_USE' => 'Prefix already in use',
     'LBL_START_SEQUENCE' => 'Start Sequence',
-
-    //Company Details
     'organizationname' => 'Company Name',
     'logoname' => 'Company Logo',
     'address' => 'Address',
@@ -297,35 +250,23 @@ $languageStrings = [
     'LBL_COMPANY_LOGO' => 'Company Logo',
     'LBL_NO_LOGO_EDIT_AND_UPLOAD' => 'No image, edit and upload image',
     'LBL_EDIT_COMPANY_DETAILS_MESSAGE' => 'To edit company details, please click on Settings Icon > Add/Delete Users > Company ',
-
     'LBL_ACTIVE' => 'Active',
     'LBL_INACTIVE' => 'In Active',
-
-    //show last scan in workflows and mailconverter
     'LBL_DISABLED' => 'Disabled',
     'LBL_RUNNING' => 'Running',
     'LBL_LAST_SCAN_TIMED_OUT' => 'Last scan timed out',
     'LBL_LAST_SCAN_AT' => 'Last scanned at ',
     'LBL_TIME_TAKEN' => ' time taken ',
     'LBL_SHORT_SECONDS' => 'sec',
-
-    //Email Templates
     'EmailTemplate' => 'Email Template',
     'LBL_TEMPLATE_NAME' => 'Template name',
-    'LBL_DESCRIPTION' => 'Description',
     'LBL_SUBJECT' => 'Subject',
-
-    //User Login History
     'LoginHistory' => 'User Login History',
     'LBL_LOGIN_HISTORY_DETAILS' => 'Login History',
     'LBL_LOGIN_HISTORY_DESCRIPTION' => 'Login History Details',
-    'LBL_USER_NAME' => 'User Name',
     'LBL_USER_IP_ADDRESS' => 'User IP Address',
     'LBL_LOGIN_TIME' => 'Sign-in Time',
     'LBL_LOGGED_OUT_TIME' => 'Sign-out Time',
-    'LBL_STATUS' => 'Status',
-
-    // Leads and Potentials Mapping 
     'LBL_SAVED_SUCCESSFULLY' => 'Saved Successfully',
     'LBL_DELETED_SUCCESSFULLY' => 'Deleted Successfully',
     'LBL_INVALID_MAPPING' => 'Invalid Mapping',
@@ -334,9 +275,6 @@ $languageStrings = [
     'LBL_MAPPING_WITH_OTHER_MODULES' => 'Mapping with other Modules',
     'LBL_ADD_MAPPING' => 'Add Mapping',
     'LBL_NONE' => 'None',
-
-    //Field Type Translation
-    'phone' => 'Phone',
     'picklist' => 'Pick List',
     'email' => 'Email',
     'text' => 'String',
@@ -354,16 +292,12 @@ $languageStrings = [
     'image' => 'Image',
     'LBL_DEFAULT_TAX_MODE' => 'Default Tax Mode',
     'LBL_RELATIONSHIPS' => 'Relationships',
-
     'LBL_MODULE_BUILDER_DESCRIPTION' => 'Creating new modules',
-
     'LBL_EXTENSION_STORE' => 'Extension Store',
-    'LBL_GATEWAY_CONFIGURATION' => 'Payment Gateway Configuration',
+    'LBL_GATEWAY_CONFIGURATION' => 'Subscriptions',
     'MAIN_PRODUCT_WHITELABEL' => 'CRM white labeling',
     'LBL_WHITE_LABELING_INFO' => 'Enabling this will remove feedback icon, video links, new feature videos and footer from CRM.',
     'LBL_WHITE_LABELING_INFO_MSG' => 'Enabling this will remove help button and footer from CRM.',
-    /*Vtiger7 Language Strings*/
-    'LBL_USER_MANAGEMENT' => 'User Management',
     'LBL_MODULE_MANAGEMENT' => 'Module Manager',
     'LBL_AUTOMATION' => 'Automation',
     'LBL_CONFIGURATION' => 'Configuration',
@@ -373,8 +307,6 @@ $languageStrings = [
     'LBL_TEMPLATES' => 'Templates',
     'LBL_MODULE_CUSTOMIZATION' => 'Module Layouts & Fields',
     'LBL_TAX_MANAGEMENT' => 'Tax Management',
-    'LBL_TERMS_AND_CONDITIONS' => 'Terms and Conditions',
-    'LBL_GATEWAY_CONFIGURATION' => 'Subscriptions',
     'LBL_LEAD_MAPPING' => 'Lead Conversion Data Mapping',
     'LBL_OPPORTUNITY_MAPPING' => 'Opportunity to Project Mapping',
     'LBL_PICKLIST_DEPENDENCY' => 'Picklist Dependency',
@@ -393,7 +325,6 @@ $languageStrings = [
     'LBL_TAXES_UPDATED' => 'Taxes updated',
     'LBL_TAX_ALREADY_EXISTS' => 'Tax already exists',
     'LBL_TAX_DELETED' => 'Tax deleted',
-    'LBL_REGIONS' => 'Regions',
     'LBL_TAXES_REGIONS' => 'Taxes regions',
     'LBL_ADD_REGION' => 'Add region',
     'LBL_ADD_TAX' => 'Add tax',
@@ -428,7 +359,6 @@ $languageStrings = [
     'LBL_CLIENT_SECRET' => 'Client Secret',
     'LBL_CLIENT_TOKEN' => 'Client Token',
 ];
-
 $jsLanguageStrings = [
     'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Please select atleast one member for a group',
     'JS_GROUP_DELETED_SUCCESSFULLY' => 'Group deleted successfully',

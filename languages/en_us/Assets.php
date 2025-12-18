@@ -18,16 +18,11 @@
  */
 
 $languageStrings = [
-    // Basic Strings
     'Assets' => 'Assets',
     'SINGLE_Assets' => 'Asset',
     'LBL_ADD_RECORD' => 'Add Asset',
     'LBL_RECORDS_LIST' => 'Assets List',
-
-    // Blocks
     'LBL_ASSET_INFORMATION' => 'Asset Details',
-
-    //Field Labels
     'Asset No' => 'Asset No',
     'Serial Number' => 'Serial Number',
     'Date Sold' => 'Date Sold',
@@ -39,8 +34,8 @@ $languageStrings = [
     'Asset Name' => 'Asset Name',
     'Customer Name' => 'Customer Name',
     'Notes' => 'Notes',
-
-    /*picklist values*/
     'In Service' => 'In Service',
     'Out-of-service' => 'Out-of-service',
+];
+$jsLanguageStrings = [
 ];

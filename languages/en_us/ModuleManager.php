@@ -38,7 +38,6 @@ $languageStrings = [
     'LBL_FAILED' => 'Failed',
     'LBL_SUCCESSFULL' => 'Successfull',
     'LBL_INSTALLATION_LOG' => 'Installation Log',
-    //Install From file labels
     'LBL_VERIFY_IMPORT_DETAILS' => 'Verify Import Details',
     'LBL_MODULE_NAME' => 'Module Name',
     'LBL_REQ_CRM_VERSION' => 'CRM Version',
@@ -48,7 +47,7 @@ $languageStrings = [
     'LBL_VERSION_NOT_SUPPORTED' => 'Module version is not compatible with CRM version',
     'LBL_FINISH' => 'Finish',
     'LBL_IMPORT_ZIP' => 'Install From File',
-    'LBL_NOT_FOUND' => "Sorry, no extensions are currently available for the current version of your CRM",
+    'LBL_NOT_FOUND' => 'Sorry, no extensions are currently available for the current version of your CRM',
     'LBL_INVALID_IMPORT_TRY_AGAIN' => ' provided for module import! Try Again.',
     'LBL_IMPORTED_MODULE' => ' module was imported successfully.',
     'LBL__IMPORTING_MODULE' => 'Importing Module',
@@ -56,7 +55,6 @@ $languageStrings = [
     'LBL_ACCEPT_WITH_THE_DISCLAIMER' => 'I accept with disclaimer and would like to proceed',
     'LBL_INSTALL_FROM_ZIP' => 'Install from Zip',
     'LBL_DELETE_EXIST_DIRECTORY' => 'Please delete the module directory that exist to proceed with import module',
-
     'LBL_UPDATE_MODULE_FROM_FILE' => 'Update Module From File',
     'LBL_UPDATED_MODULE' => ' module was updated successfully.',
     'LBL__UPDATING_MODULE' => 'Updating Module',

@@ -27,12 +27,10 @@ $languageStrings = [
     'LBL_FORMAT_INFO_WEBAPP_URL' => 'ex:http://0.0.0.0:5000',
     'LBL_INFO_CONTEXT' => 'Vtiger Spezifischer Kontext in Ihrer Asterisk-Server konfiguriert (extensions.conf)',
     'LBL_PBXMANAGER_INFO' => 'Configure Asterisk Server Details after Installing Vtiger Asterisk Connector in your Asterisk Server',
-
     'webappurl' => 'Vtiger Asterisk App URL',
     'vtigersecretkey' => 'Vtiger Secret Key',
     'outboundcontext' => 'Outbound Context',
     'outboundtrunk' => 'Outbound Trunk',
 ];
-
 $jsLanguageStrings = [
 ];

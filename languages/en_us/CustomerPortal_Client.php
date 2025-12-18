@@ -34,5 +34,7 @@ $languageStrings = [
     'OpenTicketsByPriority' => 'Open Tickets By Priority',
     'TicketsClosureTimeByPriority' => 'Tickets Closure Time By Priority',
     '_start for widgets' => 'keys',
-    'Recent' => 'Recent'
+    'Recent' => 'Recent',
+];
+$jsLanguageStrings = [
 ];

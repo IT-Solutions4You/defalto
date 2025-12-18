@@ -37,7 +37,6 @@ $languageStrings = [
     'LBL_BOOKMARKS' => 'Bookmarks',
     'HTTP_ERROR' => 'The website that you are trying to open is not secure and might not open. If you still wish to view the webpage then you can click on the content blocker in the address bar and enable it.',
 ];
-
 $jsLanguageStrings = [
     'JS_ENTER_MANDATORY_FIELDS' => 'Please enter all mandatory fields',
 ];

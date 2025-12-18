@@ -37,3 +37,5 @@ $languageStrings = [
     'LBL_WELCOME' => 'Welcome',
     'LBL_RECORDS_CHANGE_LOG' => 'Migration : Records Changes Log',
 ];
+$jsLanguageStrings = [
+];

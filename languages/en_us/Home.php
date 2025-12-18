@@ -18,7 +18,6 @@
  */
 
 $languageStrings = [
-    // Home Page Components
     'ALVT' => 'Top Organizations',
     'PLVT' => 'Top Opportunities',
     'QLTQ' => 'Top Quotes',
@@ -35,7 +34,6 @@ $languageStrings = [
     'LBL_ADD_NEW_DASHBOARD' => 'Add new dashboard',
     'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Maximum 30 characters are allowed for dashboard name.',
 ];
-
 $jsLanguageStrings = [
     'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Dashboard name cannot not be empty',
     'JS_NO_DATA_AVAILABLE' => 'No data available',

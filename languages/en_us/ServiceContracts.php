@@ -18,16 +18,12 @@
  */
 
 $languageStrings = [
-    // Basic Strings
     'ServiceContracts' => 'Service Contracts',
     'Service Contracts' => 'Service Contracts',
     'SINGLE_ServiceContracts' => 'Service Contract',
     'LBL_ADD_RECORD' => 'Add Service Contract',
     'LBL_RECORDS_LIST' => 'Service Contracts List',
-    // Blocks
     'LBL_SERVICE_CONTRACT_INFORMATION' => 'Service Contract Details',
-
-    //Field Labels
     'Contract No' => 'Contract No',
     'Start Date' => 'Start Date',
     'End Date' => 'End Date',
@@ -54,4 +50,7 @@ $languageStrings = [
     'High' => 'High',
     'Services' => 'Services',
     'In Progress' => 'In Progress',
+    'Due date' => 'Due date',
+];
+$jsLanguageStrings = [
 ];

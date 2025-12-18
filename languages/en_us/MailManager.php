@@ -111,7 +111,7 @@ $languageStrings = [
     'LBL_MAILBOX_DETAILS' => 'Mailbox Details',
     'LBL_DELETE_Mailbox' => 'Delete Mailbox',
     'LBL_ACCOUNT_TYPE' => 'Account Type',
-    'LBL_MODULE_DESCRIPTION' => "Mail Manager is an integrated email client that allows users to perform system related actions on incoming email. It helps you create Leads, Contacts, Organizations, Trouble Tickets and Tasks from the emails that you receive in your inbox. Should sender's email id match with a record in system, you can perform more actions like, Attaching email, Adding Task, Comment and Ticket. Additionally, you can manage composing, replying, forwarding emails etc.",
+    'LBL_MODULE_DESCRIPTION' => 'Mail Manager is an integrated email client that allows users to perform system related actions on incoming email. It helps you create Leads, Contacts, Organizations, Trouble Tickets and Tasks from the emails that you receive in your inbox. Should sender\'s email id match with a record in system, you can perform more actions like, Attaching email, Adding Task, Comment and Ticket. Additionally, you can manage composing, replying, forwarding emails etc.',
     'LBL_CHOOSE_EXISTING_FOLDER' => 'Choose an existing folder',
     'LBL_CHOOSE_FOLDER_DESC' => 'Copies of the sent mails for this account will be saved in the default <b>Sent Mail</b> folder.<br><br>
             If you want to change the default sent mail folder, after creating the mail box click on <b>Settings</b> icon and <b>Edit</b> the MailBox.',
@@ -223,7 +223,6 @@ $languageStrings = [
     'JSLBL_MAILS_MARKED_UNREAD' => 'Mail(s) marked as unread.',
     'JSLBL_MAILS_MARKED_READ' => 'Mail(s) marked as read.',
 ];
-
 $jsLanguageStrings = [
     'MailManager' => 'Mail Manager',
     'JSLBL_Loading_Please_Wait' => 'Loading Please Wait',

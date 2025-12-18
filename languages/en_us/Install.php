@@ -49,7 +49,7 @@ $languageStrings = [
     'LBL_MORE_INFORMATION' => 'More Information',
     'LBL_NEXT' => 'Next',
     'LBL_ONE_LAST_THING' => 'One last thing...',
-    'LBL_PASSWORD_MISMATCH' => 'Please re-enter passwords.  The \"Password\" and \"Re-type password\" values do not match.',
+    'LBL_PASSWORD_MISMATCH' => 'Please re-enter passwords.  The \\"Password\\" and \\"Re-type password\\" values do not match.',
     'LBL_PASSWORD' => 'Password',
     'LBL_PHP_CONFIGURATION' => 'PHP Configuration',
     'LBL_PHP_RECOMMENDED_SETTINGS' => 'Recommended PHP Settings',
@@ -101,7 +101,6 @@ $languageStrings = [
     'sk_sk' => 'Slovak',
     'cz_cz' => 'Czech',
 ];
-
 $jsLanguageStrings = [
     'JS_WARNING_DECIMALS' => 'Warning! Required different values Decimal and Grouping separator.',
     'JS_WARNING_EMAIL' => 'Warning! Invalid email address.',

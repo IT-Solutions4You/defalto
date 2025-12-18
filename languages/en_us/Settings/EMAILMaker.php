@@ -37,7 +37,6 @@ $languageStrings = [
     'LBL_LICENSE_MANAGE' => 'Manage licenses',
     'LBL_LICENSE_USED_BY_OTHER_USERS' => 'License used by other users',
 ];
-
 $jsLanguageStrings = [
     'JS_UNINSTALL_CONFIRM' => 'Are you sure to completely remove module from your vTiger?',
     'LBL_DEACTIVATE_QUESTION' => 'Do you really want to deactivate your license key?',

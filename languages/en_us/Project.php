@@ -18,16 +18,11 @@
  */
 
 $languageStrings = [
-    // Basic Strings
     'Project' => 'Projects',
     'SINGLE_Project' => 'Project',
     'LBL_ADD_RECORD' => 'Add Project',
     'LBL_RECORDS_LIST' => 'Projects List',
-
-    // Blocks
     'LBL_PROJECT_INFORMATION' => 'Project Details',
-
-    //Field Labels
     'Project Name' => 'Project Name',
     'Start Date' => 'Start Date',
     'Target End Date' => 'Target End Date',
@@ -38,8 +33,6 @@ $languageStrings = [
     'Progress' => 'Progress',
     'Type' => 'Type',
     'Related to' => 'Related To',
-
-    //Summary Information
     'LBL_TASKS_OPEN' => 'Tasks Open',
     'LBL_TASKS_DUE' => 'Tasks Due',
     'LBL_TASKS_COMPLETED' => 'Tasks Completed',
@@ -49,9 +42,7 @@ $languageStrings = [
     'LBL_TASKS_LOW' => 'Low Priority',
     'LBL_TASKS_OTHER' => 'Other Priorities',
     'LBL_SELECT_PROGRESS' => 'Progress - All',
-    'LBL_SELECT_STATUS' => 'Status - All',
-
-    //Related List
+    'LBL_SELECT_STATUS' => 'Select Status',
     'LBL_CHARTS' => 'Charts',
     'LBL_TASKS_LIST' => 'Tasks List',
     'LBL_MILESTONES' => 'Milestones',
@@ -60,11 +51,7 @@ $languageStrings = [
     'LBL_STATUS' => 'Status',
     'LBL_TICKET_PRIORITY' => 'Priority',
     'LBL_MILESTONES_LIST' => 'Milestones List',
-
-    //Summary View Widgets
     'LBL_DOWNLOAD_FILE' => 'Download File',
-
-    //picklist values
     'prospecting' => 'Prospecting',
     'in progress' => 'In Progress',
     'initiated' => 'Initiated',
@@ -79,8 +66,6 @@ $languageStrings = [
     'low' => 'Low',
     'normal' => 'Normal',
     'high' => 'High',
-
-    //Gantt chart
     'LBL_CHART' => 'Chart',
     'LBL_PROGRESS_CHART' => 'Progress Chart',
     'LBL_TASK_NAME' => 'Task Name',
@@ -92,10 +77,19 @@ $languageStrings = [
     'LBL_GANTT_INFO2' => 'Drag on the left or center of the task to change start and end date.',
     'LBL_EDIT_PROJECT_TASK_STATUS_COLOR' => 'Edit Project Task Status Color',
     'LBL_SELECT_PROJECT_TASK_STATUS_COLOR' => 'Select Project Task Status Color',
-    'LBL_SELECT_STATUS' => 'Select Status',
     'LBL_EDIT_COLOR' => 'Edit Color',
+    '10%' => '10%',
+    '20%' => '20%',
+    '30%' => '30%',
+    '40%' => '40%',
+    '50%' => '50%',
+    '60%' => '60%',
+    '70%' => '70%',
+    '80%' => '80%',
+    '90%' => '90%',
+    '100%' => '100%',
+    'Is Converted From Opportunity' => 'Is Converted From Opportunity',
 ];
-
 $jsLanguageStrings = [
     'JS_COLOR_SAVED_SUCESSFULLY' => 'Color Saved Successfully',
 ];

@@ -18,18 +18,13 @@
  */
 
 $languageStrings = [
-    // Basic Strings
     'SINGLE_Documents' => 'Document',
     'Documents' => 'Documents',
     'LBL_ADD_RECORD' => 'Add Document',
     'LBL_RECORDS_LIST' => 'Documents List',
-
-    // Blocks
     'LBL_NOTE_INFORMATION' => 'Basic Information',
     'LBL_FILE_INFORMATION' => 'File Details',
     'LBL_DESCRIPTION' => 'Description',
-
-    //Field Labels
     'Title' => 'Title',
     'File Name' => 'File Name',
     'Note' => 'Note',
@@ -42,20 +37,12 @@ $languageStrings = [
     'Folder Name' => 'Folder Name',
     'Document No' => 'Document No',
     'Last Modified By' => 'Last Modified By',
-
-    //Folder
     'LBL_FOLDER_HAS_DOCUMENTS' => 'Please move documents from folder before deleting',
-
-    //DetailView Actions
     'LBL_DOWNLOAD_FILE' => 'Download File',
     'LBL_CHECK_FILE_INTEGRITY' => 'Check file integrity',
-
-    //EditView
     'LBL_INTERNAL' => 'Internal',
     'LBL_EXTERNAL' => 'External',
     'LBL_MAX_UPLOAD_SIZE' => 'Maximum upload size',
-
-    //ListView Actions
     'LBL_MOVE' => 'Move',
     'LBL_ADD_FOLDER' => 'Add Folder',
     'LBL_FOLDERS_LIST' => 'Folders List',
@@ -63,16 +50,11 @@ $languageStrings = [
     'LBL_DOCUMENTS_MOVED_SUCCESSFULLY' => 'Documents Moved Successfully',
     'LBL_DENIED_DOCUMENTS' => 'Denied Documents',
     'MB' => 'MB',
-
     'LBL_ADD_NEW_FOLDER' => 'Add New Folder',
     'LBL_FOLDER_NAME' => 'Folder Name',
     'LBL_FOLDER_DESCRIPTION' => 'Folder Description',
-
-    //Check file integrity messages
     'LBL_FILE_AVAILABLE' => 'File is available for download',
     'LBL_FILE_NOT_AVAILABLE' => 'This Document is not available for Download',
-    'LBL_VIEW_FILE' => 'View File',
-    'LBL_PREVIEW_NOT_AVAILABLE' => 'Preview Not Available',
     'LBL_VIEW_FILE' => 'View File',
     'LBL_PREVIEW_NOT_AVAILABLE' => 'Preview Not Available',
     'LBL_INTERNAL_DOCUMENT_TYPE' => 'Internal Document',
@@ -103,12 +85,11 @@ $languageStrings = [
     'LBL_FROM_SERVICE' => 'From %s',
     'LBL_CREATE_NEW' => 'Create New %s',
     'LBL_SELECT_A_FOLDER_TO_MOVE' => 'Please select a folder to move',
+    'Custom Informations' => 'Custom Informations',
 ];
-
 $jsLanguageStrings = [
     'JS_NEW_FOLDER' => 'New Folder',
     'JS_MOVE_DOCUMENTS' => 'Move Documents',
-    //Move documents confirmation message
     'JS_ARE_YOU_SURE_YOU_WANT_TO_MOVE_DOCUMENTS_TO' => 'Are you sure you want to move the file(s) to',
     'JS_FOLDER' => 'folder',
     'JS_OPERATION_DENIED' => 'Operation Denied',

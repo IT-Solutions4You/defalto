@@ -18,7 +18,6 @@
  */
 
 $languageStrings = [
-    //Actions
     'LBL_CONVERT_LEAD_FIELD_MAPPING' => 'Convert Lead Mapping',
     'LBL_ORGANIZATIONS' => 'Organizations',
     'LBL_CONTACTS' => 'Contacts',

@@ -97,8 +97,8 @@ $languageStrings = [
     'LBL_FILENAME' => 'Filename',
     'LBL_FOLDER' => 'Folder',
     'LBL_BANNED_WORD' => 'Banned word: ',
+    'Mail Message Key' => 'Mail Message Key',
 ];
-
 $jsLanguageStrings = [
     'JS_UNINSTALL_CONFIRM' => 'Are you sure to completely remove module from your system?',
 ];

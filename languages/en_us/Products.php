@@ -18,25 +18,19 @@
  */
 
 $languageStrings = [
-    // Basic Strings
     'Products' => 'Products',
     'SINGLE_Products' => 'Product',
     'LBL_ADD_RECORD' => 'Add Product',
     'LBL_RECORDS_LIST' => 'Products List',
-
-    // Blocks
     'LBL_PRODUCT_INFORMATION' => 'Product Details',
     'LBL_IMAGE_INFORMATION' => 'Product Image Information',
     'LBL_STOCK_INFORMATION' => 'Stock Information',
-
     'LBL_MORE_CURRENCIES' => 'more currencies',
     'LBL_PRICES' => 'Product Prices',
     'LBL_PRICE' => 'Price',
     'LBL_RESET_PRICE' => 'Reset Price',
     'LBL_RESET' => 'Reset',
     'LBL_ADD_TO_PRICEBOOKS' => 'Add to PriceBooks',
-
-    //Field Labels
     'Product No' => 'Product Number',
     'Part Number' => 'Part Number',
     'Product Active' => 'Product Active',
@@ -44,13 +38,11 @@ $languageStrings = [
     'Product Category' => 'Product Category',
     'Website' => 'Website',
     'Mfr PartNo' => 'Mfr PartNo',
-    'Vendor PartNo' => 'Vendor PartNo',
+    'Vendor PartNo' => 'Vendor Part No',
     'Usage Unit' => 'Usage Unit',
     'Handler' => 'Handler',
     'Reorder Level' => 'Reorder Level',
     'Tax Class' => 'Tax Class',
-    'Reorder Level' => 'Reorder Level',
-    'Vendor PartNo' => 'Vendor Part No',
     'Serial No' => 'Serial No',
     'Qty In Stock' => 'Qty. in Stock',
     'Product Sheet' => 'Product Sheet',
@@ -60,15 +52,10 @@ $languageStrings = [
     'Unit Price' => 'Unit Price',
     'Commission Rate' => 'Commission Rate',
     'Qty/Unit' => 'Qty/Unit',
-
-    //Added for existing picklist entries
-
     '--None--' => '--None--',
-
     'Hardware' => 'Hardware',
     'Software' => 'Software',
     'CRM Applications' => 'CRM Applications',
-
     '300-Sales-Software' => '300-Sales-Software',
     '301-Sales-Hardware' => '301-Sales-Hardware',
     '302-Rental-Income' => '302-Rental-Income',
@@ -78,7 +65,6 @@ $languageStrings = [
     '306-Internet Sales' => '306-Internet Sales',
     '307-Service-Hardware Labor' => '307-Service-Hardware Labor',
     '308-Sales-Books' => '308-Sales-Books',
-
     'Box' => 'Box',
     'Carton' => 'Carton',
     'Caton' => 'Caton',
@@ -95,8 +81,6 @@ $languageStrings = [
     'Sheet' => 'Sheet',
     'Spiral Binder' => 'Spiral Binder',
     'Sq Ft' => 'Sq Ft',
-
-    'LBL_ADD_TO_PRICEBOOKS' => 'Add to PriceBooks',
     'LBL_CONVERSION_RATE' => 'Conversion Rate',
     'LBL_PRODUCTSMOD_DISABLED' => 'Enable Products Module to view Products',
     'LBL_SHOW_BUNDLE_IN_INVENTORY' => 'Show bundle items in Invoice/Quotes/Sales Order/Purchase Order',
@@ -104,8 +88,11 @@ $languageStrings = [
     'LBL_UPDATE_BUNDLE_PRICE' => 'Update Bundle Price',
     'LBL_PRODUCT_NAME' => 'Product Name',
     'LBL_PRICE_QUANTITY' => 'Price x Quantity',
+    'AltvetPet Inc.' => 'AltvetPet Inc.',
+    'LexPon Inc.' => 'LexPon Inc.',
+    'MetBeat Corp' => 'MetBeat Corp',
+    'Taxes' => 'Taxes',
 ];
-
 $jsLanguageStrings = [
     'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY' => 'Sub products will be shown in the Inventory',
     'JS_SUB_PRODUCTS_WILL_NOT_BE_SHOWN_IN_INVENTORY' => 'Sub products will not be shown in the Inventory',

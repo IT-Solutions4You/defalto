@@ -15,3 +15,5 @@ $languageStrings = [
     'LBL_FIELDS_IN_ITEMS_BLOCK' => 'Fields in Items Block',
     'LBL_SELECT_VISIBLE_FIELDS' => 'Select Visible Fields',
 ];
+$jsLanguageStrings = [
+];

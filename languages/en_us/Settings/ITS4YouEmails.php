@@ -79,7 +79,6 @@ $languageStrings = [
     'Marketing Recipient' => 'Marketing Recipient',
     'UNSUBSCRIBED' => 'UNSUBSCRIBED',
 ];
-
 $jsLanguageStrings = [
     'JS_UNINSTALL_CONFIRM' => 'Are you sure to completely remove module from your vTiger?',
 ];
