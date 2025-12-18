@@ -134,7 +134,7 @@
         <div class="pb-3">
             <div class="row">
                 <div class="col-lg">
-                    <h4><b>{vtranslate('LBL_EXTENSIONS', $QUALIFIED_MODULE)}</b></h4>
+                    <h4><b>{vtranslate('LBL_MODULES', $QUALIFIED_MODULE)}</b></h4>
                 </div>
                 <div class="col-lg-auto"></div>
             </div>
