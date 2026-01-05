@@ -9,16 +9,19 @@
  */
 
 $languageStrings = [
-    'SINGLE_ModComments'          => 'Komentář',
-    'LBL_RECORDS_LIST'            => 'Seznam komentářů',
+    'SINGLE_ModComments' => 'Komentář',
+    'LBL_RECORDS_LIST' => 'Seznam komentářů',
     'LBL_MODCOMMENTS_INFORMATION' => 'Komentáře',
-    'LBL_OTHER_INFORMATION'       => 'Jiné informace',
-    'LBL_ADDING_COMMENT'          => 'Přidat komentář',
+    'LBL_OTHER_INFORMATION' => 'Jiné informace',
+    'LBL_ADDING_COMMENT' => 'Přidat komentář',
     'LBL_WRITE_YOUR_COMMENT_HERE' => 'Zde vložte komentář',
-    'Comment'                     => 'Comment',
-    'Creator'                     => 'Vytvořil',
-    'Related To Comments'         => 'Souvisí s',
-    'LBL_COMMENTED_AT'            => 'Komentoval',
+    'Comment' => 'Comment',
+    'Creator' => 'Vytvořil',
+    'Related To Comments' => 'Souvisí s',
+    'LBL_COMMENTED_AT' => 'Komentoval',
+    'Is Private' => 'Je súkromný',
+    'Attachment' => 'Príloha',
+    'Related Email Id' => 'Súvisiace ID emailu',
 ];
 $jsLanguageStrings = [
 ];

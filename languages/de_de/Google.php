@@ -93,7 +93,6 @@ $languageStrings = [
     'work' => 'Arbeit',
     'work_fax' => 'Fax',
 ];
-
 $jsLanguageStrings = [
     'LBL_NOT_SYNCRONIZE' => 'Sie haben noch nicht synchronisiert',
     'LBL_SYNCRONIZING' => 'Synchronisieren ....',

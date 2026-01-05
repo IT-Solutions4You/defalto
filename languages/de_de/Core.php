@@ -1281,7 +1281,6 @@ $languageStrings = [
     'week days ago' => 'vor Wochentagen',
     'week days later' => 'Wochentage später',
 ];
-
 $jsLanguageStrings = [
     'AM' => 'Vormittag',
     'DELETE_USER_PERMANENT_WARNING' => 'Wenn ein Benutzer dauerhaft gelöscht wird, werden alle Aufzeichnungen einschließlich der Kommentare und der Historie auf den neuen Benutzer übertragen.',
@@ -1808,4 +1807,5 @@ $jsLanguageStrings = [
     'url' => 'URL',
     'work' => 'Arbeit',
     'work_fax' => 'Fax',
+    'JS_DIACRITICS_NOT_ALLOWED' => 'Diacritics are not permitted. Only hyphens, underscores, and spaces are allowed.',
 ];

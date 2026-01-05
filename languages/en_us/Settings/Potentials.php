@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -18,4 +19,6 @@
 
 $languageStrings = [
     'LBL_POTENTIAL_FIELD_MAPPING' => 'Opportunities Field Mapping',
+];
+$jsLanguageStrings = [
 ];

@@ -31,7 +31,7 @@ $languageStrings = [
     'SINGLE_SMSNotifier' => 'SMS-Benachrichtigung',
     'SMSNotifier' => 'SMS-Benachrichtigung',
     'message' => 'Nachricht',
+    'StatusInformation' => 'StatusInformation',
 ];
-
 $jsLanguageStrings = [
 ];

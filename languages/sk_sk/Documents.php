@@ -77,6 +77,7 @@ $languageStrings = [
     'LBL_VIEW_FILE' => 'Zobraziť súbor',
     'LBL_UPLOAD' => 'Nahrať',
     'LBL_CREATE_NEW' => 'Vytvoriť nový %s',
+    'Custom Informations' => 'Vlastné informácie',
 ];
 $jsLanguageStrings = [
     'JS_NEW_FOLDER' => 'Vytvorenie nového priečinka',

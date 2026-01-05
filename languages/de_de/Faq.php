@@ -33,7 +33,7 @@ $languageStrings = [
     'Published' => 'veröffentlicht',
     'Question' => 'Frage',
     'SINGLE_Faq' => 'FAQ',
+    'Related to' => 'Related to',
 ];
-
 $jsLanguageStrings = [
 ];

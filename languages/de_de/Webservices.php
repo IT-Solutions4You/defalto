@@ -24,6 +24,5 @@ $languageStrings = [
     'LBL_NEW_PASSWORD_MISMATCH' => 'Neues Passwort und bestätigen Passwort stimmen nicht überein',
     'LBL_PASSWORD_NOT_STRONG' => 'Um Ihre Daten zu schützen, empfehlen wir die Verwendung eines sicheren Passworts &lt;br&gt; &lt;ul&gt; &lt;li&gt;Das Passwort sollte mindestens 8 Zeichen lang sein&lt;/li&gt; &lt;li&gt;Mindestens eine Zahl enthalten&lt;/li&gt; &lt;li&gt;Mindestens einen Kleinbuchstaben enthalten&lt;/li&gt; &lt;li&gt;Mindestens einen Großbuchstaben enthalten&lt;/li&gt; &lt;li&gt;Mindestens ein Sonderzeichen enthalten&lt;/li&gt; &lt;/ul&gt;',
 ];
-
 $jsLanguageStrings = [
 ];

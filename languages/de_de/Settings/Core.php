@@ -358,7 +358,6 @@ $languageStrings = [
     'vatid' => 'Umsatzsteuer-ID',
     'website' => 'Website',
 ];
-
 $jsLanguageStrings = [
     'JS_ANNOUNCEMENT_SAVED' => 'Ankündigung gespeichert',
     'JS_CONFIGURATION_DETAILS_SAVED' => 'Gespeicherte Konfigurationsdetails',

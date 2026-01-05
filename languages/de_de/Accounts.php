@@ -64,8 +64,13 @@ $languageStrings = [
     'VAT ID' => 'USt.-ID',
     'Website' => 'Webseite',
     'industry' => 'Branche',
+    'Potential client' => 'Potential client',
+    'VAT Number' => 'VAT Number',
+    'Price Book' => 'Price Book',
+    'Contacted - Successful' => 'Contacted - Successful',
+    'Contacted - Unsuccessful' => 'Contacted - Unsuccessful',
+    'Contacted - Never Contact Again' => 'Contacted - Never Contact Again',
 ];
-
 $jsLanguageStrings = [
     'JS_DUPLICATE_CREATION_CONFIRMATION' => 'Name der Organisation ist bereits Vorhanden. Wollen Sie einen doppelten Datensatz erstellen?',
     'LBL_DELETE_CONFIRMATION' => 'Durch das Entfernen der Organisation werden auch verknüpfte Potentiale und Angebote entfernt. Jetzt dennoch entfernen?',

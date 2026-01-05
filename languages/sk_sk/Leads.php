@@ -43,6 +43,11 @@ $languageStrings = [
     'LBL_CONVERT_LEAD_ERROR_TITLE' => 'Moduly zakázané',
     'LBL_MANDATORY_FIELDS_ARE_EMPTY' => 'Povinné polia sú prázdne',
     'LBL_LEAD_SOURCE' => 'Pôvod Leadu',
+    'Title' => 'Titul',
+    'Private Phone' => 'Súkromný telefón',
+    'Contacted - Successful' => 'Kontaktovaný – úspešne',
+    'Contacted - Unsuccessful' => 'Kontaktovaný – neúspešne',
+    'Contacted - Never Contact Again' => 'Kontaktovaný – už nekontaktovať',
 ];
 $jsLanguageStrings = [
     'JS_SELECT_CONTACTS' => 'Vyberte Kontakty pre pokračovanie',

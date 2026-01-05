@@ -20,3 +20,5 @@
 $languageStrings = [
     'LBL_POTENTIAL_FIELD_MAPPING' => 'Chancen Field Mapping',
 ];
+$jsLanguageStrings = [
+];

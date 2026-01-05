@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -18,41 +19,41 @@
 
 $languageStrings = [
     // Basic Strings
-    'Profiles'                            => 'Profiles',
-    'SINGLE_Profiles'                     => 'Profile',
-    'LBL_ADD_RECORD'                      => 'Add Profile',
-    'LBL_CREATE_PROFILE'                  => 'Create Profile',
-    'LBL_PROFILE_NAME'                    => 'Profile name',
-    'LBL_DESCRIPTION'                     => 'Description',
+    'Profiles' => 'Profiles',
+    'SINGLE_Profiles' => 'Profile',
+    'LBL_ADD_RECORD' => 'Add Profile',
+    'LBL_CREATE_PROFILE' => 'Create Profile',
+    'LBL_PROFILE_NAME' => 'Profile name',
+    'LBL_DESCRIPTION' => 'Description',
     'LBL_EDIT_PRIVILEGES_OF_THIS_PROFILE' => 'Edit privileges of this profile',
-    'LBL_MODULES'                         => 'Modules',
-    'LBL_PROFILE_VIEW'                    => 'Profile view',
-    'LBL_FIELDS'                          => 'Fields',
-    'LBL_TOOLS'                           => 'Tools',
-    'LBL_FIELD_AND_TOOL_PRIVILEGES'       => 'Field and Tool Privileges',
-    'LBL_EDIT_RECORD'                     => 'Edit',
-    'LBL_DUPLICATE_RECORD'                => 'Duplicate',
-    'LBL_DELETE_RECORD'                   => 'Delete',
+    'LBL_MODULES' => 'Modules',
+    'LBL_PROFILE_VIEW' => 'Profile view',
+    'LBL_FIELDS' => 'Fields',
+    'LBL_TOOLS' => 'Tools',
+    'LBL_FIELD_AND_TOOL_PRIVILEGES' => 'Field and Tool Privileges',
+    'LBL_EDIT_RECORD' => 'Edit',
+    'LBL_DUPLICATE_RECORD' => 'Duplicate',
+    'LBL_DELETE_RECORD' => 'Delete',
 
-    'LBL_VIEW_PRVILIGE'   => 'View',
-    'LBL_EDIT_PRVILIGE'   => 'Create/Edit',
+    'LBL_VIEW_PRVILIGE' => 'View',
+    'LBL_EDIT_PRVILIGE' => 'Create/Edit',
     'LBL_DELETE_PRVILIGE' => 'Delete',
-    'LBL_INIVISIBLE'      => 'Invisible',
-    'LBL_READ_ONLY'       => 'Read only',
-    'LBL_WRITE'           => 'Write',
+    'LBL_INIVISIBLE' => 'Invisible',
+    'LBL_READ_ONLY' => 'Read only',
+    'LBL_WRITE' => 'Write',
 
-    'LBL_DELETE_PROFILE'            => 'Delete Profile',
+    'LBL_DELETE_PROFILE' => 'Delete Profile',
     'LBL_TRANSFER_ROLES_TO_PROFILE' => 'Transfer roles to profile',
-    'LBL_PROFILES'                  => 'Profiles',
-    'LBL_CHOOSE_PROFILES'           => 'Choose Profiles',
+    'LBL_PROFILES' => 'Profiles',
+    'LBL_CHOOSE_PROFILES' => 'Choose Profiles',
 
-    'LBL_VIEW_ALL'                  => 'View All',
-    'LBL_EDIT_ALL'                  => 'Edit All',
-    'LBL_VIEW_ALL_DESC'             => 'Can view all the modules information',
-    'LBL_EDIT_ALL_DESC'             => 'Can edit all the modules information',
-    'LBL_DUPLICATES_EXIST'          => 'Duplicate Profile Exists',
+    'LBL_VIEW_ALL' => 'View All',
+    'LBL_EDIT_ALL' => 'Edit All',
+    'LBL_VIEW_ALL_DESC' => 'Can view all the modules information',
+    'LBL_EDIT_ALL_DESC' => 'Can edit all the modules information',
+    'LBL_DUPLICATES_EXIST' => 'Duplicate Profile Exists',
 
-    'LBL_EDIT_PROFILE'              => 'Edit Profile',
+    'LBL_EDIT_PROFILE' => 'Edit Profile',
     'LBL_GLOBAL_PERMISSION_WARNING' => 'Warning : Users associated with this profile can access all records in the CRM',
 ];
 

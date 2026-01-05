@@ -266,6 +266,13 @@ $languageStrings = [
     'LBL_CHECK_LOADING' => 'Hľadajú sa aktualizácie',
     'LBL_MEMBERSHIP_BRANDING' => 'Chcete aktualizovat jedním kliknutím?<br>Podívejte se, co zahrnuje <a-redirect-membership>Defalto Membership</a>, a <a-redirect-order>začněte hned teď</a>.',
     'LBL_MODULES' => 'Moduly',
+    'LBL_LICENSE_ACTIVATED' => 'Licencia bola úspešne aktivovaná.',
+    'LBL_LICENSE_NOT_ACTIVATED' => 'Licencia nebola aktivovaná.',
+    'LBL_SYSTEM_DOWNLOAD_INFO' => 'Vitajte v migrácii Vtiger',
+    'LBL_SYSTEM_DOWNLOAD_INFO_DESC' => 'Upozornenie: Po aktualizácii nie je možné vrátiť sa späť na staršiu verziu. Preto je dôležité vytvoriť zálohu inštalácie, vrátane zdrojových súborov a databázy.',
+    'LBL_BACKUP_DATABASE' => 'Vytvoril som zálohu databázy',
+    'LBL_BACKUP_SOURCE' => 'Vytvoril som zálohu zdrojového priečinka',
+    'LBL_HOW_TO' => 'Ako na to?',
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Naozaj chcete nainštalovať rozšírenie?',

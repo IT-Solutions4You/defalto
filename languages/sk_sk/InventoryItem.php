@@ -49,6 +49,9 @@ $languageStrings = [
     'Direct' => 'Suma',
     'Discount per Unit' => 'Zľava na položku',
     'No Tax' => 'Žiadna daň',
+    'Parent' => 'Nadradený záznam',
+    'Discount Type' => 'Typ zľavy',
+    'Price Book' => 'Cenník',
 ];
 $jsLanguageStrings = [
     'JS_PRODUCT_LINE_SAVE_ERROR' => 'Chyba pri ukladaní položky',

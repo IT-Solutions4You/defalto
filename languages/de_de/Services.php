@@ -40,7 +40,16 @@ $languageStrings = [
     'Tax Class' => 'Steuerklasse',
     'Usage Unit' => 'Einheit',
     'Website' => 'Webseite',
+    'Service Code' => 'Service Code',
+    'Support' => 'Support',
+    'Installation' => 'Installation',
+    'Migration' => 'Migration',
+    'Customization' => 'Customization',
+    'Training' => 'Training',
+    'Hours' => 'Hours',
+    'Days' => 'Days',
+    'Incidents' => 'Incidents',
+    'Taxes' => 'Taxes',
 ];
-
 $jsLanguageStrings = [
 ];

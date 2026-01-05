@@ -75,7 +75,6 @@ $languageStrings = [
     'onlymine' => 'Show only  %s  linked to contact',
     'products_or_services' => 'Show all %s',
 ];
-
 $jsLanguageStrings = [
     'JS_ADD_FIELD' => 'fields hinzufügen',
     'JS_HIDE' => 'Hidden',

@@ -52,7 +52,21 @@ $languageStrings = [
     'normal' => 'normal',
     'operative' => 'operativ',
     'other' => 'andere',
+    'Task Name' => 'Task Name',
+    'Task Number' => 'Task Number',
+    'Milestone' => 'Milestone',
+    '10%' => '10%',
+    '20%' => '20%',
+    '30%' => '30%',
+    '40%' => '40%',
+    '50%' => '50%',
+    '60%' => '60%',
+    '70%' => '70%',
+    '80%' => '80%',
+    '90%' => '90%',
+    '100%' => '100%',
+    'Planed Hours' => 'Planed Hours',
+    'Task No' => 'Task No',
 ];
-
 $jsLanguageStrings = [
 ];

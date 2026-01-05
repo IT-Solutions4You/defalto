@@ -58,8 +58,12 @@ $languageStrings = [
     'Secondary Email' => 'weitere E-Mail',
     'Warm' => 'warm',
     'Website' => 'Webseite',
+    'Title' => 'Title',
+    'Private Phone' => 'Private Phone',
+    'Contacted - Successful' => 'Contacted - Successful',
+    'Contacted - Unsuccessful' => 'Contacted - Unsuccessful',
+    'Contacted - Never Contact Again' => 'Contacted - Never Contact Again',
 ];
-
 $jsLanguageStrings = [
     'JS_SELECT_CONTACTS' => 'Wählen Sie Kontakte zum Fortfahren',
     'JS_SELECT_ORGANIZATION' => 'Wählen Sie Organisationen zum Fortfahren',

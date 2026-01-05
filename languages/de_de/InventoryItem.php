@@ -37,8 +37,15 @@ $languageStrings = [
     'Tax Amount' => 'Steuerbetrag',
     'Total' => 'Gesamt',
     'Unit' => 'Einheit',
+    'Parent' => 'Parent',
+    'Discount Type' => 'Discount Type',
+    'Percentage' => 'Percentage',
+    'Direct' => 'Direct',
+    'Discount per Unit' => 'Discount per Unit',
+    'Discounts Amount' => 'Discounts Amount',
+    'Margin Amount' => 'Margin Amount',
+    'Price Book' => 'Price Book',
 ];
-
 $jsLanguageStrings = [
     'JS_PRODUCT_LINE_SAVE_ERROR' => 'Fehler beim Speichern der Produktzeile',
 ];

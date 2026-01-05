@@ -78,8 +78,18 @@ $languageStrings = [
     'other' => 'andere',
     'prospecting' => 'prospektion',
     'waiting for feedback' => 'warten auf Rückmeldung',
+    '10%' => '10%',
+    '20%' => '20%',
+    '30%' => '30%',
+    '40%' => '40%',
+    '50%' => '50%',
+    '60%' => '60%',
+    '70%' => '70%',
+    '80%' => '80%',
+    '90%' => '90%',
+    '100%' => '100%',
+    'Is Converted From Opportunity' => 'Is Converted From Opportunity',
 ];
-
 $jsLanguageStrings = [
     'JS_COLOR_SAVED_SUCESSFULLY' => 'Farbe erfolgreich gespeichert',
 ];

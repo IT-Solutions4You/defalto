@@ -554,8 +554,8 @@ $languageStrings = [
     'finished' => 'Finished',
     'in progress' => 'In progress',
     'not started' => 'Not started',
+    'LBL_DEFAULT_SETTINGS_DESC' => ' ',
 ];
-
 $jsLanguageStrings = [
     'ARE_YOU_SURE' => 'Are you sure?',
     'BLOCK_NAME_CANNOT_BE_BLANK' => 'Block name can not be blank',

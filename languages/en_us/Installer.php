@@ -275,9 +275,7 @@ $languageStrings = [
     'LBL_CHECK_UPDATING' => 'Searching',
     'LBL_CHECK_LOADING' => 'Searching for updates',
     'LBL_MEMBERSHIP_BRANDING' => 'Want one-click updates?<br>See what <a-redirect-membership>Defalto Membership</a> includes and <a-redirect-order>get started now</a>.',
-    'LBL_MODULES' => 'Modules',
 ];
-
 $jsLanguageStrings = [
     'JS_UNINSTALL_CONFIRM' => 'Are you sure to completely remove module from your system?',
     'JS_LICENSE_UPDATE_QUESTION' => 'Are you sure you want to update licenses?',
