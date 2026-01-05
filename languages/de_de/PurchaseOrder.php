@@ -47,8 +47,17 @@ $languageStrings = [
     'SINGLE_PurchaseOrder' => 'Einkaufsbestellung',
     'Sales Commission' => 'Provision',
     'Tracking Number' => 'Bedarfsnummer',
+    'Price Book' => 'Price Book',
+    'Price After Discount' => 'Price After Discount',
+    'Overall Discount' => 'Overall Discount',
+    'Overall Discount Amount' => 'Overall Discount Amount',
+    'Price After Overall Discount' => 'Price After Overall Discount',
+    'Tax Amount' => 'Tax Amount',
+    'Grand Total' => 'Grand Total',
+    'Margin Amount' => 'Margin Amount',
+    'Paid' => 'Paid',
+    'Terms &amp; Conditions' => 'Terms &amp; Conditions',
 ];
-
 $jsLanguageStrings = [
     'JS_ACCOUNT_NOT_FOUND' => 'Organisation leer!',
     'JS_ACCOUNT_NOT_FOUND_MESSAGE' => 'Bitte wählen Sie eine Organisation, bevor Sie die Adresse kopieren',

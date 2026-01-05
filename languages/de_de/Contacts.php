@@ -64,7 +64,12 @@ $languageStrings = [
     'Support Start Date' => 'Support-Startdatum',
     'Title' => 'Funktion',
     'User List' => 'Benutzerliste',
+    'Private Phone' => 'Private Phone',
+    'Portal User Name' => 'Portal User Name',
+    'Portal Last Login' => 'Portal Last Login',
+    'Contacted - Successful' => 'Contacted - Successful',
+    'Contacted - Unsuccessful' => 'Contacted - Unsuccessful',
+    'Contacted - Never Contact Again' => 'Contacted - Never Contact Again',
 ];
-
 $jsLanguageStrings = [
 ];

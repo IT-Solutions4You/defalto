@@ -98,8 +98,8 @@ $languageStrings = [
     'Workflow' => 'Workflow',
     'starred' => 'Markiert',
     'tags' => 'Tags',
+    'Mail Message Key' => 'Mail Message Key',
 ];
-
 $jsLanguageStrings = [
     'JS_UNINSTALL_CONFIRM' => 'Sind Sie sicher, dass Sie das Modul vollständig aus Ihrem Defalto entfernen möchten?',
 ];

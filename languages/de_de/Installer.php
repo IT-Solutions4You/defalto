@@ -259,8 +259,24 @@ $languageStrings = [
     'warning' => 'Warnung',
     'LBL_MEMBERSHIP_BRANDING' => 'Updates mit nur einem Klick?<br>Entdecken Sie, was die <a-redirect-membership>Defalto-Mitgliedschaft</a> beinhaltet, und <a-redirect-order>starten Sie jetzt</a>.',
     'LBL_MODULES' => 'Module',
+    'LBL_ADD_LICENSE' => 'Add License Key',
+    'LBL_LICENSE_ACTIVATED' => 'License activated successfully.',
+    'LBL_LICENSE_NOT_ACTIVATED' => 'License not activated.',
+    'no_activations_left' => 'No activations left',
+    'LBL_UP_TO_DATE' => 'System version is up to date',
+    'LBL_SYSTEM_DOWNLOAD_INFO' => 'Welcome to Vtiger Migration',
+    'LBL_SYSTEM_DOWNLOAD_INFO_DESC' => 'Warning: Please note that it is not possible to revert back to older version after the upgrade. So, it is important to take a backup of the installation, including the source files and database.',
+    'LBL_BACKUP_DATABASE' => 'I have taken the backup of database',
+    'LBL_BACKUP_SOURCE' => 'I have taken the backup of source folder',
+    'LBL_HOW_TO' => 'How to?',
+    'LBL_CHECK_REQUIREMENTS' => 'I have checked system requirements',
+    'LBL_CHECK_UPDATE' => 'Search for updates',
+    'LBL_LAST_CHECK' => 'Last check',
+    'LBL_CHECK_UPDATED' => 'Updated',
+    'LBL_CHECK_UPDATE_AVAILABLE' => 'Update available',
+    'LBL_CHECK_UPDATING' => 'Searching',
+    'LBL_CHECK_LOADING' => 'Searching for updates',
 ];
-
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Möchten Sie die Erweiterung wirklich installieren?',
     'JS_ARE_YOU_SURE_LOGOUT' => 'Möchten Sie sich wirklich abmelden?',
@@ -281,4 +297,5 @@ $jsLanguageStrings = [
     'JS_UPDATE_LICENSES_QUESTION' => 'Möchten Sie die Lizenzen wirklich aktualisieren?',
     'LBL_DEACTIVATE_QUESTION' => 'Möchten Sie Ihren Lizenzschlüssel wirklich deaktivieren?',
     'LBL_UNINSTALL_CONFIRM' => 'Möchten Sie den Installer wirklich vollständig aus Ihrem Defalto entfernen?',
+    'JS_PLEASE_CONFIRM_BACKUP_DATABASE_AND_SOURCE_CODE' => 'Confirm backup of database, source code and checked for system requirements',
 ];

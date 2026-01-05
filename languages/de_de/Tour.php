@@ -34,6 +34,5 @@ $languageStrings = [
     'LBL_WHAT_TO_DO_NEXT' => 'Was möchten Sie als Nächstes tun?',
     'SINGLE_Tour' => 'Tour',
 ];
-
 $jsLanguageStrings = [
 ];

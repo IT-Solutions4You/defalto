@@ -28,7 +28,12 @@ $languageStrings = [
     'LBL_WRITE_YOUR_COMMENT_HERE' => 'Kommentare hier eintragen',
     'Related To Comments' => 'bezogen auf',
     'SINGLE_ModComments' => 'Kommentar',
+    'Customer' => 'Customer',
+    'UserId' => 'UserId',
+    'ReasonToEdit' => 'ReasonToEdit',
+    'Is Private' => 'Is Private',
+    'Attachment' => 'Attachment',
+    'Related Email Id' => 'Related Email Id',
 ];
-
 $jsLanguageStrings = [
 ];
