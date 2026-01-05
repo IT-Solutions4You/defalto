@@ -46,6 +46,21 @@ $languageStrings = [
     'Related To' => 'Projekt',
     'Project Milestone' => 'Miľník',
     'Canceled ' => 'Zrušená',
+    'Task Name' => 'Názov úlohy',
+    'Task Number' => 'Číslo úlohy',
+    'Milestone' => 'Míľnik',
+    '10%' => '10%',
+    '20%' => '20%',
+    '30%' => '30%',
+    '40%' => '40%',
+    '50%' => '50%',
+    '60%' => '60%',
+    '70%' => '70%',
+    '80%' => '80%',
+    '90%' => '90%',
+    '100%' => '100%',
+    'Planed Hours' => 'Plánované hodiny',
+    'Task No' => 'Úloha č.',
 ];
 $jsLanguageStrings = [
 ];
