@@ -26,6 +26,8 @@ $languageStrings = [
     'LBL_DATABASE_CHANGE_LOG' => 'Migration : Změny databáze v logu',
     'LBL_INSTALLATION_WIZARD' => 'Migration wizard',
     'LBL_WELCOME' => 'Welcome',
+    'LBL_RECORDS_CHANGE_LOG' => 'Migrácia: Record Changes Log',
+    'Connect with us' => 'Spojte sa s nami',
 ];
 $jsLanguageStrings = [
 ];

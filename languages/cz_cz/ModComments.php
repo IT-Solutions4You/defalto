@@ -19,6 +19,9 @@ $languageStrings = [
     'Creator' => 'Vytvořil',
     'Related To Comments' => 'Souvisí s',
     'LBL_COMMENTED_AT' => 'Komentoval',
+    'Is Private' => 'Je súkromný',
+    'Attachment' => 'Príloha',
+    'Related Email Id' => 'Súvisiace ID emailu',
 ];
 $jsLanguageStrings = [
 ];

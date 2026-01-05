@@ -11,7 +11,6 @@
 $languageStrings = [
     'InventoryItem' => 'Inventory Item',
     'SINGLE_InventoryItem' => 'Inventory Item',
-
     'LBL_INVENTORYITEM_INFORMATION' => 'Inventory Item Information',
     'LBL_CUSTOM_INFORMATION' => 'Custom Information',
     'LBL_DESCRIPTION_INFORMATION' => 'Description Information',
@@ -38,8 +37,22 @@ $languageStrings = [
     'Price Total' => 'Price with VAT',
     'SAVED_TAX_VALUE_FOR' => ' Saved Tax Value for:',
     'NO_ITEMS_FOUND' => 'No Items Found',
+    'Add' => 'Pridať',
+    'Discounts Amount' => 'Zľavy celkom',
+    'Margin Amount' => 'Marža',
+    'Overall Discount %' => 'Celková zľava %',
+    'Total without VAT' => 'Celkom bez DPH',
+    'Total with VAT' => 'Celkom s DPH',
+    'Grand Total' => 'K úhrade',
+    'Item Total' => 'Celkom na položku',
+    'Percentage' => 'Percento',
+    'Direct' => 'Suma',
+    'Discount per Unit' => 'Zľava na položku',
+    'No Tax' => 'Žiadna daň',
+    'Parent' => 'Nadradený záznam',
+    'Discount Type' => 'Typ zľavy',
+    'Price Book' => 'Cenník',
 ];
-
 $jsLanguageStrings = [
     'JS_PRODUCT_LINE_SAVE_ERROR' => 'Product line save error',
 ];

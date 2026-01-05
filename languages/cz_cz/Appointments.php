@@ -200,6 +200,14 @@ $languageStrings = [
     'LBL_TEAM_CALENDAR' => 'Teams',
     'LBL_ADD_CALENDAR' => 'Add Calendar',
     'LBL_FILTER' => 'Filter',
+    'Is All Day' => 'Celý deň',
+    'Start Datetime' => 'Dátum a čas začiatku',
+    'End Datetime' => 'Dátum a čas ukončenia',
+    'Reminder' => 'Pripomienka',
+    'Invite Users' => 'Pozvať používateľov',
+    'Calendar No' => 'Číslo kalendára',
+    'Creator' => 'Tvorca',
+    'Duration' => 'Trvanie',
 ];
 $jsLanguageStrings = [
     'JS_ONE_DAY_EVENT' => 'One day Event',

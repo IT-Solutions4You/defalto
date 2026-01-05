@@ -561,6 +561,16 @@ $languageStrings = [
     'LBL_EXECUTE_AFTER_SAVE' => 'Execute action after save',
     'LBL_RELATED_DOCUMENTS_BY_FIELD' => 'Related documents by fields',
     'LBL_PDF_CONTENT' => 'PDF Content',
+    'LBL_PROCUCT_VAT_PERCENT' => 'DPH (%)',
+    'Blank' => 'Prázdna šablóna',
+    'Send Email with PDF Maker attachments' => 'Odoslať e-mail s prílohami PDF Maker',
+    'Send Email from EMAIL Maker' => 'Odoslať e-mail z nástroja EMAIL Maker',
+    'Browse record' => 'Prehľadávať záznam',
+    'From Email' => 'Z e-mailu',
+    'LBL_ASSIGNED_USER_SMTP' => 'SMTP server priradeného používateľa',
+    'LBL_CHECK_OPTOUT' => 'Skontrolovať odhlásenie z e-mailov',
+    'LBL_IMPORT_EINVOICE_XML' => 'Importovať XML elektronickej faktúry',
+    'LBL_VARIABLE_PRODUCTCODE' => 'Kód produktu / služby',
 ];
 $jsLanguageStrings = [
     'LBL_MISSING_FIELDS' => 'Missing mndatory fields:',

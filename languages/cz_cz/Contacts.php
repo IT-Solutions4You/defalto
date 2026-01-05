@@ -58,6 +58,12 @@ $languageStrings = [
     'Account Name' => 'Organizace',
     'LBL_TRANSACTIONS' => 'Transakce',
     'Mailing PO Box' => 'Doručovací P.O. BOX',
+    'Private Phone' => 'Súkromný telefón',
+    'Portal User Name' => 'Používateľské meno portálu',
+    'Portal Last Login' => 'Posledné prihlásenie do portálu',
+    'Contacted - Successful' => 'Kontaktovaný – úspešne',
+    'Contacted - Unsuccessful' => 'Kontaktovaný – neúspešne',
+    'Contacted - Never Contact Again' => 'Kontaktovaný – už nekontaktovať',
 ];
 $jsLanguageStrings = [
     'LBL_SYNC_BUTTON' => 'Synchronizovat teď',

@@ -601,6 +601,12 @@ $languageStrings = [
     'LBL_ASSIGNED_USER_SMTP' => 'Assigned user SMTP server',
     'LBL_EXECUTE_AFTER_SAVE' => 'Execute action after save',
     'LBL_SELECT_LABEL' => 'Select Label',
+    'LBL_CHANGE_MODULE_QUESTION' => 'Určite chcete zmeniť primárny modul?',
+    'LBL_DEACTIVATE_QUESTION' => 'Určite chcete deaktivovať Váš licenčný kľúč?',
+    'LBL_DUPLICATE_TEMPLATE_CREATION_CONFIRMATION' => 'Názov predlohy už existuje, chcete vytvoriť predlohu s rovnakým názvom?',
+    'LBL_CHECK_COMPANY' => 'Prosím, skontrolujte informácie o spoločnosti.',
+    'LBL_PRODUCT_LIST_PRICE_WITHOUT_TAX' => 'Cenníková cena bez dane',
+    'LBL_VARIABLE_PRODUCTCODE' => 'Kód produktu / služby',
 ];
 $jsLanguageStrings = [
     'LBL_MISSING_FIELDS' => 'Missing mandatory fields:',

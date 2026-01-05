@@ -81,6 +81,10 @@ $languageStrings = [
     'LBL_PRICE_QUANTITY' => 'Cena x Množství',
     'LBL_NOT_A_BUNDLE' => 'Nejde o balíček produktů',
     'Vendor Name' => 'Dodavatel',
+    'AltvetPet Inc.' => 'AltvetPet Inc.',
+    'LexPon Inc.' => 'LexPon Inc.',
+    'MetBeat Corp' => 'MetBeat Corp',
+    'Taxes' => 'Dane',
 ];
 $jsLanguageStrings = [
     'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY' => 'Podprodukty budou zobrazeny v inventáři',

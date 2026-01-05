@@ -38,6 +38,8 @@ $languageStrings = [
     'Service' => 'Služba',
     'Hours' => 'Hodina',
     'Days' => 'Den',
+    'Service Code' => 'Kód služby',
+    'Taxes' => 'Dane',
 ];
 $jsLanguageStrings = [
 ];

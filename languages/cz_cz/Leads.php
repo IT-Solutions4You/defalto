@@ -55,6 +55,11 @@ $languageStrings = [
     'LBL_MANDATORY_FIELDS_ARE_EMPTY' => 'Povinná pole jsou prázdná',
     'LBL_WEBFORMS' => 'Nastavit webový formulář',
     'LBL_LEAD_SOURCE' => 'Zdroj prvního kontaktu',
+    'Title' => 'Titul',
+    'Private Phone' => 'Súkromný telefón',
+    'Contacted - Successful' => 'Kontaktovaný – úspešne',
+    'Contacted - Unsuccessful' => 'Kontaktovaný – neúspešne',
+    'Contacted - Never Contact Again' => 'Kontaktovaný – už nekontaktovať',
 ];
 $jsLanguageStrings = [
     'JS_SELECT_CONTACTS' => 'Vyberte kontakty pro pokračování',

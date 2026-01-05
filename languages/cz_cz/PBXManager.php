@@ -33,6 +33,11 @@ $languageStrings = [
     'Duration (sec)' => 'Doba trvání (sek)',
     'Recording  ' => 'Záznam',
     'Start Time' => 'Doba spuštění',
+    'Direction' => 'Smer',
+    'End Time' => 'Čas ukončenia',
+    'Source UUID' => 'Zdrojové UUID',
+    'Gateway' => 'Brána',
+    'Customer Type' => 'Typ zákazníka',
 ];
 $jsLanguageStrings = [
 ];

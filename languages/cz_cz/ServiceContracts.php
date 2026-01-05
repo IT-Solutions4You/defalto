@@ -42,6 +42,8 @@ $languageStrings = [
     'Services' => 'Services',
     'In Progress' => 'In Progress',
     'Due date' => 'Koncové datum',
+    'LBL_SERVICE_REQUEST' => 'Požiadavky',
+    'None' => 'Žiadne',
 ];
 $jsLanguageStrings = [
 ];

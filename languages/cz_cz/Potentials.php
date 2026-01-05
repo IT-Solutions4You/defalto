@@ -70,6 +70,10 @@ $languageStrings = [
     'LBL_IMPORTANCE' => 'Důležitost',
     'LBL_COST' => 'Náklad',
     'LBL_REVENUE' => 'Výnos',
+    'Creator' => 'Tvorca',
+    'LBL_CREATE_INVOICE' => 'Vytvoriť faktúru',
+    'LBL_CREATE_QUOTES' => 'Vytvoriť cenovú ponuku',
+    'LBL_CREATE_SALESORDER' => 'Vytvoriť predajnú objednávku',
 ];
 $jsLanguageStrings = [
     'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Konverze vyžaduje výběr Projektu',

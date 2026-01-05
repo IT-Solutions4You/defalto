@@ -77,6 +77,7 @@ $languageStrings = [
     'LBL_CREATE_NEW' => 'Create New %s',
     'LBL_SELECT_A_FOLDER_TO_MOVE' => 'Vyberte složku, kterou chcete přesunout',
     'LBL_EMAIL_FILE_AS_ATTACHMENT' => 'Odeslat soubor jako přílohu',
+    'Custom Informations' => 'Vlastné informácie',
 ];
 $jsLanguageStrings = [
     'JS_NEW_FOLDER' => 'Vytvoření nové složky',
