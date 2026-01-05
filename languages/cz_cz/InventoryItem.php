@@ -9,11 +9,11 @@
  */
 
 $languageStrings = [
-    'InventoryItem'        => 'Inventory Item',
+    'InventoryItem' => 'Inventory Item',
     'SINGLE_InventoryItem' => 'Inventory Item',
 
     'LBL_INVENTORYITEM_INFORMATION' => 'Inventory Item Information',
-    'LBL_CUSTOM_INFORMATION'      => 'Custom Information',
+    'LBL_CUSTOM_INFORMATION' => 'Custom Information',
     'LBL_DESCRIPTION_INFORMATION' => 'Description Information',
     'Item text' => 'Item text',
     'Product Name' => 'Product Name',
