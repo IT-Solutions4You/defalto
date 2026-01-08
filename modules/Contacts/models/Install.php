@@ -10,7 +10,7 @@
 
 class Contacts_Install_Model extends Core_Install_Model
 {
-    public array $registerCustomLinks = [
+    public array $registerRelatedLists = [
         ['Accounts','Contacts','Contacts','add','get_contacts','',],
         ['Contacts','HelpDesk','HelpDesk','add','get_tickets','',],
         ['Contacts','Quotes','Quotes','add','get_quotes','contact_id',],
@@ -152,6 +152,7 @@ class Contacts_Install_Model extends Core_Install_Model
                     'headerfieldsequence' => 1,
                     'filter' => 1,
                     'filter_sequence' => 4,
+                    'related_modules' => ['Accounts'],
                 ],
                 'birthday' => [
                     'name' => 'birthday',
