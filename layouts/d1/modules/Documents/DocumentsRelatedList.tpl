@@ -150,10 +150,15 @@
                                         <a class="btn btn-sm text-secondary" name="relationEdit" data-url="{$RELATED_RECORD->getEditViewUrl()}">
                                             <i title="{vtranslate('LBL_EDIT', $MODULE)}" class="fa fa-pencil"></i>
                                         </a>
-                                        {if $IS_DELETABLE}
-                                            <a class="btn btn-sm text-secondary relationDelete">
-                                                <i title="{vtranslate('LBL_UNLINK', $MODULE)}" class="vicon-linkopen"></i>
-                                            </a>
+										{if $IS_DELETABLE}
+                                            <button type="button" class="btn btn-sm text-secondary" onclick='app.controller().relationDeleteRecord("{$RELATED_RECORD->getDeleteUrl()}")'>
+                                                <i title="{vtranslate('LBL_DELETE', $MODULE)}" class="fa-solid fa-trash"></i>
+                                            </button>
+                                            {if isset($RELATION_MODEL) && $RELATION_MODEL->isUnlinkable()}
+                                                <a class="btn btn-sm text-secondary relationDelete" data-message="LBL_UNLINK_CONFIRMATION">
+                                                    <i title="{vtranslate('LBL_UNLINK', $MODULE)}" class="vicon-linkopen"></i>
+                                                </a>
+                                            {/if}
                                         {/if}
                                         {assign var=RECORD_ID value=$RELATED_RECORD->getId()}
                                         {assign var="DOCUMENT_RECORD_MODEL" value=Vtiger_Record_Model::getInstanceById($RECORD_ID)}

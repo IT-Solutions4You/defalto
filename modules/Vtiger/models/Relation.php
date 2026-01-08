@@ -378,4 +378,12 @@ class Vtiger_Relation_Model extends Vtiger_Base_Model
     {
         return $this->get('presence') == 0 ? true : false;
     }
+
+    /**
+     * @return bool
+     */
+    public function isUnlinkable(): bool
+    {
+        return in_array($this->get('name'), ['get_attachments', 'get_related_list']);
+    }
 }

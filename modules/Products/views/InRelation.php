@@ -110,6 +110,7 @@ class Products_InRelation_View extends Vtiger_RelatedList_View
         }
 
         $viewer = $this->getViewer($request);
+        $viewer->assign('RELATION_MODEL', $relationModel);
         $viewer->assign('RELATED_RECORDS', $models);
         $viewer->assign('PARENT_RECORD', $parentRecordModel);
         $viewer->assign('RELATED_LIST_LINKS', $links);
