@@ -285,33 +285,6 @@ class Quotes extends CRMEntity
         return $rel_tables[$secmodule];
     }
 
-    // Function to unlink an entity with given Id from another entity
-    function unlinkRelationship($id, $return_module, $return_id)
-    {
-        global $log;
-        if (empty($return_module) || empty($return_id)) {
-            return;
-        }
-
-        if ($return_module == 'Accounts') {
-            $this->trash('Quotes', $id);
-        } elseif ($return_module == 'Potentials') {
-            $relation_query = 'UPDATE vtiger_quotes SET potential_id=? WHERE quoteid=?';
-            $this->db->pquery($relation_query, [null, $id]);
-        } elseif ($return_module == 'Contacts') {
-            $relation_query = 'UPDATE vtiger_quotes SET contact_id=? WHERE quoteid=?';
-            $this->db->pquery($relation_query, [null, $id]);
-        } elseif ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
-        } elseif ($return_module == 'Leads') {
-            $relation_query = 'UPDATE vtiger_quotes SET contact_id=? WHERE quoteid=?';
-            $this->db->pquery($relation_query, [null, $id]);
-        } else {
-            parent::unlinkRelationship($id, $return_module, $return_id);
-        }
-    }
-
     /*Function to create records in current module.
     **This function called while importing records to this module*/
     function createRecords($obj)

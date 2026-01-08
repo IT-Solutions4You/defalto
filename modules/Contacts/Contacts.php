@@ -1500,36 +1500,21 @@ class Contacts extends CRMEntity
     }
 
     // Function to unlink an entity with given Id from another entity
-    function unlinkRelationship($id, $return_module, $return_id)
+    public function unlinkRelationship($id, $return_module, $return_id)
     {
         global $log;
         if (empty($return_module) || empty($return_id)) {
             return;
         }
 
-        if ($return_module == 'Accounts') {
-            $sql = 'UPDATE vtiger_contactdetails SET account_id = ? WHERE contactid = ?';
-            $this->db->pquery($sql, [null, $id]);
-        } elseif ($return_module == 'Potentials') {
-            $sql = 'DELETE FROM vtiger_contpotentialrel WHERE contactid=? AND potentialid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
-
-            //If contact related to potential through edit of record,that entry will be present in
-            //vtiger_potential contact_id column,which should be set to zero
-            $sql = 'UPDATE vtiger_potential SET contact_id = ? WHERE contact_id=? AND potentialid=?';
-            $this->db->pquery($sql, [0, $id, $return_id]);
+        if ($return_module == 'Potentials') {
+            $this->db->pquery('DELETE FROM vtiger_contpotentialrel WHERE contactid=? AND potentialid=?', [$id, $return_id]);
         } elseif ($return_module == 'Campaigns') {
-            $sql = 'DELETE FROM vtiger_campaigncontrel WHERE contactid=? AND campaignid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_campaigncontrel WHERE contactid=? AND campaignid=?', [$id, $return_id]);
         } elseif ($return_module == 'Products') {
-            $sql = 'DELETE FROM vtiger_seproductsrel WHERE crmid=? AND productid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_seproductsrel WHERE crmid=? AND productid=?', [$id, $return_id]);
         } elseif ($return_module == 'Vendors') {
-            $sql = 'DELETE FROM vtiger_vendorcontactrel WHERE vendorid=? AND contactid=?';
-            $this->db->pquery($sql, [$return_id, $id]);
-        } elseif ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_vendorcontactrel WHERE vendorid=? AND contactid=?', [$return_id, $id]);
         } else {
             parent::unlinkRelationship($id, $return_module, $return_id);
         }

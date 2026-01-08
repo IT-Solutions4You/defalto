@@ -28,7 +28,6 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
 class Accounts extends CRMEntity
 {
     public string $moduleName = 'Accounts';
@@ -37,11 +36,11 @@ class Accounts extends CRMEntity
     public $table_index = 'accountid';
     public $tab_name = ['vtiger_crmentity', 'vtiger_account', 'vtiger_accountbillads', 'vtiger_accountshipads', 'vtiger_accountscf'];
     public $tab_name_index = [
-        'vtiger_crmentity'      => 'crmid',
-        'vtiger_account'        => 'accountid',
+        'vtiger_crmentity' => 'crmid',
+        'vtiger_account' => 'accountid',
         'vtiger_accountbillads' => 'accountaddressid',
         'vtiger_accountshipads' => 'accountaddressid',
-        'vtiger_accountscf'     => 'accountid'
+        'vtiger_accountscf' => 'accountid'
     ];
     /**
      * Mandatory table for supporting custom fields.
@@ -57,30 +56,30 @@ class Accounts extends CRMEntity
     public $list_fields = [
         'Account Name' => ['vtiger_account' => 'accountname'],
         'Billing City' => ['vtiger_accountbillads' => 'bill_city'],
-        'Website'      => ['vtiger_account' => 'website'],
-        'Phone'        => ['vtiger_account' => 'phone'],
-        'Assigned To'  => ['vtiger_crmentity' => 'assigned_user_id']
+        'Website' => ['vtiger_account' => 'website'],
+        'Phone' => ['vtiger_account' => 'phone'],
+        'Assigned To' => ['vtiger_crmentity' => 'assigned_user_id']
     ];
 
     public $list_fields_name = [
         'Account Name' => 'accountname',
         'Billing City' => 'bill_city',
-        'Website'      => 'website',
-        'Phone'        => 'phone',
-        'Assigned To'  => 'assigned_user_id'
+        'Website' => 'website',
+        'Phone' => 'phone',
+        'Assigned To' => 'assigned_user_id'
     ];
     public $list_link_field = 'accountname';
 
     public $search_fields = [
         'Account Name' => ['vtiger_account' => 'accountname'],
         'Billing City' => ['vtiger_accountbillads' => 'bill_city'],
-        'Assigned To'  => ['vtiger_crmentity' => 'assigned_user_id'],
+        'Assigned To' => ['vtiger_crmentity' => 'assigned_user_id'],
     ];
 
     public $search_fields_name = [
         'Account Name' => 'accountname',
         'Billing City' => 'bill_city',
-        'Assigned To'  => 'assigned_user_id',
+        'Assigned To' => 'assigned_user_id',
     ];
     // This is the list of vtiger_fields that are required
     public $required_fields = [];
@@ -97,20 +96,20 @@ class Accounts extends CRMEntity
     public $def_basicsearch_col = 'accountname';
 
     public $related_module_table_index = [
-        'Contacts'         => ['table_name' => 'vtiger_contactdetails', 'table_index' => 'contactid', 'rel_index' => 'account_id'],
-        'Potentials'       => ['table_name' => 'vtiger_potential', 'table_index' => 'potentialid', 'rel_index' => 'related_to'],
-        'Quotes'           => ['table_name' => 'vtiger_quotes', 'table_index' => 'quoteid', 'rel_index' => 'account_id'],
-        'SalesOrder'       => ['table_name' => 'vtiger_salesorder', 'table_index' => 'salesorderid', 'rel_index' => 'account_id'],
-        'Invoice'          => ['table_name' => 'vtiger_invoice', 'table_index' => 'invoiceid', 'rel_index' => 'account_id'],
-        'HelpDesk'         => ['table_name' => 'vtiger_troubletickets', 'table_index' => 'ticketid', 'rel_index' => 'parent_id'],
-        'Products'         => ['table_name' => 'vtiger_seproductsrel', 'table_index' => 'productid', 'rel_index' => 'crmid'],
-        'Documents'        => ['table_name' => 'vtiger_senotesrel', 'table_index' => 'notesid', 'rel_index' => 'crmid'],
+        'Contacts' => ['table_name' => 'vtiger_contactdetails', 'table_index' => 'contactid', 'rel_index' => 'account_id'],
+        'Potentials' => ['table_name' => 'vtiger_potential', 'table_index' => 'potentialid', 'rel_index' => 'related_to'],
+        'Quotes' => ['table_name' => 'vtiger_quotes', 'table_index' => 'quoteid', 'rel_index' => 'account_id'],
+        'SalesOrder' => ['table_name' => 'vtiger_salesorder', 'table_index' => 'salesorderid', 'rel_index' => 'account_id'],
+        'Invoice' => ['table_name' => 'vtiger_invoice', 'table_index' => 'invoiceid', 'rel_index' => 'account_id'],
+        'HelpDesk' => ['table_name' => 'vtiger_troubletickets', 'table_index' => 'ticketid', 'rel_index' => 'parent_id'],
+        'Products' => ['table_name' => 'vtiger_seproductsrel', 'table_index' => 'productid', 'rel_index' => 'crmid'],
+        'Documents' => ['table_name' => 'vtiger_senotesrel', 'table_index' => 'notesid', 'rel_index' => 'crmid'],
         'ServiceContracts' => ['table_name' => 'vtiger_servicecontracts', 'table_index' => 'servicecontractsid', 'rel_index' => 'account_id'],
-        'Services'         => ['table_name' => 'vtiger_crmentityrel', 'table_index' => 'crmid', 'rel_index' => 'crmid'],
-        'Campaigns'        => ['table_name' => 'vtiger_campaignaccountrel', 'table_index' => 'campaignid', 'rel_index' => 'accountid'],
-        'Assets'           => ['table_name' => 'vtiger_assets', 'table_index' => 'assetsid', 'rel_index' => 'account'],
-        'Project'          => ['table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'account_id'],
-        'PurchaseOrder'    => ['table_name' => 'vtiger_purchaseorder', 'table_index' => 'purchaseorderid', 'rel_index' => 'accountid'],
+        'Services' => ['table_name' => 'vtiger_crmentityrel', 'table_index' => 'crmid', 'rel_index' => 'crmid'],
+        'Campaigns' => ['table_name' => 'vtiger_campaignaccountrel', 'table_index' => 'campaignid', 'rel_index' => 'accountid'],
+        'Assets' => ['table_name' => 'vtiger_assets', 'table_index' => 'assetsid', 'rel_index' => 'account'],
+        'Project' => ['table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'account_id'],
+        'PurchaseOrder' => ['table_name' => 'vtiger_purchaseorder', 'table_index' => 'purchaseorderid', 'rel_index' => 'accountid'],
     ];
 
     /** Returns a list of the associated Campaigns
@@ -239,7 +238,7 @@ class Accounts extends CRMEntity
         $userNameSql = getSqlForNameInDisplayFormat([
             'first_name' =>
                 'vtiger_users.first_name',
-            'last_name'  => 'vtiger_users.last_name'
+            'last_name' => 'vtiger_users.last_name'
         ], 'Users');
         $query = "SELECT vtiger_contactdetails.*, vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id, vtiger_account.accountname,
 			case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
@@ -313,7 +312,7 @@ class Accounts extends CRMEntity
         $userNameSql = getSqlForNameInDisplayFormat([
             'first_name' =>
                 'vtiger_users.first_name',
-            'last_name'  => 'vtiger_users.last_name'
+            'last_name' => 'vtiger_users.last_name'
         ], 'Users');
         $query = "SELECT vtiger_purchaseorder.*, vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id,
 			case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
@@ -877,51 +876,51 @@ class Accounts extends CRMEntity
         $log->debug("Entering function transferRelatedRecords ($module, " . implode(',', $transferEntityIds) . ", $entityId)");
 
         $rel_table_arr = [
-            'Contacts'         => 'vtiger_contactdetails',
-            'Potentials'       => 'vtiger_potential',
-            'Quotes'           => 'vtiger_quotes',
-            'SalesOrder'       => 'vtiger_salesorder',
-            'Invoice'          => 'vtiger_invoice',
-            'Documents'        => 'vtiger_senotesrel',
-            'Attachments'      => 'vtiger_seattachmentsrel',
-            'HelpDesk'         => 'vtiger_troubletickets',
-            'Products'         => 'vtiger_seproductsrel',
+            'Contacts' => 'vtiger_contactdetails',
+            'Potentials' => 'vtiger_potential',
+            'Quotes' => 'vtiger_quotes',
+            'SalesOrder' => 'vtiger_salesorder',
+            'Invoice' => 'vtiger_invoice',
+            'Documents' => 'vtiger_senotesrel',
+            'Attachments' => 'vtiger_seattachmentsrel',
+            'HelpDesk' => 'vtiger_troubletickets',
+            'Products' => 'vtiger_seproductsrel',
             'ServiceContracts' => 'vtiger_servicecontracts',
-            'Campaigns'        => 'vtiger_campaignaccountrel',
-            'Assets'           => 'vtiger_assets',
-            'Project'          => 'vtiger_project'
+            'Campaigns' => 'vtiger_campaignaccountrel',
+            'Assets' => 'vtiger_assets',
+            'Project' => 'vtiger_project'
         ];
 
         $tbl_field_arr = [
-            'vtiger_contactdetails'     => 'contactid',
-            'vtiger_potential'          => 'potentialid',
-            'vtiger_quotes'             => 'quoteid',
-            'vtiger_salesorder'         => 'salesorderid',
-            'vtiger_invoice'            => 'invoiceid',
-            'vtiger_senotesrel'         => 'notesid',
-            'vtiger_seattachmentsrel'   => 'attachmentsid',
-            'vtiger_troubletickets'     => 'ticketid',
-            'vtiger_seproductsrel'      => 'productid',
-            'vtiger_servicecontracts'   => 'servicecontractsid',
+            'vtiger_contactdetails' => 'contactid',
+            'vtiger_potential' => 'potentialid',
+            'vtiger_quotes' => 'quoteid',
+            'vtiger_salesorder' => 'salesorderid',
+            'vtiger_invoice' => 'invoiceid',
+            'vtiger_senotesrel' => 'notesid',
+            'vtiger_seattachmentsrel' => 'attachmentsid',
+            'vtiger_troubletickets' => 'ticketid',
+            'vtiger_seproductsrel' => 'productid',
+            'vtiger_servicecontracts' => 'servicecontractsid',
             'vtiger_campaignaccountrel' => 'campaignid',
-            'vtiger_assets'             => 'assetsid',
-            'vtiger_project'            => 'projectid'
+            'vtiger_assets' => 'assetsid',
+            'vtiger_project' => 'projectid'
         ];
 
         $entity_tbl_field_arr = [
-            'vtiger_contactdetails'     => 'account_id',
-            'vtiger_potential'          => 'related_to',
-            'vtiger_quotes'             => 'account_id',
-            'vtiger_salesorder'         => 'account_id',
-            'vtiger_invoice'            => 'account_id',
-            'vtiger_senotesrel'         => 'crmid',
-            'vtiger_seattachmentsrel'   => 'crmid',
-            'vtiger_troubletickets'     => 'parent_id',
-            'vtiger_seproductsrel'      => 'crmid',
-            'vtiger_servicecontracts'   => 'account_id',
+            'vtiger_contactdetails' => 'account_id',
+            'vtiger_potential' => 'related_to',
+            'vtiger_quotes' => 'account_id',
+            'vtiger_salesorder' => 'account_id',
+            'vtiger_invoice' => 'account_id',
+            'vtiger_senotesrel' => 'crmid',
+            'vtiger_seattachmentsrel' => 'crmid',
+            'vtiger_troubletickets' => 'parent_id',
+            'vtiger_seproductsrel' => 'crmid',
+            'vtiger_servicecontracts' => 'account_id',
             'vtiger_campaignaccountrel' => 'accountid',
-            'vtiger_assets'             => 'account',
-            'vtiger_project'            => 'account_id',
+            'vtiger_assets' => 'account',
+            'vtiger_project' => 'account_id',
         ];
 
         foreach ($transferEntityIds as $transferId) {
@@ -958,15 +957,15 @@ class Accounts extends CRMEntity
     function setRelationTables($secmodule)
     {
         $rel_tables = [
-            "Contacts"   => ["vtiger_contactdetails" => ["account_id", "contactid"], "vtiger_account" => "accountid"],
+            "Contacts" => ["vtiger_contactdetails" => ["account_id", "contactid"], "vtiger_account" => "accountid"],
             "Potentials" => ["vtiger_potential" => ["related_to", "potentialid"], "vtiger_account" => "accountid"],
-            "Quotes"     => ["vtiger_quotes" => ["account_id", "quoteid"], "vtiger_account" => "accountid"],
+            "Quotes" => ["vtiger_quotes" => ["account_id", "quoteid"], "vtiger_account" => "accountid"],
             "SalesOrder" => ["vtiger_salesorder" => ["account_id", "salesorderid"], "vtiger_account" => "accountid"],
-            "Invoice"    => ["vtiger_invoice" => ["account_id", "invoiceid"], "vtiger_account" => "accountid"],
-            "HelpDesk"   => ["vtiger_troubletickets" => ["parent_id", "ticketid"], "vtiger_account" => "accountid"],
-            "Products"   => ["vtiger_seproductsrel" => ["crmid", "productid"], "vtiger_account" => "accountid"],
-            "Documents"  => ["vtiger_senotesrel" => ["crmid", "notesid"], "vtiger_account" => "accountid"],
-            "Campaigns"  => ["vtiger_campaignaccountrel" => ["accountid", "campaignid"], "vtiger_account" => "accountid"],
+            "Invoice" => ["vtiger_invoice" => ["account_id", "invoiceid"], "vtiger_account" => "accountid"],
+            "HelpDesk" => ["vtiger_troubletickets" => ["parent_id", "ticketid"], "vtiger_account" => "accountid"],
+            "Products" => ["vtiger_seproductsrel" => ["crmid", "productid"], "vtiger_account" => "accountid"],
+            "Documents" => ["vtiger_senotesrel" => ["crmid", "notesid"], "vtiger_account" => "accountid"],
+            "Campaigns" => ["vtiger_campaignaccountrel" => ["accountid", "campaignid"], "vtiger_account" => "accountid"],
         ];
 
         return $rel_tables[$secmodule];
@@ -1103,8 +1102,8 @@ class Accounts extends CRMEntity
     /**
      * Function to Recursively get all the upper accounts of a given Account
      *
-     * @param integer $id              - accountid
-     * @param array   $parent_accounts - Array of all the parent accounts
+     * @param integer $id - accountid
+     * @param array $parent_accounts - Array of all the parent accounts
      *                                 returns All the parent accounts of the given accountid in array format
      *
      * @throws Exception
@@ -1160,9 +1159,9 @@ class Accounts extends CRMEntity
     /**
      * Function to Recursively get all the child accounts of a given Account
      *
-     * @param integer $id             - accountid
-     * @param array   $child_accounts - Array of all the child accounts
-     * @param integer $depth          - Depth at which the particular account has to be placed in the hierarchy
+     * @param integer $id - accountid
+     * @param array $child_accounts - Array of all the child accounts
+     * @param integer $depth - Depth at which the particular account has to be placed in the hierarchy
      *                                returns All the child accounts of the given accountid in array format
      */
     function __getChildAccounts($id, &$child_accounts, $depth)
@@ -1173,7 +1172,7 @@ class Accounts extends CRMEntity
         $userNameSql = getSqlForNameInDisplayFormat([
             'first_name' =>
                 'vtiger_users.first_name',
-            'last_name'  => 'vtiger_users.last_name'
+            'last_name' => 'vtiger_users.last_name'
         ], 'Users');
         $query = "SELECT vtiger_account.*, vtiger_accountbillads.*, CASE when (vtiger_users.user_name not like '') THEN $userNameSql ELSE vtiger_groups.groupname END as user_name 
 		    FROM vtiger_account
@@ -1285,7 +1284,7 @@ class Accounts extends CRMEntity
     }
 
     // Function to unlink an entity with given Id from another entity
-    function unlinkRelationship($id, $return_module, $return_id)
+    public function unlinkRelationship($id, $return_module, $return_id)
     {
         global $log;
         if (empty($return_module) || empty($return_id)) {
@@ -1293,14 +1292,9 @@ class Accounts extends CRMEntity
         }
 
         if ($return_module == 'Campaigns') {
-            $sql = 'DELETE FROM vtiger_campaignaccountrel WHERE accountid=? AND campaignid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_campaignaccountrel WHERE accountid=? AND campaignid=?', [$id, $return_id]);
         } elseif ($return_module == 'Products') {
-            $sql = 'DELETE FROM vtiger_seproductsrel WHERE crmid=? AND productid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
-        } elseif ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_seproductsrel WHERE crmid=? AND productid=?', [$id, $return_id]);
         } else {
             parent::unlinkRelationship($id, $return_module, $return_id);
         }

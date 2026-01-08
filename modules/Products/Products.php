@@ -1466,18 +1466,9 @@ class Products extends CRMEntity
         }
 
         if ($return_module == 'Leads' || $return_module == 'Contacts' || $return_module == 'Potentials') {
-            $sql = 'DELETE FROM vtiger_seproductsrel WHERE productid = ? AND crmid = ?';
-            $this->db->pquery($sql, [$id, $return_id]);
-        } elseif ($return_module == 'Vendors') {
-            $sql = 'UPDATE vtiger_products SET vendor_id = ? WHERE productid = ?';
-            $this->db->pquery($sql, [null, $id]);
+            $this->db->pquery('DELETE FROM vtiger_seproductsrel WHERE productid = ? AND crmid = ?', [$id, $return_id]);
         } elseif ($return_module == 'Accounts') {
-            $sql = 'DELETE FROM vtiger_seproductsrel WHERE productid = ? AND (crmid = ? OR crmid IN (SELECT contactid FROM vtiger_contactdetails WHERE account_id=?))';
-            $param = [$id, $return_id, $return_id];
-            $this->db->pquery($sql, $param);
-        } elseif ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_seproductsrel WHERE productid = ? AND (crmid = ? OR crmid IN (SELECT contactid FROM vtiger_contactdetails WHERE account_id=?))', [$id, $return_id, $return_id]);
         } else {
             parent::unlinkRelationship($id, $return_module, $return_id);
         }

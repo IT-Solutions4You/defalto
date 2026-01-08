@@ -519,8 +519,7 @@ class Vendors extends CRMEntity
             return;
         }
         if ($return_module == 'Contacts') {
-            $sql = 'DELETE FROM vtiger_vendorcontactrel WHERE vendorid=? AND contactid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_vendorcontactrel WHERE vendorid=? AND contactid=?', [$id, $return_id]);
         } else {
             parent::unlinkRelationship($id, $return_module, $return_id);
         }
