@@ -275,6 +275,9 @@ $languageStrings = [
     'LBL_CHECK_UPDATING' => 'Searching',
     'LBL_CHECK_LOADING' => 'Searching for updates',
     'LBL_MEMBERSHIP_BRANDING' => 'Want one-click updates?<br>See what <a-redirect-membership>Defalto Membership</a> includes and <a-redirect-order>get started now</a>.',
+    'LBL_REQUIRED_CKEDITOR_UPLOAD' => 'Required for CKEditor image upload',
+    'LBL_REQUIRED_TEMPLATE_IMAGE' => 'Required slash for Template images',
+    'LBL_REQUIRED_ATTACHMENTS_UPLOAD' => 'Requiered slash for Attachments upload',
 ];
 $jsLanguageStrings = [
     'JS_UNINSTALL_CONFIRM' => 'Are you sure to completely remove module from your system?',
