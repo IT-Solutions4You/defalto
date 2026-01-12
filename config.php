@@ -26,7 +26,8 @@
  * is located at /etc/vtigercrm directory.
  */
 
-include('config.inc.php');
+include 'version.php';
+include 'config.inc.php';
 
 $THIS_DIR = __DIR__;
 

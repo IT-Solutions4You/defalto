@@ -10,6 +10,20 @@
 
 class Vtiger_Install_Model extends Core_Install_Model
 {
+    public static array $deleteFiles = [
+        'modules/Invoice/views/Edit.php',
+        'modules/SalesOrder/views/Edit.php',
+        'modules/PurchaseOrder/views/Edit.php',
+        'modules/Quotes/views/Edit.php',
+        'modules/Invoice/views/Detail.php',
+        'modules/SalesOrder/views/Detail.php',
+        'modules/PurchaseOrder/views/Detail.php',
+        'modules/Quotes/views/Detail.php',
+        'modules/Invoice/views/QuickCreateAjax.php',
+        'modules/SalesOrder/views/QuickCreateAjax.php',
+        'modules/Quotes/views/QuickCreateAjax.php',
+    ];
+
     public static array $createTablesClasses = [
         'Vtiger_Module_Model',
         'Vtiger_Field_Model',
@@ -25,6 +39,8 @@ class Vtiger_Install_Model extends Core_Install_Model
         'Core_TaxRecord_Model',
         'Settings_Vtiger_MenuItem_Model',
         'Settings_Vtiger_Menu_Model',
+        'Core_Modifiers_Model',
+        'CustomView_Record_Model',
     ];
 
     public array $registerFieldTypes = [
@@ -100,5 +116,19 @@ class Vtiger_Install_Model extends Core_Install_Model
         $fieldTable->updateData(['columnname' => 'modifiedtime', 'fieldname' => 'modifiedtime'], ['columnname' => 'modifiedtime']);
 
         $this->getDB()->pquery('DELETE FROM vtiger_field WHERE fieldid NOT IN (SELECT min(fieldid) FROM vtiger_field GROUP BY tabid,columnname,tablename,fieldname)');
+
+        self::logSuccess('Files delete start');
+
+        foreach (self::$deleteFiles as $deleteFile) {
+            self::logSuccess('File delete: ' . $deleteFile);
+
+            if (is_file($deleteFile) && unlink($deleteFile)) {
+                self::logSuccess('File deleted');
+            } else {
+                self::logInfo('File already deleted');
+            }
+        }
+
+        self::logSuccess('Files delete end');
     }
 }

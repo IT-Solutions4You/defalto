@@ -25,7 +25,10 @@ class Vtiger_BasicAjax_View extends Vtiger_Basic_View
         $this->exposeMethod('showSearchResults');
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView'];
@@ -33,14 +36,18 @@ class Vtiger_BasicAjax_View extends Vtiger_Basic_View
         return $permissions;
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        return true;
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return true;
     }
 
     function process(Vtiger_Request $request)
@@ -108,6 +115,8 @@ class Vtiger_BasicAjax_View extends Vtiger_Basic_View
         $viewer->assign('MODULE', $module);
 
         $viewer->assign('SAVE_FILTER_PERMITTED', $saveFilterPermitted);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showAdvancedSearch', $request->getModule(), $viewer, $request);
 
         echo $viewer->view('AdvanceSearch.tpl', $moduleName, true);
     }
@@ -217,6 +226,8 @@ class Vtiger_BasicAjax_View extends Vtiger_Basic_View
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('MATCHING_RECORDS', $matchingRecordsList);
         $viewer->assign('IS_ADVANCE_SEARCH', $isAdvanceSearch);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showSearchResults', $request->getModule(), $viewer, $request);
 
         echo $viewer->view('UnifiedSearchResults.tpl', '', true);
     }

@@ -16,7 +16,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Vtiger_RelatedRecordsAjax_Action extends Vtiger_Action_Controller
+class Vtiger_RelatedRecordsAjax_Action extends Core_Controller_Action
 {
     var $relationModules = [];
 
@@ -26,7 +26,10 @@ class Vtiger_RelatedRecordsAjax_Action extends Vtiger_Action_Controller
         $this->exposeMethod('getRelatedRecordsCount');
     }
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'recordId'];
@@ -34,7 +37,10 @@ class Vtiger_RelatedRecordsAjax_Action extends Vtiger_Action_Controller
         return $permissions;
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $parentModule = $request->get("module");
@@ -50,6 +56,8 @@ class Vtiger_RelatedRecordsAjax_Action extends Vtiger_Action_Controller
         if (empty($this->relationModules)) {
             throw new Exception(vtranslate('LBL_RELATED_MODULES_PERMISSION_DENIED'));
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)

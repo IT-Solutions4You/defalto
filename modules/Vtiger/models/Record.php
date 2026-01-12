@@ -725,7 +725,7 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
                 $record->setData($newRow);
                 //Updating entity details
                 $entity = $record->getEntity();
-                $entity->column_fields = $record->getData();
+                $entity->setColumnFields($record->getData());
                 $entity->id = $record->getId();
                 $record->setEntity($entity);
                 $records[$record->getId()] = $record;
@@ -977,10 +977,15 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
      */
     public function fetchCurrencyId(): int
     {
-        $db = PearDatabase::getInstance();
         $id = $this->getId();
         $seType = getSalesEntityType($id);
         $focus = CRMEntity::getInstance($seType);
+
+        if (!columnExists('currency_id', $focus->table_name)) {
+            return 1;
+        }
+
+        $db = PearDatabase::getInstance();
         $result = $db->pquery('SELECT currency_id FROM ' . $focus->table_name . ' WHERE ' . $focus->table_index . ' = ?', [$id]);
 
         if (!$db->num_rows($result)) {
@@ -1108,6 +1113,15 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
             ->createKey('KEY IF NOT EXISTS `crmentity_deleted_idx` (`deleted`)')
             ->createKey('KEY IF NOT EXISTS `crm_ownerid_del_setype_idx` (`assigned_user_id`,`deleted`,`setype`)')
             ->createKey('KEY IF NOT EXISTS `vtiger_crmentity_labelidx` (`label`)');
+
+
+        $this->getTable('vtiger_crmentity_user_field', '')
+            ->createTable('recordid', 'int(19) NOT NULL')
+            ->createColumn('userid', 'int(19) NOT NULL')
+            ->createColumn('starred', 'varchar(100) DEFAULT NULL')
+            ->createKey('CONSTRAINT record_user_idx UNIQUE KEY IF NOT EXISTS (recordid, userid)')
+            ->createKey('CONSTRAINT fk_vtiger_crmentity_user_field_recordid FOREIGN KEY IF NOT EXISTS (recordid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE')
+        ;
     }
 
     public function getDescription(): string

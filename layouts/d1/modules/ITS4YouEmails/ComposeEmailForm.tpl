@@ -142,9 +142,10 @@
                                     </div>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <div class="dropdown-item">
-                                                <input type="file" class="{if $FILE_ATTACHED}removeNoFileChosen{/if}" id="multiFile" name="file[]" title="{vtranslate('LBL_UPLOAD', $MODULE)}"/>
-                                            </div>
+                                            <label class="dropdown-item" href="#" title="{vtranslate('LBL_UPLOAD', $MODULE)}">
+                                                {vtranslate('LBL_UPLOAD', $MODULE)}
+                                                <input type="file" class="d-none {if $FILE_ATTACHED}removeNoFileChosen{/if}" id="multiFile" name="file[]"/>
+                                            </label>
                                         </li>
                                         <li>
                                             <a class="dropdown-item" href="#" id="browseCrm" data-url="{$DOCUMENTS_URL}" title="{vtranslate('LBL_BROWSE_CRM',$MODULE)}">{vtranslate('LBL_BROWSE_CRM',$MODULE)}</a>

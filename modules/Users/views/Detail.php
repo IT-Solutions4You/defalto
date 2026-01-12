@@ -18,7 +18,10 @@
 
 class Users_Detail_View extends Users_PreferenceDetail_View
 {
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $this->preProcessSettings($request);
@@ -92,7 +95,10 @@ class Users_Detail_View extends Users_PreferenceDetail_View
         $viewer->view('SettingsMenuEnd.tpl', $qualifiedModuleName);
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $this->postProcessSettings($request);
         parent::postProcess($request);
@@ -107,19 +113,20 @@ class Users_Detail_View extends Users_PreferenceDetail_View
         parent::process($request);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-        $moduleName = $request->getModule();
 
         $jsFileNames = [
             'modules.Settings.Vtiger.resources.Index'
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     /**
@@ -138,7 +145,10 @@ class Users_Detail_View extends Users_PreferenceDetail_View
         return $recordModel->isEditable();
     }
 
-    public function getPageTitle(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getPageTitle(Vtiger_Request $request): string
     {
         return vtranslate($request->getModule(), $request->getModule());
     }

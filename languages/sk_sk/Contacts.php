@@ -56,6 +56,12 @@ $languageStrings = [
     'Email' => 'Primárny email',
     'Secondary Email' => 'Sekundárny email',
     'Other Phone' => 'Sekundárny telefón',
+    'Private Phone' => 'Súkromný telefón',
+    'Portal User Name' => 'Používateľské meno portálu',
+    'Portal Last Login' => 'Posledné prihlásenie do portálu',
+    'Contacted - Successful' => 'Kontaktovaný – úspešne',
+    'Contacted - Unsuccessful' => 'Kontaktovaný – neúspešne',
+    'Contacted - Never Contact Again' => 'Kontaktovaný – už nekontaktovať',
 ];
 $jsLanguageStrings = [
 ];

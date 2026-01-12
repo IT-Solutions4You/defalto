@@ -33,13 +33,10 @@ class Core_SaveSharingRecord_Action extends Vtiger_Save_Action
     }
 
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return bool|void
-     * @throws Exception
+     * @inheritDoc
      */
-    public function validateRequest(Vtiger_Request $request)
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

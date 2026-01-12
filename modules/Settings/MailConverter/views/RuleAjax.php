@@ -38,6 +38,8 @@ class Settings_MailConverter_RuleAjax_View extends Settings_Vtiger_IndexAjax_Vie
         $viewer->assign('FIELDS', $fields);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('Rule.tpl', $qualifiedModuleName);
     }
 }

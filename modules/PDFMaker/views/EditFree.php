@@ -12,7 +12,10 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
 {
     public $cu_language = '';
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $viewer = $this->getViewer($request);
@@ -36,7 +39,10 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
         }
     }
 
-    function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'EditViewPreProcess.tpl';
     }
@@ -396,6 +402,8 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
         $viewer->assign('SELECTED_MODULE_NAME', $selectedModuleName);
         $viewer->assign('SOURCE_MODULE', $selectedModuleName);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('EditFree.tpl', 'PDFMaker');
     }
 
@@ -420,13 +428,9 @@ class PDFMaker_EditFree_View extends Vtiger_Index_View
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $jsFileNames = [

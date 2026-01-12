@@ -27,7 +27,9 @@ class Vtiger_Double_UIType extends Core_Number_UIType
      */
     public function getDisplayValue($value, $record = false, $recordInstance = false)
     {
-        return self::transformDisplayValue($value);
+        $user = $this->isItemDetailField() ? $this->getInventoryNumberUser() : $this->getNumberUser();
+
+        return (string)CurrencyField::convertToUserFormat($value, $user, true);
     }
 
     /**

@@ -46,6 +46,14 @@ $languageStrings = [
     'S&amp;H Amount' => 'Čiastka za dopravu a manipuláciu',
     'S&amp;H Percent' => 'Percento za dopravu a manipuláciu',
     'Terms &amp; Conditions' => 'Podmienky a ustanovenia',
+    'Price Book' => 'Cenník',
+    'Price After Discount' => 'Cena po zľave',
+    'Overall Discount' => 'Celková zľava',
+    'Overall Discount Amount' => 'Suma celkovej zľavy',
+    'Price After Overall Discount' => 'Cena po celkovej zľave',
+    'Tax Amount' => 'Suma dane',
+    'Grand Total' => 'Celková suma',
+    'Margin Amount' => 'Výška marže',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Nákupná objednávka obsahuje odstránené produkty alebo služby, prosím upravte objednávku',

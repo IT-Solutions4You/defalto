@@ -36,7 +36,7 @@ $languageStrings = [
     'LBL_WAIT' => 'Bitte warten Sie ...',
     'LBL_WELCOME' => 'Welcome',
     'LBL_WE_AIM_TO_BE_BEST' => 'Wir wollen sein - einfach die beste',
+    'LBL_RECORDS_CHANGE_LOG' => 'Migration : Records Changes Log',
 ];
-
 $jsLanguageStrings = [
 ];

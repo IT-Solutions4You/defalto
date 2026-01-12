@@ -16,7 +16,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Import_Queue_Action extends Vtiger_Action_Controller
+class Import_Queue_Action extends Core_Controller_Action
 {
     static $IMPORT_STATUS_NONE = 0;
     static $IMPORT_STATUS_SCHEDULED = 1;

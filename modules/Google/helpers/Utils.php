@@ -31,7 +31,7 @@ class Google_Utils_Helper
     public static function updateSyncTime($sourceModule, $modifiedTime = false, $user = false)
     {
         $db = PearDatabase::getInstance();
-        self::intialiseUpdateSchema();
+
         if (!$user) {
             $user = Users_Record_Model::getCurrentUserModel();
         }
@@ -54,16 +54,6 @@ class Google_Utils_Helper
     }
 
     /**
-     *  Creates sync table if not exists
-     */
-    private static function intialiseUpdateSchema()
-    {
-        if (!Vtiger_Utils::CheckTable('vtiger_google_sync')) {
-            Vtiger_Utils::CreateTable('vtiger_google_sync', '(googlemodule varchar(50),user int(10), synctime datetime,lastsynctime datetime)', true);
-        }
-    }
-
-    /**
      *  Gets the max Modified time of last sync records
      *
      * @param <sting> $sourceModule modulename to which sync time should return
@@ -73,7 +63,6 @@ class Google_Utils_Helper
     public static function getSyncTime($sourceModule, $user = false)
     {
         $db = PearDatabase::getInstance();
-        self::intialiseUpdateSchema();
         if (!$user) {
             $user = Users_Record_Model::getCurrentUserModel();
         }
@@ -97,9 +86,9 @@ class Google_Utils_Helper
     public static function getLastSyncTime($sourceModule)
     {
         $db = PearDatabase::getInstance();
-        self::intialiseUpdateSchema();
         $user = Users_Record_Model::getCurrentUserModel();
         $result = $db->pquery('SELECT lastsynctime FROM vtiger_google_sync WHERE user=? AND googlemodule=?', [$user->id, $sourceModule]);
+
         if ($result && $db->num_rows($result) > 0) {
             $row = $db->fetch_array($result);
 

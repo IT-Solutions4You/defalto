@@ -23,31 +23,32 @@
 class Vtiger_FieldBasic
 {
     /** ID of this field instance */
-    var $id;
-    var $name;
-    var $label = false;
-    var $table = false;
-    var $column = false;
-    var $columntype = false;
-    var $helpinfo = '';
-    var $summaryfield = 0;
-    var $masseditable = 1; // Default: Enable massedit for field
+    public $id;
+    public $name;
+    public $label = false;
+    public $table = false;
+    public $column = false;
+    public $columntype = false;
+    public $helpinfo = '';
+    public $summaryfield = 0;
+    public $masseditable = 1; // Default: Enable massedit for field
+    public $ajaxeditable = 1; // Default: Enable ajaxedit for field
 
-    var $uitype = 1;
-    var $typeofdata = 'V~O';
-    var $displaytype = 1;
-    var $generatedtype = 1;
-    var $readonly = 1;
-    var $presence = 2;
-    var $defaultvalue = '';
-    var $maximumlength = 100;
-    var $sequence = false;
-    var $quickcreate = 1;
-    var $quicksequence = false;
-    var $info_type = 'BAS';
-    var $isunique = false;
-    var $block;
-    var $headerfield = 0;
+    public $uitype = 1;
+    public $typeofdata = 'V~O';
+    public $displaytype = 1;
+    public $generatedtype = 1;
+    public $readonly = 1;
+    public $presence = 2;
+    public $defaultvalue = '';
+    public $maximumlength = 100;
+    public $sequence = false;
+    public $quickcreate = 1;
+    public $quicksequence = false;
+    public $info_type = 'BAS';
+    public $isunique = false;
+    public $block;
+    public $headerfield = 0;
     public $related_modules;
     public $quickcreatesequence;
     public $headerfieldsequence;
@@ -84,6 +85,7 @@ class Vtiger_FieldBasic
         $this->typeofdata = $valuemap['typeofdata'];
         $this->helpinfo = $valuemap['helpinfo'];
         $this->masseditable = $valuemap['masseditable'];
+        $this->ajaxeditable = $valuemap['ajaxeditable'];
         $this->displaytype = $valuemap['displaytype'];
         $this->generatedtype = $valuemap['generatedtype'];
         $this->readonly = $valuemap['readonly'];
@@ -261,6 +263,7 @@ class Vtiger_FieldBasic
             'headerfield'         => $this->headerfield,
             'headerfieldsequence' => $this->headerfieldsequence,
             'masseditable'        => $this->masseditable,
+            'ajaxeditable'        => $this->ajaxeditable,
         ];
         $this->getFieldTable()->insertData($params);
 
@@ -311,6 +314,7 @@ class Vtiger_FieldBasic
             ->createColumn('headerfield', 'int(1) DEFAULT 0')
             ->createColumn('headerfieldsequence', 'int(19) DEFAULT 0')
             ->createColumn('isunique', 'tinyint(1) DEFAULT 0')
+            ->createColumn('ajaxeditable', 'tinyint(1) DEFAULT 1')
             ->createKey('PRIMARY KEY IF NOT EXISTS (fieldid)')
             ->createKey('KEY IF NOT EXISTS field_tabid_idx (tabid)')
             ->createKey('KEY IF NOT EXISTS field_fieldname_idx (fieldname)')

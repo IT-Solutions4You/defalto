@@ -16,9 +16,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Users_DeleteImage_Action extends Vtiger_Action_Controller
+class Users_DeleteImage_Action extends Core_Controller_Action
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
         $record = $request->get('id');
@@ -26,6 +29,8 @@ class Users_DeleteImage_Action extends Vtiger_Action_Controller
         if (!(Users_Privileges_Model::isPermitted($moduleName, 'EditView', $record) && Users_Privileges_Model::isPermitted($moduleName, 'Delete', $record))) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)

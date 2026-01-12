@@ -109,6 +109,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
                     'filter_sequence' => 3,
                     'quickcreate' => 2,
                     'quicksequence' => 3,
+                    'ajaxeditable' => 0,
                 ],
                 'contact_id' => [
                     'name' => 'contact_id',
@@ -595,6 +596,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
                     'headerfieldsequence' => 1,
                     'filter' => 1,
                     'filter_sequence' => 1,
+                    'ajaxeditable' => 0,
                 ],
             ]
         ];

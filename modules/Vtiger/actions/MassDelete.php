@@ -18,7 +18,10 @@
 
 class Vtiger_MassDelete_Action extends Vtiger_Mass_Action
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'Delete'];
@@ -26,14 +29,18 @@ class Vtiger_MassDelete_Action extends Vtiger_Mass_Action
         return $permissions;
     }
 
-    function preProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    function preProcess(Vtiger_Request $request): void
     {
-        return true;
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return true;
     }
 
     public function process(Vtiger_Request $request)

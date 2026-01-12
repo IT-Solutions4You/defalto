@@ -33,6 +33,9 @@ class Products_ProductsPopupAjax_View extends Products_ProductsPopup_View
         $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $viewer->assign('SELECTED_RECORDS', $request->get("selectedRecords"));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('ProductsPopupContents.tpl', $moduleName, true);
     }
 }

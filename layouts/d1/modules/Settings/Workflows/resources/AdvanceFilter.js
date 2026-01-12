@@ -231,7 +231,7 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js', {}, {
         }
     }
 });
-
+/** @var Workflows_Field_Js */
 Vtiger_Field_Js('Workflows_Field_Js', {}, {
 
     getUiTypeSpecificHtml: function () {
@@ -276,6 +276,10 @@ Vtiger_Date_Field_Js('Workflows_Date_Field_Js', {}, {
         return this.get('date-format');
     },
 
+    getDisplayValue: function () {
+        return this.get('display-value') ?? this.getValue();
+    },
+
     /**
      * Function to get the ui
      * @return string|object input text field
@@ -310,7 +314,7 @@ Vtiger_Date_Field_Js('Workflows_Date_Field_Js', {}, {
                 return this._super();
             }
         } else {
-            html = '<input type="text" class="getPopupUi date inputElement form-control" name="' + this.getName() + '"  data-date-format="' + this.getDateFormat() + '"  value="' + this.getValue() + '" />' +
+            html = '<input type="text" class="getPopupUi date inputElement form-control" name="' + this.getName() + '"  data-date-format="' + this.getDateFormat() + '"  value="' + this.getDisplayValue() + '" />' +
                 '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />';
             element = jQuery(html);
 

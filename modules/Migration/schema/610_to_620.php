@@ -66,15 +66,6 @@ if (file_exists("modules/Google")) {
  */
 global $adb;
 
-if (!Vtiger_Utils::CheckTable('vtiger_google_oauth2')) {
-    Vtiger_Utils::CreateTable(
-        'vtiger_google_oauth2',
-        '(service varchar(20),access_token varchar(500),refresh_token varchar(500),userid int(19))',
-        true
-    );
-    echo '<br> vtiger_google_oauth2 table created <br>';
-}
-
 //(start)Migrating GoogleCalendar ClientIds in wsapp_recordmapping to support v3
 
 $syncTrackerIds = [];
@@ -133,16 +124,3 @@ if (php7_count($appIds)) {
     echo '<br> vtiger_wsapp_recordmapping clientid migration completed for CalendarSync';
 }
 //(end)
-
-//Google Calendar sync changes ends here
-
-//Google migration : Create Sync setting table
-$sql = 'CREATE TABLE vtiger_google_sync_settings (user int(11) DEFAULT NULL, 
-    module varchar(50) DEFAULT NULL , clientgroup varchar(255) DEFAULT NULL, 
-    direction varchar(50) DEFAULT NULL)';
-$db->pquery($sql, []);
-$sql = 'CREATE TABLE vtiger_google_sync_fieldmapping ( vtiger_field varchar(255) DEFAULT NULL,
-        google_field varchar(255) DEFAULT NULL, google_field_type varchar(255) DEFAULT NULL,
-        google_custom_label varchar(255) DEFAULT NULL, user int(11) DEFAULT NULL)';
-$db->pquery($sql, []);
-echo '<br>Google sync setting and mapping table added</br>';

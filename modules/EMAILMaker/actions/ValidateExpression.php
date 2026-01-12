@@ -8,7 +8,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class EMAILMaker_ValidateExpression_Action extends Vtiger_Action_Controller
+class EMAILMaker_ValidateExpression_Action extends Core_Controller_Action
 {
     public function __construct()
     {
@@ -16,9 +16,12 @@ class EMAILMaker_ValidateExpression_Action extends Vtiger_Action_Controller
         $this->exposeMethod('ForEMAILMakerDisplayEdit');
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
-        return;
+        return true;
     }
 
     public function process(Vtiger_Request $request)

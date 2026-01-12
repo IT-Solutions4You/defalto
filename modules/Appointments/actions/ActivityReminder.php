@@ -8,7 +8,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Appointments_ActivityReminder_Action extends Vtiger_Action_Controller
+class Appointments_ActivityReminder_Action extends Core_Controller_Action
 {
     /**
      * @param Vtiger_Request $request
@@ -63,9 +63,7 @@ class Appointments_ActivityReminder_Action extends Vtiger_Action_Controller
     }
 
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return array
+     * @inheritDoc
      */
     public function requiresPermission(Vtiger_Request $request): array
     {

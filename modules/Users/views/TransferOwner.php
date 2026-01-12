@@ -18,17 +18,26 @@
 
 class Users_TransferOwner_View extends Vtiger_Index_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
+
         if (!$currentUserModel->isAdminUser()) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)
@@ -49,6 +58,8 @@ class Users_TransferOwner_View extends Vtiger_Index_View
         $viewer->assign('TRANSFER_USER_NAME', $userRecordModel->getName());
         $viewer->assign('USER_LIST', $usersList);
         $viewer->assign('CURRENT_USER_MODEL', $userRecordModel);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('TransferOwner.tpl', $moduleName);
     }

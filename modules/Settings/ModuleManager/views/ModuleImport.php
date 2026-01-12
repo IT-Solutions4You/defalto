@@ -42,6 +42,9 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
         $viewer->assign('EXTENSIONS', $EXTENSIONS);
         $viewer->assign('EXTENSIONS_AVAILABLE', (php7_count($EXTENSIONS) > 0) ? true : false);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('Step1.tpl', $qualifiedModuleName);
     }
 
@@ -102,6 +105,8 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
             $viewer->assign('ERROR_MESSAGE', vtranslate('LBL_INVALID_FILE', $qualifiedModuleName));
         }
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'step2', $request->getModule(), $viewer, $request);
+
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
         $viewer->view('Step2.tpl', $qualifiedModuleName);
     }
@@ -140,18 +145,17 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
             $viewer->assign('ERROR', true);
             $viewer->assign('ERROR_MESSAGE', vtranslate('LBL_INVALID_MODULE_INFO', $qualifiedModuleName));
         }
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'step3', $request->getModule(), $viewer, $request);
+
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
         $viewer->view('Step3.tpl', $qualifiedModuleName);
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -161,9 +165,8 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     public function importUserModuleStep1(Vtiger_Request $request)
@@ -171,6 +174,9 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
         $viewer = $this->getViewer($request);
         $qualifiedModuleName = $request->getModule(false);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'importUserModuleStep1', $request->getModule(), $viewer, $request);
+
         $viewer->view('ImportUserModuleStep1.tpl', $qualifiedModuleName);
     }
 
@@ -216,11 +222,17 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
                 }
             }
         }
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'importUserModuleStep2', $request->getModule(), $viewer, $request);
+
         $viewer->view('ImportUserModuleStep2.tpl', $qualifiedModuleName);
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateReadAccess();
+        return $request->validateReadAccess();
     }
 }

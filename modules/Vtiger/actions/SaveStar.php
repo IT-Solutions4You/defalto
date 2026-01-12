@@ -20,14 +20,20 @@ class Vtiger_SaveStar_Action extends Vtiger_Mass_Action
 {
     var $followRecordIds = [];
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
 
         return $permissions;
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         if ($request->has('selected_ids')) {

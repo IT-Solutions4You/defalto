@@ -28,7 +28,6 @@ $languageStrings = [
     'Rss' => 'RSS',
     'SINGLE_Rss' => 'Rss Feed',
 ];
-
 $jsLanguageStrings = [
     'JS_INVALID_RSS_URL' => 'Ungültige Rss URL',
     'JS_NO_RECORDS' => 'Keine Datensätze',

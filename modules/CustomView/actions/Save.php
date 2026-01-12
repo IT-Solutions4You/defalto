@@ -16,9 +16,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class CustomView_Save_Action extends Vtiger_Action_Controller
+class CustomView_Save_Action extends Core_Controller_Action
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'source_module', 'action' => 'DetailView'];
@@ -103,8 +106,11 @@ class CustomView_Save_Action extends Vtiger_Action_Controller
         return $customViewModel->setData($customViewData);
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

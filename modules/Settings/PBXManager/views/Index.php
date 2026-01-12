@@ -39,6 +39,9 @@ class Settings_PBXManager_Index_View extends Settings_Vtiger_Index_View
         $viewer->assign('MODULE', $request->getModule(false));
         $viewer->assign('QUALIFIED_MODULE', $request->getModule(false));
         $viewer->assign('RECORD_MODEL', $recordModel);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'gatewayInfo', $request->getModule(), $viewer, $request);
+
         $viewer->view('index.tpl', $request->getModule(false));
     }
 }

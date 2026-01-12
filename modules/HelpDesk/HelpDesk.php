@@ -23,6 +23,8 @@
 
 class HelpDesk extends CRMEntity
 {
+    public string $moduleVersion = '1.2';
+    public string $moduleName = 'HelpDesk';
     public string $parentName = 'SUPPORT';
     public $table_name = 'vtiger_troubletickets';
     public $table_index = 'ticketid';
@@ -33,7 +35,6 @@ class HelpDesk extends CRMEntity
      */
     public $customFieldTable = ['vtiger_ticketcf', 'ticketid'];
 
-    public $column_fields = [];
     //Pavani: Assign value to entity_table
     public $entity_table = 'vtiger_crmentity';
 
@@ -104,20 +105,10 @@ class HelpDesk extends CRMEntity
     // For Alphabetical search
     public $def_basicsearch_col = 'ticket_title';
 
-    //var $groupTable = Array('vtiger_ticketgrouprelation','ticketid');
-
-    /**    Constructor which will set the column_fields in this object
+    /**
+     * @inheritDoc
      */
-    function __construct()
-    {
-        $this->log = Logger::getLogger('helpdesk');
-        $this->log->debug("Entering HelpDesk() method ...");
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('HelpDesk');
-        $this->log->debug("Exiting HelpDesk method ...");
-    }
-
-    function save_module($module)
+    public function save_module(string $module)
     {
         //Inserting into Ticket Comment Table
         $this->insertIntoTicketCommentTable("vtiger_ticketcomments", $module);

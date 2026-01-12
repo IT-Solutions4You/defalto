@@ -50,15 +50,11 @@ require_once 'includes/runtime/Cache.php';
  */
 class Users extends CRMEntity
 {
+    public string $moduleVersion = '1.1';
+    public string $moduleName = 'Users';
     public int $ownedBy = 1;
     public int $isEntity = 0;
-    public $log;
-    /**
-     * @var PearDatabase
-     */
-    public $db;
     // Stored fields
-    public $id;
     public $authenticated = false;
     public $error_string;
     public $is_admin;
@@ -131,8 +127,6 @@ class Users extends CRMEntity
         'Admin'        => 'is_admin',
         'Phone'        => 'phone_work',
     ];
-
-    public $popup_fields = ['last_name'];
 
     // This is the list of fields that are in the lists.
     public $default_order_by = "user_name";
@@ -218,14 +212,12 @@ class Users extends CRMEntity
      */
     function __construct()
     {
-        $this->log = Logger::getLogger('user');
+        parent::__construct();
         $this->log->debug("Entering Users() method ...");
-        $this->db = PearDatabase::getInstance();
         $this->DEFAULT_PASSWORD_CRYPT_TYPE = (version_compare(PHP_VERSION, '5.3.0') >= 0) ? 'PHP5.3MD5' : 'MD5';
         if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
             $this->DEFAULT_PASSWORD_CRYPT_TYPE = 'PHASH';
         }
-        $this->column_fields = getColumnFields('Users');
         $this->column_fields['currency_name'] = '';
         $this->column_fields['currency_code'] = '';
         $this->column_fields['currency_symbol'] = '';
@@ -491,7 +483,7 @@ class Users extends CRMEntity
         $result = $this->db->requirePsSingleResult($query, [$usr_name], false);
 
         $row = $this->db->fetchByAssoc($result);
-        $this->column_fields = $row;
+        $this->setColumnFields($row);
         $this->id = $row['id'];
 
         $this->loadPreferencesFromDB($row['user_preferences']);

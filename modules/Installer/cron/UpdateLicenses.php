@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
  * (c) IT-Solutions4You s.r.o
@@ -8,15 +8,4 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-trait InventoryItem_Edit_Trait
-{
-    /**
-     * @return Array
-     */
-    public function adaptHeaderScripts(): array
-    {
-        return [
-            'modules.InventoryItem.resources.InventoryItemEdit',
-        ];
-    }
-}
+Installer_License_Model::updateAll();

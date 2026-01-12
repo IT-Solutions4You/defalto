@@ -31,6 +31,9 @@ class Settings_CronTasks_EditAjax_View extends Settings_Vtiger_IndexAjax_View
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('RECORD', $recordId);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('EditAjax.tpl', $qualifiedModuleName);
     }
 }

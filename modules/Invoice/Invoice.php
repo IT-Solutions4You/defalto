@@ -31,9 +31,9 @@
 
 class Invoice extends CRMEntity
 {
+    public string $moduleVersion = '1.2';
+    public string $moduleName = 'Invoice';
     public string $parentName = 'SALES';
-    public $log;
-    public $db;
 
     public $table_name = "vtiger_invoice";
     public $table_index = 'invoiceid';
@@ -46,8 +46,6 @@ class Invoice extends CRMEntity
         'vtiger_invoicecf'           => 'invoiceid',
     ];
     public $customFieldTable = ['vtiger_invoicecf', 'invoiceid'];
-
-    public $column_fields = [];
 
     public $update_product_array = [];
 
@@ -124,29 +122,24 @@ class Invoice extends CRMEntity
 
     public $entity_table = "vtiger_crmentity";
 
-    // For workflows update field tasks is deleted all the lineitems.
-    public $isLineItemUpdate = true;
-
-    /**    Constructor which will set the column_fields in this object
+    /**
+     * @inheritDoc
      */
-    public function __construct()
-
-    {    $this->log = Logger::getLogger('Invoice');
-        $this->log->debug("Entering Invoice() method ...");
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('Invoice');
-        $this->log->debug("Exiting Invoice method ...");
-    }
-
-    /** Function to handle the module specific save operations
-     */
-    public function save_module($module)
+    public function save_module(string $module)
     {
+        $request = new Vtiger_Request($_REQUEST, $_REQUEST);
+        $sourceModule = $request->get('sourceModule');
+        $sourceRecord = (int)$request->get('sourceRecord');
+
         if (!empty($this->_salesorderid)) {
             InventoryItem_CopyOnCreate_Model::run($this, $this->_salesorderid);
+        } elseif ((empty($sourceModule) || empty($sourceRecord)) && !empty($this->column_fields['salesorder_id'])) {
+            InventoryItem_CopyOnCreate_Model::run($this, $this->column_fields['salesorder_id']);
+        } elseif (is_numeric($request->get('duplicateFrom'))) {
+            InventoryItem_CopyOnCreate_Model::run($this, $request->get('duplicateFrom'));
+        } else {
+            InventoryItem_CopyOnCreate_Model::run($this);
         }
-
-        InventoryItem_CopyOnCreate_Model::run($this);
     }
 
     /**

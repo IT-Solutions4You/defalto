@@ -39,7 +39,7 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model
         'SUPPORT'   => ['HelpDesk', 'Faq', 'ServiceContracts',],
         'PROJECT'   => ['Project', 'ProjectTask', 'ProjectMilestone'],
         'ANALYTICS'   => ['Reporting'],
-        'TOOLS'     => ['Appointments', 'RecycleBin', 'PDFMaker', 'EMAILMaker', 'ITS4YouEmails', 'MailManager', 'Documents', 'PBXManager', 'Rss', 'Portal', 'Installer', 'Tour'],
+        'TOOLS'     => ['Appointments', 'RecycleBin', 'PDFMaker', 'EMAILMaker', 'ITS4YouEmails', 'MailManager', 'Documents', 'PBXManager', 'Installer', 'Tour'],
     ];
 
     /**

@@ -18,7 +18,10 @@
 
 class SMSNotifier_Edit_View extends Vtiger_Edit_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         throw new Exception(vtranslate('LBL_PERMISSION_DENIED', $request->getModule()));
     }

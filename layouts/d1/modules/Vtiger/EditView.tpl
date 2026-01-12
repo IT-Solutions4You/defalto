@@ -42,7 +42,9 @@
 									{elseif $SOURCE_MODULE neq ''}
 										<input type="hidden" name="sourceModule" value="{$SOURCE_MODULE}"/>
 										<input type="hidden" name="sourceRecord" value="{$SOURCE_RECORD}"/>
-									{/if}
+									{elseif $smarty.request.isDuplicate eq 'true'}
+                                        <input type="hidden" name="duplicateFrom" value="{$smarty.request.record}" />
+                                    {/if}
 									{include file="partials/EditViewReturn.tpl"|vtemplate_path:$MODULE}
 									{include file="partials/EditViewContents.tpl"|@vtemplate_path:$MODULE}
 								</div>
@@ -55,7 +57,7 @@
 										</div>
 										<div class="col-6 text-start">
 											<button type='submit' class='btn btn-primary active px-5 saveButton'>
-												{if $RECORD_ID eq '' && InventoryItem_Utils_Helper::usesInventoryItem($MODULE)}
+												{if $RECORD_ID eq '' && InventoryItem_Utils_Helper::isInventoryModule($MODULE)}
 													{vtranslate('LBL_SAVE_AND_CONTINUE', $MODULE)}
 												{else}
 													{vtranslate('LBL_SAVE', $MODULE)}

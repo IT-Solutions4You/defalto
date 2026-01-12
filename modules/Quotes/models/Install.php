@@ -139,6 +139,7 @@ class Quotes_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'headerfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
                 'contact_id' => [
                     'name' => 'contact_id',
@@ -476,6 +477,7 @@ class Quotes_Install_Model extends Core_Install_Model
                     'masseditable' => 0,
                     'quickcreate' => 3,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
             ],
         ];

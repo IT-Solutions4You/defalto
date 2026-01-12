@@ -10,10 +10,7 @@
 
 class EMAILMaker extends CRMExtension
 {
-    public $log;
-    public $db;
     public $moduleModel;
-    public $id;
     public $name;
     private $basicModules;
     private $profilesActions;
@@ -23,14 +20,11 @@ class EMAILMaker extends CRMExtension
     public $list_fields_name = [];
     public $list_fields = [];
     public $related_tables = [];
-    public string $moduleVersion = '1.0';
+    public string $moduleVersion = '1.1';
 
     public function __construct()
     {
-        global $log;
-
-        $this->log = $log;
-        $this->db = PearDatabase::getInstance();
+        parent::__construct();
         $this->basicModules = ['20', '21', '22', '23'];
         $this->profilesActions = [
             'EDIT'       => 'EditView',

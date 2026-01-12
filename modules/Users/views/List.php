@@ -20,7 +20,10 @@ class Users_List_View extends Settings_Vtiger_List_View
 {
     public $listViewLinks;
 
-    function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
 
@@ -31,15 +34,17 @@ class Users_List_View extends Settings_Vtiger_List_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     public function process(Vtiger_Request $request)
     {
         $viewer = $this->getViewer($request);
         $this->initializeListViewContents($request, $viewer);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ListViewContents.tpl', $request->getModule(false));
     }
 
@@ -308,7 +313,10 @@ class Users_List_View extends Settings_Vtiger_List_View
         return Vtiger_Util_Helper::transferListSearchParamsToFilterCondition($listSearchParams, $moduleModel);
     }
 
-    public function getHeaderCss(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $headerCssInstances = parent::getHeaderCss($request);
         $cssFileNames = [

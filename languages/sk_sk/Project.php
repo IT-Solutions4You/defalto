@@ -76,6 +76,16 @@ $languageStrings = [
     'Milestones list' => 'Zoznam miľníkov',
     'LBL_CREATING_NEW' => 'Nový',
     'Is Converted From Opportunity' => 'Je konvertovaný z príležitosti',
+    '10%' => '10%',
+    '20%' => '20%',
+    '30%' => '30%',
+    '40%' => '40%',
+    '50%' => '50%',
+    '60%' => '60%',
+    '70%' => '70%',
+    '80%' => '80%',
+    '90%' => '90%',
+    '100%' => '100%',
 ];
 $jsLanguageStrings = [
     'JS_COLOR_SAVED_SUCESSFULLY' => 'Farba bola úspešne uložená',

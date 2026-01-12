@@ -52,6 +52,8 @@ class Import_List_View extends Vtiger_Popup_View
             $viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
             $viewer->assign('RELATED_MODULE', $moduleName);
 
+            Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
             if ($request->isAjax() && ($request->get('_showContents', true) == true)) {
                 $viewer->view('PopupContents.tpl', $moduleName);
             } else {
@@ -142,6 +144,9 @@ class Import_List_View extends Vtiger_Popup_View
         $viewer->assign('IMPORT_RECORDS', $importRecords);
         $viewer->assign('TYPE', $request->get('type'));
         $viewer->assign('MODULE', $moduleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'getImportDetails', $request->getModule(), $viewer, $request);
+
         $viewer->view('ImportDetails.tpl', 'Import');
     }
 

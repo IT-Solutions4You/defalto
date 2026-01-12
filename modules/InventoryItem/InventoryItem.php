@@ -10,6 +10,8 @@
 
 class InventoryItem extends CRMEntity
 {
+    public string $moduleVersion = '1.1';
+    public string $moduleName = 'InventoryItem';
     public $table_name = 'df_inventoryitem';
     public $table_index = 'inventoryitemid';
 
@@ -57,9 +59,6 @@ class InventoryItem extends CRMEntity
         'Assigned To' => 'assigned_user_id',
     ];
 
-    // For Popup window record selection
-    public $popup_fields = ['item_text'];
-
     // For Alphabetical search
     public $def_basicsearch_col = 'item_text';
 
@@ -73,13 +72,6 @@ class InventoryItem extends CRMEntity
     public $default_order_by = 'inventoryitemid';
     public $default_sort_order = 'DESC';
 
-    function __construct()
-    {
-        $this->log = Logger::getLogger('inventoryItem');
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('InventoryItem');
-    }
-
     /**
      * Invoked when special actions are performed on the module.
      *
@@ -87,9 +79,11 @@ class InventoryItem extends CRMEntity
      * @param string $eventType  Event Type
      *
      * @return void
+     * @throws Exception
      */
     public function vtlib_handler(string $moduleName, string $eventType)
     {
+        Core_Install_Model::getInstance($eventType, $moduleName)->install();
     }
 
     /**
@@ -170,15 +164,6 @@ class InventoryItem extends CRMEntity
         } else {
             parent::unlinkRelationship($id, $return_module, $return_id);
         }
-    }
-
-    /**
-     * @param string $module
-     *
-     * @return void
-     */
-    public function save_module($module)
-    {
     }
 
     /**

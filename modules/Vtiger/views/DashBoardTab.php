@@ -26,7 +26,10 @@ class Vtiger_DashboardTab_View extends Vtiger_Index_View
         $this->exposeMethod('showDashBoardTabList');
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         if ($request->get('module') != 'Dashboard') {
@@ -55,6 +58,9 @@ class Vtiger_DashboardTab_View extends Vtiger_Index_View
 
         $viewer = $this->getViewer($request);
         $viewer->assign("MODULE", $moduleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showDashBoardAddTabForm', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('AddDashBoardTabForm.tpl', $moduleName, true);
     }
 
@@ -78,6 +84,9 @@ class Vtiger_DashboardTab_View extends Vtiger_Index_View
         $viewer->assign('TABID', $tabId);
 
         $viewer->assign('CURRENT_USER', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'getTabContents', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('dashboards/DashBoardTabContents.tpl', $moduleName, true);
     }
 
@@ -91,6 +100,9 @@ class Vtiger_DashboardTab_View extends Vtiger_Index_View
 
         $viewer->assign('DASHBOARD_TABS', $dashBoardTabs);
         $viewer->assign('MODULE', $moduleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showDashBoardTabList', $request->getModule(), $viewer, $request);
+
         $viewer->view('DashBoardTabList.tpl', $moduleName);
     }
 }

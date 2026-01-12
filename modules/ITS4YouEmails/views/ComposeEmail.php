@@ -507,11 +507,9 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
     }
 
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return array
+     * @inheritDoc
      */
-    public function requiresPermission(Vtiger_Request $request)
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
 
@@ -530,6 +528,9 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $this->composeMailData($request);
 
         $viewer = $this->getViewer($request);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ComposeEmailForm.tpl', $request->getModule());
     }
 

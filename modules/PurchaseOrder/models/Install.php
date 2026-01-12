@@ -479,6 +479,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 0,
                     'summaryfield' => 1,
+                    'ajaxeditable' => 0,
                 ],
             ],
         ];

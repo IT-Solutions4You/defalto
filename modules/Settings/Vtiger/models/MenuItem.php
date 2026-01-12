@@ -54,7 +54,6 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
             ['LBL_PICKLIST_EDITOR'      ,'index.php?parent=Settings&module=Picklist&view=Index', 'LBL_PICKLIST_DESCRIPTION', 1],
             ['LBL_PICKLIST_DEPENDENCY'  ,'index.php?parent=Settings&module=PickListDependency&view=List', 'LBL_PICKLIST_DEPENDENCY_DESCRIPTION'],
             ['LBL_MENU_EDITOR'          ,'index.php?module=MenuEditor&parent=Settings&view=Index',],
-            ['LBL_CUSTOMER_PORTAL'      ,'index.php?module=CustomerPortal&parent=Settings&view=Index',],
         ],
         'LBL_MARKETING_SALES' => [
             1 => ['LBL_LEAD_MAPPING'        ,'index.php?parent=Settings&module=Leads&view=MappingDetail', ''],
@@ -72,7 +71,6 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
             ['LBL_MY_TAGS'       ,'index.php?module=Tags&parent=Settings&view=List&record=1', ''],
         ],
         'LBL_EXTENSIONS' => [
-            1 => ['LBL_GOOGLE', 'index.php?module=Contacts&parent=Settings&view=Extension&extensionModule=Google&extensionView=Index&mode=settings', '']
         ],
         'LBL_OTHER_SETTINGS' => [
             1 => ['LBL_MAIL_SCANNER', 'index.php?parent=Settings&module=MailConverter&view=List', 'LBL_MAIL_SCANNER_DESCRIPTION'],

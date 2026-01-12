@@ -18,12 +18,16 @@
 
 class Google_Map_View extends Vtiger_Detail_View
 {
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
         $recordId = $request->get('record');
 
         $recordPermission = Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId);
+
         if (!$recordPermission) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
@@ -32,27 +36,17 @@ class Google_Map_View extends Vtiger_Detail_View
     }
 
     /**
-     * must be overriden
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return boolean
+     * @inheritDoc
      */
-    function preProcess(Vtiger_Request $request, $display = true)
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        return true;
     }
 
     /**
-     * must be overriden
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return boolean
+     * @inheritDoc
      */
-    function postProcess(Vtiger_Request $request)
+    public function postProcess(Vtiger_Request $request): void
     {
-        return true;
     }
 
     /**

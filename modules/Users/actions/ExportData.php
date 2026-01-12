@@ -18,17 +18,26 @@
 
 class Users_ExportData_Action extends Vtiger_ExportData_Action
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
+
         if (!$currentUserModel->isAdminUser()) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
         }
+
+        return true;
     }
 
     var $exportableFields = [
@@ -103,8 +112,11 @@ class Users_ExportData_Action extends Vtiger_ExportData_Action
         return $queryGenerator->getQuery();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateReadAccess();
+        return $request->validateReadAccess();
     }
 }

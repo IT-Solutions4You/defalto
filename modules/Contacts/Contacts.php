@@ -31,9 +31,8 @@
 // Contact is used to store customer information.
 class Contacts extends CRMEntity
 {
+    public string $moduleName = 'Contacts';
     public string $parentName = 'HOME';
-    public $log;
-    public $db;
 
     public $table_name = "vtiger_contactdetails";
     public $table_index = 'contactid';
@@ -53,14 +52,13 @@ class Contacts extends CRMEntity
         'vtiger_contactsubdetails' => 'contactsubscriptionid',
         'vtiger_contactscf'        => 'contactid',
         'vtiger_customerdetails'   => 'customerid',
-        'vtiger_portalinfo'        => 'id'
+        'vtiger_portalinfo'        => 'id',
+        'vtiger_campaignrelstatus'        => 'campaignrelstatusid',
     ];
     /**
      * Mandatory table for supporting custom fields.
      */
     public $customFieldTable = ['vtiger_contactscf', 'contactid'];
-
-    public $column_fields = [];
 
     public $sortby_fields = ['lastname', 'firstname', 'title', 'email', 'phone', 'assigned_user_id', 'accountname'];
 
@@ -164,15 +162,6 @@ class Contacts extends CRMEntity
         'Project'          => ['table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'contact_id'],
         'Vendors'          => ['table_name' => 'vtiger_vendorcontactrel', 'table_index' => 'vendorid', 'rel_index' => 'contactid'],
     ];
-
-    function __construct()
-    {
-        $this->log = Logger::getLogger('contact');
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('Contacts');
-    }
-
-    // Mike Crowe Mod --------------------------------------------------------Default ordering for us
 
     /** Function to get the number of Contacts assigned to a particular User.
      *
@@ -1193,14 +1182,6 @@ class Contacts extends CRMEntity
         return $query;
     }
 
-    /** Function to handle module specific operations when saving a entity
-     */
-    function save_module($module)
-    {
-        // now handling in the crmentity for uitype 69
-        //$this->insertIntoAttachment($this->id,$module);
-    }
-
     /**
      *      This function is used to add the vtiger_attachments. This will call the function uploadAndSaveFile which will upload the attachment into the server and save that attachment information in the database.
      *
@@ -1483,10 +1464,10 @@ class Contacts extends CRMEntity
             $this->db->pquery('INSERT INTO vtiger_relatedlists_rb VALUES (?,?,?,?,?,?)', $params);
         }
         //removing the relationship of contacts with PurchaseOrder
-        $this->db->pquery('UPDATE vtiger_purchaseorder SET contactid=0 WHERE contactid=?', [$id]);
+        $this->db->pquery('UPDATE vtiger_purchaseorder SET contact_id=0 WHERE contact_id=?', [$id]);
 
         //Backup Contact-SalesOrder Relation
-        $so_q = 'SELECT salesorderid FROM vtiger_salesorder WHERE contactid=?';
+        $so_q = 'SELECT salesorderid FROM vtiger_salesorder WHERE contact_id=?';
         $so_res = $this->db->pquery($so_q, [$id]);
         if ($this->db->num_rows($so_res) > 0) {
             $so_ids_list = [];

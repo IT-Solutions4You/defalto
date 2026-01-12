@@ -18,18 +18,16 @@
 
 class Documents_QuickCreateAjax_View extends Vtiger_IndexAjax_View
 {
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
 
         $permissions[] = ['module_parameter' => 'module', 'action' => 'CreateView'];
 
         return $permissions;
-    }
-
-    public function checkPermission(Vtiger_Request $request)
-    {
-        return parent::checkPermission($request);
     }
 
     public function process(Vtiger_Request $request)
@@ -100,6 +98,9 @@ class Documents_QuickCreateAjax_View extends Vtiger_IndexAjax_View
 
         $viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
         $viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('QuickCreate.tpl', $moduleName, true);
     }
 
@@ -124,7 +125,10 @@ class Documents_QuickCreateAjax_View extends Vtiger_IndexAjax_View
         return $fields;
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
         $jsFileNames = [
@@ -132,8 +136,8 @@ class Documents_QuickCreateAjax_View extends Vtiger_IndexAjax_View
             "modules.Vtiger.resources.CkEditor"
         ];
 
-        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
 
-        return $jsScriptInstances;
+        return $this->checkAndConvertJsScripts($jsFileNames);
     }
 }

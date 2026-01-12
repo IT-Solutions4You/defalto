@@ -9,17 +9,17 @@
  */
 
 $languageStrings = [
-    "CronTasks"      => "Plánovač",
+    "CronTasks" => "Plánovač",
     "Frequency(H:M)" => "Frekvence(H:M)",
-    "Id"             => "ID",
-    "Cron Job"       => "Plánovač",
-    "Frequency"      => "Frekvence",
-    "Status"         => "Stav",
-    "Last Start"     => "Poslední scan započal",
-    "Last End"       => "Poslední scan ukončen",
-    "Sequence"       => "Sekvence",
-    "LBL_COMPLETED"  => "Kompletní",
-    "LBL_INACTIVE"   => "Neaktivní",
+    "Id" => "ID",
+    "Cron Job" => "Plánovač",
+    "Frequency" => "Frekvence",
+    "Status" => "Stav",
+    "Last Start" => "Poslední scan započal",
+    "Last End" => "Poslední scan ukončen",
+    "Sequence" => "Sekvence",
+    "LBL_COMPLETED" => "Kompletní",
+    "LBL_INACTIVE" => "Neaktivní",
 ];
 
 $jsLanguageStrings = [

@@ -16,7 +16,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Vtiger_DashBoardTab_Action extends Vtiger_Action_Controller
+class Vtiger_DashBoardTab_Action extends Core_Controller_Action
 {
     function __construct()
     {
@@ -26,7 +26,10 @@ class Vtiger_DashBoardTab_Action extends Vtiger_Action_Controller
         $this->exposeMethod('updateTabSequence');
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         if ($request->get('module') != 'Dashboard') {

@@ -46,8 +46,11 @@ class Settings_Vtiger_OutgoingServerSaveAjax_Action extends Settings_Vtiger_Basi
         $response->emit();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

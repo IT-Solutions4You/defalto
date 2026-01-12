@@ -20,12 +20,9 @@ class EMAILMaker_List_View extends Vtiger_Index_View
     }
 
     /**
-     * @param Vtiger_Request $request
-     * @param bool           $display
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function preProcess(Vtiger_Request $request, $display = true)
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         vtws_addDefaultModuleTypeEntity($request->getModule());
 
@@ -62,12 +59,18 @@ class EMAILMaker_List_View extends Vtiger_Index_View
         }
     }
 
-    public function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'ListViewPreProcess.tpl';
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $viewer = $this->getViewer($request);
         $viewer->view('IndexPostProcess.tpl');
@@ -229,10 +232,15 @@ class EMAILMaker_List_View extends Vtiger_Index_View
         $viewer->assign('MODULE', 'EMAILMaker');
         $viewer->assign('SEARCH_DETAILS', $searchDetails);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'getList', $request->getModule(), $viewer, $request);
+
         $viewer->view('ListEMAILTemplatesContents.tpl', 'EMAILMaker');
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();

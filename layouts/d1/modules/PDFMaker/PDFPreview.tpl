@@ -20,14 +20,20 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col text-end">
-                            <button type="button" class="btn btn-primary active downloadButton" data-desc="{$DOWNLOAD_URL}">
-                                <strong>{vtranslate('LBL_DOWNLOAD_FILE',$MODULE)}</strong>
+                            <button type="button" class="btn btn-primary active" onclick="PDFMaker_FreeActions_Js.sendEmail('{$TEMPLATE}', '{$LANGUAGE}')">
+                                <i class="bi bi-send-fill"></i>
+                                <b class="ms-2">{vtranslate('LBL_SEND_EMAIL',$MODULE)}</b>
+                            </button>
+                            <button type="button" class="btn btn-primary active downloadButton ms-2" data-desc="{$DOWNLOAD_URL}">
+                                <i class="bi bi-file-earmark-arrow-down-fill"></i>
+                                <b class="ms-2">{vtranslate('LBL_DOWNLOAD_FILE',$MODULE)}</b>
                             </button>
                         </div>
                         {if $PRINT_ACTION eq '1'}
                             <div class="col-auto">
                                 <button type="button" class="btn btn-primary printButton">
-                                    <strong>{vtranslate('LBL_PRINT', $MODULE)}</strong>
+                                    <i class="bi bi-printer-fill"></i>
+                                    <b class="ms-2">{vtranslate('LBL_PRINT', $MODULE)}</b>
                                 </button>
                             </div>
                         {/if}

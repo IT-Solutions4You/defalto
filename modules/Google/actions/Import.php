@@ -18,7 +18,10 @@
 
 class Google_Import_Action extends Vtiger_BasicAjax_Action
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }

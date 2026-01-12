@@ -127,7 +127,7 @@ function createInvoice(int $salesOrderId, string $recurringDate = '')
 
     $focus->id = '';
     $focus->mode = '';
-    $focus->column_fields['invoicestatus'] = 'Auto Created';
+    $focus->column_fields['invoicestatus'] = 'AutoCreated';
     $focus->column_fields['invoicedate'] = $recurringDate;
 
     $dueDuration = decidePaymentDuration($soFocus->column_fields['payment_duration']);

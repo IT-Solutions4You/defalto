@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,40 +18,39 @@
  */
 
 $languageStrings = [
-    // Basic Strings
-    'ServiceContracts'                 => 'Service Contracts',
-    'Service Contracts'                => 'Service Contracts',
-    'SINGLE_ServiceContracts'          => 'Service Contract',
-    'LBL_ADD_RECORD'                   => 'Add Service Contract',
-    'LBL_RECORDS_LIST'                 => 'Service Contracts List',
-    // Blocks
+    'ServiceContracts' => 'Service Contracts',
+    'Service Contracts' => 'Service Contracts',
+    'SINGLE_ServiceContracts' => 'Service Contract',
+    'LBL_ADD_RECORD' => 'Add Service Contract',
+    'LBL_RECORDS_LIST' => 'Service Contracts List',
     'LBL_SERVICE_CONTRACT_INFORMATION' => 'Service Contract Details',
-
-    //Field Labels
-    'Contract No'                      => 'Contract No',
-    'Start Date'                       => 'Start Date',
-    'End Date'                         => 'End Date',
-    'Tracking Unit'                    => 'Tracking Unit',
-    'Total Units'                      => 'Total Units',
-    'Used Units'                       => 'Used Units',
-    'Progress'                         => 'Progress',
-    'Planned Duration'                 => 'Planned Duration (in Days)',
-    'Actual Duration'                  => 'Actual Duration (in Days)',
-    'Type'                             => 'Type',
-    'Related to'                       => 'Related To',
-    'Hours'                            => 'Hours',
-    'Days'                             => 'Days',
-    'Incidents'                        => 'Incidents',
-    'Normal'                           => 'Normal',
-    'Support'                          => 'Support',
-    'Administrative'                   => 'Administrative',
-    'Undefined'                        => 'Undefined',
-    'In Planning'                      => 'In Planning',
-    'On Hold'                          => 'On Hold',
-    'Complete'                         => 'Complete',
-    'Archived'                         => 'Archived',
-    'Low'                              => 'Low',
-    'High'                             => 'High',
-    'Services'                         => 'Services',
-    'In Progress'                      => 'In Progress',
+    'Contract No' => 'Contract No',
+    'Start Date' => 'Start Date',
+    'End Date' => 'End Date',
+    'Tracking Unit' => 'Tracking Unit',
+    'Total Units' => 'Total Units',
+    'Used Units' => 'Used Units',
+    'Progress' => 'Progress',
+    'Planned Duration' => 'Planned Duration (in Days)',
+    'Actual Duration' => 'Actual Duration (in Days)',
+    'Type' => 'Type',
+    'Related to' => 'Related To',
+    'Hours' => 'Hours',
+    'Days' => 'Days',
+    'Incidents' => 'Incidents',
+    'Normal' => 'Normal',
+    'Support' => 'Support',
+    'Administrative' => 'Administrative',
+    'Undefined' => 'Undefined',
+    'In Planning' => 'In Planning',
+    'On Hold' => 'On Hold',
+    'Complete' => 'Complete',
+    'Archived' => 'Archived',
+    'Low' => 'Low',
+    'High' => 'High',
+    'Services' => 'Services',
+    'In Progress' => 'In Progress',
+    'Due date' => 'Due date',
+];
+$jsLanguageStrings = [
 ];

@@ -464,7 +464,10 @@ class MailManager_Relation_View extends MailManager_Abstract_View
         return $mailManagerAllowedModules;
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
         return $request->validateWriteAccess();
     }

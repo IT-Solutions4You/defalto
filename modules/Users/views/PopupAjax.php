@@ -18,16 +18,23 @@
 
 class Users_PopupAjax_View extends Vtiger_PopupAjax_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
         $sourceModuleName = $request->get('src_module');
         $sourceFieldName = $request->get('src_field');
+
         if ($moduleName == 'Users' && $sourceModuleName == 'Quotes' && $sourceFieldName == 'assigned_user_id1') {
             return true;
         }

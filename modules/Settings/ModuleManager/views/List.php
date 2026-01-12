@@ -32,6 +32,8 @@ class Settings_ModuleManager_List_View extends Settings_Vtiger_Index_View
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('ListContents.tpl', $qualifiedModuleName, true);
     }
 }

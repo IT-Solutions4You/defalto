@@ -18,18 +18,16 @@
 
 class Documents_FilePreview_View extends Vtiger_IndexAjax_View
 {
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
 
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
 
         return $permissions;
-    }
-
-    public function checkPermission(Vtiger_Request $request)
-    {
-        return parent::checkPermission($request);
     }
 
     public function process(Vtiger_Request $request)
@@ -107,6 +105,8 @@ class Documents_FilePreview_View extends Vtiger_IndexAjax_View
         $viewer->assign('FILE_CONTENTS', $contents);
         global $site_URL;
         $viewer->assign('SITE_URL', $site_URL);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         echo $viewer->view('FilePreview.tpl', $moduleName, true);
     }

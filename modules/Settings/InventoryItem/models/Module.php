@@ -43,27 +43,4 @@ class Settings_InventoryItem_Module_Model extends Vtiger_Module_Model
 
         return $moduleModel;
     }
-
-    /**
-     * @return array
-     */
-    public static function getSupportedModules(): array
-    {
-        $db = PearDatabase::getInstance();
-        $supportedModules = ['Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice',];
-        $query = "SELECT vtiger_tab.tabid, vtiger_tab.tablabel, vtiger_tab.name as tabname
-				  FROM vtiger_tab
-				  WHERE vtiger_tab.name IN (" . generateQuestionMarks($supportedModules) . ") 
-				    AND vtiger_tab.presence != 1
-				  ORDER BY vtiger_tab.tabid";
-        $result = $db->pquery($query, $supportedModules);
-
-        $modulesModelsList = [];
-
-        while ($row = $db->fetchByAssoc($result)) {
-            $modulesModelsList[$row['tabid']] = $row['tabname'];
-        }
-
-        return $modulesModelsList;
-    }
 }

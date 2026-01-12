@@ -263,12 +263,14 @@
                                         </div>
                                         <div class="col py-3 fw-semibold" id="menubar_item_right_LBL_MY_PREFERENCES">{vtranslate('LBL_MY_PREFERENCES')}</div>
                                     </a>
-                                    <a class="row" href="index.php?module=Tour&view=Index">
-                                        <div class="col-2 p-3 logout-footer-icon text-secondary text-center">
-                                            <i class="fa-solid fa-lightbulb"></i>
-                                        </div>
-                                        <div class="col py-3 fw-semibold" id="menubar_item_right_LBL_WELCOME_GUIDES">{vtranslate('LBL_WELCOME_GUIDES')}</div>
-                                    </a>
+                                    {if Core_Utils_Helper::isModuleActive('Tour')}
+                                        <a class="row" href="index.php?module=Tour&view=Index">
+                                            <div class="col-2 p-3 logout-footer-icon text-secondary text-center">
+                                                <i class="fa-solid fa-lightbulb"></i>
+                                            </div>
+                                            <div class="col py-3 fw-semibold" id="menubar_item_right_LBL_WELCOME_GUIDES">{vtranslate('LBL_WELCOME_GUIDES')}</div>
+                                        </a>
+                                    {/if}
                                     <a class="row" href="index.php?module=Users&action=Logout">
                                         <div class="col-2 p-3 logout-footer-icon text-secondary text-center">
                                             <i class="fa fa-power-off"></i>

@@ -18,7 +18,10 @@
 
 class Settings_PickListDependency_List_View extends Settings_Vtiger_List_View
 {
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         $moduleModelList = Settings_PickListDependency_Module_Model::getPicklistSupportedModules();
         $forModule = $request->get('formodule');
@@ -45,16 +48,11 @@ class Settings_PickListDependency_List_View extends Settings_Vtiger_List_View
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-        $moduleName = $request->getModule();
 
         $jsFileNames = [
             '~libraries/jquery/malihu-custom-scrollbar/js/jquery.mCustomScrollbar.concat.min.js',
@@ -63,12 +61,14 @@ class Settings_PickListDependency_List_View extends Settings_Vtiger_List_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
-    public function getHeaderCss(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $headerCssInstances = parent::getHeaderCss($request);
 

@@ -40,7 +40,8 @@ require_once 'include/RelatedListView.php';
 
 class CRMExtension
 {
-    public $column_fields = [];
+    public $id;
+    public TrackableObject $column_fields;
     public $related_tables = [];
     public $db;
     public int $isEntity = 0;
@@ -52,27 +53,69 @@ class CRMExtension
     public string $parentName = '';
     public $recordSource = 'CRM';
 
-    public $popup_fields;
-
-    public $IsCustomModule;
     public $name;
-    public string $moduleVersion = '0.1';
+    public string $moduleVersion = '1.0';
     public $list_fields_names = [];
     public $list_fields = [];
     public int $ownedBy = 1;
+
+    /**
+     * Initializes the class instance by setting up the logger and database connection.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->log = Logger::getLogger(strtolower($this->moduleName));
+        $this->db = PearDatabase::getInstance();
+        $this->column_fields = new TrackableObject();
+    }
+
+    /**
+     * @param array $data
+     * @return void
+     */
+    public function setColumnFields(array $data): void
+    {
+        foreach ($data as $key => $value) {
+            $this->column_fields[$key] = $value;
+        }
+    }
+
+    /**
+     * Handle module-specific operations when saving an entity
+     *
+     * @param string $module
+     *
+     * @return void
+     */
+    public function save_module(string $module)
+    {
+    }
 }
 
 class CRMEntity extends CRMExtension
 {
     public int $isEntity = 1;
     public int $ownedBy = 0;
-    public $id;
+
+    /**
+     * Initializes the class instance by setting up the logger, database connection,
+     * and retrieving column fields specific to the module.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->column_fields = getColumnFields($this->moduleName);
+    }
 
     /**
      * Detect if we are in bulk save mode, where some features can be turned-off
      * to improve performance.
      */
-    static function isBulkSaveMode()
+    public static function isBulkSaveMode()
     {
         global $VTIGER_BULK_SAVE_MODE;
         if (isset($VTIGER_BULK_SAVE_MODE) && $VTIGER_BULK_SAVE_MODE) {
@@ -82,7 +125,7 @@ class CRMEntity extends CRMExtension
         return false;
     }
 
-    static function getInstance($module)
+    public static function getInstance($module)
     {
         $modName = $module;
 
@@ -91,10 +134,9 @@ class CRMEntity extends CRMExtension
             checkFileAccessForInclusion("modules/$module/$modName.php");
             require_once("modules/$module/$modName.php");
         }
+
         $focus = new $modName();
-        $focus->moduleName = $module;
-        $focus->column_fields = new TrackableObject();
-        $focus->column_fields = getColumnFields($module);
+
         if (method_exists($focus, 'initialize')) {
             $focus->initialize();
         }
@@ -1170,13 +1212,13 @@ class CRMEntity extends CRMExtension
         //$this->log->debug("CRMEntity:process_full_list_query: result is ".$result);
 
         if ($this->db->getRowCount($result) > 0) {
-            //	$this->db->println("process_full mid=".$this->table_index." mname=".$this->module_name);
+            //	$this->db->println("process_full mid=".$this->table_index." mname=".$this->moduleName);
             // We have some data.
             while ($row = $this->db->fetchByAssoc($result)) {
                 $rowid = $row[$this->table_index];
 
                 if (isset($rowid)) {
-                    $this->retrieve_entity_info($rowid, $this->module_name);
+                    $this->retrieve_entity_info($rowid, $this->moduleName);
                 } else {
                     $this->db->println("rowid not set unable to retrieve");
                 }

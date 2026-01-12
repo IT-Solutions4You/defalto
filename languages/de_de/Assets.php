@@ -37,6 +37,5 @@ $languageStrings = [
     'Shipping Tracking Number' => 'Sendungsverfolgungsnummer',
     'Tag Number' => 'Tag-Nummer',
 ];
-
 $jsLanguageStrings = [
 ];

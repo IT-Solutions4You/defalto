@@ -18,13 +18,19 @@
 
 class ModComments_Edit_View extends Vtiger_Edit_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         $moduleName = $request->getModule();
         $record = $request->get('record');
+
         if (!empty($record) || !Users_Privileges_Model::isPermitted($moduleName, 'EditView')) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
+
+        return true;
     }
 }

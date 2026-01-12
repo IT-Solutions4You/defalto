@@ -10,16 +10,24 @@
 
 class Installer_Index_View extends Vtiger_Index_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
         if (!$currentUserModel->isAdminUser()) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
+
+        return true;
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         $moduleName = $request->getModule();
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
@@ -83,7 +91,10 @@ class Installer_Index_View extends Vtiger_Index_View
         $this->installer($request);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
         $jsFileNames = [

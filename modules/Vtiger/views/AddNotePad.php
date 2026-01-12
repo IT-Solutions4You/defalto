@@ -18,7 +18,10 @@
 
 class Vtiger_AddNotePad_View extends Vtiger_Index_View
 {
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         if ($request->get('module') != 'Dashboard') {
@@ -38,6 +41,8 @@ class Vtiger_AddNotePad_View extends Vtiger_Index_View
         $moduleName = $request->getModule();
 
         $viewer->assign('MODULE', $moduleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('dashboards/AddNotePad.tpl', $moduleName);
     }

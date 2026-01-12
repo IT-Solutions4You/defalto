@@ -498,7 +498,6 @@ $languageStrings = [
     'landscape' => 'Querformat',
     'portrait' => 'Hochformat',
 ];
-
 $jsLanguageStrings = [
     'ARE_YOU_SURE' => 'Are you sure?',
     'BLOCK_NAME_CANNOT_BE_BLANK' => 'Block name can not be blank',

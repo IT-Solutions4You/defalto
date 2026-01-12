@@ -37,8 +37,11 @@ class Settings_Workflows_SaveAjax_Action extends Settings_Vtiger_IndexAjax_View
         $response->emit();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

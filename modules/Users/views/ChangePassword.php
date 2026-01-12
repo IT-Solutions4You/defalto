@@ -18,7 +18,10 @@
 
 class Users_ChangePassword_View extends Vtiger_Basic_View
 {
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
 
@@ -46,7 +49,10 @@ class Users_ChangePassword_View extends Vtiger_Basic_View
         }
     }
 
-    protected function preProcessDisplay(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessDisplay(Vtiger_Request $request): void
     {
     }
 

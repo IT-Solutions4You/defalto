@@ -35,8 +35,12 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         $this->exposeMethod('massSave');
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
+        return true;
     }
 
     /**
@@ -113,6 +117,9 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         $viewer->assign('TITLE', vtranslate($this->moduleName, $this->moduleName));
         $viewer->assign('RESULT', $emailsResult);
         $viewer->assign('RELATED_LOAD', !$request->isEmpty('related_load'));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'massSave', $request->getModule(), $viewer, $request);
+
         $viewer->view('ModalSendEmailResult.tpl', $this->moduleName);
     }
 
@@ -590,7 +597,10 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         return true;
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $jsFileNames = [
@@ -607,8 +617,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

@@ -103,4 +103,9 @@ class Vtiger_Datetime_UIType extends Vtiger_Date_UIType
             return $this->getDBDateTimeValue($value);
         }
     }
+
+    public static function transformDisplayValue($value, $record): string
+    {
+        return Vtiger_Datetime_UIType::getDateTimeValue($value);
+    }
 }

@@ -355,6 +355,7 @@ class Project_Install_Model extends Core_Install_Model
                     'quickcreate' => 3,
                     'masseditable' => 0,
                     'summaryfield' => 0,
+                    'ajaxeditable' => 0,
                 ],
             ],
         ];

@@ -18,9 +18,8 @@
 
 class PriceBooks extends CRMEntity
 {
+    public string $moduleName = 'PriceBooks';
     public string $parentName = 'SALES';
-    public $log;
-    public $db;
     public $table_name = "vtiger_pricebook";
     public $table_index = 'pricebookid';
     public $tab_name = ['vtiger_crmentity', 'vtiger_pricebook', 'vtiger_pricebookcf'];
@@ -29,7 +28,6 @@ class PriceBooks extends CRMEntity
      * Mandatory table for supporting custom fields.
      */
     public $customFieldTable = ['vtiger_pricebookcf', 'pricebookid'];
-    public $column_fields = [];
 
     public $sortby_fields = ['bookname'];
 
@@ -61,18 +59,10 @@ class PriceBooks extends CRMEntity
     // For Alphabetical search
     public $def_basicsearch_col = 'bookname';
 
-    /**    Constructor which will set the column_fields in this object
+    /**
+     * @inheritDoc
      */
-    public function __construct()
-    {
-        $this->log = Logger::getLogger('pricebook');
-        $this->log->debug("Entering PriceBooks() method ...");
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('PriceBooks');
-        $this->log->debug("Exiting PriceBook method ...");
-    }
-
-    public function save_module($module)
+    public function save_module(string $module)
     {
         // Update the list prices in the price book with the unit price, if the Currency has been changed
         $this->updateListPrices();
@@ -407,7 +397,7 @@ class PriceBooks extends CRMEntity
                 $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
                 $focus = $recordModel->getEntity();
                 $focus->id = $recordId;
-                $focus->column_fields = $fieldData;
+                $focus->setColumnFields($fieldData);
                 $this->entityData[] = VTEntityData::fromCRMEntity($focus);
             }
 
@@ -417,7 +407,7 @@ class PriceBooks extends CRMEntity
                 $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
                 $focus = $recordModel->getEntity();
                 $focus->id = $recordId;
-                $focus->column_fields = $entityInfo;
+                $focus->setColumnFields($entityInfo);
                 $this->entitydata[] = VTEntityData::fromCRMEntity($focus);
             }
 

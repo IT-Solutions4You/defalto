@@ -30,7 +30,10 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View
         }
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request);
         $viewer = $this->getViewer($request);
@@ -78,6 +81,9 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View
         $viewer->assign('CURRENT_USER', $currentUser);
         $admin = Users::getActiveAdminUser();
         $viewer->assign('ACTIVE_ADMIN', $admin);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'step1', $request->getModule(), $viewer, $request);
+
         $viewer->view('Step1.tpl', $qualifiedModuleName);
     }
 
@@ -152,6 +158,8 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View
         $userModel = Users_Record_Model::getCurrentUserModel();
         $viewer->assign('DATE_FORMAT', $userModel->get('date_format'));
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'step2', $request->getModule(), $viewer, $request);
+
         $viewer->view('Step2.tpl', $qualifiedModuleName);
     }
 
@@ -182,10 +190,15 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View
         $viewer->assign('TASK_LIST', $workFlowModel->getTasks());
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'Step3', $request->getModule(), $viewer, $request);
+
         $viewer->view('Step3.tpl', $qualifiedModuleName);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -202,12 +215,14 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
-    function getHeaderCss(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $headerCssInstances = parent::getHeaderCss($request);
         $moduleName = $request->getModule();
@@ -266,6 +281,8 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View
         $viewer->assign('RETURN_SOURCE_MODULE', $request->get("returnsourceModule"));
         $viewer->assign('RETURN_PAGE', $request->get("returnpage"));
         $viewer->assign('RETURN_SEARCH_VALUE', $request->get("returnsearch_value"));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'v7Edit', $request->getModule(), $viewer, $request);
 
         $viewer->view('EditView.tpl', $qualifiedModuleName);
     }

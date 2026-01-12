@@ -26,7 +26,10 @@ class Google_List_View extends Vtiger_PopupAjax_View
         $this->exposeMethod('Calendar');
     }
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
@@ -45,7 +48,7 @@ class Google_List_View extends Vtiger_PopupAjax_View
             case "changeUser" :
                 $request->set('sourcemodule', 'Contacts');
                 $this->deleteSync($request);
-                $request->set('sourcemodule', 'Calendar');
+                $request->set('sourcemodule', 'Appointments');
                 $this->deleteSync($request);
                 $this->renderSyncUI($request);
 
@@ -250,23 +253,27 @@ class Google_List_View extends Vtiger_PopupAjax_View
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    public function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
 
-        return $this->checkAndConvertJsScripts([
+        $jsFileNames = [
             "modules.$moduleName.resources.List",
-        ]);
+        ];
+
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
+
+        return $this->checkAndConvertJsScripts($jsFileNames);
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
         //don't do validation because there is a redirection from google
+        return true;
     }
 }

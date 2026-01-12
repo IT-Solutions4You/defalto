@@ -86,8 +86,8 @@ $languageStrings = [
     'SINGLE_Documents' => 'Dokument',
     'Title' => 'Titel',
     'Version' => 'Version',
+    'Custom Informations' => 'Custom Informations',
 ];
-
 $jsLanguageStrings = [
     'JS_ACCESS_REVOKED' => 'Zugriff widerrufen',
     'JS_ARE_YOU_SURE_TO_REVOKE_ACCESS' => 'Sind Sie sicher, dass Sie den Zugriff widerrufen möchten?',

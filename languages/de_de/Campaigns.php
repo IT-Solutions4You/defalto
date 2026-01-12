@@ -62,8 +62,9 @@ $languageStrings = [
     'TargetSize' => 'Größe der Zielgruppe',
     'Telemarketing' => 'Telemarketing',
     'Webinar' => 'Websemiar',
+    'Completed' => 'Completed',
+    'Partners' => 'Partners',
 ];
-
 $jsLanguageStrings = [
     'JS_APPENDED_TO_EXISTING_LIST' => '%s aus der Liste werden mit der bestehenden Liste angehängt.',
 ];

@@ -30,10 +30,16 @@ class Settings_Vtiger_TermsAndConditionsEdit_View extends Settings_Vtiger_Index_
         $viewer->assign('INVENTORY_MODULES', $inventoryModules);
         $viewer->assign('CONDITION_TEXT', $conditionText);
         $viewer->assign('MODEL', $model);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('TermsAndConditions.tpl', $qualifiedName);
     }
 
-    function getPageTitle(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getPageTitle(Vtiger_Request $request): string
     {
         $qualifiedModuleName = $request->getModule(false);
 
@@ -41,13 +47,9 @@ class Settings_Vtiger_TermsAndConditionsEdit_View extends Settings_Vtiger_Index_
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -58,8 +60,7 @@ class Settings_Vtiger_TermsAndConditionsEdit_View extends Settings_Vtiger_Index_
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

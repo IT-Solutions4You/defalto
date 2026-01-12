@@ -35,10 +35,16 @@ class Settings_Vtiger_CustomRecordNumbering_View extends Settings_Vtiger_Index_V
         $viewer->assign('DEFAULT_MODULE_MODEL', $defaultModuleModel);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('CustomRecordNumbering.tpl', $qualifiedModuleName);
     }
 
-    function getPageTitle(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getPageTitle(Vtiger_Request $request): string
     {
         $qualifiedModuleName = $request->getModule(false);
 
@@ -46,24 +52,18 @@ class Settings_Vtiger_CustomRecordNumbering_View extends Settings_Vtiger_Index_V
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-        $moduleName = $request->getModule();
 
         $jsFileNames = [
             "modules.Settings.Vtiger.resources.CustomRecordNumbering"
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

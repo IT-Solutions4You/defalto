@@ -55,6 +55,8 @@ class Vtiger_MiniList_Dashboard extends Vtiger_IndexAjax_View
         $viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $content = $request->get('content');
         if (!empty($content)) {
             $viewer->view('dashboards/MiniListContents.tpl', $moduleName);
@@ -65,7 +67,10 @@ class Vtiger_MiniList_Dashboard extends Vtiger_IndexAjax_View
         }
     }
 
-    function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         return $this->checkAndConvertJsScripts([]);
     }

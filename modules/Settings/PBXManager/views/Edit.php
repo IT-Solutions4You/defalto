@@ -43,6 +43,9 @@ class Settings_PBXManager_Edit_View extends Vtiger_Edit_View
         $viewer->assign('RECORD_MODEL', $recordModel);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
         $viewer->assign('MODULE', $request->getModule(false));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showPopup', $request->getModule(), $viewer, $request);
+
         $viewer->view('Edit.tpl', $request->getModule(false));
     }
 }

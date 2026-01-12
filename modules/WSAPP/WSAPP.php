@@ -21,6 +21,8 @@ require_once 'modules/WSAPP/Utils.php';
 
 class WSAPP extends CRMExtension
 {
+    public string $moduleName = 'WSAPP';
+
     /**
      * Invoked when special actions are performed on the module.
      *

@@ -10,21 +10,34 @@
 
 class Core_Redirect_View extends Vtiger_Basic_View {
 
-    public function loginRequired(): bool
+    /**
+     * @inheritDoc
+     */
+    public function isLoginRequired(): bool
     {
         return false;
     }
 
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
-    {
-    }
-
-    public function postProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
     }
 
@@ -49,11 +62,16 @@ class Core_Redirect_View extends Vtiger_Basic_View {
             'Web' => 'https://defalto.com/',
             'Forum' => 'https://defalto.com/forum/',
             'Blog' => 'https://defalto.com/blog/',
-            'Documentation' => 'https://defalto.com/docs/user-guide/',
-            'Videos' => 'https://www.youtube.com/@itsolutions4you',
+            'Documentation' => 'https://defalto.com/docs/',
+            'Videos' => 'https://www.youtube.com/@DefaltoCRM',
             'Releases' => 'https://github.com/IT-Solutions4You/defalto/releases',
             'Facebook' => 'https://www.facebook.com/defalto.crm',
-            'Youtube' => 'https://www.youtube.com/@itsolutions4you',
+            'Youtube' => 'https://www.youtube.com/@DefaltoCRM',
+            'Migration' => 'https://defalto.com/administrator-guide/installation-guide/system-backup-database-and-files/',
+            'SourceForge' => 'https://sourceforge.net/projects/defalto-crm/',
+            'Requirements' => 'https://defalto.com/administrator-guide/installation-guide/system-requirements/',
+            'Membership' => 'https://defalto.com/services/membership?utm_source=app&utm_medium=updates_inline&utm_campaign=membership_upsell&utm_content=info',
+            'MembershipOrder' => 'https://defalto.store/downloads/membership?utm_source=app&utm_medium=updates_inline&utm_campaign=membership_upsell&utm_content=order',
             default => '',
         };
     }

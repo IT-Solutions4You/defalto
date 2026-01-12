@@ -32,6 +32,8 @@ class Settings_Profiles_DeleteAjax_View extends Settings_Profiles_IndexAjax_View
         $viewer->assign('ALL_RECORDS', Settings_Profiles_Record_Model::getAll());
         $viewer->assign('RECORD_MODEL', $recordModel);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('DeleteTransferForm.tpl', $qualifiedModuleName, true);
     }
 }

@@ -18,7 +18,10 @@
 
 class Leads_ConvertLead_View extends Vtiger_Index_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
@@ -62,6 +65,8 @@ class Leads_ConvertLead_View extends Vtiger_Index_View
         $contactsModuleModel = Vtiger_Module_Model::getInstance('Contacts');
         $accountField = Vtiger_Field_Model::getInstance('account_id', $contactsModuleModel);
         $viewer->assign('CONTACT_ACCOUNT_FIELD_MODEL', $accountField);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('ConvertLead.tpl', $moduleName);
     }

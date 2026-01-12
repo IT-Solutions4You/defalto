@@ -34,6 +34,8 @@ class Settings_Profiles_Detail_View extends Settings_Vtiger_Index_View
         $viewer->assign('ALL_UTILITY_ACTIONS', Vtiger_Action_Model::getAllUtility(true));
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('DetailView.tpl', $qualifiedModuleName);
     }
 

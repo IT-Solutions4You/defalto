@@ -36,6 +36,15 @@ $languageStrings = [
     'LBL_GENERATE_INVOICE' => 'Vygenerovať faktúru',
     'LBL_GENERATE_SALESORDER' => 'Vygenerovať predajnú objednávku',
     'LBL_GENERATE_PURCHASEORDER' => 'Vygenerovať nákupnú objednávku',
+    'Price Book' => 'Cenník',
+    'Price After Discount' => 'Cena po zľave',
+    'Overall Discount' => 'Celková zľava',
+    'Overall Discount Amount' => 'Suma celkovej zľavy',
+    'Price After Overall Discount' => 'Cena po celkovej zľave',
+    'Tax Amount' => 'Suma dane',
+    'Grand Total' => 'Celková suma',
+    'Margin Amount' => 'Výška marže',
+    'Quote Date' => 'Dátum ponuky',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Cenová ponuka obsahuje odstránené produkty alebo služby, prosím upravte ponuku',

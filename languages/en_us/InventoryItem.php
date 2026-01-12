@@ -9,11 +9,10 @@
  */
 
 $languageStrings = [
-    'InventoryItem'        => 'Inventory Item',
+    'InventoryItem' => 'Inventory Item',
     'SINGLE_InventoryItem' => 'Inventory Item',
-
     'LBL_INVENTORYITEM_INFORMATION' => 'Inventory Item Information',
-    'LBL_CUSTOM_INFORMATION'      => 'Custom Information',
+    'LBL_CUSTOM_INFORMATION' => 'Custom Information',
     'LBL_DESCRIPTION_INFORMATION' => 'Description Information',
     'Item text' => 'Item text',
     'Product Name' => 'Product Name',
@@ -38,8 +37,15 @@ $languageStrings = [
     'Price Total' => 'Price with VAT',
     'SAVED_TAX_VALUE_FOR' => ' Saved Tax Value for:',
     'NO_ITEMS_FOUND' => 'No Items Found',
+    'Parent' => 'Parent',
+    'Discount Type' => 'Discount Type',
+    'Percentage' => 'Percentage',
+    'Direct' => 'Direct',
+    'Discount per Unit' => 'Discount per Unit',
+    'Discounts Amount' => 'Discounts Amount',
+    'Margin Amount' => 'Margin Amount',
+    'Price Book' => 'Price Book',
 ];
-
 $jsLanguageStrings = [
     'JS_PRODUCT_LINE_SAVE_ERROR' => 'Product line save error',
 ];

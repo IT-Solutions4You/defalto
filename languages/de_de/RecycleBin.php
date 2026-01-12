@@ -28,7 +28,6 @@ $languageStrings = [
     'RecycleBin' => 'Papierkorb',
     'SINGLE_RecycleBin' => 'Papierkorb',
 ];
-
 $jsLanguageStrings = [
     'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Sind Sie sicher, dass Sie die Aufzeichnungen wiederherstellen möchten?',
     'JS_LBL_RESTORE_RECORD_CONFIRMATION' => 'Sind Sie sicher, dass Sie den Datensatz wiederherstellen wollen?',

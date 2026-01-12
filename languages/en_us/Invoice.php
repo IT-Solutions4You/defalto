@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,46 +18,44 @@
  */
 
 $languageStrings = [
-
-    'Invoice'                 => 'Invoices',
-    //DetailView Actions
-    'SINGLE_Invoice'          => 'Invoice',
-    'LBL_EXPORT_TO_PDF'       => 'Export to PDF',
-    'LBL_SEND_MAIL_PDF'       => 'Send Email with PDF',
-
-    //Basic strings
-    'LBL_ADD_RECORD'          => 'Add Invoice',
-    'LBL_RECORDS_LIST'        => 'Invoice List',
-
-    // Blocks
+    'Invoice' => 'Invoices',
+    'SINGLE_Invoice' => 'Invoice',
+    'LBL_EXPORT_TO_PDF' => 'Export to PDF',
+    'LBL_SEND_MAIL_PDF' => 'Send Email with PDF',
+    'LBL_ADD_RECORD' => 'Add Invoice',
+    'LBL_RECORDS_LIST' => 'Invoice List',
     'LBL_INVOICE_INFORMATION' => 'Invoice Details',
-
-    //Field labels
-    'Sales Order'             => 'Sales Order',
-    'Customer No'             => 'Customer No',
-    'Invoice Date'            => 'Invoice Date',
-    'Purchase Order'          => 'Purchase Order',
-    'Sales Commission'        => 'Sales Commission',
-    'Invoice No'              => 'Invoice No',
-    'LBL_RECEIVED'            => 'Received',
-    'LBL_BALANCE'             => 'Balance',
-    //Added for existing Picklist Entries
-
-    'Sent'                                                                       => 'Sent',
-    'Credit Invoice'                                                             => 'Credit Invoice',
-    'Paid'                                                                       => 'Paid',
-    'AutoCreated'                                                                => 'AutoCreated',
-    'Cancel'                                                                     => 'Cancel',
-
-    //Translation for product not found
-    'LBL_THIS'                                                                   => 'This',
-    'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM'          => 'is deleted from the system.please remove or replace this item',
+    'Sales Order' => 'Sales Order',
+    'Customer No' => 'Customer No',
+    'Invoice Date' => 'Invoice Date',
+    'Purchase Order' => 'Purchase Order',
+    'Sales Commission' => 'Sales Commission',
+    'Invoice No' => 'Invoice No',
+    'LBL_RECEIVED' => 'Received',
+    'LBL_BALANCE' => 'Balance',
+    'Sent' => 'Sent',
+    'Credit Invoice' => 'Credit Invoice',
+    'Paid' => 'Paid',
+    'AutoCreated' => 'AutoCreated',
+    'Cancel' => 'Cancel',
+    'LBL_THIS' => 'This',
+    'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'is deleted from the system.please remove or replace this item',
     'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'This line item is deleted from the system,please remove this line items',
-    'LBL_NOT_A_BUNDLE'                                                           => 'Not a Bundle',
-    'LBL_SUB_PRODUCTS'                                                           => 'Sub Products',
-    'LBL_ACTION'                                                                 => 'Action',
+    'LBL_NOT_A_BUNDLE' => 'Not a Bundle',
+    'LBL_SUB_PRODUCTS' => 'Sub Products',
+    'LBL_ACTION' => 'Action',
+    'Price Book' => 'Price Book',
+    'Price After Discount' => 'Price After Discount',
+    'Overall Discount' => 'Overall Discount',
+    'Overall Discount Amount' => 'Overall Discount Amount',
+    'Price After Overall Discount' => 'Price After Overall Discount',
+    'Tax Amount' => 'Tax Amount',
+    'Grand Total' => 'Grand Total',
+    'Margin Amount' => 'Margin Amount',
+    'Quote' => 'Quote',
+    'Inventory Manager' => 'Inventory Manager',
+    'Terms &amp; Conditions' => 'Terms &amp; Conditions',
 ];
-
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Please remove line item that is deleted',
 ];

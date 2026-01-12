@@ -17,7 +17,10 @@ class PDFMaker_DetailFree_View extends Vtiger_Index_View
         parent::__construct();
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $viewer = $this->getViewer($request);
@@ -95,15 +98,23 @@ class PDFMaker_DetailFree_View extends Vtiger_Index_View
         $viewer->assign('CATEGORY', $category);
         $viewer->assign('PDFMAKER_RECORD_MODEL', $recordModel);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('DetailFree.tpl', 'PDFMaker');
     }
 
-    function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'DetailViewPreProcess.tpl';
     }
 
-    function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $jsFileNames = [

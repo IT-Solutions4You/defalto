@@ -18,14 +18,18 @@
 
 class Settings_Groups_DeleteAjax_View extends Settings_Vtiger_Index_View
 {
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        return;
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return;
     }
 
     public function process(Vtiger_Request $request)
@@ -43,6 +47,8 @@ class Settings_Groups_DeleteAjax_View extends Settings_Vtiger_Index_View
 
         $viewer->assign('ALL_USERS', Users_Record_Model::getAll());
         $viewer->assign('ALL_GROUPS', Settings_Groups_Record_Model::getAll());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         echo $viewer->view('DeleteTransferForm.tpl', $qualifiedModuleName, true);
     }

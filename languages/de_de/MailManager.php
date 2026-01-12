@@ -222,7 +222,6 @@ $languageStrings = [
     'MailManager' => 'E-Mail-Manager',
     'SINGLE_MailManager' => 'E-Mail Manager',
 ];
-
 $jsLanguageStrings = [
     'JSLBL_ACCOUNTNAME_CANNOT_EMPTY' => 'Organisation Name darf nicht leer sein',
     'JSLBL_ADD_COMMENT' => 'Kommentar hinzufügen',

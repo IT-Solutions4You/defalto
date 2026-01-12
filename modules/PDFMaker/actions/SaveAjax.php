@@ -8,7 +8,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class PDFMaker_SaveAjax_Action extends Vtiger_Action_Controller
+class PDFMaker_SaveAjax_Action extends Core_Controller_Action
 {
     function __construct()
     {
@@ -21,8 +21,12 @@ class PDFMaker_SaveAjax_Action extends Vtiger_Action_Controller
         }
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
+        return true;
     }
 
     function process(Vtiger_Request $request)

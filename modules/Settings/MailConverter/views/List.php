@@ -18,7 +18,10 @@
 
 class Settings_MailConverter_List_View extends Settings_Vtiger_Index_View
 {
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $qualifiedModuleName = $request->getModule(false);
@@ -28,11 +31,6 @@ class Settings_MailConverter_List_View extends Settings_Vtiger_Index_View
         if ($display) {
             $this->preProcessDisplay($request);
         }
-    }
-
-    protected function preProcessTplName(Vtiger_Request $request)
-    {
-        return parent::preProcessTplName($request);
     }
 
     public function process(Vtiger_Request $request)
@@ -64,17 +62,16 @@ class Settings_MailConverter_List_View extends Settings_Vtiger_Index_View
             $viewer->assign('RULE_MODELS_LIST', Settings_MailConverter_RuleRecord_Model::getAll($scannerId));
             $viewer->assign('FOLDERS_SCANNED', Settings_MailConverter_Module_Model::getScannedFolders($scannerId));
         }
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('RulesList.tpl', $qualifiedModuleName);
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -84,8 +81,7 @@ class Settings_MailConverter_List_View extends Settings_Vtiger_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

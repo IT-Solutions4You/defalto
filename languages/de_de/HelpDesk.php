@@ -94,8 +94,12 @@ $languageStrings = [
     'link' => 'Loggen Sie sich in das Kundenportal ein und nutzen Sie den folgenden Link, um die Nachricht zu sehen:',
     'replied' => 'beantwortet.',
     'reply' => 'Es gibt eine Antwort zu Ihrem Anliegen ',
+    'Related to' => 'Related to',
+    'First Comment Hours' => 'First Comment Hours',
+    'First Comment Time' => 'First Comment Time',
+    'Last Comment Hours' => 'Last Comment Hours',
+    'Last Comment Time' => 'Last Comment Time',
 ];
-
 $jsLanguageStrings = [
     'LBL_ADD_DOCUMENT' => 'Dokument Hinzufügen',
     'LBL_CREATE_TICKET' => 'Ticket erstellen',

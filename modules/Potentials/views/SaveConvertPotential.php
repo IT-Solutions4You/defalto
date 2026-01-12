@@ -18,9 +18,12 @@
 
 vimport('~~/include/Webservices/ConvertPotential.php');
 
-class Potentials_SaveConvertPotential_View extends Vtiger_View_Controller
+class Potentials_SaveConvertPotential_View extends Core_Controller_View
 {
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
@@ -114,8 +117,11 @@ class Potentials_SaveConvertPotential_View extends Vtiger_View_Controller
         $viewer->view('ConvertPotentialError.tpl', $moduleName);
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

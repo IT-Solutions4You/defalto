@@ -31,27 +31,6 @@ class Appointments_Field_Model extends Vtiger_Field_Model
     }
 
     /**
-     * @return bool|string
-     */
-    public function isAjaxEditable()
-    {
-        switch ($this->getName()) {
-            case 'recurring_type':
-                return 'recurrence';
-            case 'reminder_time':
-                return 'reminder';
-            case 'invite_users':
-                return 'InviteUsers';
-            case 'datetime_end':
-            case 'datetime_start':
-            case 'contact_id':
-                return 'false';
-        }
-
-        return parent::isAjaxEditable();
-    }
-
-    /**
      * @return bool
      */
     public function isEmptyPicklistOptionAllowed(): bool

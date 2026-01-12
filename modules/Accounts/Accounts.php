@@ -31,9 +31,8 @@
 
 class Accounts extends CRMEntity
 {
+    public string $moduleName = 'Accounts';
     public string $parentName = 'HOME';
-    public $log;
-    public $db;
     public $table_name = "vtiger_account";
     public $table_index = 'accountid';
     public $tab_name = ['vtiger_crmentity', 'vtiger_account', 'vtiger_accountbillads', 'vtiger_accountshipads', 'vtiger_accountscf'];
@@ -49,8 +48,6 @@ class Accounts extends CRMEntity
      */
     public $customFieldTable = ['vtiger_accountscf', 'accountid'];
     public $entity_table = "vtiger_crmentity";
-
-    public $column_fields = [];
 
     public $sortby_fields = ['accountname', 'bill_city', 'website', 'phone', 'assigned_user_id'];
 
@@ -115,21 +112,6 @@ class Accounts extends CRMEntity
         'Project'          => ['table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'account_id'],
         'PurchaseOrder'    => ['table_name' => 'vtiger_purchaseorder', 'table_index' => 'purchaseorderid', 'rel_index' => 'accountid'],
     ];
-
-    function __construct()
-    {
-        $this->log = Logger::getLogger('account');
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('Accounts');
-    }
-
-    /** Function to handle module specific operations when saving a entity
-     */
-    function save_module($module)
-    {
-    }
-
-    // Mike Crowe Mod --------------------------------------------------------Default ordering for us
 
     /** Returns a list of the associated Campaigns
      *

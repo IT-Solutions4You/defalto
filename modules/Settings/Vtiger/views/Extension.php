@@ -18,7 +18,10 @@
 
 class Settings_Vtiger_Extension_View extends Settings_Vtiger_Index_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->get('extensionModule');
 
@@ -68,7 +71,10 @@ class Settings_Vtiger_Extension_View extends Settings_Vtiger_Index_View
         return $links['EXTENSIONLINK'];
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $viewer = $this->getViewer($request);
@@ -88,16 +94,11 @@ class Settings_Vtiger_Extension_View extends Settings_Vtiger_Index_View
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-        $moduleName = $request->getModule();
         $extensionViewInstance = $this->getExtensionViewInstance($request);
 
         $jsFileNames = [
@@ -111,8 +112,7 @@ class Settings_Vtiger_Extension_View extends Settings_Vtiger_Index_View
         $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
         $jsScriptInstances = $extensionViewInstance->getHeaderScripts($request);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

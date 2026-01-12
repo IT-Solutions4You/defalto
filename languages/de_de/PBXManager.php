@@ -35,7 +35,16 @@ $languageStrings = [
     'SINGLE_PBXManager' => 'Anruf-Aufzeichnung',
     'Time Of Call' => 'Anrufzeit',
     'Total Duration' => 'Dauer (sek)',
+    'Direction' => 'Direction',
+    'Call Status' => 'Call Status',
+    'Start Time' => 'Start Time',
+    'End Time' => 'End Time',
+    'Source UUID' => 'Source UUID',
+    'Gateway' => 'Gateway',
+    'Customer' => 'Customer',
+    'User' => 'User',
+    'Customer Number' => 'Customer Number',
+    'Customer Type' => 'Customer Type',
 ];
-
 $jsLanguageStrings = [
 ];

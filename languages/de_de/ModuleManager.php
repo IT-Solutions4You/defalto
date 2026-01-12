@@ -63,8 +63,9 @@ $languageStrings = [
     'LBL__IMPORTING_MODULE' => 'Modul importieren',
     'LBL__UPDATING_MODULE' => 'aktualisiere Modul',
     'ModuleManager' => 'Modul-Manager',
+    'LBL_CRM_EXTENSION_STORE' => 'CRM Extension Store',
+    'LBL_REQ_CRM_VERSION' => 'CRM Version',
 ];
-
 $jsLanguageStrings = [
     'JS_CLICK_HERE' => 'Hier klicken',
     'JS_EXTENSION_STORE_IS_NOT_SUPPOTED_WOULD_YOU_LIKE_TO_INSTALL' => 'Erweiterung wird nicht unterstützt, Möchten Sie installieren?',

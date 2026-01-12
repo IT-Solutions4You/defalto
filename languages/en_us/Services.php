@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,37 +18,38 @@
  */
 
 $languageStrings = [
-    // Basic Strings
-    'Services'                => 'Services',
-    'SINGLE_Services'         => 'Service',
-    'LBL_ADD_RECORD'          => 'Add Service',
-    'LBL_RECORDS_LIST'        => 'Services List',
-
-    // Blocks
+    'Services' => 'Services',
+    'SINGLE_Services' => 'Service',
+    'LBL_ADD_RECORD' => 'Add Service',
+    'LBL_RECORDS_LIST' => 'Services List',
     'LBL_SERVICE_INFORMATION' => 'Service Details',
-
-    'LBL_MORE_CURRENCIES'   => 'more currencies',
-    'LBL_PRICES'            => 'Service Prices',
-    'LBL_PRICE'             => 'Price',
-    'LBL_RESET_PRICE'       => 'Reset Price',
-    'LBL_RESET'             => 'Reset',
-
-    //Services popup of pricebook
+    'LBL_MORE_CURRENCIES' => 'more currencies',
+    'LBL_PRICES' => 'Service Prices',
+    'LBL_PRICE' => 'Price',
+    'LBL_RESET_PRICE' => 'Reset Price',
+    'LBL_RESET' => 'Reset',
     'LBL_ADD_TO_PRICEBOOKS' => 'Add to PriceBooks',
-
-    //Field Labels
-    'Service Name'          => 'Service Name',
-    'Service Active'        => 'Service Active',
-    'Service Category'      => 'Service Category',
-    'Service No'            => 'Service Number',
-    'Owner'                 => 'Owner',
-    'No of Units'           => 'Number of Units',
-    'Commission Rate'       => 'Commission Rate',
-    'Price'                 => 'Price',
-    'Usage Unit'            => 'Usage Unit',
-    'Tax Class'             => 'Tax Class',
-    'Website'               => 'Website',
-
-    //Services popup of pricebook
-    'LBL_ADD_TO_PRICEBOOKS' => 'Add to PriceBooks',
+    'Service Name' => 'Service Name',
+    'Service Active' => 'Service Active',
+    'Service Category' => 'Service Category',
+    'Service No' => 'Service Number',
+    'Owner' => 'Owner',
+    'No of Units' => 'Number of Units',
+    'Commission Rate' => 'Commission Rate',
+    'Price' => 'Price',
+    'Usage Unit' => 'Usage Unit',
+    'Tax Class' => 'Tax Class',
+    'Website' => 'Website',
+    'Service Code' => 'Service Code',
+    'Support' => 'Support',
+    'Installation' => 'Installation',
+    'Migration' => 'Migration',
+    'Customization' => 'Customization',
+    'Training' => 'Training',
+    'Hours' => 'Hours',
+    'Days' => 'Days',
+    'Incidents' => 'Incidents',
+    'Taxes' => 'Taxes',
+];
+$jsLanguageStrings = [
 ];

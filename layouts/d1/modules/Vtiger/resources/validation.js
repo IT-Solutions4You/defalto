@@ -52,53 +52,13 @@ jQuery.validator.addMethod("WholeNumber", function (value, element, params) {
         return true;
     }, jQuery.validator.format(app.vtranslate('INVALID_NUMBER'))
 );
-/*
- * Experimental
- * 
-jQuery.Class('Calendar_greaterThanDependentField_Validator', {}, {
-	validate : function(value, element, params) {
-		console.log("value : ",value);
-		console.log("element : ",element);
-	}
-});
 
-jQuery.Class('Vtiger_Validations_Helper', {
-	getInstance : function() {
-		return new Vtiger_Validations_Helper();
-	}
-},{ 
-	getModuleSpecificValidatorClassName : function(validatorName) {
-		var moduleName = app.getModuleName();
-		var moduleSpecificClassName = moduleName + '_' + validatorName + '_Validator';
-		return moduleSpecificClassName;
-	},
+jQuery.validator.addMethod('DisableDiacritics', function (value, element, params) {
+        let regex = /[^0-9a-zA-Z\-_ ]+/;
 
-	isModuleSpecificValidatorExists : function(validatorName) {
-		var moduleSpecificClassName = this.getModuleSpecificValidatorClassName(validatorName);
-		if(typeof window[moduleSpecificClassName] !== 'undefined') {
-			return true;
-		}
-		return false;
-	},
-
-	getModuleSpecificValidatorInstance : function(validatorName) {
-		var moduleSpecificValidatorClassName = this.getModuleSpecificValidatorClassName(validatorName);
-		return new window[moduleSpecificValidatorClassName];
-	}
-});
-
-jQuery.validator.addMethod("greaterThanDependentField", function(value, element, params) {
-	var helper = Vtiger_Validations_Helper.getInstance();
-	var validatorName = 'greaterThanDependentField';
-	if(helper.isModuleSpecificValidatorExists(validatorName)) {
-		var validatorInstance = helper.getModuleSpecificValidatorInstance(validatorName);
-		return validatorInstance.validate(value, element, params);
-	}
-	//fallback to generic validation
-	return true;
-	}, jQuery.validator.format("Please enter the proper value")
+        return !regex.test(value);
+    }, jQuery.validator.format(app.vtranslate('JS_DIACRITICS_NOT_ALLOWED'))
 );
-*/
 
 jQuery.validator.addMethod("Calendar_greaterThanDependentField", function (value, element, params) {
         var form = jQuery(element).closest('form');

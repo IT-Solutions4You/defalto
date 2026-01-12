@@ -23,6 +23,7 @@ require_once 'include/utils/VtlibUtils.php';
 
 class ModComments extends ModCommentsCore
 {
+    public string $moduleVersion = '1.1';
     public string $moduleName = 'ModComments';
     public string $moduleLabel = 'Comments';
     public string $parentName = 'Settings';
@@ -252,7 +253,10 @@ class ModComments extends ModCommentsCore
         }
     }
 
-    public function save_module($module): void
+    /**
+     * @inheritDoc
+     */
+    public function save_module(string $module)
     {
         $this->retrieveSource();
         $this->saveMailAttachmentIds();

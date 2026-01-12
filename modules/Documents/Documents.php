@@ -19,9 +19,9 @@
 // Note is used to store customer information.
 class Documents extends CRMEntity
 {
+    public string $moduleVersion = '1.2';
+    public string $moduleName = 'Documents';
     public string $parentName = 'HOME';
-    public $log;
-    public $db;
     public $table_name = "vtiger_notes";
     public $table_index = 'notesid';
     public $default_note_name_dom = ['Meeting vtiger_notes', 'Reminder'];
@@ -32,7 +32,6 @@ class Documents extends CRMEntity
      * Mandatory table for supporting custom fields.
      */
     public $customFieldTable = ['vtiger_notescf', 'notesid'];
-    public $column_fields = [];
     public $sortby_fields = ['notes_title', 'modifiedtime', 'filename', 'createdtime', 'lastname', 'filedownloadcount', 'assigned_user_id'];
 
     // This is used to retrieve related vtiger_fields from form posts.
@@ -87,16 +86,10 @@ class Documents extends CRMEntity
     public $default_order_by = 'notes_title';
     public $default_sort_order = 'ASC';
 
-    public function __construct()
-    {
-        $this->log = Logger::getLogger('notes');
-        $this->log->debug("Entering Documents() method ...");
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('Documents');
-        $this->log->debug("Exiting Documents method ...");
-    }
-
-    function save_module($module)
+    /**
+     * @inheritDoc
+     */
+    public function save_module(string $module)
     {
         global $log, $adb, $upload_badext;
         $insertion_mode = $this->mode;

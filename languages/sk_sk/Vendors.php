@@ -30,7 +30,7 @@ $languageStrings = [
     '306-Internet Sales' => 'Internetový predaj',
     '307-Service-Hardware Labor' => 'Servisné práce',
     '308-Sales-Books' => 'Predaj kníh',
-    'LBL_CREATE_PURCHASEORDER'            => 'Vytvoriť Nákupnú Objednávku',
+    'LBL_CREATE_PURCHASEORDER' => 'Vytvoriť Nákupnú Objednávku',
 ];
 $jsLanguageStrings = [
     'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Ste si istí, že chcete zmazať záznam?',

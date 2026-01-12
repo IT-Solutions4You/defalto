@@ -23,7 +23,10 @@ class Google_Setting_View extends Vtiger_PopupAjax_View
         $this->exposeMethod('emitContactSyncSettingUI');
     }
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
@@ -34,7 +37,7 @@ class Google_Setting_View extends Vtiger_PopupAjax_View
             case "Contacts" :
                 $this->emitContactsSyncSettingUI($request);
                 break;
-            case "Calendar" :
+            case "Appointments" :
                 $this->emitCalendarSyncSettingUI($request);
                 break;
         }

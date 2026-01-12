@@ -16,9 +16,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Users_UI5_Action extends Vtiger_Action_Controller
+class Users_UI5_Action extends Core_Controller_Action
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }

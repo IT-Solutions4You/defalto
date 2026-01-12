@@ -19,6 +19,8 @@ class ITS4YouEmails_BodyWidget_View extends Vtiger_Detail_View
         $viewer->assign('RECORD_ID', $recordId);
         $viewer->assign('MODULE_NAME', $moduleName);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('BodyWidget.tpl', $moduleName);
     }
 }

@@ -36,8 +36,11 @@ class Settings_Roles_Delete_Action extends Settings_Vtiger_Basic_Action
         header("Location: $redirectUrl");
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

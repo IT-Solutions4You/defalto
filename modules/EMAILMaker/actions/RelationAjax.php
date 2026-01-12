@@ -8,7 +8,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class EMAILMaker_RelationAjax_Action extends Vtiger_Action_Controller
+class EMAILMaker_RelationAjax_Action extends Core_Controller_Action
 {
     public function __construct()
     {
@@ -18,18 +18,19 @@ class EMAILMaker_RelationAjax_Action extends Vtiger_Action_Controller
         $this->exposeMethod('getRelatedListPageCount');
     }
 
-    public function checkPermission(Vtiger_Request $request)
-    {
-    }
-
-    public function preProcess(Vtiger_Request $request)
-    {
-        return true;
-    }
-
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
+    {
     }
 
     public function process(Vtiger_Request $request)

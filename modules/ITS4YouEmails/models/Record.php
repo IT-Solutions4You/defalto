@@ -318,6 +318,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
 
         $content = $this->convertUrlsToTrackUrls($content);
         $content = $this->convertCssToInline($content);
+        $content .= $this->getBranding();
         $content .= $this->getTrackImageDetails();
 
         return $content;
@@ -1276,5 +1277,17 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         global $ITS4YouEmails_BannedWords;
 
         $this->setBannedWords(array_merge((array)$ITS4YouEmails_BannedWords, ['#ITS4YouEmails_Do_Not_Send_Mail#']));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getBranding(): string
+    {
+        if (Installer_License_Model::isMembershipActive()) {
+            return '';
+        }
+
+        return '<div style="text-align: center; font-size: 10px;"><a href="https://defalto.com" style="color: silver;">Sent via Defalto CRM</a></div>';
     }
 }

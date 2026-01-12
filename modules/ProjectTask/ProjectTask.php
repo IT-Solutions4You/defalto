@@ -20,14 +20,9 @@ class ProjectTask extends CRMEntity
 {
     public string $moduleName = 'ProjectTask';
     public string $parentName = 'PROJECT';
-    var $db, $log; // Used in class functions of CRMEntity
 
     var $table_name = 'vtiger_projecttask';
     var $table_index = 'projecttaskid';
-    var $column_fields = [];
-
-    /** Indicator if this is a custom module or standard module */
-    var $IsCustomModule = true;
 
     /**
      * Mandatory table for supporting custom fields.
@@ -93,9 +88,6 @@ class ProjectTask extends CRMEntity
         'Assigned To'       => 'assigned_user_id'
     ];
 
-    // For Popup window record selection
-    var $popup_fields = ['projecttaskname'];
-
     // Placeholder for sort fields - All the fields will be initialized for Sorting through initSortFields
     var $sortby_fields = [];
 
@@ -116,18 +108,6 @@ class ProjectTask extends CRMEntity
     // Used when enabling/disabling the mandatory fields for the module.
     // Refers to vtiger_field.fieldname values.
     var $mandatory_fields = ['createdtime', 'modifiedtime', 'projecttaskname', 'projectid', 'assigned_user_id'];
-
-    function __construct()
-    {
-        global $log, $currentModule;
-        $this->column_fields = getColumnFields(get_class($this));
-        $this->db = PearDatabase::getInstance();
-        $this->log = $log;
-    }
-
-    function save_module($module)
-    {
-    }
 
     /**
      * Return query to use based on given modulename, fieldname

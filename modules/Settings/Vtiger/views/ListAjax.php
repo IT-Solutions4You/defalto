@@ -24,14 +24,18 @@ class Settings_Vtiger_ListAjax_View extends Settings_Vtiger_List_View
         $this->exposeMethod('getPageCount');
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        return true;
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return true;
     }
 
     function process(Vtiger_Request $request)

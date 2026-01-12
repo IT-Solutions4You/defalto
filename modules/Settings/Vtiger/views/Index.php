@@ -23,7 +23,10 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
         parent::__construct();
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
@@ -34,7 +37,10 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
         return true;
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $this->preProcessSettings($request, $display);
@@ -103,7 +109,10 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
         }
     }
 
-    protected function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'SettingsMenuStart.tpl';
     }
@@ -115,7 +124,10 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
         $viewer->view('SettingsMenuEnd.tpl', $qualifiedModuleName);
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $this->postProcessSettings($request);
         parent::postProcess($request);
@@ -135,17 +147,16 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
         $viewer->assign('ACTIVE_MODULES', $activeModules);
         $viewer->assign('SETTINGS_SHORTCUTS', $pinnedSettingsShortcuts);
         $viewer->assign('MODULE', $qualifiedModuleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('Index.tpl', $qualifiedModuleName);
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -162,9 +173,8 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     public static function getSelectedFieldFromModule($menuModels, $moduleName)
@@ -213,7 +223,10 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View
         }
     }
 
-    public function getPageTitle(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getPageTitle(Vtiger_Request $request): string
     {
         $pageTitle = parent::getPageTitle($request);
 

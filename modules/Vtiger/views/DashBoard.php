@@ -20,7 +20,10 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View
 {
     protected static $selectable_dashboards;
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         if ($request->get('module') != 'Dashboard') {
@@ -33,7 +36,10 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View
         return $permissions;
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $viewer = $this->getViewer($request);
@@ -67,7 +73,10 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View
         }
     }
 
-    public function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'dashboards/DashBoardPreProcess.tpl';
     }
@@ -108,22 +117,16 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View
         }
         $viewer->assign('CURRENT_USER', Users_Record_Model::getCurrentUserModel());
         $viewer->assign('TABID', $tabid);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('dashboards/DashBoardContents.tpl', $moduleName);
     }
 
-    public function postProcess(Vtiger_Request $request)
-    {
-        parent::postProcess($request);
-    }
-
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    public function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -140,19 +143,14 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     /**
-     * Function to get the list of Css models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_CssScript_Model instances
+     * @inheritDoc
      */
-    public function getHeaderCss(Vtiger_Request $request)
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $parentHeaderCssScriptInstances = parent::getHeaderCss($request);
 

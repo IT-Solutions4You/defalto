@@ -29,7 +29,7 @@ require_once 'vtlib/Vtiger/Mailer.php';
 require_once 'include/events/include.inc';
 vimport('includes.runtime.EntryPoint');
 
-class Import_Data_Action extends Vtiger_Action_Controller
+class Import_Data_Action extends Core_Controller_Action
 {
     var $id;
     var $user;
@@ -53,8 +53,9 @@ class Import_Data_Action extends Vtiger_Action_Controller
     static $IMPORT_RECORD_MERGED = 4;
     static $IMPORT_RECORD_FAILED = 5;
 
-    public function __construct($importInfo, $user)
+    public function __construct()
     {
+        [$importInfo, $user] = func_get_args();
         $this->id = $importInfo['id'];
         $this->module = $importInfo['module'];
         $this->fieldMapping = $importInfo['field_mapping'];
@@ -427,7 +428,7 @@ class Import_Data_Action extends Vtiger_Action_Controller
                     $recordModel = Vtiger_Record_Model::getCleanInstance($this->module);
                     $focus = $recordModel->getEntity();
                     $focus->id = $recordId;
-                    $focus->column_fields = $fieldData;
+                    $focus->setColumnFields($fieldData);
                     $this->entityData[] = VTEntityData::fromCRMEntity($focus);
                 }
 
@@ -437,7 +438,7 @@ class Import_Data_Action extends Vtiger_Action_Controller
                     $recordModel = Vtiger_Record_Model::getCleanInstance($this->module);
                     $focus = $recordModel->getEntity();
                     $focus->id = $recordId;
-                    $focus->column_fields = $entityInfo;
+                    $focus->setColumnFields($entityInfo);
                     $this->entitydata[] = VTEntityData::fromCRMEntity($focus);
                 }
             }
@@ -803,7 +804,7 @@ class Import_Data_Action extends Vtiger_Action_Controller
         $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
         $focus = $recordModel->getEntity();
         $focus->id = $recordId;
-        $focus->column_fields = $fieldData;
+        $focus->setColumnFields($fieldData);
         $this->entitydata[] = VTEntityData::fromCRMEntity($focus);
         $focus->updateMissingSeqNumber($moduleName);
 
