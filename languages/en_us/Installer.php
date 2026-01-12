@@ -258,6 +258,7 @@ $languageStrings = [
     'LBL_UNINSTALL_CONFIRM'                => 'Are you sure to completely remove Extension from your CRM ?',
     'LBL_LICENSE_DELETED'                  => 'License deleted successfully.',
     'LBL_ADD_LICENSE' => 'Add License Key',
+    'LBL_MODULES' => 'Modules',
 ];
 
 $jsLanguageStrings = [
