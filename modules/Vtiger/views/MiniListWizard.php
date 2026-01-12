@@ -18,7 +18,10 @@
 
 class Vtiger_MiniListWizard_View extends Vtiger_Index_View
 {
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         if ($request->get('module') != 'Dashboard') {
@@ -78,6 +81,8 @@ class Vtiger_MiniListWizard_View extends Vtiger_Index_View
                 $viewer->assign('SELECTED_MODULE', $selectedModule);
                 break;
         }
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('dashboards/MiniListWizard.tpl', $moduleName);
     }

@@ -35,6 +35,8 @@ class Settings_MenuEditor_Index_View extends Settings_Vtiger_Index_View
         $viewer->assign('APP_MAPPED_MODULES', $mappedModuleList);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('Index.tpl', $qualifiedModuleName);
     }
 }

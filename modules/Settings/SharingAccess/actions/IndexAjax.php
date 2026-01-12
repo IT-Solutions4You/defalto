@@ -80,8 +80,11 @@ class Settings_SharingAccess_IndexAjax_Action extends Settings_Vtiger_IndexAjax_
         $response->emit();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

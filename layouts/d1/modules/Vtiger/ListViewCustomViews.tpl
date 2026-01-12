@@ -30,6 +30,7 @@
                                     {assign var=CUSTOME_VIEW_RECORD_MODEL value=CustomView_Record_Model::getInstanceById($CUSTOM_VIEW->getId())}
                                     {assign var=MEMBERS value=$CUSTOME_VIEW_RECORD_MODEL->getMembers()}
                                     {assign var=LIST_STATUS value=$CUSTOME_VIEW_RECORD_MODEL->get('status')}
+                                    {assign var=SHARED_MEMBER_COUNT value=0}
                                     {foreach key=GROUP_LABEL item=MEMBER_LIST from=$MEMBERS}
                                         {if $MEMBER_LIST|@count gt 0}
                                             {assign var=SHARED_MEMBER_COUNT value=1}

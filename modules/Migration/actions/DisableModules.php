@@ -16,15 +16,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Migration_DisableModules_Action extends Vtiger_Action_Controller
+class Migration_DisableModules_Action extends Core_Controller_Action
 {
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return bool
-     * @throws Exception
+     * @inheritDoc
      */
-    public function checkPermission(Vtiger_Request $request)
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $currentUserModel = Users_Record_Model::getCurrentUserModel();

@@ -33,7 +33,12 @@ $languageStrings = [
     'administrative' => 'administrativ',
     'operative' => 'operativ',
     'other' => 'andere',
+    'Milestone Name' => 'Milestone Name',
+    'Milestone Status' => 'Milestone Status',
+    'Planned' => 'Planned',
+    'In progress' => 'In progress',
+    'Completed' => 'Completed',
+    'Milestone No' => 'Milestone No',
 ];
-
 $jsLanguageStrings = [
 ];

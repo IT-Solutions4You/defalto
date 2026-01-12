@@ -43,6 +43,9 @@ class Project_EditAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('STATUS', $request->get('status'));
         $viewer->assign('TASK_STATUS', Vtiger_Util_Helper::getPickListValues('projecttaskstatus'));
         $viewer->assign('TASK_STATUS_COLOR', $parentRecordModel->getStatusColors());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'editColor', $request->getModule(), $viewer, $request);
+
         $viewer->view('EditColor.tpl', $moduleName);
     }
 }

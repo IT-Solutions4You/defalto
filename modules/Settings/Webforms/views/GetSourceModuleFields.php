@@ -18,7 +18,10 @@
 
 class Settings_Webforms_GetSourceModuleFields_View extends Settings_Vtiger_IndexAjax_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
 
@@ -61,6 +64,8 @@ class Settings_Webforms_GetSourceModuleFields_View extends Settings_Vtiger_Index
         $viewer->assign('SELECTED_FIELD_MODELS_LIST', $selectedFieldsList);
         $viewer->assign('ALL_FIELD_MODELS_LIST', $recordModel->getAllFieldsList($sourceModule));
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('FieldsEditView.tpl', $qualifiedModuleName);
     }

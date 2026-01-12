@@ -63,8 +63,9 @@ $languageStrings = [
     'Total Revenue' => 'Gesamteinnahmen',
     'Type' => 'Typ',
     'Value Proposition' => 'Bewertung',
+    'Proposal or Price Quote' => 'Proposal or Price Quote',
+    'Negotiation or Review' => 'Negotiation or Review',
 ];
-
 $jsLanguageStrings = [
     'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Konvertierung erfordert Auswahl des Projekts',
 ];

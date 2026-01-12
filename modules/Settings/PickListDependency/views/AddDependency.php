@@ -38,6 +38,9 @@ class Settings_PickListDependency_AddDependency_View extends Settings_Vtiger_Ind
         $moduleModels = Vtiger_Module_Model::getEntityModules();
 
         $viewer->assign('MODULES', $moduleModels);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('AddDependency.tpl', $qualifiedModule);
     }
 

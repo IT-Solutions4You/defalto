@@ -88,8 +88,11 @@ $languageStrings = [
     'Usage Unit' => 'Mengeneinheit',
     'Vendor PartNo' => 'Händlernr.',
     'Website' => 'Webseite',
+    'AltvetPet Inc.' => 'AltvetPet Inc.',
+    'LexPon Inc.' => 'LexPon Inc.',
+    'MetBeat Corp' => 'MetBeat Corp',
+    'Taxes' => 'Taxes',
 ];
-
 $jsLanguageStrings = [
     'JS_DELETION_OR_IN_ACTIVATION_CHILD_PRODUCT_MESSAGE' => 'Dieses Produkt ist Teil eines Produkt-Bündels. Der Preis des Bundles bleibt unverändert, wenn ein Bündelstück gelöscht oder deaktiviert wird. Sind Sie sicher, dass Sie fortfahren möchten?',
     'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY' => 'Unterprodukte werden im Inventar angezeigt',

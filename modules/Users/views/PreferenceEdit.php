@@ -18,12 +18,18 @@
 
 class Users_PreferenceEdit_View extends Vtiger_Edit_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
@@ -34,19 +40,26 @@ class Users_PreferenceEdit_View extends Vtiger_Edit_View
                 throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
             }
         }
+
         if (($currentUserModel->isAdminUser() == true || $currentUserModel->get('id') == $record)) {
             return true;
-        } else {
-            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
+
+        throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
     }
 
-    function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'UserEditViewPreProcess.tpl';
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         if ($this->checkPermission($request)) {
             $currentUser = Users_Record_Model::getCurrentUserModel();
@@ -132,13 +145,18 @@ class Users_PreferenceEdit_View extends Vtiger_Edit_View
             }
             $viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
 
+            Core_Modifiers_Model::modifyForClass(get_class($this), 'preProcess', $request->getModule(), $viewer, $request);
+
             if ($display) {
                 $this->preProcessDisplay($request);
             }
         }
     }
 
-    protected function preProcessDisplay(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessDisplay(Vtiger_Request $request): void
     {
         $viewer = $this->getViewer($request);
         $viewer->view($this->preProcessTplName($request), $request->getModule());
@@ -170,7 +188,10 @@ class Users_PreferenceEdit_View extends Vtiger_Edit_View
         parent::process($request);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -186,8 +207,7 @@ class Users_PreferenceEdit_View extends Vtiger_Edit_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

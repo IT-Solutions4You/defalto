@@ -16,7 +16,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class CustomView_Deny_Action extends Vtiger_Action_Controller
+class CustomView_Deny_Action extends Core_Controller_Action
 {
     public function process(Vtiger_Request $request)
     {
@@ -31,8 +31,11 @@ class CustomView_Deny_Action extends Vtiger_Action_Controller
         header("Location: $listViewUrl");
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

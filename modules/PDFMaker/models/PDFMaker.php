@@ -436,4 +436,186 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
     {
         return new self();
     }
+
+    /**
+     * @param $actionKey
+     * @return true
+     */
+    public function checkPermissions($actionKey)
+    {
+        return true;
+    }
+
+    /**
+     * @return true
+     */
+    public function checkTemplatePermissions()
+    {
+        return true;
+    }
+
+    /**
+     * @param string $module
+     * @param bool $forListView
+     * @param int|bool $recordId
+     * @return array
+     */
+    public function getAvailableTemplates($module, $forListView = false, $recordId = false): array
+    {
+        $adb = PearDatabase::getInstance();
+        $sql = 'SELECT templateid, filename, description FROM vtiger_pdfmaker WHERE module=? AND deleted=?';
+        $result = $adb->pquery($sql, [$module, '0']);
+
+        $templatesInfo = [];
+
+        while ($row = $adb->fetchByAssoc($result)) {
+            $templateId = intval($row['templateid']);
+            $templatesInfo[$templateId] = [
+                'template_id' => $templateId,
+                'templatename' => $row['filename'],
+                'title' => $row['description'],
+                'is_default' => 3,
+                'order' => 1,
+                'disable_export_edit' => 1,
+                'is_default_single_template' => 1,
+            ];
+        }
+
+        return $templatesInfo;
+    }
+
+    public function getAvailableTemplate($module, $forListView = false, $recordId = false)
+    {
+        $templates = $this->getAvailableTemplates($module);
+
+        return array_pop($templates);
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @param string|array $templates
+     * @param object $focus
+     * @param array $records
+     * @param string $fileName
+     * @param string $moduleName
+     * @param string $language
+     * @return bool
+     * @throws Exception
+     */
+    public function createPDFAndSaveFile($request, $templates, $focus, $records, $fileName, $moduleName, $language): bool
+    {
+        $documentId = $this->db->getUniqueID('vtiger_crmentity');
+
+        if (is_array($templates)) {
+            $templateIds = $templates;
+        } else {
+            $templates = trim($templates, ';');
+            $templateIds = array_filter(explode(';', $templates));
+        }
+
+        if (empty($language)) {
+            $language = Vtiger_Language_Handler::getLanguage();
+        }
+
+        $preContent = [];
+        //called function GetPreparedMPDF returns the name of PDF and fill the variable $mpdf with prepared HTML output
+        $mpdf = null;
+        $name = $this->GetPreparedMPDF($mpdf, $records[0], $moduleName, $language);
+        $name = $this->generate_cool_uri($name);
+
+        $upload_file_path = decideFilePath();
+
+        if (!empty($name)) {
+            $fileName = $name . '.pdf';
+        }
+
+        $mpdf->Output($upload_file_path . $documentId . '_' . $fileName);
+
+        $filesize = filesize($upload_file_path . $documentId . '_' . $fileName);
+        $filetype = 'application/pdf';
+        $description = $focus->column_fields['description'];
+        $ownerId = $focus->column_fields['assigned_user_id'];
+
+        $this->saveAttachment($documentId, $fileName, $description, $filetype, $upload_file_path, $ownerId);
+        $this->saveAttachmentRelation($documentId, $focus->id);
+        $this->db->pquery(
+            'UPDATE vtiger_notes SET filesize=?, filename=? WHERE notesid=?',
+            [$filesize, $fileName, $focus->id],
+        );
+
+        if (vtlib_isModuleActive('ModTracker')) {
+            require_once 'modules/ModTracker/ModTracker.php';
+            ModTracker::linkRelation($moduleName, $focus->parentid, 'Documents', $focus->id);
+        }
+
+        return true;
+    }
+
+    public function saveAttachmentRelation($documentId, $recordId): void
+    {
+        $this->db->pquery(
+            'INSERT INTO vtiger_seattachmentsrel (crmid, attachmentsid) VALUES (?,?)',
+            [$recordId, $documentId],
+        );
+    }
+
+    /**
+     * @param int $documentId
+     * @param string $fileName
+     * @param string $description
+     * @param string $filetype
+     * @param string $upload_file_path
+     * @param int $ownerId
+     * @return void
+     */
+    public function saveAttachment($documentId, $fileName, $description, $filetype, $upload_file_path, $ownerId): void
+    {
+        $createdTime = date('Y-m-d H:i:s');
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+
+        if (empty($ownerId)) {
+            $ownerId = $currentUser->id;
+        }
+
+        if (defined('STORAGE_ROOT')) {
+            $upload_file_path = str_replace(STORAGE_ROOT, '', $upload_file_path);
+        }
+
+        $this->db->pquery(
+            'INSERT INTO vtiger_crmentity (crmid,creator_user_id,assigned_user_id,setype,description,createdtime,modifiedtime) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [
+                $documentId,
+                $currentUser->id,
+                $ownerId,
+                'Documents Attachment',
+                $description,
+                $this->db->formatDate($createdTime, true),
+                $this->db->formatDate($createdTime, true),
+            ]
+        );
+
+        $this->db->pquery(
+            'INSERT INTO vtiger_attachments(attachmentsid, name, storedname, description, type, path) VALUES (?, ?, ?, ?, ?, ?)',
+            [
+                $documentId,
+                $fileName,
+                $fileName,
+                $description,
+                $filetype,
+                $upload_file_path,
+            ]
+        );
+    }
+
+    /**
+     * @param int $templateId
+     * @return bool
+     */
+    public function isTemplateDeleted($templateId)
+    {
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery('SELECT * FROM vtiger_pdfmaker WHERE templateid = ? AND deleted = ?', [$templateId, 1]);
+
+        return (bool)$adb->num_rows($result);
+    }
 }

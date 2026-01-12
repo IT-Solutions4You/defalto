@@ -27,7 +27,10 @@ class Products_RelationAjax_Action extends Vtiger_RelationAjax_Action
 		$this->exposeMethod('changeBundleCost');
 	}
 
-	public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
 	{
 		$permissions = parent::requiresPermission($request);
 		$mode = $request->getMode();

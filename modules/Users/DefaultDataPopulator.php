@@ -129,9 +129,9 @@ class DefaultDataPopulator extends CRMEntity
             [21, 'PurchaseOrder', 0, -1, 'PurchaseOrder', 0, 0, 1, 'Inventory'],
             [22, 'SalesOrder', 0, -1, 'SalesOrder', 0, 0, 1, 'Sales'],
             [23, 'Invoice', 0, -1, 'Invoice', 0, 0, 1, 'Sales'],
-            [24, 'Rss', 0, -1, 'Rss', 0, 1, 0, 'Tools'],
+            [24, 'Rss', 0, -1, 'Rss', 0, 1, 0, null],
             [26, 'Campaigns', 0, -1, 'Campaigns', 0, 0, 1, 'Marketing'],
-            [27, 'Portal', 0, -1, 'Portal', 0, 1, 0, 'Tools'],
+            [27, 'Portal', 0, -1, 'Portal', 0, 1, 0, null],
             [29, 'Users', 0, -1, 'Users', 0, 1, 0, null],
         ];
         $tabIds = $this->createTabs($tabs);
@@ -670,8 +670,8 @@ class DefaultDataPopulator extends CRMEntity
         $this->db->query("alter table vtiger_inventoryshippingrel add column shtax$shserviceid decimal(7,3) default NULL");
 
         //version file is included here because without including this file version cannot be get
-        include('vtigerversion.php');
-        $this->db->query("insert into vtiger_version values(" . $this->db->getUniqueID('vtiger_version') . ",'" . $vtiger_current_version . "','" . $vtiger_current_version . "')");
+        include 'version.php';
+        $this->db->query("insert into vtiger_version values(" . $this->db->getUniqueID('vtiger_version') . ",'" . $defalto_current_version . "','" . $defalto_current_version . "')");
 
         //Register default language English
         require_once('vtlib/Vtiger/Language.php');

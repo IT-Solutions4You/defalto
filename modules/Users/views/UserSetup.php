@@ -18,14 +18,19 @@
 
 class Users_UserSetup_View extends Vtiger_Index_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        return true;
     }
 
     public function process(Vtiger_Request $request)
@@ -57,6 +62,9 @@ class Users_UserSetup_View extends Vtiger_Index_View
             $viewer->assign('TIME_ZONES', $userModuleModel->getTimeZonesList());
             $viewer->assign('LANGUAGES', $userModuleModel->getLanguagesList());
             $viewer->assign('USER_ID', $request->get('record'));
+
+            Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
             $viewer->view('UserSetup.tpl', $moduleName);
         } else {
             if (isset($_SESSION['return_params'])) {
@@ -70,8 +78,10 @@ class Users_UserSetup_View extends Vtiger_Index_View
         }
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return true;
     }
 }

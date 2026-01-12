@@ -16,6 +16,5 @@ $languageStrings = [
     'LBL_SEARCH_MODULE' => 'Modul suchen...',
     'SINGLE_Appointments' => 'Kalender',
 ];
-
 $jsLanguageStrings = [
 ];

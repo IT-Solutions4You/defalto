@@ -20,16 +20,12 @@ class Services extends CRMEntity
 {
     use Core_UnitPrice_Trait;
 
+    public string $moduleVersion = '1.1';
     public string $moduleName = 'Services';
     public string $parentName = 'INVENTORY';
-    var $db, $log; // Used in class functions of CRMEntity
 
     var $table_name = 'vtiger_service';
     var $table_index = 'serviceid';
-    var $column_fields = [];
-
-    /** Indicator if this is a custom module or standard module */
-    var $IsCustomModule = true;
 
     /**
      * Mandatory table for supporting custom fields.
@@ -90,9 +86,6 @@ class Services extends CRMEntity
         'Price'        => 'unit_price'
     ];
 
-    // For Popup window record selection
-    var $popup_fields = ['servicename', 'service_usageunit', 'unit_price'];
-
     // Placeholder for sort fields - All the fields will be initialized for Sorting through initSortFields
     var $sortby_fields = [];
 
@@ -114,17 +107,10 @@ class Services extends CRMEntity
 
     var $unit_price;
 
-    /**    Constructor which will set the column_fields in this object
+    /**
+     * @inheritDoc
      */
-    function __construct()
-    {
-        global $log;
-        $this->column_fields = getColumnFields(get_class($this));
-        $this->db = PearDatabase::getInstance();
-        $this->log = $log;
-    }
-
-    function save_module($module)
+    public function save_module(string $module)
     {
         //Inserting into service_taxrel table
         if ($_REQUEST['ajxaction'] != 'DETAILVIEW' && $_REQUEST['action'] != 'ProcessDuplicates' && !$this->isWorkFlowFieldUpdate) {

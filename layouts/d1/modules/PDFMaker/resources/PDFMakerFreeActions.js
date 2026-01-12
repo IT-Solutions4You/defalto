@@ -13,7 +13,7 @@ jQuery.Class('PDFMaker_FreeActions_Js', {
         let aDeferred = jQuery.Deferred();
 
         if (container.find('.modal-content').length > 0) {
-            app.helper.hideModal().then(function () {
+            app.helper.hideModal({modalName: 'PDFMakerModal'}).then(function () {
                 aDeferred.resolve();
             });
         } else {
@@ -79,11 +79,12 @@ jQuery.Class('PDFMaker_FreeActions_Js', {
         };
 
         app.helper.showProgress();
-        app.request.get({data: params}).then(function (err, response) {
+        app.request.post({data: params}).then(function (err, response) {
 
             app.helper.hideProgress();
             app.helper.showModal(response, {
-                'cb': function (modalContainer) {
+                modalName: 'PDFMakerModal',
+                cb: function (modalContainer) {
                     if ('PDFBreakline' === modeType) {
                         modalContainer.find('.LineItemCheckbox').on('click', function () {
                             self.checkIfAny(modalContainer);
@@ -102,7 +103,7 @@ jQuery.Class('PDFMaker_FreeActions_Js', {
         let form = modalContainer.find('#Save' + modeType + 'Form');
         let params = form.serializeFormData();
 
-        app.helper.hideModal();
+        app.helper.hideModal({modalName: 'PDFMakerModal'});
         app.helper.showProgress();
 
         app.request.post({data: params}).then(function (error) {
@@ -141,10 +142,11 @@ jQuery.Class('PDFMaker_FreeActions_Js', {
         params['mode'] = 'getPreview';
 
         app.helper.showProgress();
-        app.request.get({data: params}).then(function (err, data) {
+        app.request.post({data: params}).then(function (err, data) {
 
             app.helper.showModal(data, {
-                'cb': function (modalContainer) {
+                modalName: 'PDFMakerModal',
+                cb: function (modalContainer) {
                     self.registerPDFPreviewActionsButtons(modalContainer, pdfLanguage);
                     self.setMaxModalHeight(modalContainer, 'iframe');
                 }
@@ -199,6 +201,11 @@ jQuery.Class('PDFMaker_FreeActions_Js', {
         container.find('.showProductImages').on('click', function () {
             self.showPDFMakerModal('ProductImages');
         });
+    },
+    sendEmail: function (templateId, templateLanguage) {
+        app.helper.hideModal({modalName: 'PDFMakerModal'});
+
+        EMAILMaker_Actions_Js.emailmaker_sendMail(templateId, templateLanguage, '', false);
     }
 }, {
     registerEvents: function () {

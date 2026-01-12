@@ -31,9 +31,9 @@
 
 class SalesOrder extends CRMEntity
 {
+    public string $moduleVersion = '1.1';
+    public string $moduleName = 'SalesOrder';
     public string $parentName = 'SALES';
-    public $log;
-    public $db;
 
     public $table_name = "vtiger_salesorder";
     public $table_index = 'salesorderid';
@@ -66,8 +66,6 @@ class SalesOrder extends CRMEntity
     public $new_schema = true;
 
     public $update_product_array = [];
-
-    public $column_fields = [];
 
     public $sortby_fields = ['subject', 'assigned_user_id', 'accountname', 'lastname'];
 
@@ -137,24 +135,22 @@ class SalesOrder extends CRMEntity
     // For Alphabetical search
     public $def_basicsearch_col = 'subject';
 
-    // For workflows update field tasks is deleted all the lineitems.
-    public $isLineItemUpdate = true;
-
-    /** Constructor Function for SalesOrder class
-     *  This function creates an instance of LoggerManager class using getLogger method
-     *  creates an instance for PearDatabase class and get values for column_fields array of SalesOrder class.
+    /**
+     * @inheritDoc
      */
-    public function __construct()
-
+    public function save_module(string $module)
     {
-        $this->log = Logger::getLogger('SalesOrder');
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('SalesOrder');
-    }
+        $request = new Vtiger_Request($_REQUEST, $_REQUEST);
+        $sourceModule = $request->get('sourceModule');
+        $sourceRecord = (int)$request->get('sourceRecord');
 
-    public function save_module($module)
-    {
-        InventoryItem_CopyOnCreate_Model::run($this);
+        if ((empty($sourceModule) || empty($sourceRecord)) && !empty($this->column_fields['quote_id'])) {
+            InventoryItem_CopyOnCreate_Model::run($this, $this->column_fields['quote_id']);
+        } elseif (is_numeric($request->get('duplicateFrom'))) {
+            InventoryItem_CopyOnCreate_Model::run($this, $request->get('duplicateFrom'));
+        } else {
+            InventoryItem_CopyOnCreate_Model::run($this);
+        }
     }
 
     /** Function to get the invoices associated with the Sales Order

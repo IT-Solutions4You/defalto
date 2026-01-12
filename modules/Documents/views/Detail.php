@@ -18,7 +18,10 @@
 
 class Documents_Detail_View extends Vtiger_Detail_View
 {
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         $viewer = $this->getViewer($request);
         $viewer->assign('NO_SUMMARY', true);

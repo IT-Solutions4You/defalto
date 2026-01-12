@@ -19,6 +19,9 @@ class Tour_Index_View extends Vtiger_Index_View
 
         $viewer = $this->getViewer($request);
         $viewer->assign('GUIDES', Tour_Base_Guide::getAll());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('Index.tpl', $moduleName);
     }
 }

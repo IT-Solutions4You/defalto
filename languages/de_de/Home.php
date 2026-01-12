@@ -36,7 +36,6 @@ $languageStrings = [
     'QLTQ' => 'Top Angebote',
     'UA' => 'aktuelle Aktivitäten',
 ];
-
 $jsLanguageStrings = [
     'JS_NO_DATA_AVAILABLE' => 'keine Daten verfügbar',
     'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Dashboard-Name kann nicht nicht leer sein',

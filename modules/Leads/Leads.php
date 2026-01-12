@@ -23,9 +23,9 @@
 
 class Leads extends CRMEntity
 {
+    public string $moduleVersion = '1.1';
+    public string $moduleName = 'Leads';
     public string $parentName = 'HOME';
-    var $log;
-    var $db;
 
     var $table_name = "vtiger_leaddetails";
     var $table_index = 'leadid';
@@ -47,7 +47,6 @@ class Leads extends CRMEntity
     var $customFieldTable = ['vtiger_leadscf', 'leadid'];
 
     //construct this from database;
-    var $column_fields = [];
     var $sortby_fields = ['lastname', 'firstname', 'email', 'phone', 'company', 'assigned_user_id', 'website'];
 
     // This is used to retrieve related vtiger_fields from form posts.
@@ -97,25 +96,6 @@ class Leads extends CRMEntity
     var $def_basicsearch_col = 'lastname';
 
     var $LBL_LEAD_MAPPING = 'LBL_LEAD_MAPPING';
-
-    //var $groupTable = Array('vtiger_leadgrouprelation','leadid');
-
-    function __construct()
-    {
-        $this->log = Logger::getLogger('lead');
-        $this->log->debug("Entering Leads() method ...");
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('Leads');
-        $this->log->debug("Exiting Lead method ...");
-    }
-
-    /** Function to handle module specific operations when saving a entity
-     */
-    function save_module($module)
-    {
-    }
-
-    // Mike Crowe Mod --------------------------------------------------------Default ordering for us
 
     /** Function to export the lead records in CSV Format
      *

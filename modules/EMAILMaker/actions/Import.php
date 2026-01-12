@@ -10,8 +10,12 @@
 
 class EMAILMaker_Import_Action extends Vtiger_Save_Action
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
+        return true;
     }
 
     public function process(Vtiger_Request $request)

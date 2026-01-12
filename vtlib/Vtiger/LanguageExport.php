@@ -136,9 +136,9 @@ class Vtiger_LanguageExport extends Vtiger_Package
 	 */
 	function export_Dependencies($moduleInstance)
 	{
-		global $vtiger_current_version, $adb;
+		global $defalto_current_version, $adb;
 
-		$vtigerMinVersion = $vtiger_current_version;
+		$vtigerMinVersion = $defalto_current_version;
 		$vtigerMaxVersion = false;
 
 		$this->openNode('dependencies');

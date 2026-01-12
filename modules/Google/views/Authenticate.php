@@ -18,16 +18,23 @@
 
 class Google_Authenticate_View extends Vtiger_Index_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
 
         $recordPermission = Users_Privileges_Model::isPermitted($moduleName, 'index');
+
         if (!$recordPermission) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
@@ -42,8 +49,12 @@ class Google_Authenticate_View extends Vtiger_Index_View
         $oauth2Connector->authorize();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
         /* Ignore check - as referer could be CRM or Google Accounts */
+        return true;
     }
 }

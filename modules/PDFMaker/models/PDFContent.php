@@ -17,7 +17,8 @@ if ($memory_limit < 256) {
 class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 {
     public static $bridge2mpdf = [];
-    private static $is_inventory_module = false;
+    public $PDFMaker;
+    private static $is_inventory_module = [];
     private static $module;
     private static $language;
     private static $focus;
@@ -97,7 +98,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
         self::$bridge2mpdf['record'] = self::$focus->id;
         self::$rowbreak = '<rowbreak />';
-        self::$is_inventory_module[self::$module] = InventoryItem_Utils_Helper::usesInventoryItem(self::$module);
+        self::$is_inventory_module[self::$module] = InventoryItem_Utils_Helper::isInventoryModule(self::$module);
     }
 
     private function getTemplateData()
@@ -145,10 +146,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
     public function getContent()
     {
         self::$execution_time_start = microtime(true);
-        self::$content = self::$body;
-        self::$content = self::$header . self::$section_sep;
-        self::$content .= self::$body . self::$section_sep;
-        self::$content .= self::$footer;
+        self::$content = self::$header . self::$section_sep . self::$body . self::$section_sep . self::$footer;
         self::$content = html_entity_decode(self::$content, ENT_QUOTES, self::$def_charset);
 
         $this->retrieveAssignedUserId();
@@ -175,8 +173,18 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         $this->replaceExecutionTime();
         $this->convertEncoding();
 
+        return $this->getContentBySections();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getContentBySections(): array
+    {
         $PDF_content = [];
         [$PDF_content['header'], $PDF_content['body'], $PDF_content['footer']] = explode(self::$section_sep, self::$content);
+
+        $PDF_content['footer'] .= $this->getBranding();
 
         return $PDF_content;
     }

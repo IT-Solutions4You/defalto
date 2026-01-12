@@ -336,9 +336,6 @@ class VTUpdateFieldsTask extends VTTask
             $actionName = $_REQUEST['action'];
             $_REQUEST['action'] = '';
 
-            // For workflows update field tasks is deleted all the lineitems.
-            $focus->isLineItemUpdate = false;
-
             //For workflows we need to update all the fields irrespective if the logged in user has the
             //permission or not.
             $focus->isWorkFlowFieldUpdate = true;
@@ -357,7 +354,6 @@ class VTUpdateFieldsTask extends VTTask
                     foreach ($referenceFocus->column_fields as $fieldName => $fieldValue) {
                         $referenceFocus->column_fields[$fieldName] = html_entity_decode($fieldValue, ENT_QUOTES, $default_charset);
                     }
-                    $referenceFocus->isLineItemUpdate = false;
                     $referenceFocus->isWorkFlowFieldUpdate = true;
                     $referenceFocus->saveentity($referenceFocus->moduleName);
                     if ($referenceEntityFields == true) {

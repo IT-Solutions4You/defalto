@@ -27,6 +27,9 @@ $languageStrings = [
     'isactive' => 'Active',
     'username' => 'User Name',
     'password' => 'Password',
+    'ClickATellNew' => 'Clickatell (Platform)',
+    'ClickATell' => 'Clickatell (Communicator/Central)',
+    'LBL_CLICKATELLNEW_CALLBACKURL_INFO' => 'Please copy this URL to the \'Enable delivery notifications\' field in your ClickATell SMS Integration Settings page',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE_CONFIRMATION' => 'Are you sure, you want to delete this SMSNotifier Configuration',

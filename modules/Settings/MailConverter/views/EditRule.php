@@ -18,7 +18,10 @@
 
 class Settings_MailConverter_EditRule_View extends Settings_Vtiger_IndexAjax_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $scannerId = $request->get('scannerId');
@@ -26,6 +29,8 @@ class Settings_MailConverter_EditRule_View extends Settings_Vtiger_IndexAjax_Vie
         if (!$scannerId) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', $request->getModule(false)));
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)
@@ -59,6 +64,8 @@ class Settings_MailConverter_EditRule_View extends Settings_Vtiger_IndexAjax_Vie
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $viewer->assign('ASSIGNED_USER', $assignedTo[0]);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('RuleEditView.tpl', $qualifiedModuleName);
     }

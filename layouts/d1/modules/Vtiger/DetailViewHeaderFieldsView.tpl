@@ -22,8 +22,6 @@
                 {assign var=FIELD_VALUE value=$FIELD_MODEL->get('fieldvalue')}
                 {assign var=DISPLAY_VALUE value=$FIELD_MODEL->getDisplayValue($FIELD_VALUE)}
                 {assign var=IS_EDITABLE value=$FIELD_MODEL->isAjaxEditable() && (!isset($LIST_PREVIEW) || $LIST_PREVIEW neq true) && $IS_AJAX_ENABLED eq true && $REQUEST_INSTANCE->get('displayMode') neq 'overlay'}
-            {else}
-                {continue}
             {/if}
             {if 'field' eq $FIELD_CONFIG['type']}
                 {assign var=FIELD_DATA_TYPE value=$FIELD_MODEL->getFieldDataType()}

@@ -26,6 +26,9 @@ class ProjectTask_RecipientPreferences_View extends Project_RecipientPreferences
         $viewer->assign('EMAIL_FIELDS_LIST', $emailFieldsInfo);
         $viewer->assign('MODULE', $sourceModule);
         $viewer->assign('SOURCE_MODULE', $sourceModule);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         echo $viewer->view('RecipientPreferences.tpl', 'Project', true);
     }
 

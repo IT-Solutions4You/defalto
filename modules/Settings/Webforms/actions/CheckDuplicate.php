@@ -18,7 +18,10 @@
 
 class Settings_Webforms_CheckDuplicate_Action extends Settings_Vtiger_Index_Action
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
 

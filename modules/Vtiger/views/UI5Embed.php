@@ -18,7 +18,10 @@
 
 class Vtiger_UI5Embed_View extends Vtiger_Index_View
 {
-    protected function preProcessDisplay(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessDisplay(Vtiger_Request $request): void
     {
     }
 

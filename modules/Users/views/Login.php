@@ -18,19 +18,28 @@
 
 vimport('~~/vtlib/Vtiger/Net/Client.php');
 
-class Users_Login_View extends Vtiger_View_Controller
+class Users_Login_View extends Core_Controller_View
 {
-    function loginRequired()
+    /**
+     * @inheritDoc
+     */
+    public function isLoginRequired(): bool
     {
         return false;
     }
 
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         return true;
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         global $current_user;
 
@@ -49,6 +58,8 @@ class Users_Login_View extends Vtiger_View_Controller
         $viewer->assign('EXTENSION_MODULE', '');
         $viewer->assign('CURRENT_USER_MODEL', $current_user);
         $viewer->assign('LANGUAGE', '');
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'preProcess', $request->getModule(), $viewer, $request);
 
         if ($display) {
             $this->preProcessDisplay($request);
@@ -89,21 +100,33 @@ class Users_Login_View extends Vtiger_View_Controller
         $viewer->view('Login.tpl', 'Users');
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $moduleName = $request->getModule();
         $viewer = $this->getViewer($request);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'postProcess', $request->getModule(), $viewer, $request);
+
         $viewer->view('Footer.tpl', $moduleName);
     }
 
-    function getPageTitle(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getPageTitle(Vtiger_Request $request): string
     {
         $companyDetails = Vtiger_CompanyDetails_Model::getInstanceById();
 
         return $companyDetails->get('organizationname');
     }
 
-    function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
 
@@ -113,8 +136,7 @@ class Users_Login_View extends Vtiger_View_Controller
             'modules.Vtiger.resources.Popup',
         ];
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($jsScriptInstances, $headerScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($jsScriptInstances, $headerScriptInstances);
     }
 }

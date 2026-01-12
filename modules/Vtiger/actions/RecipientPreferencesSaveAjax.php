@@ -18,7 +18,10 @@
 
 class Vtiger_RecipientPreferencesSaveAjax_Action extends Vtiger_SaveAjax_Action
 {
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView'];

@@ -29,6 +29,5 @@ $languageStrings = [
     'PriceBooks' => 'Preislisten',
     'SINGLE_PriceBooks' => 'Preisliste',
 ];
-
 $jsLanguageStrings = [
 ];

@@ -16,7 +16,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class MailManager_Folder_Action extends Vtiger_Action_Controller
+class MailManager_Folder_Action extends Core_Controller_Action
 {
     /**
      * @throws Exception

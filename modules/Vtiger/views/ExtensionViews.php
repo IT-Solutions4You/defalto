@@ -27,12 +27,10 @@ class Vtiger_ExtensionViews_View extends Vtiger_Index_View
         $this->exposeMethod('showLogDetail');
     }
 
-    function checkPermission(Vtiger_Request $request)
-    {
-        parent::checkPermission($request);
-    }
-
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'custom_module', 'action' => 'DetailView'];
@@ -53,7 +51,10 @@ class Vtiger_ExtensionViews_View extends Vtiger_Index_View
         $this->showLogs($request);
     }
 
-    function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->get('extensionModule');
         $jsFileNames = [
@@ -61,9 +62,9 @@ class Vtiger_ExtensionViews_View extends Vtiger_Index_View
             'modules.' . $moduleName . '.resources.Settings'
         ];
 
-        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
 
-        return $jsScriptInstances;
+        return $this->checkAndConvertJsScripts($jsFileNames);
     }
 
     /**

@@ -51,14 +51,38 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
     {
         if (empty($_SESSION['Installer_SystemInstall'])) {
             $_SESSION['Installer_SystemInstall'] = Installer_Api_Model::getInstance()->getSystemInstall();
+            $_SESSION['Installer_SystemInstallDate'] = time();
         }
 
         return $_SESSION['Installer_SystemInstall'];
     }
 
+    /**
+     * @return void
+     */
     public static function clearCache(): void
     {
         unset($_SESSION['Installer_SystemInstall']);
+        unset($_SESSION['Installer_SystemInstallDate']);
+    }
+
+    /**
+     * @return string
+     */
+    public static function getCacheDate(): string
+    {
+        $time = $_SESSION['Installer_SystemInstallDate'];
+        $userDate = Vtiger_Util_Helper::formatDateIntoStrings(date('Y-m-d', $time), date('H:i:s', $time));
+
+        return $time ? $userDate : '';
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isCacheDateValid(): bool
+    {
+        return time() - $_SESSION['Installer_SystemInstallDate'] > 60;
     }
 
     /**
@@ -80,6 +104,31 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
         return $this->get('version');
     }
 
+    /**
+     * @return bool
+     */
+    public function isNewestVersion(): bool
+    {
+        return (bool)version_compare(Vtiger_Version::current(), $this->get('version'), '>=');
+    }
+
+    public function hasDownloadUrl(): bool
+    {
+        return $this->get('download-url');
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        if ($this->isNewestVersion()) {
+            return vtranslate('LBL_UP_TO_DATE', 'Installer');
+        }
+
+        return '';
+    }
+
     public function getLabel(): string
     {
         return $this->get('label');
@@ -88,5 +137,22 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
     public function getDownloadUrl(): string
     {
         return 'index.php?module=Installer&view=IndexAjax&mode=systemProgress&version=' . $this->getVersion();
+    }
+
+    public function getCurrentVersion(): string
+    {
+        return Vtiger_Version::current();
+    }
+
+    /**
+     *
+     */
+    public function getBranding()
+    {
+        $translate = vtranslate('LBL_MEMBERSHIP_BRANDING', 'Installer');
+        $translate = str_replace('-redirect-membership', ' class="fw-bold text-primary" target="_blank" href="index.php?module=Installer&view=Redirect&mode=Membership"', $translate);
+        $translate = str_replace('-redirect-order', ' class="fw-bold text-primary" target="_blank" href="index.php?module=Installer&view=Redirect&mode=MembershipOrder"', $translate);
+
+        return $translate;
     }
 }

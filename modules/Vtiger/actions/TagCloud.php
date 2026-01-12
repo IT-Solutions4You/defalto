@@ -32,7 +32,10 @@ class Vtiger_TagCloud_Action extends Vtiger_Mass_Action
         $this->exposeMethod('remove');
     }
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
@@ -239,8 +242,11 @@ class Vtiger_TagCloud_Action extends Vtiger_Mass_Action
         $response->emit();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

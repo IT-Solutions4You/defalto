@@ -10,16 +10,19 @@
 
 class EMAILMaker_ListViewSelect_View extends Vtiger_IndexAjax_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
-        $moduleName = $request->getModule();
-        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
         EMAILMaker_Debugger_Model::GetInstance()->Init();
         $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
 
-        if ($EMAILMaker->checkPermissions("DETAIL") == false) {
+        if (!$EMAILMaker->checkPermissions("DETAIL")) {
             throw new Exception('LBL_PERMISSION_DENIED');
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)
@@ -107,6 +110,9 @@ class EMAILMaker_ListViewSelect_View extends Vtiger_IndexAjax_View
 
         $viewer->assign('idslist', $_REQUEST['idslist']);
         $viewer->assign('relmodule', $request->get('return_module'));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view("ListViewSelect.tpl", 'EMAILMaker');
     }
 

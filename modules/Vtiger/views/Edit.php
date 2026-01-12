@@ -25,7 +25,10 @@ class Vtiger_Edit_View extends Vtiger_Index_View
         parent::__construct();
     }
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $record = $request->get('record');
@@ -38,7 +41,10 @@ class Vtiger_Edit_View extends Vtiger_Index_View
         return $permissions;
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
         $record = $request->get('record');
@@ -71,7 +77,10 @@ class Vtiger_Edit_View extends Vtiger_Index_View
         $viewer->assign('MODULE_SETTING_ACTIONS', $settingLinks);
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         //Vtiger7 - TO show custom view name in Module Header
         $viewer = $this->getViewer($request);
@@ -178,6 +187,8 @@ class Vtiger_Edit_View extends Vtiger_Index_View
 
         $viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
         $viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $moduleName, $viewer, $request);
 
         if ($request->get('displayMode') == 'overlay') {
             $viewer->assign('SCRIPTS', $this->getOverlayHeaderScripts($request));

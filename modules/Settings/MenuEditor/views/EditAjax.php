@@ -43,6 +43,9 @@ class Settings_MenuEditor_EditAjax_View extends Settings_Vtiger_Index_View
         $viewer->assign('SELECTED_APP_NAME', $appName);
         $viewer->assign('MODULE', $request->getModule());
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('AddModule.tpl', $qualifiedModuleName);
     }
 }

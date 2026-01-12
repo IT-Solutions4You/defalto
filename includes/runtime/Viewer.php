@@ -338,10 +338,10 @@ function vtemplate_path($templateName, $moduleName = '')
  */
 function vresource_url($url)
 {
-    global $vtiger_current_version;
+    global $defalto_current_version;
 
     if (stripos($url, '://') === false) {
-        $url = $url . '?v=' . $vtiger_current_version;
+        $url = $url . '?v=' . $defalto_current_version;
     }
 
     if (stripos($url, '$LAYOUT$') !== false) {

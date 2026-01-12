@@ -191,8 +191,8 @@ class Settings_ModuleManager_Module_Model extends Vtiger_Module_Model
 
         // UserPrivilege file needs to be regenerated if module state is changed from
         // vtiger 5.1.0 onwards
-        global $vtiger_current_version;
-        if (version_compare($vtiger_current_version, '5.0.4', '>')) {
+        global $defalto_current_version;
+        if (version_compare($defalto_current_version, '5.0.4', '>')) {
             vtlib_RecreateUserPrivilegeFiles();
         }
     }

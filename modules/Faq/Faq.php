@@ -32,9 +32,8 @@
 // Faq is used to store vtiger_faq information.
 class Faq extends CRMEntity
 {
+    public string $moduleName = 'Faq';
     public string $parentName = 'SUPPORT';
-    public $log;
-    public $db;
     public $table_name = "vtiger_faq";
     public $table_index = 'id';
     //fix for Custom Field for FAQ
@@ -43,8 +42,6 @@ class Faq extends CRMEntity
     public $customFieldTable = ['vtiger_faqcf', 'faqid'];
 
     public $entity_table = "vtiger_crmentity";
-
-    public $column_fields = [];
 
     public $sortby_fields = ['question', 'category', 'id'];
 
@@ -87,18 +84,10 @@ class Faq extends CRMEntity
     // For Alphabetical search
     public $def_basicsearch_col = 'question';
 
-    /**    Constructor which will set the column_fields in this object
+    /**
+     * @inheritDoc
      */
-    function __construct()
-    {
-        $this->log = Logger::getLogger('faq');
-        $this->log->debug("Entering Faq() method ...");
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('Faq');
-        $this->log->debug("Exiting Faq method ...");
-    }
-
-    function save_module($module)
+    public function save_module(string $module)
     {
         //Inserting into Faq comment table
         $this->insertIntoFAQCommentTable('vtiger_faqcomments', $module);

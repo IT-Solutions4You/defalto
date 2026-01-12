@@ -51,7 +51,7 @@ $languageStrings = [
     'Type' => 'Typ',
     'Undefined' => 'nicht definiert',
     'Used Units' => 'Verbrauch',
+    'Due date' => 'Due date',
 ];
-
 $jsLanguageStrings = [
 ];

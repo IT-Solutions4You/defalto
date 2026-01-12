@@ -16,7 +16,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Migration_Index_View extends Vtiger_View_Controller
+class Migration_Index_View extends Core_Controller_View
 {
     function __construct()
     {
@@ -28,7 +28,10 @@ class Migration_Index_View extends Vtiger_View_Controller
         $this->exposeMethod('migrateData');
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
@@ -85,7 +88,10 @@ class Migration_Index_View extends Vtiger_View_Controller
         $viewer->view('MigrationStep3.tpl', $moduleName);
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
 
@@ -97,17 +103,26 @@ class Migration_Index_View extends Vtiger_View_Controller
         $viewer->view('MigrationPreProcess.tpl', $moduleName);
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $moduleName = $request->getModule();
 
         $viewer = $this->getViewer($request);
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('VIEW', 'Index');
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'postProcess', $request->getModule(), $viewer, $request);
+
         $viewer->view('MigrationPostProcess.tpl', $moduleName);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = [];
         $moduleName = $request->getModule();
@@ -118,10 +133,11 @@ class Migration_Index_View extends Vtiger_View_Controller
             "modules.$moduleName.resources.Index"
         ];
 
-        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
 
-        return $headerScriptInstances;
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     /**

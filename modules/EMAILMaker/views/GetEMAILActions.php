@@ -10,8 +10,12 @@
 
 class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
+        return true;
     }
 
     public function __construct()
@@ -110,6 +114,8 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
                 }
             }
         }
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view($tpl_name . ".tpl", 'EMAILMaker');
     }

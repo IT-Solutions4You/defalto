@@ -15,7 +15,10 @@ class ITS4YouEmails_List_View extends Vtiger_List_View
         parent::__construct();
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         vtws_addDefaultModuleTypeEntity($request->getModule());
 

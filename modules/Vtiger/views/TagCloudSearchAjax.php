@@ -18,7 +18,10 @@
 
 class Vtiger_TagCloudSearchAjax_View extends Vtiger_IndexAjax_View
 {
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         if ($request->get('module') != 'Dashboard') {
@@ -39,6 +42,8 @@ class Vtiger_TagCloudSearchAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('TAGGED_RECORDS', $taggedRecords);
         $viewer->assign('TAG_NAME', $request->get('tag_name'));
 
-        echo $viewer->view('TagCloudResults.tpl', $module, true);
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
+        echo $viewer->view('TagCloudResults.tpl', $request->getModule(), true);
     }
 }

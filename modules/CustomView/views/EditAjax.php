@@ -18,7 +18,10 @@
 
 class CustomView_EditAjax_View extends Vtiger_IndexAjax_View
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'source_module', 'action' => 'DetailView'];
@@ -115,6 +118,8 @@ class CustomView_EditAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('LIST_SHARED', $listShared);
         $viewer->assign('SELECTED_MEMBERS_GROUP', $customViewSharedMembers);
         $viewer->assign('MEMBER_GROUPS', Settings_Groups_Member_Model::getAll());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         echo $viewer->view('EditView.tpl', $module, true);
     }

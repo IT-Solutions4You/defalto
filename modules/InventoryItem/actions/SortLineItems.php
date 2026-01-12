@@ -8,7 +8,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class InventoryItem_SortLineItems_Action extends Vtiger_Action_Controller
+class InventoryItem_SortLineItems_Action extends Core_Controller_Action
 {
     public function process(Vtiger_Request $request)
     {
@@ -40,7 +40,10 @@ class InventoryItem_SortLineItems_Action extends Vtiger_Action_Controller
         $response->emit();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
         return $request->validateWriteAccess();
     }

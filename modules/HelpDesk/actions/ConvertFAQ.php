@@ -16,9 +16,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class HelpDesk_ConvertFAQ_Action extends Vtiger_Action_Controller
+class HelpDesk_ConvertFAQ_Action extends Core_Controller_Action
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
@@ -53,7 +56,7 @@ class HelpDesk_ConvertFAQ_Action extends Vtiger_Action_Controller
                     $requestData['module'] = 'HelpDesk';
                     $requestData['duplicateRecords'] = $e->getDuplicateRecordIds();
 
-                    global $vtiger_current_version;
+                    global $defalto_current_version;
                     $viewer = new Vtiger_Viewer();
                     $viewer->assign('REQUEST_DATA', $requestData);
                     $viewer->assign('REQUEST_URL', $faqRecordModel->getEditViewUrl() . "&parentId=$recordId&parentModule=$moduleName");
@@ -66,8 +69,11 @@ class HelpDesk_ConvertFAQ_Action extends Vtiger_Action_Controller
         }
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

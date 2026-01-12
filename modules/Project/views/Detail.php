@@ -151,12 +151,10 @@ class Project_Detail_View extends Vtiger_Detail_View
 		return $viewer->view('ShowChart.tpl', $moduleName, 'true');
 	}
 
-	/**
-	 * Function get gantt specific headerscript
-	 *
-	 * @param Vtiger_Request $request
-	 */
-	public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
 	{
 		$headerScriptInstances = parent::getHeaderScripts($request);
 		$jsFileNames = [
@@ -177,17 +175,14 @@ class Project_Detail_View extends Vtiger_Detail_View
 		];
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-		return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
 	}
 
 	/**
-	 * Function to get the css styles for gantt chart
-	 *
-	 * @param Vtiger_Request $request
+	 * @inheritDoc
 	 */
-	public function getHeaderCss(Vtiger_Request $request)
+    public function getHeaderCss(Vtiger_Request $request): array
 	{
 		$headerCssInstances = parent::getHeaderCss($request);
 		$cssFileNames = [

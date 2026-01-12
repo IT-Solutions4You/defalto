@@ -18,7 +18,10 @@
 
 class ModComments_Delete_Action extends Vtiger_Delete_Action
 {
-    function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
     }

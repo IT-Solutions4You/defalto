@@ -38,12 +38,9 @@ class Core_RelatedBlock_View extends Vtiger_Index_View
     }
 
     /**
-     * @param Vtiger_Request $request
-     * @param bool           $display
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function preProcess(Vtiger_Request $request, $display = true)
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         if ($this->isContentView($request)) {
             return;
@@ -53,11 +50,9 @@ class Core_RelatedBlock_View extends Vtiger_Index_View
     }
 
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function postProcess(Vtiger_Request $request)
+    public function postProcess(Vtiger_Request $request): void
     {
         if ($this->isContentView($request)) {
             return;
@@ -94,6 +89,8 @@ class Core_RelatedBlock_View extends Vtiger_Index_View
             $viewer->assign('RELATED_MODULE_SORT_OPTIONS', $relatedBlock->getRelatedModuleSortOptions());
             $viewer->assign('SELECT_MODULE', $relatedBlock->getRelatedModuleSortOptions());
         }
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'edit', $request->getModule(), $viewer, $request);
 
         $viewer->view('RelatedBlockEdit.tpl', $request->getModule());
     }
@@ -201,6 +198,9 @@ class Core_RelatedBlock_View extends Vtiger_Index_View
         $viewer = $this->getViewer($request);
         $viewer->assign('TEMPLATE_CONTENT', $testContent);
         $viewer->assign('RECORD_MODEL', $records[0]->getSourceRecord());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'iframe', $request->getModule(), $viewer, $request);
+
         $viewer->view('relatedblock/Iframe.tpl', $moduleName);
     }
 
@@ -214,15 +214,16 @@ class Core_RelatedBlock_View extends Vtiger_Index_View
         $viewer = $this->getViewer($request);
         $viewer->assign('RELATED_BLOCK_MODELS', Core_RelatedBlock_Model::getAll($moduleName));
         $viewer->assign('RELATED_BLOCK_MODEL', Core_RelatedBlock_Model::getInstance($moduleName));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'list', $request->getModule(), $viewer, $request);
+
         $viewer->view('RelatedBlockList.tpl', $request->getModule());
     }
 
     /**
-     * @param Vtiger_Request $request
-     *
-     * @return array
+     * @inheritDoc
      */
-    public function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();

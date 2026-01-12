@@ -18,13 +18,18 @@
 
 class ModComments_FilePreview_View extends Vtiger_IndexAjax_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
 
         if (!Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $request->get('record'))) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)
@@ -103,6 +108,8 @@ class ModComments_FilePreview_View extends Vtiger_IndexAjax_View
         $viewer->assign('FILE_TYPE', $type);
         $viewer->assign('FILE_CONTENTS', $contents);
         $viewer->assign('SITE_URL', vglobal('site_URL'));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('FilePreview.tpl', $moduleName);
     }

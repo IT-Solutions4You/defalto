@@ -368,14 +368,10 @@ class ListViewController
                     //not check for permissions for non admin users for status and activity type field
                     $value = Vtiger_Language_Handler::getTranslatedString($value, $module);
                     $value = textlength_check($value);
-                } elseif ($fieldDataType == 'date' || $fieldDataType == 'datetime') {
+                } elseif ($fieldDataType == 'date') {
                     if ($value != '' && $value != '0000-00-00' && $value != 'NULL') {
-                        if ($fieldDataType == 'datetime' && $value != '0000-00-00 00:00:00') {
-                            $value = Vtiger_Datetime_UIType::getDateTimeValue($value);
-                        } elseif ($fieldDataType == 'date') {
-                            $date = new DateTimeField($value);
-                            $value = $date->getDisplayDate();
-                        }
+                        $date = new DateTimeField($value);
+                        $value = $date->getDisplayDate();
                     } elseif ($value == '0000-00-00') {
                         $value = '';
                     }
@@ -487,10 +483,10 @@ class ListViewController
                     }
 
                     if (!empty($rawValue)) {
-                        $uiTypeModel = Vtiger_Base_UIType::getInstance($fieldDataType, $module);
+                        $fieldModel = Vtiger_Field_Model::getInstance($field->getFieldId());
 
-                        if(method_exists($uiTypeModel, 'transformDisplayValue')) {
-                            $value = $uiTypeModel::transformDisplayValue($rawValue);
+                        if ($fieldModel) {
+                            $value = $fieldModel->getDisplayValue($rawValue, $baseRecordId);
                         }
                     } else {
                         $value = '';

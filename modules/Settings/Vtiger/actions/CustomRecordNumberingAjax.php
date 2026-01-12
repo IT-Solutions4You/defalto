@@ -26,7 +26,10 @@ class Settings_Vtiger_CustomRecordNumberingAjax_Action extends Settings_Vtiger_I
         $this->exposeMethod('updateRecordsWithSequenceNumber');
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         parent::checkPermission($request);
         $qualifiedModuleName = $request->getModule(false);
@@ -35,6 +38,8 @@ class Settings_Vtiger_CustomRecordNumberingAjax_Action extends Settings_Vtiger_I
         if (!$sourceModule) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', $qualifiedModuleName));
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)
@@ -108,8 +113,11 @@ class Settings_Vtiger_CustomRecordNumberingAjax_Action extends Settings_Vtiger_I
         $response->emit();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

@@ -16,12 +16,14 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Install_Index_view extends Vtiger_View_Controller
+class Install_Index_view extends Core_Controller_View
 {
     protected $debug = false;
-    protected $viewer = null;
 
-    function loginRequired()
+    /**
+     * @inheritDoc
+     */
+    public function isLoginRequired(): bool
     {
         return false;
     }
@@ -44,7 +46,10 @@ class Install_Index_view extends Vtiger_View_Controller
         set_time_limit(0); // override limits on execution time to allow installation process to finish
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         $this->applyInstallFriendlyEnv();
         $this->retrieveDefaultLanguage($request);
@@ -87,7 +92,10 @@ class Install_Index_view extends Vtiger_View_Controller
         $this->Step1($request);
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();
@@ -250,7 +258,7 @@ class Install_Index_view extends Vtiger_View_Controller
             $viewer->assign('PASSWORD', $_SESSION['config_file_info']['password']);
             $viewer->assign('USERNAME', $_SESSION['config_file_info']['admin_name']);
             $viewer->assign('APPUNIQUEKEY', $this->retrieveConfiguredAppUniqueKey());
-            $viewer->assign('CURRENT_VERSION', $_SESSION['vtiger_version']);
+            $viewer->assign('CURRENT_VERSION', $_SESSION['defalto_version']);
             $viewer->view('Step7.tpl', $moduleName);
         } else {
             $response = new Vtiger_Response();
@@ -268,7 +276,10 @@ class Install_Index_view extends Vtiger_View_Controller
         return $application_unique_key ?? '';
     }
 
-    public function getHeaderCss(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
         $parentCSSScripts = parent::getHeaderCss($request);
@@ -281,7 +292,10 @@ class Install_Index_view extends Vtiger_View_Controller
         return $headerCSSScriptInstances;
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
         $parentScripts = parent::getHeaderScripts($request);
@@ -291,12 +305,14 @@ class Install_Index_view extends Vtiger_View_Controller
             "modules.$moduleName.resources.Index"
         ];
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($parentScripts, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($parentScripts, $jsScriptInstances);
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
         return $request->validateWriteAccess(true);
     }

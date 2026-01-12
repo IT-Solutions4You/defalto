@@ -10,11 +10,7 @@
 
 class ITS4YouEmails extends CRMEntity
 {
-    public string $moduleVersion = '1.0';
-    public $id;
-    public $column_fields;
-    public $log;
-    public $db;
+    public string $moduleVersion = '1.2';
     public string $moduleName = 'ITS4YouEmails';
     public string $parentName = 'Tools';
     public string $moduleLabel = 'Emails';
@@ -66,17 +62,11 @@ class ITS4YouEmails extends CRMEntity
         'Assigned To' => 'assigned_user_id',
         'Description' => 'description',
     ];
-    public $isLineItemUpdate = true;
 
-    public function __construct()
-    {
-        global $log;
-        $this->column_fields = getColumnFields(get_class($this));
-        $this->db = PearDatabase::getInstance();
-        $this->log = $log;
-    }
-
-    public function save_module()
+    /**
+     * @inheritDoc
+     */
+    public function save_module(string $module)
     {
         $this->createRelationsFormBlock();
     }

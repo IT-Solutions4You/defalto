@@ -34,7 +34,10 @@ class Vtiger_Import_View extends Vtiger_Index_View
         $this->exposeMethod('updateSavedMapping');
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
 
@@ -69,13 +72,9 @@ class Vtiger_Import_View extends Vtiger_Index_View
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
 
@@ -96,9 +95,8 @@ class Vtiger_Import_View extends Vtiger_Index_View
         }
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
     function getUnsupportedDuplicateHandlingModules()
@@ -162,6 +160,8 @@ class Vtiger_Import_View extends Vtiger_Index_View
         }
 
         $viewer->assign('FORMAT', $fileFormat);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'importBasicStep', $request->getModule(), $viewer, $request);
 
         return $viewer->view('ImportBasicStep.tpl', 'Import');
     }
@@ -305,6 +305,9 @@ class Vtiger_Import_View extends Vtiger_Index_View
         $viewer->assign('MODULE', 'Import');
         $viewer->assign('TOTAL_RECORDS', $noOfRecords);
         $viewer->assign('DELETED_RECORDS_COUNT', $noOfRecordsDeleted);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'undoImport', $request->getModule(), $viewer, $request);
+
         $viewer->view('ImportUndoResult.tpl', 'Import');
     }
 

@@ -28,7 +28,10 @@ class PriceBooks_RelationAjax_Action extends Vtiger_RelationAjax_Action
         }
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $mode = $request->getMode();

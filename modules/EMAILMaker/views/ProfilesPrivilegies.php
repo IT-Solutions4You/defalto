@@ -10,12 +10,18 @@
 
 class EMAILMaker_ProfilesPrivilegies_View extends EMAILMaker_Index_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
+
         if (!$currentUserModel->isAdminUser()) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)
@@ -59,10 +65,16 @@ class EMAILMaker_ProfilesPrivilegies_View extends EMAILMaker_Index_View
             }
         }
         $viewer->assign("PERMISSIONS", $permissionNames);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ProfilesPrivilegies.tpl', 'EMAILMaker');
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
@@ -72,8 +84,7 @@ class EMAILMaker_ProfilesPrivilegies_View extends EMAILMaker_Index_View
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

@@ -37,7 +37,6 @@ $languageStrings = [
     'Portal' => 'Unsere Seiten',
     'SINGLE_Portal' => 'Unsere Website',
 ];
-
 $jsLanguageStrings = [
     'JS_ENTER_MANDATORY_FIELDS' => 'Bitte füllen Sie alle Pflichtfelder aus',
 ];

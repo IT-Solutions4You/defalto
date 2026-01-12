@@ -31,9 +31,8 @@
 
 class PurchaseOrder extends CRMEntity
 {
+    public string $moduleName = 'PurchaseOrder';
     public string $parentName = 'INVENTORY';
-    public $log;
-    public $db;
 
     public $table_name = 'vtiger_purchaseorder';
     public $table_index = 'purchaseorderid';
@@ -52,8 +51,6 @@ class PurchaseOrder extends CRMEntity
     public $entity_table = 'vtiger_crmentity';
 
     public $billadr_table = 'vtiger_pobillads';
-
-    public $column_fields = [];
 
     public $sortby_fields = ['subject', 'tracking_no', 'assigned_user_id', 'lastname'];
 
@@ -119,25 +116,19 @@ class PurchaseOrder extends CRMEntity
     // For Alphabetical search
     public $def_basicsearch_col = 'subject';
 
-    // For workflows update field tasks is deleted all the lineitems.
-    public $isLineItemUpdate = true;
 
-    //var $groupTable = Array('vtiger_pogrouprelation','purchaseorderid');
-
-    /** Constructor Function for Order class
-     *  This function creates an instance of LoggerManager class using getLogger method
-     *  creates an instance for PearDatabase class and get values for column_fields array of Order class.
+    /**
+     * @inheritDoc
      */
-    public function __construct()
+    public function save_module(string $module)
     {
-        $this->log = Logger::getLogger('PurchaseOrder');
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('PurchaseOrder');
-    }
+        $request = new Vtiger_Request($_REQUEST, $_REQUEST);
 
-    public function save_module($module)
-    {
-        InventoryItem_CopyOnCreate_Model::run($this);
+        if (is_numeric($request->get('duplicateFrom'))) {
+            InventoryItem_CopyOnCreate_Model::run($this, $request->get('duplicateFrom'));
+        } else {
+            InventoryItem_CopyOnCreate_Model::run($this);
+        }
     }
 
     /*

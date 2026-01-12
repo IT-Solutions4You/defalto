@@ -18,18 +18,16 @@
 
 class Documents_MoveDocuments_View extends Vtiger_Index_View
 {
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
 
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView'];
 
         return $permissions;
-    }
-
-    public function checkPermission(Vtiger_Request $request)
-    {
-        return parent::checkPermission($request);
     }
 
     public function process(Vtiger_Request $request)
@@ -54,6 +52,8 @@ class Documents_MoveDocuments_View extends Vtiger_Index_View
             $viewer->assign('ALPHABET_VALUE', $searchValue);
             $viewer->assign('SEARCH_KEY', $searchKey);
         }
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('MoveDocuments.tpl', $moduleName);
     }

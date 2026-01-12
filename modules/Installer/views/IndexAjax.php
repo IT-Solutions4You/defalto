@@ -10,13 +10,18 @@
 
 class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
         if (!$currentUserModel->isAdminUser()) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
+
+        return true;
     }
 
     /**
@@ -30,8 +35,6 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
         $this->exposeMethod('extensionProgress');
         $this->exposeMethod('extensionUninstall');
         $this->exposeMethod('licenseModal');
-        $this->exposeMethod('licenseSave');
-        $this->exposeMethod('licenseDelete');
         $this->exposeMethod('updateInformation');
         $mode = $request->getMode();
 
@@ -48,10 +51,13 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
     public function systemModal(Vtiger_Request $request): void
     {
         $version = $request->get('version');
+        $qualifiedModule = $request->getModule(false);
 
         $viewer = $this->getViewer($request);
+        $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
+        $viewer->assign('MODULE', $request->getModule());
         $viewer->assign('SYSTEM_INSTALL', Installer_SystemInstall_Model::getInstance($version));
-        $viewer->view('SystemModal.tpl', $request->getModule());
+        $viewer->view('SystemModal.tpl', $qualifiedModule);
     }
 
     /**
@@ -93,73 +99,11 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
     /**
      * @throws Exception
      */
-    public function licenseSave(Vtiger_Request $request): void
-    {
-        $id = (int)$request->get('license_id');
-        $name = $request->get('license_name');
-
-        if (!empty($id)) {
-            $license = Installer_License_Model::getInstanceById($id);
-        } else {
-            $license = Installer_License_Model::getInstance($name);
-        }
-
-        $license->set('name', $name);
-        $licenseInfo = Installer_Api_Model::getInstance()->activateLicenseInfo($license->getName());
-        $license->setInfo($licenseInfo);
-        $license->save();
-
-        Installer_ExtensionInstall_Model::clearCache();
-        Installer_SystemInstall_Model::clearCache();
-
-        header('location:' . $license->getLicenseUrl());
-    }
-
-    public function updateInformation(Vtiger_Request $request): void
-    {
-        Installer_ExtensionInstall_Model::clearCache();
-        Installer_SystemInstall_Model::clearCache();
-
-        header('location:index.php?module=Installer&view=Index');
-    }
-
-    /**
-     * @param Vtiger_Request $request
-     *
-     * @return void
-     * @throws Exception
-     */
-    public function licenseDelete(Vtiger_Request $request): void
-    {
-        $id = (int)$request->get('license_id');
-        $message = vtranslate('LBL_LICENSE_ALREADY_DELETED', 'Installer');
-
-        if (!empty($id)) {
-            $license = Installer_License_Model::getInstanceById($id);
-
-            if ($license) {
-                $deactivate = Installer_Api_Model::getInstance()->deactivateLicenseInfo($license->getName());
-
-                if ($deactivate) {
-                    $license->delete();
-                    $message = vtranslate('LBL_LICENSE_DELETED', 'Installer');
-                }
-            }
-        }
-
-        $response = new Vtiger_Response();
-        $response->setResult(['success' => true, 'message' => $message]);
-        $response->emit();
-    }
-
-    /**
-     * @throws Exception
-     */
     public function systemProgress(Vtiger_Request $request): void
     {
         vglobal('debug', true);
 
-        $licenses = Installer_License_Model::getAll(Installer_License_Model::EXTENSION_PACKAGES);
+        $licenses = Installer_License_Model::getAll(Installer_License_Model::EXTENSION_PACKAGE);
 
         if (!empty($licenses)) {
             foreach ($licenses as $license) {
@@ -225,5 +169,17 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
         } else {
             header('location:' . $_SERVER['HTTP_REFERER']);
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function updateInformation(Vtiger_Request $request): void
+    {
+        Installer_License_Model::updateAll();
+        Installer_ExtensionInstall_Model::clearCache();
+        Installer_SystemInstall_Model::clearCache();
+
+        header('location:index.php?module=Installer&view=Index');
     }
 }

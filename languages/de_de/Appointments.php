@@ -200,8 +200,14 @@ $languageStrings = [
     'Yearly' => 'Jahr(e)',
     'first' => 'Erster',
     'last' => 'Letzer',
+    'Is All Day' => 'Is All Day',
+    'Start Datetime' => 'Start Datetime',
+    'End Datetime' => 'End Datetime',
+    'Reminder' => 'Reminder',
+    'Invite Users' => 'Invite Users',
+    'Calendar No' => 'Calendar No',
+    'Duration' => 'Duration',
 ];
-
 $jsLanguageStrings = [
     'JS_CALENDAR_VIEW_ADDED_SUCCESSFULLY' => 'Kalenderansicht erfolgreich hinzugefügt',
     'JS_CALENDAR_VIEW_COLOR_UPDATED_SUCCESSFULLY' => 'Kalenderansichtfarben erfolgreich aktualisiert',

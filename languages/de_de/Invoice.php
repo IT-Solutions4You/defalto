@@ -44,8 +44,18 @@ $languageStrings = [
     'Sales Commission' => 'Provision',
     'Sales Order' => 'Auftragsbestätigung',
     'Sent' => 'gesendet',
+    'Price Book' => 'Price Book',
+    'Price After Discount' => 'Price After Discount',
+    'Overall Discount' => 'Overall Discount',
+    'Overall Discount Amount' => 'Overall Discount Amount',
+    'Price After Overall Discount' => 'Price After Overall Discount',
+    'Tax Amount' => 'Tax Amount',
+    'Grand Total' => 'Grand Total',
+    'Margin Amount' => 'Margin Amount',
+    'Quote' => 'Quote',
+    'Inventory Manager' => 'Inventory Manager',
+    'Terms &amp; Conditions' => 'Terms &amp; Conditions',
 ];
-
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Bitte entfernen Sie die gelöschte Position',
 ];

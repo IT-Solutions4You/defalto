@@ -18,14 +18,18 @@
 
 class Settings_Profiles_EditAjax_View extends Settings_Profiles_Edit_View
 {
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        return true;
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return true;
     }
 
     public function process(Vtiger_Request $request)
@@ -42,25 +46,22 @@ class Settings_Profiles_EditAjax_View extends Settings_Profiles_Edit_View
         $viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
         $viewer->assign('SHOW_EXISTING_PROFILES', true);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'getContents', $request->getModule(), $viewer, $request);
+
         return $viewer->view('EditViewContents.tpl', $qualifiedModuleName, true);
     }
 
     /**
-     * Function to get the list of Script models to be included
-     *
-     * @param Vtiger_Request $request
-     *
-     * @return <Array> - List of Vtiger_JsScript_Model instances
+     * @inheritDoc
      */
-    function getHeaderScripts(Vtiger_Request $request)
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
-        $moduleName = $request->getModule();
-
         $jsFileNames = [
             "modules.Settings.Profiles.resources.Profiles",
         ];
-        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
-        return $jsScriptInstances;
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
+
+        return $this->checkAndConvertJsScripts($jsFileNames);
     }
 }

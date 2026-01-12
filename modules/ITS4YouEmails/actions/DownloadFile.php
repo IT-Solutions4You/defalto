@@ -8,13 +8,8 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class ITS4YouEmails_DownloadFile_Action extends Vtiger_Action_Controller
+class ITS4YouEmails_DownloadFile_Action extends Core_Controller_Action
 {
-    public function checkPermission(Vtiger_Request $request)
-    {
-        return parent::checkPermission($request);
-    }
-
     public function process(Vtiger_Request $request)
     {
         $db = PearDatabase::getInstance();
@@ -52,7 +47,10 @@ class ITS4YouEmails_DownloadFile_Action extends Vtiger_Action_Controller
         }
     }
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView'];

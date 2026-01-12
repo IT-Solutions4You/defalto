@@ -31,9 +31,9 @@
 
 class Quotes extends CRMEntity
 {
+    public string $moduleVersion = '1.1';
+    public string $moduleName = 'Quotes';
     public string $parentName = 'SALES';
-    var $log;
-    var $db;
 
     var $table_name = "vtiger_quotes";
     var $table_index = 'quoteid';
@@ -56,8 +56,6 @@ class Quotes extends CRMEntity
     var $object_name = "Quote";
 
     var $new_schema = true;
-
-    var $column_fields = [];
 
     var $sortby_fields = ['subject', 'crmid', 'assigned_user_id', 'accountname', 'lastname'];
 
@@ -129,21 +127,18 @@ class Quotes extends CRMEntity
     // For Alphabetical search
     var $def_basicsearch_col = 'subject';
 
-    // For workflows update field tasks is deleted all the lineitems.
-    var $isLineItemUpdate = true;
-
-    /**    Constructor which will set the column_fields in this object
+    /**
+     * @inheritDoc
      */
-    function __construct()
+    public function save_module(string $module)
     {
-        $this->log = Logger::getLogger('quote');
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('Quotes');
-    }
+        $request = new Vtiger_Request($_REQUEST, $_REQUEST);
 
-    function save_module()
-    {
-        InventoryItem_CopyOnCreate_Model::run($this);
+        if (is_numeric($request->get('duplicateFrom'))) {
+            InventoryItem_CopyOnCreate_Model::run($this, $request->get('duplicateFrom'));
+        } else {
+            InventoryItem_CopyOnCreate_Model::run($this);
+        }
     }
 
     /**    function used to get the list of sales orders which are related to the Quotes

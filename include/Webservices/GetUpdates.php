@@ -146,13 +146,13 @@ function vtws_sync($mtime, $elementType, $syncType, $user)
         }
         $params = [$moduleMeta->getTabName(), $datetime, $maxModifiedTime];
 
-        $queryGenerator = new QueryGenerator($elementType, $user);
+        $queryGenerator = new EnhancedQueryGenerator($elementType, $user);
         $fields = [];
         $moduleFields = $moduleMeta->getModuleFields();
         $moduleFieldNames = getSelectClauseFields($elementType, $moduleMeta, $user);
         $moduleFieldNames[] = 'id';
         $queryGenerator->setFields($moduleFieldNames);
-        $selectClause = "SELECT " . $queryGenerator->getSelectClauseColumnSQL();
+        $selectClause = 'SELECT ' . $queryGenerator->getSelectClauseColumnSQL();
         // adding the fieldnames that are present in the delete condition to the select clause
         // since not all fields present in delete condition will be present in the fieldnames of the module
         foreach ($deleteColumnNames as $table_fieldName => $columnName) {
@@ -162,12 +162,13 @@ function vtws_sync($mtime, $elementType, $syncType, $user)
         }
 
         $fromClause = $queryGenerator->getFromClause();
+        $fromClause .= " INNER JOIN (SELECT modifiedtime, crmid,deleted,setype FROM $baseCRMTable WHERE setype = ? AND modifiedtime > ? AND modifiedtime <= ?";
 
-        $fromClause .= " INNER JOIN (select modifiedtime, crmid,deleted,setype FROM $baseCRMTable WHERE setype=? and modifiedtime >? and modifiedtime<=?";
         if (!$applicationSync) {
-            $fromClause .= 'and assigned_user_id IN(' . generateQuestionMarks($ownerIds) . ')';
+            $fromClause .= ' AND assigned_user_id IN (' . generateQuestionMarks($ownerIds) . ')';
             $params = array_merge($params, $ownerIds);
         }
+
         $fromClause .= ' ) vtiger_ws_sync ON (vtiger_crmentity.crmid = vtiger_ws_sync.crmid)';
         $q = $selectClause . " " . $fromClause;
         $result = $adb->pquery($q, $params);

@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -17,22 +18,21 @@
  */
 
 $languageStrings = [
-	'Recycle Bin'              => 'Recycle Bin',
-	'RecycleBin'               => 'Recycle Bin',
-	'SINGLE_RecycleBin'        => 'Recycle Bin',
-	'LBL_SELECT_MODULE'        => 'Select Module',
-	'LBL_EMPTY_RECYCLEBIN'     => 'Empty Recycle Bin',
-	'LBL_RESTORE'              => 'Restore',
-	'LBL_NO_PERMITTED_MODULES' => 'No permitted modules available',
-	'LBL_RECORDS_LIST'         => 'Recycle Bin List',
-	'LBL_NO_RECORDS_FOUND'     => 'No records found to Restore in module',
+    'Recycle Bin' => 'Recycle Bin',
+    'RecycleBin' => 'Recycle Bin',
+    'SINGLE_RecycleBin' => 'Recycle Bin',
+    'LBL_SELECT_MODULE' => 'Select Module',
+    'LBL_EMPTY_RECYCLEBIN' => 'Empty Recycle Bin',
+    'LBL_RESTORE' => 'Restore',
+    'LBL_NO_PERMITTED_MODULES' => 'No permitted modules available',
+    'LBL_RECORDS_LIST' => 'Recycle Bin List',
+    'LBL_NO_RECORDS_FOUND' => 'No records found to Restore in module',
 ];
-
 $jsLanguageStrings = [
-	'JS_MSG_EMPTY_RB_CONFIRMATION'         => 'Are you sure you want to permanently remove all the deleted records from your database?',
-	'JS_LBL_RESTORE_RECORDS_CONFIRMATION'  => 'Are you sure you want to restore the records?',
-	'JS_RESTORING_RECORDS'                 => 'Restoring records',
-	'JS_LBL_RESTORE_RECORD_CONFIRMATION'   => 'Are you sure you want to restore the record?',
-	'JS_RESTORING_RECORD'                  => 'Restoring Record',
-	'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Restore in Vtiger and Drive',
+    'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Are you sure you want to permanently remove all the deleted records from your database?',
+    'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Are you sure you want to restore the records?',
+    'JS_RESTORING_RECORDS' => 'Restoring records',
+    'JS_LBL_RESTORE_RECORD_CONFIRMATION' => 'Are you sure you want to restore the record?',
+    'JS_RESTORING_RECORD' => 'Restoring Record',
+    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Restore in Vtiger and Drive',
 ];

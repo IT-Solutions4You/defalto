@@ -36,6 +36,5 @@ $languageStrings = [
     '_start for notify' => 'keys',
     '_start for widgets' => 'keys',
 ];
-
 $jsLanguageStrings = [
 ];

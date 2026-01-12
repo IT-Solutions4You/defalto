@@ -10,15 +10,47 @@
 
 class InventoryItem_Install_Model extends Core_Install_Model
 {
+    public array $blocksHeaderFields = [
+        1 => 'item_text',
+        'productid',
+        'price',
+        'quantity',
+        'unit',
+    ];
+    protected array $defaultSupportedModules = ['Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice'];
+
+    protected array $modifiers = [
+        'Quotes' => [
+            'DetailView'          => ['InventoryItem_DetailView_Modifier'],
+            'EditView'            => ['InventoryItem_EditView_Modifier'],
+            'QuickCreateAjaxView' => ['InventoryItem_QuickCreateAjaxView_Modifier'],
+        ],
+        'PurchaseOrder' => [
+            'DetailView'          => ['InventoryItem_DetailView_Modifier'],
+            'EditView'            => ['InventoryItem_EditView_Modifier'],
+        ],
+        'SalesOrder' => [
+            'DetailView'          => ['InventoryItem_DetailView_Modifier'],
+            'EditView'            => ['InventoryItem_EditView_Modifier'],
+            'QuickCreateAjaxView' => ['InventoryItem_QuickCreateAjaxView_Modifier'],
+        ],
+        'Invoice' => [
+            'DetailView'          => ['InventoryItem_DetailView_Modifier'],
+            'EditView'            => ['InventoryItem_EditView_Modifier'],
+            'QuickCreateAjaxView' => ['InventoryItem_QuickCreateAjaxView_Modifier'],
+        ],
+    ];
 
     public function addCustomLinks(): void
     {
         $this->updateHistory();
         $this->updateComments();
+        $this->registerModifiers();
     }
 
     public function deleteCustomLinks(): void
     {
+        $this->deregisterModifiers();
     }
 
     public function getBlocks(): array
@@ -470,11 +502,11 @@ class InventoryItem_Install_Model extends Core_Install_Model
 
     public function getTables(): array
     {
-        return [];
+        return ['df_inventoryitemcolumns', 'df_inventoryitem_itemmodules', 'df_inventoryitem_quantitydecimals', 'df_inventoryitem_modules'];
     }
 
     /**
-     * @throws AppException
+     * @throws Exception
      */
     public function installTables(): void
     {
@@ -527,5 +559,56 @@ class InventoryItem_Install_Model extends Core_Install_Model
             ->createTable('field', 'varchar(255) NOT NULL')
             ->createColumn('decimals', 'int(19) NOT NULL DEFAULT 0')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`field`)');
+
+        $this->getTable('df_inventoryitem_modules', null)
+            ->createTable('tabid')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`tabid`)')
+            ->createKey('CONSTRAINT `fk_1_df_inventoryitem_modules` FOREIGN KEY IF NOT EXISTS (`tabid`) REFERENCES `vtiger_tab` (`tabid`) ON DELETE CASCADE');
+    }
+
+    public function postInstall(): void
+    {
+        parent::postInstall();
+        $this->setupSupportedModules();
+    }
+
+    protected function setupSupportedModules()
+    {
+        $db = PearDatabase::getInstance();
+        $res = $db->query('SELECT * FROM df_inventoryitem_modules');
+
+        if ($db->num_rows($res)) {
+            return;
+        }
+
+        foreach ($this->defaultSupportedModules as $moduleName) {
+            InventoryItem_Utils_Helper::registerInventoryModule($moduleName);
+        }
+    }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    protected function registerModifiers(): void
+    {
+        foreach ($this->modifiers as $moduleName => $modifiersData) {
+            foreach ($modifiersData as $modifiable => $classNames) {
+                foreach ($classNames as $className) {
+                    Core_Modifiers_Model::registerModifier($moduleName, 'InventoryItem', $modifiable, $className);
+                }
+            }
+        }
+    }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    protected function deregisterModifiers(): void
+    {
+        foreach ($this->modifiers as $moduleName => $modifiersData) {
+            Core_Modifiers_Model::deregisterModifier($moduleName, 'InventoryItem');
+        }
     }
 }

@@ -21,14 +21,18 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
         }
     }
 
-    function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
-        return true;
     }
 
-    function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return true;
     }
 
     function process(Vtiger_Request $request)
@@ -145,6 +149,7 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
         $moduleName = $request->getModule();
 
         $site_URL = vglobal('site_URL');
+        $PDFMakerModel = PDFMaker_PDFMaker_Model::getInstance();
         $PDFMakerModuleModel = Vtiger_Module_Model::getInstance($moduleName);
 
         $source_module = $request->get('source_module');
@@ -167,15 +172,18 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
             $file_path .= '&' . $attr_path;
         }
 
+        $template = $PDFMakerModel->getAvailableTemplate($source_module, false, $record);
+
         $viewer->assign('FILE_PATH', $file_path);
         $viewer->assign('SITE_URL', $site_URL);
 
-        //$viewer->view('Preview.tpl', $moduleName);
         $viewer->assign('PDF_FILE_TYPE', 'yes');
         $viewer->assign('DOWNLOAD_URL', $file_path . '&generate_type=attachment');
         $viewer->assign('FILE_TYPE', 'pdf');
 
         $viewer->assign('MODULE_NAME', $moduleName);
+        $viewer->assign('LANGUAGE', $language);
+        $viewer->assign('TEMPLATE', $template['template_id']);
 
         $printAction = '1';
         $u_agent = $_SERVER['HTTP_USER_AGENT'];
@@ -191,46 +199,42 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
 
     public function ProductImages(Vtiger_Request $request)
     {
-        $pdf_strings = [];
         $moduleName = $request->getModule();
         $viewer = $this->getViewer($request);
         $viewer->assign('MODULE_NAME', $moduleName);
 
         $adb = PearDatabase::getInstance();
 
-        $denied_img = vimage_path('denied.gif');
+        $denied_img = vimage_path("denied.gif");
 
-        $id = $request->get('return_id');
+        $id = $request->get("return_id");
         $setype = getSalesEntityType($id);
 
         if ($setype != 'Products') {
-            $sql = "SELECT CASE WHEN vtiger_products.productid != '' THEN vtiger_products.productname ELSE vtiger_service.servicename END AS productname,
-            df_inventoryitem.productid, vtiger_inventoryproductrel.sequence_no, vtiger_attachments.attachmentsid, name, path, vtiger_attachments.storedname
-          FROM vtiger_inventoryproductrel
-          LEFT JOIN vtiger_seattachmentsrel
-            ON vtiger_seattachmentsrel.crmid=df_inventoryitem.productid
-          LEFT JOIN vtiger_attachments
-            ON vtiger_attachments.attachmentsid=vtiger_seattachmentsrel.attachmentsid
-          LEFT JOIN vtiger_products
-            ON vtiger_products.productid=df_inventoryitem.productid
-          LEFT JOIN vtiger_service
-            ON vtiger_service.serviceid=df_inventoryitem.productid
-          WHERE vtiger_inventoryproductrel.id=? ORDER BY vtiger_inventoryproductrel.sequence_no";
+            $sql = 'SELECT CASE WHEN vtiger_products.productid > 0 THEN vtiger_products.productname ELSE vtiger_service.servicename END AS productname, df_inventoryitem.productid, df_inventoryitem.sequence as sequence_no, vtiger_attachments.*
+                FROM df_inventoryitem
+                LEFT JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.crmid=df_inventoryitem.productid
+                LEFT JOIN vtiger_attachments ON vtiger_attachments.attachmentsid=vtiger_seattachmentsrel.attachmentsid
+                LEFT JOIN vtiger_products ON vtiger_products.productid=df_inventoryitem.productid
+                LEFT JOIN vtiger_service ON vtiger_service.serviceid=df_inventoryitem.productid
+                WHERE df_inventoryitem.parentid=? ORDER BY df_inventoryitem.sequence';
         } else {
-            $sql = "SELECT vtiger_products.productname, vtiger_products.productid, '1' AS sequence_no, vtiger_attachments.attachmentsid, name, path, vtiger_attachments.storedname
+            $sql = 'SELECT vtiger_products.productname, vtiger_products.productid, 1 AS sequence_no, vtiger_attachments.*
               FROM vtiger_products
               LEFT JOIN vtiger_seattachmentsrel
                 ON vtiger_seattachmentsrel.crmid=vtiger_products.productid
               LEFT JOIN vtiger_attachments
                 ON vtiger_attachments.attachmentsid=vtiger_seattachmentsrel.attachmentsid
-              WHERE vtiger_products.productid=? ORDER BY vtiger_attachments.attachmentsid";
+              WHERE vtiger_products.productid=? ORDER BY vtiger_attachments.attachmentsid';
         }
 
         $res = $adb->pquery($sql, [$id]);
         $products = [];
 
         while ($row = $adb->fetchByAssoc($res)) {
-            $row = PDFMaker_Module_Model::fixStoredName($row);
+            if (empty($row['storedname'])) {
+                $row['storedname'] = $row['name'];
+            }
 
             $products[$row['productid'] . '#_#' . $row['productname'] . '#_#' . $row['sequence_no']][$row['attachmentsid']]['path'] = $row['path'];
             $products[$row['productid'] . '#_#' . $row['productname'] . '#_#' . $row['sequence_no']][$row['attachmentsid']]['name'] = $row['storedname'];
@@ -250,58 +254,59 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
 
         foreach ($products as $productnameid => $data) {
             [$productid, $productname, $seq] = explode('#_#', $productnameid, 3);
-
             $prodImg = '';
             $i = 0;
             $noCheck = ' checked="checked" ';
-            $width = '100';
+            $width = '';
             $height = '';
 
-            foreach ($data as $attachmentId => $images) {
-                if ($attachmentId != '') {
+            foreach ($data as $attid => $images) {
+                if (!empty($attid)) {
                     $checked = '';
 
                     if (isset($saved_products[$productid . '_' . $seq])) {
-                        if ($saved_products[$productid . '_' . $seq] == $attachmentId) {
+                        if ($saved_products[$productid . '_' . $seq] == $attid) {
                             $checked = ' checked="checked" ';
                             $noCheck = '';
                             $width = $saved_wh[$productid . '_' . $seq]['width'];
                             $height = $saved_wh[$productid . '_' . $seq]['height'];
                         }
-                    } elseif (!isset($bac_products[$productid . '_' . $seq])) {
-                        $bac_products[$productid . '_' . $seq] = $attachmentId;
+                    } elseif (!isset($bac_products[$productid . '_' . $seq])) { //$bac_products array is used for default selection of first image  in case no explicit selection has been made
+                        $bac_products[$productid . '_' . $seq] = $attid;
                         $checked = ' checked="checked" ';
                         $noCheck = '';
-                        $width = '100';
+                        $width = '';
                         $height = '';
                     }
 
-                    $prodImg .= '<label class="py-2 px-3 d-flex align-items-center">
-                            <input type="radio" class="form-check-input ms-1 me-3" name="img_' . $productid . '_' . $seq . '" value="' . $attachmentId . '"' . $checked . '/>
-		                    <img src="' . $images['path'] . $attachmentId . '_' . $images['name'] . '" alt="' . $images['name'] . '" title="' . $images['name'] . '" class="rounded" style="height:50px;">
-		                 </label>';
-                    $i++;
+                    $prodImg .= '<label class="d-inline-block p-2">
+                        <input class="form-check-input" type="radio" name="img_' . $productid . '_' . $seq . '" value="' . $attid . '"' . $checked . '/>
+                        <img class="ms-2 rounded" src="' . $images["path"] . $attid . '_' . $images["name"] . '" alt="' . $images["name"] . '" title="' . $images["name"] . '" style="height:40px;">
+                    </label>';
                 }
             }
 
-            $imgHTML .= '<div class="detailedViewHeader my-3 border rounded"><h4 class="border-bottom px-3 py-2 m-0">' . $productname . '</h4>';
+            $imgHTML .= '<div class="border rounded mb-3"><div class="col py-3 detailedViewHeader"><b class="mx-3">' . $productname . '</b>';
 
-            if ($i > 0) {
-                $imgHTML .= '<div class="input-group w-50 px-3 py-2">
-                    <span class="input-group-text">' . vtranslate('Width', 'PDFMaker') . '</span>
-                    <input type="text" class="form-control" maxlength="3" name="width_' . $productid . '_' . $seq . '" value="' . $width . '">
-                    <span class="input-group-text">' . vtranslate('Height', 'PDFMaker') . '</span>
-		            <input type="text" class="form-control" maxlength="3" name="height_' . $productid . '_' . $seq . '" value="' . $height . '">
-		            </div>';
+            if (!empty($prodImg)) {
+                $imgHTML .= '<label class="col-4">
+                    <div class="input-group">
+                        <input type="text" maxlength="3" name="width_' . $productid . '_' . $seq . '" value="' . $width . '" class="form-control" placeholder="width">
+                        <div class="input-group-text">x</div>     
+                        <input type="text" maxlength="3" name="height_' . $productid . '_' . $seq . '" value="' . $height . '" class="form-control" placeholder="height">
+                    </div>
+                </label>';
             }
 
-            $imgHTML .= '<div class="dvtCellInfo">';
-            $imgHTML .= '<label class="py-2 px-3 d-flex align-items-center">';
-            $imgHTML .= '<input type="radio" class="form-check-input ms-1 me-3" name="img_' . $productid . '_' . $seq . '" value="no_image"' . $noCheck . '/>';
-            $imgHTML .= '<img src="' . $denied_img . '" style="height:50px;" align="absmiddle" title="' . $pdf_strings['LBL_NO_IMAGE'] . '" alt="' . $pdf_strings['LBL_NO_IMAGE'] . '"/>';
-            $imgHTML .= '</label>';
-            $imgHTML .= $prodImg;
-            $imgHTML .= '</div></div>';
+            $imgHTML .= '</div>
+		             <div class="col dvtCellInfo">
+		                <div class="border-top">
+                         <label class="d-inline-block p-2">
+                            <input class="form-check-input" type="radio" name="img_' . $productid . '_' . $seq . '" value="no_image"' . $noCheck . '/>
+                            <img class="ms-2 rounded" src="' . $denied_img . '" style="height: 40px;" />
+                        </label>'.
+                $prodImg .
+                '</div></div></div>';
         }
 
         $viewer->assign('IMG_HTML', $imgHTML);

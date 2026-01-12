@@ -198,6 +198,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'displaytype' => 1,
             'masseditable' => 0,
             'picklist_values' => [],
+            'ajaxeditable' => 0,
         ],
         'currency_id' => [
             'name' => 'currency_id',
@@ -210,6 +211,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
+            'ajaxeditable' => 0,
         ],
         'pricebookid' => [
             'name' => 'pricebookid',
@@ -225,6 +227,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'related_modules' => [
                 'PriceBooks',
             ],
+            'ajaxeditable' => 0,
         ],
         'subtotal' => [
             'name' => 'subtotal',
@@ -237,6 +240,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 3,
             'masseditable' => 1,
+            'ajaxeditable' => 0,
         ],
         'discount_amount' => [
             'name' => 'discount_amount',
@@ -249,6 +253,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
+            'ajaxeditable' => 0,
         ],
         'price_after_discount' => [
             'name' => 'price_after_discount',
@@ -263,6 +268,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
+            'ajaxeditable' => 0,
         ],
         'overall_discount' => [
             'name' => 'overall_discount',
@@ -277,6 +283,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
+            'ajaxeditable' => 0,
         ],
         'overall_discount_amount' => [
             'name' => 'overall_discount_amount',
@@ -291,6 +298,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
+            'ajaxeditable' => 0,
         ],
         'price_after_overall_discount' => [
             'name' => 'price_after_overall_discount',
@@ -305,6 +313,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 3,
             'masseditable' => 1,
+            'ajaxeditable' => 0,
         ],
         'tax_amount' => [
             'name' => 'tax_amount',
@@ -319,6 +328,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
+            'ajaxeditable' => 0,
         ],
         'price_total' => [
             'name' => 'price_total',
@@ -331,6 +341,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 3,
             'masseditable' => 1,
+            'ajaxeditable' => 0,
         ],
         'adjustment' => [
             'name' => 'adjustment',
@@ -344,6 +355,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'displaytype' => 1,
             'masseditable' => 1,
             'summaryfield' => 0,
+            'ajaxeditable' => 0,
         ],
         'grand_total' => [
             'name' => 'grand_total',
@@ -357,6 +369,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'displaytype' => 1,
             'masseditable' => 1,
             'summaryfield' => 0,
+            'ajaxeditable' => 0,
         ],
         'margin_amount' => [
             'name' => 'margin_amount',
@@ -372,6 +385,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'displaytype' => 1,
             'masseditable' => 1,
             'summaryfield' => 0,
+            'ajaxeditable' => 0,
         ],
     ];
 
@@ -844,6 +858,11 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         foreach ($filters as $filterName => $filterFields) {
             $filterInstance = $this->createFilter($filterName, $moduleInstance);
+
+            if (!$filterInstance->isCreating() && self::isUpgradeProcess()) {
+                continue;
+            }
+
             $filterInstance->deleteFields();
 
             ksort($filterFields);
@@ -945,7 +964,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public function isFieldKeySkippedForUpdate(string $key): bool
     {
-        return defined('VTIGER_UPGRADE') && in_array($key, self::$fieldKeySkippedForUpdate);
+        return self::isUpgradeProcess() && in_array($key, self::$fieldKeySkippedForUpdate);
     }
 
     /**
@@ -955,7 +974,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public function isBlockKeySkippedForUpdate(string $key): bool
     {
-        return defined('VTIGER_UPGRADE') && in_array($key, self::$blockKeySkippedForUpdate);
+        return self::isUpgradeProcess() && in_array($key, self::$blockKeySkippedForUpdate);
     }
 
     /**
@@ -1077,6 +1096,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         if (!$filterInstance) {
             $filterInstance = new Vtiger_Filter();
+            $filterInstance->creating = true;
         }
 
         $filterInstance->name = $filterName;
@@ -1598,5 +1618,10 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             [$uiTypeId, $uiType] = $fieldTypeName;
             $fieldModel->saveFieldType($uiTypeId, $uiType);
         }
+    }
+
+    public static function isUpgradeProcess(): bool
+    {
+        return defined('VTIGER_UPGRADE') && VTIGER_UPGRADE;
     }
 }

@@ -40,6 +40,8 @@ class Vtiger_Notebook_Dashboard extends Vtiger_IndexAjax_View
         $viewer->assign('WIDGET', $widget);
         $viewer->assign('MODULE_NAME', $moduleName);
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $content = $request->get('content');
         if (!empty($content)) {
             $viewer->view('dashboards/NotebookContents.tpl', $moduleName);

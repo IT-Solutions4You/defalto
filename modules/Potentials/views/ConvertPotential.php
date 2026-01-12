@@ -18,7 +18,10 @@
 
 class Potentials_ConvertPotential_View extends Vtiger_Index_View
 {
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
@@ -48,6 +51,8 @@ class Potentials_ConvertPotential_View extends Vtiger_Index_View
         $assignedToFieldModel = $moduleModel->getField('assigned_user_id');
         $assignedToFieldModel->set('fieldvalue', $recordModel->get('assigned_user_id'));
         $viewer->assign('ASSIGN_TO', $assignedToFieldModel);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('ConvertPotential.tpl', $moduleName);
     }

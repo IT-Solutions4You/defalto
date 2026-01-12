@@ -58,6 +58,12 @@ $languageStrings = [
     'LBL_ADD_SERVICECONTRACTS' => 'Pridať servisnú zmluvu',
     'LBL_ADD_HELPDESK' => 'Pridať tiket',
     'LBL_ADD_INVOICE' => 'Pridať faktúru',
+    'Potential client' => 'Potenciálny klient',
+    'VAT Number' => 'IČ DPH',
+    'Price Book' => 'Cenník',
+    'Contacted - Successful' => 'Kontaktovaný – úspešne',
+    'Contacted - Unsuccessful' => 'Kontaktovaný – neúspešne',
+    'Contacted - Never Contact Again' => 'Kontaktovaný – už nekontaktovať',
 ];
 $jsLanguageStrings = [
     'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Ste si istí, že chcete odstrániť záznam?',

@@ -16,20 +16,18 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Vtiger_DeleteImage_Action extends Vtiger_Action_Controller
+class Vtiger_DeleteImage_Action extends Core_Controller_Action
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record'];
         $permissions[] = ['module_parameter' => 'module', 'action' => 'Delete', 'record_parameter' => 'record'];
 
         return $permissions;
-    }
-
-    public function checkPermission(Vtiger_Request $request)
-    {
-        parent::checkPermission($request);
     }
 
     public function process(Vtiger_Request $request)

@@ -18,7 +18,10 @@
 
 class Products_MoreCurrenciesList_View extends Vtiger_IndexAjax_View
 {
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $record = $request->get('record');
@@ -66,6 +69,8 @@ class Products_MoreCurrenciesList_View extends Vtiger_IndexAjax_View
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('PRICE_DETAILS', $priceDetails);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('MoreCurrenciesList.tpl', 'Products');
     }

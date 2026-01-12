@@ -27,6 +27,11 @@ $languageStrings = [
     'Related To' => 'Projekt',
     'Project Task' => 'Projektové úlohy',
     'LBL_CREATING_NEW' => 'Nový',
+    'Milestone Name' => 'Názov míľnika',
+    'Milestone Status' => 'Stav míľnika',
+    'Planned' => 'Plánované',
+    'In progress' => 'Prebieha',
+    'Milestone No' => 'Číslo míľnika',
 ];
 $jsLanguageStrings = [
 ];

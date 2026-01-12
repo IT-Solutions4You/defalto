@@ -10,8 +10,6 @@
 
 class PDFMaker extends CRMExtension
 {
-    public $log;
-    public $db;
     public $list_fields_name = [];
     public $list_fields = [];
     public $related_tables = [];
@@ -19,7 +17,7 @@ class PDFMaker extends CRMExtension
     public string $moduleName = 'PDFMaker';
     public string $moduleLabel = 'PDFMaker';
     public string $parentName = 'TOOLS';
-    public string $moduleVersion = '0.1';
+    public string $moduleVersion = '0.4';
     /**
      * @var mixed|null
      */
@@ -27,10 +25,7 @@ class PDFMaker extends CRMExtension
 
     public function __construct()
     {
-        global $log;
-
-        $this->log = $log;
-        $this->db = PearDatabase::getInstance();
+        parent::__construct();
         $this->name = $this->moduleName;
         $this->id = getTabId($this->moduleName);
     }

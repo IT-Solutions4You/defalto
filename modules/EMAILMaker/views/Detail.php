@@ -92,15 +92,23 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
         $viewer->assign("CATEGORY", $category);
         $viewer->assign("IS_MASSEMAIL", "no");
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showModuleDetailView', $request->getModule(), $viewer, $request);
+
         $viewer->view('Detail.tpl', 'EMAILMaker');
     }
 
-    public function preProcessTplName(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function preProcessTplName(Vtiger_Request $request): string
     {
         return 'DetailViewPreProcess.tpl';
     }
 
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         Vtiger_Basic_View::preProcess($request, false);
 
@@ -281,7 +289,10 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
         $viewer->view("DetailViewListWF.tpl", 'EMAILMaker');
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
         $selectedTabLabel = $request->get('tab_label');
@@ -301,10 +312,12 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
         parent::postProcess($request);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-        $moduleName = $request->getModule();
         $layout = Vtiger_Viewer::getLayoutName();
         $jsFileNames = [
             "layouts.$layout.modules.Vtiger.resources.List",
@@ -322,7 +335,10 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
         return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 
-    public function getHeaderCss(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $headerCssInstances = parent::getHeaderCss($request);
         $cssFileNames = [];

@@ -18,7 +18,10 @@
 
 class Google_SaveSyncSettings_Action extends Vtiger_BasicAjax_Action
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         return [];
     }
@@ -26,7 +29,7 @@ class Google_SaveSyncSettings_Action extends Vtiger_BasicAjax_Action
     public function process(Vtiger_Request $request)
     {
         $contactsSettings = $request->get('Contacts');
-        $calendarSettings = $request->get('Calendar');
+        $calendarSettings = $request->get('Appointments');
         $sourceModule = $request->get('sourceModule');
 
         $contactRequest = new Vtiger_Request($contactsSettings);
@@ -34,7 +37,7 @@ class Google_SaveSyncSettings_Action extends Vtiger_BasicAjax_Action
         Google_Utils_Helper::saveSyncSettings($contactRequest);
 
         $calendarRequest = new Vtiger_Request($calendarSettings);
-        $calendarRequest->set('sourcemodule', 'Calendar');
+        $calendarRequest->set('sourcemodule', 'Appointments');
         Google_Utils_Helper::saveSyncSettings($calendarRequest);
         $googleModuleModel = Vtiger_Module_Model::getInstance('Google');
 

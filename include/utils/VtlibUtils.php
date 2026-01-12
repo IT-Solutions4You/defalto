@@ -137,7 +137,7 @@ function vtlib_moduleAlwaysActive()
  */
 function vtlib_setup_modulevars($module, $focus)
 {
-    $checkfor = ['table_name', 'table_index', 'related_tables', 'popup_fields', 'IsCustomModule'];
+    $checkfor = ['table_name', 'table_index', 'related_tables'];
     foreach ($checkfor as $check) {
         if (!isset($focus->$check)) {
             $focus->$check = __vtlib_get_modulevar_value($module, $check);
@@ -151,7 +151,6 @@ function __vtlib_get_modulevar_value($module, $varname)
         [
             'Accounts'         =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_account',
                     'table_index'    => 'accountid',
                     // related_tables variable should define the association (relation) between dependent tables
@@ -163,11 +162,9 @@ function __vtlib_get_modulevar_value($module, $varname)
                         'vtiger_accountshipads' => ['accountaddressid', 'vtiger_account', 'accountid'],
                         'vtiger_accountscf'     => ['accountid', 'vtiger_account', 'accountid'],
                     ],
-                    'popup_fields'   => ['accountname'], // TODO: Add this initialization to all the standard module
                 ],
             'Contacts'         =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_contactdetails',
                     'table_index'    => 'contactid',
                     'related_tables' => [
@@ -178,11 +175,9 @@ function __vtlib_get_modulevar_value($module, $varname)
                         'vtiger_customerdetails'   => ['customerid', 'vtiger_contactdetails', 'contactid'],
                         'vtiger_contactscf'        => ['contactid', 'vtiger_contactdetails', 'contactid']
                     ],
-                    'popup_fields'   => ['lastname'],
                 ],
             'Leads'            =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_leaddetails',
                     'table_index'    => 'leadid',
                     'related_tables' => [
@@ -190,52 +185,42 @@ function __vtlib_get_modulevar_value($module, $varname)
                         'vtiger_leadaddress'    => ['leadaddressid', 'vtiger_leaddetails', 'leadid'],
                         'vtiger_leadscf'        => ['leadid', 'vtiger_leaddetails', 'leadid'],
                     ],
-                    'popup_fields'   => ['lastname'],
                 ],
             'Campaigns'        =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_campaign',
                     'table_index'    => 'campaignid',
-                    'popup_fields'   => ['campaignname'],
                 ],
             'Potentials'       =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_potential',
                     'table_index'    => 'potentialid',
                     // NOTE: UIType 10 is being used instead of direct relationship from 5.1.0
                     //'related_tables' => Array ('vtiger_account' => Array('accountid')),
-                    'popup_fields'   => ['potentialname'],
                     'related_tables' => [
                         'vtiger_potentialscf' => ['potentialid', 'vtiger_potential', 'potentialid'],
                     ],
                 ],
             'Quotes'           =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_quotes',
                     'table_index'    => 'quoteid',
                     'related_tables' => [
                         'vtiger_quotescf' => ['quoteid', 'vtiger_quotes', 'quoteid'],
                         'vtiger_account'  => ['accountid']
                     ],
-                    'popup_fields'   => ['subject'],
                 ],
             'SalesOrder'       =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_salesorder',
                     'table_index'    => 'salesorderid',
                     'related_tables' => [
                         'vtiger_salesordercf' => ['salesorderid', 'vtiger_salesorder', 'salesorderid'],
                         'vtiger_account'      => ['accountid']
                     ],
-                    'popup_fields'   => ['subject'],
                 ],
             'PurchaseOrder'    =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_purchaseorder',
                     'table_index'    => 'purchaseorderid',
                     'related_tables' => [
@@ -243,14 +228,11 @@ function __vtlib_get_modulevar_value($module, $varname)
                         'vtiger_poshipads'       => ['poshipaddressid', 'vtiger_purchaseorder', 'purchaseorderid'],
                         'vtiger_pobillads'       => ['pobilladdressid', 'vtiger_purchaseorder', 'purchaseorderid'],
                     ],
-                    'popup_fields'   => ['subject'],
                 ],
             'Invoice'          =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_invoice',
                     'table_index'    => 'invoiceid',
-                    'popup_fields'   => ['subject'],
                     'related_tables' => [
                         'vtiger_invoicecf'      => ['invoiceid', 'vtiger_invoice', 'invoiceid'],
                         'vtiger_invoiceshipads' => ['invoiceshipaddressid', 'vtiger_invoice', 'invoiceid'],
@@ -259,22 +241,18 @@ function __vtlib_get_modulevar_value($module, $varname)
                 ],
             'HelpDesk'         =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_troubletickets',
                     'table_index'    => 'ticketid',
                     'related_tables' => ['vtiger_ticketcf' => ['ticketid']],
-                    'popup_fields'   => ['ticket_title']
                 ],
             'Faq'              =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_faq',
                     'table_index'    => 'id',
                     'related_tables' => ['vtiger_faqcf' => ['faqid', 'vtiger_faq', 'id']]
                 ],
             'Documents'        =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_notes',
                     'table_index'    => 'notesid',
                     'related_tables' => [
@@ -283,33 +261,27 @@ function __vtlib_get_modulevar_value($module, $varname)
                 ],
             'Products'         =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_products',
                     'table_index'    => 'productid',
                     'related_tables' => [
                         'vtiger_productcf' => ['productid']
                     ],
-                    'popup_fields'   => ['productname'],
                 ],
             'PriceBooks'       =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_pricebook',
                     'table_index'    => 'pricebookid',
                 ],
             'Vendors'          =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_vendor',
                     'table_index'    => 'vendorid',
-                    'popup_fields'   => ['vendorname'],
                     'related_tables' => [
                         'vtiger_vendorcf' => ['vendorid', 'vtiger_vendor', 'vendorid']
                     ],
                 ],
             'Project'          =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_project',
                     'table_index'    => 'projectid',
                     'related_tables' => [
@@ -318,7 +290,6 @@ function __vtlib_get_modulevar_value($module, $varname)
                 ],
             'ProjectMilestone' =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_projectmilestone',
                     'table_index'    => 'projectmilestoneid',
                     'related_tables' => [
@@ -327,7 +298,6 @@ function __vtlib_get_modulevar_value($module, $varname)
                 ],
             'ProjectTask'      =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_projecttask',
                     'table_index'    => 'projecttaskid',
                     'related_tables' => [
@@ -336,7 +306,6 @@ function __vtlib_get_modulevar_value($module, $varname)
                 ],
             'Services'         =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_service',
                     'table_index'    => 'serviceid',
                     'related_tables' => [
@@ -345,7 +314,6 @@ function __vtlib_get_modulevar_value($module, $varname)
                 ],
             'ServiceContracts' =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_servicecontracts',
                     'table_index'    => 'servicecontractsid',
                     'related_tables' => [
@@ -354,7 +322,6 @@ function __vtlib_get_modulevar_value($module, $varname)
                 ],
             'Assets'           =>
                 [
-                    'IsCustomModule' => false,
                     'table_name'     => 'vtiger_assets',
                     'table_index'    => 'assetsid',
                     'related_tables' => [

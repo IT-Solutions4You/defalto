@@ -25,7 +25,10 @@ class Campaigns_RelationAjax_Action extends Vtiger_RelationAjax_Action
         $this->exposeMethod('updateStatus');
     }
 
-    public function requiresPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $mode = $request->getMode();
@@ -44,11 +47,6 @@ class Campaigns_RelationAjax_Action extends Vtiger_RelationAjax_Action
         }
 
         return $permissions;
-    }
-
-    public function checkPermission(Vtiger_Request $request)
-    {
-        return parent::checkPermission($request);
     }
 
     /**

@@ -18,13 +18,18 @@
 
 class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View
 {
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
 
         if (!(Users_Privileges_Model::isPermitted($moduleName, 'EditView'))) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
         }
+
+        return true;
     }
 
     public function process(Vtiger_Request $request)
@@ -76,17 +81,23 @@ class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('RETURN_RECORD', $request->get('returnrecord'));
         $viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
 
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('QuickEdit.tpl', $moduleName);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $moduleName = $request->getModule();
         $jsFileNames = [
             "modules.$moduleName.resources.Edit"
         ];
-        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
-        return $jsScriptInstances;
+        Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
+
+        return $this->checkAndConvertJsScripts($jsFileNames);
     }
 }

@@ -26,9 +26,12 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View
         $this->exposeMethod('Save');
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 
     public function process(Vtiger_Request $request)
@@ -149,6 +152,7 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View
                             return;
                         }
                     } elseif ($mappingInfo['valuetype'] == 'rawtext' && Vtiger_Functions::isDateValue($mappingInfo['value'])) {
+                        $mappingInfo['display-value'] = $mappingInfo['value'];
                         $mappingInfo['value'] = DateTimeField::convertToDBFormat($mappingInfo['value']);
                         $fieldMapping[$key] = $mappingInfo;
                     }

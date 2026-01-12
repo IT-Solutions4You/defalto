@@ -23,21 +23,25 @@ class EMAILMaker_ProductBlocks_View extends EMAILMaker_Index_View
             $templates[$row["id"]]["body"] = html_entity_decode($row["body"], ENT_QUOTES);
         }
         $viewer->assign("PB_TEMPLATES", $templates);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+
         $viewer->view('ProductBlocks.tpl', 'EMAILMaker');
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-        $moduleName = $request->getModule();
         $layout = Vtiger_Viewer::getLayoutName();
         $jsFileNames = [
             "layouts.$layout.modules.EMAILMaker.resources.ProductBlocks"
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-        return $headerScriptInstances;
+        return array_merge($headerScriptInstances, $jsScriptInstances);
     }
 }

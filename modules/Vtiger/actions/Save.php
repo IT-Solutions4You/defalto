@@ -16,11 +16,14 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Vtiger_Save_Action extends Vtiger_Action_Controller
+class Vtiger_Save_Action extends Core_Controller_Action
 {
     public $savedRecordId;
 
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $moduleParameter = $request->get('source_module');
@@ -43,7 +46,10 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller
         return $permissions;
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
     {
         $moduleName = $request->getModule();
         $record = $request->get('record');
@@ -59,7 +65,10 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller
         return parent::checkPermission($request);
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
         return $request->validateWriteAccess();
     }
@@ -105,7 +114,7 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller
                 $requestData['duplicateRecords'] = $e->getDuplicateRecordIds();
                 $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 
-                global $vtiger_current_version;
+                global $defalto_current_version;
                 $viewer = new Vtiger_Viewer();
 
                 $viewer->assign('REQUEST_DATA', $requestData);

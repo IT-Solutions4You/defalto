@@ -102,7 +102,9 @@ class Vtiger_Session
             }
         }
 
-        session_start();
+        if (!session_id()) {
+            session_start();
+        }
 
         if (!isset($_SESSION['__CRM_Session_Info'])) {
             $_SESSION['__CRM_Session_Info'] = self::STARTED;

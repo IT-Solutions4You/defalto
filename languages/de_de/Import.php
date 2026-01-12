@@ -110,6 +110,5 @@ $languageStrings = [
     'failed' => 'Fehlgeschlagene Datensätze',
     'skipped' => 'Übersprungene Datensätze',
 ];
-
 $jsLanguageStrings = [
 ];

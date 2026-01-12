@@ -21,14 +21,8 @@ class Assets extends CRMEntity
     public string $moduleName = 'Assets';
     public string $parentName = 'INVENTORY';
 
-    var $db, $log; // Used in class functions of CRMEntity
-
     var $table_name = 'vtiger_assets';
     var $table_index = 'assetsid';
-    var $column_fields = [];
-
-    /** Indicator if this is a custom module or standard module */
-    var $IsCustomModule = true;
 
     /**
      * Mandatory table for supporting custom fields.
@@ -88,9 +82,6 @@ class Assets extends CRMEntity
         'Product Name'  => 'product'
     ];
 
-    // For Popup window record selection
-    var $popup_fields = ['assetname', 'account', 'product'];
-
     // Placeholder for sort fields - All the fields will be initialized for Sorting through initSortFields
     var $sortby_fields = [];
 
@@ -111,21 +102,6 @@ class Assets extends CRMEntity
     var $default_sort_order = 'ASC';
 
     var $unit_price;
-
-    /**    Constructor which will set the column_fields in this object
-     */
-    function __construct()
-    {
-        global $log;
-        $this->column_fields = getColumnFields(get_class($this));
-        $this->db = PearDatabase::getInstance();
-        $this->log = $log;
-    }
-
-    function save_module($module)
-    {
-        //module specific save
-    }
 
     /**
      * Return query to use based on given modulename, fieldname

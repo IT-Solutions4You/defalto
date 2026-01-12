@@ -23,9 +23,8 @@
 
 class Campaigns extends CRMEntity
 {
+    public string $moduleName = 'Campaigns';
     public string $parentName = 'MARKETING';
-    public $log;
-    public $db;
     public $table_name = "vtiger_campaign";
     public $table_index = 'campaignid';
 
@@ -35,7 +34,6 @@ class Campaigns extends CRMEntity
      * Mandatory table for supporting custom fields.
      */
     public $customFieldTable = ['vtiger_campaignscf', 'campaignid'];
-    public $column_fields = [];
 
     public $sortby_fields = [
         'campaignname',
@@ -92,21 +90,6 @@ class Campaigns extends CRMEntity
     public $def_basicsearch_col = 'campaignname';
 
     public $campaignrelstatus;
-
-    function __construct()
-    {
-        $this->log = Logger::getLogger('campaign');
-        $this->db = PearDatabase::getInstance();
-        $this->column_fields = getColumnFields('Campaigns');
-    }
-
-    /** Function to handle module specific operations when saving a entity
-     */
-    function save_module($module)
-    {
-    }
-
-    // Mike Crowe Mod --------------------------------------------------------Default ordering for us
 
     /**
      * Function to get Campaign related Accouts

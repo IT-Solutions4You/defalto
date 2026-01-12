@@ -20,14 +20,9 @@ class ServiceContracts extends CRMEntity
 {
     public string $moduleName = 'ServiceContracts';
     public string $parentName = 'SUPPORT';
-    var $db, $log; // Used in class functions of CRMEntity
 
     var $table_name = 'vtiger_servicecontracts';
     var $table_index = 'servicecontractsid';
-    var $column_fields = [];
-
-    /** Indicator if this is a custom module or standard module */
-    var $IsCustomModule = true;
 
     /**
      * Mandatory table for supporting custom fields.
@@ -91,9 +86,6 @@ class ServiceContracts extends CRMEntity
         'Total Units' => 'total_units'
     ];
 
-    // For Popup window record selection
-    var $popup_fields = ['subject'];
-
     // Placeholder for sort fields - All the fields will be initialized for Sorting through initSortFields
     var $sortby_fields = [];
 
@@ -116,15 +108,10 @@ class ServiceContracts extends CRMEntity
     var $default_order_by = 'subject';
     var $default_sort_order = 'ASC';
 
-    function __construct()
-    {
-        global $log;
-        $this->column_fields = getColumnFields(get_class($this));
-        $this->db = new PearDatabase();
-        $this->log = $log;
-    }
-
-    function save_module($module)
+    /**
+     * @inheritDoc
+     */
+    public function save_module(string $module)
     {
         $returnAction = $_REQUEST['return_action'] ?? '';
         $forModule = $_REQUEST['return_module'] ?? '';

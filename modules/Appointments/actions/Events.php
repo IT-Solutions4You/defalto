@@ -8,7 +8,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Appointments_Events_Action extends Vtiger_Action_Controller
+class Appointments_Events_Action extends Core_Controller_Action
 {
     /**
      * @param Vtiger_Request $request

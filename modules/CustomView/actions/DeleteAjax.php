@@ -16,9 +16,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class CustomView_DeleteAjax_Action extends Vtiger_Action_Controller
+class CustomView_DeleteAjax_Action extends Core_Controller_Action
 {
-    public function requiresPermission(\Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function requiresPermission(Vtiger_Request $request): array
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'sourceModule', 'action' => 'DetailView'];
@@ -26,19 +29,11 @@ class CustomView_DeleteAjax_Action extends Vtiger_Action_Controller
         return $permissions;
     }
 
-    public function checkPermission(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
-        return parent::checkPermission($request);
-    }
-
-    function preProcess(Vtiger_Request $request)
-    {
-        return true;
-    }
-
-    function postProcess(Vtiger_Request $request)
-    {
-        return true;
     }
 
     public function process(Vtiger_Request $request)
@@ -52,8 +47,11 @@ class CustomView_DeleteAjax_Action extends Vtiger_Action_Controller
         $customViewModel->delete();
     }
 
-    public function validateRequest(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
     {
-        $request->validateWriteAccess();
+        return $request->validateWriteAccess();
     }
 }

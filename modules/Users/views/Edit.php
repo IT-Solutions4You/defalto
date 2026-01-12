@@ -18,7 +18,10 @@
 
 class Users_Edit_View extends Users_PreferenceEdit_View
 {
-    public function preProcess(Vtiger_Request $request, $display = true)
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
     {
         parent::preProcess($request, false);
         $this->preProcessSettings($request);
@@ -84,16 +87,21 @@ class Users_Edit_View extends Users_PreferenceEdit_View
         $viewer->view('SettingsMenuEnd.tpl', $qualifiedModuleName);
     }
 
-    public function postProcess(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
     {
         $this->postProcessSettings($request);
         parent::postProcess($request);
     }
 
-    public function getHeaderScripts(Vtiger_Request $request)
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-        $moduleName = $request->getModule();
         $jsFileNames = [
             'modules.Settings.Vtiger.resources.Index',
         ];
