@@ -15,7 +15,7 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-s
+
 class CustomerPortal_FetchCompanyTitle extends CustomerPortal_API_Abstract
 {
     function process(CustomerPortal_API_Request $request)
