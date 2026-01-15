@@ -114,7 +114,7 @@ class SalesOrder_Recurring_Model
         $moduleModel = Vtiger_Module_Model::getInstance($recurringModule);
 
         if (!$moduleModel || !$moduleModel->isActive()) {
-            $log->error('Recurring module is not active: ' . $recurringModule);
+            $log->info('Recurring module is not active: ' . $recurringModule);
 
             return;
         }
@@ -122,13 +122,13 @@ class SalesOrder_Recurring_Model
         $handlerClass = $recurringModule . '_SORecurring_Model';
 
         if (!class_exists($handlerClass)) {
-            $log->error('Recurring handler class not found: ' . $handlerClass);
+            $log->info('Recurring handler class not found: ' . $handlerClass);
 
             return;
         }
 
         if (!is_callable([$handlerClass, 'run'])) {
-            $log->error('Recurring handler method missing: ' . $handlerClass . '::run');
+            $log->info('Recurring handler method missing: ' . $handlerClass . '::run');
 
             return;
         }
