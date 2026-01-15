@@ -52,7 +52,7 @@ class Invoice_SORecurring_Model
         $focus->column_fields['invoicedate'] = $recurringDate;
 
         [$y, $m, $d] = explode('-', $recurringDate);
-        $focus->column_fields['duedate'] = date('Y-m-d', mktime(0, 0, 0, $m, (int)$d + $paymentDuration, $y));
+        $focus->column_fields['duedate'] = date('Y-m-d', mktime(0, 0, 0, (int)$m, (int)$d + $paymentDuration, (int)$y));
 
         $focus->_salesorderid = $salesOrderId;
         $focus->column_fields['source'] = 'RECURRING INVOICE';
