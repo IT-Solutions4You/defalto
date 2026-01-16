@@ -594,6 +594,22 @@ class Invoice_Install_Model extends Core_Install_Model
                     'filter_sequence' => 1,
                     'ajaxeditable' => 0,
                 ],
+                'invoice_type' => [
+                    'name' => 'invoice_type',
+                    'uitype' => 1,
+                    'column' => 'invoice_type',
+                    'table' => 'vtiger_invoice',
+                    'label' => 'Invoice Type',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 0,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 0,
+                    'headerfield' => 0,
+                    'ajaxeditable' => 0,
+                ],
             ]
         ];
     }
@@ -691,6 +707,7 @@ class Invoice_Install_Model extends Core_Install_Model
             ->createColumn('grand_total', self::$COLUMN_DECIMAL)
             ->createColumn('margin_amount', self::$COLUMN_DECIMAL)
             ->createColumn('inventorymanager', 'int(19) DEFAULT NULL')
+            ->createColumn('invoice_type', 'varchar(100) DEFAULT "Invoice"')
             ->createKey('PRIMARY KEY IF NOT EXISTS (invoiceid)')
             ->createKey('KEY IF NOT EXISTS invoice_purchaseorderid_idx (invoiceid)')
             ->createKey('KEY IF NOT EXISTS fk_2_vtiger_invoice (salesorder_id)')
