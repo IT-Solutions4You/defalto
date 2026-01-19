@@ -11,17 +11,18 @@
 class Invoice_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
-        ['Accounts', 'Invoice', 'Invoice', 'add', 'get_invoices', '',],
-        ['Contacts', 'Invoice', 'Invoice', 'add', 'get_invoices', '',],
-        ['Services', 'Invoice', 'Invoice', 'ADD', 'get_invoices', '',],
         ['Invoice', 'Assets', 'Assets', 'ADD', 'get_dependents_list', '',],
-        ['Potentials', 'Invoice', 'Invoice', 'ADD', 'get_dependents_list', '',],
         ['Invoice', 'Appointments', 'Appointments', '', 'get_related_list', '',],
         ['Invoice', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
         ['Invoice', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
+
+        ['Accounts', 'Invoice', 'Invoice', 'add', 'get_invoices', '',],
+        ['Contacts', 'Invoice', 'Invoice', 'add', 'get_invoices', '',],
+        ['Services', 'Invoice', 'Invoice', 'ADD', 'get_invoices', '',],
+        ['Potentials', 'Invoice', 'Invoice', 'ADD', 'get_dependents_list', '',],
         ['Documents', 'Invoice', 'Invoice', '', 'get_related_list', '',],
         ['Products', 'Invoice', 'Invoice', 'ADD', 'get_invoices', '',],
-        ['Documents', 'Invoice', 'Invoice', '1', 'get_related_list', '',],
+        ['Documents', 'Invoice', 'Invoice', '', 'get_related_list', '',],
         ['SalesOrder', 'Invoice', 'Invoice', '', 'get_invoices', '',],
     ];
 

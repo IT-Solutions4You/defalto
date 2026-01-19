@@ -58,13 +58,13 @@ class Products_Install_Model extends Core_Install_Model
         ['Products', 'PurchaseOrder', 'PurchaseOrder', 'ADD', 'get_purchase_orders',],
         ['Products', 'Appointments', 'Appointments', '', 'get_related_list',],
         ['Products', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list',],
-        ['PriceBooks', 'Products', 'Products', 'select', 'get_pricebook_products',],
+        ['PriceBooks', 'Products', 'Products', 'add,select', 'get_pricebook_products',],
         ['Accounts', 'Products', 'Products', 'select', 'get_products',],
         ['Leads', 'Products', 'Products', 'select', 'get_products',],
         ['Contacts', 'Products', 'Products', 'select', 'get_products',],
         ['Potentials', 'Products', 'Products', 'select', 'get_products',],
         ['Vendors', 'Products', 'Products', 'add,select', 'get_products',],
-        ['Documents', 'Products', 'Products', '1', 'get_related_list',],
+        ['Documents', 'Products', 'Products', '', 'get_related_list',],
     ];
 
     /**

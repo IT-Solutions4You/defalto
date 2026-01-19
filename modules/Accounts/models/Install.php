@@ -10,6 +10,18 @@
 
 class Accounts_Install_Model extends Core_Install_Model
 {
+    public array $registerRelatedLists = [
+        ['Accounts', 'Contacts', 'Contacts', 'add', 'get_contacts', '',],
+        ['Accounts', 'Potentials', 'Potentials', 'add', 'get_opportunities', '',],
+        ['Accounts', 'Quotes', 'Quotes', 'add', 'get_quotes', '',],
+        ['Accounts', 'SalesOrder', 'SalesOrder', 'add', 'get_salesorder', '',],
+        ['Accounts', 'Invoice', 'Invoice', 'add', 'get_invoices', '',],
+        ['Accounts', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
+        ['Accounts', 'HelpDesk', 'Documents', 'add', 'get_tickets', '',],
+        ['Accounts', 'Products', 'Products', 'select', 'get_products', '',],
+        ['Accounts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list', 'account_id'],
+        ['Accounts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_merged_list', 'account_id'],
+    ];
 
     /**
      * [module, type, label, url, icon, sequence, handlerInfo]
@@ -33,6 +45,7 @@ class Accounts_Install_Model extends Core_Install_Model
 
     public function addCustomLinks(): void
     {
+        $this->updateRelatedList();
         $this->updateCustomLinks();
         $this->updateComments();
         $this->updateHistory();
@@ -40,6 +53,7 @@ class Accounts_Install_Model extends Core_Install_Model
 
     public function deleteCustomLinks(): void
     {
+        $this->updateRelatedList(false);
         $this->updateCustomLinks(false);
         $this->updateComments(false);
         $this->updateHistory(false);

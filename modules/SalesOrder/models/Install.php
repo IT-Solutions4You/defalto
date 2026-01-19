@@ -22,7 +22,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
         ['SalesOrder', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
         ['Documents', 'SalesOrder', 'SalesOrder', '', 'get_related_list',],
         ['Products', 'SalesOrder', 'Sales Order', 'ADD', 'get_salesorder',],
-        ['Documents', 'SalesOrder', 'SalesOrder', '1', 'get_related_list',],
+        ['Documents', 'SalesOrder', 'SalesOrder', '', 'get_related_list',],
     ];
 
     /**

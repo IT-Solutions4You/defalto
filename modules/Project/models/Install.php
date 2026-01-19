@@ -28,16 +28,16 @@ class Project_Install_Model extends Core_Install_Model
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        ['Accounts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_merged_list', 'account_id'],
-        ['Contacts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_dependents_list', 'contact_id'],
-        ['HelpDesk', 'Project', 'Projects', ['SELECT'], 'get_related_list'],
-
         ['Project', 'ProjectTask', 'Project Tasks', ['ADD'], 'get_dependents_list', 'projectid'],
         ['Project', 'ProjectMilestone', 'Project Milestones', ['ADD'], 'get_dependents_list', 'projectid'],
         ['Project', 'ProjectTeam', 'Project Team', ['ADD'], 'get_dependents_list'],
         ['Project', 'Documents', 'Documents', ['ADD', 'SELECT',], 'get_attachments'],
         ['Project', 'HelpDesk', 'HelpDesk', ['ADD', 'SELECT',], 'get_related_list'],
         ['Project', 'Quotes', 'Quotes', ['SELECT',], 'get_related_list'],
+
+        ['Accounts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_merged_list', 'account_id'],
+        ['Contacts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_dependents_list', 'contact_id'],
+        ['HelpDesk', 'Project', 'Projects', ['SELECT'], 'get_related_list'],
     ];
 
     /**

@@ -50,16 +50,15 @@ class Campaigns_Install_Model extends Core_Install_Model {
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        ['Leads', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', ],
-        ['Contacts', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', ],
         ['Campaigns', 'Contacts', 'Contacts', 'add,select', 'get_contacts', ],
         ['Campaigns', 'Leads', 'Leads', 'add,select', 'get_leads', ],
         ['Campaigns', 'Potentials', 'Potentials', 'add', 'get_opportunities', ],
-        ['Campaigns', 'Calendar', 'Activities', 'add', 'get_activities', ],
-        ['Accounts', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', ],
         ['Campaigns', 'Accounts', 'Accounts', 'add,select', 'get_accounts', ],
         ['Campaigns', 'Appointments', 'Appointments', '', 'get_related_list', ],
         ['Campaigns', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', ],
+        ['Leads', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', ],
+        ['Contacts', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', ],
+        ['Accounts', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', ],
     ];
 
 
