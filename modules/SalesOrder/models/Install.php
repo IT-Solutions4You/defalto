@@ -577,6 +577,24 @@ class SalesOrder_Install_Model extends Core_Install_Model
                     'columntype' => 'date',
                     'quickcreate' => 3,
                 ],
+                'recurring_module' => [
+                    'name' => 'recurring_module',
+                    'uitype' => 16,
+                    'column' => 'recurring_module',
+                    'table' => 'vtiger_invoice_recurring_info',
+                    'label' => 'Recurring Module',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 3,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 0,
+                    'picklist_values' => [
+                        'Invoice',
+                    ],
+                    'defaultvalue' => 'Invoice',
+                ],
             ],
             'LBL_SYSTEM_INFORMATION' => [
                 'salesorder_no' => [
@@ -737,11 +755,13 @@ class SalesOrder_Install_Model extends Core_Install_Model
             ->createColumn('end_period','date DEFAULT NULL')
             ->createColumn('next_recurring_date','date DEFAULT NULL')
             ->createColumn('payment_duration','varchar(200) DEFAULT NULL')
+            ->createColumn('recurring_module', 'varchar(200) DEFAULT \'Invoice\'')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`salesorderid`)')
             ->createKey('CONSTRAINT `fk_salesorderid_vtiger_invoice_recurring_info` FOREIGN KEY IF NOT EXISTS (`salesorderid`) REFERENCES `vtiger_salesorder` (`salesorderid`) ON DELETE CASCADE');
 
         $this->createPicklistTable('vtiger_sostatus', 'sostatusid', 'sostatus');
         $this->createPicklistTable('vtiger_recurring_frequency', 'recurring_frequency_id', 'recurring_frequency');
         $this->createPicklistTable('vtiger_payment_duration', 'payment_duration_id', 'payment_duration');
+        $this->createPicklistTable('vtiger_recurring_module', 'recurring_moduleid', 'recurring_module');
     }
 }
