@@ -604,11 +604,12 @@ class Invoice_Install_Model extends Core_Install_Model
                     'presence' => 0,
                     'typeofdata' => 'V~O',
                     'quickcreate' => 0,
-                    'displaytype' => 1,
+                    'displaytype' => 2,
                     'masseditable' => 0,
                     'summaryfield' => 0,
                     'headerfield' => 0,
                     'ajaxeditable' => 0,
+                    'defaultvalue' => 'Invoice',
                 ],
             ]
         ];

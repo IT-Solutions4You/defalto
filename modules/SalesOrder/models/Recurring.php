@@ -18,8 +18,7 @@ class SalesOrder_Recurring_Model
      */
     public static function run(): void
     {
-        global $adb, $log;
-
+        $db = PearDatabase::getInstance();
         $log = Logger::getLogger('RecurringInvoice');
         $log->debug('invoked RecurringInvoice');
 
@@ -37,9 +36,9 @@ class SalesOrder_Recurring_Model
 		    AND DATE_FORMAT(next_recurring_date, "%Y-%m-%d") <= ?
 		 ORDER BY salesorderid
 		 LIMIT 50';
-        $result = $adb->pquery($sql, [$currentDate, $currentDate, $currentDate]);
+        $result = $db->pquery($sql, [$currentDate, $currentDate, $currentDate]);
 
-        while ($row = $adb->fetchByAssoc($result)) {
+        while ($row = $db->fetchByAssoc($result)) {
             $salesOrderId = (int)$row['salesorderid'];
             $startPeriod = $row['start_period'];
             $endPeriod = $row['end_period'];
@@ -78,7 +77,7 @@ class SalesOrder_Recurring_Model
                         self::dispatchRecurring($salesOrderId, $recurringDateFromList, $paymentDuration, $recurringModule);
                     }
 
-                    $adb->pquery(
+                    $db->pquery(
                         'UPDATE vtiger_invoice_recurring_info SET next_recurring_date = ? WHERE salesorderid = ?',
                         [$validNextRecurringDate, $salesOrderId]
                     );
@@ -88,7 +87,7 @@ class SalesOrder_Recurring_Model
 
                 $nextRecurringDatesInfo = self::getRecurringDate($recurringDate, $recurringFrequency);
                 $nextRecurringDate = $nextRecurringDatesInfo['validDate'];
-                $adb->pquery('UPDATE vtiger_invoice_recurring_info SET next_recurring_date = ? WHERE salesorderid = ?', [$nextRecurringDate, $salesOrderId]);
+                $db->pquery('UPDATE vtiger_invoice_recurring_info SET next_recurring_date = ? WHERE salesorderid = ?', [$nextRecurringDate, $salesOrderId]);
             }
 
             // Add some free time for the case when automatic workflow generates a .pdf file and sends it to the customer to prevent the mail server from limit errors
@@ -108,7 +107,7 @@ class SalesOrder_Recurring_Model
      */
     private static function dispatchRecurring(int $salesOrderId, string $recurringDate, int $paymentDuration, string $recurringModule): void
     {
-        global $log;
+        $log = Logger::getLogger('RecurringInvoice');
 
         $recurringModule = $recurringModule ?: 'Invoice';
         $moduleModel = Vtiger_Module_Model::getInstance($recurringModule);

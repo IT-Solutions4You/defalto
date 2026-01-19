@@ -19,7 +19,7 @@ class Invoice_SORecurring_Model
      */
     public static function run(int $salesOrderId, string $recurringDate, int $paymentDuration): void
     {
-        global $current_user, $log;
+        global $current_user;
 
         if (!$recurringDate) {
             $recurringDate = date('Y-m-d');
@@ -27,10 +27,6 @@ class Invoice_SORecurring_Model
 
         if (!$current_user) {
             $current_user = Users::getActiveAdminUser();
-        }
-
-        if (!$log) {
-            $log = Logger::getLogger('RecurringInvoice');
         }
 
         $soFocus = CRMEntity::getInstance('SalesOrder');
@@ -60,6 +56,7 @@ class Invoice_SORecurring_Model
         try {
             $focus->save('Invoice');
         } catch (Exception $e) {
+            $log = Logger::getLogger('RecurringInvoice');
             $log->info($e->getMessage());
         }
     }
