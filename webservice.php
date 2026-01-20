@@ -41,8 +41,8 @@ require_once('include/logging.php');
 $API_VERSION = "0.22";
 
 global $seclog, $log;
-$seclog = Logger::getLogger('SECURITY');
-$log = Logger::getLogger('webservice');
+$seclog = Vtiger_Logger_Helper::getLogger('SECURITY');
+$log = Vtiger_Logger_Helper::getLogger('webservice');
 
 function getRequestParamsArrayForOperation($operation)
 {

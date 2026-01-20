@@ -865,7 +865,7 @@ class DefaultDataPopulator extends CRMEntity
 
     function __construct()
     {
-        $this->log = Logger::getLogger('DefaultDataPopulator');
+        $this->log = Vtiger_Logger_Helper::getLogger('DefaultDataPopulator');
         $this->db = PearDatabase::getInstance();
     }
 }

@@ -30,7 +30,7 @@
 require_once('include/logging.php');
 global $app_strings;
 
-$log = Logger::getLogger('layout_utils');
+$log = Vtiger_Logger_Helper::getLogger('layout_utils');
 
 /**
  * Create HTML to display formatted form title of a form in the left pane

@@ -56,7 +56,7 @@ class Invoice_SORecurring_Model
         try {
             $focus->save('Invoice');
         } catch (Exception $e) {
-            $log = Logger::getLogger('RecurringInvoice');
+            $log = Vtiger_Logger_Helper::getLogger('RecurringInvoice');
             $log->info($e->getMessage());
         }
     }

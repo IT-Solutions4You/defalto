@@ -1113,9 +1113,9 @@ function installVtlibModule($packagename, $packagepath, $customized = false)
     $module_exists = false;
     $module_dir_exists = false;
     if ($module == null) {
-        $log->fatal("$packagename Module zipfile is not valid!");
+        $log->critical("$packagename Module zipfile is not valid!");
     } elseif (Vtiger_Module::getInstance($module)) {
-        $log->fatal("$module already exists!");
+        $log->critical("$module already exists!");
         $module_exists = true;
     }
     if ($module_exists == false) {
@@ -1123,7 +1123,7 @@ function installVtlibModule($packagename, $packagepath, $customized = false)
         $package->import($packagepath, true);
         $moduleInstance = Vtiger_Module::getInstance($module);
         if (empty($moduleInstance)) {
-            $log->fatal("$module module installation failed!");
+            $log->critical("$module module installation failed!");
         }
     }
 }
@@ -1158,14 +1158,14 @@ function updateVtlibModule($module, $packagepath)
     }
 
     if ($module == null) {
-        $log->fatal("Module name is invalid");
+        $log->critical("Module name is invalid");
     } else {
         $moduleInstance = Vtiger_Module::getInstance($module);
         if ($moduleInstance || $package->isModuleBundle($packagepath)) {
             $log->debug("$module - Module instance found - Update starts here");
             $package->update($moduleInstance, $packagepath);
         } else {
-            $log->fatal("$module doesn't exists!");
+            $log->critical("$module doesn't exists!");
         }
     }
 }

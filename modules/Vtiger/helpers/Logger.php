@@ -24,7 +24,7 @@ use Monolog\Logger as MonologLogger;
 use Monolog\Handler\StreamHandler;
 
 // Define a custom Logger class
-class Logger
+class Vtiger_Logger_Helper
 {
     private static $logLevel;
     private static $filePath;
@@ -32,7 +32,7 @@ class Logger
 
     /**
      * Constructor to initialize the logger
-     * @global type $PERFORMANCE_CONFIG [Enable LOGLEVEL_DEBUG falg in config.performance.php]
+     * @global $PERFORMANCE_CONFIG [Enable LOGLEVEL_DEBUG [true|false] in config.performance.php]
      */
     public function __construct()
     {
@@ -72,22 +72,39 @@ class Logger
         return $log;
     }
 
-    // Placeholder method for logging information
-    public function info($message)
-    {
-        // Logging info not implemented
-    }
-
-    // Placeholder method for logging debug messages
+    /**
+     * Following are placeholder methods for logging, mirroring methods in Monolog, but without implementation. These are used if logging is turned off.
+     */
     public function debug($message)
     {
-        // Logging debug not implemented
     }
 
-    // Placeholder method for logging debug messages
-    public function fatal($message)
+    public function info($message)
     {
-        // Logging debug not implemented
+    }
+
+    public function notice($message)
+    {
+    }
+
+    public function warning($message)
+    {
+    }
+
+    public function error($message)
+    {
+    }
+
+    public function critical($message)
+    {
+    }
+
+    public function alert($message)
+    {
+    }
+
+    public function emergency($message)
+    {
     }
 }
 
