@@ -12,9 +12,9 @@ class PriceBooks_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
         ['Products', 'PriceBooks', 'PriceBooks', 'ADD,SELECT', 'get_product_pricebooks',],
-        ['PriceBooks', 'Products', 'Products', 'add,select', 'get_pricebook_products',],
+        ['PriceBooks', 'Products', 'Products', 'SELECT', 'get_pricebook_products',],
         ['Services', 'PriceBooks', 'PriceBooks', 'ADD', 'get_service_pricebooks',],
-        ['PriceBooks', 'Services', 'Services', 'add,SELECT', 'get_pricebook_services',],
+        ['PriceBooks', 'Services', 'Services', 'SELECT', 'get_pricebook_services',],
         ['PriceBooks', 'Appointments', 'Appointments', '', 'get_related_list',],
         ['PriceBooks', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list',],
     ];
