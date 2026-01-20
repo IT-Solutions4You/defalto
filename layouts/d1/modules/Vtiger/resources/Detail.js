@@ -675,7 +675,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
     /**
      * To handle related record delete confirmation message
      */
-    getDeleteMessageKey: function () {
+    getDeleteMessageKey: function (element) {
         return 'LBL_DELETE_CONFIRMATION';
     },
 
@@ -713,7 +713,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         self.getContainer().on('click', 'a.relationDelete', function (e) {
             e.stopImmediatePropagation();
             var element = jQuery(e.currentTarget);
-            var key = self.getDeleteMessageKey();
+            var key = self.getDeleteMessageKey(e);
             var message = app.vtranslate(key);
             var relatedModuleName = self.getRelatedModuleName();
             var row = element.closest('tr');
@@ -3268,4 +3268,23 @@ Vtiger.Class("Vtiger_Detail_Js", {
         this.registerEventForPicklistDependencySetup(this.getForm());
         vtUtils.enableTooltips();
     },
+    relationDeleteRecord(url) {
+        let self = this,
+            relatedController = self.getRelatedController(),
+            data = app.convertUrlToDataParams(url);
+
+        data['action'] = 'DeleteAjax';
+
+        if (!relatedController) {
+            return;
+        }
+
+        app.helper.showConfirmationBox({message: app.vtranslate(self.getDeleteMessageKey())}).then(function (e) {
+            app.request.post({data: data}).then(function (error, data) {
+                relatedController.loadRelatedList().then(function () {
+                    relatedController.triggerRelationAdditionalActions();
+                });
+            });
+        });
+    }
 });

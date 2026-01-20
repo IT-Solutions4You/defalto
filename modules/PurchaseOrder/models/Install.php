@@ -10,11 +10,17 @@
 
 class PurchaseOrder_Install_Model extends Core_Install_Model
 {
+    public array $registerRelatedLists = [
+        ['PurchaseOrder', 'Documents', 'Documents', 'add,select', 'get_attachments',],
+    ];
+
     /**
      * @return void
      */
     public function addCustomLinks(): void
     {
+        $this->updateRelatedList();
+        $this->updateToStandardModule();
     }
 
     /**

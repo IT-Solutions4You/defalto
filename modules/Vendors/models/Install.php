@@ -10,11 +10,19 @@
 
 class Vendors_Install_Model extends Core_Install_Model
 {
+    public array $registerRelatedLists = [
+        ['Vendors', 'Products', 'Products', 'add,select', 'get_products',],
+        ['Vendors', 'PurchaseOrder', 'Purchase Order', 'add', 'get_purchase_orders',],
+        ['Vendors', 'Contacts', 'Contacts', 'select', 'get_contacts',],
+    ];
+
     /**
      * @return void
      */
     public function addCustomLinks(): void
     {
+        $this->updateRelatedList();
+        $this->updateToStandardModule();
     }
 
     /**

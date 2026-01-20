@@ -12,10 +12,9 @@ class Faq_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
         ['Faq', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['Faq', 'ModComments', 'ModComments', '', 'get_comments', '',],
         ['Faq', 'Appointments', 'Appointments', '', 'get_related_list', '',],
         ['Faq', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
-        ['Documents', 'Faq', 'Faq', '1', 'get_related_list', '',],
+        ['Documents', 'Faq', 'Faq', '', 'get_related_list', '',],
     ];
 
     public array $blocksHeaderFields = [

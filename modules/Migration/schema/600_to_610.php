@@ -673,18 +673,6 @@ $assignedToId = Users::getActiveAdminId();
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_mailscanner_rules SET assigned_to=?", [$assignedToId]);
 echo "<br> Adding assigned to, cc, bcc fields for mail scanner rules";
 
-$relationId = $adb->getUniqueID('vtiger_relatedlists');
-$contactTabId = getTabid('Contacts');
-$vendorTabId = getTabId('Vendors');
-$actions = 'SELECT';
-
-$query = 'SELECT max(sequence) as maxsequence FROM vtiger_relatedlists where tabid = ?';
-$result = $adb->pquery($query, [$contactTabId]);
-$sequence = $adb->query_result($result, 0, 'maxsequence');
-
-$query = 'INSERT INTO vtiger_relatedlists VALUES(?,?,?,?,?,?,?,?,?,?,?)';
-$result = Migration_Index_View::ExecuteQuery($query, [$relationId, $contactTabId, $vendorTabId, 'get_vendors', ($sequence + 1), 'Vendors', 0, $actions, null, '', '']);
-
 //79 ends
 
 //82 ends
@@ -727,12 +715,6 @@ for ($i = 0; $i < $numOfRows; $i++) {
     Migration_Index_View::ExecuteQuery('UPDATE vtiger_contactdetails SET imagename = ? WHERE contactid = ?', [$imageName, $contactId]);
 }
 echo 'updating image information for contacts table is completed';
-
-//Updating actions for PriceBooks related list in Products and Services
-$productsTabId = getTabId('Products');
-
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_relatedlists SET actions=? WHERE label=? and tabid=? ", ['ADD,SELECT', 'PriceBooks', $productsTabId]);
-echo '<br>Updated PriceBooks related list actions for products and services';
 
 //85 starts
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_account ALTER isconvertedfromlead SET DEFAULT ?', ['0']);
@@ -1105,17 +1087,6 @@ if (!defined('INSTALLATION_MODE')) {
         $incomingLinkLabel = 'Incoming Calls';
         Vtiger_Link::addLink(0, $headerScriptLinkType, $incomingLinkLabel, 'modules/PBXManager/resources/PBXManagerJS.js', '', '', $handlerInfo);
         echo '<br>Added PBXManager links<br>';
-
-        //Add module related dependencies
-
-        $pbxmanager = Vtiger_Module::getInstance('PBXManager');
-        $dependentModules = ['Contacts', 'Leads', 'Accounts'];
-        foreach ($dependentModules as $module) {
-            $moduleInstance = Vtiger_Module::getInstance($module);
-            $moduleInstance->setRelatedList($pbxmanager, "PBXManager", [], 'get_dependents_list');
-        }
-
-        echo '<br>Added PBXManager related list<br>';
 
         //Add action mapping
 

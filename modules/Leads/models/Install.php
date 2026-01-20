@@ -10,12 +10,19 @@
 
 class Leads_Install_Model extends Core_Install_Model {
 
+    public array $registerRelatedLists = [
+        ['Leads', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
+        ['Leads', 'Products', 'Products', 'select', 'get_products', '',],
+        ['Leads', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', '',],
+    ];
+
     /**
      * @return void
      * @throws Exception
      */
     public function addCustomLinks(): void
     {
+        $this->updateRelatedList();
         $this->updateHistory();
         $this->updateComments();
         self::addDefaultLeadMapping();

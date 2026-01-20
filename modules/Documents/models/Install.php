@@ -29,6 +29,7 @@ class Documents_Install_Model extends Core_Install_Model
         ['ProjectTask', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
         ['Project', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
         ['ITS4YouEmails', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
+
         ['Documents', 'Contacts', 'Contacts', '', 'get_related_list', '',],
         ['Documents', 'Accounts', 'Accounts', '', 'get_related_list', '',],
         ['Documents', 'Potentials', 'Potentials', '', 'get_related_list', '',],

@@ -20,7 +20,7 @@ class Potentials_Install_Model extends Core_Install_Model
         ['Potentials', 'Services', 'Services', 'SELECT', 'get_related_list', '',],
         ['Potentials', 'Invoice', 'Invoice', 'ADD', 'get_dependents_list', '',],
         ['Potentials', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
-        ['HelpDesk', 'Appointments', 'Appointments', '', 'get_related_list', '',],
+        ['Potentials', 'Project', 'Project', 'ADD,SELECT', 'get_dependents_list', 'potentialid',],
     ];
 
     /**

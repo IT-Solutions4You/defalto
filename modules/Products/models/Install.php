@@ -64,7 +64,7 @@ class Products_Install_Model extends Core_Install_Model
         ['Contacts', 'Products', 'Products', 'select', 'get_products',],
         ['Potentials', 'Products', 'Products', 'select', 'get_products',],
         ['Vendors', 'Products', 'Products', 'add,select', 'get_products',],
-        ['Documents', 'Products', 'Products', '1', 'get_related_list',],
+        ['Documents', 'Products', 'Products', '', 'get_related_list',],
     ];
 
     /**

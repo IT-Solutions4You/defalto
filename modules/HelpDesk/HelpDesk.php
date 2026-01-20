@@ -431,21 +431,9 @@ class HelpDesk extends CRMEntity
         }
 
         if ($return_module == 'Accounts') {
-            $sql = 'UPDATE vtiger_troubletickets SET parent_id=? WHERE ticketid=?';
-            $this->db->pquery($sql, [null, $id]);
-            $se_sql = 'DELETE FROM vtiger_seticketsrel WHERE ticketid=?';
-            $this->db->pquery($se_sql, [$id]);
+            $this->db->pquery('DELETE FROM vtiger_seticketsrel WHERE ticketid=?', [$id]);
         } elseif ($return_module == 'Contacts') {
-            $sql = 'UPDATE vtiger_troubletickets SET contact_id=? WHERE ticketid=?';
-            $this->db->pquery($sql, [null, $id]);
-            $se_sql = 'DELETE FROM vtiger_seticketsrel WHERE ticketid=?';
-            $this->db->pquery($se_sql, [$id]);
-        } elseif ($return_module == 'Products') {
-            $sql = 'UPDATE vtiger_troubletickets SET product_id=? WHERE ticketid=?';
-            $this->db->pquery($sql, [null, $id]);
-        } elseif ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_seticketsrel WHERE ticketid=?', [$id]);
         } else {
             parent::unlinkRelationship($id, $return_module, $return_id);
         }

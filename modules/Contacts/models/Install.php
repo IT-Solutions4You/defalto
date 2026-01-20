@@ -10,28 +10,30 @@
 
 class Contacts_Install_Model extends Core_Install_Model
 {
-    public array $registerCustomLinks = [
-        ['Accounts','Contacts','Contacts','add','get_contacts','',],
+    public array $registerRelatedLists = [
+        ['Contacts','Potentials','Potentials','add','get_opportunities','',],
         ['Contacts','HelpDesk','HelpDesk','add','get_tickets','',],
         ['Contacts','Quotes','Quotes','add','get_quotes','contact_id',],
         ['Contacts','PurchaseOrder','Purchase Order','add','get_purchase_orders','',],
         ['Contacts','SalesOrder','Sales Order','add','get_salesorder','contact_id',],
         ['Contacts','Invoice','Invoice','add','get_invoices','',],
-        ['Vendors','Contacts','Contacts','select','get_contacts','',],
         ['Contacts','Appointments','Appointments','','get_related_list','',],
         ['Contacts','Assets','Assets','ADD','get_dependents_list','',],
         ['Contacts','Vendors','Vendors','SELECT','get_vendors','',],
         ['Contacts','ServiceContracts','Service Contracts','ADD','get_dependents_list','',],
         ['Contacts','Services','Services','SELECT','get_related_list','',],
-        ['Services','Contacts','Contacts','SELECT','get_related_list','',],
-        ['Contacts','Project','Projects','ADD,SELECT','get_dependents_list','',],
+        ['Contacts', 'Project', 'Projects', ['ADD'], 'get_dependents_list', 'contact_id'],
         ['Contacts','ITS4YouEmails','ITS4YouEmails','SELECT','get_related_list','',],
         ['Contacts','Campaigns','Campaigns','SELECT','get_campaigns','',],
-        ['Campaigns','Contacts','Contacts','ADD,SELECT','get_contacts','',],
         ['Contacts','Documents','Documents','ADD,SELECT','get_attachments','',],
-        ['Documents','Contacts','Contacts','1','get_related_list','',],
-        ['Products','Contacts','Contacts','SELECT','get_contacts','',],
         ['Contacts','Products','Products','SELECT','get_products','',],
+
+        ['Accounts','Contacts','Contacts','add','get_contacts','',],
+        ['Vendors','Contacts','Contacts','select','get_contacts','',],
+        ['Services','Contacts','Contacts','SELECT','get_related_list','',],
+        ['Campaigns','Contacts','Contacts','ADD,SELECT','get_contacts','',],
+        ['Documents','Contacts','Contacts','','get_related_list','',],
+        ['Products','Contacts','Contacts','SELECT','get_contacts','',],
         ['Potentials','Contacts','Contacts','SELECT','get_contacts','',],
     ];
 
@@ -152,6 +154,7 @@ class Contacts_Install_Model extends Core_Install_Model
                     'headerfieldsequence' => 1,
                     'filter' => 1,
                     'filter_sequence' => 4,
+                    'related_modules' => ['Accounts'],
                 ],
                 'birthday' => [
                     'name' => 'birthday',

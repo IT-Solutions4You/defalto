@@ -109,6 +109,7 @@ class Vtiger_RelatedList_View extends Vtiger_Index_View
         }
 
         $viewer = $this->getViewer($request);
+        $viewer->assign('RELATION_MODEL', $relationModel);
         $viewer->assign('RELATED_FIELDS_INFO', json_encode($fieldsInfo));
         $viewer->assign('IS_CREATE_PERMITTED', isPermitted($relatedModuleName, 'CreateView'));
         $viewer->assign('RELATED_RECORDS', $models);

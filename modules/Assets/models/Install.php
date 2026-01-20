@@ -18,7 +18,7 @@ class Assets_Install_Model extends Core_Install_Model
         ['Accounts', 'Assets', 'Assets', ['add'], 'get_dependents_list'],
         ['Products', 'Assets', 'Assets', ['add'], 'get_dependents_list'],
         ['Invoice', 'Assets', 'Assets', ['add'], 'get_dependents_list'],
-        ['Documents', 'Assets', 'Assets', ['add'], 'get_related_list', '',],
+        ['Documents', 'Assets', 'Assets', '', 'get_related_list', '',],
         ['Contacts', 'Assets', 'Assets', ['add'], 'get_dependents_list', '',],
 
         ['Assets', 'HelpDesk', 'HelpDesk', ['add', 'select'], 'get_related_list'],

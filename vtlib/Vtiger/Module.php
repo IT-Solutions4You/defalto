@@ -140,6 +140,30 @@ class Vtiger_Module extends Vtiger_ModuleBasic
     }
 
     /**
+     * @throws Exception
+     */
+    public function hasRelatedList(object $moduleInstance, string $label = '', string $function = ''): bool
+    {
+        $search = [
+            'tabid' => $this->id,
+            'related_tabid' => $moduleInstance->id,
+        ];
+
+        if (!empty($label)) {
+            $search['label'] = $label;
+        }
+
+        if (!empty($function)) {
+            $search['name'] = $function;
+        }
+
+        $table = Core_DatabaseData_Model::getTableInstance('vtiger_relatedlists', 'tabid');
+        $data = $table->selectData(['tabid'], $search);
+
+        return !empty($data['tabid']);
+    }
+
+    /**
      * Unset related list information that exists with other module
      *
      * @param Vtiger_Module Instance of target module with which relation should be setup

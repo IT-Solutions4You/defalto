@@ -276,6 +276,9 @@ $languageStrings = [
     'LBL_CHECK_UPDATE_AVAILABLE' => 'Update available',
     'LBL_CHECK_UPDATING' => 'Searching',
     'LBL_CHECK_LOADING' => 'Searching for updates',
+    'LBL_REQUIRED_CKEDITOR_UPLOAD' => 'Required for CKEditor image upload',
+    'LBL_REQUIRED_TEMPLATE_IMAGE' => 'Required slash for Template images',
+    'LBL_REQUIRED_ATTACHMENTS_UPLOAD' => 'Requiered slash for Attachments upload',
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Möchten Sie die Erweiterung wirklich installieren?',

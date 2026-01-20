@@ -257,9 +257,9 @@ class CRMEntity extends CRMExtension
     /**
      * This function is used to upload the attachment in the server and save that attachment information in db.
      *
-     * @param int    $id           - entity id to which the file to be uploaded
-     * @param string $module       - the current module name
-     * @param array  $file_details - array which contains the file information(name, type, size, tmp_name and error)
+     * @param int $id - entity id to which the file to be uploaded
+     * @param string $module - the current module name
+     * @param array $file_details - array which contains the file information(name, type, size, tmp_name and error)
      *                             return void
      */
     function uploadAndSaveFile($id, $module, $file_details, $attachmentType = 'Attachment')
@@ -478,16 +478,16 @@ class CRMEntity extends CRMExtension
 
             $description_val = from_html($this->column_fields['description'], false);
             $params = [
-                'crmid'            => $current_id,
-                'creator_user_id'  => $current_user->id,
+                'crmid' => $current_id,
+                'creator_user_id' => $current_user->id,
                 'assigned_user_id' => $ownerid,
-                'smgroupid'        => $groupid,
-                'setype'           => $module,
-                'description'      => $description_val,
-                'modifiedby'       => $current_user->id,
-                'createdtime'      => $created_date_var,
-                'modifiedtime'     => $modified_date_var,
-                'source'           => $source,
+                'smgroupid' => $groupid,
+                'setype' => $module,
+                'description' => $description_val,
+                'modifiedby' => $current_user->id,
+                'createdtime' => $created_date_var,
+                'modifiedtime' => $modified_date_var,
+                'source' => $source,
             ];
 
             if ($label) {
@@ -522,7 +522,7 @@ class CRMEntity extends CRMExtension
     /** Function to insert values in the specifed table for the specified module
      *
      * @param $table_name -- table name:: Type varchar
-     * @param $module     -- module:: Type varchar
+     * @param $module -- module:: Type varchar
      */
     function insertIntoEntityTable($table_name, $module, $fileid = '')
     {
@@ -955,7 +955,7 @@ class CRMEntity extends CRMExtension
      * Retrieve record information of the module
      *
      * @param <Integer> $record - crmid of record
-     * @param <String>  $module - module name
+     * @param <String> $module - module name
      */
     function retrieve_entity_info($record, $module, $allowDeleted = false)
     {
@@ -1371,9 +1371,9 @@ class CRMEntity extends CRMExtension
      * Function to get the column value of a field when the field value is empty ''
      *
      * @param $columnname -- Column name for the field
-     * @param $fldvalue   -- Input value for the field taken from the User
-     * @param $fieldname  -- Name of the Field
-     * @param $uitype     -- UI type of the field
+     * @param $fldvalue -- Input value for the field taken from the User
+     * @param $fieldname -- Name of the Field
+     * @param $uitype -- UI type of the field
      *
      * @return Column value of the field.
      */
@@ -1564,40 +1564,30 @@ class CRMEntity extends CRMExtension
     }
 
     /** Function to unlink an entity with given Id from another entity */
-    function unlinkRelationship($id, $return_module, $return_id)
+    public function unlinkRelationship($id, $return_module, $return_id)
     {
         global $log, $currentModule;
+
+        if (empty($return_module) || empty($return_id)) {
+            return;
+        }
+
         if ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
-        } else {
-            $query = 'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=? AND relcrmid=?) OR (relcrmid=? AND module=? AND crmid=?)';
-            $params = [$id, $return_module, $return_id, $id, $return_module, $return_id];
-            $this->db->pquery($query, $params);
-
-            $fieldRes = $this->db->pquery(
-                'SELECT tabid, tablename, columnname FROM vtiger_field WHERE fieldid IN (SELECT fieldid FROM vtiger_fieldmodulerel WHERE module=? AND relmodule=?)',
-                [$currentModule, $return_module]
+            $this->db->pquery(
+                'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?',
+                [$id, $return_id]
             );
-            $numOfFields = $this->db->num_rows($fieldRes);
-            for ($i = 0; $i < $numOfFields; $i++) {
-                $tabId = $this->db->query_result($fieldRes, $i, 'tabid');
-                $tableName = $this->db->query_result($fieldRes, $i, 'tablename');
-                $columnName = $this->db->query_result($fieldRes, $i, 'columnname');
-
-                $relatedModule = vtlib_getModuleNameById($tabId);
-                $focusObj = CRMEntity::getInstance($relatedModule);
-
-                $updateQuery = "UPDATE $tableName SET $columnName=? WHERE $columnName=? AND $focusObj->table_index=?";
-                $updateParams = [null, $return_id, $id];
-                $this->db->pquery($updateQuery, $updateParams);
-            }
+        } else {
+            $this->db->pquery(
+                'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=? AND relcrmid=?) OR (relcrmid=? AND module=? AND crmid=?)',
+                [$id, $return_module, $return_id, $id, $return_module, $return_id]
+            );
         }
     }
 
     /** Function to restore a deleted record of specified module with given crmid
      *
-     * @param $module     -- module name:: Type varchar
+     * @param $module -- module name:: Type varchar
      * @param $entity_ids -- list of crmids :: Array
      */
     function restore($module, $id)
@@ -2135,7 +2125,7 @@ class CRMEntity extends CRMExtension
 
         $userNameSql = getSqlForNameInDisplayFormat([
             'first_name' => 'vtiger_users.first_name',
-            'last_name'  => 'vtiger_users.last_name'
+            'last_name' => 'vtiger_users.last_name'
         ], 'Users');
         $query .= ", CASE WHEN (vtiger_users.user_name NOT LIKE '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name";
 
@@ -2252,7 +2242,7 @@ class CRMEntity extends CRMExtension
 
             $userNameSql = getSqlForNameInDisplayFormat([
                 'first_name' => 'vtiger_users.first_name',
-                'last_name'  => 'vtiger_users.last_name'
+                'last_name' => 'vtiger_users.last_name'
             ], 'Users');
             $query .= ", CASE WHEN (vtiger_users.user_name NOT LIKE '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name";
 
@@ -3010,7 +3000,7 @@ class CRMEntity extends CRMExtension
     /**
      *
      * @param String $module - module name for which query needs to be generated.
-     * @param Users  $user   - user for which query needs to be generated.
+     * @param Users $user - user for which query needs to be generated.
      *
      * @return String Access control Query for the user.
      * @throws Exception
@@ -3133,7 +3123,7 @@ class CRMEntity extends CRMExtension
         $rel_tables = [
             "Documents" => [
                 "vtiger_senotesrel" => ["crmid", "notesid"],
-                $this->table_name   => $this->table_index
+                $this->table_name => $this->table_index
             ],
         ];
 
@@ -3268,11 +3258,11 @@ class CRMEntity extends CRMExtension
     /**
      * Function which will give the basic query to find duplicates
      *
-     * @param <String>  $module
-     * @param <String>  $tableColumns
-     * @param <String>  $selectedColumns
+     * @param <String> $module
+     * @param <String> $tableColumns
+     * @param <String> $selectedColumns
      * @param <Boolean> $ignoreEmpty
-     * @param <Array>   $requiredTables
+     * @param <Array> $requiredTables
      *
      * @return string
      */

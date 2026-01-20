@@ -637,31 +637,10 @@ class Potentials extends CRMEntity
             return;
         }
 
-        if ($return_module == 'Accounts') {
-            $this->trash($this->moduleName, $id);
-        } elseif ($return_module == 'Campaigns') {
-            $sql = 'UPDATE vtiger_potential SET campaignid = ? WHERE potentialid = ?';
-            $this->db->pquery($sql, [null, $id]);
-        } elseif ($return_module == 'Products') {
-            $sql = 'DELETE FROM vtiger_seproductsrel WHERE crmid=? AND productid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
+        if ($return_module == 'Products') {
+            $this->db->pquery('DELETE FROM vtiger_seproductsrel WHERE crmid=? AND productid=?', [$id, $return_id]);
         } elseif ($return_module == 'Contacts') {
-            $sql = 'DELETE FROM vtiger_contpotentialrel WHERE potentialid=? AND contactid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
-
-            //If contact related to potential through edit of record,that entry will be present in
-            //vtiger_potential contact_id column,which should be set to zero
-            $sql = 'UPDATE vtiger_potential SET contact_id = ? WHERE potentialid=? AND contact_id=?';
-            $this->db->pquery($sql, [0, $id, $return_id]);
-
-            // Potential directly linked with Contact (not through Account - vtiger_contpotentialrel)
-            $directRelCheck = $this->db->pquery('SELECT related_to FROM vtiger_potential WHERE potentialid=? AND contact_id=?', [$id, $return_id]);
-            if ($this->db->num_rows($directRelCheck)) {
-                $this->trash($this->moduleName, $id);
-            }
-        } elseif ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_contpotentialrel WHERE potentialid=? AND contactid=?', [$id, $return_id]);
         } else {
             parent::unlinkRelationship($id, $return_module, $return_id);
         }
