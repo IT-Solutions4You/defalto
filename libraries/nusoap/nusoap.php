@@ -1,6 +1,8 @@
 <?php
 
-require_once('include/logging.php');
+require_once('config.php');
+require_once('vendorCheck.php');
+require_once('vendor/autoload.php');
 /*
 $Id: nusoap.php,v 1.94 2005/08/04 01:27:42 snichol Exp $
 

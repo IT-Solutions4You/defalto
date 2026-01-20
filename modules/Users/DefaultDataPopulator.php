@@ -17,7 +17,6 @@
  */
 
 include_once('config.php');
-require_once('include/logging.php');
 require_once('include/utils/utils.php');
 
 /** Class to populate the default required data during installation

@@ -27,7 +27,6 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-require_once('include/logging.php');
 global $app_strings;
 
 $log = Vtiger_Logger_Helper::getLogger('layout_utils');

@@ -27,7 +27,6 @@ include_once 'vtlib/Vtiger/Module.php';
 include_once 'includes/main/WebUI.php';
 
 require_once 'include/utils/utils.php';
-require_once 'include/logging.php';
 
 global $adb, $log, $HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME, $current_language;
 $log = Vtiger_Logger_Helper::getLogger('SendSupportNotification');

@@ -22,7 +22,6 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-require_once 'include/logging.php';
 include_once 'vendor/adodb/adodb-php/adodb.inc.php';
 require_once 'vendor/adodb/adodb-php/adodb-xmlschema.inc.php';
 

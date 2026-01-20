@@ -16,10 +16,9 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-// Include the Monolog library for logging functionality
-require 'vendor/autoload.php';
+include_once('config.performance.php');
 
-// Import necessary classes from Monolog
+// Include the Monolog library for logging functionality
 use Monolog\Logger as MonologLogger;
 use Monolog\Handler\StreamHandler;
 

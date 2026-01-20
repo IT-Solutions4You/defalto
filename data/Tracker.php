@@ -32,7 +32,6 @@
  */
 
 include_once('config.php');
-require_once('include/logging.php');
 require_once('include/database/PearDatabase.php');
 
 /** This class is used to track the recently viewed items on a per user basis.

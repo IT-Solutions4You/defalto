@@ -18,6 +18,5 @@
  */
 
 require_once('include/utils/utils.php');
-require_once('include/logging.php');
 
 SalesOrder_Recurring_Model::run();
