@@ -62,8 +62,8 @@
                             {if $IS_EDITABLE}
                                 <div class="col">
                                     <input type="hidden" name="{$FIELD_NAME}" value="0">
-                                    <div class="form-check form-switch d-flex align-items-center p-0">
-                                        <input id="headerFieldSwitch{$FIELD_NAME}" class="form-check-input m-0 float-none" data-change-check-field="1" type="checkbox" name="{$FIELD_NAME}" {if !empty($FIELD_VALUE)}checked="checked"{/if} value="1">
+                                    <div class="form-check form-switch d-flex align-items-center p-0 m-0">
+                                        <input id="headerFieldSwitch{$FIELD_NAME}" class="form-check-input m-0 float-none h-2rem w-4rem" data-change-check-field="1" type="checkbox" name="{$FIELD_NAME}" {if !empty($FIELD_VALUE)}checked="checked"{/if} value="1">
                                     </div>
                                 </div>
                             {else}
