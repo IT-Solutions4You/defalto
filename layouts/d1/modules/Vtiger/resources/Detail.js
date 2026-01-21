@@ -3064,34 +3064,42 @@ Vtiger.Class("Vtiger_Detail_Js", {
             return;
         }
 
-        checkboxes.bootstrapSwitch({
-            onText: app.vtranslate('LBL_YES'),
-            offText: app.vtranslate('LBL_NO'),
-            size: 'mini',
-            onSwitchChange() {
-                let element = $(this),
-                    params = {
-                        record: app.getRecordId(),
-                        module: app.getModuleName(),
-                        action: 'SaveAjax',
-                        value: element.is(':checked') ? 1 : 0,
-                        field: element.attr('name'),
-                    };
+        checkboxes.each(function () {
+            let element = $(this),
+                value = element.is(':checked');
 
-                app.request.post({data: params}).then(function (error, data) {
-                    if (!error) {
-                        let field = params['field'];
-
-                        if (params['value'] === parseInt(data[field]['value'])) {
-                            app.event.trigger(Vtiger_Detail_Js.changeCheckEvent, element);
-                            app.helper.showSuccessNotification({message: message});
-                        } else {
-                            app.helper.showErrorNotification({message: message});
-                        }
-                    }
-                })
-            }
+            element.bootstrapSwitch({
+                onText: app.vtranslate('LBL_YES'),
+                offText: app.vtranslate('LBL_NO'),
+                onSwitchChange() {
+                    self.saveBootstrapSwitch(element)
+                }
+            })
+            element.bootstrapSwitch('state', value, value);
         });
+    },
+    saveBootstrapSwitch(element) {
+        let message = app.vtranslate('JS_RECORD_UPDATED'),
+            params = {
+                record: app.getRecordId(),
+                module: app.getModuleName(),
+                action: 'SaveAjax',
+                value: element.is(':checked') ? 1 : 0,
+                field: element.attr('name'),
+            };
+
+        app.request.post({data: params}).then(function (error, data) {
+            if (!error) {
+                let field = params['field'];
+
+                if (params['value'] === parseInt(data[field]['value'])) {
+                    app.event.trigger(Vtiger_Detail_Js.changeCheckEvent, element);
+                    app.helper.showSuccessNotification({message: message});
+                } else {
+                    app.helper.showErrorNotification({message: message});
+                }
+            }
+        })
     },
     registerAssignedUserChange() {
         let self = this,
