@@ -283,27 +283,6 @@ class Invoice extends CRMEntity
         return $rel_tables[$secmodule];
     }
 
-    // Function to unlink an entity with given Id from another entity
-    public function unlinkRelationship($id, $return_module, $return_id)
-    {
-        global $log;
-        if (empty($return_module) || empty($return_id)) {
-            return;
-        }
-
-        if ($return_module == 'Accounts' || $return_module == 'Contacts') {
-            $this->trash('Invoice', $id);
-        } elseif ($return_module == 'SalesOrder') {
-            $relation_query = 'UPDATE vtiger_invoice set salesorder_id=? where invoiceid=?';
-            $this->db->pquery($relation_query, [null, $id]);
-        } elseif ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
-        } else {
-            parent::unlinkRelationship($id, $return_module, $return_id);
-        }
-    }
-
     /*Function to create records in current module.
     **This function called while importing records to this module*/
     public function createRecords($obj)

@@ -94,25 +94,6 @@ if (defined('VTIGER_UPGRADE')) {
           WHERE vtiger_relatedlists.name = ? AND vtiger_relatedlists.tabid = ? AND customized = 0";
     $db->pquery($query, ['get_merged_list', 'get_dependents_list', $accountsTabId]);
 
-    $invoiceModuleInstance = Vtiger_Module::getInstance('Invoice');
-    $blockInstance = Vtiger_Block::getInstance('LBL_INVOICE_INFORMATION', $invoiceModuleInstance);
-    if ($blockInstance) {
-        $fieldInstance = Vtiger_Field::getInstance('potential_id', $invoiceModuleInstance);
-        if (!$fieldInstance) {
-            $field = new Vtiger_Field();
-            $field->name = 'potential_id';
-            $field->label = 'Potential Name';
-            $field->uitype = 10;
-            $field->typeofdata = 'I~O';
-
-            $blockInstance->addField($field);
-            $field->setRelatedModules(['Potentials']);
-
-            $oppModuleModel = Vtiger_Module_Model::getInstance('Potentials');
-            $oppModuleModel->setRelatedlist($invoiceModuleInstance, 'Invoice', ['ADD'], 'get_dependents_list');
-        }
-    }
-
     $documentsModuleModel = Vtiger_Module_Model::getInstance('Documents');
     $noteContentFieldModel = Vtiger_Field_Model::getInstance('notecontent', $documentsModuleModel);
     if ($noteContentFieldModel) {
@@ -202,25 +183,6 @@ if (defined('VTIGER_UPGRADE')) {
         $model->setText($tAndC);
         $model->setType($moduleName);
         $model->save();
-    }
-
-    $documentsInstance = Vtiger_Module::getInstance('Documents');
-    if ($documentsInstance) {
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('Contacts'), 'Contacts', true);
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('Accounts'), 'Accounts', true);
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('Potentials'), 'Potentials', true);
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('Leads'), 'Leads', true);
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('Products'), 'Products', true);
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('Services'), 'Services', true);
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('Project'), 'Project', true);
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('Assets'), 'Assets', true);
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('ServiceContracts'), 'ServiceContracts', true);
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('Quotes'), 'Quotes', true);
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('Invoice'), 'Invoice', true);
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('SalesOrder'), 'SalesOrder', true);
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('PurchaseOrder'), 'PurchaseOrder', true);
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('HelpDesk'), 'HelpDesk', true);
-        $documentsInstance->setRelatedList(Vtiger_Module::getInstance('Faq'), 'Faq', true);
     }
 
     //Update relation field for existing relation ships
@@ -741,22 +703,6 @@ if (defined('VTIGER_UPGRADE')) {
         $db->pquery('ALTER TABLE vtiger_crmentityrel ADD INDEX relcrmid_idx(relcrmid)', []);
     }
 
-    //Start : Project added as related tab for Potentials module.
-    $projectModuleModel = Vtiger_Module_Model::getInstance('Project');
-    $fieldModel = Vtiger_Field::getInstance('potentialid', $projectModuleModel);
-    if ($fieldModel) {
-        $fieldModel->setRelatedModules(['Potentials']);
-        $result = $db->pquery(
-            'SELECT 1 FROM vtiger_relatedlists where tabid=? AND relationfieldid=? AND related_tabid=?',
-            [getTabid('Potentials'), $fieldModel->id, getTabid('Project')]
-        );
-        if (!($db->num_rows($result))) {
-            $potentialModuleModel = Vtiger_Module_Model::getInstance('Potentials');
-            $potentialModuleModel->setRelatedList($projectModuleModel, 'Projects', ['ADD', 'SELECT'], 'get_dependents_list', $fieldModel->id);
-        }
-    }
-    //End
-
     if (!columnExists('click_count', 'vtiger_email_track')) {
         Vtiger_Utils::AlterTable('vtiger_email_track', ' ADD click_count INT NOT NULL default 0');
     }
@@ -1256,9 +1202,6 @@ if (defined('VTIGER_UPGRADE')) {
     $db->pquery('ALTER TABLE vtiger_cvstdfilter ADD CONSTRAINT fk_1_vtiger_cvstdfilter FOREIGN KEY (cvid) REFERENCES vtiger_customview(cvid) ON DELETE CASCADE', []);
 
     $Vtiger_Utils_Log = true;
-    $productsInstance = Vtiger_Module_Model::getInstance('Products');
-    $poInstance = Vtiger_Module_Model::getInstance('PurchaseOrder');
-    $productsInstance->setRelatedList($poInstance, 'PurchaseOrder', false, 'get_purchase_orders');
 
     $db->pquery('DELETE FROM vtiger_links WHERE linktype=? AND handler_class=?', ['DETAILVIEWBASIC', 'Documents']);
 

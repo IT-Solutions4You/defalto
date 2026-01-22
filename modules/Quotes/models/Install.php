@@ -10,17 +10,17 @@
 class Quotes_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
+        ['Quotes', 'Appointments', 'Appointments', '', 'get_related_list', '',],
+        ['Quotes', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
+        ['Quotes', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
+        ['Quotes', 'SalesOrder', 'Sales Order', '', 'get_salesorder', '',],
+
         ['Accounts', 'Quotes', 'Quotes', 'add', 'get_quotes', '',],
         ['Contacts', 'Quotes', 'Quotes', 'add', 'get_quotes', '',],
         ['Services', 'Quotes', 'Quotes', 'ADD', 'get_quotes', '',],
         ['Potentials', 'Quotes', 'Quotes', 'ADD', 'get_Quotes', '',],
-        ['Quotes', 'Appointments', 'Appointments', '', 'get_related_list', '',],
-        ['Quotes', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
-        ['Quotes', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
-        ['Documents', 'Quotes', 'Quotes', '', 'get_related_list', '',],
         ['Products', 'Quotes', 'Quotes', 'ADD', 'get_quotes', '',],
-        ['Documents', 'Quotes', 'Quotes', '1', 'get_related_list', '',],
-        ['Quotes', 'SalesOrder', 'Sales Order', '', 'get_salesorder', '',],
+        ['Documents', 'Quotes', 'Quotes', '', 'get_related_list', '',],
         ['Project', 'Quotes', 'Quotes', 'SELECT', 'get_related_list', '',],
     ];
 

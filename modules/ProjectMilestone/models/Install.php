@@ -28,6 +28,7 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
      */
     public function addCustomLinks(): void
     {
+        $this->updateRelatedList();
         $this->updateToStandardModule();
         $this->updateNumbering();
         $this->updateComments();

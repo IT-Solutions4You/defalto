@@ -425,8 +425,9 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
         $row = $this->db->query_result_rowdata($result);
         $number = $this->db->num_rows($result);
         $message = 1 < $number ? 'LBL_DUPLICATE_RELATED_LISTS' : '';
+        $actions = is_array($data['actions']) ? implode(',', $data['actions']) : $data['actions'];
 
-        if ($data['actions'] !== $row['actions']) {
+        if (strtolower($actions) !== strtolower($row['actions'])) {
             $message = 'LBL_DIFFERENT_ACTIONS';
         }
 

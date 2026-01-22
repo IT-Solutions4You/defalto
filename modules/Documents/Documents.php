@@ -423,11 +423,9 @@ class Documents extends CRMEntity
         }
 
         if ($return_module == 'Accounts') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE notesid = ? AND (crmid = ? OR crmid IN (SELECT contactid FROM vtiger_contactdetails WHERE account_id=?))';
-            $this->db->pquery($sql, [$id, $return_id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_senotesrel WHERE notesid = ? AND (crmid = ? OR crmid IN (SELECT contactid FROM vtiger_contactdetails WHERE account_id=?))', [$id, $return_id, $return_id]);
         } else {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE notesid = ? AND crmid = ?';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_senotesrel WHERE notesid = ? AND crmid = ?', [$id, $return_id]);
 
             parent::unlinkRelationship($id, $return_module, $return_id);
         }

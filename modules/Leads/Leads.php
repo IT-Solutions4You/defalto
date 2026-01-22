@@ -483,14 +483,9 @@ class Leads extends CRMEntity
         }
 
         if ($return_module == 'Campaigns') {
-            $sql = 'DELETE FROM vtiger_campaignleadrel WHERE leadid=? AND campaignid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_campaignleadrel WHERE leadid=? AND campaignid=?', [$id, $return_id]);
         } elseif ($return_module == 'Products') {
-            $sql = 'DELETE FROM vtiger_seproductsrel WHERE crmid=? AND productid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
-        } elseif ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_seproductsrel WHERE crmid=? AND productid=?', [$id, $return_id]);
         } else {
             parent::unlinkRelationship($id, $return_module, $return_id);
         }

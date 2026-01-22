@@ -20,7 +20,6 @@
  * For the full copyright and license information, please view the LICENSE-AGPLv3.txt
  * file that was distributed with this source code.
  */
-
 class Campaigns extends CRMEntity
 {
     public string $moduleName = 'Campaigns';
@@ -49,21 +48,21 @@ class Campaigns extends CRMEntity
     ];
 
     public $list_fields = [
-        'Campaign Name'       => ['campaign' => 'campaignname'],
-        'Campaign Type'       => ['campaign' => 'campaigntype'],
-        'Campaign Status'     => ['campaign' => 'campaignstatus'],
-        'Expected Revenue'    => ['campaign' => 'expectedrevenue'],
+        'Campaign Name' => ['campaign' => 'campaignname'],
+        'Campaign Type' => ['campaign' => 'campaigntype'],
+        'Campaign Status' => ['campaign' => 'campaignstatus'],
+        'Expected Revenue' => ['campaign' => 'expectedrevenue'],
         'Expected Close Date' => ['campaign' => 'closingdate'],
-        'Assigned To'         => ['crmentity' => 'assigned_user_id'],
+        'Assigned To' => ['crmentity' => 'assigned_user_id'],
     ];
 
     public $list_fields_name = [
-        'Campaign Name'       => 'campaignname',
-        'Campaign Type'       => 'campaigntype',
-        'Campaign Status'     => 'campaignstatus',
-        'Expected Revenue'    => 'expectedrevenue',
+        'Campaign Name' => 'campaignname',
+        'Campaign Type' => 'campaigntype',
+        'Campaign Status' => 'campaignstatus',
+        'Expected Revenue' => 'expectedrevenue',
         'Expected Close Date' => 'closingdate',
-        'Assigned To'         => 'assigned_user_id',
+        'Assigned To' => 'assigned_user_id',
     ];
 
     public $list_link_field = 'campaignname';
@@ -172,7 +171,7 @@ class Campaigns extends CRMEntity
         $userNameSql = getSqlForNameInDisplayFormat([
             'first_name' =>
                 'vtiger_users.first_name',
-            'last_name'  => 'vtiger_users.last_name'
+            'last_name' => 'vtiger_users.last_name'
         ], 'Users');
         $query = "SELECT vtiger_account.*,
 				CASE when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,
@@ -286,7 +285,7 @@ class Campaigns extends CRMEntity
         $userNameSql = getSqlForNameInDisplayFormat([
             'first_name' =>
                 'vtiger_users.first_name',
-            'last_name'  => 'vtiger_users.last_name'
+            'last_name' => 'vtiger_users.last_name'
         ], 'Users');
         $query = "SELECT vtiger_contactdetails.account_id, vtiger_account.accountname,
 				CASE when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name ,
@@ -406,7 +405,7 @@ class Campaigns extends CRMEntity
         $userNameSql = getSqlForNameInDisplayFormat([
             'first_name' =>
                 'vtiger_users.first_name',
-            'last_name'  => 'vtiger_users.last_name'
+            'last_name' => 'vtiger_users.last_name'
         ], 'Users');
         $query = "SELECT vtiger_leaddetails.*, vtiger_crmentity.crmid,vtiger_leadaddress.phone,vtiger_leadsubdetails.website,
 				CASE when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,
@@ -489,7 +488,7 @@ class Campaigns extends CRMEntity
         $userNameSql = getSqlForNameInDisplayFormat([
             'first_name' =>
                 'vtiger_users.first_name',
-            'last_name'  => 'vtiger_users.last_name'
+            'last_name' => 'vtiger_users.last_name'
         ], 'Users');
         $query = "SELECT CASE when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,
 					vtiger_potential.related_to, vtiger_potential.contact_id, vtiger_account.accountname, vtiger_potential.potentialid, vtiger_potential.potentialname,
@@ -603,18 +602,18 @@ class Campaigns extends CRMEntity
     function setRelationTables($secmodule)
     {
         $rel_tables = [
-            "Contacts"   => ["vtiger_campaigncontrel" => ["campaignid", "contactid"], "vtiger_campaign" => "campaignid"],
-            "Leads"      => ["vtiger_campaignleadrel" => ["campaignid", "leadid"], "vtiger_campaign" => "campaignid"],
-            "Accounts"   => ["vtiger_campaignaccountrel" => ["campaignid", "accountid"], "vtiger_campaign" => "campaignid"],
+            "Contacts" => ["vtiger_campaigncontrel" => ["campaignid", "contactid"], "vtiger_campaign" => "campaignid"],
+            "Leads" => ["vtiger_campaignleadrel" => ["campaignid", "leadid"], "vtiger_campaign" => "campaignid"],
+            "Accounts" => ["vtiger_campaignaccountrel" => ["campaignid", "accountid"], "vtiger_campaign" => "campaignid"],
             "Potentials" => ["vtiger_potential" => ["campaignid", "potentialid"], "vtiger_campaign" => "campaignid"],
-            "Products"   => ["vtiger_campaign" => ["campaignid", "product_id"]],
+            "Products" => ["vtiger_campaign" => ["campaignid", "product_id"]],
         ];
 
         return $rel_tables[$secmodule];
     }
 
     // Function to unlink an entity with given Id from another entity
-    function unlinkRelationship($id, $return_module, $return_id)
+    public function unlinkRelationship($id, $return_module, $return_id)
     {
         global $log;
         if (empty($return_module) || empty($return_id)) {
@@ -622,16 +621,12 @@ class Campaigns extends CRMEntity
         }
 
         if ($return_module == 'Leads') {
-            $sql = 'DELETE FROM vtiger_campaignleadrel WHERE campaignid=? AND leadid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_campaignleadrel WHERE campaignid=? AND leadid=?', [$id, $return_id]);
         } elseif ($return_module == 'Contacts') {
-            $sql = 'DELETE FROM vtiger_campaigncontrel WHERE campaignid=? AND contactid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_campaigncontrel WHERE campaignid=? AND contactid=?', [$id, $return_id]);
         } elseif ($return_module == 'Accounts') {
-            $sql = 'DELETE FROM vtiger_campaignaccountrel WHERE campaignid=? AND accountid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
-            $sql = 'DELETE FROM vtiger_campaigncontrel WHERE campaignid=? AND contactid IN (SELECT contactid FROM vtiger_contactdetails WHERE account_id=?)';
-            $this->db->pquery($sql, [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_campaignaccountrel WHERE campaignid=? AND accountid=?', [$id, $return_id]);
+            $this->db->pquery('DELETE FROM vtiger_campaigncontrel WHERE campaignid=? AND contactid IN (SELECT contactid FROM vtiger_contactdetails WHERE account_id=?)', [$id, $return_id]);
         } else {
             parent::unlinkRelationship($id, $return_module, $return_id);
         }

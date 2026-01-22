@@ -144,29 +144,6 @@ class InventoryItem extends CRMEntity
     }
 
     /**
-     * Function to unlink an entity with given Id from another entity
-     *
-     * @param int    $id
-     * @param string $return_module
-     * @param int    $return_id
-     *
-     * @return void
-     */
-    public function unlinkRelationship($id, $return_module, $return_id)
-    {
-        if (empty($return_module) || empty($return_id)) {
-            return;
-        }
-
-        if ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
-        } else {
-            parent::unlinkRelationship($id, $return_module, $return_id);
-        }
-    }
-
-    /**
      * @param string    $module
      * @param int       $crmid
      * @param string    $withModule

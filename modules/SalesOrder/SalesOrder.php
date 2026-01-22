@@ -287,33 +287,6 @@ class SalesOrder extends CRMEntity
         return $rel_tables[$secmodule];
     }
 
-    // Function to unlink an entity with given Id from another entity
-    public function unlinkRelationship($id, $return_module, $return_id)
-    {
-        global $log;
-        if (empty($return_module) || empty($return_id)) {
-            return;
-        }
-
-        if ($return_module == 'Accounts') {
-            $this->trash('SalesOrder', $id);
-        } elseif ($return_module == 'Quotes') {
-            $relation_query = 'UPDATE vtiger_salesorder SET quote_id=? WHERE salesorderid=?';
-            $this->db->pquery($relation_query, [null, $id]);
-        } elseif ($return_module == 'Potentials') {
-            $relation_query = 'UPDATE vtiger_salesorder SET potential_id=? WHERE salesorderid=?';
-            $this->db->pquery($relation_query, [null, $id]);
-        } elseif ($return_module == 'Contacts') {
-            $relation_query = 'UPDATE vtiger_salesorder SET contact_id=? WHERE salesorderid=?';
-            $this->db->pquery($relation_query, [null, $id]);
-        } elseif ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
-        } else {
-            parent::unlinkRelationship($id, $return_module, $return_id);
-        }
-    }
-
     public function getJoinClause($tableName)
     {
         if ($tableName == 'vtiger_invoice_recurring_info') {

@@ -223,35 +223,6 @@ class PurchaseOrder extends CRMEntity
         return $rel_tables[$secmodule];
     }
 
-    // Function to unlink an entity with given Id from another entity
-    public function unlinkRelationship($id, $return_module, $return_id)
-    {
-        if (empty($return_module) || empty($return_id)) {
-            return;
-        }
-
-        switch ($return_module) {
-            case 'Vendors':
-                $sql_req = 'UPDATE vtiger_purchaseorder SET vendor_id = ? WHERE purchaseorderid = ?';
-                $this->db->pquery($sql_req, [$id]);
-                break;
-            case 'Contacts':
-                $sql_req = 'UPDATE vtiger_purchaseorder SET contact_id=? WHERE purchaseorderid = ?';
-                $this->db->pquery($sql_req, [null, $id]);
-                break;
-            case 'Documents':
-                $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-                $this->db->pquery($sql, [$id, $return_id]);
-                break;
-            case 'Accounts':
-                $sql = 'UPDATE vtiger_purchaseorder SET account_id=? WHERE purchaseorderid=?';
-                $this->db->pquery($sql, [null, $id]);
-                break;
-            default:
-                parent::unlinkRelationship($id, $return_module, $return_id);
-        }
-    }
-
     /*Function to create records in current module.
     **This function called while importing records to this module*/
     public function createRecords($obj)
