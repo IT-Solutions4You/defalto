@@ -380,17 +380,22 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
     /**
      * @param int $recordId
      * @return string
+     * @throws Exception
      */
     public function getInventoryItemImage(int $recordId): string
     {
-        $adb = PearDatabase::getInstance();
-        $result = $adb->pquery(
-            'SELECT df_inventoryitem.productid FROM df_inventoryitem WHERE df_inventoryitem.inventoryitemid=?',
-            [$recordId],
-        );
-        $row = $adb->fetchByAssoc($result);
+        return $this->getRecordImage($this->getInventoryItemProductId($recordId));
+    }
 
-        return $this->getRecordImage((int)$row['productid']);
+    /**
+     * @throws Exception
+     */
+    public function getInventoryItemProductId(int $inventoryItemId): int
+    {
+        $table = Core_DatabaseData_Model::getTableInstance('df_inventoryitem');
+        $data = $table->selectData(['productid as id'], ['inventoryitemid' => $inventoryItemId]);
+
+        return $data['id'];
     }
 
     /**
