@@ -847,6 +847,7 @@ Vtiger.Class('Vtiger_Index_Js', {
      */
     getMaxiumFileUploadingSize: function (container) {
         //TODO : get it from the server
+
         return container.find('.maxUploadSize').data('value');
     },
 
