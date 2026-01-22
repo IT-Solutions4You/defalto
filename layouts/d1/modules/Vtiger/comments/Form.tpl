@@ -13,7 +13,7 @@
                 <div class="row mb-3">
                     <div class="col-12">
                         <div class="commentTextArea">
-                            <textarea name="commentcontent" class="commentcontent form-control" onfocus="this.style.height = '9em';"  placeholder="{vtranslate('LBL_POST_YOUR_COMMENT_HERE', $MODULE_NAME)}" rows="{$COMMENT_TEXTAREA_DEFAULT_ROWS}"></textarea>
+                            <textarea name="commentcontent" class="commentcontent form-control" onfocusout="if(!this.value) this.style.height = null;" onfocus="this.style.height = '9em';"  placeholder="{vtranslate('LBL_POST_YOUR_COMMENT_HERE', $MODULE_NAME)}" rows="{$COMMENT_TEXTAREA_DEFAULT_ROWS}"></textarea>
                         </div>
                     </div>
                 </div>
