@@ -497,6 +497,7 @@ $languageStrings = [
     'UNZIP_ERROR' => 'mpdf.zip entpacken',
     'landscape' => 'Querformat',
     'portrait' => 'Hochformat',
+    'LBL_VARIABLE_PRODUCTIMAGE' => 'Product / Service image',
 ];
 $jsLanguageStrings = [
     'ARE_YOU_SURE' => 'Are you sure?',

@@ -607,6 +607,7 @@ $languageStrings = [
     'LBL_CHECK_COMPANY' => 'Prosím, skontrolujte informácie o spoločnosti.',
     'LBL_PRODUCT_LIST_PRICE_WITHOUT_TAX' => 'Cenníková cena bez dane',
     'LBL_VARIABLE_PRODUCTCODE' => 'Kód produktu / služby',
+    'LBL_VARIABLE_PRODUCTIMAGE' => 'Obrázek produktu / služby',
 ];
 $jsLanguageStrings = [
     'LBL_MISSING_FIELDS' => 'Missing mandatory fields:',

@@ -495,6 +495,7 @@ $languageStrings = [
     'LBL_INSTALL_STEP_1' => 'Welcome',
     'SINGLE_PDFMaker' => 'PDFMaker',
     'LBL_VARIABLE_PRODUCTCODE' => 'Product / Service code',
+    'LBL_VARIABLE_PRODUCTIMAGE' => 'Product / Service image',
 ];
 $jsLanguageStrings = [
     'LBL_MISSING_FIELDS' => 'Missing mndatory fields:',

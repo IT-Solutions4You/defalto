@@ -615,6 +615,7 @@ $languageStrings = [
     'LBL_SELECT_LABEL' => 'Vybrať popis',
     'LBL_PRODUCT_LIST_PRICE_WITHOUT_TAX' => 'Cenníková cena bez dane',
     'LBL_VARIABLE_PRODUCTCODE' => 'Kód produktu / služby',
+    'LBL_VARIABLE_PRODUCTIMAGE' => 'Obrázok produktu/služby',
 ];
 $jsLanguageStrings = [
     'LBL_MISSING_FIELDS' => 'Chýbajú povinné polia:',

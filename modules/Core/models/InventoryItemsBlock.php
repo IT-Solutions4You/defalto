@@ -220,6 +220,7 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
         $values['$PS_TITLE$'] = $recordModel->getName();
         $values['$PS_DESCRIPTION$'] = $recordModel->getDescription();
         $values['$PS_CODE$'] = $recordModel->get('serial_no') ?: $recordModel->get('servicecode');
+        $values['$PS_IMAGE$'] = '$RECORD_IMAGE_' . $inventoryItemId . '$';
 
         return $values;
     }
@@ -353,6 +354,7 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
                 'PS_TITLE' => 'LBL_VARIABLE_PRODUCTTITLE',
                 'PS_DESCRIPTION' => 'LBL_VARIABLE_PRODUCTDESCRIPTION',
                 'PS_CODE' => 'LBL_VARIABLE_PRODUCTCODE',
+                'PS_IMAGE' => 'LBL_VARIABLE_PRODUCTIMAGE',
             ],
         ];
         $options = array_merge_recursive($this->getVariableOptionsForModule('InventoryItem'), $customOptions);
