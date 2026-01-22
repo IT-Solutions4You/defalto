@@ -12,6 +12,8 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
 {
     public static array $currencyUserConfig = [];
     public static array $numberUserConfig = [];
+    public static array $inventoryNumberUserConfig = [];
+    public static array $inventoryCurrencyUserConfig = [];
 
     protected string $variablePrefix = 'RB';
     protected string $recordPrefix = 'RB';
@@ -646,18 +648,28 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
      */
     public function retrieveNumberUsers(): void
     {
-        global $number_user, $currency_user;
+        global $number_user, $currency_user, $inventory_currency_user, $inventory_number_user;
 
         $currentUser = Users_Record_Model::getCurrentUserModel();
         $currency_user = clone $currentUser;
         $number_user = clone $currentUser;
+        $inventory_currency_user = clone $currentUser;
+        $inventory_number_user = clone $currentUser;
 
         foreach (self::$currencyUserConfig as $key => $value) {
-            $currency_user->$key = $value;
+            $currency_user->set($key, $value);
         }
 
         foreach (self::$numberUserConfig as $key => $value) {
-            $number_user->$key = $value;
+            $number_user->set($key, $value);
+        }
+
+        foreach (self::$inventoryNumberUserConfig as $key => $value) {
+            $inventory_number_user->set($key, $value);
+        }
+
+        foreach (self::$inventoryCurrencyUserConfig as $key => $value) {
+            $inventory_currency_user->set($key, $value);
         }
     }
 
