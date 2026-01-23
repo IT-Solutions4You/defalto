@@ -45,6 +45,8 @@ $languageStrings = [
     'Grand Total' => 'Celková suma',
     'Margin Amount' => 'Výška marže',
     'Quote Date' => 'Dátum ponuky',
+    'Create Proforma Invoice' => 'Vytvoriť predfaktúru',
+    'Create Final Invoice' => 'Vytvoriť finálnu faktúru',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Cenová ponuka obsahuje odstránené produkty alebo služby, prosím upravte ponuku',
