@@ -25,28 +25,8 @@ class Inventory_TaxRecord_Model extends Vtiger_Base_Model {
 		return $this->get('taxlabel');
 	}	
 
-	public function getTax() {
-		return $this->get('percentage');
-	}
-
-	public function getTaxType() {
-		return $this->get('type');
-	}
-
-	public function getTaxMethod() {
-		return $this->get('method');
-	}
-
 	public function isDeleted() {
 		return $this->get('deleted') == 0 ? false : true;
-	}
-
-	public function markDeleted() {
-		return $this->set('deleted','1');
-	}
-
-	public function unMarkDeleted() {
-		return $this->set('deleted','0');
 	}
 
 	public function setType($type) {
@@ -58,36 +38,12 @@ class Inventory_TaxRecord_Model extends Vtiger_Base_Model {
 		return $this->type;
 	}
 
-	public function isProductTax() {
-		return ($this->getType() == self::PRODUCT_AND_SERVICE_TAX) ? true : false;
-	}
-
 	public function isShippingTax() {
 		return ($this->getType() == self::SHIPPING_AND_HANDLING_TAX) ? true : false;
 	}
 
-	public function getCreateTaxUrl() {
-		return '?module=Vtiger&parent=Settings&view=TaxAjax&mode=editTax';
-	}
-
 	public function getEditTaxUrl() {
 		return '?module=Vtiger&parent=Settings&view=TaxAjax&mode=editTax&type='.$this->getType().'&taxid='.$this->getId();
-	}
-
-	public function getRegionTaxes() {
-		$regions = $this->get('regions');
-		if ($regions) {
-			return Zend_Json::decode(html_entity_decode($regions));
-		}
-		return array();
-	}
-
-	public function getTaxesOnCompound() {
-		$compoundOn = $this->get('compoundon');
-		if ($compoundOn) {
-			return Zend_Json::decode(html_entity_decode($compoundOn));
-		}
-		return array();
 	}
 
 	private function getTableNameFromType() {
@@ -285,22 +241,5 @@ class Inventory_TaxRecord_Model extends Vtiger_Base_Model {
 			$recordModelsList[$taxRecordModel->getId()] = $taxRecordModel;
 		}
 		return $recordModelsList;
-	}
-
-	public static function getDeductTaxesList($active = true) {
-		$db = PearDatabase::getInstance();
-		$tableName = Inventory_TaxRecord_Model::INVENTORY_TAXES_TABLE_NAME;
-
-		$where = '';
-		if ($active) {
-			$where = ' AND deleted=0';
-		}
-
-		$deductTaxesList = array();
-		$result = $db->pquery("SELECT * FROM $tableName WHERE method=? $where", array('Deducted'));
-		while($rowData = $db->fetch_array($result)) {
-			$deductTaxesList[$rowData['taxid']] = $rowData;
-		}
-		return $deductTaxesList;
 	}
 }

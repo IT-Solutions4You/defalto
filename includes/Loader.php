@@ -78,6 +78,10 @@ class Vtiger_Loader
         }
 
         // Check file inclusion before including it
+        if (!function_exists('checkFileAccessForInclusion')) {
+            require_once('include/utils/CommonUtils.php');
+        }
+
         checkFileAccessForInclusion($file);
 
         $status = -1;

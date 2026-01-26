@@ -19,9 +19,11 @@
 
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . '../..');
 
+require_once('config.inc.php');
+require_once('vendorCheck.php');
+require_once('vendor/autoload.php');
 require_once 'include/utils/utils.php';
 require_once('include/utils/CommonUtils.php');
-require_once("config.inc.php");
 require_once('include/database/PearDatabase.php');
 require_once 'include/Webservices/Utils.php';
 require_once("modules/Users/Users.php");
@@ -39,7 +41,6 @@ require_once("include/Webservices/WebServiceError.php");
 require_once 'include/utils/UserInfoUtil.php';
 require_once 'include/Webservices/ModuleTypes.php';
 require_once 'include/utils/VtlibUtils.php';
-require_once('include/logging.php');
 require_once 'include/Webservices/WebserviceEntityOperation.php';
 require_once 'include/Webservices/Retrieve.php';
 require_once 'modules/Users/Users.php';

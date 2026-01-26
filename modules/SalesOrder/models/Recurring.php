@@ -19,7 +19,7 @@ class SalesOrder_Recurring_Model
     public static function run(): void
     {
         $db = PearDatabase::getInstance();
-        $log = Logger::getLogger('RecurringInvoice');
+        $log = Core_Logger_Helper::getLogger('RecurringInvoice');
         $log->debug('invoked RecurringInvoice');
 
         $currentDate = date('Y-m-d');
@@ -107,7 +107,7 @@ class SalesOrder_Recurring_Model
      */
     private static function dispatchRecurring(int $salesOrderId, string $recurringDate, int $paymentDuration, string $recurringModule): void
     {
-        $log = Logger::getLogger('RecurringInvoice');
+        $log = Core_Logger_Helper::getLogger('RecurringInvoice');
 
         $recurringModule = $recurringModule ?: 'Invoice';
         $moduleModel = Vtiger_Module_Model::getInstance($recurringModule);

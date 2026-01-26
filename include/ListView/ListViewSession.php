@@ -17,7 +17,6 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-require_once('include/logging.php');
 require_once('modules/CustomView/CustomView.php');
 
 class ListViewSession

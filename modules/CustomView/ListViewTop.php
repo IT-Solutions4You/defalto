@@ -58,7 +58,6 @@ function getKeyMetrics($maxval, $calCnt)
 {
     require_once("data/Tracker.php");
     require_once('modules/CustomView/CustomView.php');
-    require_once('include/logging.php');
     require_once('include/ListView/ListView.php');
 
     global $app_strings;
@@ -68,7 +67,7 @@ function getKeyMetrics($maxval, $calCnt)
     $metricviewnames = "'Hot Leads'";
 
     $current_module_strings = return_module_language($current_language, "CustomView");
-    $log = Logger::getLogger('metrics');
+    $log = Core_Logger_Helper::getLogger('metrics');
 
     $metriclists = getMetricList();
 

@@ -132,7 +132,7 @@ class OutlookSyncServer extends SyncServer
         $response['updated'] = [];
         $response['deleted'] = [];
 
-        $log->fatal($result['updated']);
+        $log->critical($result['updated']);
 
         $nextSyncDeleteRecords = $this->destHandler->getAssignToChangedRecords();
         foreach ($result['created'] as $clientRecordId => $record) {

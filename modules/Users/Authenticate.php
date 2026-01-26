@@ -30,7 +30,6 @@
 
 require_once('modules/Users/Users.php');
 require_once('modules/Users/CreateUserPrivilegeFile.php');
-require_once('include/logging.php');
 require_once('user_privileges/audit_trail.php');
 
 global $mod_strings, $default_charset;

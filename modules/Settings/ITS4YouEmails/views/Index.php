@@ -59,7 +59,6 @@ class Settings_ITS4YouEmails_Index_View extends Settings_Vtiger_Index_View
 
         unset($headerScriptInstances['modules.Vtiger.resources.Edit']);
         unset($headerScriptInstances["modules.Settings.Vtiger.resources.Edit"]);
-        unset($headerScriptInstances['modules.Inventory.resources.Edit']);
         unset($headerScriptInstances["modules.$moduleName.resources.Edit"]);
         unset($headerScriptInstances["modules.Settings.$moduleName.resources.Edit"]);
 

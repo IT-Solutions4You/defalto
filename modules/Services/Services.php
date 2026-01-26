@@ -1120,9 +1120,9 @@ class Services extends CRMEntity
     function unlinkRelationship($id, $return_module, $return_id)
     {
         global $log, $currentModule;
-        $log->fatal('id:--' . $id);
-        $log->fatal('return_module:--' . $return_module);
-        $log->fatal('return_id:---' . $return_id);
+        $log->critical('id:--' . $id);
+        $log->critical('return_module:--' . $return_module);
+        $log->critical('return_id:---' . $return_id);
         if ($return_module == 'Accounts') {
             $focus = CRMEntity::getInstance($return_module);
             $entityIds = $focus->getRelatedContactsIds($return_id);

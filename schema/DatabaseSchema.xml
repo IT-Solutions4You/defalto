@@ -2472,25 +2472,6 @@
 		<query>ALTER TABLE vtiger_salesordercf ADD CONSTRAINT fk_1_vtiger_salesordercf FOREIGN KEY (salesorderid) REFERENCES vtiger_salesorder(salesorderid) ON DELETE CASCADE</query>
 	</sql>
 
-
-	<table name="vtiger_notificationscheduler">
-		<field name="schedulednotificationid" type="I" size="19">
-			<key />
-			<autoincrement />
-		</field>
-		<field name="schedulednotificationname" type="C" size="200" />
-		<field name="active" type="I" size="1" />
-		<field name="notificationsubject" type="C" size="200" />
-		<field name="notificationbody" type="X" />
-		<field name="label" type="C" size="50" />
-		<field name="type" type="C" size="10" />
-		<index name="notificationscheduler_schedulednotificationname_idx">
-			<col>schedulednotificationname</col>
-			<unique />
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
 	<table name="vtiger_relatedlists">
 		<field name="relation_id" type="I" size="19">
 			<key />

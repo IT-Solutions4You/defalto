@@ -27,11 +27,6 @@ class Products_Record_Model extends Vtiger_Record_Model
         return 'index.php?module=Inventory&action=GetTaxes&record=' . $this->getId();
     }
 
-    function getPurchaseOrderTaxesURL()
-    {
-        return 'index.php?module=PurchaseOrder&action=GetTaxes&record=' . $this->getId();
-    }
-
     /**
      * Function to get available taxes for this record
      * @return <Array> List of available taxes

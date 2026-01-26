@@ -319,7 +319,7 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
         $headerScriptInstances = parent::getHeaderScripts($request);
 
         $jsFileNames = [
-            '~libraries/garand-sticky/jquery.sticky.js',
+            '~libraries/jquery/garand-sticky/jquery.sticky.js',
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
