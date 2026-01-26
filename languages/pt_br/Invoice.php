@@ -55,6 +55,9 @@ $languageStrings = [
     'LBL_NOT_A_BUNDLE'                                                           => 'Não é um Pacote',
     'LBL_SUB_PRODUCTS'                                                           => 'Sub Produtos',
     'LBL_ACTION'                                                                 => 'Ação',
+    'Invoice Type' => 'Tipo de fatura',
+    'Tax Document' => 'Documento fiscal',
+    'Final Invoice' => 'Fatura final',
 ];
 
 $jsLanguageStrings = [

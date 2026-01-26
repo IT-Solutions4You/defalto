@@ -56,6 +56,9 @@ $languageStrings = [
     'LBL_ACTION'                                                                 => 'Åtgärd',
 
     'Purchase Order' => 'Beställning',
+    'Invoice Type' => 'Fakturatyp',
+    'Tax Document' => 'Tax Document',
+    'Final Invoice' => 'Slutfaktura',
 ];
 
 $jsLanguageStrings = [

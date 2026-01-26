@@ -597,7 +597,7 @@ class Invoice_Install_Model extends Core_Install_Model
                 ],
                 'invoice_type' => [
                     'name' => 'invoice_type',
-                    'uitype' => 1,
+                    'uitype' => 16,
                     'column' => 'invoice_type',
                     'table' => 'vtiger_invoice',
                     'label' => 'Invoice Type',
@@ -610,6 +610,9 @@ class Invoice_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 0,
                     'ajaxeditable' => 0,
+                    'picklist_values' => [
+                        'Invoice',
+                    ],
                     'defaultvalue' => 'Invoice',
                 ],
             ]
