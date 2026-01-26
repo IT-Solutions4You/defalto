@@ -2247,6 +2247,21 @@ class CRMEntity extends CRMExtension
             $query .= ", CASE WHEN (vtiger_users.user_name NOT LIKE '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name";
 
             $more_relation = '';
+
+            if (!empty($other->tab_name_index)) {
+                foreach ($other->tab_name_index as $tableName => $tableIndex) {
+                    if (in_array($tableName, [$other->table_name, 'vtiger_crmentity'])) {
+                        continue;
+                    }
+
+                    if (in_array($tableName, $other->tab_name_left_join)) {
+                        $more_relation .= sprintf(" LEFT JOIN %s ON %s.%s=vtiger_crmentity.crmid", $tableName, $tableName, $tableIndex);
+                    } else {
+                        $more_relation .= sprintf(" INNER JOIN %s ON %s.%s=vtiger_crmentity.crmid", $tableName, $tableName, $tableIndex);
+                    }
+                }
+            }
+
             if (!empty($other->related_tables)) {
                 foreach ($other->related_tables as $tname => $relmap) {
                     $query .= ", $tname.*";
