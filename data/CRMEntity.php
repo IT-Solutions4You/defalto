@@ -2137,7 +2137,11 @@ class CRMEntity extends CRMExtension
                     continue;
                 }
 
-                $more_relation .= sprintf(" INNER JOIN %s ON %s.%s=vtiger_crmentity.crmid", $tableName, $tableName, $tableIndex);
+                if (in_array($tableName, $other->tab_name_left_join)) {
+                    $more_relation .= sprintf(" LEFT JOIN %s ON %s.%s=vtiger_crmentity.crmid", $tableName, $tableName, $tableIndex);
+                } else {
+                    $more_relation .= sprintf(" INNER JOIN %s ON %s.%s=vtiger_crmentity.crmid", $tableName, $tableName, $tableIndex);
+                }
             }
         }
 
