@@ -23,7 +23,7 @@ use Monolog\Logger as MonologLogger;
 use Monolog\Handler\StreamHandler;
 
 // Define a custom Logger class
-class Vtiger_Logger_Helper
+class Core_Logger_Helper
 {
     private static $logLevel;
     private static $filePath;

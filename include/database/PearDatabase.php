@@ -25,8 +25,8 @@
 include_once 'vendor/adodb/adodb-php/adodb.inc.php';
 require_once 'vendor/adodb/adodb-php/adodb-xmlschema.inc.php';
 
-$log = Vtiger_Logger_Helper::getLogger('VT');
-$logsqltm = Vtiger_Logger_Helper::getLogger('SQLTIME');
+$log = Core_Logger_Helper::getLogger('VT');
+$logsqltm = Core_Logger_Helper::getLogger('SQLTIME');
 
 // Callback class useful to convert PreparedStatement Question Marks to SQL value
 // See function convertPS2Sql in PearDatabase below
@@ -164,7 +164,7 @@ class PearDatabase
 
     function println($msg)
     {
-        $log1 = Vtiger_Logger_Helper::getLogger('VT');
+        $log1 = Core_Logger_Helper::getLogger('VT');
         if (is_array($msg)) {
             $log1->info("PearDatabse ->" . print_r($msg, true));
         } else {
@@ -1073,7 +1073,7 @@ class PearDatabase
     function __construct($dbtype = '', $host = '', $dbname = '', $username = '', $passwd = '')
     {
         global $currentModule;
-        $this->log = Vtiger_Logger_Helper::getLogger('PearDatabase_' . $currentModule);
+        $this->log = Core_Logger_Helper::getLogger('PearDatabase_' . $currentModule);
         $this->resetSettings($dbtype, $host, $dbname, $username, $passwd);
 
         // Initialize performance parameters

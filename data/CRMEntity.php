@@ -65,7 +65,7 @@ class CRMExtension
      */
     public function __construct()
     {
-        $this->log = Vtiger_Logger_Helper::getLogger(strtolower($this->moduleName));
+        $this->log = Core_Logger_Helper::getLogger(strtolower($this->moduleName));
         $this->db = PearDatabase::getInstance();
         $this->column_fields = new TrackableObject();
     }

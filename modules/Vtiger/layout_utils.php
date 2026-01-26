@@ -29,7 +29,7 @@
 
 global $app_strings;
 
-$log = Vtiger_Logger_Helper::getLogger('layout_utils');
+$log = Core_Logger_Helper::getLogger('layout_utils');
 
 /**
  * Create HTML to display formatted form title of a form in the left pane

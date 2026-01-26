@@ -29,7 +29,7 @@ include_once 'includes/main/WebUI.php';
 require_once 'include/utils/utils.php';
 
 global $adb, $log, $HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME, $current_language;
-$log = Vtiger_Logger_Helper::getLogger('SendSupportNotification');
+$log = Core_Logger_Helper::getLogger('SendSupportNotification');
 $log->debug(" invoked SendSupportNotification ");
 
 // retrieve the translated strings.

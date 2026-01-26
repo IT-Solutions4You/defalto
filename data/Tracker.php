@@ -57,7 +57,7 @@ class Tracker
 
     function __construct()
     {
-        $this->log = Vtiger_Logger_Helper::getLogger('Tracker');
+        $this->log = Core_Logger_Helper::getLogger('Tracker');
         // $this->db = PearDatabase::getInstance();
         global $adb;
         $this->db = $adb;

@@ -40,8 +40,8 @@ require_once("include/Zend/Json.php");
 $API_VERSION = "0.22";
 
 global $seclog, $log;
-$seclog = Vtiger_Logger_Helper::getLogger('SECURITY');
-$log = Vtiger_Logger_Helper::getLogger('webservice');
+$seclog = Core_Logger_Helper::getLogger('SECURITY');
+$log = Core_Logger_Helper::getLogger('webservice');
 
 function getRequestParamsArrayForOperation($operation)
 {

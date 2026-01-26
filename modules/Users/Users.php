@@ -207,7 +207,7 @@ class Users extends CRMEntity
     public $leftpanelhide;
 
     /** constructor function for the main user class
-     * instantiates the Vtiger_Logger_Helper class and PearDatabase Class
+     * instantiates the Core_Logger_Helper class and PearDatabase Class
      *
      */
     function __construct()

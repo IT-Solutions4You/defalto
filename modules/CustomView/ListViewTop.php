@@ -67,7 +67,7 @@ function getKeyMetrics($maxval, $calCnt)
     $metricviewnames = "'Hot Leads'";
 
     $current_module_strings = return_module_language($current_language, "CustomView");
-    $log = Vtiger_Logger_Helper::getLogger('metrics');
+    $log = Core_Logger_Helper::getLogger('metrics');
 
     $metriclists = getMetricList();
 
