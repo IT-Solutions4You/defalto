@@ -55,6 +55,9 @@ $languageStrings = [
     'Quote' => 'Quote',
     'Inventory Manager' => 'Inventory Manager',
     'Terms &amp; Conditions' => 'Terms &amp; Conditions',
+    'Invoice Type' => 'Rechnungstyp',
+    'Tax Document' => 'Steuerbeleg für erhaltene Zahlung',
+    'Final Invoice' => 'Schlussrechnung',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Bitte entfernen Sie die gelöschte Position',
