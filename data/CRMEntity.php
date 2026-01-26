@@ -57,6 +57,7 @@ class CRMExtension
     public string $moduleVersion = '1.0';
     public $list_fields_names = [];
     public $list_fields = [];
+    public array $tab_name_left_join = [];
     public int $ownedBy = 1;
 
     /**
