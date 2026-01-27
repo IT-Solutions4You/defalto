@@ -1266,6 +1266,6 @@ class Users_Record_Model extends Vtiger_Record_Model
     {
         $info = Vtiger_Functions::getCurrencySymbolandRate($this->getCurrencyId());
 
-        return $info['conversion_rate'];
+        return $info['rate'];
     }
 }
