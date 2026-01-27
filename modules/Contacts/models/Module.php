@@ -166,55 +166,18 @@ class Contacts_Module_Model extends Vtiger_Module_Model
      */
     public function getQueryByModuleField($sourceModule, $field, $record, $listQuery)
     {
-        if (in_array($sourceModule, ['Campaigns', 'Potentials', 'Vendors', 'Products', 'Services', 'ITS4YouEmails'])
-            || ($sourceModule === 'Contacts' && $field === 'contact_id' && $record)) {
-            switch ($sourceModule) {
-                case 'Campaigns'    :
-                    $tableName = 'vtiger_campaigncontrel';
-                    $fieldName = 'contactid';
-                    $relatedFieldName = 'campaignid';
-                    break;
-                case 'Potentials'    :
-                    $tableName = 'vtiger_contpotentialrel';
-                    $fieldName = 'contactid';
-                    $relatedFieldName = 'potentialid';
-                    break;
-                case 'Vendors'        :
-                    $tableName = 'vtiger_vendorcontactrel';
-                    $fieldName = 'contactid';
-                    $relatedFieldName = 'vendorid';
-                    break;
-                case 'Products'        :
-                    $tableName = 'vtiger_seproductsrel';
-                    $fieldName = 'crmid';
-                    $relatedFieldName = 'productid';
-                    break;
-            }
-
-            $db = PearDatabase::getInstance();
+        if ($sourceModule === 'Contacts' && $field === 'contact_id' && $record) {
+            $condition = " vtiger_contactdetails.contactid != ?";
             $params = [$record];
-            if ($sourceModule === 'Services') {
-                $condition = " vtiger_contactdetails.contactid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
-                $params = [$record, $record];
-            } elseif ($sourceModule === 'ITS4YouEmails') {
-                $condition = ' vtiger_contactdetails.emailoptout = 0';
-            } elseif ($sourceModule === 'Contacts' && $field === 'contact_id') {
-                $condition = " vtiger_contactdetails.contactid != ?";
-            } else {
-                $condition = " vtiger_contactdetails.contactid NOT IN (SELECT $fieldName FROM $tableName WHERE $relatedFieldName = ?)";
-            }
-            $condition = $db->convert2Sql($condition, $params);
-
-            $position = stripos($listQuery, 'where');
-            if ($position) {
-                $split = preg_split('/where/i', $listQuery);
-                $overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
-            } else {
-                $overRideQuery = $listQuery . ' WHERE ' . $condition;
-            }
-
-            return $overRideQuery;
+        } else {
+            $condition = " vtiger_crmentity.crmid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
+            $params = [$record, $record];
         }
+
+        $db = PearDatabase::getInstance();
+        $condition = $db->convert2Sql($condition, $params);
+
+        return $this->addConditionToQuery($listQuery, $condition);
     }
 
     public function getDefaultSearchField()
