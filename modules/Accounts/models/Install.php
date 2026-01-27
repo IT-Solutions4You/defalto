@@ -11,16 +11,22 @@
 class Accounts_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
-        ['Accounts', 'Contacts', 'Contacts', 'add', 'get_contacts', '',],
-        ['Accounts', 'Potentials', 'Potentials', 'add', 'get_opportunities', '',],
-        ['Accounts', 'Quotes', 'Quotes', 'add', 'get_quotes', '',],
-        ['Accounts', 'SalesOrder', 'SalesOrder', 'add', 'get_salesorder', '',],
-        ['Accounts', 'Invoice', 'Invoice', 'add', 'get_invoices', '',],
-        ['Accounts', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['Accounts', 'HelpDesk', 'Documents', 'add', 'get_tickets', '',],
-        ['Accounts', 'Products', 'Products', 'select', 'get_products', '',],
+        ['Accounts', 'Contacts', 'Contacts', 'add', 'get_dependents_list', 'account_id',],
+        ['Accounts', 'Potentials', 'Potentials', 'add', 'get_dependents_list', 'related_to',],
+        ['Accounts', 'Quotes', 'Quotes', 'add', 'get_dependents_list', 'account_id',],
+        ['Accounts', 'SalesOrder', 'SalesOrder', 'add', 'get_dependents_list', 'account_id',],
+        ['Accounts', 'Invoice', 'Invoice', 'add', 'get_related_list', 'account_id',],
+        ['Accounts', 'Documents', 'Documents', 'add,select', 'get_related_list', '',],
+        ['Accounts', 'HelpDesk', 'HelpDesk', 'add', 'get_dependents_list', 'parent_id',],
+        ['Accounts', 'Products', 'Products', 'select', 'get_related_list', '',],
+        ['Accounts', 'Services', 'Services', 'select', 'get_related_list', '',],
         ['Accounts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list', 'account_id'],
-        ['Accounts', 'Project', 'Projects', ['ADD', 'SELECT'], 'get_merged_list', 'account_id'],
+        ['Accounts', 'Project', 'Projects', 'ADD,SELECT', 'get_related_list', 'account_id'],
+        ['Accounts', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', ],
+        ['Accounts', 'Assets', 'Assets', 'add', 'get_dependents_list', 'account'],
+        ['Accounts', 'Appointments', 'Appointments', 'select', 'get_related_list', ''],
+        ['Accounts', 'ITS4YouEmails', 'ITS4YouEmails', 'select', 'get_related_list', ''],
+        ['Accounts', 'SalesOrder', 'Sales Order', '', 'delete_related_list', '',],
     ];
 
     /**
@@ -43,14 +49,20 @@ class Accounts_Install_Model extends Core_Install_Model
         'Other',
     ];
 
+    /**
+     * @throws Exception
+     */
     public function addCustomLinks(): void
     {
+        $this->updateComments();
         $this->updateRelatedList();
         $this->updateCustomLinks();
-        $this->updateComments();
         $this->updateHistory();
     }
 
+    /**
+     * @throws Exception
+     */
     public function deleteCustomLinks(): void
     {
         $this->updateRelatedList(false);

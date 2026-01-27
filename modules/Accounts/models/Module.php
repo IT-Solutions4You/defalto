@@ -62,34 +62,19 @@ class Accounts_Module_Model extends Vtiger_Module_Model
      */
     public function getQueryByModuleField($sourceModule, $field, $record, $listQuery)
     {
-        if (($sourceModule == 'Accounts' && $field == 'account_id' && $record)
-            || in_array($sourceModule, ['Campaigns', 'Products', 'Services', 'ITS4YouEmails'])) {
+        if (($sourceModule == 'Accounts' && $field == 'account_id' && $record) || $sourceModule == 'Campaigns') {
             $db = PearDatabase::getInstance();
             $params = [$record];
+
             if ($sourceModule === 'Campaigns') {
                 $condition = " vtiger_account.accountid NOT IN (SELECT accountid FROM vtiger_campaignaccountrel WHERE campaignid = ?)";
-            } elseif ($sourceModule === 'Products') {
-                $condition = " vtiger_account.accountid NOT IN (SELECT crmid FROM vtiger_seproductsrel WHERE productid = ?)";
-            } elseif ($sourceModule === 'Services') {
-                $condition = " vtiger_account.accountid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
-                $params = [$record, $record];
-            } elseif ($sourceModule === 'ITS4YouEmails') {
-                $condition = ' vtiger_account.emailoptout = 0';
-                $params = [];
             } else {
                 $condition = " vtiger_account.accountid != ?";
             }
+
             $condition = $db->convert2Sql($condition, $params);
 
-            $position = stripos($listQuery, 'where');
-            if ($position) {
-                $split = preg_split('/where/i', $listQuery);
-                $overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
-            } else {
-                $overRideQuery = $listQuery . ' WHERE ' . $condition;
-            }
-
-            return $overRideQuery;
+            return $this->addConditionToQuery($listQuery, $condition);
         }
     }
 
