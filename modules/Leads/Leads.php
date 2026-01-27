@@ -205,76 +205,6 @@ class Leads extends CRMEntity
         return $return_value;
     }
 
-    /** Returns a list of the associated Campaigns
-     *
-     * @param $id -- campaign id :: Type Integer
-     *
-     * @returns list of campaigns in array format
-     */
-    function get_campaigns($id, $cur_tab_id, $rel_tab_id, $actions = false)
-    {
-        global $log, $singlepane_view, $currentModule, $current_user;
-        $log->debug("Entering get_campaigns(" . $id . ") method ...");
-        $this_module = $currentModule;
-
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
-        require_once("modules/$related_module/$related_module.php");
-        $other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
-        $singular_modname = vtlib_toSingular($related_module);
-
-        $parenttab = getParentTab();
-
-        if ($singlepane_view == 'true') {
-            $returnset = '&return_module=' . $this_module . '&return_action=DetailView&return_id=' . $id;
-        } else {
-            $returnset = '&return_module=' . $this_module . '&return_action=CallRelatedList&return_id=' . $id;
-        }
-
-        $button = '';
-
-        $button .= '<input type="hidden" name="email_directing_module"><input type="hidden" name="record">';
-
-        if ($actions) {
-            $actions = sanitizeRelatedListsActions($actions);
-
-            if (in_array('SELECT', $actions) && isPermitted($related_module, 4, '') == 'yes') {
-                $button .= "<input title='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString(
-                        $related_module
-                    ) . "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='" . getTranslatedString(
-                        'LBL_SELECT'
-                    ) . " " . getTranslatedString($related_module) . "'>&nbsp;";
-            }
-        }
-
-        $userNameSql = getSqlForNameInDisplayFormat([
-            'first_name' =>
-                'vtiger_users.first_name',
-            'last_name' => 'vtiger_users.last_name'
-        ], 'Users');
-        $query = "SELECT case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name ,
-				vtiger_campaign.campaignid, vtiger_campaign.campaignname, vtiger_campaign.campaigntype, vtiger_campaign.campaignstatus,
-				vtiger_campaign.expectedrevenue, vtiger_campaign.closingdate, vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id,
-				vtiger_crmentity.modifiedtime from vtiger_campaign
-				inner join vtiger_campaignleadrel on vtiger_campaignleadrel.campaignid=vtiger_campaign.campaignid
-				inner join vtiger_crmentity on vtiger_crmentity.crmid = vtiger_campaign.campaignid
-				inner join vtiger_campaignscf ON vtiger_campaignscf.campaignid = vtiger_campaign.campaignid
-				left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.assigned_user_id
-				left join vtiger_users on vtiger_users.id = vtiger_crmentity.assigned_user_id
-				where vtiger_campaignleadrel.leadid=" . $id . " and vtiger_crmentity.deleted=0";
-
-        $return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
-
-        if ($return_value == null) {
-            $return_value = [];
-        }
-        $return_value['CUSTOM_BUTTON'] = $button;
-
-        $log->debug("Exiting get_campaigns method ...");
-
-        return $return_value;
-    }
-
     /**
      * Function to get lead related Products
      *
@@ -482,7 +412,7 @@ class Leads extends CRMEntity
         }
 
         if ($return_module == 'Campaigns') {
-            Campaigns_Relation_Model::deleteCampaignRelation($return_id, $return_module, $id, 'Contacts');
+            Campaigns_Relation_Model::deleteCampaignRelation($return_id, $return_module, $id, 'Leads');
         }
 
         parent::unlinkRelationship($id, $return_module, $return_id);
@@ -512,7 +442,7 @@ class Leads extends CRMEntity
 
         foreach ($with_crmids as $with_crmid) {
             if ($with_module == 'Campaigns') {
-                Campaigns_Relation_Model::saveCampaignRelation($with_crmid, $with_module, $crmid, 'Contacts');
+                Campaigns_Relation_Model::saveCampaignRelation($with_crmid, $with_module, $crmid, 'Leads');
             }
 
             parent::save_related_module($module, $crmid, $with_module, $with_crmid);

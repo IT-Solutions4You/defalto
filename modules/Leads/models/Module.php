@@ -351,22 +351,8 @@ class Leads_Module_Model extends Vtiger_Module_Model
     public function getQueryByModuleField($sourceModule, $field, $record, $listQuery)
     {
         if (in_array($sourceModule, ['Campaigns', 'Products', 'Services',])) {
-            switch ($sourceModule) {
-                case 'Campaigns'    :
-                    $tableName = 'vtiger_campaignleadrel';
-                    $fieldName = 'leadid';
-                    $relatedFieldName = 'campaignid';
-                    break;
-            }
-
-            if (in_array($sourceModule, ['Services', 'Products',])) {
-                $condition = " vtiger_crmentity.crmid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
-                $params = [$record, $record];
-            } else {
-                $condition = " vtiger_crmentity.crmid NOT IN (SELECT $fieldName FROM $tableName WHERE $relatedFieldName = ?)";
-                $params = [$record];
-            }
-
+            $condition = " vtiger_crmentity.crmid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
+            $params = [$record, $record];
             $condition = PearDatabase::getInstance()->convert2Sql($condition, $params);
 
             return $this->addConditionToQuery($listQuery, $condition);

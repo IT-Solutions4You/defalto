@@ -14,7 +14,7 @@ class Leads_Install_Model extends Core_Install_Model {
         ['Leads', 'Documents', 'Documents', 'add,select', 'get_related_list', '',],
         ['Leads', 'Products', 'Products', 'select', 'get_related_list', '',],
         ['Leads', 'Services', 'Services', 'select', 'get_related_list', '',],
-        ['Leads', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', '',],
+        ['Leads', 'Campaigns', 'Campaigns', 'select', 'get_related_list', '',],
         ['Leads', 'Appointments', 'Appointments', 'select', 'get_related_list', ],
         ['Leads', 'ITS4YouEmails', 'ITS4YouEmails', 'select', 'get_related_list', ],
     ];

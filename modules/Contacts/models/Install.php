@@ -30,7 +30,6 @@ class Contacts_Install_Model extends Core_Install_Model
 
         ['Vendors', 'Contacts', 'Contacts', 'select', 'get_contacts', '',],
         ['Services', 'Contacts', 'Contacts', 'SELECT', 'get_related_list', '',],
-        ['Campaigns', 'Contacts', 'Contacts', 'ADD,SELECT', 'get_contacts', '',],
         ['Documents', 'Contacts', 'Contacts', '', 'get_related_list', '',],
         ['Products', 'Contacts', 'Contacts', 'SELECT', 'get_contacts', '',],
     ];

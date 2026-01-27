@@ -67,9 +67,10 @@ class Accounts_Module_Model extends Vtiger_Module_Model
             $params = [$record];
 
             if ($sourceModule === 'Campaigns') {
-                $condition = " vtiger_account.accountid NOT IN (SELECT accountid FROM vtiger_campaignaccountrel WHERE campaignid = ?)";
+                $condition = ' vtiger_crmentity.crmid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ';
+                $params = [$record, $record];
             } else {
-                $condition = " vtiger_account.accountid != ?";
+                $condition = ' vtiger_account.accountid != ? ';
             }
 
             $condition = $db->convert2Sql($condition, $params);

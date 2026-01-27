@@ -112,84 +112,6 @@ class Accounts extends CRMEntity
         'PurchaseOrder' => ['table_name' => 'vtiger_purchaseorder', 'table_index' => 'purchaseorderid', 'rel_index' => 'accountid'],
     ];
 
-    /** Returns a list of the associated Campaigns
-     *
-     * @param $id -- campaign id :: Type Integer
-     *
-     * @returns list of campaigns in array format
-     */
-    function get_campaigns($id, $cur_tab_id, $rel_tab_id, $actions = false)
-    {
-        global $log, $singlepane_view, $currentModule, $current_user;
-        $log->debug("Entering get_campaigns(" . $id . ") method ...");
-        $this_module = $currentModule;
-
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
-        require_once("modules/$related_module/$related_module.php");
-        $other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
-        $singular_modname = vtlib_toSingular($related_module);
-
-        $parenttab = getParentTab();
-
-        if ($singlepane_view == 'true') {
-            $returnset = '&return_module=' . $this_module . '&return_action=DetailView&return_id=' . $id;
-        } else {
-            $returnset = '&return_module=' . $this_module . '&return_action=CallRelatedList&return_id=' . $id;
-        }
-
-        $button = '';
-
-        $button .= '<input type="hidden" name="email_directing_module"><input type="hidden" name="record">';
-
-        if ($actions) {
-            $actions = sanitizeRelatedListsActions($actions);
-
-            if (in_array('SELECT', $actions) && isPermitted($related_module, 4, '') == 'yes') {
-                $button .= "<input title='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString(
-                        $related_module
-                    ) . "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='" . getTranslatedString(
-                        'LBL_SELECT'
-                    ) . " " . getTranslatedString($related_module) . "'>&nbsp;";
-            }
-        }
-
-        $entityIds = $this->getRelatedContactsIds();
-        $entityIds = implode(',', $entityIds);
-
-        $userNameSql = getSqlForNameInDisplayFormat(['first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'], 'Users');
-
-        $query = "SELECT case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,
-				vtiger_campaign.campaignid, vtiger_campaign.campaignname, vtiger_campaign.campaigntype, vtiger_campaign.campaignstatus,
-				vtiger_campaign.expectedrevenue, vtiger_campaign.closingdate, vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id,
-				vtiger_crmentity.modifiedtime
-				from vtiger_campaign
-				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_campaign.campaignid
-				INNER JOIN vtiger_campaignscf ON vtiger_campaignscf.campaignid = vtiger_campaign.campaignid
-				LEFT JOIN vtiger_campaignaccountrel ON vtiger_campaignaccountrel.campaignid=vtiger_campaign.campaignid
-				LEFT JOIN vtiger_campaigncontrel ON vtiger_campaigncontrel.campaignid=vtiger_campaign.campaignid
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid=vtiger_crmentity.assigned_user_id
-				LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id
-				WHERE vtiger_crmentity.deleted=0 AND (vtiger_campaignaccountrel.accountid=$id";
-
-        if (!empty ($entityIds)) {
-            $query .= " OR vtiger_campaigncontrel.contactid IN (" . $entityIds . "))";
-        } else {
-            $query .= ")";
-        }
-
-        $return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
-
-        if ($return_value == null) {
-            $return_value = [];
-        }
-        $return_value['CUSTOM_BUTTON'] = $button;
-
-        $log->debug("Exiting get_campaigns method ...");
-
-        return $return_value;
-    }
-
     /** Function to export the account records in CSV Format
      *
      * @param reference variable - where condition is passed when the query is executed
@@ -673,7 +595,7 @@ class Accounts extends CRMEntity
 
         foreach ($with_crmids as $with_crmid) {
             if ($with_module == 'Campaigns') {
-                Campaigns_Relation_Model::saveCampaignRelation($with_crmid, $with_module, $crmid, 'Contacts');
+                Campaigns_Relation_Model::saveCampaignRelation($with_crmid, $with_module, $crmid, 'Accounts');
             }
 
             parent::save_related_module($module, $crmid, $with_module, $with_crmid);

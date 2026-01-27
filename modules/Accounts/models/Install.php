@@ -22,7 +22,7 @@ class Accounts_Install_Model extends Core_Install_Model
         ['Accounts', 'Services', 'Services', 'select', 'get_related_list', '',],
         ['Accounts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list', 'account_id'],
         ['Accounts', 'Project', 'Projects', 'ADD,SELECT', 'get_related_list', 'account_id'],
-        ['Accounts', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', ],
+        ['Accounts', 'Campaigns', 'Campaigns', 'select', 'get_related_list', ],
         ['Accounts', 'Assets', 'Assets', 'add', 'get_dependents_list', 'account'],
         ['Accounts', 'Appointments', 'Appointments', 'select', 'get_related_list', ''],
         ['Accounts', 'ITS4YouEmails', 'ITS4YouEmails', 'select', 'get_related_list', ''],
