@@ -1256,4 +1256,16 @@ class Users_Record_Model extends Vtiger_Record_Model
     {
         return 'Detail' === $this->get('default_record_view') ? 'Details' : 'Summary';
     }
+
+    public function getCurrencyId(): int
+    {
+        return (int)$this->get('currency_id');
+    }
+
+    public function getConversionRate()
+    {
+        $info = Vtiger_Functions::getCurrencySymbolandRate($this->getCurrencyId());
+
+        return $info['conversion_rate'];
+    }
 }
