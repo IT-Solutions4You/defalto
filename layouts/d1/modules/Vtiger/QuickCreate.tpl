@@ -18,12 +18,15 @@
                 {assign var=HEADER_TITLE value={vtranslate('LBL_QUICK_CREATE', $MODULE)}|cat:" "|cat:{vtranslate($SINGLE_MODULE, $MODULE)}}
                 {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
                 {assign var=MODAL_WINDOW value=true}
+                {assign var=CURRENT_USER value=Users_Record_Model::getCurrentUserModel()}
                 <div class="modal-body">
                     {if !empty($PICKIST_DEPENDENCY_DATASOURCE)}
                         <input type="hidden" name="picklistDependency" value='{Vtiger_Util_Helper::toSafeHTML($PICKIST_DEPENDENCY_DATASOURCE)}' />
                     {/if}
                     <input type="hidden" name="module" value="{$MODULE}">
                     <input type="hidden" name="action" value="SaveAjax">
+                    <input type="hidden" name="currency_id" value="{$CURRENT_USER->getCurrencyId()}">
+                    <input type="hidden" name="conversion_rate" value="{$CURRENT_USER->getConversionRate()}">
                     {if $RELATION_OPERATOR eq 'true'}
                         <input type="hidden" name="relationOperation" value="{$RELATION_OPERATOR}" />
                         <input type="hidden" name="sourceModule" value="{$PARENT_MODULE}" />
