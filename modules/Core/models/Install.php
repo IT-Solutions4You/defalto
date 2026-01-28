@@ -1296,7 +1296,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     public function updateRelatedList(bool $register = true): void
     {
         foreach ($this->registerRelatedLists as $relatedList) {
-            $moduleName = $relatedList[0] ?? $this->moduleName;
+            $moduleName = !empty($relatedList[0]) ? $relatedList[0] : $this->getModuleName();
             $module = Vtiger_Module::getInstance($moduleName);
             $relatedModule = Vtiger_Module::getInstance($relatedList[1]);
 
