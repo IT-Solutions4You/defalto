@@ -41,29 +41,27 @@ class Products_Install_Model extends Core_Install_Model
     ];
 
     public array $registerRelatedLists = [
-        ['Products', 'HelpDesk', 'HelpDesk', 'add', 'get_tickets',],
-        ['Products', 'Documents', 'Documents', 'add,select', 'get_attachments',],
-        ['Products', 'Quotes', 'Quotes', 'add', 'get_quotes',],
-        ['Products', 'PurchaseOrder', 'Purchase Order', 'add', 'get_purchase_orders',],
-        ['Products', 'SalesOrder', 'Sales Order', 'add', 'get_salesorder',],
-        ['Products', 'Invoice', 'Invoice', 'add', 'get_invoices',],
+        ['Products', 'Documents', 'Documents', 'add,select', 'get_related_list',],
+        ['Products', 'Potentials', 'Potentials', 'select', 'get_related_list',],
+        ['Products', 'Leads', 'Leads', 'select', 'get_related_list',],
+        ['Products', 'Accounts', 'Accounts', 'select', 'get_related_list',],
+        ['Products', 'Contacts', 'Contacts', 'select', 'get_related_list',],
+        ['Products', 'Appointments', 'Appointments', 'SELECT', 'get_related_list',],
+        ['Products', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list',],
+
+        ['Products', 'Quotes', 'Quotes', 'add', 'get_inventory_list',],
+        ['Products', 'PurchaseOrder', 'Purchase Order', 'add', 'get_inventory_list',],
+        ['Products', 'SalesOrder', 'Sales Order', 'add', 'get_inventory_list',],
+        ['Products', 'Invoice', 'Invoice', 'add', 'get_inventory_list',],
+
+        ['Products', 'HelpDesk', 'HelpDesk', 'add', 'get_dependents_list', 'product_id'],
+        ['Products', 'Assets', 'Assets', 'ADD', 'get_dependents_list', 'product'],
         ['Products', 'PriceBooks', 'PriceBooks', 'ADD,SELECT', 'get_product_pricebooks',],
-        ['Products', 'Leads', 'Leads', 'select', 'get_leads',],
-        ['Products', 'Accounts', 'Accounts', 'select', 'get_accounts',],
-        ['Products', 'Contacts', 'Contacts', 'select', 'get_contacts',],
-        ['Products', 'Potentials', 'Potentials', 'select', 'get_opportunities',],
         ['Products', 'Products', 'Product Bundles', 'add,select', 'get_products',],
         ['Products', 'Products', 'Parent Product', '', 'get_parent_products',],
-        ['Products', 'Assets', 'Assets', 'ADD', 'get_dependents_list',],
-        ['Products', 'PurchaseOrder', 'PurchaseOrder', 'ADD', 'get_purchase_orders',],
-        ['Products', 'Appointments', 'Appointments', '', 'get_related_list',],
-        ['Products', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list',],
-        ['PriceBooks', 'Products', 'Products', 'select', 'get_pricebook_products',],
-        ['Accounts', 'Products', 'Products', 'select', 'get_products',],
-        ['Leads', 'Products', 'Products', 'select', 'get_products',],
-        ['Contacts', 'Products', 'Products', 'select', 'get_products',],
-        ['Potentials', 'Products', 'Products', 'select', 'get_products',],
-        ['Vendors', 'Products', 'Products', 'add,select', 'get_products',],
+
+        ['Products', 'PurchaseOrder', 'PurchaseOrder', 'ADD', 'delete_related_list',],
+
         ['Documents', 'Products', 'Products', '', 'get_related_list',],
     ];
 
@@ -598,7 +596,19 @@ class Products_Install_Model extends Core_Install_Model
             ->createKey('KEY IF NOT EXISTS `producttaxrel_productid_idx` (`productid`)')
             ->createKey('KEY IF NOT EXISTS `producttaxrel_taxid_idx` (`taxid`)')
             ->createKey('CONSTRAINT `fk_crmid_vtiger_producttaxrel` FOREIGN KEY IF NOT EXISTS (`productid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
-        
+
+        $this->getTable('vtiger_seproductsrel', '')
+            ->createTable('crmid')
+            ->createColumn('productid','int(19) NOT NULL DEFAULT 0')
+            ->createColumn('setype','varchar(30) NOT NULL')
+            ->createColumn('quantity','int(19) DEFAULT 1')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (crmid,productid)')
+            ->createKey('KEY IF NOT EXISTS seproductsrel_productid_idx (productid)')
+            ->createKey('KEY IF NOT EXISTS seproductrel_crmid_idx (crmid)')
+            ->createKey('CONSTRAINT fk_1_vtiger_seproductsrel FOREIGN KEY IF NOT EXISTS (crmid) REFERENCES vtiger_crmentity (crmid) ON DELETE CASCADE')
+            ->createKey('CONSTRAINT fk_2_vtiger_seproductsrel FOREIGN KEY IF NOT EXISTS (productid) REFERENCES vtiger_products (productid) ON DELETE CASCADE')
+            ;
+
         $this->createPicklistTable('vtiger_manufacturer', '', 'manufacturer');
         $this->createPicklistTable('vtiger_productcategory', '', 'productcategory');
         $this->createPicklistTable('vtiger_usageunit', '', 'usageunit');
