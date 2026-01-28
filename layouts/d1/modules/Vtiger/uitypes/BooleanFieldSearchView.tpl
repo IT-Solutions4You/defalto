@@ -9,7 +9,7 @@
 {strip}
     {assign var="FIELD_INFO" value=Zend_Json::encode($FIELD_MODEL->getFieldInfo())}
     {if !isset($SEARCH_INFO['searchValue'])}
-        {$SEARCH_INFO['searchValue'] = '0'}
+        {$SEARCH_INFO['searchValue'] = null}
     {/if}
     {assign var=SEARCH_VALUES value=$SEARCH_INFO['searchValue']}
     <div class="">
