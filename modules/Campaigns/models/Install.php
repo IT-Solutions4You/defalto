@@ -53,10 +53,10 @@ class Campaigns_Install_Model extends Core_Install_Model {
         ['Campaigns', 'Contacts', 'Contacts', 'add,select', 'get_related_list',],
         ['Campaigns', 'Leads', 'Leads', 'add,select', 'get_related_list',],
         ['Campaigns', 'Accounts', 'Accounts', 'add,select', 'get_related_list',],
-
         ['Campaigns', 'Potentials', 'Potentials', 'add', 'get_related_list',],
-        ['Campaigns', 'Appointments', 'Appointments', '', 'get_related_list', ],
-        ['Campaigns', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', ],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
 

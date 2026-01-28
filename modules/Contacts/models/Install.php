@@ -17,21 +17,16 @@ class Contacts_Install_Model extends Core_Install_Model
         ['Contacts', 'PurchaseOrder', 'Purchase Order', 'add', 'get_dependents_list', 'contact_id',],
         ['Contacts', 'SalesOrder', 'Sales Order', 'add', 'get_dependents_list', 'contact_id',],
         ['Contacts', 'Invoice', 'Invoice', 'add', 'get_dependents_list', 'contact_id',],
-        ['Contacts', 'Appointments', 'Appointments', 'select', 'get_related_list', '',],
         ['Contacts', 'Assets', 'Assets', 'ADD', 'get_dependents_list', 'contact',],
         ['Contacts', 'Vendors', 'Vendors', 'SELECT', 'get_related_list', '',],
         ['Contacts', 'ServiceContracts', 'Service Contracts', 'ADD', 'get_dependents_list', 'contact_id',],
         ['Contacts', 'Products', 'Products', 'SELECT', 'get_related_list', '',],
         ['Contacts', 'Services', 'Services', 'SELECT', 'get_related_list', '',],
         ['Contacts', 'Project', 'Projects', ['ADD'], 'get_dependents_list', 'contact_id'],
-        ['Contacts', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
         ['Contacts', 'Campaigns', 'Campaigns', 'SELECT', 'get_related_list', '',],
-        ['Contacts', 'Documents', 'Documents', 'ADD,SELECT', 'get_related_list', '',],
-
-        ['Vendors', 'Contacts', 'Contacts', 'select', 'get_contacts', '',],
-        ['Services', 'Contacts', 'Contacts', 'SELECT', 'get_related_list', '',],
-        ['Documents', 'Contacts', 'Contacts', '', 'get_related_list', '',],
-        ['Products', 'Contacts', 'Contacts', 'SELECT', 'get_contacts', '',],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
     /**

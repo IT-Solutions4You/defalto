@@ -26,7 +26,7 @@ class Documents extends CRMEntity
     public $table_index = 'notesid';
     public $default_note_name_dom = ['Meeting vtiger_notes', 'Reminder'];
     public $tab_name = ['vtiger_crmentity', 'vtiger_notes', 'vtiger_notescf'];
-    public $tab_name_index = ['vtiger_crmentity' => 'crmid', 'vtiger_notes' => 'notesid', 'vtiger_senotesrel' => 'notesid', 'vtiger_notescf' => 'notesid'];
+    public $tab_name_index = ['vtiger_crmentity' => 'crmid', 'vtiger_notes' => 'notesid', 'vtiger_notescf' => 'notesid'];
 
     /**
      * Mandatory table for supporting custom fields.
@@ -328,11 +328,12 @@ class Documents extends CRMEntity
         }
     }
 
-    function insertintonotesrel($relid, $id)
+    /**
+     * @throws Exception
+     */
+    public function insertintonotesrel($relationId, $id)
     {
-        global $adb;
-        $dbQuery = "insert into vtiger_senotesrel values ( ?, ? )";
-        $dbresult = $adb->pquery($dbQuery, [$relid, $id]);
+        Core_Relation_Model::saveEntityRelation($relationId, getSalesEntityType($relationId), $id, 'Documents');
     }
 
     /*function save_related_module($module, $crmid, $with_module, $with_crmid){
@@ -392,46 +393,6 @@ class Documents extends CRMEntity
 
         return $rel_tables[$secmodule];
     }
-
-    // Function to unlink all the dependent entities of the given Entity by Id
-    function unlinkDependencies($module, $id)
-    {
-        global $log;
-        /*//Backup Documents Related Records
-        $se_q = 'SELECT crmid FROM vtiger_senotesrel WHERE notesid = ?';
-        $se_res = $this->db->pquery($se_q, array($id));
-        if ($this->db->num_rows($se_res) > 0) {
-            for($k=0;$k < $this->db->num_rows($se_res);$k++)
-            {
-                $se_id = $this->db->query_result($se_res,$k,"crmid");
-                $params = array($id, RB_RECORD_DELETED, 'vtiger_senotesrel', 'notesid', 'crmid', $se_id);
-                $this->db->pquery('INSERT INTO vtiger_relatedlists_rb VALUES (?,?,?,?,?,?)', $params);
-            }
-        }
-        $sql = 'DELETE FROM vtiger_senotesrel WHERE notesid = ?';
-        $this->db->pquery($sql, array($id));*/
-
-        parent::unlinkDependencies($module, $id);
-    }
-
-    // Function to unlink an entity with given Id from another entity
-    function unlinkRelationship($id, $return_module, $return_id)
-    {
-        global $log;
-        if (empty($return_module) || empty($return_id)) {
-            return;
-        }
-
-        if ($return_module == 'Accounts') {
-            $this->db->pquery('DELETE FROM vtiger_senotesrel WHERE notesid = ? AND (crmid = ? OR crmid IN (SELECT contactid FROM vtiger_contactdetails WHERE account_id=?))', [$id, $return_id, $return_id]);
-        } else {
-            $this->db->pquery('DELETE FROM vtiger_senotesrel WHERE notesid = ? AND crmid = ?', [$id, $return_id]);
-
-            parent::unlinkRelationship($id, $return_module, $return_id);
-        }
-    }
-
-// Function to get fieldname for uitype 27 assuming that documents have only one file type field
 
     function getFileTypeFieldName()
     {
@@ -530,63 +491,5 @@ class Documents extends CRMEntity
         }
 
         return false;
-    }
-
-    /**
-     * Function to get query for related list in Documents module
-     */
-    function get_related_list($id, $cur_tab_id, $rel_tab_id, $actions = false)
-    {
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
-        $other = CRMEntity::getInstance($related_module);
-        $more_relation = '';
-        vtlib_setup_modulevars('Documents', $this);
-        vtlib_setup_modulevars($related_module, $other);
-
-        $returnset = "&return_module=Documents&return_action=CallRelatedList&return_id=" . $id;
-
-        $query = "SELECT vtiger_crmentity.*, $other->table_name.*";
-
-        $userNameSql = getSqlForNameInDisplayFormat(['first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'], 'Users');
-
-        if (!empty($other->tab_name_index)) {
-            foreach ($other->tab_name_index as $tableName => $tableId) {
-                if (in_array($tableName, ['vtiger_crmentity', $other->table_name])) {
-                    continue;
-                }
-
-                $query .= ", $tableName.*";
-                $more_relation .= " INNER JOIN $tableName ON $tableName.$tableId = vtiger_crmentity.crmid";
-            }
-        }
-
-        if (!empty($other->related_tables)) {
-            foreach ($other->related_tables as $tname => $relmap) {
-                $query .= ", $tname.*";
-                if (empty($relmap[1])) {
-                    $relmap[1] = $other->table_name;
-                }
-                if (empty($relmap[2])) {
-                    $relmap[2] = $relmap[0];
-                }
-                $more_relation .= " LEFT JOIN $tname ON $tname.$relmap[0] = $relmap[1].$relmap[2]";
-            }
-        }
-
-        $query .= " FROM $other->table_name";
-        $query .= " INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = $other->table_name.$other->table_index";
-        $query .= " INNER JOIN vtiger_senotesrel ON vtiger_senotesrel.crmid = vtiger_crmentity.crmid " . $more_relation;
-        $query .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id";
-        $query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id";
-        $query .= " WHERE vtiger_crmentity.deleted = 0 AND vtiger_senotesrel.notesid=$id";
-
-        //eliminate lead converted
-        if ($related_module == 'Leads') {
-            $query .= " AND vtiger_leaddetails.converted=0 ";
-        }
-
-        $return_value = GetRelatedList('Documents', $related_module, $other, $query, '', $returnset);
-
-        return $return_value;
     }
 }

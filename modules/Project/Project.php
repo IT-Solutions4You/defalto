@@ -349,15 +349,6 @@ class Project extends CRMEntity
     }
 
     /**
-     * Here we override the parent's method,
-     * This is done because the related lists for this module use a custom query
-     * that queries the child module's table (column of the uitype10 field)
-     *
-     * @see data/CRMEntity#save_related_module($module, $crmid, $with_module, $with_crmid)
-     */
-    //function save_related_module($module, $crmid, $with_module, $with_crmid) {    }
-
-    /**
      * Here we override the parent's method
      * This is done because the related lists for this module use a custom query
      * that queries the child module's table (column of the uitype10 field)
@@ -490,50 +481,6 @@ class Project extends CRMEntity
         $entries[0] = ["<a href='$fullGanttChartImageUrl' border='0' target='_blank'><img src='$thumbGanttChartImageUrl' border='0'></a>"];
 
         return ['header' => $headers, 'entries' => $entries];
-    }
-
-    /** Function to unlink an entity with given Id from another entity */
-    function unlinkRelationship($id, $return_module, $return_id)
-    {
-        global $log, $currentModule;
-        $id = Vtiger_Util_Helper::validateStringForSql($id);
-        $return_module = Vtiger_Util_Helper::validateStringForSql($return_module);
-        $return_id = Vtiger_Util_Helper::validateStringForSql($return_id);
-
-        if ($return_module == 'Accounts') {
-            $focus = CRMEntity::getInstance($return_module);
-            $entityIds = $focus->getRelatedContactsIds($return_id);
-            array_push($entityIds, $return_id);
-            $entityIds = implode(',', $entityIds);
-            $return_modules = "'Accounts','Contacts'";
-        } elseif ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
-        } else {
-            $entityIds = $return_id;
-            $return_modules = "'" . $return_module . "'";
-        }
-
-        if ($return_module != 'Documents') {
-            $query = 'DELETE FROM vtiger_crmentityrel WHERE (relcrmid=' . $id . ' AND module IN (' . $return_modules . ') AND crmid IN (' . $entityIds . ')) OR (crmid=' . $id . ' AND relmodule IN (' . $return_modules . ') AND relcrmid IN (' . $entityIds . '))';
-            $this->db->pquery($query, []);
-
-            $sql = 'SELECT tabid, tablename, columnname FROM vtiger_field WHERE fieldid IN (SELECT fieldid FROM vtiger_fieldmodulerel WHERE module=? AND relmodule IN (' . $return_modules . '))';
-            $fieldRes = $this->db->pquery($sql, [$currentModule]);
-            $numOfFields = $this->db->num_rows($fieldRes);
-
-            for ($i = 0; $i < $numOfFields; $i++) {
-                $tabId = $this->db->query_result($fieldRes, $i, 'tabid');
-                $tableName = $this->db->query_result($fieldRes, $i, 'tablename');
-                $columnName = $this->db->query_result($fieldRes, $i, 'columnname');
-                $relatedModule = vtlib_getModuleNameById($tabId);
-                $focusObj = CRMEntity::getInstance($relatedModule);
-
-                $updateQuery = "UPDATE $tableName SET $columnName=? WHERE $columnName IN ($entityIds) AND $focusObj->table_index=?";
-                $updateParams = [null, $id];
-                $this->db->pquery($updateQuery, $updateParams);
-            }
-        }
     }
 
     /**

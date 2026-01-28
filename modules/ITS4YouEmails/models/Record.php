@@ -689,13 +689,13 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $adb = PearDatabase::getInstance();
 
         $result = $adb->pquery(
-            'SELECT * FROM vtiger_senotesrel
-            INNER JOIN vtiger_crmentity ON vtiger_senotesrel.notesid = vtiger_crmentity.crmid AND vtiger_senotesrel.crmid = ?
-            INNER JOIN vtiger_notes ON vtiger_notes.notesid = vtiger_senotesrel.notesid
+            'SELECT * FROM vtiger_crmentityrel
+            INNER JOIN vtiger_crmentity ON (vtiger_crmentityrel.crmid = vtiger_crmentity.crmid OR vtiger_crmentityrel.relcrmid = vtiger_crmentity.crmid) AND (vtiger_crmentityrel.crmid = ? OR vtiger_crmentityrel.relcrmid = ?)
+            INNER JOIN vtiger_notes ON vtiger_notes.notesid = vtiger_crmentity.crmid
             INNER JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.crmid = vtiger_notes.notesid
             INNER JOIN vtiger_attachments ON vtiger_attachments.attachmentsid = vtiger_seattachmentsrel.attachmentsid
             WHERE vtiger_crmentity.deleted=0',
-            [$this->getId()]
+            [$this->getId(), $this->getId()]
         );
         $documents = [];
 

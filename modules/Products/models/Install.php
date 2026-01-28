@@ -41,27 +41,27 @@ class Products_Install_Model extends Core_Install_Model
     ];
 
     public array $registerRelatedLists = [
-        ['Products', 'Documents', 'Documents', 'add,select', 'get_related_list',],
-        ['Products', 'Potentials', 'Potentials', 'select', 'get_related_list',],
-        ['Products', 'Leads', 'Leads', 'select', 'get_related_list',],
-        ['Products', 'Accounts', 'Accounts', 'select', 'get_related_list',],
-        ['Products', 'Contacts', 'Contacts', 'select', 'get_related_list',],
-        ['Products', 'Appointments', 'Appointments', 'SELECT', 'get_related_list',],
-        ['Products', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list',],
-
-        ['Products', 'Quotes', 'Quotes', 'add', 'get_inventory_list',],
-        ['Products', 'PurchaseOrder', 'Purchase Order', 'add', 'get_inventory_list',],
-        ['Products', 'SalesOrder', 'Sales Order', 'add', 'get_inventory_list',],
-        ['Products', 'Invoice', 'Invoice', 'add', 'get_inventory_list',],
-
-        ['Products', 'HelpDesk', 'HelpDesk', 'add', 'get_dependents_list', 'product_id'],
-        ['Products', 'Assets', 'Assets', 'ADD', 'get_dependents_list', 'product'],
         ['Products', 'PriceBooks', 'PriceBooks', 'ADD,SELECT', 'get_product_pricebooks',],
         ['Products', 'Products', 'Product Bundles', 'add,select', 'get_products',],
         ['Products', 'Products', 'Parent Product', '', 'get_parent_products',],
 
-        ['Products', 'PurchaseOrder', 'PurchaseOrder', 'ADD', 'delete_related_list',],
+        ['Products', 'Quotes', 'Quotes', '', 'get_inventory_list',],
+        ['Products', 'PurchaseOrder', 'Purchase Order', '', 'get_inventory_list',],
+        ['Products', 'SalesOrder', 'Sales Order', '', 'get_inventory_list',],
+        ['Products', 'Invoice', 'Invoice', '', 'get_inventory_list',],
 
+        ['Products', 'HelpDesk', 'HelpDesk', 'add', 'get_dependents_list', 'product_id'],
+        ['Products', 'Assets', 'Assets', 'ADD', 'get_dependents_list', 'product'],
+
+        ['Products', 'Potentials', 'Potentials', 'select', 'get_related_list',],
+        ['Products', 'Leads', 'Leads', 'select', 'get_related_list',],
+        ['Products', 'Accounts', 'Accounts', 'select', 'get_related_list',],
+        ['Products', 'Contacts', 'Contacts', 'select', 'get_related_list',],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
+
+        ['Products', 'PurchaseOrder', 'PurchaseOrder', 'ADD', 'delete_related_list',],
         ['Documents', 'Products', 'Products', '', 'get_related_list',],
     ];
 
@@ -131,8 +131,8 @@ class Products_Install_Model extends Core_Install_Model
     public function addCustomLinks(): void
     {
         $this->updateToStandardModule();
-        $this->updateRelatedList();
         $this->updateComments();
+        $this->updateRelatedList();
     }
 
     public function deleteCustomLinks(): void
@@ -238,7 +238,7 @@ class Products_Install_Model extends Core_Install_Model
                 ],
                 'vendor_id' => [
                     'name' => 'vendor_id',
-                    'uitype' => 75,
+                    'uitype' => 10,
                     'column' => 'vendor_id',
                     'table' => 'vtiger_products',
                     'label' => 'Vendor Name',
@@ -249,6 +249,7 @@ class Products_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'related_modules' => ['Vendors'],
                 ],
                 'vendor_part_no' => [
                     'name' => 'vendor_part_no',

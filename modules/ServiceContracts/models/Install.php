@@ -20,11 +20,13 @@ class ServiceContracts_Install_Model extends Core_Install_Model
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        ['Accounts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list', 'account_id'],
+        ['ServiceContracts', 'HelpDesk', 'HelpDesk', ['ADD', 'SELECT'], 'get_related_list'],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
+
         ['Contacts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list', 'contact_id'],
         ['HelpDesk', 'ServiceContracts', 'Service Contracts', ['ADD', 'SELECT'], 'get_related_list'],
-        ['ServiceContracts', 'HelpDesk', 'HelpDesk', ['ADD', 'SELECT'], 'get_related_list'],
-        ['ServiceContracts', 'Documents', 'Documents', ['ADD', 'SELECT'], 'get_attachments'],
     ];
 
     /**

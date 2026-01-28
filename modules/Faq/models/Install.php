@@ -11,10 +11,9 @@
 class Faq_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
-        ['Faq', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['Faq', 'Appointments', 'Appointments', '', 'get_related_list', '',],
-        ['Faq', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
-        ['Documents', 'Faq', 'Faq', '', 'get_related_list', '',],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
     public array $blocksHeaderFields = [

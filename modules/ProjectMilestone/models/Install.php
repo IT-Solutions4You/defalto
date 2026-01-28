@@ -15,9 +15,10 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        ['ProjectTask', 'Documents', 'Documents', ['ADD', 'SELECT'], 'get_attachments'],
-        ['Project', 'ProjectMilestone', 'Project Milestones', ['ADD'], 'get_dependents_list', 'projectid'],
         ['ProjectMilestone' , 'ProjectTask', 'Project Task', ['ADD'], 'get_dependents_list', 'milestoneid'],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
     protected string $moduleNumbering = 'PM';
@@ -28,10 +29,10 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
      */
     public function addCustomLinks(): void
     {
+        $this->updateComments();
         $this->updateRelatedList();
         $this->updateToStandardModule();
         $this->updateNumbering();
-        $this->updateComments();
         $this->updateHistory();
         $this->addModuleToCustomerPortal();
     }

@@ -141,51 +141,6 @@ class Quotes extends CRMEntity
         }
     }
 
-    /**    function used to get the list of sales orders which are related to the Quotes
-     *
-     * @param int $id - quote id
-     *
-     * @return array - return an array which will be returned from the function GetRelatedList
-     */
-    function get_salesorder($id)
-    {
-        global $log, $singlepane_view;
-        $log->debug("Entering get_salesorder(" . $id . ") method ...");
-        require_once('modules/SalesOrder/SalesOrder.php');
-        $focus = new SalesOrder();
-
-        $button = '';
-
-        if ($singlepane_view == 'true') {
-            $returnset = '&return_module=Quotes&return_action=DetailView&return_id=' . $id;
-        } else {
-            $returnset = '&return_module=Quotes&return_action=CallRelatedList&return_id=' . $id;
-        }
-
-        $userNameSql = getSqlForNameInDisplayFormat([
-            'first_name' =>
-                'vtiger_users.first_name',
-            'last_name'  => 'vtiger_users.last_name'
-        ], 'Users');
-        $query = "select vtiger_crmentity.*, vtiger_salesorder.*, vtiger_quotes.subject as quotename
-			, vtiger_account.accountname,case when (vtiger_users.user_name not like '') then
-			$userNameSql else vtiger_groups.groupname end as user_name
-		from vtiger_salesorder
-		inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_salesorder.salesorderid
-		left outer join vtiger_quotes on vtiger_quotes.quoteid=vtiger_salesorder.quote_id
-		left outer join vtiger_account on vtiger_account.accountid=vtiger_salesorder.account_id
-		left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.assigned_user_id
-        LEFT JOIN vtiger_salesordercf ON vtiger_salesordercf.salesorderid = vtiger_salesorder.salesorderid
-        LEFT JOIN vtiger_invoice_recurring_info ON vtiger_invoice_recurring_info.salesorderid = vtiger_salesorder.salesorderid
-		LEFT JOIN vtiger_sobillads ON vtiger_sobillads.sobilladdressid = vtiger_salesorder.salesorderid
-		LEFT JOIN vtiger_soshipads ON vtiger_soshipads.soshipaddressid = vtiger_salesorder.salesorderid
-		left join vtiger_users on vtiger_users.id=vtiger_crmentity.assigned_user_id
-		where vtiger_crmentity.deleted=0 and vtiger_salesorder.quote_id = " . $id;
-        $log->debug("Exiting get_salesorder method ...");
-
-        return GetRelatedList('Quotes', 'SalesOrder', $focus, $query, $button, $returnset);
-    }
-
     // Function to get column name - Overriding function of base class
     function get_column_value($columname, $fldvalue, $fieldname, $uitype, $datatype = '')
     {
@@ -276,7 +231,6 @@ class Quotes extends CRMEntity
     {
         $rel_tables = [
             "SalesOrder" => ["vtiger_salesorder" => ["quote_id", "salesorderid"], "vtiger_quotes" => "quoteid"],
-            "Documents"  => ["vtiger_senotesrel" => ["crmid", "notesid"], "vtiger_quotes" => "quoteid"],
             "Accounts"   => ["vtiger_quotes" => ["quoteid", "account_id"]],
             "Contacts"   => ["vtiger_quotes" => ["quoteid", "contact_id"]],
             "Potentials" => ["vtiger_quotes" => ["quoteid", "potential_id"]],

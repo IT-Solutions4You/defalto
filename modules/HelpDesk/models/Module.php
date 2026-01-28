@@ -178,16 +178,8 @@ class HelpDesk_Module_Model extends Vtiger_Module_Model
             $condition = " vtiger_troubletickets.ticketid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
             $db = PearDatabase::getInstance();
             $condition = $db->convert2Sql($condition, [$record, $record]);
-            $pos = stripos($listQuery, 'where');
 
-            if ($pos) {
-                $split = preg_split('/where/i', $listQuery);
-                $overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
-            } else {
-                $overRideQuery = $listQuery . ' WHERE ' . $condition;
-            }
-
-            return $overRideQuery;
+            return $this->addConditionToQuery($listQuery, $condition);
         }
     }
 

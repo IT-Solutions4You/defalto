@@ -53,6 +53,9 @@ class SalesOrder extends CRMEntity
         'vtiger_salesordercf'           => 'salesorderid',
         'vtiger_invoice_recurring_info' => 'salesorderid',
     ];
+    public array $tab_name_left_join = [
+        'vtiger_invoice_recurring_info'
+    ];
     /**
      * Mandatory table for supporting custom fields.
      */
@@ -151,49 +154,6 @@ class SalesOrder extends CRMEntity
         } else {
             InventoryItem_CopyOnCreate_Model::run($this);
         }
-    }
-
-    /** Function to get the invoices associated with the Sales Order
-     *  This function accepts the id as arguments and execute the MySQL query using the id
-     *  and sends the query and the id as arguments to renderRelatedInvoices() method.
-     */
-    public function get_invoices($id)
-    {
-        global $log, $singlepane_view;
-        $log->debug("Entering get_invoices(" . $id . ") method ...");
-        require_once('modules/Invoice/Invoice.php');
-
-        $focus = new Invoice();
-
-        $button = '';
-        if ($singlepane_view == 'true') {
-            $returnset = '&return_module=SalesOrder&return_action=DetailView&return_id=' . $id;
-        } else {
-            $returnset = '&return_module=SalesOrder&return_action=CallRelatedList&return_id=' . $id;
-        }
-
-        $userNameSql = getSqlForNameInDisplayFormat([
-            'first_name' =>
-                'vtiger_users.first_name',
-            'last_name'  => 'vtiger_users.last_name'
-        ], 'Users');
-        $query = "select vtiger_crmentity.*, vtiger_invoice.*, vtiger_account.accountname,
-			vtiger_salesorder.subject as salessubject, case when
-			(vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname
-			end as user_name from vtiger_invoice
-			inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_invoice.invoiceid
-			left outer join vtiger_account on vtiger_account.accountid=vtiger_invoice.account_id
-			inner join vtiger_salesorder on vtiger_salesorder.salesorderid=vtiger_invoice.salesorder_id
-            LEFT JOIN vtiger_invoicecf ON vtiger_invoicecf.invoiceid = vtiger_invoice.invoiceid
-			LEFT JOIN vtiger_invoicebillads ON vtiger_invoicebillads.invoicebilladdressid = vtiger_invoice.invoiceid
-			LEFT JOIN vtiger_invoiceshipads ON vtiger_invoiceshipads.invoiceshipaddressid = vtiger_invoice.invoiceid
-			left join vtiger_users on vtiger_users.id=vtiger_crmentity.assigned_user_id
-			left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.assigned_user_id
-			where vtiger_crmentity.deleted=0 and vtiger_salesorder.salesorderid=" . $id;
-
-        $log->debug("Exiting get_invoices method ...");
-
-        return GetRelatedList('SalesOrder', 'Invoice', $focus, $query, $button, $returnset);
     }
 
     /*

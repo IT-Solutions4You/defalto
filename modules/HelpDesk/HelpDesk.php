@@ -30,6 +30,9 @@ class HelpDesk extends CRMEntity
     public $table_index = 'ticketid';
     public $tab_name = ['vtiger_crmentity', 'vtiger_troubletickets', 'vtiger_ticketcf'];
     public $tab_name_index = ['vtiger_crmentity' => 'crmid', 'vtiger_troubletickets' => 'ticketid', 'vtiger_ticketcf' => 'ticketid', 'vtiger_ticketcomments' => 'ticketid'];
+    public array $tab_name_left_join = [
+        'vtiger_ticketcomments',
+    ];
     /**
      * Mandatory table for supporting custom fields.
      */
@@ -420,23 +423,6 @@ class HelpDesk extends CRMEntity
         ];
 
         return $rel_tables[$secmodule];
-    }
-
-    // Function to unlink an entity with given Id from another entity
-    function unlinkRelationship($id, $return_module, $return_id)
-    {
-        global $log;
-        if (empty($return_module) || empty($return_id)) {
-            return;
-        }
-
-        if ($return_module == 'Accounts') {
-            $this->db->pquery('DELETE FROM vtiger_seticketsrel WHERE ticketid=?', [$id]);
-        } elseif ($return_module == 'Contacts') {
-            $this->db->pquery('DELETE FROM vtiger_seticketsrel WHERE ticketid=?', [$id]);
-        } else {
-            parent::unlinkRelationship($id, $return_module, $return_id);
-        }
     }
 
     public static function getTicketEmailContents($entityData, $toOwner = false)

@@ -16,7 +16,6 @@ class Accounts_Install_Model extends Core_Install_Model
         ['Accounts', 'Quotes', 'Quotes', 'add', 'get_dependents_list', 'account_id',],
         ['Accounts', 'SalesOrder', 'SalesOrder', 'add', 'get_dependents_list', 'account_id',],
         ['Accounts', 'Invoice', 'Invoice', 'add', 'get_related_list', 'account_id',],
-        ['Accounts', 'Documents', 'Documents', 'add,select', 'get_related_list', '',],
         ['Accounts', 'HelpDesk', 'HelpDesk', 'add', 'get_dependents_list', 'parent_id',],
         ['Accounts', 'Products', 'Products', 'select', 'get_related_list', '',],
         ['Accounts', 'Services', 'Services', 'select', 'get_related_list', '',],
@@ -24,8 +23,9 @@ class Accounts_Install_Model extends Core_Install_Model
         ['Accounts', 'Project', 'Projects', 'ADD,SELECT', 'get_related_list', 'account_id'],
         ['Accounts', 'Campaigns', 'Campaigns', 'select', 'get_related_list', ],
         ['Accounts', 'Assets', 'Assets', 'add', 'get_dependents_list', 'account'],
-        ['Accounts', 'Appointments', 'Appointments', 'select', 'get_related_list', ''],
-        ['Accounts', 'ITS4YouEmails', 'ITS4YouEmails', 'select', 'get_related_list', ''],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
         ['Accounts', 'SalesOrder', 'Sales Order', '', 'delete_related_list', '',],
     ];
 
