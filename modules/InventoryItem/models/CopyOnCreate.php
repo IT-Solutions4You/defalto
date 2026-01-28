@@ -66,6 +66,7 @@ class InventoryItem_CopyOnCreate_Model extends Vtiger_Base_Model
                 $itemModel->set('parentid', $entity->id);
                 $itemModel->set('parentitemid', $item['inventoryitemid']);
                 $itemModel->save();
+                $itemModel->saveTaxId((int)$item['tax_id']);
                 unset($itemModel);
             }
 
