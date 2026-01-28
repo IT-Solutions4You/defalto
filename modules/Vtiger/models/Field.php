@@ -1895,7 +1895,7 @@ class Vtiger_Field_Model extends Vtiger_Field
      * @param array $searchInfo
      * @return null
      */
-    public function getSearchValueByInfo(array $searchInfo): mixed
+    public function getSearchValueByInfo(mixed $searchInfo): mixed
     {
         return $searchInfo['searchValue'] ?? null;
     }
