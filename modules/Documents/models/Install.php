@@ -327,5 +327,28 @@ class Documents_Install_Model extends Core_Install_Model
         ];
 
         CustomView_Record_Model::updateColumnNames($moduleName, $fields);
+
+        $this->migrateRelationDocuments();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrateRelationDocuments(): void
+    {
+        $db = $this->getDB();
+
+        if (!$db->tableExists('vtiger_senotesrel')) {
+            return;
+        }
+
+        $result = $db->pquery('SELECT * FROM vtiger_senotesrel');
+
+        while ($row = $db->fetch_array($result)) {
+            $moduleName = getSalesEntityType($row['crmid']);
+            Core_Relation_Model::saveEntityRelation($row['crmid'], $moduleName, $row['notesid'], 'Documents');
+        }
+
+        $db->pquery('DROP TABLE vtiger_senotesrel');
     }
 }
