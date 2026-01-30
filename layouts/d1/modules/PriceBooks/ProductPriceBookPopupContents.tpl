@@ -56,9 +56,11 @@
                                             <span class="ms-2">{vtranslate($LISTVIEW_HEADER->get('label'), $MODULE_NAME)}</span>
                                         </a>
                                     </th>
+                                    {if 'bookname' eq $LISTVIEW_HEADER->get('name')}
+                                        <th class="listViewHeaderValues noSorting text-secondary {$WIDTHTYPE}">{vtranslate('LBL_UNIT_PRICE',$MODULE_NAME)}</th>
+                                        <th class="listViewHeaderValues noSorting text-secondary {$WIDTHTYPE}">{vtranslate('LBL_LIST_PRICE',$MODULE_NAME)}</th>
+                                    {/if}
                                 {/foreach}
-                                <th class="listViewHeaderValues noSorting text-secondary {$WIDTHTYPE}">{vtranslate('LBL_UNIT_PRICE',$MODULE_NAME)}</th>
-                                <th class="listViewHeaderValues noSorting text-secondary {$WIDTHTYPE}">{vtranslate('LBL_LIST_PRICE',$MODULE_NAME)}</th>
                             </tr>
                         </thead>
                         {if $MODULE_MODEL && $MODULE_MODEL->isQuickSearchEnabled()}
@@ -73,9 +75,12 @@
                                         {assign var=FIELD_UI_TYPE_MODEL value=$LISTVIEW_HEADER->getUITypeModel()}
                                         {include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$MODULE_NAME) FIELD_MODEL= $LISTVIEW_HEADER SEARCH_INFO=$SEARCH_DETAILS[$LISTVIEW_HEADER->getName()] USER_MODEL=$USER_MODEL}
                                     </td>
+                                    {if 'bookname' eq $LISTVIEW_HEADER->get('name')}
+                                        <td></td>
+                                        <td></td>
+                                    {/if}
                                 {/foreach}
-                                <td></td>
-                                <td></td>
+
                             </tr>
                         {/if}
 
@@ -98,14 +103,16 @@
                                             <a>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
                                         {/if}
                                     </td>
+                                    {if 'bookname' eq $LISTVIEW_HEADER->get('name')}
+                                        <td class="listViewEntryValue {$WIDTHTYPE}">
+                                            <a>{$LISTVIEW_ENTRY->get('unit_price')}</a>
+                                        </td>
+                                        <td class="listViewEntryValue {$WIDTHTYPE}">
+                                            <input type="text" value="{$LISTVIEW_ENTRY->get('unit_price')}" name="unit_price" class="inputElement form-control zeroPaddingAndMargin invisible" data-rule-required="true" data-rule-currency="true"
+                                                   data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}'/>
+                                        </td>
+                                    {/if}
                                 {/foreach}
-                                <td class="listViewEntryValue {$WIDTHTYPE}">
-                                    <a>{$LISTVIEW_ENTRY->get('unit_price')}</a>
-                                </td>
-                                <td class="listViewEntryValue {$WIDTHTYPE}">
-                                    <input type="text" value="{$LISTVIEW_ENTRY->get('unit_price')}" name="unit_price" class="inputElement form-control zeroPaddingAndMargin invisible" data-rule-required="true" data-rule-currency="true"
-                                               data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}'/>
-                                </td>
                             </tr>
                         {/foreach}
                     </table>
