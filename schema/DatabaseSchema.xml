@@ -1293,31 +1293,6 @@
 		<query>ALTER TABLE vtiger_campaignleadrel ADD CONSTRAINT fk_2_vtiger_campaignleadrel FOREIGN KEY (leadid) REFERENCES vtiger_leaddetails(leadid) ON DELETE CASCADE</query>
 	</sql>
 
-	<table name="vtiger_contpotentialrel">
-		<field name="contactid" type="I" size="19">
-			<key />
-			<notnull />
-			<default value="0" />
-		</field>
-		<field name="potentialid" type="I" size="19">
-			<key />
-			<default value="0" />
-		</field>
-
-		<index name="contpotentialrel_potentialid_idx">
-			<col>potentialid</col>
-		</index>
-		<index name="contpotentialrel_contactid_idx">
-			<col>contactid</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_contpotentialrel ADD CONSTRAINT fk_1_vtiger_contpotentialrel FOREIGN KEY (contactid) REFERENCES vtiger_contactdetails(contactid) ON DELETE CASCADE</query>
-		<query>ALTER TABLE vtiger_contpotentialrel ADD CONSTRAINT fk_2_vtiger_contpotentialrel FOREIGN KEY (potentialid) REFERENCES vtiger_potential(potentialid) ON DELETE CASCADE</query>
-	</sql>
-
 	<table name="vtiger_troubletickets">
 		<field name="ticketid" type="I" size="19">
 			<key />
@@ -1380,29 +1355,6 @@
 		<query>ALTER TABLE vtiger_ticketcomments ADD CONSTRAINT fk_1_vtiger_ticketcomments FOREIGN KEY (ticketid) REFERENCES vtiger_troubletickets(ticketid) ON DELETE CASCADE</query>
 	</sql>
 
-	<table name="vtiger_vendorcontactrel">
-		<field name="vendorid" type="I" size="19">
-			<key />
-			<default value="0" />
-		</field>
-		<field name="contactid" type="I" size="19">
-			<key />
-			<default value="0" />
-		</field>
-
-		<index name="vendorcontactrel_vendorid_idx">
-			<col>vendorid</col>
-		</index>
-		<index name="vendorcontactrel_contact_idx">
-			<col>contactid</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_vendorcontactrel ADD CONSTRAINT fk_1_vtiger_vendorcontactrel FOREIGN KEY (contactid) REFERENCES vtiger_contactdetails(contactid) ON DELETE CASCADE</query>
-		<query>ALTER TABLE vtiger_vendorcontactrel ADD CONSTRAINT fk_2_vtiger_vendorcontactrel FOREIGN KEY (vendorid) REFERENCES vtiger_vendor(vendorid) ON DELETE CASCADE</query>
-	</sql>
 
 	<table name="vtiger_salesmanticketrel">
 		<field name="smid" type="I" size="19">
@@ -1456,30 +1408,6 @@
 	<sql>
 		<query>ALTER TABLE vtiger_seproductsrel ADD CONSTRAINT fk_1_vtiger_seproductsrel FOREIGN KEY (crmid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE</query>
 		<query>ALTER TABLE vtiger_seproductsrel ADD CONSTRAINT fk_2_vtiger_seproductsrel FOREIGN KEY (productid) REFERENCES vtiger_products(productid) ON DELETE CASCADE</query>
-	</sql>
-
-	<table name="vtiger_seticketsrel">
-		<field name="crmid" type="I" size="19">
-			<key />
-			<default value="0" />
-		</field>
-		<field name="ticketid" type="I" size="19">
-			<key />
-			<default value="0" />
-		</field>
-
-		<index name="seticketsrel_crmid_idx">
-			<col>crmid</col>
-		</index>
-		<index name="seticketsrel_ticketid_idx">
-			<col>ticketid</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_seticketsrel ADD CONSTRAINT fk_1_vtiger_seticketsrel FOREIGN KEY (crmid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE</query>
-		<query>ALTER TABLE vtiger_seticketsrel ADD CONSTRAINT fk_2_vtiger_seticketsrel FOREIGN KEY (ticketid) REFERENCES vtiger_troubletickets(ticketid) ON DELETE CASCADE</query>
 	</sql>
 
 	<table name="vtiger_import_maps">
@@ -1655,30 +1583,6 @@
 		<field name="status" type="C" size="25" />
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
-
-	<table name="vtiger_senotesrel">
-		<field name="crmid" type="I" size="19">
-			<key />
-			<default value="0" />
-		</field>
-		<field name="notesid" type="I" size="19">
-			<key />
-			<default value="0" />
-		</field>
-
-		<index name="senotesrel_notesid_idx">
-			<col>notesid</col>
-		</index>
-		<index name="senotesrel_crmid_idx">
-			<col>crmid</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_senotesrel ADD CONSTRAINT fk_1_vtiger_senotesrel FOREIGN KEY (crmid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE</query>
-		<query>ALTER TABLE vtiger_senotesrel ADD CONSTRAINT fk_2_vtiger_senotesrel FOREIGN KEY (notesid) REFERENCES vtiger_notes(notesid) ON DELETE CASCADE</query>
-	</sql>
 
 	<table name="vtiger_ticketcf">
 		<field name="ticketid" type="I" size="19">
