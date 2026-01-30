@@ -96,7 +96,7 @@ class Documents extends CRMEntity
         if (isset($this->parentid) && $this->parentid != '') {
             $relid = $this->parentid;
         }
-        //inserting into vtiger_senotesrel
+
         if (isset($relid) && $relid != '') {
             $this->insertintonotesrel($relid, $this->id);
         }
@@ -334,64 +334,6 @@ class Documents extends CRMEntity
     public function insertintonotesrel($relationId, $id)
     {
         Core_Relation_Model::saveEntityRelation($relationId, getSalesEntityType($relationId), $id, 'Documents');
-    }
-
-    /*function save_related_module($module, $crmid, $with_module, $with_crmid){
-    }*/
-
-    /*
-     * Function to get the secondary query part of a report
-     * @param - $module primary module name
-     * @param - $secmodule secondary module name
-     * returns the query string formed on fetching the related data for report for secondary module
-     */
-    function generateReportsSecQuery($module, $secmodule, $queryPlanner)
-    {
-        $matrix = $queryPlanner->newDependencyMatrix();
-        $matrix->setDependency("vtiger_crmentityDocuments", ["vtiger_groupsDocuments", "vtiger_usersDocuments", "vtiger_lastModifiedByDocuments"]);
-
-        if (!$queryPlanner->requireTable('vtiger_notes', $matrix)) {
-            return '';
-        }
-        $matrix->setDependency("vtiger_notes", ["vtiger_crmentityDocuments", "vtiger_attachmentsfolder"]);
-        // TODO Support query planner
-        $query = $this->getRelationQuery($module, $secmodule, "vtiger_notes", "notesid", $queryPlanner);
-        $query .= " left join vtiger_notescf on vtiger_notes.notesid = vtiger_notescf.notesid";
-        if ($queryPlanner->requireTable("vtiger_crmentityDocuments", $matrix)) {
-            $query .= " left join vtiger_crmentity as vtiger_crmentityDocuments on vtiger_crmentityDocuments.crmid=vtiger_notes.notesid and vtiger_crmentityDocuments.deleted=0";
-        }
-        if ($queryPlanner->requireTable("vtiger_attachmentsfolder")) {
-            $query .= " left join vtiger_attachmentsfolder on vtiger_attachmentsfolder.folderid=vtiger_notes.folderid";
-        }
-        if ($queryPlanner->requireTable("vtiger_groupsDocuments")) {
-            $query .= " left join vtiger_groups as vtiger_groupsDocuments on vtiger_groupsDocuments.groupid = vtiger_crmentityDocuments.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_usersDocuments")) {
-            $query .= " left join vtiger_users as vtiger_usersDocuments on vtiger_usersDocuments.id = vtiger_crmentityDocuments.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_lastModifiedByDocuments")) {
-            $query .= " left join vtiger_users as vtiger_lastModifiedByDocuments on vtiger_lastModifiedByDocuments.id = vtiger_crmentityDocuments.modifiedby ";
-        }
-        if ($queryPlanner->requireTable("vtiger_createdbyDocuments")) {
-            $query .= " left join vtiger_users as vtiger_createdbyDocuments on vtiger_createdbyDocuments.id = vtiger_crmentityDocuments.creator_user_id ";
-        }
-
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
-    }
-
-    /*
-     * Function to get the relation tables for related modules
-     * @param - $secmodule secondary module name
-     * returns the array with table names and fieldnames storing relations between module and this module
-     */
-    function setRelationTables($secmodule)
-    {
-        $rel_tables = [];
-
-        return $rel_tables[$secmodule];
     }
 
     function getFileTypeFieldName()

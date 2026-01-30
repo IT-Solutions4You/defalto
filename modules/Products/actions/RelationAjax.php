@@ -76,9 +76,12 @@ class Products_RelationAjax_Action extends Vtiger_RelationAjax_Action
 
 		$sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
 		$relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModule);
+        /** @var Products_Relation_Model $relationModel */
 		$relationModel = Vtiger_Relation_Model::getInstance($sourceModuleModel, $relatedModuleModel);
+
 		foreach ($relatedRecordIdList as $relatedRecordId) {
 			$relationModel->addRelation($sourceRecordId, $relatedRecordId, ['quantities' => $qtysList]);
+
 			if ($relatedModule == 'PriceBooks') {
 				$recordModel = Vtiger_Record_Model::getInstanceById($relatedRecordId);
 				if ($sourceRecordId && ($sourceModule === 'Products' || $sourceModule === 'Services')) {

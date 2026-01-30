@@ -32,15 +32,21 @@ class Services_Install_Model extends Core_Install_Model
         self::APPOINTMENTS_RELATED_LIST,
     ];
 
+    /**
+     * @throws Exception
+     */
     public function addCustomLinks(): void
     {
         $this->updateToStandardModule();
+        $this->updateComments();
         $this->updateRelatedList();
         $this->updateNumbering();
-        $this->updateComments();
         $this->updateHistory();
     }
 
+    /**
+     * @throws Exception
+     */
     public function deleteCustomLinks(): void
     {
         $this->updateRelatedList(false);

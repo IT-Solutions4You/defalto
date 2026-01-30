@@ -1039,8 +1039,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
 
     public function saveDocumentRelation($recordId)
     {
-        $adb = PearDatabase::getInstance();
-        $adb->pquery('INSERT INTO vtiger_senotesrel (crmid, notesid)VALUES (?,?)', [$this->getId(), $recordId]);
+        Core_Relation_Model::saveEntityRelation($this->getId(), $this->getModuleName(), $recordId, 'Documents');
     }
 
     public function getAddressesFromEmailIds($emailIds)

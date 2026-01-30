@@ -15,7 +15,6 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
 class Vendors extends CRMEntity
 {
     public string $moduleName = 'Vendors';
@@ -36,25 +35,25 @@ class Vendors extends CRMEntity
     // This is the list of vtiger_fields that are in the lists.
     var $list_fields = [
         'Vendor Name' => ['vendor' => 'vendorname'],
-        'Phone'       => ['vendor' => 'phone'],
-        'Email'       => ['vendor' => 'email'],
-        'Category'    => ['vendor' => 'category']
+        'Phone' => ['vendor' => 'phone'],
+        'Email' => ['vendor' => 'email'],
+        'Category' => ['vendor' => 'category']
     ];
     var $list_fields_name = [
         'Vendor Name' => 'vendorname',
-        'Phone'       => 'phone',
-        'Email'       => 'email',
-        'Category'    => 'category'
+        'Phone' => 'phone',
+        'Email' => 'email',
+        'Category' => 'category'
     ];
     var $list_link_field = 'vendorname';
 
     var $search_fields = [
         'Vendor Name' => ['vendor' => 'vendorname'],
-        'Phone'       => ['vendor' => 'phone']
+        'Phone' => ['vendor' => 'phone']
     ];
     var $search_fields_name = [
         'Vendor Name' => 'vendorname',
-        'Phone'       => 'phone'
+        'Phone' => 'phone'
     ];
     //Specifying required fields for vendors
     var $required_fields = [];
@@ -165,97 +164,25 @@ class Vendors extends CRMEntity
     }
 
     /*
-     * Function to get the secondary query part of a report
-     * @param - $module primary module name
-     * @param - $secmodule secondary module name
-     * returns the query string formed on fetching the related data for report for secondary module
-     */
-    function generateReportsSecQuery($module, $secmodule, $queryPlanner)
-    {
-        $matrix = $queryPlanner->newDependencyMatrix();
-
-        $matrix->setDependency("vtiger_crmentityVendors", ["vtiger_usersVendors", "vtiger_lastModifiedByVendors"]);
-        if (!$queryPlanner->requireTable('vtiger_vendor', $matrix)) {
-            return '';
-        }
-        $matrix->setDependency("vtiger_vendor", ["vtiger_crmentityVendors", "vtiger_vendorcf", "vtiger_email_trackVendors"]);
-        $query = $this->getRelationQuery($module, $secmodule, "vtiger_vendor", "vendorid", $queryPlanner);
-        // TODO Support query planner
-        if ($queryPlanner->requireTable("vtiger_crmentityVendors", $matrix)) {
-            $query .= " left join vtiger_crmentity as vtiger_crmentityVendors on vtiger_crmentityVendors.crmid=vtiger_vendor.vendorid and vtiger_crmentityVendors.deleted=0";
-        }
-        if ($queryPlanner->requireTable("vtiger_vendorcf")) {
-            $query .= " left join vtiger_vendorcf on vtiger_vendorcf.vendorid = vtiger_crmentityVendors.crmid";
-        }
-        if ($queryPlanner->requireTable("vtiger_email_trackVendors")) {
-            $query .= " LEFT JOIN vtiger_email_track AS vtiger_email_trackVendors ON vtiger_email_trackVendors.crmid = vtiger_vendor.vendorid";
-        }
-        if ($queryPlanner->requireTable("vtiger_usersVendors")) {
-            $query .= " left join vtiger_users as vtiger_usersVendors on vtiger_usersVendors.id = vtiger_crmentityVendors.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_lastModifiedByVendors")) {
-            $query .= " left join vtiger_users as vtiger_lastModifiedByVendors on vtiger_lastModifiedByVendors.id = vtiger_crmentityVendors.modifiedby ";
-        }
-        if ($queryPlanner->requireTable("vtiger_createdbyVendors")) {
-            $query .= " left join vtiger_users as vtiger_createdbyVendors on vtiger_createdbyVendors.id = vtiger_crmentityVendors.creator_user_id ";
-        }
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
-    }
-
-    /*
      * Function to get the relation tables for related modules
      * @param - $secmodule secondary module name
      * returns the array with table names and fieldnames storing relations between module and this module
      */
-    function setRelationTables($secmodule)
+    public function setRelationTables($secmodule)
     {
         $rel_tables = [
-            "Products" => ["vtiger_products" => ["vendor_id", "productid"], "vtiger_vendor" => "vendorid"],
-            "PurchaseOrder" => ["vtiger_purchaseorder" => ["vendor_id", "purchaseorderid"], "vtiger_vendor" => "vendorid"],
-            "Contacts" => ["vtiger_vendorcontactrel" => ["vendorid", "contactid"], "vtiger_vendor" => "vendorid"],
+            'Products' => ['vtiger_products' => ['vendor_id', 'productid'], 'vtiger_vendor' => 'vendorid'],
+            'PurchaseOrder' => ['vtiger_purchaseorder' => ['vendor_id', 'purchaseorderid'], 'vtiger_vendor' => 'vendorid'],
         ];
 
         return $rel_tables[$secmodule];
     }
 
     // Function to unlink all the dependent entities of the given Entity by Id
-    function unlinkDependencies($module, $id)
+    public function unlinkDependencies($module, $id)
     {
-        global $log;
-        //Deleting Vendor related PO.
-        $po_q = 'SELECT vtiger_crmentity.crmid FROM vtiger_crmentity
-			INNER JOIN vtiger_purchaseorder ON vtiger_crmentity.crmid=vtiger_purchaseorder.purchaseorderid
-			INNER JOIN vtiger_vendor ON vtiger_vendor.vendorid=vtiger_purchaseorder.vendor_id
-			WHERE vtiger_crmentity.deleted=0 AND vtiger_purchaseorder.vendor_id=?';
-        $po_res = $this->db->pquery($po_q, [$id]);
-        $po_ids_list = [];
-        for ($k = 0; $k < $this->db->num_rows($po_res); $k++) {
-            $po_id = $this->db->query_result($po_res, $k, "crmid");
-            $po_ids_list[] = $po_id;
-            $sql = 'UPDATE vtiger_crmentity SET deleted = 1 WHERE crmid = ?';
-            $this->db->pquery($sql, [$po_id]);
-        }
-        //Backup deleted Vendors related Potentials.
-        $params = [$id, RB_RECORD_UPDATED, 'vtiger_crmentity', 'deleted', 'crmid', implode(",", $po_ids_list)];
-        $this->db->pquery('INSERT INTO vtiger_relatedlists_rb VALUES (?,?,?,?,?,?)', $params);
-
-        //Backup Product-Vendor Relation
-        $pro_q = 'SELECT productid FROM vtiger_products WHERE vendor_id=?';
-        $pro_res = $this->db->pquery($pro_q, [$id]);
-        if ($this->db->num_rows($pro_res) > 0) {
-            $pro_ids_list = [];
-            for ($k = 0; $k < $this->db->num_rows($pro_res); $k++) {
-                $pro_ids_list[] = $this->db->query_result($pro_res, $k, "productid");
-            }
-            $params = [$id, RB_RECORD_UPDATED, 'vtiger_products', 'vendor_id', 'productid', implode(",", $pro_ids_list)];
-            $this->db->pquery('INSERT INTO vtiger_relatedlists_rb VALUES (?,?,?,?,?,?)', $params);
-        }
-        //Deleting Product-Vendor Relation.
-        $pro_q = 'UPDATE vtiger_products SET vendor_id = 0 WHERE vendor_id = ?';
-        $this->db->pquery($pro_q, [$id]);
+        Core_Relation_Model::saveEntityDependencies($id, 'vtiger_vendor', 'vendorid', 'vtiger_purchaseorder', 'purchaseorderid', 'vendor_id');
+        Core_Relation_Model::saveDependencies($id, 'vendor_id', 'vtiger_products', 'productid');
 
         parent::unlinkDependencies($module, $id);
     }

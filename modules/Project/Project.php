@@ -106,15 +106,6 @@ class Project extends CRMEntity
     var $mandatory_fields = ['createdtime', 'modifiedtime', 'projectname', 'assigned_user_id'];
 
     /**
-     * Return query to use based on given modulename, fieldname
-     * Useful to handle specific case handling for Popup
-     */
-    function getQueryByModuleField($module, $fieldname, $srcrecord)
-    {
-        // $srcrecord could be empty
-    }
-
-    /**
      * Get list view query (send more WHERE clause condition if required)
      */
     function getListQuery($module, $usewhere = '')
@@ -496,24 +487,21 @@ class Project extends CRMEntity
         $log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
         $rel_table_arr = [
-            "ProjectTask"      => "vtiger_projecttask",
+            'ProjectTask' => 'vtiger_projecttask',
             'ProjectMilestone' => 'vtiger_projectmilestone',
-            "Documents"        => "vtiger_senotesrel",
-            "Attachments"      => "vtiger_seattachmentsrel"
+            'Attachments' => 'vtiger_seattachmentsrel'
         ];
 
         $tbl_field_arr = [
-            "vtiger_projecttask"      => "projecttaskid",
+            'vtiger_projecttask' => 'projecttaskid',
             'vtiger_projectmilestone' => 'projectmilestoneid',
-            "vtiger_senotesrel"       => "notesid",
-            "vtiger_seattachmentsrel" => "attachmentsid"
+            'vtiger_seattachmentsrel' => 'attachmentsid'
         ];
 
         $entity_tbl_field_arr = [
-            "vtiger_projecttask"      => "projectid",
+            'vtiger_projecttask' => 'projectid',
             'vtiger_projectmilestone' => 'projectid',
-            "vtiger_senotesrel"       => "crmid",
-            "vtiger_seattachmentsrel" => "crmid"
+            'vtiger_seattachmentsrel' => 'crmid'
         ];
 
         foreach ($transferEntityIds as $transferId) {

@@ -141,70 +141,6 @@ class Leads extends CRMEntity
         return $query;
     }
 
-    function get_quotes($id, $cur_tab_id, $rel_tab_id, $actions = false)
-    {
-        global $log, $singlepane_view, $currentModule, $current_user;
-        $log->debug("Entering get_quotes(" . $id . ") method ...");
-        $this_module = $currentModule;
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
-
-        require_once("modules/$related_module/$related_module.php");
-        $other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
-        $singular_modname = vtlib_toSingular($related_module);
-
-        $parenttab = getParentTab();
-        if ($singlepane_view == 'true') {
-            $returnset = '&return_module=' . $this_module . '&return_action=DetailView&return_id=' . $id;
-        } else {
-            $returnset = '&return_module=' . $this_module . '&return_action=CallRelatedList&return_id=' . $id;
-        }
-
-        $button = '';
-        if ($actions && getFieldVisibilityPermission($related_module, $current_user->id, 'account_id', 'readwrite') == '0') {
-            $actions = sanitizeRelatedListsActions($actions);
-
-            if (in_array('SELECT', $actions) && isPermitted($related_module, 4, '') == 'yes') {
-                $button .= "<input title='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString(
-                        $related_module
-                    ) . "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='" . getTranslatedString(
-                        'LBL_SELECT'
-                    ) . " " . getTranslatedString($related_module) . "'>&nbsp;";
-            }
-
-            if (in_array('ADD', $actions) && isPermitted($related_module, 1, '') == 'yes') {
-                $button .= "<input title='" . getTranslatedString('LBL_ADD_NEW') . " " . getTranslatedString($singular_modname) . "' class='crmbutton small create'" .
-                    " onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
-                    " value='" . getTranslatedString('LBL_ADD_NEW') . " " . getTranslatedString($singular_modname) . "'>&nbsp;";
-            }
-        }
-
-        $userNameSql = getSqlForNameInDisplayFormat(['first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'], 'Users');
-
-        $query = "SELECT vtiger_crmentity.*, vtiger_quotes.*, vtiger_leaddetails.leadid,
-            case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
-            FROM vtiger_quotes
-            INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_quotes.quoteid
-            LEFT JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid = vtiger_quotes.contactid
-            LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id
-            LEFT JOIN vtiger_quotescf ON vtiger_quotescf.quoteid = vtiger_quotes.quoteid
-            LEFT JOIN vtiger_quotesbillads ON vtiger_quotesbillads.quotebilladdressid = vtiger_quotes.quoteid
-            LEFT JOIN vtiger_quotesshipads ON vtiger_quotesshipads.quoteshipaddressid = vtiger_quotes.quoteid
-            LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id
-            WHERE vtiger_crmentity.deleted = 0 AND vtiger_leaddetails.leadid = $id";
-
-        $return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
-
-        if ($return_value == null) {
-            $return_value = [];
-        }
-        $return_value['CUSTOM_BUTTON'] = $button;
-
-        $log->debug("Exiting get_quotes method ...");
-
-        return $return_value;
-    }
-
     /**
      * Function to get lead related Products
      *
@@ -287,23 +223,17 @@ class Leads extends CRMEntity
         $log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
         $rel_table_arr = [
-            'Documents' => 'vtiger_senotesrel',
             'Attachments' => 'vtiger_seattachmentsrel',
-            'Products' => 'vtiger_seproductsrel',
             'Campaigns' => 'vtiger_campaignleadrel'
         ];
 
         $tbl_field_arr = [
-            'vtiger_senotesrel' => 'notesid',
             'vtiger_seattachmentsrel' => 'attachmentsid',
-            'vtiger_seproductsrel' => 'productid',
             'vtiger_campaignleadrel' => 'campaignid'
         ];
 
         $entity_tbl_field_arr = [
-            'vtiger_senotesrel' => 'crmid',
             'vtiger_seattachmentsrel' => 'crmid',
-            'vtiger_seproductsrel' => 'crmid',
             'vtiger_campaignleadrel' => 'leadid'
         ];
 
@@ -331,76 +261,6 @@ class Leads extends CRMEntity
         }
         parent::transferRelatedRecords($module, $transferEntityIds, $entityId);
         $log->debug("Exiting transferRelatedRecords...");
-    }
-
-    /*
-     * Function to get the secondary query part of a report
-     * @param - $module primary module name
-     * @param - $secmodule secondary module name
-     * returns the query string formed on fetching the related data for report for secondary module
-     */
-    function generateReportsSecQuery($module, $secmodule, $queryPlanner)
-    {
-        $matrix = $queryPlanner->newDependencyMatrix();
-        $matrix->setDependency('vtiger_crmentityLeads', ['vtiger_groupsLeads', 'vtiger_usersLeads', 'vtiger_lastModifiedByLeads']);
-
-        // TODO Support query planner
-        if (!$queryPlanner->requireTable("vtiger_leaddetails", $matrix)) {
-            return '';
-        }
-
-        $matrix->setDependency('vtiger_leaddetails', ['vtiger_crmentityLeads', 'vtiger_leadaddress', 'vtiger_leadsubdetails', 'vtiger_leadscf', 'vtiger_email_trackLeads']);
-
-        $query = $this->getRelationQuery($module, $secmodule, "vtiger_leaddetails", "leadid", $queryPlanner);
-        if ($queryPlanner->requireTable("vtiger_crmentityLeads", $matrix)) {
-            $query .= " left join vtiger_crmentity as vtiger_crmentityLeads on vtiger_crmentityLeads.crmid = vtiger_leaddetails.leadid and vtiger_crmentityLeads.deleted=0";
-        }
-        if ($queryPlanner->requireTable("vtiger_leadaddress")) {
-            $query .= " left join vtiger_leadaddress on vtiger_leaddetails.leadid = vtiger_leadaddress.leadaddressid";
-        }
-        if ($queryPlanner->requireTable("vtiger_leadsubdetails")) {
-            $query .= " left join vtiger_leadsubdetails on vtiger_leadsubdetails.leadsubscriptionid = vtiger_leaddetails.leadid";
-        }
-        if ($queryPlanner->requireTable("vtiger_leadscf")) {
-            $query .= " left join vtiger_leadscf on vtiger_leadscf.leadid = vtiger_leaddetails.leadid";
-        }
-        if ($queryPlanner->requireTable("vtiger_email_trackLeads")) {
-            $query .= " LEFT JOIN vtiger_email_track AS vtiger_email_trackLeads ON vtiger_email_trackLeads.crmid = vtiger_leaddetails.leadid";
-        }
-        if ($queryPlanner->requireTable("vtiger_groupsLeads")) {
-            $query .= " left join vtiger_groups as vtiger_groupsLeads on vtiger_groupsLeads.groupid = vtiger_crmentityLeads.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_usersLeads")) {
-            $query .= " left join vtiger_users as vtiger_usersLeads on vtiger_usersLeads.id = vtiger_crmentityLeads.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_lastModifiedByLeads")) {
-            $query .= " left join vtiger_users as vtiger_lastModifiedByLeads on vtiger_lastModifiedByLeads.id = vtiger_crmentityLeads.modifiedby ";
-        }
-        if ($queryPlanner->requireTable("vtiger_createdbyLeads")) {
-            $query .= " left join vtiger_users as vtiger_createdbyLeads on vtiger_createdbyLeads.id = vtiger_crmentityLeads.creator_user_id ";
-        }
-
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
-    }
-
-    /*
-     * Function to get the relation tables for related modules
-     * @param - $secmodule secondary module name
-     * returns the array with table names and fieldnames storing relations between module and this module
-     */
-    function setRelationTables($secmodule)
-    {
-        $rel_tables = [
-            "Products" => ["vtiger_crmentityrel" => ["crmid", "relcrmid"], "vtiger_leaddetails" => "leadid"],
-            "Campaigns" => ["vtiger_campaignleadrel" => ["leadid", "campaignid"], "vtiger_leaddetails" => "leadid"],
-            "Documents" => ["vtiger_crmentityrel" => ["crmid", "relcrmid"], "vtiger_leaddetails" => "leadid"],
-            "Services" => ["vtiger_crmentityrel" => ["crmid", "relcrmid"], "vtiger_leaddetails" => "leadid"],
-        ];
-
-        return $rel_tables[$secmodule];
     }
 
     // Function to unlink an entity with given Id from another entity

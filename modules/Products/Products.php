@@ -15,7 +15,6 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
 class Products extends CRMEntity
 {
     use Core_UnitPrice_Trait;
@@ -35,9 +34,9 @@ class Products extends CRMEntity
     public $tab_name = ['vtiger_crmentity', 'vtiger_products', 'vtiger_productcf'];
 
     public $tab_name_index = [
-        'vtiger_crmentity'     => 'crmid',
-        'vtiger_products'      => 'productid',
-        'vtiger_productcf'     => 'productid',
+        'vtiger_crmentity' => 'crmid',
+        'vtiger_products' => 'productid',
+        'vtiger_productcf' => 'productid',
         'vtiger_seproductsrel' => 'productid',
         'vtiger_producttaxrel' => 'productid'
     ];
@@ -49,31 +48,31 @@ class Products extends CRMEntity
 
     // This is the list of vtiger_fields that are in the lists.
     public $list_fields = [
-        'Product Name'    => ['products' => 'productname'],
-        'Part Number'     => ['products' => 'productcode'],
+        'Product Name' => ['products' => 'productname'],
+        'Part Number' => ['products' => 'productcode'],
         'Commission Rate' => ['products' => 'commissionrate'],
-        'Qty/Unit'        => ['products' => 'qty_per_unit'],
-        'Unit Price'      => ['products' => 'unit_price'],
+        'Qty/Unit' => ['products' => 'qty_per_unit'],
+        'Unit Price' => ['products' => 'unit_price'],
     ];
     public $list_fields_name = [
-        'Product Name'    => 'productname',
-        'Part Number'     => 'productcode',
+        'Product Name' => 'productname',
+        'Part Number' => 'productcode',
         'Commission Rate' => 'commissionrate',
-        'Qty/Unit'        => 'qty_per_unit',
-        'Unit Price'      => 'unit_price',
+        'Qty/Unit' => 'qty_per_unit',
+        'Unit Price' => 'unit_price',
     ];
 
     public $list_link_field = 'productname';
 
     public $search_fields = [
         'Product Name' => ['products' => 'productname'],
-        'Part Number'  => ['products' => 'productcode'],
-        'Unit Price'   => ['products' => 'unit_price'],
+        'Part Number' => ['products' => 'productcode'],
+        'Unit Price' => ['products' => 'unit_price'],
     ];
     public $search_fields_name = [
         'Product Name' => 'productname',
-        'Part Number'  => 'productcode',
-        'Unit Price'   => 'unit_price',
+        'Part Number' => 'productcode',
+        'Unit Price' => 'unit_price',
     ];
 
     public $required_fields = ['productname' => 1];
@@ -123,7 +122,7 @@ class Products extends CRMEntity
     /**    function to save the product tax information in vtiger_producttaxrel table
      *
      * @param string $tablename - vtiger_tablename to save the product tax relationship (producttaxrel)
-     * @param string $module    - current module name
+     * @param string $module - current module name
      *                          $return void
      */
     function insertTaxInformation($tablename, $module)
@@ -520,42 +519,33 @@ class Products extends CRMEntity
         $log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
         $rel_table_arr = [
-            "HelpDesk"      => "vtiger_troubletickets",
-            "Products"      => "vtiger_seproductsrel",
-            "Attachments"   => "vtiger_seattachmentsrel",
-            "Quotes"        => "df_inventoryitem",
+            "HelpDesk" => "vtiger_troubletickets",
+            "Products" => "vtiger_seproductsrel",
+            "Attachments" => "vtiger_seattachmentsrel",
+            "Quotes" => "df_inventoryitem",
             "PurchaseOrder" => "df_inventoryitem",
-            "SalesOrder"    => "df_inventoryitem",
-            "Invoice"       => "df_inventoryitem",
-            "PriceBooks"    => "vtiger_pricebookproductrel",
-            "Leads"         => "vtiger_seproductsrel",
-            "Accounts"      => "vtiger_seproductsrel",
-            "Potentials"    => "vtiger_seproductsrel",
-            "Contacts"      => "vtiger_seproductsrel",
-            "Documents"     => "vtiger_senotesrel",
-            'Assets'        => 'vtiger_assets',
+            "SalesOrder" => "df_inventoryitem",
+            "Invoice" => "df_inventoryitem",
+            "PriceBooks" => "vtiger_pricebookproductrel",
+            'Assets' => 'vtiger_assets',
         ];
 
         $tbl_field_arr = [
-            "vtiger_troubletickets"      => "ticketid",
-            "vtiger_seproductsrel"       => "crmid",
-            "vtiger_seattachmentsrel"    => "attachmentsid",
+            "vtiger_troubletickets" => "ticketid",
+            "vtiger_seattachmentsrel" => "attachmentsid",
             "df_inventoryitem" => "inventoryitemid",
             "vtiger_pricebookproductrel" => "pricebookid",
-            "vtiger_seproductsrel"       => "crmid",
-            "vtiger_senotesrel"          => "notesid",
-            'vtiger_assets'              => 'assetsid',
+            "vtiger_seproductsrel" => "crmid",
+            'vtiger_assets' => 'assetsid',
         ];
 
         $entity_tbl_field_arr = [
-            "vtiger_troubletickets"      => "product_id",
-            "vtiger_seproductsrel"       => "crmid",
-            "vtiger_seattachmentsrel"    => "crmid",
+            "vtiger_troubletickets" => "product_id",
+            "vtiger_seproductsrel" => "crmid",
+            "vtiger_seattachmentsrel" => "crmid",
             "df_inventoryitem" => "productid",
             "vtiger_pricebookproductrel" => "productid",
-            "vtiger_seproductsrel"       => "productid",
-            "vtiger_senotesrel"          => "crmid",
-            'vtiger_assets'              => 'product',
+            'vtiger_assets' => 'product',
         ];
 
         foreach ($transferEntityIds as $transferId) {
@@ -583,85 +573,16 @@ class Products extends CRMEntity
         $log->debug("Exiting transferRelatedRecords...");
     }
 
-    /*
-     * Function to get the secondary query part of a report
-     * @param - $module primary module name
-     * @param - $secmodule secondary module name
-     * returns the query string formed on fetching the related data for report for secondary module
-     */
-    function generateReportsSecQuery($module, $secmodule, $queryPlanner)
-    {
-        global $current_user;
-        $matrix = $queryPlanner->newDependencyMatrix();
-
-        $matrix->setDependency("vtiger_crmentityProducts", ["vtiger_groupsProducts", "vtiger_usersProducts", "vtiger_lastModifiedByProducts"]);
-        //query planner Support  added
-        if (!$queryPlanner->requireTable('vtiger_products', $matrix)) {
-            return '';
-        }
-        $matrix->setDependency("vtiger_products", ["innerProduct", "vtiger_crmentityProducts", "vtiger_productcf", "vtiger_vendorRelProducts"]);
-
-        $query = $this->getRelationQuery($module, $secmodule, "vtiger_products", "productid", $queryPlanner);
-        if ($queryPlanner->requireTable("innerProduct")) {
-            $query .= " LEFT JOIN (
-					SELECT vtiger_products.productid,
-							(CASE WHEN (vtiger_products.currency_id = 1 ) THEN vtiger_products.unit_price
-								ELSE (vtiger_products.unit_price / vtiger_currency_info.conversion_rate) END
-							) AS actual_unit_price
-					FROM vtiger_products
-					LEFT JOIN vtiger_currency_info ON vtiger_products.currency_id = vtiger_currency_info.id
-					LEFT JOIN vtiger_productcurrencyrel ON vtiger_products.productid = vtiger_productcurrencyrel.productid
-					AND vtiger_productcurrencyrel.currencyid = " . $current_user->currency_id . "
-				) AS innerProduct ON innerProduct.productid = vtiger_products.productid";
-        }
-        if ($queryPlanner->requireTable("vtiger_crmentityProducts")) {
-            $query .= " left join vtiger_crmentity as vtiger_crmentityProducts on vtiger_crmentityProducts.crmid=vtiger_products.productid and vtiger_crmentityProducts.deleted=0";
-        }
-        if ($queryPlanner->requireTable("vtiger_productcf")) {
-            $query .= " left join vtiger_productcf on vtiger_products.productid = vtiger_productcf.productid";
-        }
-        if ($queryPlanner->requireTable("vtiger_groupsProducts")) {
-            $query .= " left join vtiger_groups as vtiger_groupsProducts on vtiger_groupsProducts.groupid = vtiger_crmentityProducts.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_usersProducts")) {
-            $query .= " left join vtiger_users as vtiger_usersProducts on vtiger_usersProducts.id = vtiger_crmentityProducts.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_vendorRelProducts")) {
-            $query .= " left join vtiger_vendor as vtiger_vendorRelProducts on vtiger_vendorRelProducts.vendorid = vtiger_products.vendor_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_lastModifiedByProducts")) {
-            $query .= " left join vtiger_users as vtiger_lastModifiedByProducts on vtiger_lastModifiedByProducts.id = vtiger_crmentityProducts.modifiedby ";
-        }
-        if ($queryPlanner->requireTable("vtiger_createdbyProducts")) {
-            $query .= " left join vtiger_users as vtiger_createdbyProducts on vtiger_createdbyProducts.id = vtiger_crmentityProducts.creator_user_id ";
-        }
-
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
-    }
-
-    /*
-     * Function to get the relation tables for related modules
-     * @param - $secmodule secondary module name
-     * returns the array with table names and fieldnames storing relations between module and this module
-     */
-    function setRelationTables($secmodule)
+    public function setRelationTables($secmodule)
     {
         $rel_tables = [
-            "HelpDesk"      => ["vtiger_troubletickets" => ["product_id", "ticketid"], "vtiger_products" => "productid"],
-            "Quotes"        => ["df_inventoryitem" => ["productid", "inventoryitemid"], "vtiger_products" => "productid"],
-            "PurchaseOrder" => ["df_inventoryitem" => ["productid", "inventoryitemid"], "vtiger_products" => "productid"],
-            "SalesOrder"    => ["df_inventoryitem" => ["productid", "inventoryitemid"], "vtiger_products" => "productid"],
-            "Invoice"       => ["df_inventoryitem" => ["productid", "inventoryitemid"], "vtiger_products" => "productid"],
-            "Leads"         => ["vtiger_seproductsrel" => ["productid", "crmid"], "vtiger_products" => "productid"],
-            "Accounts"      => ["vtiger_seproductsrel" => ["productid", "crmid"], "vtiger_products" => "productid"],
-            "Contacts"      => ["vtiger_seproductsrel" => ["productid", "crmid"], "vtiger_products" => "productid"],
-            "Potentials"    => ["vtiger_seproductsrel" => ["productid", "crmid"], "vtiger_products" => "productid"],
-            "Products"      => ["vtiger_products" => ["productid", "product_id"], "vtiger_products" => "productid"],
-            "PriceBooks"    => ["vtiger_pricebookproductrel" => ["productid", "pricebookid"], "vtiger_products" => "productid"],
-            "Documents"     => ["vtiger_senotesrel" => ["crmid", "notesid"], "vtiger_products" => "productid"],
+            'HelpDesk' => ['vtiger_troubletickets' => ['product_id', 'ticketid'], 'vtiger_products' => 'productid'],
+            'Quotes' => ['df_inventoryitem' => ['productid', 'inventoryitemid'], 'vtiger_products' => 'productid'],
+            'PurchaseOrder' => ['df_inventoryitem' => ['productid', 'inventoryitemid'], 'vtiger_products' => 'productid'],
+            'SalesOrder' => ['df_inventoryitem' => ['productid', 'inventoryitemid'], 'vtiger_products' => 'productid'],
+            'Invoice' => ['df_inventoryitem' => ['productid', 'inventoryitemid'], 'vtiger_products' => 'productid'],
+            'Products' => ['vtiger_products' => ['productid', 'product_id'], 'vtiger_products' => 'productid'],
+            'PriceBooks' => ['vtiger_pricebookproductrel' => ['productid', 'pricebookid'], 'vtiger_products' => 'productid'],
         ];
 
         return $rel_tables[$secmodule];
@@ -680,38 +601,10 @@ class Products extends CRMEntity
     }
 
     // Function to unlink all the dependent entities of the given Entity by Id
-    function unlinkDependencies($module, $id)
+    public function unlinkDependencies($module, $id)
     {
-        global $log;
-        //Backup Campaigns-Product Relation
-        $cmp_q = 'SELECT campaignid FROM vtiger_campaign WHERE product_id = ?';
-        $cmp_res = $this->db->pquery($cmp_q, [$id]);
-        if ($this->db->num_rows($cmp_res) > 0) {
-            $cmp_ids_list = [];
-            for ($k = 0; $k < $this->db->num_rows($cmp_res); $k++) {
-                $cmp_ids_list[] = $this->db->query_result($cmp_res, $k, "campaignid");
-            }
-            $params = [$id, RB_RECORD_UPDATED, 'vtiger_campaign', 'product_id', 'campaignid', implode(",", $cmp_ids_list)];
-            $this->db->pquery('INSERT INTO vtiger_relatedlists_rb VALUES (?,?,?,?,?,?)', $params);
-        }
-        //we have to update the product_id as null for the campaigns which are related to this product
-        $this->db->pquery('UPDATE vtiger_campaign SET product_id=0 WHERE product_id = ?', [$id]);
-
-        // restoring products relations
-        $productRelRB = $this->db->pquery('SELECT * FROM vtiger_seproductsrel WHERE productid = ?', [$id]);
-        $rows = $this->db->num_rows($productRelRB);
-        if ($this->db->num_rows($productRelRB)) {
-            for ($i = 0; $i < $rows; $i++) {
-                $crmid = $this->db->query_result($productRelRB, $i, "crmid");
-                $params = [$id, RB_RECORD_DELETED, 'vtiger_seproductsrel', 'productid', 'crmid', $crmid];
-                $this->db->pquery(
-                    'INSERT INTO vtiger_relatedlists_rb(entityid, action, rel_table, rel_column, ref_column, related_crm_ids)
-						VALUES (?,?,?,?,?,?)',
-                    $params,
-                );
-            }
-        }
-        $this->db->pquery('DELETE from vtiger_seproductsrel WHERE productid=? or crmid=?', [$id, $id]);
+        Core_Relation_Model::saveDependencies($id, 'product_id', 'vtiger_campaign', 'campaignid');
+        Core_Relation_Model::saveDependencies($id, 'crmid', 'vtiger_seproductsrel', 'productid');
 
         parent::unlinkDependencies($module, $id);
     }

@@ -68,17 +68,6 @@ class Contacts_Module_Model extends Vtiger_Module_Model
             $returnQuery = $db->convert2Sql($query, $params);
 
             return $returnQuery;
-        } elseif ($parentId && $parentModule == 'Potentials') {
-            $query = "SELECT " . implode(',', $searchFields) . " FROM vtiger_crmentity
-						INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
-						LEFT JOIN vtiger_contpotentialrel ON vtiger_contpotentialrel.contactid = vtiger_contactdetails.contactid
-						LEFT JOIN vtiger_potential ON vtiger_potential.contact_id = vtiger_contactdetails.contactid
-						WHERE deleted = 0 AND (vtiger_contpotentialrel.potentialid = ? OR vtiger_potential.potentialid = ?)
-						AND label like ?";
-            $params = [$parentId, $parentId, "%$searchValue%"];
-            $returnQuery = $db->convert2Sql($query, $params);
-
-            return $returnQuery;
         } elseif ($parentId && $parentModule == 'HelpDesk') {
             $query = "SELECT " . implode(',', $searchFields) . " FROM vtiger_crmentity
                         INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
@@ -94,16 +83,6 @@ class Contacts_Module_Model extends Vtiger_Module_Model
                         INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
                         INNER JOIN vtiger_campaigncontrel ON vtiger_campaigncontrel.contactid = vtiger_contactdetails.contactid
                         WHERE deleted=0 AND vtiger_campaigncontrel.campaignid = ? AND label like ?";
-
-            $params = [$parentId, "%$searchValue%"];
-            $returnQuery = $db->convert2Sql($query, $params);
-
-            return $returnQuery;
-        } elseif ($parentId && $parentModule == 'Vendors') {
-            $query = "SELECT " . implode(',', $searchFields) . " FROM vtiger_crmentity
-                        INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
-                        INNER JOIN vtiger_vendorcontactrel ON vtiger_vendorcontactrel.contactid = vtiger_contactdetails.contactid
-                        WHERE deleted=0 AND vtiger_vendorcontactrel.vendorid = ? AND label like ?";
 
             $params = [$parentId, "%$searchValue%"];
             $returnQuery = $db->convert2Sql($query, $params);
@@ -169,15 +148,14 @@ class Contacts_Module_Model extends Vtiger_Module_Model
         if ($sourceModule === 'Contacts' && $field === 'contact_id' && $record) {
             $condition = " vtiger_contactdetails.contactid != ?";
             $params = [$record];
-        } else {
-            $condition = " vtiger_crmentity.crmid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
-            $params = [$record, $record];
+
+            $db = PearDatabase::getInstance();
+            $condition = $db->convert2Sql($condition, $params);
+
+            return $this->addConditionToQuery($listQuery, $condition);
         }
 
-        $db = PearDatabase::getInstance();
-        $condition = $db->convert2Sql($condition, $params);
-
-        return $this->addConditionToQuery($listQuery, $condition);
+        return $listQuery;
     }
 
     public function getDefaultSearchField()

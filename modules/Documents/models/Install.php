@@ -282,7 +282,6 @@ class Documents_Install_Model extends Core_Install_Model
         return [
             'vtiger_notes',
             'vtiger_notescf',
-            'vtiger_senotesrel',
         ];
     }
 

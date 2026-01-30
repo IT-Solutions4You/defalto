@@ -27,7 +27,6 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
 class Potentials extends CRMEntity
 {
     public string $moduleName = 'Potentials';
@@ -46,36 +45,36 @@ class Potentials extends CRMEntity
 
     // This is the list of vtiger_fields that are in the lists.
     public $list_fields = [
-        'Potential'           => ['potential' => 'potentialname'],
-        'Organization Name'   => ['potential' => 'related_to'],
-        'Contact Name'        => ['potential' => 'contact_id'],
-        'Sales Stage'         => ['potential' => 'sales_stage'],
-        'Amount'              => ['potential' => 'amount'],
+        'Potential' => ['potential' => 'potentialname'],
+        'Organization Name' => ['potential' => 'related_to'],
+        'Contact Name' => ['potential' => 'contact_id'],
+        'Sales Stage' => ['potential' => 'sales_stage'],
+        'Amount' => ['potential' => 'amount'],
         'Expected Close Date' => ['potential' => 'closingdate'],
-        'Assigned To'         => ['crmentity', 'assigned_user_id'],
+        'Assigned To' => ['crmentity', 'assigned_user_id'],
     ];
 
     public $list_fields_name = [
-        'Potential'           => 'potentialname',
-        'Organization Name'   => 'related_to',
-        'Contact Name'        => 'contact_id',
-        'Sales Stage'         => 'sales_stage',
-        'Amount'              => 'amount',
+        'Potential' => 'potentialname',
+        'Organization Name' => 'related_to',
+        'Contact Name' => 'contact_id',
+        'Sales Stage' => 'sales_stage',
+        'Amount' => 'amount',
         'Expected Close Date' => 'closingdate',
-        'Assigned To'         => 'assigned_user_id',
+        'Assigned To' => 'assigned_user_id',
     ];
 
     public $list_link_field = 'potentialname';
 
     public $search_fields = [
-        'Potential'           => ['potential' => 'potentialname'],
-        'Related To'          => ['potential' => 'related_to'],
+        'Potential' => ['potential' => 'potentialname'],
+        'Related To' => ['potential' => 'related_to'],
         'Expected Close Date' => ['potential' => 'closedate'],
     ];
 
     public $search_fields_name = [
-        'Potential'           => 'potentialname',
-        'Related To'          => 'related_to',
+        'Potential' => 'potentialname',
+        'Related To' => 'related_to',
         'Expected Close Date' => 'closingdate',
     ];
 
@@ -157,7 +156,7 @@ class Potentials extends CRMEntity
         $userNameSql = getSqlForNameInDisplayFormat([
             'first_name' =>
                 'vtiger_users.first_name',
-            'last_name'  => 'vtiger_users.last_name'
+            'last_name' => 'vtiger_users.last_name'
         ], 'Users');
         $query = "SELECT $fields_list,case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
 				FROM vtiger_potential
@@ -199,20 +198,20 @@ class Potentials extends CRMEntity
 
         $rel_table_arr = [
             'Attachments' => 'vtiger_seattachmentsrel',
-            'Quotes'      => 'vtiger_quotes',
-            'SalesOrder'  => 'vtiger_salesorder',
+            'Quotes' => 'vtiger_quotes',
+            'SalesOrder' => 'vtiger_salesorder',
         ];
 
         $tbl_field_arr = [
             'vtiger_seattachmentsrel' => 'attachmentsid',
-            'vtiger_quotes'           => 'quoteid',
-            'vtiger_salesorder'       => 'salesorderid',
+            'vtiger_quotes' => 'quoteid',
+            'vtiger_salesorder' => 'salesorderid',
         ];
 
         $entity_tbl_field_arr = [
             'vtiger_seattachmentsrel' => 'crmid',
-            'vtiger_quotes'           => 'potential_id',
-            'vtiger_salesorder'       => 'potential_id',
+            'vtiger_quotes' => 'potential_id',
+            'vtiger_salesorder' => 'potential_id',
         ];
 
         foreach ($transferEntityIds as $transferId) {
@@ -241,59 +240,11 @@ class Potentials extends CRMEntity
         $log->debug("Exiting transferRelatedRecords...");
     }
 
-    /*
-     * Function to get the secondary query part of a report
-     * @param - $module primary module name
-     * @param - $secmodule secondary module name
-     * returns the query string formed on fetching the related data for report for secondary module
-     */
-    function generateReportsSecQuery($module, $secmodule, $queryPlanner)
+    public function save_module(string $module)
     {
-        $matrix = $queryPlanner->newDependencyMatrix();
-        $matrix->setDependency('vtiger_crmentityPotentials', ['vtiger_groupsPotentials', 'vtiger_usersPotentials', 'vtiger_lastModifiedByPotentials']);
-
-        if (!$queryPlanner->requireTable("vtiger_potential", $matrix)) {
-            return '';
+        if (!empty($this->column_fields['contact_id']) && !empty($this->id)) {
+            $this->save_related_module('Potentials', $this->id, 'Contacts', $this->column_fields['contact_id']);
         }
-        $matrix->setDependency(
-            'vtiger_potential',
-            ['vtiger_crmentityPotentials', 'vtiger_accountPotentials', 'vtiger_contactdetailsPotentials', 'vtiger_campaignPotentials', 'vtiger_potentialscf']
-        );
-
-        $query = $this->getRelationQuery($module, $secmodule, "vtiger_potential", "potentialid", $queryPlanner);
-
-        if ($queryPlanner->requireTable("vtiger_crmentityPotentials", $matrix)) {
-            $query .= " left join vtiger_crmentity as vtiger_crmentityPotentials on vtiger_crmentityPotentials.crmid=vtiger_potential.potentialid and vtiger_crmentityPotentials.deleted=0";
-        }
-        if ($queryPlanner->requireTable("vtiger_accountPotentials")) {
-            $query .= " left join vtiger_account as vtiger_accountPotentials on vtiger_potential.related_to = vtiger_accountPotentials.accountid";
-        }
-        if ($queryPlanner->requireTable("vtiger_contactdetailsPotentials")) {
-            $query .= " left join vtiger_contactdetails as vtiger_contactdetailsPotentials on vtiger_potential.contact_id = vtiger_contactdetailsPotentials.contactid";
-        }
-        if ($queryPlanner->requireTable("vtiger_potentialscf")) {
-            $query .= " left join vtiger_potentialscf on vtiger_potentialscf.potentialid = vtiger_potential.potentialid";
-        }
-        if ($queryPlanner->requireTable("vtiger_groupsPotentials")) {
-            $query .= " left join vtiger_groups vtiger_groupsPotentials on vtiger_groupsPotentials.groupid = vtiger_crmentityPotentials.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_usersPotentials")) {
-            $query .= " left join vtiger_users as vtiger_usersPotentials on vtiger_usersPotentials.id = vtiger_crmentityPotentials.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_campaignPotentials")) {
-            $query .= " left join vtiger_campaign as vtiger_campaignPotentials on vtiger_potential.campaignid = vtiger_campaignPotentials.campaignid";
-        }
-        if ($queryPlanner->requireTable("vtiger_lastModifiedByPotentials")) {
-            $query .= " left join vtiger_users as vtiger_lastModifiedByPotentials on vtiger_lastModifiedByPotentials.id = vtiger_crmentityPotentials.modifiedby ";
-        }
-        if ($queryPlanner->requireTable("vtiger_createdbyPotentials")) {
-            $query .= " left join vtiger_users as vtiger_createdbyPotentials on vtiger_createdbyPotentials.id = vtiger_crmentityPotentials.creator_user_id ";
-        }
-
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
     }
 
     /*
@@ -301,13 +252,13 @@ class Potentials extends CRMEntity
      * @param - $secmodule secondary module name
      * returns the array with table names and fieldnames storing relations between module and this module
      */
-    function setRelationTables($secmodule)
+    public function setRelationTables($secmodule)
     {
         $rel_tables = [
-            "Quotes"     => ["vtiger_quotes" => ["potential_id", "quoteid"], "vtiger_potential" => "potentialid"],
-            "SalesOrder" => ["vtiger_salesorder" => ["potential_id", "salesorderid"], "vtiger_potential" => "potentialid"],
-            "Accounts"   => ["vtiger_potential" => ["potentialid", "related_to"]],
-            "Contacts"   => ["vtiger_potential" => ["potentialid", "contact_id"]],
+            'Quotes' => ['vtiger_quotes' => ['potential_id', 'quoteid'], 'vtiger_potential' => 'potentialid'],
+            'SalesOrder' => ['vtiger_salesorder' => ['potential_id', 'salesorderid'], 'vtiger_potential' => 'potentialid'],
+            'Accounts' => ['vtiger_potential' => ['potentialid', 'related_to']],
+            'Contacts' => ['vtiger_potential' => ['potentialid', 'contact_id']],
         ];
 
         return $rel_tables[$secmodule];

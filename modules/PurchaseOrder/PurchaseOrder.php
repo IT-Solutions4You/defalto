@@ -132,83 +132,6 @@ class PurchaseOrder extends CRMEntity
     }
 
     /*
-     * Function to get the secondary query part of a report
-     * @param - $module primary module name
-     * @param - $secmodule secondary module name
-     * returns the query string formed on fetching the related data for report for secondary module
-     */
-    public function generateReportsSecQuery($module, $secmodule, $queryPlanner)
-    {
-        $matrix = $queryPlanner->newDependencyMatrix();
-        $matrix->setDependency('vtiger_crmentityPurchaseOrder', ['vtiger_usersPurchaseOrder', 'vtiger_groupsPurchaseOrder', 'vtiger_lastModifiedByPurchaseOrder']);
-
-        if (!$queryPlanner->requireTable('vtiger_purchaseorder', $matrix)) {
-            return '';
-        }
-
-        $matrix->setDependency('vtiger_purchaseorder', [
-            'vtiger_crmentityPurchaseOrder',
-            'vtiger_currency_info' . $secmodule,
-            'vtiger_purchaseordercf',
-            'vtiger_vendorRelPurchaseOrder',
-            'vtiger_pobillads',
-            'vtiger_poshipads',
-            'vtiger_contactdetailsPurchaseOrder'
-        ]);
-
-        $query = $this->getRelationQuery($module, $secmodule, 'vtiger_purchaseorder', 'purchaseorderid', $queryPlanner);
-
-        if ($queryPlanner->requireTable('vtiger_crmentityPurchaseOrder', $matrix)) {
-            $query .= ' left join vtiger_crmentity as vtiger_crmentityPurchaseOrder on vtiger_crmentityPurchaseOrder.crmid=vtiger_purchaseorder.purchaseorderid and vtiger_crmentityPurchaseOrder.deleted=0';
-        }
-
-        if ($queryPlanner->requireTable('vtiger_purchaseordercf')) {
-            $query .= ' left join vtiger_purchaseordercf on vtiger_purchaseorder.purchaseorderid = vtiger_purchaseordercf.purchaseorderid';
-        }
-
-        if ($queryPlanner->requireTable('vtiger_pobillads')) {
-            $query .= ' left join vtiger_pobillads on vtiger_purchaseorder.purchaseorderid=vtiger_pobillads.pobilladdressid';
-        }
-
-        if ($queryPlanner->requireTable('vtiger_poshipads')) {
-            $query .= ' left join vtiger_poshipads on vtiger_purchaseorder.purchaseorderid=vtiger_poshipads.poshipaddressid';
-        }
-
-        if ($queryPlanner->requireTable('vtiger_currency_info' . $secmodule)) {
-            $query .= ' left join vtiger_currency_info as vtiger_currency_info' . $secmodule . ' on vtiger_currency_info' . $secmodule . '.id = vtiger_purchaseorder.currency_id';
-        }
-
-        if ($queryPlanner->requireTable('vtiger_usersPurchaseOrder')) {
-            $query .= ' left join vtiger_users as vtiger_usersPurchaseOrder on vtiger_usersPurchaseOrder.id = vtiger_crmentityPurchaseOrder.assigned_user_id';
-        }
-
-        if ($queryPlanner->requireTable('vtiger_groupsPurchaseOrder')) {
-            $query .= ' left join vtiger_groups as vtiger_groupsPurchaseOrder on vtiger_groupsPurchaseOrder.groupid = vtiger_crmentityPurchaseOrder.assigned_user_id';
-        }
-
-        if ($queryPlanner->requireTable('vtiger_vendorRelPurchaseOrder')) {
-            $query .= ' left join vtiger_vendor as vtiger_vendorRelPurchaseOrder on vtiger_vendorRelPurchaseOrder.vendorid = vtiger_purchaseorder.vendor_id';
-        }
-
-        if ($queryPlanner->requireTable('vtiger_contactdetailsPurchaseOrder')) {
-            $query .= ' left join vtiger_contactdetails as vtiger_contactdetailsPurchaseOrder on vtiger_contactdetailsPurchaseOrder.contactid = vtiger_purchaseorder.contact_id';
-        }
-
-        if ($queryPlanner->requireTable('vtiger_lastModifiedByPurchaseOrder')) {
-            $query .= ' left join vtiger_users as vtiger_lastModifiedByPurchaseOrder on vtiger_lastModifiedByPurchaseOrder.id = vtiger_crmentityPurchaseOrder.modifiedby ';
-        }
-
-        if ($queryPlanner->requireTable('vtiger_createdbyPurchaseOrder')) {
-            $query .= ' left join vtiger_users as vtiger_createdbyPurchaseOrder on vtiger_createdbyPurchaseOrder.id = vtiger_crmentityPurchaseOrder.creator_user_id ';
-        }
-
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
-    }
-
-    /*
      * Function to get the relation tables for related modules
      * @param - $secmodule secondary module name
      * returns the array with table names and fieldnames storing relations between module and this module
@@ -216,7 +139,6 @@ class PurchaseOrder extends CRMEntity
     public function setRelationTables($secmodule)
     {
         $rel_tables = [
-            'Documents' => ['vtiger_senotesrel' => ['crmid', 'notesid'], 'vtiger_purchaseorder' => 'purchaseorderid'],
             'Contacts'  => ['vtiger_purchaseorder' => ['purchaseorderid', 'contact_id']],
         ];
 

@@ -132,15 +132,6 @@ class ModCommentsCore extends CRMEntity
     }
 
     /**
-     * Return query to use based on given modulename, fieldname
-     * Useful to handle specific case handling for Popup
-     */
-    function getQueryByModuleField($module, $fieldname, $srcrecord)
-    {
-        // $srcrecord could be empty
-    }
-
-    /**
      * Get list view query (send more WHERE clause condition if required)
      */
     function getListQuery($module, $usewhere = false)
@@ -371,50 +362,6 @@ class ModCommentsCore extends CRMEntity
         return $query;
     }
 
-    /*
-     * Function to get the secondary query part of a report
-     * @param - $module primary module name
-     * @param - $secmodule secondary module name
-     * returns the query string formed on fetching the related data for report for secondary module
-     */
-    function generateReportsSecQuery($module, $secmodule, $queryPlanner)
-    {
-        $matrix = $queryPlanner->newDependencyMatrix();
-
-        $matrix->setDependency(
-            'vtiger_crmentityModComments',
-            ['vtiger_groupsModComments', 'vtiger_usersModComments', 'vtiger_contactdetailsRelModComments', 'vtiger_modcommentsRelModComments']
-        );
-
-        if (!$queryPlanner->requireTable("vtiger_modcomments", $matrix)) {
-            return '';
-        }
-        $matrix->setDependency('vtiger_modcomments', ['vtiger_crmentityModComments']);
-
-        $query = $this->getRelationQuery($module, $secmodule, "vtiger_modcomments", "modcommentsid", $queryPlanner);
-
-        if ($queryPlanner->requireTable("vtiger_crmentityModComments", $matrix)) {
-            $query .= " left join vtiger_crmentity as vtiger_crmentityModComments on vtiger_crmentityModComments.crmid=vtiger_modcomments.modcommentsid and vtiger_crmentityModComments.deleted=0";
-        }
-        if ($queryPlanner->requireTable("vtiger_groupsModComments")) {
-            $query .= " left join vtiger_groups vtiger_groupsModComments on vtiger_groupsModComments.groupid = vtiger_crmentityModComments.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_usersModComments")) {
-            $query .= " left join vtiger_users as vtiger_usersModComments on vtiger_usersModComments.id = vtiger_crmentityModComments.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_contactdetailsRelModComments")) {
-            $query .= " left join vtiger_contactdetails as vtiger_contactdetailsRelModComments on vtiger_contactdetailsRelModComments.contactid = vtiger_crmentityModComments.crmid";
-        }
-        if ($queryPlanner->requireTable("vtiger_modcommentsRelModComments")) {
-            $query .= " left join vtiger_modcomments as vtiger_modcommentsRelModComments on vtiger_modcommentsRelModComments.modcommentsid = vtiger_crmentityModComments.crmid";
-        }
-
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
-    }
-
     /**
      * Invoked when special actions are performed on the module.
      *
@@ -437,32 +384,4 @@ class ModCommentsCore extends CRMEntity
             // TODO Handle actions after this module is updated.
         }
     }
-
-    /**
-     * Handle saving related module information.
-     * NOTE: This function has been added to CRMEntity (base class).
-     * You can override the behavior by re-defining it here.
-     */
-    // function save_related_module($module, $crmid, $with_module, $with_crmid) { }
-
-    /**
-     * Handle deleting related module information.
-     * NOTE: This function has been added to CRMEntity (base class).
-     * You can override the behavior by re-defining it here.
-     */
-    //function delete_related_module($module, $crmid, $with_module, $with_crmid) { }
-
-    /**
-     * Handle getting related list information.
-     * NOTE: This function has been added to CRMEntity (base class).
-     * You can override the behavior by re-defining it here.
-     */
-    //function get_related_list($id, $cur_tab_id, $rel_tab_id, $actions=false) { }
-
-    /**
-     * Handle getting dependents list information.
-     * NOTE: This function has been added to CRMEntity (base class).
-     * You can override the behavior by re-defining it here.
-     */
-    //function get_dependents_list($id, $cur_tab_id, $rel_tab_id, $actions=false) { }
 }

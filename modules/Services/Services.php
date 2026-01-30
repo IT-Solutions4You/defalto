@@ -15,7 +15,6 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
 class Services extends CRMEntity
 {
     use Core_UnitPrice_Trait;
@@ -138,7 +137,7 @@ class Services extends CRMEntity
     /**    function to save the service tax information in vtiger_servicetaxrel table
      *
      * @param string $tablename - vtiger_tablename to save the service tax relationship (servicetaxrel)
-     * @param string $module    - current module name
+     * @param string $module - current module name
      *                          $return void
      */
     function insertTaxInformation($tablename, $module)
@@ -193,7 +192,7 @@ class Services extends CRMEntity
     /**    function to save the service price information in vtiger_servicecurrencyrel table
      *
      * @param string $tablename - vtiger_tablename to save the service currency relationship (servicecurrencyrel)
-     * @param string $module    - current module name
+     * @param string $module - current module name
      *                          $return void
      */
 
@@ -207,15 +206,6 @@ class Services extends CRMEntity
         $query = "update vtiger_productcurrencyrel set actual_price=? where productid=? and currencyid=?";
         $params = [$prod_unit_price, $this->id, $prod_base_currency];
         $this->db->pquery($query, $params);
-    }
-
-    /**
-     * Return query to use based on given modulename, fieldname
-     * Useful to handle specific case handling for Popup
-     */
-    function getQueryByModuleField($module, $fieldname, $srcrecord)
-    {
-        // $srcrecord could be empty
     }
 
     /**
@@ -449,8 +439,8 @@ class Services extends CRMEntity
 
     /**    Function to display the Services which are related to the PriceBook
      *
-     * @param string $query     - query to get the list of products which are related to the current PriceBook
-     * @param object $focus     - PriceBook object which contains all the information of the current PriceBook
+     * @param string $query - query to get the list of products which are related to the current PriceBook
+     * @param object $focus - PriceBook object which contains all the information of the current PriceBook
      * @param string $returnset - return_module, return_action and return_id which are sequenced with & to pass to the URL which is optional
      *                          return array $return_data which will be formed like array('header'=>$header,'entries'=>$entries_list) where as $header contains all the header columns and $entries_list will contain all the Service entries
      */
@@ -635,81 +625,26 @@ class Services extends CRMEntity
     }
 
     /*
-     * Function to get the secondary query part of a report
-     * @param - $module primary module name
-     * @param - $secmodule secondary module name
-     * returns the query string formed on fetching the related data for report for secondary module
-     */
-    function generateReportsSecQuery($module, $secmodule, $queryPlanner)
-    {
-        global $current_user;
-        $matrix = $queryPlanner->newDependencyMatrix();
-        $matrix->setDependency('vtiger_crmentityServices', ['vtiger_usersServices', 'vtiger_groupsServices', 'vtiger_lastModifiedByServices']);
-        if (!$queryPlanner->requireTable("vtiger_service", $matrix)) {
-            return '';
-        }
-        $matrix->setDependency('vtiger_service', ['actual_unit_price', 'vtiger_currency_info', 'vtiger_productcurrencyrel', 'vtiger_servicecf', 'vtiger_crmentityServices']);
-
-        $query = $this->getRelationQuery($module, $secmodule, "vtiger_service", "serviceid", $queryPlanner);
-        if ($queryPlanner->requireTable("innerService")) {
-            $query .= " LEFT JOIN (
-			SELECT vtiger_service.serviceid,
-			(CASE WHEN (vtiger_service.currency_id = " . $current_user->currency_id . " ) THEN vtiger_service.unit_price
-			WHEN (vtiger_productcurrencyrel.actual_price IS NOT NULL) THEN vtiger_productcurrencyrel.actual_price
-			ELSE (vtiger_service.unit_price / vtiger_currency_info.conversion_rate) * " . $current_user->conv_rate . " END
-			) AS actual_unit_price FROM vtiger_service
-			LEFT JOIN vtiger_currency_info ON vtiger_service.currency_id = vtiger_currency_info.id
-			LEFT JOIN vtiger_productcurrencyrel ON vtiger_service.serviceid = vtiger_productcurrencyrel.productid
-			AND vtiger_productcurrencyrel.currencyid = " . $current_user->currency_id . ")
-			AS innerService ON innerService.serviceid = vtiger_service.serviceid";
-        }
-        if ($queryPlanner->requireTable("vtiger_crmentityServices", $matrix)) {
-            $query .= " left join vtiger_crmentity as vtiger_crmentityServices on vtiger_crmentityServices.crmid=vtiger_service.serviceid and vtiger_crmentityServices.deleted=0";
-        }
-        if ($queryPlanner->requireTable("vtiger_servicecf")) {
-            $query .= " left join vtiger_servicecf on vtiger_service.serviceid = vtiger_servicecf.serviceid";
-        }
-        if ($queryPlanner->requireTable("vtiger_usersServices")) {
-            $query .= " left join vtiger_users as vtiger_usersServices on vtiger_usersServices.id = vtiger_crmentityServices.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_groupsServices")) {
-            $query .= " left join vtiger_groups as vtiger_groupsServices on vtiger_groupsServices.groupid = vtiger_crmentityServices.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_lastModifiedByServices")) {
-            $query .= " left join vtiger_users as vtiger_lastModifiedByServices on vtiger_lastModifiedByServices.id = vtiger_crmentityServices.modifiedby ";
-        }
-        if ($queryPlanner->requireTable("vtiger_createdbyServices")) {
-            $query .= " left join vtiger_users as vtiger_createdbyServices on vtiger_createdbyServices.id = vtiger_crmentityServices.creator_user_id ";
-        }
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
-    }
-
-    /*
      * Function to get the relation tables for related modules
      * @param - $secmodule secondary module name
      * returns the array with table names and fieldnames storing relations between module and this module
      */
-    function setRelationTables($secmodule)
+    public function setRelationTables($secmodule)
     {
         $rel_tables = [
-            "Quotes"        => ["df_inventoryitem" => ["productid", "inventoryitemid"], "vtiger_service" => "serviceid"],
-            "PurchaseOrder" => ["df_inventoryitem" => ["productid", "inventoryitemid"], "vtiger_service" => "serviceid"],
-            "SalesOrder"    => ["df_inventoryitem" => ["productid", "inventoryitemid"], "vtiger_service" => "serviceid"],
-            "Invoice"       => ["df_inventoryitem" => ["productid", "inventoryitemid"], "vtiger_service" => "serviceid"],
-            "PriceBooks"    => ["vtiger_pricebookproductrel" => ["productid", "pricebookid"], "vtiger_service" => "serviceid"],
-            "Documents"     => ["vtiger_senotesrel" => ["crmid", "notesid"], "vtiger_service" => "serviceid"],
+            'Quotes' => ['df_inventoryitem' => ['productid', 'inventoryitemid'], 'vtiger_service' => 'serviceid'],
+            'PurchaseOrder' => ['df_inventoryitem' => ['productid', 'inventoryitemid'], 'vtiger_service' => 'serviceid'],
+            'SalesOrder' => ['df_inventoryitem' => ['productid', 'inventoryitemid'], 'vtiger_service' => 'serviceid'],
+            'Invoice' => ['df_inventoryitem' => ['productid', 'inventoryitemid'], 'vtiger_service' => 'serviceid'],
+            'PriceBooks' => ['vtiger_pricebookproductrel' => ['productid', 'pricebookid'], 'vtiger_service' => 'serviceid'],
         ];
 
         return $rel_tables[$secmodule];
     }
 
     // Function to unlink all the dependent entities of the given Entity by Id
-    function unlinkDependencies($module, $id)
+    public function unlinkDependencies($module, $id)
     {
-        global $log;
         $this->db->pquery('DELETE from vtiger_seproductsrel WHERE productid=? or crmid=?', [$id, $id]);
 
         parent::unlinkDependencies($module, $id);
