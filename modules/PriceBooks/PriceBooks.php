@@ -15,7 +15,6 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
 class PriceBooks extends CRMEntity
 {
     public string $moduleName = 'PriceBooks';
@@ -34,12 +33,12 @@ class PriceBooks extends CRMEntity
     // This is the list of fields that are in the lists.
     public $list_fields = [
         'Price Book Name' => ['pricebook' => 'bookname'],
-        'Active'          => ['pricebook' => 'active'],
+        'Active' => ['pricebook' => 'active'],
     ];
 
     public $list_fields_name = [
         'Price Book Name' => 'bookname',
-        'Active'          => 'active',
+        'Active' => 'active',
     ];
     public $list_link_field = 'bookname';
 
@@ -267,58 +266,15 @@ class PriceBooks extends CRMEntity
     }
 
     /*
-     * Function to get the secondary query part of a report
-     * @param - $module primary module name
-     * @param - $secmodule secondary module name
-     * returns the query string formed on fetching the related data for report for secondary module
-     */
-    function generateReportsSecQuery($module, $secmodule, $queryPlanner)
-    {
-        $matrix = $queryPlanner->newDependencyMatrix();
-
-        $matrix->setDependency("vtiger_crmentityPriceBooks", ["vtiger_usersPriceBooks", "vtiger_groupsPriceBooks"]);
-        if (!$queryPlanner->requireTable('vtiger_pricebook', $matrix)) {
-            return '';
-        }
-        $matrix->setDependency("vtiger_pricebook", ["vtiger_crmentityPriceBooks", "vtiger_currency_infoPriceBooks"]);
-
-        $query = $this->getRelationQuery($module, $secmodule, "vtiger_pricebook", "pricebookid", $queryPlanner);
-        // TODO Support query planner
-        if ($queryPlanner->requireTable("vtiger_crmentityPriceBooks", $matrix)) {
-            $query .= " left join vtiger_crmentity as vtiger_crmentityPriceBooks on vtiger_crmentityPriceBooks.crmid=vtiger_pricebook.pricebookid and vtiger_crmentityPriceBooks.deleted=0";
-        }
-        if ($queryPlanner->requireTable("vtiger_currency_infoPriceBooks")) {
-            $query .= " left join vtiger_currency_info as vtiger_currency_infoPriceBooks on vtiger_currency_infoPriceBooks.id = vtiger_pricebook.currency_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_usersPriceBooks")) {
-            $query .= " left join vtiger_users as vtiger_usersPriceBooks on vtiger_usersPriceBooks.id = vtiger_crmentityPriceBooks.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_groupsPriceBooks")) {
-            $query .= " left join vtiger_groups as vtiger_groupsPriceBooks on vtiger_groupsPriceBooks.groupid = vtiger_crmentityPriceBooks.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_lastModifiedByPriceBooks")) {
-            $query .= " left join vtiger_users as vtiger_lastModifiedByPriceBooks on vtiger_lastModifiedByPriceBooks.id = vtiger_crmentityPriceBooks.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_createdbyPriceBooks")) {
-            $query .= " left join vtiger_users as vtiger_createdbyPriceBooks on vtiger_createdbyPriceBooks.id = vtiger_crmentityPriceBooks.creator_user_id ";
-        }
-
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
-    }
-
-    /*
      * Function to get the relation tables for related modules
      * @param - $secmodule secondary module name
      * returns the array with table names and fieldnames storing relations between module and this module
      */
-    function setRelationTables($secmodule)
+    public function setRelationTables($secmodule)
     {
         $rel_tables = [
-            "Products" => ["vtiger_pricebookproductrel" => ["pricebookid", "productid"], "vtiger_pricebook" => "pricebookid"],
-            "Services" => ["vtiger_pricebookproductrel" => ["pricebookid", "productid"], "vtiger_pricebook" => "pricebookid"],
+            'Products' => ['vtiger_pricebookproductrel' => ['pricebookid', 'productid'], 'vtiger_pricebook' => 'pricebookid'],
+            'Services' => ['vtiger_pricebookproductrel' => ['pricebookid', 'productid'], 'vtiger_pricebook' => 'pricebookid'],
         ];
 
         return $rel_tables[$secmodule];

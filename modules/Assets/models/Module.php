@@ -25,15 +25,7 @@ class Assets_Module_Model extends Vtiger_Module_Model
             $db = PearDatabase::getInstance();
             $condition = $db->convert2Sql($condition, [$record, $record]);
 
-            $pos = stripos($listQuery, 'where');
-            if ($pos) {
-                $split = preg_split('/where/i', $listQuery);
-                $overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
-            } else {
-                $overRideQuery = $listQuery . ' WHERE ' . $condition;
-            }
-
-            return $overRideQuery;
+            return $this->addConditionToQuery($listQuery, $condition);
         }
     }
 

@@ -48,4 +48,6 @@ $languageStrings = [
     'LBL_THIS'                                                                   => 'Это',
     'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM'          => 'будет удален из системы.просьба удалить или заменить этот пункт',
     'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Эта позиция удаляется из системы,пожалуйста, удалите эту строку элементов',
+    'Create Proforma Invoice' => 'Create Proforma Invoice',
+    'Create Final Invoice'    => 'Create Final Invoice',
 ];

@@ -16,7 +16,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Vtiger_Relation_Model extends Vtiger_Base_Model
+class Vtiger_Relation_Model extends Core_Relation_Model
 {
     protected $parentModule = false;
     protected $relatedModule = false;
@@ -384,6 +384,6 @@ class Vtiger_Relation_Model extends Vtiger_Base_Model
      */
     public function isUnlinkable(): bool
     {
-        return in_array($this->get('name'), ['get_attachments', 'get_related_list']);
+        return 'get_related_list' === $this->get('name');
     }
 }

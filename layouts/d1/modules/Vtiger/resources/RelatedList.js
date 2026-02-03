@@ -95,6 +95,7 @@ jQuery.Class("Vtiger_RelatedList_Js", {
         params['view'] = "Detail";
         params['module'] = this.parentModuleName;
         params['record'] = this.getParentId(),
+            params['relationId'] = $('.tab-item.active').data('relationId'),
             params['relatedModule'] = this.relatedModulename,
             params['sortorder'] = this.getSortOrder(),
             params['orderby'] = this.getOrderBy(),
@@ -121,7 +122,7 @@ jQuery.Class("Vtiger_RelatedList_Js", {
 
         app.event.trigger('pre.relatedListLoad.click');
 
-        app.request.get({data: completeParams}).then(
+        app.request.post({data: completeParams}).then(
             function (error, responseData) {
                 app.helper.hideProgress();
                 thisInstance.relatedTabsContainer.find('li').removeClass('active');

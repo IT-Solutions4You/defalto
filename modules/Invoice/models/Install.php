@@ -11,27 +11,24 @@
 class Invoice_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
-        ['Invoice', 'Assets', 'Assets', 'ADD', 'get_dependents_list', '',],
-        ['Invoice', 'Appointments', 'Appointments', '', 'get_related_list', '',],
-        ['Invoice', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
-        ['Invoice', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
-
-        ['Accounts', 'Invoice', 'Invoice', 'add', 'get_invoices', '',],
-        ['Contacts', 'Invoice', 'Invoice', 'add', 'get_invoices', '',],
-        ['Services', 'Invoice', 'Invoice', 'ADD', 'get_invoices', '',],
-        ['Potentials', 'Invoice', 'Invoice', 'ADD', 'get_dependents_list', '',],
-        ['Documents', 'Invoice', 'Invoice', '', 'get_related_list', '',],
-        ['Products', 'Invoice', 'Invoice', 'ADD', 'get_invoices', '',],
-        ['Documents', 'Invoice', 'Invoice', '', 'get_related_list', '',],
-        ['SalesOrder', 'Invoice', 'Invoice', '', 'get_invoices', '',],
+        ['Invoice', 'Assets', 'Assets', 'ADD', 'get_dependents_list', 'invoiceid',],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
+    /**
+     * @throws Exception
+     */
     public function addCustomLinks(): void
     {
         $this->updateToStandardModule();
         $this->updateRelatedList();
     }
 
+    /**
+     * @throws Exception
+     */
     public function deleteCustomLinks(): void
     {
         $this->updateRelatedList(false);
@@ -109,7 +106,7 @@ class Invoice_Install_Model extends Core_Install_Model
                 ],
                 'contact_id' => [
                     'name' => 'contact_id',
-                    'uitype' => 57,
+                    'uitype' => 10,
                     'column' => 'contact_id',
                     'table' => 'vtiger_invoice',
                     'label' => 'Contact Name',
@@ -122,6 +119,7 @@ class Invoice_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 1,
                     'headerfield' => 0,
+                    'related_modules' => ['Contacts'],
                 ],
                 'invoicestatus' => [
                     'name' => 'invoicestatus',
@@ -597,7 +595,7 @@ class Invoice_Install_Model extends Core_Install_Model
                 ],
                 'invoice_type' => [
                     'name' => 'invoice_type',
-                    'uitype' => 1,
+                    'uitype' => 16,
                     'column' => 'invoice_type',
                     'table' => 'vtiger_invoice',
                     'label' => 'Invoice Type',
@@ -610,6 +608,9 @@ class Invoice_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 0,
                     'ajaxeditable' => 0,
+                    'picklist_values' => [
+                        'Invoice',
+                    ],
                     'defaultvalue' => 'Invoice',
                 ],
             ]

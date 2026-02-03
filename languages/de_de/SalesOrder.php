@@ -74,6 +74,8 @@ $languageStrings = [
     'Net 60 days' => 'Net 60 days',
     'Net 90 days' => 'Net 90 days',
     'Next Invoice Date' => 'Next Invoice Date',
+    'Create Proforma Invoice' => 'Proformarechnung erstellen',
+    'Create Final Invoice' => 'Schlussrechnung erstellen',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Bitte entfernen Sie die gelöschte Position',

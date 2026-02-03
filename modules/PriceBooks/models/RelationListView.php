@@ -26,15 +26,23 @@ class PriceBooks_RelationListView_Model extends Vtiger_RelationListView_Model
             return $headerFields;
         }
 
-        //Added to support List Price
-        $field = new Vtiger_Field_Model();
-        $field->set('name', 'listprice');
-        $field->set('column', 'listprice');
-        $field->set('label', 'List Price');
-        $field->set('uitype', '71');
-        $headerFields['listprice'] = $field;
+        $newHeaderFields = [];
 
-        return $headerFields;
+        foreach ($headerFields as $headerField) {
+            $newHeaderFields[$headerField->getName()] = $headerField;
+
+            if (1 === count($newHeaderFields)) {
+                //Added to support List Price
+                $field = new Vtiger_Field_Model();
+                $field->set('name', 'listprice');
+                $field->set('column', 'listprice');
+                $field->set('label', 'List Price');
+                $field->set('uitype', '71');
+                $newHeaderFields['listprice'] = $field;
+            }
+        }
+
+        return $newHeaderFields;
     }
 
     public function getEntries($pagingModel)

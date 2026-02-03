@@ -12,24 +12,6 @@ class Documents_Install_Model extends Core_Install_Model
 {
 
     public array $registerRelatedLists = [
-        ['Accounts', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['Leads', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['Contacts', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['Potentials', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['Products', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['HelpDesk', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['Quotes', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['PurchaseOrder', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['SalesOrder', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['Invoice', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['Faq', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['ServiceContracts', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
-        ['Services', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
-        ['Assets', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
-        ['ProjectTask', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
-        ['Project', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
-        ['ITS4YouEmails', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
-
         ['Documents', 'Contacts', 'Contacts', '', 'get_related_list', '',],
         ['Documents', 'Accounts', 'Accounts', '', 'get_related_list', '',],
         ['Documents', 'Potentials', 'Potentials', '', 'get_related_list', '',],
@@ -45,8 +27,8 @@ class Documents_Install_Model extends Core_Install_Model
         ['Documents', 'PurchaseOrder', 'PurchaseOrder', '', 'get_related_list', '',],
         ['Documents', 'HelpDesk', 'HelpDesk', '', 'get_related_list', '',],
         ['Documents', 'Faq', 'Faq', '', 'get_related_list', '',],
-        ['Documents', 'Appointments', 'Appointments', '', 'get_related_list', '',],
-        ['Documents', 'ITS4YouEmails', 'ITS4YouEmails', '', 'get_related_list', '',],
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
     public function addCustomLinks(): void
@@ -300,7 +282,6 @@ class Documents_Install_Model extends Core_Install_Model
         return [
             'vtiger_notes',
             'vtiger_notescf',
-            'vtiger_senotesrel',
         ];
     }
 
@@ -335,15 +316,6 @@ class Documents_Install_Model extends Core_Install_Model
             ->createTable('notesid')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`notesid`)')
             ->createKey('CONSTRAINT `fk_notesid_vtiger_notescf` FOREIGN KEY IF NOT EXISTS (`notesid`) REFERENCES `vtiger_notes` (`notesid`) ON DELETE CASCADE');
-
-        $this->getTable('vtiger_senotesrel', null)
-            ->createTable('crmid', 'int(19) NOT NULL DEFAULT 0')
-            ->createColumn('notesid', 'int(19) NOT NULL DEFAULT 0')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`crmid`,`notesid`)')
-            ->createKey('KEY IF NOT EXISTS `senotesrel_notesid_idx` (`notesid`)')
-            ->createKey('KEY IF NOT EXISTS `senotesrel_crmid_idx` (`crmid`)')
-            ->createKey('CONSTRAINT `fk1_crmid` FOREIGN KEY IF NOT EXISTS (`crmid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
-            ->createKey('CONSTRAINT `fk_2_vtiger_senotesrel` FOREIGN KEY IF NOT EXISTS (`notesid`) REFERENCES `vtiger_notes` (`notesid`) ON DELETE CASCADE');
     }
 
     public function migrate()
@@ -354,5 +326,28 @@ class Documents_Install_Model extends Core_Install_Model
         ];
 
         CustomView_Record_Model::updateColumnNames($moduleName, $fields);
+
+        $this->migrateRelationDocuments();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrateRelationDocuments(): void
+    {
+        $db = $this->getDB();
+
+        if (!$db->tableExists('vtiger_senotesrel')) {
+            return;
+        }
+
+        $result = $db->pquery('SELECT * FROM vtiger_senotesrel');
+
+        while ($row = $db->fetch_array($result)) {
+            $moduleName = getSalesEntityType($row['crmid']);
+            Core_Relation_Model::saveEntityRelation($row['crmid'], $moduleName, $row['notesid'], 'Documents');
+        }
+
+        $db->pquery('DROP TABLE vtiger_senotesrel');
     }
 }

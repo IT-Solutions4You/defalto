@@ -102,15 +102,6 @@ class ProjectMilestone extends CRMEntity
     var $mandatory_fields = ['createdtime', 'modifiedtime', 'projectmilestonename', 'projectid', 'assigned_user_id'];
 
     /**
-     * Return query to use based on given modulename, fieldname
-     * Useful to handle specific case handling for Popup
-     */
-    function getQueryByModuleField($module, $fieldname, $srcrecord)
-    {
-        // $srcrecord could be empty
-    }
-
-    /**
      * Get list view query (send more WHERE clause condition if required)
      */
     function getListQuery($module, $where = '')
@@ -342,75 +333,5 @@ class ProjectMilestone extends CRMEntity
     function vtlib_handler($moduleName, $eventType)
     {
         Core_Install_Model::getInstance($eventType, $moduleName)->install();
-    }
-
-    /**
-     * Handle saving related module information.
-     * NOTE: This function has been added to CRMEntity (base class).
-     * You can override the behavior by re-defining it here.
-     */
-    // function save_related_module($module, $crmid, $with_module, $with_crmid) { }
-
-    /**
-     * Handle deleting related module information.
-     * NOTE: This function has been added to CRMEntity (base class).
-     * You can override the behavior by re-defining it here.
-     */
-    //function delete_related_module($module, $crmid, $with_module, $with_crmid) { }
-
-    /**
-     * Handle getting related list information.
-     * NOTE: This function has been added to CRMEntity (base class).
-     * You can override the behavior by re-defining it here.
-     */
-    //function get_related_list($id, $cur_tab_id, $rel_tab_id, $actions=false) { }
-
-    /**
-     * Handle getting dependents list information.
-     * NOTE: This function has been added to CRMEntity (base class).
-     * You can override the behavior by re-defining it here.
-     */
-    //function get_dependents_list($id, $cur_tab_id, $rel_tab_id, $actions=false) { }
-
-    /*
-    * Function to get the secondary query part of a report
-    * @param - $module primary module name
-    * @param - $secmodule secondary module name
-    * returns the query string formed on fetching the related data for report for secondary module
-    */
-    function generateReportsSecQuery($module, $secmodule, $queryPlanner)
-    {
-        $matrix = $queryPlanner->newDependencyMatrix();
-        $matrix->setDependency('vtiger_crmentityProjectMilestone', ['vtiger_groupsProjectMilestone', 'vtiger_usersProjectMilestone', 'vtiger_lastModifiedByProjectMilestone']);
-
-        if (!$queryPlanner->requireTable('vtiger_projectmilestone', $matrix)) {
-            return '';
-        }
-        $matrix->setDependency('vtiger_projectmilestone', ['vtiger_crmentityProjectMilestone']);
-
-        $query .= $this->getRelationQuery($module, $secmodule, "vtiger_projectmilestone", "projectmilestoneid", $queryPlanner);
-
-        if ($queryPlanner->requireTable('vtiger_crmentityProjectMilestone', $matrix)) {
-            $query .= " LEFT JOIN vtiger_crmentity AS vtiger_crmentityProjectMilestone ON vtiger_crmentityProjectMilestone.crmid=vtiger_projectmilestone.projectmilestoneid and vtiger_crmentityProjectMilestone.deleted=0";
-        }
-        if ($queryPlanner->requireTable('vtiger_projectmilestonecf')) {
-            $query .= " LEFT JOIN vtiger_projectmilestonecf ON vtiger_projectmilestone.projectmilestoneid = vtiger_projectmilestonecf.projectmilestoneid";
-        }
-        if ($queryPlanner->requireTable('vtiger_groupsProjectMilestone')) {
-            $query .= "	left join vtiger_groups AS vtiger_groupsProjectMilestone ON vtiger_groupsProjectMilestone.groupid = vtiger_crmentityProjectMilestone.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable('vtiger_usersProjectMilestone')) {
-            $query .= " LEFT JOIN vtiger_users AS vtiger_usersProjectMilestone ON vtiger_usersProjectMilestone.id = vtiger_crmentityProjectMilestone.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable('vtiger_lastModifiedByProjectMilestone')) {
-            $query .= " LEFT JOIN vtiger_users AS vtiger_lastModifiedByProjectMilestone ON vtiger_lastModifiedByProjectMilestone.id = vtiger_crmentityProjectMilestone.modifiedby ";
-        }
-        if ($queryPlanner->requireTable("vtiger_createdbyProjectMilestone")) {
-            $query .= " LEFT JOIN vtiger_users AS vtiger_createdbyProjectMilestone ON vtiger_createdbyProjectMilestone.id = vtiger_crmentityProjectMilestone.creator_user_id ";
-        }
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
     }
 }

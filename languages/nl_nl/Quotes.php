@@ -35,4 +35,6 @@ $languageStrings = [
     'LBL_THIS'                                                                   => 'Dit',
     'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM'          => 'wordt het verwijderd uit het systeem.verwijder of vervang deze post',
     'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Dit onderdeel van het systeem is verwijderd,verwijder deze regelitems',
+    'Create Proforma Invoice' => 'Proformafactuur aanmaken',
+    'Create Final Invoice' => 'Eindfactuur aanmaken',
 ];

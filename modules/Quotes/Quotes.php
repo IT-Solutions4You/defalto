@@ -28,7 +28,6 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
 class Quotes extends CRMEntity
 {
     public string $moduleVersion = '1.1';
@@ -39,11 +38,11 @@ class Quotes extends CRMEntity
     var $table_index = 'quoteid';
     var $tab_name = ['vtiger_crmentity', 'vtiger_quotes', 'vtiger_quotesbillads', 'vtiger_quotesshipads', 'vtiger_quotescf'];
     var $tab_name_index = [
-        'vtiger_crmentity'     => 'crmid',
-        'vtiger_quotes'        => 'quoteid',
+        'vtiger_crmentity' => 'crmid',
+        'vtiger_quotes' => 'quoteid',
         'vtiger_quotesbillads' => 'quotebilladdressid',
         'vtiger_quotesshipads' => 'quoteshipaddressid',
-        'vtiger_quotescf'      => 'quoteid'
+        'vtiger_quotescf' => 'quoteid'
     ];
     /**
      * Mandatory table for supporting custom fields.
@@ -79,39 +78,39 @@ class Quotes extends CRMEntity
     var $list_fields = [
         //'Quote No'=>Array('crmentity'=>'crmid'),
         // Module Sequence Numbering
-        'Quote No'       => ['quotes' => 'quote_no'],
+        'Quote No' => ['quotes' => 'quote_no'],
         // END
-        'Subject'        => ['quotes' => 'subject'],
-        'Quote Stage'    => ['quotes' => 'quotestage'],
+        'Subject' => ['quotes' => 'subject'],
+        'Quote Stage' => ['quotes' => 'quotestage'],
         'Potential Name' => ['quotes' => 'potential_id'],
-        'Account Name'   => ['account' => 'account_id'],
-        'Total'          => ['quotes' => 'total'],
-        'Assigned To'    => ['crmentity' => 'assigned_user_id']
+        'Account Name' => ['account' => 'account_id'],
+        'Total' => ['quotes' => 'total'],
+        'Assigned To' => ['crmentity' => 'assigned_user_id']
     ];
 
     var $list_fields_name = [
-        'Quote No'       => 'quote_no',
-        'Subject'        => 'subject',
-        'Quote Stage'    => 'quotestage',
+        'Quote No' => 'quote_no',
+        'Subject' => 'subject',
+        'Quote Stage' => 'quotestage',
         'Potential Name' => 'potential_id',
-        'Account Name'   => 'account_id',
-        'Total'          => 'grand_total',
-        'Assigned To'    => 'assigned_user_id'
+        'Account Name' => 'account_id',
+        'Total' => 'grand_total',
+        'Assigned To' => 'assigned_user_id'
     ];
     var $list_link_field = 'subject';
 
     var $search_fields = [
-        'Quote No'     => ['quotes' => 'quote_no'],
-        'Subject'      => ['quotes' => 'subject'],
+        'Quote No' => ['quotes' => 'quote_no'],
+        'Subject' => ['quotes' => 'subject'],
         'Account Name' => ['quotes' => 'account_id'],
-        'Quote Stage'  => ['quotes' => 'quotestage'],
+        'Quote Stage' => ['quotes' => 'quotestage'],
     ];
 
     var $search_fields_name = [
-        'Quote No'     => 'quote_no',
-        'Subject'      => 'subject',
+        'Quote No' => 'quote_no',
+        'Subject' => 'subject',
         'Account Name' => 'account_id',
-        'Quote Stage'  => 'quotestage',
+        'Quote Stage' => 'quotestage',
     ];
 
     // This is the list of vtiger_fields that are required.
@@ -141,51 +140,6 @@ class Quotes extends CRMEntity
         }
     }
 
-    /**    function used to get the list of sales orders which are related to the Quotes
-     *
-     * @param int $id - quote id
-     *
-     * @return array - return an array which will be returned from the function GetRelatedList
-     */
-    function get_salesorder($id)
-    {
-        global $log, $singlepane_view;
-        $log->debug("Entering get_salesorder(" . $id . ") method ...");
-        require_once('modules/SalesOrder/SalesOrder.php');
-        $focus = new SalesOrder();
-
-        $button = '';
-
-        if ($singlepane_view == 'true') {
-            $returnset = '&return_module=Quotes&return_action=DetailView&return_id=' . $id;
-        } else {
-            $returnset = '&return_module=Quotes&return_action=CallRelatedList&return_id=' . $id;
-        }
-
-        $userNameSql = getSqlForNameInDisplayFormat([
-            'first_name' =>
-                'vtiger_users.first_name',
-            'last_name'  => 'vtiger_users.last_name'
-        ], 'Users');
-        $query = "select vtiger_crmentity.*, vtiger_salesorder.*, vtiger_quotes.subject as quotename
-			, vtiger_account.accountname,case when (vtiger_users.user_name not like '') then
-			$userNameSql else vtiger_groups.groupname end as user_name
-		from vtiger_salesorder
-		inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_salesorder.salesorderid
-		left outer join vtiger_quotes on vtiger_quotes.quoteid=vtiger_salesorder.quote_id
-		left outer join vtiger_account on vtiger_account.accountid=vtiger_salesorder.account_id
-		left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.assigned_user_id
-        LEFT JOIN vtiger_salesordercf ON vtiger_salesordercf.salesorderid = vtiger_salesorder.salesorderid
-        LEFT JOIN vtiger_invoice_recurring_info ON vtiger_invoice_recurring_info.salesorderid = vtiger_salesorder.salesorderid
-		LEFT JOIN vtiger_sobillads ON vtiger_sobillads.sobilladdressid = vtiger_salesorder.salesorderid
-		LEFT JOIN vtiger_soshipads ON vtiger_soshipads.soshipaddressid = vtiger_salesorder.salesorderid
-		left join vtiger_users on vtiger_users.id=vtiger_crmentity.assigned_user_id
-		where vtiger_crmentity.deleted=0 and vtiger_salesorder.quote_id = " . $id;
-        $log->debug("Exiting get_salesorder method ...");
-
-        return GetRelatedList('Quotes', 'SalesOrder', $focus, $query, $button, $returnset);
-    }
-
     // Function to get column name - Overriding function of base class
     function get_column_value($columname, $fldvalue, $fieldname, $uitype, $datatype = '')
     {
@@ -199,87 +153,17 @@ class Quotes extends CRMEntity
     }
 
     /*
-     * Function to get the secondary query part of a report
-     * @param - $module primary module name
-     * @param - $secmodule secondary module name
-     * returns the query string formed on fetching the related data for report for secondary module
-     */
-    function generateReportsSecQuery($module, $secmodule, $queryPlanner)
-    {
-        $matrix = $queryPlanner->newDependencyMatrix();
-        $matrix->setDependency('vtiger_crmentityQuotes', ['vtiger_usersQuotes', 'vtiger_groupsQuotes', 'vtiger_lastModifiedByQuotes']);
-
-        if (!$queryPlanner->requireTable('vtiger_quotes', $matrix)) {
-            return '';
-        }
-        $matrix->setDependency('vtiger_quotes', [
-            'vtiger_crmentityQuotes',
-            "vtiger_currency_info$secmodule",
-            'vtiger_quotescf',
-            'vtiger_potentialRelQuotes',
-            'vtiger_quotesbillads',
-            'vtiger_quotesshipads',
-            'vtiger_invoice_recurring_info',
-            'vtiger_quotesQuotes',
-        ]);
-
-        $query = $this->getRelationQuery($module, $secmodule, "vtiger_quotes", "quoteid", $queryPlanner);
-        if ($queryPlanner->requireTable("vtiger_crmentityQuotes", $matrix)) {
-            $query .= " left join vtiger_crmentity as vtiger_crmentityQuotes on vtiger_crmentityQuotes.crmid=vtiger_quotes.quoteid and vtiger_crmentityQuotes.deleted=0";
-        }
-        if ($queryPlanner->requireTable("vtiger_quotescf")) {
-            $query .= " left join vtiger_quotescf on vtiger_quotes.quoteid = vtiger_quotescf.quoteid";
-        }
-        if ($queryPlanner->requireTable("vtiger_quotesbillads")) {
-            $query .= " left join vtiger_quotesbillads on vtiger_quotes.quoteid=vtiger_quotesbillads.quotebilladdressid";
-        }
-        if ($queryPlanner->requireTable("vtiger_quotesshipads")) {
-            $query .= " left join vtiger_quotesshipads on vtiger_quotes.quoteid=vtiger_quotesshipads.quoteshipaddressid";
-        }
-        if ($queryPlanner->requireTable("vtiger_currency_info$secmodule")) {
-            $query .= " left join vtiger_currency_info as vtiger_currency_info$secmodule on vtiger_currency_info$secmodule.id = vtiger_quotes.currency_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_groupsQuotes")) {
-            $query .= " left join vtiger_groups as vtiger_groupsQuotes on vtiger_groupsQuotes.groupid = vtiger_crmentityQuotes.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_usersQuotes")) {
-            $query .= " left join vtiger_users as vtiger_usersQuotes on vtiger_usersQuotes.id = vtiger_crmentityQuotes.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_potentialRelQuotes")) {
-            $query .= " left join vtiger_potential as vtiger_potentialRelQuotes on vtiger_potentialRelQuotes.potentialid = vtiger_quotes.potential_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_contactdetailsQuotes")) {
-            $query .= " left join vtiger_contactdetails as vtiger_contactdetailsQuotes on vtiger_contactdetailsQuotes.contactid = vtiger_quotes.contact_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_accountQuotes")) {
-            $query .= " left join vtiger_account as vtiger_accountQuotes on vtiger_accountQuotes.accountid = vtiger_quotes.account_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_lastModifiedByQuotes")) {
-            $query .= " left join vtiger_users as vtiger_lastModifiedByQuotes on vtiger_lastModifiedByQuotes.id = vtiger_crmentityQuotes.modifiedby ";
-        }
-        if ($queryPlanner->requireTable("vtiger_createdbyQuotes")) {
-            $query .= " left join vtiger_users as vtiger_createdbyQuotes on vtiger_createdbyQuotes.id = vtiger_crmentityQuotes.creator_user_id ";
-        }
-
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
-    }
-
-    /*
      * Function to get the relation tables for related modules
      * @param - $secmodule secondary module name
      * returns the array with table names and fieldnames storing relations between module and this module
      */
-    function setRelationTables($secmodule)
+    public function setRelationTables($secmodule)
     {
         $rel_tables = [
-            "SalesOrder" => ["vtiger_salesorder" => ["quote_id", "salesorderid"], "vtiger_quotes" => "quoteid"],
-            "Documents"  => ["vtiger_senotesrel" => ["crmid", "notesid"], "vtiger_quotes" => "quoteid"],
-            "Accounts"   => ["vtiger_quotes" => ["quoteid", "account_id"]],
-            "Contacts"   => ["vtiger_quotes" => ["quoteid", "contact_id"]],
-            "Potentials" => ["vtiger_quotes" => ["quoteid", "potential_id"]],
+            'SalesOrder' => ['vtiger_salesorder' => ['quote_id', 'salesorderid'], 'vtiger_quotes' => 'quoteid'],
+            'Accounts' => ['vtiger_quotes' => ['quoteid', 'account_id']],
+            'Contacts' => ['vtiger_quotes' => ['quoteid', 'contact_id']],
+            'Potentials' => ['vtiger_quotes' => ['quoteid', 'potential_id']],
         ];
 
         return $rel_tables[$secmodule];

@@ -73,7 +73,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         params.url = "index.php?view=Detail&module=" + app.getModuleName() + "&mode=showRecentActivities&record=" + recordId;
 
         app.helper.showProgress();
-        app.request.get(params).then(function (error, response) {
+        app.request.post(params).then(function (error, response) {
             app.helper.hideProgress();
             jQuery(".HistoryContainer").find(".data-body").html(response);
         });
@@ -360,7 +360,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         var defParams = self.getDefaultParams();
         urlParams = jQuery.extend(defParams, urlParams);
         app.helper.showProgress();
-        app.request.get({data: urlParams}).then(function (err, res) {
+        app.request.post({data: urlParams}).then(function (err, res) {
             aDeferred.resolve(res);
             var container = jQuery('.relatedContainer');
             container.html(res);
@@ -2627,7 +2627,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         params['returnrecord'] = jQuery('[name="record_id"]').val();
 
         app.helper.showProgress();
-        app.request.get({data: params}).then(function (err, response) {
+        app.request.post({data: params}).then(function (err, response) {
             app.helper.hideProgress();
             let overlayParams = {'backdrop': 'static', 'keyboard': false};
 
@@ -3064,34 +3064,42 @@ Vtiger.Class("Vtiger_Detail_Js", {
             return;
         }
 
-        checkboxes.bootstrapSwitch({
-            onText: app.vtranslate('LBL_YES'),
-            offText: app.vtranslate('LBL_NO'),
-            size: 'mini',
-            onSwitchChange() {
-                let element = $(this),
-                    params = {
-                        record: app.getRecordId(),
-                        module: app.getModuleName(),
-                        action: 'SaveAjax',
-                        value: element.is(':checked') ? 1 : 0,
-                        field: element.attr('name'),
-                    };
+        checkboxes.each(function () {
+            let element = $(this),
+                value = element.is(':checked');
 
-                app.request.post({data: params}).then(function (error, data) {
-                    if (!error) {
-                        let field = params['field'];
-
-                        if (params['value'] === parseInt(data[field]['value'])) {
-                            app.event.trigger(Vtiger_Detail_Js.changeCheckEvent, element);
-                            app.helper.showSuccessNotification({message: message});
-                        } else {
-                            app.helper.showErrorNotification({message: message});
-                        }
-                    }
-                })
-            }
+            element.bootstrapSwitch({
+                onText: app.vtranslate('LBL_YES'),
+                offText: app.vtranslate('LBL_NO'),
+                onSwitchChange() {
+                    self.saveBootstrapSwitch(element)
+                }
+            })
+            element.bootstrapSwitch('state', value, value);
         });
+    },
+    saveBootstrapSwitch(element) {
+        let message = app.vtranslate('JS_RECORD_UPDATED'),
+            params = {
+                record: app.getRecordId(),
+                module: app.getModuleName(),
+                action: 'SaveAjax',
+                value: element.is(':checked') ? 1 : 0,
+                field: element.attr('name'),
+            };
+
+        app.request.post({data: params}).then(function (error, data) {
+            if (!error) {
+                let field = params['field'];
+
+                if (params['value'] === parseInt(data[field]['value'])) {
+                    app.event.trigger(Vtiger_Detail_Js.changeCheckEvent, element);
+                    app.helper.showSuccessNotification({message: message});
+                } else {
+                    app.helper.showErrorNotification({message: message});
+                }
+            }
+        })
     },
     registerAssignedUserChange() {
         let self = this,

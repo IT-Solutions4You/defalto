@@ -192,4 +192,13 @@ class Products_Relation_Model extends Vtiger_Relation_Model
         $productModel = Vtiger_Record_Model::getInstanceById($sourceRecordId, $sourceModuleName);
         $productModel->updateSubProductQuantity($destinationRecordId, $quantity);
     }
+
+    /*public function addRelation($sourcerecordId, $destinationRecordId, $quantities = [])
+    {
+        $sourceModule = $this->getParentModuleModel();
+        $sourceModuleName = $sourceModule->get('name');
+        $sourceModuleFocus = CRMEntity::getInstance($sourceModuleName);
+        $destinationModuleName = $this->getRelationModuleModel()->get('name');
+        relateEntities($sourceModuleFocus, $sourceModuleName, $sourcerecordId, $destinationModuleName, $destinationRecordId);
+    }*/
 }

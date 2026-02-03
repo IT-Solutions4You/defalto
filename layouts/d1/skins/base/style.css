@@ -2357,24 +2357,6 @@ input[type=checkbox]:checked {
     font-weight: bold;
 }
 
-.fileUploadBtn {
-    position: relative;
-    overflow: hidden;
-}
-
-.fileUploadBtn input[type="file"] {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 0;
-    padding: 0;
-    font-size: 20px;
-    cursor: pointer;
-    opacity: 0;
-    filter: alpha(opacity=0);
-    width: 100%;
-}
-
 tr.folder,
 tr.file {
     font-size: 130%;
@@ -3702,10 +3684,6 @@ li.select2-search-choice div {
     margin-right: 10px;
 }
 
-.MultiFile-wrap {
-    display: inline-block;
-}
-
 #searchResults-container .moduleResults-container .essentials-toggle {
     display: none;
 }
@@ -4593,6 +4571,30 @@ input[type=number] {
 .relatedListEntryValues[data-field-type="percentage"]
 {
     text-align: right;
+}
+
+.input-file-full-size {
+    position: relative;
+}
+.input-file-full-size [type=file] {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.MultiFile-label {
+    display: block;
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+}
+
+.MultiFile-label * {
+    display: inline;
 }
 
 @media (max-width: 991.98px) {

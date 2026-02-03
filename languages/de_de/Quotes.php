@@ -48,6 +48,8 @@ $languageStrings = [
     'Margin Amount' => 'Margin Amount',
     'Quote Date' => 'Quote Date',
     'Terms &amp; Conditions' => 'Terms &amp; Conditions',
+    'Create Proforma Invoice' => 'Proformarechnung erstellen',
+    'Create Final Invoice' => 'Schlussrechnung erstellen',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Bitte entfernen Sie die gelöschte Position',

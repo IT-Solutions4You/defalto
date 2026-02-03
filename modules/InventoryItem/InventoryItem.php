@@ -98,11 +98,17 @@ class InventoryItem extends CRMEntity
         global $adb, $log;
         $log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
-        $rel_table_arr = ['Documents' => 'vtiger_senotesrel', 'Attachments' => 'vtiger_seattachmentsrel'];
+        $rel_table_arr = [
+            'Attachments' => 'vtiger_seattachmentsrel'
+        ];
 
-        $tbl_field_arr = ['vtiger_senotesrel' => 'notesid', 'vtiger_seattachmentsrel' => 'attachmentsid'];
+        $tbl_field_arr = [
+            'vtiger_seattachmentsrel' => 'attachmentsid'
+        ];
 
-        $entity_tbl_field_arr = ['vtiger_senotesrel' => 'crmid', 'vtiger_seattachmentsrel' => 'crmid'];
+        $entity_tbl_field_arr = [
+            'vtiger_seattachmentsrel' => 'crmid'
+        ];
 
         foreach ($transferEntityIds as $transferId) {
             foreach ($rel_table_arr as $rel_module => $rel_table) {
@@ -130,17 +136,6 @@ class InventoryItem extends CRMEntity
 
         parent::transferRelatedRecords($module, $transferEntityIds, $entityId);
         $log->debug('Exiting transferRelatedRecords...');
-    }
-
-    /*
-	 * Function to get the relation tables for related modules
-	 * @param string $secmodule secondary module name
-     *
-	 * @return array  with table names and fieldnames storing relations between module and this module
-	 */
-    public function setRelationTables($secmodule)
-    {
-        return [];
     }
 
     /**

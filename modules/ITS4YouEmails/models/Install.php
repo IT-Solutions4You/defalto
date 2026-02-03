@@ -20,7 +20,7 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = array(
-        ['ITS4YouEmails', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments'],
+        self::DOCUMENTS_RELATED_LIST,
     );
 
     /**

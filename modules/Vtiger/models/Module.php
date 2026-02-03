@@ -672,7 +672,7 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
 
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         $deletedCondition = $this->getDeletedRecordCondition();
-        $nonAdminQuery .= Users_Privileges_Model::getNonAdminAccessControlQuery($this->getName());
+        $nonAdminQuery = Users_Privileges_Model::getNonAdminAccessControlQuery($this->getName());
         $query = 'SELECT * FROM vtiger_crmentity ' . $nonAdminQuery . ' WHERE setype=? AND ' . $deletedCondition . ' AND modifiedby = ? ORDER BY modifiedtime DESC LIMIT ?';
         $params = [$this->getName(), $currentUserModel->id, $limit];
         $result = $db->pquery($query, $params);
@@ -1283,7 +1283,7 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
             return ' AND vtiger_notes.filestatus = 1 ';
         }
 
-        return;
+        return '';
     }
 
     /**
@@ -1762,17 +1762,8 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
                     $tablename = $relatedModuleMapping[$module]['table_name'];
                     $tabIndex = $relatedModuleMapping[$module]['table_index'];
                     $relIndex = $relatedModuleMapping[$module]['rel_index'];
-                    //To show related records comments in documents, should get related document records from vtiger_senotesrel.
-                    if (empty($tablename) && $this->getName() == 'Documents') {
-                        $tablename = 'vtiger_senotesrel';
-                        $tabIndex = 'crmid';
-                        $relIndex = 'notesid';
-                        //To show related Document comments in current module
-                    } elseif (empty($tablename) && $module == 'Documents') {
-                        $tablename = 'vtiger_senotesrel';
-                        $tabIndex = 'notesid';
-                        $relIndex = 'crmid';
-                    } elseif (empty($tablename)) {
+
+                    if (empty($tablename)) {
                         //Fallback to vtiger_crmentityrel if both focus and relationfieldid is empty
                         $tablename = 'vtiger_crmentityrel';
                         $tabIndex = 'crmid';
@@ -1787,11 +1778,6 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
                         foreach ($recordIds as $key => $recordId) {
                             array_push($params, $recordId);
                         }
-                    } elseif ($module == "Contacts" && $this->getName() == "Potentials") {
-                        $tablename = 'vtiger_contpotentialrel';
-                        $tabIndex = 'contactid';
-                        $sql .= " INNER JOIN $tablename ON $tablename.$tabIndex = vtiger_crmentity.crmid 
-                        WHERE $tablename.potentialid IN (" . generateQuestionMarks($recordIds) . ")";
                     } else {
                         $sql .= " INNER JOIN $tablename ON $tablename.$tabIndex = vtiger_crmentity.crmid
                             WHERE $tablename.$relIndex IN (" . generateQuestionMarks($recordIds) . ")";
@@ -1802,16 +1788,9 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
                     $tablename = $fieldModel->get('table');
                     $relIndex = $fieldModel->get('column');
                     if ($tablename == $relatedModuleFocus->table_name) {
-                        if ($this->getName() == "Contacts" && $module == "Potentials") {
-                            $tablename = 'vtiger_contpotentialrel';
-                            $tabIndex = 'potentialid';
-                            $sql .= " INNER JOIN $tablename ON $tablename.$tabIndex = vtiger_crmentity.crmid
-                            WHERE $tablename.contactid IN (" . generateQuestionMarks($recordIds) . ")";
-                        } else {
-                            $tabIndex = $relatedModuleFocus->table_index;
-                            $sql .= " INNER JOIN $tablename ON $tablename.$tabIndex = vtiger_crmentity.crmid
-                            WHERE $tablename.$relIndex IN (" . generateQuestionMarks($recordIds) . ")";
-                        }
+                        $tabIndex = $relatedModuleFocus->table_index;
+                        $sql .= " INNER JOIN $tablename ON $tablename.$tabIndex = vtiger_crmentity.crmid
+                        WHERE $tablename.$relIndex IN (" . generateQuestionMarks($recordIds) . ")";
                     } else {
                         $modulePrimaryTableName = $relatedModuleFocus->table_name;
                         $modulePrimaryTableIndex = $relatedModuleFocus->table_index;
@@ -2321,5 +2300,19 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
                 $fieldModel->delete();
             }
         }
+    }
+
+    public function addConditionToQuery($query, $condition): string
+    {
+        $position = stripos($query, 'where');
+
+        if ($position) {
+            $split = preg_split('/where/i', $query, 2);
+            $overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
+        } else {
+            $overRideQuery = $query . ' WHERE ' . $condition;
+        }
+
+        return $overRideQuery;
     }
 }

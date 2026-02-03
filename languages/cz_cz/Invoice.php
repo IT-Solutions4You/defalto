@@ -61,6 +61,9 @@ $languageStrings = [
     'Margin Amount' => 'Výška marže',
     'Quote' => 'Ponuka',
     'Inventory Manager' => 'Správca zásob',
+    'Invoice Type' => 'Typ faktury',
+    'Tax Document' => 'Daňový doklad k přijaté platbě',
+    'Final Invoice' => 'Finální faktura',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Prosím, odstraňte fakturovanou položku, která již byla odebrána ze systému',

@@ -23,7 +23,7 @@
 			{/if}
 		{/if}
 		<div class="fileUploadContainer mb-3">
-			<div class="fileUploadBtn btn btn-primary">
+			<div class="fileUploadBtn btn btn-primary input-file-full-size">
 				<span>
 					<i class="fa fa-laptop"></i>
 					<span class="ms-2">{vtranslate('LBL_UPLOAD', $MODULE)}</span>
