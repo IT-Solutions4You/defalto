@@ -1569,7 +1569,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model
         Core_DatabaseData_Model::getTableInstance('vtiger_cv2users', '')
             ->createTable('cvid', 'INT(25) NOT NULL')
             ->createColumn('userid', 'INT(25) NOT NULL')
-            ->createKey('KEY IF NOT EXISTS vtiger_cv2users_ibfk_1(cvid)')
+            ->createKey('KEY IF NOT EXISTS vtiger_cv2users_ibfk_1 (cvid)')
             ->createKey('CONSTRAINT vtiger_customview_ibfk_1 FOREIGN KEY IF NOT EXISTS (cvid) REFERENCES vtiger_customview (cvid) ON DELETE CASCADE')
             ->createKey('CONSTRAINT vtiger_users_ibfk_1 FOREIGN KEY IF NOT EXISTS (userid) REFERENCES vtiger_users (id) ON DELETE CASCADE');
 

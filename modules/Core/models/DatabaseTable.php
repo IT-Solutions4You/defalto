@@ -146,24 +146,44 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @param $criteria
+     * @param string $criteria
      *
      * @return $this
      */
-    public function createKey($criteria)
+    public function createKey(string $criteria): self
     {
-        $lowerCriteria = strtolower($criteria);
+        $criteria = str_replace(
+            [
+                'KEY IF NOT EXISTS',
+                'INDEX IF NOT EXISTS',
+                '`',
+            ],
+            [
+                'KEY',
+                'INDEX',
+                '',
+            ],
+            $criteria
+        );
 
-        if (str_contains($lowerCriteria, 'key ') && !str_contains($lowerCriteria, 'key if not exists')) {
-            Core_Install_Model::logError('Added to key "IF NOT EXISTS" to: ' . $criteria);
+        $key = '';
+        $columns = [];
 
-            $criteria = str_replace('KEY', 'KEY IF NOT EXISTS', $criteria);
+        if(str_starts_with($criteria, 'UNIQUE')) {
+            $keyInfo = explode(' ', $criteria, 4);
+            $key = trim($keyInfo[2]);
+            $columns = [
+                trim($keyInfo[3], ' ()')
+            ];
+        } elseif(str_starts_with($criteria, 'PRIMARY')) {
+            $key = 'PRIMARY';
+        } else {
+            $keyInfo = explode(' ', $criteria, 3);
+            $key = trim($keyInfo[1]);
         }
 
-        if (str_contains($lowerCriteria, 'index ') && !str_contains($lowerCriteria, 'index if not exists')) {
-            Core_Install_Model::logError('Added to index "IF NOT EXISTS" to: ' . $criteria);
-
-            $criteria = str_replace('INDEX', 'INDEX IF NOT EXISTS', $criteria);
+        if (empty($key) || $this->isConstraintExists($key) || $this->isKeyExists($key, $columns)) {
+            return $this;
         }
 
         $this->db->pquery(
@@ -177,7 +197,7 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
         return $this;
     }
 
-    public function isKeyExists(string $key): bool
+    public function isConstraintExists(string $key): bool
     {
         $dbName = $this->db->database->database;
         $result = $this->db->pquery(
@@ -187,11 +207,27 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
         return $this->db->num_rows($result) > 0;
     }
 
+    public function isKeyExists(string $key, array $columns = []): bool
+    {
+        $dbName = $this->db->database->database;
+        $query = 'SELECT INDEX_NAME FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND INDEX_NAME = ? ';
+        $params = [$dbName, $this->get('table'), $key];
+
+        if (!empty($column)) {
+            $query .= 'AND COLUMN_NAME IN (' . generateQuestionMarks($column) . ')';
+            $params[] = $columns;
+        }
+
+        $result = $this->db->pquery($query, $params);
+
+        return $this->db->num_rows($result) > 0;
+    }
+
     public function removeKey(string $criteria): self
     {
         $key = explode('KEY ', $criteria)[1];
 
-        if (!$this->isKeyExists($key)) {
+        if (!$this->isConstraintExists($key)) {
             return $this;
         }
 

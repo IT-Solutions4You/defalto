@@ -234,12 +234,12 @@ class EMAILMaker_Install_Model extends Core_Install_Model
             ->createColumn('bcc_ids', 'text DEFAULT NULL')
             ->createColumn('email_send_date', 'datetime DEFAULT NULL')
             ->createColumn('deleted', 'int(11) DEFAULT \'0\'')
-            ->createKey('KEY IF NOT EXISTS`esentid` (`esentid`)')
-            ->createKey('KEY IF NOT EXISTS`pid` (`pid`)')
-            ->createKey('KEY IF NOT EXISTS`status` (`status`)')
-            ->createKey('KEY IF NOT EXISTS`deleted` (`deleted`)')
-            ->createKey('KEY IF NOT EXISTS`parent_id` (`parent_id`)')
-            ->createKey('KEY IF NOT EXISTS`esentid_2` (`esentid`,`status`,`deleted`)');
+            ->createKey('KEY IF NOT EXISTS `esentid` (`esentid`)')
+            ->createKey('KEY IF NOT EXISTS `pid` (`pid`)')
+            ->createKey('KEY IF NOT EXISTS `status` (`status`)')
+            ->createKey('KEY IF NOT EXISTS `deleted` (`deleted`)')
+            ->createKey('KEY IF NOT EXISTS `parent_id` (`parent_id`)')
+            ->createKey('KEY IF NOT EXISTS `esentid_2` (`esentid`,`status`,`deleted`)');
 
         $this->getTable('vtiger_emakertemplates_sent', 'esentid')
             ->createTable()
@@ -263,8 +263,8 @@ class EMAILMaker_Install_Model extends Core_Install_Model
             ->createColumn('ids_for_pdf', 'text DEFAULT NULL')
             ->createColumn('pmodule', 'varchar(255) DEFAULT NULL')
             ->createColumn('language', 'varchar(255) DEFAULT NULL')
-            ->createKey('KEY IF NOT EXISTS`userid` (`userid`)')
-            ->createKey('KEY IF NOT EXISTS`related_to` (`related_to`)');
+            ->createKey('KEY IF NOT EXISTS `userid` (`userid`)')
+            ->createKey('KEY IF NOT EXISTS `related_to` (`related_to`)');
 
         $this->getTable('vtiger_emakertemplates_settings', null)
             ->createTable('decimals', 'tinyint(2) NOT NULL')
