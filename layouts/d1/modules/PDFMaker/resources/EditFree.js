@@ -74,11 +74,13 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js", {
     },
     getSelectedEditor: function () {
 
-        let selectedTab2 = jQuery('#ContentEditorTabs').find('.active').data('type'),
+        let selectedTab2 = jQuery('#ContentEditorTabs .active').parents('li').data('type'),
             oEditorName = 'body';
 
         if (selectedTab2 === "header" || selectedTab2 === "footer")
             oEditorName = selectedTab2 + '_body';
+
+        console.log(oEditorName);
 
         return CKEDITOR.instances[oEditorName];
     },
