@@ -1288,7 +1288,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @param true $register
+     * @param bool $register
      *
      * @return void
      * @throws Exception
