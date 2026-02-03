@@ -89,6 +89,8 @@ class Vtiger_Save_Action extends Core_Controller_Action
                 $loadUrl = $recordModel->getModule()->getListViewUrl();
             } elseif ($request->get('returnmodule') && $request->get('returnview')) {
                 $loadUrl = 'index.php?' . $request->getReturnURL();
+            } elseif(InventoryItem_Utils_Helper::isInventoryModule($request->getModule())) {
+                $loadUrl = $recordModel->getFullDetailViewUrl();
             } else {
                 $loadUrl = $recordModel->getDetailViewUrl();
             }
