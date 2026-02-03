@@ -177,6 +177,35 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
         return $this;
     }
 
+    public function isKeyExists(string $key): bool
+    {
+        $dbName = $this->db->database->database;
+        $result = $this->db->pquery(
+            sprintf('SELECT CONSTRAINT_NAME FROM information_schema.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = \'%s\' AND CONSTRAINT_NAME = \'%s\' ', $dbName, $key)
+        );
+
+        return $this->db->num_rows($result) > 0;
+    }
+
+    public function removeKey(string $criteria): self
+    {
+        $key = explode('KEY ', $criteria)[1];
+
+        if (!$this->isKeyExists($key)) {
+            return $this;
+        }
+
+        $this->db->pquery(
+            sprintf(
+                'ALTER TABLE %s DROP %s',
+                $this->get('table'),
+                $criteria
+            )
+        );
+
+        return $this;
+    }
+
     /**
      * @throws Exception
      */

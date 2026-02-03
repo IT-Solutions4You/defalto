@@ -17,35 +17,36 @@ class Services_Install_Model extends Core_Install_Model
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        ['HelpDesk', 'Services', 'Services', ['select']],
-        ['Leads', 'Services', 'Services', ['select']],
-        ['Accounts', 'Services', 'Services', ['select']],
-        ['Contacts', 'Services', 'Services', ['select']],
-        ['Potentials', 'Services', 'Services', ['select']],
-        ['PriceBooks', 'Services', 'Services', ['select'], 'get_pricebook_services'],
-
-        ['Services', 'HelpDesk', 'HelpDesk', ['add', 'select'], 'get_related_list'],
-        ['Services', 'Quotes', 'Quotes', ['add'], 'get_quotes'],
-        ['Services', 'PurchaseOrder', 'Purchase Order', ['add'], 'get_purchase_orders'],
-        ['Services', 'SalesOrder', 'Sales Order', ['add'], 'get_salesorder'],
-        ['Services', 'Invoice', 'Invoice', ['add'], 'get_invoices'],
-        ['Services', 'PriceBooks', 'PriceBooks', ['add'], 'get_service_pricebooks'],
-        ['Services', 'Leads', 'Leads', ['SELECT'], 'get_related_list'],
-        ['Services', 'Accounts', 'Accounts', ['SELECT'], 'get_related_list'],
-        ['Services', 'Contacts', 'Contacts', ['SELECT'], 'get_related_list'],
-        ['Services', 'Potentials', 'Potentials', ['SELECT'], 'get_related_list'],
-        ['Services', 'Documents', 'Documents', ['ADD', 'SELECT'], 'get_attachments'],
+        ['Services', 'PriceBooks', 'PriceBooks', ['add', 'select'], 'get_service_pricebooks'],
+        ['Services', 'Quotes', 'Quotes', '', 'get_inventory_list'],
+        ['Services', 'PurchaseOrder', 'Purchase Order', '', 'get_inventory_list'],
+        ['Services', 'SalesOrder', 'Sales Order', '', 'get_inventory_list'],
+        ['Services', 'Invoice', 'Invoice', '', 'get_inventory_list'],
+        ['Services', 'HelpDesk', 'HelpDesk', ['add', 'select'], 'get_related_list', 'product_id'],
+        ['Services', 'Potentials', 'Potentials', ['select'], 'get_related_list'],
+        ['Services', 'Leads', 'Leads', ['select'], 'get_related_list'],
+        ['Services', 'Accounts', 'Accounts', ['select'], 'get_related_list'],
+        ['Services', 'Contacts', 'Contacts', ['select'], 'get_related_list'],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
+    /**
+     * @throws Exception
+     */
     public function addCustomLinks(): void
     {
         $this->updateToStandardModule();
+        $this->updateComments();
         $this->updateRelatedList();
         $this->updateNumbering();
-        $this->updateComments();
         $this->updateHistory();
     }
 
+    /**
+     * @throws Exception
+     */
     public function deleteCustomLinks(): void
     {
         $this->updateRelatedList(false);

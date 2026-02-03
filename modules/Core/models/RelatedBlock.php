@@ -24,23 +24,11 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
      * @var array
      */
     public static array $relatedModuleJoin = [
-        'Documents'   => [
-            'senotesrel',
-            'vtiger_senotesrel',
-            'INNER JOIN vtiger_senotesrel',
-            'vtiger_senotesrel.notesid=vtiger_crmentity.crmid AND vtiger_senotesrel.crmid=$SOURCE_RECORD$',
-        ],
         'ModComments' => [
             'modcommentsrel',
             'vtiger_modcommentsrel',
             'INNER JOIN vtiger_modcomments',
             'vtiger_modcommentsrel.modcommentsid=vtiger_crmentity.crmid AND vtiger_modcommentsrel.related_to=$SOURCE_RECORD$',
-        ],
-        'Products'    => [
-            'seproductsrel',
-            'vtiger_seproductsrel',
-            'INNER JOIN vtiger_seproductsrel',
-            'vtiger_seproductsrel.productid=vtiger_crmentity.crmid AND vtiger_seproductsrel.crmid=$SOURCE_RECORD$',
         ],
     ];
 

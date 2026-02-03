@@ -43,7 +43,7 @@
 										{vtranslate('LBL_OR', $MODULE)}
 									</div>
 									<div>
-										<div class="fileUploadBtn btn btn-primary">
+										<div class="fileUploadBtn btn btn-primary input-file-full-size">
 											<span><i class="fa fa-laptop"></i> {vtranslate('LBL_SELECT_FILE_FROM_COMPUTER', $MODULE)}</span>
 											{assign var=FIELD_MODEL value=$FIELD_MODELS['filename']}
 											<input type="file" name="{$FIELD_MODEL->getFieldName()}" value="{$FIELD_VALUE}" data-rule-required="true" />

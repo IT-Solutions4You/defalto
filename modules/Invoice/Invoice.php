@@ -196,78 +196,6 @@ class Invoice extends CRMEntity
     }
 
     /*
-     * Function to get the secondary query part of a report
-     * @param - $module primary module name
-     * @param - $secmodule secondary module name
-     * returns the query string formed on fetching the related data for report for secondary module
-     */
-    public function generateReportsSecQuery($module, $secmodule, $queryPlanner)
-    {
-        // Define the dependency matrix ahead
-        $matrix = $queryPlanner->newDependencyMatrix();
-        $matrix->setDependency('vtiger_crmentityInvoice', ['vtiger_usersInvoice', 'vtiger_groupsInvoice', 'vtiger_lastModifiedByInvoice']);
-
-        if (!$queryPlanner->requireTable('vtiger_invoice', $matrix)) {
-            return '';
-        }
-
-        $matrix->setDependency('vtiger_invoice', [
-            'vtiger_crmentityInvoice',
-            "vtiger_currency_info$secmodule",
-            'vtiger_invoicecf',
-            'vtiger_salesorderInvoice',
-            'vtiger_invoicebillads',
-            'vtiger_invoiceshipads',
-            'vtiger_contactdetailsInvoice',
-            'vtiger_accountInvoice'
-        ]);
-
-        $query = $this->getRelationQuery($module, $secmodule, "vtiger_invoice", "invoiceid", $queryPlanner);
-
-        if ($queryPlanner->requireTable('vtiger_crmentityInvoice', $matrix)) {
-            $query .= " left join vtiger_crmentity as vtiger_crmentityInvoice on vtiger_crmentityInvoice.crmid=vtiger_invoice.invoiceid and vtiger_crmentityInvoice.deleted=0";
-        }
-        if ($queryPlanner->requireTable('vtiger_invoicecf')) {
-            $query .= " left join vtiger_invoicecf on vtiger_invoice.invoiceid = vtiger_invoicecf.invoiceid";
-        }
-        if ($queryPlanner->requireTable("vtiger_currency_info$secmodule")) {
-            $query .= " left join vtiger_currency_info as vtiger_currency_info$secmodule on vtiger_currency_info$secmodule.id = vtiger_invoice.currency_id";
-        }
-        if ($queryPlanner->requireTable('vtiger_salesorderInvoice')) {
-            $query .= " left join vtiger_salesorder as vtiger_salesorderInvoice on vtiger_salesorderInvoice.salesorderid=vtiger_invoice.salesorder_id";
-        }
-        if ($queryPlanner->requireTable('vtiger_invoicebillads')) {
-            $query .= " left join vtiger_invoicebillads on vtiger_invoice.invoiceid=vtiger_invoicebillads.invoicebilladdressid";
-        }
-        if ($queryPlanner->requireTable('vtiger_invoiceshipads')) {
-            $query .= " left join vtiger_invoiceshipads on vtiger_invoice.invoiceid=vtiger_invoiceshipads.invoiceshipaddressid";
-        }
-        if ($queryPlanner->requireTable('vtiger_groupsInvoice')) {
-            $query .= " left join vtiger_groups as vtiger_groupsInvoice on vtiger_groupsInvoice.groupid = vtiger_crmentityInvoice.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable('vtiger_usersInvoice')) {
-            $query .= " left join vtiger_users as vtiger_usersInvoice on vtiger_usersInvoice.id = vtiger_crmentityInvoice.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable('vtiger_contactdetailsInvoice')) {
-            $query .= " left join vtiger_contactdetails as vtiger_contactdetailsInvoice on vtiger_invoice.contact_id = vtiger_contactdetailsInvoice.contactid";
-        }
-        if ($queryPlanner->requireTable('vtiger_accountInvoice')) {
-            $query .= " left join vtiger_account as vtiger_accountInvoice on vtiger_accountInvoice.accountid = vtiger_invoice.account_id";
-        }
-        if ($queryPlanner->requireTable('vtiger_lastModifiedByInvoice')) {
-            $query .= " left join vtiger_users as vtiger_lastModifiedByInvoice on vtiger_lastModifiedByInvoice.id = vtiger_crmentityInvoice.modifiedby ";
-        }
-        if ($queryPlanner->requireTable("vtiger_createdbyInvoice")) {
-            $query .= " left join vtiger_users as vtiger_createdbyInvoice on vtiger_createdbyInvoice.id = vtiger_crmentityInvoice.creator_user_id ";
-        }
-
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
-    }
-
-    /*
      * Function to get the relation tables for related modules
      * @param - $secmodule secondary module name
      * returns the array with table names and fieldnames storing relations between module and this module
@@ -275,9 +203,8 @@ class Invoice extends CRMEntity
     public function setRelationTables($secmodule)
     {
         $rel_tables = [
-            "Documents" => ["vtiger_senotesrel" => ["crmid", "notesid"], "vtiger_invoice" => "invoiceid"],
-            "Accounts"  => ["vtiger_invoice" => ["invoiceid", "account_id"]],
-            "Contacts"  => ["vtiger_invoice" => ["invoiceid", "contact_id"]],
+            'Accounts' => ['vtiger_invoice' => ['invoiceid', 'account_id']],
+            'Contacts' => ['vtiger_invoice' => ['invoiceid', 'contact_id']],
         ];
 
         return $rel_tables[$secmodule];

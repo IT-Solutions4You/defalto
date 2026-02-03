@@ -11,9 +11,12 @@
 class Vendors_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
-        ['Vendors', 'Products', 'Products', 'add,select', 'get_products',],
-        ['Vendors', 'PurchaseOrder', 'Purchase Order', 'add', 'get_purchase_orders',],
-        ['Vendors', 'Contacts', 'Contacts', 'select', 'get_contacts',],
+        ['Vendors', 'Products', 'Products', 'add', 'get_dependents_list', 'vendor_id'],
+        ['Vendors', 'PurchaseOrder', 'Purchase Order', 'add', 'get_dependents_list', 'vendor_id'],
+        ['Vendors', 'Contacts', 'Contacts', 'select', 'get_related_list', ''],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
     /**
@@ -313,5 +316,30 @@ class Vendors_Install_Model extends Core_Install_Model
             ->createKey('PRIMARY KEY IF NOT EXISTS (`vendorid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_vendor` FOREIGN KEY IF NOT EXISTS (`vendorid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
         ;
+    }
+
+    public function migrate()
+    {
+        $this->migrateRelationVendorContact();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrateRelationVendorContact(): void
+    {
+        $db = $this->getDB();
+
+        if (!$db->tableExists('vtiger_vendorcontactrel')) {
+            return;
+        }
+
+        $result = $db->pquery('SELECT * FROM vtiger_vendorcontactrel');
+
+        while ($row = $db->fetch_array($result)) {
+            Core_Relation_Model::saveEntityRelation($row['vendorid'], 'Vendors', $row['contactid'], 'Contacts');
+        }
+
+        $db->pquery('DROP TABLE vtiger_vendorcontactrel');
     }
 }

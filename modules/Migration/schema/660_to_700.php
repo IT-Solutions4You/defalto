@@ -141,10 +141,6 @@ if (defined('VTIGER_UPGRADE')) {
     if (!in_array('is_subproducts_viewable', $columns)) {
         $db->pquery('ALTER TABLE vtiger_products ADD COLUMN is_subproducts_viewable INT(1) DEFAULT 1', []);
     }
-    $columns = $db->getColumnNames('vtiger_seproductsrel');
-    if (!in_array('quantity', $columns)) {
-        $db->pquery('ALTER TABLE vtiger_seproductsrel ADD COLUMN quantity INT(19) DEFAULT 1', []);
-    }
     $columns = $db->getColumnNames('vtiger_inventorysubproductrel');
     if (!in_array('quantity', $columns)) {
         $db->pquery('ALTER TABLE vtiger_inventorysubproductrel ADD COLUMN quantity INT(19) DEFAULT 1', []);

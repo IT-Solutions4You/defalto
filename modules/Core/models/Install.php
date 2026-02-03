@@ -10,6 +10,10 @@
 
 abstract class Core_Install_Model extends Core_DatabaseData_Model
 {
+    public const DOCUMENTS_RELATED_LIST = ['', 'Documents', 'Documents', 'add,select', 'get_related_list',];
+    public const EMAILS_RELATED_LIST = ['', 'ITS4YouEmails', 'ITS4YouEmails', 'select', 'get_related_list',];
+    public const APPOINTMENTS_RELATED_LIST = ['', 'Appointments', 'Appointments', 'select', 'get_related_list',];
+
     /**
      * @var array
      * [name, handler, frequency, module, sequence, description]
@@ -1284,25 +1288,30 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @param $register
+     * @param bool $register
      *
      * @return void
+     * @throws Exception
      */
-    public function updateRelatedList($register = true)
+    public function updateRelatedList(bool $register = true): void
     {
         foreach ($this->registerRelatedLists as $relatedList) {
-            $module = Vtiger_Module::getInstance($relatedList[0]);
+            $moduleName = !empty($relatedList[0]) ? $relatedList[0] : $this->getModuleName();
+            $module = Vtiger_Module::getInstance($moduleName);
             $relatedModule = Vtiger_Module::getInstance($relatedList[1]);
 
             if ($module && $relatedModule) {
-                $relatedLabel = isset($relatedList[2]) ? $relatedList[2] : $relatedModule->name;
-                $relatedActions = isset($relatedList[3]) ? $relatedList[3] : '';
-                $relatedFunction = isset($relatedList[4]) ? $relatedList[4] : 'get_related_list';
+                $relatedLabel = $relatedList[2] ?? $relatedModule->name;
+                $relatedActions = $relatedList[3] ?? '';
+                $relatedFunction = $relatedList[4] ?? 'get_related_list';
                 $field = isset($relatedList[5]) ? Vtiger_Field_Model::getInstance($relatedList[5], $relatedModule) : '';
                 $fieldId = $field ? $field->getId() : '';
 
-                $module->unsetRelatedList($relatedModule, $relatedLabel);
-                $module->unsetRelatedList($relatedModule, $relatedLabel, $relatedFunction);
+                $module->unsetRelatedList($relatedModule, $relatedLabel, '');
+
+                if ('delete_related_list' === $relatedFunction) {
+                    continue;
+                }
 
                 if ($register) {
                     $module->setRelatedList($relatedModule, $relatedLabel, $relatedActions, $relatedFunction, $fieldId);

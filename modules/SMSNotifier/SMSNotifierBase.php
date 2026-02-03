@@ -123,15 +123,6 @@ class SMSNotifierBase extends CRMEntity
 	}
 
 	/**
-	 * Return query to use based on given modulename, fieldname
-	 * Useful to handle specific case handling for Popup
-	 */
-	function getQueryByModuleField($module, $fieldname, $srcrecord)
-	{
-		// $srcrecord could be empty
-	}
-
-	/**
 	 * Get list view query (send more WHERE clause condition if required)
 	 */
 	function getListQuery($module, $usewhere = false)

@@ -11,7 +11,9 @@
 class PurchaseOrder_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
-        ['PurchaseOrder', 'Documents', 'Documents', 'add,select', 'get_attachments',],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
     /**
@@ -19,6 +21,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
      */
     public function addCustomLinks(): void
     {
+        $this->updateComments();
         $this->updateRelatedList();
         $this->updateToStandardModule();
     }
@@ -55,7 +58,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
                 ],
                 'vendor_id' => [
                     'name' => 'vendor_id',
-                    'uitype' => 81,
+                    'uitype' => 10,
                     'column' => 'vendor_id',
                     'table' => 'vtiger_purchaseorder',
                     'label' => 'Vendor Name',
@@ -66,6 +69,9 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+                    'related_modules' => [
+                        'Vendors',
+                    ],
                 ],
                 'requisition_no' => [
                     'name' => 'requisition_no',
@@ -97,7 +103,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
                 ],
                 'contact_id' => [
                     'name' => 'contact_id',
-                    'uitype' => 57,
+                    'uitype' => 10,
                     'column' => 'contact_id',
                     'table' => 'vtiger_purchaseorder',
                     'label' => 'Contact Name',
@@ -109,6 +115,9 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'headerfield' => 1,
+                    'related_modules' => [
+                        'Contacts',
+                    ],
                 ],
                 'duedate' => [
                     'name' => 'duedate',

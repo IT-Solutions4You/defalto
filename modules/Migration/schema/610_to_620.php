@@ -25,13 +25,6 @@ if (defined('INSTALLATION_MODE')) {
 
 $db = PearDatabase::getInstance();
 
-//Handle migration for http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/7552--senotesrel
-Migration_Index_View::ExecuteQuery('DELETE from vtiger_senotesrel WHERE crmid NOT IN(select crmid from vtiger_crmentity)', []);
-Migration_Index_View::ExecuteQuery(
-    'ALTER TABLE vtiger_senotesrel ADD CONSTRAINT fk1_crmid FOREIGN KEY IF NOT EXISTS (crmid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE',
-    []
-);
-
 /*141*/
 //registering handlers for Google sync 
 require_once 'includes/main/WebUI.php';

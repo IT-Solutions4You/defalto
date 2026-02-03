@@ -32,10 +32,9 @@ class Services_Module_Model extends Products_Module_Model
      */
     public function getQueryByModuleField($sourceModule, $field, $record, $listQuery)
     {
-        $supportedModulesList = ['Leads', 'Accounts', 'HelpDesk', 'Potentials'];
-        if (($sourceModule == 'PriceBooks' && $field == 'priceBookRelatedList')
-            || in_array($sourceModule, $supportedModulesList)
-            || in_array($sourceModule, InventoryItem_Utils_Helper::getInventoryItemModules())) {
+        $supportedModulesList = ['Leads', 'Accounts', 'HelpDesk', 'Potentials', 'Contacts'];
+
+        if (($sourceModule == 'PriceBooks' && $field == 'priceBookRelatedList') || in_array($sourceModule, $supportedModulesList) || in_array($sourceModule, InventoryItem_Utils_Helper::getInventoryItemModules())) {
             $condition = " vtiger_service.discontinued = 1 ";
 
             $db = PearDatabase::getInstance();
@@ -47,17 +46,10 @@ class Services_Module_Model extends Products_Module_Model
                 $condition .= " AND vtiger_service.serviceid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
                 $params = [$record, $record];
             }
+
             $condition = $db->convert2Sql($condition, $params);
 
-            $pos = stripos($listQuery, 'where');
-            if ($pos) {
-                $split = preg_split('/where/i', $listQuery);
-                $overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
-            } else {
-                $overRideQuery = $listQuery . ' WHERE ' . $condition;
-            }
-
-            return $overRideQuery;
+            return $this->addConditionToQuery($listQuery, $condition);
         }
     }
 

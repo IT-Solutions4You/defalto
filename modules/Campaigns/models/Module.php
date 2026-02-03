@@ -28,7 +28,7 @@ class Campaigns_Module_Model extends Vtiger_Module_Model
     public function getSpecificRelationQuery($relatedModule)
     {
         if ($relatedModule === 'Leads') {
-            $specificQuery = 'AND vtiger_leaddetails.converted = 0';
+            $specificQuery = ' AND vtiger_leaddetails.converted = 0 ';
 
             return $specificQuery;
         }
@@ -49,33 +49,12 @@ class Campaigns_Module_Model extends Vtiger_Module_Model
     public function getQueryByModuleField($sourceModule, $field, $record, $listQuery)
     {
         if (in_array($sourceModule, ['Leads', 'Accounts', 'Contacts'])) {
-            switch ($sourceModule) {
-                case 'Leads'        :
-                    $tableName = 'vtiger_campaignleadrel';
-                    $relatedFieldName = 'leadid';
-                    break;
-                case 'Accounts'        :
-                    $tableName = 'vtiger_campaignaccountrel';
-                    $relatedFieldName = 'accountid';
-                    break;
-                case 'Contacts'        :
-                    $tableName = 'vtiger_campaigncontrel';
-                    $relatedFieldName = 'contactid';
-                    break;
-            }
             $db = PearDatabase::getInstance();
-            $condition = " vtiger_campaign.campaignid NOT IN (SELECT campaignid FROM $tableName WHERE $relatedFieldName = ?)";
-            $condition = $db->convert2Sql($condition, [$record]);
-            $pos = stripos($listQuery, 'where');
+            $condition = ' vtiger_crmentity.crmid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ';
+            $params = [$record, $record];
+            $condition = $db->convert2Sql($condition, $params);
 
-            if ($pos) {
-                $split = preg_split('/where/i', $listQuery);
-                $overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
-            } else {
-                $overRideQuery = $listQuery . ' WHERE ' . $condition;
-            }
-
-            return $overRideQuery;
+            return $this->addConditionToQuery($listQuery, $condition);
         }
     }
 

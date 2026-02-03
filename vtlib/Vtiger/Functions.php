@@ -1105,8 +1105,6 @@ class Vtiger_Functions
             //Lead Related Fields
             "vtiger_leaddetails:email"               => "V",
             "vtiger_leaddetails:secondaryemail"      => "V",
-            //Documents Related Fields
-            "vtiger_senotesrel:crmid"                => "V",
             //HelpDesk Related Fields
             "vtiger_troubletickets:parent_id"        => "V",
             "vtiger_troubletickets:product_id"       => "V",
@@ -1140,17 +1138,10 @@ class Vtiger_Functions
             "vtiger_campaigncontrel:contactid"       => "V",
             "vtiger_campaignleadrel:campaignid"      => "V",
             "vtiger_campaignleadrel:leadid"          => "V",
-            "vtiger_contpotentialrel:contactid"      => "V",
-            "vtiger_contpotentialrel:potentialid"    => "V",
             "vtiger_pricebookproductrel:pricebookid" => "V",
             "vtiger_pricebookproductrel:productid"   => "V",
-            "vtiger_senotesrel:notesid"              => "V",
             "vtiger_seproductsrel:crmid"             => "V",
             "vtiger_seproductsrel:productid"         => "V",
-            "vtiger_seticketsrel:crmid"              => "V",
-            "vtiger_seticketsrel:ticketid"           => "V",
-            "vtiger_vendorcontactrel:vendorid"       => "V",
-            "vtiger_vendorcontactrel:contactid"      => "V",
             "vtiger_pricebook:currency_id"           => "V",
         ];
 

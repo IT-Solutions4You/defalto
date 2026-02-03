@@ -20,7 +20,6 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
 class HelpDesk extends CRMEntity
 {
     public string $moduleVersion = '1.2';
@@ -30,6 +29,9 @@ class HelpDesk extends CRMEntity
     public $table_index = 'ticketid';
     public $tab_name = ['vtiger_crmentity', 'vtiger_troubletickets', 'vtiger_ticketcf'];
     public $tab_name_index = ['vtiger_crmentity' => 'crmid', 'vtiger_troubletickets' => 'ticketid', 'vtiger_ticketcf' => 'ticketid', 'vtiger_ticketcomments' => 'ticketid'];
+    public array $tab_name_left_join = [
+        'vtiger_ticketcomments',
+    ];
     /**
      * Mandatory table for supporting custom fields.
      */
@@ -43,24 +45,24 @@ class HelpDesk extends CRMEntity
     public $list_fields = [
         //Module Sequence Numbering
         //'Ticket ID'=>Array('crmentity'=>'crmid'),
-        'Ticket No'    => ['troubletickets' => 'ticket_no'],
+        'Ticket No' => ['troubletickets' => 'ticket_no'],
         // END
-        'Subject'      => ['troubletickets' => 'ticket_title'],
-        'Related to'   => ['troubletickets' => 'parent_id'],
+        'Subject' => ['troubletickets' => 'ticket_title'],
+        'Related to' => ['troubletickets' => 'parent_id'],
         'Contact Name' => ['troubletickets' => 'contact_id'],
-        'Status'       => ['troubletickets' => 'ticketstatus'],
-        'Priority'     => ['troubletickets' => 'ticketpriorities'],
-        'Assigned To'  => ['crmentity', 'assigned_user_id'],
+        'Status' => ['troubletickets' => 'ticketstatus'],
+        'Priority' => ['troubletickets' => 'ticketpriorities'],
+        'Assigned To' => ['crmentity', 'assigned_user_id'],
     ];
 
     public $list_fields_name = [
-        'Ticket No'    => 'ticket_no',
-        'Subject'      => 'ticket_title',
-        'Related to'   => 'parent_id',
+        'Ticket No' => 'ticket_no',
+        'Subject' => 'ticket_title',
+        'Related to' => 'parent_id',
         'Contact Name' => 'contact_id',
-        'Status'       => 'ticketstatus',
-        'Priority'     => 'ticketpriorities',
-        'Assigned To'  => 'assigned_user_id',
+        'Status' => 'ticketstatus',
+        'Priority' => 'ticketpriorities',
+        'Assigned To' => 'assigned_user_id',
     ];
 
     public $list_link_field = 'ticket_title';
@@ -85,11 +87,11 @@ class HelpDesk extends CRMEntity
     public $search_fields = [
         //'Ticket ID' => Array('vtiger_crmentity'=>'crmid'),
         'Ticket No' => ['vtiger_troubletickets' => 'ticket_no'],
-        'Title'     => ['vtiger_troubletickets' => 'ticket_title'],
+        'Title' => ['vtiger_troubletickets' => 'ticket_title'],
     ];
     public $search_fields_name = [
         'Ticket No' => 'ticket_no',
-        'Title'     => 'ticket_title',
+        'Title' => 'ticket_title',
     ];
     //Specify Required fields
     public $required_fields = [];
@@ -143,7 +145,7 @@ class HelpDesk extends CRMEntity
     /** Function to insert values in vtiger_ticketcomments  for the specified tablename and  module
      *
      * @param $table_name -- table name:: Type varchar
-     * @param $module     -- module:: Type varchar
+     * @param $module -- module:: Type varchar
      */
     function insertIntoTicketCommentTable($table_name, $module)
     {
@@ -172,7 +174,7 @@ class HelpDesk extends CRMEntity
     /**
      *      This function is used to add the vtiger_attachments. This will call the function uploadAndSaveFile which will upload the attachment into the server and save that attachment information in the database.
      *
-     * @param int    $id     - entity id to which the vtiger_files to be uploaded
+     * @param int $id - entity id to which the vtiger_files to be uploaded
      * @param string $module - the current module name
      */
     function insertIntoAttachment($id, $module)
@@ -316,11 +318,17 @@ class HelpDesk extends CRMEntity
         global $adb, $log;
         $log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
-        $rel_table_arr = ['Attachments' => 'vtiger_seattachmentsrel', 'Documents' => 'vtiger_senotesrel'];
+        $rel_table_arr = [
+            'Attachments' => 'vtiger_seattachmentsrel',
+        ];
 
-        $tbl_field_arr = ['vtiger_seattachmentsrel' => 'attachmentsid', 'vtiger_senotesrel' => 'notesid'];
+        $tbl_field_arr = [
+            'vtiger_seattachmentsrel' => 'attachmentsid',
+        ];
 
-        $entity_tbl_field_arr = ['vtiger_seattachmentsrel' => "crmid", 'vtiger_senotesrel' => 'crmid'];
+        $entity_tbl_field_arr = [
+            'vtiger_seattachmentsrel' => "crmid",
+        ];
 
         foreach ($transferEntityIds as $transferId) {
             foreach ($rel_table_arr as $rel_module => $rel_table) {
@@ -349,94 +357,17 @@ class HelpDesk extends CRMEntity
     }
 
     /*
-     * Function to get the secondary query part of a report
-     * @param - $module primary module name
-     * @param - $secmodule secondary module name
-     * returns the query string formed on fetching the related data for report for secondary module
-     */
-    function generateReportsSecQuery($module, $secmodule, $queryPlanner)
-    {
-        $matrix = $queryPlanner->newDependencyMatrix();
-        $matrix->setDependency("vtiger_crmentityHelpDesk", ["vtiger_groupsHelpDesk", "vtiger_usersHelpDesk", "vtiger_lastModifiedByHelpDesk"]);
-        $matrix->setDependency("vtiger_crmentityRelHelpDesk", ["vtiger_accountRelHelpDesk", "vtiger_contactdetailsRelHelpDesk"]);
-
-        if (!$queryPlanner->requireTable('vtiger_troubletickets', $matrix)) {
-            return '';
-        }
-
-        $matrix->setDependency("vtiger_troubletickets", ["vtiger_crmentityHelpDesk", "vtiger_ticketcf", "vtiger_crmentityRelHelpDesk", "vtiger_productsRel"]);
-
-        // TODO Support query planner
-        $query = $this->getRelationQuery($module, $secmodule, "vtiger_troubletickets", "ticketid", $queryPlanner);
-
-        if ($queryPlanner->requireTable("vtiger_crmentityHelpDesk", $matrix)) {
-            $query .= " left join vtiger_crmentity as vtiger_crmentityHelpDesk on vtiger_crmentityHelpDesk.crmid=vtiger_troubletickets.ticketid and vtiger_crmentityHelpDesk.deleted=0";
-        }
-        if ($queryPlanner->requireTable("vtiger_ticketcf")) {
-            $query .= " left join vtiger_ticketcf on vtiger_ticketcf.ticketid = vtiger_troubletickets.ticketid";
-        }
-        if ($queryPlanner->requireTable("vtiger_crmentityRelHelpDesk", $matrix)) {
-            $query .= " left join vtiger_crmentity as vtiger_crmentityRelHelpDesk on vtiger_crmentityRelHelpDesk.crmid = vtiger_troubletickets.parent_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_accountRelHelpDesk")) {
-            $query .= " left join vtiger_account as vtiger_accountRelHelpDesk on vtiger_accountRelHelpDesk.accountid=vtiger_crmentityRelHelpDesk.crmid";
-        }
-        if ($queryPlanner->requireTable("vtiger_contactdetailsRelHelpDesk")) {
-            $query .= " left join vtiger_contactdetails as vtiger_contactdetailsRelHelpDesk on vtiger_contactdetailsRelHelpDesk.contactid= vtiger_troubletickets.contact_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_productsRel")) {
-            $query .= " left join vtiger_products as vtiger_productsRel on vtiger_productsRel.productid = vtiger_troubletickets.product_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_groupsHelpDesk")) {
-            $query .= " left join vtiger_groups as vtiger_groupsHelpDesk on vtiger_groupsHelpDesk.groupid = vtiger_crmentityHelpDesk.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_usersHelpDesk")) {
-            $query .= " left join vtiger_users as vtiger_usersHelpDesk on vtiger_usersHelpDesk.id = vtiger_crmentityHelpDesk.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_lastModifiedByHelpDesk")) {
-            $query .= " left join vtiger_users as vtiger_lastModifiedByHelpDesk on vtiger_lastModifiedByHelpDesk.id = vtiger_crmentityHelpDesk.modifiedby ";
-        }
-        if ($queryPlanner->requireTable("vtiger_createdbyHelpDesk")) {
-            $query .= " left join vtiger_users as vtiger_createdbyHelpDesk on vtiger_createdbyHelpDesk.id = vtiger_crmentityHelpDesk.creator_user_id ";
-        }
-
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
-    }
-
-    /*
      * Function to get the relation tables for related modules
      * @param - $secmodule secondary module name
      * returns the array with table names and fieldnames storing relations between module and this module
      */
-    function setRelationTables($secmodule)
+    public function setRelationTables($secmodule)
     {
         $rel_tables = [
-            "Documents" => ["vtiger_senotesrel" => ["crmid", "notesid"], "vtiger_troubletickets" => "ticketid"],
-            "Products"  => ["vtiger_troubletickets" => ["ticketid", "product_id"]],
-            "Services"  => ["vtiger_crmentityrel" => ["crmid", "relcrmid"], "vtiger_troubletickets" => "ticketid"],
+            'Products' => ['vtiger_troubletickets' => ['ticketid', 'product_id']],
         ];
 
         return $rel_tables[$secmodule];
-    }
-
-    // Function to unlink an entity with given Id from another entity
-    function unlinkRelationship($id, $return_module, $return_id)
-    {
-        global $log;
-        if (empty($return_module) || empty($return_id)) {
-            return;
-        }
-
-        if ($return_module == 'Accounts') {
-            $this->db->pquery('DELETE FROM vtiger_seticketsrel WHERE ticketid=?', [$id]);
-        } elseif ($return_module == 'Contacts') {
-            $this->db->pquery('DELETE FROM vtiger_seticketsrel WHERE ticketid=?', [$id]);
-        } else {
-            parent::unlinkRelationship($id, $return_module, $return_id);
-        }
     }
 
     public static function getTicketEmailContents($entityData, $toOwner = false)

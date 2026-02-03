@@ -599,7 +599,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     {
         $number = "";
         if (is_numeric($value)) {
-            $number = number_format($value, self::$decimals, self::$decimal_point, self::$thousands_separator);
+            $number = number_format($value, (int)self::$decimals, self::$decimal_point, self::$thousands_separator);
         }
 
         return $number;
