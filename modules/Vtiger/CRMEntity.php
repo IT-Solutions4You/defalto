@@ -15,7 +15,6 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
 class Vtiger_CRMEntity extends CRMEntity
 {
 
@@ -32,9 +31,8 @@ class Vtiger_CRMEntity extends CRMEntity
      * Return query to use based on given modulename, fieldname
      * Useful to handle specific case handling for Popup
      */
-    function getQueryByModuleField($module, $fieldname, $srcrecord)
+    public function getQueryByModuleField($module, $fieldname, $srcrecord)
     {
-        // $srcrecord could be empty
     }
 
     /**

@@ -175,9 +175,9 @@ function vtws_convertlead($entityvalues, $user)
         }
 
         if (!empty($accountId) && !empty($contactId) && !empty($potentialId)) {
-            $sql = "insert into vtiger_contpotentialrel values(?,?)";
-            $result = $adb->pquery($sql, [$contactId, $potentialId]);
-            if ($result === false) {
+            $result = Core_Relation_Model::saveEntityRelation($contactId, 'Contacts', $potentialId, 'Potentials');
+
+            if (!$result) {
                 throw new WebServiceException(
                     WebServiceErrorCode::$FAILED_TO_CREATE_RELATION,
                     "Failed to related Contact with the Potential"

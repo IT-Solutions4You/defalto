@@ -119,20 +119,6 @@ class Faq extends CRMEntity
         }
     }
 
-    /*
-     * Function to get the relation tables for related modules
-     * @param - $secmodule secondary module name
-     * returns the array with table names and fieldnames storing relations between module and this module
-     */
-    function setRelationTables($secmodule)
-    {
-        $rel_tables = [
-            "Documents" => ["vtiger_senotesrel" => ["crmid", "notesid"], "vtiger_faq" => "id"],
-        ];
-
-        return $rel_tables[$secmodule];
-    }
-
     function clearSingletonSaveFields()
     {
         $this->column_fields['comments'] = '';

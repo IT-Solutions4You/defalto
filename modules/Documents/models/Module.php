@@ -64,36 +64,6 @@ class Documents_Module_Model extends Vtiger_Module_Model
     }
 
     /**
-     * Function to get list view query for popup window
-     *
-     * @param <String>  $sourceModule Parent module
-     * @param <String>  $field        parent fieldname
-     * @param <Integer> $record       parent id
-     * @param <String>  $listQuery
-     *
-     * @return <String> Listview Query
-     */
-    public function getQueryByModuleField($sourceModule, $field, $record, $listQuery)
-    {
-        if ($sourceModule === 'ITS4YouEmails' && $field === 'composeEmail') {
-            $condition = ' (( vtiger_notes.filelocationtype LIKE "%I%")) AND vtiger_notes.filename != "" AND vtiger_notes.filestatus = 1';
-        } else {
-            $db = PearDatabase::getInstance();
-            $condition = " vtiger_notes.notesid NOT IN (SELECT notesid FROM vtiger_senotesrel WHERE crmid = ?) AND vtiger_notes.filestatus = 1";
-            $condition = $db->convert2Sql($condition, [$record]);
-        }
-        $pos = stripos($listQuery, 'where');
-        if ($pos) {
-            $split = preg_split('/where/i', $listQuery);
-            $overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
-        } else {
-            $overRideQuery = $listQuery . ' WHERE ' . $condition;
-        }
-
-        return $overRideQuery;
-    }
-
-    /**
      * Funtion that returns fields that will be showed in the record selection popup
      * @return <Array of fields>
      */
@@ -226,4 +196,15 @@ class Documents_Module_Model extends Vtiger_Module_Model
     {
         return false;
     }
+
+    public function getQueryByModuleField($sourceModule, $field, $record, $listQuery)
+    {
+        $db = PearDatabase::getInstance();
+        $condition = ' vtiger_crmentity.crmid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ';
+        $params = [$record, $record];
+        $condition = $db->convert2Sql($condition, $params);
+
+        return $this->addConditionToQuery($listQuery, $condition);
+    }
+
 }

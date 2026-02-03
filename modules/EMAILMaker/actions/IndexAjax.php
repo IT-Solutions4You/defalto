@@ -353,41 +353,6 @@ class EMAILMaker_IndexAjax_Action extends Core_Controller_Action
         $response->emit();
     }
 
-    public function getRelatedDocuments($crmid)
-    {
-        $adb = PearDatabase::getInstance();
-        $documentRes = $adb->pquery(
-            "SELECT * FROM vtiger_senotesrel
-            INNER JOIN vtiger_crmentity ON vtiger_senotesrel.notesid = vtiger_crmentity.crmid AND vtiger_senotesrel.crmid = ?
-            INNER JOIN vtiger_notes ON vtiger_notes.notesid = vtiger_senotesrel.notesid
-            INNER JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.crmid = vtiger_notes.notesid
-            INNER JOIN vtiger_attachments ON vtiger_attachments.attachmentsid = vtiger_seattachmentsrel.attachmentsid
-            WHERE vtiger_crmentity.deleted = 0",
-            [$crmid]
-        );
-        $numOfRows = $adb->num_rows($documentRes);
-        if ($numOfRows) {
-            for ($i = 0; $i < $numOfRows; $i++) {
-                $row = $adb->query_result_rowdata($documentRes, $i);
-
-                if (!isset($row['storedname']) || empty($row['storedname'])) {
-                    $row['storedname'] = $row['name'];
-                }
-
-                $documentsList[$i]['name'] = $row['filename'];
-                $filesize = $row['filesize'];
-                $documentsList[$i]['size'] = $this->getFormattedFileSize($filesize);
-                $documentsList[$i]['docid'] = $row['notesid'];
-                $documentsList[$i]['path'] = $row['path'];
-                $documentsList[$i]['fileid'] = $row['attachmentsid'];
-                $documentsList[$i]['attachment'] = $row['storedname'];
-                $documentsList[$i]['type'] = $row['type'];
-            }
-        }
-
-        return $documentsList;
-    }
-
     public function getFormattedFileSize($filesize)
     {
         if ($filesize < 1024) {

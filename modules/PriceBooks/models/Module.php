@@ -95,6 +95,7 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model
         if (in_array($sourceModule, $relatedModulesList)) {
             $pos = stripos($listQuery, ' where ');
             $db = PearDatabase::getInstance();
+
             if ($currencyId && in_array($field, ['productid', 'serviceid'])) {
                 $condition = " vtiger_pricebook.pricebookid IN (SELECT pricebookid FROM vtiger_pricebookproductrel WHERE productid = ?)
 								AND vtiger_pricebook.currency_id = $currencyId AND vtiger_pricebook.active = 1";
@@ -102,15 +103,10 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model
                 $condition = "vtiger_pricebook.pricebookid NOT IN (SELECT pricebookid FROM vtiger_pricebookproductrel WHERE productid = ?)
 								AND vtiger_pricebook.active = 1";
             }
-            $condition = $db->convert2Sql($condition, [$record]);
-            if ($pos) {
-                $split = preg_split('/ where /i', $listQuery);
-                $overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
-            } else {
-                $overRideQuery = $listQuery . ' WHERE ' . $condition;
-            }
 
-            return $overRideQuery;
+            $condition = $db->convert2Sql($condition, [$record]);
+
+            return $this->addConditionToQuery($listQuery, $condition);
         }
     }
 

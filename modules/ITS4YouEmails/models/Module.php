@@ -163,4 +163,22 @@ class ITS4YouEmails_Module_Model extends Vtiger_Module_Model
 
         return $emailOptOutIds;
     }
+
+    /**
+     * @param string     $sourceModule
+     * @param string     $field
+     * @param int|string $record
+     * @param string     $listQuery
+     *
+     * @return string
+     */
+    public function getQueryByModuleField(string $sourceModule, string $field, $record, string $listQuery): string
+    {
+        $db = PearDatabase::getInstance();
+        $condition = ' vtiger_crmentity.crmid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ';
+        $params = [$record, $record];
+        $condition = $db->convert2Sql($condition, $params);
+
+        return $this->addConditionToQuery($listQuery, $condition);
+    }
 }

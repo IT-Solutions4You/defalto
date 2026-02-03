@@ -73,7 +73,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         params.url = "index.php?view=Detail&module=" + app.getModuleName() + "&mode=showRecentActivities&record=" + recordId;
 
         app.helper.showProgress();
-        app.request.get(params).then(function (error, response) {
+        app.request.post(params).then(function (error, response) {
             app.helper.hideProgress();
             jQuery(".HistoryContainer").find(".data-body").html(response);
         });
@@ -360,7 +360,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         var defParams = self.getDefaultParams();
         urlParams = jQuery.extend(defParams, urlParams);
         app.helper.showProgress();
-        app.request.get({data: urlParams}).then(function (err, res) {
+        app.request.post({data: urlParams}).then(function (err, res) {
             aDeferred.resolve(res);
             var container = jQuery('.relatedContainer');
             container.html(res);
@@ -2627,7 +2627,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         params['returnrecord'] = jQuery('[name="record_id"]').val();
 
         app.helper.showProgress();
-        app.request.get({data: params}).then(function (err, response) {
+        app.request.post({data: params}).then(function (err, response) {
             app.helper.hideProgress();
             let overlayParams = {'backdrop': 'static', 'keyboard': false};
 

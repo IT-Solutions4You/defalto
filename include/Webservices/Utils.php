@@ -684,33 +684,39 @@ function vtws_getRelatedNotesAttachments($id, $relatedId)
 {
     global $adb, $log;
 
-    $sql = "select * from vtiger_senotesrel where crmid=?";
-    $result = $adb->pquery($sql, [$id]);
+    $result = $adb->pquery(
+        'SELECT relcrmid as note_id FROM vtiger_crmentityrel WHERE crmid=? AND relmodule=?',
+        [$id, 'Documents']
+    );
+
     if ($result === false) {
         return false;
     }
-    $rowCount = $adb->num_rows($result);
 
-    $sql = "insert into vtiger_senotesrel(crmid,notesid) values (?,?)";
-    for ($i = 0; $i < $rowCount; ++$i) {
-        $noteId = $adb->query_result($result, $i, "notesid");
-        $resultNew = $adb->pquery($sql, [$relatedId, $noteId]);
+    while ($row = $adb->fetchByAssoc($result)) {
+        $resultNew = Core_Relation_Model::saveEntityRelation($relatedId, getSalesEntityType($relatedId), $row['note_id'], 'Documents');
+
         if ($resultNew === false) {
             return false;
         }
     }
 
-    $sql = "select * from vtiger_seattachmentsrel where crmid=?";
-    $result = $adb->pquery($sql, [$id]);
+    $result = $adb->pquery(
+        'SELECT attachmentsid FROM vtiger_seattachmentsrel WHERE crmid=?',
+        [$id]
+    );
+
     if ($result === false) {
         return false;
     }
-    $rowCount = $adb->num_rows($result);
 
-    $sql = "insert into vtiger_seattachmentsrel(crmid,attachmentsid) values (?,?)";
-    for ($i = 0; $i < $rowCount; ++$i) {
-        $attachmentId = $adb->query_result($result, $i, "attachmentsid");
-        $resultNew = $adb->pquery($sql, [$relatedId, $attachmentId]);
+    while ($row = $adb->fetchByAssoc($result)) {
+        $attachmentId = $row['attachmentsid'];
+        $resultNew = $adb->pquery(
+            'INSERT INTO vtiger_seattachmentsrel(crmid,attachmentsid) VALUES (?,?)',
+            [$relatedId, $attachmentId]
+        );
+
         if ($resultNew === false) {
             return false;
         }
@@ -1225,31 +1231,27 @@ function vtws_transferRelatedPotentialQuotes($entityId, $relatedId)
 /**
  * Function To Transfer Related Documents From Parent Record to Related Record
  *
- * @param <Integer> $entityId  - Parent Id
+ * @param <Integer> $entityId - Parent Id
  * @param <Integer> $relatedId - Related Id
  *
  * @return boolean
+ * @throws Exception
  */
 function vtws_transferRelatedPotentialDocuments($entityId, $relatedId)
 {
     $db = PearDatabase::getInstance();
-
-    $sql = "SELECT vtiger_senotesrel.notesid FROM vtiger_senotesrel 
-			INNER JOIN vtiger_crmentity on vtiger_crmentity.crmid = vtiger_senotesrel.crmid 
-			WHERE vtiger_senotesrel.crmid=?";
-    $result = $db->pquery($sql, [$entityId]);
+    $result = $db->pquery('SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid=? AND relmodule=?', [$entityId, 'Documents']);
 
     if ($result === false) {
         return false;
     }
 
-    $rowCount = $db->num_rows($result);
-    for ($i = 0; $i < $rowCount; $i++) {
-        $documentId = $db->query_result($result, $i, "notesid");
+    while ($row = $db->fetchByAssoc($result)) {
+        $documentId = $row['relcrmid'];
 
         if (!empty($relatedId)) {
-            $sql = "INSERT INTO vtiger_senotesrel (crmid,notesid) values (?,?)";
-            $resultNew = $db->pquery($sql, [$relatedId, $documentId]);
+            $resultNew = Core_Relation_Model::saveEntityRelation($relatedId, getSalesEntityType($relatedId), $documentId, 'Documents');
+
             if ($resultNew === false) {
                 return false;
             }

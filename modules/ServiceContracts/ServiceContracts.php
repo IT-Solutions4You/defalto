@@ -15,7 +15,6 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
 class ServiceContracts extends CRMEntity
 {
     public string $moduleName = 'ServiceContracts';
@@ -38,8 +37,8 @@ class ServiceContracts extends CRMEntity
      * Mandatory for Saving, Include tablename and tablekey columnname here.
      */
     var $tab_name_index = [
-        'vtiger_crmentity'          => 'crmid',
-        'vtiger_servicecontracts'   => 'servicecontractsid',
+        'vtiger_crmentity' => 'crmid',
+        'vtiger_servicecontracts' => 'servicecontractsid',
         'vtiger_servicecontractscf' => 'servicecontractsid'
     ];
 
@@ -49,18 +48,18 @@ class ServiceContracts extends CRMEntity
     var $list_fields = [
         /* Format: Field Label => Array(tablename, columnname) */
         // tablename should not have prefix 'vtiger_'
-        'Subject'     => ['servicecontracts', 'subject'],
+        'Subject' => ['servicecontracts', 'subject'],
         'Assigned To' => ['crmentity', 'assigned_user_id'],
         'Contract No' => ['servicecontracts', 'contract_no'],
-        'Used Units'  => ['servicecontracts', 'used_units'],
+        'Used Units' => ['servicecontracts', 'used_units'],
         'Total Units' => ['servicecontracts', 'total_units']
     ];
     var $list_fields_name = [
         /* Format: Field Label => fieldname */
-        'Subject'     => 'subject',
+        'Subject' => 'subject',
         'Assigned To' => 'assigned_user_id',
         'Contract No' => 'contract_no',
-        'Used Units'  => 'used_units',
+        'Used Units' => 'used_units',
         'Total Units' => 'total_units'
     ];
 
@@ -71,18 +70,18 @@ class ServiceContracts extends CRMEntity
     var $search_fields = [
         /* Format: Field Label => Array(tablename, columnname) */
         // tablename should not have prefix 'vtiger_'
-        'Subject'     => ['servicecontracts', 'subject'],
+        'Subject' => ['servicecontracts', 'subject'],
         'Contract No' => ['servicecontracts', 'contract_no'],
         'Assigned To' => ['vtiger_crmentity', 'assigned_user_id'],
-        'Used Units'  => ['servicecontracts', 'used_units'],
+        'Used Units' => ['servicecontracts', 'used_units'],
         'Total Units' => ['servicecontracts', 'total_units']
     ];
     var $search_fields_name = [
         /* Format: Field Label => fieldname */
-        'Subject'     => 'subject',
+        'Subject' => 'subject',
         'Contract No' => 'contract_no',
         'Assigned To' => 'assigned_user_id',
-        'Used Units'  => 'used_units',
+        'Used Units' => 'used_units',
         'Total Units' => 'total_units'
     ];
 
@@ -123,15 +122,6 @@ class ServiceContracts extends CRMEntity
                 $on_focus->save_related_module($forModule, $forCrmId, $module, $this->id);
             }
         }
-    }
-
-    /**
-     * Return query to use based on given modulename, fieldname
-     * Useful to handle specific case handling for Popup
-     */
-    function getQueryByModuleField($module, $fieldname, $srcrecord)
-    {
-        // $srcrecord could be empty
     }
 
     /**
@@ -229,53 +219,6 @@ class ServiceContracts extends CRMEntity
         }
 
         return $sec_query;
-    }
-
-    /*
-     * Function to get the secondary query part of a report
-     * @param - $module primary module name
-     * @param - $secmodule secondary module name
-     * returns the query string formed on fetching the related data for report for secondary module
-     */
-    function generateReportsSecQuery($module, $secmodule, $queryPlanner)
-    {
-        $matrix = $queryPlanner->newDependencyMatrix();
-        $matrix->setDependency('vtiger_crmentityServiceContracts', ['vtiger_groupsServiceContracts', 'vtiger_usersServiceContracts']);
-        if (!$queryPlanner->requireTable('vtiger_servicecontracts', $matrix)) {
-            return '';
-        }
-        $matrix->setDependency('vtiger_servicecontracts', ['vtiger_servicecontractscf', 'vtiger_crmentityServiceContracts']);
-
-        $query = $this->getRelationQuery($module, $secmodule, "vtiger_servicecontracts", "servicecontractsid", $queryPlanner);
-
-        if ($queryPlanner->requireTable("vtiger_crmentityServiceContracts", $matrix)) {
-            $query .= " left join vtiger_crmentity as vtiger_crmentityServiceContracts on vtiger_crmentityServiceContracts.crmid = vtiger_servicecontracts.servicecontractsid  and vtiger_crmentityServiceContracts.deleted=0";
-        }
-        if ($queryPlanner->requireTable("vtiger_servicecontractscf")) {
-            $query .= " left join vtiger_servicecontractscf on vtiger_servicecontractscf.servicecontractsid = vtiger_servicecontracts.servicecontractsid";
-        }
-        if ($queryPlanner->requireTable("vtiger_groupsServiceContracts")) {
-            $query .= " left join vtiger_groups as vtiger_groupsServiceContracts on vtiger_groupsServiceContracts.groupid = vtiger_crmentityServiceContracts.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_usersServiceContracts")) {
-            $query .= " left join vtiger_users as vtiger_usersServiceContracts on vtiger_usersServiceContracts.id = vtiger_crmentityServiceContracts.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_contactdetailsRelServiceContracts")) {
-            $query .= " left join vtiger_contactdetails as vtiger_contactdetailsRelServiceContracts on vtiger_contactdetailsRelServiceContracts.contactid = vtiger_servicecontracts.contact_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_accountRelServiceContracts")) {
-            $query .= " left join vtiger_account as vtiger_accountRelServiceContracts on vtiger_accountRelServiceContracts.accountid = vtiger_servicecontracts.account_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_lastModifiedByServiceContracts")) {
-            $query .= " left join vtiger_users as vtiger_lastModifiedByServiceContracts on vtiger_lastModifiedByServiceContracts.id = vtiger_crmentityServiceContracts.modifiedby ";
-        }
-        if ($queryPlanner->requireTable("vtiger_createdbyServiceContracts")) {
-            $query .= " left join vtiger_users as vtiger_createdbyServiceContracts on vtiger_createdbyServiceContracts.id = vtiger_crmentityServiceContracts.creator_user_id ";
-        }
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
     }
 
     /**
@@ -595,72 +538,28 @@ class ServiceContracts extends CRMEntity
     }
 
     /**
-     * Handle getting related list information.
-     * NOTE: This function has been added to CRMEntity (base class).
-     * You can override the behavior by re-defining it here.
-     */
-    //function get_related_list($id, $cur_tab_id, $rel_tab_id, $actions=false) { }
-
-    /** Function to unlink an entity with given Id from another entity */
-    function unlinkRelationship($id, $return_module, $return_id)
-    {
-        global $log, $currentModule;
-        $id = Vtiger_Util_Helper::validateStringForSql($id);
-        $return_module = Vtiger_Util_Helper::validateStringForSql($return_module);
-        $return_id = Vtiger_Util_Helper::validateStringForSql($return_id);
-
-        if ($return_module == 'Accounts') {
-            $focus = CRMEntity::getInstance($return_module);
-            $entityIds = $focus->getRelatedContactsIds($return_id);
-            array_push($entityIds, $return_id);
-            $entityIds = implode(',', $entityIds);
-            $return_modules = "'Accounts','Contacts'";
-        } elseif ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
-        } else {
-            $entityIds = $return_id;
-            $return_modules = "'" . $return_module . "'";
-        }
-
-        if ($return_module != 'Documents') {
-            $query = 'DELETE FROM vtiger_crmentityrel WHERE (relcrmid=' . $id . ' AND module IN (' . $return_modules . ') AND crmid IN (' . $entityIds . ')) OR (crmid=' . $id . ' AND relmodule IN (' . $return_modules . ') AND relcrmid IN (' . $entityIds . '))';
-            $this->db->pquery($query, []);
-
-            $sql = 'SELECT tabid, tablename, columnname FROM vtiger_field WHERE fieldid IN (SELECT fieldid FROM vtiger_fieldmodulerel WHERE module=? AND relmodule IN (' . $return_modules . '))';
-            $fieldRes = $this->db->pquery($sql, [$currentModule]);
-            $numOfFields = $this->db->num_rows($fieldRes);
-            for ($i = 0; $i < $numOfFields; $i++) {
-                $tabId = $this->db->query_result($fieldRes, $i, 'tabid');
-                $tableName = $this->db->query_result($fieldRes, $i, 'tablename');
-                $columnName = $this->db->query_result($fieldRes, $i, 'columnname');
-                $relatedModule = vtlib_getModuleNameById($tabId);
-                $focusObj = CRMEntity::getInstance($relatedModule);
-
-                $updateQuery = "UPDATE $tableName SET $columnName=? WHERE $columnName IN ($entityIds) AND $focusObj->table_index=?";
-                $updateParams = [null, $id];
-                $this->db->pquery($updateQuery, $updateParams);
-            }
-        }
-    }
-
-    /**
      * Move the related records of the specified list of id's to the given record.
      *
      * @param String This module name
      * @param Array List of Entity Id's from which related records need to be transfered
      * @param Integer Id of the the Record to which the related records are to be moved
      */
-    function transferRelatedRecords($module, $transferEntityIds, $entityId)
+    public function transferRelatedRecords($module, $transferEntityIds, $entityId)
     {
         global $adb, $log;
         $log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
-        $rel_table_arr = ["Documents" => "vtiger_senotesrel", "Attachments" => "vtiger_seattachmentsrel"];
+        $rel_table_arr = [
+            'Attachments' => 'vtiger_seattachmentsrel'
+        ];
 
-        $tbl_field_arr = ["vtiger_senotesrel" => "notesid", "vtiger_seattachmentsrel" => "attachmentsid"];
+        $tbl_field_arr = [
+            'vtiger_seattachmentsrel' => 'attachmentsid'
+        ];
 
-        $entity_tbl_field_arr = ["vtiger_senotesrel" => "crmid", "vtiger_seattachmentsrel" => "crmid"];
+        $entity_tbl_field_arr = [
+            'vtiger_seattachmentsrel' => 'crmid'
+        ];
 
         foreach ($transferEntityIds as $transferId) {
             foreach ($rel_table_arr as $rel_module => $rel_table) {
@@ -668,8 +567,7 @@ class ServiceContracts extends CRMEntity
                 $entity_id_field = $entity_tbl_field_arr[$rel_table];
                 // IN clause to avoid duplicate entries
                 $sel_result = $adb->pquery(
-                    "select $id_field from $rel_table where $entity_id_field=? " .
-                    " and $id_field not in (select $id_field from $rel_table where $entity_id_field=?)",
+                    "select $id_field from $rel_table where $entity_id_field=? " . " and $id_field not in (select $id_field from $rel_table where $entity_id_field=?)",
                     [$transferId, $entityId]
                 );
                 $res_cnt = $adb->num_rows($sel_result);
