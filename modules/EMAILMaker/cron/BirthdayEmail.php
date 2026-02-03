@@ -17,7 +17,6 @@ require_once 'vendor/autoload.php';
 require_once('includes/runtime/BaseModel.php');
 require_once('includes/runtime/Globals.php');
 require_once('include/utils/utils.php');
-require_once('include/logging.php');
 require_once('include/database/PearDatabase.php');
 require_once('modules/EMAILMaker/EMAILMaker.php');
 require_once('modules/EMAILMaker/models/EMAILMaker.php');

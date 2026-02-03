@@ -18,7 +18,6 @@
  */
 
 require_once('include/utils/utils.php');
-require_once('include/logging.php');
 require_once('include/database/PearDatabase.php');
 
 Settings_MailConverter_MailScanner_Handler::runCron();

@@ -56,10 +56,11 @@ class InventoryItem_Module_Model extends Vtiger_Module_Model
     {
         $db = PearDatabase::getInstance();
         $items = [];
-        $sql = 'SELECT df_inventoryitem.*, df_inventoryitemcf.* 
+        $sql = 'SELECT df_inventoryitem.*, df_inventoryitemcf.*, df_taxes_records.tax_id 
                 FROM df_inventoryitem
                     LEFT JOIN df_inventoryitemcf ON df_inventoryitemcf.inventoryitemid = df_inventoryitem.inventoryitemid
                     INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid AND vtiger_crmentity.deleted = 0
+                    LEFT JOIN df_taxes_records ON df_taxes_records.record_id = df_inventoryitem.inventoryitemid
                 WHERE parentid = ? ';
 
         if (!$includeText) {

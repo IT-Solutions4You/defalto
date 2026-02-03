@@ -84,9 +84,6 @@ $languageStrings = [
     'LBL_MENU_DESC'           => 'Konfiguracja widoczności pozycji menu',
     'LBL_MENU_EDITOR_MESSAGE' => 'Rzeczywista liczba punktów menu wyświetlanych będzie zależeć od wielkości ekranu i może być mniejsza niż wybranych pozycjach.',
 
-    'NOTIFICATIONSCHEDULERS'      => 'Harmonogram powiadomień',
-    'LBL_NOTIF_SCHED_DESCRIPTION' => 'Zarządzaj powiadomieniami',
-
     'LBL_COMPANY_DETAILS'     => 'Szczegóły firmy',
     'LBL_COMPANY_DESCRIPTION' => 'Dane adresowe firmy',
 

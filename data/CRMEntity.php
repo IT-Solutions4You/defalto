@@ -31,7 +31,6 @@
  */
 
 include_once('config.php');
-require_once('include/logging.php');
 require_once('data/Tracker.php');
 require_once('include/utils/utils.php');
 require_once('include/utils/UserInfoUtil.php');
@@ -67,7 +66,7 @@ class CRMExtension
      */
     public function __construct()
     {
-        $this->log = Logger::getLogger(strtolower($this->moduleName));
+        $this->log = Core_Logger_Helper::getLogger(strtolower($this->moduleName));
         $this->db = PearDatabase::getInstance();
         $this->column_fields = new TrackableObject();
     }
@@ -1835,7 +1834,7 @@ class CRMEntity extends CRMExtension
                     }
                 }
             } else {
-                $log->fatal("Updating Missing Sequence Number FAILED! REASON: Field table and module table mismatching.");
+                $log->critical("Updating Missing Sequence Number FAILED! REASON: Field table and module table mismatching.");
             }
         }
 

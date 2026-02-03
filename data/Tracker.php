@@ -32,7 +32,6 @@
  */
 
 include_once('config.php');
-require_once('include/logging.php');
 require_once('include/database/PearDatabase.php');
 
 /** This class is used to track the recently viewed items on a per user basis.
@@ -58,7 +57,7 @@ class Tracker
 
     function __construct()
     {
-        $this->log = Logger::getLogger('Tracker');
+        $this->log = Core_Logger_Helper::getLogger('Tracker');
         // $this->db = PearDatabase::getInstance();
         global $adb;
         $this->db = $adb;

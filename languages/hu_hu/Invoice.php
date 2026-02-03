@@ -44,4 +44,7 @@ $languageStrings = [
     'LBL_THIS'                                                                   => 'Ez a',
     'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM'          => 'törli a rendszerből.kérjük, eltávolítása vagy cseréje ez a tétel',
     'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Ez a sor törlődik a rendszerből,kérjük, távolítsa el ezt a sort',
+    'Invoice Type' => 'Számlatípus',
+    'Tax Document' => 'Tax Document',
+    'Final Invoice' => 'Végszámla',
 ];

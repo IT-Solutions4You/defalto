@@ -189,20 +189,6 @@ class Inventory_Charges_Model extends Vtiger_Base_Model {
 	}
 
 	/**
-	 * Function to get charges taxes list
-	 * @return <Array> list of Inventory_TaxRecord_Models
-	 */
-	public static function getChargeTaxesList() {
-		$chargeTaxesList = array();
-		foreach (Inventory_Charges_Model::getInventoryCharges() as $chargeId => $chargeModel) {
-			foreach ($chargeModel->getSelectedTaxes() as $taxId => $taxModel) {
-				$chargeTaxesList[$chargeId][$taxId] = $taxModel->getData();
-			}
-		}
-		return $chargeTaxesList;
-	}
-
-	/**
 	 * Function to check duplicate charge name
 	 * @param <String> $chargeName
 	 * @param <Number> $excludedId

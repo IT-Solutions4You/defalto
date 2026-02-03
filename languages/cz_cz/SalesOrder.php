@@ -65,6 +65,8 @@ $languageStrings = [
     'Net 7 days' => 'Splatnosť 7 dní',
     'Net 14 days' => 'Splatnosť 14 dní',
     'Net 90 days' => 'Splatnosť 90 dní',
+    'Create Proforma Invoice' => 'Vytvořit předfakturu',
+    'Create Final Invoice' => 'Vytvořit finální fakturu',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Prosím, odstraňte řádkovou položku, která je odstraněna',

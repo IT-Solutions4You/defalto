@@ -36,13 +36,12 @@ require_once("include/Webservices/State.php");
 require_once("include/Webservices/OperationManager.php");
 require_once("include/Webservices/SessionManager.php");
 require_once("include/Zend/Json.php");
-require_once('include/logging.php');
 
 $API_VERSION = "0.22";
 
 global $seclog, $log;
-$seclog = Logger::getLogger('SECURITY');
-$log = Logger::getLogger('webservice');
+$seclog = Core_Logger_Helper::getLogger('SECURITY');
+$log = Core_Logger_Helper::getLogger('webservice');
 
 function getRequestParamsArrayForOperation($operation)
 {

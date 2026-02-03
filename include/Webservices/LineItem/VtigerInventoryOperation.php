@@ -220,20 +220,8 @@ class VtigerInventoryOperation extends VtigerModuleOperation
         $recordCompoundTaxesElement = $this->getCompoundTaxesElement($element, $lineItems);
         $element = array_merge($element, $recordCompoundTaxesElement);
         $element['productid'] = $lineItems[0]['productid'];
-        $element['LineItems_FinalDetails'] = $this->getLineItemFinalDetails($idComponents[1]);
 
         return $element;
-    }
-
-    public function getLineItemFinalDetails($record)
-    {
-        $finalDetails = [];
-        $recordModel = Vtiger_Record_Model::getInstanceById($record);
-        if ($recordModel) {
-            $finalDetails = $recordModel->getProducts();
-        }
-
-        return $finalDetails;
     }
 
     public function delete($id)

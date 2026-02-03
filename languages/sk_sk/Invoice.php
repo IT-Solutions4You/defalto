@@ -61,6 +61,9 @@ $languageStrings = [
     'Margin Amount' => 'Výška marže',
     'Quote' => 'Ponuka',
     'Inventory Manager' => 'Správca zásob',
+    'Invoice Type' => 'Typ faktúry',
+    'Tax Document' => 'Daňový dokument k prijatej platbe',
+    'Final Invoice' => 'Finálna faktúra',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Faktúra obsahuje odstránené produkty alebo služby, prosím upravte Faktúru',

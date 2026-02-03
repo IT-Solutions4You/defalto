@@ -17,7 +17,6 @@
  */
 
 include_once('config.php');
-require_once('include/logging.php');
 require_once('include/utils/utils.php');
 
 /** Class to populate the default required data during installation
@@ -226,49 +225,6 @@ class DefaultDataPopulator extends CRMEntity
         $this->db->query("insert into vtiger_datashare_relatedmodules values (" . $this->db->getUniqueID('vtiger_datashare_relatedmodules') . ",22,23)");
 
         // New Secutity End
-        //insert into the vtiger_notificationscheduler vtiger_table
-        //insert into related list vtiger_table
-
-        $this->db->query(
-            "insert into vtiger_notificationscheduler(schedulednotificationid,schedulednotificationname,active,notificationsubject,notificationbody,label) values (" . $this->db->getUniqueID(
-                "vtiger_notificationscheduler"
-            ) . ",'LBL_TASK_NOTIFICATION_DESCRITPION',1,'Task Delay Notification','Tasks delayed beyond 24 hrs ','LBL_TASK_NOTIFICATION')"
-        );
-        $this->db->query(
-            "insert into vtiger_notificationscheduler(schedulednotificationid,schedulednotificationname,active,notificationsubject,notificationbody,label) values (" . $this->db->getUniqueID(
-                "vtiger_notificationscheduler"
-            ) . ",'LBL_BIG_DEAL_DESCRIPTION' ,1,'Big Deal notification','Success! A big deal has been won! ','LBL_BIG_DEAL')"
-        );
-        $this->db->query(
-            "insert into vtiger_notificationscheduler(schedulednotificationid,schedulednotificationname,active,notificationsubject,notificationbody,label) values (" . $this->db->getUniqueID(
-                "vtiger_notificationscheduler"
-            ) . ",'LBL_TICKETS_DESCRIPTION',1,'Pending Tickets notification','Ticket pending please ','LBL_PENDING_TICKETS')"
-        );
-        $this->db->query(
-            "insert into vtiger_notificationscheduler(schedulednotificationid,schedulednotificationname,active,notificationsubject,notificationbody,label) values (" . $this->db->getUniqueID(
-                "vtiger_notificationscheduler"
-            ) . ",'LBL_MANY_TICKETS_DESCRIPTION',1,'Too many tickets Notification','Too many tickets pending against this entity ','LBL_MANY_TICKETS')"
-        );
-        $this->db->query(
-            "insert into vtiger_notificationscheduler(schedulednotificationid,schedulednotificationname,active,notificationsubject,notificationbody,label,type) values (" . $this->db->getUniqueID(
-                "vtiger_notificationscheduler"
-            ) . ",'LBL_START_DESCRIPTION' ,1,'Support Start Notification','10','LBL_START_NOTIFICATION','select')"
-        );
-        $this->db->query(
-            "insert into vtiger_notificationscheduler(schedulednotificationid,schedulednotificationname,active,notificationsubject,notificationbody,label,type) values (" . $this->db->getUniqueID(
-                "vtiger_notificationscheduler"
-            ) . ",'LBL_SUPPORT_DESCRIPTION',1,'Support ending please','11','LBL_SUPPORT_NOTICIATION','select')"
-        );
-        $this->db->query(
-            "insert into vtiger_notificationscheduler(schedulednotificationid,schedulednotificationname,active,notificationsubject,notificationbody,label,type) values (" . $this->db->getUniqueID(
-                "vtiger_notificationscheduler"
-            ) . ",'LBL_SUPPORT_DESCRIPTION_MONTH',1,'Support ending please','12','LBL_SUPPORT_NOTICIATION_MONTH','select')"
-        );
-        $this->db->query(
-            "insert into vtiger_notificationscheduler(schedulednotificationid,schedulednotificationname,active,notificationsubject,notificationbody,label) values (" . $this->db->getUniqueID(
-                "vtiger_notificationscheduler"
-            ) . ",'LBL_ACTIVITY_REMINDER_DESCRIPTION' ,1,'Activity Reminder Notification','This is a reminder notification for the Activity','LBL_ACTIVITY_NOTIFICATION')"
-        );
 
         //inserting actions for get_attachments
         $folderid = $this->db->getUniqueID("vtiger_attachmentsfolder");
@@ -865,7 +821,7 @@ class DefaultDataPopulator extends CRMEntity
 
     function __construct()
     {
-        $this->log = Logger::getLogger('DefaultDataPopulator');
+        $this->log = Core_Logger_Helper::getLogger('DefaultDataPopulator');
         $this->db = PearDatabase::getInstance();
     }
 }
