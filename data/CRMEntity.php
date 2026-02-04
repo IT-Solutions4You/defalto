@@ -1927,8 +1927,6 @@ class CRMEntity extends CRMExtension
      */
     public function save_related_module($module, $crmid, $with_module, $with_crmid)
     {
-        global $adb;
-
         if (!is_array($with_crmid)) {
             $with_crmid = [$with_crmid];
         }
