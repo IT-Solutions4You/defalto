@@ -15,12 +15,6 @@
     </div>
 </div>
 </nav>
-    <div id='overlayPageContent' class='fade modal overlayPageContent content-area' tabindex='-1' role='dialog' aria-hidden='true'>
-        <div class="data">
-        </div>
-        <div class="modal-dialog">
-        </div>
-    </div>
 <div class="main-container container-fluid main-container-{$MODULE}">
     <div class="row h-main">
         {include file='ModuleSidebar.tpl'|vtemplate_path:$MODULE}
