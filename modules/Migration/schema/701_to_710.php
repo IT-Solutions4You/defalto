@@ -92,7 +92,7 @@ if (defined('VTIGER_UPGRADE')) {
     //START::Tag fields are pointed to cf table for the modules Assets, Services etc..
     $fieldName = 'tags';
     $moduleModels = Vtiger_Module_Model::getAll();
-    $restrictedModules = ['Dashboard', 'Home', 'Rss', 'Portal', 'Import'];
+    $restrictedModules = ['Dashboard', 'Home', 'Import'];
     foreach ($moduleModels as $moduleModel) {
         if (in_array($moduleModel->getName(), $restrictedModules)) {
             continue;

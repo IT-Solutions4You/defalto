@@ -408,7 +408,7 @@ class DefaultDataPopulator extends CRMEntity
         ];
 
         foreach ($names as $tab) {
-            if (in_array($tab, ['Rss', 'Recyclebin'])) {
+            if (in_array($tab, ['Recyclebin'])) {
                 continue;
             }
             $entityId = $this->db->getUniqueID("vtiger_ws_entity");

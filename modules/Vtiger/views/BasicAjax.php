@@ -78,7 +78,7 @@ class Vtiger_BasicAjax_View extends Vtiger_Basic_View
         }
 
         $saveFilterPermitted = true;
-        $saveFilterexcludedModules = ['ModComments', 'RSS', 'Portal', 'Integration', 'PBXManager', 'DashBoard'];
+        $saveFilterexcludedModules = ['ModComments', 'Integration', 'PBXManager', 'DashBoard'];
         if (in_array($moduleName, $saveFilterexcludedModules)) {
             $saveFilterPermitted = false;
         }

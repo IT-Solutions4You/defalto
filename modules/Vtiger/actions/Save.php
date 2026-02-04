@@ -54,7 +54,7 @@ class Vtiger_Save_Action extends Core_Controller_Action
         $moduleName = $request->getModule();
         $record = $request->get('record');
 
-        $nonEntityModules = ['Users', 'Portal', 'Rss'];
+        $nonEntityModules = ['Users'];
         if ($record && !in_array($moduleName, $nonEntityModules)) {
             $recordEntityName = getSalesEntityType($record);
             if ($recordEntityName !== $moduleName) {
