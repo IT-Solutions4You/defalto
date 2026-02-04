@@ -286,4 +286,23 @@ class Products_Module_Model extends Vtiger_Module_Model
 
         return parent::getField($fieldName);
     }
+
+    /**
+     * @throws Exception
+     */
+    public function getConfigureRelatedListFields()
+    {
+        $fields = parent::getConfigureRelatedListFields();
+        $newFields = [];
+
+        foreach ($fields as $fieldName => $fieldLabel) {
+            $newFields[$fieldName] = $fieldLabel;
+
+            if (1 === count($newFields)) {
+                $newFields['qty_per_unit'] = 'qty_per_unit';
+            }
+        }
+
+        return $newFields;
+    }
 }
