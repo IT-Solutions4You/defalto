@@ -151,7 +151,7 @@ class ServiceContracts_Install_Model extends Core_Install_Model
                         'In Planning',
                         'In Progress',
                         'On Hold',
-                        'Complete',
+                        ['Complete', '', 0],
                         'Archived',
                     ],
                 ],

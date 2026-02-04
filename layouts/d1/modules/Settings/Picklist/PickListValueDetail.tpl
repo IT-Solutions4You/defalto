@@ -55,7 +55,7 @@
                                                         <i class="fa-solid fa-grip-vertical"></i>
                                                     </span>
                                         </div>
-                                        <div class="col-auto picklistActions">
+                                        <div class="col-2 picklistActions">
                                             <a title="{vtranslate('LBL_EDIT',$QUALIFIED_MODULE)}" class="renameItem btn text-secondary">
                                                 <i class="fa fa-pencil"></i>
                                             </a>

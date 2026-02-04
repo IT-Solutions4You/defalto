@@ -170,8 +170,8 @@ class Potentials_Install_Model extends Core_Install_Model
                         'Perception Analysis',
                         'Proposal or Price Quote',
                         'Negotiation or Review',
-                        'Closed Won',
-                        'Closed Lost',
+                        ['Closed Won', '', 0],
+                        ['Closed Lost', '', 0],
                     ],
                 ],
                 'nextstep' => [

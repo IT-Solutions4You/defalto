@@ -259,10 +259,10 @@ class HelpDesk_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'picklist_values' => [
-                        'Open',
-                        'In Progress',
-                        'Wait For Response',
-                        'Closed',
+                        ['Open', '', 0],
+                        ['In Progress', '', 0],
+                        ['Wait For Response', '', 0],
+                        ['Closed', '', 0],
                     ],
                 ],
                 'ticketcategories' => [
