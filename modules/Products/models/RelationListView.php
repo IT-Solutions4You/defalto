@@ -37,32 +37,33 @@ class Products_RelationListView_Model extends Vtiger_RelationListView_Model
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function getHeaders()
     {
         $headerFields = parent::getHeaders();
+        $relationModuleName = $this->getRelationModel()->getRelationModuleModel()->getName();
 
-        if ($this->getRelationModel()->getRelationModuleModel()->getName() == 'PriceBooks') {
+        if (in_array($relationModuleName, ['PriceBooks', 'Products'])) {
             $newHeaderFields = [];
 
             foreach ($headerFields as $headerField) {
                 $newHeaderFields[$headerField->getName()] = $headerField;
 
                 if (1 === count($newHeaderFields)) {
-                    //Added to support List Price
-                    $field = new Vtiger_Field_Model();
-                    $field->set('name', 'listprice');
-                    $field->set('column', 'listprice');
-                    $field->set('label', 'List Price');
-                    $field->set('uitype', 71);
-                    $newHeaderFields['listprice'] = $field;
+                    $relationModel = $this->getRelationModel()->getRelationModuleModel();
 
-                    //Added to support Unit Price
-                    $unitPriceField = new Vtiger_Field_Model();
-                    $unitPriceField->set('name', 'unit_price');
-                    $unitPriceField->set('column', 'unit_price');
-                    $unitPriceField->set('label', 'Unit Price');
-                    $unitPriceField->set('uitype', 71);
-                    $newHeaderFields['unit_price'] = $unitPriceField;
+                    if('Products' === $relationModuleName) {
+                        /** @var Products_Module_Model $relationModel */
+                        $newHeaderFields['qty_per_unit'] = $relationModel->getField('qty_per_unit');
+                    }
+
+                    if ('PriceBooks' === $relationModuleName) {
+                        /** @var PriceBooks_Module_Model $relationModel */
+                        $newHeaderFields['listprice'] = $relationModel->getField('listprice');
+                        $newHeaderFields['unit_price'] = $relationModel->getField('unit_price');
+                    }
                 }
             }
 
@@ -82,7 +83,8 @@ class Products_RelationListView_Model extends Vtiger_RelationListView_Model
         $relatedModuleName = $this->getRelatedModuleModel()->getName();
         $quantityField = $parentModule->getField('qty_per_unit');
 
-        if ($parentModuleName === $relatedModuleName && $this->tab_label === 'Product Bundles' && $quantityField->isActiveField()) {//Products && Child Products
+        if ($parentModuleName === $relatedModuleName && $this->tab_label === 'Product Bundles' && $quantityField->isActiveField()) {
+            //Products && Child Products
             $queryComponents = preg_split('/ FROM /i', $query);
             $count = php7_count($queryComponents);
 

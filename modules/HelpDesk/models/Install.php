@@ -17,8 +17,6 @@ class HelpDesk_Install_Model extends Core_Install_Model
         self::DOCUMENTS_RELATED_LIST,
         self::EMAILS_RELATED_LIST,
         self::APPOINTMENTS_RELATED_LIST,
-
-        ['ServiceContracts', 'HelpDesk', 'HelpDesk', ['ADD', 'SELECT'], 'get_related_list'],
     ];
 
     public array $registerEventHandler = [
@@ -259,10 +257,10 @@ class HelpDesk_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'picklist_values' => [
-                        'Open',
-                        'In Progress',
-                        'Wait For Response',
-                        'Closed',
+                        ['Open', '', 0],
+                        ['In Progress', '', 0],
+                        ['Wait For Response', '', 0],
+                        ['Closed', '', 0],
                     ],
                 ],
                 'ticketcategories' => [

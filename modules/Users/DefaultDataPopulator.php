@@ -128,9 +128,7 @@ class DefaultDataPopulator extends CRMEntity
             [21, 'PurchaseOrder', 0, -1, 'PurchaseOrder', 0, 0, 1, 'Inventory'],
             [22, 'SalesOrder', 0, -1, 'SalesOrder', 0, 0, 1, 'Sales'],
             [23, 'Invoice', 0, -1, 'Invoice', 0, 0, 1, 'Sales'],
-            [24, 'Rss', 0, -1, 'Rss', 0, 1, 0, null],
             [26, 'Campaigns', 0, -1, 'Campaigns', 0, 0, 1, 'Marketing'],
-            [27, 'Portal', 0, -1, 'Portal', 0, 1, 0, null],
             [29, 'Users', 0, -1, 'Users', 0, 1, 0, null],
             [30, 'ModTracker', 0, -1, 'ModTracker', 1, 1, 0, ''],
             [31, 'ModComments', 0, -1, 'Comments', 1, 0, 1, 'Settings'],
@@ -410,7 +408,7 @@ class DefaultDataPopulator extends CRMEntity
         ];
 
         foreach ($names as $tab) {
-            if (in_array($tab, ['Rss', 'Recyclebin'])) {
+            if (in_array($tab, ['Recyclebin'])) {
                 continue;
             }
             $entityId = $this->db->getUniqueID("vtiger_ws_entity");

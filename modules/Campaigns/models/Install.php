@@ -60,14 +60,20 @@ class Campaigns_Install_Model extends Core_Install_Model {
     ];
 
 
+    /**
+     * @throws Exception
+     */
     public function addCustomLinks(): void
     {
-        $this->updateRelatedList();
         $this->updateComments();
+        $this->updateRelatedList();
         $this->updateHistory();
         $this->updateToStandardModule();
     }
 
+    /**
+     * @throws Exception
+     */
     public function deleteCustomLinks(): void
     {
         $this->updateRelatedList(false);

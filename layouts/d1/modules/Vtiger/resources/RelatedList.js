@@ -91,21 +91,22 @@ jQuery.Class("Vtiger_RelatedList_Js", {
     },
 
     getCompleteParams: function () {
-        var params = {};
+        let detailInstance = Vtiger_Detail_Js.getInstance();
+        let params = {};
+
         params['view'] = "Detail";
         params['module'] = this.parentModuleName;
-        params['record'] = this.getParentId(),
-            params['relationId'] = $('.tab-item.active').data('relationId'),
-            params['relatedModule'] = this.relatedModulename,
-            params['sortorder'] = this.getSortOrder(),
-            params['orderby'] = this.getOrderBy(),
-            params['page'] = this.getCurrentPageNum();
+        params['record'] = this.getParentId();
+        params['relationId'] = $('.tab-item.active').data('relationId');
+        params['relatedModule'] = this.relatedModulename;
+        params['sortorder'] = this.getSortOrder();
+        params['orderby'] = this.getOrderBy();
+        params['page'] = this.getCurrentPageNum();
         params['mode'] = "showRelatedList";
         params['tab_label'] = this.selectedRelatedTabElement.data('label-key');
-        var detailInstance = Vtiger_Detail_Js.getInstance();
-        var searchParams = JSON.stringify(detailInstance.getRelatedListSearchParams());
-        params['search_params'] = searchParams;
+        params['search_params'] = JSON.stringify(detailInstance.getRelatedListSearchParams());
         params['nolistcache'] = (jQuery('#noFilterCache').val() == 1) ? 1 : 0;
+
         return params;
     },
 

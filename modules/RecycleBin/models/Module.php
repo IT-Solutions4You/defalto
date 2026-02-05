@@ -123,7 +123,7 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model
     public function getAllModuleList()
     {
         $moduleModels = parent::getEntityModules();
-        $restrictedModules = ['ProjectMilestone', 'ModComments', 'Rss', 'Portal', 'Integration', 'PBXManager', 'Dashboard', 'Home'];
+        $restrictedModules = ['ProjectMilestone', 'ModComments', 'Integration', 'PBXManager', 'Dashboard', 'Home'];
         foreach ($moduleModels as $key => $moduleModel) {
             if (in_array($moduleModel->getName(), $restrictedModules) || $moduleModel->get('isentitytype') != 1) {
                 unset($moduleModels[$key]);

@@ -384,6 +384,6 @@ class Vtiger_Relation_Model extends Core_Relation_Model
      */
     public function isUnlinkable(): bool
     {
-        return 'get_related_list' === $this->get('name');
+        return in_array($this->get('name'), ['get_products', 'get_related_list', 'get_product_pricebooks']);
     }
 }

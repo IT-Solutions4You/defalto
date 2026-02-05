@@ -2057,7 +2057,7 @@ class Users_CRMSetup
      */
     public static function getPackagesList()
     {
-        $restrictedModulesList = ['ModComments', 'Rss', 'Portal', 'Integration', 'PBXManager', 'Dashboard', 'Home'];
+        $restrictedModulesList = ['ModComments', 'Integration', 'PBXManager', 'Dashboard', 'Home'];
 
         $packagesList = [
             'Tools'     => [

@@ -40,7 +40,7 @@ class Vtiger_Delete_Action extends Core_Controller_Action
 
         parent::checkPermission($request);
 
-        $nonEntityModules = ['Users', 'Portal', 'Rss'];
+        $nonEntityModules = ['Users',];
         if ($record && !in_array($moduleName, $nonEntityModules)) {
             $recordEntityName = getSalesEntityType($record);
             if ($recordEntityName !== $moduleName) {
