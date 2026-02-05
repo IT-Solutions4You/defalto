@@ -144,10 +144,6 @@ class Contacts extends CRMEntity
     // Refers to vtiger_field.fieldname values.
     public $mandatory_fields = ['assigned_user_id', 'lastname', 'createdtime', 'modifiedtime'];
 
-    //Added these variables which are used as default order by and sortorder in ListView
-    public $default_order_by = 'lastname';
-    public $default_sort_order = 'ASC';
-
     // For Alphabetical search
     public $def_basicsearch_col = 'lastname';
 

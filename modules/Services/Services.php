@@ -105,9 +105,6 @@ class Services extends CRMEntity
     // Refers to vtiger_field.fieldname values.
     public $mandatory_fields = ['servicename', 'assigned_user_id'];
 
-    public $default_order_by = 'servicename';
-    public $default_sort_order = 'ASC';
-
     public $unit_price;
 
     /**

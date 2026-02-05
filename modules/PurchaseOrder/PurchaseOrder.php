@@ -109,10 +109,6 @@ class PurchaseOrder extends CRMEntity
     // This is the list of vtiger_fields that are required.
     public $required_fields = ['accountname' => 1];
 
-    //Added these variables which are used as default order by and sortorder in ListView
-    public $default_order_by = 'subject';
-    public $default_sort_order = 'ASC';
-
     // For Alphabetical search
     public $def_basicsearch_col = 'subject';
 
