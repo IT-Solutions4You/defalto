@@ -80,8 +80,6 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js", {
         if (selectedTab2 === "header" || selectedTab2 === "footer")
             oEditorName = selectedTab2 + '_body';
 
-        console.log(oEditorName);
-
         return CKEDITOR.instances[oEditorName];
     },
     InsertIntoTemplate: function (element, islabel) {
