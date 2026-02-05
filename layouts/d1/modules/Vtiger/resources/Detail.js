@@ -1271,7 +1271,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
             var fieldValue = ajaxEditNewValue;
 
             //Before saving ajax edit values we need to check if the value is changed then only we have to save
-            if (previousValue == ajaxEditNewValue) {
+            if (previousValue === ajaxEditNewValue || undefined === ajaxEditNewValue) {
                 detailViewValue.css('display', 'inline-block');
                 editElement.addClass('hide');
                 editElement.removeClass('ajaxEdited');
