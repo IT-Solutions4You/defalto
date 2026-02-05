@@ -120,13 +120,14 @@ class ProjectTask_Install_Model extends Core_Install_Model
 
     /**
      * @return void
+     * @throws Exception
      */
     public function addCustomLinks(): void
     {
         $this->updateNumbering();
         $this->updateCustomLinks();
-        $this->updateRelatedList();
         $this->updateComments();
+        $this->updateRelatedList();
         $this->updateHistory();
         $this->updateToStandardModule();
         $this->addModuleToCustomerPortal();
@@ -134,6 +135,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
 
     /**
      * @return void
+     * @throws Exception
      */
     public function deleteCustomLinks(): void
     {

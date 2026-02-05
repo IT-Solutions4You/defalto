@@ -17,8 +17,6 @@ class HelpDesk_Install_Model extends Core_Install_Model
         self::DOCUMENTS_RELATED_LIST,
         self::EMAILS_RELATED_LIST,
         self::APPOINTMENTS_RELATED_LIST,
-
-        ['ServiceContracts', 'HelpDesk', 'HelpDesk', ['ADD', 'SELECT'], 'get_related_list'],
     ];
 
     public array $registerEventHandler = [

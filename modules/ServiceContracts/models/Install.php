@@ -24,9 +24,6 @@ class ServiceContracts_Install_Model extends Core_Install_Model
         self::DOCUMENTS_RELATED_LIST,
         self::EMAILS_RELATED_LIST,
         self::APPOINTMENTS_RELATED_LIST,
-
-        ['Contacts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list', 'contact_id'],
-        ['HelpDesk', 'ServiceContracts', 'Service Contracts', ['ADD', 'SELECT'], 'get_related_list'],
     ];
 
     /**
@@ -93,13 +90,14 @@ class ServiceContracts_Install_Model extends Core_Install_Model
 
     /**
      * @return void
+     * @throws Exception
      */
     public function addCustomLinks(): void
     {
+        $this->updateComments();
         $this->updateRelatedList();
         $this->updateEventHandler();
         $this->updateNumbering();
-        $this->updateComments();
         $this->updateHistory();
         $this->updateContractStatusPresence();
         $this->updateToStandardModule();
@@ -116,6 +114,7 @@ class ServiceContracts_Install_Model extends Core_Install_Model
 
     /**
      * @return void
+     * @throws Exception
      */
     public function deleteCustomLinks(): void
     {
