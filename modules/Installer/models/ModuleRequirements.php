@@ -222,6 +222,10 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
         foreach ($this->relatedList as $value) {
             [$moduleName, $relationModule, $relationLabel, $actions, $function] = $value;
 
+            if(empty($moduleName)) {
+                $moduleName = $this->getModuleName();
+            }
+
             $data = [
                 'module'         => $moduleName,
                 'related_module' => $relationModule,

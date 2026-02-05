@@ -103,8 +103,6 @@ class ProjectTask extends CRMEntity
     // Callback function list during Importing
     var $special_functions = ['set_import_assigned_user'];
 
-    var $default_order_by = 'projecttaskname';
-    var $default_sort_order = 'ASC';
     // Used when enabling/disabling the mandatory fields for the module.
     // Refers to vtiger_field.fieldname values.
     var $mandatory_fields = ['createdtime', 'modifiedtime', 'projecttaskname', 'projectid', 'assigned_user_id'];

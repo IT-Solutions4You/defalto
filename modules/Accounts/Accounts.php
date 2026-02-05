@@ -88,10 +88,6 @@ class Accounts extends CRMEntity
     // Refers to vtiger_field.fieldname values.
     public $mandatory_fields = ['assigned_user_id', 'createdtime', 'modifiedtime', 'accountname'];
 
-    //Added these variables which are used as default order by and sortorder in ListView
-    public $default_order_by = 'accountname';
-    public $default_sort_order = 'ASC';
-
     // For Alphabetical search
     public $def_basicsearch_col = 'accountname';
 
@@ -107,6 +103,9 @@ class Accounts extends CRMEntity
         'Project' => ['table_name' => 'vtiger_project', 'table_index' => 'projectid', 'rel_index' => 'account_id'],
         'PurchaseOrder' => ['table_name' => 'vtiger_purchaseorder', 'table_index' => 'purchaseorderid', 'rel_index' => 'accountid'],
     ];
+
+    public string $default_order_by = 'accountname';
+    public string $default_sort_order = 'asc';
 
     /** Function to export the account records in CSV Format
      *

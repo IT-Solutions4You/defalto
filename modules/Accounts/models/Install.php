@@ -15,7 +15,7 @@ class Accounts_Install_Model extends Core_Install_Model
         ['Accounts', 'Potentials', 'Potentials', 'add', 'get_dependents_list', 'related_to',],
         ['Accounts', 'Quotes', 'Quotes', 'add', 'get_dependents_list', 'account_id',],
         ['Accounts', 'SalesOrder', 'SalesOrder', 'add', 'get_dependents_list', 'account_id',],
-        ['Accounts', 'Invoice', 'Invoice', 'add', 'get_related_list', 'account_id',],
+        ['Accounts', 'Invoice', 'Invoice', 'add', 'get_dependents_list', 'account_id',],
         ['Accounts', 'HelpDesk', 'HelpDesk', 'add', 'get_dependents_list', 'parent_id',],
         ['Accounts', 'Products', 'Products', 'select', 'get_related_list', '',],
         ['Accounts', 'Services', 'Services', 'select', 'get_related_list', '',],
