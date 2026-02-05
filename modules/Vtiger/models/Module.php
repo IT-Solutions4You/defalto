@@ -780,7 +780,7 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         } else {
             $db = PearDatabase::getInstance();
             $query = 'SELECT 1 FROM vtiger_field WHERE uitype=4 and tabid=?';
-            $params = [$this->getId()];
+            $params = [(int)$this->getId()];
             $result = $db->pquery($query, $params);
 
             return $db->num_rows($result) > 0 ? true : false;
