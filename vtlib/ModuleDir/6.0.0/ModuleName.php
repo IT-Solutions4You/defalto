@@ -83,8 +83,8 @@ class ModuleName extends CRMEntity
     // Refers to vtiger_field.fieldname values.
     var $mandatory_fields = ['<entityfieldname>', 'assigned_user_id'];
 
-    var $default_order_by = '<entityfieldname>';
-    var $default_sort_order = 'ASC';
+    var string $default_order_by = '<entityfieldname>';
+    var string $default_sort_order = 'ASC';
 
     /**
      * Invoked when special actions are performed on the module.

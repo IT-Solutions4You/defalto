@@ -116,11 +116,6 @@ class Quotes extends CRMEntity
     // This is the list of vtiger_fields that are required.
     var $required_fields = ["accountname" => 1];
 
-    //Added these variables which are used as default order by and sortorder in ListView
-    var $default_order_by = 'crmid';
-    var $default_sort_order = 'ASC';
-    //var $groupTable = Array('vtiger_quotegrouprelation','quoteid');
-
     var $mandatory_fields = ['subject', 'createdtime', 'modifiedtime', 'assigned_user_id', 'quantity', 'listprice', 'productid'];
 
     // For Alphabetical search
