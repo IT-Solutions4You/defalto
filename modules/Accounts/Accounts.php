@@ -104,6 +104,9 @@ class Accounts extends CRMEntity
         'PurchaseOrder' => ['table_name' => 'vtiger_purchaseorder', 'table_index' => 'purchaseorderid', 'rel_index' => 'accountid'],
     ];
 
+    public string $default_order_by = 'accountname';
+    public string $default_sort_order = 'asc';
+
     /** Function to export the account records in CSV Format
      *
      * @param reference variable - where condition is passed when the query is executed

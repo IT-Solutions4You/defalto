@@ -86,7 +86,7 @@ class Invoice_Install_Model extends Core_Install_Model
                 ],
                 'account_id' => [
                     'name' => 'account_id',
-                    'uitype' => 73,
+                    'uitype' => 10,
                     'column' => 'account_id',
                     'table' => 'vtiger_invoice',
                     'label' => 'Account Name',
@@ -103,6 +103,9 @@ class Invoice_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'filter_sequence' => 3,
                     'ajaxeditable' => 0,
+                    'related_modules' => [
+                        'Accounts'
+                    ],
                 ],
                 'contact_id' => [
                     'name' => 'contact_id',
