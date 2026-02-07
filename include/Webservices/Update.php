@@ -21,6 +21,8 @@ function vtws_update($element, $user)
 {
     global $log, $adb, $app_strings;
 
+    require_once 'include/Webservices/LineItem/InventoryItemSync.php';
+
     //setting $app_strings
     if (empty($app_strings)) {
         $currentLanguage = Vtiger_Language_Handler::getLanguage();
@@ -102,6 +104,13 @@ function vtws_update($element, $user)
     }
 
     $entity = $handler->update($element);
+
+    if (!empty($element['LineItems']) && InventoryItem_Webservice_Sync::isInventoryModule($entityName)) {
+        $components = vtws_getIdComponents($element['id']);
+        $parentId = (int)$components[1];
+        InventoryItem_Webservice_Sync::syncLineItems($entityName, $parentId, $element['LineItems'], $element);
+    }
+
     VTWS_PreserveGlobal::flush();
 
     return $entity;
