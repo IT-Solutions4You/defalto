@@ -106,4 +106,11 @@ class Core_Utils_Helper
 
         return rtrim($root_directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
     }
+
+    public static function retrieveKCFinderConfig(): void
+    {
+        $_SESSION['KCFINDER']['uploadURL'] = vglobal('site_URL') . 'test/upload';
+        $_SESSION['KCFINDER']['uploadDir'] = vglobal('root_directory') . 'test/upload';
+        $_SESSION['KCFINDER']['deniedExts'] = implode(' ', vglobal('upload_badext'));
+    }
 }
