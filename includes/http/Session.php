@@ -98,11 +98,19 @@ class Vtiger_Session
             if ($id) {
                 self::id($id);
             } else {
-                self::id(uniqid(dechex(mt_rand()), true));
+                $generatedId = function_exists('session_create_id') ? session_create_id() : '';
+
+                if (empty($generatedId)) {
+                    $sidLength = (int)ini_get('session.sid_length');
+                    $sidLength = $sidLength > 0 ? $sidLength : 26;
+                    $generatedId = substr(bin2hex(random_bytes(32)), 0, $sidLength);
+                }
+
+                self::id($generatedId);
             }
         }
 
-        if (!session_id()) {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
 
