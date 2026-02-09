@@ -153,7 +153,7 @@ $languageStrings = [
     'LBL_EQUAL_GREATER_THAN' => '=> (Gleich-Größer als)',
     'LBL_OTHER' => 'Andere',
     'LBL_DELIMITER_INFO' => 'Wählen Sie das Trennzeichen, das Werte von Etiketten in Ihrem E-Mail-Körper trennt',
-    'LBL_EMAIL_BODY_INFO' => 'Text aus einer E-Mail kopieren Probe unten in das Feld eingescannt werden. Vtiger CRM werden versuchen, Werte zu finden und helfen Sie Karte, um CRM-Felder.',
+    'LBL_EMAIL_BODY_INFO' => 'Text aus einer E-Mail kopieren Probe unten in das Feld eingescannt werden. Defalto CRM werden versuchen, Werte zu finden und helfen Sie Karte, um CRM-Felder.',
     'LBL_SAMPLE_BODY_TEXT' => 'Beispiel Body Text',
     'LBL_FIND_FIELDS' => 'Klicken Sie hier, um die Werte von E-Mail-Körper zu finden',
     'LBL_BODY_FIELDS' => 'Werte von E-Mail',
@@ -172,7 +172,7 @@ $languageStrings = [
     'LBL_DUPLICATE_USERNAME_ERROR' => 'Es gibt bereits eine Mail Converter mit dieser E-Mail-Adresse konfiguriert. Sie können keine doppelte Mail Converter mit derselben E-Mail-Adresse ein.',
     'LBL_DUPLICATE_SCANNERNAME_ERROR' => 'Es gibt bereits eine Mail Converter mit diesem Namen konfiguriert. Sie können keine Mail Converter mit doppelten Namen.',
 
-    'LBL_MAILCONVERTER_DESCRIPTION' => 'E-Mail-Konverter ermöglicht die Konfiguration Ihrer mailbox zu Scannen Ihre E-Mails und erstellen Sie die entsprechenden Entitäten in Vtiger CRM.<br />Sie müssen auch Regeln definieren, die festlegen, welche Aktionen durchgeführt werden sollte, Ihre E-Mails.<br />Ihre E-Mails werden automatisch gescannt, es sei denn, Sie haben Behinderte Mail-Scanner task-Planer. <br /><br /><br />',
+    'LBL_MAILCONVERTER_DESCRIPTION' => 'E-Mail-Konverter ermöglicht die Konfiguration Ihrer mailbox zu Scannen Ihre E-Mails und erstellen Sie die entsprechenden Entitäten in Defalto CRM.<br />Sie müssen auch Regeln definieren, die festlegen, welche Aktionen durchgeführt werden sollte, Ihre E-Mails.<br />Ihre E-Mails werden automatisch gescannt, es sei denn, Sie haben Behinderte Mail-Scanner task-Planer. <br /><br /><br />',
     'LBL_NOTE' => 'Hinweis',
     'LBL_MAILCONVERTER_DISABLE_MESSAGE' => 'E-Mail-Converter entfernt werden, am 31. Juli. Poststelle bietet eine einfachere Möglichkeit zu Scannen Ihre E-Mails. Aktivieren Poststelle, bitte ',
     'LBL_CLICK_HERE' => 'klicken Sie hier',

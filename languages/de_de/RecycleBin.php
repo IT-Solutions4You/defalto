@@ -32,7 +32,7 @@ $jsLanguageStrings = [
     'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Sind Sie sicher, dass Sie die Aufzeichnungen wiederherstellen möchten?',
     'JS_LBL_RESTORE_RECORD_CONFIRMATION' => 'Sind Sie sicher, dass Sie den Datensatz wiederherstellen wollen?',
     'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Sind Sie sicher, dass Sie alle gelöschten Datensätze dauerhaft aus Ihrer Datenbank entfernen möchten?',
-    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Wiederherstellen in Vtiger und Laufwerk',
+    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Wiederherstellen in Defalto und Laufwerk',
     'JS_RESTORING_RECORD' => 'Datensatz wiederherstellen',
     'JS_RESTORING_RECORDS' => 'Datensätze wiederherstellen',
 ];

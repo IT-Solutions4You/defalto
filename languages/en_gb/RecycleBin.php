@@ -31,6 +31,6 @@ $jsLanguageStrings = [
     'JS_LBL_RESTORE_RECORDS_CONFIRMATION'  => 'Are you sure you want to restore the records?',
     'JS_LBL_RESTORE_RECORD_CONFIRMATION'   => 'Are you sure you want to restore the record?',
     'JS_RESTORING_RECORD'                  => 'Restoring Record',
-    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Restore in Vtiger and Drive',
+    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Restore in Defalto and Drive',
     'JS_RESTORING_RECORDS'                 => 'Restoring records',
 ];
