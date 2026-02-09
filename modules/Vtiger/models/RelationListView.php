@@ -226,15 +226,9 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model
         $relationModule = $this->getRelationModel()->getRelationModuleModel();
         $relationModuleName = $relationModule->get('name');
         $relatedColumnFields = $relationModule->getConfigureRelatedListFields();
+
         if (php7_count($relatedColumnFields) <= 0) {
             $relatedColumnFields = $relationModule->getRelatedListFields();
-        }
-
-        if ($relationModuleName == 'PriceBooks') {
-            //Adding fields in the related list
-            $relatedColumnFields['unit_price'] = 'unit_price';
-            $relatedColumnFields['listprice'] = 'listprice';
-            $relatedColumnFields['currency_id'] = 'currency_id';
         }
 
         $query = $this->getRelationQuery();

@@ -82,9 +82,6 @@ class Documents extends CRMEntity
         'filelocationtype',
         'folderid'
     ];
-    //Added these variables which are used as default order by and sortorder in ListView
-    public $default_order_by = 'notes_title';
-    public $default_sort_order = 'ASC';
 
     /**
      * @inheritDoc

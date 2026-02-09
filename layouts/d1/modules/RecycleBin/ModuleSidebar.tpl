@@ -19,8 +19,9 @@
                         <ul class="lists-menu nav nav-pills flex-column">
                             {if $MODULE_LIST|@count gt 0}
                                 {foreach item=MODULEMODEL from=$MODULE_LIST}
-                                    <li class='listViewFilter tab-item nav-link fs-6 {if $MODULEMODEL->getName() eq $SOURCE_MODULE}active{/if} '>
-                                        <a class="filterName" href="index.php?module=RecycleBin&view=List&sourceModule={$MODULEMODEL->getName()}" >{vtranslate($MODULEMODEL->getName(), $MODULEMODEL->getName())}</a>
+                                    {assign var=MODULE_LABEL value=vtranslate($MODULEMODEL->getName(), $MODULEMODEL->getName())}
+                                    <li class='listViewFilter tab-item nav-link fs-6 {if $MODULEMODEL->getName() eq $SOURCE_MODULE}active{/if}' data-module="{$MODULEMODEL->getName()}" data-label="{$MODULE_LABEL}">
+                                        <a class="filterName" href="index.php?module=RecycleBin&view=List&sourceModule={$MODULEMODEL->getName()}" >{$MODULE_LABEL}</a>
                                     </li>
                                 {/foreach}
                             {/if}

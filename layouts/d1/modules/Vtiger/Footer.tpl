@@ -16,6 +16,7 @@
     </div>
 </footer>
 <libraries class="d-block">
+    {include file='OverlayPageContent.tpl'|vtemplate_path:$QUALIFIED_MODULE}
     <div id="overlayPage" class="modal fade">
         <div class="modal-dialog modal-fullscreen">
             <div class="modal-content">

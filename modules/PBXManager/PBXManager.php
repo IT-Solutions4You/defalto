@@ -76,9 +76,6 @@ class PBXManager extends CRMEntity
     var $def_detailview_recname = 'customernumber';
     // Used when enabling/disabling the mandatory fields for the module.
     // Refers to vtiger_field.fieldname values.
-//    var $mandatory_fields = Array('assigned_user_id');
-    var $default_order_by = 'customernumber';
-    var $default_sort_order = 'ASC';
 
     /**
      * Invoked when special actions are performed on the module.

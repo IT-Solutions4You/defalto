@@ -58,6 +58,8 @@ class CRMExtension
     public $list_fields = [];
     public array $tab_name_left_join = [];
     public int $ownedBy = 1;
+    public string $default_order_by = 'modifiedtime';
+    public string $default_sort_order = 'desc';
 
     /**
      * Initializes the class instance by setting up the logger and database connection.
@@ -1927,8 +1929,6 @@ class CRMEntity extends CRMExtension
      */
     public function save_related_module($module, $crmid, $with_module, $with_crmid)
     {
-        global $adb;
-
         if (!is_array($with_crmid)) {
             $with_crmid = [$with_crmid];
         }

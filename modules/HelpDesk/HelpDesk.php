@@ -100,10 +100,6 @@ class HelpDesk extends CRMEntity
     // Refers to vtiger_field.fieldname values.
     public $mandatory_fields = ['assigned_user_id', 'createdtime', 'modifiedtime', 'ticket_title', 'ticketpriorities', 'ticketstatus'];
 
-    //Added these variables which are used as default order by and sortorder in ListView
-    public $default_order_by = 'crmid';
-    public $default_sort_order = 'DESC';
-
     // For Alphabetical search
     public $def_basicsearch_col = 'ticket_title';
 

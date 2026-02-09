@@ -81,10 +81,6 @@ class Products extends CRMEntity
     public $sortby_fields = [];
     public $def_basicsearch_col = 'productname';
 
-    //Added these variables which are used as default order by and sortorder in ListView
-    public $default_order_by = 'productname';
-    public $default_sort_order = 'ASC';
-
     // Used when enabling/disabling the mandatory fields for the module.
     // Refers to vtiger_field.fieldname values.
     public $mandatory_fields = ['createdtime', 'modifiedtime', 'productname', 'assigned_user_id'];
@@ -622,28 +618,18 @@ class Products extends CRMEntity
         parent::unlinkRelationship($id, $return_module, $return_id);
     }
 
-    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = [])
+    public function save_related_module($module, $crmid, $with_module, $with_crmid)
     {
-        $adb = PearDatabase::getInstance();
-
-        if (!is_array($with_crmids)) {
-            $with_crmids = [$with_crmids];
+        if (!is_array($with_crmid)) {
+            $with_crmids = [$with_crmid];
         }
 
         foreach ($with_crmids as $with_crmid) {
             if ('Products' === $with_module) {
-                $query = $adb->pquery('SELECT * FROM vtiger_seproductsrel WHERE crmid=? AND productid=?', [$crmid, $with_crmid]);
-
-                if ($adb->num_rows($query)) {
-                    continue;
-                }
-
-                $quantities = $otherParams && is_array($otherParams['quantities']) ? $otherParams['quantities'] : [];
-                $qty = (float)$quantities[$with_crmid] ?? 1;
-                $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES (?,?,?,?)', [$with_crmid, $crmid, $with_module, $qty]);
+                Products_Relation_Model::saveProductRelation($with_crmid, $with_module, $crmid, $module);
             }
-
-            parent::save_related_module($module, $crmid, $with_module, $with_crmid);
         }
+
+        parent::save_related_module($module, $crmid, $with_module, $with_crmid);
     }
 }

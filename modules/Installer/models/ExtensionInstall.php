@@ -10,7 +10,7 @@
 
 class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 {
-    public static array $ignoredModules = ['Dashboard', 'Home', 'Rss', 'Portal', 'Import', 'SMSNotifier', 'WSAPP', 'PBXManager', 'RecycleBin', 'Webforms', 'Google', 'ModTracker', 'ModComments', 'MailManager', 'Users', 'CustomerPortal'];
+    public static array $ignoredModules = ['Dashboard', 'Home', 'Import', 'SMSNotifier', 'WSAPP', 'PBXManager', 'RecycleBin', 'Webforms', 'Google', 'ModTracker', 'ModComments', 'MailManager', 'Users', 'CustomerPortal'];
     public Vtiger_Module_Model|bool|null $module = null;
 
     public static function clearCache(): void

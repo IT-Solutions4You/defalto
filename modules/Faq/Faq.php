@@ -75,10 +75,6 @@ class Faq extends CRMEntity
         'City'         => 'bill_city',
     ];
 
-    //Added these variables which are used as default order by and sortorder in ListView
-    public $default_order_by = 'id';
-    public $default_sort_order = 'DESC';
-
     public $mandatory_fields = ['question', 'faq_answer', 'createdtime', 'modifiedtime'];
 
     // For Alphabetical search

@@ -91,9 +91,6 @@ class ModCommentsCore extends CRMEntity
     // Callback function list during Importing
     var $special_functions = ['set_import_assigned_user'];
 
-    var $default_order_by = 'modcommentsid';
-    var $default_sort_order = 'DESC';
-
     // Used when enabling/disabling the mandatory fields for the module.
     // Refers to vtiger_field.fieldname values.
     var $mandatory_fields = ['createdtime', 'modifiedtime', 'commentcontent'];

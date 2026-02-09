@@ -108,12 +108,6 @@ class Invoice extends CRMEntity
     // This is the list of vtiger_fields that are required.
     public $required_fields = ["accountname" => 1];
 
-    //Added these variables which are used as default order by and sortorder in ListView
-    public $default_order_by = 'crmid';
-    public $default_sort_order = 'ASC';
-
-    //public $groupTable = Array('vtiger_invoicegrouprelation','invoiceid');
-
     public $mandatory_fields = ['subject', 'createdtime', 'modifiedtime', 'assigned_user_id', 'quantity', 'listprice', 'productid'];
     public $_salesorderid;
 

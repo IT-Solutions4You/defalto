@@ -120,13 +120,14 @@ class ProjectTask_Install_Model extends Core_Install_Model
 
     /**
      * @return void
+     * @throws Exception
      */
     public function addCustomLinks(): void
     {
         $this->updateNumbering();
         $this->updateCustomLinks();
-        $this->updateRelatedList();
         $this->updateComments();
+        $this->updateRelatedList();
         $this->updateHistory();
         $this->updateToStandardModule();
         $this->addModuleToCustomerPortal();
@@ -134,6 +135,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
 
     /**
      * @return void
+     * @throws Exception
      */
     public function deleteCustomLinks(): void
     {
@@ -220,11 +222,11 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'quickcreate' => 1,
                     'masseditable' => 0,
                     'picklist_values' => [
-                        'Open',
-                        'In Progress',
-                        'Completed',
-                        'Deferred',
-                        'Canceled',
+                        ['Open', '', 0],
+                        ['In Progress', '', 0],
+                        ['Completed', '', 0],
+                        ['Deferred', '', 0],
+                        ['Canceled', '', 0],
                     ],
                     'headerfield' => 0,
                 ],

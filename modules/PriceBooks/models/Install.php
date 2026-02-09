@@ -170,9 +170,9 @@ class PriceBooks_Install_Model extends Core_Install_Model
             ->createColumn('productid', 'int(19) NOT NULL')
             ->createColumn('listprice', self::$COLUMN_DECIMAL)
             ->createColumn('usedcurrency', 'int(11) NOT NULL DEFAULT 1')
-            ->createKey('PRIMARY KEY IF NOT EXISTS(`pricebookid`,`productid`)')
-            ->createKey('KEY IF NOT EXISTS`pricebookproductrel_pricebookid_idx` (`pricebookid`)')
-            ->createKey('KEY IF NOT EXISTS`pricebookproductrel_productid_idx` (`productid`)')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`pricebookid`,`productid`)')
+            ->createKey('KEY IF NOT EXISTS `pricebookproductrel_pricebookid_idx` (`pricebookid`)')
+            ->createKey('KEY IF NOT EXISTS `pricebookproductrel_productid_idx` (`productid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_pricebookproductrel` FOREIGN KEY IF NOT EXISTS(`pricebookid`) REFERENCES `vtiger_pricebook` (`pricebookid`) ON DELETE CASCADE');
     }
 }

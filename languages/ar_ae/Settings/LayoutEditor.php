@@ -218,7 +218,7 @@ $jsLanguageStrings = [
     'JS_DETAIL_HEADER'                                 => 'سجل رأس',
     'JS_MAXIMUM_HEADER_FIELDS_ALLOWED'                 => 'أقصى %s حقول رأس سمحت',
     'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT'       => 'اسم الحقول تظهر في رأس افتراضيا',
-    'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7'           => 'هذا المجال هو رأس تمكين Vtiger7 سوف يظهر في عرض موجز',
+    'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7'           => 'هذا المجال هو رأس تمكين Defalto سوف يظهر في عرض موجز',
 
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'تحديث بنجاح للنظر في الحقول المحددة في الوقاية من التكرارات',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'لم تنظر الحقول المحددة في الوقاية من التكرارات',

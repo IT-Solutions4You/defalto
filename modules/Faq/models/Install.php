@@ -119,10 +119,10 @@ class Faq_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 0,
                     'picklist_values' => [
-                        'Draft',
-                        'Reviewed',
-                        'Published',
-                        'Obsolete',
+                        ['Draft', '', 0],
+                        ['Reviewed', '', 0],
+                        ['Published', '', 0],
+                        ['Obsolete', '', 0],
                     ],
                 ],
                 'product_id' => [

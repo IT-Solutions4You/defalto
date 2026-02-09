@@ -175,11 +175,11 @@ class Quotes_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 0,
                     'picklist_values' => [
-                        'Created',
-                        'Delivered',
-                        'Reviewed',
-                        'Accepted',
-                        'Rejected',
+                        ['Created', '', 0],
+                        ['Delivered', '', 0],
+                        ['Reviewed', '', 0],
+                        ['Accepted', '', 0],
+                        ['Rejected', '', 0],
                     ],
                 ],
                 'carrier' => [

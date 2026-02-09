@@ -100,6 +100,7 @@ class Vtiger_Field extends Vtiger_FieldBasic
             $sortOrderId++;
 
             if (is_array($value)) {
+                $presence = $value[2] ?? $presence;
                 $adb->pquery(
                     "INSERT INTO $picklist_table($picklist_idcol, $this->name, presence, picklist_valueid,sortorderid,color) VALUES(?,?,?,?,?,?)",
                     [$new_id, $value[0], $presence, $newPicklistValueId, $sortOrderId, $value[1]]

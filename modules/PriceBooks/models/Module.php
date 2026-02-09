@@ -218,6 +218,8 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model
     public static function getCustomField(string $fieldName, string $moduleName): object
     {
         $fieldModel = Vtiger_Field_Model::getCleanInstance($fieldName, $moduleName);
+        $fieldModel->column = $fieldName;
+        $fieldModel->name = $fieldName;
         $fieldModel->label = self::$customFieldLabels[$fieldName];
         $fieldModel->uitype = 71;
 
@@ -240,20 +242,36 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model
     {
         $newHeaderFields = [];
 
+        /** @var Vtiger_Field_Model $headerField */
         foreach ($headerFields as $headerField) {
             $newHeaderFields[$headerField->getName()] = $headerField;
 
             if (1 === count($newHeaderFields)) {
-                //Added to support List Price
-                $field = new Vtiger_Field_Model();
-                $field->set('name', 'listprice');
-                $field->set('column', 'listprice');
-                $field->set('label', 'List Price');
-
-                $newHeaderFields['listprice'] = $field;
+                $newHeaderFields['listprice'] = $headerField->getModule()->getField('listprice');
             }
         }
 
         return $newHeaderFields;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getConfigureRelatedListFields()
+    {
+        $fields = parent::getConfigureRelatedListFields();
+        $newFields = [];
+
+        foreach ($fields as $fieldName => $fieldLabel) {
+            $newFields[$fieldName] = $fieldLabel;
+
+            if (1 === count($newFields)) {
+                $newFields['unit_price'] = 'unit_price';
+                $newFields['listprice'] = 'listprice';
+                $newFields['currency_id'] = 'currency_id';
+            }
+        }
+
+        return $newFields;
     }
 }

@@ -19,7 +19,7 @@
 
 $languageStrings = [
     'LBL_CRM_DOCUMENTATION' => 'Defalto Hilfe -<a href="index.php?module=Core&view=Redirect&mode=Documentation" target="_blank">Documentaion</a><BR>',
-    'LBL_CRM_MIGRATION' => 'Willkommen auf Vtiger Migration',
+    'LBL_CRM_MIGRATION' => 'Willkommen auf Defalto Migration',
     'LBL_DATABASE_CHANGE_LOG' => 'Migration: Datenbankänderungen Anmelden',
     'LBL_DISCUSS_WITH_US_AT_BLOGS' => 'Um mehr zu wissen, Defalto folgen Sie uns unsere <a href="index.php?module=Core&view=Redirect&mode=Blog" target="_blank">Blog</a>',
     'LBL_INPROGRESS' => 'Migration im Gange',
@@ -32,7 +32,7 @@ $languageStrings = [
     'LBL_SPACE_FOR_YOU' => 'Kommen Sie vorbei, es gibt Platz für Sie!',
     'LBL_TALK_TO_US_AT_FORUMS' => 'Haben Sie Fragen? Hilfe zu Defalto Suche <a href="index.php?module=Core&view=Redirect&mode=Forum" target="_blank">Diskussionen</a><br>',
     'LBL_THANKS' => 'Vielen Dank für Hilfe <b>Defalto CRM</b>',
-    'LBL_VTIGER_MIGRATION' => 'Willkommen auf Vtiger Migration',
+    'LBL_VTIGER_MIGRATION' => 'Willkommen auf Defalto Migration',
     'LBL_WAIT' => 'Bitte warten Sie ...',
     'LBL_WELCOME' => 'Welcome',
     'LBL_WE_AIM_TO_BE_BEST' => 'Wir wollen sein - einfach die beste',

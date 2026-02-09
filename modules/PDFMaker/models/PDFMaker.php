@@ -30,8 +30,7 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
         $this->name = 'PDFMaker';
         $this->id = getTabId($this->name);
 
-        $_SESSION['KCFINDER']['uploadURL'] = rtrim(vglobal('site_URL'), '/') . '/test/upload';
-        $_SESSION['KCFINDER']['uploadDir'] = __DIR__ . '/../../../test/upload';
+        Core_Utils_Helper::retrieveKCFinderConfig();
     }
 
     //ListView data

@@ -315,9 +315,45 @@ Vtiger_List_Js("RecycleBin_List_Js", {
     enableListViewActions: function () {
         jQuery('.recordDependentListActions').find('button').removeAttr('disabled');
     },
+    registerSearchModules() {
+        let self = this,
+            mainContainer = jQuery('.main-container'),
+            modules = mainContainer.find('.listViewFilter');
+
+        mainContainer.on('keyup', '.search-list', function() {
+            let searchText = self.simplifyString($(this).val());
+
+            modules.removeClass('hide');
+
+            if (!searchText.length) {
+                return;
+            }
+
+            modules.filter(function() {
+                let label = self.simplifyString($(this).data('label')),
+                    module = self.simplifyString($(this).data('module'));
+
+                console.log(searchText, label, module);
+
+                return label.indexOf(searchText) < 0 && module.indexOf(searchText) < 0;
+            }).addClass('hide');
+        });
+    },
+    simplifyString(value) {
+        if (!value.length) {
+            return value;
+        }
+
+        value = value.trim().toLowerCase();
+        value = value.replace(/[^a-z0-9\s]/g, '');
+        value = value.replace(/\s+/g, '').trim();
+
+        return value;
+    },
     registerEvents: function () {
         this._super();
         this.registerRestoreRecordClickEvent();
+        this.registerSearchModules();
 
         // Added to overide default list view siderbar event
         jQuery('.list-menu-content').on('click', '.listViewFilter', function (e) {

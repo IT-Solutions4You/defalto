@@ -104,9 +104,6 @@ class ServiceContracts extends CRMEntity
     // Callback function list during Importing
     var $special_functions = ['set_import_assigned_user'];
 
-    var $default_order_by = 'subject';
-    var $default_sort_order = 'ASC';
-
     /**
      * @inheritDoc
      */

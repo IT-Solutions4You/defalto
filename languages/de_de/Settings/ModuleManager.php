@@ -96,7 +96,7 @@ $languageStrings = [
     'LBL_IMPORT_NOW' => 'Import Now',
     'LBL_DISCLAIMER_FOR_IMPORT_FROM_ZIP' => '<b>Disclaimer - Custom Files could put your CRM at risk</b> <br>  
 												 This functionality has been made available for Developers to test new modules.
-													If you are installing from a file provided 3rd party, please proceed only if you trust the publisher. Custom Modules could include security vulnerabilities and overwrite system files putting your CRM at risk. The module you are about to install has not been reviewed by Vtiger.',
+													If you are installing from a file provided 3rd party, please proceed only if you trust the publisher. Custom Modules could include security vulnerabilities and overwrite system files putting your CRM at risk. The module you are about to install has not been reviewed by Defalto.',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_SETUP_CARD_DETAILS_TO_INSTALL_THIS_EXTENSION' => 'Bitte Setup-Details, um diese Erweiterung zu installieren',
