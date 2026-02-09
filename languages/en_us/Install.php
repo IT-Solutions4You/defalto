@@ -100,6 +100,7 @@ $languageStrings = [
     'tr_tr' => 'Turkce Dil Paketi',
     'sk_sk' => 'Slovak',
     'cz_cz' => 'Czech',
+    'de_de' => 'Deutsch',
 ];
 $jsLanguageStrings = [
     'JS_WARNING_DECIMALS' => 'Warning! Required different values Decimal and Grouping separator.',

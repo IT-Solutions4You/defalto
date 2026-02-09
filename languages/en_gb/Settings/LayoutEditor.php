@@ -227,7 +227,7 @@ $jsLanguageStrings = [
     'JS_DETAIL_HEADER'                                 => 'Record header',
     'JS_MAXIMUM_HEADER_FIELDS_ALLOWED'                 => 'Maximum %s header fields allowed',
     'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT'       => 'Name fields appear in Header by default',
-    'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7'           => 'This Field is Header enabled for Vtiger7, It will appear in Summary View',
+    'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7'           => 'This Field is Header enabled for Defalto, It will appear in Summary View',
 
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Successfully updated to consider selected fields in duplicates prevention',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Failed to consider selected fields in duplicates prevention',

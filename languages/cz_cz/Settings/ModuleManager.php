@@ -10,7 +10,7 @@
 
 $languageStrings = [
     'ModuleManager' => 'Správce modulů',
-    'LBL_IMPORT_MODULE' => 'Instalovat z Vtiger App Store',
+    'LBL_IMPORT_MODULE' => 'Instalovat z Defalto App Store',
     'LBL_CRM_EXTENSION_STORE' => 'CRM App Store',
     'LBL_PUBLISHER' => 'Výrobce',
     'LBL_LICENSE' => 'Licence',
@@ -53,7 +53,7 @@ $languageStrings = [
     'LBL_IMPORT_MODULE_FROM_ZIP' => 'Instalovat ze .zip souboru',
     'LBL_UPDATE_NOW' => 'Aktualizujte teď',
     'LBL_IMPORT_NOW' => 'Importovat nyní',
-    'LBL_DISCLAIMER_FOR_IMPORT_FROM_ZIP' => '<b>Upozornění - Instalace není bezpečná</b><br />Tato funkctionalita byla zpřístupněna pro vývojáře, aby mohli testovat nové moduly. Pokud instalujete ze souboru od třetí strany, prosím pokračujte pouze pokud důvěřujete vydavateli. Cizí moduly mohou obsahovat bezpečnostní chyby a přepisování systémových souborů může ohrožovat Váš CRM systém.Modul, který se chystáte nainstalovat, nebyl kontrolovaný společností Vtiger.',
+    'LBL_DISCLAIMER_FOR_IMPORT_FROM_ZIP' => '<b>Upozornění - Instalace není bezpečná</b><br />Tato funkctionalita byla zpřístupněna pro vývojáře, aby mohli testovat nové moduly. Pokud instalujete ze souboru od třetí strany, prosím pokračujte pouze pokud důvěřujete vydavateli. Cizí moduly mohou obsahovat bezpečnostní chyby a přepisování systémových souborů může ohrožovat Váš CRM systém.Modul, který se chystáte nainstalovat, nebyl kontrolovaný společností Defalto.',
     'LBL_IMPORT_MODULE_FROM_FILE' => 'Instalovat ze souboru',
 ];
 $jsLanguageStrings = [

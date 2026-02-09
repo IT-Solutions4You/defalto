@@ -68,7 +68,7 @@
                             <tbody>
                             <tr>
                                 <td>{vtranslate('LBL_USERNAME','Install')}</td>
-                                <td>{$INFORMATION['admin']}</td>
+                                <td>{$INFORMATION['admin_name']}</td>
                             </tr>
                             <tr>
                                 <td>{vtranslate('LBL_EMAIL','Install')}<span class="no text-danger ms-2">*</span></td>

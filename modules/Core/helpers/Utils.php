@@ -109,8 +109,48 @@ class Core_Utils_Helper
 
     public static function retrieveKCFinderConfig(): void
     {
+        if (empty(vglobal('site_URL'))) {
+            return;
+        }
+
         $_SESSION['KCFINDER']['uploadURL'] = vglobal('site_URL') . 'test/upload';
         $_SESSION['KCFINDER']['uploadDir'] = vglobal('root_directory') . 'test/upload';
-        $_SESSION['KCFINDER']['deniedExts'] = implode(' ', vglobal('upload_badext'));
+        $_SESSION['KCFINDER']['deniedExts'] = implode(' ', (array)vglobal('upload_badext'));
+    }
+
+    public static function markdownToHtml($text): string
+    {
+        $text = decode_html($text);
+        $text = preg_replace('/^# (.*)$/m', '<h1>$1</h1>', $text);
+        $text = preg_replace('/^## (.*)$/m', '<h2>$1</h2>', $text);
+        $text = preg_replace('/^### (.*)$/m', '<h3>$1</h3>', $text);
+        $text = preg_replace('/^---$/m', '<hr>', $text);
+        $text = preg_replace('/\[!\[(.*?)\]\((.*?)\)\]\((.*?)\)/', '<a href="$3"><img src="$2" alt="$1"></a>', $text);
+        $text = preg_replace('/\[(.*?)\]\((.*?)\)/', '<a class="text-primary" href="$2">$1</a>', $text);
+        $text = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $text);
+
+        return nl2br($text);
+    }
+
+    public static function getReadmeFileContents(): string
+    {
+        $value = file_get_contents('README.md');
+
+        if (empty($value)) {
+            return '';
+        }
+
+        return self::markdownToHtml($value);
+    }
+
+    public static function getLicenseFileContents(): string
+    {
+        $value = file_get_contents('LICENSE.md');
+
+        if (empty($value)) {
+            return '';
+        }
+
+        return self::markdownToHtml($value);
     }
 }
