@@ -14,7 +14,7 @@
 			<input type=hidden name="mode" value="Step3" />
 			{include file='StepHeader.tpl'|@vtemplate_path:'Install'}
 			<div class="license border m-3 h-50vh overflow-auto p-3">
-                {Core_Utils_Helper::getReadmeFileContents()}
+                {Core_Utils_Helper::getLicenseFileContents()}
 			</div>
 			<div class="button-container text-end p-3">
 				<input name="back" type="button" class="btn btn-primary me-2" value="{vtranslate('LBL_DISAGREE', 'Install')}"/>

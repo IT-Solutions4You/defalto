@@ -142,4 +142,15 @@ class Core_Utils_Helper
 
         return self::markdownToHtml($value);
     }
+
+    public static function getLicenseFileContents(): string
+    {
+        $value = file_get_contents('LICENSE.md');
+
+        if (empty($value)) {
+            return '';
+        }
+
+        return self::markdownToHtml($value);
+    }
 }
