@@ -181,7 +181,7 @@ $languageStrings = [
     'LBL_REQUIRES_AUTHENTICATION' => 'Vyžaduje přihlášení',
     'LBL_OUTGOING_SERVER' => 'Odchozí server',
     'LBL_OUTGOING_SERVER_DESC' => 'Nastavte Váš odchozí emailový server',
-    'LBL_DEFAULT' => 'Jako výchozí emailový SMTP server je standardně nastaven Defalto.com. Abyste mohli využít funkčnost doručování emailů, nastavte následující.',
+    'LBL_DEFAULT' => 'Jako výchozí emailový SMTP server je standardně nastaven defalto.com. Abyste mohli využít funkčnost doručování emailů, nastavte následující.',
     'LBL_OPTIONS1' => 'Odesílat emialy z vašeho emailového serveru<br>
 					- Vložte detaily SMTP účtu (název serveru, uživatelskí jméno, heslo) stejně, jako jaký jste vložili při nastavovovávní odesílací emailové adresy.',
     'LBL_OPTIONS2' => 'Zadat server defalto.com jako odesílatele pro Vaši doménu.<br />					- Pokud preferujete Defalto server jako odchozí emailový server, doporučujeme nastavit Váš doménový SPF záznam, který umožní použití Defalto serveru pro odesílání emailů z Vaší domény.					  Pro další informace jak nastavit SPF, zašlete prosím email od-support@defalto.com.',

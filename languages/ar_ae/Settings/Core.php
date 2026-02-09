@@ -50,7 +50,7 @@ $languageStrings = [
     'LBL_DESCRIPTION'                 => 'Description',
 
     // Other Strings
-    'LBL_USER_DESCRIPTION'            => 'إدارة المستخدمين الذين يمكنهم الوصول defalto إدارة علاقات العملاء',
+    'LBL_USER_DESCRIPTION'            => 'إدارة المستخدمين الذين يمكنهم الوصول Defalto إدارة علاقات العملاء',
     'LBL_ROLES'                       => 'Roles',
     'LBL_ROLE_DESCRIPTION'            => 'Set up hierarchy of roles and assign to the users',
 
@@ -69,7 +69,7 @@ $languageStrings = [
     'LBL_FIELDFORMULAS_DESCRIPTION' => 'Add custom equations to custom fields',
 
     'VTLIB_LBL_MODULE_MANAGER'             => 'وحدات',
-    'VTLIB_LBL_MODULE_MANAGER_DESCRIPTION' => 'Manage module behavior inside defalto CRM',
+    'VTLIB_LBL_MODULE_MANAGER_DESCRIPTION' => 'Manage module behavior inside Defalto CRM',
     'LBL_PICKLIST_EDITOR'                  => 'القيم قائمة اختيار حقل',
     'LBL_PICKLIST_DESCRIPTION'             => 'Customize Picklist values in each module',
     'LBL_PICKLIST_DEPENDENCY_SETUP'        => 'قائمة الاختيار التبعيات',
@@ -234,7 +234,7 @@ $languageStrings = [
 
     //Configuration Editor
     'LBL_CONFIG_EDITOR'                      => 'Configuration Editor',
-    'LBL_CONFIG_DESCRIPTION'                 => 'Edit the Configuration details of defalto CRM',
+    'LBL_CONFIG_DESCRIPTION'                 => 'Edit the Configuration details of Defalto CRM',
     'LBL_CONFIG_FILE'                        => 'config.inc.php',
     'LBL_MB'                                 => 'MB',
 
