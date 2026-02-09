@@ -657,9 +657,7 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
      */
     public function isErrorSqlMode(array $data): string
     {
-        $sqlMode = $this->getValueSqlMode($data);
-
-        return !(empty($sqlMode) || 'NO_ENGINE_SUBSTITUTION' === trim($sqlMode, ',')) ? 'yes' : 'no';
+        return 'no';
     }
 
     /**
@@ -809,7 +807,9 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
      */
     public function isWarningSqlMode(array $data): string
     {
-        return $this->isErrorSqlMode($data);
+        $sqlMode = $this->getValueSqlMode($data);
+
+        return !(empty($sqlMode) || 'NO_ENGINE_SUBSTITUTION' === trim($sqlMode, ',')) ? 'yes' : 'no';
     }
 
     public function isWritableFolder(string $dir): bool
