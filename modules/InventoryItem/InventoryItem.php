@@ -69,9 +69,6 @@ class InventoryItem extends CRMEntity
     // Refers to vtiger_field.fieldname values.
     public $mandatory_fields = ['item_text', 'assigned_user_id'];
 
-    public $default_order_by = 'inventoryitemid';
-    public $default_sort_order = 'DESC';
-
     /**
      * Invoked when special actions are performed on the module.
      *
@@ -98,11 +95,17 @@ class InventoryItem extends CRMEntity
         global $adb, $log;
         $log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
-        $rel_table_arr = ['Documents' => 'vtiger_senotesrel', 'Attachments' => 'vtiger_seattachmentsrel'];
+        $rel_table_arr = [
+            'Attachments' => 'vtiger_seattachmentsrel'
+        ];
 
-        $tbl_field_arr = ['vtiger_senotesrel' => 'notesid', 'vtiger_seattachmentsrel' => 'attachmentsid'];
+        $tbl_field_arr = [
+            'vtiger_seattachmentsrel' => 'attachmentsid'
+        ];
 
-        $entity_tbl_field_arr = ['vtiger_senotesrel' => 'crmid', 'vtiger_seattachmentsrel' => 'crmid'];
+        $entity_tbl_field_arr = [
+            'vtiger_seattachmentsrel' => 'crmid'
+        ];
 
         foreach ($transferEntityIds as $transferId) {
             foreach ($rel_table_arr as $rel_module => $rel_table) {
@@ -130,40 +133,6 @@ class InventoryItem extends CRMEntity
 
         parent::transferRelatedRecords($module, $transferEntityIds, $entityId);
         $log->debug('Exiting transferRelatedRecords...');
-    }
-
-    /*
-	 * Function to get the relation tables for related modules
-	 * @param string $secmodule secondary module name
-     *
-	 * @return array  with table names and fieldnames storing relations between module and this module
-	 */
-    public function setRelationTables($secmodule)
-    {
-        return [];
-    }
-
-    /**
-     * Function to unlink an entity with given Id from another entity
-     *
-     * @param int    $id
-     * @param string $return_module
-     * @param int    $return_id
-     *
-     * @return void
-     */
-    public function unlinkRelationship($id, $return_module, $return_id)
-    {
-        if (empty($return_module) || empty($return_id)) {
-            return;
-        }
-
-        if ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
-        } else {
-            parent::unlinkRelationship($id, $return_module, $return_id);
-        }
     }
 
     /**

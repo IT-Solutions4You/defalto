@@ -11,16 +11,17 @@
 class Potentials_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
-        ['Potentials', 'Contacts', 'Contacts', 'select', 'get_contacts', '',],
-        ['Potentials', 'Products', 'Products', 'select', 'get_products', '',],
         ['Potentials', null, 'Sales Stage History', '', 'get_stage_history', '',],
-        ['Potentials', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['Potentials', 'Quotes', 'Quotes', 'add', 'get_Quotes', '',],
-        ['Potentials', 'SalesOrder', 'Sales Order', 'add', 'get_salesorder', '',],
+        ['Potentials', 'Contacts', 'Contacts', 'select', 'get_related_list', '',],
+        ['Potentials', 'Products', 'Products', 'select', 'get_related_list', '',],
         ['Potentials', 'Services', 'Services', 'SELECT', 'get_related_list', '',],
-        ['Potentials', 'Invoice', 'Invoice', 'ADD', 'get_dependents_list', '',],
-        ['Potentials', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
-        ['HelpDesk', 'Appointments', 'Appointments', '', 'get_related_list', '',],
+        ['Potentials', 'Quotes', 'Quotes', 'add', 'get_dependents_list', 'potential_id',],
+        ['Potentials', 'SalesOrder', 'Sales Order', 'add', 'get_dependents_list', 'potential_id',],
+        ['Potentials', 'Invoice', 'Invoice', 'ADD', 'get_dependents_list', 'potential_id',],
+        ['Potentials', 'Project', 'Project', 'ADD', 'get_dependents_list', 'potentialid',],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
     /**
@@ -169,8 +170,8 @@ class Potentials_Install_Model extends Core_Install_Model
                         'Perception Analysis',
                         'Proposal or Price Quote',
                         'Negotiation or Review',
-                        'Closed Won',
-                        'Closed Lost',
+                        ['Closed Won', '', 0],
+                        ['Closed Lost', '', 0],
                     ],
                 ],
                 'nextstep' => [
@@ -460,5 +461,27 @@ class Potentials_Install_Model extends Core_Install_Model
         $fields = ['potentialtype' => 'opportunity_type'];
 
         CustomView_Record_Model::updateColumnNames($moduleName, $fields);
+
+        $this->migrateRelationContactsPotentials();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrateRelationContactsPotentials(): void
+    {
+        $db = $this->getDB();
+
+        if(!$db->tableExists('vtiger_contpotentialrel')) {
+            return;
+        }
+
+        $result = $db->pquery('SELECT * FROM vtiger_contpotentialrel');
+
+        while ($row = $db->fetch_array($result)) {
+            Core_Relation_Model::saveEntityRelation($row['contactid'], 'Contacts', $row['potentialid'], 'Potentials');
+        }
+
+        $db->pquery('DROP TABLE vtiger_contpotentialrel');
     }
 }

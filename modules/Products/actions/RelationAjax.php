@@ -63,22 +63,22 @@ class Products_RelationAjax_Action extends Vtiger_RelationAjax_Action
 	 */
 	function addRelation($request)
 	{
+        Products_Relation_Model::$productsQuantities = $request->get('quantities', []);
+
 		$sourceModule = $request->getModule();
 		$sourceRecordId = $request->get('src_record');
 
 		$relatedModule = $request->get('related_module');
 		$relatedRecordIdList = $request->get('related_record_list');
 
-		$qtysList = $request->get('quantities');
-		if (!is_array($qtysList)) {
-			$qtysList = [];
-		}
-
 		$sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
 		$relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModule);
+        /** @var Products_Relation_Model $relationModel */
 		$relationModel = Vtiger_Relation_Model::getInstance($sourceModuleModel, $relatedModuleModel);
+
 		foreach ($relatedRecordIdList as $relatedRecordId) {
-			$relationModel->addRelation($sourceRecordId, $relatedRecordId, ['quantities' => $qtysList]);
+			$relationModel->addRelation($sourceRecordId, $relatedRecordId);
+
 			if ($relatedModule == 'PriceBooks') {
 				$recordModel = Vtiger_Record_Model::getInstanceById($relatedRecordId);
 				if ($sourceRecordId && ($sourceModule === 'Products' || $sourceModule === 'Services')) {

@@ -60,6 +60,9 @@ $languageStrings = [
     'LBL_THIS'                                                                   => 'هذا',
     'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM'          => 'ملغي من النظام ، الرجاء ازالة او استبدال الوحدة',
     'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'هذا البند ملغي من النظام ، الرجاء ازالة هذا البند',
+
+    'Create Proforma Invoice'  => 'Create Proforma Invoice',
+    'Create Final Invoice'  => 'Create Final Invoice',
 ];
 
 $jsLanguageStrings = [

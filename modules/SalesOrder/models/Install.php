@@ -11,18 +11,12 @@
 class SalesOrder_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
-        ['Accounts', 'SalesOrder', 'Sales Order', 'add', 'get_salesorder',],
-        ['Contacts', 'SalesOrder', 'Sales Order', 'add', 'get_salesorder',],
-        ['Quotes', 'SalesOrder', 'Sales Order', '', 'get_salesorder',],
-        ['SalesOrder', 'Invoice', 'Invoice', '', 'get_invoices',],
-        ['Services', 'SalesOrder', 'Sales Order', 'ADD', 'get_salesorder',],
-        ['Potentials', 'SalesOrder', 'Sales Order', 'ADD', 'get_salesorder',],
-        ['SalesOrder', 'Appointments', 'Appointments', '', 'get_related_list',],
-        ['SalesOrder', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list',],
-        ['SalesOrder', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments',],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
+        ['SalesOrder', 'Invoice', 'Invoice', '', 'get_dependents_list', 'salesorder_id',],
+
         ['Documents', 'SalesOrder', 'SalesOrder', '', 'get_related_list',],
-        ['Products', 'SalesOrder', 'Sales Order', 'ADD', 'get_salesorder',],
-        ['Documents', 'SalesOrder', 'SalesOrder', '1', 'get_related_list',],
     ];
 
     /**
@@ -31,6 +25,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
     public function addCustomLinks(): void
     {
         $this->updateToStandardModule();
+        $this->updateComments();
         $this->updateRelatedList();
     }
 
@@ -79,7 +74,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
                 ],
                 'potential_id' => [
                     'name' => 'potential_id',
-                    'uitype' => 76,
+                    'uitype' => 10,
                     'column' => 'potential_id',
                     'table' => 'vtiger_salesorder',
                     'label' => 'Potential Name',
@@ -90,10 +85,13 @@ class SalesOrder_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+                    'related_modules' => [
+                        'Potentials',
+                    ]
                 ],
                 'account_id' => [
                     'name' => 'account_id',
-                    'uitype' => 73,
+                    'uitype' => 10,
                     'column' => 'account_id',
                     'table' => 'vtiger_salesorder',
                     'label' => 'Account Name',
@@ -110,10 +108,13 @@ class SalesOrder_Install_Model extends Core_Install_Model
                     'quickcreate' => 2,
                     'quicksequence' => 3,
                     'ajaxeditable' => 0,
+                    'related_modules' => [
+                        'Accounts',
+                    ],
                 ],
                 'contact_id' => [
                     'name' => 'contact_id',
-                    'uitype' => 57,
+                    'uitype' => 10,
                     'column' => 'contact_id',
                     'table' => 'vtiger_salesorder',
                     'label' => 'Contact Name',
@@ -125,6 +126,9 @@ class SalesOrder_Install_Model extends Core_Install_Model
                     'summaryfield' => 1,
                     'quickcreate' => 2,
                     'quicksequence' => 4,
+                    'related_modules' => [
+                        'Contacts',
+                    ]
                 ],
                 'sostatus' => [
                     'name' => 'sostatus',
@@ -139,10 +143,10 @@ class SalesOrder_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 1,
                     'picklist_values' => [
-                        'Created',
-                        'Approved',
-                        'Delivered',
-                        'Cancelled',
+                        ['Created', '', 0],
+                        ['Approved', '', 0],
+                        ['Delivered', '', 0],
+                        ['Cancelled', '', 0],
                     ],
                     'headerfield' => 1,
                     'headerfieldsequence' => 3,
@@ -153,7 +157,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
                 ],
                 'quote_id' => [
                     'name' => 'quote_id',
-                    'uitype' => 78,
+                    'uitype' => 10,
                     'column' => 'quote_id',
                     'table' => 'vtiger_salesorder',
                     'label' => 'Quote Name',
@@ -164,6 +168,9 @@ class SalesOrder_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 0,
                     'summaryfield' => 1,
+                    'related_modules' => [
+                        'Quotes',
+                    ]
                 ],
                 'orderdate' => [
                     'name' => 'orderdate',
@@ -577,6 +584,24 @@ class SalesOrder_Install_Model extends Core_Install_Model
                     'columntype' => 'date',
                     'quickcreate' => 3,
                 ],
+                'recurring_module' => [
+                    'name' => 'recurring_module',
+                    'uitype' => 16,
+                    'column' => 'recurring_module',
+                    'table' => 'vtiger_invoice_recurring_info',
+                    'label' => 'Recurring Module',
+                    'readonly' => 1,
+                    'presence' => 0,
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 3,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 0,
+                    'picklist_values' => [
+                        'Invoice',
+                    ],
+                    'defaultvalue' => 'Invoice',
+                ],
             ],
             'LBL_SYSTEM_INFORMATION' => [
                 'salesorder_no' => [
@@ -737,11 +762,13 @@ class SalesOrder_Install_Model extends Core_Install_Model
             ->createColumn('end_period','date DEFAULT NULL')
             ->createColumn('next_recurring_date','date DEFAULT NULL')
             ->createColumn('payment_duration','varchar(200) DEFAULT NULL')
+            ->createColumn('recurring_module', 'varchar(200) DEFAULT \'Invoice\'')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`salesorderid`)')
             ->createKey('CONSTRAINT `fk_salesorderid_vtiger_invoice_recurring_info` FOREIGN KEY IF NOT EXISTS (`salesorderid`) REFERENCES `vtiger_salesorder` (`salesorderid`) ON DELETE CASCADE');
 
         $this->createPicklistTable('vtiger_sostatus', 'sostatusid', 'sostatus');
         $this->createPicklistTable('vtiger_recurring_frequency', 'recurring_frequency_id', 'recurring_frequency');
         $this->createPicklistTable('vtiger_payment_duration', 'payment_duration_id', 'payment_duration');
+        $this->createPicklistTable('vtiger_recurring_module', 'recurring_moduleid', 'recurring_module');
     }
 }

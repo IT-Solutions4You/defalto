@@ -15,16 +15,10 @@ class Assets_Install_Model extends Core_Install_Model
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        ['Accounts', 'Assets', 'Assets', ['add'], 'get_dependents_list'],
-        ['Products', 'Assets', 'Assets', ['add'], 'get_dependents_list'],
-        ['Invoice', 'Assets', 'Assets', ['add'], 'get_dependents_list'],
-        ['Documents', 'Assets', 'Assets', ['add'], 'get_related_list', '',],
-        ['Contacts', 'Assets', 'Assets', ['add'], 'get_dependents_list', '',],
-
         ['Assets', 'HelpDesk', 'HelpDesk', ['add', 'select'], 'get_related_list'],
-        ['Assets', 'Documents', 'Documents', ['add', 'select'], 'get_attachments'],
-        ['Assets', 'Appointments', 'Appointments', '', 'get_related_list', '',],
-        ['Assets', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
     /**
@@ -98,9 +92,9 @@ class Assets_Install_Model extends Core_Install_Model
     {
         $this->updateToStandardModule();
         $this->updateNumbering();
-        $this->updateRelatedList();
-        $this->updateComments();
         $this->updateHistory();
+        $this->updateComments();
+        $this->updateRelatedList();
         $this->addModuleToCustomerPortal();
     }
 

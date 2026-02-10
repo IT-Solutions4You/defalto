@@ -98,7 +98,7 @@
                                     {elseif $LISTVIEW_HEADER->getName() eq 'qty_per_unit'}
                                         {assign var="ENTRY_VALUE" value=$LISTVIEW_ENTRY->get({$LISTVIEW_HEADERNAME})}
                                         <a class="qtyForDisplay {if $EDITED_VALUE}hide{/if}">{$ENTRY_VALUE}</a>
-                                        <div class="{if !$EDITED_VALUE}hide{/if} qtyForEdit">
+                                        <div class="qtyForEdit {if !$EDITED_VALUE}hide{/if}">
                                             {assign var="QTY_ELEMENT_NAME" value="quantity"|cat:{$COL_NUMBER}|cat:{$ROW_NUMBER}}
                                             <input type="text" value="{if $EDITED_VALUE}{$EDITED_VALUE}{else}{$ENTRY_VALUE}{/if}" data-rule-positiveExcludingZero=true data-rule-positive=true name="{$QTY_ELEMENT_NAME}" class="form-control quantityTextBox" />
                                         </div>

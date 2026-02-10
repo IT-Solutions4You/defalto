@@ -11,11 +11,9 @@
 class Faq_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
-        ['Faq', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
-        ['Faq', 'ModComments', 'ModComments', '', 'get_comments', '',],
-        ['Faq', 'Appointments', 'Appointments', '', 'get_related_list', '',],
-        ['Faq', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
-        ['Documents', 'Faq', 'Faq', '1', 'get_related_list', '',],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
     public array $blocksHeaderFields = [
@@ -121,10 +119,10 @@ class Faq_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 0,
                     'picklist_values' => [
-                        'Draft',
-                        'Reviewed',
-                        'Published',
-                        'Obsolete',
+                        ['Draft', '', 0],
+                        ['Reviewed', '', 0],
+                        ['Published', '', 0],
+                        ['Obsolete', '', 0],
                     ],
                 ],
                 'product_id' => [

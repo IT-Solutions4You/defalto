@@ -79,4 +79,45 @@ class Campaigns_Relation_Model extends Vtiger_Relation_Model
             }
         }
     }
+
+    public static array $tableCampaignRelation = [
+        'Accounts' => ['vtiger_campaignaccountrel', 'accountid'],
+        'Contacts' => ['vtiger_campaigncontrel', 'contactid'],
+        'Leads' => ['vtiger_campaignleadrel', 'leadid'],
+    ];
+
+    public static function deleteCampaignRelation(int $record, string $module, int $relationRecord, string $relationModule): bool
+    {
+        $db = PearDatabase::getInstance();
+        $tableInfo = self::$tableCampaignRelation[$relationModule] ?? null;
+
+        if (empty($tableInfo)) {
+            return false;
+        }
+
+        $query = sprintf('DELETE FROM %s WHERE campaignid=? AND %s=?', $tableInfo[0], $tableInfo[1]);
+        $db->pquery($query, [$record, $relationRecord]);
+
+        return true;
+    }
+
+    public static function saveCampaignRelation(int $record, string $module, int $relationRecord, string $relationModule): bool
+    {
+        $db = PearDatabase::getInstance();
+        $tableInfo = self::$tableCampaignRelation[$relationModule] ?? null;
+
+        if (empty($tableInfo)) {
+            return false;
+        }
+
+        $query = sprintf('SELECT 1 FROM %s WHERE campaignid = ? AND %s = ?', $tableInfo[0], $tableInfo[1]);
+        $checkResult = $db->pquery($query, [$record, $relationRecord]);
+
+        if (!$db->num_rows($checkResult)) {
+            $query = sprintf('INSERT INTO %s (campaignid, %s, campaignrelstatusid) VALUES (?, ?, ?)', $tableInfo[0], $tableInfo[1]);
+            $db->pquery($query, [$record, $relationRecord, 1]);
+        }
+
+        return true;
+    }
 }

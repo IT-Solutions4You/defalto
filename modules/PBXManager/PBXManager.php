@@ -76,9 +76,6 @@ class PBXManager extends CRMEntity
     var $def_detailview_recname = 'customernumber';
     // Used when enabling/disabling the mandatory fields for the module.
     // Refers to vtiger_field.fieldname values.
-//    var $mandatory_fields = Array('assigned_user_id');
-    var $default_order_by = 'customernumber';
-    var $default_sort_order = 'ASC';
 
     /**
      * Invoked when special actions are performed on the module.
@@ -163,7 +160,7 @@ class PBXManager extends CRMEntity
         $EventManager->registerHandler($batchSaveEvent, $handler_path, $batchEventClassName);
         $EventManager->registerHandler($batchDeleteEvent, $handler_path, $batchEventClassName);
         $EventManager->registerHandler($convertLeadEvent, $handler_path, $className);
-        $log->fatal('Lookup Events Registered');
+        $log->critical('Lookup Events Registered');
     }
 
     /**
@@ -177,7 +174,7 @@ class PBXManager extends CRMEntity
             $moduleInstance = Vtiger_Module::getInstance($module);
             $moduleInstance->setRelatedList($pbxmanager, "PBXManager", [], 'get_dependents_list');
         }
-        $log->fatal('Successfully added Module Related lists');
+        $log->critical('Successfully added Module Related lists');
     }
 
     /**
@@ -191,7 +188,7 @@ class PBXManager extends CRMEntity
             $moduleInstance = Vtiger_Module::getInstance($module);
             $moduleInstance->unsetRelatedList($pbxmanager, "PBXManager", 'get_dependents_list');
         }
-        $log->fatal('Successfully removed Module Related lists');
+        $log->critical('Successfully removed Module Related lists');
     }
 
     /**
@@ -206,7 +203,7 @@ class PBXManager extends CRMEntity
         $batchEventClassName = 'PBXManagerBatchHandler';
         $EventManager->unregisterHandler($className);
         $EventManager->unregisterHandler($batchEventClassName);
-        $log->fatal('Lookup Events Unregistered');
+        $log->critical('Lookup Events Unregistered');
     }
 
     /**
@@ -222,7 +219,7 @@ class PBXManager extends CRMEntity
         ];
 
         Vtiger_Link::addLink($this->tabId, $this->headerScriptLinkType, $this->incominglinkLabel, 'modules/PBXManager/resources/PBXManagerJS.js', '', '', $handlerInfo);
-        $log->fatal('Links added');
+        $log->critical('Links added');
     }
 
     /**
@@ -233,7 +230,7 @@ class PBXManager extends CRMEntity
         global $log;
         //Deleting Headerscripts links
         Vtiger_Link::deleteLink($this->tabId, $this->headerScriptLinkType, $this->incominglinkLabel, 'modules/PBXManager/resources/PBXManagerJS.js');
-        $log->fatal('Links Removed');
+        $log->critical('Links Removed');
     }
 
     /**
@@ -243,7 +240,7 @@ class PBXManager extends CRMEntity
     {
         global $log;
         Settings_Vtiger_MenuItem_Model::deleteItem('LBL_PBXMANAGER');
-        $log->fatal('Settings Field Removed');
+        $log->critical('Settings Field Removed');
     }
 
     /**
@@ -267,7 +264,7 @@ class PBXManager extends CRMEntity
             [$actionId, 'ReceiveIncomingCalls', 0]
         );
         $moduleInstance->enableTools('ReceiveIncomingcalls');
-        $log->fatal('ReceiveIncomingcalls ActionName Added');
+        $log->critical('ReceiveIncomingcalls ActionName Added');
 
         //To add actionname as MakeOutgoingCalls
         $maxActionIdresult = $adb->pquery('SELECT max(actionid+1) AS actionid FROM vtiger_actionmapping', []);
@@ -280,7 +277,7 @@ class PBXManager extends CRMEntity
             [$actionId, 'MakeOutgoingCalls', 0]
         );
         $moduleInstance->enableTools('MakeOutgoingCalls');
-        $log->fatal('MakeOutgoingCalls ActionName Added');
+        $log->critical('MakeOutgoingCalls ActionName Added');
     }
 
     /**
@@ -299,7 +296,7 @@ class PBXManager extends CRMEntity
                      WHERE actionname=?',
             ['ReceiveIncomingCalls']
         );
-        $log->fatal('ReceiveIncomingcalls ActionName Removed');
+        $log->critical('ReceiveIncomingcalls ActionName Removed');
 
         $moduleInstance->disableTools('MakeOutgoingCalls');
         $adb->pquery(
@@ -307,7 +304,7 @@ class PBXManager extends CRMEntity
                       WHERE actionname=?',
             ['MakeOutgoingCalls']
         );
-        $log->fatal('MakeOutgoingCalls ActionName Removed');
+        $log->critical('MakeOutgoingCalls ActionName Removed');
     }
 
     static function checkLinkPermission($linkData)

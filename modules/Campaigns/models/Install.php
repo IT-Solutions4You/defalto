@@ -50,27 +50,30 @@ class Campaigns_Install_Model extends Core_Install_Model {
      * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
      */
     public array $registerRelatedLists = [
-        ['Leads', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', ],
-        ['Contacts', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', ],
-        ['Campaigns', 'Contacts', 'Contacts', 'add,select', 'get_contacts', ],
-        ['Campaigns', 'Leads', 'Leads', 'add,select', 'get_leads', ],
-        ['Campaigns', 'Potentials', 'Potentials', 'add', 'get_opportunities', ],
-        ['Campaigns', 'Calendar', 'Activities', 'add', 'get_activities', ],
-        ['Accounts', 'Campaigns', 'Campaigns', 'select', 'get_campaigns', ],
-        ['Campaigns', 'Accounts', 'Accounts', 'add,select', 'get_accounts', ],
-        ['Campaigns', 'Appointments', 'Appointments', '', 'get_related_list', ],
-        ['Campaigns', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', ],
+        ['Campaigns', 'Contacts', 'Contacts', 'add,select', 'get_related_list',],
+        ['Campaigns', 'Leads', 'Leads', 'add,select', 'get_related_list',],
+        ['Campaigns', 'Accounts', 'Accounts', 'add,select', 'get_related_list',],
+        ['Campaigns', 'Potentials', 'Potentials', 'add', 'get_related_list',],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
 
+    /**
+     * @throws Exception
+     */
     public function addCustomLinks(): void
     {
-        $this->updateRelatedList();
         $this->updateComments();
+        $this->updateRelatedList();
         $this->updateHistory();
         $this->updateToStandardModule();
     }
 
+    /**
+     * @throws Exception
+     */
     public function deleteCustomLinks(): void
     {
         $this->updateRelatedList(false);
@@ -520,6 +523,12 @@ class Campaigns_Install_Model extends Core_Install_Model {
      */
     public function migrate()
     {
+        $this->migrateFieldProducts();
+        $this->migrateRelationCampaigns();
+    }
+
+    public function migrateFieldProducts(): void
+    {
         if (!columnExists('product_id', 'vtiger_campaign')) {
             return;
         }
@@ -536,6 +545,28 @@ class Campaigns_Install_Model extends Core_Install_Model {
                 ['related_to' => $row['product_id']],
                 ['campaignid' => $row['campaignid']],
             );
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrateRelationCampaigns(): void
+    {
+        $tables = Campaigns_Relation_Model::$tableCampaignRelation;
+        $db = $this->getDB();
+
+        foreach ($tables as $tableInfo) {
+            [$table, $column] = $tableInfo;
+            $query = sprintf('SELECT * FROM %s', $table);
+            $result = $db->pquery($query);
+
+            while ($row = $db->fetch_array($result)) {
+                $recordId = $row[$column];
+                $moduleName = getSalesEntityType($recordId);
+
+                Core_Relation_Model::saveEntityRelation($row['campaignid'], 'Campaigns', $recordId, $moduleName);
+            }
         }
     }
 }

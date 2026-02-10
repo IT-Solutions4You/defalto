@@ -16,7 +16,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Vtiger_Relation_Model extends Vtiger_Base_Model
+class Vtiger_Relation_Model extends Core_Relation_Model
 {
     protected $parentModule = false;
     protected $relatedModule = false;
@@ -377,5 +377,13 @@ class Vtiger_Relation_Model extends Vtiger_Base_Model
     public function isActive()
     {
         return $this->get('presence') == 0 ? true : false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUnlinkable(): bool
+    {
+        return in_array($this->get('name'), ['get_products', 'get_related_list', 'get_product_pricebooks']);
     }
 }

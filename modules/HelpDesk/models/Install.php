@@ -11,13 +11,12 @@
 class HelpDesk_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
-        ['HelpDesk', 'Documents', 'Documents', 'add,select', 'get_attachments', '',],
         ['HelpDesk', 'ServiceContracts', 'Service Contracts', ['ADD','SELECT'], 'get_related_list', '',],
         ['HelpDesk', 'Services', 'Services', 'SELECT', 'get_related_list', '',],
         ['HelpDesk', 'Project', 'Projects', 'SELECT', 'get_related_list', '',],
-        ['HelpDesk', 'Appointments', 'Appointments', '', 'get_related_list', '',],
-        ['HelpDesk', 'ITS4YouEmails', 'ITS4YouEmails', ['SELECT'], 'get_related_list', '',],
-        ['ServiceContracts', 'HelpDesk', 'HelpDesk', ['ADD', 'SELECT'], 'get_related_list'],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
     public array $registerEventHandler = [
@@ -258,10 +257,10 @@ class HelpDesk_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'picklist_values' => [
-                        'Open',
-                        'In Progress',
-                        'Wait For Response',
-                        'Closed',
+                        ['Open', '', 0],
+                        ['In Progress', '', 0],
+                        ['Wait For Response', '', 0],
+                        ['Closed', '', 0],
                     ],
                 ],
                 'ticketcategories' => [
@@ -573,5 +572,27 @@ class HelpDesk_Install_Model extends Core_Install_Model
         ];
 
         CustomView_Record_Model::updateColumnNames('HelpDesk', $fields);
+
+        $this->migrateRelationHelpDesk();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function migrateRelationHelpDesk(): void
+    {
+        $db = $this->getDB();
+
+        if (!$db->tableExists('vtiger_seticketsrel')) {
+            return;
+        }
+
+        $result = $db->pquery('SELECT * FROM vtiger_seticketsrel');
+
+        while ($row = $db->fetch_array($result)) {
+            Core_Relation_Model::saveEntityRelation($row['crmid'], getSalesEntityType($row['crmid']), $row['ticketid'], 'HelpDesk');
+        }
+
+        $db->pquery('DROP TABLE vtiger_seticketsrel');
     }
 }

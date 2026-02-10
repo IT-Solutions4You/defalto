@@ -140,13 +140,38 @@ class Vtiger_Module extends Vtiger_ModuleBasic
     }
 
     /**
+     * @throws Exception
+     */
+    public function hasRelatedList(object $moduleInstance, string $label = '', string $function = ''): bool
+    {
+        $search = [
+            'tabid' => $this->id,
+            'related_tabid' => $moduleInstance->id,
+        ];
+
+        if (!empty($label)) {
+            $search['label'] = $label;
+        }
+
+        if (!empty($function)) {
+            $search['name'] = $function;
+        }
+
+        $table = Core_DatabaseData_Model::getTableInstance('vtiger_relatedlists', 'tabid');
+        $data = $table->selectData(['tabid'], $search);
+
+        return !empty($data['tabid']);
+    }
+
+    /**
      * Unset related list information that exists with other module
      *
-     * @param Vtiger_Module Instance of target module with which relation should be setup
-     * @param String Label to display in related list (default is target module name)
-     * @param String Callback function name of this module to use as handler
+     * @param Vtiger_Module $moduleInstance Instance of target module with which relation should be setup
+     * @param String $label Label to display in related list (default is target module name)
+     * @param String $function_name Callback function name of this module to use as handler
+     * @throws Exception
      */
-    function unsetRelatedList($moduleInstance, $label = '', $function_name = 'get_related_list')
+    public function unsetRelatedList($moduleInstance, $label = '', $function_name = 'get_related_list')
     {
         global $adb;
 
@@ -158,12 +183,20 @@ class Vtiger_Module extends Vtiger_ModuleBasic
             $label = $moduleInstance->name;
         }
 
-        $adb->pquery(
-            "DELETE FROM vtiger_relatedlists WHERE tabid=? AND related_tabid=? AND name=? AND label=?",
-            [$this->id, $moduleInstance->id, $function_name, $label]
-        );
+        $params = ['tabid' => $this->id, 'related_tabid' => $moduleInstance->id, 'label' => $label];
+
+        if (!empty($function_name)) {
+            $params['name'] = $function_name;
+        }
+
+        $this->getRelatedListsTable()->deleteData($params);
 
         self::log("Unsetting relation with $moduleInstance->name ... DONE");
+    }
+
+    public function getRelatedListsTable(): Core_DatabaseData_Model
+    {
+        return Core_DatabaseData_Model::getTableInstance('vtiger_relatedlists', '');
     }
 
     function unsetRelatedListForField($fieldId)

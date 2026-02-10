@@ -18,6 +18,35 @@
 
 class Products_Relation_Model extends Vtiger_Relation_Model
 {
+    public static array $productsQuantities = [];
+
+    public static function getProductQuantity($id)
+    {
+        if (!isset(self::$productsQuantities[$id])) {
+            return 1;
+        }
+
+        return self::$productsQuantities[$id];
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function saveProductRelation($record, $module, $relationRecord, $relationModule): bool
+    {
+        $table = Core_DatabaseData_Model::getTableInstance('vtiger_seproductsrel', '');
+        $insertData = ['crmid' => $record, 'setype' => $module, 'productid' => $relationRecord, 'quantity' => self::getProductQuantity($record)];
+        $data = $table->selectData(['crmid', 'productid'], $insertData);
+
+        if (!empty($data['crmid'])) {
+            return false;
+        }
+
+        $table->insertData($insertData);
+
+        return true;
+    }
+
     /**
      * Function returns the Query for the relationhips
      *

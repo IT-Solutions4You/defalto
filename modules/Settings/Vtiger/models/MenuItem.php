@@ -62,9 +62,6 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
         'LBL_INVENTORY' => [
             1 => ['INVENTORYTERMSANDCONDITIONS' ,'index.php?parent=Settings&module=Vtiger&view=TermsAndConditionsEdit', 'LBL_INV_TANDC_DESCRIPTION']
         ],
-        'LBL_COMMUNICATION_TEMPLATES' => [
-            1 => ['NOTIFICATIONSCHEDULERS', 'index.php?module=Settings&view=listnotificationschedulers&parenttab=Settings', 'LBL_NOTIF_SCHED_DESCRIPTION'],
-        ],
         'LBL_MY_PREFERENCES' => [
             1 => ['My Preferences'    ,'index.php?module=Users&view=PreferenceDetail&parent=Settings&record=1', ''],
             ['Calendar Settings' ,'index.php?module=Users&parent=Settings&view=Calendar&record=1', ''],
@@ -302,7 +299,6 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
             'LBL_FIELDFORMULAS',
             'LBL_FIELDS_ACCESS',
             'LBL_MAIL_MERGE',
-            'NOTIFICATIONSCHEDULERS',
             'ModTracker',
             'LBL_WORKFLOW_LIST',
             'LBL_TOOLTIP_MANAGEMENT',
@@ -363,7 +359,6 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
             'LBL_FIELDFORMULAS',
             'LBL_FIELDS_ACCESS',
             'LBL_MAIL_MERGE',
-            'NOTIFICATIONSCHEDULERS',
             'ModTracker',
             'LBL_WORKFLOW_LIST',
             'LBL_TOOLTIP_MANAGEMENT',

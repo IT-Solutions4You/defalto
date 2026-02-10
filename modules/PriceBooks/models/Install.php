@@ -11,12 +11,10 @@
 class PriceBooks_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
-        ['Products', 'PriceBooks', 'PriceBooks', 'ADD,SELECT', 'get_product_pricebooks',],
-        ['PriceBooks', 'Products', 'Products', 'select', 'get_pricebook_products',],
-        ['Services', 'PriceBooks', 'PriceBooks', 'ADD', 'get_service_pricebooks',],
         ['PriceBooks', 'Services', 'Services', 'SELECT', 'get_pricebook_services',],
-        ['PriceBooks', 'Appointments', 'Appointments', '', 'get_related_list',],
-        ['PriceBooks', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list',],
+        ['PriceBooks', 'Products', 'Products', 'SELECT', 'get_pricebook_products',],
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
     ];
 
     public function addCustomLinks(): void
@@ -172,9 +170,9 @@ class PriceBooks_Install_Model extends Core_Install_Model
             ->createColumn('productid', 'int(19) NOT NULL')
             ->createColumn('listprice', self::$COLUMN_DECIMAL)
             ->createColumn('usedcurrency', 'int(11) NOT NULL DEFAULT 1')
-            ->createKey('PRIMARY KEY IF NOT EXISTS(`pricebookid`,`productid`)')
-            ->createKey('KEY IF NOT EXISTS`pricebookproductrel_pricebookid_idx` (`pricebookid`)')
-            ->createKey('KEY IF NOT EXISTS`pricebookproductrel_productid_idx` (`productid`)')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`pricebookid`,`productid`)')
+            ->createKey('KEY IF NOT EXISTS `pricebookproductrel_pricebookid_idx` (`pricebookid`)')
+            ->createKey('KEY IF NOT EXISTS `pricebookproductrel_productid_idx` (`productid`)')
             ->createKey('CONSTRAINT `fk_1_vtiger_pricebookproductrel` FOREIGN KEY IF NOT EXISTS(`pricebookid`) REFERENCES `vtiger_pricebook` (`pricebookid`) ON DELETE CASCADE');
     }
 }

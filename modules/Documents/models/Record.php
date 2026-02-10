@@ -186,6 +186,7 @@ class Documents_Record_Model extends Vtiger_Record_Model
      * @param int $documentId
      *
      * @return void
+     * @throws Exception
      */
     public function saveDocumentsRelation(int $recordId, int $documentId): void
     {
@@ -193,14 +194,6 @@ class Documents_Record_Model extends Vtiger_Record_Model
             return;
         }
 
-        $adb = PearDatabase::getInstance();
-        $params = [$recordId, $documentId];
-        $result = $adb->pquery('SELECT * FROM vtiger_senotesrel WHERE crmid=? AND notesid=?', $params);
-
-        if ($adb->num_rows($result)) {
-            return;
-        }
-
-        $adb->pquery('INSERT INTO vtiger_senotesrel(crmid, notesid) VALUES(?,?)', $params);
+        Core_Relation_Model::saveEntityRelation($recordId, getSalesEntityType($recordId), $documentId, 'Documents');
     }
 }

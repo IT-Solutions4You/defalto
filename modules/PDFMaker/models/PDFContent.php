@@ -840,4 +840,30 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
     {
         require_once 'vendor/simplehtmldom/simplehtmldom/simple_html_dom.php';
     }
+
+    public function getInventoryItemImage(int $recordId): string
+    {
+        $sourceRecordId = self::$recordModel->getId();
+        $itemInfo = Core_DatabaseData_Model::getTableInstance('df_inventoryitem')->selectData(['productid as id', 'sequence'], ['inventoryitemid' => $recordId]);
+
+        if (empty($itemInfo['id'])) {
+            return '';
+        }
+
+        $imageInfo = Core_DatabaseData_Model::getTableInstance('vtiger_pdfmaker_images')->selectData(['attachmentid as id', 'width', 'height'], ['crmid' => $sourceRecordId, 'productid' => $itemInfo['id'], 'sequence' => $itemInfo['sequence']]);
+
+        if (empty($imageInfo['id'])) {
+            return '';
+        }
+
+        $attachmentInfo = Core_DatabaseData_Model::getTableInstance('vtiger_attachments')->selectData(['*'], ['attachmentsid' => $imageInfo['id']]);
+
+        if (!empty($attachmentInfo['attachmentsid'])) {
+            $attachmentInfo['style'] = 'width: ' . $imageInfo['width'] . 'px; height: ' . $imageInfo['height'] . 'px;';
+
+            return $this->getRecordImageFromData($attachmentInfo);
+        }
+
+        return '';
+    }
 }

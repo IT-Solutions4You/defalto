@@ -88,7 +88,6 @@ class Vtiger_Import_View extends Vtiger_Index_View
             unset($headerScriptInstances[$moduleEditFile]);
 
             $jsFileNames = [
-                'modules.Inventory.resources.Edit',
                 'modules.' . $moduleName . '.resources.Edit',
                 'modules.Import.resources.Import'
             ];

@@ -350,43 +350,15 @@ class Leads_Module_Model extends Vtiger_Module_Model
      */
     public function getQueryByModuleField($sourceModule, $field, $record, $listQuery)
     {
-        if (in_array($sourceModule, ['Campaigns', 'Products', 'Services', 'ITS4YouEmails'])) {
-            switch ($sourceModule) {
-                case 'Campaigns'    :
-                    $tableName = 'vtiger_campaignleadrel';
-                    $fieldName = 'leadid';
-                    $relatedFieldName = 'campaignid';
-                    break;
-                case 'Products'        :
-                    $tableName = 'vtiger_seproductsrel';
-                    $fieldName = 'crmid';
-                    $relatedFieldName = 'productid';
-                    break;
-            }
+        if (in_array($sourceModule, ['Campaigns', 'Products', 'Services',])) {
+            $condition = " vtiger_crmentity.crmid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
+            $params = [$record, $record];
+            $condition = PearDatabase::getInstance()->convert2Sql($condition, $params);
 
-            $db = PearDatabase::getInstance();
-            $params = [$record];
-            if ($sourceModule === 'Services') {
-                $condition = " vtiger_leaddetails.leadid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
-                $params = [$record, $record];
-            } elseif ($sourceModule === 'ITS4YouEmails') {
-                $condition = ' vtiger_leaddetails.emailoptout = 0';
-                $params = [];
-            } else {
-                $condition = " vtiger_leaddetails.leadid NOT IN (SELECT $fieldName FROM $tableName WHERE $relatedFieldName = ?)";
-            }
-            $condition = $db->convert2Sql($condition, $params);
-
-            $position = stripos($listQuery, 'where');
-            if ($position) {
-                $split = preg_split('/where/i', $listQuery);
-                $overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
-            } else {
-                $overRideQuery = $listQuery . ' WHERE ' . $condition;
-            }
-
-            return $overRideQuery;
+            return $this->addConditionToQuery($listQuery, $condition);
         }
+
+        return '';
     }
 
     public function getDefaultSearchField()

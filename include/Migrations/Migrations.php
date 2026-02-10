@@ -35,7 +35,6 @@ class Migrations
     public function __construct()
     {
         require_once('include/utils/utils.php');
-        require_once('include/logging.php');
         require_once('include/Migrations/AbstractMigrations.php');
 
         require_once('modules/com_vtiger_workflow/include.inc');

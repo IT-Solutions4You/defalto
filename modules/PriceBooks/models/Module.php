@@ -95,6 +95,7 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model
         if (in_array($sourceModule, $relatedModulesList)) {
             $pos = stripos($listQuery, ' where ');
             $db = PearDatabase::getInstance();
+
             if ($currencyId && in_array($field, ['productid', 'serviceid'])) {
                 $condition = " vtiger_pricebook.pricebookid IN (SELECT pricebookid FROM vtiger_pricebookproductrel WHERE productid = ?)
 								AND vtiger_pricebook.currency_id = $currencyId AND vtiger_pricebook.active = 1";
@@ -102,15 +103,10 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model
                 $condition = "vtiger_pricebook.pricebookid NOT IN (SELECT pricebookid FROM vtiger_pricebookproductrel WHERE productid = ?)
 								AND vtiger_pricebook.active = 1";
             }
-            $condition = $db->convert2Sql($condition, [$record]);
-            if ($pos) {
-                $split = preg_split('/ where /i', $listQuery);
-                $overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
-            } else {
-                $overRideQuery = $listQuery . ' WHERE ' . $condition;
-            }
 
-            return $overRideQuery;
+            $condition = $db->convert2Sql($condition, [$record]);
+
+            return $this->addConditionToQuery($listQuery, $condition);
         }
     }
 
@@ -222,6 +218,8 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model
     public static function getCustomField(string $fieldName, string $moduleName): object
     {
         $fieldModel = Vtiger_Field_Model::getCleanInstance($fieldName, $moduleName);
+        $fieldModel->column = $fieldName;
+        $fieldModel->name = $fieldName;
         $fieldModel->label = self::$customFieldLabels[$fieldName];
         $fieldModel->uitype = 71;
 
@@ -244,20 +242,36 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model
     {
         $newHeaderFields = [];
 
+        /** @var Vtiger_Field_Model $headerField */
         foreach ($headerFields as $headerField) {
             $newHeaderFields[$headerField->getName()] = $headerField;
 
             if (1 === count($newHeaderFields)) {
-                //Added to support List Price
-                $field = new Vtiger_Field_Model();
-                $field->set('name', 'listprice');
-                $field->set('column', 'listprice');
-                $field->set('label', 'List Price');
-
-                $newHeaderFields['listprice'] = $field;
+                $newHeaderFields['listprice'] = $headerField->getModule()->getField('listprice');
             }
         }
 
         return $newHeaderFields;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getConfigureRelatedListFields()
+    {
+        $fields = parent::getConfigureRelatedListFields();
+        $newFields = [];
+
+        foreach ($fields as $fieldName => $fieldLabel) {
+            $newFields[$fieldName] = $fieldLabel;
+
+            if (1 === count($newFields)) {
+                $newFields['unit_price'] = 'unit_price';
+                $newFields['listprice'] = 'listprice';
+                $newFields['currency_id'] = 'currency_id';
+            }
+        }
+
+        return $newFields;
     }
 }

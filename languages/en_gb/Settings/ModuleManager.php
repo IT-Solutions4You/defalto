@@ -83,8 +83,8 @@ $languageStrings = [
     'LBL_VERSION_NOT_SUPPORTED'      => 'Module version is not compatible with CRM version',
     'LBL_FINISH'                     => 'Finish',
     'LBL_IMPORT_ZIP'                 => 'Install from file',
-    'LBL_IMPORT_MODULE'              => 'Install from Vtiger',
-    'LBL_NOT_FOUND'                  => "Sorry, no extensions are currently available for your version of vtiger CRM",
+    'LBL_IMPORT_MODULE'              => 'Install from Defalto',
+    'LBL_NOT_FOUND'                  => "Sorry, no extensions are currently available for your version of Defalto CRM",
     'LBL_INVALID_IMPORT_TRY_AGAIN'   => ' provided for module import! Try again.',
     'LBL_IMPORTED_MODULE'            => ' module was imported successfully.',
     'LBL__IMPORTING_MODULE'          => 'Importing Module',
@@ -102,7 +102,7 @@ $languageStrings = [
     'LBL_OK'                                   => 'Ok',
     'LBL_DISCLAIMER_FOR_IMPORT_FROM_ZIP'       => '<b>Disclaimer - Custom Files could put your CRM at risk</b><br />  
                                               This functionality has been made available for Developers to test new modules.
-                                              If you are installing from a file provided 3rd party, please proceed only if you trust the publisher. Custom Modules could include security vulnerabilities and overwrite system files putting your CRM at risk. The module you are about to install has not been reviewed by Vtiger.',
+                                              If you are installing from a file provided 3rd party, please proceed only if you trust the publisher. Custom Modules could include security vulnerabilities and overwrite system files putting your CRM at risk. The module you are about to install has not been reviewed by Defalto.',
 
 ];
 $jsLanguageStrings = [

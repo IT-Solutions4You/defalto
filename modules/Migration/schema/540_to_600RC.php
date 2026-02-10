@@ -324,17 +324,6 @@ $home->addLink('DASHBOARDWIDGET', 'Leads by Source', 'index.php?module=Leads&vie
 $home->addLink('DASHBOARDWIDGET', 'Tickets by Status', 'index.php?module=HelpDesk&view=ShowWidget&name=TicketsByStatus', '', '13');
 $home->addLink('DASHBOARDWIDGET', 'Open Tickets', 'index.php?module=HelpDesk&view=ShowWidget&name=OpenTickets', '', '14');
 
-$projectTabId = getTabid('Project');
-$projectTaskTabId = getTabid('ProjectTask');
-$projectMilestoneTabId = getTabid('ProjectMilestone');
-$contactsTabId = getTabid('Contacts');
-$accountsTabId = getTabid('Accounts');
-
-Migration_Index_View::ExecuteQuery(
-    'UPDATE vtiger_relatedlists SET actions=? WHERE tabid in(?, ?) and related_tabid in (?)',
-    ['add', $contactsTabId, $accountsTabId, $projectTabId]
-);
-
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET truncate_trailing_zeros = ?', [1]);
 
 //deleted the id column from the All filter (exclude custom modules)
@@ -581,11 +570,6 @@ Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_cvadvfilter MODIFY compar
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_cvadvfilter SET comparator = ? WHERE comparator = ?', ['next120days', 'next120day']);
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_cvadvfilter SET comparator = ? WHERE comparator = ?', ['last120days', 'last120day']);
 
-Migration_Index_View::ExecuteQuery(
-    "UPDATE vtiger_relatedlists SET actions = ? WHERE tabid = ? AND related_tabid IN (?, ?)",
-    ['ADD', getTabid('Project'), getTabid('ProjectTask'), getTabid('ProjectMilestone')]
-);
-
 if (Vtiger_Utils::CheckTable('vtiger_cron_task')) {
     Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_cron_task MODIFY COLUMN laststart INT(11) UNSIGNED', []);
     Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_cron_task MODIFY COLUMN lastend INT(11) UNSIGNED', []);
@@ -609,10 +593,6 @@ Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_cvadvfilter MODIFY value 
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_sqltimelog MODIFY started DECIMAL(20,6)', []);
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_sqltimelog MODIFY ended DECIMAL(20,6)', []);
 
-//added Assests tab in contact
-$assetsModuleInstance = Vtiger_Module::getInstance('Assets');
-$contactModule = Vtiger_Module::getInstance('Contacts');
-$contactModule->setRelatedList($assetsModuleInstance, '', false, 'get_dependents_list');
 // End 2013.04.23
 
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_profile ADD COLUMN directly_related_to_role int(1) DEFAULT 0', []);

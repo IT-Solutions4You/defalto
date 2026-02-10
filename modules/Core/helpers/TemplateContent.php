@@ -179,14 +179,15 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
             return;
         }
 
-        Core_RelatedBlock_Model::$numberUserConfig = Core_RelatedBlock_Model::$currencyUserConfig = [
+        $class = 'Core_RelatedBlock_Model';
+        $class::$numberUserConfig = $class::$currencyUserConfig = $class::$inventoryNumberUserConfig = $class::$inventoryCurrencyUserConfig = [
             'currency_grouping_separator' => self::$thousands_separator,
             'currency_decimal_separator'  => self::$decimal_point,
             'truncate_trailing_zeros'     => false,
             'no_of_currency_decimals'     => self::$decimals,
         ];
 
-        self::$content = Core_RelatedBlock_Model::replaceAll(self::$recordModel, self::$content, $this->getTemplateModule());
+        self::$content = $class::replaceAll(self::$recordModel, self::$content, $this->getTemplateModule());
     }
 
     /**
@@ -206,14 +207,15 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
             return;
         }
 
-        Core_InventoryItemsBlock_Model::$numberUserConfig = Core_InventoryItemsBlock_Model::$currencyUserConfig = [
+        $class = 'Core_InventoryItemsBlock_Model';
+        $class::$numberUserConfig = $class::$currencyUserConfig = $class::$inventoryNumberUserConfig = $class::$inventoryCurrencyUserConfig = [
             'currency_grouping_separator' => self::$thousands_separator,
             'currency_decimal_separator'  => self::$decimal_point,
             'truncate_trailing_zeros'     => false,
             'no_of_currency_decimals'     => self::$decimals,
         ];
 
-        self::$content = Core_InventoryItemsBlock_Model::replaceAll(self::$recordModel, self::$content, $this->getTemplateModule());
+        self::$content = $class::replaceAll(self::$recordModel, self::$content, $this->getTemplateModule());
     }
 
     /**
@@ -226,14 +228,15 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
             return;
         }
 
-        Core_VatBlock_Model::$numberUserConfig = Core_VatBlock_Model::$currencyUserConfig = [
+        $class = 'Core_VatBlock_Model';
+        $class::$numberUserConfig = $class::$currencyUserConfig = $class::$inventoryNumberUserConfig = $class::$inventoryCurrencyUserConfig = [
             'currency_grouping_separator' => self::$thousands_separator,
             'currency_decimal_separator'  => self::$decimal_point,
             'truncate_trailing_zeros'     => false,
             'no_of_currency_decimals'     => self::$decimals,
         ];
 
-        self::$content = Core_VatBlock_Model::replaceAll(self::$recordModel, self::$content, $this->getTemplateModule());
+        self::$content = $class::replaceAll(self::$recordModel, self::$content, $this->getTemplateModule());
     }
 
     /**
@@ -380,17 +383,22 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
     /**
      * @param int $recordId
      * @return string
+     * @throws Exception
      */
     public function getInventoryItemImage(int $recordId): string
     {
-        $adb = PearDatabase::getInstance();
-        $result = $adb->pquery(
-            'SELECT df_inventoryitem.productid FROM df_inventoryitem WHERE df_inventoryitem.inventoryitemid=?',
-            [$recordId],
-        );
-        $row = $adb->fetchByAssoc($result);
+        return $this->getRecordImage($this->getInventoryItemProductId($recordId));
+    }
 
-        return $this->getRecordImage((int)$row['productid']);
+    /**
+     * @throws Exception
+     */
+    public function getInventoryItemProductId(int $inventoryItemId): int
+    {
+        $table = Core_DatabaseData_Model::getTableInstance('df_inventoryitem');
+        $data = $table->selectData(['productid as id'], ['inventoryitemid' => $inventoryItemId]);
+
+        return $data['id'];
     }
 
     /**

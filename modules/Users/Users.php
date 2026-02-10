@@ -129,8 +129,8 @@ class Users extends CRMEntity
     ];
 
     // This is the list of fields that are in the lists.
-    public $default_order_by = "user_name";
-    public $default_sort_order = 'ASC';
+    public string $default_order_by = "user_name";
+    public string $default_sort_order = 'ASC';
 
     public $record_id;
     public $new_schema = true;
@@ -207,7 +207,7 @@ class Users extends CRMEntity
     public $leftpanelhide;
 
     /** constructor function for the main user class
-     * instantiates the Logger class and PearDatabase Class
+     * instantiates the Core_Logger_Helper class and PearDatabase Class
      *
      */
     function __construct()
@@ -2057,7 +2057,7 @@ class Users_CRMSetup
      */
     public static function getPackagesList()
     {
-        $restrictedModulesList = ['ModComments', 'Rss', 'Portal', 'Integration', 'PBXManager', 'Dashboard', 'Home'];
+        $restrictedModulesList = ['ModComments', 'Integration', 'PBXManager', 'Dashboard', 'Home'];
 
         $packagesList = [
             'Tools'     => [

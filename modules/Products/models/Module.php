@@ -32,12 +32,11 @@ class Products_Module_Model extends Vtiger_Module_Model
     public function getQueryByModuleField($sourceModule, $field, $record, $listQuery)
     {
         $supportedModulesList = [$this->getName(), 'Vendors', 'Leads', 'Accounts', 'Contacts', 'Potentials'];
-        if (($sourceModule == 'PriceBooks' && $field == 'priceBookRelatedList')
-            || in_array($sourceModule, $supportedModulesList)
-            || in_array($sourceModule, InventoryItem_Utils_Helper::getInventoryItemModules())) {
+        if (($sourceModule == 'PriceBooks' && $field == 'priceBookRelatedList') || in_array($sourceModule, $supportedModulesList) || in_array($sourceModule, InventoryItem_Utils_Helper::getInventoryItemModules())) {
             $condition = " vtiger_products.discontinued = 1 ";
             $db = PearDatabase::getInstance();
             $params = [$record];
+
             if ($sourceModule === $this->getName()) {
                 $condition .= " AND vtiger_products.productid NOT IN (SELECT productid FROM vtiger_seproductsrel WHERE setype = '" . $this->getName(
                     ) . "' UNION SELECT crmid FROM vtiger_seproductsrel WHERE productid = ?) AND vtiger_products.productid <> ? ";
@@ -47,21 +46,16 @@ class Products_Module_Model extends Vtiger_Module_Model
             } elseif ($sourceModule === 'Vendors') {
                 $condition .= " AND vtiger_products.vendor_id != ? ";
             } elseif (in_array($sourceModule, $supportedModulesList)) {
+                $condition .= " AND vtiger_products.productid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ?)";
+            } elseif($sourceModule === 'Products') {
                 $condition .= " AND vtiger_products.productid NOT IN (SELECT productid FROM vtiger_seproductsrel WHERE crmid = ?)";
             } else {
                 $params = [];
             }
+
             $condition = $db->convert2Sql($condition, $params);
 
-            $pos = stripos($listQuery, 'where');
-            if ($pos) {
-                $split = preg_split('/where/i', $listQuery);
-                $overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
-            } else {
-                $overRideQuery = $listQuery . ' WHERE ' . $condition;
-            }
-
-            return $overRideQuery;
+            return $this->addConditionToQuery($listQuery, $condition);
         }
     }
 
@@ -291,5 +285,24 @@ class Products_Module_Model extends Vtiger_Module_Model
         }
 
         return parent::getField($fieldName);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getConfigureRelatedListFields()
+    {
+        $fields = parent::getConfigureRelatedListFields();
+        $newFields = [];
+
+        foreach ($fields as $fieldName => $fieldLabel) {
+            $newFields[$fieldName] = $fieldLabel;
+
+            if (1 === count($newFields)) {
+                $newFields['qty_per_unit'] = 'qty_per_unit';
+            }
+        }
+
+        return $newFields;
     }
 }

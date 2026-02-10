@@ -273,6 +273,9 @@ $languageStrings = [
     'LBL_BACKUP_DATABASE' => 'Vytvoril som zálohu databázy',
     'LBL_BACKUP_SOURCE' => 'Vytvoril som zálohu zdrojového priečinka',
     'LBL_HOW_TO' => 'Ako na to?',
+    'LBL_REQUIRED_CKEDITOR_UPLOAD' => 'Vyžadované pre nahrávanie obrázkov v CKEditore',
+    'LBL_REQUIRED_TEMPLATE_IMAGE' => 'Vyžadovaná lomka pre obrázky v šablónach',
+    'LBL_REQUIRED_ATTACHMENTS_UPLOAD' => 'Vyžadovaná lomka pre nahrávanie príloh',
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Naozaj chcete nainštalovať rozšírenie?',

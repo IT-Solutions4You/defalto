@@ -274,7 +274,7 @@ class Appointments_Module_Model extends Vtiger_Module_Model
      *
      * @return string
      */
-    public static function getQueryByModuleField(string $sourceModule, string $field, $record, string $listQuery): string
+    public function getQueryByModuleField(string $sourceModule, string $field, $record, string $listQuery): string
     {
         if ('Appointments' === $sourceModule && 'invite_users' === $field) {
             $search = "its4you_calendar.invite_users = 'replace_invite_users'";
@@ -282,7 +282,12 @@ class Appointments_Module_Model extends Vtiger_Module_Model
             $listQuery = str_replace($search, $replace, $listQuery);
         }
 
-        return $listQuery;
+        $db = PearDatabase::getInstance();
+        $condition = ' vtiger_crmentity.crmid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ';
+        $params = [$record, $record];
+        $condition = $db->convert2Sql($condition, $params);
+
+        return $this->addConditionToQuery($listQuery, $condition);
     }
 
     public function getConfigureRelatedListFields()

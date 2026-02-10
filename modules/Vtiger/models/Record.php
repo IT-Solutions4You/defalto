@@ -768,8 +768,8 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
         $fileDetails = [];
         $query = 'SELECT * FROM vtiger_attachments
 				INNER JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid
-				INNER JOIN vtiger_senotesrel ON vtiger_senotesrel.notesid = vtiger_seattachmentsrel.crmid
-				WHERE vtiger_senotesrel.crmid = ? ';
+				INNER JOIN vtiger_crmentityrel ON vtiger_crmentityrel.relcrmid = vtiger_seattachmentsrel.crmid
+				WHERE vtiger_crmentityrel.crmid = ? ';
         $params = [$this->get('id')];
         $result = $db->pquery($query, $params);
 

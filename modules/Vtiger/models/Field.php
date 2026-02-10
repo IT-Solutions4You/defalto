@@ -1890,4 +1890,21 @@ class Vtiger_Field_Model extends Vtiger_Field
     {
         return $this->get('fieldvalue');
     }
+
+    /**
+     * @param array $searchInfo
+     * @return null
+     */
+    public function getSearchValueByInfo(mixed $searchInfo): mixed
+    {
+        return $searchInfo['searchValue'] ?? null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFieldInfoJSON(): string
+    {
+        return Zend_Json::encode($this->getFieldInfo());
+    }
 }

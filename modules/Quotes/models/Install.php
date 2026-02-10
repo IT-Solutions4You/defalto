@@ -10,18 +10,12 @@
 class Quotes_Install_Model extends Core_Install_Model
 {
     public array $registerRelatedLists = [
-        ['Accounts', 'Quotes', 'Quotes', 'add', 'get_quotes', '',],
-        ['Contacts', 'Quotes', 'Quotes', 'add', 'get_quotes', '',],
-        ['Services', 'Quotes', 'Quotes', 'ADD', 'get_quotes', '',],
-        ['Potentials', 'Quotes', 'Quotes', 'ADD', 'get_Quotes', '',],
-        ['Quotes', 'Appointments', 'Appointments', '', 'get_related_list', '',],
-        ['Quotes', 'ITS4YouEmails', 'ITS4YouEmails', 'SELECT', 'get_related_list', '',],
-        ['Quotes', 'Documents', 'Documents', 'ADD,SELECT', 'get_attachments', '',],
+        self::DOCUMENTS_RELATED_LIST,
+        self::EMAILS_RELATED_LIST,
+        self::APPOINTMENTS_RELATED_LIST,
+        ['Quotes', 'SalesOrder', 'Sales Order', '', 'get_dependents_list', 'quote_id'],
+
         ['Documents', 'Quotes', 'Quotes', '', 'get_related_list', '',],
-        ['Products', 'Quotes', 'Quotes', 'ADD', 'get_quotes', '',],
-        ['Documents', 'Quotes', 'Quotes', '1', 'get_related_list', '',],
-        ['Quotes', 'SalesOrder', 'Sales Order', '', 'get_salesorder', '',],
-        ['Project', 'Quotes', 'Quotes', 'SELECT', 'get_related_list', '',],
     ];
 
     public array $blocksHeaderFields = [
@@ -73,15 +67,18 @@ class Quotes_Install_Model extends Core_Install_Model
 
     /**
      * @return void
+     * @throws Exception
      */
     public function addCustomLinks(): void
     {
         $this->updateToStandardModule();
+        $this->updateComments();
         $this->updateRelatedList();
     }
 
     /**
      * @return void
+     * @throws Exception
      */
     public function deleteCustomLinks(): void
     {
@@ -113,7 +110,7 @@ class Quotes_Install_Model extends Core_Install_Model
                 ],
                 'potential_id' => [
                     'name' => 'potential_id',
-                    'uitype' => 76,
+                    'uitype' => 10,
                     'column' => 'potential_id',
                     'table' => 'vtiger_quotes',
                     'label' => 'Potential Name',
@@ -124,10 +121,13 @@ class Quotes_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
+                    'related_modules' => [
+                        'Potentials',
+                    ],
                 ],
                 'account_id' => [
                     'name' => 'account_id',
-                    'uitype' => 73,
+                    'uitype' => 10,
                     'column' => 'account_id',
                     'table' => 'vtiger_quotes',
                     'label' => 'Account Name',
@@ -140,10 +140,13 @@ class Quotes_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 0,
                     'ajaxeditable' => 0,
+                    'related_modules' => [
+                        'Accounts'
+                    ],
                 ],
                 'contact_id' => [
                     'name' => 'contact_id',
-                    'uitype' => 57,
+                    'uitype' => 10,
                     'column' => 'contact_id',
                     'table' => 'vtiger_quotes',
                     'label' => 'Contact Name',
@@ -155,6 +158,7 @@ class Quotes_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'headerfield' => 0,
+                    'related_modules' => ['Contacts']
                 ],
                 'quotestage' => [
                     'name' => 'quotestage',
@@ -171,11 +175,11 @@ class Quotes_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 0,
                     'picklist_values' => [
-                        'Created',
-                        'Delivered',
-                        'Reviewed',
-                        'Accepted',
-                        'Rejected',
+                        ['Created', '', 0],
+                        ['Delivered', '', 0],
+                        ['Reviewed', '', 0],
+                        ['Accepted', '', 0],
+                        ['Rejected', '', 0],
                     ],
                 ],
                 'carrier' => [
@@ -543,7 +547,8 @@ class Quotes_Install_Model extends Core_Install_Model
             ->createKey('KEY IF NOT EXISTS `quotes_potential_id_idx` (`potential_id`)')
             ->createKey('KEY IF NOT EXISTS `quotes_contact_id_idx` (`contact_id`)')
             ->createKey('CONSTRAINT `fk_3_vtiger_quotes` FOREIGN KEY IF NOT EXISTS (`potential_id`) REFERENCES `vtiger_potential` (`potentialid`) ON DELETE CASCADE')
-            ->createKey('CONSTRAINT `fk_crmid_vtiger_quotes` FOREIGN KEY IF NOT EXISTS (`quoteid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
+            ->createKey('CONSTRAINT `fk_crmid_vtiger_quotes` FOREIGN KEY IF NOT EXISTS (`quoteid`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE')
+            ->removeKey('FOREIGN KEY fk_1_vtiger_quotes');
 
         $this->getTable('vtiger_quotesbillads', null)
             ->createTable('quotebilladdressid', 'int(19) NOT NULL DEFAULT \'0\'')

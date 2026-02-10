@@ -164,22 +164,22 @@
 							</thead>
 							{foreach item=RELATED_RECORD from=$RELATED_RECORDS}
 								<tr class="listViewEntries border-top" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
-									<td class="{$WIDTHTYPE}">
-										<input type="checkbox" value="{$RELATED_RECORD->getId()}" class="listViewEntriesCheckBox form-check-input"/>
-									</td>
-									<td>
+                                    <td class="{$WIDTHTYPE}">
+                                        <input type="checkbox" value="{$RELATED_RECORD->getId()}" class="listViewEntriesCheckBox form-check-input"/>
+                                    </td>
+                                    <td class="js-redirect-disabled">
 										<span class="actionImages btn-group">
-											<a class="btn text-secondary" name="relationEdit" data-url="{$RELATED_RECORD->getEditViewUrl()}" href="javascript:void(0)">
+											<a class="btn btn-sm text-secondary" name="relationEdit" data-url="{$RELATED_RECORD->getEditViewUrl()}" href="javascript:void(0)">
 												<i title="{vtranslate('LBL_EDIT', $MODULE)}" class="fa fa-pencil"></i>
 											</a>
 											{if $IS_DELETABLE}
-												<a class="btn text-secondary relationDelete">
+                                                <a class="btn btn-sm text-secondary relationDelete">
 													<i title="{vtranslate('LBL_UNLINK', $MODULE)}" class="vicon-linkopen"></i>
 												</a>
-											{/if}
+                                            {/if}
 										</span>
-									</td>
-									{foreach item=HEADER_FIELD from=$RELATED_HEADERS}
+                                    </td>
+                                    {foreach item=HEADER_FIELD from=$RELATED_HEADERS}
 										{assign var=RELATED_HEADERNAME value=$HEADER_FIELD->get('name')}
 										{assign var=RELATED_LIST_VALUE value=$RELATED_RECORD->get($RELATED_HEADERNAME)}
 										<td class="{$WIDTHTYPE} relatedListEntryValues" data-field-type="{$HEADER_FIELD->getFieldDataType()}" nowrap>
@@ -189,7 +189,7 @@
 												{elseif $HEADER_FIELD->getFieldDataType() eq 'currency'}
 													{assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($RELATED_RECORD->getCurrencyId())}
 													{CurrencyField::appendCurrencySymbol($RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME), $CURRENCY_INFO['symbol'])}
-												{elseif $HEADER_FIELD->getFieldDataType() eq 'picklist' and $FIELD_MODEL->isPicklistColorSupported()}
+												{elseif $HEADER_FIELD->getFieldDataType() eq 'picklist' and $HEADER_FIELD->isPicklistColorSupported()}
 													<span class="py-1 px-2 rounded picklist-color picklist-{$HEADER_FIELD->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($RELATED_LIST_VALUE)}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</span>
 												{else}
 													{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}

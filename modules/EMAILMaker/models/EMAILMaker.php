@@ -80,8 +80,8 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         $this->profilesPermissions = [];
         $this->name = 'EMAILMaker';
         $this->id = getTabId($this->name);
-        $_SESSION['KCFINDER']['uploadURL'] = 'test/upload';
-        $_SESSION['KCFINDER']['uploadDir'] = '../test/upload';
+
+        Core_Utils_Helper::retrieveKCFinderConfig();
     }
 
     public static function getExpressions()

@@ -53,6 +53,9 @@ class SalesOrder extends CRMEntity
         'vtiger_salesordercf'           => 'salesorderid',
         'vtiger_invoice_recurring_info' => 'salesorderid',
     ];
+    public array $tab_name_left_join = [
+        'vtiger_invoice_recurring_info'
+    ];
     /**
      * Mandatory table for supporting custom fields.
      */
@@ -125,11 +128,6 @@ class SalesOrder extends CRMEntity
     // This is the list of vtiger_fields that are required.
     public $required_fields = ["accountname" => 1];
 
-    //Added these variables which are used as default order by and sortorder in ListView
-    public $default_order_by = 'subject';
-    public $default_sort_order = 'ASC';
-    //public $groupTable = Array('vtiger_sogrouprelation','salesorderid');
-
     public $mandatory_fields = ['subject', 'createdtime', 'modifiedtime', 'assigned_user_id', 'quantity', 'listprice', 'productid'];
 
     // For Alphabetical search
@@ -153,125 +151,6 @@ class SalesOrder extends CRMEntity
         }
     }
 
-    /** Function to get the invoices associated with the Sales Order
-     *  This function accepts the id as arguments and execute the MySQL query using the id
-     *  and sends the query and the id as arguments to renderRelatedInvoices() method.
-     */
-    public function get_invoices($id)
-    {
-        global $log, $singlepane_view;
-        $log->debug("Entering get_invoices(" . $id . ") method ...");
-        require_once('modules/Invoice/Invoice.php');
-
-        $focus = new Invoice();
-
-        $button = '';
-        if ($singlepane_view == 'true') {
-            $returnset = '&return_module=SalesOrder&return_action=DetailView&return_id=' . $id;
-        } else {
-            $returnset = '&return_module=SalesOrder&return_action=CallRelatedList&return_id=' . $id;
-        }
-
-        $userNameSql = getSqlForNameInDisplayFormat([
-            'first_name' =>
-                'vtiger_users.first_name',
-            'last_name'  => 'vtiger_users.last_name'
-        ], 'Users');
-        $query = "select vtiger_crmentity.*, vtiger_invoice.*, vtiger_account.accountname,
-			vtiger_salesorder.subject as salessubject, case when
-			(vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname
-			end as user_name from vtiger_invoice
-			inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_invoice.invoiceid
-			left outer join vtiger_account on vtiger_account.accountid=vtiger_invoice.account_id
-			inner join vtiger_salesorder on vtiger_salesorder.salesorderid=vtiger_invoice.salesorder_id
-            LEFT JOIN vtiger_invoicecf ON vtiger_invoicecf.invoiceid = vtiger_invoice.invoiceid
-			LEFT JOIN vtiger_invoicebillads ON vtiger_invoicebillads.invoicebilladdressid = vtiger_invoice.invoiceid
-			LEFT JOIN vtiger_invoiceshipads ON vtiger_invoiceshipads.invoiceshipaddressid = vtiger_invoice.invoiceid
-			left join vtiger_users on vtiger_users.id=vtiger_crmentity.assigned_user_id
-			left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.assigned_user_id
-			where vtiger_crmentity.deleted=0 and vtiger_salesorder.salesorderid=" . $id;
-
-        $log->debug("Exiting get_invoices method ...");
-
-        return GetRelatedList('SalesOrder', 'Invoice', $focus, $query, $button, $returnset);
-    }
-
-    /*
-     * Function to get the secondary query part of a report
-     * @param - $module primary module name
-     * @param - $secmodule secondary module name
-     * returns the query string formed on fetching the related data for report for secondary module
-     */
-    public function generateReportsSecQuery($module, $secmodule, $queryPlanner)
-    {
-        $matrix = $queryPlanner->newDependencyMatrix();
-        $matrix->setDependency('vtiger_crmentitySalesOrder', ['vtiger_usersSalesOrder', 'vtiger_groupsSalesOrder', 'vtiger_lastModifiedBySalesOrder']);
-        if (!$queryPlanner->requireTable('vtiger_salesorder', $matrix)) {
-            return '';
-        }
-        $matrix->setDependency('vtiger_salesorder', [
-            'vtiger_crmentitySalesOrder',
-            "vtiger_currency_info$secmodule",
-            'vtiger_salesordercf',
-            'vtiger_potentialRelSalesOrder',
-            'vtiger_sobillads',
-            'vtiger_soshipads',
-            'vtiger_contactdetailsSalesOrder',
-            'vtiger_accountSalesOrder',
-            'vtiger_invoice_recurring_info',
-            'vtiger_quotesSalesOrder'
-        ]);
-
-        $query = $this->getRelationQuery($module, $secmodule, "vtiger_salesorder", "salesorderid", $queryPlanner);
-        if ($queryPlanner->requireTable("vtiger_crmentitySalesOrder", $matrix)) {
-            $query .= " left join vtiger_crmentity as vtiger_crmentitySalesOrder on vtiger_crmentitySalesOrder.crmid=vtiger_salesorder.salesorderid and vtiger_crmentitySalesOrder.deleted=0";
-        }
-        if ($queryPlanner->requireTable("vtiger_salesordercf")) {
-            $query .= " left join vtiger_salesordercf on vtiger_salesorder.salesorderid = vtiger_salesordercf.salesorderid";
-        }
-        if ($queryPlanner->requireTable("vtiger_sobillads")) {
-            $query .= " left join vtiger_sobillads on vtiger_salesorder.salesorderid=vtiger_sobillads.sobilladdressid";
-        }
-        if ($queryPlanner->requireTable("vtiger_soshipads")) {
-            $query .= " left join vtiger_soshipads on vtiger_salesorder.salesorderid=vtiger_soshipads.soshipaddressid";
-        }
-        if ($queryPlanner->requireTable("vtiger_currency_info$secmodule")) {
-            $query .= " left join vtiger_currency_info as vtiger_currency_info$secmodule on vtiger_currency_info$secmodule.id = vtiger_salesorder.currency_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_groupsSalesOrder")) {
-            $query .= " left join vtiger_groups as vtiger_groupsSalesOrder on vtiger_groupsSalesOrder.groupid = vtiger_crmentitySalesOrder.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_usersSalesOrder")) {
-            $query .= " left join vtiger_users as vtiger_usersSalesOrder on vtiger_usersSalesOrder.id = vtiger_crmentitySalesOrder.assigned_user_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_potentialRelSalesOrder")) {
-            $query .= " left join vtiger_potential as vtiger_potentialRelSalesOrder on vtiger_potentialRelSalesOrder.potentialid = vtiger_salesorder.potential_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_contactdetailsSalesOrder")) {
-            $query .= " left join vtiger_contactdetails as vtiger_contactdetailsSalesOrder on vtiger_salesorder.contact_id = vtiger_contactdetailsSalesOrder.contactid";
-        }
-        if ($queryPlanner->requireTable("vtiger_invoice_recurring_info")) {
-            $query .= " left join vtiger_invoice_recurring_info on vtiger_salesorder.salesorderid = vtiger_invoice_recurring_info.salesorderid";
-        }
-        if ($queryPlanner->requireTable("vtiger_quotesSalesOrder")) {
-            $query .= " left join vtiger_quotes as vtiger_quotesSalesOrder on vtiger_salesorder.quote_id = vtiger_quotesSalesOrder.quoteid";
-        }
-        if ($queryPlanner->requireTable("vtiger_accountSalesOrder")) {
-            $query .= " left join vtiger_account as vtiger_accountSalesOrder on vtiger_accountSalesOrder.accountid = vtiger_salesorder.account_id";
-        }
-        if ($queryPlanner->requireTable("vtiger_lastModifiedBySalesOrder")) {
-            $query .= " left join vtiger_users as vtiger_lastModifiedBySalesOrder on vtiger_lastModifiedBySalesOrder.id = vtiger_crmentitySalesOrder.modifiedby ";
-        }
-        if ($queryPlanner->requireTable("vtiger_createdbySalesOrder")) {
-            $query .= " left join vtiger_users as vtiger_createdbySalesOrder on vtiger_createdbySalesOrder.id = vtiger_crmentitySalesOrder.creator_user_id ";
-        }
-
-        //if secondary modules custom reference field is selected
-        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-
-        return $query;
-    }
-
     /*
      * Function to get the relation tables for related modules
      * @param - $secmodule secondary module name
@@ -280,38 +159,10 @@ class SalesOrder extends CRMEntity
     public function setRelationTables($secmodule)
     {
         $rel_tables = [
-            "Invoice"   => ["vtiger_invoice" => ["salesorder_id", "invoiceid"], "vtiger_salesorder" => "salesorderid"],
-            "Documents" => ["vtiger_senotesrel" => ["crmid", "notesid"], "vtiger_salesorder" => "salesorderid"],
+            'Invoice' => ['vtiger_invoice' => ['salesorder_id', 'invoiceid'], 'vtiger_salesorder' => 'salesorderid'],
         ];
 
         return $rel_tables[$secmodule];
-    }
-
-    // Function to unlink an entity with given Id from another entity
-    public function unlinkRelationship($id, $return_module, $return_id)
-    {
-        global $log;
-        if (empty($return_module) || empty($return_id)) {
-            return;
-        }
-
-        if ($return_module == 'Accounts') {
-            $this->trash('SalesOrder', $id);
-        } elseif ($return_module == 'Quotes') {
-            $relation_query = 'UPDATE vtiger_salesorder SET quote_id=? WHERE salesorderid=?';
-            $this->db->pquery($relation_query, [null, $id]);
-        } elseif ($return_module == 'Potentials') {
-            $relation_query = 'UPDATE vtiger_salesorder SET potential_id=? WHERE salesorderid=?';
-            $this->db->pquery($relation_query, [null, $id]);
-        } elseif ($return_module == 'Contacts') {
-            $relation_query = 'UPDATE vtiger_salesorder SET contact_id=? WHERE salesorderid=?';
-            $this->db->pquery($relation_query, [null, $id]);
-        } elseif ($return_module == 'Documents') {
-            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
-            $this->db->pquery($sql, [$id, $return_id]);
-        } else {
-            parent::unlinkRelationship($id, $return_module, $return_id);
-        }
     }
 
     public function getJoinClause($tableName)

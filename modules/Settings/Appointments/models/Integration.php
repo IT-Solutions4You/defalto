@@ -160,9 +160,14 @@ class Settings_Appointments_Integration_Model extends Vtiger_Base_Model
 
     /**
      * @return void
+     * @throws Exception
      */
     public function setRelation()
     {
+        if($this->moduleModel->hasRelatedList($this->fieldModule, 'Appointments', 'get_related_list')) {
+            return;
+        }
+
         $this->moduleModel->setRelatedList($this->fieldModule, 'Appointments', '', 'get_related_list', $this->fieldModel->getId());
     }
 

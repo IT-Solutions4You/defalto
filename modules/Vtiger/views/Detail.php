@@ -80,7 +80,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         $moduleName = $request->getModule();
         $recordId = $request->get('record');
 
-        $nonEntityModules = ['Users', 'Portal', 'Rss'];
+        $nonEntityModules = ['Users'];
         if ($recordId && !in_array($moduleName, $nonEntityModules)) {
             $recordEntityName = getSalesEntityType($recordId);
             if ($recordEntityName !== $moduleName) {
@@ -207,6 +207,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View
     public function process(Vtiger_Request $request)
     {
         $mode = $request->getMode();
+
         if (!empty($mode)) {
             echo $this->invokeExposedMethod($mode, $request);
 

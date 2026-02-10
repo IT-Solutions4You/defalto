@@ -73,7 +73,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         params.url = "index.php?view=Detail&module=" + app.getModuleName() + "&mode=showRecentActivities&record=" + recordId;
 
         app.helper.showProgress();
-        app.request.get(params).then(function (error, response) {
+        app.request.post(params).then(function (error, response) {
             app.helper.hideProgress();
             jQuery(".HistoryContainer").find(".data-body").html(response);
         });
@@ -360,7 +360,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         var defParams = self.getDefaultParams();
         urlParams = jQuery.extend(defParams, urlParams);
         app.helper.showProgress();
-        app.request.get({data: urlParams}).then(function (err, res) {
+        app.request.post({data: urlParams}).then(function (err, res) {
             aDeferred.resolve(res);
             var container = jQuery('.relatedContainer');
             container.html(res);
@@ -675,7 +675,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
     /**
      * To handle related record delete confirmation message
      */
-    getDeleteMessageKey: function () {
+    getDeleteMessageKey: function (element) {
         return 'LBL_DELETE_CONFIRMATION';
     },
 
@@ -713,7 +713,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         self.getContainer().on('click', 'a.relationDelete', function (e) {
             e.stopImmediatePropagation();
             var element = jQuery(e.currentTarget);
-            var key = self.getDeleteMessageKey();
+            var key = self.getDeleteMessageKey(e);
             var message = app.vtranslate(key);
             var relatedModuleName = self.getRelatedModuleName();
             var row = element.closest('tr');
@@ -1271,7 +1271,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
             var fieldValue = ajaxEditNewValue;
 
             //Before saving ajax edit values we need to check if the value is changed then only we have to save
-            if (previousValue == ajaxEditNewValue) {
+            if (previousValue === ajaxEditNewValue || undefined === ajaxEditNewValue) {
                 detailViewValue.css('display', 'inline-block');
                 editElement.addClass('hide');
                 editElement.removeClass('ajaxEdited');
@@ -2627,7 +2627,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         params['returnrecord'] = jQuery('[name="record_id"]').val();
 
         app.helper.showProgress();
-        app.request.get({data: params}).then(function (err, response) {
+        app.request.post({data: params}).then(function (err, response) {
             app.helper.hideProgress();
             let overlayParams = {'backdrop': 'static', 'keyboard': false};
 
@@ -3064,34 +3064,42 @@ Vtiger.Class("Vtiger_Detail_Js", {
             return;
         }
 
-        checkboxes.bootstrapSwitch({
-            onText: app.vtranslate('LBL_YES'),
-            offText: app.vtranslate('LBL_NO'),
-            size: 'mini',
-            onSwitchChange() {
-                let element = $(this),
-                    params = {
-                        record: app.getRecordId(),
-                        module: app.getModuleName(),
-                        action: 'SaveAjax',
-                        value: element.is(':checked') ? 1 : 0,
-                        field: element.attr('name'),
-                    };
+        checkboxes.each(function () {
+            let element = $(this),
+                value = element.is(':checked');
 
-                app.request.post({data: params}).then(function (error, data) {
-                    if (!error) {
-                        let field = params['field'];
-
-                        if (params['value'] === parseInt(data[field]['value'])) {
-                            app.event.trigger(Vtiger_Detail_Js.changeCheckEvent, element);
-                            app.helper.showSuccessNotification({message: message});
-                        } else {
-                            app.helper.showErrorNotification({message: message});
-                        }
-                    }
-                })
-            }
+            element.bootstrapSwitch({
+                onText: app.vtranslate('LBL_YES'),
+                offText: app.vtranslate('LBL_NO'),
+                onSwitchChange() {
+                    self.saveBootstrapSwitch(element)
+                }
+            })
+            element.bootstrapSwitch('state', value, value);
         });
+    },
+    saveBootstrapSwitch(element) {
+        let message = app.vtranslate('JS_RECORD_UPDATED'),
+            params = {
+                record: app.getRecordId(),
+                module: app.getModuleName(),
+                action: 'SaveAjax',
+                value: element.is(':checked') ? 1 : 0,
+                field: element.attr('name'),
+            };
+
+        app.request.post({data: params}).then(function (error, data) {
+            if (!error) {
+                let field = params['field'];
+
+                if (params['value'] === parseInt(data[field]['value'])) {
+                    app.event.trigger(Vtiger_Detail_Js.changeCheckEvent, element);
+                    app.helper.showSuccessNotification({message: message});
+                } else {
+                    app.helper.showErrorNotification({message: message});
+                }
+            }
+        })
     },
     registerAssignedUserChange() {
         let self = this,
@@ -3268,4 +3276,23 @@ Vtiger.Class("Vtiger_Detail_Js", {
         this.registerEventForPicklistDependencySetup(this.getForm());
         vtUtils.enableTooltips();
     },
+    relationDeleteRecord(url) {
+        let self = this,
+            relatedController = self.getRelatedController(),
+            data = app.convertUrlToDataParams(url);
+
+        data['action'] = 'DeleteAjax';
+
+        if (!relatedController) {
+            return;
+        }
+
+        app.helper.showConfirmationBox({message: app.vtranslate(self.getDeleteMessageKey())}).then(function (e) {
+            app.request.post({data: data}).then(function (error, data) {
+                relatedController.loadRelatedList().then(function () {
+                    relatedController.triggerRelationAdditionalActions();
+                });
+            });
+        });
+    }
 });

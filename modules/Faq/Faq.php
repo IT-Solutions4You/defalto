@@ -75,10 +75,6 @@ class Faq extends CRMEntity
         'City'         => 'bill_city',
     ];
 
-    //Added these variables which are used as default order by and sortorder in ListView
-    public $default_order_by = 'id';
-    public $default_sort_order = 'DESC';
-
     public $mandatory_fields = ['question', 'faq_answer', 'createdtime', 'modifiedtime'];
 
     // For Alphabetical search
@@ -117,20 +113,6 @@ class Faq extends CRMEntity
             $sql = "insert into vtiger_faqcomments values(?, ?, ?, ?)";
             $adb->pquery($sql, $params);
         }
-    }
-
-    /*
-     * Function to get the relation tables for related modules
-     * @param - $secmodule secondary module name
-     * returns the array with table names and fieldnames storing relations between module and this module
-     */
-    function setRelationTables($secmodule)
-    {
-        $rel_tables = [
-            "Documents" => ["vtiger_senotesrel" => ["crmid", "notesid"], "vtiger_faq" => "id"],
-        ];
-
-        return $rel_tables[$secmodule];
     }
 
     function clearSingletonSaveFields()

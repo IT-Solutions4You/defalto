@@ -98,19 +98,7 @@ class Assets extends CRMEntity
     // Callback function list during Importing
     var $special_functions = ['set_import_assigned_user'];
 
-    var $default_order_by = 'assetname';
-    var $default_sort_order = 'ASC';
-
     var $unit_price;
-
-    /**
-     * Return query to use based on given modulename, fieldname
-     * Useful to handle specific case handling for Popup
-     */
-    function getQueryByModuleField($module, $fieldname, $srcrecord)
-    {
-        // $srcrecord could be empty
-    }
 
     /**
      * Get list view query.
@@ -312,13 +300,6 @@ class Assets extends CRMEntity
         return $query;
     }
 
-    // Function to unlink all the dependent entities of the given Entity by Id
-    function unlinkDependencies($module, $id)
-    {
-        global $log;
-        parent::unlinkDependencies($module, $id);
-    }
-
     /**
      * Invoked when special actions are performed on the module.
      *
@@ -348,11 +329,17 @@ class Assets extends CRMEntity
         global $adb, $log;
         $log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
-        $rel_table_arr = ["Documents" => "vtiger_senotesrel", "Attachments" => "vtiger_seattachmentsrel"];
+        $rel_table_arr = [
+            'Attachments' => 'vtiger_seattachmentsrel'
+        ];
 
-        $tbl_field_arr = ["vtiger_senotesrel" => "notesid", "vtiger_seattachmentsrel" => "attachmentsid"];
+        $tbl_field_arr = [
+            'vtiger_seattachmentsrel' => 'attachmentsid'
+        ];
 
-        $entity_tbl_field_arr = ["vtiger_senotesrel" => "crmid", "vtiger_seattachmentsrel" => "crmid"];
+        $entity_tbl_field_arr = [
+            'vtiger_seattachmentsrel' => 'crmid'
+        ];
 
         foreach ($transferEntityIds as $transferId) {
             foreach ($rel_table_arr as $rel_module => $rel_table) {

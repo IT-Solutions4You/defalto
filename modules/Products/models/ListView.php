@@ -18,6 +18,27 @@
 
 class Products_ListView_Model extends Vtiger_ListView_Model
 {
+    public function getListViewHeaders()
+    {
+        $headers = parent::getListViewHeaders();
+
+        if ('productsList' === $this->get('src_field')) {
+            $newHeaderFields = [];
+
+            foreach ($headers as $headerField) {
+                $newHeaderFields[$headerField->getName()] = $headerField;
+
+                if (1 === count($newHeaderFields)) {
+                    $newHeaderFields['qty_per_unit'] = $this->getModule()->getField('qty_per_unit');
+                }
+            }
+
+            $headers = $newHeaderFields;
+        }
+
+        return $headers;
+    }
+
     /**
      * Function to get the list view entries
      *

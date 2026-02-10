@@ -194,9 +194,10 @@ class InventoryItem_Utils_Helper
         $taxRecordModel = Core_TaxRecord_Model::getInstance($productId);
         $taxModels = $taxRecordModel->getTaxes();
         $taxInfo = $taxRecordModel->getTaxesInfo();
+        $activeTaxes = Core_TaxRecord_Model::getActiveTaxesForRecord($productId);
         $taxes = [];
 
-        if (count($taxInfo)) {
+        if (count($taxInfo) && !empty($activeTaxes)) {
             foreach ($taxInfo as $taxId => $taxData) {
                 $tax = $taxModels[$taxId];
                 unset($taxData['default']);
@@ -213,7 +214,7 @@ class InventoryItem_Utils_Helper
                 $regions = [];
 
                 foreach ($taxRegions as $taxRegion) {
-                    $regions[$taxRegion->getId()] = $taxRegion->percentage;
+                    $regions[$taxRegion->getId()] = $taxRegion->get('percentage');
                 }
 
                 $taxes[$taxId]['regions'] = json_encode($regions);

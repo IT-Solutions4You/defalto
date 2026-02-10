@@ -302,6 +302,11 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
                 [$id]
             );
             $row = $adb->query_result_rowdata($image_res);
+
+            if (empty($row['attachmentsid'])) {
+                return '';
+            }
+
             $row = self::fixStoredName($row);
             $site_url = self::fixSiteUrl($site_url);
 
