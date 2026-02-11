@@ -278,8 +278,9 @@ jQuery.Class("Vtiger_CustomView_Js", {}, {
             let target = jQuery(e.target),
                 currentValue = target.data('isDefault');
 
-            params.data = {};
-            params.url = target.data('url');
+            params = {
+                data: app.convertUrlToDataParams(params.url),
+            };
 
             if (currentValue) {
                 params.data.setdefault = '0';
