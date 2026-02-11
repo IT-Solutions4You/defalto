@@ -1288,6 +1288,7 @@ $languageStrings = [
     'Dollar ($)' => 'Dollar ($)',
     'Space ( )' => 'Space ( )',
     'LBL_UNIQUE' => 'Unique',
+    'LBL_DEFAULT_CV' => 'Default Custom View',
 ];
 $jsLanguageStrings = [
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page',
