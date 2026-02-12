@@ -555,20 +555,16 @@ var Settings_Picklist_Js = {
             tbody = jQuery('#pickListValuesTable');
 
         tbody.sortable({
-            helper: function (e, ui) {
-                //while dragging helper elements td element will take width as contents width
-                //so we are explicity saying that it has to be same width so that element will not
-                //look like distrubed
-                ui.children().each(function (index, element) {
-                    element = jQuery(element);
-                    element.width(element.width());
-                })
-                return ui;
-            },
+            handle: '.dragHandle',
+            helper: 'clone',
             containment: tbody,
             revert: true,
             update: function (e, ui) {
                 self.saveSequence();
+            },
+            start: function(e, ui){
+                ui.placeholder.height(ui.item.height());
+                ui.placeholder.css({'visibility': 'visible', 'background-color': '#efefef'});
             }
         });
     },
@@ -620,23 +616,11 @@ var Settings_Picklist_Js = {
     getPickListTemplate: function (value, color) {
         let contrast = app.helper.getColorContrast(color),
             textColor = (contrast === 'dark') ? 'white' : 'black',
-            actions = jQuery('.picklistActionsTemplate').html();
+            cloneElement = jQuery('.pickListValueClone').clone();
 
-        return '<div class="pickListValue border-bottom p-2">' +
-            '<div class="text-truncate fieldPropertyContainer">' +
-            '<div class="row align-items-center">' +
-            '<div class="col-auto">' +
-            '<span class="cursorDrag btn text-secondary">' +
-            '<i class="fa-solid fa-grip-vertical"></i>' +
-            '</span>' +
-            '</div>' +
-            '<div class="col-3 picklistActions">' + actions + '</div>' +
-            '<div class="col">' +
-            '<span class="py-1 px-2 rounded picklist-color" style="background-color: ' + color + ';color: ' + textColor + ';">' + value + '</span>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '</div>';
+        cloneElement.find('.picklist-color').css('background-color', color).css('color', textColor).text(value);
+
+        return cloneElement.html();
     },
 
     registerItemActions: function () {

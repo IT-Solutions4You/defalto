@@ -3218,7 +3218,7 @@ div.tooltip-inner {
 }
 
 .cursorDrag {
-    cursor: move;
+    cursor: move !important;
 }
 
 .google-import-container {
@@ -4514,6 +4514,9 @@ input[type=number] {
 }
 .w-25vw-max {
     max-width: 25vw;
+}
+.w-100-max {
+    max-width: 100%;
 }
 .w-30rem {
     width: 30rem;
