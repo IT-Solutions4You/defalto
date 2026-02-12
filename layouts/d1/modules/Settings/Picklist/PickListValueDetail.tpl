@@ -55,9 +55,12 @@
                                                         <i class="fa-solid fa-grip-vertical"></i>
                                                     </span>
                                         </div>
-                                        <div class="col-2 picklistActions">
+                                        <div class="col-3 picklistActions">
                                             <a title="{vtranslate('LBL_EDIT',$QUALIFIED_MODULE)}" class="renameItem btn text-secondary">
                                                 <i class="fa fa-pencil"></i>
+                                            </a>
+                                            <a title="{vtranslate('LBL_EDIT',$QUALIFIED_MODULE)}" class="colorItem btn text-secondary">
+                                                <i class="fa-solid fa-palette"></i>
                                             </a>
                                             {if !in_array($PICKLIST_VALUE, $NON_DELETABLE_VALUES)}
                                                 <a title="{vtranslate('LBL_DELETE_VALUE',$QUALIFIED_MODULE)}" class="deleteItem btn text-secondary">
@@ -74,13 +77,16 @@
                         {/foreach}
                         <div class="p-2 afterPicklistValues"><!-- Placeholder role to allow drag-and-drop for last elements --></div>
                         <span class="picklistActionsTemplate hide">
-                                    <a title="{vtranslate('LBL_EDIT',$QUALIFIED_MODULE)}" class="renameItem btn text-secondary">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                    <a title="{vtranslate('LBL_DELETE_VALUE',$QUALIFIED_MODULE)}" class="deleteItem btn text-secondary">
-                                        <i class="fa fa-trash-o"></i>
-                                    </a>
-                                </span>
+                            <a title="{vtranslate('LBL_EDIT',$QUALIFIED_MODULE)}" class="renameItem btn text-secondary">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                            <a title="{vtranslate('LBL_EDIT',$QUALIFIED_MODULE)}" class="colorItem btn text-secondary">
+                                <i class="fa-solid fa-palette"></i>
+                            </a>
+                            <a title="{vtranslate('LBL_DELETE_VALUE',$QUALIFIED_MODULE)}" class="deleteItem btn text-secondary">
+                                <i class="fa fa-trash-o"></i>
+                            </a>
+                        </span>
                     </div>
                 </div>
             </div>

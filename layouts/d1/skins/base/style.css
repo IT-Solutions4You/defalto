@@ -138,7 +138,7 @@
     --bs-btn-disabled-bg: #fff;
     --bs-btn-disabled-border-color: #8181a5;
     --bs-gradient: none;
-    --bs-btn-border-color: #ECECF2;
+    --bs-btn-border-color: var(--bs-border-color);
     --bs-btn-color: #8181A5;
     --bs-btn-hover-color: #1c1d21;
     --bs-btn-hover-bg: #fff;
@@ -4484,6 +4484,9 @@ input[type=number] {
 }
 .word-break-all {
     word-break: break-all;
+}
+.h-1rem {
+    min-height: 2rem;
 }
 .h-2rem {
     min-height: 2rem;
