@@ -111,13 +111,14 @@ class CustomView_Record_Model extends Vtiger_Base_Model
         $cvKey = $userId . '-' . $moduleId;
         $cvId = Vtiger_Cache::get('UserDefaultCustomView', $cvKey);
 
-        if (is_null($cvId)) {
+        if (!is_int($cvId)) {
             $result = $db->pquery('SELECT default_cvid FROM vtiger_user_module_preferences WHERE userid = ? AND tabid = ?', [$userId, $moduleId]);
             $cvId = (int)$db->query_result($result, 0, 'default_cvid');
+
             Vtiger_Cache::set('UserDefaultCustomView', $cvKey, $cvId);
         }
 
-        if (!is_null($cvId)) {
+        if (is_int($cvId)) {
             return $cvId === $this->getId();
         }
 

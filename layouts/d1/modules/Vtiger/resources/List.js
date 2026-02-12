@@ -2749,7 +2749,17 @@ Vtiger.Class("Vtiger_List_Js", {
             element.trigger('post.DeleteFilter.click', {'url': element.data('cvDeleteUrl')});
         });
 
+        container.on('click', '[data-cv-default-url]', function (e) {
+            let element = jQuery(e.currentTarget);
+            if (typeof element.data('cvDefaultUrl') == "undefined") return;
+            element.trigger('post.ToggleDefault.click', {'url': element.data('cvDefaultUrl')});
+        });
+
         container.on('post.DeletedFilter', function (e) {
+            window.location.reload();
+        });
+
+        container.on('post.ToggleDefault.saved', function (e) {
             window.location.reload();
         });
     },

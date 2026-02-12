@@ -1280,6 +1280,7 @@ $languageStrings = [
     'vt_update' => 'Datensätze in vtiger aktualisiert',
     'week days ago' => 'vor Wochentagen',
     'week days later' => 'Wochentage später',
+    'LBL_DEFAULT_CV' => 'Standardansicht',
 ];
 $jsLanguageStrings = [
     'AM' => 'Vormittag',

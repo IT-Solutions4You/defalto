@@ -924,4 +924,10 @@ var vtUtils = {
     updateWindowUrl(url) {
         window.history.replaceState(null, '', url);
     },
+    setColor(containerClass, color) {
+        let container = $(containerClass);
+
+        container.find('.changeColor').css('color', color);
+        container.find('.changeColorValue').val(color);
+    },
 }
