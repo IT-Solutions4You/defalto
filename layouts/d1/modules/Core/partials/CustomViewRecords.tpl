@@ -25,6 +25,9 @@
                                 <i class="fa-solid fa-trash"></i>
                             </a>
                         {/if}
+                        <a class="btn btn-sm ms-1" data-cv-default-url="{$CUSTOM_VIEW->getToggleDefaultUrl()}" data-is-default="{if $CUSTOM_VIEW->isDefault()}1{else}0{/if}" title="{vtranslate('LBL_DEFAULT_CV', $MODULE)}">
+                            <i class="bi {if $CUSTOM_VIEW->isDefault()}bi-pin-fill{else}bi-pin{/if}"></i>
+                        </a>
                         <a class="btn btn-sm ms-1" data-cv-duplicate-url="{$CUSTOM_VIEW->getDuplicateUrl()}" title="{vtranslate('LBL_DUPLICATE', $MODULE)}">
                             <i class="fa-solid fa-copy"></i>
                         </a>

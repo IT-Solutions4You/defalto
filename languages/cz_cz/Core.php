@@ -1442,6 +1442,7 @@ $languageStrings = [
     'LBL_UNIQUE' => 'Unikátne',
     'Next' => 'Ďalej',
     'Finish' => 'Dokončiť',
+    'LBL_DEFAULT_CV' => 'Výchozí zobrazení',
 ];
 $jsLanguageStrings = [
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastavení systému nakonfigurujte server odchozí pošty',

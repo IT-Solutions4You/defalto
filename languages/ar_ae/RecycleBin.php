@@ -33,7 +33,7 @@ $jsLanguageStrings = [
     'JS_LBL_RESTORE_RECORDS_CONFIRMATION'  => 'هل أنت متأكد أنك تريد استعادة السجلات؟',
     'JS_LBL_RESTORE_RECORD_CONFIRMATION'   => 'هل أنت متأكد أنك تريد استعادة السجل؟',
     'JS_RESTORING_RECORD'                  => 'استعادة السجل',
-    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'استعادة في vtiger إدارة والصلب',
+    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'استعادة في Defalto إدارة والصلب',
 
     'JS_RESTORING_RECORDS' => 'استعادة الوثائق',
 

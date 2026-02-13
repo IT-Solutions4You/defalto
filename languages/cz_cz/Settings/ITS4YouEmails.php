@@ -18,7 +18,7 @@ $languageStrings = [
     'LBL_LICENSE_SETTINGS_INFO' => 'Manage your Module License Key',
     'LBL_LICENSE' => 'License settings',
     'LBL_LICENSE_DESC' => 'Manage all settings related to your license',
-    'LBL_URL' => 'Your vtiger url',
+    'LBL_URL' => 'Your Defalto url',
     'LBL_LICENSE_ACTIVE' => 'Extension is active',
     'LBL_LICENSE_INACTIVE' => 'Extension is not active',
     'LBL_INSTALLER_NOT_ACTIVE' => 'Install or Activate ITS4YouInstaller module to manage your licenses.',
@@ -80,5 +80,5 @@ $languageStrings = [
     'UNSUBSCRIBED' => 'UNSUBSCRIBED',
 ];
 $jsLanguageStrings = [
-    'JS_UNINSTALL_CONFIRM' => 'Are you sure to completely remove module from your vTiger?',
+    'JS_UNINSTALL_CONFIRM' => 'Are you sure to completely remove module from your Defalto?',
 ];

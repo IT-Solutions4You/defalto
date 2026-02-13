@@ -24,11 +24,11 @@ $languageStrings = [
     'LBL_INFO_WEBAPP_URL'        => 'Configure your Asterisk URL in the  format',
     'LBL_FORMAT_WEBAPP_URL'      => '(protocol)://(asterisk_ip):(VtigerConnector_port)',
     'LBL_FORMAT_INFO_WEBAPP_URL' => 'ex:http://0.0.0.0:5000',
-    'LBL_INFO_CONTEXT'           => 'vtiger CRM specfic context configured in your Asterisk server(extensions.conf)',
-    'LBL_PBXMANAGER_INFO'        => 'Configure Asterisk Server Details after installing the vtiger CRM Asterisk Connector in your Asterisk Server',
+    'LBL_INFO_CONTEXT'           => 'Defalto CRM specfic context configured in your Asterisk server(extensions.conf)',
+    'LBL_PBXMANAGER_INFO'        => 'Configure Asterisk Server Details after installing the Defalto CRM Asterisk Connector in your Asterisk Server',
 
-    'webappurl'       => 'vtiger CRM Asterisk App URL',
-    'vtigersecretkey' => 'vtiger CRM Secret Key',
+    'webappurl'       => 'Defalto CRM Asterisk App URL',
+    'vtigersecretkey' => 'Defalto CRM Secret Key',
     'context'         => 'Context',
 ];
 

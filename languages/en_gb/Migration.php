@@ -17,14 +17,14 @@
  */
 
 $languageStrings = [
-    'LBL_CRM_MIGRATION'                 => 'Welcome to vtiger CRM Migration',
+    'LBL_CRM_MIGRATION'                 => 'Welcome to Defalto CRM Migration',
     'LBL_MIGRATION_COMPLETED'              => 'Migration Completed',
     'LBL_MIGRATION_WIZARD'                 => 'Migration Wizard',
     'LBL_PRIDE_BEING_ASSOCIATED'           => 'We take pride in being associated with you.',
-    'LBL_TALK_TO_US_AT_FORUMS'             => 'Have any questions? Find help on Vtiger <a href="index.php?module=Core&view=Redirect&mode=Forum" target="_blank"> Discussions </a><br>',
-    'LBL_DISCUSS_WITH_US_AT_BLOGS'         => 'To know more about Vtiger follow us our <a href="index.php?module=Core&view=Redirect&mode=Blog" target="_blank">Blog</a>',
+    'LBL_TALK_TO_US_AT_FORUMS'             => 'Have any questions? Find help on Defalto <a href="index.php?module=Core&view=Redirect&mode=Forum" target="_blank"> Discussions </a><br>',
+    'LBL_DISCUSS_WITH_US_AT_BLOGS'         => 'To know more about Defalto follow us our <a href="index.php?module=Core&view=Redirect&mode=Blog" target="_blank">Blog</a>',
     'LBL_CRM_DOCUMENTATION'                => 'Defalto Help - <a href="index.php?module=Core&view=Redirect&mode=Documentation" target="_blank">Documentaion</a> , <a href="index.php?module=Core&view=Redirect&mode=Videos" target="_blank">Videos</a> <BR>',
-    'LBL_THANKS'                           => 'Thanks for using <b>vtiger CRM</b>',
+    'LBL_THANKS'                           => 'Thanks for using <b>Defalto CRM</b>',
     'LBL_WE_AIM_TO_BE_BEST'                => 'We aim to be - simply the best',
     'LBL_SPACE_FOR_YOU'                    => 'Come on over, there is space for you too!',
     'LBL_MIGRATION_COMPLETED_SUCCESSFULLY' => 'Your Defalto migration completed successfully.',

@@ -15,6 +15,7 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
+
 class Services extends CRMEntity
 {
     use Core_UnitPrice_Trait;

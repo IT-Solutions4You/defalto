@@ -218,7 +218,7 @@ Sind Sie sicher, dass Sie zum löschen dieses Feld?',
     'JS_DETAIL_HEADER' => 'Datensatz-header',
     'JS_MAXIMUM_HEADER_FIELDS_ALLOWED' => 'Maximal %s-header-Felder erlaubt',
     'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT' => 'Name Felder im Header standardmäßig',
-    'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'Dieses Feld ist Kopfzeile aktiviert Vtiger7, erscheint Es in der Zusammenfassung',
+    'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'Dieses Feld ist Kopfzeile aktiviert Defalto, erscheint Es in der Zusammenfassung',
 
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Erfolgreich aktualisierte ausgewählte Felder in Duplikaten Prävention zu berücksichtigen',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Fehler beim ausgewählten Feldern in Duplikaten Prävention berücksichtigen',

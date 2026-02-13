@@ -59,6 +59,7 @@ class Settings_Picklist_IndexAjax_View extends Settings_Vtiger_IndexAjax_View
         $viewer->assign('SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES', $selectedFieldNonEditablePickListValues);
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedName);
+        $viewer->assign('PICKLIST_COLOR_EDIT', $request->get('pickListColorEdit', false));
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'showEditView', $request->getModule(), $viewer, $request);
 

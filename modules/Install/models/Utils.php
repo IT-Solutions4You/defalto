@@ -42,6 +42,7 @@ class Install_Utils_Model
         'tr_tr' => ['tr_tr', 'Turkce Dil Paketi', 'Turkce',],
         'sk_sk' => ['sk_sk', 'Slovak', 'Slovak',],
         'cz_cz' => ['cz_cz', 'Czech', 'Czech',],
+        'de_de' => ['de_de', 'Deutsch', 'German',],
     ];
 
     public static array $registerModules = [
