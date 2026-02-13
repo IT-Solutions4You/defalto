@@ -171,7 +171,7 @@ class Potentials_Install_Model extends Core_Install_Model
                         ['Proposal or Price Quote', '#F2A85E'],
                         ['Negotiation or Review', '#F1C44E'],
                         ['Closed Won', '#5CE573', 0],
-                        ['Closed Lost', '#AB475E', 0],
+                        ['Closed Lost', '#F5587D', 0],
                     ],
                 ],
                 'nextstep' => [
