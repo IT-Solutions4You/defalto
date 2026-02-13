@@ -18,10 +18,10 @@
                         <div class="row align-items-center border-bottom py-2">
                             <div class="col fw-bold">{$MODULE->get('label')} ({$MODULE_NAME})</div>
                             <div class="col-auto">
-                                <a class="btn btn-primary me-2" href="index.php?module={$MODULE_NAME}&view=InstallManager&mode=install">Install extension</a>
-                                <a class="btn btn-primary me-2" href="index.php?module={$MODULE_NAME}&view=InstallManager&mode=update">Update extension</a>
-                                <a class="btn btn-success me-2" href="index.php?module={$MODULE_NAME}&view=InstallManager&mode=migrate">Migrate extension</a>
-                                <a class="btn btn-danger me-2" href="index.php?module={$MODULE_NAME}&view=InstallManager&mode=delete">Delete extension</a>
+                                <a class="btn btn-primary me-2" href="index.php?module={$MODULE_NAME}&view=InstallManager&mode=install">Install</a>
+                                <a class="btn btn-primary me-2" href="index.php?module={$MODULE_NAME}&view=InstallManager&mode=update">Update</a>
+                                <a class="btn btn-success me-2" href="index.php?module={$MODULE_NAME}&view=InstallManager&mode=migrate">Migrate</a>
+                                <a class="btn btn-danger me-2" href="index.php?module={$MODULE_NAME}&view=InstallManager&mode=delete">Delete</a>
                             </div>
                         </div>
                     {/foreach}
