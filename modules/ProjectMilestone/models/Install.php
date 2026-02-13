@@ -108,9 +108,9 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
                     'label' => 'Milestone Status',
                     'masseditable' => 1,
                     'picklist_values' => [
-                        'Planned',
-                        'In progress',
-                        'Completed',
+                        ['Planned', '#E5E7EB'],
+                        ['In progress', '#5FA6FF'],
+                        ['Completed', '#5CE573'],
                     ],
                     'headerfield' => 1,
                     'headerfieldsequence' => 3,
