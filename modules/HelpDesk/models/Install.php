@@ -257,10 +257,10 @@ class HelpDesk_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'picklist_values' => [
-                        ['Open', '', 0],
-                        ['In Progress', '', 0],
-                        ['Wait For Response', '', 0],
-                        ['Closed', '', 0],
+                        ['Open', '#C8D6FB', 0],
+                        ['In Progress', '#5FA6FF', 0],
+                        ['Wait For Response', '#F4CF5E', 0],
+                        ['Closed', '#5CE573', 0],
                     ],
                 ],
                 'ticketcategories' => [
@@ -297,10 +297,10 @@ class HelpDesk_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 0,
                     'picklist_values' => [
-                        'Low',
-                        'Normal',
-                        'High',
-                        'Urgent',
+                        ['Low', '#E5E7EB'],
+                        ['Normal', '#F1C44E'],
+                        ['High', '#F2A85E'],
+                        ['Urgent', '#F5587D'],
                     ],
                 ],
                 'ticketseverities' => [
