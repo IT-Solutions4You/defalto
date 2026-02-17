@@ -233,9 +233,9 @@ class Project_Install_Model extends Core_Install_Model
                     'table' => 'vtiger_project',
                     'label' => 'Priority',
                     'picklist_values' => [
-                        'low',
-                        'normal',
-                        'high',
+                        ['low', '#EFF3FE'],
+                        ['normal', '#E6B93D'],
+                        ['high', '#E44D72'],
                     ],
                     'summaryfield' => 0,
                 ],
