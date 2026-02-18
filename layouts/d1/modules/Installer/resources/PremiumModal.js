@@ -6,44 +6,71 @@
  * This file is licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
+/** @var Installer_PremiumModal_Js */
+jQuery.Class('Installer_PremiumModal_Js', {
+    instance: false,
+    getInstance: function () {
+        if (!this.instance) {
+            this.instance = new Installer_PremiumModal_Js();
+        }
 
-(function () {
-    const moduleName = (typeof app !== 'undefined' && typeof app.getModuleName === 'function') ? app.getModuleName() : '';
-    const alertFlagId = moduleName ? 'show' + moduleName + 'LicenseAlert' : 'showProformaLicenseAlert';
-    const shownFlag = moduleName ? (moduleName + 'LicenseAlertShown') : 'proformaLicenseAlertShown';
-
-    if (window[shownFlag]) {
-        return;
+        return this.instance;
     }
+}, {
+    premiumModalHtml: null,
 
-    let premiumModalHtml = null;
+    getModuleName: function () {
+        if (typeof app !== 'undefined' && typeof app.getModuleName === 'function') {
+            return app.getModuleName();
+        }
 
-    const fetchModalHtml = function (cb) {
-        if (premiumModalHtml) {
-            cb(premiumModalHtml);
+        return '';
+    },
+
+    getAlertFlagId: function () {
+        const moduleName = this.getModuleName();
+
+        return moduleName ? ('show' + moduleName + 'LicenseAlert') : 'showProformaLicenseAlert';
+    },
+
+    getShownFlagKey: function () {
+        const moduleName = this.getModuleName();
+
+        return moduleName ? (moduleName + 'LicenseAlertShown') : 'proformaLicenseAlertShown';
+    },
+
+    registerEvents: function () {
+        this.tryShowLicenseAlert(0);
+    },
+
+    fetchModalHtml: function (cb) {
+        if (this.premiumModalHtml) {
+            cb(this.premiumModalHtml);
+
             return;
         }
 
         app.request.post({
-            url: 'index.php?module=Installer&for_module=' + app.getModuleName() + '&view=PremiumModal'
+            url: 'index.php?module=Installer&for_module=' + this.getModuleName() + '&view=PremiumModal'
         }).then(function (error, data) {
             if (error) {
                 return;
             }
 
             if (data) {
-                premiumModalHtml = data;
+                this.premiumModalHtml = data;
                 cb(data);
             }
-        });
-    };
+        }.bind(this));
+    },
 
-    const attachPremiumModalHandlers = function (container) {
+    attachPremiumModalHandlers: function (container) {
         if (!container || !container.length) {
             return;
         }
 
         const $otherModals = jQuery('.modal.show').not(container);
+
         if ($otherModals.length) {
             const otherStates = [];
             $otherModals.each(function () {
@@ -59,10 +86,13 @@
                 const stored = container.data('dfUnderlyingModals') || [];
                 container.removeData('dfUnderlyingModals');
                 stored.forEach(function (state) {
+
                     if (!state || !state.id) {
                         return;
                     }
+
                     const $modal = jQuery('#' + state.id);
+
                     if ($modal.length) {
                         $modal.css('z-index', state.zIndex || '').removeClass('df-modal-underlay');
                     }
@@ -78,6 +108,7 @@
         container.attr('data-bs-backdrop', 'static');
         container.attr('data-bs-keyboard', 'false');
         const instance = container.data('bs.modal');
+
         if (instance && instance._config) {
             instance._config.backdrop = 'static';
             instance._config.keyboard = false;
@@ -88,13 +119,17 @@
         if (!container.data('dfPremiumHandlersBound')) {
             container.data('dfPremiumHandlersBound', true);
             const element = container.get(0);
+
             if (element) {
                 element.addEventListener('hide.bs.modal', function (e) {
+
                     if (!container.data('dfAllowClose')) {
                         e.preventDefault();
                         e.stopImmediatePropagation();
+
                         return false;
                     }
+
                     container.data('dfAllowClose', false);
                 });
             }
@@ -107,8 +142,10 @@
             e.preventDefault();
             e.stopImmediatePropagation();
             const href = jQuery(this).attr('href');
+
             if (href) {
                 const win = window.open(href, '_blank');
+
                 if (win) {
                     try {
                         win.opener = null;
@@ -117,64 +154,76 @@
                     }
                 }
             }
+
             container.data('dfAllowClose', true);
             container.modal('hide');
+
             return false;
         });
         container.off('click.dfPremium').on('click.dfPremium', '[data-bs-dismiss="modal"], [data-dismiss="modal"], [data-df-continue]', function () {
             container.data('dfAllowClose', true);
         });
-    };
+    },
 
-    const openModal = function () {
-        fetchModalHtml(function (html) {
+    openModal: function () {
+        this.fetchModalHtml(function (html) {
             const container = app.helper.showModal(html, {
                 modalName: 'dfPremiumModal',
                 backdrop: 'static',
                 keyboard: false
             });
 
-            attachPremiumModalHandlers(container);
-        });
-    };
+            this.attachPremiumModalHandlers(container);
+        }.bind(this));
+    },
 
-    window.DefaltoPremiumModal = {
-        open: openModal
-    };
+    registerGlobalModal: function () {
+        const self = this;
+        window.DefaltoPremiumModal = {
+            open: function () {
+                self.openModal();
+            }
+        };
+    },
 
-    const showLicenseAlert = function () {
-        const $alertFlag = jQuery('#' + alertFlagId);
+    showLicenseAlert: function () {
+        const $alertFlag = jQuery('#' + this.getAlertFlagId());
 
         if ($alertFlag.length && parseInt($alertFlag.val()) !== 1) {
             return;
         }
+
+        const shownFlag = this.getShownFlagKey();
 
         if (window[shownFlag]) {
             return;
         }
 
         window[shownFlag] = true;
-        openModal();
-    };
+        this.openModal();
+    },
 
-    const tryShowLicenseAlert = function (attempt) {
+    tryShowLicenseAlert: function (attempt) {
+        const shownFlag = this.getShownFlagKey();
+
         if (window[shownFlag]) {
             return;
         }
 
         if (typeof app !== 'undefined' && app.request && typeof app.request.post === 'function' && app.helper && typeof app.helper.showModal === 'function') {
-            showLicenseAlert();
+            this.registerGlobalModal();
+            this.showLicenseAlert();
             return;
         }
 
         if (attempt < 20) {
             setTimeout(function () {
-                tryShowLicenseAlert(attempt + 1);
-            }, 100);
+                this.tryShowLicenseAlert(attempt + 1);
+            }.bind(this), 100);
         }
-    };
+    }
+});
 
-    jQuery(window).on('load', function () {
-        tryShowLicenseAlert(0);
-    });
-})();
+$(document).ready(function () {
+    Installer_PremiumModal_Js.getInstance().registerEvents();
+});
