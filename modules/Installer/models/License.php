@@ -176,10 +176,18 @@ class Installer_License_Model extends Core_DatabaseData_Model
      */
     public static function isMembershipActive(): bool
     {
-        $memberShips = Installer_License_Model::getAll(Installer_License_Model::MEMBERSHIP_PACKAGE);
+        $memberShips = self::getAll(Installer_License_Model::MEMBERSHIP_PACKAGE);
 
-        foreach ($memberShips as $membership) {
-            if ($membership->isValidLicense()) {
+        foreach ($memberShips as $license) {
+            if ($license->isValidLicense()) {
+                return true;
+            }
+        }
+
+        $packages = self::getAll(Installer_License_Model::EXTENSION_PACKAGE, 'Installer');
+
+        foreach ($packages as $license) {
+            if ($license->isValidLicense()) {
                 return true;
             }
         }

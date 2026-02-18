@@ -51,7 +51,10 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                 };
 
             app.helper.showConfirmationBox({message: app.vtranslate('JS_LICENSE_DELETE_CONFIRMATION')}).then(function (e) {
+                app.helper.showProgress();
                 app.request.post({data: params}).then(function (error, data) {
+                    app.helper.hideProgress();
+
                     if (!error) {
                         app.helper.showSuccessNotification({message: data['message']});
                         element.parents('.licenseContainer').remove();

@@ -67,7 +67,13 @@
                 <div class="col-lg-auto"></div>
             </div>
             <div class="row border py-2">
-                <div class="col-lg"></div>
+                <div class="col-lg fw-bold">
+                    {if Installer_License_Model::isMembershipActive()}
+                        <span class="bg-success text-white px-2 p-1 rounded">{vtranslate('LBL_MEMBERSHIP_ACTIVE', $QUALIFIED_MODULE)}</span>
+                    {else}
+                        <span class="bg-danger text-white px-2 p-1 rounded">{vtranslate('LBL_MEMBERSHIP_INACTIVE', $QUALIFIED_MODULE)}</span>
+                    {/if}
+                </div>
                 <div class="col-lg-4 fw-bold">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</div>
             </div>
             {foreach from=Installer_SystemInstall_Model::getAll() item=SYSTEM_MODEL}
