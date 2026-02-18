@@ -276,6 +276,13 @@ $languageStrings = [
     'LBL_REQUIRED_CKEDITOR_UPLOAD' => 'Vyžadované pre nahrávanie obrázkov v CKEditore',
     'LBL_REQUIRED_TEMPLATE_IMAGE' => 'Vyžadovaná lomka pre obrázky v šablónach',
     'LBL_REQUIRED_ATTACHMENTS_UPLOAD' => 'Vyžadovaná lomka pre nahrávanie príloh',
+    'LBL_PREMIUM_MODAL_TITLE_PREFIX' => 'Odemkněte',
+    'LBL_PREMIUM_MODAL_WHAT_YOU_GET' => 'Co získáte:',
+    'LBL_PREMIUM_MODAL_HIGHLIGHT' => 'Součást balíčku rozšíření',
+    'LBL_PREMIUM_MODAL_BUY' => 'Koupit licenci',
+    'LBL_PREMIUM_MODAL_CONTINUE' => 'Pokračovat bez licence',
+    'LBL_PREMIUM_MODAL_FOOTNOTE' => 'Už jste zakoupili? Aktivujte licenci v',
+    'LBL_PREMIUM_MODAL_INSTALLER_LINK' => 'Instalátoru',
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Naozaj chcete nainštalovať rozšírenie?',

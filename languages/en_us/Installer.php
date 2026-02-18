@@ -280,6 +280,13 @@ $languageStrings = [
     'LBL_REQUIRED_TEMPLATE_IMAGE' => 'Required slash for Template images',
     'LBL_REQUIRED_ATTACHMENTS_UPLOAD' => 'Requiered slash for Attachments upload',
     'LBL_MODULES' => 'Modules',
+    'LBL_PREMIUM_MODAL_TITLE_PREFIX' => 'Unlock',
+    'LBL_PREMIUM_MODAL_WHAT_YOU_GET' => 'What you get:',
+    'LBL_PREMIUM_MODAL_HIGHLIGHT' => 'Included in Extension package',
+    'LBL_PREMIUM_MODAL_BUY' => 'Buy License',
+    'LBL_PREMIUM_MODAL_CONTINUE' => 'Continue without License',
+    'LBL_PREMIUM_MODAL_FOOTNOTE' => 'Already purchased? Activate your license in',
+    'LBL_PREMIUM_MODAL_INSTALLER_LINK' => 'Installer',
 ];
 $jsLanguageStrings = [
     'JS_UNINSTALL_CONFIRM' => 'Are you sure to completely remove module from your system?',
