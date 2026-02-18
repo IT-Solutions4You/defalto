@@ -279,6 +279,13 @@ $languageStrings = [
     'LBL_REQUIRED_CKEDITOR_UPLOAD' => 'Required for CKEditor image upload',
     'LBL_REQUIRED_TEMPLATE_IMAGE' => 'Required slash for Template images',
     'LBL_REQUIRED_ATTACHMENTS_UPLOAD' => 'Requiered slash for Attachments upload',
+    'LBL_PREMIUM_MODAL_TITLE_PREFIX' => 'Freischalten',
+    'LBL_PREMIUM_MODAL_WHAT_YOU_GET' => 'Ihre Vorteile:',
+    'LBL_PREMIUM_MODAL_HIGHLIGHT' => 'Im Erweiterungspaket enthalten',
+    'LBL_PREMIUM_MODAL_BUY' => 'Lizenz kaufen',
+    'LBL_PREMIUM_MODAL_CONTINUE' => 'Ohne Lizenz fortfahren',
+    'LBL_PREMIUM_MODAL_FOOTNOTE' => 'Bereits gekauft? Aktivieren Sie Ihre Lizenz im',
+    'LBL_PREMIUM_MODAL_INSTALLER_LINK' => 'Installer',
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Möchten Sie die Erweiterung wirklich installieren?',
