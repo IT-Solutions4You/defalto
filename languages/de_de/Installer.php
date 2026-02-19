@@ -286,6 +286,13 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_CONTINUE' => 'Ohne Lizenz fortfahren',
     'LBL_PREMIUM_MODAL_FOOTNOTE' => 'Bereits gekauft? Aktivieren Sie Ihre Lizenz im',
     'LBL_PREMIUM_MODAL_INSTALLER_LINK' => 'Installer',
+    'LBL_TEAM_GROWING' => 'Ihr Team wächst',
+    'LBL_TEAM_ACTIVE_USER' => 'Sie haben derzeit <b>%s aktive Benutzer</b>',
+    'LBL_TEAM_LIMIT_USER' => 'Ihr Tarif erlaubt bis zu <b>%s Benutzer</b>',
+    'LBL_TEAM_CONTINUE_ADDING_USER' => 'Um weitere Teammitglieder hinzuzufügen, <b>aktualisieren</b> Sie bitte Ihren Tarif.',
+    'LBL_PREMIUM_CONTINUE' => 'Weiter',
+    'LBL_PREMIUM_BUY' => 'Lizenz upgraden',
+
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Möchten Sie die Erweiterung wirklich installieren?',

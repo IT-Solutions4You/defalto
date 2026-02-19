@@ -173,11 +173,32 @@ class Installer_License_Model extends Core_DatabaseData_Model
 
     public function isValidLicense(): bool
     {
-        if ('valid' === $this->getInfo('license') && !$this->isExpired() && !$this->isUserLimitReached()) {
+        if ($this->isValid() && !$this->isExpired() && !$this->isUserLimitReached()) {
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function getReachedUserLimitLicense(string $extension)
+    {
+        $licenses = self::getAll(self::EXTENSION_PACKAGE, $extension);
+
+        foreach ($licenses as $license) {
+            if ($license->isValid() && !$license->isExpired() && $license->isUserLimitReached()) {
+                return $license;
+            }
+        }
+
+        return false;
+    }
+
+    public function isValid(): bool
+    {
+        return 'valid' === $this->getInfo('license');
     }
 
     public function isExpired(): bool
@@ -187,7 +208,7 @@ class Installer_License_Model extends Core_DatabaseData_Model
 
     public function isUserLimitReached(): bool
     {
-        return $this->getUsersCount() >= $this->getUsersLimit();
+        return $this->getUsersCount() > $this->getUsersLimit();
     }
 
     public function setInfo(array $info): void
@@ -208,15 +229,7 @@ class Installer_License_Model extends Core_DatabaseData_Model
             }
         }
 
-        $packages = self::getAll(Installer_License_Model::EXTENSION_PACKAGE, 'Installer');
-
-        foreach ($packages as $license) {
-            if ($license->isValidLicense()) {
-                return true;
-            }
-        }
-
-        return false;
+        return self::isActiveExtension('Installer');
     }
 
     public function hasExpireDate(): bool

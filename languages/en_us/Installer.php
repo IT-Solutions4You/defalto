@@ -289,6 +289,12 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_CONTINUE' => 'Continue without License',
     'LBL_PREMIUM_MODAL_FOOTNOTE' => 'Already purchased? Activate your license in',
     'LBL_PREMIUM_MODAL_INSTALLER_LINK' => 'Installer',
+    'LBL_TEAM_GROWING' => 'Your team is growing',
+    'LBL_TEAM_ACTIVE_USER' => 'You currently have <b>%s active users</b>',
+    'LBL_TEAM_LIMIT_USER' => 'Your plan allows up to <b>%s users</b>',
+    'LBL_TEAM_CONTINUE_ADDING_USER' => 'To continue adding new team members, please <b>upgrade</b> your plan.',
+    'LBL_PREMIUM_CONTINUE' => 'Continue',
+    'LBL_PREMIUM_BUY' => 'Upgrade License',
 ];
 $jsLanguageStrings = [
     'JS_UNINSTALL_CONFIRM' => 'Are you sure to completely remove module from your system?',

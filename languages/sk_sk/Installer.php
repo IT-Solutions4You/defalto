@@ -283,6 +283,13 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_CONTINUE' => 'Pokračovať bez licencie',
     'LBL_PREMIUM_MODAL_FOOTNOTE' => 'Už ste zakúpili? Aktivujte licenciu v',
     'LBL_PREMIUM_MODAL_INSTALLER_LINK' => 'Inštalátore',
+    'LBL_TEAM_GROWING' => 'Váš tím rastie',
+    'LBL_TEAM_ACTIVE_USER' => 'Momentálne máte <b>%s aktívnych používateľov</b>',
+    'LBL_TEAM_LIMIT_USER' => 'Váš plán umožňuje maximálne <b>%s používateľov</b>',
+    'LBL_TEAM_CONTINUE_ADDING_USER' => 'Ak chcete pokračovať v pridávaní nových členov tímu, prosím <b>upgradujte</b> svoj plán.',
+    'LBL_PREMIUM_CONTINUE' => 'Pokračovať',
+    'LBL_PREMIUM_BUY' => 'Upgradovať licenciu',
+
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Naozaj chcete nainštalovať rozšírenie?',
