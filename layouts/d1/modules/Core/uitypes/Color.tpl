@@ -10,7 +10,7 @@
             {foreach from=Core_Color_UIType::getColorList() key=COLORS_LABEL item=COLORS}
                 <div class="dropdown-header">{vtranslate($COLORS_LABEL, $QUALIFIED_MODULE)}</div>
                 {foreach from=$COLORS key=COLOR_LABEL item=COLOR_ID}
-                    <a href="#" class="dropdown-item colorOption d-flex" onclick="vtUtils.setColor('.{$FIELD_NAME}ChangeColorContainer', '{$COLOR_ID}')">
+                    <a href="#" class="dropdown-item colorOption d-flex {if $COLOR_VALUE eq $COLOR_ID}fw-bold bg-body-secondary{/if}" data-color-id="{$COLOR_ID}" onclick="vtUtils.setColor('.{$FIELD_NAME}ChangeColorContainer', '{$COLOR_ID}')">
                         <span class="w-25 rounded" style="background: {$COLOR_ID};"></span>
                         <span class="text-capitalize ms-2">{vtranslate($COLOR_LABEL, $QUALIFIED_MODULE)}</span>
                     </a>

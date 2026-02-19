@@ -7,11 +7,11 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-    <div class="container-fluid">
-        <div class="pb-3">
-            <div class="row py-2">
+    <div class="">
+        <div class="container-fluid">
+            <div class="row py-2 align-items-center">
                 <div class="col-lg">
-                    <h4><b>{vtranslate('LBL_LICENSES', $QUALIFIED_MODULE)}</b></h4>
+                    <h4 class="m-0 text-secondary"><b>{vtranslate('LBL_LICENSES', $QUALIFIED_MODULE)}</b></h4>
                 </div>
                 <div class="col-lg-auto">
                     <button type="button" class="btn btn-primary" data-edit-license="">
@@ -23,15 +23,18 @@
                     </a>
                 </div>
             </div>
-            <div class="row border py-2">
+        </div>
+        <div class="container-fluid border rounded">
+            <div class="row py-2 text-secondary">
                 <div class="col-lg-4"></div>
-                <div class="col-lg-2 fw-bold">{vtranslate('LBL_TYPE', $QUALIFIED_MODULE)}</div>
-                <div class="col-lg-2 fw-bold">{vtranslate('Due Date', $QUALIFIED_MODULE)}</div>
+                <div class="col-lg fw-bold">{vtranslate('LBL_TYPE', $QUALIFIED_MODULE)}</div>
+                <div class="col-lg fw-bold">{vtranslate('LBL_USER_LIMIT', $QUALIFIED_MODULE)}</div>
+                <div class="col-lg fw-bold">{vtranslate('Due Date', $QUALIFIED_MODULE)}</div>
                 <div class="col-lg-4 fw-bold">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</div>
             </div>
             {foreach from=Installer_License_Model::getAll() item=LICENSE_MODEL}
-                <div class="row border border-top-0 py-2 licenseContainer align-items-center">
-                    <div class="col-lg-4">
+                <div class="row border-top py-2 licenseContainer align-items-center">
+                    <div class="col-lg-4 fw-bold">
                         {if $LICENSE_MODEL->isValidLicense()}
                             <span class="me-2 text-success cursorDefault" title="{vtranslate('LBL_VALID_LICENSE', $QUALIFIED_MODULE)}">
                                 <i class="fa-solid fa-check me-2"></i>
@@ -44,8 +47,9 @@
                             </span>
                         {/if}
                     </div>
-                    <div class="col-lg-2">{$LICENSE_MODEL->getItemName()}</div>
-                    <div class="col-lg-2">{Vtiger_Functions::currentUserDisplayDate($LICENSE_MODEL->getExpireDate())}</div>
+                    <div class="col-lg">{$LICENSE_MODEL->getItemName()}</div>
+                    <div class="col-lg {if $LICENSE_MODEL->isUserLimitReached()}fw-bold text-danger{/if}">{$LICENSE_MODEL->getUsersCount()} / {$LICENSE_MODEL->getDisplayUsersLimit()}</div>
+                    <div class="col-lg">{Vtiger_Functions::currentUserDisplayDate($LICENSE_MODEL->getExpireDate())}</div>
                     <div class="col-lg-4">
                         <button type="button" class="btn btn-primary me-2" data-edit-license="{$LICENSE_MODEL->getId()}">
                             <i class="fa-solid fa-pencil"></i>
@@ -59,19 +63,26 @@
                 </div>
             {/foreach}
         </div>
-        <div class="pb-3">
-            <div class="row">
-                <div class="col-lg">
-                    <h4><b>{vtranslate('LBL_SYSTEM', $QUALIFIED_MODULE)}</b></h4>
+        <div class="container-fluid">
+            <div class="row py-2 pt-3">
+                <div class="col">
+                    <h4 class="m-0 text-secondary"><b>{vtranslate('LBL_SYSTEM', $QUALIFIED_MODULE)}</b></h4>
                 </div>
-                <div class="col-lg-auto"></div>
             </div>
-            <div class="row border py-2">
-                <div class="col-lg"></div>
-                <div class="col-lg-4 fw-bold">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</div>
+        </div>
+        <div class="container-fluid rounded border">
+            <div class="row py-2 align-items-center">
+                <div class="col-lg fw-bold">
+                    {if Installer_License_Model::isMembershipActive()}
+                        <span class="bg-success text-white px-2 p-1 rounded">{vtranslate('LBL_MEMBERSHIP_ACTIVE', $QUALIFIED_MODULE)}</span>
+                    {else}
+                        <span class="bg-danger text-white px-2 p-1 rounded">{vtranslate('LBL_MEMBERSHIP_INACTIVE', $QUALIFIED_MODULE)}</span>
+                    {/if}
+                </div>
+                <div class="col-lg-4 fw-bold text-secondary">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</div>
             </div>
             {foreach from=Installer_SystemInstall_Model::getAll() item=SYSTEM_MODEL}
-                <div class="row border border-top-0 py-2 align-items-center systemUpdateContainer">
+                <div class="row border-top py-2 align-items-center systemUpdateContainer">
                     <div class="col-lg">
                         <div class="fs-4">Defalto v{$SYSTEM_MODEL->getCurrentVersion()}</div>
                         <div>
@@ -131,14 +142,15 @@
                 </div>
             {/foreach}
         </div>
-        <div class="pb-3">
-            <div class="row">
-                <div class="col-lg">
-                    <h4><b>{vtranslate('LBL_MODULES', $QUALIFIED_MODULE)}</b></h4>
+        <div class="container-fluid">
+            <div class="row py-2 pt-3">
+                <div class="col">
+                    <h4 class="m-0 text-secondary"><b>{vtranslate('LBL_MODULES', $QUALIFIED_MODULE)}</b></h4>
                 </div>
-                <div class="col-lg-auto"></div>
             </div>
-            <div class="row border py-2">
+        </div>
+        <div class="container-fluid rounded border">
+            <div class="row py-2 text-secondary">
                 <div class="col-lg"></div>
                 <div class="col-lg-4 fw-bold">{vtranslate('LBL_UPDATE_VERSION', $QUALIFIED_MODULE)}</div>
                 <div class="col-lg-4 fw-bold">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</div>
@@ -146,7 +158,7 @@
             {foreach from=Installer_ExtensionInstall_Model::getAll() item=EXTENSION_MODEL}
                 {assign var=EXTENSION_NAME value=$EXTENSION_MODEL->getName()}
                 {assign var=EXTENSION_LABEL value=vtranslate($EXTENSION_NAME, $EXTENSION_NAME)}
-                <div class="row border border-top-0 py-2 align-items-center">
+                <div class="row border-top py-2 align-items-center">
                     <div class="col-lg">
                         <a href="{$EXTENSION_MODEL->getDefaultUrl()}">{$EXTENSION_MODEL->getLabel()}</a>
                     </div>
