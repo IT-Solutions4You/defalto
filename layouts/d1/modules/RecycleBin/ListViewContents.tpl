@@ -115,7 +115,7 @@
                                                 {/if}
                                             </span>
                                         </span>
-                                    {if $LISTVIEW_HEADER->isEditable() eq 'true' && $LISTVIEW_HEADER->isAjaxEditable() eq 'true'}
+                                    {if $LISTVIEW_HEADER->isEditable() && $LISTVIEW_HEADER->isAjaxEditable()}
                                         <span class="hide edit">
                                             </span>
                                     {/if}
