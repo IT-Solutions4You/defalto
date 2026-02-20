@@ -8,6 +8,7 @@
  *}
 {strip}
     <div class="">
+        <div class="sectionTagContainer"><div class="sectionTag" id="UpdateLicense"></div></div>
         <div class="container-fluid">
             <div class="row py-2 align-items-center">
                 <div class="col-lg">
@@ -63,6 +64,7 @@
                 </div>
             {/foreach}
         </div>
+        <div class="sectionTagContainer"><div class="sectionTag" id="UpdateDefalto"></div></div>
         <div class="container-fluid">
             <div class="row py-2 pt-3">
                 <div class="col">
@@ -158,6 +160,7 @@
             {foreach from=Installer_ExtensionInstall_Model::getAll() item=EXTENSION_MODEL}
                 {assign var=EXTENSION_NAME value=$EXTENSION_MODEL->getName()}
                 {assign var=EXTENSION_LABEL value=vtranslate($EXTENSION_NAME, $EXTENSION_NAME)}
+                <div class="sectionTagContainer"><div class="sectionTag" id="Update{$EXTENSION_NAME}"></div></div>
                 <div class="row border-top py-2 align-items-center">
                     <div class="col-lg">
                         <a href="{$EXTENSION_MODEL->getDefaultUrl()}">{$EXTENSION_MODEL->getLabel()}</a>

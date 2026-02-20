@@ -215,6 +215,7 @@
                             </li>
                         {/if}
                     {/if}
+                    {include file="partials/TopbarInstaller.tpl"|vtemplate_path:$MODULE}
                     <li class="ms-2">
                         <div class="dropdown">
                             <a href="#" class="userName" data-bs-toggle="dropdown">
