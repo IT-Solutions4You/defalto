@@ -292,7 +292,14 @@ $languageStrings = [
     'LBL_TEAM_CONTINUE_ADDING_USER' => 'Um weitere Teammitglieder hinzuzufügen, <b>aktualisieren</b> Sie bitte Ihren Tarif.',
     'LBL_PREMIUM_CONTINUE' => 'Weiter',
     'LBL_PREMIUM_BUY' => 'Lizenz upgraden',
-
+    'License users limit reached' => 'Die maximale Anzahl der Lizenzbenutzer wurde erreicht.',
+    'License expired' => 'Aktion erforderlich: Ihre Lizenz ist nicht mehr aktiv.',
+    'License inactive' => 'Ungültiger Lizenzschlüssel. Bitte überprüfen Sie Ihre Angaben.',
+    'License active' => 'Ihre Lizenz ist gültig.',
+    'Update available' => 'Neue Funktionen stehen bereit.',
+    'New extension available' => 'Neue Erweiterung ist zur Installation bereit.',
+    'System up to date' => 'Alles ist auf dem neuesten Stand.',
+    'System update available' => 'Die Systemversion %s ist jetzt verfügbar.',
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Möchten Sie die Erweiterung wirklich installieren?',

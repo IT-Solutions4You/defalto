@@ -289,6 +289,14 @@ $languageStrings = [
     'LBL_TEAM_CONTINUE_ADDING_USER' => 'Ak chcete pokračovať v pridávaní nových členov tímu, prosím <b>upgradujte</b> svoj plán.',
     'LBL_PREMIUM_CONTINUE' => 'Pokračovať',
     'LBL_PREMIUM_BUY' => 'Upgradovať licenciu',
+    'License users limit reached' => 'Bol dosiahnutý limit používateľov licencie.',
+    'License expired' => 'Vyžaduje sa akcia: Vaša licencia už nie je aktívna.',
+    'License inactive' => 'Neplatný licenčný kľúč. Skontrolujte svoje údaje.',
+    'License active' => 'Vaša licencia je platná.',
+    'Update available' => 'Sú dostupné nové funkcie.',
+    'New extension available' => 'Nový doplnok je pripravený na inštaláciu.',
+    'System up to date' => 'Všetko je aktuálne.',
+    'System update available' => 'Je dostupná systémová verzia %s.',
 
 ];
 $jsLanguageStrings = [

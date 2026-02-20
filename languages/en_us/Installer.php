@@ -295,6 +295,14 @@ $languageStrings = [
     'LBL_TEAM_CONTINUE_ADDING_USER' => 'To continue adding new team members, please <b>upgrade</b> your plan.',
     'LBL_PREMIUM_CONTINUE' => 'Continue',
     'LBL_PREMIUM_BUY' => 'Upgrade License',
+    'License users limit reached' => 'License users limit reached',
+    'License expired' => 'Action required: Your license is no longer active.',
+    'License inactive' => 'Invalid license key. Please check your details.',
+    'License active' => 'Your license is valid.',
+    'Update available' => 'New features are waiting for you.',
+    'New extension available' => 'New add-on ready to install.',
+    'System up to date' => 'Everything is up to date.',
+    'System update available' => 'System version %s is now available.',
 ];
 $jsLanguageStrings = [
     'JS_UNINSTALL_CONFIRM' => 'Are you sure to completely remove module from your system?',
