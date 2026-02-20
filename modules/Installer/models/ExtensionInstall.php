@@ -43,8 +43,10 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     {
         $version = $this->getVersion();
         $module = $this->getName();
+        $translate = vtranslate($module, $module);
+        $translate = str_replace(['ITS4You', '4You'], ['', ''], $translate);
 
-        return vtranslate($module, $module) . ($version ? ' v' . $version : '');
+        return $translate . ($version ? ' v' . $version : '');
     }
 
     /**
@@ -199,6 +201,14 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     public function getVersion(): string
     {
         return (string)$this->get('version');
+    }
+
+    public function getIcon(): string
+    {
+        $module = $this->getModule();
+        $fontIcon = $module?->getFontIcon();
+
+        return (string)$fontIcon ?? 'fa fa-puzzle-piece';
     }
 
     public function hasDownloadUrl(): bool

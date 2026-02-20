@@ -12,6 +12,7 @@ class Installer_PremiumModal_View extends Vtiger_Footer_View
 {
     /**
      * @inheritDoc
+     * @throws Exception
      */
     public function process(Vtiger_Request $request)
     {
@@ -39,11 +40,21 @@ class Installer_PremiumModal_View extends Vtiger_Footer_View
             }
         }
 
-        $viewer->assign('PREMIUM_ITEMS', $premiumItems);
-        $viewer->assign('FOR_MODULE', $forModule);
-        $viewer->assign('BUY_URL', 'https://defalto.com/services/extend-your-defalto-crm-with-extensions/');
+        $reachedUserLimitLicense = Installer_License_Model::getReachedUserLimitLicense($forModule);
+        $buyUrl = 'index.php?module=' . $forModule . '&view=Redirect&mode=Buy';
+        $template = 'PremiumModal.tpl';
 
-        $viewer->view('PremiumModal.tpl', 'Installer');
+        if ($reachedUserLimitLicense) {
+            $template = 'PremiumLimitModal.tpl';
+            $buyUrl = 'index.php?module=' . $forModule . '&view=Redirect&mode=Store';
+        }
+
+        $viewer->assign('PREMIUM_ITEMS', $premiumItems);
+        $viewer->assign('REACHED_USER_LIMIT_LICENSE', $reachedUserLimitLicense);
+        $viewer->assign('FOR_MODULE', $forModule);
+        $viewer->assign('BUY_URL', $buyUrl);
+
+        $viewer->view($template, 'Installer');
     }
 
     /**

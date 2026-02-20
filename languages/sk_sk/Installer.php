@@ -283,6 +283,21 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_CONTINUE' => 'Pokračovať bez licencie',
     'LBL_PREMIUM_MODAL_FOOTNOTE' => 'Už ste zakúpili? Aktivujte licenciu v',
     'LBL_PREMIUM_MODAL_INSTALLER_LINK' => 'Inštalátore',
+    'LBL_TEAM_GROWING' => 'Váš tím rastie',
+    'LBL_TEAM_ACTIVE_USER' => 'Momentálne máte <b>%s aktívnych používateľov</b>',
+    'LBL_TEAM_LIMIT_USER' => 'Váš plán umožňuje maximálne <b>%s používateľov</b>',
+    'LBL_TEAM_CONTINUE_ADDING_USER' => 'Ak chcete pokračovať v pridávaní nových členov tímu, prosím <b>upgradujte</b> svoj plán.',
+    'LBL_PREMIUM_CONTINUE' => 'Pokračovať',
+    'LBL_PREMIUM_BUY' => 'Upgradovať licenciu',
+    'License users limit reached' => 'Bol dosiahnutý limit používateľov licencie.',
+    'License expired' => 'Vyžaduje sa akcia: Vaša licencia už nie je aktívna.',
+    'License inactive' => 'Neplatný licenčný kľúč. Skontrolujte svoje údaje.',
+    'License active' => 'Vaša licencia je platná.',
+    'Update available' => 'Sú dostupné nové funkcie.',
+    'New extension available' => 'Nový doplnok je pripravený na inštaláciu.',
+    'System up to date' => 'Všetko je aktuálne.',
+    'System update available' => 'Je dostupná systémová verzia %s.',
+
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Naozaj chcete nainštalovať rozšírenie?',
