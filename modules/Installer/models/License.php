@@ -208,6 +208,10 @@ class Installer_License_Model extends Core_DatabaseData_Model
 
     public function isUserLimitReached(): bool
     {
+        if (empty($this->getUsersLimit())) {
+            return false;
+        }
+
         return $this->getUsersCount() > $this->getUsersLimit();
     }
 
