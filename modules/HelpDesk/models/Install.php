@@ -123,7 +123,7 @@ class HelpDesk_Install_Model extends Core_Install_Model
         $taskName = 'Send notification to employee';
         $taskType = 'VTEmailTask';
         $data = [
-            'subject' => '$ticket_no: $ticket_title$(general : (__VtigerMeta__) supportEmailid)',
+            'subject' => '$ticket_no: $ticket_title$(general : (__Meta__) supportEmailid)',
             'executeImmediately' => '1',
             'signature' => 'on',
             'content' => '<html>
@@ -146,7 +146,7 @@ class HelpDesk_Install_Model extends Core_Install_Model
                     <a href="mailto:$(modifiedby : (Users) email1)?subject=$ticket_no: $ticket_title">Reply to ticket: $ticket_no </a><br />
                 </body>
             </html>',
-            'fromEmail' => '$(general : (__VtigerMeta__) supportName)<$(general : (__VtigerMeta__) supportEmailId)>',
+            'fromEmail' => '$(general : (__Meta__) supportName)<$(general : (__Meta__) supportEmailId)>',
             'recepient' => ['$(contact_id : (Contacts) email)'],
             'template_language' => 'en_us',
             'template' => 'custom_template',

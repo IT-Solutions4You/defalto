@@ -64,9 +64,9 @@ class VTSimpleTemplate
                 }
             } else {
                 [$full, $referenceField, $referenceModule, $fieldname] = $matches;
-                if ($referenceModule === '__VtigerMeta__' || $fieldname === 'dbLabel') {
+                if ($referenceModule === '__Meta__' || $fieldname === 'dbLabel') {
                     $result = $this->getMetaValue($fieldname);
-                } elseif ('__VtigerCompany__' == $referenceModule) {
+                } elseif ('__Company__' == $referenceModule) {
                     $result = $this->getCompanySetting($fieldname);
                 } else {
                     $referenceId = $this->parent->get($referenceField);

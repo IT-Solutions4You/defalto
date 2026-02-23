@@ -997,7 +997,7 @@ $emailTask->workflowId = $commentsWorkflow->id;
 $emailTask->summary = 'Comment Added From Portal : Send Email to Record Owner';
 $emailTask->fromEmail = '$(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname)&lt;$(contact_id : (Contacts) email)&gt;';
 $emailTask->recepient = ',$(assigned_user_id : (Users) email1)';
-$emailTask->subject = 'Respond to Ticket ID## $(general : (__VtigerMeta__) recordId) ## in Customer Portal - URGENT';
+$emailTask->subject = 'Respond to Ticket ID## $(general : (__Meta__) recordId) ## in Customer Portal - URGENT';
 $emailTask->content = 'Dear $(assigned_user_id : (Users) last_name) $(assigned_user_id : (Users) first_name),<br><br>
 								Customer has provided the following additional information to your reply:<br><br>
 								<b>$lastComment</b><br><br>
@@ -1059,9 +1059,9 @@ $workflowManager->save($commentsWorkflow);
 $emailTask->id = '';
 $emailTask->workflowId = $commentsWorkflow->id;
 $emailTask->summary = 'Comment Added From CRM : Send Email to Contact, where Contact is not a Portal User';
-$emailTask->fromEmail = '$(general : (__VtigerMeta__) supportName)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
+$emailTask->fromEmail = '$(general : (__Meta__) supportName)&lt;$(general : (__Meta__) supportEmailId)&gt;';
 $emailTask->recepient = ',$(contact_id : (Contacts) email)';
-$emailTask->subject = '$ticket_no [ Ticket Id : $(general : (__VtigerMeta__) recordId) ] $ticket_title';
+$emailTask->subject = '$ticket_no [ Ticket Id : $(general : (__Meta__) recordId) ] $ticket_title';
 $emailTask->content = 'Dear $(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname),<br><br>
 							The Ticket is replied the details are :<br><br>
 							Ticket No : $ticket_no<br>
@@ -1100,17 +1100,17 @@ $workflowManager->save($commentsWorkflow);
 $emailTask->id = '';
 $emailTask->workflowId = $commentsWorkflow->id;
 $emailTask->summary = 'Comment Added From CRM : Send Email to Contact, where Contact is Portal User';
-$emailTask->fromEmail = '$(general : (__VtigerMeta__) supportName)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
+$emailTask->fromEmail = '$(general : (__Meta__) supportName)&lt;$(general : (__Meta__) supportEmailId)&gt;';
 $emailTask->recepient = ',$(contact_id : (Contacts) email)';
-$emailTask->subject = '$ticket_no [ Ticket Id : $(general : (__VtigerMeta__) recordId) ] $ticket_title';
+$emailTask->subject = '$ticket_no [ Ticket Id : $(general : (__Meta__) recordId) ] $ticket_title';
 $emailTask->content = 'Ticket No : $ticket_no<br>
-										Ticket Id : $(general : (__VtigerMeta__) recordId)<br>
+										Ticket Id : $(general : (__Meta__) recordId)<br>
 										Subject : $ticket_title<br><br>
 										Dear $(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname),<br><br>
 										There is a reply to <b>$ticket_title</b> in the "Customer Portal" at VTiger.
 										You can use the following link to view the replies made:<br>
-										<a href="$(general : (__VtigerMeta__) portaldetailviewurl)">Ticket Details</a><br><br>
-										Thanks<br>$(general : (__VtigerMeta__) supportName)';
+										<a href="$(general : (__Meta__) portaldetailviewurl)">Ticket Details</a><br><br>
+										Thanks<br>$(general : (__Meta__) supportName)';
 $taskManager->saveTask($emailTask);
 
 // Comment Added From CRM - Organization
@@ -1154,10 +1154,10 @@ $workflowManager->save($commentsWorkflow);
 $emailTask->id = '';
 $emailTask->workflowId = $commentsWorkflow->id;
 $emailTask->summary = 'Comment Added From CRM : Send Email to Organization';
-$emailTask->fromEmail = '$(general : (__VtigerMeta__) supportName)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
+$emailTask->fromEmail = '$(general : (__Meta__) supportName)&lt;$(general : (__Meta__) supportEmailId)&gt;';
 $emailTask->recepient = ',$(parent_id : (Accounts) email1),';
-$emailTask->subject = '$ticket_no [ Ticket Id : $(general : (__VtigerMeta__) recordId) ] $ticket_title';
-$emailTask->content = 'Ticket ID : $(general : (__VtigerMeta__) recordId)<br>Ticket Title : $ticket_title<br><br>
+$emailTask->subject = '$ticket_no [ Ticket Id : $(general : (__Meta__) recordId) ] $ticket_title';
+$emailTask->content = 'Ticket ID : $(general : (__Meta__) recordId)<br>Ticket Title : $ticket_title<br><br>
 								Dear $(parent_id : (Accounts) accountname),<br><br>
 								The Ticket is replied the details are :<br><br>
 								Ticket No : $ticket_no<br>
@@ -1219,18 +1219,18 @@ for ($i = 0; $i < $numOfRows; $i++) {
                 $emailTask->id = '';
                 $emailTask->workflowId = $properties['workflowId'];
                 $emailTask->summary = 'Notify Record Owner when Ticket is created from Portal';
-                $emailTask->fromEmail = '$(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
+                $emailTask->fromEmail = '$(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname)&lt;$(general : (__Meta__) supportEmailId)&gt;';
                 $emailTask->recepient = ',$(assigned_user_id : (Users) email1)';
-                $emailTask->subject = '[From Portal] $ticket_no [ Ticket Id : $(general : (__VtigerMeta__) recordId) ] $ticket_title';
+                $emailTask->subject = '[From Portal] $ticket_no [ Ticket Id : $(general : (__Meta__) recordId) ] $ticket_title';
                 $emailTask->content = 'Ticket No : $ticket_no<br>
-							  Ticket ID : $(general : (__VtigerMeta__) recordId)<br>
+							  Ticket ID : $(general : (__Meta__) recordId)<br>
 							  Ticket Title : $ticket_title<br><br>
 							  $description';
                 $tm->saveTask($emailTask);
 
                 $emailTask->id = $properties['id'];
                 $emailTask->summary = 'Notify Related Contact when Ticket is created from Portal';
-                $emailTask->fromEmail = '$(general : (__VtigerMeta__) supportName)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
+                $emailTask->fromEmail = '$(general : (__Meta__) supportName)&lt;$(general : (__Meta__) supportEmailId)&gt;';
                 $emailTask->recepient = ',$(contact_id : (Contacts) email)';
 
                 $tm->saveTask($emailTask);
@@ -1295,10 +1295,10 @@ for ($i = 0; $i < $numOfRows; $i++) {
 
                 $emailTask->id = '';
                 $emailTask->summary = 'Send Email to Organization on Ticket Update';
-                $emailTask->fromEmail = '$(general : (__VtigerMeta__) supportName)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
+                $emailTask->fromEmail = '$(general : (__Meta__) supportName)&lt;$(general : (__Meta__) supportEmailId)&gt;';
                 $emailTask->recepient = ',$(parent_id : (Accounts) email1)';
-                $emailTask->subject = '$ticket_no [ Ticket Id : $(general : (__VtigerMeta__) recordId) ] $ticket_title';
-                $emailTask->content = 'Ticket ID : $(general : (__VtigerMeta__) recordId)<br>Ticket Title : $ticket_title<br><br>
+                $emailTask->subject = '$ticket_no [ Ticket Id : $(general : (__Meta__) recordId) ] $ticket_title';
+                $emailTask->content = 'Ticket ID : $(general : (__Meta__) recordId)<br>Ticket Title : $ticket_title<br><br>
 								Dear $(parent_id : (Accounts) accountname),<br><br>
 								The Ticket is replied the details are :<br><br>
 								Ticket No : $ticket_no<br>
@@ -1359,7 +1359,7 @@ for ($i = 0; $i < $numOfRows; $i++) {
                 $emailTask->workflowId = $properties['workflowId'];
                 $emailTask->summary = 'Send Email to Contact on Ticket Update';
                 $emailTask->recepient = ',$(contact_id : (Contacts) email)';
-                $emailTask->content = 'Ticket ID : $(general : (__VtigerMeta__) recordId)<br>Ticket Title : $ticket_title<br><br>
+                $emailTask->content = 'Ticket ID : $(general : (__Meta__) recordId)<br>Ticket Title : $ticket_title<br><br>
 								Dear $(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname),<br><br>
 								The Ticket is replied the details are :<br><br>
 								Ticket No : $ticket_no<br>
@@ -1445,10 +1445,10 @@ for ($i = 0; $i < $numOfRows; $i++) {
                 $emailTask->id = '';
                 $emailTask->workflowId = $newWorkflowModel->id;
                 $emailTask->summary = 'Send Email to Record Owner on Ticket Update';
-                $emailTask->fromEmail = '$(general : (__VtigerMeta__) supportName)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
+                $emailTask->fromEmail = '$(general : (__Meta__) supportName)&lt;$(general : (__Meta__) supportEmailId)&gt;';
                 $emailTask->recepient = ',$(assigned_user_id : (Users) email1)';
                 $emailTask->subject = 'Ticket Number : $ticket_no $ticket_title';
-                $emailTask->content = 'Ticket ID : $(general : (__VtigerMeta__) recordId)<br>Ticket Title : $ticket_title<br><br>
+                $emailTask->content = 'Ticket ID : $(general : (__Meta__) recordId)<br>Ticket Title : $ticket_title<br><br>
 								Dear $(assigned_user_id : (Users) last_name) $(assigned_user_id : (Users) first_name),<br><br>
 								The Ticket is replied the details are :<br><br>
 								Ticket No : $ticket_no<br>

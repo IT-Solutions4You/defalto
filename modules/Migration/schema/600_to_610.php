@@ -245,18 +245,18 @@ for ($i = 0; $i < $numOfRows; $i++) {
                 $emailTask->id = '';
                 $emailTask->workflowId = $properties['workflowId'];
                 $emailTask->summary = 'Notify Record Owner when Ticket is created from Portal';
-                $emailTask->fromEmail = '$(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
+                $emailTask->fromEmail = '$(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname)&lt;$(general : (__Meta__) supportEmailId)&gt;';
                 $emailTask->recepient = ',$(assigned_user_id : (Users) email1)';
-                $emailTask->subject = '[From Portal] $ticket_no [ Ticket Id : $(general : (__VtigerMeta__) recordId) ] $ticket_title';
+                $emailTask->subject = '[From Portal] $ticket_no [ Ticket Id : $(general : (__Meta__) recordId) ] $ticket_title';
                 $emailTask->content = 'Ticket No : $ticket_no<br>
-                                              Ticket ID : $(general : (__VtigerMeta__) recordId)<br>
+                                              Ticket ID : $(general : (__Meta__) recordId)<br>
                                               Ticket Title : $ticket_title<br><br>
                                               $description';
                 $tm->saveTask($emailTask);
 
                 $emailTask->id = $properties['id'];
                 $emailTask->summary = 'Notify Related Contact when Ticket is created from Portal';
-                $emailTask->fromEmail = '$(general : (__VtigerMeta__) supportName)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
+                $emailTask->fromEmail = '$(general : (__Meta__) supportName)&lt;$(general : (__Meta__) supportEmailId)&gt;';
                 $emailTask->recepient = ',$(contact_id : (Contacts) email)';
 
                 $tm->saveTask($emailTask);
@@ -374,10 +374,10 @@ for ($i = 0; $i < $numOfRows; $i++) {
 
                 $emailTask->id = '';
                 $emailTask->summary = 'Send Email to Organization on Ticket Update';
-                $emailTask->fromEmail = '$(general : (__VtigerMeta__) supportName)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
+                $emailTask->fromEmail = '$(general : (__Meta__) supportName)&lt;$(general : (__Meta__) supportEmailId)&gt;';
                 $emailTask->recepient = ',$(parent_id : (Accounts) email1)';
-                $emailTask->subject = '$ticket_no [ Ticket Id : $(general : (__VtigerMeta__) recordId) ] $ticket_title';
-                $emailTask->content = 'Ticket ID : $(general : (__VtigerMeta__) recordId)<br>Ticket Title : $ticket_title<br><br>
+                $emailTask->subject = '$ticket_no [ Ticket Id : $(general : (__Meta__) recordId) ] $ticket_title';
+                $emailTask->content = 'Ticket ID : $(general : (__Meta__) recordId)<br>Ticket Title : $ticket_title<br><br>
                                                             Dear $(parent_id : (Accounts) accountname),<br><br>
                                                             The Ticket is replied the details are :<br><br>
                                                             Ticket No : $ticket_no<br>
@@ -438,7 +438,7 @@ for ($i = 0; $i < $numOfRows; $i++) {
                 $emailTask->workflowId = $properties['workflowId'];
                 $emailTask->summary = 'Send Email to Contact on Ticket Update';
                 $emailTask->recepient = ',$(contact_id : (Contacts) email)';
-                $emailTask->content = 'Ticket ID : $(general : (__VtigerMeta__) recordId)<br>Ticket Title : $ticket_title<br><br>
+                $emailTask->content = 'Ticket ID : $(general : (__Meta__) recordId)<br>Ticket Title : $ticket_title<br><br>
                                                             Dear $(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname),<br><br>
                                                             The Ticket is replied the details are :<br><br>
                                                             Ticket No : $ticket_no<br>
@@ -578,10 +578,10 @@ for ($i = 0; $i < $numOfRows; $i++) {
                 $emailTask->id = '';
                 $emailTask->workflowId = $newWorkflowModel->id;
                 $emailTask->summary = 'Send Email to Record Owner on Ticket Update';
-                $emailTask->fromEmail = '$(general : (__VtigerMeta__) supportName)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
+                $emailTask->fromEmail = '$(general : (__Meta__) supportName)&lt;$(general : (__Meta__) supportEmailId)&gt;';
                 $emailTask->recepient = ',$(assigned_user_id : (Users) email1)';
                 $emailTask->subject = 'Ticket Number : $ticket_no $ticket_title';
-                $emailTask->content = 'Ticket ID : $(general : (__VtigerMeta__) recordId)<br>Ticket Title : $ticket_title<br><br>
+                $emailTask->content = 'Ticket ID : $(general : (__Meta__) recordId)<br>Ticket Title : $ticket_title<br><br>
                                                             Dear $(assigned_user_id : (Users) last_name) $(assigned_user_id : (Users) first_name),<br><br>
                                                             The Ticket is replied the details are :<br><br>
                                                             Ticket No : $ticket_no<br>
@@ -830,81 +830,6 @@ if (!$adb->num_rows($result)) {
         'INSERT INTO vtiger_currencies (currencyid, currency_name, currency_code, currency_symbol) VALUES(?, ?, ?, ?)',
         [$adb->getUniqueID('vtiger_currencies'), 'Libya, Dinar', 'LYD', 'LYD']
     );
-}
-
-//Start: Customer - Feature #17656 Allow users to add/remove date format with the date fields in workflow send mail task.
-$fieldResult = $adb->pquery(
-    'SELECT fieldname, name, typeofdata FROM vtiger_field
-                                INNER JOIN vtiger_tab ON vtiger_tab.tabid = vtiger_field.tabid WHERE typeofdata LIKE ?',
-    ['D%']
-);
-
-$dateFieldsList = $dateTimeFieldsList = [];
-while ($rowData = $adb->fetch_array($fieldResult)) {
-    $moduleName = $rowData['name'];
-    $fieldName = $rowData['fieldname'];
-
-    $pos = stripos($rowData['typeofdata'], 'DT');
-    if ($pos !== false) {
-        $dateTimeFieldsList[$moduleName][$fieldName] = $fieldName;
-    } else {
-        $dateFieldsList[$moduleName][$fieldName] = $fieldName;
-    }
-}
-
-$dateFields = [];
-foreach ($dateFieldsList as $moduleName => $fieldNamesList) {
-    $dateFields = array_merge($dateFields, $fieldNamesList);
-}
-
-$dateTimeFields = [];
-foreach ($dateTimeFieldsList as $moduleName => $fieldNamesList) {
-    $dateTimeFields = array_merge($dateTimeFields, $fieldNamesList);
-}
-
-$taskIdsList = [];
-$result = $adb->pquery(
-    'SELECT task_id, module_name FROM com_vtiger_workflowtasks
-                        INNER JOIN com_vtiger_workflows ON com_vtiger_workflows.workflow_id = com_vtiger_workflowtasks.workflow_id
-                        WHERE task LIKE ?',
-    ['%VTEmailTask%']
-);
-while ($rowData = $adb->fetch_array($result)) {
-    $taskIdsList[$rowData['task_id']] = $rowData['module_name'];
-}
-
-$dateFormat = '($_DATE_FORMAT_)';
-$timeZone = '($(general : (__VtigerMeta__) usertimezone))';
-foreach ($taskIdsList as $taskId => $taskModuleName) {
-    $tm = new VTTaskManager();
-    $task = $tm->retrieveTask($taskId);
-
-    $emailTask = new VTEmailTask();
-    $properties = get_object_vars($task);
-    foreach ($properties as $propertyName => $propertyValue) {
-        $propertyValue = str_replace('$(general : (__VtigerMeta__) date)', "(general : (__VtigerMeta__) date) $dateFormat", $propertyValue);
-
-        foreach ($dateFields as $fieldName) {
-            $propertyValue = str_replace("$$fieldName", "$$fieldName $dateFormat", $propertyValue);
-        }
-
-        foreach ($dateTimeFields as $fieldName) {
-            $propertyValue = str_replace("$$fieldName", "$$fieldName $timeZone", $propertyValue);
-        }
-
-        foreach ($dateFieldsList as $moduleName => $fieldNamesList) {
-            foreach ($fieldNamesList as $fieldName) {
-                $propertyValue = str_replace("($moduleName) $fieldName)", "($moduleName) $fieldName) $dateFormat", $propertyValue);
-            }
-        }
-        foreach ($dateTimeFieldsList as $moduleName => $fieldNamesList) {
-            foreach ($fieldNamesList as $fieldName) {
-                $propertyValue = str_replace("($moduleName) $fieldName)", "($moduleName) $fieldName) $timeZone", $propertyValue);
-            }
-        }
-        $emailTask->$propertyName = $propertyValue;
-    }
-    $tm->saveTask($emailTask);
 }
 
 global $root_directory;
