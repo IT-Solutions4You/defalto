@@ -24,6 +24,12 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      * @return array
      */
     public array $registerCustomLinks = [];
+
+    /**
+     * [name,module,trigger,recurrence,conditions,actions]
+     * @var array
+     */
+    public array $registerWorkflowTasks = [];
     /**
      * @var array
      * [events, file, class, condition, dependOn, modules]
@@ -1562,7 +1568,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      * @return bool|object
      * @throws Exception
      */
-    public function updateWorkflowTask(string $name, string $moduleName, array $conditions, string $trigger, string $recurrence): bool|object
+    public function updateWorkflowTask(string $name, string $moduleName, array $conditions, string $trigger): bool|object
     {
         $workflowModel = Settings_Workflows_Record_Model::getInstanceByName($name);
 
@@ -1574,8 +1580,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $workflowModel->set('name', $name);
         $workflowModel->set('summary', $name);
         $workflowModel->set('conditions', $conditions);
-        $workflowModel->set('workflow_trigger', $trigger);
-        $workflowModel->set('workflow_recurrence', $recurrence);
+        $workflowModel->set('execution_condition', $trigger);
         $workflowModel->set('filtersavedinnew', 6);
         $workflowModel->save();
 
@@ -1632,5 +1637,32 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     public static function isUpgradeProcess(): bool
     {
         return defined('VTIGER_UPGRADE') && VTIGER_UPGRADE;
+    }
+
+    /**
+     * workflow [name,module,trigger,recurrence,conditions,actions]
+     * actions [include,name,type,data]
+     * @throws Exception
+     */
+    public function updateWorkflowTasks(): void
+    {
+        $workflows = $this->registerWorkflowTasks;
+
+        foreach ($workflows as $workflow) {
+            [$name, $module, $trigger, $recurrence, $conditions, $actions] = $workflow;
+
+            foreach ($conditions as $conditionKey => $condition) {
+                $conditions[$conditionKey] = (object)$condition;
+            }
+
+            $workflowModel = $this->updateWorkflowTask($name, $module, $conditions, $trigger, $recurrence);
+
+            foreach ($actions as $action) {
+                [$include, $name, $type, $data] = $action;
+                require_once $include;
+
+                $this->updateWorkflowAction($type, $name, $data, $workflowModel);
+            }
+        }
     }
 }
