@@ -259,10 +259,6 @@ Migration_Index_View::ExecuteQuery('DELETE FROM vtiger_no_of_currency_decimals W
 Migration_Index_View::ExecuteQuery("delete from com_vtiger_workflowtasks where task_id=?", [11]);
 Migration_Index_View::ExecuteQuery("delete from com_vtiger_workflowtasks where task_id=?", [12]);
 
-// Creating Default workflows
-$workflowManager = new VTWorkflowManager();
-$taskManager = new VTTaskManager();
-
 global $current_user;
 $adb = PearDatabase::getInstance();
 $user = new Users();
@@ -531,21 +527,6 @@ $sqltimelogTable = "CREATE TABLE vtiger_sqltimelog ( id integer, type VARCHAR(10
 					data text, started decimal(18,2), ended decimal(18,2), loggedon datetime)";
 
 Migration_Index_View::ExecuteQuery($sqltimelogTable, []);
-
-$moduleName = 'PurchaseOrder';
-$vtWorkFlow = new VTWorkflowManager();
-$poWorkFlow = $vtWorkFlow->newWorkFlow($moduleName);
-$poWorkFlow->description = "Update Inventory Products On Every Save";
-$poWorkFlow->defaultworkflow = 1;
-$poWorkFlow->executionCondition = 3;
-$vtWorkFlow->save($poWorkFlow);
-
-$tm = new VTTaskManager();
-$task = $tm->createTask('VTEntityMethodTask', $poWorkFlow->id);
-$task->active = true;
-$task->summary = "Update Inventory Products";
-$task->methodName = "UpdateInventory";
-$tm->saveTask($task);
 
 // Add Tag Cloud widget.
 $homeModule = Vtiger_Module::getInstance('Home');
