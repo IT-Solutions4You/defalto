@@ -9,18 +9,13 @@
  */
 
 $languageStrings = [
-    'Vendors' => 'Vendors',
     'SINGLE_Vendors' => 'Dodavatel',
     'LBL_ADD_RECORD' => 'Přidat dodavatele',
     'LBL_RECORDS_LIST' => 'Seznam dodavatelů',
     'LBL_VENDOR_INFORMATION' => 'Detail dodavatele',
     'LBL_VENDOR_ADDRESS_INFORMATION' => 'Detail adresy',
-    'Vendor Name' => 'Vendor Name',
     'Vendor No' => 'Číslo dodavatele',
-    'Website' => 'Website',
     'GL Account' => 'Analytický účet',
-    'Phone' => 'Phone',
-    'Email' => 'Primary Email',
     '300-Sales-Software' => 'Prodej-Software',
     '301-Sales-Hardware' => 'Prodej-Hardware',
     '302-Rental-Income' => 'Pronájem-Příjem',
@@ -31,6 +26,11 @@ $languageStrings = [
     '307-Service-Hardware Labor' => 'Služby-Hardware-Výroba',
     '308-Sales-Books' => 'Prodej-Knihy',
     'LBL_CREATE_PURCHASEORDER' => 'Vytvoriť Nákupnú Objednávku',
+    'Vendors' => 'Dodavatelé',
+    'Vendor Name' => 'Název dodavatele',
+    'Website' => 'Web',
+    'Phone' => 'Telefon',
+    'Email' => 'Primární e‑mail',
 ];
 $jsLanguageStrings = [
     'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Opravdu chcete smazat záznam?',

@@ -29,8 +29,9 @@ $languageStrings = [
     'LBL_CREATING_NEW' => 'Nový',
     'Milestone Name' => 'Názov míľnika',
     'Milestone Status' => 'Stav míľnika',
-    'Planned' => 'Plánované',
-    'In progress' => 'Prebieha',
+    'Planned' => 'Naplánovaný',
+    'In progress' => 'V realizácii',
+    'Completed' => 'Dokončený',
     'Milestone No' => 'Číslo míľnika',
 ];
 $jsLanguageStrings = [

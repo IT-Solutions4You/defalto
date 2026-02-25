@@ -297,7 +297,8 @@ $languageStrings = [
     'New extension available' => 'Nový doplnok je pripravený na inštaláciu.',
     'System up to date' => 'Všetko je aktuálne.',
     'System update available' => 'Je dostupná systémová verzia %s.',
-
+    'LBL_USER_LIMIT' => 'User limit',
+    'Unlimited' => 'Unlimited',
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Naozaj chcete nainštalovať rozšírenie?',
