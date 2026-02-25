@@ -328,6 +328,7 @@ $languageStrings = [
     'yyyy-mm-dd' => 'yyyy-mm-dd',
     'dd.mm.yyyy' => 'dd.mm.yyyy',
     'dd/mm/yyyy' => 'dd/mm/yyyy',
+    'de_de' => 'de_de',
 ];
 $jsLanguageStrings = [
     'JS_ENTER_OLD_PASSWORD' => 'Prosím, zadajte svoje staré heslo.',

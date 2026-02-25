@@ -17,14 +17,15 @@ $languageStrings = [
     'LBL_COMMENT_INFORMATION' => 'Komentár',
     'Question' => 'Otázka',
     'Answer' => 'Riešenie',
-    'Comments' => 'Comments',
     'Faq No' => 'Znalostná databáza č.',
     'General' => 'Všeobecná',
-    'Draft' => 'Návrh',
-    'Published' => 'Zverejnená',
-    'Obsolete' => 'Zastaraná',
+    'Draft' => 'Koncept',
+    'Reviewed' => 'Skontrolované',
+    'Published' => 'Zverejnené',
+    'Obsolete' => 'Zastarané',
     'LBL_SOLUTION' => 'Riešenie',
     'Product Name' => 'Produkt',
+    'Comments' => 'Komentáre',
 ];
 $jsLanguageStrings = [
 ];
