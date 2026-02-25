@@ -384,7 +384,7 @@ class HelpDesk_Install_Model extends Core_Install_Model
 										Ticket Id : $(general : (__Meta__) recordId)<br>
 										Subject : $ticket_title<br><br>
 										Dear $(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname),<br><br>
-										There is a reply to <b>$ticket_title</b> in the "Customer Portal" at VTiger.
+										There is a reply to <b>$ticket_title</b> in the "Customer Portal" at Defalto.
 										You can use the following link to view the replies made:<br>
 										<a href="$(general : (__Meta__) portaldetailviewurl)">Ticket Details</a><br><br>
 										Thanks<br>$(general : (__Meta__) supportName)',
