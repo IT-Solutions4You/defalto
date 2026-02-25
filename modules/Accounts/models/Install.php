@@ -67,7 +67,7 @@ class Accounts_Install_Model extends Core_Install_Model
                     'An account has been created ',
                     'VTEmailTask',
                     [
-                        'content' => 'A Account has been assigned to you on Defalto CRM<br>Details of account are :<br><br>AccountId:<b>$account_no</b><br>AccountName:<b>$accountname</b><br>Rating:<b>$rating</b><br>Industry:<b>$industry</b><br>AccountType:<b>$accounttype</b><br>Description:<b>$description</b><br><br><br>Thank You<br>Admin',
+                        'content' => 'An Account has been assigned to you on Defalto CRM<br>Details of account are :<br><br>AccountId:<b>$account_no</b><br>AccountName:<b>$accountname</b><br>Rating:<b>$rating</b><br>Industry:<b>$industry</b><br>AccountType:<b>$accounttype</b><br>Description:<b>$description</b><br><br><br>Thank You<br>Admin',
                         'subject' => 'Regarding Account Creation',
                         'recepient' => '$(assigned_user_id : (Users) email1)',
                         'methodName' => 'NotifyOwner',
