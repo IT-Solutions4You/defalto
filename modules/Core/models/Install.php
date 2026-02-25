@@ -1670,7 +1670,12 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
     }
 
-    public function hasWorkflowTask($module, $name): bool
+    /**
+     * @param string $module
+     * @param string $name
+     * @return bool
+     */
+    public function hasWorkflowTask(string $module, string $name): bool
     {
         $db = PearDatabase::getInstance();
         $result = $db->pquery('SELECT 1 FROM com_vtiger_workflows WHERE module_name=? AND workflowname=?', [$module, $name]);
