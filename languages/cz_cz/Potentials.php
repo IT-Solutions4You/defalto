@@ -9,8 +9,6 @@
  */
 
 $languageStrings = [
-    'Potentials' => 'Opportunities',
-    'SINGLE_Potentials' => 'Opportunity',
     'LBL_ADD_RECORD' => 'Přidat příležitost',
     'LBL_RECORDS_LIST' => 'Seznam příležitostí',
     'LBL_OPPORTUNITY_INFORMATION' => 'Detail příležitosti',
@@ -35,8 +33,6 @@ $languageStrings = [
     'Negotiation/Review' => 'Vyjednávání',
     'Closed Won' => 'Vyhraná obchodní příležitost',
     'Closed Lost' => 'Ztracená obchodní příležitost',
-    '--None--' => '--None--',
-    'Existing Business' => 'Existující firma',
     'LBL_EXPECTED_CLOSE_DATE_ON' => 'Předpokládané datum uzavření',
     'LBL_RELATED_CONTACTS' => 'Související osoby',
     'LBL_RELATED_PRODUCTS' => 'Související produkty',
@@ -69,13 +65,18 @@ $languageStrings = [
     'Potentials by Stage' => 'Příležitosti podle fáze',
     'Top Potentials' => 'Top příležitosti',
     'Forecast' => 'Prodejní prognóza',
-    'New Business' => 'Nový obchod',
     'LBL_CUSTOM_FIELD_MAPPING' => 'Mapování polí: Příležitost → Projekt',
-    'Creator' => 'Tvůrce',
     'LBL_CREATE_INVOICE' => 'Vytvořit fakturu',
     'LBL_CREATE_QUOTES' => 'Vytvořit cenovou nabídku',
     'LBL_CREATE_SALESORDER' => 'Vytvořit prodejní objednávku',
-
+    'Potentials' => 'Příležitosti',
+    'SINGLE_Potentials' => 'Příležitost',
+    'Opportunities' => 'Příležitosti',
+    'Opportunity' => 'Příležitost',
+    '--None--' => '--Žádné--',
+    'Existing Business' => 'Existující obchod',
+    'New Business' => 'Nový obchod',
+    'Creator' => 'Tvůrce',
 ];
 $jsLanguageStrings = [
     'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Konverze vyžaduje výběr Projektu',

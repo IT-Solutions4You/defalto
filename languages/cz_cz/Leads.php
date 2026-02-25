@@ -9,7 +9,6 @@
  */
 
 $languageStrings = [
-    'Leads' => 'Leads',
     'SINGLE_Leads' => 'První kontakt',
     'LBL_RECORDS_LIST' => 'Seznam prvních kontaktů',
     'LBL_ADD_RECORD' => 'Přidat první kontakt',
@@ -47,8 +46,6 @@ $languageStrings = [
     'Title' => 'Titul',
     'Website' => 'Web',
     'Phone' => 'Telefon',
-    'Secondary Email' => 'Sekundární email',
-    'Email' => 'Primární email',
     'Mr.' => 'Pan',
     'Ms.' => 'Slečna',
     'Mrs.' => 'Paní',
@@ -60,7 +57,10 @@ $languageStrings = [
     'Contacted - Successful' => 'Kontaktován – úspěšně',
     'Contacted - Unsuccessful' => 'Kontaktován – neúspěšně',
     'Contacted - Never Contact Again' => 'Kontaktován – již nekontaktovat',
-
+    'Leads' => 'První kontakty',
+    'Other Phone' => 'Další telefon',
+    'Secondary Email' => 'Sekundární e‑mail',
+    'Email' => 'Primární e‑mail',
 ];
 $jsLanguageStrings = [
     'JS_SELECT_CONTACTS' => 'Vyberte kontakty pro pokračování',
