@@ -1646,10 +1646,15 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public function updateWorkflowTasks(): void
     {
+        $result = PearDatabase::getInstance()->pquery('SELECT 1 FROM com_vtiger_workflows WHERE module_name=? ADN workflowname=?');
         $workflows = $this->registerWorkflowTasks;
 
         foreach ($workflows as $workflow) {
             [$name, $module, $trigger, $recurrence, $conditions, $actions] = $workflow;
+
+            if ($this->hasWorkflowTask($module, $name)) {
+                continue;
+            }
 
             foreach ($conditions as $conditionKey => $condition) {
                 $conditions[$conditionKey] = (object)$condition;
@@ -1664,5 +1669,13 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                 $this->updateWorkflowAction($type, $name, $data, $workflowModel);
             }
         }
+    }
+
+    public function hasWorkflowTask($module, $name): bool
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT 1 FROM com_vtiger_workflows WHERE module_name=? ADN workflowname=?', [$module, $name]);
+
+        return $db->num_rows($result) > 0;
     }
 }
