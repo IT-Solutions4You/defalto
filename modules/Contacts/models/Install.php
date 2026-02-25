@@ -106,7 +106,7 @@ class Contacts_Install_Model extends Core_Install_Model
             [
                 [
                     'modules/com_vtiger_workflow/tasks/VTEmailTask.inc',
-                    'An contact has been created ',
+                    'A contact has been created ',
                     'VTEmailTask',
                     [
                         'content' => 'An Contact has been assigned to you on vtigerCRM<br>Details of Contact are :<br><br>Contact Id:<b>$contact_no</b><br>LastName:<b>$lastname</b><br>FirstName:<b>$firstname</b><br>Lead Source:<b>$leadsource</b><br>Department:<b>$department</b><br>Description:<b>$description</b><br><br><br>And <b>CustomerPortal Login Details</b> is sent to the EmailID :-$email<br><br>Thank You<br>Admin',
