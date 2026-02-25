@@ -9,6 +9,7 @@
 {strip}
     <div class="row conditionRow mb-3">
         <div class="col-lg-4 col-md-4 col-sm-4">
+            {assign var=FIELD_TYPE value='string'}
             <select class="{if empty($NOCHOSEN)}select2{/if} col-lg-12" name="columnname" data-placeholder="{vtranslate('LBL_SELECT_FIELD',$QUALIFIED_MODULE)}">
                 <option value="none"></option>
                 {foreach key=BLOCK_LABEL item=BLOCK_FIELDS from=$RECORD_STRUCTURE}
@@ -23,7 +24,6 @@
                                 {assign var=columnNameApi value=getCustomViewColumnName}
                             {/if}
                             <option value="{$FIELD_MODEL->$columnNameApi()}" data-fieldtype="{$FIELD_MODEL->getFieldType()}" data-field-name="{$FIELD_NAME}"
-                                {assign var=FIELD_TYPE value='string'}
                                 {if isset($CONDITION_INFO['columnname']) && decode_html($FIELD_MODEL->$columnNameApi()) eq $CONDITION_INFO['columnname']}
                                     {assign var=FIELD_TYPE value=$FIELD_MODEL->getFieldDataType()}
                                     {assign var=SELECTED_FIELD_MODEL value=$FIELD_MODEL}
