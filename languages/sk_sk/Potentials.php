@@ -9,8 +9,8 @@
  */
 
 $languageStrings = [
-    'Potentials' => 'Príležitosti',
-    'SINGLE_Potentials' => 'Príležitosť',
+    'Potentials' => 'Obchodné príležitosti',
+    'SINGLE_Potentials' => 'Obchodná príležitosť',
     'LBL_ADD_RECORD' => 'Pridať priležitosť',
     'LBL_RECORDS_LIST' => 'Zoznam príležitostí',
     'LBL_OPPORTUNITY_INFORMATION' => 'Informácie o príležitosti',

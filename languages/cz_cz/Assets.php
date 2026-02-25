@@ -9,7 +9,7 @@
  */
 
 $languageStrings = [
-    'Assets' => 'Assets',
+    'Assets' => 'Majetek',
     'SINGLE_Assets' => 'Majetek',
     'LBL_ADD_RECORD' => 'Přidat majetek',
     'LBL_RECORDS_LIST' => 'Seznam majetku',
@@ -25,8 +25,8 @@ $languageStrings = [
     'Asset Name' => 'Název majetku',
     'Customer Name' => 'Organizace',
     'Notes' => 'Poznámka',
-    'In Service' => 'Aktivní',
-    'Out-of-service' => 'Vyřazeno',
+    'In Service' => 'Aktivně používán',
+    'Out-of-service' => 'Dočasně vyřazen',
     'Contact Name' => 'Osoba',
 ];
 $jsLanguageStrings = [

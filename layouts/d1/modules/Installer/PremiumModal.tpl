@@ -11,7 +11,7 @@
         <div class="modal-content" role="document" aria-labelledby="dfPremiumTitle">
             {include file='PremiumModalHeader.tpl'|@vtemplate_path:$MODULE}
             <div class="modal-body px-4 py-3">
-                <p class="mb-3"><strong>{vtranslate($FOR_MODULE, $FOR_MODULE)}</strong> {vtranslate('LBL_PREMIUM_MODAL_LEAD', $FOR_MODULE)}</p>
+                <p class="mb-3"><strong>{vtranslate($FOR_MODULE, $FOR_MODULE)}</strong> {vtranslate('LBL_PREMIUM_MODAL_SUBTITLE', $FOR_MODULE)}</p>
                 <h3 class="h6">{vtranslate('LBL_PREMIUM_MODAL_WHAT_YOU_GET', $MODULE)}</h3>
                 {if !empty($PREMIUM_ITEMS)}
                     <ul class="list-unstyled mb-3">

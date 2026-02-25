@@ -27,6 +27,7 @@
  */
 
 include 'version.php';
+include 'config.performance.php';
 include 'config.inc.php';
 
 $THIS_DIR = __DIR__;

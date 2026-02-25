@@ -69,6 +69,7 @@ class Campaigns_Install_Model extends Core_Install_Model {
         $this->updateRelatedList();
         $this->updateHistory();
         $this->updateToStandardModule();
+        $this->updateWorkflowTasks();
     }
 
     /**
@@ -515,6 +516,7 @@ class Campaigns_Install_Model extends Core_Install_Model {
         
         $this->createPicklistTable('vtiger_campaigntype', 'campaigntypeid', 'campaigntype');
         $this->createPicklistTable('vtiger_expectedresponse', 'expectedresponseid', 'expectedresponse');
+        $this->createPicklistTable('vtiger_campaignstatus', 'campaignstatusid', 'campaignstatus');
     }
 
     /**

@@ -32,6 +32,28 @@ class Potentials_Install_Model extends Core_Install_Model
         ['Potentials', 'LISTVIEWBASIC', 'Kanban View', 'index.php?module=Potentials&view=Kanban', 'fa-solid fa-chart-simple fa-rotate-180',],
     ];
 
+    public array $registerWorkflowTasks = [
+        [
+            'Send Email to users on Potential creation',
+            'Potentials',
+            '1',
+            '1',
+            [],
+            [
+                [
+                    'modules/com_vtiger_workflow/tasks/VTEmailTask.inc',
+                    'A Potential has been created ',
+                    'VTEmailTask',
+                    [
+                        'content' => 'A Potential has been assigned to you on Defalto CRM<br>Details of Potential are :<br><br>Potential No:<b>$potential_no</b><br>Potential Name:<b>$potentialname</b><br>Amount:<b>$amount</b><br>Expected Close Date:<b>$closingdate</b><br>Type:<b>$opportunity_type</b><br><br><br>Description :$description<br><br>Thank You<br>Admin',
+                        'subject' => 'Regarding Potential Assignment',
+                        'recepient' => '$(assigned_user_id : (Users) email1)',
+                    ],
+                ],
+            ],
+        ],
+    ];
+
     /**
      * @throws Exception
      */
@@ -42,6 +64,7 @@ class Potentials_Install_Model extends Core_Install_Model
         $this->updateRelatedList();
         $this->updateMapping();
         $this->updateCustomLinks();
+        $this->updateWorkflowTasks();
     }
 
     public function deleteCustomLinks(): void

@@ -9,7 +9,6 @@
  */
 
 $languageStrings = [
-    'Campaigns' => 'Campaigns',
     'SINGLE_Campaigns' => 'Kampaň',
     'LBL_ADD_RECORD' => 'Přidat kampaň',
     'LBL_RECORDS_LIST' => 'Seznam kampaní',
@@ -40,9 +39,9 @@ $languageStrings = [
     'Banner Ads' => 'Bannerová kampaň',
     'Direct Mail' => 'Direct Mail',
     'Telemarketing' => 'Telemarketing',
-    'Others' => 'Others',
-    'Planning' => 'Planning',
-    'Inactive' => 'Inactive',
+    'Planning' => 'V přípravě',
+    'Active' => 'Probíhá',
+    'Inactive' => 'Pozastavena',
     'Complete' => 'Ukončena',
     'Cancelled' => 'Zrušena',
     'Excellent' => 'Vynikající',
@@ -54,7 +53,9 @@ $languageStrings = [
     'Contacted - Unsuccessful' => 'Neúspěšně kontaktováno',
     'Contacted - Never Contact Again' => 'Již nikdy nekontaktovat',
     'Completed' => 'Ukončena',
-    'Partners' => 'Partneri',
+    'Campaigns' => 'Kampaně',
+    'Others' => 'Ostatní',
+    'Partners' => 'Partneři',
 ];
 $jsLanguageStrings = [
     'JS_APPENDED_TO_EXISTING_LIST' => '%s ze zvoleného seznamu se připojí k existujícímu seznamu',
