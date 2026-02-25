@@ -9,15 +9,15 @@
  */
 
 $languageStrings = [
-    'Recycle Bin' => 'Recycle Bin',
-    'RecycleBin' => 'Recycle Bin',
-    'SINGLE_RecycleBin' => 'Recycle Bin',
-    'LBL_SELECT_MODULE' => 'Select Module',
     'LBL_EMPTY_RECYCLEBIN' => 'Vyprázdnit odpadkový koš',
     'LBL_RESTORE' => 'Obnovit',
     'LBL_NO_PERMITTED_MODULES' => 'Není dostupný žádný povolený modul',
     'LBL_RECORDS_LIST' => 'Obsah odpadkového koše',
     'LBL_NO_RECORDS_FOUND' => 'V modulu nebyl nalezen žádný záznam k obnovení',
+    'Recycle Bin' => 'Koš',
+    'RecycleBin' => 'Koš',
+    'SINGLE_RecycleBin' => 'Koš',
+    'LBL_SELECT_MODULE' => 'Vyberte modul',
 ];
 $jsLanguageStrings = [
     'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Opravdu chcete nevratně odstranit vybrané záznamy?',
