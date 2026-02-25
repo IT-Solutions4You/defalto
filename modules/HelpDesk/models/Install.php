@@ -112,7 +112,7 @@ class HelpDesk_Install_Model extends Core_Install_Model
                                 <style type="text/css"> .comment-box { border: 1px solid #ddd; background-color: #f9f9f9; padding: 10px; margin: 10px 0; min-width: 30%; } </style>
                             </head>
                             <body>
-                                <p>Dobrý deň,</p>
+                                <p>Hello,</p>
                                 <p><strong>$(assigned_user_id : (Users) first_name) $(assigned_user_id : (Users) last_name)</strong> responded to your suggestion: <strong>$ticket_title</strong>.</p>
                                 <p class="comment-box">$lastComment</p>
                                 <a href="mailto:$(modifiedby : (Users) email1)?subject=$ticket_no: $ticket_title">Reply to ticket: $ticket_no </a><br />
