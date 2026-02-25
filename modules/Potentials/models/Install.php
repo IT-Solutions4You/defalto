@@ -42,7 +42,7 @@ class Potentials_Install_Model extends Core_Install_Model
             [
                 [
                     'modules/com_vtiger_workflow/tasks/VTEmailTask.inc',
-                    'An Potential has been created ',
+                    'A Potential has been created ',
                     'VTEmailTask',
                     [
                         'content' => 'An Potential has been assigned to you on vtigerCRM<br>Details of Potential are :<br><br>Potential No:<b>$potential_no</b><br>Potential Name:<b>$potentialname</b><br>Amount:<b>$amount</b><br>Expected Close Date:<b>$closingdate</b><br>Type:<b>$opportunity_type</b><br><br><br>Description :$description<br><br>Thank You<br>Admin',
