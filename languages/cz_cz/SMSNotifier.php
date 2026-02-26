@@ -9,7 +9,6 @@
  */
 
 $languageStrings = [
-    'SMSNotifier' => 'SMS Notifier',
     'LBL_SEND_SMS_TO_SELECTED_NUMBERS' => 'Odeslat SMS na vybraná čísla',
     'LBL_STEP_1' => 'Krok 1',
     'LBL_STEP_2' => 'Krok 2',
@@ -23,7 +22,8 @@ $languageStrings = [
     'LBL_SMSNOTIFIER_INFORMATION' => 'SMS informace',
     'SINGLE_SMSNotifier' => 'SMS upozornění',
     'LBL_SEREVER_CONFIG' => 'Konfigurace serveru',
-    'StatusInformation' => 'StatusInformation',
+    'SMSNotifier' => 'SMS Notifier',
+    'StatusInformation' => 'Informace o stavu',
 ];
 $jsLanguageStrings = [
 ];
