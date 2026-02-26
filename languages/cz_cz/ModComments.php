@@ -15,13 +15,13 @@ $languageStrings = [
     'LBL_OTHER_INFORMATION' => 'Jiné informace',
     'LBL_ADDING_COMMENT' => 'Přidat komentář',
     'LBL_WRITE_YOUR_COMMENT_HERE' => 'Zde vložte komentář',
-    'Comment' => 'Comment',
     'Creator' => 'Vytvořil',
     'Related To Comments' => 'Souvisí s',
     'LBL_COMMENTED_AT' => 'Komentoval',
-    'Is Private' => 'Je súkromný',
-    'Attachment' => 'Príloha',
-    'Related Email Id' => 'Súvisiace ID emailu',
+    'Comment' => 'Komentář',
+    'Is Private' => 'Je soukromý',
+    'Attachment' => 'Příloha',
+    'Related Email Id' => 'Související ID e‑mailu',
 ];
 $jsLanguageStrings = [
 ];

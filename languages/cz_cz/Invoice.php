@@ -36,32 +36,15 @@ $languageStrings = [
     'Contact Name' => 'Osoba',
     'Due Date' => 'Datum splatnosti',
     'Paypal' => 'Paypal',
-    'Delivery Date' => 'Dátum dodania',
-    'Constant Symbol' => 'Konštantný symbol',
-    'Variable Symbol' => 'Variabilný symbol',
-    'Quote' => 'Ponuka',
-    'Inventory Manager' => 'Správca zásob',
-    'Tax Document' => 'Daňový doklad k přijaté platbě',
-    'Final Invoice' => 'Finální faktura',
-    'Invoice' => 'Faktury',
     'SINGLE_Invoice' => 'Faktura',
-
     'LBL_EXPORT_TO_PDF' => 'Exportovat do PDF',
     'LBL_SEND_MAIL_PDF' => 'Odeslat e-mail s PDF',
-
     'LBL_SUB_PRODUCTS' => 'Podprodukty',
-    'LBL_ACTION' => 'Akce',
-
     'Pay Type' => 'Typ platby',
     'Bank Transfer' => 'Bankovní převod',
     'Cash' => 'Hotovost',
     'Credit card' => 'Kreditní karta',
     'Google Wallet' => 'Google peněženka',
-
-    'S&amp;H Percent' => 'Procento S&H',
-    'S&amp;H Amount' => 'Částka S&H',
-    'Terms &amp; Conditions' => 'Podmínky a ustanovení',
-
     'Price Book' => 'Ceník',
     'Price After Discount' => 'Cena po slevě',
     'Overall Discount' => 'Celková sleva',
@@ -69,10 +52,20 @@ $languageStrings = [
     'Price After Overall Discount' => 'Cena po celkové slevě',
     'Tax Amount' => 'Výše daně',
     'Grand Total' => 'Celková částka',
-    'Margin Amount' => 'Výše marže',
-
     'Invoice Type' => 'Typ faktury',
-
+    'Delivery Date' => 'Datum dodání',
+    'Constant Symbol' => 'Konstantní symbol',
+    'Variable Symbol' => 'Variabilní symbol',
+    'Quote' => 'Nabídka',
+    'Inventory Manager' => 'Správce zásob',
+    'Tax Document' => 'Daňový doklad k přijaté platbě',
+    'Final Invoice' => 'Finální faktura',
+    'Invoice' => 'Faktury',
+    'LBL_ACTION' => 'Akce',
+    'S&amp;H Percent' => 'Procento S&H',
+    'S&amp;H Amount' => 'Částka S&H',
+    'Terms &amp; Conditions' => 'Podmínky a ustanovení',
+    'Margin Amount' => 'Výše marže',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Prosím, odstraňte fakturovanou položku, která již byla odebrána ze systému',
