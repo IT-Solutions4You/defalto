@@ -10,7 +10,7 @@
 
 $languageStrings = [
     'APPTITLE' => 'Defalto CRM Open Source',
-    'POWEREDBY' => 'Powered by Defalto CRM, přeloženo<a href="http://www.its4you.sk/">IT-Solutions4You s.r.o.</a>',
+    'POWEREDBY' => 'Powered by Defalto CRM <a href="http://www.its4you.sk/">IT-Solutions4You s.r.o.</a>',
     'LBL_READ_LICENSE' => 'Přečtěte si licenci',
     'LBL_PRIVACY_POLICY' => 'Ochrana soukromí',
     'LBL_NEW' => 'Nový',
@@ -1027,7 +1027,7 @@ $languageStrings = [
     'LBL_ROLES' => 'Role',
     'LBL_ROLEANDSUBORDINATE' => 'Role a podřízené',
     'LBL_YOUR_LEARNING_SCORE' => 'Vaše skóre učení CRM',
-    'LBL_SWITCH_TO_VTIGER7_NOW' => 'Přepněte na Defalto7 do 15. února',
+    'LBL_SWITCH_TO_VTIGER7_NOW' => 'Přepněte na Defalto do 15. února',
     'ModTracker' => 'Aktualizace',
     'LBL_MAIL_SENT_SUCCESSFULLY' => 'Pošta odeslaná úspěšně',
     'LBL_FAILED_TO_SEND' => 'Nepodařilo se odeslat',
