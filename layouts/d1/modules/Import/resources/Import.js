@@ -212,43 +212,52 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             Vtiger_Import_Js.showOverLayModal(params);
         },
         loadSavedMap: function () {
-            var selectedMapElement = jQuery('#saved_maps option:selected');
-            var mapId = selectedMapElement.attr('id');
-            var fieldsList = jQuery('.fieldIdentifier');
-            var deleteMapContainer = jQuery('#delete_map_container');
+            let selectedMapElement = jQuery('#saved_maps option:selected'),
+                mapId = selectedMapElement.attr('id'),
+                fieldsList = jQuery('.fieldIdentifier'),
+                deleteMapContainer = jQuery('#delete_map_container');
+
             fieldsList.each(function (i, element) {
-                var fieldElement = jQuery(element);
+                let fieldElement = jQuery(element);
                 jQuery('[name=mapped_fields]', fieldElement).val('');
             });
+
             if (mapId == -1) {
                 deleteMapContainer.hide();
                 return;
             }
+
             deleteMapContainer.show();
-            var mappingString = selectedMapElement.val()
+            let mappingString = selectedMapElement.val()
+
             if (mappingString == '')
                 return;
-            var mappingPairs = mappingString.split('&');
-            var mapping = {};
-            for (var i = 0; i < mappingPairs.length; ++i) {
-                var mappingPair = mappingPairs[i].split('=');
-                var header = mappingPair[0];
+
+            let mappingPairs = mappingString.split('&'),
+                mapping = {};
+
+            for (let i = 0; i < mappingPairs.length; ++i) {
+                let mappingPair = mappingPairs[i].split('='),
+                    header = mappingPair[0];
+
                 header = header.replace(/\/eq\//g, '=');
                 header = header.replace(/\/amp\//g, '&amp;');
                 mapping[header] = mappingPair[1];
                 mapping[i] = mappingPair[1]; /* To make Row based match when there is no header */
             }
             fieldsList.each(function (i, element) {
-                var fieldElement = jQuery(element);
-                var mappedFields = jQuery('[name=mapped_fields]', fieldElement);
-                var rowId = jQuery('[name=row_counter]', fieldElement).get(0).value;
-                var headerNameElement = jQuery('[name=header_name]', fieldElement).get(0);
-                var headerName = jQuery(headerNameElement).html();
+                let fieldElement = jQuery(element),
+                    mappedFields = jQuery('[name=mapped_fields]', fieldElement),
+                    rowId = jQuery('[name=row_counter]', fieldElement).get(0).value,
+                    headerNameElement = jQuery('[name=header_name]', fieldElement).get(0),
+                    headerName = jQuery(headerNameElement).html();
+
                 if (headerName in mapping) {
-                    mappedFields.select2("val", mapping[headerName]);
+                    mappedFields.val(mapping[headerName]).trigger('change');
                 } else if (rowId - 1 in mapping) { /* Row based match when there is no header - but saved map is loaded. */
-                    mappedFields.select2("val", mapping[rowId - 1]);
+                    mappedFields.val(mapping[rowId - 1]).trigger('change');
                 }
+
                 Vtiger_Import_Js.loadDefaultValueWidget(fieldElement.attr('id'));
             });
         },

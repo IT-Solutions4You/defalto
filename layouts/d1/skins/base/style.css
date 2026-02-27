@@ -1942,6 +1942,7 @@ input[type=checkbox]:checked {
 .step {
     position: relative;
 }
+
 .step:after {
     position: absolute;
     top: 0;
@@ -1954,7 +1955,7 @@ input[type=checkbox]:checked {
     border-bottom: 1.5rem solid transparent;
 
     border-left: 1.5rem solid var(--dt-light-blue-color);
-    margin-right: -1.48rem;
+    margin-right: -1.4rem;
 }
 
 .crumbs .step.active:after {
@@ -1963,11 +1964,6 @@ input[type=checkbox]:checked {
 
     border-left: 1.5rem solid var(--dt-blue-color);
 }
-
-.importBlockContainer {
-    color: #596875;
-}
-
 /*******************************************
 ************* Updates Timeline ***************
 ********************************************/

@@ -52,7 +52,7 @@
     <div class="modal-overlay-footer modal-footer">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-6">
+                <div class="col-6 text-end">
                     <a class="cancelLink btn btn-primary" data-bs-dismiss="modal" href="#">{vtranslate('LBL_CANCEL', $MODULE)}</a>
                 </div>
                 <div class="col-6">
