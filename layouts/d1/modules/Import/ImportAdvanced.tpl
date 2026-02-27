@@ -33,20 +33,16 @@
         {/if}
         {include file="BreadCrumbs.tpl"|vtemplate_path:$MODULE BREADCRUMB_ID='navigation_links' ACTIVESTEP=3 BREADCRUMB_LABELS=$LABELS MODULE=$MODULE}
         <div class="importBlockContainer">
-            <table class="table table-borderless">
-                {if $ERROR_MESSAGE neq ''}
-                    <tr>
-                        <td class="text-start">
+            <div class="row">
+                <div class="col">
+                    {if !empty($ERROR_MESSAGE)}
+                        <div class="alert alert-danger">
                             {$ERROR_MESSAGE}
-                        </td>
-                    </tr>
-                {/if}
-                <tr>
-                    <td>
-                        {include file='ImportStepThree.tpl'|@vtemplate_path:'Import'}
-                    </td>
-                </tr>
-            </table>
+                        </div>
+                    {/if}
+                </div>
+            </div>
+            {include file='ImportStepThree.tpl'|@vtemplate_path:'Import'}
         </div>
     </div>
     <div class="modal-overlay-footer modal-footer">

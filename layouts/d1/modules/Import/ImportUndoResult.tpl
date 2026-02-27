@@ -20,8 +20,8 @@
                         <div class="col">
                             <h4>{'LBL_DELETION_SUMMARY'|@vtranslate:$MODULE}</h4>
                             <hr>
-                            {if $ERROR_MESSAGE}
-                                <h4>{$ERROR_MESSAGE}</h4>
+                            {if !empty($ERROR_MESSAGE)}
+                                <span class="alert alert-danger">{$ERROR_MESSAGE}</span>
                             {/if}
                         </div>
                     </div>

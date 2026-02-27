@@ -26,7 +26,9 @@
                             <span>{$IMPORT_RESULT.TOTAL}</span>
                         </h4>
                         <hr>
-                        {if !empty($ERROR_MESSAGE)}<span>{$ERROR_MESSAGE}</span>{/if}
+                        {if !empty($ERROR_MESSAGE)}
+                            <span class="alert alert-danger">{$ERROR_MESSAGE}</span>
+                        {/if}
                     </div>
                 </div>
                 {include file="Import_Result_Details.tpl"|@vtemplate_path:'Import'}

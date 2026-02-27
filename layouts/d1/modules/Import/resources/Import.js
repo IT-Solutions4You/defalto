@@ -29,7 +29,9 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
         bactToStep1: function () {
             jQuery('#step2').removeClass('active');
             jQuery('#step1').addClass('active');
+            jQuery('#uploadFileContainer').removeClass('hide');
             jQuery('#uploadFileContainer').addClass('show');
+
             jQuery('#importStep2Conatiner').removeClass('show');
             jQuery('#importStep2Conatiner').addClass('hide');
 
@@ -472,23 +474,35 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             return true;
         },
         showOverLayModal: function (params) {
+            this.clearTimer();
+
             app.helper.showProgress();
             app.request.get({data: params}).then(function (err, data) {
                 app.helper.loadPageContentOverlay(data);
                 app.helper.hideProgress();
             });
         },
-
         timer: 0,
         isReloadStatusPageStopped: false,
+        clearTimer() {
+            if (Vtiger_Import_Js.timer) {
+                clearTimeout(Vtiger_Import_Js.timer);
+            }
+        },
         scheduledImportRunning: function () {
-            var form = jQuery("#importStatusForm");
-            var data = new FormData(form[0]);
-            var postParams = {
-                data: data,
-                contentType: false,
-                processData: false
-            };
+            let form = jQuery("#importStatusForm"),
+                data = new FormData(form[0]),
+                postParams = {
+                    data: data,
+                    contentType: false,
+                    processData: false
+                };
+
+            if (!form.length) {
+                console.info('Import: skip import window closed');
+                return;
+            }
+
             app.request.post(postParams).then(function (err, response) {
                 if (!Vtiger_Import_Js.isReloadStatusPageStopped) {
                     app.helper.loadPageContentOverlay(response);
@@ -610,30 +624,22 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
         },
 
         clearSheduledImportData: function () {
-            var params = {};
-            params['module'] = app.getModuleName();
-            params['view'] = 'Import';
-            params['mode'] = 'clearCorruptedData';
+            let params = {
+                module: app.getModuleName(),
+                view: 'Import',
+                mode: 'clearCorruptedData',
+            };
+
             Vtiger_Import_Js.showOverLayModal(params);
         },
         cancelImport: function (url) {
-            var urlParams = url.slice(url.indexOf('?') + 1).split('&');
-            var params = {};
-            for (var i = 0; i < urlParams.length; i++) {
-                var param = urlParams[i].split('=');
-                params[param[0]] = param[1];
-            }
+            let params = app.convertUrlToDataParams(url)
+
             Vtiger_Import_Js.showOverLayModal(params);
-
-
         },
         scheduleImport: function (url) {
-            var urlParams = url.slice(url.indexOf('?') + 1).split('&');
-            var params = {};
-            for (var i = 0; i < urlParams.length; i++) {
-                var param = urlParams[i].split('=');
-                params[param[0]] = param[1];
-            }
+            let params = app.convertUrlToDataParams(url)
+
             Vtiger_Import_Js.showOverLayModal(params);
         },
         showImportActionStepOne: function (format) {
@@ -660,16 +666,10 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             });
         },
         getDefaultParams: function () {
-            var module = window.app.getModuleName();
-            var url = "index.php?module=" + module + "&view=Import";
-            var urlParams = url.slice(url.indexOf('?') + 1).split('&');
-
-            var params = {};
-            for (var i = 0; i < urlParams.length; i++) {
-                var param = urlParams[i].split('=');
-                params[param[0]] = param[1];
-            }
-            return params;
+            return {
+                module: app.getModuleName(),
+                view: 'Import',
+            };
         },
         finishUndoOperation: function () {
             Vtiger_Import_Js.loadListRecords();
