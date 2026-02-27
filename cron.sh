@@ -8,7 +8,7 @@
 #
 #!/bin/bash
 
-export DEFAULTCRM_ROOTDIR=$(cd -- "$(dirname "$0")" && pwd)
+export DEFALTO_CRM_ROOTDIR=$(cd -- "$(dirname "$0")" && pwd)
 export USE_PHP=$(which php || echo "php")
-cd "$DEFAULTCRM_ROOTDIR" || exit
+cd "$DEFALTO_CRM_ROOTDIR" || exit
 $USE_PHP -f cron.php
