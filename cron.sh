@@ -7,7 +7,7 @@
 # See LICENSE-AGPLv3.txt for more details.
 #
 
-export DEFALTOCRM_ROOTDIR=`dirname "$0"`/
+export DEFALTOCRM_ROOTDIR=`dirname "$0"`
 export USE_PHP=php
 
 cd $DEFALTOCRM_ROOTDIR
