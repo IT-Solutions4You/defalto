@@ -6,10 +6,9 @@
 # This file is licensed under the GNU AGPL v3 License.
 # See LICENSE-AGPLv3.txt for more details.
 #
+#!/bin/bash
 
-export DEFALTOCRM_ROOTDIR=`dirname "$0"`
-export USE_PHP=php
-
-cd $DEFALTOCRM_ROOTDIR
-# TO RUN ALL CORN JOBS
+export DEFAULTCRM_ROOTDIR=$(cd -- "$(dirname "$0")" && pwd)
+export USE_PHP=$(which php || echo "php")
+cd "$DEFAULTCRM_ROOTDIR" || exit
 $USE_PHP -f cron.php
