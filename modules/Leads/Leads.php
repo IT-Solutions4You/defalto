@@ -26,33 +26,37 @@ class Leads extends CRMEntity
     public string $moduleName = 'Leads';
     public string $parentName = 'HOME';
 
-    var $table_name = "vtiger_leaddetails";
-    var $table_index = 'leadid';
+    public $table_name = "vtiger_leaddetails";
+    public $table_index = 'leadid';
 
-    var $tab_name = ['vtiger_crmentity', 'vtiger_leaddetails', 'vtiger_leadsubdetails', 'vtiger_leadaddress', 'vtiger_leadscf'];
-    var $tab_name_index = [
+    public $tab_name = ['vtiger_crmentity', 'vtiger_leaddetails', 'vtiger_leadsubdetails', 'vtiger_leadaddress', 'vtiger_leadscf'];
+    public $tab_name_index = [
         'vtiger_crmentity' => 'crmid',
         'vtiger_leaddetails' => 'leadid',
         'vtiger_leadsubdetails' => 'leadsubscriptionid',
         'vtiger_leadaddress' => 'leadaddressid',
-        'vtiger_leadscf' => 'leadid'
+        'vtiger_leadscf' => 'leadid',
+        'vtiger_campaignrelstatus' => 'campaignrelstatusid',
+    ];
+    public array $tab_name_left_join = [
+        'vtiger_campaignrelstatus'
     ];
 
-    var $entity_table = "vtiger_crmentity";
+    public $entity_table = "vtiger_crmentity";
 
     /**
      * Mandatory table for supporting custom fields.
      */
-    var $customFieldTable = ['vtiger_leadscf', 'leadid'];
+    public $customFieldTable = ['vtiger_leadscf', 'leadid'];
 
     //construct this from database;
-    var $sortby_fields = ['lastname', 'firstname', 'email', 'phone', 'company', 'assigned_user_id', 'website'];
+    public $sortby_fields = ['lastname', 'firstname', 'email', 'phone', 'company', 'assigned_user_id', 'website'];
 
     // This is used to retrieve related vtiger_fields from form posts.
-    var $additional_column_fields = ['creator_user_id', 'assigned_user_id', 'contactid', 'potentialid', 'crmid'];
+    public $additional_column_fields = ['creator_user_id', 'assigned_user_id', 'contactid', 'potentialid', 'crmid'];
 
     // This is the list of vtiger_fields that are in the lists.
-    var $list_fields = [
+    public $list_fields = [
         'First Name' => ['leaddetails' => 'firstname'],
         'Last Name' => ['leaddetails' => 'lastname'],
         'Company' => ['leaddetails' => 'company'],
@@ -61,7 +65,7 @@ class Leads extends CRMEntity
         'Email' => ['leaddetails' => 'email'],
         'Assigned To' => ['crmentity' => 'assigned_user_id']
     ];
-    var $list_fields_name = [
+    public $list_fields_name = [
         'First Name' => 'firstname',
         'Last Name' => 'lastname',
         'Company' => 'company',
@@ -70,27 +74,27 @@ class Leads extends CRMEntity
         'Email' => 'email',
         'Assigned To' => 'assigned_user_id'
     ];
-    var $list_link_field = 'lastname';
+    public $list_link_field = 'lastname';
 
-    var $search_fields = [
+    public $search_fields = [
         'Name' => ['leaddetails' => 'lastname'],
         'Company' => ['leaddetails' => 'company']
     ];
-    var $search_fields_name = [
+    public $search_fields_name = [
         'Name' => 'lastname',
         'Company' => 'company'
     ];
 
-    var $required_fields = [];
+    public $required_fields = [];
 
     // Used when enabling/disabling the mandatory fields for the module.
     // Refers to vtiger_field.fieldname values.
-    var $mandatory_fields = ['assigned_user_id', 'lastname', 'createdtime', 'modifiedtime'];
+    public $mandatory_fields = ['assigned_user_id', 'lastname', 'createdtime', 'modifiedtime'];
 
     // For Alphabetical search
-    var $def_basicsearch_col = 'lastname';
+    public $def_basicsearch_col = 'lastname';
 
-    var $LBL_LEAD_MAPPING = 'LBL_LEAD_MAPPING';
+    public $LBL_LEAD_MAPPING = 'LBL_LEAD_MAPPING';
 
     /** Function to export the lead records in CSV Format
      *

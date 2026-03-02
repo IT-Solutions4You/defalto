@@ -29,7 +29,9 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
         bactToStep1: function () {
             jQuery('#step2').removeClass('active');
             jQuery('#step1').addClass('active');
+            jQuery('#uploadFileContainer').removeClass('hide');
             jQuery('#uploadFileContainer').addClass('show');
+
             jQuery('#importStep2Conatiner').removeClass('show');
             jQuery('#importStep2Conatiner').addClass('hide');
 
@@ -212,43 +214,52 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             Vtiger_Import_Js.showOverLayModal(params);
         },
         loadSavedMap: function () {
-            var selectedMapElement = jQuery('#saved_maps option:selected');
-            var mapId = selectedMapElement.attr('id');
-            var fieldsList = jQuery('.fieldIdentifier');
-            var deleteMapContainer = jQuery('#delete_map_container');
+            let selectedMapElement = jQuery('#saved_maps option:selected'),
+                mapId = selectedMapElement.attr('id'),
+                fieldsList = jQuery('.fieldIdentifier'),
+                deleteMapContainer = jQuery('#delete_map_container');
+
             fieldsList.each(function (i, element) {
-                var fieldElement = jQuery(element);
+                let fieldElement = jQuery(element);
                 jQuery('[name=mapped_fields]', fieldElement).val('');
             });
+
             if (mapId == -1) {
                 deleteMapContainer.hide();
                 return;
             }
+
             deleteMapContainer.show();
-            var mappingString = selectedMapElement.val()
+            let mappingString = selectedMapElement.val()
+
             if (mappingString == '')
                 return;
-            var mappingPairs = mappingString.split('&');
-            var mapping = {};
-            for (var i = 0; i < mappingPairs.length; ++i) {
-                var mappingPair = mappingPairs[i].split('=');
-                var header = mappingPair[0];
+
+            let mappingPairs = mappingString.split('&'),
+                mapping = {};
+
+            for (let i = 0; i < mappingPairs.length; ++i) {
+                let mappingPair = mappingPairs[i].split('='),
+                    header = mappingPair[0];
+
                 header = header.replace(/\/eq\//g, '=');
                 header = header.replace(/\/amp\//g, '&amp;');
                 mapping[header] = mappingPair[1];
                 mapping[i] = mappingPair[1]; /* To make Row based match when there is no header */
             }
             fieldsList.each(function (i, element) {
-                var fieldElement = jQuery(element);
-                var mappedFields = jQuery('[name=mapped_fields]', fieldElement);
-                var rowId = jQuery('[name=row_counter]', fieldElement).get(0).value;
-                var headerNameElement = jQuery('[name=header_name]', fieldElement).get(0);
-                var headerName = jQuery(headerNameElement).html();
+                let fieldElement = jQuery(element),
+                    mappedFields = jQuery('[name=mapped_fields]', fieldElement),
+                    rowId = jQuery('[name=row_counter]', fieldElement).get(0).value,
+                    headerNameElement = jQuery('[name=header_name]', fieldElement).get(0),
+                    headerName = jQuery(headerNameElement).html();
+
                 if (headerName in mapping) {
-                    mappedFields.select2("val", mapping[headerName]);
+                    mappedFields.val(mapping[headerName]).trigger('change');
                 } else if (rowId - 1 in mapping) { /* Row based match when there is no header - but saved map is loaded. */
-                    mappedFields.select2("val", mapping[rowId - 1]);
+                    mappedFields.val(mapping[rowId - 1]).trigger('change');
                 }
+
                 Vtiger_Import_Js.loadDefaultValueWidget(fieldElement.attr('id'));
             });
         },
@@ -463,23 +474,35 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             return true;
         },
         showOverLayModal: function (params) {
+            this.clearTimer();
+
             app.helper.showProgress();
             app.request.get({data: params}).then(function (err, data) {
                 app.helper.loadPageContentOverlay(data);
                 app.helper.hideProgress();
             });
         },
-
         timer: 0,
         isReloadStatusPageStopped: false,
+        clearTimer() {
+            if (Vtiger_Import_Js.timer) {
+                clearTimeout(Vtiger_Import_Js.timer);
+            }
+        },
         scheduledImportRunning: function () {
-            var form = jQuery("#importStatusForm");
-            var data = new FormData(form[0]);
-            var postParams = {
-                data: data,
-                contentType: false,
-                processData: false
-            };
+            let form = jQuery("#importStatusForm"),
+                data = new FormData(form[0]),
+                postParams = {
+                    data: data,
+                    contentType: false,
+                    processData: false
+                };
+
+            if (!form.length) {
+                console.info('Import: skip import window closed');
+                return;
+            }
+
             app.request.post(postParams).then(function (err, response) {
                 if (!Vtiger_Import_Js.isReloadStatusPageStopped) {
                     app.helper.loadPageContentOverlay(response);
@@ -601,30 +624,22 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
         },
 
         clearSheduledImportData: function () {
-            var params = {};
-            params['module'] = app.getModuleName();
-            params['view'] = 'Import';
-            params['mode'] = 'clearCorruptedData';
+            let params = {
+                module: app.getModuleName(),
+                view: 'Import',
+                mode: 'clearCorruptedData',
+            };
+
             Vtiger_Import_Js.showOverLayModal(params);
         },
         cancelImport: function (url) {
-            var urlParams = url.slice(url.indexOf('?') + 1).split('&');
-            var params = {};
-            for (var i = 0; i < urlParams.length; i++) {
-                var param = urlParams[i].split('=');
-                params[param[0]] = param[1];
-            }
+            let params = app.convertUrlToDataParams(url)
+
             Vtiger_Import_Js.showOverLayModal(params);
-
-
         },
         scheduleImport: function (url) {
-            var urlParams = url.slice(url.indexOf('?') + 1).split('&');
-            var params = {};
-            for (var i = 0; i < urlParams.length; i++) {
-                var param = urlParams[i].split('=');
-                params[param[0]] = param[1];
-            }
+            let params = app.convertUrlToDataParams(url)
+
             Vtiger_Import_Js.showOverLayModal(params);
         },
         showImportActionStepOne: function (format) {
@@ -651,16 +666,10 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             });
         },
         getDefaultParams: function () {
-            var module = window.app.getModuleName();
-            var url = "index.php?module=" + module + "&view=Import";
-            var urlParams = url.slice(url.indexOf('?') + 1).split('&');
-
-            var params = {};
-            for (var i = 0; i < urlParams.length; i++) {
-                var param = urlParams[i].split('=');
-                params[param[0]] = param[1];
-            }
-            return params;
+            return {
+                module: app.getModuleName(),
+                view: 'Import',
+            };
         },
         finishUndoOperation: function () {
             Vtiger_Import_Js.loadListRecords();

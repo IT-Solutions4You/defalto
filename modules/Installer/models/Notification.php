@@ -140,7 +140,7 @@ class Installer_Notification_Model extends Core_DatabaseData_Model
         $systems = Installer_SystemInstall_Model::getAll();
         /** @var Installer_SystemInstall_Model $system */
         foreach ($systems as $system) {
-            if ($system->getVersion() === $system->getCurrentVersion()) {
+            if (version_compare($system->getVersion(), $system->getCurrentVersion(), '<')) {
                 $this->notifications[] = [
                     'name' => 'Update Defalto',
                     'description' => 'System up to date',

@@ -16,39 +16,33 @@
     </div>
     <div class='modal-body' style="margin-bottom:250px">
         <div>
-            <table class="table table-borderless">
-                {if $ERROR_MESSAGE neq ''}
-                    <tr>
-                        <td>
-                            {$ERROR_MESSAGE}
-                        </td>
-                    </tr>
-                {/if}
+            <div class="container">
+                <div class="row py-2">
+                    {if !empty($ERROR_MESSAGE)}
+                        <div class="alert alert-danger">{$ERROR_MESSAGE}</div>
+                    {/if}
+                </div>
                 {if $ENABLE_SCHEDULE_IMPORT_CRON}
-                    <tr>
-                        <td style="padding-left: 15px;">
-                            {'LBL_ENABLE_CRON'|@vtranslate:$MODULE}
-                        </td>
-                    </tr>
+                    <div class="row">
+                        {'LBL_ENABLE_CRON'|@vtranslate:$MODULE}
+                    </div>
                 {/if}
-                <tr>
-                    <td>
-                        <table cellpadding="10" cellspacing="0" align="center" class="table table-borderless">
-                            <tr>
-                                <td>{'LBL_SCHEDULED_IMPORT_DETAILS'|@vtranslate:$MODULE}</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
+                <div class="row py-2">
+                    <div class="col">{'LBL_SCHEDULED_IMPORT_DETAILS'|@vtranslate:$MODULE}</div>
+                </div>
+            </div>
         </div>
     </div>   
-    <div class='modal-overlay-footer border1px clearfix'>
-        <div class="row clearfix">
-            <div class='textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
-                <button  name="cancel" value="{'LBL_CANCEL_IMPORT'|@vtranslate:$MODULE}" class="btn btn-lg btn-danger"
-                         onclick="Vtiger_Import_Js.cancelImport('index.php?module={$FOR_MODULE}&view=Import&mode=cancelImport&import_id={$IMPORT_ID}')">{'LBL_CANCEL_IMPORT'|@vtranslate:$MODULE}</button>
-                <button class="btn btn-success btn-lg" name="ok" onclick="Vtiger_Import_Js.scheduleImport('index.php?module={$FOR_MODULE}&view=Import')">{'LBL_OK_BUTTON_LABEL'|@vtranslate:$MODULE}</button> 
+    <div class='modal-footer modal-overlay-footer border1px clearfix'>
+        <div class="container">
+            <div class="row">
+                <div class="col text-end">
+                    <button  name="cancel" value="{'LBL_CANCEL_IMPORT'|@vtranslate:$MODULE}" class="btn btn-danger"
+                             onclick="Vtiger_Import_Js.cancelImport('index.php?module={$FOR_MODULE}&view=Import&mode=cancelImport&import_id={$IMPORT_ID}')">{'LBL_CANCEL_IMPORT'|@vtranslate:$MODULE}</button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-success" name="ok" onclick="Vtiger_Import_Js.scheduleImport('index.php?module={$FOR_MODULE}&view=Import')">{'LBL_OK_BUTTON_LABEL'|@vtranslate:$MODULE}</button>
+                </div>
             </div>
         </div>
     </div>
