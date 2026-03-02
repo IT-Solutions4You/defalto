@@ -84,6 +84,8 @@ $languageStrings = [
     "URL" => "URL",
     "Events" => "Událosť",
     "Faq" => "FAQ",
+    "LBL_SHOW_HIDDEN_FIELDS" => "Zobraziť skryté polia",
+    "LBL_COLLAPSE_BLOCK" => "Zbaliť blok",
     'LBL_HEADER_FIELDS' => 'Polia v hlavičke',
     'LBL_CLICK_HERE_ADD_COLUMN' => 'Kliknite pre pridanie poľa',
 ];
