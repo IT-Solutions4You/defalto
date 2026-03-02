@@ -47,6 +47,7 @@ $languageStrings = [
     "LBL_DUPLICATES_EXIST" => "Název bloku již existuje",
     "LBL_NON_ROLE_BASED_PICKLIST" => "Výběrové pole nezaložené na rolích",
     "LBL_DUPLICATE_FIELD_EXISTS" => "Existuje duplicitní pole",
+    "LBL_DUPLICATE_HANDLING" => "Prevence duplicit",
     "LBL_WRONG_FIELD_TYPE" => "Špatný typ pole",
     "LBL_ROLE_BASED_PICKLIST" => "Výběrové pole založené na rolích",
     "LBL_CLICK_HERE_TO_EDIT" => "Pro úpravu klikněte zde",
