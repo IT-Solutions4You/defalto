@@ -18,7 +18,7 @@
 				<input type="hidden" name="view" value="Import"/>
 				<input type="hidden" name="mode" value="uploadAndParse"/>
 				<input type="hidden" id="auto_merge" name="auto_merge" value="0"/>
-				<div class='modal-body' id="importContainer">
+				<div id="importContainer">
 					{assign var=LABELS value=[]}
 					{if $FORMAT eq 'vcf'}
 						{$LABELS["step1"] = 'LBL_UPLOAD_VCF'}

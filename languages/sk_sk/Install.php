@@ -93,6 +93,7 @@ $languageStrings = [
     'tr_tr' => 'Turecký jazykový balík',
     'sk_sk' => 'Slovenčina',
     'cz_cz' => 'Čeština',
+    'de_de' => 'Deutsch',
 ];
 $jsLanguageStrings = [
     'JS_WARNING_DECIMALS' => 'Upozornenie! Je potrebné zadať odlišné hodnoty pre desatinný a skupinový oddeľovač.',

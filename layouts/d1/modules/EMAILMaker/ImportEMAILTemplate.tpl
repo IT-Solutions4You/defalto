@@ -24,7 +24,7 @@
                                         <div>
                                             <input name="type" value="xml" type="hidden">
                                             <input type="hidden" name="is_scheduled" value="1"/>
-                                            <div class="fileUploadBtn btn btn-primary">
+                                            <div class="fileUploadBtn btn btn-primary input-file-full-size">
                                                 <span><i class="fa fa-laptop"></i> {vtranslate('Select from My Computer', $MODULE)}</span>
                                                 <input type="file" name="import_file" id="import_file" onchange="Vtiger_Import_Js.checkFileType(event)" data-file-formats="xml" data-fileFormats="xml"/>
                                             </div>

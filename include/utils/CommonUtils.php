@@ -30,9 +30,10 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-require_once('include/utils/utils.php'); //new
-require_once('include/utils/RecurringType.php');
-require_once('include/utils/EmailTemplate.php');
+require_once 'vtlib/Vtiger/Deprecated.php';
+require_once 'include/utils/utils.php'; //new
+require_once 'include/utils/RecurringType.php';
+require_once 'include/utils/EmailTemplate.php';
 require_once 'include/QueryGenerator/QueryGenerator.php';
 require_once 'include/QueryGenerator/EnhancedQueryGenerator.php';
 require_once 'include/ListView/ListViewController.php';

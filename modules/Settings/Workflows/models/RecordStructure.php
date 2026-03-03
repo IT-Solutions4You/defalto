@@ -155,7 +155,7 @@ class Settings_Workflows_RecordStructure_Model extends Vtiger_RecordStructure_Mo
         $emailFields = $this->getAllEmailFields();
         $nameFields = $this->getNameFields();
         $emailOptions = [
-            '$(general : (__VtigerMeta__) supportName)<$(general : (__VtigerMeta__) supportEmailId)>' => vtranslate('LBL_HELPDESK_SUPPORT_EMAILID', 'Settings:Vtiger'),
+            '$(general : (__Meta__) supportName)<$(general : (__Meta__) supportEmailId)>' => vtranslate('LBL_HELPDESK_SUPPORT_EMAILID', 'Settings:Vtiger'),
         ];
 
         foreach ($emailFields as $metaKey => $emailField) {
@@ -194,7 +194,7 @@ class Settings_Workflows_RecordStructure_Model extends Vtiger_RecordStructure_Mo
         $moduleModel = $this->getModule();
 
         if ($moduleModel->getField('assigned_user_id')) {
-            $specialKey = '$(general : (__VtigerMeta__) reports_to_id)';
+            $specialKey = '$(general : (__Meta__) reports_to_id)';
 
             if(!isset($emailOptions[$specialKey])){
                 $emailOptions[$specialKey] = '';

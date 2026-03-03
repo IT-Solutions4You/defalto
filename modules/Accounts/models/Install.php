@@ -44,6 +44,39 @@ class Accounts_Install_Model extends Core_Install_Model
         ],
     ];
 
+    public array $registerWorkflowTasks = [
+        [
+            'Send Email to user when Notifyowner is True',
+            'Accounts',
+            '2',
+            '2',
+            [
+                [
+                    'fieldname' => 'notify_owner',
+                    'operation' => 'is',
+                    'value' => '1',
+                    'valuetype' => 'rawtext',
+                    'joincondition' => '',
+                    'groupjoin' => 'and',
+                    'groupid' => '0',
+                ],
+            ],
+            [
+                [
+                    'modules/com_vtiger_workflow/tasks/VTEmailTask.inc',
+                    'An account has been created ',
+                    'VTEmailTask',
+                    [
+                        'content' => 'An Account has been assigned to you on Defalto CRM<br>Details of account are :<br><br>AccountId:<b>$account_no</b><br>AccountName:<b>$accountname</b><br>Rating:<b>$rating</b><br>Industry:<b>$industry</b><br>AccountType:<b>$accounttype</b><br>Description:<b>$description</b><br><br><br>Thank You<br>Admin',
+                        'subject' => 'Regarding Account Creation',
+                        'recepient' => '$(assigned_user_id : (Users) email1)',
+                        'methodName' => 'NotifyOwner',
+                    ],
+                ],
+            ],
+        ],
+    ];
+
     public static array $TYPES = [
         'Customer',
         'Potential client',
@@ -59,6 +92,7 @@ class Accounts_Install_Model extends Core_Install_Model
         $this->updateRelatedList();
         $this->updateCustomLinks();
         $this->updateHistory();
+        $this->updateWorkflowTasks();
     }
 
     /**

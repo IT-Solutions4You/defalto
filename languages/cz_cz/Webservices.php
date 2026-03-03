@@ -13,7 +13,7 @@ $languageStrings = [
     'LBL_DATABASE_QUERY_ERROR' => 'Při provádění požadované operace nastala chyba databáze',
     'LBL_INVALID_OLD_PASSWORD' => 'Bylo zadáno špatné púvodní heslo.',
     'LBL_NEW_PASSWORD_MISMATCH' => 'Nové heslo a potvrzující heslo si neodpovídají',
-    'LBL_PASSWORD_NOT_STRONG' => 'To keep your data safe, we suggest that you use a strong password &lt;br&gt; &lt;ul&gt; &lt;li&gt;Password should be at least 8 characters long &lt;/li&gt; &lt;li&gt;Include at least one number &lt;/li&gt; &lt;li&gt;Include at least one lowercase alphabet &lt;/li&gt; &lt;li&gt;Include at least one uppercase alphabet &lt;/li&gt; &lt;li&gt;Include at least one special character in the password &lt;/li&gt; &lt;/ul&gt;',
+    'LBL_PASSWORD_NOT_STRONG' => 'Pro bezpečí vašich dat doporučujeme používat silné heslo:<br><ul><li>Heslo by mělo mít alespoň 8 znaků</li><li>Obsahovat alespoň jedno číslo</li><li>Obsahovat alespoň jedno malé písmeno</li><li>Obsahovat alespoň jedno velké písmeno</li><li>Obsahovat alespoň jeden speciální znak</li></ul>',
 ];
 $jsLanguageStrings = [
 ];

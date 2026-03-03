@@ -31,61 +31,44 @@
         {/if}
     </ul>
     <div class="tab-content layoutContent p-3 themeTableColor overflowVisible">
-        <div class="tab-pane active show" id="allValuesLayout">
-            <div class="row pickListValuesTableContainer">
-                <div class="col-lg-3">
-                    <div>{vtranslate($SELECTED_PICKLIST_FIELDMODEL->get('label'),$SELECTED_MODULE_NAME)}&nbsp;{vtranslate('LBL_ITEMS',$QUALIFIED_MODULE)}</div>
-                </div>
-                <div class="col-lg-6">
-                    <div>
-                        <button class="btn btn-outline-secondary" id="addItem">
+        <div class="tab-pane active show pickListValuesTableContainer" id="allValuesLayout">
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                    <div class="container pb-3">
+                        <button class="btn btn-primary active" id="addItem">
                             <i class="fa fa-plus"></i>
                             <span class="ms-2">{vtranslate('LBL_ADD_VALUE',$QUALIFIED_MODULE)}</span>
                         </button>
                     </div>
-                    <div id="pickListValuesTable" class="border rounded mt-3">
-                        <div class="p-2 border-bottom"><!-- Placeholder role to allow drag-and-drop for last elements --></div>
-                        {assign var=PICKLIST_VALUES value=$SELECTED_PICKLISTFIELD_ALL_VALUES}
-                        {foreach key=PICKLIST_KEY item=PICKLIST_VALUE from=$PICKLIST_VALUES}
-                            <div class="pickListValue border-bottom p-2" data-key-id="{$PICKLIST_KEY}" data-key="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_VALUE)}" data-deletable="{if !in_array($PICKLIST_VALUE, $NON_DELETABLE_VALUES)}true{else}false{/if}">
-                                <div class="text-truncate fieldPropertyContainer">
-                                    <div class="row align-items-center">
-                                        <div class="col-auto">
-                                                    <span class="cursorDrag btn text-secondary">
-                                                        <i class="fa-solid fa-grip-vertical"></i>
-                                                    </span>
-                                        </div>
-                                        <div class="col-2 picklistActions">
-                                            <a title="{vtranslate('LBL_EDIT',$QUALIFIED_MODULE)}" class="renameItem btn text-secondary">
-                                                <i class="fa fa-pencil"></i>
-                                            </a>
-                                            {if !in_array($PICKLIST_VALUE, $NON_DELETABLE_VALUES)}
-                                                <a title="{vtranslate('LBL_DELETE_VALUE',$QUALIFIED_MODULE)}" class="deleteItem btn text-secondary">
-                                                    <i class="fa fa-trash-o"></i>
-                                                </a>
-                                            {/if}
-                                        </div>
-                                        <div class="col">
-                                            <span class="py-1 px-2 rounded picklist-color picklist-{$SELECTED_PICKLIST_FIELDMODEL->getId()}-{$PICKLIST_KEY}">{vtranslate($PICKLIST_VALUE,$SELECTED_MODULE_NAME)}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {/foreach}
-                        <div class="p-2 afterPicklistValues"><!-- Placeholder role to allow drag-and-drop for last elements --></div>
-                        <span class="picklistActionsTemplate hide">
-                                    <a title="{vtranslate('LBL_EDIT',$QUALIFIED_MODULE)}" class="renameItem btn text-secondary">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                    <a title="{vtranslate('LBL_DELETE_VALUE',$QUALIFIED_MODULE)}" class="deleteItem btn text-secondary">
-                                        <i class="fa fa-trash-o"></i>
-                                    </a>
+                    <div class="container border rounded">
+                        <div class="row py-2 border-bottom bg-body-secondary align-items-center">
+                            <div class="col-auto invisible">
+                                <span class="btn">
+                                    <i class="fa-solid fa-grip-vertical"></i>
                                 </span>
+                                <span class="btn">
+                                    <i class="fa-solid fa-palette"></i>
+                                </span>
+                            </div>
+                            <div class="col fw-bold">{vtranslate($SELECTED_PICKLIST_FIELDMODEL->get('label'),$SELECTED_MODULE_NAME)}</div>
+                        </div>
+                        <div id="pickListValuesTable" class="row">
+                            <div class="p-2 border-bottom"><!-- Placeholder role to allow drag-and-drop for last elements --></div>
+                            {assign var=PICKLIST_VALUES value=$SELECTED_PICKLISTFIELD_ALL_VALUES}
+                            {foreach key=PICKLIST_KEY item=PICKLIST_VALUE from=$PICKLIST_VALUES}
+                                {include file="PickListValueRow.tpl"|vtemplate_path:$QUALIFIED_MODULE}
+                            {/foreach}
+                            <div class="p-2 afterPicklistValues"><!-- Placeholder role to allow drag-and-drop for last elements --></div>
+                            <div class="pickListValueClone hide">
+                                {include file="PickListValueRow.tpl"|vtemplate_path:$QUALIFIED_MODULE PICKLIST_KEY='clone_id' PICKLIST_VALUE='clone_value'}
+                            </div>
+                        </div>
+                    </div>
+                    <div id="createViewContents" style="display: none;">
+                        {include file="CreateView.tpl"|@vtemplate_path:$QUALIFIED_MODULE}
                     </div>
                 </div>
-            </div>
-            <div id="createViewContents" style="display: none;">
-                {include file="CreateView.tpl"|@vtemplate_path:$QUALIFIED_MODULE}
             </div>
         </div>
         {if $SELECTED_PICKLIST_FIELDMODEL->isRoleBased()}

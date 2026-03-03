@@ -51,5 +51,15 @@ class Installer_Install_Model extends Core_Install_Model
             ->createTable()
             ->createColumn('name', 'VARCHAR(200)')
             ->createColumn('info', 'TEXT');
+
+        $this->getTable('df_notifications', 'id')
+            ->createTable()
+            ->createColumn('name', 'VARCHAR(100)')
+            ->createColumn('description', 'VARCHAR(200)')
+            ->createColumn('type', 'VARCHAR(10)')
+            ->createColumn('icon', 'VARCHAR(50)')
+            ->createColumn('link', 'VARCHAR(200)')
+            ->createColumn('date', 'DATETIME')
+        ;
     }
 }
